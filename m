@@ -2,134 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C951E9FC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 10:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4761E9FCA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 10:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728251AbgFAIEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 04:04:23 -0400
-Received: from mout.gmx.net ([212.227.15.18]:46477 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726056AbgFAIEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 04:04:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1590998660;
-        bh=gD1jYMR6Jfe1KRuDkbv5y4rc2qhXM0mIYVUCsOXLWBQ=;
-        h=X-UI-Sender-Class:To:From:Subject:Date;
-        b=fgfGvqeHv7QT62Tuz73nB/yAX711cylCu4d1bZINRP4RpPM/qXIpDmAM+7icX8nPp
-         rfelJ5Ihc4tFrwyuaMqUrfjpFg9no4I9aOW/8jAkzrdslfGKgJc00zofmH10wt7DZV
-         seEOemaCDSpgxexNkF4z+wR9389e9eQxyRXYKRbw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.23] ([77.8.38.77]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M4s4r-1jfO313OBL-0020bG for
- <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:04:20 +0200
-To:     Linux Kernel <linux-kernel@vger.kernel.org>
-From:   =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
-Autocrypt: addr=toralf.foerster@gmx.de; prefer-encrypt=mutual; keydata=
- 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
-Subject: a CGroup issue: a weird value in memory.memsw.limit_in_bytes
-Message-ID: <f2fa95b8-4989-ebcf-f609-33ef49dc8acf@gmx.de>
-Date:   Mon, 1 Jun 2020 10:04:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1728156AbgFAIGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 04:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726056AbgFAIGO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 04:06:14 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB67C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 01:06:14 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id n123so4744829ybf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 01:06:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d59FlMXkZZoVBeLzdnN0v1/ojzLIURQn/Bd884+qmDQ=;
+        b=ULsalHO0uqDfPINCiy70pX46VaQZMMn8knrqTo9BoOv/xI/f43NGcatb6Ws+r3H7eu
+         q1e5LA33Z4AEnxa/PwE80tZXRegVVz9JQSHlXa8JVIpFHq1JnqaIu2AqyWv96EKtfUpu
+         1Zb6fkwZVkRgSkZoqY9DCF7wHzpjtL35M/KFjaaaCfMxBP3CbZnl3shLUQqsXwOmDYxV
+         FQfRZ5++bxd3SpgnKZaTpvl4hZQzcZWW7GobRBfNqf5wdwVzRHkBBYkrlSCelae3tnGX
+         JAoqVVASWYqY6f/AnihnyKwVPjspfyUDwGQqTTiqaRUttyCQN0FRpgN/pVOXChIxyMWM
+         PYkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d59FlMXkZZoVBeLzdnN0v1/ojzLIURQn/Bd884+qmDQ=;
+        b=fPKaMEA/fYyxxwFoH7aJkXf2OQItiHFgQhWUPNyNVt0gVC+t9dFhUNg3lLlJ1lhy4s
+         qfGseERe1yrqOIOokFaUXu9ULKg+jVHo11E6DTa27DY+g7zPRaSVbaOpdTeuXSedqI2F
+         nrABYpZ7aKNRuJUaazoTZld0MNSVP0J11F+R1wA9h9Tc7nm5k7yN5ck1cY2k72c5ucwW
+         wWpR1kYwNvixWs4FBsy7wkwUrRZdR45mH5lij/7149yplufl3naPen+0IACev37oUjOO
+         pcHTQUKLjFrmLUbsWCx43Ufwob1HhU9Yx6tMnSDXpauNVBegntX18zGPqXjJYQMYMx95
+         O+0A==
+X-Gm-Message-State: AOAM530nIsOIJEk8iJITp6EvaG5ktkd8pLR1XJ1snoMwe72TnZkAYBC7
+        A8mvKP3VrgwOHhsiMj0Fwbra7tsH5+7Wm0KyQxsDGNxi
+X-Google-Smtp-Source: ABdhPJwgZvW04nPk4Jca7z69BxIY/ygIogrqLw2npBLnkocgPKpWir9r+zbAsL9C9DPHUFbnbmZEQLDozCp4sZQ4awI=
+X-Received: by 2002:a5b:ec1:: with SMTP id a1mr7817315ybs.41.1590998773488;
+ Mon, 01 Jun 2020 01:06:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wLt0DUq2TQRbeFhq7JrUl9jW6yfDLn9cJ6A0zkRzjZ3P0IvCzWM
- lJKRYUSJGHB5tDaQqU4vl3XoyX5OhSIql+plGTYNnCIpmo5f82n0kNqUzxQtykpLyiMGZOp
- fi7nS1JoRlrKQ/AJBXpavO9agdXCx56ZNZlkM089FPhRx4USfx3+YowBwDMmoIVRPBKfcbG
- Lz82e1+vjoySAZE3ySnKg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lgE9ZRvZ+iM=:asv8jJHqNQntTOeoCHtfz3
- 3d7C85hvvaz3koma6WNs+EKPFkbLYTkmcZj2fJFFJ8QNAxg0SE16JsiI7AItyprKB7bYDRTy8
- gs+FGFnA8ZWVXm7tAN/wwALxZKBZZBsE3EnCu0hRGIkxV3bRVUl6KMjYoC2umJjxjY0ulETva
- iEfBbgWaFz0epITRDT0a2JiCxpZm4YW5RyFMBeDzK6G87Ec9Z7xgZuyvv0G592KIV6nslFZVM
- VbzhcnZpLYhD9qCVBF79UyxkCC7jZWnyFLGvzuYFpqZROWdaqK2l1pkaYhnZDLzJd7Tf8+d0N
- PoR4uNlGrsrW1GfY1YU5xG4GlZlwRq1mPOQ7mTeAkrHbim/F0PjWx+OidjH+bo2OmOOYGZPbC
- hhzIzr/+IS6O7tO29/Wz/MWgY3QORt/6+1i0dIfcBdbmatBS3k1jnPArkJBGk9Sno6QyR3PPf
- RxBhiWa3xWxr2sIERg96ouKX18sjhDnoiEDsutYg/Z0ghZmNbm5HKmxyTQVtpNM2gPW2ZXG3h
- FvyC4RNwko4WJBrt/hPIxywisrq5QxCTD0LtyLWDN8K7X/ge43bb7gPY+sNGHgvKOwoyJgbEr
- Lz/G60y59npXZQ/Q7HRaaCdi3dhiV7tj7FKxpI9D2eiH+6zTEjAzKNDHAibHFzzKyNDk1wGEd
- dtQ/NJEuGVsG5LxbzESsVO5Jwx/dhBL+++CPhmOCgffQ3EcKdP9swOUiBuIoZ6QXpTzgvddfu
- lX21bvOFc6obMN+idMuOqmBDjm5ShLKJIzoO3IxePSBtec2b7O3QbjvQPWEeCeYmpD7UI4cIa
- bh7iB5jPK05NW4gZEUgTnZflXmDV9YrGxWZeaYpk1cRG/664cBwSxfHKhWGEVGjs99wNKkabP
- u2dCHSTLBURX6/lslqrFc8ksSP7k3WMWyKK3LIjNk6AdZ/vak89Z0cdpYQHvvOL0jPZlPV8SB
- jUkJkKrL1dUPbFq/nxe9LTj1qE/gV1NcSqRIGD8Tkl5rWp7GvNOo5GpBCN7dVShQbY0PwHRFE
- qXpJO64AewrAx9NsgF5CKg54Lir24yofbc22aFlHkYnMplEq4VT0VnRKVWzLXA4JYzMuSKSpM
- wuDrU7KcPUqxLLM5EhmtbDPpsA7JrSQC3zGe2VccdgfMUVDW2QYRYQHMsA/bjGmD1U9nSE4DK
- TBTGJfcxYJQIemg2IkVVwQO1M/qfngjKZcsdGkHQzgi8m4NWESsh1P9wb1hU1h25ZKD+CAmHV
- QjAjr1xFRt/wrDX6K
+References: <20200524224219.234847-1-jolsa@kernel.org> <20200524224219.234847-15-jolsa@kernel.org>
+In-Reply-To: <20200524224219.234847-15-jolsa@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 1 Jun 2020 01:06:01 -0700
+Message-ID: <CAP-5=fWz9=RhSmWgv1cH4MPXcq49xrqx=9A2P=NK80qvjgn6TA@mail.gmail.com>
+Subject: Re: [PATCH 14/14] perf tests: Add parse metric test for frontend metric
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I do wonder about this value:
+On Sun, May 24, 2020 at 3:43 PM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Adding new metri test for frontend metric. It's stolen
 
-# grep ^9 /sys/fs/cgroup/memory/*/*/memory.memsw.limit_in_bytes
-/sys/fs/cgroup/memory/tinderbox/17.1_developer-20200531-193248/memory.mems=
-w.limit_in_bytes:9223372036854771712
-/sys/fs/cgroup/memory/tinderbox/17.1_developer-libressl-20200531-194547/me=
-mory.memsw.limit_in_bytes:9223372036854771712
-/sys/fs/cgroup/memory/tinderbox/17.1_hardened-20200531-195425/memory.memsw=
-.limit_in_bytes:9223372036854771712
+s/metri/metric/
 
-which are about 2^12 below 2^63 :
+> from x86 pmu events.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-# echo "2^63 - 9223372036854771712" | bc
-4096
+Acked-by: Ian Rogers <irogers@google.com>
 
-b/c I do write much smaller values into it:
+Thanks,
+Ian
 
-https://github.com/toralf/tinderbox/blob/75fcbe43f58dadfab94fdd67aef1f681b=
-b74f451/bin/bwrap.sh#L34
-
-This happens not always, just realized it yesterday at few files.
-=2D-
-Toralf
+> ---
+>  tools/perf/tests/parse-metric.c | 46 +++++++++++++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>
+> diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
+> index 3005d27c5c48..38f20850bba3 100644
+> --- a/tools/perf/tests/parse-metric.c
+> +++ b/tools/perf/tests/parse-metric.c
+> @@ -15,6 +15,11 @@ static struct pmu_event pme_test[] = {
+>         .metric_expr    = "inst_retired.any / cpu_clk_unhalted.thread",
+>         .metric_name    = "IPC",
+>  },
+> +{
+> +       .metric_expr    = "idq_uops_not_delivered.core / (4 * (( ( cpu_clk_unhalted.thread / 2 ) * "
+> +                         "( 1 + cpu_clk_unhalted.one_thread_active / cpu_clk_unhalted.ref_xclk ) )))",
+> +       .metric_name    = "Frontend_Bound_SMT",
+> +},
+>  };
+>
+>  static struct pmu_events_map map = {
+> @@ -110,8 +115,49 @@ static int test_ipc(void)
+>         return 0;
+>  }
+>
+> +static int test_frontend(void)
+> +{
+> +       double ratio;
+> +       struct rblist metric_events = { 0 };
+> +       struct evlist *evlist;
+> +       struct evsel *evsel;
+> +       struct value vals[] = {
+> +               { .event = "idq_uops_not_delivered.core",        .val = 300 },
+> +               { .event = "cpu_clk_unhalted.thread",            .val = 200 },
+> +               { .event = "cpu_clk_unhalted.one_thread_active", .val = 400 },
+> +               { .event = "cpu_clk_unhalted.ref_xclk",          .val = 600 },
+> +               { 0 },
+> +       };
+> +       struct runtime_stat st;
+> +       int err;
+> +
+> +       evlist = evlist__new();
+> +       if (!evlist)
+> +               return -1;
+> +
+> +       err = metricgroup__parse_groups_test(evlist, &map,
+> +                                            "Frontend_Bound_SMT",
+> +                                            false, false,
+> +                                            &metric_events);
+> +
+> +       TEST_ASSERT_VAL("failed to parse metrics", err == 0);
+> +
+> +       runtime_stat__init(&st);
+> +       load_runtime_stat(&st, evlist, vals);
+> +
+> +       evsel = evlist__first(evlist);
+> +       ratio = compute_single(&metric_events, evsel, &st);
+> +
+> +       TEST_ASSERT_VAL("Frontend_Bound_SMT failed, wrong ratio", ratio == 0.45);
+> +
+> +       runtime_stat__exit(&st);
+> +       evlist__delete(evlist);
+> +       return 0;
+> +}
+> +
+>  int test__parse_metric(struct test *test __maybe_unused, int subtest __maybe_unused)
+>  {
+>         TEST_ASSERT_VAL("IPC failed", test_ipc() == 0);
+> +       TEST_ASSERT_VAL("frontend failed", test_frontend() == 0);
+>         return 0;
+>  }
+> --
+> 2.25.4
+>
