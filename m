@@ -2,121 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F801EB179
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 00:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71321EB186
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 00:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728890AbgFAWDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 18:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728777AbgFAWDr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 18:03:47 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA64C08C5C9
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 15:03:47 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id y17so478081plb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 15:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XFnIQB7ncVF63T1pY2NMmD5MUjtRKH/Cyt/vduuOCr4=;
-        b=fek/fKkwjOdhsv+J8geTqfhekmIfVg31GBFgDaJGfViiSS3F/TsrEDBUE9wVv/9R8E
-         SLECz+XjlLL63WPLyFxiSgONAHsFBoColGWxAzWM9st+Pt4+fuDZvusd10ecebte6xxm
-         cZP+Te8MKz3ySAe3gVd2jr865slvk2yVvi9Hg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XFnIQB7ncVF63T1pY2NMmD5MUjtRKH/Cyt/vduuOCr4=;
-        b=oWhQLEGl2Qjkw7KGqjRIVtlQvEGBTdC0STM7HJlISuDnEOOtLItWpM7bJvWTjMKk2h
-         ZQJyEIw042PmFOtM3rt/4lOOuvn9NIyzHIfN5s7327Pca/2Tz1LBtBkLjXnYO28514x4
-         ECVyqVDfv+E+SpIRH6FjpUfaPpKn8nFYvTiykfzPjOPo1S/qhZrP5TF4zAEHjsq3dq9v
-         1lMrrpHiWdC8MlNed7xhdM9/SRiRFs8wSfI3a0k0y4L8QHyHGiwvG6ZVrw7Z7QTQsAhA
-         cfc+ujCa1LotHmY2kLcwkDevd7P4TXunZN7mKVIOu/Qb6lRlvm5mVZ//ym8i7s8fuDVd
-         /8EA==
-X-Gm-Message-State: AOAM530mBWK/8C7otDKVKQOzMh9S9uJwHWpaSu4efWK25QOdC0nYM253
-        xs2zZROds1PZYgTG3oIJHEYpcw==
-X-Google-Smtp-Source: ABdhPJweeLR8G4rZkKaY74PZV+ncoWYY84wN8268AueoBMTYcuSWzeDoqapxC9otqNOiOJ4igNbeRg==
-X-Received: by 2002:a17:902:7041:: with SMTP id h1mr22988066plt.169.1591049026875;
-        Mon, 01 Jun 2020 15:03:46 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id 67sm346948pfg.84.2020.06.01.15.03.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 15:03:46 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     amasule@codeaurora.org, stanimir.varbanov@linaro.org
-Cc:     swboyd@chromium.org, jkardatzke@google.com, mka@chromium.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: [RFC PATCH] media: venus: Fix NULL pointer dereference in core selection
-Date:   Mon,  1 Jun 2020 15:03:22 -0700
-Message-Id: <20200601150314.RFC.1.I1e40623bbe8fa43ff1415fc273cba66503b9b048@changeid>
-X-Mailer: git-send-email 2.27.0.rc2.251.g90737beb825-goog
+        id S1728805AbgFAWJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 18:09:49 -0400
+Received: from mga11.intel.com ([192.55.52.93]:14332 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728216AbgFAWJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 18:09:49 -0400
+IronPort-SDR: OmzUdPgYKxV0cdIpmpnSPx5NitXXJUsmh39dcJLgI91vZJUSzLAukjCruhjNJlHe6/dOhODcQO
+ 2pgo7/5+DQMA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 15:09:48 -0700
+IronPort-SDR: sUumJ0VgGRtZTVt9P3HLsMnP6pZDuBTCtCYYDqxkNxI9Y5oEam8LIoybQoiyNdSRvyOZSHIZq4
+ 44bOdemssgYQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,462,1583222400"; 
+   d="scan'208";a="347190913"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.251.235.125]) ([10.251.235.125])
+  by orsmga001.jf.intel.com with ESMTP; 01 Jun 2020 15:09:45 -0700
+Subject: Re: [PATCH v2 0/9] Add shared workqueue support for idxd driver
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     vkoul@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, bhelgaas@google.com,
+        gregkh@linuxfoundation.org, arnd@arndb.de
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, dan.j.williams@intel.com, ashok.raj@intel.com,
+        fenghua.yu@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        sanjay.k.kumar@intel.com, dave.hansen@intel.com
+References: <158982749959.37989.2096629611303670415.stgit@djiang5-desk3.ch.intel.com>
+Message-ID: <95eb8203-a332-37ae-28fb-5a2af4d1daba@intel.com>
+Date:   Mon, 1 Jun 2020 15:09:45 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <158982749959.37989.2096629611303670415.stgit@djiang5-desk3.ch.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The newly-introduced function min_loaded_core() iterates over all of
-the venus instances an tries to figure out how much load each instance
-is putting on each core.  Not all instances, however, might be fully
-initialized.  Specifically the "codec_freq_data" is initialized as
-part of vdec_queue_setup(), but an instance may already be in the list
-of all instances before that time.
+Vinod,
+Obviously this series won't make it for 5.8 due to being blocked by Fenghua's 
+PASID series. Do you think you can take patches 4 and 5 independently? I think 
+these can go into 5.8 and is not dependent on anything. Thanks.
 
-Let's band-aid this by checking to see if codec_freq_data is NULL
-before dereferencing.
-
-NOTE: without this fix I was running into a crash.  Specifically there
-were two venus instances.  One was doing start_streaming.  The other
-was midway through queue_setup but hadn't yet gotten to initting
-"codec_freq_data".
-
-Fixes: eff82f79c562 ("media: venus: introduce core selection")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-I'm not massively happy about this commit but it's the best I could
-come up with without being much more of an expert in the venus codec.
-If someone has a better patch then please just consider this one to be
-a bug report and feel free to submit a better fix!  :-)
-
-In general I wonder a little bit about whether it's safe to be peeking
-at all the instances without grabbing the "inst->lock" on each one.  I
-guess it is since we do it both here and in load_scale_v4() but I
-don't know why.
-
-One thought I had was that we could fully avoid accessing the other
-instances, at least in min_loaded_core(), by just keeping track of
-"core1_load" and "core2_load" in "struct venus_core".  Whenever we add
-a new instance we could add to the relevant variables and whenever we
-release an instance we could remove.  Such a change seems cleaner but
-would require someone to test to make sure we didn't miss any case
-(AKA we always properly added/removed our load from the globals).
-
- drivers/media/platform/qcom/venus/pm_helpers.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-index abf93158857b..a1d998f62cf2 100644
---- a/drivers/media/platform/qcom/venus/pm_helpers.c
-+++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@ -496,6 +496,8 @@ min_loaded_core(struct venus_inst *inst, u32 *min_coreid, u32 *min_load)
- 	list_for_each_entry(inst_pos, &core->instances, list) {
- 		if (inst_pos == inst)
- 			continue;
-+		if (!inst_pos->clk_data.codec_freq_data)
-+			continue;
- 		vpp_freq = inst_pos->clk_data.codec_freq_data->vpp_freq;
- 		coreid = inst_pos->clk_data.core_id;
- 
--- 
-2.27.0.rc2.251.g90737beb825-goog
-
+On 5/18/2020 11:53 AM, Dave Jiang wrote:
+> v2:
+> - Dropped device feature enabling (GregKH)
+> - Dropped PCI device feature enabling (Bjorn)
+> 	- https://members.pcisig.com/wg/PCI-SIG/document/14237
+> 	- After some internal discussion, we have decided to hold off on the
+> 	  enabling of DMWR due to the following reasons. 1. Most first gen hw
+> 	  will not have the feature bits. 2. First gen hw that support the
+> 	  feature are all Root Complex integrated endpoints. 3. PCI devices
+> 	  that are not RCiEP’s with this capability won’t surface for a few
+> 	  years so we can wait until we can test the full code.
+> - Dropped special ioremap (hch)
+> - Added proper support for WQ flush (tony, dan)
+> - Changed descriptor submission to use sbitmap_queue for blocking. (dan)
+> - Split out MOBDIR64B to right location for ENQCMDS placement. (daveh)
+> - Split out SVM kernel dependencies for driver. (daveh)
+> - Call enqcmds() directly (daveh)
+> - Fix enqcmds() commit log (daveh)
+> - Split out fault processing code (tony)
+> 
+> Driver stage 1 postings for context: [1]
+> 
+> The patch series has functionality dependency on Fenghua's "Tag application
+> address space for devices" patch series for the ENQCMD CPU command enumeration
+> and the PASID MSR support. [2]
+> 
+> The first patch enumerating ENQCMD is lifted from Fenghua's patch series. It
+> removes the compilation dependency for the driver. It can be dropped by the
+> maintainer merging the driver patch series once Fenghua's patch series is
+> merged.
+> 
+> == Background ==
+> A typical DMA device requires the driver to translate application buffers to
+> hardware addresses, and a kernel-user transition to notify the hardware of new
+> work. Shared Virtual Addressing (SVA) allows the processor and device to use the
+> same virtual addresses without requiring software to translate between the
+> address spaces. ENQCMD is a new instruction on Intel Platforms that allows user
+> applications to directly notify hardware of new work, much like how doorbells
+> are used in some hardware, but it carries a payload along with it. ENQCMDS is
+> the supervisor version (ring0) of ENQCMD.
+> 
+> == ENQCMDS ==
+> Introduce iosubmit_cmd512_sync(), a common wrapper that copies an input payload
+> to a 64B aligned destination and confirms whether the payload was accepted by
+> the device or not. iosubmit_cmd512_sync() wraps the new ENQCMDS CPU instruction.
+> The ENQCMDS is a ring 0 CPU instruction that performs similar to the ENQCMD
+> instruction. Descriptor submission must use ENQCMD(S) for shared workqueues
+> (swq) on an Intel DSA device.
+> 
+> == Shared WQ support ==
+> Introduce shared workqueue (swq) support for the idxd driver. The current idxd
+> driver contains dedicated workqueue (dwq) support only. A dwq accepts
+> descriptors from a MOVDIR64B instruction. MOVDIR64B is a posted instruction on
+> the PCIe bus, it does not wait for any response from the device. If the wq is
+> full, submitted descriptors are dropped. A swq utilizes the ENQCMDS in ring 0,
+> which is a non-posted instruction. The zero flag would be set to 1 if the device
+> rejects the descriptor or if the wq is full. A swq can be shared between
+> multiple users (kernel or userspace) due to not having to keep track of the wq
+> full condition for submission. A swq requires PASID and can only run with SVA
+> support.
+> 
+> == IDXD SVA support ==
+> Add utilization of PASID to support Shared Virtual Addressing (SVA). With PASID
+> support, the descriptors can be programmed with host virtual address (HVA)
+> rather than IOVA. The hardware will work with the IOMMU in fulfilling page
+> requests. With SVA support, a user app using the char device interface can now
+> submit descriptors without having to pin the virtual memory range it wants to
+> DMA in its own address space.
+> 
+> The series does not add SVA support for the dmaengine subsystem. That support
+> is coming at a later time.
+> 
+> [1]: https://lore.kernel.org/lkml/157965011794.73301.15960052071729101309.stgit@djiang5-desk3.ch.intel.com/
+> [2]: https://lore.kernel.org/lkml/1585596788-193989-1-git-send-email-fenghua.yu@intel.com/
+> [3]: https://software.intel.com/en-us/articles/intel-sdm
+> [4]: https://software.intel.com/en-us/download/intel-scalable-io-virtualization-technical-specification
+> [5]: https://software.intel.com/en-us/download/intel-data-streaming-accelerator-preliminary-architecture-specification
+> [6]: https://01.org/blogs/2019/introducing-intel-data-streaming-accelerator
+> [7]: https://intel.github.io/idxd/
+> [8]: https://github.com/intel/idxd-driver idxd-stage2
+> 
+> ---
+> 
+> Dave Jiang (8):
+>        x86/asm: move the raw asm in iosubmit_cmds512() to special_insns.h
+>        x86/asm: add enqcmds() to support ENQCMDS instruction
+>        dmaengine: idxd: add work queue drain support
+>        dmaengine: idxd: move submission to sbitmap_queue
+>        dmaengine: idxd: add shared workqueue support
+>        dmaengine: idxd: clean up descriptors with fault error
+>        dmaengine: idxd: add leading / for sysfspath in ABI documentation
+>        dmaengine: idxd: add ABI documentation for shared wq
+> 
+> Fenghua Yu (1):
+>        x86/cpufeatures: Enumerate ENQCMD and ENQCMDS instructions
+> 
+> 
+>   Documentation/ABI/stable/sysfs-driver-dma-idxd |   68 ++++--
+>   arch/x86/include/asm/cpufeatures.h             |    1
+>   arch/x86/include/asm/io.h                      |   43 +++-
+>   arch/x86/include/asm/special_insns.h           |   17 ++
+>   arch/x86/kernel/cpu/cpuid-deps.c               |    1
+>   drivers/dma/Kconfig                            |   15 +
+>   drivers/dma/idxd/cdev.c                        |   38 ++++
+>   drivers/dma/idxd/device.c                      |  252 +++++++++++++++---------
+>   drivers/dma/idxd/dma.c                         |    9 -
+>   drivers/dma/idxd/idxd.h                        |   32 ++-
+>   drivers/dma/idxd/init.c                        |  122 +++++++-----
+>   drivers/dma/idxd/irq.c                         |  184 ++++++++++++++----
+>   drivers/dma/idxd/registers.h                   |   14 +
+>   drivers/dma/idxd/submit.c                      |  105 ++++++----
+>   drivers/dma/idxd/sysfs.c                       |  150 +++++++++++++-
+>   15 files changed, 758 insertions(+), 293 deletions(-)
+> 
+> --
+> 
