@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBCF1EAE2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607A01EAEE3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729767AbgFASEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:04:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49106 "EHLO mail.kernel.org"
+        id S1730956AbgFAS56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:57:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730177AbgFASE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:04:27 -0400
+        id S1728422AbgFAR7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:59:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 805B9207D0;
-        Mon,  1 Jun 2020 18:04:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E6592073B;
+        Mon,  1 Jun 2020 17:59:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034667;
-        bh=M1Fe7yGsnThBEbaLs1mNNRD4/sdQ9gHFLRjOaS6lX5o=;
+        s=default; t=1591034376;
+        bh=nDPx907IiAgKo62mVevumnODl8p64fK6WNMF6tym8/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F4pG9Aqq8SvGnFn5fiqch5XLN6ToltUl+pFZNefHGGaKBSRgow+jRsSRL3dDeG1mB
-         TXr1ZNBhlp9dJK+8B64Q8HF5XAkSOGCb6Gj2PYCNDEkhtubS1Ny/OnosJHNPTICzHT
-         ilSmUTtq/K5Djv2LyyQ2r4q94TAQ9IvCHw/3Oa9U=
+        b=hRxlzo7P/ZdbJSJCjoGKkMrABAnZZSgI6CbsuDqdRByJEV8w08OwXE4Y5wQJzlnvo
+         59uQ9n6UwilMHlgaQ16GS7LDEQKQsZLhdS/uD4WiwauOC9oAQLQCR6O3f0sOzH9/n3
+         ffhW7eEq6LIGkcJwhZ9IX8XKb1dpJSy6oecXYEkg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peng Hao <richard.peng@oppo.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 55/95] mmc: block: Fix use-after-free issue for rpmb
-Date:   Mon,  1 Jun 2020 19:53:55 +0200
-Message-Id: <20200601174029.980447276@linuxfoundation.org>
+        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Subject: [PATCH 4.9 49/61] ip_vti: receive ipip packet by calling ip_tunnel_rcv
+Date:   Mon,  1 Jun 2020 19:53:56 +0200
+Message-Id: <20200601174020.554744373@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Hao <richard.peng@oppo.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 202500d21654874aa03243e91f96de153ec61860 ]
+commit 976eba8ab596bab94b9714cd46d38d5c6a2c660d upstream.
 
-The data structure member “rpmb->md” was passed to a call of the function
-“mmc_blk_put” after a call of the function “put_device”. Reorder these
-function calls to keep the data accesses consistent.
+In Commit dd9ee3444014 ("vti4: Fix a ipip packet processing bug in
+'IPCOMP' virtual tunnel"), it tries to receive IPIP packets in vti
+by calling xfrm_input(). This case happens when a small packet or
+frag sent by peer is too small to get compressed.
 
-Fixes: 1c87f7357849 ("mmc: block: Fix bug when removing RPMB chardev ")
-Signed-off-by: Peng Hao <richard.peng@oppo.com>
-Cc: stable@vger.kernel.org
-[Uffe: Fixed up mangled patch and updated commit message]
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+However, xfrm_input() will still get to the IPCOMP path where skb
+sec_path is set, but never dropped while it should have been done
+in vti_ipcomp4_protocol.cb_handler(vti_rcv_cb), as it's not an
+ipcomp4 packet. This will cause that the packet can never pass
+xfrm4_policy_check() in the upper protocol rcv functions.
+
+So this patch is to call ip_tunnel_rcv() to process IPIP packets
+instead.
+
+Fixes: dd9ee3444014 ("vti4: Fix a ipip packet processing bug in 'IPCOMP' virtual tunnel")
+Reported-by: Xiumei Mu <xmu@redhat.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/mmc/core/block.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv4/ip_vti.c |   23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 23bcdbba0cab..c723a1e54b18 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -2485,8 +2485,8 @@ static int mmc_rpmb_chrdev_release(struct inode *inode, struct file *filp)
- 	struct mmc_rpmb_data *rpmb = container_of(inode->i_cdev,
- 						  struct mmc_rpmb_data, chrdev);
+--- a/net/ipv4/ip_vti.c
++++ b/net/ipv4/ip_vti.c
+@@ -98,7 +98,28 @@ static int vti_rcv_proto(struct sk_buff
  
--	put_device(&rpmb->dev);
- 	mmc_blk_put(rpmb->md);
-+	put_device(&rpmb->dev);
- 
- 	return 0;
+ static int vti_rcv_tunnel(struct sk_buff *skb)
+ {
+-	return vti_rcv(skb, ip_hdr(skb)->saddr, true);
++	struct ip_tunnel_net *itn = net_generic(dev_net(skb->dev), vti_net_id);
++	const struct iphdr *iph = ip_hdr(skb);
++	struct ip_tunnel *tunnel;
++
++	tunnel = ip_tunnel_lookup(itn, skb->dev->ifindex, TUNNEL_NO_KEY,
++				  iph->saddr, iph->daddr, 0);
++	if (tunnel) {
++		struct tnl_ptk_info tpi = {
++			.proto = htons(ETH_P_IP),
++		};
++
++		if (!xfrm4_policy_check(NULL, XFRM_POLICY_IN, skb))
++			goto drop;
++		if (iptunnel_pull_header(skb, 0, tpi.proto, false))
++			goto drop;
++		return ip_tunnel_rcv(tunnel, skb, &tpi, NULL, false);
++	}
++
++	return -EINVAL;
++drop:
++	kfree_skb(skb);
++	return 0;
  }
--- 
-2.25.1
-
+ 
+ static int vti_rcv_cb(struct sk_buff *skb, int err)
 
 
