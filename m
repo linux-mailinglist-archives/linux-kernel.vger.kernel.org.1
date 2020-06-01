@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5671EAAE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992811EAAF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728715AbgFASMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:12:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59376 "EHLO mail.kernel.org"
+        id S1730928AbgFASND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:13:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731173AbgFASME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:12:04 -0400
+        id S1731287AbgFASMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:12:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6A7920776;
-        Mon,  1 Jun 2020 18:12:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 976C920776;
+        Mon,  1 Jun 2020 18:12:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035123;
-        bh=d61p7fz4JUsdt7OPm5Wqq4X7nwX/XVQpKdebrkA0rYQ=;
+        s=default; t=1591035175;
+        bh=eABdBEgjDtkyp2gYB/PXFotmAYH5rmYdmOwO96JAc0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S4Ebgi0Tqzxkn4ePzvjGSh0kEs9yq5BOhgzMeTl56C9d6ArAg9mtnDVMIjHie9rsR
-         3I1Lz8yddL6s+AhV+1AYqk6T2WQEMAIi7gHKPYo7JLdJpWaZVe5ZwxaZMZ6xfJn99U
-         LR9vhGkyH4SERVTj9VCjOXhTmdfPIXHm00BdLJ1g=
+        b=BY2Bqdaxxs6fN81AlcGPITZY9vsmMflaSYBEneiCIv4IA8x6f3YNYTHLuE3IqPgki
+         9ziLsPXZcFbknLHuVDQlfZ8Msfa2HNcmnUVGGmPnoUiNDEcGYzlPrHZ9ueIf1iFfS5
+         VHpyKy9+bicU7sFVdw9c7HGkTKjmZOf5UBvsEwgU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 002/177] dpaa_eth: fix usage as DSA master, try 3
-Date:   Mon,  1 Jun 2020 19:52:20 +0200
-Message-Id: <20200601174048.727800313@linuxfoundation.org>
+Subject: [PATCH 5.6 006/177] net: dsa: mt7530: fix roaming from DSA user ports
+Date:   Mon,  1 Jun 2020 19:52:24 +0200
+Message-Id: <20200601174049.101892993@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
 References: <20200601174048.468952319@linuxfoundation.org>
@@ -44,73 +43,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: DENG Qingfang <dqfext@gmail.com>
 
-[ Upstream commit 5d14c304bfc14b4fd052dc83d5224376b48f52f0 ]
+[ Upstream commit 5e5502e012b8129e11be616acb0f9c34bc8f8adb ]
 
-The dpaa-eth driver probes on compatible string for the MAC node, and
-the fman/mac.c driver allocates a dpaa-ethernet platform device that
-triggers the probing of the dpaa-eth net device driver.
+When a client moves from a DSA user port to a software port in a bridge,
+it cannot reach any other clients that connected to the DSA user ports.
+That is because SA learning on the CPU port is disabled, so the switch
+ignores the client's frames from the CPU port and still thinks it is at
+the user port.
 
-All of this is fine, but the problem is that the struct device of the
-dpaa_eth net_device is 2 parents away from the MAC which can be
-referenced via of_node. So of_find_net_device_by_node can't find it, and
-DSA switches won't be able to probe on top of FMan ports.
+Fix it by enabling SA learning on the CPU port.
 
-It would be a bit silly to modify a core function
-(of_find_net_device_by_node) to look for dev->parent->parent->of_node
-just for one driver. We're just 1 step away from implementing full
-recursion.
+To prevent the switch from learning from flooding frames from the CPU
+port, set skb->offload_fwd_mark to 1 for unicast and broadcast frames,
+and let the switch flood them instead of trapping to the CPU port.
+Multicast frames still need to be trapped to the CPU port for snooping,
+so set the SA_DIS bit of the MTK tag to 1 when transmitting those frames
+to disable SA learning.
 
-Actually there have already been at least 2 previous attempts to make
-this work:
-- Commit a1a50c8e4c24 ("fsl/man: Inherit parent device and of_node")
-- One or more of the patches in "[v3,0/6] adapt DPAA drivers for DSA":
-  https://patchwork.ozlabs.org/project/netdev/cover/1508178970-28945-1-git-send-email-madalin.bucur@nxp.com/
-  (I couldn't really figure out which one was supposed to solve the
-  problem and how).
-
-Point being, it looks like this is still pretty much a problem today.
-On T1040, the /sys/class/net/eth0 symlink currently points to
-
-../../devices/platform/ffe000000.soc/ffe400000.fman/ffe4e6000.ethernet/dpaa-ethernet.0/net/eth0
-
-which pretty much illustrates the problem. The closest of_node we've got
-is the "fsl,fman-memac" at /soc@ffe000000/fman@400000/ethernet@e6000,
-which is what we'd like to be able to reference from DSA as host port.
-
-For of_find_net_device_by_node to find the eth0 port, we would need the
-parent of the eth0 net_device to not be the "dpaa-ethernet" platform
-device, but to point 1 level higher, aka the "fsl,fman-memac" node
-directly. The new sysfs path would look like this:
-
-../../devices/platform/ffe000000.soc/ffe400000.fman/ffe4e6000.ethernet/net/eth0
-
-And this is exactly what SET_NETDEV_DEV does. It sets the parent of the
-net_device. The new parent has an of_node associated with it, and
-of_dev_node_match already checks for the of_node of the device or of its
-parent.
-
-Fixes: a1a50c8e4c24 ("fsl/man: Inherit parent device and of_node")
-Fixes: c6e26ea8c893 ("dpaa_eth: change device used")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: b8f126a8d543 ("net-next: dsa: add dsa support for Mediatek MT7530 switch")
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/dpaa/dpaa_eth.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/dsa/mt7530.c |    9 ++-------
+ drivers/net/dsa/mt7530.h |    1 +
+ net/dsa/tag_mtk.c        |   15 +++++++++++++++
+ 3 files changed, 18 insertions(+), 7 deletions(-)
 
---- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-@@ -2902,7 +2902,7 @@ static int dpaa_eth_probe(struct platfor
- 	}
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -639,11 +639,8 @@ mt7530_cpu_port_enable(struct mt7530_pri
+ 	mt7530_write(priv, MT7530_PVC_P(port),
+ 		     PORT_SPEC_TAG);
  
- 	/* Do this here, so we can be verbose early */
--	SET_NETDEV_DEV(net_dev, dev);
-+	SET_NETDEV_DEV(net_dev, dev->parent);
- 	dev_set_drvdata(dev, net_dev);
+-	/* Disable auto learning on the cpu port */
+-	mt7530_set(priv, MT7530_PSC_P(port), SA_DIS);
+-
+-	/* Unknown unicast frame fordwarding to the cpu port */
+-	mt7530_set(priv, MT7530_MFC, UNU_FFP(BIT(port)));
++	/* Unknown multicast frame forwarding to the cpu port */
++	mt7530_rmw(priv, MT7530_MFC, UNM_FFP_MASK, UNM_FFP(BIT(port)));
  
- 	priv = netdev_priv(net_dev);
+ 	/* Set CPU port number */
+ 	if (priv->id == ID_MT7621)
+@@ -1247,8 +1244,6 @@ mt7530_setup(struct dsa_switch *ds)
+ 	/* Enable and reset MIB counters */
+ 	mt7530_mib_reset(ds);
+ 
+-	mt7530_clear(priv, MT7530_MFC, UNU_FFP_MASK);
+-
+ 	for (i = 0; i < MT7530_NUM_PORTS; i++) {
+ 		/* Disable forwarding by default on all ports */
+ 		mt7530_rmw(priv, MT7530_PCR_P(i), PCR_MATRIX_MASK,
+--- a/drivers/net/dsa/mt7530.h
++++ b/drivers/net/dsa/mt7530.h
+@@ -31,6 +31,7 @@ enum {
+ #define MT7530_MFC			0x10
+ #define  BC_FFP(x)			(((x) & 0xff) << 24)
+ #define  UNM_FFP(x)			(((x) & 0xff) << 16)
++#define  UNM_FFP_MASK			UNM_FFP(~0)
+ #define  UNU_FFP(x)			(((x) & 0xff) << 8)
+ #define  UNU_FFP_MASK			UNU_FFP(~0)
+ #define  CPU_EN				BIT(7)
+--- a/net/dsa/tag_mtk.c
++++ b/net/dsa/tag_mtk.c
+@@ -15,6 +15,7 @@
+ #define MTK_HDR_XMIT_TAGGED_TPID_8100	1
+ #define MTK_HDR_RECV_SOURCE_PORT_MASK	GENMASK(2, 0)
+ #define MTK_HDR_XMIT_DP_BIT_MASK	GENMASK(5, 0)
++#define MTK_HDR_XMIT_SA_DIS		BIT(6)
+ 
+ static struct sk_buff *mtk_tag_xmit(struct sk_buff *skb,
+ 				    struct net_device *dev)
+@@ -22,6 +23,9 @@ static struct sk_buff *mtk_tag_xmit(stru
+ 	struct dsa_port *dp = dsa_slave_to_port(dev);
+ 	u8 *mtk_tag;
+ 	bool is_vlan_skb = true;
++	unsigned char *dest = eth_hdr(skb)->h_dest;
++	bool is_multicast_skb = is_multicast_ether_addr(dest) &&
++				!is_broadcast_ether_addr(dest);
+ 
+ 	/* Build the special tag after the MAC Source Address. If VLAN header
+ 	 * is present, it's required that VLAN header and special tag is
+@@ -47,6 +51,10 @@ static struct sk_buff *mtk_tag_xmit(stru
+ 		     MTK_HDR_XMIT_UNTAGGED;
+ 	mtk_tag[1] = (1 << dp->index) & MTK_HDR_XMIT_DP_BIT_MASK;
+ 
++	/* Disable SA learning for multicast frames */
++	if (unlikely(is_multicast_skb))
++		mtk_tag[1] |= MTK_HDR_XMIT_SA_DIS;
++
+ 	/* Tag control information is kept for 802.1Q */
+ 	if (!is_vlan_skb) {
+ 		mtk_tag[2] = 0;
+@@ -61,6 +69,9 @@ static struct sk_buff *mtk_tag_rcv(struc
+ {
+ 	int port;
+ 	__be16 *phdr, hdr;
++	unsigned char *dest = eth_hdr(skb)->h_dest;
++	bool is_multicast_skb = is_multicast_ether_addr(dest) &&
++				!is_broadcast_ether_addr(dest);
+ 
+ 	if (unlikely(!pskb_may_pull(skb, MTK_HDR_LEN)))
+ 		return NULL;
+@@ -86,6 +97,10 @@ static struct sk_buff *mtk_tag_rcv(struc
+ 	if (!skb->dev)
+ 		return NULL;
+ 
++	/* Only unicast or broadcast frames are offloaded */
++	if (likely(!is_multicast_skb))
++		skb->offload_fwd_mark = 1;
++
+ 	return skb;
+ }
+ 
 
 
