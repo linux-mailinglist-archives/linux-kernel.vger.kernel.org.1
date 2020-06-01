@@ -2,30 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AA81EA087
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D113F1EA08C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgFAJLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 05:11:08 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5317 "EHLO huawei.com"
+        id S1725838AbgFAJMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 05:12:09 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5319 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725788AbgFAJLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 05:11:08 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 7C928607764F1DC58E3B;
-        Mon,  1 Jun 2020 17:11:06 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 1 Jun 2020
- 17:10:59 +0800
+        id S1725778AbgFAJMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 05:12:08 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id ADBEF49AA1705597C5FD;
+        Mon,  1 Jun 2020 17:12:05 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Mon, 1 Jun 2020
+ 17:11:54 +0800
 From:   Zhihao Cheng <chengzhihao1@huawei.com>
 To:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     <richard@nod.at>, <yi.zhang@huawei.com>
-Subject: [PATCH 2/2] ubifs: dent: Fix some potential memory leaks while iterating entries
-Date:   Mon, 1 Jun 2020 17:10:37 +0800
-Message-ID: <20200601091037.3794172-2-chengzhihao1@huawei.com>
+CC:     <richard@nod.at>, <s.hauer@pengutronix.de>, <yi.zhang@huawei.com>
+Subject: [PATCH] ubi: fastmap: Don't produce the initial anchor PEB when fastmap is disabled
+Date:   Mon, 1 Jun 2020 17:11:34 +0800
+Message-ID: <20200601091134.3794265-1-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200601091037.3794172-1-chengzhihao1@huawei.com>
-References: <20200601091037.3794172-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -36,28 +34,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some potential memory leaks in error handling branches while
-iterating dent entries. For example, function dbg_check_dir()
-forgets to free pdent if it exists.
+Following process triggers a memleak caused by forgetting to release the
+initial anchor PEB (CONFIG_MTD_UBI_FASTMAP is disabled):
+1. attach -> __erase_worker -> produce the initial anchor PEB
+2. detach -> ubi_fastmap_close (Do nothing, it should have released the
+   initial anchor PEB)
+
+Don't produce the initial anchor PEB in __erase_worker() when fastmap
+is disabled.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: <Stable@vger.kernel.org>
-Fixes: 1e51764a3c2ac05a2 ("UBIFS: add new flash file system")
+Fixes: f9c34bb529975fe ("ubi: Fix producing anchor PEBs")
+Reported-by: syzbot+d9aab50b1154e3d163f5@syzkaller.appspotmail.com
 ---
- fs/ubifs/debug.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/ubi/wl.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 0f5a480fe264..b4a3abf54df7 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -1123,6 +1123,7 @@ int dbg_check_dir(struct ubifs_info *c, const struct inode *dir)
- 			err = PTR_ERR(dent);
- 			if (err == -ENOENT)
- 				break;
-+			kfree(pdent);
- 			return err;
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 5146cce5fe32..5ebe1084a8e7 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1079,13 +1079,19 @@ static int __erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk)
+ 	if (!err) {
+ 		spin_lock(&ubi->wl_lock);
+ 
+-		if (!ubi->fm_anchor && e->pnum < UBI_FM_MAX_START) {
++#ifdef CONFIG_MTD_UBI_FASTMAP
++		if (!ubi->fm_disabled && !ubi->fm_anchor &&
++		    e->pnum < UBI_FM_MAX_START) {
+ 			ubi->fm_anchor = e;
+ 			ubi->fm_do_produce_anchor = 0;
+ 		} else {
+ 			wl_tree_add(e, &ubi->free);
+ 			ubi->free_count++;
  		}
++#else
++		wl_tree_add(e, &ubi->free);
++		ubi->free_count++;
++#endif
+ 
+ 		spin_unlock(&ubi->wl_lock);
  
 -- 
 2.25.4
