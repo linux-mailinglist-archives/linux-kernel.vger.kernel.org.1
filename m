@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527AF1EACCE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2711EADCB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731184AbgFASkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:40:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33034 "EHLO mail.kernel.org"
+        id S1730942AbgFASse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:48:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731344AbgFASNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:13:30 -0400
+        id S1729014AbgFASH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:07:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C80B20776;
-        Mon,  1 Jun 2020 18:13:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03B67206E2;
+        Mon,  1 Jun 2020 18:07:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035208;
-        bh=/DgzylOsyp9DnIpSDwr09rBAEMLqWYmSe5+ItFRSM0k=;
+        s=default; t=1591034847;
+        bh=jFxbb1Qy0B8oBFayjiw1lbTMGXYARxdCVgI0rLUhIzY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vkDp+RYuiRgsqtnzcoJ0byxy0aLkxKx9npCqZRo1XqB6A+5ychs1ih0/ML7DAXuos
-         H/pbEIFBeLAgcYkikFdv+GHvrzY6oSn9kqYQFP1TByOexGhrNxO+0/tmtjfDgIt8mC
-         FAVcWcZpxtfdgMPq3b2N97Nt5ReEwZ8wZLgGRYbQ=
+        b=EV4qL9uVc1+QFZ4ejGXlHMsDfaq3nyHcPhv2tHdpt8ecb7gOxtwCgheZVi6mjF/OJ
+         mRcEuvxplReSFwMOgfyPfOHrJhszBr0/ZGUjDSSC+1QZV3moiomMUsb433XiRQvpPC
+         RPnaX7YsZXw5OnCkHwXeJT31fVtBJVYqDXwxR3nc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 058/177] gfs2: dont call quota_unhold if quotas are not locked
-Date:   Mon,  1 Jun 2020 19:53:16 +0200
-Message-Id: <20200601174053.817405407@linuxfoundation.org>
+        stable@vger.kernel.org, Andrew Oakley <andrew@adoakley.name>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 039/142] ALSA: usb-audio: add mapping for ASRock TRX40 Creator
+Date:   Mon,  1 Jun 2020 19:53:17 +0200
+Message-Id: <20200601174042.024267189@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Andrew Oakley <andrew@adoakley.name>
 
-[ Upstream commit c9cb9e381985bbbe8acd2695bbe6bd24bf06b81c ]
+[ Upstream commit da7a8f1a8fc3e14c6dcc52b4098bddb8f20390be ]
 
-Before this patch, function gfs2_quota_unlock checked if quotas are
-turned off, and if so, it branched to label out, which called
-gfs2_quota_unhold. With the new system of gfs2_qa_get and put, we
-no longer want to call gfs2_quota_unhold or we won't balance our
-gets and puts.
+This is another TRX40 based motherboard with ALC1220-VB USB-audio
+that requires a static mapping table.
 
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+This motherboard also has a PCI device which advertises no codecs.  The
+PCI ID is 1022:1487 and PCI SSID is 1022:d102.  As this is using the AMD
+vendor ID, don't blacklist for now in case other boards have a working
+audio device with the same ssid.
+
+alsa-info.sh report for this board:
+http://alsa-project.org/db/?f=0a742f89066527497b77ce16bca486daccf8a70c
+
+Signed-off-by: Andrew Oakley <andrew@adoakley.name>
+Link: https://lore.kernel.org/r/20200503141639.35519-1-andrew@adoakley.name
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/quota.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/usb/mixer_maps.c   | 5 +++++
+ sound/usb/quirks-table.h | 1 +
+ 2 files changed, 6 insertions(+)
 
-diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
-index 832d44782f74..a80b638b582e 100644
---- a/fs/gfs2/quota.c
-+++ b/fs/gfs2/quota.c
-@@ -1113,7 +1113,7 @@ void gfs2_quota_unlock(struct gfs2_inode *ip)
- 	int found;
+diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+index 39d6c6fa5e33..2255f9abd7a5 100644
+--- a/sound/usb/mixer_maps.c
++++ b/sound/usb/mixer_maps.c
+@@ -529,6 +529,11 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
+ 		.map = trx40_mobo_map,
+ 		.connector_map = trx40_mobo_connector_map,
+ 	},
++	{	/* Asrock TRX40 Creator */
++		.id = USB_ID(0x26ce, 0x0a01),
++		.map = trx40_mobo_map,
++		.connector_map = trx40_mobo_connector_map,
++	},
+ 	{ 0 } /* terminator */
+ };
  
- 	if (!test_and_clear_bit(GIF_QD_LOCKED, &ip->i_flags))
--		goto out;
-+		return;
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 8c2f5c23e1b4..aa4c16ce0e57 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3647,6 +3647,7 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ ALC1220_VB_DESKTOP(0x0414, 0xa002), /* Gigabyte TRX40 Aorus Pro WiFi */
+ ALC1220_VB_DESKTOP(0x0db0, 0x0d64), /* MSI TRX40 Creator */
+ ALC1220_VB_DESKTOP(0x0db0, 0x543d), /* MSI TRX40 */
++ALC1220_VB_DESKTOP(0x26ce, 0x0a01), /* Asrock TRX40 Creator */
+ #undef ALC1220_VB_DESKTOP
  
- 	for (x = 0; x < ip->i_qadata->qa_qd_num; x++) {
- 		struct gfs2_quota_data *qd;
-@@ -1150,7 +1150,6 @@ void gfs2_quota_unlock(struct gfs2_inode *ip)
- 			qd_unlock(qda[x]);
- 	}
- 
--out:
- 	gfs2_quota_unhold(ip);
- }
- 
+ #undef USB_DEVICE_VENDOR_SPEC
 -- 
 2.25.1
 
