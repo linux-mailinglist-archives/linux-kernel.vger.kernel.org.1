@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B261EAFD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F7A1EAFDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728080AbgFATyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 15:54:16 -0400
-Received: from mga17.intel.com ([192.55.52.151]:4097 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgFATyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 15:54:15 -0400
-IronPort-SDR: M8+Oo/IpFZTXFa1s+DfCxvLcNt5HOWvRM2mq3D5wrk0sxZIa4AMP34SGK/GFkJEJfYdydOkvRK
- nwFxqbCRL70g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 12:54:14 -0700
-IronPort-SDR: 0ZwabU3a3BCQKjqDCCKDmfDjZ0xuKDlEFW6BGlaCn7Mh1iW9bU/pbrnt3VAML2YNm+okoPFz5T
- siGSxGigqImw==
-X-IronPort-AV: E=Sophos;i="5.73,462,1583222400"; 
-   d="scan'208";a="293306446"
-Received: from tzanussi-mobl4.amr.corp.intel.com (HELO [10.213.167.214]) ([10.213.167.214])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 12:54:14 -0700
-Subject: Re: [PATCH 4/7] selftests/ftrace: Convert required interface checks
- into requires list
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>
-References: <159102252279.31199.12855129586058455119.stgit@devnote2>
- <159102256204.31199.842249429317038334.stgit@devnote2>
-From:   "Zanussi, Tom" <tom.zanussi@linux.intel.com>
-Message-ID: <e23a0d5c-5e7e-13db-e9c1-2a093d3327be@linux.intel.com>
-Date:   Mon, 1 Jun 2020 14:54:12 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1728194AbgFAT42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 15:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgFAT42 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 15:56:28 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC647C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 12:56:27 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id x22so4669408lfd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 12:56:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HDL8HqCoSdHZQSQzIjnUZyIe5bA7GhgjxVOc6cThlMc=;
+        b=XRSmM2EgjG1KOb3jI0dYUmw88ZCSAs9wCuRG3ks8PpZK7HFYmAq6buyRofcCNPYRIh
+         s5rD1iG6C0BKM3IPzGDvxFSmBu1rBlK6QoVPcB6gvNJGNmuu0CvUk3nnmJdR5wbvHUuK
+         x7MLFJ8oNG1soFzd1O3Mfw1HrpIFSqep7WMJA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HDL8HqCoSdHZQSQzIjnUZyIe5bA7GhgjxVOc6cThlMc=;
+        b=K5SDvpZeFHuWTaA/qFu053uHgH6SgxR6L9X+VN5QYzl2HPJGIFE5fXveZmjI2Cx3SS
+         UeB7ozmCCd5XHZbCI8EdtKfBf9RgeD0TpaO5k0E8+iB7H+v6ElsUWRq6GIP52zx2Q7KK
+         edP1YU4kmSVG4Jic79KZrnknt09B5/vTwGqkWzkm/obga0nryBiq5N921Li/1rMtkGy1
+         dw+IYLV/OFZi4JRjZVGMZrtRq1qkCBGn7utKaYYGeEIO4tKZcH2YrHTRjGa5pPMwUAmW
+         fEM7M/Wc4jNgE6PwUBwCiZt6HvdwQTBOfzl/1QJ6PvxAeTymI57h7K6qZHcAg43mL8tI
+         YPYA==
+X-Gm-Message-State: AOAM530mmLlTRiPVRYwuPWNVi2MxVNELa42FIhJnOYT6Wroa0cAizhi1
+        AxSzASq8H1hSlycHmBldhIcN9yvbnSM=
+X-Google-Smtp-Source: ABdhPJxmNoc22DYgCPlun24BqdJJvC9YukMXkrri++/6VzxApTGpnZHlyNWvj2wvVEuMzlTqZ9SEig==
+X-Received: by 2002:ac2:54b4:: with SMTP id w20mr12034695lfk.48.1591041384597;
+        Mon, 01 Jun 2020 12:56:24 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id 10sm101182ljw.134.2020.06.01.12.56.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Jun 2020 12:56:23 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id z6so9652884ljm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 12:56:23 -0700 (PDT)
+X-Received: by 2002:a2e:b5d7:: with SMTP id g23mr4660105ljn.70.1591041383289;
+ Mon, 01 Jun 2020 12:56:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <159102256204.31199.842249429317038334.stgit@devnote2>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20200601130806.GA746506@gmail.com>
+In-Reply-To: <20200601130806.GA746506@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 1 Jun 2020 12:56:07 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgmXOFyiu6jZ8Dj8OAU7c0T0q-6RLygKC2tMiNfL7MQjQ@mail.gmail.com>
+Message-ID: <CAHk-=wgmXOFyiu6jZ8Dj8OAU7c0T0q-6RLygKC2tMiNfL7MQjQ@mail.gmail.com>
+Subject: Re: [GIT PULL] kprobes updates for v5.8
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
+On Mon, Jun 1, 2020 at 6:08 AM Ingo Molnar <mingo@kernel.org> wrote:
+>
+>  include/linux/compiler.h            | 53 +++++++++++++++++++++++
 
-On 6/1/2020 9:42 AM, Masami Hiramatsu wrote:
-> Convert the required tracefs interface checking code with
-> requires: list.
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org
-[ SNIP ]
+I have pulled this, but do we really want to add this to a header file
+that is _so_ core that it gets included for basically every single
+file built?
 
-> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-onchange-action-hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-onchange-action-hist.tc
-> index c80007aa9f86..59f876c80d45 100644
-> --- a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-onchange-action-hist.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-onchange-action-hist.tc
-> @@ -1,17 +1,13 @@
->   #!/bin/sh
->   # SPDX-License-Identifier: GPL-2.0
->   # description: event trigger - test inter-event histogram trigger onchange action
-> +# requires: synthetic_events
+I don't even see those instrumentation_begin/end() things used
+anywhere right now.
 
-I think this should be 'set_event'
+It seems excessive. That 53 lines is maybe not a lot, but it pushed
+that header file to over 12kB, and while it's mostly comments, it's
+extra IO and parsing basically for _every_ single file compiled in the
+kernel.
 
-Thanks,
+For what appears to be absolutely zero upside right now, and I really
+don't see why this should be in such a core header file!
 
-Tom
+I don't even see this as having anything at all to do with
+"compiler.h" in the first place.
+
+I really think we should think twice about making core header files
+bigger like this. No, we're nowhere the disaster that C++ project
+headers are, but tokenization and parsing is actually a pretty big
+part of the build costs (which may surprise some people who think it's
+all the fancy optimizations that cost a lot of CPU time).
+
+                  Linus
