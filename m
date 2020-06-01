@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668371EAF18
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7670A1EAEF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730307AbgFAS7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:59:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38508 "EHLO mail.kernel.org"
+        id S1730197AbgFAS63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:58:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728358AbgFAR5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:57:21 -0400
+        id S1728552AbgFAR6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:58:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC4CD206E2;
-        Mon,  1 Jun 2020 17:57:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B78242073B;
+        Mon,  1 Jun 2020 17:58:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034241;
-        bh=6fU6roTFzC+TA+Ol0XxJWSS2BpufeCtqNSOpSiz+trk=;
+        s=default; t=1591034329;
+        bh=SGiAv6shdVOKpwPOvW00N1lm9ZHiO/y4bOuCN+rRr/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TLrTJ8U/ZVn0J7wsM8hHSxBtTUtndeWYwqPBpf/vye7FsfdqpKTdEZZJk/0Wpn+RQ
-         RehXDlkCtoch2obZSM2c118XILB90riNszmUQM6vcclB/psbFoYQstsHeeAqMRVbue
-         sJbdB3Nc5P2pNLpLDZrOAxqNMNQSoPWlfDY14hYI=
+        b=pj6XKEyMob0BtvsRozDMl7SXBry83mIdCcq8k2RzQkbl9x9Bpcl8eShwQWZt3QL9r
+         6x0Edmv6KCTzIv15BhnPUq16SDpdinwSaq8OvtHy6NCbkanaLNuA5JVBU6pXe0U6XF
+         ZvLpYhXHUNrkJOx2PXXMNwA5LIV/GJkUQgYISvwA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.4 38/48] netfilter: nf_conntrack_pptp: fix compilation warning with W=1 build
-Date:   Mon,  1 Jun 2020 19:53:48 +0200
-Message-Id: <20200601174003.198014582@linuxfoundation.org>
+        stable@vger.kernel.org, Helge Deller <deller@gmx.de>
+Subject: [PATCH 4.9 42/61] parisc: Fix kernel panic in mem_init()
+Date:   Mon,  1 Jun 2020 19:53:49 +0200
+Message-Id: <20200601174019.401534628@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
-References: <20200601173952.175939894@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Helge Deller <deller@gmx.de>
 
-commit 4946ea5c1237036155c3b3a24f049fd5f849f8f6 upstream.
+commit bf71bc16e02162388808949b179d59d0b571b965 upstream.
 
->> include/linux/netfilter/nf_conntrack_pptp.h:13:20: warning: 'const' type qualifier on return type has no effect [-Wignored-qualifiers]
-extern const char *const pptp_msg_name(u_int16_t msg);
-^~~~~~
+The Debian kernel v5.6 triggers this kernel panic:
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Fixes: 4c559f15efcc ("netfilter: nf_conntrack_pptp: prevent buffer overflows in debug code")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+ Kernel panic - not syncing: Bad Address (null pointer deref?)
+ Bad Address (null pointer deref?): Code=26 (Data memory access rights trap) at addr 0000000000000000
+ CPU: 0 PID: 0 Comm: swapper Not tainted 5.6.0-2-parisc64 #1 Debian 5.6.14-1
+  IAOQ[0]: mem_init+0xb0/0x150
+  IAOQ[1]: mem_init+0xb4/0x150
+  RP(r2): start_kernel+0x6c8/0x1190
+ Backtrace:
+  [<0000000040101ab4>] start_kernel+0x6c8/0x1190
+  [<0000000040108574>] start_parisc+0x158/0x1b8
+
+on a HP-PARISC rp3440 machine with this memory layout:
+ Memory Ranges:
+  0) Start 0x0000000000000000 End 0x000000003fffffff Size   1024 MB
+  1) Start 0x0000004040000000 End 0x00000040ffdfffff Size   3070 MB
+
+Fix the crash by avoiding virt_to_page() and similar functions in
+mem_init() until the memory zones have been fully set up.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: stable@vger.kernel.org # v5.0+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- include/linux/netfilter/nf_conntrack_pptp.h |    2 +-
- net/netfilter/nf_conntrack_pptp.c           |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/include/linux/netfilter/nf_conntrack_pptp.h
-+++ b/include/linux/netfilter/nf_conntrack_pptp.h
-@@ -4,7 +4,7 @@
+---
+ arch/parisc/mm/init.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -604,7 +604,7 @@ void __init mem_init(void)
+ 			> BITS_PER_LONG);
  
- #include <linux/netfilter/nf_conntrack_common.h>
+ 	high_memory = __va((max_pfn << PAGE_SHIFT));
+-	set_max_mapnr(page_to_pfn(virt_to_page(high_memory - 1)) + 1);
++	set_max_mapnr(max_low_pfn);
+ 	free_all_bootmem();
  
--extern const char *const pptp_msg_name(u_int16_t msg);
-+const char *pptp_msg_name(u_int16_t msg);
- 
- /* state of the control session */
- enum pptp_ctrlsess_state {
---- a/net/netfilter/nf_conntrack_pptp.c
-+++ b/net/netfilter/nf_conntrack_pptp.c
-@@ -90,7 +90,7 @@ static const char *const pptp_msg_name_a
- 	[PPTP_SET_LINK_INFO]		= "SET_LINK_INFO"
- };
- 
--const char *const pptp_msg_name(u_int16_t msg)
-+const char *pptp_msg_name(u_int16_t msg)
- {
- 	if (msg > PPTP_MSG_MAX)
- 		return pptp_msg_name_array[0];
+ #ifdef CONFIG_PA11
 
 
