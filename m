@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78B01EAA9A
+	by mail.lfdr.de (Postfix) with ESMTP id 64B891EAA99
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730886AbgFASJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:09:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55834 "EHLO mail.kernel.org"
+        id S1730881AbgFASJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:09:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730873AbgFASJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:09:25 -0400
+        id S1730865AbgFASJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:09:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9CFF2068D;
-        Mon,  1 Jun 2020 18:09:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 399DA206E2;
+        Mon,  1 Jun 2020 18:09:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034964;
-        bh=aYhFCPraAuuhSNT615HvbyUmvG8NskDq5ppqHhOLMQY=;
+        s=default; t=1591034966;
+        bh=Y/PQsvmcP7ojJNDQ/LzfHMFXOeqcGVLKs741dczTlTk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cgb1HHfmeUsRy7FRCaDWXDpgqGY47Bu5+P6N4ZBlpBRVw7GOTIp/82eOsqu3uuZ+Q
-         Aan0p+gICC9Oe1lYkJNUIr8vJja47lq+C9GNSrWJNaYpokyr0LMtIzzhsnhEhmT6aa
-         UjuSahbtqnoRtv7eEz+IzTieOM9pak/H1Gc64Azk=
+        b=WFvP/qYLRz0hT5nrOmDBAlG6SAwmwo5jyXdTysRvHlvCaPI3vgYvW3ezKD1Uph0my
+         Rm1ysLK5YdLYl0ooZAqPrUpC0iVntXMpjpRlw/pXWxpVI+kXofJ7s3ZvzTv1q6RYS2
+         lIk+f9zl/Rmo55V9xVKynUAAGNp5f/WPZppFZZtk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
+        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 090/142] exec: Always set cap_ambient in cap_bprm_set_creds
-Date:   Mon,  1 Jun 2020 19:54:08 +0200
-Message-Id: <20200601174047.286596223@linuxfoundation.org>
+Subject: [PATCH 5.4 091/142] clk: qcom: gcc: Fix parent for gpll0_out_even
+Date:   Mon,  1 Jun 2020 19:54:09 +0200
+Message-Id: <20200601174047.385970800@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
 References: <20200601174037.904070960@linuxfoundation.org>
@@ -44,50 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Vinod Koul <vkoul@kernel.org>
 
-[ Upstream commit a4ae32c71fe90794127b32d26d7ad795813b502e ]
+[ Upstream commit a76f274182f054481182c81cd62bb8794a5450a6 ]
 
-An invariant of cap_bprm_set_creds is that every field in the new cred
-structure that cap_bprm_set_creds might set, needs to be set every
-time to ensure the fields does not get a stale value.
+Documentation says that gpll0 is parent of gpll0_out_even, somehow
+driver coded that as bi_tcxo, so fix it
 
-The field cap_ambient is not set every time cap_bprm_set_creds is
-called, which means that if there is a suid or sgid script with an
-interpreter that has neither the suid nor the sgid bits set the
-interpreter should be able to accept ambient credentials.
-Unfortuantely because cap_ambient is not reset to it's original value
-the interpreter can not accept ambient credentials.
-
-Given that the ambient capability set is expected to be controlled by
-the caller, I don't think this is particularly serious.  But it is
-definitely worth fixing so the code works correctly.
-
-I have tested to verify my reading of the code is correct and the
-interpreter of a sgid can receive ambient capabilities with this
-change and cannot receive ambient capabilities without this change.
-
-Cc: stable@vger.kernel.org
-Cc: Andy Lutomirski <luto@kernel.org>
-Fixes: 58319057b784 ("capabilities: ambient capabilities")
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Fixes: 2a1d7eb854bb ("clk: qcom: gcc: Add global clock controller driver for SM8150")
+Reported-by: Jonathan Marek <jonathan@marek.ca>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lkml.kernel.org/r/20200521052728.2141377-1-vkoul@kernel.org
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/commoncap.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/clk/qcom/gcc-sm8150.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/security/commoncap.c b/security/commoncap.c
-index f4ee0ae106b2..0ca31c8bc0b1 100644
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -812,6 +812,7 @@ int cap_bprm_set_creds(struct linux_binprm *bprm)
- 	int ret;
- 	kuid_t root_uid;
- 
-+	new->cap_ambient = old->cap_ambient;
- 	if (WARN_ON(!cap_ambient_invariant_ok(old)))
- 		return -EPERM;
- 
+diff --git a/drivers/clk/qcom/gcc-sm8150.c b/drivers/clk/qcom/gcc-sm8150.c
+index 20877214acff..e3959ff5cb55 100644
+--- a/drivers/clk/qcom/gcc-sm8150.c
++++ b/drivers/clk/qcom/gcc-sm8150.c
+@@ -75,8 +75,7 @@ static struct clk_alpha_pll_postdiv gpll0_out_even = {
+ 	.clkr.hw.init = &(struct clk_init_data){
+ 		.name = "gpll0_out_even",
+ 		.parent_data = &(const struct clk_parent_data){
+-			.fw_name = "bi_tcxo",
+-			.name = "bi_tcxo",
++			.hw = &gpll0.clkr.hw,
+ 		},
+ 		.num_parents = 1,
+ 		.ops = &clk_trion_pll_postdiv_ops,
 -- 
 2.25.1
 
