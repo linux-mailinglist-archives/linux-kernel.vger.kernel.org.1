@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4221EAEDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011AF1EACAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729463AbgFAR7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:59:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41480 "EHLO mail.kernel.org"
+        id S1731738AbgFASiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:38:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728503AbgFAR7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:59:09 -0400
+        id S1729948AbgFASPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:15:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF2AC2074B;
-        Mon,  1 Jun 2020 17:59:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3D332065C;
+        Mon,  1 Jun 2020 18:15:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034349;
-        bh=xC9hJYuRSl5pnTM9TMOSwz7SgPWF7neADVLAEPjyJ74=;
+        s=default; t=1591035312;
+        bh=8LJc41QcyHQrn0teuEmx2Q/YGdsOXZ7Go3DE8eV8WUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yz/bcbfskZANeqYhjYtEL92ee6jG2hyLp4YMBCcTv6Tc6WAOvibXxlgR04p6lsCgu
-         93UPm+0C8meGsivWvjFJ7h0uEhbakiQfKxqj30UtwuRbSgShe/uKW/9M1yNsW+/GTq
-         DoQWYOMvhMIj2qBFz+odj/n1psTfhMqSj1vD+4So=
+        b=PT4tVQd/akG22qzQavRTGWcxPHLct0OS+L4eTKoMrnRjiWGso0OME/ng3XvoTcXug
+         gjZtH3rPBfC/h3HmyxMMNPo3Ie5ItAZBFbed6/qILXkVVNtwDbMQ8nKd6roAt/sKjN
+         aQ2875VKg//P81jhqpe/OiQSji6/iK2coE7jTz8g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 54/61] bonding: Fix reference count leak in bond_sysfs_slave_add.
+        stable@vger.kernel.org, Robert Beckett <bob.beckett@collabora.com>,
+        Ian Ray <ian.ray@ge.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 103/177] ARM: dts/imx6q-bx50v3: Set display interface clock parents
 Date:   Mon,  1 Jun 2020 19:54:01 +0200
-Message-Id: <20200601174021.571162466@linuxfoundation.org>
+Message-Id: <20200601174057.230750147@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +46,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Robert Beckett <bob.beckett@collabora.com>
 
-commit a068aab42258e25094bc2c159948d263ed7d7a77 upstream.
+[ Upstream commit 665e7c73a7724a393b4ec92d1ae1e029925ef2b7 ]
 
-kobject_init_and_add() takes reference even when it fails.
-If this function returns an error, kobject_put() must be called to
-properly clean up the memory associated with the object. Previous
-commit "b8eb718348b8" fixed a similar problem.
+Avoid LDB and IPU DI clocks both using the same parent. LDB requires
+pasthrough clock to avoid breaking timing while IPU DI does not.
 
-Fixes: 07699f9a7c8d ("bonding: add sysfs /slave dir for bond slave devices.")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Force IPU DI clocks to use IMX6QDL_CLK_PLL2_PFD0_352M as parent
+and LDB to use IMX6QDL_CLK_PLL5_VIDEO_DIV.
 
+This fixes an issue where attempting atomic modeset while using
+HDMI and display port at the same time causes LDB clock programming
+to destroy the programming of HDMI that was done during the same
+modeset.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+[Use IMX6QDL_CLK_PLL2_PFD0_352M instead of IMX6QDL_CLK_PLL2_PFD2_396M
+ originally chosen by Robert Beckett to avoid affecting eMMC clock
+ by DRM atomic updates]
+Signed-off-by: Ian Ray <ian.ray@ge.com>
+[Squash Robert's and Ian's commits for bisectability, update patch
+ description and add stable tag]
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_sysfs_slave.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/imx6q-b450v3.dts  |  7 -------
+ arch/arm/boot/dts/imx6q-b650v3.dts  |  7 -------
+ arch/arm/boot/dts/imx6q-b850v3.dts  | 11 -----------
+ arch/arm/boot/dts/imx6q-bx50v3.dtsi | 15 +++++++++++++++
+ 4 files changed, 15 insertions(+), 25 deletions(-)
 
---- a/drivers/net/bonding/bond_sysfs_slave.c
-+++ b/drivers/net/bonding/bond_sysfs_slave.c
-@@ -153,8 +153,10 @@ int bond_sysfs_slave_add(struct slave *s
+diff --git a/arch/arm/boot/dts/imx6q-b450v3.dts b/arch/arm/boot/dts/imx6q-b450v3.dts
+index 95b8f2d71821..fb0980190aa0 100644
+--- a/arch/arm/boot/dts/imx6q-b450v3.dts
++++ b/arch/arm/boot/dts/imx6q-b450v3.dts
+@@ -65,13 +65,6 @@
+ 	};
+ };
  
- 	err = kobject_init_and_add(&slave->kobj, &slave_ktype,
- 				   &(slave->dev->dev.kobj), "bonding_slave");
--	if (err)
-+	if (err) {
-+		kobject_put(&slave->kobj);
- 		return err;
-+	}
+-&clks {
+-	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
+-			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>;
+-	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL3_USB_OTG>,
+-				 <&clks IMX6QDL_CLK_PLL3_USB_OTG>;
+-};
+-
+ &ldb {
+ 	status = "okay";
  
- 	for (a = slave_attrs; *a; ++a) {
- 		err = sysfs_create_file(&slave->kobj, &((*a)->attr));
+diff --git a/arch/arm/boot/dts/imx6q-b650v3.dts b/arch/arm/boot/dts/imx6q-b650v3.dts
+index 611cb7ae7e55..8f762d9c5ae9 100644
+--- a/arch/arm/boot/dts/imx6q-b650v3.dts
++++ b/arch/arm/boot/dts/imx6q-b650v3.dts
+@@ -65,13 +65,6 @@
+ 	};
+ };
+ 
+-&clks {
+-	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
+-			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>;
+-	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL3_USB_OTG>,
+-				 <&clks IMX6QDL_CLK_PLL3_USB_OTG>;
+-};
+-
+ &ldb {
+ 	status = "okay";
+ 
+diff --git a/arch/arm/boot/dts/imx6q-b850v3.dts b/arch/arm/boot/dts/imx6q-b850v3.dts
+index e4cb118f88c6..1ea64ecf4291 100644
+--- a/arch/arm/boot/dts/imx6q-b850v3.dts
++++ b/arch/arm/boot/dts/imx6q-b850v3.dts
+@@ -53,17 +53,6 @@
+ 	};
+ };
+ 
+-&clks {
+-	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
+-			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>,
+-			  <&clks IMX6QDL_CLK_IPU1_DI0_PRE_SEL>,
+-			  <&clks IMX6QDL_CLK_IPU2_DI0_PRE_SEL>;
+-	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
+-				 <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
+-				 <&clks IMX6QDL_CLK_PLL2_PFD2_396M>,
+-				 <&clks IMX6QDL_CLK_PLL2_PFD2_396M>;
+-};
+-
+ &ldb {
+ 	fsl,dual-channel;
+ 	status = "okay";
+diff --git a/arch/arm/boot/dts/imx6q-bx50v3.dtsi b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
+index fa27dcdf06f1..1938b04199c4 100644
+--- a/arch/arm/boot/dts/imx6q-bx50v3.dtsi
++++ b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
+@@ -377,3 +377,18 @@
+ 		#interrupt-cells = <1>;
+ 	};
+ };
++
++&clks {
++	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
++			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>,
++			  <&clks IMX6QDL_CLK_IPU1_DI0_PRE_SEL>,
++			  <&clks IMX6QDL_CLK_IPU1_DI1_PRE_SEL>,
++			  <&clks IMX6QDL_CLK_IPU2_DI0_PRE_SEL>,
++			  <&clks IMX6QDL_CLK_IPU2_DI1_PRE_SEL>;
++	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
++				 <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
++				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
++				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
++				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
++				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>;
++};
+-- 
+2.25.1
+
 
 
