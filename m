@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AF31EA833
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2F81EA837
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727803AbgFARK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:10:27 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4197 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbgFARK0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:10:26 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ed5362b0000>; Mon, 01 Jun 2020 10:08:59 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 01 Jun 2020 10:10:26 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 01 Jun 2020 10:10:26 -0700
-Received: from [10.2.56.10] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 1 Jun
- 2020 17:10:17 +0000
-Subject: Re: [PATCH 0/2] video: fbdev: fix error handling, convert to
- pin_user_pages*()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Sam Ravnborg <sam@ravnborg.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
-        "Jani Nikula" <jani.nikula@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "Paul Mundt" <lethal@linux-sh.org>
-References: <20200522041506.39638-1-jhubbard@nvidia.com>
- <20200531205819.GC138722@ravnborg.org>
- <854fae07-3cb4-dbcf-fa93-35b447f9d084@nvidia.com>
- <CAHp75Vf6=UuC2Sef3m3CpRmjAOWt8ZgBW+OPf0-_53P3F__CWw@mail.gmail.com>
- <e7f95207-1b30-17a8-4667-ca58b77ec0a3@nvidia.com>
- <CAHp75VcaXTM86K9vzyxTQJP_oNnzJ8mMHzgm7ybEioVhG6DHDQ@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <8fa07f59-6d77-f76b-7539-c88bf85c5036@nvidia.com>
-Date:   Mon, 1 Jun 2020 10:10:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        id S1727004AbgFARLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:11:39 -0400
+Received: from mga05.intel.com ([192.55.52.43]:53453 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726073AbgFARLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:11:39 -0400
+IronPort-SDR: ttTRT2ljj0FgjBczPK3ZyGZ/gNjv1b4Kf/nV2VMZHK7xT+4X/KGqWNeRzDp7lvMFgxPR2DQM2t
+ EsBMNVQKBMpA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 10:11:39 -0700
+IronPort-SDR: 2rLKlOXH2ekdU0Onp4tiYH3sULLl4DFKuHqm+VvYp8mnzqjwJh6POHFBwHce4Q6h6X4pqqUFYx
+ d/HvaZ/iQqZw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,461,1583222400"; 
+   d="scan'208";a="470391260"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP; 01 Jun 2020 10:11:38 -0700
+Received: from [10.249.230.65] (abudanko-mobl.ccr.corp.intel.com [10.249.230.65])
+        by linux.intel.com (Postfix) with ESMTP id BE08E580646;
+        Mon,  1 Jun 2020 10:11:36 -0700 (PDT)
+Subject: Re: [PATCH v5 13/13] perf record: introduce --ctl-fd[-ack] options
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <e5cac8dd-7aa4-ec7c-671c-07756907acba@linux.intel.com>
+ <8ffc9f9f-af58-deea-428b-f8a69004e3cb@linux.intel.com>
+ <923c40c7-7c0b-9fad-314d-69e7acbee201@intel.com>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <937c8cc1-b4c2-8531-3fa4-d0ad9df6a65f@linux.intel.com>
+Date:   Mon, 1 Jun 2020 20:11:35 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.1
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcaXTM86K9vzyxTQJP_oNnzJ8mMHzgm7ybEioVhG6DHDQ@mail.gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <923c40c7-7c0b-9fad-314d-69e7acbee201@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1591031340; bh=+gVKA91Wuj6YNNamkXREV13fdKCX2X0cckR/xAC0a/8=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=bSGBjSvURux84TXnv7AIb6LHGg98Y9Z0Bd+JJI8mUameTP8gU0ksdMDn8kiyj5PGi
-         QUZytsVsMScs+OsTEtOwFGbqAbSo22Mody45pb5aIPNf910ER6RLyhS0HAGlrI7CVe
-         TZkXxv6wmTpjQY4fIRBPoJkgoFNZhItMQsCfwFQySj9dfSpDK2RK1aKn+CtigpzbHW
-         iECWV17WVLTxV+/nTpfj/Uxf+FsRoP0Yz+2yXgad6cH1nBug511boW5uL/mQnbUotu
-         ZETa0LeiPyeJUzXSXR7Q2E6Cld7obchV0IhK7IG3cyXmEuZDttArL9clJN1kGgjIWa
-         JWFIu5FRvHi6A==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-01 03:35, Andy Shevchenko wrote:
-> On Mon, Jun 1, 2020 at 1:00 AM John Hubbard <jhubbard@nvidia.com> wrote:
->> On 2020-05-31 14:11, Andy Shevchenko wrote:
->>>      ...
->>> JFYI, we have history.git starting from v0.01.
->>>
->> OK, thanks for that note. According to that history.git [1],
->> then: drivers/video/pvr2fb.c had get_user_pages_fast() support added to
->> pvr2fb_write() back in 2004, but only for CONFIG_SH_DMA, as part of
+
+Hi Adrian,
+
+On 01.06.2020 19:30, Adrian Hunter wrote:
+> On 1/06/20 7:05 pm, Alexey Budankov wrote:
 >>
->>       commit 434502754f2 ("[PATCH] SH Merge")
->>
->> ...and that commit created the minor bug that patch 0001 here
->> addresses. (+Cc Paul just for the sake of completeness.)
->>
->>
->> [1] git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+>> Introduce --ctl-fd[-ack] options to pass open file descriptors numbers
+>> from command line. Extend perf-record.txt file with --ctl-fd[-ack]
+>> options description. Document possible usage model introduced by
+>> --ctl-fd[-ack] options by providing example bash shell script.
 > 
-> I mentioned this one, but I guess content should be the same.
+> Hi
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/
+> I am interested in using this also for taking snapshots.
+
+Good to hear from you.
+
+> 
+> Did you consider using a single option, or allowing either a file descriptor
+
+Single option use case is already possible like --ctl-fd <NUM_1>.
+Synchronization messages can be provided via --ctl-fd-ack <NUM_2>.
+
+> or a pathname, or including also the event default of "disabled".
+
+For my cases conversion of pathnames into open fds belongs to external
+controlling process e.g. like in the examples provided in the patch set.
+Not sure about "event default of 'disabled'"
+
+> 
+> e.g. add "--control" and support all of:
+> 
+> --control
+> --control 11
+> --control 11,15
+> --control 11,15,disabled
+> --control 11,,disabled
+> --control /tmp/my-perf.fifo
+> --control /tmp/my-perf.fifo,/tmp/my-perf-ack.fifo
+> --control /tmp/my-perf.fifo,/tmp/my-perf-ack.fifo,disabled
+> --control /tmp/my-perf.fifo,,disabled
+> 
+> Regards
+> Adrian
 > 
 
-Actually, that history.git *starts* at Linux 2.6.12-rc2, while
-tglx/history.git *ends* at Linux 2.6.12-rc2 (which is in April, 2005).
-And the commit I was looking for is in 2004. So that's why I needed a
-different stretch of history.
+Regards,
+Alexey
 
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
