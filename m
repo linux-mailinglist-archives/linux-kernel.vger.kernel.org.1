@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519341EAC42
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44EE1EADF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731353AbgFASR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:17:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39132 "EHLO mail.kernel.org"
+        id S1730430AbgFASGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:06:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731866AbgFASRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:17:47 -0400
+        id S1727875AbgFASFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:05:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 684DB2065C;
-        Mon,  1 Jun 2020 18:17:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3576E206E2;
+        Mon,  1 Jun 2020 18:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035466;
-        bh=0BF0Lk+H1PXCCe5Cg0aXgjRhQYNfh7boNZDK32hbnHw=;
+        s=default; t=1591034745;
+        bh=Qr5v3sY4zDvVsYmbz2qcrOzPLFgTZAkXnyLn+oMJwXY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ht2DuS2a6g4Na+GOrS4tiC2tWYef1CF3FUWAe9LAAPV0I54ESwmnPkEPec2Yq/XEO
-         5XG2I25PT0UTA/jf9qUEUSsfeD3T1OZLqpYWTf9wpjwnS9+URiPgipZE0fANptNtKR
-         TKRz/rZ/lQC4J2G1307iechhdu7g66c0dqK8NlUc=
+        b=o9B/Ob4Lm3XVv5pleDaoV/+oqOiAPF7U9+frl4pc2FO2fSxYMxUjNo7YLBIZf+hiz
+         iVl6LmHYV3EB7++d6fnQGLNMhLxB5q/uVQ0kchWtzRS6+Zu32DXl2MTg7XP0w5/eWo
+         kTDe32cWrCAybonsPBOOJEF15zAxpR/tT2XyUhJ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Rientjes <rientjes@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 133/177] mm: remove VM_BUG_ON(PageSlab()) from page_mapcount()
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 91/95] crypto: chelsio/chtls: properly set tp->lsndtime
 Date:   Mon,  1 Jun 2020 19:54:31 +0200
-Message-Id: <20200601174059.569234607@linuxfoundation.org>
+Message-Id: <20200601174034.277040237@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,99 +45,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 6988f31d558aa8c744464a7f6d91d34ada48ad12 ]
+commit a4976a3ef844c510ae9120290b23e9f3f47d6bce upstream.
 
-Replace superfluous VM_BUG_ON() with comment about correct usage.
+TCP tp->lsndtime unit/base is tcp_jiffies32, not tcp_time_stamp()
 
-Technically reverts commit 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to
-page_mapcount()"), but context lines have changed.
+Fixes: 36bedb3f2e5b ("crypto: chtls - Inline TLS record Tx")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Ayush Sawal <ayush.sawal@chelsio.com>
+Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Function isolate_migratepages_block() runs some checks out of lru_lock
-when choose pages for migration.  After checking PageLRU() it checks
-extra page references by comparing page_count() and page_mapcount().
-Between these two checks page could be removed from lru, freed and taken
-by slab.
-
-As a result this race triggers VM_BUG_ON(PageSlab()) in page_mapcount().
-Race window is tiny.  For certain workload this happens around once a
-year.
-
-    page:ffffea0105ca9380 count:1 mapcount:0 mapping:ffff88ff7712c180 index:0x0 compound_mapcount: 0
-    flags: 0x500000000008100(slab|head)
-    raw: 0500000000008100 dead000000000100 dead000000000200 ffff88ff7712c180
-    raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
-    page dumped because: VM_BUG_ON_PAGE(PageSlab(page))
-    ------------[ cut here ]------------
-    kernel BUG at ./include/linux/mm.h:628!
-    invalid opcode: 0000 [#1] SMP NOPTI
-    CPU: 77 PID: 504 Comm: kcompactd1 Tainted: G        W         4.19.109-27 #1
-    Hardware name: Yandex T175-N41-Y3N/MY81-EX0-Y3N, BIOS R05 06/20/2019
-    RIP: 0010:isolate_migratepages_block+0x986/0x9b0
-
-The code in isolate_migratepages_block() was added in commit
-119d6d59dcc0 ("mm, compaction: avoid isolating pinned pages") before
-adding VM_BUG_ON into page_mapcount().
-
-This race has been predicted in 2015 by Vlastimil Babka (see link
-below).
-
-[akpm@linux-foundation.org: comment tweaks, per Hugh]
-Fixes: 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to page_mapcount()")
-Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Hugh Dickins <hughd@google.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: David Rientjes <rientjes@google.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/159032779896.957378.7852761411265662220.stgit@buzz
-Link: https://lore.kernel.org/lkml/557710E1.6060103@suse.cz/
-Link: https://lore.kernel.org/linux-mm/158937872515.474360.5066096871639561424.stgit@buzz/T/ (v1)
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/mm.h | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ drivers/crypto/chelsio/chtls/chtls_io.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index c54fb96cb1e6..96deeecd9179 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -670,6 +670,11 @@ static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
- 
- extern void kvfree(const void *addr);
- 
-+/*
-+ * Mapcount of compound page as a whole, does not include mapped sub-pages.
-+ *
-+ * Must be called only for compound pages or any their tail sub-pages.
-+ */
- static inline int compound_mapcount(struct page *page)
- {
- 	VM_BUG_ON_PAGE(!PageCompound(page), page);
-@@ -689,10 +694,16 @@ static inline void page_mapcount_reset(struct page *page)
- 
- int __page_mapcount(struct page *page);
- 
-+/*
-+ * Mapcount of 0-order page; when compound sub-page, includes
-+ * compound_mapcount().
-+ *
-+ * Result is undefined for pages which cannot be mapped into userspace.
-+ * For example SLAB or special types of pages. See function page_has_type().
-+ * They use this place in struct page differently.
-+ */
- static inline int page_mapcount(struct page *page)
- {
--	VM_BUG_ON_PAGE(PageSlab(page), page);
--
- 	if (unlikely(PageCompound(page)))
- 		return __page_mapcount(page);
- 	return atomic_read(&page->_mapcount) + 1;
--- 
-2.25.1
-
+--- a/drivers/crypto/chelsio/chtls/chtls_io.c
++++ b/drivers/crypto/chelsio/chtls/chtls_io.c
+@@ -686,7 +686,7 @@ int chtls_push_frames(struct chtls_sock
+ 				make_tx_data_wr(sk, skb, immdlen, len,
+ 						credits_needed, completion);
+ 			tp->snd_nxt += len;
+-			tp->lsndtime = tcp_time_stamp(tp);
++			tp->lsndtime = tcp_jiffies32;
+ 			if (completion)
+ 				ULP_SKB_CB(skb)->flags &= ~ULPCB_FLAG_NEED_HDR;
+ 		} else {
 
 
