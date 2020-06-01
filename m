@@ -2,141 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3990D1E9E5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 08:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC8F1E9E64
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 08:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbgFAGkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 02:40:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgFAGkH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 02:40:07 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4522BC061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 23:40:06 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id g18so6878623qtu.13
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 23:40:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=oL022P9vCPxNbqvST58uSq8Z98BV5spczkI6DhdRhmA=;
-        b=uC26ZjQZe9xJXF99/nrXwhOxZ0/BKVZ5jbouogDnEgb0Yj8sw1pDQUFZ384ClSYGa8
-         xFNCsYt6fkjG7gtL3rhaFr+wuVGEOJMl3HcIP7KUuvRaWk+BCvpo6mmRHFQT4RcSF68f
-         HG2IeZaFdLXpovtc3Pb2xvs+wsNFJCJaGX3bhM6Z4ByiAfUjs4J/H+RDi02VClyluJUV
-         qJXaoSdyhXcH9U1xWjInzFP8OHW9FU3eLfzhZEjz7ybUmH9wGWhfeB1Ruth3zZwEpJTz
-         sc8EYypgCQdq9+qqgjrJiiWwFMYVxvva/d9+WO7o0dI/B4uv/DsDWLJ8UoNkWbvNs/M6
-         Y6lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=oL022P9vCPxNbqvST58uSq8Z98BV5spczkI6DhdRhmA=;
-        b=fBq+zpKi717h+9YeZ907QdzJAwAtct8p8jkJt8cNa0q7EdJNc/AyQos/rysRlGS0C4
-         wp4HYN5JCeo+dci2BMBoG3AAEY760E2XDmtOXDIUK8KasWx5JigrAFIb3REVyQw2HKxN
-         Fr409z+5hn/fTkO21kkJFN795BZ4DDQePhnMtUX67SpyrxjtwZA2TduQyF7TmcO90taS
-         owUBNrxf/YsynUhP2aEuUe32VG/CHHKzd9EFzNwUZdj0N4G5xcBJiRKaqfWxpzz/ggPD
-         LwCKZ/3sb3sYVNmVfm6XV4RuK06UK/Q32se9BhE5vr7Mo/M+FPwgbyrgB9/AsCHdBZIJ
-         wNkw==
-X-Gm-Message-State: AOAM532QLOZy0yw6FjcDgyg/SyXUokl0pRA6emFYNH3iurDrfAQ1is6k
-        3Rq+uU/OhBOpHSfkNQc7ITk4+AV1aZYYJbymWG0=
-X-Google-Smtp-Source: ABdhPJwm5XAuoeOFgp7lKIDJEuRKhKg31buCY+N/ZfNV7a8C/hJez6utFb4tZuP0xz6w1mB69OnusyjWsBDlRC7vkLo=
-X-Received: by 2002:ac8:6c6:: with SMTP id j6mr20307684qth.194.1590993605401;
- Sun, 31 May 2020 23:40:05 -0700 (PDT)
+        id S1727866AbgFAGmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 02:42:38 -0400
+Received: from mout.web.de ([212.227.15.14]:42153 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726107AbgFAGmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 02:42:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1590993732;
+        bh=tKOtouNpgU/IF7WGTYjqhR34wOq1MycJ9MCg4fP3yVs=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=MxFsclfTklOvaRoBK4ZpfmjEsH4rKjNWoWg9GXNkRlGJniKXyx9X1r5W1f592aFb9
+         hXKDwa7QpW0zAc/MDNzaWyi8uWwpw8gHwXuz0LuhEySP+STXPfg5xeRPvFj857fAoF
+         6eBsxXuPulNtk4bP2TEV+SJlGYyGNtztaQM2JWfQ=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([78.49.133.32]) by smtp.web.de (mrweb004
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MK6mD-1jepCY3k1d-001O9T; Mon, 01
+ Jun 2020 08:42:12 +0200
+Subject: Re: [PATCH v3] i2c: imx-lpi2c: Fix runtime PM imbalance in
+ lpi2c_imx_master_enable()
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Fugang Duan <fugang.duan@nxp.com>, kernel@pengutronix.de,
+        linux-imx@nxp.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>, Kangjie Lu <kjlu@umn.edu>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, Wolfram Sang <wsa@kernel.org>
+References: <20200601061640.27632-1-dinghao.liu@zju.edu.cn>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <77448b13-9233-20a8-5e68-a8830314c27d@web.de>
+Date:   Mon, 1 Jun 2020 08:42:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-References: <1590561903-13186-1-git-send-email-iamjoonsoo.kim@lge.com>
- <45a8ee8b-ec3a-df0f-fe23-6f64097cd263@suse.cz> <CAAmzW4OY9gOPcWsUwQ+O3vfFJvrWvNFnuy4O5FbPYwnWfF1wEw@mail.gmail.com>
-In-Reply-To: <CAAmzW4OY9gOPcWsUwQ+O3vfFJvrWvNFnuy4O5FbPYwnWfF1wEw@mail.gmail.com>
-From:   Joonsoo Kim <js1304@gmail.com>
-Date:   Mon, 1 Jun 2020 15:40:00 +0900
-Message-ID: <CAAmzW4Ne3V6p2a9R4KiHCRX47nVp4+2A-GATmf2DxbxpzkjHBA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] clean-up the migration target allocation functions
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200601061640.27632-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ZkPZbkfzFinZrQLxVG6GTQz9drdW40WO6R+HEO+80m3z360YPLt
+ lC2xGNp4QKSxUPFTqy+nMLUriY2fC4sBSmeJy2ucbJOe6exqWQ/2VJsgae/WKh6rkIibzJs
+ bmLh3fZcvL6GdSgH6PkfdQlUl115g9YSGPYTVhiCuHHmQuPSQfJQV7xzWP/8y0ubf+LRUNV
+ E2pyvcTsWtCfBazMOWWpQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1rs281+F7ss=:HXxDFXERtaQu8mjySKm7So
+ kNWGCJ9MoMLW/c2yQ9Ydm3XnCHV2tKbS23GI0TLLww8v8mY+1A1Q7FpBKkfLEQa7x6J3dzW9K
+ pbNoKXJ1IKGEAmLT1CeaK9bnmko3JSLXQR2aYaZQ9FyPejtPZE79Z9/SDrAHlmteuAVymmPL6
+ KC3vrygE3AwU6RZZYY6TFMHNCwmZzk+8cC2Y921AgrlIvHctZtX810ZhwS7xIWHZvQ9K0TKaM
+ wAPkgA6SGMwWXu/WgVhhEsOUgfuKHS4Sdb6GLLXqk8PLruf5tTfhx6a1Rg9qls7r4ep2E71aM
+ fhPC/ppKH4Ttv1ndehO9FGAW9uvDadrgELgl8X21BdOCyw1Yry+tQtxt97wYm7JGnAemzv5ux
+ luEYmJVrP50TgAembUF3NRrWQLcn/L72ELc4FsUuudOC/PTFzIpSPbgBnWXfjgXMNpG0fMyDO
+ R8l2hhWD31v36MXjuo0PS3XNa4vswgDn7gTPS2xsTqZ7V7/jcu228EOAvLjyeZJpcThETmk7n
+ lDnOuzWFGquUgintiLkvJ7neKbDDRF/tDyZmLdXHu7cvogKByQMGQelgDffowsTRawELfkwKC
+ CZL1ohvxUqT9GcngO0AtSTvXx1FNi4o39XB8ocSWPIoGTAYtO4HoznGXeN5mdy/ZUspQX7yrY
+ mdgdD8HBiTQKlXxDhJXLB6d7PuKid0O9fPjZBTQPtZCnDkqIpgqWOzrCW0/WCgh7JTBFKOEQu
+ /GUt5gxQPVE0PTrmYTahPvRIJQCycBSkxhR3VTF/IooRnl3La2+9kpXKrJdi6zvdgjNlIy246
+ MdEe0Qg9+vxI79kYFXL6v/KIxxonl6vTKhZa0tQ4GR1NurH/DFutZjdMoSB6YPvLOhallPmLV
+ DThl757gX2+54X2JZEa5kdqv3FE/f4iuQ+prl75qPBNMqD/jUmVwteYelklD80WGir8WH1O0o
+ cxB17R2gT/EfZahPpCcxHrpdo5nTbY4IRCZZkkQ/i/CJah1nQNCpRbZArHxVdCDfxt8BwItab
+ WzaFFN6CtcTaOzViQSAiE+Tc5806xu1LlG7BulgDmu5ogm74TbcQ1dyoLL980m/IbV8un575B
+ KuoiIdPQq+Y5ovm0kU0ccNOJIlimy9Dr38oH4GsyHY9CIFWElHVAC0SshUPUHYF6jnH43d9rF
+ 2c7BkMROt404+HWQ+zaodEtXvAnP7ALIWhksIND8tLy0EcgbZ6/KkII6/C2B8jh9Bo6Z0x1/d
+ Shgp55VP8CBBwGeKU
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=EB=85=84 5=EC=9B=94 29=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 3:50, J=
-oonsoo Kim <js1304@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+> pm_runtime_get_sync() increments the runtime PM usage counter even
+> the call returns an error code. Thus a corresponding decrement is
+> needed on the error handling path to keep the counter balanced.
 >
-> 2020=EB=85=84 5=EC=9B=94 29=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84 4:25,=
- Vlastimil Babka <vbabka@suse.cz>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
-> >
-> > On 5/27/20 8:44 AM, js1304@gmail.com wrote:
-> > > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > >
-> > > This patchset clean-up the migration target allocation functions.
-> > >
-> > > * Changes on v2
-> > > - add acked-by tags
-> > > - fix missing compound_head() call for the patch #3
-> > > - remove thisnode field on alloc_control and use __GFP_THISNODE direc=
-tly
-> > > - fix missing __gfp_mask setup for the patch
-> > > "mm/hugetlb: do not modify user provided gfp_mask"
-> > >
-> > > * Cover-letter
-> > >
-> > > Contributions of this patchset are:
-> > > 1. unify two hugetlb alloc functions. As a result, one is remained.
-> > > 2. make one external hugetlb alloc function to internal one.
-> > > 3. unify three functions for migration target allocation.
-> > >
-> > > The patchset is based on next-20200526.
-> > > The patchset is available on:
-> >
-> > I went through the series and I'd like to make some high-level suggesti=
-ons
-> > first, that should hopefully simplify the code a bit more and reduce ch=
-urn:
->
-> Thanks for review!
-> I have not enough time today to check your suggestions.
-> I will check on next week and then reply again.
->
-> Thanks.
->
-> > - in the series, alloc_huge_page_nodemask() becomes the only caller of
-> > alloc_migrate_huge_page(). So you can inline the code there, and it's o=
-ne less
-> > function out of many with similar name :)
-> >
-> > - after that, alloc_huge_page_nodemask(ac) uses ac mostly just to extra=
-ct
-> > individual fields, and only pass it as a whole to dequeue_huge_page_nod=
-emask().
-> > The only other caller of dequeue...() is dequeue_huge_page_vma() who ha=
-s to
-> > construct ac from scratch. It might be probably simpler not to introduc=
-e struct
-> > alloc_control into hugetlb code at all, and only keep it for
-> > alloc_migrate_target(), at which point it can have a more specific name=
- as
-> > discussed and there's less churn
-> >
-> > - I'd suggest not change signature of migrate_pages(), free_page_t and
-> > new_page_t, keeping the opaque private field is fine as not all callbac=
-ks use
-> > struct alloc_context pointer, and then e.g. compaction_alloc has to use=
- the
-> > private field etc. alloc_migration_target() can simply cast the private=
- to
-> > struct alloc_control *ac as the first thing
+> Fix this by adding the missed function call.
 
-Looks like all your suggestions are reasonable. I will try them and make v3=
-.
+How do you think about a wording variant like the following?
 
-Thanks.
+   Change description:
+   The PM runtime usage counter is incremented even if a call of
+   the function =E2=80=9Cpm_runtime_get_sync=E2=80=9D failed. Thus decreme=
+nt it also
+   in an error case so that the reference counting is kept consistent.
+
+
+Regards,
+Markus
