@@ -2,191 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DFD1EB013
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 22:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512A11EB016
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 22:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728381AbgFAURY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 16:17:24 -0400
-Received: from mga11.intel.com ([192.55.52.93]:6175 "EHLO mga11.intel.com"
+        id S1728487AbgFAUSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 16:18:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727996AbgFAURY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 16:17:24 -0400
-IronPort-SDR: ez1OClIHwYkiHQw0WzDudjZqOLofEWpQzJ/quJ6sGuF0wTZuMtARIe7mSDWS4jpW9iGJq4GaSa
- 9/Xlv1oZcwbw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 13:17:23 -0700
-IronPort-SDR: 2cUmnAzLqpUO1u9kmNGx+LMfvVjxJqV4LjKvzwf9Atfou4y6VSBKd2RdlcGNKlDaU3pVnhr6HT
- m1xlvCDDHSMQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,462,1583222400"; 
-   d="scan'208";a="470442448"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 01 Jun 2020 13:17:22 -0700
-Received: from [10.249.230.65] (abudanko-mobl.ccr.corp.intel.com [10.249.230.65])
-        by linux.intel.com (Postfix) with ESMTP id CD25358002E;
-        Mon,  1 Jun 2020 13:17:19 -0700 (PDT)
-Subject: [PATCH v6 09/13] perf stat: implement control commands handling
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <f8e3a714-d9b1-4647-e1d2-9981cbaa83ec@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <3c85901f-c03c-e595-a09e-f95fa06f9e7a@linux.intel.com>
-Date:   Mon, 1 Jun 2020 23:17:18 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1727996AbgFAUSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 16:18:07 -0400
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 693312076B;
+        Mon,  1 Jun 2020 20:18:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591042686;
+        bh=gTxHNUn+c76zemOeMmtcdzx9uVaCHcJ5E/m8Bh3yCOI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tr0RQWR6oS6AssPXqfmeq9xuvj7d9qQdiRkCMfNRT8f863omNQQQ2qQyRZ8vm7t1D
+         rch1yJSLWyZrBmgTyZjcbBNVWJ7hipC9qOlpLIdgK/DkatV8GES6dxiLZJ/hTmhRI1
+         rqj3JlCgX/JZtZLpuG+rsFrE9Ii/CzYzflWPHbuk=
+Received: by mail-lj1-f182.google.com with SMTP id m18so9788390ljo.5;
+        Mon, 01 Jun 2020 13:18:06 -0700 (PDT)
+X-Gm-Message-State: AOAM530bHzQY8XD2MiWIKcVsPjzAJMSHNk5FXCECBMQdyyu/vynKu7r5
+        iEBZvMRaa8Xy9QR6C6/XmdZCyUoAEpGAQ6XQxJs=
+X-Google-Smtp-Source: ABdhPJwvioT6Tk2rGCLM59ZIXtwMkm6KmKCoUrFB2IhhLJ5TIjz3MFr0H1zBt+czuJOum20rxlt+BKbayd1hZA5ABgI=
+X-Received: by 2002:a2e:9115:: with SMTP id m21mr763659ljg.350.1591042684664;
+ Mon, 01 Jun 2020 13:18:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f8e3a714-d9b1-4647-e1d2-9981cbaa83ec@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200601162814.17426-1-efremov@linux.com>
+In-Reply-To: <20200601162814.17426-1-efremov@linux.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 1 Jun 2020 13:17:53 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4nHJ6ewZ6U6EyJYUx7AFpde5D38yRykK3Q_cGf7sgBaQ@mail.gmail.com>
+Message-ID: <CAPhsuW4nHJ6ewZ6U6EyJYUx7AFpde5D38yRykK3Q_cGf7sgBaQ@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Change kvfree to kfree in generic_map_lookup_batch()
+To:     Denis Efremov <efremov@linux.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 1, 2020 at 9:29 AM Denis Efremov <efremov@linux.com> wrote:
+>
+> buf_prevkey in generic_map_lookup_batch() is allocated with
+> kmalloc(). It's safe to free it with kfree().
+>
+> Signed-off-by: Denis Efremov <efremov@linux.com>
 
-Implement handling of 'enable' and 'disable' control commands
-coming from control file descriptor. process_evlist() function
-checks for events on static fd and makes required operations.
-If poll event splits initiated timeout interval then the reminder
-is calculated and still waited in the following poll() syscall.
+Please add prefix "PATCH bpf" or "PATCH bpf-next" to indicate which
+tree this should
+apply to. This one looks more like for bpf-next, as current code still
+works. For patches
+to bpf-next, we should wait after the merge window.
 
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
----
- tools/perf/builtin-stat.c | 67 +++++++++++++++++++++++++++++----------
- 1 file changed, 50 insertions(+), 17 deletions(-)
+Also, maybe add:
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 8cf248bb9e78..4a197b5eee23 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -439,6 +439,31 @@ static bool process_timeout(int timeout, unsigned int interval, int *times)
- 	return print_interval(interval, times);
- }
- 
-+static bool process_evlist(struct evlist *evlist, unsigned int interval, int *times)
-+{
-+	bool stop = false;
-+	enum evlist_ctl_cmd cmd = EVLIST_CTL_CMD_UNSUPPORTED;
-+
-+	if (evlist__ctlfd_process(evlist, &cmd) > 0) {
-+		switch (cmd) {
-+		case EVLIST_CTL_CMD_ENABLE:
-+			pr_info(EVLIST_ENABLED_MSG);
-+			stop = print_interval(interval, times);
-+			break;
-+		case EVLIST_CTL_CMD_DISABLE:
-+			stop = print_interval(interval, times);
-+			pr_info(EVLIST_DISABLED_MSG);
-+			break;
-+		case EVLIST_CTL_CMD_ACK:
-+		case EVLIST_CTL_CMD_UNSUPPORTED:
-+		default:
-+			break;
-+		}
-+	}
-+
-+	return stop;
-+}
-+
- static void enable_counters(void)
- {
- 	if (stat_config.initial_delay < 0) {
-@@ -514,10 +539,21 @@ static bool is_target_alive(struct target *_target,
- 	return false;
- }
- 
--static int dispatch_events(bool forks, int timeout, int interval, int *times, struct timespec *ts)
-+static int dispatch_events(bool forks, int timeout, int interval, int *times)
- {
- 	bool stop = false;
- 	int child = 0, status = 0;
-+	int time_to_sleep, sleep_time;
-+	struct timespec time_start, time_stop, time_diff;
-+
-+	if (interval)
-+		sleep_time = interval;
-+	else if (timeout)
-+		sleep_time = timeout;
-+	else
-+		sleep_time = 1000;
-+
-+	time_to_sleep = sleep_time;
- 
- 	while (1) {
- 		if (forks)
-@@ -528,8 +564,17 @@ static int dispatch_events(bool forks, int timeout, int interval, int *times, st
- 		if (done || stop || child)
- 			break;
- 
--		nanosleep(ts, NULL);
--		stop = process_timeout(timeout, interval, times);
-+		clock_gettime(CLOCK_MONOTONIC, &time_start);
-+		if (!(evlist__poll(evsel_list, time_to_sleep) > 0)) { /* poll timeout or EINTR */
-+			stop = process_timeout(timeout, interval, times);
-+			time_to_sleep = sleep_time;
-+		} else { /* fd revent */
-+			stop = process_evlist(evsel_list, interval, times);
-+			clock_gettime(CLOCK_MONOTONIC, &time_stop);
-+			diff_timespec(&time_diff, &time_stop, &time_start);
-+			time_to_sleep -= time_diff.tv_sec * MSEC_PER_SEC +
-+					time_diff.tv_nsec / NSEC_PER_MSEC;
-+		}
- 	}
- 
- 	return status;
-@@ -598,7 +643,6 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 	char msg[BUFSIZ];
- 	unsigned long long t0, t1;
- 	struct evsel *counter;
--	struct timespec ts;
- 	size_t l;
- 	int status = 0;
- 	const bool forks = (argc > 0);
-@@ -607,17 +651,6 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 	int i, cpu;
- 	bool second_pass = false;
- 
--	if (interval) {
--		ts.tv_sec  = interval / USEC_PER_MSEC;
--		ts.tv_nsec = (interval % USEC_PER_MSEC) * NSEC_PER_MSEC;
--	} else if (timeout) {
--		ts.tv_sec  = timeout / USEC_PER_MSEC;
--		ts.tv_nsec = (timeout % USEC_PER_MSEC) * NSEC_PER_MSEC;
--	} else {
--		ts.tv_sec  = 1;
--		ts.tv_nsec = 0;
--	}
--
- 	if (forks) {
- 		if (perf_evlist__prepare_workload(evsel_list, &target, argv, is_pipe,
- 						  workload_exec_failed_signal) < 0) {
-@@ -775,7 +808,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 		enable_counters();
- 
- 		if (interval || timeout)
--			status = dispatch_events(forks, timeout, interval, &times, &ts);
-+			status = dispatch_events(forks, timeout, interval, &times);
- 		if (child_pid != -1) {
- 			if (timeout)
- 				kill(child_pid, SIGTERM);
-@@ -792,7 +825,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 			psignal(WTERMSIG(status), argv[0]);
- 	} else {
- 		enable_counters();
--		dispatch_events(forks, timeout, interval, &times, &ts);
-+		dispatch_events(forks, timeout, interval, &times);
- 	}
- 
- 	disable_counters();
--- 
-2.24.1
+Fixes: cb4d03ab499d ("bpf: Add generic support for lookup batch op")
 
+Acked-by: Song Liu <songliubraving@fb.com>
+
+Thanks,
+Song
