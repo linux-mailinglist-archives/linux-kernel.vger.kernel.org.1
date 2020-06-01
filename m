@@ -2,136 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D66A1EB136
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 23:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290B11EB127
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 23:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgFAVnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 17:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728360AbgFAVnV (ORCPT
+        id S1728864AbgFAVnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 17:43:08 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:38459 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728846AbgFAVnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 17:43:21 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4EFC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 14:43:19 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id c17so4306993lji.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 14:43:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0E8dX6z5svaGKiQ4AWeQa42pJuIWCtwm9+P3KiJSxhU=;
-        b=hWVFzywMhMvmiNOyDM1CxkS5a54IlqLtLluSwao6THnPiBIP5d3Fdj4PUdUeY+R1kt
-         F9X5M0VxlW8BhlAM6mkFHlg2mixVbfFe6jv0yfMyTguEaM+7N3A/72Jq7WaXmAc59hBX
-         turVdOh+NWFtRBemH/W4UGQRptwOLUNT5yvYY=
+        Mon, 1 Jun 2020 17:43:05 -0400
+Received: by mail-il1-f193.google.com with SMTP id b5so4720446iln.5;
+        Mon, 01 Jun 2020 14:43:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0E8dX6z5svaGKiQ4AWeQa42pJuIWCtwm9+P3KiJSxhU=;
-        b=ENe9+8ABA3ObzL6JXlvuDzpZsPlhwMwPxZmehz3eYMEt5GGzrBvTA3A8WrNo7o1VHY
-         6JIgabrDLsZn/RN3pBp2Nyvf1irWshLEgAoGpudi+XN+SIcH/YBcxfcnBoqy3FstiLA7
-         j3JqiOHXZG4N3Ri/dt04mhKR/BzN3xMOv5s4Kpq2iSAOXS2DHkfosgFxFLjOp+n7amNh
-         bCrECN/g+dPKFHs34yNKyNjdf6d+vnnLZa0m8p8RKq+EVLUYsVwXhU7ku+MyTEL+aPNI
-         HpVnv9xoe+j7+b+49/MAx+P5s2n19KZXzOiqmJNA2nUli6rRp85GgeEpniDIRD6uwKKI
-         amsw==
-X-Gm-Message-State: AOAM5305nDbGKSxGRIHbPvjMysNRBOUDDhBI0i8iCHYDk8mCcRNJ7fSD
-        62fbLg8m07KqXzOrHxWKf1ATntaofBY=
-X-Google-Smtp-Source: ABdhPJymxTkeUAPtDBvB5wiij3z/j7wLHSbioFjQMeo+qKlbOsfzJOCSyvmbyb9DRYevL4Ma0gYNoQ==
-X-Received: by 2002:a05:651c:1207:: with SMTP id i7mr11338343lja.86.1591047796950;
-        Mon, 01 Jun 2020 14:43:16 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id u15sm183397lfg.92.2020.06.01.14.43.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Jun 2020 14:43:16 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id e125so4861532lfd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 14:43:15 -0700 (PDT)
-X-Received: by 2002:ac2:5a0a:: with SMTP id q10mr12359143lfn.142.1591047795340;
- Mon, 01 Jun 2020 14:43:15 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h6bmu3CJcmV/9le9YJQNFFMA2nIiHEqBi68n/JP+HZg=;
+        b=GIBpUgXLGNQtvFt1EWaoJF3RlvYpSbbvRcJ0vLAJkJ9CWrSptqT1gHLtcB0/6T0k0v
+         reao62fnjV0XRf5TCK4DpU+XtH7ep1fKtL0A/DbGVMgeKnlbEWjmEMwjmhzphAWRqmXO
+         Oop1FBDbk4TACltLAzmMSOqbUlw3475yR7dQ6bFIEM0q5nu2bRLWgOa60dIT4gG6yjyR
+         etKx1r4fmvInn7F/8YXDofYZIWHPzYi66JD50XyHm/a9/sehxaYlrgkue4vOFo900r8T
+         S9u9rTBYj6IVRZDdm2eW/HrkyT4ES3PrqDA+0ZEEQ1AOrdpt4fi3LqZVRdtkf2UFBrxW
+         zC3g==
+X-Gm-Message-State: AOAM533467UdltmP5nTId3MNKEV26T91g75gVlFZScGmlxOmEQz7JJC1
+        aw4zBLAsTa4hFB+02hOumw==
+X-Google-Smtp-Source: ABdhPJyjdTs1k1AJmK5ghDCtRiwra/ZwCyc7YXPiOjDJbc7itj5xSqUIw+cqQ9LzQTmIn5vJwpBTSQ==
+X-Received: by 2002:a05:6e02:e53:: with SMTP id l19mr5346647ilk.96.1591047783964;
+        Mon, 01 Jun 2020 14:43:03 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id g4sm387323ilj.45.2020.06.01.14.43.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 14:43:03 -0700 (PDT)
+Received: (nullmailer pid 1554558 invoked by uid 1000);
+        Mon, 01 Jun 2020 21:43:02 -0000
+Date:   Mon, 1 Jun 2020 15:43:02 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>
+Subject: Re: [PATCH v2 5/5] PCI: uniphier: Add error message when failed to
+ get phy
+Message-ID: <20200601214302.GA1538223@bogus>
+References: <1589536743-6684-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1589536743-6684-6-git-send-email-hayashi.kunihiko@socionext.com>
 MIME-Version: 1.0
-References: <20200601170102.GA1346815@gmail.com>
-In-Reply-To: <20200601170102.GA1346815@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 1 Jun 2020 14:42:59 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgXf_wQ9zrJKv2Hy4EpEbLuqty-Cjbs2u00gm7XcYHBfw@mail.gmail.com>
-Message-ID: <CAHk-=wgXf_wQ9zrJKv2Hy4EpEbLuqty-Cjbs2u00gm7XcYHBfw@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/mm changes for v5.8
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1589536743-6684-6-git-send-email-hayashi.kunihiko@socionext.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 1, 2020 at 10:01 AM Ingo Molnar <mingo@kernel.org> wrote:
->
->  - Provide an opt-in (prctl driven) mechanism to flush the L1D cache on context switch.
->    The goal is to allow tasks that are paranoid due to the recent snoop assisted data
->    sampling vulnerabilites, to flush their L1D on being switched out.
+On Fri, May 15, 2020 at 06:59:03PM +0900, Kunihiko Hayashi wrote:
+> Even if phy driver doesn't probe, the error message can't be distinguished
+> from other errors. This displays error message caused by the phy driver
+> explicitly.
+> 
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-uniphier.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
+> index 493f105..7ae9688 100644
+> --- a/drivers/pci/controller/dwc/pcie-uniphier.c
+> +++ b/drivers/pci/controller/dwc/pcie-uniphier.c
+> @@ -468,8 +468,11 @@ static int uniphier_pcie_probe(struct platform_device *pdev)
+>  		return PTR_ERR(priv->rst);
+>  
+>  	priv->phy = devm_phy_optional_get(dev, "pcie-phy");
+> -	if (IS_ERR(priv->phy))
+> -		return PTR_ERR(priv->phy);
+> +	if (IS_ERR(priv->phy)) {
+> +		ret = PTR_ERR(priv->phy);
+> +		dev_err(dev, "Failed to get phy (%d)\n", ret);
 
-Am I mis-reading this?
+This will print an error on EPROBE_DEFERRED which isn't an error.
 
-Because it looks to me like this basically exports cache flushing
-instructions to user space, and gives processes a way to just say
-"slow down anybody else I schedule with too".
-
-I don't see a way for a system admin to say "this is stupid, don't do it".
-
-In other words, from what I can tell, this takes the crazy "Intel
-ships buggy CPU's and it causes problems for virtualization" code
-(which I didn't much care about), and turns it into "anybody can opt
-in to this disease, and now it affects even people and CPU's that
-don't need it and configurations where it's completely pointless".
-
-To make matters worse, it has that SW flushing fallback that isn't
-even architectural from what I remember of the last time it was
-discussed, but most certainly will waste a lot of time going through
-the motions that may or may not flush the L1D after all.
-
-I don't want some application to go "Oh, I'm _soo_ special and pretty
-and such a delicate flower, that I want to flush the L1D on every task
-switch, regardless of what CPU I am on, and regardless of whether
-there are errata or not".
-
-Because that app isn't just slowing down itself, it's slowing down others too.
-
-I have a hard time following whether this might all end up being
-predicated on the STIBP static branch conditionals and might thus at
-least be limited only to CPU's that have the problem in the first
-place.
-
-But I ended up unpulling it because I can't figure that out, and the
-explanations in the commits don't clarify (and do imply that it's
-regardless of any other errata, since it's for "undiscovered future
-errata").
-
-Because I don't want a random "I can make the kernel do stupid things"
-flag for people to opt into. I think it needs a double opt-in.
-
-At a _minimum_, SMT being enabled should disable this kind of crazy
-pseudo-security entirely, since it is completely pointless in that
-situation. Scheduling simply isn't a synchronization point with SMT
-on, so saying "sure, I'll flush the L1 at context switch" is beyond
-stupid.
-
-I do not want the kernel to do things that seem to be "beyond stupid".
-
-Because I really think this is just PR and pseudo-security, and I
-think there's a real cost in making people think "oh, I'm so special
-that I should enable this".
-
-I'm more than happy to be educated on why I'm wrong, but for now I'm
-unpulling it for lack of data.
-
-Maybe it never happens on SMT because of all those subtle static
-branch rules, but I'd really like to that to be explained.
-
-                    Linus
+> +		return ret;
+> +	}
+>  
+>  	platform_set_drvdata(pdev, priv);
+>  
+> -- 
+> 2.7.4
+> 
