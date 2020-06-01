@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7751E9EB9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 09:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459CE1E9EDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 09:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgFAHFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 03:05:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgFAHFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 03:05:05 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CF902074B;
-        Mon,  1 Jun 2020 07:05:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590995104;
-        bh=B3QD6jug+ogOzxUlyPb4F6UTjlIKD4f4RQZhFem4HJQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DIyZxKIpBbX7KMO6KiPQO8iHUlmr2rCiXeSPsi/nsD/csVbFUjQ511WD0pco/4587
-         4sxuBII1LQxSbg7P7vjRRQTfbTTV7rGT4RWxO6CPi6Jsn8WiSZ0wC+Qvf6/sERpgRJ
-         4NTHny9OIWYq+pWEtJihbcpITPmOXeAVlOC4FgxA=
-Date:   Mon, 1 Jun 2020 08:05:00 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     guohanjun@huawei.com, rjw@rjwysocki.net,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, ndesaulniers@google.com
-Subject: Re: arm64/acpi: NULL dereference reports from UBSAN at boot
-Message-ID: <20200601070459.GB8601@willie-the-truck>
-References: <20200521100952.GA5360@willie-the-truck>
- <20200521173738.GA29590@e121166-lin.cambridge.arm.com>
- <20200526202157.GE2206@willie-the-truck>
- <20200527134104.GA16115@e121166-lin.cambridge.arm.com>
+        id S1728244AbgFAHHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 03:07:33 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:23392 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726142AbgFAHHa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 03:07:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1590995249; x=1622531249;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Pse7FjT1oSM7k6+12m27jATLc53uuNLdEozAkVeDTn0=;
+  b=mJdtsJ1rnhFIp68TI3RZpZx3G+funKyFaVjfq6Kd99St2+MURUUn92WC
+   NrPHlqw3TqPGdbXWsATfVwc0JLm+jlMX93292+XVkk0yi6feCKrklS1cr
+   46iQOi2A2SclbhC/IGHFJM2uTuRqntcSJFNE97qcCAL8LHmB2Xu0H0ak/
+   w=;
+IronPort-SDR: a2WV03LKoD4vqdEmaIJRDRVZLOgNnbMLs0A7Da1b7yWqMRSHvwswB8nDGlrpkRI9IWGorfUkOP
+ bNukS5fZ9czA==
+X-IronPort-AV: E=Sophos;i="5.73,459,1583193600"; 
+   d="scan'208";a="48575926"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-168cbb73.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 01 Jun 2020 07:07:26 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2c-168cbb73.us-west-2.amazon.com (Postfix) with ESMTPS id 3D6ACA1E65;
+        Mon,  1 Jun 2020 07:07:25 +0000 (UTC)
+Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 1 Jun 2020 07:07:24 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.53) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 1 Jun 2020 07:07:16 +0000
+Subject: Re: [PATCH v3 02/18] nitro_enclaves: Define the PCI device interface
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200525221334.62966-1-andraprs@amazon.com>
+ <20200525221334.62966-3-andraprs@amazon.com>
+ <20200526064455.GA2580530@kroah.com>
+ <bd25183c-3b2d-7671-f699-78988a39a633@amazon.com>
+ <20200526222109.GB179549@kroah.com>
+ <ea25810cbd43974b75934f9cfb6ca3f007339dce.camel@kernel.crashing.org>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <1fbdc33c-8819-40b6-b0d3-5d64833c9932@amazon.com>
+Date:   Mon, 1 Jun 2020 10:07:11 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527134104.GA16115@e121166-lin.cambridge.arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <ea25810cbd43974b75934f9cfb6ca3f007339dce.camel@kernel.crashing.org>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.53]
+X-ClientProxiedBy: EX13D20UWC002.ant.amazon.com (10.43.162.163) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 02:41:04PM +0100, Lorenzo Pieralisi wrote:
-> On Tue, May 26, 2020 at 09:21:57PM +0100, Will Deacon wrote:
-> > Hi Lorenzo, Hanjun, [+Nick]
-> > 
-> > On Thu, May 21, 2020 at 06:37:38PM +0100, Lorenzo Pieralisi wrote:
-> > > On Thu, May 21, 2020 at 11:09:53AM +0100, Will Deacon wrote:
-> > > > Hi folks,
-> > > > 
-> > > > I just tried booting the arm64 for-kernelci branch under QEMU (version
-> > > > 4.2.50 (v4.2.0-779-g4354edb6dcc7)) with UBSAN enabled, and I see a
-> > > > couple of NULL pointer dereferences reported at boot. I think they're
-> > > > both GIC related (log below). I don't see a panic with UBSAN disabled,
-> > > > so something's fishy here.
-> > > 
-> > > May I ask you the QEMU command line please - just to make sure I can
-> > > replicate it.
-> > 
-> > As it turns out, I'm only able to reproduce this when building with Clang,
-> > but I don't know whether that's because GCC is missing something of Clang
-> > is signalling a false positive. You also don't need all of those whacky
-> > fuzzing options enabled.
-> > 
-> > Anyway, to reproduce:
-> > 
-> >  $ git checkout for-next/kernelci
-> >  $ make ARCH=arm64  CC=clang CROSS_COMPILE=aarch64-linux-gnu- defconfig
-> >  <then do a menuconfig and enable UBSAN>
-> >  $ make ARCH=arm64  CC=clang CROSS_COMPILE=aarch64-linux-gnu- Image
-> > 
-> > I throw that at QEMU using:
-> > 
-> > qemu-system-aarch64 -M virt -machine virtualization=true \
-> > 	-machine virt,gic-version=3 \
-> > 	-cpu max,sve=off -smp 2 -m 4096 \
-> > 	-drive if=pflash,format=raw,file=efi.img,readonly \
-> > 	-drive if=pflash,format=raw,file=varstore.img \
-> > 	-drive if=virtio,format=raw,file=disk.img \
-> > 	-device virtio-scsi-pci,id=scsi0 \
-> > 	-device virtio-rng-pci \
-> > 	-device virtio-net-pci,netdev=net0 \
-> > 	-netdev user,id=net0,hostfwd=tcp::8222-:22 \
-> > 	-nographic \
-> > 	-kernel ~/work/linux/arch/arm64/boot/Image \
-> > 	-append "earlycon root=/dev/vda2"
-> > 
-> > I built QEMU a while ago according to:
-> > 
-> > https://mirrors.edge.kernel.org/pub/linux/kernel/people/will/docs/qemu/qemu-arm64-howto.html
-> > 
-> > and its version 4.2.50 (v4.2.0-779-g4354edb6dcc7).
-> > 
-> > My clang is version 11.0.1.
-> 
-> Thanks a lot Will.
-> 
-> I *think* I was right - it is the ACPI_OFFSET() macro:
-> 
-> #define ACPI_OFFSET(d, f)  ACPI_PTR_DIFF (&(((d *) 0)->f), (void *) 0)
-> 
-> that triggers the warnings (I suspected it because at least in one of
-> the warnings I could not see any dereference of any dynamically
-> allocated data).
+CgpPbiAwMS8wNi8yMDIwIDA1OjU5LCBCZW5qYW1pbiBIZXJyZW5zY2htaWR0IHdyb3RlOgo+IE9u
+IFdlZCwgMjAyMC0wNS0yNyBhdCAwMDoyMSArMDIwMCwgR3JlZyBLSCB3cm90ZToKPj4+IFRoZXJl
+IGFyZSBhIGNvdXBsZSBvZiBkYXRhIHN0cnVjdHVyZXMgd2l0aCBtb3JlIHRoYW4gb25lIG1lbWJl
+ciBhbmQgbXVsdGlwbGUKPj4+IGZpZWxkIHNpemVzLiBBbmQgZm9yIHRoZSBvbmVzIHRoYXQgYXJl
+IG5vdCwgZ2F0aGVyZWQgYXMgZmVlZGJhY2sgZnJvbQo+Pj4gcHJldmlvdXMgcm91bmRzIG9mIHJl
+dmlldyB0aGF0IHNob3VsZCBjb25zaWRlciBhZGRpbmcgYSAiZmxhZ3MiIGZpZWxkIGluCj4+PiB0
+aGVyZSBmb3IgZnVydGhlciBleHRlbnNpYmlsaXR5Lgo+PiBQbGVhc2UgZG8gbm90IGRvIHRoYXQg
+aW4gaW9jdGxzLiAgSnVzdCBjcmVhdGUgbmV3IGNhbGxzIGluc3RlYWQgb2YKPj4gdHJ5aW5nIHRv
+ICJleHRlbmQiIGV4aXN0aW5nIG9uZXMuICBJdCdzIGFsd2F5cyBtdWNoIGVhc2llci4KPj4KPj4+
+IEkgY2FuIG1vZGlmeSB0byBoYXZlICJfX3BhY2tlZCIgaW5zdGVhZCBvZiB0aGUgYXR0cmlidXRl
+IGNhbGxvdXQuCj4+IE1ha2Ugc3VyZSB5b3UgZXZlbiBuZWVkIHRoYXQsIGFzIEkgZG9uJ3QgdGhp
+bmsgeW91IGRvIGZvciBzdHJ1Y3R1cmVzCj4+IGxpa2UgdGhlIGFib3ZlIG9uZSwgcmlnaHQ/Cj4g
+SHJtLCBteSBpbXByZXNzaW9uIChncmFudGVkIEkgb25seSBqdXN0IHN0YXJ0ZWQgdG8gbG9vayBh
+dCB0aGlzIGNvZGUpCj4gaXMgdGhhdCB0aGVzZSBhcmUgcHJvdG9jb2wgbWVzc2FnZXMgd2l0aCB0
+aGUgUENJIGRldmljZXMsIG5vdCBzdHJpY3RseQo+IGp1c3QgaW9jdGwgYXJndW1lbnRzICh0aG91
+Z2ggdGhleSBkbyBnZXQgY29udmV5ZWQgdmlhIHN1Y2ggaW9jdGxzKS4KPgo+IEFuZHJhLUlyaW5h
+LCBkaWQgSSBnZXQgdGhhdCByaWdodCA/IDotKQoKQ29ycmVjdCwgdGhlc2UgZGF0YSBzdHJ1Y3R1
+cmVzIGhhdmluZyAiX19wYWNrZWQiIGF0dHJpYnV0ZSBtYXAgdGhlIAptZXNzYWdlcyAocmVxdWVz
+dHMgLyByZXBsaWVzKSBmb3IgdGhlIGNvbW11bmljYXRpb24gd2l0aCB0aGUgTkUgUENJIGRldmlj
+ZS4KClRoZSBkYXRhIHN0cnVjdHVyZXMgZnJvbSB0aGUgaW9jdGwgY29tbWFuZHMgYXJlIG5vdCBk
+aXJlY3RseSB1c2VkIGFzIApwYXJ0IG9mIHRoZSBjb21tdW5pY2F0aW9uIHdpdGggdGhlIE5FIFBD
+SSBkZXZpY2UsIGJ1dCBzZXZlcmFsIGZpZWxkcyBvZiAKdGhlbSBlLmcuIGVuY2xhdmUgc3RhcnQg
+ZmxhZ3MuIFNvbWUgb2YgdGhlIGZpZWxkcyBmcm9tIHRoZSBORSBQQ0kgZGV2aWNlIApkYXRhIHN0
+cnVjdHVyZXMgZS5nLiB0aGUgcGh5c2ljYWwgYWRkcmVzcyBvZiBhIG1lbW9yeSByZWdpb24gKGdw
+YSkgYXJlIApzZXQgYnkgdGhlIGludGVybmFsIGtlcm5lbCBsb2dpYy4KCj4KPiBUaGF0IHNhaWQs
+IEkgc3RpbGwgdGhpbmsgdGhhdCBieSBjYXJlZnVsbHkgb3JkZXJpbmcgdGhlIGZpZWxkcyBhbmQK
+PiB1c2luZyBleHBsaWNpdCBwYWRkaW5nLCB3ZSBjYW4gYXZvaWQgdGhlIG5lZWQgb2YgdGhlIHBh
+Y2tlZCBhdHRyaWJ1dGVkLgoKUmVnYXJkaW5nIHlvdXIgcXVlc3Rpb24gaW4gdGhlIHByZXZpb3Vz
+IG1haWwgZnJvbSB0aGlzIHRocmVhZCBhbmQgdGhlIAptZW50aW9uIGFib3ZlIG9uIHRoZSBzYW1l
+IHRvcGljLCB0aGF0IHNob3VsZCBiZSBwb3NzaWJsZS4gSUlSQywgdGhlcmUgCndlcmUgMiBkYXRh
+IHN0cnVjdHVyZXMgcmVtYWluaW5nIHdpdGggIl9fcGFja2VkIiBhdHRyaWJ1dGUuCgpUaGFuayB5
+b3UsIEJlbi4KCkFuZHJhCgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgKFJvbWFuaWEpIFMu
+Ui5MLiByZWdpc3RlcmVkIG9mZmljZTogMjdBIFNmLiBMYXphciBTdHJlZXQsIFVCQzUsIGZsb29y
+IDIsIElhc2ksIElhc2kgQ291bnR5LCA3MDAwNDUsIFJvbWFuaWEuIFJlZ2lzdGVyZWQgaW4gUm9t
+YW5pYS4gUmVnaXN0cmF0aW9uIG51bWJlciBKMjIvMjYyMS8yMDA1Lgo=
 
-Cheers, Lorenzo.
-
-> Now on what to do with it - thoughts welcome.
-
-Nick -- any idea what to do about the above? The '#define' pasted by
-Lorenzo is causing a couple of spurious UBSAN splats when compiling with
-clang 11.
-
-Cheers,
-
-Will
