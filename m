@@ -2,153 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA391EAC8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E131EAC87
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgFASiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42344 "EHLO
+        id S1731661AbgFAShw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:37:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729032AbgFAShm (ORCPT
+        with ESMTP id S1730821AbgFAShn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:37:42 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27388C008630
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 11:26:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=CpB7nCiOHth7G0+bKDlWGpYMQSufxub4WvL1UZYxUiM=; b=lLP7HgHyNrFOSucRGlI0jVd/9
-        XQWkmPUBiOeOVFqJQRYfR8oZF/og/m2RQXsIISmVygdlgv+hwsIbsJVxsPCE2Odk5iAHPFQGVmhd6
-        yJRo+Xohg/igU96un8t3FG3eCWOH52u+1pUvSwCbDYDmmDPoD2z+BFMU8KaQ4JP0/oRVRRY7tJ8JP
-        NLRTI8N+AVR249xDDLmmHeZRQeqbwxGJcCthH28DMrO1RRgBynjvXEtgogo709jXA3lh8H+IpRo0Q
-        GKbuviSTibX6fshgTHCtQAeEjCJTU6tRvFAqhEQyd4IsOD0+EaNJcUc7lD5ahqplO9HtsW9dQCR/w
-        ItYnxLNiA==;
-Received: from shell.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:37610)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jfp8Q-00010n-AB; Mon, 01 Jun 2020 19:26:06 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jfp8F-0003XJ-QP; Mon, 01 Jun 2020 19:25:55 +0100
-Date:   Mon, 1 Jun 2020 19:25:55 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Enrico Weigelt <info@metux.net>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ben Dooks <ben-linux@fluff.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH 3/5] arm: decompressor: define a new zImage tag
-Message-ID: <20200601182555.GP1551@shell.armlinux.org.uk>
-References: <20200601145502.GJ1551@shell.armlinux.org.uk>
- <CGME20200601162002eucas1p28eb08a42de6f313458e9391bd5976e90@eucas1p2.samsung.com>
- <dleftjwo4qsqqf.fsf%l.stelmach@samsung.com>
+        Mon, 1 Jun 2020 14:37:43 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D1FC008631
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 11:26:33 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o6so3887175pgh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 11:26:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vQsHm/Fb+3S9GG4hi4C54VWzmvQfSDfHYATb203csRU=;
+        b=Vs7Yv/hX/ULE3o4BYT8jfnU2UW8Uy0ez3j2yQ8d6Stdt/38QVd16hvblONaRxgdbUK
+         HfbmgcTRdgDtj0uTkJE/cNinFuhzfppdk2J2grs4bm465GiL6n76ZgakZKzTV8r6dxUM
+         X7r7To/s/otOe8sf2hzW/wE30chaO+juxjXCM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vQsHm/Fb+3S9GG4hi4C54VWzmvQfSDfHYATb203csRU=;
+        b=oMv0ziCdwJbVmis/OPs1izQb2eI+D2Tb4OPM7oFPMxNtUxYXPIEA5sYXDjbGNmOh9O
+         srndwuGcOOlnZGiiSK9nl6s8/qocE1T2rcujhIuHfdGGwHnimAxFrAQdiZNo0MSJSapi
+         4Q5j+MJN9hbaSphnY4J5B37fgNVQUr1ZZD6quji5dlku/qcCF2Ja9dlxnb4/A4YlV/PK
+         Sl/WWxcAuXBro8Jhy4d3nicVHQf3mhCdjuP2LU33r9qo7pnZrv886u3Vgbrxt/S8jUkg
+         lmS25XVmubyTCYciWMkdmoQaIQ8XJ5GNuqsJmGv0ZnuMSnFomJZIPvT2Ssic/iT0XKl+
+         uwrQ==
+X-Gm-Message-State: AOAM5334kD1ZNA7OHt8spEtMcdNXXKDhayJ/a2LZD7me4a+TjuG5T1oU
+        DMzqpwf9UafGB8HyXP3d23XDXw==
+X-Google-Smtp-Source: ABdhPJy0Bj3McrkKbyUtGly01m03y4YOkwiHA40WeFmBiKfrbJdT7bHmuLQ//OCOxyp80PPGIZRcrw==
+X-Received: by 2002:a63:7052:: with SMTP id a18mr20225520pgn.39.1591035993241;
+        Mon, 01 Jun 2020 11:26:33 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m3sm151966pjs.17.2020.06.01.11.26.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 11:26:32 -0700 (PDT)
+Date:   Mon, 1 Jun 2020 11:26:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        christian.brauner@ubuntu.com, cyphar@cyphar.com, jannh@google.com,
+        jeffv@google.com, palmer@google.com, rsesek@google.com,
+        tycho@tycho.ws, Matt Denton <mpdenton@google.com>
+Subject: Re: [PATCH v3] seccomp: Add find_notification helper
+Message-ID: <202006011126.3DB757FBF5@keescook>
+References: <20200601112532.150158-1-sargun@sargun.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dleftjwo4qsqqf.fsf%l.stelmach@samsung.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200601112532.150158-1-sargun@sargun.me>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 06:19:52PM +0200, Lukasz Stelmach wrote:
-> It was <2020-06-01 pon 15:55>, when Russell King - ARM Linux admin wrote:
-> > On Mon, Jun 01, 2020 at 04:27:52PM +0200, Łukasz Stelmach wrote:
-> >> Add DCSZ tag which holds dynamic memory (stack, bss, malloc pool)
-> >> requirements of the decompressor code.
-> >
-> > Why do we need to know the stack and BSS size, when the userspace
-> > kexec tool doesn't need to know this to perform the same function.
+On Mon, Jun 01, 2020 at 04:25:32AM -0700, Sargun Dhillon wrote:
+> This adds a helper which can iterate through a seccomp_filter to
+> find a notification matching an ID. It removes several replicated
+> chunks of code.
 > 
-> 
-> kexec-tools load zImage as low in DRAM as possible and rely on two
-> assumptions:
-> 
->     + the zImage will copy itself to make enough room for the kernel,
->     + sizeof(zImage+mem) < sizeof(kernel+mem), which is true because
->       of compression.
-> 
->        DRAM start
->        + 0x8000
-> 
-> zImage    |-----------|-----|-------|
->             text+data   bss   stack 
-> 
->                  text+data           bss   
-> kernel    |---------------------|-------------------|
-> 
-> 
-> initrd                                              |-initrd-|-dtb-|
+> Signed-off-by: Sargun Dhillon <sargun@sargun.me>
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> Reviewed-by: Tycho Andersen <tycho@tycho.ws>
+> Cc: Matt Denton <mpdenton@google.com>
+> Cc: Kees Cook <keescook@google.com>,
+> Cc: Jann Horn <jannh@google.com>,
+> Cc: Robert Sesek <rsesek@google.com>,
+> Cc: Chris Palmer <palmer@google.com>
+> Cc: Christian Brauner <christian.brauner@ubuntu.com>
+> Cc: Tycho Andersen <tycho@tycho.ws>
 
-This is actually incorrect, because the decompressor will self-
-relocate itself to avoid the area that it is going to decompress
-into.  So, while the decompressor runs, in the above situation it
-ends up as:
-
-
-ram    |------------------------------------------------------...
-                 text+data           bss   
-kernel    |---------------------|-------------------|
-zImage                          |-----------|-----|-------|
-                                  text+data   bss   stack+malloc
-
-Where "text+data" is actually smaller than the image size that
-was loaded - the part of the image that performs the relocation
-is discarded (the first chunk of code up to "restart" - 200
-bytes.)  The BSS is typically smaller than 200 bytes, so we've
-been able to get away without knowing the actual BSS size so
-far.
-
-
-ram    |--|-----------------------------------------|---------...
-       |<>| TEXT_OFFSET
-kernel    |---------------------|-------------------|
-          |<----edata_size----->|<-----bss_size---->|
-          |<---------------kernel_size------------->|
-zImage                          |-----------|-----|-------|
-                                |<-------len------->| (initial)
-				|<----------len------------>| (final)
-
-The "final" len value is what the decompressor prints as the "zImage
-requires" debugging value.
-
-Hence, the size that the decompressed kernel requires is kernel_size.
-
-The size that the decompressor requires is edata_size + len(final).
-
-Now, if you intend to load the kernel to ram + TEXT_OFFSET + edata_size
-then it isn't going to lose the first 200 bytes of code, so as you
-correctly point out, we need to know the BSS size.
-
-> >> +struct arm_zimage_tag_dc {
-> >> +	struct tag_header hdr;
-> >> +	union {
-> >> +#define ZIMAGE_TAG_DECOMP_SIZE ARM_ZIMAGE_MAGIC4
-> >> +		struct zimage_decomp_size {
-> >> +			__le32 bss_size;
-> >> +			__le32 stack_size;
-> >> +			__le32 malloc_size;
-> >> +		} decomp_size;
-
-You certainly don't need to know all this.  All you need to know is
-how much space the decompressor requires after the end of the image,
-encompassing the BSS size, stack size and malloc size, which is one
-value.
+Thanks! Applied to for-next/seccomp.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
+Kees Cook
