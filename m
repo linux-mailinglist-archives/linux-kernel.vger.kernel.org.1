@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D4D1EA34C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186991EA348
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728120AbgFAMBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 08:01:23 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24518 "EHLO
+        id S1728158AbgFAMBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 08:01:06 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:40283 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727104AbgFAMAU (ORCPT
+        with ESMTP id S1727807AbgFAMAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 08:00:20 -0400
+        Mon, 1 Jun 2020 08:00:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591012818;
+        s=mimecast20190719; t=1591012821;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Tj3M9GjLpjXTRP2zr/iI1sEFZ7Qtzk7KE35E4h+RHa8=;
-        b=NedapifiFId4u+9Jy4kIn2bhrYLXTaEYbm7hlwLywK1DCFinFxlwTFj7ndB5ns5HVRtoaZ
-        +Xz46US5pb5q/+m+BNm0Kr756IxbLLvPw9SruIMbop+Z1Gi//pD9/MXa+eyvGG1RsaFeVs
-        n1+Wy2d0T3U9Kml5s7LAnBTNQvB7qEw=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-488-uylI54KKMpyYtBbDeTvKaw-1; Mon, 01 Jun 2020 08:00:16 -0400
-X-MC-Unique: uylI54KKMpyYtBbDeTvKaw-1
-Received: by mail-qv1-f71.google.com with SMTP id y2so2513831qvp.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 05:00:16 -0700 (PDT)
+        bh=axZO0oxS1oTWaBb+moPh6wvEC4bE59rtqAl5fhCdw3Q=;
+        b=TX4ruA3/LAqOiwv6ZjL92fyakf0GbsqHavc44PH3/9BZDH0goMJCaUBS+bW56vZ9vFjEJx
+        UEnnjFrD8C/D2PotrHanUEkmzRNEd+gjszlBmRjL0/bNO+bh0inK4Ogw+dyoy9M1UMaf9H
+        Xotg3Cwlc1lMd4Grs/cvjiqHFoJ5BSU=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-310-KjAnjS_oOFm9X1DuAfp39A-1; Mon, 01 Jun 2020 08:00:20 -0400
+X-MC-Unique: KjAnjS_oOFm9X1DuAfp39A-1
+Received: by mail-qk1-f200.google.com with SMTP id m29so7792200qkm.17
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 05:00:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Tj3M9GjLpjXTRP2zr/iI1sEFZ7Qtzk7KE35E4h+RHa8=;
-        b=qXrKT4N2LDG3NSNFm9yCODrcVznqfNxCcKU+M0VVPFRWcDyrV/a4cfyI+nLXYj3dpI
-         d2ZHcFlxF+Qsm0L9rZ3Fld1BMNauePYEZRdBtlHwJqUaVDuZtsjgd84IW91Wzfre9hSM
-         rmOXFJEuS4s3vQFw5pw64bVML74Qs0IQ+951IJCrT51NcE8FtcZHlNEBDB2DDIb15Bbx
-         O0v+uX8wNRxK/THqD8Aw8vtiFvMEKztB/3wGktlB+WKZErJkKOkFCEJT7jNZ3GgEICOS
-         0WC+X60zs4cmbaZUvxCs6peoUu1RpFMB8Q8qdCxN6WGuyPraWRN20vAGu17mW0y8NgI1
-         tZ9w==
-X-Gm-Message-State: AOAM532n/nSx5FzUvHn/wLYGsdSnXcyAogyLBuyz/Kwi6cmDhOvQ7mnZ
-        xWDMCOw/tcvJ5kThJgd32pcQkCkbYsOFjAQOov4NCuH/gymrO+sDTsT5cNqqLtdvt+8sXch/PH0
-        1iXtJi6yu3fdlSWf1YhciJmAJ
-X-Received: by 2002:ac8:4f46:: with SMTP id i6mr21377226qtw.317.1591012815787;
-        Mon, 01 Jun 2020 05:00:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxs8HHsRlNE0/WSN+oN9g9A1UD0u3RQYIDPxI9QY66AOMD4xi8dYBagOrCCiLPVzN48gpbsrg==
-X-Received: by 2002:ac8:4f46:: with SMTP id i6mr21377194qtw.317.1591012815472;
-        Mon, 01 Jun 2020 05:00:15 -0700 (PDT)
+        bh=axZO0oxS1oTWaBb+moPh6wvEC4bE59rtqAl5fhCdw3Q=;
+        b=fd8KX1MZy/NmFU8Fx8+ECWYMkhm2GaMRhYLcJWdU+pmJkg0s8+1x1U6Z1F80+TPlgZ
+         +4GepTrGwqs9TomIQZkhz0uWwXIDksqhmJLpaSk4H+SD9KPunpZP8cYii/37i6Sl9yZ+
+         Les8MwapdWYw5M+WRZjGwa+HUWRIjuU/iR7YNwE54KQp/jT10hwlqD7FFPmFmHtK9MgD
+         9jusIqi7SRwq0HxRsB7WPlrV5ddWcU4/FkJ87IzeWIuNLfguy72IdNDecilznsiQP8sr
+         UMu4DDlYmyEi77flRS30Co6R9B+wgxmWltCZXrPf/ZfHTLLKSLFIlbRxU75sOyOmfmHJ
+         8I0w==
+X-Gm-Message-State: AOAM530fgHMqDRTVTRAl4Xhc7m2riMaYQzGn4VC3ow3aA0sCEu8Vrv0S
+        OmNWb8Fz2UfI/RXmdtCVz166PCgmybErqqn8GGLUJwG2/EwdXtDd3Afd00Ra+ZFcLQbco2qbB5Y
+        i7zDFQiK9ZhGWEFJ7deUipCPU
+X-Received: by 2002:a37:8ec3:: with SMTP id q186mr20526033qkd.231.1591012819591;
+        Mon, 01 Jun 2020 05:00:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwQ04nOkeg/EMO4TKp+1Y9b5EgySF1Z6v76c86wvZLT7jGk078f3gO0GCmVO51vsrW+lD/YJA==
+X-Received: by 2002:a37:8ec3:: with SMTP id q186mr20525992qkd.231.1591012819298;
+        Mon, 01 Jun 2020 05:00:19 -0700 (PDT)
 Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id l9sm14474185qki.90.2020.06.01.05.00.13
+        by smtp.gmail.com with ESMTPSA id l9sm14474185qki.90.2020.06.01.05.00.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 05:00:14 -0700 (PDT)
+        Mon, 01 Jun 2020 05:00:18 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
@@ -61,9 +61,9 @@ Cc:     "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
         Jason Wang <jasowang@redhat.com>, peterx@redhat.com,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         Kevin Tian <kevin.tian@intel.com>
-Subject: [PATCH v10 07/14] KVM: Don't allocate dirty bitmap if dirty ring is enabled
-Date:   Mon,  1 Jun 2020 07:59:50 -0400
-Message-Id: <20200601115957.1581250-8-peterx@redhat.com>
+Subject: [PATCH v10 09/14] KVM: selftests: Sync uapi/linux/kvm.h to tools/
+Date:   Mon,  1 Jun 2020 07:59:52 -0400
+Message-Id: <20200601115957.1581250-10-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601115957.1581250-1-peterx@redhat.com>
 References: <20200601115957.1581250-1-peterx@redhat.com>
@@ -74,81 +74,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because kvm dirty rings and kvm dirty log is used in an exclusive way,
-Let's avoid creating the dirty_bitmap when kvm dirty ring is enabled.
-At the meantime, since the dirty_bitmap will be conditionally created
-now, we can't use it as a sign of "whether this memory slot enabled
-dirty tracking".  Change users like that to check against the kvm
-memory slot flags.
-
-Note that there still can be chances where the kvm memory slot got its
-dirty_bitmap allocated, _if_ the memory slots are created before
-enabling of the dirty rings and at the same time with the dirty
-tracking capability enabled, they'll still with the dirty_bitmap.
-However it should not hurt much (e.g., the bitmaps will always be
-freed if they are there), and the real users normally won't trigger
-this because dirty bit tracking flag should in most cases only be
-applied to kvm slots only before migration starts, that should be far
-latter than kvm initializes (VM starts).
+This will be needed to extend the kvm selftest program.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- arch/x86/kvm/mmu/mmu.c   | 2 +-
- include/linux/kvm_host.h | 5 +++++
- virt/kvm/kvm_main.c      | 4 ++--
- 3 files changed, 8 insertions(+), 3 deletions(-)
+ tools/include/uapi/linux/kvm.h | 53 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 94d84a383b80..cd2cac77f6ad 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1276,7 +1276,7 @@ gfn_to_memslot_dirty_bitmap(struct kvm_vcpu *vcpu, gfn_t gfn,
- 	slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
- 	if (!slot || slot->flags & KVM_MEMSLOT_INVALID)
- 		return NULL;
--	if (no_dirty_log && slot->dirty_bitmap)
-+	if (no_dirty_log && kvm_slot_dirty_track_enabled(slot))
- 		return NULL;
+diff --git a/tools/include/uapi/linux/kvm.h b/tools/include/uapi/linux/kvm.h
+index 428c7dde6b4b..74f150c69ee6 100644
+--- a/tools/include/uapi/linux/kvm.h
++++ b/tools/include/uapi/linux/kvm.h
+@@ -236,6 +236,7 @@ struct kvm_hyperv_exit {
+ #define KVM_EXIT_IOAPIC_EOI       26
+ #define KVM_EXIT_HYPERV           27
+ #define KVM_EXIT_ARM_NISV         28
++#define KVM_EXIT_DIRTY_RING_FULL  29
  
- 	return slot;
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index a7eaef494f45..5081c6e2ae06 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -351,6 +351,11 @@ struct kvm_memory_slot {
- 	u16 as_id;
- };
+ /* For KVM_EXIT_INTERNAL_ERROR */
+ /* Emulate instruction failed. */
+@@ -1017,6 +1018,7 @@ struct kvm_ppc_resize_hpt {
+ #define KVM_CAP_S390_VCPU_RESETS 179
+ #define KVM_CAP_S390_PROTECTED 180
+ #define KVM_CAP_PPC_SECURE_GUEST 181
++#define KVM_CAP_DIRTY_LOG_RING 182
  
-+static inline bool kvm_slot_dirty_track_enabled(struct kvm_memory_slot *slot)
-+{
-+	return slot->flags & KVM_MEM_LOG_DIRTY_PAGES;
-+}
+ #ifdef KVM_CAP_IRQ_ROUTING
+ 
+@@ -1518,6 +1520,9 @@ struct kvm_pv_cmd {
+ /* Available with KVM_CAP_S390_PROTECTED */
+ #define KVM_S390_PV_COMMAND		_IOWR(KVMIO, 0xc5, struct kvm_pv_cmd)
+ 
++/* Available with KVM_CAP_DIRTY_LOG_RING */
++#define KVM_RESET_DIRTY_RINGS		_IO(KVMIO, 0xc6)
 +
- static inline unsigned long kvm_dirty_bitmap_bytes(struct kvm_memory_slot *memslot)
- {
- 	return ALIGN(memslot->npages, BITS_PER_LONG) / 8;
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 6b759f48a302..daec04a4d752 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1294,7 +1294,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 	/* Allocate/free page dirty bitmap as needed */
- 	if (!(new.flags & KVM_MEM_LOG_DIRTY_PAGES))
- 		new.dirty_bitmap = NULL;
--	else if (!new.dirty_bitmap) {
-+	else if (!new.dirty_bitmap && !kvm->dirty_ring_size) {
- 		r = kvm_alloc_dirty_bitmap(&new);
- 		if (r)
- 			return r;
-@@ -2581,7 +2581,7 @@ static void mark_page_dirty_in_slot(struct kvm *kvm,
- 				    struct kvm_memory_slot *memslot,
- 				    gfn_t gfn)
- {
--	if (memslot && memslot->dirty_bitmap) {
-+	if (memslot && kvm_slot_dirty_track_enabled(memslot)) {
- 		unsigned long rel_gfn = gfn - memslot->base_gfn;
- 		u32 slot = (memslot->as_id << 16) | memslot->id;
+ /* Secure Encrypted Virtualization command */
+ enum sev_cmd_id {
+ 	/* Guest initialization commands */
+@@ -1671,4 +1676,52 @@ struct kvm_hyperv_eventfd {
+ #define KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE    (1 << 0)
+ #define KVM_DIRTY_LOG_INITIALLY_SET            (1 << 1)
  
++/*
++ * Arch needs to define the macro after implementing the dirty ring
++ * feature.  KVM_DIRTY_LOG_PAGE_OFFSET should be defined as the
++ * starting page offset of the dirty ring structures.
++ */
++#ifndef KVM_DIRTY_LOG_PAGE_OFFSET
++#define KVM_DIRTY_LOG_PAGE_OFFSET 0
++#endif
++
++/*
++ * KVM dirty GFN flags, defined as:
++ *
++ * |---------------+---------------+--------------|
++ * | bit 1 (reset) | bit 0 (dirty) | Status       |
++ * |---------------+---------------+--------------|
++ * |             0 |             0 | Invalid GFN  |
++ * |             0 |             1 | Dirty GFN    |
++ * |             1 |             X | GFN to reset |
++ * |---------------+---------------+--------------|
++ *
++ * Lifecycle of a dirty GFN goes like:
++ *
++ *      dirtied         collected        reset
++ * 00 -----------> 01 -------------> 1X -------+
++ *  ^                                          |
++ *  |                                          |
++ *  +------------------------------------------+
++ *
++ * The userspace program is only responsible for the 01->1X state
++ * conversion (to collect dirty bits).  Also, it must not skip any
++ * dirty bits so that dirty bits are always collected in sequence.
++ */
++#define KVM_DIRTY_GFN_F_DIRTY           BIT(0)
++#define KVM_DIRTY_GFN_F_RESET           BIT(1)
++#define KVM_DIRTY_GFN_F_MASK            0x3
++
++/*
++ * KVM dirty rings should be mapped at KVM_DIRTY_LOG_PAGE_OFFSET of
++ * per-vcpu mmaped regions as an array of struct kvm_dirty_gfn.  The
++ * size of the gfn buffer is decided by the first argument when
++ * enabling KVM_CAP_DIRTY_LOG_RING.
++ */
++struct kvm_dirty_gfn {
++	__u32 flags;
++	__u32 slot;
++	__u64 offset;
++};
++
+ #endif /* __LINUX_KVM_H */
 -- 
 2.26.2
 
