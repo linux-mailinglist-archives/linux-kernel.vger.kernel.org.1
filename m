@@ -2,207 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE731EB361
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 04:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8721EB372
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 04:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgFBCfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 22:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgFBCfw (ORCPT
+        id S1726420AbgFBCmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 22:42:06 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:50087 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbgFBCmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 22:35:52 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03448C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 19:35:52 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id m18so10694000ljo.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 19:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uTv3a3ynCKyz8zZO4LnRj5qEXUco16tlu2MClhf7vNM=;
-        b=NbdiMaFUG4ymtVXM6YxhnNENU5R3hbIcTnKRa7PoopIkM/yuZoFHwAKY/feab5Q+Yb
-         QZpOqE2gfixpvsPZ0iCxTkouiCxg7BA6EWFa0LosTUY2a1oILHTYRs0gGx4Cq3caedGw
-         dNy1lFvhiDsH7SQ8x+eg1pTD1ZiNiRDgvYDrA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uTv3a3ynCKyz8zZO4LnRj5qEXUco16tlu2MClhf7vNM=;
-        b=iHhVjqt5xY8aVy8llJj131LTDtt5mhaTZemnxdaiOxUkBn1jOryYuKhzpqYSIvF/Dk
-         rHImFbC5G8RItRtmY4CQLPES1UswFt8bDcC70S6UACz1EHRjYEaHM7kLG/+paSZj77mI
-         p9cf+ulOfQ+GvXHhLnOtxFKe9jXb3RGNNW72LNrdgC02B9MjwqznEsFs+Lj92NsXOHAM
-         Mq5cLHRx/SJvWiinwgVaHaxA++MeRG36lj0k66vrK6SN/jOQEX4jleNrXGgPx9yq5WGS
-         ZY5TZaDN9/1cEvBZWOrEP0rjcc91DDK6Wd+9EgnsfGQ6tzIZydxdbI04LQ5+gl1hnEKd
-         VuDA==
-X-Gm-Message-State: AOAM531pw7Z5Y2aNEH1sA3VgOIA2Jgfsoyt+lFX2Bu3tu+yitCZQpFsy
-        MemvZ2lp4ZaYdUkRROirMll2ELaYuRc=
-X-Google-Smtp-Source: ABdhPJz4eqr9CIZVEOkoOKYu3yRpkRbnmW5gadQETDjVOeitO5wEfJC5y8Tpb06VyFdCULr8K9TXCA==
-X-Received: by 2002:a2e:8e22:: with SMTP id r2mr463638ljk.240.1591065349061;
-        Mon, 01 Jun 2020 19:35:49 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id v7sm253751ljv.40.2020.06.01.19.35.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Jun 2020 19:35:48 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id h188so5201534lfd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 19:35:47 -0700 (PDT)
-X-Received: by 2002:ac2:5a0a:: with SMTP id q10mr12869466lfn.142.1591065347463;
- Mon, 01 Jun 2020 19:35:47 -0700 (PDT)
+        Mon, 1 Jun 2020 22:42:05 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 0522fJwtD002547, This message is accepted by code: ctloc85258
+Received: from RS-CAS02.realsil.com.cn (ms1.realsil.com.cn[172.29.17.3])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 0522fJwtD002547
+        (version=TLSv1 cipher=ECDHE-RSA-AES256-SHA bits=256 verify=NOT);
+        Tue, 2 Jun 2020 10:41:20 +0800
+Received: from RS-MBS01.realsil.com.cn ([::1]) by RS-CAS02.realsil.com.cn
+ ([::1]) with mapi id 14.03.0439.000; Tue, 2 Jun 2020 10:41:19 +0800
+From:   =?utf-8?B?5Yav6ZSQ?= <rui_feng@realsil.com.cn>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIG1tYzogcnRzeDogQWRkIFNEIEV4cHJlc3MgbW9k?= =?utf-8?Q?e_support_for_RTS5261?=
+Thread-Topic: [PATCH] mmc: rtsx: Add SD Express mode support for RTS5261
+Thread-Index: AQHWG2mdb2Wi+0TUh0G7QGay1iuqfqiL+UQAgAC/B7D//5LPAIABmysAgAtv7gCAFdruEIAJECCAgAtQDdD//64RAIABg5vg
+Date:   Tue, 2 Jun 2020 02:41:19 +0000
+Message-ID: <2A308283684ECD4B896628E09AF5361E59AD13F0@RS-MBS01.realsil.com.cn>
+References: <1587864346-3144-1-git-send-email-rui_feng@realsil.com.cn>
+ <20200427061426.GA11270@infradead.org>
+ <2A308283684ECD4B896628E09AF5361E028BCA26@RS-MBS01.realsil.com.cn>
+ <CAK8P3a0EY=FOu5j5DG1BzMEoy_6nEy129kniWCjMYDEdO1o_Jw@mail.gmail.com>
+ <2A308283684ECD4B896628E09AF5361E028BCB4B@RS-MBS01.realsil.com.cn>
+ <CAPDyKFqWAzzHDtCwaUUBVvzxX0cf46V-6RZrZ-jvnxpptNKppA@mail.gmail.com>
+ <2A308283684ECD4B896628E09AF5361E59ACDB91@RS-MBS01.realsil.com.cn>
+ <CAPDyKFo9X9ghjCeF_kGE2BhB+3QiMAMbD1Qz53saXshxy9odVg@mail.gmail.com>
+ <2A308283684ECD4B896628E09AF5361E59AD1194@RS-MBS01.realsil.com.cn>
+ <CAPDyKFp0Ahcx=iJSGeG19ekDa4rykvAnDHrn4PF5pOoONuH0RA@mail.gmail.com>
+In-Reply-To: <CAPDyKFp0Ahcx=iJSGeG19ekDa4rykvAnDHrn4PF5pOoONuH0RA@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.29.40.150]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200601170102.GA1346815@gmail.com> <CAHk-=wgXf_wQ9zrJKv2Hy4EpEbLuqty-Cjbs2u00gm7XcYHBfw@mail.gmail.com>
-In-Reply-To: <CAHk-=wgXf_wQ9zrJKv2Hy4EpEbLuqty-Cjbs2u00gm7XcYHBfw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 1 Jun 2020 19:35:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjVLSOJ+uyEOhze_AaJi2mpmOAn7QtKahO1DC-Oj5teuA@mail.gmail.com>
-Message-ID: <CAHk-=wjVLSOJ+uyEOhze_AaJi2mpmOAn7QtKahO1DC-Oj5teuA@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/mm changes for v5.8
-To:     Balbir Singh <sblbir@amazon.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 1, 2020 at 6:06 PM Balbir Singh <sblbir@amazon.com> wrote:
->
-> I think apps can do this independently today as in do the flush
-> via software fallback in the app themselves.
-
-Sure, but they can't force the kernel to do crazy things for every task switch.
-
-> But I see your concern with
-> respect to an overall admin override, I thought about it, but I stopped
-> because of the reason above.
-
-So my real concern is that I had a hard time following all the logic,
-but it _looked_ to me like it ends up doing the flushes even if SMT is
-enabled, for example.
-
-And that's not an "admin override". That's just a full no-no. If SMT
-is on, then we don't do any L1D$ flushing in the kernel, because it
-would ne entirely pointless.
-
-But this all quite possibly interacts with all the subtle static
-branches we have in this same area, so ...
-
-> The software fallback was there and is the same algorithm that we use
-> for L1TF. We could potentially remove the software fallback if there
-> is a concern, having the software fallback provides a mechanism
-> independent of the microcode version similar to L1TF.
-
-So the SW fallback raises my hackles, because we had the exact same
-kind of non-architected software fallback for clearing the data
-buffers for MDS.
-
-And that one turned out to be not only incredibly expensive, but it
-didn't work reliably anyway, and was really only written for one
-microarchitecture.
-
-It's not clear that a (generic) SW routine _can_ reliably flush the
-L1D$ simply because of replacement policy issues and possibly D$
-cacheline management settings.
-
-Again, I'm sure that for any particular microarchitecture, writing a
-SW fallback is possible.
-
-And I suspect that for most of them, "fill enough of the cache" ends
-up making things very hard to trigger in practice, but at a very high
-cost.
-
-> >I have a hard time following whether this might all end up being
-> >predicated on the STIBP static branch conditionals and might thus at
-> >least be limited only to CPU's that have the problem in the first
-> >place.
->
-> No, this is at the moment restricted to just Intel CPUs and it is designed
-> as a generic fallback mechanism for issues involving speculation and L1D
-> flush for example CVE-2020-0550[1]. This mechanism addresses issues beyond
-> what STIBP addresses.
-
-Ok, so that was hard to see.
-
-What is it that disables it exactly? I'm ok with the concept, but it
-needs to be clearly targeted, and the target wasn't clear to me. In
-fact, everything in the docs and changlog implied that the target was
-"
-
-> >Because I don't want a random "I can make the kernel do stupid things"
-> >flag for people to opt into. I think it needs a double opt-in.
-> >
->
-> Are you happy for this controlled by CAP_SYS_ADMIN or are you suggesting
-> a sysfs override by the administrator to completely disable this?
-
-At a _minimum_, I want to make sure this code never possibly ever
-starts flushing anything if SMT is on.
-
-That may be the case already. The narrow twisty mazes here from
-"enable this" to "do the flush" were too hard to follow for me, which
-is why I'm asking for more clarification.
-
-And yes, I did read the documentation you point to. That did not
-clarify anything at all.
-
-So to put this in very clear terms:
-
- - what happens if SMT is on, and a process does
-"prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_L1D_FLUSH_OUT, PR_SPEC_ENABLE,
-0, 0);"
-
-Because if the answer is "the kernel starts flushing the L1D at
-context switches" then I refuse to pull this.
-
-Why? Because it's just an incredibly stupid waste of time and effort
-to do that, and I can see some poor hapless ssh developer saying "yes,
-I should enable this thing because ssh is very special", and then ssh
-just starts wasting time on something that doesn't actually help.
-
-See what I'm saying? I want to know this feature isn't doing crazy
-things. And "flush L1D$ on SMT" is crazy, since an attacker would just
-sit on a sibling core and attack the L1 contents *before* the task
-switch happens.
-
-I have some other questions about this approach in the first place. I
-don't see why context switch is even relevant, and why it should be
-the place we flush. The kernel is trustworthy in this situation, both
-before and after the context switch. So context switch makes no
-difference what-so-ever from a security domain transfer angle.
-
-Also, shouldn't we avoid flushing if you just run as the same user all
-the time? IOW, context switch in itself isn't really relevant as a
-security domain transfer, but it *is* relevant in the sense that
-switching from one user to another is a sign of "uhhuh, now maybe I
-should be careful when returning to user mode".
-
-IOW, think of a "pipe ping-pong" test program. Set the flag for "I
-want L1D$ cache flushing". Run the program with nothing else
-happening, and a _good_ implementation should never ever cache-flush,
-because at no point did we ever enter untrusted space: we were either
-in the kernel (not just for the system calls, but for idle threads),
-or we were in user context that had the right to see the data anyway.
-
-So despite asking for a L1D$ flush on context changes, such a
-ping-pong test program that does millions of context switches per
-second shouldn't actually ever cause a cache flush, because there was
-never any point.
-
-IOW, what mitigations are in place for this not doing unnecessary
-cache flushes, either because they are fundamentally pointless (the
-machine has SMT enabled) or because they just aren't necessary (no
-transition to an untrusted security domain has happened)?
-
-And maybe those mitigations are actually there, and I just couldn't
-figure it out. Some of the code scares me ("cond_ibpb()" and friends,
-even if you did rename it to "cond_mitigation()").
-
-                   Linus
+PiANCj4gK2xpbnV4LW1tYw0KPiANCj4gT24gTW9uLCAxIEp1biAyMDIwIGF0IDA5OjM0LCDlhq/p
+lJAgPHJ1aV9mZW5nQHJlYWxzaWwuY29tLmNuPiB3cm90ZToNCj4gPg0KPiA+ID4NCj4gPiA+IE9u
+IFR1ZSwgMTkgTWF5IDIwMjAgYXQgMTE6MTgsIOWGr+mUkCA8cnVpX2ZlbmdAcmVhbHNpbC5jb20u
+Y24+IHdyb3RlOg0KPiA+ID4gPg0KPiA+ID4gPiA+IE9uIFR1ZSwgMjggQXByIDIwMjAgYXQgMDU6
+NDQsIOWGr+mUkCA8cnVpX2ZlbmdAcmVhbHNpbC5jb20uY24+IHdyb3RlOg0KPiA+ID4gPiA+ID4N
+Cj4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gT24gTW9uLCBBcHIgMjcsIDIwMjAgYXQgMTE6
+NDEgQU0g5Yav6ZSQDQo+ID4gPiA+ID4gPiA+IDxydWlfZmVuZ0ByZWFsc2lsLmNvbS5jbj4NCj4g
+PiA+ID4gPiB3cm90ZToNCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+DQo+ID4gPiA+
+ID4gPiA+ID4gPiBPbiBTdW4sIEFwciAyNiwgMjAyMCBhdCAwOToyNTo0NkFNICswODAwLA0KPiA+
+ID4gPiA+ID4gPiA+ID4gcnVpX2ZlbmdAcmVhbHNpbC5jb20uY24NCj4gPiA+ID4gPiA+ID4gd3Jv
+dGU6DQo+ID4gPiA+ID4gPiA+ID4gPiA+IEZyb206IFJ1aSBGZW5nIDxydWlfZmVuZ0ByZWFsc2ls
+LmNvbS5jbj4NCj4gPiA+ID4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gPiA+ID4gUlRTNTI2
+MSBzdXBwb3J0IGxlZ2FjeSBTRCBtb2RlIGFuZCBTRCBFeHByZXNzIG1vZGUuDQo+ID4gPiA+ID4g
+PiA+ID4gPiA+IEluIFNENy54LCBTRCBhc3NvY2lhdGlvbiBpbnRyb2R1Y2UgU0QgRXhwcmVzcyBh
+cyBhIG5ldyBtb2RlLg0KPiA+ID4gPiA+ID4gPiA+ID4gPiBTRCBFeHByZXNzIG1vZGUgaXMgZGlz
+dGluZ3Vpc2hlZCBieSBDTUQ4Lg0KPiA+ID4gPiA+ID4gPiA+ID4gPiBUaGVyZWZvcmUsIENNRDgg
+aGFzIG5ldyBiaXQgZm9yIFNEIEV4cHJlc3MuDQo+ID4gPiA+ID4gPiA+ID4gPiA+IFNEIEV4cHJl
+c3MgaXMgYmFzZWQgb24gUENJZS9OVk1lLg0KPiA+ID4gPiA+ID4gPiA+ID4gPiBSVFM1MjYxIHVz
+ZXMgQ01EOCB0byBzd2l0Y2ggdG8gU0QgRXhwcmVzcyBtb2RlLg0KPiA+ID4gPiA+ID4gPiA+ID4N
+Cj4gPiA+ID4gPiA+ID4gPiA+IFNvIGhvdyBkb2VzIHRoaXMgYml0IHdvcms/ICBUaGV5IHdheSBJ
+IGltYWdpbmVkIFNEDQo+ID4gPiA+ID4gPiA+ID4gPiBFeHByZXNzIHRvIHdvcmsgaXMgdGhhdCB0
+aGUgYWN0dWFsIFNEIENhcmQganVzdCBzaG93cyB1cA0KPiA+ID4gPiA+ID4gPiA+ID4gYXMgYSBy
+ZWFsIFBDSWUgZGV2aWNlLCBzaW1pbGFyIHRvIHNheSBUaHVuZGVyYm9sdC4NCj4gPiA+ID4gPiA+
+ID4gPg0KPiA+ID4gPiA+ID4gPiA+IE5ldyBTRCBFeHByZXNzIGNhcmQgaGFzIGR1YWwgbW9kZS4g
+T25lIGlzIFNEIG1vZGUgYW5kDQo+ID4gPiA+ID4gPiA+ID4gYW5vdGhlciBpcyBQQ0llDQo+ID4g
+PiA+ID4gPiA+IG1vZGUuDQo+ID4gPiA+ID4gPiA+ID4gSW4gUENJZSBtb2RlLCBpdCBhY3QgYXMg
+YSBQQ0llIGRldmljZSBhbmQgdXNlIFBDSWUNCj4gPiA+ID4gPiA+ID4gPiBwcm90b2NvbCBub3Qg
+VGh1bmRlcmJvbHQNCj4gPiA+ID4gPiA+ID4gcHJvdG9jb2wuDQo+ID4gPiA+ID4gPiA+DQo+ID4g
+PiA+ID4gPiA+IEkgdGhpbmsgd2hhdCBDaHJpc3RvcGggd2FzIGFza2luZyBhYm91dCBpcyB3aHkg
+eW91IG5lZWQgdG8NCj4gPiA+ID4gPiA+ID4gaXNzdWUgYW55IGNvbW1hbmRzIGF0IGFsbCBpbiBT
+RCBtb2RlIHdoZW4geW91IHdhbnQgdG8gdXNlDQo+ID4gPiA+ID4gPiA+IFBDSWUgbW9kZQ0KPiA+
+ID4gaW5zdGVhZC4NCj4gPiA+ID4gPiA+ID4gV2hhdCBoYXBwZW5zIGlmIHlvdSBsb2FkIHRoZSBO
+Vk1lIGR0aHJpdmVyIGJlZm9yZSBsb2FkaW5nDQo+ID4gPiA+ID4gPiA+IHRoZQ0KPiA+ID4gPiA+
+ID4gPiBydHM1MjYxDQo+ID4gPiA+ID4gZHJpdmVyPw0KPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+
+ID4gPiAgICAgICAgQXJuZA0KPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiAtLS0tLS1QbGVh
+c2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4N
+Cj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBSVFM1MjYxIHN1cHBvcnQgU0QgbW9kZSBhbmQgUENJ
+ZS9OVk1lIG1vZGUuIFRoZSB3b3JrZmxvdyBpcyBhcw0KPiA+ID4gZm9sbG93cy4NCj4gPiA+ID4g
+PiA+IDEuUlRTNTI2MSB3b3JrIGluIFNEIG1vZGUuDQo+ID4gPiA+ID4gPiAyLklmIGNhcmQgaXMg
+cGx1Z2dlZCBpbiwgSG9zdCBzZW5kIENNRDggdG8gYXNrIGNhcmQncyBQQ0llIGF2YWlsYWJpbGl0
+eS4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IFRoaXMgc291bmRzIGxpa2UgdGhlIGNhcmQgaW5zZXJ0
+L3JlbW92YWwgbmVlZHMgdG8gYmUgbWFuYWdlZCBieQ0KPiA+ID4gPiA+IHRoZSBydHN4X3BjaV9z
+ZG1tYyBkcml2ZXIgKG1tYykuDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IDMuSWYgdGhlIGNhcmQg
+aGFzIFBDSWUgYXZhaWxhYmlsaXR5LCBSVFM1MjYxIHN3aXRjaCB0byBQQ0llL05WTWUNCj4gbW9k
+ZS4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IFRoaXMgc3dpdGNoIGlzIGRvbmUgYnkgdGhlIG1tYyBk
+cml2ZXIsIGJ1dCBob3cgZG9lcyB0aGUNCj4gPiA+ID4gPiBQQ0llL05WTWUgZHJpdmVyIGtub3cg
+d2hlbiB0byB0YWtlIG92ZXI/IElzbid0IHRoZXJlIGENCj4gc3luY2hyb25pemF0aW9uIHBvaW50
+IG5lZWRlZD8NCj4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gNC5NbWMgZHJpdmVyIGV4aXQgYW5kIE5W
+TWUgZHJpdmVyIHN0YXJ0IHdvcmtpbmcuDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBIYXZpbmcgdGhl
+IG1tYyBkcml2ZXIgdG8gZXhpdCBzZWVtcyB3cm9uZyB0byBtZS4gRWxzZSBob3cgd291bGQNCj4g
+PiA+ID4gPiB5b3UgaGFuZGxlIGEgY2FyZCBiZWluZyByZW1vdmVkIGFuZCBpbnNlcnRlZCBhZ2Fp
+bj8NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IEluIHByaW5jaXBsZSB5b3Ugd2FudCB0aGUgbW1jIGNv
+cmUgdG8gZmFpbCB0byBkZXRlY3QgdGhlIGNhcmQNCj4gPiA+ID4gPiBhbmQgdGhlbiBkbyBhIGhh
+bmRvdmVyLCBzb21laG93LiBObz8NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IEFsdGhvdWdoLCB0byBt
+YWtlIHRoaXMgd29yayB0aGVyZSBhcmUgYSBjb3VwbGUgb2YgcHJvYmxlbXMgeW91DQo+ID4gPiA+
+ID4gbmVlZCB0byBkZWFsIHdpdGguDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiAxLiBJZiB0aGUgbW1j
+IGNvcmUgZG9lc24ndCBzdWNjZXNzZnVsbHkgZGV0ZWN0IGEgY2FyZCwgaXQgd2lsbA0KPiA+ID4g
+PiA+IHJlcXVlc3QgdGhlIG1tYyBob3N0IHRvIHBvd2VyIG9mZiB0aGUgY2FyZC4gSW4gdGhpcyBz
+aXR1YXRpb24sDQo+ID4gPiA+ID4geW91IHdhbnQgdG8ga2VlcCB0aGUgcG93ZXIgdG8gdGhlIGNh
+cmQsIGJ1dCBsZWF2ZSBpdCB0byBiZQ0KPiA+ID4gPiA+IG1hbmFnZWQgYnkgdGhlDQo+ID4gPiBQ
+Q0llL05WTWUgZHJpdmVyIGluIHNvbWUgd2F5Lg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gMi4gRHVy
+aW5nIHN5c3RlbSByZXN1bWUsIHRoZSBtbWMgY29yZSBtYXkgdHJ5IHRvIHJlc3RvcmUgcG93ZXIN
+Cj4gPiA+ID4gPiBmb3IgYSBjYXJkLCBlc3BlY2lhbGx5IGlmIGl0J3MgYSByZW1vdmFibGUgc2xv
+dCwgYXMgdG8gbWFrZSBzdXJlDQo+ID4gPiA+ID4gaXQgZ2V0cyBkZXRlY3RlZCBpZiBzb21lb25l
+IGluc2VydGVkIGEgY2FyZCB3aGlsZSB0aGUgc3lzdGVtIHdhcw0KPiBzdXNwZW5kZWQuDQo+ID4g
+PiA+ID4gTm90IHN1cmUgaWYgdGhpcyBwbGF5cyB3ZWxsIHdpdGggdGhlIFBDSWUvTlZNZSBkcml2
+ZXIncyBiZWhhdmlvdXIuDQo+ID4gPiA+ID4gQWdhaW4sIEkgdGhpbmsgc29tZSBraW5kIG9mIHN5
+bmNocm9uaXphdGlvbiBpcyBuZWVkZWQuDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IDUuSWYgY2Fy
+ZCBpcyB1bnBsdWdnZWQsIFJUUzUyNjEgd2lsbCBzd2l0Y2ggdG8gU0QgbW9kZS4NCj4gPiA+ID4g
+Pg0KPiA+ID4gPiA+IEFscmlnaHQsIGNsZWFybHkgdGhlIG1tYyBkcml2ZXIgaXMgbmVlZGVkIHRv
+IG1hbmFnZSBjYXJkDQo+IGluc2VydC9yZW1vdmFsLg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBX
+ZSBzaG91bGQgc2VuZCBDTUQ4IGluIFNEIG1vZGUgdG8gYXNrIGNhcmQncyBQQ0llDQo+ID4gPiA+
+ID4gPiBhdmFpbGFiaWxpdHksIGFuZCB0aGUNCj4gPiA+ID4gPiBvcmRlciBvZiBOVk1lIGRyaXZl
+ciBhbmQgcnRzNTI2MSBkcml2ZXIgZG9lc24ndCBtYXR0ZXIuDQo+ID4gPiA+ID4NCj4gPiA+ID4g
+PiBUaGF0IGFzc3VtZXMgdGhlcmUncyBhbm90aGVyIHN5bmNocm9uaXphdGlvbiBtZWNoYW5pc20u
+IE1heWJlDQo+ID4gPiA+ID4gdGhlcmUgaXMsIGJ1dCBJIGRvbid0IHVuZGVyc3RhbmQgaG93Lg0K
+PiA+ID4gPiA+DQo+ID4gPiA+IElmIG5vIGNhcmQgaW4gUlRTNTI2MSwgUlRTNTI2MSB3b3JrcyBp
+biBTRCBtb2RlLiBJZiB5b3UgcnVuDQo+ID4gPiA+IGNvbW1hbmQgbHNwY2ksDQo+ID4gPiB5b3Ug
+Y2FuIHNlZSB0aGUgUlRTNTI2MSBkZXZpY2UuDQo+ID4gPg0KPiA+ID4gUmlnaHQuDQo+ID4gPg0K
+PiA+ID4gVGhlIHJ0c3hfcGNpX2RyaXZlciAoZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzeF9w
+Y3IuYykgaGFzDQo+ID4gPiByZWdpc3RlcmVkIGl0c2VsZiBhcyBhIHBjaSBkcml2ZXIgYW5kIGJl
+ZW4gcHJvYmVkIHN1Y2Nlc3NmdWxseSwgSQ0KPiA+ID4gYXNzdW1lLiBUaGVuIGR1cmluZw0KPiA+
+ID4gcnRzeF9wY2lfcHJvYmUoKSBhbiBtZmQgZGV2aWNlIGlzIGFkZGVkIHZpYSBtZmRfYWRkX2Rl
+dmljZXMoKSwgd2hpY2gNCj4gPiA+IGNvcnJlc3BvbmRzIHRvIHRoZSBydHN4X3BjaV9zZG1tYw0K
+PiA+ID4gKGRyaXZlcnMvbW1jL2hvc3QvcnRzeF9wY2lfc2RtbWMuYykgcGxhdGZvcm0gZHJpdmVy
+Lg0KPiA+ID4NCj4gPiA+ID4gV2hlbiBpbnNlcnQgYSBTRCBFeHByZXNzIGNhcmQsIE1tYyBkcml2
+ZXIgd2lsbCBzZW5kIENNRDggdG8gYXNrDQo+ID4gPiA+IHRoZSBjYXJkJ3MgUENJZSBhdmFpbGFi
+aWxpdHksIGJlY2F1c2UgaXQncyBhIFNEIEVYUFJFU1MgY2FyZCwNCj4gPiA+DQo+ID4gPiBPa2F5
+LCBzbyB0aGlzIHdpbGwgdGhlbiBiZSBhIHBhcnQgb2YgdGhlIHJ0c3hfcGNpX3NkbW1jIGRyaXZl
+cidzIHByb2JlDQo+IHNlcXVlbmNlLg0KPiA+ID4gT3IgbW9yZSBleGFjdGx5LCB3aGVuIHJ0c3hf
+cGNpX3NkbW1jX2Rydl9wcm9iZSgpIGNvbXBsZXRlcw0KPiA+ID4gc3VjY2Vzc2Z1bGx5LCBhIG1t
+YyByZXNjYW4gd29yayBiZWNvbWVzIHNjaGVkdWxlZCB0byB0cnkgdG8gZGV0ZWN0DQo+ID4gPiBh
+biBTRC9NTUMgY2FyZC4gVGhlbiB0aGUgQ01EOCBjb21tYW5kIGlzIHNlbnQuLi4NCj4gPiA+DQo+
+ID4gPiA+IFJUUzUyNjEgd2lsbCBzd2l0Y2ggdG8gTlZNZSBtb2RlLCBhZnRlciBzd2l0Y2ggaWYg
+eW91IHJ1biBsc3BjaSwNCj4gPiA+ID4geW91IGNhbiBzZWUNCj4gPiA+IFJUUzUyNjEgZGlzYXBw
+ZWFyZWQgYW5kIGEgTlZNZSBkZXZpY2UgcmVwbGFjZXMgUlRTNTI2MS4NCj4gPiA+DQo+ID4gPiBD
+YW4geW91IGVsYWJvcmF0ZSBtb3JlIGV4YWN0bHkgaG93IHRoaXMgbWFuYWdlZD8NCj4gPiA+DQo+
+ID4gPiBJdCBraW5kIG9mIHNvdW5kcyBsaWtlIHRoZSBvcmlnaW5hbCBQQ0kgZGV2aWNlIGlzIGJl
+aW5nIGRlbGV0ZWQ/IEhvdw0KPiA+ID4gaXMgdGhpcyBtYW5hZ2VkPw0KPiA+ID4NCj4gPiA+IElu
+IGFueSBjYXNlLCB0aGUgcnRzeF9wY2lfZHJpdmVyJ3MgLT5yZW1vdmUoKSBjYWxsYmFjaywNCj4g
+PiA+IHJ0c3hfcGNpX3JlbW92ZSgpLCBzaG91bGQgYmUgaW52b2tlZCwgSSBhc3N1bWU/DQo+ID4g
+Pg0KPiA+ID4gVGhhdCB3b3VsZCB0aGVuIGxlYWQgdG8gdGhhdCBtZmRfcmVtb3ZlX2RldmljZXMo
+KSBnZXRzIGNhbGxlZCwgd2hpY2gNCj4gPiA+IG1ha2VzIHRoZSAtPnJlbW92ZSgpIGNhbGxiYWNr
+IG9mIHRoZSBydHN4X3BjaV9zZG1tYyBkcml2ZXIsDQo+ID4gPiBydHN4X3BjaV9zZG1tY19kcnZf
+cmVtb3ZlKCksIHRvIGJlIGludm9rZWQuIENvcnJlY3Q/DQo+ID4gPg0KPiA+IFllcywgYWZ0ZXIg
+UlRTNTI2MSBzd2l0Y2ggdG8gTlZNZSBtb2RlLCBydHN4X3BjaV9yZW1vdmUoKSBhbmQNCj4gcnRz
+eF9wY2lfc2RtbWNfZHJ2X3JlbW92ZSgpIHdpbGwgYmUgaW52b2tlZC4NCj4gDQo+IFNvLCB0aGUg
+LT5yZW1vdmUoKSBjYWxsYmFja3MgYXJlIGludm9rZWQgYmVjYXVzZSB0aGUgUENJIGRldmljZSB0
+aGF0DQo+IGNvcnJlc3BvbmRzIHRvIHRoZSBydHN4X3BjaV9kcml2ZXIgaXMgYmVpbmcgZGVsZXRl
+ZC4gQ2FuIHlvdSBleHBsYWluIHdobw0KPiBkZWxldGVzIHRoZSBQQ0kgZGV2aWNlIGFuZCB3aHk/
+DQo+IA0KPiBJIGFtIG5vdCBhIFBDSSBleHBlcnQsIHNvIGFwb2xvZ2l6ZSBmb3IgbXkgaWdub3Jh
+bmNlIC0gYnV0IEkgcmVhbGx5IHdhbnQgdG8NCj4gdW5kZXJzdGFuZCBob3cgdGhpcyBpcyBzdXBw
+b3NlZCB0byB3b3JrLg0KPiANClJ0c3ggaG9zdCBkcml2ZXIgc2V0cyBSVFM1MjYxIDB4RkY1NCBi
+aXQwPTEgYW5kIDB4RkY1NSBiaXQ0PTAsIHRoZW4gUlRTNTI2MSB3aWxsIHN3aXRjaCBNQ1UgYW5k
+IGVudGVyIFNEIEVYUFJFU1MgbW9kZS4NCkJlY2F1c2UgaGFyZHdhcmUgZGVzaWduIGlzIGludm9s
+dmVkLCBzb3JyeSBJIGNhbid0IGV4cGxhaW4gbXVjaCBtb3JlIGRldGFpbHMgYWJvdXQgdGhhdC4N
+Cg0KPiA+DQo+ID4gPiA+IEluIE5WTWUgbW9kZSwgUlRTNTI2MSBvbmx5IHByb3ZpZGUgYSBicmlk
+Z2UgYmV0d2VlbiBTRCBFeHByZXNzDQo+ID4gPiA+IGNhcmQgYW5kDQo+ID4gPiBQQ0llLiBGb3Ig
+TlZNZSBkcml2ZXIsIGp1c3QgbGlrZSBhIG5ldyBOVk1lIGRldmljZSBpcyBpbnNlcnRlZC4NCj4g
+PiA+DQo+ID4gPiBJIGRvbid0IHVuZGVyc3RhbmQgd2hhdCB0aGF0IG1lYW5zLCBidXQgSSBhbSBh
+bHNvIG5vdCBhbiBleHBlcnQgb24NCj4gUENJL05WTWUuDQo+ID4gPiBDYXJlIHRvIGV4cGxhaW4g
+bW9yZT8NCj4gPiA+DQo+ID4gSW4gTlZNZSBtb2RlLCBTRCBFeHByZXNzIGNhcmQgY29ubmVjdCB0
+aGUgY29tcHV0ZXIgdmlhIFBDSWUuDQo+ID4gSU4gU0QgbW9kZSwgY2FyZCBjb25uZWN0IGNvbXB1
+dGVyIHZpYSByZWFkZXIuDQo+IA0KPiBUaGF0IGRpZG4ndCBtYWtlIGJldHRlciBzZW5zZSB0byBt
+ZSwgc29ycnkuIEkgZG8ga25vdyBhYm91dCB0aGUgU0Qgc3BlYyBhbmQNCj4gdGhlIFNELWV4cHJl
+c3MgY2FyZCBwcm90b2NvbCBwYXJ0cy4gQW55d2F5LCBsZXQncyBsZWF2ZSB0aGlzIGZvciBub3cu
+DQo+IA0KPiA+DQo+ID4gPiA+IE1tYyBjb3JlIGRvZXNuJ3Qgc3VjY2Vzc2Z1bGx5IGRldGVjdCB0
+aGUgY2FyZCBhbmQgaGFuZG92ZXIgdG8gTlZNZQ0KPiA+ID4gPiBkcml2ZXIuIEJlY2F1c2Ugb2Yg
+ZGV0ZWN0IHRoZSBjYXJkIGZhaWxlZCwNCj4gPiA+DQo+ID4gPiBIb3cgZG8geW91IG1ha2Ugc3Vy
+ZSB0aGF0IHRoZSBydHN4X3BjaV9zZG1tYyBkcml2ZXIgaXMgbGVhdmluZyB0aGUNCj4gPiA+IGNh
+cmQgaW4gdGhlIGNvcnJlY3Qgc3RhdGUgZm9yIE5WTWU/DQo+ID4gPg0KPiA+ID4gRm9yIGV4YW1w
+bGUsIHRoZSBtbWMgY29yZSBoYXMgYSBsb29wIHJlLXRyeWluZyB3aXRoIGEgbG93ZXINCj4gPiA+
+IGluaXRpYWxpemF0aW9uIGZyZXF1ZW5jeSBmb3IgdGhlIGNhcmQgKDQwMEtIeiwgMzAwS0h6LCAy
+MDBLSHosDQo+ID4gPiAxMDBLSHopLiBUaGlzIHdpbGwgY2F1c2UgYWRkaXRpb25hbCByZXF1ZXN0
+cyB0byB0aGUgcnRzeF9wY2lfc2RtbWMgZHJpdmVyLg0KPiA+ID4NCj4gPiA+ID4gTW1jIGRyaXZl
+ciB3aWxsIHJlcXVlc3QgdGhlIFJUUzUyNjEgdG8gcG93ZXIgb2ZmIHRoZSBjYXJkLCBidXQgYXQN
+Cj4gPiA+ID4gdGhhdCB0aW1lDQo+ID4gPiBwb3dlciBvZmYgdGhlIGNhcmQgd2lsbCBub3Qgc3Vj
+Y2VlZC4NCj4gPiA+DQo+ID4gPiBZZXMsIGFzc3VtaW5nIG5vIGNhcmQgd2FzIGZvdW5kLCB0aGUg
+bW1jIGNvcmUgY2FsbHMgbW1jX3Bvd2VyX29mZigpLg0KPiA+ID4gVGhzIGxlYWRzIHRvIHRoZSBy
+dHN4X3BjaV9zZG1tYyBkcml2ZXIncyAtPnNldF9pb3MoKSBjYWxsYmFjayBiZWluZw0KPiA+ID4g
+aW52b2tlZCwgcmVxdWVzdGluZyB0aGUgY2FyZCB0byBiZSBwb3dlcmVkIG9mZi4gSSBkb24ndCBz
+ZWUgaG93IHlvdQ0KPiA+ID4gYXJlIG1hbmFnaW5nIHRoaXMsIHdoYXQgYW0gSSBtaXNzaW5nPw0K
+PiA+ID4NCj4gPiBCZWZvcmUgcG93ZXIgb2ZmIGNhcmQgYW5kIHJlLXRyeWluZyBpbml0aWFsaXph
+dGlvbiwgcnRzeCBkcml2ZXIgc2V0cyBSVFM1MjYxDQo+IDB4RkY1NSBiaXQ0PTAuDQo+ID4gQWZ0
+ZXIgc2V0IDB4RkY1NSBiaXQ0PTAsIFJUUzUyNjEgY2FuJ3QgcmVjZWl2ZSBhbnkgQ01EIGZyb20g
+UENJZSBhbmQNCj4gcHJlcGFyZSBmb3IgZGV2aWNlIGRpc2FwcGVhci4NCj4gPiBUaGVyZWZvcmUs
+IE1NQyBkcml2ZXIgY2FuJ3QgY2hhbmdlIGNhcmQgc3RhdHVzLg0KPiANCj4gT2theSwgc28gYmV5
+b25kIHRoYXQgcG9pbnQgLSBhbnkgY2FsbHMgdG8gdGhlIGludGVyZmFjZSB0aGF0IGlzIHByb3Zp
+ZGVkIGZyb20NCj4gZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzeF9wY3Igd2lsbCBmYWlsLCB3
+aGVuIGludm9rZWQgYnkgdGhlDQo+IHJ0c3hfcGNpX3NkbW1jIGRyaXZlcj8NCj4gDQpZZXMuDQoN
+Cj4gVG8gbWUsIHRoYXQgc291bmRzIGEgYml0IGZyYWdpbGUgYW5kIGl0J3MgYWxzbyByZWx5aW5n
+IG9uIGEgc3BlY2lmaWMgYmVoYXZpb3VyIG9mDQo+IHRoZSBSVFM1MjYxIGNhcmQgcmVhZGVyIGlu
+dGVyZmFjZS4gSSB3b25kZXIgaWYgdGhpcyBjb3VsZCBiZSBjb25zaWRlcmVkIGFzIGENCj4gY29t
+bW9uIGJlaGF2aW91ci4uLj8/DQo+IA0KSXQncyBhIGZlYXR1cmUgcHJvcG9zYWwgYnkgcmVhbHRl
+ayBub3QgY29tbW9uLg0KDQo+IFBlcmhhcHMgaXQncyBiZXR0ZXIgdG8gdGVhY2ggdGhlIG1tYyBj
+b3JlICptb3JlKiBhYm91dCBTRCBleHByZXNzIGNhcmRzLg0KPiBNYXliZSBhZGQgYSBuZXcgaG9z
+dCBvcHMgZm9yIGRlYWxpbmcgd2l0aCB0aGUgc3BlY2lmaWMgQ01EOCBjb21tYW5kIGFuZA0KPiBt
+YWtlIHRoZSBtbWMgY29yZSB0byAiYmFpbCBvdXQiLCByYXRoZXIgdGhhbiBrZWVwIHJldHJ5aW5n
+IHRoZSBpbml0aWFsaXphdGlvbi4gSW4NCj4gcHJpbmNpcGxlIEkgdGhpbmsgdGhlIGNvcmUgc2hv
+dWxkIGFjY2VwdCB0aGF0IGl0IG1heSBoYXZlIGZvdW5kIGFuIFNEIGV4cHJlc3MNCj4gY2FyZCwg
+dGhlbiBhYm9ydCBmdXJ0aGVyIGNvbW11bmljYXRpb24gd2l0aCBpdC4gQXQgbGVhc3QgdW50aWwg
+dGhlIG1tYyBob3N0DQo+IGluZGljYXRlcyB0aGF0IGEgcmUtaW5pdGlhbGl6YXRpb24gb2YgdGhl
+IGNhcmQgY2FuIGJlIGRvbmUsIHdoaWNoIGNvdWxkIGJlIHRocm91Z2gNCj4gYSByZW1vdmUvcmUt
+cHJvYmUsIGZvciBleGFtcGxlLg0KPiANCkluIFNENy54IHNwZWMgaG9zdCBzaG91bGQgc2VuZCBD
+TUQ4IHdpdGggYml0MjA9MSBhbmQgYml0MjE9MSB0byBhc2sgY2FyZCdzIFBDSWUgYXZhaWxhYmls
+aXR5Lg0KU28gdGhlIENNRDggaXMgbm90IHNwZWNpZmljIGZvciBSVFM1MjYxLCBpdCdzIGp1c3Qg
+bmV3bHkgZGVmaW5lZCBpbiBTRDcueCBzcGVjLg0KVGhlIG1tYyBjb3JlIHdpbGwgcmVxdWVzdCBo
+b3N0IHRvIHBvd2VyIG9mZiBjYXJkIGFuZCBoYXMgYSBsb29wIHJlLXRyeWluZyB3aXRoIGRpZmZl
+cmVudCBpbml0aWFsaXphdGlvbiBmcmVxdWVuY3kgZm9yIHRoZSBjYXJkICg0MDBLSHosIDMwMEtI
+eiwgMjAwS0h6LA0KMTAwS0h6KSwgaWYgSSBkb24ndCBtb2RpZnkgbW1jIGNvcmUsIEkgY2FuJ3Qg
+c3RvcCB0aGUgcG93ZXIgb2ZmIGFuZCByZS10cnlpbmcsIGlmIEkgbW9kaWZ5IG1tYyBjb3JlLCBS
+VFM1MjYxIHdpbGwgYmVjb21lIGEgc3BlY2lhbCBjYXNlIGZvciBtbWMgY29yZS4NClNvIG1ha2Ug
+dGhlIG9wZXJhdGlvbiBmYWlsIGlzIHRoZSBtaW5pbXVtIG1vZGlmaWNhdGlvbiBpbiBtbWMgY29y
+ZSBmb3IgbWUuIERvIHlvdSBoYXZlIGFueSBvdGhlciBzdWdnZXN0aW9uPw0KDQo+ID4NCj4gPiA+
+IEFzIHN0YXRlZCBhYm92ZSwgSSBhc3N1bWUgeW91IHRoZSBjb3JyZXNwb25kaW5nIHBsYXRmb3Jt
+IGRldmljZSBmb3INCj4gPiA+IHJ0c3hfcGNpX3NkbW1jIGJlaW5nIGRlbGV0ZWQgYW5kIHRodXMg
+dHJpZ2dlcmluZyB0aGUNCj4gPiA+IHJ0c3hfcGNpX3NkbW1jX2Rydl9yZW1vdmUoKSBiZWluZyBj
+YWxsZWQuIENvcnJlY3Q/IElmIG5vdCwgaG93IGRvZXMNCj4gPiA+IHRoZSBkcml2ZXIgbWFuYWdl
+IHRoaXM/DQo+ID4gPg0KPiA+IFllcy4NCj4gPg0KPiA+ID4gPiBXaGVuIHRoZSBjYXJkIGlzIHVu
+cGx1Z2dlZCwgUlRTNTI2MSB3aWxsIHN3aXRjaCB0byBTRCBtb2RlIGJ5DQo+ID4gPiA+IGl0c2Vs
+ZiBhbmQgZG9uJ3QgbmVlZCBtbWMgZHJpdmVyIHRvIGRvIGFueXRoaW5nLA0KPiA+ID4NCj4gPiA+
+IE9rYXkuDQo+ID4gPg0KPiA+ID4gU28gdGhhdCBtZWFucyB0aGUgcnRzeF9wY2lfc2RtbWMgZHJp
+dmVyIGlzIGJlaW5nIHByb2JlZCBhZ2Fpbj8NCj4gPiA+DQo+ID4gWWVzLg0KPiA+DQo+ID4gPiA+
+IElmIHlvdSBydW4gbHNwY2ksIHlvdSBjYW4gc2VlIE5WTWUgZGV2aWNlIGRpc2FwcGVhcmVkIGFu
+ZCBSVFM1MjYxDQo+ID4gPiA+IGFwcGVhcmVkDQo+ID4gPiBhZ2Fpbi4NCj4gPiA+DQo+ID4gPiBJ
+IHNlZS4NCj4gPiA+DQo+IA0KPiBJZiB5b3UgbmVlZCBzb21lIGhlbHAgb24gdGhlIG1tYyBjb3Jl
+IHBhcnRzLCBJIGFtIHdpbGxpbmcgdG8gaGVscCBvdXQuDQo+IEhvd2V2ZXIsIGZpcnN0LCBJIHdv
+dWxkIGxpa2UgdG8gZ2V0IHNvbWUgYmV0dGVyIHVuZGVyc3RhbmRpbmcgb2Ygd2hvIGFuZCB3aHkN
+Cj4gdGhlIFBDSSBkZXZpY2UgaXMgZGVsZXRlZC4NCj4gDQpDYW4gSSBzdG9wIHRoZSByZS10cnlp
+bmcgaW4gaG9zdCBkcml2ZXIgb3RoZXIgdGhhbiBtb2RpZnkgbW1jIGNvcmU/DQpBcyBhYm92ZSwg
+SSdtIHNvcnJ5IEkgY2FuJ3QgZXhwbGFpbiBtdWNoIG1vcmUgZGV0YWlscyBhYm91dCBoYXJkd2Fy
+ZSBkZXNpZ24uDQoNCg0KS2luZCByZWdhcmRzDQoNCg==
