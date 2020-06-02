@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B931EB4F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 07:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD041EB519
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 07:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbgFBFQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 01:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725841AbgFBFQN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 01:16:13 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 923E2C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 22:16:13 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id q24so889847pjd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 22:16:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wDwA49qlibi8ifBKcQK5YxVr+aaj4hDDJcJVTNeIJ48=;
-        b=rM7Q3kkjKcwtSFNIipJS/A4g/HnsQ1TsKTtLks8FS5hyB/S44lrzWqoImAeehYh+Dz
-         WTjzuvsYIhRxoBgcTryPVTOIWEL+q+ftsR62L86UDYi6dFfHRyJLKulD1KLE8H+l+OSt
-         CPu6no5aD/z8x8E6Ggvtgxq4dxz5BtDAKpNF3kF5G5436Km6Y+t8vh5DRd2f6WG9HZSo
-         8f6yhbnLOtumZ3Nqau4SorDMFk2J/8VCtT7EmFVP/RteSMBD/kw18Qjjihr8x0xZ/mdR
-         Wpi0Pr7n6FmV1r4qBYNjk3i36rX1IoST1Aqu91UbSEB/xm3wbC6fBrzrbE6+YJMfcZcy
-         DRAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wDwA49qlibi8ifBKcQK5YxVr+aaj4hDDJcJVTNeIJ48=;
-        b=fkazOubZqwGyX5Itc6O9OD3beVW13wozmDZneEC2S+lk6BQCMpkKZbH/m/sNucmGmQ
-         HMidDoJMjEXYiA1tRat58/0sp6pkbkasBaEpEpPaa/al+HLu9dY1GykCenmx1i6E4P+7
-         67Io+gEysAqowV+RTcE6eDzDNoFSYhaQ3xX8X3e1EkNxTKELxpRBwq9agCCB6cMMsKvH
-         3LH8VZZxL4V6VjoRP/SpBDvRM9v/64w2jnim8sN3kjBarXyQ/SWvN4SJPZQBOWpvIk+E
-         0oD4tWx+kqhh2bp2ydgt57dfn9IMuV8zSz6CBSOZTNdisTcsVlgUGhFZiQO8bpM38kRr
-         YwCA==
-X-Gm-Message-State: AOAM532t0nxKBBlSyLqlGXzgQ3XLZ9qi67wWMCKXJSHq4muPqYRLdO1h
-        inNRwPPNxU/BPsN85X0IxEai5pngULk=
-X-Google-Smtp-Source: ABdhPJxK9MCNSAN72Ms1ilFwN/924RoU9ltixe5/gs2CCe/vT8GeVBVorAjhiJip1VvS9nwHngjmLQ==
-X-Received: by 2002:a17:90b:30d8:: with SMTP id hi24mr3472370pjb.78.1591074973062;
-        Mon, 01 Jun 2020 22:16:13 -0700 (PDT)
-Received: from localhost ([122.172.62.209])
-        by smtp.gmail.com with ESMTPSA id s8sm994752pjz.44.2020.06.01.22.16.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Jun 2020 22:16:12 -0700 (PDT)
-Date:   Tue, 2 Jun 2020 10:46:09 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc:     rjw@rjwysocki.net, Souvik.Chakravarty@arm.com,
-        Thanu.Rangarajan@arm.com, Sudeep.Holla@arm.com,
-        guohanjun@huawei.com, john.garry@huawei.com,
-        jonathan.cameron@huawei.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/2] add SW BOOST support for CPPC
-Message-ID: <20200602051609.ahot4qv2nlb6yh3t@vireshk-i7>
-References: <1590804511-9672-1-git-send-email-wangxiongfeng2@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1590804511-9672-1-git-send-email-wangxiongfeng2@huawei.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        id S1726183AbgFBFX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 01:23:59 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:44040 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725298AbgFBFX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 01:23:59 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 21F421A0B6E;
+        Tue,  2 Jun 2020 07:23:57 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8E1551A0A5A;
+        Tue,  2 Jun 2020 07:23:47 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9A8BB402E4;
+        Tue,  2 Jun 2020 13:23:35 +0800 (SGT)
+From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+To:     xiaoliang.yang_1@nxp.com, po.liu@nxp.com, claudiu.manoil@nxp.com,
+        alexandru.marginean@nxp.com, vladimir.oltean@nxp.com,
+        leoyang.li@nxp.com, mingkai.hu@nxp.com, andrew@lunn.ch,
+        f.fainelli@gmail.com, vivien.didelot@gmail.com,
+        davem@davemloft.net, jiri@resnulli.us, idosch@idosch.org,
+        kuba@kernel.org, vinicius.gomes@intel.com,
+        nikolay@cumulusnetworks.com, roopa@cumulusnetworks.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        horatiu.vultur@microchip.com, alexandre.belloni@bootlin.com,
+        allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
+        UNGLinuxDriver@microchip.com, linux-devel@linux.nxdi.nxp.com
+Subject: [PATCH v2 net-next 00/10] net: ocelot: VCAP IS1 and ES0 support
+Date:   Tue,  2 Jun 2020 13:18:18 +0800
+Message-Id: <20200602051828.5734-1-xiaoliang.yang_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-05-20, 10:08, Xiongfeng Wang wrote:
-> ACPI spec 6.2 section 8.4.7.1 provide the following two CPC registers.
-> 
-> "Highest performance is the absolute maximum performance an individual
-> processor may reach, assuming ideal conditions. This performance level
-> may not be sustainable for long durations, and may only be achievable if
-> other platform components are in a specific state; for example, it may
-> require other processors be in an idle state.
-> 
-> Nominal Performance is the maximum sustained performance level of the
-> processor, assuming ideal operating conditions. In absence of an
-> external constraint (power, thermal, etc.) this is the performance level
-> the platform is expected to be able to maintain continuously. All
-> processors are expected to be able to sustain their nominal performance
-> state simultaneously."
-> 
-> We can use Highest Performance as the max performance in boost mode and
-> Nomial Performance as the max performance in non-boost mode. If the
-> Highest Performance is greater than the Nominal Performance, we assume
-> SW BOOST is supported.
-> 
-> Changelog:
-> 
-> v4 -> v5:
-> 	add 'cpu_hotplug_lock' before calling '.set_boost'
-> v3 -> v4:
-> 	run 'boost_set_msr_each' for each CPU in the policy rather than
-> 	each CPU in the system for 'acpi-cpufreq'
-> 	add 'Suggested-by'
-> 
-> Xiongfeng Wang (2):
->   cpufreq: change '.set_boost' to act on only one policy
->   CPPC: add support for SW BOOST
-> 
->  drivers/cpufreq/acpi-cpufreq.c | 14 ++++++-----
->  drivers/cpufreq/cppc_cpufreq.c | 39 +++++++++++++++++++++++++++--
->  drivers/cpufreq/cpufreq.c      | 57 +++++++++++++++++++++++-------------------
->  include/linux/cpufreq.h        |  2 +-
->  4 files changed, 77 insertions(+), 35 deletions(-)
+This series patches adds support for VCAP IS1 and ES0 module, each VCAP
+correspond to a flow chain to offload.
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+VCAP IS1 supports FLOW_ACTION_VLAN_MANGLE action to filter MAC, IP,
+VLAN, protocol, and TCP/UDP ports keys and retag vlian tag,
+FLOW_ACTION_PRIORITY action to classify packages to different Qos in hw.
+
+VCAP ES0 supports FLOW_ACTION_VLAN_PUSH action to filter vlan keys
+and push a specific vlan tag to frames.
+
+Changes since v1->v2:
+ - Use different chain to assign rules to different hardware VCAP, and
+   use action goto chain to express flow order.
+ - Add FLOW_ACTION_PRIORITY to add Qos classification on VCAP IS1.
+ - Multiple actions support.
+ - Fix some code issues.
+
+Vladimir Oltean (3):
+  net: mscc: ocelot: introduce a new ocelot_target_{read,write} API
+  net: mscc: ocelot: generalize existing code for VCAP
+  net: dsa: tag_ocelot: use VLAN information from tagging header when
+    available
+
+Xiaoliang Yang (7):
+  net: mscc: ocelot: allocated rules to different hardware VCAP TCAMs by
+    chain index
+  net: mscc: ocelot: change vcap to be compatible with full and quad
+    entry
+  net: mscc: ocelot: VCAP IS1 support
+  net: mscc: ocelot: VCAP ES0 support
+  net: mscc: ocelot: multiple actions support
+  net: ocelot: return error if rule is not found
+  net: dsa: felix: correct VCAP IS2 keys offset
+
+ drivers/net/dsa/ocelot/felix.c            |   2 -
+ drivers/net/dsa/ocelot/felix.h            |   2 -
+ drivers/net/dsa/ocelot/felix_vsc9959.c    | 202 +++++-
+ drivers/net/ethernet/mscc/ocelot.c        |  11 +
+ drivers/net/ethernet/mscc/ocelot_ace.c    | 729 ++++++++++++++++------
+ drivers/net/ethernet/mscc/ocelot_ace.h    |  26 +-
+ drivers/net/ethernet/mscc/ocelot_board.c  |   5 +-
+ drivers/net/ethernet/mscc/ocelot_flower.c |  95 ++-
+ drivers/net/ethernet/mscc/ocelot_io.c     |  17 +
+ drivers/net/ethernet/mscc/ocelot_regs.c   |  21 +-
+ drivers/net/ethernet/mscc/ocelot_s2.h     |  64 --
+ include/soc/mscc/ocelot.h                 |  39 +-
+ include/soc/mscc/ocelot_vcap.h            | 199 +++++-
+ net/dsa/tag_ocelot.c                      |  29 +
+ 14 files changed, 1105 insertions(+), 336 deletions(-)
+ delete mode 100644 drivers/net/ethernet/mscc/ocelot_s2.h
 
 -- 
-viresh
+2.17.1
+
