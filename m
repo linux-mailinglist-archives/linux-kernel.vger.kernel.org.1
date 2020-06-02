@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E9A1EC17A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 19:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC951EC1A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgFBR72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 13:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgFBR71 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 13:59:27 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DCBC05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 10:59:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5Y3HKI5svjaEX0i1wQ6y4ya6URar/l/ginxsdDN/q0M=; b=h1ZqR31owc5qrUxjp4IUDlH647
-        pCZeh/SghJcpPNeBBd7iSBH7IwYPPt/ADioUIUzH3ci0IWOEzelsREAYWXoyKyhRmtl843ukQgliX
-        CJQCO7zQwVJtZqUruWdsWVE2uBJ7fviK6f/D9PYqfKyi04hllBQc8nxxkdrTbjf6fywAS+j+iTEH1
-        yo3ksjsqR2Ty2nOSK4Vnm6/FuVQZjAa5SiXoPE6bOKzh/xz8sFtN1FfPuyYF4U2+PBGbwMB9HZxhX
-        l5rpVfDGN1LS5nbExEc0npnEaWQY0yAXeBrxO6niAYh4wPDQNOW+SBZEAKkZUf1bIZNkpVB4sjVYd
-        JKSMtMwA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jgBBl-0000yt-5m; Tue, 02 Jun 2020 17:59:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F3B9C3011B2;
-        Tue,  2 Jun 2020 19:58:59 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DECFE202436F2; Tue,  2 Jun 2020 19:58:59 +0200 (CEST)
-Date:   Tue, 2 Jun 2020 19:58:59 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        syzbot <syzbot+dc1fa714cb070b184db5@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: PANIC: double fault in fixup_bad_iret
-Message-ID: <20200602175859.GC2604@hirez.programming.kicks-ass.net>
-References: <000000000000d2474c05a6c938fe@google.com>
- <CACT4Y+ajjB8RmG3_H_9r-kaRAZ05ejW02-Py47o7wkkBjwup3Q@mail.gmail.com>
- <87o8q6n38p.fsf@nanos.tec.linutronix.de>
- <20200529160711.GC706460@hirez.programming.kicks-ass.net>
- <20200529171104.GD706518@hirez.programming.kicks-ass.net>
- <CACT4Y+YB=J0+w7+SHBC3KpKOzxh1Xaarj1cXOPOLKPKQwAW6nQ@mail.gmail.com>
- <CANpmjNP7mKDaXE1=5k+uPK15TDAX+PsV03F=iOR77Pnczkueyg@mail.gmail.com>
- <20200602094141.GR706495@hirez.programming.kicks-ass.net>
- <CANpmjNOqSQ38DZxunagMLdBi8gjRN=14+FFXPhc+9SsUk+FiXQ@mail.gmail.com>
+        id S1726267AbgFBSID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 14:08:03 -0400
+Received: from mga01.intel.com ([192.55.52.88]:49770 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725989AbgFBSID (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 14:08:03 -0400
+IronPort-SDR: DNOlpNC29SzSvDEESO6Wqm2noLPZOGElqDr0JEaM0mveqYoPfwGFZtdq0DCOWrgnZR6xzxaaa9
+ Asaritdb11Tg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 11:08:02 -0700
+IronPort-SDR: GFgu39VV8mRiSRuso9Tj9Wom8oigVbWKZaJlQ/L5nUG7eBJP0r6qnPvDLj8uo/qw6z7/CWPm1S
+ KRaEVyd2IqwA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,465,1583222400"; 
+   d="scan'208";a="286742690"
+Received: from aliang1-mobl1.gar.corp.intel.com (HELO [10.254.103.160]) ([10.254.103.160])
+  by orsmga002.jf.intel.com with ESMTP; 02 Jun 2020 11:08:00 -0700
+Subject: Re: Subject: [PATCH v2] ASoC: soc-pcm: fix BE dai not hw_free and
+ shutdown during mixer update
+To:     =?UTF-8?B?5pyx54G/54G/?= <zhucancan@vivo.com>, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     kernel <kernel@vivo.com>,
+        =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>,
+        trivial@kernel.org
+References: <ALMAWwB5CP9aAcKXCU5FzqqF.1.1590747164172.Hmail.zhucancan@vivo.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <338690ee-a081-054c-36e3-3f5fb3733442@linux.intel.com>
+Date:   Tue, 2 Jun 2020 11:19:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNOqSQ38DZxunagMLdBi8gjRN=14+FFXPhc+9SsUk+FiXQ@mail.gmail.com>
+In-Reply-To: <ALMAWwB5CP9aAcKXCU5FzqqF.1.1590747164172.Hmail.zhucancan@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 07:51:40PM +0200, Marco Elver wrote:
 
-> We have all attributes except __no_sanitize_coverage. GCC <= 7 has
-> problems with __always_inline, so we may just have to bump the
-> required compiler or emit a warning.
 
-GCC <= 7 will hard fail the compile with those function attributes.
-Bumping the min GCC version for KASAN/UBSAN to avoid that might be best.
-
-> > > Not sure what the best strategy is to minimize patch conflicts. For
-> > > now I could send just the patches to add missing definitions. If you'd
-> > > like me to send all patches (including modifying 'noinstr'), let me
-> > > know.
-> >
-> > If you're going to do patches anyway, might as well do that :-)
+On 5/29/20 5:12 AM, 朱灿灿 wrote:
+> FE state is SND_SOC_DPCM_STATE_PREPARE now, BE1 is
+> used by FE.
 > 
-> I was stuck on trying to find ways to emulate __no_sanitize_coverage
-> (with no success), and then agonizing which patches to send in which
-> sequence. ;-) You made that decision by sending the KCSAN noinstr
-> series first, so let me respond to that with what I think we can add
-> for KASAN and UBSAN at least.
+> Later when new BE2 is added to FE by mixer update,
+> it will call dpcm_run_update_startup() to update
+> BE2's state, but unfortunately BE2 .prepare() meets
+> error, it will disconnect all non started BE.
+> 
+> This make BE1 dai skip .hw_free() and .shutdown(),
+> and the BE1 users will never decrease to zero.
+> 
+> Signed-off-by: zhucancan <zhucancan@vivo.com>
+> ---
+> re-format patch content v2
+> ---
+>   sound/soc/soc-pcm.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index 1f302de44052..df34422bd0dd 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -2730,12 +2730,12 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+>   close:
+>   	dpcm_be_dai_shutdown(fe, stream);
+>   disconnect:
+> -	/* disconnect any non started BEs */
+> +	/* disconnect any closed BEs */
+>   	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+>   	for_each_dpcm_be(fe, stream, dpcm) {
+>   		struct snd_soc_pcm_runtime *be = dpcm->be;
+> -		if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
+> -				dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
+> +		if (be->dpcm[stream].state == SND_SOC_DPCM_STATE_CLOSE)
+> +			dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
+>   	}
+>   	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
 
-Excellent, thanks!
+This change is quite hard to review, this error handling can be called 
+from multiple places.
+
+I *think* it's correct because in all cases where the 
+disconnect/close/hw_free labels are reached, the non-shared BEs either 
+remain or are put in the DPCM_STATE_CLOSE state before doing this test.
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+It really wouldn't hurt though if others double-checked this change...
+
+
+
