@@ -2,89 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732031EC589
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 01:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3707D1EC5BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 01:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728680AbgFBXPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 19:15:12 -0400
-Received: from mga03.intel.com ([134.134.136.65]:57326 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726977AbgFBXPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 19:15:11 -0400
-IronPort-SDR: +yXGausVvQonlRJjYFNgJZe4YKcSALxXM9n3JD5uSKZGsHqntXxNZ8u4EGmsMSxpRtDzEJY4IL
- avCFhDf1YEKg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 16:15:10 -0700
-IronPort-SDR: VFcvTWOtbz3dkiPRuW2/npw0KipzrpAkLGxUts2YewEMQROQ4Rd+aVaZH1ioqP86z6ajt4JZpo
- vq36BdR9KjCg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,466,1583222400"; 
-   d="scan'208";a="312421829"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by FMSMGA003.fm.intel.com with ESMTP; 02 Jun 2020 16:15:10 -0700
-Date:   Tue, 2 Jun 2020 16:15:10 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH V11 11/11] fs/xfs: Update
- xfs_ioctl_setattr_dax_invalidate()
-Message-ID: <20200602231510.GH1505637@iweiny-DESK2.sc.intel.com>
-References: <20200428002142.404144-1-ira.weiny@intel.com>
- <20200428002142.404144-12-ira.weiny@intel.com>
- <20200428201138.GD6742@magnolia>
- <20200602172353.GC8230@magnolia>
+        id S1728388AbgFBXaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 19:30:23 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:46648 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726809AbgFBXaX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 19:30:23 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 052NIAut035519;
+        Tue, 2 Jun 2020 18:18:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591139890;
+        bh=B/WbR0ieFR+upVOAWaKc+gb7oNaJlchuQLeU7X+5h8Y=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=JtxlATgtWTz/2V6BwAKkhWz0uSMCAHH7hu8j/dHaq5mLzrhR57DeBrcKmdJNLcN6A
+         C/3ifPvg/Kit9blAb2WUUT9luHQ0ddZsKFXSSRWgT+v17PVqHDUv9JF5vif0f6+t/E
+         ijB233L/yeGGRCJ+Y8/jTKoLLwNsIg5nH9M2opNQ=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 052NIA0t032906
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 2 Jun 2020 18:18:10 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 2 Jun
+ 2020 18:18:10 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 2 Jun 2020 18:18:10 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 052NI9Kh009536;
+        Tue, 2 Jun 2020 18:18:09 -0500
+Subject: Re: [PATCH net-next v5 4/4] net: dp83869: Add RGMII internal delay
+ configuration
+To:     Florian Fainelli <f.fainelli@gmail.com>, <andrew@lunn.ch>,
+        <hkallweit1@gmail.com>, <davem@davemloft.net>, <robh@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <20200602164522.3276-1-dmurphy@ti.com>
+ <20200602164522.3276-5-dmurphy@ti.com>
+ <c3c68dcd-ccf1-25fd-fc4c-4c30608a1cc8@gmail.com>
+ <61888788-041f-7b93-9d99-7dad4c148021@ti.com>
+ <6981527b-f155-a46b-574a-2e6621589ca4@gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <f92f70b2-6e42-5bdb-187d-ecd8533b06a6@ti.com>
+Date:   Tue, 2 Jun 2020 18:18:04 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200602172353.GC8230@magnolia>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <6981527b-f155-a46b-574a-2e6621589ca4@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 10:23:53AM -0700, Darrick J. Wong wrote:
-> On Tue, Apr 28, 2020 at 01:11:38PM -0700, Darrick J. Wong wrote:
-> > On Mon, Apr 27, 2020 at 05:21:42PM -0700, ira.weiny@intel.com wrote:
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > > 
+Florian
 
-...
+On 6/2/20 6:13 PM, Florian Fainelli wrote:
+>
+> On 6/2/2020 4:10 PM, Dan Murphy wrote:
+>> Florian
+>>
+>> On 6/2/20 5:33 PM, Florian Fainelli wrote:
+>>> On 6/2/2020 9:45 AM, Dan Murphy wrote:
+>>>> Add RGMII internal delay configuration for Rx and Tx.
+>>>>
+>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>>> ---
+>>> [snip]
+>>>
+>>>> +
+>>>>    enum {
+>>>>        DP83869_PORT_MIRRORING_KEEP,
+>>>>        DP83869_PORT_MIRRORING_EN,
+>>>> @@ -108,6 +113,8 @@ enum {
+>>>>    struct dp83869_private {
+>>>>        int tx_fifo_depth;
+>>>>        int rx_fifo_depth;
+>>>> +    s32 rx_id_delay;
+>>>> +    s32 tx_id_delay;
+>>>>        int io_impedance;
+>>>>        int port_mirroring;
+>>>>        bool rxctrl_strap_quirk;
+>>>> @@ -232,6 +239,22 @@ static int dp83869_of_init(struct phy_device
+>>>> *phydev)
+>>>>                     &dp83869->tx_fifo_depth))
+>>>>            dp83869->tx_fifo_depth = DP83869_PHYCR_FIFO_DEPTH_4_B_NIB;
+>>>>    +    ret = of_property_read_u32(of_node, "rx-internal-delay-ps",
+>>>> +                   &dp83869->rx_id_delay);
+>>>> +    if (ret) {
+>>>> +        dp83869->rx_id_delay =
+>>>> +                dp83869_internal_delay[DP83869_CLK_DELAY_DEF];
+>>>> +        ret = 0;
+>>>> +    }
+>>>> +
+>>>> +    ret = of_property_read_u32(of_node, "tx-internal-delay-ps",
+>>>> +                   &dp83869->tx_id_delay);
+>>>> +    if (ret) {
+>>>> +        dp83869->tx_id_delay =
+>>>> +                dp83869_internal_delay[DP83869_CLK_DELAY_DEF];
+>>>> +        ret = 0;
+>>>> +    }
+>>> It is still not clear to me why is not the parsing being done by the PHY
+>>> library helper directly?
+>> Why would we do that for these properties and not any other?
+> Those properties have a standard name, which makes them suitable for
+> parsing by the core PHY library.
+>> Unless there is a new precedence being set here by having the PHY
+>> framework do all the dt node parsing for common properties.
+> You could parse the vendor properties through the driver, let the PHY
+> library parse the standard properties, and resolve any ordering
+> precedence within the driver. In general, I would favor standard
+> properties over vendor properties.
+>
+> Does this help?
 
-> > > -out_unlock:
-> > > -	xfs_iunlock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
-> > > -	return error;
-> > > +	if ((mp->m_flags & XFS_MOUNT_DAX_ALWAYS) ||
-> > > +	    (mp->m_flags & XFS_MOUNT_DAX_NEVER))
-> > > +		return;
-> > >  
-> > > +	if (((fa->fsx_xflags & FS_XFLAG_DAX) &&
-> > > +	    !(ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)) ||
-> > > +	    (!(fa->fsx_xflags & FS_XFLAG_DAX) &&
-> > > +	     (ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)))
-> > > +		d_mark_dontcache(inode);
-> 
-> Now that I think about this further, are we /really/ sure that we want
-> to let unprivileged userspace cause inode evictions?
+Ok so new precedence then.
 
-This code only applies to files they have access to.  And it does not directly
-cause an eviction.  It only hints that those inodes (for which they have access
-to) will not be cached thus causing them to be reloaded sooner than they might
-otherwise be.
+Because there are common properties like tx-fifo-depth, rx-fifo-depth, 
+enet-phy-lane-swap and max_speed that the PHY framework should parse as 
+well.
 
-So I think we are fine here.
+Dan
 
-Ira
-
-> 
-> --D
-> 
