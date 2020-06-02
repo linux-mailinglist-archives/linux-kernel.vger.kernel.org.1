@@ -2,114 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D364E1EB52B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 07:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB951EB4F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 07:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728087AbgFBFY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 01:24:27 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:44738 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726964AbgFBFYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 01:24:20 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DEE9D1A0B71;
-        Tue,  2 Jun 2020 07:24:18 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1B0311A0B79;
-        Tue,  2 Jun 2020 07:24:09 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 776FE402E4;
-        Tue,  2 Jun 2020 13:23:57 +0800 (SGT)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     xiaoliang.yang_1@nxp.com, po.liu@nxp.com, claudiu.manoil@nxp.com,
-        alexandru.marginean@nxp.com, vladimir.oltean@nxp.com,
-        leoyang.li@nxp.com, mingkai.hu@nxp.com, andrew@lunn.ch,
-        f.fainelli@gmail.com, vivien.didelot@gmail.com,
-        davem@davemloft.net, jiri@resnulli.us, idosch@idosch.org,
-        kuba@kernel.org, vinicius.gomes@intel.com,
-        nikolay@cumulusnetworks.com, roopa@cumulusnetworks.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        horatiu.vultur@microchip.com, alexandre.belloni@bootlin.com,
-        allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
-        UNGLinuxDriver@microchip.com, linux-devel@linux.nxdi.nxp.com
-Subject: [PATCH v2 net-next 10/10] net: dsa: tag_ocelot: use VLAN information from tagging header when available
-Date:   Tue,  2 Jun 2020 13:18:28 +0800
-Message-Id: <20200602051828.5734-11-xiaoliang.yang_1@nxp.com>
+        id S1725944AbgFBFUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 01:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgFBFUH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 01:20:07 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1492CC061A0E;
+        Mon,  1 Jun 2020 22:20:07 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id 18so11665388iln.9;
+        Mon, 01 Jun 2020 22:20:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=F4Tq/P229PMR7ICasmIK23jJ97RLivCGIKmExPog8G8=;
+        b=T8+hpTbnuvSHhwogA66y50kRHFMgbqBWsImhpLCQOsec2eMLbMFYMHQKbpbFo7W8h/
+         ROG3G+Z0+ElDX9XEMFtxd4xvH0wAgnn/u58FKPq3e9sq1q67YGHzWIUe7dtbHqbcELEX
+         Yy0WVPyxMbgD9/9FYjHDryYFJv3dNRK9bhN9gkUYzXIHL9bCO6Eku0t2t9ORyAVhSaJR
+         aXiUdn9GHjH1+hql2azDyb9KqcfYnVReFIj3PBiYdr96OuOx1xcbvz+O9xbGZnmXHIu3
+         eBHS38waTgPZHclVFlsAKP45hcH7KVJzx6xTnpALE0ov4+RllVphkCUqbD42iTguy3mB
+         sXbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=F4Tq/P229PMR7ICasmIK23jJ97RLivCGIKmExPog8G8=;
+        b=SKzgK/iDN4woiDk7PxE+lOyAS9w0x9SSRZSLAl2b/YqFfSWmZRZCo7dlbqpO+Wp7Y5
+         f/aO4zkWHUarNB+DJRwfrBx4M43tpBWKcdV9mDF7saP2r9IkeKwzie2fH3ENNY4dXLNW
+         ZFOURRLzd3hJR234BoZ05UsiCKTT/W5Qll2JmeRKqj8uie3R3NaDvlhJd51pvHQfdZXs
+         Gur67CZqPec+HHZjGzYqrF4AtC7Uzs1A/f99QdvOgTmuegNsV252hcqYhSH0RkE37FtG
+         7xwpn3d1BjSBJegakhX5LkXH1Fyypgh2LToV8twP6TewHDcc9bEzNu/VyuS8KluAEiz5
+         VHFA==
+X-Gm-Message-State: AOAM532Z/7PFUyuzHmbqRd0fckZ54edp2VsaKR9wa+mGGfgRMqyQkjfO
+        A6ndT3e3Q+dvAIcBYyzYeuo=
+X-Google-Smtp-Source: ABdhPJzUazyo0TJpuKZkv18/Tw+D6W2sYn1tKNDm+4aU2MrQuDNRiA/icg1ZUZBND1Exdk97TNhp8A==
+X-Received: by 2002:a92:8b0a:: with SMTP id i10mr23343495ild.245.1591075205568;
+        Mon, 01 Jun 2020 22:20:05 -0700 (PDT)
+Received: from cs-u-kase.dtc.umn.edu (cs-u-kase.cs.umn.edu. [160.94.64.2])
+        by smtp.googlemail.com with ESMTPSA id z4sm882199ilm.72.2020.06.01.22.20.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 22:20:05 -0700 (PDT)
+From:   Navid Emamdoost <navid.emamdoost@gmail.com>
+To:     Mark Brown <broonie@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu, smccaman@umn.edu,
+        Navid Emamdoost <navid.emamdoost@gmail.com>
+Subject: [PATCH] spi: sprd: call pm_runtime_put if pm_runtime_get_sync fails
+Date:   Tue,  2 Jun 2020 00:19:58 -0500
+Message-Id: <20200602051959.60440-1-navid.emamdoost@gmail.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200602051828.5734-1-xiaoliang.yang_1@nxp.com>
-References: <20200602051828.5734-1-xiaoliang.yang_1@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+Call to pm_runtime_get_sync increments counter even in case of
+failure leading to incorrect ref count.
+Call pm_runtime_put_noidle if pm_runtime_get_sync fails.
 
-When the Extraction Frame Header contains a valid classified VLAN, use
-that instead of the VLAN header present in the packet.
-
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
 ---
- net/dsa/tag_ocelot.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/spi/spi-sprd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/dsa/tag_ocelot.c b/net/dsa/tag_ocelot.c
-index b0c98ee4e13b..253188b0e56b 100644
---- a/net/dsa/tag_ocelot.c
-+++ b/net/dsa/tag_ocelot.c
-@@ -181,9 +181,16 @@ static struct sk_buff *ocelot_rcv(struct sk_buff *skb,
- 				  struct net_device *netdev,
- 				  struct packet_type *pt)
- {
-+	struct dsa_port *cpu_dp = netdev->dsa_ptr;
-+	struct dsa_switch *ds = cpu_dp->ds;
-+	struct ocelot *ocelot = ds->priv;
-+	struct ocelot_port *ocelot_port;
- 	u64 src_port, qos_class;
- 	u8 *start = skb->data;
-+	struct ethhdr *hdr;
- 	u8 *extraction;
-+	u64 vlan_tci;
-+	u16 vid;
- 
- 	/* Revert skb->data by the amount consumed by the DSA master,
- 	 * so it points to the beginning of the frame.
-@@ -211,6 +218,7 @@ static struct sk_buff *ocelot_rcv(struct sk_buff *skb,
- 
- 	packing(extraction, &src_port,  46, 43, OCELOT_TAG_LEN, UNPACK, 0);
- 	packing(extraction, &qos_class, 19, 17, OCELOT_TAG_LEN, UNPACK, 0);
-+	packing(extraction, &vlan_tci,  15,  0, OCELOT_TAG_LEN, UNPACK, 0);
- 
- 	skb->dev = dsa_master_find_slave(netdev, 0, src_port);
- 	if (!skb->dev)
-@@ -225,6 +233,27 @@ static struct sk_buff *ocelot_rcv(struct sk_buff *skb,
- 	skb->offload_fwd_mark = 1;
- 	skb->priority = qos_class;
- 
-+	/* The VID from the extraction header contains the classified VLAN. But
-+	 * if VLAN awareness is off and no retagging is done via VCAP IS1, that
-+	 * classified VID will always be the pvid of the src_port.
-+	 * port. We want Linux to see the classified VID, but only if the switch
-+	 * intended to send the packet as untagged, i.e. if the VID is different
-+	 * than the CPU port's untagged (native) VID.
-+	 */
-+	vid = vlan_tci & VLAN_VID_MASK;
-+	hdr = eth_hdr(skb);
-+	ocelot_port = ocelot->ports[src_port];
-+	if (hdr->h_proto == htons(ETH_P_8021Q) && vid != ocelot_port->pvid) {
-+		u16 dummy_vlan_tci;
-+
-+		skb_push_rcsum(skb, ETH_HLEN);
-+		__skb_vlan_pop(skb, &dummy_vlan_tci);
-+		skb_pull_rcsum(skb, ETH_HLEN);
-+		skb_reset_network_header(skb);
-+		skb_reset_transport_header(skb);
-+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_tci);
-+	}
-+
- 	return skb;
- }
+diff --git a/drivers/spi/spi-sprd.c b/drivers/spi/spi-sprd.c
+index 6678f1cbc566..860032af4b98 100644
+--- a/drivers/spi/spi-sprd.c
++++ b/drivers/spi/spi-sprd.c
+@@ -1018,6 +1018,7 @@ static int sprd_spi_remove(struct platform_device *pdev)
+ 	ret = pm_runtime_get_sync(ss->dev);
+ 	if (ret < 0) {
+ 		dev_err(ss->dev, "failed to resume SPI controller\n");
++		pm_runtime_put_noidle(&pdev->dev);
+ 		return ret;
+ 	}
  
 -- 
 2.17.1
