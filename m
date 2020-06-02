@@ -2,117 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D5A1EBD4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1DA1EBD52
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726922AbgFBNq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 09:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgFBNqz (ORCPT
+        id S1727863AbgFBNtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 09:49:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49594 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725940AbgFBNtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 09:46:55 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBBDC08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 06:46:55 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id q25so3223385wmj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 06:46:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qSTMEdvjk3TF6RfwsS1dypnjhMY3GyU5XrIVPs/JS5Y=;
-        b=Y1TD+V2YHn6cONPIQz2HtNHu42aROGvx5fTK74Y/eXE/BpTSFPKO97aZAU+6LAcDD2
-         9eGLijRbtxLbjqHPVYMtMMWMCX4L71GKSR/D3vk3ONBGn0ZuUSYzaZzOPzUwhVTfkdyL
-         m9kqQJBKc26Wx6iXh0OJu4ne5z3abM4GnbYFvR4NRbx7c5ilsNggcNXt0gP1y8QDdcY+
-         C4HHl3457Vo4dPJ7/dl2BbymecQiJdYL0NvVKWjpfH44stka49Jtgv9CbYEqOhKxBIPb
-         SV8zjJVZ8Mqi35YB5QHQJC65BR7b/m7AAL8BMfG4q8jE/a/1tygDsEeYknjTIy5ZB8n2
-         sl4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qSTMEdvjk3TF6RfwsS1dypnjhMY3GyU5XrIVPs/JS5Y=;
-        b=UTWlBB3AHtE7fO4/UmQTiLf+kk+1aJT32omcYlifWDHfIl0Ym9fPmDOxZLcZxGe+V0
-         BBOQ5dPSTNtEJnE9Iwo0oOn5kIF3cGm7KhumStHh9u0IRy1RLkH3ktDEEFQFUGj5I2nY
-         3IeyQsww/J1LhFIIivrskitZsK6xo9nvksnd/C3K+gl2aIjg0P5kXXSMd8eDPLZRFVJn
-         J3TSrbMJf0W+fSNf0ApDB1Wg/ur8FjF3zAPISYjHEYv+bVuseVRmYdgIQHf5mOizIfy1
-         +0UaaYWyreystfNoAUbu3zRcwMcLnTzHe6UHBIkbT/YrQvUMhSSALANqaJ7X17nJKIO/
-         HyWQ==
-X-Gm-Message-State: AOAM530brsiG+XJ78uVzWNrv8+Nljs67ESOJkPqB1V/JoSqH8pEmuoLY
-        95rbQhZpMT1nxnD0vbD0UZWVIg==
-X-Google-Smtp-Source: ABdhPJyjTmzSO2w5j42gGxx21vuAkkZvWzGoUQv7gnIV0Xj7BY0fEtNOZY9l9pz9e+Qlxp8caIOedg==
-X-Received: by 2002:a1c:f003:: with SMTP id a3mr4170692wmb.119.1591105613992;
-        Tue, 02 Jun 2020 06:46:53 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id d13sm3407055wmb.39.2020.06.02.06.46.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 06:46:52 -0700 (PDT)
-Date:   Tue, 2 Jun 2020 14:46:50 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net, jason.wessel@windriver.com,
-        dianders@chromium.org, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, gregkh@linuxfoundation.org,
-        jslaby@suse.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] kdb: Switch to use safer dbg_io_ops over console
- APIs
-Message-ID: <20200602134650.mdovxoa6cj2hgvei@holly.lan>
-References: <1590751607-29676-1-git-send-email-sumit.garg@linaro.org>
- <1590751607-29676-5-git-send-email-sumit.garg@linaro.org>
+        Tue, 2 Jun 2020 09:49:00 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 052Dc8MC061313;
+        Tue, 2 Jun 2020 09:48:47 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31d2u231f2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 09:48:47 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 052DRaS3022513;
+        Tue, 2 Jun 2020 13:47:34 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 31bf47x4rc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 13:47:34 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 052DlWCT3342728
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Jun 2020 13:47:32 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1CFD54C04A;
+        Tue,  2 Jun 2020 13:47:32 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9945E4C04E;
+        Tue,  2 Jun 2020 13:47:28 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.85.91.137])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  2 Jun 2020 13:47:28 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.com>,
+        tytso@mit.edu, linux-kernel@vger.kernel.org,
+        adilger.kernel@dilger.ca, sfr@canb.auug.org.au,
+        linux-next@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [PATCHv5 1/1] ext4: mballoc: Use raw_cpu_ptr instead of this_cpu_ptr
+Date:   Tue,  2 Jun 2020 19:17:21 +0530
+Message-Id: <20200602134721.18211-1-riteshh@linux.ibm.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1590751607-29676-5-git-send-email-sumit.garg@linaro.org>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-02_13:2020-06-02,2020-06-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ cotscore=-2147483648 malwarescore=0 phishscore=0 clxscore=1015 bulkscore=0
+ adultscore=0 lowpriorityscore=0 suspectscore=1 spamscore=0 mlxscore=0
+ mlxlogscore=993 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006020093
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 04:56:47PM +0530, Sumit Garg wrote:
-> In kgdb context, calling console handlers aren't safe due to locks used
-> in those handlers which could in turn lead to a deadlock. Although, using
-> oops_in_progress increases the chance to bypass locks in most console
-> handlers but it might not be sufficient enough in case a console uses
-> more locks (VT/TTY is good example).
-> 
-> Currently when a driver provides both polling I/O and a console then kdb
-> will output using the console. We can increase robustness by using the
-> currently active polling I/O driver (which should be lockless) instead
-> of the corresponding console. For several common cases (e.g. an
-> embedded system with a single serial port that is used both for console
-> output and debugger I/O) this will result in no console handler being
-> used.
-> 
-> In order to achieve this we need to reverse the order of preference to
-> use dbg_io_ops (uses polling I/O mode) over console APIs. So we just
-> store "struct console" that represents debugger I/O in dbg_io_ops and
-> while emitting kdb messages, skip console that matches dbg_io_ops
-> console in order to avoid duplicate messages. After this change,
-> "is_console" param becomes redundant and hence removed.
-> 
-> Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+It doesn't really matter in ext4_mb_new_blocks() about whether the code
+is rescheduled on any other cpu due to preemption. Because we care
+about discard_pa_seq only when the block allocation fails and then too
+we add the seq counter of all the cpus against the initial sampled one
+to check if anyone has freed any blocks while we were doing allocation.
 
-Looking good, only one minor comment left on my side (including the
-three patches prior).
+So just use raw_cpu_ptr instead of this_cpu_ptr to avoid this BUG.
 
-> diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
-> index 9e5a40d..5e00bc8 100644
-> --- a/kernel/debug/kdb/kdb_io.c
-> +++ b/kernel/debug/kdb/kdb_io.c
-> @@ -560,12 +560,14 @@ static void kdb_msg_write(char *msg, int msg_len)
->  	if (msg_len == 0)
->  		return;
->  
-> -	if (dbg_io_ops && !dbg_io_ops->is_console)
-> +	if (dbg_io_ops)
->  		kdb_io_write(msg, msg_len);
+BUG: using smp_processor_id() in preemptible [00000000] code: syz-fuzzer/6927
+caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+CPU: 1 PID: 6927 Comm: syz-fuzzer Not tainted 5.7.0-next-20200602-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
+ ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+ ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
+ ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+ ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
+ ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
+ ext4_append+0x153/0x360 fs/ext4/namei.c:67
+ ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
+ ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
+ vfs_mkdir+0x419/0x690 fs/namei.c:3632
+ do_mkdirat+0x21e/0x280 fs/namei.c:3655
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Since this now slots on so cleanly and there are not multiple calls
-to kdb_io_write() then I think perhaps factoring this out into its
-own function (in patch 1) is no long necessary. The character write
-loop can go directly into this function.
+Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Reported-by: syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com
+---
+ fs/ext4/mballoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index a9083113a8c0..b79b32dbe3ea 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4708,7 +4708,7 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
+ 	}
+ 
+ 	ac->ac_op = EXT4_MB_HISTORY_PREALLOC;
+-	seq = *this_cpu_ptr(&discard_pa_seq);
++	seq = *raw_cpu_ptr(&discard_pa_seq);
+ 	if (!ext4_mb_use_preallocated(ac)) {
+ 		ac->ac_op = EXT4_MB_HISTORY_ALLOC;
+ 		ext4_mb_normalize_request(ac, ar);
+-- 
+2.21.3
 
-Daniel.
