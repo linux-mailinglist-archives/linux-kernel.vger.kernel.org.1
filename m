@@ -2,63 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4231EC274
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4121EC276
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728202AbgFBTMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 15:12:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726174AbgFBTMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 15:12:50 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 210B4206E2;
-        Tue,  2 Jun 2020 19:12:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591125169;
-        bh=KytOgv9GEW1W76zTxo2ICGkgqWTsLMSuLcI5HtKPV6k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X5lsBBpbW70dz0E7pzkh/35XmnX90GCyjDcSKef1/YrEBsWABbFkNd3D5kT1Cw/fD
-         VHccLlP201viSu2rZMNy7exbGZ1c87g0zXdJRK8ysvnAYFrE+Ea2wMRovJ7n6qBeQc
-         4xj51ID/wxy3vvJpomUC0S+DjUbeVhzdnoq99W3E=
-Date:   Tue, 2 Jun 2020 12:12:48 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: linux-next: build failure after merge of the akpm tree
-Message-Id: <20200602121248.155dbdd4f2901f366481bdd1@linux-foundation.org>
-In-Reply-To: <20200602195741.4faaa348@canb.auug.org.au>
-References: <20200602195741.4faaa348@canb.auug.org.au>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728243AbgFBTND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 15:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726174AbgFBTNC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 15:13:02 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8F7C08C5C0;
+        Tue,  2 Jun 2020 12:13:00 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id s10so5570220pgm.0;
+        Tue, 02 Jun 2020 12:13:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ummwQBzJmeaMwFpF/XOW+e04S4X/mnuUzT0O2pim+gY=;
+        b=mowwJ93O5qpRX5IFlAiTr29MSJEJk0Bt6JOqz9mRcpKC1egaqDKtF/ehGv4VYG6KRH
+         dT8nqmsEcKxAiKDJdCwGedymzhNU94KuBah+eAyQ9owQQBpO8+o2zwW+j3pITw6vrT6O
+         NVImb44rzTEpHVQGFfB77l1vJPZC/Dp+gU7E3X+aj4K0JBwXCcZ1gR8HzBxphsJMFjyW
+         e45mHpBtuGKKhgoz9YvjauWD9o9njzD3qlwUdXkzrtVUxcX1b/8lOmagC/4LX4d86MyK
+         T+QDW2+4N1FF/WJ3eYpHQmohvTHx5LVsx9GXZiEdLerHGFqcqa2DftFax0ZuyZFSZ7RS
+         JjnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ummwQBzJmeaMwFpF/XOW+e04S4X/mnuUzT0O2pim+gY=;
+        b=Q+meR4cWKqLVLYAXwpvwO8qEVZC0tEwWRBEq3iu4t0TNiN4XYXlEobc/JzaUa6B9he
+         uJH7Z+KJ1mQDZ7ZUGpeJuk5+9QPNNKgZGhakF1U/jUZM5VYNaDdU1jXH39zHi6beKPBJ
+         JhpKUy3ZkcEhOOHvgRX6H5sFtWkvt3CpVbBm4OGJG3NO+CNnDR/lOthdnplRM9uf4ZQU
+         kkIfs+ZEVLPlXiWo/RE+OTsYBO96Z0dZqmtJO58Fu6DB96zKnF8INvJdxk5xyZJGrJiH
+         g9mMU75ckzyA5BIWoF31/EZPJcHvStsRFEN3KYd5ucaFS7xIhu6N12SuEADJao7pJ888
+         jUzQ==
+X-Gm-Message-State: AOAM533oNDHNMX2M7LIiqK+5S4vceHDRjPKadzEkFQUWeCaYfibaUfzv
+        nUPxXwhoQubdV7Y/v7iyXvZZpM2E
+X-Google-Smtp-Source: ABdhPJyhziYsvPwC8/dwKEJABhRSA6vjkhfux4LVvVp/C0Qul3g3j3pf/8BakqK3KCPFBfjeDFvk5w==
+X-Received: by 2002:a63:531a:: with SMTP id h26mr14410583pgb.188.1591125180418;
+        Tue, 02 Jun 2020 12:13:00 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x77sm3065832pfc.4.2020.06.02.12.12.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 02 Jun 2020 12:12:59 -0700 (PDT)
+Date:   Tue, 2 Jun 2020 12:12:58 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/92] 4.19.126-rc2 review
+Message-ID: <20200602191258.GC203031@roeck-us.net>
+References: <20200602101901.374486405@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200602101901.374486405@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Jun 2020 19:57:41 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-
-> Subject: [PATCH] turns out that probe_user_write is used in modular code
+On Tue, Jun 02, 2020 at 12:23:49PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.126 release.
+> There are 92 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  mm/maccess.c | 1 +
->  1 file changed, 1 insertion(+)
+> Responses should be made by Thu, 04 Jun 2020 10:16:52 +0000.
+> Anything received after that time might be too late.
 > 
-> diff --git a/mm/maccess.c b/mm/maccess.c
-> index ddfda8e6f4a5..88845eda5047 100644
-> --- a/mm/maccess.c
-> +++ b/mm/maccess.c
-> @@ -246,6 +246,7 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
->  		return -EFAULT;
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(probe_user_write);
 
-Thanks, I shall squish that in and make the appropriate changelog update.
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 421 pass: 421 fail: 0
+
+Guenter
