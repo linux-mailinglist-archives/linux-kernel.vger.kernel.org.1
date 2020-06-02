@@ -2,145 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328761EBB10
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2304A1EBB1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgFBLy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 07:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726977AbgFBLy4 (ORCPT
+        id S1726839AbgFBL7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 07:59:45 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:48186 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgFBL7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:54:56 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58405C061A0E;
-        Tue,  2 Jun 2020 04:54:55 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j10so3089533wrw.8;
-        Tue, 02 Jun 2020 04:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7M0pgcCpgKIyPa/msmRAjsWPWr7rOEx9Iq4gL/Ihm/M=;
-        b=MABAl+mEplCv5avjexorM4MeCMlpqiWsDvbKgPGJa8TCuGMSFtIOLMF9a3HPXQcuQs
-         qzzFlsMc1kcTv1VBaZ5qUbMdmwUtJCqdq0GHpDJxFJFgUhv1U5Sl34NiNdoLcLEnME8+
-         5RmYc/ysWbT4k5xpaoTKWrizTrQTaRIz5xVrO0lbV56z0WypNdFcfyQtai+EU7wX7hiM
-         qe1utxf0Ua6i7W0a4Cy/CV1Nxjgo6iScq+l1FErSp5xVYwK57oijSK08oS1pDMCM3Z8Q
-         +E/y6R913frD++QMrhszSRFy0I3Vwi6aiSwXoV5tIjYV3o3tR1XAxsNraF1BY/ddPKJP
-         1ehw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7M0pgcCpgKIyPa/msmRAjsWPWr7rOEx9Iq4gL/Ihm/M=;
-        b=dAjcndXn+ck8S0L6kSwJF0B5ZnSyWE4GnOEDKOjaMFvzxKBu3SeXxtKYbJh0+2i+ED
-         8Tp8PY80kCD8Nyig+T3zTAP6eHKrI9HxCxamj73LVtFbXFJdi2xWd8jpxGDRBNZoc3Aa
-         TvT2fKnEdW7d3h31EuUjuioweKKQdhQNJJfVeaq/OQwo5dgWl3B5nb4Ym0xYEZ9H0dgb
-         Oo+Yo3hQR2CjeElH2O6T/YdsIHO5irijBh8QM2Aut4tqGnOHhbMmy0LiRJ0Z+qohMKtH
-         aEsuyJ2SNfWk05MLdK+C4xqHMCdd3wTnEmVPNgiMK/F7fpiC2fu0+gucCys2Ve3622ay
-         +drg==
-X-Gm-Message-State: AOAM532DDj9qkiSf8mnzrYwvBukak2AyiZHxnRfApTOI6A9cwBFJdhg2
-        SB4yEZ52zJSAGv7ELoDKScYA3kRAtBGjow==
-X-Google-Smtp-Source: ABdhPJypOIwgcVbOKZfGKseAXLeB7agS7aD0IDuLQSIbdUKttZtsgODYJZ3f2BbVpqx6ZtbHjdU+Ew==
-X-Received: by 2002:adf:c391:: with SMTP id p17mr24817566wrf.243.1591098893955;
-        Tue, 02 Jun 2020 04:54:53 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain (host9-254-dynamic.3-87-r.retail.telecomitalia.it. [87.3.254.9])
-        by smtp.googlemail.com with ESMTPSA id b18sm3273777wrn.88.2020.06.02.04.54.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 04:54:53 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Sham Muthayyan <smuthayy@codeaurora.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 11/11] PCI: qcom: Add Force GEN1 support
-Date:   Tue,  2 Jun 2020 13:53:52 +0200
-Message-Id: <20200602115353.20143-12-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200602115353.20143-1-ansuelsmth@gmail.com>
-References: <20200602115353.20143-1-ansuelsmth@gmail.com>
+        Tue, 2 Jun 2020 07:59:44 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052Bq7Wd120971;
+        Tue, 2 Jun 2020 11:58:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=aNv6a+hz4l28g6qWJSVKkz/V2Ftmd/MjF6txKFfaZjg=;
+ b=QpNkDy7BTYR3eun59xAT7thNRgLIxrNmSq2DpH9MUJti5+RTwbxfh9tQikkZ4hy5g8SL
+ jpLLt8/tCWg283CzUJuQb2C8vE9VdD3LF/sDtzRUq2m9k1RZHB3M7Av6mtmj/wLangdT
+ mPrJIvttPcn7FrYpdPZd42CmqaZXUWhx6gJOX1e9Txy82xWc51BapAvuoUg0+vCuo0w2
+ kd0bJgAG7HRACgzLskVH/P+KiRwKYnQwY/6gQggSmna8+bn2OiDNzg+NAjUhETyiOoAU
+ DYOF92jHtAijnNuIiJpXt5reo4/H7+idAWttNTbcMn8D9L1ZwA0Rs1jz+KXmNw9mfmdp fw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 31dkrugnp5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 02 Jun 2020 11:58:39 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052BrxmZ020723;
+        Tue, 2 Jun 2020 11:56:39 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 31dju19xwm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Jun 2020 11:56:39 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 052BuPTJ008715;
+        Tue, 2 Jun 2020 11:56:30 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 02 Jun 2020 04:56:25 -0700
+Date:   Tue, 2 Jun 2020 14:56:17 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devel@driverdev.osuosl.org, alsa-devel@alsa-project.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org
+Subject: Re: [RESEND PATCH v1 1/6] staging: greybus: audio: Update snd_jack
+ FW usage as per new APIs
+Message-ID: <20200602115617.GD30374@kadam>
+References: <cover.1591040859.git.vaibhav.sr@gmail.com>
+ <1ee2783b64c68e49880f88457655648ac45bbcb8.1591040859.git.vaibhav.sr@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ee2783b64c68e49880f88457655648ac45bbcb8.1591040859.git.vaibhav.sr@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006020084
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
+ mlxscore=0 lowpriorityscore=0 suspectscore=2 malwarescore=0 clxscore=1011
+ adultscore=0 mlxlogscore=999 cotscore=-2147483648 phishscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006020084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sham Muthayyan <smuthayy@codeaurora.org>
+On Tue, Jun 02, 2020 at 10:51:10AM +0530, Vaibhav Agarwal wrote:
+> diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
+> index 08746c85dea6..ebf8484f0ae7 100644
+> --- a/drivers/staging/greybus/audio_codec.c
+> +++ b/drivers/staging/greybus/audio_codec.c
+> @@ -709,17 +709,29 @@ static struct snd_soc_dai_driver gbaudio_dai[] = {
+>  };
+>  
+>  static int gbaudio_init_jack(struct gbaudio_module_info *module,
+> -			     struct snd_soc_codec *codec)
+> +			     struct snd_soc_card *card)
+>  {
+>  	int ret;
+>  
 
-Add Force GEN1 support needed in some ipq8064 board that needs to limit
-some PCIe line to gen1 for some hardware limitation. This is set by the
-max-link-speed binding and needed by some soc based on ipq8064. (for
-example Netgear R7800 router)
+No blank line please.
 
-Signed-off-by: Sham Muthayyan <smuthayy@codeaurora.org>
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+> +	struct snd_soc_jack *jack;
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 259b627bf890..0ce15d53c46e 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -27,6 +27,7 @@
- #include <linux/slab.h>
- #include <linux/types.h>
- 
-+#include "../../pci.h"
- #include "pcie-designware.h"
- 
- #define PCIE20_PARF_SYS_CTRL			0x00
-@@ -99,6 +100,8 @@
- #define PCIE20_v3_PARF_SLV_ADDR_SPACE_SIZE	0x358
- #define SLV_ADDR_SPACE_SZ			0x10000000
- 
-+#define PCIE20_LNK_CONTROL2_LINK_STATUS2	0xa0
-+
- #define DEVICE_TYPE_RC				0x4
- 
- #define QCOM_PCIE_2_1_0_MAX_SUPPLY	3
-@@ -195,6 +198,7 @@ struct qcom_pcie {
- 	struct phy *phy;
- 	struct gpio_desc *reset;
- 	const struct qcom_pcie_ops *ops;
-+	int gen;
- };
- 
- #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
-@@ -395,6 +399,11 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
- 	/* wait for clock acquisition */
- 	usleep_range(1000, 1500);
- 
-+	if (pcie->gen == 1) {
-+		val = readl(pci->dbi_base + PCIE20_LNK_CONTROL2_LINK_STATUS2);
-+		val |= 1;
-+		writel(val, pci->dbi_base + PCIE20_LNK_CONTROL2_LINK_STATUS2);
-+	}
- 
- 	/* Set the Max TLP size to 2K, instead of using default of 4K */
- 	writel(CFG_REMOTE_RD_REQ_BRIDGE_SIZE_2K,
-@@ -1397,6 +1406,10 @@ static int qcom_pcie_probe(struct platform_device *pdev)
- 		goto err_pm_runtime_put;
- 	}
- 
-+	pcie->gen = of_pci_get_max_link_speed(pdev->dev.of_node);
-+	if (pcie->gen < 0)
-+		pcie->gen = 2;
-+
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "parf");
- 	pcie->parf = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(pcie->parf)) {
--- 
-2.25.1
+This code would be nicer without the "jack" pointer.  Just use
+"module->headset_jack" directly so that it's easier to use grep on the
+code.
+
+> +	struct snd_soc_jack_pin *headset, *button;
+> +
+>  	if (!module->jack_mask)
+>  		return 0;
+>  
+>  	snprintf(module->jack_name, NAME_SIZE, "GB %d Headset Jack",
+>  		 module->dev_id);
+> -	ret = snd_soc_jack_new(codec, module->jack_name, module->jack_mask,
+> -			       &module->headset_jack);
+> +
+> +	headset = devm_kzalloc(module->dev, sizeof(*headset), GFP_KERNEL);
+> +	if (!headset)
+> +		return -ENOMEM;
+> +
+> +	headset->pin = module->jack_name;
+> +	headset->mask = module->jack_mask;
+> +	jack = &module->headset_jack;
+> +
+> +	ret = snd_soc_card_jack_new(card, module->jack_name, module->jack_mask,
+> +				    jack, headset, 1);
+>  	if (ret) {
+>  		dev_err(module->dev, "Failed to create new jack\n");
+>  		return ret;
+> @@ -730,11 +742,21 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+>  
+>  	snprintf(module->button_name, NAME_SIZE, "GB %d Button Jack",
+>  		 module->dev_id);
+> -	ret = snd_soc_jack_new(codec, module->button_name, module->button_mask,
+> -			       &module->button_jack);
+> +	button = devm_kzalloc(module->dev, sizeof(*headset), GFP_KERNEL);
+                                           ^^^^^^^^^^^^^^^^
+Use "sizeof(*button)".  It's the same size so it doesn't affect runtime.
+
+
+> +	if (!button) {
+> +		ret = -ENOMEM;
+> +		goto free_headset;
+> +	}
+
+regards,
+dan carpenter
 
