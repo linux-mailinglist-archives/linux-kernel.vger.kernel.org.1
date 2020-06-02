@@ -2,55 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8AD1EC4DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 00:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A161EC4E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 00:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728914AbgFBWUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 18:20:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728888AbgFBWUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 18:20:07 -0400
-Subject: Re: [git pull] drm for 5.8-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591136407;
-        bh=7lHSBvEPz7oxY7O+go1frxwoEWOhwnlJQiDFhhJWsqA=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=YUWPOuDHKGVB6/b/178dr9IKDajJeXLmTJziaMnrxLwQIZaux3HjJIHbBkRTCt8SU
-         PxZ8xg+e6faFhLWuCu4BUlvmDVf9nT3+e/lo5iMXPx8kuqJNSy75Py9x2YPDa1A7xH
-         brMApxVfuSzGvTxlzEglT926iXfkOfCXXyFU4plM=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9txGww+omvateOTizZRV9_wLdAbq6uAz3DRa_S6bn1jQuQ@mail.gmail.com>
-References: <CAPM=9txGww+omvateOTizZRV9_wLdAbq6uAz3DRa_S6bn1jQuQ@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAPM=9txGww+omvateOTizZRV9_wLdAbq6uAz3DRa_S6bn1jQuQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm
- tags/drm-next-2020-06-02
-X-PR-Tracked-Commit-Id: 9ca1f474cea0edc14a1d7ec933e5472c0ff115d3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: faa392181a0bd42c5478175cef601adeecdc91b6
-Message-Id: <159113640702.9664.5070448560079355262.pr-tracker-bot@kernel.org>
-Date:   Tue, 02 Jun 2020 22:20:07 +0000
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        id S1730141AbgFBW1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 18:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730121AbgFBW1X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 18:27:23 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F51C08C5C0;
+        Tue,  2 Jun 2020 15:27:22 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477:9e51:a893:b0fe:602a])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id EE4811277CC6E;
+        Tue,  2 Jun 2020 15:27:21 -0700 (PDT)
+Date:   Tue, 02 Jun 2020 15:27:20 -0700 (PDT)
+Message-Id: <20200602.152720.2064219583725974441.davem@davemloft.net>
+To:     piotr.stankiewicz@intel.com
+Cc:     thomas.lendacky@amd.com, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/15] amd-xgbe: use PCI_IRQ_MSI_TYPES where appropriate
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200602092105.32190-1-piotr.stankiewicz@intel.com>
+References: <20200602092105.32190-1-piotr.stankiewicz@intel.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 02 Jun 2020 15:27:22 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 2 Jun 2020 16:06:32 +1000:
+From: Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+Date: Tue,  2 Jun 2020 11:21:05 +0200
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-next-2020-06-02
+> Seeing as there is shorthand available to use when asking for any type
+> of interrupt, or any type of message signalled interrupt, leverage it.
+> 
+> Signed-off-by: Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/faa392181a0bd42c5478175cef601adeecdc91b6
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Applied.
