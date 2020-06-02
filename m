@@ -2,277 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75F51EC3E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 22:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107561EC3F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 22:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728428AbgFBUmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 16:42:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51378 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728162AbgFBUmh (ORCPT
+        id S1728187AbgFBUnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 16:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726647AbgFBUnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 16:42:37 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jgDk3-0001oi-9t; Tue, 02 Jun 2020 20:42:35 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        Kyle Evans <self@kyle-evans.net>,
-        Victor Stinner <victor.stinner@gmail.com>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, fweimer@redhat.com, jannh@google.com,
-        oleg@redhat.com, arnd@arndb.de, shuah@kernel.org,
-        dhowells@redhat.com, ldv@altlinux.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v5 3/3] tests: add close_range() tests
-Date:   Tue,  2 Jun 2020 22:42:19 +0200
-Message-Id: <20200602204219.186620-4-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200602204219.186620-1-christian.brauner@ubuntu.com>
-References: <20200602204219.186620-1-christian.brauner@ubuntu.com>
+        Tue, 2 Jun 2020 16:43:39 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B935C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 13:43:39 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id z9so3625006ljh.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 13:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Azl+Ad2Snhfc0xP2HW9Ep94V4yuBccpc/CvQD+kNGgE=;
+        b=bUurhMFsGKldaV/fuSmBFvEu0dq7tRd7XTk2lYRSi7CMt/C6LTxrmwSmxTUVSAUw+R
+         hFe8+ZbhpvMW8p8gN7hIFf7JuzG0jpuk+SD5IcjAuz+qyt7SbCCoAckx1gBtY7EuHg70
+         ph2LYj1CMupe+0MuVxpfesphrjpJYdYSsavyk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Azl+Ad2Snhfc0xP2HW9Ep94V4yuBccpc/CvQD+kNGgE=;
+        b=lr9/YbHa8377h3fc7hsAKqk7ozgUIpW6fSqivT5hBDEyPR+TqGSeQ+WhMVphy3uskS
+         BtuMOACg1v4b4FmHhHACYc4jrreINIOWK9chN3ugiQN6q6nzm0sAs9uOUER1k5nVHVcr
+         zsWaFuv7hYS+H0ww32W3Kog9eC1J2xjybZIUK/VYCFLCJFFtxA+l50FQvpPBnaauYdnJ
+         3VEIbiwZSTN3S5EKgt6R9PTKS4O/XSy2qYKw2pCYLyY4O+MhU9BegJeszxa9OD93p1uL
+         XJh7moxPMq+Pzn5wpnLLzqR3rjebv5KKkbZE3TtTuhhpQun4oVfzL2arsj2ATAwe9gGd
+         vVUw==
+X-Gm-Message-State: AOAM531S5Nwq3qojvgIzmUkBdxwMn/PPdvuXi3fnRNLqOGZS+AqDl3W8
+        upD72mDLGaru3LaUgZe9IGLoeZYdbrk=
+X-Google-Smtp-Source: ABdhPJz0HICOcSq9G2Z6W277iDXe9tpZyAq3fSkGnReUmPKQ+ljfeAwPX24PZ2OGkNMnI6bs6qbHBw==
+X-Received: by 2002:a2e:a16e:: with SMTP id u14mr389254ljl.427.1591130617523;
+        Tue, 02 Jun 2020 13:43:37 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id n8sm37178lfb.20.2020.06.02.13.43.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jun 2020 13:43:36 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id d7so6988868lfi.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 13:43:36 -0700 (PDT)
+X-Received: by 2002:a19:d52:: with SMTP id 79mr590629lfn.125.1591130616197;
+ Tue, 02 Jun 2020 13:43:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200602084257.134555-1-mst@redhat.com> <fc204429-7a6e-8214-a66f-bf2676018aae@redhat.com>
+ <20200602163306.GM23230@ZenIV.linux.org.uk> <CAHk-=wjgg0bpD0qjYF=twJNXmRXYPjXqO1EFLL-mS8qUphe0AQ@mail.gmail.com>
+ <20200602162931-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20200602162931-mutt-send-email-mst@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 2 Jun 2020 13:43:20 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgYu+qk15_NpUZXwbetEU5eiWppJ=Z_A6dCSCWKxCfDfw@mail.gmail.com>
+Message-ID: <CAHk-=wgYu+qk15_NpUZXwbetEU5eiWppJ=Z_A6dCSCWKxCfDfw@mail.gmail.com>
+Subject: Re: [PATCH RFC] uaccess: user_access_begin_after_access_ok()
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Jason Wang <jasowang@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds basic tests for the new close_range() syscall.
-- test that no invalid flags can be passed
-- test that a range of file descriptors is correctly closed
-- test that a range of file descriptors is correctly closed if there there
-  are already closed file descriptors in the range
-- test that max_fd is correctly capped to the current fdtable maximum
+On Tue, Jun 2, 2020 at 1:33 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> Hmm are you sure we can drop it? access_ok is done in the context
+> of the process. Access itself in the context of a kernel thread
+> that borrows the same mm. IIUC if the process can be 32 bit
+> while the kernel is 64 bit, access_ok in the context of the
+> kernel thread will not DTRT.
 
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Jann Horn <jannh@google.com>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Dmitry V. Levin <ldv@altlinux.org>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Florian Weimer <fweimer@redhat.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: linux-api@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
----
-/* v2 */
-unchanged
+You're historically expected to just "set_fs()" when you do use_mm().
 
-/* v3 */
-- Christian Brauner <christian@brauner.io>:
-  - verify that close_range() correctly closes a single file descriptor
+Then we fixed it in commit...
 
-/* v4 */
-- Christian Brauner <christian@brauner.io>:
-  - add missing Cc for Shuah
-  - add missing Cc for linux-kselftest
+Oh, when I look for it, I notice that it still hasn't gotten merged.
+It's still pending, see
 
-/* v5 */
-- Michael Ellerman <mpe@ellerman.id.au>:
-  - remove include of unexported kernel headers
-- Christian Brauner <christian.brauner@ubuntu.com>:
-  - add missing SPDX header to Makefile
----
- tools/testing/selftests/Makefile              |   1 +
- tools/testing/selftests/core/.gitignore       |   1 +
- tools/testing/selftests/core/Makefile         |   7 +
- .../testing/selftests/core/close_range_test.c | 149 ++++++++++++++++++
- 4 files changed, 158 insertions(+)
- create mode 100644 tools/testing/selftests/core/.gitignore
- create mode 100644 tools/testing/selftests/core/Makefile
- create mode 100644 tools/testing/selftests/core/close_range_test.c
+  https://lore.kernel.org/lkml/20200416053158.586887-4-hch@lst.de/
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 2ff68702fd41..2e387ce83311 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -6,6 +6,7 @@ TARGETS += breakpoints
- TARGETS += capabilities
- TARGETS += cgroup
- TARGETS += clone3
-+TARGETS += core
- TARGETS += cpufreq
- TARGETS += cpu-hotplug
- TARGETS += drivers/dma-buf
-diff --git a/tools/testing/selftests/core/.gitignore b/tools/testing/selftests/core/.gitignore
-new file mode 100644
-index 000000000000..6e6712ce5817
---- /dev/null
-+++ b/tools/testing/selftests/core/.gitignore
-@@ -0,0 +1 @@
-+close_range_test
-diff --git a/tools/testing/selftests/core/Makefile b/tools/testing/selftests/core/Makefile
-new file mode 100644
-index 000000000000..f6f2d6f473c6
---- /dev/null
-+++ b/tools/testing/selftests/core/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+CFLAGS += -g -I../../../../usr/include/
-+
-+TEST_GEN_PROGS := close_range_test
-+
-+include ../lib.mk
-+
-diff --git a/tools/testing/selftests/core/close_range_test.c b/tools/testing/selftests/core/close_range_test.c
-new file mode 100644
-index 000000000000..6d92e239a228
---- /dev/null
-+++ b/tools/testing/selftests/core/close_range_test.c
-@@ -0,0 +1,149 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <linux/kernel.h>
-+#include <limits.h>
-+#include <stdbool.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <syscall.h>
-+#include <unistd.h>
-+
-+#include "../kselftest.h"
-+
-+#ifndef __NR_close_range
-+#define __NR_close_range -1
-+#endif
-+
-+static inline int sys_close_range(unsigned int fd, unsigned int max_fd,
-+				  unsigned int flags)
-+{
-+	return syscall(__NR_close_range, fd, max_fd, flags);
-+}
-+
-+#ifndef ARRAY_SIZE
-+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-+#endif
-+
-+int main(int argc, char **argv)
-+{
-+	const char *test_name = "close_range";
-+	int i, ret;
-+	int open_fds[101];
-+	int fd_max, fd_mid, fd_min;
-+
-+	ksft_set_plan(9);
-+
-+	for (i = 0; i < ARRAY_SIZE(open_fds); i++) {
-+		int fd;
-+
-+		fd = open("/dev/null", O_RDONLY | O_CLOEXEC);
-+		if (fd < 0) {
-+			if (errno == ENOENT)
-+				ksft_exit_skip(
-+					"%s test: skipping test since /dev/null does not exist\n",
-+					test_name);
-+
-+			ksft_exit_fail_msg(
-+				"%s test: %s - failed to open /dev/null\n",
-+				strerror(errno), test_name);
-+		}
-+
-+		open_fds[i] = fd;
-+	}
-+
-+	fd_min = open_fds[0];
-+	fd_max = open_fds[99];
-+
-+	ret = sys_close_range(fd_min, fd_max, 1);
-+	if (!ret)
-+		ksft_exit_fail_msg(
-+			"%s test: managed to pass invalid flag value\n",
-+			test_name);
-+	if (errno == ENOSYS)
-+		ksft_exit_skip("%s test: close_range() syscall not supported\n", test_name);
-+
-+	ksft_test_result_pass("do not allow invalid flag values for close_range()\n");
-+
-+	fd_mid = open_fds[50];
-+	ret = sys_close_range(fd_min, fd_mid, 0);
-+	if (ret < 0)
-+		ksft_exit_fail_msg(
-+			"%s test: Failed to close range of file descriptors from %d to %d\n",
-+			test_name, fd_min, fd_mid);
-+	ksft_test_result_pass("close_range() from %d to %d\n", fd_min, fd_mid);
-+
-+	for (i = 0; i <= 50; i++) {
-+		ret = fcntl(open_fds[i], F_GETFL);
-+		if (ret >= 0)
-+			ksft_exit_fail_msg(
-+				"%s test: Failed to close range of file descriptors from %d to %d\n",
-+				test_name, fd_min, fd_mid);
-+	}
-+	ksft_test_result_pass("fcntl() verify closed range from %d to %d\n", fd_min, fd_mid);
-+
-+	/* create a couple of gaps */
-+	close(57);
-+	close(78);
-+	close(81);
-+	close(82);
-+	close(84);
-+	close(90);
-+
-+	fd_mid = open_fds[51];
-+	/* Choose slightly lower limit and leave some fds for a later test */
-+	fd_max = open_fds[92];
-+	ret = sys_close_range(fd_mid, fd_max, 0);
-+	if (ret < 0)
-+		ksft_exit_fail_msg(
-+			"%s test: Failed to close range of file descriptors from 51 to 100\n",
-+			test_name);
-+	ksft_test_result_pass("close_range() from %d to %d\n", fd_mid, fd_max);
-+
-+	for (i = 51; i <= 92; i++) {
-+		ret = fcntl(open_fds[i], F_GETFL);
-+		if (ret >= 0)
-+			ksft_exit_fail_msg(
-+				"%s test: Failed to close range of file descriptors from 51 to 100\n",
-+				test_name);
-+	}
-+	ksft_test_result_pass("fcntl() verify closed range from %d to %d\n", fd_mid, fd_max);
-+
-+	fd_mid = open_fds[93];
-+	fd_max = open_fds[99];
-+	/* test that the kernel caps and still closes all fds */
-+	ret = sys_close_range(fd_mid, UINT_MAX, 0);
-+	if (ret < 0)
-+		ksft_exit_fail_msg(
-+			"%s test: Failed to close range of file descriptors from 51 to 100\n",
-+			test_name);
-+	ksft_test_result_pass("close_range() from %d to %d\n", fd_mid, fd_max);
-+
-+	for (i = 93; i < 100; i++) {
-+		ret = fcntl(open_fds[i], F_GETFL);
-+		if (ret >= 0)
-+			ksft_exit_fail_msg(
-+				"%s test: Failed to close range of file descriptors from 51 to 100\n",
-+				test_name);
-+	}
-+	ksft_test_result_pass("fcntl() verify closed range from %d to %d\n", fd_mid, fd_max);
-+
-+	ret = sys_close_range(open_fds[100], open_fds[100], 0);
-+	if (ret < 0)
-+		ksft_exit_fail_msg(
-+			"%s test: Failed to close single file descriptor\n",
-+			test_name);
-+	ksft_test_result_pass("close_range() closed single file descriptor\n");
-+
-+	ret = fcntl(open_fds[100], F_GETFL);
-+	if (ret >= 0)
-+		ksft_exit_fail_msg(
-+			"%s test: Failed to close single file descriptor\n",
-+			test_name);
-+	ksft_test_result_pass("fcntl() verify closed single file descriptor\n");
-+
-+	return ksft_exit_pass();
-+}
--- 
-2.26.2
+for the current thing.
 
+              Linus
