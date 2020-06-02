@@ -2,173 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971461EC307
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29D11EC30F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbgFBTtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 15:49:33 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:57198 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgFBTtc (ORCPT
+        id S1728170AbgFBTuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 15:50:50 -0400
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:36854 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726139AbgFBTur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 15:49:32 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 966508030838;
-        Tue,  2 Jun 2020 19:49:28 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id H-uqhSvYPpnb; Tue,  2 Jun 2020 22:49:25 +0300 (MSK)
-Date:   Tue, 2 Jun 2020 22:49:25 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>, SoC Team <soc@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 04/10] dt-bindings: spi: Add bindings for spi-dw-mchp
-Message-ID: <20200602194925.qbevttzz3ghvmd2d@mobilestation>
-References: <20200513140031.25633-1-lars.povlsen@microchip.com>
- <20200513140031.25633-5-lars.povlsen@microchip.com>
+        Tue, 2 Jun 2020 15:50:47 -0400
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Tue, 2 Jun 2020 12:50:46 -0700
+Received: from sc9-mailhost3.vmware.com (unknown [10.200.192.49])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 748FE40BEE;
+        Tue,  2 Jun 2020 12:50:46 -0700 (PDT)
+From:   Matt Helsley <mhelsley@vmware.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Matt Helsley <mhelsley@vmware.com>
+Subject: [RFC][PATCH v4 00/32] objtool: Make recordmcount a subcommand
+Date:   Tue, 2 Jun 2020 12:49:53 -0700
+Message-ID: <cover.1591125127.git.mhelsley@vmware.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200513140031.25633-5-lars.povlsen@microchip.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 04:00:25PM +0200, Lars Povlsen wrote:
-> This add DT bindings for the Microsemi/Microchip SPI controller used
-> in various SoC's. It describes the "mscc,ocelot-spi" and
-> "mscc,jaguar2-spi" bindings.
+recordmcount has its own ELF wrapper code and could utilize
+objtool's ELF code to more-portably handle architecture variations.
+This series makes recordmcount a subcommand of objtool. It  very
+gradually convert recordmcount to become a subcommand of objtool and
+then reuses parts of objtool's ELF code. recordmcount maps the file in
+and collects simple information it needs to append a section to the
+object file. The only part of the original file it modifies is the
+address of new section tables -- interestingly enough this
+resembles RCU in that we don't really trim the old tables so
+much as unlink them via a critical offset and then rely on
+future tooling, in this case, to drop the unused bits. Much of
+the recordmcount ELF code is only reading and walking the data
+structures to collect the mcount locations it records in a separate
+area of memory. This means it's safe to mix access to the mapped
+file with access to the objtool-style linked data
+structures as we gradually convert it to using only the linked data
+structures. Once the old ELF code is no longer in use we can drop it
+and use objtool to take over the task of writing the results without
+using the RCU-like trick any more.
 
-As I see it, there is no need in this patch at all. Current DT binding file
-describes the MSCC version of the DW APB SSI IP pretty well. You can add an
-example to the DT schema though with "mscc,ocelot-spi" or "mscc,jaguar2-spi"
-compatible string and additional registers range. 
+Testing:
 
--Sergey
+I've been using scripts to test cross compilation and execution of
+objtool, and mcount on objects built for x86, ppc64le, arm64, s390, and
+sparc. I used PowerPC as a sample arch for fixing a bug (see Changes)
+and confirmed it builds a full zImage with defconfig
+(CONFIG_DYNAMIC_FTRACE=y).
 
-> 
-> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> ---
->  .../bindings/spi/mscc,ocelot-spi.yaml         | 60 +++++++++++++++++++
->  .../bindings/spi/snps,dw-apb-ssi.txt          |  7 +--
->  MAINTAINERS                                   |  1 +
->  3 files changed, 63 insertions(+), 5 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/spi/mscc,ocelot-spi.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/mscc,ocelot-spi.yaml b/Documentation/devicetree/bindings/spi/mscc,ocelot-spi.yaml
-> new file mode 100644
-> index 0000000000000..a3ac0fa576553
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/mscc,ocelot-spi.yaml
-> @@ -0,0 +1,60 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/spi/mscc,ocelot-spi.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Microsemi Vcore-III SPI Communication Controller
-> +
-> +maintainers:
-> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-> +  - Lars Povlsen <lars.povlsen@microchip.com>
-> +
-> +allOf:
-> +  - $ref: "spi-controller.yaml#"
-> +
-> +description: |
-> +  The Microsemi Vcore-III SPI controller is a general purpose SPI
-> +  controller based upon the Designware SPI controller. It uses an 8
-> +  byte rx/tx fifo.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - mscc,ocelot-spi
-> +      - mscc,jaguar2-spi
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  reg:
-> +    minItems: 2
-> +    items:
-> +      - description: Designware SPI registers
-> +      - description: CS override registers
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  reg-io-width:
-> +    description: |
-> +      The I/O register width (in bytes) implemented by this device.
-> +    items:
-> +       enum: [ 2, 4 ]
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +
-> +examples:
-> +  - |
-> +    spi0: spi@101000 {
-> +      compatible = "mscc,ocelot-spi";
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      reg = <0x101000 0x100>, <0x3c 0x18>;
-> +      interrupts = <9>;
-> +      clocks = <&ahb_clk>;
-> +    };
-> diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt
-> index 3ed08ee9feba4..5e1849be7bae5 100644
-> --- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt
-> +++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt
-> @@ -1,10 +1,8 @@
->  Synopsys DesignWare AMBA 2.0 Synchronous Serial Interface.
-> 
->  Required properties:
-> -- compatible : "snps,dw-apb-ssi" or "mscc,<soc>-spi", where soc is "ocelot" or
-> -  "jaguar2", or "amazon,alpine-dw-apb-ssi"
-> -- reg : The register base for the controller. For "mscc,<soc>-spi", a second
-> -  register set is required (named ICPU_CFG:SPI_MST)
-> +- compatible : "snps,dw-apb-ssi" or "amazon,alpine-dw-apb-ssi"
-> +- reg : The register base for the controller.
->  - interrupts : One interrupt, used by the controller.
->  - #address-cells : <1>, as required by generic SPI binding.
->  - #size-cells : <0>, also as required by generic SPI binding.
-> @@ -38,4 +36,3 @@ Example:
->  		cs-gpios = <&gpio0 13 0>,
->  			   <&gpio0 14 0>;
->  	};
-> -
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 1db598723a1d8..6472240b8391b 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11231,6 +11231,7 @@ L:	linux-mips@vger.kernel.org
->  S:	Supported
->  F:	Documentation/devicetree/bindings/mips/mscc.txt
->  F:	Documentation/devicetree/bindings/power/reset/ocelot-reset.txt
-> +F:	Documentation/devicetree/bindings/spi/mscc,ocelot-spi.yaml
->  F:	arch/mips/boot/dts/mscc/
->  F:	arch/mips/configs/generic/board-ocelot.config
->  F:	arch/mips/generic/board-ocelot.c
-> --
-> 2.26.2
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Changes
+v4:
+	Split out recordmcount cleanups and upstreamed.
+	[ https://lore.kernel.org/lkml/20190802134712.2d8cc63f@gandalf.local.home/ ]
+
+	Split out and iterated on objtool multi-arch support.
+	[ https://lore.kernel.org/lkml/cover.1586468801.git.mhelsley@vmware.com/ ]
+
+	Split out expanded relocation support, renamed types, and functions
+	to reflect expanded relocation support, and posted.
+	[ https://lore.kernel.org/lkml/cover.1590785960.git.mhelsley@vmware.com/ ]
+
+	This set is based on the patches sent upstream and posted above.
+
+	Adapted to renames by Ingo and Peter: s/elf_open/elf_open_read/
+
+	Added weak symbols for mcount subcommand
+		This nicely eliminated the need for the mcount.h header.
+
+	Added tools/objtool/Makefile per-arch SUBCMD_ blocks for each
+		arch recordmcount / mcount supports.
+
+	Moved ftrace/mcount/record.h from objtool_dep to recordmcount_dep
+		This keeps the dependencies better organized.
+
+	Fixed Makefile issue reported for PowerPC and a couple other archs
+		by kbuild test robot. The always-$(BUILD_C_RECORDMCOUNT)
+		line wasn't sufficiently replaced. Added to prepare-objtool
+		target in top level Makefile.
+
+	Split up dependencies to be independent of CONFIG_STACK_VALIDATION
+		and CONFIG_UNWINDER_ORC since these are x86-specific.
+		Now any arch which uses the C version of recordmcount
+		will build objtool if dynamic tracing is enabled.
+
+	Added a second rename at the end to be consistent with other
+		objtool subcommands.
+
+v3:
+        Rebased on mainline. s/elf_open/elf_read/ in recordmcount.c
+
+v2:
+        Fix whitespace before line continuation
+
+        Add ftrace/mcount/record.h to objtool_dep
+
+        Rename the Makefile variable BUILD_C_RECORDMCOUNT to
+            better reflect its purpose
+
+        Similar: rename recordmcount_source => recordmcount_dep
+            When using objtool we can just depend on the
+            binary rather than the source the binary is
+            built from. This should address Josh's feedback and
+            make the Makefile code a bit clearer
+
+        Add a comment to make reading the Makefile a little
+            easier
+
+        Rebased to latest mainline -rc
+
+
+Matt Helsley (32):
+  objtool: Prepare to merge recordmcount
+  objtool: Make recordmcount into mcount subcmd
+  objtool: recordmcount: Start using objtool's elf wrapper
+  objtool: recordmcount: Search for __mcount_loc before walking the
+    sections
+  objtool: recordmcount: Convert do_func() relhdrs
+  objtool: mcount: Remove unused fname parameter
+  objtool: mcount: Use libelf for section header names
+  objtool: mcount: Walk objtool Elf structs in find_secsym_ndx
+  objtool: mcount: Use symbol structs to find mcount relocations
+  objtool: mcount: Walk relocation lists
+  objtool: mcount: Move get_mcountsym
+  objtool: mcount: Replace MIPS offset types
+  objtool: mcount: Move is_fake_mcount()
+  objtool: mcount: Stop using ehdr in find_section_sym_index
+  objtool: mcount: Move find_section_sym_index()
+  objtool: mcount: Restrict using ehdr in append_func()
+  objtool: mcount: Use objtool ELF to write
+  objtool: mcount: Move nop_mcount()
+  objtool: mcount: Move has_rel_mcount() and tot_relsize()
+  objtool: mcount: Move relocation entry size detection
+  objtool: mcount: Only keep ELF file size
+  objtool: mcount: Use ELF header from objtool
+  objtool: mcount: Remove unused file mapping
+  objtool: mcount: Reduce usage of _size wrapper
+  objtool: mcount: Move mcount_adjust out of wrapper
+  objtool: mcount: Pre-allocate new ELF sections
+  objtool: mcount: Generic location and relocation table types
+  objtool: mcount: Move sift_rel_mcount out of wrapper file
+  objtool: mcount: Remove wrapper for ELF relocation type
+  objtool: mcount: Remove wrapper double-include trick
+  objtool: mcount: Remove endian wrappers
+  objtool: mcount: Rename
+
+ Documentation/dontdiff                     |   2 +-
+ Documentation/trace/ftrace-design.rst      |   4 +-
+ Documentation/trace/ftrace.rst             |   6 +-
+ Makefile                                   |  24 +-
+ arch/arm64/include/asm/ftrace.h            |   2 +-
+ arch/x86/include/asm/ftrace.h              |   2 +-
+ kernel/trace/Kconfig                       |   2 +-
+ scripts/.gitignore                         |   1 -
+ scripts/Makefile                           |   1 -
+ scripts/Makefile.build                     |  22 +-
+ scripts/recordmcount.c                     | 663 --------------------
+ scripts/recordmcount.h                     | 606 ------------------
+ scripts/sorttable.h                        |   2 +-
+ tools/objtool/.gitignore                   |   1 +
+ tools/objtool/Build                        |   2 +
+ tools/objtool/Makefile                     |  37 +-
+ tools/objtool/builtin-mcount.c             |  50 ++
+ tools/objtool/builtin.h                    |   2 +
+ tools/objtool/elf.c                        |   5 +-
+ tools/objtool/elf.h                        |   2 +
+ tools/objtool/mcount.c                     | 682 +++++++++++++++++++++
+ tools/objtool/objtool.c                    |   1 +
+ tools/objtool/objtool.h                    |   1 +
+ {scripts => tools/objtool}/recordmcount.pl |   0
+ tools/objtool/weak.c                       |   5 +
+ 25 files changed, 821 insertions(+), 1304 deletions(-)
+ delete mode 100644 scripts/recordmcount.c
+ delete mode 100644 scripts/recordmcount.h
+ create mode 100644 tools/objtool/builtin-mcount.c
+ create mode 100644 tools/objtool/mcount.c
+ rename {scripts => tools/objtool}/recordmcount.pl (100%)
+
+
+base-commit: 2160e6958fc4fa0a70d5f8a2f32760c7ab3bfd6c
+-- 
+2.20.1
+
