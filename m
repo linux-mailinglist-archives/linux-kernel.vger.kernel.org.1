@@ -2,131 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF761EC213
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75821EC232
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgFBSqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 14:46:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgFBSqd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 14:46:33 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EEBC08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 11:46:32 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id a127so3467317pfa.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 11:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=KjGFYyFxgPYs05yaRJGkiTGGqOdTYKxkxLdoLAX2dfc=;
-        b=umDxVyYdwoQVgslyAnCov/qRec06itnasXt33K/1Tx+Q8ZmZvHyxMaMvFdd28DbusM
-         00OSH9nQ3R40zOLyUUXqK4jyjOKSjW5IZxLS+ityplv0VxKv8HxdfUDHTVT7PQKaoSeB
-         CIRzOgqkQJ56y9F5GjagLKE5/3qqD8eGm3UZA6j2Ujd5zNrI2Q8Qat3qcFHeqOL3uKbo
-         LaQsDdUIxL9GPZoHUNdLRXS1BBeitjt7kbbmGf2Al1kpzpNbAUm3iZg1x6oA7jGpcBh+
-         hrI64AI9nCHF3YvHI0J1geuB6VLPTt20Gw0XZYK0+rAKn2jSk24PzrIGOl4HCvLJQKn3
-         ZT+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=KjGFYyFxgPYs05yaRJGkiTGGqOdTYKxkxLdoLAX2dfc=;
-        b=HzKfuaJ2pAD17h20swF+irmOVOSfQcxytVUEf0jfiD8OdgwdfG3RegAZZRIZbDVdgR
-         C7qsJAn5HOp0XmTGkQyyWi+glJ4nVbD+ps9Nv0x3vaEB54e6RipQLE9XMdprMtdHpbQW
-         /VgfZhYid5lFtZehp4wZVNPsqJF6NWVfYz9JEILKjkmqxGGmvAZyLeNTWYCsOILUTK/h
-         pvQonhCx2y5zFz70CiU8WazdDoAPIYAxnehKvFS0EVFDncoLdnrwMY9YaWETBdVaaLV0
-         K+kdKUoc/A+YZ+lfBAZ3sWUjOCgG7jhF++qMMYizxbTLUSDeW19AdDfHC5AAk1+NqaGy
-         bvAA==
-X-Gm-Message-State: AOAM531R8/DZSMsRILU8K2SxBBM/YMqDWBHyZ3OGDuBuC2Ix40rORBpZ
-        3l2VzBwcPZS69bdfT3SYSSo=
-X-Google-Smtp-Source: ABdhPJzXP7o7aqixQ14sESQ0eCXX2+MysWeKa5rOX2JW53KzJBa/ov2sDcBhfSB4Q3HNGTYycAWfDQ==
-X-Received: by 2002:aa7:9910:: with SMTP id z16mr3427117pff.53.1591123591678;
-        Tue, 02 Jun 2020 11:46:31 -0700 (PDT)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.171.172.1])
-        by smtp.gmail.com with ESMTPSA id o21sm3056833pfp.12.2020.06.02.11.46.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Jun 2020 11:46:30 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     gregkh@linuxfoundation.org, jamal.k.shareef@gmail.com,
-        dan.carpenter@oracle.com, marcgonzalez@google.com,
-        hariprasad.kelam@gmail.com, tasman@leaflabs.com,
-        nachukannan@gmail.com
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH] staging: vc04_services: Convert get_user_pages*() --> pin_user_pages*()
-Date:   Wed,  3 Jun 2020 00:24:17 +0530
-Message-Id: <1591124057-27696-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        id S1727032AbgFBSzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 14:55:21 -0400
+Received: from muru.com ([72.249.23.125]:56784 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726139AbgFBSzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 14:55:20 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 5EB0680C5;
+        Tue,  2 Jun 2020 18:56:09 +0000 (UTC)
+Date:   Tue, 2 Jun 2020 11:55:15 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Peter Hurley <peter@hurleysoftware.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Sebastian Reichel <sre@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH] serial: 8250_port: Fix imprecise external abort for
+ mctrl if inactive
+Message-ID: <20200602185515.GF37466@atomide.com>
+References: <20200602001813.30459-1-tony@atomide.com>
+ <20200602080811.GI19480@localhost>
+ <CAHp75Vfi5nDgwT10J_EKYn90vGuiL1hyfre+t_w_OFREFY-Tqg@mail.gmail.com>
+ <20200602133659.GD37466@atomide.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200602133659.GD37466@atomide.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In 2019, we introduced pin_user_pages*() and now we are converting
-get_user_pages*() to the new API as appropriate. [1] & [2] could
-be referred for more information.
+* Tony Lindgren <tony@atomide.com> [200602 13:38]:
+> * Andy Shevchenko <andy.shevchenko@gmail.com> [200602 08:33]:
+> Now that we can detach and reattach the kernel serial console,
+> there should not be any need for pm_runtime_irq_safe() anymore :)
 
-[1] Documentation/core-api/pin_user_pages.rst
+Below is a hastily tested RFC patch to remove pm_runtime_irq_safe()
+for 8250_omap.c that seems to work for idle use case :)
 
-[2] "Explicit pinning of user-space pages":
-        https://lwn.net/Articles/807108/
+> And the UART wake-up from deeper idle states can only happen with
+> help of external hardware like GPIO controller or pinctrl controller.
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: John Hubbard <jhubbard@nvidia.com>
----
-Hi,
+It does not yet include the check for configured wakeirq though.
+And omap-serial.c needs a similar patch or maybe we can attempt
+to just drop it this time as 8250_omap.c should be used nowadays.
+Or just drop PM from omap-serial.c if it can't be dropped.
 
-I'm compile tested this, but unable to run-time test, so any testing
-help is much appriciated.
+Andy, is the change below the only remaining blocker now for
+your serial PM runtime changes?
 
- .../vc04_services/interface/vchiq_arm/vchiq_2835_arm.c   | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+Regards,
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
-index 38a13e4..4616013 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
-@@ -287,12 +287,8 @@ int vchiq_dump_platform_state(void *dump_context)
- 			     pagelistinfo->num_pages, pagelistinfo->dma_dir);
+Tony
+
+8< -------------------------------
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -123,6 +123,7 @@ struct omap8250_priv {
+ 	spinlock_t rx_dma_lock;
+ 	bool rx_dma_broken;
+ 	bool throttled;
++	unsigned int active:1;
+ };
+ 
+ struct omap8250_dma_params {
+@@ -598,9 +599,13 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
+ {
+ 	struct uart_port *port = dev_id;
+ 	struct uart_8250_port *up = up_to_u8250p(port);
++	struct omap8250_priv *priv = up->port.private_data;
+ 	unsigned int iir;
+ 	int ret;
+ 
++	if (!priv->active)
++		return IRQ_NONE;
++
+ #ifdef CONFIG_SERIAL_8250_DMA
+ 	if (up->dma) {
+ 		ret = omap_8250_dma_handle_irq(port);
+@@ -608,10 +613,10 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
+ 	}
+ #endif
+ 
+-	serial8250_rpm_get(up);
+ 	iir = serial_port_in(port, UART_IIR);
+ 	ret = serial8250_handle_irq(port, iir);
+-	serial8250_rpm_put(up);
++
++	pm_runtime_mark_last_busy(port->dev);
+ 
+ 	return IRQ_RETVAL(ret);
+ }
+@@ -1110,13 +1115,9 @@ static int omap_8250_dma_handle_irq(struct uart_port *port)
+ 	unsigned long flags;
+ 	u8 iir;
+ 
+-	serial8250_rpm_get(up);
+-
+ 	iir = serial_port_in(port, UART_IIR);
+-	if (iir & UART_IIR_NO_INT) {
+-		serial8250_rpm_put(up);
++	if (iir & UART_IIR_NO_INT)
+ 		return IRQ_HANDLED;
+-	}
+ 
+ 	spin_lock_irqsave(&port->lock, flags);
+ 
+@@ -1144,7 +1145,7 @@ static int omap_8250_dma_handle_irq(struct uart_port *port)
  	}
  
--	if (pagelistinfo->pages_need_release) {
--		unsigned int i;
+ 	uart_unlock_and_check_sysrq(port, flags);
+-	serial8250_rpm_put(up);
++
+ 	return 1;
+ }
+ 
+@@ -1329,11 +1330,10 @@ static int omap8250_probe(struct platform_device *pdev)
+ 	if (!of_get_available_child_count(pdev->dev.of_node))
+ 		pm_runtime_set_autosuspend_delay(&pdev->dev, -1);
+ 
+-	pm_runtime_irq_safe(&pdev->dev);
 -
--		for (i = 0; i < pagelistinfo->num_pages; i++)
--			put_page(pagelistinfo->pages[i]);
--	}
-+	if (pagelistinfo->pages_need_release)
-+		unpin_user_pages(pagelistinfo->pages, pagelistinfo->num_pages);
+ 	pm_runtime_get_sync(&pdev->dev);
  
- 	dma_free_coherent(g_dev, pagelistinfo->pagelist_buffer_size,
- 			  pagelistinfo->pagelist, pagelistinfo->dma_addr);
-@@ -395,7 +391,7 @@ int vchiq_dump_platform_state(void *dump_context)
- 		}
- 		/* do not try and release vmalloc pages */
- 	} else {
--		actual_pages = get_user_pages_fast(
-+		actual_pages = pin_user_pages_fast(
- 					  (unsigned long)buf & PAGE_MASK,
- 					  num_pages,
- 					  type == PAGELIST_READ,
-@@ -407,10 +403,8 @@ int vchiq_dump_platform_state(void *dump_context)
- 				       __func__, actual_pages, num_pages);
+ 	omap_serial_fill_features_erratas(&up, priv);
++	priv->active = pm_runtime_enabled(&pdev->dev);
+ 	up.port.handle_irq = omap8250_no_handle_irq;
+ 	priv->rx_trigger = RX_TRIGGER;
+ 	priv->tx_trigger = TX_TRIGGER;
+@@ -1517,6 +1517,8 @@ static int omap8250_runtime_suspend(struct device *dev)
+ 	if (!priv)
+ 		return 0;
  
- 			/* This is probably due to the process being killed */
--			while (actual_pages > 0) {
--				actual_pages--;
--				put_page(pages[actual_pages]);
--			}
-+			if (actual_pages > 0)
-+				unpin_user_pages(pages, actual_pages);
- 			cleanup_pagelistinfo(pagelistinfo);
- 			return NULL;
- 		}
++	priv->active = 0;
++
+ 	up = serial8250_get_port(priv->line);
+ 	/*
+ 	 * When using 'no_console_suspend', the console UART must not be
+@@ -1575,6 +1577,8 @@ static int omap8250_runtime_resume(struct device *dev)
+ 
+ 	pinctrl_pm_select_default_state(dev);
+ 
++	priv->active = 1;
++
+ 	return 0;
+ }
+ #endif
 -- 
-1.9.1
-
+2.26.2
