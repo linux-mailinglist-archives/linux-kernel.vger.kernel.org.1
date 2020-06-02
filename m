@@ -2,112 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981331EB2CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 02:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B941EB2C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 02:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726099AbgFBAtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 20:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgFBAtI (ORCPT
+        id S1726012AbgFBAkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 20:40:31 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:27578 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbgFBAka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 20:49:08 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7757C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 17:49:07 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w68so3445478pfb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 17:49:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=6DuNPAr1idaRpwQ6WcJVhQL920mjQAymmj650iV94eU=;
-        b=ndyJivolQhyu2G6jZDIL/3xVQMu7J5dCWIi8tQ/LjVvOwidJUN8YvCAT0/yuqk2SYn
-         R4nZnux60kel9RdDMcg9ElcTdIBIKVsMFEVXLh6Cd8nv1K7YkJAPlZrGIj9VPCGHiqUw
-         dMFHYBHgHuD1VjhfkClysZHfdh/5YndQ0eZ9FmVGMvZJ0qhjbOm8Sixdn5CxrUUh7Pmj
-         FQWkh0mrQY541Kp7+1Szbp7whjwhMeTbVABof07h8P15E6dOJavDM+ozdvQ+v8EhU8eY
-         lCWi/i8QKhQ3gYmlrx19jXmtp/mFfUsTBahzCXKpq1nfwCU3siOU577JZi9f7VTy7e2Z
-         +EYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=6DuNPAr1idaRpwQ6WcJVhQL920mjQAymmj650iV94eU=;
-        b=jUoa0OenbLcnbTQE7gexbdHRz8E8J2ShsB6bJfyz2EvTV0fQ+BWXtO1fGEj7+2O6HC
-         ofep+e93BKSprsWFm8HTLdDhEOe50btIBGwg/maTWjQ3/6UzN4VH7GUsEEKLZXDd87pr
-         6quECqYEnSggLOmNG6iwId+TnioYk0lPWN9NuOsNXFiUsm0qedJ3FaguDc1JbaPv/3Em
-         vfkcBSRPnYTgdWQZNMqCEkYKpNhJQxZL3yHm5NDVqkk75AOshhfSziMzXF+dHFrXsYJd
-         zqFzPk3wjsUwTNrEjSbDOd38cPkUUd1vOYf+2Si8F4Q0apth7Bzpxa2ACfgKOAjU9eK6
-         6x5Q==
-X-Gm-Message-State: AOAM5306HQGurp7YXRtiMFfQcB6gDGAlaDIy+KA8T8SXr5toipJCVuWW
-        I01QwOTFMvPaogEutP0C0fJFcw==
-X-Google-Smtp-Source: ABdhPJwwKAthNUesiDBD7YBKyp9KP/QdlfGLvwvBIEuDXnh4HnLacRhZ80oPYfmXhDu3TQjDiJEjMA==
-X-Received: by 2002:a63:4d5a:: with SMTP id n26mr22321711pgl.85.1591058947202;
-        Mon, 01 Jun 2020 17:49:07 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:d9a3:6ef8:19c1:abf4? ([2601:646:c200:1ef2:d9a3:6ef8:19c1:abf4])
-        by smtp.gmail.com with ESMTPSA id i26sm536576pfo.0.2020.06.01.17.49.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Jun 2020 17:49:06 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [GRUB PATCH RFC 00/18] i386: Intel TXT secure launcher
-Date:   Mon, 1 Jun 2020 17:49:03 -0700
-Message-Id: <C6007C2B-AEFF-4A48-B791-323CDC04266D@amacapital.net>
-References: <f954e9ef-295a-a8ce-0ff8-a88ad81b01a3@apertussolutions.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Lukasz Hawrylko <lukasz.hawrylko@linux.intel.com>,
-        grub-devel@gnu.org, LKML <linux-kernel@vger.kernel.org>,
-        trenchboot-devel@googlegroups.com, X86 ML <x86@kernel.org>,
-        alexander.burmashev@oracle.com,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        eric.snowberg@oracle.com, javierm@redhat.com,
-        kanth.ghatraju@oracle.com,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        krystian.hebel@3mdeb.com, michal.zygowski@3mdeb.com,
-        Matthew Garrett <mjg59@google.com>, phcoder@gmail.com,
-        piotr.krol@3mdeb.com, Peter Jones <pjones@redhat.com>,
-        Ross Philipson <ross.philipson@oracle.com>
-In-Reply-To: <f954e9ef-295a-a8ce-0ff8-a88ad81b01a3@apertussolutions.com>
-To:     "Daniel P. Smith" <dpsmith@apertussolutions.com>
-X-Mailer: iPhone Mail (17E262)
+        Mon, 1 Jun 2020 20:40:30 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200602004026epoutp0183fc6eb6a512b1fb1d8751857d29f2bb~UkzWQJpxk0224602246epoutp01J
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 00:40:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200602004026epoutp0183fc6eb6a512b1fb1d8751857d29f2bb~UkzWQJpxk0224602246epoutp01J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591058426;
+        bh=l7Rt2o0kdGFSHg652UR00dk3txaeJfZo5NnrTQMvqxo=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=gJj9coh6awcsQkoqAELBkvQeXN2qULTHKxQIHoaQrBVnbOTyk6W4EbyYac+yraDQl
+         ZhTb5qeOTQTcD2cjR4ytbypdvA279sC5w+ntPLTKXbba6LF6zA/FkOOojEYGGX/2Es
+         WlE6Xbxh0Ox41zGg2WARmxiHpatzuWOhbEoG8PfE=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20200602004024epcas1p3b679346e48f5aa7e23e8400b1dd819c5~UkzUURw6t0448404484epcas1p31;
+        Tue,  2 Jun 2020 00:40:24 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 49bY9L3MNNzMqYl0; Tue,  2 Jun
+        2020 00:40:22 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C6.29.18978.5FF95DE5; Tue,  2 Jun 2020 09:40:22 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200602004019epcas1p47250832e03ece66e322e82a72c007a50~UkzPoLCtc1010210102epcas1p4Y;
+        Tue,  2 Jun 2020 00:40:19 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200602004019epsmtrp2e14e1aa156221eb93e89340e05c762fa~UkzPnLpqO3205032050epsmtrp2m;
+        Tue,  2 Jun 2020 00:40:19 +0000 (GMT)
+X-AuditID: b6c32a35-b8298a8000004a22-4d-5ed59ff551f9
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B8.D6.08382.3FF95DE5; Tue,  2 Jun 2020 09:40:19 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200602004019epsmtip1bb2424a547cb17f1ede6c058213b29ab~UkzPWeK8N1039010390epsmtip1W;
+        Tue,  2 Jun 2020 00:40:19 +0000 (GMT)
+Subject: Re: [RFC PATCH v5 3/6] PM / devfreq: exynos-bus: Add registration
+ of interconnect child device
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <chanwoo@kernel.org>
+Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        =?UTF-8?B?QXJ0dXIgxZp3aWdvxYQ=?= <a.swigon@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>, inki.dae@samsung.com,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <7a3840c7-fbfb-112e-46b6-97871da710e8@samsung.com>
+Date:   Tue, 2 Jun 2020 09:50:52 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
+MIME-Version: 1.0
+In-Reply-To: <8a977716-9e0e-5daf-fb22-32d943da42e5@samsung.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNJsWRmVeSWpSXmKPExsWy7bCmvu63+VfjDCa/ZbK4P6+V0WLjjPWs
+        FhNvXGGxmH/kHKvFla/v2Sym793EZjHp/gQWi/PnN7BbbHp8jdXi8q45bBYzzu9jslh75C67
+        xe3GFWwWrXuPsFscftPOajFj8ks2BwGPTas62TzuXNvD5nG/+ziTx+Yl9R59W1YxenzeJBfA
+        FpVtk5GamJJapJCal5yfkpmXbqvkHRzvHG9qZmCoa2hpYa6kkJeYm2qr5OIToOuWmQN0t5JC
+        WWJOKVAoILG4WEnfzqYov7QkVSEjv7jEVim1ICWnwLJArzgxt7g0L10vOT/XytDAwMgUqDAh
+        O+PNm6tsBZ9kK9ofT2BrYFwo1sXIySEhYCLxqaefqYuRi0NIYAejxNxT91kgnE+MEscb9jFC
+        ON8YJR69W8kK0zL303R2iMReRontry9BOe8ZJeb/XsICUiUskClx/PQSdhBbRCBE4vWk52BF
+        zAJ/WSR2bp/ABJJgE9CS2P/iBhuIzS+gKHH1x2NGEJtXwE7i7uo7YHEWARWJC8dXg9WLCoRJ
+        nNzWAlUjKHFy5hOwZZwC9hLHljSCLWMWEJe49WQ+E4QtL7H97RxmkMUSAi84JLbe/gz1g4vE
+        zcvtzBC2sMSr41vYIWwpic/v9rJB2NUSK08eYYNo7mCU2LL/AlSzscT+pZOBNnAAbdCUWL9L
+        HyKsKLHz91xGiMV8Eu++9rCClEgI8Ep0tAlBlChLXH5wlwnClpRY3N7JNoFRaRaSd2YheWEW
+        khdmISxbwMiyilEstaA4Nz212LDAEDm+NzGCU7WW6Q7GiW8/6B1iZOJgPMQowcGsJMI7Wf1S
+        nBBvSmJlVWpRfnxRaU5q8SFGU2AAT2SWEk3OB2aLvJJ4Q1MjY2NjCxNDM1NDQyVxXnGZC3FC
+        AumJJanZqakFqUUwfUwcnFINTLbBh1+I7El+ds0187/OSh/nw4fTnV3isjb9M56ov/V06Tyt
+        /Srcjxe7PXp+SeSP3d7JJqW3Ds+52+V2hS9w0+WGD7H+HbudH17+s3dtRnXvtjcrY6dcWqUj
+        IMHYW9/afePmJRYePVMnEetNe2fabgqTZp9zU3aTd5HrjNlVDy6xPJwufWTrV2sn3Xml7IkL
+        Vx3Nmluz2bXP6R+X/Oy9wtXWW3e1MR1boXixoKNZR/anw/tTdalfGiPmPm96yi7j+m36Q7Hk
+        hTrPO5YIH44t3mQ0O2TK1T2X9zQUORT2udlZr8ytdandosoar3L5csys8/d/HNRS2Ww9zbtf
+        09Bni3b91kVnCk9fUJ2923CWjYQSS3FGoqEWc1FxIgABFdu7XgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Ra0hTYRyHec85OzuOZkdX+WpluqJQ0DKi3iJbkcgyk8CILNCWHW85nTte
+        us5kiTVTTEvXqC1rdpl0O167TMHNIrpYpmnlDSfpdGZoSh+Sao7Abw//3/N8+lO4Zy3hQyWn
+        ZTLKNFmqmBQQ9Raxb9CUoTN23Ztz3qhfnw/QY+1DHrrU3UEgg/UdD3VMT5CowsyRqLS/hEBt
+        bY/4iLN94qGPT6+RSNvWhKH71l4++pp3l0T5ZisfWRwFPKQts5PbaSlnukBKez49J6X9hS8x
+        aY0xV1pcawLSKc53L3lQsPUok5qczSjXbjssSHI4OknF5PLjBbYS8iyoXKIBbhSkN8DrkxV8
+        DRBQnvQzAL8XDvJcgzcs/9CKawD1j0XQYmFdzjiART063OmI6GRoPz/EczqL6H3wkT3I6eD0
+        HwKaLxeQrsCMwVl1NekMSDoQNo90z/FC2h92/rIBJwvpbbC3umfuTtCr4PuX1ZiTF9P74ROj
+        DXM5HvDV1SHCyW60BL4w5vGdjNNr4G99O+5iL/hlyIC5eAVsGL+GlwCRbl6um5fo5iW6eckN
+        QJiAN6Ng5YlyNkQRksbkBLMyOZuVlhgcny7nwNxjAwMaQYPpR3ALwCjQAiCFixcJy9a0x3oK
+        j8pOnGSU6XHKrFSGbQFLKULsJezOqIz1pBNlmcwxhlEwyv8rRrn5nMWyYnzdf87mZE8HDElU
+        vR91htUJGRHm28YZR1DnU35cs6S1URNadcTEQXXTer2ttMrv8CE8PWhHTeEMYuI4/YX6zbwJ
+        hzHibSjaI6uMMH8bjF4e9brIT7FK0hUQrg6LSvpyCn+x4OZbibAsJaFq1v/G7ZV2tnx4JFxt
+        1PRppx01Z7b+iB8sAltyJ1lVnSXX2/p8tH7ZncHuBdordTE7x6yjXSknjCP6i5FhIl2D6QEz
+        c7m1Xe1WSrhj0fYy+UpuuL0GnzyiqmWLBQfGbg2oKnw59Nl6XTWzb1Oke3x0TN/A6RzxQK1H
+        ZlXHRq+87F2i9+nS77sP5htSYqPu6cUEmyQLCcSVrOwvgP7u6UcDAAA=
+X-CMS-MailID: 20200602004019epcas1p47250832e03ece66e322e82a72c007a50
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200529163225eucas1p1cfb2233c869dcc3dab84b754bbce17b6
+References: <CGME20200529163225eucas1p1cfb2233c869dcc3dab84b754bbce17b6@eucas1p1.samsung.com>
+        <20200529163200.18031-1-s.nawrocki@samsung.com>
+        <20200529163200.18031-4-s.nawrocki@samsung.com>
+        <CAGTfZH1KC=jpQ5GXNtEf1cn7+WqXJdqbbVKmpxr8Snh4GEy8bA@mail.gmail.com>
+        <8a977716-9e0e-5daf-fb22-32d943da42e5@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sylwester,
 
+On 6/1/20 7:04 PM, Sylwester Nawrocki wrote:
+> Cc: Rob, devicetree ML
+> 
+> On 31.05.2020 01:57, Chanwoo Choi wrote:
+>> On Sat, May 30, 2020 at 1:33 AM Sylwester Nawrocki
+>> <s.nawrocki@samsung.com> wrote:
+>>>
+>>> This patch adds registration of a child platform device for the exynos
+>>> interconnect driver. It is assumed that the interconnect provider will
+>>> only be needed when #interconnect-cells property is present in the bus
+>>> DT node, hence the child device will be created only when such a property
+>>> is present.
+>>>
+>>> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+>>>
+>>> Changes for v5:
+>>>  - new patch.
+>>> ---
+>>>  drivers/devfreq/exynos-bus.c | 17 +++++++++++++++++
+>>>  1 file changed, 17 insertions(+)
+>>>
+>>> diff --git a/drivers/devfreq/exynos-bus.c b/drivers/devfreq/exynos-bus.c
+>>> index 8fa8eb5..856e37d 100644
+>>> --- a/drivers/devfreq/exynos-bus.c
+>>> +++ b/drivers/devfreq/exynos-bus.c
+>>> @@ -24,6 +24,7 @@
+>>>
+>>>  struct exynos_bus {
+>>>         struct device *dev;
+>>> +       struct platform_device *icc_pdev;
+>>>
+>>>         struct devfreq *devfreq;
+>>>         struct devfreq_event_dev **edev;
+>>> @@ -156,6 +157,8 @@ static void exynos_bus_exit(struct device *dev)
+>>>         if (ret < 0)
+>>>                 dev_warn(dev, "failed to disable the devfreq-event devices\n");
+>>>
+>>> +       platform_device_unregister(bus->icc_pdev);
+>>> +
+>>>         dev_pm_opp_of_remove_table(dev);
+>>>         clk_disable_unprepare(bus->clk);
+>>>         if (bus->opp_table) {
+>>> @@ -168,6 +171,8 @@ static void exynos_bus_passive_exit(struct device *dev)
+>>>  {
+>>>         struct exynos_bus *bus = dev_get_drvdata(dev);
+>>>
+>>> +       platform_device_unregister(bus->icc_pdev);
+>>> +
+>>>         dev_pm_opp_of_remove_table(dev);
+>>>         clk_disable_unprepare(bus->clk);
+>>>  }
+>>> @@ -431,6 +436,18 @@ static int exynos_bus_probe(struct platform_device *pdev)
+>>>         if (ret < 0)
+>>>                 goto err;
+>>>
+>>> +       /* Create child platform device for the interconnect provider */
+>>> +       if (of_get_property(dev->of_node, "#interconnect-cells", NULL)) {
+>>> +                   bus->icc_pdev = platform_device_register_data(
+>>> +                                               dev, "exynos-generic-icc",
+>>> +                                               PLATFORM_DEVID_AUTO, NULL, 0);
+>>> +
+>>> +                   if (IS_ERR(bus->icc_pdev)) {
+>>> +                           ret = PTR_ERR(bus->icc_pdev);
+>>> +                           goto err;
+>>> +                   }
+>>> +       }
+>>> +
+>>>         max_state = bus->devfreq->profile->max_state;
+>>>         min_freq = (bus->devfreq->profile->freq_table[0] / 1000);
+>>>         max_freq = (bus->devfreq->profile->freq_table[max_state - 1] / 1000);
+>>> --
+>>> 2.7.4
+>>>
+>>
+>> It looks like very similar like the registering the interconnect
+>> device of imx-bus.c
+>> and I already reviewed and agreed this approach.
+>>
+>> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+>>
+>> nitpick: IMHO, I think that 'exynos-icc' is proper and simple without
+>> 'generic' word.
+>> If we need to add new icc compatible int the future, we will add
+>> 'exynosXXXX-icc' new compatible.
+>> But, I'm not forcing it. just opinion. Anyway, I agree this approach.
+> 
+> Thanks for review. I will change the name to exynos-icc in next version, 
+> as I commented at other patch, it is not part of any DT binding, 
+> it is just for device/driver matching between devfreq and interconnect.
 
-> On Jun 1, 2020, at 5:14 PM, Daniel P. Smith <dpsmith@apertussolutions.com>=
- wrote:
->=20
-> =EF=BB=BFOn 6/1/20 3:39 PM, Andy Lutomirski wrote:
->>>> .
->=20
-> In other words, the log for the relaunch to attest what is currently
-> running is really no less useful than using the first launch log to
-> attest to the what was running in the first launch.
->=20
+Thanks. I have not any objection to use either 'exynos-generic-icc' 
+or 'exynos-icc'. It is just my opinion. And on next version,
+please add linux-pm mailing list to Cc.
 
-Maybe it would help if you give some examples of what=E2=80=99s actually in t=
-his log and why anyone, Linux or otherwise, cares for any purpose other than=
- debugging.  We=E2=80=99re talking about a log written by something like GRU=
-B, right?  If so, I=E2=80=99m imagining things like:
-
-GRUB: loading such-and-such module
-GRUB: loading the other module
-GRUB: loading Linux at /boot/vmlinuz-whatever
-GRUB: about to do the DRTM launch. Bye-bye.
-
-This is surely useful for debugging.  But, if I understand your security mod=
-el correctly, it=E2=80=99s untrustworthy in the sense that this all comes fr=
-om before the DRTM launch and it could have been tampered with by SMM code o=
-r even just a malicious USB stick.  Or even a malicious compromised kernel o=
-n the same machine. So you could hash this log into a PCR, but I don=E2=80=99=
-t see what you=E2=80=99ve accomplished by doing so.
-
-Or have I misunderstood what this log is?  Perhaps you=E2=80=99re talking ab=
-out something else entirely.=
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
