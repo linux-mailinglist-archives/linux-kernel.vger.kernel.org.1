@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4B61EC3BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 22:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D0B1EC3C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 22:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728491AbgFBUfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 16:35:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46292 "EHLO mail.kernel.org"
+        id S1728660AbgFBUfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 16:35:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728174AbgFBUfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 16:35:05 -0400
-Subject: Re: [GIT PULL] MMC and MEMSTICK updates for v5.8
+        id S1728459AbgFBUfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 16:35:06 -0400
+Subject: Re: [GIT PULL] Power management updates for v5.8-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591130105;
-        bh=4Hp52jbeOMDuF3PTu79KmzW6xYMBZC7zQipXzNkht6s=;
+        s=default; t=1591130106;
+        bh=2rVwh4/siikVrpgwYQuuD+buqge9Sw5sBfNz6/5D/G4=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=KWlo2qDmsRmEW1ASpCh5PNWmb6IMtYmAK+NICr0j5NGHs8CmYt+GEdnabSdXC7UGo
-         YDPYWciBfPxTVW94jjvT+m2RT20Itrrk0S15gNNpGhJwrJpmh74J3CPNogzFaX/rFA
-         ASjIJry84fTZvT/BhOk4OISkSf0ye/p4lecZExb8=
+        b=DaTHAH+Ih2x/zpFGh+ICXsG43LB4CLkxU33kHtD/QNLxT1+vEP6H0f1vDbrWmymFl
+         +o/95tHMuX+6Z+3XQYlMXf1y6f6H29Kb6083QTTHM+nneHBiYOjFCTz5bQWEAaqIod
+         VYKiuvCkpQTkLaYEgjCmRReZf858bTknNPNc6P0A=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200601082613.4566-1-ulf.hansson@linaro.org>
-References: <20200601082613.4566-1-ulf.hansson@linaro.org>
+In-Reply-To: <CAJZ5v0gV2T9BUBGT8TOt+kdO6+T_WwmcO1PPonWu76REGkoorQ@mail.gmail.com>
+References: <CAJZ5v0gV2T9BUBGT8TOt+kdO6+T_WwmcO1PPonWu76REGkoorQ@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200601082613.4566-1-ulf.hansson@linaro.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.8
-X-PR-Tracked-Commit-Id: ae5c0585dfc2168c589de5878df2e591dfbd4bf0
+X-PR-Tracked-Message-Id: <CAJZ5v0gV2T9BUBGT8TOt+kdO6+T_WwmcO1PPonWu76REGkoorQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.8-rc1
+X-PR-Tracked-Commit-Id: a34024d98eeaa78e2cd22017180df778800b83fc
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c5d6c13843880ad0112f0513f3eb041b258be66e
-Message-Id: <159113010551.19446.11840655469371443898.pr-tracker-bot@kernel.org>
-Date:   Tue, 02 Jun 2020 20:35:05 +0000
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+X-PR-Merge-Commit-Id: 355ba37d756c38962fe9bb616f5f48eb12a7e11e
+Message-Id: <159113010624.19446.15600149439571163343.pr-tracker-bot@kernel.org>
+Date:   Tue, 02 Jun 2020 20:35:06 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon,  1 Jun 2020 10:26:13 +0200:
+The pull request you sent on Mon, 1 Jun 2020 17:48:27 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.8
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.8-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c5d6c13843880ad0112f0513f3eb041b258be66e
+https://git.kernel.org/torvalds/c/355ba37d756c38962fe9bb616f5f48eb12a7e11e
 
 Thank you!
 
