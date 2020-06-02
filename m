@@ -2,128 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D771EB41A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 06:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A74A1EB423
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 06:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgFBEHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 00:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgFBEHw (ORCPT
+        id S1726135AbgFBEMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 00:12:48 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8236 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726003AbgFBEMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 00:07:52 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AB4C061A0E;
-        Mon,  1 Jun 2020 21:07:52 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id k15so6432992otp.8;
-        Mon, 01 Jun 2020 21:07:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KMSPv9lovPpFYq/LUSFG6QcTM2yJAf6mkVnhkUqAWFE=;
-        b=WMxPxSbb+ih0evnuvt75qFV3j8/ZNo5BoD18gBSZrmuRB4x6eae1MSmhNbPveib8Cb
-         vG9YA93T4cM2T9KxFOrqXQPSCswFTfrBHeDT7K3csLywYfYJnG1bK47kH2B5IkpfFDTv
-         7AclSnVyGL3RM659NhBjQiWSNH6AszZr3hagD+SFuyd8BmUHP9tGbUz9BSOUdZ/CHCrz
-         2oCtAI3pdEMUiiEjNiDZFonC6ESR4R17iOsexI1pf0Fi2tNzAdohkOdFU0pRIkgbwvsv
-         0SF2prYH888MMi3xOuUOIPJjBhTu6bzXuN4Hr1FkGzc9TpENlMzHGozAyZ/90+5ihXpv
-         aQJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KMSPv9lovPpFYq/LUSFG6QcTM2yJAf6mkVnhkUqAWFE=;
-        b=EB6aK9FeAjo2vR6xrTbgun8JicTEpDkdnQmhHpVsdKvUySIuQJl5c3Ahi0YCLDlB6D
-         tOl+3U12mwcYg6egUP3jKwmpgpS+Su8wktK/2yfmO/EVm6lsAKovgRxQEZzNAVzHKoab
-         /KdxFxLgRE/wt5TnJRiED3ERi7EGuC8PX/sVtpg2J4VAT/DV0Z04eXO21RubgDzm9MMF
-         wTNiGKF6tjY0lodyhirmAMq0F/vbdMDsdOtw969k2GSuzhW3DXSqypJnI20padt8OieE
-         AEyqPigDLq9PST3o9N0N3pgnGlPqV22Tx6l2ZHCNqtilTEQ4w3ovkUMSF+bcF8uWbFYx
-         3lxQ==
-X-Gm-Message-State: AOAM531gIxYA9n+J/pJRWxqNPdDh5UW8LcrsqP1DN/mlWR8R6JCUmJip
-        kGYLvoxQQfUhJ0u5WKrGYEc=
-X-Google-Smtp-Source: ABdhPJzXrPxUYjRIUy87NNVlcUO9m5FQh/SjJVEgeC1PytNMgZBHluBrkNXvuWeXy4XPqPBswW9+Jw==
-X-Received: by 2002:a9d:1d43:: with SMTP id m61mr19800887otm.190.1591070871042;
-        Mon, 01 Jun 2020 21:07:51 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:4111:8b00::3])
-        by smtp.gmail.com with ESMTPSA id v1sm418926ooi.13.2020.06.01.21.07.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 21:07:50 -0700 (PDT)
-Date:   Mon, 1 Jun 2020 21:07:48 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Parav Pandit <parav@mellanox.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH net-next] mlx5: Restore err assignment in mlx5_mdev_init
-Message-ID: <20200602040748.GA1435528@ubuntu-n2-xlarge-x86>
-References: <20200530055447.1028004-1-natechancellor@gmail.com>
- <20200531095810.GF66309@unreal>
+        Tue, 2 Jun 2020 00:12:48 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05243cGU128488;
+        Tue, 2 Jun 2020 00:12:27 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31c53yyxdp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 00:12:27 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05243cip128459;
+        Tue, 2 Jun 2020 00:12:27 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31c53yyxd9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 00:12:26 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05240nnL022718;
+        Tue, 2 Jun 2020 04:12:25 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma05fra.de.ibm.com with ESMTP id 31bf482464-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 04:12:24 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0524CLrS65602010
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Jun 2020 04:12:22 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DDFCB11C050;
+        Tue,  2 Jun 2020 04:12:21 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5470F11C04A;
+        Tue,  2 Jun 2020 04:12:19 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.55.113])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  2 Jun 2020 04:12:19 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     mpe@ellerman.id.au
+Cc:     ravi.bangoria@linux.ibm.com, mikey@neuling.org,
+        apopple@linux.ibm.com, paulus@samba.org, npiggin@gmail.com,
+        christophe.leroy@c-s.fr, naveen.n.rao@linux.vnet.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] hw_breakpoint: Fix build warnings with clang
+Date:   Tue,  2 Jun 2020 09:42:08 +0530
+Message-Id: <20200602041208.128913-1-ravi.bangoria@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200531095810.GF66309@unreal>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-02_04:2020-06-01,2020-06-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ mlxlogscore=985 cotscore=-2147483648 mlxscore=0 adultscore=0 spamscore=0
+ lowpriorityscore=0 suspectscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006020020
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 31, 2020 at 12:58:10PM +0300, Leon Romanovsky wrote:
-> On Fri, May 29, 2020 at 10:54:48PM -0700, Nathan Chancellor wrote:
-> > Clang warns:
-> >
-> > drivers/net/ethernet/mellanox/mlx5/core/main.c:1278:6: warning: variable
-> > 'err' is used uninitialized whenever 'if' condition is true
-> > [-Wsometimes-uninitialized]
-> >         if (!priv->dbg_root) {
-> >             ^~~~~~~~~~~~~~~
-> > drivers/net/ethernet/mellanox/mlx5/core/main.c:1303:9: note:
-> > uninitialized use occurs here
-> >         return err;
-> >                ^~~
-> > drivers/net/ethernet/mellanox/mlx5/core/main.c:1278:2: note: remove the
-> > 'if' if its condition is always false
-> >         if (!priv->dbg_root) {
-> >         ^~~~~~~~~~~~~~~~~~~~~~
-> > drivers/net/ethernet/mellanox/mlx5/core/main.c:1259:9: note: initialize
-> > the variable 'err' to silence this warning
-> >         int err;
-> >                ^
-> >                 = 0
-> > 1 warning generated.
-> >
-> > This path previously returned -ENOMEM, restore that error code so that
-> > it is not uninitialized.
-> >
-> > Fixes: 810cbb25549b ("net/mlx5: Add missing mutex destroy")
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1042
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/main.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > index df46b1fce3a7..ac68445fde2d 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > @@ -1277,6 +1277,7 @@ static int mlx5_mdev_init(struct mlx5_core_dev *dev, int profile_idx)
-> >  					    mlx5_debugfs_root);
-> >  	if (!priv->dbg_root) {
-> >  		dev_err(dev->device, "mlx5_core: error, Cannot create debugfs dir, aborting\n");
-> > +		err = -ENOMEM;
-> >  		goto err_dbg_root;
->                 ^^^^^^^^^^^^^^^^^^ this is wrong.
-> Failure to create debugfs should never fail the driver.
+kbuild test robot reported few build warnings with hw_breakpoint code
+when compiled with clang[1]. Fix those.
 
-Fair enough, could you guys deal with this then to make sure it gets
-fixed properly? It appears to be introduced in 11f3b84d7068 ("net/mlx5:
-Split mdev init and pci init").
+[1]: https://lore.kernel.org/linuxppc-dev/202005192233.oi9CjRtA%25lkp@intel.com/
 
-> >  	}
-> >
-> >
-> > base-commit: c0cc73b79123e67b212bd537a7af88e52c9fbeac
-> > --
-> > 2.27.0.rc0
-> >
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+---
+Note: Prepared on top of powerpc/next.
+
+ arch/powerpc/include/asm/hw_breakpoint.h | 3 ---
+ include/linux/hw_breakpoint.h            | 4 ++++
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/hw_breakpoint.h b/arch/powerpc/include/asm/hw_breakpoint.h
+index f42a55eb77d2..cb424799da0d 100644
+--- a/arch/powerpc/include/asm/hw_breakpoint.h
++++ b/arch/powerpc/include/asm/hw_breakpoint.h
+@@ -70,9 +70,6 @@ extern int hw_breakpoint_exceptions_notify(struct notifier_block *unused,
+ 						unsigned long val, void *data);
+ int arch_install_hw_breakpoint(struct perf_event *bp);
+ void arch_uninstall_hw_breakpoint(struct perf_event *bp);
+-int arch_reserve_bp_slot(struct perf_event *bp);
+-void arch_release_bp_slot(struct perf_event *bp);
+-void arch_unregister_hw_breakpoint(struct perf_event *bp);
+ void hw_breakpoint_pmu_read(struct perf_event *bp);
+ extern void flush_ptrace_hw_breakpoint(struct task_struct *tsk);
+ 
+diff --git a/include/linux/hw_breakpoint.h b/include/linux/hw_breakpoint.h
+index 6058c3844a76..521481f0d320 100644
+--- a/include/linux/hw_breakpoint.h
++++ b/include/linux/hw_breakpoint.h
+@@ -80,6 +80,10 @@ extern int dbg_reserve_bp_slot(struct perf_event *bp);
+ extern int dbg_release_bp_slot(struct perf_event *bp);
+ extern int reserve_bp_slot(struct perf_event *bp);
+ extern void release_bp_slot(struct perf_event *bp);
++extern int hw_breakpoint_weight(struct perf_event *bp);
++extern int arch_reserve_bp_slot(struct perf_event *bp);
++extern void arch_release_bp_slot(struct perf_event *bp);
++extern void arch_unregister_hw_breakpoint(struct perf_event *bp);
+ 
+ extern void flush_ptrace_hw_breakpoint(struct task_struct *tsk);
+ 
+-- 
+2.26.2
+
