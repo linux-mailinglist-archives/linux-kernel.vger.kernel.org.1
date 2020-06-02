@@ -2,97 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3281C1EBD4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212BA1EBD55
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgFBNs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 09:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgFBNs4 (ORCPT
+        id S1728031AbgFBNtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 09:49:25 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:35801 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725940AbgFBNtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 09:48:56 -0400
-Received: from forwardcorp1j.mail.yandex.net (forwardcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B12CC08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 06:48:56 -0700 (PDT)
-Received: from mxbackcorp1j.mail.yandex.net (mxbackcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::162])
-        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 295442E1521;
-        Tue,  2 Jun 2020 16:48:51 +0300 (MSK)
-Received: from myt5-70c90f7d6d7d.qloud-c.yandex.net (myt5-70c90f7d6d7d.qloud-c.yandex.net [2a02:6b8:c12:3e2c:0:640:70c9:f7d])
-        by mxbackcorp1j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id sIM0iAAhv4-mmeWtImL;
-        Tue, 02 Jun 2020 16:48:51 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1591105731; bh=DZ+4m0IpKnoMyohjYdLVqfAqILLUbRSTQBZ19sLaXSo=;
-        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
-        b=WSk1w+1a3ejh4K4zEQyKiIetrZHihpYz6AshoFdoA9LCyHQJNcRh+npwxDth8EuwS
-         SXJrST8fc7HNA3lG4Ufy0YgkRREoPcXEzuTGKXbk9eP1q4r3DQM483AYxHRi9uq/24
-         B9wKQ6ktt7CdcXav7PIArMtK5fuaDo88guQ+y8yg=
-Authentication-Results: mxbackcorp1j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:210::1:a])
-        by myt5-70c90f7d6d7d.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id niHGN11jDl-mmWqcDeN;
-        Tue, 02 Jun 2020 16:48:48 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: kobject_init_and_add is easy to misuse
-To:     Matthew Wilcox <willy@infradead.org>,
-        Wang Hai <wanghai38@huawei.com>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20200602115033.1054-1-wanghai38@huawei.com>
- <20200602121035.GL19604@bombadil.infradead.org>
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Message-ID: <d7c1a000-ca47-bace-c098-d3f3ab0c5127@yandex-team.ru>
-Date:   Tue, 2 Jun 2020 16:48:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 2 Jun 2020 09:49:25 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U-O.QTj_1591105757;
+Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0U-O.QTj_1591105757)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 02 Jun 2020 21:49:17 +0800
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>, Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: [PATCH] workqueue: ensure all flush_work() completed when being destoryed
+Date:   Tue,  2 Jun 2020 13:49:14 +0000
+Message-Id: <20200602134915.2644-1-laijs@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200601060802.3260-1-laijs@linux.alibaba.com>
+References: <20200601060802.3260-1-laijs@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20200602121035.GL19604@bombadil.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/06/2020 15.10, Matthew Wilcox wrote:
-> On Tue, Jun 02, 2020 at 07:50:33PM +0800, Wang Hai wrote:
->> syzkaller reports for memory leak when kobject_init_and_add()
->> returns an error in the function sysfs_slab_add() [1]
->>
->> When this happened, the function kobject_put() is not called for the
->> corresponding kobject, which potentially leads to memory leak.
->>
->> This patch fixes the issue by calling kobject_put() even if
->> kobject_init_and_add() fails.
-> 
-> I think this speaks to a deeper problem with kobject_init_and_add()
-> -- the need to call kobject_put() if it fails is not readily apparent
-> to most users.  This same bug appears in the first three users of
-> kobject_init_and_add() that I checked --
-> arch/ia64/kernel/topology.c
-> drivers/firmware/dmi-sysfs.c
-> drivers/firmware/efi/esrt.c
-> drivers/scsi/iscsi_boot_sysfs.c
-> 
-> Some do get it right --
-> arch/powerpc/kernel/cacheinfo.c
-> drivers/gpu/drm/ttm/ttm_bo.c
-> drivers/gpu/drm/ttm/ttm_memory.c
-> drivers/infiniband/hw/mlx4/sysfs.c
-> 
-> I'd argue that the current behaviour is wrong, that kobject_init_and_add()
-> should call kobject_put() if the add fails.  This would need a tree-wide
-> audit.  But somebody needs to do that anyway because based on my random
-> sampling, half of the users currently get it wrong.
-> 
+In old days, worker threads are not shared among different
+workqueues and destroy_workqueue() used kthread_stop() to destroy
+all workers before going to destroy workqueue structures.
+And kthread_stop() can ensure the scheduled (worker->scheduled)
+work items and the linked work items queued by flush_work()
+to be completed.
 
-At his point kobject doesn't own kmem-cache structure itself yet.
+For a workqueue to be completed/unused for wq users means that all
+queued works have completed and all flush_work() have return,
+and the workqueue is legitimate to passed to destroy_workqueue().
 
-So calling kobject_put() will free kmem-cache and then it will be
-freed second time on error path in create_cache().
+But
+e22bee782b3b("workqueue: implement concurrency managed dynamic worker pool")
+made worker pools and workers shared among different
+workqueues and kthread_stop() is not used to sync the completion
+of the work items. destroy_workqueue() uses drain_workqueue()
+to drain user work items, but internal work items queued by
+flush_work() is not drained due to they don't have colors.
 
-I suppose freeing in case of error should be pushed from common
-create_cache() into slab-specific __kmem_cache_create().
+So problems may occur when wq_barrier_func() does complete(&barr->done)
+and the wokenup wq-user code does destroy_workqueue(). destroy_workqueue()
+can be scheduled eariler than the proccess_one_work() to do
+the put_pwq(), so that the sanity check in destroy_workqueue()
+can see the no yet put pwq->refcnt and blame false positively.
+
+The problem can be easily fixed by removing the WORK_NO_COLOR
+and making the internal work item queued by flush_work() inherit
+the color of the work items to be flushed. It would definitely
+revert the design and the benefits of the WORK_NO_COLOR.
+
+The patch simply adds an atomic counter for in-flight flush_work()
+and a completion for destroy_workqueue() waiting for them.
+
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+Changed from V1:
+	Change from flush_no_color based mechanism to atomic+completion
+	based as TJ suggested.
+
+ kernel/workqueue.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 1921c982f920..71272beb8e01 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -253,6 +253,9 @@ struct workqueue_struct {
+ 	int			nr_drainers;	/* WQ: drain in progress */
+ 	int			saved_max_active; /* WQ: saved pwq max_active */
+ 
++	atomic_t		nr_flush_work;	/* flush work in progress */
++	struct completion	flush_work_done; /* sync flush_work() */
++
+ 	struct workqueue_attrs	*unbound_attrs;	/* PW: only for unbound wqs */
+ 	struct pool_workqueue	*dfl_pwq;	/* PW: only for unbound wqs */
+ 
+@@ -1154,6 +1157,12 @@ static void pwq_activate_first_delayed(struct pool_workqueue *pwq)
+ 	pwq_activate_delayed_work(work);
+ }
+ 
++static void dec_nr_in_flight_flush_work(struct workqueue_struct *wq)
++{
++	if (atomic_dec_and_test(&wq->nr_flush_work))
++		complete(&wq->flush_work_done);
++}
++
+ /**
+  * pwq_dec_nr_in_flight - decrement pwq's nr_in_flight
+  * @pwq: pwq of interest
+@@ -1168,8 +1177,10 @@ static void pwq_activate_first_delayed(struct pool_workqueue *pwq)
+ static void pwq_dec_nr_in_flight(struct pool_workqueue *pwq, int color)
+ {
+ 	/* uncolored work items don't participate in flushing or nr_active */
+-	if (color == WORK_NO_COLOR)
++	if (color == WORK_NO_COLOR) {
++		dec_nr_in_flight_flush_work(pwq->wq);
+ 		goto out_put;
++	}
+ 
+ 	pwq->nr_in_flight[color]--;
+ 
+@@ -2682,6 +2693,7 @@ static void insert_wq_barrier(struct pool_workqueue *pwq,
+ 	}
+ 
+ 	debug_work_activate(&barr->work);
++	atomic_inc(&pwq->wq->nr_flush_work);
+ 	insert_work(pwq, &barr->work, head,
+ 		    work_color_to_flags(WORK_NO_COLOR) | linked);
+ }
+@@ -4278,6 +4290,9 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ 	wq_init_lockdep(wq);
+ 	INIT_LIST_HEAD(&wq->list);
+ 
++	atomic_set(&wq->nr_flush_work, 1);
++	init_completion(&wq->flush_work_done);
++
+ 	if (alloc_and_link_pwqs(wq) < 0)
+ 		goto err_unreg_lockdep;
+ 
+@@ -4354,6 +4369,10 @@ void destroy_workqueue(struct workqueue_struct *wq)
+ 	/* drain it before proceeding with destruction */
+ 	drain_workqueue(wq);
+ 
++	/* flush all uncompleted internal work items queued by flush_work() */
++	dec_nr_in_flight_flush_work(wq);
++	wait_for_completion(&wq->flush_work_done);
++
+ 	/* kill rescuer, if sanity checks fail, leave it w/o rescuer */
+ 	if (wq->rescuer) {
+ 		struct worker *rescuer = wq->rescuer;
+-- 
+2.20.1
+
