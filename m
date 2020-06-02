@@ -2,114 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFF71EBBDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC541EBBE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgFBMkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgFBMkI (ORCPT
+        id S1727794AbgFBMlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:41:06 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:44030 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgFBMlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:40:08 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E876C061A0E;
-        Tue,  2 Jun 2020 05:40:08 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id n24so12610137ejd.0;
-        Tue, 02 Jun 2020 05:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pnkbE2uBubmbsQ93vSdhuAVLA29ePPmsNN07Qt9DHJ4=;
-        b=dYsfrN7LwYJdkBm0nZ1qPQHkUNeGceflDzI5C5NUoLIiZvmiZpWFc/mmvz6qM3A546
-         /5G/DdfN6Fg7pJ/64PoBkDDacuYGmPLFyoa4RbNvSIoU7w8rWqRVJ3lxBvGe+S/i0UYD
-         6iliy99FeqPecrqyPhTWDxi57Bh0r7g21U11O5jYSVleisF4GZ0k9xl02xK5uf+FAIuO
-         +UH2SEnaIXNdaGfuINUDDJ2CSi8JhQnS5Um2aqFgmbbPy5RE1fxA+70wAVhFoo7t0KfN
-         saJOvarvOlt/HnlsrlRRlvB9tcD9bYWuRv3vYg08ILqVox2Iyxml5oYoM8QCFsvyPI1G
-         8ZhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pnkbE2uBubmbsQ93vSdhuAVLA29ePPmsNN07Qt9DHJ4=;
-        b=djjKYeVuLKGy2NfqlTMUfx6EcQ8xqFEFqxLIYLrKgXrNiDiEaBI4GYbvgBZ1Vbw/74
-         GO0ntF7f8ypY9va3efRksgFC+phmvZCxG6JqmgrFFrTtjPYeiTnf7zjhnzuVQ/LXtKTv
-         U7Fc4MbJd4bTqanUijFp+Zj/mFp3kYGw+MGpGMZ+5mthqquXf5T2X6aI9X1DMO1Ve6wS
-         cKH4hR/SH2iCtkflYZD7zecONYeT9L0LMY6pUpnmOtg/0QIpJyTryY/aqJ70YFdRklIZ
-         46QGVV8kzTCPDuBd0m6XKc6uFYysPF6MTBD9Y8BznzugNliNIUTJfKXMAljJRiboGSRm
-         mosA==
-X-Gm-Message-State: AOAM530crT94CJEbL5OK5SKzvOgjqXrV+88T/Q7oaasVpe93SMgyGpYp
-        e0Mjl/h/drF1nGIwDhzX5g4=
-X-Google-Smtp-Source: ABdhPJz4LZjAT+sYrMfbdPxp8PF2QaCCD5/7pLVxD/qNvvvB/GiZeB2y1VMgWBQYjIBc3hOGpR7vVQ==
-X-Received: by 2002:a17:906:4d04:: with SMTP id r4mr22460219eju.317.1591101607207;
-        Tue, 02 Jun 2020 05:40:07 -0700 (PDT)
-Received: from localhost (pd9e51079.dip0.t-ipconnect.de. [217.229.16.121])
-        by smtp.gmail.com with ESMTPSA id cb6sm620637edb.18.2020.06.02.05.40.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 05:40:05 -0700 (PDT)
-Date:   Tue, 2 Jun 2020 14:40:04 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Peter Vasil <peter.vasil@gmail.com>
-Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, linux-pwm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nightwolf@relghuar.net
-Subject: Re: [PATCH v2] pwm: sun4i: direct clock output support for Allwinner
- A64
-Message-ID: <20200602124004.GB3360525@ulmo>
-References: <20200428164150.366966-1-peter.vasil@gmail.com>
+        Tue, 2 Jun 2020 08:41:05 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 052Cf3RM120100;
+        Tue, 2 Jun 2020 07:41:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591101663;
+        bh=wRmRkSXnt3fLQN56wOzLfHTAJ2PNWfgj+9sS12W0rio=;
+        h=From:To:CC:Subject:Date;
+        b=A/Y2NaudgDJa6Otq13YP9xh08d4OzBgxMQLCjhbboRulPbR0F7pYNXEtUzRmXobVv
+         lHVTrP6+7p8VE58Vr6Cd9EGYU/cWWLbR1K9nuLsZwnMWJfPejNAGDwp0KBntem1gFh
+         ++oH5rF5x1FrxUnhyA0Ezn1mpIpdpj0i4fHuh3tY=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 052Cf3H2010020
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 2 Jun 2020 07:41:03 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 2 Jun
+ 2020 07:41:03 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 2 Jun 2020 07:41:03 -0500
+Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 052Cf0v7045240;
+        Tue, 2 Jun 2020 07:41:01 -0500
+From:   Roger Quadros <rogerq@ti.com>
+To:     <balbi@kernel.org>
+CC:     <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
+Subject: [PATCH] dt-bindings: usb: ti,keystone-dwc3.yaml: Improve schema
+Date:   Tue, 2 Jun 2020 15:40:55 +0300
+Message-ID: <20200602124055.1680-1-rogerq@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+pHx0qQiF2pBVqBT"
-Content-Disposition: inline
-In-Reply-To: <20200428164150.366966-1-peter.vasil@gmail.com>
-User-Agent: Mutt/1.13.1 (2019-12-14)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There were some review comments after the patch was integrated.
+Address those.
 
---+pHx0qQiF2pBVqBT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 1883a934e156 ("dt-bindings: usb: convert keystone-usb.txt to YAML")
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+---
+ .../bindings/usb/ti,keystone-dwc3.yaml        | 47 ++++++++++++++-----
+ 1 file changed, 35 insertions(+), 12 deletions(-)
 
-On Tue, Apr 28, 2020 at 06:41:50PM +0200, Peter Vasil wrote:
-> Allwinner A64 is capable of a direct clock output on PWM (see A64
-> User Manual chapter 3.10). Add support for this in the sun4i PWM
-> driver.
->=20
-> Signed-off-by: Peter Vasil <peter.vasil@gmail.com>
-> ---
->  drivers/pwm/pwm-sun4i.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+diff --git a/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml b/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml
+index f127535feb0b..017c5883184b 100644
+--- a/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml
+@@ -11,30 +11,44 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    oneOf:
+-      - const: "ti,keystone-dwc3"
+-      - const: "ti,am654-dwc3"
++    items:
++      - enum:
++        - "ti,keystone-dwc3"
++        - "ti,am654-dwc3"
+ 
+   reg:
+     maxItems: 1
+-    description: Address and length of the register set for the USB subsystem on
+-      the SOC.
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 1
++
++  ranges: true
+ 
+   interrupts:
+     maxItems: 1
+-    description: The irq number of this device that is used to interrupt the MPU.
+-
+ 
+   clocks:
++    $ref: /schemas/types.yaml#definitions/phandle-array
+     description: Clock ID for USB functional clock.
+ 
++  assigned-clocks:
++    $ref: /schemas/types.yaml#definitions/phandle-array
++
++  assigned-clock-parents:
++    $ref: /schemas/types.yaml#definitions/phandle-array
++
+   power-domains:
++    $ref: /schemas/types.yaml#definitions/phandle-array
+     description: Should contain a phandle to a PM domain provider node
+       and an args specifier containing the USB device id
+       value. This property is as per the binding,
+       Documentation/devicetree/bindings/soc/ti/sci-pm-domain.txt
+ 
+   phys:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
+     description:
+       PHY specifier for the USB3.0 PHY. Some SoCs need the USB3.0 PHY
+       to be turned on before the controller.
+@@ -44,31 +58,40 @@ properties:
+     items:
+       - const: "usb3-phy"
+ 
+-  dwc3:
++  dma-coherent: true
++
++  dma-ranges: true
++
++patternProperties:
++  "usb@[a-f0-9]+$":
++    type: object
+     description: This is the node representing the DWC3 controller instance
+       Documentation/devicetree/bindings/usb/dwc3.txt
+ 
+ required:
+   - compatible
+   - reg
++  - "#address-cells"
++  - "#size-cells"
++  - ranges
+   - interrupts
+-  - clocks
++
++additionalProperties: false
+ 
+ examples:
+   - |
+     #include <dt-bindings/interrupt-controller/arm-gic.h>
+ 
+-    usb: usb@2680000 {
++    dwc3@2680000 {
+       compatible = "ti,keystone-dwc3";
+       #address-cells = <1>;
+       #size-cells = <1>;
+       reg = <0x2680000 0x10000>;
+       clocks = <&clkusb>;
+-      clock-names = "usb";
+       interrupts = <GIC_SPI 393 IRQ_TYPE_EDGE_RISING>;
+       ranges;
+ 
+-      dwc3@2690000 {
++      usb@2690000 {
+         compatible = "synopsys,dwc3";
+         reg = <0x2690000 0x70000>;
+         interrupts = <GIC_SPI 393 IRQ_TYPE_EDGE_RISING>;
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
-Applied, thanks.
-
-Thierry
-
---+pHx0qQiF2pBVqBT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl7WSKQACgkQ3SOs138+
-s6EaEhAAm/NQGeJ/IOWtqrbF6KZ1hxhFv6kLldfbKchk0A0Rhnebp1FqHYMkQBwu
-/KzAQl8/ZLrQMM3oXqYeKEWW+sSowB/KyICk7Ynx/RRJjAQiBsdOjfANNvONeF56
-4VOWkiC12fHm7l+vOFWtQttg8ShAIoKQQM/XQ+Gj259BfdAeSs+Gv+7FL9ue8pTI
-n6iM9g68mr88CP2XkWMPsMhaSAE21o7UEgMI6y4BpHXETnb2bmbaIHPoWJB2jx/E
-rLpCN6iQTkxrgtV/mU8sXggejhRDqTWdq9aueNt3dEDj4o2eAayIJy4Rba4zbyb/
-l1C+6qiuT9MQglKbmY4of4FXWt339nfgtgXJL6aHRJob1ROu/OH0hVmW/jDfJV64
-C73+XaNUyfNUqgNc2Q+5B/xNCuRa7cENLhA8j3vu+gKFIlSMHVpD35ISBr/DSQwR
-qEBPZ2ZDW6TmqUxr2ZLuirW3SXV6jVngsMJhDqAFSWEaLc49MjIi3LG9ItEQdj6h
-h2OTJPS+IE3JSTKkX90e9BA/QEsi+f/SP3sQBpxetXYn19eUliLXMzIKv0V/rWUc
-L85/oyvgT1n8PVbc7O0hMEgqoRxwth9R/EOtozadIlceBw9zdpRy3lp+aO4DL8NR
-5mOiC5GtWuBmP2/l8/edwhneBVDCQQP2AYVZ6vm29XVX5Glklvs=
-=FM1x
------END PGP SIGNATURE-----
-
---+pHx0qQiF2pBVqBT--
