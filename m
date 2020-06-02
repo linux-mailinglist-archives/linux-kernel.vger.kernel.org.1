@@ -2,161 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B471EC5AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 01:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406761EC5BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 01:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgFBX2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 19:28:52 -0400
-Received: from mga06.intel.com ([134.134.136.31]:38173 "EHLO mga06.intel.com"
+        id S1728403AbgFBXbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 19:31:02 -0400
+Received: from albireo.enyo.de ([37.24.231.21]:55286 "EHLO albireo.enyo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726589AbgFBX2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 19:28:51 -0400
-IronPort-SDR: H7+PLikNW0S3HMJ2m+Ebu9YD1SE4din8SYPrT0OYbojWxRckn26ZM2RlxX1hyf3Kjtoyj/TDKD
- 4VzrtxakNahw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 16:28:51 -0700
-IronPort-SDR: OKjQEHjHSnkvSt2tRndVRvOSocqBUBfTrLaYv+V4qnwAfjFhPzrPDaLEvqVzCuAVrFxWPL3j6b
- gTYN6yObRsVg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,466,1583222400"; 
-   d="scan'208";a="257269222"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.25])
-  by fmsmga007.fm.intel.com with ESMTP; 02 Jun 2020 16:28:49 -0700
-Date:   Tue, 2 Jun 2020 16:28:49 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@intel.com>,
-        lalithambika.krishnakumar@intel.com, rajatxjain@gmail.com,
-        pmalani@google.com, bleung@google.com, levinale@google.com,
-        zsm@google.com, mnissler@google.com, tbroch@google.com,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v3] iommu/vt-d: Don't apply gfx quirks to untrusted
- devices
-Message-ID: <20200602232849.GA17696@otc-nc-03>
-References: <20200602232602.156049-1-rajatja@google.com>
+        id S1726809AbgFBXbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 19:31:02 -0400
+Received: from [172.17.203.2] (helo=deneb.enyo.de)
+        by albireo.enyo.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1jgGN0-0005GC-1l; Tue, 02 Jun 2020 23:30:58 +0000
+Received: from fw by deneb.enyo.de with local (Exim 4.92)
+        (envelope-from <fw@deneb.enyo.de>)
+        id 1jgGMz-0001Se-VB; Wed, 03 Jun 2020 01:30:57 +0200
+From:   Florian Weimer <fw@deneb.enyo.de>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        Kyle Evans <self@kyle-evans.net>,
+        Victor Stinner <victor.stinner@gmail.com>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, fweimer@redhat.com, jannh@google.com,
+        oleg@redhat.com, arnd@arndb.de, shuah@kernel.org,
+        dhowells@redhat.com, ldv@altlinux.org
+Subject: Re: [PATCH v5 1/3] open: add close_range()
+References: <20200602204219.186620-1-christian.brauner@ubuntu.com>
+        <20200602204219.186620-2-christian.brauner@ubuntu.com>
+Date:   Wed, 03 Jun 2020 01:30:57 +0200
+In-Reply-To: <20200602204219.186620-2-christian.brauner@ubuntu.com> (Christian
+        Brauner's message of "Tue, 2 Jun 2020 22:42:17 +0200")
+Message-ID: <87d06hdozy.fsf@mid.deneb.enyo.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200602232602.156049-1-rajatja@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 04:26:02PM -0700, Rajat Jain wrote:
-> Currently, an external malicious PCI device can masquerade the VID:PID
-> of faulty gfx devices, and thus apply iommu quirks to effectively
-> disable the IOMMU restrictions for itself.
-> 
-> Thus we need to ensure that the device we are applying quirks to, is
-> indeed an internal trusted device.
-> 
-> Signed-off-by: Rajat Jain <rajatja@google.com>
-> Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+* Christian Brauner:
 
-With these changes
+> The performance is striking. For good measure, comparing the following
+> simple close_all_fds() userspace implementation that is essentially just
+> glibc's version in [6]:
+>
+> static int close_all_fds(void)
+> {
+>         int dir_fd;
+>         DIR *dir;
+>         struct dirent *direntp;
+>
+>         dir = opendir("/proc/self/fd");
+>         if (!dir)
+>                 return -1;
+>         dir_fd = dirfd(dir);
+>         while ((direntp = readdir(dir))) {
+>                 int fd;
+>                 if (strcmp(direntp->d_name, ".") == 0)
+>                         continue;
+>                 if (strcmp(direntp->d_name, "..") == 0)
+>                         continue;
+>                 fd = atoi(direntp->d_name);
+>                 if (fd == dir_fd || fd == 0 || fd == 1 || fd == 2)
+>                         continue;
+>                 close(fd);
+>         }
+>         closedir(dir);
+>         return 0;
+> }
+>
 
-Reviewed-by: Ashok Raj <ashok.raj@intel.com>
+> [6]: https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/grantpt.c;h=2030e07fa6e652aac32c775b8c6e005844c3c4eb;hb=HEAD#l17
+>      Note that this is an internal implementation that is not exported.
+>      Currently, libc seems to not provide an exported version of this
+>      because of missing kernel support to do this.
 
-> ---
-> v3: - Separate out the warning mesage in a function to be called from
->       other places. Change the warning string as suggested.
-> v2: - Change the warning print strings.
->     - Add Lu Baolu's acknowledgement.
-> 
->  drivers/iommu/intel-iommu.c | 37 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 37 insertions(+)
-> 
-> diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
-> index ef0a5246700e5..dc859f02985a0 100644
-> --- a/drivers/iommu/intel-iommu.c
-> +++ b/drivers/iommu/intel-iommu.c
-> @@ -6185,6 +6185,23 @@ intel_iommu_domain_set_attr(struct iommu_domain *domain,
->  	return ret;
->  }
->  
-> +/*
-> + * Check that the device does not live on an external facing PCI port that is
-> + * marked as untrusted. Such devices should not be able to apply quirks and
-> + * thus not be able to bypass the IOMMU restrictions.
-> + */
-> +static bool risky_device(struct pci_dev *pdev)
-> +{
-> +	if (pdev->untrusted) {
-> +		pci_warn(pdev,
-> +			 "Skipping IOMMU quirk for dev (%04X:%04X) on untrusted"
-> +			 " PCI link. Please check with your BIOS/Platform"
-> +			 " vendor about this\n", pdev->vendor, pdev->device);
-> +		return true;
-> +	}
-> +	return false;
-> +}
-> +
->  const struct iommu_ops intel_iommu_ops = {
->  	.capable		= intel_iommu_capable,
->  	.domain_alloc		= intel_iommu_domain_alloc,
-> @@ -6214,6 +6231,9 @@ const struct iommu_ops intel_iommu_ops = {
->  
->  static void quirk_iommu_igfx(struct pci_dev *dev)
->  {
-> +	if (risky_device(dev))
-> +		return;
-> +
->  	pci_info(dev, "Disabling IOMMU for graphics on this chipset\n");
->  	dmar_map_gfx = 0;
->  }
-> @@ -6255,6 +6275,9 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163D, quirk_iommu_igfx);
->  
->  static void quirk_iommu_rwbf(struct pci_dev *dev)
->  {
-> +	if (risky_device(dev))
-> +		return;
-> +
->  	/*
->  	 * Mobile 4 Series Chipset neglects to set RWBF capability,
->  	 * but needs it. Same seems to hold for the desktop versions.
-> @@ -6285,6 +6308,9 @@ static void quirk_calpella_no_shadow_gtt(struct pci_dev *dev)
->  {
->  	unsigned short ggc;
->  
-> +	if (risky_device(dev))
-> +		return;
-> +
->  	if (pci_read_config_word(dev, GGC, &ggc))
->  		return;
->  
-> @@ -6318,6 +6344,12 @@ static void __init check_tylersburg_isoch(void)
->  	pdev = pci_get_device(PCI_VENDOR_ID_INTEL, 0x3a3e, NULL);
->  	if (!pdev)
->  		return;
-> +
-> +	if (risky_device(pdev)) {
-> +		pci_dev_put(pdev);
-> +		return;
-> +	}
-> +
->  	pci_dev_put(pdev);
->  
->  	/* System Management Registers. Might be hidden, in which case
-> @@ -6327,6 +6359,11 @@ static void __init check_tylersburg_isoch(void)
->  	if (!pdev)
->  		return;
->  
-> +	if (risky_device(pdev)) {
-> +		pci_dev_put(pdev);
-> +		return;
-> +	}
-> +
->  	if (pci_read_config_dword(pdev, 0x188, &vtisochctrl)) {
->  		pci_dev_put(pdev);
->  		return;
-> -- 
-> 2.27.0.rc2.251.g90737beb825-goog
-> 
+Just to be clear, this code is not compiled into glibc anymore in
+typical configurations.  I have posted a patch to turn grantpt into a
+no-op: <https://sourceware.org/pipermail/libc-alpha/2020-May/114379.html>
+
+I'm not entirely convinced that it's safe to keep iterating over
+/proc/self/fd while also closing descriptors.  Ideally, I think an
+application should call getdents64, process the file names for
+descriptors in the buffer, and if any have been closed, seek to zero
+before the next getdents64 call.  Maybe procfs is different, but with
+other file systems, unlinking files can trigger directory reordering,
+and then you get strange effects.  The d_ino behavior for
+/proc/self/fd is a bit strange as well (it's not consistently
+descriptor plus 3).
