@@ -2,83 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C591EB6F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 10:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355AD1EB701
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 10:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726450AbgFBIFq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Jun 2020 04:05:46 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:40972 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgFBIFo (ORCPT
+        id S1726216AbgFBIHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 04:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbgFBIHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 04:05:44 -0400
-Received: by mail-ed1-f65.google.com with SMTP id ce8so3213691edb.8;
-        Tue, 02 Jun 2020 01:05:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=SCR2cHiabRKqtkGaERDcoYhLdk1hHk/2OBBAMb5lQNY=;
-        b=SSTnPobq3H7q9kcHjP1hoz3gIoOTfh/FbhzMV0W3gdVaWYGlK1CXaS6Scr+EuiZxqI
-         BnW0QrTgigImDlbj3stiSD9O1dly0PcGPuKK/65Kj6VFB07XYA0Y5lh4ZKoDU2mVkzWC
-         x6r+u07Q17qZxtjEVnnGLardR0ZpdyMFKINLO/BGVVObc3l7oRXmy7h3LU1NO1S7hw47
-         s+DzpBiRH8dLDGcO8iKqEp7orR1bJNtdeONuYF6TbV3ExbtwMJNtDN/IErGZq1twgCDi
-         dLIoAXb1NciavJJBb2qjpyVMQiPQ/FrzldOhTXhHMi87YvZA1liuw1sMd4v7+jzFN4ia
-         V7EQ==
-X-Gm-Message-State: AOAM532SDF22FkZyR602bsXyhwmHHy9HiLUxsrCfP+tDA81UfXYrS5xa
-        f7q+U7VbNM+NKUhyzXkHt9Q=
-X-Google-Smtp-Source: ABdhPJwZlPDhteUZ4oQPMQH3bkm+GkPpXcVWfKiuXmPmtRXf3HlXBuN/miC3BujdGRr/785rYqnlRQ==
-X-Received: by 2002:a50:af85:: with SMTP id h5mr17930429edd.86.1591085141913;
-        Tue, 02 Jun 2020 01:05:41 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.118])
-        by smtp.googlemail.com with ESMTPSA id u10sm1177397edb.65.2020.06.02.01.05.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 02 Jun 2020 01:05:41 -0700 (PDT)
-Date:   Tue, 2 Jun 2020 10:05:38 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     georgi.djakov@linaro.org, cw00.choi@samsung.com,
-        a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        inki.dae@samsung.com, sw0312.kim@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH v5 1/6] dt-bindings: exynos-bus: Add documentation
- for interconnect properties
-Message-ID: <20200602080538.GA8216@kozik-lap>
-References: <20200529163200.18031-1-s.nawrocki@samsung.com>
- <CGME20200529163219eucas1p2d127fe3936921f53f6fe7902e7d14a3e@eucas1p2.samsung.com>
- <20200529163200.18031-2-s.nawrocki@samsung.com>
+        Tue, 2 Jun 2020 04:07:15 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4E7C061A0E;
+        Tue,  2 Jun 2020 01:07:15 -0700 (PDT)
+Received: from ni.home (unknown [IPv6:2a01:cb19:8092:cf00:aaa1:59ff:fe08:91d5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: myjosserand)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AD7C52A0151;
+        Tue,  2 Jun 2020 09:07:06 +0100 (BST)
+From:   =?UTF-8?q?Myl=C3=A8ne=20Josserand?= 
+        <mylene.josserand@collabora.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org, heiko@sntech.de,
+        robh+dt@kernel.org
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, mylene.josserand@collabora.com,
+        kernel@collabora.com
+Subject: [PATCH v4 0/2] ARM: Add Rockchip rk3288w support
+Date:   Tue,  2 Jun 2020 10:06:42 +0200
+Message-Id: <20200602080644.11333-1-mylene.josserand@collabora.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200529163200.18031-2-s.nawrocki@samsung.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 06:31:55PM +0200, Sylwester Nawrocki wrote:
-> Add documentation for new optional properties in the exynos bus nodes:
-> samsung,interconnect-parent, #interconnect-cells.
-> These properties allow to specify the SoC interconnect structure which
-> then allows the interconnect consumer devices to request specific
-> bandwidth requirements.
-> 
-> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
-> Changes for v5:
->  - exynos,interconnect-parent-node renamed to samsung,interconnect-parent
-> ---
->  Documentation/devicetree/bindings/devfreq/exynos-bus.txt | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
+Hello everyone,
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Context
+-------
+
+Here is my V4 of my patches that add the support for the Rockchip
+RK3288w which is a revision of the RK3288. It is mostly the same SOC
+except for, at least, one clock tree which is different.
+This difference is only known by looking at the BSP kernel [1].
+
+Currently, the mainline kernel will not hang on rk3288w but it is
+probably by "chance" because we got an issue on a lower kernel version.
+
+According to Rockchip's U-Boot [2], the rk3288w can be detected using
+the HDMI revision number (= 0x1A) in this version of the SOC.
+
+Changelog
+---------
+
+This V4 is pretty much the same than the V3. Added the dt-bindings
+documentation in clock-controller dt-bindings and fixed some typos
+according to Heiko's reviews.
+
+Changes since v3:
+   - Updated clock-controller's dt-bindings
+   - Fixed indentation
 
 Best regards,
-Krzysztof
+Mylène Josserand
+
+[1] https://github.com/rockchip-linux/kernel/blob/develop-4.4/drivers/clk/rockchip/clk-rk3288.c#L960..L964
+[2] https://github.com/rockchip-linux/u-boot/blob/next-dev/arch/arm/mach-rockchip/rk3288/rk3288.c#L378..L388
+
+Mylène Josserand (2):
+  clk: rockchip: rk3288: Handle clock tree for rk3288w
+  dt-bindings: clocks: rk3288: add possible rk3288w
+
+ .../bindings/clock/rockchip,rk3288-cru.txt    |  8 +++++++-
+ drivers/clk/rockchip/clk-rk3288.c             | 20 +++++++++++++++++--
+ 2 files changed, 25 insertions(+), 3 deletions(-)
+
+-- 
+2.26.2
+
