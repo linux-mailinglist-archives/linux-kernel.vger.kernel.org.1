@@ -2,541 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6FB1EBCB4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F37D1EBCAD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728275AbgFBNK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 09:10:59 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:44098 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgFBNK6 (ORCPT
+        id S1728050AbgFBNJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 09:09:36 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:35434 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727013AbgFBNJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 09:10:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1591103458; x=1622639458;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=8PyBjtWSkd4lw04T7AvgGMax2HvF//Nh3zPcCX2mNC0=;
-  b=dRx3mrFmNPd3kp2H5ADCWiOld+IoMIoBJk8l+xooa1jYN5ol51xgHFnB
-   t/c5ZBEM2i2A3knaVe2QdKMec27liQJAX8NEVsZUXo8UMZckR0D+vwboi
-   zvqoY3sKS04msXE1NKlpWdGcKi212Z0r09k1eMVfdTXXToiBOq7pGjJRj
-   o=;
-IronPort-SDR: g1CoT3zw5d4wRJ9jDVp5aF/xK/irKuXYjD2ewP3paLzgVvEdEfjoaP68d2/bLsiEzCtsLd18vo
- hD1uq4ngUo1w==
-X-IronPort-AV: E=Sophos;i="5.73,464,1583193600"; 
-   d="scan'208";a="33878771"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 02 Jun 2020 13:10:43 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id 8E7B8A182F;
-        Tue,  2 Jun 2020 13:10:39 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 2 Jun 2020 13:10:38 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.175) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 2 Jun 2020 13:10:22 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
-        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
-        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
-        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
-        <ying.huang@intel.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v14 08/15] mm/damon: Add debugfs interface
-Date:   Tue, 2 Jun 2020 15:01:18 +0200
-Message-ID: <20200602130125.20467-9-sjpark@amazon.com>
+        Tue, 2 Jun 2020 09:09:35 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200602130932euoutp016ce3720db614a2779c47be3f5d88bda8~UvBZsjLJv0430104301euoutp012
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 13:09:32 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200602130932euoutp016ce3720db614a2779c47be3f5d88bda8~UvBZsjLJv0430104301euoutp012
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591103372;
+        bh=mqXQUJYme8sb1kqyyvm+dIEEXicHI1pNmMuhexl44FY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JvH6xRRKpNIE6J6Or813n+/x5J6SdAlVvNHoRWI5RMMBzWwoVWNuPT0TkluDE/rmI
+         e6BEh5ULO8rq082LoJv4lvmnDlD0He3ulRHg8jhtHuEZmmDs/yGmqviqFpFzF1iLjO
+         VJ1/gTj07mM2j/aexBkvBv0kaZAWZg/1cHLDD5oQ=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200602130932eucas1p2fd3291361188944610cbfe39dacb9167~UvBY89fm52884128841eucas1p24;
+        Tue,  2 Jun 2020 13:09:32 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 7E.29.60698.B8F46DE5; Tue,  2
+        Jun 2020 14:09:31 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200602130931eucas1p1cd784c8f692fa91dc566504543a927de~UvBYTXxxs1673516735eucas1p1S;
+        Tue,  2 Jun 2020 13:09:31 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200602130931eusmtrp1a44b6adeb42cbadf5c1397223ff4fca6~UvBYSlpQe0850308503eusmtrp1i;
+        Tue,  2 Jun 2020 13:09:31 +0000 (GMT)
+X-AuditID: cbfec7f5-a29ff7000001ed1a-47-5ed64f8ba37e
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 56.80.07950.B8F46DE5; Tue,  2
+        Jun 2020 14:09:31 +0100 (BST)
+Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200602130930eusmtip2d4d6e6598c097b354cc224f2f84170fb~UvBXd9TTM2230822308eusmtip2v;
+        Tue,  2 Jun 2020 13:09:30 +0000 (GMT)
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>, peron.clem@gmail.com,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        linux-samsung-soc@vger.kernel.org,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: [PATCH v2] soc: samsung: Add simple voltage coupler for Exynos5800
+Date:   Tue,  2 Jun 2020 15:02:11 +0200
+Message-Id: <20200602130211.2727-1-m.szyprowski@samsung.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200602130125.20467-1-sjpark@amazon.com>
-References: <20200602130125.20467-1-sjpark@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.175]
-X-ClientProxiedBy: EX13D29UWC002.ant.amazon.com (10.43.162.254) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+In-Reply-To: <57cf3a15-5d9b-7636-4c69-60742e8cfae6@samsung.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA0VSa0hTYRjmO+fs7Dicnabki5nioKCbF+zHB4l28cepKPvjj4KWqw4qOpUt
+        S4XIDLxslqaYYiZiSl5Th7csw3Q0aupMa5nO0BJtlkHp7KJJbkfz3/O9z/PwPO/Lx5CyLpEX
+        E5twmVcnKOPltIRqf/F7cL8uwqII/JgXgltKmkS4aGqaxu8WZ0W4/vsnhM3mZjGevP+ewEtv
+        sgk80lVG44VbBoRLzM8I3GiYEOOvvwYIPF4+QuF+07AIr1paKJxtWCJxi507tJV7XDoh5vR1
+        OTRntTyluby/gVzr2yyKu91ahzjjaAfBLeh9TjNnJSGX+PjYK7w6IDRKErMy6plULU95mV1F
+        pyOrtxa5MMAegNwKO6FFEkbG1iB4p2+kHYSMXUTwYeKEQCwgeNKxTG44Rle7SIF4iGC2eGLT
+        kdEf6cA0GwTaeS3tEHmwNxC0VQwRDoJkl0nofu3nwO7sCZg1NYsdmGJ3wvsZnRNL2RDozB9H
+        Qpov1Df3OJNd2DC4Z9Q6uwL7SgxjfZ8pQRQOtm/zYgG7w5yxdR17g6kwlxIMNxFMDTaKhUcu
+        gpGMkvWIg2Ad/LPWlVmrtxuaugKE8WEoqS1zjoF1g9H5rcICblDQXkwKYylkZ8oE9S4oNT76
+        H/t8aHj9WhzUagvXr1WAoMlqQvnIt3QzrAKhOuTJJ2tU0bwmOIG/6q9RqjTJCdH+FxNVerT2
+        o0yrRnsnerZyoRexDJK7SgODLAqZSHlFk6rqRcCQcg/pkQGTQia9pExN49WJ59XJ8bymF21n
+        KLmnNLjSdk7GRisv83E8n8SrN1iCcfFKR6KMnPKMM67HHlQrJ4sX9pZf734TY/gZpoCatp4f
+        xDRtNERuqYro7sjKvGvv648NH9+m/1JkMy/uU8247bhDj7mXj1TdzR0MjRX3Re071bBkTrEd
+        9fMJHXjScNLe98GH15mHV3f7TqXDcVY31zzvV2StjGsNvRhcGh6vGEu79lhOaWKUQXtItUb5
+        D7BvGOhNAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsVy+t/xe7rd/tfiDPruC1psnLGe1WLqwyds
+        Fte/PGe1WP3xMaPF+fMb2C0ezL3JZPHtSgeTxeVdc9gsPvceYbSYcX4fk8XaI3fZLd78OMtk
+        cXveZRaLM6cvsVr8u7aRxaLjyDdmi41fPRwEPXbOusvusWlVJ5vHnWt72Dz6/xp4bLnazuLR
+        t2UVo8fxG9uZPD5vkgvgiNKzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV0rez
+        SUnNySxLLdK3S9DL+HNDvGCpUsXJjiVsDYx3ZLoYOTkkBEwkbvzbxdzFyMUhJLCUUWLajE+M
+        EAkZiZPTGlghbGGJP9e62CCKPjFKnPkyAayITcBQoustREJEoJVR4vzrVUwgDrNAK4vEgjur
+        mEGqhAW8JZ6f3sAOYrMIqErcfNYNZvMK2EjsmHAbap28xOoNB8DqOQXsJWYf7wIaxAG0zk7i
+        9weuCYx8CxgZVjGKpJYW56bnFhvpFSfmFpfmpesl5+duYgTGzLZjP7fsYOx6F3yIUYCDUYmH
+        18DwWpwQa2JZcWXuIUYJDmYlEV6ns6fjhHhTEiurUovy44tKc1KLDzGaAt00kVlKNDkfGM95
+        JfGGpobmFpaG5sbmxmYWSuK8HQIHY4QE0hNLUrNTUwtSi2D6mDg4pRoY9y088S6fp+f15bqQ
+        xqOclyQ4p6n7ulqLT3hg0/uhRPHMjTdvp7OeM5q55WyUH3/+EesD34Rvvn1oee/Zd/Z32zZx
+        hc/NSjGpO/7R/cQPb6VH+SKavBVan7qZOTqYGt8GLP666Mi6uMOZGatCzolbncy7ukxDfYuT
+        6P3lPBkvt6z9+CV58bQjc5RYijMSDbWYi4oTAdTZRnevAgAA
+X-CMS-MailID: 20200602130931eucas1p1cd784c8f692fa91dc566504543a927de
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200602130931eucas1p1cd784c8f692fa91dc566504543a927de
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200602130931eucas1p1cd784c8f692fa91dc566504543a927de
+References: <57cf3a15-5d9b-7636-4c69-60742e8cfae6@samsung.com>
+        <CGME20200602130931eucas1p1cd784c8f692fa91dc566504543a927de@eucas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Add a simple custom voltage regulator coupler for Exynos5800 SoCs, which
+require coupling between "vdd_arm" and "vdd_int" regulators. This coupler
+ensures that the voltage balancing for the coupled regulators is done
+only when clients for the each regulator apply their constraints, so the
+voltage values don't go beyond the bootloader-selected operation point
+during the boot process. This also ensures proper voltage balancing if
+any of the client driver is missing.
 
-This commit adds a debugfs interface for DAMON.
-
-DAMON exports four files, ``attrs``, ``pids``, ``record``, and
-``monitor_on`` under its debugfs directory, ``<debugfs>/damon/``.
-
-Attributes
-----------
-
-Users can read and write the ``sampling interval``, ``aggregation
-interval``, ``regions update interval``, and min/max number of
-monitoring target regions by reading from and writing to the ``attrs``
-file.  For example, below commands set those values to 5 ms, 100 ms,
-1,000 ms, 10, 1000 and check it again::
-
-    # cd <debugfs>/damon
-    # echo 5000 100000 1000000 10 1000 > attrs
-    # cat attrs
-    5000 100000 1000000 10 1000
-
-Target PIDs
------------
-
-Users can read and write the pids of current monitoring target processes
-by reading from and writing to the ``pids`` file.  For example, below
-commands set processes having pids 42 and 4242 as the processes to be
-monitored and check it again::
-
-    # cd <debugfs>/damon
-    # echo 42 4242 > pids
-    # cat pids
-    42 4242
-
-Note that setting the pids doesn't start the monitoring.
-
-Record
-------
-
-DAMON supports direct monitoring result record feature.  The recorded
-results are first written to a buffer and flushed to a file in batch.
-Users can set the size of the buffer and the path to the result file by
-reading from and writing to the ``record`` file.  For example, below
-commands set the buffer to be 4 KiB and the result to be saved in
-'/damon.data'.
-
-    # cd <debugfs>/damon
-    # echo 4096 /damon.data > pids
-    # cat record
-    4096 /damon.data
-
-Turning On/Off
---------------
-
-You can check current status, start and stop the monitoring by reading
-from and writing to the ``monitor_on`` file.  Writing ``on`` to the file
-starts DAMON to monitor the target processes with the attributes.
-Writing ``off`` to the file stops DAMON.  DAMON also stops if every
-target processes is terminated.  Below example commands turn on, off,
-and check status of DAMON::
-
-    # cd <debugfs>/damon
-    # echo on > monitor_on
-    # echo off > monitor_on
-    # cat monitor_on
-    off
-
-Please note that you cannot write to the ``attrs`` and ``pids`` files
-while the monitoring is turned on.  If you write to the files while
-DAMON is running, ``-EINVAL`` will be returned.
-
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
-Reviewed-by: Leonard Foerster <foersleo@amazon.de>
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 ---
- mm/damon.c | 357 ++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 356 insertions(+), 1 deletion(-)
+v2:
+- removed dependency on the regulator names as pointed by krzk, now it
+  works with all coupled regulators. So far the coupling between the
+  regulators on Exynos5800 based boards is defined only between
+  "vdd_arm" and "vdd_int" supplies.
+---
+ arch/arm/mach-exynos/Kconfig                  |  1 +
+ drivers/soc/samsung/Kconfig                   |  3 +
+ drivers/soc/samsung/Makefile                  |  1 +
+ .../soc/samsung/exynos-regulator-coupler.c    | 56 +++++++++++++++++++
+ 4 files changed, 61 insertions(+)
+ create mode 100644 drivers/soc/samsung/exynos-regulator-coupler.c
 
-diff --git a/mm/damon.c b/mm/damon.c
-index 768ffd08f7ab..6b0b8f21a6c6 100644
---- a/mm/damon.c
-+++ b/mm/damon.c
-@@ -10,6 +10,7 @@
- #define pr_fmt(fmt) "damon: " fmt
+diff --git a/arch/arm/mach-exynos/Kconfig b/arch/arm/mach-exynos/Kconfig
+index 76838255b5fa..f185cd3d4c62 100644
+--- a/arch/arm/mach-exynos/Kconfig
++++ b/arch/arm/mach-exynos/Kconfig
+@@ -118,6 +118,7 @@ config SOC_EXYNOS5800
+ 	bool "Samsung EXYNOS5800"
+ 	default y
+ 	depends on SOC_EXYNOS5420
++	select EXYNOS_REGULATOR_COUPLER
  
- #include <linux/damon.h>
-+#include <linux/debugfs.h>
- #include <linux/delay.h>
- #include <linux/kthread.h>
- #include <linux/mm.h>
-@@ -50,6 +51,15 @@
- /* Get a random number in [l, r) */
- #define damon_rand(l, r) (l + prandom_u32() % (r - l))
+ config EXYNOS_MCPM
+ 	bool
+diff --git a/drivers/soc/samsung/Kconfig b/drivers/soc/samsung/Kconfig
+index c7a2003687c7..264185664594 100644
+--- a/drivers/soc/samsung/Kconfig
++++ b/drivers/soc/samsung/Kconfig
+@@ -37,4 +37,7 @@ config EXYNOS_PM_DOMAINS
+ 	bool "Exynos PM domains" if COMPILE_TEST
+ 	depends on PM_GENERIC_DOMAINS || COMPILE_TEST
  
-+/* A monitoring context for debugfs interface users. */
-+static struct damon_ctx damon_user_ctx = {
-+	.sample_interval = 5 * 1000,
-+	.aggr_interval = 100 * 1000,
-+	.regions_update_interval = 1000 * 1000,
-+	.min_nr_regions = 10,
-+	.max_nr_regions = 1000,
-+};
++config EXYNOS_REGULATOR_COUPLER
++	bool "Exynos SoC Regulator Coupler" if COMPILE_TEST
++	depends on ARCH_EXYNOS || COMPILE_TEST
+ endif
+diff --git a/drivers/soc/samsung/Makefile b/drivers/soc/samsung/Makefile
+index edd1d6ea064d..ecc3a32f6406 100644
+--- a/drivers/soc/samsung/Makefile
++++ b/drivers/soc/samsung/Makefile
+@@ -9,3 +9,4 @@ obj-$(CONFIG_EXYNOS_PMU)	+= exynos-pmu.o
+ obj-$(CONFIG_EXYNOS_PMU_ARM_DRIVERS)	+= exynos3250-pmu.o exynos4-pmu.o \
+ 					exynos5250-pmu.o exynos5420-pmu.o
+ obj-$(CONFIG_EXYNOS_PM_DOMAINS) += pm_domains.o
++obj-$(CONFIG_EXYNOS_REGULATOR_COUPLER) += exynos-regulator-coupler.o
+diff --git a/drivers/soc/samsung/exynos-regulator-coupler.c b/drivers/soc/samsung/exynos-regulator-coupler.c
+new file mode 100644
+index 000000000000..370a0ce4de3a
+--- /dev/null
++++ b/drivers/soc/samsung/exynos-regulator-coupler.c
+@@ -0,0 +1,56 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2020 Samsung Electronics Co., Ltd.
++ *	      http://www.samsung.com/
++ * Author: Marek Szyprowski <m.szyprowski@samsung.com>
++ *
++ * Simple Samsung Exynos SoC voltage coupler. Ensures that all
++ * clients set their constraints before balancing the voltages.
++ */
 +
- /*
-  * Construct a damon_region struct
-  *
-@@ -1133,13 +1143,358 @@ int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
- 	return 0;
- }
- 
--static int __init damon_init(void)
-+static ssize_t debugfs_monitor_on_read(struct file *file,
-+		char __user *buf, size_t count, loff_t *ppos)
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/of.h>
++#include <linux/regulator/coupler.h>
++#include <linux/regulator/driver.h>
++
++static int exynos_coupler_balance_voltage(struct regulator_coupler *coupler,
++					  struct regulator_dev *rdev,
++					  suspend_state_t state)
 +{
-+	struct damon_ctx *ctx = &damon_user_ctx;
-+	char monitor_on_buf[5];
-+	bool monitor_on;
-+	int len;
++	struct coupling_desc *c_desc = &rdev->coupling_desc;
++	int ret, cons_uV = 0, cons_max_uV = INT_MAX;
++	bool skip_coupled = false;
 +
-+	monitor_on = damon_kdamond_running(ctx);
-+	len = snprintf(monitor_on_buf, 5, monitor_on ? "on\n" : "off\n");
-+
-+	return simple_read_from_buffer(buf, count, ppos, monitor_on_buf, len);
-+}
-+
-+static ssize_t debugfs_monitor_on_write(struct file *file,
-+		const char __user *buf, size_t count, loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = &damon_user_ctx;
-+	ssize_t ret;
-+	char cmdbuf[5];
-+	int err;
-+
-+	ret = simple_write_to_buffer(cmdbuf, 5, ppos, buf, count);
++	/* get coupled regulator constraints */
++	ret = regulator_check_consumers(c_desc->coupled_rdevs[1], &cons_uV,
++					&cons_max_uV, state);
 +	if (ret < 0)
 +		return ret;
 +
-+	if (sscanf(cmdbuf, "%s", cmdbuf) != 1)
-+		return -EINVAL;
-+	if (!strncmp(cmdbuf, "on", 5))
-+		err = damon_start(ctx);
-+	else if (!strncmp(cmdbuf, "off", 5))
-+		err = damon_stop(ctx);
-+	else
-+		return -EINVAL;
++	/* skip adjusting coupled regulator if it has no constraints set yet */
++	if (cons_uV == 0)
++		skip_coupled = true;
 +
-+	if (err)
-+		ret = err;
-+	return ret;
++	return regulator_do_balance_voltage(rdev, state, skip_coupled);
 +}
 +
-+static ssize_t damon_sprint_pids(struct damon_ctx *ctx, char *buf, ssize_t len)
++static int exynos_coupler_attach(struct regulator_coupler *coupler,
++				 struct regulator_dev *rdev)
 +{
-+	struct damon_task *t;
-+	int written = 0;
-+	int rc;
-+
-+	damon_for_each_task(t, ctx) {
-+		rc = snprintf(&buf[written], len - written, "%d ", t->pid);
-+		if (!rc)
-+			return -ENOMEM;
-+		written += rc;
-+	}
-+	if (written)
-+		written -= 1;
-+	written += snprintf(&buf[written], len - written, "\n");
-+	return written;
-+}
-+
-+static ssize_t debugfs_pids_read(struct file *file,
-+		char __user *buf, size_t count, loff_t *ppos)
- {
-+	struct damon_ctx *ctx = &damon_user_ctx;
-+	ssize_t len;
-+	char pids_buf[320];
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	len = damon_sprint_pids(ctx, pids_buf, 320);
-+	mutex_unlock(&ctx->kdamond_lock);
-+	if (len < 0)
-+		return len;
-+
-+	return simple_read_from_buffer(buf, count, ppos, pids_buf, len);
-+}
-+
-+/*
-+ * Converts a string into an array of unsigned long integers
-+ *
-+ * Returns an array of unsigned long integers if the conversion success, or
-+ * NULL otherwise.
-+ */
-+static int *str_to_pids(const char *str, ssize_t len, ssize_t *nr_pids)
-+{
-+	int *pids;
-+	const int max_nr_pids = 32;
-+	int pid;
-+	int pos = 0, parsed, ret;
-+
-+	*nr_pids = 0;
-+	pids = kmalloc_array(max_nr_pids, sizeof(pid), GFP_KERNEL);
-+	if (!pids)
-+		return NULL;
-+	while (*nr_pids < max_nr_pids && pos < len) {
-+		ret = sscanf(&str[pos], "%d%n", &pid, &parsed);
-+		pos += parsed;
-+		if (ret != 1)
-+			break;
-+		pids[*nr_pids] = pid;
-+		*nr_pids += 1;
-+	}
-+	if (*nr_pids == 0) {
-+		kfree(pids);
-+		pids = NULL;
-+	}
-+
-+	return pids;
-+}
-+
-+static ssize_t debugfs_pids_write(struct file *file,
-+		const char __user *buf, size_t count, loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = &damon_user_ctx;
-+	char *kbuf;
-+	int *targets;
-+	ssize_t nr_targets;
-+	ssize_t ret;
-+	int err;
-+
-+	kbuf = kmalloc(count, GFP_KERNEL);
-+	if (!kbuf)
-+		return -ENOMEM;
-+
-+	ret = simple_write_to_buffer(kbuf, count, ppos, buf, count);
-+	if (ret < 0)
-+		goto out;
-+
-+	targets = str_to_pids(kbuf, ret, &nr_targets);
-+	if (!targets) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	if (ctx->kdamond) {
-+		ret = -EINVAL;
-+		goto unlock_out;
-+	}
-+
-+	err = damon_set_pids(ctx, targets, nr_targets);
-+	if (err)
-+		ret = err;
-+unlock_out:
-+	mutex_unlock(&ctx->kdamond_lock);
-+	kfree(targets);
-+out:
-+	kfree(kbuf);
-+	return ret;
-+}
-+
-+static ssize_t debugfs_record_read(struct file *file,
-+		char __user *buf, size_t count, loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = &damon_user_ctx;
-+	char record_buf[20 + MAX_RFILE_PATH_LEN];
-+	int ret;
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	ret = snprintf(record_buf, ARRAY_SIZE(record_buf), "%u %s\n",
-+			ctx->rbuf_len, ctx->rfile_path);
-+	mutex_unlock(&ctx->kdamond_lock);
-+	return simple_read_from_buffer(buf, count, ppos, record_buf, ret);
-+}
-+
-+static ssize_t debugfs_record_write(struct file *file,
-+		const char __user *buf, size_t count, loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = &damon_user_ctx;
-+	char *kbuf;
-+	unsigned int rbuf_len;
-+	char rfile_path[MAX_RFILE_PATH_LEN];
-+	ssize_t ret;
-+	int err;
-+
-+	kbuf = kmalloc(count + 1, GFP_KERNEL);
-+	if (!kbuf)
-+		return -ENOMEM;
-+	kbuf[count] = '\0';
-+
-+	ret = simple_write_to_buffer(kbuf, count, ppos, buf, count);
-+	if (ret < 0)
-+		goto out;
-+	if (sscanf(kbuf, "%u %s",
-+				&rbuf_len, rfile_path) != 2) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	if (ctx->kdamond) {
-+		ret = -EBUSY;
-+		goto unlock_out;
-+	}
-+
-+	err = damon_set_recording(ctx, rbuf_len, rfile_path);
-+	if (err)
-+		ret = err;
-+unlock_out:
-+	mutex_unlock(&ctx->kdamond_lock);
-+out:
-+	kfree(kbuf);
-+	return ret;
-+}
-+
-+
-+static ssize_t debugfs_attrs_read(struct file *file,
-+		char __user *buf, size_t count, loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = &damon_user_ctx;
-+	char kbuf[128];
-+	int ret;
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	ret = snprintf(kbuf, ARRAY_SIZE(kbuf), "%lu %lu %lu %lu %lu\n",
-+			ctx->sample_interval, ctx->aggr_interval,
-+			ctx->regions_update_interval, ctx->min_nr_regions,
-+			ctx->max_nr_regions);
-+	mutex_unlock(&ctx->kdamond_lock);
-+
-+	return simple_read_from_buffer(buf, count, ppos, kbuf, ret);
-+}
-+
-+static ssize_t debugfs_attrs_write(struct file *file,
-+		const char __user *buf, size_t count, loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = &damon_user_ctx;
-+	unsigned long s, a, r, minr, maxr;
-+	char *kbuf;
-+	ssize_t ret;
-+	int err;
-+
-+	kbuf = kmalloc(count, GFP_KERNEL);
-+	if (!kbuf)
-+		return -ENOMEM;
-+
-+	ret = simple_write_to_buffer(kbuf, count, ppos, buf, count);
-+	if (ret < 0)
-+		goto out;
-+
-+	if (sscanf(kbuf, "%lu %lu %lu %lu %lu",
-+				&s, &a, &r, &minr, &maxr) != 5) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	if (ctx->kdamond) {
-+		ret = -EBUSY;
-+		goto unlock_out;
-+	}
-+
-+	err = damon_set_attrs(ctx, s, a, r, minr, maxr);
-+	if (err)
-+		ret = err;
-+unlock_out:
-+	mutex_unlock(&ctx->kdamond_lock);
-+out:
-+	kfree(kbuf);
-+	return ret;
-+}
-+
-+static const struct file_operations monitor_on_fops = {
-+	.owner = THIS_MODULE,
-+	.read = debugfs_monitor_on_read,
-+	.write = debugfs_monitor_on_write,
-+};
-+
-+static const struct file_operations pids_fops = {
-+	.owner = THIS_MODULE,
-+	.read = debugfs_pids_read,
-+	.write = debugfs_pids_write,
-+};
-+
-+static const struct file_operations record_fops = {
-+	.owner = THIS_MODULE,
-+	.read = debugfs_record_read,
-+	.write = debugfs_record_write,
-+};
-+
-+static const struct file_operations attrs_fops = {
-+	.owner = THIS_MODULE,
-+	.read = debugfs_attrs_read,
-+	.write = debugfs_attrs_write,
-+};
-+
-+static struct dentry *debugfs_root;
-+
-+static int __init damon_debugfs_init(void)
-+{
-+	const char * const file_names[] = {"attrs", "record",
-+		"pids", "monitor_on"};
-+	const struct file_operations *fops[] = {&attrs_fops, &record_fops,
-+		&pids_fops, &monitor_on_fops};
-+	int i;
-+
-+	debugfs_root = debugfs_create_dir("damon", NULL);
-+	if (!debugfs_root) {
-+		pr_err("failed to create the debugfs dir\n");
-+		return -ENOMEM;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(file_names); i++) {
-+		if (!debugfs_create_file(file_names[i], 0600, debugfs_root,
-+					NULL, fops[i])) {
-+			pr_err("failed to create %s file\n", file_names[i]);
-+			return -ENOMEM;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-+static int __init damon_init_user_ctx(void)
-+{
-+	int rc;
-+
-+	struct damon_ctx *ctx = &damon_user_ctx;
-+
-+	ktime_get_coarse_ts64(&ctx->last_aggregation);
-+	ctx->last_regions_update = ctx->last_aggregation;
-+
-+	rc = damon_set_recording(ctx, 1024 * 1024, "/damon.data");
-+	if (rc)
-+		return rc;
-+
-+	mutex_init(&ctx->kdamond_lock);
-+
-+	INIT_LIST_HEAD(&ctx->tasks_list);
-+
 +	return 0;
 +}
 +
-+static int __init damon_init(void)
++static struct regulator_coupler exynos_coupler = {
++	.attach_regulator = exynos_coupler_attach,
++	.balance_voltage  = exynos_coupler_balance_voltage,
++};
++
++static int __init exynos_coupler_init(void)
 +{
-+	int rc;
++	if (!of_machine_is_compatible("samsung,exynos5800"))
++		return 0;
 +
-+	rc = damon_init_user_ctx();
-+	if (rc)
-+		return rc;
-+
-+	rc = damon_debugfs_init();
-+	if (rc)
-+		pr_err("%s: debugfs init failed\n", __func__);
-+
-+	return rc;
++	return regulator_coupler_register(&exynos_coupler);
 +}
-+
- static void __exit damon_exit(void)
- {
-+	damon_stop(&damon_user_ctx);
-+	debugfs_remove_recursive(debugfs_root);
-+
-+	kfree(damon_user_ctx.rbuf);
-+	kfree(damon_user_ctx.rfile_path);
- }
- 
- module_init(damon_init);
++arch_initcall(exynos_coupler_init);
 -- 
 2.17.1
 
