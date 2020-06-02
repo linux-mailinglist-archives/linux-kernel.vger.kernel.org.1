@@ -2,129 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EE21EBD27
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9338D1EBD2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbgFBNfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 09:35:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:50978 "EHLO foss.arm.com"
+        id S1728243AbgFBNhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 09:37:06 -0400
+Received: from muru.com ([72.249.23.125]:56698 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725940AbgFBNfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 09:35:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B5F721FB;
-        Tue,  2 Jun 2020 06:35:38 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1EA783F305;
-        Tue,  2 Jun 2020 06:35:37 -0700 (PDT)
-References: <20200527151613.16083-1-benjamin.gaignard@st.com> <jhjpnahizkm.mognet@arm.com> <f95ce45f-7a1c-0feb-afa8-203ddb500f2f@st.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Benjamin GAIGNARD <benjamin.gaignard@st.com>
-Cc:     Hugues FRUCHET <hugues.fruchet@st.com>,
-        "mchehab\@kernel.org" <mchehab@kernel.org>,
-        "mcoquelin.stm32\@gmail.com" <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        "linux-media\@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-stm32\@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel\@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "vincent.guittot\@linaro.org" <vincent.guittot@linaro.org>,
-        "rjw\@rjwysocki.net" <rjw@rjwysocki.net>
-Subject: Re: [PATCH] media: stm32-dcmi: Set minimum cpufreq requirement
-In-reply-to: <f95ce45f-7a1c-0feb-afa8-203ddb500f2f@st.com>
-Date:   Tue, 02 Jun 2020 14:35:31 +0100
-Message-ID: <jhjo8q1io9o.mognet@arm.com>
+        id S1726922AbgFBNhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 09:37:04 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 97A0D80C5;
+        Tue,  2 Jun 2020 13:37:53 +0000 (UTC)
+Date:   Tue, 2 Jun 2020 06:36:59 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Peter Hurley <peter@hurleysoftware.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Sebastian Reichel <sre@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH] serial: 8250_port: Fix imprecise external abort for
+ mctrl if inactive
+Message-ID: <20200602133659.GD37466@atomide.com>
+References: <20200602001813.30459-1-tony@atomide.com>
+ <20200602080811.GI19480@localhost>
+ <CAHp75Vfi5nDgwT10J_EKYn90vGuiL1hyfre+t_w_OFREFY-Tqg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vfi5nDgwT10J_EKYn90vGuiL1hyfre+t_w_OFREFY-Tqg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Andy Shevchenko <andy.shevchenko@gmail.com> [200602 08:33]:
+> On Tue, Jun 2, 2020 at 11:09 AM Johan Hovold <johan@kernel.org> wrote:
+> > On Mon, Jun 01, 2020 at 05:18:13PM -0700, Tony Lindgren wrote:
+> 
+> ...
+> 
+> > There's shouldn't be anything fundamental preventing you from adding the
+> > missing resume calls to the mctrl paths even if it may require reworking
+> > (and fixing) the whole RPM implementation (which would be a good thing
+> > of course).
+> 
+> Yes, for serial core I have long standing patch series to implement
+> RPM (more or less?) properly.
 
-On 02/06/20 12:37, Benjamin GAIGNARD wrote:
-> On 6/2/20 11:31 AM, Valentin Schneider wrote:
->>> @@ -99,6 +100,8 @@ enum state {
->>>
->>>   #define OVERRUN_ERROR_THRESHOLD	3
->>>
->>> +#define DCMI_MIN_FREQ	650000 /* in KHz */
->>> +
->> This assumes the handling part is guaranteed to always run on the same CPU
->> with the same performance profile (regardless of the platform). If that's
->> not guaranteed, it feels like you'd want this to be configurable in some
->> way.
-> Yes I could add a st,stm32-dcmi-min-frequency (in KHz) parameter the
-> device tree node.
->
+Yeah let's try after the merge window.
 
-Something like that - I'm not sure how well this fits with the DT
-landscape, as you could argue it isn't really a description of the
-hardware, more of a description of the performance expectations of the
-software. I won't really argue here.
+Not sure what else to do with the fix though. We currently have
+8250_port.c not really aware of the hardare state for PM runtime at
+least for the hang-up path.
 
->>
->>>   struct dcmi_graph_entity {
->>>        struct v4l2_async_subdev asd;
->>>
->> [...]
->>> @@ -2020,6 +2042,8 @@ static int dcmi_probe(struct platform_device *pdev)
->>>                goto err_cleanup;
->>>        }
->>>
->>> +	dcmi->policy = cpufreq_cpu_get(0);
->>> +
->> Ideally you'd want to fetch the policy of the CPU your IRQ (and handling
->> thread) is affined to; The only compatible DTS I found describes a single
->> A7, which is somewhat limited in the affinity area...
-> If I move this code just before start streaming and use get_cpu(), would
-> it works ?
->
+> However, OMAP is a beast which prevents us to go due to a big hack
+> called pm_runtime_irq_safe().
+> Tony is aware of this and I think the above is somehow related to removal of it.
 
-AFAIA streaming_start() is not necessarily executing on the same CPU as the
-one that will handle the interrupt. I was thinking you could use the IRQ's
-effective affinity as a hint of which CPU(s) to boost, i.e. something like:
+Now that we can detach and reattach the kernel serial console,
+there should not be any need for pm_runtime_irq_safe() anymore :)
 
----
-    struct cpumask_var_t visited;
-    struct irq_data *d = irq_get_irq_data(irq);
+And the UART wake-up from deeper idle states can only happen with
+help of external hardware like GPIO controller or pinctrl controller.
 
-    err = alloc_cpumask_var(visited, GFP_KERNEL);
-    /* ... */
-    for_each_cpu(cpu, irq_data_get_effective_affinity_mask(d)) {
-            /* check if not already spanned */
-            if (cpumask_test_cpu(cpu, visited))
-                    continue;
+And for the always-on wake-up interrupt controllers we have the
+Linux generic wakeirqs to wake-up serial device on events.
 
-            policy = cpufreq_cpu_get(cpu);
-            cpumask_or(visited, visited, policy->cpus);
-            /* do the boost for that policy here */
-            /* ... */
-            cpufreq_cpu_put(policy);
-    }
----
+So I think the way to procedd with pm_runtime_irq_safe() removal
+for serial drivers is to block serial PM runtime unless we have a
+wakeirq configured for omaps in devicetree. In the worst case the
+regression is that PM runtime for serial won't work unless properly
+configured.
 
-That of course falls apart when hotplug gets involved, and the effective
-affinity changes... There's irq_set_affinity_notifier() out there, but it
-seems it's only about the affinity, not the effective_affinity, I'm not
-sure how valid it would be to query the effective_affinity in that
-notifier.
+And the UART wakeup latency will be a bit longer compared to
+pm_runtime_irq_safe() naturally.
 
-> Benjamin
->>
->>>        dev_info(&pdev->dev, "Probe done\n");
->>>
->>>        platform_set_drvdata(pdev, dcmi);
->>> @@ -2049,6 +2073,9 @@ static int dcmi_remove(struct platform_device *pdev)
->>>
->>>        pm_runtime_disable(&pdev->dev);
->>>
->>> +	if (dcmi->policy)
->>> +		cpufreq_cpu_put(dcmi->policy);
->>> +
->>>        v4l2_async_notifier_unregister(&dcmi->notifier);
->>>        v4l2_async_notifier_cleanup(&dcmi->notifier);
->>>        media_entity_cleanup(&dcmi->vdev->entity);
+> But I completely agree that the goal is to get better runtime PM
+> implementation over all.
+
+Yes agreed.
+
+Regards,
+
+Tony
