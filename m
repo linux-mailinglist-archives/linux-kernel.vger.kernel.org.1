@@ -2,100 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECBA1EBB47
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 800551EBB54
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgFBMKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:10:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgFBMKw (ORCPT
+        id S1726809AbgFBMNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:13:54 -0400
+Received: from m4a0072g.houston.softwaregrp.com ([15.124.2.130]:55198 "EHLO
+        m4a0072g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725940AbgFBMNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:10:52 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43F4C061A0E;
-        Tue,  2 Jun 2020 05:10:52 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id d6so1355402pjs.3;
-        Tue, 02 Jun 2020 05:10:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V2uYDYvTpzXxeNKnkNIGug7/bVN4wAJFHdUKLy8MXAI=;
-        b=bxq8lSQDgv9sZxmAbZ7U5hT5hFMuKvlqToqx1TuKlgJlOeIRJw81/iU7O9dKPwZFpy
-         pgiq/pNNUMbLNYh/pil/gjX8cRu7Sj4OiUC2NsqIaXsXlWKywhdVkAF9L9dLBxohZhPr
-         fgAWQhh4vkCqjM/SiS0TULA+PQbNTltv1AsDrRH1PxBlibLGTXImuZEaJ/mWkYPpkJ0y
-         BxZG6LC3bK6RBdrPGTIGDq2jwEa3UuDkR4Xa1KbvB+7WA940FxeLYUZ6kqf+A6mgeun9
-         FKL4gjXWlyXT0dspCK0cI6enUTf2761NoQoIiZkZvqyZbkO15K+ltjJaLsETjT4AI8De
-         fuMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V2uYDYvTpzXxeNKnkNIGug7/bVN4wAJFHdUKLy8MXAI=;
-        b=CpH5D9XAZ8HLNOZcH0vfoiFwJdamKrEas7+ziXMw73cMf30YtvJRzHcBv57CfNASW1
-         Mt9rSkzGxPoAqL4QDP5jNrJ1J00swHBzGBnjAwG9UglNyQJdBcRZTXKDtXw9M3AYouE4
-         7eDapfqL1WkrpjwfegIS3bygjesqciXI+OffTVjFL1sRKG0574AF8K6h29R30Wy0DBon
-         Hw6lm6EReXCjcg8Ub+1+wXR7srhkKRThMEwO5lP+WHquFoexWoQxhwsSKWeRrmVKFmug
-         MbwntV7teWeJwS469PR/TqtfwfjBTiwQpCH/c1K+skAj/9Wm0InIrcXzEsFasRXgnTYA
-         +DZA==
-X-Gm-Message-State: AOAM5330s2HNmxA2ntwGfNm6lY6NanZNwzIP6y1dV9rQ3MQ1U3BJeN/U
-        VqL8sdwp+rxkHHHnU/Mf5lI=
-X-Google-Smtp-Source: ABdhPJx46iaVyx2eA6jh47ZPFsD1wXypPfLo23GddEVedhkpkikkHdNx1jPvw5UoAukM2pzSgqHqWw==
-X-Received: by 2002:a17:90b:23c8:: with SMTP id md8mr5464609pjb.72.1591099852280;
-        Tue, 02 Jun 2020 05:10:52 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id x2sm2271776pfj.142.2020.06.02.05.10.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 05:10:51 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Tue, 2 Jun 2020 21:10:49 +0900
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH v6 03/14] videobuf2: handle V4L2 buffer cache flags
-Message-ID: <20200602121049.GB617@jagdpanzerIV.localdomain>
-References: <20200514160153.3646-1-sergey.senozhatsky@gmail.com>
- <20200514160153.3646-4-sergey.senozhatsky@gmail.com>
- <b34ae09b-7c20-7255-6adc-3370680555cd@xs4all.nl>
- <20200602101834.GA617@jagdpanzerIV.localdomain>
- <9ec2618b-0cce-b00e-08cf-b579d9aa1d5d@xs4all.nl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Tue, 2 Jun 2020 08:13:53 -0400
+Received: FROM m4a0072g.houston.softwaregrp.com (15.120.17.147) BY m4a0072g.houston.softwaregrp.com WITH ESMTP;
+ Tue,  2 Jun 2020 12:12:28 +0000
+Received: from M4W0335.microfocus.com (2002:f78:1193::f78:1193) by
+ M4W0335.microfocus.com (2002:f78:1193::f78:1193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Tue, 2 Jun 2020 12:12:34 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (15.124.8.10) by
+ M4W0335.microfocus.com (15.120.17.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Tue, 2 Jun 2020 12:12:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O5IHjzvzD8ZjwGcYQXj/tChQAW2W6yXRcyi3M7vD/8DK7FBJM7Q8PCR2f2Ymgc6j9H8Kkb4/E28j9TFfBuVhIScZV9oMm0uMBkLeCS2/oScQvWf40WViKpR0i5zqzxqbjb5T4gEpfjbyiDG4lLFptYGMXLt5NvtoV+I9WVQVfZ/TGykiEvIIQG0CSIsGv3Rei0yizHCP8U96qdeBnOsanQldtuObxWhM5TIoWQ5xIVeu8AyCr+m8ux/8fSY22yOcDPUXRVk4W060n15ds7BfO/RFtnr22QEbyY5OODh4JT5N1EHxBXkANRhiHsmbNEqIhKILABeuyNeHRglO9HkGQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D+JjmCMUzUrwZobVBqGkk3omJ+aSdCqSmz6HXykLp90=;
+ b=lgTe/hrK+cRGc7A178tYYCH6gLJX5UvT9NyZONnUOlSnCK8BstvvQYP93UPqedI20EsYL6UvTGp9Axu5jsa4TPSYCgzoODi4Ka7UK/kK5yHWjGAAPHnSCI+66Ga85PfBRZkFYi2Bt97TL/dUWzyu6c61bEvRpRWStkLZtC2anMCEYc+nLZgt36KeuXzUQvmozbyaeG76ny7leGEuqIgHa9vdDdOEtMLf5yKUwZ737FRdLszL2acLVMs3TFX8kr7bfiFkq0VjnAGGPt3qgXyQRKY18aftj+L5Er53xqWViAbDcaWo5dw3sWPuvB5csBO9hRbz/hBma3sfSTCcsuadqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
+Received: from MW3PR18MB3658.namprd18.prod.outlook.com (2603:10b6:303:54::24)
+ by MW3PR18MB3689.namprd18.prod.outlook.com (2603:10b6:303:5e::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Tue, 2 Jun
+ 2020 12:12:33 +0000
+Received: from MW3PR18MB3658.namprd18.prod.outlook.com
+ ([fe80::2da0:153f:7d56:210d]) by MW3PR18MB3658.namprd18.prod.outlook.com
+ ([fe80::2da0:153f:7d56:210d%6]) with mapi id 15.20.3045.024; Tue, 2 Jun 2020
+ 12:12:33 +0000
+Date:   Tue, 2 Jun 2020 20:12:25 +0800
+From:   Kai Liu <kai.liu@suse.com>
+To:     <xiakaixu1987@gmail.com>
+CC:     <kashyap.desai@broadcom.com>, <sumit.saxena@broadcom.com>,
+        <shivasharan.srikanteshwara@broadcom.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Xiaoming Gao <newtongao@tencent.com>
+Subject: Re: [PATCH] scsi: megaraid_sas: fix kdump kernel boot hung caused by
+ JBOD
+Message-ID: <20200602121225.okhqr2xitv6522pp@suse.com>
+References: <1590651115-9619-1-git-send-email-newtongao@tencent.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Disposition: inline
-In-Reply-To: <9ec2618b-0cce-b00e-08cf-b579d9aa1d5d@xs4all.nl>
+In-Reply-To: <1590651115-9619-1-git-send-email-newtongao@tencent.com>
+User-Agent: NeoMutt/20200501
+X-ClientProxiedBy: HK2PR02CA0212.apcprd02.prod.outlook.com
+ (2603:1096:201:20::24) To MW3PR18MB3658.namprd18.prod.outlook.com
+ (2603:10b6:303:54::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (113.116.107.68) by HK2PR02CA0212.apcprd02.prod.outlook.com (2603:1096:201:20::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.18 via Frontend Transport; Tue, 2 Jun 2020 12:12:31 +0000
+X-Originating-IP: [113.116.107.68]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: caba565f-272f-4b3e-ffdb-08d806ee39cd
+X-MS-TrafficTypeDiagnostic: MW3PR18MB3689:
+X-Microsoft-Antispam-PRVS: <MW3PR18MB3689C7E6BFE5DC47512D6919988B0@MW3PR18MB3689.namprd18.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:118;
+X-Forefront-PRVS: 0422860ED4
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: T1XU9JyPRxx044O2kPMNmLB35KGS3tqfeBD7ENB1dMyhJBZ1hn5K+mj9TahfMXX4hMGF0bXvBR+OyMdto7GVPxUJ6aPkp9C4MwYOfkIW26K2GCSjaR4RP6OoHa4YXcaP23kcqFduEPsgcN4fpxWmHmEJGVtDoWIhL14RtW8hvN4uJC7TGcccS/KZL+IsnRNOG3M2kDcLgYlISNbi95nUKJYLRFGwg7PgrVcn13s6arsIadFs8iIATIvnASpVfGV0uBBwAF0wescDuHmac9FNL8vokX+EBoa/Ea7xbH+DyOjx9MoAEW92wr5uMV5WCBKeSJzmdItXE8FQwXJxbv90c08FWCtbdnhojyX7W863uGMK6mB1am8+hzRBd5wHOceP
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR18MB3658.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(366004)(39860400002)(396003)(136003)(52116002)(86362001)(66946007)(5660300002)(4326008)(66556008)(66476007)(478600001)(6496006)(8676002)(2906002)(6916009)(6666004)(2616005)(956004)(83380400001)(44832011)(8936002)(186003)(16526019)(316002)(26005)(6486002)(1076003)(36756003)(357404004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: ZkDW7ODZqqoAYZC3U2scuZsvCS44bqIMeEQUE8GQytNxP44SNJgbTn/HqIkh0WV0wSxShlIWLfHgoYZqQAfDSmgiLPsu7PM9UVPAZkVwep+aPIjdH7amVYUCkJrB6JCYTbMMQHtv1r4Q6qSxJEAEVK0ltbomqVxkr9vqZ13OneiBURjf47LjJtQblhu5Ymf9wwxeMmJtEOtQTVdbjHyMjkrJZQDC++6Uueikrc4CVRBuKO4gSW3vS7T8y3jhMlDq/0c8amlWQY5zcNBqv3YUjcokHzVteeYoxFGVAG2IeoQ6XtSOkUSBPLyylcB08op8VhU80rDpkXQoLD2HC/PG9mJ0BPORoqXsWSJmLk2jj1dqwWYxTA3eybdmbFU9NnIGz9EBbhPh9cpPXL3UMXww4FzIjmfPBUn7Bw3M9aHL6546Pe7dtdRgSXmJ8rCaPrW8jv4iK6es8rMtbEGOW681eNX9yf8enjV6GaJGYHKEJ48ROVpdL3jFFMfHX/2qmsz1
+X-MS-Exchange-CrossTenant-Network-Message-Id: caba565f-272f-4b3e-ffdb-08d806ee39cd
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2020 12:12:33.1948
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tKRFZCDvzZMlrM/DfL4eRfqjqMXqq8ZRe5i0t9r2iwLqOyIQVGFXB/T2/+13bE2H+au4ehu/t5fPvLCtLxRTVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR18MB3689
+X-OriginatorOrg: suse.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/06/02 12:27), Hans Verkuil wrote:
-[..]
-> > Sorry, Hans, do you suggest to have something like this:
-> > 
-> > 	if (q->memory == VB2_MEMORY_DMABUF) {
-> > 		vb->need_cache_sync_on_finish = 0;
-> > 		vb->need_cache_sync_on_prepare = 0;
-> > 		b->flags &= ~V4L2_BUF_FLAG_NO_CACHE_INVALIDATE;
-> > 		b->flags &= ~V4L2_BUF_FLAG_NO_CACHE_CLEAN;
-> > 		return;
-> > 	}
-> > 
-> > I didn't clear the ->flags there because we clear the vb flush/sync
-> > flags: ->need_cache_sync_on_finish/prepare are zeros for DMABUF memory
-> > type. Which is equivalent to passing V4L2_BUF_FLAG_NO_CACHE_INVALIDATE
-> > V4L2_BUF_FLAG_NO_CACHE_CLEAN. IOW we would clearing both "vb's do cache
-> > sync" and request's "do not cache sync".
-> 
-> Ah, yes. In that case the v4l-utils patch is likely wrong.
-> Can you take a look at that patch?
+On 2020/05/28 Thu 15:31, xiakaixu1987@gmail.com wrote:
+>From: Xiaoming Gao <newtongao@tencent.com>
+>
+>when kernel crash, and kexec into kdump kernel, megaraid_sas will hung and
+>print follow error logs
+>
+>24.1485901 sd 0:0:G:0: [sda 1 tag809 BRCfl Debug mfi stat 0x2(1, data len requested/conpleted 0X100
+>0/0x0)]
+>24.1867171 sd 0:0:G :9: [sda I tag861 BRCfl Debug mfft stat 0x2d, data len reques ted/conp1e Led 0X100
+>0/0x0]
+>24.2054191 sd 0:O:6:O: [sda 1 tag861 FAILED Result: hustbyte=DIDGK drioerbyte-DRIUCR SENSE]
+>24.2549711 bik_update_ request ! 1/0 error , dev sda, sector 937782912 op 0x0:(READ) flags 0x0 phys_seg 1 prio class
+>21.2752791 buffer_io_error 2 callbacks suppressed
+>21.2752731 Duffer IO error an dev sda, logical block 117212064, async page read
+>
+>this bug is caused by commit '59db5a931bbe73f ("scsi: megaraid_sas: Handle sequence JBOD map failure at
+> driver level
+>")'
+>and can be fixed by not set JOB when reset_devices on
 
-Hans, are we talking about "v4l2-utils: test cache_hints for MMAP queues"
-patch? I can take a look, yes.
+I've recently run into this exact issue on a arm64 machine with Avago 
+3408 controller. This patch fixed the issue. Thank you.
 
-	-ss
+Tested-by: Kai Liu <kai.liu@suse.com>
+
+Best regards,
+Kai
+
+>
+>Signed-off-by: Xiaoming Gao <newtongao@tencent.com>
+>---
+> drivers/scsi/megaraid/megaraid_sas_fusion.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+>index b2ad965..24e7f1b 100644
+>--- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
+>+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+>@@ -3127,7 +3127,7 @@ static void megasas_build_ld_nonrw_fusion(struct megasas_instance *instance,
+> 		<< MR_RAID_CTX_RAID_FLAGS_IO_SUB_TYPE_SHIFT;
+>
+> 	/* If FW supports PD sequence number */
+>-	if (instance->support_seqnum_jbod_fp) {
+>+	if (!reset_devices && instance->support_seqnum_jbod_fp) {
+> 		if (instance->use_seqnum_jbod_fp &&
+> 			instance->pd_list[pd_index].driveType == TYPE_DISK) {
+>
+>-- 
+>1.8.3.1
+>
+
