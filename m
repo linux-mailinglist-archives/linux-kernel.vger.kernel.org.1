@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5272D1EBCB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98E61EBCB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgFBNKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 09:10:50 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:40342 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726130AbgFBNKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 09:10:49 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A47F8BF05A7B39E22515;
-        Tue,  2 Jun 2020 21:10:44 +0800 (CST)
-Received: from localhost (10.166.215.154) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Tue, 2 Jun 2020
- 21:10:36 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <lorenzo.pieralisi@arm.com>, <robh@kernel.org>,
-        <bhelgaas@google.com>, <hayashi.kunihiko@socionext.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] PCI: uniphier: Fix Kconfig warning
-Date:   Tue, 2 Jun 2020 21:10:33 +0800
-Message-ID: <20200602131033.41780-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1728031AbgFBNLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 09:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgFBNLx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 09:11:53 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEE8C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 06:11:52 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id gl26so12667487ejb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 06:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=CZOZ6zJl7K+CX7mG44VkFRrQ+i68m5YSb/XRoNfw+DM=;
+        b=t0s7P9RnsOK2U5V+NV5U4s8HwqQzsGNp/WsyLh4dkWjyUNQj7cBzs38hzylHfE4434
+         vm+7cbuffuhkCAefjvtW93sgucqMJWs6e+sA+glkG9uxBrmSs7WuZgex8lyZpS/Wgnpn
+         NbZW8F8+XRviLQTo5py4Ne+gWjMayTge49GbfTmhN1kCa4FjwQDtLDga1xO4fYfGz5jJ
+         jr0lcBWk5r0aAHArS0iQBx/sCersP7w6CRk766Jh99VWam1I6TEjA1x+badD9URU0FPd
+         tVsglEc0lLFCrjAHXNPuQedBL6u5EdPEmGbROneVT7MKZNqTg1ufBHvBLWzzqeJp1kOi
+         poJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=CZOZ6zJl7K+CX7mG44VkFRrQ+i68m5YSb/XRoNfw+DM=;
+        b=QyUzcY28YKY2npx6e2EuP1PSB7mF971/QCy/f7MqNdd7C1tHHvOUPYUPBl6kor5xd1
+         X4mcw1fumtIU9pp33kwEfgITI0s6tiTUiR/AcxIEkg7Eut+XLhJ8mgmA23CbTDDQZ//T
+         WBknQEALfMwR4ONe8LnVuYuATa905jjkmJ9H7YXaFHRG8LdkPaGBy7jcmx1OAxecvw6R
+         EOiBPut3R9OXqVchawuExjYjG0ySx2KMBZocZQpYP2cE09vl0aB9LRD5vhYIdIQlEaWq
+         y87pcP7K5QUsTQXQRBaJO7HT0NDiLNv0QIoO3NCcrtmcdJhFc88te96LOt2Z66TfNuQZ
+         i5ow==
+X-Gm-Message-State: AOAM530Mvv/0cdCW4i5SMUZsAjQ7xN8Dpirc+nFpj5Tjkt1SEpk3KyH8
+        YeqODgcQJqg8gUR0owubza1hMnINS1mKBGOJi9E=
+X-Google-Smtp-Source: ABdhPJx4VZ5A6VaXepwuw8xvzLuyaM2MMY6+CjAstZB65gsiy9p3Lp9treannux6GlWaODr6rYZhlBUZrMZF4MPzFk0=
+X-Received: by 2002:a17:906:6a4b:: with SMTP id n11mr2272181ejs.198.1591103511474;
+ Tue, 02 Jun 2020 06:11:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.166.215.154]
-X-CFilter-Loop: Reflected
+Received: by 2002:a54:2211:0:0:0:0:0 with HTTP; Tue, 2 Jun 2020 06:11:51 -0700 (PDT)
+Reply-To: azizdake0@gmail.com
+From:   Aziz Dake <pauwill066@gmail.com>
+Date:   Tue, 2 Jun 2020 06:11:51 -0700
+Message-ID: <CAO2feTDP0KE=tde2AK=j-X8mRKfN6VzkrnB+Dp+oUtTDh5GoVg@mail.gmail.com>
+Subject: From Honourable Barrister Aziz Dake.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WARNING: unmet direct dependencies detected for PCIE_DW_EP
-  Depends on [n]: PCI [=y] && PCI_ENDPOINT [=n]
-  Selected by [y]:
-  - PCIE_UNIPHIER_EP [=y] && PCI [=y] && (ARCH_UNIPHIER || COMPILE_TEST [=y]) && OF [=y] && HAS_IOMEM [=y]
+Attn: Sir/Madam
 
-Add missing dependency to fix this.
+I am Honourable Barrister Aziz the personal resident Attorney here in
+Burkina Faso to Late Mr. Muammar Muhammad Abu Minyar al-Gaddafi of
+Libya c. 1942 =E2=80=93 20 October 2011.
 
-Fixes: 006564dee825 ("PCI: uniphier: Add Socionext UniPhier Pro5 PCIe endpoint controller driver")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/pci/controller/dwc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+My client Late Mr. Muammar Muhammad Abu Minyar al-Gaddafi c. 1942 =E2=80=93=
+ 20
+October 2011, was having a deposit sum of {thirty million four Hundred
+thousand united state dollars} only ($30.4M USD) with a security
+finance firm affiliated with African development bank here in Burkina
+Faso.
 
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index 43a29f7a4501..044a3761c44f 100644
---- a/drivers/pci/controller/dwc/Kconfig
-+++ b/drivers/pci/controller/dwc/Kconfig
-@@ -293,6 +293,7 @@ config PCIE_UNIPHIER_EP
- 	bool "Socionext UniPhier PCIe endpoint controllers"
- 	depends on ARCH_UNIPHIER || COMPILE_TEST
- 	depends on OF && HAS_IOMEM
-+	depends on PCI_ENDPOINT
- 	select PCIE_DW_EP
- 	help
- 	  Say Y here if you want PCIe endpoint controller support on
--- 
-2.17.1
+With the above explanation=E2=80=99s I want to move this money from Burkina
+Faso to your country, affidavit on your name, but note that this is a
+deal between me and you and should not be related to anybody until the
+deal is over for security reasons, please if interested reply as soon
+as possible.
 
-
+Thanks,
+Honourable Barrister Aziz Dake.
