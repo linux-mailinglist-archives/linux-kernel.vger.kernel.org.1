@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7241EB538
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 07:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD481EB53D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 07:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728304AbgFBFZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 01:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
+        id S1726445AbgFBFZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 01:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgFBFZD (ORCPT
+        with ESMTP id S1725616AbgFBFZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 01:25:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF901C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 22:25:02 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jfzPu-0002KI-09; Tue, 02 Jun 2020 07:24:50 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jfzPs-0002Lz-VZ; Tue, 02 Jun 2020 07:24:48 +0200
-Date:   Tue, 2 Jun 2020 07:24:48 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     peng.fan@nxp.com
-Cc:     shawnguo@kernel.org, fabio.estevam@nxp.com, kernel@pengutronix.de,
-        aisheng.dong@nxp.com, robh+dt@kernel.org, sboyd@kernel.org,
-        linux@rempel-privat.de, jaswinder.singh@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, leonard.crestez@nxp.com, daniel.baluta@nxp.com,
-        l.stach@pengutronix.de, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH V3 1/3] dt-bindings: mailbox: imx-mu: support i.MX8M
-Message-ID: <20200602052448.fxepmwltc4465q4i@pengutronix.de>
-References: <1590999602-29482-1-git-send-email-peng.fan@nxp.com>
- <1590999602-29482-2-git-send-email-peng.fan@nxp.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="c2h6m5xrkl3f4s3k"
-Content-Disposition: inline
-In-Reply-To: <1590999602-29482-2-git-send-email-peng.fan@nxp.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 07:18:57 up 199 days, 20:37, 185 users,  load average: 0.07, 0.08,
- 0.05
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Tue, 2 Jun 2020 01:25:39 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5739C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 22:25:39 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id b5so1677087pfp.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 22:25:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=pmTQ2J+ewmzAEXPhfQy/+hCxdmaweoAFACeDccmRGl0=;
+        b=h5yZkA2l+Mg+kNUOWElvwFJjm2e1UB14Z+QBIySxys0830XZ9MF/dClCMu0l+DtKGE
+         o9SyVR1BIDZ3dTL5vmbUYfxj5uQDWDVnQkYbK3iVMAeELega+0qsbn2jRbtwi7O+/WVX
+         BSeQ5q/IdE+Epsq46jRoijqjDQ4CM0PTYlNMvNfB62aHj+0NTnLn4zQ7KK2DkAgUXeTd
+         GDhhQQEK3NpJp5a2mmHIYUmj+UQN7VgW+hpPJViUZJoPX3HTgTeSSz5YCXSAdly87wOB
+         iFISROlBAuTNkdchyO4pMVuAJdtWnq0kIUOHdMMad4/APHraiQ0dY9xK/7xJbS4e03CO
+         ZPUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=pmTQ2J+ewmzAEXPhfQy/+hCxdmaweoAFACeDccmRGl0=;
+        b=pR9HV3dN3VXZHjg8+HJ4LG5yxqJmeR0I3lRF0f66Sp/h5Q4mFKgNYH9sZL6Pi3TohA
+         VA28NCAz9pPyx0q3Ka3SEtD5cFMgqDJCSwQQDYMbJvR+8xCNnsrBaBZHdkGTVs+pXkD0
+         7WgivPHH7EQFenJZwVlzOGN7L/UxLZMF0YKBuO9EGZw3FXvZk9qcx/TeZdbHVt2G8xdi
+         3TypGq7EPc7ItcwcxIKH6BCN6hhu3aTaRkfYq7vFMCnGj04AsZh2UqqoYI7bgjrxA1RP
+         5xUQkRRpbXP8eQT6NK54qVn6ZJBmW1tT67KzbSMXM4fb9jC8aWlBOJB+zBcfkt+0VWX5
+         NqFQ==
+X-Gm-Message-State: AOAM532aVpcLwItKU3b5OU/EHduiCi7pt6KogXtLK/+7MXguq8Enkzx3
+        rXknQOc3i9IcqHcEJ6K7h3Zd7zYCo0I=
+X-Google-Smtp-Source: ABdhPJym62I5PYrbey5hKJ41iA2hotYaRo67Whb7YuRi7XclxNuXaWayAK5GxIE0maNqAf41WqvcwA==
+X-Received: by 2002:a65:6795:: with SMTP id e21mr22870328pgr.282.1591075538931;
+        Mon, 01 Jun 2020 22:25:38 -0700 (PDT)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id f7sm1031988pjp.24.2020.06.01.22.25.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 22:25:38 -0700 (PDT)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Rakesh Pillai <pillair@qti.qualcomm.com>,
+        Govind Singh <govinds@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Niklas Cassel <niklas.cassel@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>, ath10k@lists.infradead.org
+Subject: [PATCH] wireless: ath10k: Return early in ath10k_qmi_event_server_exit() to avoid hard crash on reboot
+Date:   Tue,  2 Jun 2020 05:25:33 +0000
+Message-Id: <20200602052533.15048-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ever since 5.7-rc1, if we call
+ath10k_qmi_remove_msa_permission(), the db845c hard crashes on
+reboot, resulting in the device getting stuck in the usb crash
+debug mode and not coming back up wihthout a hard power off.
 
---c2h6m5xrkl3f4s3k
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This hack avoids the issue by returning early in
+ath10k_qmi_event_server_exit().
 
-On Mon, Jun 01, 2020 at 04:20:00PM +0800, peng.fan@nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> Add i.MX8MQ/M/N/P compatible string to support i.MX8M SoCs
->=20
-> Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  Documentation/devicetree/bindings/mailbox/fsl,mu.txt | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/mailbox/fsl,mu.txt b/Docum=
-entation/devicetree/bindings/mailbox/fsl,mu.txt
-> index 26b7a88c2fea..906377acf2cd 100644
-> --- a/Documentation/devicetree/bindings/mailbox/fsl,mu.txt
-> +++ b/Documentation/devicetree/bindings/mailbox/fsl,mu.txt
-> @@ -18,7 +18,8 @@ Messaging Unit Device Node:
->  Required properties:
->  -------------------
->  - compatible :	should be "fsl,<chip>-mu", the supported chips include
-> -		imx6sx, imx7s, imx8qxp, imx8qm.
-> +		imx6sx, imx7s, imx8qxp, imx8qm, imx8mq, imx8mm, imx8mn,
-> +		imx8mp.
->  		The "fsl,imx6sx-mu" compatible is seen as generic and should
->  		be included together with SoC specific compatible.
->  		There is a version 1.0 MU on imx7ulp, use "fsl,imx7ulp-mu"
-> --=20
-> 2.16.4
->=20
->=20
+A better solution is very much desired!
 
-Hi Peng,
+Feedback and suggestions welcome!
 
-The fsl,mu.yaml was already taken by Rob, so one or other patch will
-break by merge. I assume you should drop this change.
+Cc: Rakesh Pillai <pillair@qti.qualcomm.com>
+Cc: Govind Singh <govinds@codeaurora.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Niklas Cassel <niklas.cassel@linaro.org>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Amit Pundir <amit.pundir@linaro.org>
+Cc: Brian Norris <briannorris@chromium.org>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
+Reported-by: Amit Pundir <amit.pundir@linaro.org>
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+ drivers/net/wireless/ath/ath10k/qmi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index 85dce43c5439..ab38562ce1cb 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -854,6 +854,11 @@ static void ath10k_qmi_event_server_exit(struct ath10k_qmi *qmi)
+ 	struct ath10k *ar = qmi->ar;
+ 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 
++	/*
++	 * HACK: Calling ath10k_qmi_remove_msa_permission causes
++	 * hardware to hard crash on reboot
++	 */
++	return;
+ 	ath10k_qmi_remove_msa_permission(qmi);
+ 	ath10k_core_free_board_files(ar);
+ 	if (!test_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags))
+-- 
+2.17.1
 
-Regards,
-Oleksij
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---c2h6m5xrkl3f4s3k
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl7V4pgACgkQ4omh9DUa
-UbObbg//WhWLqmjlyeR0A0GCaFvcBoDzS1TBdruVqmmFsGcgHhnHeH3c3STzS8ig
-cvnCfziAkNQLbRiqqPZO9J2n39SIX/Nps2JujTRTUldgKYK4/OTge15skrNTXQDD
-R/J3a6HaqgFPDTjEMzgjOe/1MvMtJrao1Ej4sJ08BSkQICy/GOPzVGy7/VeSFF1g
-3X6Z8lzHsU2BdS5IzTwQGEWVZ2JkEnK8qmyTHFL7HFjpNgh7CWwv34u2GAaeaC8/
-HnpfPA1JI2WEHbv+fVxMZjx04cmbHXFclp2qPu8skAgcEJMB1+UelVUPuXDgvqlj
-0kE2SgPeVtgX+IWWqaUbZh5f3baAUXu/I+miACCeLCV3SBcDJMDI7G5N4KV8mMu4
-QzXzHXVSEshTKSNx8rj6v04TSycrD/F5zArIfy04dnkoWd9ZZuwDR2BzQziHQqUa
-STPlogKn80dqho1oScRU0UtVTJtnk/SH8AgNatL+vJZbD4x4eW5ntE1LiU5oUfUR
-VvbsdhCPduN2QvTv+cENBC6BzqONJMDumHgY/8RirvqvfL2zSFxKwtAu9q5ay56r
-0Lkv2AQhn8d49EbEebxIPSM++gdUEw5usf/pbRT0J+YHPAviTZkhovjCAuPlli9D
-VKZHRW2V7rsbv4BArG8SpKGFDuHLgFNDZvaI+aM0HqiGYrS/hbM=
-=YyCu
------END PGP SIGNATURE-----
-
---c2h6m5xrkl3f4s3k--
