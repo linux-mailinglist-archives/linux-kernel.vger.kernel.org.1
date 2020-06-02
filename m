@@ -2,142 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48C71EC5D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 01:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785FF1EC5E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 01:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgFBXoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 19:44:39 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:57864 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgFBXoj (ORCPT
+        id S1727898AbgFBXtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 19:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726589AbgFBXtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 19:44:39 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 739AD8030808;
-        Tue,  2 Jun 2020 23:44:36 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id vYqbvJLx9H0f; Wed,  3 Jun 2020 02:44:35 +0300 (MSK)
-Date:   Wed, 3 Jun 2020 02:44:34 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>, SoC Team <soc@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 00/10] spi: Adding support for Microchip Sparx5 SoC
-Message-ID: <20200602234434.tznhbtt3sgpz5lxz@mobilestation>
-References: <20200513140031.25633-1-lars.povlsen@microchip.com>
- <20200529162130.hsjcde27xhohl6jl@mobilestation>
- <87img9q3sb.fsf@soft-dev15.microsemi.net>
+        Tue, 2 Jun 2020 19:49:20 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E9FC08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 16:49:20 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id g5so268571pfm.10
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 16:49:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yVZeRlHhmAp/EMedhM3eoU5f2SVcU2Jx7IPSMK+7jJA=;
+        b=E0d2VlsqPj91lO5CAD8WZ5itr9frJvtu8iuXkw+qeXzjXC4Uip1vmXF8oIE1I7Ca1o
+         nLnMIdg/5ZCKqU7lKZatNBkCKQGp60QG+BjHdhq5P9nAYAe/BwYvIT4s+2hf33fbtaoV
+         AIJ/rWolSjpPsy1jTpCDrfDl5YKIGGgJbCrlTbKuDeK1rByox2oTrtEs2PSQOaGTTv9H
+         aEHjiE2Pq+23Wn48sELeokRlGixHU8DwSOmOEOYxqZ0tK1C7/qos/NvYDJr9luTBISav
+         B1ACivJy1WwLPQb/z4fxEr6civ6H5q1ub1cNpfSastZNT2OOzT2q14oDz6HEx9WhmgzB
+         UW1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yVZeRlHhmAp/EMedhM3eoU5f2SVcU2Jx7IPSMK+7jJA=;
+        b=PCCoYe4eqYVeEOIiEfgytK4jS9xqYehKUmWSxwf3oUJxYVQzMzh7IgtcKCVI7MlQU9
+         cUhEcqGeIu4H3pUGGmt8/RYsox4OBBZKNV+tMR5rEoPkJ65kBo6HTNqKe+qwbP+nm3Zc
+         Rwt9MsAeAA9929JHTki7VVBOsRCsHiEbnN279KqbTGhZyNGy650ltzCdrge5UQLNQqXt
+         7+eSy+t6QyyZ2ZFTBStFPKdS3srgWYgu2jR862yh7F/L4aVGr2QvIsv44PE8U/N69el4
+         eHOFr5egSTXzItCxp+fAtjYwDn0bpD6HsSnJtsIoNeA1nBHPQH899W0SwxB00AEMl1Zd
+         pCPg==
+X-Gm-Message-State: AOAM531R9avVFxttqFW2Nw+jpQiFly8OAGcaJXudf9Xfp/RAHYo8czH9
+        5RT/JNZ39XdljP4GWwfyQqqloHqPn54=
+X-Google-Smtp-Source: ABdhPJwhNjUMzKjWf5QCkLix8B4rbHeEW57Wy0OzwqsMIxXo0t1ac9T2bunWwjBSynyz5CU+162gow==
+X-Received: by 2002:a17:90a:17e6:: with SMTP id q93mr1755037pja.133.1591141759693;
+        Tue, 02 Jun 2020 16:49:19 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:476b:691:abc3:38db])
+        by smtp.gmail.com with ESMTPSA id k7sm94000pga.87.2020.06.02.16.49.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 16:49:18 -0700 (PDT)
+Date:   Tue, 2 Jun 2020 16:49:12 -0700
+From:   Prashant Malani <pmalani@google.com>
+To:     Rajat Jain <rajatja@google.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        lalithambika.krishnakumar@intel.com, rajatxjain@gmail.com,
+        bleung@google.com, levinale@google.com, zsm@google.com,
+        mnissler@google.com, tbroch@google.com
+Subject: Re: [PATCH v3] iommu/vt-d: Don't apply gfx quirks to untrusted
+ devices
+Message-ID: <20200602234912.GB109930@google.com>
+References: <20200602232602.156049-1-rajatja@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87img9q3sb.fsf@soft-dev15.microsemi.net>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200602232602.156049-1-rajatja@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 10:18:28AM +0200, Lars Povlsen wrote:
-> 
-> Serge Semin writes:
-> 
-> > Hello Lars,
-> >
-> > On Wed, May 13, 2020 at 04:00:21PM +0200, Lars Povlsen wrote:
-> >> This is an add-on series to the main SoC Sparx5 series
-> >> (Message-ID: <20200513125532.24585-1-lars.povlsen@microchip.com>).
-> >>
-> >> The series add support for Sparx5 on top of the existing
-> >> ocelot/jaguar2 spi driver.
-> >>
-> >> It spins off the existing support for the MSCC platforms into a
-> >> separate driver, as adding new platforms from the MSCC/Microchip
-> >> product lines will further complicate (clutter) the original driver.
-> >>
-> >> New YAML dt-bindings are provided for the resulting driver.
-> >>
-> >> It is expected that the DT patches are to be taken directly by the arm-soc
-> >> maintainers.
-> >
-> > Regarding our cooperation. It can be implemented as follows. Since your patchset
-> > is less cumbersome than mine and is more ready to be integrated into the generic DW
-> > APB SSI code, it would be better to first make it through Mark', Andy' and my reviews
-> > to be further merged into the kernel version of the driver. After that I'll have
-> > my code altered so it could be applied on top of your patches. When everything
-> > is done we'll have a more comprehensive DW APB SSI driver with poll-based
-> > PIO operations support, new features like rx-delay, etc.
-> >
-> 
+Hi Rajat,
 
-> Hi Serge!
+On Tue, Jun 02, 2020 at 04:26:02PM -0700, Rajat Jain wrote:
+> Currently, an external malicious PCI device can masquerade the VID:PID
+> of faulty gfx devices, and thus apply iommu quirks to effectively
+> disable the IOMMU restrictions for itself.
 > 
-> I think I would be able to work on the SPI patches this week. Should I
-> base it on the current spi-next or 5.7? Then address the comments and
-> send out a new revision?
+> Thus we need to ensure that the device we are applying quirks to, is
+> indeed an internal trusted device.
+> 
+> Signed-off-by: Rajat Jain <rajatja@google.com>
+> Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+> v3: - Separate out the warning mesage in a function to be called from
+>       other places. Change the warning string as suggested.
+> v2: - Change the warning print strings.
+>     - Add Lu Baolu's acknowledgement.
+> 
+>  drivers/iommu/intel-iommu.c | 37 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+> 
+> diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+> index ef0a5246700e5..dc859f02985a0 100644
+> --- a/drivers/iommu/intel-iommu.c
+> +++ b/drivers/iommu/intel-iommu.c
+> @@ -6185,6 +6185,23 @@ intel_iommu_domain_set_attr(struct iommu_domain *domain,
+>  	return ret;
+>  }
+>  
+> +/*
+> + * Check that the device does not live on an external facing PCI port that is
+> + * marked as untrusted. Such devices should not be able to apply quirks and
+> + * thus not be able to bypass the IOMMU restrictions.
+> + */
+> +static bool risky_device(struct pci_dev *pdev)
+> +{
+> +	if (pdev->untrusted) {
+> +		pci_warn(pdev,
+> +			 "Skipping IOMMU quirk for dev (%04X:%04X) on untrusted"
+> +			 " PCI link. Please check with your BIOS/Platform"
+> +			 " vendor about this\n", pdev->vendor, pdev->device);
+> +		return true;
+> +	}
+> +	return false;
+minor suggestion: Perhaps you could use a guard clause here? It would save you
+a level of indentation, and possibly allow better string splitting
+(e.g keeping "untrusted PCI" together). So something like:
 
-Finally I've done a part of review. It must be enough for v2. As Mark said the
-new version is supposed to be based on the spi-next, since that branch's got
-all recent DW APB SSI patches applied.
+if (!pdev->untrusted)
+	return false;
 
--Sergey
+pci_warn(...);
 
+I also hear the column limit warning is now for 100 chars [1], though
+I'm not sure how it's being handled in this file.
+
+Best regards,
+
+-Prashant
+
+[1]:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/Documentation/process/coding-style.rst?id=bdc48fa11e46f867ea4d75fa59ee87a7f48be144
+
+> +}
+> +
+>  const struct iommu_ops intel_iommu_ops = {
+>  	.capable		= intel_iommu_capable,
+>  	.domain_alloc		= intel_iommu_domain_alloc,
+> @@ -6214,6 +6231,9 @@ const struct iommu_ops intel_iommu_ops = {
+>  
+>  static void quirk_iommu_igfx(struct pci_dev *dev)
+>  {
+> +	if (risky_device(dev))
+> +		return;
+> +
+>  	pci_info(dev, "Disabling IOMMU for graphics on this chipset\n");
+>  	dmar_map_gfx = 0;
+>  }
+> @@ -6255,6 +6275,9 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163D, quirk_iommu_igfx);
+>  
+>  static void quirk_iommu_rwbf(struct pci_dev *dev)
+>  {
+> +	if (risky_device(dev))
+> +		return;
+> +
+>  	/*
+>  	 * Mobile 4 Series Chipset neglects to set RWBF capability,
+>  	 * but needs it. Same seems to hold for the desktop versions.
+> @@ -6285,6 +6308,9 @@ static void quirk_calpella_no_shadow_gtt(struct pci_dev *dev)
+>  {
+>  	unsigned short ggc;
+>  
+> +	if (risky_device(dev))
+> +		return;
+> +
+>  	if (pci_read_config_word(dev, GGC, &ggc))
+>  		return;
+>  
+> @@ -6318,6 +6344,12 @@ static void __init check_tylersburg_isoch(void)
+>  	pdev = pci_get_device(PCI_VENDOR_ID_INTEL, 0x3a3e, NULL);
+>  	if (!pdev)
+>  		return;
+> +
+> +	if (risky_device(pdev)) {
+> +		pci_dev_put(pdev);
+> +		return;
+> +	}
+> +
+>  	pci_dev_put(pdev);
+>  
+>  	/* System Management Registers. Might be hidden, in which case
+> @@ -6327,6 +6359,11 @@ static void __init check_tylersburg_isoch(void)
+>  	if (!pdev)
+>  		return;
+>  
+> +	if (risky_device(pdev)) {
+> +		pci_dev_put(pdev);
+> +		return;
+> +	}
+> +
+>  	if (pci_read_config_dword(pdev, 0x188, &vtisochctrl)) {
+>  		pci_dev_put(pdev);
+>  		return;
+> -- 
+> 2.27.0.rc2.251.g90737beb825-goog
 > 
-> Thanks for reaching out.
-> 
-> ---Lars
-> 
-> > Thank you one more time for the series you've shared with us. Let's see what can
-> > be done to improve it...
-> >
-> > -Sergey
-> >
-> >>
-> >> Lars Povlsen (10):
-> >>   spi: dw: Add support for polled operation via no IRQ specified in DT
-> >>   spi: dw: Add support for RX sample delay register
-> >>   spi: dw: Add support for client driver memory operations
-> >>   dt-bindings: spi: Add bindings for spi-dw-mchp
-> >>   spi: spi-dw-mmio: Spin off MSCC platforms into spi-dw-mchp
-> >>   dt-bindings: spi: spi-dw-mchp: Add Sparx5 support
-> >>   spi: spi-dw-mchp: Add Sparx5 support
-> >>   arm64: dts: sparx5: Add SPI controller
-> >>   arm64: dts: sparx5: Add spi-nor support
-> >>   arm64: dts: sparx5: Add spi-nand devices
-> >>
-> >>  .../bindings/spi/mscc,ocelot-spi.yaml         |  89 ++++
-> >>  .../bindings/spi/snps,dw-apb-ssi.txt          |   7 +-
-> >>  MAINTAINERS                                   |   2 +
-> >>  arch/arm64/boot/dts/microchip/sparx5.dtsi     |  37 ++
-> >>  .../boot/dts/microchip/sparx5_pcb125.dts      |  16 +
-> >>  .../boot/dts/microchip/sparx5_pcb134.dts      |  22 +
-> >>  .../dts/microchip/sparx5_pcb134_board.dtsi    |   9 +
-> >>  .../boot/dts/microchip/sparx5_pcb135.dts      |  23 +
-> >>  .../dts/microchip/sparx5_pcb135_board.dtsi    |   9 +
-> >>  arch/mips/configs/generic/board-ocelot.config |   2 +-
-> >>  drivers/spi/Kconfig                           |   7 +
-> >>  drivers/spi/Makefile                          |   1 +
-> >>  drivers/spi/spi-dw-mchp.c                     | 399 ++++++++++++++++++
-> >>  drivers/spi/spi-dw-mmio.c                     |  93 ----
-> >>  drivers/spi/spi-dw.c                          |  31 +-
-> >>  drivers/spi/spi-dw.h                          |   4 +
-> >>  16 files changed, 644 insertions(+), 107 deletions(-)
-> >>  create mode 100644 Documentation/devicetree/bindings/spi/mscc,ocelot-spi.yaml
-> >>  create mode 100644 drivers/spi/spi-dw-mchp.c
-> >>
-> >> --
-> >> 2.26.2
-> >>
-> >> _______________________________________________
-> >> linux-arm-kernel mailing list
-> >> linux-arm-kernel@lists.infradead.org
-> >> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-> --
-> Lars Povlsen,
-> Microchip
