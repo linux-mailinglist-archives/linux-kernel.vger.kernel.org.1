@@ -2,133 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B9C1EC2BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A521EC2C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbgFBTbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 15:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49564 "EHLO
+        id S1728083AbgFBTbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 15:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgFBTbI (ORCPT
+        with ESMTP id S1726320AbgFBTbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 15:31:08 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA377C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 12:31:07 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id o6so5618876pgh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 12:31:07 -0700 (PDT)
+        Tue, 2 Jun 2020 15:31:50 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4E9C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 12:31:50 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id z9so3380351ljh.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 12:31:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=googlenew;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6w+XkUkU5h5LP0oH8IvcLuw6U3W/97W5DvOiXSMn/mA=;
-        b=WgkU/r3jMF9n33U8WloHJaM9zXFQJe2XsKzRsi/9mRzHgTDM8IZ97uCi0DdfxuBerD
-         26V8O/NVxAOOvlGJyZO9cfboF+5RY/Lp2TTyeRE9QzjgRLbAvonU6TpkcjihKBsoOVpF
-         QahWqbXJnNbkfidvMqq9c7UQcS2luBejKZl+olP8pzlszbI5SGw/956jai2htH3Lh9Bc
-         2tbSkAvw14Q2ds0/JMN7GjEs7y59z2iCOULnoF2g77jIleJ84sjve+uNP/KO8FVQmuN5
-         K95bNpISSjfOJFkStw24uui2/zSOmjMaiPW4GT0qMVAiV78fu1CWTEb9n5Qtn6vCpox3
-         x5MQ==
+        d=anholt-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IQbEYa0oW0Il8mjfCzR4SoEfB7EUDs8d+32KPqK0uG4=;
+        b=VG2CJ5t+FQePnvjuONDwr6Dql0NvazBNVRqadOsYgGBHsWUl15Ct8FtXwYihJnDz4P
+         roesHC2nlZ1W+rf0yu/PrUqwzwy9amDLGR8maWs7F7LOLxt51R6tgnYvEXzcAPzEY5/C
+         A3syAi0TEP9TFKGEiO5g+0hlkjSzNyG6QQG+3cF+LfRsQdyWyzrXblFKTUdRm84VvTRM
+         90fejGTEfsQCFOcBHCCd2S/eQs0TKYCv7mMunvHHl4cPh9vJDYMGI2Qj6UNQZhNYyl4A
+         6YKeBUUuielCOD2+N2SFexpH6ft4bMjwWpo58iuHfwApd6/fnY69lPErh6E1cNhXyw4o
+         9R7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6w+XkUkU5h5LP0oH8IvcLuw6U3W/97W5DvOiXSMn/mA=;
-        b=ZM9MaKwDoZ43w8KMsm8zuoOKkPvswMlpqwPgq1gP+W/lKx3EEFizqgW8t+7Ln9VWQx
-         SDW/CPs5QHQn+Wp8ow+tVcYq/kEaAvNxMnNQqW69pWGShRN0Oba/oQB0dyrtTTdG44Ik
-         +UWBCIbflLPRA1JTDrmrNYra/KpkJ+6+5Foxqnhooii2TEsyVTXPEzFlP86P+bfhBuNC
-         JYbo5SunxxuH7uX32tlzubjcNT2WukhXXtNQA63QLhHJhR9zTqj2HJM9odAZ+sswVwk/
-         Uv5xBnpk/fhVym2neyuChpGH4fmcHVVx/h8PCg/t+YLYehoZbMxSiXJkKt9AGWflBIJv
-         e/pQ==
-X-Gm-Message-State: AOAM5323VoNs8Q6wA4o3c2gSeeEsRWVWREuKWO3a563MkTVfA6QESgB6
-        fJX64WEa4r7yHxeS81i1QPL74DqeUC6lyg==
-X-Google-Smtp-Source: ABdhPJyv+MI97viRmZ6Mwyl2wRJj7hDq6oxKKSr+JdzibxHzmCC73fMp5Fx+ItV+U3VgzYvK9x8iAw==
-X-Received: by 2002:a17:90a:d809:: with SMTP id a9mr823280pjv.212.1591126267247;
-        Tue, 02 Jun 2020 12:31:07 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id e12sm3086572pfj.137.2020.06.02.12.31.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jun 2020 12:31:06 -0700 (PDT)
-Subject: Re: [PATCH RESEND v3 0/6] arm64: add the time namespace support
-To:     Andrei Vagin <avagin@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20200602180259.76361-1-avagin@gmail.com>
-From:   Dmitry Safonov <dima@arista.com>
-Message-ID: <3906fa01-1b3c-76f7-5587-b1f5cf6b6066@arista.com>
-Date:   Tue, 2 Jun 2020 20:31:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IQbEYa0oW0Il8mjfCzR4SoEfB7EUDs8d+32KPqK0uG4=;
+        b=TcnwGhroKHSzTibcxSmslVOxPNG19IH87akTDUKAxFwRUbZtOFbaDwXYjtX85Xy0//
+         596Kv8BjCSA6WXNCSw4XQvIfPVesydstNoKp76hkC0sBJ4ADbTQX/vo2TcEh7EEbguXO
+         7j37BUdOa+8DrpkYRR1pOP+6cIVagtRKyjk/5ynY4Ua/+32RBIdzxpD3CeLpIfGLrGgw
+         UlMgCeFJLi3i8EZO2EZCuQCnqfa0ufkB2cntbdHSy0oNO3qnvAo4tnH7y+q7pIuQKz2w
+         HPYpM0RgltcsRr/yPxMFq6Jgx2NGrhsQNBG83CkmebvCLOq4U1G6dt0BeWVOGzMrkE0j
+         DLWw==
+X-Gm-Message-State: AOAM532vu0WJD+zt4yb7bGXJdvUehlXygr61IavJ8NIm5PCGitOlYtX8
+        KmGJ4FaAkvPcsPFx7VjdC5TA1V1xiFBATjD4F9Da0Q==
+X-Google-Smtp-Source: ABdhPJxA2pW7yh8mSs3AzE0QrgE8KUJRrdHsiJaMgBJ2xDsVXK8ITtIHOEPS1WjP3x7YzPtQAVEFE55uqBSjObbn8hU=
+X-Received: by 2002:a2e:9147:: with SMTP id q7mr326807ljg.430.1591126308681;
+ Tue, 02 Jun 2020 12:31:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200602180259.76361-1-avagin@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
+ <d2c1850e38e14f3def4c0307240e6826e296c14b.1590594512.git-series.maxime@cerno.tech>
+ <CADaigPU7c=1u47R9GzvGCH_Z2fywY1foGYEy=KbBikjUQpwUFg@mail.gmail.com>
+ <20200602141228.7zbkob7bw3owajsq@gilmour> <CAPY8ntDZWJeu14mL5a0jqUWHFOEWm2OOBBkh4yjjP0oLU83UCQ@mail.gmail.com>
+In-Reply-To: <CAPY8ntDZWJeu14mL5a0jqUWHFOEWm2OOBBkh4yjjP0oLU83UCQ@mail.gmail.com>
+From:   Eric Anholt <eric@anholt.net>
+Date:   Tue, 2 Jun 2020 12:31:37 -0700
+Message-ID: <CADaigPUHPhdrt9JkTfaw0iT7Z8z3Si-v2VJ-s+dhnFQaDNkAaA@mail.gmail.com>
+Subject: Re: [PATCH v3 032/105] drm/vc4: crtc: Enable and disable the PV in
+ atomic_enable / disable
+To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrei,
+On Tue, Jun 2, 2020 at 8:02 AM Dave Stevenson
+<dave.stevenson@raspberrypi.com> wrote:
+>
+> Hi Maxime and Eric
+>
+> On Tue, 2 Jun 2020 at 15:12, Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > Hi Eric
+> >
+> > On Wed, May 27, 2020 at 09:54:44AM -0700, Eric Anholt wrote:
+> > > On Wed, May 27, 2020 at 8:50 AM Maxime Ripard <maxime@cerno.tech> wrote:
+> > > >
+> > > > The VIDEN bit in the pixelvalve currently being used to enable or disable
+> > > > the pixelvalve seems to not be enough in some situations, which whill end
+> > > > up with the pixelvalve stalling.
+> > > >
+> > > > In such a case, even re-enabling VIDEN doesn't bring it back and we need to
+> > > > clear the FIFO. This can only be done if the pixelvalve is disabled though.
+> > > >
+> > > > In order to overcome this, we can configure the pixelvalve during
+> > > > mode_set_no_fb, but only enable it in atomic_enable and flush the FIFO
+> > > > there, and in atomic_disable disable the pixelvalve again.
+> > >
+> > > What displays has this been tested with?  Getting this sequencing
+> > > right is so painful, and things like DSI are tricky to get to light
+> > > up.
+> >
+> > That FIFO is between the HVS and the HDMI PVs, so this was obviously
+> > tested against that. Dave also tested the DSI output IIRC, so we should
+> > be covered here.
+>
+> DSI wasn't working on the first patch set that Maxime sent - I haven't
+> tested this one as yet but will do so.
+> DPI was working early on to both an Adafruit 800x480 DPI panel, and
+> via a VGA666 as VGA.
+> HDMI is obviously working.
+> VEC is being ignored now. The clock structure is more restricted than
+> earlier chips, so to get the required clocks for the VEC without using
+> fractional divides it compromises the clock that other parts of the
+> system can run at (IIRC including the ARM). That's why the VEC has to
+> be explicitly enabled for the firmware to enable it as the only
+> output. It's annoying, but that's just a restriction of the chip.
 
-On 6/2/20 7:02 PM, Andrei Vagin wrote:
-> Allocate the time namespace page among VVAR pages and add the logic
-> to handle faults on VVAR properly.
-> 
-> If a task belongs to a time namespace then the VVAR page which contains
-> the system wide VDSO data is replaced with a namespace specific page
-> which has the same layout as the VVAR page. That page has vdso_data->seq
-> set to 1 to enforce the slow path and vdso_data->clock_mode set to
-> VCLOCK_TIMENS to enforce the time namespace handling path.
-> 
-> The extra check in the case that vdso_data->seq is odd, e.g. a concurrent
-> update of the VDSO data is in progress, is not really affecting regular
-> tasks which are not part of a time namespace as the task is spin waiting
-> for the update to finish and vdso_data->seq to become even again.
-> 
-> If a time namespace task hits that code path, it invokes the corresponding
-> time getter function which retrieves the real VVAR page, reads host time
-> and then adds the offset for the requested clock which is stored in the
-> special VVAR page.
-> 
-> v2: Code cleanups suggested by Vincenzo.
-> v3: add a comment in __arch_get_timens_vdso_data.
-> 
-> Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Dmitry Safonov <dima@arista.com>
-> 
-> v3 on github (if someone prefers `git pull` to `git am`):
-> https://github.com/avagin/linux-task-diag/tree/arm64/timens-v3
-
-Thanks for adding arm64 support, I've looked through patches and don't
-see any major problems.
-
-Reviewed-by: Dmitry Safonov <dima@arista.com>
-
-> 
-> Andrei Vagin (6):
->   arm64/vdso: use the fault callback to map vvar pages
->   arm64/vdso: Zap vvar pages when switching to a time namespace
->   arm64/vdso: Add time napespace page
->   arm64/vdso: Handle faults on timens page
->   arm64/vdso: Restrict splitting VVAR VMA
->   arm64: enable time namespace support
-> 
->  arch/arm64/Kconfig                            |   1 +
->  .../include/asm/vdso/compat_gettimeofday.h    |  11 ++
->  arch/arm64/include/asm/vdso/gettimeofday.h    |   8 ++
->  arch/arm64/kernel/vdso.c                      | 134 ++++++++++++++++--
->  arch/arm64/kernel/vdso/vdso.lds.S             |   3 +-
->  arch/arm64/kernel/vdso32/vdso.lds.S           |   3 +-
->  include/vdso/datapage.h                       |   1 +
->  7 files changed, 147 insertions(+), 14 deletions(-)
-> 
-
-Thanks,
-          Dmitry
+I'm more concerned with "make sure we don't regress pre-pi4 with this
+series" than "pi4 displays all work from the beginning"
