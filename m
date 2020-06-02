@@ -2,274 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002A51EB964
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFD21EB968
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726782AbgFBKQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 06:16:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727977AbgFBKQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 06:16:12 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728087AbgFBKRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 06:17:51 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:38081 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726377AbgFBKRc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 06:17:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591093049;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m8flul9T5/INbLuHOQ1wE5MsczYdkAsRCFisLMaoyM8=;
+        b=GKCmkONLVp8K4AT3fwhcl2dt/DI3MsLgfBjFFYyMOZuHopIZVB+iIYl0+u95gWQyIbbpX8
+        mDTnG/nva4bsrrVpx0KWUddxBum5xXBGtpZFOGIUtk432r8y5fqY59aMlopeRifjDWnLoY
+        SQ8b1I4kX+9mu+oF7jIkoq8iMnKi+7s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-196-_gVI1e6lPeGjgn2AI4D0lw-1; Tue, 02 Jun 2020 06:17:07 -0400
+X-MC-Unique: _gVI1e6lPeGjgn2AI4D0lw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F48F206A4;
-        Tue,  2 Jun 2020 10:16:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591092970;
-        bh=/ICJOi2Jk5AGm6n4Em1+cXiPwNbB4uPwZ51SPTTbijU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bCX1jkZ7s7VbGqIvuKUWD7vM3oyuh2NCkQu2KkkFX9H8poEFQ+yM1Y9QkgT01NUg4
-         If3aJZiNnnchibh46iP8Kn2QAqRhSeuK8i7osMOKNUCLHCfm7WUqk3PfjWkF057Fgn
-         Z4V1X8PBtZXV5hZaUb5aXe2amwQ+6BPmCs7C3CkY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: [PATCH 4.4 00/47] 4.4.226-rc2 review
-Date:   Tue,  2 Jun 2020 12:16:07 +0200
-Message-Id: <20200602100034.001608787@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AC751030982;
+        Tue,  2 Jun 2020 10:17:05 +0000 (UTC)
+Received: from [10.72.12.83] (ovpn-12-83.pek2.redhat.com [10.72.12.83])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5E9C8100164D;
+        Tue,  2 Jun 2020 10:16:54 +0000 (UTC)
+Subject: Re: [PATCH] vdpa: bypass waking up vhost_woker for vdpa vq kick
+To:     Dan Carpenter <dan.carpenter@oracle.com>, kbuild@lists.01.org,
+        Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     lkp@intel.com, kbuild-all@lists.01.org, lulu@redhat.com,
+        dan.daly@intel.com, cunming.liang@intel.com
+References: <20200602094203.GU30374@kadam>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <b8ccbccf-f667-8d15-8de2-b87da5f51ec3@redhat.com>
+Date:   Tue, 2 Jun 2020 18:16:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.226-rc2.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.4.226-rc2
-X-KernelTest-Deadline: 2020-06-04T10:00+00:00
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200602094203.GU30374@kadam>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.4.226 release.
-There are 47 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
 
-Responses should be made by Thu, 04 Jun 2020 09:57:12 +0000.
-Anything received after that time might be too late.
-
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.226-rc2.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.4.226-rc2
-
-Benjamin Block <bblock@linux.ibm.com>
-    scsi: zfcp: fix request object use-after-free in send path causing wrong traces
-
-Aaron Conole <aconole@redhat.com>
-    printk: help pr_debug and pr_devel to optimize out arguments
-
-Ben Hutchings <ben.hutchings@codethink.co.uk>
-    drm/msm: Fix possible null dereference on failure of get_pages()
-
-Guoqing Jiang <gqjiang@suse.com>
-    sc16is7xx: move label 'err_spi' to correct section
-
-Michal Marek <mmarek@suse.com>
-    asm-prototypes: Clear any CPP defines before declaring the functions
-
-Liviu Dudau <liviu@dudau.co.uk>
-    mm/vmalloc.c: don't dereference possible NULL pointer in __vunmap()
-
-Roopa Prabhu <roopa@cumulusnetworks.com>
-    net: rtnl_configure_link: fix dev flags changes arg to __dev_notify_flags
-
-Sudip Mukherjee <sudip@vectorindia.org>
-    mac80211: fix memory leak
-
-Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-    usb: renesas_usbhs: gadget: fix spin_lock_init() for &uep->lock
-
-Thomas Gleixner <tglx@linutronix.de>
-    genirq/generic_pending: Do not lose pending affinity update
-
-Matt Roper <matthew.d.roper@intel.com>
-    drm/fb-helper: Use proper plane mask for fb cleanup
-
-Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-    mm: remove VM_BUG_ON(PageSlab()) from page_mapcount()
-
-Pablo Neira Ayuso <pablo@netfilter.org>
-    netfilter: nf_conntrack_pptp: fix compilation warning with W=1 build
-
-Qiushi Wu <wu000273@umn.edu>
-    bonding: Fix reference count leak in bond_sysfs_slave_add.
-
-Qiushi Wu <wu000273@umn.edu>
-    qlcnic: fix missing release in qlcnic_83xx_interrupt_test.
-
-Pablo Neira Ayuso <pablo@netfilter.org>
-    netfilter: nf_conntrack_pptp: prevent buffer overflows in debug code
-
-Phil Sutter <phil@nwl.cc>
-    netfilter: ipset: Fix subcounter update skip
-
-Michael Braun <michael-dev@fami-braun.de>
-    netfilter: nft_reject_bridge: enable reject with bridge vlan
-
-Xin Long <lucien.xin@gmail.com>
-    ip_vti: receive ipip packet by calling ip_tunnel_rcv
-
-Jeremy Sowden <jeremy@azazel.net>
-    vti4: eliminated some duplicate code.
-
-Xin Long <lucien.xin@gmail.com>
-    xfrm: fix a NULL-ptr deref in xfrm_local_error
-
-Xin Long <lucien.xin@gmail.com>
-    xfrm: fix a warning in xfrm_policy_insert_list
-
-Xin Long <lucien.xin@gmail.com>
-    xfrm: allow to accept packets with ipv6 NEXTHDR_HOP in xfrm_input
-
-Alexander Dahl <post@lespocky.de>
-    x86/dma: Fix max PFN arithmetic overflow on 32 bit systems
-
-Helge Deller <deller@gmx.de>
-    parisc: Fix kernel panic in mem_init()
-
-Qiushi Wu <wu000273@umn.edu>
-    iommu: Fix reference count leak in iommu_group_alloc.
-
-Arnd Bergmann <arnd@arndb.de>
-    include/asm-generic/topology.h: guard cpumask_of_node() macro argument
-
-Alexander Potapenko <glider@google.com>
-    fs/binfmt_elf.c: allocate initialized memory in fill_thread_core_info()
-
-Eric W. Biederman <ebiederm@xmission.com>
-    exec: Always set cap_ambient in cap_bprm_set_creds
-
-Chris Chiu <chiu@endlessm.com>
-    ALSA: usb-audio: mixer: volume quirk for ESS Technology Asus USB DAC
-
-Changming Liu <liu.changm@northeastern.edu>
-    ALSA: hwdep: fix a left shifting 1 by 31 UB bug
-
-Kaike Wan <kaike.wan@intel.com>
-    IB/qib: Call kobject_put() when kobject_init_and_add() fails
-
-Kevin Locke <kevin@kevinlocke.name>
-    Input: i8042 - add ThinkPad S230u to i8042 reset list
-
-Łukasz Patron <priv.luk@gmail.com>
-    Input: xpad - add custom init packet for Xbox One S controllers
-
-Brendan Shanks <bshanks@codeweavers.com>
-    Input: evdev - call input_flush_device() on release(), not flush()
-
-James Hilliard <james.hilliard1@gmail.com>
-    Input: usbtouchscreen - add support for BonXeon TP
-
-Steve French <stfrench@microsoft.com>
-    cifs: Fix null pointer check in cifs_read
-
-Masahiro Yamada <masahiroy@kernel.org>
-    usb: gadget: legacy: fix redundant initialization warnings
-
-Lei Xue <carmark.dlut@gmail.com>
-    cachefiles: Fix race between read_waiter and read_copier involving op->to_do
-
-Kalderon, Michal <Michal.Kalderon@cavium.com>
-    IB/cma: Fix reference count leak when no ipv4 addresses are set
-
-Dmitry V. Levin <ldv@altlinux.org>
-    uapi: fix linux/if_pppol2tp.h userspace compilation errors
-
-Qiushi Wu <wu000273@umn.edu>
-    net/mlx4_core: fix a memory leak bug.
-
-Qiushi Wu <wu000273@umn.edu>
-    net: sun: fix missing release regions in cas_init_one().
-
-Moshe Shemesh <moshe@mellanox.com>
-    net/mlx5: Add command entry handling completion
-
-Jere Leppänen <jere.leppanen@nokia.com>
-    sctp: Start shutdown on association restart if in SHUTDOWN-SENT state and socket is closed
-
-Yuqi Jin <jinyuqi@huawei.com>
-    net: revert "net: get rid of an signed integer overflow in ip_idents_reserve()"
-
-Eric Dumazet <edumazet@google.com>
-    ax25: fix setsockopt(SO_BINDTODEVICE)
+On 2020/6/2 下午5:42, Dan Carpenter wrote:
+> Hi Zhu,
+>
+> url:    https://github.com/0day-ci/linux/commits/Zhu-Lingshan/vdpa-bypass-waking-up-vhost_woker-for-vdpa-vq-kick/20200526-133819
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-next
+> config: x86_64-randconfig-m001-20200529 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> smatch warnings:
+> drivers/vhost/vdpa.c:348 vhost_vdpa_set_vring_kick() error: uninitialized symbol 'r'.
+>
+> # https://github.com/0day-ci/linux/commit/a84ddbf1ef29f18aafb2bb8a93bcedd4a29a967d
+> git remote add linux-review https://github.com/0day-ci/linux
+> git remote update linux-review
+> git checkout a84ddbf1ef29f18aafb2bb8a93bcedd4a29a967d
+> vim +/r +348 drivers/vhost/vdpa.c
+>
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  316  static long vhost_vdpa_set_vring_kick(struct vhost_virtqueue *vq,
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  317  				      void __user *argp)
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  318  {
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  319  	bool pollstart = false, pollstop = false;
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  320  	struct file *eventfp, *filep = NULL;
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  321  	struct vhost_vring_file f;
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  322  	long r;
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  323
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  324  	if (copy_from_user(&f, argp, sizeof(f)))
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  325  		return -EFAULT;
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  326
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  327  	eventfp = f.fd == -1 ? NULL : eventfd_fget(f.fd);
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  328  	if (IS_ERR(eventfp)) {
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  329  		r = PTR_ERR(eventfp);
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  330  		return r;
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  331  	}
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  332
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  333  	if (eventfp != vq->kick) {
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  334  		pollstop = (filep = vq->kick) != NULL;
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  335  		pollstart = (vq->kick = eventfp) != NULL;
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  336  	} else
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  337  		filep = eventfp;
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  338
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  339  	if (pollstop && vq->handle_kick)
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  340  		vhost_vdpa_poll_stop(vq);
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  341
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  342  	if (filep)
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  343  		fput(filep);
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  344
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  345  	if (pollstart && vq->handle_kick)
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  346  		r = vhost_vdpa_poll_start(vq);
+>
+> "r" not initialized on else path.
+>
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  347
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26 @348  	return r;
+> a84ddbf1ef29f1 Zhu Lingshan 2020-05-26  349  }
 
 
--------------
+Will fix.
 
-Diffstat:
+Thanks
 
- Makefile                                           |  4 +-
- arch/parisc/mm/init.c                              |  2 +-
- arch/x86/include/asm/dma.h                         |  2 +-
- drivers/gpu/drm/drm_fb_helper.c                    |  2 +-
- drivers/gpu/drm/msm/msm_gem.c                      | 20 +++---
- drivers/infiniband/hw/qib/qib_sysfs.c              |  9 +--
- drivers/input/evdev.c                              | 19 ++----
- drivers/input/joystick/xpad.c                      | 12 ++++
- drivers/input/serio/i8042-x86ia64io.h              |  7 ++
- drivers/input/touchscreen/usbtouchscreen.c         |  1 +
- drivers/iommu/iommu.c                              |  2 +-
- drivers/net/bonding/bond_sysfs_slave.c             |  4 +-
- drivers/net/ethernet/mellanox/mlx4/fw.c            |  2 +-
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c      | 15 +++++
- .../net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c    |  4 +-
- drivers/net/ethernet/sun/cassini.c                 |  3 +-
- drivers/s390/scsi/zfcp_fsf.c                       | 10 ++-
- drivers/tty/serial/sc16is7xx.c                     |  2 +
- drivers/usb/gadget/legacy/inode.c                  |  3 +-
- drivers/usb/renesas_usbhs/mod_gadget.c             |  2 +-
- fs/binfmt_elf.c                                    |  2 +-
- fs/cachefiles/rdwr.c                               |  2 +-
- fs/cifs/file.c                                     |  2 +-
- include/asm-generic/asm-prototypes.h               |  6 ++
- include/asm-generic/topology.h                     |  2 +-
- include/linux/mlx5/driver.h                        |  1 +
- include/linux/mm.h                                 |  1 -
- include/linux/netfilter/nf_conntrack_pptp.h        |  2 +-
- include/linux/printk.h                             | 12 ++--
- include/rdma/ib_addr.h                             |  6 +-
- include/uapi/linux/l2tp.h                          |  7 +-
- kernel/irq/migration.c                             | 26 ++++++--
- mm/vmalloc.c                                       |  2 +-
- net/ax25/af_ax25.c                                 |  6 +-
- net/bridge/netfilter/nft_reject_bridge.c           |  6 ++
- net/core/rtnetlink.c                               |  2 +-
- net/ipv4/ip_vti.c                                  | 75 ++++++++++++----------
- net/ipv4/netfilter/nf_nat_pptp.c                   |  7 +-
- net/ipv4/route.c                                   | 14 ++--
- net/mac80211/sta_info.c                            |  1 +
- net/netfilter/ipset/ip_set_list_set.c              |  2 +-
- net/netfilter/nf_conntrack_pptp.c                  | 62 ++++++++++--------
- net/sctp/sm_statefuns.c                            |  9 +--
- net/xfrm/xfrm_input.c                              |  2 +-
- net/xfrm/xfrm_output.c                             |  3 +-
- net/xfrm/xfrm_policy.c                             |  7 +-
- security/commoncap.c                               |  1 +
- sound/core/hwdep.c                                 |  4 +-
- sound/usb/mixer.c                                  |  8 +++
- 49 files changed, 242 insertions(+), 163 deletions(-)
 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
