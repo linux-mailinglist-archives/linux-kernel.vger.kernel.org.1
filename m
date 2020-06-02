@@ -2,169 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4279F1EBA4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BDF1EBA41
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgFBLXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 07:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgFBLXB (ORCPT
+        id S1726809AbgFBLUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 07:20:33 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22010 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726012AbgFBLU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:23:01 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B668C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 04:23:01 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id d8so1090423uam.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 04:23:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G+DNdm4OSXj+ZbBSFAclEqfXcnxIti3qQTr4JFZ9dtc=;
-        b=lnD6MIXyEj5uecvyfaXox7g810NP8Ibk2/joJWKyDDRPfm3DDKj1mmwutnK8eZAgvv
-         izrSuehMkKmZ17ShLYiUxI/c/NX6yCBTsze7Z6QLSjRTt77h/QAbHMrE8K1mbss3kRVF
-         XmQ/NdlpU2PJp+Xw3FPgxtZpn/NS1ZkmHk4k3WXL1J9RVAQkDlL1ZnV6LJEVTO6QaCsO
-         Dx5an036CMyZqV7xlEA5DhUb6Kd3D1jTSeVCb0nHpz8opyYh2XNR/brlP6n/C8qZ6Fkj
-         gPANDbfdblL2Czrxg9LQqdBCOdazHgbshh+xLjD4brVfLTPVXc8ckcxDiB67VPlS/c6R
-         XtPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G+DNdm4OSXj+ZbBSFAclEqfXcnxIti3qQTr4JFZ9dtc=;
-        b=FZnhd7zNVNuXtq/o3wkPMaG/uXGmC8hU1eyVbMm4L16BoEC0q7PtkPrQqSk+sNBPaW
-         uXSzgcgM6bm6IVtuOhIr+5S3lKyhRh7vONQG5JJ886yGSRqHY16RM4ubAv0WdersXZEO
-         TZbFZY05LtCk4GtM0JR8GBUOyLy/haUzqBISX8kXTDaY37+rVXJTtRI8IW82BqjwYzZN
-         jJAjiJgzSbK81EEGg2iQwoun6HtyCFf0pNXw7KyXCuxnQHLTfyEs0kGn/g9CNGmgJO7n
-         LFM4SFAKQIN4rwDcttuHbpKjvfhC1laTYaiUhEudCffkJHw09eByatRaKIhtPwYh5P1F
-         fK5A==
-X-Gm-Message-State: AOAM5303oKPwGolpTHlV8mzJ44+Yp0R40RK8o2HDNuba3bta4jYIQ7w3
-        6HH3LMDS682v67BNlH+ETu7k4tq77cRbYx0GUbfKN3yK
-X-Google-Smtp-Source: ABdhPJzgunA1N5yaYNWOEvkLV8aY3KUQWScXsEgM4P7MMV+4QxZfoN3c4emUPiX+0ovH8mnEnlAJ16bm8arKmmGWxBk=
-X-Received: by 2002:ab0:6012:: with SMTP id j18mr1209769ual.69.1591096980386;
- Tue, 02 Jun 2020 04:23:00 -0700 (PDT)
+        Tue, 2 Jun 2020 07:20:28 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 052B6uW1024989;
+        Tue, 2 Jun 2020 07:20:03 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31c540a8gh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 07:20:02 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 052AXfi5026220;
+        Tue, 2 Jun 2020 07:20:02 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31c540a8f9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 07:20:01 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 052BEuq6017287;
+        Tue, 2 Jun 2020 11:20:00 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 31bf482ct7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 11:20:00 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 052BIgfi64749898
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Jun 2020 11:18:42 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1FB4C42041;
+        Tue,  2 Jun 2020 11:19:57 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 81A8B4204F;
+        Tue,  2 Jun 2020 11:19:54 +0000 (GMT)
+Received: from [9.199.62.173] (unknown [9.199.62.173])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  2 Jun 2020 11:19:54 +0000 (GMT)
+Subject: Re: [PATCH] hw_breakpoint: Fix build warnings with clang
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        christophe.leroy@c-s.fr, mikey@neuling.org, apopple@linux.ibm.com,
+        linux-kernel@vger.kernel.org, npiggin@gmail.com, paulus@samba.org,
+        naveen.n.rao@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+References: <20200602041208.128913-1-ravi.bangoria@linux.ibm.com>
+ <0217bbaf-a831-8aea-3ecd-fa217fca1669@csgroup.eu>
+ <87d06hivfs.fsf@mpe.ellerman.id.au>
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Message-ID: <99295a0b-cda7-4570-e68c-b78510b2771d@linux.ibm.com>
+Date:   Tue, 2 Jun 2020 16:49:53 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200511115524.22602-1-Rodrigo.Siqueira@amd.com> <20200511115524.22602-2-Rodrigo.Siqueira@amd.com>
-In-Reply-To: <20200511115524.22602-2-Rodrigo.Siqueira@amd.com>
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-Date:   Tue, 2 Jun 2020 12:19:42 +0100
-Message-ID: <CACvgo53qkPb+3xVcUQJosnq0fSzG9kBEet2tCeLNXkkAQLSrUA@mail.gmail.com>
-Subject: Re: [PATCH V4 1/3] drm/vkms: Decouple crc operations from composer
-To:     Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc:     Brian Starkey <brian.starkey@arm.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Simon Ser <contact@emersion.fr>,
-        Leandro Ribeiro <leandro.ribeiro@collabora.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87d06hivfs.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-02_11:2020-06-01,2020-06-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ mlxlogscore=999 cotscore=-2147483648 mlxscore=0 adultscore=0 spamscore=0
+ lowpriorityscore=0 suspectscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006020072
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rodrigo,
 
-On Mon, 11 May 2020 at 12:55, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com> wrote:
 
-> -static uint32_t _vkms_get_crc(struct vkms_composer *primary_composer,
-> -                             struct vkms_composer *cursor_composer)
-> +static int compose_planes(void **vaddr_out,
-> +                         struct vkms_composer *primary_composer,
-> +                         struct vkms_composer *cursor_composer)
->  {
->         struct drm_framebuffer *fb = &primary_composer->fb;
->         struct drm_gem_object *gem_obj = drm_gem_fb_get_obj(fb, 0);
->         struct vkms_gem_object *vkms_obj = drm_gem_to_vkms_gem(gem_obj);
-> -       void *vaddr_out = kzalloc(vkms_obj->gem.size, GFP_KERNEL);
-> -       u32 crc = 0;
->
-> -       if (!vaddr_out) {
-> -               DRM_ERROR("Failed to allocate memory for output frame.");
-> -               return 0;
-> +       if (!*vaddr_out) {
-> +               *vaddr_out = kzalloc(vkms_obj->gem.size, GFP_KERNEL);
-It would be clearer if you keep the to alloc (or not for wb) in the
-caller. As-is it's very subtle and error prone.
+On 6/2/20 4:30 PM, Michael Ellerman wrote:
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>> Le 02/06/2020 à 06:12, Ravi Bangoria a écrit :
+>>> kbuild test robot reported few build warnings with hw_breakpoint code
+>>> when compiled with clang[1]. Fix those.
+>>>
+>>> [1]: https://lore.kernel.org/linuxppc-dev/202005192233.oi9CjRtA%25lkp@intel.com/
+>>>
+> 
+> This should have mentioned that some of the errors were recently
+> introduced by your commit.
 
-> +               if (!*vaddr_out) {
-> +                       DRM_ERROR("Cannot allocate memory for output frame.");
-> +                       return -ENOMEM;
-> +               }
->         }
->
-> -       if (WARN_ON(!vkms_obj->vaddr)) {
-> -               kfree(vaddr_out);
-> -               return crc;
-> -       }
-> +       if (WARN_ON(!vkms_obj->vaddr))
-> +               return -EINVAL;
->
-> -       memcpy(vaddr_out, vkms_obj->vaddr, vkms_obj->gem.size);
-> +       memcpy(*vaddr_out, vkms_obj->vaddr, vkms_obj->gem.size);
->
->         if (cursor_composer)
-> -               compose_cursor(cursor_composer, primary_composer, vaddr_out);
-> +               compose_cursor(cursor_composer, primary_composer, *vaddr_out);
->
-> -       crc = compute_crc(vaddr_out, primary_composer);
-> -
-> -       kfree(vaddr_out);
-> -
-> -       return crc;
-> +       return 0;
->  }
->
->  /**
-> @@ -157,9 +153,11 @@ void vkms_composer_worker(struct work_struct *work)
->         struct vkms_output *out = drm_crtc_to_vkms_output(crtc);
->         struct vkms_composer *primary_composer = NULL;
->         struct vkms_composer *cursor_composer = NULL;
-> +       void *vaddr_out = NULL;
->         u32 crc32 = 0;
->         u64 frame_start, frame_end;
->         bool crc_pending;
-> +       int ret;
->
->         spin_lock_irq(&out->composer_lock);
->         frame_start = crtc_state->frame_start;
-> @@ -183,14 +181,25 @@ void vkms_composer_worker(struct work_struct *work)
->         if (crtc_state->num_active_planes == 2)
->                 cursor_composer = crtc_state->active_planes[1]->composer;
->
-> -       if (primary_composer)
-> -               crc32 = _vkms_get_crc(primary_composer, cursor_composer);
-> +       if (!primary_composer)
-> +               return;
-> +
-This early return changes the functionality. Namely the
-drm_crtc_add_crc_entry(.... 0) is now missing. I don't recall much
-about the crc to judge if that's a genuine bugfix, or newly introduced
-bug.
+Sure, will take care next time.
 
-In the former case, it should be a separate patch.
+> 
+>>> Reported-by: kbuild test robot <lkp@intel.com>
+>>> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+>>> ---
+>>> Note: Prepared on top of powerpc/next.
+>>>
+>>>    arch/powerpc/include/asm/hw_breakpoint.h | 3 ---
+>>>    include/linux/hw_breakpoint.h            | 4 ++++
+>>>    2 files changed, 4 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/include/asm/hw_breakpoint.h b/arch/powerpc/include/asm/hw_breakpoint.h
+>>> index f42a55eb77d2..cb424799da0d 100644
+>>> --- a/arch/powerpc/include/asm/hw_breakpoint.h
+>>> +++ b/arch/powerpc/include/asm/hw_breakpoint.h
+>>> @@ -70,9 +70,6 @@ extern int hw_breakpoint_exceptions_notify(struct notifier_block *unused,
+>>>    						unsigned long val, void *data);
+>>>    int arch_install_hw_breakpoint(struct perf_event *bp);
+>>>    void arch_uninstall_hw_breakpoint(struct perf_event *bp);
+>>> -int arch_reserve_bp_slot(struct perf_event *bp);
+>>> -void arch_release_bp_slot(struct perf_event *bp);
+>>> -void arch_unregister_hw_breakpoint(struct perf_event *bp);
+>>>    void hw_breakpoint_pmu_read(struct perf_event *bp);
+>>>    extern void flush_ptrace_hw_breakpoint(struct task_struct *tsk);
+>>>    
+>>> diff --git a/include/linux/hw_breakpoint.h b/include/linux/hw_breakpoint.h
+>>> index 6058c3844a76..521481f0d320 100644
+>>> --- a/include/linux/hw_breakpoint.h
+>>> +++ b/include/linux/hw_breakpoint.h
+>>> @@ -80,6 +80,10 @@ extern int dbg_reserve_bp_slot(struct perf_event *bp);
+>>>    extern int dbg_release_bp_slot(struct perf_event *bp);
+>>>    extern int reserve_bp_slot(struct perf_event *bp);
+>>>    extern void release_bp_slot(struct perf_event *bp);
+>>> +extern int hw_breakpoint_weight(struct perf_event *bp);
+>>> +extern int arch_reserve_bp_slot(struct perf_event *bp);
+>>> +extern void arch_release_bp_slot(struct perf_event *bp);
+>>> +extern void arch_unregister_hw_breakpoint(struct perf_event *bp);
+>>
+>> Please no new 'extern'. In the old days 'extern' keyword was used, but
+>> new code shall not introduce new unnecessary usage of 'extern' keyword.
+>> See report from Checkpatch below:
+>>
+>> WARNING:COMMIT_LOG_LONG_LINE: Possible unwrapped commit description
+>> (prefer a maximum 75 chars per line)
+>> #9:
+>> [1]:
+>> https://lore.kernel.org/linuxppc-dev/202005192233.oi9CjRtA%25lkp@intel.com/
+>>
+>> CHECK:AVOID_EXTERNS: extern prototypes should be avoided in .h files
+>> #40: FILE: include/linux/hw_breakpoint.h:83:
+>> +extern int hw_breakpoint_weight(struct perf_event *bp);
+> 
+> I fixed it up when applying.
 
-> +       ret = compose_planes(&vaddr_out, primary_composer, cursor_composer);
-> +       if (ret) {
-> +               if (ret == -EINVAL)
-> +                       kfree(vaddr_out);
-> +               return;
-> +       }
-> +
-> +       crc32 = compute_crc(vaddr_out, primary_composer);
->
->         /*
->          * The worker can fall behind the vblank hrtimer, make sure we catch up.
->          */
->         while (frame_start <= frame_end)
->                 drm_crtc_add_crc_entry(crtc, true, frame_start++, &crc32);
-> +
-> +       kfree(vaddr_out);
-Nit: move the free() just after compute_crc() - it's not needed for
-the drm_crtc_add_crc_entry().
+Thanks Michael.
 
--Emil
+Ravi
