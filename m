@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C1D1EB925
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B65A1EB939
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbgFBKJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 06:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
+        id S1728275AbgFBKKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 06:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727016AbgFBKJq (ORCPT
+        with ESMTP id S1727794AbgFBKJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 06:09:46 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73586C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 03:09:46 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id b5so1986623pfp.9
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 03:09:46 -0700 (PDT)
+        Tue, 2 Jun 2020 06:09:51 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609A8C05BD43
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 03:09:50 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id q24so1223188pjd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 03:09:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vautb822ZfqbgT9H1qhF7C4M74PWhQzgpsc/iQMPhyE=;
-        b=MGUa5+DQjvlhtfr049c1/fZTWBfJSEvMFonHlxrFq/sQnDeuGeJcc19rbD1i2IUYFW
-         wLdRgfi5usAEHgvKX+OpQiU8rU7Wukf4IBm7E1vRavICIGExstq2YzYucy2VItWJKOa+
-         jeZPXSqL+224vtF1Uhg376HaG0Q77QkIazFNHY1K5ndrpRfNcOAE+wcbJszpvM3VA8b3
-         yt4sy+m/l7mzThlR4/45Oxmf0iIzi3ZG4xs6tKIq/66HY8NrivhPSydQrhMaMdnSVgd5
-         DZGaTpACkz+3blFLW4phCxLZByRK4jdSNCSvI1owaTzER2JWfPUn1eKbji0Gt/bMBP+7
-         ZaGg==
+        bh=VDUg6z9g8U9M6fAkFW44jT1VB/1+ZQ8nnChdFdTrw0o=;
+        b=JPrls4ETeYgIMJX8QWPVQUeGPDIFB+vzbpaSR5smt+GsXM2c2z7wR9aheT0MN045P2
+         MNn4xigoWj3B+e/Mlkhx8leM+ryWRSyDkv2jCuMpjMoMbsu6AveAhfgJUHQ04LLWxZmN
+         Mgejx+A7Nfvupn6zYsWwCzGymftS0KpiDMYxnUrGc8Z7h4wVwSJgqHJSqQ8KVtifV0X7
+         rlEB+oWDujkm/iwFE0RsCoTI8us/FmQfaZNaYZGaCf6JwP+V5n7ZiL9XU/eRKA9H7Sb3
+         hQZABN9U4kKHxk5DR00FZFVn1TbaoJ9Ge7zovM/YwR3zCbmAbsNpG5n5/W57XxXCdpd4
+         S+hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vautb822ZfqbgT9H1qhF7C4M74PWhQzgpsc/iQMPhyE=;
-        b=kM1YtbLTXvMD9AFeR+/XdxRENrErA89KpBP+IBJsuACymmjQ0lVhtYWenYHrI6NvTW
-         XzN/ugGKZpYBABp+590fEBnPY573C4XTdjyUg/9Uf+cs9nJx0VCV+vgteHddW5RIuiFC
-         6IvymmORaqmQIIbs5eY1bPjtMd7yygR8J2r1bXGIpFhmERtvpL5klPCht5u4puXvWvqg
-         mPz106YMauFpQC4eWfM+m2rIMeRy9s+/NuMDYNwd06iMt56SgIX7a6M3Vjou05Bmk6BZ
-         oJ0tcjtyqhwH0SCQjnDdhbY9i3XLQjKZSt6eC7NPUj5ALdNXCbC+Y77OrPiSkvI6i7JT
-         hm6w==
-X-Gm-Message-State: AOAM530DNweXchqmjGcYhryZcojeHaYp9tRXl/HBCgGScoCunX4oMfLt
-        Nhrj3XU0oTWaANPIkBbDfhxtDg==
-X-Google-Smtp-Source: ABdhPJyvrxxge7r1kiYD3PJFB7Ec7P66SkuqUcn7jCBYLTysyG8pMddjI4b3PuPNg2NaNhrHragmnw==
-X-Received: by 2002:a62:9242:: with SMTP id o63mr24360759pfd.310.1591092585950;
-        Tue, 02 Jun 2020 03:09:45 -0700 (PDT)
+        bh=VDUg6z9g8U9M6fAkFW44jT1VB/1+ZQ8nnChdFdTrw0o=;
+        b=jcAPI0VZ53QHEj0dHCrQv5/51DDv0OfKa/HH/uG1oolQzNehyzhVr+tvBCF3LIk6Y+
+         Xn4ZdP6qbe7xZT+UrcYKiL/sKpJ6StFp60pRPOc4ToYAyfD3vELHVLcWtfwL5IKvpucn
+         dpvM7FrMZMf5uEVYq6jWWTKJMdcayT8xuAx4UYVN0PJmmQe2k5/YKvgMGEB3K9Yl214x
+         i5wqGcQ8gZSIMUQW9IpfXwizlnzVedrhF2GFm6DCoS8VCo1Xko+Kix4KVWRR9a797Mp2
+         OWvAtC974n9o5+j1kUamO/cHIwAjFFT+jmeEKvXTtO/+U7vzevCfYwUWVXJyTcQRFY3O
+         iWLQ==
+X-Gm-Message-State: AOAM531j7iNemvLjDb7e4aweHxNINDZpQ1a+6CkmYZmzE6cNBQHaqefQ
+        NuIs8nOJ6C6Z0NO+KA3VnOzLjw==
+X-Google-Smtp-Source: ABdhPJwnO+GOOLL0Y48EeL/vzlAQa5VHkhlhDZThUPUSKKqU0v9nmNf30V1MnTAaDnlATpYdfSTLog==
+X-Received: by 2002:a17:90b:3614:: with SMTP id ml20mr4435051pjb.41.1591092589904;
+        Tue, 02 Jun 2020 03:09:49 -0700 (PDT)
 Received: from nagraj.local ([49.206.21.239])
-        by smtp.gmail.com with ESMTPSA id d8sm1931276pgb.42.2020.06.02.03.09.42
+        by smtp.gmail.com with ESMTPSA id d8sm1931276pgb.42.2020.06.02.03.09.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 03:09:45 -0700 (PDT)
+        Tue, 02 Jun 2020 03:09:49 -0700 (PDT)
 From:   Sumit Semwal <sumit.semwal@linaro.org>
 To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
         broonie@kernel.org, robh+dt@kernel.org
@@ -55,9 +55,9 @@ Cc:     nishakumari@codeaurora.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         kgunda@codeaurora.org, rnayak@codeaurora.org,
         Sumit Semwal <sumit.semwal@linaro.org>
-Subject: [PATCH v4 2/5] dt-bindings: regulator: Add labibb regulator
-Date:   Tue,  2 Jun 2020 15:39:21 +0530
-Message-Id: <20200602100924.26256-3-sumit.semwal@linaro.org>
+Subject: [PATCH v4 3/5] arm64: dts: qcom: pmi8998: Add nodes for LAB and IBB regulators
+Date:   Tue,  2 Jun 2020 15:39:22 +0530
+Message-Id: <20200602100924.26256-4-sumit.semwal@linaro.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200602100924.26256-1-sumit.semwal@linaro.org>
 References: <20200602100924.26256-1-sumit.semwal@linaro.org>
@@ -70,105 +70,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nisha Kumari <nishakumari@codeaurora.org>
 
-Adding the devicetree binding for labibb regulator.
+This patch adds devicetree nodes for LAB and IBB regulators.
 
 Signed-off-by: Nisha Kumari <nishakumari@codeaurora.org>
 Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
- [sumits: cleanup as per review comments and update to yaml]
+  [sumits: Updated for better compatible strings and names]
 --
-v2: updated for better compatible string and names.
-v3: moved to yaml
-v4: fixed dt_binding_check issues
+v2: sumits: updated for better compatible string and names
+v3: sumits: updated interrupt-names as per review comments
+v4: sumits: removed labibb label
 ---
- .../regulator/qcom-labibb-regulator.yaml      | 79 +++++++++++++++++++
- 1 file changed, 79 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+ arch/arm64/boot/dts/qcom/pmi8998.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
-new file mode 100644
-index 000000000000..178820ec04c7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
-@@ -0,0 +1,79 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/qcom-labibb-regulator.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/arm64/boot/dts/qcom/pmi8998.dtsi b/arch/arm64/boot/dts/qcom/pmi8998.dtsi
+index 23f9146a161e..3230b78b8048 100644
+--- a/arch/arm64/boot/dts/qcom/pmi8998.dtsi
++++ b/arch/arm64/boot/dts/qcom/pmi8998.dtsi
+@@ -25,5 +25,19 @@ pmi8998_lsid1: pmic@3 {
+ 		reg = <0x3 SPMI_USID>;
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
 +
-+title: Qualcomm's LAB(LCD AMOLED Boost)/IBB(Inverting Buck Boost) Regulator
++		labibb {
++			compatible = "qcom,pmi8998-lab-ibb";
 +
-+maintainers:
-+  - Sumit Semwal <sumit.semwal@linaro.org>
++			ibb: ibb {
++				interrupts = <0x3 0xdc 0x2 IRQ_TYPE_EDGE_RISING>;
++				interrupt-names = "sc-err";
++			};
 +
-+description:
-+  LAB can be used as a positive boost power supply and IBB can be used as a
-+  negative boost power supply for display panels. Currently implemented for
-+  pmi8998.
-+
-+allOf:
-+  - $ref: "regulator.yaml#"
-+
-+properties:
-+  compatible:
-+    const: qcom,pmi8998-lab-ibb
-+
-+  lab:
-+    type: object
-+
-+    properties:
-+
-+      interrupts:
-+        maxItems: 1
-+        description:
-+          Short-circuit interrupt for lab.
-+
-+      interrupt-names:
-+        const: sc-err
-+
-+    required:
-+    - interrupts
-+    - interrupt-names
-+
-+  ibb:
-+    type: object
-+
-+    properties:
-+
-+      interrupts:
-+        maxItems: 1
-+        description:
-+          Short-circuit interrupt for lab.
-+
-+      interrupt-names:
-+        const: sc-err
-+
-+    required:
-+    - interrupts
-+    - interrupt-names
-+
-+required:
-+  - compatible
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    labibb {
-+      compatible = "qcom,pmi8998-lab-ibb";
-+
-+      lab {
-+        interrupts = <0x3 0x0 IRQ_TYPE_EDGE_RISING>;
-+        interrupt-names = "sc-err";
-+      };
-+
-+      ibb {
-+        interrupts = <0x3 0x2 IRQ_TYPE_EDGE_RISING>;
-+        interrupt-names = "sc-err";
-+      };
-+    };
-+
-+...
++			lab: lab {
++				interrupts = <0x3 0xde 0x0 IRQ_TYPE_EDGE_RISING>;
++				interrupt-names = "sc-err";
++			};
++		};
+ 	};
+ };
 -- 
 2.26.2
 
