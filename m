@@ -2,195 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEFB1EB8FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 11:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA741EB905
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgFBJ6F convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Jun 2020 05:58:05 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:44165 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgFBJ6E (ORCPT
+        id S1726935AbgFBKAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 06:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbgFBKAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 05:58:04 -0400
-Received: by mail-oi1-f196.google.com with SMTP id x202so11039804oix.11;
-        Tue, 02 Jun 2020 02:58:02 -0700 (PDT)
+        Tue, 2 Jun 2020 06:00:01 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94601C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 03:00:00 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d66so4825036pfd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 03:00:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Zp5PU9Twd2i2tzFPrLrjXtcDPzTLivpIOOvbhmocsuo=;
+        b=dmnR1WvZuRPZ/6Vpb+2SuZ+t+QRjmdnWP4ZzKF3uTHDv6g1pEoMDEDg0XZp1RQS4Rc
+         PcdwQZ29rNPnq3l2fjwqhuF7j/2HX+rBmez4tAy8HbfuXFzxbKgiqrjW/bkv/yD58r1Q
+         RIPnaU6YMZn5W47hiL5Cwf7GTc+8XvqW2lhYOl2l6y2WsJw0EDbx5auoVaKZRGYT/MrW
+         65P2sOwN8DsDt4Wk/Hj4ZI7jftv3djCsQ51f81pX/h2RYakYDO5iyWeC2mruTm4m/oAt
+         spMKkoM1c0u9+ks+AAa++E4S2fyAHS2aD1Hvrb5vDAG2sKTV79mdr4NuETxL7Y2knUFA
+         aapg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iyewGMkXuJg3DmH4dw7+D04mCzZJepxSb898orAzqYE=;
-        b=WqC7ap9kSJWq9edwz1WCwhEyaNVw6XWb63nI9Qb533drLQUp//cO3O3JWDyiBGCiLo
-         HX6s8Fav5SoxNaOF5Cy5gqf1p1qCT9vo3QXmdGtG0AS1Yq519pnqQd9O+CSxpi4njx1O
-         i8OTFau0hprYj5FLjf+An65WJsIQ3xB51jWOhBLEcUpT/ar1phLilcQ9K+vHNcqb6BO+
-         2LnrwuKxeBablFahh5zNt1/OXog3lf2Pz6QI7cexyyxEbptTIjawqx5LYt+JHxUKxJX2
-         uh0+UQ6KgeKNV7qRy/OBSPKmAfr7YeFMD0yZof2xzQm1wNumEGami4rcABgGbVcgawS6
-         i2Ow==
-X-Gm-Message-State: AOAM530SLwhAiEqvmtrvEjgzG0s9t20ddx4cFando6W7Uuad2rAq3dmG
-        awoRBgrsioX1Lg5BXFJsOu6ApeZYkJ+u1EBdp34=
-X-Google-Smtp-Source: ABdhPJyvmRip82nf1YTS55HK8PTzXOrpeX0lgVwXjy8zq0flE3jPmfLBFLzpm3mGBvRwgejHWjZu3JNklv6lc9+XOPY=
-X-Received: by 2002:aca:210a:: with SMTP id 10mr2284816oiz.153.1591091882187;
- Tue, 02 Jun 2020 02:58:02 -0700 (PDT)
+        bh=Zp5PU9Twd2i2tzFPrLrjXtcDPzTLivpIOOvbhmocsuo=;
+        b=qBMSsI1bn7m6/gw0Xqjbg2TKizTFQoaeyfEU7Eaiid0gp6X/J0TXLBt9sYEwXIV9Kd
+         Ox7y63b2MSpNSp8dxMXnYg2gz6NeQWTmTDPQA/8n2PlFBTlKdK/thWbTkSm2noTgiNws
+         pZVG+MrHPR+d5wrlXxSu/nr+cHklB7FBgfQhykZgQKeiYWm+/8llq5ESgaNkl//S5Dt1
+         xoY9wGLuwVSkI6JWNpXj8uixbCgsM/Ja625jjVShHV8fPFSfnAbuXiZVUC6Q9swvtB7c
+         8CJ2bVJTEA2lvFgf2a3FvVczvx9J2cthLuSidg3ZR3kApw6nHmCk9pzFzDmbsI0ebcBn
+         EGNQ==
+X-Gm-Message-State: AOAM532NgoI/Shpw1QtDOTFhdnSIdTmP0pcUNKAF7fSKIIcEtywvaptZ
+        ItXPJgYXqK2914LedqyP9e1BkhT/eoYN1R073Oc=
+X-Google-Smtp-Source: ABdhPJyDp8msT2DNgjzkwwVUe+Cx8nDbX/Gkz2pS3jjzG2aw72oIk/YYF9TBdmXcCF3WA4qheLl5NIP1f08J9GZZI+k=
+X-Received: by 2002:a63:545a:: with SMTP id e26mr22863595pgm.4.1591092000175;
+ Tue, 02 Jun 2020 03:00:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <158923078019.390.12609597570329519463.tip-bot2@tip-bot2>
- <20200526182744.GA3722128@gmail.com> <20200526191408.GN2869@paulmck-ThinkPad-P72>
-In-Reply-To: <20200526191408.GN2869@paulmck-ThinkPad-P72>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 2 Jun 2020 11:57:51 +0200
-Message-ID: <CAMuHMdUfsGSWco5rEidmPmZBH+PbUVq3tyXu=cc67x-X5LyXpA@mail.gmail.com>
-Subject: Re: [PATCH] rcu/performance: Fix kfree_perf_init() build warning on
- 32-bit kernels
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        x86 <x86@kernel.org>
+References: <20200602092030.31966-1-piotr.stankiewicz@intel.com>
+ <CAHp75Ve9tdNB7s+gybsg-OUjA3HiZBgzxeOzw=qkx8t1Ybbmsg@mail.gmail.com> <CY4PR11MB1528E8F05A738675B0DC1A59F98B0@CY4PR11MB1528.namprd11.prod.outlook.com>
+In-Reply-To: <CY4PR11MB1528E8F05A738675B0DC1A59F98B0@CY4PR11MB1528.namprd11.prod.outlook.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 2 Jun 2020 12:59:48 +0300
+Message-ID: <CAHp75VdmaGchzGCQ1ch4-9nj=5EKFAndUCKRZKhhiSRrbTwnnA@mail.gmail.com>
+Subject: Re: [PATCH 07/15] drm/amdgpu: use PCI_IRQ_MSI_TYPES where appropriate
+To:     "Stankiewicz, Piotr" <piotr.stankiewicz@intel.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Tue, Jun 2, 2020 at 12:58 PM Stankiewicz, Piotr
+<piotr.stankiewicz@intel.com> wrote:
+> > -----Original Message-----
+> > From: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > Sent: Tuesday, June 2, 2020 11:49 AM
+> > To: Stankiewicz, Piotr <piotr.stankiewicz@intel.com>
+> > Cc: Alex Deucher <alexander.deucher@amd.com>; Christian K=C3=B6nig
+> > <christian.koenig@amd.com>; David Zhou <David1.Zhou@amd.com>; David
+> > Airlie <airlied@linux.ie>; Daniel Vetter <daniel@ffwll.ch>; amd-
+> > gfx@lists.freedesktop.org; dri-devel <dri-devel@lists.freedesktop.org>;=
+ Linux
+> > Kernel Mailing List <linux-kernel@vger.kernel.org>
+> > Subject: Re: [PATCH 07/15] drm/amdgpu: use PCI_IRQ_MSI_TYPES where
+> > appropriate
+> > On Tue, Jun 2, 2020 at 12:24 PM Piotr Stankiewicz
+> > <piotr.stankiewicz@intel.com> wrote:
 
-On Tue, May 26, 2020 at 9:17 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> On Tue, May 26, 2020 at 08:27:44PM +0200, Ingo Molnar wrote:
-> > * tip-bot2 for Joel Fernandes (Google) <tip-bot2@linutronix.de> wrote:
+...
+
+> > >                 int nvec =3D pci_msix_vec_count(adev->pdev);
+> > >                 unsigned int flags;
+> > >
+> > > -               if (nvec <=3D 0) {
+> > > +               if (nvec > 0)
+> > > +                       flags =3D PCI_IRQ_MSI_TYPES;
+> > > +               else
+> > >                         flags =3D PCI_IRQ_MSI;
+> > > -               } else {
+> > > -                       flags =3D PCI_IRQ_MSI | PCI_IRQ_MSIX;
+> > > -               }
+> > > +
+> > >                 /* we only need one vector */
+> > >                 nvec =3D pci_alloc_irq_vectors(adev->pdev, 1, 1, flag=
+s);
 > >
-> > > The following commit has been merged into the core/rcu branch of tip:
-> > >
-> > > Commit-ID:     f87dc808009ac86c790031627698ef1a34c31e25
-> > > Gitweb:        https://git.kernel.org/tip/f87dc808009ac86c790031627698ef1a34c31e25
-> > > Author:        Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > AuthorDate:    Mon, 16 Mar 2020 12:32:26 -04:00
-> > > Committer:     Paul E. McKenney <paulmck@kernel.org>
-> > > CommitterDate: Mon, 27 Apr 2020 11:02:50 -07:00
-> > >
-> > > rcuperf: Add ability to increase object allocation size
-> > >
-> > > This allows us to increase memory pressure dynamically using a new
-> > > rcuperf boot command line parameter called 'rcumult'.
-> > >
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > ---
-> > >  kernel/rcu/rcuperf.c | 5 ++++-
-> > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-> > > index a4a8d09..16dd1e6 100644
-> > > --- a/kernel/rcu/rcuperf.c
-> > > +++ b/kernel/rcu/rcuperf.c
-
-> > > @@ -722,6 +723,8 @@ kfree_perf_init(void)
-> > >             schedule_timeout_uninterruptible(1);
-> > >     }
-> > >
-> > > +   pr_alert("kfree object size=%lu\n", kfree_mult * sizeof(struct kfree_obj));
+> > I'm not sure if you have seen my last comment internally about this pat=
+ch.
 > >
-> > There's a new build warning on certain 32-bit kernel builds due to
-> > this commit:
+> > I don't understand why we need these pci_msix_vec_count() followed by
+> > conditional at all.
+> > Perhaps we may simple drop all these and supply flag directly?
 > >
-> > In file included from ./include/linux/printk.h:7,
-> >                  from ./include/linux/kernel.h:15,
-> >                  from kernel/rcu/rcuperf.c:13:
-> > kernel/rcu/rcuperf.c: In function ‘kfree_perf_init’:
-> > ./include/linux/kern_levels.h:5:18: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
-> >     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
-> >       |                  ^~~~~~
-> > ./include/linux/kern_levels.h:9:20: note: in expansion of macro ‘KERN_SOH’
-> >     9 | #define KERN_ALERT KERN_SOH "1" /* action must be taken immediately */
-> >       |                    ^~~~~~~~
-> > ./include/linux/printk.h:295:9: note: in expansion of macro ‘KERN_ALERT’
-> >   295 |  printk(KERN_ALERT pr_fmt(fmt), ##__VA_ARGS__)
-> >       |         ^~~~~~~~~~
-> > kernel/rcu/rcuperf.c:726:2: note: in expansion of macro ‘pr_alert’
-> >   726 |  pr_alert("kfree object size=%lu\n", kfree_mult * sizeof(struct kfree_obj));
-> >       |  ^~~~~~~~
-> > kernel/rcu/rcuperf.c:726:32: note: format string is defined here
-> >   726 |  pr_alert("kfree object size=%lu\n", kfree_mult * sizeof(struct kfree_obj));
-> >       |                              ~~^
-> >       |                                |
-> >       |                                long unsigned int
-> >       |                              %u
-
-This issue is now upstream.
-
-> > The reason for the warning is that both kfree_mult and sizeof() are
-> > 'int' types on 32-bit kernels, while the format string expects a long.
-
-sizeof() is of type size_t, which is either unsigned int (32-bit) or
-unsigned long (64-bit).
-Hence the result of the multiplication is also of type size_t.
-
+> > But OTOH, I don't know the initial motivation, so, the above patch is
+> > non-intrusive and keeps original logic.
 > >
-> > Instead of casting the type to long or tweaking the format string, the
-> > most straightforward solution is to upgrade kfree_mult to a long.
-> > Since this depends on CONFIG_RCU_PERF_TEST
+>
+> Sorry, I must have misunderstood or missed that comment. I am happy
+> to do a V2 if dropping the conditional is preferable.
 
-So the proper fix is Kefeng's patch from April:
-"[PATCH -next] rcuperf: Fix printk format warning"
-https://lore.kernel.org/r/20200417040245.66382-1-wangkefeng.wang@huawei.com
+Let's wait for AMD people to confirm either.
 
-":"--
-> Makes sense, and I have queued the patch below, which I am assuming
-> that you want in the upcoming merge window.  If you don't tell me
-> otherwise, I will send you an urgent pull request later today.
-> Or, if you just put it directly into -tip yourself:
->
-> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
->
-> Either way, please let me know.
->
-> > BTW., could we please also rename this code from 'PERF_TEST'/'perf test'
-> > to 'PERFORMANCE_TEST'/'performance test'? At first glance I always
-> > mistakenly believe that it's somehow related to perf, while it isn't. =B-)
->
-> Fair enough, especially given that perf was there first and is also way
-> more heavily used.  ;-)
->
-> But I am guessing that this one is OK for the v5.9 merge window.
-> Either way, I will update as you say.
->
->                                                         Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> commit 2fbc7d67a2ed108e3ac63296670fecb3a42fddd0
-> Author: Ingo Molnar <mingo@kernel.org>
-> Date:   Tue May 26 12:10:01 2020 -0700
->
->     rcuperf: Fix kfree_mult to match printk() format
->
->     This commit changes the type of kfree_mult from int to long in order
->     to match the printk() format on 32-bit systems.
->
->     Reported-by: kbuild test robot <lkp@intel.com>
->     Signed-off-by: Ingo Molnar <mingo@kernel.org>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
-> diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-> index d906ca9..fb3a1f0 100644
-> --- a/kernel/rcu/rcuperf.c
-> +++ b/kernel/rcu/rcuperf.c
-> @@ -93,7 +93,7 @@ torture_param(bool, shutdown, RCUPERF_SHUTDOWN,
->  torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
->  torture_param(int, writer_holdoff, 0, "Holdoff (us) between GPs, zero to disable");
->  torture_param(int, kfree_rcu_test, 0, "Do we run a kfree_rcu() perf test?");
-> -torture_param(int, kfree_mult, 1, "Multiple of kfree_obj size to allocate.");
-> +torture_param(long, kfree_mult, 1, "Multiple of kfree_obj size to allocate.");
->
->  static char *perf_type = "rcu";
->  module_param(perf_type, charp, 0444);
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--=20
+With Best Regards,
+Andy Shevchenko
