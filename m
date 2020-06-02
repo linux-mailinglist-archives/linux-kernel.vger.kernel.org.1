@@ -2,103 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC951EC1A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794E01EC19C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgFBSID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 14:08:03 -0400
-Received: from mga01.intel.com ([192.55.52.88]:49770 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725989AbgFBSID (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 14:08:03 -0400
-IronPort-SDR: DNOlpNC29SzSvDEESO6Wqm2noLPZOGElqDr0JEaM0mveqYoPfwGFZtdq0DCOWrgnZR6xzxaaa9
- Asaritdb11Tg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 11:08:02 -0700
-IronPort-SDR: GFgu39VV8mRiSRuso9Tj9Wom8oigVbWKZaJlQ/L5nUG7eBJP0r6qnPvDLj8uo/qw6z7/CWPm1S
- KRaEVyd2IqwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,465,1583222400"; 
-   d="scan'208";a="286742690"
-Received: from aliang1-mobl1.gar.corp.intel.com (HELO [10.254.103.160]) ([10.254.103.160])
-  by orsmga002.jf.intel.com with ESMTP; 02 Jun 2020 11:08:00 -0700
-Subject: Re: Subject: [PATCH v2] ASoC: soc-pcm: fix BE dai not hw_free and
- shutdown during mixer update
-To:     =?UTF-8?B?5pyx54G/54G/?= <zhucancan@vivo.com>, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc:     kernel <kernel@vivo.com>,
-        =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>,
-        trivial@kernel.org
-References: <ALMAWwB5CP9aAcKXCU5FzqqF.1.1590747164172.Hmail.zhucancan@vivo.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <338690ee-a081-054c-36e3-3f5fb3733442@linux.intel.com>
-Date:   Tue, 2 Jun 2020 11:19:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726839AbgFBSG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 14:06:58 -0400
+Received: from vmicros1.altlinux.org ([194.107.17.57]:51620 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbgFBSG6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 14:06:58 -0400
+X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Jun 2020 14:06:56 EDT
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id 9435E72CCF1;
+        Tue,  2 Jun 2020 21:00:51 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+        id 77BEF7CFE82; Tue,  2 Jun 2020 21:00:51 +0300 (MSK)
+Date:   Tue, 2 Jun 2020 21:00:51 +0300
+From:   "Dmitry V. Levin" <ldv@altlinux.org>
+To:     Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Elvira Khabirova <lineprinter@altlinux.org>,
+        Eugene Syromyatnikov <evgsyr@gmail.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] s390: fix syscall_get_error for compat processes
+Message-ID: <20200602180051.GA2427@altlinux.org>
 MIME-Version: 1.0
-In-Reply-To: <ALMAWwB5CP9aAcKXCU5FzqqF.1.1590747164172.Hmail.zhucancan@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If both the tracer and the tracee are compat processes, and gprs[2]
+is assigned a value by __poke_user_compat, then the higher 32 bits
+of gprs[2] are cleared, IS_ERR_VALUE() always returns false, and
+syscall_get_error() always returns 0.
 
+Fix the implementation by sign-extending the value for compat processes
+the same way as x86 implementation does.
 
-On 5/29/20 5:12 AM, 朱灿灿 wrote:
-> FE state is SND_SOC_DPCM_STATE_PREPARE now, BE1 is
-> used by FE.
-> 
-> Later when new BE2 is added to FE by mixer update,
-> it will call dpcm_run_update_startup() to update
-> BE2's state, but unfortunately BE2 .prepare() meets
-> error, it will disconnect all non started BE.
-> 
-> This make BE1 dai skip .hw_free() and .shutdown(),
-> and the BE1 users will never decrease to zero.
-> 
-> Signed-off-by: zhucancan <zhucancan@vivo.com>
-> ---
-> re-format patch content v2
-> ---
->   sound/soc/soc-pcm.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 1f302de44052..df34422bd0dd 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -2730,12 +2730,12 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
->   close:
->   	dpcm_be_dai_shutdown(fe, stream);
->   disconnect:
-> -	/* disconnect any non started BEs */
-> +	/* disconnect any closed BEs */
->   	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
->   	for_each_dpcm_be(fe, stream, dpcm) {
->   		struct snd_soc_pcm_runtime *be = dpcm->be;
-> -		if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
-> -				dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
-> +		if (be->dpcm[stream].state == SND_SOC_DPCM_STATE_CLOSE)
-> +			dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
->   	}
->   	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+The bug was exposed to user space by commit 201766a20e30f ("ptrace: add
+PTRACE_GET_SYSCALL_INFO request") and detected by strace test suite.
 
-This change is quite hard to review, this error handling can be called 
-from multiple places.
+This change fixes strace syscall tampering on s390.
 
-I *think* it's correct because in all cases where the 
-disconnect/close/hw_free labels are reached, the non-shared BEs either 
-remain or are put in the DPCM_STATE_CLOSE state before doing this test.
+Fixes: 753c4dd6a2fa2 ("[S390] ptrace changes")
+Cc: Elvira Khabirova <lineprinter@altlinux.org>
+Cc: stable@vger.kernel.org # v2.6.28+
+Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
+---
+ arch/s390/include/asm/syscall.h | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-It really wouldn't hurt though if others double-checked this change...
-
-
-
+diff --git a/arch/s390/include/asm/syscall.h b/arch/s390/include/asm/syscall.h
+index f073292e9fdb..c07633824715 100644
+--- a/arch/s390/include/asm/syscall.h
++++ b/arch/s390/include/asm/syscall.h
+@@ -33,7 +33,17 @@ static inline void syscall_rollback(struct task_struct *task,
+ static inline long syscall_get_error(struct task_struct *task,
+ 				     struct pt_regs *regs)
+ {
+-	return IS_ERR_VALUE(regs->gprs[2]) ? regs->gprs[2] : 0;
++	unsigned long error = regs->gprs[2];
++#ifdef CONFIG_COMPAT
++	if (test_tsk_thread_flag(task, TIF_31BIT)) {
++		/*
++		 * Sign-extend the value so (int)-EFOO becomes (long)-EFOO
++		 * and will match correctly in comparisons.
++		 */
++		error = (long) (int) error;
++	}
++#endif
++	return IS_ERR_VALUE(error) ? error : 0;
+ }
+ 
+ static inline long syscall_get_return_value(struct task_struct *task,
+-- 
+ldv
