@@ -2,130 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1F11EC30E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C51BA1EC337
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbgFBTuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 15:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52640 "EHLO
+        id S1728726AbgFBTwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 15:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgFBTup (ORCPT
+        with ESMTP id S1728322AbgFBTwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 15:50:45 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21AEC08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 12:50:45 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id s10so20215pgm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 12:50:45 -0700 (PDT)
+        Tue, 2 Jun 2020 15:52:40 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFE7C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 12:52:39 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o8so238932pgm.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 12:52:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=Mzflbrhvko6ep9R8wCU2OJXZtq8oTTi/5tkZ4gQS+KU=;
-        b=1HXvkSvfGPWZsFf9KXSa+UGDDH/KpDwMQ1AEANLUWLtLYCMadcW2V+7jbK5siUkQzD
-         aCr1WhbBlE0ZPeriCj1qZcieohUrQffr92IKQ5DsXah7wZg7XH0x4atSqMdRIxOu+4up
-         G58TXs1tA4TrGk+5zlRp4NvXNZNylyw0tLeQ8TJ/XACrEMV2iznvydyGcG0XDoXuevQi
-         2YocTCBoSWrTGpmskMxpiQE3vYB5t5tw+2U29okyWjEJua0JVxYDaFxC1yLbhYhk+lD/
-         2yAcm2hKSJ/rw4u1Oxo8DBN6gHjAzm9D8bs68A1EPQbZr5sprsq3PoOU/vyNEZvW1Mgt
-         iGFw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jBlQ0H5npGZVX47FUALQU/dmYxL2gnelxfg7MyVgbp0=;
+        b=cXB+4FqNR7A1+uDCNrWesXMiMm7U/wLiP8fD+W0cE1gzqO2K8wf1c21vHDI37WBEFD
+         9QnRF0kehrlIrI4U5xggqGOcyDyyRFq52mX3/BZ6GEbc6RWuraI8bw8RmIasX7ASzrZD
+         UkWZIIoMb/sYmEfPDYKHrqLXoXLaFuawhh57qCuX/QfXyCVfUGTfD5cbpnH188RnBSw5
+         z+8NzdfxXFDbnqNzil6f1tVct+EwLHuEpN1HGG+ct9ECKFR4gtfKFT2vzyFj7ihbOSaf
+         8C5RQ+5WMawNzeL5+Q0UOrDdCTXXgugtJNndzY/Digyp6kFV5SCf/bycj0bm7qKk/JdL
+         0Flg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=Mzflbrhvko6ep9R8wCU2OJXZtq8oTTi/5tkZ4gQS+KU=;
-        b=cKGoTso/8VF61puyKZFaejTiq5y3ggxYT7Pg6bMbZqXiZpbuHWFgzr2ZFkZkGY1Yl1
-         SmPZsNG1NAT0Bc0NwN5hmS0u3dVqBmhDqObWIvKfLuEtqEruOgZBHUE9O0lmUKweyX/7
-         7tXh6fNo5rSLvTCgSFZ0apg4/1eDqU/9fNyzydEQ4Wt45ZY1YUUb9e4hjybQ80Zndyk6
-         FHJc5nujrAIfLqGVZp3fd6zPVn3I9u931w8KfuvNaEH6WGvkSAeAKvT7dPQjFzsi5fRG
-         kQ3tapPFZBzq0r8JxDKE7K8GyrtWOmg1Mc4elvR6TTWQK7Le8fz/QYt4q37bgdDDyam0
-         MyCw==
-X-Gm-Message-State: AOAM531roR29vttUVPBmeB09dD1vgsMB6MLwtrMKDO7AVAF13cM4AvhG
-        LUPiEx9O2oXh667op6wag/Wiug==
-X-Google-Smtp-Source: ABdhPJxlr3NaxlIvKmBsKz+yOh9jZdQ2fh6/hxF4Qy88GQazKgYAnQRroYSTPEuTjdmxlCgzgN9SQQ==
-X-Received: by 2002:a62:7e95:: with SMTP id z143mr9750440pfc.108.1591127445044;
-        Tue, 02 Jun 2020 12:50:45 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:64fc:8253:a1dc:f79c? ([2601:646:c200:1ef2:64fc:8253:a1dc:f79c])
-        by smtp.gmail.com with ESMTPSA id h3sm3083148pfr.2.2020.06.02.12.50.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jun 2020 12:50:44 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] arch/x86: reset MXCSR to default in kernel_fpu_begin()
-Date:   Tue, 2 Jun 2020 12:50:42 -0700
-Message-Id: <C6F6F6E4-CBD8-4E72-812B-99F008ECAA4F@amacapital.net>
-References: <8b1f0bfa-79b0-74e4-0241-8b2a94491807@linuxfoundation.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-In-Reply-To: <8b1f0bfa-79b0-74e4-0241-8b2a94491807@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-X-Mailer: iPhone Mail (17F80)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jBlQ0H5npGZVX47FUALQU/dmYxL2gnelxfg7MyVgbp0=;
+        b=dU/mk+1y5Uac2+MHYihg0xolaSXS4Uh4PN/UuvaH4MucicnG1VgihN09XyKqC4wtmu
+         ABFadkpzYMjuPkeRvBEWVMDRCXb1CmVGVnHs+QRNZU1vdOcrZcKSXHZTJMmDO1PGg5bm
+         Fiaj0rqBMVyVxBQT0yAiM9HsGvWOrhNFpgPj+WnOCz2nHvur0Nr8pyZ1NAsE0esp9aZE
+         sg2ThqhbJXpECrnGpOdYJNz2m9n/78orlAeJPv+pJVv+9bonLGEjQOxIGsVEB12Ihmxi
+         Pnr/1OZAP7QhThp2DpY9kJoqE9TPIl+7mWVgpn5k3lFgTbtMAZS2zHi3ZrK+SBIydTPA
+         PpOA==
+X-Gm-Message-State: AOAM533Kzb3h2c4tC/yF/KafJbs5ZMIuE9TGUwIZGaNDThOSbIOBbkY5
+        E+93/iJgcBmZw2+NTvINxd8O7XJ0nbyHHxYC6lvRaA==
+X-Google-Smtp-Source: ABdhPJwCuiEf76Zc629eMOZpmu8/WaCfFuZD4eftG+RCE1u8qTjG8vY+SrXS/9ahOtF+G23ZHcYgVcLUMB2hz29+5jI=
+X-Received: by 2002:a17:90b:4c47:: with SMTP id np7mr893785pjb.101.1591127558983;
+ Tue, 02 Jun 2020 12:52:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAKwvOdmCrM0eUZHR12OBgyRhNPFDzZKjrpZ0DW8Cg=wqTfzDFw@mail.gmail.com>
+ <20200602192523.32758-1-natechancellor@gmail.com>
+In-Reply-To: <20200602192523.32758-1-natechancellor@gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 2 Jun 2020 12:52:26 -0700
+Message-ID: <CAKwvOdnH8rxT7y1U0d=pyD19K38KwarrwA2s+Ji7ctgg+ks_kg@mail.gmail.com>
+Subject: Re: [PATCH v2] s390: vdso: Use $(LD) instead of $(CC) to link vDSO
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 2, 2020 at 12:25 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> Currently, the VDSO is being linked through $(CC). This does not match
+> how the rest of the kernel links objects, which is through the $(LD)
+> variable.
+>
+> When clang is built in a default configuration, it first attempts to use
+> the target triple's default linker, which is just ld. However, the user
+> can override this through the CLANG_DEFAULT_LINKER cmake define so that
+> clang uses another linker by default, such as LLVM's own linker, ld.lld.
+> This can be useful to get more optimized links across various different
+> projects.
+>
+> However, this is problematic for the s390 vDSO because ld.lld does not
+> have any s390 emulatiom support:
+>
+> https://github.com/llvm/llvm-project/blob/llvmorg-10.0.1-rc1/lld/ELF/Driver.cpp#L132-L150
+>
+> Thus, if a user is using a toolchain with ld.lld as the default, they
+> will see an error, even if they have specified ld.bfd through the LD
+> make variable:
+>
+> $ make -j"$(nproc)" -s ARCH=s390 CROSS_COMPILE=s390x-linux-gnu- LLVM=1 \
+>                        LD=s390x-linux-gnu-ld \
+>                        defconfig arch/s390/kernel/vdso64/
+> ld.lld: error: unknown emulation: elf64_s390
+> clang-11: error: linker command failed with exit code 1 (use -v to see invocation)
+>
+> Normally, '-fuse-ld=bfd' could be used to get around this; however, this
+> can be fragile, depending on paths and variable naming. The cleaner
+> solution for the kernel is to take advantage of the fact that $(LD) can
+> be invoked directly, which bypasses the heuristics of $(CC) and respects
+> the user's choice. Similar changes have been done for ARM, ARM64, and
+> MIPS.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1041
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+
+Thanks, with this, I'm more confident that the linker flags don't change.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+> ---
+>
+> v1 -> v2:
+>
+> * Add -fPIC per GCC's documentation, as pointed out by Nick.
+>
+>  arch/s390/kernel/vdso64/Makefile | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/s390/kernel/vdso64/Makefile b/arch/s390/kernel/vdso64/Makefile
+> index bec19e7e6e1c..67c14732c304 100644
+> --- a/arch/s390/kernel/vdso64/Makefile
+> +++ b/arch/s390/kernel/vdso64/Makefile
+> @@ -18,8 +18,8 @@ KBUILD_AFLAGS_64 += -m64 -s
+>
+>  KBUILD_CFLAGS_64 := $(filter-out -m64,$(KBUILD_CFLAGS))
+>  KBUILD_CFLAGS_64 += -m64 -fPIC -shared -fno-common -fno-builtin
+> -KBUILD_CFLAGS_64 += -nostdlib -Wl,-soname=linux-vdso64.so.1 \
+> -                   -Wl,--hash-style=both
+> +ldflags-y := -fPIC -shared -nostdlib -soname=linux-vdso64.so.1 \
+> +            --hash-style=both -T
+>
+>  $(targets:%=$(obj)/%.dbg): KBUILD_CFLAGS = $(KBUILD_CFLAGS_64)
+>  $(targets:%=$(obj)/%.dbg): KBUILD_AFLAGS = $(KBUILD_AFLAGS_64)
+> @@ -37,8 +37,8 @@ KASAN_SANITIZE := n
+>  $(obj)/vdso64_wrapper.o : $(obj)/vdso64.so
+>
+>  # link rule for the .so file, .lds has to be first
+> -$(obj)/vdso64.so.dbg: $(src)/vdso64.lds $(obj-vdso64) FORCE
+> -       $(call if_changed,vdso64ld)
+> +$(obj)/vdso64.so.dbg: $(obj)/vdso64.lds $(obj-vdso64) FORCE
+> +       $(call if_changed,ld)
+>
+>  # strip rule for the .so file
+>  $(obj)/%.so: OBJCOPYFLAGS := -S
+> @@ -50,8 +50,6 @@ $(obj-vdso64): %.o: %.S FORCE
+>         $(call if_changed_dep,vdso64as)
+>
+>  # actual build commands
+> -quiet_cmd_vdso64ld = VDSO64L $@
+> -      cmd_vdso64ld = $(CC) $(c_flags) -Wl,-T $(filter %.lds %.o,$^) -o $@
+>  quiet_cmd_vdso64as = VDSO64A $@
+>        cmd_vdso64as = $(CC) $(a_flags) -c -o $@ $<
+>
+>
+> base-commit: e1750a3d9abbea2ece29cac8dc5a6f5bc19c1492
+> --
+> 2.27.0.rc2
+>
 
 
-> On Jun 2, 2020, at 10:27 AM, Shuah Khan <skhan@linuxfoundation.org> wrote:=
-
->=20
-> =EF=BB=BFOn 6/2/20 11:03 AM, Andy Lutomirski wrote:
->>> On Tue, Jun 2, 2020 at 3:56 AM Borislav Petkov <bp@alien8.de> wrote:
->>>=20
->>> Hi,
->>>=20
->>> On Tue, Jun 02, 2020 at 01:29:51PM +0300, Petteri Aimonen wrote:
->>>> The kernel module is not actually x86-specific, even though it is
->>>> currently only enabled for x86. amdgpu driver already does kernel mode
->>>> floating point operations on PPC64 also, and the same module could be
->>>> used to test the same thing there.
->>>=20
->>> Then make it generic please and put the user portion in, say,
->>> tools/testing/selftests/fpu/ and we can ask ppc people to test it too.
->>> People might wanna add more stuff to it in the future, which would be
->>> good.
->>>=20
->>>> To deterministically trigger the bug, the syscall has to come from the
->>>> same thread that has modified MXCSR. Going through /usr/sbin/modprobe
->>>> won't work, and manually doing the necessary syscalls for module loadin=
-g
->>>> seems too complicated.
->>>=20
->>> Ok, fair enough. But put that file in debugfs pls.
->> I think I agree.  While it would be delightful to have general
->> selftest tooling for kernel modules, we don't have that right now, and
->> having the test just work with an appropriately configured kernel
->> would be nice.
->=20
-> Let's extend it to do what we want it to do. I will happy to take
-> patches. If you have some concrete ideas on what we can add, please
-> do a short summary of what is missing. I will find a way to get this
-> done.
->=20
->> How about putting the file you frob in
->> /sys/kernel/debug/selftest_helpers/something_or_other.  The idea would
->> be that /sys/kernel/debug/selftest_helpers would be a general place
->> for kernel helpers needed to make selftests work.
->=20
-> Is this a workaround for the lack of selftest tooling for kernel
-> modules? In which case, let's us focus on fix selftest tooling.
-
-The goal here is to have a selftest that runs kernel code as part of its ope=
-ration. That is, the selftest is, logically, starting in userspace:
-
-setup_evil_state();
-ret =3D call_kernel_helper();
-check_some_other_stuff();
-undo_evil_state();
-
-And the call_kernel_helper() could be moderately specific to the test.
-
->=20
-> thanks,
-> -- Shuah
+-- 
+Thanks,
+~Nick Desaulniers
