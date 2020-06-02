@@ -2,129 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123A11EBBF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913031EBBFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgFBMmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:42:24 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:57159 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725940AbgFBMmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:42:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591101743; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=5Vd/bdUNGvly/grt98Jx4x27H8iSAXBdUqjZmOyOWf0=; b=lJkZ+qasACzeUN5DUiJLgkZn6GQiL0C1lJvHB2XwveQGOs3hDF/ieKZH9SC8PaYyYg4uIM/7
- NklFtDNYRas2SRT0e9lA3xZdWpA27QuzxUgncW7XKni8m7Bbo8ARj3+Q2o3CfCX7zSmlIZEz
- 0O0n+zJEs9d3ejkH0fr0vfGDvnk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 5ed64919082f42857f6b8f85 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Jun 2020 12:42:01
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DFA9DC43395; Tue,  2 Jun 2020 12:42:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: stummala)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 62AFCC433C6;
-        Tue,  2 Jun 2020 12:41:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 62AFCC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=stummala@codeaurora.org
-From:   Sahitya Tummala <stummala@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Sahitya Tummala <stummala@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] f2fs: fix retry logic in f2fs_write_cache_pages()
-Date:   Tue,  2 Jun 2020 18:11:47 +0530
-Message-Id: <1591101707-18802-1-git-send-email-stummala@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        id S1726853AbgFBMp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:45:57 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:40260 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgFBMp5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 08:45:57 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052CacON189542;
+        Tue, 2 Jun 2020 12:44:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=UBDMz9NlvYHl649uFsBp8WuLVJ9aVdmnCyvloWHY3iI=;
+ b=j5FBhoLTTvFUfwqLW06mrGaHCgTsehDy5lsbtZWAYbr/d0d1IyKDx2pdQXSkf5ws13gr
+ GInvov+URNvOD1xqIM6l2KcUwqrLGSuQGSBwUwIdxJbazfiP5tRoB/QH3YfsB5oJyvnJ
+ PbC/7MWs9QHUlC3jrTbzb77fDVI8FW8PF8eAN7m2dw235L+uKNksYu08+4fThRNO4ueX
+ cw6fOmhE13jniYBnyXix2ZPxeWIFnhoIX1CxBczbbmJLp4tMN+vgYogosuN7mOL/TZtc
+ LsWCd47DT0ZsRRKrmAcm+xAdVxqxo6J87129P8MCQOYBsjmF7+sfrvuw9LGR15bc+Thm 3w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 31bfem3s7w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 02 Jun 2020 12:44:58 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052CcLGU008671;
+        Tue, 2 Jun 2020 12:44:58 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 31dju1bycv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Jun 2020 12:44:58 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 052CirVp022788;
+        Tue, 2 Jun 2020 12:44:54 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 02 Jun 2020 05:44:51 -0700
+Date:   Tue, 2 Jun 2020 15:44:39 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devel@driverdev.osuosl.org, alsa-devel@alsa-project.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org
+Subject: Re: [RESEND PATCH v1 5/6] staging: greybus: audio: Add helper APIs
+ for dynamic audio modules
+Message-ID: <20200602124439.GH30374@kadam>
+References: <cover.1591040859.git.vaibhav.sr@gmail.com>
+ <c1339e4d57c8b39bd25197d4514fabd868b829b1.1591040859.git.vaibhav.sr@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c1339e4d57c8b39bd25197d4514fabd868b829b1.1591040859.git.vaibhav.sr@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006020089
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006020089
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case a compressed file is getting overwritten, the current retry
-logic doesn't include the current page to be retried now as it sets
-the new start index as 0 and new end index as writeback_index - 1.
-This causes the corresponding cluster to be uncompressed and written
-as normal pages without compression. Fix this by allowing writeback to
-be retried for the current page as well (in case of compressed page
-getting retried due to index mismatch with cluster index). So that
-this cluster can be written compressed in case of overwrite.
+On Tue, Jun 02, 2020 at 10:51:14AM +0530, Vaibhav Agarwal wrote:
+> +static int gbaudio_remove_controls(struct snd_card *card, struct device *dev,
+> +				   const struct snd_kcontrol_new *controls,
+> +				   int num_controls, const char *prefix)
+> +{
+> +	int i, err;
+> +
+> +	for (i = 0; i < num_controls; i++) {
+> +		const struct snd_kcontrol_new *control = &controls[i];
+> +		struct snd_ctl_elem_id id;
+> +		struct snd_kcontrol *kctl;
+> +
+> +		if (prefix)
+> +			snprintf(id.name, sizeof(id.name), "%s %s", prefix,
+> +				 control->name);
+> +		else
+> +			strlcpy(id.name, control->name, sizeof(id.name));
+> +		id.numid = 0;
+> +		id.iface = control->iface;
+> +		id.device = control->device;
+> +		id.subdevice = control->subdevice;
+> +		id.index = control->index;
+> +		kctl = snd_ctl_find_id(card, &id);
+> +		if (!kctl) {
+> +			dev_err(dev, "%d: Failed to find %s\n", err,
+> +				control->name);
+> +			return -ENOENT;
 
-Also, align f2fs_write_cache_pages() according to the change -
-<64081362e8ff>("mm/page-writeback.c: fix range_cyclic writeback vs
-writepages deadlock").
+I feel like this should be a continue instead of a return.
 
-Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
----
-v2: 
-- Align the code to <64081362e8ff>("mm/page-writeback.c: fix range_cyclic
-  writeback vs writepages deadlock") and adjust the retry logic also as per
-  Chao's suggestion.
+> +		}
+> +		err = snd_ctl_remove(card, kctl);
+> +		if (err < 0) {
+> +			dev_err(dev, "%d: Failed to remove %s\n", err,
+> +				control->name);
+> +			return err;
 
- fs/f2fs/data.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+Probably here as well.  The caller doesn't actually check for errors.
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 4af5fcd..31af29f 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2825,7 +2825,6 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
- 	pgoff_t index;
- 	pgoff_t end;		/* Inclusive */
- 	pgoff_t done_index;
--	int cycled;
- 	int range_whole = 0;
- 	xa_mark_t tag;
- 	int nwritten = 0;
-@@ -2843,17 +2842,12 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
- 	if (wbc->range_cyclic) {
- 		writeback_index = mapping->writeback_index; /* prev offset */
- 		index = writeback_index;
--		if (index == 0)
--			cycled = 1;
--		else
--			cycled = 0;
- 		end = -1;
- 	} else {
- 		index = wbc->range_start >> PAGE_SHIFT;
- 		end = wbc->range_end >> PAGE_SHIFT;
- 		if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX)
- 			range_whole = 1;
--		cycled = 1; /* ignore range_cyclic tests */
- 	}
- 	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
- 		tag = PAGECACHE_TAG_TOWRITE;
-@@ -3021,12 +3015,13 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
- 		}
- 	}
- #endif
--	if ((!cycled && !done) || retry) {
--		cycled = 1;
-+	if (retry) {
- 		index = 0;
--		end = writeback_index - 1;
-+		end = -1;
- 		goto retry;
- 	}
-+	if (wbc->range_cyclic && !done)
-+		done_index = 0;
- 	if (wbc->range_cyclic || (range_whole && wbc->nr_to_write > 0))
- 		mapping->writeback_index = done_index;
- 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> +		}
+> +	}
+> +	return 0;
+> +}
 
