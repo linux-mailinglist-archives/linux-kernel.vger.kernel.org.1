@@ -2,116 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B8F1EC462
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 23:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451E91EC474
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 23:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgFBVez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 17:34:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49740 "EHLO mail.kernel.org"
+        id S1728309AbgFBVld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 17:41:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgFBVez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 17:34:55 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728226AbgFBVld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 17:41:33 -0400
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F30AE206E2;
-        Tue,  2 Jun 2020 21:34:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4884B20823;
+        Tue,  2 Jun 2020 21:41:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591133694;
-        bh=U5VQLBA0K584HyMnp25pHX350Ep4BaZZoHpAMfzXWOE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LHEuC4+DoL1LbalzPAmeFzSITJzZ7hODWN7PopM1OKU+1s8mHEmJJtHec0GBEaHoj
-         203o2uDa+HjRZEJ1ThVBUBux4B3RnuMMwJjI90C9OcpYK9g5Fej+OXAXSDFMG3iGp/
-         JDOBTjJS3zzuKz4zqk0Lsbfmp1Fi573mV5FbiVZk=
-Date:   Tue, 2 Jun 2020 16:39:58 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>
-Cc:     linux-acpi@vger.kernel.org, devel@acpica.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH v2] ACPICA: Replace one-element array with flexible-array
-Message-ID: <20200602213958.GA32150@embeddedor>
+        s=default; t=1591134092;
+        bh=lE2qIKk7fGwpmdgOyUmGUSZcTgDTl1S+IeWtKVRZiB4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MDcmsG4AsJa29AZLZyoyaLg1XXhJzFswAk0zW/njIgWzQbow0ZCLgSsLqd+gAeQXG
+         C+8NWnC9t990cXc67f2TeU+s0cPjHcss27WIhpkpp9pNbZ/SHobhFO7ecDYXdWqccD
+         84jHiAhyesNMy12lNigcDvQHG9hH+oyoyWjcyaQQ=
+Received: by mail-oi1-f181.google.com with SMTP id z9so13394714oid.2;
+        Tue, 02 Jun 2020 14:41:32 -0700 (PDT)
+X-Gm-Message-State: AOAM533CA/eeis7UXDUuGs/awHAZB91FxuNFoRk/YixuRvacY6iI+fZu
+        aLKfDBWeEFU7sR/OYZwamVcHv8UQaDaAjHNrdA==
+X-Google-Smtp-Source: ABdhPJxGd1RDkZpLil39OM00IhmdJlV8U5qy7Nn3gSrgTh2gorz+2QOj5O8k4Aoo1zTVz6xs3rPGF8jvSLdSMIFh7Rs=
+X-Received: by 2002:a05:6808:7cb:: with SMTP id f11mr4487019oij.152.1591134091638;
+ Tue, 02 Jun 2020 14:41:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200526191303.1492-1-james.quinlan@broadcom.com>
+ <20200526191303.1492-4-james.quinlan@broadcom.com> <20200529174634.GA2630216@bogus>
+ <CA+-6iNwWBFYHVKiwwJ95DYQ5zmc5uBo1cgZzd6rpD++aQWgGpw@mail.gmail.com>
+In-Reply-To: <CA+-6iNwWBFYHVKiwwJ95DYQ5zmc5uBo1cgZzd6rpD++aQWgGpw@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 2 Jun 2020 15:41:19 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKtASTzACSNn8BgmEBqf0eyR8RB_tjY7aUnvK+2GYXTbg@mail.gmail.com>
+Message-ID: <CAL_JsqKtASTzACSNn8BgmEBqf0eyR8RB_tjY7aUnvK+2GYXTbg@mail.gmail.com>
+Subject: Re: [PATCH v2 03/14] dt-bindings: PCI: Add bindings for more Brcmstb chips
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of one-element arrays in the following
-form:
+On Tue, Jun 2, 2020 at 2:53 PM Jim Quinlan <james.quinlan@broadcom.com> wrote:
+>
+> On Fri, May 29, 2020 at 1:46 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Tue, May 26, 2020 at 03:12:42PM -0400, Jim Quinlan wrote:
+> > > From: Jim Quinlan <jquinlan@broadcom.com>
+> > >
+> > > - Add compatible strings for three more Broadcom STB chips: 7278, 7216,
+> > >   7211 (STB version of RPi4).
+> > > - add new property 'brcm,scb-sizes'
+> > > - add new property 'resets'
+> > > - add new property 'reset-names'
+> > > - allow 'ranges' and 'dma-ranges' to have more than one item and update
+> > >   the example to show this.
+> > >
+> > > Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+> > > ---
+> > >  .../bindings/pci/brcm,stb-pcie.yaml           | 40 +++++++++++++++++--
+> > >  1 file changed, 36 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> > > index 8680a0f86c5a..66a7df45983d 100644
+> > > --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> > > +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> > > @@ -14,7 +14,13 @@ allOf:
+> > >
+> > >  properties:
+> > >    compatible:
+> > > -    const: brcm,bcm2711-pcie # The Raspberry Pi 4
+> > > +    items:
+> > > +      - enum:
+> >
+> > Don't need items here. Just change the const to enum.
+> >
+> > > +          - brcm,bcm2711-pcie # The Raspberry Pi 4
+> > > +          - brcm,bcm7211-pcie # Broadcom STB version of RPi4
+> > > +          - brcm,bcm7278-pcie # Broadcom 7278 Arm
+> > > +          - brcm,bcm7216-pcie # Broadcom 7216 Arm
+> > > +          - brcm,bcm7445-pcie # Broadcom 7445 Arm
+> > >
+> > >    reg:
+> > >      maxItems: 1
+> > > @@ -34,10 +40,12 @@ properties:
+> > >        - const: msi
+> > >
+> > >    ranges:
+> > > -    maxItems: 1
+> > > +    minItems: 1
+> > > +    maxItems: 4
+> > >
+> > >    dma-ranges:
+> > > -    maxItems: 1
+> > > +    minItems: 1
+> > > +    maxItems: 6
+> > >
+> > >    clocks:
+> > >      maxItems: 1
+> > > @@ -58,8 +66,30 @@ properties:
+> > >
+> > >    aspm-no-l0s: true
+> > >
+> > > +  resets:
+> > > +    description: for "brcm,bcm7216-pcie", must be a valid reset
+> > > +      phandle pointing to the RESCAL reset controller provider node.
+> > > +    $ref: "/schemas/types.yaml#/definitions/phandle"
+> > > +
+> > > +  reset-names:
+> > > +    items:
+> > > +      - const: rescal
+> >
+> > These are going to need to be an if/then schema if they only apply to
+> > certain compatible(s).
+>
+> Why is that -- the code is general enough to handle its presence or
+> not (it is an optional compatibility)>
 
-struct something {
-    int length;
-    u8 data[1];
-};
+Because an if/then schema expresses in a parse-able form what your
+'description' does in free form text.
 
-struct something *instance;
+Presumably a 'resets' property for !brcm,bcm7216-pcie is invalid, so
+we should check that. The schema shouldn't be just what some driver
+happens to currently allow. Also, it's not a driver's job to validate
+DT, so it shouldn't check any of this.
 
-instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
-instance->length = size;
-memcpy(instance->data, source, size);
+> > > +  brcm,scb-sizes:
+> > > +    description: (u32, u32) tuple giving the 64bit PCIe memory
+> > > +      viewport size of a memory controller.  There may be up to
+> > > +      three controllers, and each size must be a power of two
+> > > +      with a size greater or equal to the amount of memory the
+> > > +      controller supports.
+> >
+> > This sounds like what dma-ranges should express?
+>
+> There is some overlap but this contains information that is not in the
+> dma-ranges.  Believe me I tried.
 
-but the preferred mechanism to declare variable-length types such as
-these ones is a flexible array member[1][2], introduced in C99:
+I don't understand. If you had 3 dma-ranges entries, you'd have 3
+sizes. Can you expand or show me what you tried?
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+> > If not, we do have 64-bit size if that what you need.
+>
+> IIRC I tried the 64-bit size but the YAML validator did not like it;
+> it wanted numbers like  <0x1122334455667788> while dtc wanted <
+> 0x11223344 0x55667788>.  I gave up trying and switched to u32.
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+You used the /bits/ annotation for dtc?:
 
-This issue was found with the help of Coccinelle and audited _manually_.
+/bits/ 64 <0x1122334455667788>
 
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+I also made a recent fix to dt-schema around handling of 64-bit sizes,
+so update if you have problems still.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v2:
- - Don't use struct_size() for now.
- - Update subject line and changelog text.
-
- drivers/acpi/acpica/utids.c | 2 +-
- include/acpi/actypes.h      | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/acpi/acpica/utids.c b/drivers/acpi/acpica/utids.c
-index 3bb06935a2ad3..225f3c60203c7 100644
---- a/drivers/acpi/acpica/utids.c
-+++ b/drivers/acpi/acpica/utids.c
-@@ -263,7 +263,7 @@ acpi_ut_execute_CID(struct acpi_namespace_node *device_node,
- 	 * 3) Size of the actual CID strings
- 	 */
- 	cid_list_size = sizeof(struct acpi_pnp_device_id_list) +
--	    ((count - 1) * sizeof(struct acpi_pnp_device_id)) +
-+	    count * sizeof(struct acpi_pnp_device_id) +
- 	    string_area_size;
- 
- 	cid_list = ACPI_ALLOCATE_ZEROED(cid_list_size);
-diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
-index 4defed58ea338..c7bcda0ad366a 100644
---- a/include/acpi/actypes.h
-+++ b/include/acpi/actypes.h
-@@ -1145,7 +1145,7 @@ struct acpi_pnp_device_id {
- struct acpi_pnp_device_id_list {
- 	u32 count;		/* Number of IDs in Ids array */
- 	u32 list_size;		/* Size of list, including ID strings */
--	struct acpi_pnp_device_id ids[1];	/* ID array */
-+	struct acpi_pnp_device_id ids[];	/* ID array */
- };
- 
- /*
--- 
-2.27.0
-
+Rob
