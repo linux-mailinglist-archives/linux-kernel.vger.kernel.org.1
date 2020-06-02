@@ -2,118 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E97B1EBBD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DFC1EBBE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgFBMjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgFBMjR (ORCPT
+        id S1727065AbgFBMke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:40:34 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:49210 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgFBMkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:39:17 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C07C061A0E;
-        Tue,  2 Jun 2020 05:39:17 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id e2so12565814eje.13;
-        Tue, 02 Jun 2020 05:39:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=F1vjzv7szM2SvYyH6cUhGI5pKgsWnnEULj32MB0yFS4=;
-        b=WYnvAJWjcIH5V3n93yd+hBCgHBYATbMf4IhCsfwQ9Oy1ZM9Z6rPS+WbFRPRAFWV/bF
-         g8NVrkY1eAE3itDiEE0aGbFh82DXnCYGwNCAVEFB9InkZi2h89PET4FN6iEgxXtQf0uv
-         Tx1pit9Jd6xv3AdFKIWO7ZejWVHuRhkC878hAEFOiQFDje52U6ZlKNLeqXVPUoQX4T4e
-         GB7+N4Vxwux1TDzFrN8dajdxWthW3Hz1N2MRMmG9WVU48aO+F4QH0DSedqbufQ+5ESWw
-         ZkycrkFkAvLKMSlCKPX3yzohcyD9cGBxC439RRXOlwZ/WsIsfF6eXyxeDckOKQLJ9FRJ
-         WJtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=F1vjzv7szM2SvYyH6cUhGI5pKgsWnnEULj32MB0yFS4=;
-        b=BB14d8SyuMFwGhoajjNKDuiPWim1rAEeDZDpvIgcFSNy9BBXt1gN0KY8BticqwPm5q
-         YS5QmpjD9FvwkaP+YVP5xaM4F8PPLAORGf++kXhmHk2OrUEFySZnpmxtFTySwV0XPpna
-         K2uEKTRK+7kT2cYPsDSqfoRqYpg+nePLspO4LypWyz3s5EVMu0PMo7d6vonH5xueXsrI
-         e+fwR0YV9vSk+g/kHr/+h0aCfCJ4gzzJ1sgO/drawwC1eqJWG2q3yEUN469rtrmyvIc3
-         3wA1m14/qUF1EOZMpSSrcBEHguTLLQ+ZsRveFkMT1KEYs0kPKUmc0lF63DvKOsDvfS7K
-         W6jQ==
-X-Gm-Message-State: AOAM530MRXOy8JEtVMlYmXmdtQws+Pze+iWfC0RLSPAV1cZppN5SIUad
-        ZomhbtDaBwcHEOXnGleicesgGxXZ
-X-Google-Smtp-Source: ABdhPJy0URsgXsVIryc33w0XdDF5+UsNv9pCt38qFg7zKESxBcV+HSUzFeWuuPBLGmUt+XridHj6UQ==
-X-Received: by 2002:a17:906:7ad3:: with SMTP id k19mr22505707ejo.464.1591101556221;
-        Tue, 02 Jun 2020 05:39:16 -0700 (PDT)
-Received: from localhost (pd9e51079.dip0.t-ipconnect.de. [217.229.16.121])
-        by smtp.gmail.com with ESMTPSA id dc8sm1522400edb.10.2020.06.02.05.39.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 05:39:14 -0700 (PDT)
-Date:   Tue, 2 Jun 2020 14:39:14 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        David Wu <david.wu@rock-chips.com>, linux-pwm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pwm: rockchip: simplify rockchip_pwm_get_state()
-Message-ID: <20200602123914.GA3360525@ulmo>
-References: <20190919091728.24756-1-linux@rasmusvillemoes.dk>
+        Tue, 2 Jun 2020 08:40:33 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052CcSIv001774;
+        Tue, 2 Jun 2020 12:39:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=+hHvUJaPYzsi+fcWNIuGDxfwGDP2NYDK2A8UukYwLsg=;
+ b=uzsmwn7YqvyQ9EzQ2iEowprkxDu+h0QW+mTPgk/n+d/ws9CfK8jJe+OY/4p6ntObBilj
+ Kv7SKNlgcxGB8BeOHAZd2jNNlIqiMWeq7PcQmXHQF2g8q2aeNA5c4dTwRuZVp4C/jPEd
+ X1cyqsLoNmwDPfRnKVBIteRPu48AmNrF85QWtYyUXn7yrtPXMy5CnonvcdgjUcTv/TC/
+ 2R4LVXu55RXdqwP19B4SBQlT3S36d12TbEkA7ciWxs38ebbE2NiXIWKwYbVJyztFsrgB
+ Qs2gdYJdTsALUuy+0NSoRBmnd8Gsn+QhsBfaVTn8Q407dniu+dRSdbGpQkMUbyTEFKr+ 5g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 31dkruguax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 02 Jun 2020 12:39:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052CcLPP008707;
+        Tue, 2 Jun 2020 12:39:42 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 31dju1bseu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Jun 2020 12:39:42 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 052Cdflg021562;
+        Tue, 2 Jun 2020 12:39:41 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 02 Jun 2020 05:39:40 -0700
+Date:   Tue, 2 Jun 2020 15:39:30 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devel@driverdev.osuosl.org, alsa-devel@alsa-project.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org
+Subject: Re: [RESEND PATCH v1 4/6] staging: greybus: audio: Resolve
+ compilation error in topology parser
+Message-ID: <20200602123930.GG30374@kadam>
+References: <cover.1591040859.git.vaibhav.sr@gmail.com>
+ <6131fec4cf9e18dbf70fa7f992de9d588299ee18.1591040859.git.vaibhav.sr@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IJpNTDwzlM2Ie8A6"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190919091728.24756-1-linux@rasmusvillemoes.dk>
-User-Agent: Mutt/1.13.1 (2019-12-14)
+In-Reply-To: <6131fec4cf9e18dbf70fa7f992de9d588299ee18.1591040859.git.vaibhav.sr@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006020089
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
+ mlxscore=0 lowpriorityscore=0 suspectscore=0 malwarescore=0 clxscore=1015
+ adultscore=0 mlxlogscore=999 cotscore=-2147483648 phishscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006020089
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---IJpNTDwzlM2Ie8A6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Sep 19, 2019 at 11:17:27AM +0200, Rasmus Villemoes wrote:
-> The way state->enabled is computed is rather convoluted and hard to
-> read - both branches of the if() actually do the exact same thing. So
-> remove the if(), and further simplify "<boolean condition> ? true :
-> false" to "<boolean condition>".
->=20
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+On Tue, Jun 02, 2020 at 10:51:13AM +0530, Vaibhav Agarwal wrote:
+> Fix compilation errors for GB Audio topology parser code with recent
+> kernel versions.
+> 
+> Signed-off-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
 > ---
-> I stumbled on this while trying to understand how the pwm subsystem
-> works. This patch is a semantic no-op, but it's also possible that,
-> say, the first branch simply contains a "double negative" so either
-> the !=3D should be =3D=3D or the "false : true" should be "true : false".
->=20
->  drivers/pwm/pwm-rockchip.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
+>  drivers/staging/greybus/audio_topology.c | 130 +++++++++++------------
+>  1 file changed, 61 insertions(+), 69 deletions(-)
+> 
+> diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
+> index 4ac30accf226..7d5e87341a5c 100644
+> --- a/drivers/staging/greybus/audio_topology.c
+> +++ b/drivers/staging/greybus/audio_topology.c
+> @@ -5,8 +5,8 @@
+>   * Copyright 2015-2016 Linaro Ltd.
+>   */
+>  
+> +#include <linux/greybus.h>
+>  #include "audio_codec.h"
+> -#include "greybus_protocols.h"
+>  
+>  #define GBAUDIO_INVALID_ID	0xFF
+>  
+> @@ -165,15 +165,15 @@ static int gbcodec_mixer_ctl_info(struct snd_kcontrol *kcontrol,
+>  	struct gbaudio_ctl_pvt *data;
+>  	struct gb_audio_ctl_elem_info *info;
+>  	struct gbaudio_module_info *module;
+> -	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+> -	struct gbaudio_codec_info *gbcodec = snd_soc_codec_get_drvdata(codec);
+> +	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
+> +	struct gbaudio_codec_info *gb = snd_soc_component_get_drvdata(comp);
 
-I've applied this. Irrespective of any feedback David would have this is
-correct and a nice simplification.
+Please rename "gbcodec" in a different patch.  It's not related to
+fixing the compile.
 
-Thierry
+Otherwise it seems okay.
 
---IJpNTDwzlM2Ie8A6
-Content-Type: application/pgp-signature; name="signature.asc"
+regards,
+dan carpenter
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl7WSHEACgkQ3SOs138+
-s6EIvA//U+YBcRa/yOWyp3jhnv0UxhIHPIk4tcP1l5N4cNtnj23Y4VCdv7baJM4M
-k2OKqKanjnp0AROTYeu150CEqI+xXuND8W7PKRIcCTLkS2Gy7WBXh1ezlCRupzyH
-uYRPi+PY5ZkX/owSFRy+2Ii5o5ywzPc5aH6hqsLfKGzkUrJA/wFsTH85JfmEwwTu
-8WOYkvO8zGqaA32B5Orx42x4jH020aa/PorZsl1WXjEnqN7zc0Ke5CZxZN/puoE+
-YuTAqG9NDMFiZzkeN2vHbuafUyBk0zSRiz+/1KTkKPnubJ0bLncbCZRonghCCCNV
-3hWEB8Fm5pP9mo5Ht4q6Z4or2JkuWbcu3IwyE9SrerLtcTbkbCqaU3kkvKFm72Gy
-QN2iUJiGHk4i7PYqNEAWfQ9i16U7+2nbb6rroHiHcKR8G1boWJcwyg6dwVto5uUN
-47k4J8HTAZBsDysAH4GVavggIig9WwMMqprGhVRA7CLhMtp5i/g+9fyN6OmxmwAO
-9N4Sxs/ScWdReU63b0DbWRdEQa9OVK0BWz13uoESETZcfeH9ggZpY2EDBQ96KRY5
-cG9Ka88WfHJJ7qth/PcHsu94fFnbcPkZeca16guCWoYIi5SdCJeDuPVfbjV1xn9T
-Fu/bhyvbAecyGACpTbIwZb5DhtT4HYr0IX4Q4mJ8PfM8b0BdR4o=
-=OaiW
------END PGP SIGNATURE-----
-
---IJpNTDwzlM2Ie8A6--
