@@ -2,124 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB961EBB8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222451EBB92
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgFBMWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:22:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726937AbgFBMWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:22:09 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1D5B2053B;
-        Tue,  2 Jun 2020 12:22:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591100528;
-        bh=zoYzZzP112/newTQzfSumttw9583gdScBlj4fN9D0gQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0+7Z0cr/oGYllCuEhye3XCHQXlI/VQ0JGybEDtdLdxtR2FzpV4I4z38sODGWRWmo1
-         GrfH/N1d4ttjvEsE/TA/lao9K21uOYKA8lDqftrCR5FfViPifMs9UPp0w85v+1wTMa
-         jQCcEhdZQCBkE2ylbd974aI+Ds/GVCfVcDTNiCb0=
-Date:   Tue, 2 Jun 2020 13:22:05 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sumit Semwal <sumit.semwal@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, nishakumari@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org,
-        rnayak@codeaurora.org
-Subject: Re: [PATCH v4 5/5] regulator: qcom: labibb: Add SC interrupt handling
-Message-ID: <20200602122205.GF5684@sirena.org.uk>
-References: <20200602100924.26256-1-sumit.semwal@linaro.org>
- <20200602100924.26256-6-sumit.semwal@linaro.org>
+        id S1728101AbgFBMWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726217AbgFBMWp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 08:22:45 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A4DC061A0E
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 05:22:45 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id o15so12504065ejm.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 05:22:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A08j6fU+RlNfIhwI5UM24mjQznnwSgfTXAFxVissV48=;
+        b=JqAagGFBVhcjxJPeBl5cy+G9GwDLNghzA6eP0eUwsaQW5oBc2sm29vAYyo/systJBA
+         lPocLTxup1vVlzpiDJdk2rLd5+9I4cXxz2Q1OnpETIGsAp69v8XqSvIi7Dxaa6qVLyra
+         1vWzF8dNJE2Qjv6i0Oa3d9mU2+GuB42bt1suc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A08j6fU+RlNfIhwI5UM24mjQznnwSgfTXAFxVissV48=;
+        b=HEkadrqr4XOGvCbA14GdAKXn5bUbU+Iu7Iq8nKhl6bHL/fvRK42brhoZnvFsX31O/R
+         NMSEFKeglvfQ7bIhq+6tv91nYD+afX+wbTTxy/m47Swmwpc7Z2bCjlKF27CJhRosU51f
+         Hg2ppjmi++hxzKIkEHeGu4Jg001iUBITV7m5CFBfac/ZR1kYg4MqGo8k0+psMhRvn9IC
+         qhGLF7wSr03URsIEoAHH8I3NOsonR8vfuOh1F39QkO0OgoOrwpbEQMFzwABez8xWG7VR
+         Y5pMuGVZmJUhFl0u1jx4PoN/tOPwU7jajGczs54YNjxSwCIdCyK+0HTo2JVWVSu4RMbb
+         IZjw==
+X-Gm-Message-State: AOAM5311QFFOMIBxfHdI9/jvKTXLr/IOSJNrQg65A/AJzBdP4rZv1HGw
+        bDdofz9AP8kCCqR6wYsOg4/dAg2GIvJFuw==
+X-Google-Smtp-Source: ABdhPJzcsF7QY9ioRjUCm3b9bX3uN76i/zUlWR4ZevJHDHq7SGUgrGhKJI5nmCHzQyOzKmdPrLlA+g==
+X-Received: by 2002:a17:906:3d69:: with SMTP id r9mr22580442ejf.20.1591100563136;
+        Tue, 02 Jun 2020 05:22:43 -0700 (PDT)
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com. [209.85.221.48])
+        by smtp.gmail.com with ESMTPSA id m21sm1522493edj.74.2020.06.02.05.22.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jun 2020 05:22:42 -0700 (PDT)
+Received: by mail-wr1-f48.google.com with SMTP id x6so3150517wrm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 05:22:41 -0700 (PDT)
+X-Received: by 2002:a5d:6750:: with SMTP id l16mr26260746wrw.295.1591100561085;
+ Tue, 02 Jun 2020 05:22:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gdTfX7fkYsEEjebm"
-Content-Disposition: inline
-In-Reply-To: <20200602100924.26256-6-sumit.semwal@linaro.org>
-X-Cookie: We are not a clone.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200514160153.3646-1-sergey.senozhatsky@gmail.com>
+ <20200514160153.3646-4-sergey.senozhatsky@gmail.com> <b34ae09b-7c20-7255-6adc-3370680555cd@xs4all.nl>
+In-Reply-To: <b34ae09b-7c20-7255-6adc-3370680555cd@xs4all.nl>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Tue, 2 Jun 2020 14:22:28 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5Cu5ex=YcuVfmEC1uNA4DZBSAF04LYtrw3-q22ZMc7_DA@mail.gmail.com>
+Message-ID: <CAAFQd5Cu5ex=YcuVfmEC1uNA4DZBSAF04LYtrw3-q22ZMc7_DA@mail.gmail.com>
+Subject: Re: [PATCH v6 03/14] videobuf2: handle V4L2 buffer cache flags
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Hans,
 
---gdTfX7fkYsEEjebm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Tue, Jun 2, 2020 at 11:51 AM Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>
+> Hi Sergey,
+>
+> While doing final testing for this patch series (together with the v4l-utils patch)
+> I found one remaining issue:
+>
+> On 14/05/2020 18:01, Sergey Senozhatsky wrote:
+> > From: Sergey Senozhatsky <senozhatsky@chromium.org>
+> >
+> > Set video buffer cache management flags corresponding to V4L2 cache
+> > flags.
+> >
+> > Both ->prepare() and ->finish() cache management hints should be
+> > passed during this stage (buffer preparation), because there is
+> > no other way for user-space to tell V4L2 to avoid ->finish() cache
+> > flush.
+> >
+> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > ---
+> >  .../media/common/videobuf2/videobuf2-v4l2.c   | 48 +++++++++++++++++++
+> >  include/media/videobuf2-core.h                | 11 +++++
+> >  2 files changed, 59 insertions(+)
+> >
+> > diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> > index eb5d5db96552..f13851212cc8 100644
+> > --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> > +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> > @@ -337,6 +337,53 @@ static int vb2_fill_vb2_v4l2_buffer(struct vb2_buffer *vb, struct v4l2_buffer *b
+> >       return 0;
+> >  }
+> >
+> > +static void set_buffer_cache_hints(struct vb2_queue *q,
+> > +                                struct vb2_buffer *vb,
+> > +                                struct v4l2_buffer *b)
+> > +{
+> > +     /*
+> > +      * DMA exporter should take care of cache syncs, so we can avoid
+> > +      * explicit ->prepare()/->finish() syncs. For other ->memory types
+> > +      * we always need ->prepare() or/and ->finish() cache sync.
+> > +      */
+> > +     if (q->memory == VB2_MEMORY_DMABUF) {
+> > +             vb->need_cache_sync_on_finish = 0;
+> > +             vb->need_cache_sync_on_prepare = 0;
+> > +             return;
+> > +     }
+> > +
+> > +     /*
+> > +      * Cache sync/invalidation flags are set by default in order to
+> > +      * preserve existing behaviour for old apps/drivers.
+> > +      */
+> > +     vb->need_cache_sync_on_prepare = 1;
+> > +     vb->need_cache_sync_on_finish = 1;
+> > +
+> > +     if (!vb2_queue_allows_cache_hints(q)) {
+> > +             /*
+> > +              * Clear buffer cache flags if queue does not support user
+> > +              * space hints. That's to indicate to userspace that these
+> > +              * flags won't work.
+> > +              */
+> > +             b->flags &= ~V4L2_BUF_FLAG_NO_CACHE_INVALIDATE;
+> > +             b->flags &= ~V4L2_BUF_FLAG_NO_CACHE_CLEAN;
+> > +             return;
+> > +     }
+>
+> These two flags need to be cleared for VB2_MEMORY_DMABUF as well in the test above.
+> This bug is causing v4l2-compliance failures (use the test-media script in contrib/test
+> in v4l-utils: 'sudo test-media vim2m').
 
-On Tue, Jun 02, 2020 at 03:39:24PM +0530, Sumit Semwal wrote:
+Would you be able to paste the failures, so that we know that we
+reproduce the same problems? Thanks!
 
->  static int qcom_labibb_regulator_enable(struct regulator_dev *rdev)
->  {
-> -	return regulator_enable_regmap(rdev);
-> +	int ret;
-> +	struct labibb_regulator *reg = rdev_get_drvdata(rdev);
-> +
-> +	ret = regulator_enable_regmap(rdev);
-> +	if (ret >= 0)
-> +		reg->enabled = true;
+Best regards,
+Tomasz
 
-Can we not read the register we just wrote to here?
-
-> +	/*
-> +	 * The SC(short circuit) fault would trigger PBS(Portable Batch
-> +	 * System) to disable regulators for protection. This would
-> +	 * cause the SC_DETECT status being cleared so that it's not
-> +	 * able to get the SC fault status.
-> +	 * Check if the regulator is enabled in the driver but
-> +	 * disabled in hardware, this means a SC fault had happened
-> +	 * and SCP handling is completed by PBS.
-> +	 */
-> +	if (!in_sc_err) {
-> +
-> +		reg = labibb_reg->base + REG_LABIBB_ENABLE_CTL;
-> +
-> +		ret = regmap_read_poll_timeout(labibb_reg->regmap,
-> +					reg, val,
-> +					!(val & LABIBB_CONTROL_ENABLE),
-> +					POLLING_SCP_DONE_INTERVAL_US,
-> +					POLLING_SCP_TIMEOUT);
-
-Why do we need a timeout here?
-
-> +						NULL);
-> +		regulator_unlock(labibb_reg->rdev);
-> +	}
-> +	return IRQ_HANDLED;
-
-This returns IRQ_HANDLED even if we didn't detect an interrupt source...
-Especially given the need to check to see if the regulator was turned
-off by the hardware it seems like there must be some false positives.
-
-> +	} else {
-> +		ret = devm_request_threaded_irq(reg->dev,
-> +						sc_irq,
-> +						NULL, labibb_sc_err_handler,
-> +						IRQF_ONESHOT,
-> +						"sc-err", reg);
-
-This looks like we're requesting the interrupt before we register the
-regulator which means the interrupt might fire without the regulator
-being there.  The order of registration should be reversed.
-
---gdTfX7fkYsEEjebm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7WRGwACgkQJNaLcl1U
-h9AQxAf8DfQwS+lpjrOoHgyYMGAdrelohDwZkiQnvYkAj/OfYQd3p5mkrBwbDamD
-yShU2qO7B/HwJ7aTdKuvkh4C7I6+j2i2aLCKjaiaej3mkPuk+0UExjH6lApQNS0c
-M7ENfxK05L3iAqKFvGx8DBNtr7BwJ12BV0jD/TZNxu9rXXEEXhRbnKNRx8pySXBz
-Qw8dP84h7WQARO089CaJf1JrbQES4TAxd0n0nCeTkqT6ynF7UHYrnbwN78s0f4Ef
-1ntUPHeyyFnmQjFlx3a+zAaOanSGIMbn25B0J+1msieGqjeXruhkf8n6YjNRHUDq
-uLCyTwC1rkX4ricMwVqRGfjA03eE0Q==
-=9Ynm
------END PGP SIGNATURE-----
-
---gdTfX7fkYsEEjebm--
+>
+> It's enough to post a v6.1 for this patch, everything else is fine.
+>
+> Regards,
+>
+>         Hans
+>
+> > +
+> > +     /*
+> > +      * ->finish() cache sync can be avoided when queue direction is
+> > +      * TO_DEVICE.
+> > +      */
+> > +     if (q->dma_dir == DMA_TO_DEVICE)
+> > +             vb->need_cache_sync_on_finish = 0;
+> > +
+> > +     if (b->flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE)
+> > +             vb->need_cache_sync_on_finish = 0;
+> > +
+> > +     if (b->flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN)
+> > +             vb->need_cache_sync_on_prepare = 0;
+> > +}
+> > +
+> >  static int vb2_queue_or_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
+> >                                   struct v4l2_buffer *b, bool is_prepare,
+> >                                   struct media_request **p_req)
+> > @@ -381,6 +428,7 @@ static int vb2_queue_or_prepare_buf(struct vb2_queue *q, struct media_device *md
+> >       }
+> >
+> >       if (!vb->prepared) {
+> > +             set_buffer_cache_hints(q, vb, b);
+> >               /* Copy relevant information provided by the userspace */
+> >               memset(vbuf->planes, 0,
+> >                      sizeof(vbuf->planes[0]) * vb->num_planes);
+> > diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+> > index 7f39d9fffc8c..ccc5c498d3e3 100644
+> > --- a/include/media/videobuf2-core.h
+> > +++ b/include/media/videobuf2-core.h
+> > @@ -635,6 +635,17 @@ struct vb2_queue {
+> >  #endif
+> >  };
+> >
+> > +/**
+> > + * vb2_queue_allows_cache_hints() - Return true if the queue allows cache
+> > + * and memory consistency hints.
+> > + *
+> > + * @q:               pointer to &struct vb2_queue with videobuf2 queue
+> > + */
+> > +static inline bool vb2_queue_allows_cache_hints(struct vb2_queue *q)
+> > +{
+> > +     return q->allow_cache_hints && q->memory == VB2_MEMORY_MMAP;
+> > +}
+> > +
+> >  /**
+> >   * vb2_plane_vaddr() - Return a kernel virtual address of a given plane.
+> >   * @vb:              pointer to &struct vb2_buffer to which the plane in
+> >
+>
