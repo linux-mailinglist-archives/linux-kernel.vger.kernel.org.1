@@ -2,492 +2,871 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0491EC40B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 22:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B611EC404
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 22:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgFBUx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 16:53:56 -0400
-Received: from mga11.intel.com ([192.55.52.93]:2571 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgFBUxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 16:53:52 -0400
-IronPort-SDR: LfekwvzBQZnwbtEVbK7OvZInKRzao+KUWrKMugsfumh90rUcOtM+tZWgm7s/vbq9FhUsVzvi83
- ppYXdmFie6vA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 13:51:49 -0700
-IronPort-SDR: aSOI5KA/Pq/z2p/4NB4/Oydme6Jclly6VGkwUYIfhaxGbXajYAd86mc0/+0ZUcsEPT4XHiqyxC
- ykBaaQUpcQQg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,465,1583222400"; 
-   d="scan'208";a="257757001"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga007.jf.intel.com with ESMTP; 02 Jun 2020 13:51:49 -0700
-Date:   Tue, 2 Jun 2020 13:51:49 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Vaibhav Jain <vaibhav@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RESEND PATCH v9 4/5] ndctl/papr_scm,uapi: Add support for PAPR
- nvdimm specific methods
-Message-ID: <20200602205148.GF1505637@iweiny-DESK2.sc.intel.com>
-References: <20200602101438.73929-1-vaibhav@linux.ibm.com>
- <20200602101438.73929-5-vaibhav@linux.ibm.com>
+        id S1727860AbgFBUxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 16:53:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726223AbgFBUxS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 16:53:18 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AC4C08C5C1
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 13:53:17 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id g12so1884904pll.10
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 13:53:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mCi1TvNXYv+QmgOjFERuyTPeLNebGPQitVjEbtAQ4Ns=;
+        b=Y9rdtFpTMmbGn9TECynD9I/QV80s8Gye/XAi6AhEY/hBQXwu0xRoMcVttbHxSQCUK+
+         wBNTJvRhDeZqqK9ZXjYZLyTs8ZrztaH2cYqOem2FE0s4XvmRlAvF4o3c4MUcB8042Rac
+         4C8NFFTrBAJUj9cL0gUms10DK4Z+hf7oxE3z4XlzASBJ7oXJB5G4GlIVZRe21x69QcXx
+         2MUXG+Le4iagZDFnSmjvV8hC3F9Zvljn+Xq1Qaw1tcgbLWG5pDN+1DdXz3GxEpyKeqOS
+         tmyqxV+5Rw6sOREidXnZGqKEV1HHrVAp+iCh1jX5UgIuZnFVcjgs+PAHJf2nZPQrIpur
+         u+rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mCi1TvNXYv+QmgOjFERuyTPeLNebGPQitVjEbtAQ4Ns=;
+        b=C2KNAoWR3+v5q8oe+aPpOVqZUpYb3Fszu0UmVXypaQtbz/cqHJk60nP3oQEoMxkqi4
+         7CmvUcNGZs+bR6sBJ+QxY3rAUvwy7Dk98PISBppo+pyh60fkaGA2dTXPc63jXM6hAYYN
+         ddrsvzxxJNVvhv1N5ROS1yMgKlYf55y2VdP8z6s8lva+meyf54rkLP3A2xs4wTZHMO+O
+         YVn3vQYWSA0i52xf5JnsLJhU7QQHW6kyp8yzrAY1JTth+EykQ3crS36w97Mm3+dSWRXH
+         96oR+H/UDQVyfhi1I8+ILjU0S6khhfSGrkgKSb5vms8NGQTvzG5Q8puDq5ucO7A9SkOF
+         DsOQ==
+X-Gm-Message-State: AOAM530RQflmMTGumE3zVvT55czmc4sxrBXdzJ7wMAD69wpcfSTsdP/p
+        gXFx3nM38x3vsp3cGe/dwLD6vA==
+X-Google-Smtp-Source: ABdhPJyMlSoW27dMHYSS4eM/FUU77PJkyvL0iYEKCzUqmdEHbzPYr6kc+2wvs3mpu+ho4t6iB2McBQ==
+X-Received: by 2002:a17:902:ec06:: with SMTP id l6mr27024959pld.193.1591131196898;
+        Tue, 02 Jun 2020 13:53:16 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id z29sm40455pff.120.2020.06.02.13.53.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 13:53:16 -0700 (PDT)
+Date:   Tue, 2 Jun 2020 14:53:14 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] remoteproc/k3-dsp: Add a remoteproc driver of K3
+ C66x DSPs
+Message-ID: <20200602205314.GB29840@xps15>
+References: <20200521001006.2725-1-s-anna@ti.com>
+ <20200521001006.2725-4-s-anna@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200602101438.73929-5-vaibhav@linux.ibm.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200521001006.2725-4-s-anna@ti.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 03:44:37PM +0530, Vaibhav Jain wrote:
-> Introduce support for PAPR NVDIMM Specific Methods (PDSM) in papr_scm
-> module and add the command family NVDIMM_FAMILY_PAPR to the white list
-> of NVDIMM command sets. Also advertise support for ND_CMD_CALL for the
-> nvdimm command mask and implement necessary scaffolding in the module
-> to handle ND_CMD_CALL ioctl and PDSM requests that we receive.
+On Wed, May 20, 2020 at 07:10:05PM -0500, Suman Anna wrote:
+> The Texas Instrument's K3 J721E SoCs have two C66x DSP Subsystems in MAIN
+> voltage domain that are based on the TI's standard TMS320C66x DSP CorePac
+> module. Each subsystem has a Fixed/Floating-Point DSP CPU, with 32 KB each
+> of L1P & L1D SRAMs that can be configured and partitioned as either RAM
+> and/or Cache, and 288 KB of L2 SRAM with 256 KB of memory configurable as
+> either RAM and/or Cache. The CorePac also includes an Internal DMA (IDMA),
+> External Memory Controller (EMC), Extended Memory Controller (XMC) with a
+> Region Address Translator (RAT) unit for 32-bit to 48-bit address
+> extension/translations, an Interrupt Controller (INTC) and a Powerdown
+> Controller (PDC).
 > 
-> The layout of the PDSM request as we expect from libnvdimm/libndctl is
-> described in newly introduced uapi header 'papr_pdsm.h' which
-> defines a new 'struct nd_pdsm_cmd_pkg' header. This header is used
-> to communicate the PDSM request via member
-> 'nd_cmd_pkg.nd_command' and size of payload that need to be
-> sent/received for servicing the PDSM.
+> A new remoteproc module is added to perform the device management of
+> these DSP devices. The support is limited to images using only external
+> DDR memory at the moment, the loading support to internal memories and
+> any on-chip RAM memories will be added in a subsequent patch. RAT support
+> is also left for a future patch, and as such the reserved memory carveout
+> regions are all expected to be using memory regions within the first 2 GB.
+> Error Recovery and Power Management features are not currently supported.
 > 
-> A new function is_cmd_valid() is implemented that reads the args to
-> papr_scm_ndctl() and performs sanity tests on them. A new function
-> papr_scm_service_pdsm() is introduced and is called from
-> papr_scm_ndctl() in case of a PDSM request is received via ND_CMD_CALL
-> command from libnvdimm.
+> The C66x remote processors do not have an MMU, and so require fixed memory
+> carveout regions matching the firmware image addresses. Support for this
+> is provided by mandating multiple memory regions to be attached to the
+> remoteproc device. The first memory region will be used to serve as the
+> DMA pool for all dynamic allocations like the vrings and vring buffers.
+> The remaining memory regions are mapped into the kernel at device probe
+> time, and are used to provide address translations for firmware image
+> segments without the need for any RSC_CARVEOUT entries. Any firmware
+> image using memory outside of the supplied reserved memory carveout
+> regions will be errored out.
 > 
-> Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+> The driver uses various TI-SCI interfaces to talk to the System Controller
+> (DMSC) for managing configuration, power and reset management of these
+> cores. IPC between the A72 cores and the DSP cores is supported through
+> the virtio rpmsg stack using shared memory and OMAP Mailboxes.
+> 
+> Signed-off-by: Suman Anna <s-anna@ti.com>
 > ---
-> Changelog:
+> v2:
+>  - Dropped the pm_runtime usage
+>  - Replaced the private k3_dsp_rproc_get_firmware() with the newly introduced
+>    rproc_of_parse_firmware()
+>  - Addressed other minor comments from Mathieu - Revised help on Kconfig, reordered
+>    header files, whitespace indentation fixes, remove the stale memset comment on
+>    internal memories, renamed struct k3_dsp_rproc_mem to struct k3_dsp_mem.
+> v1: https://patchwork.kernel.org/patch/11458577/
 > 
-> Resend:
-> * Added ack from Aneesh.
-> 
-> v8..v9:
-> * Reduced the usage of term SCM replacing it with appropriate
->   replacement [ Dan Williams, Aneesh ]
-> * Renamed 'papr_scm_pdsm.h' to 'papr_pdsm.h'
-> * s/PAPR_SCM_PDSM_*/PAPR_PDSM_*/g
-> * s/NVDIMM_FAMILY_PAPR_SCM/NVDIMM_FAMILY_PAPR/g
-> * Minor updates to 'papr_psdm.h' to replace usage of term 'SCM'.
-> * Minor update to patch description.
-> 
-> v7..v8:
-> * Removed the 'payload_offset' field from 'struct
->   nd_pdsm_cmd_pkg'. Instead command payload is always assumed to start
->   at 'nd_pdsm_cmd_pkg.payload'. [ Aneesh ]
-> * To enable introducing new fields to 'struct nd_pdsm_cmd_pkg',
->   'reserved' field of 10-bytes is introduced. [ Aneesh ]
-> * Fixed a typo in "Backward Compatibility" section of papr_scm_pdsm.h
->   [ Ira ]
-> 
-> Resend:
-> * None
-> 
-> v6..v7 :
-> * Removed the re-definitions of __packed macro from papr_scm_pdsm.h
->   [Mpe].
-> * Removed the usage of __KERNEL__ macros in papr_scm_pdsm.h [Mpe].
-> * Removed macros that were unused in papr_scm.c from papr_scm_pdsm.h
->   [Mpe].
-> * Made functions defined in papr_scm_pdsm.h as static inline. [Mpe]
-> 
-> v5..v6 :
-> * Changed the usage of the term DSM to PDSM to distinguish it from the
->   ACPI term [ Dan Williams ]
-> * Renamed papr_scm_dsm.h to papr_scm_pdsm.h and updated various struct
->   to reflect the new terminology.
-> * Updated the patch description and title to reflect the new terminology.
-> * Squashed patch to introduce new command family in 'ndctl.h' with
->   this patch [ Dan Williams ]
-> * Updated the papr_scm_pdsm method starting index from 0x10000 to 0x0
->   [ Dan Williams ]
-> * Removed redundant license text from the papr_scm_psdm.h file.
->   [ Dan Williams ]
-> * s/envelop/envelope/ at various places [ Dan Williams ]
-> * Added '__packed' attribute to command package header to gaurd
->   against different compiler adding paddings between the fields.
->   [ Dan Williams]
-> * Converted various pr_debug to dev_debug [ Dan Williams ]
-> 
-> v4..v5 :
-> * None
-> 
-> v3..v4 :
-> * None
-> 
-> v2..v3 :
-> * Updated the patch prefix to 'ndctl/uapi' [Aneesh]
-> 
-> v1..v2 :
-> * None
-> ---
->  arch/powerpc/include/uapi/asm/papr_pdsm.h | 136 ++++++++++++++++++++++
->  arch/powerpc/platforms/pseries/papr_scm.c | 101 +++++++++++++++-
->  include/uapi/linux/ndctl.h                |   1 +
->  3 files changed, 232 insertions(+), 6 deletions(-)
->  create mode 100644 arch/powerpc/include/uapi/asm/papr_pdsm.h
-> 
-> diff --git a/arch/powerpc/include/uapi/asm/papr_pdsm.h b/arch/powerpc/include/uapi/asm/papr_pdsm.h
+>  drivers/remoteproc/Kconfig                |  13 +
+>  drivers/remoteproc/Makefile               |   1 +
+>  drivers/remoteproc/ti_k3_dsp_remoteproc.c | 701 ++++++++++++++++++++++
+>  3 files changed, 715 insertions(+)
+>  create mode 100644 drivers/remoteproc/ti_k3_dsp_remoteproc.c
+>
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+ 
+> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> index 2c9fb870a276..ef787774b52b 100644
+> --- a/drivers/remoteproc/Kconfig
+> +++ b/drivers/remoteproc/Kconfig
+> @@ -265,6 +265,19 @@ config TI_K3_R5_REMOTEPROC
+>  	  It's safe to say N here if you're not interested in utilizing
+>  	  a slave processor
+>  
+> +config TI_K3_DSP_REMOTEPROC
+> +	tristate "TI K3 DSP remoteproc support"
+> +	depends on ARCH_K3
+> +	select MAILBOX
+> +	select OMAP2PLUS_MBOX
+> +	help
+> +	  Say m here to support TI's C66x and C71x DSP remote processor
+> +	  subsystems on various TI K3 family of SoCs through the remote
+> +	  processor framework.
+> +
+> +	  It's safe to say N here if you're not interested in utilizing
+> +	  the DSP slave processors.
+> +
+>  endif # REMOTEPROC
+>  
+>  endmenu
+> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> index ea0c6812e4fc..9f87d222744c 100644
+> --- a/drivers/remoteproc/Makefile
+> +++ b/drivers/remoteproc/Makefile
+> @@ -31,3 +31,4 @@ obj-$(CONFIG_ST_REMOTEPROC)		+= st_remoteproc.o
+>  obj-$(CONFIG_ST_SLIM_REMOTEPROC)	+= st_slim_rproc.o
+>  obj-$(CONFIG_STM32_RPROC)		+= stm32_rproc.o
+>  obj-$(CONFIG_TI_K3_R5_REMOTEPROC)	+= ti_k3_r5_remoteproc.o
+> +obj-$(CONFIG_TI_K3_DSP_REMOTEPROC)	+= ti_k3_dsp_remoteproc.o
+> diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
 > new file mode 100644
-> index 000000000000..6407fefcc007
+> index 000000000000..e4036f5992fe
 > --- /dev/null
-> +++ b/arch/powerpc/include/uapi/asm/papr_pdsm.h
-> @@ -0,0 +1,136 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+> +++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> @@ -0,0 +1,701 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
 > +/*
-> + * PAPR nvDimm Specific Methods (PDSM) and structs for libndctl
+> + * TI K3 DSP Remote Processor(s) driver
 > + *
-> + * (C) Copyright IBM 2020
-> + *
-> + * Author: Vaibhav Jain <vaibhav at linux.ibm.com>
+> + * Copyright (C) 2018-2020 Texas Instruments Incorporated - http://www.ti.com/
+> + *	Suman Anna <s-anna@ti.com>
 > + */
 > +
-> +#ifndef _UAPI_ASM_POWERPC_PAPR_PDSM_H_
-> +#define _UAPI_ASM_POWERPC_PAPR_PDSM_H_
+> +#include <linux/io.h>
+> +#include <linux/mailbox_client.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_reserved_mem.h>
+> +#include <linux/omap-mailbox.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/remoteproc.h>
+> +#include <linux/reset.h>
+> +#include <linux/soc/ti/ti_sci_protocol.h>
 > +
-> +#include <linux/types.h>
+> +#include "omap_remoteproc.h"
+> +#include "remoteproc_internal.h"
+> +#include "ti_sci_proc.h"
 > +
-> +/*
-> + * PDSM Envelope:
-> + *
-> + * The ioctl ND_CMD_CALL transfers data between user-space and kernel via
-> + * envelope which consists of a header and user-defined payload sections.
-> + * The header is described by 'struct nd_pdsm_cmd_pkg' which expects a
-> + * payload following it and accessible via 'nd_pdsm_cmd_pkg.payload' field.
-> + * There is reserved field that can used to introduce new fields to the
-> + * structure in future. It also tries to ensure that 'nd_pdsm_cmd_pkg.payload'
-> + * lies at a 8-byte boundary.
-> + *
-> + *  +-------------+---------------------+---------------------------+
-> + *  |   64-Bytes  |       16-Bytes      |       Max 176-Bytes       |
-> + *  +-------------+---------------------+---------------------------+
-> + *  |               nd_pdsm_cmd_pkg     |                           |
-> + *  |-------------+                     |                           |
-> + *  |  nd_cmd_pkg |                     |                           |
-> + *  +-------------+---------------------+---------------------------+
-> + *  | nd_family   |                     |                           |
-> + *  | nd_size_out | cmd_status          |                           |
-> + *  | nd_size_in  | payload_version     |     payload               |
-> + *  | nd_command  | reserved            |                           |
-> + *  | nd_fw_size  |                     |                           |
-> + *  +-------------+---------------------+---------------------------+
-> + *
-> + * PDSM Header:
-> + *
-> + * The header is defined as 'struct nd_pdsm_cmd_pkg' which embeds a
-> + * 'struct nd_cmd_pkg' instance. The PDSM command is assigned to member
-> + * 'nd_cmd_pkg.nd_command'. Apart from size information of the envelope which is
-> + * contained in 'struct nd_cmd_pkg', the header also has members following 
-                                                             ^^^^^
-                                                        ...  the  ...
-
-> + * members:
-> + *
-> + * 'cmd_status'		: (Out) Errors if any encountered while servicing PDSM.
-> + * 'payload_version'	: (In/Out) Version number associated with the payload.
-> + * 'reserved'		: Not used and reserved for future.
-> + *
-> + * PDSM Payload:
-> + *
-> + * The layout of the PDSM Payload is defined by various structs shared between
-> + * papr_scm and libndctl so that contents of payload can be interpreted. During
-> + * servicing of a PDSM the papr_scm module will read input args from the payload
-> + * field by casting its contents to an appropriate struct pointer based on the
-> + * PDSM command. Similarly the output of servicing the PDSM command will be
-> + * copied to the payload field using the same struct.
-> + *
-> + * 'libnvdimm' enforces a hard limit of 256 bytes on the envelope size, which
-> + * leaves around 176 bytes for the envelope payload (ignoring any padding that
-> + * the compiler may silently introduce).
-> + *
-> + * Payload Version:
-> + *
-> + * A 'payload_version' field is present in PDSM header that indicates a specific
-> + * version of the structure present in PDSM Payload for a given PDSM command.
-> + * This provides backward compatibility in case the PDSM Payload structure
-> + * evolves and different structures are supported by 'papr_scm' and 'libndctl'.
-> + *
-> + * When sending a PDSM Payload to 'papr_scm', 'libndctl' should send the version
-> + * of the payload struct it supports via 'payload_version' field. The 'papr_scm'
-> + * module when servicing the PDSM envelope checks the 'payload_version' and then
-> + * uses 'payload struct version' == MIN('payload_version field',
-> + * 'max payload-struct-version supported by papr_scm') to service the PDSM.
-> + * After servicing the PDSM, 'papr_scm' put the negotiated version of payload
-> + * struct in returned 'payload_version' field.
-> + *
-> + * Libndctl on receiving the envelope back from papr_scm again checks the
-> + * 'payload_version' field and based on it use the appropriate version dsm
-> + * struct to parse the results.
-> + *
-> + * Backward Compatibility:
-> + *
-> + * Above scheme of exchanging different versioned PDSM struct between libndctl
-> + * and papr_scm should provide backward compatibility until following two
-> + * assumptions/conditions when defining new PDSM structs hold:
-> + *
-> + * Let T(X) = { set of attributes in PDSM struct 'T' versioned X }
-> + *
-> + * 1. T(X) is a proper subset of T(Y) if Y > X.
-> + *    i.e Each new version of PDSM struct should retain existing struct
-> + *    attributes from previous version
-> + *
-> + * 2. If an entity (libndctl or papr_scm) supports a PDSM struct T(X) then
-> + *    it should also support T(1), T(2)...T(X - 1).
-> + *    i.e When adding support for new version of a PDSM struct, libndctl
-> + *    and papr_scm should retain support of the existing PDSM struct
-> + *    version they support.
-
-Please see this thread for an example why versions are a bad idea in UAPIs:
-
-https://lkml.org/lkml/2020/3/26/213
-
-While the use of version is different in that thread the fundamental issues are
-the same.  You end up with some weird matrix of supported features and
-structure definitions.  For example, you are opening up the possibility of
-changing structures with a different version for no good reason.
-
-Also having the user query with version Z and get back version X (older) is
-odd.  Generally if the kernel does not know about a feature (ie version Z of
-the structure) it should return -EINVAL and let the user figure out what to do.
-The user may just give up or they could try a different query.
-
+> +#define KEYSTONE_RPROC_LOCAL_ADDRESS_MASK	(SZ_16M - 1)
+> +
+> +/**
+> + * struct k3_dsp_mem - internal memory structure
+> + * @cpu_addr: MPU virtual address of the memory region
+> + * @bus_addr: Bus address used to access the memory region
+> + * @dev_addr: Device address of the memory region from DSP view
+> + * @size: Size of the memory region
 > + */
-> +
-> +/* PDSM-header + payload expected with ND_CMD_CALL ioctl from libnvdimm */
-> +struct nd_pdsm_cmd_pkg {
-> +	struct nd_cmd_pkg hdr;	/* Package header containing sub-cmd */
-> +	__s32 cmd_status;	/* Out: Sub-cmd status returned back */
-> +	__u16 reserved[5];	/* Ignored and to be used in future */
-
-How do you know when reserved is used for something else in the future?  Is
-reserved guaranteed (and checked by the code) to be 0?
-
-> +	__u16 payload_version;	/* In/Out: version of the payload */
-
-Why is payload_version after reserved?
-
-> +	__u8 payload[];		/* In/Out: Sub-cmd data buffer */
-> +} __packed;
-> +
-> +/*
-> + * Methods to be embedded in ND_CMD_CALL request. These are sent to the kernel
-> + * via 'nd_pdsm_cmd_pkg.hdr.nd_command' member of the ioctl struct
-> + */
-> +enum papr_pdsm {
-> +	PAPR_PDSM_MIN = 0x0,
-> +	PAPR_PDSM_MAX,
+> +struct k3_dsp_mem {
+> +	void __iomem *cpu_addr;
+> +	phys_addr_t bus_addr;
+> +	u32 dev_addr;
+> +	size_t size;
 > +};
 > +
-> +/* Convert a libnvdimm nd_cmd_pkg to pdsm specific pkg */
-> +static inline struct nd_pdsm_cmd_pkg *nd_to_pdsm_cmd_pkg(struct nd_cmd_pkg *cmd)
-> +{
-> +	return (struct nd_pdsm_cmd_pkg *) cmd;
-> +}
-> +
-> +/* Return the payload pointer for a given pcmd */
-> +static inline void *pdsm_cmd_to_payload(struct nd_pdsm_cmd_pkg *pcmd)
-> +{
-> +	if (pcmd->hdr.nd_size_in == 0 && pcmd->hdr.nd_size_out == 0)
-> +		return NULL;
-> +	else
-> +		return (void *)(pcmd->payload);
-> +}
-> +
-> +#endif /* _UAPI_ASM_POWERPC_PAPR_PDSM_H_ */
-> diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-> index 149431594839..5e2237e7ec08 100644
-> --- a/arch/powerpc/platforms/pseries/papr_scm.c
-> +++ b/arch/powerpc/platforms/pseries/papr_scm.c
-> @@ -15,13 +15,15 @@
->  #include <linux/seq_buf.h>
->  
->  #include <asm/plpar_wrappers.h>
-> +#include <asm/papr_pdsm.h>
->  
->  #define BIND_ANY_ADDR (~0ul)
->  
->  #define PAPR_SCM_DIMM_CMD_MASK \
->  	((1ul << ND_CMD_GET_CONFIG_SIZE) | \
->  	 (1ul << ND_CMD_GET_CONFIG_DATA) | \
-> -	 (1ul << ND_CMD_SET_CONFIG_DATA))
-> +	 (1ul << ND_CMD_SET_CONFIG_DATA) | \
-> +	 (1ul << ND_CMD_CALL))
->  
->  /* DIMM health bitmap bitmap indicators */
->  /* SCM device is unable to persist memory contents */
-> @@ -350,16 +352,97 @@ static int papr_scm_meta_set(struct papr_scm_priv *p,
->  	return 0;
->  }
->  
-> +/*
-> + * Validate the inputs args to dimm-control function and return '0' if valid.
-> + * This also does initial sanity validation to ND_CMD_CALL sub-command packages.
+> +/**
+> + * struct k3_dsp_mem_data - memory definitions for a DSP
+> + * @name: name for this memory entry
+> + * @dev_addr: device address for the memory entry
 > + */
-> +static int is_cmd_valid(struct nvdimm *nvdimm, unsigned int cmd, void *buf,
-> +		       unsigned int buf_len)
+> +struct k3_dsp_mem_data {
+> +	const char *name;
+> +	const u32 dev_addr;
+> +};
+> +
+> +/**
+> + * struct k3_dsp_dev_data - device data structure for a DSP
+> + * @mems: pointer to memory definitions for a DSP
+> + * @num_mems: number of memory regions in @mems
+> + * @boot_align_addr: boot vector address alignment granularity
+> + * @uses_lreset: flag to denote the need for local reset management
+> + */
+> +struct k3_dsp_dev_data {
+> +	const struct k3_dsp_mem_data *mems;
+> +	u32 num_mems;
+> +	u32 boot_align_addr;
+> +	bool uses_lreset;
+> +};
+> +
+> +/**
+> + * struct k3_dsp_rproc - k3 DSP remote processor driver structure
+> + * @dev: cached device pointer
+> + * @rproc: remoteproc device handle
+> + * @mem: internal memory regions data
+> + * @num_mems: number of internal memory regions
+> + * @rmem: reserved memory regions data
+> + * @num_rmems: number of reserved memory regions
+> + * @reset: reset control handle
+> + * @data: pointer to DSP-specific device data
+> + * @tsp: TI-SCI processor control handle
+> + * @ti_sci: TI-SCI handle
+> + * @ti_sci_id: TI-SCI device identifier
+> + * @mbox: mailbox channel handle
+> + * @client: mailbox client to request the mailbox channel
+> + */
+> +struct k3_dsp_rproc {
+> +	struct device *dev;
+> +	struct rproc *rproc;
+> +	struct k3_dsp_mem *mem;
+> +	int num_mems;
+> +	struct k3_dsp_mem *rmem;
+> +	int num_rmems;
+> +	struct reset_control *reset;
+> +	const struct k3_dsp_dev_data *data;
+> +	struct ti_sci_proc *tsp;
+> +	const struct ti_sci_handle *ti_sci;
+> +	u32 ti_sci_id;
+> +	struct mbox_chan *mbox;
+> +	struct mbox_client client;
+> +};
+> +
+> +/**
+> + * k3_dsp_rproc_mbox_callback() - inbound mailbox message handler
+> + * @client: mailbox client pointer used for requesting the mailbox channel
+> + * @data: mailbox payload
+> + *
+> + * This handler is invoked by the OMAP mailbox driver whenever a mailbox
+> + * message is received. Usually, the mailbox payload simply contains
+> + * the index of the virtqueue that is kicked by the remote processor,
+> + * and we let remoteproc core handle it.
+> + *
+> + * In addition to virtqueue indices, we also have some out-of-band values
+> + * that indicate different events. Those values are deliberately very
+> + * large so they don't coincide with virtqueue indices.
+> + */
+> +static void k3_dsp_rproc_mbox_callback(struct mbox_client *client, void *data)
 > +{
-> +	unsigned long cmd_mask = PAPR_SCM_DIMM_CMD_MASK;
-> +	struct nd_pdsm_cmd_pkg *pkg = nd_to_pdsm_cmd_pkg(buf);
-> +	struct papr_scm_priv *p;
+> +	struct k3_dsp_rproc *kproc = container_of(client, struct k3_dsp_rproc,
+> +						  client);
+> +	struct device *dev = kproc->rproc->dev.parent;
+> +	const char *name = kproc->rproc->name;
+> +	u32 msg = omap_mbox_message(data);
 > +
-> +	/* Only dimm-specific calls are supported atm */
-> +	if (!nvdimm)
-> +		return -EINVAL;
+> +	dev_dbg(dev, "mbox msg: 0x%x\n", msg);
 > +
-> +	/* get the provider date from struct nvdimm */
-
-s/date/data
-
-> +	p = nvdimm_provider_data(nvdimm);
-> +
-> +	if (!test_bit(cmd, &cmd_mask)) {
-> +		dev_dbg(&p->pdev->dev, "Unsupported cmd=%u\n", cmd);
-> +		return -EINVAL;
-> +	} else if (cmd == ND_CMD_CALL) {
-> +
-> +		/* Verify the envelope package */
-> +		if (!buf || buf_len < sizeof(struct nd_pdsm_cmd_pkg)) {
-> +			dev_dbg(&p->pdev->dev, "Invalid pkg size=%u\n",
-> +				buf_len);
-> +			return -EINVAL;
+> +	switch (msg) {
+> +	case RP_MBOX_CRASH:
+> +		/*
+> +		 * remoteproc detected an exception, but error recovery is not
+> +		 * supported. So, just log this for now
+> +		 */
+> +		dev_err(dev, "K3 DSP rproc %s crashed\n", name);
+> +		break;
+> +	case RP_MBOX_ECHO_REPLY:
+> +		dev_info(dev, "received echo reply from %s\n", name);
+> +		break;
+> +	default:
+> +		/* silently handle all other valid messages */
+> +		if (msg >= RP_MBOX_READY && msg < RP_MBOX_END_MSG)
+> +			return;
+> +		if (msg > kproc->rproc->max_notifyid) {
+> +			dev_dbg(dev, "dropping unknown message 0x%x", msg);
+> +			return;
 > +		}
+> +		/* msg contains the index of the triggered vring */
+> +		if (rproc_vq_interrupt(kproc->rproc, msg) == IRQ_NONE)
+> +			dev_dbg(dev, "no message was found in vqid %d\n", msg);
+> +	}
+> +}
 > +
-> +		/* Verify that the PDSM family is valid */
-> +		if (pkg->hdr.nd_family != NVDIMM_FAMILY_PAPR) {
-> +			dev_dbg(&p->pdev->dev, "Invalid pkg family=0x%llx\n",
-> +				pkg->hdr.nd_family);
-> +			return -EINVAL;
+> +/*
+> + * Kick the remote processor to notify about pending unprocessed messages.
+> + * The vqid usage is not used and is inconsequential, as the kick is performed
+> + * through a simulated GPIO (a bit in an IPC interrupt-triggering register),
+> + * the remote processor is expected to process both its Tx and Rx virtqueues.
+> + */
+> +static void k3_dsp_rproc_kick(struct rproc *rproc, int vqid)
+> +{
+> +	struct k3_dsp_rproc *kproc = rproc->priv;
+> +	struct device *dev = rproc->dev.parent;
+> +	mbox_msg_t msg = (mbox_msg_t)vqid;
+> +	int ret;
 > +
-> +		}
+> +	/* send the index of the triggered virtqueue in the mailbox payload */
+> +	ret = mbox_send_message(kproc->mbox, (void *)msg);
+> +	if (ret < 0)
+> +		dev_err(dev, "failed to send mailbox message, status = %d\n",
+> +			ret);
+> +}
 > +
-> +		/* We except a payload with all PDSM commands */
-> +		if (pdsm_cmd_to_payload(pkg) == NULL) {
-> +			dev_dbg(&p->pdev->dev,
-> +				"Empty payload for sub-command=0x%llx\n",
-> +				pkg->hdr.nd_command);
-> +			return -EINVAL;
-> +		}
+> +/* Put the DSP processor into reset */
+> +static int k3_dsp_rproc_reset(struct k3_dsp_rproc *kproc)
+> +{
+> +	struct device *dev = kproc->dev;
+> +	int ret;
+> +
+> +	ret = reset_control_assert(kproc->reset);
+> +	if (ret) {
+> +		dev_err(dev, "local-reset assert failed, ret = %d\n", ret);
+> +		return ret;
 > +	}
 > +
-> +	/* Command looks valid */
-
-I assume the first command to be implemented also checks the { nd_command,
-payload_version, payload length } for correctness?
-
+> +	ret = kproc->ti_sci->ops.dev_ops.put_device(kproc->ti_sci,
+> +						    kproc->ti_sci_id);
+> +	if (ret) {
+> +		dev_err(dev, "module-reset assert failed, ret = %d\n", ret);
+> +		if (reset_control_deassert(kproc->reset))
+> +			dev_warn(dev, "local-reset deassert back failed\n");
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +/* Release the DSP processor from reset */
+> +static int k3_dsp_rproc_release(struct k3_dsp_rproc *kproc)
+> +{
+> +	struct device *dev = kproc->dev;
+> +	int ret;
+> +
+> +	ret = kproc->ti_sci->ops.dev_ops.get_device(kproc->ti_sci,
+> +						    kproc->ti_sci_id);
+> +	if (ret) {
+> +		dev_err(dev, "module-reset deassert failed, ret = %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = reset_control_deassert(kproc->reset);
+> +	if (ret) {
+> +		dev_err(dev, "local-reset deassert failed, ret = %d\n", ret);
+> +		if (kproc->ti_sci->ops.dev_ops.put_device(kproc->ti_sci,
+> +							  kproc->ti_sci_id))
+> +			dev_warn(dev, "module-reset assert back failed\n");
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +/*
+> + * Power up the DSP remote processor.
+> + *
+> + * This function will be invoked only after the firmware for this rproc
+> + * was loaded, parsed successfully, and all of its resource requirements
+> + * were met.
+> + */
+> +static int k3_dsp_rproc_start(struct rproc *rproc)
+> +{
+> +	struct k3_dsp_rproc *kproc = rproc->priv;
+> +	struct mbox_client *client = &kproc->client;
+> +	struct device *dev = kproc->dev;
+> +	u32 boot_addr;
+> +	int ret;
+> +
+> +	client->dev = dev;
+> +	client->tx_done = NULL;
+> +	client->rx_callback = k3_dsp_rproc_mbox_callback;
+> +	client->tx_block = false;
+> +	client->knows_txdone = false;
+> +
+> +	kproc->mbox = mbox_request_channel(client, 0);
+> +	if (IS_ERR(kproc->mbox)) {
+> +		ret = -EBUSY;
+> +		dev_err(dev, "mbox_request_channel failed: %ld\n",
+> +			PTR_ERR(kproc->mbox));
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * Ping the remote processor, this is only for sanity-sake for now;
+> +	 * there is no functional effect whatsoever.
+> +	 *
+> +	 * Note that the reply will _not_ arrive immediately: this message
+> +	 * will wait in the mailbox fifo until the remote processor is booted.
+> +	 */
+> +	ret = mbox_send_message(kproc->mbox, (void *)RP_MBOX_ECHO_REQUEST);
+> +	if (ret < 0) {
+> +		dev_err(dev, "mbox_send_message failed: %d\n", ret);
+> +		goto put_mbox;
+> +	}
+> +
+> +	boot_addr = rproc->bootaddr;
+> +	if (boot_addr & (kproc->data->boot_align_addr - 1)) {
+> +		dev_err(dev, "invalid boot address 0x%x, must be aligned on a 0x%x boundary\n",
+> +			boot_addr, kproc->data->boot_align_addr);
+> +		ret = -EINVAL;
+> +		goto put_mbox;
+> +	}
+> +
+> +	dev_err(dev, "booting DSP core using boot addr = 0x%x\n", boot_addr);
+> +	ret = ti_sci_proc_set_config(kproc->tsp, boot_addr, 0, 0);
+> +	if (ret)
+> +		goto put_mbox;
+> +
+> +	ret = k3_dsp_rproc_release(kproc);
+> +	if (ret)
+> +		goto put_mbox;
+> +
+> +	return 0;
+> +
+> +put_mbox:
+> +	mbox_free_channel(kproc->mbox);
+> +	return ret;
+> +}
+> +
+> +/*
+> + * Stop the DSP remote processor.
+> + *
+> + * This function puts the DSP processor into reset, and finishes processing
+> + * of any pending messages.
+> + */
+> +static int k3_dsp_rproc_stop(struct rproc *rproc)
+> +{
+> +	struct k3_dsp_rproc *kproc = rproc->priv;
+> +
+> +	mbox_free_channel(kproc->mbox);
+> +
+> +	k3_dsp_rproc_reset(kproc);
+> +
 > +	return 0;
 > +}
 > +
-> +static int papr_scm_service_pdsm(struct papr_scm_priv *p,
-> +				struct nd_pdsm_cmd_pkg *call_pkg)
+> +/*
+> + * Custom function to translate a DSP device address (internal RAMs only) to a
+> + * kernel virtual address.  The DSPs can access their RAMs at either an internal
+> + * address visible only from a DSP, or at the SoC-level bus address. Both these
+> + * addresses need to be looked through for translation. The translated addresses
+> + * can be used either by the remoteproc core for loading (when using kernel
+> + * remoteproc loader), or by any rpmsg bus drivers.
+> + */
+> +static void *k3_dsp_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len)
 > +{
-> +	/* unknown subcommands return error in packages */
-> +	if (call_pkg->hdr.nd_command <= PAPR_PDSM_MIN ||
-> +	    call_pkg->hdr.nd_command >= PAPR_PDSM_MAX) {
-> +		dev_dbg(&p->pdev->dev, "Invalid PDSM request 0x%llx\n",
-> +			call_pkg->hdr.nd_command);
-> +		call_pkg->cmd_status = -EINVAL;
-> +		return 0;
+> +	struct k3_dsp_rproc *kproc = rproc->priv;
+> +	void __iomem *va = NULL;
+> +	phys_addr_t bus_addr;
+> +	u32 dev_addr, offset;
+> +	size_t size;
+> +	int i;
+> +
+> +	if (len == 0)
+> +		return NULL;
+> +
+> +	for (i = 0; i < kproc->num_mems; i++) {
+> +		bus_addr = kproc->mem[i].bus_addr;
+> +		dev_addr = kproc->mem[i].dev_addr;
+> +		size = kproc->mem[i].size;
+> +
+> +		if (da < KEYSTONE_RPROC_LOCAL_ADDRESS_MASK) {
+> +			/* handle DSP-view addresses */
+> +			if (da >= dev_addr &&
+> +			    ((da + len) <= (dev_addr + size))) {
+> +				offset = da - dev_addr;
+> +				va = kproc->mem[i].cpu_addr + offset;
+> +				return (__force void *)va;
+> +			}
+> +		} else {
+> +			/* handle SoC-view addresses */
+> +			if (da >= bus_addr &&
+> +			    (da + len) <= (bus_addr + size)) {
+> +				offset = da - bus_addr;
+> +				va = kproc->mem[i].cpu_addr + offset;
+> +				return (__force void *)va;
+> +			}
+> +		}
 > +	}
 > +
-> +	/* Depending on the DSM command call appropriate service routine */
-> +	switch (call_pkg->hdr.nd_command) {
-> +	default:
-> +		dev_dbg(&p->pdev->dev, "Unsupported PDSM request 0x%llx\n",
-> +			call_pkg->hdr.nd_command);
-> +		call_pkg->cmd_status = -ENOENT;
-> +		return 0;
+> +	/* handle static DDR reserved memory regions */
+> +	for (i = 0; i < kproc->num_rmems; i++) {
+> +		dev_addr = kproc->rmem[i].dev_addr;
+> +		size = kproc->rmem[i].size;
+> +
+> +		if (da >= dev_addr && ((da + len) <= (dev_addr + size))) {
+> +			offset = da - dev_addr;
+> +			va = kproc->rmem[i].cpu_addr + offset;
+> +			return (__force void *)va;
+> +		}
 > +	}
+> +
+> +	return NULL;
 > +}
 > +
->  static int papr_scm_ndctl(struct nvdimm_bus_descriptor *nd_desc,
->  			  struct nvdimm *nvdimm, unsigned int cmd, void *buf,
->  			  unsigned int buf_len, int *cmd_rc)
->  {
->  	struct nd_cmd_get_config_size *get_size_hdr;
->  	struct papr_scm_priv *p;
-> +	struct nd_pdsm_cmd_pkg *call_pkg = NULL;
-> +	int rc;
->  
-> -	/* Only dimm-specific calls are supported atm */
-> -	if (!nvdimm)
-> -		return -EINVAL;
-> +	/* Use a local variable in case cmd_rc pointer is NULL */
-> +	if (cmd_rc == NULL)
-> +		cmd_rc = &rc;
-
-Why is this needed?  AFAICT The caller of papr_scm_ndctl does not specify null
-and you did not change it.
-
+> +static const struct rproc_ops k3_dsp_rproc_ops = {
+> +	.start		= k3_dsp_rproc_start,
+> +	.stop		= k3_dsp_rproc_stop,
+> +	.kick		= k3_dsp_rproc_kick,
+> +	.da_to_va	= k3_dsp_rproc_da_to_va,
+> +};
 > +
-> +	*cmd_rc = is_cmd_valid(nvdimm, cmd, buf, buf_len);
-> +	if (*cmd_rc) {
-> +		pr_debug("Invalid cmd=0x%x. Err=%d\n", cmd, *cmd_rc);
-> +		return *cmd_rc;
+> +static int k3_dsp_rproc_of_get_memories(struct platform_device *pdev,
+> +					struct k3_dsp_rproc *kproc)
+> +{
+> +	const struct k3_dsp_dev_data *data = kproc->data;
+> +	struct device *dev = &pdev->dev;
+> +	struct resource *res;
+> +	int num_mems = 0;
+> +	int i;
+> +
+> +	num_mems = kproc->data->num_mems;
+> +	kproc->mem = devm_kcalloc(kproc->dev, num_mems,
+> +				  sizeof(*kproc->mem), GFP_KERNEL);
+> +	if (!kproc->mem)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < num_mems; i++) {
+> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> +						   data->mems[i].name);
+> +		if (!res) {
+> +			dev_err(dev, "found no memory resource for %s\n",
+> +				data->mems[i].name);
+> +			return -EINVAL;
+> +		}
+> +		if (!devm_request_mem_region(dev, res->start,
+> +					     resource_size(res),
+> +					     dev_name(dev))) {
+> +			dev_err(dev, "could not request %s region for resource\n",
+> +				data->mems[i].name);
+> +			return -EBUSY;
+> +		}
+> +
+> +		kproc->mem[i].cpu_addr = devm_ioremap_wc(dev, res->start,
+> +							 resource_size(res));
+> +		if (IS_ERR(kproc->mem[i].cpu_addr)) {
+> +			dev_err(dev, "failed to map %s memory\n",
+> +				data->mems[i].name);
+> +			return PTR_ERR(kproc->mem[i].cpu_addr);
+> +		}
+> +		kproc->mem[i].bus_addr = res->start;
+> +		kproc->mem[i].dev_addr = data->mems[i].dev_addr;
+> +		kproc->mem[i].size = resource_size(res);
+> +
+> +		dev_dbg(dev, "memory %8s: bus addr %pa size 0x%zx va %pK da 0x%x\n",
+> +			data->mems[i].name, &kproc->mem[i].bus_addr,
+> +			kproc->mem[i].size, kproc->mem[i].cpu_addr,
+> +			kproc->mem[i].dev_addr);
 > +	}
->  
->  	p = nvdimm_provider_data(nvdimm);
->  
-> @@ -381,13 +464,19 @@ static int papr_scm_ndctl(struct nvdimm_bus_descriptor *nd_desc,
->  		*cmd_rc = papr_scm_meta_set(p, buf);
->  		break;
->  
-> +	case ND_CMD_CALL:
-> +		call_pkg = nd_to_pdsm_cmd_pkg(buf);
-> +		*cmd_rc = papr_scm_service_pdsm(p, call_pkg);
-> +		break;
+> +	kproc->num_mems = num_mems;
 > +
->  	default:
-> -		return -EINVAL;
-> +		dev_dbg(&p->pdev->dev, "Unknown command = %d\n", cmd);
-> +		*cmd_rc = -EINVAL;
-
-Is this change related?  If there is a bug where there is a caller of
-papr_scm_ndctl() with cmd_rc == NULL this should be a separate patch to fix
-that issue.
-
-Ira
-
->  	}
->  
->  	dev_dbg(&p->pdev->dev, "returned with cmd_rc = %d\n", *cmd_rc);
->  
-> -	return 0;
-> +	return *cmd_rc;
->  }
->  
->  static ssize_t flags_show(struct device *dev,
-> diff --git a/include/uapi/linux/ndctl.h b/include/uapi/linux/ndctl.h
-> index de5d90212409..0e09dc5cec19 100644
-> --- a/include/uapi/linux/ndctl.h
-> +++ b/include/uapi/linux/ndctl.h
-> @@ -244,6 +244,7 @@ struct nd_cmd_pkg {
->  #define NVDIMM_FAMILY_HPE2 2
->  #define NVDIMM_FAMILY_MSFT 3
->  #define NVDIMM_FAMILY_HYPERV 4
-> +#define NVDIMM_FAMILY_PAPR 5
->  
->  #define ND_IOCTL_CALL			_IOWR(ND_IOCTL, ND_CMD_CALL,\
->  					struct nd_cmd_pkg)
+> +	return 0;
+> +}
+> +
+> +static int k3_dsp_reserved_mem_init(struct k3_dsp_rproc *kproc)
+> +{
+> +	struct device *dev = kproc->dev;
+> +	struct device_node *np = dev->of_node;
+> +	struct device_node *rmem_np;
+> +	struct reserved_mem *rmem;
+> +	int num_rmems;
+> +	int ret, i;
+> +
+> +	num_rmems = of_property_count_elems_of_size(np, "memory-region",
+> +						    sizeof(phandle));
+> +	if (num_rmems <= 0) {
+> +		dev_err(dev, "device does not reserved memory regions, ret = %d\n",
+> +			num_rmems);
+> +		return -EINVAL;
+> +	}
+> +	if (num_rmems < 2) {
+> +		dev_err(dev, "device needs atleast two memory regions to be defined, num = %d\n",
+> +			num_rmems);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* use reserved memory region 0 for vring DMA allocations */
+> +	ret = of_reserved_mem_device_init_by_idx(dev, np, 0);
+> +	if (ret) {
+> +		dev_err(dev, "device cannot initialize DMA pool, ret = %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	num_rmems--;
+> +	kproc->rmem = kcalloc(num_rmems, sizeof(*kproc->rmem), GFP_KERNEL);
+> +	if (!kproc->rmem) {
+> +		ret = -ENOMEM;
+> +		goto release_rmem;
+> +	}
+> +
+> +	/* use remaining reserved memory regions for static carveouts */
+> +	for (i = 0; i < num_rmems; i++) {
+> +		rmem_np = of_parse_phandle(np, "memory-region", i + 1);
+> +		if (!rmem_np) {
+> +			ret = -EINVAL;
+> +			goto unmap_rmem;
+> +		}
+> +
+> +		rmem = of_reserved_mem_lookup(rmem_np);
+> +		if (!rmem) {
+> +			of_node_put(rmem_np);
+> +			ret = -EINVAL;
+> +			goto unmap_rmem;
+> +		}
+> +		of_node_put(rmem_np);
+> +
+> +		kproc->rmem[i].bus_addr = rmem->base;
+> +		/* 64-bit address regions currently not supported */
+> +		kproc->rmem[i].dev_addr = (u32)rmem->base;
+> +		kproc->rmem[i].size = rmem->size;
+> +		kproc->rmem[i].cpu_addr = ioremap_wc(rmem->base, rmem->size);
+> +		if (!kproc->rmem[i].cpu_addr) {
+> +			dev_err(dev, "failed to map reserved memory#%d at %pa of size %pa\n",
+> +				i + 1, &rmem->base, &rmem->size);
+> +			ret = -ENOMEM;
+> +			goto unmap_rmem;
+> +		}
+> +
+> +		dev_dbg(dev, "reserved memory%d: bus addr %pa size 0x%zx va %pK da 0x%x\n",
+> +			i + 1, &kproc->rmem[i].bus_addr,
+> +			kproc->rmem[i].size, kproc->rmem[i].cpu_addr,
+> +			kproc->rmem[i].dev_addr);
+> +	}
+> +	kproc->num_rmems = num_rmems;
+> +
+> +	return 0;
+> +
+> +unmap_rmem:
+> +	for (i--; i >= 0; i--) {
+> +		if (kproc->rmem[i].cpu_addr)
+> +			iounmap(kproc->rmem[i].cpu_addr);
+> +	}
+> +	kfree(kproc->rmem);
+> +release_rmem:
+> +	of_reserved_mem_device_release(kproc->dev);
+> +	return ret;
+> +}
+> +
+> +static void k3_dsp_reserved_mem_exit(struct k3_dsp_rproc *kproc)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < kproc->num_rmems; i++)
+> +		iounmap(kproc->rmem[i].cpu_addr);
+> +	kfree(kproc->rmem);
+> +
+> +	of_reserved_mem_device_release(kproc->dev);
+> +}
+> +
+> +static
+> +struct ti_sci_proc *k3_dsp_rproc_of_get_tsp(struct device *dev,
+> +					    const struct ti_sci_handle *sci)
+> +{
+> +	struct ti_sci_proc *tsp;
+> +	u32 temp[2];
+> +	int ret;
+> +
+> +	ret = of_property_read_u32_array(dev->of_node, "ti,sci-proc-ids",
+> +					 temp, 2);
+> +	if (ret < 0)
+> +		return ERR_PTR(ret);
+> +
+> +	tsp = kzalloc(sizeof(*tsp), GFP_KERNEL);
+> +	if (!tsp)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	tsp->dev = dev;
+> +	tsp->sci = sci;
+> +	tsp->ops = &sci->ops.proc_ops;
+> +	tsp->proc_id = temp[0];
+> +	tsp->host_id = temp[1];
+> +
+> +	return tsp;
+> +}
+> +
+> +static int k3_dsp_rproc_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	const struct k3_dsp_dev_data *data;
+> +	struct k3_dsp_rproc *kproc;
+> +	struct rproc *rproc;
+> +	const char *fw_name;
+> +	int ret = 0;
+> +	int ret1;
+> +
+> +	data = of_device_get_match_data(dev);
+> +	if (!data)
+> +		return -ENODEV;
+> +
+> +	ret = rproc_of_parse_firmware(dev, 0, &fw_name);
+> +	if (ret) {
+> +		dev_err(dev, "failed to parse firmware-name property, ret = %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	rproc = rproc_alloc(dev, dev_name(dev), &k3_dsp_rproc_ops, fw_name,
+> +			    sizeof(*kproc));
+> +	if (!rproc)
+> +		return -ENOMEM;
+> +
+> +	rproc->has_iommu = false;
+> +	rproc->recovery_disabled = true;
+> +	kproc = rproc->priv;
+> +	kproc->rproc = rproc;
+> +	kproc->dev = dev;
+> +	kproc->data = data;
+> +
+> +	kproc->ti_sci = ti_sci_get_by_phandle(np, "ti,sci");
+> +	if (IS_ERR(kproc->ti_sci)) {
+> +		ret = PTR_ERR(kproc->ti_sci);
+> +		if (ret != -EPROBE_DEFER) {
+> +			dev_err(dev, "failed to get ti-sci handle, ret = %d\n",
+> +				ret);
+> +		}
+> +		kproc->ti_sci = NULL;
+> +		goto free_rproc;
+> +	}
+> +
+> +	ret = of_property_read_u32(np, "ti,sci-dev-id", &kproc->ti_sci_id);
+> +	if (ret) {
+> +		dev_err(dev, "missing 'ti,sci-dev-id' property\n");
+> +		goto put_sci;
+> +	}
+> +
+> +	kproc->reset = devm_reset_control_get_exclusive(dev, NULL);
+> +	if (IS_ERR(kproc->reset)) {
+> +		ret = PTR_ERR(kproc->reset);
+> +		dev_err(dev, "failed to get reset, status = %d\n", ret);
+> +		goto put_sci;
+> +	}
+> +
+> +	kproc->tsp = k3_dsp_rproc_of_get_tsp(dev, kproc->ti_sci);
+> +	if (IS_ERR(kproc->tsp)) {
+> +		dev_err(dev, "failed to construct ti-sci proc control, ret = %d\n",
+> +			ret);
+> +		ret = PTR_ERR(kproc->tsp);
+> +		goto put_sci;
+> +	}
+> +
+> +	ret = ti_sci_proc_request(kproc->tsp);
+> +	if (ret < 0) {
+> +		dev_err(dev, "ti_sci_proc_request failed, ret = %d\n", ret);
+> +		goto free_tsp;
+> +	}
+> +
+> +	ret = k3_dsp_rproc_of_get_memories(pdev, kproc);
+> +	if (ret)
+> +		goto release_tsp;
+> +
+> +	ret = k3_dsp_reserved_mem_init(kproc);
+> +	if (ret) {
+> +		dev_err(dev, "reserved memory init failed, ret = %d\n", ret);
+> +		goto release_tsp;
+> +	}
+> +
+> +	ret = rproc_add(rproc);
+> +	if (ret) {
+> +		dev_err(dev, "failed to add register device with remoteproc core, status = %d\n",
+> +			ret);
+> +		goto release_mem;
+> +	}
+> +
+> +	platform_set_drvdata(pdev, kproc);
+> +
+> +	return 0;
+> +
+> +release_mem:
+> +	k3_dsp_reserved_mem_exit(kproc);
+> +release_tsp:
+> +	ret1 = ti_sci_proc_release(kproc->tsp);
+> +	if (ret1)
+> +		dev_err(dev, "failed to release proc, ret = %d\n", ret1);
+> +free_tsp:
+> +	kfree(kproc->tsp);
+> +put_sci:
+> +	ret1 = ti_sci_put_handle(kproc->ti_sci);
+> +	if (ret1)
+> +		dev_err(dev, "failed to put ti_sci handle, ret = %d\n", ret1);
+> +free_rproc:
+> +	rproc_free(rproc);
+> +	return ret;
+> +}
+> +
+> +static int k3_dsp_rproc_remove(struct platform_device *pdev)
+> +{
+> +	struct k3_dsp_rproc *kproc = platform_get_drvdata(pdev);
+> +	struct device *dev = &pdev->dev;
+> +	int ret;
+> +
+> +	rproc_del(kproc->rproc);
+> +
+> +	ret = ti_sci_proc_release(kproc->tsp);
+> +	if (ret)
+> +		dev_err(dev, "failed to release proc, ret = %d\n", ret);
+> +
+> +	kfree(kproc->tsp);
+> +
+> +	ret = ti_sci_put_handle(kproc->ti_sci);
+> +	if (ret)
+> +		dev_err(dev, "failed to put ti_sci handle, ret = %d\n", ret);
+> +
+> +	k3_dsp_reserved_mem_exit(kproc);
+> +	rproc_free(kproc->rproc);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct k3_dsp_mem_data c66_mems[] = {
+> +	{ .name = "l2sram", .dev_addr = 0x800000 },
+> +	{ .name = "l1pram", .dev_addr = 0xe00000 },
+> +	{ .name = "l1dram", .dev_addr = 0xf00000 },
+> +};
+> +
+> +static const struct k3_dsp_dev_data c66_data = {
+> +	.mems = c66_mems,
+> +	.num_mems = ARRAY_SIZE(c66_mems),
+> +	.boot_align_addr = SZ_1K,
+> +	.uses_lreset = true,
+> +};
+> +
+> +static const struct of_device_id k3_dsp_of_match[] = {
+> +	{ .compatible = "ti,j721e-c66-dsp", .data = &c66_data, },
+> +	{ /* sentinel */ },
+> +};
+> +MODULE_DEVICE_TABLE(of, k3_dsp_of_match);
+> +
+> +static struct platform_driver k3_dsp_rproc_driver = {
+> +	.probe	= k3_dsp_rproc_probe,
+> +	.remove	= k3_dsp_rproc_remove,
+> +	.driver	= {
+> +		.name = "k3-dsp-rproc",
+> +		.of_match_table = k3_dsp_of_match,
+> +	},
+> +};
+> +
+> +module_platform_driver(k3_dsp_rproc_driver);
+> +
+> +MODULE_AUTHOR("Suman Anna <s-anna@ti.com>");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_DESCRIPTION("TI K3 DSP Remoteproc driver");
 > -- 
-> 2.26.2
+> 2.26.0
 > 
