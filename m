@@ -2,127 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4EA1EB5DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 08:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEADD1EB5DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 08:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbgFBGdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 02:33:15 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:51141 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgFBGdP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 02:33:15 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200602063310epoutp0110221213e3d95cd250ca640a3f7d4713~UpnVCNPP40594205942epoutp017
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 06:33:10 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200602063310epoutp0110221213e3d95cd250ca640a3f7d4713~UpnVCNPP40594205942epoutp017
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591079590;
-        bh=SKTSQHN27yku0aCMVC0SXjrdfRnYbfPM0BNdMKlfeqs=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=GaBAQhGI1P9XBuLD34JqT0Nl3lZ7bKNmGenl4z4tagc7w8s0GsyxQjwJPVmjr2fky
-         04h9TqkCqYTNyG2GXlj4zxjFZJ9zgTty8OIWhbVOyKynbEKpBjt0cl91hw02ZiiqOH
-         L1XhWYwW9+8UjPVYPt5skQBAPgjceTlWd2/y+NA0=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200602063310epcas1p25d70858f33640f535c6f8900b5beff1f~UpnUX1Zyi2915829158epcas1p2b;
-        Tue,  2 Jun 2020 06:33:10 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.166]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 49bj0P0sc6zMqYm1; Tue,  2 Jun
-        2020 06:33:09 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0B.EA.28581.3A2F5DE5; Tue,  2 Jun 2020 15:33:07 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200602063307epcas1p1ac6a463514f46a1025d372a9806abcba~UpnRm0tY13253132531epcas1p1e;
-        Tue,  2 Jun 2020 06:33:07 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200602063307epsmtrp20ed0b8d91e867394124c4c960689c9f2~UpnRiHgk41350113501epsmtrp2E;
-        Tue,  2 Jun 2020 06:33:07 +0000 (GMT)
-X-AuditID: b6c32a38-85df1a8000006fa5-66-5ed5f2a37644
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        1D.04.08382.2A2F5DE5; Tue,  2 Jun 2020 15:33:07 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200602063306epsmtip15578da615ea3679a13e7110229905f0a~UpnRTr4ey2646826468epsmtip1B;
-        Tue,  2 Jun 2020 06:33:06 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Tetsuhiro Kohada'" <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>
-Cc:     <mori.takahiro@ab.mitsubishielectric.co.jp>,
-        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "'Sungjong Seo'" <sj1557.seo@samsung.com>
-In-Reply-To: <1ffc01d6380d$656e3520$304a9f60$@samsung.com>
-Subject: RE: [PATCH] exfat: optimize dir-cache
-Date:   Tue, 2 Jun 2020 15:33:06 +0900
-Message-ID: <011201d638a7$ad371350$07a539f0$@samsung.com>
+        id S1726223AbgFBGe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 02:34:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725872AbgFBGeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 02:34:25 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47CAE206C3
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 06:34:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591079665;
+        bh=F7YZbPYiN71e1bTg0PEGxxOXDvOpaBNYCH3Vx+AkD28=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NuzlUw+XytCoI2Wzvn8L/zilAb0jbpwC5zE4FvRkX2z91uc0FVhMcG3mNmBtyvQ9P
+         TCCV5A8ElP5+vp4/ANdS7LyqcOf6RDW3oatSSnzw5ua27olDgzXwaZ6vqQSpHQEOP9
+         Znfm92H/alS/A7OobWcJ28iP5+AxqbNr3s7aGt3Y=
+Received: by mail-ot1-f46.google.com with SMTP id m2so8138667otr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 23:34:25 -0700 (PDT)
+X-Gm-Message-State: AOAM531+RLrx2/hYWVZE6GdaLjcWbcizwB6CAdD3+eT97KLVDLG017wi
+        Sv5GwLXhO3BCuzzRXyeKkgN6ktvc6r83+yZ/6mQ=
+X-Google-Smtp-Source: ABdhPJyHxlvEsyAIH07io7sueke1XvM4e3N4qPypJbdwgB110o791doJH4AX7dXfNuyXHgG2f1P7jCiwFfMDXUzcd5A=
+X-Received: by 2002:a05:6830:2417:: with SMTP id j23mr9842146ots.108.1591079664660;
+ Mon, 01 Jun 2020 23:34:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKbEd8GOCYeHYQBe/Vm0kX/gmqw5wMD/7F2Af7EGpmnExSvgA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMJsWRmVeSWpSXmKPExsWy7bCmru7iT1fjDHa90bV4c3Iqi8WevSdZ
-        LC7vmsNmcfn/JxaLZV8ms1hs+XeE1YHN48uc4+webZP/sXs0H1vJ5tG3ZRWjx+dNcgGsUTk2
-        GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUAXKCmUJeaU
-        AoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKDA0K9IoTc4tL89L1kvNzrQwNDIxMgSoTcjJe
-        /V/JVPCKuWLhopOsDYy9zF2MnBwSAiYSX/9dB7OFBHYwSlx54tbFyAVkf2KU2L3oBDuE841R
-        Yu2iy2wwHbOPLWCDSOxllPjdsIYRwnnJKDGpt40dpIpNQFfi35/9YB0iAu4SOxYeYAEpYhY4
-        zygxY/VvsASngJXE2Yt/wJYLC+hJfPz2kgnEZhFQkbi1YSULiM0rYCmxdeZPRghbUOLkzCdg
-        cWYBeYntb+dAPaEg8fPpMlaIZU4Sd+f9YIaoEZGY3dnGDLJYQmAih8SCb08YIRpcJDa+7GWC
-        sIUlXh3fwg5hS0l8frcX6DgOILta4uN+qPkdjBIvvttC2MYSN9dvYAUpYRbQlFi/Sx8irCix
-        8/dcRoi1fBLvvvawQkzhlehoE4IoUZXou3QYaqm0RFf7B/YJjEqzkDw2C8ljs5A8MAth2QJG
-        llWMYqkFxbnpqcWGBSbIkb2JEZw6tSx2MM59+0HvECMTB+MhRgkOZiUR3snql+KEeFMSK6tS
-        i/Lji0pzUosPMZoCg3ois5Rocj4weeeVxBuaGhkbG1uYmJmbmRorifOetLoQJySQnliSmp2a
-        WpBaBNPHxMEp1cAk39mg+/3vW+YJHLlrG/OOxu17c+CpB9vLLKVHNsfKcxs+Tjtvyt3N8PCF
-        h9YqywKeWRO/R5ge6ePVU9PQjVvjW/B5w7Zr93g+uKswOORd1eI+lT/LZvK2rGlq6vvzv334
-        cO/0/g2bS9YyzF76rXjyi6/p/8Ru8MqcOevnFbr/60OtFUdaMg+6qAQUrZn2t27aZlO/nKlq
-        DU9/15eF53LYvNjVUnJLcsnvKrbLx5c9Lfd+W7pcj9e6cpfqXY01pnO0qsU9K1/9YNKIzP/K
-        f95R97OTbUV8ANPFC58yf0akTE6d4HAqrnBau8MVtiTvhvuGr0Of7z1e8mZrwFaWO5H7m1Pe
-        LReyLN8p61T94s5hJZbijERDLeai4kQAxtGWkyYEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPLMWRmVeSWpSXmKPExsWy7bCSnO7iT1fjDHpXMVu8OTmVxWLP3pMs
-        Fpd3zWGzuPz/E4vFsi+TWSy2/DvC6sDm8WXOcXaPtsn/2D2aj61k8+jbsorR4/MmuQDWKC6b
-        lNSczLLUIn27BK6MV/9XMhW8Yq5YuOgkawNjL3MXIyeHhICJxOxjC9i6GLk4hAR2M0o07ehg
-        g0hISxw7cQaoiAPIFpY4fLgYouY5o8SPDR3sIDVsAroS//7sB6sXEXCX2LHwAAtIEbPARUaJ
-        VQ0tzBAdQM7sbaeZQKo4Bawkzl78A7ZaWEBP4uO3l2BxFgEViVsbVrKA2LwClhJbZ/5khLAF
-        JU7OfAIWZxbQluh92MoIYctLbH87B+oFBYmfT5exQlzhJHF33g9miBoRidmdbcwTGIVnIRk1
-        C8moWUhGzULSsoCRZRWjZGpBcW56brFhgWFearlecWJucWleul5yfu4mRnAcaWnuYNy+6oPe
-        IUYmDsZDjBIczEoivJPVL8UJ8aYkVlalFuXHF5XmpBYfYpTmYFES571RuDBOSCA9sSQ1OzW1
-        ILUIJsvEwSnVwGSZOCslRMA2dP5E+8qzYcxsKYvO3jm1SvLPC2uz/yJBhYLha5o/lT510i7n
-        fXTvnkbZ6icvWNb4hppZHDiv0Fkx/Wf3l27VoiUmiY2zSm/+7dp5Nb8neXb7kWcBDaHz5lws
-        YNFeryF0JDlC5NW6vQGBSx7/Nz9m1qdm7pd++v0TjxMtWyOtzfWrFXZ9nZpgLJLYvin/5NfA
-        ixMOObaWSTGVZD4S08x6p7m+uV36QsOv8IMnP3/2y1G13Cje0O5VH/HD6mzcg8eG25TZ3k1c
-        OlXie5+4m8KNtYe3vGDnt1jVsngp+/7lLhLvz/8KYQ6ePGuOyeyTty95P/xZ8XZu8eXZNRv0
-        RTZtZPZ5zm6UJKrEUpyRaKjFXFScCADAwsh3EgMAAA==
-X-CMS-MailID: 20200602063307epcas1p1ac6a463514f46a1025d372a9806abcba
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200520075735epcas1p269372d222e25f3fd51b7979f5b7cdc61
-References: <CGME20200520075735epcas1p269372d222e25f3fd51b7979f5b7cdc61@epcas1p2.samsung.com>
-        <20200520075641.32441-1-kohada.tetsuhiro@dc.mitsubishielectric.co.jp>
-        <1ffc01d6380d$656e3520$304a9f60$@samsung.com>
+References: <20200601132443.GA796373@gmail.com> <CAMj1kXEH+M6j0W8GbwmJ6B2g1Kxoj01XW0P2a5_1OBVFoiF7ZA@mail.gmail.com>
+ <CAHk-=wjt9O8JReJbSTLTSeZoD3X9KkQiMhQfgRyqjA1FyQXgRw@mail.gmail.com> <CAHk-=wh2xgJ=nnfjW-yYQ4yzMOTQ17eVsfQupjd3dXu1BuguUA@mail.gmail.com>
+In-Reply-To: <CAHk-=wh2xgJ=nnfjW-yYQ4yzMOTQ17eVsfQupjd3dXu1BuguUA@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 2 Jun 2020 08:34:13 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGxO7WHA6nzxnvS24bEiXrbFzQaRArrU_fJXV6JKQD-nw@mail.gmail.com>
+Message-ID: <CAMj1kXGxO7WHA6nzxnvS24bEiXrbFzQaRArrU_fJXV6JKQD-nw@mail.gmail.com>
+Subject: Re: [GIT PULL] EFI changes for v5.8
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Optimize directory access based on exfat_entry_set_cache.
-> >  - Hold bh instead of copied d-entry.
-> >  - Modify bh->data directly instead of the copied d-entry.
-> >  - Write back the retained bh instead of rescanning the d-entry-set.
-> > And
-> >  - Remove unused cache related definitions.
+On Tue, 2 Jun 2020 at 01:02, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Mon, Jun 1, 2020 at 1:38 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
 > >
-> > Signed-off-by: Tetsuhiro Kohada
-> > <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>
-> 
-> Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
-Applied your 5 patches.
-Thanks!
+> > Ok, I'll try to remember, but I probably won't. So it would be lovely
+> > to be reminded when I get the arm pull.
+>
+> Well, the arm pull already came in, and mentioned it, and it all
+> looked entirely local and simple, so it's all good.
+>
+> Or rather, it's all _potentially_ good, but completely untested by yours truly.
+>
+> rmk said he'd take a look, but maybe Ard might want to peek at it too.
+>
 
+Builds and boots fine via EFI on ARM32, thanks.
