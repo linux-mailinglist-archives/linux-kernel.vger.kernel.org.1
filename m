@@ -2,108 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208561EB69E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 09:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346671EB6A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 09:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgFBHhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 03:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbgFBHhM (ORCPT
+        id S1726365AbgFBHiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 03:38:11 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50260 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725907AbgFBHiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 03:37:12 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BDCC05BD43
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 00:37:11 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id r9so1868671wmh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 00:37:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cumulusnetworks.com; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xqds7VbU+K4A2laqYmDPq+zdOfWX/VjHAo0lo4mVXR0=;
-        b=anQ2chfqCtHiZ4pB5qiENxzfk8kF2TaVNvzhYEztrPanUnTZOwgh9uLDEQQUB0D9Nm
-         epHJcbtRVzaKPvJAQQ6gnjksaOc6SJjLnX4DJq3azYt54ilj0wLyXuKTfuoyLODJbWm0
-         cbky1C0TxwTgECHxolmkjGf913LY89hRXbYtg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xqds7VbU+K4A2laqYmDPq+zdOfWX/VjHAo0lo4mVXR0=;
-        b=m+/0mFeJ3io1OctxBshgLci+sP8fPtqBdRGk8lMGqwvlPP02ZS40S4d40Mj/e8ZiLD
-         CQVVHRJCCLb3N3dbrt8FkK14tuePH4gfnu4mwX5rfP6pfBsRkiwjNyLvN0MuvB9/w4LX
-         rjEhgu5hOHve7uunokC8XvDU63Veul4s3w53a1DNjlx00g4FRSMQZWzWE6yHbp5ZeZ5E
-         +6VAcCShN9knCVO7iFssIRpQCvc6ZFJHH7wsSH3C91gA2Trb59QnNJRvUCojNPOcttpZ
-         GwxL7KjQY8ev3M2HmofDhlpS1pHwdrg0e7hypKcMg0iOcp7AyQBI8SPCzn276A7p0bB0
-         bKDA==
-X-Gm-Message-State: AOAM5319L//rimb+AeGtSXAtF8ERBK2OXaCm6i2ttKSzOiq1mk6SKGit
-        UeZqJJd2ergZ37ZrkAxvlk2dK2mqgA0=
-X-Google-Smtp-Source: ABdhPJxVmq6mSWg/iUiuouLU0cmof6ha99AdKRzM2oufoIVIFhcGa8uQFobYRnwf9lC+PgvBrVralA==
-X-Received: by 2002:a05:600c:2110:: with SMTP id u16mr2832929wml.26.1591083430327;
-        Tue, 02 Jun 2020 00:37:10 -0700 (PDT)
-Received: from [192.168.0.109] (84-238-136-197.ip.btc-net.bg. [84.238.136.197])
-        by smtp.gmail.com with ESMTPSA id 23sm2333774wmo.18.2020.06.02.00.37.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jun 2020 00:37:09 -0700 (PDT)
-Subject: Re: [PATCH] ipv4: nexthop: Fix deadcode issue by performing a proper
- NULL check
-From:   Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-To:     David Miller <davem@davemloft.net>, patrickeigensatz@gmail.com
-Cc:     dsahern@kernel.org, scan-admin@coverity.com, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200601111201.64124-1-patrick.eigensatz@gmail.com>
- <20200601.110654.1178868171436999333.davem@davemloft.net>
- <4e6ba1a8-be3b-fd22-e0b8-485d33bb51eb@cumulusnetworks.com>
-Message-ID: <beb306e9-228f-6810-fc77-972e5acb5863@cumulusnetworks.com>
-Date:   Tue, 2 Jun 2020 10:37:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Tue, 2 Jun 2020 03:38:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591083489;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HSlpXWkdenCoS8Vggi65kLvpKKRyegY2MHdYGB2V1Mg=;
+        b=YCruQkWo2UsyMXeJOVl9RZ1bdApZs5dhB5PRZnbrVVZpJtbfmbKDfeOrTftTKltF66t+R4
+        nSmHVJV2PmfX1yAnKwDpIRPdoo3WFeENz/Bict8RPEn5xf6ku69lHPLoA0hwd/LwK63xqN
+        O3zddoNpAH9uI63pdJM0mux0U0t3utA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-411-1miAQknoOuiCWtiUVJoR4A-1; Tue, 02 Jun 2020 03:38:04 -0400
+X-MC-Unique: 1miAQknoOuiCWtiUVJoR4A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D127107ACCA;
+        Tue,  2 Jun 2020 07:38:03 +0000 (UTC)
+Received: from T590 (ovpn-12-167.pek2.redhat.com [10.72.12.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CE35478EF4;
+        Tue,  2 Jun 2020 07:37:56 +0000 (UTC)
+Date:   Tue, 2 Jun 2020 15:37:52 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     yu kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, martin.petersen@oracle.com, wenwen@cs.uga.edu,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH] block/bio-integrity: don't free 'buf' if
+ bio_integrity_add_page() failed
+Message-ID: <20200602073752.GB1384911@T590>
+References: <20200601123856.3895734-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <4e6ba1a8-be3b-fd22-e0b8-485d33bb51eb@cumulusnetworks.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200601123856.3895734-1-yukuai3@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/06/2020 10:23, Nikolay Aleksandrov wrote:
-> On 01/06/2020 21:06, David Miller wrote:
->> From: patrickeigensatz@gmail.com
->> Date: Mon,  1 Jun 2020 13:12:01 +0200
->>
->>> From: Patrick Eigensatz <patrickeigensatz@gmail.com>
->>>
->>> After allocating the spare nexthop group it should be tested for kzalloc()
->>> returning NULL, instead the already used nexthop group (which cannot be
->>> NULL at this point) had been tested so far.
->>>
->>> Additionally, if kzalloc() fails, return ERR_PTR(-ENOMEM) instead of NULL.
->>>
->>> Coverity-id: 1463885
->>> Reported-by: Coverity <scan-admin@coverity.com>
->>> Signed-off-by: Patrick Eigensatz <patrickeigensatz@gmail.com>
->>
->> Applied, thank you.
->>
+On Mon, Jun 01, 2020 at 08:38:56PM +0800, yu kuai wrote:
+> commit e7bf90e5afe3 ("block/bio-integrity: fix a memory leak bug") add a
+> kree() for 'buf' if bio_integrity_add_page() return '0'. However, the
+> object will be freed in bio_integrity_free() since 'bio->bi_opf' and
+> 'bio->bi_integrity' was set previousy in bio_integrity_alloc().
 > 
-> Hi Dave,
-> I see this patch in -net-next but it should've been in -net as I wrote in my
-> review[1]. This patch should go along with the recent nexthop set that fixes
-> a few bugs, since it could result in a null ptr deref if the spare group cannot
-> be allocated.
+> Fixes: commit e7bf90e5afe3 ("block/bio-integrity: fix a memory leak bug")
+> Signed-off-by: yu kuai <yukuai3@huawei.com>
+> ---
+>  block/bio-integrity.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/block/bio-integrity.c b/block/bio-integrity.c
+> index bf62c25cde8f..ae07dd78e951 100644
+> --- a/block/bio-integrity.c
+> +++ b/block/bio-integrity.c
+> @@ -278,7 +278,6 @@ bool bio_integrity_prep(struct bio *bio)
+>  
+>  		if (ret == 0) {
+>  			printk(KERN_ERR "could not attach integrity payload\n");
+> -			kfree(buf);
+>  			status = BLK_STS_RESOURCE;
+>  			goto err_end_io;
+>  		}
 
-Obviously I forgot to mention in my review that it should go to -stable with the
-nexthop fix set.
+Looks correct, and it relies on the fact the 1st 'page' is always added
+successfully, so 'buf' is always attached to the bip since then:
 
-> How would you like to proceed? Should it be submitted for -net as well?
-> 
-> Thanks,
->  Nik
-> 
-> [1] https://lkml.org/lkml/2020/6/1/391
-> 
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+
+
+thanks, 
+Ming
 
