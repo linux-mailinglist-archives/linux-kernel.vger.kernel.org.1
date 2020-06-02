@@ -2,186 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E0F1EB910
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 009D61EB947
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgFBKFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 06:05:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46340 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726012AbgFBKFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 06:05:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 8F90EAD12;
-        Tue,  2 Jun 2020 10:05:25 +0000 (UTC)
-Message-ID: <7cbe4da8ba4a1524824473f8c58720f412a00fc2.camel@suse.de>
-Subject: Re: [PATCH v8 4/4] USB: pci-quirks: Add Raspberry Pi 4 quirk
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, tim.gover@raspberrypi.org,
-        linux-pci@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        gregkh@linuxfoundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Tue, 02 Jun 2020 12:05:20 +0200
-In-Reply-To: <20200505161318.26200-5-nsaenzjulienne@suse.de>
-References: <20200505161318.26200-1-nsaenzjulienne@suse.de>
-         <20200505161318.26200-5-nsaenzjulienne@suse.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-ePWuOhLXkyI0rM3f0PjZ"
-User-Agent: Evolution 3.36.2 
+        id S1728381AbgFBKKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 06:10:46 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:54790 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726217AbgFBKJl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 06:09:41 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id C57998030838;
+        Tue,  2 Jun 2020 10:09:38 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id uAvv_XAg1Q8P; Tue,  2 Jun 2020 13:09:37 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paul.burton@imgtec.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        James Hogan <jhogan@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/6] mips: Add DT bindings for MIPS CDMM and MIPS GIC
+Date:   Tue, 2 Jun 2020 13:09:15 +0300
+Message-ID: <20200602100921.1155-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Folks, the code and DT-related patches here have been mostly reviewed.
+Please consider merge the series in or at least give me a feedback to
+update the series, since merge window is getting opened and I would
+really appreciate to see the leftover being merged in.
 
---=-ePWuOhLXkyI0rM3f0PjZ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Regarding this patchset origin. Recently I've submitted a series of
+patchset's which provided multiple fixes for the MIPS arch subsystem and
+the MIPS GIC and DW APB Timer drivers, which were required for the
+Baikal-T1 SoC correctly working with those drivers. Mostly those patchsets
+have been already merged into the corresponding subsystems, but several
+patches have been left floating since noone really responded for review
+except Rob provided his approval regarding DT bindings. Thus in this
+patchset I've collected all the leftovers so not to loose them in a pale
+of the maintainers email logs.
 
-On Tue, 2020-05-05 at 18:13 +0200, Nicolas Saenz Julienne wrote:
-> On the Raspberry Pi 4, after a PCI reset, VL805's firmware may either be
-> loaded directly from an EEPROM or, if not present, by the SoC's
-> VideoCore. Inform VideoCore that VL805 was just reset.
->=20
-> Also, as this creates a dependency between USB_PCI and VideoCore's
-> firmware interface, and since USB_PCI can't be set as a module neither
-> this can. Reflect that on the firmware interface Kconfg.
->=20
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> ---
+The patchset includes the following updates: MIPS CPC and GIC DT bindings
+legacy text-based file are converted to the DT schema (Rob has already
+reviewed them), add MIPS CDMM DT node support to place the CDMM block at
+the platform-specific MMIO range, make sure MIPS CDMM is available for
+MIPS_R5 CPUs.
 
-It was pointed out to me on the u-boot mailing lists that all this could be
-implemented trough a reset controller. In other words have xhci get the res=
-et
-controller trough device-tree, assert it, ultamately causing the firmware
-routine to be run.
+Seeing the series concerns the MIPS-related drivers it's better to merge
+it in through the MIPS repository:
+https://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/
 
-As much as it pains me to go over stuff that's already 'fixed', it seems to=
- me
-it's a better solution. On one hand we get over the device-tree dependency =
-mess
-(see patch #3), and on the other we transform a pci-quirk into something le=
-ss
-hacky.
+This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
+tag: v5.7-rc4
 
-That said, before getting my hands dirty, I was wondering if there is any
-obvious reasons why I shouldn't do this, note that:
+Suggestion.
+Since Paul isn't looking after the MIPS arch code anymore, Ralf hasn't
+been seen maintaining MIPS for a long time, Thomas is only responsible
+for the next part of it:
+	F:      Documentation/devicetree/bindings/mips/
+	F:      Documentation/mips/
+	F:      arch/mips/
+	F:      drivers/platform/mips/
+the MIPS-specific drivers like:
+	F:	drivers/bus/mips_cdmm.c
+	F:	drivers/irqchip/irq-mips-cpu.c
+	F:	drivers/irqchip/irq-mips-gic.c
+	F:	drivers/clocksource/mips-gic-timer.c
+	F:	drivers/cpuidle/cpuidle-cps.c
+seem to be left for the subsystems maintainers to support. So if you don't
+mind or unless there is a better alternative, I can help with looking
+after them to ease the maintainers review burden and since I'll be working
+on our MIPS-based SoC drivers integrating into the mainline kernel repo
+anyway. If you don't like this idea, please just decline the last
+patch in the series.
 
-- We're talking here of a PCIe XCHI device, maybe there's an issue integrat=
-ing
-  it with DT, given the fact that, as of today, it's not really represented
-  there.
+Previous patchsets:
+mips: Prepare MIPS-arch code for Baikal-T1 SoC support:
+Link: https://lore.kernel.org/linux-mips/20200306124807.3596F80307C2@mail.baikalelectronics.ru
+Link: https://lore.kernel.org/linux-mips/20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru
+Link: https://lore.kernel.org/linux-mips/20200521140725.29571-1-Sergey.Semin@baikalelectronics.ru
 
-- There is no reset controller support in xhci-pci, maybe there are good
-  reasons why. For instance, it's not something that's reflected in any way=
- in
-  the spec.
+clocksource: Fix MIPS GIC and DW APB Timer for Baikal-T1 SoC support:
+Link: https://lore.kernel.org/linux-rtc/20200324174325.14213-1-Sergey.Semin@baikalelectronics.ru
+Link: https://lore.kernel.org/linux-rtc/20200506214107.25956-1-Sergey.Semin@baikalelectronics.ru
+Link: https://lore.kernel.org/linux-rtc/20200521005321.12129-1-Sergey.Semin@baikalelectronics.ru
 
-Regards,
-Nicolas
+Changelog prev:
+- Add yaml-based bindings file for MIPS CDMM dt-node.
+- Convert mti,mips-cpc to DT schema.
+- Use a shorter summary describing the bindings modification patches.
+- Rearrange the SoBs with adding Alexey' co-development tag.
+- Lowercase the hex numbers in the dt-bindings.
 
->=20
-> Changes since v5:
->  - Fix Kconfig issue with allmodconfig
->=20
-> Changes since v4:
->  - Do not split up error message
->=20
-> Changes since v3:
->  - Add more complete error message
->=20
-> Changes since v1:
->  - Make RASPBERRYPI_FIRMWARE dependent on this quirk to make sure it
->    gets compiled when needed.
->=20
->  drivers/firmware/Kconfig      |  3 ++-
->  drivers/usb/host/pci-quirks.c | 16 ++++++++++++++++
->  2 files changed, 18 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-> index 8007d4aa76dc..b42140cff8ac 100644
-> --- a/drivers/firmware/Kconfig
-> +++ b/drivers/firmware/Kconfig
-> @@ -178,8 +178,9 @@ config ISCSI_IBFT
->  	  Otherwise, say N.
-> =20
->  config RASPBERRYPI_FIRMWARE
-> -	tristate "Raspberry Pi Firmware Driver"
-> +	bool "Raspberry Pi Firmware Driver"
->  	depends on BCM2835_MBOX
-> +	default USB_PCI
->  	help
->  	  This option enables support for communicating with the firmware on th=
-e
->  	  Raspberry Pi.
-> diff --git a/drivers/usb/host/pci-quirks.c b/drivers/usb/host/pci-quirks.=
-c
-> index 92150ecdb036..0b949acfa258 100644
-> --- a/drivers/usb/host/pci-quirks.c
-> +++ b/drivers/usb/host/pci-quirks.c
-> @@ -16,6 +16,9 @@
->  #include <linux/export.h>
->  #include <linux/acpi.h>
->  #include <linux/dmi.h>
-> +
-> +#include <soc/bcm2835/raspberrypi-firmware.h>
-> +
->  #include "pci-quirks.h"
->  #include "xhci-ext-caps.h"
-> =20
-> @@ -1243,11 +1246,24 @@ static void quirk_usb_handoff_xhci(struct pci_dev
-> *pdev)
-> =20
->  static void quirk_usb_early_handoff(struct pci_dev *pdev)
->  {
-> +	int ret;
-> +
->  	/* Skip Netlogic mips SoC's internal PCI USB controller.
->  	 * This device does not need/support EHCI/OHCI handoff
->  	 */
->  	if (pdev->vendor =3D=3D 0x184e)	/* vendor Netlogic */
->  		return;
-> +
-> +	if (pdev->vendor =3D=3D PCI_VENDOR_ID_VIA && pdev->device =3D=3D 0x3483=
-) {
-> +		ret =3D rpi_firmware_init_vl805(pdev);
-> +		if (ret) {
-> +			/* Firmware might be outdated, or something failed */
-> +			dev_warn(&pdev->dev,
-> +				 "Failed to load VL805's firmware: %d. Will
-> continue to attempt to work, but bad things might happen. You should fix
-> this...\n",
-> +				 ret);
-> +		}
-> +	}
-> +
->  	if (pdev->class !=3D PCI_CLASS_SERIAL_USB_UHCI &&
->  			pdev->class !=3D PCI_CLASS_SERIAL_USB_OHCI &&
->  			pdev->class !=3D PCI_CLASS_SERIAL_USB_EHCI &&
+Changelog v2:
+- Resend.
 
+Link: https://lore.kernel.org/linux-mips/20200601122121.15809-1-Sergey.Semin@baikalelectronics.ru
+Changelog v3:
+- Keep F: MAINTAINERS section alphabetically ordered.
+- Add Thomas as the co-maintainer of the MIPS CPU and GIC IRQchip, MIPS
+  GIC timer and MIPS CPS CPUidle drivers.
 
---=-ePWuOhLXkyI0rM3f0PjZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: James Hogan <jhogan@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNATURE-----
+Serge Semin (6):
+  dt-bindings: power: Convert mti,mips-cpc to DT schema
+  dt-bindings: interrupt-controller: Convert mti,gic to DT schema
+  dt-bindings: bus: Add MIPS CDMM controller
+  mips: cdmm: Add mti,mips-cdmm dtb node support
+  bus: cdmm: Add MIPS R5 arch support
+  MAINTAINERS: Add maintainers for MIPS core drivers
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7WJGAACgkQlfZmHno8
-x/6SjQf/Qywc5xMG/WfuS5YbTgjiJzIg9nJVk2umtOVQOaE6cXK6I2HUcLXKSphG
-ZAIxOSd8yG38RZGU/E/XCiWpYe0uEjJYnR4gKLF4/QsTwWKvjXvksXvcZYD/d4/U
-JJeFUPeutvO90Q3WSiUowjt0/uEaH8PDdYSvPfqe/DZt6loaIHXJXhv8M1e/R8a8
-Jatksa8pTD5uVBYYJFgY83Mrwd/SJ8/LthiE5FCHc1z1L3sbaChf+26xKtvn3iHU
-j1taE9o84y6m2IqDVDLZVeU2yuYt/VPOsnA5JarsZX/y1HoFg9OdoJL7GTazUefj
-q6BBn3BmYTUIQvDBgXg/JY1MYyNoEA==
-=5e/e
------END PGP SIGNATURE-----
+ .../bindings/bus/mti,mips-cdmm.yaml           |  35 +++++
+ .../interrupt-controller/mips-gic.txt         |  67 --------
+ .../interrupt-controller/mti,gic.yaml         | 148 ++++++++++++++++++
+ .../bindings/power/mti,mips-cpc.txt           |   8 -
+ .../bindings/power/mti,mips-cpc.yaml          |  35 +++++
+ MAINTAINERS                                   |  11 ++
+ drivers/bus/Kconfig                           |   2 +-
+ drivers/bus/mips_cdmm.c                       |  15 ++
+ 8 files changed, 245 insertions(+), 76 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/bus/mti,mips-cdmm.yaml
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mti,gic.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+ create mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
 
---=-ePWuOhLXkyI0rM3f0PjZ--
+-- 
+2.26.2
 
