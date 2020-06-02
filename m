@@ -2,105 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CAC1EB923
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCF31EB91D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgFBKJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 06:09:52 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:54878 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbgFBKJn (ORCPT
+        id S1726809AbgFBKJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 06:09:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726408AbgFBKJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 06:09:43 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 032288030835;
-        Tue,  2 Jun 2020 10:09:41 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id sMqdzHK63iVF; Tue,  2 Jun 2020 13:09:40 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Serge Semin <fancer.lancer@gmail.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paul.burton@imgtec.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        James Hogan <jhogan@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 4/6] mips: cdmm: Add mti,mips-cdmm dtb node support
-Date:   Tue, 2 Jun 2020 13:09:19 +0300
-Message-ID: <20200602100921.1155-5-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200602100921.1155-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200602100921.1155-1-Sergey.Semin@baikalelectronics.ru>
+        Tue, 2 Jun 2020 06:09:40 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD9A2C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 03:09:38 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id t16so1157524plo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 03:09:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9EWmfZNZs76IOluosDfmNrcdSeX3EmBQEAHMvHcf/Vk=;
+        b=uZr9rCwig9hq4NeVRTrP9yee3JCzQwSVErzm2dL4W5KxPlvfZGS28uIBMB94tfdytB
+         iTxIl0AMvr1+HntgrZ8WRFYeGX/i+01pdp6HXa+m3FBywDvc2vX1kT+uTtJQSje+9m2P
+         ca6mm3GoCXIzlz7Gpn7lnZxAhXqrtIUXwcBOcOao8HpciVMj4Z3JGw97UC9JRyMv+WUd
+         cLGFmxaYUhZvOjDx3mnBkn5HFiBvzlrAiHDq+EUoG5Mvr/r94wpggUe/7fl10rlnF0Vf
+         tXIOLk5Jex9citYAJ3yOVmG+KAWmBAbOkdKiAT3HpLlIo8gH4/kThrcvZMPAwOrQK/X8
+         4s9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9EWmfZNZs76IOluosDfmNrcdSeX3EmBQEAHMvHcf/Vk=;
+        b=lwGr9d+yjc1DLXfcu6xz45gVOm3VdWhHHhaDqqcZl2D4SK3Uu7KjaAINoCvsy8iCJa
+         b++SXIfpVUBSqjnraM1PnWtehkRkzHOWnrI8QkiLj85poehqJJMiq8/7U0PnSu6tWM/d
+         ZRcvUUX8j+B7RTsX6kvF8hPVyzn7F9tfbS/oPOyo7kdWejIH5/r+4ouRaAFG7AaGJShv
+         zbjpW7Gol9cMImXGpBQ0xaoAE1Qi6iI/TFA55ZxXAUHUxCi5KPcx7QnumVF51WIDp0xO
+         AFP4sLthCLd2iXtBbx+M6tXcEglnL99yRKDnDCle37UXmXFQVbV7vxHtU16RSp6n2KdP
+         DFug==
+X-Gm-Message-State: AOAM533HzOFSxBexRd6ydRXC8T9rZSmUj/KaxOCYZm0Ey5+oy3zmOZdG
+        cPHaPrE9AViH2DpHTPyzly5v9g==
+X-Google-Smtp-Source: ABdhPJwcz+UPRaGJjz1YGfQ6cG165j/BIiASbSQ2PPFQQAhFhCjtu6LEh3fyjK4bz6/m/UhhPBboDQ==
+X-Received: by 2002:a17:90a:3d49:: with SMTP id o9mr4352805pjf.26.1591092577852;
+        Tue, 02 Jun 2020 03:09:37 -0700 (PDT)
+Received: from nagraj.local ([49.206.21.239])
+        by smtp.gmail.com with ESMTPSA id d8sm1931276pgb.42.2020.06.02.03.09.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 03:09:37 -0700 (PDT)
+From:   Sumit Semwal <sumit.semwal@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org
+Cc:     nishakumari@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        kgunda@codeaurora.org, rnayak@codeaurora.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: [PATCH v4 0/5] Qualcomm labibb regulator driver
+Date:   Tue,  2 Jun 2020 15:39:19 +0530
+Message-Id: <20200602100924.26256-1-sumit.semwal@linaro.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since having and mapping the CDMM block is platform specific, then
-instead of just returning a zero-address, lets make the default CDMM
-base address search method (mips_cdmm_phys_base()) to do something
-useful. For instance to find the address in a dedicated dtb-node in
-order to support of-based platforms by default.
+This series adds a driver for LAB/IBB regulators found on some Qualcomm SoCs.
+These regulators provide positive and/or negative boost power supplies
+for LCD/LED display panels connected to the SoC.
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+This series adds the support for pmi8998 PMIC found in SDM845 family of SoCs.
 
----
+Changes from v3:
+- Handled review comments from v3
+- In core, swapped the meaning of enable_time and poll_enabled_time; so we
+   wait for total enable_time delay, and poll in-between at poll_enabled_time
+   interval now.
+- fixed dt_bindings_check issues in dt-bindings patch.
+- Cleanup of register_labibb_regulator(), and adapted to updated meaning of
+   poll_enabled_time.
 
-Changelog prev:
-- Use alphabetical order for the include pre-processor operator.
----
- drivers/bus/mips_cdmm.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Changes from v2:
+- Review comments from v2
+- Moved the poll-to-check-enabled functionality to regulator core.
+- Used more core features to simplify enable/disable functions.
+- Moved the devicetree binding to yaml.
+- Updated interrupt-names and simplified handling.
 
-diff --git a/drivers/bus/mips_cdmm.c b/drivers/bus/mips_cdmm.c
-index 1b14256376d2..9f7ed1fcd428 100644
---- a/drivers/bus/mips_cdmm.c
-+++ b/drivers/bus/mips_cdmm.c
-@@ -13,6 +13,8 @@
- #include <linux/cpu.h>
- #include <linux/cpumask.h>
- #include <linux/io.h>
-+#include <linux/of_address.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/smp.h>
-@@ -337,9 +339,22 @@ static phys_addr_t mips_cdmm_cur_base(void)
-  * Picking a suitable physical address at which to map the CDMM region is
-  * platform specific, so this weak function can be overridden by platform
-  * code to pick a suitable value if none is configured by the bootloader.
-+ * By default this method tries to find a CDMM-specific node in the system
-+ * dtb. Note that this won't work for early serial console.
-  */
- phys_addr_t __weak mips_cdmm_phys_base(void)
- {
-+	struct device_node *np;
-+	struct resource res;
-+	int err;
-+
-+	np = of_find_compatible_node(NULL, NULL, "mti,mips-cdmm");
-+	if (np) {
-+		err = of_address_to_resource(np, 0, &res);
-+		if (!err)
-+			return res.start;
-+	}
-+
- 	return 0;
- }
- 
+Changes from v1:
+- Incorporated review comments from v1
+- Changed from virtual-regulator based handling to individual regulator based
+  handling.
+- Reworked the core to merge most of enable/disable functions, combine the
+  regulator_ops into one and allow for future variations.
+- is_enabled() is now _really_ is_enabled()
+- Simplified the SC interrupt handling - use regmap_read_poll_timeout,
+  REGULATOR_EVENT_OVER_CURRENT handling and notification to clients.
+
+Nisha Kumari (4):
+  dt-bindings: regulator: Add labibb regulator
+  arm64: dts: qcom: pmi8998: Add nodes for LAB and IBB regulators
+  regulator: qcom: Add labibb driver
+  regulator: qcom: labibb: Add SC interrupt handling
+
+Sumit Semwal (1):
+  regulator: Allow regulators to verify enabled during enable()
+
+ .../regulator/qcom-labibb-regulator.yaml      |  79 +++++
+ arch/arm64/boot/dts/qcom/pmi8998.dtsi         |  14 +
+ drivers/regulator/Kconfig                     |  10 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/core.c                      |  58 +++-
+ drivers/regulator/qcom-labibb-regulator.c     | 289 ++++++++++++++++++
+ include/linux/regulator/driver.h              |   5 +
+ 7 files changed, 455 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+ create mode 100644 drivers/regulator/qcom-labibb-regulator.c
+
 -- 
 2.26.2
 
