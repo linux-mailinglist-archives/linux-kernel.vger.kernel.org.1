@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E741EC199
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9B31EC19D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727818AbgFBSFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 14:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
+        id S1727790AbgFBSHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 14:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgFBSFH (ORCPT
+        with ESMTP id S1726037AbgFBSHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 14:05:07 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAE7C05BD1E;
-        Tue,  2 Jun 2020 11:05:07 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id j8so11769134iog.13;
-        Tue, 02 Jun 2020 11:05:07 -0700 (PDT)
+        Tue, 2 Jun 2020 14:07:11 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5F6C05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 11:07:11 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 185so5444703pgb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 11:07:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qi0HjvbuXmvWcbpKL9tqxqxdG7EHQ6ate3lS8JMnsis=;
-        b=n6SisKMzEskMMswvWF8T1MVJaEjU+M2p9WlOTCsTOkAMXSX7jjvFckywiWVsDYs2U+
-         kODUOFnwU53QHETCwHl6+t0CaXWQPRDgdAsmWdmRsjEtGETkyAlwMz13gBQpP3QZLOIv
-         hXMWI1WeQgeZYxAGlNUpnFJ4DHSmfyxhK5GoPELm45lW70eeqtaBUrVhWny4fmNh4gmB
-         tP+mUQwKTPdpw38XlJ4LPbq/dtZksPuqnqcZhDwoqt+kRsKZAfxm5jwzcJ6c9xLsw4Vn
-         nvQ7d+KwBNHfzTG6fnCfsGF0tKbmfWR17/Jv9AnV0z1cLRTDFgTEL0Tnyh1WpCJ0vlO4
-         SkKQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DTxalqs/pHPsm3sLO7uWOd7CCP2I2KVCnswTNK8P1k8=;
+        b=RA2jFaTtyiyOffX+8t+4eoki862K5Ju2HjEVedRIQuk1JD0Ec86Haa06krSLrl6LpL
+         VkG/BNoeku+uha0fc4pA2ZuczeoC+O+OEKk4wh2MakrjpCLCY0WnxHxNKn1XZyKJS6h/
+         wi9nvGVrLMzreLbS+RNIMp7kAsbY/XJYcn7L8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qi0HjvbuXmvWcbpKL9tqxqxdG7EHQ6ate3lS8JMnsis=;
-        b=GuqSAdvOV7DlmbuH+ls6ZGPyDaYtCBgQ8Cdt5KYBkTRGrM1SI4cYsuWrtErytUYwH9
-         gXV7PQmSbVx8uvE5wXeohugTA2wyOQma3pFFRGJOz9Xvnl97uxnP/2PTNgRB+gMqi0x6
-         yVFbN4PVvrlVDLQOyE/ICTu94kIhfXNtIskPaJ/OQ0f5DpDTOFs4OEP+HvnuEBiLGByJ
-         qlPICQw3BPJUd+qqN8qU2lX2LCvMbNk4EDoOuRj3sGy6Ivyyc2S7WdKMqBIsMX1axqmh
-         Asy/hxqKY/hZtDzvIPZL6gwGDHTY1Eoa1c0T5T7quw5L/mwpr3iU8PtFMN/68Kd3qxuE
-         hxFw==
-X-Gm-Message-State: AOAM53061Fdp1HSs+o0GCpA4h9WyfVeSVbTt4evQfL1Q5jZF8id4AbXG
-        WsBMs9Jj0GvYEDDF2gkPpv/t1VcabMwr9FIjUbk=
-X-Google-Smtp-Source: ABdhPJyonPyd5t+XvdQnqO2DVdloB9jkKGUp6lcECpSjq4TtuP0PsbQTgx66Mb8Kw6pkFBpx+vmXjKtzILYqu6/rG5Y=
-X-Received: by 2002:a05:6602:1204:: with SMTP id y4mr525321iot.44.1591121106733;
- Tue, 02 Jun 2020 11:05:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DTxalqs/pHPsm3sLO7uWOd7CCP2I2KVCnswTNK8P1k8=;
+        b=BaqFSZYaVRwoNLSjaJO4MTzWisTVAbvneRjrKxf6H868UtKQ4GDMzVOO/WPfmfI5qO
+         kwiHcGKX1CgqpIGIP7ThCaiJjuJEuWvF+tfLbMIOKTxLS07QalG38gzQFxk9hwL+nchD
+         0UPDNReWoutP2p4Ep8AmjJyiTTSoa0mxyQZnie7fqzOMLQBinsUl/NUL14aSaG+Ii5oi
+         VE9/wPE63ChEOVef8OlRrLRsAFDtBuGSp5I8kF8cXz61mnX7k2Yv4ayo7suSJGyhqDTy
+         3uR36fiCeWuRkoJHFvlBla/lQOMnhw09PaX73AyqkCn/yW9cd31LmxRwLDsTYEesSMyz
+         4IZg==
+X-Gm-Message-State: AOAM531xYnUgQFlEtuGlj78ieEnyG4ikbZ2Ob7amrLnFj2poXIKcvMFj
+        PMh2VsulzGmcRXWlJ01cn9cpEEv5dEwyJQ==
+X-Google-Smtp-Source: ABdhPJzHVVx9VNVUgr3dHCYpuAqidPMbaFtV5I/trgX7Y4qqdH9iIOAQQBQw/OAJgP7tQnT+4N+oUQ==
+X-Received: by 2002:a05:6a00:150c:: with SMTP id q12mr26468066pfu.270.1591121230644;
+        Tue, 02 Jun 2020 11:07:10 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y7sm2868552pfq.43.2020.06.02.11.07.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 11:07:09 -0700 (PDT)
+Date:   Tue, 2 Jun 2020 11:07:08 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH 1/2] kernel/panic.c: Make oops_may_print() return bool
+Message-ID: <202006021106.6360CB6FD@keescook>
+References: <1591103358-32087-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-References: <20200602064545.50288-1-yuehaibing@huawei.com>
-In-Reply-To: <20200602064545.50288-1-yuehaibing@huawei.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue, 2 Jun 2020 11:04:55 -0700
-Message-ID: <CAM_iQpXtsvewiN3bmfJqwuURN--aCkaR7N6zfYWf82KmFUZnLQ@mail.gmail.com>
-Subject: Re: [PATCH] net: genetlink: Fix memleak in genl_family_rcv_msg_dumpit()
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1591103358-32087-1-git-send-email-yangtiezhu@loongson.cn>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 1, 2020 at 11:47 PM YueHaibing <yuehaibing@huawei.com> wrote:
-> @@ -630,6 +625,9 @@ static int genl_family_rcv_msg_dumpit(const struct genl_family *family,
->                 err = __netlink_dump_start(net->genl_sock, skb, nlh, &c);
->         }
->
-> +       genl_family_rcv_msg_attrs_free(info->family, info->attrs, true);
-> +       genl_dumpit_info_free(info);
-> +
->         return err;
->  }
+On Tue, Jun 02, 2020 at 09:09:17PM +0800, Tiezhu Yang wrote:
+> The return value of oops_may_print() is true or false, so change its type
+> to reflect that.
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-I do not think you can just move it after __netlink_dump_start(),
-because cb->done() can be called, for example, in netlink_sock_destruct()
-too.
+Sure, that looks fine. :)
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
