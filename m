@@ -2,119 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AA51EBD85
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 16:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418BE1EBD8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 16:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728259AbgFBOAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 10:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgFBOAc (ORCPT
+        id S1727032AbgFBOB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 10:01:29 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:45320 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725841AbgFBOB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 10:00:32 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84806C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 07:00:32 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id s88so1480185pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 07:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7yBqRQ05m/Z4dmTqP2jf4amoRtlJTzK7ps3isjshOVc=;
-        b=BYLCVngy4uvXcIBPOgBUgVA0OPaE+H9Fyfe9LVc4F4uRNZXwKG1fmWo90RbVuFdj2h
-         3VSgFyffB6NjRiZG+jajuSTEagKpWwT8ZLfryOA7RcaVRV3s57dUZGAGd/QeFaXOKSwN
-         wNicNnfkZQHReNgWl0ZUZ6e/OEe5N3ppU6i4QtSFoOfo7QOX3U8HCQ11vyiP680D6vJU
-         m4HXHkMCbfQzopvgRyWnUi9Ep/1/CjKLH7xvxAu2KZuk/mVwA9NycekR1paT5abB5qRO
-         tcDU1qOcqKNaosOCMDzgpMb9XiDWRPgNIW4a8pre/lp/T+/zExpaJ5ifhkEElourHw2i
-         J+jw==
+        Tue, 2 Jun 2020 10:01:28 -0400
+Received: by mail-lj1-f195.google.com with SMTP id z18so12674895lji.12;
+        Tue, 02 Jun 2020 07:01:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7yBqRQ05m/Z4dmTqP2jf4amoRtlJTzK7ps3isjshOVc=;
-        b=lyinFBNj6+zjbMnqdZ3z1g9NCe68EkU2/ub80vwACzY8TzbPBE7X+w613Bsvk9r9pJ
-         uIsf8XxJA/+EoQST2wAdsdHlIX7WHiIm2ajtoibDLw72pLrqRhMJ7RVh4gO3Iy/3urpA
-         pcNoFH3M7N0Vt1WYhwy0aKgaz9ALm1BJFokpfMBhAG3XR/30Gul+TMBTeYbZRGyrxc2g
-         J5sbr9U9UGa/6F4tAcf6Wm6/ieDyznwDxM16qVm0VkhyGnl46LdBtuZmw2m9TN3hoW2C
-         w7azMfwq+K3J+ckV/xgWsYwm6O3TsjyJDcbUQFvX7kXFpizwI0ubu/RhfWK5d/gy69eV
-         UepA==
-X-Gm-Message-State: AOAM530gUB51ZhtaxXfmdsbYEwtBuD9MJS/cxmSa/UCHpPAMLKXROK0J
-        XU0C8Eh0y6Fm017e4fMAyCgVHcbJ5vGlUycRxiM+sYEVNlU4sA==
-X-Google-Smtp-Source: ABdhPJxbQimuLaI1bwYXtc/xXdK9j/EbdTfKTdAZ6xD5IZjH/RkMWlo/QACxutOeZs5hbdkLutmcnDZurql5j/rBV8g=
-X-Received: by 2002:a17:90a:1704:: with SMTP id z4mr5657315pjd.181.1591106431949;
- Tue, 02 Jun 2020 07:00:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2GWIfNtzCugpdmUqQsZRd/8mo4Bw27Ep9qZG/S6V/g8=;
+        b=fdViPSblwRo3UhJL0C2d5x+BwIMt04XqTSU4EKCjbRcvCJXGEzyXgcjdJBi7s9rOcg
+         f0iIiWkkaxIKL+M6yPFZ4lTVBKHBfprM4jNyE4I9hxMAYCnHFoFWj7UW3+LOat3T4ejM
+         OQCw6CuzZkFKZVI156itfwJL6crrIDrZM03ekgBgEtjBqbOCS5RzR3QxzT7XtK1BaEJp
+         HynU9/XAORVCFl5nqYVe7r/zUkwAWdnx5gOID1YKK22WCNsUAIyIsyORV486SDHk6hik
+         YAzhCw5OvneeMlVGHVtVPKnqqtmasNGR2qx4e42Lvr4e+MB3Wq6dodgZo6lhGqKPrY0R
+         oaAw==
+X-Gm-Message-State: AOAM531xZbCkDVuI2RSit5ERxgmaGIUtAsLi3wCI2BrjG6xM2U9B7WFQ
+        UAhBNOoCaKCrRR4Pq3Qird0=
+X-Google-Smtp-Source: ABdhPJymTQM9Ny8rhRuuLH44YpMh03Mgg2hLv4ixzkGnxZxqRZqkzo7nc8Hdq3RuC9Y+E8yN45TrGg==
+X-Received: by 2002:a2e:1453:: with SMTP id 19mr4084338lju.155.1591106486007;
+        Tue, 02 Jun 2020 07:01:26 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id x23sm720423lfe.32.2020.06.02.07.01.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 07:01:25 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@xi.terra>)
+        id 1jg7Ti-0000xq-LH; Tue, 02 Jun 2020 16:01:18 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jslaby@suse.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 0/4] serial: core: fix up sysrq regressions
+Date:   Tue,  2 Jun 2020 16:00:54 +0200
+Message-Id: <20200602140058.3656-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200602092030.31966-1-piotr.stankiewicz@intel.com> <14063C7AD467DE4B82DEDB5C278E8663010E23E538@FMSMSX108.amr.corp.intel.com>
-In-Reply-To: <14063C7AD467DE4B82DEDB5C278E8663010E23E538@FMSMSX108.amr.corp.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 2 Jun 2020 17:00:20 +0300
-Message-ID: <CAHp75Vfe5dQkOiFoAZx5b-NS1afiD-YC_w+5LcX8P1Hm0ASenA@mail.gmail.com>
-Subject: Re: [PATCH 07/15] drm/amdgpu: use PCI_IRQ_MSI_TYPES where appropriate
-To:     "Ruhl, Michael J" <michael.j.ruhl@intel.com>
-Cc:     "Stankiewicz, Piotr" <piotr.stankiewicz@intel.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Zhou <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 4:38 PM Ruhl, Michael J <michael.j.ruhl@intel.com> w=
-rote:
-> >-----Original Message-----
-> >From: dri-devel <dri-devel-bounces@lists.freedesktop.org> On Behalf Of
-> >Piotr Stankiewicz
-> >Sent: Tuesday, June 2, 2020 5:21 AM
-> >To: Alex Deucher <alexander.deucher@amd.com>; Christian K=C3=B6nig
-> ><christian.koenig@amd.com>; David Zhou <David1.Zhou@amd.com>; David
-> >Airlie <airlied@linux.ie>; Daniel Vetter <daniel@ffwll.ch>
-> >Cc: Stankiewicz, Piotr <piotr.stankiewicz@intel.com>; dri-
-> >devel@lists.freedesktop.org; amd-gfx@lists.freedesktop.org; linux-
-> >kernel@vger.kernel.org
-> >Subject: [PATCH 07/15] drm/amdgpu: use PCI_IRQ_MSI_TYPES where
-> >appropriate
+This series fixes a few regressions introduced by the recent sysrq
+rework that went into 5.6.
 
-...
+The port unlock fix is tagged for stable, and the fix for the
+unnecessary per-character overhead probably could be as well although
+it is a bit more intrusive.
 
-> >               int nvec =3D pci_msix_vec_count(adev->pdev);
-> >               unsigned int flags;
-> >
-> >-              if (nvec <=3D 0) {
-> >+              if (nvec > 0)
-> >+                      flags =3D PCI_IRQ_MSI_TYPES;
-> >+              else
-> >                       flags =3D PCI_IRQ_MSI;
-> >-              } else {
-> >-                      flags =3D PCI_IRQ_MSI | PCI_IRQ_MSIX;
-> >-              }
->
-> Minor nit:
->
-> Is it really necessary to set do this check?  Can flags just
-> be set?
->
-> I.e.:
->         flags =3D PCI_IRQ_MSI_TYPES;
->
-> pci_alloc_irq_vector() tries stuff in order.  If MSIX is not available,
-> it will try MSI.
+Johan
 
-That's also what I proposed earlier. But I suggested as well to wait
-for AMD people to confirm that neither pci_msix_vec_count() nor flags
-is needed and we can directly supply MSI_TYPES to the below call.
 
-> >               /* we only need one vector */
-> >               nvec =3D pci_alloc_irq_vectors(adev->pdev, 1, 1, flags);
+Johan Hovold (4):
+  Revert "serial: core: Refactor uart_unlock_and_check_sysrq()"
+  serial: core: fix broken sysrq port unlock
+  serial: core: fix sysrq overhead regression
+  serial: core: drop redundant sysrq checks
 
---=20
-With Best Regards,
-Andy Shevchenko
+ drivers/tty/serial/serial_core.c |  96 +---------------------------
+ include/linux/serial_core.h      | 105 +++++++++++++++++++++++++++++--
+ 2 files changed, 103 insertions(+), 98 deletions(-)
+
+-- 
+2.26.2
+
