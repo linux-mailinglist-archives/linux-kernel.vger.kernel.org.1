@@ -2,82 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADE61EBDDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 16:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093BF1EBDC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 16:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728347AbgFBOQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 10:16:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43138 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728140AbgFBOQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 10:16:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 3D533AE89;
-        Tue,  2 Jun 2020 14:16:13 +0000 (UTC)
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, vinmenon@codeaurora.org,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Garrett <mjg59@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>
-Subject: [RFC PATCH 5/5] mm, slub: make reclaim_account attribute read-only
-Date:   Tue,  2 Jun 2020 16:15:19 +0200
-Message-Id: <20200602141519.7099-6-vbabka@suse.cz>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200602141519.7099-1-vbabka@suse.cz>
-References: <20200602141519.7099-1-vbabka@suse.cz>
+        id S1728012AbgFBOQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 10:16:02 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23632 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726112AbgFBOQC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 10:16:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591107360;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RGEMiVn12opt/g+WjyzDzTyT6jZrj0pfTX7zXxSALys=;
+        b=deVr3fAWN+fOvpboH1hXXI9H+Dqod65fP/S5jB+d3ogirvWFsyPHuV1mA3fst9lo/4H7CN
+        6GFGB+xjfwyUNPpPTIw0T8hQK4yJ/keJ23jnKeImmghuNaKU6PwWrk+q3IYjojQ8fj6y4+
+        MNS9ZVniey7JDtroWalZk8XR7hHZkuE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-1qZgDf03Pqau7TvT-SLC_A-1; Tue, 02 Jun 2020 10:15:58 -0400
+X-MC-Unique: 1qZgDf03Pqau7TvT-SLC_A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C607480058E;
+        Tue,  2 Jun 2020 14:15:56 +0000 (UTC)
+Received: from krava (unknown [10.40.192.188])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 3E61D49F6;
+        Tue,  2 Jun 2020 14:15:52 +0000 (UTC)
+Date:   Tue, 2 Jun 2020 16:15:51 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH 1/2] perf tools: check libasan and libubsan in
+ Makefile.config
+Message-ID: <20200602141551.GC1169993@krava>
+References: <1591071304-19338-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1591071304-19338-1-git-send-email-yangtiezhu@loongson.cn>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The attribute reflects the SLAB_RECLAIM_ACCOUNT cache flag. It's not clear why
-this attribute was writable in the first place, as it's tied to how the cache
-is used by its creator, it's not a user tunable. Furthermore:
+On Tue, Jun 02, 2020 at 12:15:03PM +0800, Tiezhu Yang wrote:
+> When build perf with ASan or UBSan, if libasan or libubsan can not find,
+> the feature-glibc is 0 and there exists the following error log which is
+> wrong, because we can find gnu/libc-version.h in /usr/include, glibc-devel
+> is also installed.
+> 
+> [yangtiezhu@linux perf]$ make DEBUG=1 EXTRA_CFLAGS='-fno-omit-frame-pointer -fsanitize=address'
+>   BUILD:   Doing 'make -j4' parallel build
+>   HOSTCC   fixdep.o
+>   HOSTLD   fixdep-in.o
+>   LINK     fixdep
+> <stdin>:1:0: warning: -fsanitize=address and -fsanitize=kernel-address are not supported for this target
+> <stdin>:1:0: warning: -fsanitize=address not supported for this target
+> 
+> Auto-detecting system features:
+> ...                         dwarf: [ OFF ]
+> ...            dwarf_getlocations: [ OFF ]
+> ...                         glibc: [ OFF ]
+> ...                          gtk2: [ OFF ]
+> ...                      libaudit: [ OFF ]
+> ...                        libbfd: [ OFF ]
+> ...                        libcap: [ OFF ]
+> ...                        libelf: [ OFF ]
+> ...                       libnuma: [ OFF ]
+> ...        numa_num_possible_cpus: [ OFF ]
+> ...                       libperl: [ OFF ]
+> ...                     libpython: [ OFF ]
+> ...                     libcrypto: [ OFF ]
+> ...                     libunwind: [ OFF ]
+> ...            libdw-dwarf-unwind: [ OFF ]
+> ...                          zlib: [ OFF ]
+> ...                          lzma: [ OFF ]
+> ...                     get_cpuid: [ OFF ]
+> ...                           bpf: [ OFF ]
+> ...                        libaio: [ OFF ]
+> ...                       libzstd: [ OFF ]
+> ...        disassembler-four-args: [ OFF ]
+> 
+> Makefile.config:393: *** No gnu/libc-version.h found, please install glibc-dev[el].  Stop.
+> Makefile.perf:224: recipe for target 'sub-make' failed
+> make[1]: *** [sub-make] Error 2
+> Makefile:69: recipe for target 'all' failed
+> make: *** [all] Error 2
+> [yangtiezhu@linux perf]$ ls /usr/include/gnu/libc-version.h
+> /usr/include/gnu/libc-version.h
+> 
+> After install libasan and libubsan, the feature-glibc is 1 and the build
+> process is success, so the cause is related with libasan or libubsan, we
+> should check them and print an error log to reflect the reality.
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  tools/perf/Makefile.config | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index 12a8204..b699d21 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -387,6 +387,12 @@ else
+>        NO_LIBBPF := 1
+>        NO_JVMTI := 1
+>      else
+> +      ifneq ($(shell ldconfig -p | grep libasan >/dev/null 2>&1; echo $$?), 0)
+> +        msg := $(error No libasan found, please install libasan);
+> +      endif
+> +      ifneq ($(shell ldconfig -p | grep libubsan >/dev/null 2>&1; echo $$?), 0)
+> +        msg := $(error No libubsan found, please install libubsan);
+> +      endif
 
-- it affects slab merging, but that's not being checked while toggled
-- if affects whether __GFP_RECLAIMABLE flag is used to allocate page, but
-  the runtime toggle doesn't update allocflags
-- it affects cache_vmstat_idx() so runtime toggle might lead to incosistency
-  of NR_SLAB_RECLAIMABLE and NR_SLAB_UNRECLAIMABLE
+hum, would it be better to have check for this in tools/build/features?
 
-Thus make it read-only.
+jirka
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/slub.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index 38dd6f3ebb04..d4a9a097da50 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -5223,16 +5223,7 @@ static ssize_t reclaim_account_show(struct kmem_cache *s, char *buf)
- {
- 	return sprintf(buf, "%d\n", !!(s->flags & SLAB_RECLAIM_ACCOUNT));
- }
--
--static ssize_t reclaim_account_store(struct kmem_cache *s,
--				const char *buf, size_t length)
--{
--	s->flags &= ~SLAB_RECLAIM_ACCOUNT;
--	if (buf[0] == '1')
--		s->flags |= SLAB_RECLAIM_ACCOUNT;
--	return length;
--}
--SLAB_ATTR(reclaim_account);
-+SLAB_ATTR_RO(reclaim_account);
- 
- static ssize_t hwcache_align_show(struct kmem_cache *s, char *buf)
- {
--- 
-2.26.2
+>        ifneq ($(filter s% -static%,$(LDFLAGS),),)
+>          msg := $(error No static glibc found, please install glibc-static);
+>        else
+> -- 
+> 2.1.0
+> 
 
