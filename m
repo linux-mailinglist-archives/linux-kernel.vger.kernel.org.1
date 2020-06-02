@@ -2,176 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431441EC5AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 01:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E251EC5B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 01:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgFBX2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 19:28:18 -0400
-Received: from mga03.intel.com ([134.134.136.65]:58382 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726589AbgFBX2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 19:28:18 -0400
-IronPort-SDR: T+1ReKr1T7wcC6J6gN1+ZOv/ySPs5Jx30p6vbdL9LlGJdrxzKWCtJQalajjGOLzUAP6YY1FSBI
- g7m5mutnNixA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 16:28:18 -0700
-IronPort-SDR: N09uJ+7Y0dNPSgwYr9zhSYvR1e3DZdCOjixmglYP2XfmiKe5V2xpLo5sXLOd4Kei/ePRxXUJ3M
- /n7D3W5wfC9Q==
-X-IronPort-AV: E=Sophos;i="5.73,466,1583222400"; 
-   d="scan'208";a="272535837"
-Received: from rchatre-mobl.amr.corp.intel.com (HELO [10.209.123.248]) ([10.209.123.248])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 16:28:17 -0700
-Subject: Re: [PATCH] x86/resctrl: Fix memory bandwidth counter width for AMD
-To:     Babu Moger <babu.moger@amd.com>,
-        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <159105232628.48268.7763865625735367523.stgit@naples-babu.amd.com>
- <b7625596-c1f9-798d-a138-b619178497b2@intel.com>
- <c7c5c0e5-6839-234e-38e0-69834aa2c8dd@amd.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <6cc9bdb5-bf41-ed8b-0b30-3464d6c290b9@intel.com>
-Date:   Tue, 2 Jun 2020 16:28:16 -0700
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1728451AbgFBX3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 19:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728426AbgFBX27 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 19:28:59 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A1CDC08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 16:28:59 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id z18so331561lji.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 16:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qjaU90Aqma95VsfOo2nizNA7PtUJ8ixbSgrVzYoKVZg=;
+        b=O70cWbESKcocnY6Rm2LHbtj+/wDRLhMaZyD0QUV1oRWgIVbLODxahUb5+xk9qw9vrp
+         L3AxrnpvUnYdzly11Nujw9UYnH2Pgc71UC26t8WvoMXs5dM1rKr/0chn4rmhHjEl+Uzm
+         Mv+OfIfXSwr2nCko/k/DnMkWNZM/z4+dEjImk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qjaU90Aqma95VsfOo2nizNA7PtUJ8ixbSgrVzYoKVZg=;
+        b=U7djAmzG6wyFMTw/dyQQdhSonIOTZUdl3P6xJYJ1dl9W+uXeQvsnXTxy8/w9e+uUVW
+         6t1S7CjIFH0xXb4yDNOXtbAydtJ5M9KrXZ/5Y1u8X7x9xo4c6ojaZc4ywLQPcBOkTku9
+         aK+HnH0d6mUVayeLO6/k7OiqdnVbiiVBORPU29cKoCSpHYGevhzI8XADKqPG6yjj99VT
+         PY5vumjSjUp5ZX63cpqCeLncKIngGxDMfllr9IivslcJHQpDNZSIf9tGbZm+xYIcGLJ2
+         OervlWAclrnjg3ddBzi5THwlJoHdVvYcnU+qegJpYfgO+GE0B7bX9pginFyIKce1QgvE
+         FNQA==
+X-Gm-Message-State: AOAM53092FsHzbKuaDVIdXpBPtBb1ti95YyQVFpC+OzZRrzFZqWS1xnD
+        T8Q5itA9B5L5UuMn43DZMmFsCU7Q2P8=
+X-Google-Smtp-Source: ABdhPJxw0k/0KPLGOhuMi25pXJLqvysSPmibTJFN0rgXqGMlvl1iE31QkKwnCocQ11FDGGonpOy/Ng==
+X-Received: by 2002:a2e:8953:: with SMTP id b19mr698262ljk.187.1591140536577;
+        Tue, 02 Jun 2020 16:28:56 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id k29sm64949ljc.136.2020.06.02.16.28.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jun 2020 16:28:55 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id a25so388265ljp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 16:28:55 -0700 (PDT)
+X-Received: by 2002:a2e:7e0a:: with SMTP id z10mr662056ljc.314.1591140534778;
+ Tue, 02 Jun 2020 16:28:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c7c5c0e5-6839-234e-38e0-69834aa2c8dd@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200601170102.GA1346815@gmail.com> <CAHk-=wgXf_wQ9zrJKv2Hy4EpEbLuqty-Cjbs2u00gm7XcYHBfw@mail.gmail.com>
+ <20200602073350.GA481221@gmail.com> <b159ba4c53fcf04cc4eb747c45e1d4d2d83310a3.camel@kernel.crashing.org>
+ <871rmxgw4d.fsf@nanos.tec.linutronix.de> <CAHk-=wgOFnMW-EgymmrTyqTPLrpGJrUJ_wBzehMpyT=SO4-JRQ@mail.gmail.com>
+ <105f5a87b689eab38baf4d51d03e9f9707e74c66.camel@amazon.com>
+In-Reply-To: <105f5a87b689eab38baf4d51d03e9f9707e74c66.camel@amazon.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 2 Jun 2020 16:28:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whC4PUhErcoDhCbTOdmPPy-Pj8j9ytsdcyz9TorOb4KUw@mail.gmail.com>
+Message-ID: <CAHk-=whC4PUhErcoDhCbTOdmPPy-Pj8j9ytsdcyz9TorOb4KUw@mail.gmail.com>
+Subject: Re: [GIT PULL] x86/mm changes for v5.8
+To:     "Singh, Balbir" <sblbir@amazon.com>
+Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "a.p.zijlstra@chello.nl" <a.p.zijlstra@chello.nl>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "luto@kernel.org" <luto@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Babu,
+On Tue, Jun 2, 2020 at 4:01 PM Singh, Balbir <sblbir@amazon.com> wrote:
+>
+> >      (c) and if I read the code correctly, trying to flush the L1D$ on
+> > non-intel without the HW support, it causes a WARN_ON_ONCE()! WTF?
+>
+> That is not correct, the function only complains if we do a software fallback
+> flush without allocating the flush pages.
 
-On 6/2/2020 3:12 PM, Babu Moger wrote:
-> 
-> 
->> -----Original Message-----
->> From: Reinette Chatre <reinette.chatre@intel.com>
->> Sent: Tuesday, June 2, 2020 4:51 PM
->> To: Moger, Babu <Babu.Moger@amd.com>; fenghua.yu@intel.com;
->> tglx@linutronix.de; mingo@redhat.com; bp@alien8.de; x86@kernel.org;
->> hpa@zytor.com; linux-kernel@vger.kernel.org
->> Subject: Re: [PATCH] x86/resctrl: Fix memory bandwidth counter width for AMD
->>
->> Hi Babu,
->>
->> On 6/1/2020 4:00 PM, Babu Moger wrote:
->>> Memory bandwidth is calculated reading the monitoring counter
->>> at two intervals and calculating the delta. It is the software’s
->>> responsibility to read the count often enough to avoid having
->>> the count roll over _twice_ between reads.
->>>
->>> The current code hardcodes the bandwidth monitoring counter's width
->>> to 24 bits for AMD. This is due to default base counter width which
->>> is 24. Currently, AMD does not implement the CPUID 0xF.[ECX=1]:EAX
->>> to adjust the counter width. But, the AMD hardware supports much
->>> wider bandwidth counter with the default width of 44 bits.
->>>
->>> Kernel reads these monitoring counters every 1 second and adjusts the
->>> counter value for overflow. With 24 bits and scale value of 64 for AMD,
->>> it can only measure up to 1GB/s without overflowing. For the rates
->>> above 1GB/s this will fail to measure the bandwidth.
->>>
->>> Fix the issue setting the default width to 44 bits by adjusting the
->>> offset.
->>>
->>> AMD future products will implement the CPUID 0xF.[ECX=1]:EAX.
->>>
->>> Signed-off-by: Babu Moger <babu.moger@amd.com>
->>> ---
->>> - Sending it second time. Email client had some issues first time.
->>> - Generated the patch on top of
->>>    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git (x86/cache).
->>>
->>>  arch/x86/kernel/cpu/resctrl/core.c     |    8 +++++++-
->>>  arch/x86/kernel/cpu/resctrl/internal.h |    1 +
->>>  2 files changed, 8 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/x86/kernel/cpu/resctrl/core.c
->> b/arch/x86/kernel/cpu/resctrl/core.c
->>> index 12f967c6b603..6040e9ae541b 100644
->>> --- a/arch/x86/kernel/cpu/resctrl/core.c
->>> +++ b/arch/x86/kernel/cpu/resctrl/core.c
->>> @@ -983,7 +983,13 @@ void resctrl_cpu_detect(struct cpuinfo_x86 *c)
->>>  		c->x86_cache_occ_scale = ebx;
->>>  		if (c->x86_vendor == X86_VENDOR_INTEL)
->>>  			c->x86_cache_mbm_width_offset = eax & 0xff;
->>> -		else
->>> +		else if (c->x86_vendor == X86_VENDOR_AMD) {
->>> +			if (eax)
->>
->> This test checks if _any_ bit is set in eax ...
->>
->>> +				c->x86_cache_mbm_width_offset = eax & 0xff;
->>
->> ... with the assumption that the first eight bits contain a value.
->>
->> Even so, now that Intel and AMD will be using eax in the same way,
->> perhaps it can be done simpler by always using eax to obtain the offset
->> (and thus avoid the code duplication) and on AMD initialize the default
->> if it cannot be obtained from eax?
->>
->> What I mean is something like:
->>
->> @@ -1024,10 +1024,12 @@ void resctrl_cpu_detect(struct cpuinfo_x86 *c)
->>
->>  		c->x86_cache_max_rmid  = ecx;
->>  		c->x86_cache_occ_scale = ebx;
->> -		if (c->x86_vendor == X86_VENDOR_INTEL)
->> -			c->x86_cache_mbm_width_offset = eax & 0xff;
->> -		else
->> -			c->x86_cache_mbm_width_offset = -1;
->> +		c->x86_cache_mbm_width_offset = eax & 0xff;
->> +		if (c->x86_vendor == X86_VENDOR_AMD &&
->> +		    c->x86_cache_mbm_width_offset == 0) {
->> +			c->x86_cache_mbm_width_offset =
->> +				MBM_CNTR_WIDTH_OFFSET_AMD;
->> +		}
->>  	}
->>  }
->>
->> What do you think?
-> 
-> That looks good. But we still need to keep the
-> default(c->x86_cache_mbm_width_offset = -1;) for non-AMD and non-Intel.
-> How about this?
+Right.
 
-This original default of -1 was added to deal with AMD when it was not
-known to support eax. Now that AMD's support of eax is captured among
-the default code I did not find it necessary to keep that considering
-resctrl_cpu_detect() is only called on AMD and Intel.
+And if you're not on Intel, then that allocation would never have been
+done, since the allocation function returns an error for non-intel
+systems.
 
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/core.c
-> b/arch/x86/kernel/cpu/resctrl/core.c
-> index 12f967c6b603..7269bd896ba9 100644
-> --- a/arch/x86/kernel/cpu/resctrl/core.c
-> +++ b/arch/x86/kernel/cpu/resctrl/core.c
-> @@ -983,6 +983,9 @@ void resctrl_cpu_detect(struct cpuinfo_x86 *c)
->                 c->x86_cache_occ_scale = ebx;
->                 if (c->x86_vendor == X86_VENDOR_INTEL)
->                         c->x86_cache_mbm_width_offset = eax & 0xff;
-> +               else if (c->x86_vendor == X86_VENDOR_AMD)
-> +                       c->x86_cache_mbm_width_offset = eax ? eax & 0xff :
+> That function is not exposed without
+> the user using the prctl() API, which allocates those flush pages.
 
-This has the same concern that I mentioned earlier where the contents of
-the entire register is used to determine if the first eight bits
-contains a value. Did I miss something obvious?
+See above: it doesn't actually allocate those pages on anything but intel CPU's.
 
-> +
-> MBM_CNTR_WIDTH_OFFSET_AMD;
->                 else
->                         c->x86_cache_mbm_width_offset = -1;
->         }
-> 
+That said, looking deeper, it then does look like a
+l1d_flush_init_once() failure will also cause the code to avoid
+setting the TIF_SPEC_L1D_FLUSH bit, so non-intel CPU's will never call
+the actual flushing routines, and thus never hit the WARN_ON. Ok.
 
-Reinette
+> >  (2) the HW case is done for any vendor, if it reports the "I have the MSR"
+>
+> No l1d_flush_init_once() fails for users opting in via the prctl(), it
+> succeeds for users of L1TF.
+
+Yeah, again it looks like this all is basically just a hack for Intel CPU's.
+
+It should never have been conditional on "do this on Intel".
+
+It should have been conditional on the L1TF bug.
+
+Yes, there's certainly overlap there, but it's not complete.
+
+> >  (3) the VMX support certainly has various sanity checks like "oh, CPU
+> > doesn't have X86_BUG_L1TF, then I won't do this even if there was some
+> > kernel command line to say I should". But the new prctrl doesn't have
+> > anything like that. It just enables that L1D$ thing mindlessly,
+> > thinking that user-land software somehow knows what it's doing. BS.
+>
+> So you'd like to see a double opt-in?
+
+I'd like it to be gated on being sane by default, together with some
+system option like we have for pretty much all the mitigations.
+
+>     Unforunately there is no gating
+> of the bug and I tried to make it generic - clearly calling it opt-in
+> flushing for the paranoid, for those who really care about CVE-2020-0550.
+
+No, you didn't make it generic at all - you made it depend on
+X86_VENDOR_INTEL instead.
+
+So now the logic is "on Intel, do this thing whether it makes sense or
+not, on other vendors, never do it whether it _would_ make sense or
+not".
+
+That to me is not sensible. I just don't see the logic.
+
+This feature should never be enabled unless X86_BUG_L1TF is on, as far
+as I can tell.
+
+And it should never be enabled if SMT is on.
+
+At that point, it at least starts making sense. Maybe we don't need
+any further admin options at that point.
+
+> Would this make you happier?
+>
+> 1. Remove SW fallback flush
+> 2. Implement a double opt-in (CAP_SYS_ADMIN for the prctl or a
+>    system wide disable)?
+> 3. Ensure the flush happens only when the current core has
+>    SMT disabled
+
+I think that (3) case should basically be "X86_BUG_L1TF && !SMT". That
+should basically be the default setting for this.
+
+The (2) thing I would prefer to just be the same kind of thing we do
+for all the other mitigations: have a kernel command line to override
+the defaults.
+
+The SW fallback right now feels wrong to me. It does seem to be very
+microarchitecture-specific and I'd really like to understand the
+reason for the magic TLB filling. At the same time, if the feature is
+at least enabled under sane and understandable circumstances, and
+people have a way to turn it off, maybe I don't care too much.
+
+                  Linus
