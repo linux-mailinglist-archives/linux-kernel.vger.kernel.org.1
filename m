@@ -2,152 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BDF1EBA41
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D3A1EBA3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgFBLUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 07:20:33 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22010 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726012AbgFBLU2 (ORCPT
+        id S1726320AbgFBLUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 07:20:20 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:38834 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgFBLUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:20:28 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 052B6uW1024989;
-        Tue, 2 Jun 2020 07:20:03 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31c540a8gh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Jun 2020 07:20:02 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 052AXfi5026220;
-        Tue, 2 Jun 2020 07:20:02 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31c540a8f9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Jun 2020 07:20:01 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 052BEuq6017287;
-        Tue, 2 Jun 2020 11:20:00 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 31bf482ct7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Jun 2020 11:20:00 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 052BIgfi64749898
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 2 Jun 2020 11:18:42 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1FB4C42041;
-        Tue,  2 Jun 2020 11:19:57 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 81A8B4204F;
-        Tue,  2 Jun 2020 11:19:54 +0000 (GMT)
-Received: from [9.199.62.173] (unknown [9.199.62.173])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  2 Jun 2020 11:19:54 +0000 (GMT)
-Subject: Re: [PATCH] hw_breakpoint: Fix build warnings with clang
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        christophe.leroy@c-s.fr, mikey@neuling.org, apopple@linux.ibm.com,
-        linux-kernel@vger.kernel.org, npiggin@gmail.com, paulus@samba.org,
-        naveen.n.rao@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-References: <20200602041208.128913-1-ravi.bangoria@linux.ibm.com>
- <0217bbaf-a831-8aea-3ecd-fa217fca1669@csgroup.eu>
- <87d06hivfs.fsf@mpe.ellerman.id.au>
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Message-ID: <99295a0b-cda7-4570-e68c-b78510b2771d@linux.ibm.com>
-Date:   Tue, 2 Jun 2020 16:49:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 2 Jun 2020 07:20:17 -0400
+Received: by mail-il1-f200.google.com with SMTP id c8so4423071ilm.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 04:20:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=zMicM0NHbCSTRWS4r82QF2SXzu5Q7H29IEKe/4Smvew=;
+        b=ucFfMbqnsmAqqGHF83FqRhdyk961GH3yCI0ySMXBhC0eJC6zlEJ9Aiep+j536DMfP7
+         CaRWTlfbBRmbRJEdUUgdfGP4ovl/K0XBHgsjN7wPnPkArv4WzvTmnSiR0p7Du5LGfO8W
+         /YKhX2btu/2fBCcbb6V0tCZIrFgMNwhAZ+qzDQ8q4Q/R1qYuPH1rNGliYNQD3+93nVpm
+         jHPFF4vyS1dp/IWAelE4pkREiQRsmYc5m6wDj+yM7oZxYA9KkPWw5NRJShOZjZdHDmKm
+         UrfZo5YKdyDCN8TneuXEXZcqnT6J/kj0fZBZf36nMPCkMp4ui5as+HS8R37MsKRpqxiQ
+         KfVg==
+X-Gm-Message-State: AOAM533b4PACr4qWyxdxR9oScA5qhM056VAQSQ8yMq0fuinhMv4megCf
+        s4iajDQXEzdQanmZRNZDPlhP2DdIFFPKuyCh95eOmx+GZCcd
+X-Google-Smtp-Source: ABdhPJwd5/P+dkeerOSL4vtqpDMgbEz3TJ/gVhSpiVhzNtZKOPYyEBX9SOJi9pOTo8GI4a9Hf94RBj8rRJsT5JMG09Hx74jWrJFC
 MIME-Version: 1.0
-In-Reply-To: <87d06hivfs.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-02_11:2020-06-01,2020-06-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- mlxlogscore=999 cotscore=-2147483648 mlxscore=0 adultscore=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 malwarescore=0 phishscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006020072
+X-Received: by 2002:a05:6638:101c:: with SMTP id r28mr26033924jab.84.1591096816692;
+ Tue, 02 Jun 2020 04:20:16 -0700 (PDT)
+Date:   Tue, 02 Jun 2020 04:20:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008ff8ea05a71818b5@google.com>
+Subject: linux-next test error: BUG: using smp_processor_id() in preemptible
+ [ADDR] code: syz-fuzzer/6792
+From:   syzbot <syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following crash on:
+
+HEAD commit:    0e21d462 Add linux-next specific files for 20200602
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=127233ee100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ecc1aef35f550ee3
+dashboard link: https://syzkaller.appspot.com/bug?extid=82f324bb69744c5f6969
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com
+
+BUG: using smp_processor_id() in preemptible [00000000] code: syz-fuzzer/6792
+caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+CPU: 1 PID: 6792 Comm: syz-fuzzer Not tainted 5.7.0-next-20200602-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
+ ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+ ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
+ ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+ ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
+ ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
+ ext4_append+0x153/0x360 fs/ext4/namei.c:67
+ ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
+ ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
+ vfs_mkdir+0x419/0x690 fs/namei.c:3632
+ do_mkdirat+0x21e/0x280 fs/namei.c:3655
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4b02a0
+Code: Bad RIP value.
+RSP: 002b:000000c00010d4b8 EFLAGS: 00000212 ORIG_RAX: 0000000000000102
+RAX: ffffffffffffffda RBX: 000000c00002c000 RCX: 00000000004b02a0
+RDX: 00000000000001c0 RSI: 000000c000026b40 RDI: ffffffffffffff9c
+RBP: 000000c00010d510 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000212 R12: ffffffffffffffff
+R13: 000000000000005b R14: 000000000000005a R15: 0000000000000100
 
 
-On 6/2/20 4:30 PM, Michael Ellerman wrote:
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->> Le 02/06/2020 à 06:12, Ravi Bangoria a écrit :
->>> kbuild test robot reported few build warnings with hw_breakpoint code
->>> when compiled with clang[1]. Fix those.
->>>
->>> [1]: https://lore.kernel.org/linuxppc-dev/202005192233.oi9CjRtA%25lkp@intel.com/
->>>
-> 
-> This should have mentioned that some of the errors were recently
-> introduced by your commit.
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Sure, will take care next time.
-
-> 
->>> Reported-by: kbuild test robot <lkp@intel.com>
->>> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
->>> ---
->>> Note: Prepared on top of powerpc/next.
->>>
->>>    arch/powerpc/include/asm/hw_breakpoint.h | 3 ---
->>>    include/linux/hw_breakpoint.h            | 4 ++++
->>>    2 files changed, 4 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/arch/powerpc/include/asm/hw_breakpoint.h b/arch/powerpc/include/asm/hw_breakpoint.h
->>> index f42a55eb77d2..cb424799da0d 100644
->>> --- a/arch/powerpc/include/asm/hw_breakpoint.h
->>> +++ b/arch/powerpc/include/asm/hw_breakpoint.h
->>> @@ -70,9 +70,6 @@ extern int hw_breakpoint_exceptions_notify(struct notifier_block *unused,
->>>    						unsigned long val, void *data);
->>>    int arch_install_hw_breakpoint(struct perf_event *bp);
->>>    void arch_uninstall_hw_breakpoint(struct perf_event *bp);
->>> -int arch_reserve_bp_slot(struct perf_event *bp);
->>> -void arch_release_bp_slot(struct perf_event *bp);
->>> -void arch_unregister_hw_breakpoint(struct perf_event *bp);
->>>    void hw_breakpoint_pmu_read(struct perf_event *bp);
->>>    extern void flush_ptrace_hw_breakpoint(struct task_struct *tsk);
->>>    
->>> diff --git a/include/linux/hw_breakpoint.h b/include/linux/hw_breakpoint.h
->>> index 6058c3844a76..521481f0d320 100644
->>> --- a/include/linux/hw_breakpoint.h
->>> +++ b/include/linux/hw_breakpoint.h
->>> @@ -80,6 +80,10 @@ extern int dbg_reserve_bp_slot(struct perf_event *bp);
->>>    extern int dbg_release_bp_slot(struct perf_event *bp);
->>>    extern int reserve_bp_slot(struct perf_event *bp);
->>>    extern void release_bp_slot(struct perf_event *bp);
->>> +extern int hw_breakpoint_weight(struct perf_event *bp);
->>> +extern int arch_reserve_bp_slot(struct perf_event *bp);
->>> +extern void arch_release_bp_slot(struct perf_event *bp);
->>> +extern void arch_unregister_hw_breakpoint(struct perf_event *bp);
->>
->> Please no new 'extern'. In the old days 'extern' keyword was used, but
->> new code shall not introduce new unnecessary usage of 'extern' keyword.
->> See report from Checkpatch below:
->>
->> WARNING:COMMIT_LOG_LONG_LINE: Possible unwrapped commit description
->> (prefer a maximum 75 chars per line)
->> #9:
->> [1]:
->> https://lore.kernel.org/linuxppc-dev/202005192233.oi9CjRtA%25lkp@intel.com/
->>
->> CHECK:AVOID_EXTERNS: extern prototypes should be avoided in .h files
->> #40: FILE: include/linux/hw_breakpoint.h:83:
->> +extern int hw_breakpoint_weight(struct perf_event *bp);
-> 
-> I fixed it up when applying.
-
-Thanks Michael.
-
-Ravi
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
