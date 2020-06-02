@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6073E1EBAD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87A71EBAD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728361AbgFBLvy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Jun 2020 07:51:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36531 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728070AbgFBLv3 (ORCPT
+        id S1728336AbgFBLvu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Jun 2020 07:51:50 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:49002 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728170AbgFBLvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:51:29 -0400
+        Tue, 2 Jun 2020 07:51:32 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-gYlz33UBM_2JG7ucv7nfDg-1; Tue, 02 Jun 2020 07:51:25 -0400
-X-MC-Unique: gYlz33UBM_2JG7ucv7nfDg-1
+ us-mta-220-AzP_FFAjPiWdXO7c3OwAMg-1; Tue, 02 Jun 2020 07:51:27 -0400
+X-MC-Unique: AzP_FFAjPiWdXO7c3OwAMg-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3AA5C80B724;
-        Tue,  2 Jun 2020 11:51:23 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D59281030980;
+        Tue,  2 Jun 2020 11:51:25 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.195.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EAD96100164D;
-        Tue,  2 Jun 2020 11:51:20 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 911A210013D7;
+        Tue,  2 Jun 2020 11:51:23 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -35,9 +35,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH 09/13] perf tools: Factor out prepare_metric function
-Date:   Tue,  2 Jun 2020 13:50:51 +0200
-Message-Id: <20200602115055.1168446-10-jolsa@kernel.org>
+Subject: [PATCH 10/13] perf tools: Release metric_events rblist
+Date:   Tue,  2 Jun 2020 13:50:52 +0200
+Message-Id: <20200602115055.1168446-11-jolsa@kernel.org>
 In-Reply-To: <20200602115055.1168446-1-jolsa@kernel.org>
 References: <20200602115055.1168446-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -51,99 +51,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Factoring out prepare_metric functio so it can
-be used in test interface coming in following
-changes.
+We don't release metric_events rblist, add the missing
+delete hook and call the release before leaving cmd_stat.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/stat-shadow.c | 53 ++++++++++++++++++++++-------------
- 1 file changed, 34 insertions(+), 19 deletions(-)
+ tools/perf/builtin-stat.c     |  1 +
+ tools/perf/util/metricgroup.c | 19 +++++++++++++++++++
+ tools/perf/util/metricgroup.h |  1 +
+ 3 files changed, 21 insertions(+)
 
-diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-index a7c13a88ecb9..27be7ce2fff4 100644
---- a/tools/perf/util/stat-shadow.c
-+++ b/tools/perf/util/stat-shadow.c
-@@ -730,25 +730,16 @@ static void print_smi_cost(struct perf_stat_config *config,
- 	out->print_metric(config, out->ctx, NULL, "%4.0f", "SMI#", smi_num);
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 8a0c470dd92b..6d45b9783b73 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -2252,6 +2252,7 @@ int cmd_stat(int argc, const char **argv)
+ 
+ 	evlist__delete(evsel_list);
+ 
++	metricgroup__rblist_exit(&stat_config.metric_events);
+ 	runtime_stat_delete(&stat_config);
+ 
+ 	return status;
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index fe33fee7f6ad..1b80a7901388 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -76,11 +76,30 @@ static struct rb_node *metric_event_new(struct rblist *rblist __maybe_unused,
+ 	return &me->nd;
  }
  
--static void generic_metric(struct perf_stat_config *config,
--			   const char *metric_expr,
--			   struct evsel **metric_events,
--			   char *name,
--			   const char *metric_name,
--			   const char *metric_unit,
--			   int runtime,
--			   int cpu,
--			   struct perf_stat_output_ctx *out,
--			   struct runtime_stat *st)
-+static int prepare_metric(struct evsel **metric_events,
-+			  struct expr_parse_ctx *pctx,
-+			  int cpu,
-+			  struct runtime_stat *st)
- {
--	print_metric_t print_metric = out->print_metric;
--	struct expr_parse_ctx pctx;
--	double ratio, scale;
--	int i;
--	void *ctxp = out->ctx;
-+	double scale;
- 	char *n, *pn;
-+	int i;
- 
--	expr__ctx_init(&pctx);
-+	expr__ctx_init(pctx);
- 	for (i = 0; metric_events[i]; i++) {
- 		struct saved_value *v;
- 		struct stats *stats;
-@@ -771,7 +762,7 @@ static void generic_metric(struct perf_stat_config *config,
- 
- 		n = strdup(metric_events[i]->name);
- 		if (!n)
--			return;
-+			return -ENOMEM;
- 		/*
- 		 * This display code with --no-merge adds [cpu] postfixes.
- 		 * These are not supported by the parser. Remove everything
-@@ -782,11 +773,35 @@ static void generic_metric(struct perf_stat_config *config,
- 			*pn = 0;
- 
- 		if (metric_total)
--			expr__add_id(&pctx, n, metric_total);
-+			expr__add_id(pctx, n, metric_total);
- 		else
--			expr__add_id(&pctx, n, avg_stats(stats)*scale);
-+			expr__add_id(pctx, n, avg_stats(stats)*scale);
- 	}
- 
-+	return i;
++static void metric_event_delete(struct rblist *rblist __maybe_unused,
++				struct rb_node *rb_node)
++{
++	struct metric_event *me = container_of(rb_node, struct metric_event, nd);
++	struct metric_expr *expr, *tmp;
++
++	list_for_each_entry_safe(expr, tmp, &me->head, nd) {
++		free(expr);
++	}
++
++	free(me);
 +}
 +
-+static void generic_metric(struct perf_stat_config *config,
-+			   const char *metric_expr,
-+			   struct evsel **metric_events,
-+			   char *name,
-+			   const char *metric_name,
-+			   const char *metric_unit,
-+			   int runtime,
-+			   int cpu,
-+			   struct perf_stat_output_ctx *out,
-+			   struct runtime_stat *st)
+ static void metricgroup__rblist_init(struct rblist *metric_events)
+ {
+ 	rblist__init(metric_events);
+ 	metric_events->node_cmp = metric_event_cmp;
+ 	metric_events->node_new = metric_event_new;
++	metric_events->node_delete = metric_event_delete;
++}
++
++void metricgroup__rblist_exit(struct rblist *metric_events)
 +{
-+	print_metric_t print_metric = out->print_metric;
-+	struct expr_parse_ctx pctx;
-+	double ratio, scale;
-+	int i;
-+	void *ctxp = out->ctx;
-+
-+	i = prepare_metric(metric_events, &pctx, cpu, st);
-+	if (i < 0)
-+		return;
-+
- 	if (!metric_events[i]) {
- 		if (expr__parse(&ratio, &pctx, metric_expr, runtime) == 0) {
- 			char *unit;
++	rblist__exit(metric_events);
+ }
+ 
+ struct egroup {
+diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
+index 426c824e20bf..8315bd1a7da4 100644
+--- a/tools/perf/util/metricgroup.h
++++ b/tools/perf/util/metricgroup.h
+@@ -47,4 +47,5 @@ void metricgroup__print(bool metrics, bool groups, char *filter,
+ 			bool raw, bool details);
+ bool metricgroup__has_metric(const char *metric);
+ int arch_get_runtimeparam(void);
++void metricgroup__rblist_exit(struct rblist *metric_events);
+ #endif
 -- 
 2.25.4
 
