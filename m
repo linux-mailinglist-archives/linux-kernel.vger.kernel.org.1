@@ -2,248 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335761EB2F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 03:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDA51EB2E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 03:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725985AbgFBBZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 21:25:59 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:53224 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725793AbgFBBZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 21:25:59 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id EE2171A09DE;
-        Tue,  2 Jun 2020 03:25:55 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id EF7431A09CF;
-        Tue,  2 Jun 2020 03:25:51 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id EE13240285;
-        Tue,  2 Jun 2020 09:25:46 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amit.kucheria@verdurent.com, robh+dt@kernel.org,
-        hongtao.jia@nxp.com, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V3] dt-bindings: thermal: Convert qoriq to json-schema
-Date:   Tue,  2 Jun 2020 09:15:32 +0800
-Message-Id: <1591060532-14727-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727932AbgFBBQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 21:16:44 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:18273 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725793AbgFBBQn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 21:16:43 -0400
+X-IronPort-AV: E=Sophos;i="5.73,462,1583164800"; 
+   d="scan'208";a="93611258"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 02 Jun 2020 09:16:38 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id 582184CE03C1;
+        Tue,  2 Jun 2020 09:16:36 +0800 (CST)
+Received: from [10.167.220.69] (10.167.220.69) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 2 Jun 2020 09:16:36 +0800
+Message-ID: <5ED5A871.4070101@cn.fujitsu.com>
+Date:   Tue, 2 Jun 2020 09:16:33 +0800
+From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
+MIME-Version: 1.0
+To:     Jan Kara <jack@suse.cz>
+CC:     Ira Weiny <ira.weiny@intel.com>, <linux-ext4@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V4 6/8] fs/ext4: Make DAX mount option a tri-state
+References: <20200521191313.261929-1-ira.weiny@intel.com> <20200521191313.261929-7-ira.weiny@intel.com> <5ECE00AE.3010802@cn.fujitsu.com> <20200527235002.GA725853@iweiny-DESK2.sc.intel.com> <5ECF7CD3.20409@cn.fujitsu.com> <20200528094144.GD14550@quack2.suse.cz>
+In-Reply-To: <20200528094144.GD14550@quack2.suse.cz>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.167.220.69]
+X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
+X-yoursite-MailScanner-ID: 582184CE03C1.AA45D
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the qoriq thermal binding to DT schema format using json-schema
+On 2020/5/28 17:41, Jan Kara wrote:
+> On Thu 28-05-20 16:56:51, Xiao Yang wrote:
+>> On 2020/5/28 7:50, Ira Weiny wrote:
+>>> On Wed, May 27, 2020 at 01:54:54PM +0800, Xiao Yang wrote:
+>>>> On 2020/5/22 3:13, ira.weiny@intel.com wrote:
+>>>>> From: Ira Weiny<ira.weiny@intel.com>
+>>>>>
+>>>>> We add 'always', 'never', and 'inode' (default).  '-o dax' continues to
+>>>>> operate the same which is equivalent to 'always'.  This new
+>>>>> functionality is limited to ext4 only.
+>>>>>
+>>>>> Specifically we introduce a 2nd DAX mount flag EXT4_MOUNT2_DAX_NEVER and set
+>>>>> it and EXT4_MOUNT_DAX_ALWAYS appropriately for the mode.
+>>>>>
+>>>>> We also force EXT4_MOUNT2_DAX_NEVER if !CONFIG_FS_DAX.
+>>>>>
+>>>>> Finally, EXT4_MOUNT2_DAX_INODE is used solely to detect if the user
+>>>>> specified that option for printing.
+>>>> Hi Ira,
+>>>>
+>>>> I have two questions when reviewing this patch:
+>>>> 1) After doing mount with the same dax=inode option, ext4/xfs shows
+>>>> differnt output(i.e. xfs doesn't print 'dax=inode'):
+>>>> ---------------------------------------------------
+>>>> # mount -o dax=inode /dev/pmem0 /mnt/xfstests/test/
+>>>> # mount | grep pmem0
+>>>> /dev/pmem0 on /mnt/xfstests/test type ext4 (rw,relatime,seclabel,dax=inode)
+>>>>
+>>>> # mount -odax=inode /dev/pmem1 /mnt/xfstests/scratch/
+>>>> # mount | grep pmem1
+>>>> /dev/pmem1 on /mnt/xfstests/scratch type xfs
+>>>> (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+>>>> ----------------------------------------------------
+>>>> Is this expected output? why don't unify the output?
+>>>
+>>> Correct. dax=inode is the default.  xfs treats that default the same whether
+>>> you specify it on the command line or not.
+>>>
+>>> For ext4 Jan specifically asked that if the user specified dax=inode on the
+>>> command line that it be printed on the mount options.  If you don't specify
+>>> anything then dax=inode is in effect but ext4 will not print anything.
+>>>
+>>> I had the behavior the same as XFS originally but Jan wanted it this way.  The
+>>> XFS behavior is IMO better and is what the new mount infrastructure gives by
+>>> default.
+>>
+>> Could we unify the output?  It is strange for me to use differnt output on
+>> ext4 and xfs.
+>
+> If we'd unify the output with XFS, it would be inconsistent with all the
+> other ext4 mount options. So I disagree with that. I agree it is not ideal
+> to have different behavior between xfs and ext4 but such is the historical
+> behavior. If we want to change that, we need to change the handling for all
+> the ext4 mount options. I'm open for that discussion but it is a problem
+> unrelated to this patch set.
+Hi Jan,
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-Changes since V2:
-	- correct maintainer's email address.
----
- .../devicetree/bindings/thermal/qoriq-thermal.txt  |  71 -------------
- .../devicetree/bindings/thermal/qoriq-thermal.yaml | 112 +++++++++++++++++++++
- 2 files changed, 112 insertions(+), 71 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/thermal/qoriq-thermal.txt
- create mode 100644 Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
+Thanks for your quick feedback.
+Of course, this doubt should not block the patch set.
 
-diff --git a/Documentation/devicetree/bindings/thermal/qoriq-thermal.txt b/Documentation/devicetree/bindings/thermal/qoriq-thermal.txt
-deleted file mode 100644
-index 28f2cba..0000000
---- a/Documentation/devicetree/bindings/thermal/qoriq-thermal.txt
-+++ /dev/null
-@@ -1,71 +0,0 @@
--* Thermal Monitoring Unit (TMU) on Freescale QorIQ SoCs
--
--Required properties:
--- compatible : Must include "fsl,qoriq-tmu" or "fsl,imx8mq-tmu". The
--	version of the device is determined by the TMU IP Block Revision
--	Register (IPBRR0) at offset 0x0BF8.
--	Table of correspondences between IPBRR0 values and example  chips:
--		Value           Device
--		----------      -----
--		0x01900102      T1040
--- reg : Address range of TMU registers.
--- interrupts : Contains the interrupt for TMU.
--- fsl,tmu-range : The values to be programmed into TTRnCR, as specified by
--	the SoC reference manual. The first cell is TTR0CR, the second is
--	TTR1CR, etc.
--- fsl,tmu-calibration : A list of cell pairs containing temperature
--	calibration data, as specified by the SoC reference manual.
--	The first cell of each pair is the value to be written to TTCFGR,
--	and the second is the value to be written to TSCFGR.
--- #thermal-sensor-cells : Must be 1. The sensor specifier is the monitoring
--	site ID, and represents the "n" in TRITSRn and TRATSRn.
--
--Optional property:
--- little-endian : If present, the TMU registers are little endian. If absent,
--	the default is big endian.
--- clocks : the clock for clocking the TMU silicon.
--
--Example:
--
--tmu@f0000 {
--	compatible = "fsl,qoriq-tmu";
--	reg = <0xf0000 0x1000>;
--	interrupts = <18 2 0 0>;
--	fsl,tmu-range = <0x000a0000 0x00090026 0x0008004a 0x0001006a>;
--	fsl,tmu-calibration = <0x00000000 0x00000025
--			       0x00000001 0x00000028
--			       0x00000002 0x0000002d
--			       0x00000003 0x00000031
--			       0x00000004 0x00000036
--			       0x00000005 0x0000003a
--			       0x00000006 0x00000040
--			       0x00000007 0x00000044
--			       0x00000008 0x0000004a
--			       0x00000009 0x0000004f
--			       0x0000000a 0x00000054
--
--			       0x00010000 0x0000000d
--			       0x00010001 0x00000013
--			       0x00010002 0x00000019
--			       0x00010003 0x0000001f
--			       0x00010004 0x00000025
--			       0x00010005 0x0000002d
--			       0x00010006 0x00000033
--			       0x00010007 0x00000043
--			       0x00010008 0x0000004b
--			       0x00010009 0x00000053
--
--			       0x00020000 0x00000010
--			       0x00020001 0x00000017
--			       0x00020002 0x0000001f
--			       0x00020003 0x00000029
--			       0x00020004 0x00000031
--			       0x00020005 0x0000003c
--			       0x00020006 0x00000042
--			       0x00020007 0x0000004d
--			       0x00020008 0x00000056
--
--			       0x00030000 0x00000012
--			       0x00030001 0x0000001d>;
--	#thermal-sensor-cells = <1>;
--};
-diff --git a/Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml b/Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
-new file mode 100644
-index 0000000..4bc344a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
-@@ -0,0 +1,112 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/thermal/qoriq-thermal.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Thermal Monitoring Unit (TMU) on Freescale QorIQ SoCs
-+
-+maintainers:
-+  - Hongtao Jia <hongtao.jia@nxp.com>
-+
-+properties:
-+  compatible:
-+    description: |
-+      The version of the device is determined by the TMU IP Block Revision
-+      Register (IPBRR0) at offset 0x0BF8.
-+      Table of correspondences between IPBRR0 values and example chips:
-+            Value           Device
-+            ----------      -----
-+            0x01900102      T1040
-+    enum:
-+      - fsl,qoriq-tmu
-+      - fsl,imx8mq-tmu
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  fsl,tmu-range:
-+    $ref: '/schemas/types.yaml#/definitions/uint32-array'
-+    description: |
-+      The values to be programmed into TTRnCR, as specified by the SoC
-+      reference manual. The first cell is TTR0CR, the second is TTR1CR, etc.
-+    maxItems: 4
-+
-+  fsl,tmu-calibration:
-+    $ref: '/schemas/types.yaml#/definitions/uint32-matrix'
-+    description: |
-+      A list of cell pairs containing temperature calibration data, as
-+      specified by the SoC reference manual. The first cell of each pair
-+      is the value to be written to TTCFGR, and the second is the value
-+      to be written to TSCFGR.
-+    items:
-+      items:
-+        - description: value for TTCFGR
-+        - description: value for TSCFGR
-+    minItems: 1
-+    maxItems: 64
-+
-+  little-endian:
-+    description: |
-+      boolean, if present, the TMU registers are little endian. If absent,
-+      the default is big endian.
-+    type: boolean
-+
-+  clocks:
-+    maxItems: 1
-+
-+  "#thermal-sensor-cells":
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - fsl,tmu-range
-+  - fsl,tmu-calibration
-+  - '#thermal-sensor-cells'
-+
-+examples:
-+  - |
-+    tmu@f0000 {
-+        compatible = "fsl,qoriq-tmu";
-+        reg = <0xf0000 0x1000>;
-+        interrupts = <18 2 0 0>;
-+        fsl,tmu-range = <0x000a0000 0x00090026 0x0008004a 0x0001006a>;
-+        fsl,tmu-calibration = <0x00000000 0x00000025>,
-+                              <0x00000001 0x00000028>,
-+                              <0x00000002 0x0000002d>,
-+                              <0x00000003 0x00000031>,
-+                              <0x00000004 0x00000036>,
-+                              <0x00000005 0x0000003a>,
-+                              <0x00000006 0x00000040>,
-+                              <0x00000007 0x00000044>,
-+                              <0x00000008 0x0000004a>,
-+                              <0x00000009 0x0000004f>,
-+                              <0x0000000a 0x00000054>,
-+                              <0x00010000 0x0000000d>,
-+                              <0x00010001 0x00000013>,
-+                              <0x00010002 0x00000019>,
-+                              <0x00010003 0x0000001f>,
-+                              <0x00010004 0x00000025>,
-+                              <0x00010005 0x0000002d>,
-+                              <0x00010006 0x00000033>,
-+                              <0x00010007 0x00000043>,
-+                              <0x00010008 0x0000004b>,
-+                              <0x00010009 0x00000053>,
-+                              <0x00020000 0x00000010>,
-+                              <0x00020001 0x00000017>,
-+                              <0x00020002 0x0000001f>,
-+                              <0x00020003 0x00000029>,
-+                              <0x00020004 0x00000031>,
-+                              <0x00020005 0x0000003c>,
-+                              <0x00020006 0x00000042>,
-+                              <0x00020007 0x0000004d>,
-+                              <0x00020008 0x00000056>,
-+                              <0x00030000 0x00000012>,
-+                              <0x00030001 0x0000001d>;
-+        #thermal-sensor-cells = <1>;
-+    };
--- 
-2.7.4
+Best Regards,
+Xiao Yang
+>
+> 								Honza
+
+
 
