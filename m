@@ -2,207 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222451EBB92
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DFC1EBB97
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgFBMWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbgFBMWp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:22:45 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A4DC061A0E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 05:22:45 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id o15so12504065ejm.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 05:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A08j6fU+RlNfIhwI5UM24mjQznnwSgfTXAFxVissV48=;
-        b=JqAagGFBVhcjxJPeBl5cy+G9GwDLNghzA6eP0eUwsaQW5oBc2sm29vAYyo/systJBA
-         lPocLTxup1vVlzpiDJdk2rLd5+9I4cXxz2Q1OnpETIGsAp69v8XqSvIi7Dxaa6qVLyra
-         1vWzF8dNJE2Qjv6i0Oa3d9mU2+GuB42bt1suc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A08j6fU+RlNfIhwI5UM24mjQznnwSgfTXAFxVissV48=;
-        b=HEkadrqr4XOGvCbA14GdAKXn5bUbU+Iu7Iq8nKhl6bHL/fvRK42brhoZnvFsX31O/R
-         NMSEFKeglvfQ7bIhq+6tv91nYD+afX+wbTTxy/m47Swmwpc7Z2bCjlKF27CJhRosU51f
-         Hg2ppjmi++hxzKIkEHeGu4Jg001iUBITV7m5CFBfac/ZR1kYg4MqGo8k0+psMhRvn9IC
-         qhGLF7wSr03URsIEoAHH8I3NOsonR8vfuOh1F39QkO0OgoOrwpbEQMFzwABez8xWG7VR
-         Y5pMuGVZmJUhFl0u1jx4PoN/tOPwU7jajGczs54YNjxSwCIdCyK+0HTo2JVWVSu4RMbb
-         IZjw==
-X-Gm-Message-State: AOAM5311QFFOMIBxfHdI9/jvKTXLr/IOSJNrQg65A/AJzBdP4rZv1HGw
-        bDdofz9AP8kCCqR6wYsOg4/dAg2GIvJFuw==
-X-Google-Smtp-Source: ABdhPJzcsF7QY9ioRjUCm3b9bX3uN76i/zUlWR4ZevJHDHq7SGUgrGhKJI5nmCHzQyOzKmdPrLlA+g==
-X-Received: by 2002:a17:906:3d69:: with SMTP id r9mr22580442ejf.20.1591100563136;
-        Tue, 02 Jun 2020 05:22:43 -0700 (PDT)
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com. [209.85.221.48])
-        by smtp.gmail.com with ESMTPSA id m21sm1522493edj.74.2020.06.02.05.22.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jun 2020 05:22:42 -0700 (PDT)
-Received: by mail-wr1-f48.google.com with SMTP id x6so3150517wrm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 05:22:41 -0700 (PDT)
-X-Received: by 2002:a5d:6750:: with SMTP id l16mr26260746wrw.295.1591100561085;
- Tue, 02 Jun 2020 05:22:41 -0700 (PDT)
+        id S1726959AbgFBMZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:25:17 -0400
+Received: from mout.web.de ([212.227.17.12]:41123 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725940AbgFBMZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 08:25:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1591100668;
+        bh=JuyLwIYLMaFR2t/oQoFSPcT4slduqGwAFMkOqpi5Nok=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=JpS44jws+gVh2bMjwttj0jap5WC4+vF12712XWXBqgBMQHv+Pq2PJmNexQzUZeZ88
+         Lcvth1qyBDyx3pG0Bw0A+jkKkh9sCe2O5ZriJ7wzS2MEsY9YwhcXVixvatKQnaQ8yL
+         XKbvqx80YWbG+p3Pk/rjohNST9e51aQ6BGsMQCd8=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([2.243.186.246]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0MZUS9-1jPo8H22ov-00LGHl; Tue, 02
+ Jun 2020 14:24:28 +0200
+To:     zhucancan@vivo.com, alsa-devel@alsa-project.org, kernel@vivo.com
+Cc:     linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Wang Wenhu <wenhu.wang@vivo.com>
+Subject: Re: [PATCH] ALSA: core: Fix control device release issue
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <2d17a48f-f633-4704-f0d9-ce3b668ccc9c@web.de>
+Date:   Tue, 2 Jun 2020 14:24:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-References: <20200514160153.3646-1-sergey.senozhatsky@gmail.com>
- <20200514160153.3646-4-sergey.senozhatsky@gmail.com> <b34ae09b-7c20-7255-6adc-3370680555cd@xs4all.nl>
-In-Reply-To: <b34ae09b-7c20-7255-6adc-3370680555cd@xs4all.nl>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Tue, 2 Jun 2020 14:22:28 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5Cu5ex=YcuVfmEC1uNA4DZBSAF04LYtrw3-q22ZMc7_DA@mail.gmail.com>
-Message-ID: <CAAFQd5Cu5ex=YcuVfmEC1uNA4DZBSAF04LYtrw3-q22ZMc7_DA@mail.gmail.com>
-Subject: Re: [PATCH v6 03/14] videobuf2: handle V4L2 buffer cache flags
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+X-Provags-ID: V03:K1:5+SZRiX7HHnkkzWdJPkX6PlXxafpR7793U5LLJQQQ8BYTAmbRxh
+ hzzkd1ZiIafe4h3CQH9L/BElG+Ow46dCEQVC3PMMyMr5Fd5mcMSGm3ZD0FwlefwfgQhr/Xb
+ Hv8BRha9q2z/bBIkyQ8gsjkm+pZiqqcno9EjWYiJcEHJctIWI7+bqR/hSerB2b64tHiaWFO
+ 3DHt2tXbLaP0PxHONqQdA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yHVodJjuMLo=:bwko08NmA+kjlArhLShLVj
+ CF9X42uZJt4PGx7QAMXL92VSsI7HD4cOlPvvv8DvZjun12BOqhQBYPwzfJqRVSkhzmZPRD7Vu
+ MS29r9hmR2taxbPpNmCrilDPtL+sKuqG8553A0tN7mZc75HIyPwKWgGZ/WkvBRbe2GyY1byZx
+ TpEl1xBUUQQXdxVyWkYgj94WoBLDX7nnttzFZCgVbu5B9+/ol+ret4GIgVg5/WErwFwN4Mhu9
+ vaULpztVoT0jvmkgk/zz6VsPlf4kZN9+Y/ZgIaVxqQQ2+QSWzN5L6F/6ZKM+ALqy9mPYCS9Qy
+ hWk7qbKI6iEt/1zf9BMSy7fnMIuOwbNIvPsXkigJoVMBcHARqmJX3X5eKBfWm/zouNTVfS+cS
+ unlp9g7UGMNH4hCJZqzGG/A3RwNN43Y/d5j5mjw+Zqpn6rqJ9FQwWnBKK+W3LtiGfs4nfCYRs
+ r7eUgRheyomJw6TqP1YrQreaxgEZ0WKuV1Q04C3gALiE6mbocIJQCRiuaYFWO/sthRQD+HwB+
+ /0YUZ/u3sLTgZfHoX1xK4ncN7shNpLU64xiVRG9sYdQ5ps0wuRVJ80VqimUklMyG6KOD9VTMD
+ vm7cSXo405ASf/ZpUoW6Dib4yS7Qgw5U4hiGgqwhw50qCAaIjEbxruyEbLBuW3yWkldiMtoyF
+ YU7Q/JXyaIsLNIQqgdT1Fbq0zRAj3NCJVbdU0ngj1rsjxRQ/NObHU2GBkDxjOHwldHWzMz3NQ
+ /lekPrpX0mg9vDg42lkqzV7Jh4/GSDITo0F2ItvobGk1DUDH/9/a62OXZRd7/i1wwb10k3+NQ
+ 2V6f611rCmL4dlyWMnq6CHUqLg2mKSjXAHc9Iise2hVluazCQ9VbzKHKkRnj7eWMogdXwcR4U
+ ZK6+liVBCUwp0IBrx5+vQ5esDePaRx/FN0TxKNILDv9aMJ8Fq1tTGtEZFx5+Nxx0M4PAu9kEo
+ FbXxtZYLJP3qETBhkpHVIz3QoTKtqOvhLk1pkGrH042ufd0YHdTpICmuRBKM7qnheFM+pYA2J
+ 5uKnUgo5WsLkdtzO1i5l/4sJEgdelUqa/eLXxdxDe99LarGFpFF0AdDbWCDX38Q0OB7AW453+
+ alxq136itDlHK+u3RS/B4zKEnAUkvnR9aom/xcoPn9vU3/3/l9/7yHTfjdaZ21xAKJdRqCYQJ
+ 0SsscwdN9XgxxWPjc19+KO24Y7WJF6nM4LxHAhiu+cdB4azlUgNQfhpGNh4jPKa4ASOOdfiUt
+ oTUrNXR2qVZKmivkX
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+> We use snd_pcm_add_usr_ctls() in component's .pcm_new(),
+> unfortunately snd_soc_dapm_add_routes() meets error during
+> adding card->dapm_routes/of_dapm_routes, it will goto probe_end
+> to call soc_cleanup_card_resources().
+>
+> The commit dc82e52492f6 ("ALSA: core: Assure control device
+> to be registered at last") will make pcm device release is
+> prior to control device release, but the control device needs
+> to use pcm pointor, which is already freed by pcm device release.
 
-On Tue, Jun 2, 2020 at 11:51 AM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->
-> Hi Sergey,
->
-> While doing final testing for this patch series (together with the v4l-utils patch)
-> I found one remaining issue:
->
-> On 14/05/2020 18:01, Sergey Senozhatsky wrote:
-> > From: Sergey Senozhatsky <senozhatsky@chromium.org>
-> >
-> > Set video buffer cache management flags corresponding to V4L2 cache
-> > flags.
-> >
-> > Both ->prepare() and ->finish() cache management hints should be
-> > passed during this stage (buffer preparation), because there is
-> > no other way for user-space to tell V4L2 to avoid ->finish() cache
-> > flush.
-> >
-> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > ---
-> >  .../media/common/videobuf2/videobuf2-v4l2.c   | 48 +++++++++++++++++++
-> >  include/media/videobuf2-core.h                | 11 +++++
-> >  2 files changed, 59 insertions(+)
-> >
-> > diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> > index eb5d5db96552..f13851212cc8 100644
-> > --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> > +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> > @@ -337,6 +337,53 @@ static int vb2_fill_vb2_v4l2_buffer(struct vb2_buffer *vb, struct v4l2_buffer *b
-> >       return 0;
-> >  }
-> >
-> > +static void set_buffer_cache_hints(struct vb2_queue *q,
-> > +                                struct vb2_buffer *vb,
-> > +                                struct v4l2_buffer *b)
-> > +{
-> > +     /*
-> > +      * DMA exporter should take care of cache syncs, so we can avoid
-> > +      * explicit ->prepare()/->finish() syncs. For other ->memory types
-> > +      * we always need ->prepare() or/and ->finish() cache sync.
-> > +      */
-> > +     if (q->memory == VB2_MEMORY_DMABUF) {
-> > +             vb->need_cache_sync_on_finish = 0;
-> > +             vb->need_cache_sync_on_prepare = 0;
-> > +             return;
-> > +     }
-> > +
-> > +     /*
-> > +      * Cache sync/invalidation flags are set by default in order to
-> > +      * preserve existing behaviour for old apps/drivers.
-> > +      */
-> > +     vb->need_cache_sync_on_prepare = 1;
-> > +     vb->need_cache_sync_on_finish = 1;
-> > +
-> > +     if (!vb2_queue_allows_cache_hints(q)) {
-> > +             /*
-> > +              * Clear buffer cache flags if queue does not support user
-> > +              * space hints. That's to indicate to userspace that these
-> > +              * flags won't work.
-> > +              */
-> > +             b->flags &= ~V4L2_BUF_FLAG_NO_CACHE_INVALIDATE;
-> > +             b->flags &= ~V4L2_BUF_FLAG_NO_CACHE_CLEAN;
-> > +             return;
-> > +     }
->
-> These two flags need to be cleared for VB2_MEMORY_DMABUF as well in the test above.
-> This bug is causing v4l2-compliance failures (use the test-media script in contrib/test
-> in v4l-utils: 'sudo test-media vim2m').
+I suggest to improve this change description.
 
-Would you be able to paste the failures, so that we know that we
-reproduce the same problems? Thanks!
-
-Best regards,
-Tomasz
-
->
-> It's enough to post a v6.1 for this patch, everything else is fine.
->
-> Regards,
->
->         Hans
->
-> > +
-> > +     /*
-> > +      * ->finish() cache sync can be avoided when queue direction is
-> > +      * TO_DEVICE.
-> > +      */
-> > +     if (q->dma_dir == DMA_TO_DEVICE)
-> > +             vb->need_cache_sync_on_finish = 0;
-> > +
-> > +     if (b->flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE)
-> > +             vb->need_cache_sync_on_finish = 0;
-> > +
-> > +     if (b->flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN)
-> > +             vb->need_cache_sync_on_prepare = 0;
-> > +}
-> > +
-> >  static int vb2_queue_or_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
-> >                                   struct v4l2_buffer *b, bool is_prepare,
-> >                                   struct media_request **p_req)
-> > @@ -381,6 +428,7 @@ static int vb2_queue_or_prepare_buf(struct vb2_queue *q, struct media_device *md
-> >       }
-> >
-> >       if (!vb->prepared) {
-> > +             set_buffer_cache_hints(q, vb, b);
-> >               /* Copy relevant information provided by the userspace */
-> >               memset(vbuf->planes, 0,
-> >                      sizeof(vbuf->planes[0]) * vb->num_planes);
-> > diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
-> > index 7f39d9fffc8c..ccc5c498d3e3 100644
-> > --- a/include/media/videobuf2-core.h
-> > +++ b/include/media/videobuf2-core.h
-> > @@ -635,6 +635,17 @@ struct vb2_queue {
-> >  #endif
-> >  };
-> >
-> > +/**
-> > + * vb2_queue_allows_cache_hints() - Return true if the queue allows cache
-> > + * and memory consistency hints.
-> > + *
-> > + * @q:               pointer to &struct vb2_queue with videobuf2 queue
-> > + */
-> > +static inline bool vb2_queue_allows_cache_hints(struct vb2_queue *q)
-> > +{
-> > +     return q->allow_cache_hints && q->memory == VB2_MEMORY_MMAP;
-> > +}
-> > +
-> >  /**
-> >   * vb2_plane_vaddr() - Return a kernel virtual address of a given plane.
-> >   * @vb:              pointer to &struct vb2_buffer to which the plane in
-> >
->
+Regards,
+Markus
