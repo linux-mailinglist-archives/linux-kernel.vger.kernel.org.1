@@ -2,120 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984A21EB9F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327781EBA0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726007AbgFBLAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 07:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54934 "EHLO
+        id S1726606AbgFBLFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 07:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgFBLAT (ORCPT
+        with ESMTP id S1725921AbgFBLFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:00:19 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03AF5C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 04:00:18 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49bpwZ1x4Zz9sSf;
-        Tue,  2 Jun 2020 21:00:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1591095614;
-        bh=DhxXv+xjm6xZfn7LCNIfX94B+FHTlGaJbWoNNuGqJho=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Ycmg+NiqHj27V5eQzPg1boDh0bIvIzTsJkLJyvWS2K2Tq1tenNHE9zsVSVMnNuxaw
-         Bv/8XERam7hOlupB8SqJDs7EGIgwtdNEBEjwDiAYQhNfTnpSfbFHGdgduf+rfslA5H
-         MTFiYUnCFGQDeFblSW4B/SRtaUSM+9smMfh7s9Ivs4gqmj8tlGmkLmLraQcw286hhQ
-         YhM9Qq1Z3OsalAtWFoS2KF/1O/xdFz+Q25VOOiQhDG3vx1eW2yuqapoT/evkLqYRrW
-         30fkE7F4bGKybz7lRbIZGNhXBfY6q4BeHT/S+aqclB6kNOje2DSu1tqEb02r42Yu7a
-         CekUVydCcscHw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     christophe.leroy@c-s.fr, mikey@neuling.org, apopple@linux.ibm.com,
-        linux-kernel@vger.kernel.org, npiggin@gmail.com, paulus@samba.org,
-        naveen.n.rao@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] hw_breakpoint: Fix build warnings with clang
-In-Reply-To: <0217bbaf-a831-8aea-3ecd-fa217fca1669@csgroup.eu>
-References: <20200602041208.128913-1-ravi.bangoria@linux.ibm.com> <0217bbaf-a831-8aea-3ecd-fa217fca1669@csgroup.eu>
-Date:   Tue, 02 Jun 2020 21:00:39 +1000
-Message-ID: <87d06hivfs.fsf@mpe.ellerman.id.au>
+        Tue, 2 Jun 2020 07:05:53 -0400
+X-Greylist: delayed 2144 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 02 Jun 2020 04:05:53 PDT
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793BEC061A0E
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 04:05:53 -0700 (PDT)
+Received: from kapsi.fi ([2001:67c:1be8::11] helo=lakka.kapsi.fi)
+        by mail.kapsi.fi with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <jpa@lakka.kapsi.fi>)
+        id 1jg4B5-0001K0-OB; Tue, 02 Jun 2020 13:29:52 +0300
+Received: from jpa by lakka.kapsi.fi with local (Exim 4.92)
+        (envelope-from <jpa@lakka.kapsi.fi>)
+        id 1jg4B5-00021k-MV; Tue, 02 Jun 2020 13:29:51 +0300
+Date:   Tue, 2 Jun 2020 13:29:51 +0300
+From:   Petteri Aimonen <jpa@git.mail.kapsi.fi>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arch/x86: reset MXCSR to default in kernel_fpu_begin()
+Message-ID: <20200602102951.GE17423@lakka.kapsi.fi>
+References: <20200602101119.GA11634@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200602101119.GA11634@zn.tnic>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Rspam-Score: 1.2 (+)
+X-Rspam-Report: Action: no action
+ Symbol: RCVD_TLS_LAST(0.00)
+ Symbol: ARC_NA(0.00)
+ Symbol: FROM_HAS_DN(0.00)
+ Symbol: TO_MATCH_ENVRCPT_ALL(0.00)
+ Symbol: MIME_GOOD(-0.10)
+ Symbol: DMARC_NA(0.00)
+ Symbol: AUTH_NA(1.00)
+ Symbol: RCPT_COUNT_FIVE(0.00)
+ Symbol: TO_DN_ALL(0.00)
+ Symbol: NEURAL_HAM(-0.00)
+ Symbol: R_SPF_NA(0.00)
+ Symbol: FORGED_SENDER(0.30)
+ Symbol: R_DKIM_NA(0.00)
+ Symbol: MIME_TRACE(0.00)
+ Symbol: ASN(0.00)
+ Symbol: FROM_NEQ_ENVFROM(0.00)
+ Symbol: RCVD_COUNT_TWO(0.00)
+ Message-ID: 20200602102951.GE17423@lakka.kapsi.fi
+X-Rspam-Bar: +
+X-SA-Exim-Connect-IP: 2001:67c:1be8::11
+X-SA-Exim-Mail-From: jpa@lakka.kapsi.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 02/06/2020 =C3=A0 06:12, Ravi Bangoria a =C3=A9crit=C2=A0:
->> kbuild test robot reported few build warnings with hw_breakpoint code
->> when compiled with clang[1]. Fix those.
->>=20
->> [1]: https://lore.kernel.org/linuxppc-dev/202005192233.oi9CjRtA%25lkp@in=
-tel.com/
->>=20
+Hi,
 
-This should have mentioned that some of the errors were recently
-introduced by your commit.
+> Instead of adding that kernel module which is x86-specific
+> to a generic lib/ directory, it should be in, say,
+> tools/testing/selftests/x86/test_fpu_module.c or so and instead of
 
->> Reported-by: kbuild test robot <lkp@intel.com>
->> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
->> ---
->> Note: Prepared on top of powerpc/next.
->>=20
->>   arch/powerpc/include/asm/hw_breakpoint.h | 3 ---
->>   include/linux/hw_breakpoint.h            | 4 ++++
->>   2 files changed, 4 insertions(+), 3 deletions(-)
->>=20
->> diff --git a/arch/powerpc/include/asm/hw_breakpoint.h b/arch/powerpc/inc=
-lude/asm/hw_breakpoint.h
->> index f42a55eb77d2..cb424799da0d 100644
->> --- a/arch/powerpc/include/asm/hw_breakpoint.h
->> +++ b/arch/powerpc/include/asm/hw_breakpoint.h
->> @@ -70,9 +70,6 @@ extern int hw_breakpoint_exceptions_notify(struct noti=
-fier_block *unused,
->>   						unsigned long val, void *data);
->>   int arch_install_hw_breakpoint(struct perf_event *bp);
->>   void arch_uninstall_hw_breakpoint(struct perf_event *bp);
->> -int arch_reserve_bp_slot(struct perf_event *bp);
->> -void arch_release_bp_slot(struct perf_event *bp);
->> -void arch_unregister_hw_breakpoint(struct perf_event *bp);
->>   void hw_breakpoint_pmu_read(struct perf_event *bp);
->>   extern void flush_ptrace_hw_breakpoint(struct task_struct *tsk);
->>=20=20=20
->> diff --git a/include/linux/hw_breakpoint.h b/include/linux/hw_breakpoint=
-.h
->> index 6058c3844a76..521481f0d320 100644
->> --- a/include/linux/hw_breakpoint.h
->> +++ b/include/linux/hw_breakpoint.h
->> @@ -80,6 +80,10 @@ extern int dbg_reserve_bp_slot(struct perf_event *bp);
->>   extern int dbg_release_bp_slot(struct perf_event *bp);
->>   extern int reserve_bp_slot(struct perf_event *bp);
->>   extern void release_bp_slot(struct perf_event *bp);
->> +extern int hw_breakpoint_weight(struct perf_event *bp);
->> +extern int arch_reserve_bp_slot(struct perf_event *bp);
->> +extern void arch_release_bp_slot(struct perf_event *bp);
->> +extern void arch_unregister_hw_breakpoint(struct perf_event *bp);
->
-> Please no new 'extern'. In the old days 'extern' keyword was used, but=20
-> new code shall not introduce new unnecessary usage of 'extern' keyword.=20
-> See report from Checkpatch below:
->
-> WARNING:COMMIT_LOG_LONG_LINE: Possible unwrapped commit description=20
-> (prefer a maximum 75 chars per line)
-> #9:
-> [1]:=20
-> https://lore.kernel.org/linuxppc-dev/202005192233.oi9CjRtA%25lkp@intel.co=
-m/
->
-> CHECK:AVOID_EXTERNS: extern prototypes should be avoided in .h files
-> #40: FILE: include/linux/hw_breakpoint.h:83:
-> +extern int hw_breakpoint_weight(struct perf_event *bp);
+The kernel module is not actually x86-specific, even though it is 
+currently only enabled for x86. amdgpu driver already does kernel mode 
+floating point operations on PPC64 also, and the same module could be 
+used to test the same thing there.
 
-I fixed it up when applying.
+> reading /proc/sys/debug/test_fpu, the user portion of the code would
+> simply modprobe it.
 
-cheers
+To deterministically trigger the bug, the syscall has to come from the 
+same thread that has modified MXCSR. Going through /usr/sbin/modprobe 
+won't work, and manually doing the necessary syscalls for module loading 
+seems too complicated.
+
+> What is also missing is the user portion doing ldmxcsr before running
+> the test and the test should be causing at least one exception which
+> MXCSR masks off.
+
+The fesetround() and feenableexcept() are the portable ways to modify 
+MXCSR. The test module does cause Precision Exception and Denormal 
+Exception if those exceptions are unmasked.
+
+--
+Petteri
