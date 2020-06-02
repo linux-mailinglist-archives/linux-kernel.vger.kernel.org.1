@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5414F1EC10E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 19:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832D91EC113
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 19:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725969AbgFBRgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 13:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
+        id S1726894AbgFBRhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 13:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbgFBRgU (ORCPT
+        with ESMTP id S1726139AbgFBRhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 13:36:20 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE088C05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 10:36:20 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id m1so5403146pgk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 10:36:20 -0700 (PDT)
+        Tue, 2 Jun 2020 13:37:13 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5B7C05BD1E;
+        Tue,  2 Jun 2020 10:37:12 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id q16so1636114plr.2;
+        Tue, 02 Jun 2020 10:37:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Uce1GUg/yeAXqzZgy16vemL5SREKQhoWq++yzE0HX/k=;
-        b=Xq2HkgktcbP09b447MRSywQnvS/ELe+9AihIJrcVVuSVUy55gNXjhQr7/8rqMwt0Vq
-         Ur9ztyYu7A4/EYgrHVPyu77LTe1Zlfa05TswMKF3CwTmqiOYkbOliwwgbhrf0zFtsU0Q
-         95tbh/amSpR5VYzUaZi2b3cXSv4T/gO3azZvbx1uGQp8QzR2aDoQTDkDANhBeVPkU6Tq
-         MlEglM6NM/UddT0W/FY5ai/n20C+g6KIWaJThwXeUOaq41/Vrc8nZhYPo2oEXRppjZVC
-         6NFNvfrVNyCScTlPkMmGyaVkwyrAUctbo3uRKpVlHnU1ZswKvoBnAqfOA3LgbqUv4ytq
-         58ow==
+        bh=yC3b8DT3Kq2HwvI7o7BNmEUaQSfwkzDaER9EH5kkdq0=;
+        b=Yviw9z295zj5fjLl2vUlLMAJzpUBdI6yODgLo71V+gnRWdy/HAfOku+4RRGF+yzmqK
+         t+au//KmqSyun3jNCn8vCEmKZNdAFWTJftT893d+nbe9PjQ8sJDXaTHzCZ/jv3Wa/7/Y
+         QigrSViYpDIh7VAmvvZTyDug+wYeFeI+s7pGmAbiZpsKOOY1z3i1+6IG3saPoQPuQW8L
+         PRHyMDST7Kx8Ek98ZFeCdl8Ojb5DhgTobkvM0vWcFMfafJCDpPpjqhzsc+N/z6iB08FZ
+         DSJW5bxNzFbXaXqd0LKkWoaLxpbP935w0N9J0lqkRULyFI9st4ghdJYOiCX90M0LelV8
+         k1lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=Uce1GUg/yeAXqzZgy16vemL5SREKQhoWq++yzE0HX/k=;
-        b=sYqh0zKByrP4Megi215qup09+sAokLdGa2Ot8VC/Sb6goYjHf/LOwgfYnq6IgKhfEE
-         ZVxis+JhLgNfd2sS+j6mxxFLoZbAO5LOgnlGHbY0cVEGcSzRg5u0Vp+x66Wt2spm6nPP
-         lI+CBVcv19FflrM8gOKUDo/+Nwj9Hjh3ouveF4dUrE1isBs8OYAmV0fxAAwtSOsQReVH
-         GEgDHhqIYRKgRvyc5i2quCFLUfM1Zgq/kyDYGBanxadFnkYMh/ovrUJueUt690AUvQIx
-         hmwHM3a6Ytd52Z45xE9cF+xcFJgow/VjiG6+dOZgg+lPBIWtC7H0GOs0bWLPpknQs1Xu
-         8TPQ==
-X-Gm-Message-State: AOAM533QznKuYEkBnRvi+IVk5hLBzhMDuid+QXDE1d4XKeFyhrU00PA3
-        8OGabqe0EWF6D7aKvA0pitI=
-X-Google-Smtp-Source: ABdhPJzojgq3mk4y99SD0KUo/tv5azMA07TY6lAMuLSGuWWXOIsLruARqyvangOgvctSu8ulNVAw2Q==
-X-Received: by 2002:aa7:80d0:: with SMTP id a16mr28203334pfn.188.1591119380338;
-        Tue, 02 Jun 2020 10:36:20 -0700 (PDT)
+        bh=yC3b8DT3Kq2HwvI7o7BNmEUaQSfwkzDaER9EH5kkdq0=;
+        b=USIgqTyBh0ZtIVk9pYJfF+BWG2boro1dM0fR1aq1cXWIlSy/Q6hqgvzbuq6/+UICX1
+         eZa2fKWtwCzxtE58lZLgKRznAy+yYfOGcfbkZ/J8iMeRlTAaiTtDeSyD6Vs9e6WNhnY+
+         ncyyGyBTnTar5pelb9m5FuDIlUtkO65BjFcRSl8uTSJG9Mv8IQpmXk3xbe14k90QI+TP
+         7ylrdJ/WT+Qc/Oc1zDuG8cfRSWxj2XMreCNs243TkWLBH+IJmxb6MP0SFb67LynaAQgh
+         1j0TOYUmQoawhse3liiSLq8ZcE7F4U5mM6s9LdK8KQVZyAjJUxzf9LYUuml3QXqO/Xtx
+         7QHw==
+X-Gm-Message-State: AOAM532H8cMTA+QsQrpacOAlWzPzjvwjQbl7Yxcr+IMzx+IXNKUAUfdf
+        6wXOHs94IS26Rx+v3COJ/Wk=
+X-Google-Smtp-Source: ABdhPJz/gwr+d9DNnYFiNawK6YhfZFHEyC8/iMMp5w+Vh1TRDaGaZmArZRTSZkbx1AZrUmItAtFU5g==
+X-Received: by 2002:a17:902:aa48:: with SMTP id c8mr17901684plr.128.1591119432420;
+        Tue, 02 Jun 2020 10:37:12 -0700 (PDT)
 Received: from localhost.localdomain ([223.235.152.125])
-        by smtp.gmail.com with ESMTPSA id i22sm2864382pfo.92.2020.06.02.10.35.37
+        by smtp.gmail.com with ESMTPSA id i22sm2864382pfo.92.2020.06.02.10.36.26
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Jun 2020 10:36:19 -0700 (PDT)
+        Tue, 02 Jun 2020 10:37:11 -0700 (PDT)
 From:   Amit Singh Tomar <amittomer25@gmail.com>
 To:     andre.przywara@arm.com, afaerber@suse.de,
-        manivannan.sadhasivam@linaro.org, sboyd@kernel.org
+        manivannan.sadhasivam@linaro.org, robh+dt@kernel.org
 Cc:     cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org
-Subject: [PATCH v3 03/10] clk: actions: Add MMC clock-register reset bits
-Date:   Tue,  2 Jun 2020 23:03:05 +0530
-Message-Id: <1591119192-18538-4-git-send-email-amittomer25@gmail.com>
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH v3 04/10] arm64: dts: actions: limit address range for pinctrl node
+Date:   Tue,  2 Jun 2020 23:03:06 +0530
+Message-Id: <1591119192-18538-5-git-send-email-amittomer25@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1591119192-18538-1-git-send-email-amittomer25@gmail.com>
 References: <1591119192-18538-1-git-send-email-amittomer25@gmail.com>
@@ -64,35 +64,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds reset bits needed for MMC clock registers present
-on Actions S700 SoC.
+After commit 7cdf8446ed1d ("arm64: dts: actions: Add pinctrl node for
+Actions Semi S700") following error has been observed while booting
+Linux on Cubieboard7-lite(based on S700 SoC).
 
+[    0.257415] pinctrl-s700 e01b0000.pinctrl: can't request region for
+resource [mem 0xe01b0000-0xe01b0fff]
+[    0.266902] pinctrl-s700: probe of e01b0000.pinctrl failed with error -16
+
+This is due to the fact that memory range for "sps" power domain controller
+clashes with pinctrl.
+
+One way to fix it, is to limit pinctrl address range which is safe
+to do as current pinctrl driver uses address range only up to 0x100.
+
+This commit limits the pinctrl address range to 0x100 so that it doesn't
+conflict with sps range.
+
+Fixes: 7cdf8446ed1d ("arm64: dts: actions: Add pinctrl node for Actions
+Semi S700")
+
+Suggested-by: Andre Przywara <andre.przywara@arm.com>
 Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
 ---
-Changes from v2:
-	* No change.
-Changes from v1:
+Changes since v2:
+	* this is no more don't merge and fixed
+	  the broken S700 boot by limiting pinctrl
+	  address range.
+	* Modified the subject to reflect the changes.
+Changes since v1:
         * No change.
-Changes from RFC:
-        * No change.
+Changes since RFC:
+        * kept as do not merge.
 ---
- drivers/clk/actions/owl-s700.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm64/boot/dts/actions/s700.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/actions/owl-s700.c b/drivers/clk/actions/owl-s700.c
-index a2f34d13fb54..cd60eca7727d 100644
---- a/drivers/clk/actions/owl-s700.c
-+++ b/drivers/clk/actions/owl-s700.c
-@@ -577,6 +577,9 @@ static const struct owl_reset_map s700_resets[] = {
- 	[RESET_DSI]	= { CMU_DEVRST0, BIT(2) },
- 	[RESET_CSI]	= { CMU_DEVRST0, BIT(13) },
- 	[RESET_SI]	= { CMU_DEVRST0, BIT(14) },
-+	[RESET_SD0]     = { CMU_DEVRST0, BIT(22) },
-+	[RESET_SD1]     = { CMU_DEVRST0, BIT(23) },
-+	[RESET_SD2]     = { CMU_DEVRST0, BIT(24) },
- 	[RESET_I2C0]	= { CMU_DEVRST1, BIT(0) },
- 	[RESET_I2C1]	= { CMU_DEVRST1, BIT(1) },
- 	[RESET_I2C2]	= { CMU_DEVRST1, BIT(2) },
+diff --git a/arch/arm64/boot/dts/actions/s700.dtsi b/arch/arm64/boot/dts/actions/s700.dtsi
+index 2006ad5424fa..f8eb72bb4125 100644
+--- a/arch/arm64/boot/dts/actions/s700.dtsi
++++ b/arch/arm64/boot/dts/actions/s700.dtsi
+@@ -231,7 +231,7 @@
+ 
+ 		pinctrl: pinctrl@e01b0000 {
+ 			compatible = "actions,s700-pinctrl";
+-			reg = <0x0 0xe01b0000 0x0 0x1000>;
++			reg = <0x0 0xe01b0000 0x0 0x100>;
+ 			clocks = <&cmu CLK_GPIO>;
+ 			gpio-controller;
+ 			gpio-ranges = <&pinctrl 0 0 136>;
 -- 
 2.7.4
 
