@@ -2,74 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B023F1EC2BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 525141EC2C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgFBT36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 15:29:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgFBT36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 15:29:58 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12FA2206E2;
-        Tue,  2 Jun 2020 19:29:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591126197;
-        bh=1hBLrZg8X2acETkZYOjT00wEqCW1nenOSI1VbaWk2lI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VW+O6scbO7flZAH65Wt6O9kqkw7+wNDrxAVj03aQU00mcTXWIoOezC4Sy7nBdO+bE
-         06cerlKExp/cSPfeA2b4AD0kxhNG3oj6zE73X3H2bTnPaoluy+jXmL6ZsqMtWQUUyt
-         qL5VRPkJWaDFxjgFW/hu5v6/btG5z88wuQ8ICttM=
-Date:   Tue, 2 Jun 2020 12:29:54 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Victor Julien <victor@inliniac.net>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Mao Wenan <maowenan@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
-        Neil Horman <nhorman@tuxdriver.com>, linux-doc@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexander Drozdov <al.drozdov@gmail.com>,
-        Tom Herbert <tom@herbertland.com>
-Subject: Re: [PATCH net-next v2] af-packet: new flag to indicate all csums
- are good
-Message-ID: <20200602122954.0c35072b@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <6a3dcce9-4635-28e9-d78e-1c7f1f7874da@inliniac.net>
-References: <20200602080535.1427-1-victor@inliniac.net>
-        <CA+FuTSfD2-eF0H=Qu09=JXK6WTiWKNtcqRXqv3TfMfB-=0GiMg@mail.gmail.com>
-        <b0a9d785-9d5e-9897-b051-6d9a1e8f914e@inliniac.net>
-        <CA+FuTSd07inNysGhx088hq_jybrikSQdxw8HYjmP84foXhnXOA@mail.gmail.com>
-        <06479df9-9da4-dbda-5bd1-f6e4d61471d0@inliniac.net>
-        <CA+FuTSci29=W89CLweZcW=RTKwEXpUdPjsLGTB95iSNcnpU_Lw@mail.gmail.com>
-        <6a3dcce9-4635-28e9-d78e-1c7f1f7874da@inliniac.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728024AbgFBTbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 15:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726320AbgFBTbV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 15:31:21 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F339C08C5C1
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 12:31:21 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id n7so27146ybh.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 12:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=rclZP01j1InoS/3XtOg/bC1dGPlx80uQ6aMTFnGzZ2w=;
+        b=lKTcFEgWzsBAVwkz4pKNgMxfzTA/rGF9JodhNthDiBoH7YkwDBV0kuC35tGrGmUPa7
+         vigobAbCfGHSoCDBNiiNxGCo7ry+l11xNDbwclXy4FRbvLdz1Yv3eqb8rD4o311vIRV6
+         NpmILM/4g7+ijufcHgNkg4AdMRRfwaUT1X0pS7DCnceJFn8bDOjsoNsZDYC6xv9nOuWg
+         oBIKuuzUNJbFU0/tAlZtsBNYOjUnDAbe8I0Qxs1y2Ikzs3uN0bccFj+Iby/ZIT//ZKjR
+         fgN+4PcwfA4n6RA2eU1K9QyQilXZEkUcXZqwz2AYKNfI6kQB0S/S7OhaqcgDbolreiHl
+         ZAjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=rclZP01j1InoS/3XtOg/bC1dGPlx80uQ6aMTFnGzZ2w=;
+        b=L1bc2p9UF0bK0IR7zujmDxMQA+W85K8OmVLCYLH4FYRyHD8ZZx3JJG4UBF6glc4JIl
+         EABWGAZtsjInZEsSgyEj8DuEnw04/W6k9mwtIv2CGpEmZyrzCTfwapn+xG0EEXEcuPBB
+         bh+iWG1HkAgsWw4kjUMroNquo1Gpga3PqE+v4BJF4XZsNY8dXIhLhOrom6DmpFTYqM4P
+         K3SjFlerBBJ4j7j/Eu4sjB9C87rbhd0IseXiIjyyL/9MNeHOYgFs5u5havjItdvozWGt
+         MzjKLunUmJ2V371TLmrJ6uZkANcfZ7crdKRzAYXvt968wglG/sKsHkSH/hrScHnUDbtj
+         546g==
+X-Gm-Message-State: AOAM533pxVYeG0lqPtHFvnBEPrE8aTlXcO+FvOVTxBs5fOZmuOOJzhRK
+        bGmA7G7eUbcFst5+QkTkmMmXPVWlp53gscY=
+X-Google-Smtp-Source: ABdhPJwx0Lnv0amOjqwgyGjnGBXNYRxRwJOaVB5GXUgExCVr3FTb91vVxXmRJ+HznOHa2zVWvNFKsvqcVfjrfhU=
+X-Received: by 2002:a25:c186:: with SMTP id r128mr46983177ybf.92.1591126280496;
+ Tue, 02 Jun 2020 12:31:20 -0700 (PDT)
+Date:   Tue,  2 Jun 2020 12:30:59 -0700
+In-Reply-To: <20200602132702.y3tjwvqdbww7oy5i@treble>
+Message-Id: <20200602193100.229287-1-inglorion@google.com>
+Mime-Version: 1.0
+References: <20200602132702.y3tjwvqdbww7oy5i@treble>
+X-Mailer: git-send-email 2.27.0.rc2.251.g90737beb825-goog
+Subject: [PATCH v2] x86_64: fix jiffies ODR violation
+From:   Bob Haarman <inglorion@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Bob Haarman <inglorion@google.com>, stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Alistair Delva <adelva@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Baoquan He <bhe@redhat.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Ross Zwisler <zwisler@chromium.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Jun 2020 21:22:11 +0200 Victor Julien wrote:
-> - receiver uses nfp (netronome) driver: TP_STATUS_CSUM_VALID set for
-> every packet, including the bad TCP ones
-> - receiver uses ixgbe driver: TP_STATUS_CSUM_VALID not set for the bad
-> packets.
-> 
-> Again purely based on 'git grep' it seems nfp does not support
-> UNNECESSARY, while ixgbe does.
-> 
-> (my original testing was with the nfp only, so now I at least understand
-> my original thinking)
+'jiffies' and 'jiffies_64' are meant to alias (two different symbols
+that share the same address).  Most architectures make the symbols alias
+to the same address via linker script assignment in their
+arch/<arch>/kernel/vmlinux.lds.S:
 
-FWIW nfp defaults to CHECKSUM_COMPLETE if the device supports it (see
-if you have RXCSUM_COMPLETE in the probe logs). It supports UNNECESSARY
-as well, but IDK if there is a way to choose  the preferred checksum
-types in the stack :( You'd have to edit the driver and remove the
-NFP_NET_CFG_CTRL_CSUM_COMPLETE from the NFP_NET_CFG_CTRL_RXCSUM_ANY
-mask to switch to using UNNECESSARY.
+jiffies = jiffies_64;
+
+which is effectively a definition of jiffies.
+
+jiffies and jiffies_64 are both forward declared for all arch's in:
+include/linux/jiffies.h.
+
+jiffies_64 is defined in kernel/time/timer.c for all arch's.
+
+x86_64 was peculiar in that it wasn't doing the above linker script
+assignment, but rather was:
+1. defining jiffies in arch/x86/kernel/time.c instead via linker script.
+2. overriding the symbol jiffies_64 from kernel/time/timer.c in
+arch/x86/kernel/vmlinux.lds.s via 'jiffies_64 = jiffies;'.
+
+As Fangrui notes:
+
+  In LLD, symbol assignments in linker scripts override definitions in
+  object files. GNU ld appears to have the same behavior. It would
+  probably make sense for LLD to error "duplicate symbol" but GNU ld
+  is unlikely to adopt for compatibility reasons.
+
+So we have an ODR violation (UB), which we seem to have gotten away
+with thus far. Where it becomes harmful is when we:
+
+1. Use -fno-semantic-interposition.
+
+As Fangrui notes:
+
+  Clang after LLVM commit 5b22bcc2b70d
+  ("[X86][ELF] Prefer to lower MC_GlobalAddress operands to .Lfoo$local")
+  defaults to -fno-semantic-interposition similar semantics which help
+  -fpic/-fPIC code avoid GOT/PLT when the referenced symbol is defined
+  within the same translation unit. Unlike GCC
+  -fno-semantic-interposition, Clang emits such relocations referencing
+  local symbols for non-pic code as well.
+
+This causes references to jiffies to refer to '.Ljiffies$local' when
+jiffies is defined in the same translation unit. Likewise, references
+to jiffies_64 become references to '.Ljiffies_64$local' in translation
+units that define jiffies_64.  Because these differ from the names
+used in the linker script, they will not be rewritten to alias one
+another.
+
+Combined with ...
+
+2. Full LTO effectively treats all source files as one translation
+unit, causing these local references to be produced everywhere.  When
+the linker processes the linker script, there are no longer any
+references to jiffies_64' anywhere to replace with 'jiffies'.  And
+thus '.Ljiffies$local' and '.Ljiffies_64$local' no longer alias
+at all.
+
+In the process of porting patches enabling Full LTO from arm64 to
+x86_64, we observe spooky bugs where the kernel appeared to boot, but
+init doesn't get scheduled.
+
+Instead, we can avoid the ODR violation by matching other arch's by
+defining jiffies only by linker script.  For -fno-semantic-interposition
++ Full LTO, there is no longer a global definition of jiffies for the
+compiler to produce a local symbol which the linker script won't ensure
+aliases to jiffies_64.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/852
+Fixes: 40747ffa5aa8 ("asmlinkage: Make jiffies visible")
+Cc: stable@vger.kernel.org
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Reported-by: Alistair Delva <adelva@google.com>
+Suggested-by: Fangrui Song <maskray@google.com>
+Debugged-by: Nick Desaulniers <ndesaulniers@google.com>
+Debugged-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Bob Haarman <inglorion@google.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+v2:
+* Changed commit message as requested by Josh Poimboeuf
+  (no code change)
+
+---
+ arch/x86/kernel/time.c        | 4 ----
+ arch/x86/kernel/vmlinux.lds.S | 4 ++--
+ 2 files changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/time.c b/arch/x86/kernel/time.c
+index 371a6b348e44..e42faa792c07 100644
+--- a/arch/x86/kernel/time.c
++++ b/arch/x86/kernel/time.c
+@@ -25,10 +25,6 @@
+ #include <asm/hpet.h>
+ #include <asm/time.h>
+ 
+-#ifdef CONFIG_X86_64
+-__visible volatile unsigned long jiffies __cacheline_aligned_in_smp = INITIAL_JIFFIES;
+-#endif
+-
+ unsigned long profile_pc(struct pt_regs *regs)
+ {
+ 	unsigned long pc = instruction_pointer(regs);
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 1bf7e312361f..7c35556c7827 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -40,13 +40,13 @@ OUTPUT_FORMAT(CONFIG_OUTPUT_FORMAT)
+ #ifdef CONFIG_X86_32
+ OUTPUT_ARCH(i386)
+ ENTRY(phys_startup_32)
+-jiffies = jiffies_64;
+ #else
+ OUTPUT_ARCH(i386:x86-64)
+ ENTRY(phys_startup_64)
+-jiffies_64 = jiffies;
+ #endif
+ 
++jiffies = jiffies_64;
++
+ #if defined(CONFIG_X86_64)
+ /*
+  * On 64-bit, align RODATA to 2MB so we retain large page mappings for
+-- 
+2.27.0.rc2.251.g90737beb825-goog
+
