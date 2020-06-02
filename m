@@ -2,74 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867EA1EBB2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426CB1EBB31
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbgFBMDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:03:55 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:42036 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgFBMDy (ORCPT
+        id S1727055AbgFBMGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726946AbgFBMGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:03:54 -0400
-Received: by mail-oi1-f193.google.com with SMTP id s21so3038878oic.9;
-        Tue, 02 Jun 2020 05:03:54 -0700 (PDT)
+        Tue, 2 Jun 2020 08:06:19 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EDCC08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 05:06:17 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id 1so1848185vsl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 05:06:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X8TLwbbwpigYbLnnsmu2/tqlSQ4fjBU1I+APno1oETk=;
+        b=rAuOnM4pnXKCbe7wrzaoRdTKnyJBeTd0qTlYB470WMcq3DPvaQWUPhFzMfBkCpt5VZ
+         eqX0bC/o4hoV08wZE2N3bjOaORbaid/b50ftvLPKRzHvqtl3ZWD+0cqyurIAB+8rxgg9
+         FLe+HWZGMaaoWYbpzC52HrGXjBJaRJT22su4XEsrUFmIlBSdpNQJRm8EB9ECCYGrQS/c
+         gsM2UIRsj39DnQ0mEFwFHCykOFhoWolqR3jk7Q1id5fDp9/o+8D31UpPdbEiqQYX2+WQ
+         iJlFk6Df2wlvnhfBOihX+7DHWobBPr1bpvJFHIRKi7BDNoYG1cN5d/+HJbUUj8viqZJQ
+         uuew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IgExh/ny3ZdfEOHfQwIXJ7oTzjh0IcO4NnZTa4lzZZg=;
-        b=XoPJY8dgVqI6dF88I4ohPzj5yp8a2ZWH4R+ajgNEzXhq6XLxNCzSYot84tzVh06OEq
-         IG3qdoMrFGI65d6DZXI13xdl4FvdZGvVA7v6Sxm4ejvRyNMDli/ebrI4hqfr7dtOLnDv
-         HvaclkeqFxosFfZa2Nh+FXhkqX6j2I2D+1GwyHDUn4KRGURp5GRyVHfXROXBsj4WNNcC
-         rQEUPit6w4HE15n1HqxuFuN1WcxZpB3iy1BAAHJiVGJNF+TQQdYmEsIjpgWj0YwmiGEt
-         wZ5Zz6v51hu19dKh8LBWI93gkkZ/Vfj5L0+dyaiJXxy0GYrAjYjbzmtzs3pmjHtmVA86
-         W3Nw==
-X-Gm-Message-State: AOAM533PMqnXWUjN6qvNQp1FlV93jCj1LEPi3imOy/JPv+z51dDiSdZm
-        Fm5YzP9hlqrt2RnTcOnaWSI5lsqfOvbKFTkXHO4=
-X-Google-Smtp-Source: ABdhPJz2czAuYGYJfe62NGAvi2DIXZQZsfLZD8OxGXlID6t22QF7K8A5fIlnr/Ug64ryYGdMa83JGneje4dJWf0Q67U=
-X-Received: by 2002:aca:1a19:: with SMTP id a25mr1947756oia.54.1591099433899;
- Tue, 02 Jun 2020 05:03:53 -0700 (PDT)
+        bh=X8TLwbbwpigYbLnnsmu2/tqlSQ4fjBU1I+APno1oETk=;
+        b=B3ticL8VJ6KmPU/9hDtUkPQTbRVwFfKoXiH7cc82YQBIMZtEYCcXWISjNE0b07dWdt
+         xXgyGYeqbyNAhYcunqi+STotv9J6wTQUNziUPZ6P2uJhXGAbckWDxJOMCnoLfckqRmln
+         DI36OvZrmPcfm+nFHpwchX6LfVST4lwdIRafHNfCdEmpNmVje53tCRSThWX6YklomhQD
+         kmdVRdhBHVmlo/IydspI0IxBCRDQc/CZMQTzIlu18kUpZmXQf1ObNaV+rt8j+GB2mpYz
+         5ecspIzxyxV7CSdCm4pZDmPoFCu9rxY23i1zPARm1ps7k/a2QzRyFsEYaj2QB8nH7kdO
+         PSWA==
+X-Gm-Message-State: AOAM530Pyq78hBRo8vyv0wFwOY25X+2jhvjIZxzDVX9443o/9lZ5Qq+A
+        f7wTQzIE2zbZGi7gRQDi8L7p0kNaDs3TKdX4chvbBQ==
+X-Google-Smtp-Source: ABdhPJyYvO6EGUQzrkJXaKKQ2X1NWP8QbEKUI3/Bv4Zylahw5KDfo6vhcEr8o85kUFivcskLi7AfeWGuKQUXa0BPBk4=
+X-Received: by 2002:a67:8983:: with SMTP id l125mr7213160vsd.34.1591099576761;
+ Tue, 02 Jun 2020 05:06:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <CGME20200504232908eucas1p296927bc7c736ad924cefaea9a546459d@eucas1p2.samsung.com>
- <b1cf967015c5beafa475aaa30d8e21a58caff870.camel@perches.com> <380c0494-ed02-b2be-65b0-d385627fb894@samsung.com>
-In-Reply-To: <380c0494-ed02-b2be-65b0-d385627fb894@samsung.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 2 Jun 2020 14:03:38 +0200
-Message-ID: <CAMuHMdVYuk9+=3OTufOo98Dd3ijXS6JBH9RqK2v+9mwogxbnXA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] video: fbdev: amifb: add FIXMEs about
- {put,get}_user() failures
-To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
+References: <20200602134402.24c19488@canb.auug.org.au>
+In-Reply-To: <20200602134402.24c19488@canb.auug.org.au>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 2 Jun 2020 14:05:39 +0200
+Message-ID: <CAPDyKFqjm3Egbv9nj8wR_q5onpJT=jSh-MvKn+VuJGX_ifG9TA@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the mmc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Wright Feng <wright.feng@cypress.com>,
+        Chi-hsien Lin <chi-hsien.lin@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Linus <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 1:52 PM Bartlomiej Zolnierkiewicz
-<b.zolnierkie@samsung.com> wrote:
-> Since we lack the hardware (or proper emulator setup) for
-> testing needed changes add FIXMEs to document the issues
-> (so at least they are not forgotten).
++ Linus
+
+On Tue, 2 Jun 2020 at 05:44, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Hi all,
+>
+> After merging the mmc tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
+>
+> drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c: In function 'brcmf_sdiod_probe':
+> drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c:915:7: error: 'SDIO_DEVICE_ID_CYPRESS_4373' undeclared (first use in this function); did you mean 'SDIO_DEVICE_ID_BROADCOM_CYPRESS_4373'?
+>   915 |  case SDIO_DEVICE_ID_CYPRESS_4373:
+>       |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>       |       SDIO_DEVICE_ID_BROADCOM_CYPRESS_4373
+> drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c:915:7: note: each undeclared identifier is reported only once for each function it appears in
+>
+> Caused by commit
+>
+>   1eb911258805 ("mmc: sdio: Fix Cypress SDIO IDs macros in common include file")
+>
+> interacting with commit
+>
+>   2a7621ded321 ("brcmfmac: set F2 blocksize for 4373")
+>
+> from the net-next tree.
+>
+> I have applied the following merge fix patch.
+>
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 2 Jun 2020 13:41:04 +1000
+> Subject: [PATCH] mmc: sdio: merge fix for "brcmfmac: set F2 blocksize for
+>  4373"
+>
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Thanks Stephen for fixing and reporting about this!
 
-Gr{oetje,eeting}s,
+Looks like the fix is rather trivial, so I assume Linus can
+cherry-pick your patch, while merging my pull request for mmc for
+v5.8. In any case, I will monitor the process and send a fix on top,
+if needed.
 
-                        Geert
+Kind regards
+Uffe
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> ---
+>  drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
+> index e718bd466830..46346cb3bc84 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
+> @@ -912,7 +912,7 @@ static int brcmf_sdiod_probe(struct brcmf_sdio_dev *sdiodev)
+>                 goto out;
+>         }
+>         switch (sdiodev->func2->device) {
+> -       case SDIO_DEVICE_ID_CYPRESS_4373:
+> +       case SDIO_DEVICE_ID_BROADCOM_CYPRESS_4373:
+>                 f2_blksz = SDIO_4373_FUNC2_BLOCKSIZE;
+>                 break;
+>         case SDIO_DEVICE_ID_BROADCOM_4359:
+> --
+> 2.26.2
+>
+> --
+> Cheers,
+> Stephen Rothwell
