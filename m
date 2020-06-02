@@ -2,116 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7931EBCEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828BF1EBCE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgFBNQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 09:16:46 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:40667 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726630AbgFBNQl (ORCPT
+        id S1728313AbgFBNQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 09:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726922AbgFBNQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 09:16:41 -0400
+        Tue, 2 Jun 2020 09:16:30 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D415EC061A0E
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 06:16:29 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id v19so2907072wmj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 06:16:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1591103800; x=1622639800;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=P84mRIQzKrwCVq5uxgHNtZN8HW/b5hkyeS6yj/UbW4A=;
-  b=k8pfcQVKaxynOmaWqzv8axHToGYYcNBDiheOf/aYGc6vm1TK31tty3DV
-   vDhLmY7688VfbLKLf2UtPLSpqbvAt9kgqEbly0CmKc4R8AT83uhCi8KuD
-   n+aJYPxS0WhEgCsvXxlC6mmWTBaAhcbHT4j19iAfOTytnTtkRYM/ecWml
-   s=;
-IronPort-SDR: wi30j8U1jqV8InCQm0WcaBes5KBTq5/SBXhs4jATm1wktr0yLfUco/6IsfHVHfQiyciRKLRswq
- H/UL2SrbmKpA==
-X-IronPort-AV: E=Sophos;i="5.73,464,1583193600"; 
-   d="scan'208";a="34015768"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 02 Jun 2020 13:16:24 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com (Postfix) with ESMTPS id 4B5F4A06A9;
-        Tue,  2 Jun 2020 13:16:21 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 2 Jun 2020 13:16:20 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.253) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 2 Jun 2020 13:16:04 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
-        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
-        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
-        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
-        <ying.huang@intel.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v14 13/15] mm/damon-test: Add a kunit test for recording setup
-Date:   Tue, 2 Jun 2020 15:15:49 +0200
-Message-ID: <20200602131549.23617-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200602130125.20467-1-sjpark@amazon.com>
-References: <20200602130125.20467-1-sjpark@amazon.com>
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OpasVMisglYsuLwIdyOtQK0A81fANkOyysqk8CVIvx0=;
+        b=kuDotpuhsY+MXpsr9Oy5OHDubwIUR/t6up0ak/ePcy2RYYIQAcRwYchPhLrdrqQ8ZC
+         jDK8O0tZ+vCJrTENfDjEGHWnjEKoRkrWEcPXw3RXThiLDdTS0t0w+q1PM/ZIlowe3v6E
+         wt0jXrNZ+k5dqoWCCoe7cAQEnilSIKZTVdFlc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=OpasVMisglYsuLwIdyOtQK0A81fANkOyysqk8CVIvx0=;
+        b=e1pPT3rMbQG+spyS7EEV/M0Gvn1ongDhAJrW1ecgmESE2vJ8WuqDFjDCUbf8z6nrpv
+         Sp9F6n8mQIensVjEgtTQOFi5aL+dgM3O40XPaEKEt0wmaCiZubevZy0rZc3Ehp5QW369
+         3pAYo9RHh1tgqUu4Mbx2kg0m5zj9lIvO3qA1i0OzCu7IfnmqGchZajZxObhPe0qfBBSF
+         mbFzyr6/fzVgLDxTzLKrFTZHT4yHMsejeuTgWwXPIRKEZp23zIHTwIfk52Jxd0ZUDAUt
+         bcuLKhdL2ymJumUcqlPifxm5WuHvQ7K/iZKKaIhsmmUvOmvI0c6DLQlCoPj1JeqWOVtD
+         1deA==
+X-Gm-Message-State: AOAM531q3fiffI+cYS/w5mMaqLUqRGP4OKnGJK1PEjVSX+IUgPVuPbnS
+        p4r9EeUdrBjEKHNPNTCQhW47K/KzSCs=
+X-Google-Smtp-Source: ABdhPJyKXdTRZdaW33eS+W0IooJHz/fLbQxnKFQHG78T5To3m81jjbqdvxTgllHwNEE6P7CX/B+JFA==
+X-Received: by 2002:a1c:2cd7:: with SMTP id s206mr3955987wms.109.1591103758685;
+        Tue, 02 Jun 2020 06:15:58 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t8sm2591537wmi.46.2020.06.02.06.15.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 06:15:58 -0700 (PDT)
+Date:   Tue, 2 Jun 2020 15:15:51 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-fbdev@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] video: fbdev: pxafb: Use correct return value for
+ pxafb_probe()
+Message-ID: <20200602131551.GD20149@phenom.ffwll.local>
+Mail-Followup-To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>, linux-fbdev@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <CGME20200525071149eucas1p271b0c64a9d44429978e2099257681b70@eucas1p2.samsung.com>
+ <1590390705-22898-1-git-send-email-yangtiezhu@loongson.cn>
+ <be2f65ba-e26c-fe3f-82d9-d9532db496eb@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.253]
-X-ClientProxiedBy: EX13D41UWC001.ant.amazon.com (10.43.162.107) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be2f65ba-e26c-fe3f-82d9-d9532db496eb@samsung.com>
+X-Operating-System: Linux phenom 5.6.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Hi Bart,
 
-This commit adds another unit test case for the recording setup.
+On Mon, Jun 01, 2020 at 03:25:25PM +0200, Bartlomiej Zolnierkiewicz wrote:
+> 
+> On 5/25/20 9:11 AM, Tiezhu Yang wrote:
+> > When call function devm_platform_ioremap_resource(), we should use IS_ERR()
+> > to check the return value and return PTR_ERR() if failed.
+> > 
+> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> 
+> Applied to drm-misc-next tree (patch should show up in v5.9), thanks.
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- mm/damon-test.h | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Thanks for going through all the backlog of patches in the fbdev area
+every once in a while! That kind of housekeeping work is often
+underappreciated, but rather important to keep the ship going.
 
-diff --git a/mm/damon-test.h b/mm/damon-test.h
-index cf715529ff64..5b18619efe72 100644
---- a/mm/damon-test.h
-+++ b/mm/damon-test.h
-@@ -137,6 +137,18 @@ static void damon_test_set_pids(struct kunit *test)
- 	KUNIT_EXPECT_STREQ(test, (char *)buf, "\n");
- }
- 
-+static void damon_test_set_recording(struct kunit *test)
-+{
-+	struct damon_ctx *ctx = &damon_user_ctx;
-+
-+	damon_set_recording(ctx, 4242, "foo.bar");
-+	KUNIT_EXPECT_EQ(test, ctx->rbuf_len, 4242u);
-+	KUNIT_EXPECT_STREQ(test, ctx->rfile_path, "foo.bar");
-+	damon_set_recording(ctx, 42, "foo");
-+	KUNIT_EXPECT_EQ(test, ctx->rbuf_len, 42u);
-+	KUNIT_EXPECT_STREQ(test, ctx->rfile_path, "foo");
-+}
-+
- /*
-  * Test damon_three_regions_in_vmas() function
-  *
-@@ -596,6 +608,7 @@ static struct kunit_case damon_test_cases[] = {
- 	KUNIT_CASE(damon_test_tasks),
- 	KUNIT_CASE(damon_test_regions),
- 	KUNIT_CASE(damon_test_set_pids),
-+	KUNIT_CASE(damon_test_set_recording),
- 	KUNIT_CASE(damon_test_three_regions_in_vmas),
- 	KUNIT_CASE(damon_test_aggregate),
- 	KUNIT_CASE(damon_test_write_rbuf),
+Cheers, Daniel
+
+PS: Of course also holds for everyone else doing this in other areas.
+fbdev simply stuck out just now catching up on mails.
+
+
+> 
+> Best regards,
+> --
+> Bartlomiej Zolnierkiewicz
+> Samsung R&D Institute Poland
+> Samsung Electronics
+> 
+> > ---
+> >  drivers/video/fbdev/pxafb.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/video/fbdev/pxafb.c b/drivers/video/fbdev/pxafb.c
+> > index 00b96a7..423331c 100644
+> > --- a/drivers/video/fbdev/pxafb.c
+> > +++ b/drivers/video/fbdev/pxafb.c
+> > @@ -2305,7 +2305,7 @@ static int pxafb_probe(struct platform_device *dev)
+> >  	fbi->mmio_base = devm_platform_ioremap_resource(dev, 0);
+> >  	if (IS_ERR(fbi->mmio_base)) {
+> >  		dev_err(&dev->dev, "failed to get I/O memory\n");
+> > -		ret = -EBUSY;
+> > +		ret = PTR_ERR(fbi->mmio_base);
+> >  		goto failed;
+> >  	}
+> >  
+> > 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
 -- 
-2.17.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
