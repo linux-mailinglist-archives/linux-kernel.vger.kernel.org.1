@@ -2,172 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1701EBA60
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654821EBA58
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgFBL2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 07:28:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgFBL2L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:28:11 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F860C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 04:28:11 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id u7so1812161vsp.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 04:28:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MrsaCGMsxTtIoOCqcMdZ4C1bTw37N0EwvD0GhGKPg5c=;
-        b=SYFHd5CjZsRD9rFmDi8LwQKJOJTS7RfvhSKpKPMnELMZ8rVW0lpSB1QuuO2kjuIPsr
-         oPvRfgssA3LmCl4WaderkbkKnWiKcJjswpuuTRuiAX+ucQEpf0taxKXhu94aqPzWour+
-         d5JDDAS5T8tyERQplHTrPsXV9sLYbxIqVNaAhAqONeV+LQ8jgY5CDviWH7J5wSkK7Q8S
-         MYLzmYMYavojrfKdN2LFWWg06yKrOUu73kC9yf/kxBKi33fT5Z2kycLNl+ihMS8p2A9O
-         +xsmS3eng/+tmoFFnN3J4p+4jUf0wCIvqwJeIy5sbSPlxe0d+QWVUvX9kmnBdaRhli5X
-         1vUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MrsaCGMsxTtIoOCqcMdZ4C1bTw37N0EwvD0GhGKPg5c=;
-        b=W0/GH22YnhvrgFuO+E5+t7/Cx6kyoXeRa6ekpeeYvGupUpC967t5wlafgwvk6zXeoT
-         VHEWQXJR1xSGf7clKdCmL2t6jvPdNpvaMezUE1jaIuRgwmmuEy7aDb0aXg6IMN1IMkRC
-         1Vf52K54lTRkO4TTH8tVc4hRShIe5xYwB2JrXXZ2PqHi67m/qi2oZJmhbvJnTAZwJRAQ
-         0UPskca2TFcsq7d0mLEJ17ud5E9PQp1rK/VWqhYJOE7ia0w6qlfcyHp5DSfmqYLtiHhp
-         fILB03od03IVGTw4M5vvgA9pCPqorhDAWtNlGo0js3+dLWGs0ES2CpwlRE/jAemA/nFI
-         J6MQ==
-X-Gm-Message-State: AOAM530I9/S28YWVGUbqjL3xLjiCGe5C+n8DMNQJ/4dddcbJYkBuXYG3
-        JmAp4AnRQB0bQelRS9gkv8jCVJ1NmLXlv6cn44k=
-X-Google-Smtp-Source: ABdhPJxvkp0xKNancykWUqW+vOfVHn5HOQRf+uGXkTljBAdGL8i/zKpsdyfyx6meJ41TYU3KfR/jxJbBl9Y23HbGgLM=
-X-Received: by 2002:a67:3291:: with SMTP id y139mr5489124vsy.37.1591097290771;
- Tue, 02 Jun 2020 04:28:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200511115524.22602-1-Rodrigo.Siqueira@amd.com>
- <20200511115524.22602-3-Rodrigo.Siqueira@amd.com> <CACvgo53KfLkTg4UvT5E+afX+z4FjMcpdctD5=v32WJs6TS5s5g@mail.gmail.com>
-In-Reply-To: <CACvgo53KfLkTg4UvT5E+afX+z4FjMcpdctD5=v32WJs6TS5s5g@mail.gmail.com>
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-Date:   Tue, 2 Jun 2020 12:24:53 +0100
-Message-ID: <CACvgo50pYWM8DQuGjJwiZdO1vJvmg-XG08a+MYSWDmgVezN7Gw@mail.gmail.com>
-Subject: Re: [PATCH V4 2/3] drm/vkms: Compute CRC without change input data
-To:     Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc:     Brian Starkey <brian.starkey@arm.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Simon Ser <contact@emersion.fr>,
-        Leandro Ribeiro <leandro.ribeiro@collabora.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726373AbgFBLZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 07:25:40 -0400
+Received: from mga05.intel.com ([192.55.52.43]:1988 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725900AbgFBLZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 07:25:40 -0400
+IronPort-SDR: YVTOJA1kWfkHBOY197OibLbIEBrEpGS/0xCl+pS3E8ZbWIjbraMIjmJBjT3MAOKXXH1VnjpuQ/
+ 7t8GcEXqwtag==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 04:25:39 -0700
+IronPort-SDR: Vt5hFo/noc/5O4LBKKynkXP+DEjGzBPWT8SpbjdRMYjojELhXvxAb6S3KA+hom3JsE8PT+cBjo
+ Bpf1o1ru87XQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,464,1583222400"; 
+   d="scan'208";a="286622080"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.157])
+  by orsmga002.jf.intel.com with ESMTP; 02 Jun 2020 04:25:37 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf tools: Fix kernel maps for kcore and eBPF
+Date:   Tue,  2 Jun 2020 14:25:05 +0300
+Message-Id: <20200602112505.1406-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 May 2020 at 12:34, Emil Velikov <emil.l.velikov@gmail.com> wrote:
->
-> Hi Rodrigo,
->
-> On Mon, 11 May 2020 at 12:55, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com> wrote:
-> >
-> > From: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-> >
-> > The compute_crc() function is responsible for calculating the
-> > framebuffer CRC value; due to the XRGB format, this function has to
-> > ignore the alpha channel during the CRC computation. Therefore,
-> > compute_crc() set zero to the alpha channel directly in the input
-> > framebuffer, which is not a problem since this function receives a copy
-> > of the original buffer. However, if we want to use this function in a
-> > context without a buffer copy, it will change the initial value. This
-> > patch makes compute_crc() calculate the CRC value without modifying the
-> > input framebuffer.
-> >
-> > Signed-off-by: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-> > ---
-> >  drivers/gpu/drm/vkms/vkms_composer.c | 31 +++++++++++++++++-----------
-> >  1 file changed, 19 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
-> > index 258e659ecfba..686d25e7b01d 100644
-> > --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> > +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> > @@ -9,33 +9,40 @@
-> >
-> >  #include "vkms_drv.h"
-> >
-> > +static u32 get_pixel_from_buffer(int x, int y, const u8 *buffer,
-> > +                                const struct vkms_composer *composer)
-> > +{
-> > +       int src_offset = composer->offset + (y * composer->pitch)
-> > +                                         + (x * composer->cpp);
-> > +
-> > +       return *(u32 *)&buffer[src_offset];
-> > +}
-> > +
-> >  /**
-> >   * compute_crc - Compute CRC value on output frame
-> >   *
-> > - * @vaddr_out: address to final framebuffer
-> > + * @vaddr: address to final framebuffer
-> >   * @composer: framebuffer's metadata
-> >   *
-> >   * returns CRC value computed using crc32 on the visible portion of
-> >   * the final framebuffer at vaddr_out
-> >   */
-> > -static uint32_t compute_crc(void *vaddr_out, struct vkms_composer *composer)
-> > +static uint32_t compute_crc(const u8 *vaddr,
-> > +                           const struct vkms_composer *composer)
-> >  {
-> > -       int i, j, src_offset;
-> > +       int x, y;
-> >         int x_src = composer->src.x1 >> 16;
-> >         int y_src = composer->src.y1 >> 16;
-> >         int h_src = drm_rect_height(&composer->src) >> 16;
-> >         int w_src = drm_rect_width(&composer->src) >> 16;
-> > -       u32 crc = 0;
-> > +       u32 crc = 0, pixel = 0;
-> >
-> > -       for (i = y_src; i < y_src + h_src; ++i) {
-> > -               for (j = x_src; j < x_src + w_src; ++j) {
-> > -                       src_offset = composer->offset
-> > -                                    + (i * composer->pitch)
-> > -                                    + (j * composer->cpp);
-> > +       for (y = y_src; y < y_src + h_src; ++y) {
-> > +               for (x = x_src; x < x_src + w_src; ++x) {
-> >                         /* XRGB format ignores Alpha channel */
-> > -                       memset(vaddr_out + src_offset + 24, 0,  8);
-> > -                       crc = crc32_le(crc, vaddr_out + src_offset,
-> > -                                      sizeof(u32));
-> > +                       pixel = get_pixel_from_buffer(x, y, vaddr, composer);
-> > +                       bitmap_clear((void *)&pixel, 0, 8);
-> > +                       crc = crc32_le(crc, (void *)&pixel, sizeof(u32));
-> >                 }
-> >         }
-> >
-> IMHO using something like the following makes the code far simpler and clearer.
->
-> offset = composer->offset + (y_src * composer->pitch) + (x_src * composer->cpp);
->
-> for (i = 0; i < h_src; i++, offset += composer->pitch) {
->    for (j = 0; j < w_src; j++, offset += composer->cpp) {
->       pixel = get_pixel_from_buffer(vaddr, offset);
->       crc = crc32_le(crc, &pixel, sizeof(u32); // cast should not be needed
->    }
-> }
->
-> With the bitmap_clear() and related comment moved into get_pixel_from_buffer().
->
-If you fold the bitmap_clear() in get_pixel_from_buffer(), and drop
-the cast (unless I'm missing something and it's really needed) for
-crc32_le() this patch is:
+Adjust pgoff also when moving a map's start address.
 
-Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
+Example with v5.4.34 based kernel:
 
-I would suggest (but it's not a requirement) that you simplify the
-loop/offset calculation as separate patch in v5.
+  Before:
 
--Emil
+    $ sudo tools/perf/perf record -a --kcore -e intel_pt//k sleep 1
+    [ perf record: Woken up 1 times to write data ]
+    [ perf record: Captured and wrote 1.958 MB perf.data ]
+    $ sudo tools/perf/perf script --itrace=e >/dev/null
+    Warning:
+    961 instruction trace errors
+
+  After:
+
+    $ sudo tools/perf/perf script --itrace=e >/dev/null
+    $
+
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: fb5a88d4131a ("perf tools: Preserve eBPF maps when loading kcore")
+Cc: stable@vger.kernel.org
+---
+ tools/perf/util/symbol.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+index 57cbe7a29868..5ddf84dcbae7 100644
+--- a/tools/perf/util/symbol.c
++++ b/tools/perf/util/symbol.c
+@@ -1224,6 +1224,7 @@ int maps__merge_in(struct maps *kmaps, struct map *new_map)
+ 
+ 				m->end = old_map->start;
+ 				list_add_tail(&m->node, &merged);
++				new_map->pgoff += old_map->end - new_map->start;
+ 				new_map->start = old_map->end;
+ 			}
+ 		} else {
+@@ -1244,6 +1245,7 @@ int maps__merge_in(struct maps *kmaps, struct map *new_map)
+ 				 *      |new......| ->         |new...|
+ 				 * |old....|        -> |old....|
+ 				 */
++				new_map->pgoff += old_map->end - new_map->start;
+ 				new_map->start = old_map->end;
+ 			}
+ 		}
+-- 
+2.17.1
+
