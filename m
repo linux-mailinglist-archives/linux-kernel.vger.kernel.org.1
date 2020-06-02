@@ -2,109 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39391EBD22
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517261EBD2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728140AbgFBNdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 09:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgFBNdH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 09:33:07 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2FBC061A0E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 06:33:05 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a25so12628438ljp.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 06:33:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UXOP6EeQeN7QnSWXWe4xWPi5EI/vGhngXSWL67O93vc=;
-        b=2EGajLxxJM6gikQYPuS1mnKu5hp46+IVBEa9BwEc3owfe/BwQA7s9KI6hUKhvXWmSt
-         iMTb3bx5tEj8Sg6M7mXe5jzbS8EczhnXojEdy5kqCDqyc08i+3JK6eu5RtkCnIjm3CyY
-         bI4QHBWOVI7IQ5r9m0fg4tfoYV4jyp815xZStlLvA/SPqmTHBLzf1jYYzdTl/TDY+YKZ
-         tQCVWR94HSbuE4z6qpl2vcGt6s4WI7kuo1H6tSS1vr1WOEbPHcyxvV1/7QcLvUVCP2FK
-         xWa+SP7Rx1sAG/Sv1pXG9062JgPV+wc117DRdA0jPIqWflhSnelmPeh3mtb45eP9BUB3
-         /lxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UXOP6EeQeN7QnSWXWe4xWPi5EI/vGhngXSWL67O93vc=;
-        b=FvMi7rsmAnWFrY0tl2aJbDKAEjH7dfAuDmrGfXH5ZHOLqH1qLbnxHLntf3dFbBwtG0
-         VwpPVUkN8Nz8Mrco8ukj0+k/cDI6P7gnZqZdMg19W4GoVXETjGfhoxKxyiSZHDbgTMtA
-         H0u4KUlMCGcrZ2HrXJJQ2h9PHSZGVC3lUoY0wg2c3eYcTjYQEhSOcY1MfzY8NUFBFoDc
-         OzQZdPyqq9lI5k4sMqTqZWtQ7hLd2w3Lga5uoEvtx2n1KJ0qCyre8CiGDSvDW3Qq6RyM
-         qrOeeTmE0xHjT4yZq0KXenGAkck7vsqSg1if/BmAsIp9YmGG8F6IhjScUjUxd3ktcb39
-         m1KQ==
-X-Gm-Message-State: AOAM530kYHw/lzNAqvHmDCAbHREZuHHZ8WmEk34CbJBUHYHaXkdFweIP
-        a2cSX0ZMbWozYL7Ul4pCsF7iEQ==
-X-Google-Smtp-Source: ABdhPJwUKdYFxoN2BZU6Td7Fn5skrnUDC3bo7r1I44uRR7y3Vo9hSYxz7kedhP7e5lIggogsjLYjGw==
-X-Received: by 2002:a2e:9859:: with SMTP id e25mr3590593ljj.243.1591104784267;
-        Tue, 02 Jun 2020 06:33:04 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id y17sm696697lfa.77.2020.06.02.06.33.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 06:33:03 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 226B4102780; Tue,  2 Jun 2020 16:33:09 +0300 (+03)
-Date:   Tue, 2 Jun 2020 16:33:09 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [RFC 06/16] KVM: Use GUP instead of copy_from/to_user() to
- access guest memory
-Message-ID: <20200602133309.xyet6tndjadwafnb@box>
-References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
- <20200522125214.31348-7-kirill.shutemov@linux.intel.com>
- <87a71w832c.fsf@vitty.brq.redhat.com>
- <20200525151755.yzbmemtrii455s6k@box>
- <a5acc4c8-2ee6-9e5d-c0a5-2a6f7c54c059@redhat.com>
+        id S1727863AbgFBNg0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Jun 2020 09:36:26 -0400
+Received: from mga01.intel.com ([192.55.52.88]:11395 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725940AbgFBNgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 09:36:25 -0400
+IronPort-SDR: bvFYyemll5sTkaRpzI1aVTMRam3WvWHb5FVhKT9AvBO3010qUbA3LX4F3A4BXhMiNxFPK+2jsG
+ G+ddehdN+G0A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 06:36:25 -0700
+IronPort-SDR: NBeSQghNBhFX6gfvY+doY0ZyDPw4dDqR5/Hs8LXo5/2uJ8VK42VCv7OXn2DNZoegfHmCvIvTSb
+ beQDtVJARb4g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,464,1583222400"; 
+   d="scan'208";a="286653698"
+Received: from fmsmsx107.amr.corp.intel.com ([10.18.124.205])
+  by orsmga002.jf.intel.com with ESMTP; 02 Jun 2020 06:36:24 -0700
+Received: from fmsmsx114.amr.corp.intel.com (10.18.116.8) by
+ fmsmsx107.amr.corp.intel.com (10.18.124.205) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 2 Jun 2020 06:36:24 -0700
+Received: from fmsmsx108.amr.corp.intel.com ([169.254.9.97]) by
+ FMSMSX114.amr.corp.intel.com ([169.254.6.185]) with mapi id 14.03.0439.000;
+ Tue, 2 Jun 2020 06:35:20 -0700
+From:   "Ruhl, Michael J" <michael.j.ruhl@intel.com>
+To:     "Stankiewicz, Piotr" <piotr.stankiewicz@intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     "Stankiewicz, Piotr" <piotr.stankiewicz@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 07/15] drm/amdgpu: use PCI_IRQ_MSI_TYPES where
+ appropriate
+Thread-Topic: [PATCH 07/15] drm/amdgpu: use PCI_IRQ_MSI_TYPES where
+ appropriate
+Thread-Index: AQHWOL8clbNxZ7bnykCB8ftlNPJ+z6jFUrZg
+Date:   Tue, 2 Jun 2020 13:35:20 +0000
+Message-ID: <14063C7AD467DE4B82DEDB5C278E8663010E23E538@FMSMSX108.amr.corp.intel.com>
+References: <20200602092030.31966-1-piotr.stankiewicz@intel.com>
+In-Reply-To: <20200602092030.31966-1-piotr.stankiewicz@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.1.200.107]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a5acc4c8-2ee6-9e5d-c0a5-2a6f7c54c059@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 06:35:22PM +0200, Paolo Bonzini wrote:
-> On 25/05/20 17:17, Kirill A. Shutemov wrote:
-> >> Personally, I would've just added 'struct kvm' pointer to 'struct
-> >> kvm_memory_slot' to be able to extract 'mem_protected' info when
-> >> needed. This will make the patch much smaller.
-> > Okay, can do.
-> > 
-> > Other thing I tried is to have per-slot flag to indicate that it's
-> > protected. But Sean pointed that it's all-or-nothing feature and having
-> > the flag in the slot would be misleading.
-> > 
-> 
-> Perhaps it would be misleading, but it's an optimization.  Saving a
-> pointer dereference can be worth it, also because there are some places
-> where we just pass around a memslot and we don't have the struct kvm*.
+>-----Original Message-----
+>From: dri-devel <dri-devel-bounces@lists.freedesktop.org> On Behalf Of
+>Piotr Stankiewicz
+>Sent: Tuesday, June 2, 2020 5:21 AM
+>To: Alex Deucher <alexander.deucher@amd.com>; Christian König
+><christian.koenig@amd.com>; David Zhou <David1.Zhou@amd.com>; David
+>Airlie <airlied@linux.ie>; Daniel Vetter <daniel@ffwll.ch>
+>Cc: Stankiewicz, Piotr <piotr.stankiewicz@intel.com>; dri-
+>devel@lists.freedesktop.org; amd-gfx@lists.freedesktop.org; linux-
+>kernel@vger.kernel.org
+>Subject: [PATCH 07/15] drm/amdgpu: use PCI_IRQ_MSI_TYPES where
+>appropriate
+>
+>Seeing as there is shorthand available to use when asking for any type
+>of interrupt, or any type of message signalled interrupt, leverage it.
+>
+>Signed-off-by: Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+>Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+>---
+> drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c | 8 ++++----
+> 1 file changed, 4 insertions(+), 4 deletions(-)
+>
+>diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c
+>b/drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c
+>index 5ed4227f304b..6dbe173a9fd4 100644
+>--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c
+>+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c
+>@@ -251,11 +251,11 @@ int amdgpu_irq_init(struct amdgpu_device *adev)
+> 		int nvec = pci_msix_vec_count(adev->pdev);
+> 		unsigned int flags;
+>
+>-		if (nvec <= 0) {
+>+		if (nvec > 0)
+>+			flags = PCI_IRQ_MSI_TYPES;
+>+		else
+> 			flags = PCI_IRQ_MSI;
+>-		} else {
+>-			flags = PCI_IRQ_MSI | PCI_IRQ_MSIX;
+>-		}
 
-Vitaly proposed to add struct kvm pointer into memslot. Do you object
-against it?
+Minor nit:
 
--- 
- Kirill A. Shutemov
+Is it really necessary to set do this check?  Can flags just
+be set?
+
+I.e.: 
+	flags = PCI_IRQ_MSI_TYPES;
+
+pci_alloc_irq_vector() tries stuff in order.  If MSIX is not available,
+it will try MSI.
+
+M
+
+>+
+> 		/* we only need one vector */
+> 		nvec = pci_alloc_irq_vectors(adev->pdev, 1, 1, flags);
+> 		if (nvec > 0) {
+>--
+>2.17.2
+>
+>_______________________________________________
+>dri-devel mailing list
+>dri-devel@lists.freedesktop.org
+>https://lists.freedesktop.org/mailman/listinfo/dri-devel
