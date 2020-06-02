@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327781EBA0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0271EBA05
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgFBLFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 07:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgFBLFx (ORCPT
+        id S1726217AbgFBLEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 07:04:48 -0400
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:44234 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgFBLEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:05:53 -0400
-X-Greylist: delayed 2144 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 02 Jun 2020 04:05:53 PDT
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793BEC061A0E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 04:05:53 -0700 (PDT)
-Received: from kapsi.fi ([2001:67c:1be8::11] helo=lakka.kapsi.fi)
-        by mail.kapsi.fi with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <jpa@lakka.kapsi.fi>)
-        id 1jg4B5-0001K0-OB; Tue, 02 Jun 2020 13:29:52 +0300
-Received: from jpa by lakka.kapsi.fi with local (Exim 4.92)
-        (envelope-from <jpa@lakka.kapsi.fi>)
-        id 1jg4B5-00021k-MV; Tue, 02 Jun 2020 13:29:51 +0300
-Date:   Tue, 2 Jun 2020 13:29:51 +0300
-From:   Petteri Aimonen <jpa@git.mail.kapsi.fi>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arch/x86: reset MXCSR to default in kernel_fpu_begin()
-Message-ID: <20200602102951.GE17423@lakka.kapsi.fi>
-References: <20200602101119.GA11634@zn.tnic>
+        Tue, 2 Jun 2020 07:04:47 -0400
+Received: by mail-oo1-f68.google.com with SMTP id e8so1632751ooi.11;
+        Tue, 02 Jun 2020 04:04:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SnU67PM5tYuOxOQ+ffnEXx7IP/EaDf221A3j8p4Bihs=;
+        b=TZfncMOjIFrBbaZ31JJa1FvBWRjbJUH8oifaOiq7nQowyup+3lWbN2xdrz7AeqUloV
+         PKalo02TpG5AAwmjcWrmPwVj0x0CEUwfPHbpqVwLi3iCcoW/7e3Hb8HcMUieiN0iZTY2
+         S15uZR43Jw6J8Hc7+D8c+NbB7EqJc9ebsow6TT/ZuWfFfGyR6t4MEW0nh+ZL2Ecsfz1E
+         iEU8lHzAAb4bM80vZpJryLB5GupO9xAX7oT6DjgI1iwYS52ud9hqo8jB7csR/hKmPfSQ
+         PL3wG8fSQrW5DxzugA/LyhmM1eSqs0V20P+mHt1B4Em+RowYW/jhqX0T3F3kZUrIEa3t
+         9bIg==
+X-Gm-Message-State: AOAM533YoHfZ5+Iqq7eZAOvlspirNN4zYA88IZz0buk3xLgjgrcN2133
+        /rSxmEOvzZ/18QVf+wNDY/MiDoV/d5g3TTwpZjc=
+X-Google-Smtp-Source: ABdhPJx5LJM1BuqsyoFrXnT/JqbG5sPPQGLYtu772FLIRUMwlABs9hqY840TLSR+IxcpPBkOXCjVdX5M39D3Q54TX0I=
+X-Received: by 2002:a4a:e295:: with SMTP id k21mr20587446oot.11.1591095884883;
+ Tue, 02 Jun 2020 04:04:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200602101119.GA11634@zn.tnic>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Rspam-Score: 1.2 (+)
-X-Rspam-Report: Action: no action
- Symbol: RCVD_TLS_LAST(0.00)
- Symbol: ARC_NA(0.00)
- Symbol: FROM_HAS_DN(0.00)
- Symbol: TO_MATCH_ENVRCPT_ALL(0.00)
- Symbol: MIME_GOOD(-0.10)
- Symbol: DMARC_NA(0.00)
- Symbol: AUTH_NA(1.00)
- Symbol: RCPT_COUNT_FIVE(0.00)
- Symbol: TO_DN_ALL(0.00)
- Symbol: NEURAL_HAM(-0.00)
- Symbol: R_SPF_NA(0.00)
- Symbol: FORGED_SENDER(0.30)
- Symbol: R_DKIM_NA(0.00)
- Symbol: MIME_TRACE(0.00)
- Symbol: ASN(0.00)
- Symbol: FROM_NEQ_ENVFROM(0.00)
- Symbol: RCVD_COUNT_TWO(0.00)
- Message-ID: 20200602102951.GE17423@lakka.kapsi.fi
-X-Rspam-Bar: +
-X-SA-Exim-Connect-IP: 2001:67c:1be8::11
-X-SA-Exim-Mail-From: jpa@lakka.kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+References: <CGME20200504232908eucas1p296927bc7c736ad924cefaea9a546459d@eucas1p2.samsung.com>
+ <b1cf967015c5beafa475aaa30d8e21a58caff870.camel@perches.com>
+ <839133dd-8ed4-5fec-c311-ce9f8abf3d5f@samsung.com> <72e0871c-d4bb-4887-4d6f-a60fd905bec1@physik.fu-berlin.de>
+In-Reply-To: <72e0871c-d4bb-4887-4d6f-a60fd905bec1@physik.fu-berlin.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 2 Jun 2020 13:04:33 +0200
+Message-ID: <CAMuHMdXUD4PNndjtxz84pYMdXaM68g7vWiRd+Gf18a35T-oA=Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] video: fbdev: amifb: remove dead APUS support
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Adrian,
 
-> Instead of adding that kernel module which is x86-specific
-> to a generic lib/ directory, it should be in, say,
-> tools/testing/selftests/x86/test_fpu_module.c or so and instead of
+On Tue, Jun 2, 2020 at 12:41 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On 6/2/20 12:37 PM, Bartlomiej Zolnierkiewicz wrote:
+> >> These #ifdefs are relics from APUS (Amiga Power-Up System), which
+> >> added a PPC board.  APUS support was killed off a long time ago,
+> >> when arch/ppc/ was still king, but these #ifdefs were missed, because
+> >> they didn't test for CONFIG_APUS.
+> >
+> > Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+> > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> > ---
+> >  drivers/video/fbdev/amifb.c |   63 --------------------------------------------
+> >  1 file changed, 63 deletions(-)
+>
+> What do you mean with the sentence "when arch/ppc/ was still king"?
 
-The kernel module is not actually x86-specific, even though it is 
-currently only enabled for x86. amdgpu driver already does kernel mode 
-floating point operations on PPC64 also, and the same module could be 
-used to test the same thing there.
+Ah, Bartl copied that from my email ;-)
 
-> reading /proc/sys/debug/test_fpu, the user portion of the code would
-> simply modprobe it.
+There used to be APUS support under arch/ppc/.
+Later, 32-bit arch/ppc/ and 64-bit arch/ppc64/ were merged in a new\
+architecture port under arch/powerpc/, and the old ones were dropped.
+APUS was never converted, and thus dropped.
 
-To deterministically trigger the bug, the syscall has to come from the 
-same thread that has modified MXCSR. Going through /usr/sbin/modprobe 
-won't work, and manually doing the necessary syscalls for module loading 
-seems too complicated.
+> Does that mean - in the case we would re-add APUS support in the future, that
+> these particular changes would not be necessary?
 
-> What is also missing is the user portion doing ldmxcsr before running
-> the test and the test should be causing at least one exception which
-> MXCSR masks off.
+They would still be necessary, as PowerPC doesn't grok m68k instructions.
+Alternatively, we could just drop the m68k inline asm, and retain the C
+version instead?  I have no idea how big of a difference that would make
+on m68k, using a more modern compiler than when the code was written
+originally.
 
-The fesetround() and feenableexcept() are the portable ways to modify 
-MXCSR. The test module does cause Precision Exception and Denormal 
-Exception if those exceptions are unmasked.
+Note that all of this is used only for cursor handling, which I doubt is
+actually used by any user space application. The only exception is the
+DIVUL() macro, which is used once during initialization, thus also not
+performance critical.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 
 --
-Petteri
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
