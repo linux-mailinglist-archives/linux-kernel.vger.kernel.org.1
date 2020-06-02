@@ -2,119 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4937B1EBBE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E28D1EBBEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbgFBMlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgFBMlb (ORCPT
+        id S1728114AbgFBMlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:41:50 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21986 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725940AbgFBMlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:41:31 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF17C061A0E;
-        Tue,  2 Jun 2020 05:41:31 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id mb16so12601864ejb.4;
-        Tue, 02 Jun 2020 05:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GHFMqUa98wqBWHtS9xjIzjQXZSVDldKjF1cbC0g4d08=;
-        b=tnvwpLObLrEDtNs8U5Vl8qkSnTyyeCPMkkSaR3Kg9eUoRH3Hgn29or2fGpv7zHGk8M
-         C8BNQ2tcJTDdzu1SUcIWaS2WWq0PO2v/NovoDLSOeqaMWAvipZKAHJuLY5TfkoE6gPzx
-         CsfZW5NJUgYv/Gpqeioq6eumh/VelsnRuMOy9Ka5zXfPEnT+Fgdi2+ubHc36B7AGq72t
-         oFD67tSFDwndvtWTXeSBI/QEeGD8j62j/uGgQwGDqHz9qRdfcBPtr40KKF0l37G94Q8J
-         pgM27p0AeY4NlJcZX2uf2eEfgi8jr8pbWdUH64icu+Di8w8IYurTjt6RYRW74uVc8mFF
-         w4jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GHFMqUa98wqBWHtS9xjIzjQXZSVDldKjF1cbC0g4d08=;
-        b=b+YxKp+6yw4mTHmj5wPw9GhPI9a60J4gB2Fy5ulOJX3ifKxZOoMKLAt3g/c7ZbHTq1
-         fDJ0H3k3sG/hlWDLHjRsyBSgp0rw9UESNHvyR/5IUYzULUad3w6R0CvwwCmjmMRyP1ST
-         cswQ0HYqcqeNyqIY8OBD7hd1vwylGZSj8mqHC0b4tHvvS4l/c5wMxQBeIUqRiO9Ue1kP
-         z1ah4UyxyZspS1/OUQV9D8qNsmT85dHqna1X7EFroxapFagxh2F++dFAlPrHdJMTh4TV
-         mQs+08bARY5od+nvSdMoWfC7DPOtA/yQKyJrCyUIhSwvKPGCoS/rfSK492zF90ibQwHk
-         +oKg==
-X-Gm-Message-State: AOAM533Q82ocuzYMdJRRCGWrGi0nwlBnH91NVysLlBrhcbmUvRqYsyEc
-        JN+LIxEItSm5D1XUfHnMSQY=
-X-Google-Smtp-Source: ABdhPJzyy7UvAUoIvRp6qrIztSS8RZHsRj3KwPTHNmzsC88Iv7frGG2V8KfjWdulFq5S2YkCi9eGig==
-X-Received: by 2002:a17:906:2e50:: with SMTP id r16mr22811025eji.305.1591101689995;
-        Tue, 02 Jun 2020 05:41:29 -0700 (PDT)
-Received: from localhost (pd9e51079.dip0.t-ipconnect.de. [217.229.16.121])
-        by smtp.gmail.com with ESMTPSA id f4sm1572869ejk.17.2020.06.02.05.41.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 05:41:27 -0700 (PDT)
-Date:   Tue, 2 Jun 2020 14:41:26 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, od@zcrc.me,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] pwm: jz4740: Drop dependency on MACH_INGENIC
-Message-ID: <20200602124126.GD3360525@ulmo>
-References: <20200527115225.10069-1-paul@crapouillou.net>
+        Tue, 2 Jun 2020 08:41:45 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 052CX7tD061173;
+        Tue, 2 Jun 2020 08:41:36 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31dheku6mb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 08:41:35 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 052Ca5gS008002;
+        Tue, 2 Jun 2020 12:41:34 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma01fra.de.ibm.com with ESMTP id 31bf47tf9u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 12:41:33 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 052CfVUN65339640
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Jun 2020 12:41:31 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A973642041;
+        Tue,  2 Jun 2020 12:41:31 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 256274203F;
+        Tue,  2 Jun 2020 12:41:30 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.91.137])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  2 Jun 2020 12:41:29 +0000 (GMT)
+Subject: Re: linux-next test error: BUG: using smp_processor_id() in
+ preemptible [ADDR] code: syz-fuzzer/6792
+To:     syzbot <syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+References: <0000000000008ff8ea05a71818b5@google.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Tue, 2 Jun 2020 18:11:29 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VMt1DrMGOVs3KQwf"
-Content-Disposition: inline
-In-Reply-To: <20200527115225.10069-1-paul@crapouillou.net>
-User-Agent: Mutt/1.13.1 (2019-12-14)
+In-Reply-To: <0000000000008ff8ea05a71818b5@google.com>
+Content-Type: multipart/mixed;
+ boundary="------------8CCD057140658DF24F4D91CA"
+Content-Language: en-US
+Message-Id: <20200602124130.256274203F@d06av24.portsmouth.uk.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-02_13:2020-06-02,2020-06-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 bulkscore=0
+ adultscore=0 suspectscore=0 cotscore=-2147483648 phishscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 mlxlogscore=999 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006020089
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a multi-part message in MIME format.
+--------------8CCD057140658DF24F4D91CA
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---VMt1DrMGOVs3KQwf
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+#syz test: 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 
+0e21d4620dd047da7952f44a2e1ac777ded2d57e
 
-On Wed, May 27, 2020 at 01:52:22PM +0200, Paul Cercueil wrote:
-> Depending on MACH_INGENIC prevent us from creating a generic kernel that
-> works on more than one MIPS board. Instead, we just depend on MIPS being
-> set.
->=20
-> Acked-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->=20
-> Notes:
->     v2: New patch. I don't consider this a fix but an enhancement, since =
-the old
->     	behaviour was in place since the driver was born in ~2010, so no Fix=
-es tag.
->     v3: Commit message changes (invert Acked-by / Signed-off-by)
->=20
->  drivers/pwm/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+--------------8CCD057140658DF24F4D91CA
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-ext4-mballoc-Use-raw_cpu_ptr-in-case-if-preemption-i.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ext4-mballoc-Use-raw_cpu_ptr-in-case-if-preemption-i.pa";
+ filename*1="tch"
 
-All four patches applied, thanks.
+From cc1cf67d99d5fa61db0651c89c288df31bad6b8e Mon Sep 17 00:00:00 2001
+From: Ritesh Harjani <riteshh@linux.ibm.com>
+Date: Tue, 2 Jun 2020 17:54:12 +0530
+Subject: [PATCH 1/1] ext4: mballoc: Use raw_cpu_ptr in case if preemption is enabled
 
-Thierry
+It doesn't matter really in ext4_mb_new_blocks() about whether the code
+is rescheduled on any other cpu due to preemption. Because we care
+about discard_pa_seq only when the block allocation fails and then too
+we add the seq counter of all the cpus against the initial sampled one
+to check if anyone has freed any blocks while we were doing allocation.
 
---VMt1DrMGOVs3KQwf
-Content-Type: application/pgp-signature; name="signature.asc"
+So just use raw_cpu_ptr to not trigger this BUG.
 
------BEGIN PGP SIGNATURE-----
+BUG: using smp_processor_id() in preemptible [00000000] code: syz-fuzzer/6927
+caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+CPU: 1 PID: 6927 Comm: syz-fuzzer Not tainted 5.7.0-next-20200602-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
+ ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+ ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
+ ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+ ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
+ ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
+ ext4_append+0x153/0x360 fs/ext4/namei.c:67
+ ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
+ ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
+ vfs_mkdir+0x419/0x690 fs/namei.c:3632
+ do_mkdirat+0x21e/0x280 fs/namei.c:3655
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl7WSPYACgkQ3SOs138+
-s6FaCRAAnn+U7/uQz3zkEYTEbfnxMr8kVUv6gVcGH3Ix8HVWYWXpWh753iKyp8AP
-vwfWWrO1oy5hh5JuygD21z+Ax5Q80jdohC5q88WMX9XrGuxxtk0ZdU/vXUKr1Jq8
-XF9QGH6AyFVqqTmQb0vZfYpMqMIPmV2xOIosKvHr30MfxnzWgijcAQyCzqHDKKtn
-nZVMeZXwOzwfGM3ZFGy27z4o2CqFepCzwtqdFBkGLM3pHASuI36M8luC64dYgRzq
-/G4JRz22p2+0AJ1MurJmb7jTvujJbdBYKtm5hMJoDxjxONFqKEgfMPXbnVdSGWFW
-eBuQpws8toP4Rzd5VTJAZ2deC8cd4gWvKCHLip9EtuWqHgIwPrVSLmRw/DiVSVif
-r/Wex9A1iPHKAuo9yUAwph41N0qX6UegVSUV3yen9PZwduHGY2eJ0xhHsYQdlSLW
-xqdDga5hvavcrg62EPWAHch1z1vrRKC7tO+DbRSnaQV/mJEqhnf7+jM0dB8723F5
-9zirSWPQkWojhNPBE1dbMqeaitDoFOqHZ/U/OlMY6NHDFincfxk2jDQF32ehMfrm
-c4iDIaarl73UlGCtgNYO1/9SFrRcdKXeBLhFaLJyU/5+J+eSO/LOCdcHVKDXXTuM
-iGhac5iTre7gSZlU4CfS58AglrjmNMMbEbkt1Mh4PhxW++f20A4=
-=yUQX
------END PGP SIGNATURE-----
+Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Reported-by: syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com
+---
+ fs/ext4/mballoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---VMt1DrMGOVs3KQwf--
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index a9083113a8c0..b79b32dbe3ea 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4708,7 +4708,7 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
+ 	}
+ 
+ 	ac->ac_op = EXT4_MB_HISTORY_PREALLOC;
+-	seq = *this_cpu_ptr(&discard_pa_seq);
++	seq = *raw_cpu_ptr(&discard_pa_seq);
+ 	if (!ext4_mb_use_preallocated(ac)) {
+ 		ac->ac_op = EXT4_MB_HISTORY_ALLOC;
+ 		ext4_mb_normalize_request(ac, ar);
+-- 
+2.21.3
+
+
+--------------8CCD057140658DF24F4D91CA--
+
