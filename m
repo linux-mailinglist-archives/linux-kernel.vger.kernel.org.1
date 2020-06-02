@@ -2,146 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2304A1EBB1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9137A1EBB18
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgFBL7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 07:59:45 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:48186 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgFBL7o (ORCPT
+        id S1726380AbgFBL5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 07:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgFBL5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:59:44 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052Bq7Wd120971;
-        Tue, 2 Jun 2020 11:58:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=aNv6a+hz4l28g6qWJSVKkz/V2Ftmd/MjF6txKFfaZjg=;
- b=QpNkDy7BTYR3eun59xAT7thNRgLIxrNmSq2DpH9MUJti5+RTwbxfh9tQikkZ4hy5g8SL
- jpLLt8/tCWg283CzUJuQb2C8vE9VdD3LF/sDtzRUq2m9k1RZHB3M7Av6mtmj/wLangdT
- mPrJIvttPcn7FrYpdPZd42CmqaZXUWhx6gJOX1e9Txy82xWc51BapAvuoUg0+vCuo0w2
- kd0bJgAG7HRACgzLskVH/P+KiRwKYnQwY/6gQggSmna8+bn2OiDNzg+NAjUhETyiOoAU
- DYOF92jHtAijnNuIiJpXt5reo4/H7+idAWttNTbcMn8D9L1ZwA0Rs1jz+KXmNw9mfmdp fw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 31dkrugnp5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 02 Jun 2020 11:58:39 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052BrxmZ020723;
-        Tue, 2 Jun 2020 11:56:39 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 31dju19xwm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Jun 2020 11:56:39 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 052BuPTJ008715;
-        Tue, 2 Jun 2020 11:56:30 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Jun 2020 04:56:25 -0700
-Date:   Tue, 2 Jun 2020 14:56:17 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Vaibhav Agarwal <vaibhav.sr@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        devel@driverdev.osuosl.org, alsa-devel@alsa-project.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org
-Subject: Re: [RESEND PATCH v1 1/6] staging: greybus: audio: Update snd_jack
- FW usage as per new APIs
-Message-ID: <20200602115617.GD30374@kadam>
-References: <cover.1591040859.git.vaibhav.sr@gmail.com>
- <1ee2783b64c68e49880f88457655648ac45bbcb8.1591040859.git.vaibhav.sr@gmail.com>
+        Tue, 2 Jun 2020 07:57:31 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C1DC061A0E
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 04:57:31 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id c194so6977858oig.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 04:57:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bnys2wOoEU1x/ikV5ijTNA/FpnweJ1oEqvvB7NUEA+A=;
+        b=k+9cCuBX+07ki3h/U1eTOzlr6ODNPkXXcMKP6TfZD7xxmJxeBWW3n9KjD5Mg1xqfxl
+         CqMnaNTwFk4x77rZ3i4IpXbcT3Lz0kMvuu5YL/MJ1IvMjZQqxUnWCDc5VhRoQRm9ETn/
+         t9/MEFpNnEXCG0JRS0g0z25GDiOozWbkOTdxfYjCG5iAvZFoaBtC80XqC3qwp1Egq7Bj
+         oXW7ASgx69H0zp0YNjuLPGrC0UFqf2u/Qphzr8zuZBi1hTWXjrU0MRk7pWYFRAyoxyV5
+         MibIXAuxNYlXoDbaxIpKNnSPdw1PNSBNbD7I8rhM/2vJb17fdDmqsTVVpccOou9NM1ZX
+         5zMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bnys2wOoEU1x/ikV5ijTNA/FpnweJ1oEqvvB7NUEA+A=;
+        b=Bu8rVZKdXPniqryEJxNMuMIUo68BOTXEz8ve+SDbIP8NlfJrnftAK2Gtzutfvm0qvn
+         rEM0gfWdq0R7hd96N3vir5wIXk+yWzay1UbJzm1k/g8F/DLPElxHcdjhobNi2WtMmePk
+         zMof4hRjzkHlY9kw9Ff3fBnlvQGErFK8s6HvYgV5sqArmbiI8nCOxxIJvnSSOOm7sAIr
+         JP2izbmVCgRyxoPMpcEsFQkffuTN3bYHiYU1qF+toFdeiRLv5eF7q5jj9j89oABKGhum
+         +EmZ2SiTnqUBM1nBWVa8O8+UnaYncS3v5yz1O1nZ0Is6IWLW8ep5OCnSb1usYG0j8t5Y
+         B3Fg==
+X-Gm-Message-State: AOAM530hUxqrjSDI7am9KEYhiuZH/eHdT0YpulXUrqBlozyQMG9QC9rE
+        nGVObqZwMk42C52UqwTULnrgwXzibYut8deUtxWWew==
+X-Google-Smtp-Source: ABdhPJyF04o7i6kEvgUR2RRqw2rFPSQaTPQrgt/KTJQMMVnh2YChB0XvplTmPPHzK36jN1aEaoBMWgCgPKD1BB58jkU=
+X-Received: by 2002:aca:50cf:: with SMTP id e198mr2811324oib.76.1591099050929;
+ Tue, 02 Jun 2020 04:57:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1ee2783b64c68e49880f88457655648ac45bbcb8.1591040859.git.vaibhav.sr@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
- suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006020084
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
- mlxscore=0 lowpriorityscore=0 suspectscore=2 malwarescore=0 clxscore=1011
- adultscore=0 mlxlogscore=999 cotscore=-2147483648 phishscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006020084
+References: <20200602100924.26256-1-sumit.semwal@linaro.org>
+ <20200602100924.26256-2-sumit.semwal@linaro.org> <20200602112415.GD5684@sirena.org.uk>
+In-Reply-To: <20200602112415.GD5684@sirena.org.uk>
+From:   Sumit Semwal <sumit.semwal@linaro.org>
+Date:   Tue, 2 Jun 2020 17:27:19 +0530
+Message-ID: <CAO_48GHdhafjgLH1-3upZPXhNjKSt_bPAnPpjA+nhR2wrLbcZw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/5] regulator: Allow regulators to verify enabled
+ during enable()
+To:     Mark Brown <broonie@kernel.org>
+Cc:     agross@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+        lgirdwood@gmail.com, robh+dt@kernel.org,
+        Nisha Kumari <nishakumari@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 10:51:10AM +0530, Vaibhav Agarwal wrote:
-> diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
-> index 08746c85dea6..ebf8484f0ae7 100644
-> --- a/drivers/staging/greybus/audio_codec.c
-> +++ b/drivers/staging/greybus/audio_codec.c
-> @@ -709,17 +709,29 @@ static struct snd_soc_dai_driver gbaudio_dai[] = {
->  };
->  
->  static int gbaudio_init_jack(struct gbaudio_module_info *module,
-> -			     struct snd_soc_codec *codec)
-> +			     struct snd_soc_card *card)
->  {
->  	int ret;
->  
+Hi Mark,
 
-No blank line please.
+Thanks for the review!
 
-> +	struct snd_soc_jack *jack;
+On Tue, 2 Jun 2020 at 16:54, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Jun 02, 2020 at 03:39:20PM +0530, Sumit Semwal wrote:
+>
+> > +
+> > +             if (time_remaining <= 0) {
+> > +                     rdev_err(rdev, "Enabled check failed.\n");
+> > +                     return -ETIMEDOUT;
+>
+> s/failed/timed out/
+Ack
+>
+> > + * @poll_enabled_time: Maximum time (in uS) to poll if the regulator is
+> > + *                          actually enabled, after enable() call
+> > + *
+>
+> This comment needs updating to reflect the new implementation.
+Yes, I will update.
 
-This code would be nicer without the "jack" pointer.  Just use
-"module->headset_jack" directly so that it's easier to use grep on the
-code.
-
-> +	struct snd_soc_jack_pin *headset, *button;
-> +
->  	if (!module->jack_mask)
->  		return 0;
->  
->  	snprintf(module->jack_name, NAME_SIZE, "GB %d Headset Jack",
->  		 module->dev_id);
-> -	ret = snd_soc_jack_new(codec, module->jack_name, module->jack_mask,
-> -			       &module->headset_jack);
-> +
-> +	headset = devm_kzalloc(module->dev, sizeof(*headset), GFP_KERNEL);
-> +	if (!headset)
-> +		return -ENOMEM;
-> +
-> +	headset->pin = module->jack_name;
-> +	headset->mask = module->jack_mask;
-> +	jack = &module->headset_jack;
-> +
-> +	ret = snd_soc_card_jack_new(card, module->jack_name, module->jack_mask,
-> +				    jack, headset, 1);
->  	if (ret) {
->  		dev_err(module->dev, "Failed to create new jack\n");
->  		return ret;
-> @@ -730,11 +742,21 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
->  
->  	snprintf(module->button_name, NAME_SIZE, "GB %d Button Jack",
->  		 module->dev_id);
-> -	ret = snd_soc_jack_new(codec, module->button_name, module->button_mask,
-> -			       &module->button_jack);
-> +	button = devm_kzalloc(module->dev, sizeof(*headset), GFP_KERNEL);
-                                           ^^^^^^^^^^^^^^^^
-Use "sizeof(*button)".  It's the same size so it doesn't affect runtime.
-
-
-> +	if (!button) {
-> +		ret = -ENOMEM;
-> +		goto free_headset;
-> +	}
-
-regards,
-dan carpenter
-
+Best,
+Sumit.
