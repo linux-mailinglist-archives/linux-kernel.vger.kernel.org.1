@@ -2,150 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BCD1EBD64
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918DE1EBD70
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgFBNym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 09:54:42 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:52588 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgFBNym (ORCPT
+        id S1726977AbgFBN7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 09:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725919AbgFBN7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 09:54:42 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052DqYKO120296;
-        Tue, 2 Jun 2020 13:54:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : reply-to : mime-version : content-type;
- s=corp-2020-01-29; bh=PvGlKKbIzRg+r/rxEzHH7QUrhuv1NTZV4doWX07tn4o=;
- b=rORvsn2dvfxdda6CIal3pCOM1RbD9OnHPl26ZLw5ONJ2y0cxGoo1O22WiYU7m822AAIu
- VbcMAeWlcMFLzA8mzZ63E2Pj5g6Ds+poCt+SCZNf+1fKk0bnvglQBuF0xE//vAn3MIQU
- V3gBtSLn/Zl7Hhw4smg2Bkf1IZAci4bpgpBwYPefKwt8YzOcF2bG/kTOJte8bdgimbNt
- 1h/4Es+smv9HxxntTFWSlChEb1WdGfxKEC89iSLqJCU8akrV5qo7AonT8/SFx+OjSTf3
- HtFT8XOljBdQIZAQSL+n3FtGv7Bz7z1v+nRFD7tjtvNXGvSr6r9jAJqzak+8GYWEXTGq 7g== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 31bewqv7gp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 02 Jun 2020 13:54:19 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052DrP2a142498;
-        Tue, 2 Jun 2020 13:54:18 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 31c12p80yc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Jun 2020 13:54:18 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 052DsGZr004520;
-        Tue, 2 Jun 2020 13:54:16 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Jun 2020 06:54:16 -0700
-Date:   Tue, 2 Jun 2020 16:54:09 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Zhou Wang <wangzhou1@hisilicon.com>,
-        Shukun Tan <tanshukun1@huawei.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH v2] crypto: hisilicon - allow smaller reads in debugfs
-Message-ID: <20200602135409.GA59808@mwanda>
-Reply-To: b6da310b-e633-9f74-f7af-7791d803aaf5@huawei.com
+        Tue, 2 Jun 2020 09:59:11 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C89C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 06:59:10 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id q2so2088278vsr.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 06:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9owB6N5YoTr+QgRWYSW+w97CM/a02Li4ocdyLucMnlA=;
+        b=Ze+ivp4cAFxyqk7NhiH/FgnYGbbWWGkjKQQY3TxEitCzQdk7p0Wu76o0FkjuBwXiVH
+         2Dg5GkZntUYHmh7C7r68i/lLSdsF0OcuA1BfQ15WDPiUYtJHbjCzEhJEJ9F1fW4CSoBa
+         khCoH7AF8Speu+33IkgkUZJNsl734DdLOmVBBUhwR0J5x8OL60XWZn6dVPDktK0uYZyY
+         STfI+k0NDFh4ebSmg1x4NiORk3wVn8f8pbTx/cFFLCIJdycWBKOR9MKgZnroaxd6/GLI
+         VygAjCvqQjJqWXgTeulGShbJMm30zj4FP81VlH6EQDYtPjzDPJbE9QL+kDGi985PaEAa
+         KZEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9owB6N5YoTr+QgRWYSW+w97CM/a02Li4ocdyLucMnlA=;
+        b=rxH8a7+DazUqWM+3KLJfsj4Oy7Ffb0nUI5PJY2uvNP3mMRS4717uKEhIHAK6vz3plg
+         aPH0tjTs6tk9adIfO44OvWaF4WOLB67kQPckmhpiOGTNAzrlMjksSBghjRs/4pNlr5UT
+         i1qG9NOx7vAKEOAZRKnzQOUibRlFAiReSLOm1i+iumj64ugNY6qmsLulNl1PDJ//UB2T
+         U0lQMLj/CQyqKb3rNBhi8iJ65vIhFZSOLG+IgXabEDJj1X3iuyRuqNo4bbzHb618BwOY
+         TY0mIjmxRmaWTygP93dEHgsXqDpUvCFGX5ESZpX+2iQpsxLd5t1wqXCkkaWLfWF5inKu
+         68Aw==
+X-Gm-Message-State: AOAM530GH3auo0Tm0yDxEO517GPxSYpnN8HnYgipqrzgr/zJJuwIxtX4
+        q1IbfyLF/RmpkCRQ9D4BrKV1xWmnydOMIFPOoac=
+X-Google-Smtp-Source: ABdhPJwagcH+IMCLFpcz6CGUl5oYhyGNJls9L62J/M3CQCdOJiJr0Rvnef8YwBvKPwiyJDIDZDjyOZlJdWHq94p6Rm4=
+X-Received: by 2002:a67:b149:: with SMTP id z9mr17006698vsl.85.1591106349968;
+ Tue, 02 Jun 2020 06:59:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
- adultscore=0 suspectscore=0 spamscore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006020098
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
- phishscore=0 suspectscore=0 impostorscore=0 cotscore=-2147483648
- lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006020098
+References: <cover.1590982881.git.Sandor.yu@nxp.com> <d3d707cf37e7928a839071242c752779061cc094.1590982881.git.Sandor.yu@nxp.com>
+In-Reply-To: <d3d707cf37e7928a839071242c752779061cc094.1590982881.git.Sandor.yu@nxp.com>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Tue, 2 Jun 2020 14:55:52 +0100
+Message-ID: <CACvgo52NeUSQV5p8+4DkCjpkv12cs8fCkQqy4MFn8pVaorVaHg@mail.gmail.com>
+Subject: Re: [PATCH 1/7] drm/rockchip: prepare common code for cdns and rk
+ dpi/dp driver
+To:     sandor.yu@nxp.com
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Sandy Huang <hjc@rock-chips.com>, dkos@cadence.com,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-rockchip <linux-rockchip@lists.infradead.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        LAKML <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Originally this code rejected any read less than 256 bytes.  There
-is no need for this artificial limit.  We should just use the normal
-helper functions to read a string from the kernel.
+HI Sandor Yu
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-v2: Use simple_read_from_buffer().  The v1 was slightly half arsed
-because I left the original check for:
+On Mon, 1 Jun 2020 at 07:29, <sandor.yu@nxp.com> wrote:
+>
+> From: Sandor Yu <Sandor.yu@nxp.com>
+>
+> - Extracted common fields from cdn_dp_device to a new cdns_mhdp_device
+>   structure which will be used by two separate drivers later on.
+> - Moved some datatypes (audio_format, audio_info, vic_pxl_encoding_format,
+>   video_info) from cdn-dp-core.c to cdn-dp-reg.h.
+> - Changed prefixes from cdn_dp to cdns_mhdp
+>     cdn -> cdns to match the other Cadence's drivers
+>     dp -> mhdp to distinguish it from a "just a DP" as the IP underneath
+>       this registers map can be a HDMI (which is internally different,
+>       but the interface for commands, events is pretty much the same).
+> - Modified cdn-dp-core.c to use the new driver structure and new function
+>   names.
+> - writel and readl are replaced by cdns_mhdp_bus_write and
+>   cdns_mhdp_bus_read.
+>
+The high-level idea is great - split, refactor and reuse the existing drivers.
 
-	if (*pos)
-		return 0;
+Although looking at the patches themselves - they seems to be doing
+multiple things at once.
+As indicated by the extensive list in the commit log.
 
-So it could result in partial reads.  The new code means that if you
-want to read the buffer one byte at a time, that's fine or if you want
-to read it in one 256 byte chunk that's also fine.  Plus it deletes 21
-lines of code and is a lot cleaner.
+I would suggest splitting those up a bit, roughly in line of the
+itemisation as per the commit message.
 
- drivers/crypto/hisilicon/qm.c | 33 ++++++---------------------------
- 1 file changed, 6 insertions(+), 27 deletions(-)
+Here is one hand wavy way to chunk this patch:
+ 1) use put_unalligned*
+ 2) 'use local variable dev' style of changes (as seem in cdn_dp_clk_enable)
+ 3) add writel/readl wrappers
+ 4) hookup struct cdns_mhdp_device, keep dp->mhdp detail internal.
+The cdn-dp-reg.h function names/signatures will stay the same.
+ 5) finalize the helpers - use mhdp directly, rename
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 9bb263cec6c30..13ccb9e29a2e1 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -1064,19 +1064,10 @@ static ssize_t qm_cmd_read(struct file *filp, char __user *buffer,
- 	char buf[QM_DBG_READ_LEN];
- 	int len;
- 
--	if (*pos)
--		return 0;
--
--	if (count < QM_DBG_READ_LEN)
--		return -ENOSPC;
-+	len = scnprintf(buf, QM_DBG_READ_LEN, "%s\n",
-+			"Please echo help to cmd to get help information");
- 
--	len = snprintf(buf, QM_DBG_READ_LEN, "%s\n",
--		       "Please echo help to cmd to get help information");
--
--	if (copy_to_user(buffer, buf, len))
--		return -EFAULT;
--
--	return (*pos = len);
-+	return simple_read_from_buffer(buffer, count, pos, buf, len);
- }
- 
- static void *qm_ctx_alloc(struct hisi_qm *qm, size_t ctx_size,
-@@ -2691,24 +2682,12 @@ static ssize_t qm_status_read(struct file *filp, char __user *buffer,
+HTH
+Emil
+
+Examples:
+4)
+ static int cdn_dp_mailbox_read(struct cdn_dp_device *dp)
  {
- 	struct hisi_qm *qm = filp->private_data;
- 	char buf[QM_DBG_READ_LEN];
--	int val, cp_len, len;
--
--	if (*pos)
--		return 0;
--
--	if (count < QM_DBG_READ_LEN)
--		return -ENOSPC;
-+	int val, len;
- 
- 	val = atomic_read(&qm->status.flags);
--	len = snprintf(buf, QM_DBG_READ_LEN, "%s\n", qm_s[val]);
--	if (!len)
--		return -EFAULT;
--
--	cp_len = copy_to_user(buffer, buf, len);
--	if (cp_len)
--		return -EFAULT;
-+	len = scnprintf(buf, QM_DBG_READ_LEN, "%s\n", qm_s[val]);
- 
--	return (*pos = len);
-+	return simple_read_from_buffer(buffer, count, pos, buf, len);
- }
- 
- static const struct file_operations qm_status_fops = {
--- 
-2.26.2
++"  struct cdns_mhdp_device *mhdp = dp->mhdp;
+   int val, ret;
 
+-  ret = readx_poll_timeout(readl, dp->regs + MAILBOX_EMPTY_ADDR,
++  ret = readx_poll_timeout(readl, mhdp->regs_base + MAILBOX_EMPTY_ADDR,
+...
+   return fancy_readl(dp, MAILBOX0_RD_DATA) & 0xff;
+ }
+
+5)
+-static int cdn_dp_mailbox_read(struct cdn_dp_device *dp)
++static int mhdp_mailbox_read(struct cdns_mhdp_device *mhdp)
+ {
+-  struct cdns_mhdp_device *mhdp = dp->mhdp;
+   int val, ret;
+...
+-  return fancy_readl(dp, MAILBOX0_RD_DATA) & 0xff;
++  return cdns_mhdp_bus_read(mhdp, MAILBOX0_RD_DATA) & 0xff;
+ }
