@@ -2,194 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544D71EBF3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 17:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8EA1EBF37
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 17:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgFBPn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 11:43:29 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:53681 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgFBPn2 (ORCPT
+        id S1726728AbgFBPmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 11:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726000AbgFBPml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 11:43:28 -0400
+        Tue, 2 Jun 2020 11:42:41 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F14C08C5C0;
+        Tue,  2 Jun 2020 08:42:41 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ga6so1559972pjb.1;
+        Tue, 02 Jun 2020 08:42:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1591112607; x=1622648607;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=xo5iQNh2u9O4I7ZyRk3wLunxD/gOFcQ/CX+VsNZiQws=;
-  b=VrC6MuQAPd0vEY93v9lGPqFcpWi29adR1d+8WV/4he+o3zJxXgDGBxu8
-   FfFsl2vYunIIdCLWScA40Bb33bLG3QVsekGWVnDQODeYwc1Fb1UDktFj5
-   wxHZMc0bgIdMk+Jm4/miPOXKrBm+1ozJFWxcF8BwL14xI1H3py4YlKDis
-   Y=;
-IronPort-SDR: 2XGqGmkKWyxqG6NkZJ8CgeI5Dq3JIkhit5hVVFb0kIskPSovnTNXNe/s+8uaOszlPilgH3s4v3
- +BcfWsBqjocg==
-X-IronPort-AV: E=Sophos;i="5.73,465,1583193600"; 
-   d="scan'208";a="47881129"
-Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.47.23.34])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 02 Jun 2020 15:43:10 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id 01269A2242;
-        Tue,  2 Jun 2020 15:43:07 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 2 Jun 2020 15:43:07 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.82) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 2 Jun 2020 15:42:51 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     SeongJae Park <sjpark@amazon.com>, <akpm@linux-foundation.org>,
-        "SeongJae Park" <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
-        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [PATCH v14 09/15] mm/damon: Add tracepoints
-Date:   Tue, 2 Jun 2020 17:42:34 +0200
-Message-ID: <20200602154234.26962-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200602113536.16e8e767@gandalf.local.home> (raw)
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7bWnrd7umFBH01tkVkxcf5w00Z7S8X+gUXJZqUHju+Y=;
+        b=Cp+3JDR3Mq+WCW4ZtXCOK4rCbpMcTAfSK8CCKbgoXVR3yHtZvPUp8wQBKYG+NTnFAH
+         kIWhCgZPO+tl9gkSgY94x/6+HTH1goMxi6pPQSY5YJurYLNgveEULA2hWqW3IR0AbKWP
+         G0ivb7bVvppLm7DTwL1yMTLMoMkJs42nrCA2+waArTOLHKJFPhz22dgL79YX21G/0cbJ
+         afUx8uvcFWZb+1swujVpWBWRLNPiq++5XulPJsrFPvWJeczo8v0QrwLuEGTf799B20Gu
+         uFWygE2Hg+qIdK9a2SW72IyW4TA31/53Su58WsJ54/uQegpvOxcSKjWHxn46SveQ6eNx
+         Ns5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=7bWnrd7umFBH01tkVkxcf5w00Z7S8X+gUXJZqUHju+Y=;
+        b=Co7z9pUQu+yxDjfIdRcPSI1LVJBS8/RTujlAFqvoD7YLh0WlTkO1WSYTMqowYflfYl
+         1tw0xZAGnsR+zuXPgzqGdtq6QcoE4Z/ROYNY1Bl+YSx8ACdlWiiBHyR8BaqZB/koSXrt
+         Ki4t/ocj7LxoTVwnTP+rtfxIeBpdh2nvltjv/u4tXs6LS6mQWXtVx/tIVQ2Ym6UTEdU3
+         HvFUI3gc7C2JeMPIe5LNphutsKsNtqqJfgLjna1tGkXEHyXHal0otB0DDs9/KZS9uur0
+         mYg1TzuRTtISo3BpftJoBd+rzQFsW4pV5e/ARq6yh/0c+6b7aNRUAqRbuvFq9LGmUkCh
+         PvKg==
+X-Gm-Message-State: AOAM533oSB+mRnG2oVgEzy1uLg7sm7EnFEIzTJDRYimL/uZws5n6Cqe/
+        WN+XutCLPHoRWMsHUk0RqicREQhN
+X-Google-Smtp-Source: ABdhPJxlP5M+lMbxBj+QsJlbD8gTxN6qqLEWHERxDajWnbAVCH1npZ2X296bqZANf6DnEAyvmSoAyg==
+X-Received: by 2002:a17:902:ea8a:: with SMTP id x10mr25553334plb.61.1591112561148;
+        Tue, 02 Jun 2020 08:42:41 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w65sm2710504pfb.160.2020.06.02.08.42.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jun 2020 08:42:40 -0700 (PDT)
+Subject: Re: [PATCH 1/2] i2c: mux: pca9541: Change to correct bus control
+ commands
+To:     Peter Rosin <peda@axentia.se>,
+        Quentin Strydom <quentin.strydom@bluwireless.com>,
+        Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1591099969-30446-1-git-send-email-quentin.strydom@bluwireless.com>
+ <2e2c3b98-20a6-2671-ad74-a0f171073bd0@axentia.se>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <89e367db-a5f7-6eb0-5437-0ea0646b85d0@roeck-us.net>
+Date:   Tue, 2 Jun 2020 08:42:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.82]
-X-ClientProxiedBy: EX13D24UWA004.ant.amazon.com (10.43.160.233) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+In-Reply-To: <2e2c3b98-20a6-2671-ad74-a0f171073bd0@axentia.se>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Jun 2020 11:35:36 -0400 Steven Rostedt <rostedt@goodmis.org> wrote:
+On 6/2/20 8:05 AM, Peter Rosin wrote:
+> On 2020-06-02 14:12, Quentin Strydom wrote:
+>> Change current bus commands to match the pca9541a datasheet
+>> (see table 12 on page 14 of
+>> https://www.nxp.com/docs/en/data-sheet/PCA9541A.pdf). Also
+>> where entries are marked as no change the current control
+>> command is repeated as the current master reading the
+>> control register has control of the bus and bus is on.
+>>
+>> Signed-off-by: Quentin Strydom <quentin.strydom@bluwireless.com>
+>> ---
+>>  drivers/i2c/muxes/i2c-mux-pca9541.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/i2c/muxes/i2c-mux-pca9541.c b/drivers/i2c/muxes/i2c-mux-pca9541.c
+>> index 6a39ada..50808fa 100644
+>> --- a/drivers/i2c/muxes/i2c-mux-pca9541.c
+>> +++ b/drivers/i2c/muxes/i2c-mux-pca9541.c
+>> @@ -211,7 +211,7 @@ static void pca9541_release_bus(struct i2c_client *client)
+>>  
+>>  /* Control commands per PCA9541 datasheet */
+>>  static const u8 pca9541_control[16] = {
+>> -	4, 0, 1, 5, 4, 4, 5, 5, 0, 0, 1, 1, 0, 4, 5, 1
+>> +	4, 4, 5, 5, 4, 4, 5, 7, 8, 0, 1, 11, 0, 0, 1, 1
+>>  };
+>>  
+>>  /*
+> 
+> I found all your mails from git send-email in my spam folder. They probably
+> lack some headers that have become increasingly important... [Don't ask me
+> for further details.]
+> 
+> I do not have the HW to test this. I'm only going by the datasheet.
+> 
+> But yes, pca9541_control[1] and [2] indeed seem exchanged with [13] and [14].
+> 
+> However, pca9541_control[5], [7], [8], and [11] are never used AFAICT.
+> Trying to write 7, 8 and 11 also attempts to write various read-only bits
+> and makes no sense. So, I'd skip those changes.
+> 
+> All that said, I'm a bit skeptic as to why this has worked at all if this
+> is incorrect. I would like to see a more detailed failure description that
+> could explain why this change is indeed "it".
+> 
 
-> On Tue, 2 Jun 2020 15:12:49 +0200
-> SeongJae Park <sjpark@amazon.com> wrote:
-> 
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > This commit adds a tracepoint for DAMON.  It traces the monitoring
-> > results of each region for each aggregation interval.  Using this, DAMON
-> > will be easily integrated with any tracepoints supporting tools such as
-> > perf.
-> > 
-> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > Reviewed-by: Leonard Foerster <foersleo@amazon.de>
-> > ---
-> >  include/trace/events/damon.h | 43 ++++++++++++++++++++++++++++++++++++
-> >  mm/damon.c                   |  5 +++++
-> >  2 files changed, 48 insertions(+)
-> >  create mode 100644 include/trace/events/damon.h
-> > 
-> > diff --git a/include/trace/events/damon.h b/include/trace/events/damon.h
-> > new file mode 100644
-> > index 000000000000..22236642d366
-> > --- /dev/null
-> > +++ b/include/trace/events/damon.h
-> > @@ -0,0 +1,43 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#undef TRACE_SYSTEM
-> > +#define TRACE_SYSTEM damon
-> > +
-> > +#if !defined(_TRACE_DAMON_H) || defined(TRACE_HEADER_MULTI_READ)
-> > +#define _TRACE_DAMON_H
-> > +
-> > +#include <linux/types.h>
-> > +#include <linux/tracepoint.h>
-> > +
-> > +TRACE_EVENT(damon_aggregated,
-> > +
-> > +	TP_PROTO(int pid, unsigned int nr_regions,
-> > +		unsigned long vm_start, unsigned long vm_end,
-> > +		unsigned int nr_accesses),
-> > +
-> > +	TP_ARGS(pid, nr_regions, vm_start, vm_end, nr_accesses),
-> > +
-> > +	TP_STRUCT__entry(
-> > +		__field(int, pid)
-> > +		__field(unsigned int, nr_regions)
-> > +		__field(unsigned long, vm_start)
-> > +		__field(unsigned long, vm_end)
-> > +		__field(unsigned int, nr_accesses)
-> > +	),
-> > +
-> > +	TP_fast_assign(
-> > +		__entry->pid = pid;
-> > +		__entry->nr_regions = nr_regions;
-> > +		__entry->vm_start = vm_start;
-> > +		__entry->vm_end = vm_end;
-> > +		__entry->nr_accesses = nr_accesses;
-> > +	),
-> > +
-> > +	TP_printk("pid=%d nr_regions=%u %lu-%lu: %u", __entry->pid,
-> > +			__entry->nr_regions, __entry->vm_start,
-> > +			__entry->vm_end, __entry->nr_accesses)
-> > +);
-> > +
-> > +#endif /* _TRACE_DAMON_H */
-> > +
-> > +/* This part must be outside protection */
-> > +#include <trace/define_trace.h>
-> > diff --git a/mm/damon.c b/mm/damon.c
-> > index 6b0b8f21a6c6..af6f395fe06c 100644
-> > --- a/mm/damon.c
-> > +++ b/mm/damon.c
-> > @@ -9,6 +9,8 @@
-> >  
-> >  #define pr_fmt(fmt) "damon: " fmt
-> >  
-> > +#define CREATE_TRACE_POINTS
-> > +
-> >  #include <linux/damon.h>
-> >  #include <linux/debugfs.h>
-> >  #include <linux/delay.h>
-> > @@ -20,6 +22,7 @@
-> >  #include <linux/sched/mm.h>
-> >  #include <linux/sched/task.h>
-> >  #include <linux/slab.h>
-> > +#include <trace/events/damon.h>
-> >  
-> >  /* Minimal region size.  Every damon_region is aligned by this. */
-> >  #define MIN_REGION PAGE_SIZE
-> > @@ -650,6 +653,8 @@ static void kdamond_reset_aggregated(struct damon_ctx *c)
-> >  			damon_write_rbuf(c, &r->vm_end, sizeof(r->vm_end));
-> >  			damon_write_rbuf(c, &r->nr_accesses,
-> >  					sizeof(r->nr_accesses));
-> > +			trace_damon_aggregated(t->pid, nr,
-> > +					r->vm_start, r->vm_end, r->nr_accesses);
-> 
-> For a little better code, what about passing in t and r directly, and then
-> having the TP_fast_assign just do the dereferencing there?
-> 
-> 	__entry->pid = t->pid;
-> 	__entry->vm_start = r->vm_start;
-> 	__entry->vm_end = r->vm_end;
-> 	__entry->nr_accesses = r->nr_accesses;
-> 
-> It will produce better code at the trace point call (which is the important
-> part) and make the trace event a bit more flexible in the future, without
-> having to modify the call site.
+Good question. I had tested the code quite extensively. Maybe the failing cases
+did not apply to my situation. Too long to recall, unfortunately.
 
-Good point, I will do so in the next spin!
-
-
-Thanks,
-SeongJae Park
-
-> 
-> -- Steve
-> 
-> 
-> >  			r->nr_accesses = 0;
-> >  		}
-> >  	}
+Guenter
