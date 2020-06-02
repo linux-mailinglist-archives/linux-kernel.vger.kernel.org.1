@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E021EBA40
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4E41EBA47
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgFBLU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 07:20:29 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:41096 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgFBLUS (ORCPT
+        id S1726580AbgFBLWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 07:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgFBLWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:20:18 -0400
-Received: by mail-io1-f72.google.com with SMTP id b30so6656981ioc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 04:20:17 -0700 (PDT)
+        Tue, 2 Jun 2020 07:22:41 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405CCC061A0E;
+        Tue,  2 Jun 2020 04:22:41 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id n9so1240223plk.1;
+        Tue, 02 Jun 2020 04:22:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=LFCYo6Ppo4sEF/Ge4xWjhzf5GS4llSMO5W63JlrM7KQ=;
+        b=bKZCM1vPpptfyYMSXvgRkpuRDbMki1FhOPMqlwbLnVstbWg0qiqkCS1O57oOXwQuQd
+         +ilqEQ3DcHER6lECOK0foKhzOkTLOSYYit6+mH2EPqtG6maZexBnUAhVwi21cWColo0Q
+         LNLXHyjqDkZ+BpqzSA4rD7zFYqK9asLhlURmRvN5Clt2uOtW5gk+oJJMZgIKxdV4HfME
+         XLZ+iDkilPNPZAN39AAfIUzJ1nHvXIMVEWwTbpZ+ZKUPESlWucThCvXB2gDmpRwMTDSu
+         6UJDn0pcZiK9LrY8sUHbLAI4FD7gQnKG+9tZ7dDHfESkcuIw0qdBa9KR49+mZTrYxGwB
+         DLdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=yu1KKc0BU5akfdxfaI2hIWvisKQp/McaEhJQQbUDA+4=;
-        b=R+r61HWuDRmTkpkqO9A0sewQEv4Wu6XVJDX9WM3OPHmTQsa9igmL9H7lTBdC0RO1Zj
-         umDpdCDiSPubIZL+i88kqwbHfyCFz4NjcI07Y+skuz4WlKvI+nlXJiNkOR8EpTZO24Ls
-         r4oGScpBihlvRbg5dQVjhX3JL1ZcddOuyWnolLXBb2lmetVK6YinUaG6ROQmFPYNElsT
-         JWNdYl/cO52A2q5YAaQl0USyCUPl92CbcLsMxQcFiV41d1djI1RkddUNsaIH488F1rta
-         GRQi0689HnWacCG6aEIocBYTd3mffQmp/ju3wRJPMx7AfDMufAyo8uERWj0c7GCQDQ4Q
-         eeZg==
-X-Gm-Message-State: AOAM533O8VA8VgSdVEof+zdqkv3Iwbxfr4K2UF8Py+H+9jOWKYBo5rak
-        t7UM7mcLDDeixN3u60iQf+rmGocRMnM9KxNSWCxR0YEsw6nK
-X-Google-Smtp-Source: ABdhPJzQSGUTHvHlLxgaNL4xZR4ewHa0VVZNxqruxHy49J8yux77imieX0DMg7jWRx05z9UcbyYK/4hCmMHc+sqFSCaBTqqKfdnc
-MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1616:: with SMTP id x22mr23201287iow.70.1591096817282;
- Tue, 02 Jun 2020 04:20:17 -0700 (PDT)
-Date:   Tue, 02 Jun 2020 04:20:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000098f29705a7181812@google.com>
-Subject: linux-next test error: BUG: using smp_processor_id() in preemptible
- [ADDR] code: syz-fuzzer/6927
-From:   syzbot <syzbot+cd8a20b91d68ef113b45@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=LFCYo6Ppo4sEF/Ge4xWjhzf5GS4llSMO5W63JlrM7KQ=;
+        b=W1I5D3653Iy6hxd+zG13t5VuSXLERO31JyAK4HArgnjUAT515TtgtPa1I+pE5n4Kqe
+         0fjzC9QI2HnQpjcAM8hmnTXchdKY112JkOH3fs871uEkpiQbHcphDgenwzuC0UcRjY1v
+         6d+4vjXFCTfdJob9QJWF2Xwjcy+wMRUxhyoc1QcfIn7yIsULoEqPgWtanzAlm8+LUoCJ
+         4bWJ2IcRT7zb2MfEM/12E58GsgxvNSPNSg1WnqjFhbid3JZKk87PwbDkCcKorv6Lb1Ct
+         zCMJEcQ6z2wj6TYtBYPf4XiLqMSA456sW1FERShdAHKDkDCgeah8NkVTfIu0hu6B+qMS
+         CtYg==
+X-Gm-Message-State: AOAM531Udhb/OXNjIdpom/7njC5K+9SiSuxfvArt1u6PrdZMr7jf0aM3
+        VSwcli1Big9e1jh83eTixBk=
+X-Google-Smtp-Source: ABdhPJwfTFUI1HfGsYg4wx0v6+YoLTxCwj7X0smn80Ce1gQdJ41svgwZ/rNmBwG0aIWD24XxuXXlDA==
+X-Received: by 2002:a17:902:bb95:: with SMTP id m21mr12586768pls.262.1591096960561;
+        Tue, 02 Jun 2020 04:22:40 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:189:c86a:7149:74ab:b584:ecf8])
+        by smtp.gmail.com with ESMTPSA id j9sm2238172pje.28.2020.06.02.04.22.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 04:22:39 -0700 (PDT)
+From:   Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
+To:     Rain River <rain.1986.08.12@gmail.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     aishwaryarj100@gmail.com
+Subject: [PATCH] net: nvidia: forcedeth: Drop a condition with no effect
+Date:   Tue,  2 Jun 2020 16:52:28 +0530
+Message-Id: <20200602112228.30333-1-aishwaryarj100@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+As the "else if" and "else" branch body are identical the
+condition has no effect. So removing "else if" condition.
 
-syzbot found the following crash on:
-
-HEAD commit:    0e21d462 Add linux-next specific files for 20200602
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1597f2fe100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ecc1aef35f550ee3
-dashboard link: https://syzkaller.appspot.com/bug?extid=cd8a20b91d68ef113b45
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+cd8a20b91d68ef113b45@syzkaller.appspotmail.com
-
-BUG: using smp_processor_id() in preemptible [00000000] code: syz-fuzzer/6927
-caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
-CPU: 1 PID: 6927 Comm: syz-fuzzer Not tainted 5.7.0-next-20200602-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
- ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
- ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
- ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
- ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
- ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
- ext4_append+0x153/0x360 fs/ext4/namei.c:67
- ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
- ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
- vfs_mkdir+0x419/0x690 fs/namei.c:3632
- do_mkdirat+0x21e/0x280 fs/namei.c:3655
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4b02a0
-Code: Bad RIP value.
-RSP: 002b:000000c0000cf4b8 EFLAGS: 00000212 ORIG_RAX: 0000000000000102
-RAX: ffffffffffffffda RBX: 000000c00002c000 RCX: 00000000004b02a0
-RDX: 00000000000001c0 RSI: 000000c000116be0 RDI: ffffffffffffff9c
-RBP: 000000c0000cf510 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000212 R12: ffffffffffffffff
-R13: 0000000000000060 R14: 000000000000005f R15: 0000000000000100
-
-
+Signed-off-by: Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/ethernet/nvidia/forcedeth.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/net/ethernet/nvidia/forcedeth.c b/drivers/net/ethernet/nvidia/forcedeth.c
+index 2fc10a36afa4..87ed7e192ce9 100644
+--- a/drivers/net/ethernet/nvidia/forcedeth.c
++++ b/drivers/net/ethernet/nvidia/forcedeth.c
+@@ -3476,9 +3476,6 @@ static int nv_update_linkspeed(struct net_device *dev)
+ 	} else if (adv_lpa & LPA_10FULL) {
+ 		newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_10;
+ 		newdup = 1;
+-	} else if (adv_lpa & LPA_10HALF) {
+-		newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_10;
+-		newdup = 0;
+ 	} else {
+ 		newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_10;
+ 		newdup = 0;
+-- 
+2.17.1
+
