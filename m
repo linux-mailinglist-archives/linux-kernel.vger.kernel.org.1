@@ -2,133 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFC21EBEB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 17:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01921EBEBF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 17:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726580AbgFBPFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 11:05:40 -0400
-Received: from mail-eopbgr80091.outbound.protection.outlook.com ([40.107.8.91]:20737
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726073AbgFBPFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 11:05:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gau3skRLLVMIC2pATzfIwHfsknwBQ61rq/7BsgpqQTJ3mZn1i+BIT0j3ZDIKwrjw4KX/1gDIyZn0J9Awss3HhDKdVPlHpdsf4r298rvnOZLOnEhQPXrWE6Q8+YMKOsvuXd49t1NTZAQ0buBZ8kzrI8wFjhAn1fcgUoATwaU9kqtOAavgPCrv7pinh2shKl0Q5c6qjGknGxMOgLc682xRN4+MKeANrHtNykfBEgzrZg1qc31AhbNwnO7vBfgLY+vkPFywyLS0M8hq7P1cprnHbIt48NJtI8N4fpjlnr2w9KXbwK9xzKcZZAbFmnbKkrHw8DyLvFignuvb49cWa7vf2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AmpoA4vL7CKSGZUinjwHc/3liT6xHC8viqPCBaAs2V0=;
- b=G73TZ4Z1/sgp36Xb06Dg/L0SB8Mw0dYT8BoAE0viuVE5Thd0OjXADTeDRGj9aQW1rQfIBVFTkra+ebotwUJyEwDDu8DQb4IqQG6UK4ytVasQidsSZfELKWp/BAXzvGxT0KPJWBeJQcWldMK8frthwxBpFrKQE9qotzJ5tzSt84kUec52XRmklbpkeFzOzJh+4FFtSWO9LJyf1LKsA4iFhpVNb4rdPmIMVj7EutU8dm14tK2Rm3XqK+XNl9Q8khXgitQDjyeAhpL0rbrAr3GAPYNTxwBAOYJhwaWI/QJ4Df9pDdBU/sa7PjIM4JG1mUQFtbN+pd641ZMPMKpjwS/FmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AmpoA4vL7CKSGZUinjwHc/3liT6xHC8viqPCBaAs2V0=;
- b=WQJQdg2IHH8nRdBwi3PnJrmDjdsXm58j62v4YUW17L2tw1cnXActd2j0S18sHITijjCF5GreuB10BRP+9pAJdF/vJdxFzO0jBM00S5O0/TtLwxw2BTnr52eCMI0yOS/4WwF3HWhIXfBrmTxz6LfAyOmKqbGcYXrxZpLIzk2XGHw=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=axentia.se;
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
- by DB8PR02MB5884.eurprd02.prod.outlook.com (2603:10a6:10:118::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.18; Tue, 2 Jun
- 2020 15:05:35 +0000
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::ccd1:96b3:48dc:c5d1]) by DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::ccd1:96b3:48dc:c5d1%7]) with mapi id 15.20.3045.024; Tue, 2 Jun 2020
- 15:05:35 +0000
-Subject: Re: [PATCH 1/2] i2c: mux: pca9541: Change to correct bus control
- commands
-To:     Quentin Strydom <quentin.strydom@bluwireless.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1591099969-30446-1-git-send-email-quentin.strydom@bluwireless.com>
-From:   Peter Rosin <peda@axentia.se>
-Organization: Axentia Technologies AB
-Message-ID: <2e2c3b98-20a6-2671-ad74-a0f171073bd0@axentia.se>
-Date:   Tue, 2 Jun 2020 17:05:31 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
-In-Reply-To: <1591099969-30446-1-git-send-email-quentin.strydom@bluwireless.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: sv-SE
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HE1PR0402CA0057.eurprd04.prod.outlook.com
- (2603:10a6:7:7c::46) To DB8PR02MB5482.eurprd02.prod.outlook.com
- (2603:10a6:10:eb::29)
+        id S1726345AbgFBPIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 11:08:38 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:46411 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725958AbgFBPIh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 11:08:37 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 52D3558029D;
+        Tue,  2 Jun 2020 11:08:36 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 02 Jun 2020 11:08:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=gy1oFJKqpBP4SByoQQwaUJAvM+9
+        w8yd8uHa/7cqBJYw=; b=Oz9Xqz55njCGiEvASU5op28H1HwHkjvsX30FAklJvnC
+        9SRwNgp+FAsmWDWl2eGPl/wwn2wX8iyHIIDpUhDjbxB7ek8aBGBEgqPApx01cJee
+        ow72sBBRgkWLGsHHvtuUDxH3cgPp6vZ2IhNqhLL/RB3IOIzbyV8SRrB7FgtHxmux
+        mm8q7dyytgf0taBIKSlN4wXh7c9VEwqrVND5Rb52ANfnDzAPAmnWONIEcR1OaMfs
+        bnND44Y8qXvtXYaTllhuRgGaRpRw374gEZ1kilfWmxUfh4oxYDidSUTI3aSeDI5y
+        Yk/rNyvw7halECPY0JtZEUNQBHLZCoI2suQFBvap7Uw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=gy1oFJ
+        KqpBP4SByoQQwaUJAvM+9w8yd8uHa/7cqBJYw=; b=bJM6OPVoNRNPTageBFCxr/
+        IN/eDOTiB/u5xeOBUfJZ7dPocqBHKKQmsp7LkdPM4o027HNQoJNFV8UzNnHkhimN
+        hwAAwp9IxdEKn5yUNVDVqqEbXV9qo3w8/pCScjiyZmSQIH9N1IpBRoP8ZNuLifP2
+        z78jC9+XbmPYa87Ae5US+movKmAI8Pir0IYmv9XPaMdWcg6pm+5SFud3raTOhv/2
+        JI2A8GQ+hQQceElacAMzKPp6ZEVUvdgLQfqSf9TjG2O2Lgmw6dKfhZ9sZo683m2p
+        y1Mc+GDYcbkqivtCnyEXJs1qHBUwCuobPgB4wcBf1l3zcz7UhsAka2b3+PNwNYFg
+        ==
+X-ME-Sender: <xms:c2vWXkhdVEW6ST4sMVFQgmKUTFTvuPer01RwFoKyAodm4pEC_tk76A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudefjedgieefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepffetteevieejteeuhfffgeektefghfeileehhedtuddutefhhfejtddvtddu
+    ledvnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucfkphepledtrdekle
+    drieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
+    ohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:c2vWXtCDEAcKfSgqwYDZX7tjB7rLCyk7f6fK6F2QNuL4qtIuAbF7TQ>
+    <xmx:c2vWXsFXlbOKzrCYCsFvwq4O5GZ-ck9CYfRuifQYUyM_3Hm0ZbjU3A>
+    <xmx:c2vWXlQvPSwwrNNBVCFjU57a4PX_szp_kzAzcH61aCULz3_pjaSXHw>
+    <xmx:dGvWXomyvR5ShMrCKL5WanwF1A69eGDNVxpMFlapZCgrDvWRLw219Q>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 119FE30614FA;
+        Tue,  2 Jun 2020 11:08:34 -0400 (EDT)
+Date:   Tue, 2 Jun 2020 17:08:34 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>, dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 104/105] dt-bindings: display: vc4: hdmi: Add BCM2711
+ HDMI controllers bindings
+Message-ID: <20200602150834.6xovwdxpgncq3ybh@gilmour>
+References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
+ <e85e24a494a3ff41177c94673ced0f4280b6a0ee.1590594512.git-series.maxime@cerno.tech>
+ <20200529181833.GA2685451@bogus>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.13.3] (213.112.138.116) by HE1PR0402CA0057.eurprd04.prod.outlook.com (2603:10a6:7:7c::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19 via Frontend Transport; Tue, 2 Jun 2020 15:05:34 +0000
-X-Originating-IP: [213.112.138.116]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8eb43fc0-34ee-4917-bf05-08d8070666d2
-X-MS-TrafficTypeDiagnostic: DB8PR02MB5884:
-X-Microsoft-Antispam-PRVS: <DB8PR02MB5884E67728082913DE5BDFBEBC8B0@DB8PR02MB5884.eurprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-Forefront-PRVS: 0422860ED4
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eVD9cKCsw/+jHy5mwohlaBdcKmJI5oASr+YcrgB1m7mo7v94W/41F9JtboNk7QWxgl6h69B4TbHO7hHXRVSZv+yHpd33KAOxoJOjrmF8Ui2F941ZcXeTOSqmXKpkez7VMPoWQbgHFKSnyqWjzXtibIPbDcuVfAD7xOciepxcuJCTG+WvB8PRye/6w7Y9PA7EYrG/nOk5tpS3jFpUIJ9QnbkOkaQNuQPq8gDy7Wc7PJhxEQmGQ0/kzgvLQmepKUN2SnkajLSSgmW8t6Tgf+LsQmNtcUj2GPLZgdLrvgugsWniMgYIJm8Ke4AlFiWr2xav7TxPGnT/hTbQp8Kq0/0spfKTA7Prr6QpTxcVGJdTrn06iqm6+ZpR1dBsicNPDTx3PaNj4cxwoVpN+tUS25oF0vIZyS4xcxYvdyGAKJ1KyTPHURHm4AQ3tsDKNH5sOAto9eQD8ZbgDLlMxWpE0tgwag==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(39830400003)(366004)(396003)(136003)(83380400001)(5660300002)(316002)(36756003)(26005)(86362001)(31696002)(6666004)(186003)(66556008)(66476007)(16576012)(2906002)(16526019)(110136005)(66946007)(53546011)(6486002)(36916002)(52116002)(508600001)(956004)(8936002)(2616005)(966005)(31686004)(8676002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: MGdmsFe6bqEOEbIwbjxW0/PVs+6OgzfpysS55zTcwe+xrduIFDCQ7/tyvpf3TOjqonHBMCvB7+OBy311f6tg7dhx1fd/gCS3IP/rdUy66aQosmoUD9LZcc9Vsa4h1UcrWWw+jp2ZCJ4UckG4MYnTHjfd27BYPUQxEGNMRC2hGOenH7YcybcMtbEtiPE8goH7jCgvQQVcSZSsVzO9XaUoZ40FQ+9MJ+2ZesccNiP2cH20gcq2OuqlHK4S6EjPwoHgInSwizcWxF0SdiOzTmyzyBKzNoxY4dFkrLNhqNP9ZNmaTw8KBntHPaaEco9Vg1hQao6F/0zLk2GhAXwzAQXFGAW+w9Hv195BCjGtR3LI+lP7OSy+6F7/VvQFDMzsop/0GRaUMCDq4I5x5UZbSQHM6v8o5KIQnMQop3/SLehyqB7TzP/Gu5gu8cbkBHrGb9seGTa9Maj35ditOhWUgbhS7st6CPXlX2HXPgyiLO20tMw=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8eb43fc0-34ee-4917-bf05-08d8070666d2
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2020 15:05:35.1449
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vxScoJ950OxqcQGkiBx79i91lft3I48wSKP1wKk7h7HKp2UvD/IFHOeoMqMHmrkp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR02MB5884
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="idttynnu6hrdagv3"
+Content-Disposition: inline
+In-Reply-To: <20200529181833.GA2685451@bogus>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-02 14:12, Quentin Strydom wrote:
-> Change current bus commands to match the pca9541a datasheet
-> (see table 12 on page 14 of
-> https://www.nxp.com/docs/en/data-sheet/PCA9541A.pdf). Also
-> where entries are marked as no change the current control
-> command is repeated as the current master reading the
-> control register has control of the bus and bus is on.
-> 
-> Signed-off-by: Quentin Strydom <quentin.strydom@bluwireless.com>
-> ---
->  drivers/i2c/muxes/i2c-mux-pca9541.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/i2c/muxes/i2c-mux-pca9541.c b/drivers/i2c/muxes/i2c-mux-pca9541.c
-> index 6a39ada..50808fa 100644
-> --- a/drivers/i2c/muxes/i2c-mux-pca9541.c
-> +++ b/drivers/i2c/muxes/i2c-mux-pca9541.c
-> @@ -211,7 +211,7 @@ static void pca9541_release_bus(struct i2c_client *client)
->  
->  /* Control commands per PCA9541 datasheet */
->  static const u8 pca9541_control[16] = {
-> -	4, 0, 1, 5, 4, 4, 5, 5, 0, 0, 1, 1, 0, 4, 5, 1
-> +	4, 4, 5, 5, 4, 4, 5, 7, 8, 0, 1, 11, 0, 0, 1, 1
->  };
->  
->  /*
 
-I found all your mails from git send-email in my spam folder. They probably
-lack some headers that have become increasingly important... [Don't ask me
-for further details.]
+--idttynnu6hrdagv3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I do not have the HW to test this. I'm only going by the datasheet.
+Hi Rob,
 
-But yes, pca9541_control[1] and [2] indeed seem exchanged with [13] and [14].
+On Fri, May 29, 2020 at 12:18:33PM -0600, Rob Herring wrote:
+> On Wed, May 27, 2020 at 05:49:14PM +0200, Maxime Ripard wrote:
+> > The HDMI controllers found in the BCM2711 SoC need some adjustments to =
+the
+> > bindings, especially since the registers have been shuffled around in m=
+ore
+> > register ranges.
+> >=20
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: devicetree@vger.kernel.org
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > ---
+> >  Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml | 109=
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 109 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/display/brcm,bcm2=
+711-hdmi.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2711-hdm=
+i.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
+> > new file mode 100644
+> > index 000000000000..6091fe3d315b
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
+> > @@ -0,0 +1,109 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+>=20
+> Dual license...
+>=20
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/display/brcm,bcm2711-hdmi.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Broadcom BCM2711 HDMI Controller Device Tree Bindings
+> > +
+> > +maintainers:
+> > +  - Eric Anholt <eric@anholt.net>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - brcm,bcm2711-hdmi0
+> > +      - brcm,bcm2711-hdmi1
+>=20
+> What's the difference between the 2 blocks?=20
 
-However, pca9541_control[5], [7], [8], and [11] are never used AFAICT.
-Trying to write 7, 8 and 11 also attempts to write various read-only bits
-and makes no sense. So, I'd skip those changes.
+The register layout and the lane mapping in the PHY change a bit.
 
-All that said, I'm a bit skeptic as to why this has worked at all if this
-is incorrect. I would like to see a more detailed failure description that
-could explain why this change is indeed "it".
+> > +
+> > +  reg:
+> > +    items:
+> > +      - description: HDMI controller register range
+> > +      - description: DVP register range
+> > +      - description: HDMI PHY register range
+> > +      - description: Rate Manager register range
+> > +      - description: Packet RAM register range
+> > +      - description: Metadata RAM register range
+> > +      - description: CSC register range
+> > +      - description: CEC register range
+> > +      - description: HD register range
+> > +
+> > +  reg-names:
+> > +    items:
+> > +      - const: hdmi
+> > +      - const: dvp
+> > +      - const: phy
+> > +      - const: rm
+> > +      - const: packet
+> > +      - const: metadata
+> > +      - const: csc
+> > +      - const: cec
+> > +      - const: hd
+> > +
+> > +  clocks:
+> > +    description: The HDMI state machine clock
+> > +
+> > +  clock-names:
+> > +    const: hdmi
+> > +
+> > +  ddc:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description: >
+> > +      Phandle of the I2C controller used for DDC EDID probing
+>=20
+> Goes in the connector.
+>=20
+> And isn't the standard name ddc-i2c-bus?
+>=20
+> > +
+> > +  hpd-gpios:
+> > +    description: >
+> > +      The GPIO pin for the HDMI hotplug detect (if it doesn't appear
+> > +      as an interrupt/status bit in the HDMI controller itself)
+>=20
+> Goes in the connector.
 
-Cheers,
-Peter
+If this was an entirely new binding, I would agree, but this is not
+really the case here.
+
+We discussed it already for the v2, and this binding is essentially the
+same one than the bcm2835 HDMI controller.
+
+I initially sent a patch adding conditionnals for the clocks and regs
+differences too, and you asked to split the binding into a separate file
+to simplify it a bit.
+
+Supporting both the old binding, and the new one based on the connector
+is going to make the code significantly more complicated, and I'm not
+really sure why we would here.
+
+Thanks!
+Maxime
+
+--idttynnu6hrdagv3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXtZrcQAKCRDj7w1vZxhR
+xS63AQChWBDf5sP/ABh3lPAf9fleWlDwl1ELjIJJmVcgvpMHdwEA7OiJMvxjuIzW
+wGuu/pUZM36aV5U9/r21kOAWpvo1Rgs=
+=4keu
+-----END PGP SIGNATURE-----
+
+--idttynnu6hrdagv3--
