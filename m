@@ -2,81 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98E61EBCB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DB21EBCC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgFBNLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 09:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgFBNLx (ORCPT
+        id S1726630AbgFBNNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 09:13:30 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:52091 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725958AbgFBNN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 09:11:53 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEE8C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 06:11:52 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id gl26so12667487ejb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 06:11:52 -0700 (PDT)
+        Tue, 2 Jun 2020 09:13:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=CZOZ6zJl7K+CX7mG44VkFRrQ+i68m5YSb/XRoNfw+DM=;
-        b=t0s7P9RnsOK2U5V+NV5U4s8HwqQzsGNp/WsyLh4dkWjyUNQj7cBzs38hzylHfE4434
-         vm+7cbuffuhkCAefjvtW93sgucqMJWs6e+sA+glkG9uxBrmSs7WuZgex8lyZpS/Wgnpn
-         NbZW8F8+XRviLQTo5py4Ne+gWjMayTge49GbfTmhN1kCa4FjwQDtLDga1xO4fYfGz5jJ
-         jr0lcBWk5r0aAHArS0iQBx/sCersP7w6CRk766Jh99VWam1I6TEjA1x+badD9URU0FPd
-         tVsglEc0lLFCrjAHXNPuQedBL6u5EdPEmGbROneVT7MKZNqTg1ufBHvBLWzzqeJp1kOi
-         poJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=CZOZ6zJl7K+CX7mG44VkFRrQ+i68m5YSb/XRoNfw+DM=;
-        b=QyUzcY28YKY2npx6e2EuP1PSB7mF971/QCy/f7MqNdd7C1tHHvOUPYUPBl6kor5xd1
-         X4mcw1fumtIU9pp33kwEfgITI0s6tiTUiR/AcxIEkg7Eut+XLhJ8mgmA23CbTDDQZ//T
-         WBknQEALfMwR4ONe8LnVuYuATa905jjkmJ9H7YXaFHRG8LdkPaGBy7jcmx1OAxecvw6R
-         EOiBPut3R9OXqVchawuExjYjG0ySx2KMBZocZQpYP2cE09vl0aB9LRD5vhYIdIQlEaWq
-         y87pcP7K5QUsTQXQRBaJO7HT0NDiLNv0QIoO3NCcrtmcdJhFc88te96LOt2Z66TfNuQZ
-         i5ow==
-X-Gm-Message-State: AOAM530Mvv/0cdCW4i5SMUZsAjQ7xN8Dpirc+nFpj5Tjkt1SEpk3KyH8
-        YeqODgcQJqg8gUR0owubza1hMnINS1mKBGOJi9E=
-X-Google-Smtp-Source: ABdhPJx4VZ5A6VaXepwuw8xvzLuyaM2MMY6+CjAstZB65gsiy9p3Lp9treannux6GlWaODr6rYZhlBUZrMZF4MPzFk0=
-X-Received: by 2002:a17:906:6a4b:: with SMTP id n11mr2272181ejs.198.1591103511474;
- Tue, 02 Jun 2020 06:11:51 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1591103608; x=1622639608;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=8JGBy8gZAjCRLD5i3p6YmN4Jl57pC+5KaEYiBGwvMNo=;
+  b=VnR9flOFu3zjishZ5hRq91O80l4qhJu+SBjN3PdUC7b3KCkdJKIbNpmj
+   ChHtT3WckiprnF6aKoSIT0vZWbRsj6ZtPtdLA+nbXoC3ADbLifC5O5izX
+   rB1qpsoYx1NisN3ovnTvjvWDaL1K6h9+kLKAtEVadzohBlTO8OeRMEC0Q
+   k=;
+IronPort-SDR: Ouvqh5524HgVpj23Vpn6Kc8yqAW9izadPSzizcDGx/+pzeLsG47GLEtR3CAT7DLTQvd77enBhw
+ 5/zLzrvJR/BA==
+X-IronPort-AV: E=Sophos;i="5.73,464,1583193600"; 
+   d="scan'208";a="33962858"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 02 Jun 2020 13:13:24 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com (Postfix) with ESMTPS id 8588FA1DAF;
+        Tue,  2 Jun 2020 13:13:22 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 2 Jun 2020 13:13:21 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.48) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 2 Jun 2020 13:13:05 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
+        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
+        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
+        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
+        <peterz@infradead.org>, <rdunlap@infradead.org>,
+        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
+        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
+        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
+        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
+        <ying.huang@intel.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v14 09/15] mm/damon: Add tracepoints
+Date:   Tue, 2 Jun 2020 15:12:49 +0200
+Message-ID: <20200602131249.22765-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200602130125.20467-1-sjpark@amazon.com>
+References: <20200602130125.20467-1-sjpark@amazon.com>
 MIME-Version: 1.0
-Received: by 2002:a54:2211:0:0:0:0:0 with HTTP; Tue, 2 Jun 2020 06:11:51 -0700 (PDT)
-Reply-To: azizdake0@gmail.com
-From:   Aziz Dake <pauwill066@gmail.com>
-Date:   Tue, 2 Jun 2020 06:11:51 -0700
-Message-ID: <CAO2feTDP0KE=tde2AK=j-X8mRKfN6VzkrnB+Dp+oUtTDh5GoVg@mail.gmail.com>
-Subject: From Honourable Barrister Aziz Dake.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.48]
+X-ClientProxiedBy: EX13D41UWB002.ant.amazon.com (10.43.161.109) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attn: Sir/Madam
+From: SeongJae Park <sjpark@amazon.de>
 
-I am Honourable Barrister Aziz the personal resident Attorney here in
-Burkina Faso to Late Mr. Muammar Muhammad Abu Minyar al-Gaddafi of
-Libya c. 1942 =E2=80=93 20 October 2011.
+This commit adds a tracepoint for DAMON.  It traces the monitoring
+results of each region for each aggregation interval.  Using this, DAMON
+will be easily integrated with any tracepoints supporting tools such as
+perf.
 
-My client Late Mr. Muammar Muhammad Abu Minyar al-Gaddafi c. 1942 =E2=80=93=
- 20
-October 2011, was having a deposit sum of {thirty million four Hundred
-thousand united state dollars} only ($30.4M USD) with a security
-finance firm affiliated with African development bank here in Burkina
-Faso.
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Reviewed-by: Leonard Foerster <foersleo@amazon.de>
+---
+ include/trace/events/damon.h | 43 ++++++++++++++++++++++++++++++++++++
+ mm/damon.c                   |  5 +++++
+ 2 files changed, 48 insertions(+)
+ create mode 100644 include/trace/events/damon.h
 
-With the above explanation=E2=80=99s I want to move this money from Burkina
-Faso to your country, affidavit on your name, but note that this is a
-deal between me and you and should not be related to anybody until the
-deal is over for security reasons, please if interested reply as soon
-as possible.
+diff --git a/include/trace/events/damon.h b/include/trace/events/damon.h
+new file mode 100644
+index 000000000000..22236642d366
+--- /dev/null
++++ b/include/trace/events/damon.h
+@@ -0,0 +1,43 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM damon
++
++#if !defined(_TRACE_DAMON_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_DAMON_H
++
++#include <linux/types.h>
++#include <linux/tracepoint.h>
++
++TRACE_EVENT(damon_aggregated,
++
++	TP_PROTO(int pid, unsigned int nr_regions,
++		unsigned long vm_start, unsigned long vm_end,
++		unsigned int nr_accesses),
++
++	TP_ARGS(pid, nr_regions, vm_start, vm_end, nr_accesses),
++
++	TP_STRUCT__entry(
++		__field(int, pid)
++		__field(unsigned int, nr_regions)
++		__field(unsigned long, vm_start)
++		__field(unsigned long, vm_end)
++		__field(unsigned int, nr_accesses)
++	),
++
++	TP_fast_assign(
++		__entry->pid = pid;
++		__entry->nr_regions = nr_regions;
++		__entry->vm_start = vm_start;
++		__entry->vm_end = vm_end;
++		__entry->nr_accesses = nr_accesses;
++	),
++
++	TP_printk("pid=%d nr_regions=%u %lu-%lu: %u", __entry->pid,
++			__entry->nr_regions, __entry->vm_start,
++			__entry->vm_end, __entry->nr_accesses)
++);
++
++#endif /* _TRACE_DAMON_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
+diff --git a/mm/damon.c b/mm/damon.c
+index 6b0b8f21a6c6..af6f395fe06c 100644
+--- a/mm/damon.c
++++ b/mm/damon.c
+@@ -9,6 +9,8 @@
+ 
+ #define pr_fmt(fmt) "damon: " fmt
+ 
++#define CREATE_TRACE_POINTS
++
+ #include <linux/damon.h>
+ #include <linux/debugfs.h>
+ #include <linux/delay.h>
+@@ -20,6 +22,7 @@
+ #include <linux/sched/mm.h>
+ #include <linux/sched/task.h>
+ #include <linux/slab.h>
++#include <trace/events/damon.h>
+ 
+ /* Minimal region size.  Every damon_region is aligned by this. */
+ #define MIN_REGION PAGE_SIZE
+@@ -650,6 +653,8 @@ static void kdamond_reset_aggregated(struct damon_ctx *c)
+ 			damon_write_rbuf(c, &r->vm_end, sizeof(r->vm_end));
+ 			damon_write_rbuf(c, &r->nr_accesses,
+ 					sizeof(r->nr_accesses));
++			trace_damon_aggregated(t->pid, nr,
++					r->vm_start, r->vm_end, r->nr_accesses);
+ 			r->nr_accesses = 0;
+ 		}
+ 	}
+-- 
+2.17.1
 
-Thanks,
-Honourable Barrister Aziz Dake.
