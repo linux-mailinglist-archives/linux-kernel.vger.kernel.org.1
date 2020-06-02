@@ -2,227 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D241EC4F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 00:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F561EC513
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 00:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728475AbgFBWbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 18:31:31 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:65069 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728387AbgFBWbZ (ORCPT
+        id S1730313AbgFBWdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 18:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727898AbgFBWdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 18:31:25 -0400
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 02 Jun 2020 15:31:24 -0700
-Received: from gurus-linux.qualcomm.com ([10.46.162.81])
-  by ironmsg01-sd.qualcomm.com with ESMTP; 02 Jun 2020 15:31:22 -0700
-Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
-        id D6F594DF1; Tue,  2 Jun 2020 15:31:22 -0700 (PDT)
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Guru Das Srinagesh <gurus@codeaurora.org>
-Subject: [PATCH v16 11/11] pwm: core: Convert period and duty cycle to u64
-Date:   Tue,  2 Jun 2020 15:31:16 -0700
-Message-Id: <64f9ba1c9d6c49a397f12846493707883cee430f.1591136989.git.gurus@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <cover.1591136989.git.gurus@codeaurora.org>
-References: <cover.1591136989.git.gurus@codeaurora.org>
-In-Reply-To: <cover.1591136989.git.gurus@codeaurora.org>
-References: <cover.1591136989.git.gurus@codeaurora.org>
+        Tue, 2 Jun 2020 18:33:52 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCE0C08C5C0;
+        Tue,  2 Jun 2020 15:33:52 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id l10so254752wrr.10;
+        Tue, 02 Jun 2020 15:33:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PtGVXqcTc64CdaV++HlXk2NwJAsozYe6VtwS/wGydGk=;
+        b=JNnm978m2Tjes/vaXxc4gWPaS+ByDpoLLejQREPLD0TzRnBxR8wT78FibPzf06wSju
+         VgIM6ZjOySipXtBVR8wmqgrJiS9CsaLbCjSjfgnCbO6i5A99avCGuWRVz9/+lkjLz7b0
+         eOOmMATIQaA/RdsKvOKOewhOjXLHkeQlxG5AOdeQ2niJq8PnROq9Xvq5hhdlXO/LLkVU
+         1OP2gr7729buJQOtcXAFp87gKtUXJqcEvp25B1c8J9g66CIH58d/ujdHPDfFH/86HoA3
+         4IHh4wgq9sgeM52xfVQVr5YAGldvlwk4mVCF/MKv0hjcCsVf0UMFl/M6sF7ygphqWrg9
+         9lbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PtGVXqcTc64CdaV++HlXk2NwJAsozYe6VtwS/wGydGk=;
+        b=UryGCMm7/sOYGnt8X2E8wduzBC6x3MGLQmApHbYPi9AvpUATr/mvp45CGUY35xnOgp
+         b+YaJCnkksmRvnIA5ovzldcqUXNBMYvwflYFHuxvhnySzXCLXh5oFXwGGluxOy6258Q2
+         II7GBHHF/dwdnnSlAU8A7JgQgc3azpMcCE+0UtKZkxJyHKHqmpaUOQBXFaGHMFpy16sX
+         xI0JNkJ/JjyX2kr/VBLohgzyfW376mE5G8sF498OZir9B59wvFHzqy9OUWHNUUKZPm6D
+         uEUhqPUoV8md0FrxQxnDRBRtowPA/Ncu8gCo8r48ffLUUY18EMGH9yO2XOKFlEvHqJ+g
+         FBNg==
+X-Gm-Message-State: AOAM530kwQ5TloQoZEVNpiuQbc6unbBcw+INtOLkyQXYNJJPtZ9R7Hez
+        qjjvPsmp034e7BRB3QkFn7qAat5b
+X-Google-Smtp-Source: ABdhPJyIwCcPTPmX4Qo+4ikBX6m+r7Scb6XSJ0eeoHam69b347gB6Irc45DPlt4yAoAxuE90OM0IXA==
+X-Received: by 2002:adf:82cf:: with SMTP id 73mr26888381wrc.382.1591137230357;
+        Tue, 02 Jun 2020 15:33:50 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id c140sm313375wmd.18.2020.06.02.15.33.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jun 2020 15:33:49 -0700 (PDT)
+Subject: Re: [PATCH net-next v5 4/4] net: dp83869: Add RGMII internal delay
+ configuration
+To:     Dan Murphy <dmurphy@ti.com>, andrew@lunn.ch, hkallweit1@gmail.com,
+        davem@davemloft.net, robh@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20200602164522.3276-1-dmurphy@ti.com>
+ <20200602164522.3276-5-dmurphy@ti.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <c3c68dcd-ccf1-25fd-fc4c-4c30608a1cc8@gmail.com>
+Date:   Tue, 2 Jun 2020 15:33:46 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200602164522.3276-5-dmurphy@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because period and duty cycle are defined as ints with units of
-nanoseconds, the maximum time duration that can be set is limited to
-~2.147 seconds. Change their definitions to u64 in the structs of the
-PWM framework so that higher durations may be set.
 
-Also use the right format specifiers in debug prints in both core.c as
-well as pwm-stm32-lp.c.
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/pwm/core.c         | 14 +++++++-------
- drivers/pwm/pwm-stm32-lp.c |  2 +-
- drivers/pwm/sysfs.c        |  8 ++++----
- include/linux/pwm.h        | 12 ++++++------
- 4 files changed, 18 insertions(+), 18 deletions(-)
+On 6/2/2020 9:45 AM, Dan Murphy wrote:
+> Add RGMII internal delay configuration for Rx and Tx.
+> 
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
 
-diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-index bca0496..a2ff6dd 100644
---- a/drivers/pwm/core.c
-+++ b/drivers/pwm/core.c
-@@ -510,12 +510,12 @@ static void pwm_apply_state_debug(struct pwm_device *pwm,
- 	    last->period > s2.period &&
- 	    last->period <= state->period)
- 		dev_warn(chip->dev,
--			 ".apply didn't pick the best available period (requested: %u, applied: %u, possible: %u)\n",
-+			 ".apply didn't pick the best available period (requested: %llu, applied: %llu, possible: %llu)\n",
- 			 state->period, s2.period, last->period);
- 
- 	if (state->enabled && state->period < s2.period)
- 		dev_warn(chip->dev,
--			 ".apply is supposed to round down period (requested: %u, applied: %u)\n",
-+			 ".apply is supposed to round down period (requested: %llu, applied: %llu)\n",
- 			 state->period, s2.period);
- 
- 	if (state->enabled &&
-@@ -524,14 +524,14 @@ static void pwm_apply_state_debug(struct pwm_device *pwm,
- 	    last->duty_cycle > s2.duty_cycle &&
- 	    last->duty_cycle <= state->duty_cycle)
- 		dev_warn(chip->dev,
--			 ".apply didn't pick the best available duty cycle (requested: %u/%u, applied: %u/%u, possible: %u/%u)\n",
-+			 ".apply didn't pick the best available duty cycle (requested: %llu/%llu, applied: %llu/%llu, possible: %llu/%llu)\n",
- 			 state->duty_cycle, state->period,
- 			 s2.duty_cycle, s2.period,
- 			 last->duty_cycle, last->period);
- 
- 	if (state->enabled && state->duty_cycle < s2.duty_cycle)
- 		dev_warn(chip->dev,
--			 ".apply is supposed to round down duty_cycle (requested: %u/%u, applied: %u/%u)\n",
-+			 ".apply is supposed to round down duty_cycle (requested: %llu/%llu, applied: %llu/%llu)\n",
- 			 state->duty_cycle, state->period,
- 			 s2.duty_cycle, s2.period);
- 
-@@ -558,7 +558,7 @@ static void pwm_apply_state_debug(struct pwm_device *pwm,
- 	    (s1.enabled && s1.period != last->period) ||
- 	    (s1.enabled && s1.duty_cycle != last->duty_cycle)) {
- 		dev_err(chip->dev,
--			".apply is not idempotent (ena=%d pol=%d %u/%u) -> (ena=%d pol=%d %u/%u)\n",
-+			".apply is not idempotent (ena=%d pol=%d %llu/%llu) -> (ena=%d pol=%d %llu/%llu)\n",
- 			s1.enabled, s1.polarity, s1.duty_cycle, s1.period,
- 			last->enabled, last->polarity, last->duty_cycle,
- 			last->period);
-@@ -1284,8 +1284,8 @@ static void pwm_dbg_show(struct pwm_chip *chip, struct seq_file *s)
- 		if (state.enabled)
- 			seq_puts(s, " enabled");
- 
--		seq_printf(s, " period: %u ns", state.period);
--		seq_printf(s, " duty: %u ns", state.duty_cycle);
-+		seq_printf(s, " period: %llu ns", state.period);
-+		seq_printf(s, " duty: %llu ns", state.duty_cycle);
- 		seq_printf(s, " polarity: %s",
- 			   state.polarity ? "inverse" : "normal");
- 
-diff --git a/drivers/pwm/pwm-stm32-lp.c b/drivers/pwm/pwm-stm32-lp.c
-index 67fca62..134c146 100644
---- a/drivers/pwm/pwm-stm32-lp.c
-+++ b/drivers/pwm/pwm-stm32-lp.c
-@@ -61,7 +61,7 @@ static int stm32_pwm_lp_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 	do_div(div, NSEC_PER_SEC);
- 	if (!div) {
- 		/* Clock is too slow to achieve requested period. */
--		dev_dbg(priv->chip.dev, "Can't reach %u ns\n",	state->period);
-+		dev_dbg(priv->chip.dev, "Can't reach %llu ns\n", state->period);
- 		return -EINVAL;
- 	}
- 
-diff --git a/drivers/pwm/sysfs.c b/drivers/pwm/sysfs.c
-index 2389b86..449dbc0 100644
---- a/drivers/pwm/sysfs.c
-+++ b/drivers/pwm/sysfs.c
-@@ -42,7 +42,7 @@ static ssize_t period_show(struct device *child,
- 
- 	pwm_get_state(pwm, &state);
- 
--	return sprintf(buf, "%u\n", state.period);
-+	return sprintf(buf, "%llu\n", state.period);
- }
- 
- static ssize_t period_store(struct device *child,
-@@ -52,10 +52,10 @@ static ssize_t period_store(struct device *child,
- 	struct pwm_export *export = child_to_pwm_export(child);
- 	struct pwm_device *pwm = export->pwm;
- 	struct pwm_state state;
--	unsigned int val;
-+	u64 val;
- 	int ret;
- 
--	ret = kstrtouint(buf, 0, &val);
-+	ret = kstrtou64(buf, 0, &val);
- 	if (ret)
- 		return ret;
- 
-@@ -77,7 +77,7 @@ static ssize_t duty_cycle_show(struct device *child,
- 
- 	pwm_get_state(pwm, &state);
- 
--	return sprintf(buf, "%u\n", state.duty_cycle);
-+	return sprintf(buf, "%llu\n", state.duty_cycle);
- }
- 
- static ssize_t duty_cycle_store(struct device *child,
-diff --git a/include/linux/pwm.h b/include/linux/pwm.h
-index 2635b2a..a13ff38 100644
---- a/include/linux/pwm.h
-+++ b/include/linux/pwm.h
-@@ -39,7 +39,7 @@ enum pwm_polarity {
-  * current PWM hardware state.
-  */
- struct pwm_args {
--	unsigned int period;
-+	u64 period;
- 	enum pwm_polarity polarity;
- };
- 
-@@ -56,8 +56,8 @@ enum {
-  * @enabled: PWM enabled status
-  */
- struct pwm_state {
--	unsigned int period;
--	unsigned int duty_cycle;
-+	u64 period;
-+	u64 duty_cycle;
- 	enum pwm_polarity polarity;
- 	bool enabled;
- };
-@@ -107,13 +107,13 @@ static inline bool pwm_is_enabled(const struct pwm_device *pwm)
- 	return state.enabled;
- }
- 
--static inline void pwm_set_period(struct pwm_device *pwm, unsigned int period)
-+static inline void pwm_set_period(struct pwm_device *pwm, u64 period)
- {
- 	if (pwm)
- 		pwm->state.period = period;
- }
- 
--static inline unsigned int pwm_get_period(const struct pwm_device *pwm)
-+static inline u64 pwm_get_period(const struct pwm_device *pwm)
- {
- 	struct pwm_state state;
- 
-@@ -128,7 +128,7 @@ static inline void pwm_set_duty_cycle(struct pwm_device *pwm, unsigned int duty)
- 		pwm->state.duty_cycle = duty;
- }
- 
--static inline unsigned int pwm_get_duty_cycle(const struct pwm_device *pwm)
-+static inline u64 pwm_get_duty_cycle(const struct pwm_device *pwm)
- {
- 	struct pwm_state state;
- 
+[snip]
+
+> +
+>  enum {
+>  	DP83869_PORT_MIRRORING_KEEP,
+>  	DP83869_PORT_MIRRORING_EN,
+> @@ -108,6 +113,8 @@ enum {
+>  struct dp83869_private {
+>  	int tx_fifo_depth;
+>  	int rx_fifo_depth;
+> +	s32 rx_id_delay;
+> +	s32 tx_id_delay;
+>  	int io_impedance;
+>  	int port_mirroring;
+>  	bool rxctrl_strap_quirk;
+> @@ -232,6 +239,22 @@ static int dp83869_of_init(struct phy_device *phydev)
+>  				 &dp83869->tx_fifo_depth))
+>  		dp83869->tx_fifo_depth = DP83869_PHYCR_FIFO_DEPTH_4_B_NIB;
+>  
+> +	ret = of_property_read_u32(of_node, "rx-internal-delay-ps",
+> +				   &dp83869->rx_id_delay);
+> +	if (ret) {
+> +		dp83869->rx_id_delay =
+> +				dp83869_internal_delay[DP83869_CLK_DELAY_DEF];
+> +		ret = 0;
+> +	}
+> +
+> +	ret = of_property_read_u32(of_node, "tx-internal-delay-ps",
+> +				   &dp83869->tx_id_delay);
+> +	if (ret) {
+> +		dp83869->tx_id_delay =
+> +				dp83869_internal_delay[DP83869_CLK_DELAY_DEF];
+> +		ret = 0;
+> +	}
+
+It is still not clear to me why is not the parsing being done by the PHY
+library helper directly?
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Florian
