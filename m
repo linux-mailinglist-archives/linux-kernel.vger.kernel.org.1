@@ -2,199 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1641EBC7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8892D1EBC9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgFBNGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 09:06:47 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:30312 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728407AbgFBNGb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 09:06:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591103189;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uCok80LFYJ4Lm/PMCty2sCIaVjds7Ty5xQFab3NSrrY=;
-        b=IShkhbjnQJMa5w0IGp+5HfAqTh8qDrenQxW0dlKOFJCHX6IfAirU0VZLMjgX+zVgTou5F8
-        H4mzXbFvBIDGJSlJce4rOzWrGE1AWxuuKffviXK6j26XiIcnTVO4gHHbGTL013+7AprYEr
-        f4Ebo2oTodfxB0wUCC9nMVs5cacQQ+o=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-jY-nlEpoNAKWqHOaQ3eClA-1; Tue, 02 Jun 2020 09:06:28 -0400
-X-MC-Unique: jY-nlEpoNAKWqHOaQ3eClA-1
-Received: by mail-wr1-f70.google.com with SMTP id p9so1380825wrx.10
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 06:06:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uCok80LFYJ4Lm/PMCty2sCIaVjds7Ty5xQFab3NSrrY=;
-        b=WngNgiWoyI6qMfEKnnxEgzFd5lJI8o627JdjEKbX+kgtgylDLJ2R4LlUQoUcr7cXK/
-         Yq7SarISyeYIWSf7gyTpQw38q/zu5yuI26+AR6Pl/8D9wsHyJUxIUC5Rfvg/wVliS4kz
-         2IdzXqpcZiSpEzqce/Ew+qDD5Tbs/C9uZzj90WWQj9iVBSIDpRiU1+Cxdd5WNdFgVbFR
-         BeNz+wkynr8SqJWJOoKAr2H9qrUxsMcgBd2Ojpo81c9miaC1dwEjHMoEQy9vKY1dMgjF
-         GXgfqNICpRYZeUrvAmgurnRF6KsaHcgGmyJhr2LW9jUmOpvAi7XKnku1GyIaUG0If+CN
-         DX9w==
-X-Gm-Message-State: AOAM532SysBCXOc3Jd/JblCrJdkzmSYLyZkXhZOthJutI3PGA5XjqZIb
-        gzY1lcXaZrYgzolXGfUuqbowG79RV7VAwyaJCQ2K1XZCr4KiJfVUkdM65yF96Hmv/qE7S3Rt2Rf
-        O4qaiI3kK22gROJbXDFF6pB+V
-X-Received: by 2002:adf:a350:: with SMTP id d16mr27202897wrb.237.1591103187035;
-        Tue, 02 Jun 2020 06:06:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzSMYsr9uLo9HwO9qp8x9NdNINKCKw+Yq/4jaF7d1uMiQ2jKEDbPOfPn52lZ3rMs5ZJSOurmQ==
-X-Received: by 2002:adf:a350:: with SMTP id d16mr27202884wrb.237.1591103186812;
-        Tue, 02 Jun 2020 06:06:26 -0700 (PDT)
-Received: from redhat.com (bzq-109-64-41-91.red.bezeqint.net. [109.64.41.91])
-        by smtp.gmail.com with ESMTPSA id n23sm3456907wmc.0.2020.06.02.06.06.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 06:06:26 -0700 (PDT)
-Date:   Tue, 2 Jun 2020 09:06:25 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: [PATCH RFC 13/13] vhost: drop head based APIs
-Message-ID: <20200602130543.578420-14-mst@redhat.com>
-References: <20200602130543.578420-1-mst@redhat.com>
+        id S1728575AbgFBNHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 09:07:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:50674 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728584AbgFBNHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 09:07:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7A811FB;
+        Tue,  2 Jun 2020 06:07:15 -0700 (PDT)
+Received: from [10.57.10.95] (unknown [10.57.10.95])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BE473F305;
+        Tue,  2 Jun 2020 06:07:13 -0700 (PDT)
+Subject: Re: [PATCH] iommu/dma: limit iova free size to unmmaped iova
+To:     guptap@codeaurora.org
+Cc:     mhocko@suse.com, owner-linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200521113004.12438-1-guptap@codeaurora.org>
+ <7aaa8dcc-6a47-f256-431d-2a1b034b4076@arm.com>
+ <90662ef3123dbf2e93f9718ee5cc14a7@codeaurora.org>
+ <2d873ab9-ebb9-3c2d-f129-55a036ab47d0@arm.com>
+ <4ba082d3bb965524157704ea1ffb1ff4@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <9b5f8501-6e6e-0cd2-7f98-7cfea13051d7@arm.com>
+Date:   Tue, 2 Jun 2020 14:07:12 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200602130543.578420-1-mst@redhat.com>
-X-Mailer: git-send-email 2.24.1.751.gd10ce2899c
-X-Mutt-Fcc: =sent
+In-Reply-To: <4ba082d3bb965524157704ea1ffb1ff4@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Everyone's using buf APIs, no need for head based ones anymore.
+On 2020-05-26 08:19, guptap@codeaurora.org wrote:
+> On 2020-05-22 14:54, Robin Murphy wrote:
+>> On 2020-05-22 07:25, guptap@codeaurora.org wrote:
+>>> On 2020-05-22 01:46, Robin Murphy wrote:
+>>>> On 2020-05-21 12:30, Prakash Gupta wrote:
+>>> I agree, we shouldn't be freeing the partial iova. Instead just making
+>>> sure if unmap was successful should be sufficient before freeing 
+>>> iova. So change
+>>> can instead be something like this:
+>>>
+>>> -    iommu_dma_free_iova(cookie, dma_addr, size);
+>>> +    if (unmapped)
+>>> +        iommu_dma_free_iova(cookie, dma_addr, size);
+>>>
+>>>> TBH my gut feeling here is that you're really just trying to treat a
+>>>> symptom of another bug elsewhere, namely some driver calling
+>>>> dma_unmap_* or dma_free_* with the wrong address or size in the first
+>>>> place.
+>>>>
+>>> This condition would arise only if driver calling dma_unmap/free_* 
+>>> with 0
+>>> iova_pfn. This will be flagged with a warning during unmap but will 
+>>> trigger
+>>> panic later on while doing unrelated dma_map/unmap_*. If unmapped has 
+>>> already
+>>> failed for invalid iova, there is no reason we should consider this 
+>>> as valid
+>>> iova and free. This part should be fixed.
+>>
+>> I disagree. In general, if drivers call the DMA API incorrectly it is
+>> liable to lead to data loss, memory corruption, and various other
+>> unpleasant misbehaviour - it is not the DMA layer's job to attempt to
+>> paper over driver bugs.
+>>
+>> There *is* an argument for downgrading the BUG_ON() in
+>> iova_magazine_free_pfns() to a WARN_ON(), since frankly it isn't a
+>> sufficiently serious condition to justify killing the whole machine
+>> immediately, but NAK to bodging the iommu-dma mid-layer to "fix" that.
+>> A serious bug already happened elsewhere, so trying to hide the
+>> fallout really doesn't help anyone.
+>>
+> Sorry for delayed response, it was a long weekend.
+> I agree that invalid DMA API call can result in unexpected issues and 
+> client
+> should fix it, but then the present behavior makes it difficult to catch 
+> cases
+> when driver is making wrong DMA API calls. When invalid iova pfn is 
+> passed it
+> doesn't fail then and there, though DMA layer is aware of iova being 
+> invalid. It
+> fails much after that in the context of an valid map/unmap, with BUG_ON().
+> 
+> Downgrading BUG_ON() to WARN_ON() in iova_magazine_free_pfns() will not 
+> help
+> much as invalid iova will cause NULL pointer dereference.
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/vhost/vhost.c | 36 ++++++++----------------------------
- drivers/vhost/vhost.h | 12 ------------
- 2 files changed, 8 insertions(+), 40 deletions(-)
+Obviously I didn't mean a literal s/BUG/WARN/ substitution - some 
+additional control flow to actually handle the error case was implied.
 
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index be822f0c9428..412923cc96df 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -2256,12 +2256,12 @@ static int fetch_buf(struct vhost_virtqueue *vq)
- 	return 1;
- }
- 
--/* Reverse the effect of vhost_get_vq_desc. Useful for error handling. */
-+/* Revert the effect of fetch_buf. Useful for error handling. */
-+static
- void vhost_discard_vq_desc(struct vhost_virtqueue *vq, int n)
- {
- 	vq->last_avail_idx -= n;
- }
--EXPORT_SYMBOL_GPL(vhost_discard_vq_desc);
- 
- /* This function returns a value > 0 if a descriptor was found, or 0 if none were found.
-  * A negative code is returned on error. */
-@@ -2421,8 +2421,7 @@ static int __vhost_add_used_n(struct vhost_virtqueue *vq,
- 	return 0;
- }
- 
--/* After we've used one of their buffers, we tell them about it.  We'll then
-- * want to notify the guest, using eventfd. */
-+static
- int vhost_add_used_n(struct vhost_virtqueue *vq, struct vring_used_elem *heads,
- 		     unsigned count)
- {
-@@ -2456,10 +2455,8 @@ int vhost_add_used_n(struct vhost_virtqueue *vq, struct vring_used_elem *heads,
- 	}
- 	return r;
- }
--EXPORT_SYMBOL_GPL(vhost_add_used_n);
- 
--/* After we've used one of their buffers, we tell them about it.  We'll then
-- * want to notify the guest, using eventfd. */
-+static
- int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int len)
- {
- 	struct vring_used_elem heads = {
-@@ -2469,14 +2466,17 @@ int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int len)
- 
- 	return vhost_add_used_n(vq, &heads, 1);
- }
--EXPORT_SYMBOL_GPL(vhost_add_used);
- 
-+/* After we've used one of their buffers, we tell them about it.  We'll then
-+ * want to notify the guest, using vhost_signal. */
- int vhost_put_used_buf(struct vhost_virtqueue *vq, struct vhost_buf *buf)
- {
- 	return vhost_add_used(vq, buf->id, buf->in_len);
- }
- EXPORT_SYMBOL_GPL(vhost_put_used_buf);
- 
-+/* After we've used one of their buffers, we tell them about it.  We'll then
-+ * want to notify the guest, using vhost_signal. */
- int vhost_put_used_n_bufs(struct vhost_virtqueue *vq,
- 			  struct vhost_buf *bufs, unsigned count)
- {
-@@ -2537,26 +2537,6 @@ void vhost_signal(struct vhost_dev *dev, struct vhost_virtqueue *vq)
- }
- EXPORT_SYMBOL_GPL(vhost_signal);
- 
--/* And here's the combo meal deal.  Supersize me! */
--void vhost_add_used_and_signal(struct vhost_dev *dev,
--			       struct vhost_virtqueue *vq,
--			       unsigned int head, int len)
--{
--	vhost_add_used(vq, head, len);
--	vhost_signal(dev, vq);
--}
--EXPORT_SYMBOL_GPL(vhost_add_used_and_signal);
--
--/* multi-buffer version of vhost_add_used_and_signal */
--void vhost_add_used_and_signal_n(struct vhost_dev *dev,
--				 struct vhost_virtqueue *vq,
--				 struct vring_used_elem *heads, unsigned count)
--{
--	vhost_add_used_n(vq, heads, count);
--	vhost_signal(dev, vq);
--}
--EXPORT_SYMBOL_GPL(vhost_add_used_and_signal_n);
--
- /* return true if we're sure that avaiable ring is empty */
- bool vhost_vq_avail_empty(struct vhost_dev *dev, struct vhost_virtqueue *vq)
- {
-diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
-index 6c10e99ff334..4fcf59153fc7 100644
---- a/drivers/vhost/vhost.h
-+++ b/drivers/vhost/vhost.h
-@@ -195,11 +195,6 @@ long vhost_vring_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *arg
- bool vhost_vq_access_ok(struct vhost_virtqueue *vq);
- bool vhost_log_access_ok(struct vhost_dev *);
- 
--int vhost_get_vq_desc(struct vhost_virtqueue *,
--		      struct iovec iov[], unsigned int iov_count,
--		      unsigned int *out_num, unsigned int *in_num,
--		      struct vhost_log *log, unsigned int *log_num);
--void vhost_discard_vq_desc(struct vhost_virtqueue *, int n);
- int vhost_get_avail_buf(struct vhost_virtqueue *, struct vhost_buf *buf,
- 			struct iovec iov[], unsigned int iov_count,
- 			unsigned int *out_num, unsigned int *in_num,
-@@ -207,13 +202,6 @@ int vhost_get_avail_buf(struct vhost_virtqueue *, struct vhost_buf *buf,
- void vhost_discard_avail_bufs(struct vhost_virtqueue *,
- 			      struct vhost_buf *, unsigned count);
- int vhost_vq_init_access(struct vhost_virtqueue *);
--int vhost_add_used(struct vhost_virtqueue *, unsigned int head, int len);
--int vhost_add_used_n(struct vhost_virtqueue *, struct vring_used_elem *heads,
--		     unsigned count);
--void vhost_add_used_and_signal(struct vhost_dev *, struct vhost_virtqueue *,
--			       unsigned int id, int len);
--void vhost_add_used_and_signal_n(struct vhost_dev *, struct vhost_virtqueue *,
--			       struct vring_used_elem *heads, unsigned count);
- int vhost_put_used_buf(struct vhost_virtqueue *, struct vhost_buf *buf);
- int vhost_put_used_n_bufs(struct vhost_virtqueue *,
- 			  struct vhost_buf *bufs, unsigned count);
--- 
-MST
+I'll write up the patch myself, since it's easier than further debating.
 
+> I see no reason why DMA layer wants to free an iova for which unmapped 
+> failed.
+> IMHO queuing an invalid iova (which already failed unmap) to rcache which
+> eventually going to crash the system looks like iommu-dma layer issue.
+
+What if the unmap fails because the address range is already entirely 
+unmapped? Freeing the IOVA (or at least attempting to) would be 
+logically appropriate in that case. In fact some IOMMU drivers might not 
+even consider that a failure, so the DMA layer may not even be aware 
+that it's been handed a bogus unallocated address.
+
+The point is that unmapping *doesn't* fail under normal and correct 
+operation, so the DMA layer should not expect to have to handle it. Even 
+if it does happen, that's a highly exceptional case that the DMA layer 
+cannot recover from by itself; at best it can just push the problem 
+elsewhere. It's pretty hard to justify doing extra work to simply move 
+an exceptional problem around without really addressing it.
+
+And in this particular case, personally I would *much* rather see 
+warnings spewing from both the pagetable and IOVA code as early as 
+possible to clearly indicate that the DMA layer itself has been thrown 
+out of sync, than just have warnings that might represent some other 
+source of pagetable corruption (or at worst, depending on the pagetable 
+code, no warnings at all and only have dma_map_*() calls quietly start 
+failing much, much later due to all the IOVA space having been leaked by 
+bad unmaps).
+
+Robin.
