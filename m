@@ -2,57 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FC31EBBEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123A11EBBF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgFBMlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:41:46 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:50335 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726371AbgFBMlp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:41:45 -0400
-Received: by mail-il1-f199.google.com with SMTP id u4so11601302ilq.17
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 05:41:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=tAlIbuV2NmJbjQsrEd8aARaADyAiwp04Ya0IbnrBnn0=;
-        b=agzrugfBOR9Kgi4QhKvIVPEycHE+U+QIWEC9EeWgUDjafZta683hkUMfmD25SE7P/H
-         GbsXCX/4QVi0Sdwo+GBH7UDWxyLEQY1ifCuFIokdJNZNAPUF7FvIQpo0g5mVYEbCkxy9
-         tVftpyRP2hfzFKqMwm5fgdaxz7m6Pzva3dQYvjaegUPZWc1AugKk47k7v2epA6FEpgo6
-         uPRFIHwimYPXtDq17Db0gqY//R2T2bqssbfVniU8GCFN11Z7AYC+sCr/ceQF3CNOysJx
-         Jc564Z+U7sbmIilH3E0JeLiAqP9tN37Bo/x/QT+soV1goM6t645+gvVd6dglYoUsplVL
-         rTXg==
-X-Gm-Message-State: AOAM532Oe4f/sm3Ed4TTk+5ow6A9GSOGlsCAfPQOWwOm7JAqcqKhDxu0
-        9HMGXc5H7vr8dt7TBKQ04rpOETuh4KXWfKpQbVjo8gFeGAMA
-X-Google-Smtp-Source: ABdhPJy0duXvd9nJwf4jJ+gZCXXpt1+wEmsQ8/kmPREsBEIwiOWpnsvild1FxcJtKuX5Yj6pRJyHODOemxR+emeQ45aoT2uGgm3p
-MIME-Version: 1.0
-X-Received: by 2002:a02:ce56:: with SMTP id y22mr25228557jar.18.1591101704812;
- Tue, 02 Jun 2020 05:41:44 -0700 (PDT)
-Date:   Tue, 02 Jun 2020 05:41:44 -0700
-In-Reply-To: <20200602124130.256274203F@d06av24.portsmouth.uk.ibm.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000eabc7505a7193b6a@google.com>
-Subject: Re: Re: linux-next test error: BUG: using smp_processor_id() in
- preemptible [ADDR] code: syz-fuzzer/6792
-From:   syzbot <syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        riteshh@linux.ibm.com, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+        id S1728133AbgFBMmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:42:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:57159 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725940AbgFBMmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 08:42:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591101743; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=5Vd/bdUNGvly/grt98Jx4x27H8iSAXBdUqjZmOyOWf0=; b=lJkZ+qasACzeUN5DUiJLgkZn6GQiL0C1lJvHB2XwveQGOs3hDF/ieKZH9SC8PaYyYg4uIM/7
+ NklFtDNYRas2SRT0e9lA3xZdWpA27QuzxUgncW7XKni8m7Bbo8ARj3+Q2o3CfCX7zSmlIZEz
+ 0O0n+zJEs9d3ejkH0fr0vfGDvnk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5ed64919082f42857f6b8f85 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Jun 2020 12:42:01
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DFA9DC43395; Tue,  2 Jun 2020 12:42:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: stummala)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 62AFCC433C6;
+        Tue,  2 Jun 2020 12:41:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 62AFCC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=stummala@codeaurora.org
+From:   Sahitya Tummala <stummala@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Sahitya Tummala <stummala@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] f2fs: fix retry logic in f2fs_write_cache_pages()
+Date:   Tue,  2 Jun 2020 18:11:47 +0530
+Message-Id: <1591101707-18802-1-git-send-email-stummala@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> #syz test: 
+In case a compressed file is getting overwritten, the current retry
+logic doesn't include the current page to be retried now as it sets
+the new start index as 0 and new end index as writeback_index - 1.
+This causes the corresponding cluster to be uncompressed and written
+as normal pages without compression. Fix this by allowing writeback to
+be retried for the current page as well (in case of compressed page
+getting retried due to index mismatch with cluster index). So that
+this cluster can be written compressed in case of overwrite.
 
-This crash does not have a reproducer. I cannot test it.
+Also, align f2fs_write_cache_pages() according to the change -
+<64081362e8ff>("mm/page-writeback.c: fix range_cyclic writeback vs
+writepages deadlock").
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 
-> 0e21d4620dd047da7952f44a2e1ac777ded2d57e
+Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+---
+v2: 
+- Align the code to <64081362e8ff>("mm/page-writeback.c: fix range_cyclic
+  writeback vs writepages deadlock") and adjust the retry logic also as per
+  Chao's suggestion.
+
+ fs/f2fs/data.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 4af5fcd..31af29f 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2825,7 +2825,6 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+ 	pgoff_t index;
+ 	pgoff_t end;		/* Inclusive */
+ 	pgoff_t done_index;
+-	int cycled;
+ 	int range_whole = 0;
+ 	xa_mark_t tag;
+ 	int nwritten = 0;
+@@ -2843,17 +2842,12 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+ 	if (wbc->range_cyclic) {
+ 		writeback_index = mapping->writeback_index; /* prev offset */
+ 		index = writeback_index;
+-		if (index == 0)
+-			cycled = 1;
+-		else
+-			cycled = 0;
+ 		end = -1;
+ 	} else {
+ 		index = wbc->range_start >> PAGE_SHIFT;
+ 		end = wbc->range_end >> PAGE_SHIFT;
+ 		if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX)
+ 			range_whole = 1;
+-		cycled = 1; /* ignore range_cyclic tests */
+ 	}
+ 	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+ 		tag = PAGECACHE_TAG_TOWRITE;
+@@ -3021,12 +3015,13 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+ 		}
+ 	}
+ #endif
+-	if ((!cycled && !done) || retry) {
+-		cycled = 1;
++	if (retry) {
+ 		index = 0;
+-		end = writeback_index - 1;
++		end = -1;
+ 		goto retry;
+ 	}
++	if (wbc->range_cyclic && !done)
++		done_index = 0;
+ 	if (wbc->range_cyclic || (range_whole && wbc->nr_to_write > 0))
+ 		mapping->writeback_index = done_index;
+ 
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
