@@ -2,170 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F8B1EC426
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 23:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81A81EC421
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 23:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgFBVHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 17:07:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
+        id S1728114AbgFBVDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 17:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgFBVHR (ORCPT
+        with ESMTP id S1726112AbgFBVD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 17:07:17 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DA4C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 14:07:15 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id n23so5067ljh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 14:07:15 -0700 (PDT)
+        Tue, 2 Jun 2020 17:03:29 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA94FC08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 14:03:28 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id u10so13121185ljj.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 14:03:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QGf11SbLkxX4fJOwT9kGUgWEGfA4VGBgNO6kWFPFsRk=;
-        b=XM3q8pho/PiowJ76NeZ46OC8b/u0qzNDKNLp7cEGV3nGiBc2PGReStjvx1Vz8tUMND
-         4apoBJ3u14oElCS0buaQvzQDvSszTwAsZ6Yhd5EN54LStE+ICJI6tZsQZF7P75x4vh38
-         Hlaj5tBKyfVXGXv4gKJiwm0zV3L6emG1YczkM=
+        bh=0bJlmus5XHXjv1rw00vbaJw33tmb8qsAo8E9SyQVB5o=;
+        b=c3OO9Eib+9QFWyiyGkaP3OWFMYITgu0SqFYiihv1nDFfvPl5LG+QGROmQ0W2vvF9TH
+         xFPPXbu1d1Ijk8yKx1L8kgzVX4/QMqVlDd/+mMyGn+W6nAmAlpRGjtWXYEvN82lx37MV
+         fur6Zc96Tv4VAr6lx2n2EUxpsK34AWMPsgGCg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QGf11SbLkxX4fJOwT9kGUgWEGfA4VGBgNO6kWFPFsRk=;
-        b=exzka0GrmR6CZqVH3pyx8n7i5ufX5lj3KEUipT3vXwyXlCNHkjT10nKuLhQNllivzr
-         CuKBUk70/OWxV27sc/d9268xi65QLawbNGiYRD5s6sKiIhOc8cci6IUCmSsVnh7wX7+0
-         YiRCTo1IQT6IRTyQ2lS68YMLoWbR5amFszbEVdjQ+AhXwPD452FylegVJ91YEcGs2rnx
-         4Y9LLhtdjqtVa7N9sYVJ74mSTmURxWjh1LXm7ogOFP4VWvDfin4+km42CeQA1jyKRK/C
-         dmhUfsspZVnCXG3pODNWOaD0qUwf+7vhMlK27P1mPhXuO2WvS2GacofMN98bfEJXZ71i
-         wb7A==
-X-Gm-Message-State: AOAM532IlJzVCcfbzGvBbwmLEC+wxMfbMXYlACNZcvhk7G7MONafrUVu
-        Kyz70Rm1JJeQKZLiyzAXZheAQE8v9OU6mw==
-X-Google-Smtp-Source: ABdhPJxifL/UbjQ0bDL8ho/l8HQdQ7t96IpIOB70RUwaepmNPGo5ppusWH2I18Wa55z3QSaItG6RGg==
-X-Received: by 2002:a2e:9c9:: with SMTP id 192mr451989ljj.4.1591132033801;
-        Tue, 02 Jun 2020 14:07:13 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id z4sm9247lji.119.2020.06.02.14.07.13
+        bh=0bJlmus5XHXjv1rw00vbaJw33tmb8qsAo8E9SyQVB5o=;
+        b=Cm+9C3Zm0w8m9uyUCukUJBq2OoeWmRw0LGtN77XQQDf/2hYuE/y97TZ2NADFG8mYl5
+         YM4E+KDluzLxhprfZwlYQ63HS3tDm0p2FAn37eZS7pe+8FUev928AwuJdzo+/GP5X0h4
+         NEKPRR8wCmG8OlvCNrcU5b6O6ydU1tZfr2vX/QgcVnBn/KKkABIB66q9N/DCe9s8o5TR
+         5NZmBQ6BcDRLpxZdgF0WbDtpjP7Gi+2TQcPu1YgRDngej2jjRcChq430VRmQ5tnLGYLD
+         YIXEAByY+i/2VH+ZLTe+Ogs7u/sqbYmvAz3dnqLGH9L4tqsvXfOSIRJ8LSZFqqTcMvXZ
+         cCHg==
+X-Gm-Message-State: AOAM530tVubm1FNGKF8qjusAaxO0hE24xes2R2N5cWsH2moxUHUHFt76
+        juqNx5HPm3i32+2Q835P46z35eRAbEs=
+X-Google-Smtp-Source: ABdhPJxt2mk0nvaMRJbM2xnk8wiggj6vk9JQ4mpdDBQp3pKG4DQwnB5cRyVvn3cscmc/MdCsmMHiaQ==
+X-Received: by 2002:a2e:88d5:: with SMTP id a21mr429346ljk.31.1591131806748;
+        Tue, 02 Jun 2020 14:03:26 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id s20sm46094lfb.48.2020.06.02.14.03.25
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jun 2020 14:07:13 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id m18so18360ljo.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 14:07:13 -0700 (PDT)
-X-Received: by 2002:a2e:7f02:: with SMTP id a2mr429268ljd.138.1591131684280;
- Tue, 02 Jun 2020 14:01:24 -0700 (PDT)
+        Tue, 02 Jun 2020 14:03:25 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id z18so14300110lji.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 14:03:25 -0700 (PDT)
+X-Received: by 2002:a2e:7e0a:: with SMTP id z10mr460164ljc.314.1591131805045;
+ Tue, 02 Jun 2020 14:03:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200526145815.6415-1-mcgrof@kernel.org> <20200526145815.6415-6-mcgrof@kernel.org>
-In-Reply-To: <20200526145815.6415-6-mcgrof@kernel.org>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Tue, 2 Jun 2020 14:01:12 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXMR-Aa9322QjUTxiD2zwXDUig1eyG7GAAJJDvuUg1AXdA@mail.gmail.com>
-Message-ID: <CA+ASDXMR-Aa9322QjUTxiD2zwXDUig1eyG7GAAJJDvuUg1AXdA@mail.gmail.com>
-Subject: Re: [PATCH v3 5/8] ath10k: use new taint_firmware_crashed()
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     jeyu@kernel.org, "David S. Miller" <davem@davemloft.net>,
-        kuba@kernel.org, linux-wireless <linux-wireless@vger.kernel.org>,
-        aquini@redhat.com, linux-doc@vger.kernel.org, peterz@infradead.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux@dominikbrodowski.net,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        glider@google.com, GR-everest-linux-l2@marvell.com,
-        mchehab+samsung@kernel.org, will@kernel.org,
-        michael.chan@broadcom.com, Rob Herring <robh@kernel.org>,
-        paulmck@kernel.org, bhe@redhat.com, corbet@lwn.net,
-        mchehab+huawei@kernel.org, ath10k <ath10k@lists.infradead.org>,
-        derosier@gmail.com, Takashi Iwai <tiwai@suse.de>, mingo@redhat.com,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>, yzaikin@google.com,
-        dyoung@redhat.com, pmladek@suse.com, elver@google.com,
-        sburla@marvell.com, aelior@marvell.com,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, sfr@canb.auug.org.au,
-        gpiccoli@canonical.com, Steven Rostedt <rostedt@goodmis.org>,
-        fmanlunas@marvell.com, cai@lca.pw, tglx@linutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
-        rdunlap@infradead.org, schlad@suse.de,
-        Doug Anderson <dianders@chromium.org>, vkoul@kernel.org,
-        mhiramat@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        dchickles@marvell.com, bauerman@linux.ibm.com
+References: <20200602204219.186620-1-christian.brauner@ubuntu.com>
+In-Reply-To: <20200602204219.186620-1-christian.brauner@ubuntu.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 2 Jun 2020 14:03:09 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjy234P7tvpQb6bnd1rhO78Uc+B0g1CPg9VOhJNTxmtWw@mail.gmail.com>
+Message-ID: <CAHk-=wjy234P7tvpQb6bnd1rhO78Uc+B0g1CPg9VOhJNTxmtWw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] close_range()
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kyle Evans <self@kyle-evans.net>,
+        Victor Stinner <victor.stinner@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        "Dmitry V. Levin" <ldv@altlinux.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 7:58 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
+On Tue, Jun 2, 2020 at 1:42 PM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
 >
-> This makes use of the new taint_firmware_crashed() to help
-> annotate when firmware for device drivers crash. When firmware
-> crashes devices can sometimes become unresponsive, and recovery
-> sometimes requires a driver unload / reload and in the worst cases
-> a reboot.
+> This is a resend of the close_range() syscall, as discussed in [1]. There weren't any outstanding
+> discussions anymore and this was in mergeable shape. I simply hadn't gotten around to moving this
+> into my for-next the last few cycles and then forgot about it. Thanks to Kyle and the Python people,
+> and others for consistenly reminding me before every merge window and mea culpa for not moving on
+> this sooner. I plan on moving this into for-next after v5.8-rc1 has been released and targeting the
+> v5.9 merge window.
 
-Just for the record, the underlying problem you seem to be complaining
-about does not appear to be a firmware crash at all. It does happen to
-result in a firmware crash report much later on (because when the PCIe
-endpoint is this hosed, sooner or later the driver thinks the firmware
-is dead), but it's not likely the root cause. More below.
+Btw, I did have one reaction that I can't find in the original thread,
+which probably means that it got lost.
 
-> Using a taint flag allows us to annotate when this happens clearly.
->
-> I have run into this situation with this driver with the latest
-> firmware as of today, May 21, 2020 using v5.6.0, leaving me at
-> a state at which my only option is to reboot. Driver removal and
-> addition does not fix the situation. This is reported on kernel.org
-> bugzilla korg#207851 [0].
+If one of the designed uses for this is for dropping file descriptors
+just before execve(), it's possible that we'd want to have the option
+to say "unshare my fd array" as part of close_range().
 
-I took a look, and replied there:
-https://bugzilla.kernel.org/show_bug.cgi?id=207851#c2
+Yes, yes, you can do
 
-Per the above, it seems more likely you have a PCI or power management
-problem, not an ath10k or ath10k-firmware problem.
+        unshare(CLONE_FILES);
+        close_range(3,~0u);
 
-> But this isn't the first firmware crash reported,
-> others have been filed before and none of these bugs have yet been
-> addressed [1] [2] [3].  Including my own I see these firmware crash
-> reports:
+to do it as two operations (and you had that as the example typical
+use), but it would actually be better to be able to do
 
-Yes, firmware does crash. Sometimes repeatedly. It also happens to be
-closed source, so it's nearly impossible for the average Linux dev to
-debug. But FWIW, those 3 all appear to be recoverable -- and then they
-crash again a few minutes later. So just as claimed on prior
-iterations of this patchset, ath10k is doing fine at recovery [*] --
-it's "only" the firmware that's a problem. (And, if a WiFi firmware
-doesn't like something in the RF environment...it's totally
-understandable that the crash will happen more than once. Of course
-that sucks, but it's not unexpected.) Crucially, rebooting won't
-really do anything to help these people, AIUI.
+        close_range(3, ~0ul, CLOSE_RANGE_UNSHARE);
 
-Maybe what you really want is to taint the kernel every time a
-non-free firmware is loaded ;)
+instead. Because otherwise we just waste time copying the file
+descriptors first in the unshare, and then closing them after.. Double
+the work..
 
-I'd also note that those 3 reports are 3 years old. There have been
-many ath10k-firmware updates since then, so it's not necessarily fair
-to dig those back up. Also, bugzilla.kernel.org is totally ignored by
-many linux-wireless@ folks. But I digress...
+And maybe this _did_ get mentioned last time, and I just don't find
+it. I also don't see anything like that in the patches, although the
+flags argument is there.
 
-All in all, I have no interest in this proposal, for many of the
-reasons already mentioned on previous iterations. It's way too coarse
-and won't be useful in understanding what's going on in a system, IMO,
-at least for ath10k. But it's also easy enough to ignore, so if it
-makes somebody happy to claim a taint, then so be it.
-
-Regards,
-Brian
-
-[*] Although, at least one of those doesn't appear to be as "clean" of
-a recovery attempt as typical. Maybe there are some lurking driver
-bugs in there too.
-
-
->   * korg#207851 [0]
->   * korg#197013 [1]
->   * korg#201237 [2]
->   * korg#195987 [3]
->
-> [0] https://bugzilla.kernel.org/show_bug.cgi?id=207851
-> [1] https://bugzilla.kernel.org/show_bug.cgi?id=197013
-> [2] https://bugzilla.kernel.org/show_bug.cgi?id=201237
-> [3] https://bugzilla.kernel.org/show_bug.cgi?id=195987
+            Linus
