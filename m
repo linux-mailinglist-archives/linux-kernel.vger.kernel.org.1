@@ -2,89 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7631EB536
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 07:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D531EB53A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 07:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgFBFY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 01:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgFBFYL (ORCPT
+        id S1728317AbgFBFZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 01:25:10 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32602 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728294AbgFBFZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 01:24:11 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBABC061A0E;
-        Mon,  1 Jun 2020 22:24:11 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id d1so11671119ila.8;
-        Mon, 01 Jun 2020 22:24:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=0UBYZ9vT+P4liUXzHGb51XmUJt+xAS+zePK7rl2i4/E=;
-        b=Jw8/Cj6lr48k/N35XU05hYas1NM3/oL3UmVQAI0rjwc5i2vb7FtJiRajUdSmuwrNpV
-         /VvKabQH0H3WgtfokgAdrIf/17roHavjyLAeraCEziJ5FsjUh/ZlJ8yc3UdIo5KNR1LC
-         fbqN6BoN4nBPXsqZnrzbL5JdfSHPMGV0HBC6qCNyn0x53uTBERcz7AtTktdFkwee9Ey8
-         9nhiHzL3Ucw82UJeAXTwrGPDOiqCeCV/UbW17GwJIPHpTVlFxuHDYf6a/vFlwPed4yTK
-         eSAYappQGlAYxHEdTjS6FB+83yoRYg/DfTuvLK2WTSep9fzmRipoLXGOe4Fm5VS3XLl7
-         2rIQ==
+        Tue, 2 Jun 2020 01:25:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591075504;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VehAfr1QcK1Dwcz7+ds+E0e6uhlAX/0K+5UtuSIJbmY=;
+        b=Ykr7aZeXAj71puhTDzDkpDwNHgmlhc1TPiJ5hjsQ9I5x/mycROf37HS/8XmSJ6HWcXkvvq
+        asdgoqZAQmTqGZmA6seJQXCzkZyq7I26HmJqwMtkJsapXHPZKT3QE5NYky/WojEJYt+DBb
+        TlLVx/FJaQyRt1g6UEHD6vwQt8CxyvU=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-313-Y4XWxJivMeqtDIlHcQpGMg-1; Tue, 02 Jun 2020 01:24:59 -0400
+X-MC-Unique: Y4XWxJivMeqtDIlHcQpGMg-1
+Received: by mail-qt1-f200.google.com with SMTP id e44so12750773qta.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 22:24:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=0UBYZ9vT+P4liUXzHGb51XmUJt+xAS+zePK7rl2i4/E=;
-        b=MC+ftsUWuD2SSYe0BXaBPtsruT3vUqRMMPwsGtuW85rHRnhzk++O9pq96c7Rf9R+29
-         NmCIPnysSd3RUptgNc2DEUVbeay1AJRcJ4vsO4cQT+Q1EClCTEyUj2CJtG25LHkDu3kz
-         rA/4y3vkZJTpNTgFb6x4+gAm4u3wAnXsO3TolpSNiUyt/GXcW8ItMJY8heR9pzbKjofY
-         dHB/cVG0ykhiwcCcANNbwOXVRuN3jhTvB0TGwWtyw0KASLi7Z1Z2QvDaBLhukacdc0c0
-         9ht4VWEJ/2kJQD8qkHBZdyZqeDGSVPyTIQZTEDqvqMYWeQ/D/aRErXjQbB7C31Y6flsK
-         PTOA==
-X-Gm-Message-State: AOAM530o7YVvMVfU4DLfClk3O008/yD8L47dcvmMu5T3zoa1bykwOvz9
-        pi5TRwjitVjx2+K+9RXkBbs=
-X-Google-Smtp-Source: ABdhPJy6nC6FkDM3WVT7AQFqv+ro6xBB/sJG4VAzoJKxEB61XIjczNyDwEifywEk3F2RfUrH8YBwyA==
-X-Received: by 2002:a92:190:: with SMTP id 138mr16797887ilb.5.1591075451000;
-        Mon, 01 Jun 2020 22:24:11 -0700 (PDT)
-Received: from cs-u-kase.dtc.umn.edu (cs-u-kase.cs.umn.edu. [160.94.64.2])
-        by smtp.googlemail.com with ESMTPSA id r17sm909656ilc.33.2020.06.01.22.24.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 22:24:10 -0700 (PDT)
-From:   Navid Emamdoost <navid.emamdoost@gmail.com>
-To:     Laxman Dewangan <ldewangan@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu, smccaman@umn.edu,
-        Navid Emamdoost <navid.emamdoost@gmail.com>
-Subject: [PATCH] spi: tegra20-slink: add missing pm_runtime_put if pm_runtime_get_sync fails
-Date:   Tue,  2 Jun 2020 00:24:04 -0500
-Message-Id: <20200602052404.81041-1-navid.emamdoost@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VehAfr1QcK1Dwcz7+ds+E0e6uhlAX/0K+5UtuSIJbmY=;
+        b=uJ9Tlv3+FtCD+yl7fQU/9n7DwdjceDAM9sCIzqQjmqg24UuOqObgDPrpjn5Vt+38ka
+         gKKkyCoF7kUvp/USHWrysQDjpuOac4II5i/SNC60MgweSxXnDqsY64qkwurPPUItEhdt
+         9gRf4ZwAQpwpHTU+z9g03x6QohG9zLcmjbBhynqmHBYGs1ZY6Mzpy49oP1zd8CP9uNZ7
+         wnZ95+JBDP+gY5Mf7dmTieWv2gTPOl88rj+ewNmYFGzuhZL11uJT12ppAqT1nZiSLSrb
+         yE7JY6KbAOaO4RUaxSbbr9ygTZLeobj+Mgcrax2E2X9mZ8796t83B70Sm3VfJpiwug3d
+         U17A==
+X-Gm-Message-State: AOAM532ieBLIteV/R3oqfJtEkrq5uuTx+kWFY50ikNVqPzM1UOTPaVHY
+        P9QPPYjvhmGXxgLu4ODDlTC6g6SGfaVryeoCwjd3Hv3bKnaW6pZxK2M1EdUfe/xU7TUHW4VCKam
+        L7pSIiv81ThA3k6H+i467s0fdDFY1X40lKSrATd1f
+X-Received: by 2002:a37:b9c7:: with SMTP id j190mr18446738qkf.210.1591075498896;
+        Mon, 01 Jun 2020 22:24:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyqSml3yIRLnTsy9Th/UnRcgf1YOKMax0M+KxC4ZQtHYQlBJISkBakBOY31tAwc7YBCMcTTQOYw3l/yGOmFjpg=
+X-Received: by 2002:a37:b9c7:: with SMTP id j190mr18446721qkf.210.1591075498589;
+ Mon, 01 Jun 2020 22:24:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <1589395957-24628-1-git-send-email-bhsharma@redhat.com>
+In-Reply-To: <1589395957-24628-1-git-send-email-bhsharma@redhat.com>
+From:   Bhupesh Sharma <bhsharma@redhat.com>
+Date:   Tue, 2 Jun 2020 10:54:46 +0530
+Message-ID: <CACi5LpMKSNz=_OQWmEQ2kaswbjAONjn2pXQiu=jCA=wMt3wGCQ@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Append new variables to vmcoreinfo (TCR_EL1.T1SZ
+ for arm64 and MAX_PHYSMEM_BITS for all archs)
+To:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        x86@kernel.org
+Cc:     Bhupesh SHARMA <bhupesh.linux@gmail.com>,
+        Boris Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morse <james.morse@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steve Capper <steve.capper@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Dave Anderson <anderson@redhat.com>,
+        Kazuhito Hagio <k-hagio@ab.jp.nec.com>,
+        John Donnelly <john.p.donnelly@oracle.com>,
+        scott.branden@broadcom.com, Amit Kachhap <amit.kachhap@arm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        kexec mailing list <kexec@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Call to pm_runtime_get_sync increments counter even in case of
-failure leading to incorrect ref count.
-Call pm_runtime_put if pm_runtime_get_sync fails.
+Hello,
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
----
- drivers/spi/spi-tegra20-slink.c | 1 +
- 1 file changed, 1 insertion(+)
+On Thu, May 14, 2020 at 12:22 AM Bhupesh Sharma <bhsharma@redhat.com> wrote:
+>
+> Apologies for the delayed update. Its been quite some time since I
+> posted the last version (v5), but I have been really caught up in some
+> other critical issues.
+>
+> Changes since v5:
+> ----------------
+> - v5 can be viewed here:
+>   http://lists.infradead.org/pipermail/kexec/2019-November/024055.html
+> - Addressed review comments from James Morse and Boris.
+> - Added Tested-by received from John on v5 patchset.
+> - Rebased against arm64 (for-next/ptr-auth) branch which has Amit's
+>   patchset for ARMv8.3-A Pointer Authentication feature vmcoreinfo
+>   applied.
+>
+> Changes since v4:
+> ----------------
+> - v4 can be seen here:
+>   http://lists.infradead.org/pipermail/kexec/2019-November/023961.html
+> - Addressed comments from Dave and added patches for documenting
+>   new variables appended to vmcoreinfo documentation.
+> - Added testing report shared by Akashi for PATCH 2/5.
+>
+> Changes since v3:
+> ----------------
+> - v3 can be seen here:
+>   http://lists.infradead.org/pipermail/kexec/2019-March/022590.html
+> - Addressed comments from James and exported TCR_EL1.T1SZ in vmcoreinfo
+>   instead of PTRS_PER_PGD.
+> - Added a new patch (via [PATCH 3/3]), which fixes a simple typo in
+>   'Documentation/arm64/memory.rst'
+>
+> Changes since v2:
+> ----------------
+> - v2 can be seen here:
+>   http://lists.infradead.org/pipermail/kexec/2019-March/022531.html
+> - Protected 'MAX_PHYSMEM_BITS' vmcoreinfo variable under CONFIG_SPARSEMEM
+>   ifdef sections, as suggested by Kazu.
+> - Updated vmcoreinfo documentation to add description about
+>   'MAX_PHYSMEM_BITS' variable (via [PATCH 3/3]).
+>
+> Changes since v1:
+> ----------------
+> - v1 was sent out as a single patch which can be seen here:
+>   http://lists.infradead.org/pipermail/kexec/2019-February/022411.html
+>
+> - v2 breaks the single patch into two independent patches:
+>   [PATCH 1/2] appends 'PTRS_PER_PGD' to vmcoreinfo for arm64 arch, whereas
+>   [PATCH 2/2] appends 'MAX_PHYSMEM_BITS' to vmcoreinfo in core kernel code (all archs)
+>
+> This patchset primarily fixes the regression reported in user-space
+> utilities like 'makedumpfile' and 'crash-utility' on arm64 architecture
+> with the availability of 52-bit address space feature in underlying
+> kernel. These regressions have been reported both on CPUs which don't
+> support ARMv8.2 extensions (i.e. LVA, LPA) and are running newer kernels
+> and also on prototype platforms (like ARMv8 FVP simulator model) which
+> support ARMv8.2 extensions and are running newer kernels.
+>
+> The reason for these regressions is that right now user-space tools
+> have no direct access to these values (since these are not exported
+> from the kernel) and hence need to rely on a best-guess method of
+> determining value of 'vabits_actual' and 'MAX_PHYSMEM_BITS' supported
+> by underlying kernel.
+>
+> Exporting these values via vmcoreinfo will help user-land in such cases.
+> In addition, as per suggestion from makedumpfile maintainer (Kazu),
+> it makes more sense to append 'MAX_PHYSMEM_BITS' to
+> vmcoreinfo in the core code itself rather than in arm64 arch-specific
+> code, so that the user-space code for other archs can also benefit from
+> this addition to the vmcoreinfo and use it as a standard way of
+> determining 'SECTIONS_SHIFT' value in user-land.
+>
+> Cc: Boris Petkov <bp@alien8.de>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Steve Capper <steve.capper@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Dave Anderson <anderson@redhat.com>
+> Cc: Kazuhito Hagio <k-hagio@ab.jp.nec.com>
+> Cc: John Donnelly <john.p.donnelly@oracle.com>
+> Cc: scott.branden@broadcom.com
+> Cc: Amit Kachhap <amit.kachhap@arm.com>
+> Cc: x86@kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-doc@vger.kernel.org
+> Cc: kexec@lists.infradead.org
+>
+> Bhupesh Sharma (2):
+>   crash_core, vmcoreinfo: Append 'MAX_PHYSMEM_BITS' to vmcoreinfo
+>   arm64/crash_core: Export TCR_EL1.T1SZ in vmcoreinfo
+>
+>  Documentation/admin-guide/kdump/vmcoreinfo.rst | 16 ++++++++++++++++
+>  arch/arm64/include/asm/pgtable-hwdef.h         |  1 +
+>  arch/arm64/kernel/crash_core.c                 | 10 ++++++++++
+>  kernel/crash_core.c                            |  1 +
+>  4 files changed, 28 insertions(+)
 
-diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
-index 7f4d932dade7..9509b7cb14e4 100644
---- a/drivers/spi/spi-tegra20-slink.c
-+++ b/drivers/spi/spi-tegra20-slink.c
-@@ -756,6 +756,7 @@ static int tegra_slink_setup(struct spi_device *spi)
- 	ret = pm_runtime_get_sync(tspi->dev);
- 	if (ret < 0) {
- 		dev_err(tspi->dev, "pm runtime failed, e = %d\n", ret);
-+		pm_runtime_put(tspi->dev);
- 		return ret;
- 	}
- 
--- 
-2.17.1
+Ping. @James Morse , Others
+
+Please share if you have some comments regarding this patchset.
+
+Thanks,
+Bhupesh
 
