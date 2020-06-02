@@ -2,85 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6C01EBDB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 16:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F329C1EBDE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 16:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728066AbgFBONK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 10:13:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726000AbgFBONK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 10:13:10 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC0DE206E2;
-        Tue,  2 Jun 2020 14:13:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591107189;
-        bh=eoCV77ebnGXc80BKlBswulqCHVzwy3/Grt/NEStAdkw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IDExaWXh/vvrizG/Ny8gDiqzvGDrYpQcN8GhkpAzbJzaksTXATbU5SYXNSgvjIlIz
-         m1RK0VgQFCQKCw1+n4suuwoqS8qGrXdEP9P8xzpzh1/f4buCReS7qyKO1NhlEhircG
-         en3LPCIuungYQaEaYLAnxz/AHEmz2OfRLLpt2Eg4=
-Date:   Tue, 2 Jun 2020 15:13:06 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Navid Emamdoost <navid.emamdoost@gmail.com>,
-        linux-spi@vger.kernel.org, Navid Emamdoost <emamd001@umn.edu>,
-        Kangjie Lu <kjlu@umn.edu>, Stephen McCamant <smccaman@umn.edu>,
-        Qiushi Wu <wu000273@umn.edu>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] spi: spi-ti-qspi: call pm_runtime_put on pm_runtime_get
- failure
-Message-ID: <20200602141306.GH5684@sirena.org.uk>
-References: <26028f50-3fb8-eb08-3c9f-08ada018bf9e@web.de>
- <20200602094947.GA5684@sirena.org.uk>
- <1c13e0ec-e50f-9eea-5704-052d2d682727@web.de>
+        id S1728388AbgFBOQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 10:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728157AbgFBOQ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 10:16:29 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608F7C08C5C0;
+        Tue,  2 Jun 2020 07:16:29 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id m23so934740vko.2;
+        Tue, 02 Jun 2020 07:16:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/6a0t6+7th0CQZpcLX9FSsj+5y1OPdbod01fcXwFCW0=;
+        b=sAAGbc+hD14yma5Er/rT2CCXst65zCjTzv3RNPwbAeZqS0/qsLDQWFjHQjoTuGAeC1
+         +ipXKm1ZoDdcONOTRhvidUfFwpVg9ZsOpg2F9JImpLXgIqY0vPmq3ISAC7ehqsaJyMmq
+         ZIFnQiTa33xomn0HYM9RDwIFwF1icxNzbRDDq6u6o9Q1UGOmrT87cYXWR/pujy6Ekztp
+         2UuzBjskR5IeOYFERkM/ERIzFsjrdlN3XM2XasDzmANJrlRl4hlq3+XNUK4ornQQazI2
+         FWhzgAb1osiFDN4tgCYp2/JcYCQqPDD7ObSfnTlXAS7/7NHk0s+GDr6H2eP6sns6ZMVy
+         FruQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/6a0t6+7th0CQZpcLX9FSsj+5y1OPdbod01fcXwFCW0=;
+        b=cw2uiQCQqzGrryIYX+dwc2NbVo70djoCgzqvG8HegzeDDnIQBkkRhg0IdM6KX99qT+
+         lfJmZOrYHF0C5qSc17g/ze2Nu3qAf7Aee4SjP0enOnL9rbZH2UDjkBDh3x6oSyxO83Kx
+         B1G/0Y37WaxjWSj1iood6s/h5uWy4ONX/lfMZeyNbUgD/Xt6hRZdlC7YoQfVqzeH+4zP
+         5RrKDH3l9aKqlmGI2LY7v1y+zqecJnEeV7w4vzCAl2pzlfdGeWDC8PIrKADToCmDzav8
+         iOcVNpUee8DuUiyepIje19/yoqu/tPP3SlxH8W18tjXmu4C0AE5H7wdS90vQoTOIQlqi
+         2i1g==
+X-Gm-Message-State: AOAM532qxK0+R96Txb/8B4c5+VLXuD6eEDsmRfMOnbn+aGbMLgKUdU2g
+        jLbhtSoMWHQYQGeO7KeY6qo4G0MIPDCTIl7b3/cbbqKB
+X-Google-Smtp-Source: ABdhPJwsUlpy33FnIB6m4RAYn6vpQrhwYECjwYK+Cfnuf/EDhnqFeqzbq/cAlJV6cbDMbQlGYt6WBz8NxB2C5SttY3Q=
+X-Received: by 2002:a1f:2ac6:: with SMTP id q189mr9360992vkq.28.1591107388620;
+ Tue, 02 Jun 2020 07:16:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ik0NlRzMGhMnxrMX"
-Content-Disposition: inline
-In-Reply-To: <1c13e0ec-e50f-9eea-5704-052d2d682727@web.de>
-X-Cookie: We are not a clone.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1591009402-681-1-git-send-email-mkrishn@codeaurora.org>
+In-Reply-To: <1591009402-681-1-git-send-email-mkrishn@codeaurora.org>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Tue, 2 Jun 2020 15:13:10 +0100
+Message-ID: <CACvgo50eb5_jp_6B5tkV9cX_X2_y2Xnavu+wvUUhHN5FsV9hiw@mail.gmail.com>
+Subject: Re: [v2] drm/msm: add shutdown support for display platform_driver
+To:     Krishna Manikandan <mkrishn@codeaurora.org>
+Cc:     ML dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno@lists.freedesktop.org,
+        devicetree <devicetree@vger.kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Sean Paul <seanpaul@chromium.org>, kalyan_t@codeaurora.org,
+        "Kristian H . Kristensen" <hoegsberg@chromium.org>,
+        mka@chromium.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Krishna,
 
---ik0NlRzMGhMnxrMX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Tue, 2 Jun 2020 at 08:17, Krishna Manikandan <mkrishn@codeaurora.org> wrote:
+>
+> Define shutdown callback for display drm driver,
+> so as to disable all the CRTCS when shutdown
+> notification is received by the driver.
+>
+> This change will turn off the timing engine so
+> that no display transactions are requested
+> while mmu translations are getting disabled
+> during reboot sequence.
+>
+> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
+>
+AFAICT atomics is setup in msm_drm_ops::bind and shutdown in
+msm_drm_ops::unbind.
 
-On Tue, Jun 02, 2020 at 12:02:11PM +0200, Markus Elfring wrote:
+Are you saying that unbind never triggers? If so, then we should
+really fix that instead, since this patch seems more like a
+workaround.
 
-> > The original changelog is perfectly fine, please stop sending these.
-
-> I find this commit message improvable also according to Linux software
-> development documentation.
-
-Causing people to send out new versions of things for tweaks to the
-commit log consumes time for them and everyone they're sending changes
-to.  Pushing people to make trivial rewordings of their commit logs to
-match your particular taste is not a good use of people's time.
-
---ik0NlRzMGhMnxrMX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7WXnIACgkQJNaLcl1U
-h9BIPAf/Qg3X33LluXMNn6+or5b8wx23/eNT76IKOCDLt2nsBUFeX0RTB14vx2Ij
-wQwNT/+zdryOjbNaDuuxsRM0DV4SawkJVlaUJ81/HDGRTzyD7LbZwDy7GMSrkhW/
-suZlkonuFDGJ07yuMaYGcGykfALQc8/37nX5+WSOX682mHkqnpzIy1uZL231RcLg
-hhccjsA7NflG4vQzHy6cdAnoRTVdXtp9EZ50jXdrQjS6BaAtJniAn9B6j7ifz8s/
-f3j0pUuLHqkXXY+yP5B8I0QWoTUkFSd/f+LL8PdwG5qfp17iswdqZoutqVwwzsOw
-aQeBit3pr2gLrZOVf6/Ehu7Je1Jnqw==
-=e8Ou
------END PGP SIGNATURE-----
-
---ik0NlRzMGhMnxrMX--
+-Emil
