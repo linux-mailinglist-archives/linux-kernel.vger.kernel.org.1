@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894971EC19E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FB01EC1A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbgFBSHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 14:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgFBSHZ (ORCPT
+        id S1726647AbgFBSK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 14:10:28 -0400
+Received: from smtpout1.mo528.mail-out.ovh.net ([46.105.34.251]:45681 "EHLO
+        smtpout1.mo528.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725989AbgFBSK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 14:07:25 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F47C05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 11:07:25 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a45so1313890pje.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 11:07:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nZuxt92Kcd2Y/qYw09AKoILAu9ELH/jBsFNAqJwYZKc=;
-        b=kgOAm1GzLZRyLUp10yxygCcG4pukATTKH0+7dsmEz51H7SRs3VPAPxlbuSHAimFMg1
-         YbYbt7PlmwiosyIs3u7iclCtbtdPv3UxwLmDnwIpq6dyby8EeBzo2uQndfOVVSsnIfL7
-         /fd/QKyRA6ePSKS9JhIoNQrUe7tAbZNjIr9D4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nZuxt92Kcd2Y/qYw09AKoILAu9ELH/jBsFNAqJwYZKc=;
-        b=KQuRKs3VqzqQseOiEGShBNIfVKXquoUNJhXivApbyqf/hDPvEujMBmofE7OSChybib
-         30O3rK4jnViWhq5xpEOR6TJycEltHN9UyJwz8+W4UsSsaK6dfvNvO2jcsYXfxJ/7u4yM
-         sLLwmt4jTxhUDpmRj383vknti0mEeesbFJYRKLQ95JjW64ElPqvWX7EBQtlRv8e2HQDu
-         nvo9bBjrE3TevwQMaEUqtYCkctCK3Gl1kOyyt47RInLyikK3yyfUDJmRBKZzlyHt1Dqw
-         KXtCquxcK9jEJfoV89qC7puIjD0BilHmPnMHl7V5pJL1a0GUwBc0b1yAwQPrNs5L7vRm
-         /5yQ==
-X-Gm-Message-State: AOAM531S1D84yraBz4zs+HIqukHtjUUi8XgqKXyypoZFZKHjFAFawcCw
-        4/3M6nfvEiGPaH3GmBiGSCi7pqjgac+fWA==
-X-Google-Smtp-Source: ABdhPJzEUslZe5YoFk8h2BNw75DPdSKiA0XcJWWZeenn05a2eH8KNtI/90cdMRKd7loJRFOSYCGjdA==
-X-Received: by 2002:a17:90a:ce94:: with SMTP id g20mr386067pju.95.1591121244973;
-        Tue, 02 Jun 2020 11:07:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j130sm2880287pfd.94.2020.06.02.11.07.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 11:07:24 -0700 (PDT)
-Date:   Tue, 2 Jun 2020 11:07:23 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH 2/2] lib/Kconfig.debug: Fix typo in the help text of
- CONFIG_PANIC_TIMEOUT
-Message-ID: <202006021107.88E20B57@keescook>
-References: <1591103358-32087-1-git-send-email-yangtiezhu@loongson.cn>
- <1591103358-32087-2-git-send-email-yangtiezhu@loongson.cn>
+        Tue, 2 Jun 2020 14:10:27 -0400
+Received: from pro2.mail.ovh.net (unknown [10.109.138.132])
+        by mo528.mail-out.ovh.net (Postfix) with ESMTPS id 998EB607FDC3;
+        Tue,  2 Jun 2020 20:10:25 +0200 (CEST)
+Received: from localhost (34.103.240.103) by DAG2EX1.emp2.local (172.16.2.11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Tue, 2 Jun 2020
+ 20:10:25 +0200
+Date:   Tue, 2 Jun 2020 20:08:13 +0200
+From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Peter Meerwald <pmeerw@pmeerw.net>
+Subject: Re: [PATCH v3 0/4] Add support for SCD30 sensor
+Message-ID: <20200602180813.GD2668@arch>
+References: <20200602164723.28858-1-tomasz.duszynski@octakon.com>
+ <CAHp75VdPF=LzDn0f_Ljb=S+8L58DS4ofC6fD=Nzu1afR_nD8vQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <1591103358-32087-2-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <CAHp75VdPF=LzDn0f_Ljb=S+8L58DS4ofC6fD=Nzu1afR_nD8vQ@mail.gmail.com>
+X-Originating-IP: [34.103.240.103]
+X-ClientProxiedBy: DAG2EX2.emp2.local (172.16.2.12) To DAG2EX1.emp2.local
+ (172.16.2.11)
+X-Ovh-Tracer-Id: 10813424183108459679
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrudefjedgleefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfhfgggtuggjihesthdtredttddtjeenucfhrhhomhepvfhomhgrshiiucffuhhsiiihnhhskhhiuceothhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmqeenucggtffrrghtthgvrhhnpedtheevtefhffduteejfedtkeeuheejgeejvdetfffgveekffefgeffueeghefgjeenucfkpheptddrtddrtddrtddpfeegrddutdefrddvgedtrddutdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhrohdvrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepthhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmpdhrtghpthhtohepphhmvggvrhifsehpmhgvvghrfidrnhgvth
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 09:09:18PM +0800, Tiezhu Yang wrote:
-> There exists duplicated "the" in the help text of CONFIG_PANIC_TIMEOUT,
-> remove it.
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+On Tue, Jun 02, 2020 at 07:55:55PM +0300, Andy Shevchenko wrote:
+> On Tue, Jun 2, 2020 at 7:49 PM Tomasz Duszynski
+> <tomasz.duszynski@octakon.com> wrote:
+> >
+> > Following series adds support for Sensirion SCD30 sensor module capable of
+> > measuring carbon dioxide, temperature and relative humidity. CO2 measurements
+> > base on NDIR principle while temperature and relative humidity are measured by
+> > the on board SHT31. As for sensor communication, both I2C and serial interfaces
+> > are supported.
+>
+> Btw, since we have relaxed 80 limit to 100, I recommend to reconsider
+> some lines to be joined.
+>
 
-Thanks for catching that!
+Heh, that particular change is becoming more viral that corona itself these days.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+> --
+> With Best Regards,
+> Andy Shevchenko
