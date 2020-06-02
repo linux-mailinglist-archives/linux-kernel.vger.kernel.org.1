@@ -2,148 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FCD1EC329
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F0E1EC320
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728656AbgFBTwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 15:52:16 -0400
-Received: from smtp1.de.adit-jv.com ([93.241.18.167]:53741 "EHLO
-        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728275AbgFBTvD (ORCPT
+        id S1728573AbgFBTvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 15:51:55 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:28087 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728387AbgFBTvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 15:51:03 -0400
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
-        by smtp1.de.adit-jv.com (Postfix) with ESMTP id 3FF913C04C1;
-        Tue,  2 Jun 2020 21:50:59 +0200 (CEST)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
-        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id sQ2OMu6SAg4D; Tue,  2 Jun 2020 21:50:53 +0200 (CEST)
-Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 80A043C00B5;
-        Tue,  2 Jun 2020 21:50:53 +0200 (CEST)
-Received: from lxhi-065.adit-jv.com (10.72.94.11) by HI2EXCH01.adit-jv.com
- (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 2 Jun 2020
- 21:50:53 +0200
-From:   Eugeniu Rosca <erosca@de.adit-jv.com>
-To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>, <stable@vger.kernel.org>
-Subject: [PATCH v2] media: vsp1: dl: Fix NULL pointer dereference on unbind
-Date:   Tue, 2 Jun 2020 21:50:16 +0200
-Message-ID: <20200602195016.803-1-erosca@de.adit-jv.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 2 Jun 2020 15:51:06 -0400
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Tue, 2 Jun 2020 12:51:03 -0700
+Received: from sc9-mailhost3.vmware.com (unknown [10.200.192.49])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 8C78740BEB;
+        Tue,  2 Jun 2020 12:51:04 -0700 (PDT)
+From:   Matt Helsley <mhelsley@vmware.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Matt Helsley <mhelsley@vmware.com>
+Subject: [RFC][PATCH v4 23/32] objtool: mcount: Remove unused file mapping
+Date:   Tue, 2 Jun 2020 12:50:16 -0700
+Message-ID: <b1f40de1b44575d235df42ec9d0c581392c3efe3.1591125127.git.mhelsley@vmware.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1591125127.git.mhelsley@vmware.com>
+References: <cover.1591125127.git.mhelsley@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.72.94.11]
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit f3b98e3c4d2e16 ("media: vsp1: Provide support for extended
-command pools"), the vsp pointer used for referencing the VSP1 device
-structure from a command pool during vsp1_dl_ext_cmd_pool_destroy() was
-not populated.
+The ELF data is now accessed completely through objtool's
+ELF code. We can remove the mapping of the original ELF
+file and propagate elf_open_read(), elf_close(), and malloc()
+up in place of mmap_file(), mmap_cleanup(), and umalloc()
+respectively. This also eliminates the last use of the
+umalloc() wrapper, reduces the number of global
+variables, and limits the use of globals to:
 
-Correctly assign the pointer to prevent the following
-null-pointer-dereference when removing the device:
+	The struct elf for the file we're working on. This
+	saves passing it to nearly every function as a parameter.
 
-[*] h3ulcb-kf #>
-echo fea28000.vsp > /sys/bus/platform/devices/fea28000.vsp/driver/unbind
- Unable to handle kernel NULL pointer dereference at virtual address 0000000000000028
- Mem abort info:
-   ESR = 0x96000006
-   EC = 0x25: DABT (current EL), IL = 32 bits
-   SET = 0, FnV = 0
-   EA = 0, S1PTW = 0
- Data abort info:
-   ISV = 0, ISS = 0x00000006
-   CM = 0, WnR = 0
- user pgtable: 4k pages, 48-bit VAs, pgdp=00000007318be000
- [0000000000000028] pgd=00000007333a1003, pud=00000007333a6003, pmd=0000000000000000
- Internal error: Oops: 96000006 [#1] PREEMPT SMP
- Modules linked in:
- CPU: 1 PID: 486 Comm: sh Not tainted 5.7.0-rc6-arm64-renesas-00118-ge644645abf47 #185
- Hardware name: Renesas H3ULCB Kingfisher board based on r8a77951 (DT)
- pstate: 40000005 (nZcv daif -PAN -UAO)
- pc : vsp1_dlm_destroy+0xe4/0x11c
- lr : vsp1_dlm_destroy+0xc8/0x11c
- sp : ffff800012963b60
- x29: ffff800012963b60 x28: ffff0006f83fc440
- x27: 0000000000000000 x26: ffff0006f5e13e80
- x25: ffff0006f5e13ed0 x24: ffff0006f5e13ed0
- x23: ffff0006f5e13ed0 x22: dead000000000122
- x21: ffff0006f5e3a080 x20: ffff0006f5df2938
- x19: ffff0006f5df2980 x18: 0000000000000003
- x17: 0000000000000000 x16: 0000000000000016
- x15: 0000000000000003 x14: 00000000000393c0
- x13: ffff800011a5ec18 x12: ffff800011d8d000
- x11: ffff0006f83fcc68 x10: ffff800011a53d70
- x9 : ffff8000111f3000 x8 : 0000000000000000
- x7 : 0000000000210d00 x6 : 0000000000000000
- x5 : ffff800010872e60 x4 : 0000000000000004
- x3 : 0000000078068000 x2 : ffff800012781000
- x1 : 0000000000002c00 x0 : 0000000000000000
- Call trace:
-  vsp1_dlm_destroy+0xe4/0x11c
-  vsp1_wpf_destroy+0x10/0x20
-  vsp1_entity_destroy+0x24/0x4c
-  vsp1_destroy_entities+0x54/0x130
-  vsp1_remove+0x1c/0x40
-  platform_drv_remove+0x28/0x50
-  __device_release_driver+0x178/0x220
-  device_driver_detach+0x44/0xc0
-  unbind_store+0xe0/0x104
-  drv_attr_store+0x20/0x30
-  sysfs_kf_write+0x48/0x70
-  kernfs_fop_write+0x148/0x230
-  __vfs_write+0x18/0x40
-  vfs_write+0xdc/0x1c4
-  ksys_write+0x68/0xf0
-  __arm64_sys_write+0x18/0x20
-  el0_svc_common.constprop.0+0x70/0x170
-  do_el0_svc+0x20/0x80
-  el0_sync_handler+0x134/0x1b0
-  el0_sync+0x140/0x180
- Code: b40000c2 f9403a60 d2800084 a9400663 (f9401400)
- ---[ end trace 3875369841fb288a ]---
+	Variables set depending on the ELF file endian, wordsize,
+	and arch so that the appropriate relocation structures,
+	offset sizes, architecture quirks, and nop encodings will
+	be used.
 
-Fixes: f3b98e3c4d2e16 ("media: vsp1: Provide support for extended command pools")
-Cc: stable@vger.kernel.org # v4.19+
-Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Tested-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+	One command-line option
+
+Note that we're still using the recordmcount wrapper to change
+variable sizes and structure definitions we use to build the
+mcount relocation data and call instruction offsets.
+
+Signed-off-by: Matt Helsley <mhelsley@vmware.com>
 ---
+ tools/objtool/recordmcount.c | 99 +++---------------------------------
+ tools/objtool/recordmcount.h |  4 +-
+ 2 files changed, 9 insertions(+), 94 deletions(-)
 
-Changes in v2:
- - Rephrased the description based on Kieran's proposal
- - Added the Reviewed-by/Tested-by signatures
- - No change in the contents
-
----
- drivers/media/platform/vsp1/vsp1_dl.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/media/platform/vsp1/vsp1_dl.c b/drivers/media/platform/vsp1/vsp1_dl.c
-index d7b43037e500..e07b135613eb 100644
---- a/drivers/media/platform/vsp1/vsp1_dl.c
-+++ b/drivers/media/platform/vsp1/vsp1_dl.c
-@@ -431,6 +431,8 @@ vsp1_dl_cmd_pool_create(struct vsp1_device *vsp1, enum vsp1_extcmd_type type,
- 	if (!pool)
- 		return NULL;
+diff --git a/tools/objtool/recordmcount.c b/tools/objtool/recordmcount.c
+index bfed27f53f75..5ec44c9f2884 100644
+--- a/tools/objtool/recordmcount.c
++++ b/tools/objtool/recordmcount.c
+@@ -41,104 +41,14 @@
+ #define R_AARCH64_ABS64	257
+ #endif
  
-+	pool->vsp1 = vsp1;
-+
- 	spin_lock_init(&pool->lock);
- 	INIT_LIST_HEAD(&pool->free);
+-#define R_ARM_PC24		1
+ #define R_ARM_THM_CALL		10
+-#define R_ARM_CALL		28
  
+-static int fd_map;	/* File descriptor for file being modified. */
+-static int mmap_failed; /* Boolean flag. */
+ static char gpfx;	/* prefix for global symbol name (sometimes '_') */
+ static const char *altmcount;	/* alternate mcount symbol name */
+ extern int warn_on_notrace_sect; /* warn when section has mcount not being recorded */
+-static void *file_map;	/* pointer of the mapped file */
+-static size_t file_map_size; /* original ELF file size */
+ 
+ static struct elf *lf;
+ 
+-static void mmap_cleanup(void)
+-{
+-	if (!mmap_failed)
+-		munmap(file_map, file_map_size);
+-	else
+-		free(file_map);
+-	file_map = NULL;
+-	if (lf)
+-		elf_close(lf);
+-	lf = NULL;
+-}
+-
+-static void * umalloc(size_t size)
+-{
+-	void *const addr = malloc(size);
+-	if (addr == 0) {
+-		fprintf(stderr, "malloc failed: %zu bytes\n", size);
+-		mmap_cleanup();
+-		return NULL;
+-	}
+-	return addr;
+-}
+-
+-/*
+- * Get the whole file as a programming convenience in order to avoid
+- * malloc+lseek+read+free of many pieces.  If successful, then mmap
+- * avoids copying unused pieces; else just read the whole file.
+- * Open for both read and write; new info will be appended to the file.
+- * Use MAP_PRIVATE so that a few changes to the in-memory ElfXX_Ehdr
+- * do not propagate to the file until an explicit overwrite at the last.
+- * This preserves most aspects of consistency (all except .st_size)
+- * for simultaneous readers of the file while we are appending to it.
+- * However, multiple writers still are bad.  We choose not to use
+- * locking because it is expensive and the use case of kernel build
+- * makes multiple writers unlikely.
+- */
+-static void *mmap_file(char const *fname)
+-{
+-	struct stat sb;
+-
+-	/* Avoid problems if early cleanup() */
+-	fd_map = -1;
+-	mmap_failed = 1;
+-	file_map = NULL;
+-	file_map_size = 0;
+-
+-	lf = elf_open_read(fname, O_RDWR);
+-	if (!lf) {
+-		perror(fname);
+-		return NULL;
+-	}
+-	fd_map = lf->fd;
+-	if (fstat(fd_map, &sb) < 0) {
+-		perror(fname);
+-		goto out;
+-	}
+-	if (!S_ISREG(sb.st_mode)) {
+-		fprintf(stderr, "not a regular file: %s\n", fname);
+-		goto out;
+-	}
+-	file_map = mmap(0, sb.st_size, PROT_READ|PROT_WRITE, MAP_PRIVATE,
+-			fd_map, 0);
+-	if (file_map == MAP_FAILED) {
+-		mmap_failed = 1;
+-		file_map = umalloc(sb.st_size);
+-		if (!file_map) {
+-			perror(fname);
+-			goto out;
+-		}
+-		if (read(fd_map, file_map, sb.st_size) != sb.st_size) {
+-			perror(fname);
+-			mmap_cleanup();
+-			goto out;
+-		}
+-	} else
+-		mmap_failed = 0;
+-	file_map_size = sb.st_size;
+-out:
+-	fd_map = -1;
+-
+-	return file_map;
+-}
+-
+-
+ static unsigned char ideal_nop5_x86_64[5] = { 0x0f, 0x1f, 0x44, 0x00, 0x00 };
+ static unsigned char ideal_nop5_x86_32[5] = { 0x3e, 0x8d, 0x74, 0x26, 0x00 };
+ static unsigned char *ideal_nop;
+@@ -525,8 +435,11 @@ static int do_file(char const *const fname)
+ 	unsigned int reltype = 0;
+ 	int rc = -1;
+ 
+-	if (!mmap_file(fname))
++	lf = elf_open_read(fname, O_RDWR);
++	if (!lf) {
++		perror(fname);
+ 		goto out;
++	}
+ 
+ 	w = w4nat;
+ 	w2 = w2nat;
+@@ -656,7 +569,9 @@ static int do_file(char const *const fname)
+ 	}  /* end switch */
+ 
+ out:
+-	mmap_cleanup();
++	if (lf)
++		elf_close(lf);
++	lf = NULL;
+ 	return rc;
+ }
+ 
+diff --git a/tools/objtool/recordmcount.h b/tools/objtool/recordmcount.h
+index 352d2042be35..e1be7243742b 100644
+--- a/tools/objtool/recordmcount.h
++++ b/tools/objtool/recordmcount.h
+@@ -188,13 +188,13 @@ static int do_func(unsigned const reltype)
+ 	totrelsz = tot_relsize(&rel_entsize);
+ 	if (totrelsz == 0)
+ 		return 0;
+-	mrel0 = umalloc(totrelsz);
++	mrel0 = malloc(totrelsz);
+ 	mrelp = mrel0;
+ 	if (!mrel0)
+ 		return -1;
+ 
+ 	/* 2*sizeof(address) <= sizeof(Elf_Rel) */
+-	mloc0 = umalloc(totrelsz>>1);
++	mloc0 = malloc(totrelsz>>1);
+ 	mlocp = mloc0;
+ 	if (!mloc0) {
+ 		free(mrel0);
 -- 
-2.26.2
+2.20.1
 
