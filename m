@@ -2,145 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9F11EC36C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 22:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EBC1EC36E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 22:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727011AbgFBUIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 16:08:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgFBUIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 16:08:00 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5EAA2072F;
-        Tue,  2 Jun 2020 20:07:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591128479;
-        bh=yKebJ6YxNe1OKDd9yzOTTACfvrnQvf2mteYMkPYl8rM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rC9RYL7Eye74VGyH6nyxx8Zu8h4Pqa2rAOU5Eq1cX6Bg8fuUGcv2U/kvNmLNUUapX
-         rPXdlohH5qBDZKgMCNYlDFKEjer/IU6aR3t7wNyFDMyW1aIP1L9sIpRimU36IBvgVF
-         coC4zD2QSKWZzNT0iaoSRg/UDyQKzBDYenFXNWQw=
-Date:   Tue, 2 Jun 2020 22:07:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Wang Hai <wanghai38@huawei.com>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, khlebnikov@yandex-team.ru,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: kobject_init_and_add is easy to misuse
-Message-ID: <20200602200756.GA3933938@kroah.com>
-References: <20200602115033.1054-1-wanghai38@huawei.com>
- <20200602121035.GL19604@bombadil.infradead.org>
- <1591111514.4253.32.camel@HansenPartnership.com>
- <20200602173603.GB3579519@kroah.com>
- <1591127656.16819.7.camel@HansenPartnership.com>
+        id S1728170AbgFBUIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 16:08:06 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:59845 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727794AbgFBUIF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 16:08:05 -0400
+Received: from [192.168.42.210] ([93.22.133.243])
+        by mwinf5d52 with ME
+        id mL83220025FEkrh03L83SZ; Tue, 02 Jun 2020 22:08:04 +0200
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 02 Jun 2020 22:08:04 +0200
+X-ME-IP: 93.22.133.243
+Subject: Re: [PATCH] pinctrl: freescale: imx: Fix an error handling path in
+ 'imx_pinctrl_probe()'
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     aisheng.dong@nxp.com, festevam@gmail.com, linus.walleij@linaro.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stefan@agner.ch, gary.bisson@boundarydevices.com,
+        linux-gpio@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        linux-arm-kernel@lists.infradead.org
+References: <20200530204955.588962-1-christophe.jaillet@wanadoo.fr>
+ <20200602101346.GW30374@kadam>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <9e186840-aece-cfcc-918a-8441db9f6f7b@wanadoo.fr>
+Date:   Tue, 2 Jun 2020 22:08:02 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1591127656.16819.7.camel@HansenPartnership.com>
+In-Reply-To: <20200602101346.GW30374@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 12:54:16PM -0700, James Bottomley wrote:
-> On Tue, 2020-06-02 at 19:36 +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Jun 02, 2020 at 08:25:14AM -0700, James Bottomley wrote:
-> > > On Tue, 2020-06-02 at 05:10 -0700, Matthew Wilcox wrote:
-> > > > On Tue, Jun 02, 2020 at 07:50:33PM +0800, Wang Hai wrote:
-> > > > > syzkaller reports for memory leak when kobject_init_and_add()
-> > > > > returns an error in the function sysfs_slab_add() [1]
-> > > > > 
-> > > > > When this happened, the function kobject_put() is not called
-> > > > > for the corresponding kobject, which potentially leads to
-> > > > > memory leak.
-> > > > > 
-> > > > > This patch fixes the issue by calling kobject_put() even if
-> > > > > kobject_init_and_add() fails.
-> > > > 
-> > > > I think this speaks to a deeper problem with
-> > > > kobject_init_and_add()
-> > > > -- the need to call kobject_put() if it fails is not readily
-> > > > apparent
-> > > > to most users.  This same bug appears in the first three users of
-> > > > kobject_init_and_add() that I checked --
-> > > > arch/ia64/kernel/topology.c
-> > > > drivers/firmware/dmi-sysfs.c
-> > > > drivers/firmware/efi/esrt.c
-> > > > drivers/scsi/iscsi_boot_sysfs.c
-> > > > 
-> > > > Some do get it right --
-> > > > arch/powerpc/kernel/cacheinfo.c
-> > > > drivers/gpu/drm/ttm/ttm_bo.c
-> > > > drivers/gpu/drm/ttm/ttm_memory.c
-> > > > drivers/infiniband/hw/mlx4/sysfs.c
-> > > > 
-> > > > I'd argue that the current behaviour is wrong,
-> > > 
-> > > Absolutely agree with this.  We have a big meta pattern here where
-> > > we introduce functions with tortuous semantics then someone creates
-> > > a checker for the semantics and misuses come crawling out of the
-> > > woodwork leading to floods of patches, usually for little or never
-> > > used error paths, which really don't buy anything apart from
-> > > theoretical correctness.  Just insisting on simple semantics would
-> > > have avoided this.
-> > 
-> > I "introduced" this way back at the end of 2007.  It's not exactly a
-> > new function.
-> 
-> Heh, well, if it never fails, how you handle the failure become
-> unimportant semantics ...
-> 
-> > > >  that kobject_init_and_add() should call kobject_put() if the add
-> > > > fails.  This would need a tree-wide audit.  But somebody needs to
-> > > > do that anyway because based on my random sampling, half of the
-> > > > users currently get it wrong.
-> > > 
-> > > Well, the semantics of kobject_init() are free on fail, so these
-> > > are the ones everyone seems to be using.  The semantics of
-> > > kobject_add are put on fail.  The problem is that put on fail isn't
-> > > necessarily correct in the kobject_init() case: the release
-> > > function may make assumptions about the object hierarchy which
-> > > aren't satisfied in the kobject_init() failure case.  This argues
-> > > that kobject_init_and_add() can't ever have correct semantics and
-> > > we should eliminate it.
-> > 
-> > At the time, it did reduce common functionality and error handling
-> > all into a simpler function.  And, given it's history, it must have
-> > somehow worked for the past 12 years or so :)
-> 
-> Well, like I said, as long as it never fails, no problem.
-> 
-> It was just Matthew saying "couldn't we make it do kobject_put()
-> itself?" that got me thinking that perhaps that wouldn't work with all
-> cases.  So now we're discussing failure handling, we're into the
-> esoteric rabbit hole case that never happens.
-> 
-> > Odds are, lots of the callers shouldn't be messing around with
-> > kobjects in the first place.  Originally it was only assumed that
-> > there would be very few users.  But it has spread to filesystems and
-> > firmware subsystems.  Drivers should never use it though, so it's a
-> > good hint something is wrong there...
-> > 
-> > Anyway, patches to fix this up to make a "sane" api for kobjects is
-> > always appreciated.  Personally I don't have the time at the moment.
-> 
-> I think the only way we can make the failure semantics consistent is to
-> have the kobject_init() ones (so kfree on failure).  That means for the
-> add part, the function would have to unwind everything it did from init
-> on so kfree() is still an option.  If people agree, then I can produce
-> the patch ... it's just the current drive to transform everyone who's
-> doing kfree() into kobject_put() would become wrong ...
+Le 02/06/2020 à 12:13, Dan Carpenter a écrit :
+> On Sat, May 30, 2020 at 10:49:55PM +0200, Christophe JAILLET wrote:
+>> 'pinctrl_unregister()' should not be called to undo
+>> 'devm_pinctrl_register_and_init()', it is already handled by the framework.
+>>
+>> This simplifies the error handling paths of the probe function.
+>> The 'imx_free_resources()' can be removed as well.
+>>
+>> Fixes: a51c158bf0f7 ("pinctrl: imx: use radix trees for groups and functions")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+> You didn't introduce this but the:
+>
+> 	ipctl->input_sel_base = of_iomap(np, 0);
+>
+> should be changed to devm_of_iomap().
+Done as a separated patch.
 
-Everyone should be putting their kfree into the kobject release anyway,
-right?
+Thx for the review and the comment.
 
-Anyway, let's see your patch before I start to object further :)
 
-thanks,
+CJ
 
-greg k-h
+> regards,
+> dan carpenter
+
+
