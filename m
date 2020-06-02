@@ -2,81 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C281EB389
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 04:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206341EB394
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 05:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726450AbgFBC44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 22:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbgFBC4y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 22:56:54 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848BCC061A0E;
-        Mon,  1 Jun 2020 19:56:53 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49bcBn3GWMz9sSg;
-        Tue,  2 Jun 2020 12:56:49 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1591066611;
-        bh=YCwgkBAIWR9lwcZTT3gJGRHrETSDKFKv9oHQKKerD1g=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=hbBdgWq/e1Emt3gRHmqD91+k4UdRYjXCpeFqENlHwoArQaV+KU7uWGLPbrf5+6Trr
-         Fqj/ynRGm/Lfi0OnBPtSJmw41FmwJq9Imu80idpvhtdRhtX7lStU/LJAP5M5khPQm+
-         8+MwVX42mFeaetY8yuod+gPeLHl9z0gsE04oJor+DF3BIskjXraOCLxzzxpLOfLNPz
-         gK6Rxx4IzvN8CZnX4iVw2uflA+suvEVTUjyGExPXzSPZ5/WPxVL7RMquIsh75zaXsl
-         CoF+zwYUD2yso3mE3N7oW9Yb61Shiw7rcqu1KRC4WQfh4f7qyw5k4uPG1PNvvl3tzt
-         jmTVNMdNqKBag==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        Liao Pingfang <liao.pingfang@zte.com.cn>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     Allison Randal <allison@lohutok.net>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colin Cross <ccross@android.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Wang Liang <wang.liang82@zte.com.cn>,
-        Xue Zhihong <xue.zhihong@zte.com.cn>,
-        Yi Wang <wang.yi59@zte.com.cn>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] powerpc/nvram: Replace kmalloc with kzalloc in the error message
-In-Reply-To: <c3d22d89-9133-30aa-8270-c515df214963@web.de>
-References: <c3d22d89-9133-30aa-8270-c515df214963@web.de>
-Date:   Tue, 02 Jun 2020 12:57:11 +1000
-Message-ID: <87imgai394.fsf@mpe.ellerman.id.au>
+        id S1726380AbgFBDDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 23:03:06 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:44858 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725841AbgFBDDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 23:03:06 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 77675D6802A5AACA4A96;
+        Tue,  2 Jun 2020 11:03:02 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.202.122) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 2 Jun 2020 11:02:54 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>
+CC:     <iommu@lists.linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Prime Zeng <prime.zeng@hisilicon.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: [PATCH] driver core: platform: expose numa_node to users in sysfs
+Date:   Tue, 2 Jun 2020 15:01:39 +1200
+Message-ID: <20200602030139.73012-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.202.122]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Markus Elfring <Markus.Elfring@web.de> writes:
->> Please just remove the message instead, it's a tiny allocation that's
->> unlikely to ever fail, and the caller will print an error anyway.
->
-> How do you think about to take another look at a previous update suggestion
-> like the following?
->
-> powerpc/nvram: Delete three error messages for a failed memory allocation
-> https://patchwork.ozlabs.org/project/linuxppc-dev/patch/00845261-8528-d011-d3b8-e9355a231d3a@users.sourceforge.net/
-> https://lore.kernel.org/linuxppc-dev/00845261-8528-d011-d3b8-e9355a231d3a@users.sourceforge.net/
-> https://lore.kernel.org/patchwork/patch/752720/
-> https://lkml.org/lkml/2017/1/19/537
+For some platform devices like iommu, particually ARM smmu, users may
+care about the numa locality. for example, if threads and drivers run
+near iommu, they may get much better performance on dma_unmap_sg.
+For other platform devices, users may still want to know the hardware
+topology.
 
-That deleted the messages from nvram_scan_partitions(), but neither of
-the callers of nvram_scan_paritions() check its return value or print
-anything if it fails. So removing those messages would make those
-failures silent which is not what we want.
+Cc: Prime Zeng <prime.zeng@hisilicon.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ drivers/base/platform.c | 26 +++++++++++++++++++++++++-
+ 1 file changed, 25 insertions(+), 1 deletion(-)
 
-cheers
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index b27d0f6c18c9..7794b9a38d82 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -1062,13 +1062,37 @@ static ssize_t driver_override_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RW(driver_override);
+ 
++static ssize_t numa_node_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "%d\n", dev_to_node(dev));
++}
++static DEVICE_ATTR_RO(numa_node);
++
++static umode_t platform_dev_attrs_visible(struct kobject *kobj, struct attribute *a,
++		int n)
++{
++	struct device *dev = container_of(kobj, typeof(*dev), kobj);
++
++	if (a == &dev_attr_numa_node.attr &&
++			dev_to_node(dev) == NUMA_NO_NODE)
++		return 0;
++
++	return a->mode;
++}
+ 
+ static struct attribute *platform_dev_attrs[] = {
+ 	&dev_attr_modalias.attr,
++	&dev_attr_numa_node.attr,
+ 	&dev_attr_driver_override.attr,
+ 	NULL,
+ };
+-ATTRIBUTE_GROUPS(platform_dev);
++
++static struct attribute_group platform_dev_group = {
++	.attrs = platform_dev_attrs,
++	.is_visible = platform_dev_attrs_visible,
++};
++__ATTRIBUTE_GROUPS(platform_dev);
+ 
+ static int platform_uevent(struct device *dev, struct kobj_uevent_env *env)
+ {
+-- 
+2.23.0
+
+
