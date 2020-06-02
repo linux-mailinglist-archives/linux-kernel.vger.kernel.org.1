@@ -2,98 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659DA1EBB7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA851EBB81
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728083AbgFBMUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:20:19 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:49105 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726648AbgFBMUR (ORCPT
+        id S1726853AbgFBMVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:21:04 -0400
+Received: from sonic315-13.consmr.mail.bf2.yahoo.com ([74.6.134.123]:36383
+        "EHLO sonic315-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725940AbgFBMVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:20:17 -0400
-Received: by mail-il1-f197.google.com with SMTP id o4so4659753ilc.15
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 05:20:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ZnzEZCHryLV8mcyggZorI2Pw7WyGvNuTkNQjiVsjQoU=;
-        b=FdsBl84Qyw/W5ukEniHIurNnQaMm5825kUpKX8i4glOz0W9xehWfP9IUl6I9uR/meK
-         Low7MW1RO4BHhTPTuds3YEgf+ewb30V2yDQa3tEFpGmU658nRCTBNCTPnZWCL3tpnSTF
-         R5gWtUM8yoCwSmfRlF8+FmI+pCt0rHSk1BjQcK/R+8oirgRqoNz7nwBSzQV2xepq5QUU
-         +2YlxBGYPaDewbODxZQRFuYSIk1khf6J5bKgOtZFBesjBji/VpnuP3Vj+fqCQJVSA/OD
-         zpq1XQYVfXTQ4ww/+MrOO8u1839RxOFfD04hPxFas+JPU9QyK+e2S6TsqbDBj9TPhgsM
-         nISQ==
-X-Gm-Message-State: AOAM531RgMpH+Ow3Y0/SA1D7+w22Qvf/APGASCyI4fv83urqtS2jXpA+
-        voxKvJ46IjwivBoYnZ7B/geUzGN2MrABPD3kHuHyLZ1Gm260
-X-Google-Smtp-Source: ABdhPJz+A2UnGb/ByrAkBHUCSaa4hXkbpXZ72LvNlqDKR2a7Ml/YCuiqW9L4PbgcAXUjGaLM/aHRLNoVRDY5jDuWBJ8+1pTQy3Yt
+        Tue, 2 Jun 2020 08:21:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591100462; bh=WCnWLq8BPrdCMbkdv9jA9CokrT0OCUMl5RLneP5fHRo=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Fpu4N7+0WfXO35eCxO+cPvRQF3yXA0Xu6GrAPzxxmbb+5uiFXGhbBhmKiiU7v0gmBEMyTDN1crXu8eSftMipGRJ/v+Q9HbDqVw0iLjqVob36RxRjP66tdBc0937ls9/CoxfkvLGFr/rZBdZkrafTYufxLZaByvJtk+SliDZOZqregRm7lE2wCX9lvxntxaUBBfzgAORvkpbE+itmP0SM7TxoclOxOQ7B2qKyfh4xU0e0cU4uT3xRWlOAm4F/Ng7+A/ci2/GzfHk/S4SuQHNCYs7nH6JFuMt0s0vikL7A+fc2EvF8tPCtpAX07XXuukXaXUFBcYDvdPgep7VB0kwd8A==
+X-YMail-OSG: WKvQns4VM1m3jH65x9k9RB6_zK0c_gBGjn7L90fpwfzXjMnVlu9JTgjfpcK3Htz
+ 9uDPcHh3XlikRdClpTuYorbhf5L00nc51AdJ0KrXKzbdHgK5Ok79.Dgsp7H23iQH_KgG90GHVcR9
+ eanK.Trj0ZaswzbT9NJN6fcaU2Qfvxn7F_OEySam_UBJc0awK6CPd6YYFp5QHJvzTvC.YvuIDDdx
+ 9.qqfEl9lS9PiIKqxgtZ95EmabxItCW.AstMcVGqE3VMHKen24kFKB2oti.uHiZriT8kJs7A3CdY
+ JuVx1dsCw4ymNQDeKLLWLqa7opB6umA4LM_554JmirVAhNuC7wK_AEqziO3U3C8Xy0HR9HMs8UJB
+ JUfmrl3R0T79r8EzLWXpQlEHk3KxDNubgqjPOml2_EbJBgiZart5AAcH5sYERPo0kaI.Gei0KhkO
+ YxAdVvmW8V16hgSYmTjimvj3IoQk6QORGztR.LcTXyFmCEcfBKqyFNFVCqF0X.b0Z_Xu2PIXmtBg
+ KbkaSyYfrmn1X7ZwexKIM_OwBdc14knGntE0uMDWKRsrkC6gxsOSTHtUaV3Q7f7Wh70O8y8r3u7K
+ BJbxGZ2908RdueD4TRI1cGWgvfMQNUXHamk7fpi9XYRM9nQpKQlJBb6j04Vt63wqXjD35RWYD574
+ 2U6uoTqzAPuMpVpQTsPeAdUEIzRMd4e7vSYu7vmqut9P8FWRgzjTnMJoewaETmz47kpthPoqB8q5
+ EYmhSt1IaC4NyDfy_XF_I2AFVcuW2uXwBJL9_eH5_GLi6PaCaWHb9p0p2yxbUrKP8iBhnUWn43XL
+ zhbjDzBvv5Mar18.0Slh6UmU434jaXlYRnMc2LtT98HZ216_0EU8jnlgc74Qc8VQLEuBxp5zf89h
+ uOX9HCvdfVHQio0RKu6MQUtybodAlq6pWN085X0zBguZvlGKjv98qGpzPUm1AKVSZv5Oy37c632x
+ ibl8.DCVyV95AMPbQI2dldquNS_B47gsBIsw9YRbo6tH2cfzJ3qpNJlgo6cyHYQ1c_.0poCX4qCW
+ aSI1h2Muu2GR60vmygFPSvKY9cuWqATs2VPPQ5CU6rCmjpBaB3tm6lztyMOCTFlXHFfoR4fZVYT1
+ X1E1tpTmjKNtirwAXjGW4l_h_KaVr.viXp1J.F1oX6eoP_cGPKj6pJFoohfPeY5_Ps6e0FMsfqEZ
+ BLgjnEdsKHsUytzcfZJi6mwyYGVTPQohO_xhyrQz1DhuaxSMsMdw9lzWSKfrVznKMeBZuFUYKFaT
+ BGH_NQ.Q2VHk83h27QS1EAsLC3rR7GuJvu.F1WequBVm8NyeIdvNM8HFIrKtKtQbfftmhOLMKS6t
+ D50Y6Dc5aUOvASst8VMvFu7JbTJbn2GBqBXmv
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.bf2.yahoo.com with HTTP; Tue, 2 Jun 2020 12:21:02 +0000
+Date:   Tue, 2 Jun 2020 12:20:59 +0000 (UTC)
+From:   Richard Kabore <richardkabore1212@gmail.com>
+Reply-To: richard.kabore122@gmail.com
+Message-ID: <154813635.953718.1591100459067@mail.yahoo.com>
+Subject: PROPOSITION
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1286:: with SMTP id y6mr3284521ilq.0.1591100416502;
- Tue, 02 Jun 2020 05:20:16 -0700 (PDT)
-Date:   Tue, 02 Jun 2020 05:20:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000020b15e05a718ef22@google.com>
-Subject: linux-next test error: BUG: using smp_processor_id() in preemptible
- [ADDR] code: kworker/u4:LINE/6740
-From:   syzbot <syzbot+8ea916061cc749544c8f@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <154813635.953718.1591100459067.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    0e21d462 Add linux-next specific files for 20200602
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13f3dcca100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ecc1aef35f550ee3
-dashboard link: https://syzkaller.appspot.com/bug?extid=8ea916061cc749544c8f
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+8ea916061cc749544c8f@syzkaller.appspotmail.com
-
-BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u4:6/6740
-caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
-CPU: 1 PID: 6740 Comm: kworker/u4:6 Not tainted 5.7.0-next-20200602-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: writeback wb_workfn (flush-8:0)
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
- ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
- ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
- ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
- mpage_map_one_extent fs/ext4/inode.c:2377 [inline]
- mpage_map_and_submit_extent fs/ext4/inode.c:2430 [inline]
- ext4_writepages+0x1ab5/0x3400 fs/ext4/inode.c:2782
- do_writepages+0xfa/0x2a0 mm/page-writeback.c:2338
- __writeback_single_inode+0x12a/0x13d0 fs/fs-writeback.c:1453
- writeback_sb_inodes+0x515/0xdc0 fs/fs-writeback.c:1717
- __writeback_inodes_wb+0xc3/0x250 fs/fs-writeback.c:1786
- wb_writeback+0x8db/0xd50 fs/fs-writeback.c:1895
- wb_check_old_data_flush fs/fs-writeback.c:1997 [inline]
- wb_do_writeback fs/fs-writeback.c:2050 [inline]
- wb_workfn+0xab3/0x1090 fs/fs-writeback.c:2079
- process_one_work+0x965/0x1690 kernel/workqueue.c:2269
- worker_thread+0x96/0xe10 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+Dear Sir/Ma,
+
+Good day to you, i hope this message meet you in good fate. I have a proposition to offer which i know will be of immense benefit to both of us. I need you to work with me as my partner in executing a legitimate business deal. Kindly indicate your interest by replying to my private email on [richard.kabore122@gmail.com]
+
+Yours Sincerely,
+
+Mr Richard Kabore.
