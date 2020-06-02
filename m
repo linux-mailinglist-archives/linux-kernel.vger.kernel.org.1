@@ -2,227 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3456E1EB5E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 08:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DB51EB5DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 08:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgFBGfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 02:35:21 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:51744 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgFBGfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 02:35:20 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9F85C1A266B;
-        Tue,  2 Jun 2020 08:35:17 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AC9351A0BEC;
-        Tue,  2 Jun 2020 08:35:13 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0F6CB4030C;
-        Tue,  2 Jun 2020 14:35:08 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 3/3] ARM: dts: imx: Change usdhc node name on i.MX6/i.MX7 SoCs
-Date:   Tue,  2 Jun 2020 14:24:52 +0800
-Message-Id: <1591079092-18625-3-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591079092-18625-1-git-send-email-Anson.Huang@nxp.com>
-References: <1591079092-18625-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726198AbgFBGeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 02:34:07 -0400
+Received: from twhmllg3.macronix.com ([211.75.127.131]:37240 "EHLO
+        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgFBGeG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 02:34:06 -0400
+Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
+        by TWHMLLG3.macronix.com with ESMTP id 0526WqhW083980;
+        Tue, 2 Jun 2020 14:32:52 +0800 (GMT-8)
+        (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
+        by Forcepoint Email with ESMTP id C42C77D7708EA654953F;
+        Tue,  2 Jun 2020 14:32:52 +0800 (CST)
+In-Reply-To: <20200529092353.56nfczya6ygfbki2@yadavpratyush.com>
+References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw> <1590737775-4798-2-git-send-email-masonccyang@mxic.com.tw> <20200529092353.56nfczya6ygfbki2@yadavpratyush.com>
+To:     "Pratyush Yadav" <me@yadavpratyush.com>
+Cc:     boris.brezillon@collabora.com, broonie@kernel.org,
+        juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        matthias.bgg@gmail.com, miquel.raynal@bootlin.com, p.yadav@ti.com,
+        richard@nod.at, tudor.ambarus@microchip.com, vigneshr@ti.com
+Subject: Re: [PATCH v4 1/7] mtd: spi-nor: sfdp: get octal mode maximum speed from
+ BFPT
+MIME-Version: 1.0
+X-KeepSent: 61F39C24:01B2337A-4825857B:00238327;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OF61F39C24.01B2337A-ON4825857B.00238327-4825857B.0023F82E@mxic.com.tw>
+From:   masonccyang@mxic.com.tw
+Date:   Tue, 2 Jun 2020 14:32:53 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
+ 2020/06/02 PM 02:32:52,
+        Serialize complete at 2020/06/02 PM 02:32:52
+Content-Type: text/plain; charset="US-ASCII"
+X-MAIL: TWHMLLG3.macronix.com 0526WqhW083980
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change i.MX6/i.MX7 SoCs usdhc node name from usdhc to mmc to be
-compliant with yaml schema, it requires the nodename to be "mmc".
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- arch/arm/boot/dts/imx6qdl.dtsi | 8 ++++----
- arch/arm/boot/dts/imx6sl.dtsi  | 8 ++++----
- arch/arm/boot/dts/imx6sx.dtsi  | 8 ++++----
- arch/arm/boot/dts/imx6ul.dtsi  | 4 ++--
- arch/arm/boot/dts/imx7s.dtsi   | 6 +++---
- 5 files changed, 17 insertions(+), 17 deletions(-)
+Hi Pratyush,
 
-diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
-index deb09df..346a52f 100644
---- a/arch/arm/boot/dts/imx6qdl.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl.dtsi
-@@ -1056,7 +1056,7 @@
- 					     <0 126 IRQ_TYPE_LEVEL_HIGH>;
- 			};
- 
--			usdhc1: usdhc@2190000 {
-+			usdhc1: mmc@2190000 {
- 				compatible = "fsl,imx6q-usdhc";
- 				reg = <0x02190000 0x4000>;
- 				interrupts = <0 22 IRQ_TYPE_LEVEL_HIGH>;
-@@ -1068,7 +1068,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc2: usdhc@2194000 {
-+			usdhc2: mmc@2194000 {
- 				compatible = "fsl,imx6q-usdhc";
- 				reg = <0x02194000 0x4000>;
- 				interrupts = <0 23 IRQ_TYPE_LEVEL_HIGH>;
-@@ -1080,7 +1080,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc3: usdhc@2198000 {
-+			usdhc3: mmc@2198000 {
- 				compatible = "fsl,imx6q-usdhc";
- 				reg = <0x02198000 0x4000>;
- 				interrupts = <0 24 IRQ_TYPE_LEVEL_HIGH>;
-@@ -1092,7 +1092,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc4: usdhc@219c000 {
-+			usdhc4: mmc@219c000 {
- 				compatible = "fsl,imx6q-usdhc";
- 				reg = <0x0219c000 0x4000>;
- 				interrupts = <0 25 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
-index 11e7bf3..e2d2532 100644
---- a/arch/arm/boot/dts/imx6sl.dtsi
-+++ b/arch/arm/boot/dts/imx6sl.dtsi
-@@ -854,7 +854,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc1: usdhc@2190000 {
-+			usdhc1: mmc@2190000 {
- 				compatible = "fsl,imx6sl-usdhc", "fsl,imx6q-usdhc";
- 				reg = <0x02190000 0x4000>;
- 				interrupts = <0 22 IRQ_TYPE_LEVEL_HIGH>;
-@@ -866,7 +866,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc2: usdhc@2194000 {
-+			usdhc2: mmc@2194000 {
- 				compatible = "fsl,imx6sl-usdhc", "fsl,imx6q-usdhc";
- 				reg = <0x02194000 0x4000>;
- 				interrupts = <0 23 IRQ_TYPE_LEVEL_HIGH>;
-@@ -878,7 +878,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc3: usdhc@2198000 {
-+			usdhc3: mmc@2198000 {
- 				compatible = "fsl,imx6sl-usdhc", "fsl,imx6q-usdhc";
- 				reg = <0x02198000 0x4000>;
- 				interrupts = <0 24 IRQ_TYPE_LEVEL_HIGH>;
-@@ -890,7 +890,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc4: usdhc@219c000 {
-+			usdhc4: mmc@219c000 {
- 				compatible = "fsl,imx6sl-usdhc", "fsl,imx6q-usdhc";
- 				reg = <0x0219c000 0x4000>;
- 				interrupts = <0 25 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm/boot/dts/imx6sx.dtsi b/arch/arm/boot/dts/imx6sx.dtsi
-index 995e1b1..430c21a 100644
---- a/arch/arm/boot/dts/imx6sx.dtsi
-+++ b/arch/arm/boot/dts/imx6sx.dtsi
-@@ -943,7 +943,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc1: usdhc@2190000 {
-+			usdhc1: mmc@2190000 {
- 				compatible = "fsl,imx6sx-usdhc", "fsl,imx6sl-usdhc";
- 				reg = <0x02190000 0x4000>;
- 				interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
-@@ -955,7 +955,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc2: usdhc@2194000 {
-+			usdhc2: mmc@2194000 {
- 				compatible = "fsl,imx6sx-usdhc", "fsl,imx6sl-usdhc";
- 				reg = <0x02194000 0x4000>;
- 				interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
-@@ -967,7 +967,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc3: usdhc@2198000 {
-+			usdhc3: mmc@2198000 {
- 				compatible = "fsl,imx6sx-usdhc", "fsl,imx6sl-usdhc";
- 				reg = <0x02198000 0x4000>;
- 				interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
-@@ -979,7 +979,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc4: usdhc@219c000 {
-+			usdhc4: mmc@219c000 {
- 				compatible = "fsl,imx6sx-usdhc", "fsl,imx6sl-usdhc";
- 				reg = <0x0219c000 0x4000>;
- 				interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm/boot/dts/imx6ul.dtsi b/arch/arm/boot/dts/imx6ul.dtsi
-index 2d64802..e5aab37 100644
---- a/arch/arm/boot/dts/imx6ul.dtsi
-+++ b/arch/arm/boot/dts/imx6ul.dtsi
-@@ -861,7 +861,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc1: usdhc@2190000 {
-+			usdhc1: mmc@2190000 {
- 				compatible = "fsl,imx6ul-usdhc", "fsl,imx6sx-usdhc";
- 				reg = <0x02190000 0x4000>;
- 				interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
-@@ -875,7 +875,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc2: usdhc@2194000 {
-+			usdhc2: mmc@2194000 {
- 				compatible = "fsl,imx6ul-usdhc", "fsl,imx6sx-usdhc";
- 				reg = <0x02194000 0x4000>;
- 				interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
-index 3cba731..1cfaf41 100644
---- a/arch/arm/boot/dts/imx7s.dtsi
-+++ b/arch/arm/boot/dts/imx7s.dtsi
-@@ -1126,7 +1126,7 @@
- 				reg = <0x30b30200 0x200>;
- 			};
- 
--			usdhc1: usdhc@30b40000 {
-+			usdhc1: mmc@30b40000 {
- 				compatible = "fsl,imx7d-usdhc", "fsl,imx6sl-usdhc";
- 				reg = <0x30b40000 0x10000>;
- 				interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
-@@ -1138,7 +1138,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc2: usdhc@30b50000 {
-+			usdhc2: mmc@30b50000 {
- 				compatible = "fsl,imx7d-usdhc", "fsl,imx6sl-usdhc";
- 				reg = <0x30b50000 0x10000>;
- 				interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
-@@ -1150,7 +1150,7 @@
- 				status = "disabled";
- 			};
- 
--			usdhc3: usdhc@30b60000 {
-+			usdhc3: mmc@30b60000 {
- 				compatible = "fsl,imx7d-usdhc", "fsl,imx6sl-usdhc";
- 				reg = <0x30b60000 0x10000>;
- 				interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
--- 
-2.7.4
+> 
+> Subject
+> 
+> Re: [PATCH v4 1/7] mtd: spi-nor: sfdp: get octal mode maximum speed from 
+BFPT
+> 
+> On 29/05/20 03:36PM, Mason Yang wrote:
+> > Get maximum operation speed of device in octal mode from
+> > BFPT 20th DWORD.
+> 
+> I don't like the idea of getting the maximum operation speed from BFPT 
+> when the Profile 1.0 table already tells us that. For example, the 
+> 200MHz operation dummy cycles field in the 4th DWORD says that a value 
+> of 0 means the frequency is not supported. So the Profile 1.0 table 
+> already tells us what frequencies the flash can run at in xSPI Profile 
+> 1.0 mode.
+
+As JEDEC spec. mentioned that 
+Operation faster than 200MHz is not part of the current xSPI Spec. 
+However, this does not prevent vendors from making devices that operate at 
+higher speed.
+
+In addition, current xSPP profile 1.0 table only defined up to 200MHz.
+
+> 
+> So IMO we should use the Profile 1.0 table for this instead because
+> it will be a localized change which is easier to maintain. I also get 
+> the feeling it will be less prone to mis-interpretations.
+> 
+> > Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+> > ---
+
+thanks for your time & comments.
+Mason
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
 
