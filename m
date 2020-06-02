@@ -2,155 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFDF1EC22E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF761EC213
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgFBSxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 14:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
+        id S1727921AbgFBSqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 14:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgFBSxc (ORCPT
+        with ESMTP id S1726139AbgFBSqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 14:53:32 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11B7C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 11:53:31 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id k2so1873281pjs.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 11:53:31 -0700 (PDT)
+        Tue, 2 Jun 2020 14:46:33 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EEBC08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 11:46:32 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a127so3467317pfa.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 11:46:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lcbY1VrV57GqPoFo7ptDB2znFdFUv0Mj9KOWNzaUW2E=;
-        b=iY81CrGfmojXqpZOwyWc5FJulkMA+MB1PD+DNvpbGMwLjk7EYSts9ax8jyweSuxnOg
-         L1+M2+C3ihJ82bHBfyap8X7f3NG70bmLnsr8DMinGcXbaH0O5E9eF/m3NsmINlBfIdTX
-         AGWgLaj3tjCGuDPCnVzA0fSIvFfH/n/9TFFtMaJAPlTkWQJySbKn6dJ+ejCxuClfTIhf
-         04dpsphQqr8AXP2CIoyfADPkQvuHgQBIvZDx6WWLohI8DG5Q8xx+oh18PBRXNHspMMhB
-         5E49XHTWn7hBb/IFXbQzOASEnpD2TMwhBzXf7Rkdp1KgmtTfH6Haq0y+J3dO0L0Ngj5U
-         tzhA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=KjGFYyFxgPYs05yaRJGkiTGGqOdTYKxkxLdoLAX2dfc=;
+        b=umDxVyYdwoQVgslyAnCov/qRec06itnasXt33K/1Tx+Q8ZmZvHyxMaMvFdd28DbusM
+         00OSH9nQ3R40zOLyUUXqK4jyjOKSjW5IZxLS+ityplv0VxKv8HxdfUDHTVT7PQKaoSeB
+         CIRzOgqkQJ56y9F5GjagLKE5/3qqD8eGm3UZA6j2Ujd5zNrI2Q8Qat3qcFHeqOL3uKbo
+         LaQsDdUIxL9GPZoHUNdLRXS1BBeitjt7kbbmGf2Al1kpzpNbAUm3iZg1x6oA7jGpcBh+
+         hrI64AI9nCHF3YvHI0J1geuB6VLPTt20Gw0XZYK0+rAKn2jSk24PzrIGOl4HCvLJQKn3
+         ZT+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lcbY1VrV57GqPoFo7ptDB2znFdFUv0Mj9KOWNzaUW2E=;
-        b=XuphZP3/Tmy7YCiCF3npuM7Tbu00KySM51Vwgycyhes9kYzvlCSpMbOyTp4IVInRy9
-         k0DR/MKP6l6xfEmbc69csboxybBf7Hx0lfQ7JsQ2R0Vfnve8h/vkkkfjc7B/a15Ws4Hq
-         JoKd3dRHEsiTopXvDDOcW8UA82LHq/4s2YSrK30L8QtJxf8y4rBG3dHP8gFZzwiIY46E
-         OAByNIoIHJEOkXTRKhhEI2I7mY7avUNd5NSHxp7rKUvdljpsafISQazQYAUzTZ58AsLU
-         VsJvR7hrIWQekwQObMfPMxAw6KZFMHm7bZGLEJc4oM2bR0hRstMHMgVmPDFUXGm+34qu
-         ko/w==
-X-Gm-Message-State: AOAM533XOSSJtELIgSGnROA6TFTKKQDuUBAPoHT/oHqAFR6VG/zZL7Ii
-        8aYo4PaqJaE1V38GVbggrLbtBFkHqyQp3kPww9EGqw==
-X-Google-Smtp-Source: ABdhPJycuMM6aHGbe0O2CrOSJTyrPXJsQw8afAcdxwgAWCtimO+5JAU8UDgC7cj//wqbciDlzyiy8kZXnyMtEmSbJlo=
-X-Received: by 2002:a17:90a:2a8e:: with SMTP id j14mr627704pjd.136.1591124010835;
- Tue, 02 Jun 2020 11:53:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200602184409.22142-1-elver@google.com>
-In-Reply-To: <20200602184409.22142-1-elver@google.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 2 Jun 2020 20:53:19 +0200
-Message-ID: <CAAeHK+wh-T4aGDeQM5Z9tTgZM+Y4xkOavjT7QuR+FHQkY-CHuw@mail.gmail.com>
-Subject: Re: [PATCH -tip 1/2] Kconfig: Bump required compiler version of KASAN
- and UBSAN
-To:     Marco Elver <elver@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KjGFYyFxgPYs05yaRJGkiTGGqOdTYKxkxLdoLAX2dfc=;
+        b=HzKfuaJ2pAD17h20swF+irmOVOSfQcxytVUEf0jfiD8OdgwdfG3RegAZZRIZbDVdgR
+         C7qsJAn5HOp0XmTGkQyyWi+glJ4nVbD+ps9Nv0x3vaEB54e6RipQLE9XMdprMtdHpbQW
+         /VgfZhYid5lFtZehp4wZVNPsqJF6NWVfYz9JEILKjkmqxGGmvAZyLeNTWYCsOILUTK/h
+         pvQonhCx2y5zFz70CiU8WazdDoAPIYAxnehKvFS0EVFDncoLdnrwMY9YaWETBdVaaLV0
+         K+kdKUoc/A+YZ+lfBAZ3sWUjOCgG7jhF++qMMYizxbTLUSDeW19AdDfHC5AAk1+NqaGy
+         bvAA==
+X-Gm-Message-State: AOAM531R8/DZSMsRILU8K2SxBBM/YMqDWBHyZ3OGDuBuC2Ix40rORBpZ
+        3l2VzBwcPZS69bdfT3SYSSo=
+X-Google-Smtp-Source: ABdhPJzXP7o7aqixQ14sESQ0eCXX2+MysWeKa5rOX2JW53KzJBa/ov2sDcBhfSB4Q3HNGTYycAWfDQ==
+X-Received: by 2002:aa7:9910:: with SMTP id z16mr3427117pff.53.1591123591678;
+        Tue, 02 Jun 2020 11:46:31 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.171.172.1])
+        by smtp.gmail.com with ESMTPSA id o21sm3056833pfp.12.2020.06.02.11.46.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 Jun 2020 11:46:30 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     gregkh@linuxfoundation.org, jamal.k.shareef@gmail.com,
+        dan.carpenter@oracle.com, marcgonzalez@google.com,
+        hariprasad.kelam@gmail.com, tasman@leaflabs.com,
+        nachukannan@gmail.com
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH] staging: vc04_services: Convert get_user_pages*() --> pin_user_pages*()
+Date:   Wed,  3 Jun 2020 00:24:17 +0530
+Message-Id: <1591124057-27696-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 8:44 PM Marco Elver <elver@google.com> wrote:
->
-> Adds config variable CC_HAS_WORKING_NOSANITIZE, which will be true if we
-> have a compiler that does not fail builds due to no_sanitize functions.
-> This does not yet mean they work as intended, but for automated
-> build-tests, this is the minimum requirement.
->
-> For example, we require that __always_inline functions used from
-> no_sanitize functions do not generate instrumentation. On GCC <= 7 this
-> fails to build entirely, therefore we make the minimum version GCC 8.
+In 2019, we introduced pin_user_pages*() and now we are converting
+get_user_pages*() to the new API as appropriate. [1] & [2] could
+be referred for more information.
 
-Could you also update KASAN docs to mention this requirement? As a
-separate patch or in v2, up to you.
+[1] Documentation/core-api/pin_user_pages.rst
 
->
-> For KCSAN this is a non-functional change, however, we should add it in
-> case this variable changes in future.
->
-> Link: https://lkml.kernel.org/r/20200602175859.GC2604@hirez.programming.kicks-ass.net
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> Apply after:
-> https://lkml.kernel.org/r/20200602173103.931412766@infradead.org
-> ---
->  init/Kconfig      | 3 +++
->  lib/Kconfig.kasan | 1 +
->  lib/Kconfig.kcsan | 1 +
->  lib/Kconfig.ubsan | 1 +
->  4 files changed, 6 insertions(+)
->
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 0f72eb4ffc87..3e8565bc8376 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -39,6 +39,9 @@ config TOOLS_SUPPORT_RELR
->  config CC_HAS_ASM_INLINE
->         def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
->
-> +config CC_HAS_WORKING_NOSANITIZE
-> +       def_bool !CC_IS_GCC || GCC_VERSION >= 80000
-> +
->  config CONSTRUCTORS
->         bool
->         depends on !UML
-> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-> index 81f5464ea9e1..15e6c4b26a40 100644
-> --- a/lib/Kconfig.kasan
-> +++ b/lib/Kconfig.kasan
-> @@ -20,6 +20,7 @@ config KASAN
->         depends on (HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC) || \
->                    (HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS)
->         depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
-> +       depends on CC_HAS_WORKING_NOSANITIZE
->         help
->           Enables KASAN (KernelAddressSANitizer) - runtime memory debugger,
->           designed to find out-of-bounds accesses and use-after-free bugs.
-> diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
-> index 5ee88e5119c2..2ab4a7f511c9 100644
-> --- a/lib/Kconfig.kcsan
-> +++ b/lib/Kconfig.kcsan
-> @@ -5,6 +5,7 @@ config HAVE_ARCH_KCSAN
->
->  config HAVE_KCSAN_COMPILER
->         def_bool CC_IS_CLANG && $(cc-option,-fsanitize=thread -mllvm -tsan-distinguish-volatile=1)
-> +       depends on CC_HAS_WORKING_NOSANITIZE
->         help
->           For the list of compilers that support KCSAN, please see
->           <file:Documentation/dev-tools/kcsan.rst>.
-> diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
-> index a5ba2fd51823..f725d126af7d 100644
-> --- a/lib/Kconfig.ubsan
-> +++ b/lib/Kconfig.ubsan
-> @@ -4,6 +4,7 @@ config ARCH_HAS_UBSAN_SANITIZE_ALL
->
->  menuconfig UBSAN
->         bool "Undefined behaviour sanity checker"
-> +       depends on CC_HAS_WORKING_NOSANITIZE
->         help
->           This option enables the Undefined Behaviour sanity checker.
->           Compile-time instrumentation is used to detect various undefined
-> --
-> 2.27.0.rc2.251.g90737beb825-goog
->
+[2] "Explicit pinning of user-space pages":
+        https://lwn.net/Articles/807108/
+
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+---
+Hi,
+
+I'm compile tested this, but unable to run-time test, so any testing
+help is much appriciated.
+
+ .../vc04_services/interface/vchiq_arm/vchiq_2835_arm.c   | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
+index 38a13e4..4616013 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
+@@ -287,12 +287,8 @@ int vchiq_dump_platform_state(void *dump_context)
+ 			     pagelistinfo->num_pages, pagelistinfo->dma_dir);
+ 	}
+ 
+-	if (pagelistinfo->pages_need_release) {
+-		unsigned int i;
+-
+-		for (i = 0; i < pagelistinfo->num_pages; i++)
+-			put_page(pagelistinfo->pages[i]);
+-	}
++	if (pagelistinfo->pages_need_release)
++		unpin_user_pages(pagelistinfo->pages, pagelistinfo->num_pages);
+ 
+ 	dma_free_coherent(g_dev, pagelistinfo->pagelist_buffer_size,
+ 			  pagelistinfo->pagelist, pagelistinfo->dma_addr);
+@@ -395,7 +391,7 @@ int vchiq_dump_platform_state(void *dump_context)
+ 		}
+ 		/* do not try and release vmalloc pages */
+ 	} else {
+-		actual_pages = get_user_pages_fast(
++		actual_pages = pin_user_pages_fast(
+ 					  (unsigned long)buf & PAGE_MASK,
+ 					  num_pages,
+ 					  type == PAGELIST_READ,
+@@ -407,10 +403,8 @@ int vchiq_dump_platform_state(void *dump_context)
+ 				       __func__, actual_pages, num_pages);
+ 
+ 			/* This is probably due to the process being killed */
+-			while (actual_pages > 0) {
+-				actual_pages--;
+-				put_page(pages[actual_pages]);
+-			}
++			if (actual_pages > 0)
++				unpin_user_pages(pages, actual_pages);
+ 			cleanup_pagelistinfo(pagelistinfo);
+ 			return NULL;
+ 		}
+-- 
+1.9.1
+
