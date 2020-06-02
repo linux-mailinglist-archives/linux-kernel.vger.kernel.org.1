@@ -2,162 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51BA1EC337
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2181EC33F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728726AbgFBTwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 15:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728322AbgFBTwk (ORCPT
+        id S1728031AbgFBTyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 15:54:19 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:48398 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726589AbgFBTyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 15:52:40 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFE7C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 12:52:39 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id o8so238932pgm.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 12:52:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jBlQ0H5npGZVX47FUALQU/dmYxL2gnelxfg7MyVgbp0=;
-        b=cXB+4FqNR7A1+uDCNrWesXMiMm7U/wLiP8fD+W0cE1gzqO2K8wf1c21vHDI37WBEFD
-         9QnRF0kehrlIrI4U5xggqGOcyDyyRFq52mX3/BZ6GEbc6RWuraI8bw8RmIasX7ASzrZD
-         UkWZIIoMb/sYmEfPDYKHrqLXoXLaFuawhh57qCuX/QfXyCVfUGTfD5cbpnH188RnBSw5
-         z+8NzdfxXFDbnqNzil6f1tVct+EwLHuEpN1HGG+ct9ECKFR4gtfKFT2vzyFj7ihbOSaf
-         8C5RQ+5WMawNzeL5+Q0UOrDdCTXXgugtJNndzY/Digyp6kFV5SCf/bycj0bm7qKk/JdL
-         0Flg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jBlQ0H5npGZVX47FUALQU/dmYxL2gnelxfg7MyVgbp0=;
-        b=dU/mk+1y5Uac2+MHYihg0xolaSXS4Uh4PN/UuvaH4MucicnG1VgihN09XyKqC4wtmu
-         ABFadkpzYMjuPkeRvBEWVMDRCXb1CmVGVnHs+QRNZU1vdOcrZcKSXHZTJMmDO1PGg5bm
-         Fiaj0rqBMVyVxBQT0yAiM9HsGvWOrhNFpgPj+WnOCz2nHvur0Nr8pyZ1NAsE0esp9aZE
-         sg2ThqhbJXpECrnGpOdYJNz2m9n/78orlAeJPv+pJVv+9bonLGEjQOxIGsVEB12Ihmxi
-         Pnr/1OZAP7QhThp2DpY9kJoqE9TPIl+7mWVgpn5k3lFgTbtMAZS2zHi3ZrK+SBIydTPA
-         PpOA==
-X-Gm-Message-State: AOAM533Kzb3h2c4tC/yF/KafJbs5ZMIuE9TGUwIZGaNDThOSbIOBbkY5
-        E+93/iJgcBmZw2+NTvINxd8O7XJ0nbyHHxYC6lvRaA==
-X-Google-Smtp-Source: ABdhPJwCuiEf76Zc629eMOZpmu8/WaCfFuZD4eftG+RCE1u8qTjG8vY+SrXS/9ahOtF+G23ZHcYgVcLUMB2hz29+5jI=
-X-Received: by 2002:a17:90b:4c47:: with SMTP id np7mr893785pjb.101.1591127558983;
- Tue, 02 Jun 2020 12:52:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAKwvOdmCrM0eUZHR12OBgyRhNPFDzZKjrpZ0DW8Cg=wqTfzDFw@mail.gmail.com>
- <20200602192523.32758-1-natechancellor@gmail.com>
-In-Reply-To: <20200602192523.32758-1-natechancellor@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 2 Jun 2020 12:52:26 -0700
-Message-ID: <CAKwvOdnH8rxT7y1U0d=pyD19K38KwarrwA2s+Ji7ctgg+ks_kg@mail.gmail.com>
-Subject: Re: [PATCH v2] s390: vdso: Use $(LD) instead of $(CC) to link vDSO
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+        Tue, 2 Jun 2020 15:54:18 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id D6A608EE268;
+        Tue,  2 Jun 2020 12:54:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1591127657;
+        bh=BnRTz0H3of5YQTsobSyKAMRC+EgHR1zd32h9qrh3mL0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=wLxGzutPw6wLP7nAdTeh2H079b6mUpp6Vzs8J/WCwOrzFDGyhr0+0fcmf4q+jbiUh
+         jVFSI0+Z7Mp3J6guDguNNu+UTROi0o5ARRNtqv92L6T+bIJsXpoziPLxAOuxLuNC/N
+         8H17TqLL537SUtgx21SSCRHvDkN+lqBGhBZxBLYA=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 9xuGT-2m2fYZ; Tue,  2 Jun 2020 12:54:17 -0700 (PDT)
+Received: from [153.66.254.194] (unknown [50.35.76.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 1CC838EE0F8;
+        Tue,  2 Jun 2020 12:54:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1591127657;
+        bh=BnRTz0H3of5YQTsobSyKAMRC+EgHR1zd32h9qrh3mL0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=wLxGzutPw6wLP7nAdTeh2H079b6mUpp6Vzs8J/WCwOrzFDGyhr0+0fcmf4q+jbiUh
+         jVFSI0+Z7Mp3J6guDguNNu+UTROi0o5ARRNtqv92L6T+bIJsXpoziPLxAOuxLuNC/N
+         8H17TqLL537SUtgx21SSCRHvDkN+lqBGhBZxBLYA=
+Message-ID: <1591127656.16819.7.camel@HansenPartnership.com>
+Subject: Re: kobject_init_and_add is easy to misuse
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Wang Hai <wanghai38@huawei.com>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, khlebnikov@yandex-team.ru,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Date:   Tue, 02 Jun 2020 12:54:16 -0700
+In-Reply-To: <20200602173603.GB3579519@kroah.com>
+References: <20200602115033.1054-1-wanghai38@huawei.com>
+         <20200602121035.GL19604@bombadil.infradead.org>
+         <1591111514.4253.32.camel@HansenPartnership.com>
+         <20200602173603.GB3579519@kroah.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 12:25 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> Currently, the VDSO is being linked through $(CC). This does not match
-> how the rest of the kernel links objects, which is through the $(LD)
-> variable.
->
-> When clang is built in a default configuration, it first attempts to use
-> the target triple's default linker, which is just ld. However, the user
-> can override this through the CLANG_DEFAULT_LINKER cmake define so that
-> clang uses another linker by default, such as LLVM's own linker, ld.lld.
-> This can be useful to get more optimized links across various different
-> projects.
->
-> However, this is problematic for the s390 vDSO because ld.lld does not
-> have any s390 emulatiom support:
->
-> https://github.com/llvm/llvm-project/blob/llvmorg-10.0.1-rc1/lld/ELF/Driver.cpp#L132-L150
->
-> Thus, if a user is using a toolchain with ld.lld as the default, they
-> will see an error, even if they have specified ld.bfd through the LD
-> make variable:
->
-> $ make -j"$(nproc)" -s ARCH=s390 CROSS_COMPILE=s390x-linux-gnu- LLVM=1 \
->                        LD=s390x-linux-gnu-ld \
->                        defconfig arch/s390/kernel/vdso64/
-> ld.lld: error: unknown emulation: elf64_s390
-> clang-11: error: linker command failed with exit code 1 (use -v to see invocation)
->
-> Normally, '-fuse-ld=bfd' could be used to get around this; however, this
-> can be fragile, depending on paths and variable naming. The cleaner
-> solution for the kernel is to take advantage of the fact that $(LD) can
-> be invoked directly, which bypasses the heuristics of $(CC) and respects
-> the user's choice. Similar changes have been done for ARM, ARM64, and
-> MIPS.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1041
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+On Tue, 2020-06-02 at 19:36 +0200, Greg Kroah-Hartman wrote:
+> On Tue, Jun 02, 2020 at 08:25:14AM -0700, James Bottomley wrote:
+> > On Tue, 2020-06-02 at 05:10 -0700, Matthew Wilcox wrote:
+> > > On Tue, Jun 02, 2020 at 07:50:33PM +0800, Wang Hai wrote:
+> > > > syzkaller reports for memory leak when kobject_init_and_add()
+> > > > returns an error in the function sysfs_slab_add() [1]
+> > > > 
+> > > > When this happened, the function kobject_put() is not called
+> > > > for the corresponding kobject, which potentially leads to
+> > > > memory leak.
+> > > > 
+> > > > This patch fixes the issue by calling kobject_put() even if
+> > > > kobject_init_and_add() fails.
+> > > 
+> > > I think this speaks to a deeper problem with
+> > > kobject_init_and_add()
+> > > -- the need to call kobject_put() if it fails is not readily
+> > > apparent
+> > > to most users.  This same bug appears in the first three users of
+> > > kobject_init_and_add() that I checked --
+> > > arch/ia64/kernel/topology.c
+> > > drivers/firmware/dmi-sysfs.c
+> > > drivers/firmware/efi/esrt.c
+> > > drivers/scsi/iscsi_boot_sysfs.c
+> > > 
+> > > Some do get it right --
+> > > arch/powerpc/kernel/cacheinfo.c
+> > > drivers/gpu/drm/ttm/ttm_bo.c
+> > > drivers/gpu/drm/ttm/ttm_memory.c
+> > > drivers/infiniband/hw/mlx4/sysfs.c
+> > > 
+> > > I'd argue that the current behaviour is wrong,
+> > 
+> > Absolutely agree with this.  We have a big meta pattern here where
+> > we introduce functions with tortuous semantics then someone creates
+> > a checker for the semantics and misuses come crawling out of the
+> > woodwork leading to floods of patches, usually for little or never
+> > used error paths, which really don't buy anything apart from
+> > theoretical correctness.  Just insisting on simple semantics would
+> > have avoided this.
+> 
+> I "introduced" this way back at the end of 2007.  It's not exactly a
+> new function.
 
-Thanks, with this, I'm more confident that the linker flags don't change.
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Heh, well, if it never fails, how you handle the failure become
+unimportant semantics ...
 
-> ---
->
-> v1 -> v2:
->
-> * Add -fPIC per GCC's documentation, as pointed out by Nick.
->
->  arch/s390/kernel/vdso64/Makefile | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/s390/kernel/vdso64/Makefile b/arch/s390/kernel/vdso64/Makefile
-> index bec19e7e6e1c..67c14732c304 100644
-> --- a/arch/s390/kernel/vdso64/Makefile
-> +++ b/arch/s390/kernel/vdso64/Makefile
-> @@ -18,8 +18,8 @@ KBUILD_AFLAGS_64 += -m64 -s
->
->  KBUILD_CFLAGS_64 := $(filter-out -m64,$(KBUILD_CFLAGS))
->  KBUILD_CFLAGS_64 += -m64 -fPIC -shared -fno-common -fno-builtin
-> -KBUILD_CFLAGS_64 += -nostdlib -Wl,-soname=linux-vdso64.so.1 \
-> -                   -Wl,--hash-style=both
-> +ldflags-y := -fPIC -shared -nostdlib -soname=linux-vdso64.so.1 \
-> +            --hash-style=both -T
->
->  $(targets:%=$(obj)/%.dbg): KBUILD_CFLAGS = $(KBUILD_CFLAGS_64)
->  $(targets:%=$(obj)/%.dbg): KBUILD_AFLAGS = $(KBUILD_AFLAGS_64)
-> @@ -37,8 +37,8 @@ KASAN_SANITIZE := n
->  $(obj)/vdso64_wrapper.o : $(obj)/vdso64.so
->
->  # link rule for the .so file, .lds has to be first
-> -$(obj)/vdso64.so.dbg: $(src)/vdso64.lds $(obj-vdso64) FORCE
-> -       $(call if_changed,vdso64ld)
-> +$(obj)/vdso64.so.dbg: $(obj)/vdso64.lds $(obj-vdso64) FORCE
-> +       $(call if_changed,ld)
->
->  # strip rule for the .so file
->  $(obj)/%.so: OBJCOPYFLAGS := -S
-> @@ -50,8 +50,6 @@ $(obj-vdso64): %.o: %.S FORCE
->         $(call if_changed_dep,vdso64as)
->
->  # actual build commands
-> -quiet_cmd_vdso64ld = VDSO64L $@
-> -      cmd_vdso64ld = $(CC) $(c_flags) -Wl,-T $(filter %.lds %.o,$^) -o $@
->  quiet_cmd_vdso64as = VDSO64A $@
->        cmd_vdso64as = $(CC) $(a_flags) -c -o $@ $<
->
->
-> base-commit: e1750a3d9abbea2ece29cac8dc5a6f5bc19c1492
-> --
-> 2.27.0.rc2
->
+> > >  that kobject_init_and_add() should call kobject_put() if the add
+> > > fails.  This would need a tree-wide audit.  But somebody needs to
+> > > do that anyway because based on my random sampling, half of the
+> > > users currently get it wrong.
+> > 
+> > Well, the semantics of kobject_init() are free on fail, so these
+> > are the ones everyone seems to be using.  The semantics of
+> > kobject_add are put on fail.  The problem is that put on fail isn't
+> > necessarily correct in the kobject_init() case: the release
+> > function may make assumptions about the object hierarchy which
+> > aren't satisfied in the kobject_init() failure case.  This argues
+> > that kobject_init_and_add() can't ever have correct semantics and
+> > we should eliminate it.
+> 
+> At the time, it did reduce common functionality and error handling
+> all into a simpler function.  And, given it's history, it must have
+> somehow worked for the past 12 years or so :)
 
+Well, like I said, as long as it never fails, no problem.
 
--- 
-Thanks,
-~Nick Desaulniers
+It was just Matthew saying "couldn't we make it do kobject_put()
+itself?" that got me thinking that perhaps that wouldn't work with all
+cases.  So now we're discussing failure handling, we're into the
+esoteric rabbit hole case that never happens.
+
+> Odds are, lots of the callers shouldn't be messing around with
+> kobjects in the first place.  Originally it was only assumed that
+> there would be very few users.  But it has spread to filesystems and
+> firmware subsystems.  Drivers should never use it though, so it's a
+> good hint something is wrong there...
+> 
+> Anyway, patches to fix this up to make a "sane" api for kobjects is
+> always appreciated.  Personally I don't have the time at the moment.
+
+I think the only way we can make the failure semantics consistent is to
+have the kobject_init() ones (so kfree on failure).  That means for the
+add part, the function would have to unwind everything it did from init
+on so kfree() is still an option.  If people agree, then I can produce
+the patch ... it's just the current drive to transform everyone who's
+doing kfree() into kobject_put() would become wrong ...
+
+James
+
