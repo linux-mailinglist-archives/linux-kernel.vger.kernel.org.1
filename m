@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997321EB6E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 10:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595DF1EB6EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 10:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgFBIBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 04:01:13 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:53954 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgFBIBN (ORCPT
+        id S1726320AbgFBIBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 04:01:54 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:38335 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbgFBIBx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 04:01:13 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id D78A18030835;
-        Tue,  2 Jun 2020 08:01:09 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id cdmgq3OZHxmj; Tue,  2 Jun 2020 11:01:08 +0300 (MSK)
-Date:   Tue, 2 Jun 2020 11:01:04 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Joel Stanley <joel@jms.id.au>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        <devicetree-compiler@vger.kernel.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3 2/2] checks: Improve i2c reg property checking
-Message-ID: <20200602080104.4vqobktck357j52v@mobilestation>
-References: <20200528085650.1417942-1-joel@jms.id.au>
- <20200528085650.1417942-3-joel@jms.id.au>
+        Tue, 2 Jun 2020 04:01:53 -0400
+Received: by mail-oi1-f196.google.com with SMTP id c194so6489217oig.5;
+        Tue, 02 Jun 2020 01:01:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IfSJUGMUIJAtGs8xJoJu4pTdTbFJQFKUBexygvbCqHg=;
+        b=XWHzmLV+RSiXPsD5jIFOXAGesdvU8woN5K6/qPDKtPlgFS9FWAMkM642GXU/Vji0d2
+         sa8FDxB7kqSzUOdpGQHhyqoKRDWQNWfdKpsbHAqozbCpPrMD8M1nAMKHF2DLgCc2Oj2/
+         sb0e3NRj6O3g8tAOEDY7pc4rRKdZpQgtR2IuzBFudUYb4/cKtRNClYRv7r5IbmohqQRL
+         RmzjHvu5zCNUj9YeZHqa6RVK3NcSxw6H54JzKNver+svnBQKXQoD1sV7+k5MQFFMOtjE
+         X7s5DRGIEStGmpYD3kBE11KFC5y6oJgApwrIktbJiJzIKx8oTXDf6TCEJKmbPkIICgMl
+         bu7Q==
+X-Gm-Message-State: AOAM5338k2mFdJAgJOtmLw+cE9Al9Z8dIHeRAG/qyFUBYqDXNLPcuHUs
+        UYEYKfN6Q3Sa7kLz5bU4etlhpeb9EyrUWk+rjYc=
+X-Google-Smtp-Source: ABdhPJwb8BmTldt5m5AYubbdo+hXPl3C08b2x1LMrx0PEc+//VCAdNVfqghwFbA59666yoA0DLKW3xFc5Rq/3ZSezD8=
+X-Received: by 2002:aca:210a:: with SMTP id 10mr2050315oiz.153.1591084912412;
+ Tue, 02 Jun 2020 01:01:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200528085650.1417942-3-joel@jms.id.au>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <20200331052850.5419-1-yuechao.zhao@advantech.com.cn>
+In-Reply-To: <20200331052850.5419-1-yuechao.zhao@advantech.com.cn>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 2 Jun 2020 10:01:41 +0200
+Message-ID: <CAMuHMdUesEMsWH55Tfe+eru8iVpgWbKPnL-wgRakG9BEpP4Y1g@mail.gmail.com>
+Subject: Re: [v4,1/1] hwmon: (nct7904) Add watchdog function
+To:     yuechao.zhao@advantech.com.cn
+Cc:     345351830@qq.com, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        amy.shih@advantech.com.tw, oakley.ding@advantech.com.tw,
+        jia.sui@advantech.com.cn, shengkui.leng@advantech.com.cn
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 06:26:50PM +0930, Joel Stanley wrote:
-> The i2c bindings in the kernel tree describe support for 10 bit
-> addressing, which must be indicated with the I2C_TEN_BIT_ADDRESS flag.
-> When this is set the address can be up to 10 bits. When it is not set
-> the address is a maximum of 7 bits.
-> 
-> See Documentation/devicetree/bindings/i2c/i2c.txt.
-> 
-> Take into account this flag when checking the address is valid.
-> 
-> Signed-off-by: Joel Stanley <joel@jms.id.au>
-> ---
-> v2: Mask reg when checking the 10-bit size
-> ---
->  checks.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/checks.c b/checks.c
-> index feb1721f2603..3fe979a63290 100644
-> --- a/checks.c
-> +++ b/checks.c
-> @@ -1023,6 +1023,7 @@ static void check_i2c_bus_bridge(struct check *c, struct dt_info *dti, struct no
->  WARNING(i2c_bus_bridge, check_i2c_bus_bridge, NULL, &addr_size_cells);
->  
->  #define I2C_OWN_SLAVE_ADDRESS	(1 << 30)
+Hi Yuechao,
 
-> +#define I2C_TEN_BIT_ADDRESS	(1 << 31)
+On Tue, Mar 31, 2020 at 7:30 AM <yuechao.zhao@advantech.com.cn> wrote:
+> From: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
+>
+> implement watchdong functionality into the "hwmon/nct7904.c"
+>
+> Signed-off-by: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
 
-As Andy neatly pointed out here:
-https://lore.kernel.org/lkml/20200527133656.GV1634618@smile.fi.intel.com/
-(1 << 31) is UB.
+Thanks for your patch, which is now commit 77849a552d142ef5 ("hwmon:
+(nct7904) Add watchdog function").
 
--Sergey
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1340,10 +1340,12 @@ config SENSORS_NCT7802
+>
+>  config SENSORS_NCT7904
+>         tristate "Nuvoton NCT7904"
+> -       depends on I2C
+> +       depends on I2C && WATCHDOG
+> +       select WATCHDOG_CORE
 
->  
->  static void check_i2c_bus_reg(struct check *c, struct dt_info *dti, struct node *node)
->  {
-> @@ -1057,10 +1058,13 @@ static void check_i2c_bus_reg(struct check *c, struct dt_info *dti, struct node
->  		reg = fdt32_to_cpu(*(cells++));
->  		/* Ignore I2C_OWN_SLAVE_ADDRESS */
->  		reg &= ~I2C_OWN_SLAVE_ADDRESS;
-> -		if (reg > 0x3ff)
-> +
-> +		if ((reg & I2C_TEN_BIT_ADDRESS) && ((reg & ~I2C_TEN_BIT_ADDRESS) > 0x3ff))
->  			FAIL_PROP(c, dti, node, prop, "I2C address must be less than 10-bits, got \"0x%x\"",
->  				  reg);
-> -
-> +		else if (reg > 0x7f)
-> +			FAIL_PROP(c, dti, node, prop, "I2C address must be less than 7-bits, got \"0x%x\". Set I2C_TEN_BIT_ADDRESS for 10 bit addresses or fix the property",
-> +				  reg);
->  	}
->  }
->  WARNING(i2c_bus_reg, check_i2c_bus_reg, NULL, &reg_format, &i2c_bus_bridge);
-> -- 
-> 2.26.2
-> 
+This makes the driver unselectable if WATCHDOG is not set.
+
+Is there a use case for using this driver without watchdog functionality?
+If yes, it might make sense to make the watchdog support optional,
+protected by #ifdef CONFIG_WATCHDOG, and change the above to
+
+    depends on I2C
+    select WATCHDOG_CORE if WATCHDOG
+
+If no, please ignore my email.
+
+>         help
+>           If you say yes here you get support for the Nuvoton NCT7904
+> -         hardware monitoring chip, including manual fan speed control.
+> +         hardware monitoring chip, including manual fan speed control
+> +         and support for the integrated watchdog.
+>
+>           This driver can also be built as a module. If so, the module
+>           will be called nct7904.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
