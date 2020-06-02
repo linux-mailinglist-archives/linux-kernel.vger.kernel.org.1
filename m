@@ -2,95 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BDE1EC166
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 19:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5131EC17E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 19:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgFBRwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 13:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726977AbgFBRwe (ORCPT
+        id S1727776AbgFBR7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 13:59:39 -0400
+Received: from smtpout1.mo803.mail-out.ovh.net ([79.137.123.219]:47279 "EHLO
+        smtpout1.mo803.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726019AbgFBR7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 13:52:34 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD53C05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 10:52:34 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id s1so13689357ljo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 10:52:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anholt-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HZgulanud4yuYVbSEY2anFOdC3z8THltqCrqmdc0mYo=;
-        b=dO9rC6U35ZJVsEEqeyiT2wqhpSYN9ZFHMHcUxncLMNKJV//15BuMSc2wnN6tjCAEjn
-         TGbDcIgy4BS7Dl6Cg5LOM9okR/1FIFpXnuFgZF/LIexlxoI3jpg6+QOS+Cg58yW6wyS0
-         WKG1Dr+gmDrfMfj0ZKPlm+bWhBzIbkCDIV20Wt9UtHpsMOJ02zBPUAQKeii04sISDLAH
-         OFTa8PehKlXok+f1TsVFQUCaXwQrxXJ1Fs8Rlms6BmuU2aMwAmixXfMXCSvFxUbiHbCB
-         XNxz8DVWLPEzDOlU65p4syvY0bUbOKKy2msR0RdtwqXQE4eqWdmg7pTz1Q11FqLhyGlY
-         +y/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HZgulanud4yuYVbSEY2anFOdC3z8THltqCrqmdc0mYo=;
-        b=BRAa3Pk6UWD30QzKB302NuZn8MJqlyUwbf0oa95Zy8ywEa4/lXIipo+S5b+3xLtwfo
-         VaEL8EMFkVdMSFZL/Np7kI4Or6ad3Tyhk4KpnkGfs5am6Y/+cYlUsqjQSjY3YEfn4Nl2
-         gyLRxrpHeOtda/Yhs5wYnSy6La3z4Zsz5I8tbcHlF9tTMLebCHkLUuyW9bE9RDSBtbUE
-         TMzesZ/RxxrP2f/2Ljz6j39jc9Zrzty4NjyoRusVw6michUEWAHV/INAnnHFM8mJpC0W
-         gTNuCL44MV0i3jad/Gant0DuYUmExiJ6EG4EXJIWlmuMZrePd9Jsk2KXM0odkdRUX3N/
-         /IAw==
-X-Gm-Message-State: AOAM531IzRnKLIbfAywThEg2gKxP7ICTqT/QBLO4t13EEGH1rugx1bXu
-        sHoMwFSXRRm3jVNuNbV3mHRuxoOn9BPdVvB/Gj/Lkg==
-X-Google-Smtp-Source: ABdhPJyb9Q+yOpWaTEJsS6SMTCHwieIBoNC2oRXbg7gqhPZ+it4nX/xFtvhER8sXJsj/q7/Cf6w1wYITBiLYGaiqulI=
-X-Received: by 2002:a2e:8ed3:: with SMTP id e19mr135042ljl.367.1591120352694;
- Tue, 02 Jun 2020 10:52:32 -0700 (PDT)
+        Tue, 2 Jun 2020 13:59:38 -0400
+Received: from pro2.mail.ovh.net (unknown [10.108.20.232])
+        by mo803.mail-out.ovh.net (Postfix) with ESMTPS id 97FD5550CFC6;
+        Tue,  2 Jun 2020 19:59:35 +0200 (CEST)
+Received: from localhost (34.103.240.103) by DAG2EX1.emp2.local (172.16.2.11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Tue, 2 Jun 2020
+ 19:59:35 +0200
+Date:   Tue, 2 Jun 2020 19:57:23 +0200
+From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Peter Meerwald <pmeerw@pmeerw.net>
+Subject: Re: [PATCH v3 3/4] iio: chemical: scd30: add serial interface driver
+Message-ID: <20200602175723.GC2668@arch>
+References: <20200602164723.28858-1-tomasz.duszynski@octakon.com>
+ <20200602164723.28858-4-tomasz.duszynski@octakon.com>
+ <CAHp75VfjWG_3XC5FJoaU7XXJc+04JTbEKdjZK=g6ffBPvJNhxA@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
- <1aaadf9a5176591c891622cb00b0c50f42e569dc.1590594512.git-series.maxime@cerno.tech>
- <CADaigPWQdeTd2CGCK-yxq+TAU6xKMVsdZfhSVptn4RSENxpdxg@mail.gmail.com> <20200602125227.fe3mt5jnqd6u4pft@gilmour>
-In-Reply-To: <20200602125227.fe3mt5jnqd6u4pft@gilmour>
-From:   Eric Anholt <eric@anholt.net>
-Date:   Tue, 2 Jun 2020 10:52:21 -0700
-Message-ID: <CADaigPUYwmwcFDtH3ZtyDaGWvutAYSX=JuMhXh2EtfNVLU6iDQ@mail.gmail.com>
-Subject: Re: [PATCH v3 015/105] drm/vc4: hvs: Boost the core clock during modeset
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <CAHp75VfjWG_3XC5FJoaU7XXJc+04JTbEKdjZK=g6ffBPvJNhxA@mail.gmail.com>
+X-Originating-IP: [34.103.240.103]
+X-ClientProxiedBy: DAG3EX2.emp2.local (172.16.2.22) To DAG2EX1.emp2.local
+ (172.16.2.11)
+X-Ovh-Tracer-Id: 10630465448542035103
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrudefjedgleduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfhfgggtuggjihesthdtredttddtjeenucfhrhhomhepvfhomhgrshiiucffuhhsiiihnhhskhhiuceothhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmqeenucggtffrrghtthgvrhhnpedtheevtefhffduteejfedtkeeuheejgeejvdetfffgveekffefgeffueeghefgjeenucfkpheptddrtddrtddrtddpfeegrddutdefrddvgedtrddutdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhrohdvrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepthhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmpdhrtghpthhtohepphhmvggvrhifsehpmhgvvghrfidrnhgvth
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 5:52 AM Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Hi Eric,
->
-> On Wed, May 27, 2020 at 09:33:44AM -0700, Eric Anholt wrote:
-> > On Wed, May 27, 2020 at 8:49 AM Maxime Ripard <maxime@cerno.tech> wrote:
-> > >
-> > > In order to prevent timeouts and stalls in the pipeline, the core clock
-> > > needs to be maxed at 500MHz during a modeset on the BCM2711.
+On Tue, Jun 02, 2020 at 08:04:16PM +0300, Andy Shevchenko wrote:
+> On Tue, Jun 2, 2020 at 7:49 PM Tomasz Duszynski
+> <tomasz.duszynski@octakon.com> wrote:
 > >
-> > Like, the whole system's core clock?
+> > Add serial interface driver for the SCD30 sensor.
 >
-> Yep, unfortunately...
+> ...
 >
-> > How is it reasonable for some device driver to crank the system's core
-> > clock up and back down to some fixed-in-the-driver frequency? Sounds
-> > like you need some sort of opp thing here.
+> > +static u16 scd30_serdev_cmd_lookup_tbl[] = {
+> > +       [CMD_START_MEAS] = 0x0036,
+> > +       [CMD_STOP_MEAS] = 0x0037,
+> > +       [CMD_MEAS_INTERVAL] = 0x0025,
+> > +       [CMD_MEAS_READY] = 0x0027,
+> > +       [CMD_READ_MEAS] = 0x0028,
+> > +       [CMD_ASC] = 0x003a,
+> > +       [CMD_FRC] = 0x0039,
+> > +       [CMD_TEMP_OFFSET] = 0x003b,
+> > +       [CMD_FW_VERSION] = 0x0020,
+> > +       [CMD_RESET] = 0x0034,
 >
-> That frequency is the minimum rate of that clock. However, since other
-> devices have similar requirements (unicam in particular) with different
-> minimum requirements, we will switch to setting a minimum rate instead
-> of enforcing a particular rate, so that patch would be essentially
-> s/clk_set_rate/clk_set_min_rate/.
+> Hmm... Can't we keep them ordered by value?
+>
+> > +};
+>
+> ...
+>
+> > +       ret = wait_for_completion_interruptible_timeout(&priv->meas_ready,
+> > +                                                       SCD30_SERDEV_TIMEOUT);
+> > +       if (ret > 0)
+> > +               ret = 0;
+> > +       else if (!ret)
+> > +               ret = -ETIMEDOUT;
+> > +
+> > +       return ret;
+>
+> Perhaps
+>
+>   if (ret < 0)
+>     return ret;
+>   if (ret == 0)
+>     return -ETIMEDOUT;
+>   return 0;
+>
+> ?
 
-clk_set_min_rate makes a lot more sense to me.  r-b with that obvious
-change. Thanks!
+Matter of style but since I will be doing other changes I can touch that
+too.
+
+>
+> ...
+>
+> > +       char txbuf[SCD30_SERDEV_MAX_BUF_SIZE] = { SCD30_SERDEV_ADDR },
+> > +            rxbuf[SCD30_SERDEV_MAX_BUF_SIZE], *rsp = response;
+>
+> Please, apply type to each variable separately.
+>
+
+Fine.
+
+> ...
+>
+> > +       switch (txbuf[1]) {
+> > +       case SCD30_SERDEV_WRITE:
+>
+> > +               if (memcmp(txbuf, txbuf, txsize)) {
+>
+> I'm not sure I understand this.
+>
+
+Ah, thanks for catching this. tx should be compared to rx.
+
+> > +                       dev_err(state->dev, "wrong message received\n");
+> > +                       return -EIO;
+> > +               }
+> > +               break;
+> > +       case SCD30_SERDEV_READ:
+>
+> > +               if (rxbuf[2] != (rxsize -
+> > +                                SCD30_SERDEV_RX_HEADER_SIZE -
+> > +                                SCD30_SERDEV_CRC_SIZE)) {
+>
+> Perhaps you can come up with better indentation/ line split?
+>
+
+I'd rather leave it as is.
+
+> > +                       dev_err(state->dev,
+> > +                               "received data size does not match header\n");
+> > +                       return -EIO;
+> > +               }
+> > +
+> > +               rxsize -= SCD30_SERDEV_CRC_SIZE;
+> > +               crc = get_unaligned_le16(rxbuf + rxsize);
+> > +               if (crc != scd30_serdev_calc_crc(rxbuf, rxsize)) {
+> > +                       dev_err(state->dev, "data integrity check failed\n");
+> > +                       return -EIO;
+> > +               }
+> > +
+> > +               rxsize -= SCD30_SERDEV_RX_HEADER_SIZE;
+> > +               memcpy(rsp, rxbuf + SCD30_SERDEV_RX_HEADER_SIZE, rxsize);
+> > +               break;
+> > +       default:
+> > +               dev_err(state->dev, "received unknown op code\n");
+> > +               return -EIO;
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+>
+> ...
+>
+> > +static struct serdev_device_driver scd30_serdev_driver = {
+> > +       .driver = {
+>
+> > +               .name = KBUILD_MODNAME,
+>
+> This is not the best what we can do. The name is an ABI and better if
+> it will be constant (independent on file name).
+>
+> > +               .of_match_table = scd30_serdev_of_match,
+> > +               .pm = &scd30_pm_ops,
+> > +       },
+> > +       .probe = scd30_serdev_probe,
+> > +};
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
