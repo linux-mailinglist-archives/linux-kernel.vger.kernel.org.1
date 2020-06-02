@@ -2,103 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595DF1EB6EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 10:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794E51EB6F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 10:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgFBIBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 04:01:54 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:38335 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgFBIBx (ORCPT
+        id S1726223AbgFBIE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 04:04:28 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:45788 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbgFBIE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 04:01:53 -0400
-Received: by mail-oi1-f196.google.com with SMTP id c194so6489217oig.5;
-        Tue, 02 Jun 2020 01:01:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IfSJUGMUIJAtGs8xJoJu4pTdTbFJQFKUBexygvbCqHg=;
-        b=XWHzmLV+RSiXPsD5jIFOXAGesdvU8woN5K6/qPDKtPlgFS9FWAMkM642GXU/Vji0d2
-         sa8FDxB7kqSzUOdpGQHhyqoKRDWQNWfdKpsbHAqozbCpPrMD8M1nAMKHF2DLgCc2Oj2/
-         sb0e3NRj6O3g8tAOEDY7pc4rRKdZpQgtR2IuzBFudUYb4/cKtRNClYRv7r5IbmohqQRL
-         RmzjHvu5zCNUj9YeZHqa6RVK3NcSxw6H54JzKNver+svnBQKXQoD1sV7+k5MQFFMOtjE
-         X7s5DRGIEStGmpYD3kBE11KFC5y6oJgApwrIktbJiJzIKx8oTXDf6TCEJKmbPkIICgMl
-         bu7Q==
-X-Gm-Message-State: AOAM5338k2mFdJAgJOtmLw+cE9Al9Z8dIHeRAG/qyFUBYqDXNLPcuHUs
-        UYEYKfN6Q3Sa7kLz5bU4etlhpeb9EyrUWk+rjYc=
-X-Google-Smtp-Source: ABdhPJwb8BmTldt5m5AYubbdo+hXPl3C08b2x1LMrx0PEc+//VCAdNVfqghwFbA59666yoA0DLKW3xFc5Rq/3ZSezD8=
-X-Received: by 2002:aca:210a:: with SMTP id 10mr2050315oiz.153.1591084912412;
- Tue, 02 Jun 2020 01:01:52 -0700 (PDT)
+        Tue, 2 Jun 2020 04:04:27 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0527w72g103122;
+        Tue, 2 Jun 2020 08:04:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=xEXkwZKus6X9amvK6F1OP8kCpc4pO5A7sywsELNZrs8=;
+ b=mNQOTPGvnR1L3n9B+FwJpWcF6QRbkCA6A8OKhPY49lLFUsK9qPhpn6TjoOe3AmhIa4K8
+ iqtDeEGRbHDpzIJTtRFNB/vUPDEUCizuQlAa7YesNlmLitTDy8sUcEFJvCyhyoVHgJaX
+ 23iouTWjrp8/j/BAY8OIiWI4Tk1N5lzqXcgOsyVelsGQ0N6HoSWa1EPz2P51DriChCEJ
+ RIk8gfKmVnKilf+mRX3TM/xvcHUtTENDaN+MdTfTWp5fs449h99Pj27R0o8N3roS+nVK
+ WJXrFkkchkzpL1gSG7Lya0mUN2Im8acX73bA0R4Ychpbi5HF6swDJXcexwLFJ1euIkvT hg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 31djtv011e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 02 Jun 2020 08:04:21 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0527vsDH126055;
+        Tue, 2 Jun 2020 08:02:20 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 31c25n51rj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Jun 2020 08:02:20 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05282Jir015345;
+        Tue, 2 Jun 2020 08:02:19 GMT
+Received: from [192.168.0.110] (/183.246.144.78)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 02 Jun 2020 01:02:19 -0700
+Subject: Re: [PATCH 1/1] blk-mq: get ctx in order to handle BLK_MQ_S_INACTIVE
+ in blk_mq_get_tag()
+To:     Dongli Zhang <dongli.zhang@oracle.com>, linux-block@vger.kernel.org
+Cc:     axboe@kernel.dk, hare@suse.de, dwagner@suse.de,
+        ming.lei@redhat.com, linux-kernel@vger.kernel.org
+References: <20200602061749.32029-1-dongli.zhang@oracle.com>
+From:   Bob Liu <bob.liu@oracle.com>
+Message-ID: <aeca8ba8-ec12-2bba-b581-d78ed5fbf6cc@oracle.com>
+Date:   Tue, 2 Jun 2020 16:01:43 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200331052850.5419-1-yuechao.zhao@advantech.com.cn>
-In-Reply-To: <20200331052850.5419-1-yuechao.zhao@advantech.com.cn>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 2 Jun 2020 10:01:41 +0200
-Message-ID: <CAMuHMdUesEMsWH55Tfe+eru8iVpgWbKPnL-wgRakG9BEpP4Y1g@mail.gmail.com>
-Subject: Re: [v4,1/1] hwmon: (nct7904) Add watchdog function
-To:     yuechao.zhao@advantech.com.cn
-Cc:     345351830@qq.com, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        amy.shih@advantech.com.tw, oakley.ding@advantech.com.tw,
-        jia.sui@advantech.com.cn, shengkui.leng@advantech.com.cn
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200602061749.32029-1-dongli.zhang@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006020051
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 cotscore=-2147483648 adultscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 bulkscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006020051
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yuechao,
+On 6/2/20 2:17 PM, Dongli Zhang wrote:
+> When scheduler is set, we hit below page fault when we offline cpu.
+> 
+> [ 1061.007725] BUG: kernel NULL pointer dereference, address: 0000000000000040
+> [ 1061.008710] #PF: supervisor read access in kernel mode
+> [ 1061.009492] #PF: error_code(0x0000) - not-present page
+> [ 1061.010241] PGD 0 P4D 0
+> [ 1061.010614] Oops: 0000 [#1] SMP PTI
+> [ 1061.011130] CPU: 0 PID: 122 Comm: kworker/0:1H Not tainted 5.7.0-rc7+ #2'
+> ... ...
+> [ 1061.013760] Workqueue: kblockd blk_mq_run_work_fn
+> [ 1061.014446] RIP: 0010:blk_mq_put_tag+0xf/0x30
+> ... ...
+> [ 1061.017726] RSP: 0018:ffffa5c18037fc70 EFLAGS: 00010287
+> [ 1061.018475] RAX: 0000000000000000 RBX: ffffa5c18037fcf0 RCX: 0000000000000004
+> [ 1061.019507] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff911535dc1180
+> ... ...
+> [ 1061.028454] Call Trace:
+> [ 1061.029307]  blk_mq_get_tag+0x26e/0x280
+> [ 1061.029866]  ? wait_woken+0x80/0x80
+> [ 1061.030378]  blk_mq_get_driver_tag+0x99/0x110
+> [ 1061.031009]  blk_mq_dispatch_rq_list+0x107/0x5e0
+> [ 1061.031672]  ? elv_rb_del+0x1a/0x30
+> [ 1061.032178]  blk_mq_do_dispatch_sched+0xe2/0x130
+> [ 1061.032844]  __blk_mq_sched_dispatch_requests+0xcc/0x150
+> [ 1061.033638]  blk_mq_sched_dispatch_requests+0x2b/0x50
+> [ 1061.034239]  __blk_mq_run_hw_queue+0x75/0x110
+> [ 1061.034867]  process_one_work+0x15c/0x370
+> [ 1061.035450]  worker_thread+0x44/0x3d0
+> [ 1061.035980]  kthread+0xf3/0x130
+> [ 1061.036440]  ? max_active_store+0x80/0x80
+> [ 1061.037018]  ? kthread_bind+0x10/0x10
+> [ 1061.037554]  ret_from_fork+0x35/0x40
+> [ 1061.038073] Modules linked in:
+> [ 1061.038543] CR2: 0000000000000040
+> [ 1061.038962] ---[ end trace d20e1df7d028e69f ]---
+> 
+> This is because blk_mq_get_driver_tag() would be used to allocate tag once
+> scheduler (e.g., mq-deadline) is set. However, in order to handle
+> BLK_MQ_S_INACTIVE in blk_mq_get_tag(), we need to set data->ctx for
+> blk_mq_put_tag().
+> 
+> Fixes: bf0beec0607db3c6 ("blk-mq: drain I/O when all CPUs in a hctx are offline")
+> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+> ---
+> This is based on for-next because currently the pull request for v5.8 is
+> not picked by mainline.
+> 
+>  block/blk-mq.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index 9a36ac1c1fa1..8bf6c06a86c1 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -1056,6 +1056,7 @@ bool blk_mq_get_driver_tag(struct request *rq)
+>  {
+>  	struct blk_mq_alloc_data data = {
+>  		.q = rq->q,
+> +		.ctx = rq->mq_ctx,
+>  		.hctx = rq->mq_hctx,
+>  		.flags = BLK_MQ_REQ_NOWAIT,
+>  		.cmd_flags = rq->cmd_flags,
+> 
 
-On Tue, Mar 31, 2020 at 7:30 AM <yuechao.zhao@advantech.com.cn> wrote:
-> From: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
->
-> implement watchdong functionality into the "hwmon/nct7904.c"
->
-> Signed-off-by: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
+Nice catch!
+Reviewed-by: Bob Liu <bob.liu@oracle.com>
 
-Thanks for your patch, which is now commit 77849a552d142ef5 ("hwmon:
-(nct7904) Add watchdog function").
-
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -1340,10 +1340,12 @@ config SENSORS_NCT7802
->
->  config SENSORS_NCT7904
->         tristate "Nuvoton NCT7904"
-> -       depends on I2C
-> +       depends on I2C && WATCHDOG
-> +       select WATCHDOG_CORE
-
-This makes the driver unselectable if WATCHDOG is not set.
-
-Is there a use case for using this driver without watchdog functionality?
-If yes, it might make sense to make the watchdog support optional,
-protected by #ifdef CONFIG_WATCHDOG, and change the above to
-
-    depends on I2C
-    select WATCHDOG_CORE if WATCHDOG
-
-If no, please ignore my email.
-
->         help
->           If you say yes here you get support for the Nuvoton NCT7904
-> -         hardware monitoring chip, including manual fan speed control.
-> +         hardware monitoring chip, including manual fan speed control
-> +         and support for the integrated watchdog.
->
->           This driver can also be built as a module. If so, the module
->           will be called nct7904.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
