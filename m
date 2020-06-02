@@ -2,72 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238E61EBCAF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5272D1EBCB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgFBNKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 09:10:00 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:60796 "EHLO loongson.cn"
+        id S1727782AbgFBNKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 09:10:50 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:40342 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726630AbgFBNKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 09:10:00 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxz2l+T9Zepas8AA--.2541S3;
-        Tue, 02 Jun 2020 21:09:19 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH 2/2] lib/Kconfig.debug: Fix typo in the help text of CONFIG_PANIC_TIMEOUT
-Date:   Tue,  2 Jun 2020 21:09:18 +0800
-Message-Id: <1591103358-32087-2-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1591103358-32087-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1591103358-32087-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxz2l+T9Zepas8AA--.2541S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrtw4kXr17Ww4xtw1rur47CFg_yoW3Jwc_Ka
-        9rtw48ua98JFWkCw4Ykws5XayIv3ZrGw1xZ3WfXr15Zw17t3s3GFs0g3s8AF13Gw4q9r45
-        ZrW0yF95tw129jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbSkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGwA2048vs2IY02
-        0Ec7CjxVAFwI0_Jrv_JF4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
-        x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I2
-        62IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcV
-        AFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG
-        0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6ry8MxAIw28Icx
-        kI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
-        xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42
-        IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY
-        6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-        CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjj2NJUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726130AbgFBNKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 09:10:49 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id A47F8BF05A7B39E22515;
+        Tue,  2 Jun 2020 21:10:44 +0800 (CST)
+Received: from localhost (10.166.215.154) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Tue, 2 Jun 2020
+ 21:10:36 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <lorenzo.pieralisi@arm.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>, <hayashi.kunihiko@socionext.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] PCI: uniphier: Fix Kconfig warning
+Date:   Tue, 2 Jun 2020 21:10:33 +0800
+Message-ID: <20200602131033.41780-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.166.215.154]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There exists duplicated "the" in the help text of CONFIG_PANIC_TIMEOUT,
-remove it.
+WARNING: unmet direct dependencies detected for PCIE_DW_EP
+  Depends on [n]: PCI [=y] && PCI_ENDPOINT [=n]
+  Selected by [y]:
+  - PCIE_UNIPHIER_EP [=y] && PCI [=y] && (ARCH_UNIPHIER || COMPILE_TEST [=y]) && OF [=y] && HAS_IOMEM [=y]
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Add missing dependency to fix this.
+
+Fixes: 006564dee825 ("PCI: uniphier: Add Socionext UniPhier Pro5 PCIe endpoint controller driver")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- lib/Kconfig.debug | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/controller/dwc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index b3b05ad..d33627a 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -824,7 +824,7 @@ config PANIC_TIMEOUT
- 	int "panic timeout"
- 	default 0
+diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+index 43a29f7a4501..044a3761c44f 100644
+--- a/drivers/pci/controller/dwc/Kconfig
++++ b/drivers/pci/controller/dwc/Kconfig
+@@ -293,6 +293,7 @@ config PCIE_UNIPHIER_EP
+ 	bool "Socionext UniPhier PCIe endpoint controllers"
+ 	depends on ARCH_UNIPHIER || COMPILE_TEST
+ 	depends on OF && HAS_IOMEM
++	depends on PCI_ENDPOINT
+ 	select PCIE_DW_EP
  	help
--	  Set the timeout value (in seconds) until a reboot occurs when the
-+	  Set the timeout value (in seconds) until a reboot occurs when
- 	  the kernel panics. If n = 0, then we wait forever. A timeout
- 	  value n > 0 will wait n seconds before rebooting, while a timeout
- 	  value n < 0 will reboot immediately.
+ 	  Say Y here if you want PCIe endpoint controller support on
 -- 
-2.1.0
+2.17.1
+
 
