@@ -2,113 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7541EB68E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 09:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D53E1EB689
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 09:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726217AbgFBH2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 03:28:50 -0400
-Received: from mail.monom.org ([188.138.9.77]:47480 "EHLO mail.monom.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgFBH2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 03:28:49 -0400
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id 04877500626;
-        Tue,  2 Jun 2020 09:28:47 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (b9168f17.cgn.dg-w.de [185.22.143.23])
-        by mail.monom.org (Postfix) with ESMTPSA id 95CE250026A;
-        Tue,  2 Jun 2020 09:28:46 +0200 (CEST)
-From:   Daniel Wagner <dwagner@suse.de>
-Subject: [ANNOUNCE] 4.4.225-rt198
-Date:   Tue, 02 Jun 2020 07:24:26 -0000
-Message-ID: <159108266692.10828.13848245676748143171@beryllium>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
+        id S1726122AbgFBH0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 03:26:32 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33860 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725616AbgFBH0b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 03:26:31 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05271m0J109860;
+        Tue, 2 Jun 2020 03:26:28 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31dfsfcbuk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 03:26:28 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0527Q6Tk004162;
+        Tue, 2 Jun 2020 07:26:26 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 31bf47wj47-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 07:26:26 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0527QN1g64422064
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Jun 2020 07:26:23 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CD7C752050;
+        Tue,  2 Jun 2020 07:26:23 +0000 (GMT)
+Received: from oc5500677777.ibm.com (unknown [9.145.186.47])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 733F85204E;
+        Tue,  2 Jun 2020 07:26:23 +0000 (GMT)
+Subject: Re: [PATCH 1/1] s390/pci: Log new handle in clp_disable_fh()
+To:     Petr Tesarik <ptesarik@suse.com>, linux-s390@vger.kernel.org,
+        Pierre Morel <pmorel@linux.ibm.com>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+References: <20200522183922.5253-1-ptesarik@suse.com>
+ <20200528110813.7eb1fc1f@ezekiel.suse.cz>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <9e4a0dec-d249-9443-6b93-83e3f9f33674@linux.ibm.com>
+Date:   Tue, 2 Jun 2020 09:26:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200528110813.7eb1fc1f@ezekiel.suse.cz>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-02_05:2020-06-01,2020-06-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ cotscore=-2147483648 mlxscore=0 bulkscore=0 priorityscore=1501
+ clxscore=1011 impostorscore=0 mlxlogscore=801 lowpriorityscore=0
+ suspectscore=0 spamscore=0 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006020039
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+Hi Petr,
 
-I'm pleased to announce the 4.4.225-rt198 stable release.
+sorry for not reacting sooner, I was on holiday, saw your message but figured it wasn't super critical.
+Thanks for finding this issue and thank you Pierre and Vasily for stepping in.
 
-This release is just an update to the new stable 4.4.215 version
-and no RT specific changes have been made.
+Best,
+Niklas Schnelle
 
-Known issues:
-
-  sigwaittest with hackbench as workload is able to trigger a crash on x86_64,
-  the same as reported for the v4.4.220-rt196 release.
-
-  BUG: unable to handle kernel paging request at 00000000ffffffff
-  IP: [<ffffffff81190003>] kmem_cache_alloc_node+0xc3/0x1e0
-  PGD 0 
-  Oops: 0000 [#1] PREEMPT SMP 
-  Modules linked in:
-  CPU: 0 PID: 5215 Comm: hackbench Not tainted 4.4.225-rt197+ #6
-  Hardware name: wortmann G31M-ES2L/G31M-S2L, BIOS F10 09/29/2009
-  task: ffff8800c2fb4f80 ti: ffff8800c2a04000 task.ti: ffff8800c2a04000
-  RIP: 0010:[<ffffffff81190003>]  [<ffffffff81190003>] kmem_cache_alloc_node+0xc3/0x1e0
-  RSP: 0018:ffff8800c2a07bd8  EFLAGS: 00010246
-  RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000006551900
-  RDX: 00000000065518c0 RSI: 00000000065518c0 RDI: 00000000000186e0
-  RBP: ffff8800c2a07c18 R08: ffffffff8172b71b R09: 0000000000000003
-  R10: 0000000000000000 R11: 0000000000000246 R12: ffff88012b001700
-  R13: 00000000ffffffff R14: 00000000ffffffff R15: 00000000024004c0
-  FS:  00007f94bc703740(0000) GS:ffff88012fc00000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00000000ffffffff CR3: 00000000c2f90000 CR4: 0000000000040670
-  Stack:
-   ffffea0004a24a80 ffffea000323f940 ffffffff8172b71b 0000000000000001
-   ffff8800c2a07d00 ffff88012b001700 0000000000000000 00000000024004c0
-   ffff8800c2a07c60 ffffffff8172b71b ffffffff024200ca ffff8800c2a08000
-  Call Trace:
-   [<ffffffff8172b71b>] ? __alloc_skb+0x4b/0x1c0
-   [<ffffffff8172b71b>] __alloc_skb+0x4b/0x1c0
-   [<ffffffff8172b8ee>] alloc_skb_with_frags+0x5e/0x1d0
-   [<ffffffff8172738d>] sock_alloc_send_pskb+0x1bd/0x1e0
-   [<ffffffff81806804>] unix_stream_sendmsg+0x244/0x390
-   [<ffffffff81723090>] sock_sendmsg+0x40/0x50
-   [<ffffffff8172311f>] sock_write_iter+0x7f/0xd0
-   [<ffffffff8119a1d8>] __vfs_write+0xb8/0xf0
-   [<ffffffff8119acaa>] vfs_write+0xba/0x1d0
-   [<ffffffff8119b93f>] SyS_write+0x4f/0xd0
-   [<ffffffff8193024a>] entry_SYSCALL_64_fastpath+0x1e/0x93
-  Code: 00 00 74 51 48 85 c0 0f 84 2c 01 00 00 49 63 54 24 1c 31 f6 4c 89 ef e8 cc d0 1e 00 eb 37 49 63 44 24 20 49 8b 3c 24 48 8d 4a 40 <49> 8b 5c 05 00 4c 89 e8 65 48 0f c7 0f 0f 94 c0 84 c0 0f 84 64 
-
-
-You can get this release via the git tree at:
-  
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-  
-    branch: v4.4-rt
-    Head SHA1: fa195796a1c5385a6e6b41c343b861067770f9c7
-  
-  Or to build 4.4.225-rt198 directly, the following patches should be applied:
-  
-    https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.4.tar.xz
-  
-    https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.4.225.xz
-  
-    https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/patch-4.4.225-rt198.patch.xz
-  
-  
-  You can also build from 4.4.220-rt197 by applying the incremental patch:
-  
-    https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/incr/patch-4.4.220-rt197-rt198.patch.xz
-  
-  Enjoy!
-  Daniel
-  
+On 5/28/20 11:08 AM, Petr Tesarik wrote:
+> Hi all,
+> 
+> just a gentle ping.
+> 
+> If the current behaviour (logging the original handle) was intended,
+> then it was worth mentioning in the commit message for 17cdec960cf77,
+> which made the change, but since that's no longer an option, I'd be
+> happy with an explanation in email.
+> 
+> Petr T
+> 
+> On Fri, 22 May 2020 20:39:22 +0200
+> Petr Tesarik <ptesarik@suse.com> wrote:
+> 
+>> After disabling a function, the original handle is logged instead of
+>> the disabled handle.
+>>
+>> Fixes: 17cdec960cf77 (s390/pci: Recover handle in clp_set_pci_fn())
+>> Signed-off-by: Petr Tesarik <ptesarik@suse.com>
+>> ---
+>>  arch/s390/pci/pci_clp.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
+>> index ea794ae755ae..179bcecefdee 100644
+>> --- a/arch/s390/pci/pci_clp.c
+>> +++ b/arch/s390/pci/pci_clp.c
+>> @@ -309,14 +309,13 @@ int clp_enable_fh(struct zpci_dev *zdev, u8 nr_dma_as)
+>>  
+>>  int clp_disable_fh(struct zpci_dev *zdev)
+>>  {
+>> -	u32 fh = zdev->fh;
+>>  	int rc;
+>>  
+>>  	if (!zdev_enabled(zdev))
+>>  		return 0;
+>>  
+>>  	rc = clp_set_pci_fn(zdev, 0, CLP_SET_DISABLE_PCI_FN);
+>> -	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, fh, rc);
+>> +	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, zdev->fh, rc);
+>>  	return rc;
+>>  }
+>>  
+> 
