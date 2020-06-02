@@ -2,168 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3AD1EC283
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775851EC291
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgFBTPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 15:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgFBTPF (ORCPT
+        id S1728024AbgFBTRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 15:17:37 -0400
+Received: from smtpout1.mo528.mail-out.ovh.net ([46.105.34.251]:33841 "EHLO
+        smtpout1.mo528.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726174AbgFBTRg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 15:15:05 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F6CC08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 12:15:04 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id e4so13997843ljn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 12:15:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J7K6RLoEkQCH+vhugjTF9x/szy4b7JRZyTG6dDIP/ho=;
-        b=VxqSqgaEO6IhaVqpktIQNoWvOOfyxQjP0DlHWFLcbaK56dzdAlhqGE3imh4rSi2fxL
-         kwXUXO3x9TZuVGFLQuNBGy93l1TJ33LJZjZ2R2DYHViAJmHYTe6/8Qhi3+TJEpaM519o
-         u67wDm8vzjkSMBYJU6AozDDhfbA9vs1ULOCEE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J7K6RLoEkQCH+vhugjTF9x/szy4b7JRZyTG6dDIP/ho=;
-        b=I5ETwrT0yGwtJFjz9Az4L4Gd96ujg3BzOW+AOz38Q4CUjJu3oxMxAJAfsV8fJjVIke
-         Z+mvbZiwG2B296GWs6O3cyi+FWcYmoXorAS0BweIA2WFh6Isy4zJyyUicFPjNRkgghr2
-         N+sWaLGAVa5Q3VYvMJZfBb5f7Q36mABWuk6jo/qg54F5SC8B7Tf9HKG9ZX55b2Uhzun8
-         3dvzTNfdRczlEkBfOuZ2FynF89ikA0pncAobSI9TANaVW0+iwUyYkMlg01eeHK0krOit
-         MbQqA+MXIFrH3KPN3VAsOwifAcsRrHJKjBtMrp6+bSrt60UUu2qO8p2xTlL6LsYKCiOB
-         yCZA==
-X-Gm-Message-State: AOAM530aRpSXgezaecu4VVQWb25L7QVxNNxf7ys8Jt2GoCPS5ZWnY+wD
-        2kghEnkcgDQcjRAdZW/wriVkYpCZhaI=
-X-Google-Smtp-Source: ABdhPJxsEPRtYW/NTLU05UTt1X4KIYjNpgyMrMkDevO16Esrvqv4aCWWOXeGd9ySOpAFa0Fcf/F8rQ==
-X-Received: by 2002:a2e:7406:: with SMTP id p6mr301881ljc.198.1591125300863;
-        Tue, 02 Jun 2020 12:15:00 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id s28sm902112lfs.3.2020.06.02.12.14.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jun 2020 12:15:00 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id u16so6867126lfl.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 12:14:59 -0700 (PDT)
-X-Received: by 2002:a19:d52:: with SMTP id 79mr430715lfn.125.1591125299390;
- Tue, 02 Jun 2020 12:14:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200601170102.GA1346815@gmail.com> <CAHk-=wgXf_wQ9zrJKv2Hy4EpEbLuqty-Cjbs2u00gm7XcYHBfw@mail.gmail.com>
- <20200602073350.GA481221@gmail.com> <b159ba4c53fcf04cc4eb747c45e1d4d2d83310a3.camel@kernel.crashing.org>
- <871rmxgw4d.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <871rmxgw4d.fsf@nanos.tec.linutronix.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 2 Jun 2020 12:14:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgOFnMW-EgymmrTyqTPLrpGJrUJ_wBzehMpyT=SO4-JRQ@mail.gmail.com>
-Message-ID: <CAHk-=wgOFnMW-EgymmrTyqTPLrpGJrUJ_wBzehMpyT=SO4-JRQ@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/mm changes for v5.8
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Balbir Singh <sblbir@amazon.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
+        Tue, 2 Jun 2020 15:17:36 -0400
+Received: from pro2.mail.ovh.net (unknown [10.109.138.188])
+        by mo528.mail-out.ovh.net (Postfix) with ESMTPS id A77146081342;
+        Tue,  2 Jun 2020 21:17:34 +0200 (CEST)
+Received: from localhost (34.103.240.103) by DAG2EX1.emp2.local (172.16.2.11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Tue, 2 Jun 2020
+ 21:17:34 +0200
+Date:   Tue, 2 Jun 2020 21:15:17 +0200
+From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Peter Meerwald <pmeerw@pmeerw.net>
+Subject: Re: [PATCH v3 3/4] iio: chemical: scd30: add serial interface driver
+Message-ID: <20200602191517.GE2668@arch>
+References: <20200602164723.28858-1-tomasz.duszynski@octakon.com>
+ <20200602164723.28858-4-tomasz.duszynski@octakon.com>
+ <CAHp75VfjWG_3XC5FJoaU7XXJc+04JTbEKdjZK=g6ffBPvJNhxA@mail.gmail.com>
+ <20200602175723.GC2668@arch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20200602175723.GC2668@arch>
+X-Originating-IP: [34.103.240.103]
+X-ClientProxiedBy: DAG2EX1.emp2.local (172.16.2.11) To DAG2EX1.emp2.local
+ (172.16.2.11)
+X-Ovh-Tracer-Id: 11947486865640807583
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrudefjedguddtfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkfhggtggujghisehttdertddttdejnecuhfhrohhmpefvohhmrghsiicuffhushiihihnshhkihcuoehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomheqnecuggftrfgrthhtvghrnheptdehveethfffudetjeeftdekueehjeegjedvteffgfevkefffeegffeugeehgfejnecukfhppedtrddtrddtrddtpdefgedruddtfedrvdegtddruddtfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehprhhovddrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomhdprhgtphhtthhopehpmhgvvghrfiesphhmvggvrhifrdhnvght
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 11:29 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Tue, Jun 02, 2020 at 07:57:23PM +0200, Tomasz Duszynski wrote:
+> On Tue, Jun 02, 2020 at 08:04:16PM +0300, Andy Shevchenko wrote:
+> > On Tue, Jun 2, 2020 at 7:49 PM Tomasz Duszynski
+> > <tomasz.duszynski@octakon.com> wrote:
+> > >
+> > > Add serial interface driver for the SCD30 sensor.
+> >
+> > ...
+> >
+> > > +static u16 scd30_serdev_cmd_lookup_tbl[] = {
+> > > +       [CMD_START_MEAS] = 0x0036,
+> > > +       [CMD_STOP_MEAS] = 0x0037,
+> > > +       [CMD_MEAS_INTERVAL] = 0x0025,
+> > > +       [CMD_MEAS_READY] = 0x0027,
+> > > +       [CMD_READ_MEAS] = 0x0028,
+> > > +       [CMD_ASC] = 0x003a,
+> > > +       [CMD_FRC] = 0x0039,
+> > > +       [CMD_TEMP_OFFSET] = 0x003b,
+> > > +       [CMD_FW_VERSION] = 0x0020,
+> > > +       [CMD_RESET] = 0x0034,
+> >
+> > Hmm... Can't we keep them ordered by value?
+> >
+> > > +};
+> >
+> > ...
+> >
+> > > +       ret = wait_for_completion_interruptible_timeout(&priv->meas_ready,
+> > > +                                                       SCD30_SERDEV_TIMEOUT);
+> > > +       if (ret > 0)
+> > > +               ret = 0;
+> > > +       else if (!ret)
+> > > +               ret = -ETIMEDOUT;
+> > > +
+> > > +       return ret;
+> >
+> > Perhaps
+> >
+> >   if (ret < 0)
+> >     return ret;
+> >   if (ret == 0)
+> >     return -ETIMEDOUT;
+> >   return 0;
+> >
+> > ?
 >
-> It's trivial enough to fix. We have a static key already which is
-> telling us whether SMT scheduling is active.
+> Matter of style but since I will be doing other changes I can touch that
+> too.
+>
+> >
+> > ...
+> >
+> > > +       char txbuf[SCD30_SERDEV_MAX_BUF_SIZE] = { SCD30_SERDEV_ADDR },
+> > > +            rxbuf[SCD30_SERDEV_MAX_BUF_SIZE], *rsp = response;
+> >
+> > Please, apply type to each variable separately.
+> >
+>
+> Fine.
+>
+> > ...
+> >
+> > > +       switch (txbuf[1]) {
+> > > +       case SCD30_SERDEV_WRITE:
+> >
+> > > +               if (memcmp(txbuf, txbuf, txsize)) {
+> >
+> > I'm not sure I understand this.
+> >
+>
+> Ah, thanks for catching this. tx should be compared to rx.
+>
+> > > +                       dev_err(state->dev, "wrong message received\n");
+> > > +                       return -EIO;
+> > > +               }
+> > > +               break;
+> > > +       case SCD30_SERDEV_READ:
+> >
+> > > +               if (rxbuf[2] != (rxsize -
+> > > +                                SCD30_SERDEV_RX_HEADER_SIZE -
+> > > +                                SCD30_SERDEV_CRC_SIZE)) {
+> >
+> > Perhaps you can come up with better indentation/ line split?
+> >
+>
+> I'd rather leave it as is.
+>
 
-.. but should we do it here, in switch_mm() in the first place?
+On the second thought, that would fit 100 column line.
 
-Should it perhaps just return an error if user land tries to set the
-"flush L1$" thing on an SMT system? And no, I don't think we care at
-all if people then start playing games and enabling/disabling SMT
-dynamically while applications are working. At that point the admin
-kets to keep both of the broken pieces.
-
-Also, see my other point about how "switch_mm()" really isn't even a
-protection domain switch to begin with. We're still in the exact same
-protection domain we used to be in, with the exact same direct access
-to L1D$.
-
-Why would we flush the caches on a random and irrelevant event in
-kernel space? switch_mm() simply isn't relevant for caches (well,
-unless you have fully virtual ones, but that's a completely different
-issue).
-
-Wouldn't it be more sensible to treat it more like TIF_NEED_FPU_LOAD -
-have a per-cpu "I need to flush the cache" variable, and then the only
-thing a context switch does is to see if the user changed (or
-whatever) and then set the bit, and set TIF_NOTIFY_RESUME in the
-thread.
-
-Because the L1D$ flush isn't a kernel issue, it's a "don't let user
-space try to attack it" issue. The kernel can already read it if it
-wants to.
-
-And that's just the "big picture" issues I see. In the big picture,
-doing this when SMT is enabled is unbelievably stupid. And in the big
-picture, context switch really isn't a security domain change wrt the
-L1D$.
-
-The more I look at those patches, the more I go "that's just wrong" on
-some of the "small picture" implementation details.
-
-Here's just a few cases that I reacted to
-
-Actual low-level flushing code:
-
- (1) the SW fallback
-
-     (a) is only defined on Intel, and initializing the silly cache
-flush pages on any other vendor will fail.
-
-     (b) seems to assume that 16 pages (order-4) is sufficient and
-necessary. Probably "good enough", but it's also an example of "yeah,
-that's expensive".
-
-     (c) and if I read the code correctly, trying to flush the L1D$ on
-non-intel without the HW support, it causes a WARN_ON_ONCE()! WTF?
-
- (2) the HW case is done for any vendor, if it reports the "I have the MSR"
-
- (3) the VMX support certainly has various sanity checks like "oh, CPU
-doesn't have X86_BUG_L1TF, then I won't do this even if there was some
-kernel command line to say I should". But the new prctrl doesn't have
-anything like that. It just enables that L1D$ thing mindlessly,
-thinking that user-land software somehow knows what it's doing. BS.
-
- (4) what does L1D_FLUSH_POPULATE_TLB mean?
-
-   That "option" makes zero sense. It pre-populates the TLB before
-doing the accesses to the L1D$ pages in the SW case, but nothing at
-all explains why that is needed. It's clearly not needed for the
-caller, since the TLB population only happens for the SW fallback, not
-for the HW one.
-
-   No documentation, no nothing. It's enabled for the VMX case, not
-for the non-vmx case, which makes me suspect it's some crazy "work
-around vm monitor page faults, because we know our SW flush fallback
-is just random garbage".
-
-In other words, there are those big "high-level design" questions, but
-also several oddities in just the implementation details.
-
-I really get the feeling that this feature just isn't ready.
-
-Ingo - would you mind sending me a pull request for the (independent)
-TLB cleanups part of that x86/mm tree? Because everything up to and
-including commit bd1de2a7aace ("x86/tlb/uv: Add a forward declaration
-for struct flush_tlb_info") looks sane.
-
-It's only this L1D$ flushing thing at the end of that branch that I
-think isn't fully cooked.
-
-               Linus
+> > > +                       dev_err(state->dev,
+> > > +                               "received data size does not match header\n");
+> > > +                       return -EIO;
+> > > +               }
+> > > +
+> > > +               rxsize -= SCD30_SERDEV_CRC_SIZE;
+> > > +               crc = get_unaligned_le16(rxbuf + rxsize);
+> > > +               if (crc != scd30_serdev_calc_crc(rxbuf, rxsize)) {
+> > > +                       dev_err(state->dev, "data integrity check failed\n");
+> > > +                       return -EIO;
+> > > +               }
+> > > +
+> > > +               rxsize -= SCD30_SERDEV_RX_HEADER_SIZE;
+> > > +               memcpy(rsp, rxbuf + SCD30_SERDEV_RX_HEADER_SIZE, rxsize);
+> > > +               break;
+> > > +       default:
+> > > +               dev_err(state->dev, "received unknown op code\n");
+> > > +               return -EIO;
+> > > +       }
+> > > +
+> > > +       return 0;
+> > > +}
+> >
+> > ...
+> >
+> > > +static struct serdev_device_driver scd30_serdev_driver = {
+> > > +       .driver = {
+> >
+> > > +               .name = KBUILD_MODNAME,
+> >
+> > This is not the best what we can do. The name is an ABI and better if
+> > it will be constant (independent on file name).
+> >
+> > > +               .of_match_table = scd30_serdev_of_match,
+> > > +               .pm = &scd30_pm_ops,
+> > > +       },
+> > > +       .probe = scd30_serdev_probe,
+> > > +};
+> >
+> > --
+> > With Best Regards,
+> > Andy Shevchenko
