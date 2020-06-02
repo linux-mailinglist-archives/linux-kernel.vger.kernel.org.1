@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D99AD1EB9C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19AE41EB9C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgFBKn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 06:43:59 -0400
-Received: from ozlabs.org ([203.11.71.1]:41951 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725958AbgFBKn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 06:43:59 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49bpYm0WBpz9sSg;
-        Tue,  2 Jun 2020 20:43:56 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1591094637;
-        bh=oCZcV2xkPgXGtfLS8LiMCGtpvLn30ooD4U0COUOX/b4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WqwHYZKYBGP5kZDObHwPkHf0NRZsodarotdxs067xV/EvqItasvREu3qd9jKV8jXB
-         PIESJgR4Z6PAdb9ZAC89vouejPTTKzuDeOfEm44aH9gwqgrU16L5Tx4zd+6KTRh8e/
-         3+BnAd5unZ4shAxf731bGpfcRl7r+RgMNen3LHHNEa7QNrkAgrfqpQrTGhW7PTBOLl
-         GpQKgybhSZBzBfAyOeEHXFH89p2XqlJEbrl7LTFUUzdbnlSU49D51OiHcv7suuP6bg
-         NqjbwRcYZCH74bGFtSpQuCSMpSVpZ1FU5v/6qKgrRJLDrFwgJYmMq3XHBzamXCR9Vs
-         RiLGYgpLW36jg==
-Date:   Tue, 2 Jun 2020 20:43:54 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Max Gurtovoy <maxg@mellanox.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        Israel Rukshin <israelr@mellanox.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: linux-next: manual merge of the block tree with the rdma tree
-Message-ID: <20200602204354.39727fdd@canb.auug.org.au>
-In-Reply-To: <3717aca8-9d75-33f1-ea8c-044af767ab5c@mellanox.com>
-References: <20200602125647.5f5ed151@canb.auug.org.au>
-        <3717aca8-9d75-33f1-ea8c-044af767ab5c@mellanox.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/x+8EnL2NCLRCz5R=VQZuLEU";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726935AbgFBKo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 06:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725958AbgFBKo2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 06:44:28 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B400C061A0E;
+        Tue,  2 Jun 2020 03:44:24 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id n9so1206018plk.1;
+        Tue, 02 Jun 2020 03:44:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=H05OVuwlBgrwjdIL249fOEZc54JAKac/tUGyHC08gQs=;
+        b=Qv3Td0OKHbhrSjgPbGqNpIAKA6svKHpglY3/U1gOS8lKHtAGsEwtP7zDxMfz/TZiUL
+         M6OrU7sdrP4rDUevsQ3bL8Nkj716L5v2mEMoTDF5LFU68rMRxh/q3rSyVZdLd+REmzpW
+         oKqIIZ053AkrJwYi/CU67ypkZ7/GMlS3AGKybC0chI/z2EXothcEPyAPIKmkc3VcS3GG
+         pxNrJkD7Je35YPJVyJPNN890Ud8VuF36LpGAyecDCYY7p4vwiz1gc9/yAV+EXB6Uehia
+         eD8fuA9xFMaGdu5M9kmb2nb2M0Vt7nUxxHXKnWX9NyWu+oiLqbfJDwhR87ezKXjT0WTR
+         9fOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=H05OVuwlBgrwjdIL249fOEZc54JAKac/tUGyHC08gQs=;
+        b=P+j7BHTNJkjKtFtRGA5/VnbM+kQQcjpaJgWTRIF5pUl373Kxzi8HS/YEdhh2lrqH/e
+         qtjpJ4Fux4E7uHN4gZmr5At1x+ZrEkqlBAeysIbBV5C4M9rq4lZ3+4PuT9bWpkNbbMWP
+         P6PJoUz27HQnNkJGDMrP/TT87BcS/cRjWMfwuZ2pMqRtyOfXGcOFUqmWubTFcwJuOmCc
+         YSbHTdOzrNuwaVywftR/8t4m/+az7NkvfWRuInV0Q7E4KNa/Qf9s8cskq16JIUZfe0BM
+         xQjL7aD0ZkA6h1klxnhyd15XU5gY+WTuXtl4GgsPn6lmHhJx8xTtUSXvtpJ4czckPaHe
+         JwMg==
+X-Gm-Message-State: AOAM533lMCQMF9NzSDEakLMVlL3hVICSbWcyUXPh/dKQ1oKFuUNN2aNI
+        iZnhv80NSNa/4mVgMZ8uSBXvdjcopXM=
+X-Google-Smtp-Source: ABdhPJzXuYCZSWZu64djI+B3rB1TLa7slAy257nEGuURgXUsCEyR63VaznbGh9DGgkKX8FEtRDW1vA==
+X-Received: by 2002:a17:902:8204:: with SMTP id x4mr11259413pln.153.1591094663735;
+        Tue, 02 Jun 2020 03:44:23 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:189:c86a:7149:74ab:b584:ecf8])
+        by smtp.gmail.com with ESMTPSA id s98sm153046pjb.33.2020.06.02.03.44.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 03:44:23 -0700 (PDT)
+From:   Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     aishwaryarj100@gmail.com
+Subject: [PATCH] net: stmmac: Drop condition with no effect
+Date:   Tue,  2 Jun 2020 16:14:04 +0530
+Message-Id: <20200602104405.28851-1-aishwaryarj100@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/x+8EnL2NCLRCz5R=VQZuLEU
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+As the "else if" and "else" branch body are identical the
+condition has no effect. So removing "else if" condition.
 
-Hi Max,
+Signed-off-by: Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-On Tue, 2 Jun 2020 11:37:26 +0300 Max Gurtovoy <maxg@mellanox.com> wrote:
->
-> On 6/2/2020 5:56 AM, Stephen Rothwell wrote:
->=20
-> This looks good to me.
->=20
-> Can you share a pointer to the tree so we'll test it in our labs ?
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index bcda49dcf619..f59813a0405c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -229,8 +229,6 @@ static int stmmac_mtl_setup(struct platform_device *pdev,
+ 		plat->tx_sched_algorithm = MTL_TX_ALGORITHM_WFQ;
+ 	else if (of_property_read_bool(tx_node, "snps,tx-sched-dwrr"))
+ 		plat->tx_sched_algorithm = MTL_TX_ALGORITHM_DWRR;
+-	else if (of_property_read_bool(tx_node, "snps,tx-sched-sp"))
+-		plat->tx_sched_algorithm = MTL_TX_ALGORITHM_SP;
+ 	else
+ 		plat->tx_sched_algorithm = MTL_TX_ALGORITHM_SP;
+ 
+-- 
+2.17.1
 
-git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-
-you want tag next-20200602
-
-or if you just want that trees that conflicted, then
-
-block: git://git.kernel.dk/linux-block.git branch for-next
-rdma: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git branch fo=
-r-next
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/x+8EnL2NCLRCz5R=VQZuLEU
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7WLWsACgkQAVBC80lX
-0Gxtpwf+MjJxsHWVelBpn/KVJRHjupGaIcGL2U0kojSsWBZqInmRjF5ELqKU0os/
-DfCMysJ9J1sSXv6DyFuZ77fJjNQWQtj4ti0MBRZ6uqUgaV49dULnUAV0gZUPAhOK
-ZlsKjSC2G2MsQkpYthiy8/CfzF6QdrJa3+01u9Ey5viDbnMKk2C1KECGLMweRoO5
-f/GX0eA3taImkwbPuAO2dFUs2omqZ9tIxAEApwki4PaV/e/IHBAv9NNNK+wINnCr
-ZQoge5hJJ4Jvn20S7tNBHbLJXuvwUArZqfTSHnLyrs6mPIJlvyNMXBVV4rbHF8yz
-58/UhmBdab2mvOJpMjCO/XqirMeNXw==
-=CUqi
------END PGP SIGNATURE-----
-
---Sig_/x+8EnL2NCLRCz5R=VQZuLEU--
