@@ -2,133 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0840B1EBDB0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 16:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A397F1EBDB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 16:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727769AbgFBOL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 10:11:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725958AbgFBOL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 10:11:28 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03B96206E2;
-        Tue,  2 Jun 2020 14:11:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591107087;
-        bh=q40Prapa4/P9sMDZERYGcRcWWL9XAhQVnAhfCZEjRSg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BjcfXPBhHpKvYmnQxmqxc91oZSzvlh4agEbB05ua8GgAOT0JH/c7xzTovOtHKHnjb
-         yVoUxhmuYWy5otKMfHhLSLPFSAeOSxJsZ6K4iFXnh8MTGjASdzsGAj/K1I8Xl1PYX8
-         ob4hwtuaR6MQAhmS4IScVPCLgS5b/cazP7uE6Nuk=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2EE1540AFD; Tue,  2 Jun 2020 11:11:25 -0300 (-03)
-Date:   Tue, 2 Jun 2020 11:11:25 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH 1/2] perf tools: check libasan and libubsan in
- Makefile.config
-Message-ID: <20200602141125.GR31795@kernel.org>
-References: <1591071304-19338-1-git-send-email-yangtiezhu@loongson.cn>
+        id S1727113AbgFBOMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 10:12:34 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:58351 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726037AbgFBOMd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 10:12:33 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id DF8795C00B9;
+        Tue,  2 Jun 2020 10:12:31 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 02 Jun 2020 10:12:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=6nfNzIAdvv+2u2nlDiEbeWjNRvu
+        HHWtTui6XJIgYRnc=; b=jAUnEuWco8XlUL2BK4xM3qarlYtcrL+3VZ0Ym1RM8WD
+        5b5AAbDS7DVtJLbQknXzWWrhrpvUmpN+U91zfJ/soaK39ndvePIEKUYrmuaYORGT
+        4x4KrUOhaCRClx3KNGcWEfuICJLq4t/tib5EP7eCG2goCt9YRerKedfW13jepPtt
+        gQfFqQdfKJECr7Ryku8u4/aj91qVPIWaanSp5Lf6hJ9DyGbX3AlSGd6xbVjW8cKl
+        1YYlss8WlFoEHFBdGOQIyJU95rSRjeLHy9WnuIQ0/RukKbrtbo/BcUFoTVAo47LU
+        RCDQDZR3nu5zpnpUyMOWUI2krXgijryDKSx0XSSXa+w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=6nfNzI
+        Advv+2u2nlDiEbeWjNRvuHHWtTui6XJIgYRnc=; b=Hu4oqsVsaTtiSj5i7jvC4r
+        NsH/ZN/D2lCDRDqGz7TrWtTeQC8EuTYqs8G+Ezfb2mLymz9Xa/BzSxNEG9ZJ/gkl
+        aM4h2IdDYABb7EuvQadKyThkjSB7SWHRbP7hEXazK9mRUBdqlSu9S/LCB9qu/1uE
+        cc7vfIdIqQ9TBsQB47COChmIFjY4vopQ9L7wsIbPBJyzNRq84CIRqr0yf4Z2SekP
+        KnWNl28M5SNbFUF8ctmDHpeEgz8cJIN06TajSckWZuIWNk+TkiOD49pxb2TyMkQz
+        z2IAUcviiPttjrseNGyOyJGVGz00DUZASBdrdOIzjfR1tBqNBwXhPMzrz2dCQdpw
+        ==
+X-ME-Sender: <xms:TV7WXo9CO17tSpLgPFR7ZfnEb5jzmTgd-KulMWm5-4SGMKqS_moV-A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudefjedgheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:TV7WXgvt0QITr9I9KP7DC0J-r-wx8Bobhwlhcl2qoc1fCp_MLUuhNw>
+    <xmx:TV7WXuAn3tU1N1MDvgwI8oOe8_do1iKiV-M_RsYxFV3cGLgaFV615w>
+    <xmx:TV7WXoemze4jGbSqKicPDyTImtFDo5iRHqfM-rDJbUfwYHOtOgIAiA>
+    <xmx:T17WXpBpyteFSyJTeWMejXCyGZvzmoEFEMDuFNQBphC0Xg8f1UGoZQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 725C43280066;
+        Tue,  2 Jun 2020 10:12:29 -0400 (EDT)
+Date:   Tue, 2 Jun 2020 16:12:28 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Eric Anholt <eric@anholt.net>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Subject: Re: [PATCH v3 032/105] drm/vc4: crtc: Enable and disable the PV in
+ atomic_enable / disable
+Message-ID: <20200602141228.7zbkob7bw3owajsq@gilmour>
+References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
+ <d2c1850e38e14f3def4c0307240e6826e296c14b.1590594512.git-series.maxime@cerno.tech>
+ <CADaigPU7c=1u47R9GzvGCH_Z2fywY1foGYEy=KbBikjUQpwUFg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6jdhhfajj55wnhto"
 Content-Disposition: inline
-In-Reply-To: <1591071304-19338-1-git-send-email-yangtiezhu@loongson.cn>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CADaigPU7c=1u47R9GzvGCH_Z2fywY1foGYEy=KbBikjUQpwUFg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jun 02, 2020 at 12:15:03PM +0800, Tiezhu Yang escreveu:
-> When build perf with ASan or UBSan, if libasan or libubsan can not find,
-> the feature-glibc is 0 and there exists the following error log which is
-> wrong, because we can find gnu/libc-version.h in /usr/include, glibc-devel
-> is also installed.
 
-I'll check this later,
+--6jdhhfajj55wnhto
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- Arnaldo
- 
-> [yangtiezhu@linux perf]$ make DEBUG=1 EXTRA_CFLAGS='-fno-omit-frame-pointer -fsanitize=address'
->   BUILD:   Doing 'make -j4' parallel build
->   HOSTCC   fixdep.o
->   HOSTLD   fixdep-in.o
->   LINK     fixdep
-> <stdin>:1:0: warning: -fsanitize=address and -fsanitize=kernel-address are not supported for this target
-> <stdin>:1:0: warning: -fsanitize=address not supported for this target
-> 
-> Auto-detecting system features:
-> ...                         dwarf: [ OFF ]
-> ...            dwarf_getlocations: [ OFF ]
-> ...                         glibc: [ OFF ]
-> ...                          gtk2: [ OFF ]
-> ...                      libaudit: [ OFF ]
-> ...                        libbfd: [ OFF ]
-> ...                        libcap: [ OFF ]
-> ...                        libelf: [ OFF ]
-> ...                       libnuma: [ OFF ]
-> ...        numa_num_possible_cpus: [ OFF ]
-> ...                       libperl: [ OFF ]
-> ...                     libpython: [ OFF ]
-> ...                     libcrypto: [ OFF ]
-> ...                     libunwind: [ OFF ]
-> ...            libdw-dwarf-unwind: [ OFF ]
-> ...                          zlib: [ OFF ]
-> ...                          lzma: [ OFF ]
-> ...                     get_cpuid: [ OFF ]
-> ...                           bpf: [ OFF ]
-> ...                        libaio: [ OFF ]
-> ...                       libzstd: [ OFF ]
-> ...        disassembler-four-args: [ OFF ]
-> 
-> Makefile.config:393: *** No gnu/libc-version.h found, please install glibc-dev[el].  Stop.
-> Makefile.perf:224: recipe for target 'sub-make' failed
-> make[1]: *** [sub-make] Error 2
-> Makefile:69: recipe for target 'all' failed
-> make: *** [all] Error 2
-> [yangtiezhu@linux perf]$ ls /usr/include/gnu/libc-version.h
-> /usr/include/gnu/libc-version.h
-> 
-> After install libasan and libubsan, the feature-glibc is 1 and the build
-> process is success, so the cause is related with libasan or libubsan, we
-> should check them and print an error log to reflect the reality.
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  tools/perf/Makefile.config | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index 12a8204..b699d21 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -387,6 +387,12 @@ else
->        NO_LIBBPF := 1
->        NO_JVMTI := 1
->      else
-> +      ifneq ($(shell ldconfig -p | grep libasan >/dev/null 2>&1; echo $$?), 0)
-> +        msg := $(error No libasan found, please install libasan);
-> +      endif
-> +      ifneq ($(shell ldconfig -p | grep libubsan >/dev/null 2>&1; echo $$?), 0)
-> +        msg := $(error No libubsan found, please install libubsan);
-> +      endif
->        ifneq ($(filter s% -static%,$(LDFLAGS),),)
->          msg := $(error No static glibc found, please install glibc-static);
->        else
-> -- 
-> 2.1.0
-> 
+Hi Eric
 
--- 
+On Wed, May 27, 2020 at 09:54:44AM -0700, Eric Anholt wrote:
+> On Wed, May 27, 2020 at 8:50 AM Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > The VIDEN bit in the pixelvalve currently being used to enable or disab=
+le
+> > the pixelvalve seems to not be enough in some situations, which whill e=
+nd
+> > up with the pixelvalve stalling.
+> >
+> > In such a case, even re-enabling VIDEN doesn't bring it back and we nee=
+d to
+> > clear the FIFO. This can only be done if the pixelvalve is disabled tho=
+ugh.
+> >
+> > In order to overcome this, we can configure the pixelvalve during
+> > mode_set_no_fb, but only enable it in atomic_enable and flush the FIFO
+> > there, and in atomic_disable disable the pixelvalve again.
+>=20
+> What displays has this been tested with?  Getting this sequencing
+> right is so painful, and things like DSI are tricky to get to light
+> up.
 
-- Arnaldo
+That FIFO is between the HVS and the HDMI PVs, so this was obviously
+tested against that. Dave also tested the DSI output IIRC, so we should
+be covered here.
+
+Maxime
+
+--6jdhhfajj55wnhto
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXtZeTAAKCRDj7w1vZxhR
+xVJqAQCUmpR8JL8pnnKjcPFlmgxyfzwLZXpVwBbL1P2+kZmIMAEAtrzlIP25oS5g
+9aixg7Ifrmc88nWmBcIbxDH1tuDcFAs=
+=Ak49
+-----END PGP SIGNATURE-----
+
+--6jdhhfajj55wnhto--
