@@ -2,169 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 783A01EBA9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412121EBA8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgFBLmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 07:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbgFBLmy (ORCPT
+        id S1726185AbgFBLiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 07:38:01 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:12448 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725919AbgFBLiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:42:54 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEC1C061A0E;
-        Tue,  2 Jun 2020 04:42:54 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id l10so3045468wrr.10;
-        Tue, 02 Jun 2020 04:42:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:in-reply-to:references:mime-version
-         :date:content-transfer-encoding;
-        bh=vjo6dgNKS2yqNivKUHaJ7wo9ZHvF45H5HmuT+8JqEzw=;
-        b=M8cd4V5pvGvXVoqU9lc0ae1R1cCK0GgEg2kx8BruoKZGYkSDZFWQzGuHrPOnTUslJ0
-         +hrNj0+RqdE4w301WuRu5VGtgHMx2x5AUJW1hL0ROIthLPDMgV2Zs5wqdiiYIBLdbhmZ
-         EF/2KPrQ8S1WRiPv2tDl5nItW1QoNt67bWVR8+PTruvlcpnDExF44xGkDmt4mSolFEPh
-         N6pUaSPk492eeFTak3334huxU0Na+2DzaM4W0k2+UVGzevnmZYdJ8noz8M0j5BTERxPv
-         XFswA6DuVPu76sexGVOj4j3n8BnJ8n1VbKyq0jhrJr1jMYphIJxk9+Z9FjsmI121y1F4
-         Cd9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:in-reply-to
-         :references:mime-version:date:content-transfer-encoding;
-        bh=vjo6dgNKS2yqNivKUHaJ7wo9ZHvF45H5HmuT+8JqEzw=;
-        b=ErAAqwb+U9hWtNg5lpAwbuTQ1yL04gWzoXIn/InsNlvxw5bjV4meWDNZ26cC08l38U
-         ZN863HIzvpRn6Xs7xPMWwJob6FAd0YfWnz711QpQUlkTHchqYdaGbTse9B+DZF0WOxxH
-         uHq/u8rk3JnfB63DU1np4lvAestVGw/gz9BG6HyhBQWbL5QSZ6YkFIfRpiXG15j4S9ha
-         TXe5qn0p1QdvALmGVFzUin54ZqSCoWKt6BNGhDpy9t+ZfipSH8LsMHIu8UwcBmmKzIXj
-         HYrw7DjhpR+s7o2SAone6VlHUD2dNKTSzUdGW3lKmumO+ZzaVsut+cnB6GGXe6tbH1PD
-         Rm0A==
-X-Gm-Message-State: AOAM530MhiMpwV0/l1J4Tq9DHnWVXkVyuOPHac93S8Klv5p5vjspaWIM
-        dmeSt/oynJlOYKK+VjP6ITY=
-X-Google-Smtp-Source: ABdhPJxuupL8Nc79xhHSR99Ny8UrOD/NFOxd0/CwQJ6IJ6RvV9wE9gKTXDuy158h+0i7YHNwvgc93g==
-X-Received: by 2002:a5d:49c4:: with SMTP id t4mr25373189wrs.127.1591098172996;
-        Tue, 02 Jun 2020 04:42:52 -0700 (PDT)
-Received: from ubuntu-laptop.micron.com ([165.225.203.62])
-        by smtp.googlemail.com with ESMTPSA id x186sm3434922wmg.8.2020.06.02.04.42.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 02 Jun 2020 04:42:52 -0700 (PDT)
-Message-ID: <43a81bce2159ccd290e5dfe4a69199f56c379ef7.camel@gmail.com>
-Subject: Re: [PATCH v4 3/5] scsi: ufs: fix potential access NULL pointer
- while memcpy
-From:   Bean Huo <huobean@gmail.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-In-Reply-To: <SN6PR04MB4640741E1DC89A927F8A60A5FC8A0@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <20200531150831.9946-1-huobean@gmail.com>
-         <20200531150831.9946-4-huobean@gmail.com>
-         <SN6PR04MB4640741E1DC89A927F8A60A5FC8A0@SN6PR04MB4640.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Date:   Tue, 02 Jun 2020 13:35:53 +0200
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Content-Transfer-Encoding: 7bit
+        Tue, 2 Jun 2020 07:38:01 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 052BW8ED005146;
+        Tue, 2 Jun 2020 13:37:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=zCgvAD2DnYOr6cNN/ctfmZUAkv+2YxaNhKI0IMJVfkE=;
+ b=v8kkOlsyPyNieJG4nr+2nQ1vF144Qa7s0rS59Pqqo2j3rSHaEJO45M0H4pEoMSq8B8CS
+ 1oecrhJFDDONdjO01uKRH6A2z94ikNRrBlvVYoTJBDpZzMOCDE4oiyBWLOEzvg9s3fIl
+ zcrAx+zuRUP6bsCtiu0MrjrrOmR07S5KrkFAdd5C7DL3ARzu/f+xavux99vZuwjyEVy5
+ wrjvsdwrM13ZNFZDx1q2cYGQCqSJ0RiHUnHyQXAKNtovBht9ffBZQQaeRxMdBk4Mdssw
+ G0hghBJU8K3yS0eSayQfL7CeeyWZPOHYoPFOXzvIlvWwJOit0N54YN6aXF6C0n7VIDdY XQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 31bcy0e6ph-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 13:37:40 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 141D110002A;
+        Tue,  2 Jun 2020 13:37:39 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D53C72B5C35;
+        Tue,  2 Jun 2020 13:37:39 +0200 (CEST)
+Received: from SFHDAG3NODE3.st.com (10.75.127.9) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Jun
+ 2020 13:37:39 +0200
+Received: from SFHDAG3NODE3.st.com ([fe80::3507:b372:7648:476]) by
+ SFHDAG3NODE3.st.com ([fe80::3507:b372:7648:476%20]) with mapi id
+ 15.00.1347.000; Tue, 2 Jun 2020 13:37:39 +0200
+From:   Benjamin GAIGNARD <benjamin.gaignard@st.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+CC:     Hugues FRUCHET <hugues.fruchet@st.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>
+Subject: Re: [PATCH] media: stm32-dcmi: Set minimum cpufreq requirement
+Thread-Topic: [PATCH] media: stm32-dcmi: Set minimum cpufreq requirement
+Thread-Index: AQHWNDnEPjQ+BLRck0Okhc2Oie/dNajE9yuAgAAjSoA=
+Date:   Tue, 2 Jun 2020 11:37:39 +0000
+Message-ID: <f95ce45f-7a1c-0feb-afa8-203ddb500f2f@st.com>
+References: <20200527151613.16083-1-benjamin.gaignard@st.com>
+ <jhjpnahizkm.mognet@arm.com>
+In-Reply-To: <jhjpnahizkm.mognet@arm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.46]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <783800331E8056488681241E76EAEE3C@st.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-02_13:2020-06-02,2020-06-02 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi Avri
-thanks review.
-
-
-On Mon, 2020-06-01 at 06:25 +0000, Avri Altman wrote:
-> Hi,
-> 
-> > If param_offset is not 0, the memcpy length shouldn't be the
-> > true descriptor length.
-> > 
-> > Fixes: a4b0e8a4e92b ("scsi: ufs: Factor out
-> > ufshcd_read_desc_param")
-> > Signed-off-by: Bean Huo <beanhuo@micron.com>
-> > ---
-> >  drivers/scsi/ufs/ufshcd.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > index f7e8bfefe3d4..bc52a0e89cd3 100644
-> > --- a/drivers/scsi/ufs/ufshcd.c
-> > +++ b/drivers/scsi/ufs/ufshcd.c
-> > @@ -3211,7 +3211,7 @@ int ufshcd_read_desc_param(struct ufs_hba
-> > *hba,
-> > 
-> >         /* Check wherher we will not copy more data, than available
-> > */
-> >         if (is_kmalloc && param_size > buff_len)
-> > -               param_size = buff_len;
-> > +               param_size = buff_len - param_offset;
-> 
-> But Is_kmalloc is true if (param_offset != 0 || param_size <
-> buff_len)
-> So  if (is_kmalloc && param_size > buff_len) implies that
-> param_offset is 0,
-> Or did I get it wrong?
-
-If param_offset is 0, This willn't get any wrong, after this patch, it
-is the same since offset is 0. As mentioned in the commit message, this
-patch is only for the case of param_offset is not 0.
-
-> 
-> Still, I think that there is a problem here because nowhere we are
-> checking that  
-> param_offset + param_size < buff_len, which now can happen because of
-> ufs-bsg.
-> Maybe you can add it and get rid of that is_kmalloc which is an
-> awkward way to test for valid values?
-
-let me explain further:
-we have these conditinos:
-
-1) param_offset == 0, param_size >= buff_len;//no problem, 
-ufshcd_query_descriptor_retry() will read descripor with true
-descriptor length, and no memcpy() called.
-
-
-2) param_offset == 0, param_size < buff_len;// no problem, 
-ufshcd_query_descriptor_retry() will read descripor with true
-descriptor length buff_len, and memcpy() with param_size length.
-
-
-3) param_offset != 0, param_offset + param_size <= buff_len;// no
-problem, ufshcd_query_descriptor_retry() will read descripor with true
-descriptor length, and memcpy() with param_size length.
-
-
-4) param_offset != 0, param_offset + param_size > buff_len;// NULL
-pointer reference problem, since ufshcd_query_descriptor_retry() will
-read descripor with true descriptor length, and memcpy() with buff_len
-length. correct memcpy length should be (buff_len - param_offset)
-
-param_offset + param_size < buff_len doesn't need to add, and
-is_kmalloc is very hard to be removed based on current flow.
-
-so, the correct fixup patch shoulbe be like this:
-
-
--if (is_kmalloc && param_size > buff_len)
--	param_size = buff_len
-+if (is_kmalloc && (param_size + param_offset) > buff_len) 
-+	param_size = buff_len - param_offset;
-
-
-how do you think about it? if no problem, I will update it in next
-version patch.
-
-thanks,
-
-Bean
-
+DQoNCk9uIDYvMi8yMCAxMTozMSBBTSwgVmFsZW50aW4gU2NobmVpZGVyIHdyb3RlOg0KPiBIaSBC
+ZW5qYW1pbiwNCj4NCj4gT24gMjcvMDUvMjAgMTY6MTYsIEJlbmphbWluIEdhaWduYXJkIHdyb3Rl
+Og0KPj4gQmVmb3JlIHN0YXJ0IHN0cmVhbWluZyBzZXQgY3B1ZnJlcSBtaW5pbXVtIGZyZXF1ZW5j
+eSByZXF1aXJlbWVudC4NCj4+IFRoZSBjcHVmcmVxIGdvdmVybm9yIHdpbGwgYWRhcHQgdGhlIGZy
+ZXF1ZW5jaWVzIGFuZCB3ZSB3aWxsIGhhdmUNCj4+IG5vIGxhdGVuY3kgZm9yIGhhbmRsaW5nIGlu
+dGVycnVwdHMuDQo+Pg0KPiBGZXcgY29tbWVudHMgYmVsb3cgZnJvbSBzb21lb25lIG9ibGl2aW91
+cyB0byB5b3VyIHBsYXRmb3JtLCB0aGV5IG1heSBub3QNCj4gYmUgYWxsIHRoYXQgcmVsZXZhbnQg
+YnV0IEkgZmlndXJlZCBJJ2QgcGl0Y2ggaW4gYW55d2F5Lg0KPg0KPj4gU2lnbmVkLW9mZi1ieTog
+QmVuamFtaW4gR2FpZ25hcmQgPGJlbmphbWluLmdhaWduYXJkQHN0LmNvbT4NCj4+IC0tLQ0KPj4g
+ICBkcml2ZXJzL21lZGlhL3BsYXRmb3JtL3N0bTMyL3N0bTMyLWRjbWkuYyB8IDI5ICsrKysrKysr
+KysrKysrKysrKysrKysrKysrKystDQo+PiAgIDEgZmlsZSBjaGFuZ2VkLCAyOCBpbnNlcnRpb25z
+KCspLCAxIGRlbGV0aW9uKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvcGxh
+dGZvcm0vc3RtMzIvc3RtMzItZGNtaS5jIGIvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9zdG0zMi9z
+dG0zMi1kY21pLmMNCj4+IGluZGV4IGI4OTMxNDkwYjgzYi4uOTdjMzQyMzUxNTY5IDEwMDY0NA0K
+Pj4gLS0tIGEvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9zdG0zMi9zdG0zMi1kY21pLmMNCj4+ICsr
+KyBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vc3RtMzIvc3RtMzItZGNtaS5jDQo+PiBAQCAtMTMs
+NiArMTMsNyBAQA0KPj4NCj4+ICAgI2luY2x1ZGUgPGxpbnV4L2Nsay5oPg0KPj4gICAjaW5jbHVk
+ZSA8bGludXgvY29tcGxldGlvbi5oPg0KPj4gKyNpbmNsdWRlIDxsaW51eC9jcHVmcmVxLmg+DQo+
+PiAgICNpbmNsdWRlIDxsaW51eC9kZWxheS5oPg0KPj4gICAjaW5jbHVkZSA8bGludXgvZG1hZW5n
+aW5lLmg+DQo+PiAgICNpbmNsdWRlIDxsaW51eC9pbml0Lmg+DQo+PiBAQCAtOTksNiArMTAwLDgg
+QEAgZW51bSBzdGF0ZSB7DQo+Pg0KPj4gICAjZGVmaW5lIE9WRVJSVU5fRVJST1JfVEhSRVNIT0xE
+CTMNCj4+DQo+PiArI2RlZmluZSBEQ01JX01JTl9GUkVRCTY1MDAwMCAvKiBpbiBLSHogKi8NCj4+
+ICsNCj4gVGhpcyBhc3N1bWVzIHRoZSBoYW5kbGluZyBwYXJ0IGlzIGd1YXJhbnRlZWQgdG8gYWx3
+YXlzIHJ1biBvbiB0aGUgc2FtZSBDUFUNCj4gd2l0aCB0aGUgc2FtZSBwZXJmb3JtYW5jZSBwcm9m
+aWxlIChyZWdhcmRsZXNzIG9mIHRoZSBwbGF0Zm9ybSkuIElmIHRoYXQncw0KPiBub3QgZ3VhcmFu
+dGVlZCwgaXQgZmVlbHMgbGlrZSB5b3UnZCB3YW50IHRoaXMgdG8gYmUgY29uZmlndXJhYmxlIGlu
+IHNvbWUNCj4gd2F5Lg0KWWVzIEkgY291bGQgYWRkIGEgc3Qsc3RtMzItZGNtaS1taW4tZnJlcXVl
+bmN5IChpbiBLSHopIHBhcmFtZXRlciB0aGUgDQpkZXZpY2UgdHJlZSBub2RlLg0KDQo+DQo+PiAg
+IHN0cnVjdCBkY21pX2dyYXBoX2VudGl0eSB7DQo+PiAgICAgICAgc3RydWN0IHY0bDJfYXN5bmNf
+c3ViZGV2IGFzZDsNCj4+DQo+IFsuLi5dDQo+PiBAQCAtMjAyMCw2ICsyMDQyLDggQEAgc3RhdGlj
+IGludCBkY21pX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+PiAgICAgICAg
+ICAgICAgICBnb3RvIGVycl9jbGVhbnVwOw0KPj4gICAgICAgIH0NCj4+DQo+PiArCWRjbWktPnBv
+bGljeSA9IGNwdWZyZXFfY3B1X2dldCgwKTsNCj4+ICsNCj4gSWRlYWxseSB5b3UnZCB3YW50IHRv
+IGZldGNoIHRoZSBwb2xpY3kgb2YgdGhlIENQVSB5b3VyIElSUSAoYW5kIGhhbmRsaW5nDQo+IHRo
+cmVhZCkgaXMgYWZmaW5lZCB0bzsgVGhlIG9ubHkgY29tcGF0aWJsZSBEVFMgSSBmb3VuZCBkZXNj
+cmliZXMgYSBzaW5nbGUNCj4gQTcsIHdoaWNoIGlzIHNvbWV3aGF0IGxpbWl0ZWQgaW4gdGhlIGFm
+ZmluaXR5IGFyZWEuLi4NCklmIEkgbW92ZSB0aGlzIGNvZGUganVzdCBiZWZvcmUgc3RhcnQgc3Ry
+ZWFtaW5nIGFuZCB1c2UgZ2V0X2NwdSgpLCB3b3VsZCANCml0IHdvcmtzID8NCg0KQmVuamFtaW4N
+Cj4NCj4+ICAgICAgICBkZXZfaW5mbygmcGRldi0+ZGV2LCAiUHJvYmUgZG9uZVxuIik7DQo+Pg0K
+Pj4gICAgICAgIHBsYXRmb3JtX3NldF9kcnZkYXRhKHBkZXYsIGRjbWkpOw0KPj4gQEAgLTIwNDks
+NiArMjA3Myw5IEBAIHN0YXRpYyBpbnQgZGNtaV9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2Rldmlj
+ZSAqcGRldikNCj4+DQo+PiAgICAgICAgcG1fcnVudGltZV9kaXNhYmxlKCZwZGV2LT5kZXYpOw0K
+Pj4NCj4+ICsJaWYgKGRjbWktPnBvbGljeSkNCj4+ICsJCWNwdWZyZXFfY3B1X3B1dChkY21pLT5w
+b2xpY3kpOw0KPj4gKw0KPj4gICAgICAgIHY0bDJfYXN5bmNfbm90aWZpZXJfdW5yZWdpc3Rlcigm
+ZGNtaS0+bm90aWZpZXIpOw0KPj4gICAgICAgIHY0bDJfYXN5bmNfbm90aWZpZXJfY2xlYW51cCgm
+ZGNtaS0+bm90aWZpZXIpOw0KPj4gICAgICAgIG1lZGlhX2VudGl0eV9jbGVhbnVwKCZkY21pLT52
+ZGV2LT5lbnRpdHkpOw0K
