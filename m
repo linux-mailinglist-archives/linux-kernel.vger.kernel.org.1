@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C911EBFCE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 18:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877501EBFCB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 18:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728128AbgFBQRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 12:17:55 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:39361 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgFBQRk (ORCPT
+        id S1727872AbgFBQRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 12:17:44 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:45583 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727055AbgFBQRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 12:17:40 -0400
+        Tue, 2 Jun 2020 12:17:41 -0400
 Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200602161738euoutp012f830a446b0c290c9a3deb84cd36938b~UxloDu9f12656226562euoutp01i
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200602161738euoutp0251c1b3bf3cc3e685c8ac05717bf223d4~UxloN8ZSv1321713217euoutp02B
         for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 16:17:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200602161738euoutp012f830a446b0c290c9a3deb84cd36938b~UxloDu9f12656226562euoutp01i
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200602161738euoutp0251c1b3bf3cc3e685c8ac05717bf223d4~UxloN8ZSv1321713217euoutp02B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
         s=mail20170921; t=1591114658;
-        bh=j/PSbzf6lrcO66laTAdT7EAr/x351R/C6wzGDMCSIm0=;
+        bh=ZsH46X2OsHgVVE4UNgCQSLzPGPM56MRSMz7Fj5fkReY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eVm0FqeyqFN3D8I3XhNlFEg/3JPG9UgvatIugb9gaabwYB96c5Q+ikTtyarbd56P1
-         nBlq6WmE5UgUEMCpB+dF/A0srCtbahjb76sqX/TiJxhffLkefNlJGG40KrP5TojYgA
-         fqeOIP3mV/rheJI5OqL3SqVyIzPyLV8vE0DPq5Hc=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200602161737eucas1p2904ac203291fee2a3e53bd6300fc2800~UxlnaC1Bp1812718127eucas1p2x;
-        Tue,  2 Jun 2020 16:17:37 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id A9.81.60679.1AB76DE5; Tue,  2
+        b=NgwEoJbD/s4k7Eq8XJQUVgm0nBv2BSEsmu4Ub4+HK23oaGCe0C6YuDeLLg1hkwuC0
+         eh/XvbG9OXLz2i/4Z74QjUcNwx3CxHDTnry/wvfT796CElMZ0XjgdN2m+sMxiUp8HY
+         yeFyZW0cPC5e6RDhgz65oFYWxEUm/VPmY21Q5li8=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200602161738eucas1p12bde97b5a914113bd67a30baeb678840~Uxln0uBkY1855418554eucas1p1R;
+        Tue,  2 Jun 2020 16:17:38 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 0C.23.60698.1AB76DE5; Tue,  2
         Jun 2020 17:17:37 +0100 (BST)
 Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
         eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200602161737eucas1p241dd0e0a9b5eea7c5d5774c46b3c570b~UxlnCnuci1103811038eucas1p2T;
+        20200602161737eucas1p2c83700f7c17296c4367ee3fda1c6e783~Uxlnakb1u1812318123eucas1p24;
         Tue,  2 Jun 2020 16:17:37 +0000 (GMT)
 Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
         eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200602161737eusmtrp19e8a12671829c8af45fcf9e379bc087b~UxlnCAFO32876728767eusmtrp1M;
+        20200602161737eusmtrp1b27e313f0a87e0dacc6846a4570f1e5d~UxlnZ44VD2876728767eusmtrp1N;
         Tue,  2 Jun 2020 16:17:37 +0000 (GMT)
-X-AuditID: cbfec7f4-0cbff7000001ed07-9d-5ed67ba17c13
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 1A.29.07950.1AB76DE5; Tue,  2
+X-AuditID: cbfec7f5-a29ff7000001ed1a-15-5ed67ba1bb4d
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 0B.29.07950.1AB76DE5; Tue,  2
         Jun 2020 17:17:37 +0100 (BST)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
         (KnoxPortal) with ESMTPA id
-        20200602161736eusmtip13d171833d1a9fdf7a556e537819b2626~Uxlm19sc02213922139eusmtip1i;
-        Tue,  2 Jun 2020 16:17:36 +0000 (GMT)
+        20200602161737eusmtip273b20c9f2d5ed78dde100331f078ec25~UxlnNTaQz0825708257eusmtip2B;
+        Tue,  2 Jun 2020 16:17:37 +0000 (GMT)
 From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
 To:     Russell King <linux@armlinux.org.uk>,
         Masahiro Yamada <masahiroy@kernel.org>,
@@ -60,93 +60,117 @@ Cc:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
         =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-Subject: [PATCH v2 0/5] kexec_file_load() for arm
-Date:   Tue,  2 Jun 2020 18:17:26 +0200
-Message-Id: <20200602161731.23033-1-l.stelmach@samsung.com>
+Subject: [PATCH v2 1/5] arm: decompressor: set malloc pool size for the
+ decompressor
+Date:   Tue,  2 Jun 2020 18:17:27 +0200
+Message-Id: <20200602161731.23033-2-l.stelmach@samsung.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601142754.26139-1-l.stelmach@samsung.com>
+In-Reply-To: <20200602161731.23033-1-l.stelmach@samsung.com>
 MIME-Version: 1.0
 Organization: Samsung R&D Institute Poland
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfVBMYRTGvXv33r0tm+vKOJMmMzsxo6Hka64pKcPMNYMY/GOIpatSu+3c
-        Ld+0NCMSZclHGSMfUxZLu7Vqq5HN1GpJa1lFqFlCpjTksy/t3gz/Pec9v+c558y8JEa/xv3J
-        RFUqx6sUyXJCKjbX/Xo8o3CPK3bmQOtkpuTsLZzRGWpETMuBShHz8KiSabEWI8boduGM03Ke
-        YKx51Yi5ef+VhGlva8aZ64MNiOnJHRIx/Xd/iRmTMQ+L8mWdLgfGFmgdYnZA/wFjLxrTWKP+
-        CMG2uqoItruxUcKarqSzuT1dBHu8VI/Yr8bAlaPXSSPiuOTE7RwfGrlJmvDG1SlRV8t2Vtu0
-        Ii2qk2YhHxKoOXDvfZ0kC0lJmipG0GDVE0LRi6CmYgATiq8IyvsKsL+WnIqmkUYRghfvukeK
-        9wiednUQHoqgoiHnqg33NPyobyKw5GV6gzHqKYL2u2aRhxpPhUFbbYc3V0xNgZwep9ijZVQ4
-        /LhdQgjzJkNm0R2v9qEioMb+RSQw4+DBubdefiwVDDcOPvdqbJjPKCvwrgTUCRKGmj7jQtBi
-        +N7+c0SPh876UomgA8B+MnvYTA7rdDipmyd4sxGYz/8UC0w4tDb+JjwMRk2DW5ZQ4TkaKvtO
-        4YLVF5q7xgkr+ILOfAYTnmVw+BAt0EFgyKkaCfSHY53FKBfJ8/87Jv+/A/L/zbqIMD2ayKVp
-        lPGcZpaK2xGiUSg1aar4kC0pSiMa/nX2wfrecmTp32xFFInkY2Qzw1yxNK7YrtmltCIgMbmf
-        bNEjeywti1Ps2s3xKRv5tGROY0WTSLF8omz2pY8baCpekcolcZya4/92RaSPvxalXIiOyWqY
-        evnhwtShspexfmsin/jVrm/avy+7eZPtRYAs16Zz0BWOuNkTHqkkyFFIJwXWZ/fFYM/XJu0N
-        +uE01fKV8/El8pS5hvAxJds+BV5z0/1ZLeqBZyv4pakL1LojELTs6mM7lpi+LKMtwW0yrIqy
-        FI4aG7Cc3zp99ekyt1ysSVCEBWO8RvEH9DnZxXEDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHIsWRmVeSWpSXmKPExsVy+t/xu7oLq6/FGbSsZLPYOGM9q8WkdQeY
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTcRTH++3ezety+nP5OFn0GPWHRj4w6kdG9IRbBL2gIMq62W1Gm8rm
+        MuuP1gNLTV2a5DM0FM184LQ5zZqtpZa1EGspqZkVvbCMNLIsc7tK/fc953zO+Z4Dh6HkfeIA
+        5khMPK+J4VQKiZQ2tY7ZlxafdESGmrpWkNqcGjHJrG4RkZ7Tt0TkUaqa9FjLETG+dohJV1OB
+        hFizbyNSZetzI68GusXkxp+HiAwbJkRk3DJGkzpjNrXGk+1ydFJsvr6TZn9XvKfYIqOONVYk
+        S9heR7OE/Wy3u7F1JadYw/CQhE2vr0DsN+O8bTP3SFcd4lVHjvGakNUHpNFl95tRXLLX8Wup
+        rW56VO2RgtwZwMtgwlAsSUFSRo7LEQz09FNCMILg3os+Wgi+IchNsomnW57VdiOhUIag7tHI
+        FPUOgdlc6KIkeC1klLaLnQUfPCqCpuzzLhcKP0XwymISOalZeBekDpVSTk3jxTBQapM4tQxH
+        gKXg15TffDhf1jCZZxh3vAryR1QC4g0Pct/QTu2Fg6DyzHOXpibxszfzXUcAzmbAXmyihDkb
+        oGZkVCToWfCxrd5N0HOhI+si7ZwP+BRkZS4Xei8iMBX8oAUmAnrtP107UDgQappChPRamGg/
+        N9XqCd1D3sIKnpBpukIJaRlcSJIL9CKozmieGhgAaR/LkQEp8v47Ju+/A/L+eRUhqgL58zqt
+        Wslrw2P4hGAtp9bqYpTBUbFqI5p8uo4/baNmdGf8oBVhBik8ZKFhjki5mDumTVRbETCUwke2
+        7nFHpFx2iEs8wWti92t0Kl5rRXMYWuEvC7/2YZ8cK7l4/ijPx/Ga6aqIcQ/QI/I1KWHAQLb4
+        +X7frSyK29RfOXiG+21ONN7NWBftuyEt/pyfrgSXcFEvQ2yaJ9v5tkGfqusRZOfYpcby+IVK
+        01tNe4g5P06p37oxIjB95YLBGjLbo7Hl8qfIS8N5X9fHjl/dbMsplGd9aUySf244fGJHIaKT
+        r3pbfExL9uItM0QKWhvNhQVRGi33F5M6K6xwAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLIsWRmVeSWpSXmKPExsVy+t/xe7oLq6/FGWxpkLfYOGM9q8WkdQeY
         LG427mayONOda3Hz0ApGi02Pr7FaXN41h83i0NS9jBZrj9xlt3j44Aarxep/pxgtPkz4z2Tx
         Z/9PFovNm6YyO/B5XL52kdljdsNFFo+/q14weyzYVOqxaVUnm8eda3vYPN6dO8fusXlJvceE
         D2/ZPPq2rGL0+LxJLoA7Ss+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLPyMRSz9DYPNbKyFRJ384m
-        JTUnsyy1SN8uQS/j/rVX7AV7eSv2nmhgamA8xtXFyMkhIWAi0b/zAnMXIxeHkMBSRok9LY9Y
-        uhg5gBJSEivnpkPUCEv8udbFBlHzlFHi9rH3rCAJNgFHif6lJ1hBEiICf5kkDs46DVbFLHCN
-        UWLjhJPMIFXCAoYSDw4/A7NZBFQl+j9cZgGxeQWsJb5v2MgGsUJeon35djCbU8BG4sDpT0wg
-        thBQzftp3UwQ9YISJ2c+AbuOWUBdYv08IZAwv4CWxJqm62AjmYHGNG+dzTyBUWgWko5ZCB2z
-        kFQtYGRexSiSWlqcm55bbKRXnJhbXJqXrpecn7uJERjX24793LKDsetd8CFGAQ5GJR5eA8Nr
-        cUKsiWXFlbmHGCU4mJVEeJ3Ono4T4k1JrKxKLcqPLyrNSS0+xGgK9OZEZinR5HxgyskriTc0
-        NTS3sDQ0NzY3NrNQEuftEDgYIySQnliSmp2aWpBaBNPHxMEp1cDI8+irx8xNvF7NOsebFv46
-        tO+hmUKPkJSByb78K0l3ynsun1krFf5qxgdR12bhJzHXYuzWPFfNelVxYGLqjJflMx4x13Ha
-        39ZyfJfE5HR3UZ+h0PnHcTLVOoeOPzLIffB4md4EhdUF5de9zLVm39hx0ubEC5u49kV8R/Pe
-        yT8ylH7v+IpLNDJDiaU4I9FQi7moOBEAn1adVgEDAAA=
-X-CMS-MailID: 20200602161737eucas1p241dd0e0a9b5eea7c5d5774c46b3c570b
+        JTUnsyy1SN8uQS9j+dE9jAWd/BWLuo+xNzCu4+li5OSQEDCRuLrxBmMXIxeHkMBSRomTTzpY
+        uxg5gBJSEivnpkPUCEv8udbFBlHzlFFizvUbzCAJNgFHif6lJ1hBEiICf5kkDs46DVbFLHCN
+        UWLjhJNgVcICIRITj15iBbFZBFQlHiw9wgZi8wpYS+yf85sVYoW8RPvy7WwgmzkFbCRmf8kB
+        CQsJ5Eo8XP6KHaJcUOLkzCcsICXMAuoS6+cJgYT5BbQk1jRdZwGxmYGmNG+dzTyBUWgWko5Z
+        CB2zkFQtYGRexSiSWlqcm55bbKRXnJhbXJqXrpecn7uJERjV24793LKDsetd8CFGAQ5GJR5e
+        A8NrcUKsiWXFlbmHGCU4mJVEeJ3Ono4T4k1JrKxKLcqPLyrNSS0+xGgK9OVEZinR5Hxgwskr
+        iTc0NTS3sDQ0NzY3NrNQEuftEDgYIySQnliSmp2aWpBaBNPHxMEp1cB44erJ3nIWIe/tV26o
+        xBt/X1ewrPqYl1FHgPfTLTltByffCTrPp2J67/ic0iu7lBvLTNhTNl4X3vVXqiG+/uOlxJ3v
+        Oo+0Sdje2rI4dlfDeVGe9wKXCu/2xIa+KO5yjml3mfR4YS2jzitbX56cK5s+X/57d/H7ayEF
+        1X864vt1V5xhmrnevuOlEktxRqKhFnNRcSIAE1ZQ3gADAAA=
+X-CMS-MailID: 20200602161737eucas1p2c83700f7c17296c4367ee3fda1c6e783
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200602161737eucas1p241dd0e0a9b5eea7c5d5774c46b3c570b
+X-RootMTR: 20200602161737eucas1p2c83700f7c17296c4367ee3fda1c6e783
 X-EPHeader: CA
 CMS-TYPE: 201P
-X-CMS-RootMailID: 20200602161737eucas1p241dd0e0a9b5eea7c5d5774c46b3c570b
+X-CMS-RootMailID: 20200602161737eucas1p2c83700f7c17296c4367ee3fda1c6e783
 References: <20200601142754.26139-1-l.stelmach@samsung.com>
-        <CGME20200602161737eucas1p241dd0e0a9b5eea7c5d5774c46b3c570b@eucas1p2.samsung.com>
+        <20200602161731.23033-1-l.stelmach@samsung.com>
+        <CGME20200602161737eucas1p2c83700f7c17296c4367ee3fda1c6e783@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following series of patches provides implementation of the
-kexec_file_load() system call form the arm architecture. zImage and uImage
-(legacy format) files are supported. Like on arm64, there is no
-possibility of loading a new DTB and the currently loaded is reused.
+Move the definition of malloc pool size of the decompressor to
+a single place. This value will be exposed later for kexec_file loader.
 
-Changes in v2:
-  - add CONFIG_KEXEC_FILE_UIMAGE for optional uImage support
-  - MALLOC_SIZE as a define instead of a symbol
-  - DCSZ tag holds combined dynamic memory requirements (bss+stack+malloc)
-  - use union for a single tag structure
-  - copyright notice includes Russell King
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+---
+ arch/arm/boot/compressed/Makefile | 7 +++++--
+ arch/arm/boot/compressed/head.S   | 6 ++++--
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-Łukasz Stelmach (5):
-  arm: decompressor: set malloc pool size for the decompressor
-  arm: add image header definitions
-  arm: decompressor: define a new zImage tag
-  arm: Add kexec_image_info
-  arm: kexec_file: load zImage or uImage, initrd and dtb
-
- arch/arm/Kconfig                       |  25 +++
- arch/arm/boot/compressed/Makefile      |   7 +-
- arch/arm/boot/compressed/head.S        |   9 +-
- arch/arm/boot/compressed/vmlinux.lds.S |  22 +--
- arch/arm/include/asm/image.h           |  77 +++++++++
- arch/arm/include/asm/kexec.h           |  14 ++
- arch/arm/kernel/Makefile               |   5 +-
- arch/arm/kernel/kexec_uimage.c         |  80 ++++++++++
- arch/arm/kernel/kexec_zimage.c         | 194 +++++++++++++++++++++++
- arch/arm/kernel/machine_kexec.c        |  39 ++++-
- arch/arm/kernel/machine_kexec_file.c   | 211 +++++++++++++++++++++++++
- 11 files changed, 662 insertions(+), 21 deletions(-)
- create mode 100644 arch/arm/include/asm/image.h
- create mode 100644 arch/arm/kernel/kexec_uimage.c
- create mode 100644 arch/arm/kernel/kexec_zimage.c
- create mode 100644 arch/arm/kernel/machine_kexec_file.c
-
+diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
+index 9c11e7490292..c4195651e371 100644
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -7,7 +7,9 @@
+ 
+ OBJS		=
+ 
+-AFLAGS_head.o += -DTEXT_OFFSET=$(TEXT_OFFSET)
++MALLOC_SIZE     =0x10000
++
++AFLAGS_head.o += -DTEXT_OFFSET=$(TEXT_OFFSET) -DMALLOC_SIZE=$(MALLOC_SIZE)
+ HEAD	= head.o
+ OBJS	+= misc.o decompress.o
+ ifeq ($(CONFIG_DEBUG_UNCOMPRESS),y)
+@@ -68,7 +70,8 @@ ZTEXTADDR	:= 0
+ ZBSSADDR	:= ALIGN(8)
+ endif
+ 
+-CPPFLAGS_vmlinux.lds := -DTEXT_START="$(ZTEXTADDR)" -DBSS_START="$(ZBSSADDR)"
++CPPFLAGS_vmlinux.lds := -DTEXT_START="$(ZTEXTADDR)" -DBSS_START="$(ZBSSADDR)" \
++			-DMALLOC_SIZE="$(MALLOC_SIZE)"
+ 
+ compress-$(CONFIG_KERNEL_GZIP) = gzip
+ compress-$(CONFIG_KERNEL_LZO)  = lzo
+diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
+index e8e1c866e413..55758264e776 100644
+--- a/arch/arm/boot/compressed/head.S
++++ b/arch/arm/boot/compressed/head.S
+@@ -309,7 +309,8 @@ restart:	adr	r0, LC0
+ #ifndef CONFIG_ZBOOT_ROM
+ 		/* malloc space is above the relocated stack (64k max) */
+ 		add	sp, sp, r0
+-		add	r10, sp, #0x10000
++		mov	r10, #MALLOC_SIZE
++		add	r10, r10, sp
+ #else
+ 		/*
+ 		 * With ZBOOT_ROM the bss/stack is non relocatable,
+@@ -623,7 +624,8 @@ not_relocated:	mov	r0, #0
+  */
+ 		mov	r0, r4
+ 		mov	r1, sp			@ malloc space above stack
+-		add	r2, sp, #0x10000	@ 64k max
++		mov	r2, #MALLOC_SIZE	@ 64k max
++		add	r2, r2, sp
+ 		mov	r3, r7
+ 		bl	decompress_kernel
+ 
 -- 
 2.26.2
 
