@@ -2,111 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC821EBABE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93A41EBAC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgFBLub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 07:50:31 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:34424 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgFBLua (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:50:30 -0400
-Received: by mail-wr1-f68.google.com with SMTP id r7so3120155wro.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 04:50:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5kmAT8l4yxXPHwQROzZlDZxhf3oO5Z1m1PUuVX32Y3o=;
-        b=HLCEWVFQ+60bKkD25NoHf2Jdl35fgIatnvfqtEWZ8imoP3vL/vxQl9iGgTsee7csYc
-         7RQAsMscksI3NxiJUEojxm4vLLXVJAfDPUlEWPC4hFkoQGCMVWNbfBoJgegZhUA8X6v1
-         yfh+J8ueICko/CUPftkYW53t+DkDEIsqMjX4ncUqSS96DTtOL6OfbGD9/m1LZtnvJD8k
-         9k1Ns6OIekBYCUf0/n6angkwY5Sab65IX4Fjh2Yei9VbYLQxACaWmQqts7glo6CYcoxI
-         1AKC+CYperIKM+02awJBfg0MWI3xyK+x8MdVTRRniLGYDYOQbDUL6gtOEyr4/WCSyWhx
-         DiwA==
-X-Gm-Message-State: AOAM533igHibReHudEE1gr2h5ogiGZ6rHNXCvny1G5X4Xq+Ny7Z1SX3b
-        iewYN2pLG5CqXWGKI+NjKFGUi1y46uKIYQHMLi8=
-X-Google-Smtp-Source: ABdhPJzyyqDuo6Q+3JXP8CrIU8gOuCPWbHpRtPlr5KtBwRcesrX6A2wafAtik2FrPCmh0EnSzpRPc2zmpjDmQy95oog=
-X-Received: by 2002:a05:6000:104f:: with SMTP id c15mr19226030wrx.391.1591098628253;
- Tue, 02 Jun 2020 04:50:28 -0700 (PDT)
+        id S1726853AbgFBLvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 07:51:00 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:35532 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726420AbgFBLvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 07:51:00 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 5EF5B15853ECC4BC46B0;
+        Tue,  2 Jun 2020 19:50:57 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Tue, 2 Jun 2020
+ 19:50:51 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <cl@linux.com>, <penberg@kernel.org>, <rientjes@google.com>,
+        <iamjoonsoo.kim@lge.com>
+CC:     <akpm@linux-foundation.org>, <khlebnikov@yandex-team.ru>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <wanghai38@huawei.com>
+Subject: [PATCH] mm/slub: fix a memory leak in sysfs_slab_add()
+Date:   Tue, 2 Jun 2020 19:50:33 +0800
+Message-ID: <20200602115033.1054-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200531162206.911168-1-jolsa@kernel.org> <CAP-5=fUk97P-ECojBya1CRE4SQoX2erNgFujEJFvSgOk6e6pdQ@mail.gmail.com>
- <20200601082027.GF881900@krava> <CAP-5=fWLp8qyVjwVuQCTEoz=SY5FFtEEZyH5=L-5cAEeN4_5uw@mail.gmail.com>
- <CAM9d7cgw+h9xC08hEErnQnqZjfN1bJWu8psGsUVicWoXWSWcLQ@mail.gmail.com> <20200602081551.GC1112120@krava>
-In-Reply-To: <20200602081551.GC1112120@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 2 Jun 2020 20:50:17 +0900
-Message-ID: <CAM9d7cgZYjCkrFtpcKr=QHrLY6PkOx6CODBiH8fmoFqEcBXKeQ@mail.gmail.com>
-Subject: Re: [PATCHv2] perf stat: Ensure group is defined on top of the same
- cpu mask
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+syzkaller reports for memory leak when kobject_init_and_add()
+returns an error in the function sysfs_slab_add() [1]
 
-On Tue, Jun 2, 2020 at 5:16 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Tue, Jun 02, 2020 at 11:47:19AM +0900, Namhyung Kim wrote:
-> > On Tue, Jun 2, 2020 at 1:21 AM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > On Mon, Jun 1, 2020 at 1:20 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > Jin Yao reported the issue (and posted first versions of this change)
-> > > > with groups being defined over events with different cpu mask.
-> > > >
-> > > > This causes assert aborts in get_group_fd, like:
-> > > >
-> > > >   # perf stat -M "C2_Pkg_Residency" -a -- sleep 1
-> > > >   perf: util/evsel.c:1464: get_group_fd: Assertion `!(fd == -1)' failed.
-> > > >   Aborted
-> > > >
-> > > > All the events in the group have to be defined over the same
-> > > > cpus so the group_fd can be found for every leader/member pair.
-> > > >
-> > > > Adding check to ensure this condition is met and removing the
-> > > > group (with warning) if we detect mixed cpus, like:
-> > > >
-> > > >   $ sudo perf stat -e '{power/energy-cores/,cycles},{instructions,power/energy-cores/}'
-> > > >   WARNING: event cpu maps do not match, disabling group:
-> > > >     anon group { power/energy-cores/, cycles }
-> > > >     anon group { instructions, power/energy-cores/ }
-> > > >
-> > > > Ian asked also for cpu maps details, it's displayed in verbose mode:
-> > > >
-> > > >   $ sudo perf stat -e '{cycles,power/energy-cores/}' -v
-> > > >   WARNING: group events cpu maps do not match, disabling group:
-> > > >     anon group { power/energy-cores/, cycles }
-> > > >        power/energy-cores/: 0
-> > > >        cycles: 0-7
-> > > >     anon group { instructions, power/energy-cores/ }
-> > > >        instructions: 0-7
-> > > >        power/energy-cores/: 0
-> > >
-> > > This is great! A nit, would 'grouped events cpus do not match' read
-> > > better? I think the cpu map is more of an internal naming convention.
-> > Allowed cpus?
->
-> hum, what you mean?
+When this happened, the function kobject_put() is not called for the
+corresponding kobject, which potentially leads to memory leak.
 
-I mean that we can use 'allowed cpus' rather then 'cpu map' in the message.
-Something like this?
+This patch fixes the issue by calling kobject_put() even if
+kobject_init_and_add() fails.
 
-  allowed cpus for events in a group do not match, disabling group:
+[1]
+BUG: memory leak
+unreferenced object 0xffff8880a6d4be88 (size 8):
+  comm "syz-executor.3", pid 946, jiffies 4295772514 (age 18.396s)
+  hex dump (first 8 bytes):
+    70 69 64 5f 33 00 ff ff                          pid_3...
+  backtrace:
+    [<00000000a0980095>] kstrdup+0x35/0x70 mm/util.c:60
+    [<00000000ef0cff3f>] kstrdup_const+0x3d/0x50 mm/util.c:82
+    [<00000000e2461486>] kvasprintf_const+0x112/0x170 lib/kasprintf.c:48
+    [<000000005d749e93>] kobject_set_name_vargs+0x55/0x130 lib/kobject.c:289
+    [<0000000094e31519>] kobject_add_varg lib/kobject.c:384 [inline]
+    [<0000000094e31519>] kobject_init_and_add+0xd8/0x170 lib/kobject.c:473
+    [<0000000060f13e32>] sysfs_slab_add+0x1d8/0x290 mm/slub.c:5811
+    [<00000000fe1d9a22>] __kmem_cache_create+0x50a/0x570 mm/slub.c:4384
+    [<000000006a71a1b4>] create_cache+0x113/0x1e0 mm/slab_common.c:407
+    [<0000000089491438>] kmem_cache_create_usercopy+0x1a1/0x260 mm/slab_common.c:505
+    [<000000008c992595>] kmem_cache_create+0xd/0x10 mm/slab_common.c:564
+    [<000000005320c4b6>] create_pid_cachep kernel/pid_namespace.c:54 [inline]
+    [<000000005320c4b6>] create_pid_namespace kernel/pid_namespace.c:96 [inline]
+    [<000000005320c4b6>] copy_pid_ns+0x77c/0x8f0 kernel/pid_namespace.c:148
+    [<00000000fc8e1a2b>] create_new_namespaces+0x26b/0xa30 kernel/nsproxy.c:95
+    [<0000000080f0c9a5>] unshare_nsproxy_namespaces+0xa7/0x1e0 kernel/nsproxy.c:229
+    [<0000000007e05aea>] ksys_unshare+0x3d2/0x770 kernel/fork.c:2969
+    [<00000000e04c8e4b>] __do_sys_unshare kernel/fork.c:3037 [inline]
+    [<00000000e04c8e4b>] __se_sys_unshare kernel/fork.c:3035 [inline]
+    [<00000000e04c8e4b>] __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3035
+    [<000000005c4707c7>] do_syscall_64+0xa1/0x530 arch/x86/entry/common.c:295
 
-Thanks
-Namhyung
+Fixes: 80da026a8e5d ("mm/slub: fix slab double-free in case of duplicate sysfs filename")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ mm/slub.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/mm/slub.c b/mm/slub.c
+index b762450f..63bd39c 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -5809,8 +5809,10 @@ static int sysfs_slab_add(struct kmem_cache *s)
+ 
+ 	s->kobj.kset = kset;
+ 	err = kobject_init_and_add(&s->kobj, &slab_ktype, NULL, "%s", name);
+-	if (err)
++	if (err) {
++		kobject_put(&s->kobj);
+ 		goto out;
++	}
+ 
+ 	err = sysfs_create_group(&s->kobj, &slab_attr_group);
+ 	if (err)
+-- 
+1.8.3.1
+
