@@ -2,116 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91DC1EC10D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 19:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C50A1EC111
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 19:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgFBRgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 13:36:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725969AbgFBRgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 13:36:07 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1728188AbgFBRgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 13:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgFBRgj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 13:36:39 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A15C05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 10:36:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=h/a8DJ2EinTq8uzlA9vH8s3fN2Vz7r1F26+b/HdqMQc=; b=Eosk0M6OwjlKxotXET8571OT2S
+        ZikpmaaB6cRhj5EUcC29Ghf/FLmZUXkY8LMLp2zplj77GZEHd1jIb3bhy9rGUZLPos+jleDlDsbNX
+        ufD3C+9eCPZ5YrJ/cwO1TGBan/HzlMxL4DEzavYTL9NfhFX4K98f9iETKXWN6x4LHEWbak+1/Ym8W
+        +dYqRXHjkvHXjptr+k2PuIuXF51djl1XWhR+/Pe6Ejln6yoCZc3aNm42tUlb4YwKNmMNYsRP+aNvP
+        Y/FuppsGrPE0eylgEW4Eg9fKk8p7/ToKIrt9eCdQMDAkNUWpNneXMYk+pILTUAbiKVjtMyy7gkrjZ
+        tyuxkOxA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jgApp-0000Tb-1y; Tue, 02 Jun 2020 17:36:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C95EE206E2;
-        Tue,  2 Jun 2020 17:36:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591119366;
-        bh=aTA24MVtMAuQu3t1M90w7EDGpDeSOUQshfIJ9wDyIMA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AJ44s8oj3g2D2laZ5EhFP4qTiwG28LQWQSsgumnv3X7ONkZs7ia+589jSRSWdQzmc
-         q5IaU0k2sqVuU0SiPL0VHKYTSwyTGS30BQjdDhHC9DijWYWyfkbBrqMKE8qm6Oh0No
-         pIoVKTq8SThIKf0m421RcWWPzMW7KmaNFdgkILek=
-Date:   Tue, 2 Jun 2020 19:36:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Wang Hai <wanghai38@huawei.com>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, khlebnikov@yandex-team.ru,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: kobject_init_and_add is easy to misuse
-Message-ID: <20200602173603.GB3579519@kroah.com>
-References: <20200602115033.1054-1-wanghai38@huawei.com>
- <20200602121035.GL19604@bombadil.infradead.org>
- <1591111514.4253.32.camel@HansenPartnership.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DF384301AC6;
+        Tue,  2 Jun 2020 19:36:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D13D42022DEAB; Tue,  2 Jun 2020 19:36:19 +0200 (CEST)
+Date:   Tue, 2 Jun 2020 19:36:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     paulmck@kernel.org, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kcsan: Prefer '__no_kcsan inline' in test
+Message-ID: <20200602173619.GA2604@hirez.programming.kicks-ass.net>
+References: <20200602143633.104439-1-elver@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1591111514.4253.32.camel@HansenPartnership.com>
+In-Reply-To: <20200602143633.104439-1-elver@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 08:25:14AM -0700, James Bottomley wrote:
-> On Tue, 2020-06-02 at 05:10 -0700, Matthew Wilcox wrote:
-> > On Tue, Jun 02, 2020 at 07:50:33PM +0800, Wang Hai wrote:
-> > > syzkaller reports for memory leak when kobject_init_and_add()
-> > > returns an error in the function sysfs_slab_add() [1]
-> > > 
-> > > When this happened, the function kobject_put() is not called for
-> > > the
-> > > corresponding kobject, which potentially leads to memory leak.
-> > > 
-> > > This patch fixes the issue by calling kobject_put() even if
-> > > kobject_init_and_add() fails.
-> > 
-> > I think this speaks to a deeper problem with kobject_init_and_add()
-> > -- the need to call kobject_put() if it fails is not readily apparent
-> > to most users.  This same bug appears in the first three users of
-> > kobject_init_and_add() that I checked --
-> > arch/ia64/kernel/topology.c
-> > drivers/firmware/dmi-sysfs.c
-> > drivers/firmware/efi/esrt.c
-> > drivers/scsi/iscsi_boot_sysfs.c
-> > 
-> > Some do get it right --
-> > arch/powerpc/kernel/cacheinfo.c
-> > drivers/gpu/drm/ttm/ttm_bo.c
-> > drivers/gpu/drm/ttm/ttm_memory.c
-> > drivers/infiniband/hw/mlx4/sysfs.c
-> > 
-> > I'd argue that the current behaviour is wrong,
+On Tue, Jun 02, 2020 at 04:36:33PM +0200, Marco Elver wrote:
+> Instead of __no_kcsan_or_inline, prefer '__no_kcsan inline' in test --
+> this is in case we decide to remove __no_kcsan_or_inline.
 > 
-> Absolutely agree with this.  We have a big meta pattern here where we
-> introduce functions with tortuous semantics then someone creates a
-> checker for the semantics and misuses come crawling out of the woodwork
-> leading to floods of patches, usually for little or never used error
-> paths, which really don't buy anything apart from theoretical
-> correctness.  Just insisting on simple semantics would have avoided
-> this.
-
-I "introduced" this way back at the end of 2007.  It's not exactly a new
-function.
-
-> >  that kobject_init_and_add() should call kobject_put() if the add
-> > fails.  This would need a tree-wide audit.  But somebody needs to do
-> > that anyway because based on my random sampling, half of the users
-> > currently get it wrong.
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
 > 
-> Well, the semantics of kobject_init() are free on fail, so these are
-> the ones everyone seems to be using.  The semantics of kobject_add are
-> put on fail.  The problem is that put on fail isn't necessarily correct
-> in the kobject_init() case: the release function may make assumptions
-> about the object hierarchy which aren't satisfied in the kobject_init()
-> failure case.  This argues that kobject_init_and_add() can't ever have
-> correct semantics and we should eliminate it.
+> Hi Paul,
+> 
+> This is to prepare eventual removal of __no_kcsan_or_inline, and avoid a
+> series that doesn't apply to anything other than -next (because some
+> bits are in -tip and the test only in -rcu; although this problem might
+> be solved in 2 weeks). This patch is to make sure in case the
+> __kcsan_or_inline series is based on -tip, integration in -next doesn't
+> cause problems.
+> 
+> This came up in
+> https://lkml.kernel.org/r/20200529185923.GO706495@hirez.programming.kicks-ass.net
 
-At the time, it did reduce common functionality and error handling all
-into a simpler function.  And, given it's history, it must have somehow
-worked for the past 12 years or so :)
+Thanks Marco!
 
-Odds are, lots of the callers shouldn't be messing around with kobjects
-in the first place.  Originally it was only assumed that there would be
-very few users.  But it has spread to filesystems and firmware
-subsystems.  Drivers should never use it though, so it's a good hint
-something is wrong there...
+I just sent the rest of that patch here:
 
-Anyway, patches to fix this up to make a "sane" api for kobjects is
-always appreciated.  Personally I don't have the time at the moment.
+  https://lkml.kernel.org/r/20200602173103.931412766@infradead.org
 
-thanks,
 
-greg k-h
+
