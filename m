@@ -2,118 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B97E1EB816
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 11:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF71D1EB81C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 11:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgFBJM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 05:12:29 -0400
-Received: from mga11.intel.com ([192.55.52.93]:4256 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgFBJM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 05:12:29 -0400
-IronPort-SDR: 9272hOyBVIKQKnhaUvpbcO92uJ27rfoHWw078CkkPb1QMrOXdLdHs9CnbuQ4X2usF3avZj+Waw
- ZgC8Kou/N3Kw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 02:12:28 -0700
-IronPort-SDR: mt9SSOUWPxTwTSF/pJO9iY+NFm/SjMVMowH2YeaFeDWsfCeU/VMAaJAOhjAyQBNnR2v7WTOLGG
- 0m+OmG+X2yvQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,463,1583222400"; 
-   d="scan'208";a="286589056"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 02 Jun 2020 02:12:28 -0700
-Received: from [10.249.224.186] (abudanko-mobl.ccr.corp.intel.com [10.249.224.186])
-        by linux.intel.com (Postfix) with ESMTP id 0A06758027C;
-        Tue,  2 Jun 2020 02:12:25 -0700 (PDT)
-Subject: Re: [PATCH v5 13/13] perf record: introduce --ctl-fd[-ack] options
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <e5cac8dd-7aa4-ec7c-671c-07756907acba@linux.intel.com>
- <8ffc9f9f-af58-deea-428b-f8a69004e3cb@linux.intel.com>
- <923c40c7-7c0b-9fad-314d-69e7acbee201@intel.com>
- <937c8cc1-b4c2-8531-3fa4-d0ad9df6a65f@linux.intel.com>
- <20200601233732.GA691017@tassilo.jf.intel.com>
- <1bc7c72b-9d78-5184-a27c-8025beadaaf0@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <d7924d7c-e2e5-c067-b9e0-cfea919e7780@linux.intel.com>
-Date:   Tue, 2 Jun 2020 12:12:24 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1726480AbgFBJO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 05:14:27 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:54122 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726217AbgFBJO0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 05:14:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591089264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4RDDGu/p3yDXdb7tcQQ0NXx81PbLpa+m/UKBUd+JAOM=;
+        b=I3BHBMRtTPoc2aGAf13q+0bp+LLLgKStCnKQzAOID9l3izUQk4X7Xq48GtJiNLF8Cz/Epe
+        3mMINeOvc9sXQ2L6S+k01nwWNuWOxuBjB3SlifPxx6E16f0J/ZE+sXkYwjZx9wiaVa1GW7
+        duWbobe3NNOiN0q6dvpo21xucBgsS6I=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-4TGcpgD-NpiMKixDzkrzvg-1; Tue, 02 Jun 2020 05:14:21 -0400
+X-MC-Unique: 4TGcpgD-NpiMKixDzkrzvg-1
+Received: by mail-qv1-f69.google.com with SMTP id w6so2904390qvj.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 02:14:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4RDDGu/p3yDXdb7tcQQ0NXx81PbLpa+m/UKBUd+JAOM=;
+        b=U0EdNoNGFC6MguI9gzete/Gezfdf0qTc4mz3dVxtGyXxRU9dYRASvk70jqG0hFR3DH
+         bP5JPIwt/c01jcz0IV20ICtNEjnTRMh9tKVoB5AW82JwJSa+mFJLQP9D5KQRV3e/4HS/
+         yD/+iXmy52RtWQV2/iJIE2X2UzBkrFjLiCeU1xR1NsfiOE0HR2snytgWkYPR8wBGHmcx
+         cbEWr6W1hnDTK7fsxbMNRVSu0BMwEUFgEzBZaNaExuTR+0LtwrBNCL/xN8ONcBPHwXwX
+         YtEV948YutJo2pmtCK3SJp8TtgcP9k30s8mkmiEWanq8OSHtEmoa0gR0loyLHXztJNF5
+         7SeA==
+X-Gm-Message-State: AOAM530Ylbk2Dw3VOaCPsK4AufUyV8FwfJjosTwCkkVcUK/BUB4gfPfB
+        XVSheV8M7XlwmP1ed27oQ9kpOXxRsqn7iwlXRqIBDsxxbTQjqWxrxXQahSh60RMVgWciTH8+VGn
+        TyIGBdrrkGYF/V9fMzNXb5e0yu+Cr+bV0y2pe+mOr
+X-Received: by 2002:ac8:2a3a:: with SMTP id k55mr25902498qtk.294.1591089260954;
+        Tue, 02 Jun 2020 02:14:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx1WsROjUW769DDxgpU4rag4njM1zCpRsTRcIP45qynEm0hFX3w+3IiwkjfSW1L8qjbkw7t1oMXMfjCmYljgak=
+X-Received: by 2002:ac8:2a3a:: with SMTP id k55mr25902481qtk.294.1591089260695;
+ Tue, 02 Jun 2020 02:14:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1bc7c72b-9d78-5184-a27c-8025beadaaf0@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200529195951.GA3767@dtor-ws> <CANMq1KDDa8jGwo9BNneJ=8y1HunM9hiRS2c0i5ASJ6+X4qvodw@mail.gmail.com>
+ <CABXOdTeTHUtWyutfQ3oO7c_g=q5GrDsdKZbSe1dwLWSeNFi-sQ@mail.gmail.com>
+ <20200530010926.GM89269@dtor-ws> <CABXOdTexbFqvHNALBeXrU5djbrLaK93fBTd6_rTCOhbEadYRgg@mail.gmail.com>
+ <20200530013419.GN89269@dtor-ws> <nycvar.YFH.7.76.2006011912150.13242@cbobk.fhfr.pm>
+In-Reply-To: <nycvar.YFH.7.76.2006011912150.13242@cbobk.fhfr.pm>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Tue, 2 Jun 2020 11:14:09 +0200
+Message-ID: <CAO-hwJLTrGs39OsxtY_r0He02Au64vg1x1_tzGjCQzyNzBCARw@mail.gmail.com>
+Subject: Re: [PATCH] HID: usbhid: do not sleep when opening device
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Guenter Roeck <groeck@google.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Linux USB Mailing List <linux-usb@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 1, 2020 at 7:13 PM Jiri Kosina <jikos@kernel.org> wrote:
+>
+> On Fri, 29 May 2020, Dmitry Torokhov wrote:
+>
+> > > > > > > usbhid tries to give the device 50 milliseconds to drain its queues
+> > > > > > > when opening the device, but does it naively by simply sleeping in open
+> > > > > > > handler, which slows down device probing (and thus may affect overall
+> > > > > > > boot time).
+> > > > > > >
+> > > > > > > However we do not need to sleep as we can instead mark a point of time
+> > > > > > > in the future when we should start processing the events.
+> > > > > > >
+> > > > > > > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+> > > > > > > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > > > > > > ---
+> > > > > > >  drivers/hid/usbhid/hid-core.c | 27 +++++++++++++++------------
+> > > > > > >  drivers/hid/usbhid/usbhid.h   |  1 +
+> > > > > > >  2 files changed, 16 insertions(+), 12 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
+> > > > > > > index c7bc9db5b192..e69992e945b2 100644
+> > > > > > > --- a/drivers/hid/usbhid/hid-core.c
+> > > > > > > +++ b/drivers/hid/usbhid/hid-core.c
+> > > > > > > @@ -95,6 +95,19 @@ static int hid_start_in(struct hid_device *hid)
+> > > > > > >                                 set_bit(HID_NO_BANDWIDTH, &usbhid->iofl);
+> > > > > > >                 } else {
+> > > > > > >                         clear_bit(HID_NO_BANDWIDTH, &usbhid->iofl);
+> > > > > > > +
+> > > > > > > +                       if (test_and_clear_bit(HID_RESUME_RUNNING,
+> > > > > > > +                                              &usbhid->iofl)) {
+> > > > > > > +                               /*
+> > > > > > > +                                * In case events are generated while nobody was
+> > > > > > > +                                * listening, some are released when the device
+> > > > > > > +                                * is re-opened. Wait 50 msec for the queue to
+> > > > > > > +                                * empty before allowing events to go through
+> > > > > > > +                                * hid.
+> > > > > > > +                                */
+> > > > > > > +                               usbhid->input_start_time = jiffies +
+> > > > > > > +                                                          msecs_to_jiffies(50);
+> > > > > > > +                       }
+> > > > > > >                 }
+> > > > > > >         }
+> > > > > > >         spin_unlock_irqrestore(&usbhid->lock, flags);
+> > > > > > > @@ -280,7 +293,8 @@ static void hid_irq_in(struct urb *urb)
+> > > > > > >                 if (!test_bit(HID_OPENED, &usbhid->iofl))
+> > > > > > >                         break;
+> > > > > > >                 usbhid_mark_busy(usbhid);
+> > > > > > > -               if (!test_bit(HID_RESUME_RUNNING, &usbhid->iofl)) {
+> > > > > > > +               if (!test_bit(HID_RESUME_RUNNING, &usbhid->iofl) &&
+> > > > > > > +                   time_after(jiffies, usbhid->input_start_time)) {
+> > > > > >
+> > > > > > Are we worried about jiffies overflowing (32-bit@1000Hz is "only" 49.7 days...)
+> > > > > >
+> > > > >
+> > > > > time_after() is overflow-safe. That is why it is used and jiffies is
+> > > > > not compared directly.
+> > > >
+> > > > Well, it is overflow safe, but still can not measure more than 50 days,
+> > > > so if you have a device open for 50+ days there will be a 50msec gap
+> > > > where it may lose events.
+> > > >
+> > >
+> > > Or you could explicitly use 64-bit jiffies.
+> >
+> > Indeed.
+> >
+> > Jiri, Benjamin, do you have preference between jiffies64 and ktime_t? I
+> > guess jiffies64 is a tiny bit less expensive.
+>
+> If I would be writing the code, I'd use ktime_t, because I personally like
+> that abstraction more :) But either variant works for me.
 
-On 02.06.2020 11:32, Alexey Budankov wrote:
-> 
-> On 02.06.2020 2:37, Andi Kleen wrote:
->>>> or a pathname, or including also the event default of "disabled".
->>>
->>> For my cases conversion of pathnames into open fds belongs to external
->>> controlling process e.g. like in the examples provided in the patch set.
->>> Not sure about "event default of 'disabled'"
->>
->> It would be nicer for manual use cases if perf supported the path names
->> directly like in Adrian's example, not needing a complex wrapper script.
-> 
-> fds interface is required for VTune integration since VTune wants control
-> over files creation aside of Perf tool process. The script demonstrates
-> just one possible use case.
-> 
-> Control files could easily be implemented on top of fds making open operations
-> for paths and then initializing fds. Interface below is vague and with explicit
-> options like below it could be more explicit:
-> --ctl-file /tmp/my-perf.fifo --ctl-file-ack /tmp/my-perf-ack.fifo
+I don't have a strong opinion on either variant. Feel free to use
+whatever you like the most.
 
-Or even clearer:
+Cheers,
+Benjamin
 
---ctl-fifo /tmp/my-perf --ctl-fifo-ack /tmp/my-perf-ack
+>
+> Thanks!
+>
+> --
+> Jiri Kosina
+> SUSE Labs
+>
 
-> 
-> Make either fds and or files provided on the command line. Implement file
-> options handling callbacks that would open paths and setting fds. Close fds
-> if they were opened by Perf tool process.
-> 
-> Adrian, please share your mind and use case.
-> 
-> ~Alexey
-> 
->>
->> -Andi
->>>
->>>>
->>>> e.g. add "--control" and support all of:
->>>>
->>>> --control
->>>> --control 11
->>>> --control 11,15
->>>> --control 11,15,disabled
->>>> --control 11,,disabled
->>>> --control /tmp/my-perf.fifo
->>>> --control /tmp/my-perf.fifo,/tmp/my-perf-ack.fifo
->>>> --control /tmp/my-perf.fifo,/tmp/my-perf-ack.fifo,disabled
->>>> --control /tmp/my-perf.fifo,,disabled
->>>>
->>>> Regards
->>>> Adrian
->>>>
->>>
->>> Regards,
->>> Alexey
->>>
