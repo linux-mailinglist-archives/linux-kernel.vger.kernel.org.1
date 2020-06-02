@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695D61EC52F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 00:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186DB1EC531
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 00:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730374AbgFBWi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 18:38:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728657AbgFBWiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 18:38:18 -0400
-Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA2472072F;
-        Tue,  2 Jun 2020 22:38:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591137498;
-        bh=tWT+BQ8hTGsDIEbbaTVUnMxlf+2G1IkCj6Z2Rc76cdg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jqazz3E5SiXHy0k7vKWwu5UQ+ZoSRW+7TjOhArb1X/18S/zHwDTNeDzl2JfJyNz+z
-         jEKke3clpIiUMEbUXZgeQjjiK75WD6dKkXT7BTJ8acL1nrX9p4ST2Z5OQmJTxjkkDl
-         JBMpWDn1FT000o62+N3Hor0OwDz/RZLl08lqNLZo=
-Received: from mchehab by mail.kernel.org with local (Exim 4.93)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jgFXz-004aXG-KW; Wed, 03 Jun 2020 00:38:15 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Luigi Semenzato <semenzato@chromium.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        NeilBrown <neilb@suse.de>, Yang Shi <yang.shi@linux.alibaba.com>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH 2/2] docs: fs: proc.rst: fix a warning due to a merge conflict
-Date:   Wed,  3 Jun 2020 00:38:14 +0200
-Message-Id: <28c4f4c5c66c0fd7cbce83fe11963ea6154f1d47.1591137229.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1591137229.git.mchehab+huawei@kernel.org>
-References: <cover.1591137229.git.mchehab+huawei@kernel.org>
+        id S1728715AbgFBWj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 18:39:29 -0400
+Received: from sonic308-18.consmr.mail.ir2.yahoo.com ([77.238.178.146]:38385
+        "EHLO sonic308-18.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726373AbgFBWj3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 18:39:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591137566; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=YhSZIxChmSjpXtd8p+oYXhsOEdfu9aeyqcw0HPCqXhLNEFS5esqMru1bexb2DXML4KomijhMaL599o6174YP17FqXcjkRpzwBCjqIzSRLucbMfyDbS/SE5PKl8WPpQGt7lcrATRM5lmNEmW/a+r8c0yhImqY3q9Yeiruej5duhao0r4u4mF0cvB0BNCQoyz3+o3AzFuvcGP32dkboCAVjjOt7H3yCgufwzPGtFBvTD6e9xZefIPFd4fsCjHWZ9Bx7x+RIK4B0MkD7r+K3i/3fwYrFudsJOwjVf90FTwbIdUITpJzm0OBV77V6B/w6r0h8OhyCjq1zdl/KmTPUHoxQQ==
+X-YMail-OSG: lVVx5yMVM1mznpSb2DP6wIecmsOOHQPBLfuFnXFGWvWmwfH9XSL8p774VxfEI9R
+ 8lZYR4HjXt6sYEb1B_p92iekMvjF4oQ7U_inH6Z7SeNfQTEccy8fQyCphwzGzfnvtCYG2jdYRaWo
+ zlT9RgVB1OXPPrLw8XZCxeDgsvxSSU.JcWmeOT_vLigmJZ6A_66o5nqcWa5wzTz.g3z0gGGS9Ne5
+ BJUM6emlknofuj83JuHhCi2fKacplhMM_7N_xkFvRRVCU3syzgvxn9tgv0AKVS6wigQtscPSDXjh
+ z5IXEXvk_oR3j_gbQC0I7dahJAG0iIkseXpcFz.VHb7Q6vEKdxgjOwjdwEDZPuNQKYXMJ_UaXJNa
+ 4.gP7AW8p2rlgRV8NOcl3CQRHJfLrwSnLzIqYxfKHATrRlHDkBIniFppnaPTgNJwkqsKcJS7rF17
+ 1F7ADG.hE9x3v9uAXNfj8ohuwMsTzz3YijUz1WXJFLZ7W6ACyg1Db8RwpoYH_fKBdBeqJU1jX657
+ 9bdc4Tv4wPlx.xxs43SvWaWbxKoNU768cNBl0o3jF.5jCbrc.Sbuedkgjk2m2iy_sKb1ZjD3pD5s
+ f8Cisvw0U0XwFcc_j1Z4_qWK2H9by0VBXtOihf.8NG58oRVZPK7C4TWp85_CVU4fE.x.LO6EGi9m
+ SZiBNh_djt6JiltdkTvyPa.Wrt11SFr6i3A.YEPbsGs0zZLI2Q6PA9qsB0Qu0Zrq4mcAy6tsJV2X
+ RwB2FlaSSFbf2G9x.woH5HhFzf8_KIim_PrCoaUzczwvI_L05u60t5x1oCAuugq0kRi9ks1gEFtJ
+ vwFuq5cizOmJauMvnYKaqZC7cJZ6HLSSlOwpYEXfrOSMlls.77Q.6jahNAWMFqw.Gk1CGHOwcxFK
+ lPcjV8qlHefqug17D7C804yYxsbKv42Cjh2y.NCcBLNa8VmrAb8FGVnjfSxtxvXL414iFADWBSI_
+ _94D6W.RP1XMyn0PXtn33kGOi3tqotnIUkeYarO64CMBW3WOyGfoQQaKDPltiy.epKXG9imHD5Oy
+ nImOlxPaWwBmkg0FUg64P5G_GTvjIMllh8_Oj6iQktdWWEZCwlv0xuGs77fgM_NlONveqHX9n.lm
+ I_YVae2iRdb4X_GJRKmoob4hetb7BTt2kyERMdZ.J8umveXsTGBYWwhx0vBZxfBUN0Sl7UZ8DJmT
+ 1BG0rFOEZFgQjs5k587ruOyo9N7sXNQ5zZdw80CIjUbRU5aKSSHIReiIPsR9FdfHUaOY4jQebHG_
+ p4sQ_wX3AiZ06KyfaQK.Gx6OezHz7OtwWBWnC31NTP97dMzyMG5Q3JT9S.hln5wrdsSWh033XlBD
+ WevLJjJ_c
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ir2.yahoo.com with HTTP; Tue, 2 Jun 2020 22:39:26 +0000
+Date:   Tue, 2 Jun 2020 22:39:22 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrs.minaabrunel209@gmail.com>
+Reply-To: mrs.minaabrunel30@gmail.com
+Message-ID: <1280459363.3007127.1591137562199@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1280459363.3007127.1591137562199.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 424037b77519 ("mm: smaps: Report arm64 guarded pages in smaps")
-added a new parameter to a table. This causes Sphinx warnings,
-because there's now an extra "-" at the wrong place:
 
-	/devel/v4l/docs/Documentation/filesystems/proc.rst:548: WARNING: Malformed table.
-	Text in column margin in table line 29.
 
-	==    =======================================
-	rd    readable
-	...
-	bt  - arm64 BTI guarded page
-	==    =======================================
+My Dear in the lord
 
-Fixes: 424037b77519 ("mm: smaps: Report arm64 guarded pages in smaps")
-Fixes: c33e97efa9d9 ("docs: filesystems: convert proc.txt to ReST")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/filesystems/proc.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 430963e0e8c3..7359741cf7cf 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -543,7 +543,7 @@ encoded manner. The codes are the following:
-     hg    huge page advise flag
-     nh    no huge page advise flag
-     mg    mergable advise flag
--    bt  - arm64 BTI guarded page
-+    bt    arm64 BTI guarded page
-     ==    =======================================
- 
- Note that there is no guarantee that every flag and associated mnemonic will
--- 
-2.26.2
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
+ugou the capital city of Burkina Faso in West Africa. The money was from th=
+e sale of his company and death benefits payment and entitlements of my dec=
+eased husband by his company.
 
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
