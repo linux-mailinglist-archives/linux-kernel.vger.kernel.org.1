@@ -2,88 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4E41EBA47
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 535DF1EBA4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726580AbgFBLWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 07:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58402 "EHLO
+        id S1726831AbgFBLXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 07:23:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgFBLWl (ORCPT
+        with ESMTP id S1725900AbgFBLXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:22:41 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405CCC061A0E;
-        Tue,  2 Jun 2020 04:22:41 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id n9so1240223plk.1;
-        Tue, 02 Jun 2020 04:22:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=LFCYo6Ppo4sEF/Ge4xWjhzf5GS4llSMO5W63JlrM7KQ=;
-        b=bKZCM1vPpptfyYMSXvgRkpuRDbMki1FhOPMqlwbLnVstbWg0qiqkCS1O57oOXwQuQd
-         +ilqEQ3DcHER6lECOK0foKhzOkTLOSYYit6+mH2EPqtG6maZexBnUAhVwi21cWColo0Q
-         LNLXHyjqDkZ+BpqzSA4rD7zFYqK9asLhlURmRvN5Clt2uOtW5gk+oJJMZgIKxdV4HfME
-         XLZ+iDkilPNPZAN39AAfIUzJ1nHvXIMVEWwTbpZ+ZKUPESlWucThCvXB2gDmpRwMTDSu
-         6UJDn0pcZiK9LrY8sUHbLAI4FD7gQnKG+9tZ7dDHfESkcuIw0qdBa9KR49+mZTrYxGwB
-         DLdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=LFCYo6Ppo4sEF/Ge4xWjhzf5GS4llSMO5W63JlrM7KQ=;
-        b=W1I5D3653Iy6hxd+zG13t5VuSXLERO31JyAK4HArgnjUAT515TtgtPa1I+pE5n4Kqe
-         0fjzC9QI2HnQpjcAM8hmnTXchdKY112JkOH3fs871uEkpiQbHcphDgenwzuC0UcRjY1v
-         6d+4vjXFCTfdJob9QJWF2Xwjcy+wMRUxhyoc1QcfIn7yIsULoEqPgWtanzAlm8+LUoCJ
-         4bWJ2IcRT7zb2MfEM/12E58GsgxvNSPNSg1WnqjFhbid3JZKk87PwbDkCcKorv6Lb1Ct
-         zCMJEcQ6z2wj6TYtBYPf4XiLqMSA456sW1FERShdAHKDkDCgeah8NkVTfIu0hu6B+qMS
-         CtYg==
-X-Gm-Message-State: AOAM531Udhb/OXNjIdpom/7njC5K+9SiSuxfvArt1u6PrdZMr7jf0aM3
-        VSwcli1Big9e1jh83eTixBk=
-X-Google-Smtp-Source: ABdhPJwfTFUI1HfGsYg4wx0v6+YoLTxCwj7X0smn80Ce1gQdJ41svgwZ/rNmBwG0aIWD24XxuXXlDA==
-X-Received: by 2002:a17:902:bb95:: with SMTP id m21mr12586768pls.262.1591096960561;
-        Tue, 02 Jun 2020 04:22:40 -0700 (PDT)
-Received: from localhost.localdomain ([2409:4072:189:c86a:7149:74ab:b584:ecf8])
-        by smtp.gmail.com with ESMTPSA id j9sm2238172pje.28.2020.06.02.04.22.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 04:22:39 -0700 (PDT)
-From:   Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
-To:     Rain River <rain.1986.08.12@gmail.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     aishwaryarj100@gmail.com
-Subject: [PATCH] net: nvidia: forcedeth: Drop a condition with no effect
-Date:   Tue,  2 Jun 2020 16:52:28 +0530
-Message-Id: <20200602112228.30333-1-aishwaryarj100@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 2 Jun 2020 07:23:36 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D395C061A0E;
+        Tue,  2 Jun 2020 04:23:36 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49bqRS1wsTz9sSc;
+        Tue,  2 Jun 2020 21:23:31 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1591097014;
+        bh=eGpanG34MNWJ0lGXSXJ8lLK/A/KPEElEzRA3x3jmVFM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=N2K4AQ+LzyA+NQ1tcvIIBzcYyQk6q7HG9wiJD1nFeLk9Bz7yHoa7/vaJ4E79qOTFm
+         RsEL3gv0RPO8SDVE8iM2v4v7+B1vZIpQ5rAeXb0nFUPY+7dgtdOzxac5dZebLcdKYM
+         aKDEy+NazXauBzYTpvnyZk6/Sy0k370x5nNft6RW2OdttceHz0G6UccjyAR8r7psP+
+         C4mBo1nJ/da6D/peOhGQFt+1OpVRWhtaGl+xhLv9WNcn7ELB6mRs9BSIKuAqwpiOb/
+         iM6GwAXGnfV808ulP+ifov4Iaz2DJroUPZqSgmBNz4fFQXv+9acYRyaFNtZDWipf5O
+         1sZGPMQYlOYBw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        Liao Pingfang <liao.pingfang@zte.com.cn>,
+        linuxppc-dev@lists.ozlabs.org, Joe Perches <joe@perches.com>
+Cc:     Allison Randal <allison@lohutok.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colin Cross <ccross@android.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Wang Liang <wang.liang82@zte.com.cn>,
+        Xue Zhihong <xue.zhihong@zte.com.cn>,
+        Yi Wang <wang.yi59@zte.com.cn>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] powerpc/nvram: Replace kmalloc with kzalloc in the error message
+In-Reply-To: <a3c158fa-3829-f38a-9202-8984b5ef5f21@web.de>
+References: <c3d22d89-9133-30aa-8270-c515df214963@web.de> <87imgai394.fsf@mpe.ellerman.id.au> <a3c158fa-3829-f38a-9202-8984b5ef5f21@web.de>
+Date:   Tue, 02 Jun 2020 21:23:57 +1000
+Message-ID: <87a71liucy.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the "else if" and "else" branch body are identical the
-condition has no effect. So removing "else if" condition.
+Markus Elfring <Markus.Elfring@web.de> writes:
+>>>> Please just remove the message instead, it's a tiny allocation that's
+>>>> unlikely to ever fail, and the caller will print an error anyway.
+>>>
+>>> How do you think about to take another look at a previous update sugges=
+tion
+>>> like the following?
+>>>
+>>> powerpc/nvram: Delete three error messages for a failed memory allocati=
+on
+>>> https://patchwork.ozlabs.org/project/linuxppc-dev/patch/00845261-8528-d=
+011-d3b8-e9355a231d3a@users.sourceforge.net/
+>>> https://lore.kernel.org/linuxppc-dev/00845261-8528-d011-d3b8-e9355a231d=
+3a@users.sourceforge.net/
+>>> https://lore.kernel.org/patchwork/patch/752720/
+>>> https://lkml.org/lkml/2017/1/19/537
+>>
+>> That deleted the messages from nvram_scan_partitions(), but neither of
+>> the callers of nvram_scan_paritions() check its return value or print
+>> anything if it fails. So removing those messages would make those
+>> failures silent which is not what we want.
+>
+> * How do you think about information like the following?
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/Documentation/process/coding-style.rst?id=3Df359287765c04711ff54fbd1164527=
+1d8e5ff763#n883
+> =E2=80=9C=E2=80=A6
+> These generic allocation functions all emit a stack dump on failure when =
+used
+> without __GFP_NOWARN so there is no use in emitting an additional failure
+> message when NULL is returned.
+> =E2=80=A6=E2=80=9D
 
-Signed-off-by: Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
----
- drivers/net/ethernet/nvidia/forcedeth.c | 3 ---
- 1 file changed, 3 deletions(-)
+Are you sure that's actually true?
 
-diff --git a/drivers/net/ethernet/nvidia/forcedeth.c b/drivers/net/ethernet/nvidia/forcedeth.c
-index 2fc10a36afa4..87ed7e192ce9 100644
---- a/drivers/net/ethernet/nvidia/forcedeth.c
-+++ b/drivers/net/ethernet/nvidia/forcedeth.c
-@@ -3476,9 +3476,6 @@ static int nv_update_linkspeed(struct net_device *dev)
- 	} else if (adv_lpa & LPA_10FULL) {
- 		newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_10;
- 		newdup = 1;
--	} else if (adv_lpa & LPA_10HALF) {
--		newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_10;
--		newdup = 0;
- 	} else {
- 		newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_10;
- 		newdup = 0;
--- 
-2.17.1
+A quick look around in slub.c leads me to:
 
+slab_out_of_memory(struct kmem_cache *s, gfp_t gfpflags, int nid)
+{
+#ifdef CONFIG_SLUB_DEBUG
+	static DEFINE_RATELIMIT_STATE(slub_oom_rs, DEFAULT_RATELIMIT_INTERVAL,
+				      DEFAULT_RATELIMIT_BURST);
+	int node;
+	struct kmem_cache_node *n;
+
+	if ((gfpflags & __GFP_NOWARN) || !__ratelimit(&slub_oom_rs))
+		return;
+
+	pr_warn("SLUB: Unable to allocate memory on node %d, gfp=3D%#x(%pGg)\n",
+		nid, gfpflags, &gfpflags);
+	pr_warn("  cache: %s, object size: %u, buffer size: %u, default order: %u,=
+ min order: %u\n",
+		s->name, s->object_size, s->size, oo_order(s->oo),
+		oo_order(s->min));
+
+	if (oo_order(s->min) > get_order(s->object_size))
+		pr_warn("  %s debugging increased min order, use slub_debug=3DO to disabl=
+e.\n",
+			s->name);
+
+	for_each_kmem_cache_node(s, node, n) {
+		unsigned long nr_slabs;
+		unsigned long nr_objs;
+		unsigned long nr_free;
+
+		nr_free  =3D count_partial(n, count_free);
+		nr_slabs =3D node_nr_slabs(n);
+		nr_objs  =3D node_nr_objs(n);
+
+		pr_warn("  node %d: slabs: %ld, objs: %ld, free: %ld\n",
+			node, nr_slabs, nr_objs, nr_free);
+	}
+#endif
+}
+
+Which looks a lot like it won't print anything when CONFIG_SLUB_DEBUG=3Dn.
+
+But maybe I'm looking in the wrong place?
+
+cheers
