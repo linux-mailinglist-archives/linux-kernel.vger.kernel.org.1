@@ -2,135 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918DE1EBD70
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9821EBD6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 15:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgFBN7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 09:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbgFBN7L (ORCPT
+        id S1726842AbgFBN4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 09:56:24 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:41403 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbgFBN4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 09:59:11 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C89C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 06:59:10 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id q2so2088278vsr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 06:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9owB6N5YoTr+QgRWYSW+w97CM/a02Li4ocdyLucMnlA=;
-        b=Ze+ivp4cAFxyqk7NhiH/FgnYGbbWWGkjKQQY3TxEitCzQdk7p0Wu76o0FkjuBwXiVH
-         2Dg5GkZntUYHmh7C7r68i/lLSdsF0OcuA1BfQ15WDPiUYtJHbjCzEhJEJ9F1fW4CSoBa
-         khCoH7AF8Speu+33IkgkUZJNsl734DdLOmVBBUhwR0J5x8OL60XWZn6dVPDktK0uYZyY
-         STfI+k0NDFh4ebSmg1x4NiORk3wVn8f8pbTx/cFFLCIJdycWBKOR9MKgZnroaxd6/GLI
-         VygAjCvqQjJqWXgTeulGShbJMm30zj4FP81VlH6EQDYtPjzDPJbE9QL+kDGi985PaEAa
-         KZEg==
+        Tue, 2 Jun 2020 09:56:23 -0400
+Received: by mail-wr1-f65.google.com with SMTP id j10so3498747wrw.8;
+        Tue, 02 Jun 2020 06:56:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9owB6N5YoTr+QgRWYSW+w97CM/a02Li4ocdyLucMnlA=;
-        b=rxH8a7+DazUqWM+3KLJfsj4Oy7Ffb0nUI5PJY2uvNP3mMRS4717uKEhIHAK6vz3plg
-         aPH0tjTs6tk9adIfO44OvWaF4WOLB67kQPckmhpiOGTNAzrlMjksSBghjRs/4pNlr5UT
-         i1qG9NOx7vAKEOAZRKnzQOUibRlFAiReSLOm1i+iumj64ugNY6qmsLulNl1PDJ//UB2T
-         U0lQMLj/CQyqKb3rNBhi8iJ65vIhFZSOLG+IgXabEDJj1X3iuyRuqNo4bbzHb618BwOY
-         TY0mIjmxRmaWTygP93dEHgsXqDpUvCFGX5ESZpX+2iQpsxLd5t1wqXCkkaWLfWF5inKu
-         68Aw==
-X-Gm-Message-State: AOAM530GH3auo0Tm0yDxEO517GPxSYpnN8HnYgipqrzgr/zJJuwIxtX4
-        q1IbfyLF/RmpkCRQ9D4BrKV1xWmnydOMIFPOoac=
-X-Google-Smtp-Source: ABdhPJwagcH+IMCLFpcz6CGUl5oYhyGNJls9L62J/M3CQCdOJiJr0Rvnef8YwBvKPwiyJDIDZDjyOZlJdWHq94p6Rm4=
-X-Received: by 2002:a67:b149:: with SMTP id z9mr17006698vsl.85.1591106349968;
- Tue, 02 Jun 2020 06:59:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xEDuRNO0hoLyf2dsuZwG9i6NBcBwN5Cee5iDNQjzrxQ=;
+        b=sDLREcBGj2jSzWIFevjiFSJJcDTJO4UJHigdV6fIuVZzx8gxKVUdHElBp2NBqX0/vr
+         KSPApcOMVc3IsPnMAXJQN8H+0fPqRW1jxzVliYzq0V+DhXMPfXX5y6mkowcv8ZoHnAsz
+         uV/6QmvIHlFi66mcB3bC53zYv3pSqjUtl+Hk4S166Rd3NvpOypamqzz2WyFdQD54RuBl
+         IrwWM/RCI70IA9Y587C9fN+o90FR788sDsBO53QzLRNq/87JLh4VafslxMGpORIdERzV
+         BXlDftWjbe2WDsDtXlnnbczrF+tG3Q8JvVJXwU0P3s6PBSQOgI0t7mOfgBHU6rjn1NbK
+         Xyrw==
+X-Gm-Message-State: AOAM533ddfF1Ex7YgE8o+m1CAUMBkoj0oxeP1uANuUtiMmJLDwGclTUP
+        YZg+yt6xz3H+SqR86ZsALeo8s0wv
+X-Google-Smtp-Source: ABdhPJwZR7zeuOOwd/F1h13TwWHbHDPsMBVbMUzwHWSM9A39cAGwW8kkkg0ywrN5jAe9fY9AUT0R8Q==
+X-Received: by 2002:adf:cf06:: with SMTP id o6mr26086363wrj.163.1591106181464;
+        Tue, 02 Jun 2020 06:56:21 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id g187sm3851690wma.17.2020.06.02.06.56.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 06:56:20 -0700 (PDT)
+Date:   Tue, 2 Jun 2020 13:56:18 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        KVM <kvm@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jon Doron <arilou@gmail.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: Re: linux-next: manual merge of the hyperv tree with the kvm tree
+Message-ID: <20200602135618.5iw6zd2jqzqqcwxm@liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net>
+References: <20200602171802.560d07bc@canb.auug.org.au>
 MIME-Version: 1.0
-References: <cover.1590982881.git.Sandor.yu@nxp.com> <d3d707cf37e7928a839071242c752779061cc094.1590982881.git.Sandor.yu@nxp.com>
-In-Reply-To: <d3d707cf37e7928a839071242c752779061cc094.1590982881.git.Sandor.yu@nxp.com>
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-Date:   Tue, 2 Jun 2020 14:55:52 +0100
-Message-ID: <CACvgo52NeUSQV5p8+4DkCjpkv12cs8fCkQqy4MFn8pVaorVaHg@mail.gmail.com>
-Subject: Re: [PATCH 1/7] drm/rockchip: prepare common code for cdns and rk
- dpi/dp driver
-To:     sandor.yu@nxp.com
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Sandy Huang <hjc@rock-chips.com>, dkos@cadence.com,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-rockchip <linux-rockchip@lists.infradead.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        LAKML <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200602171802.560d07bc@canb.auug.org.au>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Sandor Yu
+On Tue, Jun 02, 2020 at 05:18:02PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the hyperv tree got a conflict in:
+> 
+>   arch/x86/include/asm/hyperv-tlfs.h
+> 
+> between commit:
+> 
+>   22ad0026d097 ("x86/hyper-v: Add synthetic debugger definitions")
+> 
 
-On Mon, 1 Jun 2020 at 07:29, <sandor.yu@nxp.com> wrote:
->
-> From: Sandor Yu <Sandor.yu@nxp.com>
->
-> - Extracted common fields from cdn_dp_device to a new cdns_mhdp_device
->   structure which will be used by two separate drivers later on.
-> - Moved some datatypes (audio_format, audio_info, vic_pxl_encoding_format,
->   video_info) from cdn-dp-core.c to cdn-dp-reg.h.
-> - Changed prefixes from cdn_dp to cdns_mhdp
->     cdn -> cdns to match the other Cadence's drivers
->     dp -> mhdp to distinguish it from a "just a DP" as the IP underneath
->       this registers map can be a HDMI (which is internally different,
->       but the interface for commands, events is pretty much the same).
-> - Modified cdn-dp-core.c to use the new driver structure and new function
->   names.
-> - writel and readl are replaced by cdns_mhdp_bus_write and
->   cdns_mhdp_bus_read.
->
-The high-level idea is great - split, refactor and reuse the existing drivers.
+Paolo
 
-Although looking at the patches themselves - they seems to be doing
-multiple things at once.
-As indicated by the extensive list in the commit log.
+As far as I can tell you merged that series a few days ago. Do you plan
+to submit it to Linus in this merge window? How do you want to proceed
+to fix the conflict?
 
-I would suggest splitting those up a bit, roughly in line of the
-itemisation as per the commit message.
+Wei.
 
-Here is one hand wavy way to chunk this patch:
- 1) use put_unalligned*
- 2) 'use local variable dev' style of changes (as seem in cdn_dp_clk_enable)
- 3) add writel/readl wrappers
- 4) hookup struct cdns_mhdp_device, keep dp->mhdp detail internal.
-The cdn-dp-reg.h function names/signatures will stay the same.
- 5) finalize the helpers - use mhdp directly, rename
+> from the kvm tree and commit:
+> 
+>   c55a844f46f9 ("x86/hyperv: Split hyperv-tlfs.h into arch dependent and independent files")
+> 
+> from the hyperv tree.
+> 
+> I fixed it up (I removed the conficting bits from that file and added
+> the following patch) and can carry the fix as necessary. This is now fixed
+> as far as linux-next is concerned, but any non trivial conflicts should
+> be mentioned to your upstream maintainer when your tree is submitted for
+> merging.  You may also want to consider cooperating with the maintainer
+> of the conflicting tree to minimise any particularly complex conflicts.
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 2 Jun 2020 17:15:49 +1000
+> Subject: [PATCH] x86/hyperv: merge fix for hyperv-tlfs.h split
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  include/asm-generic/hyperv-tlfs.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+> index 262fae9526b1..e73a11850055 100644
+> --- a/include/asm-generic/hyperv-tlfs.h
+> +++ b/include/asm-generic/hyperv-tlfs.h
+> @@ -145,6 +145,9 @@ struct ms_hyperv_tsc_page {
+>  #define HVCALL_SET_VP_REGISTERS			0x0051
+>  #define HVCALL_POST_MESSAGE			0x005c
+>  #define HVCALL_SIGNAL_EVENT			0x005d
+> +#define HVCALL_POST_DEBUG_DATA			0x0069
+> +#define HVCALL_RETRIEVE_DEBUG_DATA		0x006a
+> +#define HVCALL_RESET_DEBUG_SESSION		0x006b
+>  #define HVCALL_RETARGET_INTERRUPT		0x007e
+>  #define HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE 0x00af
+>  #define HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_LIST 0x00b0
+> @@ -177,6 +180,7 @@ enum HV_GENERIC_SET_FORMAT {
+>  #define HV_STATUS_INVALID_HYPERCALL_INPUT	3
+>  #define HV_STATUS_INVALID_ALIGNMENT		4
+>  #define HV_STATUS_INVALID_PARAMETER		5
+> +#define HV_STATUS_OPERATION_DENIED		8
+>  #define HV_STATUS_INSUFFICIENT_MEMORY		11
+>  #define HV_STATUS_INVALID_PORT_ID		17
+>  #define HV_STATUS_INVALID_CONNECTION_ID		18
+> -- 
+> 2.26.2
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
 
-HTH
-Emil
 
-Examples:
-4)
- static int cdn_dp_mailbox_read(struct cdn_dp_device *dp)
- {
-+"  struct cdns_mhdp_device *mhdp = dp->mhdp;
-   int val, ret;
-
--  ret = readx_poll_timeout(readl, dp->regs + MAILBOX_EMPTY_ADDR,
-+  ret = readx_poll_timeout(readl, mhdp->regs_base + MAILBOX_EMPTY_ADDR,
-...
-   return fancy_readl(dp, MAILBOX0_RD_DATA) & 0xff;
- }
-
-5)
--static int cdn_dp_mailbox_read(struct cdn_dp_device *dp)
-+static int mhdp_mailbox_read(struct cdns_mhdp_device *mhdp)
- {
--  struct cdns_mhdp_device *mhdp = dp->mhdp;
-   int val, ret;
-...
--  return fancy_readl(dp, MAILBOX0_RD_DATA) & 0xff;
-+  return cdns_mhdp_bus_read(mhdp, MAILBOX0_RD_DATA) & 0xff;
- }
