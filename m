@@ -2,213 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B111EBA64
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385CD1EBA75
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 13:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgFBLbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 07:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgFBLbe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 07:31:34 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61181C061A0E;
-        Tue,  2 Jun 2020 04:31:34 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id 046472A17E6
-Subject: Re: [PATCH] vimc: debayer: Add support for ARGB format
-To:     kieran.bingham@ideasonboard.com,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Kaaira Gupta <kgupta@es.iitr.ac.in>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        laurent.pinchart@ideasonboard.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dafna Hirschfeld <dafna3@gmail.com>
-References: <20200528185717.GA20581@kaaira-HP-Pavilion-Notebook>
- <0ab57863-935d-3ab5-dfea-80a44c63ae18@collabora.com>
- <20200601121626.GA13308@kaaira-HP-Pavilion-Notebook>
- <273a36d8-fc87-f9d4-0cf2-15beddf1661c@collabora.com>
- <f927c8e3-73de-598d-130d-97b5380579e5@collabora.com>
- <3b4c4447-677c-08b9-9366-95a012f8f018@ideasonboard.com>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <cdcc42bf-b0dc-41b7-5104-eff8aa42feb2@collabora.com>
-Date:   Tue, 2 Jun 2020 08:31:26 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727788AbgFBLco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 07:32:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725966AbgFBLco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 07:32:44 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35BE72068D;
+        Tue,  2 Jun 2020 11:32:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591097563;
+        bh=8NYIhj0/kKsZqCFmjmwu9q0gjA28YKuqxfadnnfPUkU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0VBAOeBauhdWe72p5lqDnXQzLU7OUFL026MuZlgPoOtLPQnIQgcuGeX53dwDv6SjH
+         aTP13MEgG4KD3lsuLp7j39azO0Y/tTlYi1qDvlj8StFEz5xgAmFvRph8nNFNsKvi+h
+         y9tobRhav37jJEJ6i95k9H8Ed6Q9wb2sgMzsMYoE=
+Date:   Tue, 2 Jun 2020 12:32:41 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, nishakumari@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        rnayak@codeaurora.org
+Subject: Re: [PATCH v4 4/5] regulator: qcom: Add labibb driver
+Message-ID: <20200602113241.GE5684@sirena.org.uk>
+References: <20200602100924.26256-1-sumit.semwal@linaro.org>
+ <20200602100924.26256-5-sumit.semwal@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <3b4c4447-677c-08b9-9366-95a012f8f018@ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dFWYt1i2NyOo1oI9"
+Content-Disposition: inline
+In-Reply-To: <20200602100924.26256-5-sumit.semwal@linaro.org>
+X-Cookie: We are not a clone.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On 6/2/20 8:24 AM, Kieran Bingham wrote:
-> Hi Helen, Dafna,
-> 
-> On 02/06/2020 11:55, Helen Koike wrote:
->>
->> On 6/2/20 7:52 AM, Dafna Hirschfeld wrote:
->>>
->>> On 01.06.20 14:16, Kaaira Gupta wrote:
->>>> On Fri, May 29, 2020 at 05:43:57PM +0200, Dafna Hirschfeld wrote:
->>>>> Hi,
->>>>> Thanks for the patch
->>>>>
->>>>> I don't know how real devices handle ARGB formats,
->>>>> I wonder if it should be the part of the debayer.
->>>>
->>>> Hi! qcam tries to support BA24 as it is one of the formats that vimc
->>>> lists as its supported formats wih --list-formats. Shouldn't BA24 be
->>>> possible to capture with vimc?
->>>
->>> Hi,
->>> Just to clarify, when listing the supported formats of a video node, the node lists
->>> the formats that the video node as an independent media entity support.
->>> It does not mean that the 'camera' as a whole (that is, the media topology graph) supports
->>> all the formats that the video node lists. When interacting with a video node or
->>> a subdevice node, one interacts only with that specific entity.
->>> In the case of vimc, the RGB video node as an independent entity supports BA24 so the format
->>> appears in the list of the its supported formats. But since the Debayer does not
->>> support it, the format can not be generated by the entire vimc topology.
->>> This is not a bug.
->>
->> This is also my understanding.
->>
->> You should have an -EPIPE error when start streaming though, it shouldn't fail silently.
-> 
-> Yes, we had -EPIPE, and that is what I think we were trying to resolve.
-> 
-> How would userspace be expected to detect what formats to use ? Should
-> the available formats on the capture node depend on the current linking
-> of the media graph?
+--dFWYt1i2NyOo1oI9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This is a good question, I don't recall v4l2 API defining this.
+On Tue, Jun 02, 2020 at 03:39:23PM +0530, Sumit Semwal wrote:
 
-It would be a bit hard to implement in Vimc, specially when we have configfs
-for custom topology, since the capture would need to query all the pipeline.
-But could be implemented.
+> +static int qcom_labibb_regulator_is_enabled(struct regulator_dev *rdev)
+> +{
+> +	int ret;
+> +	unsigned int val;
+> +	struct labibb_regulator *reg = rdev_get_drvdata(rdev);
+> +
+> +	ret = regmap_read(reg->regmap, reg->base + REG_LABIBB_STATUS1, &val);
+> +	if (ret < 0) {
+> +		dev_err(reg->dev, "Read register failed ret = %d\n", ret);
+> +		return ret;
+> +	}
+> +	return !!(val & LABIBB_STATUS1_VREG_OK_BIT);
+> +}
 
-> 
-> Otherwise, to know what formats are supported - userspace must first
-> 'get a list of formats' then try to 'set' the formats to know what is
-> possible?
+This should be a get_status() callback...
 
-At the moment yes.
+> +static int qcom_labibb_regulator_enable(struct regulator_dev *rdev)
+> +{
+> +	return regulator_enable_regmap(rdev);
+> +}
+> +
+> +static int qcom_labibb_regulator_disable(struct regulator_dev *rdev)
+> +{
+> +	return regulator_disable_regmap(rdev);
+> +}
 
-> 
-> Or should (given VIMC is quite specialist anyway) userspace 'just know'
-> what is capable all the same?
-> 
-> That's possibly fine, as we can simply remove support for the ARGB
-> formats from the libcamera pipeline handler if it is never expected to
-> be supported.
+...is_enabled() should just be regulator_is_enabled_regmap() and these
+functions should just be removed entirely, you can use the regmap
+operations directly as the ops without the wrapper.
 
-With the configfs feature, you could build a topology with sensor->capture,
-and ARGB would be supported.
+> +	match = of_match_device(qcom_labibb_match, &pdev->dev);
+> +	if (!match)
+> +		return -ENODEV;
+> +
+> +	for (reg_data = match->data; reg_data->name; reg_data++) {
+> +		child = of_get_child_by_name(pdev->dev.of_node, reg_data->name);
+> +
+> +		if (WARN_ON(child == NULL))
+> +			return -EINVAL;
 
-> 
-> But then as a further question - what formats will we expect VIMC to
-> support? VIVID has a (very) wide range of formats.
-> 
-> Would we ever expect VIMC to be as configurable?
-> Or is the scope limited to what we have today?
+This feels like the DT bindings are confused - why do we need to search
+like this?
 
-I know it is very limited atm, but I would like to increase the range, I'm just
-with a limited bandwitdh to work on it.
+> +		dev_info(dev, "Registering %s regulator\n", child->full_name);
 
-Thanks,
-Helen
+This is noise, remove it.  The regulator framework will announce new
+regulators anyway.
 
-> 
-> --
-> Regards
-> 
-> Kieran
-> 
-> 
-> 
->> Regards,
->> Helen
->>
->>>
->>> Hope t was helpful,
->>> Dafna
->>>  
->>>>
->>>> If yes, which entity should support it, if not debayer? Should there be
->>>> a separate conversion entity, or should we keep the support in debayer
->>>> itself for efficiency issues?
->>>>
->>>>>
->>>>>
->>>>> On 28.05.20 20:57, Kaaira Gupta wrote:
->>>>>> Running qcam for pixelformat 0x34324142 showed that vimc debayer does
->>>>>> not support it. Hence, add the support for Alpha (255).
->>>>>
->>>>> I would change the commit log to:
->>>>>
->>>>> Add support for V4L2_PIX_FMT_RGB24 format in the debayer
->>>>> and set the alpha channel to constant 255.
->>>>>
->>>>> Thanks,
->>>>> Dafna
->>>>>
->>>>>>
->>>>>> Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
->>>>>> ---
->>>>>>    .../media/test-drivers/vimc/vimc-debayer.c    | 27 ++++++++++++-------
->>>>>>    1 file changed, 18 insertions(+), 9 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/media/test-drivers/vimc/vimc-debayer.c b/drivers/media/test-drivers/vimc/vimc-debayer.c
->>>>>> index c3f6fef34f68..f34148717a40 100644
->>>>>> --- a/drivers/media/test-drivers/vimc/vimc-debayer.c
->>>>>> +++ b/drivers/media/test-drivers/vimc/vimc-debayer.c
->>>>>> @@ -62,6 +62,7 @@ static const u32 vimc_deb_src_mbus_codes[] = {
->>>>>>        MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
->>>>>>        MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA,
->>>>>>        MEDIA_BUS_FMT_RGB888_1X32_PADHI,
->>>>>> +    MEDIA_BUS_FMT_ARGB8888_1X32
->>>>>>    };
->>>>>>    static const struct vimc_deb_pix_map vimc_deb_pix_map_list[] = {
->>>>>> @@ -322,15 +323,23 @@ static void vimc_deb_process_rgb_frame(struct vimc_deb_device *vdeb,
->>>>>>        unsigned int i, index;
->>>>>>        vpix = vimc_pix_map_by_code(vdeb->src_code);
->>>>>> -    index = VIMC_FRAME_INDEX(lin, col, vdeb->sink_fmt.width, 3);
->>>>>> -    for (i = 0; i < 3; i++) {
->>>>>> -        switch (vpix->pixelformat) {
->>>>>> -        case V4L2_PIX_FMT_RGB24:
->>>>>> -            vdeb->src_frame[index + i] = rgb[i];
->>>>>> -            break;
->>>>>> -        case V4L2_PIX_FMT_BGR24:
->>>>>> -            vdeb->src_frame[index + i] = rgb[2 - i];
->>>>>> -            break;
->>>>>> +
->>>>>> +    if (vpix->pixelformat == V4L2_PIX_FMT_ARGB32) {
->>>>>> +        index =  VIMC_FRAME_INDEX(lin, col, vdeb->sink_fmt.width, 4);
->>>>>> +        vdeb->src_frame[index] = 255;
->>>>>> +        for (i = 0; i < 3; i++)
->>>>>> +            vdeb->src_frame[index + i + 1] = rgb[i];
->>>>>> +    } else {
->>>>>> +        index =  VIMC_FRAME_INDEX(lin, col, vdeb->sink_fmt.width, 3);
->>>>>> +        for (i = 0; i < 3; i++) {
->>>>>> +            switch (vpix->pixelformat) {
->>>>>> +            case V4L2_PIX_FMT_RGB24:
->>>>>> +                vdeb->src_frame[index + i] = rgb[i];
->>>>>> +                break;
->>>>>> +            case V4L2_PIX_FMT_BGR24:
->>>>>> +                vdeb->src_frame[index + i] = rgb[2 - i];
->>>>>> +                break;
->>>>>> +            }
->>>>>>            }
->>>>>>        }
->>>>>>    }
->>>>>>
-> 
+--dFWYt1i2NyOo1oI9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7WONgACgkQJNaLcl1U
+h9BWjwgAgnVxrlieHh9AH/2qQhpxWtvryQlFpO+YrWNrGAC38xh3OCdOu4v3RtHO
+XA5PIkwX6cfQBCmdPO0xPzJNIZ8xXpkF8BTeBA2NwJZuyzjz7QvLnvPz8iwBQBcn
+eQSdw+y0kmRkSQo52S4JLL1q1HEJohebQ5ZvpOGFWVWYFMGm6xiIist03Kgsjav7
+w0d2WQ60HbG4CS+Wu9Eol/DLNeXFQXrdDlL/XGni+L41XbsQ/JwFkod/Pn/B0UnB
+m5ITBspUSfNG+nEGGWHHrQh1sxv1EjVYsOvfe33eleTnmEpXQKFBCLTkoQAnI8z+
+Cdf/O4avA4nPwuxRStgnozgEN4IuCA==
+=kLbo
+-----END PGP SIGNATURE-----
+
+--dFWYt1i2NyOo1oI9--
