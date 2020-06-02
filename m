@@ -2,89 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF6E1EB98F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87821EB99A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 12:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgFBK0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 06:26:08 -0400
-Received: from ozlabs.org ([203.11.71.1]:39659 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727788AbgFBKZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 06:25:26 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49bp8N3T04z9sSg;
-        Tue,  2 Jun 2020 20:25:24 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1591093524;
-        bh=bN3rqa6f6l9DlK7L1JNF8T+VNnchQEaRZ8dgVazwIy8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=R1/NZBR10nlS7ll7pX2mk/fNINJZy+PwyKktbGIg2EldKGyP0lxI5mgaKPeLTkw0J
-         Hvmu/kSOTp6jQk7f4Agg10q2+XVIS+yJmDllATSjHioYsrlvDS6zl2VVvZf1sp0nk4
-         ZIJ8LLounljxtQZLdSkXQeszAvrAzyWj7rNLXtT280ij0Khs1Ft2Vv4IICTNrtVbE3
-         RhOmX5FIAprMv5VTOhaK1SqrgvflqBIGCut8PW2ETD2y0VFUxVDbs1pNsasLeNDHGk
-         LtEM42rX1w91hdpauSeBzYJtNrjkN9jlVUnxQn6cxo6+eLpw4foZIhPeTLZhoZ7xaw
-         t9t9p1jZvievw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/32: disable KASAN with pages bigger than 16k
-In-Reply-To: <afb1a3a9-8d7d-4c99-d42f-f6d78dcef0a5@csgroup.eu>
-References: <7195fcde7314ccbf7a081b356084a69d421b10d4.1590660977.git.christophe.leroy@csgroup.eu> <afb1a3a9-8d7d-4c99-d42f-f6d78dcef0a5@csgroup.eu>
-Date:   Tue, 02 Jun 2020 20:25:48 +1000
-Message-ID: <87ftbdix1v.fsf@mpe.ellerman.id.au>
+        id S1726814AbgFBK1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 06:27:47 -0400
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:42953 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726110AbgFBK1p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 06:27:45 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id g48xjX0vFCKzeg490jIunX; Tue, 02 Jun 2020 12:27:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1591093662; bh=iuv0MyxiDVS1VP2KQKdfxyHqb0vjm3MOthTbbsyfbPQ=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=VYwKIl5kMJ5R+E27jJvlC58ntB0zcL/5dTUuoQ5KtCgGfStECfjXvK/I1kC3RMfX9
+         xcN6zpYj9Xpa5XX0l3WyfpvehX19yx8aVDWzmI7ZrDchd24DnYYAPdANe0AcsD3/jv
+         04ds24dCi8Vu29bWhhJbXLlcpbcb4K0P40W1YnoAq53v0Wojr1ode7LUqfjwvEnNhI
+         VelZrI1SrqShZ3nox17rh0xtXOapoaxzOfpbxGAjLAs13Mr4EyUYjFM0wx7HWwU5lf
+         8OCTdqFyQzBATSaOu72SSAQayF4/yesOaUWnR63l6/TYtexMaxhBTwIXKZ4vfyLU9X
+         IUvFaBI5MOKrw==
+Subject: Re: [PATCH v6 03/14] videobuf2: handle V4L2 buffer cache flags
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Hans Verkuil <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+References: <20200514160153.3646-1-sergey.senozhatsky@gmail.com>
+ <20200514160153.3646-4-sergey.senozhatsky@gmail.com>
+ <b34ae09b-7c20-7255-6adc-3370680555cd@xs4all.nl>
+ <20200602101834.GA617@jagdpanzerIV.localdomain>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <9ec2618b-0cce-b00e-08cf-b579d9aa1d5d@xs4all.nl>
+Date:   Tue, 2 Jun 2020 12:27:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20200602101834.GA617@jagdpanzerIV.localdomain>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfA7xmdWiozyMD6B5+eR1LK/gS74fhnvHCQZ7gp2EFkWbTN6gaRN2tooo5agavEOzbxm+ZFbaIivhiMIblhLhBthNmEX07pxRPFHUOyRFAb2C7ameIUDb
+ IkVlDSlEJsbUv7lOlIya7A3i3uZP2EgL8KcohM7lzMcSL/PRohvVRX9nALZuSCVFbplebdR9RWyd3BhoojSTTBex/20cCK5KTb3v1+63c4tpdTe360q9LThK
+ O/gnogKSSaBcvLeN9FQKlqF5K+Zwcdq9RFs9ZwGz4prNdpCbi4sSB5FCINquzm+iiXbr2INzF7Ik5ehxYOMQC35iIolBJ7397+f366aptWlLDXkp8R14/MjM
+ 0jp2pAfRYuKr+Y49en1iOR8IJmb1lVxvUTsH80UQW+w2o+j52KA=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 28/05/2020 =C3=A0 12:17, Christophe Leroy a =C3=A9crit=C2=A0:
->> Mapping of early shadow area is implemented by using a single static
->> page table having all entries pointing to the same early shadow page.
->> The shadow area must therefore occupy full PGD entries.
->>=20
->> The shadow area has a size of 128Mbytes starting at 0xf8000000.
->> With 4k pages, a PGD entry is 4Mbytes
->> With 16k pages, a PGD entry is 64Mbytes
->> With 64k pages, a PGD entry is 256Mbytes which is too big.
->
-> That's for 32k pages that a PGD is 256Mbytes.
->
-> With 64k pages, a PGD entry is 1Gbytes which is too big.
->
-> Michael, can you fix the commit log ?
+On 02/06/2020 12:18, Sergey Senozhatsky wrote:
+> Hi Hans,
+> 
+> On (20/06/02 11:51), Hans Verkuil wrote:
+>> Hi Sergey,
+>>
+>> While doing final testing for this patch series (together with the v4l-utils patch)
+>> I found one remaining issue:
+> 
+> Thanks for the report.
+> 
+>>> +static void set_buffer_cache_hints(struct vb2_queue *q,
+>>> +				   struct vb2_buffer *vb,
+>>> +				   struct v4l2_buffer *b)
+>>> +{
+>>> +	/*
+>>> +	 * DMA exporter should take care of cache syncs, so we can avoid
+>>> +	 * explicit ->prepare()/->finish() syncs. For other ->memory types
+>>> +	 * we always need ->prepare() or/and ->finish() cache sync.
+>>> +	 */
+>>> +	if (q->memory == VB2_MEMORY_DMABUF) {
+>>> +		vb->need_cache_sync_on_finish = 0;
+>>> +		vb->need_cache_sync_on_prepare = 0;
+>>> +		return;
+>>> +	}
+>>> +
+>>> +	/*
+>>> +	 * Cache sync/invalidation flags are set by default in order to
+>>> +	 * preserve existing behaviour for old apps/drivers.
+>>> +	 */
+>>> +	vb->need_cache_sync_on_prepare = 1;
+>>> +	vb->need_cache_sync_on_finish = 1;
+>>> +
+>>> +	if (!vb2_queue_allows_cache_hints(q)) {
+>>> +		/*
+>>> +		 * Clear buffer cache flags if queue does not support user
+>>> +		 * space hints. That's to indicate to userspace that these
+>>> +		 * flags won't work.
+>>> +		 */
+>>> +		b->flags &= ~V4L2_BUF_FLAG_NO_CACHE_INVALIDATE;
+>>> +		b->flags &= ~V4L2_BUF_FLAG_NO_CACHE_CLEAN;
+>>> +		return;
+>>> +	}
+>>
+>> These two flags need to be cleared for VB2_MEMORY_DMABUF as well in the test above.
+>> This bug is causing v4l2-compliance failures (use the test-media script in contrib/test
+>> in v4l-utils: 'sudo test-media vim2m').
+> 
+> Sorry, Hans, do you suggest to have something like this:
+> 
+> 	if (q->memory == VB2_MEMORY_DMABUF) {
+> 		vb->need_cache_sync_on_finish = 0;
+> 		vb->need_cache_sync_on_prepare = 0;
+> 		b->flags &= ~V4L2_BUF_FLAG_NO_CACHE_INVALIDATE;
+> 		b->flags &= ~V4L2_BUF_FLAG_NO_CACHE_CLEAN;
+> 		return;
+> 	}
+> 
+> I didn't clear the ->flags there because we clear the vb flush/sync
+> flags: ->need_cache_sync_on_finish/prepare are zeros for DMABUF memory
+> type. Which is equivalent to passing V4L2_BUF_FLAG_NO_CACHE_INVALIDATE
+> V4L2_BUF_FLAG_NO_CACHE_CLEAN. IOW we would clearing both "vb's do cache
+> sync" and request's "do not cache sync".
 
-Yes.
+Ah, yes. In that case the v4l-utils patch is likely wrong. Can you take a
+look at that patch?
 
-  powerpc/32: Disable KASAN with pages bigger than 16k
-=20=20
-  Mapping of early shadow area is implemented by using a single static
-  page table having all entries pointing to the same early shadow page.
-  The shadow area must therefore occupy full PGD entries.
-=20=20
-  The shadow area has a size of 128MB starting at 0xf8000000.
-  With 4k pages, a PGD entry is 4MB
-  With 16k pages, a PGD entry is 64MB
-  With 64k pages, a PGD entry is 1GB which is too big.
-=20=20
-  Until we rework the early shadow mapping, disable KASAN when the page
-  size is too big.
+In any case, *something* is wrong.
 
-  Fixes: 2edb16efc899 ("powerpc/32: Add KASAN support")
-  Cc: stable@vger.kernel.org # v5.2+
-  Reported-by: kbuild test robot <lkp@intel.com>
-  Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-  Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-  Link: https://lore.kernel.org/r/7195fcde7314ccbf7a081b356084a69d421b10d4.=
-1590660977.git.christophe.leroy@csgroup.eu
+Regards,
 
+	Hans
 
-cheers
+> 
+>> It's enough to post a v6.1 for this patch, everything else is fine.
+> 
+> Thanks!
+> 
+> 	-ss
+> 
+
