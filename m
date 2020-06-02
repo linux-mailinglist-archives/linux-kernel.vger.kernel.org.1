@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69891EBF2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 17:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B731EBF3A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 17:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgFBPj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 11:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41804 "EHLO
+        id S1727032AbgFBPnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 11:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgFBPjZ (ORCPT
+        with ESMTP id S1726000AbgFBPnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 11:39:25 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E10C08C5C0;
-        Tue,  2 Jun 2020 08:39:24 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id nu7so1558304pjb.0;
-        Tue, 02 Jun 2020 08:39:24 -0700 (PDT)
+        Tue, 2 Jun 2020 11:43:17 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B252C08C5C0;
+        Tue,  2 Jun 2020 08:43:17 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id r10so2270353vsa.12;
+        Tue, 02 Jun 2020 08:43:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fCLWRAj6WHhP+ObXwD/pQyps8oF17BSxdX9gcDmUZ5M=;
-        b=pYX+IbGFVr/4qqRHb5kRjVgsVNJywwsLdY5LnuVhvmvbiGoFVS9JFPZZmAZcUUjdUx
-         17jyd9swcx/riFEjI2EPmREzbCpX4L+KbQjnq8uId4tpci0z1KkY1ydsoDh9mjkt/lsQ
-         KvqahWYTihDV7jJkHss2j23dHFLnPIwHH4muKUXhbIuFAbxlc1ib0sqeqPeAXRbsf2gn
-         wMlfw5iE5+82xDhtiUcH9lZ2LjiFO0Q18LzILiH/AjH2dWOVpIHroxi3cye70Vttht45
-         p4NgKs1ziO5yv5/YpdJ5Xn+KBOIdJ3LyMXSahsiA9kTaNEnK4E9Zaa8Veb9eIt19hBou
-         xm4Q==
+        bh=DYngnraAO9v6DgzTxyaGpMxNWkQ9LAzLsVZUZnOMctU=;
+        b=Rih8KGyBH40LBX8n/poZKv9x/eVmj1SMH3+mvtzB7ahZBXpM5zgOl/2ZZZrpYuDWWp
+         VrJEejMmZIzUOLmIWwoivs3brFbI2xHxVTdrDsbBlbr5G7rSN5pv/CU5K0PJS8Kzh8uk
+         rry00PFj7iBcTa7YWVz4K5PqexXAPP6EDn7ekuYRbDjC1O8XAq0CD66pG29XOMU+Q1bM
+         Z02BfsJWl5GocDb3k8jII1nKOTf+9vdgXXPLSeXNPgHysUxG0R6LQwywuPpauFCeB9sc
+         QZ4soiAEvByi7k97gMxFnAM6Vnde9bkAzowzbsaTr2NORJ3UOZteslq/IzFns5zsIZY0
+         BCWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fCLWRAj6WHhP+ObXwD/pQyps8oF17BSxdX9gcDmUZ5M=;
-        b=Tb8WyjcPG4/P2a7ZE4oRFd3lVwFeSJr//U3qEjRaB9lLUdM1x0yknnsiA/WnQCAgCn
-         Zee05wNwkG6fK6+PDsi3mvZ27Ksf07pMWezo25lrX/gxaKjFj6aTelsvg4Qz898BDDf/
-         M4fuMDgZ51g7ZqSgmpfpCLF2Y6eJl3HeOiCFCYfGeY6E9C6sgCCgVILlkfgCif+kgecG
-         O9cl6P3gy/am1IUvhvNaFPvtoD3bNY0rJYFsc5wSSgwaiW2JKm3Uo2tD7m6X12k/vGq+
-         DZDu5cg4vxOMLSl1IzsFNchYrVFS010TtRPfAkab5T+9AtB6aMKfp+UpIwcuihrw8xG1
-         zLlg==
-X-Gm-Message-State: AOAM531WnqREvvqM1I95Ts/eLZGnUJF+XFgVaS4grANRQy0OzdA0QV+h
-        qRqdu4CnY2EFbziSBXAu3m7piRVeLktCEPrwRdKuniqGu98=
-X-Google-Smtp-Source: ABdhPJw+pAar+vtUn4AwgUT0o2Iuxy0FG7fSieSNVJ9T1qGejv6fs7xmWgK3SbEGwklxDEF73pROvDThMsFErvvXCrE=
-X-Received: by 2002:a17:90a:ac05:: with SMTP id o5mr6420217pjq.228.1591112364465;
- Tue, 02 Jun 2020 08:39:24 -0700 (PDT)
+        bh=DYngnraAO9v6DgzTxyaGpMxNWkQ9LAzLsVZUZnOMctU=;
+        b=JomhvyBId5jbtZNjLoF5RDP1XLdZdK4YtBa5u4Oxj+3yUNVhF4m6m6OhToXeMmVb0z
+         +LW9IDOwaqMhoVHUcVdgEwY52gFhuo4qgBMIxvANq9hTXc9RirSa5RgSG07hVRyzAoKp
+         Qt6XMeAWwl9xFnkGP5R8Ffq9zl9qLkZtEaLgI6+dRVhx5eKDAQrBPpYDaAV+MSNSflwJ
+         E3ksEQK0SjrwKu3lhEsoxrHWEZH2O9G2M4YrpW4iNg81sq3M4UFq0Z0LJL3ow+UTlG05
+         KMF8EJ2F7GzOEPrWyBcKpg7nGuz5MxZxZQ7ArjPFY+MXYcUepjMoxo/xgwa8nPaRqbXp
+         oH/A==
+X-Gm-Message-State: AOAM533xdUpXtT9oPV3rktRe0yLKfOQNghft9eJ3jhABMq6Bt29VbvmM
+        yAVF/9cUf1sALfCdjAO8rtPcl7+kgf0CdV46eFZ/Fg==
+X-Google-Smtp-Source: ABdhPJzkda1ykteQq6BwLnY+Dxu+T8WkWOO2Mx3/6MCrDeWYhdFyjxNXaMlq4pyJjgaKfSkcyDdktLKjZsXYe1+o4Pg=
+X-Received: by 2002:a67:b149:: with SMTP id z9mr17431445vsl.85.1591112596522;
+ Tue, 02 Jun 2020 08:43:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200602092118.32283-1-piotr.stankiewicz@intel.com>
-In-Reply-To: <20200602092118.32283-1-piotr.stankiewicz@intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 2 Jun 2020 18:39:12 +0300
-Message-ID: <CAHp75VfEcm-Mmo7=i40sJ0RqpOgFRpJHxQ9ePWvvqsyRp+=9GA@mail.gmail.com>
-Subject: Re: [PATCH 14/15] net: hns3: use PCI_IRQ_MSI_TYPES where appropriate
-To:     Piotr Stankiewicz <piotr.stankiewicz@intel.com>
-Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1591009402-681-1-git-send-email-mkrishn@codeaurora.org>
+ <CACvgo50eb5_jp_6B5tkV9cX_X2_y2Xnavu+wvUUhHN5FsV9hiw@mail.gmail.com> <cd61dd742e73b89794fc1b812d9fdcd9@codeaurora.org>
+In-Reply-To: <cd61dd742e73b89794fc1b812d9fdcd9@codeaurora.org>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Tue, 2 Jun 2020 16:39:58 +0100
+Message-ID: <CACvgo50b+m2+onak=AZfgihkBXEP9POjMR52087v==-puLdkQQ@mail.gmail.com>
+Subject: Re: [v2] drm/msm: add shutdown support for display platform_driver
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno@lists.freedesktop.org,
+        devicetree <devicetree@vger.kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Sean Paul <seanpaul@chromium.org>, kalyan_t@codeaurora.org,
+        "Kristian H . Kristensen" <hoegsberg@chromium.org>,
+        mka@chromium.org, devicetree-owner@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 12:26 PM Piotr Stankiewicz
-<piotr.stankiewicz@intel.com> wrote:
+On Tue, 2 Jun 2020 at 15:49, Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
 >
-> Seeing as there is shorthand available to use when asking for any type
-> of interrupt, or any type of message signalled interrupt, leverage it.
+> Hi Emil,
+>
+> On 2020-06-02 19:43, Emil Velikov wrote:
+> > Hi Krishna,
+> >
+> > On Tue, 2 Jun 2020 at 08:17, Krishna Manikandan
+> > <mkrishn@codeaurora.org> wrote:
+> >>
+> >> Define shutdown callback for display drm driver,
+> >> so as to disable all the CRTCS when shutdown
+> >> notification is received by the driver.
+> >>
+> >> This change will turn off the timing engine so
+> >> that no display transactions are requested
+> >> while mmu translations are getting disabled
+> >> during reboot sequence.
+> >>
+> >> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
+> >>
+> > AFAICT atomics is setup in msm_drm_ops::bind and shutdown in
+> > msm_drm_ops::unbind.
+> >
+> > Are you saying that unbind never triggers? If so, then we should
+> > really fix that instead, since this patch seems more like a
+> > workaround.
+> >
+>
+> Which path do you suppose that the unbind should be called from, remove
+> callback? Here we are talking about the drivers which are builtin, where
+> remove callbacks are not called from the driver core during
+> reboot/shutdown,
+> instead shutdown callbacks are called which needs to be defined in order
+> to
+> trigger unbind. So AFAICS there is nothing to be fixed.
+>
+Interesting - in drm effectively only drm panels implement .shutdown.
+So my naive assumption was that .remove was used implicitly by core,
+as part of the shutdown process. Yet that's not the case, so it seems
+that many drivers could use some fixes.
 
-...
-
->         vectors = pci_alloc_irq_vectors(pdev, HNAE3_MIN_VECTOR_NUM,
-> -                                       hdev->num_msi,
-> -                                       PCI_IRQ_MSI | PCI_IRQ_MSIX);
-> +                                       hdev->num_msi, PCI_IRQ_MSI_TYPES);
-
-...
-
->                 vectors = pci_alloc_irq_vectors(pdev, HNAE3_MIN_VECTOR_NUM,
-
->                                                 hdev->num_msi,
-> -                                               PCI_IRQ_MSI | PCI_IRQ_MSIX);
-> +                                               PCI_IRQ_MSI_TYPES);
-
-One line as above?
-
--- 
-With Best Regards,
-Andy Shevchenko
+Then again, that's an existing problem which is irrelevant for msm.
+-Emil
