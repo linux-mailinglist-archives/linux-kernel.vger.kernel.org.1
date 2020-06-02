@@ -2,61 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA851EBB81
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D47E1EBB91
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgFBMVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:21:04 -0400
-Received: from sonic315-13.consmr.mail.bf2.yahoo.com ([74.6.134.123]:36383
-        "EHLO sonic315-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725940AbgFBMVD (ORCPT
+        id S1726817AbgFBMW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:22:27 -0400
+Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:45571 "EHLO
+        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728091AbgFBMV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:21:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591100462; bh=WCnWLq8BPrdCMbkdv9jA9CokrT0OCUMl5RLneP5fHRo=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Fpu4N7+0WfXO35eCxO+cPvRQF3yXA0Xu6GrAPzxxmbb+5uiFXGhbBhmKiiU7v0gmBEMyTDN1crXu8eSftMipGRJ/v+Q9HbDqVw0iLjqVob36RxRjP66tdBc0937ls9/CoxfkvLGFr/rZBdZkrafTYufxLZaByvJtk+SliDZOZqregRm7lE2wCX9lvxntxaUBBfzgAORvkpbE+itmP0SM7TxoclOxOQ7B2qKyfh4xU0e0cU4uT3xRWlOAm4F/Ng7+A/ci2/GzfHk/S4SuQHNCYs7nH6JFuMt0s0vikL7A+fc2EvF8tPCtpAX07XXuukXaXUFBcYDvdPgep7VB0kwd8A==
-X-YMail-OSG: WKvQns4VM1m3jH65x9k9RB6_zK0c_gBGjn7L90fpwfzXjMnVlu9JTgjfpcK3Htz
- 9uDPcHh3XlikRdClpTuYorbhf5L00nc51AdJ0KrXKzbdHgK5Ok79.Dgsp7H23iQH_KgG90GHVcR9
- eanK.Trj0ZaswzbT9NJN6fcaU2Qfvxn7F_OEySam_UBJc0awK6CPd6YYFp5QHJvzTvC.YvuIDDdx
- 9.qqfEl9lS9PiIKqxgtZ95EmabxItCW.AstMcVGqE3VMHKen24kFKB2oti.uHiZriT8kJs7A3CdY
- JuVx1dsCw4ymNQDeKLLWLqa7opB6umA4LM_554JmirVAhNuC7wK_AEqziO3U3C8Xy0HR9HMs8UJB
- JUfmrl3R0T79r8EzLWXpQlEHk3KxDNubgqjPOml2_EbJBgiZart5AAcH5sYERPo0kaI.Gei0KhkO
- YxAdVvmW8V16hgSYmTjimvj3IoQk6QORGztR.LcTXyFmCEcfBKqyFNFVCqF0X.b0Z_Xu2PIXmtBg
- KbkaSyYfrmn1X7ZwexKIM_OwBdc14knGntE0uMDWKRsrkC6gxsOSTHtUaV3Q7f7Wh70O8y8r3u7K
- BJbxGZ2908RdueD4TRI1cGWgvfMQNUXHamk7fpi9XYRM9nQpKQlJBb6j04Vt63wqXjD35RWYD574
- 2U6uoTqzAPuMpVpQTsPeAdUEIzRMd4e7vSYu7vmqut9P8FWRgzjTnMJoewaETmz47kpthPoqB8q5
- EYmhSt1IaC4NyDfy_XF_I2AFVcuW2uXwBJL9_eH5_GLi6PaCaWHb9p0p2yxbUrKP8iBhnUWn43XL
- zhbjDzBvv5Mar18.0Slh6UmU434jaXlYRnMc2LtT98HZ216_0EU8jnlgc74Qc8VQLEuBxp5zf89h
- uOX9HCvdfVHQio0RKu6MQUtybodAlq6pWN085X0zBguZvlGKjv98qGpzPUm1AKVSZv5Oy37c632x
- ibl8.DCVyV95AMPbQI2dldquNS_B47gsBIsw9YRbo6tH2cfzJ3qpNJlgo6cyHYQ1c_.0poCX4qCW
- aSI1h2Muu2GR60vmygFPSvKY9cuWqATs2VPPQ5CU6rCmjpBaB3tm6lztyMOCTFlXHFfoR4fZVYT1
- X1E1tpTmjKNtirwAXjGW4l_h_KaVr.viXp1J.F1oX6eoP_cGPKj6pJFoohfPeY5_Ps6e0FMsfqEZ
- BLgjnEdsKHsUytzcfZJi6mwyYGVTPQohO_xhyrQz1DhuaxSMsMdw9lzWSKfrVznKMeBZuFUYKFaT
- BGH_NQ.Q2VHk83h27QS1EAsLC3rR7GuJvu.F1WequBVm8NyeIdvNM8HFIrKtKtQbfftmhOLMKS6t
- D50Y6Dc5aUOvASst8VMvFu7JbTJbn2GBqBXmv
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.bf2.yahoo.com with HTTP; Tue, 2 Jun 2020 12:21:02 +0000
-Date:   Tue, 2 Jun 2020 12:20:59 +0000 (UTC)
-From:   Richard Kabore <richardkabore1212@gmail.com>
-Reply-To: richard.kabore122@gmail.com
-Message-ID: <154813635.953718.1591100459067@mail.yahoo.com>
-Subject: PROPOSITION
+        Tue, 2 Jun 2020 08:21:28 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id g5uyjjRB3nv5ng5v2jpLOD; Tue, 02 Jun 2020 14:21:26 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1591100486; bh=wnxhpBOR8cxLlCxEru5iXAFOeqCtZF0eI6TnTRpTQ4k=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=mnj2X7BtqgiwxsqKNO/Gme6ym8NfylrxRhcToLZ2Jvv3pXnELWguDd0MQ9SrPJeic
+         vBE6fp1/oDqTDT7zfU1aJIr6L05uNZZsm9ctGubcWavmUJSJoVeCm/BfHyfUkQKDfG
+         M6UOwKF68yUJWQ1KuAyMkME94sS4Mta/H0wBl4FwJPDnK0H2oY7K6ertG+WQDjqRvX
+         r+SrtwlqUBAl/omOC0/PeSNBQebgliirOc9ujm2zrJtrdRXA/SEP5ril8AAEPGKoCZ
+         udHUGJm/1/hjH8ahdoBAn0JXxrFwvZolOBk+KY6KtHLWruzIkBiLCV1pIfOyplId4J
+         EZRKDh9MFG0Bw==
+Subject: Re: [PATCH v6 03/14] videobuf2: handle V4L2 buffer cache flags
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Hans Verkuil <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+References: <20200514160153.3646-1-sergey.senozhatsky@gmail.com>
+ <20200514160153.3646-4-sergey.senozhatsky@gmail.com>
+ <b34ae09b-7c20-7255-6adc-3370680555cd@xs4all.nl>
+ <20200602101834.GA617@jagdpanzerIV.localdomain>
+ <9ec2618b-0cce-b00e-08cf-b579d9aa1d5d@xs4all.nl>
+ <20200602121049.GB617@jagdpanzerIV.localdomain>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <9c6a347e-1cbf-3486-896a-124375fd225c@xs4all.nl>
+Date:   Tue, 2 Jun 2020 14:21:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200602121049.GB617@jagdpanzerIV.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-References: <154813635.953718.1591100459067.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+X-CMAE-Envelope: MS4wfB8xLrDohS5YChC2UdUEKUAgITcrA2xd5BVFjYQiOblLsFTmwikPFUXRvD8jTyG5ep3cDCjG/Sv7pz4guYWvnkNJzSSsVCsnsguovEkVK1jP6L7uNMQP
+ b+dT3G6UJ8Ihk2lGIa6OeA727A4s97n5qF+bN9c2DrNvROnxRG8sOkO/wZxl2Jk8Ajtn+Er1SyiVHVNzbXyLJKPunFQ9g5psaAP2AjWAR63W6n+Lw5H9Cnnt
+ s2wo1Uc2dfybHIUk6O7jw/xoCMctsfNNeJtz+DLSOkhwBLu7a72V1Ay2P9FoHi1bCOFPD7oaOZIVuub73834fNhQ1QuMTB17gnYIuWzo7AG/fDXO8XZMWiAw
+ C2ZpRGCs4QpOBWib4oQzgf7osEyUNSfhT1MTDEUCpVU9D1XcdFI=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 02/06/2020 14:10, Sergey Senozhatsky wrote:
+> On (20/06/02 12:27), Hans Verkuil wrote:
+> [..]
+>>> Sorry, Hans, do you suggest to have something like this:
+>>>
+>>> 	if (q->memory == VB2_MEMORY_DMABUF) {
+>>> 		vb->need_cache_sync_on_finish = 0;
+>>> 		vb->need_cache_sync_on_prepare = 0;
+>>> 		b->flags &= ~V4L2_BUF_FLAG_NO_CACHE_INVALIDATE;
+>>> 		b->flags &= ~V4L2_BUF_FLAG_NO_CACHE_CLEAN;
+>>> 		return;
+>>> 	}
+>>>
+>>> I didn't clear the ->flags there because we clear the vb flush/sync
+>>> flags: ->need_cache_sync_on_finish/prepare are zeros for DMABUF memory
+>>> type. Which is equivalent to passing V4L2_BUF_FLAG_NO_CACHE_INVALIDATE
+>>> V4L2_BUF_FLAG_NO_CACHE_CLEAN. IOW we would clearing both "vb's do cache
+>>> sync" and request's "do not cache sync".
+>>
+>> Ah, yes. In that case the v4l-utils patch is likely wrong.
+>> Can you take a look at that patch?
+> 
+> Hans, are we talking about "v4l2-utils: test cache_hints for MMAP queues"
+> patch? I can take a look, yes.
 
+Yes, that's the one.
 
-
-
-Dear Sir/Ma,
-
-Good day to you, i hope this message meet you in good fate. I have a proposition to offer which i know will be of immense benefit to both of us. I need you to work with me as my partner in executing a legitimate business deal. Kindly indicate your interest by replying to my private email on [richard.kabore122@gmail.com]
-
-Yours Sincerely,
-
-Mr Richard Kabore.
+	Hans
