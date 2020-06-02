@@ -2,128 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E6A1EC216
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907641EC21B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 20:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728080AbgFBSqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 14:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
+        id S1727872AbgFBSra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 14:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727011AbgFBSqo (ORCPT
+        with ESMTP id S1726000AbgFBSr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 14:46:44 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17202C08C5C2
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 11:46:44 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id m2so1963937pjv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 11:46:44 -0700 (PDT)
+        Tue, 2 Jun 2020 14:47:29 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E78BC08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 11:47:29 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id f89so2299957qva.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 11:47:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d4Fn6K9sSJmLeIDx+5ZYAe4QSbvn6y+nwpagCeGiUag=;
-        b=eKdiwwUZgObjzDiAaWXu1fITlLXmWFNVxyer43d44+MrNvL++Xiz3qSBGvd3qGRHjI
-         Tttx99hIYk/PtTW7oaCImk873psV+O0OzGhBXZ/uP9j5e0HmzUb/zO/QWkfmFl2vI2Kx
-         PJB9AzlQsUHdGfyk1Q1wimhqFQbpxBSBHlBtOPR+Jsot0TQVv/8KFMZ0z76tCvV50LQW
-         DWjAQ0Dr3AHCr/t/5eDi1u7XwiAkTtGOa01iij+qy8b+nONExiTZz0fOchK5yF/tO5zp
-         hVKs02MSt1EtfZRUA3Qu/ce5Dk2Z/2sDkv60pJ4ehO06t140xSTjfjem19mVvbE+RZte
-         VtDw==
+        d=lca.pw; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5Ek/i/6ax6ZbXrDVWsNeagdjRVYMfWWo92kpBvqURLc=;
+        b=LppZWpUdNriiyHnLSTR7EoXopJSgF50Fg0SDsKilB92+au5FkrfdbbZA88O7fiaujy
+         rCPGNy84abgA2FoZBfAqUz/sMIMNP0PByfkxmuoXEaUPPAZCkQfkn3spgV7hps6DIVCd
+         HviyA2Ulz80HeQ0A091ARwEy0YDbb1AnwdQrNIusvzgx6+RfL8xCAjqlPj+LqttT59eP
+         iYvcvnj3mpLI+JKoTTfhpKU+iVUvogrF1sFspdSEGfMEsVxpTHb0PpmjRD6rke/6BWsi
+         NWU7DrfwbCPNU74TcXLPLjv4FlHMA4Fis4qo0eEOvRl0tXgsjKnNz2gzPIjmv/P9OEhj
+         LYmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d4Fn6K9sSJmLeIDx+5ZYAe4QSbvn6y+nwpagCeGiUag=;
-        b=cghxUpJguYF7IYkSTi9YNenWXK2+AM7AJRmrpuVWgze1iZ53ajyjgkrVxzv0IIRlBc
-         Aq8fHFoIYtV86Raop5B+sddGC0KHR5jkWHctx+qxxOsdIquP2QSzm3E6CB7WEYEqkU+B
-         H1llOCAIPj2Xs5a7Wlao+dN57ztqfWaVuoIxMxWnviW3fsiMnAIGNUfU5hBPQVA2MOqo
-         zy2r8gajeDg0xoXMNlzcHJA/z/AT/t4E/JwXQrxfuNgbySXnPgTGzZH2go258A/bpNGW
-         7ktCcWY5w4W7Vlr6jzX3QzIlg314+WLDEK4sIguEnmXjUvvPLpqL+A8zZynNi7jAVnxJ
-         wCeQ==
-X-Gm-Message-State: AOAM532lZudskrk8r9PfRV3XyDM4J0B1AxSWseRMx6F8VZEJeC9xqj53
-        /4DZpvAc0O4Y1fOYppM3VSD4YYUd2C+3TLPCGlJkwg==
-X-Google-Smtp-Source: ABdhPJxnlzDD9LjX8NOXuBt0jcdY2ooVkC2hieTEZiEeTaqVi66E5hIZf0OS4CPzGdPPb39vpov2an7eKEIF2KO3vvA=
-X-Received: by 2002:a17:902:341:: with SMTP id 59mr24917643pld.119.1591123603136;
- Tue, 02 Jun 2020 11:46:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5Ek/i/6ax6ZbXrDVWsNeagdjRVYMfWWo92kpBvqURLc=;
+        b=SYxk+jQ3CN7Z+i4fmPJfr83UaWLA891c32dIrJYd9gJ/mvwwyJ1D00t2AeH8JPq/oI
+         O0ICfAR2fYWz+49I5x4mMj43Z7A6bw/hEWPBE+xKvYcrLKdJmrzEd0nnmZVdmMsQ/k0R
+         voV4sfQ7NKMrqsFJWVJMByyz9Opcc052x/j1cMBv+DHvTOvj0H99MxTqsshiNjfKPedg
+         iDgwyT12v43XBLhu25qBC5SvLsA6Chb5im1BG1OfmmtaeNAfRMpfcZ3c4kUSuATYHgVV
+         eQDdPkLJ+83f4aPa4kBePEQ61BKpX0a4YLcxzeZod9T7+9S7iVU7HU9E5ytsWAN69mv3
+         xKqw==
+X-Gm-Message-State: AOAM532Sc5erGtqlfsaN1GwmPh/hmexJ8+I2+4rLHNUmTLtqDODEHh9T
+        2m/xzlaUZtBplTphV8e7KU7VNphw4uffmQ==
+X-Google-Smtp-Source: ABdhPJz5qHBqjeOiFEIVRjToyL8LZDQGkfq2HX9tcEnka+4baxtizORgBdeZqLo9JIMzqtpopg6JBg==
+X-Received: by 2002:a05:6214:365:: with SMTP id t5mr11153638qvu.126.1591123648788;
+        Tue, 02 Jun 2020 11:47:28 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id l2sm3708904qtc.80.2020.06.02.11.47.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 11:47:28 -0700 (PDT)
+Date:   Tue, 2 Jun 2020 14:47:20 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, luto@amacapital.net,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        sean.j.christopherson@intel.com, andrew.cooper3@citrix.com,
+        daniel.thompson@linaro.org, a.darwish@linutronix.de,
+        rostedt@goodmis.org, bigeasy@linutronix.de,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 11/14] x86/entry: Clarify irq_{enter,exit}_rcu()
+Message-ID: <20200602184720.GA1607@lca.pw>
+References: <20200529212728.795169701@infradead.org>
+ <20200529213321.359433429@infradead.org>
+ <20200602144235.GA1129@lca.pw>
+ <20200602150511.GH706478@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <CAMj1kXErFuvOoG=DB6sz5HBvDuHDiKwWD8uOyLuxaX-u8-+dbA@mail.gmail.com>
- <20200601231805.207441-1-ndesaulniers@google.com> <BYAPR11MB30969737340044437013BF44F08B0@BYAPR11MB3096.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB30969737340044437013BF44F08B0@BYAPR11MB3096.namprd11.prod.outlook.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 2 Jun 2020 11:46:31 -0700
-Message-ID: <CAKwvOdmsCmPFiDOq7AYUyEx=60B=qo8u9yhnJDQ6nd6Ew7xDkQ@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: fix UBSAN warning using __builtin_offsetof
-To:     "Kaneda, Erik" <erik.kaneda@intel.com>
-Cc:     "Moore, Robert" <robert.moore@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "glider@google.com" <glider@google.com>,
-        "guohanjun@huawei.com" <guohanjun@huawei.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "pcc@google.com" <pcc@google.com>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "will@kernel.org" <will@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200602150511.GH706478@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 1, 2020 at 5:03 PM Kaneda, Erik <erik.kaneda@intel.com> wrote:
+On Tue, Jun 02, 2020 at 05:05:11PM +0200, Peter Zijlstra wrote:
+> On Tue, Jun 02, 2020 at 10:42:35AM -0400, Qian Cai wrote:
+> 
+> > Reverted this commit fixed the POWER9 boot warning,
+> 
+> ARGH, I'm an idiot. Please try this instead:
 >
->
-> Hi,
->
-> > Will reported UBSAN warnings:
-> > UBSAN: null-ptr-deref in drivers/acpi/acpica/tbfadt.c:459:37
-> > UBSAN: null-ptr-deref in arch/arm64/kernel/smp.c:596:6
-> >
-> > Looks like the emulated offsetof macro ACPI_OFFSET is causing these. We
-> > can avoid this by using the compiler builtin, __builtin_offsetof.
->
-> I'll take a look at this tomorrow
-> >
-> > The non-kernel runtime of UBSAN would print:
-> > runtime error: member access within null pointer of type for this macro.
->
-> actypes.h is owned by ACPICA so we typically do not allow compiler-specific
-> extensions because the code is intended to be compiled using the C99 standard
-> without compiler extensions. We could allow this sort of thing in a Linux-specific
-> header file like include/acpi/platform/aclinux.h but I'll take a look at the error as well..
+> 
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index a3eb6eba8c41..c4201b7f42b1 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -438,7 +438,7 @@ void irq_exit_rcu(void)
+>   */
+>  void irq_exit(void)
+>  {
+> -	irq_exit_rcu();
+> +	__irq_exit_rcu();
+>  	rcu_irq_exit();
+>  	 /* must be last! */
+>  	lockdep_hardirq_exit();
 
-If I'm not allowed to touch that header, it looks like I can include
-<linux/stddef.h> (rather than my host's <stddef.h>) to get a
-definition of `offsetof` thats implemented in terms of
-`__builtin_offsetof`.  I should be able to use that to replace uses of
-ACPI_OFFSET.  Are any of these off limits?
-
-$ grep -rn ACPI_OFFSET
-arch/arm64/include/asm/acpi.h:34:#define ACPI_MADT_GICC_MIN_LENGTH
-ACPI_OFFSET(  \
-arch/arm64/include/asm/acpi.h:41:#define ACPI_MADT_GICC_SPE
-(ACPI_OFFSET(struct acpi_madt_generic_interrupt, \
-include/acpi/actbl.h:376:#define ACPI_FADT_OFFSET(f)             (u16)
-ACPI_OFFSET (struct acpi_table_fadt, f)
-drivers/acpi/acpica/acresrc.h:84:#define ACPI_RS_OFFSET(f)
-  (u8) ACPI_OFFSET (struct acpi_resource,f)
-drivers/acpi/acpica/acresrc.h:85:#define AML_OFFSET(f)
-  (u8) ACPI_OFFSET (union aml_resource,f)
-drivers/acpi/acpica/acinterp.h:17:#define ACPI_EXD_OFFSET(f)
-(u8) ACPI_OFFSET (union acpi_operand_object,f)
-drivers/acpi/acpica/acinterp.h:18:#define ACPI_EXD_NSOFFSET(f)
-(u8) ACPI_OFFSET (struct acpi_namespace_node,f)
-drivers/acpi/acpica/rsdumpinfo.c:16:#define ACPI_RSD_OFFSET(f)
- (u8) ACPI_OFFSET (union acpi_resource_data,f)
-drivers/acpi/acpica/rsdumpinfo.c:17:#define ACPI_PRT_OFFSET(f)
- (u8) ACPI_OFFSET (struct acpi_pci_routing_table,f)
-
--- 
-Thanks,
-~Nick Desaulniers
+This works fine.
