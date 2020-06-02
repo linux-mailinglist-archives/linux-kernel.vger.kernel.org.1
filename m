@@ -2,305 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315941EBB6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381791EBB5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgFBMSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:18:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgFBMSD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:18:03 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3630C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 05:18:01 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id c9so1146403uao.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 05:18:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WQd65JdrIuZXHebA6USGvqPn3CMVEk7jUwm6XZRDHjM=;
-        b=u5UFb2x7dOFvmbn54KARGcHKlOYMT19j0xlf6X5jRYfQNkt6PgwFEMkhjduczOuKUQ
-         3vo73JZvAtJ/lPsZx4DWk7FLqk1+pZ9cjldVGZ7HBkYwt6ClzgC2lFsd9ArRe0HxnTrA
-         1DNlNYhpU3n39O+yz/VtXsguV4j8mR9x0bgUfAWhKUQnKmRyMcOFEgsiQJ0ny0AHT6qs
-         vO95Nz3Ea1CaXvU9MtvuWiHyWkLScHhvP/MVxFys1t3669g3u4wxlikyfLv4hS2S3/3T
-         wNeorMFFKl5nosHbJR5Iw5V6SZ+S+5+RzI95n+aiY76dy2crl5gvZ3aEUQviQJECWM1c
-         36jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WQd65JdrIuZXHebA6USGvqPn3CMVEk7jUwm6XZRDHjM=;
-        b=Wg99y92TV95ZwqXY65y/3qm5a91FS/6PC+zcbyTugoJcg06EhSGGR6dTVFB4wxQVdS
-         z2cm1N6cyKhNDb0ykXn4bSK2QjsjyECip8NdFfEN71ju4lY1wMEiXhLK3nI6FKxwEOkS
-         TVSwA04yZWzZ90l3Jixj9fMtUiGwEfMu15B1IinfVCGr1IINH+Z9qB/WdylcRUPBWzvF
-         ZbQQG39fezwKqikD2C+b7aNIxRAlo2UoPzezbKTHWa9iKtRBjkN5KT2VJ4oDedcWPSWF
-         1yGvr8hO241d/CLbvrqMDEHX0/YKGVnn7Bt0ZMIAl9stsqZk3h0Em9moKYxsJgrWpaB6
-         uhIg==
-X-Gm-Message-State: AOAM5336xEzMF6keT7wrJHgJWQrCDDsL6cfgRECgTcY3v7IQk4kNnMe3
-        VUqbR/QtYHd2ZnDnBeyaYiyyUDT8/JrrY6kB4us=
-X-Google-Smtp-Source: ABdhPJz2cJ7CEK2QU8d4MvwWTRwIYLa89bAXoHcs0pj+zLGRas+wTtW9xsAw0qFtf/blSc+unw0ABlJZ1RchbM6qsiU=
-X-Received: by 2002:ab0:2758:: with SMTP id c24mr4351437uap.64.1591100280930;
- Tue, 02 Jun 2020 05:18:00 -0700 (PDT)
+        id S1727946AbgFBMPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:15:16 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:48484 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725921AbgFBMPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 08:15:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591100115; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=6aoCLmbhav5CL/lS7P/VV6KjhJoQcYui0Q86IrjJk7c=; b=DCo5VlfyVsI9YhaieDrLs4XyonquAIrbNMrq9HJxZa8xS0jH8Ia/5TOtyffHi1h4v01iuaFB
+ 73UpaLRmFQPzxwzpNZwkqZOkC24linF6C85HAOObcino1sSjyF8P7boxGQDWyQa33qf5qjsI
+ RptEGgmpXfXX30w5SSqW0q7hxjk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5ed642cd76fccbb4c8a4c15b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Jun 2020 12:15:09
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 65AC9C433CA; Tue,  2 Jun 2020 12:15:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DBDBDC433C9;
+        Tue,  2 Jun 2020 12:15:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DBDBDC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
+        Wright Feng <wright.feng@cypress.com>,
+        Chi-hsien Lin <chi-hsien.lin@cypress.com>
+Subject: Re: linux-next: build failure after merge of the mmc tree
+References: <20200602134402.24c19488@canb.auug.org.au>
+Date:   Tue, 02 Jun 2020 15:15:03 +0300
+In-Reply-To: <20200602134402.24c19488@canb.auug.org.au> (Stephen Rothwell's
+        message of "Tue, 2 Jun 2020 13:44:02 +1000")
+Message-ID: <87a71lll4o.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <20200511115524.22602-1-Rodrigo.Siqueira@amd.com> <20200511115524.22602-4-Rodrigo.Siqueira@amd.com>
-In-Reply-To: <20200511115524.22602-4-Rodrigo.Siqueira@amd.com>
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-Date:   Tue, 2 Jun 2020 13:14:43 +0100
-Message-ID: <CACvgo538kFaXq3jkwHb1DHvgd95Ss6ZcYVwYRQ7CX53PkB411g@mail.gmail.com>
-Subject: Re: [PATCH V4 3/3] drm/vkms: Add support for writeback
-To:     Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc:     Brian Starkey <brian.starkey@arm.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Simon Ser <contact@emersion.fr>,
-        Leandro Ribeiro <leandro.ribeiro@collabora.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 May 2020 at 12:55, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com> wrote:
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
 
->  # SPDX-License-Identifier: GPL-2.0-only
-> -vkms-y := vkms_drv.o vkms_plane.o vkms_output.o vkms_crtc.o vkms_gem.o vkms_composer.o
-> +vkms-y := \
-> +       vkms_drv.o \
-> +       vkms_plane.o \
-> +       vkms_output.o \
-> +       vkms_crtc.o \
-> +       vkms_gem.o \
-> +       vkms_composer.o \
-> +       vkms_writeback.o
+> Hi all,
 >
-Nit: sort alphabetically
-
-
-> @@ -191,9 +192,12 @@ void vkms_composer_worker(struct work_struct *work)
->         if (!primary_composer)
->                 return;
+> After merging the mmc tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
 >
-> +       if (wb_pending)
-> +               vaddr_out = crtc_state->active_writeback;
-> +
->         ret = compose_planes(&vaddr_out, primary_composer, cursor_composer);
-Forgot to mention earlier - with the allocation happening in the
-caller, compose_planes() can take void *vaddr_out.
-
->         if (ret) {
-> -               if (ret == -EINVAL)
-> +               if (ret == -EINVAL && !wb_pending)
->                         kfree(vaddr_out);
->                 return;
->         }
-> @@ -206,6 +210,14 @@ void vkms_composer_worker(struct work_struct *work)
->         while (frame_start <= frame_end)
->                 drm_crtc_add_crc_entry(crtc, true, frame_start++, &crc32);
+> drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c: In function
+> 'brcmf_sdiod_probe':
+> drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c:915:7:
+> error: 'SDIO_DEVICE_ID_CYPRESS_4373' undeclared (first use in this
+> function); did you mean 'SDIO_DEVICE_ID_BROADCOM_CYPRESS_4373'?
+>   915 |  case SDIO_DEVICE_ID_CYPRESS_4373:
+>       |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>       |       SDIO_DEVICE_ID_BROADCOM_CYPRESS_4373
+> drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c:915:7: note: each undeclared identifier is reported only once for each function it appears in
 >
-> +       if (wb_pending) {
-> +               drm_writeback_signal_completion(&out->wb_connector, 0);
-> +               spin_lock_irq(&out->composer_lock);
-> +               crtc_state->wb_pending = false;
-> +               spin_unlock_irq(&out->composer_lock);
-> +               return;
-> +       }
-> +
-Just like the free() move this above the drm_crtc_add_crc_entry()
-
-if (wb_pending) {
-  signal()
-  ...
-} else {
-  free()
-}
-
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-> index 1e8b2169d834..34dd74dc8eb0 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.c
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
-> @@ -39,6 +39,10 @@ bool enable_cursor = true;
->  module_param_named(enable_cursor, enable_cursor, bool, 0444);
->  MODULE_PARM_DESC(enable_cursor, "Enable/Disable cursor support");
+> Caused by commit
 >
-> +bool enable_writeback;
-> +module_param_named(enable_writeback, enable_writeback, bool, 0444);
-> +MODULE_PARM_DESC(enable_writeback, "Enable/Disable writeback connector");
-> +
-Why is this a module parameter? Let's always enable it and leave it to
-userspace whether to use the wb or not.
-
->  static const struct file_operations vkms_driver_fops = {
->         .owner          = THIS_MODULE,
->         .open           = drm_open,
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-> index f4036bb0b9a8..35f0b71413c9 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -8,6 +8,7 @@
->  #include <drm/drm.h>
->  #include <drm/drm_gem.h>
->  #include <drm/drm_encoder.h>
-> +#include <drm/drm_writeback.h>
+>   1eb911258805 ("mmc: sdio: Fix Cypress SDIO IDs macros in common include file")
 >
->  #define XRES_MIN    20
->  #define YRES_MIN    20
-> @@ -19,6 +20,7 @@
->  #define YRES_MAX  8192
+> interacting with commit
 >
->  extern bool enable_cursor;
-> +extern bool enable_writeback;
+>   2a7621ded321 ("brcmfmac: set F2 blocksize for 4373")
 >
->  struct vkms_composer {
->         struct drm_framebuffer fb;
-> @@ -52,9 +54,11 @@ struct vkms_crtc_state {
->         int num_active_planes;
->         /* stack of active planes for crc computation, should be in z order */
->         struct vkms_plane_state **active_planes;
-> +       void *active_writeback;
+> from the net-next tree.
 >
->         /* below three are protected by vkms_output.composer_lock */
-Nit: s/below three/the following four/
+> I have applied the following merge fix patch.
 
->         bool crc_pending;
-> +       bool wb_pending;
->         u64 frame_start;
->         u64 frame_end;
->  };
-> @@ -63,6 +67,7 @@ struct vkms_output {
->         struct drm_crtc crtc;
->         struct drm_encoder encoder;
->         struct drm_connector connector;
-> +       struct drm_writeback_connector wb_connector;
->         struct hrtimer vblank_hrtimer;
->         ktime_t period_ns;
->         struct drm_pending_vblank_event *event;
-> @@ -144,4 +149,7 @@ int vkms_verify_crc_source(struct drm_crtc *crtc, const char *source_name,
->  /* Composer Support */
->  void vkms_composer_worker(struct work_struct *work);
->
-> +/* Writeback */
-> +int enable_writeback_connector(struct vkms_device *vkmsdev);
+Looks good to me, thanks. Ulf, I guess you will notify Linus about the
+conflict in your pull request?
 
-Don't forget appropriate name spacing - prefix the function with vkms.
-
-> +
->  #endif /* _VKMS_DRV_H_ */
-> diff --git a/drivers/gpu/drm/vkms/vkms_output.c b/drivers/gpu/drm/vkms/vkms_output.c
-> index 85afb77e97f0..19ffc67affec 100644
-> --- a/drivers/gpu/drm/vkms/vkms_output.c
-> +++ b/drivers/gpu/drm/vkms/vkms_output.c
-> @@ -80,6 +80,16 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
->                 goto err_attach;
->         }
->
-> +       if (enable_writeback) {
-> +               ret = enable_writeback_connector(vkmsdev);
-
-With wb connector always enabled, you can kill off the
-vkms_output::composer_enabled all together. Plus the info/error
-warnings (below) can go as well.
-
-> +               if (!ret) {
-> +                       output->composer_enabled = true;
-> +                       DRM_INFO("Writeback connector enabled");
-> +               } else {
-> +                       DRM_ERROR("Failed to init writeback connector\n");
-> +               }
-> +       }
-> +
->         drm_mode_config_reset(dev);
->
->         return 0;
-> diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c b/drivers/gpu/drm/vkms/vkms_writeback.c
-> new file mode 100644
-> index 000000000000..868f0d15ca9f
-> --- /dev/null
-> +++ b/drivers/gpu/drm/vkms/vkms_writeback.c
-> @@ -0,0 +1,142 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +
-> +#include "vkms_drv.h"
-> +#include <drm/drm_fourcc.h>
-> +#include <drm/drm_writeback.h>
-> +#include <drm/drm_probe_helper.h>
-> +#include <drm/drm_atomic_helper.h>
-> +#include <drm/drm_gem_framebuffer_helper.h>
-> +
-Nit: sort includes alphabetically.
-
-> +static const u32 vkms_wb_formats[] = {
-> +       DRM_FORMAT_XRGB8888,
-> +};
-> +
-> +static const struct drm_connector_funcs vkms_wb_connector_funcs = {
-> +       .fill_modes = drm_helper_probe_single_connector_modes,
-> +       .destroy = drm_connector_cleanup,
-> +       .reset = drm_atomic_helper_connector_reset,
-> +       .atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
-> +       .atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
-> +};
-> +
-> +static int vkms_wb_encoder_atomic_check(struct drm_encoder *encoder,
-> +                                       struct drm_crtc_state *crtc_state,
-> +                                       struct drm_connector_state *conn_state)
-> +{
-> +       struct drm_framebuffer *fb;
-> +       const struct drm_display_mode *mode = &crtc_state->mode;
-> +
-> +       if (!conn_state->writeback_job || !conn_state->writeback_job->fb)
-Drop the fb check.
-
-> +               return 0;
-> +
-> +       fb = conn_state->writeback_job->fb;
-> +       if (fb->width != mode->hdisplay || fb->height != mode->vdisplay) {
-> +               DRM_DEBUG_KMS("Invalid framebuffer size %ux%u\n",
-> +                             fb->width, fb->height);
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (fb->format->format != DRM_FORMAT_XRGB8888) {
-Use the vkms_wb_formats[], regardless if it's one entry or not.
-
-> +               struct drm_format_name_buf format_name;
-> +
-> +               DRM_DEBUG_KMS("Invalid pixel format %s\n",
-> +                             drm_get_format_name(fb->format->format,
-> +                                                 &format_name));
-> +               return -EINVAL;
-> +       }
-> +
-> +       return 0;
-
-Thinking out loud:
-This function should be a helper that drivers can reuse and build
-upon. The format might be tricky.
-It's already in drm_writeback_connector::pixel_formats_blob_ptr, while
-the function takes drm_writeback::encoder as argument.
-
-But that for another patch series.
-
-
-> +static void vkms_wb_atomic_commit(struct drm_connector *conn,
-> +                                 struct drm_connector_state *state)
-> +{
-> +       struct vkms_device *vkmsdev = drm_device_to_vkms_device(conn->dev);
-> +       struct vkms_output *output = &vkmsdev->output;
-> +       struct drm_writeback_connector *wb_conn = &output->wb_connector;
-> +       struct drm_connector_state *conn_state = wb_conn->base.state;
-> +       struct vkms_crtc_state *crtc_state = output->composer_state;
-> +
-> +       if (!conn_state)
-> +               return;
-> +
-> +       if (!conn_state->writeback_job || !conn_state->writeback_job->fb) {
-Drop the fb check.
-
--Emil
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
