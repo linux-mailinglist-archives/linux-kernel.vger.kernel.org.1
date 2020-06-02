@@ -2,134 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3707D1EC5BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 01:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2B51EC58F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 01:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728388AbgFBXaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 19:30:23 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:46648 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726809AbgFBXaX (ORCPT
+        id S1728174AbgFBXS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 19:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726589AbgFBXSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 19:30:23 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 052NIAut035519;
-        Tue, 2 Jun 2020 18:18:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1591139890;
-        bh=B/WbR0ieFR+upVOAWaKc+gb7oNaJlchuQLeU7X+5h8Y=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=JtxlATgtWTz/2V6BwAKkhWz0uSMCAHH7hu8j/dHaq5mLzrhR57DeBrcKmdJNLcN6A
-         C/3ifPvg/Kit9blAb2WUUT9luHQ0ddZsKFXSSRWgT+v17PVqHDUv9JF5vif0f6+t/E
-         ijB233L/yeGGRCJ+Y8/jTKoLLwNsIg5nH9M2opNQ=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 052NIA0t032906
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 2 Jun 2020 18:18:10 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 2 Jun
- 2020 18:18:10 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 2 Jun 2020 18:18:10 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 052NI9Kh009536;
-        Tue, 2 Jun 2020 18:18:09 -0500
-Subject: Re: [PATCH net-next v5 4/4] net: dp83869: Add RGMII internal delay
- configuration
-To:     Florian Fainelli <f.fainelli@gmail.com>, <andrew@lunn.ch>,
-        <hkallweit1@gmail.com>, <davem@davemloft.net>, <robh@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20200602164522.3276-1-dmurphy@ti.com>
- <20200602164522.3276-5-dmurphy@ti.com>
- <c3c68dcd-ccf1-25fd-fc4c-4c30608a1cc8@gmail.com>
- <61888788-041f-7b93-9d99-7dad4c148021@ti.com>
- <6981527b-f155-a46b-574a-2e6621589ca4@gmail.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <f92f70b2-6e42-5bdb-187d-ecd8533b06a6@ti.com>
-Date:   Tue, 2 Jun 2020 18:18:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 2 Jun 2020 19:18:55 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28CCC08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 16:18:54 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id c21so116712lfb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 16:18:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w339YpBFgV7tqQf8M7YphxkuH2MrbkG2i3IWInNVEFw=;
+        b=YxsAHw4owitymwvHIwpqwWvn9/NXfSmSAaW4XnOP3SsDR0q/tu0Kjtftp1ifdfbfTc
+         db7b0ZQb7XugZtiYeszap76BEZuj9SR7sEGdl+KzdbvXUErm382A/PEE9pQKqw2RCHW+
+         fxt3fniEs00mZZGfE4SRefURbUpvaDWjfMSwtxss/P7Hu5hOCAebKrwvL198wVJLAScc
+         4x1kUwZY1D43yHWgBhNeQakXS1vaWEODvIRwRn+skTC2lMBjsFPh6jtE5RpKnVCGheKI
+         hxnCOSxuHeJWxmzn1wKje/9Ngwo+exug6CDE81AlefvydqUyh2OSPjhGhkcoCl5Hkqrs
+         Ktbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w339YpBFgV7tqQf8M7YphxkuH2MrbkG2i3IWInNVEFw=;
+        b=ZH8hTQRmg/wcC6SWZQ2/dOSwPm8uzxyNQSwCnobabHip1fEzM3x/cwND+JXclQ+pYO
+         q371w9tyUNglyhz3TPx2c1v5LiZkVS1Yjk3FyI7jrVnpCveiZqlDK9ssZTaSvoAmMknG
+         7O8aN4elH8jg4U6/w59iByD4yaEO3oHPt/7uv5epLHwWUsX9oPSbXWPaMGbC89+hskGZ
+         RR6MIttxsby4BubDHqq4sOek9+zbugyLv5r6MGvgInNJ2DzMaiv6dbTDwA/127UyKKZu
+         I3vTVVIa2eAfUwHQ8M+0AOYjTGZMZLSV5qNE30MjxABLKJaYe6tDONWQOnAngI7EE0aR
+         6H7Q==
+X-Gm-Message-State: AOAM5302Ex3Thjozm61L4C4gWI0u55SuCnSi6DlzuNrq4jaLBnpbxIXd
+        VuRoV+EIJxHHQK4pbJ+mMd720w==
+X-Google-Smtp-Source: ABdhPJxwAotMVS+UbqsYp+bbhka8nGqAjJAI+8M3Prj7QP/OP9DS5g/xQ3THv/MFg0EiknvWEapPfQ==
+X-Received: by 2002:ac2:550a:: with SMTP id j10mr860697lfk.46.1591139933189;
+        Tue, 02 Jun 2020 16:18:53 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id 15sm63048ljr.104.2020.06.02.16.18.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 16:18:51 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 87BFB102780; Wed,  3 Jun 2020 02:18:57 +0300 (+03)
+Date:   Wed, 3 Jun 2020 02:18:57 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] x86/mm: Fix boot with some memory above MAXMEM
+Message-ID: <20200602231857.ousba2xiks7myxbt@box>
+References: <20200511191721.1416-1-kirill.shutemov@linux.intel.com>
+ <20200525044902.rsb46bxu5hdsqglt@box>
+ <20200525145943.GA13247@kernel.org>
+ <20200525150820.zljiamptpzi37ohx@box>
+ <24b51944-bfba-a937-484a-5d9ec54fdf01@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <6981527b-f155-a46b-574a-2e6621589ca4@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24b51944-bfba-a937-484a-5d9ec54fdf01@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Florian
+On Tue, May 26, 2020 at 07:27:15AM -0700, Dave Hansen wrote:
+> On 5/25/20 8:08 AM, Kirill A. Shutemov wrote:
+> >>>> +	if (not_addressable) {
+> >>>> +		pr_err("%lldGB of physical memory is not addressable in the paging mode\n",
+> >>>> +		       not_addressable >> 30);
+> >>>> +		if (!pgtable_l5_enabled())
+> >>>> +			pr_err("Consider enabling 5-level paging\n");
+> >> Could this happen at all when l5 is enabled?
+> >> Does it mean we need kmap() for 64-bit?
+> > It's future-profing. Who knows what paging modes we would have in the
+> > future.
+> 
+> Future-proofing and firmware-proofing. :)
+> 
+> In any case, are we *really* limited to 52 bits of physical memory with
+> 5-level paging?
 
-On 6/2/20 6:13 PM, Florian Fainelli wrote:
->
-> On 6/2/2020 4:10 PM, Dan Murphy wrote:
->> Florian
->>
->> On 6/2/20 5:33 PM, Florian Fainelli wrote:
->>> On 6/2/2020 9:45 AM, Dan Murphy wrote:
->>>> Add RGMII internal delay configuration for Rx and Tx.
->>>>
->>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->>>> ---
->>> [snip]
->>>
->>>> +
->>>>    enum {
->>>>        DP83869_PORT_MIRRORING_KEEP,
->>>>        DP83869_PORT_MIRRORING_EN,
->>>> @@ -108,6 +113,8 @@ enum {
->>>>    struct dp83869_private {
->>>>        int tx_fifo_depth;
->>>>        int rx_fifo_depth;
->>>> +    s32 rx_id_delay;
->>>> +    s32 tx_id_delay;
->>>>        int io_impedance;
->>>>        int port_mirroring;
->>>>        bool rxctrl_strap_quirk;
->>>> @@ -232,6 +239,22 @@ static int dp83869_of_init(struct phy_device
->>>> *phydev)
->>>>                     &dp83869->tx_fifo_depth))
->>>>            dp83869->tx_fifo_depth = DP83869_PHYCR_FIFO_DEPTH_4_B_NIB;
->>>>    +    ret = of_property_read_u32(of_node, "rx-internal-delay-ps",
->>>> +                   &dp83869->rx_id_delay);
->>>> +    if (ret) {
->>>> +        dp83869->rx_id_delay =
->>>> +                dp83869_internal_delay[DP83869_CLK_DELAY_DEF];
->>>> +        ret = 0;
->>>> +    }
->>>> +
->>>> +    ret = of_property_read_u32(of_node, "tx-internal-delay-ps",
->>>> +                   &dp83869->tx_id_delay);
->>>> +    if (ret) {
->>>> +        dp83869->tx_id_delay =
->>>> +                dp83869_internal_delay[DP83869_CLK_DELAY_DEF];
->>>> +        ret = 0;
->>>> +    }
->>> It is still not clear to me why is not the parsing being done by the PHY
->>> library helper directly?
->> Why would we do that for these properties and not any other?
-> Those properties have a standard name, which makes them suitable for
-> parsing by the core PHY library.
->> Unless there is a new precedence being set here by having the PHY
->> framework do all the dt node parsing for common properties.
-> You could parse the vendor properties through the driver, let the PHY
-> library parse the standard properties, and resolve any ordering
-> precedence within the driver. In general, I would favor standard
-> properties over vendor properties.
->
-> Does this help?
+Yes. It's architectural. SDM says "MAXPHYADDR is at most 52" (Vol 3A,
+4.1.4).
 
-Ok so new precedence then.
+I guess it can be extended with an opt-in feature and relevant changes to
+page table structure. But as of today there's no such thing.
 
-Because there are common properties like tx-fifo-depth, rx-fifo-depth, 
-enet-phy-lane-swap and max_speed that the PHY framework should parse as 
-well.
+> Previously, we said we were limited to 46 bits, and now
+> we're saying that the limit is 52 with 5-level paging:
+> 
+> #define MAX_PHYSMEM_BITS (pgtable_l5_enabled() ? 52 : 46)
+> 
+> The 46 was fine with the 48 bits of address space on 4-level paging
+> systems since we need 1/2 of the address space for userspace, 1/4 for
+> the direct map and 1/4 for the vmalloc-and-friends area.  At 46 bits of
+> address space, we fill up the direct map.
+> 
+> The hardware designers know this and never enumerated a MAXPHYADDR from
+> CPUID which was higher than what we could cover with 46 bits.  It was
+> nice and convenient that these two separate things matched:
+> 1. The amount of physical address space addressable in a direct map
+>    consuming 1/4 of the virtual address space.
+> 2. The CPU-enumerated MAXPHYADDR which among other things dictates how
+>    much physical address space is addressable in a PTE.
+> 
+> But, with 5-level paging, things are a little different.  The limit in
+> addressable memory because of running out of the direct map actually
+> happens at 55 bits (57-2=55, analogous to the 4-level 48-2=46).
+> 
+> So shouldn't it technically be this:
+> 
+> #define MAX_PHYSMEM_BITS (pgtable_l5_enabled() ? 55 : 46)
+> 
+> ?
 
-Dan
+Bits above 52 are ignored in the page table entries and accessible to
+software. Some of them got claimed by HW features (XD-bit, protection
+keys), but such features require explicit opt-in on software side.
 
+Kernel could claim bits 53-55 for the physical address, but it doesn't get
+us anything: if future HW would provide such feature it would require
+opt-in. On other hand claiming them now means we cannot use them for other
+purposes as SW bit. I don't see a point.
+
+-- 
+ Kirill A. Shutemov
