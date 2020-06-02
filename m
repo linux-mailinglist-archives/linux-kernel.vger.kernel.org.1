@@ -2,273 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3795B1EBB61
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C421EBB58
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 14:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728059AbgFBMPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 08:15:33 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:46956 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgFBMPd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 08:15:33 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052C8YZ6140455;
-        Tue, 2 Jun 2020 12:14:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=NBE5+I4CqSHnayNrwmdJkxTE42E3YIjg8dJCdAw1TJU=;
- b=gBXOsgmf8FV/AzhHnNbmOfepIOv0bn23ch5lZ5gXg2RoRNBZ3i9IMHxyDXG3NfSj7lmE
- OeT66XV6gaNNzQRYJRV/W/ZXc5UPAjjbTYk0oS8Zr0ruHRfM3E0Oz+ErB9n+2lEBjGmP
- WvV0M/x/exOU5ccpNbFMyzfBSWZm+Uqw7oSlOR4qQMz0yg4ZFvEuO78meDkJMApLcmei
- NJqc8sqdtyw4scElos6VsVNYSPQAt3aiJAP1mzQqFn1liAoh2rCw8aBMvGRzQwMSLGJL
- qayqxwY22iPO3Enxg4xZdNAZMIjFwE28OLdIEc1dc98RxhtSF6daaAi0LymCV5nDiX/e ew== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 31bfem3n7r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 02 Jun 2020 12:14:37 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052CDwcT120702;
-        Tue, 2 Jun 2020 12:14:36 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 31dju1as04-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Jun 2020 12:14:36 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 052CERfW006908;
-        Tue, 2 Jun 2020 12:14:32 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Jun 2020 05:14:26 -0700
-Date:   Tue, 2 Jun 2020 15:14:17 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Vaibhav Agarwal <vaibhav.sr@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        devel@driverdev.osuosl.org, alsa-devel@alsa-project.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org
-Subject: Re: [RESEND PATCH v1 2/6] staging: greybus: audio: Maintain jack
- list within GB Audio module
-Message-ID: <20200602121417.GE30374@kadam>
-References: <cover.1591040859.git.vaibhav.sr@gmail.com>
- <ccb39352a30ab39df1534efafc9415aa89b156fa.1591040859.git.vaibhav.sr@gmail.com>
+        id S1727782AbgFBMOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 08:14:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725921AbgFBMOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 08:14:46 -0400
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BE6A2068D;
+        Tue,  2 Jun 2020 12:14:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591100085;
+        bh=hS7g9g/aSqZzPJBPg66kKL88fBvDX9aRfUs29YzvkBs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=yl/i7Qiqq7UoiHmOVqVo+SEn4KgETDEedHdFCdNCuS9f2E2SQng2voWzPfHPcO6YE
+         8CF1FQSd08KxkT7RlTX59097gDyqNuMBxG3McsUgXYZn1n9qp24KE+RNxGUKVpsrLE
+         /QrUIwIAtq/wHHtTJJMYo7XfANI0AplH+lQth1YE=
+Received: by mail-oi1-f169.google.com with SMTP id c194so7020383oig.5;
+        Tue, 02 Jun 2020 05:14:45 -0700 (PDT)
+X-Gm-Message-State: AOAM532rmY1+BQ9CYyDuFLCE6cBO2lFp6FW3CClAI+rFysYQbJT/FXPy
+        M54+9xkJyfwX2roPJdU0xR9VP8/LUClsqFo7BaQ=
+X-Google-Smtp-Source: ABdhPJxW1sEkwPq7K4sRBd1zGPvt9cMm19769d1cEMMvHkLmv/96Zuuq0m9uCjS+3j1U8+rNjcP1B0egOpse0Ai0JB0=
+X-Received: by 2002:aca:b707:: with SMTP id h7mr2899814oif.174.1591100084934;
+ Tue, 02 Jun 2020 05:14:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ccb39352a30ab39df1534efafc9415aa89b156fa.1591040859.git.vaibhav.sr@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
- suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006020087
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=2
- mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1015
- impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006020087
+References: <1591085678-22764-1-git-send-email-neal.liu@mediatek.com>
+In-Reply-To: <1591085678-22764-1-git-send-email-neal.liu@mediatek.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 2 Jun 2020 14:14:33 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHjAdk5=-uSh_=S9j5cz42zr3h6t+YYGy+obevuQDp0fg@mail.gmail.com>
+Message-ID: <CAMj1kXHjAdk5=-uSh_=S9j5cz42zr3h6t+YYGy+obevuQDp0fg@mail.gmail.com>
+Subject: Re: Security Random Number Generator support
+To:     Neal Liu <neal.liu@mediatek.com>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mediatek@lists.infradead.org,
+        lkml <linux-kernel@vger.kernel.org>, wsd_upstream@mediatek.com,
+        Crystal Guo <Crystal.Guo@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 10:51:11AM +0530, Vaibhav Agarwal wrote:
-> As per the current implementation for GB codec driver, a jack list is
-> maintained for each module. And it expects the list to be populated by
-> the snd_soc_jack structure which would require modifications in
-> mainstream code.
-> 
-> However, this is not a necessary requirement and the list can be easily
-> maintained within gbaudio_module_info as well. This patch provides the
-> relevant changes for the same.
-> 
-> Signed-off-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
-> ---
->  drivers/staging/greybus/audio_codec.c  | 76 ++++++++++++++------------
->  drivers/staging/greybus/audio_codec.h  | 10 +++-
->  drivers/staging/greybus/audio_module.c | 20 ++++---
->  3 files changed, 60 insertions(+), 46 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
-> index ebf8484f0ae7..a2ee587e5a79 100644
-> --- a/drivers/staging/greybus/audio_codec.c
-> +++ b/drivers/staging/greybus/audio_codec.c
-> @@ -712,7 +712,7 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
->  			     struct snd_soc_card *card)
->  {
->  	int ret;
-> -
-> +	struct gbaudio_jack *gba_jack, *n;
->  	struct snd_soc_jack *jack;
+On Tue, 2 Jun 2020 at 10:15, Neal Liu <neal.liu@mediatek.com> wrote:
+>
+> These patch series introduce a security random number generator
+> which provides a generic interface to get hardware rnd from Secure
+> state. The Secure state can be Arm Trusted Firmware(ATF), Trusted
+> Execution Environment(TEE), or even EL2 hypervisor.
+>
+> Patch #1..2 adds sec-rng kernel driver for Trustzone based SoCs.
+> For security awareness SoCs on ARMv8 with TrustZone enabled,
+> peripherals like entropy sources is not accessible from normal world
+> (linux) and rather accessible from secure world (HYP/ATF/TEE) only.
+> This driver aims to provide a generic interface to Arm Trusted
+> Firmware or Hypervisor rng service.
+>
+>
+> changes since v1:
+> - rename mt67xx-rng to mtk-sec-rng since all MediaTek ARMv8 SoCs can reuse
+>   this driver.
+>   - refine coding style and unnecessary check.
+>
+>   changes since v2:
+>   - remove unused comments.
+>   - remove redundant variable.
+>
+>   changes since v3:
+>   - add dt-bindings for MediaTek rng with TrustZone enabled.
+>   - revise HWRNG SMC call fid.
+>
+>   changes since v4:
+>   - move bindings to the arm/firmware directory.
+>   - revise driver init flow to check more property.
+>
+>   changes since v5:
+>   - refactor to more generic security rng driver which
+>     is not platform specific.
+>
+> *** BLURB HERE ***
+>
+> Neal Liu (2):
+>   dt-bindings: rng: add bindings for sec-rng
+>   hwrng: add sec-rng driver
+>
 
-Because we got rid of the jack pointer then we can re-use the name here.
+There is no reason to model a SMC call as a driver, and represent it
+via a DT node like this.
 
-	struct gbaudio_jack *jack, *n;
-
-We still don't want the "struct snd_soc_jack *jack;" pointer.
-
->  	struct snd_soc_jack_pin *headset, *button;
->  
-> @@ -728,7 +728,8 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
->  
->  	headset->pin = module->jack_name;
->  	headset->mask = module->jack_mask;
-> -	jack = &module->headset_jack;
-> +	gba_jack = &module->headset;
-> +	jack = &gba_jack->jack;
-
-Use module->headset.jack directly.
-
->  
->  	ret = snd_soc_card_jack_new(card, module->jack_name, module->jack_mask,
->  				    jack, headset, 1);
-> @@ -737,6 +738,9 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
->  		return ret;
->  	}
->  
-> +	/* Add to module's jack list */
-> +	list_add(&gba_jack->list, &module->jack_list);
+It would be much better if this SMC interface is made truly generic,
+and wired into the arch_get_random() interface, which can be used much
+earlier.
 
 
-Here as well.
-
-> +
->  	if (!module->button_mask)
->  		return 0;
->  
-> @@ -745,20 +749,24 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
->  	button = devm_kzalloc(module->dev, sizeof(*headset), GFP_KERNEL);
->  	if (!button) {
->  		ret = -ENOMEM;
-> -		goto free_headset;
-> +		goto free_jack;
-
-Let's call the label "free_jacks" (plural).
-
->  	}
->  
->  	button->pin = module->button_name;
->  	button->mask = module->button_mask;
-> -	jack = &module->button_jack;
-> +	gba_jack = &module->button;
-> +	jack = &gba_jack->jack;
->  
->  	ret = snd_soc_card_jack_new(card, module->button_name,
->  				    module->button_mask, jack, button, 1);
->  	if (ret) {
->  		dev_err(module->dev, "Failed to create button jack\n");
-> -		goto free_headset;
-> +		goto free_jack;
->  	}
->  
-> +	/* Add to module's jack list */
-> +	list_add(&gba_jack->list, &module->jack_list);
-> +
->  	/*
->  	 * Currently, max 4 buttons are supported with following key mapping
->  	 * BTN_0 = KEY_MEDIA
-> @@ -768,58 +776,55 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
->  	 */
->  
->  	if (module->button_mask & SND_JACK_BTN_0) {
-> -		ret = snd_jack_set_key(module->button_jack.jack, SND_JACK_BTN_0,
-> +		ret = snd_jack_set_key(jack->jack, SND_JACK_BTN_0,
->  				       KEY_MEDIA);
->  		if (ret) {
->  			dev_err(module->dev, "Failed to set BTN_0\n");
-> -			goto free_button;
-> +			goto free_jack;
->  		}
->  	}
->  
->  	if (module->button_mask & SND_JACK_BTN_1) {
-> -		ret = snd_jack_set_key(module->button_jack.jack, SND_JACK_BTN_1,
-> +		ret = snd_jack_set_key(jack->jack, SND_JACK_BTN_1,
->  				       KEY_VOICECOMMAND);
->  		if (ret) {
->  			dev_err(module->dev, "Failed to set BTN_1\n");
-> -			goto free_button;
-> +			goto free_jack;
->  		}
->  	}
->  
->  	if (module->button_mask & SND_JACK_BTN_2) {
-> -		ret = snd_jack_set_key(module->button_jack.jack, SND_JACK_BTN_2,
-> +		ret = snd_jack_set_key(jack->jack, SND_JACK_BTN_2,
->  				       KEY_VOLUMEUP);
->  		if (ret) {
->  			dev_err(module->dev, "Failed to set BTN_2\n");
-> -			goto free_button;
-> +			goto free_jack;
->  		}
->  	}
->  
->  	if (module->button_mask & SND_JACK_BTN_3) {
-> -		ret = snd_jack_set_key(module->button_jack.jack, SND_JACK_BTN_3,
-> +		ret = snd_jack_set_key(jack->jack, SND_JACK_BTN_3,
->  				       KEY_VOLUMEDOWN);
->  		if (ret) {
->  			dev_err(module->dev, "Failed to set BTN_0\n");
-> -			goto free_button;
-> +			goto free_jack;
->  		}
->  	}
->  
->  	/* FIXME
->  	 * verify if this is really required
->  	set_bit(INPUT_PROP_NO_DUMMY_RELEASE,
-> -		module->button_jack.jack->input_dev->propbit);
-> +		module->button->jack->jack->input_dev->propbit);
->  	*/
->  
->  	return 0;
->  
-> -free_button:
-> -	jack = &module->button_jack;
-> -	snd_device_free(card->snd_card, jack->jack);
-> -	list_del(&jack->list);
-> -
-> -free_headset:
-> -	jack = &module->headset_jack;
-> -	snd_device_free(card->snd_card, jack->jack);
-> -	list_del(&jack->list);
-> +free_jack:
-> +	list_for_each_entry_safe(gba_jack, n, &module->jack_list, list) {
-> +		jack = &gba_jack->jack;
-> +		snd_device_free(card->snd_card, jack->jack);
-
-Since we renamed "gba_jack" to "jack" then this becomes:
-
-		snd_device_free(card->snd_card, jack->jack.jack);
-
-Which is sort of weird, but still okay.
-
-> +		list_del(&gba_jack->list);
-> +	}
->  
->  	return ret;
->  }
-> @@ -829,6 +834,7 @@ int gbaudio_register_module(struct gbaudio_module_info *module)
->  	int ret;
->  	struct snd_soc_codec *codec;
->  	struct snd_card *card;
-> +	struct gbaudio_jack *gba_jack = NULL;
-
-Don't introduce unused assignments.  It just silences static checker
-warnings about uninitialized variables and introduces bugs.
-
-Anyway, the same comments for the rest of the patch.  Please don't
-introduce so many variables which aren't required and which hurt
-grep-ability.
-
-regards,
-dan carpenter
-
+>  .../devicetree/bindings/rng/sec-rng.yaml      |  53 ++++++
+>  drivers/char/hw_random/Kconfig                |  13 ++
+>  drivers/char/hw_random/Makefile               |   1 +
+>  drivers/char/hw_random/sec-rng.c              | 155 ++++++++++++++++++
+>  4 files changed, 222 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rng/sec-rng.yaml
+>  create mode 100644 drivers/char/hw_random/sec-rng.c
+>
+> --
+> 2.18.0
