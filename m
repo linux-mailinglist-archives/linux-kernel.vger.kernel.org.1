@@ -2,108 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93AEA1EB64B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 09:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42ED1EB655
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 09:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgFBHNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 03:13:55 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:39560 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgFBHNz (ORCPT
+        id S1726267AbgFBHPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 03:15:45 -0400
+Received: from smtpout1.mo528.mail-out.ovh.net ([46.105.34.251]:59539 "EHLO
+        smtpout1.mo528.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725835AbgFBHPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 03:13:55 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 0527DSCS0001740, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 0527DSCS0001740
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 2 Jun 2020 15:13:28 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 2 Jun 2020 15:13:27 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 2 Jun 2020 15:13:27 +0800
-Received: from RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8]) by
- RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8%5]) with mapi id
- 15.01.1779.005; Tue, 2 Jun 2020 15:13:27 +0800
-From:   =?utf-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>
-To:     Philip Schwartz <philquadra@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>
-Subject: RE: Bug in your kernel since version 5.2
-Thread-Topic: Bug in your kernel since version 5.2
-Thread-Index: AQHWOHWyfrvx4DwjCUuaFCjruHqHp6jD+PmAgADtNkA=
-Date:   Tue, 2 Jun 2020 07:13:26 +0000
-Message-ID: <cc342555d3b343d59a7824a7e20d0907@realtek.com>
-References: <CACYmiSfM00o864c5pxxWEQNZsgFMkNwJePCGvae6P7o31NXMyw@mail.gmail.com>
- <0fc7c8c2-ac6a-2b66-074b-92b5d03219b6@infradead.org>
- <CACYmiSer8FA+qjh8NHZJ2maxSd-=RwDdZ2F7_-E4uM1NXuZ8gQ@mail.gmail.com>
-In-Reply-To: <CACYmiSer8FA+qjh8NHZJ2maxSd-=RwDdZ2F7_-E4uM1NXuZ8gQ@mail.gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.88.99]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 2 Jun 2020 03:15:45 -0400
+Received: from pro2.mail.ovh.net (unknown [10.108.1.149])
+        by mo528.mail-out.ovh.net (Postfix) with ESMTPS id 9B4386059ACD;
+        Tue,  2 Jun 2020 09:15:40 +0200 (CEST)
+Received: from localhost (34.103.240.103) by DAG2EX1.emp2.local (172.16.2.11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Tue, 2 Jun 2020
+ 09:15:41 +0200
+Date:   Tue, 2 Jun 2020 09:13:28 +0200
+From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
+        <andy.shevchenko@gmail.com>, <pmeerw@pmeerw.net>
+Subject: Re: [PATCH v2 1/4] iio: chemical: scd30: add core driver
+Message-ID: <20200602071328.GA2668@arch>
+References: <20200530213630.87159-1-tomasz.duszynski@octakon.com>
+ <20200530213630.87159-2-tomasz.duszynski@octakon.com>
+ <20200531105840.27e17f3d@archlinux>
+ <20200531192152.GC27246@arch>
+ <20200601113604.00002d70@Huawei.com>
+ <20200601113006.GA28560@arch>
+ <20200601144120.000038ba@Huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20200601144120.000038ba@Huawei.com>
+X-Originating-IP: [34.103.240.103]
+X-ClientProxiedBy: DAG2EX2.emp2.local (172.16.2.12) To DAG2EX1.emp2.local
+ (172.16.2.11)
+X-Ovh-Tracer-Id: 18202423796053400822
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrudefiedgudduvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkfhggtggujghisehttdertddttdejnecuhfhrohhmpefvohhmrghsiicuffhushiihihnshhkihcuoehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomheqnecuggftrfgrthhtvghrnheptdehveethfffudetjeeftdekueehjeegjedvteffgfevkefffeegffeugeehgfejnecukfhppedtrddtrddtrddtpdefgedruddtfedrvdegtddruddtfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehprhhovddrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomhdprhgtphhtthhopehpmhgvvghrfiesphhmvggvrhifrdhnvght
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUGhpbGlw77yMDQoNCldlIGNhbid0IHJlcHJvZHVjZSB0aGlzIHByb2JsZW0gb24gZ2VuZXJh
-bCBwbGF0Zm9ybSBvbiBvdXIgc2lkZSwgaXQgd29ya3Mgd2VsbCBvbiBvdXIgcGxhdGZvcm1zIHRo
-YXQgd2UgaGF2ZSwgDQpidXQgd2UgZG9u4oCZdCBoYXZlIE5VQzdQSllIIHBsYXRmb3JtIHRvIGNo
-ZWNrIHRoaXMuDQoNClRoaXMgcGF0Y2ggKGJlZGUwM2E1NzliM2I0YTAzNjAwM2M0ODYyY2MxYmFh
-NGRkYzM1MWYpIHNob3VsZCBub3QgYWZmZWN0IHJ0czUyMjksIHdlIGRpZG7igJl0IGRvIGFueXRo
-aW5nIG9uIHJ0czUyMjkNCg0KUmlja3kgICAgDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
-LS0NCj4gRnJvbTogUGhpbGlwIFNjaHdhcnR6IFttYWlsdG86cGhpbHF1YWRyYUBnbWFpbC5jb21d
-DQo+IFNlbnQ6IFR1ZXNkYXksIEp1bmUgMDIsIDIwMjAgODo1MiBBTQ0KPiBUbzogUmFuZHkgRHVu
-bGFwDQo+IENjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyDlkLPmmIrmvoQgUmlja3k7
-IEdyZWcgS3JvYWgtSGFydG1hbjsgVWxmDQo+IEhhbnNzb247IGxpbnV4LW1tYw0KPiBTdWJqZWN0
-OiBSZTogQnVnIGluIHlvdXIga2VybmVsIHNpbmNlIHZlcnNpb24gNS4yDQo+IA0KPiBUaGFua3Ms
-IEknbGwgY2hlY2sgaXQgb3V0Lg0KPiANCj4gT24gTW9uLCBKdW4gMSwgMjAyMCBhdCA3OjM1IFBN
-IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPiB3cm90ZToNCj4gPg0KPiA+IFth
-ZGRpbmcgQ2M6cyBhbmQgY29tbWVudHNdDQo+ID4NCj4gPg0KPiA+IE9uIDYvMS8yMCAzOjUyIFBN
-LCBQaGlsaXAgU2Nod2FydHogd3JvdGU6DQo+ID4gPiBUaGlzIGlzIG15IHNpeHRoIGF0dGVtcHQg
-dG8gc2VuZCBhIGJ1ZyByZXBvcnQuDQo+ID4gPg0KPiA+ID4gVGhlIGZpcnN0IHRpbWUgeW91IGRp
-ZG4ndCBsaWtlIG15IGVtYWlsIGFkZHJlc3MuDQo+ID4gPiBUaGUgc2Vjb25kIHRpbWUgeW91IGRp
-ZG4ndCBsaWtlIHRoYXQgSSBjb3BpZWQgdGhlIHdob2xlIHVybC4NCj4gPiA+IFRoZSB0aGlyZCB0
-aW1lIHlvdSBkaWRuJ3QgbGlrZSB0aGF0IHRoZSBwYXJ0IG9mIHRoZSB1cmwgdGhhdCBJIGNvcGll
-ZA0KPiA+ID4gbG9va2VkIGEgYml0IGxpa2UgYSB1cmwuDQo+ID4gPiBUaGUgZm91cnRoIHRpbWUg
-eW91IGNvbXBsYWluZWQgdGhhdCAiVGhlIG1lc3NhZ2UgY29udGFpbnMgSFRNTA0KPiA+ID4gc3Vi
-cGFydCx0aGVyZWZvcmUgd2UgY29uc2lkZXIgaXQgU1BBTSINCj4gPg0KPiA+IFllcy4NCj4gPg0K
-PiA+ID4gVGhlIGZpZnRoIHRpbWUgeW91IGRpZG4ndCBsaWtlID8/Pz8/Pz8/Py4NCj4gPiA+DQo+
-ID4gPiBLZXJuZWwgZG90IG9yZyBCdWd6aWxsYSAgICAgICBJIEQgZXF1YWxzICAyMDQwMDMNCj4g
-PiA+DQo+ID4gPg0KPiA+ID4gSSBsb29rIGZvcndhcmQgdG8geW91ciBlbWFpbCByZWplY3Rpb24g
-bWVzc2FnZS4NCj4gPg0KPiA+DQo+ID4gUGxlYXNlIHNlZSBodHRwczovL2J1Z3ppbGxhLmtlcm5l
-bC5vcmcvc2hvd19idWcuY2dpP2lkPTIwNDAwMw0KPiA+DQo+ID4gU2V2ZXJhbCBwZW9wbGUgYXJl
-IGhhdmluZyBwcm9ibGVtcyB3aXRoIEludGVsIE5VQ3MgYW5kL29yDQo+ID4gdGhlIFJUUzUyMjkg
-UENJIEV4cHJlc3MgQ2FyZCBSZWFkZXIvZHJpdmVyLCBiZWdpbm5pbmcgd2l0aA0KPiA+IDUuMS1y
-YzEuDQo+ID4NCj4gPiBIZXJlIGlzIG9uZSBidWd6aWxsYSBjb21tZW50Og0KPiA+IERpZCBhIGdp
-dCBiaXNlY3QgYW5kIGZvdW5kIHRoZSBjdWxwcml0Lg0KPiA+DQo+ID4gYmVkZTAzYTU3OWIzYjRh
-MDM2MDAzYzQ4NjJjYzFiYWE0ZGRjMzUxZiBpcyB0aGUgZmlyc3QgYmFkIGNvbW1pdA0KPiA+IGNv
-bW1pdCBiZWRlMDNhNTc5YjNiNGEwMzYwMDNjNDg2MmNjMWJhYTRkZGMzNTFmDQo+ID4gQXV0aG9y
-OiBSaWNreVd1IDxyaWNreV93dUByZWFsdGVrLmNvbT4NCj4gPiBEYXRlOiAgIFR1ZSBGZWIgMTkg
-MjA6NDk6NTggMjAxOSArMDgwMA0KPiA+DQo+ID4gICAgIG1pc2M6IHJ0c3g6IEVuYWJsZSBPQ1Ag
-Zm9yIHJ0czUyMmEgcnRzNTI0YSBydHM1MjVhIHJ0czUyNjANCj4gPg0KPiA+ICAgICB0aGlzIGVu
-YWJsZXMgYW5kIGFkZHMgT0NQIGZ1bmN0aW9uIGZvciBSZWFsdGVrIEEgc2VyaWVzIGNhcmRyZWFk
-ZXIgY2hpcHMNCj4gPiAgICAgYW5kIGZpeGVzIHNvbWUgT0NQIGZsb3cgaW4gcnRzNTI2MC5jDQo+
-ID4NCj4gPiAgICAgU2lnbmVkLW9mZi1ieTogUmlja3lXdSA8cmlja3lfd3VAcmVhbHRlay5jb20+
-DQo+ID4gICAgIFNpZ25lZC1vZmYtYnk6IEdyZWcgS3JvYWgtSGFydG1hbiA8Z3JlZ2toQGxpbnV4
-Zm91bmRhdGlvbi5vcmc+DQo+ID4NCj4gPiA6MDQwMDAwIDA0MDAwMCA2NWJmZGM0NzNiN2I4NWNi
-NDIzZmY1MjgzMDlmYzkyZDczZWFlNWI0DQo+IDEyOTJkODU2NGY2NzgwMjdkMGU1Yzc3NTUwZTM3
-ZDY5NmIxMzRiMjggTSAgICAgIGRyaXZlcnMNCj4gPg0KPiA+IEp1c3QgcmV2ZXJ0IHRoYXQgYW5k
-IHlvdSdsbCBiZSBnb2xkZW4uDQo+ID4NCj4gPiBydHM1MjJhLHJ0czUyNGEscnRzNTI1YSxydHM1
-MjYwDQo+ID4gU28gc29tZWhvdyBPQ1AgZ290IGVuYWJsZWQgZm9yIHJ0czUyMjkgdW5sZXNzIGEg
-bWVhbnMgcnRzNTIyeC4gSSBndWVzcyB0aGV5DQo+IG5lZWQgdG8gbWFrZSBzdXJlIGl0cyBub3Qg
-ZW5hYmxlZCBmb3IgNTIyOS4NCj4gPiB7ZW5kIG9mIGJ1Z3ppbGxhIGNvbW1lbnR9DQo+ID4NCj4g
-Pg0KPiA+DQo+ID4gLS0NCj4gPiB+UmFuZHkNCj4gPg0KPiANCj4gLS0tLS0tUGxlYXNlIGNvbnNp
-ZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRpbmcgdGhpcyBlLW1haWwuDQo=
+On Mon, Jun 01, 2020 at 02:41:20PM +0100, Jonathan Cameron wrote:
+> ...
+>
+> > > > > > +
+> > > > > > +	return ret;
+> > > > > > +}
+> > > > > > +
+> > > > > > +int scd30_probe(struct device *dev, int irq, const char *name, void *priv,
+> > > > > > +		scd30_command_t command)
+> > > > > > +{
+> > > > > > +	static const unsigned long scd30_scan_masks[] = { 0x07, 0x00 };
+> > > > > > +	struct scd30_state *state;
+> > > > > > +	struct iio_dev *indio_dev;
+> > > > > > +	int ret;
+> > > > > > +	u16 val;
+> > > > > > +
+> > > > > > +	indio_dev = devm_iio_device_alloc(dev, sizeof(*state));
+> > > > > > +	if (!indio_dev)
+> > > > > > +		return -ENOMEM;
+> > > > > > +
+> > > > > > +	state = iio_priv(indio_dev);
+> > > > > > +	state->dev = dev;
+> > > > >
+> > > > > Doesn't seem to be used.
+> > > > >
+> > > > > > +	state->priv = priv;
+> > > > >
+> > > > > What's this for?  At least at first glance I can't find it being used
+> > > > > anywhere.
+> > > > >
+> > > > > > +	state->irq = irq;
+> > > > > > +	state->pressure_comp = SCD30_PRESSURE_COMP_DEFAULT;
+> > > > > > +	state->meas_interval = SCD30_MEAS_INTERVAL_DEFAULT;
+> > > > > > +	state->command = command;
+> > > > > > +	mutex_init(&state->lock);
+> > > > > > +	init_completion(&state->meas_ready);
+> > > > > > +
+> > > > > > +	dev_set_drvdata(dev, indio_dev);
+> > > > > > +
+> > > > > > +	indio_dev->dev.parent = dev;
+> > > > >
+> > > > > Side note that there is a series moving this into the core under revision at
+> > > > > the moment.  Hopefully I'll remember to fix this up when applying your patch
+> > > > > if that one has gone in ahead of it.
+> > > > >
+> > > > > > +	indio_dev->info = &scd30_info;
+> > > > > > +	indio_dev->name = name;
+> > > > > > +	indio_dev->channels = scd30_channels;
+> > > > > > +	indio_dev->num_channels = ARRAY_SIZE(scd30_channels);
+> > > > > > +	indio_dev->modes = INDIO_DIRECT_MODE;
+> > > > > > +	indio_dev->available_scan_masks = scd30_scan_masks;
+> > > > > > +
+> > > > > > +	state->vdd = devm_regulator_get(dev, "vdd");
+> > > > > > +	if (IS_ERR(state->vdd)) {
+> > > > > > +		if (PTR_ERR(state->vdd) == -EPROBE_DEFER)
+> > > > > > +			return -EPROBE_DEFER;
+> > > > > > +
+> > > > > > +		dev_err(dev, "failed to get regulator\n");
+> > > > > > +		return PTR_ERR(state->vdd);
+> > > > > > +	}
+> > > > > > +
+> > > > > > +	ret = regulator_enable(state->vdd);
+> > > > > > +	if (ret)
+> > > > > > +		return ret;
+> > > > > > +
+> > > > > > +	ret = devm_add_action_or_reset(dev, scd30_disable_regulator, state);
+> > > > > > +	if (ret)
+> > > > > > +		return ret;
+> > > > > > +
+> > > > >
+> > > > > A comment here on why it makes sense to register this here.  What
+> > > > > started mesurement? It seems that happens well below here so
+> > > > > we should really call this after that start all.
+> > > > >
+> > > >
+> > > > Sensor after being powered up starts in mode it was left in.
+> > > > Chances are it was continuous mode and we want to shut it down.
+> > >
+> > > That's fine.  The question is why 'here' as opposed to after the below where you
+> > > put it into continuous mode.
+> > >
+> >
+> > Let's suppose sensor got energized and started measuring. Then without
+> > registering action which stops measurement we jump to device reset etc.
+> >
+> > Now if reset failed for whatever reason (same applies to everything
+> > below reset) devm will gracefully unwind previous actions but sensor
+> > will continue doing his job. But there's no point. Better to save some
+> > milliaps for later.
+>
+> I'm not convinced. Note that in your example, the sensor was already on.
+> If we never loaded the driver it would stay on.  We should
+> deal with only problems we have potentially created.
+>
+
+Fair enough.
+
+> If reset fails, it shouldn't 'enable' the sensor hence we are just in
+> the same state as if the driver hadn't loaded at all.  Also if reset
+> fails the chance of a disable succeeding is very low.
+>
+> The code is much more logical with this being done immediately after
+> the action to enable thing we are disabling.  So please put it down
+> there.
+>
+>
+>
+> >
+> > In case we have real regulator then there's no real issue because
+> > power gets cut off during cleanup.
+> >
+> > Quite often though there's only a dummy one which does nothing useful
+> > except making regulator framework happy.
+> >
+> > So my thinking here is that we're slightly better off registering
+> > scd30_stop_meas() action earlier to prevent such scenario from happening.
+> >
+> > > >
+> > > > > > +	ret = devm_add_action_or_reset(dev, scd30_stop_meas, state);
+> > > > > > +	if (ret)
+> > > > > > +		return ret;
+> > > > > > +
+> > > > > > +	ret = scd30_reset(state);
+> > > > > > +	if (ret) {
+> > > > > > +		dev_err(dev, "failed to reset device: %d\n", ret);
+> > > > > > +		return ret;
+> > > > > > +	}
+> > > > > > +
+> > > > > > +	if (state->irq > 0) {
+> > > > > > +		ret = scd30_setup_trigger(indio_dev);
+> > > > > > +		if (ret) {
+> > > > > > +			dev_err(dev, "failed to setup trigger: %d\n", ret);
+> > > > > > +			return ret;
+> > > > > > +		}
+> > > > > > +	}
+> > > > > > +
+> > > > > > +	ret = devm_iio_triggered_buffer_setup(dev, indio_dev, NULL,
+> > > > > > +					      scd30_trigger_handler, NULL);
+> > > > > > +	if (ret)
+> > > > > > +		return ret;
+> > > > > > +
+> > > > > > +	ret = scd30_command_read(state, CMD_FW_VERSION, &val);
+> > > > > > +	if (ret) {
+> > > > > > +		dev_err(dev, "failed to read firmware version: %d\n", ret);
+> > > > > > +		return ret;
+> > > > > > +	}
+> > > > > > +	dev_info(dev, "firmware version: %d.%d\n", val >> 8, (char)val);
+> > > > > > +
+> > > > > > +	ret = scd30_command_write(state, CMD_MEAS_INTERVAL,
+> > > > > > +				  state->meas_interval);
+> > > > > > +	if (ret) {
+> > > > > > +		dev_err(dev, "failed to set measurement interval: %d\n", ret);
+> > > > > > +		return ret;
+> > > > > > +	}
+> > > > > > +
+> > > > > > +	ret = scd30_command_write(state, CMD_START_MEAS, state->pressure_comp);
+> > > > > > +	if (ret) {
+> > > > > > +		dev_err(dev, "failed to start measurement: %d\n", ret);
+> > > > > > +		return ret;
+> > > > > > +	}
+> Here is where we should register that cleanup handler.
+>
+> Jonathan
+>
+> > > > > > +
+> > > > > > +	return devm_iio_device_register(dev, indio_dev);
+> > > > > > +}
+> > > > > > +EXPORT_SYMBOL(scd30_probe);
+> > > > > > +
+> > > > > > +MODULE_AUTHOR("Tomasz Duszynski <tomasz.duszynski@octakon.com>");
+> > > > > > +MODULE_DESCRIPTION("Sensirion SCD30 carbon dioxide sensor core driver");
+> > > > > > +MODULE_LICENSE("GPL v2");
+> > > > > > --
+> > > > > > 2.26.2
+> > > > > >
+> > > > >
+> > >
+> > >
+>
+>
