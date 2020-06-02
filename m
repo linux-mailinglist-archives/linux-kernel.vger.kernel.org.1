@@ -2,159 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4FE1EC31A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FCD1EC329
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 21:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728558AbgFBTvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 15:51:23 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:36862 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728395AbgFBTvH (ORCPT
+        id S1728656AbgFBTwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 15:52:16 -0400
+Received: from smtp1.de.adit-jv.com ([93.241.18.167]:53741 "EHLO
+        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728275AbgFBTvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 15:51:07 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Tue, 2 Jun 2020 12:51:03 -0700
-Received: from sc9-mailhost3.vmware.com (unknown [10.200.192.49])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id BE47C40BEB;
-        Tue,  2 Jun 2020 12:51:03 -0700 (PDT)
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH v4 22/32] objtool: mcount: Use ELF header from objtool
-Date:   Tue, 2 Jun 2020 12:50:15 -0700
-Message-ID: <b5c4c748f8d83f0a0406a4f53357bbe489d3eb13.1591125127.git.mhelsley@vmware.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1591125127.git.mhelsley@vmware.com>
-References: <cover.1591125127.git.mhelsley@vmware.com>
+        Tue, 2 Jun 2020 15:51:03 -0400
+Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
+        by smtp1.de.adit-jv.com (Postfix) with ESMTP id 3FF913C04C1;
+        Tue,  2 Jun 2020 21:50:59 +0200 (CEST)
+Received: from smtp1.de.adit-jv.com ([127.0.0.1])
+        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id sQ2OMu6SAg4D; Tue,  2 Jun 2020 21:50:53 +0200 (CEST)
+Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 80A043C00B5;
+        Tue,  2 Jun 2020 21:50:53 +0200 (CEST)
+Received: from lxhi-065.adit-jv.com (10.72.94.11) by HI2EXCH01.adit-jv.com
+ (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 2 Jun 2020
+ 21:50:53 +0200
+From:   Eugeniu Rosca <erosca@de.adit-jv.com>
+To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>, <stable@vger.kernel.org>
+Subject: [PATCH v2] media: vsp1: dl: Fix NULL pointer dereference on unbind
+Date:   Tue, 2 Jun 2020 21:50:16 +0200
+Message-ID: <20200602195016.803-1-erosca@de.adit-jv.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+X-Originating-IP: [10.72.94.11]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ELF header is the very first structure in an ELF file.
-Rather than cast it from the file mapping we use the ELF
-header extracted via objtool's ELF code.
+In commit f3b98e3c4d2e16 ("media: vsp1: Provide support for extended
+command pools"), the vsp pointer used for referencing the VSP1 device
+structure from a command pool during vsp1_dl_ext_cmd_pool_destroy() was
+not populated.
 
-This is the last usage of the open-coded mapping of the ELF
-file which we will remove in a later step.
+Correctly assign the pointer to prevent the following
+null-pointer-dereference when removing the device:
 
-Signed-off-by: Matt Helsley <mhelsley@vmware.com>
+[*] h3ulcb-kf #>
+echo fea28000.vsp > /sys/bus/platform/devices/fea28000.vsp/driver/unbind
+ Unable to handle kernel NULL pointer dereference at virtual address 0000000000000028
+ Mem abort info:
+   ESR = 0x96000006
+   EC = 0x25: DABT (current EL), IL = 32 bits
+   SET = 0, FnV = 0
+   EA = 0, S1PTW = 0
+ Data abort info:
+   ISV = 0, ISS = 0x00000006
+   CM = 0, WnR = 0
+ user pgtable: 4k pages, 48-bit VAs, pgdp=00000007318be000
+ [0000000000000028] pgd=00000007333a1003, pud=00000007333a6003, pmd=0000000000000000
+ Internal error: Oops: 96000006 [#1] PREEMPT SMP
+ Modules linked in:
+ CPU: 1 PID: 486 Comm: sh Not tainted 5.7.0-rc6-arm64-renesas-00118-ge644645abf47 #185
+ Hardware name: Renesas H3ULCB Kingfisher board based on r8a77951 (DT)
+ pstate: 40000005 (nZcv daif -PAN -UAO)
+ pc : vsp1_dlm_destroy+0xe4/0x11c
+ lr : vsp1_dlm_destroy+0xc8/0x11c
+ sp : ffff800012963b60
+ x29: ffff800012963b60 x28: ffff0006f83fc440
+ x27: 0000000000000000 x26: ffff0006f5e13e80
+ x25: ffff0006f5e13ed0 x24: ffff0006f5e13ed0
+ x23: ffff0006f5e13ed0 x22: dead000000000122
+ x21: ffff0006f5e3a080 x20: ffff0006f5df2938
+ x19: ffff0006f5df2980 x18: 0000000000000003
+ x17: 0000000000000000 x16: 0000000000000016
+ x15: 0000000000000003 x14: 00000000000393c0
+ x13: ffff800011a5ec18 x12: ffff800011d8d000
+ x11: ffff0006f83fcc68 x10: ffff800011a53d70
+ x9 : ffff8000111f3000 x8 : 0000000000000000
+ x7 : 0000000000210d00 x6 : 0000000000000000
+ x5 : ffff800010872e60 x4 : 0000000000000004
+ x3 : 0000000078068000 x2 : ffff800012781000
+ x1 : 0000000000002c00 x0 : 0000000000000000
+ Call trace:
+  vsp1_dlm_destroy+0xe4/0x11c
+  vsp1_wpf_destroy+0x10/0x20
+  vsp1_entity_destroy+0x24/0x4c
+  vsp1_destroy_entities+0x54/0x130
+  vsp1_remove+0x1c/0x40
+  platform_drv_remove+0x28/0x50
+  __device_release_driver+0x178/0x220
+  device_driver_detach+0x44/0xc0
+  unbind_store+0xe0/0x104
+  drv_attr_store+0x20/0x30
+  sysfs_kf_write+0x48/0x70
+  kernfs_fop_write+0x148/0x230
+  __vfs_write+0x18/0x40
+  vfs_write+0xdc/0x1c4
+  ksys_write+0x68/0xf0
+  __arm64_sys_write+0x18/0x20
+  el0_svc_common.constprop.0+0x70/0x170
+  do_el0_svc+0x20/0x80
+  el0_sync_handler+0x134/0x1b0
+  el0_sync+0x140/0x180
+ Code: b40000c2 f9403a60 d2800084 a9400663 (f9401400)
+ ---[ end trace 3875369841fb288a ]---
+
+Fixes: f3b98e3c4d2e16 ("media: vsp1: Provide support for extended command pools")
+Cc: stable@vger.kernel.org # v4.19+
+Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Tested-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 ---
- tools/objtool/recordmcount.c | 37 +++++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 20 deletions(-)
 
-diff --git a/tools/objtool/recordmcount.c b/tools/objtool/recordmcount.c
-index 85e95e1ea6f6..bfed27f53f75 100644
---- a/tools/objtool/recordmcount.c
-+++ b/tools/objtool/recordmcount.c
-@@ -523,21 +523,19 @@ static void MIPS64_r_info(Elf64_Rel *const rp, unsigned sym, unsigned type)
- static int do_file(char const *const fname)
- {
- 	unsigned int reltype = 0;
--	Elf32_Ehdr *ehdr;
- 	int rc = -1;
+Changes in v2:
+ - Rephrased the description based on Kieran's proposal
+ - Added the Reviewed-by/Tested-by signatures
+ - No change in the contents
+
+---
+ drivers/media/platform/vsp1/vsp1_dl.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/media/platform/vsp1/vsp1_dl.c b/drivers/media/platform/vsp1/vsp1_dl.c
+index d7b43037e500..e07b135613eb 100644
+--- a/drivers/media/platform/vsp1/vsp1_dl.c
++++ b/drivers/media/platform/vsp1/vsp1_dl.c
+@@ -431,6 +431,8 @@ vsp1_dl_cmd_pool_create(struct vsp1_device *vsp1, enum vsp1_extcmd_type type,
+ 	if (!pool)
+ 		return NULL;
  
--	ehdr = mmap_file(fname);
--	if (!ehdr)
-+	if (!mmap_file(fname))
- 		goto out;
++	pool->vsp1 = vsp1;
++
+ 	spin_lock_init(&pool->lock);
+ 	INIT_LIST_HEAD(&pool->free);
  
- 	w = w4nat;
- 	w2 = w2nat;
- 	w8 = w8nat;
--	switch (ehdr->e_ident[EI_DATA]) {
-+	switch (lf->ehdr.e_ident[EI_DATA]) {
- 		static unsigned int const endian = 1;
- 	default:
- 		fprintf(stderr, "unrecognized ELF data encoding %d: %s\n",
--			ehdr->e_ident[EI_DATA], fname);
-+			lf->ehdr.e_ident[EI_DATA], fname);
- 		goto out;
- 	case ELFDATA2LSB:
- 		if (*(unsigned char const *)&endian != 1) {
-@@ -566,18 +564,18 @@ static int do_file(char const *const fname)
- 		push_bl_mcount_thumb = push_bl_mcount_thumb_be;
- 		break;
- 	}  /* end switch */
--	if (memcmp(ELFMAG, ehdr->e_ident, SELFMAG) != 0 ||
--	    w2(ehdr->e_type) != ET_REL ||
--	    ehdr->e_ident[EI_VERSION] != EV_CURRENT) {
-+	if (memcmp(ELFMAG, lf->ehdr.e_ident, SELFMAG) != 0 ||
-+	    lf->ehdr.e_type != ET_REL ||
-+	    lf->ehdr.e_ident[EI_VERSION] != EV_CURRENT) {
- 		fprintf(stderr, "unrecognized ET_REL file %s\n", fname);
- 		goto out;
- 	}
- 
- 	gpfx = '_';
--	switch (w2(ehdr->e_machine)) {
-+	switch (lf->ehdr.e_machine) {
- 	default:
- 		fprintf(stderr, "unrecognized e_machine %u %s\n",
--			w2(ehdr->e_machine), fname);
-+			lf->ehdr.e_machine, fname);
- 		goto out;
- 	case EM_386:
- 		reltype = R_386_32;
-@@ -618,37 +616,36 @@ static int do_file(char const *const fname)
- 		break;
- 	}  /* end switch */
- 
--	switch (ehdr->e_ident[EI_CLASS]) {
-+	switch (lf->ehdr.e_ident[EI_CLASS]) {
- 	default:
- 		fprintf(stderr, "unrecognized ELF class %d %s\n",
--			ehdr->e_ident[EI_CLASS], fname);
-+			lf->ehdr.e_ident[EI_CLASS], fname);
- 		goto out;
- 	case ELFCLASS32:
--		if (w2(ehdr->e_ehsize) != sizeof(Elf32_Ehdr)
--		||  w2(ehdr->e_shentsize) != sizeof(Elf32_Shdr)) {
-+		if (lf->ehdr.e_ehsize != sizeof(Elf32_Ehdr)
-+		||  lf->ehdr.e_shentsize != sizeof(Elf32_Shdr)) {
- 			fprintf(stderr,
- 				"unrecognized ET_REL file: %s\n", fname);
- 			goto out;
- 		}
--		if (w2(ehdr->e_machine) == EM_MIPS) {
-+		if (lf->ehdr.e_machine == EM_MIPS) {
- 			reltype = R_MIPS_32;
- 			is_fake_mcount = MIPS_is_fake_mcount;
- 		}
- 		rc = do32(reltype);
- 		break;
- 	case ELFCLASS64: {
--		Elf64_Ehdr *const ghdr = (Elf64_Ehdr *)ehdr;
--		if (w2(ghdr->e_ehsize) != sizeof(Elf64_Ehdr)
--		||  w2(ghdr->e_shentsize) != sizeof(Elf64_Shdr)) {
-+		if (lf->ehdr.e_ehsize != sizeof(Elf64_Ehdr)
-+		||  lf->ehdr.e_shentsize != sizeof(Elf64_Shdr)) {
- 			fprintf(stderr,
- 				"unrecognized ET_REL file: %s\n", fname);
- 			goto out;
- 		}
--		if (w2(ghdr->e_machine) == EM_S390) {
-+		if (lf->ehdr.e_machine == EM_S390) {
- 			reltype = R_390_64;
- 			mcount_adjust_64 = -14;
- 		}
--		if (w2(ghdr->e_machine) == EM_MIPS) {
-+		if (lf->ehdr.e_machine == EM_MIPS) {
- 			reltype = R_MIPS_64;
- 			Elf64_r_info = MIPS64_r_info;
- 			is_fake_mcount = MIPS_is_fake_mcount;
 -- 
-2.20.1
+2.26.2
 
