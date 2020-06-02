@@ -2,58 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0491EBF6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 17:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F7B1EBF79
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 17:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgFBPzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 11:55:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50838 "EHLO mail.kernel.org"
+        id S1726842AbgFBP4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 11:56:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgFBPzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 11:55:08 -0400
-Received: from localhost (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
+        id S1726214AbgFBP4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 11:56:31 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CDFD2067B;
-        Tue,  2 Jun 2020 15:55:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 338E420757;
+        Tue,  2 Jun 2020 15:56:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591113308;
-        bh=PRxYptlqDh/ho5Adpy8HLDZHSmhfvJbp9cjTmMciy58=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=rqolI2+cJdcgCjFb938OQrKwiPnmVdg09hq9mw0rg3s/2xntd5muOFt2qIOjCU6yt
-         JL5oyl+4M1uHTMXcV7sDlr3yTxMpdCvOXSYOxOHXfujuQRMO5vZEztUqutLOtD3Atb
-         GDB+AIu2CqT/LfTdGrDSRzpjlKflJrrfpVV6Seho=
-Date:   Tue, 2 Jun 2020 08:55:07 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Dominique Martinet <asmadeus@codewreck.org>
-cc:     Stefano Stabellini <sstabellini@kernel.org>, jgross@suse.com,
-        boris.ostrovsky@oracle.com, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        ericvh@gmail.com, lucho@ionkov.net,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>
-Subject: Re: [PATCH v2] 9p/xen: increase XEN_9PFS_RING_ORDER
-In-Reply-To: <20200602060246.GA16791@nautica>
-Message-ID: <alpine.DEB.2.21.2006020855010.12801@sstabellini-ThinkPad-T480s>
-References: <20200521193242.15953-1-sstabellini@kernel.org> <20200522055847.GA2833@nautica> <alpine.DEB.2.21.2006011406100.12801@sstabellini-ThinkPad-T480s> <20200602060246.GA16791@nautica>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        s=default; t=1591113391;
+        bh=5FRbTyMEHqZ/disi9S3ygHA1ZLKo5uP3F/8Q4bd3NF4=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=hJItRM3K+8+Qs4lFmthfk57ZH2mtGUt75GCgNA8towZ9AT+0zKDuc8NY9KaKwAp8m
+         /BlphWpDJw5iQHobKibwMKxVLP3raJRFaCm/zNdof8ocSaq0P0bTDAgvNRpMcVYUUQ
+         0JS1EBftve1DNzPRoA1fZy9+C0myDABq6hoWVFZ8=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 1394C352283B; Tue,  2 Jun 2020 08:56:31 -0700 (PDT)
+Date:   Tue, 2 Jun 2020 08:56:31 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     mingo@kernel.org, tglx@linutronix.de
+Cc:     geert@linux-m68k.org, wangkefeng.wang@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL rcu/urgent] Fix printk format warning
+Message-ID: <20200602155631.GA1638@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Jun 2020, Dominique Martinet wrote:
-> Stefano Stabellini wrote on Mon, Jun 01, 2020:
-> > > LGTM, I'll try to find some time to test this by the end of next week or
-> > > will trust you if I can't make it -- ping me around June 1st if I don't
-> > > reply again until then...
-> > 
-> > Ping :-)
-> 
-> I actually did think about this patch this weekend! . . .but didn't
-> quite make it :/
-> Anyway, as promised pushed to linux-next, I'll submit this for 5.8
+Hello!
 
-Thank you!
+This pull request contains a single commit that fixes a printk() format
+error that appears on 32-bit architectures.  This could be argued to
+be a minor bug, but it is a regression from this week's merge window,
+and is in code that is never used in production.  Therefore the risk of
+adding this late in process is quite low, more than worth it to fix the
+irritation/confusion that the bug can cause.
+
+And a big "Thank you!!!" to Geert (CCed) for bringing this to my
+attention, as it has slipped through the cracks earlier.
+
+The following changes since commit b1fcf9b83c4149c63d1e0c699e85f93cbe28e211:
+
+  rcu: Provide __rcu_is_watching() (2020-05-19 15:51:21 +0200)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git urgent-for-mingo
+
+for you to fetch changes up to b3e2d20973db3ec87a6dd2fee0c88d3c2e7c2f61:
+
+  rcuperf: Fix printk format warning (2020-06-02 08:41:37 -0700)
+
+----------------------------------------------------------------
+Kefeng Wang (1):
+      rcuperf: Fix printk format warning
+
+ kernel/rcu/rcuperf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
