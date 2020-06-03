@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFEB1ED969
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 01:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A101ED96C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 01:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgFCXdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 19:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
+        id S1726567AbgFCXd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 19:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgFCXcV (ORCPT
+        with ESMTP id S1726385AbgFCXcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 19:32:21 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC175C08C5C7
+        Wed, 3 Jun 2020 19:32:18 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA35C00863C
         for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 16:32:18 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b16so2466797pfi.13
+Received: by mail-pl1-x642.google.com with SMTP id t7so1385720plr.0
         for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 16:32:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3Hqe0fSnXDR9BQhToHGwDvWeXmOn6wXlTM1ZNtQBNo0=;
-        b=YTEneSOLG0G03VL7npO7bUdyovAOz/rWIhWyhFR63irmezy8TdYcAkK240HUiwVQWE
-         l1+wS3Zsf9sMrntm2h4pD25VpYQ6IwLesvsppd1RMdvcr3jcMToX3FgASNyJIcm+17M+
-         RgKR5xqROZSaXLSFW/JQA7YcOaR/t1jFVii4U=
+        bh=vlsGh/2A3yd9dyMlCDYBd0p4l1T5Oo7IaL6NTs2MBUk=;
+        b=TU9flWAg9FMH+Npku3SFev/YYK6vvYYCp6jsnIW2uRPdSGDM2UMjhH0to/RSt2mcu+
+         +tEJTAZqQ0UV4spAC//nbMEU4YZmc6CW1cgHcGYV50zllOcjZjx+9n/jCEKcVaB/68HX
+         WckrYbpJZIVMmdggrVZUzoJLKS1NezuTTfatg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3Hqe0fSnXDR9BQhToHGwDvWeXmOn6wXlTM1ZNtQBNo0=;
-        b=g+NnDqulHnDMCWJ7/ZPohWrMFTXQkyKws0EqAOh83lri3+u8CkfUOGqJDQS3xmHbx5
-         8yJhwqdR37pwzdWadS1sikMF+8Ha1Zj6KgfS+Hub8XyEy1EB7pTaOQ0KPMlR7wFKaH+n
-         avpmMj+WGGpLVca/Fp4VKDTW9Jh//f2EryCf+I5simOCAnlhvxviP+S/EqdfRsCGL92t
-         6uXiCoiSw7qOyHZ4Zt9DO+0StaydAfDSK8SzL06vjgQxAYzoa4/4GMEigiRrdDGCBybs
-         vRlf08o2emNEBMTLBSmc1Q4wztLwxTuYE1nHlUeARalCYhWhksW52nHCXNGIhL+rapCV
-         buxA==
-X-Gm-Message-State: AOAM532esBNsW9/MiDz86vjD+WpNRG8q2oippCDQY3VzqX7biNeMYgrG
-        0aCdEuLT45E42yB+HhkuO+zEbQ==
-X-Google-Smtp-Source: ABdhPJyfJH3U7PUxTmeWYwI+KnsyVJ3CXtEz238mctrUyUOZNrrAJx63byFxfj5FXVnOwJj3WTFGgg==
-X-Received: by 2002:a65:41c8:: with SMTP id b8mr1632114pgq.265.1591227138290;
-        Wed, 03 Jun 2020 16:32:18 -0700 (PDT)
+        bh=vlsGh/2A3yd9dyMlCDYBd0p4l1T5Oo7IaL6NTs2MBUk=;
+        b=FAg67mVgG30rLgVZ+orKJNWh4Hs/tEnd8lvgb1e6ATTL4JAxntsLF2MqG/Cj4I/J9U
+         FdDG/XfoANqdK6btuY92xQQLEpIwcbH9MqpR5Ts61eNrFJupwKGFLUi74ZNABtn7AaQL
+         dRZhtiXI145DB+1yYdST5zMCkQBBEGolftoBABxbqcUd/l4RitNa9qTlQZLp2lYGlg6C
+         TgZoYB30shSpS0i6mTwjjKJQua31bC5LqIMnkNAv4B4SP0Ghgutk7budaWQ7MbCBRaMp
+         KD6X0GXz8jHC90sNZAuPXA/pChe0KkcLQ9lWqIMAfutYA7Zh/6yAltYvGdL3WUAr97Dw
+         Kokg==
+X-Gm-Message-State: AOAM530CH4EzrmdWP85YzJSvAV9FyWWO63gHWtWDYtIuc7Me287Du7lo
+        SORFKliM4JgaQuMi4W0vEt6OqA==
+X-Google-Smtp-Source: ABdhPJyBu+lQtrGYhp3WZ7ZyvY1X8s9WoOeJvHWXF5Ulh61p00d2PYdWCaVGKn3LkWqTOEtrYGlBGw==
+X-Received: by 2002:a17:902:aa0c:: with SMTP id be12mr2119692plb.241.1591227137753;
+        Wed, 03 Jun 2020 16:32:17 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l3sm3402369pju.43.2020.06.03.16.32.14
+        by smtp.gmail.com with ESMTPSA id b1sm3836817pjc.33.2020.06.03.16.32.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 03 Jun 2020 16:32:16 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -58,13 +58,14 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
         linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
         linux-mm@kvack.org, clang-built-linux@googlegroups.com
-Subject: [PATCH 05/10] ide: Remove uninitialized_var() usage
-Date:   Wed,  3 Jun 2020 16:31:58 -0700
-Message-Id: <20200603233203.1695403-6-keescook@chromium.org>
+Subject: [PATCH 06/10] clk: st: Remove uninitialized_var() usage
+Date:   Wed,  3 Jun 2020 16:31:59 -0700
+Message-Id: <20200603233203.1695403-7-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200603233203.1695403-1-keescook@chromium.org>
 References: <20200603233203.1695403-1-keescook@chromium.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -78,9 +79,10 @@ simply initialize the variable or make compiler changes. As a precursor
 to removing[2] this[3] macro[4], just remove this variable since it was
 actually unused:
 
-drivers/ide/ide-taskfile.c:232:34: warning: unused variable 'flags' [-Wunused-variable]
-        unsigned long uninitialized_var(flags);
-                                        ^
+drivers/clk/st/clkgen-fsyn.c: In function ‘quadfs_set_rate’:
+drivers/clk/st/clkgen-fsyn.c:793:6: warning: unused variable ‘i’ [-Wunused-variable]
+  793 |  int i;
+      |      ^
 
 [1] https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.com/
 [2] https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=1TGqCR5vQkCzWJ0QxK6CernOU6eedsudAixw@mail.gmail.com/
@@ -89,21 +91,21 @@ drivers/ide/ide-taskfile.c:232:34: warning: unused variable 'flags' [-Wunused-va
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/ide/ide-taskfile.c | 1 -
+ drivers/clk/st/clkgen-fsyn.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/ide/ide-taskfile.c b/drivers/ide/ide-taskfile.c
-index aab6a10435b6..a26f85ab58a9 100644
---- a/drivers/ide/ide-taskfile.c
-+++ b/drivers/ide/ide-taskfile.c
-@@ -229,7 +229,6 @@ void ide_pio_bytes(ide_drive_t *drive, struct ide_cmd *cmd,
- 	ide_hwif_t *hwif = drive->hwif;
- 	struct scatterlist *sg = hwif->sg_table;
- 	struct scatterlist *cursg = cmd->cursg;
--	unsigned long uninitialized_var(flags);
- 	struct page *page;
- 	unsigned int offset;
- 	u8 *buf;
+diff --git a/drivers/clk/st/clkgen-fsyn.c b/drivers/clk/st/clkgen-fsyn.c
+index a156bd0c6af7..f1adc858b590 100644
+--- a/drivers/clk/st/clkgen-fsyn.c
++++ b/drivers/clk/st/clkgen-fsyn.c
+@@ -790,7 +790,6 @@ static int quadfs_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	struct st_clk_quadfs_fsynth *fs = to_quadfs_fsynth(hw);
+ 	struct stm_fs params;
+ 	long hwrate;
+-	int uninitialized_var(i);
+ 
+ 	if (!rate || !parent_rate)
+ 		return -EINVAL;
 -- 
 2.25.1
 
