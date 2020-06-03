@@ -2,196 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72EE1ECB06
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2131ECB0E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726173AbgFCIHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 04:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
+        id S1726311AbgFCIIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 04:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgFCIHe (ORCPT
+        with ESMTP id S1726262AbgFCIH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 04:07:34 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF49CC05BD43;
-        Wed,  3 Jun 2020 01:07:33 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49cM2q6KX2z9sSd;
-        Wed,  3 Jun 2020 18:07:31 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1591171652;
-        bh=HxO3Wpm6XOrIJUNFfVubWTuMmRFb+J1z2Qh7xpR9dKQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tDHCUgHC/QG3xTk5v5w67yAF5Z5CV6BpJKeFwBtXB6Y0JuRPRSPPmdqv2cZoPXV//
-         jSSYptLw5I2OseSx5rfCWyAr7Wecq2G/SzQjxr3Ox3vzc/o/BGLwAq5a4jxbYraOdA
-         AtJsNHrhKFVf/3CYBBzaxs4W2MsTocLQBX7Xr00UfJwA1qA7sQ306pKJSPKL4RBAa7
-         1qWFmS15yYZ4b8KyG0kuAlKSOoYviyH9eTQAZ6p7LR+H8bIeP9vnGonZDvNyCFvXa5
-         Yi1tTxW4PCKP+9tT3GNw5AS0QM9JyiwkXCnzcNtVkkIvJbdTQ44Cz0phXrW3T2E/Ce
-         xD6KnhcO9kGBg==
-Date:   Wed, 3 Jun 2020 18:07:31 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: linux-next: manual merge of the akpm-current tree with Linus' tree
-Message-ID: <20200603180731.7df1082f@canb.auug.org.au>
+        Wed, 3 Jun 2020 04:07:58 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03125C03E96E
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 01:07:57 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id m18so1547968ljo.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 01:07:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qm1Fufz0OVB6tfCS+0Zsp1jGFDeHl0Qe2Wk3cNVFIjE=;
+        b=em6VoVH3kTta5GgGnR4yxb0C9pC1Go/C30Wl2dHtASemgL3MKbw20qcTF6Xp/bqged
+         RqOiCSv36QuACxRruwObvBTcwUk07Vmv1pRD7jpaD80GjeML6wGVdnohnXhDpk4O6+vj
+         CYcJiJHrTqBZ0vrJitGDSVZcpdMJoTTeyYXQ6IKOQcGDkoR5aMwVFg1dMeW+q79MUbvm
+         UM03uTMHvxOc+IDw/fvKIk3IgDSfh7K96pi/PSu+HgDag/sDDXiL0MFQeFJsr7+wOAHd
+         jiR0M0thaeIfsT1hu5gedkVkCI75yMeGExpSo9+ia+XoHXJRolqp+4yzG5CkerIzUioR
+         nkaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qm1Fufz0OVB6tfCS+0Zsp1jGFDeHl0Qe2Wk3cNVFIjE=;
+        b=SVAdztEw9cfFFjaoisO/fOu00d1YBJQU/uov/7QRjk7rTbYO+EwEz1X3LOhTOkh0yn
+         CkhigQxYs7v96i0JPUXxByLylJ2mYdR9Reyh/i4LJPW+N8sVcaZ9AkhSP/wfDp+4kpn6
+         mIZ/fFX1041g6oNFdiWLTUJ5x5jW10FlBDaLTW0EBDqPa7EE9A5E7Iz9yMOtapCIsf6w
+         ZWNmk3Xl6UPRjkINMwgS0qKusxDZMF67DsKdTd9/zngeU1CMUzGwtqon8H2L9kxTqaE9
+         4lqFvlY8mOUh2nnrF20/GCPBC8yBiymL81tFfQJdsXPAsXRYBZIv4f41/6rPLao6BL1r
+         J73w==
+X-Gm-Message-State: AOAM530+I6SGDE1MMGBUupj4S71t7PiCu2yO4sRSAtN69OoP/IQ0nlrh
+        T+N1hn4Gch3gTQcUdc/JPOXzaZ0ONpbeyjn+HlgPog==
+X-Google-Smtp-Source: ABdhPJxcPvpE6Kivg7poyIQDKjTdaR1zLLkk4Fmt5UIvp5/hGBWWhPNMg87+/+CuxmPgVa3FetzyOOjx5sQTccuyCM0=
+X-Received: by 2002:a05:651c:1103:: with SMTP id d3mr1553238ljo.110.1591171676264;
+ Wed, 03 Jun 2020 01:07:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zfpFXzvyD7h_7PWNrU8fLh6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <1591107505-6030-1-git-send-email-sumit.garg@linaro.org> <1591108981.4253.17.camel@linux.ibm.com>
+In-Reply-To: <1591108981.4253.17.camel@linux.ibm.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 3 Jun 2020 13:37:44 +0530
+Message-ID: <CAFA6WYOoMdLJ2g3gocZBZWdu-7Nfw7LKHnzX8S8FKeC7cuNwYg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] Introduce TEE based Trusted Keys support
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>, dhowells@redhat.com,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Markus Wamser <Markus.Wamser@mixed-mode.de>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        op-tee@lists.trustedfirmware.org,
+        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zfpFXzvyD7h_7PWNrU8fLh6
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2 Jun 2020 at 20:14, James Bottomley <jejb@linux.ibm.com> wrote:
+>
+> On Tue, 2020-06-02 at 19:48 +0530, Sumit Garg wrote:
+> > Add support for TEE based trusted keys where TEE provides the
+> > functionality to seal and unseal trusted keys using hardware unique
+> > key. Also, this is an alternative in case platform doesn't possess a
+> > TPM device.
+>
+> So here's a meta problem: in the case when the platform possesses both
+> TEE and TPM  what should it do?
 
-Hi all,
+IMO, trust source (either a TPM or a TEE) should be unique and
+carefully chosen as per platform security policy corresponding to a
+particular threat model.
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+And moreover TEEs have been mostly used in the embedded world where
+having a hardware TPM is cumbersome given constraints regarding BoM
+cost and hardware resources.
 
-  mm/gup.c
+>  Things like this:
+>
+> > --- a/security/keys/trusted-keys/trusted_core.c
+> > +++ b/security/keys/trusted-keys/trusted_core.c
+> > @@ -25,6 +25,8 @@
+> >
+> >  #if defined(CONFIG_TRUSTED_TPM)
+> >  static struct trusted_key_ops *trusted_key_ops =
+> > &tpm_trusted_key_ops;
+> > +#elif defined(CONFIG_TRUSTED_TEE)
+> > +static struct trusted_key_ops *trusted_key_ops =
+> > &tee_trusted_key_ops;
+> >  #else
+>
+> Say it's either/or at a Kconfig level: so if you select both TEE and
+> TPM based trusted keys at compile time, we intall the TPM ops and
+> ignore the TEE ops, is that right?  Surely this should be runtime
+> selectable based on what the platform has ...
 
-between commit:
+This dynamic selection was already part of v4 patch-set but after
+objection from Jarrko here [1], I switched to compile time mode
+instead.
 
-  17839856fd58 ("gup: document and work around "COW can break either way" i=
-ssue")
+[1] https://lkml.org/lkml/2020/6/2/139
 
-from Linus' tree and (at least) commits:
+> perhaps it should even be
+> selectable per key?
+>
+> Once it is runtime selectable, what should be selected in the both
+> case?  Or should we allow the user to decide, if so, how?
+>
+> when you pipe a trusted key, I think the subtype (TEE or TPM) should be
+> part of the piped information, so it loads again seamlessly.  This
+> would actually be fixed by something like the ASN.1 scheme I'm trying
+> to upstream, at least for TPM keys, but do TEE keys have a recognized
+> ASN.1 format?
+>
 
-  d7f76db8e4ad ("mm/gup: move __get_user_pages_fast() down a few lines in g=
-up.c")
-  6a5f74c81019 ("mm/gup: refactor and de-duplicate gup_fast() code")
+I guess this is something which we can refine later if there are real
+platforms that have a particular security requirement to support both
+TPM and a TEE.
 
-from the akpm-current tree.
+-Sumit
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc mm/gup.c
-index 3edf740a3897,fb28e7aecd35..000000000000
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@@ -2814,17 -2743,21 +2758,33 @@@ static int internal_get_user_pages_fast
-  		return -EFAULT;
- =20
-  	/*
-+ 	 * Disable interrupts. The nested form is used, in order to allow full,
-+ 	 * general purpose use of this routine.
-+ 	 *
-+ 	 * With interrupts disabled, we block page table pages from being
-+ 	 * freed from under us. See struct mmu_table_batch comments in
-+ 	 * include/asm-generic/tlb.h for more details.
-+ 	 *
-+ 	 * We do not adopt an rcu_read_lock(.) here as we also want to
-+ 	 * block IPIs that come from THPs splitting.
-++	 *
-++	 * NOTE! We allow read-only gup_fast() here, but you'd better be
-++	 * careful about possible COW pages. You'll get _a_ COW page, but
-++	 * not necessarily the one you intended to get depending on what
-++	 * COW event happens after this. COW may break the page copy in a
-++	 * random direction.
-++	 *
- +	 * The FAST_GUP case requires FOLL_WRITE even for pure reads,
- +	 * because get_user_pages() may need to cause an early COW in
- +	 * order to avoid confusing the normal COW routines. So only
- +	 * targets that are already writable are safe to do by just
- +	 * looking at the page tables.
-  	 */
-  	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP) &&
-  	    gup_fast_permitted(start, end)) {
-- 		local_irq_disable();
-+ 		local_irq_save(flags);
- -		gup_pgd_range(addr, end, gup_flags, pages, &nr_pinned);
- +		gup_pgd_range(addr, end, gup_flags | FOLL_WRITE, pages, &nr_pinned);
-- 		local_irq_enable();
-+ 		local_irq_restore(flags);
-  		ret =3D nr_pinned;
-  	}
- =20
-@@@ -2848,6 -2781,46 +2808,50 @@@
-  	return ret;
-  }
- =20
-+ /*
-+  * Like get_user_pages_fast() except it's IRQ-safe in that it won't fall =
-back to
-+  * the regular GUP.
-+  * Note a difference with get_user_pages_fast: this always returns the
-+  * number of pages pinned, 0 if no pages were pinned.
-+  *
-+  * If the architecture does not support this function, simply return with=
- no
-+  * pages pinned.
-++ *
-++ * Careful, careful! COW breaking can go either way, so a non-write
-++ * access can get ambiguous page results. If you call this function witho=
-ut
-++ * 'write' set, you'd better be sure that you're ok with that ambiguity.
-+  */
-+ int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
-+ 			  struct page **pages)
-+ {
-+ 	int nr_pinned;
-+ 	/*
-+ 	 * Internally (within mm/gup.c), gup fast variants must set FOLL_GET,
-+ 	 * because gup fast is always a "pin with a +1 page refcount" request.
-+ 	 *
-+ 	 * FOLL_FAST_ONLY is required in order to match the API description of
-+ 	 * this routine: no fall back to regular ("slow") GUP.
-+ 	 */
-+ 	unsigned int gup_flags =3D FOLL_GET | FOLL_FAST_ONLY;
-+=20
-+ 	if (write)
-+ 		gup_flags |=3D FOLL_WRITE;
-+=20
-+ 	nr_pinned =3D internal_get_user_pages_fast(start, nr_pages, gup_flags,
-+ 						 pages);
-+ 	/*
-+ 	 * As specified in the API description above, this routine is not
-+ 	 * allowed to return negative values. However, the common core
-+ 	 * routine internal_get_user_pages_fast() *can* return -errno.
-+ 	 * Therefore, correct for that here:
-+ 	 */
-+ 	if (nr_pinned < 0)
-+ 		nr_pinned =3D 0;
-+=20
-+ 	return nr_pinned;
-+ }
-+ EXPORT_SYMBOL_GPL(__get_user_pages_fast);
-+=20
-  /**
-   * get_user_pages_fast() - pin user pages in memory
-   * @start:      starting user address
-
---Sig_/zfpFXzvyD7h_7PWNrU8fLh6
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7XWkMACgkQAVBC80lX
-0GysxQf8D7LU7anSGf96oRUYwGDUTnqsHEyuZGkOKLw90AyK/mrOZLEz7K5ziK8f
-l+QgHuzwKs7YmsoJ8TPr42uJvyE2LY3vIGeQeOFk4yuk6YG8QY2LkO//WGYPOk81
-7MGiRYFIEHCuCmanwEAniLZOwqMWCWXRcGPXT/EuYTtf2aojgsP3B0GJ4xe6X0Tv
-BTd2SbADqOADjDpXqVTdx0GnYdQPAm91Wmc9Xt0+OZtRFrGicBwVBqTeZyYcyum1
-bhkdGIh6b4X77HtniCd/TskPujRjEjbbvOwZW5EFl08dT7ig+t/Z1oFdm8gtplJE
-AQR3F/u0aKQ4bOE+s4yFoI/SoNdx1Q==
-=GsVj
------END PGP SIGNATURE-----
-
---Sig_/zfpFXzvyD7h_7PWNrU8fLh6--
+> James
+>
