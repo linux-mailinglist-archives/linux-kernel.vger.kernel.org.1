@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9631ED725
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 22:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8141ED72B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 22:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgFCUCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 16:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbgFCUCF (ORCPT
+        id S1726204AbgFCUDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 16:03:53 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:37842 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725922AbgFCUDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 16:02:05 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05199C08C5C0;
-        Wed,  3 Jun 2020 13:02:03 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d66so2275217pfd.6;
-        Wed, 03 Jun 2020 13:02:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Tnu/CyDw1h7BIsRr4D3oJlUTeZPgHQX82cMlMteGwro=;
-        b=MEtVuioVQqydKcyY1av8VW+zNuuMhBV2H36aKCIaBdCfvbzyqA3UjmGvumOy4Nj6tg
-         C/I6P72J8m/HjG1pkXC5IM9EgjFLssjUqSGVVxX2+97W8EGwM99MFl322eU0vVomTsO5
-         R5oliaX5ikWGbU/a3LUYLVq0/tJpl0nqcJoze+M65G1ZMB2FRsX00IQUzVddl/t/TkV5
-         cpAjpdmcmRVxvSEbIi4Cly/qIsReJw73HCSgV88hMbvGovIjKbpklalBh4u3k0T+NeNk
-         LnfFjd3uX9AZaoAPrUmrkHLHhxWeSID2c1y0cnyLwWgsRJYZY7PGWRbOjqtAr+Mz9x6z
-         JeSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Tnu/CyDw1h7BIsRr4D3oJlUTeZPgHQX82cMlMteGwro=;
-        b=DobK8iuJVNNFVv2X7HSphgg8Umlr5vGsNlOAv4zWYlwdM2TGBYXmzMdarmgBkZnsdt
-         Xy1ImzSDqJ2RdxEmzrqpcF/oqVgqSXEK8kJcw4vMrrtVJl4J1WCs28r4ku9jPyE9KiyQ
-         +dZnq5tztnRc8H9d6cUdm7fkgLOPHiF3chxO8XRkklzwY9uv3SnCJVsbpobc6b6GDQ7I
-         KxigOQbVuOUkP/jI9r44r2k57nZn3SvKNx0MUvjelaIszCYgpFjV55MSLDz6216qWCXQ
-         JtC+9Z2L6EKLwSTbSvYn7ufMle8yUnLl4A4nmfATYzs0UtnLRMHCEWTydt11dzaSU4QP
-         YeCA==
-X-Gm-Message-State: AOAM530YTfgtK81IlKJOCZT/Xa5ayX40rIa1PVKmNIvCGcPn1xOOVhJA
-        DlItzw3o8XaC4YBSqqFPtcweRNb5
-X-Google-Smtp-Source: ABdhPJwD3HI/ELCFQ0lrxbRHrN080D1603C+j21RJiOcQinFRr3pKAOQdhIwn3FU/yre/Y8DZ/hcBw==
-X-Received: by 2002:a63:648:: with SMTP id 69mr1003980pgg.109.1591214522816;
-        Wed, 03 Jun 2020 13:02:02 -0700 (PDT)
-Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id t22sm3340139pjy.32.2020.06.03.13.02.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jun 2020 13:02:01 -0700 (PDT)
-Subject: Re: [PATCH v3 13/13] PCI: brcmstb: Add bcm7211, bcm7216, bcm7445,
- bcm7278 to match list
-To:     Jim Quinlan <james.quinlan@broadcom.com>,
-        linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200603192058.35296-1-james.quinlan@broadcom.com>
- <20200603192058.35296-14-james.quinlan@broadcom.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <5858bfe4-5c2a-1a12-e934-37e11c3bb693@gmail.com>
-Date:   Wed, 3 Jun 2020 13:02:00 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.8.1
+        Wed, 3 Jun 2020 16:03:51 -0400
+Received: from [78.134.115.170] (port=37458 helo=melee.fritz.box)
+        by hostingweb31.netsons.net with esmtpa (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1jgZc2-005dPA-O7; Wed, 03 Jun 2020 22:03:46 +0200
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Keerthy <j-keerthy@ti.com>,
+        Axel Lin <axel.lin@ingics.com>
+Subject: [RFC 0/4] regulator: lp87565: ignore ENx pins and add LP87524-Q1
+Date:   Wed,  3 Jun 2020 22:03:15 +0200
+Message-Id: <20200603200319.16184-1-luca@lucaceresoli.net>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200603192058.35296-14-james.quinlan@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+the first patch in this series is a small but significant variation in how
+the lp87565 driver enables the output rails, allow the kernel to always
+know when it is enabling an output. However it can change existing
+behaviour (depending on the hardware setup) and thus it should be carefully
+evaluated.
 
-On 6/3/2020 12:20 PM, Jim Quinlan wrote:
-> Now that the support is in place with previous commits, we add several
-> chips that use the BrcmSTB driver.
-> 
-> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+The following patches are a fairly straightforward addition of a new chip
+variant along with some DT bindings cleanup.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Luca
+
+Luca Ceresoli (4):
+  regulator: lp87565: enable voltage regardless of ENx pin
+  regulator: lp87565: dt: remove duplicated section
+  regulator: lp87565: dt: add LP87524-Q1 variant
+  regulator: lp87565: add LP87524-Q1 variant
+
+ .../devicetree/bindings/mfd/lp87565.txt       | 66 ++++++++++++++-----
+ drivers/mfd/lp87565.c                         |  4 ++
+ drivers/regulator/lp87565-regulator.c         | 21 +++++-
+ include/linux/mfd/lp87565.h                   |  1 +
+ 4 files changed, 73 insertions(+), 19 deletions(-)
+
 -- 
-Florian
+2.27.0
+
