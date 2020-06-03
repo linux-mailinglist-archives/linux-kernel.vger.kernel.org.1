@@ -2,214 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B0F1ED259
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA3A1ED29C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726095AbgFCOsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 10:48:23 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16500 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725834AbgFCOsW (ORCPT
+        id S1726364AbgFCOvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 10:51:53 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:57688 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbgFCOvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 10:48:22 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 053EWOBx017053;
-        Wed, 3 Jun 2020 10:47:36 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31ec64m5h5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Jun 2020 10:47:35 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 053EhHxG016719;
-        Wed, 3 Jun 2020 14:47:34 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma01fra.de.ibm.com with ESMTP id 31bf47uc8x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Jun 2020 14:47:33 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 053ElVWG55968044
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 Jun 2020 14:47:31 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 827CEA405C;
-        Wed,  3 Jun 2020 14:47:31 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2D76CA4054;
-        Wed,  3 Jun 2020 14:47:28 +0000 (GMT)
-Received: from sathnaga86 (unknown [9.85.87.122])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  3 Jun 2020 14:47:27 +0000 (GMT)
-Date:   Wed, 3 Jun 2020 20:17:25 +0530
-From:   Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
-        sachinp <sachinp@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        manvanth <manvanth@linux.vnet.ibm.com>,
-        linux-next <linux-next@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "aneesh.kumar" <aneesh.kumar@linux.vnet.ibm.com>,
-        akpm@linux-foundation.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, hch <hch@lst.de>
-Subject: Re: [mainline][Oops][bisected 2ba3e6 ] 5.7.0 boot fails with kernel
- panic on powerpc
-Message-ID: <20200603144725.GA221279@sathnaga86>
-Reply-To: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-References: <1591181457.9020.13.camel@abdul>
- <20200603133257.GL6857@suse.de>
+        Wed, 3 Jun 2020 10:51:52 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jgUkA-0006ZY-JD; Wed, 03 Jun 2020 08:51:50 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jgUk9-0005aR-P2; Wed, 03 Jun 2020 08:51:50 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     <linux-kernel@vger.kernel.org>
+Date:   Wed, 03 Jun 2020 09:47:51 -0500
+Message-ID: <875zc8kxyg.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200603133257.GL6857@suse.de>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-03_12:2020-06-02,2020-06-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 clxscore=1011
- suspectscore=1 adultscore=0 malwarescore=0 cotscore=-2147483648
- spamscore=0 mlxlogscore=999 lowpriorityscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006030112
+Content-Type: text/plain
+X-XM-SPF: eid=1jgUk9-0005aR-P2;;;mid=<875zc8kxyg.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+hMjF0oDHJ4xXsPRpWOhyuUU9Uw6OySHE=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMSubMetaSxObfu_03,XMSubMetaSx_00
+        autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.3170]
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 0; Body=1 Fuz1=1 Fuz2=1]
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: ; sa02 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 434 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.0 (0.9%), b_tie_ro: 2.8 (0.7%), parse: 0.62
+        (0.1%), extract_message_metadata: 3.1 (0.7%), get_uri_detail_list:
+        1.61 (0.4%), tests_pri_-1000: 2.7 (0.6%), tests_pri_-950: 1.03 (0.2%),
+        tests_pri_-900: 0.80 (0.2%), tests_pri_-90: 137 (31.6%), check_bayes:
+        136 (31.3%), b_tokenize: 6 (1.5%), b_tok_get_all: 12 (2.8%),
+        b_comp_prob: 1.79 (0.4%), b_tok_touch_all: 112 (25.7%), b_finish: 0.75
+        (0.2%), tests_pri_0: 268 (61.8%), check_dkim_signature: 0.71 (0.2%),
+        check_dkim_adsp: 2.1 (0.5%), poll_dns_idle: 0.72 (0.2%), tests_pri_10:
+        2.9 (0.7%), tests_pri_500: 7 (1.6%), rewrite_mail: 0.00 (0.0%)
+Subject: [GIT PULL] proc changes for v5.8-rc1
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 03:32:57PM +0200, Joerg Roedel wrote:
-> On Wed, Jun 03, 2020 at 04:20:57PM +0530, Abdul Haleem wrote:
-> > @Joerg, Could you please have a look?
-> 
-> Can you please try the attached patch?
 
-Hi Joerg,
+Please pull the proc-linus branch from the git tree:
 
-I did hit the similar boot failue on a Power9 baremetal box(mentioned in Note) and 
-your below patch helped solving that for my environment and 
-am able to boot the system fine.
+   git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git proc-linus
 
-...
-Fedora 31 (Thirty One)
-Kernel 5.7.0-gd6f9469a0-dirty on an ppc64le (hvc0)
+   HEAD: 9d78edeaec759f997c303f286ecd39daee166f2a proc: proc_pid_ns takes super_block as an argument
 
- login:
+This branch has 4 sets of changes:
 
+      proc: modernize proc to support multiple private instances
+      proc: Ensure we see the exit of each process tid exactly
+      Removing has_group_leader_pid
+      posix-cpu-timers: Use pids not tasks in lookup
 
-Tested-by: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+Alexey updated proc so each mount of proc uses a new superblock.  This
+allows people to actually use mount options with proc with no fear of
+messing up another mount of proc.  Given the kernel's internal mounts of
+proc for things like uml this was a real problem, and resulted in
+Android's hidepid mount options being ignored and introducing security
+issues.
 
-Note: for the record, here is the boot failure call trace.
+The rest of the changes are small cleanups and fixes that came out of my
+work to allow this change to proc.  In essence it is swapping the pids
+in de_thread during exec which revoves a special case the code had to
+handle.  Then updating the code to stop handling that special case.
 
-[    0.023555] mempolicy: Enabling automatic NUMA balancing. Configure with numa_balancing= or the kernel.numa_balancing sysctl
-[    0.023582] pid_max: default: 163840 minimum: 1280
-[    0.035014] BUG: Unable to handle kernel data access on read at 0xc000006000000000
-[    0.035058] Faulting instruction address: 0xc000000000382304
-[    0.035074] Oops: Kernel access of bad area, sig: 11 [#1]
-[    0.035097] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA PowerNV
-[    0.035113] Modules linked in:
-[    0.035136] CPU: 24 PID: 0 Comm: swapper/24 Not tainted 5.7.0-gd6f9469a0 #1
-[    0.035161] NIP:  c000000000382304 LR: c00000000038407c CTR: 0000000000000000
-[    0.035197] REGS: c00000000167f930 TRAP: 0300   Not tainted  (5.7.0-gd6f9469a0)
-[    0.035241] MSR:  9000000002009033 <SF,HV,VEC,EE,ME,IR,DR,RI,LE>  CR: 42022422  XER: 00000000
-[    0.035294] CFAR: c0000000003822fc DAR: c000006000000000 DSISR: 40000000 IRQMASK: 0 
-[    0.035294] GPR00: c00000000038407c c00000000167fbc0 c00000000168090[  150.252645597,5] OPAL: Reboot request...
-[  150.252928266,5] RESET: Initiating fast reboot 1...
-0 c008000000000000 
-[    0.035294] GPR04: ffffffffffffffff 00000000000001ff c0080000001fffff 0000000000000060 
-[    0.035294] GPR08: 0000000060000000 0000000000000005 c000006000000000 c008000000200000 
-[    0.035294] GPR12: 0000000022022422 c000000001870000 c000000000000000 c008000000000000 
-[    0.035294] GPR16: c008000007ffffff c008000000200000 0000000000000000 c000006000000000 
-[    0.035294] GPR20: c008000008000000 c008000008000000 c008000007ffffff c008000007ffffff 
-[    0.035294] GPR24: c00000000163f7c8 c00000000172d0c0 0000000000000001 0000000000000001 
-[    0.035294] GPR28: c000000001708000 c00000000172d0c8 0000000000000000 c008000008000000 
-[    0.035622] NIP [c000000000382304] map_kernel_range_noflush+0x274/0x510
-[    0.035657] LR [c00000000038407c] __vmalloc_node_range+0x2ec/0x3a0
-[    0.035690] Call Trace:
-[    0.035709] [c00000000167fbc0] [c00000000038d848] __alloc_pages_nodemask+0x158/0x3f0 (unreliable)
-[    0.035750] [c00000000167fc90] [c00000000038407c] __vmalloc_node_range+0x2ec/0x3a0
-[    0.035787] [c00000000167fd40] [c000000000384268] __vmalloc+0x58/0x70
-[    0.035823] [c00000000167fdb0] [c000000001056db8] alloc_large_system_hash+0x204/0x304
-[    0.035870] [c00000000167fe60] [c00000000105c1f0] vfs_caches_init+0xd8/0x138
-[    0.035916] [c00000000167fee0] [c0000000010242a0] start_kernel+0x644/0x6ec
-[    0.035960] [c00000000167ff90] [c00000000000ca9c] start_here_common+0x1c/0x400
-[    0.036004] Instruction dump:
-[    0.036016] 3af4ffff 60000000 60000000 38c90010 7f663036 7d667a14 7cc600d0 7d713038 
-[    0.036038] 38d1ffff 7c373040 41810008 7e91a378 <e8b30000> 2c250000 418201b4 7f464830 
-[    0.036083] ---[ end trace c7e72029dfacc217 ]---
-[    0.036114] 
-[    1.036223] Kernel panic - not syncing: Attempted to kill the idle task!
-[    1.036858] Rebooting in 10 seconds..
+Alexey Gladkov (9):
+      proc: modernize proc to support multiple private instances
+      proc: rename struct proc_fs_info to proc_fs_opts
+      proc: allow to mount many instances of proc in one pid namespace
+      proc: instantiate only pids that we can ptrace on 'hidepid=4' mount option
+      proc: add option to mount only a pids subset
+      docs: proc: add documentation for "hidepid=4" and "subset=pid" options and new mount behavior
+      proc: use human-readable values for hidepid
+      proc: use named enums for better readability
+      Use proc_pid_ns() to get pid_namespace from the proc superblock
+      proc: proc_pid_ns takes super_block as an argument
 
+Eric W. Biederman (14):
+      proc: Use PIDTYPE_TGID in next_tgid
+      rculist: Add hlists_swap_heads_rcu
+      proc: Ensure we see the exit of each process tid exactly once
+      proc: Ensure we see the exit of each process tid exactly
+      posix-cpu-timer: Tidy up group_leader logic in lookup_task
+      posix-cpu-timer:  Unify the now redundant code in lookup_task
+      exec: Remove BUG_ON(has_group_leader_pid)
+      signal: Remove has_group_leader_pid
+      posix-cpu-timers: Extend rcu_read_lock removing task_struct references
+      posix-cpu-timers: Replace cpu_timer_pid_type with clock_pid_type
+      posix-cpu-timers: Replace __get_task_for_clock with pid_for_clock
+      Removing has_group_leader_pid
+      posix-cpu-timers: Use pids not tasks in lookup
 
-Regards,
--Satheesh.
+Oleg Nesterov (1):
+      remove the no longer needed pid_alive() check in __task_pid_nr_ns()
 
-> 
-> diff --git a/include/asm-generic/5level-fixup.h b/include/asm-generic/5level-fixup.h
-> index 58046ddc08d0..afbab31fbd7e 100644
-> --- a/include/asm-generic/5level-fixup.h
-> +++ b/include/asm-generic/5level-fixup.h
-> @@ -17,6 +17,11 @@
->  	((unlikely(pgd_none(*(p4d))) && __pud_alloc(mm, p4d, address)) ? \
->  		NULL : pud_offset(p4d, address))
-> 
-> +#define pud_alloc_track(mm, p4d, address, mask)					\
-> +	((unlikely(pgd_none(*(p4d))) &&						\
-> +	  (__pud_alloc(mm, p4d, address) || ({*(mask)|=PGTBL_P4D_MODIFIED;0;})))?	\
-> +	  NULL : pud_offset(p4d, address))
-> +
->  #define p4d_alloc(mm, pgd, address)		(pgd)
->  #define p4d_alloc_track(mm, pgd, address, mask)	(pgd)
->  #define p4d_offset(pgd, start)			(pgd)
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 7e07f4f490cb..d46bf03b804f 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2088,35 +2088,35 @@ static inline pud_t *pud_alloc(struct mm_struct *mm, p4d_t *p4d,
->  		NULL : pud_offset(p4d, address);
->  }
-> 
-> -static inline p4d_t *p4d_alloc_track(struct mm_struct *mm, pgd_t *pgd,
-> +static inline pud_t *pud_alloc_track(struct mm_struct *mm, p4d_t *p4d,
->  				     unsigned long address,
->  				     pgtbl_mod_mask *mod_mask)
-> -
->  {
-> -	if (unlikely(pgd_none(*pgd))) {
-> -		if (__p4d_alloc(mm, pgd, address))
-> +	if (unlikely(p4d_none(*p4d))) {
-> +		if (__pud_alloc(mm, p4d, address))
->  			return NULL;
-> -		*mod_mask |= PGTBL_PGD_MODIFIED;
-> +		*mod_mask |= PGTBL_P4D_MODIFIED;
->  	}
-> 
-> -	return p4d_offset(pgd, address);
-> +	return pud_offset(p4d, address);
->  }
-> 
-> -#endif /* !__ARCH_HAS_5LEVEL_HACK */
-> -
-> -static inline pud_t *pud_alloc_track(struct mm_struct *mm, p4d_t *p4d,
-> +static inline p4d_t *p4d_alloc_track(struct mm_struct *mm, pgd_t *pgd,
->  				     unsigned long address,
->  				     pgtbl_mod_mask *mod_mask)
-> +
->  {
-> -	if (unlikely(p4d_none(*p4d))) {
-> -		if (__pud_alloc(mm, p4d, address))
-> +	if (unlikely(pgd_none(*pgd))) {
-> +		if (__p4d_alloc(mm, pgd, address))
->  			return NULL;
-> -		*mod_mask |= PGTBL_P4D_MODIFIED;
-> +		*mod_mask |= PGTBL_PGD_MODIFIED;
->  	}
-> 
-> -	return pud_offset(p4d, address);
-> +	return p4d_offset(pgd, address);
->  }
-> 
-> +#endif /* !__ARCH_HAS_5LEVEL_HACK */
-> +
->  static inline pmd_t *pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long address)
->  {
->  	return (unlikely(pud_none(*pud)) && __pmd_alloc(mm, pud, address))?
+ Documentation/filesystems/proc.rst                 |  92 ++++++++++++---
+ fs/exec.c                                          |   6 +-
+ fs/locks.c                                         |   4 +-
+ fs/proc/array.c                                    |   2 +-
+ fs/proc/base.c                                     |  74 ++++++------
+ fs/proc/generic.c                                  |   9 ++
+ fs/proc/inode.c                                    |  30 ++++-
+ fs/proc/root.c                                     | 131 ++++++++++++++++-----
+ fs/proc/self.c                                     |   8 +-
+ fs/proc/thread_self.c                              |   8 +-
+ fs/proc_namespace.c                                |  14 +--
+ include/linux/pid.h                                |   1 +
+ include/linux/pid_namespace.h                      |  12 --
+ include/linux/proc_fs.h                            |  32 ++++-
+ include/linux/rculist.h                            |  21 ++++
+ include/linux/sched/signal.h                       |  11 --
+ kernel/fork.c                                      |   2 +-
+ kernel/pid.c                                       |  22 +++-
+ kernel/time/posix-cpu-timers.c                     | 111 ++++++++---------
+ net/ipv6/ip6_flowlabel.c                           |   2 +-
+ security/tomoyo/realpath.c                         |   4 +-
+ tools/testing/selftests/proc/.gitignore            |   2 +
+ tools/testing/selftests/proc/Makefile              |   2 +
+ .../testing/selftests/proc/proc-fsconfig-hidepid.c |  50 ++++++++
+ .../testing/selftests/proc/proc-multiple-procfs.c  |  48 ++++++++
+ 25 files changed, 492 insertions(+), 206 deletions(-)
+
+Eric
