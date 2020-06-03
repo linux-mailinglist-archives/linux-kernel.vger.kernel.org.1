@@ -2,93 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8537A1ECAB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B48C1ECABB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgFCHnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 03:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49540 "EHLO
+        id S1726054AbgFCHnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 03:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgFCHnA (ORCPT
+        with ESMTP id S1725275AbgFCHnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 03:43:00 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801B3C05BD43;
-        Wed,  3 Jun 2020 00:43:00 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49cLVS5Jrqz9sT5;
-        Wed,  3 Jun 2020 17:42:55 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1591170177;
-        bh=IckQhhES8zBib6U8gKLAIsAkLyYn3U8IcA3AvL8JLVg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=A5Z+llWPwu3EG9ASOwmgmhAFl86SwwrPO+QKJQUfO+EF2k4LUIiCvp0Cs+CgIg8tS
-         s23Qc0HtktBOlfc/Gl74IcK3yR++DdNan714R3sfafqc1JzES6bzJ1pHqtAsoxND04
-         aLntPfV5VnrI3UlCj2EyX2rgp90LRcR4O9fBR5z5aqUfJ3vOgpjNtegUYBslxJsX18
-         Ptw0Rx6RFKelaexqX/QYG4TMNCfixoPWWsscruMXBXsE1ouiSEwxJhED3tAIO3aDMR
-         7Mv8Rwv/8SXmjFQunDjqVoueD5bN6OM1eg2qzM3Lj10BWGU+kSw1pB2hvWzAYmbmuM
-         cj0rdv1pbTljA==
-Date:   Wed, 3 Jun 2020 17:42:53 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: linux-next: build failure after merge of the ftrace tree
-Message-ID: <20200603174253.60deace5@canb.auug.org.au>
+        Wed, 3 Jun 2020 03:43:23 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BF3C05BD43
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 00:43:23 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id x202so973884oix.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 00:43:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vY4y0JhXv/D29rjsVD+kS4QfopuULHMmvhUHPgT7K/Y=;
+        b=ctkqnrn9huKuehDcyS1rw+N1T+nGQivzy3aseSSjf3Q/z44MJenzC9MdrLVrtPMI3L
+         vtt+M7DcGGUIk6YuhV9NYsQ4FE9UkoDgUYvN1jEgxrDqW55kj70makupwI3s5LGhDbDM
+         IHUD++GPvKUGLvbVb7pNoyvRQLJpNm3Sj2bpE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vY4y0JhXv/D29rjsVD+kS4QfopuULHMmvhUHPgT7K/Y=;
+        b=dGirSNf37H6y2KMoYlkdQvU3dDtWC1pNfKGN/BL4p697m3HJzN3y/vSbyqvoodakBU
+         Zdm9Tx7NanV/CkcEgOGjexnOapRejnpHeD2FZ+O2OquFmXX+yV/SjPn0WJjkX1nWLqT0
+         LW1vq9BvgmLXxQRkxU0delou8XKj9OjVoYzJwsTe+yVfxpNZuDrYhIZ5EF12/jjfCzs3
+         vgB3tdhrtlZiN2bVjyuqSTaoa1GiM4ONmIYB8MaKIJfLR0/neWE4B2PpaEwYx65ZqNTt
+         BHZQvhA2C1Buwoq5l2XJ39CtU81IheFbAav+qrUlWO5OLhP/tHqVZyuBeMBRECy8iVCO
+         ikxw==
+X-Gm-Message-State: AOAM531WY20fLqal5dsCq6PkbpnuX9IzqefCRf9TKrpUnPTnYLsIc/UU
+        /xQ3XxkDXcMXiEcRp1D8pEUNujuv6n9mOQ5eftdMrwRQ
+X-Google-Smtp-Source: ABdhPJymYFBB4qTO2iV3fKajN0kRnUfnpqF2m8adj5PkYKr/CCvXSuR4yN5GXbv2TV/lXEz6BonxwqCrFy1m4alvzs4=
+X-Received: by 2002:aca:4b91:: with SMTP id y139mr5374242oia.128.1591170202838;
+ Wed, 03 Jun 2020 00:43:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/I4R33YNDdItszcPI1+o_FA8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <CAPM=9txGww+omvateOTizZRV9_wLdAbq6uAz3DRa_S6bn1jQuQ@mail.gmail.com>
+ <CAHk-=wjvVjei5d45D=GQMsFMssD8knSFWqxMbd4bH8qSgXk-Lg@mail.gmail.com>
+ <CAHk-=wiug3vS=J7obQsyCLp+6qQvT5v6ctOddHRXbVgsLFTLwQ@mail.gmail.com> <e75218b1-985a-0ec8-483d-9780f668d8c3@suse.de>
+In-Reply-To: <e75218b1-985a-0ec8-483d-9780f668d8c3@suse.de>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 3 Jun 2020 09:43:11 +0200
+Message-ID: <CAKMK7uHfS-R+03u=kXfCUjcqVRohKYtNLxaSZ98KoYRbeTNOvw@mail.gmail.com>
+Subject: Re: [git pull] drm for 5.8-rc1
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Airlie <airlied@gmail.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/I4R33YNDdItszcPI1+o_FA8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jun 3, 2020 at 9:18 AM Thomas Zimmermann <tzimmermann@suse.de> wrot=
+e:
+>
+> Hi
+>
+> Am 02.06.20 um 23:56 schrieb Linus Torvalds:
+> > On Tue, Jun 2, 2020 at 2:21 PM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> >>
+> >> I'm still working through the rest of the merge, so far that was the
+> >> only one that made me go "Whaa?".
+> >
+> > Hmm. I'm also ending up effectively reverting the drm commit
+> > b28ad7deb2f2 ("drm/tidss: Use simple encoder") because commit
+> > 9da67433f64e ("drm/tidss: fix crash related to accessing freed
+> > memory") made the premise of that simply encoder commit no longer be
+> > true.
+>
+> That's OK. The simple encoder is just for consolidating these
+> almost-empty encoders at a single place.
+>
+> > If there is a better way to sort that out (ie something like "use
+> > simple encoder but make it free things at destroy time"), I don't know
+> > of it.
+>
+> There's now drmm_kmalloc() to auto-free the memory when DRM releases a
+> device.
 
-Hi all,
+Yeah I think we discussed that tidss patch on dri-devel when it showed
+up, right fix is to essentially undo it, replace with a
+s/devm_kzalloc/drmm_kmalloc/ and then re-apply the simple encoder
+conversion. We had (and I think still have) some details to sort out
+in all this, so some back&forth is entirely expected here. Also it's
+just driver unload, which at least for integrated gpu no user ever
+cares about, only developers.
+-Daniel
 
-After merging the ftrace tree, today's linux-next build (htmldocs)
-failed like this:
+>
+> Best regards
+> Thomas
+>
+> >
+> > I'll let you guys fight it out (added people involved with those
+> > commits to the participants,
+> >
+> >                     Linus
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> >
+>
+> --
+> Thomas Zimmermann
+> Graphics Driver Developer
+> SUSE Software Solutions Germany GmbH
+> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+> (HRB 36809, AG N=C3=BCrnberg)
+> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+>
 
-
-Sphinx parallel build error:
-docutils.utils.SystemMessage: /home/sfr/next/next/Documentation/trace/histo=
-gram-design.rst:219: (SEVERE/4) Unexpected section title.
-
-.
-.
-
-Caused by commit
-
-  16b585fe7192 ("tracing: Add histogram-design document")
-
-I am running a slightly out of date version os sphynx (2.4.3) ...
 
 --=20
-Cheers,
-Stephen Rothwell
-
---Sig_/I4R33YNDdItszcPI1+o_FA8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7XVH0ACgkQAVBC80lX
-0GxOJgf/cZ3x5I2CZOftdgMzisJiYOLJUgvO16mEn6nH5D30C9j+KMgNjprGWJTB
-whmDNyvRu7T6kefYC50eUDYP2/JsVgxcZkKvwA5BDebx7+asMV7mG514zoBbKu7u
-VgJtRNp1XQLAbAm9KBR0csPqnVgOdM6QBjY/TP0mrEjXFN+6tvJFwnGH5CuuX7sL
-vcGmEhnstBNlPt9ir+PKYu8IVkkLYHGdzJiFSWERHQc6MMqkqQ2HLog6fUqORATV
-g5c/JAL1XZfA5aOB5Oq6DBbN0r1t6F2T8LOlUt9XEVRAlIXlM4juyOH1/szxTbB+
-6Z5WT3k1z/sKPDMuTep6TwMG+3/vcQ==
-=Y4B+
------END PGP SIGNATURE-----
-
---Sig_/I4R33YNDdItszcPI1+o_FA8--
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
