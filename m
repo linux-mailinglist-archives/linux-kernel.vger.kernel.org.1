@@ -2,62 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BE41ED773
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 22:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6771ED77B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 22:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726393AbgFCUdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 16:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbgFCUdb (ORCPT
+        id S1726354AbgFCUfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 16:35:47 -0400
+Received: from sender4-of-o51.zoho.com ([136.143.188.51]:21167 "EHLO
+        sender4-of-o51.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbgFCUfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 16:33:31 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C18FDC08C5C0;
-        Wed,  3 Jun 2020 13:33:31 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 9056D2E4;
-        Wed,  3 Jun 2020 20:33:30 +0000 (UTC)
-Date:   Wed, 3 Jun 2020 14:33:29 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: reference to Linux Foundation NDA program obsolete?
-Message-ID: <20200603143329.6e303a46@lwn.net>
-In-Reply-To: <alpine.DEB.2.21.2005240722560.5201@felia>
-References: <alpine.DEB.2.21.2005240722560.5201@felia>
-Organization: LWN.net
+        Wed, 3 Jun 2020 16:35:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1591216528; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=XtuGx0syGIaRfttsTq7X2YDyak4086XJ8kNU+QqBpgZOeHbjOyBy/bLOwxG+TUAtXMjtnZYfyJtvB0cu95pC/ns/BbsxrFXbjTnnjFBo59xM4PaxNVAhCVthPkGKyT18Wc7ATL1DD4FylFSwVmdyqaz4P+cq8JYGgxZw8Vp67T4=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1591216528; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject; 
+        bh=iieshxWnuWqIoayg7cEdrMVEeyE1LrIxIGyyzYieWuQ=; 
+        b=aubAok86zqg0oTrbfRKHVOR7MUIvBQTiV+YyODici4Hn4XihIbdy6w+hobsowCc/wilkzdxci1r2dyzVC4+TtfVbF29uqfP4w21GIFxGynEVPPrhXe8K+lGllV8bUy75IOFJENMLG6qyLsHIvCtqzH8CRt8kpjbB9qbQcUuDnRk=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=meresinski.eu;
+        spf=pass  smtp.mailfrom=tomasz@meresinski.eu;
+        dmarc=pass header.from=<tomasz@meresinski.eu> header.from=<tomasz@meresinski.eu>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1591216528;
+        s=zoho; d=meresinski.eu; i=tomasz@meresinski.eu;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=iieshxWnuWqIoayg7cEdrMVEeyE1LrIxIGyyzYieWuQ=;
+        b=sydJSkWd2rGSJH+RPW97lsb1/DAy+6tazkau/UFu893dMWcN7GGzVZPufgZ53Psn
+        RmgmrI0pc5BbBhHV5h5iEVpW/znD7rq/E/dX/CH+NmK7X7HNJle/13I6tZr/QGfv/gM
+        VZxut6NpZxcyAZcG6nMuLaZtTfxqfczLwNiHR5UA=
+Received: from localhost.localdomain (78-11-200-65.static.ip.netia.com.pl [78.11.200.65]) by mx.zohomail.com
+        with SMTPS id 1591216526971281.37892539217535; Wed, 3 Jun 2020 13:35:26 -0700 (PDT)
+From:   =?UTF-8?q?Tomasz=20Meresi=C5=84ski?= <tomasz@meresinski.eu>
+Cc:     =?UTF-8?q?Tomasz=20Meresi=C5=84ski?= <tomasz@meresinski.eu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>,
+        Jonathan Cox <jonathan@jdcox.net>,
+        Dan Lazewatsky <dlaz@chromium.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Richard Dodd <richard.o.dodd@gmail.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20200603203347.7792-1-tomasz@meresinski.eu>
+Subject: [PATCH] usb: add USB_QUIRK_DELAY_INIT for Logitech C922
+Date:   Wed,  3 Jun 2020 22:33:46 +0200
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-ZohoMailClient: External
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 May 2020 07:33:29 +0200 (CEST)
-Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+The Logitech C922, just like other Logitech webcams,
+needs the USB_QUIRK_DELAY_INIT or it will randomly
+not respond after device connection
 
->     http://www.linuxfoundation.org/en/NDA_program
-> 
-> This kind of review is often enough to avoid serious problems later on
-> without requiring public disclosure of the project.
-> 
-> <--
-> 
-> The link is dead; internet search only showed some references from 
-> meeting minutes in 2008, but nothing more since then.
-> 
-> Has this LF NDA program simply been phased out?
+Signed-off-by: Tomasz Meresi=C5=84ski <tomasz@meresinski.eu>
 
-That information has now resurfaced at:
+usb: add USB_QUIRK_DELAY_INIT for Logitech C922
 
-	https://www.linuxfoundation.org/nda/
+The Logitech C922 webcam, just like other Logitech webcams,
+needs the USB_QUIRK_DELAY_INIT or it will randomly
+not respond after device connection
 
-I guess somebody should see to it that the docs get updated...:)
+Signed-off-by: Tomasz Meresi=C5=84ski <tomasz@meresinski.eu>
+---
+ drivers/usb/core/quirks.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks again,
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index 3e8efe759c3e..e0b77674869c 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -218,11 +218,12 @@ static const struct usb_device_id usb_quirk_list[] =
+=3D {
+ =09/* Logitech HD Webcam C270 */
+ =09{ USB_DEVICE(0x046d, 0x0825), .driver_info =3D USB_QUIRK_RESET_RESUME }=
+,
+=20
+-=09/* Logitech HD Pro Webcams C920, C920-C, C925e and C930e */
++=09/* Logitech HD Pro Webcams C920, C920-C, C922, C925e and C930e */
+ =09{ USB_DEVICE(0x046d, 0x082d), .driver_info =3D USB_QUIRK_DELAY_INIT },
+ =09{ USB_DEVICE(0x046d, 0x0841), .driver_info =3D USB_QUIRK_DELAY_INIT },
+ =09{ USB_DEVICE(0x046d, 0x0843), .driver_info =3D USB_QUIRK_DELAY_INIT },
+ =09{ USB_DEVICE(0x046d, 0x085b), .driver_info =3D USB_QUIRK_DELAY_INIT },
++=09{ USB_DEVICE(0x046d, 0x085c), .driver_info =3D USB_QUIRK_DELAY_INIT },
+=20
+ =09/* Logitech ConferenceCam CC3000e */
+ =09{ USB_DEVICE(0x046d, 0x0847), .driver_info =3D USB_QUIRK_DELAY_INIT },
+--=20
+2.17.1
 
-jon
+
