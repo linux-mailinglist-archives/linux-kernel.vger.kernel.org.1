@@ -2,163 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0E91ECC15
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 11:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F50D1ECC1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 11:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbgFCJAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 05:00:02 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:19820 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgFCJAB (ORCPT
+        id S1726415AbgFCJA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 05:00:59 -0400
+Received: from atl4mhfb01.myregisteredsite.com ([209.17.115.55]:43986 "EHLO
+        atl4mhfb01.myregisteredsite.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726243AbgFCJA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 05:00:01 -0400
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 0538xbsc016465;
-        Wed, 3 Jun 2020 17:59:38 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0538xbsc016465
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1591174778;
-        bh=BToKRSuqkTAHEhOluVCemoRUXQFRflh7iXAOaCDFqDA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FLfVGAkSFvmX4f0H0OwIZ01V6Rghgg5hAYS5O3ZtE3TnrUpC0YX2+IYBzH9CuHnPI
-         NZMOmHjbAkHQQ4MV72eIXGiHUKegQFoBCVF00hJsllpGx+fFmIvTnKVmVqkYSgb8h4
-         T4pGfc5xJKajBV6DfyKpRueTbF3H3hz5BKHREKQJtOM0owrnBDg1ZbbOvfkEqOl8NT
-         wWIYEiOZyI8FvVjlCCLdnZhdpoKJOE1yNPB3MPxWk+veJbe4/28UNbhJ2Z1dAp+Hqx
-         renDemBu6xtoQnq4GROmljfqBE23Z/WiMo+TVNrnad1aIZ6tYCT+nlw2yQqe5gx5qI
-         FcVBJ0V+NyAxw==
-X-Nifty-SrcIP: [209.85.221.170]
-Received: by mail-vk1-f170.google.com with SMTP id e1so294955vkd.1;
-        Wed, 03 Jun 2020 01:59:37 -0700 (PDT)
-X-Gm-Message-State: AOAM531S89qIGmHxgSvNchPZNo64WgzpndMgR5ZJ6oAP/y2l0dWACuZm
-        ORVHv4FL8fFOj+dimMi2YYCe8UJDMkBQ3OFZaE8=
-X-Google-Smtp-Source: ABdhPJycaZq2XSioO8P5Rjgff4124TzlUNyq/IolCVGqFaH8nhVP9patSbf2c9j51QnlTWR7VLCU710cJW3wUTKf/gE=
-X-Received: by 2002:ac5:cc7a:: with SMTP id w26mr10349581vkm.12.1591174776419;
- Wed, 03 Jun 2020 01:59:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200603053313.3863761-1-masahiroy@kernel.org>
- <CAMj1kXGk-2pyTZ3yNW14Kk4fvtsNOb7maAHVM2C=vVAjaaFRug@mail.gmail.com>
- <CAK7LNARg70FrTmnuoUiLM6KWxeJ+AeXqgB53GS6sY7z0J+qH6g@mail.gmail.com> <CAMj1kXFxmgQ=YzmLNnMO-2gibSGQ1=tXBd07ntqCYYU122zEUw@mail.gmail.com>
-In-Reply-To: <CAMj1kXFxmgQ=YzmLNnMO-2gibSGQ1=tXBd07ntqCYYU122zEUw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 3 Jun 2020 17:59:00 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARLUeuiu3Y1cFqT7550MaF8fnBmMTZxKEG0Cy3vpxVkMQ@mail.gmail.com>
-Message-ID: <CAK7LNARLUeuiu3Y1cFqT7550MaF8fnBmMTZxKEG0Cy3vpxVkMQ@mail.gmail.com>
-Subject: Re: [PATCH] efi/libstub: refactor Makefile to not use lib-y syntax
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 3 Jun 2020 05:00:58 -0400
+Received: from jax4mhob16.registeredsite.com (jax4mhob16.registeredsite.com [64.69.218.104])
+        by atl4mhfb01.myregisteredsite.com (8.14.4/8.14.4) with ESMTP id 05390t0a004589
+        for <linux-kernel@vger.kernel.org>; Wed, 3 Jun 2020 05:00:55 -0400
+Received: from mailpod.hostingplatform.com ([10.30.71.203])
+        by jax4mhob16.registeredsite.com (8.14.4/8.14.4) with ESMTP id 05390r2h002062
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-kernel@vger.kernel.org>; Wed, 3 Jun 2020 05:00:53 -0400
+Received: (qmail 1338 invoked by uid 0); 3 Jun 2020 09:00:53 -0000
+X-TCPREMOTEIP: 83.128.90.119
+X-Authenticated-UID: mike@milosoftware.com
+Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
+  by 0 with ESMTPA; 3 Jun 2020 09:00:53 -0000
+From:   Mike Looijmans <mike.looijmans@topic.nl>
+To:     linux-usb@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org, balbi@kernel.org,
+        Mike Looijmans <mike.looijmans@topic.nl>
+Subject: [PATCH] usb: dwc3: Add support for VBUS power control
+Date:   Wed,  3 Jun 2020 10:59:32 +0200
+Message-Id: <20200603085932.31746-1-mike.looijmans@topic.nl>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 3, 2020 at 5:45 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Wed, 3 Jun 2020 at 10:36, Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > On Wed, Jun 3, 2020 at 3:45 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > On Wed, 3 Jun 2020 at 07:34, Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > > >
-> > > > Documentation/kbuild/makefiles.rst says:
-> > > >
-> > > >   Use of lib-y is normally restricted to `lib/` and `arch/*/lib`.
-> > > >
-> > > > I want to disallow lib-y outside of them.
-> > > >
-> > >
-> > > Why?
-> >
-> >
-> > Because I plan to remove lib-y entirely at some point.
-> >
-> > lib-y is not so useful to shrink the image size because:
-> >
-> >   - An object in lib.a can be omitted only when no symbol
-> >     in that object is referenced.  This rarely happens.
-> >
-> >   -  lib-y objects are often exported by nature
-> >      because lib-y is a collection of utility functions.
-> >      Even if no in-tree user, we always need to keep them
-> >      because EXPORT_SYMBOL() is the interface to modules.
-> >
-> >
-> > When I worked on commit 7273ad2b08f8ac9563579d16a3cf528857b26f49,
-> > I made some research.
-> >
-> > The benefit of lib-y is just 362 byte for x86_64_defconfig.
-> > ( Before: 26578002, After: 26578364)
-> >
-> > My hope is lib-y will be replaced by dead-code elimination or
-> > ultimately by LTO.
-> >
-> > drivers/firmware/efi/libstub/Makefile
-> > is the only Makefile that breaks the rule:
-> > "Use of lib-y is normally restricted to `lib/` and `arch/*/lib`"
-> >
-> >
-> >
-> >
-> > >
-> > > > Add a custom rule to build lib.a, which is linked to the decompressor
-> > > > for ARCH=x86, ARCH=arm.
-> > > >
-> > > > For ARCH=arm64, use obj-y to link objects to vmlinux in the ordinary
-> > > > way.
-> > > >
-> > >
-> > > The code works perfectly fine as is, and I don't see what is
-> > > fundamentally wrong with using static libraries outside of lib/ and
-> > > arch/*/lib.
-> >
-> > The intended usage of lib-y is to hook lib.a
-> > to scripts/vmlinux.sh via KBUILD_VMLINUX_LIBS.
-> >
-> > This Makefile is just what you found to work.
-> >
-> >
-> > >
-> > > Also, I would like this code to still be incorporated as a static
-> > > library into arm64 as well, so that only pieces that are actually
-> > > needed are incorporated into the final image.
-> >
-> > No.
-> > It is not working like that because you set
-> > lib.a to core-y.
-> >
-> > All objects in core-y are always linked to vmlinux.
-> >
->
-> The lib.a file is passed to the linker as a static library, so it will
-> only grab what it needs.
->
-> For instance, if you build arm64 from mainline today, the
-> efi_relocate_kernel will not be in the final image, even though it is
-> built as part of libstub
+Support VBUS power control using regulator framework. Enables the regulator
+while the port is in host mode.
 
+Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+---
+ .../devicetree/bindings/usb/dwc3.txt          |  1 +
+ drivers/usb/dwc3/core.c                       | 30 ++++++++++++++-----
+ drivers/usb/dwc3/core.h                       |  4 +++
+ drivers/usb/dwc3/drd.c                        |  6 ++--
+ 4 files changed, 29 insertions(+), 12 deletions(-)
 
-I built today's mainline kernel
-(d6f9469a03d832dcd17041ed67774ffb5f3e73b3).
-
-
-I see it in vmlinux.
-
-
-$ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-  defconfig
-$ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-  -j24
-    ...
-$ aarch64-linux-gnu-nm  -n  vmlinux | grep  efi_relocate_kernel
-ffff8000114afb90 t __efistub_efi_relocate_kernel
-
-
-
+diff --git a/Documentation/devicetree/bindings/usb/dwc3.txt b/Documentation/devicetree/bindings/usb/dwc3.txt
+index 9946ff9ba735..56bc3f238e2d 100644
+--- a/Documentation/devicetree/bindings/usb/dwc3.txt
++++ b/Documentation/devicetree/bindings/usb/dwc3.txt
+@@ -37,6 +37,7 @@ Optional properties:
+  - phys: from the *Generic PHY* bindings
+  - phy-names: from the *Generic PHY* bindings; supported names are "usb2-phy"
+ 	or "usb3-phy".
++ - vbus-supply: Regulator handle that provides the VBUS power.
+  - resets: set of phandle and reset specifier pairs
+  - snps,usb2-lpm-disable: indicate if we don't want to enable USB2 HW LPM
+  - snps,usb3_lpm_capable: determines if platform is USB3 LPM capable
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index edc17155cb2b..a9e58a301446 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -25,6 +25,7 @@
+ #include <linux/of.h>
+ #include <linux/acpi.h>
+ #include <linux/pinctrl/consumer.h>
++#include <linux/regulator/consumer.h>
+ #include <linux/reset.h>
+ 
+ #include <linux/usb/ch9.h>
+@@ -112,6 +113,23 @@ void dwc3_set_prtcap(struct dwc3 *dwc, u32 mode)
+ 	dwc->current_dr_role = mode;
+ }
+ 
++void dwc3_set_vbus(struct dwc3 *dwc, bool enable)
++{
++	int ret;
++
++	if (enable != dwc->vbus_reg_enabled) {
++		if (enable)
++			ret = regulator_enable(dwc->vbus_reg);
++		else
++			ret = regulator_disable(dwc->vbus_reg);
++		if (!ret)
++			dwc->vbus_reg_enabled = enable;
++	}
++
++	if (dwc->usb2_phy)
++		otg_set_vbus(dwc->usb2_phy->otg, enable);
++}
++
+ static void __dwc3_set_mode(struct work_struct *work)
+ {
+ 	struct dwc3 *dwc = work_to_dwc(work);
+@@ -164,8 +182,7 @@ static void __dwc3_set_mode(struct work_struct *work)
+ 		if (ret) {
+ 			dev_err(dwc->dev, "failed to initialize host\n");
+ 		} else {
+-			if (dwc->usb2_phy)
+-				otg_set_vbus(dwc->usb2_phy->otg, true);
++			dwc3_set_vbus(dwc, true);
+ 			phy_set_mode(dwc->usb2_generic_phy, PHY_MODE_USB_HOST);
+ 			phy_set_mode(dwc->usb3_generic_phy, PHY_MODE_USB_HOST);
+ 		}
+@@ -173,8 +190,7 @@ static void __dwc3_set_mode(struct work_struct *work)
+ 	case DWC3_GCTL_PRTCAP_DEVICE:
+ 		dwc3_event_buffers_setup(dwc);
+ 
+-		if (dwc->usb2_phy)
+-			otg_set_vbus(dwc->usb2_phy->otg, false);
++		dwc3_set_vbus(dwc, false);
+ 		phy_set_mode(dwc->usb2_generic_phy, PHY_MODE_USB_DEVICE);
+ 		phy_set_mode(dwc->usb3_generic_phy, PHY_MODE_USB_DEVICE);
+ 
+@@ -1183,8 +1199,7 @@ static int dwc3_core_init_mode(struct dwc3 *dwc)
+ 	case USB_DR_MODE_PERIPHERAL:
+ 		dwc3_set_prtcap(dwc, DWC3_GCTL_PRTCAP_DEVICE);
+ 
+-		if (dwc->usb2_phy)
+-			otg_set_vbus(dwc->usb2_phy->otg, false);
++		dwc3_set_vbus(dwc, false);
+ 		phy_set_mode(dwc->usb2_generic_phy, PHY_MODE_USB_DEVICE);
+ 		phy_set_mode(dwc->usb3_generic_phy, PHY_MODE_USB_DEVICE);
+ 
+@@ -1198,8 +1213,7 @@ static int dwc3_core_init_mode(struct dwc3 *dwc)
+ 	case USB_DR_MODE_HOST:
+ 		dwc3_set_prtcap(dwc, DWC3_GCTL_PRTCAP_HOST);
+ 
+-		if (dwc->usb2_phy)
+-			otg_set_vbus(dwc->usb2_phy->otg, true);
++		dwc3_set_vbus(dwc, true);
+ 		phy_set_mode(dwc->usb2_generic_phy, PHY_MODE_USB_HOST);
+ 		phy_set_mode(dwc->usb3_generic_phy, PHY_MODE_USB_HOST);
+ 
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index 4c171a8e215f..cee2574d7bf4 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -1085,6 +1085,9 @@ struct dwc3 {
+ 
+ 	bool			phys_ready;
+ 
++	struct regulator	*vbus_reg;
++	bool			vbus_reg_enabled;
++
+ 	struct ulpi		*ulpi;
+ 	bool			ulpi_ready;
+ 
+@@ -1397,6 +1400,7 @@ struct dwc3_gadget_ep_cmd_params {
+ 
+ /* prototypes */
+ void dwc3_set_prtcap(struct dwc3 *dwc, u32 mode);
++void dwc3_set_vbus(struct dwc3 *dwc, bool enable);
+ void dwc3_set_mode(struct dwc3 *dwc, u32 mode);
+ u32 dwc3_core_fifo_space(struct dwc3_ep *dep, u8 type);
+ 
+diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
+index 7db1ffc92bbd..45fdec2d128d 100644
+--- a/drivers/usb/dwc3/drd.c
++++ b/drivers/usb/dwc3/drd.c
+@@ -384,8 +384,7 @@ void dwc3_otg_update(struct dwc3 *dwc, bool ignore_idstatus)
+ 		if (ret) {
+ 			dev_err(dwc->dev, "failed to initialize host\n");
+ 		} else {
+-			if (dwc->usb2_phy)
+-				otg_set_vbus(dwc->usb2_phy->otg, true);
++			dwc3_set_vbus(dwc, true);
+ 			if (dwc->usb2_generic_phy)
+ 				phy_set_mode(dwc->usb2_generic_phy,
+ 					     PHY_MODE_USB_HOST);
+@@ -398,8 +397,7 @@ void dwc3_otg_update(struct dwc3 *dwc, bool ignore_idstatus)
+ 		dwc3_event_buffers_setup(dwc);
+ 		spin_unlock_irqrestore(&dwc->lock, flags);
+ 
+-		if (dwc->usb2_phy)
+-			otg_set_vbus(dwc->usb2_phy->otg, false);
++		dwc3_set_vbus(dwc, false);
+ 		if (dwc->usb2_generic_phy)
+ 			phy_set_mode(dwc->usb2_generic_phy,
+ 				     PHY_MODE_USB_DEVICE);
 -- 
-Best Regards
-Masahiro Yamada
+2.17.1
+
