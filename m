@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71011ECB36
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F901ECB38
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgFCIOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 04:14:18 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:47821 "EHLO
+        id S1726294AbgFCIPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 04:15:21 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:53721 "EHLO
         relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbgFCIOR (ORCPT
+        with ESMTP id S1725275AbgFCIPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 04:14:17 -0400
+        Wed, 3 Jun 2020 04:15:20 -0400
 Received: from debian.home (lfbn-gre-1-325-105.w90-112.abo.wanadoo.fr [90.112.45.105])
         (Authenticated sender: alex@ghiti.fr)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 14EA020000A;
-        Wed,  3 Jun 2020 08:14:13 +0000 (UTC)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id B7D08200008;
+        Wed,  3 Jun 2020 08:15:16 +0000 (UTC)
 From:   Alexandre Ghiti <alex@ghiti.fr>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
@@ -23,9 +23,9 @@ To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Christoph Hellwig <hch@lst.de>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH v2 3/8] riscv: Simplify MAXPHYSMEM config
-Date:   Wed,  3 Jun 2020 04:10:59 -0400
-Message-Id: <20200603081104.14004-4-alex@ghiti.fr>
+Subject: [PATCH v2 4/8] riscv: Prepare ptdump for vm layout dynamic addresses
+Date:   Wed,  3 Jun 2020 04:11:00 -0400
+Message-Id: <20200603081104.14004-5-alex@ghiti.fr>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200603081104.14004-1-alex@ghiti.fr>
 References: <20200603081104.14004-1-alex@ghiti.fr>
@@ -36,54 +36,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Either the user specifies maximum physical memory size of 2GB or the
-user lives with the system constraint which is 1/4th of maximum
-addressable memory in Sv39 MMU mode (i.e. 128GB) for now.
+This is a preparatory patch for sv48 support that will introduce
+dynamic PAGE_OFFSET.
+
+Dynamic PAGE_OFFSET implies that all zones (vmalloc, vmemmap, fixaddr...)
+whose addresses depend on PAGE_OFFSET become dynamic and can't be used
+to statically initialize the array used by ptdump to identify the
+different zones of the vm layout.
 
 Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
 Reviewed-by: Anup Patel <anup@brainfault.org>
 ---
- arch/riscv/Kconfig | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+ arch/riscv/mm/ptdump.c | 49 ++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 40 insertions(+), 9 deletions(-)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 64b25a90d60f..e167f16131f4 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -106,7 +106,7 @@ config PAGE_OFFSET
- 	default 0xC0000000 if 32BIT && MAXPHYSMEM_2GB
- 	default 0x80000000 if 64BIT && !MMU
- 	default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
--	default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
-+	default 0xffffffe000000000 if 64BIT && !MAXPHYSMEM_2GB
+diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
+index 7eab76a93106..7d9386a7f5c2 100644
+--- a/arch/riscv/mm/ptdump.c
++++ b/arch/riscv/mm/ptdump.c
+@@ -49,22 +49,41 @@ struct addr_marker {
+ 	const char *name;
+ };
  
- config ARCH_FLATMEM_ENABLE
- 	def_bool y
-@@ -223,19 +223,11 @@ config MODULE_SECTIONS
- 	bool
- 	select HAVE_MOD_ARCH_SPECIFIC
++enum address_markers_idx {
++#ifdef CONFIG_KASAN
++	KASAN_SHADOW_START_NR,
++	KASAN_SHADOW_END_NR,
++#endif
++	FIXMAP_START_NR,
++	FIXMAP_END_NR,
++	PCI_IO_START_NR,
++	PCI_IO_END_NR,
++#ifdef CONFIG_SPARSEMEM_VMEMMAP
++	VMEMMAP_START_NR,
++	VMEMMAP_END_NR,
++#endif
++	VMALLOC_START_NR,
++	VMALLOC_END_NR,
++	PAGE_OFFSET_NR,
++	END_OF_SPACE_NR
++};
++
+ static struct addr_marker address_markers[] = {
+ #ifdef CONFIG_KASAN
+ 	{KASAN_SHADOW_START,	"Kasan shadow start"},
+ 	{KASAN_SHADOW_END,	"Kasan shadow end"},
+ #endif
+-	{FIXADDR_START,		"Fixmap start"},
+-	{FIXADDR_TOP,		"Fixmap end"},
+-	{PCI_IO_START,		"PCI I/O start"},
+-	{PCI_IO_END,		"PCI I/O end"},
++	{0,			"Fixmap start"},
++	{0,			"Fixmap end"},
++	{0,			"PCI I/O start"},
++	{0,			"PCI I/O end"},
+ #ifdef CONFIG_SPARSEMEM_VMEMMAP
+-	{VMEMMAP_START,		"vmemmap start"},
+-	{VMEMMAP_END,		"vmemmap end"},
++	{0,			"vmemmap start"},
++	{0,			"vmemmap end"},
+ #endif
+-	{VMALLOC_START,		"vmalloc() area"},
+-	{VMALLOC_END,		"vmalloc() end"},
+-	{PAGE_OFFSET,		"Linear mapping"},
++	{0,			"vmalloc() area"},
++	{0,			"vmalloc() end"},
++	{0,			"Linear mapping"},
+ 	{-1, NULL},
+ };
  
--choice
--	prompt "Maximum Physical Memory"
--	default MAXPHYSMEM_2GB if 32BIT
--	default MAXPHYSMEM_2GB if 64BIT && CMODEL_MEDLOW
--	default MAXPHYSMEM_128GB if 64BIT && CMODEL_MEDANY
--
--	config MAXPHYSMEM_2GB
--		bool "2GiB"
--	config MAXPHYSMEM_128GB
--		depends on 64BIT && CMODEL_MEDANY
--		bool "128GiB"
--endchoice
--
-+config MAXPHYSMEM_2GB
-+	bool "Maximum Physical Memory 2GiB"
-+	default y if 32BIT
-+	default y if 64BIT && CMODEL_MEDLOW
-+	default n
+@@ -304,6 +323,18 @@ static int ptdump_init(void)
+ {
+ 	unsigned int i, j;
  
- config SMP
- 	bool "Symmetric Multi-Processing"
++	address_markers[FIXMAP_START_NR].start_address = FIXADDR_START;
++	address_markers[FIXMAP_END_NR].start_address = FIXADDR_TOP;
++	address_markers[PCI_IO_START_NR].start_address = PCI_IO_START;
++	address_markers[PCI_IO_END_NR].start_address = PCI_IO_END;
++#ifdef CONFIG_SPARSEMEM_VMEMMAP
++	address_markers[VMEMMAP_START_NR].start_address = VMEMMAP_START;
++	address_markers[VMEMMAP_END_NR].start_address = VMEMMAP_END;
++#endif
++	address_markers[VMALLOC_START_NR].start_address = VMALLOC_START;
++	address_markers[VMALLOC_END_NR].start_address = VMALLOC_END;
++	address_markers[PAGE_OFFSET_NR].start_address = PAGE_OFFSET;
++
+ 	for (i = 0; i < ARRAY_SIZE(pg_level); i++)
+ 		for (j = 0; j < ARRAY_SIZE(pte_bits); j++)
+ 			pg_level[i].mask |= pte_bits[j].mask;
 -- 
 2.20.1
 
