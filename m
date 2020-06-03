@@ -2,182 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909BC1EC8DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 07:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4AA1EC8E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 07:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725854AbgFCFeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 01:34:17 -0400
-Received: from conuserg-10.nifty.com ([210.131.2.77]:58893 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgFCFeQ (ORCPT
+        id S1725853AbgFCFku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 01:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgFCFku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 01:34:16 -0400
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 0535XFsW027699;
-        Wed, 3 Jun 2020 14:33:15 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 0535XFsW027699
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1591162396;
-        bh=S2qfYJl3VVPFJgaHLte7Yupybv6BYwId2vGPrugcKrQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KFtphBTePXst6vLqPvuK1CfhDSFYJXLl4lAEN0Mj2Q43jXBw/1aEgdlQj8imyBzd2
-         7OvaxoOGDIGpPo4+iVt7uSk9HzDt8mfOC9raDIn9nYTDiFQGnC49YtZ9vYFn13BhbS
-         CSW6i52tokICX16L+d7hBZH6H9a4ptUzVI29ax5NspZuhuuCsWOtFR2Idq+oMly2Kt
-         2qkP1QohWQAWh9+4hX/Se6s4elEet6KU3BvusbemSO2dGse+xf9tpfMhMbtM1GBFJc
-         GZbTtpiXDkA3kz+stcKzwweokDo00NoXZv0pyEgxY69HuSxKreymadDKM/FeuD+fjV
-         lI4Unna+N38XQ==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] efi/libstub: refactor Makefile to not use lib-y syntax
-Date:   Wed,  3 Jun 2020 14:33:13 +0900
-Message-Id: <20200603053313.3863761-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 3 Jun 2020 01:40:50 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCECC05BD43
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 22:40:48 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id q14so1061029qtr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 22:40:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BGjC9hEQA1RR/riJGwSmJT9ELHQ3fhF1Tg4h6hxErB8=;
+        b=RxwRIyfDNLvjYG+kEHCJcCiHEf2SAfoDGWZHb18yU/XycrDCxTGWC1FGHfOv63oioc
+         depbopH7hI+U+cdOLFdEOAQ7pi84ZfaJD80GDS25Q7t+4cvHeCO/95lSGN0/eC6bGkj2
+         xJaJiPI4AOh07/pM3Q9dn3y8bxc+5zf6kN/CGWEr2af4Yyo8Nd8vMj5JNXbx+sUtsuBR
+         yvGWG8/3HBJkLC7jqK0qlBje1xaGZaOBCSxoFEOd94kxmNtp55SfBQoGRu9MlSWGwDkV
+         5LSmBI0ylJ4QgzOQnRIIecDC4oRNOn5MVQGnfRFCUGRovDIPhdwLd74SXkk/VA5JQ4pY
+         O14Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BGjC9hEQA1RR/riJGwSmJT9ELHQ3fhF1Tg4h6hxErB8=;
+        b=nHzaCwJCU3cD/0ThlExammgmekUCk1Wz1XOTdI76pzr1fo+ntQMl1olPCcVgzo7sbQ
+         8qW9Y6fTlMKOk37chmhGIxeqnjmzGKWC4KhZJJePYUE5yDiYBkMrvrqKiIJA7vjLuq2h
+         Xw1XCY8yp1Ee3DQAU/Ni5y7W5WnPy0dWyh5EMRnVoVQnyrmkBJwgsG28HqM3wrsD2Vfm
+         XCIRyBvwaFYTs01uSglcV4Fgs347+WTwi+ogAODLfqssQTyNl0u7Q5ziEko9kr17K9HK
+         Wue7v0Bs2b9tkCaghRadGeTzZaLJzLR3QDTyXMjTvoP2tbN+29xnfr4d3qtBXybOnoPz
+         X4mQ==
+X-Gm-Message-State: AOAM533isPCT4r3a4zYKNztQVoPJ+/Mcavks/ba9NZmPhqVMQ+ntJeu1
+        agWNlrR9NuluI7DBUPQi+WbDf/dfHX8uZTJR6Qg=
+X-Google-Smtp-Source: ABdhPJyWDX1lz6zBSzm27sfpv5XtJ+G6/lhPGhhnMNgZ//wPrXSdNqyKz9wWjZYbM1c3fufK8HFN/2gHAIBqvsXsIxU=
+X-Received: by 2002:ac8:44da:: with SMTP id b26mr31368255qto.232.1591162847600;
+ Tue, 02 Jun 2020 22:40:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200520232525.798933-6-hannes@cmpxchg.org> <CAAmzW4MMLw=4BHRtt=g8BHpQLTaSmhG03Ct6WMjmDxVnOkNQYA@mail.gmail.com>
+ <20200527134333.GF6781@cmpxchg.org> <CAAmzW4NW+cv7VnNApWKJr4r9=QKaufK3y5apyNXo-M-y=q0dgg@mail.gmail.com>
+ <20200528170155.GA69521@cmpxchg.org> <CAAmzW4NEPZRWL5PBXEWwg9kBOL9fYUNqTTzh3WRDWbaSPLv=CQ@mail.gmail.com>
+ <20200529151228.GA92892@cmpxchg.org> <CAAmzW4Pccc4UcBThhKyqbtY=kK83Fz7k4vYR4eJN4te2E25=_A@mail.gmail.com>
+ <20200601155615.GA131075@cmpxchg.org> <CAAmzW4NDVznjOsW1Vgg1P+0vSQarE1ziY=MN5S5f70pQiOPn-Q@mail.gmail.com>
+ <20200602164726.GA225032@cmpxchg.org>
+In-Reply-To: <20200602164726.GA225032@cmpxchg.org>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Wed, 3 Jun 2020 14:40:40 +0900
+Message-ID: <CAAmzW4P0HZw-K1jHogpCevDCfsSfm2SRSXYwUqznoDBNWa_NUQ@mail.gmail.com>
+Subject: Re: [PATCH 05/14] mm: workingset: let cache workingset challenge anon
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan.kim@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        LKML <linux-kernel@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation/kbuild/makefiles.rst says:
+2020=EB=85=84 6=EC=9B=94 3=EC=9D=BC (=EC=88=98) =EC=98=A4=EC=A0=84 1:48, Jo=
+hannes Weiner <hannes@cmpxchg.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Tue, Jun 02, 2020 at 11:34:17AM +0900, Joonsoo Kim wrote:
+> > 2020=EB=85=84 6=EC=9B=94 2=EC=9D=BC (=ED=99=94) =EC=98=A4=EC=A0=84 12:5=
+6, Johannes Weiner <hannes@cmpxchg.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
+=B1:
+> > > On Mon, Jun 01, 2020 at 03:14:24PM +0900, Joonsoo Kim wrote:
+> > > > But, I still think that modified refault activation equation isn't
+> > > > safe. The next
+> > > > problem I found is related to the scan ratio limit patch ("limit th=
+e range of
+> > > > LRU type balancing") on this series. See the below example.
+> > > >
+> > > > anon: Hot (X M)
+> > > > file: Hot (200 M) / dummy (200 M)
+> > > > P: 1200 M (3 parts, each one 400 M, P1, P2, P3)
+> > > > Access Pattern: A -> F(H) -> P1 -> A -> F(H) -> P2 -> ... ->
+> > > >
+> > > > Without this patch, A and F(H) are kept on the memory and look like
+> > > > it's correct.
+> > > >
+> > > > With this patch and below fix, refault equation for Pn would be:
+> > > >
+> > > > Refault dist of Pn =3D 1200 (from file non-resident) + 1200 * anon =
+scan
+> > > > ratio (from anon non-resident)
+> > > > anon + active file =3D X + 200
+> > > > 1200 + 1200 * anon scan ratio (0.5 ~ 2) < X + 200
+> > >
+> > > That doesn't look quite right to me. The anon part of the refault
+> > > distance is driven by X, so the left-hand of this formula contains X
+> > > as well.
+> > >
+> > > 1000 file (1200M reuse distance, 200M in-core size) + F(H) reactivati=
+ons + X * scan ratio < X + 1000
+> >
+> > As I said before, there is no X on left-hand of this formula. To
+> > access all Pn and
+> > re-access P1, we need 1200M file list scan and reclaim. More scan isn't=
+ needed.
+> > With your patch "limit the range of LRU type balancing", scan ratio
+> > between file/anon
+> > list is limited to 0.5 ~ 2.0, so, maximum anon scan would be 1200 M *
+> > 2.0, that is,
+> > 2400 M and not bounded by X. That means that file list cannot be
+> > stable with some X.
+>
+> Oh, no X on the left because you're talking about the number of pages
+> scanned until the first refaults, which is fixed - so why are we still
+> interpreting the refault distance against a variable anon size X?
 
-  Use of lib-y is normally restricted to `lib/` and `arch/*/lib`.
+Looks like I was confused again. Your formula is correct and mine is
+wrong. My mistake is I thought that your patch "limit the range of LRU
+type balancing"
+which makes scan *ratio* 2:1 leads to actual scan *count* ratio
+between anon/file to 2:1.
+But, now I realized that 2:1 is just scan ratio and actual scan
+*count* ratio could be far
+larger with certain list size. It would be X * scan ratio in above example =
+so my
+explanation is wrong and you are right.
 
-I want to disallow lib-y outside of them.
+Sorry for making a trouble.
 
-Add a custom rule to build lib.a, which is linked to the decompressor
-for ARCH=x86, ARCH=arm.
+> Well, that's misleading. We compare against anon because part of the
+> cache is already encoded in the refault distance. What we're really
+> checking is access distance against total amount of available RAM.
+>
+> Consider this. We want to activate pages where
+>
+>         access_distance <=3D RAM
+>
+> and our measure of access distance is:
+>
+>         access_distance =3D refault_distance + inactive_file
+>
+> So the comparison becomes:
+>
+>         refault_distance + inactive_file < RAM
+>
+> which we simplify to:
+>
+>         refault_distance < active_file + anon
+>
+> There is a certain threshold for X simply because there is a certain
+> threshold for RAM beyond which we need to start activating. X cannot
+> be arbitrary, it must be X + cache filling up memory - after all we
+> have page reclaim evicting pages.
+>
+> Again, this isn't new. In the current code, we activate when:
+>
+>         refault_distance < active_file
+>
+> which is
+>
+>         access_distance <=3D RAM - anon
+>
+> You can see, whether things are stable or not always depends on the
+> existing workingset size. It's just a proxy for how much total RAM we
+> have potentially available to the refaulting page.
+>
+> > If my lastly found example is a correct example (your confirm is requir=
+ed),
+> > it is also related to the correctness issue since cold pages causes
+> > eviction of the hot pages repeatedly.
+>
+> I think your example is correct, but it benefits from the VM
+> arbitrarily making an assumption that has a 50/50 shot of being true.
+>
+> You and I know which pages are hot and which are cold because you
+> designed the example.
+>
+> All the VM sees is this:
+>
+> - We have an established workingset that has previously shown an
+>   access distance <=3D RAM and therefor was activated.
+>
+> - We now have another set that also appears to have an access distance
+>   <=3D RAM. The only way to know for sure, however, is sample the
+>   established workingset and compare the relative access frequencies.
+>
+> Currently, we just assume the incoming pages are colder. Clearly
+> that's beneficial when it's true. Clearly that can be totally wrong.
+>
+> We must allow a fair comparison between these two sets.
+>
+> For cache, that's already the case - that's why I brought up the
+> cache-only example: if refault distances are 50M and you have 60M of
+> active cache, we activate all refaults and force an even competition
+> between the established workingset and the new pages.
+>
+> Whether we can protect active file when anon needs to shrink first and
+> can't (the activate/iocost split) that's a different question. But I'm
+> no longer so sure after looking into it further.
+>
+> First, we would need two different refault distances: either we
+> consider anon age and need to compare to active_file + anon, or we
+> don't and compare to active_file only. We cannot mix willy nilly,
+> because the metrics wouldn't be comparable. We don't have the space to
+> store two different eviction timestamps, nor could we afford to cut
+> the precision in half.
+>
+> Second, the additional page flag required to implement it.
+>
+> Third, it's somewhat moot because we still have the same behavior when
+> active_file would need to shrink and can't. There can't be a stable
+> state as long as refault distances <=3D active_file.
+>
+> > In this case, they (without patch, with patch) all have some correctnes=
+s
+> > issue so we need to judge which one is better in terms of overall impac=
+t.
+> > I don't have strong opinion about it so it's up to you to decide the wa=
+y to go.
+>
+> If my patch was simply changing the default assumption on which pages
+> are hot and which are cold, I would agree with you - the pros would be
+> equal to the cons, one way wouldn't be more correct than the other.
+>
+> But that isn't what my patch is doing. What it does is get rid of the
+> assumption, to actually sample and compare the access frequencies when
+> there isn't enough data to make an informed decision.
+>
+> That's a net improvement.
 
-For ARCH=arm64, use obj-y to link objects to vmlinux in the ordinary
-way.
+Okay. Now I think that this patch has a net improvement.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
- arch/arm64/Makefile                   |  1 -
- drivers/firmware/efi/Makefile         |  2 +-
- drivers/firmware/efi/libstub/Makefile | 51 +++++++++++++++------------
- 3 files changed, 30 insertions(+), 24 deletions(-)
-
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 650e1185c190..ab79b20efc8d 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -145,7 +145,6 @@ export	TEXT_OFFSET
- 
- core-y		+= arch/arm64/
- libs-y		:= arch/arm64/lib/ $(libs-y)
--core-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
- 
- # Default target when executing plain make
- boot		:= arch/arm64/boot
-diff --git a/drivers/firmware/efi/Makefile b/drivers/firmware/efi/Makefile
-index 7a216984552b..317a05cd388b 100644
---- a/drivers/firmware/efi/Makefile
-+++ b/drivers/firmware/efi/Makefile
-@@ -20,7 +20,7 @@ obj-$(CONFIG_EFI_VARS_PSTORE)		+= efi-pstore.o
- obj-$(CONFIG_UEFI_CPER)			+= cper.o
- obj-$(CONFIG_EFI_RUNTIME_MAP)		+= runtime-map.o
- obj-$(CONFIG_EFI_RUNTIME_WRAPPERS)	+= runtime-wrappers.o
--subdir-$(CONFIG_EFI_STUB)		+= libstub
-+obj-$(CONFIG_EFI_STUB)			+= libstub/
- obj-$(CONFIG_EFI_FAKE_MEMMAP)		+= fake_map.o
- obj-$(CONFIG_EFI_BOOTLOADER_CONTROL)	+= efibc.o
- obj-$(CONFIG_EFI_TEST)			+= test/
-diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-index cce4a7436052..e4e9b17fa3b2 100644
---- a/drivers/firmware/efi/libstub/Makefile
-+++ b/drivers/firmware/efi/libstub/Makefile
-@@ -44,7 +44,7 @@ OBJECT_FILES_NON_STANDARD	:= y
- # Prevents link failures: __sanitizer_cov_trace_pc() is not linked in.
- KCOV_INSTRUMENT			:= n
- 
--lib-y				:= efi-stub-helper.o gop.o secureboot.o tpm.o \
-+stub-obj-y			:= efi-stub-helper.o gop.o secureboot.o tpm.o \
- 				   file.o mem.o random.o randomalloc.o pci.o \
- 				   skip_spaces.o lib-cmdline.o lib-ctype.o \
- 				   alignedmem.o relocate.o vsprintf.o
-@@ -55,15 +55,19 @@ efi-deps-y := fdt_rw.c fdt_ro.c fdt_wip.c fdt.c fdt_empty_tree.c fdt_sw.c
- $(obj)/lib-%.o: $(srctree)/lib/%.c FORCE
- 	$(call if_changed_rule,cc_o_c)
- 
--lib-$(CONFIG_EFI_GENERIC_STUB)	+= efi-stub.o fdt.o string.o \
-+stub-obj-$(CONFIG_EFI_GENERIC_STUB)	+= efi-stub.o fdt.o string.o \
- 				   $(patsubst %.c,lib-%.o,$(efi-deps-y))
- 
--lib-$(CONFIG_ARM)		+= arm32-stub.o
--lib-$(CONFIG_ARM64)		+= arm64-stub.o
--lib-$(CONFIG_X86)		+= x86-stub.o
-+stub-obj-$(CONFIG_ARM)		+= arm32-stub.o
-+stub-obj-$(CONFIG_ARM64)	+= arm64-stub.o
-+stub-obj-$(CONFIG_X86)		+= x86-stub.o
- CFLAGS_arm32-stub.o		:= -DTEXT_OFFSET=$(TEXT_OFFSET)
- CFLAGS_arm64-stub.o		:= -DTEXT_OFFSET=$(TEXT_OFFSET)
- 
-+targets				+= $(stub-obj-y)
-+stub-obj-y			:= $(patsubst %.o,%.stub.o, $(stub-obj-y))
-+targets				+= $(stub-obj-y)
-+
- #
- # For x86, bootloaders like systemd-boot or grub-efi do not zero-initialize the
- # .bss section, so the .bss section of the EFI stub needs to be included in the
-@@ -83,23 +87,6 @@ STUBCOPY_FLAGS-$(CONFIG_ARM)	+= --rename-section .data=.data.efistub	\
- 				   --rename-section .bss=.bss.efistub,load,alloc
- STUBCOPY_RELOC-$(CONFIG_ARM)	:= R_ARM_ABS
- 
--#
--# arm64 puts the stub in the kernel proper, which will unnecessarily retain all
--# code indefinitely unless it is annotated as __init/__initdata/__initconst etc.
--# So let's apply the __init annotations at the section level, by prefixing
--# the section names directly. This will ensure that even all the inline string
--# literals are covered.
--# The fact that the stub and the kernel proper are essentially the same binary
--# also means that we need to be extra careful to make sure that the stub does
--# not rely on any absolute symbol references, considering that the virtual
--# kernel mapping that the linker uses is not active yet when the stub is
--# executing. So build all C dependencies of the EFI stub into libstub, and do
--# a verification pass to see if any absolute relocations exist in any of the
--# object files.
--#
--extra-y				:= $(lib-y)
--lib-y				:= $(patsubst %.o,%.stub.o,$(lib-y))
--
- STUBCOPY_FLAGS-$(CONFIG_ARM64)	+= --prefix-alloc-sections=.init \
- 				   --prefix-symbols=__efistub_
- STUBCOPY_RELOC-$(CONFIG_ARM64)	:= R_AARCH64_ABS
-@@ -121,3 +108,23 @@ quiet_cmd_stubcopy = STUBCPY $@
- 		/bin/false;						\
- 	fi;								\
- 	$(OBJCOPY) $(STUBCOPY_FLAGS-y) $< $@
-+
-+# arm64 puts the stub in the kernel proper, which will unnecessarily retain all
-+# code indefinitely unless it is annotated as __init/__initdata/__initconst etc.
-+# So let's apply the __init annotations at the section level, by prefixing
-+# the section names directly. This will ensure that even all the inline string
-+# literals are covered.
-+# The fact that the stub and the kernel proper are essentially the same binary
-+# also means that we need to be extra careful to make sure that the stub does
-+# not rely on any absolute symbol references, considering that the virtual
-+# kernel mapping that the linker uses is not active yet when the stub is
-+# executing. So build all C dependencies of the EFI stub into libstub, and do
-+# a verification pass to see if any absolute relocations exist in any of the
-+# object files.
-+#
-+obj-$(CONFIG_ARM64)		+= $(stub-obj-y)
-+extra-$(CONFIG_ARM)		+= lib.a
-+extra-$(CONFIG_X86)		+= lib.a
-+
-+$(obj)/lib.a: $(addprefix $(obj)/, $(stub-obj-y)) FORCE
-+	$(call if_changed,ar)
--- 
-2.25.1
-
+Thanks.
