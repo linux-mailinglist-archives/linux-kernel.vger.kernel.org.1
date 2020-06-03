@@ -2,235 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9EB1EC72C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273F61EC705
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgFCCJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 22:09:37 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:40270 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725910AbgFCCJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 22:09:33 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AFC2F1A0075;
-        Wed,  3 Jun 2020 04:09:30 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D17611A0064;
-        Wed,  3 Jun 2020 04:09:24 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9D88B402E8;
-        Wed,  3 Jun 2020 10:09:16 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     aisheng.dong@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux@rempel-privat.de, pandy.gao@nxp.com, wolfram@the-dreams.de,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 3/3] dt-bindings: i2c: Convert imx i2c to json-schema
-Date:   Wed,  3 Jun 2020 09:58:55 +0800
-Message-Id: <1591149535-342-4-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591149535-342-1-git-send-email-Anson.Huang@nxp.com>
-References: <1591149535-342-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725922AbgFCCAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 22:00:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725777AbgFCCAb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 22:00:31 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4507BC08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 19:00:31 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id b3so349715oib.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 19:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ok2sDrK2SLA0bHHaUOMWpvGtTcXD/H3ASuegQf7ne4w=;
+        b=G9lBqE2sDVv4nTGEbBHIu9uhIITCHh57QQ4he4DeP3tHyOTOAhnBUtX7fRqU+lwxY7
+         w3zDT9qiBxkR4xptUyyCgrQjBAr1tqi4ILRksieZfrVp2653IkI3Ng3d6myNAPqZ5kIZ
+         Y9zptv655EFxKggJYsPCmC4/rl6X4TiTCgJHp2GvYIFeb2KvDUkd1etEQGQo3YaBG2GC
+         YS/poFaTstns6ev0955ICTMF6gLMioHlDoTUUcRW+JDaOTkzrHl88qkeVmgJCa5uOWtd
+         qSx3nVtd+PsVFwPB86Pb5ZprH547zu7K7fm1AXJLHq+NR49Z+iGDy9KXAgJTIe1SeX/v
+         6SfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ok2sDrK2SLA0bHHaUOMWpvGtTcXD/H3ASuegQf7ne4w=;
+        b=P7CoNMwcvw7SpM0s+jpaI5xYIanIUiJDSv9QLXdSYxFiE6InOC9Kd3BNOMUY4DtiLN
+         jWqLUl4Z77ATVwEIGPzdL9qWzOJjfKJQbNToX7gf0orTuylG9Ac7qQgHEWpDAj2KoVYJ
+         Ep6/0fJ9wC9NtZDLaNlQNIhob1Yh+X8/Kd055sP7qT5VXqndiuyHkxIvMTZ+KW82JqyR
+         UULutQIbAOj3HpgkIPkKGIsyAtXkY7asLlvObf1m08hZhITsZRUQFxTu42zhSr4rnn2w
+         aSAQ6pOzUW25BiRg8plZ2XDc+qg1SjhiocRRE4bFaMSbFQ1G/tJ+DgN/c93aVXCaQ3BG
+         1pGg==
+X-Gm-Message-State: AOAM530PHoVx8AzzgY842Q3W3P7jJgtHOHwpZptOj5NiD7S4Riqs6nSE
+        JXjwJySi6szUj58EGPr0++tV1cVHfBdOiCCOsbxG/EcJ
+X-Google-Smtp-Source: ABdhPJx0Y/BF3YBAltt+QDGLgccJ7gbb+zCGlexxmF3cbGIzaeOaJeLBsaJFY30sBshHVZpbTbfC838KuUmveX/L9SQ=
+X-Received: by 2002:a05:6808:3ac:: with SMTP id n12mr3228031oie.172.1591149630339;
+ Tue, 02 Jun 2020 19:00:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200411045918.179455-1-saravanak@google.com> <86sghas7so.wl-maz@kernel.org>
+ <CALAqxLXkbNh4GVC82SqXNoib+4FQS2Y3XbePyhreJcwWoVEQaw@mail.gmail.com>
+ <CAGETcx92fj-VEjYsYx0E4_TCV8fW1fvvxn_DyV=b4BJ7B5zG2Q@mail.gmail.com>
+ <20200429102832.4eee22b4@why> <CAGETcx_d0aM+MdeOFDaXDnTEs85rVY=H7zvhZf7NNB4w-t_CGg@mail.gmail.com>
+ <5b605bd46d3ef213c7ec82d02967e4bb@kernel.org> <CAGETcx9kYKOEAmLbJzmOucR2Z4qy9PCY2=UCYdYTJWTL=BeZNQ@mail.gmail.com>
+In-Reply-To: <CAGETcx9kYKOEAmLbJzmOucR2Z4qy9PCY2=UCYdYTJWTL=BeZNQ@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 2 Jun 2020 18:59:54 -0700
+Message-ID: <CAGETcx9x4+6HfqGF7T2hXSpG29PKjHMZ=3UzSVM9vGrSYkfLkA@mail.gmail.com>
+Subject: Re: [RFC PATCH v1] irqchip: Add IRQCHIP_MODULE_BEGIN/END helper macros
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Android Kernel Team <kernel-team@android.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX I2C binding to DT schema format using json-schema,
-some improvements applied, such as update example based on latest DT
-file, add more compatible for existing SoCs, and remove unnecessary
-common property "pinctrl".
+On Fri, May 1, 2020 at 1:23 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Fri, May 1, 2020 at 1:48 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On 2020-04-29 20:04, Saravana Kannan wrote:
+> > > On Wed, Apr 29, 2020 at 2:28 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > [...]
+> >
+> > >> One thing though: this seems to be exclusively DT driven. Have you
+> > >> looked into how that would look like for other firmware types such as
+> > >> ACPI?
+> > >
+> > > I'm not very familiar with ACPI at all. I've just started to learn
+> > > about how it works in the past few months poking at code when I have
+> > > some time. So I haven't tried to get this to work with ACPI nor do I
+> > > think I'll be able to do that anytime in the near future. I hope that
+> > > doesn't block this from being used for DT based platforms.
+> >
+> > As long as you don't try to modularise a driver that does both DT and
+> > ACPI, you'll be safe. I'm also actively trying to discourage people
+> > from inventing custom irqchips on ACPI platforms (the spec almost
+> > forbids them, but not quite).
+> >
+> > >> Another thing is the handling of dependencies. Statically built
+> > >> irqchips are initialized in the right order based on the topology
+> > >> described in DT, and are initialized early enough that client devices
+> > >> will find their irqchip This doesn't work here, obviously.
+> > >
+> > > Yeah, I read that code thoroughly :)
+> > >
+> > >> How do you
+> > >> propose we handle these dependencies, both between irqchip drivers and
+> > >> client drivers?
+> > >
+> > > For client drivers, we don't need to do anything. The IRQ apis seem to
+> > > already handle -EPROBE_DEFER correctly in this case.
+> > >
+> > > For irqchip drivers, the easy answer can be: Load the IRQ modules
+> > > early if you make them modules.
+> >
+> > Uhuh. I'm afraid that's not a practical solution. We need to offer the
+> > same behaviour for both and not rely on the user to understand the
+> > topology of the SoC.
+> >
+> > > But in my case, I've been testing this with fw_devlink=on. The TL;DR
+> > > of "fw_devlink=on" in this context is that the IRQ devices will get
+> > > device links created based on "interrupt-parent" property. So, with
+> > > the magic of device links, these IRQ devices will probe in the right
+> > > topological order without any wasted deferred probe attempts. For
+> > > cases without fw_devlink=on, I think I can improve
+> > > platform_irqchip_probe() in my patch to check if the parent device has
+> > > probed and defer if it hasn't.
+> >
+> > Seems like an interesting option. Two things then:
+> >
+> > - Can we enforce the use of fw_devlink for modularized irqchips?
+>
+> fw_devlink doesn't have any config and it's a command line option. So
+> not sure how you can enforce that.
+>
+> > - For those irqchips that can be modularized, it is apparent that they
+> >    should have been written as platform devices the first place. Maybe
+> >    we should just do that (long term, though).
+>
+> I agree. If they can be platform devices, they should be. But when
+> those platform device drivers are built in, you'll either need:
+> 1) fw_devlink=on to enforce the topological init order
+> Or
+> 2) have a generic irqchip probe helper function that ensures that.
+> My patch with some additional checks added to platform_irqchip_probe()
+> can provide (2).
+>
+> In the short term, my patch series also makes it easier to convert
+> existing non-platform drivers into platform drivers.
+>
+> So if I fix up platform_irqchip_probe() to also do -EPROBE_DEFER to
+> enforce topology, will that make this patch acceptable?
+>
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- Documentation/devicetree/bindings/i2c/i2c-imx.txt  |  49 ---------
- Documentation/devicetree/bindings/i2c/i2c-imx.yaml | 118 +++++++++++++++++++++
- 2 files changed, 118 insertions(+), 49 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-imx.txt
- create mode 100644 Documentation/devicetree/bindings/i2c/i2c-imx.yaml
+Friendly reminder.
 
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-imx.txt b/Documentation/devicetree/bindings/i2c/i2c-imx.txt
-deleted file mode 100644
-index b967544..0000000
---- a/Documentation/devicetree/bindings/i2c/i2c-imx.txt
-+++ /dev/null
-@@ -1,49 +0,0 @@
--* Freescale Inter IC (I2C) and High Speed Inter IC (HS-I2C) for i.MX
--
--Required properties:
--- compatible :
--  - "fsl,imx1-i2c" for I2C compatible with the one integrated on i.MX1 SoC
--  - "fsl,imx21-i2c" for I2C compatible with the one integrated on i.MX21 SoC
--  - "fsl,vf610-i2c" for I2C compatible with the one integrated on Vybrid vf610 SoC
--- reg : Should contain I2C/HS-I2C registers location and length
--- interrupts : Should contain I2C/HS-I2C interrupt
--- clocks : Should contain the I2C/HS-I2C clock specifier
--
--Optional properties:
--- clock-frequency : Constains desired I2C/HS-I2C bus clock frequency in Hz.
--  The absence of the property indicates the default frequency 100 kHz.
--- dmas: A list of two dma specifiers, one for each entry in dma-names.
--- dma-names: should contain "tx" and "rx".
--- scl-gpios: specify the gpio related to SCL pin
--- sda-gpios: specify the gpio related to SDA pin
--- pinctrl: add extra pinctrl to configure i2c pins to gpio function for i2c
--  bus recovery, call it "gpio" state
--
--Examples:
--
--i2c@83fc4000 { /* I2C2 on i.MX51 */
--	compatible = "fsl,imx51-i2c", "fsl,imx21-i2c";
--	reg = <0x83fc4000 0x4000>;
--	interrupts = <63>;
--};
--
--i2c@70038000 { /* HS-I2C on i.MX51 */
--	compatible = "fsl,imx51-i2c", "fsl,imx21-i2c";
--	reg = <0x70038000 0x4000>;
--	interrupts = <64>;
--	clock-frequency = <400000>;
--};
--
--i2c0: i2c@40066000 { /* i2c0 on vf610 */
--	compatible = "fsl,vf610-i2c";
--	reg = <0x40066000 0x1000>;
--	interrupts =<0 71 0x04>;
--	dmas = <&edma0 0 50>,
--		<&edma0 0 51>;
--	dma-names = "rx","tx";
--	pinctrl-names = "default", "gpio";
--	pinctrl-0 = <&pinctrl_i2c1>;
--	pinctrl-1 = <&pinctrl_i2c1_gpio>;
--	scl-gpios = <&gpio5 26 GPIO_ACTIVE_HIGH>;
--	sda-gpios = <&gpio5 27 GPIO_ACTIVE_HIGH>;
--};
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-imx.yaml b/Documentation/devicetree/bindings/i2c/i2c-imx.yaml
-new file mode 100644
-index 0000000..0d31d1c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/i2c/i2c-imx.yaml
-@@ -0,0 +1,118 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/i2c/i2c-imx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale Inter IC (I2C) and High Speed Inter IC (HS-I2C) for i.MX
-+
-+maintainers:
-+  - Wolfram Sang <wolfram@the-dreams.de>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: fsl,imx1-i2c
-+      - const: fsl,imx21-i2c
-+      - const: fsl,vf610-i2c
-+      - items:
-+          - const: fsl,imx35-i2c
-+          - const: fsl,imx1-i2c
-+      - items:
-+          - enum:
-+            - fsl,imx25-i2c
-+            - fsl,imx27-i2c
-+            - fsl,imx31-i2c
-+            - fsl,imx50-i2c
-+            - fsl,imx51-i2c
-+            - fsl,imx53-i2c
-+            - fsl,imx6q-i2c
-+            - fsl,imx6sl-i2c
-+            - fsl,imx6sx-i2c
-+            - fsl,imx6sll-i2c
-+            - fsl,imx6ul-i2c
-+            - fsl,imx7s-i2c
-+            - fsl,imx8mq-i2c
-+            - fsl,imx8mm-i2c
-+            - fsl,imx8mn-i2c
-+            - fsl,imx8mp-i2c
-+          - const: fsl,imx21-i2c
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-frequency:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Constains desired I2C/HS-I2C bus clock frequency in Hz.
-+      The absence of the property indicates the default frequency 100 kHz.
-+    default: 100000
-+
-+  dmas:
-+    items:
-+      - description: DMA controller phandle and request line for RX
-+      - description: DMA controller phandle and request line for TX
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: tx
-+
-+  sda-gpios:
-+    $ref: '/schemas/types.yaml#/definitions/phandle'
-+    description: |
-+      gpio used for the sda signal, this should be flagged as
-+      active high using open drain with (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)
-+      from <dt-bindings/gpio/gpio.h> since the signal is by definition
-+      open drain.
-+    maxItems: 1
-+
-+  scl-gpios:
-+    $ref: '/schemas/types.yaml#/definitions/phandle'
-+    description: |
-+      gpio used for the scl signal, this should be flagged as
-+      active high using open drain with (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)
-+      from <dt-bindings/gpio/gpio.h> since the signal is by definition
-+      open drain.
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx5-clock.h>
-+    #include <dt-bindings/clock/vf610-clock.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    i2c@83fc4000 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        compatible = "fsl,imx51-i2c", "fsl,imx21-i2c";
-+        reg = <0x83fc4000 0x4000>;
-+        interrupts = <63>;
-+        clocks = <&clks IMX5_CLK_I2C2_GATE>;
-+    };
-+
-+    i2c@40066000 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        compatible = "fsl,vf610-i2c";
-+        reg = <0x40066000 0x1000>;
-+        interrupts = <71 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&clks VF610_CLK_I2C0>;
-+        clock-names = "ipg";
-+        dmas = <&edma0 0 50>,
-+               <&edma0 0 51>;
-+        dma-names = "rx","tx";
-+    };
--- 
-2.7.4
-
+-Saravana
