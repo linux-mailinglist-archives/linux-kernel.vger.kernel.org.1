@@ -2,127 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C52C1EC940
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 08:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D9F1EC938
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 08:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725937AbgFCGEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 02:04:50 -0400
-Received: from mail02.asahi-net.or.jp ([202.224.55.14]:41832 "EHLO
-        mail02.asahi-net.or.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgFCGEt (ORCPT
+        id S1725905AbgFCGCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 02:02:10 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35356 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725823AbgFCGCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 02:04:49 -0400
-X-Greylist: delayed 432 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jun 2020 02:04:47 EDT
-Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
-        (Authenticated sender: PQ4Y-STU)
-        by mail02.asahi-net.or.jp (Postfix) with ESMTPA id DEA73EE429;
-        Wed,  3 Jun 2020 14:57:33 +0900 (JST)
-Received: from yo-satoh-debian.ysato.ml (z215094.dynamic.ppp.asahi-net.or.jp [110.4.215.94])
-        by sakura.ysato.name (Postfix) with ESMTPSA id 182B31C06C6;
-        Wed,  3 Jun 2020 14:57:33 +0900 (JST)
-Date:   Wed, 03 Jun 2020 14:57:32 +0900
-Message-ID: <87y2p4n12r.wl-ysato@users.sourceforge.jp>
-From:   Yoshinori Sato <ysato@users.sourceforge.jp>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Rich Felker <dalias@libc.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Wed, 3 Jun 2020 02:02:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591164126;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o6jcKEk2mcNih81oO7ze2OIDsY31roMJVUEa+DK3JW4=;
+        b=KQSJhsWbuJxwK8sR+YKrV5au+UwrU4/bluQFJ1JHjhq/prhUAzF+UpJC5T0BJne+Ldt2eM
+        cHCC2P5P+TNCjZuty4GkzoQ2fs5A4B7yn3j1AlWNFdk7ARsXzc93EChCnVtGkteNJLCEQQ
+        FRgW1CmPGPOWhUCk9PlmL8UYhV38NCI=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-491-3rHZStFCO0Kx-cPVcdM1OA-1; Wed, 03 Jun 2020 02:02:02 -0400
+X-MC-Unique: 3rHZStFCO0Kx-cPVcdM1OA-1
+Received: by mail-wm1-f70.google.com with SMTP id g84so455313wmf.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 23:02:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=o6jcKEk2mcNih81oO7ze2OIDsY31roMJVUEa+DK3JW4=;
+        b=IEtNkoLzQFsFi7Bw/qKCa2HLBmsSfb4TrGxZ286rmXiTZDDPZIQWJEwQc4EcIqgh5h
+         qBRzNvhDPv3bfupapvk7YcttoD0J8eh8qYK8OrunItBLDp9A/+mD1YuVVq53Fg2W2KtY
+         WuY9HAz3LI5TkvR2P2MS2/IpXs0/gLUWFuWLTjO9ou4mEBjE3hmAO8bviYFflv2eGwjA
+         ZJzns1IIY28IDF6c7IHMnUGNymMhU6pnbQ7+6kATofG+x05l3vmP59sCoR5Pg/+CMATe
+         5A6hrAWvphVJTaMyWcqhh+2zJxe4jlzXvANtDF+zTBcGgbAfhS8/mj3atDtNb95gOOVV
+         E+Pw==
+X-Gm-Message-State: AOAM530krBliWr9++ADTUQl25A1buebP8gEcPgrJLZyfa5H7sFA+2tad
+        Y/gEX5XfB+E7vmlmrau6D6eaMaX2MNDlwOewEoML5pgg9qLOSN0sAI3QDF4Ad73wCXer6+/3XIA
+        J5kWC2fE6Q1mXpGJ/moHlQGxD
+X-Received: by 2002:a1c:f003:: with SMTP id a3mr7045174wmb.119.1591164121029;
+        Tue, 02 Jun 2020 23:02:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxXl+sofUHZk+VbvLWmhyqHx7h7DWb02lQ/P8NQ7EV8iW/Kg++HMCXfoH3XtMI929I9Wym9Mw==
+X-Received: by 2002:a1c:f003:: with SMTP id a3mr7045163wmb.119.1591164120841;
+        Tue, 02 Jun 2020 23:02:00 -0700 (PDT)
+Received: from redhat.com (bzq-109-64-41-91.red.bezeqint.net. [109.64.41.91])
+        by smtp.gmail.com with ESMTPSA id k16sm1608442wrp.66.2020.06.02.23.01.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 23:02:00 -0700 (PDT)
+Date:   Wed, 3 Jun 2020 02:01:58 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Jason Wang <jasowang@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Subject: Re: linux-sh for-next reactivation
-In-Reply-To: <20200603084105.47bd62c5@canb.auug.org.au>
-References: <20200602031123.GA1079@brightrain.aerifal.cx>
-        <20200602150039.780a0ac0@canb.auug.org.au>
-        <20200602202832.GA3776@brightrain.aerifal.cx>
-        <20200603084105.47bd62c5@canb.auug.org.au>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM/1.14.9 (=?ISO-8859-4?Q?Goj=F2?=) APEL/10.8 EasyPG/1.0.0 Emacs/26
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+        Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH RFC] uaccess: user_access_begin_after_access_ok()
+Message-ID: <20200603014944-mutt-send-email-mst@kernel.org>
+References: <20200602084257.134555-1-mst@redhat.com>
+ <fc204429-7a6e-8214-a66f-bf2676018aae@redhat.com>
+ <20200602163306.GM23230@ZenIV.linux.org.uk>
+ <CAHk-=wjgg0bpD0qjYF=twJNXmRXYPjXqO1EFLL-mS8qUphe0AQ@mail.gmail.com>
+ <20200602162931-mutt-send-email-mst@kernel.org>
+ <CAHk-=wgYu+qk15_NpUZXwbetEU5eiWppJ=Z_A6dCSCWKxCfDfw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgYu+qk15_NpUZXwbetEU5eiWppJ=Z_A6dCSCWKxCfDfw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Jun 2020 07:41:05 +0900,
-Stephen Rothwell wrote:
-> 
-> [1  <text/plain; US-ASCII (quoted-printable)>]
-> Hi Rich,
-> 
-> On Tue, 2 Jun 2020 16:28:33 -0400 Rich Felker <dalias@libc.org> wrote:
+On Tue, Jun 02, 2020 at 01:43:20PM -0700, Linus Torvalds wrote:
+> On Tue, Jun 2, 2020 at 1:33 PM Michael S. Tsirkin <mst@redhat.com> wrote:
 > >
-> > On Tue, Jun 02, 2020 at 03:00:39PM +1000, Stephen Rothwell wrote:
-> > > Hi Rich,
-> > > 
-> > > On Mon, 1 Jun 2020 23:11:39 -0400 Rich Felker <dalias@libc.org> wrote:  
-> > > >
-> > > > Could you reactivate linux-next pull from my arch/sh for-next branch?
-> > > > It's where it was before, at:
-> > > > 
-> > > >     git://git.libc.org/linux-sh for-next
-> > > > 
-> > > > and has newly accepted patches ready.  
-> > > 
-> > > I already have an SH tree from
-> > > git://git.sourceforge.jp/gitroot/uclinux-h8/linux.git#sh-next .  Should
-> > > I do anything with that one?
-> > > 
-> > > It currently contains:
-> > > 
-> > > $ git log --oneline origin/master..sh/sh-next 
-> > > a193018e5290 (sh/sh-next) sh: add missing EXPORT_SYMBOL() for __delay
-> > > 1d5fd6c33b04 sh: add missing DECLARE_EXPORT() for __ashiftrt_r4_xx
-> > > d70f1e3d5dbd Merge remote-tracking branch 'origin/master' into sh-next
-> > > baf58858e8b6 sh: prefer __section from compiler_attributes.h
-> > > 8619b5a9035a sh: Drop -Werror from kernel Makefile
-> > > 3a3a78124693 sh: kernel: disassemble: Mark expected switch fall-throughs
-> > > fb8f77490f55 sh: kernel: hw_breakpoint: Fix missing break in switch statement
-> > > cd10afbc932d sh: remove unneeded uapi asm-generic wrappers
-> > > cbfc6edb6a4a sh: use __builtin_constant_p() directly instead of IS_IMMEDIATE()  
-> > 
-> > Hi Stephen,
-> > 
-> > I completely forgot that you had the tree from our other co-maintainer
-> > Yoshinori Sato on the list linux-next is pulling from. Would it be
-> > okay to keep both? That would help with quickly identifying and
-> > resolving any conflicting commits and make things go more smoothly
-> > with two maintainers trying to be active.
-> > 
-> > Let me know if this doesn't work for you and we'll figure out
-> > alternative arrangements.
+> > Hmm are you sure we can drop it? access_ok is done in the context
+> > of the process. Access itself in the context of a kernel thread
+> > that borrows the same mm. IIUC if the process can be 32 bit
+> > while the kernel is 64 bit, access_ok in the context of the
+> > kernel thread will not DTRT.
 > 
-> Added from today (I called it "sh-rf" - if you want a different name,
-> please let me know).
-> 
-> Thanks for adding your subsystem tree as a participant of linux-next.  As
-> you may know, this is not a judgement of your code.  The purpose of
-> linux-next is for integration testing and to lower the impact of
-> conflicts between subsystems in the next merge window. 
-> 
-> You will need to ensure that the patches/commits in your tree/series have
-> been:
->      * submitted under GPL v2 (or later) and include the Contributor's
->         Signed-off-by,
->      * posted to the relevant mailing list,
->      * reviewed by you (or another maintainer of your subsystem tree),
->      * successfully unit tested, and 
->      * destined for the current or next Linux merge window.
-> 
-> Basically, this should be just what you would send to Linus (or ask him
-> to fetch).  It is allowed to be rebased if you deem it necessary.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell 
-> sfr@canb.auug.org.au
-> [2 OpenPGP digital signature <application/pgp-signature (7bit)>]
-> No public key for 015042F34957D06C created at 2020-06-03T07:41:05+0900 using RSA
+> You're historically expected to just "set_fs()" when you do use_mm().
 
-I only provided it temporarily.
-Plase remove git://git.sourceforge.jp/gitroot/uclinux-h8/linux.git#sh-next
+Right and we do that, but that still sets the segment according to the
+current thread's flags, right?
 
-Thanks.
+E.g. I see:
+
+#define USER_DS         MAKE_MM_SEG(TASK_SIZE_MAX)
+
+and
+
+#define TASK_SIZE               (test_thread_flag(TIF_ADDR32) ? \
+                                        IA32_PAGE_OFFSET : TASK_SIZE_MAX)
+
+
+so if this is run from a kernel thread on a 64 bit kernel, we get
+TASK_SIZE_MAX even if we got the pointer from a 32 bit userspace
+address.
+
+
+
+> Then we fixed it in commit...
+> 
+> Oh, when I look for it, I notice that it still hasn't gotten merged.
+> It's still pending, see
+> 
+>   https://lore.kernel.org/lkml/20200416053158.586887-4-hch@lst.de/
+> 
+> for the current thing.
+> 
+>               Linus
+
+
+Maybe kthread_use_mm should also get the fs, not just mm.
+Then we can just use access_ok directly before the access.
+
 
 -- 
-Yosinori Sato
+MST
+
