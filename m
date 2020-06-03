@@ -2,81 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06AC1EC8BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 07:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4311EC8A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 07:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725855AbgFCF0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 01:26:12 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:59804 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725275AbgFCF0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 01:26:12 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1E23D200D4F;
-        Wed,  3 Jun 2020 07:26:10 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id ADEFC200D21;
-        Wed,  3 Jun 2020 07:26:06 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 218E9402E4;
-        Wed,  3 Jun 2020 13:26:02 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     jassisinghbrar@gmail.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 0/3] Handle mailbox clock/power management related issues
-Date:   Wed,  3 Jun 2020 13:15:41 +0800
-Message-Id: <1591161344-12885-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725867AbgFCFPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 01:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbgFCFPn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 01:15:43 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C39C05BD43;
+        Tue,  2 Jun 2020 22:15:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=q/5VpgkyFO00N1VKSSfFPcjSDFVe49KfMOFz+/wJqtg=; b=hlcbbSYHXeyR/GEgn2M2XhV/JK
+        9uIwLkjlajSgB2wo3R1EVEiSaC7qlD20OPQOQj3hKOYJGNmniquqEo9fpVU6BgMJMOSu6KbGffwpY
+        YLn51RgdX7HB10AZAWIfwbQtn7W6vzY6ac3C5LEWtPN25P4iVhLmHDdHP7i/Zs4atIysUt9yiFNh3
+        MiolCQwWerpohlFoaZPfc9eBMrWfQHsRA9hffsOi6mhQhj1/Pnxcg9cSx4UjhHn5qlJWy/pt5wMiR
+        QbWxSOZZXENLnqpO4zVHSdhjLqugSSA+xWnyPYSQuAeGx89w8Us2P7ujFzu4Tkgf3AsDT6RvVyhe6
+        J3cxqwGg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jgLkb-0006oH-Ig; Wed, 03 Jun 2020 05:15:41 +0000
+Date:   Tue, 2 Jun 2020 22:15:41 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/15] ahci: use PCI_IRQ_MSI_TYPES where appropriate
+Message-ID: <20200603051541.GA15520@infradead.org>
+References: <20200602092012.31831-1-piotr.stankiewicz@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200602092012.31831-1-piotr.stankiewicz@intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current i.MX mailbox driver mainly supports 2 series i.MX SoCs with
-different architecture, one is for i.MX8X platforms with SCU inside,
-the other is for i.MX6/7/8M series without SCU.
+On Tue, Jun 02, 2020 at 11:20:12AM +0200, Piotr Stankiewicz wrote:
+> Seeing as there is shorthand available to use when asking for any type
+> of interrupt, or any type of message signalled interrupt, leverage it.
+> 
+> Signed-off-by: Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
 
-For i.MX8X, 2 types of MU are supported, one is for system IPC, such kind
-of MU has no clock/power assignment, they are both controlled by SCU. The
-other is for application, such kind of MU has no clock assignment, but have
-power domain assignment, consumers need to call mailbox APIs to manage MU
-power in runtime;
-
-For i.MX6/7/8M, MU clock or power could be assigned based on different SoCs,
-but all the MUs are for application, consumers need to call mailbox APIs to
-manage MU clock/power in runtime.
-
-For the power management related issue mentioned above, they are as below:
-
-1. clock should be managed in runtime to make sure MU clock/power can be off
-   on i.MX6/7/8M platforms;
-2. ONLY system IPC MU needs to have IRQF_NO_SUSPEND flag set, other application
-   MU no need to have this flag, since the MU clock/power is OFF in noirq
-   suspend phase and if MU interrupt arrives, with IRQF_NO_SUSPEND flag set,
-   the MU ISR will try to access MU register and lead to system hang because
-   of clock/power disabled;
-
-To distinguish these different MU instances, use MU's clock/power assignment
-status to decide whether to save/restore MU context during suspend/resume,
-whether to have IRQF_NO_SUSPEND flag set, etc..
-
-patch #1 is identical with https://patchwork.kernel.org/patch/11581215/, the
-patch #2/#3 depend on #1, so I resend #1 in this series to make them as a whole
-series.
-
-Anson Huang (2):
-  mailbox: imx: Add runtime PM callback to handle MU clocks
-  mailbox: imx: ONLY IPC MU needs IRQF_NO_SUSPEND flag
-
-Dong Aisheng (1):
-  mailbox: imx: Add context save/restore for suspend/resume
-
- drivers/mailbox/imx-mailbox.c | 72 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 69 insertions(+), 3 deletions(-)
-
--- 
-2.7.4
-
+Im not sure where PCI_IRQ_MSI_TYPES appeared (I can't find it in
+mainline), but I think replacing the supported list of types with this
+weird group is no in any way a good idea.
