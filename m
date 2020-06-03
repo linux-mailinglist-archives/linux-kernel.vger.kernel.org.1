@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA441ED128
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 15:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A171ED139
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 15:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725937AbgFCNsV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Jun 2020 09:48:21 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:34629 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725866AbgFCNsU (ORCPT
+        id S1726112AbgFCNsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 09:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726027AbgFCNsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 09:48:20 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R921e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01419;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0U-TwqSa_1591192068;
-Received: from 30.39.27.85(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0U-TwqSa_1591192068)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 03 Jun 2020 21:47:49 +0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH 0/2] Build ORC fast lookup table in scripts/sorttable tool
-From:   changhuaixin <changhuaixin@linux.alibaba.com>
-In-Reply-To: <20200601173840.3f36m6l4fsu5bill@treble>
-Date:   Wed, 3 Jun 2020 21:47:47 +0800
-Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        bp@alien8.de, hpa@zytor.com, luto@amacapital.net,
-        michal.lkml@markovi.net, mingo@redhat.com, peterz@infradead.org,
-        tglx@linutronix.de, x86@kernel.org, yamada.masahiro@socionext.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <037BCC2F-FEF5-40AB-8F7B-7A966073113C@linux.alibaba.com>
-References: <20200429064626.16389-1-changhuaixin@linux.alibaba.com>
- <20200522182815.ezanmvbemhzq2fmm@treble>
- <482837A8-E9D9-4229-B7B1-8E14403FB2AC@linux.alibaba.com>
- <20200601173840.3f36m6l4fsu5bill@treble>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-X-Mailer: Apple Mail (2.3445.104.11)
+        Wed, 3 Jun 2020 09:48:51 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE8FC008639
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 06:48:49 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id x27so1347270lfg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 06:48:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
+        b=LImzFWfFZ5MGhzJT1qzCsgEXVo7xW37sUIdrDLCKiXHQE0/Tq0rYX6Af/ld5dvlhmE
+         opFt8B8vUrhAfyxGIRs7eIQZmnu+cHCt7Dz4gEu/fnBWHDlMa8iVHDbM7XgqJUtNcgor
+         I4Oj1yGJ3ygOniFn6Dr+FHDS5BV48N/ldz+eBwWbR5/ADnYCL6KuztRZu9mrKJOxMODU
+         fmVICwwGmTYXXsgICTxE6unupuMdGq6+YZvkWKysZVLYK3Wwxrg7U2ecMo3WGycHWcU1
+         w35jxyjuynpm30G3kj/I18A4vO2Y2WN0kfTajUkGc1Xe9t84eQuWhnB4AGlAS8dbrawc
+         iC3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
+        b=arn9yttQXkGni3y2mTemXsk2hejEefZiNLABn0wCPopS4bnipJN1t0kCRfWhasQywa
+         XZYWX4DhYbaTWYLYk9MZVbR+dwQnROoRN+9jlqiGwcu1WiYdGwsDe1OS/YKXF9xmGSym
+         EUSJzhLScFF3eq+KXfXeKPU24NdIk6nsU0PZ+FA8rr3MfozUH/rV0zWyYQF2Z1KMaIc3
+         LKFf600i0DPq914bx42sxQm0ntEcpUt7nbFpq0HL7tQ19X0sObUUopnEdI942i+ePqL6
+         9/dpfyqpDnsQIfMvLQiSqvkEwIol1wQYxzMX/zQ83+G0OQEO8pcA+z+gYLts+OtzWTtx
+         G2zQ==
+X-Gm-Message-State: AOAM532lf10bgbN5vGxWxQqTA/cKr7gjPehGgSXV4io5J1DE2eRDpJ9h
+        bF/yXThTjL6b1A9Wcxpe65H5zphEbd5oRZyWWG0=
+X-Google-Smtp-Source: ABdhPJzc66PsPJ7uf2JiXrqj7zfh07Ra5BpBms0TPKeexmxkWkfXYY+ch/Os+E85wJbdOE6Lm+0ANdybV/7KRG4HAcU=
+X-Received: by 2002:a05:6512:308e:: with SMTP id z14mr2566308lfd.29.1591192127287;
+ Wed, 03 Jun 2020 06:48:47 -0700 (PDT)
+MIME-Version: 1.0
+Reply-To: susanjones.wife@gmail.com
+Received: by 2002:a19:a405:0:0:0:0:0 with HTTP; Wed, 3 Jun 2020 06:48:46 -0700 (PDT)
+From:   "Mrs.Susan Jones" <joneswife.susan@gmail.com>
+Date:   Wed, 3 Jun 2020 14:48:46 +0100
+X-Google-Sender-Auth: aH2vam-ZraP3yG1gz3ryctMgTE4
+Message-ID: <CALBhdBfusXWup1N4iFuTS3D1AZxWbZbTDS_qa-wA3FkbkE7MrQ@mail.gmail.com>
+Subject: HELLO: I AM MRS SUSAN JONES
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+-- 
+OUR GOLDEN OPPORTUNITY
 
+Hello Dear Friend,
 
-> On Jun 2, 2020, at 1:38 AM, Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> 
-> On Sun, May 31, 2020 at 01:26:54PM +0800, changhuaixin wrote:
->>   It turned out to be an alignment problem. If sh_size of previous section
->>   orc_unwind is not 4-byte aligned, sh_offset of the following orc_lookup
->>   section is not 4-byte aligned too. However, the VMA of section orc_lookup
->>   is aligned to the nearest 4-byte. Thus, the orc_lookup section means two
->>   different ares for scripts/sorttable tool and kernel.
->> 
->>   Sections headers look like this when it happens:
->> 
->>   12 .orc_unwind_ip 00172124  ffffffff82573b28  0000000002573b28  01773b28
->>    2**0
->>                    CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
->>   13 .orc_unwind   0022b1b6  ffffffff826e5c4c  00000000026e5c4c  018e5c4c
->>    2**0
->>                    CONTENTS, ALLOC, LOAD, READONLY, DATA
->>   14 .orc_lookup   0003003c  ffffffff82910e04  0000000002910e04  01b10e02
->>    2**0
->>                    ALLOC
->>   15 .vvar         00001000  ffffffff82941000  0000000002941000  01b41000
->>    2**4
->>                    CONTENTS, ALLOC, LOAD, DATA
->> 
->>   Sorttable tool uses the are starting with offset 0x01b10e02 for 0x0003003c
->>   bytes. While kernel use the area starting with VMA at  0xffffffff82910e04
->>   for 0x0003003c bytes, meaning that each entry in this table used by kernel
->>   is actually 2 bytes behind the corresponding entry set from sorttable
->>   tool.
->> 
->>   Any suggestion on fixing this？
-> 
-> The VMA and LMA are both 4-byte aligned.  The file offset alignment
-> (0x01b10e02) shouldn't matter.
-> 
-> Actually it looks like the problem is that the section doesn't have
-> CONTENTS, so it's just loaded as a BSS section (all zeros).  The section
-> needs to be type SHT_PROGBITS instead of SHT_NOBITS.
-> 
-> $ readelf -S vmlinux |grep orc_lookup
->  [16] .orc_lookup       NOBITS           ffffffff82b68418  01d68418
-> 
-> I tried to fix it with
-> 
-> diff --git a/scripts/sorttable.h b/scripts/sorttable.h
-> index a36c76c17be4..76adb1fb88f8 100644
-> --- a/scripts/sorttable.h
-> +++ b/scripts/sorttable.h
-> @@ -341,6 +341,7 @@ static int do_sort(Elf_Ehdr *ehdr,
-> 			param.lookup_table_size = s->sh_size;
-> 			param.orc_lookup_table = (unsigned int *)
-> 				((void *)ehdr + s->sh_offset);
-> +			w(SHT_PROGBITS, &s->sh_type);
-> 		}
-> 		if (!strcmp(secstrings + idx, ".text")) {
-> 			param.text_size = s->sh_size;
-> 
-> 
-> But that makes kallsyms unhappy, so I guess we need to do it from the
-> linker script where .orc_lookup is created.
-> 
-> Linker script doesn't seem to allow manual specification of the section
-> type, so this is the best I could come up with:
-> 
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index db600ef218d7..49f4f5bc6165 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -826,6 +826,8 @@
-> 		. += (((SIZEOF(.text) + LOOKUP_BLOCK_SIZE - 1) /	\
-> 			LOOKUP_BLOCK_SIZE) + 1) * 4;			\
-> 		orc_lookup_end = .;					\
-> +		/* HACK: force SHT_PROGBITS so sorttable can edit: */	\
-> +		BYTE(1);						\
-> 	}
-> #else
-> #define ORC_UNWIND_TABLE
+Complement of the day, i hope you are doing great today. However, I am
+Mrs.Susan Jones, an auditor with one of the new generation banks here
+in Burkina Faso.
 
-Thanks! It works.
+I am writing you this letter based on the latest development at my
+Department. i discovered some abandoned huge amount of money, Ten
+Million, Five hundred thousand  United States Dollars.($10.500.000).
+Now I am only contacting you as a foreigner because this money cannot
+be approved to a local bank account here, but can only be approved to
+any foreign account and foreign beneficiary because the money is in US
+dollars
 
+This will be  a legitimate transaction once you accept to build trust
+with me and follow simple instruction doing the transfer process,
+until the total sum transfer out of the bank here to your own bank
+account any where in the world, and I agreed to share the total money
+50/50 with you once you successful confirmed it in your bank account.
+But any expenses doing the transfer process will be deduct from the
+amount before sharing, If you are interested to work with me and
+provide a good receiving bank account, get back to me as soon as
+possible with the following details below.
 
+Your full name
+Your Profession
+Your direct mobile phone number
+Your Scanned International passport or any of your identity
+
+NOTE: PLEASE IT YOU ARE NOT INTERESTED DON'T BORDER TO RESPOND BACK TO
+AVOID TIME WASTED.
+
+As soon as I receive these data's, I will forward to you the
+application form which you will send to the bank for the claim and
+transfer of the fund into your bank account as the  new beneficial.
+
+I am waiting to hear from you soon
+
+Yours
+Mrs.Susan Jones
