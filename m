@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C08E1ED777
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 22:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1500E1ED780
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 22:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726231AbgFCUfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 16:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbgFCUfN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 16:35:13 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD71C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 13:35:12 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id y11so1208797plt.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 13:35:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=W5rG5azrfwU1SE5+6VF2CaiUSY0EB63jPHlaOLOAids=;
-        b=H8lAAd7t8MN6jYw5eMcIVe9rAHxpKI1yFv/LZqIHzVdqTGi0osItXRbEC3imxxp5fw
-         XiTsvqNcg9jDA5i7CRdaI5PyhRfdYFu1/Haxwk1herusBfde/0Rxv2M8k7zdqcBZ5vO2
-         uAqTfTk4PSLas1IJTdwiVj7qe87PLWc/DJroM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W5rG5azrfwU1SE5+6VF2CaiUSY0EB63jPHlaOLOAids=;
-        b=hl9oDFVz4a4lsYWmdZSt/mRdEg/oHODl4CQR0/r0rYdv+6LQyvLHV/FdI3d/9ZURZy
-         YG4WfV9rtzgqf60HvzBWHq9bUxdiacS53QrbMmzxT93s9gJfxGw41KObgDpBalzVcWOI
-         TJZZM5fITPdCQ7Dm862kKvWIF+MSynzjCaJo7svbFtRol0lSEjLjvEqlfjwvK8GEAHsT
-         gFwm4XuKrfH30BD83RaESoR6bHo2j5MQ/+BFOAptmMP0+zO185TH2TF9QztSP81rZ1uO
-         gXN/pUgHKF+UrK3kFGEH3WgdGJ5ItIle2srI/M5vLEdnzicVugYnYUgTajdtsYflnCdv
-         +PSQ==
-X-Gm-Message-State: AOAM531nWrjyengJMEluy4yPkYa+28veK46x5t/XJeuGyjwcQqeaV/a1
-        Blo3pfy1JPRApM1QLBzGLqJKsw==
-X-Google-Smtp-Source: ABdhPJxh+aatEAcsfm7x2O7pF9u4HQEykZUt/5RuZbEPGXrhPVdcNGxmsklSppL48UqLLLYO/xjupQ==
-X-Received: by 2002:a17:902:714e:: with SMTP id u14mr1478127plm.175.1591216512009;
-        Wed, 03 Jun 2020 13:35:12 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i10sm2573857pfa.166.2020.06.03.13.35.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 13:35:10 -0700 (PDT)
-Date:   Wed, 3 Jun 2020 13:35:09 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     glider@google.com
-Cc:     miklos@szeredi.hu, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, royyang@google.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] ovl: explicitly initialize error in ovl_copy_xattr()
-Message-ID: <202006031219.36197D0729@keescook>
-References: <20200603174714.192027-1-glider@google.com>
+        id S1726170AbgFCUi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 16:38:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725821AbgFCUi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 16:38:26 -0400
+Received: from localhost (p5486cfa5.dip0.t-ipconnect.de [84.134.207.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 899522074B;
+        Wed,  3 Jun 2020 20:38:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591216706;
+        bh=ynTIpUVLHd3Fetf06EYiB+OyQhltY0fHhPnuDW+nP7k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f2FZRU2mcJEtxwIplnFuwE3HGvAocU4WnMmA5NCU1VX5Bv6um+1TjlU20JYnqXiSe
+         mH3Hpqtkd7uIwH2i/30LatW1GAI+PN+jjob5oCjiMhLYCoB+PjDinJlIgyvXARNrjd
+         XxhLMODN+7sFHY3YwQOkSci2ztumvgm1J2RpRMjk=
+Date:   Wed, 3 Jun 2020 22:38:18 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: pxa: don't error out if there's no pinctrl
+Message-ID: <20200603203818.GA1347@ninjato>
+References: <20200602193823.267048-1-lkundrak@v3.sk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
 Content-Disposition: inline
-In-Reply-To: <20200603174714.192027-1-glider@google.com>
+In-Reply-To: <20200602193823.267048-1-lkundrak@v3.sk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 07:47:14PM +0200, glider@google.com wrote:
-> Under certain circumstances (we found this out running Docker on a
-> Clang-built kernel with CONFIG_INIT_STACK_ALL) ovl_copy_xattr() may
-> return uninitialized value of |error| from ovl_copy_xattr().
-> It is then returned by ovl_create() to lookup_open(), which casts it to
-> an invalid dentry pointer, that can be further read or written by the
-> lookup_open() callers.
-> 
-> Signed-off-by: Alexander Potapenko <glider@google.com>
 
-Link: https://bugs.chromium.org/p/chromium/issues/detail?id=1050405
-Fixes: e4ad29fa0d22 ("ovl: use a minimal buffer in ovl_copy_xattr")
-Cc: stable@vger.kernel.org
-Reviewed-by: Kees Cook <keescook@chromium.org>
+--C7zPtVaVf+AK4Oqc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It seems the error isn't reported anywhere, so the value likely isn't
-too important. -EINVAL seems sane to me.
+On Tue, Jun 02, 2020 at 09:38:23PM +0200, Lubomir Rintel wrote:
+> The bus recovery patch regresses on OLPC XO-1.75 that has no pinctrl in
+> its DT.
+>=20
+> Fixes: 7c9ec2c52518 ("i2c: pxa: implement generic i2c bus recovery")'
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
 
-Thought: should CONFIG_INIT_STACK_ALL=y disable uninitialized_var()?
+Applied to for-next, thanks!
 
-$ git grep uninitialized_var | wc -l
-300
 
-We have evidence this is being used inappropriately and is masking bugs.
-I would actually think it should should be removed globally, but it
-seems especially important for CONFIG_INIT_STACK_ALL=y.
+--C7zPtVaVf+AK4Oqc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I've opened:
-https://github.com/KSPP/linux/issues/81
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Kees Cook
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl7YCjYACgkQFA3kzBSg
+KbYs1RAAqXFrAks4gE6JldEwD2WqZJrHqz7WDRY6scbc3FrEUZy1Kn1yA/KaJyuR
+HKVJISXP/UHGnQTL3QRrc0hMUCeSYcAgBh9HCqEPomlWKF1e0I5zRovpKd36dMxY
+aWM4C+VF+KV622MOSIFGQlHYRua+Bld8bi0BP/+DRvfA82ArAjVRB4gez1x55hQZ
+I4gSdxn1jPw9azHt7g5kJmKRaPFjPfuzXCVo76BpWevcGu14lvh04CSl+OzFhqQB
+xIF8ma2jv7RfKDGWQD1TMVreVDtLitCVDYvnUD6RVQ3ZDE95Ji7XAhalGSN445xY
+bknJkglyKhgSH8DuD87alkstj36UqPV3n8r6W2ETB+7bqC8d60zuoZp2dL6lgf3J
+4NuTJpU13XunMhx4oU1VR2CUK5HG5vxm9fw5yj82rs9FzsHqAF0bHPMS5x9bcA+I
+YQjI8XXpoe/ZCcu05hQe350khVyDrpQfB+/iRR82/srp/8CwpMPPFmQ6SNmZk70D
+rLRMzKE43wkMjAVftINuIxnW+09bGmnWSjHhpRaMbHwj5V6Cj3ADrlmRtZWcxrHB
+af2uPpvVHkG6/ntWk4Qls8CGKMqNEEWfZRFg2+uCUDKTRHUMlvCKe10/qsSXg7Yl
+RvA+OPx47hjNrTXnvKw6zeIMvu6n00DY6JcQqOpsCMlnYT6nABc=
+=KqSX
+-----END PGP SIGNATURE-----
+
+--C7zPtVaVf+AK4Oqc--
