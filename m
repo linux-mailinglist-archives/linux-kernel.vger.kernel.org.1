@@ -2,94 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5967B1ECE98
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DF81ECEBC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726213AbgFCLkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 07:40:42 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:27216 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726129AbgFCLkh (ORCPT
+        id S1726363AbgFCLm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 07:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbgFCLmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 07:40:37 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 053BdehX022887;
-        Wed, 3 Jun 2020 07:40:36 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 31e4scs6ac-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Jun 2020 07:40:36 -0400
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 053BeZVh004329
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 3 Jun 2020 07:40:35 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 3 Jun 2020
- 07:40:34 -0400
-Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 3 Jun 2020 07:40:33 -0400
-Received: from saturn.ad.analog.com ([10.48.65.112])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 053BeOtL017839;
-        Wed, 3 Jun 2020 07:40:31 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <johan@kernel.org>, <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v2 5/6] iio: light: lm3533-als: use iio_device_set_parent() to assign parent
-Date:   Wed, 3 Jun 2020 14:40:22 +0300
-Message-ID: <20200603114023.175102-6-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200603114023.175102-1-alexandru.ardelean@analog.com>
-References: <20200603114023.175102-1-alexandru.ardelean@analog.com>
+        Wed, 3 Jun 2020 07:42:46 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88783C08C5C0
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 04:42:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=7IW00XHgXSVe0eWN0HTd2HDxOWygvcOr4u+CUzB/SvI=; b=E3gzSfAM5W6bRu0zQXJ6k4PaBa
+        lwLEFg+ilOwi3MC8cxcnx8Vr5F6qCP53Rk801BLXI7XsrjvqQaSUzWIXApbNYPuu6m5ZJrAGc6ZdM
+        7OW0g6971HaO52GDsYG6lZvptB5PQmchQd+SSWpB1CZpjdGjhBC41aDQ6X8P31aVhwbUVP+gKNyIM
+        0QKkBZ5v5GodxE5rjQw45GzYb74dQDcQdrOi8jR7OkSdKgA1XkYFwHB2I2/+r51lH0azgD8i9NduA
+        1Vo92390X7iklh4xqcSez4W13fbSlZnoqgordlfGSVl6YbDnftxX4e/HFog9zTO2d6odgpTnMxrBk
+        1ScduGMw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jgRms-0005of-U0; Wed, 03 Jun 2020 11:42:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0E03D306E6D;
+        Wed,  3 Jun 2020 13:42:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id BEF6D209DB0D4; Wed,  3 Jun 2020 13:42:23 +0200 (CEST)
+Message-ID: <20200603114052.243227806@infradead.org>
+User-Agent: quilt/0.66
+Date:   Wed, 03 Jun 2020 13:40:22 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     tglx@linutronix.de
+Cc:     x86@kernel.org, elver@google.com, paulmck@kernel.org,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, will@kernel.org, dvyukov@google.com,
+        glider@google.com, andreyknvl@google.com
+Subject: [PATCH 8/9] x86/entry: __always_inline CR2 for noinstr
+References: <20200603114014.152292216@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-03_11:2020-06-02,2020-06-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 bulkscore=0
- cotscore=-2147483648 clxscore=1015 phishscore=0 mlxscore=0 impostorscore=0
- suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006030093
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This assignment is the more peculiar as it assigns the parent of the
-platform-device's device (i.e. pdev->dev.parent) as the IIO device's
-parent.
+vmlinux.o: warning: objtool: exc_page_fault()+0x9: call to read_cr2() leaves .noinstr.text section
+vmlinux.o: warning: objtool: exc_page_fault()+0x24: call to prefetchw() leaves .noinstr.text section
+vmlinux.o: warning: objtool: exc_page_fault()+0x21: call to kvm_handle_async_pf.isra.0() leaves .noinstr.text section
+vmlinux.o: warning: objtool: exc_nmi()+0x1cc: call to write_cr2() leaves .noinstr.text section
 
-Since the devm_iio_device_alloc() [now] assigns the device argument as the
-default parent (and since this is the more common case), for cases
-where the parent needs to be different, the iio_device_set_parent helper
-should be used.
-
-That makes things a bit more obvious about the new behavior of
-devm_iio_device_alloc() and makes it clearer that iio_device_set_parent()
-should be used.
-
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- drivers/iio/light/lm3533-als.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/kvm_para.h      |    2 +-
+ arch/x86/include/asm/processor.h     |    2 +-
+ arch/x86/include/asm/special_insns.h |    8 ++++----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iio/light/lm3533-als.c b/drivers/iio/light/lm3533-als.c
-index bc196c212881..8a621244dd01 100644
---- a/drivers/iio/light/lm3533-als.c
-+++ b/drivers/iio/light/lm3533-als.c
-@@ -852,7 +852,7 @@ static int lm3533_als_probe(struct platform_device *pdev)
- 	indio_dev->channels = lm3533_als_channels;
- 	indio_dev->num_channels = ARRAY_SIZE(lm3533_als_channels);
- 	indio_dev->name = dev_name(&pdev->dev);
--	indio_dev->dev.parent = pdev->dev.parent;
-+	iio_device_set_parent(indio_dev, pdev->dev.parent);
- 	indio_dev->modes = INDIO_DIRECT_MODE;
+--- a/arch/x86/include/asm/kvm_para.h
++++ b/arch/x86/include/asm/kvm_para.h
+@@ -141,7 +141,7 @@ static inline void kvm_disable_steal_tim
+ 	return;
+ }
  
- 	als = iio_priv(indio_dev);
--- 
-2.25.1
+-static inline bool kvm_handle_async_pf(struct pt_regs *regs, u32 token)
++static __always_inline bool kvm_handle_async_pf(struct pt_regs *regs, u32 token)
+ {
+ 	return false;
+ }
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -823,7 +823,7 @@ static inline void prefetch(const void *
+  * Useful for spinlocks to avoid one state transition in the
+  * cache coherency protocol:
+  */
+-static inline void prefetchw(const void *x)
++static __always_inline void prefetchw(const void *x)
+ {
+ 	alternative_input(BASE_PREFETCH, "prefetchw %P1",
+ 			  X86_FEATURE_3DNOWPREFETCH,
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -28,14 +28,14 @@ static inline unsigned long native_read_
+ 	return val;
+ }
+ 
+-static inline unsigned long native_read_cr2(void)
++static __always_inline unsigned long native_read_cr2(void)
+ {
+ 	unsigned long val;
+ 	asm volatile("mov %%cr2,%0\n\t" : "=r" (val), "=m" (__force_order));
+ 	return val;
+ }
+ 
+-static inline void native_write_cr2(unsigned long val)
++static __always_inline void native_write_cr2(unsigned long val)
+ {
+ 	asm volatile("mov %0,%%cr2": : "r" (val), "m" (__force_order));
+ }
+@@ -160,12 +160,12 @@ static inline void write_cr0(unsigned lo
+ 	native_write_cr0(x);
+ }
+ 
+-static inline unsigned long read_cr2(void)
++static __always_inline unsigned long read_cr2(void)
+ {
+ 	return native_read_cr2();
+ }
+ 
+-static inline void write_cr2(unsigned long x)
++static __always_inline void write_cr2(unsigned long x)
+ {
+ 	native_write_cr2(x);
+ }
+
 
