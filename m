@@ -2,30 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121871ECBB0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3391ECBB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbgFCImC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 04:42:02 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5780 "EHLO huawei.com"
+        id S1726351AbgFCImM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 04:42:12 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5847 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725355AbgFCImC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 04:42:02 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E0C7CDB02565211492AB;
-        Wed,  3 Jun 2020 16:41:58 +0800 (CST)
+        id S1726150AbgFCImL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 04:42:11 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 11FBF637D0B8783E79BB;
+        Wed,  3 Jun 2020 16:42:09 +0800 (CST)
 Received: from SWX921481.china.huawei.com (10.126.202.66) by
  DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 3 Jun 2020 16:41:49 +0800
+ 14.3.487.0; Wed, 3 Jun 2020 16:41:58 +0800
 From:   Barry Song <song.bao.hua@hisilicon.com>
 To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
 CC:     <guro@fb.com>, <linux-mm@kvack.org>,
         <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
         Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH 0/2] mm: fix the names of general cma and hugetlb cma
-Date:   Wed, 3 Jun 2020 20:40:23 +1200
-Message-ID: <20200603084025.62740-1-song.bao.hua@hisilicon.com>
+Subject: [PATCH 1/2] mm: cma: fix the name of CMA areas
+Date:   Wed, 3 Jun 2020 20:40:24 +1200
+Message-ID: <20200603084025.62740-2-song.bao.hua@hisilicon.com>
 X-Mailer: git-send-email 2.21.0.windows.1
+In-Reply-To: <20200603084025.62740-1-song.bao.hua@hisilicon.com>
+References: <20200603084025.62740-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -36,20 +38,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the current code of CMA can only work when users pass a const string as name
-parameter. we need to fix the way to handle names in CMA.
-On the other hand, to avoid name conflicts after enabling CMA_DEBUGFS, each
-hugetlb should get a different CMA name.
+if users give a name saved in stack, the current code will generate magic
+pointer.
+if users don't give a name(NULL), kasprintf() will always return NULL as
+we are at the early stage. that means cma_init_reserved_mem() will return
+-ENOMEM if users set name parameter as NULL.
 
-Barry Song (2):
-  mm: cma: fix the name of CMA areas
-  mm: hugetlb: fix the name of hugetlb CMA
+Cc: Roman Gushchin <guro@fb.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ mm/cma.c | 13 ++++++-------
+ mm/cma.h |  4 +++-
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
- mm/cma.c     | 13 ++++++-------
- mm/cma.h     |  4 +++-
- mm/hugetlb.c |  4 +++-
- 3 files changed, 12 insertions(+), 9 deletions(-)
-
+diff --git a/mm/cma.c b/mm/cma.c
+index 0463ad2ce06b..b24151fa2101 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -202,13 +202,12 @@ int __init cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
+ 	 * subsystems (like slab allocator) are available.
+ 	 */
+ 	cma = &cma_areas[cma_area_count];
+-	if (name) {
+-		cma->name = name;
+-	} else {
+-		cma->name = kasprintf(GFP_KERNEL, "cma%d\n", cma_area_count);
+-		if (!cma->name)
+-			return -ENOMEM;
+-	}
++
++	if (name)
++		snprintf(cma->name, CMA_MAX_NAME, name);
++	else
++		snprintf(cma->name, CMA_MAX_NAME,  "cma%d\n", cma_area_count);
++
+ 	cma->base_pfn = PFN_DOWN(base);
+ 	cma->count = size >> PAGE_SHIFT;
+ 	cma->order_per_bit = order_per_bit;
+diff --git a/mm/cma.h b/mm/cma.h
+index 33c0b517733c..27d3f0e9f68f 100644
+--- a/mm/cma.h
++++ b/mm/cma.h
+@@ -2,6 +2,8 @@
+ #ifndef __MM_CMA_H__
+ #define __MM_CMA_H__
+ 
++#define CMA_MAX_NAME 64
++
+ struct cma {
+ 	unsigned long   base_pfn;
+ 	unsigned long   count;
+@@ -12,7 +14,7 @@ struct cma {
+ 	struct hlist_head mem_head;
+ 	spinlock_t mem_head_lock;
+ #endif
+-	const char *name;
++	char name[CMA_MAX_NAME];
+ };
+ 
+ extern struct cma cma_areas[MAX_CMA_AREAS];
 -- 
 2.23.0
 
