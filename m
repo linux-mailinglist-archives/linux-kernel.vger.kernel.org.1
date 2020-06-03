@@ -2,136 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDABC1ED03C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E731ED05E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725973AbgFCMzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:55:08 -0400
-Received: from mout.gmx.net ([212.227.15.19]:42605 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725833AbgFCMzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:55:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1591188902;
-        bh=jKHhJmHxQkXdYjjqXk9mEhOE3xfXnWx+KSdbHS6fj9k=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Nw3geqRI9a2dEmwRZaSG+M1BrwTX5m93sKawmElLm+jte52w8YiIywgQTpXbprPvJ
-         cGz90uNtZNHIjn+JhYJnJfeS1OWbKFriy+1EcwYx94GRrnX1rEyRwELoK/X+YmmLpr
-         5hIjcKt75xNvId0e6KWo1PEpSC/TaQ2cUTXRTZtg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [93.196.61.25] ([93.196.61.25]) by
- msvc-mesg-gmx023.server.lan (via HTTP); Wed, 3 Jun 2020 14:55:02 +0200
+        id S1725967AbgFCM5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:57:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgFCM5m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 08:57:42 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E24AC08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 05:57:42 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id r125so1225169lff.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 05:57:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dCxVfxCrSSvJ1heapBVBhtwf6LbvPjf1sTBIQx1UBaM=;
+        b=IQUmjbdCDziM8wOcD5JwWxDWgCqYExkvwyTsNu4BaU5djWrB/6LZr5jocRhVSLt02u
+         ss6vOIas9V/vMnYoRwNZWxX17OjcnTaCHJSzWAGCMJ1tQyHXIHTSkI8pdZro2Vs9TmJC
+         ddhvuSG85jXvqykzYV+OyrsGIdePfWkqlTfXGyRNP6AFeBK9SU/UNOvMV7wNe2sxGHsZ
+         FIo8hcWOjb6p6VYSWTrzkAs2akFq73RT+1iU82MqyvzCXaX8iOXTVh4iHFUQX9iKP67M
+         iJVBizLXZ1bDRIRgaNJoBrUvn1yF+74hPocpaLC9OEuyqj/G7HX/WFTGEC5PkKEt90qF
+         IGbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dCxVfxCrSSvJ1heapBVBhtwf6LbvPjf1sTBIQx1UBaM=;
+        b=X6580dfdjZ2G4e3fFiHLyTs9YtfrkMPQAoGPhp7JF1F0nO+Dl8idhFyhE2dnK0EkHT
+         /UL0cnmvJurCZsEKLfK8rF7jGaV76RP5XJ8t2J71563lmA107otU4CA90L2Cd9V1BBd6
+         RTOnAyu7LLQm5TxBgUbTr1vZ2LbJ1BW32iTBkZTWrfasdXidGizuL7HZVUg6IJClTGnc
+         ZVQw7yh6nqyesjrCXTHow/qokbkAXidVRTInS7R7rrTnMjR978Njgg07W3LEl4iKPJ5i
+         zZ4rMhAmNUES3m6SCl6OTrGSaJh4Ibw5XXPlonhYJWE+p3rpnF3SFAOJni1XWNT0n5Qi
+         YGbA==
+X-Gm-Message-State: AOAM5318OnoSxyXnq/v7joI1EE13gYkN0VZ1xqwKS6ajGzXrAfKZN+C+
+        TWmsEYuIKc3InyjxDRQxnSmxfma+numuh35RF4rmUw==
+X-Google-Smtp-Source: ABdhPJzB+kUOYneJzg/WXbkmONQu6HxudYdBz/co21M/29F544KJW1AnlEw+zmhPMZGik7mL4D5BzVGhcIEOFgkmtH8=
+X-Received: by 2002:ac2:5473:: with SMTP id e19mr2412645lfn.21.1591189059461;
+ Wed, 03 Jun 2020 05:57:39 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <trinity-27e19b3a-887a-4609-b127-16a3c9d5b804-1591188902362@msvc-mesg-gmx023>
-From:   crustyaw@gmx.de
-To:     AGeissler <Andreas.Geissler@duagon.com>
-Cc:     Andreas.Geissler@duagon.com, jth@kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] MAINTAINERS: Update maintainer entries for MEN
- HW
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 3 Jun 2020 14:55:02 +0200
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200603071049.7309-1-Andreas.Geissler@duagon.com>
-References: <20200603071049.7309-1-Andreas.Geissler@duagon.com>
-X-Provags-ID: V03:K1:OZfTRwHrlU11uSF3KVx9NPRSy7XybGFpzC3kWTJHMLWe29Ht6TEVfwahibQrZYvYnwTeV
- 4N6ZzC8lVY89trycprO9xsI9jXTIZF9VESpaIqixRoQXX7/WI8MyiSHuqVi1neTAieIJCcO0ay57
- 0mbY2XHmeRWYKGGKMy5HonvdgWsOLNe0LaYEnmfZNspYDXY0gVo77dqOWax84p1+kg4JwPwzczTx
- 1KLtVar+o8m0jkbPE6wNqEIqQc0NiQrb5jvsBGc0STdXoXVDaPACCucQTnMVyCOsoUf5lyi9KKHC
- q2U5Ptf8Tn2RbArqX6z/7U8
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YGZGAXjeuk4=:1AKlQFaMul5WI5hg6WhVrF
- vaqOBANniwkEUkJ5Ffx1i7QKEYjHINiJnBYArHrdo5h51p7T0dAzE29MUITsWx4b1cQWa9Wng
- pz/CJiGMSdf+uZFBHeb2BD4QZCphghXnxH2Zf1A6euMAotN9vEzh1Ibo9coQeetiDbJ35/Z6m
- W+ZClg0L3r18D+R4FJgbWLJqWFsZbTKvN1ovMvacvPAhgXoTrPlBbHMNrLdnAhKqLSiXfPpgH
- ri1sqvfvhgZaou//Vyheo02U+QLmKrNhEcSEoKvNRQWc87eXUSLGDFjACUatuPplJyRrtO83n
- fq3CrKyf38JkW2gWwx9ctHOp9FIYLvv5mLdcz3ePmOJ9c9xMlsAkr/+8h//ySrXq450ND16V1
- Pov97CaW8z9kAKBowllgpQtAEzFhfoSMtDosFOjjmUxmF0oaSc70kKJ3m89P7mO4Gw3B9QUSi
- LbT345ftw/kO87qveclg3fmXCpC9zm8GtvpeqQx0l2iBYJrYXtA3APbTthzKdLtapswrbq1Nl
- Q/BFbxaPyChtQ0VtvV/com1ywZ6cU1XSbZ8kSHXk3YUzLgPKzlOiWchuJ5wrg9rj+eYS78KSz
- rWAxdwYK1Cwe7YD8JONkjKB76jvEuypIM8vH6W8KqIzSJYQWWtSApZ0Y+HTA0QFvygy2F2ldl
- LWGPKyckyu/vs4vzhQ5wLNxsWRsAeREAqufK2CiDRy7b7jRZ2t8I3VjO0VQ5JKajZ+jQTB1QC
- NMxtP0cH0lLztiX4gYFY0a/2qVR3YYmdE0Wb/A==
+References: <CACK8Z6F3jE-aE+N7hArV3iye+9c-COwbi3qPkRPxfrCnccnqrw@mail.gmail.com>
+ <20200601232542.GA473883@bjorn-Precision-5520> <20200602050626.GA2174820@kroah.com>
+ <CAA93t1puWzFx=1h0xkZEkpzPJJbBAF7ONL_wicSGxHjq7KL+WA@mail.gmail.com>
+ <20200603060751.GA465970@kroah.com> <CACK8Z6EXDf2vUuJbKm18R6HovwUZia4y_qUrTW8ZW+8LA2+RgA@mail.gmail.com>
+ <20200603121613.GA1488883@kroah.com>
+In-Reply-To: <20200603121613.GA1488883@kroah.com>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Wed, 3 Jun 2020 05:57:02 -0700
+Message-ID: <CACK8Z6EzYxh8WS8h8y6WdF8PnwUixQvFy6JASuzJ_tRsVfu5Fw@mail.gmail.com>
+Subject: Re: [RFC] Restrict the untrusted devices, to bind to only a set of
+ "whitelisted" drivers
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rajat Jain <rajatxjain@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Prashant Malani <pmalani@google.com>,
+        Benson Leung <bleung@google.com>,
+        Todd Broch <tbroch@google.com>,
+        Alex Levin <levinale@google.com>,
+        Mattias Nissler <mnissler@google.com>,
+        Zubin Mithra <zsm@google.com>,
+        Bernie Keany <bernie.keany@intel.com>,
+        Aaron Durbin <adurbin@google.com>,
+        Diego Rivas <diegorivas@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Furquan Shaikh <furquan@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Christian Kellner <christian@kellner.me>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acker-by: Andreas Werner <crustyaw@gmx=2Ede>
+Hi Greg,
 
-Gesendet mit der GMX Mail App
+Thanks for looking into this thread.
 
-Am 03=2E06=2E20 um 09:10 schrieb AGeissler
+On Wed, Jun 3, 2020 at 5:16 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Jun 03, 2020 at 04:51:18AM -0700, Rajat Jain wrote:
+> > Hello,
+> >
+> > >
+> > > > Thanks for the pointer! I'm still looking at the details yet, but a
+> > > > quick look (usb_dev_authorized()) seems to suggest that this API is
+> > > > "device based". The multiple levels of "authorized" seem to take shape
+> > > > from either how it is wired or from userspace choice. Once authorized,
+> > > > USB device or interface is authorized to be used by *anyone* (can be
+> > > > attached to any drivers). Do I understand it right that it does not
+> > > > differentiate between drivers?
+> > >
+> > > Yes, and that is what you should do, don't fixate on drivers.  Users
+> > > know how to control and manage devices.  Us kernel developers are
+> > > responsible for writing solid drivers and getting them merged into the
+> > > kernel tree and maintaining them over time.  Drivers in the kernel
+> > > should always be trusted, ...
+> >
+> > 1) Yes, I agree that this would be ideal, and this should be our
+> > mission. I should clarify that I may have used the wrong term
+> > "Trusted/Certified drivers". I didn't really mean that the drivers may
+> > be malicious by intent. What I really meant is that a driver may have
+> > an attack surface, which is a vulnerability that may be exploited.
+>
+> Any code has such a thing, proving otherwise is a tough problem :)
+>
+> > Realistically speaking, finding vulnerabilities in drivers, creating
+> > attacks to exploit them, and fixing them is a never ending cat and
+> > mouse game. At Least "identifying the vulnerabilities" part is better
+> > performed by security folks rather than driver writers.
+>
+> Are you sure about that?  It's hard to prove a negative :)
+>
+> > Earlier in the
+> > thread I had mentioned certain studies/projects that identified and
+> > exploited such vulnerabilities in the drivers. I should have used the
+> > term "Vetted Drivers" maybe to convey the intent better - drivers that
+> > have been vetted by a security focussed team (admin). What I'm
+> > advocating here is an administrator's right to control the drivers
+> > that he wants to allow for external ports on his systems.
+>
+> That's an odd thing, but sure, if you want to write up such a policy for
+> your systems, great.  But that policy does not belong in the kernel, it
+> belongs in userspace.
 
-> =EF=BB=BF[resend; because of missing cc]
->=20
-> Remove Andreas Werner as Maintainer of the F21 BMC driver, as he is no
-> longer with the company and add Andreas Geissler as additional
-> Maintainer for all MEN Hardware=2E
->=20
-> Acked-by: Johannes Thumshirn <jth@kernel=2Eorg>
-> Acked-by: Andreas Werner <crustyaw@gmx=2Ede>
-> Signed-off-by: AGeissler <Andreas=2EGeissler@duagon=2Ecom>
-> ---
->  MAINTAINERS | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 68cd1b966b45=2E=2Eb3b45d2e9c8a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11044,19 +11044,21 @@ F:	include/uapi/mtd/
-> =20
->  MEN A21 WATCHDOG DRIVER
->  M:	Johannes Thumshirn <morbidrsa@gmail=2Ecom>
-> +M:	Andreas Geissler <andreas=2Egeissler@duagon=2Ecom>
->  L:	linux-watchdog@vger=2Ekernel=2Eorg
->  S:	Maintained
->  F:	drivers/watchdog/mena21_wdt=2Ec
-> =20
->  MEN CHAMELEON BUS (mcb)
->  M:	Johannes Thumshirn <morbidrsa@gmail=2Ecom>
-> +M:	Andreas Geissler <andreas=2Egeissler@duagon=2Ecom>
->  S:	Maintained
->  F:	Documentation/driver-api/men-chameleon-bus=2Erst
->  F:	drivers/mcb/
->  F:	include/linux/mcb=2Eh
-> =20
->  MEN F21BMC (Board Management Controller)
-> -M:	Andreas Werner <andreas=2Ewerner@men=2Ede>
-> +M:	Andreas Geissler <andreas=2Egeissler@duagon=2Ecom>
->  S:	Supported
->  F:	Documentation/hwmon/menf21bmc=2Erst
->  F:	drivers/hwmon/menf21bmc_hwmon=2Ec
-> @@ -11066,10 +11068,18 @@ F:	drivers/watchdog/menf21bmc_wdt=2Ec
-> =20
->  MEN Z069 WATCHDOG DRIVER
->  M:	Johannes Thumshirn <jth@kernel=2Eorg>
-> +M:	Andreas Geissler <andreas=2Egeissler@duagon=2Ecom>
->  L:	linux-watchdog@vger=2Ekernel=2Eorg
->  S:	Maintained
->  F:	drivers/watchdog/menz69_wdt=2Ec
-> =20
-> +MEN Z135 UART DRIVER
-> +M:	Johannes Thumshirn <jth@kernel=2Eorg>
-> +M:	Andreas Geissler <andreas=2Egeissler@duagon=2Ecom>
-> +L:	linux-serial@vger=2Ekernel=2Eorg
-> +S:	Maintained
-> +F:	drivers/tty/serial/men_z135_uart=2Ec
-> +
->  MESON AO CEC DRIVER FOR AMLOGIC SOCS
->  M:	Neil Armstrong <narmstrong@baylibre=2Ecom>
->  L:	linux-media@vger=2Ekernel=2Eorg
->=20
-> base-commit: d6f9469a03d832dcd17041ed67774ffb5f3e73b3
-> --=20
-> 2=2E16=2E4
->=20
->=20
-> MEN Mikro Elektronik GmbH
-> Neuwieder Stra=C3=9Fe 1-7 90411 N=C3=BCrnberg
-> Gesch=C3=A4ftsf=C3=BChrer: Dr=2E Michael Goldbach - Matthias Kamolz - Yi=
-lmaz Kocak - Handelsregister AG N=C3=BCrnberg HRB 5540
->=20
->=20
+Agree.
 
+>
+> > 2) In addition to the problem of driver negligences / vulnerabilities
+> > to be exploited, we ran into another problem with the "whitelist
+> > devices only" approach. We did start with the "device based" approach
+> > only initially - but quickly realized that anything we use to
+> > whitelist an external device can only be based on the info provided by
+> > *that device* itself. So until we have devices that exchange
+> > certificates with kernel [1], it is easy for a malicious device to
+> > spoof a whitelisted device (by presenting the same VID:DID or any
+> > other data that is used by us to whitelist it).
+> >
+> > [1] https://www.intel.com/content/www/us/en/io/pci-express/pcie-device-security-enhancements-spec.html
+> >
+> > I hope that helps somewhat clarify how / why we reached here?
+>
+> Kind of, I still think all you need to do is worry about controlling the
+> devices and if a driver should bind to it or not.
+
+Agree. That is precisely what this RFC had in mind: (1) controlling
+whether a device is authorized and if so (2) What drivers can bind to
+it.
+
+>  Again, much like USB
+> has been doing for a very long time now.  The idea of "spoofing" ids
+> also is not new, and has been around for a very long time as well, and
+> again, the controls that the USB core gives you allows you to make any
+> type of policy decision you want to, in userspace.
+>
+> So please, in summary:
+>         - don't think this is some new type of thing, it's an old issue
+>           transferred to yet-another-hardware-bus.  Not to say this is
+>           not important, just please look at the work that others have
+>           done in the past to help mitigate and solve this (reading the
+>           Wireless USB spec should help you out here too, as they
+>           detailed all of this.)
+>         - do copy what USB did, by moving that logic into the driver
+>           core so that all busses who want to take advantage of this
+>           type of functionality, easily can do so.
+
+Understood, will keep that in mind. I may first present a "PCI
+subsystem only" draft just to get a feel for it, since that is more
+familiar to me and also already has some bits and pieces we need for
+this.
+
+Thanks & Best Regards,
+
+Rajat
+
+>
+> thanks,
+>
+> greg k-h
