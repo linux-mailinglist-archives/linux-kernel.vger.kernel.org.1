@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C151ECA4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1131E1ECA50
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726110AbgFCHQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 03:16:01 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:62996 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgFCHQB (ORCPT
+        id S1726191AbgFCHQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 03:16:38 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:12891 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725810AbgFCHQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 03:16:01 -0400
+        Wed, 3 Jun 2020 03:16:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1591168560; x=1622704560;
+  t=1591168597; x=1622704597;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=ep+MdSv8eQP3ckds5U0F+W6+o9V8F3cfwHm67gssntY=;
-  b=Vcepx1yBDHSEF9Nra5pbbvgxUKETwg24H3ZmGkkXQh2sN8gcTZ6FiR01
-   yhOVQcXp9poIuUIEgjOa1i4pvxNMuLvoJz036nQP9TcOvio9txvmvRLj3
-   L2w/pufkDfVId00j/DPtDQkoRw0v/fj/GySVfksdlowtWtJoq7+ULQPQD
-   c=;
-IronPort-SDR: KjSI6WhbtiAd87PusXIS49PaAJPWCoIBu+1+a9ZWxF2V5uyIbiF9K6dnsnVCVzKw13MB4P3Q8M
- t/xJORm2aYzg==
+  bh=b5EEY//uUmxww4MeXLoOfsSYKFHirbB/BqQ/qTWvUzg=;
+  b=VgH9tHFSm2gPaMFL2hoib1WaU5m+VC6gNzveLNnbjvXrxWLz1854i9La
+   ylOyg6UYQo+qpNjpp6wJ1c6bCb3RK3XAdUDYQ5gpG+DKU5M07qd4c6edg
+   E/JuXisglvnycs5vjnmg78nGjbc7x0OLdgHCWV1xQSztELl136LEG0cnt
+   U=;
+IronPort-SDR: /k0QNW6GRPzb8OtPKZHEuh76x8xYBrNQC11dfck1XE1vsqINY3dtEni+N4FDMfQIwaCrbaB9MX
+ W+dmU762QwWQ==
 X-IronPort-AV: E=Sophos;i="5.73,467,1583193600"; 
-   d="scan'208";a="48089333"
-Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.47.23.34])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 03 Jun 2020 07:15:56 +0000
+   d="scan'208";a="41160802"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-98acfc19.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 03 Jun 2020 07:16:33 +0000
 Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id 8BB75A21DB;
-        Wed,  3 Jun 2020 07:15:44 +0000 (UTC)
+        by email-inbound-relay-1d-98acfc19.us-east-1.amazon.com (Postfix) with ESMTPS id 7019EA184B;
+        Wed,  3 Jun 2020 07:16:20 +0000 (UTC)
 Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
  EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 3 Jun 2020 07:15:43 +0000
+ id 15.0.1497.2; Wed, 3 Jun 2020 07:16:19 +0000
 Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.26) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 3 Jun 2020 07:15:27 +0000
+ id 15.0.1497.2; Wed, 3 Jun 2020 07:16:03 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -56,9 +56,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <ying.huang@intel.com>, <linux-damon@amazon.com>,
         <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [RFC v10 5/8] mm/damon/schemes: Implement statistics feature
-Date:   Wed, 3 Jun 2020 09:11:35 +0200
-Message-ID: <20200603071138.8152-6-sjpark@amazon.com>
+Subject: [RFC v10 6/8] mm/damon/selftests: Add 'schemes' debugfs tests
+Date:   Wed, 3 Jun 2020 09:11:36 +0200
+Message-ID: <20200603071138.8152-7-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200603071138.8152-1-sjpark@amazon.com>
 References: <20200603071138.8152-1-sjpark@amazon.com>
@@ -74,113 +74,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-To tune the DAMON-based operation schemes, knowing how many and how
-large regions are affected by each of the schemes will be helful.  Those
-stats could be used for not only the tuning, but also monitoring of the
-working set size and the number of regions, if the scheme does not
-change the program behavior too much.
-
-For the reason, this commit implements the statistics for the schemes.
-The total number and size of the regions that each scheme is applied are
-exported to users via '->stat_count' and '->stat_sz' of 'struct damos'.
-Admins can also check the number by reading 'schemes' debugfs file.  The
-last two integers now represents the stats.  To allow collecting the
-stats without changing the program behavior, this commit also adds new
-scheme action, 'DAMOS_STAT'.  Note that 'DAMOS_STAT' is not only making
-no memory operation actions, but also does not reset the age of regions.
+This commit adds simple selftets for 'schemes' debugfs file of DAMON.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- include/linux/damon.h |  6 ++++++
- mm/damon.c            | 13 ++++++++++---
- 2 files changed, 16 insertions(+), 3 deletions(-)
+ .../testing/selftests/damon/debugfs_attrs.sh  | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 842a01e80c6e..e77256cf30dd 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -64,6 +64,7 @@ struct damon_task {
-  * @DAMOS_PAGEOUT:	Call ``madvise()`` for the region with MADV_PAGEOUT.
-  * @DAMOS_HUGEPAGE:	Call ``madvise()`` for the region with MADV_HUGEPAGE.
-  * @DAMOS_NOHUGEPAGE:	Call ``madvise()`` for the region with MADV_NOHUGEPAGE.
-+ * @DAMOS_STAT:		Do nothing but count the stat.
-  * @DAMOS_ACTION_LEN:	Number of supported actions.
-  */
- enum damos_action {
-@@ -72,6 +73,7 @@ enum damos_action {
- 	DAMOS_PAGEOUT,
- 	DAMOS_HUGEPAGE,
- 	DAMOS_NOHUGEPAGE,
-+	DAMOS_STAT,		/* Do nothing but only record the stat */
- 	DAMOS_ACTION_LEN,
- };
+diff --git a/tools/testing/selftests/damon/debugfs_attrs.sh b/tools/testing/selftests/damon/debugfs_attrs.sh
+index d5188b0f71b1..4aeb2037a67e 100755
+--- a/tools/testing/selftests/damon/debugfs_attrs.sh
++++ b/tools/testing/selftests/damon/debugfs_attrs.sh
+@@ -97,6 +97,35 @@ fi
  
-@@ -84,6 +86,8 @@ enum damos_action {
-  * @min_age_region:	Minimum age of target regions.
-  * @max_age_region:	Maximum age of target regions.
-  * @action:		&damo_action to be applied to the target regions.
-+ * @stat_count:		Total number of regions that this scheme is applied.
-+ * @stat_sz:		Total size of regions that this scheme is applied.
-  * @list:		List head for siblings.
-  *
-  * For each aggregation interval, DAMON applies @action to monitoring target
-@@ -98,6 +102,8 @@ struct damos {
- 	unsigned int min_age_region;
- 	unsigned int max_age_region;
- 	enum damos_action action;
-+	unsigned long stat_count;
-+	unsigned long stat_sz;
- 	struct list_head list;
- };
+ echo $ORIG_CONTENT > $file
  
-diff --git a/mm/damon.c b/mm/damon.c
-index 909599e6e5bc..ea6a8b6886b8 100644
---- a/mm/damon.c
-+++ b/mm/damon.c
-@@ -191,6 +191,8 @@ static struct damos *damon_new_scheme(
- 	scheme->min_age_region = min_age_region;
- 	scheme->max_age_region = max_age_region;
- 	scheme->action = action;
-+	scheme->stat_count = 0;
-+	scheme->stat_sz = 0;
- 	INIT_LIST_HEAD(&scheme->list);
- 
- 	return scheme;
-@@ -771,6 +773,8 @@ static int damos_do_action(struct damon_task *task, struct damon_region *r,
- 	case DAMOS_NOHUGEPAGE:
- 		madv_action = MADV_NOHUGEPAGE;
- 		break;
-+	case DAMOS_STAT:
-+		return 0;
- 	default:
- 		pr_warn("Wrong action %d\n", action);
- 		return -EINVAL;
-@@ -798,8 +802,11 @@ static void damon_do_apply_schemes(struct damon_ctx *c, struct damon_task *t,
- 				(s->max_age_region &&
- 				 s->max_age_region < r->age))
- 			continue;
-+		s->stat_count++;
-+		s->stat_sz += sz;
- 		damos_do_action(t, r, s->action);
--		r->age = 0;
-+		if (s->action != DAMOS_STAT)
-+			r->age = 0;
- 	}
- }
- 
-@@ -1384,11 +1391,11 @@ static ssize_t sprint_schemes(struct damon_ctx *c, char *buf, ssize_t len)
- 
- 	damon_for_each_scheme(s, c) {
- 		rc = snprintf(&buf[written], len - written,
--				"%u %u %u %u %u %u %d\n",
-+				"%u %u %u %u %u %u %d %lu %lu\n",
- 				s->min_sz_region, s->max_sz_region,
- 				s->min_nr_accesses, s->max_nr_accesses,
- 				s->min_age_region, s->max_age_region,
--				s->action);
-+				s->action, s->stat_count, s->stat_sz);
- 		if (!rc)
- 			return -ENOMEM;
++# Test schemes file
++file="$DBGFS/schemes"
++
++ORIG_CONTENT=$(cat $file)
++echo "1 2 3 4 5 6 3" > $file
++if [ $? -ne 0 ]
++then
++	echo "$file write fail"
++	echo $ORIG_CONTENT > $file
++	exit 1
++fi
++
++echo "1 2
++3 4 5 6 3" > $file
++if [ $? -eq 0 ]
++then
++	echo "$file multi line write success (expected fail)"
++	echo $ORIG_CONTENT > $file
++	exit 1
++fi
++
++echo > $file
++if [ $? -ne 0 ]
++then
++	echo "$file empty string writing fail"
++	echo $ORIG_CONTENT > $file
++	exit 1
++fi
++
+ # Test pids file
+ file="$DBGFS/pids"
  
 -- 
 2.17.1
