@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025191ED1E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4802D1ED1E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbgFCOPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 10:15:00 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:12232 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726205AbgFCOO7 (ORCPT
+        id S1726106AbgFCOPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 10:15:54 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:1140 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725936AbgFCOPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 10:14:59 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 053EAP7H023260;
-        Wed, 3 Jun 2020 07:13:03 -0700
+        Wed, 3 Jun 2020 10:15:53 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 053E9Qwq028336;
+        Wed, 3 Jun 2020 07:13:49 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=Gep5SvJR2rB4Fg3lq/X25+siBp6GshutbOP5KX7oYtk=;
- b=GarUIy3kzz0lAqTeEEkni3DOu35+IrvdZ/AEHOl3OVvRGitFekV5oMoLDyTFZ9ubCx6s
- rxxgLMww5MK6eIwOPsS4814QTtE1pHhWAj+20DqKTY7M5yrG+I0MHmFUXe9V+kRBiK6t
- Y8S3eleU16VCU8WapkhIbuOZWVNz/6iwsT4= 
+ mime-version; s=facebook; bh=FiBUCa1y87rEpo2nb1sqgvjKgbp3KmwUDIsZJE+OOyg=;
+ b=bO3sAFciyrHLb7KloO5MO+aL6WMTWGaTW641xjZIL4hrT8P11U2U3fy7OWJ6nFTqtL9k
+ nMLNnRIOTaSEFnLtmhcQo5UonH7amYU9xT+sPzMe6menPseHLTcT60gHjCzgQg2ZZvcD
+ HqhjHoQbq8DOEfAsvEUaof0Vpzyv5r/LIVU= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31bn7q8fnc-3
+        by m0089730.ppops.net with ESMTP id 31bk00hqee-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 03 Jun 2020 07:13:03 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+        Wed, 03 Jun 2020 07:13:49 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 3 Jun 2020 07:13:01 -0700
+ 15.1.1979.3; Wed, 3 Jun 2020 07:13:46 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R0ATBvNB/83Wfr+TBYEw8qD9TnP1PBEQWmyw/YZ70wRceHlfDRWMXOPNB+zz9dHFjxIUk98Y9SzeOmPzzwDs3DJ/SM7fnx5nVjFZrDwQ831W7qEWVgM7bpp4HKwz/GQjj/NrdnGXPj0XjghAl4hQSA0eRNmzVVz1N3OhrNJ0DQdSSi301WpXWHv9TxBPPAd9yqtcxxyT+eaR09HkfhgjU4QXCFO7Fe3y/ZX7S0wD9JGwkkrxA9Jul6F8TDux4OBAl2XIVLP6iYnm8dTluRCvCO8VGh/jmvQNaAIHBjd9gtrxlWkTqN151RCsrTreWQCCK60s2cOv1stu4ChVQ4PvSg==
+ b=jrxLDHPrLsvRuyjXdWpY+IhNvoNyGkEZ2GVoRi7keB2GIB1KoW4f9oSmcoyuT/yvX8KsUVu368wAJd4Gi3ed8RKF8LsUkmO5t8K7ZvjP1pQ1hUzNk66HMCaUY3ZgNwubUz17mh75CJzn4ufgZP/4XvITke6f6enF2lC1p4yWGEROgWwuNfcKCGvONHot21bu+uRpYEDEKIbUSUjX9z+gKzFy1fsVye8gc/JuuLolzgN8hC6PjlFTf7F7b2LF10APb/VV/wWu7+UXgxYsDHg35h+8KJGZzx7Vo0VF88gD4x6QsoMeOJ0SXco1fiWSGuGk55+OHSd+j3305+9SUXo1lQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gep5SvJR2rB4Fg3lq/X25+siBp6GshutbOP5KX7oYtk=;
- b=NRSAIij/v+EBFMfecaTRdtgMAPTJos+2DMjaWI+KT7WsG1wozi9dWvJwQFFsl2TQPjn+qmPh+Z4YaHrwnAN2IXTlHINPVbDQD0rrlcpj2axNrzXWmgBjKYFu0iH0ADClx9SZXmhN2BUSESUukY6M8XC6V8U4sdzrP480EcLQfEMMYoLMezsYJMCRmdreL4kfxlYWIe4B3oLTrlywF0W267PDCe7Fg5dwrJiOoLiuuc0yH5iCI84WKou3nMK44EVGZqXQkcX5hea+9T5zF6OHv4Hj+/NeRrbd0vo2kZpgWYt9PUpjHaa+G9gAqu6C5TEdBsQP1qKSNQPr3C4NMc6JuQ==
+ bh=FiBUCa1y87rEpo2nb1sqgvjKgbp3KmwUDIsZJE+OOyg=;
+ b=NXtukPCsZqa3Acctkj8Q5KWV63DezEtPzbPmnB6LpcFaG/sv4tcx0sC9lzH+m47dU5pFQr89pVhWwhEShNmiAF9qHEZZdAsJAobU5bkckkEFNLRcay4QOfinLSCUd3RCJIswlKQIC3ByIBVFBPMOrvk219GbFQe2tfPopThqkZBem7mJvjAbhGs4BOeWxpHkFoZZ3z6qJF4j7Bu2Lm+OOBBsTPPzGjeiElX2cZFYjpTRoPrUkJ+hHi/aPsbbqlemwlLdXYO4JwKSjcuIwxCzlbodOaumyDaX9TxY9KpxgjjAcVHIdeVXhsTH5lhW9mUuE9SDM5ahWbgsJl2QNpTzbA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gep5SvJR2rB4Fg3lq/X25+siBp6GshutbOP5KX7oYtk=;
- b=a/R/QDal0I5lzegT97qbE8TnVxytNjQC1gNfAB+wTnPjl72KhQieWhYB1LTHSxSKHtrBScL8aZEpsrALYyNRxA/snKOMFaLdDPGihYiZdR1aB+YcawY+bn4dlfcShFP67+uHqC2Rg2hWptE1nCeA0CLtBbLWwegYllicoAwJEmw=
+ bh=FiBUCa1y87rEpo2nb1sqgvjKgbp3KmwUDIsZJE+OOyg=;
+ b=KlP9QtKtmQRuRXxZmOfLzYelbBG5TE+il+VV9Jm1dBTQ/2wQP0qdxU+ChV/vhbSWx/6ZCgPyhknVnw9tcKd2v1S9OyK1YHtARj9NfpaKa/C/masaITMS9Ga4L7x2uY4ycurkiz9HUQzfeWTQksWUox9GBZNBPHHZh1lWTVhFabk=
 Authentication-Results: hisilicon.com; dkim=none (message not signed)
  header.d=none;hisilicon.com; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3383.namprd15.prod.outlook.com (2603:10b6:a03:10d::15) with
+ by BYAPR15MB2598.namprd15.prod.outlook.com (2603:10b6:a03:14d::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21; Wed, 3 Jun
- 2020 14:13:00 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Wed, 3 Jun
+ 2020 14:13:45 +0000
 Received: from BYAPR15MB4136.namprd15.prod.outlook.com
  ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
  ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3066.018; Wed, 3 Jun 2020
- 14:12:59 +0000
-Date:   Wed, 3 Jun 2020 07:12:56 -0700
+ 14:13:45 +0000
+Date:   Wed, 3 Jun 2020 07:13:42 -0700
 From:   Roman Gushchin <guro@fb.com>
 To:     Barry Song <song.bao.hua@hisilicon.com>
 CC:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>,
         <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: Re: [PATCH 1/2] mm: cma: fix the name of CMA areas
-Message-ID: <20200603141256.GA559132@carbon.DHCP.thefacebook.com>
+Subject: Re: [PATCH 2/2] mm: hugetlb: fix the name of hugetlb CMA
+Message-ID: <20200603141342.GB559132@carbon.DHCP.thefacebook.com>
 References: <20200603084025.62740-1-song.bao.hua@hisilicon.com>
- <20200603084025.62740-2-song.bao.hua@hisilicon.com>
+ <20200603084025.62740-3-song.bao.hua@hisilicon.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200603084025.62740-2-song.bao.hua@hisilicon.com>
-X-ClientProxiedBy: BYAPR07CA0086.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::27) To BYAPR15MB4136.namprd15.prod.outlook.com
+In-Reply-To: <20200603084025.62740-3-song.bao.hua@hisilicon.com>
+X-ClientProxiedBy: BY5PR13CA0028.namprd13.prod.outlook.com
+ (2603:10b6:a03:180::41) To BYAPR15MB4136.namprd15.prod.outlook.com
  (2603:10b6:a03:96::24)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:2a2b) by BYAPR07CA0086.namprd07.prod.outlook.com (2603:10b6:a03:12b::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18 via Frontend Transport; Wed, 3 Jun 2020 14:12:58 +0000
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:2a2b) by BY5PR13CA0028.namprd13.prod.outlook.com (2603:10b6:a03:180::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.7 via Frontend Transport; Wed, 3 Jun 2020 14:13:44 +0000
 X-Originating-IP: [2620:10d:c090:400::5:2a2b]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ef0fb2d0-6533-491a-b97b-08d807c837f3
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3383:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3383733ABC9341C9001995ACBE880@BYAPR15MB3383.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 29072879-0060-41eb-865e-08d807c8538a
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2598:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB259881CD258253F2E6FCCEEFBE880@BYAPR15MB2598.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
 X-Forefront-PRVS: 04238CD941
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Zw3z4viIu6Twsv15vJVHRaPnetn/qubObKYJIqHeRJds7lpOrZq22kZ5ZTahjp9dFN//9/g6Yvby48xuojSfcFRlcPu4bHubvpX8Qton9h9ty2bECJ+VAaR8zlrJwp6mguGDiIdoon9S7tF0hr0TGhw+z03seTO4hzJoLTBRtHrNZRkfwbyQVEe7dz7tpg6GvYI6Bz3Zxr6qkj9y+M25GkWgRF1w39C4ZPLeAdT4QXXEExRxBS47yy/t77/jHTDH/Un6YHGZvhldtphowH1vDQ0VWaT5NJexWQOjZ0fxYL/CuCoCUeaDtDBfX1T0XIoV5hPkIwgnRZt8dBeLAqgwkQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(366004)(136003)(346002)(39860400002)(396003)(478600001)(6916009)(316002)(33656002)(8676002)(55016002)(16526019)(9686003)(6506007)(2906002)(8936002)(186003)(1076003)(52116002)(4326008)(7696005)(5660300002)(66556008)(86362001)(66476007)(66946007)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: G/cgP8SjwneDbUlvielt5+Also6SYOWTrr/o0twA5+KpHQzotvbKTI+2BwXzhq8iHrFPXprO73ondQtWkjeWAY/cR0sTga1EGWdKwd0OKIBXu973mLBbm4/XHOaCnY5IV7TawK4NNBHEArPolDb48sfwN/uwGATnnrGPXpQfR7F2JBlocnboiuPrbWc6nOjoic3LMjvfR3S9eBSR/Il/FSycJavbA+INcCQVPdsMZzTPGRM5HIZqVStZeBQULrSp+nxOprXp0a1F9R+7R1F6vut5kYS3U57ZRM/aE/bs9POuxubjRzBuY5PDtVAfIigwmvviCxxgkSNgJVsv3gnaNpmmy+TDFcrMbMBaMRwQaTzWDytKbPhb5q6Ar3WSsYvOAhOqVWBjh3D6rsRGayC1gNRBQmIRTwGCP9qyDmpgcJ8c8Ec6inYkFyRVobRRqMucsaEkKSnRjfxmkjQNZ+4dXMcKtdHAhhu34imdnT72pEVVuyRxGBUR5Y8qJ+MazmNyucHtjMBspBotDodE8VhXkA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef0fb2d0-6533-491a-b97b-08d807c837f3
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2020 14:12:59.6562
+X-Microsoft-Antispam-Message-Info: f+7zxKRgEiamcGzHBVWIj5//ZfFeX03W6uowc5pOza7x8B0bNaGM34xq62o2peJ2SQkxUNIhnDLh3chYAwbQZNxiWZ7SnP6YDeMn0VHecMMTcgB5h2Dek6hNXx5IvXa5bRtbkkjsumP8XmvyM4D7nj+UBJQ2OagDEDeGVo5XdU5s6uuaUjjD69CyDysUMCIzaNMMIsaHNkaMZaszcmiDa2S4GFnEKK4ljzp40lzNfec97CAU5ebc7tOBrDSRy94CK504CsJoIEE37LANARfua2p1QydnPx/dmXnHGbMcQldn4AzFcYY0R9AcK+CaTzUHT/yGzf/fnVGpsnvBhLOSYg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(366004)(136003)(376002)(346002)(396003)(6916009)(16526019)(186003)(6506007)(66556008)(52116002)(7696005)(66946007)(83380400001)(8676002)(478600001)(8936002)(66476007)(2906002)(55016002)(33656002)(4326008)(86362001)(316002)(5660300002)(9686003)(1076003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: b4iOTasch0vvvyVlz5iOY6+0eRJaG376uijMPaEz0bZPj7e3+5VXRAjaG6EHkeTSQQhUTfBkIoM/YLnjjQ0y7027MapsdW3VDbn1+8fJDKVCyYv2h5A0Lqzg38UCeyXi08lVPR9YnVS/MZrg/zpLOJhP1DgsyoziNcDGiABLscFJ2ZrwaQgS/+enFojyfuYiJAA0T0QJPDC0L7+KkDgnbAlcqqNf0UDsMub5QrUQ5jYQB8VbEfaXVkN2CdiBZzBmf0FLEUvaO3KobBCJB3xQYLWqNGKKvl4b0UOP7jF5QhPVmlDWm2BYiDgvAeJO7M7QY1Z8g8r/Wx6Mqo47GFBGDeDCUqADmRnYZPcm5xbrGFiMusKIt9DA5DOniukdFiCTfcY2HzhMICnG0/8nCI8WF5WmGKejHN4bGVk3LGMz6dmh2/iGWK4Qx5JYoM8FIdPxd3CLNM3GVRXQspGaAy0anV7/Ykg5flIU/kzw0PFxBWC0HyOy5xIPO8OSPDTaWO11lsx2CpDZmUcPuPURcgANsg==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29072879-0060-41eb-865e-08d807c8538a
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2020 14:13:45.0965
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: p9L1wqPHpSGM7XPD/SHh2Zk6Tpitx1+73Ksb8iM5u3ysywDjx2lo5ILBQPSI8Rix
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3383
+X-MS-Exchange-CrossTenant-UserPrincipalName: kTFmg6mthdG59JAVNMV73NjIc1MLuhBzGNtWrZ/wER/Ll6k6Ex3/NNkcUMgBKy26
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2598
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-06-03_12:2020-06-02,2020-06-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- malwarescore=0 bulkscore=0 adultscore=0 impostorscore=0 suspectscore=1
- phishscore=0 priorityscore=1501 clxscore=1015 mlxlogscore=999 mlxscore=0
- cotscore=-2147483648 spamscore=0 classifier=spam adjust=0 reason=mlx
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
+ clxscore=1015 lowpriorityscore=0 priorityscore=1501 cotscore=-2147483648
+ malwarescore=0 spamscore=0 suspectscore=1 bulkscore=0 mlxscore=0
+ impostorscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.12.0-2004280000 definitions=main-2006030113
 X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
@@ -109,71 +109,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 08:40:24PM +1200, Barry Song wrote:
-> if users give a name saved in stack, the current code will generate magic
-> pointer.
-> if users don't give a name(NULL), kasprintf() will always return NULL as
-> we are at the early stage. that means cma_init_reserved_mem() will return
-> -ENOMEM if users set name parameter as NULL.
+On Wed, Jun 03, 2020 at 08:40:25PM +1200, Barry Song wrote:
+> once we enable CMA_DEBUGFS, we will get the below errors:
+> directory 'cma-hugetlb' with parent 'cma' already present
+> 
+> only the first numa node will get a directory in debugfs.
+> we should have different names for different CMA areas.
 > 
 > Cc: Roman Gushchin <guro@fb.com>
 > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 
 Acked-by: Roman Gushchin <guro@fb.com>
 
-Thanks!
-
 > ---
->  mm/cma.c | 13 ++++++-------
->  mm/cma.h |  4 +++-
->  2 files changed, 9 insertions(+), 8 deletions(-)
+>  mm/hugetlb.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 0463ad2ce06b..b24151fa2101 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -202,13 +202,12 @@ int __init cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
->  	 * subsystems (like slab allocator) are available.
->  	 */
->  	cma = &cma_areas[cma_area_count];
-> -	if (name) {
-> -		cma->name = name;
-> -	} else {
-> -		cma->name = kasprintf(GFP_KERNEL, "cma%d\n", cma_area_count);
-> -		if (!cma->name)
-> -			return -ENOMEM;
-> -	}
-> +
-> +	if (name)
-> +		snprintf(cma->name, CMA_MAX_NAME, name);
-> +	else
-> +		snprintf(cma->name, CMA_MAX_NAME,  "cma%d\n", cma_area_count);
-> +
->  	cma->base_pfn = PFN_DOWN(base);
->  	cma->count = size >> PAGE_SHIFT;
->  	cma->order_per_bit = order_per_bit;
-> diff --git a/mm/cma.h b/mm/cma.h
-> index 33c0b517733c..27d3f0e9f68f 100644
-> --- a/mm/cma.h
-> +++ b/mm/cma.h
-> @@ -2,6 +2,8 @@
->  #ifndef __MM_CMA_H__
->  #define __MM_CMA_H__
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index bcabbe02192b..4ebc4edc3b40 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -5586,12 +5586,14 @@ void __init hugetlb_cma_reserve(int order)
+>  	reserved = 0;
+>  	for_each_node_state(nid, N_ONLINE) {
+>  		int res;
+> +		char name[20];
 >  
-> +#define CMA_MAX_NAME 64
-> +
->  struct cma {
->  	unsigned long   base_pfn;
->  	unsigned long   count;
-> @@ -12,7 +14,7 @@ struct cma {
->  	struct hlist_head mem_head;
->  	spinlock_t mem_head_lock;
->  #endif
-> -	const char *name;
-> +	char name[CMA_MAX_NAME];
->  };
+>  		size = min(per_node, hugetlb_cma_size - reserved);
+>  		size = round_up(size, PAGE_SIZE << order);
 >  
->  extern struct cma cma_areas[MAX_CMA_AREAS];
+> +		snprintf(name, 20, "hugetlb%d", nid);
+>  		res = cma_declare_contiguous_nid(0, size, 0, PAGE_SIZE << order,
+> -						 0, false, "hugetlb",
+> +						 0, false, name,
+>  						 &hugetlb_cma[nid], nid);
+>  		if (res) {
+>  			pr_warn("hugetlb_cma: reservation failed: err %d, node %d",
 > -- 
 > 2.23.0
 > 
