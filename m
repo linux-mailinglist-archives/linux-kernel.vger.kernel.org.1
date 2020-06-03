@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7221ED1DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BA01ED1DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbgFCOO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 10:14:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:34004 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgFCOOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 10:14:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3134E55D;
-        Wed,  3 Jun 2020 07:14:55 -0700 (PDT)
-Received: from e123648.arm.com (unknown [10.37.12.87])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 93E753F52E;
-        Wed,  3 Jun 2020 07:14:52 -0700 (PDT)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
-        linux-pm@vger.kernel.org
-Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
-        Morten.Rasmussen@arm.com, Dietmar.Eggemann@arm.com,
-        Chris.Redpath@arm.com, javi.merinocacho@arm.com,
-        lukasz.luba@arm.com
-Subject: [PATCH] MAINTAINERS: Add maintenance information for IPA
-Date:   Wed,  3 Jun 2020 15:14:20 +0100
-Message-Id: <20200603141420.15274-1-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726021AbgFCOOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 10:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgFCOOi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 10:14:38 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1AFC08C5C0
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 07:14:38 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id y5so2367782iob.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 07:14:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=svZoKn4xGPR4SS45fq6+SKw2sCAIAoHnLGq22FBq738=;
+        b=LxACmpbv08TgK6F7H4VnmPbRZrBcz4vbFuw7uwxc9OG8DYfaBqoi2IUmPOgqWcFiLe
+         aiJLTOexhnYuIlhoMx+PKNalgGLyzk/PCGKZ/zTTJZM68Cuwk6CcQ+eioANYUFfo+h8n
+         by/JI6i7qAscM+mBHQgyfKFgFvZM7eTzpczVMC25DRkF68zbvMXItA4dxfjLhu7W5exv
+         ji0LIY+T8Cy5yDGCyCw46LQ4w25+LS1HKcAJXWU0QIcJX3VS6UQAnY3VK3s4jtMlDxZN
+         lS50T8FTMdTGqV+0IPrrW+TafuTxpxLfjppiy5UsU2JqGYtOeuA29uzXau+WszxVPJZX
+         TFvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=svZoKn4xGPR4SS45fq6+SKw2sCAIAoHnLGq22FBq738=;
+        b=OKwdoB/TA6Og9r8XqJv0dfIny7HxSEh5P8pd3iodC1a+N8ePmA0YKgoDL15YPLR7ny
+         eyHFgzO/lsYnd5dyjb4roQZ+22Nc+SHL87Rd7zNT73XDBi/TQNpljFz8c+hIkBdexIKj
+         gzgICYYYXlxyxm1HHdMWyXo6/gWPvOiywwIsaeGfBUBG1tkFyoTEoFHwZ2qVYAsUJvBJ
+         zWrMyyKCkN0G6oYFLa+Db+HCzEyEYHQ5ORDN1DkIC9HuXCiBEEgB/D5ToLty0Cf15677
+         /svcYh1c8yIRQW3Dl9C+0BS/zbyZZDqUuJ3Y+8Il5zPVa4f1WsmSuEfEIovcyZq0SVWe
+         Bjcg==
+X-Gm-Message-State: AOAM533d6SEnKt/mFhJ/rJUsXIGud7O7Cr3/yHDgQM6JE47+GbWDPCDL
+        Js2yXMZrrQUwuupzeFZnt5MoNVqwEdNKi+i2FAA=
+X-Google-Smtp-Source: ABdhPJxa2oyjWRoZohXrmz15wupkaQOWdagTFY89oc2GOMryFOKHoPx4iiWhVt4MgZ6nOjJ7yVjNWeTONSrd5QN7dJI=
+X-Received: by 2002:a02:5184:: with SMTP id s126mr107435jaa.30.1591193677903;
+ Wed, 03 Jun 2020 07:14:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <4627b565-0a5c-080e-726a-01b773c985e8@landley.net>
+In-Reply-To: <4627b565-0a5c-080e-726a-01b773c985e8@landley.net>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Wed, 3 Jun 2020 16:14:26 +0200
+Message-ID: <CAFLxGvwdkj4J_O_82nnhUcc_AnLwmT1eCp8qkjJBn8Ce6GHVeA@mail.gmail.com>
+Subject: Re: headers_install builds break on a lot of targets?
+To:     Rob Landley <rob@landley.net>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rich Felker <dalias@libc.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entry for ARM Intelligent Power Allocation - thermal governor.
+On Wed, Jun 3, 2020 at 3:51 PM Rob Landley <rob@landley.net> wrote:
+> um
+> gcc: error: missing argument to =E2=80=98-Wframe-larger-than=3D=E2=80=99
+> Makefile:1230: *** Headers not exportable for the um architecture.  Stop.
+> make: *** [__build_one_by_one] Error 2
 
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
-Hi Daniel,
+Exporting headers of UML makes not much sense.
 
-Could you pick it up, please?
-
-Regards,
-Lukasz
-
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e64e5db31497..8ce4677477a4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16699,6 +16699,14 @@ F:	drivers/thermal/cpufreq_cooling.c
- F:	drivers/thermal/cpuidle_cooling.c
- F:	include/linux/cpu_cooling.h
- 
-+THERMAL/POWER_ALLOCATOR
-+M:	Lukasz Luba <lukasz.luba@arm.com>
-+L:	linux-pm@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/driver-api/thermal/power_allocator.rst
-+F:	drivers/thermal/power_allocator.c
-+F:	include/trace/events/thermal_power_allocator.h
-+
- THINKPAD ACPI EXTRAS DRIVER
- M:	Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>
- L:	ibm-acpi-devel@lists.sourceforge.net
--- 
-2.17.1
-
+--=20
+Thanks,
+//richard
