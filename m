@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E521ED52A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 19:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9366D1ED50C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 19:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgFCRmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 13:42:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726238AbgFCRmq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 13:42:46 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27BACC08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 10:33:31 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id j12so1856693lfh.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 10:33:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RiYI0t+KrBvaJgMcqUi2332VvHKyX88P2wlQysjVLXM=;
-        b=gk244yjdaq9AeMPc0x74cYRwy2EEkQH/A2o2vAvYivtoPifzXZ4zIPTJxNnt6AEms3
-         lnpu4id+cI4xfoV50YJ3gBY/KHwO5czVFEAW3yZvg2XLVI0C+9X1+Ckei58TxH5yrgfU
-         PF13oW+pEFgFc9YI47rXwqVQRStTEWiZL8fC7FVTh8rSr0KJdluA2FI89xLVmbfQ+NEW
-         wlgPHeXOEVwRUcFUMyqo37mmdKmoeKXeGMAoiKXHwA/4WYa5strDvITPRW9Rem2vUDvL
-         zNBIpLEJlrIhR0I1My/Ub2bW9Sw0qyMOt/HBDths765G9kyJoGaQBb+35SazRc8zZLjg
-         m+LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RiYI0t+KrBvaJgMcqUi2332VvHKyX88P2wlQysjVLXM=;
-        b=WhNf2uH+FRGKAwHj9wPL56tx6nFivDR9FFoGBVMYulRijweWUJ8dZYea3IpxhRL+T9
-         fLdE6w0yQlhiEU1pGSPQ8z0QcHG/JgJQimPhyShrEyM4MTfqgncOVLE2q6JWYi589rVg
-         b0VER97T8t8vqF30E7YTqfcq1b6TAvln1OCVKGTce2ZXi0j75zKrhVCmVAFAPoSOWbLf
-         /DYEEVYAyprLdBdZekx4Wvglg1bWlOCSU4sus4L6SS6HF0v3jrFiDul56iq0JI0+23fL
-         g6YW/VEUYFtjvrJ35XyIXwv+JMlgIpCE3LbdBp6XOd1TBrv86N+3xsUyghC+SQVu8mnN
-         MJ3g==
-X-Gm-Message-State: AOAM532PYzQGfnHrXu8DGJyBVeYMyO1G1T4a1n+wkf3rDUTgUOti0Zoo
-        Gk5E3r+s7i+A8qzkinWP+RfsWQ==
-X-Google-Smtp-Source: ABdhPJxlDbpPhvBO2HwzpUWB+mZRWd3ea7bAmLgctD4jOZItUkkhqH0olCiHDFJagt7e80KPbSXkjA==
-X-Received: by 2002:ac2:489a:: with SMTP id x26mr297287lfc.111.1591205609563;
-        Wed, 03 Jun 2020 10:33:29 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:448d:774a:2057:6699:2c75:847d? ([2a00:1fa0:448d:774a:2057:6699:2c75:847d])
-        by smtp.gmail.com with ESMTPSA id q8sm815921lfo.13.2020.06.03.10.33.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jun 2020 10:33:28 -0700 (PDT)
-Subject: Re: [PATCH v3] usb: host: xhci-mtk: avoid runtime suspend when
- removing hcd
-To:     Macpaul Lin <macpaul.lin@mediatek.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        stable@vger.kernel.org
-Cc:     Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
-        Macpaul Lin <macpaul.lin@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-usb@vger.kernel.org, linux-mediatek@lists.infradead.org
-References: <ebd32a2b-c4ba-8891-b13e-f6c641a94276@linux.intel.com>
- <1591189767-21988-1-git-send-email-macpaul.lin@mediatek.com>
-From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <b2f3aa9f-a592-0e8c-f897-f5d885fb9740@cogentembedded.com>
-Date:   Wed, 3 Jun 2020 20:33:24 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1726321AbgFCRfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 13:35:09 -0400
+Received: from mga14.intel.com ([192.55.52.115]:40771 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726061AbgFCRez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 13:34:55 -0400
+IronPort-SDR: MRj5xfyAcddDBZ41DXK3LqjRyWhwXRaUHvef+I4qdba7csV8QFmp2LyIqHSJkE4I24xmMkZ1O3
+ Fuv04K7QdJ4A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 10:33:52 -0700
+IronPort-SDR: UEpJgJCNMYlkl3DSUf6/mQMTVai4u47l2xaA8qjYJu/1BjNiP2gJs7+UJtblPju4WpsllCbG3B
+ 1SyocBgNdKpQ==
+X-IronPort-AV: E=Sophos;i="5.73,468,1583222400"; 
+   d="scan'208";a="378173379"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 10:33:52 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tony Luck <tony.luck@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/cpu: Add Sapphire Rapids CPU model number
+Date:   Wed,  3 Jun 2020 10:33:52 -0700
+Message-Id: <20200603173352.15506-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-In-Reply-To: <1591189767-21988-1-git-send-email-macpaul.lin@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+Latest edition (039) of "Intel Architecture Instruction Set Extensions
+and Future Features Programming Reference" includes three new CPU model
+numbers. Linux already has the two Ice Lake server ones. Add the new
+model number for Sapphire Rapids.
 
-On 03.06.2020 16:09, Macpaul Lin wrote:
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
+I'd appreciate this being merged to Linus, even though it wasn't posted
+before the merge window opened. It will avoid it being a dependency for
+other patch series (perf, edac, ...)
 
-> When runtime suspend was enabled, runtime suspend might happened
+FYI: ISE039 is here today (not included in commit message because the URL
+isn't long term stable).
 
-    Happen.
+https://software.intel.com/content/dam/develop/public/us/en/documents/architecture-instruction-set-extensions-programming-reference.pdf
 
-> when xhci is removing hcd. This might cause kernel panic when hcd
-> has been freed but runtime pm suspend related handle need to
-> reference it.
-> 
-> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-> Reviewed-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-[...]
+ arch/x86/include/asm/intel-family.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-MBR, Sergei
+diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
+index 8f1e94f29a16..a338a6deb950 100644
+--- a/arch/x86/include/asm/intel-family.h
++++ b/arch/x86/include/asm/intel-family.h
+@@ -89,6 +89,8 @@
+ #define INTEL_FAM6_COMETLAKE		0xA5
+ #define INTEL_FAM6_COMETLAKE_L		0xA6
+ 
++#define INTEL_FAM6_SAPPHIRERAPIDS_X	0x8F
++
+ /* "Small Core" Processors (Atom) */
+ 
+ #define INTEL_FAM6_ATOM_BONNELL		0x1C /* Diamondville, Pineview */
+-- 
+2.21.1
+
