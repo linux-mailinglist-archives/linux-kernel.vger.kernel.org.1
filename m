@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FCC1ED1E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522801ED1ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgFCOQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 10:16:18 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:8523 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725884AbgFCOQS (ORCPT
+        id S1726237AbgFCOQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 10:16:42 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:37575 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725961AbgFCOQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 10:16:18 -0400
+        Wed, 3 Jun 2020 10:16:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1591193777; x=1622729777;
+  t=1591193796; x=1622729796;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=uykKOZZjn9dx48r34/9kMX/c9ZH8aqf2dtSlZ4UrAfo=;
-  b=J8PrvYRz74XPZ4+ED9/4iq1bt96jP2v4oOtSI39wjaAlOdAxoqfuKi1/
-   OtJisXzh/Hvju+JbjbFGrPGnpjlC7/iBwx8RjAo1WhQdCLx7Oqcf6g4b0
-   2qvQ/quBH7ye3a7BXy2dXtzmXGiexJP1hiF1bbPbWQaWjr9rET5YSr48e
-   s=;
-IronPort-SDR: Wn8WtR/08hi8t6atRaPbX10k0NQMvGJ+CDx3dpUypdxdiNtV+Tsd9TCNSIPehX4z6lraeTb3fE
- jo/uCpEfjZbA==
+  bh=Q95Imqm6D4GsRp4TGS1qrEUIPf92/YhKKGxjfjqdz5s=;
+  b=eDbD0YYJzxl5IHLNfy4GgBvJxs/fDMpYz42218Fw2gGxv4JLTuLBp429
+   LxgouLDE7qEScWwn/eIWLSZstIhi/dng4LsXYONk5xIknpEa0lc1S4co3
+   21MLDhKJqXuuhzj4rArLT2+Xpsb5KdhBG94ShjG7WJPFrJBUenaHJ0CwQ
+   Q=;
+IronPort-SDR: lspKg3ajDh5Oo2wnIVCzaXvCQutKzWtGrcE+8aN0BzbvFkBGtmQ8EEl+hH5XyAVRNxqSDbBgCb
+ HnYlj4rQ6KoA==
 X-IronPort-AV: E=Sophos;i="5.73,467,1583193600"; 
-   d="scan'208";a="49526531"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 03 Jun 2020 14:16:15 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 563131A19DC;
-        Wed,  3 Jun 2020 14:16:13 +0000 (UTC)
+   d="scan'208";a="35573782"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 03 Jun 2020 14:16:33 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com (Postfix) with ESMTPS id 01E29A27D2;
+        Wed,  3 Jun 2020 14:16:29 +0000 (UTC)
 Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
  EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 3 Jun 2020 14:16:12 +0000
+ id 15.0.1497.2; Wed, 3 Jun 2020 14:16:29 +0000
 Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.90) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 3 Jun 2020 14:15:56 +0000
+ id 15.0.1497.2; Wed, 3 Jun 2020 14:16:13 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -56,9 +56,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <ying.huang@intel.com>, <linux-damon@amazon.com>,
         <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [RFC v2 8/9] mm/damon/debugfs: Support physical memory monitoring
-Date:   Wed, 3 Jun 2020 16:11:34 +0200
-Message-ID: <20200603141135.10575-9-sjpark@amazon.com>
+Subject: [RFC v2 9/9] Docs/damon: Document physical memory monitoring support
+Date:   Wed, 3 Jun 2020 16:11:35 +0200
+Message-ID: <20200603141135.10575-10-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200603141135.10575-1-sjpark@amazon.com>
 References: <20200603141135.10575-1-sjpark@amazon.com>
@@ -74,68 +74,86 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit makes the debugfs interface to support the physical memory
-monitoring, in addition to the virtual memory monitoring.
-
-Users can do the physical memory monitoring by writing a special
-keyword, 'paddr\n' to the 'pids' debugfs file.  Then, DAMON will check
-the special keyword and configure the callbacks of the monitoring
-context for the debugfs user for physical memory.  This will internally
-add one fake monitoring target process, which has pid as -1.
-
-Unlike the virtual memory monitoring, DAMON debugfs will not
-automatically set the monitoring target region.  Therefore, users should
-also set the monitoring target address region using the 'init_regions'
-debugfs file.  While doing this, the 'pid' in the input should be '-1'.
-
-Finally, the physical memory monitoring will not automatically
-terminated because it has fake monitoring target process.  The user
-should explicitly turn off the monitoring by writing 'off' to the
-'monitor_on' debugfs file.
+This commit adds description for the physical memory monitoring usage in
+the DAMON document.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- mm/damon.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ Documentation/admin-guide/mm/damon/usage.rst | 42 ++++++++++++++------
+ 1 file changed, 29 insertions(+), 13 deletions(-)
 
-diff --git a/mm/damon.c b/mm/damon.c
-index 6a5c6d540580..7361d5885118 100644
---- a/mm/damon.c
-+++ b/mm/damon.c
-@@ -1263,6 +1263,9 @@ static bool kdamond_need_stop(struct damon_ctx *ctx)
- 		return true;
+diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
+index 137ed770c2d6..359745f0dbfb 100644
+--- a/Documentation/admin-guide/mm/damon/usage.rst
++++ b/Documentation/admin-guide/mm/damon/usage.rst
+@@ -314,27 +314,42 @@ check it again::
+ Target PIDs
+ -----------
  
- 	damon_for_each_task(t, ctx) {
-+		if (t->pid == -1)
-+			return false;
-+
- 		task = damon_get_task_struct(t);
- 		if (task) {
- 			put_task_struct(task);
-@@ -1796,6 +1799,23 @@ static ssize_t debugfs_pids_write(struct file *file,
- 	if (ret < 0)
- 		goto out;
+-Users can get and set the pids of monitoring target processes by reading from
+-and writing to the ``pids`` file.  For example, below commands set processes
+-having pids 42 and 4242 as the processes to be monitored and check it again::
++To monitor the virtual memory address spaces of specific processes, users can
++get and set the pids of monitoring target processes by reading from and writing
++to the ``pids`` file.  For example, below commands set processes having pids 42
++and 4242 as the processes to be monitored and check it again::
  
-+	if (!strncmp(kbuf, "paddr\n", count)) {
-+		/* Configure the context for physical memory monitoring */
-+		ctx->init_target_regions = kdamond_init_phys_regions;
-+		ctx->update_target_regions = kdamond_update_phys_regions;
-+		ctx->prepare_access_checks = kdamond_prepare_phys_access_checks;
-+		ctx->check_accesses = kdamond_check_phys_accesses;
+     # cd <debugfs>/damon
+     # echo 42 4242 > pids
+     # cat pids
+     42 4242
+ 
++Users can also monitor the physical memory address space of the system by
++writing a special keyword, "``paddr\n``" to the file.  In this case, reading the
++file will show ``-1``, as below::
 +
-+		/* Set the fake target task pid as -1 */
-+		snprintf(kbuf, count, "-1");
-+	} else {
-+		/* Configure the context for virtual memory monitoring */
-+		ctx->init_target_regions = kdamond_init_vm_regions;
-+		ctx->update_target_regions = kdamond_update_vm_regions;
-+		ctx->prepare_access_checks = kdamond_prepare_vm_access_checks;
-+		ctx->check_accesses = kdamond_check_vm_accesses;
-+	}
++    # cd <debugfs>/damon
++    # echo paddr > pids
++    # cat pids
++    -1
 +
- 	targets = str_to_pids(kbuf, ret, &nr_targets);
- 	if (!targets) {
- 		ret = -ENOMEM;
+ Note that setting the pids doesn't start the monitoring.
+ 
+ 
+ Initla Monitoring Target Regions
+ --------------------------------
+ 
+-DAMON automatically sets and updates the monitoring target regions so that
+-entire memory mappings of target processes can be covered.  However, users
+-might want to limit the monitoring region to specific address ranges, such as
+-the heap, the stack, or specific file-mapped area.  Or, some users might know
+-the initial access pattern of their workloads and therefore want to set optimal
+-initial regions for the 'adaptive regions adjustment'.
++In case of the virtual memory monitoring, DAMON automatically sets and updates
++the monitoring target regions so that entire memory mappings of target
++processes can be covered.  However, users might want to limit the monitoring
++region to specific address ranges, such as the heap, the stack, or specific
++file-mapped area.  Or, some users might know the initial access pattern of
++their workloads and therefore want to set optimal initial regions for the
++'adaptive regions adjustment'.
++
++In contrast, DAMON do not automatically sets and updates the monitoring target
++regions in case of physical memory monitoring.  Therefore, users should set the
++monitoring target regions by themselves.
+ 
+ In such cases, users can explicitly set the initial monitoring target regions
+ as they want, by writing proper values to the ``init_regions`` file.  Each line
+@@ -354,10 +369,11 @@ region of process 42, and another couple of address ranges, ``20-40`` and
+             4242 20      40
+             4242 50      100" > init_regions
+ 
+-Note that this sets the initial monitoring target regions only.  DAMON will
+-automatically updates the boundary of the regions after one ``regions update
+-interval``.  Therefore, users should set the ``regions update interval`` large
+-enough.
++Note that this sets the initial monitoring target regions only.  In case of
++virtual memory monitoring, DAMON will automatically updates the boundary of the
++regions after one ``regions update interval``.  Therefore, users should set the
++``regions update interval`` large enough in this case, if they don't want the
++update.
+ 
+ 
+ Record
 -- 
 2.17.1
 
