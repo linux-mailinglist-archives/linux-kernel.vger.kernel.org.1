@@ -2,230 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619CD1ECADF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 400351ECAEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgFCH6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 03:58:39 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:49399 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725877AbgFCH6j (ORCPT
+        id S1726171AbgFCIBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 04:01:17 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:62375 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725275AbgFCIBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 03:58:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591171117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6s4YwWjWSDJyEzvWoBd/i85+Sheo/GOp6+xMWZwy3wU=;
-        b=QT3wVAQs1deiYlEdDOl+maeqWVWvd8K8p9GWd/M2I+2IyduK4stQuAw/8gsC1ByjW9qsPp
-        9kEatIOEFXOTySAzFXc0YTgSp1iSVRNz4AhGlsys4ontYDQBhwM+kOrr3M56XTV68kjyGG
-        6bejlrye06UW2xnGREAq4xKqQLVvSQw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-9RybUihZM9iS6EvrhrYauA-1; Wed, 03 Jun 2020 03:58:35 -0400
-X-MC-Unique: 9RybUihZM9iS6EvrhrYauA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F08EE800685;
-        Wed,  3 Jun 2020 07:58:33 +0000 (UTC)
-Received: from [10.72.12.214] (ovpn-12-214.pek2.redhat.com [10.72.12.214])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 582B95C221;
-        Wed,  3 Jun 2020 07:58:28 +0000 (UTC)
-Subject: Re: [PATCH RFC 07/13] vhost: format-independent API for used buffers
-To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?Q?Eugenio_P=c3=a9rez?= <eperezma@redhat.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org
-References: <20200602130543.578420-1-mst@redhat.com>
- <20200602130543.578420-8-mst@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <6d98f2cc-2084-cde0-c938-4ca01692adf9@redhat.com>
-Date:   Wed, 3 Jun 2020 15:58:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 3 Jun 2020 04:01:16 -0400
+X-UUID: 4ca35eb9f2224bd58242cb8ba52937b9-20200603
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=07Kpr56aB3PFy6IWckMxSvdLdNklg9y3xgmgR9sXxKc=;
+        b=BnoTwQqrI6c5pqUfBu6bW3IvXyHAyvA2720ByQBW2kMzuPTryV1OGWaGW6EPN/d+JDnayq5Aq++yoKmI5BFbYVhUO3hzR4KoXB9ig3nXUowlX/lB/GGbYbOOpPbvfTXCkU4HuBmzJu/JXrzBmjs763u2UubjwrzS2u0vValEcJk=;
+X-UUID: 4ca35eb9f2224bd58242cb8ba52937b9-20200603
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <neal.liu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 172606472; Wed, 03 Jun 2020 15:54:18 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 3 Jun 2020 15:54:16 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 3 Jun 2020 15:54:16 +0800
+Message-ID: <1591170857.19414.5.camel@mtkswgap22>
+Subject: Re: Security Random Number Generator support
+From:   Neal Liu <neal.liu@mediatek.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Neal Liu <neal.liu@mediatek.com>,
+        Julius Werner <jwerner@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Matt Mackall <mpm@selenic.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Crystal Guo =?UTF-8?Q?=28=E9=83=AD=E6=99=B6=29?= 
+        <Crystal.Guo@mediatek.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Date:   Wed, 3 Jun 2020 15:54:17 +0800
+In-Reply-To: <fcbe37f6f9cbcde24f9c28bc504f1f0e@kernel.org>
+References: <1591085678-22764-1-git-send-email-neal.liu@mediatek.com>
+         <CAMj1kXHjAdk5=-uSh_=S9j5cz42zr3h6t+YYGy+obevuQDp0fg@mail.gmail.com>
+         <85dfc0142d3879d50c0ba18bcc71e199@misterjones.org>
+         <1591169342.4878.9.camel@mtkswgap22>
+         <fcbe37f6f9cbcde24f9c28bc504f1f0e@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <20200602130543.578420-8-mst@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/6/2 下午9:06, Michael S. Tsirkin wrote:
-> Add a new API that doesn't assume used ring, heads, etc.
-> For now, we keep the old APIs around to make it easier
-> to convert drivers.
->
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->   drivers/vhost/vhost.c | 52 ++++++++++++++++++++++++++++++++++---------
->   drivers/vhost/vhost.h | 17 +++++++++++++-
->   2 files changed, 58 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-> index b4a6e44d56a8..be822f0c9428 100644
-> --- a/drivers/vhost/vhost.c
-> +++ b/drivers/vhost/vhost.c
-> @@ -2292,13 +2292,12 @@ static int fetch_descs(struct vhost_virtqueue *vq)
->    * number of output then some number of input descriptors, it's actually two
->    * iovecs, but we pack them into one and note how many of each there were.
->    *
-> - * This function returns the descriptor number found, or vq->num (which is
-> - * never a valid descriptor number) if none was found.  A negative code is
-> - * returned on error. */
-> -int vhost_get_vq_desc(struct vhost_virtqueue *vq,
-> -		      struct iovec iov[], unsigned int iov_size,
-> -		      unsigned int *out_num, unsigned int *in_num,
-> -		      struct vhost_log *log, unsigned int *log_num)
-> + * This function returns a value > 0 if a descriptor was found, or 0 if none were found.
-> + * A negative code is returned on error. */
-> +int vhost_get_avail_buf(struct vhost_virtqueue *vq, struct vhost_buf *buf,
-> +			struct iovec iov[], unsigned int iov_size,
-> +			unsigned int *out_num, unsigned int *in_num,
-> +			struct vhost_log *log, unsigned int *log_num)
->   {
->   	int ret = fetch_descs(vq);
->   	int i;
-> @@ -2311,6 +2310,8 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
->   	*out_num = *in_num = 0;
->   	if (unlikely(log))
->   		*log_num = 0;
-> +	buf->in_len = buf->out_len = 0;
-> +	buf->descs = 0;
->   
->   	for (i = vq->first_desc; i < vq->ndescs; ++i) {
->   		unsigned iov_count = *in_num + *out_num;
-> @@ -2340,6 +2341,7 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
->   			/* If this is an input descriptor,
->   			 * increment that count. */
->   			*in_num += ret;
-> +			buf->in_len += desc->len;
->   			if (unlikely(log && ret)) {
->   				log[*log_num].addr = desc->addr;
->   				log[*log_num].len = desc->len;
-> @@ -2355,9 +2357,11 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
->   				goto err;
->   			}
->   			*out_num += ret;
-> +			buf->out_len += desc->len;
->   		}
->   
-> -		ret = desc->id;
-> +		buf->id = desc->id;
-> +		++buf->descs;
->   
->   		if (!(desc->flags & VRING_DESC_F_NEXT))
->   			break;
-> @@ -2365,7 +2369,7 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
->   
->   	vq->first_desc = i + 1;
->   
-> -	return ret;
-> +	return 1;
->   
->   err:
->   	for (i = vq->first_desc; i < vq->ndescs; ++i)
-> @@ -2375,7 +2379,15 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
->   
->   	return ret;
->   }
-> -EXPORT_SYMBOL_GPL(vhost_get_vq_desc);
-> +EXPORT_SYMBOL_GPL(vhost_get_avail_buf);
-> +
-> +/* Reverse the effect of vhost_get_avail_buf. Useful for error handling. */
-> +void vhost_discard_avail_bufs(struct vhost_virtqueue *vq,
-> +			      struct vhost_buf *buf, unsigned count)
-> +{
-> +	vhost_discard_vq_desc(vq, count);
-> +}
-> +EXPORT_SYMBOL_GPL(vhost_discard_avail_bufs);
->   
->   static int __vhost_add_used_n(struct vhost_virtqueue *vq,
->   			    struct vring_used_elem *heads,
-> @@ -2459,6 +2471,26 @@ int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int len)
->   }
->   EXPORT_SYMBOL_GPL(vhost_add_used);
->   
-> +int vhost_put_used_buf(struct vhost_virtqueue *vq, struct vhost_buf *buf)
-> +{
-> +	return vhost_add_used(vq, buf->id, buf->in_len);
-> +}
-> +EXPORT_SYMBOL_GPL(vhost_put_used_buf);
-> +
-> +int vhost_put_used_n_bufs(struct vhost_virtqueue *vq,
-> +			  struct vhost_buf *bufs, unsigned count)
-> +{
-> +	unsigned i;
-> +
-> +	for (i = 0; i < count; ++i) {
-> +		vq->heads[i].id = cpu_to_vhost32(vq, bufs[i].id);
-> +		vq->heads[i].len = cpu_to_vhost32(vq, bufs[i].in_len);
-> +	}
-> +
-> +	return vhost_add_used_n(vq, vq->heads, count);
-> +}
-> +EXPORT_SYMBOL_GPL(vhost_put_used_n_bufs);
-> +
->   static bool vhost_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
->   {
->   	__u16 old, new;
-> diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
-> index a67bda9792ec..6c10e99ff334 100644
-> --- a/drivers/vhost/vhost.h
-> +++ b/drivers/vhost/vhost.h
-> @@ -67,6 +67,13 @@ struct vhost_desc {
->   	u16 id;
->   };
->   
-> +struct vhost_buf {
-> +	u32 out_len;
-> +	u32 in_len;
-> +	u16 descs;
-> +	u16 id;
-> +};
-
-
-So it looks to me the struct vhost_buf can work for both split ring and 
-packed ring.
-
-If this is true, we'd better make struct vhost_desc work for both.
-
-Thanks
-
-
-> +
->   /* The virtqueue structure describes a queue attached to a device. */
->   struct vhost_virtqueue {
->   	struct vhost_dev *dev;
-> @@ -193,7 +200,12 @@ int vhost_get_vq_desc(struct vhost_virtqueue *,
->   		      unsigned int *out_num, unsigned int *in_num,
->   		      struct vhost_log *log, unsigned int *log_num);
->   void vhost_discard_vq_desc(struct vhost_virtqueue *, int n);
-> -
-> +int vhost_get_avail_buf(struct vhost_virtqueue *, struct vhost_buf *buf,
-> +			struct iovec iov[], unsigned int iov_count,
-> +			unsigned int *out_num, unsigned int *in_num,
-> +			struct vhost_log *log, unsigned int *log_num);
-> +void vhost_discard_avail_bufs(struct vhost_virtqueue *,
-> +			      struct vhost_buf *, unsigned count);
->   int vhost_vq_init_access(struct vhost_virtqueue *);
->   int vhost_add_used(struct vhost_virtqueue *, unsigned int head, int len);
->   int vhost_add_used_n(struct vhost_virtqueue *, struct vring_used_elem *heads,
-> @@ -202,6 +214,9 @@ void vhost_add_used_and_signal(struct vhost_dev *, struct vhost_virtqueue *,
->   			       unsigned int id, int len);
->   void vhost_add_used_and_signal_n(struct vhost_dev *, struct vhost_virtqueue *,
->   			       struct vring_used_elem *heads, unsigned count);
-> +int vhost_put_used_buf(struct vhost_virtqueue *, struct vhost_buf *buf);
-> +int vhost_put_used_n_bufs(struct vhost_virtqueue *,
-> +			  struct vhost_buf *bufs, unsigned count);
->   void vhost_signal(struct vhost_dev *, struct vhost_virtqueue *);
->   void vhost_disable_notify(struct vhost_dev *, struct vhost_virtqueue *);
->   bool vhost_vq_avail_empty(struct vhost_dev *, struct vhost_virtqueue *);
+T24gV2VkLCAyMDIwLTA2LTAzIGF0IDA4OjQwICswMTAwLCBNYXJjIFp5bmdpZXIgd3JvdGU6DQo+
+IE9uIDIwMjAtMDYtMDMgMDg6MjksIE5lYWwgTGl1IHdyb3RlOg0KPiA+IE9uIFR1ZSwgMjAyMC0w
+Ni0wMiBhdCAyMTowMiArMDgwMCwgTWFyYyBaeW5naWVyIHdyb3RlOg0KPiA+PiBPbiAyMDIwLTA2
+LTAyIDEzOjE0LCBBcmQgQmllc2hldXZlbCB3cm90ZToNCj4gPj4gPiBPbiBUdWUsIDIgSnVuIDIw
+MjAgYXQgMTA6MTUsIE5lYWwgTGl1IDxuZWFsLmxpdUBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+
+PiA+Pg0KPiA+PiA+PiBUaGVzZSBwYXRjaCBzZXJpZXMgaW50cm9kdWNlIGEgc2VjdXJpdHkgcmFu
+ZG9tIG51bWJlciBnZW5lcmF0b3INCj4gPj4gPj4gd2hpY2ggcHJvdmlkZXMgYSBnZW5lcmljIGlu
+dGVyZmFjZSB0byBnZXQgaGFyZHdhcmUgcm5kIGZyb20gU2VjdXJlDQo+ID4+ID4+IHN0YXRlLiBU
+aGUgU2VjdXJlIHN0YXRlIGNhbiBiZSBBcm0gVHJ1c3RlZCBGaXJtd2FyZShBVEYpLCBUcnVzdGVk
+DQo+ID4+ID4+IEV4ZWN1dGlvbiBFbnZpcm9ubWVudChURUUpLCBvciBldmVuIEVMMiBoeXBlcnZp
+c29yLg0KPiA+PiA+Pg0KPiA+PiA+PiBQYXRjaCAjMS4uMiBhZGRzIHNlYy1ybmcga2VybmVsIGRy
+aXZlciBmb3IgVHJ1c3R6b25lIGJhc2VkIFNvQ3MuDQo+ID4+ID4+IEZvciBzZWN1cml0eSBhd2Fy
+ZW5lc3MgU29DcyBvbiBBUk12OCB3aXRoIFRydXN0Wm9uZSBlbmFibGVkLA0KPiA+PiA+PiBwZXJp
+cGhlcmFscyBsaWtlIGVudHJvcHkgc291cmNlcyBpcyBub3QgYWNjZXNzaWJsZSBmcm9tIG5vcm1h
+bCB3b3JsZA0KPiA+PiA+PiAobGludXgpIGFuZCByYXRoZXIgYWNjZXNzaWJsZSBmcm9tIHNlY3Vy
+ZSB3b3JsZCAoSFlQL0FURi9URUUpIG9ubHkuDQo+ID4+ID4+IFRoaXMgZHJpdmVyIGFpbXMgdG8g
+cHJvdmlkZSBhIGdlbmVyaWMgaW50ZXJmYWNlIHRvIEFybSBUcnVzdGVkDQo+ID4+ID4+IEZpcm13
+YXJlIG9yIEh5cGVydmlzb3Igcm5nIHNlcnZpY2UuDQo+ID4+ID4+DQo+ID4+ID4+DQo+ID4+ID4+
+IGNoYW5nZXMgc2luY2UgdjE6DQo+ID4+ID4+IC0gcmVuYW1lIG10Njd4eC1ybmcgdG8gbXRrLXNl
+Yy1ybmcgc2luY2UgYWxsIE1lZGlhVGVrIEFSTXY4IFNvQ3MgY2FuDQo+ID4+ID4+IHJldXNlDQo+
+ID4+ID4+ICAgdGhpcyBkcml2ZXIuDQo+ID4+ID4+ICAgLSByZWZpbmUgY29kaW5nIHN0eWxlIGFu
+ZCB1bm5lY2Vzc2FyeSBjaGVjay4NCj4gPj4gPj4NCj4gPj4gPj4gICBjaGFuZ2VzIHNpbmNlIHYy
+Og0KPiA+PiA+PiAgIC0gcmVtb3ZlIHVudXNlZCBjb21tZW50cy4NCj4gPj4gPj4gICAtIHJlbW92
+ZSByZWR1bmRhbnQgdmFyaWFibGUuDQo+ID4+ID4+DQo+ID4+ID4+ICAgY2hhbmdlcyBzaW5jZSB2
+MzoNCj4gPj4gPj4gICAtIGFkZCBkdC1iaW5kaW5ncyBmb3IgTWVkaWFUZWsgcm5nIHdpdGggVHJ1
+c3Rab25lIGVuYWJsZWQuDQo+ID4+ID4+ICAgLSByZXZpc2UgSFdSTkcgU01DIGNhbGwgZmlkLg0K
+PiA+PiA+Pg0KPiA+PiA+PiAgIGNoYW5nZXMgc2luY2UgdjQ6DQo+ID4+ID4+ICAgLSBtb3ZlIGJp
+bmRpbmdzIHRvIHRoZSBhcm0vZmlybXdhcmUgZGlyZWN0b3J5Lg0KPiA+PiA+PiAgIC0gcmV2aXNl
+IGRyaXZlciBpbml0IGZsb3cgdG8gY2hlY2sgbW9yZSBwcm9wZXJ0eS4NCj4gPj4gPj4NCj4gPj4g
+Pj4gICBjaGFuZ2VzIHNpbmNlIHY1Og0KPiA+PiA+PiAgIC0gcmVmYWN0b3IgdG8gbW9yZSBnZW5l
+cmljIHNlY3VyaXR5IHJuZyBkcml2ZXIgd2hpY2gNCj4gPj4gPj4gICAgIGlzIG5vdCBwbGF0Zm9y
+bSBzcGVjaWZpYy4NCj4gPj4gPj4NCj4gPj4gPj4gKioqIEJMVVJCIEhFUkUgKioqDQo+ID4+ID4+
+DQo+ID4+ID4+IE5lYWwgTGl1ICgyKToNCj4gPj4gPj4gICBkdC1iaW5kaW5nczogcm5nOiBhZGQg
+YmluZGluZ3MgZm9yIHNlYy1ybmcNCj4gPj4gPj4gICBod3JuZzogYWRkIHNlYy1ybmcgZHJpdmVy
+DQo+ID4+ID4+DQo+ID4+ID4NCj4gPj4gPiBUaGVyZSBpcyBubyByZWFzb24gdG8gbW9kZWwgYSBT
+TUMgY2FsbCBhcyBhIGRyaXZlciwgYW5kIHJlcHJlc2VudCBpdA0KPiA+PiA+IHZpYSBhIERUIG5v
+ZGUgbGlrZSB0aGlzLg0KPiA+PiANCj4gPj4gKzEuDQo+ID4+IA0KPiA+PiA+IEl0IHdvdWxkIGJl
+IG11Y2ggYmV0dGVyIGlmIHRoaXMgU01DIGludGVyZmFjZSBpcyBtYWRlIHRydWx5IGdlbmVyaWMs
+DQo+ID4+ID4gYW5kIHdpcmVkIGludG8gdGhlIGFyY2hfZ2V0X3JhbmRvbSgpIGludGVyZmFjZSwg
+d2hpY2ggY2FuIGJlIHVzZWQgbXVjaA0KPiA+PiA+IGVhcmxpZXIuDQo+ID4+IA0KPiA+PiBXYXNu
+J3QgdGhlcmUgYSBwbGFuIHRvIHN0YW5kYXJkaXplIGEgU01DIGNhbGwgdG8gcnVsZSB0aGVtIGFs
+bD8NCj4gPj4gDQo+ID4+ICAgICAgICAgIE0uDQo+ID4gDQo+ID4gQ291bGQgeW91IGdpdmUgdXMg
+YSBoaW50IGhvdyB0byBtYWtlIHRoaXMgU01DIGludGVyZmFjZSBtb3JlIGdlbmVyaWMgaW4NCj4g
+PiBhZGRpdGlvbiB0byBteSBhcHByb2FjaD8NCj4gPiBUaGVyZSBpcyBubyAoZWFzeSkgd2F5IHRv
+IGdldCBwbGF0Zm9ybS1pbmRlcGVuZGVudCBTTUMgZnVuY3Rpb24gSUQsDQo+ID4gd2hpY2ggaXMg
+d2h5IHdlIGVuY29kZSBpdCBpbnRvIGRldmljZSB0cmVlLCBhbmQgcHJvdmlkZSBhIGdlbmVyaWMN
+Cj4gPiBkcml2ZXIuIEluIHRoaXMgd2F5LCBkaWZmZXJlbnQgZGV2aWNlcyBjYW4gYmUgbWFwcGVk
+IGFuZCB0aGVuIGdldA0KPiA+IGRpZmZlcmVudCBmdW5jdGlvbiBJRCBpbnRlcm5hbGx5Lg0KPiAN
+Cj4gVGhlIGlkZWEgaXMgc2ltcGx5IHRvIGhhdmUgKm9uZSogc2luZ2xlIElEIHRoYXQgY2F0ZXJz
+IGZvciBhbGwNCj4gaW1wbGVtZW50YXRpb25zLCBqdXN0IGxpa2Ugd2UgZGlkIGZvciBQU0NJIGF0
+IHRoZSB0aW1lLiBUaGlzDQo+IHJlcXVpcmVzIEFSTSB0byBlZGljdCBhIHN0YW5kYXJkLCB3aGlj
+aCBpcyB3aGF0IEkgd2FzIHJlZmVycmluZw0KPiB0byBhYm92ZS4NCj4gDQo+IFRoZXJlIGlzIHpl
+cm8gYmVuZWZpdCBpbiBoYXZpbmcgYSBwbGF0Zm9ybS1kZXBlbmRlbnQgSUQuIEl0IGp1c3QNCj4g
+cG9pbnRsZXNzbHkgaW5jcmVhc2VzIGNvbXBsZXhpdHksIGFuZCBtZWFucyB3ZSBjYW5ub3QgdXNl
+IHRoZSBSTkcNCj4gYmVmb3JlIHRoZSBmaXJtd2FyZSB0YWJsZXMgYXJlIGF2YWlsYWJsZSAoeWVz
+LCB3ZSBuZWVkIGl0IHRoYXQNCj4gZWFybHkpLg0KPiANCj4gICAgICAgICAgTS4NCg0KRG8geW91
+IGtub3cgd2hpY2ggQVJNIGV4cGVydCBjb3VsZCBlZGljdCB0aGlzIHN0YW5kYXJkPw0KT3IgaXMg
+dGhlcmUgYW55IGNoYW5jZSB0aGF0IHdlIGNhbiBtYWtlIG9uZT8gQW5kIGJlIHJldmlld2VkIGJ5
+DQptYWludGFpbmVycz8NCg0KDQo=
 
