@@ -2,173 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF181EC931
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 07:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C52C1EC940
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 08:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725992AbgFCF5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 01:57:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbgFCF5z (ORCPT
+        id S1725937AbgFCGEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 02:04:50 -0400
+Received: from mail02.asahi-net.or.jp ([202.224.55.14]:41832 "EHLO
+        mail02.asahi-net.or.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbgFCGEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 01:57:55 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C774C05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 22:57:54 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id w15so515120lfe.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 22:57:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JpeVz17nK62n2I7lJsMjpjJeta8RNunq13H2fFv481U=;
-        b=rxJ5wnqmdp0ElBh95sbYZD2C0ERDuJhqALLPdI3Uf6ID1QWL1A7TjOgB+zjd4HSTXM
-         BqlNiWSveZ2HCUVCwcNH9x/sf3TvRJbb3TLdDI+4uVMNoxgJfpzNTOSRx6aQeMPWl47t
-         1ul7+8Twj9LfQe0Wl3phhIWRw8MEkGexykWzlUu4M7QLPoxg1eHVhWBHsR3+NscOJdle
-         8Y4OsDnKweo43BTM41ZdiZdr/bTFXaNJ43IZgMVUuv5dQTg927u5jvrJxIe/U3rCg9B6
-         sG9df7Z69Jz54oyzAFq9h4q4CSs1szIdLSM9Y50ZrUsx4yV8PjEg3LOOcEn6ETLfwoBk
-         2UMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JpeVz17nK62n2I7lJsMjpjJeta8RNunq13H2fFv481U=;
-        b=dWhPW9jNNq/fuXSFpy3h2LC0ji8QlXNJh67IupJixA5+fYLUt30NQM1PRlkBvn2F4e
-         lPu2pI+RnflXTthuapzPz5R3F/CjJQ3DMCYFfzAAqTcyMxIK+EshHZaBLsIW5Un1Bc/Z
-         cdtyxNyz5/+qrIpjkbyc/S5lDzNaNi61cLF/1QMNbAcKNLVIJk3X/rkSDdilFMXehllS
-         SNZF1D9YzvBVJ3RVjo1h+i7ExfIBUHUSqVJ5Z/FdK1pmZW+lZaW0QKMQ0haus7zrYAJg
-         9u7tku7Irop4Y4O9d5KGNnTS5DYIXhtNqtY3Je56tHywwFBCaOG6USOVx18T5c28vQte
-         OEzg==
-X-Gm-Message-State: AOAM533Wwyh2ZqZjdv3+JkuPCx0kKGX1AeOJqHXFekHvhK5kXhr9dKcV
-        KcJoYWlA+w8IG9/dzXxhAHX0FRXo/JszUDwQBltNXlpMAlNtPQ==
-X-Google-Smtp-Source: ABdhPJxyH9UCojipPIpjPD3fz4YC4gZFpOn5JiS7xpx0NKM4c9VqB1kxuxEJapZkWwubv5077IsNALkuU0PLpE6lVV4=
-X-Received: by 2002:a19:8453:: with SMTP id g80mr1527341lfd.167.1591163872565;
- Tue, 02 Jun 2020 22:57:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200602101901.374486405@linuxfoundation.org>
-In-Reply-To: <20200602101901.374486405@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 3 Jun 2020 11:27:41 +0530
-Message-ID: <CA+G9fYvGFL5-PtfxrSuOMVmM0Xni8mKZnNWt+=J+OT-wmK8YFQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/92] 4.19.126-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 3 Jun 2020 02:04:49 -0400
+X-Greylist: delayed 432 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jun 2020 02:04:47 EDT
+Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
+        (Authenticated sender: PQ4Y-STU)
+        by mail02.asahi-net.or.jp (Postfix) with ESMTPA id DEA73EE429;
+        Wed,  3 Jun 2020 14:57:33 +0900 (JST)
+Received: from yo-satoh-debian.ysato.ml (z215094.dynamic.ppp.asahi-net.or.jp [110.4.215.94])
+        by sakura.ysato.name (Postfix) with ESMTPSA id 182B31C06C6;
+        Wed,  3 Jun 2020 14:57:33 +0900 (JST)
+Date:   Wed, 03 Jun 2020 14:57:32 +0900
+Message-ID: <87y2p4n12r.wl-ysato@users.sourceforge.jp>
+From:   Yoshinori Sato <ysato@users.sourceforge.jp>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Rich Felker <dalias@libc.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Subject: Re: linux-sh for-next reactivation
+In-Reply-To: <20200603084105.47bd62c5@canb.auug.org.au>
+References: <20200602031123.GA1079@brightrain.aerifal.cx>
+        <20200602150039.780a0ac0@canb.auug.org.au>
+        <20200602202832.GA3776@brightrain.aerifal.cx>
+        <20200603084105.47bd62c5@canb.auug.org.au>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?ISO-8859-4?Q?Goj=F2?=) APEL/10.8 EasyPG/1.0.0 Emacs/26
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Jun 2020 at 15:54, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.126 release.
-> There are 92 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 04 Jun 2020 10:16:52 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.126-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Wed, 03 Jun 2020 07:41:05 +0900,
+Stephen Rothwell wrote:
+> 
+> [1  <text/plain; US-ASCII (quoted-printable)>]
+> Hi Rich,
+> 
+> On Tue, 2 Jun 2020 16:28:33 -0400 Rich Felker <dalias@libc.org> wrote:
+> >
+> > On Tue, Jun 02, 2020 at 03:00:39PM +1000, Stephen Rothwell wrote:
+> > > Hi Rich,
+> > > 
+> > > On Mon, 1 Jun 2020 23:11:39 -0400 Rich Felker <dalias@libc.org> wrote:  
+> > > >
+> > > > Could you reactivate linux-next pull from my arch/sh for-next branch?
+> > > > It's where it was before, at:
+> > > > 
+> > > >     git://git.libc.org/linux-sh for-next
+> > > > 
+> > > > and has newly accepted patches ready.  
+> > > 
+> > > I already have an SH tree from
+> > > git://git.sourceforge.jp/gitroot/uclinux-h8/linux.git#sh-next .  Should
+> > > I do anything with that one?
+> > > 
+> > > It currently contains:
+> > > 
+> > > $ git log --oneline origin/master..sh/sh-next 
+> > > a193018e5290 (sh/sh-next) sh: add missing EXPORT_SYMBOL() for __delay
+> > > 1d5fd6c33b04 sh: add missing DECLARE_EXPORT() for __ashiftrt_r4_xx
+> > > d70f1e3d5dbd Merge remote-tracking branch 'origin/master' into sh-next
+> > > baf58858e8b6 sh: prefer __section from compiler_attributes.h
+> > > 8619b5a9035a sh: Drop -Werror from kernel Makefile
+> > > 3a3a78124693 sh: kernel: disassemble: Mark expected switch fall-throughs
+> > > fb8f77490f55 sh: kernel: hw_breakpoint: Fix missing break in switch statement
+> > > cd10afbc932d sh: remove unneeded uapi asm-generic wrappers
+> > > cbfc6edb6a4a sh: use __builtin_constant_p() directly instead of IS_IMMEDIATE()  
+> > 
+> > Hi Stephen,
+> > 
+> > I completely forgot that you had the tree from our other co-maintainer
+> > Yoshinori Sato on the list linux-next is pulling from. Would it be
+> > okay to keep both? That would help with quickly identifying and
+> > resolving any conflicting commits and make things go more smoothly
+> > with two maintainers trying to be active.
+> > 
+> > Let me know if this doesn't work for you and we'll figure out
+> > alternative arrangements.
+> 
+> Added from today (I called it "sh-rf" - if you want a different name,
+> please let me know).
+> 
+> Thanks for adding your subsystem tree as a participant of linux-next.  As
+> you may know, this is not a judgement of your code.  The purpose of
+> linux-next is for integration testing and to lower the impact of
+> conflicts between subsystems in the next merge window. 
+> 
+> You will need to ensure that the patches/commits in your tree/series have
+> been:
+>      * submitted under GPL v2 (or later) and include the Contributor's
+>         Signed-off-by,
+>      * posted to the relevant mailing list,
+>      * reviewed by you (or another maintainer of your subsystem tree),
+>      * successfully unit tested, and 
+>      * destined for the current or next Linux merge window.
+> 
+> Basically, this should be just what you would send to Linus (or ask him
+> to fetch).  It is allowed to be rebased if you deem it necessary.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell 
+> sfr@canb.auug.org.au
+> [2 OpenPGP digital signature <application/pgp-signature (7bit)>]
+> No public key for 015042F34957D06C created at 2020-06-03T07:41:05+0900 using RSA
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+I only provided it temporarily.
+Plase remove git://git.sourceforge.jp/gitroot/uclinux-h8/linux.git#sh-next
 
-Summary
-------------------------------------------------------------------------
+Thanks.
 
-kernel: 4.19.126-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.19.y
-git commit: 80718197a8a3f9c3b222375e5d1de8adf5422000
-git describe: v4.19.125-93-g80718197a8a3
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.19-oe/bu=
-ild/v4.19.125-93-g80718197a8a3
-
-No regressions (compared to build v4.19.125)
-
-No fixes (compared to build v4.19.125)
-
-Ran 26389 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* install-android-platform-tools-r2800
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* kselftest/net
-* kselftest/networking
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* perf
-* v4l2-compliance
-* kvm-unit-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-io-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* ltp-open-posix-tests
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Yosinori Sato
