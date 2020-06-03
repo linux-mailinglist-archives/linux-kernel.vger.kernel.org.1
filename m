@@ -2,154 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD451ECCB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 11:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D6E1ECC9C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 11:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgFCJkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 05:40:08 -0400
-Received: from mail-eopbgr30074.outbound.protection.outlook.com ([40.107.3.74]:46051
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725854AbgFCJkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 05:40:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aztJNJL/D2fgvn4taM6gQUOjKEFNU1ctl0ziAjJxc65Y7BH/Um3Q0YO5sqddLvvNA6R1dZ44+8Li05KJrGy744mdlFZGN7h3eHEpXbk29Z7651UVnzYk1/lml9v4YGfK0Ckld0em0avAkOLit01yRyC091KNIGEFIPw1ph8UhqC47LBrNY2736O1bbmeKP+4OSfUhgwMdajxJrPFlGZW/IsQhrRPu4g9AXMf7kjiQaI3IiDYgOA7fyHh8iUfX/xmkRXpCIhsUde6mdUcZs6o1uA4Gq4PYob0p99TqoFlQ1Th4G8JLg6c0iF03ANRN7Ta0LZmmxq0Modab30W4jGuUA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fMEY2ra3VmJNtDhGs/eKIOXbVsOomvkoqWKOLXOIapQ=;
- b=EjD1Wx7bU0RY0UAqHQbBEWCTm/zGBxJ/uQ29EYUZ/3DABSTSPVRhKOX5m6itD5B/p3lefEG+JvmTPlN5BsBeC5J+IEKViOFmkjgPJdKAZEC+JxT1En6deoGu6lsbiRMNjf9pNH57N+C2SaPfX1st14BpNn9A8YSWgsjJvZX49ciMyyGg4ge+yiAgPTqbsBHu8LYzEDqT79zJIwCVhKkC2TYYKuhFVO9zW2V1ezLfV+LK1ParXN5WbDxjjCt8Fu8V6w0P+hlgszUNoph49db+TPBEZNE9XUA3bx+4KTCnQtLKtzW+CNMOU1a+EQtJMuxyCq7KOUSe3tdFYM05RcW6qQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fMEY2ra3VmJNtDhGs/eKIOXbVsOomvkoqWKOLXOIapQ=;
- b=ACXS2IXLrAqd3BYvstNzD54vVT0ICxUlWzP8ElP5WWU6TlZw75L/n01C2KCnK0b5QQ+IaXdYLynm2thfUY/hX+KOd/FwdnKtpz8b4gK8Xltg92Rx05V7hKsi3OfzPs1RJg6xgcUOPWKgY6f+7YJ0+EH8jfLMG8xXHkBfxXm3x7Q=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB6PR0402MB2856.eurprd04.prod.outlook.com (2603:10a6:4:9a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Wed, 3 Jun
- 2020 09:40:03 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.3066.018; Wed, 3 Jun 2020
- 09:40:03 +0000
-From:   peng.fan@nxp.com
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de, aisheng.dong@nxp.com
-Cc:     kernel@pengutronix.de, festevam@gmail.com, leonard.crestez@nxp.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] soc: imx: scu: use devm_kasprintf
-Date:   Wed,  3 Jun 2020 17:29:32 +0800
-Message-Id: <1591176572-9693-1-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0070.apcprd02.prod.outlook.com
- (2603:1096:4:54::34) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
+        id S1726402AbgFCJcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 05:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbgFCJcQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 05:32:16 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33E9C05BD43
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 02:32:15 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id e125so894747lfd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 02:32:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4f1Cyl0YeI3L9KPObQmKLYBSMli65+QxBgDMxC3xLDI=;
+        b=WFyguRK5TZF/ig1HlfEo56DPZl6QsdgRHwyzME5BE9Cnyzh2Tin6y4QU1grNXFyGi7
+         N+BBHNjCVoSyp0epO1PvM0r3VVWE7M7b3aV4cyAxiVaeYZy4V/JpEMw0p/Vk+ZX/cMsR
+         6Pfhxh2sdhOnCKXfTurwp8zJiRYQTtHBFCIwwvWuFCPGTgHDFHJtdlwVC5Qf4zMdhBn+
+         KCtZHx9z/kFQYyABvuuX+NuXAWMJ/Bbe32m618ClyK4WM9RDLFndtES3lvMWfl435RkJ
+         cozY/g85V6O70ZfWKJYXXrw/Kmi6KNj4Golqm2vioeoIO20wEANgjNEx9INwfPOg6ujn
+         91cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4f1Cyl0YeI3L9KPObQmKLYBSMli65+QxBgDMxC3xLDI=;
+        b=N3PoFyWP4uOE5c5/opZkDIsYTK6ysqv53D+fEx0q+s1SRKMbLl5tr4T/ATgkbHE+SK
+         wtJrtDzVtllrR5TTyqtb6nRlPFiwkFA8GSAKUUkjAGT5lYFuJ08CmIABOb8sM2o3BdET
+         kkDgEXis1IQn5oeUjKk+W4glOYZIU2pKg4KwiI0Ex/nd104e5ONfwLjJNiL1Q+0Dzkxf
+         kTBJGKymj06DzBlxq6tPxlaZEnkrxKl8qEkHVDBWY+Bya/9o0xaqZGB5qC3phQrLz/jw
+         JtGdowU/dQjxDWKCawMh2cWLToY2AZU8ZulZilgnlOUfR+rWBC53mfaGaEmjwP/3LVca
+         cMKQ==
+X-Gm-Message-State: AOAM533nReB+fOgG0b65fjQQgIvJaXwiIX0ueJkIoJSHQaEXjOuqpm6p
+        eIT9ivkUM1ZAhhVgOg0zrioDt3X53q2t2SSqlqJP1Q==
+X-Google-Smtp-Source: ABdhPJyMF3bTtwkxfKQ/zGDUE2fed47JYmAtXSJ5vvW8/FnxuQhwtIXWbzmhEspLiTN7/hirZv2g5bsjDGS/iKQTNDY=
+X-Received: by 2002:ac2:41d4:: with SMTP id d20mr2002613lfi.204.1591176734387;
+ Wed, 03 Jun 2020 02:32:14 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR02CA0070.apcprd02.prod.outlook.com (2603:1096:4:54::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3045.25 via Frontend Transport; Wed, 3 Jun 2020 09:40:00 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.66]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 968e6474-ad19-4ef5-a439-08d807a21764
-X-MS-TrafficTypeDiagnostic: DB6PR0402MB2856:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6PR0402MB28560A4A78E4B58086F52AA488880@DB6PR0402MB2856.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:324;
-X-Forefront-PRVS: 04238CD941
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 12XAsF9tEZf4nQsGfd+jV9EykKeYnJw/fNUDp0drfiO+fW6ezIKiZawKl/VwD0pk87levIH8YiSYBqQxBiN4Tmj/KrxE96YXj6ItokC/72FXeZrVjnN3jjQazznsH+ci4UCSoNfp1ScPDCrM3S76JA2xrQZaz3hoOSqYe/Hzm+37TGtVB4JvdNAJnXczLDM7HM5NgM2OWtiDOCMf9M32axiMO68gIx34IK/hkdP4zlsUN8iAqL4KQ8p4Inu8beht9BTHbefaWxd5IJmD6RkWAySC4IuoreQgxaApSYVk03y48kVfOihsc/nQ0ACf2+ZxP4keuUs0xOJpS3iDI18DUU1b8F5atx7r/B3CZMscqaijM+s3NepA/SI3zgPWUs/6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(376002)(396003)(39860400002)(136003)(316002)(5660300002)(8936002)(69590400007)(86362001)(83380400001)(6506007)(36756003)(478600001)(52116002)(66556008)(66946007)(8676002)(4326008)(66476007)(6512007)(9686003)(2616005)(186003)(26005)(16526019)(2906002)(956004)(6486002)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: LCE4Jv334FGUoRWjfS4gtftsAfbXAfT4aDGgtmNEKOyyHIZzkryruNoMQoc5qB5bt/qF60v7fr2VYqVbI5uITKJFLrgGLx/m2Z7xY0CpMEUye8gfAXeC7TJp2IdtStAHoATq6CqXnDdTZamqyz65lJrwKwkKkPLyUQsOV0sdE3bQuW44KVH5xwTV9Yt6AZe4xuV3mNP6sKOJ2Y9KhiMHPTv6BF2rv6Fu47THrNYt1z5u6g8ITMftWmuR2g4jLhfOnOCQZ0nOkbRPUtBO5POQqrdizan0r4T928bkmxw3Ublj/FbyTHbKSEHb0yk+ekhJYOJ5HwgigKUcR/hkwU9q6ApaJE0V0DPjDI9ivduEt59AD7NYG36D281lI6vArnDUfHOutiuA9ocm0uJvTgVlDOhUqf1761XLs7KX8Ba7HpG3lgUn4fQZ00rW4MJqXrZOKmikMCCt/nMu78sRRm6nblD6YVsusEugVgT6ft2WGMv5LQoeb5c0QngpIKqJgtAO
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 968e6474-ad19-4ef5-a439-08d807a21764
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2020 09:40:03.4002
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ccq5Biz/yie/NneAkByHNAEBsvDwUTyx+XnNBD6zbkD4f6Z5BoA5snLGyXhCl2qTnU0EFJBAjTMgDAWZPnSwrw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2856
+References: <1591168935-6382-1-git-send-email-sumit.garg@linaro.org>
+ <1591168935-6382-5-git-send-email-sumit.garg@linaro.org> <20200603082503.GD14855@linux-b0ei>
+In-Reply-To: <20200603082503.GD14855@linux-b0ei>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 3 Jun 2020 15:02:02 +0530
+Message-ID: <CAFA6WYMHtXzW-VLJYhC_-7w5+1NgM8PYrNXv=-2g_GKdOO+sNQ@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] kdb: Switch to use safer dbg_io_ops over console APIs
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+On Wed, 3 Jun 2020 at 13:55, Petr Mladek <pmladek@suse.com> wrote:
+>
+> On Wed 2020-06-03 12:52:15, Sumit Garg wrote:
+> > In kgdb context, calling console handlers aren't safe due to locks used
+> > in those handlers which could in turn lead to a deadlock. Although, using
+> > oops_in_progress increases the chance to bypass locks in most console
+> > handlers but it might not be sufficient enough in case a console uses
+> > more locks (VT/TTY is good example).
+> >
+> > Currently when a driver provides both polling I/O and a console then kdb
+> > will output using the console. We can increase robustness by using the
+> > currently active polling I/O driver (which should be lockless) instead
+> > of the corresponding console. For several common cases (e.g. an
+> > embedded system with a single serial port that is used both for console
+> > output and debugger I/O) this will result in no console handler being
+> > used.
+> >
+> > In order to achieve this we need to reverse the order of preference to
+> > use dbg_io_ops (uses polling I/O mode) over console APIs. So we just
+> > store "struct console" that represents debugger I/O in dbg_io_ops and
+> > while emitting kdb messages, skip console that matches dbg_io_ops
+> > console in order to avoid duplicate messages. After this change,
+> > "is_console" param becomes redundant and hence removed.
+> >
+> > diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
+> > index 4139698..6e182aa 100644
+> > --- a/drivers/tty/serial/kgdboc.c
+> > +++ b/drivers/tty/serial/kgdboc.c
+> > @@ -558,6 +557,7 @@ static int __init kgdboc_earlycon_init(char *opt)
+> >       }
+> >
+> >       earlycon = con;
+> > +     kgdboc_earlycon_io_ops.cons = con;
+> >       pr_info("Going to register kgdb with earlycon '%s'\n", con->name);
+> >       if (kgdb_register_io_module(&kgdboc_earlycon_io_ops) != 0) {
+> >               earlycon = NULL;
+>
+> Should we clear kgdboc_earlycon_io_ops.cons here when
+> kgdb_register_io_module() failed?
+>
 
-Use devm_kasprintf to simplify code
+AFAIK, kgdboc_earlycon_io_ops won't be used at any later stage in case
+registration fails. So IMO, it would be a redundant assignment unless
+I missed something.
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/soc/imx/soc-imx-scu.c | 37 +++++++++++--------------------------
- 1 file changed, 11 insertions(+), 26 deletions(-)
+-Sumit
 
-diff --git a/drivers/soc/imx/soc-imx-scu.c b/drivers/soc/imx/soc-imx-scu.c
-index 20d37eaeb5f2..92448ca9a6f8 100644
---- a/drivers/soc/imx/soc-imx-scu.c
-+++ b/drivers/soc/imx/soc-imx-scu.c
-@@ -115,43 +115,28 @@ static int imx_scu_soc_probe(struct platform_device *pdev)
- 
- 	/* format soc_id value passed from SCU firmware */
- 	val = id & 0x1f;
--	soc_dev_attr->soc_id = kasprintf(GFP_KERNEL, "0x%x", val);
-+	soc_dev_attr->soc_id = devm_kasprintf(&pdev->dev, GFP_KERNEL, "0x%x", val);
- 	if (!soc_dev_attr->soc_id)
- 		return -ENOMEM;
- 
- 	/* format revision value passed from SCU firmware */
- 	val = (id >> 5) & 0xf;
- 	val = (((val >> 2) + 1) << 4) | (val & 0x3);
--	soc_dev_attr->revision = kasprintf(GFP_KERNEL,
--					   "%d.%d",
--					   (val >> 4) & 0xf,
--					   val & 0xf);
--	if (!soc_dev_attr->revision) {
--		ret = -ENOMEM;
--		goto free_soc_id;
--	}
-+	soc_dev_attr->revision = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%d.%d",
-+						(val >> 4) & 0xf, val & 0xf);
-+	if (!soc_dev_attr->revision)
-+		return -ENOMEM;
- 
--	soc_dev_attr->serial_number = kasprintf(GFP_KERNEL, "%016llX", uid);
--	if (!soc_dev_attr->serial_number) {
--		ret = -ENOMEM;
--		goto free_revision;
--	}
-+	soc_dev_attr->serial_number = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-+						     "%016llX", uid);
-+	if (!soc_dev_attr->serial_number)
-+		return -ENOMEM;
- 
- 	soc_dev = soc_device_register(soc_dev_attr);
--	if (IS_ERR(soc_dev)) {
--		ret = PTR_ERR(soc_dev);
--		goto free_serial_number;
--	}
-+	if (IS_ERR(soc_dev))
-+		return PTR_ERR(soc_dev);
- 
- 	return 0;
--
--free_serial_number:
--	kfree(soc_dev_attr->serial_number);
--free_revision:
--	kfree(soc_dev_attr->revision);
--free_soc_id:
--	kfree(soc_dev_attr->soc_id);
--	return ret;
- }
- 
- static struct platform_driver imx_scu_soc_driver = {
--- 
-2.16.4
-
+> > diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+> > index c62d764..529116b 100644
+> > --- a/include/linux/kgdb.h
+> > +++ b/include/linux/kgdb.h
+> > @@ -276,8 +276,7 @@ struct kgdb_arch {
+> >   * the I/O driver.
+> >   * @post_exception: Pointer to a function that will do any cleanup work
+> >   * for the I/O driver.
+> > - * @is_console: 1 if the end device is a console 0 if the I/O device is
+> > - * not a console
+> > + * @cons: valid if the I/O device is a console; else NULL.
+> >   */
+> >  struct kgdb_io {
+> >       const char              *name;
+> > @@ -288,7 +287,7 @@ struct kgdb_io {
+> >       void                    (*deinit) (void);
+> >       void                    (*pre_exception) (void);
+> >       void                    (*post_exception) (void);
+> > -     int                     is_console;
+> > +     struct console          *cons;
+>
+> Nit: I would call it "con". The trailing 's' makes me feel that that the
+>      variable points to an array or list of consoles.
+>
+> >  };
+> >
+>
+> Otherwise, it looks pretty straightforward.
+>
+> Best Regards,
+> Petr
