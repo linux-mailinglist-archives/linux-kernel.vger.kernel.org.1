@@ -2,136 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004071ECBB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C011ECBBC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgFCImL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 04:42:11 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2268 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725355AbgFCImI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 04:42:08 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 6809DE24A9B570BF8335;
-        Wed,  3 Jun 2020 09:42:06 +0100 (IST)
-Received: from [127.0.0.1] (10.47.0.59) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 3 Jun 2020
- 09:42:05 +0100
-Subject: Re: [PATCH v3] libata: Use per port sync for detach
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, <axboe@kernel.dk>
-CC:     "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200603074819.21639-1-kai.heng.feng@canonical.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <b13888c3-d1f9-7e6e-d25e-0287b3d7ba9b@huawei.com>
-Date:   Wed, 3 Jun 2020 09:40:54 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726371AbgFCIpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 04:45:32 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:37350 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726243AbgFCIpc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 04:45:32 -0400
+X-UUID: f30f1bf5163c40d4b518c5f6d536a3c4-20200603
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=GqhgG6L1zGtST6u5yF493LQmjohmvvIpbn2zNdLG3lI=;
+        b=EglGzROtLnjGP6UZ7vtLOLO5lL7jNEVYEoUCIoIuLfLHEOTqUvF9DjQG4pbPUSbhipRSvqUq/8y9yfbB3PixdysjiKhpCwP1Kc8RRtA3Om4bWvICDizKNaBk7433ramkhTVmPUezXbIx6d7GXgKnXMF0Pujhp2WqTGC92QMAMlc=;
+X-UUID: f30f1bf5163c40d4b518c5f6d536a3c4-20200603
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1543401211; Wed, 03 Jun 2020 16:45:29 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs01n2.mediatek.inc
+ (172.21.101.79) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Jun
+ 2020 16:45:26 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 3 Jun 2020 16:45:26 +0800
+Message-ID: <1591173806.15527.1.camel@mhfsdcap03>
+Subject: Re: [PATCH v2] usb: host: xhci-mtk: avoid runtime suspend when
+ removing hcd
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Macpaul Lin <macpaul.lin@mediatek.com>
+CC:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul.lin@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-usb@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
+Date:   Wed, 3 Jun 2020 16:43:26 +0800
+In-Reply-To: <1590726778-29065-1-git-send-email-macpaul.lin@mediatek.com>
+References: <1590726569-28248-1-git-send-email-macpaul.lin@mediatek.com>
+         <1590726778-29065-1-git-send-email-macpaul.lin@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20200603074819.21639-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.0.59]
-X-ClientProxiedBy: lhreml735-chm.china.huawei.com (10.201.108.86) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+X-TM-SNTS-SMTP: CA6D6B5CA1B57E8E80E8EA32F96818490747DA2EE90F21A39CF72B716572D3462000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/06/2020 08:48, Kai-Heng Feng wrote:
-> Commit 130f4caf145c ("libata: Ensure ata_port probe has completed before
-> detach") may cause system freeze during suspend.
-> 
-> Using async_synchronize_full() in PM callbacks is wrong, since async
-> callbacks that are already scheduled may wait for not-yet-scheduled
-> callbacks, causes a circular dependency.
-> 
-> Instead of using big hammer like async_synchronize_full(), use async
-> cookie to make sure port probe are synced, without affecting other
-> scheduled PM callbacks.
-> 
-> Fixes: 130f4caf145c ("libata: Ensure ata_port probe has completed before detach")
-> BugLink: https://bugs.launchpad.net/bugs/1867983
-> Suggested-by: John Garry <john.garry@huawei.com>
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-
-thanks,
-Tested-by: John Garry <john.garry@huawei.com>
-
-> ---
-> v3:
->   - Move the comment to properly align with the code.
-> 
-> v2:
->   - Sync up to cookie + 1.
->   - Squash the synchronization into the same loop.
-> 
->   drivers/ata/libata-core.c | 11 +++++------
->   include/linux/libata.h    |  3 +++
->   2 files changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-> index 69361ec43db5..b1cd4d97bc2a 100644
-> --- a/drivers/ata/libata-core.c
-> +++ b/drivers/ata/libata-core.c
-> @@ -42,7 +42,6 @@
->   #include <linux/workqueue.h>
->   #include <linux/scatterlist.h>
->   #include <linux/io.h>
-> -#include <linux/async.h>
->   #include <linux/log2.h>
->   #include <linux/slab.h>
->   #include <linux/glob.h>
-> @@ -5778,7 +5777,7 @@ int ata_host_register(struct ata_host *host, struct scsi_host_template *sht)
->   	/* perform each probe asynchronously */
->   	for (i = 0; i < host->n_ports; i++) {
->   		struct ata_port *ap = host->ports[i];
-> -		async_schedule(async_port_probe, ap);
-> +		ap->cookie = async_schedule(async_port_probe, ap);
->   	}
->   
->   	return 0;
-> @@ -5920,11 +5919,11 @@ void ata_host_detach(struct ata_host *host)
->   {
->   	int i;
->   
-> -	/* Ensure ata_port probe has completed */
-> -	async_synchronize_full();
-> -
-> -	for (i = 0; i < host->n_ports; i++)
-> +	for (i = 0; i < host->n_ports; i++) {
-> +		/* Ensure ata_port probe has completed */
-> +		async_synchronize_cookie(host->ports[i]->cookie + 1);
->   		ata_port_detach(host->ports[i]);
-> +	}
->   
->   	/* the host is dead now, dissociate ACPI */
->   	ata_acpi_dissociate(host);
-> diff --git a/include/linux/libata.h b/include/linux/libata.h
-> index af832852e620..8a4843704d28 100644
-> --- a/include/linux/libata.h
-> +++ b/include/linux/libata.h
-> @@ -22,6 +22,7 @@
->   #include <linux/acpi.h>
->   #include <linux/cdrom.h>
->   #include <linux/sched.h>
-> +#include <linux/async.h>
->   
->   /*
->    * Define if arch has non-standard setup.  This is a _PCI_ standard
-> @@ -872,6 +873,8 @@ struct ata_port {
->   	struct timer_list	fastdrain_timer;
->   	unsigned long		fastdrain_cnt;
->   
-> +	async_cookie_t		cookie;
-> +
->   	int			em_message_type;
->   	void			*private_data;
->   
-> 
+T24gRnJpLCAyMDIwLTA1LTI5IGF0IDEyOjMyICswODAwLCBNYWNwYXVsIExpbiB3cm90ZToNCj4g
+V2hlbiBydW50aW1lIHN1c3BlbmQgd2FzIGVuYWJsZWQsIHJ1bnRpbWUgc3VzcGVuZCBtaWdodCBo
+YXBwZW5lZA0KPiB3aGVuIHhoY2kgaXMgcmVtb3ZpbmcgaGNkLiBUaGlzIG1pZ2h0IGNhdXNlIGtl
+cm5lbCBwYW5pYyB3aGVuIGhjZA0KPiBoYXMgYmVlbiBmcmVlZCBidXQgcnVudGltZSBwbSBzdXNw
+ZW5kIHJlbGF0ZWQgaGFuZGxlIG5lZWQgdG8NCj4gcmVmZXJlbmNlIGl0Lg0KPiANCj4gU2lnbmVk
+LW9mZi1ieTogTWFjcGF1bCBMaW4gPG1hY3BhdWwubGluQG1lZGlhdGVrLmNvbT4NCj4gLS0tDQo+
+ICBkcml2ZXJzL3VzYi9ob3N0L3hoY2ktbXRrLmMgfCAgICA1ICsrKy0tDQo+ICAxIGZpbGUgY2hh
+bmdlZCwgMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvdXNiL2hvc3QveGhjaS1tdGsuYyBiL2RyaXZlcnMvdXNiL2hvc3QveGhjaS1tdGsu
+Yw0KPiBpbmRleCBiZmJkYjNjLi42NDFkMjRlIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3VzYi9o
+b3N0L3hoY2ktbXRrLmMNCj4gKysrIGIvZHJpdmVycy91c2IvaG9zdC94aGNpLW10ay5jDQo+IEBA
+IC01ODcsNiArNTg3LDkgQEAgc3RhdGljIGludCB4aGNpX210a19yZW1vdmUoc3RydWN0IHBsYXRm
+b3JtX2RldmljZSAqZGV2KQ0KPiAgCXN0cnVjdCB4aGNpX2hjZAkqeGhjaSA9IGhjZF90b194aGNp
+KGhjZCk7DQo+ICAJc3RydWN0IHVzYl9oY2QgICpzaGFyZWRfaGNkID0geGhjaS0+c2hhcmVkX2hj
+ZDsNCj4gIA0KPiArCXBtX3J1bnRpbWVfcHV0X3N5bmMoJmRldi0+ZGV2KTsNCj4gKwlwbV9ydW50
+aW1lX2Rpc2FibGUoJmRldi0+ZGV2KTsNCj4gKw0KPiAgCXVzYl9yZW1vdmVfaGNkKHNoYXJlZF9o
+Y2QpOw0KPiAgCXhoY2ktPnNoYXJlZF9oY2QgPSBOVUxMOw0KPiAgCWRldmljZV9pbml0X3dha2V1
+cCgmZGV2LT5kZXYsIGZhbHNlKTsNCj4gQEAgLTU5Nyw4ICs2MDAsNiBAQCBzdGF0aWMgaW50IHho
+Y2lfbXRrX3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXYpDQo+ICAJeGhjaV9tdGtf
+c2NoX2V4aXQobXRrKTsNCj4gIAl4aGNpX210a19jbGtzX2Rpc2FibGUobXRrKTsNCj4gIAl4aGNp
+X210a19sZG9zX2Rpc2FibGUobXRrKTsNCj4gLQlwbV9ydW50aW1lX3B1dF9zeW5jKCZkZXYtPmRl
+dik7DQo+IC0JcG1fcnVudGltZV9kaXNhYmxlKCZkZXYtPmRldik7DQo+ICANCj4gIAlyZXR1cm4g
+MDsNCj4gIH0NCg0KUmV2aWV3ZWQtYnk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlh
+dGVrLmNvbT4NCg0KVGhhbmtzDQoNCg0K
 
