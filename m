@@ -2,136 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7581ECBBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC501ECBBE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgFCIpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 04:45:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56480 "EHLO mail.kernel.org"
+        id S1726434AbgFCIpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 04:45:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51046 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbgFCIpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 04:45:24 -0400
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90AB92074B;
-        Wed,  3 Jun 2020 08:45:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591173923;
-        bh=cblJEWAd3DPBh04Tlvi8BcWOqhwYMzDqk94d+BenPsg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JMMp8Ma1HO/w/A4xLIz/t4cDUfnR9e6+1nfkhAszV/2t7s5h2fFOHOWb5WhGNIVww
-         HlDhJJr2T/2K1hDog0MaSCnEnalnWwGta927B0xxNxUBzO38h+iAKd2gjX8L/qSCg6
-         T77Fw9B1pB9+weIlI0CutbQ8W7oT1wSKDmnpUmIk=
-Received: by mail-ot1-f43.google.com with SMTP id b18so1281469oti.1;
-        Wed, 03 Jun 2020 01:45:23 -0700 (PDT)
-X-Gm-Message-State: AOAM531oZN/gcuD3wfWmocPmxYLOYYIXle7IE2FwRUMFYasDNB31kidR
-        zuneZdDlmnToPYnMv3EFk7kxaD7TNsx53A7EjMg=
-X-Google-Smtp-Source: ABdhPJzoqH82vfddBcZ2ilJNSYyw2hykyw6p+iOltpxefWYgGi1NHuWQjSjLS+b1Ow7vhgSqC6IYHofRPCZ/ijqKzNE=
-X-Received: by 2002:a9d:7684:: with SMTP id j4mr1249171otl.108.1591173922903;
- Wed, 03 Jun 2020 01:45:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200603053313.3863761-1-masahiroy@kernel.org>
- <CAMj1kXGk-2pyTZ3yNW14Kk4fvtsNOb7maAHVM2C=vVAjaaFRug@mail.gmail.com> <CAK7LNARg70FrTmnuoUiLM6KWxeJ+AeXqgB53GS6sY7z0J+qH6g@mail.gmail.com>
-In-Reply-To: <CAK7LNARg70FrTmnuoUiLM6KWxeJ+AeXqgB53GS6sY7z0J+qH6g@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 3 Jun 2020 10:45:11 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFxmgQ=YzmLNnMO-2gibSGQ1=tXBd07ntqCYYU122zEUw@mail.gmail.com>
-Message-ID: <CAMj1kXFxmgQ=YzmLNnMO-2gibSGQ1=tXBd07ntqCYYU122zEUw@mail.gmail.com>
-Subject: Re: [PATCH] efi/libstub: refactor Makefile to not use lib-y syntax
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726243AbgFCIpp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 04:45:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 77D98ACCC;
+        Wed,  3 Jun 2020 08:45:45 +0000 (UTC)
+Date:   Wed, 03 Jun 2020 10:45:41 +0200
+Message-ID: <s5h367cfsga.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Macpaul Lin <macpaul.lin@mediatek.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Alexander Tsoy <alexander@tsoy.me>,
+        Johan Hovold <johan@kernel.org>,
+        Hui Wang <hui.wang@canonical.com>,
+        Szabolcs =?UTF-8?B?U3rFkWtl?= <szszoke.code@gmail.com>,
+        <alsa-devel@alsa-project.org>, <linux-usb@vger.kernel.org>,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul.lin@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] sound: usb: pcm: fix incorrect power state when playing sound after PM_AUTO suspend
+In-Reply-To: <s5hblm0fxl0.wl-tiwai@suse.de>
+References: <s5hpnahhbz8.wl-tiwai@suse.de>
+        <1591153515.23525.50.camel@mtkswgap22>
+        <s5heeqwfyti.wl-tiwai@suse.de>
+        <s5hblm0fxl0.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Jun 2020 at 10:36, Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Wed, Jun 3, 2020 at 3:45 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Wed, 3 Jun 2020 at 07:34, Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >
-> > > Documentation/kbuild/makefiles.rst says:
-> > >
-> > >   Use of lib-y is normally restricted to `lib/` and `arch/*/lib`.
-> > >
-> > > I want to disallow lib-y outside of them.
-> > >
-> >
-> > Why?
->
->
-> Because I plan to remove lib-y entirely at some point.
->
-> lib-y is not so useful to shrink the image size because:
->
->   - An object in lib.a can be omitted only when no symbol
->     in that object is referenced.  This rarely happens.
->
->   -  lib-y objects are often exported by nature
->      because lib-y is a collection of utility functions.
->      Even if no in-tree user, we always need to keep them
->      because EXPORT_SYMBOL() is the interface to modules.
->
->
-> When I worked on commit 7273ad2b08f8ac9563579d16a3cf528857b26f49,
-> I made some research.
->
-> The benefit of lib-y is just 362 byte for x86_64_defconfig.
-> ( Before: 26578002, After: 26578364)
->
-> My hope is lib-y will be replaced by dead-code elimination or
-> ultimately by LTO.
->
-> drivers/firmware/efi/libstub/Makefile
-> is the only Makefile that breaks the rule:
-> "Use of lib-y is normally restricted to `lib/` and `arch/*/lib`"
->
->
->
->
-> >
-> > > Add a custom rule to build lib.a, which is linked to the decompressor
-> > > for ARCH=x86, ARCH=arm.
-> > >
-> > > For ARCH=arm64, use obj-y to link objects to vmlinux in the ordinary
-> > > way.
-> > >
-> >
-> > The code works perfectly fine as is, and I don't see what is
-> > fundamentally wrong with using static libraries outside of lib/ and
-> > arch/*/lib.
->
-> The intended usage of lib-y is to hook lib.a
-> to scripts/vmlinux.sh via KBUILD_VMLINUX_LIBS.
->
-> This Makefile is just what you found to work.
->
->
-> >
-> > Also, I would like this code to still be incorporated as a static
-> > library into arm64 as well, so that only pieces that are actually
-> > needed are incorporated into the final image.
->
-> No.
-> It is not working like that because you set
-> lib.a to core-y.
->
-> All objects in core-y are always linked to vmlinux.
->
+On Wed, 03 Jun 2020 08:54:51 +0200,
+Takashi Iwai wrote:
+> 
+> On Wed, 03 Jun 2020 08:28:09 +0200,
+> Takashi Iwai wrote:
+> > 
+> > And, the most suspicious case is the last one,
+> > chip->num_suspended-intf.  It means that the device has multiple
+> > USB interfaces and they went to suspend, while the resume isn't
+> > performed for the all suspended interfaces in return.
+> 
+> If this is the cause, a patch like below might help.
+> It gets/puts the all assigned interfaced instead of only the primary
+> one.
 
-The lib.a file is passed to the linker as a static library, so it will
-only grab what it needs.
+... and considering of the problem again, rather the patch below might
+be the right answer.  Now the driver tries to remember at which state
+it entered into the system-suspend.  Upon resume, in return, when the
+state reaches back to that point, set the card state to D0.
 
-For instance, if you build arm64 from mainline today, the
-efi_relocate_kernel will not be in the final image, even though it is
-built as part of libstub
+The previous patch can be applied on the top, too, and it might be
+worth to apply both.
+
+Let me know if any of those actually helps.
+
+
+Takashi
+
+---
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -843,9 +843,6 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+ 	if (chip == (void *)-1L)
+ 		return 0;
+ 
+-	chip->autosuspended = !!PMSG_IS_AUTO(message);
+-	if (!chip->autosuspended)
+-		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D3hot);
+ 	if (!chip->num_suspended_intf++) {
+ 		list_for_each_entry(as, &chip->pcm_list, list) {
+ 			snd_usb_pcm_suspend(as);
+@@ -858,6 +855,11 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+ 			snd_usb_mixer_suspend(mixer);
+ 	}
+ 
++	if (!PMSG_IS_AUTO(message) && !chip->system_suspend) {
++		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D3hot);
++		chip->system_suspend = chip->num_suspended_intf;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -871,10 +873,10 @@ static int __usb_audio_resume(struct usb_interface *intf, bool reset_resume)
+ 
+ 	if (chip == (void *)-1L)
+ 		return 0;
+-	if (--chip->num_suspended_intf)
+-		return 0;
+ 
+ 	atomic_inc(&chip->active); /* avoid autopm */
++	if (chip->num_suspended_intf > 1)
++		goto out;
+ 
+ 	list_for_each_entry(as, &chip->pcm_list, list) {
+ 		err = snd_usb_pcm_resume(as);
+@@ -896,9 +898,12 @@ static int __usb_audio_resume(struct usb_interface *intf, bool reset_resume)
+ 		snd_usbmidi_resume(p);
+ 	}
+ 
+-	if (!chip->autosuspended)
++ out:
++	if (chip->num_suspended_intf == chip->system_suspend) {
+ 		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D0);
+-	chip->autosuspended = 0;
++		chip->system_suspend = 0;
++	}
++	chip->num_suspended_intf--;
+ 
+ err_out:
+ 	atomic_dec(&chip->active); /* allow autopm after this point */
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index 1c892c7f14d7..e0ebfb25fbd5 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -26,7 +26,7 @@ struct snd_usb_audio {
+ 	struct usb_interface *pm_intf;
+ 	u32 usb_id;
+ 	struct mutex mutex;
+-	unsigned int autosuspended:1;	
++	unsigned int system_suspend;
+ 	atomic_t active;
+ 	atomic_t shutdown;
+ 	atomic_t usage_count;
