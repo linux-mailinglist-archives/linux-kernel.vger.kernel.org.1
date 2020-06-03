@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCD91ED418
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 18:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819531ED421
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 18:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726076AbgFCQTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 12:19:24 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:41582 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgFCQTX (ORCPT
+        id S1726151AbgFCQVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 12:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726088AbgFCQVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 12:19:23 -0400
-Received: by mail-io1-f66.google.com with SMTP id o5so2887508iow.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 09:19:23 -0700 (PDT)
+        Wed, 3 Jun 2020 12:21:30 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3822C08C5C0;
+        Wed,  3 Jun 2020 09:21:29 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id z2so3107884ilq.0;
+        Wed, 03 Jun 2020 09:21:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cQzWmDpi1wJWr0RAlK2/sz80AqOXD8xVaJIwnGR0WlI=;
+        b=ohUB6XRm86g2of7JgBVG2MU0BLZ0blpmOnYXK3ZXp8oSse4caksO/C+X67LsiwT1c/
+         PdPRhORlmR9BQNUEDt8RLgIPepqCraQkWZN+J/3pAB2D1xNDIV4perqgDx0gEdKrf446
+         4Mych9a3o8xREmPYtEcF6rr1Z6nzBxyRH30UXpqyKJajb88IRVfYOuLUDxyFu/PQtSKO
+         GYYdl51AsOskRKzDj2OcstIL9Sx0c3lQapUfLmRpFJ5j9WQNP7FQGmlBE8FUbD+Hl4SR
+         6nmme5G8WpmXolqwVoxOWC3N7COBg/IuTzVxTIDVwQ1eCOYkeugKQVFT+udtUMBOTlez
+         Cq4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rC5bE9KFvxDnJlcIiTlWdbXRmbn0P+2nI1r3gG1LMao=;
-        b=KWtwKLq5k5yduwYU0+awVZBJ+eRqkZ8R6W23tXhMGaOE249AqVqS3VrYXxAobTuF2R
-         On04wu3dN2WOoYn00MFXTfFJ1zYm60+ayjrIzBjlmAxC4+YZlC37pdo6tZ7OAJczFTCc
-         w89bi0Ub8Fm3oXgRWrnFswkkdxgenf/fpPB0uYeKRDVykKWKgAiOV91WpiU7wJy0V1kk
-         Q/I4pC0i3ORI5zCURJPWpIazXKZR/k2daiq3j2ZS9XsN7KSoegIFdte+RtGqeGakNQwl
-         7Mr6ZzvdLGuGURcJ5GfRlwoe7wJkgnk686zWw1WznY/dOatIxZK+xyJXfpRiIIxI9Nle
-         f6dA==
-X-Gm-Message-State: AOAM531/kFxGxCsCizHcasQGy7J5MBij32vOW8ktW8CAxGkGKnyU45uX
-        kET0FUrfqPF14FgFRc/PAA==
-X-Google-Smtp-Source: ABdhPJxDBsDsagU3oxTW3qm0z17Idaq7Nb0AnTWkfF+zJ7waFaMp+/uD70MJ/TrnJ77YA1pde9s1WA==
-X-Received: by 2002:a5d:8613:: with SMTP id f19mr438310iol.173.1591201162738;
-        Wed, 03 Jun 2020 09:19:22 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id i78sm1248407ile.87.2020.06.03.09.19.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 09:19:22 -0700 (PDT)
-Received: (nullmailer pid 1478226 invoked by uid 1000);
-        Wed, 03 Jun 2020 16:19:19 -0000
-Date:   Wed, 3 Jun 2020 10:19:19 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Raphael Gault <raphael.gault@arm.com>, mark.rutland@arm.com,
-        raph.gault+kdev@gmail.com, peterz@infradead.org,
-        catalin.marinas@arm.com, will.deacon@arm.com,
-        linux-kernel@vger.kernel.org, acme@kernel.org, mingo@redhat.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 1/7] perf: arm64: Add test to check userspace access
- to hardware counters.
-Message-ID: <20200603161919.GA1364927@bogus>
-References: <20190822144220.27860-1-raphael.gault@arm.com>
- <20190822144220.27860-2-raphael.gault@arm.com>
- <20190827191755.00007a57@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cQzWmDpi1wJWr0RAlK2/sz80AqOXD8xVaJIwnGR0WlI=;
+        b=iAnWbClJTi49WdLmimelhmLMT876u5m8pV5PdVTGJ39C5HQoQyMV0scQZyLEYQOWec
+         1/ENjbyV+kjUttyiXDRVt0Zwk8zmPerJe9WhxaJVUz4FSIAraC3SmNXRBRm5kQTcO+/f
+         XWpy+4UUOsxwp8v+sAaiRwA0rsWxIks0gBO9PnJOciVvxKFTd5R9UbPUPT2Ws6B+ym/b
+         MUP45Fd87x1I7KQzOTLl64BPkxaWFLu4ky88ClK2/yAYPbx8wVHEX2d8B+d7Z79DaAYA
+         Sg/l93DJfJu4IzcTfBWOAQ6ayUPpBzHW3C3+1a4wXnpRjlD0Ncd72msKl4kmJqsli64t
+         WDuw==
+X-Gm-Message-State: AOAM5326Tpsf2Z/NENie4PsNXNJFet9uVmsRq047yYYKDsUevL7YkPT/
+        ScabTQyv7u3xA3dNysUk6/zuHxQaq/c6QL5cTbY=
+X-Google-Smtp-Source: ABdhPJyTdlCHYTTpxOFSyktVrh69KTHXJ6eGz1oRtrU9A3OdrzKYmM3Hma8Io/AqZzE5MUBYw7pgAp0UmOm8eP0HSvI=
+X-Received: by 2002:a92:2a0c:: with SMTP id r12mr261189ile.275.1591201289370;
+ Wed, 03 Jun 2020 09:21:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190827191755.00007a57@huawei.com>
+References: <20200603154559.140418-1-colin.king@canonical.com>
+ <CAOQ4uxhLW=MSk=RhUi51EdOticfk1i_pku6qjCp2QpwnpyL5sw@mail.gmail.com> <1edc291d-6e63-89d8-d48c-443908ddc0e8@canonical.com>
+In-Reply-To: <1edc291d-6e63-89d8-d48c-443908ddc0e8@canonical.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 3 Jun 2020 19:21:18 +0300
+Message-ID: <CAOQ4uxhSKT6dE7JUKMM7Jg2T7HFfUJQFXObtPi+z2G+JxzyRSg@mail.gmail.com>
+Subject: Re: [PATCH][next] ovl: fix null pointer dereference on null stack
+ pointer on error return
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 27, 2019 at 07:17:55PM +0800, Jonathan Cameron wrote:
-> On Thu, 22 Aug 2019 15:42:14 +0100
-> Raphael Gault <raphael.gault@arm.com> wrote:
-> 
-> > This test relies on the fact that the PMU registers are accessible
-> > from userspace. It then uses the perf_event_mmap_page to retrieve
-> > the counter index and access the underlying register.
-> > 
-> > This test uses sched_setaffinity(2) in order to run on all CPU and thus
-> > check the behaviour of the PMU of all cpus in a big.LITTLE environment.
-> > 
-> > Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-> 
-> Hi Raphael,
-> 
-> I just tested this on 1620 and it works fairly nicely with one exception...
+On Wed, Jun 3, 2020 at 7:15 PM Colin Ian King <colin.king@canonical.com> wrote:
+>
+> On 03/06/2020 17:11, Amir Goldstein wrote:
+> > On Wed, Jun 3, 2020 at 6:46 PM Colin King <colin.king@canonical.com> wrote:
+> >>
+> >> From: Colin Ian King <colin.king@canonical.com>
+> >>
+> >> There are two error return paths where the call to path_put is
+> >> dereferencing the null pointer 'stack'.  Fix this by avoiding the
+> >> error exit path via label 'out_err' that will lead to the path_put
+> >> calls and instead just return the error code directly.
+> >>
+> >> Addresses-Coverity: ("Dereference after null check)"
+> >> Fixes: 4155c10a0309 ("ovl: clean up getting lower layers")
+> >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> >
+> >
+> > Which branch is that based on?
+> > Doesn't seem to apply to master nor next
+>
+> It was based on today's linux-next
 
-I'm working on reviving this series.
+Oh, I'm behind.
+Sorry for the noise.
 
-> The test will run and generate garbage numbers if the rest of the
-> series isn't yet applied to the kernel.  Is there anything we can do
-> to prevent that?
-
-I've added a check that user access is enabled which should prevent 
-that. It also validates pmc_width is set which was missing in this 
-series.
-
-> It's a slightly silly complaint, but this also take a while compared to all 
-> the other tests if you have lots of cores, so maybe a slightly shorter
-> test?
-
-I'm not sure what the value of running on every core was supposed to be. 
-If we want to check big.LITTLE, then the test should detect that and 
-pass if user access is disabled on all cores. If we're not on 
-big.LITTLE, then I don't see the point in this test running on every 
-core.
-
-Rob
+Thanks,
+Amir.
