@@ -2,113 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9941ECBAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004071ECBB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgFCIlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 04:41:05 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:38363 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgFCIlF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 04:41:05 -0400
-Received: by mail-lf1-f66.google.com with SMTP id 202so789914lfe.5;
-        Wed, 03 Jun 2020 01:41:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y3+NZ002fR5cwFINbc/o3dpUhIJL9xPazQ2yRYvAcPI=;
-        b=hCKGaV93HEyfanQW2nAnEjNxbwDsgSYdkTODol6+PNwAyo+kuNPDUKiMhE80mpiu9o
-         zubbOA8qpI5QX647m0BK2AAWL2lLBQm7rYvJmni8wTFJcbW/j6/1sAT4blQrmczyWa21
-         PkFK/71ER6yi7IGo/HTGm+WmsJ9hVxb2jo4JUWEfKWbEmTqsb1ydZB/F5t96HyhSFqER
-         QoFFj2ZwrQbFgNU3p4BAFtONiYu36xAAAerV4jGEKj6ZMWvp209JFnOkw368Of8RLXku
-         WIXRMe7s/7BCS8M+TwOQUYOerldFaRTirFNp8LhCOdFqd2+oO6al5lxUaKw6hRKBvqH6
-         4jhw==
-X-Gm-Message-State: AOAM532MKL7xWBuCjQZLzHVIGx2++6Fs35TJgQGSNcVTihnQuXFP0jbB
-        aJ2N+y6DsKs3nMgmICIQOfI=
-X-Google-Smtp-Source: ABdhPJzoycNz0b42LjEGhqRPhb5Q3Xac6OiJOYqR8aXp9vwMshAsFIyQ9VYMEqnoKBUzsU0ot5PTsA==
-X-Received: by 2002:a19:434e:: with SMTP id m14mr1905473lfj.40.1591173662210;
-        Wed, 03 Jun 2020 01:41:02 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id w20sm298508lji.7.2020.06.03.01.41.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 01:41:01 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1jgOx9-0002Ai-OO; Wed, 03 Jun 2020 10:40:51 +0200
-Date:   Wed, 3 Jun 2020 10:40:51 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Dmitry Safonov <0x7f454c46@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH 2/4] serial: core: fix broken sysrq port unlock
-Message-ID: <20200603084051.GJ19480@localhost>
-References: <20200602140058.3656-1-johan@kernel.org>
- <20200602140058.3656-3-johan@kernel.org>
- <CAHp75VeXYn46wQ5EXkk_MOQ49ybtyTeoQS6BS1X9DkC6hbeF-w@mail.gmail.com>
- <b016ad68-124a-5c98-f49b-f7286d995223@gmail.com>
+        id S1726300AbgFCImL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 04:42:11 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2268 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725355AbgFCImI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 04:42:08 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 6809DE24A9B570BF8335;
+        Wed,  3 Jun 2020 09:42:06 +0100 (IST)
+Received: from [127.0.0.1] (10.47.0.59) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 3 Jun 2020
+ 09:42:05 +0100
+Subject: Re: [PATCH v3] libata: Use per port sync for detach
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, <axboe@kernel.dk>
+CC:     "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
+        <linux-ide@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200603074819.21639-1-kai.heng.feng@canonical.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <b13888c3-d1f9-7e6e-d25e-0287b3d7ba9b@huawei.com>
+Date:   Wed, 3 Jun 2020 09:40:54 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b016ad68-124a-5c98-f49b-f7286d995223@gmail.com>
+In-Reply-To: <20200603074819.21639-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.0.59]
+X-ClientProxiedBy: lhreml735-chm.china.huawei.com (10.201.108.86) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 04:34:16PM +0100, Dmitry Safonov wrote:
-> On 6/2/20 3:48 PM, Andy Shevchenko wrote:
-> > On Tue, Jun 2, 2020 at 5:03 PM Johan Hovold <johan@kernel.org> wrote:
-> >>
-> >> Commit d6e1935819db ("serial: core: Allow processing sysrq at port
-> >> unlock time") worked around a circular locking dependency by adding
-> >> helpers used to defer sysrq processing to when the port lock was
-> >> released.
-> >>
-> >> A later commit unfortunately converted these inline helpers to exported
-> >> functions despite the fact that the unlock helper was restoring irq
-> >> flags, something which needs to be done in the same function that saved
-> >> them (e.g. on SPARC).
-> > 
-> > I'm not familiar with sparc, can you elaborate a bit what is ABI /
-> > architecture lock implementation background?
+On 03/06/2020 08:48, Kai-Heng Feng wrote:
+> Commit 130f4caf145c ("libata: Ensure ata_port probe has completed before
+> detach") may cause system freeze during suspend.
 > 
-> I remember that was a limitation a while ago to save/restore flags from
-> the same function. Though, I vaguely remember the reason.
-> I don't see this limitation in Documentation/*
+> Using async_synchronize_full() in PM callbacks is wrong, since async
+> callbacks that are already scheduled may wait for not-yet-scheduled
+> callbacks, causes a circular dependency.
+> 
+> Instead of using big hammer like async_synchronize_full(), use async
+> cookie to make sure port probe are synced, without affecting other
+> scheduled PM callbacks.
+> 
+> Fixes: 130f4caf145c ("libata: Ensure ata_port probe has completed before detach")
+> BugLink: https://bugs.launchpad.net/bugs/1867983
+> Suggested-by: John Garry <john.garry@huawei.com>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-It's described in both LDD3 and LKD, which is possibly where I first
-picked it up too (admittedly a long time ago).
+thanks,
+Tested-by: John Garry <john.garry@huawei.com>
 
-> Google suggests that it's related to storage location:
-> https://stackoverflow.com/a/34279032
+> ---
+> v3:
+>   - Move the comment to properly align with the code.
+> 
+> v2:
+>   - Sync up to cookie + 1.
+>   - Squash the synchronization into the same loop.
+> 
+>   drivers/ata/libata-core.c | 11 +++++------
+>   include/linux/libata.h    |  3 +++
+>   2 files changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+> index 69361ec43db5..b1cd4d97bc2a 100644
+> --- a/drivers/ata/libata-core.c
+> +++ b/drivers/ata/libata-core.c
+> @@ -42,7 +42,6 @@
+>   #include <linux/workqueue.h>
+>   #include <linux/scatterlist.h>
+>   #include <linux/io.h>
+> -#include <linux/async.h>
+>   #include <linux/log2.h>
+>   #include <linux/slab.h>
+>   #include <linux/glob.h>
+> @@ -5778,7 +5777,7 @@ int ata_host_register(struct ata_host *host, struct scsi_host_template *sht)
+>   	/* perform each probe asynchronously */
+>   	for (i = 0; i < host->n_ports; i++) {
+>   		struct ata_port *ap = host->ports[i];
+> -		async_schedule(async_port_probe, ap);
+> +		ap->cookie = async_schedule(async_port_probe, ap);
+>   	}
+>   
+>   	return 0;
+> @@ -5920,11 +5919,11 @@ void ata_host_detach(struct ata_host *host)
+>   {
+>   	int i;
+>   
+> -	/* Ensure ata_port probe has completed */
+> -	async_synchronize_full();
+> -
+> -	for (i = 0; i < host->n_ports; i++)
+> +	for (i = 0; i < host->n_ports; i++) {
+> +		/* Ensure ata_port probe has completed */
+> +		async_synchronize_cookie(host->ports[i]->cookie + 1);
+>   		ata_port_detach(host->ports[i]);
+> +	}
+>   
+>   	/* the host is dead now, dissociate ACPI */
+>   	ata_acpi_dissociate(host);
+> diff --git a/include/linux/libata.h b/include/linux/libata.h
+> index af832852e620..8a4843704d28 100644
+> --- a/include/linux/libata.h
+> +++ b/include/linux/libata.h
+> @@ -22,6 +22,7 @@
+>   #include <linux/acpi.h>
+>   #include <linux/cdrom.h>
+>   #include <linux/sched.h>
+> +#include <linux/async.h>
+>   
+>   /*
+>    * Define if arch has non-standard setup.  This is a _PCI_ standard
+> @@ -872,6 +873,8 @@ struct ata_port {
+>   	struct timer_list	fastdrain_timer;
+>   	unsigned long		fastdrain_cnt;
+>   
+> +	async_cookie_t		cookie;
+> +
+>   	int			em_message_type;
+>   	void			*private_data;
+>   
+> 
 
-No, that was never the issue.
-
-SPARC includes the current register window in those flags, which at
-least had to be restored in the same stack frame.
-
-> Looking into arch/sparc I also can't catch if it's still a limitation.
-
-Yeah, looking closer at the current implementation it seems this is no
-longer an issue on SPARC.
-
-> Also, looking around, xa_unlock_irqrestore() is called not from the same
-> function. Maybe this issue is in history?
-
-xa_unlock_irqrestore() is just a macro for spin_unlock_irqsave() it
-seems, so not a counter example.
-
-> Also, some comments would be nice near functions in the header.
-
-Agreed. Let me respin this and either merge this with the next patch or
-at least amend the commit message.
-
-Johan
