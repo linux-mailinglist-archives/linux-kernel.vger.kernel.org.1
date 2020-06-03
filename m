@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1E61ED884
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 00:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF161ED88D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 00:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgFCWUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 18:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726354AbgFCWUA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 18:20:00 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B7EC08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 15:20:00 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id c14so3974075qka.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 15:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=u8bt+zJqcOzYuwXNEkBi3TSw8qIySQwkMwxxZhfbW18=;
-        b=q2j+NT0eKKrPZcaZj7zOdpJf6VRJKe1lfRidzOhPqGQQMYv9LP6cbgWlNpGtOAYYYo
-         1F8XkS4JBGT45vJQcJQiseFEIZiJsyHIUcmahuuHUvUbA/O3i1sn2RFFPH0LAOu338Lq
-         GZL7uPZ8PPfpOlH9nV2nXPeChGR8mwkfvRcICVF30rJQkLPmMZV+7KLUbHHd98jItvaK
-         aAEfNVpnz2AjS8AUxcd5vS9qSXZk8xJvlC7cOMaR3PuBj35OXO76ZIH1K/aUrhfv5XEn
-         pdTzFxFZs9KXENZRy5YgVfW5jMX61cOnTsCK/Q9xLc7aqEhNi2vQ3DahE9d+fAVSefdf
-         tlpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=u8bt+zJqcOzYuwXNEkBi3TSw8qIySQwkMwxxZhfbW18=;
-        b=hYhoSWhLkudNpkoOdN7opWpY8pkvDOIL6YYO8pi5NqMy5V9WIPyy0EGOCXRs6WT+/G
-         xuZKj8s8qJqF4ltGS6Ezamv8jkTNDkVO8ITGsn+wmmsfCVid0lW3HGOd54vbHBJfDurk
-         SVCZoFjjgeMdH56HcY87ID6+h7NFE3c1XZPJObsixaCjPlS5CZUsmylLKoZ+BkgC4GOA
-         Z7q3e6kWlp6L6pn77NWiL2v4uVo/0fOu3JfuEHFXQI2AvG8BhXi8Wvk/ntcKByFpcEAV
-         jOIrNnf+j85Rle0JQ81x18JpP3sEIW4RlcgPZkCVvKgfakRB7Ayc8mDTAS/wN1pUTSQT
-         XhbQ==
-X-Gm-Message-State: AOAM531+qj9lB21Whx7J/2HldlIuR8WDVcu7Os8f4y8DDqyT0vfHKxXJ
-        wpUGVhVqrQa1vC6qVYqYi4z3Mg==
-X-Google-Smtp-Source: ABdhPJw05gsQ6aNcDdc1C5CE24VGVGWfuS8FT1e1NBeJHtJHf+z9mkEvKoPt0qQbf38jhzBbMLSP7g==
-X-Received: by 2002:a37:9586:: with SMTP id x128mr1874208qkd.312.1591222799472;
-        Wed, 03 Jun 2020 15:19:59 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id h50sm3328294qte.25.2020.06.03.15.19.56
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 03 Jun 2020 15:19:58 -0700 (PDT)
-Date:   Wed, 3 Jun 2020 15:19:42 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Song Liu <songliubraving@fb.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm,thp: stop leaking unreleased file pages
-In-Reply-To: <20200603215122.GR19604@bombadil.infradead.org>
-Message-ID: <alpine.LSU.2.11.2006031506500.32284@eggly.anvils>
-References: <alpine.LSU.2.11.2005231837500.1766@eggly.anvils> <20200526160140.GC850116@cmpxchg.org> <alpine.LSU.2.11.2005271402410.6459@eggly.anvils> <20200603215122.GR19604@bombadil.infradead.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+        id S1726871AbgFCWWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 18:22:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726441AbgFCWWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 18:22:49 -0400
+Received: from sstabellini-ThinkPad-T480s.hsd1.ca.comcast.net (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D431C2067B;
+        Wed,  3 Jun 2020 22:22:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591222969;
+        bh=KkHGhoUNVUm6PPU2Wc3n69d1PFrjoUPau99hvQGcD1E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=iS/9d1NEK4nODfzf/8QcScf3N+hmvvrgLTCxl91JpBRBcydxeV138kYdTqiJMEt9b
+         nhYp1DoW/P0X+h2Do5xbSeYfbg7p+rgwfDoq04oiBlfmzPiGObo11WusHd99feCP+G
+         hdz7+XBkfDJCmzl8jFCi1R+GtcVCvV0kGA2FLHcQ=
+From:   Stefano Stabellini <sstabellini@kernel.org>
+To:     jgross@suse.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Cc:     sstabellini@kernel.org, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, tamas@tklengyel.com,
+        roman@zededa.com,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>
+Subject: [PATCH v2 01/11] swiotlb-xen: use vmalloc_to_page on vmalloc virt addresses
+Date:   Wed,  3 Jun 2020 15:22:37 -0700
+Message-Id: <20200603222247.11681-1-sstabellini@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <alpine.DEB.2.21.2006031506590.6774@sstabellini-ThinkPad-T480s>
+References: <alpine.DEB.2.21.2006031506590.6774@sstabellini-ThinkPad-T480s>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Jun 2020, Matthew Wilcox wrote:
-> On Wed, May 27, 2020 at 02:28:10PM -0700, Hugh Dickins wrote:
-> > Saying "source inspection" reminds me: there is another funny in there,
-> > but I don't think it matters very much in practice, and might need
-> > rather a lot of testing to justify any particular patch: where
-> > page_cache_sync_readahead() asks for PAGE_SIZE pages!
-> > 
-> > "end - index" seems a more reasonable number to me: but then we
-> > might find that reading ahead into the next huge extent had actually
-> > been a useful optimization (and those readahead functions impose
-> > their own caps, so PAGE_SIZE shouldn't work out too outrageously).
-> 
-> That readahead was only added in 99cb0dbd47a15d395bf3faa78dc122bc5efe3fc0
-> so it probably hasn't really been performance tested yet.
+From: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 
-I can well imagine that an entirely new body of code, exercised
-in the background by khugepaged, will not be a leading candidate for
-performance comparisons - rightly so; but arguing that by the commit
-being in the tree for only eight months seems... odd :)
+xen_alloc_coherent_pages might return pages for which virt_to_phys and
+virt_to_page don't work, e.g. ioremap'ed pages.
 
-Hugh
+So in xen_swiotlb_free_coherent we can't assume that virt_to_page works.
+Instead add a is_vmalloc_addr check and use vmalloc_to_page on vmalloc
+virt addresses.
+
+This patch fixes the following crash at boot on RPi4:
+https://marc.info/?l=xen-devel&m=158862573216800
+
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+Tested-by: Corey Minyard <cminyard@mvista.com>
+Tested-by: Roman Shaposhnik <roman@zededa.com>
+---
+Changes in v2:
+- update commit message
+---
+ drivers/xen/swiotlb-xen.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+index b6d27762c6f8..a42129cba36e 100644
+--- a/drivers/xen/swiotlb-xen.c
++++ b/drivers/xen/swiotlb-xen.c
+@@ -335,6 +335,7 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
+ 	int order = get_order(size);
+ 	phys_addr_t phys;
+ 	u64 dma_mask = DMA_BIT_MASK(32);
++	struct page *pg;
+ 
+ 	if (hwdev && hwdev->coherent_dma_mask)
+ 		dma_mask = hwdev->coherent_dma_mask;
+@@ -346,9 +347,11 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
+ 	/* Convert the size to actually allocated. */
+ 	size = 1UL << (order + XEN_PAGE_SHIFT);
+ 
++	pg = is_vmalloc_addr(vaddr) ? vmalloc_to_page(vaddr) :
++				      virt_to_page(vaddr);
+ 	if (!WARN_ON((dev_addr + size - 1 > dma_mask) ||
+ 		     range_straddles_page_boundary(phys, size)) &&
+-	    TestClearPageXenRemapped(virt_to_page(vaddr)))
++	    TestClearPageXenRemapped(pg))
+ 		xen_destroy_contiguous_region(phys, order);
+ 
+ 	xen_free_coherent_pages(hwdev, size, vaddr, (dma_addr_t)phys, attrs);
+-- 
+2.17.1
+
