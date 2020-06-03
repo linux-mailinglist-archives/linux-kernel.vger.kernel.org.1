@@ -2,124 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517AF1EC9D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 08:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CA51EC9D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 08:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726186AbgFCG4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 02:56:23 -0400
-Received: from mout.web.de ([212.227.15.3]:48889 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726003AbgFCG4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 02:56:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1591167372;
-        bh=C0/lrnZna4gVvcljuyBvlFX+3mBGVOVeaC5jh9KHQ90=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=eUlntA165H9m6P7gZO8Yyt5stG8cRMb6MszfvXyiGpTNwszRkUEsdTZrq6aPQf4Sk
-         ASHeJhTU6PqnIOPbn/l011E8lv9Rbnf/WscapIUvWO+cah8ewV4TGdXoqSvNBnWc5b
-         F0FKsL3HgXKeQxI/s16Av24tsUNbnFZq8N6wb73o=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.131.82.231]) by smtp.web.de (mrweb004
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0MNg5K-1jddV00nko-007AMJ; Wed, 03
- Jun 2020 08:56:12 +0200
-Subject: Re: cxl: Fix kobject memory leak in cxl_sysfs_afu_new_cr()
-To:     Wang Hai <wanghai38@huawei.com>, linuxppc-dev@lists.ozlabs.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Ian Munsie <imunsie@au1.ibm.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <b9791ff3-8397-f6e9-ca88-59c9bbe8c78f@web.de>
- <25ad528b-beaf-820f-9738-ea304dcbc0d7@huawei.com>
- <20200603061443.GB531505@kroah.com>
- <20ae5516-7e41-f706-46ba-955e1936f183@huawei.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <eee5161b-e7de-c260-9f54-427cccae486b@web.de>
-Date:   Wed, 3 Jun 2020 08:56:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1726061AbgFCG53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 02:57:29 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:53242 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725275AbgFCG52 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 02:57:28 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0536nrLj007448;
+        Tue, 2 Jun 2020 23:57:11 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
+ cc : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pfpt0818; bh=wC95efS1auVg0O0kAyMpJqFWQfZI2Tt6llUaChJW/HM=;
+ b=ZK4FfcH4a3HjhQZ+LLdGLaJfVD3+Cfm3cLWW3FJfpqXaCjh4p5tPVdOqSKAdHmMtOfIu
+ fAsVytgmO5ZDw8ZCBNrYaprXxvs0KosiwMKb6RoL27ZYXz7DOvmPteuVsk5LdfSb5DLX
+ k6hinfoqbUd+kCjaxWgXCAGPu9se2oa0Nsi0o6aUCmNFVvRTde28UnlUyTIqnG7CbQWw
+ Z1PVQATF9Yrim4Y71wdTJsNhHdMsxOVtYyWTiR9eq6ggI1TPO2jMJAFG30pUXU+sjguT
+ 5kRArTl9DAqgS+4O5XwJKDYIQ8M6xm7JK4cBdNieWrj4k6ta5z/qJ876JnCS2lt3mDSm Lg== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 31bmupxh96-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 23:57:11 -0700
+Received: from SC-EXCH02.marvell.com (10.93.176.82) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Jun
+ 2020 23:57:10 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
+ by SC-EXCH02.marvell.com (10.93.176.82) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Tue, 2 Jun 2020 23:57:10 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k3E1R7IjUZdwUui/QDeUfGa1EWMWyGtxDbGQt07/FLZoO/cIk9L5IBz24CHptQiDkWxYhFhG2CZgWLHwNvaayjup/WT4ehOcFFIMEjWEqtbgzDlC1JBfcF6xvIBlCY8alZxB8HnKjFCJOXVNzDx9Qyo7eaiTugX94/SyFEdPDroBCd8FfJ5VeaW6hUyNtNIgPfszIeL7Af/vEKpgdy2BiheWw1w5lIoLl2dpUYR+YMjd+kMWunvrqyRNsRBIe4l9kCb9+63TxCn9MPtu67+/NbWU+yzgCIxrGXFcmsJD/gUH3VYudKHOkV3l9A9qTFqhtMg4w4H99FLpqPA4mXyUNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wC95efS1auVg0O0kAyMpJqFWQfZI2Tt6llUaChJW/HM=;
+ b=bqUZY7YwVPavnGjYEHTqnJ22F159b/jBtEJSLTgEJSC8G641QI+4K0y1GzV7CHSQFbWHTQSlk16fsGeaBpRY+zwEj5/Vxpr7UZ/RMj32KkuQFmjrWVm/vPHH0hbEylZEEaJ0elheW6m9cMFc7JEgijnLxSScyDHqhIxlUgQbyOBN1F4msQpUl9Z35uPiKu7ImplvEPPW9a61ce5MctqDW+SF74m9LiRpvzXtetZNKaDEDGK5cvv9HZxmN0RZqt82w/PJaaxd3OPHIDQ8cyN9fS7QPVUdcB7hb28nP5NrMAN1ua2EgvoZKEhce/j+wpG95FStpuVVdyq8MjVErD2Szw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wC95efS1auVg0O0kAyMpJqFWQfZI2Tt6llUaChJW/HM=;
+ b=L+ZQj3LOTQOT8awOxOA6+8JuZBVObMw3fPJZT+ktH7ehT2vd8zs6aLKC6V9rnENyeCJRo0qjLfG47mIz7bMm09Yic2EBIGAV9yI/ZW53P/uv1kyuTFodz5mC8ZxqwoF28cmvKERk3MUGzPfxXHqra74GptoGdArBAQhhp7DndKY=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=marvell.com;
+Received: from BYAPR18MB2661.namprd18.prod.outlook.com (2603:10b6:a03:136::26)
+ by BYAPR18MB2807.namprd18.prod.outlook.com (2603:10b6:a03:111::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21; Wed, 3 Jun
+ 2020 06:57:08 +0000
+Received: from BYAPR18MB2661.namprd18.prod.outlook.com
+ ([fe80::a165:ffa5:f3eb:d62d]) by BYAPR18MB2661.namprd18.prod.outlook.com
+ ([fe80::a165:ffa5:f3eb:d62d%7]) with mapi id 15.20.3045.024; Wed, 3 Jun 2020
+ 06:57:08 +0000
+Date:   Wed, 3 Jun 2020 08:56:58 +0200
+From:   Robert Richter <rrichter@marvell.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Aristeu Rozanski <aris@redhat.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] EDAC/ghes: Setup DIMM label from DMI and use it in
+ error reports
+Message-ID: <20200603065657.zrxer5jtgryqlznt@rric.localdomain>
+References: <20200528101307.23245-1-rrichter@marvell.com>
+ <20200602154843.GD11634@zn.tnic>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200602154843.GD11634@zn.tnic>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-ClientProxiedBy: HE1PR05CA0343.eurprd05.prod.outlook.com
+ (2603:10a6:7:92::38) To BYAPR18MB2661.namprd18.prod.outlook.com
+ (2603:10b6:a03:136::26)
 MIME-Version: 1.0
-In-Reply-To: <20ae5516-7e41-f706-46ba-955e1936f183@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:CI9x26801qgto6e2qo5DcPgBFgq2Cw0097mz+PLuVntYFtGi0RR
- 2zQAnr+ip2KbaFOrjxhQnVxlm2kuyW+AsA9LESSpABY6EpbKgZNLpG1ONkt0C0Td2nDbPYf
- HLcXBBxZtqumtfduYE0X8sTUp1FbTE23m+th6Gf4+g0Jvir45g+I8l0XKtRn5bxBxOGcBlH
- hH/6J4F/y2mNa8m2KSRcw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EPOgsv2oE8U=:7+9buTWG57PiBAY8m9Ueni
- vYfsZg4Je53KEQGj74J00JtIqOlorluCksMmtK8LiReevj6DKHGtwoe/MDYOCs+9ZqmzXVJse
- SKqZcWP3eguQwUeHW4qoKk4ipEliUbM8URLKMReBbt/BIZW8o4U+zvso43Xx4/2awH7j/PqVg
- 5ogwkebJs7kyMNUU2kflML6mKYaUPFh9AB9Z5tJaBVe5CW/CWuGLyDOQ3ptUxbwWhNEdbJzMH
- UT9PmnJ/7rMfRkVWMxD/mwdJKwbON81RLuwEE3z5JnqSTEJCrqRG3om2LmyIg5/PWl9TAEnXW
- s5ackNJYs4oW+R194XxAcbDY+Vk5faY6tjeEghys3uyoeuCroUpGDzrCAe79ItE/8chC3tLaz
- 3ys2ICF0yCsL/T9p3yB4y28PbT5yFePdbcBkh35/Q6e9tMVw8ZAYZoA/ybPYn7vuR4sq9hPUz
- xcIk+QU4GnrkovLPvIE/R9+vwsaN7Lwmf8rhjvVo4vmeQpTNYq+6Qv5aBWERkWuZvcUZrcGsZ
- GmKIxtHGMKn4e9ySoCflBOzyQDpMtpTuvhLN+s0d0WFVMRvyYckA3juJvkvHGp+YSJ2ysKu/l
- 8fJlVon5Nf79biE5fQPXVTo7nv8phwOwMveVtnUE69MA55q3tf208Cg4lpenRkh1rufFtprrA
- G4WGb/Pw7v2gZYLSBviFoJyq8wnEhDqQmtSreHRgATLP2RKHlFg7VGuoa1gw12zKM2X+DWbma
- Z/6HnYja7hqDluIbsU13NW3wwRamB3Z5qo8YM1fwskSdCZiggI25bHYtinQyBEBC/LkLqXPFY
- UCtR2E185+eS/6DQymPcFdOa+2t1XsOXLlW64XIXXGL14RgJ1JNGYDxGbbKQRim/TLz1bilv+
- WFM0r5Gb30pAqc33enfdbAK3emgFXAXdNjxaXhUoTcBDdjx0JP9vHyFRdpHo2b+aN2gdHcqBA
- DFuAHzIgHPRLgTJcwYH5f7pfb8MDNNHQ2yootau03oGkLC5USnVu5mCQ9VCfLvHSYpyjU+Hgy
- QLU2FnjZcsvWjsS96cJclp6NjB4ZjBtrRoqQVbzK5QAblxu2yWZUnPQMXU/g7Teqy8ke+TEW7
- 80pB6bx+D0pGPMnn8XgKgpcav3XdOzjAD2hVHUq7aof5zgr4dFmzl3NTPKeNduU4X8WIXWjcI
- xmyHegjSGPoA/tEnhxYTuh4qyZr0YhyLCPfe/ydnwSFq1fkFkVfXs3Xw7Pq2p0JlT6XFTd9x9
- KL7Gfkrq0s8Nwa3b6
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from rric.localdomain (31.208.96.227) by HE1PR05CA0343.eurprd05.prod.outlook.com (2603:10a6:7:92::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18 via Frontend Transport; Wed, 3 Jun 2020 06:57:06 +0000
+X-Originating-IP: [31.208.96.227]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 55d263da-3389-4cd0-42c6-08d8078b54ea
+X-MS-TrafficTypeDiagnostic: BYAPR18MB2807:
+X-Microsoft-Antispam-PRVS: <BYAPR18MB28071DC95ACBED6828BC89A6D9880@BYAPR18MB2807.namprd18.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-Forefront-PRVS: 04238CD941
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YukT8xA7Vu23dTq1HM1cs/pHNvu/oQbf/SceYZyq4vOqeikTHavPT24MLLpEZemdnp9M8k2X7NWaPsB9j6Q+9emHkPHP+hscHRrmMk/JDOXvZwjqj548LYGysJA5wVw636H+M7HuL9BSwjPotYatXtCYa3Z6bCec1uh5/3ZHc05aksqHsrlpFBWa/Yi6mccjrgHoo0xmB9wRpP3zhpt81Yh5jOQx67N2y9rPmbWQIKoM+fEDVISGD/n2xyVs/pGzD2SzWsHy+SSgWoVqI214Siwd/1ajc4HEzFaKkAhhj2LBYVik7zfrK2E6mT2czA7OdnAYHtaVusKfXSt+nCJhIA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR18MB2661.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(39850400004)(136003)(376002)(366004)(396003)(5660300002)(1076003)(6666004)(6916009)(4744005)(4326008)(478600001)(956004)(2906002)(83380400001)(8936002)(8676002)(54906003)(16526019)(53546011)(6506007)(55016002)(52116002)(7696005)(86362001)(9686003)(66946007)(66476007)(66556008)(316002)(186003)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: W7CtzK3ygJTeTVkYKjwqxBIN0DbyOp20rtEHqwUC2AjwHO+uGoh0jIUtRPGkPXMsiqnQ1zSkbtIkVbzvjB9Ola2iGGoCpn/kwynulUQuXOVjvVjqSqv5Gz212UL9KvCJbc6HkjXZmO3N08xx2AcbZvy6MHjm/w1YPa6xDwFy/G9mHrGx81DE6TEVQVR8vLxGYuwwoVmDRCbSH52v/6ia0ChsbmPUxBQ65OpZARD1SGSkpXvvdlcZQcpwV79Q9GmJab6uuf2o8/zlJAldWJAGDA7Nrmo2eB72xSV0Y5zHXPMgXS5lTqs0lmIQy4hCNguZLvWOlSW2c6P5DXV51Zh1Lnc3BhoMVZDwdL9KOq0kxpAsxUeZXp2jCs63U5hGlv8N0gikr3tr5baUOFjah43JIJpMGD9VtgO9iEnSmHB7o1URz51WtwUsmiw/KmoKrNmVFKc7b6uUdItp7P0k8/NYe1cP0X4HK5JI94o89N1HuNY=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55d263da-3389-4cd0-42c6-08d8078b54ea
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2020 06:57:08.1791
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0WcG/7yDAvBqD9wf156BsnOA4C5cUJToRfoaG8fZCe3D6VyyU2c6Jw8jfcmURTacsjQQ5b5eXGbi6yTAS8LLfw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR18MB2807
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-03_06:2020-06-02,2020-06-03 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Okay, so I don=E2=80=99t have to send the v2 patch.
+On 02.06.20 17:48:43, Borislav Petkov wrote:
+> On Thu, May 28, 2020 at 12:13:06PM +0200, Robert Richter wrote:
 
-It will become more interesting under which circumstances the presented
-software development concerns will be taken better into account.
+> > v4:
+> > 
+> >  * dimm->label: Only update dimm->label in if bank/device is found in
+> >    the SMBIOS table, this keeps current behavior for machines that do
+> >    not provide this information.
+> > 
+> >  * e->location: Keep current behavior how e->location is written.
+> > 
+> >  * e->label: Use dimm->label if a DIMM was found by its handle and
+> >    "unknown memory" otherwise. This aligns with the edac_mc
+> >    implementation.
+> > 
+> > Signed-off-by: Robert Richter <rrichter@marvell.com>
+> > ---
+> >  drivers/edac/ghes_edac.c | 37 ++++++++++++++++++++++++++-----------
+> >  1 file changed, 26 insertions(+), 11 deletions(-)
+> 
+> Yap, looks good. I'll queue it after the merge window.
 
-Regards,
-Markus
+Great, thanks.
+
+-Robert
