@@ -2,178 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767AF1ECF69
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5381ECF68
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726324AbgFCMFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:05:49 -0400
-Received: from mga06.intel.com ([134.134.136.31]:27453 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725890AbgFCMFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:05:47 -0400
-IronPort-SDR: BHNvMs7bggyfCdCygbPm4lEy6cqO0b0EtZSv/KgwVejU/L1fYzU8wQVl3MgNZ3+5yZgKjrsfP+
- lafC9qY2YHzw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 05:05:43 -0700
-IronPort-SDR: TScpzMotEr8BfVw/z8jvqRo8iKu5Q3XeM23jRAcJMq7PuYDeq0tZVS+1C+CtHFQHSJvA15s9I7
- aLAuJ1NkJGEw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,467,1583222400"; 
-   d="scan'208";a="269055950"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.157]) ([10.237.72.157])
-  by orsmga003.jf.intel.com with ESMTP; 03 Jun 2020 05:05:40 -0700
-Subject: Re: [PATCH v4 10/10] perf record: introduce --ctl-fd[-ack] options
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        id S1726188AbgFCMFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:05:37 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25518 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725859AbgFCMFg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 08:05:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591185935;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=veNBN0nIrJ2QwM6/V0a3q4/qqOsViBBqoFiGJMYOieg=;
+        b=T7IB3cqKd6n/NsYeq/p1KtgdLQjmAVNqDfvvTV0rTuztiovAUErMCgngJM7ll2rCnHBUVv
+        XzfzB7I3bwH3ge/PwuMsUuegNlbnS98dMMsoCsqNal5J/+EyWGPlzCrSKgpPF8NnMGsNZL
+        BjhguNsBzgku4dHz/9ncO69Zh+gJDII=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-XQuSdKH3OeaDMD3LRIVwnw-1; Wed, 03 Jun 2020 08:05:31 -0400
+X-MC-Unique: XQuSdKH3OeaDMD3LRIVwnw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5713461;
+        Wed,  3 Jun 2020 12:05:28 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-112-181.ams2.redhat.com [10.36.112.181])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E79B15C220;
+        Wed,  3 Jun 2020 12:05:22 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Carlos O'Donell <carlos@redhat.com>,
+        Joseph Myers <joseph@codesourcery.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        libc-alpha@sourceware.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ben Maurer <bmaurer@fb.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <653fe5f3-c986-a841-1ed8-0a7d2fa24c00@linux.intel.com>
- <cd791bc8-2609-a136-a833-1dab6df68ff2@linux.intel.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <b4b2ddb9-296b-c260-32ef-fee17e04a29d@intel.com>
-Date:   Wed, 3 Jun 2020 15:05:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dave Watson <davejwatson@fb.com>, Paul Turner <pjt@google.com>,
+        Rich Felker <dalias@libc.org>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH glibc 1/3] glibc: Perform rseq registration at C startup and thread creation (v20)
+References: <20200527185130.5604-1-mathieu.desnoyers@efficios.com>
+        <20200527185130.5604-2-mathieu.desnoyers@efficios.com>
+Date:   Wed, 03 Jun 2020 14:05:21 +0200
+In-Reply-To: <20200527185130.5604-2-mathieu.desnoyers@efficios.com> (Mathieu
+        Desnoyers's message of "Wed, 27 May 2020 14:51:28 -0400")
+Message-ID: <87d06gxsla.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <cd791bc8-2609-a136-a833-1dab6df68ff2@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/05/20 5:23 pm, Alexey Budankov wrote:
-> 
-> Introduce --ctl-fd[-ack] options to pass open file descriptors numbers
-> from command line. Extend perf-record.txt file with --ctl-fd[-ack]
-> options description. Document possible usage model introduced by
-> --ctl-fd[-ack] options by providing example bash shell script.
-> 
-> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-> ---
->  tools/perf/Documentation/perf-record.txt | 39 ++++++++++++++++++++++++
->  tools/perf/builtin-record.c              | 10 ++++++
->  tools/perf/util/record.h                 |  2 ++
->  3 files changed, 51 insertions(+)
-> 
-> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-> index c2c4ce7ccee2..5c012cfe68a4 100644
-> --- a/tools/perf/Documentation/perf-record.txt
-> +++ b/tools/perf/Documentation/perf-record.txt
-> @@ -614,6 +614,45 @@ appended unit character - B/K/M/G
->  	The number of threads to run when synthesizing events for existing processes.
->  	By default, the number of threads equals 1.
->  
-> +--ctl-fd::
-> +--ctl-fd-ack::
-> +Listen on ctl-fd descriptor for command to control measurement ('enable': enable events,
-> +'disable': disable events. Optionally send control command completion ('ack') to fd-ack
-> +descriptor to synchronize with the controlling process. 
+* Mathieu Desnoyers:
 
-You should also explain the use of --delay=-1 here.
+> +#ifdef __cplusplus
+> +# if  __cplusplus >=3D 201103L
+> +#  define __rseq_static_assert(expr, diagnostic) static_assert (expr, di=
+agnostic)
+> +#  define __rseq_alignof(type)                   alignof (type)
+> +#  define __rseq_alignas(x)                      alignas (x)
+> +#  define __rseq_tls_storage_class               thread_local
+> +# endif
+> +#elif (defined __STDC_VERSION__ ? __STDC_VERSION__ : 0) >=3D 201112L
+> +# define __rseq_static_assert(expr, diagnostic)  _Static_assert (expr, d=
+iagnostic)
+> +# define __rseq_alignof(type)                    _Alignof (type)
+> +# define __rseq_alignas(x)                       _Alignas (x)
+> +# define __rseq_tls_storage_class                _Thread_local
+> +#endif
 
-Example of bash shell script
-> +to enable and disable events during measurements:
-> +
-> +#!/bin/bash
-> +
-> +ctl_dir=/tmp/
-> +
-> +ctl_fifo=${ctl_dir}perf_ctl.fifo
-> +test -p ${ctl_fifo} && unlink ${ctl_fifo}
-> +mkfifo ${ctl_fifo}
-> +exec {ctl_fd}<>${ctl_fifo}
-> +
-> +ctl_ack_fifo=${ctl_dir}perf_ctl_ack.fifo
-> +test -p ${ctl_ack_fifo} && unlink ${ctl_ack_fifo}
-> +mkfifo ${ctl_ack_fifo}
-> +exec {ctl_fd_ack}<>${ctl_ack_fifo}
-> +
-> +perf record -D -1 -e cpu-cycles -a                        \
-> +            --ctl-fd ${ctl_fd} --ctl-fd-ack ${ctl_fd_ack} \
-> +            -- sleep 30 &
-> +perf_pid=$!
-> +
-> +sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e1 && echo "enabled(${e1})"
-> +sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d1 && echo "disabled(${d1})"
-> +
-> +exec {ctl_fd_ack}>&-
-> +unlink ${ctl_ack_fifo}
-> +
-> +exec {ctl_fd}>&-
-> +unlink ${ctl_fifo}
-> +
-> +wait -n ${perf_pid}
-> +exit $?
-> +
-> +
->  SEE ALSO
->  --------
->  linkperf:perf-stat[1], linkperf:perf-list[1], linkperf:perf-intel-pt[1]
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 1ff3b7a77283..e057a2be42b7 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -1761,6 +1761,9 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->  		perf_evlist__start_workload(rec->evlist);
->  	}
->  
-> +	if (evlist__initialize_ctlfd(rec->evlist, opts->ctl_fd, opts->ctl_fd_ack))
-> +		goto out_child;
-> +
->  	if (opts->initial_delay) {
->  		pr_info(EVLIST_DISABLED_MSG);
->  		if (opts->initial_delay > 0) {
-> @@ -1907,6 +1910,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->  		record__synthesize_workload(rec, true);
->  
->  out_child:
-> +	evlist__finalize_ctlfd(rec->evlist);
->  	record__mmap_read_all(rec, true);
->  	record__aio_mmap_read_sync(rec);
->  
-> @@ -2392,6 +2396,8 @@ static struct record record = {
->  		},
->  		.mmap_flush          = MMAP_FLUSH_DEFAULT,
->  		.nr_threads_synthesize = 1,
-> +		.ctl_fd              = -1,
-> +		.ctl_fd_ack          = -1,
->  	},
->  	.tool = {
->  		.sample		= process_sample_event,
-> @@ -2587,6 +2593,10 @@ static struct option __record_options[] = {
->  	OPT_UINTEGER(0, "num-thread-synthesize",
->  		     &record.opts.nr_threads_synthesize,
->  		     "number of threads to run for event synthesis"),
-> +	OPT_INTEGER(0, "ctl-fd", &record.opts.ctl_fd,
-> +		    "Listen on fd descriptor for command to control measurement ('enable': enable events, 'disable': disable events)"),
-> +	OPT_INTEGER(0, "ctl-fd-ack", &record.opts.ctl_fd_ack,
-> +		    "Send control command completion ('ack') to fd ack descriptor"),
->  	OPT_END()
->  };
->  
-> diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
-> index 96a73bbd8cd4..da18aeca3623 100644
-> --- a/tools/perf/util/record.h
-> +++ b/tools/perf/util/record.h
-> @@ -69,6 +69,8 @@ struct record_opts {
->  	int	      mmap_flush;
->  	unsigned int  comp_level;
->  	unsigned int  nr_threads_synthesize;
-> +	int	      ctl_fd;
-> +	int	      ctl_fd_ack;
->  };
->  
->  extern const char * const *record_usage;
-> 
+This does not seem to work.  I get this with GCC 9:
+
+In file included from /tmp/cih_test_gsrKbC.cc:8:0:
+../sysdeps/unix/sysv/linux/sys/rseq.h:42:50: error: attribute ignored [-Wer=
+ror=3Dattributes]
+ #  define __rseq_alignas(x)                      alignas (x)
+                                                  ^
+../sysdeps/unix/sysv/linux/sys/rseq.h:122:14: note: in expansion of macro =
+=E2=80=98__rseq_alignas=E2=80=99
+     uint32_t __rseq_alignas (32) version;
+              ^
+
+In any case, these changes really have to go into the UAPI header first.
+Only the __thread handling should remain.  Otherwise, we'll have a tough
+situation on our hands changing the UAPI header, without introducing
+macro definition conflicts.  I'd suggest to stick to the aligned
+attribute for the time being, like the current UAPI headers.
+
+The resut looks okay to me.
+
+I'm still waiting for feedback from other maintainers whether the level
+of documentation and testing is appropriate.
+
+Thanks,
+Florian
 
