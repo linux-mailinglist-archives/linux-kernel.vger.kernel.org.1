@@ -2,90 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271941ECDAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 12:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCB31ECDBC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 12:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725956AbgFCKhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 06:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgFCKhD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 06:37:03 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9939FC08C5C0;
-        Wed,  3 Jun 2020 03:37:03 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id b5so1333720pfp.9;
-        Wed, 03 Jun 2020 03:37:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nVD95UqH77JMAWDNsd0PmgMJkNd8f0kxry6BDs2oz4E=;
-        b=G8yRAz6Anu24jKjhLCcyWcAHoXa7Kb8tJkH2E8wuENj9S4jdN33ltae2Ok5J23MxIK
-         8t3+fqbsYr8IX6hDoSB+EaDz/ZhEKTG5zczojKocgAi+ufJyUAM6ffey9/zWT/KvVLiz
-         nrEwj+gziOtYhgdzeGbUHJ21cc0gdfHQuvdAAO/wlgMAj3jpSBKjbvDLJNl6/rTlfrzC
-         qPhSrY3Jus3HsVn2mpyGPWXJHNmpDODN4nIb4FD9hSNjkViAGVYHe7Q7UmKw4ggJHQXL
-         gIPZHExMy6HA3HVx5D7XlB87JCjW33QhsWJ6c23zitUsfGWd17/ZtyFImtqWHOjIrPG3
-         SQAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nVD95UqH77JMAWDNsd0PmgMJkNd8f0kxry6BDs2oz4E=;
-        b=pkeqjSN/pLJnINcZdbQIBjAo0zeMmHOFoQhrlY4sA/XQqlEYnUxQWP1j8tJ02MgS4H
-         WmTz1xdHBMvDct89Zo0b99nOAvKrx3QAWzWrC6W9eYgTJCeOU0pgk1KfAtPBKxrtu0HG
-         fOvI/xi04nnJwrKx34g7sThlGVey7jBi5Wswp105aDziOq1pz1iAlsjnEOur9MLR4bDN
-         O0D9tAR65lBwPjNsbq/vW+zfvpeslsQshI9wM2VuqE9qtD94dOMOB2kaGKkDbY8JoYk9
-         AI0Xq3Q0/aTlV3aTYoz5hReqG5A8jdX9h6t6YuoJumj1vHJro8MdIuVclxIMOcLz4aXI
-         7BKA==
-X-Gm-Message-State: AOAM5306tA6CMR7l/4tNx/y2ukcgtYdpOMY4Zbb19fEcb/HmzEbUk9k1
-        APHiO6Vibe8YJLglynS2IgWSrF7BhIExpbPk5hk=
-X-Google-Smtp-Source: ABdhPJxVeySC5xkIJDLVVD1Z0A6TnKDtg3SyLYNUw2j09vjKGAyAlKEQckD0tHeWTW/G9Ebbr/Mz/kUCRa/5d2lrhmU=
-X-Received: by 2002:a17:90a:1704:: with SMTP id z4mr4865792pjd.181.1591180623108;
- Wed, 03 Jun 2020 03:37:03 -0700 (PDT)
+        id S1725922AbgFCKkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 06:40:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:59786 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725828AbgFCKkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 06:40:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A86331B;
+        Wed,  3 Jun 2020 03:40:23 -0700 (PDT)
+Received: from bogus (unknown [10.37.12.118])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 152D53F305;
+        Wed,  3 Jun 2020 03:40:20 -0700 (PDT)
+Date:   Wed, 3 Jun 2020 11:40:17 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Xiongfeng Wang <wangxiongfeng2@huawei.com>, rjw@rjwysocki.net,
+        guohanjun@huawei.com, ionela.voinescu@arm.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Question]: about 'cpuinfo_cur_freq' shown in sysfs when the CPU
+ is in idle state
+Message-ID: <20200603104017.GD7259@bogus>
+References: <f1773fdc-f6ef-ec28-0c0a-4a09e66ab63b@huawei.com>
+ <20200603075200.hbyofgcyiwocl565@vireshk-i7>
+ <20200603100727.GB7259@bogus>
+ <20200603101010.alijrfmte2c6xv5c@vireshk-i7>
+ <20200603101753.GC7259@bogus>
+ <20200603102159.hzctwiqiukwhrpo7@vireshk-i7>
 MIME-Version: 1.0
-References: <20200602092118.32283-1-piotr.stankiewicz@intel.com>
- <CAHp75VfEcm-Mmo7=i40sJ0RqpOgFRpJHxQ9ePWvvqsyRp+=9GA@mail.gmail.com> <CY4PR11MB15287ACFF4C55F84D43433E9F9880@CY4PR11MB1528.namprd11.prod.outlook.com>
-In-Reply-To: <CY4PR11MB15287ACFF4C55F84D43433E9F9880@CY4PR11MB1528.namprd11.prod.outlook.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 3 Jun 2020 13:36:51 +0300
-Message-ID: <CAHp75Vd7k--sDBXOBNPkBhC1fAOL25D3Q9N=tesi0mLxzXRA0A@mail.gmail.com>
-Subject: Re: [PATCH 14/15] net: hns3: use PCI_IRQ_MSI_TYPES where appropriate
-To:     "Stankiewicz, Piotr" <piotr.stankiewicz@intel.com>
-Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200603102159.hzctwiqiukwhrpo7@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 3, 2020 at 11:50 AM Stankiewicz, Piotr
-<piotr.stankiewicz@intel.com> wrote:
-> > -----Original Message-----
-> > From: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > Sent: Tuesday, June 2, 2020 5:39 PM
-> > On Tue, Jun 2, 2020 at 12:26 PM Piotr Stankiewicz
-> > <piotr.stankiewicz@intel.com> wrote:
-
-...
-
-> > >                                                 hdev->num_msi,
-> > > -                                               PCI_IRQ_MSI | PCI_IRQ_MSIX);
-> > > +                                               PCI_IRQ_MSI_TYPES);
+On Wed, Jun 03, 2020 at 03:51:59PM +0530, Viresh Kumar wrote:
+> On 03-06-20, 11:17, Sudeep Holla wrote:
+> > On Wed, Jun 03, 2020 at 03:40:10PM +0530, Viresh Kumar wrote:
+> > > On 03-06-20, 11:07, Sudeep Holla wrote:
+> > > > But I have another question. If we can detect that CPPC on some platforms
+> > > > rely on CPU registers(I assume FFH registers here and not system/io/...
+> > > > type of GAS registers), can we set dvfs_on_any_cpu(can't recall exact
+> > > > flag name) to false if not already done to prevent such issues. Or I am
+> > > > talking non-sense as it may be applicable only for _set operation and
+> > >
+> > >           Yes, non-sense :)
+> > >
 > >
-> > One line as above?
-> >
+> > Thanks for confirming 👍.
 >
-> It would push the line above 80 characters.
+> Hehe.
+>
+> So, do you agree that we better do the read from the CPUs themselves ?
+>
 
-It's now relaxed limit, but if it is only few characters, I wouldn't care.
+Yes if that is fine. I thought waking up the core was not a good solution
+in terms of power, but I have no objection for that as well as return 0
+as IMO it aligns with the AMU counters when CPU is idle.
 
--- 
-With Best Regards,
-Andy Shevchenko
+--
+Regards,
+Sudeep
