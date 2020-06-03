@@ -2,84 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFBA1ECCFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 11:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1851ECD02
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 11:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbgFCJyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 05:54:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbgFCJyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 05:54:31 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726295AbgFCJ5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 05:57:07 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34300 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725854AbgFCJ5G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 05:57:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591178225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4MA6Azc4ArSFQSxrgXC2tTu2QvV0djuoR5kPx8BJBBc=;
+        b=VSnmAG4ps6GmRV093OTucHQpKFptaMzORGAwMh/1B1osBNFmbA6PFSNVspCNsqScDjpS0q
+        rbDgdnqe5K256T3SL16DgL43E99znGphtQXPsks/EkFsMNLOeqlf0EflUTkTvqp+jBOLMc
+        pvkctVC5lIFT8bxX1O3OpK+rPbwRCDE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-DjnYCkpwPTyZ2R-wCsIHVQ-1; Wed, 03 Jun 2020 05:57:01 -0400
+X-MC-Unique: DjnYCkpwPTyZ2R-wCsIHVQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97A49206A2;
-        Wed,  3 Jun 2020 09:54:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591178071;
-        bh=oeMBR71zS+pMyX9v0fj7F0CkiuWzgIrRNVOKUGSXlBw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1j09JU8SfYxzcB1rwjgcwH0ZOPQVPHj6TI+nzcBNAFm7EjL8s1ouPqNgoWrY3gs+d
-         n3350osjIgPNmYoinUdlA5il9X6PZJBitrjbEk1CvbaLGLPLWEZaKleJOO3XhfRSXB
-         aan+nEcRRWKKhwD80fElz3jqPv1xqeZKSWnzM5lA=
-Date:   Wed, 3 Jun 2020 10:54:28 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Luigi Semenzato <semenzato@chromium.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        NeilBrown <neilb@suse.de>, Yang Shi <yang.shi@linux.alibaba.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 2/2] docs: fs: proc.rst: fix a warning due to a merge
- conflict
-Message-ID: <20200603095428.GA5327@sirena.org.uk>
-References: <cover.1591137229.git.mchehab+huawei@kernel.org>
- <28c4f4c5c66c0fd7cbce83fe11963ea6154f1d47.1591137229.git.mchehab+huawei@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E67491009600;
+        Wed,  3 Jun 2020 09:56:58 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-13-100.pek2.redhat.com [10.72.13.100])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1AB0D60BE1;
+        Wed,  3 Jun 2020 09:56:53 +0000 (UTC)
+Date:   Wed, 3 Jun 2020 17:56:50 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     Lianbo Jiang <lijiang@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        akpm@linux-foundation.org, ebiederm@xmission.com, jbohac@suse.cz,
+        jmorris@namei.org, mjg59@google.com, bhe@redhat.com
+Subject: Re: [PATCH v2] kexec: Do not verify the signature without the
+ lockdown or mandatory signature
+Message-ID: <20200603095650.GA4078@dhcp-128-65.nay.redhat.com>
+References: <20200602045952.27487-1-lijiang@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <28c4f4c5c66c0fd7cbce83fe11963ea6154f1d47.1591137229.git.mchehab+huawei@kernel.org>
-X-Cookie: Your supervisor is thinking about you.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200602045952.27487-1-lijiang@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06/02/20 at 12:59pm, Lianbo Jiang wrote:
+> Signature verification is an important security feature, to protect
+> system from being attacked with a kernel of unknown origin. Kexec
+> rebooting is a way to replace the running kernel, hence need be
+> secured carefully.
+> 
+> In the current code of handling signature verification of kexec kernel,
+> the logic is very twisted. It mixes signature verification, IMA signature
+> appraising and kexec lockdown.
+> 
+> If there is no KEXEC_SIG_FORCE, kexec kernel image doesn't have one of
+> signature, the supported crypto, and key, we don't think this is wrong,
+> Unless kexec lockdown is executed. IMA is considered as another kind of
+> signature appraising method.
+> 
+> If kexec kernel image has signature/crypto/key, it has to go through the
+> signature verification and pass. Otherwise it's seen as verification
+> failure, and won't be loaded.
+> 
+> Seems kexec kernel image with an unqualified signature is even worse than
+> those w/o signature at all, this sounds very unreasonable. E.g. If people
+> get a unsigned kernel to load, or a kernel signed with expired key, which
+> one is more dangerous?
+> 
+> So, here, let's simplify the logic to improve code readability. If the
+> KEXEC_SIG_FORCE enabled or kexec lockdown enabled, signature verification
+> is mandated. Otherwise, we lift the bar for any kernel image.
+> 
+> Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+> ---
+> Changes since v1:
+> [1] Modify the log level(suggested by Jiri Bohac)
+> 
+>  kernel/kexec_file.c | 34 ++++++----------------------------
+>  1 file changed, 6 insertions(+), 28 deletions(-)
+> 
+> diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+> index faa74d5f6941..fae496958a68 100644
+> --- a/kernel/kexec_file.c
+> +++ b/kernel/kexec_file.c
+> @@ -181,34 +181,19 @@ void kimage_file_post_load_cleanup(struct kimage *image)
+>  static int
+>  kimage_validate_signature(struct kimage *image)
+>  {
+> -	const char *reason;
+>  	int ret;
+>  
+>  	ret = arch_kexec_kernel_verify_sig(image, image->kernel_buf,
+>  					   image->kernel_buf_len);
+> -	switch (ret) {
+> -	case 0:
+> -		break;
+> +	if (ret) {
+>  
+> -		/* Certain verification errors are non-fatal if we're not
+> -		 * checking errors, provided we aren't mandating that there
+> -		 * must be a valid signature.
+> -		 */
+> -	case -ENODATA:
+> -		reason = "kexec of unsigned image";
+> -		goto decide;
+> -	case -ENOPKG:
+> -		reason = "kexec of image with unsupported crypto";
+> -		goto decide;
+> -	case -ENOKEY:
+> -		reason = "kexec of image with unavailable key";
+> -	decide:
+>  		if (IS_ENABLED(CONFIG_KEXEC_SIG_FORCE)) {
+> -			pr_notice("%s rejected\n", reason);
+> +			pr_notice("Enforced kernel signature verification failed (%d).\n", ret);
+>  			return ret;
+>  		}
+>  
+> -		/* If IMA is guaranteed to appraise a signature on the kexec
+> +		/*
+> +		 * If IMA is guaranteed to appraise a signature on the kexec
+>  		 * image, permit it even if the kernel is otherwise locked
+>  		 * down.
+>  		 */
+> @@ -216,17 +201,10 @@ kimage_validate_signature(struct kimage *image)
+>  		    security_locked_down(LOCKDOWN_KEXEC))
+>  			return -EPERM;
+>  
+> -		return 0;
+> -
+> -		/* All other errors are fatal, including nomem, unparseable
+> -		 * signatures and signature check failures - even if signatures
+> -		 * aren't required.
+> -		 */
+> -	default:
+> -		pr_notice("kernel signature verification failed (%d).\n", ret);
+> +		pr_debug("kernel signature verification failed (%d).\n", ret);
+>  	}
+>  
+> -	return ret;
+> +	return 0;
+>  }
+>  #endif
+>  
+> -- 
+> 2.17.1
+> 
 
---GvXjxJ+pjyke8COw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Acked-by: Dave Young <dyoung@redhat.com>
 
-On Wed, Jun 03, 2020 at 12:38:14AM +0200, Mauro Carvalho Chehab wrote:
-> Changeset 424037b77519 ("mm: smaps: Report arm64 guarded pages in smaps")
-> added a new parameter to a table. This causes Sphinx warnings,
-> because there's now an extra "-" at the wrong place:
+Thanks
+Dave
 
-Acked-by: Mark Brown <broonie@kernel.org>
-
---GvXjxJ+pjyke8COw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7Xc1AACgkQJNaLcl1U
-h9CkuAf7BQEahHNY2RtCJ0oStk4GzPzgDuhtsL9o2vxq/A5/CNTfmJ6l3lwIzV6p
-RTSoNwkaoN8gXO+tYG14vho8aO4FKLeJKZLUHbwbJkcLDdtDO5uDIH0/Kq2pwJOM
-fB6OEiVinHkdFwCmeOClv51/2hX0QzfJpzEo0AsPiOryDA+Rbv/KvuKk/W69lZw/
-E0unmZ9MEH7Dq6zssY/Q+ORvpaSmu7MnbUnRpHDmjtqavrnYfCVnZWUF+GhyjO1E
-Z9W9iD3N/pIpvUInOfhkGsFjKxZtwX+tKVoYJ3B5/gFjg05wrJXNKqY0Z5CmLsgw
-s7dSHPu0BPmIpaCy/6HTAsu5jtgynQ==
-=XRbF
------END PGP SIGNATURE-----
-
---GvXjxJ+pjyke8COw--
