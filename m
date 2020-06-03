@@ -2,81 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D0B1ECC6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 11:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A6E1ECC6F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 11:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgFCJTe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Jun 2020 05:19:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbgFCJTd (ORCPT
+        id S1726706AbgFCJTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 05:19:41 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:59694 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbgFCJTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 05:19:33 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2F6C05BD43;
-        Wed,  3 Jun 2020 02:19:33 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jgPYW-0005nE-T5; Wed, 03 Jun 2020 11:19:29 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 6A4061C0081;
-        Wed,  3 Jun 2020 11:19:28 +0200 (CEST)
-Date:   Wed, 03 Jun 2020 09:19:28 -0000
-From:   "tip-bot2 for Kefeng Wang" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/urgent] rcuperf: Fix printk format warning
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Wed, 3 Jun 2020 05:19:39 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 7AA73803083B;
+        Wed,  3 Jun 2020 09:19:36 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id xlDcL2gyq2Ni; Wed,  3 Jun 2020 12:19:35 +0300 (MSK)
+Date:   Wed, 3 Jun 2020 12:19:34 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Colin King <colin.king@canonical.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH][next] clk: baikal-t1: fix spelling mistake
+ "Uncompatible" -> "Incompatible"
+Message-ID: <20200603091934.vt5skqdzy6gnc5rk@mobilestation>
+References: <20200602121030.39132-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Message-ID: <159117596821.17951.14565757458666669715.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200602121030.39132-1-colin.king@canonical.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/urgent branch of tip:
+On Tue, Jun 02, 2020 at 01:10:30PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in a pr_err error message. Fix it.
 
-Commit-ID:     b3e2d20973db3ec87a6dd2fee0c88d3c2e7c2f61
-Gitweb:        https://git.kernel.org/tip/b3e2d20973db3ec87a6dd2fee0c88d3c2e7c2f61
-Author:        Kefeng Wang <wangkefeng.wang@huawei.com>
-AuthorDate:    Fri, 17 Apr 2020 12:02:45 +08:00
-Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Tue, 02 Jun 2020 08:41:37 -07:00
+Thanks!
 
-rcuperf: Fix printk format warning
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-Using "%zu" to fix following warning,
-kernel/rcu/rcuperf.c: In function ‘kfree_perf_init’:
-include/linux/kern_levels.h:5:18: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
-
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/rcuperf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-index 16dd1e6..9eb39c2 100644
---- a/kernel/rcu/rcuperf.c
-+++ b/kernel/rcu/rcuperf.c
-@@ -723,7 +723,7 @@ kfree_perf_init(void)
- 		schedule_timeout_uninterruptible(1);
- 	}
- 
--	pr_alert("kfree object size=%lu\n", kfree_mult * sizeof(struct kfree_obj));
-+	pr_alert("kfree object size=%zu\n", kfree_mult * sizeof(struct kfree_obj));
- 
- 	kfree_reader_tasks = kcalloc(kfree_nrealthreads, sizeof(kfree_reader_tasks[0]),
- 			       GFP_KERNEL);
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/clk/baikal-t1/clk-ccu-div.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/baikal-t1/clk-ccu-div.c b/drivers/clk/baikal-t1/clk-ccu-div.c
+> index b479156e5e9b..f141fda12b09 100644
+> --- a/drivers/clk/baikal-t1/clk-ccu-div.c
+> +++ b/drivers/clk/baikal-t1/clk-ccu-div.c
+> @@ -316,7 +316,7 @@ static struct ccu_div_data *ccu_div_create_data(struct device_node *np)
+>  		data->rst_num = ARRAY_SIZE(sys_rst_map);
+>  		data->rst_map = sys_rst_map;
+>  	} else {
+> -		pr_err("Uncompatible DT node '%s' specified\n",
+> +		pr_err("Incompatible DT node '%s' specified\n",
+>  			of_node_full_name(np));
+>  		ret = -EINVAL;
+>  		goto err_kfree_data;
+> -- 
+> 2.25.1
+> 
