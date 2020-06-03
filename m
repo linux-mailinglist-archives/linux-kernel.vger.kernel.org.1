@@ -2,86 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFB51ECFC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DABF21ECFCB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbgFCMb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
+        id S1726095AbgFCMbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:31:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgFCMb0 (ORCPT
+        with ESMTP id S1726054AbgFCMbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:31:26 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0B3C08C5C2
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 05:31:26 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id a25so2492941ljp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 05:31:26 -0700 (PDT)
+        Wed, 3 Jun 2020 08:31:42 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856F7C08C5C0
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 05:31:41 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id n23so2472281ljh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 05:31:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L1NJYuTKReAQCzwmp21v6oxd6VH6o0/1AXhj3Xbp+FA=;
-        b=GYLRyR3OR2you4gt5Qoe94eTqGpHQxHxJtDqtMFwAwycpFKpORilUHJ+cpxeyB10dZ
-         HZZIncnj4Nc5euIkBmYg91PiCtTZXQoWLM//bJq/8ljVCqKGsEkudebxu1rD/xFge7XX
-         gUcQtcfaYyLClnFKKSzUJFm9UdTCKp09CFDZ/ll0z2c+BjIUHXiTXK0/xIsaBmZFPgzW
-         5PcPHAb51hM1T8b69zqjgmxhk7njDjDVmtYtpuT0xSkK8+vIbM4iI1M6M5/VlhCf0/Sn
-         7xxUT6j3nTgizmvd+kLannVm19nUGA+BXHohp50BOfs5E71QhnvSDS02jxYWWK3eWHCv
-         fbxA==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=P9MOihz2dNvs8KZnA010MIHpIN88q045MfnMNo8RW/o=;
+        b=cKDJ0CH/AF02dBkES1fgqvnlScibwydiQmc/O6sYnvqocnJJn8D7Dt7BUqJbsXHFOq
+         3Dh5EB5u05D+YUsYcdK2/dpz8P58l57wXAVWJcRb+qIKRfzhB1yUJK1hWXTcUY4lbCuG
+         USjD327wh1diUNLSkiylOunzvvYK+8hVXWtRTK1+Ul1Zfo3EtpeJBZTM8Z4Oqp98gjBd
+         DkWSSTa1qO5cNWMJDug4MRPvXkJ15iRqaEZ7DizskD2LQJKlcCVx4DV6nFhmgQDe10kX
+         Xpy2RgMSqATYotfaUQk02ZT1fs/CLkW4WoouCR9LTIlwVpbLTgEVYlT3tpDHo7uZkbM5
+         EI+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L1NJYuTKReAQCzwmp21v6oxd6VH6o0/1AXhj3Xbp+FA=;
-        b=N8cGE4vz7b51FIi28EMcM1s3boHDWeof7kx0glcmg5wefO/IWZHpYlrDXDenHcCDDe
-         z9X7/SIsoC8PDFHYH01XD3/B+5yGban+/Brou+zk6iJsn1T4bbbfiKKiUv4MHZKkQe9j
-         sWak9mQqUh6n5ZqnI4ZjX4IiQzYab7eMHvhoPwB7Pn0LNCGMkf88v+wSRNXOdkFoDvPT
-         uQMbe1F2YHDSxAq8i3BI0VC9+5TFh7GXN7XHjVDWn++upJ/VPQtYqbV564tmI5XkFtjP
-         Bk8TK7AeNIiP2hwKCeJ3vrJ/uTwVJZpAg6+p6TU1CP1fvLyqOaRQoV6RQjt4bPlhDy3u
-         o5jw==
-X-Gm-Message-State: AOAM530CMuAn1yYVwXkdhJP8jYYZVq1UyYSixZ5+GGiTir787V4QOvhb
-        KJbR7O33sPP4bn8cPNyRTGQhOPmlH9nxZoU80O/uOg==
-X-Google-Smtp-Source: ABdhPJzeYHCrqoAKbg/iXMZc2UHkSMqVGpsvQRy6zx+BK4rdk3W1fxIGP76BKw3wR0/nVnq2bumPP8UA4bGzDwuUJyc=
-X-Received: by 2002:a2e:350a:: with SMTP id z10mr1920234ljz.104.1591187484286;
- Wed, 03 Jun 2020 05:31:24 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=P9MOihz2dNvs8KZnA010MIHpIN88q045MfnMNo8RW/o=;
+        b=hQJeRn8OPq5Y7AjBpCHhPS3BpfWcAr/C7AVOlQFuV9u/ugrwIuKDegLsdbqHlzzx7o
+         whJcKz7p6lgMspsmzO4fHfNlrZvRpb055MZiFpxaDqPr3ZuUMYDw2uOCmILVwhb90thG
+         mxugM9I8PLux1y5WuMjvt+Z6sMkggbOgyRLH6rYgTGawZ+h7UmMjesIUZ3imY1rTLtIo
+         uyuFDm7r+uYqJDYDq3eQ+N3ZUSa+9HaKxVvG0Q7OkGfTnpIWoikJk1ZM23cA2LB/Y0dZ
+         dCaFGDQWs2MqHZ7Jcihn4PEqwYeJl+WBqx8GVRMv3hiwSbQh2ZvgnHUpkAJRd9lPPyVU
+         ML/Q==
+X-Gm-Message-State: AOAM531bNzJpaJyAFRYJrw3Ic8QtFbDAAgFFSDM0Em68y1IfZfRInFSn
+        TloOac9h+B+JwUb5GyDv3MUKF3Qazt3A9+qc8qHx7Q==
+X-Google-Smtp-Source: ABdhPJw8SSAJIyE84pdf0Z6PzkVQ0XCT1269nX2POe1eYPap+iF6PA0W87bqQfgKU2PzWMulWs5QUCll7p5vTFgMEVE=
+X-Received: by 2002:a2e:911:: with SMTP id 17mr2041281ljj.411.1591187499787;
+ Wed, 03 Jun 2020 05:31:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200530201952.585798-1-christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20200530201952.585798-1-christophe.jaillet@wanadoo.fr>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 3 Jun 2020 14:31:13 +0200
-Message-ID: <CACRpkdYvoe8o8Db1mszfgcHA3XZF7LJ3P1u5pnKOfEfS99F0Ew@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: imxl: Fix an error handling path in 'imx1_pinctrl_core_probe()'
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stefan Agner <stefan@agner.ch>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 3 Jun 2020 18:01:28 +0530
+Message-ID: <CA+G9fYtCP3d805MpSMq0TGkz2uhHpFLaizP8uHxHzC5jnAc0hQ@mail.gmail.com>
+Subject: linux-next: arm64 build failed - aarch64-linux-gnu-ld: cannot find
+ ./drivers/firmware/efi/libstub/lib.abuilt-in.a: No such file or directory
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-efi@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
+Cc:     ardb@kernel.org, Ingo Molnar <mingo@kernel.org>,
+        nivedita@alum.mit.edu, jarkko.sakkinen@linux.intel.com,
+        xypron.glpk@gmx.de
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 30, 2020 at 10:20 PM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
+arm64 build failed on Linux-next 20200603.
 
-> When 'pinctrl_register()' has been turned into 'devm_pinctrl_register()',
-> an error handling path has not been updated.
->
-> Axe a now unneeded 'pinctrl_unregister()'.
->
-> Fixes: e55e025d1687 ("pinctrl: imxl: Use devm_pinctrl_register() for pinctrl registration")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=arm64
+CROSS_COMPILE=aarch64-linux-gnu- HOSTCC=gcc CC="sccache
+aarch64-linux-gnu-gcc" O=build Image
+ #
+aarch64-linux-gnu-ld: cannot find
+./drivers/firmware/efi/libstub/lib.abuilt-in.a: No such file or
+directory
+ make[1]: *** [/linux/Makefile:1132: vmlinux] Error 1
 
-Patch applied.
-
-Yours,
-Linus Walleij
+-- 
+Linaro LKFT
+https://lkft.linaro.org
