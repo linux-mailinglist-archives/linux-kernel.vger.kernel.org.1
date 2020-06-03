@@ -2,86 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E3E1EC8C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 07:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EC51EC8A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 07:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725915AbgFCF0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 01:26:17 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:60144 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725275AbgFCF0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 01:26:14 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AFF5E200D21;
-        Wed,  3 Jun 2020 07:26:12 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4C1A7200D53;
-        Wed,  3 Jun 2020 07:26:09 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id B2687402B1;
-        Wed,  3 Jun 2020 13:26:04 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     jassisinghbrar@gmail.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 3/3] mailbox: imx: ONLY IPC MU needs IRQF_NO_SUSPEND flag
-Date:   Wed,  3 Jun 2020 13:15:44 +0800
-Message-Id: <1591161344-12885-4-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591161344-12885-1-git-send-email-Anson.Huang@nxp.com>
-References: <1591161344-12885-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725905AbgFCFRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 01:17:54 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43963 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725792AbgFCFRx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 01:17:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591161471;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9zb23GOwMdeuO409vFKEhupNpLymoL466WEUGj0SSmg=;
+        b=RmMOvriMWs8yA0uojFx0ZznFPPCvPlIf01dt6bZdnPKoNVx41ISTXNR/tcXkArFum7r50X
+        0z6Nz/ejPynE56m12gJO4ttA+Y3W0o9yZOzyWIkQq2NrtbKXCKJHNolCCujDaq2xre3mLJ
+        QpmNIjl1Xcm2YXwwHYf6iqbP5rUqUZY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-zIb5YpJNMk-_QGqU7zk-dQ-1; Wed, 03 Jun 2020 01:17:49 -0400
+X-MC-Unique: zIb5YpJNMk-_QGqU7zk-dQ-1
+Received: by mail-wr1-f70.google.com with SMTP id e7so593739wrp.14
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 22:17:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9zb23GOwMdeuO409vFKEhupNpLymoL466WEUGj0SSmg=;
+        b=jyGfueCRmJr1rGD9E8NqR4TP6T0E2ZrMrJ5YWjm6z8xUOv1W6s9vTWH9nWqpvAQeff
+         8Hjrqf2GEdyM0bUEmw52NOJAKN3VBbVxw9KqCEO4wa3ATDc35eWH8RVAz9q8aulIwtAm
+         P0MEvIuODW4CD/cHD/afn/FlabyY/+Ldovd+/9MLAB/ArlrnU60uXzWoNYdQ95IwHhNR
+         JsqmBjGb1SbLD1VqS0J2+X8GnMpkZsBPa8sN03qHHtb8hZHj8Y77rjboObLAt9033Hu8
+         8NHtW22JS6Ub+OE7B+3TT/ZUwwS1E+6LOXJq4PXgH2UMON/qnomHoVbiCQJECMZ2dqKt
+         Sovw==
+X-Gm-Message-State: AOAM531Qvzr+Hcqf1bPRGBe6x5l+fxLR/LiZiEcqI1NpSAJIeeVAuGCQ
+        HzwFtaLCORj2GcLiB5M11Bts9qAydl2z9GaWsB3Mt/p+bJXWDXcyRwkXbfcujpCZEd/kaf6OHxj
+        LCPflB4Z3Sp0xJ0DAu2IM8dun
+X-Received: by 2002:a7b:c158:: with SMTP id z24mr7422326wmi.12.1591161468592;
+        Tue, 02 Jun 2020 22:17:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwJEou6ul/0ePHl0Sxjd9yTiJzg78VX6HFkFw1rv8Xk3wqLdc+7XBJv21QaaCDP6N70D59EvQ==
+X-Received: by 2002:a7b:c158:: with SMTP id z24mr7422312wmi.12.1591161468380;
+        Tue, 02 Jun 2020 22:17:48 -0700 (PDT)
+Received: from redhat.com (bzq-109-64-41-91.red.bezeqint.net. [109.64.41.91])
+        by smtp.gmail.com with ESMTPSA id 1sm1180009wms.25.2020.06.02.22.17.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 22:17:47 -0700 (PDT)
+Date:   Wed, 3 Jun 2020 01:17:45 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH RFC] uaccess: user_access_begin_after_access_ok()
+Message-ID: <20200603010645-mutt-send-email-mst@kernel.org>
+References: <20200602084257.134555-1-mst@redhat.com>
+ <20200602163048.GL23230@ZenIV.linux.org.uk>
+ <20200602163937-mutt-send-email-mst@kernel.org>
+ <20200602221057.GQ23230@ZenIV.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200602221057.GQ23230@ZenIV.linux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPC MU has no power domain assigned and there could be IPC during
-noirq suspend phase, so IRQF_NO_SUSPEND flag is needed for IPC MU.
-However, for other MUs, they have power domain assigned and their
-power will be turned off during noirq suspend phase, but with
-IRQF_NO_SUSPEND set, their interrupts are NOT disabled even after
-their power turned off, it will cause system crash when mailbox
-driver trys to handle pending interrupts but the MU power is already
-turned off.
+On Tue, Jun 02, 2020 at 11:10:57PM +0100, Al Viro wrote:
+> On Tue, Jun 02, 2020 at 04:42:03PM -0400, Michael S. Tsirkin wrote:
+> > On Tue, Jun 02, 2020 at 05:30:48PM +0100, Al Viro wrote:
+> > > On Tue, Jun 02, 2020 at 04:45:05AM -0400, Michael S. Tsirkin wrote:
+> > > > So vhost needs to poke at userspace *a lot* in a quick succession.  It
+> > > > is thus benefitial to enable userspace access, do our thing, then
+> > > > disable. Except access_ok has already been pre-validated with all the
+> > > > relevant nospec checks, so we don't need that.  Add an API to allow
+> > > > userspace access after access_ok and barrier_nospec are done.
+> > > 
+> > > This is the wrong way to do it, and this API is certain to be abused
+> > > elsewhere.  NAK - we need to sort out vhost-related problems, but
+> > > this is not an acceptable solution.  Sorry.
+> > 
+> > OK so summarizing what you and Linus both said, we need at
+> > least a way to make sure access_ok (and preferably the barrier too)
+> > is not missed.
+> > 
+> > Another comment is about actually checking that performance impact
+> > is significant and worth the complexity and risk.
+> > 
+> > Is that a fair summary?
+> > 
+> > I'm actually thinking it's doable with a new __unsafe_user type of
+> > pointer, sparse will then catch errors for us.
+> 
+> Er... how would sparse keep track of the range?
 
-So, IRQF_NO_SUSPEND flag should ONLY be added to IPC MU which has
-power domain managed by SCU, then all other MUs' pending interrupts
-after noirq suspend phase will be handled after system resume.
+Using types. So you start with a user pointer:
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- drivers/mailbox/imx-mailbox.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+struct foo __user *up;
 
-diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
-index 080b608..7205b82 100644
---- a/drivers/mailbox/imx-mailbox.c
-+++ b/drivers/mailbox/imx-mailbox.c
-@@ -292,6 +292,7 @@ static int imx_mu_startup(struct mbox_chan *chan)
- {
- 	struct imx_mu_priv *priv = to_imx_mu_priv(chan->mbox);
- 	struct imx_mu_con_priv *cp = chan->con_priv;
-+	unsigned long irq_flag = IRQF_SHARED;
- 	int ret;
- 
- 	pm_runtime_get_sync(priv->dev);
-@@ -302,8 +303,12 @@ static int imx_mu_startup(struct mbox_chan *chan)
- 		return 0;
- 	}
- 
--	ret = request_irq(priv->irq, imx_mu_isr, IRQF_SHARED |
--			  IRQF_NO_SUSPEND, cp->irq_desc, chan);
-+	/* IPC MU should be with IRQF_NO_SUSPEND set */
-+	if (!priv->dev->pm_domain)
-+		irq_flag |= IRQF_NO_SUSPEND;
-+
-+	ret = request_irq(priv->irq, imx_mu_isr, irq_flag,
-+			  cp->irq_desc, chan);
- 	if (ret) {
- 		dev_err(priv->dev,
- 			"Unable to acquire IRQ %d\n", priv->irq);
+Now you validate it, including a speculation barrier:
+
+struct foo __valdated_user *p = user_access_validate(up, sizeof *up);
+
+and you can save it and use it with something like unsafe_get_user and unsafe_put_user
+that gets __valdated_user pointers:
+
+user_access_begin_validated(p, sizeof *p)
+valiated_get_user(bar, foo->bar, err_fault)
+valiated_put_user(baz, foo->baz, err_fault)
+user_access_end()
+
+
+
+
 -- 
-2.7.4
+MST
 
