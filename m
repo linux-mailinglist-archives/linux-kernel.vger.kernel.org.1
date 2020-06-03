@@ -2,420 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DD41ECD7A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 12:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 001BA1ECD84
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 12:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgFCKYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 06:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbgFCKYf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 06:24:35 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CDBC08C5C0;
-        Wed,  3 Jun 2020 03:24:35 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id l27so1606440ejc.1;
-        Wed, 03 Jun 2020 03:24:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=ijpgz/H39QX77UCIJyYAxLfDtqADya0tOsEpKq3wQ6I=;
-        b=JYh8geY1wQ0ZgJDu4N9TkLlJALYHfZIdjZLmNB7QaxY0k/oIh4MiSgR4mNToFAn/8i
-         +PZsJXLzCOz2aeo0p4OXbPwsHCi6Uh3/a8JIorLa/luW8B3yVaxLWi/89KB8RcsZJaZK
-         4F4KV4b7mwfvONiMK5RVlYeoFODIUGIPbM/63LsKF/V4c4wnwLqNK6xw0HIUbThP7ZIl
-         xlbcsjrId0JqWZ7PkbRdpiMjF8lEWlzfkJmlndloIW0LZwz754FpqRlXyKykB8EnFM4c
-         7X0A0qe7RHITIIMOJkHWvxT7wtMt+3I+MABcukqQvBeEyY/kLdgdmU20TEGaMq1tRN7j
-         K2+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=ijpgz/H39QX77UCIJyYAxLfDtqADya0tOsEpKq3wQ6I=;
-        b=fTzBjWG3c5JoZxAqGAhcDeWl3tLXThJiksiBG8/mAQ8WtCowNIXdqX9kthJ5qPLOi5
-         45U1HhhNP1hhc/oxnCqIF90fz2a4REaPxv4rEAkrI9YMPN6JKCL8IWCQFbD3LWhc+92u
-         uKYIhddWaFLFRwaQBr8OMUOUzpX0q4N1WdhD40Uys9ARLCqZ2GVcU7RATlVgDT0gMHR9
-         MKmXfal5mP/M8/k8jOkB2kZwyftJo6dtivXW4etBN7xTmsqMm/R/PIDiPRLBWvkdLDii
-         /ecbKLfrvxmdjZuB1ZC5vmHok0bL/ySfGk1c0u5Xt2dFfbyAnPM1NYvaPK+/9bY1vKVz
-         rE3g==
-X-Gm-Message-State: AOAM533aDQ7JM+XdErTV5IPNjwKnC1XLxF+v6z08vtRtOT0C59j6iVCX
-        uzusAWHYcZkGmnSI0FpesM0kOIqYM66/5DCviGc=
-X-Google-Smtp-Source: ABdhPJyI2JagoGjNsl+fP1yfKx6yMIk9qDdtfqmxH9Fc3w3zOU7sysFdqsJkz4rzBeaFzAbfTJf0H6e/InhwmXhUE4g=
-X-Received: by 2002:a17:906:6d4b:: with SMTP id a11mr19511522ejt.108.1591179873683;
- Wed, 03 Jun 2020 03:24:33 -0700 (PDT)
+        id S1726867AbgFCK1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 06:27:03 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:58921 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725854AbgFCK1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 06:27:02 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49cQ7j5Qqqz9sPF;
+        Wed,  3 Jun 2020 20:26:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1591180017;
+        bh=zD33Wup488scavQp90fj5kXT/hdVydyJgVvHiJB0IH8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=QyulPPnqdk+2gvx4+zfS4Px8oEZizNMo6GDz/S0s99oCd93OgnlHvTd2o8ObLt77t
+         tlba7wzT+2z0sEMjGS3oKQ2oktL1PL2XQxWCfmd+3zA543rFGQUZb/B4lZYBPnoFkY
+         SSUK9XeHXps4fkagekD9OjKaDwOOha+l9UvdVJOeLNMjht0SYMftt+rNxz/p9D4f8w
+         3ezSWhZ9Dc2zLUtIaStVwxWsvEZaOASAJ/PlRmitLo3UoMkxFVZc8V0c4057QRbpVB
+         rRZxeRzzgUSJckdKLZJOOAZzApvv/UgBYi8AO+2h9TDqbQveG345WrpTl5gIoT03Ue
+         MhXMe3FPnC48g==
+Date:   Wed, 3 Jun 2020 20:26:55 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Subject: linux-next: fix ups for clashes between akpm and powerpc trees
+Message-ID: <20200603202655.0ad0eacc@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20200602204219.186620-1-christian.brauner@ubuntu.com> <20200602204219.186620-2-christian.brauner@ubuntu.com>
-In-Reply-To: <20200602204219.186620-2-christian.brauner@ubuntu.com>
-Reply-To: mtk.manpages@gmail.com
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Date:   Wed, 3 Jun 2020 12:24:22 +0200
-Message-ID: <CAKgNAkiHYer_d+AvRUDPgS3WfCQXKrrCuXFV1g9t2zim7QBpXw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] open: add close_range()
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Kyle Evans <self@kyle-evans.net>,
-        Victor Stinner <victor.stinner@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        "Dmitry V. Levin" <ldv@altlinux.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/T+O9YzBbXMkBzqWEdGuULUD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+--Sig_/T+O9YzBbXMkBzqWEdGuULUD
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Could we have a manual page for this API (best before it's merged)?
+Hi all,
 
-Thanks,
+Some things turned up in the powerpc tree today that required some changes
+to patches in the akpm tree and also the following fixup patch provided
+(mostly) by Michael. I have applied this as a single patch today, but
+parts of it should probably go in some other patches.
 
-Michael
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 3 Jun 2020 20:03:49 +1000
+Subject: [PATCH] powerpc fixes for changes clashing with akpm tree changes
 
-On Tue, 2 Jun 2020 at 22:44, Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
->
-> This adds the close_range() syscall. It allows to efficiently close a range
-> of file descriptors up to all file descriptors of a calling task.
->
-> I've also coordinated with some FreeBSD developers who got in touch with
-> me (Cced below). FreeBSD intends to add the same syscall once we merged it.
-> Quite a bunch of projects in userspace are waiting on this syscall
-> including Python and systemd.
->
-> The syscall came up in a recent discussion around the new mount API and
-> making new file descriptor types cloexec by default. During this
-> discussion, Al suggested the close_range() syscall (cf. [1]). Note, a
-> syscall in this manner has been requested by various people over time.
->
-> First, it helps to close all file descriptors of an exec()ing task. This
-> can be done safely via (quoting Al's example from [1] verbatim):
->
->         /* that exec is sensitive */
->         unshare(CLONE_FILES);
->         /* we don't want anything past stderr here */
->         close_range(3, ~0U);
->         execve(....);
->
-> The code snippet above is one way of working around the problem that file
-> descriptors are not cloexec by default. This is aggravated by the fact that
-> we can't just switch them over without massively regressing userspace. For
-> a whole class of programs having an in-kernel method of closing all file
-> descriptors is very helpful (e.g. demons, service managers, programming
-> language standard libraries, container managers etc.).
-> (Please note, unshare(CLONE_FILES) should only be needed if the calling
-> task is multi-threaded and shares the file descriptor table with another
-> thread in which case two threads could race with one thread allocating file
-> descriptors and the other one closing them via close_range(). For the
-> general case close_range() before the execve() is sufficient.)
->
-> Second, it allows userspace to avoid implementing closing all file
-> descriptors by parsing through /proc/<pid>/fd/* and calling close() on each
-> file descriptor. From looking at various large(ish) userspace code bases
-> this or similar patterns are very common in:
-> - service managers (cf. [4])
-> - libcs (cf. [6])
-> - container runtimes (cf. [5])
-> - programming language runtimes/standard libraries
->   - Python (cf. [2])
->   - Rust (cf. [7], [8])
-> As Dmitry pointed out there's even a long-standing glibc bug about missing
-> kernel support for this task (cf. [3]).
-> In addition, the syscall will also work for tasks that do not have procfs
-> mounted and on kernels that do not have procfs support compiled in. In such
-> situations the only way to make sure that all file descriptors are closed
-> is to call close() on each file descriptor up to UINT_MAX or RLIMIT_NOFILE,
-> OPEN_MAX trickery (cf. comment [8] on Rust).
->
-> The performance is striking. For good measure, comparing the following
-> simple close_all_fds() userspace implementation that is essentially just
-> glibc's version in [6]:
->
-> static int close_all_fds(void)
-> {
->         int dir_fd;
->         DIR *dir;
->         struct dirent *direntp;
->
->         dir = opendir("/proc/self/fd");
->         if (!dir)
->                 return -1;
->         dir_fd = dirfd(dir);
->         while ((direntp = readdir(dir))) {
->                 int fd;
->                 if (strcmp(direntp->d_name, ".") == 0)
->                         continue;
->                 if (strcmp(direntp->d_name, "..") == 0)
->                         continue;
->                 fd = atoi(direntp->d_name);
->                 if (fd == dir_fd || fd == 0 || fd == 1 || fd == 2)
->                         continue;
->                 close(fd);
->         }
->         closedir(dir);
->         return 0;
-> }
->
-> to close_range() yields:
-> 1. closing 4 open files:
->    - close_all_fds(): ~280 us
->    - close_range():    ~24 us
->
-> 2. closing 1000 open files:
->    - close_all_fds(): ~5000 us
->    - close_range():   ~800 us
->
-> close_range() is designed to allow for some flexibility. Specifically, it
-> does not simply always close all open file descriptors of a task. Instead,
-> callers can specify an upper bound.
-> This is e.g. useful for scenarios where specific file descriptors are
-> created with well-known numbers that are supposed to be excluded from
-> getting closed.
-> For extra paranoia close_range() comes with a flags argument. This can e.g.
-> be used to implement extension. Once can imagine userspace wanting to stop
-> at the first error instead of ignoring errors under certain circumstances.
-> There might be other valid ideas in the future. In any case, a flag
-> argument doesn't hurt and keeps us on the safe side.
->
-> From an implementation side this is kept rather dumb. It saw some input
-> from David and Jann but all nonsense is obviously my own!
-> - Errors to close file descriptors are currently ignored. (Could be changed
->   by setting a flag in the future if needed.)
-> - __close_range() is a rather simplistic wrapper around __close_fd().
->   My reasoning behind this is based on the nature of how __close_fd() needs
->   to release an fd. But maybe I misunderstood specifics:
->   We take the files_lock and rcu-dereference the fdtable of the calling
->   task, we find the entry in the fdtable, get the file and need to release
->   files_lock before calling filp_close().
->   In the meantime the fdtable might have been altered so we can't just
->   retake the spinlock and keep the old rcu-reference of the fdtable
->   around. Instead we need to grab a fresh reference to the fdtable.
->   If my reasoning is correct then there's really no point in fancyfying
->   __close_range(): We just need to rcu-dereference the fdtable of the
->   calling task once to cap the max_fd value correctly and then go on
->   calling __close_fd() in a loop.
->
-> /* References */
-> [1]: https://lore.kernel.org/lkml/20190516165021.GD17978@ZenIV.linux.org.uk/
-> [2]: https://github.com/python/cpython/blob/9e4f2f3a6b8ee995c365e86d976937c141d867f8/Modules/_posixsubprocess.c#L220
-> [3]: https://sourceware.org/bugzilla/show_bug.cgi?id=10353#c7
-> [4]: https://github.com/systemd/systemd/blob/5238e9575906297608ff802a27e2ff9effa3b338/src/basic/fd-util.c#L217
-> [5]: https://github.com/lxc/lxc/blob/ddf4b77e11a4d08f09b7b9cd13e593f8c047edc5/src/lxc/start.c#L236
-> [6]: https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/grantpt.c;h=2030e07fa6e652aac32c775b8c6e005844c3c4eb;hb=HEAD#l17
->      Note that this is an internal implementation that is not exported.
->      Currently, libc seems to not provide an exported version of this
->      because of missing kernel support to do this.
-> [7]: https://github.com/rust-lang/rust/issues/12148
-> [8]: https://github.com/rust-lang/rust/blob/5f47c0613ed4eb46fca3633c1297364c09e5e451/src/libstd/sys/unix/process2.rs#L303-L308
->      Rust's solution is slightly different but is equally unperformant.
->      Rust calls getdtablesize() which is a glibc library function that
->      simply returns the current RLIMIT_NOFILE or OPEN_MAX values. Rust then
->      goes on to call close() on each fd. That's obviously overkill for most
->      tasks. Rarely, tasks - especially non-demons - hit RLIMIT_NOFILE or
->      OPEN_MAX.
->      Let's be nice and assume an unprivileged user with RLIMIT_NOFILE set
->      to 1024. Even in this case, there's a very high chance that in the
->      common case Rust is calling the close() syscall 1021 times pointlessly
->      if the task just has 0, 1, and 2 open.
->
-> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Kyle Evans <self@kyle-evans.net>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: Dmitry V. Levin <ldv@altlinux.org>
-> Cc: Oleg Nesterov <oleg@redhat.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Florian Weimer <fweimer@redhat.com>
-> Cc: linux-api@vger.kernel.org
-> ---
-> /* v2 */
-> - Linus Torvalds <torvalds@linux-foundation.org>:
->   - add cond_resched() to yield cpu when closing a lot of file descriptors
-> - Al Viro <viro@zeniv.linux.org.uk>:
->   - add cond_resched() to yield cpu when closing a lot of file descriptors
->
-> /* v3 */
-> unchanged
->
-> /* v4 */
-> - Oleg Nesterov <oleg@redhat.com>:
->   - fix braino: s/max()/min()/
->
-> /* v5 */
-> unchanged
-> ---
->  fs/file.c                | 62 ++++++++++++++++++++++++++++++++++------
->  fs/open.c                | 20 +++++++++++++
->  include/linux/fdtable.h  |  2 ++
->  include/linux/syscalls.h |  2 ++
->  4 files changed, 78 insertions(+), 8 deletions(-)
->
-> diff --git a/fs/file.c b/fs/file.c
-> index abb8b7081d7a..e260bfe687d1 100644
-> --- a/fs/file.c
-> +++ b/fs/file.c
-> @@ -10,6 +10,7 @@
->  #include <linux/syscalls.h>
->  #include <linux/export.h>
->  #include <linux/fs.h>
-> +#include <linux/kernel.h>
->  #include <linux/mm.h>
->  #include <linux/sched/signal.h>
->  #include <linux/slab.h>
-> @@ -620,12 +621,9 @@ void fd_install(unsigned int fd, struct file *file)
->
->  EXPORT_SYMBOL(fd_install);
->
-> -/*
-> - * The same warnings as for __alloc_fd()/__fd_install() apply here...
-> - */
-> -int __close_fd(struct files_struct *files, unsigned fd)
-> +static struct file *pick_file(struct files_struct *files, unsigned fd)
->  {
-> -       struct file *file;
-> +       struct file *file = NULL;
->         struct fdtable *fdt;
->
->         spin_lock(&files->file_lock);
-> @@ -637,15 +635,63 @@ int __close_fd(struct files_struct *files, unsigned fd)
->                 goto out_unlock;
->         rcu_assign_pointer(fdt->fd[fd], NULL);
->         __put_unused_fd(files, fd);
-> -       spin_unlock(&files->file_lock);
-> -       return filp_close(file, files);
->
->  out_unlock:
->         spin_unlock(&files->file_lock);
-> -       return -EBADF;
-> +       return file;
-> +}
-> +
-> +/*
-> + * The same warnings as for __alloc_fd()/__fd_install() apply here...
-> + */
-> +int __close_fd(struct files_struct *files, unsigned fd)
-> +{
-> +       struct file *file;
-> +
-> +       file = pick_file(files, fd);
-> +       if (!file)
-> +               return -EBADF;
-> +
-> +       return filp_close(file, files);
->  }
->  EXPORT_SYMBOL(__close_fd); /* for ksys_close() */
->
-> +/**
-> + * __close_range() - Close all file descriptors in a given range.
-> + *
-> + * @fd:     starting file descriptor to close
-> + * @max_fd: last file descriptor to close
-> + *
-> + * This closes a range of file descriptors. All file descriptors
-> + * from @fd up to and including @max_fd are closed.
-> + */
-> +int __close_range(struct files_struct *files, unsigned fd, unsigned max_fd)
-> +{
-> +       unsigned int cur_max;
-> +
-> +       if (fd > max_fd)
-> +               return -EINVAL;
-> +
-> +       rcu_read_lock();
-> +       cur_max = files_fdtable(files)->max_fds;
-> +       rcu_read_unlock();
-> +
-> +       /* cap to last valid index into fdtable */
-> +       max_fd = min(max_fd, (cur_max - 1));
-> +       while (fd <= max_fd) {
-> +               struct file *file;
-> +
-> +               file = pick_file(files, fd++);
-> +               if (!file)
-> +                       continue;
-> +
-> +               filp_close(file, files);
-> +               cond_resched();
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  /*
->   * variant of __close_fd that gets a ref on the file for later fput.
->   * The caller must ensure that filp_close() called on the file, and then
-> diff --git a/fs/open.c b/fs/open.c
-> index 719b320ede52..87e076e9e127 100644
-> --- a/fs/open.c
-> +++ b/fs/open.c
-> @@ -1279,6 +1279,26 @@ SYSCALL_DEFINE1(close, unsigned int, fd)
->         return retval;
->  }
->
-> +/**
-> + * close_range() - Close all file descriptors in a given range.
-> + *
-> + * @fd:     starting file descriptor to close
-> + * @max_fd: last file descriptor to close
-> + * @flags:  reserved for future extensions
-> + *
-> + * This closes a range of file descriptors. All file descriptors
-> + * from @fd up to and including @max_fd are closed.
-> + * Currently, errors to close a given file descriptor are ignored.
-> + */
-> +SYSCALL_DEFINE3(close_range, unsigned int, fd, unsigned int, max_fd,
-> +               unsigned int, flags)
-> +{
-> +       if (flags)
-> +               return -EINVAL;
-> +
-> +       return __close_range(current->files, fd, max_fd);
-> +}
-> +
->  /*
->   * This routine simulates a hangup on the tty, to arrange that users
->   * are given clean terminals at login time.
-> diff --git a/include/linux/fdtable.h b/include/linux/fdtable.h
-> index f07c55ea0c22..fcd07181a365 100644
-> --- a/include/linux/fdtable.h
-> +++ b/include/linux/fdtable.h
-> @@ -121,6 +121,8 @@ extern void __fd_install(struct files_struct *files,
->                       unsigned int fd, struct file *file);
->  extern int __close_fd(struct files_struct *files,
->                       unsigned int fd);
-> +extern int __close_range(struct files_struct *files, unsigned int fd,
-> +                        unsigned int max_fd);
->  extern int __close_fd_get_file(unsigned int fd, struct file **res);
->
->  extern struct kmem_cache *files_cachep;
-> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-> index 1815065d52f3..18fea399329b 100644
-> --- a/include/linux/syscalls.h
-> +++ b/include/linux/syscalls.h
-> @@ -442,6 +442,8 @@ asmlinkage long sys_openat(int dfd, const char __user *filename, int flags,
->  asmlinkage long sys_openat2(int dfd, const char __user *filename,
->                             struct open_how *how, size_t size);
->  asmlinkage long sys_close(unsigned int fd);
-> +asmlinkage long sys_close_range(unsigned int fd, unsigned int max_fd,
-> +                               unsigned int flags);
->  asmlinkage long sys_vhangup(void);
->
->  /* fs/pipe.c */
-> --
-> 2.26.2
->
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/powerpc/include/asm/book3s/64/pgtable.h |  6 ++++++
+ arch/powerpc/include/asm/nohash/32/pgtable.h | 10 +++++-----
+ arch/powerpc/mm/kasan/8xx.c                  |  4 ++--
+ arch/powerpc/mm/kasan/book3s_32.c            |  2 +-
+ arch/powerpc/mm/nohash/8xx.c                 |  2 +-
+ arch/powerpc/mm/pgtable.c                    |  2 +-
+ arch/powerpc/mm/pgtable_32.c                 |  2 +-
+ 7 files changed, 17 insertions(+), 11 deletions(-)
 
+diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/in=
+clude/asm/book3s/64/pgtable.h
+index 25c3cb8272c0..a6799723cd98 100644
+--- a/arch/powerpc/include/asm/book3s/64/pgtable.h
++++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
+@@ -1008,6 +1008,12 @@ extern struct page *p4d_page(p4d_t p4d);
+ #define pud_page_vaddr(pud)	__va(pud_val(pud) & ~PUD_MASKED_BITS)
+ #define p4d_page_vaddr(p4d)	__va(p4d_val(p4d) & ~P4D_MASKED_BITS)
+=20
++static inline unsigned long pgd_index(unsigned long address)
++{
++	return (address >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1);
++}
++#define pgd_index pgd_index
++
+ #define pte_ERROR(e) \
+ 	pr_err("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
+ #define pmd_ERROR(e) \
+diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/in=
+clude/asm/nohash/32/pgtable.h
+index c188a6f64bcd..1927e1b653f2 100644
+--- a/arch/powerpc/include/asm/nohash/32/pgtable.h
++++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
+@@ -205,10 +205,6 @@ static inline void pmd_clear(pmd_t *pmdp)
+ 	*pmdp =3D __pmd(0);
+ }
+=20
+-
+-/* to find an entry in a kernel page-table-directory */
+-#define pgd_offset_k(address) pgd_offset(&init_mm, address)
+-
+ /* to find an entry in a page-table-directory */
+ #define pgd_index(address)	 ((address) >> PGDIR_SHIFT)
+ #define pgd_offset(mm, address)	 ((mm)->pgd + pgd_index(address))
+@@ -241,7 +237,7 @@ static inline pte_basic_t pte_update(struct mm_struct *=
+mm, unsigned long addr, p
+ 	pte_basic_t old =3D pte_val(*p);
+ 	pte_basic_t new =3D (old & ~(pte_basic_t)clr) | set;
+ 	int num, i;
+-	pmd_t *pmd =3D pmd_offset(pud_offset(pgd_offset(mm, addr), addr), addr);
++	pmd_t *pmd =3D pmd_offset(pud_offset(p4d_offset(pgd_offset(mm, addr), add=
+r), addr), addr);
+=20
+ 	if (!huge)
+ 		num =3D PAGE_SIZE / SZ_4K;
+@@ -341,6 +337,10 @@ static inline int pte_young(pte_t pte)
+ 	pfn_to_page((__pa(pmd_val(pmd)) >> PAGE_SHIFT))
+ #endif
+=20
++#define pte_offset_kernel(dir, addr)	\
++	(pmd_bad(*(dir)) ? NULL : (pte_t *)pmd_page_vaddr(*(dir)) + \
++				  pte_index(addr))
++
+ /*
+  * Encode and decode a swap entry.
+  * Note that the bits we use in a PTE for representing a swap entry
+diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
+index db4ef44af22f..569d98a41881 100644
+--- a/arch/powerpc/mm/kasan/8xx.c
++++ b/arch/powerpc/mm/kasan/8xx.c
+@@ -10,7 +10,7 @@
+ static int __init
+ kasan_init_shadow_8M(unsigned long k_start, unsigned long k_end, void *blo=
+ck)
+ {
+-	pmd_t *pmd =3D pmd_ptr_k(k_start);
++	pmd_t *pmd =3D pmd_off_k(k_start);
+ 	unsigned long k_cur, k_next;
+=20
+ 	for (k_cur =3D k_start; k_cur !=3D k_end; k_cur =3D k_next, pmd +=3D 2, b=
+lock +=3D SZ_8M) {
+@@ -59,7 +59,7 @@ int __init kasan_init_region(void *start, size_t size)
+ 		return ret;
+=20
+ 	for (; k_cur < k_end; k_cur +=3D PAGE_SIZE) {
+-		pmd_t *pmd =3D pmd_ptr_k(k_cur);
++		pmd_t *pmd =3D pmd_off_k(k_cur);
+ 		void *va =3D block + k_cur - k_start;
+ 		pte_t pte =3D pfn_pte(PHYS_PFN(__pa(va)), PAGE_KERNEL);
+=20
+diff --git a/arch/powerpc/mm/kasan/book3s_32.c b/arch/powerpc/mm/kasan/book=
+3s_32.c
+index 4bc491a4a1fd..a32b4640b9de 100644
+--- a/arch/powerpc/mm/kasan/book3s_32.c
++++ b/arch/powerpc/mm/kasan/book3s_32.c
+@@ -46,7 +46,7 @@ int __init kasan_init_region(void *start, size_t size)
+ 	kasan_update_early_region(k_start, k_cur, __pte(0));
+=20
+ 	for (; k_cur < k_end; k_cur +=3D PAGE_SIZE) {
+-		pmd_t *pmd =3D pmd_ptr_k(k_cur);
++		pmd_t *pmd =3D pmd_off_k(k_cur);
+ 		void *va =3D block + k_cur - k_start;
+ 		pte_t pte =3D pfn_pte(PHYS_PFN(__pa(va)), PAGE_KERNEL);
+=20
+diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
+index 286441bbbe49..92e8929cbe3e 100644
+--- a/arch/powerpc/mm/nohash/8xx.c
++++ b/arch/powerpc/mm/nohash/8xx.c
+@@ -74,7 +74,7 @@ static pte_t __init *early_hugepd_alloc_kernel(hugepd_t *=
+pmdp, unsigned long va)
+ static int __ref __early_map_kernel_hugepage(unsigned long va, phys_addr_t=
+ pa,
+ 					     pgprot_t prot, int psize, bool new)
+ {
+-	pmd_t *pmdp =3D pmd_ptr_k(va);
++	pmd_t *pmdp =3D pmd_off_k(va);
+ 	pte_t *ptep;
+=20
+ 	if (WARN_ON(psize !=3D MMU_PAGE_512K && psize !=3D MMU_PAGE_8M))
+diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
+index 45a0556089e8..1136257c3a99 100644
+--- a/arch/powerpc/mm/pgtable.c
++++ b/arch/powerpc/mm/pgtable.c
+@@ -264,7 +264,7 @@ int huge_ptep_set_access_flags(struct vm_area_struct *v=
+ma,
+ #if defined(CONFIG_PPC_8xx)
+ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep=
+, pte_t pte)
+ {
+-	pmd_t *pmd =3D pmd_ptr(mm, addr);
++	pmd_t *pmd =3D pmd_off(mm, addr);
+ 	pte_basic_t val;
+ 	pte_basic_t *entry =3D &ptep->pte;
+ 	int num =3D is_hugepd(*((hugepd_t *)pmd)) ? 1 : SZ_512K / SZ_4K;
+diff --git a/arch/powerpc/mm/pgtable_32.c b/arch/powerpc/mm/pgtable_32.c
+index e2d054c9575e..6eb4eab79385 100644
+--- a/arch/powerpc/mm/pgtable_32.c
++++ b/arch/powerpc/mm/pgtable_32.c
+@@ -40,7 +40,7 @@ notrace void __init early_ioremap_init(void)
+ {
+ 	unsigned long addr =3D ALIGN_DOWN(FIXADDR_START, PGDIR_SIZE);
+ 	pte_t *ptep =3D (pte_t *)early_fixmap_pagetable;
+-	pmd_t *pmdp =3D pmd_ptr_k(addr);
++	pmd_t *pmdp =3D pmd_off_k(addr);
+=20
+ 	for (; (s32)(FIXADDR_TOP - addr) > 0;
+ 	     addr +=3D PGDIR_SIZE, ptep +=3D PTRS_PER_PTE, pmdp++)
+--=20
+2.26.2
 
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/T+O9YzBbXMkBzqWEdGuULUD
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7Xeu8ACgkQAVBC80lX
+0Gzfhgf/cPFp2dlvYny+4RY4PCVkyWhX1RA5GNl9ysvabCodQrz+8pncZtOeb4MF
+eY4AJ83+Zz7E/4N1eN7mBGLnpBLcA3oLBc8auDIw6KzK26CMX7c5aSB4Q0EWOdCA
+VjKOS4St84Hv/BHlPTvEtCiir53gvLlaoWYH0byul1nTIfxSoTdJVHY0rE1FwF7M
+RmfMKVuYKhy+cmTW2rfVkYvUhDSwAq92TV7leq8EKvpZEHffOh+05sGozqty+N4g
+dUnFEe8oAOg42tKyByzpBjf1Ww6HMywpSVTH55SCIWjQJr34n9sOHvc0lIf/GvMX
+C91jjfQi7ZTZHDKK58sahYOxWvm6Fg==
+=EU0e
+-----END PGP SIGNATURE-----
+
+--Sig_/T+O9YzBbXMkBzqWEdGuULUD--
