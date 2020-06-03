@@ -2,141 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DC51EC946
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 08:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F081EC94B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 08:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgFCGL5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Jun 2020 02:11:57 -0400
-Received: from mail1.bemta26.messagelabs.com ([85.158.142.115]:24220 "EHLO
-        mail1.bemta26.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725810AbgFCGL4 (ORCPT
+        id S1725952AbgFCGND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 02:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725840AbgFCGND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 02:11:56 -0400
-Received: from [100.113.4.218] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
-        by server-4.bemta.az-b.eu-central-1.aws.symcld.net id 52/3E-52160-92F37DE5; Wed, 03 Jun 2020 06:11:53 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHIsWRWlGSWpSXmKPExsUS8J9toq6G/fU
-  4g5knjSyaF69ns7i8aw6bA5PH/rlr2D0+b5ILYIpizcxLyq9IYM34f/gAY8FGgYqTj46zNzDu
-  4Oti5OIQEmhglFjyeCJzFyMnh4SAn8TFrVMYIRKrGSXurl3OBOHsY5Q4+6uHCaSKTUBX4vviz
-  6wgtoiAgsTVn7/ZQGxmAW+Jp7+2AtkcHMICThLNd5RBwiwCKhLL7r5lB7F5Bewldu6cwA6xTF
-  7i1/PPYIuFBDQkDnduhYuvPbqFBWSMhECcxJc7phCtghInZz6BCltLTNycCFGtJjF/cRcjhM0
-  p8f7DByaQEmYBTYn1u/Qh7tKWWLbwNfMERpFZSAbNQqiahaRqASPzKkbLpKLM9IyS3MTMHF1D
-  AwNdQ0NjXXNdI2NDvcQq3SS91FLd5NS8kqJEoKxeYnmxXnFlbnJOil5easkmRmC0pBSyP9/Bu
-  OrNB71DjJIcTEqivO57r8UJ8SXlp1RmJBZnxBeV5qQWH2KU4eBQkuAVsb0eJyRYlJqeWpGWmQ
-  OMXJi0BAePkgjvcxugNG9xQWJucWY6ROoUo6KUOK8dSJ8ASCKjNA+uDZYsLjHKSgnzMjIwMAj
-  xFKQW5WaWoMq/YhTnYFQS5pW0A5rCk5lXAjf9FdBiJqDF9n3XQBaXJCKkpBqYmlPz15rlVh/o
-  CNnRvv7z/KB1i+RYdgQ/S22PmVb+cfnM/ou3Dyr/ff/V+Fg2U28ut/rVwJqwaW6itm6zFUrfv
-  pQKKrZQVHxT/Cr3Q0TMbZZjUtVndmzUT5ribF2c8O34r0TDvHQhiahrF5W26F6+7+A1f826tP
-  xZc6v72XbqrAtZWbyp0u/H4pXO32bumvWBLeXqjW81NSxhv+dalLp90X3AIxp2ddWyjJS5RnN
-  S7e8aa1Stjtkt8O9nuUHKkvW2khYlP/yOPtNo9eK6mP1gXVlNdOlr/xWi+xTiZm631TVweaS9
-  8e0buS6vDxd2HMlQvrvxWkHm2axzQi8WxH64kdo7ScCu+fmvC6ssJr8XUGIpzkg01GIuKk4EA
-  E3gJpGRAwAA
-X-Env-Sender: Andreas.Geissler@duagon.com
-X-Msg-Ref: server-18.tower-239.messagelabs.com!1591164711!4249372!1
-X-Originating-IP: [80.255.6.145]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.50.1; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 1230 invoked from network); 3 Jun 2020 06:11:52 -0000
-Received: from unknown (HELO keys.men.de) (80.255.6.145)
-  by server-18.tower-239.messagelabs.com with AES128-SHA encrypted SMTP; 3 Jun 2020 06:11:52 -0000
-Received: from MEN-EX01.intra.men.de ([192.168.1.1])
-  by keys.men.de (PGP Universal service);
-  Wed, 03 Jun 2020 08:11:52 +0200
-X-PGP-Universal: processed;
-        by keys.men.de on Wed, 03 Jun 2020 08:11:52 +0200
-Received: from MEN-EX01.intra.men.de (192.168.1.1) by MEN-EX01.intra.men.de
- (192.168.1.1) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Jun
- 2020 08:11:51 +0200
-Received: from build1.dev.men.de (10.64.0.100) by MEN-EX01.intra.men.de
- (192.168.1.1) with Microsoft SMTP Server (TLS) id 15.0.1497.2 via Frontend
- Transport; Wed, 3 Jun 2020 08:11:51 +0200
-From:   AGeissler <Andreas.Geissler@duagon.com>
-To:     <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        AGeissler <Andreas.Geissler@duagon.com>
-Subject: [PATCH] MAINTAINERS: Update maintainer entries for MEN HW
-Date:   Wed, 3 Jun 2020 08:11:42 +0200
-Message-ID: <20200603061142.4000-1-Andreas.Geissler@duagon.com>
-X-Mailer: git-send-email 2.16.4
-X-Originating-IP: [10.64.0.100]
-X-ClientProxiedBy: MEN-EX01.intra.men.de (192.168.1.1) To
- MEN-EX01.intra.men.de (192.168.1.1)
+        Wed, 3 Jun 2020 02:13:03 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11DFC05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 23:13:01 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id c17so1163319lji.11
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 23:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Xk20P2S7rDaUSDVCxxVxeXJ0wXIWFWiSC2tdp+gpqnA=;
+        b=fsGluz86vOjHN2TBk7/t+PLrMaZOi9+uqgGmTsnkoQdc28EmAYL4vUmyrI1Yx+4r9v
+         dc9hA378SMDasdLLSt7ed+YXpkCM+PQ27N06g3k5Y0rnIGfR81Fq80Vj0MYO8g9SBTxt
+         B5d2A7eg62WtGZjEuQ6+xjGev3ubE0hFTJ8NzMfWpjQ7NzXRtVOK32KIw3QtTaQ7nRWk
+         WNJ2rB9leySe6hSWTDOiPTu9xUnryNQVS5WzaFroFjlroZIwnPReQQr13Wl5e9kCV+t+
+         GAGdkTK2bPbCfp391bf8sH/zhTp+mKjKFisqEm9BmoFBmgKJjCt7qWk3mUq1BnraSRYO
+         UjGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Xk20P2S7rDaUSDVCxxVxeXJ0wXIWFWiSC2tdp+gpqnA=;
+        b=QTbQ/b0EpSJ0KPY1d9NAZSU69E2iv429riwtb9m8Ca8BW3Eb3q2Rt52hfaHHGKqsTC
+         adFVNMA3Jadxh4YTfxnix4ZpNvEtf3vTon6nic8uaIoOHCNmhCgmcAO4d0qIMWYc5yo9
+         BA2pAXfvOjrYSNrXFtBiHpsvvMDiXe1rLc/q1QPgXgyDd4dFG+39sL7GyeWEtF5a1cXm
+         z4GwEBJpTmDAX94JG+us8mektKFsE71R2GIbiByj/rH+6fm2qC3EC4OyvdzLgL4NPlFF
+         deKqZ2hLbeHzWM04kaIhPLXmtpBhsL7tjYDdp0IjrrSqnfzgijGiUpycKqcnk27oqFBq
+         HYcQ==
+X-Gm-Message-State: AOAM530BTvxNkdg+LfkTP259Uhp1Y1wPiAvJolbbfwhTma1LWqm0ga1H
+        /dj+MzbmyZ3PV8I8QR6ecKMJpvj7BemaKEmnEjckDw==
+X-Google-Smtp-Source: ABdhPJx7/ynr7nesYDFxGz07duEAXFlWwMJoMBfkXUk50wTWbVm+zrhC5l4zwQj/Mj/wyO9X0MbnDFPlUTk/LMPDkBk=
+X-Received: by 2002:a2e:974e:: with SMTP id f14mr1205380ljj.102.1591164779850;
+ Tue, 02 Jun 2020 23:12:59 -0700 (PDT)
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e4841e51-7998-49c0-ba41-8b8a0e2d8962
-X-EXCLAIMER-MD-BIFURCATION-INSTANCE: 0
-X-Loop: 2
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+References: <20200602181325.420361863@linuxfoundation.org>
+In-Reply-To: <20200602181325.420361863@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 3 Jun 2020 11:42:48 +0530
+Message-ID: <CA+G9fYsU+pP971z2sOjyJbW3jiiTa=TK+GJTCZ+-TF36krCepw@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/55] 4.9.226-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-﻿Remove Andreas Werner as Maintainer of the F21 BMC driver, as he is no
-longer with the company and add Andreas Geissler as additional
-Maintainer for all MEN Hardware.
+On Tue, 2 Jun 2020 at 23:44, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.226 release.
+> There are 55 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 04 Jun 2020 18:12:28 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.226-rc3.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Acked-by: Johannes Thumshirn <jth@kernel.org>
-Acked-by: Andreas Werner <crustyaw@gmx.de>
-Signed-off-by: AGeissler <Andreas.Geissler@duagon.com>
----
- MAINTAINERS | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 68cd1b966b45..b3b45d2e9c8a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11044,19 +11044,21 @@ F:	include/uapi/mtd/
- 
- MEN A21 WATCHDOG DRIVER
- M:	Johannes Thumshirn <morbidrsa@gmail.com>
-+M:	Andreas Geissler <andreas.geissler@duagon.com>
- L:	linux-watchdog@vger.kernel.org
- S:	Maintained
- F:	drivers/watchdog/mena21_wdt.c
- 
- MEN CHAMELEON BUS (mcb)
- M:	Johannes Thumshirn <morbidrsa@gmail.com>
-+M:	Andreas Geissler <andreas.geissler@duagon.com>
- S:	Maintained
- F:	Documentation/driver-api/men-chameleon-bus.rst
- F:	drivers/mcb/
- F:	include/linux/mcb.h
- 
- MEN F21BMC (Board Management Controller)
--M:	Andreas Werner <andreas.werner@men.de>
-+M:	Andreas Geissler <andreas.geissler@duagon.com>
- S:	Supported
- F:	Documentation/hwmon/menf21bmc.rst
- F:	drivers/hwmon/menf21bmc_hwmon.c
-@@ -11066,10 +11068,18 @@ F:	drivers/watchdog/menf21bmc_wdt.c
- 
- MEN Z069 WATCHDOG DRIVER
- M:	Johannes Thumshirn <jth@kernel.org>
-+M:	Andreas Geissler <andreas.geissler@duagon.com>
- L:	linux-watchdog@vger.kernel.org
- S:	Maintained
- F:	drivers/watchdog/menz69_wdt.c
- 
-+MEN Z135 UART DRIVER
-+M:	Johannes Thumshirn <jth@kernel.org>
-+M:	Andreas Geissler <andreas.geissler@duagon.com>
-+L:	linux-serial@vger.kernel.org
-+S:	Maintained
-+F:	drivers/tty/serial/men_z135_uart.c
-+
- MESON AO CEC DRIVER FOR AMLOGIC SOCS
- M:	Neil Armstrong <narmstrong@baylibre.com>
- L:	linux-media@vger.kernel.org
+Summary
+------------------------------------------------------------------------
 
-base-commit: d6f9469a03d832dcd17041ed67774ffb5f3e73b3
--- 
-2.16.4
+kernel: 4.9.226-rc3
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: a836fd8c024d14989c7cbfb91040e805b093f1d7
+git describe: v4.9.225-56-ga836fd8c024d
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.9-oe/bui=
+ld/v4.9.225-56-ga836fd8c024d
 
+No regressions (compared to build v4.9.225)
 
-MEN Mikro Elektronik GmbH
-Neuwieder Straße 1-7 90411 Nürnberg
-Geschäftsführer: Dr. Michael Goldbach - Matthias Kamolz - Yilmaz Kocak - Handelsregister AG Nürnberg HRB 5540
+No fixes (compared to build v4.9.225)
 
+Ran 25363 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+* kvm-unit-tests
+* ltp-containers-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kselftest/net
+* kselftest/networking
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
