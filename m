@@ -2,131 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6D61ED16D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 15:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DB11ED172
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 15:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgFCNvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 09:51:22 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:12702 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725882AbgFCNvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 09:51:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591192280; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=4th+09S0iCW1XVvsnSYykoMMaed1cUFlHMRPNaY08ZY=;
- b=leGAfoJj8e1QaC0OSyhcxRtQcFxsrpPT2soDbkgPPMdvou7gDpbBOPRdSgQ1b6SKihVIVhzY
- Z07a9CUHXJ16wWfYKE4rqbpKzZtVr3QhTt4Y1YBBkTTZePxt2ytnZrnKLKZzZ675bCVWaP2I
- b5SjYp7tVekGKepdsfYtxvJGRaQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5ed7aac98e09c0ae098b58ec (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Jun 2020 13:51:05
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7D522C43395; Wed,  3 Jun 2020 13:51:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CD2FEC433C6;
-        Wed,  3 Jun 2020 13:51:04 +0000 (UTC)
+        id S1726173AbgFCNvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 09:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgFCNvr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 09:51:47 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4789DC08C5C0;
+        Wed,  3 Jun 2020 06:51:47 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id w15so1349124lfe.11;
+        Wed, 03 Jun 2020 06:51:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ynGubvv1lmJWgKvcuVKEC2BlJOItbIGYAHQ5FZLJdXc=;
+        b=nv7BQ7nd558gTRBx1gpQtkB4AASf1WpGTDlSi+XRqpqBiWXAdWx7PXZNXp0mAOV7L1
+         IlrO3mgTvKSCwQfsG2jePNFIP3YK/VGecuiVhlhsWPxY008GW5d6vHeCp/1RXbiOAC7h
+         Vk6aI9eBA5aepCJSq4vXw0d7crfqDwVKipz/CIp33JuUqPCKLSi7H7mRT6KMO7Dtzl58
+         foMgeePlRhYWQUZqzW0yjoFvPBO6UyxOXtiR6fqVb1KCckfomW83DxFV4Jo3jmbUthLU
+         YMSikTOTJIkhvjFKesHqmlqBjlMEFRE7qNeSRorEE7CqL5BkTq3QV49RMdPpn0B+qBbj
+         ZuMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ynGubvv1lmJWgKvcuVKEC2BlJOItbIGYAHQ5FZLJdXc=;
+        b=sx4EldfJ+Khp7HpPMt3PLbOc0ibmf45Cv064KyTFRpqD2XRv4yNkktc6vimwWZulie
+         tydZfKbNAPJ04Y9g13bn77UPAJoFbLYKQClq10CJTZDWKoaWvpA2dBrzBKjEz9j3hIfW
+         tFVGEMQ/w7Iuz+t3cmJsrceg0ozw3Sd+wb++Th5n+QEjMCgRgeIyLbxrRsxFswILhAtU
+         d1Lxi/lD+7lUfioWB/0K5dsdEC3LszF8/qWBVa/w3N+Wccg8OnQquBHn9jXOSEWJf2Z3
+         rH+lf5Phh1m1m4JcFWVTl1dNIOwUule4wsO4jVhBtjw6tgbR8Z0hQUPtuZNy1TY+tGwM
+         ZMcg==
+X-Gm-Message-State: AOAM533pcaMRRw4pca3OQ3+ZCvlHPWr5GDABsQ/UcME3SOwq27HBGc0s
+        qZrLRml2j67dGqEfrhtGTEGkcHl9nDUWora4fiC7hOxLtrA=
+X-Google-Smtp-Source: ABdhPJzwXeSetxU7Ts8RRJiSyxD/Af2iDDUT+Ltxy+kX+GR+P7ziqOKvTXQCW/Fn/KOe+KEQ5e82p437f1NO7Cqi1u0=
+X-Received: by 2002:ac2:5197:: with SMTP id u23mr2534893lfi.109.1591192305763;
+ Wed, 03 Jun 2020 06:51:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 03 Jun 2020 19:21:04 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCH 2/2] coresight: tmc: Add shutdown callback for TMC ETR/ETF
-In-Reply-To: <68444180-3ebe-8988-493a-fdd1dff994b6@arm.com>
-References: <cover.1590947174.git.saiprakash.ranjan@codeaurora.org>
- <28123d1e19f235f97555ee36a5ed8b52d20cbdea.1590947174.git.saiprakash.ranjan@codeaurora.org>
- <20200601212858.GB24287@xps15>
- <bf7e8ac2-51b2-d9cb-9c4f-c311297accac@arm.com>
- <1549935cf69ac3a006f32eb278821027@codeaurora.org>
- <6c1a4fbd-98cb-a49c-0ced-1318d5d5e7c8@arm.com>
- <7fe5762b5cb8f87e988232922d06c55d@codeaurora.org>
- <68444180-3ebe-8988-493a-fdd1dff994b6@arm.com>
-Message-ID: <c3b17c472783faa6f153bccc157ad8c4@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20200602080425.93712-1-kerneljasonxing@gmail.com>
+ <CANn89iLNCDuXAhj4By0PDKbuFvneVfwmwkLbRCEKLBF+pmNEPg@mail.gmail.com>
+ <CAL+tcoBjjwrkE5QbXDFADRGJfPoniLL1rMFNUkAKBN9L57UGHA@mail.gmail.com>
+ <CANn89iKDKnnW1na_F0ngGh3EEc0quuBB2XWo21oAKaHckdPK4w@mail.gmail.com>
+ <CAL+tcoDn_=T--uB0CRymfTGvD022PPDk5Yw2yCxvqOOpZ4G_dQ@mail.gmail.com>
+ <CANn89i+dPu9=qJowhRVm9d3CesY4p+zzJ0HGiCMc_yJxux6pow@mail.gmail.com>
+ <CAL+tcoC2+vYoFbujkLCF7P3evfirNSBQtJ9bPFHiU2FGOnBo+A@mail.gmail.com>
+ <CANn89iJfLM2Hz69d9qOZoRKwzzCCpgVRZ1zbTTbg4vGvSAEZ-w@mail.gmail.com> <CADVnQy=RJfmzHR15DyWdydFAqSqVmFhaW4_cgYYAgnixEa5DNQ@mail.gmail.com>
+In-Reply-To: <CADVnQy=RJfmzHR15DyWdydFAqSqVmFhaW4_cgYYAgnixEa5DNQ@mail.gmail.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Wed, 3 Jun 2020 21:51:09 +0800
+Message-ID: <CAL+tcoCnsEi8KahgbhrVDawdhsjnAS4X8je0oCE-KZoCyf1Gcg@mail.gmail.com>
+Subject: Re: [PATCH] tcp: fix TCP socks unreleased in BBR mode
+To:     Neal Cardwell <ncardwell@google.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        David Miller <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        liweishi <liweishi@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+On Wed, Jun 3, 2020 at 8:02 PM Neal Cardwell <ncardwell@google.com> wrote:
+>
+> On Wed, Jun 3, 2020 at 1:44 AM Eric Dumazet <edumazet@google.com> wrote:
+> >
+> > On Tue, Jun 2, 2020 at 10:05 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
+> > >
+> > > Hi Eric,
+> > >
+> > > I'm still trying to understand what you're saying before. Would this
+> > > be better as following:
+> > > 1) discard the tcp_internal_pacing() function.
+> > > 2) remove where the tcp_internal_pacing() is called in the
+> > > __tcp_transmit_skb() function.
+> > >
+> > > If we do so, we could avoid 'too late to give up pacing'. Meanwhile,
+> > > should we introduce the tcp_wstamp_ns socket field as commit
+> > > (864e5c090749) does?
+> > >
+> >
+> > Please do not top-post on netdev mailing list.
+> >
+> >
+> > I basically suggested double-checking which point in TCP could end up
+> > calling tcp_internal_pacing()
+> > while the timer was already armed.
+> >
+> > I guess this is mtu probing.
 
-On 2020-06-03 19:10, Robin Murphy wrote:
-> On 2020-06-03 13:26, Sai Prakash Ranjan wrote:
->> Hi Robin,
->> 
->> On 2020-06-03 17:51, Robin Murphy wrote:
->>> On 2020-06-03 13:00, Sai Prakash Ranjan wrote:
->>>> Hi Robin, Mathieu
->>>> 
->>>> On 2020-06-03 17:07, Robin Murphy wrote:
->>>>> On 2020-06-01 22:28, Mathieu Poirier wrote:
->>>>>> That being said I'm sure that dependencies on an IOMMU isn't a 
->>>>>> problem confined
->>>>>> to coresight. I am adding Robin Murphy, who added this commit [1], 
->>>>>> to the thread
->>>>>> in the hope that he can provide guidance on the right way to do 
->>>>>> this.
->>>>> 
->>>>> Right, it's not specific to CoreSight, and it's not even specific 
->>>>> to
->>>>> IOMMUs really. In short, blame kexec ;)
->>>>> 
->>>> 
->>>> Yes it is not specific to coresight, we are targeting this for all
->>>> consumers/clients of SMMU(atleast on SC7180 SoC). We have display 
->>>> throwing
->>>> NoC/interconnect errors[1] during reboot after SMMU is disabled.
->>>> This is also not specific to kexec either as you explained here [2] 
->>>> about
->>>> a case with display which is exacly what is happening in our system 
->>>> [1].
->>> 
->>> Sure, but those instances are begging the question of why the SMMU is
->>> disabled at reboot in the first place ;)
->>> 
->> 
->> That is what happens in SMMU shutdown callback right? It is the 
->> reboot/shutdown flow.
-> 
-> Yes, that's where it happens, but my point is *why* it happens at all.
-> 
-> hint: `git log --grep=shutdown drivers/iommu/`
-> 
+I tested the patch Eric suggested and the system display the stack
+trace which means there's one more exception we have to take into
+consideration. The call trace is listed as following:
+ Call Trace:
+  <IRQ>
+  __tcp_retransmit_skb+0x188/0x7f0
+  ? bbr_set_state+0x7f/0x90 [tcp_bbr]
+  tcp_retransmit_skb+0x14/0xc0
+  tcp_retransmit_timer+0x313/0xa10
+  ? native_sched_clock+0x37/0x90
+  ? tcp_write_timer_handler+0x210/0x210
+  tcp_write_timer_handler+0xb1/0x210
+  tcp_write_timer+0x6d/0x80
+  call_timer_fn+0x29/0x110
+  run_timer_softirq+0x3cb/0x400
+  ? native_sched_clock+0x37/0x90
+  __do_softirq+0xdf/0x2ed
+  irq_exit+0xf7/0x100
+  smp_apic_timer_interrupt+0x68/0x120
+  apic_timer_interrupt+0xf/0x20
+  </IRQ>
 
-Ah my change :)
+I admitted that this case is not that easily triggered, but it is the
+one that avoids the check during tcp_mtu_probe() period. The first skb
+is sent out without being checked by tcp_pacing_check  when RTO comes.
 
-> If we could assume the system is always about to be powered off or
-> reset, we wouldn't need to do anything to the SMMU either ;)
-> 
+>
+> Perhaps this could also happen from some of the retransmission code
+> paths that don't use tcp_xmit_retransmit_queue()? Perhaps
+> tcp_retransmit_timer() (RTO) and  tcp_send_loss_probe() TLP? It seems
+> they could indirectly cause a call to __tcp_transmit_skb() and thus
+> tcp_internal_pacing() without first checking if the pacing timer was
+> already armed?
+>
 
-Are you hinting at removing SMMU shutdown callback altogether ;)
+Point taken. There are indeed several places using __tcp_transmit_skb
+where could cause such an issue, that is to say, slab increasing. All
+these particular cases, I think, should all be taken into account.
 
 Thanks,
-Sai
+Jason
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+> neal
