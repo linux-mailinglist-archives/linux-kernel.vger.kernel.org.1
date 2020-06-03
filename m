@@ -2,126 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5A11ECEBB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607E31ECE9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgFCLmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 07:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgFCLmq (ORCPT
+        id S1726238AbgFCLkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 07:40:47 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:23670 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725855AbgFCLke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 07:42:46 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A432AC08C5C2
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 04:42:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=/2QXn+atrvGmy2WDbzn5KMB/u9lheYoEWUB6ctzoU3g=; b=nd5NSFf1K9rXAPZ5EqvJWLfgJj
-        K0Udc3DDJu569lTf2A7VaH8rgTeBA6lWIS81w8GFLRHNd1DAbwtMrCS3Mu9XjgWkIFWRhTFgWeU54
-        CrBJsRr1MxN8ukND6clELPnM/tI5AvfrHJ1VofR37y9xGghURpQQJC+iKuh/uAr25Gr1OUoSXYrJ2
-        C8ryF7mf/xTLWOkDyQbeE+/M+9taxnwG79sXN106K+E5INVrBeyYi6hXYgA5+pEnf3pZXPl4EkTeU
-        glsWl3s65PTcQsfG0mIR9FjqyJWyrnAq1uzQPsh3KMNC6Trn+zZGXDzG7065dRyJr91ynAmtNyAOs
-        zAJBNCZw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jgRmr-0005oW-FJ; Wed, 03 Jun 2020 11:42:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F266B306D6D;
-        Wed,  3 Jun 2020 13:42:23 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id B4319209DB0D0; Wed,  3 Jun 2020 13:42:23 +0200 (CEST)
-Message-ID: <20200603114052.070166551@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 03 Jun 2020 13:40:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de
-Cc:     x86@kernel.org, elver@google.com, paulmck@kernel.org,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, will@kernel.org, dvyukov@google.com,
-        glider@google.com, andreyknvl@google.com
-Subject: [PATCH 5/9] x86/entry: __always_inline arch_atomic_* for noinstr
-References: <20200603114014.152292216@infradead.org>
+        Wed, 3 Jun 2020 07:40:34 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 053Bdej8022901;
+        Wed, 3 Jun 2020 07:40:33 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 31e4scs6a9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Jun 2020 07:40:32 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 053BeVLQ029997
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 3 Jun 2020 07:40:31 -0400
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 3 Jun 2020 04:40:30 -0700
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 3 Jun 2020 04:40:29 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 3 Jun 2020 04:40:29 -0700
+Received: from saturn.ad.analog.com ([10.48.65.112])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 053BeOtI017839;
+        Wed, 3 Jun 2020 07:40:27 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <johan@kernel.org>, <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2 2/6] iio: core: add iio_device_set_parent() helper
+Date:   Wed, 3 Jun 2020 14:40:19 +0300
+Message-ID: <20200603114023.175102-3-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200603114023.175102-1-alexandru.ardelean@analog.com>
+References: <20200603114023.175102-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-03_11:2020-06-02,2020-06-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 bulkscore=0
+ cotscore=-2147483648 clxscore=1015 phishscore=0 mlxscore=0 impostorscore=0
+ suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006030093
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vmlinux.o: warning: objtool: rcu_dynticks_eqs_exit()+0x33: call to arch_atomic_and.constprop.0() leaves .noinstr.text section
+By default, the device allocation will also assign a parent device to the
+IIO device object. In cases where devm_iio_device_alloc() is used,
+sometimes the parent device must be different than the device used to
+manage the allocation.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+In that case, this helper should be used to change the parent, hence the
+requirement to call this between allocation & registration.
+
+This pattern/requirement is not very common in the IIO space, and it may be
+cleaned up later.
+But until then, assigning the parent manually between allocation &
+registration is slightly easier.
+
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 ---
- arch/x86/include/asm/atomic.h |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ include/linux/iio/iio.h | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
---- a/arch/x86/include/asm/atomic.h
-+++ b/arch/x86/include/asm/atomic.h
-@@ -205,13 +205,13 @@ static __always_inline bool arch_atomic_
- }
- #define arch_atomic_try_cmpxchg arch_atomic_try_cmpxchg
- 
--static inline int arch_atomic_xchg(atomic_t *v, int new)
-+static __always_inline int arch_atomic_xchg(atomic_t *v, int new)
- {
- 	return arch_xchg(&v->counter, new);
- }
- #define arch_atomic_xchg arch_atomic_xchg
- 
--static inline void arch_atomic_and(int i, atomic_t *v)
-+static __always_inline void arch_atomic_and(int i, atomic_t *v)
- {
- 	asm volatile(LOCK_PREFIX "andl %1,%0"
- 			: "+m" (v->counter)
-@@ -219,7 +219,7 @@ static inline void arch_atomic_and(int i
- 			: "memory");
+diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+index 91a69f4751aa..5784f8c9508f 100644
+--- a/include/linux/iio/iio.h
++++ b/include/linux/iio/iio.h
+@@ -649,6 +649,26 @@ static inline struct iio_dev *iio_device_get(struct iio_dev *indio_dev)
+ 	return indio_dev ? dev_to_iio_dev(get_device(&indio_dev->dev)) : NULL;
  }
  
--static inline int arch_atomic_fetch_and(int i, atomic_t *v)
-+static __always_inline int arch_atomic_fetch_and(int i, atomic_t *v)
- {
- 	int val = arch_atomic_read(v);
++/**
++ * iio_device_set_parent() - assign parent device to the IIO device object
++ * @indio_dev: 		IIO device structure
++ * @parent:		reference to parent device object
++ *
++ * This utility must be called between IIO device allocation
++ * (via devm_iio_device_alloc()) & IIO device registration
++ * (via {devm_}iio_device_register()).
++ * By default, the device allocation will also assign a parent device to
++ * the IIO device object. In cases where devm_iio_device_alloc() is used,
++ * sometimes the parent device must be different than the device used to
++ * manage the allocation.
++ * In that case, this helper should be used to change the parent, hence the
++ * requirement to call this between allocation & registration.
++ **/
++static inline void iio_device_set_parent(struct iio_dev *indio_dev,
++					 struct device *parent)
++{
++	indio_dev->dev.parent = parent;
++}
  
-@@ -229,7 +229,7 @@ static inline int arch_atomic_fetch_and(
- }
- #define arch_atomic_fetch_and arch_atomic_fetch_and
- 
--static inline void arch_atomic_or(int i, atomic_t *v)
-+static __always_inline void arch_atomic_or(int i, atomic_t *v)
- {
- 	asm volatile(LOCK_PREFIX "orl %1,%0"
- 			: "+m" (v->counter)
-@@ -237,7 +237,7 @@ static inline void arch_atomic_or(int i,
- 			: "memory");
- }
- 
--static inline int arch_atomic_fetch_or(int i, atomic_t *v)
-+static __always_inline int arch_atomic_fetch_or(int i, atomic_t *v)
- {
- 	int val = arch_atomic_read(v);
- 
-@@ -247,7 +247,7 @@ static inline int arch_atomic_fetch_or(i
- }
- #define arch_atomic_fetch_or arch_atomic_fetch_or
- 
--static inline void arch_atomic_xor(int i, atomic_t *v)
-+static __always_inline void arch_atomic_xor(int i, atomic_t *v)
- {
- 	asm volatile(LOCK_PREFIX "xorl %1,%0"
- 			: "+m" (v->counter)
-@@ -255,7 +255,7 @@ static inline void arch_atomic_xor(int i
- 			: "memory");
- }
- 
--static inline int arch_atomic_fetch_xor(int i, atomic_t *v)
-+static __always_inline int arch_atomic_fetch_xor(int i, atomic_t *v)
- {
- 	int val = arch_atomic_read(v);
- 
-
+ /**
+  * iio_device_set_drvdata() - Set device driver data
+-- 
+2.25.1
 
