@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9701ED282
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3486D1ED280
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgFCOuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 10:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59716 "EHLO
+        id S1726706AbgFCOur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 10:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726450AbgFCOuW (ORCPT
+        with ESMTP id S1726462AbgFCOuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 10:50:22 -0400
+        Wed, 3 Jun 2020 10:50:23 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF3FC08C5C0;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0772C08C5C1;
         Wed,  3 Jun 2020 07:50:22 -0700 (PDT)
 Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de.)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA1:256)
         (Exim 4.80)
         (envelope-from <a.darwish@linutronix.de>)
-        id 1jgUiZ-0001yp-5A; Wed, 03 Jun 2020 16:50:11 +0200
+        id 1jgUie-0001zr-3o; Wed, 03 Jun 2020 16:50:16 +0200
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
@@ -29,15 +29,11 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
         "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH v2 4/6] net: mdiobus: Disable preemption upon u64_stats update
-Date:   Wed,  3 Jun 2020 16:49:47 +0200
-Message-Id: <20200603144949.1122421-5-a.darwish@linutronix.de>
+        Jens Axboe <axboe@kernel.dk>, Vivek Goyal <vgoyal@redhat.com>,
+        linux-block@vger.kernel.org
+Subject: [PATCH v2 5/6] block: nr_sects_write(): Disable preemption on seqcount write
+Date:   Wed,  3 Jun 2020 16:49:48 +0200
+Message-Id: <20200603144949.1122421-6-a.darwish@linutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200603144949.1122421-1-a.darwish@linutronix.de>
 References: <20200603144949.1122421-1-a.darwish@linutronix.de>
@@ -51,42 +47,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The u64_stats mechanism uses sequence counters to protect against 64-bit
-values tearing on 32-bit architectures. Updating u64_stats is thus a
-sequence counter write side critical section where preemption must be
-disabled.
+For optimized block readers not holding a mutex, the "number of sectors"
+64-bit value is protected from tearing on 32-bit architectures by a
+sequence counter.
 
-For mdiobus_stats_acct(), disable preemption upon the u64_stats update.
-It is called from process context through mdiobus_read() and
-mdiobus_write().
+Disable preemption before entering that sequence counter's write side
+critical section. Otherwise, the read side can preempt the write side
+section and spin for the entire scheduler tick. If the reader belongs to
+a real-time scheduling class, it can spin forever and the kernel will
+livelock.
 
-Reported-by: kernel test robot <lkp@intel.com>
+Fixes: c83f6bf98dc1 ("block: add partition resize function to blkpg ioctl")
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- drivers/net/phy/mdio_bus.c | 2 ++
+ block/blk.h | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 7a4eb3f2cb74..a1a4dee2a033 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -757,6 +757,7 @@ EXPORT_SYMBOL(mdiobus_scan);
- 
- static void mdiobus_stats_acct(struct mdio_bus_stats *stats, bool op, int ret)
+diff --git a/block/blk.h b/block/blk.h
+index 0a94ec68af32..151f86932547 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -470,9 +470,11 @@ static inline sector_t part_nr_sects_read(struct hd_struct *part)
+ static inline void part_nr_sects_write(struct hd_struct *part, sector_t size)
  {
+ #if BITS_PER_LONG==32 && defined(CONFIG_SMP)
 +	preempt_disable();
- 	u64_stats_update_begin(&stats->syncp);
- 
- 	u64_stats_inc(&stats->transfers);
-@@ -771,6 +772,7 @@ static void mdiobus_stats_acct(struct mdio_bus_stats *stats, bool op, int ret)
- 		u64_stats_inc(&stats->writes);
- out:
- 	u64_stats_update_end(&stats->syncp);
+ 	write_seqcount_begin(&part->nr_sects_seq);
+ 	part->nr_sects = size;
+ 	write_seqcount_end(&part->nr_sects_seq);
 +	preempt_enable();
- }
- 
- /**
+ #elif BITS_PER_LONG==32 && defined(CONFIG_PREEMPTION)
+ 	preempt_disable();
+ 	part->nr_sects = size;
 -- 
 2.20.1
 
