@@ -2,61 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9371ECEB0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98501ECEB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbgFCLma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 07:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58622 "EHLO
+        id S1726202AbgFCLmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 07:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgFCLm3 (ORCPT
+        with ESMTP id S1725854AbgFCLmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 07:42:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5ECEC08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 04:42:29 -0700 (PDT)
+        Wed, 3 Jun 2020 07:42:47 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB2EC08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 04:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Subject:Cc:To:From:Date:Message-ID:
-        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=8Kdbt0b37eerZhg/nVUe4tBYOkqdJz7+Q7Dw50pmBzY=; b=CZmeYv881QdKwxCUtnBfzVNN84
-        oTnuSOa8f1Z2LnsY84txATKa8ljmhGhTJpIYk/wROM2JI6ZPNarlJRmTvEs1bcfidenSwpj+DXcI5
-        ZhJ11fIc48CeXzC4b/TYP35QwRyWKP+3UDKiUj34dJskYWdTo6IzC23w+Ni3+ZqlpEWDBR0Nu3gwV
-        WxP6WcmfxcwmMOfbns53oNvF+V2XgwNF6tHkpY3nPi3pTHeZhTzK4RSK/xVdBXwgA/mM40Vn8MYs7
-        BhY5Ep/fpkhxRe+b2Gk03j21nC/9j3wvZQGD6fsDtq3/Xcf4QKIiJJ3A7h3WP5MjyStgCJ4jdrKUh
-        s7MkiCPQ==;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=T+DOFpWbn6w2E0hTbTLLAKKN4dYF4a47Ffrg1miQE+s=; b=WlkGKt1MX6Ir6JuHJV5OpZweyS
+        MjraldTCdcyiEopcdiGXvxRoglByC4CqhMbJnj1HkRYU4NPzGzErWACKZcLI3a5M3nOo6PENzpfcK
+        QwMmaGxL92K/4TvairrSNyzJ9Ez7rcVH25DZkkP9ZY15KmGd/HawPoXZhmVzB8iqrjfqRHOyILY9J
+        M7awHbG2TIpF/rFNePIr20Y9ZdaJ3l9+XTnWg+LZgVGrd6LLfqa2YzJ1QQL8XDr+y5cFQbTBnGat5
+        NDS4+evAHMc1h7JStbaqELxqpDbgWnkfstWHeL48qp1rlF99laCQrZvI1ChwvNn145BAFywX60Oy6
+        KQpm1bWA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jgRmr-0005jl-RV; Wed, 03 Jun 2020 11:42:26 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jgRmr-0005oU-FK; Wed, 03 Jun 2020 11:42:25 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B67E530581E;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B673230008D;
         Wed,  3 Jun 2020 13:42:23 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id A2068209C23EC; Wed,  3 Jun 2020 13:42:23 +0200 (CEST)
-Message-ID: <20200603114014.152292216@infradead.org>
+        id A62B0209C23E0; Wed,  3 Jun 2020 13:42:23 +0200 (CEST)
+Message-ID: <20200603114051.838509047@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 03 Jun 2020 13:40:14 +0200
+Date:   Wed, 03 Jun 2020 13:40:15 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de
 Cc:     x86@kernel.org, elver@google.com, paulmck@kernel.org,
         kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
         peterz@infradead.org, will@kernel.org, dvyukov@google.com,
-        glider@google.com, andreyknvl@google.com
-Subject: [PATCH 0/9] x86/entry fixes
+        glider@google.com, andreyknvl@google.com, Qian Cai <cai@lca.pw>
+Subject: [PATCH 1/9] x86/entry: Fix irq_exit()
+References: <20200603114014.152292216@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first patch is a fix for x86/entry, I'm quicky runing out of brown paper bags again :/
+Because if you rename a function, you should also rename the users.
 
-The rest goes on top of these:
+Fixes: b614345f52bc ("x86/entry: Clarify irq_{enter,exit}_rcu()")
+Reported-by: Qian Cai <cai@lca.pw>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Qian Cai <cai@lca.pw>
+Link: https://lkml.kernel.org/r/20200602150511.GH706478@hirez.programming.kicks-ass.net
+---
+ kernel/softirq.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  https://lkml.kernel.org/r/20200602173103.931412766@infradead.org
-  https://lkml.kernel.org/r/20200602184409.22142-1-elver@google.com
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -438,7 +438,7 @@ void irq_exit_rcu(void)
+  */
+ void irq_exit(void)
+ {
+-	irq_exit_rcu();
++	__irq_exit_rcu();
+ 	rcu_irq_exit();
+ 	 /* must be last! */
+ 	lockdep_hardirq_exit();
 
-patches from myself and Marco that enable *SAN builds. So far GCC-KASAN seen to
-behave quite well, I've yet to try UBSAN.
 
