@@ -2,158 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522801ED1ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8431ED1C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbgFCOQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 10:16:42 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:37575 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbgFCOQg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 10:16:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1591193796; x=1622729796;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=Q95Imqm6D4GsRp4TGS1qrEUIPf92/YhKKGxjfjqdz5s=;
-  b=eDbD0YYJzxl5IHLNfy4GgBvJxs/fDMpYz42218Fw2gGxv4JLTuLBp429
-   LxgouLDE7qEScWwn/eIWLSZstIhi/dng4LsXYONk5xIknpEa0lc1S4co3
-   21MLDhKJqXuuhzj4rArLT2+Xpsb5KdhBG94ShjG7WJPFrJBUenaHJ0CwQ
-   Q=;
-IronPort-SDR: lspKg3ajDh5Oo2wnIVCzaXvCQutKzWtGrcE+8aN0BzbvFkBGtmQ8EEl+hH5XyAVRNxqSDbBgCb
- HnYlj4rQ6KoA==
-X-IronPort-AV: E=Sophos;i="5.73,467,1583193600"; 
-   d="scan'208";a="35573782"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 03 Jun 2020 14:16:33 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com (Postfix) with ESMTPS id 01E29A27D2;
-        Wed,  3 Jun 2020 14:16:29 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 3 Jun 2020 14:16:29 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.90) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 3 Jun 2020 14:16:13 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
-        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
-        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
-        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
-        <ying.huang@intel.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [RFC v2 9/9] Docs/damon: Document physical memory monitoring support
-Date:   Wed, 3 Jun 2020 16:11:35 +0200
-Message-ID: <20200603141135.10575-10-sjpark@amazon.com>
+        id S1726015AbgFCOMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 10:12:21 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:38228 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725884AbgFCOMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 10:12:20 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 47A855205DCCCBE6A13C;
+        Wed,  3 Jun 2020 22:12:10 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 3 Jun 2020
+ 22:12:01 +0800
+From:   Cheng Jian <cj.chengjian@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <live-patching@vger.kernel.org>
+CC:     <cj.chengjian@huawei.com>, <chenwandun@huawei.com>,
+        <xiexiuqi@huawei.com>, <bobo.shaobowang@huawei.com>,
+        <huawei.libin@huawei.com>, <jeyu@kernel.org>, <jikos@kernel.org>
+Subject: [PATCH] module: make module symbols visible after init
+Date:   Wed, 3 Jun 2020 14:12:00 +0000
+Message-ID: <20200603141200.17745-1-cj.chengjian@huawei.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200603141135.10575-1-sjpark@amazon.com>
-References: <20200603141135.10575-1-sjpark@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.43.160.90]
-X-ClientProxiedBy: EX13D45UWB002.ant.amazon.com (10.43.161.78) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+When lookup the symbols of module by module_kallsyms_lookup_name(),
+the symbols address is visible only if the module's status isn't
+MODULE_STATE_UNFORMED, This is problematic.
 
-This commit adds description for the physical memory monitoring usage in
-the DAMON document.
+When complete_formation is done, the state of the module is modified
+to MODULE_STATE_COMING, and the symbol of module is visible to the
+outside.
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
+At this time, the init function of the module has not been called,
+so if the address of the function symbol has been found and called,
+it may cause some exceptions.
+
+For livepatch module, the relocation information of the livepatch
+module is completed in init by klp_write_object_relocations(), and
+the symbol name of the old and new functions are the same. Therefore,
+when we lookup the symbol, we may get the function address of the
+livepatch module. a crash can occurs when we call this function.
+
+	CPU 0				CPU 1
+	==================================================
+	load_module
+	add_unformed_module # MODULE_STATE_UNFORMED;
+	post_relocation
+	complete_formation  # MODULE_STATE_COMING;
+					------------------
+					module_kallsymc_lookup_name("A")
+					call A()	# CRASH
+					------------------
+	do_init_module
+	klp_write_object_relocations
+	mod->state = MODULE_STATE_LIVE;
+
+In commit 0bd476e6c671 ("kallsyms: unexport kallsyms_lookup_name() and
+kallsyms_on_each_symbol()") restricts the invocation for kernel unexported
+symbols, but it is still incorrect to make the symbols of non-LIVE modules
+visible to the outside.
+
+Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
 ---
- Documentation/admin-guide/mm/damon/usage.rst | 42 ++++++++++++++------
- 1 file changed, 29 insertions(+), 13 deletions(-)
+ kernel/module.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index 137ed770c2d6..359745f0dbfb 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -314,27 +314,42 @@ check it again::
- Target PIDs
- -----------
- 
--Users can get and set the pids of monitoring target processes by reading from
--and writing to the ``pids`` file.  For example, below commands set processes
--having pids 42 and 4242 as the processes to be monitored and check it again::
-+To monitor the virtual memory address spaces of specific processes, users can
-+get and set the pids of monitoring target processes by reading from and writing
-+to the ``pids`` file.  For example, below commands set processes having pids 42
-+and 4242 as the processes to be monitored and check it again::
- 
-     # cd <debugfs>/damon
-     # echo 42 4242 > pids
-     # cat pids
-     42 4242
- 
-+Users can also monitor the physical memory address space of the system by
-+writing a special keyword, "``paddr\n``" to the file.  In this case, reading the
-+file will show ``-1``, as below::
-+
-+    # cd <debugfs>/damon
-+    # echo paddr > pids
-+    # cat pids
-+    -1
-+
- Note that setting the pids doesn't start the monitoring.
- 
- 
- Initla Monitoring Target Regions
- --------------------------------
- 
--DAMON automatically sets and updates the monitoring target regions so that
--entire memory mappings of target processes can be covered.  However, users
--might want to limit the monitoring region to specific address ranges, such as
--the heap, the stack, or specific file-mapped area.  Or, some users might know
--the initial access pattern of their workloads and therefore want to set optimal
--initial regions for the 'adaptive regions adjustment'.
-+In case of the virtual memory monitoring, DAMON automatically sets and updates
-+the monitoring target regions so that entire memory mappings of target
-+processes can be covered.  However, users might want to limit the monitoring
-+region to specific address ranges, such as the heap, the stack, or specific
-+file-mapped area.  Or, some users might know the initial access pattern of
-+their workloads and therefore want to set optimal initial regions for the
-+'adaptive regions adjustment'.
-+
-+In contrast, DAMON do not automatically sets and updates the monitoring target
-+regions in case of physical memory monitoring.  Therefore, users should set the
-+monitoring target regions by themselves.
- 
- In such cases, users can explicitly set the initial monitoring target regions
- as they want, by writing proper values to the ``init_regions`` file.  Each line
-@@ -354,10 +369,11 @@ region of process 42, and another couple of address ranges, ``20-40`` and
-             4242 20      40
-             4242 50      100" > init_regions
- 
--Note that this sets the initial monitoring target regions only.  DAMON will
--automatically updates the boundary of the regions after one ``regions update
--interval``.  Therefore, users should set the ``regions update interval`` large
--enough.
-+Note that this sets the initial monitoring target regions only.  In case of
-+virtual memory monitoring, DAMON will automatically updates the boundary of the
-+regions after one ``regions update interval``.  Therefore, users should set the
-+``regions update interval`` large enough in this case, if they don't want the
-+update.
- 
- 
- Record
+diff --git a/kernel/module.c b/kernel/module.c
+index 64a2b4daaaa5..96c9cb64de57 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -4220,7 +4220,7 @@ unsigned long module_kallsyms_lookup_name(const char *name)
+ 			ret = find_kallsyms_symbol_value(mod, colon+1);
+ 	} else {
+ 		list_for_each_entry_rcu(mod, &modules, list) {
+-			if (mod->state == MODULE_STATE_UNFORMED)
++			if (mod->state != MODULE_STATE_LIVE)
+ 				continue;
+ 			if ((ret = find_kallsyms_symbol_value(mod, name)) != 0)
+ 				break;
 -- 
 2.17.1
 
