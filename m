@@ -2,126 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C201ED253
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC0C1ED28F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726015AbgFCOsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 10:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgFCOsH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 10:48:07 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBF4C08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 07:48:07 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id o13so2073796otl.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 07:48:07 -0700 (PDT)
+        id S1726200AbgFCOtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 10:49:53 -0400
+Received: from mail-dm6nam10on2049.outbound.protection.outlook.com ([40.107.93.49]:63200
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726144AbgFCOtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 10:49:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MQNH4n4ssZG1xk0zz8+FDrfQ0Fd5PDnssubA5tw8LVMJ94Sk0QceMQw/pNV9woYTtu8NazA2qxumjlUdBJqSap18tFMSrd/pq15RALHGC7UDrgQ0iu9pfnOjfaH4TnTVMego+4n2GPbbMjBYwIltUqioNBaIlyCFTJFrQ9FLtdDM1Syx4BCU7gJOzqs+/dU1cx72nRbHdaz0sAc1MKHENjJbo0Wt/W/jPE8DNER2jotfDkqxFgFyx5SsD+TcX9B/7o/23yFywj0rEH6x9P1845Q2rGNMNRYTob1TmuKoUBOiD6sjSD6ynhbLJ0eqRsWNpUBxVvordwZvZmpqUUgFIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZCpM65CewYisrkWp7fZipWZ113RLvwQy7sFbztUNZT8=;
+ b=QWgNuFV36JZudAwXgb4xTJYpVUC+pxVtiRG9JFC1btax9BDNOKSANPZBfuVzk7WAo0WRTTfuHudHYj44DZWrugzyFAjlHEuK5s1J6UIYYyoCoNGqdhn3iirMhk04MNL/ZUOPsse8HmWKg3kiwcnzOgdpRyE1/IbyHqxKoO8SC65ONByZTlusJ7gBRzVyxfROGQNIHBAV6dW7KVyJewfgJeVh2L5P+EFO376q8dvwFRe+sV2ZuzxzEKuIWys4cHSr3n4S20w9r3Fv0gDM8I6dErOjewOlnO1qSdYy/pn2BvS2kYPdgYo0sS4C60uWIGXjdBWvwXb2DWBL2oQ7h8MqMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K4mWQ9BO+ADAedoRkxDsxNn5p6Rl0+bZnTb72ellqDY=;
-        b=MIkps4tW3dJjh2gI+MkcQDiSeHA+/2kyUTQs223quN2IFGpE5XwbsFdY0xuq1Pinx/
-         9Cur14MPWPsnKRuFW8iuEli5YlOWV4L03LVquMJk7w/RnWUT7vvxrEA0SgreCY9PlWQl
-         SMIwYh4Okf4LTQAFjd5y3kIId4UHXRGMRyCHfEplkPLMbCIsVd/gDdfRVJaU284qpJPN
-         pgdlDRfpzpnjzkb5jqg90mr2QxDPJfa4qpm8JhOka8ZbuQ4OydQUriTBWd4V7Zlm4vih
-         8lsA9I/2CyfiG+040dFG7EAbys/uwW8GgPkBBMyeQ0letlLHoWlPzOr3Y1V+NvTPLXnD
-         5xuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K4mWQ9BO+ADAedoRkxDsxNn5p6Rl0+bZnTb72ellqDY=;
-        b=Rg39aKp3L9EFZytRrwsvCyle9mBTXFSD17dVcOD4mSKu1u73CnGTrs1+lDHAuHWMy4
-         +ntZRHkiplsDHnY3h7SISGuq1XyASBx1+oiRUgT5OGbAGMdXMTemrN9PZTLeZcWoBrzt
-         ppN7AUp1cY7BXyaNjqVD5DarzfZ/Pw894Wqt+0AJ5h6egV0AB6hw0HekUkRYkgJpkmpv
-         8dyBx+w5Nj/IM4TuE2h/s4RVv6hCSwc44Lp8o/jXzWR8waN27rBKHtJ0FP+1NrZKokkX
-         UTSrd90EWuvedXV+TkPA7eUgkXabne7MJsLc/uHsmVSUfZg9ukhZtSV+M872jZQ/xnse
-         D4Fw==
-X-Gm-Message-State: AOAM530bbkM+Oku/eWsmksgCmNChxWkulihkwjzbyHVgBog56r73Vh+J
-        qOMrL/QKb8POG1duIhtKVMLRui3TDTBt4E3zERDX2A==
-X-Google-Smtp-Source: ABdhPJziZsRVXntK8sNdeCrfyAujrpVvkIXmhqO25+V3RupcnSBtEIl8SdahpAwthlHGQF8U/clIQ2OCahYRM6xd8CM=
-X-Received: by 2002:a9d:6958:: with SMTP id p24mr256297oto.17.1591195686488;
- Wed, 03 Jun 2020 07:48:06 -0700 (PDT)
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZCpM65CewYisrkWp7fZipWZ113RLvwQy7sFbztUNZT8=;
+ b=MFeykc2jBp2y/oisnDFF7kSaKYWEQIpk68ZjVnk3youSlf9StU8UGMk6fxZK5UYTQbC0XFZbApUgQVvPGYe8NA/6uEmPG6dtJlefidsB10rWNwJZRSeLJxX90RlhSbr2qQdKA3M/LyLhE5pen/bfkljii82d6Zmbow5CvQwcMyY=
+Received: from SA9PR10CA0021.namprd10.prod.outlook.com (2603:10b6:806:a7::26)
+ by BYAPR02MB4215.namprd02.prod.outlook.com (2603:10b6:a02:f4::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.25; Wed, 3 Jun
+ 2020 14:49:48 +0000
+Received: from SN1NAM02FT019.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:a7:cafe::b7) by SA9PR10CA0021.outlook.office365.com
+ (2603:10b6:806:a7::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17 via Frontend
+ Transport; Wed, 3 Jun 2020 14:49:48 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ SN1NAM02FT019.mail.protection.outlook.com (10.152.72.130) with Microsoft SMTP
+ Server id 15.20.3045.17 via Frontend Transport; Wed, 3 Jun 2020 14:49:48
+ +0000
+Received: from [149.199.38.66] (port=60688 helo=xsj-pvapsmtp01)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1jgUhR-0007G4-Nw; Wed, 03 Jun 2020 07:49:01 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by xsj-pvapsmtp01 with smtp (Exim 4.63)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1jgUiB-000515-HL; Wed, 03 Jun 2020 07:49:47 -0700
+Received: from xsj-pvapsmtp01 (xsj-mail.xilinx.com [149.199.38.66])
+        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 053Enh5s015305;
+        Wed, 3 Jun 2020 07:49:43 -0700
+Received: from [172.19.2.206] (helo=xsjblevinsk50.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1jgUi7-00050a-6C; Wed, 03 Jun 2020 07:49:43 -0700
+From:   Ben Levinsky <ben.levinsky@xilinx.com>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org, michals@xilinx.com,
+        jollys@xilinx.com, rajanv@xilinx.com, robh+dt@kernel.org,
+        mark.rutland@arm.com
+Cc:     linux-remoteproc@vger.kernel.org,
+        linux-arm-kernell@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/5] remoteproc: Add zynqmp_r5 driver
+Date:   Wed,  3 Jun 2020 07:49:38 -0700
+Message-Id: <1591195783-10290-1-git-send-email-ben.levinsky@xilinx.com>
+X-Mailer: git-send-email 2.7.4
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(346002)(376002)(39860400002)(396003)(136003)(46966005)(4326008)(478600001)(316002)(47076004)(186003)(8936002)(82740400003)(8676002)(2906002)(36756003)(7696005)(26005)(9786002)(81166007)(356005)(2616005)(82310400002)(83380400001)(336012)(426003)(70586007)(70206006)(44832011)(5660300002)(6666004);DIR:OUT;SFP:1101;
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-References: <20200603114014.152292216@infradead.org> <20200603120037.GA2570@hirez.programming.kicks-ass.net>
- <20200603120818.GC2627@hirez.programming.kicks-ass.net> <CANpmjNOxLkqh=qpHQjUC_bZ0GCjkoJ4NxF3UuNGKhJSvcjavaA@mail.gmail.com>
- <20200603121815.GC2570@hirez.programming.kicks-ass.net> <CANpmjNPxMo0sNmkbMHmVYn=WJJwtmYR03ZtFDyPhmiMuR1ug=w@mail.gmail.com>
-In-Reply-To: <CANpmjNPxMo0sNmkbMHmVYn=WJJwtmYR03ZtFDyPhmiMuR1ug=w@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 3 Jun 2020 16:47:54 +0200
-Message-ID: <CANpmjNPzmynV2X+e76roUmt_3oq8KDDKyLLsgn__qtAb8i0aXQ@mail.gmail.com>
-Subject: Re: [PATCH 0/9] x86/entry fixes
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: eafe4e0e-4e08-4251-58e3-08d807cd5ced
+X-MS-TrafficTypeDiagnostic: BYAPR02MB4215:
+X-Microsoft-Antispam-PRVS: <BYAPR02MB4215A422C276D125DC80AE0AB5880@BYAPR02MB4215.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 04238CD941
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: t6m2CW8B6/gWQvaoMaqws3XUT0OtEPYwMX10Wu4uYK2zNAY0vE0KfYrQhe1n549g1r76nSy2sp/RbXY+WH+HM7nxlWb6ySUSXBBqpkQydwRzvSCOZE3IIve2XBH6MBXAtPO0BE1mpCfVehbfYgL9micd8Wl2vYOXltJFyoHhKsiuN6Z1+P+W76uWaTpbVbW4rAfYoqbQXSrRNVQUkuqd+K36ZLbrdioZU2UL3jzLMgNwQyBVCAsGA0wwFmlrGuWkagn2oCVh5qyZwOhwa88GJiETqPwm4eL5cFjPYlj9mofNznbk0YUg/mqb4Ixk4mWPkcJ19YCUZaOJMYH1S3/mxUhm3GR45pnOdxrX3shqGsGod+rRNwh5B9IHxonWxDB4qXzKhNA7wyQgIUKfGJduRQ==
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2020 14:49:48.1524
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: eafe4e0e-4e08-4251-58e3-08d807cd5ced
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Jun 2020 at 15:32, Marco Elver <elver@google.com> wrote:
->
-> On Wed, 3 Jun 2020 at 14:18, Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Wed, Jun 03, 2020 at 02:08:57PM +0200, Marco Elver wrote:
-> >
-> > > What is the .config you used? I somehow can't reproduce. I've applied
-> > > the patches on top of -tip/master.
-> >
-> > So tip/master, my patches, your patches, this series.
-> >
-> > $ make CC=/opt/llvm/bin/clang O=defconfig-build/ -j80 -s bzImage
-> >
-> > is what I used, with the below config.
-> >
->
-> Thanks, can reproduce now. So far I haven't found any indication that
-> there is a missing check in Clang's instrumentation passes somewhere.
-> I'm a bit suspicious because both Clang and GCC have this behaviour.
-> I'll continue looking.
+Provide basic driver to control Arm R5  co-processor found on
+Xilinx ZynqMP UltraScale+ and Versal MPSoC's.
 
-This is fun: __always_inline functions inlined into
-__no_sanitize_undefined *do* get instrumented because apparently UBSan
-passes must run before the optimizer (before inlining), contrary to
-what [ATM]SAN instrumentation does. Both GCC and Clang do this.
+Currently it is able to start, stop and load elf on to the
+processor.
 
-Some options to fix:
+The driver was tested on Xilinx ZynqMP and Versal.
 
-1. Add __no_sanitize_undefined to the problematic __always_inline
-functions. I don't know if a macro like '#define
-__always_inline_noinstr __always_inline __no_sanitize_undefined' is
-useful, but it's not an automatic fix either. This option isn't great,
-because it doesn't really scale.
+v2:
+- remove domain struct as per review from Mathieu
+v3:
+- add xilinx-related platform mgmt fn's instead of wrapping around
+  function pointer in xilinx eemi ops struct
+- update zynqmp_r5 yaml parsing to not raise warnings for extra
+  information in children of R5 node. The warning "node has a unit
+  name, but no reg or ranges property" will still be raised though 
+  as this particular node is needed to describe the
+  '#address-cells' and '#size-cells' information.
+v4:
+- add default values for enums
+- fix formatting as per checkpatch.pl --strict. Note that 1 warning and 1 check
+  are still raised as each is due to fixing the warning results in that
+particular line going over 80 characters.
+- remove warning '/example-0/rpu@ff9a0000/r5@0: 
+  node has a unit name, but no reg or ranges property'
+  by adding reg to r5 node.
+v5:
+- update device tree sample and yaml parsing to not raise any warnings
+- description for memory-region in yaml parsing
+- compatible string in yaml parsing for TCM
+- parse_fw change from use of rproc_of_resm_mem_entry_init to rproc_mem_entry_init and use of alloc/release
+- var's of type zynqmp_r5_pdata all have same local variable name
+- use dev_dbg instead of dev_info
 
-2. If you look at the generated code for functions with
-__ubsan_handle_*, all the calls are actually guarded by a branch. So
-if we know that there is no UBSan violation in the function, AFAIK
-we're fine. What are the exact requirements for 'noinstr'? Is it only
-"do not call anything I didn't tell you to call?" If that's the case,
-and there is no bug in the function ;-), then for UBSan we're fine.
-With that in mind, you could whitelist "__ubsan_handle"-prefixed
-functions in objtool. Given the __always_inline+noinstr+__ubsan_handle
-case is quite rare, it might be reasonable.
 
-We could try to do better, and make __ubsan_handle_* 'noinstr' by
-checking if _RET_IP_ is in .noinstr.text and just return. Would that
-work? But that would only be useful if there is a UBSan bug. It might
-also slow-down regular UBSan, and if we assume that the
-__always_inline functions called from noinstr functions that end up
-with UBSan instrumentation don't have bugs (big assumption), then not
-much is gained either.
+Ben Levinsky (5):
+  firmware: xilinx: Add ZynqMP firmware ioctl enums for RPU
+    configuration.
+  firmware: xilinx: Add shutdown/wakeup APIs
+  firmware: xilinx: Add RPU configuration APIs
+  dt-bindings: remoteproc: Add documentation for ZynqMP R5 rproc
+    bindings
+  remoteproc: Add initial zynqmp R5 remoteproc driver
 
-Thoughts?
+ .../remoteproc/xilinx,zynqmp-r5-remoteproc.yaml    | 126 +++
+ drivers/firmware/xilinx/zynqmp.c                   | 134 +++
+ drivers/remoteproc/Kconfig                         |  10 +
+ drivers/remoteproc/Makefile                        |   1 +
+ drivers/remoteproc/zynqmp_r5_remoteproc.c          | 902 +++++++++++++++++++++
+ include/linux/firmware/xlnx-zynqmp.h               |  75 ++
+ 6 files changed, 1248 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+ create mode 100644 drivers/remoteproc/zynqmp_r5_remoteproc.c
 
-Thanks,
--- Marco
+-- 
+2.7.4
+
