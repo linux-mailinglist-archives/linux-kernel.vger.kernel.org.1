@@ -2,138 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B101ECD38
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 12:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77C81ECD4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 12:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgFCKK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 06:10:26 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:34841 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725881AbgFCKK0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 06:10:26 -0400
-Received: by mail-lf1-f65.google.com with SMTP id 82so956256lfh.2;
-        Wed, 03 Jun 2020 03:10:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VJQBChCpqVmScxIVsRE/tzoYaBw5y+ElxuBAFpFZSx4=;
-        b=gOeRpZGYaA4iy2YeApF4AKUMhmEYQCHIUdxJVaBNm4vI04v8b9l/r4wQOFJNRLI+eT
-         meEivp30PWxYMup3xoELC3FEZX2MLQu7htyNtQnLowM5Z05rz1Sso0YYXrU6Z2nDAq5i
-         PdtE/JljFojeMxX+G+JzHdsi2zH8HSciRE9vFwydVjEg3VRovPwLr6uarsMhAxSptFfB
-         vOIycKfYcwA9R1h/LHKnYp8IPsJ5qLA8kG7mqv2LqToiWIXknVac45JMXmci8hSdKNg/
-         K9v/sJ1ULASmJRuXqt6prqk60ZhcIGKDaLNnnpFFAk/NyyCLGTlOyT2OqXkblaaw0S23
-         LDxA==
-X-Gm-Message-State: AOAM530vPHsFiGnkz3CZrbmni8KQfOraN8DoY7s599bWgvPKcyKyDkyj
-        k8wXk7Z/wspq4inF9/6hzs8=
-X-Google-Smtp-Source: ABdhPJzbHpX6SdFHdCuPksS1gYu3+YX8RbNf4MpiT/293QxC9qClinHQc5NeGx+pAE+5VR6t9NaeGQ==
-X-Received: by 2002:ac2:5604:: with SMTP id v4mr2125245lfd.124.1591179022502;
-        Wed, 03 Jun 2020 03:10:22 -0700 (PDT)
-Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
-        by smtp.googlemail.com with ESMTPSA id c4sm346896lja.56.2020.06.03.03.10.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 03:10:21 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     pbonzini@redhat.com
-Cc:     Denis Efremov <efremov@linux.com>, joe@perches.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: Use vmemdup_user()
-Date:   Wed,  3 Jun 2020 13:11:31 +0300
-Message-Id: <20200603101131.2107303-1-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <0c00d96c46d34d69f5f459baebf3c89a507730fc.camel@perches.com>
-References: <0c00d96c46d34d69f5f459baebf3c89a507730fc.camel@perches.com>
+        id S1726812AbgFCKMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 06:12:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725888AbgFCKMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 06:12:52 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6FCD2067B;
+        Wed,  3 Jun 2020 10:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591179171;
+        bh=dzxakD5Qs6xUHCcVDK8PS7kM6wuAZyUCmRV4IYykOeY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=THY3g1j2rRmwdyve4LDrl/GACpfAvanR80oIBx8tI/5P09gf9Kzoe0W0vAhH4f4ha
+         ZSRKxRDNHxbm/3ecaI9paMweJDZZY4Y/UTnzXH+v17Wx3pNsgX2bBjnppu88ApBwMq
+         qRI2plDsO49X2FSpTyVhC23hFMJK+KmGbiI4AVQw=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jgQO9-00HPhH-PA; Wed, 03 Jun 2020 11:12:50 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 03 Jun 2020 11:12:49 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Android Kernel Team <kernel-team@android.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v1] irqchip: Add IRQCHIP_MODULE_BEGIN/END helper
+ macros
+In-Reply-To: <CAGETcx9kYKOEAmLbJzmOucR2Z4qy9PCY2=UCYdYTJWTL=BeZNQ@mail.gmail.com>
+References: <20200411045918.179455-1-saravanak@google.com>
+ <86sghas7so.wl-maz@kernel.org>
+ <CALAqxLXkbNh4GVC82SqXNoib+4FQS2Y3XbePyhreJcwWoVEQaw@mail.gmail.com>
+ <CAGETcx92fj-VEjYsYx0E4_TCV8fW1fvvxn_DyV=b4BJ7B5zG2Q@mail.gmail.com>
+ <20200429102832.4eee22b4@why>
+ <CAGETcx_d0aM+MdeOFDaXDnTEs85rVY=H7zvhZf7NNB4w-t_CGg@mail.gmail.com>
+ <5b605bd46d3ef213c7ec82d02967e4bb@kernel.org>
+ <CAGETcx9kYKOEAmLbJzmOucR2Z4qy9PCY2=UCYdYTJWTL=BeZNQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.4
+Message-ID: <d17908a4313ed0f5ccfa8265611738b2@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: saravanak@google.com, john.stultz@linaro.org, tglx@linutronix.de, jason@lakedaemon.net, kernel-team@android.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace opencoded alloc and copy with vmemdup_user().
+Hi Saravana,
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
-Looks like these are the only places in KVM that are suitable for
-vmemdup_user().
+On 2020-05-01 21:23, Saravana Kannan wrote:
+> On Fri, May 1, 2020 at 1:48 AM Marc Zyngier <maz@kernel.org> wrote:
+>> 
+>> On 2020-04-29 20:04, Saravana Kannan wrote:
+>> > On Wed, Apr 29, 2020 at 2:28 AM Marc Zyngier <maz@kernel.org> wrote:
+>> 
+>> [...]
+>> 
+>> >> One thing though: this seems to be exclusively DT driven. Have you
+>> >> looked into how that would look like for other firmware types such as
+>> >> ACPI?
+>> >
+>> > I'm not very familiar with ACPI at all. I've just started to learn
+>> > about how it works in the past few months poking at code when I have
+>> > some time. So I haven't tried to get this to work with ACPI nor do I
+>> > think I'll be able to do that anytime in the near future. I hope that
+>> > doesn't block this from being used for DT based platforms.
+>> 
+>> As long as you don't try to modularise a driver that does both DT and
+>> ACPI, you'll be safe. I'm also actively trying to discourage people
+>> from inventing custom irqchips on ACPI platforms (the spec almost
+>> forbids them, but not quite).
+>> 
+>> >> Another thing is the handling of dependencies. Statically built
+>> >> irqchips are initialized in the right order based on the topology
+>> >> described in DT, and are initialized early enough that client devices
+>> >> will find their irqchip This doesn't work here, obviously.
+>> >
+>> > Yeah, I read that code thoroughly :)
+>> >
+>> >> How do you
+>> >> propose we handle these dependencies, both between irqchip drivers and
+>> >> client drivers?
+>> >
+>> > For client drivers, we don't need to do anything. The IRQ apis seem to
+>> > already handle -EPROBE_DEFER correctly in this case.
+>> >
+>> > For irqchip drivers, the easy answer can be: Load the IRQ modules
+>> > early if you make them modules.
+>> 
+>> Uhuh. I'm afraid that's not a practical solution. We need to offer the
+>> same behaviour for both and not rely on the user to understand the
+>> topology of the SoC.
+>> 
+>> > But in my case, I've been testing this with fw_devlink=on. The TL;DR
+>> > of "fw_devlink=on" in this context is that the IRQ devices will get
+>> > device links created based on "interrupt-parent" property. So, with
+>> > the magic of device links, these IRQ devices will probe in the right
+>> > topological order without any wasted deferred probe attempts. For
+>> > cases without fw_devlink=on, I think I can improve
+>> > platform_irqchip_probe() in my patch to check if the parent device has
+>> > probed and defer if it hasn't.
+>> 
+>> Seems like an interesting option. Two things then:
+>> 
+>> - Can we enforce the use of fw_devlink for modularized irqchips?
+> 
+> fw_devlink doesn't have any config and it's a command line option. So
+> not sure how you can enforce that.
 
- arch/x86/kvm/cpuid.c | 17 +++++++----------
- virt/kvm/kvm_main.c  | 19 ++++++++-----------
- 2 files changed, 15 insertions(+), 21 deletions(-)
+By having a config option that forces it on if that option is selected
+by modular irqchips? More importantly, what is the drawback of having
+fw_devlink on at all times? It definitely looks like the best thing
+since sliced bread (with cheese), so what is the catch?
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 901cd1fdecd9..27438a2bdb62 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -182,17 +182,14 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
- 	r = -E2BIG;
- 	if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
- 		goto out;
--	r = -ENOMEM;
- 	if (cpuid->nent) {
--		cpuid_entries =
--			vmalloc(array_size(sizeof(struct kvm_cpuid_entry),
--					   cpuid->nent));
--		if (!cpuid_entries)
--			goto out;
--		r = -EFAULT;
--		if (copy_from_user(cpuid_entries, entries,
--				   cpuid->nent * sizeof(struct kvm_cpuid_entry)))
-+		cpuid_entries = vmemdup_user(entries,
-+					     array_size(sizeof(struct kvm_cpuid_entry),
-+							cpuid->nent));
-+		if (IS_ERR(cpuid_entries)) {
-+			r = PTR_ERR(cpuid_entries);
- 			goto out;
-+		}
- 	}
- 	for (i = 0; i < cpuid->nent; i++) {
- 		vcpu->arch.cpuid_entries[i].function = cpuid_entries[i].function;
-@@ -212,8 +209,8 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
- 	kvm_x86_ops.cpuid_update(vcpu);
- 	r = kvm_update_cpuid(vcpu);
- 
-+	kvfree(cpuid_entries);
- out:
--	vfree(cpuid_entries);
- 	return r;
- }
- 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 731c1e517716..46a3743e95ff 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -3722,21 +3722,18 @@ static long kvm_vm_ioctl(struct file *filp,
- 		if (routing.flags)
- 			goto out;
- 		if (routing.nr) {
--			r = -ENOMEM;
--			entries = vmalloc(array_size(sizeof(*entries),
--						     routing.nr));
--			if (!entries)
--				goto out;
--			r = -EFAULT;
- 			urouting = argp;
--			if (copy_from_user(entries, urouting->entries,
--					   routing.nr * sizeof(*entries)))
--				goto out_free_irq_routing;
-+			entries = vmemdup_user(urouting->entries,
-+					       array_size(sizeof(*entries),
-+							  routing.nr));
-+			if (IS_ERR(entries)) {
-+				r = PTR_ERR(entries);
-+				goto out;
-+			}
- 		}
- 		r = kvm_set_irq_routing(kvm, entries, routing.nr,
- 					routing.flags);
--out_free_irq_routing:
--		vfree(entries);
-+		kvfree(entries);
- 		break;
- 	}
- #endif /* CONFIG_HAVE_KVM_IRQ_ROUTING */
+> 
+>> - For those irqchips that can be modularized, it is apparent that they
+>>    should have been written as platform devices the first place. Maybe
+>>    we should just do that (long term, though).
+> 
+> I agree. If they can be platform devices, they should be. But when
+> those platform device drivers are built in, you'll either need:
+> 1) fw_devlink=on to enforce the topological init order
+
+That would have my preference, provided that there is no drawbacks.
+
+> Or
+> 2) have a generic irqchip probe helper function that ensures that.
+> My patch with some additional checks added to platform_irqchip_probe()
+> can provide (2).
+> 
+> In the short term, my patch series also makes it easier to convert
+> existing non-platform drivers into platform drivers.
+> 
+> So if I fix up platform_irqchip_probe() to also do -EPROBE_DEFER to
+> enforce topology, will that make this patch acceptable?
+
+That'd be a lot better. We also need some guards for things that
+cannot be a driver (primary interrupt controllers don't have a struct
+device).
+
+Thanks,
+
+         M.
 -- 
-2.26.2
-
+Jazz is not dead. It just smells funny...
