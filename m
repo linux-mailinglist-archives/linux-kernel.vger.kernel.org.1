@@ -2,48 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095CB1ECB0A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFAF21ECB12
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgFCIH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 04:07:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50200 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725275AbgFCIH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 04:07:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id F2C50AC37;
-        Wed,  3 Jun 2020 08:07:58 +0000 (UTC)
-Date:   Wed, 3 Jun 2020 10:07:54 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     daniel.thompson@linaro.org, kgdb-bugreport@lists.sourceforge.net,
-        jason.wessel@windriver.com, dianders@chromium.org,
-        sergey.senozhatsky@gmail.com, gregkh@linuxfoundation.org,
-        jslaby@suse.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/4] kdb: Re-factor kdb_printf() message write code
-Message-ID: <20200603080753.GA14855@linux-b0ei>
-References: <1591168935-6382-1-git-send-email-sumit.garg@linaro.org>
- <1591168935-6382-2-git-send-email-sumit.garg@linaro.org>
+        id S1726342AbgFCIIb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Jun 2020 04:08:31 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:30513 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726099AbgFCIIa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 04:08:30 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-172-_4y6Z0HxOsCLflypv4x5zQ-1; Wed, 03 Jun 2020 09:08:17 +0100
+X-MC-Unique: _4y6Z0HxOsCLflypv4x5zQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 3 Jun 2020 09:08:17 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 3 Jun 2020 09:08:17 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Al Viro' <viro@zeniv.linux.org.uk>
+CC:     "'Michael S. Tsirkin'" <mst@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jason Wang <jasowang@redhat.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>
+Subject: RE: [PATCH RFC] uaccess: user_access_begin_after_access_ok()
+Thread-Topic: [PATCH RFC] uaccess: user_access_begin_after_access_ok()
+Thread-Index: AQHWOR0GBiAzsIPf10apeP3ZClgqcqjFyCZAgAAGv4CAALncwA==
+Date:   Wed, 3 Jun 2020 08:08:17 +0000
+Message-ID: <a6d865f0dc7a427bb180cf451b8d470f@AcuMS.aculab.com>
+References: <20200602084257.134555-1-mst@redhat.com>
+ <fc204429-7a6e-8214-a66f-bf2676018aae@redhat.com>
+ <20200602163306.GM23230@ZenIV.linux.org.uk>
+ <CAHk-=wjgg0bpD0qjYF=twJNXmRXYPjXqO1EFLL-mS8qUphe0AQ@mail.gmail.com>
+ <20200602162931-mutt-send-email-mst@kernel.org>
+ <950896ceff2d44e8aaf6f9f5fab210e4@AcuMS.aculab.com>
+ <20200602215827.GP23230@ZenIV.linux.org.uk>
+In-Reply-To: <20200602215827.GP23230@ZenIV.linux.org.uk>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1591168935-6382-2-git-send-email-sumit.garg@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-06-03 12:52:12, Sumit Garg wrote:
-> Re-factor kdb_printf() message write code in order to avoid duplication
-> of code and thereby increase readability.
+From: Al Viro <viro@ftp.linux.org.uk> On Behalf Of Al Viro
+> Sent: 02 June 2020 22:58
+> On Tue, Jun 02, 2020 at 08:41:38PM +0000, David Laight wrote:
 > 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > In which case you need a 'user_access_begin' that takes the mm
+> > as an additional parameter.
+> 
+> 	What does any of that have to do with mm?  Details, please.
 
-Revieved-by: Petr Mladek <pmladek@suse.com>
+Actually probably nothing.
 
-Best Regards,
-Petr
+I was sort of thinking that maybe the user process's memory
+map (mm?) would be temporarily 'attached' to the kernel thread
+so that it used the normal copy_to/from_user() fault
+handling to access the 'other' process.
+
+In which case you'd want to do the bound check against the
+limit of the user addresses in the mm rather than those of
+the current process.
+
+But later posts probably imply that it is all done differently.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
