@@ -2,145 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AADA1ED38A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DC91ED392
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726206AbgFCPiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 11:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbgFCPiD (ORCPT
+        id S1726061AbgFCPko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 11:40:44 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:28911 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725882AbgFCPkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 11:38:03 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CB5C08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 08:38:03 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id h7so2233652otr.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 08:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wUY7nP7Sv66k98sXJa54neuqzOTWObAW2W4PIwzpdcI=;
-        b=Hce2Huj/z7Q9ek11o7cfKqDoLMsSsJAXdHOkeMya7IDa47PFfpzfcOXAPi5rcOieca
-         v9U1Bqb3LMEcnUxPIJ5oIx04J/4He+bRR2kTRpQXcmAVGJoIPde08eNEvMrjG5A1mXug
-         f9ueB0QDHqEG7cC0XzKQs0lgBVVWU67s90C74=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wUY7nP7Sv66k98sXJa54neuqzOTWObAW2W4PIwzpdcI=;
-        b=LrkP+VkKdYRgrSNIvq9CzhteKgjUFIQDgUfocGrGSP0C6mRhLklnsqdaeLBBiucwug
-         vkzWOdbRQ6qSYu/AIlHiojRDaBiX1R25RP7oNUqPxhNdZ1ywlKpkiKSuJej6dfeSSSKH
-         nsLXv/PKk09nLL3h/ZSl2kOYxC0l3wfkfERCqNxeJTfvTuyn6RzKW3Q9ei1AobsNuI/3
-         KPKexvomzoZBAR1M8jpZ1qMIo+MoYmXK/d7Ia+diPaHbTp6+qMelc8X6lFdKG0qZlK2s
-         RA/iK7X2zKBfDZl5s/lyuOpKGMVOkITiVvlaVK0vx81cUu7bU/Cqjt1NQhdgZTS0sEEZ
-         iCqQ==
-X-Gm-Message-State: AOAM532v+OBdhreFRXOFfdXKaxw+c8N/ICVhqNc6SPX3hJNSkER90Z8u
-        AKW0w33NSyU5Vn+NYHU73ZgqBw==
-X-Google-Smtp-Source: ABdhPJwUE2JcDDB2tkm5OymS16GFKtI6YuzIrfZ/noLq1PEptK66UFd9p/iuw4Js3aPAutSewiV5Fw==
-X-Received: by 2002:a9d:a71:: with SMTP id 104mr472689otg.40.1591198682698;
-        Wed, 03 Jun 2020 08:38:02 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y197sm655155oie.58.2020.06.03.08.38.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jun 2020 08:38:02 -0700 (PDT)
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- kselftest tree
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, skhan@linuxfoundation.org
-References: <20200603182901.63dfec97@canb.auug.org.au>
- <20200603190306.bd85ea37629210c8642f7bd7@kernel.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <0137f4b2-78cb-bd87-056a-aa44ac474637@linuxfoundation.org>
-Date:   Wed, 3 Jun 2020 09:38:01 -0600
+        Wed, 3 Jun 2020 11:40:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591198842;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vdlXkqSUFoXM0JnYdCV2CEI4PZdSQVjXKjFpcdUfIWs=;
+        b=Qqk3qs7BZhWLBMo61gAf8GIIb9Bgp1wDHMtrc8OksaHgBSGdzzy0spop1zdx7s0PT5p3ay
+        JhtnncbcgaAEklQJFMZUlpv+NFDeXUIKrw8mri50dveTqcLO2DtYtWx1qT7a7EHx9/futX
+        zlP/TGt9B1k+UdVi3EEreXmX5ljI2Xw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-45-yX-bTHDGOjC7JJ41CWA9cw-1; Wed, 03 Jun 2020 11:40:24 -0400
+X-MC-Unique: yX-bTHDGOjC7JJ41CWA9cw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CD091097F02;
+        Wed,  3 Jun 2020 15:39:40 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-115-1.rdu2.redhat.com [10.10.115.1])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1935D10013D5;
+        Wed,  3 Jun 2020 15:39:39 +0000 (UTC)
+Subject: Re: [PATCH] x86/speculation: Check whether speculation is force
+ disabled
+To:     "Tada, Kenta (Sony)" <Kenta.Tada@sony.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "pawan.kumar.gupta@linux.intel.com" 
+        <pawan.kumar.gupta@linux.intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <TYXPR01MB150318D484EE220452A5085AF5880@TYXPR01MB1503.jpnprd01.prod.outlook.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <d0356d0a-83dd-f3ae-c0ba-82089976c014@redhat.com>
+Date:   Wed, 3 Jun 2020 11:39:38 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200603190306.bd85ea37629210c8642f7bd7@kernel.org>
+In-Reply-To: <TYXPR01MB150318D484EE220452A5085AF5880@TYXPR01MB1503.jpnprd01.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/20 4:03 AM, Masami Hiramatsu wrote:
-> Hi Stephen,
-> 
-> On Wed, 3 Jun 2020 18:29:01 +1000
-> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> 
->> Hi all,
->>
->> Today's linux-next merge of the akpm-current tree got a conflict in:
->>
->>    tools/testing/selftests/sysctl/sysctl.sh
->>
->> between commit:
->>
->>    eee470e0739a ("selftests/sysctl: Fix to load test_sysctl module")
->>
->> from the kselftest tree and patch:
->>
->>    "tools/testing/selftests/sysctl/sysctl.sh: support CONFIG_TEST_SYSCTL=y"
->>
->> from the akpm-current tree.
->>
->> I fixed it up (see below) and can carry the fix as necessary. This
->> is now fixed as far as linux-next is concerned, but any non trivial
->> conflicts should be mentioned to your upstream maintainer when your tree
->> is submitted for merging.  You may also want to consider cooperating
->> with the maintainer of the conflicting tree to minimise any particularly
->> complex conflicts.
-> 
-> Thank you for fixing this confliction, at least this fix looks good to me.
-> I think this (Vlatimil's patch) should be merged via Shuah's kselftest tree.
-> 
-> https://lkml.org/lkml/2020/4/27/921
-> 
-> This fix seems an independent fix.
-> 
-> Thank you,
-> 
->>
->> -- 
->> Cheers,
->> Stephen Rothwell
->>
->> diff --cc tools/testing/selftests/sysctl/sysctl.sh
->> index c3459f9f2429,ce1eeea6f769..000000000000
->> --- a/tools/testing/selftests/sysctl/sysctl.sh
->> +++ b/tools/testing/selftests/sysctl/sysctl.sh
->> @@@ -112,10 -122,9 +112,10 @@@ test_reqs(
->>    
->>    function load_req_mod()
->>    {
->> - 	if [ ! -d $DIR ]; then
->> + 	if [ ! -d $DIR -a ! -d $SYSCTL ]; then
->>    		if ! modprobe -q -n $TEST_DRIVER; then
->> - 			echo "$0: module $TEST_DRIVER not found [SKIP]"
->> + 			echo "$0: module $TEST_DRIVER not found and not built-in [SKIP]"
->>   +			echo "You must set CONFIG_TEST_SYSCTL=m in your kernel" >&2
->>    			exit $ksft_skip
->>    		fi
->>    		modprobe $TEST_DRIVER
-> 
-> 
+On 6/3/20 3:12 AM, Tada, Kenta (Sony) wrote:
+> Once PR_SPEC_FORCE_DISABLE is set, users cannot set PR_SPEC_ENABLE.
+> This commit checks whether PR_SPEC_FORCE_DISABLE was previously set.
+>
+> Signed-off-by: Kenta Tada <Kenta.Tada@sony.com>
+> ---
+>   arch/x86/kernel/cpu/bugs.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+> index ed54b3b21c39..678ace157035 100644
+> --- a/arch/x86/kernel/cpu/bugs.c
+> +++ b/arch/x86/kernel/cpu/bugs.c
+> @@ -1173,6 +1173,9 @@ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
+>   		if (spectre_v2_user == SPECTRE_V2_USER_STRICT ||
+>   		    spectre_v2_user == SPECTRE_V2_USER_STRICT_PREFERRED)
+>   			return -EPERM;
+> +		/* If speculation is force disabled, enable is not allowed */
+> +		if (task_spec_ib_force_disable(task))
+> +			return -EPERM;
+>   		task_clear_spec_ib_disable(task);
+>   		task_update_spec_tif(task);
+>   		break;
 
-Thanks Stephen for the fixup and Masami for verifying this looks good.
-Please carry the fix. I will make a note of the fix in my pull request
-to Linus as well to keep us all on the same page.
+There is a comment up a few lines about this:
 
-thanks,
--- Shuah
+                 /*
+                  * Indirect branch speculation is always allowed when
+                  * mitigation is force disabled.
+                  */
+It conflicts with your new code. We can have an argument on whether IB 
+should follow how SSB is being handled. Before that is settled,
 
-
+Nacked-by: Waiman Long <longman@redhat.com>
 
