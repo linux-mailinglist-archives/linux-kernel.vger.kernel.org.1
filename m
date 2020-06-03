@@ -2,82 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3BB1EC7A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 05:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D621EC7AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 05:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725906AbgFCDBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 23:01:39 -0400
-Received: from ozlabs.org ([203.11.71.1]:51817 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbgFCDBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 23:01:38 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49cDFr0mZBz9sTD;
-        Wed,  3 Jun 2020 13:01:34 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1591153296;
-        bh=oNX5+B3yN7rD8ZhFo8Gqpc+HpYbEV/fR85vMqUwAnmA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ezkeEDVoIrEXgihjwswT53YYSm9b7aQCc+/JKPjZpEmY1rvyJIiesqBN14sEIS1Nj
-         BOp7gC6V9J6tMJj1elQfy6mN714ToP2lD9LDGXcHbBdtwSRmo6gV00sOILCOrQ4A4k
-         bqUqjTvGWHvx7dwn2iD5CJjeDExgLjOr29A8ItNC1D6hjHwvCtSp/4zauh4PI30Gui
-         vCLInUu5PGr4veb3dqsHKFTMiNW57iveP4Jg4hKKqJXo/qfXy2tBDnfZJvpNh3+zNo
-         ofutgsqEpo3kc0rHtz+QIKbMZ/SNf4j/UCv+lmscprOxnTm1URoX1hasM2WsfeBk/N
-         fSMMHk1LRk9IQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     "wanghai \(M\)" <wanghai38@huawei.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ian Munsie <imunsie@au1.ibm.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] cxl: Fix kobject memory leak in cxl_sysfs_afu_new_cr()
-In-Reply-To: <25ad528b-beaf-820f-9738-ea304dcbc0d7@huawei.com>
-References: <b9791ff3-8397-f6e9-ca88-59c9bbe8c78f@web.de> <25ad528b-beaf-820f-9738-ea304dcbc0d7@huawei.com>
-Date:   Wed, 03 Jun 2020 13:02:00 +1000
-Message-ID: <877dwoj1hz.fsf@mpe.ellerman.id.au>
+        id S1725937AbgFCDDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 23:03:36 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:41256 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725780AbgFCDDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 23:03:36 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id E19243405ACD07594765;
+        Wed,  3 Jun 2020 11:03:33 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.91) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Wed, 3 Jun 2020
+ 11:03:21 +0800
+Subject: Re: [PATCH 2/4] perf svghelper: Fix memory leak in
+ svg_build_topology_map
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Wei Li <liwei391@huawei.com>
+CC:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        <linux-kernel@vger.kernel.org>, Xie XiuQi <xiexiuqi@huawei.com>,
+        Hongbo Yao <yaohongbo@huawei.com>
+References: <20200521133218.30150-1-liwei391@huawei.com>
+ <20200521133218.30150-3-liwei391@huawei.com>
+ <20200521141545.GC3898@kernel.org>
+From:   "LiBin (Huawei)" <huawei.libin@huawei.com>
+Message-ID: <36b0d67c-f8a0-09b2-c2c7-964e202710d2@huawei.com>
+Date:   Wed, 3 Jun 2020 11:03:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200521141545.GC3898@kernel.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.215.91]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"wanghai (M)" <wanghai38@huawei.com> writes:
-> =E5=9C=A8 2020/6/3 1:20, Markus Elfring =E5=86=99=E9=81=93:
->>> Fix it by adding a call to kobject_put() in the error path of
->>> kobject_init_and_add().
->> Thanks for another completion of the exception handling.
->>
->> Would an other patch subject be a bit nicer?
-> Thanks for the guidance, I will perfect this description and send a v2
->>
->> =E2=80=A6
->>> +++ b/drivers/misc/cxl/sysfs.c
->>> @@ -624,7 +624,7 @@ static struct afu_config_record *cxl_sysfs_afu_new_=
-cr(struct cxl_afu *afu, int c
->>>   	rc =3D kobject_init_and_add(&cr->kobj, &afu_config_record_type,
->>>   				  &afu->dev.kobj, "cr%i", cr->cr);
->>>   	if (rc)
->>> -		goto err;
->>> +		goto err1;
->> =E2=80=A6
->>
->> Can an other label be more reasonable here?
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
-Documentation/process/coding-style.rst?id=3Df359287765c04711ff54fbd11645271=
-d8e5ff763#n465
-> I just used the original author's label, should I replace all his labels=
-=20
-> like'err','err1' with reasonable one.
 
-No.
+ÔÚ 2020/5/21 22:15, Arnaldo Carvalho de Melo Ð´µÀ:
+> Em Thu, May 21, 2020 at 09:32:16PM +0800, Wei Li escreveu:
+>> From: Li Bin <huawei.libin@huawei.com>
+>>
+>> Fix leak of memory pointed to by t.sib_thr and t.sib_core in
+>> svg_build_topology_map.
+>>
+>> Signed-off-by: Li Bin <huawei.libin@huawei.com>
+>> ---
+>>   tools/perf/util/svghelper.c | 10 +++++++---
+>>   1 file changed, 7 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/tools/perf/util/svghelper.c b/tools/perf/util/svghelper.c
+>> index 96f941e01681..e2b3b0e2fafe 100644
+>> --- a/tools/perf/util/svghelper.c
+>> +++ b/tools/perf/util/svghelper.c
+>> @@ -754,6 +754,7 @@ int svg_build_topology_map(struct perf_env *env)
+>>   	int i, nr_cpus;
+>>   	struct topology t;
+>>   	char *sib_core, *sib_thr;
+>> +	int ret;
+> Please set ret to -1 here
+>
+> 	int ret = -1;
+> 	
+> So that you don't have to add all those lines below...
+>
+>>   
+>>   	nr_cpus = min(env->nr_cpus_online, MAX_NR_CPUS);
+>>   
+>> @@ -767,12 +768,14 @@ int svg_build_topology_map(struct perf_env *env)
+>>   
+>>   	if (!t.sib_core || !t.sib_thr) {
+>>   		fprintf(stderr, "topology: no memory\n");
+>> +		ret = -1;
+>>   		goto exit;
+>>   	}
+>>   
+>>   	for (i = 0; i < env->nr_sibling_cores; i++) {
+>>   		if (str_to_bitmap(sib_core, &t.sib_core[i], nr_cpus)) {
+>>   			fprintf(stderr, "topology: can't parse siblings map\n");
+>> +			ret = -1;
+>>   			goto exit;
+>>   		}
+>>   
+>> @@ -782,6 +785,7 @@ int svg_build_topology_map(struct perf_env *env)
+>>   	for (i = 0; i < env->nr_sibling_threads; i++) {
+>>   		if (str_to_bitmap(sib_thr, &t.sib_thr[i], nr_cpus)) {
+>>   			fprintf(stderr, "topology: can't parse siblings map\n");
+>> +			ret = -1;
+>>   			goto exit;
+>>   		}
+>>   
+>> @@ -791,6 +795,7 @@ int svg_build_topology_map(struct perf_env *env)
+>>   	topology_map = malloc(sizeof(int) * nr_cpus);
+>>   	if (!topology_map) {
+>>   		fprintf(stderr, "topology: no memory\n");
+>> +		ret = -1;
+>>   		goto exit;
+>>   	}
+>>   
+>> @@ -798,12 +803,11 @@ int svg_build_topology_map(struct perf_env *env)
+>>   		topology_map[i] = -1;
+>>   
+>>   	scan_core_topology(topology_map, &t, nr_cpus);
+>> -
+>> -	return 0;
+> ... as you'll set it to zero here :-)
 
-cheers
+
+Thank you for your comments. I will fix it.
+
+Thanks,
+
+Li Bin
+
+
+>> +	ret = 0;
+>>   
+>>   exit:
+>>   	zfree(&t.sib_core);
+>>   	zfree(&t.sib_thr);
+>>   
+>> -	return -1;
+>> +	return ret;
+>>   }
+>> -- 
+>> 2.17.1
+>>
+
