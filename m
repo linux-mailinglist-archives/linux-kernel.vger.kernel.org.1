@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA94B1EC75B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3D61EC788
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgFCCcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 22:32:06 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:59074 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgFCCcG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 22:32:06 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0532Rlek188123;
-        Wed, 3 Jun 2020 02:31:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=zzVHRLOiQYXnYFpDFmw0PZpsKu82bGLV3htgEoTFfZg=;
- b=OBqT39h6c9yfr0rXQsvTEvI+Hegp4MputnxHqQ+as6oadEciK+Yyz1ugGd98JvAeYYK8
- xyLDx+1cUyGm7RGfq23qrAdUdzuw6hcOz+MzNS5quTVVwBtAhx8rHqlF5ddVs0G7i3Ql
- u+zE/pgtQnm7q9ZzPNQiE3SQ5PzWO00ttrUt3Q/ZvwlV4Infbn0XHLcZ0iMF87j1liN4
- KgS8q/vs40ev/mQqpFA3PAf9PAy561LU1UU8O1KUS0ISb1QKa0lXNSNwBF8nDsuXWC9R
- FDpMaRiO+xfcas8FikwXFWwKtaSSfxl9lqee84YDsZNugYt06V1vW9DZ1AjmPOI0wHDu Tw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 31bfem6s9r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 03 Jun 2020 02:31:57 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0532TPrb164237;
-        Wed, 3 Jun 2020 02:31:56 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 31c12q5d4v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Jun 2020 02:31:56 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0532Vnnm015051;
-        Wed, 3 Jun 2020 02:31:54 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Jun 2020 19:31:49 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     kjlu@umn.edu, "wu000273@umn.edu" <wu000273@umn.edu>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Lee Duncan <lduncan@suse.com>, open-iscsi@googlegroups.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, Chris Leech <cleech@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: Fix reference count leak in iscsi_boot_create_kobj.
-Date:   Tue,  2 Jun 2020 22:31:38 -0400
-Message-Id: <159114947917.26776.6215710664403797046.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200528201353.14849-1-wu000273@umn.edu>
-References: <20200528201353.14849-1-wu000273@umn.edu>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
- adultscore=0 suspectscore=0 spamscore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006030018
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1011
- impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006030017
+        id S1725916AbgFCCnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 22:43:08 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:42106 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725794AbgFCCnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 22:43:08 -0400
+X-Greylist: delayed 653 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Jun 2020 22:43:06 EDT
+Received: from localhost.localdomain (unknown [159.226.5.100])
+        by APP-05 (Coremail) with SMTP id zQCowACnxRChC9deFbYoAQ--.37618S2;
+        Wed, 03 Jun 2020 10:32:03 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     rth@twiddle.net
+Cc:     ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arch: kernel: Replace sg++ with sg = sg_next(sg)
+Date:   Wed,  3 Jun 2020 02:31:59 +0000
+Message-Id: <20200603023159.715-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowACnxRChC9deFbYoAQ--.37618S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF18WryxZw1fJrWUCF1DAwb_yoWxAFX_t3
+        Wjqw13GryrCr4a9F1UCw4fCa909a95ZF4S9ayIgrZ7JF1DW3Z3ur4jqrsIqryDC3yxKF4I
+        y343t3Wqyr10kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbwxYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCF
+        x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
+        v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
+        67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
+        IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
+        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcVWlDUUUU
+X-Originating-IP: [159.226.5.100]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAMQA102YLNlQgAAsH
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 May 2020 15:13:53 -0500, wu000273@umn.edu wrote:
+Replace sg++ with sg = sg_next(sg).
 
-> kobject_init_and_add() should be handled when it return an error,
-> because kobject_init_and_add() takes reference even when it fails.
-> If this function returns an error, kobject_put() must be called to
-> properly clean up the memory associated with the object. Previous
-> commit "b8eb718348b8" fixed a similar problem. Thus replace calling
-> kfree() by calling kobject_put().
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ arch/alpha/kernel/pci_iommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied to 5.8/scsi-queue, thanks!
-
-[1/1] scsi: iscsi: Fix reference count leak in iscsi_boot_create_kobj
-      https://git.kernel.org/mkp/scsi/c/0267ffce562c
-
+diff --git a/arch/alpha/kernel/pci_iommu.c b/arch/alpha/kernel/pci_iommu.c
+index 7f1925a32c99..81037907268d 100644
+--- a/arch/alpha/kernel/pci_iommu.c
++++ b/arch/alpha/kernel/pci_iommu.c
+@@ -638,7 +638,7 @@ sg_fill(struct device *dev, struct scatterlist *leader, struct scatterlist *end,
+ 
+ 		while (sg+1 < end && (int) sg[1].dma_address == -1) {
+ 			size += sg[1].length;
+-			sg++;
++			sg = sg_next(sg);
+ 		}
+ 
+ 		npages = iommu_num_pages(paddr, size, PAGE_SIZE);
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.17.1
+
