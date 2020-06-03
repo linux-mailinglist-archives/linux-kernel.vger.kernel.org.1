@@ -2,92 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B0B1ED065
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDF01ECFDD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgFCM7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:59:10 -0400
-Received: from www413.your-server.de ([88.198.28.140]:59804 "EHLO
-        www413.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgFCM7J (ORCPT
+        id S1725973AbgFCMeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:34:09 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:45994 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgFCMeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:59:09 -0400
-X-Greylist: delayed 1518 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jun 2020 08:59:08 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=cyberus-technology.de; s=default1911; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=WLXbW7eXUFsbHAU7HjXMcrh7C07cQvd1bw2Aquc/MMQ=; b=STO4UMrdwTubX7v2omyrFeJGM
-        qq1ZY5ooXteqYoYSLnmjaa26PlLavdzZlWh+u8ynyZLVI3Q0Uaxf402CkZy/RE4ZV18Od2J2uywZL
-        0B1rHQHjfnHHqiKmwIQUqAiEY2G1DFCmNHqEkClSgIVtDaUl7JOuXXw/PE64bbxZMJNcUEKZW0nmg
-        pWFa9cHKM35fG6Czz9iSJcJUasT2242nsmibkiyGYkBZnDBs8dKH+356OK5Ea5pSGrX0D4tO+G9VV
-        vXtnD3cxWfSWGQHS08JTJ9+oCPvGgxMazUqgZxj8wjIXX0mWAqPmTQ0ufTVzJaFMBwt5o5FVOQ7J+
-        8AQnbtzRA==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www413.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <julian.stecklina@cyberus-technology.de>)
-        id 1jgSaZ-0000IJ-Jk; Wed, 03 Jun 2020 14:33:48 +0200
-Received: from [2001:16b8:5718:c600:5706:3182:8b16:9ba] (helo=linux.fritz.box)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1:ECDHE-RSA-AES256-SHA:256)
-        (Exim 4.92)
-        (envelope-from <julian.stecklina@cyberus-technology.de>)
-        id 1jgSaZ-000LTO-DG; Wed, 03 Jun 2020 14:33:47 +0200
-From:   Julian Stecklina <julian.stecklina@cyberus-technology.de>
-To:     intel-gvt-dev@lists.freedesktop.org
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Julian Stecklina <julian.stecklina@cyberus-technology.de>,
-        Thomas Prescher <thomas.prescher@cyberus-technology.de>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: [PATCH] drm/i915/gvt: print actionable error message when gm runs out
-Date:   Wed,  3 Jun 2020 14:33:21 +0200
-Message-Id: <20200603123321.263895-1-julian.stecklina@cyberus-technology.de>
-X-Mailer: git-send-email 2.26.2
+        Wed, 3 Jun 2020 08:34:08 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 053CXlW0106513;
+        Wed, 3 Jun 2020 07:33:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591187627;
+        bh=M1WLgsB/SXIxgPgMCUsfddSCaUg3DosSo3K0GUtPR8k=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=XEMFGjwTtPlC2aXThydcOTlnENH3ZAIUrOvPwGB7xWpkvHHm3XMJqa0lvQwCbCJ/F
+         LbFchZFF8h0TImyM/WdSZQHH+i0QBJVPRh/5KVDKbr/bVA/5n5rZvdCuLyTuxwDUck
+         0KcquY5GMJNVdi46O9eFCoRth4rLgt9XqlKW2/N4=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 053CXlqF115353
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 3 Jun 2020 07:33:47 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 3 Jun
+ 2020 07:33:47 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 3 Jun 2020 07:33:47 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 053CXhNO005965;
+        Wed, 3 Jun 2020 07:33:44 -0500
+Subject: Re: [PATCH 1/5] drm/omap: Fix suspend resume regression after
+ platform data removal
+To:     Tony Lindgren <tony@atomide.com>, <linux-omap@vger.kernel.org>
+CC:     "Andrew F . Davis" <afd@ti.com>, Dave Gerlach <d-gerlach@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <dri-devel@lists.freedesktop.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20200531193941.13179-1-tony@atomide.com>
+ <20200531193941.13179-2-tony@atomide.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <16ba1808-5c7f-573d-8dd0-c80cac2f476e@ti.com>
+Date:   Wed, 3 Jun 2020 15:33:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: julian.stecklina@cyberus-technology.de
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25831/Tue Jun  2 14:41:03 2020)
+In-Reply-To: <20200531193941.13179-2-tony@atomide.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a user tries to allocate too many or too big vGPUs and runs out
-of graphics memory, the resulting error message is not actionable and
-looks like an internal error.
+Hi Tony,
 
-Change the error message to clearly point out what actions a user can
-take to resolve this situation.
+On 31/05/2020 22:39, Tony Lindgren wrote:
+> When booting without legacy platform data, we no longer have omap_device
+> calling PM runtime suspend for us on suspend. This causes the driver
+> context not be saved as we have no suspend and resume functions defined.
+> 
+> Let's fix the issue by switching over to use UNIVERSAL_DEV_PM_OPS as it
+> will call the existing PM runtime suspend functions on suspend.
 
-Cc: Thomas Prescher <thomas.prescher@cyberus-technology.de>
-Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-Signed-off-by: Julian Stecklina <julian.stecklina@cyberus-technology.de>
----
- drivers/gpu/drm/i915/gvt/aperture_gm.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+I don't think we can use UNIVERSAL_DEV_PM_OPS, as we can't disable DSS modules in any order, but 
+things have to be shut down in orderly manner.
 
-diff --git a/drivers/gpu/drm/i915/gvt/aperture_gm.c b/drivers/gpu/drm/i915/gvt/aperture_gm.c
-index 0d6d598713082..5c5c8e871dae2 100644
---- a/drivers/gpu/drm/i915/gvt/aperture_gm.c
-+++ b/drivers/gpu/drm/i915/gvt/aperture_gm.c
-@@ -69,9 +69,12 @@ static int alloc_gm(struct intel_vgpu *vgpu, bool high_gm)
- 				  start, end, flags);
- 	mmio_hw_access_post(gt);
- 	mutex_unlock(&gt->ggtt->vm.mutex);
--	if (ret)
--		gvt_err("fail to alloc %s gm space from host\n",
--			high_gm ? "high" : "low");
-+	if (ret) {
-+		gvt_err("vgpu%d: failed to allocate %s gm space from host\n",
-+			vgpu->id, high_gm ? "high" : "low");
-+		gvt_err("vgpu%d: destroying vGPUs, decreasing vGPU memory size or increasing GPU aperture size may resolve this\n",
-+			vgpu->id);
-+	}
- 
- 	return ret;
- }
+omapdrm hasn't relied on omap_device calling runtime suspend for us (I didn't know it does that). We 
+have system suspend hooks in omap_drv.c:
+
+SIMPLE_DEV_PM_OPS(omapdrm_pm_ops, omap_drm_suspend, omap_drm_resume)
+
+omap_drm_suspend() is supposed to turn off the displays, which then cause dispc_runtime_put (and 
+other runtime_puts) to be called, which result in dispc_runtime_suspend (and other runtime PM suspends).
+
+So... For some reason that's no longer happening? I need to try to find a board with which 
+suspend/resume works (without DSS)...
+
+  Tomi
+
 -- 
-2.26.2
-
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
