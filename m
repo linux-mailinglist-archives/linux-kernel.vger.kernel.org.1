@@ -2,88 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE361ED054
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDABC1ED03C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbgFCM4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:56:30 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:18200 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726034AbgFCM4H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:56:07 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 053CqLxO011596;
-        Wed, 3 Jun 2020 14:55:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=AXPGvtsGWLkKS+I+Kb5oNNnn9+C77me7iOpHlW+3zcQ=;
- b=EwNJXCgpwPTH2wp+1MmXoIB2q8Xu/AZZoeu8cbn9XIpZ6YIWUvzjWwAe8mkL+T1PacF5
- BNCjEmb1KJm+k1UkqAt0XTqg4jGKvOyrCBsL9ROH5Tp548+vG6PJ2GvIKys/4AEjeFkS
- iq1vQptuiaVsenD1WuE7Swk1kA1WWrPwawrKo+nXtXXWL1ethVAWKdM0CVzcHVKmP/79
- vqvObc7HtM0fmu8So3hAGzv4/FCdkan3aFZCXIyonSfzz4CvI1llCkmR7nVJTaIDS8ik
- ZFohtxh3Ninl9EZ64oM/8EwpI59rav6nlg3dny2of0f1t3cfudZygfoTxIfeJfS8HXiu nA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31bcy0mqfs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Jun 2020 14:55:39 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D883010003D;
-        Wed,  3 Jun 2020 14:55:38 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A642C2CBE90;
-        Wed,  3 Jun 2020 14:55:38 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG3NODE3.st.com (10.75.127.9)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 3 Jun 2020 14:54:48
- +0200
-From:   Benjamin Gaignard <benjamin.gaignard@st.com>
-To:     <fabrice.gasnier@st.com>, <lee.jones@linaro.org>,
-        <robh+dt@kernel.org>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@st.com>, <linux@armlinux.org.uk>,
-        <daniel.lezcano@linaro.org>, <tglx@linutronix.de>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Benjamin Gaignard <benjamin.gaignard@st.com>
-Subject: [RESEND v7 6/6] ARM: mach-stm32: select low power timer for STM32MP157
-Date:   Wed, 3 Jun 2020 14:54:39 +0200
-Message-ID: <20200603125439.23275-7-benjamin.gaignard@st.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <20200603125439.23275-1-benjamin.gaignard@st.com>
-References: <20200603125439.23275-1-benjamin.gaignard@st.com>
+        id S1725973AbgFCMzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:55:08 -0400
+Received: from mout.gmx.net ([212.227.15.19]:42605 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725833AbgFCMzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 08:55:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1591188902;
+        bh=jKHhJmHxQkXdYjjqXk9mEhOE3xfXnWx+KSdbHS6fj9k=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=Nw3geqRI9a2dEmwRZaSG+M1BrwTX5m93sKawmElLm+jte52w8YiIywgQTpXbprPvJ
+         cGz90uNtZNHIjn+JhYJnJfeS1OWbKFriy+1EcwYx94GRrnX1rEyRwELoK/X+YmmLpr
+         5hIjcKt75xNvId0e6KWo1PEpSC/TaQ2cUTXRTZtg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [93.196.61.25] ([93.196.61.25]) by
+ msvc-mesg-gmx023.server.lan (via HTTP); Wed, 3 Jun 2020 14:55:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE3.st.com
- (10.75.127.9)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-03_12:2020-06-02,2020-06-03 signatures=0
+Message-ID: <trinity-27e19b3a-887a-4609-b127-16a3c9d5b804-1591188902362@msvc-mesg-gmx023>
+From:   crustyaw@gmx.de
+To:     AGeissler <Andreas.Geissler@duagon.com>
+Cc:     Andreas.Geissler@duagon.com, jth@kernel.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] MAINTAINERS: Update maintainer entries for MEN
+ HW
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 3 Jun 2020 14:55:02 +0200
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200603071049.7309-1-Andreas.Geissler@duagon.com>
+References: <20200603071049.7309-1-Andreas.Geissler@duagon.com>
+X-Provags-ID: V03:K1:OZfTRwHrlU11uSF3KVx9NPRSy7XybGFpzC3kWTJHMLWe29Ht6TEVfwahibQrZYvYnwTeV
+ 4N6ZzC8lVY89trycprO9xsI9jXTIZF9VESpaIqixRoQXX7/WI8MyiSHuqVi1neTAieIJCcO0ay57
+ 0mbY2XHmeRWYKGGKMy5HonvdgWsOLNe0LaYEnmfZNspYDXY0gVo77dqOWax84p1+kg4JwPwzczTx
+ 1KLtVar+o8m0jkbPE6wNqEIqQc0NiQrb5jvsBGc0STdXoXVDaPACCucQTnMVyCOsoUf5lyi9KKHC
+ q2U5Ptf8Tn2RbArqX6z/7U8
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YGZGAXjeuk4=:1AKlQFaMul5WI5hg6WhVrF
+ vaqOBANniwkEUkJ5Ffx1i7QKEYjHINiJnBYArHrdo5h51p7T0dAzE29MUITsWx4b1cQWa9Wng
+ pz/CJiGMSdf+uZFBHeb2BD4QZCphghXnxH2Zf1A6euMAotN9vEzh1Ibo9coQeetiDbJ35/Z6m
+ W+ZClg0L3r18D+R4FJgbWLJqWFsZbTKvN1ovMvacvPAhgXoTrPlBbHMNrLdnAhKqLSiXfPpgH
+ ri1sqvfvhgZaou//Vyheo02U+QLmKrNhEcSEoKvNRQWc87eXUSLGDFjACUatuPplJyRrtO83n
+ fq3CrKyf38JkW2gWwx9ctHOp9FIYLvv5mLdcz3ePmOJ9c9xMlsAkr/+8h//ySrXq450ND16V1
+ Pov97CaW8z9kAKBowllgpQtAEzFhfoSMtDosFOjjmUxmF0oaSc70kKJ3m89P7mO4Gw3B9QUSi
+ LbT345ftw/kO87qveclg3fmXCpC9zm8GtvpeqQx0l2iBYJrYXtA3APbTthzKdLtapswrbq1Nl
+ Q/BFbxaPyChtQ0VtvV/com1ywZ6cU1XSbZ8kSHXk3YUzLgPKzlOiWchuJ5wrg9rj+eYS78KSz
+ rWAxdwYK1Cwe7YD8JONkjKB76jvEuypIM8vH6W8KqIzSJYQWWtSApZ0Y+HTA0QFvygy2F2ldl
+ LWGPKyckyu/vs4vzhQ5wLNxsWRsAeREAqufK2CiDRy7b7jRZ2t8I3VjO0VQ5JKajZ+jQTB1QC
+ NMxtP0cH0lLztiX4gYFY0a/2qVR3YYmdE0Wb/A==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make MACH_STM32MP157 select CLKSRC_STM32_LP to get a broadcast timer.
+Acker-by: Andreas Werner <crustyaw@gmx=2Ede>
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
----
- arch/arm/mach-stm32/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Gesendet mit der GMX Mail App
 
-diff --git a/arch/arm/mach-stm32/Kconfig b/arch/arm/mach-stm32/Kconfig
-index 57699bd8f107..d78f55b7b1d0 100644
---- a/arch/arm/mach-stm32/Kconfig
-+++ b/arch/arm/mach-stm32/Kconfig
-@@ -46,6 +46,7 @@ if ARCH_MULTI_V7
- config MACH_STM32MP157
- 	bool "STMicroelectronics STM32MP157"
- 	select ARM_ERRATA_814220
-+	select CLKSRC_STM32_LP
- 	default y
- 
- endif # ARMv7-A
--- 
-2.15.0
+Am 03=2E06=2E20 um 09:10 schrieb AGeissler
+
+> =EF=BB=BF[resend; because of missing cc]
+>=20
+> Remove Andreas Werner as Maintainer of the F21 BMC driver, as he is no
+> longer with the company and add Andreas Geissler as additional
+> Maintainer for all MEN Hardware=2E
+>=20
+> Acked-by: Johannes Thumshirn <jth@kernel=2Eorg>
+> Acked-by: Andreas Werner <crustyaw@gmx=2Ede>
+> Signed-off-by: AGeissler <Andreas=2EGeissler@duagon=2Ecom>
+> ---
+>  MAINTAINERS | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 68cd1b966b45=2E=2Eb3b45d2e9c8a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11044,19 +11044,21 @@ F:	include/uapi/mtd/
+> =20
+>  MEN A21 WATCHDOG DRIVER
+>  M:	Johannes Thumshirn <morbidrsa@gmail=2Ecom>
+> +M:	Andreas Geissler <andreas=2Egeissler@duagon=2Ecom>
+>  L:	linux-watchdog@vger=2Ekernel=2Eorg
+>  S:	Maintained
+>  F:	drivers/watchdog/mena21_wdt=2Ec
+> =20
+>  MEN CHAMELEON BUS (mcb)
+>  M:	Johannes Thumshirn <morbidrsa@gmail=2Ecom>
+> +M:	Andreas Geissler <andreas=2Egeissler@duagon=2Ecom>
+>  S:	Maintained
+>  F:	Documentation/driver-api/men-chameleon-bus=2Erst
+>  F:	drivers/mcb/
+>  F:	include/linux/mcb=2Eh
+> =20
+>  MEN F21BMC (Board Management Controller)
+> -M:	Andreas Werner <andreas=2Ewerner@men=2Ede>
+> +M:	Andreas Geissler <andreas=2Egeissler@duagon=2Ecom>
+>  S:	Supported
+>  F:	Documentation/hwmon/menf21bmc=2Erst
+>  F:	drivers/hwmon/menf21bmc_hwmon=2Ec
+> @@ -11066,10 +11068,18 @@ F:	drivers/watchdog/menf21bmc_wdt=2Ec
+> =20
+>  MEN Z069 WATCHDOG DRIVER
+>  M:	Johannes Thumshirn <jth@kernel=2Eorg>
+> +M:	Andreas Geissler <andreas=2Egeissler@duagon=2Ecom>
+>  L:	linux-watchdog@vger=2Ekernel=2Eorg
+>  S:	Maintained
+>  F:	drivers/watchdog/menz69_wdt=2Ec
+> =20
+> +MEN Z135 UART DRIVER
+> +M:	Johannes Thumshirn <jth@kernel=2Eorg>
+> +M:	Andreas Geissler <andreas=2Egeissler@duagon=2Ecom>
+> +L:	linux-serial@vger=2Ekernel=2Eorg
+> +S:	Maintained
+> +F:	drivers/tty/serial/men_z135_uart=2Ec
+> +
+>  MESON AO CEC DRIVER FOR AMLOGIC SOCS
+>  M:	Neil Armstrong <narmstrong@baylibre=2Ecom>
+>  L:	linux-media@vger=2Ekernel=2Eorg
+>=20
+> base-commit: d6f9469a03d832dcd17041ed67774ffb5f3e73b3
+> --=20
+> 2=2E16=2E4
+>=20
+>=20
+> MEN Mikro Elektronik GmbH
+> Neuwieder Stra=C3=9Fe 1-7 90411 N=C3=BCrnberg
+> Gesch=C3=A4ftsf=C3=BChrer: Dr=2E Michael Goldbach - Matthias Kamolz - Yi=
+lmaz Kocak - Handelsregister AG N=C3=BCrnberg HRB 5540
+>=20
+>=20
 
