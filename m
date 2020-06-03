@@ -2,135 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A091ED434
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 18:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E851ED44F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 18:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgFCQYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 12:24:11 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47840 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgFCQYL (ORCPT
+        id S1726090AbgFCQ0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 12:26:20 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60695 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725939AbgFCQ0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 12:24:11 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053GGTF4010338;
-        Wed, 3 Jun 2020 16:23:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=PaPbtInXwCDIAc2IoG+7wf0xKv2XiaYkTrHhHA9qwlg=;
- b=AdVqigCX3BRvbGFZJWiZlBVeIX38Y0sQ6wAdQXMOyDfZYxVhm1oqYFDOIUC4gOGum/zX
- KoQEiPv0BjzCpygk5dAb3K6bExqw3OdhT+Wv+kUxx0v6Pj5N+zCUUVp0S6z1IDRhHMlh
- OjUqOCxKtVxaqZqX2N9U1pNqCIGZ5Q/ugsbLqTJ9/sh3UQzc6I/sKKLv2uR7RU78IxUs
- LJK13S0B7zB8Q7vHk5N7GFkY1szuQn5XJpjByRYvs7ZVePMxuyLBymWjx0kgxEqqW2NH
- 0gjv+NLrgy0a4dCxJKuaEJ8erP3Zrrz3xhxoIHbJkKmnD7ZdFvHItGJXykuUC7H2Qfou 5g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 31bfema66g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 03 Jun 2020 16:23:53 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053GI3Pb011584;
-        Wed, 3 Jun 2020 16:23:52 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 31dju3gg6c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Jun 2020 16:23:52 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 053GNlPo032435;
-        Wed, 3 Jun 2020 16:23:50 GMT
-Received: from [10.159.230.80] (/10.159.230.80)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 03 Jun 2020 09:23:47 -0700
-Subject: Re: [PATCH 1/1] blk-mq: get ctx in order to handle BLK_MQ_S_INACTIVE
- in blk_mq_get_tag()
-To:     John Garry <john.garry@huawei.com>, linux-block@vger.kernel.org
-Cc:     axboe@kernel.dk, hare@suse.de, dwagner@suse.de,
-        ming.lei@redhat.com, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20200602061749.32029-1-dongli.zhang@oracle.com>
- <2114e1a8-253b-9ad7-0991-afc15df365bd@huawei.com>
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-Message-ID: <39dd930b-839d-5d74-afb6-5a8bb1d2f0da@oracle.com>
-Date:   Wed, 3 Jun 2020 09:23:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 3 Jun 2020 12:26:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591201578;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dMqwWWzHo3fy38RH5JowEjmFezZIYfiA+LiXUUe2ODM=;
+        b=WBHFwUnX/MT5/kGV/nWfAxLAHG9R/RFl0DmA9gfCzAWf7jyCbxD0vfHF1d6zgLaHktFEe+
+        ktzDWAYkJ6zO8BD52HG5bwohdvdR1zHVbv00k+jmDTOTBC1zTP2igCWtHs9RW0PQ/t0bxe
+        aKJRlbtZunQpTduS3qLwUMK3zdXmY2w=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-296-qba1G82IOyGmdzqRxgbgTA-1; Wed, 03 Jun 2020 12:26:16 -0400
+X-MC-Unique: qba1G82IOyGmdzqRxgbgTA-1
+Received: by mail-qt1-f198.google.com with SMTP id c22so1008270qtp.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 09:26:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=dMqwWWzHo3fy38RH5JowEjmFezZIYfiA+LiXUUe2ODM=;
+        b=WFACpjQRbEeK7lEBqtaj04YIZWfc+FiEG3J4wGZb+fJYiRUp9zQmtTZ6HN9AUnfDoI
+         qMB8wyzlK7VKV/rZqy7+rzTSuCYqXzBd9xP3exq4U/dXlLvF8+IZqTTwi+fgCNhL+fuc
+         7riaGuzsprGJknc+N3uXK6xLL0A9G82jAzpoBTvI9Iu+IkhTd8JZEIP/K2ITSj/58snm
+         f6yacaiSZ8K3HpsjroY5r/KjD78NUq6OYtEwgdBN27/yt8QEJsa1wy/3idN/Nbnr8w76
+         WGpARncmukY3ZAKbgDFmqvta0h1U0jaZUI1rTq2w99PhTqP8YX22ZZSv3Q6s/eCcW/6L
+         E1Zw==
+X-Gm-Message-State: AOAM531QAZrLXr/dUUjrACp65LhHZQU0vykMkeaWQ4WXAiyY5vHVVfJB
+        l980x5kgeKHNFT9ZZBvE4HJp/BQUCp4Lkg8X2Cm1rKzV3EENX3a5ShJuBRadqYWGG2gnjk6iOuf
+        hzcLfFcSrc99dPQuBZ5NescHh
+X-Received: by 2002:a37:8302:: with SMTP id f2mr459417qkd.220.1591201576080;
+        Wed, 03 Jun 2020 09:26:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwKqhMLHPZcgjFr9XB7c/kNuGHGvZZ0lp+ttkkbotvsK/G4TlijsRIMnW9BziRubgOsnvwXrQ==
+X-Received: by 2002:a37:8302:: with SMTP id f2mr459396qkd.220.1591201575825;
+        Wed, 03 Jun 2020 09:26:15 -0700 (PDT)
+Received: from Whitewolf.lyude.net (static-173-76-190-23.bstnma.ftas.verizon.net. [173.76.190.23])
+        by smtp.gmail.com with ESMTPSA id a38sm2632175qtb.37.2020.06.03.09.26.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jun 2020 09:26:15 -0700 (PDT)
+Message-ID: <4c6a9fba546fc9a8c63d9669cfd4876efc903786.camel@redhat.com>
+Subject: Re: [PATCH] drm/nouveau/dispnv50: fix runtime pm imbalance on error
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
+Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sean Paul <seanpaul@chromium.org>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Takashi Iwai <tiwai@suse.de>, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Date:   Wed, 03 Jun 2020 12:26:14 -0400
+In-Reply-To: <20200520104750.21335-1-dinghao.liu@zju.edu.cn>
+References: <20200520104750.21335-1-dinghao.liu@zju.edu.cn>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <2114e1a8-253b-9ad7-0991-afc15df365bd@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006030129
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1011
- impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006030129
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+Hi! Was going through my email and found this from last month, it's a bit late
+and someone might have reviewed/pushed this already but just in case:
 
-On 6/3/20 4:59 AM, John Garry wrote:
-> On 02/06/2020 07:17, Dongli Zhang wrote:
->> When scheduler is set, we hit below page fault when we offline cpu.
->>
->> [ 1061.007725] BUG: kernel NULL pointer dereference, address: 0000000000000040
->> [ 1061.008710] #PF: supervisor read access in kernel mode
->> [ 1061.009492] #PF: error_code(0x0000) - not-present page
->> [ 1061.010241] PGD 0 P4D 0
->> [ 1061.010614] Oops: 0000 [#1] SMP PTI
->> [ 1061.011130] CPU: 0 PID: 122 Comm: kworker/0:1H Not tainted 5.7.0-rc7+ #2'
->> ... ...
->> [ 1061.013760] Workqueue: kblockd blk_mq_run_work_fn
->> [ 1061.014446] RIP: 0010:blk_mq_put_tag+0xf/0x30
->> ... ...
->> [ 1061.017726] RSP: 0018:ffffa5c18037fc70 EFLAGS: 00010287
->> [ 1061.018475] RAX: 0000000000000000 RBX: ffffa5c18037fcf0 RCX: 0000000000000004
->> [ 1061.019507] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff911535dc1180
->> ... ...
->> [ 1061.028454] Call Trace:
->> [ 1061.029307]  blk_mq_get_tag+0x26e/0x280
->> [ 1061.029866]  ? wait_woken+0x80/0x80
->> [ 1061.030378]  blk_mq_get_driver_tag+0x99/0x110
->> [ 1061.031009]  blk_mq_dispatch_rq_list+0x107/0x5e0
->> [ 1061.031672]  ? elv_rb_del+0x1a/0x30
->> [ 1061.032178]  blk_mq_do_dispatch_sched+0xe2/0x130
->> [ 1061.032844]  __blk_mq_sched_dispatch_requests+0xcc/0x150
->> [ 1061.033638]  blk_mq_sched_dispatch_requests+0x2b/0x50
->> [ 1061.034239]  __blk_mq_run_hw_queue+0x75/0x110
->> [ 1061.034867]  process_one_work+0x15c/0x370
->> [ 1061.035450]  worker_thread+0x44/0x3d0
->> [ 1061.035980]  kthread+0xf3/0x130
->> [ 1061.036440]  ? max_active_store+0x80/0x80
->> [ 1061.037018]  ? kthread_bind+0x10/0x10
->> [ 1061.037554]  ret_from_fork+0x35/0x40
->> [ 1061.038073] Modules linked in:
->> [ 1061.038543] CR2: 0000000000000040
->> [ 1061.038962] ---[ end trace d20e1df7d028e69f ]---
->>
->> This is because blk_mq_get_driver_tag() would be used to allocate tag once
->> scheduler (e.g., mq-deadline) is set. 
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+
+On Wed, 2020-05-20 at 18:47 +0800, Dinghao Liu wrote:
+> pm_runtime_get_sync() increments the runtime PM usage counter even
+> the call returns an error code. Thus a pairing decrement is needed
+> on the error handling path to keep the counter balanced.
 > 
-> I tried mq-deadline and I did not see this. Anyway else special or specific
-> about your test?
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
+> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> index 6be9df1820c5..e670756664ff 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> @@ -1123,8 +1123,10 @@ nv50_mstc_detect(struct drm_connector *connector,
+>  		return connector_status_disconnected;
+>  
+>  	ret = pm_runtime_get_sync(connector->dev->dev);
+> -	if (ret < 0 && ret != -EACCES)
+> +	if (ret < 0 && ret != -EACCES) {
+> +		pm_runtime_put_autosuspend(connector->dev->dev);
+>  		return connector_status_disconnected;
+> +	}
+>  
+>  	ret = drm_dp_mst_detect_port(connector, ctx, mstc->port->mgr,
+>  				     mstc->port);
 
-I think you just hit the issue as mentioned in another thread.
-
-To reproduce the issue reproduce to hit the condition that:
-
-1. blk_mq_hctx_notify_offline() BLK_MQ_S_INACTIVE with the barrier ...
-
-... while ...
-
-2. blk_mq_get_tag() gets the tag but BLK_MQ_S_INACTIVE is already set.
-Therefore, it would put the tag to release it.
-
-Dongli Zhang
