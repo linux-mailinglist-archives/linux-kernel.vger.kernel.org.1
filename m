@@ -2,119 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3A81ED27B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C4B1ED29B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbgFCOuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 10:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726414AbgFCOu2 (ORCPT
+        id S1726383AbgFCOvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 10:51:39 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:39396 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbgFCOvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 10:50:28 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21247C08C5C2;
-        Wed,  3 Jun 2020 07:50:28 -0700 (PDT)
-Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de.)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.80)
-        (envelope-from <a.darwish@linutronix.de>)
-        id 1jgUij-00020r-Px; Wed, 03 Jun 2020 16:50:21 +0200
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 6/6] dma-buf: Remove custom seqcount lockdep class key
-Date:   Wed,  3 Jun 2020 16:49:49 +0200
-Message-Id: <20200603144949.1122421-7-a.darwish@linutronix.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200603144949.1122421-1-a.darwish@linutronix.de>
-References: <20200603144949.1122421-1-a.darwish@linutronix.de>
+        Wed, 3 Jun 2020 10:51:36 -0400
+Received: by mail-ot1-f66.google.com with SMTP id g5so2069432otg.6;
+        Wed, 03 Jun 2020 07:51:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+IFxkwdJki1WIWWrFUItKHxjWSf4ueSBqfwRQQudi88=;
+        b=tMR8MNQ3Y2eCFDh4CEbiq7m9U3AmQ8uElTDhB+WiEofCYQ062bEdcCeb5bKX1a00Ax
+         N20KlQSzK6AarYZNvo+OuknoB7BzsUlwnY/W/IZmIWkInpE/l8r8tfd30B17UhV5kU+/
+         1Sdt3kkRLB3sq1KrICnvfDk+4mNUqSjUsyvqVlRpOMXr3/rtb0ZkfgWn8x7g5QckhGHl
+         fxsWQl8QVYV4IPJYblLmXpt/1GCkqhKyV57gqBj8Kg9iBsD3XMYoDHiuj8sa99qXeWrO
+         yJwIh+OuRIqJoCzJmsVfTP8eHzWFR7BoA1KN6ifkgTylNTzOPWAi3+cGisonDx6M+oKJ
+         DqXw==
+X-Gm-Message-State: AOAM5309TkeoeYeWil9LGPWKSNjQ2FbR2gGrDy9ms0wM5vDPh0ujWvI9
+        y6Ik6h1ujlzsfmcsJk5zr4vb6IOerDaAJOtVUsE=
+X-Google-Smtp-Source: ABdhPJwIEcy/bVF3SW/JRia20NXxWrHhYWn8UPD0KO/W61cy6Dhgv1+6DhN8aYGYhoVFdS0tesZTDuB0tYuKIXrjXiU=
+X-Received: by 2002:a9d:3d05:: with SMTP id a5mr272952otc.262.1591195892184;
+ Wed, 03 Jun 2020 07:51:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <20200531182453.15254-1-ggherdovich@suse.cz> <20200531182453.15254-4-ggherdovich@suse.cz>
+In-Reply-To: <20200531182453.15254-4-ggherdovich@suse.cz>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 3 Jun 2020 16:51:21 +0200
+Message-ID: <CAJZ5v0iNFDjt6rqXfiwn_UwiKgJDgAUshChVh5YoOCXF9hy=_A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] x86, sched: Bail out of frequency invariance if
+ turbo_freq/base_freq gives 0
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@suse.de>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 3c3b177a9369 ("reservation: add support for read-only access
-using rcu") introduced a sequence counter to manage updates to
-reservations. Back then, the reservation object initializer
-reservation_object_init() was always inlined.
+On Sun, May 31, 2020 at 8:26 PM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
+>
+> Be defensive against the case where the processor reports a base_freq
+> larger than turbo_freq (the ratio would be zero).
+>
+> Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Fixes: 1567c3e3467c ("x86, sched: Add support for frequency invariance")
 
-Having the sequence counter initialization inlined meant that each of
-the call sites would have a different lockdep class key, which would've
-broken lockdep's deadlock detection. The aforementioned commit thus
-introduced, and exported, a custom seqcount lockdep class key and name.
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-The commit 8735f16803f00 ("dma-buf: cleanup reservation_object_init...")
-transformed the reservation object initializer to a normal non-inlined C
-function. seqcount_init(), which automatically defines the seqcount
-lockdep class key and must be called non-inlined, can now be safely used.
-
-Remove the seqcount custom lockdep class key, name, and export. Use
-seqcount_init() inside the dma reservation object initializer.
-
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- drivers/dma-buf/dma-resv.c | 9 +--------
- include/linux/dma-resv.h   | 2 --
- 2 files changed, 1 insertion(+), 10 deletions(-)
-
-diff --git a/drivers/dma-buf/dma-resv.c b/drivers/dma-buf/dma-resv.c
-index 4264e64788c4..590ce7ad60a0 100644
---- a/drivers/dma-buf/dma-resv.c
-+++ b/drivers/dma-buf/dma-resv.c
-@@ -50,12 +50,6 @@
- DEFINE_WD_CLASS(reservation_ww_class);
- EXPORT_SYMBOL(reservation_ww_class);
- 
--struct lock_class_key reservation_seqcount_class;
--EXPORT_SYMBOL(reservation_seqcount_class);
--
--const char reservation_seqcount_string[] = "reservation_seqcount";
--EXPORT_SYMBOL(reservation_seqcount_string);
--
- /**
-  * dma_resv_list_alloc - allocate fence list
-  * @shared_max: number of fences we need space for
-@@ -134,9 +128,8 @@ subsys_initcall(dma_resv_lockdep);
- void dma_resv_init(struct dma_resv *obj)
- {
- 	ww_mutex_init(&obj->lock, &reservation_ww_class);
-+	seqcount_init(&obj->seq);
- 
--	__seqcount_init(&obj->seq, reservation_seqcount_string,
--			&reservation_seqcount_class);
- 	RCU_INIT_POINTER(obj->fence, NULL);
- 	RCU_INIT_POINTER(obj->fence_excl, NULL);
- }
-diff --git a/include/linux/dma-resv.h b/include/linux/dma-resv.h
-index ee50d10f052b..a6538ae7d93f 100644
---- a/include/linux/dma-resv.h
-+++ b/include/linux/dma-resv.h
-@@ -46,8 +46,6 @@
- #include <linux/rcupdate.h>
- 
- extern struct ww_class reservation_ww_class;
--extern struct lock_class_key reservation_seqcount_class;
--extern const char reservation_seqcount_string[];
- 
- /**
-  * struct dma_resv_list - a list of shared fences
--- 
-2.20.1
-
+> ---
+>  arch/x86/kernel/smpboot.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> index fe154c8226ba..f619007f46cf 100644
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -1976,6 +1976,7 @@ static bool core_set_max_freq_ratio(u64 *base_freq, u64 *turbo_freq)
+>  static bool intel_set_max_freq_ratio(void)
+>  {
+>         u64 base_freq, turbo_freq;
+> +       u64 turbo_ratio;
+>
+>         if (slv_set_max_freq_ratio(&base_freq, &turbo_freq))
+>                 goto out;
+> @@ -2009,9 +2010,15 @@ static bool intel_set_max_freq_ratio(void)
+>                 return false;
+>         }
+>
+> -       arch_turbo_freq_ratio = div_u64(turbo_freq * SCHED_CAPACITY_SCALE,
+> -                                       base_freq);
+> +       turbo_ratio = div_u64(turbo_freq * SCHED_CAPACITY_SCALE, base_freq);
+> +       if (!turbo_ratio) {
+> +               pr_debug("Non-zero turbo and base frequencies led to a 0 ratio.\n");
+> +               return false;
+> +       }
+> +
+> +       arch_turbo_freq_ratio = turbo_ratio;
+>         arch_set_max_freq_ratio(turbo_disabled());
+> +
+>         return true;
+>  }
+>
+> --
+> 2.16.4
+>
