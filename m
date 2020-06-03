@@ -2,97 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAA31EC8AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 07:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6921EC8C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 07:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbgFCFUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 01:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55690 "EHLO
+        id S1725954AbgFCF0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 01:26:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgFCFUE (ORCPT
+        with ESMTP id S1725807AbgFCF0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 01:20:04 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7E6C05BD43
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 22:20:03 -0700 (PDT)
-Received: from kapsi.fi ([2001:67c:1be8::11] helo=lakka.kapsi.fi)
-        by mail.kapsi.fi with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <jpa@lakka.kapsi.fi>)
-        id 1jgLoY-0003XD-TX; Wed, 03 Jun 2020 08:19:47 +0300
-Received: from jpa by lakka.kapsi.fi with local (Exim 4.92)
-        (envelope-from <jpa@lakka.kapsi.fi>)
-        id 1jgLoY-000616-Qw; Wed, 03 Jun 2020 08:19:46 +0300
-Date:   Wed, 3 Jun 2020 08:19:46 +0300
-From:   Petteri Aimonen <jpa@git.mail.kapsi.fi>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Shuah Khan <shuah@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arch/x86: reset MXCSR to default in kernel_fpu_begin()
-Message-ID: <20200603051946.GF17423@lakka.kapsi.fi>
-References: <8b1f0bfa-79b0-74e4-0241-8b2a94491807@linuxfoundation.org>
- <C6F6F6E4-CBD8-4E72-812B-99F008ECAA4F@amacapital.net>
- <b4629042-21c7-2b38-4c3f-44f9be469cca@linuxfoundation.org>
+        Wed, 3 Jun 2020 01:26:40 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C544C05BD43;
+        Tue,  2 Jun 2020 22:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=B9FZXvCVa4OcevC1BEI/2OAvMbOb5AtVuCYULJ2X2Z4=; b=HrsjkFjE34DIX8ilChH6LzX4q5
+        1cFzLEE4zdcDZtVK4jdUnSk+WPpHG9ggL2mJhsgob8SUnwEkV+FIbx5ZrUeB55xHQk4+LHrQv6T+j
+        qR5YYxJGrxqqRnhnysgmeZU+vAC5OsPyk8HFaRQ8jPsCKGJLRAjSSsk9L59OhOCB8aK5+cz2pYbWB
+        y9ox2eqbd3/dsbJ72gidswzwgWBsVIqsJUyy1km1tBKGv5SCo/XRPqz2KWm7FEN4e1o2U6lgthItJ
+        +7Sc3nhY5ZzXPGwsiRziDBV5LepLvEoGAEhhNbsztPl26udsWo0NHdzKGopYs79CJSF2GLun3MjxX
+        q20wr0ng==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jgLvD-0005QD-N3; Wed, 03 Jun 2020 05:26:39 +0000
+Date:   Tue, 2 Jun 2020 22:26:39 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/15] mmc: sdhci: use PCI_IRQ_MSI_TYPES where appropriate
+Message-ID: <20200603052639.GB15520@infradead.org>
+References: <20200602092059.32146-1-piotr.stankiewicz@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b4629042-21c7-2b38-4c3f-44f9be469cca@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Rspam-Score: 1.2 (+)
-X-Rspam-Report: Action: no action
- Symbol: RCVD_TLS_LAST(0.00)
- Symbol: ARC_NA(0.00)
- Symbol: FROM_HAS_DN(0.00)
- Symbol: TO_MATCH_ENVRCPT_ALL(0.00)
- Symbol: MIME_GOOD(-0.10)
- Symbol: DMARC_NA(0.00)
- Symbol: AUTH_NA(1.00)
- Symbol: TO_DN_ALL(0.00)
- Symbol: RCPT_COUNT_SEVEN(0.00)
- Symbol: NEURAL_HAM(-0.00)
- Symbol: R_SPF_NA(0.00)
- Symbol: FORGED_SENDER(0.30)
- Symbol: R_DKIM_NA(0.00)
- Symbol: MIME_TRACE(0.00)
- Symbol: ASN(0.00)
- Symbol: FROM_NEQ_ENVFROM(0.00)
- Symbol: RCVD_COUNT_TWO(0.00)
- Message-ID: 20200603051946.GF17423@lakka.kapsi.fi
-X-Rspam-Bar: +
-X-SA-Exim-Connect-IP: 2001:67c:1be8::11
-X-SA-Exim-Mail-From: jpa@lakka.kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+In-Reply-To: <20200602092059.32146-1-piotr.stankiewicz@intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-> Is it correct to assume the stuff checked differs from test to test
-> and done in user-space.
+On Tue, Jun 02, 2020 at 11:20:59AM +0200, Piotr Stankiewicz wrote:
+> Seeing as there is shorthand available to use when asking for any type
+> of interrupt, or any type of message signalled interrupt, leverage it.
 > 
-> > undo_evil_state();
-> 
-> Is it correct to assume undoing evil differs from test to test
-> and done in user-space, provide it can be done from userspace.
+> Signed-off-by: Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
 
-Yes, currently the test works like:
-
-do_test_setup();
-read_from_debugfs_file();
-check_results();
-
-and the middle step stays the same. But of course in general case there 
-could be argument passing etc, even though the test for this issue 
-doesn't need them.
-
-Myself I don't see the problem with just adding a file under debugfs and 
-bind to its read.
-
---
-Petteri
+So this crap now shows up piecemail on various lists?  Indepent of that
+it seems like a bad idea to start with, bombing people with patches that
+apparently depend on something you did first but they are not Cced on
+is just an amazingly bad idea.  Don't do that ever.
