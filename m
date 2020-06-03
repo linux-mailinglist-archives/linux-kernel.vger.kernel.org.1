@@ -2,109 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDDD1ED032
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C26F1ED04D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726088AbgFCMw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:52:58 -0400
-Received: from mga02.intel.com ([134.134.136.20]:60598 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgFCMw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:52:58 -0400
-IronPort-SDR: W8sT9l4vLhx0faDrhVWwsdnWzwe2gz3vNjZbcovkYnXg4k8VIl9LqW7oWmx01kyYF0GuNSTYZq
- VqQJX55/U/TA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 05:52:57 -0700
-IronPort-SDR: sFZ3MGew3Vqfg9eamgBCc3HZUf9hTlBph9ic9x/Et2eMKwG9uEY2c/EnJVD04Lwl6aoesmawG+
- zI6f1fKxsxhg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,467,1583222400"; 
-   d="scan'208";a="312599731"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 03 Jun 2020 05:52:57 -0700
-Received: from [10.249.225.188] (abudanko-mobl.ccr.corp.intel.com [10.249.225.188])
-        by linux.intel.com (Postfix) with ESMTP id 10E4E5800E3;
-        Wed,  3 Jun 2020 05:52:54 -0700 (PDT)
-Subject: Re: [PATCH v6 01/13] tools/libperf: introduce notion of static polled
- file descriptors
-To:     "Hunter, Adrian" <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <f8e3a714-d9b1-4647-e1d2-9981cbaa83ec@linux.intel.com>
- <40643542-6676-e0bc-2d10-165dfde41e29@linux.intel.com>
- <33c91520-7040-bd6b-b176-004ddbec2a63@intel.com>
- <b04311d6-b1c6-d625-b227-9ae4f4370626@linux.intel.com>
- <eb31a2a4-ab3b-54a7-2d5a-51457f78394e@intel.com>
- <363DA0ED52042842948283D2FC38E464B4151F86@IRSMSX106.ger.corp.intel.com>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <40d44cd8-ecdb-53c9-99f8-1737e04c84ff@linux.intel.com>
-Date:   Wed, 3 Jun 2020 15:52:53 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1726099AbgFCM4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:56:09 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:16776 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725930AbgFCM4F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 08:56:05 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 053CqDo6021444;
+        Wed, 3 Jun 2020 14:55:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=jdp1plbLpLgjvRgPP9F4ETyWDpfXePaZkpFBRFFIxfE=;
+ b=1NYkV2NcuqmyTEX0bPFHHxq6Ez5NVzma3uoaT3CnOstSPMw5TBxlk2mAWDUUbhjvbCKH
+ upmvzkH8eHnbiPQNRzJubUQKqA9aoLxyB+P23qeSlwlhFrnmoL3J/09juWVn16vlXu4h
+ ZjMED91GB3k3e2O6bMUo/IdFZKn2bTa2wlGSskwQguJyaxGI0xh+nwuTFpLkdVismKSF
+ emqkzHujU1l796UOLEoAoWK0sOkMVf2CApmyk9ZJRimV0trhTGIY1PkAhI1nOZcyNhtN
+ ST4i9KfjyWodQgpy5hRCfwL8s245S00XG66iDoWUKXlSqgKeQTSF/T3O+RNwCUZzoaw5 uQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 31bcm94rpd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Jun 2020 14:55:39 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AA1A8100034;
+        Wed,  3 Jun 2020 14:55:38 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 777662CBE8A;
+        Wed,  3 Jun 2020 14:55:38 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG3NODE3.st.com (10.75.127.9)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 3 Jun 2020 14:54:41
+ +0200
+From:   Benjamin Gaignard <benjamin.gaignard@st.com>
+To:     <fabrice.gasnier@st.com>, <lee.jones@linaro.org>,
+        <robh+dt@kernel.org>, <mcoquelin.stm32@gmail.com>,
+        <alexandre.torgue@st.com>, <linux@armlinux.org.uk>,
+        <daniel.lezcano@linaro.org>, <tglx@linutronix.de>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Benjamin Gaignard <benjamin.gaignard@st.com>
+Subject: [RESEND v7 0/6] clockevent: add low power STM32 timer
+Date:   Wed, 3 Jun 2020 14:54:33 +0200
+Message-ID: <20200603125439.23275-1-benjamin.gaignard@st.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-In-Reply-To: <363DA0ED52042842948283D2FC38E464B4151F86@IRSMSX106.ger.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG3NODE3.st.com
+ (10.75.127.9)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-03_12:2020-06-02,2020-06-03 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series add low power timer as boadcast clockevent device.
+Low power timer could runs even when CPUs are in idle mode and 
+could wakeup them.
 
-On 03.06.2020 15:30, Hunter, Adrian wrote:
-> 
-> 
->> -----Original Message-----
->> From: Hunter, Adrian <adrian.hunter@intel.com>
->> Sent: Wednesday, June 3, 2020 3:24 PM
->> To: Alexey Budankov <alexey.budankov@linux.intel.com>
->> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>; Jiri Olsa
->> <jolsa@redhat.com>; Namhyung Kim <namhyung@kernel.org>; Alexander
->> Shishkin <alexander.shishkin@linux.intel.com>; Peter Zijlstra
->> <peterz@infradead.org>; Ingo Molnar <mingo@redhat.com>; Andi Kleen
->> <ak@linux.intel.com>; linux-kernel <linux-kernel@vger.kernel.org>
->> Subject: Re: [PATCH v6 01/13] tools/libperf: introduce notion of static polled
->> file descriptors
->>
->> On 3/06/20 3:01 pm, Alexey Budankov wrote:
->>> Hi,
->>>
->>> On 03.06.2020 14:38, Adrian Hunter wrote:
->>>> On 1/06/20 11:05 pm, Alexey Budankov wrote:
->>>>>
->>>>> Implement adding of file descriptors by fdarray__add_stat() to
->>>>> fix-sized (currently 1) stat_entries array located at struct fdarray.
->>>>> Append added file descriptors to the array used by poll() syscall
->>>>> during fdarray__poll() call. Copy poll() result of the added
->>>>> descriptors from the array back to the storage for separate analysis.
->>>>
->>>> Why not instead call evlist__add_pollfd() before other fds are added,
->>>> so the fda->entries[] position is always fixed. Then this patch is not
->> needed.
->>>
->>> It then will block event consumption loop, at least in record mode,
->>> due to change sin initial assumptions behind fdarray__filter(). So
->>> extension of the API with 'static' fds looks safer w.r.t. possible
->>> functional regressions at the same time extending the API with ability
->>> to atomically wait for (poll()) not only event fds but also any other fds
->> during monitoring.
->>
->> So make fdarray__filter() return the number of filterable fds remaining.
->>
-> 
-> 
-> Or perhaps simpler, compare the return value to the number of fds that are known not to be filterable
+Lee has acked the MFD part.
+Clocksource driver still need to be reviewed by maintainers.
+Add missing part of the bindings to describe interrupt.
 
-Well, various implementations are for sure possible but the proposed design
-avoids implicit code assumptions and dependency on API calls order as in API
-implementation as in client code and that is why it's been proposed this way.
+version 7 resend:
+- with Daniel ack for driver patch
+- with Rob review for bindings patch
+
+version 7:
+- rebased on top of v5.7-rc2
+
+version 6:
+- simplify binding, DT and code to use only one interrupt
+
+version 5:
+- document interrupts and interrupt-names bindings
+- use a different wake up interrupt
+- add device-tree patch
+- make STM32MP157 select low power timer configuration flag
+- enable fast_io in regmap configuration
+
+version 4:
+- move defines in mfd/stm32-lptimer.h
+- change compatible and subnode names
+- document wakeup-source property
+- reword commit message
+- make driver Kconfig depends of MFD_STM32_LPTIMER
+- remove useless include
+- remove rate and clk fields from the private structure
+- to add comments about the registers sequence in stm32_clkevent_lp_set_timer
+- rework probe function and use devm_request_irq()
+- do not allow module to be removed
+
+version 3:
+- fix timer set sequence
+- don't forget to free irq on remove function
+- use devm_kzalloc to simplify errors handling in probe function
+
+version 2:
+- stm32 clkevent driver is now a child of the stm32 lp timer node
+- add a probe function and adpat the driver to use regmap provide
+  by it parent
+- stop using timer_of helpers
+
+
+Benjamin Gaignard (6):
+  dt-bindings: mfd: Document STM32 low power timer bindings
+  ARM: dts: stm32: Add timer subnodes on stm32mp15 SoCs
+  mfd: stm32: Add defines to be used for clkevent purpose
+  mfd: stm32: enable regmap fast_io for stm32-lptimer
+  clocksource: Add Low Power STM32 timers driver
+  ARM: mach-stm32: select low power timer for STM32MP157
+
+ .../devicetree/bindings/mfd/st,stm32-lptimer.yaml  |   5 +
+ arch/arm/boot/dts/stm32mp151.dtsi                  |  35 ++++
+ arch/arm/mach-stm32/Kconfig                        |   1 +
+ drivers/clocksource/Kconfig                        |   4 +
+ drivers/clocksource/Makefile                       |   1 +
+ drivers/clocksource/timer-stm32-lp.c               | 221 +++++++++++++++++++++
+ drivers/mfd/stm32-lptimer.c                        |   1 +
+ include/linux/mfd/stm32-lptimer.h                  |   5 +
+ 8 files changed, 273 insertions(+)
+ create mode 100644 drivers/clocksource/timer-stm32-lp.c
+
+-- 
+2.15.0
+
