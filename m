@@ -2,122 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4B01ECE6E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B091ECEA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726170AbgFCLbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 07:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgFCLbv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 07:31:51 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FBEC08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 04:31:49 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id n9so735479plk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 04:31:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=qk6h3/uMt30VL5gHNd0CIGo1xzT6Suvapd6Zkcc+DKM=;
-        b=RrVEBwVQcLUCGqEsQJpXqOjWAC7D12BFnkAzXds6Ldo3QcDZzph+tDvYWmHFe0lWhv
-         NzphH34M9lMai8xEnODbbQBiX1I3Q1lOWXWfx3vFO3Ivf3YxSOsF3S1z0b0YsXmVCqe6
-         2557nioENqUygaKxfXPSKYaHR/WHtc26Y0VOKArCfWFAv0FAXiLRraAxID6yitkllEJp
-         miGHOkxiCZLl8prcEtAuGaV2mwvp/D4j4JrBkYe7Or8TtLHHpGcW+zgJBYJJvZuY+lZF
-         2DcaYdr6nli5fNc/Dc0Aptc2BH7m81IUJ0zndV/+7pN50ImUIMH0IdwgfjEaYKLi2iRe
-         1+Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=qk6h3/uMt30VL5gHNd0CIGo1xzT6Suvapd6Zkcc+DKM=;
-        b=njNarX5mJMvG5Y00kIoGp1HDQwgSO+ujIaen96RoheYy1R7HBBVaCQlovFSm31WeKJ
-         Z8lh6jLoQEdoSyD9TVUrL5Wup9kxN1QWLrOGtyYE8jtAOhrb37kX7yB4/dnWOpchkScz
-         jp6pPNw70sLv5Qn+Q67Ss7W/AbhBC+RRA11Rnd1tfePyyLv5IeyBlMYljx5sKl4CMwcJ
-         gnSmXrwe7hu99UhCt9Szg996RnF33gvWygIc1X7VzAth692llI9AVtyTccfcLLYzicVI
-         fTMS+eJt5HMgOu2yM+dh9mkERa919eiXwYlhvE/cUQoH8X4wQKPUoIFPM77idD1KZWqz
-         wXpg==
-X-Gm-Message-State: AOAM530uW4fWCUTekDWARplfaAbhK233aBT3usOoZVDHS/9FSXRaZWYK
-        q44b4v3buxZsAVuojcKw8aZrqQ==
-X-Google-Smtp-Source: ABdhPJx1hupOSx1MjWX0wzHnvPBht00diFTwhauAGcYrofBJ0Z1tYUFmmuAKQDX/qg1grKkCKOdBgQ==
-X-Received: by 2002:a17:902:70c2:: with SMTP id l2mr22838292plt.237.1591183909305;
-        Wed, 03 Jun 2020 04:31:49 -0700 (PDT)
-Received: from localhost.localdomain ([117.252.66.248])
-        by smtp.gmail.com with ESMTPSA id n2sm1842942pfd.125.2020.06.03.04.31.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Jun 2020 04:31:48 -0700 (PDT)
-From:   Sumit Garg <sumit.garg@linaro.org>
-To:     jens.wiklander@linaro.org, corbet@lwn.net
-Cc:     maxim.uvarov@linaro.org, jarkko.sakkinen@linux.intel.com,
-        tee-dev@lists.linaro.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH] Documentation: tee: Document TEE kernel interface
-Date:   Wed,  3 Jun 2020 17:01:28 +0530
-Message-Id: <1591183888-11101-1-git-send-email-sumit.garg@linaro.org>
-X-Mailer: git-send-email 2.7.4
+        id S1725971AbgFCLlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 07:41:49 -0400
+Received: from uho.ysoft.cz ([81.19.3.130]:44950 "EHLO uho.ysoft.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725854AbgFCLlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 07:41:49 -0400
+X-Greylist: delayed 591 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jun 2020 07:41:47 EDT
+Received: from iota-build.ysoft.local (unknown [10.1.5.151])
+        by uho.ysoft.cz (Postfix) with ESMTP id CCC01A049E;
+        Wed,  3 Jun 2020 13:31:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
+        s=20160406-ysoft-com; t=1591183914;
+        bh=V5QNjV3HBqRkRY7vTGnb2qSQq5tZGtqOrS/+6XsIqto=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MHTeeHrIuvRI/7zWYgFLuBelsDB7f1T1PstpmOkqcCE9d4l0SacVK6YLNKvN80eX4
+         zoRlkpJBnVyjlwAessVQKU1W/e+BN8maQIphWZA0k1IcN81FHw4gR/0UUtkwp1Dh3z
+         qI0laoN8BXkTUMNVtdDqaT0g3nm5NmysKbMDmfCQ=
+From:   =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH net] net: dsa: qca8k: Fix "Unexpected gfp" kernel exception
+Date:   Wed,  3 Jun 2020 13:31:39 +0200
+Message-Id: <1591183899-24987-1-git-send-email-michal.vokac@ysoft.com>
+X-Mailer: git-send-email 2.1.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update documentation with TEE bus infrastructure which provides an
-interface for kernel client drivers to communicate with corresponding
-Trusted Application.
+Commit 7e99e3470172 ("net: dsa: remove dsa_switch_alloc helper")
+replaced the dsa_switch_alloc helper by devm_kzalloc in all DSA
+drivers. Unfortunately it introduced a typo in qca8k.c driver and
+wrong argument is passed to the devm_kzalloc function.
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+This fix mitigates the following kernel exception:
+
+  Unexpected gfp: 0x6 (__GFP_HIGHMEM|GFP_DMA32). Fixing up to gfp: 0x101 (GFP_DMA|__GFP_ZERO). Fix your code!
+  CPU: 1 PID: 44 Comm: kworker/1:1 Not tainted 5.5.9-yocto-ua #1
+  Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+  Workqueue: events deferred_probe_work_func
+  [<c0014924>] (unwind_backtrace) from [<c00123bc>] (show_stack+0x10/0x14)
+  [<c00123bc>] (show_stack) from [<c04c8fb4>] (dump_stack+0x90/0xa4)
+  [<c04c8fb4>] (dump_stack) from [<c00e1b10>] (new_slab+0x20c/0x214)
+  [<c00e1b10>] (new_slab) from [<c00e1cd0>] (___slab_alloc.constprop.0+0x1b8/0x540)
+  [<c00e1cd0>] (___slab_alloc.constprop.0) from [<c00e2074>] (__slab_alloc.constprop.0+0x1c/0x24)
+  [<c00e2074>] (__slab_alloc.constprop.0) from [<c00e4538>] (__kmalloc_track_caller+0x1b0/0x298)
+  [<c00e4538>] (__kmalloc_track_caller) from [<c02cccac>] (devm_kmalloc+0x24/0x70)
+  [<c02cccac>] (devm_kmalloc) from [<c030d888>] (qca8k_sw_probe+0x94/0x1ac)
+  [<c030d888>] (qca8k_sw_probe) from [<c0304788>] (mdio_probe+0x30/0x54)
+  [<c0304788>] (mdio_probe) from [<c02c93bc>] (really_probe+0x1e0/0x348)
+  [<c02c93bc>] (really_probe) from [<c02c9884>] (driver_probe_device+0x60/0x16c)
+  [<c02c9884>] (driver_probe_device) from [<c02c7fb0>] (bus_for_each_drv+0x70/0x94)
+  [<c02c7fb0>] (bus_for_each_drv) from [<c02c9708>] (__device_attach+0xb4/0x11c)
+  [<c02c9708>] (__device_attach) from [<c02c8148>] (bus_probe_device+0x84/0x8c)
+  [<c02c8148>] (bus_probe_device) from [<c02c8cec>] (deferred_probe_work_func+0x64/0x90)
+  [<c02c8cec>] (deferred_probe_work_func) from [<c0033c14>] (process_one_work+0x1d4/0x41c)
+  [<c0033c14>] (process_one_work) from [<c00340a4>] (worker_thread+0x248/0x528)
+  [<c00340a4>] (worker_thread) from [<c0039148>] (kthread+0x124/0x150)
+  [<c0039148>] (kthread) from [<c00090d8>] (ret_from_fork+0x14/0x3c)
+  Exception stack(0xee1b5fb0 to 0xee1b5ff8)
+  5fa0:                                     00000000 00000000 00000000 00000000
+  5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+  5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+  qca8k 2188000.ethernet-1:0a: Using legacy PHYLIB callbacks. Please migrate to PHYLINK!
+  qca8k 2188000.ethernet-1:0a eth2 (uninitialized): PHY [2188000.ethernet-1:01] driver [Generic PHY]
+  qca8k 2188000.ethernet-1:0a eth1 (uninitialized): PHY [2188000.ethernet-1:02] driver [Generic PHY]
+
+Fixes: 7e99e3470172 ("net: dsa: remove dsa_switch_alloc helper")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
 ---
- Documentation/tee.txt | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ drivers/net/dsa/qca8k.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/Documentation/tee.txt b/Documentation/tee.txt
-index c8fad81..428d3b5 100644
---- a/Documentation/tee.txt
-+++ b/Documentation/tee.txt
-@@ -53,6 +53,28 @@ clients, forward them to the TEE and send back the results. In the case of
- supplicants the communication goes in the other direction, the TEE sends
- requests to the supplicant which then sends back the result.
+diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+index 9f4205b4439b..d2b5ab403e06 100644
+--- a/drivers/net/dsa/qca8k.c
++++ b/drivers/net/dsa/qca8k.c
+@@ -1079,8 +1079,7 @@ qca8k_sw_probe(struct mdio_device *mdiodev)
+ 	if (id != QCA8K_ID_QCA8337)
+ 		return -ENODEV;
  
-+The TEE kernel interface
-+========================
-+
-+Kernel provides a TEE bus infrastructure where a Trusted Application is
-+represented as a device identified via Universally Unique Identifier (UUID) and
-+client drivers register a table of supported device UUIDs.
-+
-+TEE bus infrastructure registers following APIs:
-+-  match(): iterates over the client driver UUID table to find a corresponding
-+   match for device UUID. If a match is found, then this particular device is
-+   probed via corresponding probe API registered by the client driver. This
-+   process happens whenever a device or a client driver is registered with TEE
-+   bus.
-+-  uevent(): notifies user-space (udev) whenever a new device is registered on
-+   TEE bus for auto-loading of modularized client drivers.
-+
-+TEE bus device enumeration is specific to underlying TEE implementation, so it
-+is left open for TEE drivers to provide corresponding implementation.
-+
-+Then TEE client driver can talk to a matched Trusted Application using APIs
-+listed in include/linux/tee_drv.h.
-+
- OP-TEE driver
- =============
- 
-@@ -112,6 +134,14 @@ kernel are handled by the kernel driver. Other RPC messages will be forwarded to
- tee-supplicant without further involvement of the driver, except switching
- shared memory buffer representation.
- 
-+OP-TEE device enumeration
-+-------------------------
-+
-+OP-TEE provides a pseudo Trusted Application: drivers/tee/optee/device.c in
-+order to support device enumeration. In other words, OP-TEE driver invokes this
-+application to retrieve a list of Trusted Applications which can be registered
-+as devices on the TEE bus.
-+
- AMD-TEE driver
- ==============
+-	priv->ds = devm_kzalloc(&mdiodev->dev, sizeof(*priv->ds),
+-				QCA8K_NUM_PORTS);
++	priv->ds = devm_kzalloc(&mdiodev->dev, sizeof(*priv->ds), GFP_KERNEL);
+ 	if (!priv->ds)
+ 		return -ENOMEM;
  
 -- 
-2.7.4
+2.1.4
 
