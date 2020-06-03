@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D8F1ED30B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618F31ED318
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbgFCPK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 11:10:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60522 "EHLO mail.kernel.org"
+        id S1726217AbgFCPMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 11:12:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726142AbgFCPK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 11:10:58 -0400
-Received: from tzanussi-mobl (c-73-211-240-131.hsd1.il.comcast.net [73.211.240.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725967AbgFCPMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 11:12:34 -0400
+Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 942A4206E6;
-        Wed,  3 Jun 2020 15:10:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3026F206E6;
+        Wed,  3 Jun 2020 15:12:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591197058;
-        bh=3MPsv1f0boeVtrXpwRMj3TVYK6WQy/4p6Q+AEX6nQrg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=qHUJkL/GWdKG8cz+qBXbh+ADpRnxGM4ySLLOdKMvPBlAGU7zPx0qkcwLuy56teSZl
-         bRk/idYBxSTuEUyGxGsSAs3zh8L+A+4/ZQZurYYruIuVzORXt094otTQyL+binNDcl
-         TS0AkwMhQMOMSURrdzhn/o2gC+QIuG9GkhREhr0g=
-Message-ID: <71bcd300a32c0ddde8473625ba81bad3ba6f5dfe.camel@kernel.org>
-Subject: Re: linux-next: build failure after merge of the ftrace tree
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Date:   Wed, 03 Jun 2020 10:10:56 -0500
-In-Reply-To: <20200603174253.60deace5@canb.auug.org.au>
-References: <20200603174253.60deace5@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        s=default; t=1591197154;
+        bh=KWFBsll9HGUfZ4R12kYQEDC71yH0LO07oDOecGGX1gE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sKH5G5sLHMI6gplPsIj90aUd4PNiT4FOwaZhFsikRBearsdJn+bm0O3vONgGxMLrI
+         yfoYiCBhUmnRmGkB/S000V/TDuTh13QlKMnof6Zv6ExIcUIN7x6HsjcVE/EELQx5an
+         C9SfJlbEHDFfOUbsKIVSjWA7n+rNHr+AdS7xIiVg=
+From:   Will Deacon <will@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     keescook@chromium.org, linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: [PATCH] scs: Report SCS usage in bytes rather than number of entries
+Date:   Wed,  3 Jun 2020 16:12:17 +0100
+Message-Id: <20200603151218.11659-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Fix the SCS debug usage check so that we report the number of bytes
+usedm, rather than the number of entries.
 
-On Wed, 2020-06-03 at 17:42 +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the ftrace tree, today's linux-next build (htmldocs)
-> failed like this:
-> 
-> 
-> Sphinx parallel build error:
-> docutils.utils.SystemMessage:
-> /home/sfr/next/next/Documentation/trace/histogram-design.rst:219:
-> (SEVERE/4) Unexpected section title.
-> 
-> .
-> .
-> 
-> Caused by commit
-> 
->   16b585fe7192 ("tracing: Add histogram-design document")
-> 
-> I am running a slightly out of date version os sphynx (2.4.3) ...
-> 
+Fixes: 5bbaf9d1fcb9 ("scs: Add support for stack usage debugging")
+Reported-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Will Deacon <will@kernel.org>
+---
+ kernel/scs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Apparently sphynx doesn't like my funky ascii-art.  I'll post a patch
-fixing this shortly.
-
-Thanks,
-
-Tom
+diff --git a/kernel/scs.c b/kernel/scs.c
+index 222a7a9ad543..5d4d9bbdec36 100644
+--- a/kernel/scs.c
++++ b/kernel/scs.c
+@@ -74,7 +74,7 @@ static void scs_check_usage(struct task_struct *tsk)
+ 	for (p = task_scs(tsk); p < __scs_magic(tsk); ++p) {
+ 		if (!READ_ONCE_NOCHECK(*p))
+ 			break;
+-		used++;
++		used += sizeof(*p);
+ 	}
+ 
+ 	while (used > curr) {
+-- 
+2.27.0.rc2.251.g90737beb825-goog
 
