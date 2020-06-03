@@ -2,104 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C4B1ED29B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9021ED29F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726383AbgFCOvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 10:51:39 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:39396 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgFCOvg (ORCPT
+        id S1726231AbgFCOwq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Jun 2020 10:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725930AbgFCOwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 10:51:36 -0400
-Received: by mail-ot1-f66.google.com with SMTP id g5so2069432otg.6;
-        Wed, 03 Jun 2020 07:51:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+IFxkwdJki1WIWWrFUItKHxjWSf4ueSBqfwRQQudi88=;
-        b=tMR8MNQ3Y2eCFDh4CEbiq7m9U3AmQ8uElTDhB+WiEofCYQ062bEdcCeb5bKX1a00Ax
-         N20KlQSzK6AarYZNvo+OuknoB7BzsUlwnY/W/IZmIWkInpE/l8r8tfd30B17UhV5kU+/
-         1Sdt3kkRLB3sq1KrICnvfDk+4mNUqSjUsyvqVlRpOMXr3/rtb0ZkfgWn8x7g5QckhGHl
-         fxsWQl8QVYV4IPJYblLmXpt/1GCkqhKyV57gqBj8Kg9iBsD3XMYoDHiuj8sa99qXeWrO
-         yJwIh+OuRIqJoCzJmsVfTP8eHzWFR7BoA1KN6ifkgTylNTzOPWAi3+cGisonDx6M+oKJ
-         DqXw==
-X-Gm-Message-State: AOAM5309TkeoeYeWil9LGPWKSNjQ2FbR2gGrDy9ms0wM5vDPh0ujWvI9
-        y6Ik6h1ujlzsfmcsJk5zr4vb6IOerDaAJOtVUsE=
-X-Google-Smtp-Source: ABdhPJwIEcy/bVF3SW/JRia20NXxWrHhYWn8UPD0KO/W61cy6Dhgv1+6DhN8aYGYhoVFdS0tesZTDuB0tYuKIXrjXiU=
-X-Received: by 2002:a9d:3d05:: with SMTP id a5mr272952otc.262.1591195892184;
- Wed, 03 Jun 2020 07:51:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200531182453.15254-1-ggherdovich@suse.cz> <20200531182453.15254-4-ggherdovich@suse.cz>
-In-Reply-To: <20200531182453.15254-4-ggherdovich@suse.cz>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 3 Jun 2020 16:51:21 +0200
-Message-ID: <CAJZ5v0iNFDjt6rqXfiwn_UwiKgJDgAUshChVh5YoOCXF9hy=_A@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] x86, sched: Bail out of frequency invariance if
- turbo_freq/base_freq gives 0
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 3 Jun 2020 10:52:46 -0400
+Received: from wp148.webpack.hosteurope.de (wp148.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:849b::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977F3C08C5C0;
+        Wed,  3 Jun 2020 07:52:45 -0700 (PDT)
+Received: from ip1f126570.dynamic.kabel-deutschland.de ([31.18.101.112] helo=roelofs-mbp.fritz.box); authenticated
+        by wp148.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1jgUkr-0002jQ-92; Wed, 03 Jun 2020 16:52:33 +0200
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH] lan743x: Added fixed link and RGMII support / BROKEN
+ PATCH
+From:   Roelof Berg <rberg@berg-solutions.de>
+In-Reply-To: <20200601.115136.1314501977250032604.davem@davemloft.net>
+Date:   Wed, 3 Jun 2020 16:52:32 +0200
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <D784BC1B-D14C-4FE4-8FD8-76BEBE60A39D@berg-solutions.de>
+References: <20200529193003.3717-1-rberg@berg-solutions.de>
+ <20200601.115136.1314501977250032604.davem@davemloft.net>
+To:     David Miller <davem@davemloft.net>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-bounce-key: webpack.hosteurope.de;rberg@berg-solutions.de;1591195965;eb131c3d;
+X-HE-SMSGID: 1jgUkr-0002jQ-92
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 31, 2020 at 8:26 PM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
->
-> Be defensive against the case where the processor reports a base_freq
-> larger than turbo_freq (the ratio would be zero).
->
-> Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Fixes: 1567c3e3467c ("x86, sched: Add support for frequency invariance")
+TEST REPORT: BROKEN PATCH
 
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Thanks to everyone for working on the fixed link feature of lan743x eth driver.
 
-> ---
->  arch/x86/kernel/smpboot.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> index fe154c8226ba..f619007f46cf 100644
-> --- a/arch/x86/kernel/smpboot.c
-> +++ b/arch/x86/kernel/smpboot.c
-> @@ -1976,6 +1976,7 @@ static bool core_set_max_freq_ratio(u64 *base_freq, u64 *turbo_freq)
->  static bool intel_set_max_freq_ratio(void)
->  {
->         u64 base_freq, turbo_freq;
-> +       u64 turbo_ratio;
->
->         if (slv_set_max_freq_ratio(&base_freq, &turbo_freq))
->                 goto out;
-> @@ -2009,9 +2010,15 @@ static bool intel_set_max_freq_ratio(void)
->                 return false;
->         }
->
-> -       arch_turbo_freq_ratio = div_u64(turbo_freq * SCHED_CAPACITY_SCALE,
-> -                                       base_freq);
-> +       turbo_ratio = div_u64(turbo_freq * SCHED_CAPACITY_SCALE, base_freq);
-> +       if (!turbo_ratio) {
-> +               pr_debug("Non-zero turbo and base frequencies led to a 0 ratio.\n");
-> +               return false;
-> +       }
-> +
-> +       arch_turbo_freq_ratio = turbo_ratio;
->         arch_set_max_freq_ratio(turbo_disabled());
-> +
->         return true;
->  }
->
-> --
-> 2.16.4
->
+I received more test hardware today, and one piece of hardware (EVBlan7430) becomes incompatible by the patch. We need to roll back for now. Sorry.
+
+I’ll discuss about options of how to proceed in a second e-mail.
+
+Thank you and best regards,
+Roelof
+
+
+> David Miller <davem@davemloft.net>:
+> 
+>> Microchip lan7431 is frequently connected to a phy. However, it
+>> can also be directly connected to a MII remote peer without
+>> any phy in between. For supporting such a phyless hardware setup
+>> in Linux we utilized phylib, which supports a fixed-link
+>> configuration via the device tree. And we added support for
+>> defining the connection type R/GMII in the device tree.
+> ...
+> 
+> Applied, thank you.
+> 
+
