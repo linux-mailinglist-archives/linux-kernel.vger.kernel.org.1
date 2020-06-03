@@ -2,139 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E05A1ED483
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 18:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BAA1ED489
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 18:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgFCQsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 12:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgFCQsu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 12:48:50 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00::f03c:91ff:fe50:41d6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFA4C08C5C0;
-        Wed,  3 Jun 2020 09:48:50 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id EAA6A87A0; Wed,  3 Jun 2020 12:48:49 -0400 (EDT)
-Date:   Wed, 3 Jun 2020 12:48:49 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+0e37e9d19bded16b8ab9@syzkaller.appspotmail.com>,
-        chuck.lever@oracle.com, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: BUG: unable to handle kernel paging request in rb_erase
-Message-ID: <20200603164849.GB2035@fieldses.org>
-References: <0000000000005016dd05a5e6b308@google.com>
- <20200603043435.13820-1-hdanton@sina.com>
- <20200603144326.GA2035@fieldses.org>
+        id S1726188AbgFCQwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 12:52:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:35692 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725961AbgFCQwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 12:52:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20F3A31B;
+        Wed,  3 Jun 2020 09:52:06 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A6C83F305;
+        Wed,  3 Jun 2020 09:52:03 -0700 (PDT)
+Date:   Wed, 3 Jun 2020 17:52:00 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        linux-doc@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fs <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] sched/uclamp: Add a new sysctl to control RT default
+ boost value
+Message-ID: <20200603165200.v2ypeagziht7kxdw@e107158-lin.cambridge.arm.com>
+References: <20200511154053.7822-1-qais.yousef@arm.com>
+ <20200528132327.GB706460@hirez.programming.kicks-ass.net>
+ <20200528155800.yjrmx3hj72xreryh@e107158-lin.cambridge.arm.com>
+ <20200528161112.GI2483@worktop.programming.kicks-ass.net>
+ <20200529100806.GA3070@suse.de>
+ <edd80c0d-b7c8-4314-74da-08590170e6f5@arm.com>
+ <87v9k84knx.derkling@matbug.net>
+ <20200603101022.GG3070@suse.de>
+ <CAKfTPtAvMvPk5Ea2kaxXE8GzQ+Nc_PS+EKB1jAa03iJwQORSqA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200603144326.GA2035@fieldses.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <CAKfTPtAvMvPk5Ea2kaxXE8GzQ+Nc_PS+EKB1jAa03iJwQORSqA@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 10:43:26AM -0400, J. Bruce Fields wrote:
-> On Wed, Jun 03, 2020 at 12:34:35PM +0800, Hillf Danton wrote:
-> > 
-> > On Tue, 2 Jun 2020 17:55:17 -0400 "J. Bruce Fields" wrote:
-> > > 
-> > > As far as I know, this one's still unresolved.  I can't see the bug from
-> > > code inspection, and we don't have a reproducer.  If anyone else sees
-> > > this or has an idea what might be going wrong, I'd be interested.--b.
-> > 
-> > It's a PF reported in the syz-executor.3 context (PID: 8682 on CPU:1),
-> > meanwhile there's another at 
-> > 
-> >  https://lore.kernel.org/lkml/20200603011425.GA13019@fieldses.org/T/#t
-> >  Reported-by: syzbot+a29df412692980277f9d@syzkaller.appspotmail.com
-> > 
-> > in the kworker context, and one of the quick questions is, is it needed
-> > to serialize the two players, say, using a mutex?
+On 06/03/20 16:59, Vincent Guittot wrote:
+> When I want to stress the fast path i usually use "perf bench sched pipe -T "
+> The tip/sched/core on my arm octo core gives the following results for
+> 20 iterations of perf bench sched pipe -T -l 50000
 > 
-> nfsd_reply_cache_shutdown() doesn't take any locks.  All the data
-> structures it's tearing down are per-network-namespace, and it's assumed
-> all the users of that structure are gone by the time we get here.
+> all uclamp config disabled  50035.4(+/- 0.334%)
+> all uclamp config enabled  48749.8(+/- 0.339%)   -2.64%
 > 
-> I wonder if that assumption's correct.  Looking at nfsd_exit_net()....
-> 
-> nfsd_reply_cache_shutdown() is one of the first things we do, so I think
-> we're depending on the assumption that the interfaces in that network
-> namespace, and anything referencing associated sockets (in particular,
-> any associated in-progress rpc's), must be gone before our net exit
-> method is called.
-> 
-> I wonder if that's a good assumption.
+> It's quite easy to reproduce and probably easier to study the impact
 
-I think that assumption must be the problem.
+Thanks Vincent. This is very useful!
 
-That would explain why the crashes are happening in nfsd_exit_net as
-opposed to somewhere else, and why we're only seeing them since
-3ba75830ce17 "nfsd4: drc containerization".
+I could reproduce that on my Juno.
 
-I wonder what *is* safe to assume when the net exit method is called?
+One of the codepath I was suspecting seems to affect it.
 
---b.
 
-> 
-> --b.
-> 
-> > 
-> > 
-> > > On Sun, May 17, 2020 at 11:59:12PM -0700, syzbot wrote:
-> > > > Hello,
-> > > > 
-> > > > syzbot found the following crash on:
-> > > > 
-> > > > HEAD commit:    9b1f2cbd Merge tag 'clk-fixes-for-linus' of git://git.kern..
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=15dfdeaa100000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=c14212794ed9ad24
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=0e37e9d19bded16b8ab9
-> > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > > 
-> > > > Unfortunately, I don't have any reproducer for this crash yet.
-> > > > 
-> > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > > Reported-by: syzbot+0e37e9d19bded16b8ab9@syzkaller.appspotmail.com
-> > > > 
-> > > > BUG: unable to handle page fault for address: ffff887ffffffff0
-> > > > #PF: supervisor read access in kernel mode
-> > > > #PF: error_code(0x0000) - not-present page
-> > > > PGD 0 P4D 0 
-> > > > Oops: 0000 [#1] PREEMPT SMP KASAN
-> > > > CPU: 1 PID: 8682 Comm: syz-executor.3 Not tainted 5.7.0-rc5-syzkaller #0
-> > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > > > RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:201 [inline]
-> > > > RIP: 0010:rb_erase+0x37/0x18d0 lib/rbtree.c:443
-> > > > Code: 89 f7 41 56 41 55 49 89 fd 48 83 c7 08 48 89 fa 41 54 48 c1 ea 03 55 53 48 83 ec 18 80 3c 02 00 0f 85 89 10 00 00 49 8d 7d 10 <4d> 8b 75 08 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80
-> > > > RSP: 0018:ffffc900178ffb58 EFLAGS: 00010246
-> > > > RAX: dffffc0000000000 RBX: ffff8880354d0000 RCX: ffffc9000fb6d000
-> > > > RDX: 1ffff10ffffffffe RSI: ffff88800011dfe0 RDI: ffff887ffffffff8
-> > > > RBP: ffff887fffffffb0 R08: ffff888057284280 R09: fffffbfff185d12e
-> > > > R10: ffffffff8c2e896f R11: fffffbfff185d12d R12: ffff88800011dfe0
-> > > > R13: ffff887fffffffe8 R14: 000000000001dfe0 R15: ffff88800011dfe0
-> > > > FS:  00007fa002d21700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-> > > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > CR2: ffff887ffffffff0 CR3: 00000000a2164000 CR4: 00000000001426e0
-> > > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > > Call Trace:
-> > > >  nfsd_reply_cache_free_locked+0x198/0x380 fs/nfsd/nfscache.c:127
-> > > >  nfsd_reply_cache_shutdown+0x150/0x350 fs/nfsd/nfscache.c:203
-> > > >  nfsd_exit_net+0x189/0x4c0 fs/nfsd/nfsctl.c:1504
-> > > >  ops_exit_list.isra.0+0xa8/0x150 net/core/net_namespace.c:186
-> > > >  setup_net+0x50c/0x860 net/core/net_namespace.c:364
-> > > >  copy_net_ns+0x293/0x590 net/core/net_namespace.c:482
-> > > >  create_new_namespaces+0x3fb/0xb30 kernel/nsproxy.c:108
-> > > >  unshare_nsproxy_namespaces+0xbd/0x1f0 kernel/nsproxy.c:229
-> > > >  ksys_unshare+0x43d/0x8e0 kernel/fork.c:2970
-> > > >  __do_sys_unshare kernel/fork.c:3038 [inline]
-> > > >  __se_sys_unshare kernel/fork.c:3036 [inline]
-> > > >  __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3036
-> > > >  do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
-> > > >  entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 0464569f26a7..9f48090eb926 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1063,10 +1063,12 @@ static inline void uclamp_rq_dec_id(struct rq *rq, struct task_struct *p,
+         * e.g. due to future modification, warn and fixup the expected value.
+         */
+        SCHED_WARN_ON(bucket->value > rq_clamp);
++#if 0
+        if (bucket->value >= rq_clamp) {
+                bkt_clamp = uclamp_rq_max_value(rq, clamp_id, uc_se->value);
+                WRITE_ONCE(uc_rq->value, bkt_clamp);
+        }
++#endif
+ }
+
+ static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+
+
+
+uclamp_rq_max_value() could be expensive as it loops over all buckets.
+Commenting this whole path out strangely doesn't just 'fix' it, but produces
+better results to no-uclamp kernel :-/
+
+
+
+# ./perf bench -r 20 sched pipe -T -l 50000
+Without uclamp:		5039
+With uclamp:		4832
+With uclamp+patch:	5729
+
+
+
+It might be because schedutil gets biased differently by uclamp..? If I move to
+performance governor these numbers almost double.
+
+I don't know. But this promoted me to look closer and I think I spotted a bug
+where in the if condition we check for '>=' instead of '>', causing us to take
+the supposedly impossible fail safe path.
+
+Mind trying with the below patch please?
+
+
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 0464569f26a7..50d66d4016ff 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1063,7 +1063,7 @@ static inline void uclamp_rq_dec_id(struct rq *rq, struct task_struct *p,
+         * e.g. due to future modification, warn and fixup the expected value.
+         */
+        SCHED_WARN_ON(bucket->value > rq_clamp);
+-       if (bucket->value >= rq_clamp) {
++       if (bucket->value > rq_clamp) {
+                bkt_clamp = uclamp_rq_max_value(rq, clamp_id, uc_se->value);
+                WRITE_ONCE(uc_rq->value, bkt_clamp);
+        }
+
+
+
+Thanks
+
+--
+Qais Yousef
