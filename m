@@ -2,79 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF8E1EC7FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 05:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B0C1EC7D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 05:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726879AbgFCDub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 23:50:31 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:35086 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726812AbgFCDuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 23:50:19 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F3CCF1A0054;
-        Wed,  3 Jun 2020 05:50:16 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7304E1A0F20;
-        Wed,  3 Jun 2020 05:50:12 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9461840323;
-        Wed,  3 Jun 2020 11:50:06 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] ASoC: fsl_easrc: Fix "Function parameter not described" warnings
-Date:   Wed,  3 Jun 2020 11:39:41 +0800
-Message-Id: <d166b868e6d294de47a89857be03758ec82a0a61.1591155860.git.shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1591155860.git.shengjiu.wang@nxp.com>
-References: <cover.1591155860.git.shengjiu.wang@nxp.com>
-In-Reply-To: <cover.1591155860.git.shengjiu.wang@nxp.com>
-References: <cover.1591155860.git.shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725948AbgFCDlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 23:41:25 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:43386 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgFCDlX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 23:41:23 -0400
+Received: by mail-il1-f199.google.com with SMTP id e5so287286ill.10
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 20:41:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=gXY/ZYEP3SmrwbBJcl7C6Xw3GUvmdoWZklMcqyQfDr4=;
+        b=N3PtzmbMuiq2gOfIoJNPH6hkh/eS9WA9barU3S2h4jwgNZOI3c565JY2rhf+GjJD1O
+         jPeQEoSXw/pR4u66eCZ8bALIY3KxoS0hSj5xdF+/JlLIi/53HE047INwdXi8W5odjh1V
+         /WeVvZd34dtPfgvkx4fEAdMyD2gpd3KD0FwNNlYm1dcERX9xvn22GJdyTAN/JQo+TEhR
+         yUo39hcbU2Y+jvJB6ziVOVqm7br0x/MGMPlbtz3lfHFL/VCvy+2NeYlp0JcpVgE9Zgyy
+         UACRAmrxbGxvxi5NtIq+HWZGk2ndCGsT4Z8r1a/EaOtvH6MJbYxkZwQT0CHjWpqgdaEN
+         8q+A==
+X-Gm-Message-State: AOAM531XWLyEWGG7vgnnAyI+fF5EKRdPnBUfcgDY26ea565dCA5cHydo
+        GX/iEEMl4fB1YvwmR2IhYpEUz912s7DJoaIXv0D/B/UD1Lum
+X-Google-Smtp-Source: ABdhPJxq0CtdjSAJeiL8/yVeyj9mc4ScvfYBmPSicxFf2BLe4pWWyJTMypz7bJatLdWpslCO4PVKgv07dKbKcCnMcQu200HJZv1f
+MIME-Version: 1.0
+X-Received: by 2002:a92:9603:: with SMTP id g3mr2273048ilh.204.1591155681272;
+ Tue, 02 Jun 2020 20:41:21 -0700 (PDT)
+Date:   Tue, 02 Jun 2020 20:41:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002a280b05a725cd93@google.com>
+Subject: memory leak in crypto_create_tfm
+From:   syzbot <syzbot+2e635807decef724a1fa@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Obtained with:
-$ make W=1
+Hello,
 
-sound/soc/fsl/fsl_easrc.c:403: warning: Function parameter or member 'easrc' not described in 'fsl_easrc_normalize_filter'
-sound/soc/fsl/fsl_easrc.c:403: warning: Function parameter or member 'infilter' not described in 'fsl_easrc_normalize_filter'
-sound/soc/fsl/fsl_easrc.c:403: warning: Function parameter or member 'outfilter' not described in 'fsl_easrc_normalize_filter'
-sound/soc/fsl/fsl_easrc.c:403: warning: Function parameter or member 'shift' not described in 'fsl_easrc_normalize_filter'
+syzbot found the following crash on:
 
-Fixes: 955ac624058f ("ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Reported-by: kbuild test robot <lkp@intel.com>
+HEAD commit:    19409891 Merge tag 'pnp-5.8-rc1' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13165aa6100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6d41e63a2c7e0715
+dashboard link: https://syzkaller.appspot.com/bug?extid=2e635807decef724a1fa
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f00ef2100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=170f2ef2100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+2e635807decef724a1fa@syzkaller.appspotmail.com
+
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff8881175bc480 (size 64):
+  comm "syz-executor064", pid 6388, jiffies 4294941622 (age 13.280s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    e0 7e 56 84 ff ff ff ff 00 00 00 00 00 00 00 00  .~V.............
+  backtrace:
+    [<0000000029c7602f>] kmalloc include/linux/slab.h:560 [inline]
+    [<0000000029c7602f>] kzalloc include/linux/slab.h:669 [inline]
+    [<0000000029c7602f>] crypto_create_tfm+0x31/0x100 crypto/api.c:448
+    [<00000000bec8cbdb>] crypto_alloc_tfm+0x79/0x1a0 crypto/api.c:527
+    [<000000002f9791ba>] drbg_prepare_hrng crypto/drbg.c:1509 [inline]
+    [<000000002f9791ba>] drbg_instantiate crypto/drbg.c:1587 [inline]
+    [<000000002f9791ba>] drbg_kcapi_seed+0x432/0x6a9 crypto/drbg.c:1980
+    [<0000000041302bb8>] crypto_rng_reset+0x35/0x1a0 crypto/rng.c:53
+    [<000000004758c3c4>] alg_setkey crypto/af_alg.c:222 [inline]
+    [<000000004758c3c4>] alg_setsockopt+0x149/0x190 crypto/af_alg.c:255
+    [<000000008bc4b5cb>] __sys_setsockopt+0x112/0x230 net/socket.c:2132
+    [<00000000cfbf30da>] __do_sys_setsockopt net/socket.c:2148 [inline]
+    [<00000000cfbf30da>] __se_sys_setsockopt net/socket.c:2145 [inline]
+    [<00000000cfbf30da>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2145
+    [<00000000fc9c2183>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<0000000040e080a1>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff8881175bc040 (size 64):
+  comm "syz-executor064", pid 6389, jiffies 4294942172 (age 7.780s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    e0 7e 56 84 ff ff ff ff 00 00 00 00 00 00 00 00  .~V.............
+  backtrace:
+    [<0000000029c7602f>] kmalloc include/linux/slab.h:560 [inline]
+    [<0000000029c7602f>] kzalloc include/linux/slab.h:669 [inline]
+    [<0000000029c7602f>] crypto_create_tfm+0x31/0x100 crypto/api.c:448
+    [<00000000bec8cbdb>] crypto_alloc_tfm+0x79/0x1a0 crypto/api.c:527
+    [<000000002f9791ba>] drbg_prepare_hrng crypto/drbg.c:1509 [inline]
+    [<000000002f9791ba>] drbg_instantiate crypto/drbg.c:1587 [inline]
+    [<000000002f9791ba>] drbg_kcapi_seed+0x432/0x6a9 crypto/drbg.c:1980
+    [<0000000041302bb8>] crypto_rng_reset+0x35/0x1a0 crypto/rng.c:53
+    [<000000004758c3c4>] alg_setkey crypto/af_alg.c:222 [inline]
+    [<000000004758c3c4>] alg_setsockopt+0x149/0x190 crypto/af_alg.c:255
+    [<000000008bc4b5cb>] __sys_setsockopt+0x112/0x230 net/socket.c:2132
+    [<00000000cfbf30da>] __do_sys_setsockopt net/socket.c:2148 [inline]
+    [<00000000cfbf30da>] __se_sys_setsockopt net/socket.c:2145 [inline]
+    [<00000000cfbf30da>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2145
+    [<00000000fc9c2183>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<0000000040e080a1>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88811b3ca080 (size 96):
+  comm "syz-executor064", pid 6389, jiffies 4294942172 (age 7.780s)
+  hex dump (first 32 bytes):
+    89 c7 08 cb 8a 12 10 6e 00 00 00 00 00 00 00 00  .......n........
+    71 51 5a c2 1b 00 00 00 35 7d 00 00 00 00 00 00  qQZ.....5}......
+  backtrace:
+    [<000000008ec3eca0>] jent_entropy_collector_alloc+0x1b/0xf8 crypto/jitterentropy.c:662
+    [<0000000026ed401a>] jent_kcapi_init+0x17/0x40 crypto/jitterentropy-kcapi.c:119
+    [<00000000be7d6b06>] crypto_create_tfm+0x89/0x100 crypto/api.c:459
+    [<00000000bec8cbdb>] crypto_alloc_tfm+0x79/0x1a0 crypto/api.c:527
+    [<000000002f9791ba>] drbg_prepare_hrng crypto/drbg.c:1509 [inline]
+    [<000000002f9791ba>] drbg_instantiate crypto/drbg.c:1587 [inline]
+    [<000000002f9791ba>] drbg_kcapi_seed+0x432/0x6a9 crypto/drbg.c:1980
+    [<0000000041302bb8>] crypto_rng_reset+0x35/0x1a0 crypto/rng.c:53
+    [<000000004758c3c4>] alg_setkey crypto/af_alg.c:222 [inline]
+    [<000000004758c3c4>] alg_setsockopt+0x149/0x190 crypto/af_alg.c:255
+    [<000000008bc4b5cb>] __sys_setsockopt+0x112/0x230 net/socket.c:2132
+    [<00000000cfbf30da>] __do_sys_setsockopt net/socket.c:2148 [inline]
+    [<00000000cfbf30da>] __se_sys_setsockopt net/socket.c:2145 [inline]
+    [<00000000cfbf30da>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2145
+    [<00000000fc9c2183>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<0000000040e080a1>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
 ---
- sound/soc/fsl/fsl_easrc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index 7d8bf9d47842..2f6b3d8bfcfc 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -389,11 +389,11 @@ static int fsl_easrc_resampler_config(struct fsl_asrc *easrc)
-  *  For input int[16, 24, 32] -> output float32
-  *      scale it by multiplying filter coefficients by 2^-15, 2^-23, 2^-31
-  *  input:
-- *      asrc:  Structure pointer of fsl_asrc
-- *      infilter : Pointer to non-scaled input filter
-- *      shift:  The multiply factor
-+ *      @easrc:  Structure pointer of fsl_asrc
-+ *      @infilter : Pointer to non-scaled input filter
-+ *      @shift:  The multiply factor
-  *  output:
-- *      outfilter: scaled filter
-+ *      @outfilter: scaled filter
-  */
- static int fsl_easrc_normalize_filter(struct fsl_asrc *easrc,
- 				      u64 *infilter,
--- 
-2.21.0
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
