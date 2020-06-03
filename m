@@ -2,230 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE79B1ED8DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 01:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 198FB1ED8EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 01:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbgFCXDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 19:03:34 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:37939 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgFCXD0 (ORCPT
+        id S1726706AbgFCXEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 19:04:36 -0400
+Received: from smtprelay0115.hostedemail.com ([216.40.44.115]:49154 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725876AbgFCXEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 19:03:26 -0400
-Received: by mail-pj1-f65.google.com with SMTP id d6so240932pjs.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 16:03:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UFYREJttAlMAUsUygNDpQAXi3jRgxHIdgz6aJFa4sYk=;
-        b=QeN7LSMDxV+4cOIQSEwbtzSvHVuu8Xb04d1JAI2sIK+Sy+tzrvE82WqpV/X5Hj95Hs
-         bUewaS7CSBlCRjBLpEk9VsxImeJyToiikla5Us/upFD++wUDGF8GKOD/EJquJKvYV1HK
-         DN+Cbd+53GlGt1Ryyn7GOxLp/KodqGw9Z1bVg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UFYREJttAlMAUsUygNDpQAXi3jRgxHIdgz6aJFa4sYk=;
-        b=XtsK69XeesQ6rqCwyHhA0UFi98KZIDi9jQ2w9TNQZstgZlZMRhptl6VMqnlr+ajrnR
-         seirkn8La/1c2iKkdg4Kd9np4Maw0duECsDQh6dh2sZbI3hlLt4OLQ9rfxus3z4LgXXX
-         BJPetmVMhv/SNGvhFwfXrU79VaMuVxv2wVAKx0FOu1dlXwnbfj//dQ39i/7YAtoVf5KI
-         mlCjmU0DX5neZOd/eyCdSh3QIcO1AzvYQmahkxH7BN8AayjQW0rWhOhRw0fwXldX8H2G
-         uY7BrZ1le9Tg2rNtydnjwGbwjm0reTsD4zJyQkK2jvzNPWiiREjxHnww3JoWD2BNqIvG
-         2P/w==
-X-Gm-Message-State: AOAM531hbW6uDxQYrM/0wewJt+B296U4+LPcV6YLg79iIR/zSVxlf/u7
-        MvsJcUQzmxz/ko3ssRKcPfLDRg==
-X-Google-Smtp-Source: ABdhPJyvvdqexVm4VA5z2jRJ148qk3PNdO7Yao954oICTJCBXM/ZU6CfFaGgaDg5Df90tLwO9pAzQA==
-X-Received: by 2002:a17:902:b68d:: with SMTP id c13mr1997854pls.210.1591225345054;
-        Wed, 03 Jun 2020 16:02:25 -0700 (PDT)
-Received: from mcchou0.mtv.corp.google.com ([2620:15c:202:201:b46:ac84:1014:9555])
-        by smtp.gmail.com with ESMTPSA id b11sm2715999pfd.178.2020.06.03.16.02.22
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Jun 2020 16:02:23 -0700 (PDT)
-From:   Miao-chen Chou <mcchou@chromium.org>
-To:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>
-Cc:     Alain Michaud <alainm@chromium.org>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Manish Mandlik <mmandlik@chromium.org>,
-        Michael Sun <michaelfsun@google.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Yoni Shavit <yshavit@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v2 7/7] Bluetooth: Update background scan and report device based on advertisement monitors
-Date:   Wed,  3 Jun 2020 16:01:50 -0700
-Message-Id: <20200603160058.v2.7.Id9ca021d5a3e8c748ea5c0a1c81582b9a8183f45@changeid>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200603160058.v2.1.I636f906bf8122855dfd2ba636352bbdcb50c35ed@changeid>
-References: <20200603160058.v2.1.I636f906bf8122855dfd2ba636352bbdcb50c35ed@changeid>
+        Wed, 3 Jun 2020 19:04:36 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 45F56837F24D;
+        Wed,  3 Jun 2020 23:04:34 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3867:3868:3870:3871:4321:4605:5007:6119:6691:7974:8603:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12296:12297:12438:12555:12663:12740:12760:12895:12986:13019:13439:14093:14097:14181:14659:14721:21080:21325:21433:21451:21627:30012:30045:30054:30089:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: basin86_280ffd426d92
+X-Filterd-Recvd-Size: 3564
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  3 Jun 2020 23:04:32 +0000 (UTC)
+Message-ID: <b08611018fdb6d88757c6008a5c02fa0e07b32fb.camel@perches.com>
+Subject: Re: [PATCH] pwm: Add missing "CONFIG_" prefix
+From:   Joe Perches <joe@perches.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Date:   Wed, 03 Jun 2020 16:04:31 -0700
+In-Reply-To: <202006031539.4198EA6@keescook>
+References: <202006031539.4198EA6@keescook>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This calls hci_update_background_scan() when there is any update on the
-advertisement monitors. If there is at least one advertisement monitor,
-the filtering policy of scan parameters should be 0x00. This also reports
-device found mgmt events if there is at least one monitor.
+On Wed, 2020-06-03 at 15:40 -0700, Kees Cook wrote:
+> The IS_ENABLED() use was missing the CONFIG_ prefix which would have
+> lead to skipping this code.
+> 
+> Fixes: 3ad1f3a33286 ("pwm: Implement some checks for lowlevel drivers")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/pwm/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> index 9973c442b455..6b3cbc0490c6 100644
+> --- a/drivers/pwm/core.c
+> +++ b/drivers/pwm/core.c
+> @@ -121,7 +121,7 @@ static int pwm_device_request(struct pwm_device *pwm, const char *label)
+>  		pwm->chip->ops->get_state(pwm->chip, pwm, &pwm->state);
+>  		trace_pwm_get(pwm, &pwm->state);
+>  
+> -		if (IS_ENABLED(PWM_DEBUG))
+> +		if (IS_ENABLED(CONFIG_PWM_DEBUG))
+>  			pwm->last = pwm->state;
+>  	}
+>  
+> -- 
+> 2.25.1
+> 
 
-The following cases were tested with btmgmt advmon-* commands.
-(1) add a ADV monitor and observe that the passive scanning is
-triggered.
-(2) remove the last ADV monitor and observe that the passive scanning is
-terminated.
-(3) with a LE peripheral paired, repeat (1) and observe the passive
-scanning continues.
-(4) with a LE peripheral paired, repeat (2) and observe the passive
-scanning continues.
-(5) with a ADV monitor, suspend/resume the host and observe the passive
-scanning continues.
+more odd uses (mostly in comments)
 
-Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
+$ git grep -P -oh '\bIS_ENABLED\s*\(\s*\w+\s*\)'| \
+  sed -r 's/\s+//g'| \
+  grep -v '(CONFIG_' | \
+  sort | uniq -c | sort -rn
+      7 IS_ENABLED(DEBUG)
+      4 IS_ENABLED(DRM_I915_SELFTEST)
+      4 IS_ENABLED(cfg)
+      2 IS_ENABLED(opt_name)
+      2 IS_ENABLED(DEBUG_PRINT_TRIE_GRAPHVIZ)
+      2 IS_ENABLED(config)
+      2 IS_ENABLED(cond)
+      2 IS_ENABLED(__BIG_ENDIAN)
+      1 IS_ENABLED(x)
+      1 IS_ENABLED(STRICT_KERNEL_RWX)
+      1 IS_ENABLED(PWM_DEBUG)
+      1 IS_ENABLED(option)
+      1 IS_ENABLED(ETHTOOL_NETLINK)
+      1 IS_ENABLED(DEBUG_RANDOM_TRIE)
+      1 IS_ENABLED(DEBUG_CHACHA20POLY1305_SLOW_CHUNK_TEST)
+
+STRICT_KERNEL_RWX is misused here in ppc
+
 ---
 
-Changes in v2: None
+Fix pr_warn without newline too.
 
- include/net/bluetooth/hci_core.h |  1 +
- net/bluetooth/hci_core.c         | 13 +++++++++++++
- net/bluetooth/hci_event.c        |  5 +++--
- net/bluetooth/hci_request.c      | 17 ++++++++++++++---
- net/bluetooth/mgmt.c             |  5 ++++-
- 5 files changed, 35 insertions(+), 6 deletions(-)
+ arch/powerpc/mm/book3s64/hash_utils.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index 78ac7fd282d77..1ce89e546a64e 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -1243,6 +1243,7 @@ void hci_adv_monitors_clear(struct hci_dev *hdev);
- void hci_free_adv_monitor(struct adv_monitor *monitor);
- int hci_add_adv_monitor(struct hci_dev *hdev, struct adv_monitor *monitor);
- int hci_remove_adv_monitor(struct hci_dev *hdev, u16 handle);
-+bool hci_is_adv_monitoring(struct hci_dev *hdev);
- 
- void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb);
- 
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 1fcd0cc2dcc5b..08c8ce26146d3 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -3005,6 +3005,8 @@ void hci_adv_monitors_clear(struct hci_dev *hdev)
- 		hci_free_adv_monitor(monitor);
- 
- 	idr_destroy(&hdev->adv_monitors_idr);
-+
-+	hci_update_background_scan(hdev);
- }
- 
- void hci_free_adv_monitor(struct adv_monitor *monitor)
-@@ -3038,6 +3040,9 @@ int hci_add_adv_monitor(struct hci_dev *hdev, struct adv_monitor *monitor)
- 
- 	hdev->adv_monitors_cnt++;
- 	monitor->handle = handle;
-+
-+	hci_update_background_scan(hdev);
-+
- 	return 0;
- }
- 
-@@ -3069,9 +3074,17 @@ int hci_remove_adv_monitor(struct hci_dev *hdev, u16 handle)
- 		idr_for_each(&hdev->adv_monitors_idr, &free_adv_monitor, hdev);
- 	}
- 
-+	hci_update_background_scan(hdev);
-+
- 	return 0;
- }
- 
-+/* This function requires the caller holds hdev->lock */
-+bool hci_is_adv_monitoring(struct hci_dev *hdev)
-+{
-+	return !idr_is_empty(&hdev->adv_monitors_idr);
-+}
-+
- struct bdaddr_list *hci_bdaddr_list_lookup(struct list_head *bdaddr_list,
- 					 bdaddr_t *bdaddr, u8 type)
- {
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index cfeaee347db32..cbcc0b590fd41 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5447,14 +5447,15 @@ static void process_adv_report(struct hci_dev *hdev, u8 type, bdaddr_t *bdaddr,
- 
- 	/* Passive scanning shouldn't trigger any device found events,
- 	 * except for devices marked as CONN_REPORT for which we do send
--	 * device found events.
-+	 * device found events, or advertisement monitoring requested.
- 	 */
- 	if (hdev->le_scan_type == LE_SCAN_PASSIVE) {
- 		if (type == LE_ADV_DIRECT_IND)
- 			return;
- 
- 		if (!hci_pend_le_action_lookup(&hdev->pend_le_reports,
--					       bdaddr, bdaddr_type))
-+					       bdaddr, bdaddr_type) &&
-+		    idr_is_empty(&hdev->adv_monitors_idr))
- 			return;
- 
- 		if (type == LE_ADV_NONCONN_IND || type == LE_ADV_SCAN_IND)
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 1fc55685da62d..b743e3fc063d8 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -418,11 +418,15 @@ static void __hci_update_background_scan(struct hci_request *req)
- 	 */
- 	hci_discovery_filter_clear(hdev);
- 
-+	BT_DBG("%s ADV monitoring is %s", hdev->name,
-+	       hci_is_adv_monitoring(hdev) ? "on" : "off");
-+
- 	if (list_empty(&hdev->pend_le_conns) &&
--	    list_empty(&hdev->pend_le_reports)) {
-+	    list_empty(&hdev->pend_le_reports) &&
-+	    !hci_is_adv_monitoring(hdev)) {
- 		/* If there is no pending LE connections or devices
--		 * to be scanned for, we should stop the background
--		 * scanning.
-+		 * to be scanned for or no ADV monitors, we should stop the
-+		 * background scanning.
+diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
+index 51e3c15f7aff..dd60c5f2b991 100644
+--- a/arch/powerpc/mm/book3s64/hash_utils.c
++++ b/arch/powerpc/mm/book3s64/hash_utils.c
+@@ -660,11 +660,10 @@ static void __init htab_init_page_sizes(void)
+ 		 * Pick a size for the linear mapping. Currently, we only
+ 		 * support 16M, 1M and 4K which is the default
  		 */
+-		if (IS_ENABLED(STRICT_KERNEL_RWX) &&
++		if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX) &&
+ 		    (unsigned long)_stext % 0x1000000) {
+ 			if (mmu_psize_defs[MMU_PAGE_16M].shift)
+-				pr_warn("Kernel not 16M aligned, "
+-					"disabling 16M linear map alignment");
++				pr_warn("Kernel not 16M aligned, disabling 16M linear map alignment\n");
+ 			aligned = false;
+ 		}
  
- 		/* If controller is not scanning we are done. */
-@@ -798,6 +802,13 @@ static u8 update_white_list(struct hci_request *req)
- 			return 0x00;
- 	}
- 
-+	/* Once the controller offloading of advertisement monitor is in place,
-+	 * the if condition should include the support of MSFT extension
-+	 * support.
-+	 */
-+	if (!idr_is_empty(&hdev->adv_monitors_idr))
-+		return 0x00;
-+
- 	/* Select filter policy to use white list */
- 	return 0x01;
- }
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index 7c7460b58aa3a..73d3b8c52b28b 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -8429,8 +8429,11 @@ void mgmt_device_found(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 link_type,
- 	if (!hci_discovery_active(hdev)) {
- 		if (link_type == ACL_LINK)
- 			return;
--		if (link_type == LE_LINK && list_empty(&hdev->pend_le_reports))
-+		if (link_type == LE_LINK &&
-+		    list_empty(&hdev->pend_le_reports) &&
-+		    !hci_is_adv_monitoring(hdev)) {
- 			return;
-+		}
- 	}
- 
- 	if (hdev->discovery.result_filtering) {
--- 
-2.26.2
+
+
 
