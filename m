@@ -2,236 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6DF1ECE35
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457211ECE30
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbgFCLXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 07:23:25 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:43038 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgFCLXY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 07:23:24 -0400
-X-Greylist: delayed 20948 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jun 2020 07:23:22 EDT
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 053BN7w1017145;
-        Wed, 3 Jun 2020 20:23:08 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 053BN7w1017145
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1591183388;
-        bh=xjRCifcSCtm0rrzAoDGYByWsSKjvtSoXdERdT8toBEA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=F2d5LUtktqMzfbhWZOP7Lm2J3Hvl0Ltg7C0RSlrjhnowuIIQoQ5sNAzk4pJdUPt4J
-         QX6TiObzeoVq9AiskuvUBVy7/uZGka2XRVtKpU3SGexvBs2s7phSDFQcmihtyPzbqI
-         spy1IqvX++M97ARBlmNVZ0DuHWbi0C5iu7jI3BscFawBbSB0r6ZCXotxi7MxdE/nXc
-         cu3jmQ1bTXg6cD76j4jb7K0vMhKK6hZROmEM23gRRSPk1Rh59vHs9ixxqI9xHuvy8Q
-         PAxsndZLFN3h/kJ2qDXJyeo700LrNAhPJwwHtRLm+KuWDARVup20SKGV+g8xXtmt90
-         refORrn4IwAhw==
-X-Nifty-SrcIP: [209.85.222.47]
-Received: by mail-ua1-f47.google.com with SMTP id w20so714995uaa.2;
-        Wed, 03 Jun 2020 04:23:07 -0700 (PDT)
-X-Gm-Message-State: AOAM532o86d7dohfR3RxrMwxgmu7MXPwUlHUxyIN51Dq9sjKJ39ugAXd
-        zhsM190vXFj09Q8tN/nb9Mv7ENimiD9vSaUdV0E=
-X-Google-Smtp-Source: ABdhPJwM2bnRdGpy1EPn6Efl/rptchM35rdOn8jA4NCkq5d1S8uIE7q2Gpun2IB6EFvGLZVxNpl6kJ0r2Fg7nnWTl1U=
-X-Received: by 2002:a9f:2204:: with SMTP id 4mr21662596uad.40.1591183386891;
- Wed, 03 Jun 2020 04:23:06 -0700 (PDT)
+        id S1726023AbgFCLWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 07:22:53 -0400
+Received: from ozlabs.org ([203.11.71.1]:57759 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725833AbgFCLWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 07:22:52 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49cRNB58fsz9sRK;
+        Wed,  3 Jun 2020 21:22:50 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1591183370;
+        bh=8uSxzzWPus6eu0r5MlutBwAM2qOnvyL5C2jrEEV17FE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aWWyn6ihIIoGNhlmDd6H7sJc7d/GYg1rEGChg8XCBScHIb6jLhKf8UQcTc5SFPF8B
+         Zc7hsbKrVH492dz7X+1ZYpaQqYLPCwhvEFhXn48Fof5TeuRjNLkD8DA8CsLCSKB3rF
+         mR55z+DounleFCPRCraqBPK3k62VhTCpepPv12QPZcXb8dsVSyb90srYxKbFA0JyRt
+         81COqvO8FtoWVhaahKMx1Lwb1tHph6MSbYLcX59lHR6qV5obU2+VcatCke1ZQBaOuc
+         49AYwABTtwkKXAHXp33cW9Rwlbw2m5G5Vd8dt2erPhH5vnkdGflM+dJ9Nz574Hfk62
+         lvwRE56Xsf6Ow==
+Date:   Wed, 3 Jun 2020 21:22:50 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: ARCH=arm64 build breakage for Kbuild for-next branch
+Message-ID: <20200603212250.69feb53b@canb.auug.org.au>
+In-Reply-To: <20200603142404.33123d7d@canb.auug.org.au>
+References: <CAK7LNAT_rgoDQPgDB2cTvwmXrQv2mFH1ysuhvWxp2HnVMd0W7Q@mail.gmail.com>
+        <20200603142404.33123d7d@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20200603053313.3863761-1-masahiroy@kernel.org>
- <CAMj1kXGk-2pyTZ3yNW14Kk4fvtsNOb7maAHVM2C=vVAjaaFRug@mail.gmail.com>
- <CAK7LNARg70FrTmnuoUiLM6KWxeJ+AeXqgB53GS6sY7z0J+qH6g@mail.gmail.com>
- <CAMj1kXFxmgQ=YzmLNnMO-2gibSGQ1=tXBd07ntqCYYU122zEUw@mail.gmail.com>
- <CAK7LNARLUeuiu3Y1cFqT7550MaF8fnBmMTZxKEG0Cy3vpxVkMQ@mail.gmail.com>
- <CAMj1kXFKuMoYW8Sj=DHeYBSkWyeu+QgP9=fgET83K5D=-DsJ7Q@mail.gmail.com>
- <CAK7LNAR3YqmSWh_GkXdP+2tb83sOpySeXVi-kP=1eehcD5097Q@mail.gmail.com> <CAMj1kXHcRuQXPej9_H_jnno516BnuFrPRqzp1+6xN-odckEMJg@mail.gmail.com>
-In-Reply-To: <CAMj1kXHcRuQXPej9_H_jnno516BnuFrPRqzp1+6xN-odckEMJg@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 3 Jun 2020 20:22:29 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ_YMfjucip8eFBod1TBMUqGgnYebBeP22dZ4J7ZsFXeg@mail.gmail.com>
-Message-ID: <CAK7LNAQ_YMfjucip8eFBod1TBMUqGgnYebBeP22dZ4J7ZsFXeg@mail.gmail.com>
-Subject: Re: [PATCH] efi/libstub: refactor Makefile to not use lib-y syntax
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/cBciKtCFp0OIoiyBGlNwe.K";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 3, 2020 at 6:16 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+--Sig_/cBciKtCFp0OIoiyBGlNwe.K
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Wed, 3 Jun 2020 14:24:04 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
 >
-> On Wed, 3 Jun 2020 at 11:15, Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > On Wed, Jun 3, 2020 at 6:02 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > On Wed, 3 Jun 2020 at 10:59, Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > > >
-> > > > On Wed, Jun 3, 2020 at 5:45 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > > >
-> > > > > On Wed, 3 Jun 2020 at 10:36, Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > > > > >
-> > > > > > On Wed, Jun 3, 2020 at 3:45 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Wed, 3 Jun 2020 at 07:34, Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > > > > > > >
-> > > > > > > > Documentation/kbuild/makefiles.rst says:
-> > > > > > > >
-> > > > > > > >   Use of lib-y is normally restricted to `lib/` and `arch/*/lib`.
-> > > > > > > >
-> > > > > > > > I want to disallow lib-y outside of them.
-> > > > > > > >
-> > > > > > >
-> > > > > > > Why?
-> > > > > >
-> > > > > >
-> > > > > > Because I plan to remove lib-y entirely at some point.
-> > > > > >
-> > > > > > lib-y is not so useful to shrink the image size because:
-> > > > > >
-> > > > > >   - An object in lib.a can be omitted only when no symbol
-> > > > > >     in that object is referenced.  This rarely happens.
-> > > > > >
-> > > > > >   -  lib-y objects are often exported by nature
-> > > > > >      because lib-y is a collection of utility functions.
-> > > > > >      Even if no in-tree user, we always need to keep them
-> > > > > >      because EXPORT_SYMBOL() is the interface to modules.
-> > > > > >
-> > > > > >
-> > > > > > When I worked on commit 7273ad2b08f8ac9563579d16a3cf528857b26f49,
-> > > > > > I made some research.
-> > > > > >
-> > > > > > The benefit of lib-y is just 362 byte for x86_64_defconfig.
-> > > > > > ( Before: 26578002, After: 26578364)
-> > > > > >
-> > > > > > My hope is lib-y will be replaced by dead-code elimination or
-> > > > > > ultimately by LTO.
-> > > > > >
-> > > > > > drivers/firmware/efi/libstub/Makefile
-> > > > > > is the only Makefile that breaks the rule:
-> > > > > > "Use of lib-y is normally restricted to `lib/` and `arch/*/lib`"
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > > >
-> > > > > > > > Add a custom rule to build lib.a, which is linked to the decompressor
-> > > > > > > > for ARCH=x86, ARCH=arm.
-> > > > > > > >
-> > > > > > > > For ARCH=arm64, use obj-y to link objects to vmlinux in the ordinary
-> > > > > > > > way.
-> > > > > > > >
-> > > > > > >
-> > > > > > > The code works perfectly fine as is, and I don't see what is
-> > > > > > > fundamentally wrong with using static libraries outside of lib/ and
-> > > > > > > arch/*/lib.
-> > > > > >
-> > > > > > The intended usage of lib-y is to hook lib.a
-> > > > > > to scripts/vmlinux.sh via KBUILD_VMLINUX_LIBS.
-> > > > > >
-> > > > > > This Makefile is just what you found to work.
-> > > > > >
-> > > > > >
-> > > > > > >
-> > > > > > > Also, I would like this code to still be incorporated as a static
-> > > > > > > library into arm64 as well, so that only pieces that are actually
-> > > > > > > needed are incorporated into the final image.
-> > > > > >
-> > > > > > No.
-> > > > > > It is not working like that because you set
-> > > > > > lib.a to core-y.
-> > > > > >
-> > > > > > All objects in core-y are always linked to vmlinux.
-> > > > > >
-> > > > >
-> > > > > The lib.a file is passed to the linker as a static library, so it will
-> > > > > only grab what it needs.
-> > > > >
-> > > > > For instance, if you build arm64 from mainline today, the
-> > > > > efi_relocate_kernel will not be in the final image, even though it is
-> > > > > built as part of libstub
-> > > >
-> > > >
-> > > > I built today's mainline kernel
-> > > > (d6f9469a03d832dcd17041ed67774ffb5f3e73b3).
-> > > >
-> > > >
-> > > > I see it in vmlinux.
-> > > >
-> > > >
-> > > > $ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-  defconfig
-> > > > $ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-  -j24
-> > > >     ...
-> > > > $ aarch64-linux-gnu-nm  -n  vmlinux | grep  efi_relocate_kernel
-> > > > ffff8000114afb90 t __efistub_efi_relocate_kernel
-> > > >
-> > >
-> > > That is strange. I tested this before, and it worked.
-> > >
-> > > Did anything change recently in the way the linker is invoked?
-> >
-> >
-> > Nothing recently.
-> >
-> > This is obvious result because
-> > drivers/firmware/efi/libstub/lib.a
-> > is passed after ----whole-archive flag.
-> >
-> >
-> > I guess the following commit is it,
-> > but it is already 3 years ago.
-> >
->
-> Right.
->
-> So that means there is no point at all in using static libraries, no?
-> Or does --whole-archive still allow duplicate definitions like static
-> libraries do usually?
+> On Wed, 3 Jun 2020 13:11:59 +0900 Masahiro Yamada <masahiroy@kernel.org> =
+wrote:
+> >=20
+> > If you pull the latest kbuild for-next branch,
+> > ARCH=3Darm64 will fail to build.
+> >=20
+> > I will fix it soon.
+> >=20
+> > For today's linux-next, you can patch
+> > as follows.
+> > (or, you can use the old branch)
+> >=20
+> >=20
+> > diff --git a/Makefile b/Makefile
+> > index f80c4ff93ec9..fbb4b95ae648 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -1074,7 +1074,7 @@ build-dirs        :=3D $(vmlinux-dirs)
+> >  clean-dirs     :=3D $(vmlinux-alldirs)
+> >=20
+> >  # Externally visible symbols (used by link-vmlinux.sh)
+> > -KBUILD_VMLINUX_OBJS :=3D $(head-y) $(addsuffix built-in.a, $(core-y))
+> > +KBUILD_VMLINUX_OBJS :=3D $(head-y) $(patsubst %/,%/built-in.a, $(core-=
+y))
+> >  KBUILD_VMLINUX_OBJS +=3D $(addsuffix built-in.a, $(filter %/, $(libs-y=
+)))
+> >  ifdef CONFIG_MODULES
+> >  KBUILD_VMLINUX_OBJS +=3D $(patsubst %/, %/lib.a, $(filter %/, $(libs-y=
+))) =20
+>=20
+> OK, thanks, I will apply that at some point, since I have already
+> merged your tree.
 
+And then I forgot, sorry.  I assume it will be fixed tomorrow.
 
---whole-archive literally links the whole of the archive.
-If there are duplicate definitions, the linking fails
-due to multiple definition.
-So, --whole-archive is similar to linking .o files
-in this regard.
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/cBciKtCFp0OIoiyBGlNwe.K
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-There is a point for arm and x86 because
-the decompressor link does not use --whole-archive.
+-----BEGIN PGP SIGNATURE-----
 
-As for arm64, there is no point,
-but you can pass lib.a after --no-whole-archive
-by the following patch.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7XiAoACgkQAVBC80lX
+0GzHtQgAkznUzjiD/EXRvERR3mezHb9xSY0/NtQ511uFdc7cNANutqCQqbnL8xCY
+FRAzIvnbeQDCYieBjb8BWcNMj37j2KkBMbQMnsooDxa8iofFwRt2WWDFtSzFXCaD
+XbY1MvCTBqUM26DsploHRAXWLeLXk6+rEJGgmEKSQjF6iiAAf83yRJQP5y2meOEw
+eIGykNstUQJvsKJT+j6KvUyMuvcTCkGXjPgQSVnEH+PhWoK9M7VWvASlfpWncrR8
+PQoQwRNiG0CIIXP0WKGkOc4A5yQGnjajdPQzXYzx5kDGDtAs14ciIpA+YXJyGRKQ
+8PIvofk+LjavLWpp3cbo7a4A8/bzBg==
+=JgD9
+-----END PGP SIGNATURE-----
 
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 650e1185c190..48a6afa774fc 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -145,7 +145,7 @@ export      TEXT_OFFSET
-
- core-y         += arch/arm64/
- libs-y         := arch/arm64/lib/ $(libs-y)
--core-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
-+libs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
-
- # Default target when executing plain make
- boot           := arch/arm64/boot
-
-
-
-Then, _efistub_efi_low_alloc_above
-and __efistub_efi_relocate_kernel will be dropped.
-
-
-If you like the static library
-do you want me to send v2?
-
-
--- 
-Best Regards
-Masahiro Yamada
+--Sig_/cBciKtCFp0OIoiyBGlNwe.K--
