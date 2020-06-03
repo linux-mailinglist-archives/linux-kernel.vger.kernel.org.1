@@ -2,95 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B6C1EC8FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 07:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50031EC8FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 07:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgFCFwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 01:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgFCFww (ORCPT
+        id S1726013AbgFCFyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 01:54:14 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:35165 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgFCFyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 01:52:52 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF30C05BD43;
-        Tue,  2 Jun 2020 22:52:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=QN7oI7JO3aC05O3t9oy8oBvuvZKExBcNr+amt4s0nQk=; b=uMvIOi8ieP0EvZtaJSUdZoPpIZ
-        SxrxdLMf/Y7nbP6vTq9eyjskD9kCNrajX6mjMa22Xap973Ax/v77D45XQ4pzSSTV60XrYFtvG+XKI
-        7SClKN0YP6cRH6RQh5FgU4zf8q7AXvKZnYOoxmNPamDyV+GrDW+eLtfGbjuAxGiPEO4KgJNbYe+SD
-        q4biRsgdr8XscXExlfyl514kQDWKX4QekFEQPHZNQ6ld7B88OA4EStVxpDp0MgY/lbnmwIJTDJNc/
-        ZIaw5eIIMHKsKxJYzlFNlTb74nPJU2H//Pk+NI5pFEEFKuBJ17FQoMgUO/s5ApRzZPquujJgA8qC4
-        LBQLGMkw==;
-Received: from p4fdb1ad2.dip0.t-ipconnect.de ([79.219.26.210] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jgMKY-0003rC-M1; Wed, 03 Jun 2020 05:52:51 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        build test robot <lkp@intel.com>
-Subject: [PATCH 4/4] trace: fix an incorrect __user annotation on stack_trace_sysctl
-Date:   Wed,  3 Jun 2020 07:52:37 +0200
-Message-Id: <20200603055237.677416-5-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200603055237.677416-1-hch@lst.de>
-References: <20200603055237.677416-1-hch@lst.de>
+        Wed, 3 Jun 2020 01:54:14 -0400
+X-Originating-IP: 157.36.79.87
+Received: from localhost (unknown [157.36.79.87])
+        (Authenticated sender: me@yadavpratyush.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 23E36C0005;
+        Wed,  3 Jun 2020 05:54:03 +0000 (UTC)
+Date:   Wed, 3 Jun 2020 11:23:59 +0530
+From:   Pratyush Yadav <me@yadavpratyush.com>
+To:     masonccyang@mxic.com.tw
+Cc:     boris.brezillon@collabora.com, broonie@kernel.org,
+        juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        matthias.bgg@gmail.com, miquel.raynal@bootlin.com, p.yadav@ti.com,
+        richard@nod.at, tudor.ambarus@microchip.com, vigneshr@ti.com
+Subject: Re: [PATCH v4 7/7] mtd: spi-nor: macronix: Add Octal 8D-8D-8D
+ supports for Macronix mx25uw51245g
+Message-ID: <20200603055359.y35dwznglc7tlewq@yadavpratyush.com>
+References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw>
+ <1590737775-4798-8-git-send-email-masonccyang@mxic.com.tw>
+ <20200529094202.7vjs7clhykncivux@yadavpratyush.com>
+ <OF577383DB.7BF12AA3-ON4825857B.002468AB-4825857B.00250F16@mxic.com.tw>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OF577383DB.7BF12AA3-ON4825857B.002468AB-4825857B.00250F16@mxic.com.tw>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No user pointers for sysctls anymore.
+On 02/06/20 02:44PM, masonccyang@mxic.com.tw wrote:
+> 
+> Hi Pratyush,
+> 
+>  
+> > Subject
+> > 
+> > Re: [PATCH v4 7/7] mtd: spi-nor: macronix: Add Octal 8D-8D-8D supports 
+> for 
+> > Macronix mx25uw51245g
+> > 
+> > On 29/05/20 03:36PM, Mason Yang wrote:
+> > > Macronix mx25uw51245g is a SPI NOR that supports 1-1-1/8-8-8 mode.
+> > > 
+> > > Correct the dummy cycles to device for various frequencies
+> > > after xSPI profile 1.0 table parsed.
+> > > 
+> > > Enable mx25uw51245g to Octal DTR mode by executing the command 
+> sequences
+> > > to change to octal DTR mode.
+> > > 
+> > > Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+> > > ---
+> > >  drivers/mtd/spi-nor/macronix.c | 55 
+> ++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 55 insertions(+)
+> > > 
+> > > diff --git a/drivers/mtd/spi-nor/macronix.c 
+> b/drivers/mtd/spi-nor/macronix.c
+> > > index 96735d8..6c9a24c 100644
+> > > --- a/drivers/mtd/spi-nor/macronix.c
+> > > +++ b/drivers/mtd/spi-nor/macronix.c
+> > > @@ -8,6 +8,57 @@
+> > > 
+> > >  #include "core.h"
+> > > 
+> > > +#define MXIC_CR2_DUMMY_SET_ADDR 0x300
+> > > +
+> > > +/* Fixup the dummy cycles to device and setup octa_dtr_enable() */
+> > > +static void mx25uw51245g_post_sfdp_fixups(struct spi_nor *nor)
+> > > +{
+> > > +   struct spi_nor_flash_parameter *params = nor->params;
+> > > +   int ret;
+> > > +   u8 rdc, wdc;
+> > > +
+> > > +   ret = spi_nor_read_cr2(nor, MXIC_CR2_DUMMY_SET_ADDR, &rdc);
+> > > +   if (ret)
+> > > +      return;
+> > > +
+> > > +   /* Refer to dummy cycle and frequency table(MHz) */
+> > > +   switch (params->dummy_cycles) {
+> > > +   case 10:   /* 10 dummy cycles for 104 MHz */
+> > > +      wdc = 5;
+> > > +      break;
+> > > +   case 12:   /* 12 dummy cycles for 133 MHz */
+> > > +      wdc = 4;
+> > > +      break;
+> > > +   case 16:   /* 16 dummy cycles for 166 MHz */
+> > > +      wdc = 2;
+> > > +      break;
+> > > +   case 18:   /* 18 dummy cycles for 173 MHz */
+> > > +      wdc = 1;
+> > > +      break;
+> > > +   case 20:   /* 20 dummy cycles for 200 MHz */
+> > > +   default:
+> > > +      wdc = 0;
+> > > +   }
+> > 
+> > I don't get the point of this. You already know the fastest the 
+> > mx25uw51245g flash can run at. Why not just use the maximum dummy 
+> > cycles? SPI NOR doesn't know the speed the controller is running at so 
+> > the best it can do is use the maximum dummy cycles possible so it never 
+> > falls short. Sure, it will be _slightly_ less performance, but we will 
+> > be sure to read the correct data, which is much much more important.
+> 
+> In general, 200MHz needs 20 dummy cycles but some powerful device may only 
+> 
+> needs 18 dummy cycles or less.
 
-Fixes: 32927393dc1c ("sysctl: pass kernel pointers to ->proc_handler")
-Reported-by: build test robot <lkp@intel.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/ftrace.h     | 5 ++---
- kernel/trace/trace_stack.c | 5 ++---
- 2 files changed, 4 insertions(+), 6 deletions(-)
+Yes, but do different mx25uw51245g chips have different dummy cycle 
+requirements? Shouldn't all the chips with the same ID have same 
+performance?
 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index ddfc377de0d2c..fce81238f304d 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -319,9 +319,8 @@ static inline void arch_ftrace_set_direct_caller(struct pt_regs *regs,
+This is a fixup hook for mx25uw51245g, so you should already know how 
+many cycles are needed for this specific device. Is there any need for 
+generic code here?
  
- extern int stack_tracer_enabled;
- 
--int stack_trace_sysctl(struct ctl_table *table, int write,
--		       void __user *buffer, size_t *lenp,
--		       loff_t *ppos);
-+int stack_trace_sysctl(struct ctl_table *table, int write, void *buffer,
-+		       size_t *lenp, loff_t *ppos);
- 
- /* DO NOT MODIFY THIS VARIABLE DIRECTLY! */
- DECLARE_PER_CPU(int, disable_stack_tracer);
-diff --git a/kernel/trace/trace_stack.c b/kernel/trace/trace_stack.c
-index c557f42a93971..98bba4764c527 100644
---- a/kernel/trace/trace_stack.c
-+++ b/kernel/trace/trace_stack.c
-@@ -515,9 +515,8 @@ static const struct file_operations stack_trace_filter_fops = {
- #endif /* CONFIG_DYNAMIC_FTRACE */
- 
- int
--stack_trace_sysctl(struct ctl_table *table, int write,
--		   void __user *buffer, size_t *lenp,
--		   loff_t *ppos)
-+stack_trace_sysctl(struct ctl_table *table, int write, void *buffer,
-+		   size_t *lenp, loff_t *ppos)
- {
- 	int was_enabled;
- 	int ret;
+> Set a proper dummy cycles for a better performance.
+> 
+> > 
+> > Is it possible to have two chips which have _exactly_ the same ID but 
+> > one supports say 200MHz frequency but the other doesn't? Without that, 
+> > we can just enable the maximum and move on.
+> > 
+> 
+
 -- 
-2.26.2
-
+Regards,
+Pratyush Yadav
