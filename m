@@ -2,147 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B0C1EC7D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 05:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFED1EC7E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 05:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725948AbgFCDlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 23:41:25 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:43386 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgFCDlX (ORCPT
+        id S1726013AbgFCDnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 23:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbgFCDnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 23:41:23 -0400
-Received: by mail-il1-f199.google.com with SMTP id e5so287286ill.10
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 20:41:21 -0700 (PDT)
+        Tue, 2 Jun 2020 23:43:07 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34F5C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 20:43:07 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id y18so333925plr.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 20:43:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9P/rcqRUtdDUZHzz06EtqoOTWuT5t5v5LhPilPpI8U8=;
+        b=N1oZXmlKlPtvXVVjxKDiVzbJ0joI+5Jp5WpZ3BwWTgYD5wdIJYf6UyRLaZLlYTUr8K
+         mJ5Lhi8jNSclZygZvSZq4CbtkRh9945remBLkgjo7Yc3EjXAd98VMeoNFizz+MTYN/0N
+         XrK9Rix8jyPqPI4+Xj0Lyo6QzfZb2wLdiF1hgAzXhFYtR8uPXafDxK1ImcmhLp8azroF
+         PgrEreVc2oA5ZHdCeOoxFcTq5xpPit2fEqA02O5v/HuZ0oT+hY9EkbPPXeOrDQqt8oAU
+         njN/+yKHvcfh0W3l6oyqEUOiQf9n5m6NVy53ooBFzk6DvYfbn0IecuzodDQo49tepLFb
+         0OJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=gXY/ZYEP3SmrwbBJcl7C6Xw3GUvmdoWZklMcqyQfDr4=;
-        b=N3PtzmbMuiq2gOfIoJNPH6hkh/eS9WA9barU3S2h4jwgNZOI3c565JY2rhf+GjJD1O
-         jPeQEoSXw/pR4u66eCZ8bALIY3KxoS0hSj5xdF+/JlLIi/53HE047INwdXi8W5odjh1V
-         /WeVvZd34dtPfgvkx4fEAdMyD2gpd3KD0FwNNlYm1dcERX9xvn22GJdyTAN/JQo+TEhR
-         yUo39hcbU2Y+jvJB6ziVOVqm7br0x/MGMPlbtz3lfHFL/VCvy+2NeYlp0JcpVgE9Zgyy
-         UACRAmrxbGxvxi5NtIq+HWZGk2ndCGsT4Z8r1a/EaOtvH6MJbYxkZwQT0CHjWpqgdaEN
-         8q+A==
-X-Gm-Message-State: AOAM531XWLyEWGG7vgnnAyI+fF5EKRdPnBUfcgDY26ea565dCA5cHydo
-        GX/iEEMl4fB1YvwmR2IhYpEUz912s7DJoaIXv0D/B/UD1Lum
-X-Google-Smtp-Source: ABdhPJxq0CtdjSAJeiL8/yVeyj9mc4ScvfYBmPSicxFf2BLe4pWWyJTMypz7bJatLdWpslCO4PVKgv07dKbKcCnMcQu200HJZv1f
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9P/rcqRUtdDUZHzz06EtqoOTWuT5t5v5LhPilPpI8U8=;
+        b=ecyDPncH0zDDtoj8o1UFIDqSkOcH309nmv56QvHs8/Ip919p3FsVdBCoCwcH6bmuMz
+         p2AXVN2lMfW9VCbbcwkl9QHnBAlmvaO1h8vwd/HeVvFHU9iQXHYGH5HP40n9TpIJ+tQ5
+         ObmEVaDQ66gfAxUVvSl3XaiFWkIirqdRD+JVoBRJ78V3wZJmo4PF2+TypWBEZT8nJ7oO
+         EWQBSdrz+o1d1AQiGnQn97vTfM1xAzgw1oI7LFe3Uf/c7KEk8hb4SQTTIiOclmWeQSLP
+         QtFRPi9SUkkumPpsZUzfuoX5Y1O7B96vQzyHlrwdXwpWtJCRWj7peOXtmQ/fhjEOwDJx
+         q7Aw==
+X-Gm-Message-State: AOAM531uGoh8c3+n/oX+aqXFiG+Njq6KozRzVyjMFFVi7EIvZacv/geg
+        fH++M9Sgfe/93wHNSizBEdQLkg==
+X-Google-Smtp-Source: ABdhPJybmrm+Q6H26ReKaf3vVPeruX+PhPK/7dDrTEPusjijqkxEdsA4dNIajMIoLampINICppzabg==
+X-Received: by 2002:a17:902:b68f:: with SMTP id c15mr28461138pls.303.1591155786736;
+        Tue, 02 Jun 2020 20:43:06 -0700 (PDT)
+Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id m7sm502220pfb.1.2020.06.02.20.43.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 20:43:06 -0700 (PDT)
+Date:   Tue, 2 Jun 2020 20:42:58 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [ANNOUNCE] iproute2-5.7.0 release
+Message-ID: <20200602204258.717259c5@hermes.lan>
 MIME-Version: 1.0
-X-Received: by 2002:a92:9603:: with SMTP id g3mr2273048ilh.204.1591155681272;
- Tue, 02 Jun 2020 20:41:21 -0700 (PDT)
-Date:   Tue, 02 Jun 2020 20:41:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002a280b05a725cd93@google.com>
-Subject: memory leak in crypto_create_tfm
-From:   syzbot <syzbot+2e635807decef724a1fa@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The 5.7 kernel has been released, and the last patches have
+been applied to iproute2.
 
-syzbot found the following crash on:
+As usual lots of small fixes, across many utilities.
+Several qdisc now have more parameters available.
+Devlink get most of the fixes.
 
-HEAD commit:    19409891 Merge tag 'pnp-5.8-rc1' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13165aa6100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6d41e63a2c7e0715
-dashboard link: https://syzkaller.appspot.com/bug?extid=2e635807decef724a1fa
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f00ef2100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=170f2ef2100000
+Download:
+    https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.7.0.tar.=
+gz
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+2e635807decef724a1fa@syzkaller.appspotmail.com
+Repository for upcoming release:
+    git://git.kernel.org/pub/scm/network/iproute2/iproute2.git
 
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff8881175bc480 (size 64):
-  comm "syz-executor064", pid 6388, jiffies 4294941622 (age 13.280s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    e0 7e 56 84 ff ff ff ff 00 00 00 00 00 00 00 00  .~V.............
-  backtrace:
-    [<0000000029c7602f>] kmalloc include/linux/slab.h:560 [inline]
-    [<0000000029c7602f>] kzalloc include/linux/slab.h:669 [inline]
-    [<0000000029c7602f>] crypto_create_tfm+0x31/0x100 crypto/api.c:448
-    [<00000000bec8cbdb>] crypto_alloc_tfm+0x79/0x1a0 crypto/api.c:527
-    [<000000002f9791ba>] drbg_prepare_hrng crypto/drbg.c:1509 [inline]
-    [<000000002f9791ba>] drbg_instantiate crypto/drbg.c:1587 [inline]
-    [<000000002f9791ba>] drbg_kcapi_seed+0x432/0x6a9 crypto/drbg.c:1980
-    [<0000000041302bb8>] crypto_rng_reset+0x35/0x1a0 crypto/rng.c:53
-    [<000000004758c3c4>] alg_setkey crypto/af_alg.c:222 [inline]
-    [<000000004758c3c4>] alg_setsockopt+0x149/0x190 crypto/af_alg.c:255
-    [<000000008bc4b5cb>] __sys_setsockopt+0x112/0x230 net/socket.c:2132
-    [<00000000cfbf30da>] __do_sys_setsockopt net/socket.c:2148 [inline]
-    [<00000000cfbf30da>] __se_sys_setsockopt net/socket.c:2145 [inline]
-    [<00000000cfbf30da>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2145
-    [<00000000fc9c2183>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<0000000040e080a1>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+And future release (net-next):
+    git://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git
 
-BUG: memory leak
-unreferenced object 0xffff8881175bc040 (size 64):
-  comm "syz-executor064", pid 6389, jiffies 4294942172 (age 7.780s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    e0 7e 56 84 ff ff ff ff 00 00 00 00 00 00 00 00  .~V.............
-  backtrace:
-    [<0000000029c7602f>] kmalloc include/linux/slab.h:560 [inline]
-    [<0000000029c7602f>] kzalloc include/linux/slab.h:669 [inline]
-    [<0000000029c7602f>] crypto_create_tfm+0x31/0x100 crypto/api.c:448
-    [<00000000bec8cbdb>] crypto_alloc_tfm+0x79/0x1a0 crypto/api.c:527
-    [<000000002f9791ba>] drbg_prepare_hrng crypto/drbg.c:1509 [inline]
-    [<000000002f9791ba>] drbg_instantiate crypto/drbg.c:1587 [inline]
-    [<000000002f9791ba>] drbg_kcapi_seed+0x432/0x6a9 crypto/drbg.c:1980
-    [<0000000041302bb8>] crypto_rng_reset+0x35/0x1a0 crypto/rng.c:53
-    [<000000004758c3c4>] alg_setkey crypto/af_alg.c:222 [inline]
-    [<000000004758c3c4>] alg_setsockopt+0x149/0x190 crypto/af_alg.c:255
-    [<000000008bc4b5cb>] __sys_setsockopt+0x112/0x230 net/socket.c:2132
-    [<00000000cfbf30da>] __do_sys_setsockopt net/socket.c:2148 [inline]
-    [<00000000cfbf30da>] __se_sys_setsockopt net/socket.c:2145 [inline]
-    [<00000000cfbf30da>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2145
-    [<00000000fc9c2183>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<0000000040e080a1>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Thanks for all the contributions.
 
-BUG: memory leak
-unreferenced object 0xffff88811b3ca080 (size 96):
-  comm "syz-executor064", pid 6389, jiffies 4294942172 (age 7.780s)
-  hex dump (first 32 bytes):
-    89 c7 08 cb 8a 12 10 6e 00 00 00 00 00 00 00 00  .......n........
-    71 51 5a c2 1b 00 00 00 35 7d 00 00 00 00 00 00  qQZ.....5}......
-  backtrace:
-    [<000000008ec3eca0>] jent_entropy_collector_alloc+0x1b/0xf8 crypto/jitterentropy.c:662
-    [<0000000026ed401a>] jent_kcapi_init+0x17/0x40 crypto/jitterentropy-kcapi.c:119
-    [<00000000be7d6b06>] crypto_create_tfm+0x89/0x100 crypto/api.c:459
-    [<00000000bec8cbdb>] crypto_alloc_tfm+0x79/0x1a0 crypto/api.c:527
-    [<000000002f9791ba>] drbg_prepare_hrng crypto/drbg.c:1509 [inline]
-    [<000000002f9791ba>] drbg_instantiate crypto/drbg.c:1587 [inline]
-    [<000000002f9791ba>] drbg_kcapi_seed+0x432/0x6a9 crypto/drbg.c:1980
-    [<0000000041302bb8>] crypto_rng_reset+0x35/0x1a0 crypto/rng.c:53
-    [<000000004758c3c4>] alg_setkey crypto/af_alg.c:222 [inline]
-    [<000000004758c3c4>] alg_setsockopt+0x149/0x190 crypto/af_alg.c:255
-    [<000000008bc4b5cb>] __sys_setsockopt+0x112/0x230 net/socket.c:2132
-    [<00000000cfbf30da>] __do_sys_setsockopt net/socket.c:2148 [inline]
-    [<00000000cfbf30da>] __se_sys_setsockopt net/socket.c:2145 [inline]
-    [<00000000cfbf30da>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2145
-    [<00000000fc9c2183>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<0000000040e080a1>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Report problems (or enhancements) to the netdev@vger.kernel.org mailing lis=
+t.
 
 
+Andrea Claudi (2):
+      Revert "bpf: replace snprintf with asprintf when dealing with long bu=
+ffers"
+      bpf: Fixes a snprintf truncation warning
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Antoine Tenart (4):
+      macsec: report the offloading mode currently selected
+      macsec: add support for changing the offloading mode
+      man: document the ip macsec offload command
+      macsec: add an accessor for validate_str
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Bastien Roucari=C3=A8s (6):
+      Better documentation of mcast_to_unicast option
+      Improve hairpin mode description
+      Document BPDU filter option
+      Better documentation of BDPU guard
+      Document root_block option
+      State of bridge STP port are now case insensitive
+
+Benjamin Lee (4):
+      man: tc-htb.8: add missing qdisc parameter r2q
+      man: tc-htb.8: add missing class parameter quantum
+      man: tc-htb.8: fix class prio is not mandatory
+      tc: fq_codel: fix class stat deficit is signed int
+
+Benjamin Poirier (6):
+      bridge: Use consistent column names in vlan output
+      bridge: Fix typo
+      bridge: Fix output with empty vlan lists
+      json_print: Return number of characters printed
+      bridge: Align output columns
+      Replace open-coded instances of print_nl()
+
+Brian Norris (2):
+      man: add ip-netns(8) as generation target
+      man: replace $(NETNS_ETC_DIR) and $(NETNS_RUN_DIR) in ip-netns(8)
+
+Danielle Ratson (1):
+      bash-completion: devlink: add bash-completion function
+
+David Ahern (4):
+      Update kernel headers
+      Update kernel headers
+      Update kernel headers
+      Update kernel headers
+
+Donald Sharp (1):
+      nexthop: Fix Deletion display
+
+Eric Dumazet (5):
+      tc: fq_codel: add drop_batch parameter
+      tc: fq: add timer_slack parameter
+      ss: add support for Gbit speeds in sprint_bw()
+      tc: fq: fix two issues
+      utils: remove trailing zeros in print_time() and print_time64()
+
+Ido Schimmel (3):
+      devlink: Add devlink trap policer set and show commands
+      devlink: Add ability to bind policer to trap group
+      bash-completion: devlink: Extend bash-completion for new commands
+
+Jacob Keller (1):
+      devlink: add support for DEVLINK_CMD_REGION_NEW
+
+Jakub Kicinski (1):
+      tc: m_action: rename hw stats type uAPI
+
+Jiri Pirko (14):
+      devlink: add trap metadata type for flow action cookie
+      tc: m_action: introduce support for hw stats type
+      tc: show used HW stats types
+      devlink: remove custom bool command line options parsing
+      devlink: Fix help and man of "devlink health set" command
+      devlink: fix encap mode manupulation
+      devlink: Add alias "counters_enabled" for "counters" option
+      devlink: rename dpipe_counters_enable struct field to dpipe_counters_=
+enabled
+      devlink: Fix help message for dpipe
+      devlink: remove "dev" object sub help messages
+      man: add man page for devlink dpipe
+      devlink: remove unused "jw" field
+      devlink: fix JSON output of mon command
+      tc: m_action: check cookie hex string len
+
+Leslie Monis (2):
+      tc: pie: change maximum integer value of tc_pie_xstats->prob
+      Revert "tc: pie: change maximum integer value of tc_pie_xstats->prob"
+
+Moshe Shemesh (1):
+      devlink: Add health error recovery status monitoring
+
+Odin Ugedal (3):
+      tc_util: detect overflow in get_size
+      q_cake: Make fwmark uint instead of int
+      q_cake: properly print memlimit
+
+Parav Pandit (1):
+      devlink: Introduce devlink port flavour virtual
+
+Paul Blakey (1):
+      man: tc-ct.8: Add manual page for ct tc action
+
+Petr Machata (5):
+      tc: q_red: Support 'nodrop' flag
+      tc: p_ip6: Support pedit of IPv6 dsfield
+      man: tc-pedit: Add examples for dsfield and retain
+      man: tc-pedit: Drop the claim that pedit ex is only for IPv4
+      ip: link_gre: Do not send ERSPAN attributes to GRE tunnels
+
+Roman Mashak (1):
+      tc: action: fix time values output in JSON format
+
+Stephen Hemminger (7):
+      man/tc-actions: fix formatting
+      bridge: man page spelling fixes
+      uapi: update bpf.h
+      ss: update to bw print
+      uapi: update to bpf.h
+      uapi: fix comment in xfrm.h
+      v5.7.0
+
+Xin Long (1):
+      xfrm: also check for ipv6 state in xfrm_state_keep
+
