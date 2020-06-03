@@ -2,80 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C55F1ECDE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 12:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF711ECDF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725951AbgFCK6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 06:58:36 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:36943 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgFCK6f (ORCPT
+        id S1725955AbgFCLDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 07:03:35 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:58264 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgFCLDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 06:58:35 -0400
-Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1M7sQ6-1jbV9P1WyI-0055F1; Wed, 03 Jun 2020 12:58:33 +0200
-Received: by mail-qk1-f172.google.com with SMTP id w1so1626049qkw.5;
-        Wed, 03 Jun 2020 03:58:33 -0700 (PDT)
-X-Gm-Message-State: AOAM531GNkAykDmZlCPVa7raVspMYFLllQXfoob+9r8VuTsUxFHauHfT
-        FaAu9aE2jJ8P/w70z28O/tqLBdR27VYyr+18tjI=
-X-Google-Smtp-Source: ABdhPJwp4BruVv7x5KWHmKJY0GqISo7xEiXCSVQRm9DX9mEfuj1pqEjlD0cOd9acGIKxlDiPqlWzDUxi/5J33dKl6LM=
-X-Received: by 2002:a37:6188:: with SMTP id v130mr23821454qkb.138.1591181912135;
- Wed, 03 Jun 2020 03:58:32 -0700 (PDT)
+        Wed, 3 Jun 2020 07:03:34 -0400
+Received: from fsav403.sakura.ne.jp (fsav403.sakura.ne.jp [133.242.250.102])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 053B3UOI030441;
+        Wed, 3 Jun 2020 20:03:31 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav403.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav403.sakura.ne.jp);
+ Wed, 03 Jun 2020 20:03:30 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav403.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 053B3UFW030438
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 3 Jun 2020 20:03:30 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: twist: allow disabling reboot request
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <e3b30905-4497-29b4-4636-a313283dbc56@i-love.sakura.ne.jp>
+ <20200528065603.3596-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <20200528110646.GC11286@linux-b0ei>
+ <e0d6c04f-7601-51e7-c969-300e938dedc0@i-love.sakura.ne.jp>
+ <CAHk-=wgz=7MGxxX-tmMmdCsKyYJkuyxNc-4uLP=e_eEV=OzUaw@mail.gmail.com>
+ <CAHk-=wjW+_pjJzVRMuCbLhbWLkvEQVYJoXVBYGNW2PUgtX1fDw@mail.gmail.com>
+ <13b0a475-e70e-c490-d34d-0c7a34facf7c@i-love.sakura.ne.jp>
+ <CAHk-=wjj9ooYACNvO2P_Gr_=aN0g=iEqtg0TwBJo18wbn4gthg@mail.gmail.com>
+ <6116ed2e-cee1-d82f-6b68-ddb1bbb6abe2@i-love.sakura.ne.jp>
+ <CAHk-=wiVQUo_RJAaivHU5MFdznNOX4GKgJH1xrFc83e9oLnuvQ@mail.gmail.com>
+ <19d377d3-8037-8090-0f99-447f72cc1d8c@i-love.sakura.ne.jp>
+ <38df9737-3c04-dca2-0df4-115a9c1634e5@i-love.sakura.ne.jp>
+Message-ID: <51eaa6cd-33ce-f9d8-942c-c797c0ec6733@i-love.sakura.ne.jp>
+Date:   Wed, 3 Jun 2020 20:03:28 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-References: <20200408160044.2550437-1-arnd@arndb.de> <CABOV4+WerpJqsy0-uBPBZfpnDaPn56fn0Zvv1aMUJJSjEqGhAQ@mail.gmail.com>
-In-Reply-To: <CABOV4+WerpJqsy0-uBPBZfpnDaPn56fn0Zvv1aMUJJSjEqGhAQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 3 Jun 2020 12:58:16 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0ffn2wtWB=bogi78MmW_8ZvNTHneVMicPU7AW+s2tmCA@mail.gmail.com>
-Message-ID: <CAK8P3a0ffn2wtWB=bogi78MmW_8ZvNTHneVMicPU7AW+s2tmCA@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] clk: sprd: fix compile-testing
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:EV8OvwU5XuotSB7OvqwP+OpfsQxGeVOp+NthtyCo4zRG/ryxbcR
- w1HmiTM3ciy7AepEbYIf1UP11fUGUaIW829w9wNz5osaVplOcZwZPSqI4t3tRZFGmbbwSqJ
- E05v+dpnNj5xUD8G9sEUKKKI0k6TTD80frZ9F+/tljf9qp2dx3HtmlIRAyOiZzu3s7+diSe
- GUjbs3YMxT+5cPRy8pjIA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:GuVXV3OYUGo=:gt5Z4Cym1Kci0IAd01vcbI
- LIATeUrFyIOm/natrAR847ba+lHHn3p2jDxTj2uS98pYj5xyAT4G5d1gMkGgMdG1Dnqu5ag3u
- qRgQrcjXBpd05pFQhxHD/r4B7tkx5mCc+9vWnpLpG2LOIRfzUdYbRF7PEVjwDGmJJ0ySaOCvC
- mdwH17+g35vGjbqlnTYYMDR+6kawuFZjSmN59NeY/9S+kXiHwXKWv8maAhP7wt8HNBufRSJXB
- fI6B5qbcZIJrAX/8gyYCUY1tCrSfMoZ8v46fWIyecfkIPrRxaiGSW/miDAzka0rRadb6iyvSg
- JvcLw8UVyNr4XMOvw9xf+CMGA2OZZla4Wjw7p46gD2T4hvfUUA5Lkhs0FUzAcJwykacRe1Znj
- 5EVjFBbDsOMrxi0VMxhaNsKChDGIf4dNuBAqO9o34Py6tsPQXC5VPGgiry4mGAiTzf4yHnXfd
- srssJc6Q2JVqvgY5CR0utVnUYnf0FCyukHOC5UyaNybuCLpqbt0QbIlIWAfMjpE/iBWWqms0F
- U8XYf6/6mdcwI7NXYJ9b4iPw+lMuIor6V965bTxQTU2a5HOH10o73kx6bTb5QuefCAT6N84hE
- d9KaaXzUSG9J4CFYWL4jXDhstri3C+6IwC2Fw8YUmIJmkxyLYcuKCI2d5UXRJ2r9Yz6u+uI2X
- XWn34Cq0SkY75O7m/SAOMUn98QoH2ZQk9nHVPD56q9QEeb7jdq7czGy3tC4BwJBCZirM0Vgke
- dd66O5zHmvnDLIV96YD4FAgwsMjzyHsmL7b+lfDPaE6wo3IRoxPxdWQ4fNEu/e+++PSOnM8Ah
- jERZaXZy4+rw2MqpKaEuQ15icQj1lI97KUarf4jcNOKouLBwHk=
+In-Reply-To: <38df9737-3c04-dca2-0df4-115a9c1634e5@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 3, 2020 at 11:17 AM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
-> On Thu, Apr 9, 2020 at 2:57 AM Arnd Bergmann <arnd@arndb.de> wrote:
+On 2020/05/29 22:26, Tetsuo Handa wrote:
+>     By the way, I do worry that people forget to perform these steps when they do
+>     their tests without asking syzbot...
 
->
-> This patch seems not been applied to next branch? I haven't seen it on
-> linux-next.
-> Arnd, can you please pick it to your tree.
-> In case you need my ack:
-> Acked-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
->
+Here is a draft of boot-time switching. Since kconfig can handle string variable up to
+2048 characters, we could hold the content of the "your-config" file inside .config file
+in order to avoid relying on external file in "syzkaller tree". But since only one kconfig
+option is used, basically the way to temporarily include/exclude specific options (under
+automated testing by syzbot) seems to remain directly patching apply_twist_flags(), for
+https://github.com/google/syzkaller/blob/master/dashboard/config/util.sh will automatically
+overwrite CONFIG_DEFAULT_TWIST_FLAGS settings. If each twist flag were using independent
+kconfig option, the way to temporarily include/exclude specific options will become directly
+patching Kconfig file.
 
-Ok, I applied it on the arm/drivers branch now, thanks for following
-up on this!
+ drivers/tty/vt/keyboard.c |    2 ++
+ include/linux/kernel.h    |    8 ++++++++
+ init/main.c               |   30 ++++++++++++++++++++++++++++++
+ kernel/reboot.c           |   36 ++++++++++++++++++++++++++++++++++++
+ lib/Kconfig.debug         |    5 +++++
+ 5 files changed, 81 insertions(+)
 
-       Arnd
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index 568b2171f335..ae0b7cd69249 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -637,6 +637,8 @@ static void k_spec(struct vc_data *vc, unsigned char value, char up_flag)
+ 	     kbd->kbdmode == VC_OFF) &&
+ 	     value != KVAL(K_SAK))
+ 		return;		/* SAK is allowed even in raw mode */
++	if (twist_flags.disable_kbd_k_spec_handler)
++		return;
+ 	fn_handler[value](vc);
+ }
+ 
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 82d91547d122..78fdbb4f17b1 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -1038,4 +1038,12 @@ static inline void ftrace_dump(enum ftrace_dump_mode oops_dump_mode) { }
+ 	 /* OTHER_WRITABLE?  Generally considered a bad idea. */		\
+ 	 BUILD_BUG_ON_ZERO((perms) & 2) +					\
+ 	 (perms))
++
++/* Flags for twisting kernel behavior. */
++struct twist_flags {
++	bool disable_kbd_k_spec_handler;
++	bool disable_reboot_request;
++};
++extern struct twist_flags twist_flags;
++
+ #endif
+diff --git a/init/main.c b/init/main.c
+index 0ead83e86b5a..15eecd253b61 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1531,3 +1531,33 @@ static noinline void __init kernel_init_freeable(void)
+ 
+ 	integrity_load_keys();
+ }
++
++/* Flags for twisting kernel behavior. */
++struct twist_flags twist_flags __ro_after_init;
++EXPORT_SYMBOL(twist_flags);
++static __initdata char default_twist_flags[] __initdata = CONFIG_DEFAULT_TWIST_FLAGS;
++static __initdata char *chosen_twist_flags = default_twist_flags;
++
++static int __init overwrite_twist_flags(char *str)
++{
++	chosen_twist_flags = str;
++	return 1;
++}
++__setup("twist_flags=", overwrite_twist_flags);
++
++static int __init apply_twist_flags(void)
++{
++	char *flags = chosen_twist_flags;
++	char *name;
++
++	while ((name = strsep(&flags, ",")) != NULL) {
++		if (!strcmp(name, "kbd-disable-hotkeys"))
++			twist_flags.disable_kbd_k_spec_handler = true;
++		else if (!strcmp(name, "disable-reboot-request"))
++			twist_flags.disable_reboot_request = true;
++		else
++			printk(KERN_INFO "Ignoring unknown twist option '%s'.\n", name);
++	}
++	return 0;
++}
++late_initcall(apply_twist_flags);
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index 491f1347bf43..63cec97a9e59 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -63,6 +63,8 @@ EXPORT_SYMBOL_GPL(pm_power_off_prepare);
+  */
+ void emergency_restart(void)
+ {
++	if (twist_flags.disable_reboot_request)
++		panic("reboot request is disabled");
+ 	kmsg_dump(KMSG_DUMP_EMERG);
+ 	machine_emergency_restart();
+ }
+@@ -243,6 +245,8 @@ void migrate_to_reboot_cpu(void)
+  */
+ void kernel_restart(char *cmd)
+ {
++	if (twist_flags.disable_reboot_request)
++		panic("reboot request is disabled");
+ 	kernel_restart_prepare(cmd);
+ 	migrate_to_reboot_cpu();
+ 	syscore_shutdown();
+@@ -270,6 +274,8 @@ static void kernel_shutdown_prepare(enum system_states state)
+  */
+ void kernel_halt(void)
+ {
++	if (twist_flags.disable_reboot_request)
++		panic("reboot request is disabled");
+ 	kernel_shutdown_prepare(SYSTEM_HALT);
+ 	migrate_to_reboot_cpu();
+ 	syscore_shutdown();
+@@ -286,6 +292,8 @@ EXPORT_SYMBOL_GPL(kernel_halt);
+  */
+ void kernel_power_off(void)
+ {
++	if (twist_flags.disable_reboot_request)
++		panic("reboot request is disabled");
+ 	kernel_shutdown_prepare(SYSTEM_POWER_OFF);
+ 	if (pm_power_off_prepare)
+ 		pm_power_off_prepare();
+@@ -344,6 +352,10 @@ SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
+ 	mutex_lock(&system_transition_mutex);
+ 	switch (cmd) {
+ 	case LINUX_REBOOT_CMD_RESTART:
++		if (twist_flags.disable_reboot_request) {
++			ret = -EPERM;
++			break;
++		}
+ 		kernel_restart(NULL);
+ 		break;
+ 
+@@ -356,11 +368,19 @@ SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
+ 		break;
+ 
+ 	case LINUX_REBOOT_CMD_HALT:
++		if (twist_flags.disable_reboot_request) {
++			ret = -EPERM;
++			break;
++		}
+ 		kernel_halt();
+ 		do_exit(0);
+ 		panic("cannot halt");
+ 
+ 	case LINUX_REBOOT_CMD_POWER_OFF:
++		if (twist_flags.disable_reboot_request) {
++			ret = -EPERM;
++			break;
++		}
+ 		kernel_power_off();
+ 		do_exit(0);
+ 		break;
+@@ -373,17 +393,29 @@ SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
+ 		}
+ 		buffer[sizeof(buffer) - 1] = '\0';
+ 
++		if (twist_flags.disable_reboot_request) {
++			ret = -EPERM;
++			break;
++		}
+ 		kernel_restart(buffer);
+ 		break;
+ 
+ #ifdef CONFIG_KEXEC_CORE
+ 	case LINUX_REBOOT_CMD_KEXEC:
++		if (twist_flags.disable_reboot_request) {
++			ret = -EPERM;
++			break;
++		}
+ 		ret = kernel_kexec();
+ 		break;
+ #endif
+ 
+ #ifdef CONFIG_HIBERNATION
+ 	case LINUX_REBOOT_CMD_SW_SUSPEND:
++		if (twist_flags.disable_reboot_request) {
++			ret = -EPERM;
++			break;
++		}
+ 		ret = hibernate();
+ 		break;
+ #endif
+@@ -493,6 +525,8 @@ static DECLARE_WORK(poweroff_work, poweroff_work_func);
+  */
+ void orderly_poweroff(bool force)
+ {
++	if (twist_flags.disable_reboot_request)
++		panic("reboot request is disabled");
+ 	if (force) /* do not override the pending "true" */
+ 		poweroff_force = true;
+ 	schedule_work(&poweroff_work);
+@@ -514,6 +548,8 @@ static DECLARE_WORK(reboot_work, reboot_work_func);
+  */
+ void orderly_reboot(void)
+ {
++	if (twist_flags.disable_reboot_request)
++		panic("reboot request is disabled");
+ 	schedule_work(&reboot_work);
+ }
+ EXPORT_SYMBOL_GPL(orderly_reboot);
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 498d344ea53a..41cfabc74ad7 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2338,4 +2338,9 @@ config HYPERV_TESTING
+ 
+ endmenu # "Kernel Testing and Coverage"
+ 
++menuconfig DEFAULT_TWIST_FLAGS
++	string "Default twist options (DANGEROUS)"
++	help
++	  Don't specify anything unless you know what you are doing.
++
+ endmenu # Kernel hacking
+
