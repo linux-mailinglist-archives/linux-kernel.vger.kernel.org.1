@@ -2,62 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B601EC6ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 03:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326E21EC6F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 03:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgFCBsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 21:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728001AbgFCBsR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 21:48:17 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFB1C08C5C0;
-        Tue,  2 Jun 2020 18:48:17 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1jgIVr-002FlG-NT; Wed, 03 Jun 2020 01:48:15 +0000
-Date:   Wed, 3 Jun 2020 02:48:15 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH RFC] uaccess: user_access_begin_after_access_ok()
-Message-ID: <20200603014815.GR23230@ZenIV.linux.org.uk>
-References: <20200602084257.134555-1-mst@redhat.com>
+        id S1726016AbgFCBve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 21:51:34 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33535 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725927AbgFCBvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 21:51:33 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49cBhx5rd9z9sT5;
+        Wed,  3 Jun 2020 11:51:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1591149091;
+        bh=IXTHTQo8gDO7SUTW6DoR71nhmx/eHsJgQ/H+8J4HtFs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GQiPquiRjfonEs5XfrIIkpJ7OUyvGd3owEWInsOz3v4YojQVmInZYv5uJ4kJWc9hc
+         BcGLf6GdKEjYm626Ra4cjRvwulQmsgiabli+76FEC3yj16XWysLcpYUgII4+wxEvhb
+         jKCDY2dZPgsnk0D4lPTASXG6lr7Xi8G28Sg4vV0yOfguC5UGLcxqHu9KZaX02a2vdF
+         5bucn/9CUMH90NeQrIUqE3/2yxmKDdf1rsKxpp/82izPSH+ENzNgp/mwx2Sd70rMla
+         6PH/EboyMF3tTpd0LLdPhh5vkfUWdiHLkb6dlPFI727SMW3OBBPoBzYaDvAQsjc19h
+         LvbuhTqJvUjtA==
+Date:   Wed, 3 Jun 2020 11:51:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org
+Subject: linux-next: build failure after merge of the overlayfs tree
+Message-ID: <20200603115127.28b01992@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200602084257.134555-1-mst@redhat.com>
+Content-Type: multipart/signed; boundary="Sig_/U+hxjZ8=pu2.z0OP9GUGsK3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 04:45:05AM -0400, Michael S. Tsirkin wrote:
-> So vhost needs to poke at userspace *a lot* in a quick succession.  It
-> is thus benefitial to enable userspace access, do our thing, then
-> disable. Except access_ok has already been pre-validated with all the
-> relevant nospec checks, so we don't need that.  Add an API to allow
-> userspace access after access_ok and barrier_nospec are done.
+--Sig_/U+hxjZ8=pu2.z0OP9GUGsK3
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-BTW, what are you going to do about vq->iotlb != NULL case?  Because
-you sure as hell do *NOT* want e.g. translate_desc() under STAC.
-Disable it around the calls of translate_desc()?
+Hi all,
 
-How widely do you hope to stretch the user_access areas, anyway?
+After merging the overlayfs tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-BTW, speaking of possible annotations: looks like there's a large
-subset of call graph that can be reached only from vhost_worker()
-or from several ioctls, with all uaccess limited to that subgraph
-(thankfully).  Having that explicitly marked might be a good idea...
+ERROR: modpost: "security_file_ioctl" [fs/overlayfs/overlay.ko] undefined!
 
-Unrelated question, while we are at it: is there any point having
-vhost_get_user() a polymorphic macro?  In all callers the third
-argument is __virtio16 __user * and the second one is an explicit
-*<something> where <something> is __virtio16 *.  Similar for
-vhost_put_user(): in all callers the third arugment is
-__virtio16 __user * and the second - cpu_to_vhost16(vq, something).
+Caused by commit
 
-Incidentally, who had come up with the name __vhost_get_user?
-Makes for lovey WTF moment for readers - esp. in vhost_put_user()...
+  b5940870e166 ("ovl: call secutiry hook in ovl_real_ioctl()")
+
+I have applied this patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 3 Jun 2020 11:44:19 +1000
+Subject: [PATCH] export security_file_ioctl
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ security/security.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/security/security.c b/security/security.c
+index 51de970fbb1e..077ac86faacf 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -1459,6 +1459,7 @@ int security_file_ioctl(struct file *file, unsigned i=
+nt cmd, unsigned long arg)
+ {
+ 	return call_int_hook(file_ioctl, 0, file, cmd, arg);
+ }
++EXPORT_SYMBOL_GPL(security_file_ioctl);
+=20
+ static inline unsigned long mmap_prot(struct file *file, unsigned long pro=
+t)
+ {
+--=20
+2.26.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/U+hxjZ8=pu2.z0OP9GUGsK3
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7XAh8ACgkQAVBC80lX
+0Gz9bwf/dL+jSQtXGVI6j6OZ9SMNBjPPIGl17qVT5JtvHuBoMyRRrJuCfcWdmC6r
+/o3NwyIA5NR0E0ZLt9Zak1o6nRuRq7t68onDAJ7CB5IG5N4bPdyvZXEtDHNzD+CB
+zLjgzE2xbvX5d5eMJzL4XVHd0GuR3GnErf+V3ucaCDPoVKGXJhQS9gOFMXRyEw75
+0K/ziimdRBG9Twtfo+sSaidszv+KHZELl1/pZLdAN9XujCSGFuFlZYju4OslszLB
+2K44N4Kkqg4PrAyD48eUH92z7whgy2lJ2m58JWCQEaYge83Fz9IYnnSNBvcZ/MnC
+s1cY5ZqfIlnLpzFXdTT3104up6v+pQ==
+=T6mB
+-----END PGP SIGNATURE-----
+
+--Sig_/U+hxjZ8=pu2.z0OP9GUGsK3--
