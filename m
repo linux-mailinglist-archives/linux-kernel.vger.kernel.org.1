@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95501EC66A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 03:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9801EC66E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 03:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgFCBKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 21:10:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43860 "EHLO mail.kernel.org"
+        id S1728313AbgFCBKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 21:10:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgFCBKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 21:10:06 -0400
-Subject: Re: [GIT PULL] Audit patches for v5.8
+        id S1726112AbgFCBKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 21:10:09 -0400
+Subject: Re: [GIT PULL][Security] lockdown: Allow unprivileged users to see
+ lockdown status
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591146606;
-        bh=Yn9mHxjqxws6vQ0rrEyWuufyN0hqo+ADRa9GCpbDcz8=;
+        s=default; t=1591146609;
+        bh=ZTQHt+zCCq3szqCcZ4aTjWGaCX3dob9j2wXUNRYrp8s=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=J4nkKT97VEe9xJUBa7M6PbiB6Gmp8x3/pmqUIcxyaPG1r7YL9mLCH4BEXDz2f+Ea9
-         jYfZ2zeCfR/JPYEXWCHqRD/nxWj3tjp/Iwu8HJGtuHS6Jz0DKATqcUKn4oQvbk9FTu
-         snW4dqbrAwi70Jly3mzVizu2SPCKPa8zsB0DjX/8=
+        b=IoiZEjqqfonXQb/DIJNO+HBH4wnN8tjjFGsBdck4t7zDlHBMGaKjMSteQiuMHK5uC
+         ZNAU7rdVI+4Jf1xYhNOyepyvPpcBn/+RltxEfFMscayGgRL3mP2PF054ruoJSw7KQj
+         I+lX7i+d98UF3st2qjUTsHqh5ZIjrmikj3lQKyAE=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAHC9VhQqnAG5DxvoQKa643d06rDTVtHVFEj5arCsHwyoamCckA@mail.gmail.com>
-References: <CAHC9VhQqnAG5DxvoQKa643d06rDTVtHVFEj5arCsHwyoamCckA@mail.gmail.com>
+In-Reply-To: <alpine.LRH.2.21.2006021212490.12446@namei.org>
+References: <alpine.LRH.2.21.2006021212490.12446@namei.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAHC9VhQqnAG5DxvoQKa643d06rDTVtHVFEj5arCsHwyoamCckA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git
- tags/audit-pr-20200601
-X-PR-Tracked-Commit-Id: 9d44a121c5a79bc8a9d67c058456bd52a83c79e7
+X-PR-Tracked-Message-Id: <alpine.LRH.2.21.2006021212490.12446@namei.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git
+ next-general
+X-PR-Tracked-Commit-Id: 60cf7c5ed5f7087c4de87a7676b8c82d96fd166c
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9d99b1647fa56805c1cfef2d81ee7b9855359b62
-Message-Id: <159114660605.11472.8600694237100035153.pr-tracker-bot@kernel.org>
-Date:   Wed, 03 Jun 2020 01:10:06 +0000
-To:     Paul Moore <paul@paul-moore.com>
+X-PR-Merge-Commit-Id: 56f2e3b7d819f4fa44857ba81aa6870f18714ea0
+Message-Id: <159114660931.11472.12724747665819133584.pr-tracker-bot@kernel.org>
+Date:   Wed, 03 Jun 2020 01:10:09 +0000
+To:     James Morris <jmorris@namei.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-audit@redhat.com, linux-kernel@vger.kernel.org
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 1 Jun 2020 20:48:59 -0400:
+The pull request you sent on Tue, 2 Jun 2020 12:15:04 +1000 (AEST):
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git tags/audit-pr-20200601
+> git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git next-general
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9d99b1647fa56805c1cfef2d81ee7b9855359b62
+https://git.kernel.org/torvalds/c/56f2e3b7d819f4fa44857ba81aa6870f18714ea0
 
 Thank you!
 
