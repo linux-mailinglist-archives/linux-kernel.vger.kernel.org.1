@@ -2,53 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBBE1ECA7A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 051941ECA7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725906AbgFCHZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 03:25:07 -0400
-Received: from mga03.intel.com ([134.134.136.65]:26390 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725810AbgFCHZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 03:25:06 -0400
-IronPort-SDR: nkx1eByMNaAlcvMMV64V4GqvueuHomsdKe+RO2GDUIZNo4a8Y5zoB0Xz94d/EEmpsUfc9vi6in
- G5VlInMZjbZw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 00:25:06 -0700
-IronPort-SDR: J6E6tqn8ZfzzwkdltOBoLoLv+Z2KT3pbtxe8fgeneSmxipHcbjCy0gXQTvcXXwPTOy/Ec50CoA
- kpz3n9x/DasA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,467,1583222400"; 
-   d="scan'208";a="304506658"
-Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
-  by orsmga008.jf.intel.com with ESMTP; 03 Jun 2020 00:25:04 -0700
-Date:   Wed, 3 Jun 2020 15:24:13 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     LKML <linux-kernel@vger.kernel.org>, kbuild-all@lists.01.org,
-        lkp@lists.01.org, kernel test robot <lkp@intel.com>
-Subject: [0-Day CI notification] kbuild test robot will be combined with
- kernel test robot
-Message-ID: <20200603072413.GA29050@intel.com>
+        id S1726021AbgFCHZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 03:25:11 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27800 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725810AbgFCHZK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 03:25:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591169107;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:in-reply-to:in-reply-to:  references:references;
+        bh=EC+d+WxemCljULP9SuuqZspKAfF5v0XLd3cIFL/Shds=;
+        b=X7itCp34Ge6LXUJNBmHsmqtRwvADycY4lnvLWLtzU26FYpZUWs0FS63kfLCXQqRSUlae8x
+        zII4MSEJku2s85dxvqHk/zOPtPcudUDIZe7bk04p99SzCGXZXJDiIXI7pfgC9ng+wDUjRU
+        G4s3Z0HGEvaAcrxQUl2KePYBOuUN8Sw=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-412-jHB5BHKTPcKOXlfnsjssxg-1; Wed, 03 Jun 2020 03:25:06 -0400
+X-MC-Unique: jHB5BHKTPcKOXlfnsjssxg-1
+Received: by mail-qv1-f71.google.com with SMTP id x16so829870qvp.19
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 00:25:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=EC+d+WxemCljULP9SuuqZspKAfF5v0XLd3cIFL/Shds=;
+        b=ErVmIRgh/jujeILUtDkFfPNgapDZKEY4MhvVDa+r9kox5eCVa+Ijkepe6U5Ky08wsj
+         +Vr76jjKfGLOX9NtQOyLXUH+H1RsVoL0sh2EJQSPVdvsPjDNszqQuQbaBETs8iWvmPsz
+         EOnx3RdylApGdduOA90o/S3UWYJKFpSUjYc3NfOpDz9cuT1GWFpwD+FNR5MEDEbqMO1e
+         +OjF7riuV4bZ+xJrT4l+SQyAosQPu8+aZuVsaos0zXotRJolPtTonXg30EpSZ6ttGIzz
+         Kdl7UoptBR0WDxVdkw7lsQZQQ6Zbd3t4SQTRsfdfSw3SKMUOy10DdqF+YVsUvLqd2xaa
+         lbYQ==
+X-Gm-Message-State: AOAM530qVvwGhxwPjwE9RbVNUBs/KmC+moNqv3u06oEjlcQbI52pVy3b
+        RTppm5+mbmvdshs3OZPQiSCpTCoXh35X9KoGu8P+1hVT6Pc2+xNJaYJ/yzMgB/DMjydxSGtLQzS
+        Jo1yRc6mTgF/l06Jr4Z+vsqhc
+X-Received: by 2002:a37:850:: with SMTP id 77mr28134181qki.498.1591169105757;
+        Wed, 03 Jun 2020 00:25:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwywfiXv11HyflkYogvBZqV6/H9CCZ3oOPBIMwdCxiPWdRcaBtK8tl9oN/O7TAcINZHy9dowA==
+X-Received: by 2002:a37:850:: with SMTP id 77mr28134171qki.498.1591169105494;
+        Wed, 03 Jun 2020 00:25:05 -0700 (PDT)
+Received: from localhost (ip70-163-223-149.ph.ph.cox.net. [70.163.223.149])
+        by smtp.gmail.com with ESMTPSA id 80sm910052qkl.116.2020.06.03.00.25.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jun 2020 00:25:04 -0700 (PDT)
+Date:   Wed, 3 Jun 2020 00:25:03 -0700
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Qian Cai <cai@lca.pw>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] iommu: Move Intel and AMD drivers into their own
+ subdirectory
+Message-ID: <20200603072503.j5iffuoxkdryg7qa@cantor>
+Reply-To: Jerry Snitselaar <jsnitsel@redhat.com>
+Mail-Followup-To: Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Qian Cai <cai@lca.pw>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200602092616.24638-1-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200602092616.24638-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all, this is Philip who maintains the 0-Day CI test service. Thanks for
-subscribing to the service. It has been a long time we use both kbuild test
-robot and kernel test robot to send out report. From now on, we want to
-combine two mails to kernel test robot, which is a single voice for the
-whole service. Sorry for any inconvenience caused by this change, which may
-impact your mail setting.
+On Tue Jun 02 20, Joerg Roedel wrote:
+>Hi,
+>
+>two small patches to move the Intel and AMD IOMMU drivers into their own
+>subdirectory under drivers/iommu/ to make the file structure a bit less
+>cluttered.
+>
+>Regards,
+>
+>	Joerg
+>
+>Joerg Roedel (2):
+>  iommu/amd: Move AMD IOMMU driver into subdirectory
+>  iommu/vt-d: Move Intel IOMMU driver into subdirectory
+>
+> drivers/iommu/Makefile                         | 18 +++++++++---------
+> drivers/iommu/{ => amd}/amd_iommu.h            |  0
+> drivers/iommu/{ => amd}/amd_iommu_types.h      |  0
+> .../{amd_iommu_debugfs.c => amd/debugfs.c}     |  0
+> drivers/iommu/{amd_iommu_init.c => amd/init.c} |  2 +-
+> drivers/iommu/{amd_iommu.c => amd/iommu.c}     |  2 +-
+> .../iommu/{amd_iommu_v2.c => amd/iommu_v2.c}   |  0
+> .../iommu/{amd_iommu_quirks.c => amd/quirks.c} |  0
+> .../{intel-iommu-debugfs.c => intel/debugfs.c} |  0
+> drivers/iommu/{ => intel}/dmar.c               |  2 +-
+> drivers/iommu/{ => intel}/intel-pasid.h        |  0
+> drivers/iommu/{intel-iommu.c => intel/iommu.c} |  2 +-
+> .../irq_remapping.c}                           |  2 +-
+> drivers/iommu/{intel-pasid.c => intel/pasid.c} |  0
+> drivers/iommu/{intel-svm.c => intel/svm.c}     |  0
+> drivers/iommu/{intel-trace.c => intel/trace.c} |  0
+> 16 files changed, 14 insertions(+), 14 deletions(-)
+> rename drivers/iommu/{ => amd}/amd_iommu.h (100%)
+> rename drivers/iommu/{ => amd}/amd_iommu_types.h (100%)
+> rename drivers/iommu/{amd_iommu_debugfs.c => amd/debugfs.c} (100%)
+> rename drivers/iommu/{amd_iommu_init.c => amd/init.c} (99%)
+> rename drivers/iommu/{amd_iommu.c => amd/iommu.c} (99%)
+> rename drivers/iommu/{amd_iommu_v2.c => amd/iommu_v2.c} (100%)
+> rename drivers/iommu/{amd_iommu_quirks.c => amd/quirks.c} (100%)
+> rename drivers/iommu/{intel-iommu-debugfs.c => intel/debugfs.c} (100%)
+> rename drivers/iommu/{ => intel}/dmar.c (99%)
+> rename drivers/iommu/{ => intel}/intel-pasid.h (100%)
+> rename drivers/iommu/{intel-iommu.c => intel/iommu.c} (99%)
+> rename drivers/iommu/{intel_irq_remapping.c => intel/irq_remapping.c} (99%)
+> rename drivers/iommu/{intel-pasid.c => intel/pasid.c} (100%)
+> rename drivers/iommu/{intel-svm.c => intel/svm.c} (100%)
+> rename drivers/iommu/{intel-trace.c => intel/trace.c} (100%)
+>
+>-- 
+>2.17.1
+>
 
-Meanwhile, we have mail address lkp@intel.com for you to reach us. Kindly
-drop us mail at kernel test robot <lkp@intel.com> or submit issue at
-https://github.com/intel/lkp-tests for any question and support you need.
+Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
 
-Thanks
