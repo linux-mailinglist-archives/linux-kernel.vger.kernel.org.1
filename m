@@ -2,82 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564881ECF0D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C681ECED5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726016AbgFCLvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 07:51:16 -0400
-Received: from port70.net ([81.7.13.123]:51454 "EHLO port70.net"
+        id S1726071AbgFCLrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 07:47:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:22263 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgFCLvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 07:51:14 -0400
-X-Greylist: delayed 324 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jun 2020 07:51:13 EDT
-Received: by port70.net (Postfix, from userid 1002)
-        id 3A60FABEC0C2; Wed,  3 Jun 2020 13:45:46 +0200 (CEST)
-Date:   Wed, 3 Jun 2020 13:45:46 +0200
-From:   Szabolcs Nagy <nsz@port70.net>
-To:     Rich Felker <dalias@libc.org>
-Cc:     musl@lists.openwall.com, libc-alpha@sourceware.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: sys/sysinfo.h clash with linux/kernel.h
-Message-ID: <20200603114546.GA125404@port70.net>
-Mail-Followup-To: Rich Felker <dalias@libc.org>, musl@lists.openwall.com,
-        libc-alpha@sourceware.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org
-References: <20200602213704.GF1079@brightrain.aerifal.cx>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200602213704.GF1079@brightrain.aerifal.cx>
+        id S1725854AbgFCLrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 07:47:04 -0400
+IronPort-SDR: HITp9jl9xSJ5UeC+NQR2AvX2PnId09dVx489JQ3VTnwU0HxMba2nYr/bCtH6r7kcr8kPR/vtZD
+ o/edV3lePYrA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 04:47:04 -0700
+IronPort-SDR: uYU61oDyq4QGHj7sT3RCcYyexZOkUVa8y3ZV/s5uFfyOaQcSN03bFI21QQadqmd8GUBr4scAva
+ 2SMgjHolQI2w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,467,1583222400"; 
+   d="scan'208";a="257426382"
+Received: from gklab-125-110.igk.intel.com ([10.91.125.110])
+  by fmsmga007.fm.intel.com with ESMTP; 03 Jun 2020 04:47:00 -0700
+From:   Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Cc:     Piotr Stankiewicz <piotr.stankiewicz@intel.com>,
+        Kurt Schwemmer <kurt.schwemmer@microsemi.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jian-Hong Pan <jian-hong@endlessm.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Olof Johansson <olof@lixom.net>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Kelvin Cao <kelvin.cao@microchip.com>,
+        Wesley Sheng <wesley.sheng@microchip.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 03/15] PCI: Use PCI_IRQ_MSI_TYPES where appropriate
+Date:   Wed,  3 Jun 2020 13:46:48 +0200
+Message-Id: <20200603114652.12954-1-piotr.stankiewicz@intel.com>
+X-Mailer: git-send-email 2.17.2
+In-Reply-To: <20200603114212.12525-1-piotr.stankiewicz@intel.com>
+References: <20200603114212.12525-1-piotr.stankiewicz@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Seeing as there is shorthand available to use when asking for any type
+of interrupt, or any type of message signalled interrupt, leverage it.
 
-i think the linux-api list is the right place for this
-so adding it on cc.
+Signed-off-by: Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+---
+ drivers/pci/msi.c               | 3 +--
+ drivers/pci/pcie/portdrv_core.c | 4 ++--
+ drivers/pci/switch/switchtec.c  | 3 +--
+ 3 files changed, 4 insertions(+), 6 deletions(-)
 
-* Rich Felker <dalias@libc.org> [2020-06-02 17:37:05 -0400]:
-> linux/kernel.h is a uapi header that does almost nothing but define
-> some internal-use alignment macros and -- oddly -- include
-> linux/sysinfo.h to provide a definition of struct sysinfo. It's
-> included only from 6 places in the kernel uapi headers:
-> 
-> include/uapi/linux/lightnvm.h
-> include/uapi/linux/ethtool.h
-> include/uapi/linux/sysctl.h
-> include/uapi/linux/netlink.h
-> include/uapi/linux/netfilter/x_tables.h
-> include/uapi/linux/mroute6.h
-> 
-> However, it's also included from glibc's sys/sysinfo.h to provide
-> struct sysinfo (glibc depends on the kernel for the definition). On
-> musl, this produces a conflicting definition if both sys/sysinfo.h and
-> any of the above 6 headers are included in the same file.
-> 
-> I think the underlying problem here is that the same header is used
-> for two very disjoint purposes: by glibc as the provider of struct
-> sysinfo, and by other kernel headers as provider of the alignment
-> macros.
-> 
-> The glibc use is effectively a permanent contract that can't be
-> changed, so what I'd like to do is move the macros out to a separate
-> header (maybe linux/something_macros.h?) and have linux/kernel.h and
-> the above 6 uapi headers all include that. Then nothing but
-> linux/kernel.h would pull in linux/sysinfo.h.
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 443cc324b196..9db9ce5dddb3 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -1231,8 +1231,7 @@ int pci_alloc_irq_vectors_affinity(struct pci_dev *dev, unsigned int min_vecs,
+ 		}
+ 	}
+ 
+-	if (msix_vecs == -ENOSPC ||
+-	    (flags & (PCI_IRQ_MSI | PCI_IRQ_MSIX)) == PCI_IRQ_MSIX)
++	if (msix_vecs == -ENOSPC || (flags & PCI_IRQ_MSI_TYPES) == PCI_IRQ_MSIX)
+ 		return msix_vecs;
+ 	return msi_vecs;
+ }
+diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
+index 50a9522ab07d..2a38a918ba12 100644
+--- a/drivers/pci/pcie/portdrv_core.c
++++ b/drivers/pci/pcie/portdrv_core.c
+@@ -105,7 +105,7 @@ static int pcie_port_enable_irq_vec(struct pci_dev *dev, int *irqs, int mask)
+ 
+ 	/* Allocate the maximum possible number of MSI/MSI-X vectors */
+ 	nr_entries = pci_alloc_irq_vectors(dev, 1, PCIE_PORT_MAX_MSI_ENTRIES,
+-			PCI_IRQ_MSIX | PCI_IRQ_MSI);
++			PCI_IRQ_MSI_TYPES);
+ 	if (nr_entries < 0)
+ 		return nr_entries;
+ 
+@@ -131,7 +131,7 @@ static int pcie_port_enable_irq_vec(struct pci_dev *dev, int *irqs, int mask)
+ 		pci_free_irq_vectors(dev);
+ 
+ 		nr_entries = pci_alloc_irq_vectors(dev, nvec, nvec,
+-				PCI_IRQ_MSIX | PCI_IRQ_MSI);
++				PCI_IRQ_MSI_TYPES);
+ 		if (nr_entries < 0)
+ 			return nr_entries;
+ 	}
+diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
+index e69cac84b605..11fbe9c6b201 100644
+--- a/drivers/pci/switch/switchtec.c
++++ b/drivers/pci/switch/switchtec.c
+@@ -1442,8 +1442,7 @@ static int switchtec_init_isr(struct switchtec_dev *stdev)
+ 		nirqs = 4;
+ 
+ 	nvecs = pci_alloc_irq_vectors(stdev->pdev, 1, nirqs,
+-				      PCI_IRQ_MSIX | PCI_IRQ_MSI |
+-				      PCI_IRQ_VIRTUAL);
++				      PCI_IRQ_MSI_TYPES | PCI_IRQ_VIRTUAL);
+ 	if (nvecs < 0)
+ 		return nvecs;
+ 
+-- 
+2.17.2
 
-i think providing a patch would make this happen faster.
-
-ideally uapi would be reorganized such that it's clear
-what headers are supposed to be compatible with inclusion
-together with libc headers and what headers may conflict.
-
-> 
-> Note that in practice this is a rather hard issue to hit since almost
-> nothing needs sysinfo() at the same time as the above uapi interfaces.
-> However it did come up in toybox, which is how I first (just today)
-> learned about the conflict, so it seems like something that should be
-> fixed.
-> 
-> Rich
