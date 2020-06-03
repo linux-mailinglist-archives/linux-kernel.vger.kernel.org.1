@@ -2,128 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44031EC73B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE361EC740
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgFCCQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 22:16:31 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:14770 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgFCCQ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 22:16:29 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200603021626epoutp03d8ce3b9cef382c33c92f74fe53dc8c42~U5wdFwnaj0138701387epoutp03b
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 02:16:26 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200603021626epoutp03d8ce3b9cef382c33c92f74fe53dc8c42~U5wdFwnaj0138701387epoutp03b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591150586;
-        bh=bME66dlOtQH0kCIkca74ydV/mIVf+pc4dS66rCLdntM=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=sep8wLwJEUqW+EQlKiaqL1y1VWArw7hWeBv9XtzS+13HMxxiA1n3i9zKQve+38S9d
-         fnTJjEULSUsxY34cR23pJg8hUVCnSOHSN1yl/dnmSR1cnfGuWe5dQ/lZEqWdjvmvq/
-         uwTpqsGd3RH49vzbHvUimpO5sUrPSfp6ttL+uh7s=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200603021626epcas1p2fe69e3ba066c56157785f5fe0ce125ea~U5wcqGusS1285112851epcas1p2s;
-        Wed,  3 Jun 2020 02:16:26 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.160]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 49cCFh4SS9zMqYkX; Wed,  3 Jun
-        2020 02:16:24 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D9.BF.18978.7F707DE5; Wed,  3 Jun 2020 11:16:23 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200603021623epcas1p2dc700151a39d0315b1cc4158287ecf99~U5wZ18UnG1287212872epcas1p2e;
-        Wed,  3 Jun 2020 02:16:23 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200603021623epsmtrp1d527b3372964f3120f343c85793df63a~U5wZ1R-mW0421804218epsmtrp1d;
-        Wed,  3 Jun 2020 02:16:23 +0000 (GMT)
-X-AuditID: b6c32a35-5edff70000004a22-d8-5ed707f74f41
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        50.A9.08382.7F707DE5; Wed,  3 Jun 2020 11:16:23 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200603021623epsmtip2344435f7960b49d0073ea4253b0345eb~U5wZrFTNK1151211512epsmtip2o;
-        Wed,  3 Jun 2020 02:16:23 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Al Viro'" <viro@zeniv.linux.org.uk>
-Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <syzkaller@googlegroups.com>, <butterflyhuangxx@gmail.com>,
-        <sj1557.seo@samsung.com>, <stable@vger.kernel.org>
-In-Reply-To: <20200603015808.GS23230@ZenIV.linux.org.uk>
-Subject: RE: [PATCH] exfat: fix memory leak in exfat_parse_param()
-Date:   Wed, 3 Jun 2020 11:16:23 +0900
-Message-ID: <015501d6394c$fa4aeb80$eee0c280$@samsung.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHbISVtbnT/hIiybKuhVppdlkZmogJhygbYAe6wsq2omdNeMA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOJsWRmVeSWpSXmKPExsWy7bCmvu539utxBm9eKVjMWTWFzWLP3pMs
-        Fpd3zWGz2PLvCKvFgo2PGC2OvOlmtjj/9zirA7vHzll32T32TDzJ5tG3ZRWjx+dNch6bnrxl
-        CmCNyrHJSE1MSS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMATpD
-        SaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKrlFqQklNgaFCgV5yYW1yal66XnJ9rZWhgYGQK
-        VJmQk/F6ykbWglcsFU+XNLI2MH5j7mLk5JAQMJGY9GYakM3FISSwg1FiWnMbK0hCSOATo8Si
-        SVCJb4wS+xZ9h+s49uEoE0RiL6NE35/r7BDOS0aJCe93s4BUsQnoSvz7s58NxBYR0JT4P3cC
-        2Chmge2MEp8WTwAq4uDgFLCQaH7mB1IjLOAksfT7ZXYQm0VAReL0laOMIDavgKXEoUkdzBC2
-        oMTJmU/A5jMLyEtsfzsH6iIFiZ9Pl7FC7HKSeHXrGStEjYjE7M42sL0SAjM5JNYt/sQO0eAi
-        sfPSVyYIW1ji1fEtUHEpiZf9bewgt0kIVEt83A81v4NR4sV3WwjbWOLm+g2sICXMQH+t36UP
-        EVaU2Pl7LiPEWj6Jd197WCGm8Ep0tAlBlKhK9F06DLVUWqKr/QP7BEalWUgem4XksVlIHpiF
-        sGwBI8sqRrHUguLc9NRiwwJD5LjexAhOoVqmOxgnvv2gd4iRiYPxEKMEB7OSCK+V7LU4Id6U
-        xMqq1KL8+KLSnNTiQ4ymwKCeyCwlmpwPTOJ5JfGGpkbGxsYWJmbmZqbGSuK84jIX4oQE0hNL
-        UrNTUwtSi2D6mDg4pRqY9kvHhsmo2KUd0DBbE7Oqd/FmHk7hdqfd9SXaj12zZ540NPt+3K43
-        Q/hi6Rvu2gO+rYlShnk1JevnafwQTL+Wfki601JkzS8DozPFq/fPLO80ljYqvd/OXcUUn1e/
-        b8qy5/Pnx9RJiAQVnHDbVfKU68/p2931z7YLCQnoJe0NmJzbuHnBjjOtFzderjwu73vJ8DFD
-        BeNLxf+afxwYFiz3nynNJltx5+vHdt0X6wrf6KxUb1vptnizUuR3LpPcZ1XLxJIf/VyhlNV7
-        bUE9Nz93s1RtnF6r0o6cXV0JaqnVqyc/OTZpn1pcxZ8VoTNqRfKU1LfIT83KfyTmqOC9+gzD
-        hTv6YiFRJ7W9fBIfXlRiKc5INNRiLipOBABjx/YzKgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpkkeLIzCtJLcpLzFFi42LZdlhJXvc7+/U4gx8dAhZzVk1hs9iz9ySL
-        xeVdc9gstvw7wmqxYOMjRosjb7qZLc7/Pc7qwO6xc9Zddo89E0+yefRtWcXo8XmTnMemJ2+Z
-        AlijuGxSUnMyy1KL9O0SuDJeT9nIWvCKpeLpkkbWBsZvzF2MnBwSAiYSxz4cZepi5OIQEtjN
-        KHHjwgMmiIS0xLETZ4CKOIBsYYnDh4shap4zSnzdto4dpIZNQFfi35/9bCC2iICmxP+5E5hB
-        ipgF9jJKTLh4mA2iYyejxJGlq1lAJnEKWEg0P/MDaRAWcJJY+v0y2CAWARWJ01eOMoLYvAKW
-        EocmdTBD2IISJ2c+AWtlFtCTaNsIVsIsIC+x/e0cqAcUJH4+XcYKcYOTxKtbz1ghakQkZne2
-        MU9gFJ6FZNIshEmzkEyahaRjASPLKkbJ1ILi3PTcYsMCw7zUcr3ixNzi0rx0veT83E2M4FjS
-        0tzBuH3VB71DjEwcjIcYJTiYlUR4rWSvxQnxpiRWVqUW5ccXleakFh9ilOZgURLnvVG4ME5I
-        ID2xJDU7NbUgtQgmy8TBKdXAlPJSuLfM/euJ5mmGP71feHCt+VP35e1mVhmLaS87pyQyiXaV
-        RfAXT7hwMPetSVv6EzH9gNDyF7Zci0O/m9yMecYg1Lf7aACXPCOD/80cvYwuiS3mjcovHSXy
-        th0pdOW7vr/JqWXjpUr2nPp9Bk9FQ0P1T3vuNmZtPXJ4MWueYTPT/j2e9TzFDJufz1dcf6zm
-        bkm2647JTn4RcXp/br4w+eTM7tcTJKuVIXSf77ZdTGrDCnPP+seRLrVuvub1y/4dreqNWDBl
-        0jKF3QckT2+o33tG72Ozo332+ntlIrvSV1m8ebvXaPLDgyVOE3zKH1nsMH/+mW/vPf6DJwpE
-        pnlxfNmpwBH2erLKysIPvCxKLMUZiYZazEXFiQAL1PK7FAMAAA==
-X-CMS-MailID: 20200603021623epcas1p2dc700151a39d0315b1cc4158287ecf99
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200603013447epcas1p45c6537dab8fee50f1f5b8fe7fd21da2b
-References: <CGME20200603013447epcas1p45c6537dab8fee50f1f5b8fe7fd21da2b@epcas1p4.samsung.com>
-        <20200603012957.9200-1-namjae.jeon@samsung.com>
-        <20200603015808.GS23230@ZenIV.linux.org.uk>
+        id S1725924AbgFCCUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 22:20:39 -0400
+Received: from mga04.intel.com ([192.55.52.120]:56266 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725794AbgFCCUh (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 22:20:37 -0400
+IronPort-SDR: D8qdFwugUyplzsf1d1sJQ017MUqdNTHXQm5dxYNlLgtjgO56ZS8iF8rGZ/uYafU7pc7VUdhdFs
+ 6CE1c8NRI5AQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 19:20:36 -0700
+IronPort-SDR: qUWPpwL+GNS9ShkA8gnkiQ3wv6ZmVLaikZGSo7rEqFhPZnZ82QVlTSDQSvDRK/GlrHX8r4usEI
+ 8g0y+HU5QKMw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,466,1583222400"; 
+   d="scan'208";a="293792544"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Jun 2020 19:20:33 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH 0/2] Update CascadelakeX and SkylakeX events list
+Date:   Wed,  3 Jun 2020 10:18:16 +0800
+Message-Id: <20200603021818.27028-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed, Jun 03, 2020 at 10:29:57AM +0900, Namjae Jeon wrote:
-> 
-> > exfat_free() should call exfat_free_iocharset() after stealing
-> > param->string instead of kstrdup in exfat_parse_param().
-> 
-> ITYM
-> 	extfat_free() should call exfat_free_iocharset(), to prevent a leak in case we fail after
-> parsing iocharset= but before calling
-> get_tree_bdev()
-> 
-> 	Additionally, there's no point copying param->string in
-> exfat_parse_param() - just steal it, leaving NULL in param->string.
-> That's independent from the leak or fix thereof - it's simply avoiding an extra copy.
-Updated it in v2.
-Thanks!
+This patchset updates CascadelakeX events to v1.08 and
+updates SkylakeX events to v1.21.
+
+The events have been tested on CascadelakeX and SkylakeX
+servers with latest perf/core branch.
+
+Jin Yao (2):
+  perf vendor events: Update CascadelakeX events to v1.08
+  perf vendor events: Update SkylakeX events to v1.21
+
+ .../arch/x86/cascadelakex/cache.json          |   28 +-
+ .../arch/x86/cascadelakex/clx-metrics.json    |  153 +-
+ .../arch/x86/cascadelakex/frontend.json       |   34 +
+ .../arch/x86/cascadelakex/memory.json         |  704 ++---
+ .../arch/x86/cascadelakex/other.json          | 1100 ++++----
+ .../arch/x86/cascadelakex/pipeline.json       |   10 -
+ .../arch/x86/cascadelakex/uncore-other.json   |   21 +
+ .../pmu-events/arch/x86/skylakex/cache.json   | 2348 +++++++++--------
+ .../arch/x86/skylakex/floating-point.json     |   96 +-
+ .../arch/x86/skylakex/frontend.json           |  656 ++---
+ .../pmu-events/arch/x86/skylakex/memory.json  | 1977 +++++++-------
+ .../pmu-events/arch/x86/skylakex/other.json   |  172 +-
+ .../arch/x86/skylakex/pipeline.json           | 1206 +++++----
+ .../arch/x86/skylakex/skx-metrics.json        |  141 +-
+ .../arch/x86/skylakex/uncore-memory.json      |   26 +-
+ .../arch/x86/skylakex/uncore-other.json       |  730 ++++-
+ .../arch/x86/skylakex/virtual-memory.json     |  358 +--
+ 17 files changed, 5198 insertions(+), 4562 deletions(-)
+
+-- 
+2.17.1
 
