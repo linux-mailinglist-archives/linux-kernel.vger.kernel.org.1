@@ -2,139 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBE31ED528
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 19:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24D71ED544
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 19:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbgFCRmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 13:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        id S1726380AbgFCRrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 13:47:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbgFCRmq (ORCPT
+        with ESMTP id S1726103AbgFCRrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 13:42:46 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3208C08C5C6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 10:36:20 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t7so1063427plr.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 10:36:20 -0700 (PDT)
+        Wed, 3 Jun 2020 13:47:46 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D073C08C5C9
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 10:38:06 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id x27so1841354lfg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 10:38:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=ylVKXMXoSHWxEfuprMtTy+ptfQH8F9MdYoQU37bFUNc=;
-        b=X829y22aorlO5+Du+MvNj8VULQUMImlRc6xjM+s9r8nWu/Mvpz3brR7ktjNpVrS/qS
-         c3IxPLMp50QFAk4JbZGm0JkHoLEj69/UAZ4NFoAl+ElHknCqhTWatOLZLvQ8AbtbDX3z
-         8sGKtZdcUt7n3AkgwohwgKQql80SaxCE3GTvI=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jmZLnge/JsJbbtstAv9yQbEIQ8yd6Uru632t/pS89cQ=;
+        b=NFxCY+bXPLUGZdo7dT3SyTWmToxnyjr4RwN7Skl85wz7MjddHjn2AVfAy7MdqJtKKC
+         uXAje7NxrbVdIfpXaqXBBty29zjcQKBbI5aRDK6Ya5s3e7WblNy4BfS4+Mfuz6pzBafg
+         rVo3l+YqXE/um6wh4OJHcUO+5+Pm7Fiza4+jo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=ylVKXMXoSHWxEfuprMtTy+ptfQH8F9MdYoQU37bFUNc=;
-        b=CqSrMs+ygJTHRa4hXdIa4D+B2sRaRCl+sPcY7+gt6DZmg671HTceQfWQx0AdhIkNly
-         wKDzubSFH8gbR+EcauuHIpe7+GsCQ+cE19Ru4UsVPna/UdY1FHnO7NdHXCSnNBgn0ad5
-         KIAJpb8ZNWiwcE+N6yo2rS+hE0KH0Kk0lYerEbEW0MD8T30P+3WLUSd+g0vP41FH/DTR
-         Sa6+oTAOSB+fmjO8bLgXseKv/PYQdmwPQQOcB9vRsgASE0svqFGjySpjh0I3pkeMH56q
-         XmFfnPPFsyTtJHhXR8kTwd4dxRp974OsWdupAChVlXYFvjFyGi0ZvbkCLtidONU6A+jt
-         Fp8A==
-X-Gm-Message-State: AOAM5324maTHNcVZJTA+d6dEH7pepisUnFkBrLNwL2EIUmOpAcphMVr1
-        +UyxYSE79FcXzBHRV50fbfOJXA==
-X-Google-Smtp-Source: ABdhPJzPNTYLHirFN1uXJ/hKbGPbDvfxX70mtZPZJ+nOvN+YGavJ90efgc+PB2Z8D+2TUOVWgjt5DA==
-X-Received: by 2002:a17:902:465:: with SMTP id 92mr844330ple.227.1591205780260;
-        Wed, 03 Jun 2020 10:36:20 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id w5sm2376042pfn.22.2020.06.03.10.36.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 10:36:19 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jmZLnge/JsJbbtstAv9yQbEIQ8yd6Uru632t/pS89cQ=;
+        b=szzT1YJchZEbR1RswqeZANvqmJTB2hF2DdRPETGECHFC0X6lnzEb8oXIUEPq5WjI2p
+         eTrXjXa9l4IswgBWjlx3tWtNcOYtFKEbYdwO+jEJfd8uGfW7TqcJomUicK9SHex4ngkW
+         +olqQLxdURWPr8Gw3yT6ckqmUZj2ibpFjfRERXgXqCCvVLKizLH++5g/rkQ9P8it9/Ou
+         uqbCPszlkpDY9scP7BFeWqJxBIwKiUcWFjB9zKArb0GOyK3HX0uzXtYqHZA+3oPTS6+k
+         +2UcDF7kmeL5CTb/Flq2TizoFqQ37YxdDVuuYatnV+1lztaZFlnhvYYrlpz72hvMG9vA
+         pNIA==
+X-Gm-Message-State: AOAM531BAXr2sLFy42fZc3nxWf9BxdaC+ot2JCXorsfXj7cX+BV0tT6T
+        ureVtwmepZfeBlv24269/6rPM9rzFVs=
+X-Google-Smtp-Source: ABdhPJxoq+ByOv01G0ywfxgi9F5iuefXxZDJbYnI4GFsOnsyNWunxPLeRfCS5q5kTPHmqdM0Yt9FAw==
+X-Received: by 2002:a05:6512:2023:: with SMTP id s3mr338993lfs.78.1591205884606;
+        Wed, 03 Jun 2020 10:38:04 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id n8sm816844lfb.20.2020.06.03.10.38.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jun 2020 10:38:03 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id c11so3841517ljn.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 10:38:03 -0700 (PDT)
+X-Received: by 2002:a2e:b5d9:: with SMTP id g25mr159019ljn.285.1591205882849;
+ Wed, 03 Jun 2020 10:38:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1585718145-29537-3-git-send-email-sanm@codeaurora.org>
-References: <1585718145-29537-1-git-send-email-sanm@codeaurora.org> <1585718145-29537-3-git-send-email-sanm@codeaurora.org>
-Subject: Re: [PATCH v7 2/4] usb: dwc3: qcom: Add interconnect support in dwc3 driver
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Date:   Wed, 03 Jun 2020 10:36:18 -0700
-Message-ID: <159120577830.69627.13288547914742515702@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+References: <CAHC9VhTX8gkUui6AiTJMJgcohXa=TOqdO==rEDk=Mquz9sCNKA@mail.gmail.com>
+ <CAHk-=wiAVfqtJbZ=Ti1oxSvunUvsQ_CsOL5oFJL3mwhqKTeoNw@mail.gmail.com> <290017a8-d943-570f-1f90-acecf1c075a1@schaufler-ca.com>
+In-Reply-To: <290017a8-d943-570f-1f90-acecf1c075a1@schaufler-ca.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 3 Jun 2020 10:37:47 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgkZROyMpBa8EKPDVK=SvurnrzJXgphQ8Fstx8rrfO6MQ@mail.gmail.com>
+Message-ID: <CAHk-=wgkZROyMpBa8EKPDVK=SvurnrzJXgphQ8Fstx8rrfO6MQ@mail.gmail.com>
+Subject: Re: [GIT PULL] SELinux patches for v5.8
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Paul Moore <paul@paul-moore.com>, selinux@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sandeep Maheswaram (2020-03-31 22:15:43)
-> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> index 1dfd024..d33ae86 100644
-> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> @@ -76,8 +85,13 @@ struct dwc3_qcom {
->         enum usb_dr_mode        mode;
->         bool                    is_suspended;
->         bool                    pm_suspended;
-> +       struct icc_path         *usb_ddr_icc_path;
-> +       struct icc_path         *apps_usb_icc_path;
->  };
-> =20
-> +static int dwc3_qcom_interconnect_enable(struct dwc3_qcom *qcom);
-> +static int dwc3_qcom_interconnect_disable(struct dwc3_qcom *qcom);
+On Wed, Jun 3, 2020 at 10:20 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+>
+> We could have inode->i_security be the blob, rather than a pointer to it.
+> That will have its own performance issues.
 
-Please get rid of these. We shouldn't need forward declarations.
+It wouldn't actually really fix anything, because the inode is so big
+and sparsely accessed that it doesn't even really help the cache
+density issue. Yeah, it gets rid of the pointer access, but that's
+pretty much it. The fact that we randomize the order means that we
+can't even really try to aim for any cache density.
 
-> +
->  static inline void dwc3_qcom_setbits(void __iomem *base, u32 offset, u32=
- val)
->  {
->         u32 reg;
-> @@ -285,6 +307,101 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom)
->         return 0;
->  }
-> =20
-> +
-> +/**
-> + * dwc3_qcom_interconnect_init() - Get interconnect path handles
-> + * @qcom:                      Pointer to the concerned usb core.
-> + *
-> + */
-> +static int dwc3_qcom_interconnect_init(struct dwc3_qcom *qcom)
-> +{
-> +       struct device *dev =3D qcom->dev;
-> +       int ret;
-> +
-> +       if (!device_is_bound(&qcom->dwc3->dev))
-> +               return -EPROBE_DEFER;
+And it would actually not be possible with the current layered
+security model anyway, since those blob sizes are dynamic at runtime.
 
-How is this supposed to work? I see that this was added in an earlier
-revision of this patch series but there isn't any mention of why
-device_is_bound() is used here. It would be great if there was a comment
-detailing why this is necessary. It sounds like maximum_speed is
-important?
+If we had _only_ SELinux, we could perhaps have hidden the
+sid/sclass/task_sid directly in the inode (it would be only slightly
+larger than the pointer is, anyway), but even that ship sailed long
+long ago due to the whole "no security person can ever agree with
+another one on fundamentals".
 
-Furthermore, dwc3_qcom_interconnect_init() is called by
-dwc3_qcom_probe() which is the function that registers the device for
-qcom->dwc3->dev. If that device doesn't probe between the time it is
-registered by dwc3_qcom_probe() and this function is called then we'll
-fail dwc3_qcom_probe() with -EPROBE_DEFER. And that will remove the
-qcom->dwc3->dev device from the platform bus because we call
-of_platform_depopulate() on the error path of dwc3_qcom_probe().
+So don't try to blame the rest of the system design. This is on the
+security people. We've been able to handle other layers fairly well
+because they generally agree on fundamentals (although it can take
+decades before they then end up merging their code - things like the
+filesystem people standardizing on iomap and other core concepts). And
+as mentioned, when there is agreed-upon security rules (ie "struct
+cred") we've been able to spend the effort to architect it so that it
+doesn't add unnecessary overheads.
 
-So isn't this whole thing racy and can potentially lead us to a driver
-probe loop where the wrapper (dwc3_qcom) and the core (dwc3) are probing
-and we're trying to time it just right so that driver for dwc3 binds
-before we setup interconnects? I don't know if dwc3 can communicate to
-the wrapper but that would be more of a direct way to do this. Or maybe
-the wrapper should try to read the DT property for maximum speed and
-fallback to a worst case high bandwidth value if it can't figure it out
-itself without help from dwc3 core.
+             Linus
