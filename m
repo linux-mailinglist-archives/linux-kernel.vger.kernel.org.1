@@ -2,87 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9125B1ED342
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2101ED349
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726046AbgFCPYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 11:24:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36656 "EHLO mail.kernel.org"
+        id S1726184AbgFCPZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 11:25:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:34708 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725810AbgFCPYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 11:24:38 -0400
-Received: from tzanussi-mobl (c-73-211-240-131.hsd1.il.comcast.net [73.211.240.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9328206A2;
-        Wed,  3 Jun 2020 15:24:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591197878;
-        bh=wYhSFD9Khcc0Z3mpqxy4+CiNsLPVPcf8WqMe+UPsLC8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ERkS2pLmp6VM8p5BRD0VinxXrkbvVSPIGRdqKX7nRekXAl0RJYTIgfotZGeiJWSxA
-         5PQxfRgNoFaPNC1SFuXplrT4vXmJxvdLREX/1UU63tNq9In+eFzN5j1dVfvYbbktHx
-         Q3LZ+9KbtRSp+7EppzCQ3/XWYBUP9T9FEGNjB5gs=
-Message-ID: <af08615d0ce87b7c920a0ac6a5389834a0504cb7.camel@kernel.org>
-Subject: Re: linux-next: build failure after merge of the ftrace tree
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Date:   Wed, 03 Jun 2020 10:24:36 -0500
-In-Reply-To: <20200603112223.3adc3451@gandalf.local.home>
-References: <20200603174253.60deace5@canb.auug.org.au>
-         <20200603112223.3adc3451@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1725867AbgFCPZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 11:25:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3362B55D;
+        Wed,  3 Jun 2020 08:25:10 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8FCFA3F52E;
+        Wed,  3 Jun 2020 08:25:08 -0700 (PDT)
+References: <20200603124559.22652-1-benjamin.gaignard@st.com> <20200603124559.22652-3-benjamin.gaignard@st.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Benjamin Gaignard <benjamin.gaignard@st.com>
+Cc:     hugues.fruchet@st.com, mchehab@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        linux-media@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        vincent.guittot@linaro.org, rjw@rjwysocki.net
+Subject: Re: [PATCH v2 2/3] media: stm32-dcmi: Set minimum cpufreq requirement
+In-reply-to: <20200603124559.22652-3-benjamin.gaignard@st.com>
+Date:   Wed, 03 Jun 2020 16:25:01 +0100
+Message-ID: <jhjk10oi33m.mognet@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
 
-On Wed, 2020-06-03 at 11:22 -0400, Steven Rostedt wrote:
-> On Wed, 3 Jun 2020 17:42:53 +1000
-> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> 
-> > Hi all,
-> > 
-> > After merging the ftrace tree, today's linux-next build (htmldocs)
-> > failed like this:
-> > 
-> > 
-> > Sphinx parallel build error:
-> > docutils.utils.SystemMessage:
-> > /home/sfr/next/next/Documentation/trace/histogram-design.rst:219:
-> > (SEVERE/4) Unexpected section title.
-> > 
-> > .
-> > .
-> > 
-> > Caused by commit
-> > 
-> >   16b585fe7192 ("tracing: Add histogram-design document")
-> > 
-> > I am running a slightly out of date version os sphynx (2.4.3) ...
-> > 
-> 
-> It appears to be the ascii art that is causing the issue. I have no
-> idea
-> how to fix it. If someone has a patch they would like to submit, I
-> will
-> take it before I push it off to Linus.
-> 
-> -- Steve
+On 03/06/20 13:45, Benjamin Gaignard wrote:
+> +static void dcmi_set_min_frequency(struct stm32_dcmi *dcmi, u64 freq)
+> +{
+> +	struct cpufreq_policy *p;
+> +	int cpu;
+> +
+> +	for_each_cpu(cpu, irq_get_affinity_mask(dcmi->irq)) {
+> +		p = per_cpu(policy, cpu);
+> +		if (!p)
+> +			continue;
+> +
+> +		freq_qos_update_request(&per_cpu(qos_req, cpu), freq);
+> +	}
+> +}
+> +
 
-I just sent you/posted a patch to fix this.  Should be in your inbox
-already.
+You may want to use a "visited" cpumask as I suggested in the previous
+thread, since a policy can cover more than one CPU (IOW, a frequency domain
+can span more than one CPU). It's not required per-se, AFAICT, but it makes
+things a bit neater.
 
-Thanks,
+I also think you'll have to use the affinity notifier
+(irq_set_affinity_notifier()), since AFAICT userspace can change the
+affinity of that IRQ. I suppose you'll want something like:
+- Check if we currently are in streaming mode
+- Clear the QoS request for CPUs that were previously boosted but that
+  aren't in the new mask
+- Add the request for the new CPUs.
 
-Tom
+You'll probably need serialize the reading of the mask in the regular
+dcmi_set_min_frequency() as well. I concur all of that is somewhat
+annoying, but AFAICT that's required for a sturdy implementation.
 
+>  static int dcmi_start_streaming(struct vb2_queue *vq, unsigned int count)
+>  {
+>       struct stm32_dcmi *dcmi = vb2_get_drv_priv(vq);
