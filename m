@@ -2,83 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECD41ECAA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6131ECAAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726093AbgFCHf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 03:35:27 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:44523 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgFCHf0 (ORCPT
+        id S1726084AbgFCHiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 03:38:18 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:44521 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725876AbgFCHiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 03:35:26 -0400
-Received: by mail-ot1-f66.google.com with SMTP id e5so1100573ote.11;
-        Wed, 03 Jun 2020 00:35:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D7JMkOvhZUqwiu+SF/Awh2jlIp2xHt9TluszajmhLw4=;
-        b=kw2QWv8B31u0abvbBHAvVs+9AZQcphbQzmdggdkyBoukg2I+NjHn9JFdubXGeH7PdC
-         ShWyq/eOUuF5V1pkdbJ3MRSzEI5D543rkl3Nvja/r0eT1tdIHL9H6rcjVekpQ+qnwb7W
-         co3KVXKu5jzrclX1IkHDHrYbEywKI6S4Tl7opMaUEEk4NFXj73S6C4ywWVA/4QP7m6Sv
-         OTNGmMlLtkZtXgx18t7WFjeX1rJ5S/GX6EIEvWBcA/aKaNWKZQsJ0XpCNGYL02vxvxRK
-         Ijh9WFwIRzzM+J43Ge9ms3RIoUmNTD5KLwoSxXq6/sa8aSM5aEzoJyi1VrJeXPJ+NygV
-         U1CQ==
-X-Gm-Message-State: AOAM5324SFNUF7dx7uNhbCsDt0geOsHpHwXeMncOqIytbmGMlLIuXwyG
-        zUvAr+BSu/1IIRUZcQh8ez9J7PhLuBJfk2V/cxcVxA==
-X-Google-Smtp-Source: ABdhPJwU2+fB3PiD4AxJMNargOcVzctUQtjcagMYjySGTXjUm3Tf3KsLK/TZQKrzdMIs7+K/adcy9MbWExNzVqyZpcM=
-X-Received: by 2002:a05:6830:141a:: with SMTP id v26mr2278620otp.250.1591169724039;
- Wed, 03 Jun 2020 00:35:24 -0700 (PDT)
+        Wed, 3 Jun 2020 03:38:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U-RVoRv_1591169866;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U-RVoRv_1591169866)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 03 Jun 2020 15:37:47 +0800
+Subject: Re: [PATCH] doc: zh_CN: use doc reference to resolve undefined label
+ warning
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     Harry Wei <harryxiyou@gmail.com>, Wang Wenhu <wenhu.wang@vivo.com>,
+        Chucheng Luo <luochucheng@vivo.com>,
+        linux-kernel@vger.kernel.org
+References: <20200531183556.5751-1-lukas.bulwahn@gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <67729261-8deb-c1f4-979c-762786ab1954@linux.alibaba.com>
+Date:   Wed, 3 Jun 2020 15:36:11 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200531104715.2512247-1-glaubitz@physik.fu-berlin.de> <b6271c7a-1eaf-61d9-9eb6-061aa8a13ac8@physik.fu-berlin.de>
-In-Reply-To: <b6271c7a-1eaf-61d9-9eb6-061aa8a13ac8@physik.fu-berlin.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 3 Jun 2020 09:35:12 +0200
-Message-ID: <CAMuHMdV-Par79SYe75HzJsEd2cwEDhGPK+Nj0zUD8eAy9aDj1A@mail.gmail.com>
-Subject: Re: [PATCH v2] sh: Implement __get_user_u64() required for 64-bit get_user()
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Linux-sh list <linux-sh@vger.kernel.org>,
-        Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200531183556.5751-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
 
-On Wed, Jun 3, 2020 at 9:20 AM John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
-> On 5/31/20 12:47 PM, John Paul Adrian Glaubitz wrote:
-> >  Changes since v1:
-> >  - Replace single mov instruction for exception handling
-> >    in case of invalid load
->
-> Yutaka Niibe has had a look at my patch and he says, we might have to add
-> an entry for the fault handling of the upper word.
->
-> Quote:
->
-> > (1) I think that there is possibility that the second access to user
-> > space fails (while the first access succeeds).  IIUC, it's good have
-> > an entry in __ex_tables for the second access too, like:
-> >     ".long 1b+2, 3b\n\t"
-> > I don't know if the expression "1b+2" is correct, my intention is
-> > detecting the failure in the seccond access.
 
-So just add another numeric label, like is done on m68k.
+ÔÚ 2020/6/1 ÉÏÎç2:35, Lukas Bulwahn Ð´µÀ:
+> Documentation generation warns:
+> 
+>   Documentation/translations/zh_CN/filesystems/debugfs.rst:5:
+>   WARNING: undefined label: debugfs_index
 
-Gr{oetje,eeting}s,
+It's due to debugfs.txt changed to debugfs.rst.
 
-                        Geert
+> 
+> Use doc reference for files rather than introducing a label to refer to.
+> This resolves the warning above.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Anyway this fix is also fine for me.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
+
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> Jonathan, please pick this quick warning fix.
+> 
+> applies on your doc-next and next-20200529
+> 
+>  Documentation/translations/zh_CN/filesystems/debugfs.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/translations/zh_CN/filesystems/debugfs.rst b/Documentation/translations/zh_CN/filesystems/debugfs.rst
+> index f8a28793c277..822c4d42fdf9 100644
+> --- a/Documentation/translations/zh_CN/filesystems/debugfs.rst
+> +++ b/Documentation/translations/zh_CN/filesystems/debugfs.rst
+> @@ -2,7 +2,7 @@
+>  
+>  .. include:: ../disclaimer-zh_CN.rst
+>  
+> -:Original: :ref:`Documentation/filesystems/debugfs.txt <debugfs_index>`
+> +:Original: :doc:`../../../filesystems/debugfs`
+>  
+>  =======
+>  Debugfs
+> 
