@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DF81ECEBC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF3C1ECEB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgFCLm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 07:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58674 "EHLO
+        id S1726310AbgFCLmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 07:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgFCLmq (ORCPT
+        with ESMTP id S1726173AbgFCLmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 07:42:46 -0400
+        Wed, 3 Jun 2020 07:42:47 -0400
 Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88783C08C5C0
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB078C08C5C3
         for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 04:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=7IW00XHgXSVe0eWN0HTd2HDxOWygvcOr4u+CUzB/SvI=; b=E3gzSfAM5W6bRu0zQXJ6k4PaBa
-        lwLEFg+ilOwi3MC8cxcnx8Vr5F6qCP53Rk801BLXI7XsrjvqQaSUzWIXApbNYPuu6m5ZJrAGc6ZdM
-        7OW0g6971HaO52GDsYG6lZvptB5PQmchQd+SSWpB1CZpjdGjhBC41aDQ6X8P31aVhwbUVP+gKNyIM
-        0QKkBZ5v5GodxE5rjQw45GzYb74dQDcQdrOi8jR7OkSdKgA1XkYFwHB2I2/+r51lH0azgD8i9NduA
-        1Vo92390X7iklh4xqcSez4W13fbSlZnoqgordlfGSVl6YbDnftxX4e/HFog9zTO2d6odgpTnMxrBk
-        1ScduGMw==;
+        bh=DZFIrEVCB225to0ilfsUv+WkHWiGxuEfVVcHeS1Uxeg=; b=tl+Go6jNiKC54zdRV+VlFp6dX9
+        bYKTyR3iXc2qjStURDDE5Wloz4fqe0V7OILwB+beN+beTbjbU1x4gOLotZODo/QFdhlDYqFbJekTi
+        ZxfnXc/p7ruwcWjL6DE+9QUnBtylYBzkBwDZxu6AxocqQNy//O4wdwXRldJm6MCvXqeH9yFDhxbX5
+        MqvHfHrnPvkGKXYQclY/2I1G6kKb4SFZug6WLmWSE/WuCMJfBToGHE8qGDk/ttTRUMm6Qg7Vf4EQS
+        l+4s/63xxWNPKnLNIyP1K+AoKqpPH1kU7MS6yOYvXK7WsNQ6soN1m0BdcIYRWCOpHSNFfkazVqma9
+        Ckrfo6qA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jgRms-0005of-U0; Wed, 03 Jun 2020 11:42:27 +0000
+        id 1jgRms-0005og-UZ; Wed, 03 Jun 2020 11:42:27 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0E03D306E6D;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 10600306FFE;
         Wed,  3 Jun 2020 13:42:24 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id BEF6D209DB0D4; Wed,  3 Jun 2020 13:42:23 +0200 (CEST)
-Message-ID: <20200603114052.243227806@infradead.org>
+        id C2359209DB0DC; Wed,  3 Jun 2020 13:42:23 +0200 (CEST)
+Message-ID: <20200603114052.300804240@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 03 Jun 2020 13:40:22 +0200
+Date:   Wed, 03 Jun 2020 13:40:23 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de
 Cc:     x86@kernel.org, elver@google.com, paulmck@kernel.org,
         kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
         peterz@infradead.org, will@kernel.org, dvyukov@google.com,
         glider@google.com, andreyknvl@google.com
-Subject: [PATCH 8/9] x86/entry: __always_inline CR2 for noinstr
+Subject: [PATCH 9/9] x86/entry, cpumask: Provide non-instrumented variant of cpu_is_offline()
 References: <20200603114014.152292216@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,73 +53,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vmlinux.o: warning: objtool: exc_page_fault()+0x9: call to read_cr2() leaves .noinstr.text section
-vmlinux.o: warning: objtool: exc_page_fault()+0x24: call to prefetchw() leaves .noinstr.text section
-vmlinux.o: warning: objtool: exc_page_fault()+0x21: call to kvm_handle_async_pf.isra.0() leaves .noinstr.text section
-vmlinux.o: warning: objtool: exc_nmi()+0x1cc: call to write_cr2() leaves .noinstr.text section
+vmlinux.o: warning: objtool: exc_nmi()+0x12: call to cpumask_test_cpu.constprop.0() leaves .noinstr.text section
+vmlinux.o: warning: objtool: mce_check_crashing_cpu()+0x12: call to cpumask_test_cpu.constprop.0()leaves .noinstr.text section
+
+  cpumask_test_cpu()
+    test_bit()
+      instrument_atomic_read()
+      arch_test_bit()
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/kvm_para.h      |    2 +-
- arch/x86/include/asm/processor.h     |    2 +-
- arch/x86/include/asm/special_insns.h |    8 ++++----
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ arch/x86/kernel/cpu/mce/core.c |    2 +-
+ arch/x86/kernel/nmi.c          |    2 +-
+ include/linux/cpumask.h        |   15 ++++++++++++++-
+ 3 files changed, 16 insertions(+), 3 deletions(-)
 
---- a/arch/x86/include/asm/kvm_para.h
-+++ b/arch/x86/include/asm/kvm_para.h
-@@ -141,7 +141,7 @@ static inline void kvm_disable_steal_tim
- 	return;
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1083,7 +1083,7 @@ static noinstr bool mce_check_crashing_c
+ {
+ 	unsigned int cpu = smp_processor_id();
+ 
+-	if (cpu_is_offline(cpu) ||
++	if (arch_cpu_is_offline(cpu) ||
+ 	    (crashing_cpu != -1 && crashing_cpu != cpu)) {
+ 		u64 mcgstatus;
+ 
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -478,7 +478,7 @@ static DEFINE_PER_CPU(unsigned long, nmi
+ 
+ DEFINE_IDTENTRY_NMI(exc_nmi)
+ {
+-	if (IS_ENABLED(CONFIG_SMP) && cpu_is_offline(smp_processor_id()))
++	if (IS_ENABLED(CONFIG_SMP) && arch_cpu_is_offline(smp_processor_id()))
+ 		return;
+ 
+ 	if (this_cpu_read(nmi_state) != NMI_NOT_RUNNING) {
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -888,7 +888,20 @@ static inline const struct cpumask *get_
+ 	return to_cpumask(p);
  }
  
--static inline bool kvm_handle_async_pf(struct pt_regs *regs, u32 token)
-+static __always_inline bool kvm_handle_async_pf(struct pt_regs *regs, u32 token)
- {
- 	return false;
- }
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -823,7 +823,7 @@ static inline void prefetch(const void *
-  * Useful for spinlocks to avoid one state transition in the
-  * cache coherency protocol:
-  */
--static inline void prefetchw(const void *x)
-+static __always_inline void prefetchw(const void *x)
- {
- 	alternative_input(BASE_PREFETCH, "prefetchw %P1",
- 			  X86_FEATURE_3DNOWPREFETCH,
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -28,14 +28,14 @@ static inline unsigned long native_read_
- 	return val;
- }
+-#define cpu_is_offline(cpu)	unlikely(!cpu_online(cpu))
++#if NR_CPUS > 1
++static __always_inline bool arch_cpu_online(int cpu)
++{
++	return arch_test_bit(cpu, cpumask_bits(cpu_online_mask));
++}
++#else
++static __always_inline bool arch_cpu_online(int cpu)
++{
++	return cpu == 0;
++}
++#endif
++
++#define arch_cpu_is_offline(cpu)	unlikely(!arch_cpu_online(cpu))
++#define cpu_is_offline(cpu)		unlikely(!cpu_online(cpu))
  
--static inline unsigned long native_read_cr2(void)
-+static __always_inline unsigned long native_read_cr2(void)
- {
- 	unsigned long val;
- 	asm volatile("mov %%cr2,%0\n\t" : "=r" (val), "=m" (__force_order));
- 	return val;
- }
- 
--static inline void native_write_cr2(unsigned long val)
-+static __always_inline void native_write_cr2(unsigned long val)
- {
- 	asm volatile("mov %0,%%cr2": : "r" (val), "m" (__force_order));
- }
-@@ -160,12 +160,12 @@ static inline void write_cr0(unsigned lo
- 	native_write_cr0(x);
- }
- 
--static inline unsigned long read_cr2(void)
-+static __always_inline unsigned long read_cr2(void)
- {
- 	return native_read_cr2();
- }
- 
--static inline void write_cr2(unsigned long x)
-+static __always_inline void write_cr2(unsigned long x)
- {
- 	native_write_cr2(x);
- }
+ #if NR_CPUS <= BITS_PER_LONG
+ #define CPU_BITS_ALL						\
 
 
