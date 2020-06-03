@@ -2,100 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A94E1ECCA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 11:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D9A1ECCBC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 11:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgFCJfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 05:35:48 -0400
-Received: from mail-eopbgr60046.outbound.protection.outlook.com ([40.107.6.46]:45688
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725854AbgFCJfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 05:35:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gCf1aGd7q5DdNiyQAdesHmiKFoEQnNf+jiiiTqvWTbsseFOVJq5L0qgGLjw3PK428UTNdKO4VRjNaHRVH3e5YR9rA1mX92ZWd+wNybsUrzZ/pD3k34gLIvxNZcN69NnZRm6AGzXdXVhvrVRYatlTSPMuQTSlsM4gk2gYRSytZu0pQQkNVtIc2zYqPOa2SrmttJzkUwaenEq47TQdibDHIPO8/Ckr2+a+GW7WorAS2QagaEvroerp6BFlw/3r68SXLyPNGCVHKhJA8m4wfQREegKYDUKWFU5WgHF8MIqP7ocA5wmHq4Mkd9mp29fjlXmwWgdjwQ1sb3MIgtCrKGu7rA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bF2cGYEiw57DjTJG4k4WBraDParV5iPqlNSFppnyJyo=;
- b=jfZrT2u1eMZWYIC/8H37jp9qT/eVvBq0gOMJg69BRqZl5DCN5fXBuaHNtFRDZFiGmsaG1GsQsXp4sDM2yATCDYOu57Vs1DV1vKaBuxnwvzeh0RoPfx2jsMJMA7fl3Nubqu13d7aHMtp8f4Yb37Ar/JdS51IvFdBNuPKlRlZFKJ0MdY32CwlV+9X9s4frQl5kRWHYOzgKqBxbyeDP0Z4kRnKkTbenT6Ppzz0T4SH6IUvxX9ufECfNoDh8z5ymHHQcXwadIDfmK2b++aC/xL7txBqtoWezHBlkD5gSgvgH1tUCLd9ET9F20q6bjkyOpjQk7x5ZKh5HT/cFU6ABsLJwtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bF2cGYEiw57DjTJG4k4WBraDParV5iPqlNSFppnyJyo=;
- b=abDYLO2X/l9UQhk2iQcEsAhMvUsv9CY29JVEQb7Pnv+bUZRmfqvcz5qF6BfHIL78VxGcradMU5R5Tjw3oRcNICf7Tu86AI0K/N45DX80D4ZDY+JlIgxkBWzcAzF6xLe5uFjMhTWVe+aSsCHgNvc7wv7QkoOqwUllgHuRhsOKnj0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
- by VI1PR04MB5022.eurprd04.prod.outlook.com (2603:10a6:803:5f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21; Wed, 3 Jun
- 2020 09:35:43 +0000
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::4cf0:3c9c:ed2:aacd]) by VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::4cf0:3c9c:ed2:aacd%4]) with mapi id 15.20.3066.018; Wed, 3 Jun 2020
- 09:35:43 +0000
-Subject: Re: [PATCH v2] crypto: caam/qi2 - add support for dpseci_reset()
-To:     "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200603084704.5895-1-andrei.botila@oss.nxp.com>
-From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
-Message-ID: <40d8e2e6-a7c9-0132-3139-1a07a2024c18@nxp.com>
-Date:   Wed, 3 Jun 2020 12:35:40 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-In-Reply-To: <20200603084704.5895-1-andrei.botila@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM0PR03CA0060.eurprd03.prod.outlook.com (2603:10a6:208::37)
- To VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
+        id S1726648AbgFCJkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 05:40:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58822 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726011AbgFCJkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 05:40:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id F1246ACC5;
+        Wed,  3 Jun 2020 09:40:43 +0000 (UTC)
+Date:   Wed, 3 Jun 2020 10:40:36 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/2] sched/uclamp: Add a new sysctl to control RT default
+ boost value
+Message-ID: <20200603094036.GF3070@suse.de>
+References: <20200511154053.7822-1-qais.yousef@arm.com>
+ <20200528132327.GB706460@hirez.programming.kicks-ass.net>
+ <20200528155800.yjrmx3hj72xreryh@e107158-lin.cambridge.arm.com>
+ <20200528161112.GI2483@worktop.programming.kicks-ass.net>
+ <20200529100806.GA3070@suse.de>
+ <edd80c0d-b7c8-4314-74da-08590170e6f5@arm.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.129] (84.117.251.185) by AM0PR03CA0060.eurprd03.prod.outlook.com (2603:10a6:208::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18 via Frontend Transport; Wed, 3 Jun 2020 09:35:42 +0000
-X-Originating-IP: [84.117.251.185]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9721aa2b-a382-4517-c771-08d807a17ca3
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5022:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5022A9576CDF41AA3B15047498880@VI1PR04MB5022.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1051;
-X-Forefront-PRVS: 04238CD941
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TPcaknMVSKimGv4sRJt2EcN4/abAi2I9S35wNn0IVUvqGLif/y+qH+q6qsbHVf919cpwrMOt+ocDX8fQsmE8iP7ddCfURVDIRWKDDFxGjvQYXnqb4Xj73CpBbpCkHvGzPEv96c3lDp1BAkUy5opZjLjPAmJ5GvQXqd4oP0IR+ZtrLIuwwuxx1n2J/YY0EqPMkR4D86VMD3oQshSWcBNcDFJ0k4y3s0JhRNn4FhcTMudOQcGMPZ9XyGwqYIofJ4ki1IIDxgv1PraXCG+leTmUS1SdbamYvK59Ik2KsvVFRO6naGGKIH+aMPLqaGoO6ZQQSkLcMrxPvtn9PW840a2Cw/sSzYIh193Np4Ja6EQGg6Kd/z0BAME1NCpIlV+wvBz4
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(396003)(366004)(39860400002)(376002)(136003)(54906003)(31696002)(316002)(5660300002)(8676002)(110136005)(2906002)(66556008)(66476007)(6486002)(16576012)(36756003)(86362001)(8936002)(66946007)(956004)(2616005)(4744005)(16526019)(53546011)(31686004)(186003)(4326008)(52116002)(26005)(478600001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: x8ts5ZYYKjrlZ+ruNFe345MqGBdiYbtZdUzM06skMNl1pepG4G3sfZ4pKhrYBVMpaE5m2ezP3NTAc3uXhD0uu8BAKGAdHmSjL/WtOSizueIymycT6/G+hrkZzhifzLWtFLi7XmX+6SlHiQ2iTxP2QjYksm0uWuKXgF1RgucDRXeX7Xsk1Rbs0gN0JrMSrtXle1ktkvZ/6MwbFWiWXSdt8VsurvndIkRn12uLQm505dNr7RCMh6ENdY/fCZy9SqlorYP9ieKB9b4ylsibVlSpQkZXaUZ2S1PYGHb1uLi1yApcA0vyL0VZGeBDOz8aDuBt6IyYQ3ZeEv3Ep3cCCBe/VfWdsrXsKf0Tq8zQEFmR36e3iyrKCKMjV8SMBWO/Ves2FudnI88noMqTHvXE7h+W8aKxzjiHWibyrxLdvAr5WznpOrIoxSIPU1JCm+nK3iKI9AlihYp5fi9SHauui8uLL1UscLEgAQ0Uj77uToL9AExBP60lN3bboJGpn/4x632I
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9721aa2b-a382-4517-c771-08d807a17ca3
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2020 09:35:43.6811
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: E0s7PaujA9HmmANZFRCJGHCkRbahuTW2DAU1J2lWUEEjY32ZU6r0Z5YmRr1N6+MKvKTxUCRsBCV3ZujJJItOWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5022
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <edd80c0d-b7c8-4314-74da-08590170e6f5@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/2020 11:47 AM, Andrei Botila (OSS) wrote:
-> From: Andrei Botila <andrei.botila@nxp.com>
+On Tue, Jun 02, 2020 at 06:46:00PM +0200, Dietmar Eggemann wrote:
+> On 29.05.20 12:08, Mel Gorman wrote:
+> > On Thu, May 28, 2020 at 06:11:12PM +0200, Peter Zijlstra wrote:
+> >>> FWIW, I think you're referring to Mel's notice in OSPM regarding the overhead.
+> >>> Trying to see what goes on in there.
+> >>
+> >> Indeed, that one. The fact that regular distros cannot enable this
+> >> feature due to performance overhead is unfortunate. It means there is a
+> >> lot less potential for this stuff.
+> > 
+> > During that talk, I was a vague about the cost, admitted I had not looked
+> > too closely at mainline performance and had since deleted the data given
+> > that the problem was first spotted in early April. If I heard someone
+> > else making statements like I did at the talk, I would consider it a bit
+> > vague, potentially FUD, possibly wrong and worth rechecking myself. In
+> > terms of distributions "cannot enable this", we could but I was unwilling
+> > to pay the cost for a feature no one has asked for yet. If they had, I
+> > would endevour to put it behind static branches and disable it by default
+> > (like what happened for PSI). I was contacted offlist about my comments
+> > at OSPM and gathered new data to respond properly. For the record, here
+> > is an editted version of my response;
 > 
-> Add support for dpseci_reset() command for DPSECI objects.
-> For DPSECI DPAA2 objects with version lower than v5.4 reset command
-> was broken in MC f/w.
+> [...]
 > 
-> Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
-Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
+> I ran these tests on 'Ubuntu 18.04 Desktop' on Intel E5-2690 v2
+> (2 sockets * 10 cores * 2 threads) with powersave governor as:
+> 
+> $ numactl -N 0 ./run-mmtests.sh XXX
+> 
+> w/ config-network-netperf-unbound.
+> 
+> Running w/o 'numactl -N 0' gives slightly worse results.
+> 
+> without-clamp      : CONFIG_UCLAMP_TASK is not set
+> with-clamp         : CONFIG_UCLAMP_TASK=y,
+>                      CONFIG_UCLAMP_TASK_GROUP is not set
+> with-clamp-tskgrp  : CONFIG_UCLAMP_TASK=y,
+>                      CONFIG_UCLAMP_TASK_GROUP=y
+> 
+> 
+> netperf-udp
+>                                 ./5.7.0-rc7            ./5.7.0-rc7            ./5.7.0-rc7
+>                               without-clamp             with-clamp      with-clamp-tskgrp
+> 
+> Hmean     send-64         153.62 (   0.00%)      151.80 *  -1.19%*      155.60 *   1.28%*
+> Hmean     send-128        306.77 (   0.00%)      306.27 *  -0.16%*      309.39 *   0.85%*
+> Hmean     send-256        608.54 (   0.00%)      604.28 *  -0.70%*      613.42 *   0.80%*
+> Hmean     send-1024      2395.80 (   0.00%)     2365.67 *  -1.26%*     2409.50 *   0.57%*
+> Hmean     send-2048      4608.70 (   0.00%)     4544.02 *  -1.40%*     4665.96 *   1.24%*
+> Hmean     send-3312      7223.97 (   0.00%)     7158.88 *  -0.90%*     7331.23 *   1.48%*
+> Hmean     send-4096      8729.53 (   0.00%)     8598.78 *  -1.50%*     8860.47 *   1.50%*
+> Hmean     send-8192     14961.77 (   0.00%)    14418.92 *  -3.63%*    14908.36 *  -0.36%*
+> Hmean     send-16384    25799.50 (   0.00%)    25025.64 *  -3.00%*    25831.20 *   0.12%*
+> Hmean     recv-64         153.62 (   0.00%)      151.80 *  -1.19%*      155.60 *   1.28%*
+> Hmean     recv-128        306.77 (   0.00%)      306.27 *  -0.16%*      309.39 *   0.85%*
+> Hmean     recv-256        608.54 (   0.00%)      604.28 *  -0.70%*      613.42 *   0.80%*
+> Hmean     recv-1024      2395.80 (   0.00%)     2365.67 *  -1.26%*     2409.50 *   0.57%*
+> Hmean     recv-2048      4608.70 (   0.00%)     4544.02 *  -1.40%*     4665.95 *   1.24%*
+> Hmean     recv-3312      7223.97 (   0.00%)     7158.88 *  -0.90%*     7331.23 *   1.48%*
+> Hmean     recv-4096      8729.53 (   0.00%)     8598.78 *  -1.50%*     8860.47 *   1.50%*
+> Hmean     recv-8192     14961.61 (   0.00%)    14418.88 *  -3.63%*    14908.30 *  -0.36%*
+> Hmean     recv-16384    25799.39 (   0.00%)    25025.49 *  -3.00%*    25831.00 *   0.12%*
+> 
+> netperf-tcp
+>  
+> Hmean     64              818.65 (   0.00%)      812.98 *  -0.69%*      826.17 *   0.92%*
+> Hmean     128            1569.55 (   0.00%)     1555.79 *  -0.88%*     1586.94 *   1.11%*
+> Hmean     256            2952.86 (   0.00%)     2915.07 *  -1.28%*     2968.15 *   0.52%*
+> Hmean     1024          10425.91 (   0.00%)    10296.68 *  -1.24%*    10418.38 *  -0.07%*
+> Hmean     2048          17454.51 (   0.00%)    17369.57 *  -0.49%*    17419.24 *  -0.20%*
+> Hmean     3312          22509.95 (   0.00%)    22229.69 *  -1.25%*    22373.32 *  -0.61%*
+> Hmean     4096          25033.23 (   0.00%)    24859.59 *  -0.69%*    24912.50 *  -0.48%*
+> Hmean     8192          32080.51 (   0.00%)    31744.51 *  -1.05%*    31800.45 *  -0.87%*
+> Hmean     16384         36531.86 (   0.00%)    37064.68 *   1.46%*    37397.71 *   2.37%*
+> 
+> The diffs are smaller than on openSUSE Leap 15.1 and some of the
+> uclamp taskgroup results are better?
+> 
 
-Thanks,
-Horia
+I don't see the stddev and coeff but these look close to borderline.
+Sure, they are marked with a * so it passed a significant test but it's
+still a very marginal difference for netperf. It's possible that the
+systemd configurations differ in some way that is significant for uclamp
+but I don't know what that is.
+
+> With this test setup we now can play with the uclamp code in
+> enqueue_task() and dequeue_task().
+> 
+
+That is still true. An annotated perf profile should tell you if the
+uclamp code is being heavily used or if it's bailing early but it's also
+possible that uclamp overhead is not a big deal on your particular
+machine.
+
+The possibility that either the distribution, the machine or both are
+critical for detecting a problem with uclamp may explain why any overhead
+was missed. Even if it is marginal, it still makes sense to minimise the
+amount of uclamp code that is executed if no limit is specified for tasks.
+
+> ---
+> 
+> W/ config-network-netperf-unbound (only netperf-udp and buffer size 64):
+> 
+> $ perf diff 5.7.0-rc7_without-clamp/perf.data 5.7.0-rc7_with-clamp/perf.data | grep activate_task
+> 
+> # Event 'cycles:ppp'
+> #
+> # Baseline  Delta Abs  Shared Object            Symbol
+> 
+>      0.02%     +0.54%  [kernel.vmlinux]         [k] activate_task
+>      0.02%     +0.38%  [kernel.vmlinux]         [k] deactivate_task
+> 
+> $ perf diff 5.7.0-rc7_without-clamp/perf.data 5.7.0-rc7_with-clamp-tskgrp/perf.data | grep activate_task
+> 
+>      0.02%     +0.35%  [kernel.vmlinux]         [k] activate_task
+>      0.02%     +0.34%  [kernel.vmlinux]         [k] deactivate_task
+> 
+> ---
+> 
+> I still see 20 out of 90 tests with the warning message that the
+> desired confidence was not achieved though.
+> 
+> "
+> !!! WARNING
+> !!! Desired confidence was not achieved within the specified iterations.
+> !!! This implies that there was variability in the test environment that
+> !!! must be investigated before going further.
+> !!! Confidence intervals: Throughput      : 6.727% <-- more than 5% !!!
+> !!!                       Local CPU util  : 0.000%
+> !!!                       Remote CPU util : 0.000%
+> "
+> 
+> mmtests seems to run netperf with the following '-I' and 'i' parameter
+> hardcoded: 'netperf -t UDP_STREAM -i 3,3 -I 95,5' 
+
+The reason is that netperf on localhost can be a bit unreliable. It also
+hits problems with shared locks and atomics that do not necessarily happen
+when running netperf between two physical machines. When running netperf
+with something like "-I 99,1" it can take a highly variable amount of
+time to run and you are left with no clue how variable it really is or
+whether it's anywhere close to the "true mean".  Hence, in mmtests I
+opted to run netperf multiple times with low confidence to get an idea
+of how variable the test is.
+
+-- 
+Mel Gorman
+SUSE Labs
