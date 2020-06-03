@@ -2,164 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D6A1EC71C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706791EC733
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725905AbgFCCIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 22:08:35 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5775 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725780AbgFCCIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 22:08:35 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DFB861CD10B357886A0D;
-        Wed,  3 Jun 2020 10:08:31 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.99) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Wed, 3 Jun 2020
- 10:08:29 +0800
-Subject: Re: [PATCH -next] vgacon: Fix an out-of-bounds in
- vgacon_scrollback_update()
-To:     <linux-kernel@vger.kernel.org>
-CC:     <b.zolnierkie@samsung.com>
-References: <1589336932-35508-1-git-send-email-yangyingliang@huawei.com>
-From:   Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <9f47ceb6-fa01-d43e-f434-86a0b1c8df64@huawei.com>
-Date:   Wed, 3 Jun 2020 10:08:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <1589336932-35508-1-git-send-email-yangyingliang@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.166.215.99]
+        id S1725916AbgFCCOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 22:14:42 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:49943 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgFCCOl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 22:14:41 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200603021439epoutp04dd15205b7f472aaf1c2105ad04cd711c~U5u4vN4cD2241522415epoutp04K
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 02:14:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200603021439epoutp04dd15205b7f472aaf1c2105ad04cd711c~U5u4vN4cD2241522415epoutp04K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591150479;
+        bh=WjEPFCMSo9Tv/PyUNW7xSqxkVRWzm8ZAFe/hH3dlsSQ=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=KpbBlyq41bI873hjVaMA9KpcQY/gJJq9kBeGubeZ0dpKE5bm7hMvnYR0YybMv8IiU
+         z52ieKRnXVMtDUZ/K7IYEXCV2UZoBNQbXnQboivwpzDOh/YdqcCzgT7/Tw/3sfGGFs
+         pw6lcPLvuzFVtftUm66ODHYpgAsyiV68DIwmBZDk=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200603021438epcas1p2f218b3dd05be7f931e7d990765d31a5e~U5u4D2mq-0533205332epcas1p2Y;
+        Wed,  3 Jun 2020 02:14:38 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.161]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 49cCCd2pkvzMqYm1; Wed,  3 Jun
+        2020 02:14:37 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BB.04.28578.D8707DE5; Wed,  3 Jun 2020 11:14:37 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200603021436epcas1p28e26eaba7140c222c9ed09b86a489b58~U5u2yfV1n2121821218epcas1p2_;
+        Wed,  3 Jun 2020 02:14:36 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200603021436epsmtrp23f31a2f80bfa61b83e88980cbf3a8074~U5u2xu0sG1182411824epsmtrp2B;
+        Wed,  3 Jun 2020 02:14:36 +0000 (GMT)
+X-AuditID: b6c32a39-8c9ff70000006fa2-ca-5ed7078db861
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B0.79.08382.C8707DE5; Wed,  3 Jun 2020 11:14:36 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.88.103.87]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200603021436epsmtip29fd33716b1a30f94d67c0de8bb5c0a5c~U5u2lQfUI1151311513epsmtip2E;
+        Wed,  3 Jun 2020 02:14:36 +0000 (GMT)
+From:   Namjae Jeon <namjae.jeon@samsung.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, syzkaller@googlegroups.com,
+        viro@zeniv.linux.org.uk, butterflyhuangxx@gmail.com,
+        sj1557.seo@samsung.com, Namjae Jeon <namjae.jeon@samsung.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v2] exfat: fix memory leak in exfat_parse_param()
+Date:   Wed,  3 Jun 2020 11:09:39 +0900
+Message-Id: <20200603020939.9462-1-namjae.jeon@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrEKsWRmVeSWpSXmKPExsWy7bCmnm4v+/U4g/V9ohZzVk1hs9iz9ySL
+        xeVdc9gsfkyvt9jy7wirxYKNjxgtjrzpZrY4//c4qwOHx85Zd9k99kw8yebRt2UVo8fnTXIe
+        m568ZQpgjcqxyUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXL
+        zAE6RUmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYGhQoFecmFtcmpeul5yfa2Vo
+        YGBkClSZkJPxbU83W8EesYrpj/YyNTBeF+pi5OSQEDCRWH/xOWMXIxeHkMAORomJz/YxQzif
+        GCUebZsLlfnGKPH3/gZmmJZpO+dAJfYySszc1cgG1zJn3TSgKg4ONgFtiT9bREFMEQFFicvv
+        nUBKmAXOMErsPHCTBWSQsICjxNIX99hBbBYBVYkru3aDtfIKWEv8PmkMsUteYvWGA2AXSQhs
+        Ypdou36XFSLhItF3dSsbhC0s8er4FnYIW0ri87u9bCBzJASqJT7uh7q5g1HixXdbCNtY4ub6
+        DawgJcwCmhLrd+lDhBUldv4G+ZcTKMwn8e5rDyvEFF6JjjZoYKlK9F06zARhS0t0tX+AWuoh
+        8WHLJbBNQgKxEhOOPmGZwCg7C2HBAkbGVYxiqQXFuempxYYFpshRtIkRnLi0LHcwTn/7Qe8Q
+        IxMH4yFGCQ5mJRFeK9lrcUK8KYmVValF+fFFpTmpxYcYTYGhNZFZSjQ5H5g680riDU2NjI2N
+        LUzMzM1MjZXEeZ2sL8QJCaQnlqRmp6YWpBbB9DFxcEo1MGln5+hXT3BMLo3/5l+SNuXG0nzx
+        Ny+/OMze5iWlLG1ip9G34hyLq+yNv0ffbQo5LbDig9cBW45Xb6a8tHRS2dl4PMd/40k2cc2G
+        4leOPBUlRz5LP3F+ulBjRrD88b3xitMc57i9ZzCYO980gtletu96T4CuY52siF/CAznlCfz+
+        6xbHBfhsbhBP4fj09Ydypuyv5zWJL/msnrHc1Xk+6eRTr5kr9z03vRBw+GOOQ94t23dXX4Ud
+        +D9F4vv/bTFnC1PjtYvXp/o12gYlT9DeWLfg2Rn3Q27Nemx9E7p/t3QlzQ0t+LU9YtGtS3eM
+        Lyze8PH696wc4e91fNrfUtiidXNswhMM1qR/8s8NPLO0UImlOCPRUIu5qDgRANqbjbflAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgluLIzCtJLcpLzFFi42LZdlhJXreH/XqcwdvZRhZzVk1hs9iz9ySL
+        xeVdc9gsfkyvt9jy7wirxYKNjxgtjrzpZrY4//c4qwOHx85Zd9k99kw8yebRt2UVo8fnTXIe
+        m568ZQpgjeKySUnNySxLLdK3S+DK+Lanm61gj1jF9Ed7mRoYrwt1MXJySAiYSEzbOYexi5GL
+        Q0hgN6NE74NvzBAJaYljJ84A2RxAtrDE4cPFEDUfGCUmHfzLCBJnE9CW+LNFFMQUEVCUuPze
+        CaSEWeAKo8S3l3fAxggLOEosfXGPHcRmEVCVuLJrN9hIXgFrid8njSE2yUus3nCAeQIjzwJG
+        hlWMkqkFxbnpucWGBYZ5qeV6xYm5xaV56XrJ+bmbGMGBpKW5g3H7qg96hxiZOBgPMUpwMCuJ
+        8FrJXosT4k1JrKxKLcqPLyrNSS0+xCjNwaIkznujcGGckEB6YklqdmpqQWoRTJaJg1OqgYl3
+        qmAb64OJ/8SmXw/LDjn6/pYzg5+ejObcXfe85qTeZbhQtS2hlv3ivlVdhydXJ80JWLrj3v/3
+        N1TW6364eHFGpdG+BdVtR97HpyfVPBJPWxld/pTDqGTO4qNvn+6wEY5X/DYjIvOS4qL/rWeF
+        en23O/bN7hWNlFvDIP+9P6X9eUD3TFuLrONREwzDY44s/+j8wJ/NO/lJ979PvTtzFMontLAz
+        Bb5ub2HpVWG+6feiZ43pIqaamqmJoWnVc4ujl8b9+Oj5TPyzQl6GgpWBLftKF5fbqlkFN/LT
+        r5csm+Qo2LL2fvkpziKOBM7g3vtW+U8O+klNMjdvm/nj2OMNN+6c2x7xyb+Ku/lqt5ZqoRJL
+        cUaioRZzUXEiAE1M/fiTAgAA
+X-CMS-MailID: 20200603021436epcas1p28e26eaba7140c222c9ed09b86a489b58
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
 X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200603021436epcas1p28e26eaba7140c222c9ed09b86a489b58
+References: <CGME20200603021436epcas1p28e26eaba7140c222c9ed09b86a489b58@epcas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-On 2020/5/13 10:28, Yang Yingliang wrote:
-> I got a slab-out-of-bounds report when I doing fuzz test.
->
-> [  334.989515] ==================================================================
-> [  334.989577] BUG: KASAN: slab-out-of-bounds in vgacon_scroll+0x57a/0x8ed
-> [  334.989588] Write of size 1766 at addr ffff8883de69ff3e by task test/2658
-> [  334.989593]
-> [  334.989608] CPU: 3 PID: 2658 Comm: test Not tainted 5.7.0-rc5-00005-g152036d1379f #789
-> [  334.989617] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
-> [  334.989624] Call Trace:
-> [  334.989646]  dump_stack+0xe4/0x14e
-> [  334.989676]  print_address_description.constprop.5+0x3f/0x60
-> [  334.989699]  ? vgacon_scroll+0x57a/0x8ed
-> [  334.989710]  __kasan_report.cold.8+0x92/0xaf
-> [  334.989735]  ? vgacon_scroll+0x57a/0x8ed
-> [  334.989761]  kasan_report+0x37/0x50
-> [  334.989789]  check_memory_region+0x1c1/0x1e0
-> [  334.989806]  memcpy+0x38/0x60
-> [  334.989824]  vgacon_scroll+0x57a/0x8ed
-> [  334.989876]  con_scroll+0x4ef/0x5e0
-> [  334.989904]  ? lockdep_hardirqs_on+0x5e0/0x5e0
-> [  334.989934]  lf+0x24f/0x2a0
-> [  334.989951]  ? con_scroll+0x5e0/0x5e0
-> [  334.989975]  ? find_held_lock+0x33/0x1c0
-> [  334.990005]  do_con_trol+0x313/0x5ff0
-> [  334.990027]  ? lock_downgrade+0x730/0x730
-> [  334.990045]  ? reset_palette+0x440/0x440
-> [  334.990070]  ? _raw_spin_unlock_irqrestore+0x4b/0x60
-> [  334.990095]  ? notifier_call_chain+0x120/0x170
-> [  334.990132]  ? __atomic_notifier_call_chain+0xf0/0x180
-> [  334.990160]  do_con_write.part.16+0xb2b/0x1b20
-> [  334.990238]  ? do_con_trol+0x5ff0/0x5ff0
-> [  334.990258]  ? mutex_lock_io_nested+0x1280/0x1280
-> [  334.990269]  ? rcu_read_unlock+0x50/0x50
-> [  334.990315]  ? __mutex_unlock_slowpath+0xd9/0x670
-> [  334.990340]  ? lockdep_hardirqs_on+0x3a2/0x5e0
-> [  334.990368]  con_write+0x36/0xc0
-> [  334.990389]  do_output_char+0x561/0x780
-> [  334.990414]  n_tty_write+0x58e/0xd30
-> [  334.990478]  ? n_tty_read+0x1800/0x1800
-> [  334.990500]  ? prepare_to_wait_exclusive+0x300/0x300
-> [  334.990525]  ? __might_fault+0x17a/0x1c0
-> [  334.990557]  tty_write+0x430/0x960
-> [  334.990568]  ? n_tty_read+0x1800/0x1800
-> [  334.990600]  ? tty_release+0x1280/0x1280
-> [  334.990622]  __vfs_write+0x81/0x100
-> [  334.990648]  vfs_write+0x1ce/0x510
-> [  334.990676]  ksys_write+0x104/0x200
-> [  334.990691]  ? __ia32_sys_read+0xb0/0xb0
-> [  334.990708]  ? trace_hardirqs_on_thunk+0x1a/0x1c
-> [  334.990725]  ? trace_hardirqs_off_caller+0x40/0x1a0
-> [  334.990744]  ? do_syscall_64+0x3b/0x5e0
-> [  334.990775]  do_syscall_64+0xc8/0x5e0
-> [  334.990798]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
-> [  334.990811] RIP: 0033:0x44f369
-> [  334.990827] Code: 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> [  334.990834] RSP: 002b:00007ffe9ace0968 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> [  334.990848] RAX: ffffffffffffffda RBX: 0000000000400418 RCX: 000000000044f369
-> [  334.990856] RDX: 0000000000000381 RSI: 0000000020003500 RDI: 0000000000000003
-> [  334.990865] RBP: 00007ffe9ace0980 R08: 0000000020003530 R09: 00007ffe9ace0980
-> [  334.990873] R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000402110
-> [  334.990881] R13: 0000000000000000 R14: 00000000006bf018 R15: 0000000000000000
-> [  334.990937]
-> [  334.990943] The buggy address belongs to the page:
-> [  334.990962] page:ffffea000f79a400 refcount:1 mapcount:0 mapping:000000002bff47b3 index:0x0 head:ffffea000f79a400 order:4 compound_mapcount:0 compound_pincount:0
-> [  334.990973] flags: 0x2fffff80010000(head)
-> [  334.990992] raw: 002fffff80010000 dead000000000100 dead000000000122 0000000000000000
-> [  334.991006] raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-> [  334.991013] page dumped because: kasan: bad access detected
-> [  334.991017]
-> [  334.991023] Memory state around the buggy address:
-> [  334.991034]  ffff8883de6a0000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> [  334.991044]  ffff8883de6a0080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> [  334.991054] >ffff8883de6a0100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc
-> [  334.991061]                                                              ^
-> [  334.991071]  ffff8883de6a0180: fc fc fc fc fc fc 00 00 00 00 00 00 00 00 00 00
-> [  334.991082]  ffff8883de6a0200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> [  334.991088] ==================================================================
->
-> Because vgacon_scrollback_cur->tail plus memcpy size is greater than
-> vgacon_scrollback_cur->size. Fix this by checking the memcpy size.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->   drivers/video/console/vgacon.c | 11 ++++++++---
->   1 file changed, 8 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
-> index 998b0de1812f..b51ffb9a208d 100644
-> --- a/drivers/video/console/vgacon.c
-> +++ b/drivers/video/console/vgacon.c
-> @@ -243,6 +243,7 @@ static void vgacon_scrollback_startup(void)
->   static void vgacon_scrollback_update(struct vc_data *c, int t, int count)
->   {
->   	void *p;
-> +	int size;
->   
->   	if (!vgacon_scrollback_cur->data || !vgacon_scrollback_cur->size ||
->   	    c->vc_num != fg_console)
-> @@ -251,13 +252,17 @@ static void vgacon_scrollback_update(struct vc_data *c, int t, int count)
->   	p = (void *) (c->vc_origin + t * c->vc_size_row);
->   
->   	while (count--) {
-> +		size = vgacon_scrollback_cur->size - vgacon_scrollback_cur->tail;
-> +		if (size > c->vc_size_row)
-> +			size = c->vc_size_row;
-> +
->   		scr_memcpyw(vgacon_scrollback_cur->data +
->   			    vgacon_scrollback_cur->tail,
-> -			    p, c->vc_size_row);
-> +			    p, size);
->   
->   		vgacon_scrollback_cur->cnt++;
-> -		p += c->vc_size_row;
-> -		vgacon_scrollback_cur->tail += c->vc_size_row;
-> +		p += size;
-> +		vgacon_scrollback_cur->tail += size;
->   
->   		if (vgacon_scrollback_cur->tail >= vgacon_scrollback_cur->size)
->   			vgacon_scrollback_cur->tail = 0;
+butt3rflyh4ck reported memory leak found by syzkaller.
+
+A param->string held by exfat_mount_options.
+
+BUG: memory leak
+
+unreferenced object 0xffff88801972e090 (size 8):
+  comm "syz-executor.2", pid 16298, jiffies 4295172466 (age 14.060s)
+  hex dump (first 8 bytes):
+    6b 6f 69 38 2d 75 00 00                          koi8-u..
+  backtrace:
+    [<000000005bfe35d6>] kstrdup+0x36/0x70 mm/util.c:60
+    [<0000000018ed3277>] exfat_parse_param+0x160/0x5e0
+fs/exfat/super.c:276
+    [<000000007680462b>] vfs_parse_fs_param+0x2b4/0x610
+fs/fs_context.c:147
+    [<0000000097c027f2>] vfs_parse_fs_string+0xe6/0x150
+fs/fs_context.c:191
+    [<00000000371bf78f>] generic_parse_monolithic+0x16f/0x1f0
+fs/fs_context.c:231
+    [<000000005ce5eb1b>] do_new_mount fs/namespace.c:2812 [inline]
+    [<000000005ce5eb1b>] do_mount+0x12bb/0x1b30 fs/namespace.c:3141
+    [<00000000b642040c>] __do_sys_mount fs/namespace.c:3350 [inline]
+    [<00000000b642040c>] __se_sys_mount fs/namespace.c:3327 [inline]
+    [<00000000b642040c>] __x64_sys_mount+0x18f/0x230 fs/namespace.c:3327
+    [<000000003b024e98>] do_syscall_64+0xf6/0x7d0
+arch/x86/entry/common.c:295
+    [<00000000ce2b698c>] entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+exfat_free() should call exfat_free_iocharset(), to prevent a leak
+in case we fail after parsing iocharset= but before calling
+get_tree_bdev().
+
+Additionally, there's no point copying param->string in
+exfat_parse_param() - just steal it, leaving NULL in param->string.
+That's independent from the leak or fix thereof - it's simply
+avoiding an extra copy.
+
+Fixes: 719c1e182916 ("exfat: add super block operations")
+Cc: stable@vger.kernel.org # v5.7
+Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ v2:
+   - update patch description in more detail.
+
+ fs/exfat/super.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/fs/exfat/super.c b/fs/exfat/super.c
+index 405717e4e3ea..e650e65536f8 100644
+--- a/fs/exfat/super.c
++++ b/fs/exfat/super.c
+@@ -273,9 +273,8 @@ static int exfat_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 		break;
+ 	case Opt_charset:
+ 		exfat_free_iocharset(sbi);
+-		opts->iocharset = kstrdup(param->string, GFP_KERNEL);
+-		if (!opts->iocharset)
+-			return -ENOMEM;
++		opts->iocharset = param->string;
++		param->string = NULL;
+ 		break;
+ 	case Opt_errors:
+ 		opts->errors = result.uint_32;
+@@ -686,7 +685,12 @@ static int exfat_get_tree(struct fs_context *fc)
+ 
+ static void exfat_free(struct fs_context *fc)
+ {
+-	kfree(fc->s_fs_info);
++	struct exfat_sb_info *sbi = fc->s_fs_info;
++
++	if (sbi) {
++		exfat_free_iocharset(sbi);
++		kfree(sbi);
++	}
+ }
+ 
+ static const struct fs_context_operations exfat_context_ops = {
+-- 
+2.17.1
 
