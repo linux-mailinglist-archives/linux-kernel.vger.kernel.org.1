@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F42361ED6BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 21:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741FA1ED6D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 21:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgFCTVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 15:21:55 -0400
-Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170]:43498 "EHLO
-        rnd-relay.smtp.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726563AbgFCTVw (ORCPT
+        id S1726652AbgFCTXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 15:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgFCTXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 15:21:52 -0400
-Received: from mail-irv-17.broadcom.com (mail-irv-17.lvn.broadcom.net [10.75.242.48])
-        by rnd-relay.smtp.broadcom.com (Postfix) with ESMTP id 8AEC230DD9E;
-        Wed,  3 Jun 2020 12:21:51 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 rnd-relay.smtp.broadcom.com 8AEC230DD9E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1591212111;
-        bh=TD+pvEeaAmIZ4gEFvHmv/B24eOz6zs85BaHEGnwgiAs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RQV5tdrvcUBpnyjuoGF+lntfzqZTtbU2l2Hq2uEmF/D9XGnGEd7lBX+FSQmVpSVBH
-         SGCZEE8SpCy3Nj83zQ67yJrdKMRzKzSwjOO7YUi6bZgxf0S+1R6/GUaHYR4MPQ2Hh8
-         zQ3PqJOFpvnpY1EibZlC+fcLYXLfES5Yt9hR1SBM=
-Received: from stbsrv-and-01.and.broadcom.net (stbsrv-and-01.and.broadcom.net [10.28.16.211])
-        by mail-irv-17.broadcom.com (Postfix) with ESMTP id 006C614008B;
-        Wed,  3 Jun 2020 12:21:49 -0700 (PDT)
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-To:     linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 13/13] PCI: brcmstb: Add bcm7211, bcm7216, bcm7445, bcm7278 to match list
-Date:   Wed,  3 Jun 2020 15:20:45 -0400
-Message-Id: <20200603192058.35296-14-james.quinlan@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200603192058.35296-1-james.quinlan@broadcom.com>
-References: <20200603192058.35296-1-james.quinlan@broadcom.com>
+        Wed, 3 Jun 2020 15:23:08 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B9FC08C5C0
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 12:23:08 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1jgYyg-002dEI-3A; Wed, 03 Jun 2020 19:23:06 +0000
+Date:   Wed, 3 Jun 2020 20:23:06 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [git pull] misc uaccess stuff
+Message-ID: <20200603192306.GX23230@ZenIV.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the support is in place with previous commits, we add several
-chips that use the BrcmSTB driver.
+	uaccess patches that really didn't fit anywhere else.
+kvm_hv_set_msr() patch left as-is; __put_user() is by no means
+final there, but that'll be dealt with along with other KVM
+uaccess stuff next cycle.
 
-Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
----
- drivers/pci/controller/pcie-brcmstb.c | 4 ++++
- 1 file changed, 4 insertions(+)
+The following changes since commit b44f687386875b714dae2afa768e73401e45c21c:
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 131cf0a51398..22dbecb5403c 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -1189,6 +1189,10 @@ static int brcm_pcie_remove(struct platform_device *pdev)
- 
- static const struct of_device_id brcm_pcie_match[] = {
- 	{ .compatible = "brcm,bcm2711-pcie", .data = &bcm2711_cfg },
-+	{ .compatible = "brcm,bcm7211-pcie", .data = &generic_cfg },
-+	{ .compatible = "brcm,bcm7278-pcie", .data = &bcm7278_cfg },
-+	{ .compatible = "brcm,bcm7216-pcie", .data = &bcm7278_cfg },
-+	{ .compatible = "brcm,bcm7445-pcie", .data = &generic_cfg },
- 	{},
- };
- 
--- 
-2.17.1
+  drm/i915/gem: Replace user_access_begin by user_write_access_begin (2020-05-01 12:35:22 +1000)
 
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git uaccess.misc
+
+for you to fetch changes up to 4ec76a2b74c72ef9eed875ce63e27a5e7f8d80cc:
+
+  bpf: make bpf_check_uarg_tail_zero() use check_zeroed_user() (2020-06-01 14:42:37 -0400)
+
+----------------------------------------------------------------
+Al Viro (9):
+      pselect6() and friends: take handling the combined 6th/7th args into helper
+      binfmt_elf: don't bother with __{put,copy_to}_user()
+      binfmt_elf_fdpic: don't use __... uaccess primitives
+      binfmt_flat: don't use __put_user()
+      x86: switch cp_stat64() to unsafe_put_user()
+      TEST_ACCESS_OK _never_ had been checked anywhere
+      user_regset_copyout_zero(): use clear_user()
+      x86: kvm_hv_set_msr(): use __put_user() instead of 32bit __clear_user()
+      bpf: make bpf_check_uarg_tail_zero() use check_zeroed_user()
+
+ arch/x86/include/asm/pgtable_32.h |   7 ---
+ arch/x86/kernel/sys_ia32.c        |  40 ++++++++------
+ arch/x86/kvm/hyperv.c             |   2 +-
+ fs/binfmt_elf.c                   |  14 ++---
+ fs/binfmt_elf_fdpic.c             |  31 +++++++----
+ fs/binfmt_flat.c                  |  22 +++++---
+ fs/select.c                       | 112 ++++++++++++++++++++++----------------
+ include/linux/regset.h            |   2 +-
+ kernel/bpf/syscall.c              |  25 ++-------
+ 9 files changed, 134 insertions(+), 121 deletions(-)
