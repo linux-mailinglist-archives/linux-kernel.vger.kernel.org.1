@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D49F1EC776
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58821EC77E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725965AbgFCCke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 22:40:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgFCCkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 22:40:33 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06A9D207D0;
-        Wed,  3 Jun 2020 02:40:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591152032;
-        bh=galU+TbrEMo5WB4a5HGyMfhGT2sAl6XMZu1G4GrtAEE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RjB6Bkr4JWWY2VmsQVplBrRR8O7YyqKy9fYq5NbDWi6n80P1H02dqkpMZ0YGiOqAQ
-         /sn346e0Q9kdcTrHSREvA/XT97dbDPQ6JqwlTAcnob7si0qxqSyZc8ZTbKF1nVKWho
-         GxgN/W4wsuaSuaP9jxflIfjz4XPvjL83qSV+vRjY=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v3 3/7] selftests/ftrace: Add "requires:" list support
-Date:   Wed,  3 Jun 2020 11:40:28 +0900
-Message-Id: <159115202852.70027.5148306109647589587.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <159115200085.70027.6141550347953439240.stgit@devnote2>
-References: <159115200085.70027.6141550347953439240.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1726032AbgFCCk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 22:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbgFCCk5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 22:40:57 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61182C08C5C2
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Jun 2020 19:40:56 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id m18so770160ljo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 19:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zTgMCCg/n7vIKmnl7JnJOYWZtJtsVV/Gf24uT9lr2Aw=;
+        b=QcTPtcnEFRe4wGMNruzjSvrdchyjYkSAIk5hEnLYVqjEeoZ4zrQs/W1xUpzehhnR8c
+         P327F8+VJu1M6lTDNEqANb4RW5ovuuGTM3+tD1GzoEYxzJget2it2p/ORrwwDG6+0K97
+         N/TKfXmUqCnobORfjbBlOHbJDMbbld37vZe0A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zTgMCCg/n7vIKmnl7JnJOYWZtJtsVV/Gf24uT9lr2Aw=;
+        b=fRApITz354Hm6e2RkJ/GxWDJrx0aB1Z1z0M01VQRLZMX1rZFOKWX586oQwmOGSaSJO
+         IqL68HFXG5JBELQ8KsV2FXBTf8QU6qvfrMV4OGnL3lf2d+HYZnNDKEPgRdSsgKo9Bsi4
+         IFZIhRtBycNzwSo6uKfxBFrLx7LpKhlZmAk5bcfe0mMr04aaA6EIePNlvUJDRsJ+hA65
+         ZSO+7yPUYYJB02IxWPOPEYstx3VamXjwzBJ7jShz6xou5fmlZc9lxtuf+ktoBFH579UJ
+         7uYxIplJaXIncmZgYW/VjhXiuXac21h0SPK4lz5pEBS2INd3DwQascSpG7/ZoZDRzI73
+         zzjg==
+X-Gm-Message-State: AOAM531p25cZmK+tGaG+Rm/UaZNaWDjz2VKt+YSWfh2/lXzgyhT6oLlw
+        7uPRrJk4cKCL5Aq+rj0EY9ud+3PMIGo=
+X-Google-Smtp-Source: ABdhPJxZLK0SP7nyASnDV2y4o/1AkBbu7ur2neuonZm3gDg072PWBzxANyfNUpWHoPQ71cifCc24zQ==
+X-Received: by 2002:a2e:9081:: with SMTP id l1mr980156ljg.81.1591152053712;
+        Tue, 02 Jun 2020 19:40:53 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id t4sm164364ljo.36.2020.06.02.19.40.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jun 2020 19:40:52 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id h188so317217lfd.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jun 2020 19:40:51 -0700 (PDT)
+X-Received: by 2002:a05:6512:62:: with SMTP id i2mr1173928lfo.152.1591152051293;
+ Tue, 02 Jun 2020 19:40:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20200602162644.GE8204@magnolia>
+In-Reply-To: <20200602162644.GE8204@magnolia>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 2 Jun 2020 19:40:35 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgeiqB0TH_V2uTd2CX2hks+3TW344j73ftJFjqUteTxXA@mail.gmail.com>
+Message-ID: <CAHk-=wgeiqB0TH_V2uTd2CX2hks+3TW344j73ftJFjqUteTxXA@mail.gmail.com>
+Subject: Re: [GIT PULL] xfs: new code for 5.8 (now with fixed To line)
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce "requires:" list to check required ftrace interface
-for each test. This will simplify the interface checking code
-and unify the error message. Another good point is, it can
-skip the ftrace initializing.
+On Tue, Jun 2, 2020 at 9:26 AM Darrick J. Wong <djwong@kernel.org> wrote:
+>
+> fs/xfs/xfs_log_recover.c                           | 2561 ++------------------
+>  102 files changed, 4244 insertions(+), 4817 deletions(-)
 
-Note that this requires list must be written as a shell
-comment.
+Interestingly, the changes to that xfs_log_recover.c file really seem
+to break the default git diff algorithm (the linear-space Myers'
+algorithm)
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Reviewed-by: Tom Zanussi <zanussi@kernel.org>
----
- Changes in v3:
-  - Fixes a comment in template file.
----
- tools/testing/selftests/ftrace/ftracetest       |    8 +++++++-
- tools/testing/selftests/ftrace/test.d/functions |    9 +++++++++
- tools/testing/selftests/ftrace/test.d/template  |    1 +
- 3 files changed, 17 insertions(+), 1 deletion(-)
+The default settings give me
 
-diff --git a/tools/testing/selftests/ftrace/ftracetest b/tools/testing/selftests/ftrace/ftracetest
-index d3f6652311ef..cdf7940b6610 100755
---- a/tools/testing/selftests/ftrace/ftracetest
-+++ b/tools/testing/selftests/ftrace/ftracetest
-@@ -267,6 +267,11 @@ testcase() { # testfile
-   prlog -n "[$CASENO]$INSTANCE$desc"
- }
- 
-+checkreq() { # testfile
-+  requires=`grep "^#[ \t]*requires:" $1 | cut -f2- -d:`
-+  check_requires $requires
-+}
-+
- test_on_instance() { # testfile
-   grep -q "^#[ \t]*flags:.*instance" $1
- }
-@@ -356,7 +361,8 @@ trap 'SIG_RESULT=$XFAIL' $SIG_XFAIL
- 
- __run_test() { # testfile
-   # setup PID and PPID, $$ is not updated.
--  (cd $TRACING_DIR; read PID _ < /proc/self/stat; set -e; set -x; initialize_ftrace; . $1)
-+  (cd $TRACING_DIR; read PID _ < /proc/self/stat; set -e; set -x;
-+   checkreq $1; initialize_ftrace; . $1)
-   [ $? -ne 0 ] && kill -s $SIG_FAIL $SIG_PID
- }
- 
-diff --git a/tools/testing/selftests/ftrace/test.d/functions b/tools/testing/selftests/ftrace/test.d/functions
-index 697c77ef2e2b..5100eb1ada0f 100644
---- a/tools/testing/selftests/ftrace/test.d/functions
-+++ b/tools/testing/selftests/ftrace/test.d/functions
-@@ -113,6 +113,15 @@ initialize_ftrace() { # Reset ftrace to initial-state
-     enable_tracing
- }
- 
-+check_requires() { # Check required files
-+    for i in $* ; do
-+        if [ ! -e $i ]; then
-+            echo "Required feature interface $i doesn't exist."
-+            exit_unsupported
-+        fi
-+    done
-+}
-+
- LOCALHOST=127.0.0.1
- 
- yield() {
-diff --git a/tools/testing/selftests/ftrace/test.d/template b/tools/testing/selftests/ftrace/test.d/template
-index e1a5d14c4eaf..611423c4e75f 100644
---- a/tools/testing/selftests/ftrace/test.d/template
-+++ b/tools/testing/selftests/ftrace/test.d/template
-@@ -1,6 +1,7 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
- # description: %HERE DESCRIBE WHAT THIS DOES%
-+# requires: %HERE LIST THE REQUIRED FILES%
- # you have to add ".tc" extention for your testcase file
- # Note that all tests are run with "errexit" option.
- 
+ fs/xfs/xfs_log_recover.c                           | 2801 ++------------------
+ 102 files changed, 4366 insertions(+), 4939 deletions(-)
 
+which is not very close to yours. With the extra effort "--minimal" I get
+
+ fs/xfs/xfs_log_recover.c                           | 2561 ++------------------
+ 102 files changed, 4246 insertions(+), 4819 deletions(-)
+
+but based on your output, I suspect you used "--patience", which gives that
+
+ fs/xfs/xfs_log_recover.c                           | 2561 ++------------------
+ 102 files changed, 4244 insertions(+), 4817 deletions(-)
+
+output (the difference there wrt minimal came from
+fs/xfs/libxfs/xfs_symlink_remote.c).
+
+I'm used to seeing small differences in the line counts due to
+different diff heuristics, but that 250 line difference for
+"--patience" is more than you usually get.
+
+None of this matters, and I'm not at all suggesting you change any of
+your workflow.
+
+I'm just commenting because I was going "why am I not getting a
+matching diffstat", and while I'm used to seeing small differences
+from diff algorithms, that 240 line-count change was really a lot more
+than I normally encounter.
+
+                      Linus
