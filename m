@@ -2,101 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938181ECFC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8F51ECFCA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726026AbgFCMaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:30:19 -0400
-Received: from mga17.intel.com ([192.55.52.151]:6777 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725881AbgFCMaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:30:18 -0400
-IronPort-SDR: mzLxJgDCc1jin961NoBpKHKKI3RXCCcIssvl2/EeWvFJHJQl7GOHRfnWkQhpcT4fV3ZQKUqHLc
- YVYIwP/odX2g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 05:30:18 -0700
-IronPort-SDR: JVUYKk74Vv4yFnMsCovo0oLQfyJSMv/RS1AwGoX0JoTMrqMlNgbE2WU/dkGPNcS7y+7o/AoWVS
- RhLTcjNSQB3g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,467,1583222400"; 
-   d="scan'208";a="378091067"
-Received: from irsmsx108.ger.corp.intel.com ([163.33.3.3])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Jun 2020 05:30:16 -0700
-Received: from irsmsx106.ger.corp.intel.com ([169.254.8.48]) by
- IRSMSX108.ger.corp.intel.com ([169.254.11.35]) with mapi id 14.03.0439.000;
- Wed, 3 Jun 2020 13:30:15 +0100
-From:   "Hunter, Adrian" <adrian.hunter@intel.com>
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-CC:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6 01/13] tools/libperf: introduce notion of static
- polled file descriptors
-Thread-Topic: [PATCH v6 01/13] tools/libperf: introduce notion of static
- polled file descriptors
-Thread-Index: AQHWOZufBHuZt2+nWEeHvmY9kWmS3KjGuYOAgAAGMoCAABJP0A==
-Date:   Wed, 3 Jun 2020 12:30:15 +0000
-Message-ID: <363DA0ED52042842948283D2FC38E464B4151F86@IRSMSX106.ger.corp.intel.com>
-References: <f8e3a714-d9b1-4647-e1d2-9981cbaa83ec@linux.intel.com>
- <40643542-6676-e0bc-2d10-165dfde41e29@linux.intel.com>
- <33c91520-7040-bd6b-b176-004ddbec2a63@intel.com>
- <b04311d6-b1c6-d625-b227-9ae4f4370626@linux.intel.com>
- <eb31a2a4-ab3b-54a7-2d5a-51457f78394e@intel.com>
-In-Reply-To: <eb31a2a4-ab3b-54a7-2d5a-51457f78394e@intel.com>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [163.33.239.181]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726074AbgFCMbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726050AbgFCMb2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 08:31:28 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62077C08C5C0;
+        Wed,  3 Jun 2020 05:31:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1R/2YdAZSvt3VyvYBxysqrGCsIyLuWCrDG39UYVf7Wo=; b=B5HfY2k7oWgDgwYI4Ho2MRl72v
+        qRcxT5aVUTiZPip/orNqNpF2m5BQLkMvGTG/FQRd5dR00vVEVUv+s+GOWOrVY855oa3PQTYNmiDAt
+        Rwbv3/Kw7Ne/csOfPykzVrbSrLpQ7KLWd6ShCnyfDYwKjXkGPV2DzfKs9UW+jC6NyEzb0R1o3Qfps
+        /QSf2uDzRTGeaBa5itJc6lBDDJ/LjgaFzGLfHnj4V2Kfw0mRDNDVYH7ptFqDv/ZMUOlg+UQCyiC8h
+        26OdfkOmk6iopJPpDhdl/qI+e029JYR0Vxomnpz64CpaX5WFJB+RAcatXi2HfLZ9cxj7AL94feeO0
+        Yz5hLKtg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jgSXx-0006oY-9w; Wed, 03 Jun 2020 12:31:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 277C4301ABC;
+        Wed,  3 Jun 2020 14:31:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 11B2B20BDBF72; Wed,  3 Jun 2020 14:31:03 +0200 (CEST)
+Date:   Wed, 3 Jun 2020 14:31:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Subject: Re: [PATCH v2 0/3] More frequency invariance fixes for x86
+Message-ID: <20200603123103.GI2604@hirez.programming.kicks-ass.net>
+References: <20200531182453.15254-1-ggherdovich@suse.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200531182453.15254-1-ggherdovich@suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSHVudGVyLCBBZHJpYW4g
-PGFkcmlhbi5odW50ZXJAaW50ZWwuY29tPg0KPiBTZW50OiBXZWRuZXNkYXksIEp1bmUgMywgMjAy
-MCAzOjI0IFBNDQo+IFRvOiBBbGV4ZXkgQnVkYW5rb3YgPGFsZXhleS5idWRhbmtvdkBsaW51eC5p
-bnRlbC5jb20+DQo+IENjOiBBcm5hbGRvIENhcnZhbGhvIGRlIE1lbG8gPGFjbWVAa2VybmVsLm9y
-Zz47IEppcmkgT2xzYQ0KPiA8am9sc2FAcmVkaGF0LmNvbT47IE5hbWh5dW5nIEtpbSA8bmFtaHl1
-bmdAa2VybmVsLm9yZz47IEFsZXhhbmRlcg0KPiBTaGlzaGtpbiA8YWxleGFuZGVyLnNoaXNoa2lu
-QGxpbnV4LmludGVsLmNvbT47IFBldGVyIFppamxzdHJhDQo+IDxwZXRlcnpAaW5mcmFkZWFkLm9y
-Zz47IEluZ28gTW9sbmFyIDxtaW5nb0ByZWRoYXQuY29tPjsgQW5kaSBLbGVlbg0KPiA8YWtAbGlu
-dXguaW50ZWwuY29tPjsgbGludXgta2VybmVsIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
-Pg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY2IDAxLzEzXSB0b29scy9saWJwZXJmOiBpbnRyb2R1
-Y2Ugbm90aW9uIG9mIHN0YXRpYyBwb2xsZWQNCj4gZmlsZSBkZXNjcmlwdG9ycw0KPiANCj4gT24g
-My8wNi8yMCAzOjAxIHBtLCBBbGV4ZXkgQnVkYW5rb3Ygd3JvdGU6DQo+ID4gSGksDQo+ID4NCj4g
-PiBPbiAwMy4wNi4yMDIwIDE0OjM4LCBBZHJpYW4gSHVudGVyIHdyb3RlOg0KPiA+PiBPbiAxLzA2
-LzIwIDExOjA1IHBtLCBBbGV4ZXkgQnVkYW5rb3Ygd3JvdGU6DQo+ID4+Pg0KPiA+Pj4gSW1wbGVt
-ZW50IGFkZGluZyBvZiBmaWxlIGRlc2NyaXB0b3JzIGJ5IGZkYXJyYXlfX2FkZF9zdGF0KCkgdG8N
-Cj4gPj4+IGZpeC1zaXplZCAoY3VycmVudGx5IDEpIHN0YXRfZW50cmllcyBhcnJheSBsb2NhdGVk
-IGF0IHN0cnVjdCBmZGFycmF5Lg0KPiA+Pj4gQXBwZW5kIGFkZGVkIGZpbGUgZGVzY3JpcHRvcnMg
-dG8gdGhlIGFycmF5IHVzZWQgYnkgcG9sbCgpIHN5c2NhbGwNCj4gPj4+IGR1cmluZyBmZGFycmF5
-X19wb2xsKCkgY2FsbC4gQ29weSBwb2xsKCkgcmVzdWx0IG9mIHRoZSBhZGRlZA0KPiA+Pj4gZGVz
-Y3JpcHRvcnMgZnJvbSB0aGUgYXJyYXkgYmFjayB0byB0aGUgc3RvcmFnZSBmb3Igc2VwYXJhdGUg
-YW5hbHlzaXMuDQo+ID4+DQo+ID4+IFdoeSBub3QgaW5zdGVhZCBjYWxsIGV2bGlzdF9fYWRkX3Bv
-bGxmZCgpIGJlZm9yZSBvdGhlciBmZHMgYXJlIGFkZGVkLA0KPiA+PiBzbyB0aGUgZmRhLT5lbnRy
-aWVzW10gcG9zaXRpb24gaXMgYWx3YXlzIGZpeGVkLiBUaGVuIHRoaXMgcGF0Y2ggaXMgbm90DQo+
-IG5lZWRlZC4NCj4gPg0KPiA+IEl0IHRoZW4gd2lsbCBibG9jayBldmVudCBjb25zdW1wdGlvbiBs
-b29wLCBhdCBsZWFzdCBpbiByZWNvcmQgbW9kZSwNCj4gPiBkdWUgdG8gY2hhbmdlIHNpbiBpbml0
-aWFsIGFzc3VtcHRpb25zIGJlaGluZCBmZGFycmF5X19maWx0ZXIoKS4gU28NCj4gPiBleHRlbnNp
-b24gb2YgdGhlIEFQSSB3aXRoICdzdGF0aWMnIGZkcyBsb29rcyBzYWZlciB3LnIudC4gcG9zc2li
-bGUNCj4gPiBmdW5jdGlvbmFsIHJlZ3Jlc3Npb25zIGF0IHRoZSBzYW1lIHRpbWUgZXh0ZW5kaW5n
-IHRoZSBBUEkgd2l0aCBhYmlsaXR5DQo+ID4gdG8gYXRvbWljYWxseSB3YWl0IGZvciAocG9sbCgp
-KSBub3Qgb25seSBldmVudCBmZHMgYnV0IGFsc28gYW55IG90aGVyIGZkcw0KPiBkdXJpbmcgbW9u
-aXRvcmluZy4NCj4gDQo+IFNvIG1ha2UgZmRhcnJheV9fZmlsdGVyKCkgcmV0dXJuIHRoZSBudW1i
-ZXIgb2YgZmlsdGVyYWJsZSBmZHMgcmVtYWluaW5nLg0KPiANCg0KDQpPciBwZXJoYXBzIHNpbXBs
-ZXIsIGNvbXBhcmUgdGhlIHJldHVybiB2YWx1ZSB0byB0aGUgbnVtYmVyIG9mIGZkcyB0aGF0IGFy
-ZSBrbm93biBub3QgdG8gYmUgZmlsdGVyYWJsZQ0K
+On Sun, May 31, 2020 at 08:24:50PM +0200, Giovanni Gherdovich wrote:
+> changes wrt v1:
+> 
+> - add Peter Zijlstra's code to check for multiplication overflow, see
+>   https://lore.kernel.org/lkml/20200501133042.GE3762@hirez.programming.kicks-ass.net/
+> - put all frequence invariant code behind CONFIG_X86_64, as the overflow
+>   checks need 64 bits operations, see the build error at
+>   https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/7GDIBOMNVDG5W2XZD4EICE2TUZR3THBN/
+> - add additional patch to check for when base_freq > turbo_freq,
+>   suggested by Peter Zijlstra at
+>   https://lore.kernel.org/lkml/20200501130427.GD3762@hirez.programming.kicks-ass.net/
+
+Thanks!
