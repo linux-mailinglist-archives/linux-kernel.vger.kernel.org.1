@@ -2,106 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC521ED637
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 20:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D0F1ED63A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 20:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726034AbgFCSgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 14:36:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbgFCSgw (ORCPT
+        id S1726134AbgFCShR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 14:37:17 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:19195 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgFCShQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 14:36:52 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C176C08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 11:36:52 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id j7so1638630qvp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 11:36:52 -0700 (PDT)
+        Wed, 3 Jun 2020 14:37:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1591209435; x=1622745435;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=cLJ/qa747wF9Fe+WFhnXCutuePuobeRnZG8cjfIbMUA=;
+  b=Gj7ra8p5sj4wsWEXjf9KDbgXZDcqDB8NI7aEbDB1IPb+vh7NUqg7Rgst
+   byzgXWMEtZ/R6dOJFwh3Cx10JMkoQ3FZmjgQF/vcYOu7UfVeFU5qHm52r
+   3u5YXX1dIOHUAphMXYxt+c9L27qJA4gx9/GYn+2Bkq8QG++gbmbjGSPZr
+   zjqQneFy5GijNQu84sn1A5XoXASf4JfmriW8zXYlQahqe/elfYR4PDExq
+   CrFxem1tyTCeEpTGTccgSz/AncYea45by+wBsQLoPr2ZQeZu8E4ASFA/M
+   S757otWzCKTgxX+MqoT6WPxGXguiM1HwAfrJKJ8YaGJUzPj9gdRI899YW
+   w==;
+IronPort-SDR: G85FKuQVx2QTtvyyGTuNh0tINKIFhlMHc2Qhr7TiEA2DIsIDxU/1CQ8PfBvbb7rqUMS+E5Qwzh
+ ZpxZlNOee8KugjsAAMWuztoVl+u6da0v95O4/8VitBu2gzFg2RKEOtcEyowzNfV/3pMb6i1K4L
+ TFUNjWy36QPpXeCDus5THww4aHrMoFTwYqOEQZYcph2Kc+aZD7Ud0WoMK+DRNMHG+BtFvvGicP
+ BrkiIyfXo+FwOjQhJTVGtkaCqxN4NuY2iX/SblQdJiNzT4fv3jeabzy/4SLjXYFsiTSGOAsHH0
+ MB0=
+X-IronPort-AV: E=Sophos;i="5.73,468,1583218800"; 
+   d="scan'208";a="77251033"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Jun 2020 11:37:14 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 3 Jun 2020 11:37:13 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Wed, 3 Jun 2020 11:37:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mSYgl3DLUHydPs3wLvywMpsW7Tg7ORd1pBXupQ8U570iDYq82JZfR9erepwSO7CVFAPycqO3pRQYgq8OeS4CYYa/4R//9x6lpwJOd7A/v6YMCEim5gv1VpB9bwDn5a3faPjoMsvle2Z9JF94rETo+2gazeqTqRcghOFn/UnZrcdRIYicgjcp5y0P3xLbsSbmxt36khCTqhjO0K/WNeO2wykqTL7jwGS0O6ByG5OP/TbpRLayBLjBVzEzlDaOMdFcbwJeERFXXzI+ogYjal6vhr4ocoxpxNcEgizpYP5u0AIREs2D9GaNfcQnV6T5KmutQ55l893/jVV19rJg82Kovg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=egULetR9boTFQ9ntxzxj8MXMMDSBJ+0kUGP2729lzX4=;
+ b=fEgrn2DtWA3KpYk5t4msDT9AKbUWLqB2GFIlzhzbumjeS8+Ajh6jbMqHB93jAXCv9eF0j2bTRFSmFVpnwkLG+BZYPOtn+lNEtKojFMWRvo1DGvgUR1uMfCdcSzwkUtImtEDHTU7n77upUN/rRq53ZLxyHXC4mVDIkDACbGyOIi5CjNDneb7giR9iXXzioYaVy1ehhbEVKzyB/7EWgGI34l9wbbwgmO6BC6CPTxU5eK9Pj5rmt2E/RdE8SYlHHIcdjmli648SFzhTHZnfvkVQOaB7XnzGpI7qidsGU3oQvLoZXiiteYx3441cdJbzLNb+sFtLDvuRrz9JrMhwldv1xQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m0rQ25Og4KY67XYe+Rp/bn9zFlsT+AzGVQ1QokPo2LI=;
-        b=UrFdmmKr38oQJnGeMSKPQDnYV5MOF6hN3NmIRhve2nLp8UI3hW+i5z082y6E5pvd05
-         76amIpm7FGJoaVijfEGwCShv48zdZ0W4lP8GE4ukxay7gLBqddncOQAGAEUltBDEYrkk
-         i0gNcX3r+zW1RpZBEr9iTJPPu0gQeO6knUXi/NOBTCHwm7elDgThK4kaGHky8FvLreTE
-         10ugU8WYd9sGv7QbLMfM9agMZGbxRJruu/C0g6DB1fIgSYg2uol828JSYBRJZ+OxM2OX
-         eyOnkj/D0FLfu4GB60mpPFXt1ZEvS721uTlge5+kEVvswAC7V1YeMsENm0PWvemibW5q
-         Z31Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m0rQ25Og4KY67XYe+Rp/bn9zFlsT+AzGVQ1QokPo2LI=;
-        b=psnIMA8gZBVW8MC9R9JyU2quxItp2ZjizOzsM2W6WeuYoxFRvmodE+FZ5TMBgb6jnA
-         topES8RQVzA9yqmmbo6JLt6u+N4rX4j/Au/zvsoZqFo9wjgGFBzTzBRxceSe/Q0VP65M
-         ZVHkG1YO6hbQ4Xl/LmZPxtiMmBDcXn9boyN1NkahqzteZX/+tdQUMSR+pWaK+tMMDHb4
-         +AZwBgcfxSZ9LoMPe2jjXClpVpm3hW20WgOQIXomFFCAInGTLoDJwhnKN7nuxXm3oiBl
-         LAPD1alj2Ph/s9ek2CXRwX5734gi7UOWRfEaNXx+dwIxSvlNEPuTW4F0TXsNKFK7kUus
-         ffPw==
-X-Gm-Message-State: AOAM5319MoW9EAfffM760EIKLaWf54zsy8mgSfHSk41q/7t02kOXhe8W
-        Df08xRsTr5DmyXdWS60lHTcoKw==
-X-Google-Smtp-Source: ABdhPJyszoT0ZrWarMb/dYpGDGoltgyIIt9hGLvyv5t1wF1VrmyYpDnGTIJiTHW/1DcvjIgdM6CevA==
-X-Received: by 2002:ad4:56e3:: with SMTP id cr3mr1169655qvb.175.1591209411506;
-        Wed, 03 Jun 2020 11:36:51 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id x13sm2178986qkj.36.2020.06.03.11.36.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 11:36:50 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jgYFu-000qna-GW; Wed, 03 Jun 2020 15:36:50 -0300
-Date:   Wed, 3 Jun 2020 15:36:50 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Wang Hai <wanghai38@huawei.com>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, khlebnikov@yandex-team.ru,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: kobject_init_and_add is easy to misuse
-Message-ID: <20200603183650.GI6578@ziepe.ca>
-References: <20200602115033.1054-1-wanghai38@huawei.com>
- <20200602121035.GL19604@bombadil.infradead.org>
- <1591111514.4253.32.camel@HansenPartnership.com>
- <20200602173603.GB3579519@kroah.com>
- <1591127656.16819.7.camel@HansenPartnership.com>
- <20200602200756.GA3933938@kroah.com>
- <1591134670.16819.18.camel@HansenPartnership.com>
- <20200603002205.GE6578@ziepe.ca>
- <1591207475.4462.41.camel@HansenPartnership.com>
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=egULetR9boTFQ9ntxzxj8MXMMDSBJ+0kUGP2729lzX4=;
+ b=RdCecKU2I5pNB+/wr65X6dI6nKp0oJxGAqUlcyCgg+KvG2MPIDE5oQylh3vXQBTLaWxFckOPpqDUfEYmID/ZKT87tU1Uo3dl6SUV50ZzMyB3pOfAD3pbD9804fqFpgpKG6yUtV7JEe43bkxQlX+qMkOuESPIJJ9pz6VFZqWxImk=
+Received: from SN6PR11MB2848.namprd11.prod.outlook.com (2603:10b6:805:5d::20)
+ by SN6PR11MB3230.namprd11.prod.outlook.com (2603:10b6:805:b8::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21; Wed, 3 Jun
+ 2020 18:37:12 +0000
+Received: from SN6PR11MB2848.namprd11.prod.outlook.com
+ ([fe80::5907:a4c5:ee9b:8cde]) by SN6PR11MB2848.namprd11.prod.outlook.com
+ ([fe80::5907:a4c5:ee9b:8cde%7]) with mapi id 15.20.3045.022; Wed, 3 Jun 2020
+ 18:37:12 +0000
+From:   <Don.Brace@microchip.com>
+To:     <viro@zeniv.linux.org.uk>, <torvalds@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <don.brace@microsemi.com>, <linux-scsi@vger.kernel.org>
+Subject: RE: [PATCHES] uaccess hpsa
+Thread-Topic: [PATCHES] uaccess hpsa
+Thread-Index: AQHWNhJ3VNoomsaOeEeeBRTBzDDm+ajHJEVw
+Date:   Wed, 3 Jun 2020 18:37:11 +0000
+Message-ID: <SN6PR11MB2848F6299FBA22C75DF05218E1880@SN6PR11MB2848.namprd11.prod.outlook.com>
+References: <20200528234025.GT23230@ZenIV.linux.org.uk>
+ <20200529233923.GL23230@ZenIV.linux.org.uk>
+In-Reply-To: <20200529233923.GL23230@ZenIV.linux.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: zeniv.linux.org.uk; dkim=none (message not signed)
+ header.d=none;zeniv.linux.org.uk; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [76.30.211.63]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2957550a-f560-4234-1de6-08d807ed2158
+x-ms-traffictypediagnostic: SN6PR11MB3230:
+x-microsoft-antispam-prvs: <SN6PR11MB32305184366C82ED8EA99700E1880@SN6PR11MB3230.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:88;
+x-forefront-prvs: 04238CD941
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: x3dpf+j1eIfxCKUjlSqZMGOakKJXXZv94DCtjymLyzCxhtT6TmNX4EiA1fDiVkMAATmGc29toYLrdI1W4LHVxQTHI4o3yHRctBsyS6E9Jbu3lQEYcCRfk7R2jwEzgrPxHewA1QkET5wKFli16PehUqzjULd/iYwl/1mDd5fgISmesbPSmROqoMgF9evWfk2btKe9uQN/X4+cSrVc03rNpmDWu3DETUZk9/JT99jMFdDPhejrL55fB1ekj3M9svUQhggMVroFhptdpGueZWkIfr0UHC8/Sli695ZVePZL1ZyCWANoHgKIidjITasWoYE0mLwBYtYZcR5MOfdItCC2SQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2848.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(376002)(396003)(346002)(136003)(39860400002)(66476007)(33656002)(7696005)(66556008)(6506007)(64756008)(53546011)(76116006)(2906002)(26005)(66446008)(52536014)(186003)(478600001)(83380400001)(8936002)(4326008)(86362001)(9686003)(66946007)(71200400001)(4744005)(5660300002)(316002)(55016002)(54906003)(8676002)(110136005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: ZDTQaP3QQxZdKZ2kUQutdmXoImLzF+LIGc2fGr7RHMIHG/XYfWMSA+gKOxFNk2QZPWfWihLw35AyfU7+306oP+l8rTkOIHrsOfo3M2nosOj1ECXORtof41z99c4+VuRm6LRppmnH9rGJhLIj/Xmj5TpuTURs7yWExjooaXKnYhokF0tOZGIkH0mshjbcfP0KiLPzu9M0nMIKBDn8XudMCVS9N+zwiUsQH+ZtBCvWCGvYAAmfDQDtSEJ8Qr9pBRmRB17oXrCiaaBjG+KQLl644Efu31pEq4flsZbt2b3C8HQMdqR7cyH3j8j1cwN4XqCyE5zWptvZPQc73ilQI6+tSgUSADwWay0c6D6Urq1UnNmq6m1BYt4SOYpw1u0RbxAq0YXaC8NFYcz4RjxjhCkwIGmmtgcHHQ0fyjyaBJT1gYSS1G2H3VW0ofFUYAVeiWmg+7VTT0e0YOuMuXrbv1V+Eihrb5aZ9yC7X0QJjVntwEo=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1591207475.4462.41.camel@HansenPartnership.com>
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2957550a-f560-4234-1de6-08d807ed2158
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2020 18:37:11.9762
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RAgePfZkoEPXVjtNUIs8y3465Tq+clayFcUGnYZ9p8Z0Vc0PYdF60C6oDR6gOcqK9z99WQIKQMe+M6Zojd6b8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3230
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 11:04:35AM -0700, James Bottomley wrote:
-> On Tue, 2020-06-02 at 21:22 -0300, Jason Gunthorpe wrote:
-> > On Tue, Jun 02, 2020 at 02:51:10PM -0700, James Bottomley wrote:
-> > 
-> > > My first thought was "what?  I got suckered into creating a patch",
-> > > thanks ;-)  But now I look, all the error paths do unwind back to
-> > > the initial state, so kfree() on error looks to be completely
-> > > correct. 
-> > 
-> > It doesn't fully unwind if the kobject is put into a kset, then
-> > another thread can get the kref during kset_find_obj() and kfree()
-> > won't wait for the kref to go to 0. It must use put.
-> 
-> That does seem a bit contrived: the only failure kobject_add_internal()
-> can get after kobj_kset_join() is from directory creation.  If
-> directory creation fails, no name appears in sysfs and no event for the
-> name is sent, how did another thread get the name to pass in to
-> kset_find_obj()?
+-----Original Message-----
+From: linux-scsi-owner@vger.kernel.org [mailto:linux-scsi-owner@vger.kernel=
+.org] On Behalf Of Al Viro
+Sent: Friday, May 29, 2020 6:39 PM
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org; linux-fsdevel@vger.kernel.org; Don Brace =
+<don.brace@microsemi.com>; linux-scsi@vger.kernel.org
+Subject: [PATCHES] uaccess hpsa
 
-The other thread just guesses in a hostile way? 
+        hpsa compat ioctl done (hopefully) saner.  I really want to kill co=
+mpat_alloc_user_space() off - it's always trouble and for a driver-private =
+ioctls it's absolutely pointless.
 
-Eg it looks like the iommu stuff just feeds in user data to
-kobj_kset_join().
+        The series is in vfs.git #uaccess.hpsa, based at v5.7-rc1
 
-Jason
+Al Viro (4):
+      hpsa passthrough: lift {BIG_,}IOCTL_Command_struct copy{in,out} into =
+hpsa_ioctl()
+      hpsa: don't bother with vmalloc for BIG_IOCTL_Command_struct
+      hpsa: get rid of compat_alloc_user_space()
+      hpsa_ioctl(): tidy up a bit
+
+Acked-by: Don Brace <don.brace@microsemi.com>
+Tested-by: Don Brace <don.brace@microsemi.com>
+
+
+ drivers/scsi/hpsa.c | 199 ++++++++++++++++++++++++------------------------=
+----
+ 1 file changed, 90 insertions(+), 109 deletions(-)
+
