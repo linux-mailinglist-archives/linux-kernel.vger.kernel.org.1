@@ -2,63 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0681ED192
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 15:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6B91ED171
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 15:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725981AbgFCN5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 09:57:45 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51950 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgFCN5p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 09:57:45 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jgTtm-000436-HO; Wed, 03 Jun 2020 13:57:42 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] input: alps: remove redundant assignment to variable ret
-Date:   Wed,  3 Jun 2020 14:57:42 +0100
-Message-Id: <20200603135742.130852-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S1726142AbgFCNvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 09:51:40 -0400
+Received: from mga11.intel.com ([192.55.52.93]:33487 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725882AbgFCNvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 09:51:40 -0400
+IronPort-SDR: DsN0y61Xs6ZH4srtPzbK4n/gjheE0Ois0c8Y25do0ilmfccxcUSSBp9K4WzRxaQlgfp1SF/0bf
+ LqMV9B10mM/Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 06:51:39 -0700
+IronPort-SDR: catGTPvQvQK+7mQSyl66XozjADBtn4hRlUTcrYgCvxFUFmManVSiAbf9+u2MvVXhHuig3+r5Sn
+ lIIA0JZnKQag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,467,1583222400"; 
+   d="scan'208";a="269082010"
+Received: from marshy.an.intel.com ([10.122.105.159])
+  by orsmga003.jf.intel.com with ESMTP; 03 Jun 2020 06:51:38 -0700
+From:   richard.gong@linux.intel.com
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, richard.gong@linux.intel.com,
+        Richard Gong <richard.gong@intel.com>
+Subject: [PATCHv1] firmware: stratix10-rsu: fix warnings
+Date:   Wed,  3 Jun 2020 09:06:52 -0500
+Message-Id: <1591193212-15082-1-git-send-email-richard.gong@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Richard Gong <richard.gong@intel.com>
 
-The variable ret is being initialized with a value that is
-never read and it is being updated later with a new value. The
-initialization is redundant and can be removed.
+Patch fixes sparse warnings: using plain integer as NULL pointer. Replaces
+equal to with logical not operator.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Richard Gong <richard.gong@intel.com>
 ---
- drivers/input/mouse/alps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/stratix10-rsu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/mouse/alps.c b/drivers/input/mouse/alps.c
-index 34700eda0429..b067bfd2699c 100644
---- a/drivers/input/mouse/alps.c
-+++ b/drivers/input/mouse/alps.c
-@@ -1929,7 +1929,7 @@ static int alps_monitor_mode(struct psmouse *psmouse, bool enable)
- static int alps_absolute_mode_v6(struct psmouse *psmouse)
- {
- 	u16 reg_val = 0x181;
--	int ret = -1;
-+	int ret;
+diff --git a/drivers/firmware/stratix10-rsu.c b/drivers/firmware/stratix10-rsu.c
+index 4379475..469b8f7 100644
+--- a/drivers/firmware/stratix10-rsu.c
++++ b/drivers/firmware/stratix10-rsu.c
+@@ -290,7 +290,7 @@ static ssize_t reboot_image_store(struct device *dev,
+ 	unsigned long address;
+ 	int ret;
  
- 	/* enter monitor mode, to write the register */
- 	if (alps_monitor_mode(psmouse, true))
+-	if (priv == 0)
++	if (!priv)
+ 		return -ENODEV;
+ 
+ 	ret = kstrtoul(buf, 0, &address);
+@@ -315,7 +315,7 @@ static ssize_t notify_store(struct device *dev,
+ 	unsigned long status;
+ 	int ret;
+ 
+-	if (priv == 0)
++	if (!priv)
+ 		return -ENODEV;
+ 
+ 	ret = kstrtoul(buf, 0, &status);
 -- 
-2.25.1
+2.7.4
 
