@@ -2,94 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E101ECF62
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767AF1ECF69
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbgFCMFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726173AbgFCMFD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:05:03 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ECCC08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 05:05:01 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id c12so1135777lfc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 05:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bpCS5wGUx4CepPYyhtkjs6CunSLRyJTVuQXgd3iqq00=;
-        b=K7TQDtx/VFZcR/9hoYoObYaLewpu52KoTPHJAThwyNwbBRJW27tdv6o/cY4y2n4Yf2
-         Z7fef7NulYCGbU+1yOvEObHYWErTPydHxlK2xKEzEtWtVs3Kar/CUkhDPUcUNbly1fka
-         nv1kD3cSg4gccNhP5G8BoK8QLC3lA4DlEGdiFy3odrf0ZM1w2C4+mGHXjT7CpavjgnX9
-         neB+tZPnJyx+XLZhPIqI8wj817ucoZgG+ewarjkbYQw6tach2VQOoteNfMgVYjojEmBJ
-         aR1SsPiF2bnu9k6Br7HkGACB8J3iGNwGYYj1zI6KN/o7ICFhecJ6kJ1suxahdONCjnM9
-         xrzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bpCS5wGUx4CepPYyhtkjs6CunSLRyJTVuQXgd3iqq00=;
-        b=SietxlchQDuhLoOefQ3JxxXhjoLs0OYEWDy52PGcL51elVfOQNOIT3/iW+34XHDpR+
-         Ovfd+N8WTDqxUymyaFU9ZB55LLTiNdOr9BzWG5sMGBNb6iqo7w3RFC/wBAGKVZGJ5vuT
-         3QafbpgiKciDICJ6PmmLD8fC/Z0r7QhxaOemx7PudlRtlOCvTlfhbHPX59TFsTXmnQaD
-         s3WX1xKiAgEKMg92ysWtLNZwqqnUwX2r20sxoGnjqv6JLy4nPBei5T4Xq6aIfcdG2mZU
-         jmeWsHwrvXeXjaTs3fKeKNbaVR3LYW0yuIN9ZAR47kLWn3Tol0QCAJ96SBWafgEFi4Lk
-         Ni2w==
-X-Gm-Message-State: AOAM532H50FdnLuOYn22a00aQSl1RQfkPgi2f5XGCYRn8lZHi/i0UJtE
-        tgsGSzYxuCioo0S+sc2uZOkTxdWLOJUhve4l1+/NTw==
-X-Google-Smtp-Source: ABdhPJwOlRb8PQbTugXVUL3jav6MAqGicZ1XoS2jlGOVJZWlS5lZIG5V8xiJH9X2mt8bBVAliofzeGFlXWDe3EMBtvg=
-X-Received: by 2002:a05:6512:6ca:: with SMTP id u10mr2387330lff.184.1591185899581;
- Wed, 03 Jun 2020 05:04:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200603080304.16548-1-dietmar.eggemann@arm.com> <20200603080304.16548-2-dietmar.eggemann@arm.com>
-In-Reply-To: <20200603080304.16548-2-dietmar.eggemann@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 3 Jun 2020 14:04:47 +0200
-Message-ID: <CAKfTPtC6Qf9tz2VDQ_D-UmWV+91c4zwZYWSYydzdZyp+Y0_B1w@mail.gmail.com>
-Subject: Re: [PATCH 1/4] sched/pelt: Remove redundant cap_scale() definition
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
+        id S1726324AbgFCMFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:05:49 -0400
+Received: from mga06.intel.com ([134.134.136.31]:27453 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725890AbgFCMFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 08:05:47 -0400
+IronPort-SDR: BHNvMs7bggyfCdCygbPm4lEy6cqO0b0EtZSv/KgwVejU/L1fYzU8wQVl3MgNZ3+5yZgKjrsfP+
+ lafC9qY2YHzw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 05:05:43 -0700
+IronPort-SDR: TScpzMotEr8BfVw/z8jvqRo8iKu5Q3XeM23jRAcJMq7PuYDeq0tZVS+1C+CtHFQHSJvA15s9I7
+ aLAuJ1NkJGEw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,467,1583222400"; 
+   d="scan'208";a="269055950"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.157]) ([10.237.72.157])
+  by orsmga003.jf.intel.com with ESMTP; 03 Jun 2020 05:05:40 -0700
+Subject: Re: [PATCH v4 10/10] perf record: introduce --ctl-fd[-ack] options
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
         linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <653fe5f3-c986-a841-1ed8-0a7d2fa24c00@linux.intel.com>
+ <cd791bc8-2609-a136-a833-1dab6df68ff2@linux.intel.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <b4b2ddb9-296b-c260-32ef-fee17e04a29d@intel.com>
+Date:   Wed, 3 Jun 2020 15:05:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <cd791bc8-2609-a136-a833-1dab6df68ff2@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Jun 2020 at 10:03, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> Besides in PELT cap_scale() is used in the Deadline scheduler class for
-> scale-invariant bandwidth enforcement.
-> Remove the cap_scale() definition in kernel/sched/pelt.c and keep the
-> one in kernel/sched/sched.h.
->
-> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+On 25/05/20 5:23 pm, Alexey Budankov wrote:
+> 
+> Introduce --ctl-fd[-ack] options to pass open file descriptors numbers
+> from command line. Extend perf-record.txt file with --ctl-fd[-ack]
+> options description. Document possible usage model introduced by
+> --ctl-fd[-ack] options by providing example bash shell script.
+> 
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 > ---
->  kernel/sched/pelt.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
-> index b4b1ff96642f..dea5567e4f72 100644
-> --- a/kernel/sched/pelt.c
-> +++ b/kernel/sched/pelt.c
-> @@ -83,8 +83,6 @@ static u32 __accumulate_pelt_segments(u64 periods, u32 d1, u32 d3)
->         return c1 + c2 + c3;
->  }
->
-> -#define cap_scale(v, s) ((v)*(s) >> SCHED_CAPACITY_SHIFT)
-> -
->  /*
->   * Accumulate the three separate parts of the sum; d1 the remainder
->   * of the last (incomplete) period, d2 the span of full periods and d3
-> --
-> 2.17.1
->
+>  tools/perf/Documentation/perf-record.txt | 39 ++++++++++++++++++++++++
+>  tools/perf/builtin-record.c              | 10 ++++++
+>  tools/perf/util/record.h                 |  2 ++
+>  3 files changed, 51 insertions(+)
+> 
+> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+> index c2c4ce7ccee2..5c012cfe68a4 100644
+> --- a/tools/perf/Documentation/perf-record.txt
+> +++ b/tools/perf/Documentation/perf-record.txt
+> @@ -614,6 +614,45 @@ appended unit character - B/K/M/G
+>  	The number of threads to run when synthesizing events for existing processes.
+>  	By default, the number of threads equals 1.
+>  
+> +--ctl-fd::
+> +--ctl-fd-ack::
+> +Listen on ctl-fd descriptor for command to control measurement ('enable': enable events,
+> +'disable': disable events. Optionally send control command completion ('ack') to fd-ack
+> +descriptor to synchronize with the controlling process. 
+
+You should also explain the use of --delay=-1 here.
+
+Example of bash shell script
+> +to enable and disable events during measurements:
+> +
+> +#!/bin/bash
+> +
+> +ctl_dir=/tmp/
+> +
+> +ctl_fifo=${ctl_dir}perf_ctl.fifo
+> +test -p ${ctl_fifo} && unlink ${ctl_fifo}
+> +mkfifo ${ctl_fifo}
+> +exec {ctl_fd}<>${ctl_fifo}
+> +
+> +ctl_ack_fifo=${ctl_dir}perf_ctl_ack.fifo
+> +test -p ${ctl_ack_fifo} && unlink ${ctl_ack_fifo}
+> +mkfifo ${ctl_ack_fifo}
+> +exec {ctl_fd_ack}<>${ctl_ack_fifo}
+> +
+> +perf record -D -1 -e cpu-cycles -a                        \
+> +            --ctl-fd ${ctl_fd} --ctl-fd-ack ${ctl_fd_ack} \
+> +            -- sleep 30 &
+> +perf_pid=$!
+> +
+> +sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e1 && echo "enabled(${e1})"
+> +sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d1 && echo "disabled(${d1})"
+> +
+> +exec {ctl_fd_ack}>&-
+> +unlink ${ctl_ack_fifo}
+> +
+> +exec {ctl_fd}>&-
+> +unlink ${ctl_fifo}
+> +
+> +wait -n ${perf_pid}
+> +exit $?
+> +
+> +
+>  SEE ALSO
+>  --------
+>  linkperf:perf-stat[1], linkperf:perf-list[1], linkperf:perf-intel-pt[1]
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 1ff3b7a77283..e057a2be42b7 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1761,6 +1761,9 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>  		perf_evlist__start_workload(rec->evlist);
+>  	}
+>  
+> +	if (evlist__initialize_ctlfd(rec->evlist, opts->ctl_fd, opts->ctl_fd_ack))
+> +		goto out_child;
+> +
+>  	if (opts->initial_delay) {
+>  		pr_info(EVLIST_DISABLED_MSG);
+>  		if (opts->initial_delay > 0) {
+> @@ -1907,6 +1910,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>  		record__synthesize_workload(rec, true);
+>  
+>  out_child:
+> +	evlist__finalize_ctlfd(rec->evlist);
+>  	record__mmap_read_all(rec, true);
+>  	record__aio_mmap_read_sync(rec);
+>  
+> @@ -2392,6 +2396,8 @@ static struct record record = {
+>  		},
+>  		.mmap_flush          = MMAP_FLUSH_DEFAULT,
+>  		.nr_threads_synthesize = 1,
+> +		.ctl_fd              = -1,
+> +		.ctl_fd_ack          = -1,
+>  	},
+>  	.tool = {
+>  		.sample		= process_sample_event,
+> @@ -2587,6 +2593,10 @@ static struct option __record_options[] = {
+>  	OPT_UINTEGER(0, "num-thread-synthesize",
+>  		     &record.opts.nr_threads_synthesize,
+>  		     "number of threads to run for event synthesis"),
+> +	OPT_INTEGER(0, "ctl-fd", &record.opts.ctl_fd,
+> +		    "Listen on fd descriptor for command to control measurement ('enable': enable events, 'disable': disable events)"),
+> +	OPT_INTEGER(0, "ctl-fd-ack", &record.opts.ctl_fd_ack,
+> +		    "Send control command completion ('ack') to fd ack descriptor"),
+>  	OPT_END()
+>  };
+>  
+> diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+> index 96a73bbd8cd4..da18aeca3623 100644
+> --- a/tools/perf/util/record.h
+> +++ b/tools/perf/util/record.h
+> @@ -69,6 +69,8 @@ struct record_opts {
+>  	int	      mmap_flush;
+>  	unsigned int  comp_level;
+>  	unsigned int  nr_threads_synthesize;
+> +	int	      ctl_fd;
+> +	int	      ctl_fd_ack;
+>  };
+>  
+>  extern const char * const *record_usage;
+> 
+
