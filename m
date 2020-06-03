@@ -2,188 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706791EC733
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350191EC72D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725916AbgFCCOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 22:14:42 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:49943 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgFCCOl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 22:14:41 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200603021439epoutp04dd15205b7f472aaf1c2105ad04cd711c~U5u4vN4cD2241522415epoutp04K
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 02:14:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200603021439epoutp04dd15205b7f472aaf1c2105ad04cd711c~U5u4vN4cD2241522415epoutp04K
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591150479;
-        bh=WjEPFCMSo9Tv/PyUNW7xSqxkVRWzm8ZAFe/hH3dlsSQ=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=KpbBlyq41bI873hjVaMA9KpcQY/gJJq9kBeGubeZ0dpKE5bm7hMvnYR0YybMv8IiU
-         z52ieKRnXVMtDUZ/K7IYEXCV2UZoBNQbXnQboivwpzDOh/YdqcCzgT7/Tw/3sfGGFs
-         pw6lcPLvuzFVtftUm66ODHYpgAsyiV68DIwmBZDk=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200603021438epcas1p2f218b3dd05be7f931e7d990765d31a5e~U5u4D2mq-0533205332epcas1p2Y;
-        Wed,  3 Jun 2020 02:14:38 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.161]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 49cCCd2pkvzMqYm1; Wed,  3 Jun
-        2020 02:14:37 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BB.04.28578.D8707DE5; Wed,  3 Jun 2020 11:14:37 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200603021436epcas1p28e26eaba7140c222c9ed09b86a489b58~U5u2yfV1n2121821218epcas1p2_;
-        Wed,  3 Jun 2020 02:14:36 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200603021436epsmtrp23f31a2f80bfa61b83e88980cbf3a8074~U5u2xu0sG1182411824epsmtrp2B;
-        Wed,  3 Jun 2020 02:14:36 +0000 (GMT)
-X-AuditID: b6c32a39-8c9ff70000006fa2-ca-5ed7078db861
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B0.79.08382.C8707DE5; Wed,  3 Jun 2020 11:14:36 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.88.103.87]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200603021436epsmtip29fd33716b1a30f94d67c0de8bb5c0a5c~U5u2lQfUI1151311513epsmtip2E;
-        Wed,  3 Jun 2020 02:14:36 +0000 (GMT)
-From:   Namjae Jeon <namjae.jeon@samsung.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, syzkaller@googlegroups.com,
-        viro@zeniv.linux.org.uk, butterflyhuangxx@gmail.com,
-        sj1557.seo@samsung.com, Namjae Jeon <namjae.jeon@samsung.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v2] exfat: fix memory leak in exfat_parse_param()
-Date:   Wed,  3 Jun 2020 11:09:39 +0900
-Message-Id: <20200603020939.9462-1-namjae.jeon@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrEKsWRmVeSWpSXmKPExsWy7bCmnm4v+/U4g/V9ohZzVk1hs9iz9ySL
-        xeVdc9gsfkyvt9jy7wirxYKNjxgtjrzpZrY4//c4qwOHx85Zd9k99kw8yebRt2UVo8fnTXIe
-        m568ZQpgjcqxyUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXL
-        zAE6RUmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYGhQoFecmFtcmpeul5yfa2Vo
-        YGBkClSZkJPxbU83W8EesYrpj/YyNTBeF+pi5OSQEDCRWH/xOWMXIxeHkMAORomJz/YxQzif
-        GCUebZsLlfnGKPH3/gZmmJZpO+dAJfYySszc1cgG1zJn3TSgKg4ONgFtiT9bREFMEQFFicvv
-        nUBKmAXOMErsPHCTBWSQsICjxNIX99hBbBYBVYkru3aDtfIKWEv8PmkMsUteYvWGA2AXSQhs
-        Ypdou36XFSLhItF3dSsbhC0s8er4FnYIW0ri87u9bCBzJASqJT7uh7q5g1HixXdbCNtY4ub6
-        DawgJcwCmhLrd+lDhBUldv4G+ZcTKMwn8e5rDyvEFF6JjjZoYKlK9F06zARhS0t0tX+AWuoh
-        8WHLJbBNQgKxEhOOPmGZwCg7C2HBAkbGVYxiqQXFuempxYYFpshRtIkRnLi0LHcwTn/7Qe8Q
-        IxMH4yFGCQ5mJRFeK9lrcUK8KYmVValF+fFFpTmpxYcYTYGhNZFZSjQ5H5g680riDU2NjI2N
-        LUzMzM1MjZXEeZ2sL8QJCaQnlqRmp6YWpBbB9DFxcEo1MGln5+hXT3BMLo3/5l+SNuXG0nzx
-        Ny+/OMze5iWlLG1ip9G34hyLq+yNv0ffbQo5LbDig9cBW45Xb6a8tHRS2dl4PMd/40k2cc2G
-        4leOPBUlRz5LP3F+ulBjRrD88b3xitMc57i9ZzCYO980gtletu96T4CuY52siF/CAznlCfz+
-        6xbHBfhsbhBP4fj09Ydypuyv5zWJL/msnrHc1Xk+6eRTr5kr9z03vRBw+GOOQ94t23dXX4Ud
-        +D9F4vv/bTFnC1PjtYvXp/o12gYlT9DeWLfg2Rn3Q27Nemx9E7p/t3QlzQ0t+LU9YtGtS3eM
-        Lyze8PH696wc4e91fNrfUtiidXNswhMM1qR/8s8NPLO0UImlOCPRUIu5qDgRANqbjbflAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgluLIzCtJLcpLzFFi42LZdlhJXreH/XqcwdvZRhZzVk1hs9iz9ySL
-        xeVdc9gsfkyvt9jy7wirxYKNjxgtjrzpZrY4//c4qwOHx85Zd9k99kw8yebRt2UVo8fnTXIe
-        m568ZQpgjeKySUnNySxLLdK3S+DK+Lanm61gj1jF9Ed7mRoYrwt1MXJySAiYSEzbOYexi5GL
-        Q0hgN6NE74NvzBAJaYljJ84A2RxAtrDE4cPFEDUfGCUmHfzLCBJnE9CW+LNFFMQUEVCUuPze
-        CaSEWeAKo8S3l3fAxggLOEosfXGPHcRmEVCVuLJrN9hIXgFrid8njSE2yUus3nCAeQIjzwJG
-        hlWMkqkFxbnpucWGBYZ5qeV6xYm5xaV56XrJ+bmbGMGBpKW5g3H7qg96hxiZOBgPMUpwMCuJ
-        8FrJXosT4k1JrKxKLcqPLyrNSS0+xCjNwaIkznujcGGckEB6YklqdmpqQWoRTJaJg1OqgYl3
-        qmAb64OJ/8SmXw/LDjn6/pYzg5+ejObcXfe85qTeZbhQtS2hlv3ivlVdhydXJ80JWLrj3v/3
-        N1TW6364eHFGpdG+BdVtR97HpyfVPBJPWxld/pTDqGTO4qNvn+6wEY5X/DYjIvOS4qL/rWeF
-        en23O/bN7hWNlFvDIP+9P6X9eUD3TFuLrONREwzDY44s/+j8wJ/NO/lJ979PvTtzFMontLAz
-        Bb5ub2HpVWG+6feiZ43pIqaamqmJoWnVc4ujl8b9+Oj5TPyzQl6GgpWBLftKF5fbqlkFN/LT
-        r5csm+Qo2LL2fvkpziKOBM7g3vtW+U8O+klNMjdvm/nj2OMNN+6c2x7xyb+Ku/lqt5ZqoRJL
-        cUaioRZzUXEiAE1M/fiTAgAA
-X-CMS-MailID: 20200603021436epcas1p28e26eaba7140c222c9ed09b86a489b58
-X-Msg-Generator: CA
+        id S1726027AbgFCCJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 22:09:56 -0400
+Received: from mga18.intel.com ([134.134.136.126]:61255 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725794AbgFCCJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 22:09:55 -0400
+IronPort-SDR: 2+Fvnd5eFzNypVoxXb/UXPgoedu+UE4X29etYMhFuOT+FbmJUa5+2VQHQL6c+8xXwI/hMrDhU1
+ ovLngig335wg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 19:09:54 -0700
+IronPort-SDR: QbflBtgYucsFCYdwYWVAXfTCvscpVYn0PXEMN1daIhEUw/0qVvQJv7S4y349ne5pj0lbCvsORt
+ Q6RYXZhIRZmA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,466,1583222400"; 
+   d="scan'208";a="286866321"
+Received: from orsmsx106.amr.corp.intel.com ([10.22.225.133])
+  by orsmga002.jf.intel.com with ESMTP; 02 Jun 2020 19:09:53 -0700
+Received: from orsmsx122.amr.corp.intel.com (10.22.225.227) by
+ ORSMSX106.amr.corp.intel.com (10.22.225.133) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 2 Jun 2020 19:09:53 -0700
+Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
+ ORSMSX122.amr.corp.intel.com (10.22.225.227) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 2 Jun 2020 19:09:53 -0700
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (104.47.44.57) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Tue, 2 Jun 2020 19:09:53 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=POe7yxJ9JlvIA27N8d5QTpSeEC+VUmUzJaKyKD8ufQNq0MbMBq7FUci4MUY6JiAeA9fhBGbsdSItPhH9NHK9q7k3XILc0RozF+024B7kOc8ABlYlcz9vwRTWfZjh/hdw+sDvQFPLR6wBz+X5M7i63vuhM5lLdqEJ/C9DJES3SL7Zq5TKaP2XKS3WnIUNkOa0JbnqZ8L64DRO3qTWNofwUSLU41xbhIOAie8j55Fp456z0hLwuHti+OsJ9yJ7p1SgWjZCBbEVFefbLGf+RkdVvANCAeUTO25dSUEMn2BlqkAwhhGu2TbKD12IjT/Pl7MW2gxNQcSahYnLNYE8rA4jEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=boCeAhovVHPKht5qpq+r8fMQ09IMx8GYfQq11X3J+Rk=;
+ b=JQnGG/IsE6DMdW7zXA0j7rH0XryNVqtj0OhwD5W9qLMd0xX2AkEwniAYC03rxkywTV/A+Nle3OEktDbbip7eLjhgIUvSb5ZBrkph9fmaUJf+TwS/ItQqcvWc1OaQ/dDfXMq2QXwEB5xZmKulJZmmZl6GYRJDXvqmSog95ldiFOC8y7wpjOhPChHWXL7QXic9BB8DvWg/g2wvQvk9lRrkCOWjtp9XM4Tp+nMSQV3bEUF+LjFak5JKJcgzNfYbjUQHqg0quU4tEkAY4NXUptyTvEA07pe01bU5hlrY2L9e/yEXtETUTTg3cnut8WVqPI2ac94buSBkS3f2VTyO78J59w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=boCeAhovVHPKht5qpq+r8fMQ09IMx8GYfQq11X3J+Rk=;
+ b=Fa4gkbqjCmKU1lx1+vZMDkck9drtv2bzfrYSFbsyRmFwnj0hYf4pMNsdYBByVV0kl0EvjDfUAF6ZZKb0xiwpRot5uRmB8DzNSCEvQK/eGHSCZ2kWwDA7wZpcS0Lc2zjLXhNcHeIlyBzxEn7qQVEJ4kyYVTKAEATrNMIoKbPpLaQ=
+Received: from CY4PR1101MB2216.namprd11.prod.outlook.com
+ (2603:10b6:910:25::17) by CY4PR1101MB2296.namprd11.prod.outlook.com
+ (2603:10b6:910:1a::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.22; Wed, 3 Jun
+ 2020 02:09:51 +0000
+Received: from CY4PR1101MB2216.namprd11.prod.outlook.com
+ ([fe80::9c64:9b0a:fde3:b715]) by CY4PR1101MB2216.namprd11.prod.outlook.com
+ ([fe80::9c64:9b0a:fde3:b715%5]) with mapi id 15.20.3045.024; Wed, 3 Jun 2020
+ 02:09:51 +0000
+From:   "Huang, Kai" <kai.huang@intel.com>
+To:     "kirill@shutemov.name" <kirill@shutemov.name>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "wad@chromium.org" <wad@chromium.org>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "aarcange@redhat.com" <aarcange@redhat.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [RFC 02/16] x86/kvm: Introduce KVM memory protection feature
+Thread-Topic: [RFC 02/16] x86/kvm: Introduce KVM memory protection feature
+Thread-Index: AQHWMDfmobu4KV6DMkmIy0XuK+plk6i46ZCAgAAEoYCAAnnKAIAAPEWAgAqTbwA=
+Date:   Wed, 3 Jun 2020 02:09:51 +0000
+Message-ID: <0cd53be8abede7e82a68c32b1d8b0e4ca6f24a05.camel@intel.com>
+References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
+         <20200522125214.31348-3-kirill.shutemov@linux.intel.com>
+         <87d06s83is.fsf@vitty.brq.redhat.com> <20200525151525.qmfvzxbl7sq46cdq@box>
+         <20200527050350.GK31696@linux.intel.com>
+         <87eer56abe.fsf@vitty.brq.redhat.com>
+In-Reply-To: <87eer56abe.fsf@vitty.brq.redhat.com>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+authentication-results: shutemov.name; dkim=none (message not signed)
+ header.d=none;shutemov.name; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.55.52.216]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8b969c4a-359b-46f6-9403-08d807633330
+x-ms-traffictypediagnostic: CY4PR1101MB2296:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR1101MB2296F34F9FC6E4B97FA3B3B3F7880@CY4PR1101MB2296.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 04238CD941
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cbtW1qNtbDRyz+cziHF7HHRl7mUu16LnaqN9JnfOrinuWw5zd5yEMquYB0lXEqxjpCXRBbeKbinmrUZgsZn9T/ctLaxyY+q7FVm4AINR9wy+7nmW+ZACPkRpD1mktSL8NhLXkUeHCcVZA5AC2qjpQ/D/v6BhUv8AMXcfpwhJLS+dK1R2XvM1a15qW6qaxyjInBIy/5RxXyR8Y8obx2uQ5PcGAJWayH3IHErp+TnY4uU4GnzK6dyou3vPC0cnJO/RjHbV67tdJp3Wm143mPSUJG9s0PN8kLrPWdVwofrbRsjMHmZjpzLrYrkQ/wtRt4NpTwqYKhNQ8xdi7jt9+fylqg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2216.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(376002)(366004)(39850400004)(346002)(136003)(26005)(86362001)(2906002)(36756003)(186003)(478600001)(6506007)(110136005)(316002)(71200400001)(5660300002)(54906003)(2616005)(66446008)(8936002)(7416002)(83380400001)(6512007)(4326008)(66946007)(64756008)(6486002)(76116006)(91956017)(66476007)(66556008)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: bROksxzbTfp83Rb8sCOl1pxH+gUtPnRhGFV9Gsgz5yP8krbT6ebsXFasdDkiwQ6ooYBLOrQtcJ0EUjCCes7v4egYKRKLHJdmul/MQyje/YFsl//emzvW6ISyNJLegj0d2NBByoRZeWbIXJu0c+i377n3ffQ7i2lWWQwl8Ma5UmGSvnYcoBagxqNS03BTr6KVI4QVv/ahd5E66vK9Yta4fpizltkpWCXqJncg1zKvf8FgM+SVO14LTFstmKhukrHRTCBrSGhcx2Q9/wdbYhtyoRWUKl56U6ijeg5dYBVtTPk557enIfaDl9q+EH7OSKGg3p/ex26OPicdJUcc1HF+PsRzkoLk2h5fk3PA0NIy+lartfZyShGexmcv2czIswlcTxbFTB0b4A01VOLB3PiCRaKf6An7Ji/9NxsW46fgJWH2+Yxs5Yvn/3T/k4JaGpDxBLIpdSRB9T1HCANwwPpVExqUSvfzUvEEiVYO79b+5eo=
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200603021436epcas1p28e26eaba7140c222c9ed09b86a489b58
-References: <CGME20200603021436epcas1p28e26eaba7140c222c9ed09b86a489b58@epcas1p2.samsung.com>
+Content-ID: <5C5F792F5855A44C80818142B624C311@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b969c4a-359b-46f6-9403-08d807633330
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2020 02:09:51.3734
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pWyLKNl2ICA6eGKUu6vGjJyKiFdbzT1xg8Sma5fNhXfKcP9Y8ZZFBBUw+xyfgwjP2F6ib1dS2vxb3AHmHtRemw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1101MB2296
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
-
-butt3rflyh4ck reported memory leak found by syzkaller.
-
-A param->string held by exfat_mount_options.
-
-BUG: memory leak
-
-unreferenced object 0xffff88801972e090 (size 8):
-  comm "syz-executor.2", pid 16298, jiffies 4295172466 (age 14.060s)
-  hex dump (first 8 bytes):
-    6b 6f 69 38 2d 75 00 00                          koi8-u..
-  backtrace:
-    [<000000005bfe35d6>] kstrdup+0x36/0x70 mm/util.c:60
-    [<0000000018ed3277>] exfat_parse_param+0x160/0x5e0
-fs/exfat/super.c:276
-    [<000000007680462b>] vfs_parse_fs_param+0x2b4/0x610
-fs/fs_context.c:147
-    [<0000000097c027f2>] vfs_parse_fs_string+0xe6/0x150
-fs/fs_context.c:191
-    [<00000000371bf78f>] generic_parse_monolithic+0x16f/0x1f0
-fs/fs_context.c:231
-    [<000000005ce5eb1b>] do_new_mount fs/namespace.c:2812 [inline]
-    [<000000005ce5eb1b>] do_mount+0x12bb/0x1b30 fs/namespace.c:3141
-    [<00000000b642040c>] __do_sys_mount fs/namespace.c:3350 [inline]
-    [<00000000b642040c>] __se_sys_mount fs/namespace.c:3327 [inline]
-    [<00000000b642040c>] __x64_sys_mount+0x18f/0x230 fs/namespace.c:3327
-    [<000000003b024e98>] do_syscall_64+0xf6/0x7d0
-arch/x86/entry/common.c:295
-    [<00000000ce2b698c>] entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-exfat_free() should call exfat_free_iocharset(), to prevent a leak
-in case we fail after parsing iocharset= but before calling
-get_tree_bdev().
-
-Additionally, there's no point copying param->string in
-exfat_parse_param() - just steal it, leaving NULL in param->string.
-That's independent from the leak or fix thereof - it's simply
-avoiding an extra copy.
-
-Fixes: 719c1e182916 ("exfat: add super block operations")
-Cc: stable@vger.kernel.org # v5.7
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- v2:
-   - update patch description in more detail.
-
- fs/exfat/super.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/fs/exfat/super.c b/fs/exfat/super.c
-index 405717e4e3ea..e650e65536f8 100644
---- a/fs/exfat/super.c
-+++ b/fs/exfat/super.c
-@@ -273,9 +273,8 @@ static int exfat_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		break;
- 	case Opt_charset:
- 		exfat_free_iocharset(sbi);
--		opts->iocharset = kstrdup(param->string, GFP_KERNEL);
--		if (!opts->iocharset)
--			return -ENOMEM;
-+		opts->iocharset = param->string;
-+		param->string = NULL;
- 		break;
- 	case Opt_errors:
- 		opts->errors = result.uint_32;
-@@ -686,7 +685,12 @@ static int exfat_get_tree(struct fs_context *fc)
- 
- static void exfat_free(struct fs_context *fc)
- {
--	kfree(fc->s_fs_info);
-+	struct exfat_sb_info *sbi = fc->s_fs_info;
-+
-+	if (sbi) {
-+		exfat_free_iocharset(sbi);
-+		kfree(sbi);
-+	}
- }
- 
- static const struct fs_context_operations exfat_context_ops = {
--- 
-2.17.1
-
+T24gV2VkLCAyMDIwLTA1LTI3IGF0IDEwOjM5ICswMjAwLCBWaXRhbHkgS3V6bmV0c292IHdyb3Rl
+Og0KPiBTZWFuIENocmlzdG9waGVyc29uIDxzZWFuLmouY2hyaXN0b3BoZXJzb25AaW50ZWwuY29t
+PiB3cml0ZXM6DQo+IA0KPiA+IE9uIE1vbiwgTWF5IDI1LCAyMDIwIGF0IDA2OjE1OjI1UE0gKzAz
+MDAsIEtpcmlsbCBBLiBTaHV0ZW1vdiB3cm90ZToNCj4gPiA+IE9uIE1vbiwgTWF5IDI1LCAyMDIw
+IGF0IDA0OjU4OjUxUE0gKzAyMDAsIFZpdGFseSBLdXpuZXRzb3Ygd3JvdGU6DQo+ID4gPiA+ID4g
+QEAgLTcyNyw2ICs3MzQsMTUgQEAgc3RhdGljIHZvaWQgX19pbml0IGt2bV9pbml0X3BsYXRmb3Jt
+KHZvaWQpDQo+ID4gPiA+ID4gIHsNCj4gPiA+ID4gPiAgCWt2bWNsb2NrX2luaXQoKTsNCj4gPiA+
+ID4gPiAgCXg4Nl9wbGF0Zm9ybS5hcGljX3Bvc3RfaW5pdCA9IGt2bV9hcGljX2luaXQ7DQo+ID4g
+PiA+ID4gKw0KPiA+ID4gPiA+ICsJaWYgKGt2bV9wYXJhX2hhc19mZWF0dXJlKEtWTV9GRUFUVVJF
+X01FTV9QUk9URUNURUQpKSB7DQo+ID4gPiA+ID4gKwkJaWYgKGt2bV9oeXBlcmNhbGwwKEtWTV9I
+Q19FTkFCTEVfTUVNX1BST1RFQ1RFRCkpIHsNCj4gPiA+ID4gPiArCQkJcHJfZXJyKCJGYWlsZWQg
+dG8gZW5hYmxlIEtWTSBtZW1vcnkNCj4gPiA+ID4gPiBwcm90ZWN0aW9uXG4iKTsNCj4gPiA+ID4g
+PiArCQkJcmV0dXJuOw0KPiA+ID4gPiA+ICsJCX0NCj4gPiA+ID4gPiArDQo+ID4gPiA+ID4gKwkJ
+bWVtX3Byb3RlY3RlZCA9IHRydWU7DQo+ID4gPiA+ID4gKwl9DQo+ID4gPiA+ID4gIH0NCj4gPiA+
+ID4gDQo+ID4gPiA+IFBlcnNvbmFsbHksIEknZCBwcmVmZXIgdG8gZG8gdGhpcyB2aWEgc2V0dGlu
+ZyBhIGJpdCBpbiBhIEtWTS1zcGVjaWZpYw0KPiA+ID4gPiBNU1IgaW5zdGVhZC4gVGhlIGJlbmVm
+aXQgaXMgdGhhdCB0aGUgZ3Vlc3QgZG9lc24ndCBuZWVkIHRvIHJlbWVtYmVyIGlmDQo+ID4gPiA+
+IGl0IGVuYWJsZWQgdGhlIGZlYXR1cmUgb3Igbm90LCBpdCBjYW4gYWx3YXlzIHJlYWQgdGhlIGNv
+bmZpZyBtc3IuIE1heQ0KPiA+ID4gPiBjb21lIGhhbmR5IGZvciBlLmcuIGtleGVjL2tkdW1wLg0K
+PiA+ID4gDQo+ID4gPiBJIHRoaW5rIHdlIHdvdWxkIG5lZWQgdG8gcmVtZW1iZXIgaXQgYW55d2F5
+LiBBY2Nlc3NpbmcgTVNSIGlzIHNvbWV3aGF0DQo+ID4gPiBleHBlbnNpdmUuIEJ1dCwgb2theSwg
+SSBjYW4gcmV3b3JrIGl0IE1TUiBpZiBuZWVkZWQuDQo+ID4gDQo+ID4gSSB0aGluayBWaXRhbHkg
+aXMgdGFsa2luZyBhYm91dCB0aGUgY2FzZSB3aGVyZSB0aGUga2VybmVsIGNhbid0IGVhc2lseSBn
+ZXQNCj4gPiBhdCBpdHMgY2FjaGVkIHN0YXRlLCBlLmcuIGFmdGVyIGJvb3RpbmcgaW50byBhIG5l
+dyBrZXJuZWwuICBUaGUga2VybmVsIHdvdWxkDQo+ID4gc3RpbGwgaGF2ZSBhbiBYODZfRkVBVFVS
+RSBiaXQgb3Igd2hhdGV2ZXIsIHByb3ZpZGluZyBhIHZpcnR1YWwgTVNSIHdvdWxkIGJlDQo+ID4g
+cHVyZWx5IGZvciByYXJlIHNsb3cgcGF0aHMuDQo+ID4gDQo+ID4gVGhhdCBiZWluZyBzYWlkLCBh
+IGh5cGVyY2FsbCBwbHVzIENQVUlEIGJpdCBtaWdodCBiZSBiZXR0ZXIsIGUuZy4gdGhhdCdkDQo+
+ID4gYWxsb3cgdGhlIGd1ZXN0IHRvIHF1ZXJ5IHRoZSBzdGF0ZSB3aXRob3V0IHJpc2tpbmcgYSAj
+R1AuDQo+IA0KPiBXZSBoYXZlIHJkbXNyX3NhZmUoKSBmb3IgdGhhdCEgOi0pIE1TUiAoYW5kIGh5
+cGVyY2FsbCB0byB0aGF0IG1hdHRlcikNCj4gc2hvdWxkIGhhdmUgYW4gYXNzb2NpYXRlZCBDUFVJ
+RCBmZWF0dXJlIGJpdCBvZiBjb3Vyc2UuDQo+IA0KPiBZZXMsIGh5cGVyY2FsbCArIENQVUlEIHdv
+dWxkIGRvIGJ1dCBub3JtYWxseSB3ZSB0cmVhdCBDUFVJRCBkYXRhIGFzDQo+IHN0YXRpYyBhbmQg
+aW4gdGhpcyBjYXNlIHdlJ2xsIG1ha2UgaXQgYSBkeW5hbWljYWxseSBmbGlwcGluZw0KPiBiaXQu
+IEVzcGVjaWFsbHkgaWYgd2UgaW50cm9kdWNlICdLVk1fSENfRElTQUJMRV9NRU1fUFJPVEVDVEVE
+JyBsYXRlci4NCg0KTm90IHN1cmUgd2h5IGlzIEtWTV9IQ19ESVNBQkxFX01FTV9QUk9URUNURUQg
+bmVlZGVkPw0KDQo+IA0KPiA+ID4gTm90ZSwgdGhhdCB3ZSBjYW4gYXZvaWQgdGhlIGVuYWJsaW5n
+IGFsZ290aGVyLCBpZiB3ZSBtb2RpZnkgQklPUyB0byBkZWFsDQo+ID4gPiB3aXRoIHByaXZhdGUv
+c2hhcmVkIG1lbW9yeS4gQ3VycmVudGx5IEJJT1MgZ2V0IHN5c3RlbSBjcmFzaCBpZiB3ZSBlbmFi
+bGUNCj4gPiA+IHRoZSBmZWF0dXJlIGZyb20gdGltZSB6ZXJvLg0KPiA+IA0KPiA+IFdoaWNoIHdv
+dWxkIG1lc2ggYmV0dGVyIHdpdGggYSBDUFVJRCBmZWF0dXJlIGJpdC4NCj4gPiANCj4gDQo+IEFu
+ZCBtYXliZSBldmVuIGhlbHAgdXMgdG8gcmVzb2x2ZSAncmVib290JyBwcm9ibGVtLg0KDQpJTU8g
+d2UgY2FuIGFzayBRZW11IHRvIGNhbGwgaHlwZXJjYWxsIHRvICdlbmFibGUnIG1lbW9yeSBwcm90
+ZWN0aW9uIHdoZW4NCmNyZWF0aW5nIFZNLCBhbmQgZ3Vlc3Qga2VybmVsICpxdWVyaWVzKiB3aGV0
+aGVyIGl0IGlzIHByb3RlY3RlZCB2aWEgQ1BVSUQNCmZlYXR1cmUgYml0Lg0KDQo=
