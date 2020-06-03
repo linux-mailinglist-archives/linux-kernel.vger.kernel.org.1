@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650471ECC27
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 11:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887981ECC37
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 11:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgFCJGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 05:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgFCJGm (ORCPT
+        id S1726377AbgFCJL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 05:11:27 -0400
+Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:13487 "EHLO
+        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725355AbgFCJLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 05:06:42 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772C0C05BD43;
-        Wed,  3 Jun 2020 02:06:41 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 7798D28B; Wed,  3 Jun 2020 11:06:39 +0200 (CEST)
-Date:   Wed, 3 Jun 2020 11:06:37 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v3 13/75] x86/boot/compressed/64: Add IDT Infrastructure
-Message-ID: <20200603090637.GA16171@8bytes.org>
-References: <20200428151725.31091-1-joro@8bytes.org>
- <20200428151725.31091-14-joro@8bytes.org>
- <20200504105445.GE15046@zn.tnic>
- <20200504112859.GH8135@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504112859.GH8135@suse.de>
+        Wed, 3 Jun 2020 05:11:24 -0400
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 03 Jun 2020 14:40:20 +0530
+Received: from c-ppvk-linux.qualcomm.com ([10.206.24.34])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 03 Jun 2020 14:39:50 +0530
+Received: by c-ppvk-linux.qualcomm.com (Postfix, from userid 2304101)
+        id 0BBF85046; Wed,  3 Jun 2020 14:39:48 +0530 (IST)
+From:   Pradeep P V K <ppvk@codeaurora.org>
+To:     bjorn.andersson@linaro.org, adrian.hunter@intel.com,
+        robh+dt@kernel.org, ulf.hansson@linaro.org,
+        vbadigan@codeaurora.org, sboyd@kernel.org,
+        georgi.djakov@linaro.org, mka@chromium.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mmc-owner@vger.kernel.org, rnayak@codeaurora.org,
+        sibis@codeaurora.org, matthias@chromium.org,
+        Pradeep P V K <ppvk@codeaurora.org>
+Subject: [PATCH V1 0/2] Add SDHC interconnect bandwidth scaling 
+Date:   Wed,  3 Jun 2020 14:39:34 +0530
+Message-Id: <1591175376-2374-1-git-send-email-ppvk@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 01:28:59PM +0200, Joerg Roedel wrote:
-> On Mon, May 04, 2020 at 12:54:45PM +0200, Borislav Petkov wrote:
-> > On Tue, Apr 28, 2020 at 05:16:23PM +0200, Joerg Roedel wrote:
-> > > +#include "../../entry/calling.h"
-> > 
-> > Leftover from something? Commenting it out doesn't break the build here.
-> 
-> Yes, probably a leftover from when I tried to use the PT_REGS macros
-> there. I'll remove it.
 
-Turns out this include is still needed to get ORIG_RAX defined. I'll
-leave it in place.
+Add interconnect bandwidths for SDHC driver using OPP framework that
+is required by SDHC driver based on the clock frequency and bus width
+of the card. Otherwise, the system clocks may run at minimum clock
+speed and thus affecting the performance.
 
+This change is based on
+[1] [Patch v8] Introduce OPP bandwidth bindings
+(https://lkml.org/lkml/2020/5/12/493)
 
-	Joerg
+[2] [Patch v3 09/17] mmc: sdhci-msm: Fix error handling
+for dev_pm_opp_of_add_table()
+(https://lkml.org/lkml/2020/5/5/491)
+
+[3] [RFC v6 2/2] dt-bindings: mmc: sdhci-msm: Add interconnect BW
+scaling strings
+(https://lkml.org/lkml/2020/3/23/409)
+
+as there were no extra changes made on [3], retaining the Acked-by and
+Reviewed-by sign-off from [3].
+
+Pradeep P V K (2):
+  mmc: sdhci-msm: Add interconnect bandwidth scaling support
+  dt-bindings: mmc: sdhci-msm: Add interconnect BW scaling strings
+
+ Documentation/devicetree/bindings/mmc/sdhci-msm.txt | 18 ++++++++++++++++++
+ drivers/mmc/host/sdhci-msm.c                        | 16 ++++++++++++++++
+ 2 files changed, 34 insertions(+)
+
+-- 
+1.9.1
+
