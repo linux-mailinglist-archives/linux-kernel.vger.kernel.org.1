@@ -2,31 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7BE1ECB1F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A86651ECB28
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgFCILL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 04:11:11 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:56089 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgFCILL (ORCPT
+        id S1726397AbgFCIMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 04:12:17 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:33809 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgFCIMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 04:11:11 -0400
+        Wed, 3 Jun 2020 04:12:13 -0400
+X-Originating-IP: 90.112.45.105
 Received: from debian.home (lfbn-gre-1-325-105.w90-112.abo.wanadoo.fr [90.112.45.105])
         (Authenticated sender: alex@ghiti.fr)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 096D024000F;
-        Wed,  3 Jun 2020 08:11:05 +0000 (UTC)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 9EA72C0018;
+        Wed,  3 Jun 2020 08:12:09 +0000 (UTC)
 From:   Alexandre Ghiti <alex@ghiti.fr>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
         Christoph Hellwig <hch@lst.de>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH v2 0/8] Introduce sv48 support
-Date:   Wed,  3 Jun 2020 04:10:56 -0400
-Message-Id: <20200603081104.14004-1-alex@ghiti.fr>
+Cc:     Alexandre Ghiti <alex@ghiti.fr>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: [PATCH v2 1/8] riscv: Get rid of compile time logic with MAX_EARLY_MAPPING_SIZE
+Date:   Wed,  3 Jun 2020 04:10:57 -0400
+Message-Id: <20200603081104.14004-2-alex@ghiti.fr>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200603081104.14004-1-alex@ghiti.fr>
+References: <20200603081104.14004-1-alex@ghiti.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -34,58 +38,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset implements sv48 support at runtime. The kernel will try to         
-boot with 4-level page table and will fallback to 3-level if the HW does not     
-support it.                                                                      
-                                                                                 
-The biggest advantage is that we only have one kernel for 64bit, which           
-is way easier to maintain.                                                       
-                                                                                 
-Folding the 4th level into a 3-level page table has almost no cost at            
-runtime. But as mentioned Palmer, the relocatable code generated is less         
-performant.                                                                      
-                                                                                 
-At the moment, there is no way to build a 3-level page table non-relocatable     
-64bit kernel. We agreed that distributions will use this runtime configuration   
-anyway, but Palmer proposed to introduce a new Kconfig, which I will do later    
-as sv48 support was asked for 5.8.                                               
-                                                                                 
-Finally, the user can now ask for sv39 explicitly by using the device-tree       
-which will reduce memory footprint and reduce the number of memory accesses      
-in case of TLB miss.
+There is no need to compare at compile time MAX_EARLY_MAPPING_SIZE value
+with PGDIR_SIZE since MAX_EARLY_MAPPING_SIZE is set to 128MB which is less
+than PGDIR_SIZE that is equal to 1GB: that allows to simplify early_pmd
+definition.
 
-Changes in v2:
-  * Move variable declarations to pgtable.h in patch 5/7 as suggested by Anup
-  * Restore mmu-type properties in patch 6 as suggested by Anup
-  * Fix unused variable in patch 5 that was used in patch 6
-  * Fix SPARSEMEM build (patch 2 was modified so I dropped the Reviewed-by)
-  * Applied various Reviewed-by
+Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+Reviewed-by: Anup Patel <anup@brainfault.org>
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+ arch/riscv/mm/init.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-Alexandre Ghiti (8):
-  riscv: Get rid of compile time logic with MAX_EARLY_MAPPING_SIZE
-  riscv: Allow to dynamically define VA_BITS
-  riscv: Simplify MAXPHYSMEM config
-  riscv: Prepare ptdump for vm layout dynamic addresses
-  riscv: Implement sv48 support
-  riscv: Allow user to downgrade to sv39 when hw supports sv48
-  riscv: Use pgtable_l4_enabled to output mmu type in cpuinfo
-  riscv: Explicit comment about user virtual address space size
-
- arch/riscv/Kconfig                  |  34 ++---
- arch/riscv/include/asm/csr.h        |   3 +-
- arch/riscv/include/asm/fixmap.h     |   1 +
- arch/riscv/include/asm/page.h       |  15 +++
- arch/riscv/include/asm/pgalloc.h    |  36 ++++++
- arch/riscv/include/asm/pgtable-64.h |  97 +++++++++++++-
- arch/riscv/include/asm/pgtable.h    |  31 ++++-
- arch/riscv/include/asm/sparsemem.h  |   6 +-
- arch/riscv/kernel/cpu.c             |  23 ++--
- arch/riscv/kernel/head.S            |   3 +-
- arch/riscv/mm/context.c             |   2 +-
- arch/riscv/mm/init.c                | 194 ++++++++++++++++++++++++----
- arch/riscv/mm/ptdump.c              |  49 +++++--
- 13 files changed, 412 insertions(+), 82 deletions(-)
-
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index e63ea5b6b6cf..80fd692b72d5 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -256,13 +256,7 @@ static void __init create_pte_mapping(pte_t *ptep,
+ 
+ pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
+ pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+-
+-#if MAX_EARLY_MAPPING_SIZE < PGDIR_SIZE
+-#define NUM_EARLY_PMDS		1UL
+-#else
+-#define NUM_EARLY_PMDS		(1UL + MAX_EARLY_MAPPING_SIZE / PGDIR_SIZE)
+-#endif
+-pmd_t early_pmd[PTRS_PER_PMD * NUM_EARLY_PMDS] __initdata __aligned(PAGE_SIZE);
++pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+ 
+ static pmd_t *__init get_pmd_virt(phys_addr_t pa)
+ {
+@@ -276,14 +270,12 @@ static pmd_t *__init get_pmd_virt(phys_addr_t pa)
+ 
+ static phys_addr_t __init alloc_pmd(uintptr_t va)
+ {
+-	uintptr_t pmd_num;
+-
+ 	if (mmu_enabled)
+ 		return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+ 
+-	pmd_num = (va - kernel_virt_addr) >> PGDIR_SHIFT;
+-	BUG_ON(pmd_num >= NUM_EARLY_PMDS);
+-	return (uintptr_t)&early_pmd[pmd_num * PTRS_PER_PMD];
++	BUG_ON((va - kernel_virt_addr) >> PGDIR_SHIFT);
++
++	return (uintptr_t)early_pmd;
+ }
+ 
+ static void __init create_pmd_mapping(pmd_t *pmdp,
 -- 
 2.20.1
 
