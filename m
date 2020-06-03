@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD121ED3C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AABC1ED3C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgFCPvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 11:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbgFCPvk (ORCPT
+        id S1726171AbgFCPwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 11:52:44 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:50774 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgFCPwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 11:51:40 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7B9C08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 08:51:40 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id q16so961563plr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 08:51:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4EZwpgmE4SueL7e7tjK8HJwbAvV8gZoeqD/srGZ37yk=;
-        b=ZyLX+YchCvrvF4S+nVRMqtygJMKIGErfDWpiKzoDhP8bOjlMaHxMfNopmfNWUpsJnH
-         1SxKh8z3fnAwBXchSotzz7Cdri4LUXklamhV0zEbTNhbmc1voenNMpi2IO1hX2aX9QTo
-         2tyEPya5rCe7i+QcHuOzoxfig97Hr76dORbmrVZXyxeTqbpIuPCuqdMbJg3BS1NcSlhu
-         ZXgJu5XW3LCB4V5MJxB7m14GnDgc/6jZScAolGB/54a1vkoLXjDYimVOUo733q+zZAa0
-         lGW7gfMobnnl9SizU4NI5nWKF4ipByvCnII9rLTsGRMqhO4i2MCfhYjkULrtoUgyPkHk
-         fbHg==
+        Wed, 3 Jun 2020 11:52:43 -0400
+Received: by mail-wm1-f66.google.com with SMTP id v19so2434406wmj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 08:52:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4EZwpgmE4SueL7e7tjK8HJwbAvV8gZoeqD/srGZ37yk=;
-        b=HDfjC31nGHrg2rSNv0b6SlwdLj7L9W4i2EDzKne2JDlIUqYzqR8EBh1KixIlUKCDs3
-         d01w1SsyOCD5Z/JdYosx/eYofTU3I7Ns1SZnlnxC7t/pQ/zRgd7qoSrgXUW4vk7ZOukS
-         ncmow1uZWel0Tw4/nUNWwIJoeoK55vg6VJt5MjjfZYKmIlVwRVfOXCVxUFTtT0O3PhRF
-         qle1LL7tpDBZwCvTG1PqqF8IVM1iVlKUpYN1FKdp9jHZ/BDWcRoA9Lc90AoyhY/4m7MA
-         KUmPFY7NWZRkO6vuPvqxMawtXBpMU1XqKwp1hy1oPOp2uTnriZ1oBZmICFongj8MlYv0
-         7+aw==
-X-Gm-Message-State: AOAM530MiQ3BrL3WA9kOuoa46ywLUeflmPRzl1X6O3ODDxl6laxNY/Ul
-        sfNl723piUUw30MI9CQkN4XIbDl1Hegt/CxQ
-X-Google-Smtp-Source: ABdhPJwhCy0NCR2rHQD0wojHcHwNw52mcwGqMJ3XgoD3/b5iqUSSMYoW5hWg74FT61Zd2CagbT1fZg==
-X-Received: by 2002:a17:902:6903:: with SMTP id j3mr531245plk.110.1591199499859;
-        Wed, 03 Jun 2020 08:51:39 -0700 (PDT)
-Received: from Smcdef-MBP.lan ([103.136.220.73])
-        by smtp.gmail.com with ESMTPSA id 205sm2283117pfc.206.2020.06.03.08.51.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Jun 2020 08:51:39 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm/page_alloc: Skip setting nodemask when we are in interrupt
-Date:   Wed,  3 Jun 2020 23:51:24 +0800
-Message-Id: <20200603155124.33981-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GshwwJK66k7h/1UU+52GCjHZuAKqpljzNfx76xeZPt4=;
+        b=nl8dhKS4SaVRa9vcLq60bqwiJW9eB+axX36Jal7vfYHKsBeD/1+HLbKF45OzCUUvHl
+         kLkpkg8ZGydHkFcSiHSIjUzQD2w2Upk4IDAudN4G3Ljozz56tRxVVAgrtatQCGqfIo93
+         r+8+7+LRr23KjG5j1MraDoVAyinYcz3J0T9QXmSFoGP20wn7mTyIfIYqYJo0BHJDbiS2
+         V9NBJai5my2gc1Yv8oULXfHcZNqq4/pAzTjAw7E9r7rBiEpqoiVE8mhzCFF8I2Ue8Hel
+         j3K2maFbL4xjOMX+kMZ4a3KYlPZ90hfvQUhV8ZVsql4qhsaP6TrgooHUu03/c/gSca+q
+         OowQ==
+X-Gm-Message-State: AOAM533/k/leKWgv6t5uK8H0MFq2LRYPL61wS3oBz/oyG8awGzmK4ztj
+        AZbfhAU08Lb1sL8O7GQOpV0=
+X-Google-Smtp-Source: ABdhPJy45eTUcvKlAMQ1mw383qBdgAbYNBqftkPcf5LN6qB0nnXU+RkkQ6r2u0ExFdKJmaCb6WDfng==
+X-Received: by 2002:a7b:cd10:: with SMTP id f16mr9537000wmj.149.1591199531131;
+        Wed, 03 Jun 2020 08:52:11 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id q4sm3439264wma.47.2020.06.03.08.52.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jun 2020 08:52:10 -0700 (PDT)
+Date:   Wed, 3 Jun 2020 15:52:08 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Denis Efremov <efremov@linux.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Paul Durrant <paul@xen.org>, Wei Liu <wei.liu@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] xen-netback: use kstrdup() in connect_data_rings()
+Message-ID: <20200603155208.qmko4nd5on76k7c4@liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net>
+References: <20200603152643.18215-1-efremov@linux.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200603152643.18215-1-efremov@linux.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we are in the interrupt context, it is irrelevant to the
-current task context. If we use current task's mems_allowed, we
-can fair to alloc pages in the fast path and fall back to slow
-path memory allocation when the current node(which is the current
-task mems_allowed) does not have enough memory to allocate. In
-this case, it slows down the memory allocation speed of interrupt
-context. So we can skip setting the nodemask to allow any node
-to allocate memory, so that fast path allocation can success.
+On Wed, Jun 03, 2020 at 06:26:43PM +0300, Denis Efremov wrote:
+> Use kstrdup() instead of opencoded alloc and copy. kzalloc() is
+> excessive here.
+> 
+> Signed-off-by: Denis Efremov <efremov@linux.com>
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/page_alloc.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Acked-by: Wei Liu <wei.liu@kernel.org>
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b48336e20bdcd..a6c36cd557d1d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4726,10 +4726,12 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
- 
- 	if (cpusets_enabled()) {
- 		*alloc_mask |= __GFP_HARDWALL;
--		if (!ac->nodemask)
--			ac->nodemask = &cpuset_current_mems_allowed;
--		else
-+		if (!ac->nodemask) {
-+			if (!in_interrupt())
-+				ac->nodemask = &cpuset_current_mems_allowed;
-+		} else {
- 			*alloc_flags |= ALLOC_CPUSET;
-+		}
- 	}
- 
- 	fs_reclaim_acquire(gfp_mask);
--- 
-2.11.0
-
+> ---
+>  drivers/net/xen-netback/xenbus.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/xen-netback/xenbus.c b/drivers/net/xen-netback/xenbus.c
+> index 286054b60d47..69352154a51b 100644
+> --- a/drivers/net/xen-netback/xenbus.c
+> +++ b/drivers/net/xen-netback/xenbus.c
+> @@ -839,13 +839,12 @@ static int connect_data_rings(struct backend_info *be,
+>  	 * queue-N.
+>  	 */
+>  	if (num_queues == 1) {
+> -		xspath = kzalloc(strlen(dev->otherend) + 1, GFP_KERNEL);
+> +		xspath = kstrdup(dev->otherend, GFP_KERNEL);
+>  		if (!xspath) {
+>  			xenbus_dev_fatal(dev, -ENOMEM,
+>  					 "reading ring references");
+>  			return -ENOMEM;
+>  		}
+> -		strcpy(xspath, dev->otherend);
+>  	} else {
+>  		xspathsize = strlen(dev->otherend) + xenstore_path_ext_size;
+>  		xspath = kzalloc(xspathsize, GFP_KERNEL);
+> -- 
+> 2.26.2
+> 
