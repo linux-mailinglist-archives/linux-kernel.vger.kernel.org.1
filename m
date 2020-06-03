@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2039B1ED74D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 22:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3741C1ED74F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 22:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726241AbgFCUYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 16:24:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33786 "EHLO mail.kernel.org"
+        id S1726202AbgFCUZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 16:25:58 -0400
+Received: from sauhun.de ([88.99.104.3]:50126 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725992AbgFCUYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 16:24:41 -0400
-Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CF9320734;
-        Wed,  3 Jun 2020 20:24:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591215880;
-        bh=aSC2B5FOwH/jbhjkwwbA2U3nvwRY/cfyOrIerqmUQNs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=MnEtRzWw/iwVqJdM8XNSEZR3W1o2W/SiVyK+PNVgMdgyYP+4GTHe322d/sltjhL9O
-         9hAVj5iGCUzUOH6dMBBLwcCJFScUduFRdcmtSV1YsSipf0MrAYWlnkzofpFA87vWYf
-         akJfAM9AkwWT++7aDkOalDa/000MJkwGzuMUv6q8=
-Date:   Wed, 3 Jun 2020 15:24:38 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 05/13] PCI: brcmstb: Add suspend and resume pm_ops
-Message-ID: <20200603202438.GA946895@bjorn-Precision-5520>
+        id S1725961AbgFCUZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 16:25:58 -0400
+Received: from localhost (p5486cfa5.dip0.t-ipconnect.de [84.134.207.165])
+        by pokefinder.org (Postfix) with ESMTPSA id 116E32C1FE2;
+        Wed,  3 Jun 2020 22:25:55 +0200 (CEST)
+Date:   Wed, 3 Jun 2020 22:25:53 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Tali Perry <tali.perry1@gmail.com>
+Cc:     ofery@google.com, brendanhiggins@google.com,
+        avifishman70@gmail.com, tmaimon77@gmail.com, kfting@nuvoton.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        robh+dt@kernel.org, andriy.shevchenko@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH v14 0/3] i2c: npcm7xx: add NPCM i2c controller driver
+Message-ID: <20200603202553.GB7684@kunai>
+References: <20200527200820.47359-1-tali.perry1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="DBIVS5p969aUjpLe"
 Content-Disposition: inline
-In-Reply-To: <20200603192058.35296-6-james.quinlan@broadcom.com>
+In-Reply-To: <20200527200820.47359-1-tali.perry1@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 03:20:37PM -0400, Jim Quinlan wrote:
-> From: Jim Quinlan <jquinlan@broadcom.com>
-> 
-> Broadcom Set-top (BrcmSTB) boards typically support S2, S3, and S5 suspend
-> and resume.  Now the PCIe driver may do so as well.
-> 
-> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+
+--DBIVS5p969aUjpLe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, May 27, 2020 at 11:08:17PM +0300, Tali Perry wrote:
+> This patch set adds i2c controller support=20
+> for the Nuvoton NPCM Baseboard Management Controller (BMC).
+>=20
+> NPCM7xx includes 16 I2C controllers. This driver operates the controller.
+> This module also includes a slave mode.
+>=20
 > ---
->  drivers/pci/controller/pcie-brcmstb.c | 49 +++++++++++++++++++++++++++
->  1 file changed, 49 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-> index 7c707e483181..f444751e247c 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -979,6 +979,49 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
->  	brcm_pcie_bridge_sw_init_set(pcie, 1);
->  }
->  
-> +static int brcm_pcie_suspend(struct device *dev)
-> +{
-> +	struct brcm_pcie *pcie = dev_get_drvdata(dev);
-> +	int ret = 0;
-> +
-> +	brcm_pcie_turn_off(pcie);
-> +	clk_disable_unprepare(pcie->clk);
-> +
-> +	return ret;
+> v14 -> v13:
+> 	- Fix yaml example: add missing include.
+> 	- Replace all udelay to usleep_range, except one which is called from
+> 	  irq.
+> 	- Fix compilation error (module_platfrom_init conflict).
+> 	- debugfs counters always updated. Counting till max value,
+> 	  then stop counting.
+> 	- Rename bus-frequency to clock-frequency.
+> 	- Remove unused variables.
 
-No need for "ret".
+I don't have time for a deeper review, but from what I can tell this
+driver is good to go and we can fix things incrementally from now on.
 
-> +}
+Applied to for-next (will go into 5.8), thanks!
+
+
+--DBIVS5p969aUjpLe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl7YB1EACgkQFA3kzBSg
+KbZmVw//dD5ttj+RhzDcyUcRJ9NMb6dXctKo/EQYXzZfQlKOJqL36iVqKjy8rmFM
+S2F42QY95jaNRdUHEGaFzDazxEUhy7J+07z0XPHk1CrGUDBVVtRf28dsEAXS7UTm
+o8pq67KgL+rr4PcKVd92OnBF0Sdi5d6HlVYah9W7dlnR/crg95cd9JUdwn1THmFw
+/PEmw4XRnYk/+GC4D+hai+W/E86RPpMzCU9YbOCfgnTWC+L7b9W4hS3j9+xtv62V
+HD2GagLUGpBiKENxUSS0NJ7agC31Eea7gi9Gn5P8OfxYr4VtPSagnchKwCoohFbU
+EySi0qXRd5+hWMOjg2DcGqC8mo/FC2ZDSKlLYWiicTgyZjP4vkRpMHqqtwS9u+23
+EFQv0Gy+QjePWEJdjYHP+TxuKw0+2OqMfSr/mkB49sgcKe1Fd7EFlCJbnDmIoZc1
+loO0x9MGK9bl/hlVWUpTorkAJGJygdstxTVk9jFJAEFvUXz6ZNk7HKdb0yOqvZcu
+hRqp1nOCL3fSUjtNPfE3ovaEQBiJO/FcGPf4bSgKycnfeFEbnJy+lYhCvsTV6x6A
+fUy85pKXZad4b51OFi9Hgo+a59ocTopYQRPvAiTcD+e9x2WagmMJCdNjTFsKCUy0
+kprWATccn3TZJ3pSZpqlPX9FvP8u3mZOywM4WXtpX8xvT6qXqys=
+=fEJK
+-----END PGP SIGNATURE-----
+
+--DBIVS5p969aUjpLe--
