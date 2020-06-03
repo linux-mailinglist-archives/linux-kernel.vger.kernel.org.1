@@ -2,54 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA631ED6EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 21:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DE61ED6EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 21:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgFCTbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 15:31:46 -0400
-Received: from [106.12.29.111] ([106.12.29.111]:41108 "EHLO
-        instance-imf1e3pd.localdomain" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725821AbgFCTbq (ORCPT
+        id S1726181AbgFCTbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 15:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgFCTbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 15:31:46 -0400
-Received: from Shop01 (localhost [127.0.0.1])
-        by instance-imf1e3pd.localdomain (Postfix) with SMTP id 72B8A11208E;
-        Tue,  2 Jun 2020 06:27:34 +0800 (CST)
-Received: from [22.155.245.42] by Shop01 with SMTP; Mon, 01 Jun 2020 19:18:19 -0400
-Message-ID: <i-j1712$v$o62h950-a@z6278.81m>
-From:   "SUHIL ABDULZAHRA" <tbryant6@woh.rr.com>
-Reply-To: "SUHIL ABDULZAHRA" <tbryant6@woh.rr.com>
-To:     yotoxl@126.com
-Subject: DEAR SIR
-Date:   Mon, 01 Jun 20 19:18:19 GMT
-X-Mailer: eGroups Message Poster
+        Wed, 3 Jun 2020 15:31:39 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9A7C08C5C0
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 12:31:38 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1jgZ6l-002dSc-EA; Wed, 03 Jun 2020 19:31:27 +0000
+Date:   Wed, 3 Jun 2020 20:31:27 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        Ian Abbott <abbotti@mev.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [git pull] uaccess comedi compat
+Message-ID: <20200603193127.GZ23230@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="6F_B_23_E_.3_4_B7.A5E_FC"
-X-Priority: 3
-X-MSMail-Priority: Normal
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+	comedi compat ioctls done saner (killing the single biggest pile
+of __get_user/__put_user outside of arch/* in process).
 
---6F_B_23_E_.3_4_B7.A5E_FC
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
 
-Dear Sir, 
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
 
-My name is Mr. SUHIL ABDULZAHRA BADR AL-ASADI from IRAQ Ministry of Oil (M=
-oO).  
-Please can I have a confidentially funds transaction with you valued at $1=
-66 million dollars for safe keeping and investment? 
-Please forward your response to my private email: abdulzahrasuhil@gmail.co=
-m for further details.
+are available in the git repository at:
 
-Thank you
-Mr. SUHIL ABDULZAHRA
-https://oil.gov.iq
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git uaccess.comedi
 
---6F_B_23_E_.3_4_B7.A5E_FC--
+for you to fetch changes up to bac42fb21259783cb748ae54227a5e755340a396:
 
+  comedi: get rid of compat_alloc_user_space() mess in COMEDI_CMD{,TEST} compat (2020-05-29 10:06:01 -0400)
+
+----------------------------------------------------------------
+Al Viro (10):
+      comedi: move compat ioctl handling to native fops
+      comedi: get rid of indirection via translated_ioctl()
+      comedi: get rid of compat_alloc_user_space() mess in COMEDI_CHANINFO compat
+      comedi: get rid of compat_alloc_user_space() mess in COMEDI_RANGEINFO compat
+      comedi: get rid of compat_alloc_user_space() mess in COMEDI_INSN compat
+      comedi: get rid of compat_alloc_user_space() mess in COMEDI_INSNLIST compat
+      comedi: lift copy_from_user() into callers of __comedi_get_user_cmd()
+      comedi: do_cmdtest_ioctl(): lift copyin/copyout into the caller
+      comedi: do_cmd_ioctl(): lift copyin/copyout into the caller
+      comedi: get rid of compat_alloc_user_space() mess in COMEDI_CMD{,TEST} compat
+
+ drivers/staging/comedi/Makefile          |   1 -
+ drivers/staging/comedi/comedi_compat32.c | 455 -------------------------
+ drivers/staging/comedi/comedi_compat32.h |  28 --
+ drivers/staging/comedi/comedi_fops.c     | 564 +++++++++++++++++++++++++------
+ drivers/staging/comedi/comedi_internal.h |   2 +-
+ drivers/staging/comedi/range.c           |  17 +-
+ 6 files changed, 467 insertions(+), 600 deletions(-)
+ delete mode 100644 drivers/staging/comedi/comedi_compat32.c
+ delete mode 100644 drivers/staging/comedi/comedi_compat32.h
