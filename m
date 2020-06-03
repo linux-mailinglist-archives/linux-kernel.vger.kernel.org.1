@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14461ED3D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A041ED3D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgFCPzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 11:55:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:30616 "EHLO mga14.intel.com"
+        id S1726084AbgFCP4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 11:56:40 -0400
+Received: from mga04.intel.com ([192.55.52.120]:58845 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725867AbgFCPzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 11:55:42 -0400
-IronPort-SDR: FOYOpihQMBKEsunq4LBzKdbB/PcvD0bvQ2nmffPRPQ/w9Qt+M01BdAVmqlZahH1BtRN9EWCgTN
- eKiBwNcqpuiw==
+        id S1725867AbgFCP4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 11:56:40 -0400
+IronPort-SDR: UfQejUbjCvt1ZvMODsXrS6fZS4/svByVpiGuCLWNpP430oGLMgFHJquGIgTs5K0feLWYG2kctH
+ m24TyiW8Tg0A==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 08:55:41 -0700
-IronPort-SDR: EW20/+Ln5zAEqhjezti/2mNZhM6nIP65JVUVPAib8nZKLqN32Aab1iE9u/arMXpqIMrcLmGUsY
- Eo7n5qFlw00A==
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 08:56:29 -0700
+IronPort-SDR: 8nyHVEHEhPCEtgQPQqfg8oVe24ogQXk9XebIX6fkDlGex5oknlRQQJlkCD6hAviflrC4zxST9K
+ HP18agHbJwLg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,468,1583222400"; 
-   d="scan'208";a="269116000"
+   d="scan'208";a="416603990"
 Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP; 03 Jun 2020 08:55:41 -0700
+  by orsmga004.jf.intel.com with ESMTP; 03 Jun 2020 08:56:28 -0700
 Received: from [10.249.225.188] (abudanko-mobl.ccr.corp.intel.com [10.249.225.188])
-        by linux.intel.com (Postfix) with ESMTP id CE8EA58045A;
-        Wed,  3 Jun 2020 08:55:39 -0700 (PDT)
-Subject: [PATCH v7 04/13] perf stat: factor out body of event handling loop
- for system wide
+        by linux.intel.com (Postfix) with ESMTP id 11C685800E3;
+        Wed,  3 Jun 2020 08:56:25 -0700 (PDT)
+Subject: [PATCH v7 05/13] perf stat: move target check to loop control
+ statement
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
@@ -39,8 +39,8 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 References: <5de4b954-24f0-1e8d-5a0d-7b12783b8218@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <2619acc2-b49a-2850-3de5-bb76958996ee@linux.intel.com>
-Date:   Wed, 3 Jun 2020 18:55:38 +0300
+Message-ID: <8af5b574-0932-596d-25ca-8ac23dce9b23@linux.intel.com>
+Date:   Wed, 3 Jun 2020 18:56:25 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.1
 MIME-Version: 1.0
@@ -54,71 +54,31 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Introduce process_interval() and process_timeout() functions that
-factor out body of event handling loop for attach and system wide
-monitoring use cases.
+Check for target existence in loop control statement jointly with 'stop'
+indicator based on command line values and external asynchronous 'done'
+signal.
 
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- tools/perf/builtin-stat.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
+ tools/perf/builtin-stat.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 9be020e0098a..31f7ccf9537b 100644
+index 31f7ccf9537b..62bad2df13ba 100644
 --- a/tools/perf/builtin-stat.c
 +++ b/tools/perf/builtin-stat.c
-@@ -475,6 +475,23 @@ static void process_interval(void)
- 	print_counters(&rs, 0, NULL);
- }
- 
-+static bool print_interval(unsigned int interval, int *times)
-+{
-+	if (interval) {
-+		process_interval();
-+		if (interval_count && !(--(*times)))
-+			return true;
-+	}
-+	return false;
-+}
-+
-+static bool process_timeout(int timeout, unsigned int interval, int *times)
-+{
-+	if (timeout)
-+		return true;
-+	return print_interval(interval, times);
-+}
-+
- static void enable_counters(void)
- {
- 	if (stat_config.initial_delay)
-@@ -611,6 +628,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 	struct affinity affinity;
- 	int i, cpu;
- 	bool second_pass = false;
-+	bool stop = false;
- 
- 	if (interval) {
- 		ts.tv_sec  = interval / USEC_PER_MSEC;
-@@ -805,17 +823,11 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+@@ -823,10 +823,8 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
  			psignal(WTERMSIG(status), argv[0]);
  	} else {
  		enable_counters();
--		while (!done) {
-+		while (!done && !stop) {
+-		while (!done && !stop) {
++		while (!done && !stop && is_target_alive(&target, evsel_list->core.threads)) {
  			nanosleep(&ts, NULL);
- 			if (!is_target_alive(&target, evsel_list->core.threads))
- 				break;
--			if (timeout)
+-			if (!is_target_alive(&target, evsel_list->core.threads))
 -				break;
--			if (interval) {
--				process_interval();
--				if (interval_count && !(--times))
--					break;
--			}
-+			stop = process_timeout(timeout, interval, &times);
+ 			stop = process_timeout(timeout, interval, &times);
  		}
  	}
- 
 -- 
 2.24.1
 
