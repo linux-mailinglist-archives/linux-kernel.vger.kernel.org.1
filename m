@@ -2,116 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 855121ED76A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 22:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAEB1ED771
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 22:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgFCUbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 16:31:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbgFCUbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 16:31:03 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3080420734;
-        Wed,  3 Jun 2020 20:31:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591216263;
-        bh=qUNzJiCqPglvwtzmTvctitZnvvqDPh2fic8W1vH8Xy0=;
-        h=Date:From:To:cc:Subject:From;
-        b=aLcLcKFtmdFQZR1JL5mRzTKYhYhXYt/A/+ovkDyeVM9hD+veC66Kh2D6H+2J6Eb4e
-         GtC5JBONZ0vcj/mrQT9/657fhj7mIvIvKK1/aHLynbj11p3ly7wBUrcdYH7Y1x1pWZ
-         J5IG3U/DR19isiXPHzjXxGJC3JdvjuFvZLa4XEy8=
-Date:   Wed, 3 Jun 2020 22:31:00 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] HID for 5.8
-Message-ID: <nycvar.YFH.7.76.2006032225550.13242@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1726376AbgFCUdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 16:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgFCUdG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 16:33:06 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F49C08C5C0;
+        Wed,  3 Jun 2020 13:33:04 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id d6so100430pjs.3;
+        Wed, 03 Jun 2020 13:33:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tKK54s37lQCe/iastVr/8YgFF4Qz2iFi8Ru/giratfc=;
+        b=cKQIjUAAnyVFabLs4fElfG3Cv10Qjq7ZEkJ+YkgCFBYDAf/VKYDrPtEJGWcTwbpzf3
+         k1WrTOyUZU7Z+sfuK0xWmI8Zt6xnLEFwKGl/FiSLYPKkzvJUsWXZibRZ3JjnZeN10k6m
+         ofA1mwaq/6iB2Jo96JCPlDBbCSK3Qj7xdBf5/MhmUpPn2cVycDd0y++a21AaFr+tiCc/
+         fN4MVjiRnicjR18xshg8o1v0Rj5Ye1OU/JivxEHA5GlPyUZc4JkMjuU4xgHuxcyJAWi5
+         0WVDVd8MBw57vbfs7ZstpWTMWnCjj+BHJz9pwjynbn+eL9sNGezQSjskxN8lK71vzsBn
+         iz5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tKK54s37lQCe/iastVr/8YgFF4Qz2iFi8Ru/giratfc=;
+        b=Rz6HRar5Hd6RWv/4z35x0SbS5XHajA5PtGVKRmuDbEqCwYG5OdQ0Rgv8X/rO0oAace
+         wubc75qE2BEiLnMKHYsc94D8Ns/25OVfFBenyKgNWzM65CKUFcYiFWYdGjKYPFys3XIN
+         vbtsob1S57LFQxQK+tjVUCFaXbfFE+IQjQhWhHddiQeVu5sxPJIKAFW6usO8WJFDNXK1
+         pDncmptbMh9CWp00jOsKZXaWCBKXZ006vqf6qRFTvnFPOQDWDy5gS0SCIBLkDnpfY1Sv
+         yeCYrxV13Z+1j1Qy6haBG9jtQE1KFP+nrUonp4NpiMoMvYjJvdvUa3K/Mj0Dvf2GCR7J
+         LL1g==
+X-Gm-Message-State: AOAM533vR3Yxpiz8UUKPKjxKrEAqe75Yj62KYX4964hvDq3ng+hmooJP
+        ke5OZ4ZoZAbK4KpC9FulY+aYZPCL
+X-Google-Smtp-Source: ABdhPJyLkFbq2hs5iJJsfKh7chIJrewBYh8p9pOzBn1RZaK00q+ODcLjjar1be1cKhF/sxx4V04S/Q==
+X-Received: by 2002:a17:902:9a43:: with SMTP id x3mr1496123plv.190.1591216383928;
+        Wed, 03 Jun 2020 13:33:03 -0700 (PDT)
+Received: from [10.230.188.43] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 85sm2597077pfz.145.2020.06.03.13.33.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jun 2020 13:33:03 -0700 (PDT)
+Subject: Re: [PATCH v3 10/13] PCI: brcmstb: Set internal memory viewport sizes
+To:     Jim Quinlan <james.quinlan@broadcom.com>,
+        linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200603192058.35296-1-james.quinlan@broadcom.com>
+ <20200603192058.35296-11-james.quinlan@broadcom.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <40eda019-21a2-32ae-d0d7-6dc77f9d91f7@gmail.com>
+Date:   Wed, 3 Jun 2020 13:33:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200603192058.35296-11-james.quinlan@broadcom.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
 
-please pull from
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
+On 6/3/2020 12:20 PM, Jim Quinlan wrote:
+> BrcmSTB PCIe controllers are intimately connected to the memory
+> controller(s) on the SOC.  There is a "viewport" for each memory controller
+> that allows inbound accesses to CPU memory.  Each viewport's size must be
+> set to a power of two, and that size must be equal to or larger than the
+> amount of memory each controller supports.
+> 
+> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
 
-to receive HID subsystem updates for 5.8. Highlights:
-
-=====
-- hid-mcp2221 GPIO support, from Rishi Gupta
-- MT_CLS_WIN_8_DUAL obsolete quirk removal from hid-multitouch, from 
-  Kai-Heng Feng
-- a bunch of new hardware support to hid-asus driver, from Hans de Goede
-- other assorted small fixes, cleanups and device-specific quirks
-=====
-
-Thanks.
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      HID: intel-ish-hid: avoid bogus uninitialized-variable warning
-
-Benjamin Tissoires (1):
-      HID: multitouch: enable multi-input as a quirk for some devices
-
-Christophe JAILLET (1):
-      HID: fix typo in Kconfig
-
-Cristian Klein (1):
-      HID: Add quirks for Trust Panora Graphic Tablet
-
-Filipe Laíns (1):
-      HID: logitech: drop outdated references to unifying receivers
-
-Hans de Goede (7):
-      HID: asus: Only set EV_REP if we are adding a mapping
-      HID: asus: Simplify skipping of mappings for Asus T100CHI keyboard-dock
-      HID: asus: Add hid_is_using_ll_driver(usb_hid_driver) check
-      HID: asus: Add report_size to struct asus_touchpad_info
-      HID: asus: Add support for multi-touch touchpad on Medion Akoya E1239T
-      HID: asus: Fix mute and touchpad-toggle keys on Medion Akoya E1239T
-      HID: asus: Add depends on USB_HID to HID_ASUS Kconfig option
-
-Julian Sax (1):
-      HID: i2c-hid: add Schneider SCL142ALM to descriptor override
-
-Kai-Heng Feng (1):
-      HID: multitouch: Remove MT_CLS_WIN_8_DUAL
-
-Rishi Gupta (1):
-      HID: mcp2221: add GPIO functionality support
-
-Scott Shumate (1):
-      HID: sony: Fix for broken buttons on DS3 USB dongles
-
-free5lot (1):
-      HID: apple: Swap the Fn and Left Control keys on Apple keyboards
-
- drivers/hid/Kconfig                         |  11 +-
- drivers/hid/hid-apple.c                     |  30 ++++-
- drivers/hid/hid-asus.c                      | 122 ++++++++++++++++----
- drivers/hid/hid-ids.h                       |  12 +-
- drivers/hid/hid-logitech-dj.c               |   4 +-
- drivers/hid/hid-logitech-hidpp.c            |   2 +-
- drivers/hid/hid-mcp2221.c                   | 169 ++++++++++++++++++++++++++++
- drivers/hid/hid-multitouch.c                |  60 ++++------
- drivers/hid/hid-quirks.c                    |   1 +
- drivers/hid/hid-sony.c                      |  17 +++
- drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c    |   8 ++
- drivers/hid/intel-ish-hid/ishtp-fw-loader.c |   2 +
- 12 files changed, 364 insertions(+), 74 deletions(-)
-
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Jiri Kosina
-SUSE Labs
-
+Florian
