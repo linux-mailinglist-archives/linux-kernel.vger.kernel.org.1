@@ -2,106 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E29E1ECF4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885581ECF42
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726453AbgFCMC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725973AbgFCMCb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:02:31 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C701C08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 05:02:31 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id m18so397738vkk.9
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 05:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=amz3ptynYvAUbH138IEG0LpKVjBvo8sPz/3+J+n07a8=;
-        b=vHb999opMIzMza943w3iNjuwx1RH0ULq9DdNFIBNl056bXrXRIJUZCp5ljes0uQYaC
-         309fs8zXNrFuwkmvoCWzKa6rp8w9ceaeFZctOEppExt9mu/tjfs7uxgg3XwTDj17BaCx
-         zuOP9aqU7YiYeUOCR996/cgXzMGIUJiha2Iugh6txTnHMKIbNmP2nYml5bi2zGfpnI95
-         6X/rnhb1zqoT6HuDf6UsdUfLNnVViv0Xht5/UFu06NY4SkwuEPWX8Znuko1EjeNchIYA
-         KD8cWO+wMbh8V0jruPN2A13TRw4dm2Ic+XZt97mUzktOTdnbRmf0ISYUUE7SfY5RQfax
-         Pztg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=amz3ptynYvAUbH138IEG0LpKVjBvo8sPz/3+J+n07a8=;
-        b=p2D3ENfcCG+uGmk6FvrG5889M5taJvUUFAJiVb2saDzdsOAdmnn+YmylAo4EBYmu19
-         H4ZaFj3EioA6LNSFeHAmYpEAZ0e8wEyMwIsQxJDaEfZrWtIE87tCTpba/Xiw3+W/PDcW
-         UYcJwCwJrsmUx+7ZOrOzLDWoqwdPGXnCVjDApVyKVnuYVaL/x7v286aL5FPDr6n6LLAD
-         55Vlq9AxX+fs8bM7l8pUttm+Svo7IaK6LW0LY84Hcr2LwWsDbp5DDBEJKaqSrdt0ky21
-         8aZ2kWTzN1TZKg94nn2MW217XXfTTS9+kuI5iBBp8k2Wke/55EE86hHcrtxjrOA0wgCw
-         qtzg==
-X-Gm-Message-State: AOAM5313BrQetF40qv/R4EV/IByhEHOS+3gjBb6TDP6+gw1qkROr0tGj
-        qMPTg1VByrckTCqUfdkxY+GqWM/8u7aGqojWiDKrQw==
-X-Google-Smtp-Source: ABdhPJxDaY9hHU9C9cqqrvDdwtLQXU+4TVbmTzqYFpSK6jRNSb3vAPXpIT+DTQmUBmYd1hclvqBGerS3oaC4/gGhIBw=
-X-Received: by 2002:a05:6122:34:: with SMTP id q20mr7714782vkd.66.1591185750265;
- Wed, 03 Jun 2020 05:02:30 -0700 (PDT)
+        id S1726314AbgFCMC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:02:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726155AbgFCMCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 08:02:19 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E302F20738;
+        Wed,  3 Jun 2020 12:02:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591185738;
+        bh=bO58SMB1LzQOyXiL2sLw/Za72Wlu+k5XyMTXeWhSOME=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LQUS283Y4JVcEr+kDQiT/noySfp4KzARokUQnT01JTGyARrbjLOHnU5MCosY8edHh
+         4rKq3te8/tZcuzSMmWXI9pfavpPJqytChrCUwxkQ+qBUCjJNzcP/c0wRQQbaS8CURW
+         AAVxFwgryqiua1vB+dNrYKtjM9N+vHbBCZQ1sCG0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.14.183
+Date:   Wed,  3 Jun 2020 14:02:14 +0200
+Message-Id: <1591185734156106@kroah.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200602080425.93712-1-kerneljasonxing@gmail.com>
- <CANn89iLNCDuXAhj4By0PDKbuFvneVfwmwkLbRCEKLBF+pmNEPg@mail.gmail.com>
- <CAL+tcoBjjwrkE5QbXDFADRGJfPoniLL1rMFNUkAKBN9L57UGHA@mail.gmail.com>
- <CANn89iKDKnnW1na_F0ngGh3EEc0quuBB2XWo21oAKaHckdPK4w@mail.gmail.com>
- <CAL+tcoDn_=T--uB0CRymfTGvD022PPDk5Yw2yCxvqOOpZ4G_dQ@mail.gmail.com>
- <CANn89i+dPu9=qJowhRVm9d3CesY4p+zzJ0HGiCMc_yJxux6pow@mail.gmail.com>
- <CAL+tcoC2+vYoFbujkLCF7P3evfirNSBQtJ9bPFHiU2FGOnBo+A@mail.gmail.com> <CANn89iJfLM2Hz69d9qOZoRKwzzCCpgVRZ1zbTTbg4vGvSAEZ-w@mail.gmail.com>
-In-Reply-To: <CANn89iJfLM2Hz69d9qOZoRKwzzCCpgVRZ1zbTTbg4vGvSAEZ-w@mail.gmail.com>
-From:   Neal Cardwell <ncardwell@google.com>
-Date:   Wed, 3 Jun 2020 08:02:13 -0400
-Message-ID: <CADVnQy=RJfmzHR15DyWdydFAqSqVmFhaW4_cgYYAgnixEa5DNQ@mail.gmail.com>
-Subject: Re: [PATCH] tcp: fix TCP socks unreleased in BBR mode
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Jason Xing <kerneljasonxing@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, liweishi@kuaishou.com,
-        Shujin Li <lishujin@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 3, 2020 at 1:44 AM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Tue, Jun 2, 2020 at 10:05 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
-> >
-> > Hi Eric,
-> >
-> > I'm still trying to understand what you're saying before. Would this
-> > be better as following:
-> > 1) discard the tcp_internal_pacing() function.
-> > 2) remove where the tcp_internal_pacing() is called in the
-> > __tcp_transmit_skb() function.
-> >
-> > If we do so, we could avoid 'too late to give up pacing'. Meanwhile,
-> > should we introduce the tcp_wstamp_ns socket field as commit
-> > (864e5c090749) does?
-> >
->
-> Please do not top-post on netdev mailing list.
->
->
-> I basically suggested double-checking which point in TCP could end up
-> calling tcp_internal_pacing()
-> while the timer was already armed.
->
-> I guess this is mtu probing.
+I'm announcing the release of the 4.14.183 kernel.
 
-Perhaps this could also happen from some of the retransmission code
-paths that don't use tcp_xmit_retransmit_queue()? Perhaps
-tcp_retransmit_timer() (RTO) and  tcp_send_loss_probe() TLP? It seems
-they could indirectly cause a call to __tcp_transmit_skb() and thus
-tcp_internal_pacing() without first checking if the pacing timer was
-already armed?
+All users of the 4.14 kernel series must upgrade.
 
-neal
+The updated 4.14.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.14.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                            |    2 
+ arch/arm/boot/dts/bcm2835-rpi-zero-w.dts            |    2 
+ arch/arm/boot/dts/imx6q-b450v3.dts                  |    7 -
+ arch/arm/boot/dts/imx6q-b650v3.dts                  |    7 -
+ arch/arm/boot/dts/imx6q-b850v3.dts                  |   11 -
+ arch/arm/boot/dts/imx6q-bx50v3.dtsi                 |   77 +++++++++++++
+ arch/arm/boot/dts/rk3228-evb.dts                    |    2 
+ arch/arm/boot/dts/rk322x.dtsi                       |    4 
+ arch/arm/include/asm/assembler.h                    |   83 --------------
+ arch/arm/include/asm/uaccess-asm.h                  |  117 ++++++++++++++++++++
+ arch/arm/include/asm/vfpmacros.h                    |    8 -
+ arch/arm/kernel/entry-armv.S                        |   11 -
+ arch/arm/kernel/entry-header.S                      |    9 -
+ arch/arm/lib/bitops.h                               |    8 -
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi            |    8 -
+ arch/parisc/mm/init.c                               |    2 
+ arch/x86/include/asm/dma.h                          |    2 
+ arch/x86/kernel/fpu/xstate.c                        |   86 ++++++++------
+ arch/x86/kvm/vmx.c                                  |    7 -
+ drivers/gpio/gpio-exar.c                            |    7 -
+ drivers/gpio/gpio-tegra.c                           |    1 
+ drivers/infiniband/hw/qib/qib_sysfs.c               |    9 -
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c      |    2 
+ drivers/input/evdev.c                               |   19 ---
+ drivers/input/joystick/xpad.c                       |   12 ++
+ drivers/input/keyboard/dlink-dir685-touchkeys.c     |    2 
+ drivers/input/rmi4/rmi_driver.c                     |    5 
+ drivers/input/serio/i8042-x86ia64io.h               |    7 +
+ drivers/input/touchscreen/usbtouchscreen.c          |    1 
+ drivers/iommu/iommu.c                               |    2 
+ drivers/mmc/core/block.c                            |    2 
+ drivers/net/bonding/bond_sysfs_slave.c              |    4 
+ drivers/net/ethernet/freescale/Kconfig              |    2 
+ drivers/net/ethernet/freescale/dpaa/Kconfig         |    1 
+ drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c  |    5 
+ drivers/net/ethernet/mellanox/mlx4/fw.c             |    2 
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c       |   14 ++
+ drivers/net/ethernet/mellanox/mlx5/core/en_tx.c     |    6 -
+ drivers/net/ethernet/microchip/encx24j600.c         |    5 
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c |    4 
+ drivers/net/ethernet/sun/cassini.c                  |    3 
+ drivers/net/usb/cdc_ether.c                         |   11 +
+ drivers/net/usb/r8152.c                             |    1 
+ drivers/s390/scsi/zfcp_fsf.c                        |   10 +
+ drivers/tty/serial/sc16is7xx.c                      |    2 
+ drivers/usb/gadget/legacy/inode.c                   |    3 
+ fs/binfmt_elf.c                                     |    2 
+ fs/cachefiles/rdwr.c                                |    2 
+ fs/cifs/file.c                                      |    2 
+ fs/gfs2/quota.c                                     |    3 
+ fs/gfs2/quota.h                                     |    3 
+ include/asm-generic/topology.h                      |    2 
+ include/linux/mlx5/driver.h                         |    1 
+ include/linux/mm.h                                  |   15 ++
+ include/linux/netfilter/nf_conntrack_pptp.h         |    2 
+ include/net/act_api.h                               |    3 
+ include/uapi/linux/xfrm.h                           |    2 
+ kernel/irq/migration.c                              |   26 +++-
+ mm/vmalloc.c                                        |    2 
+ net/ax25/af_ax25.c                                  |    6 -
+ net/bridge/netfilter/nft_reject_bridge.c            |    6 +
+ net/ceph/osd_client.c                               |    4 
+ net/ipv4/ip_vti.c                                   |   75 ++++++------
+ net/ipv4/ipip.c                                     |    2 
+ net/ipv4/netfilter/nf_nat_pptp.c                    |    7 -
+ net/ipv4/route.c                                    |   14 +-
+ net/ipv6/esp6_offload.c                             |    9 +
+ net/mac80211/mesh_hwmp.c                            |    7 +
+ net/netfilter/ipset/ip_set_list_set.c               |    2 
+ net/netfilter/nf_conntrack_pptp.c                   |   62 +++++-----
+ net/netfilter/nfnetlink_cthelper.c                  |    3 
+ net/qrtr/qrtr.c                                     |    2 
+ net/rxrpc/local_object.c                            |   23 ++-
+ net/sctp/sm_statefuns.c                             |    9 -
+ net/xfrm/xfrm_input.c                               |    2 
+ net/xfrm/xfrm_output.c                              |   15 +-
+ net/xfrm/xfrm_policy.c                              |    7 -
+ samples/bpf/lwt_len_hist_user.c                     |    2 
+ security/commoncap.c                                |    1 
+ sound/core/hwdep.c                                  |    4 
+ sound/pci/hda/patch_realtek.c                       |    3 
+ sound/usb/mixer.c                                   |    8 +
+ 82 files changed, 580 insertions(+), 353 deletions(-)
+
+Al Viro (1):
+      copy_xstate_to_kernel(): don't leave parts of destination uninitialized
+
+Alexander Dahl (1):
+      x86/dma: Fix max PFN arithmetic overflow on 32 bit systems
+
+Alexander Potapenko (1):
+      fs/binfmt_elf.c: allocate initialized memory in fill_thread_core_info()
+
+Antony Antony (1):
+      xfrm: fix error in comment
+
+Arnd Bergmann (2):
+      net: freescale: select CONFIG_FIXED_PHY where needed
+      include/asm-generic/topology.h: guard cpumask_of_node() macro argument
+
+Benjamin Block (1):
+      scsi: zfcp: fix request object use-after-free in send path causing wrong traces
+
+Bob Peterson (1):
+      gfs2: move privileged user check to gfs2_quota_lock_check
+
+Brendan Shanks (1):
+      Input: evdev - call input_flush_device() on release(), not flush()
+
+Changming Liu (1):
+      ALSA: hwdep: fix a left shifting 1 by 31 UB bug
+
+Chris Chiu (1):
+      ALSA: usb-audio: mixer: volume quirk for ESS Technology Asus USB DAC
+
+Christophe JAILLET (1):
+      Input: dlink-dir685-touchkeys - fix a typo in driver name
+
+Chuhong Yuan (1):
+      net: microchip: encx24j600: add missed kthread_stop
+
+Colin Ian King (1):
+      net: hns: fix unsigned comparison to less than zero
+
+David Howells (1):
+      rxrpc: Fix transport sockopts to get IPv4 errors on an IPv6 socket
+
+Eric Dumazet (1):
+      ax25: fix setsockopt(SO_BINDTODEVICE)
+
+Eric W. Biederman (1):
+      exec: Always set cap_ambient in cap_bprm_set_creds
+
+Evan Green (1):
+      Input: synaptics-rmi4 - really fix attn_data use-after-free
+
+Greg Kroah-Hartman (1):
+      Linux 4.14.183
+
+Guoqing Jiang (1):
+      sc16is7xx: move label 'err_spi' to correct section
+
+Helge Deller (1):
+      parisc: Fix kernel panic in mem_init()
+
+James Hilliard (1):
+      Input: usbtouchscreen - add support for BonXeon TP
+
+Jere Leppänen (1):
+      sctp: Start shutdown on association restart if in SHUTDOWN-SENT state and socket is closed
+
+Jeremy Sowden (1):
+      vti4: eliminated some duplicate code.
+
+Jerry Lee (1):
+      libceph: ignore pool overlay and cache logic on redirects
+
+Johan Jonker (3):
+      ARM: dts: rockchip: fix phy nodename for rk3228-evb
+      arm64: dts: rockchip: swap interrupts interrupt-names rk3399 gpu node
+      ARM: dts: rockchip: fix pinctrl sub nodename for spi in rk322x.dtsi
+
+Kaike Wan (1):
+      IB/qib: Call kobject_put() when kobject_init_and_add() fails
+
+Kailang Yang (1):
+      ALSA: hda/realtek - Add new codec supported for ALC287
+
+Kevin Locke (1):
+      Input: i8042 - add ThinkPad S230u to i8042 reset list
+
+Konstantin Khlebnikov (1):
+      mm: remove VM_BUG_ON(PageSlab()) from page_mapcount()
+
+Lei Xue (1):
+      cachefiles: Fix race between read_waiter and read_copier involving op->to_do
+
+Linus Lüssing (1):
+      mac80211: mesh: fix discovery timer re-arming issue / crash
+
+Liviu Dudau (1):
+      mm/vmalloc.c: don't dereference possible NULL pointer in __vunmap()
+
+Manivannan Sadhasivam (1):
+      net: qrtr: Fix passing invalid reference to qrtr_local_enqueue()
+
+Marc Payne (1):
+      r8152: support additional Microsoft Surface Ethernet Adapter variant
+
+Masahiro Yamada (1):
+      usb: gadget: legacy: fix redundant initialization warnings
+
+Matteo Croce (1):
+      samples: bpf: Fix build error
+
+Michael Braun (1):
+      netfilter: nft_reject_bridge: enable reject with bridge vlan
+
+Moshe Shemesh (2):
+      net/mlx5: Add command entry handling completion
+      net/mlx5e: Update netdev txq on completions during closure
+
+Pablo Neira Ayuso (3):
+      netfilter: nfnetlink_cthelper: unbreak userspace helper support
+      netfilter: nf_conntrack_pptp: prevent buffer overflows in debug code
+      netfilter: nf_conntrack_pptp: fix compilation warning with W=1 build
+
+Peng Hao (1):
+      mmc: block: Fix use-after-free issue for rpmb
+
+Phil Sutter (1):
+      netfilter: ipset: Fix subcounter update skip
+
+Qiushi Wu (6):
+      net: sun: fix missing release regions in cas_init_one().
+      net/mlx4_core: fix a memory leak bug.
+      RDMA/pvrdma: Fix missing pci disable in pvrdma_pci_probe()
+      iommu: Fix reference count leak in iommu_group_alloc.
+      qlcnic: fix missing release in qlcnic_83xx_interrupt_test.
+      bonding: Fix reference count leak in bond_sysfs_slave_add.
+
+Robert Beckett (1):
+      ARM: dts/imx6q-bx50v3: Set display interface clock parents
+
+Roman Mashak (1):
+      net sched: fix reporting the first-time use timestamp
+
+Russell King (3):
+      ARM: uaccess: consolidate uaccess asm to asm/uaccess-asm.h
+      ARM: uaccess: integrate uaccess_save and uaccess_restore
+      ARM: uaccess: fix DACR mismatch with nested exceptions
+
+Salil Mehta (1):
+      net: hns: Fixes the missing put_device in positive leg for roce reset
+
+Sean Christopherson (1):
+      KVM: VMX: check for existence of secondary exec controls before accessing
+
+Sebastian Reichel (1):
+      ARM: dts: imx6q-bx50v3: Add internal switch
+
+Stefan Agner (1):
+      ARM: 8843/1: use unified assembler in headers
+
+Stephen Warren (1):
+      gpio: tegra: mask GPIO IRQs during IRQ shutdown
+
+Steve French (1):
+      cifs: Fix null pointer check in cifs_read
+
+Takashi Iwai (1):
+      gpio: exar: Fix bad handling for ida_simple_get error path
+
+Thomas Gleixner (1):
+      genirq/generic_pending: Do not lose pending affinity update
+
+Vadim Fedorenko (1):
+      net: ipip: fix wrong address family in init error path
+
+Vincent Stehlé (1):
+      ARM: dts: bcm2835-rpi-zero-w: Fix led polarity
+
+Wei Yongjun (1):
+      Input: synaptics-rmi4 - fix error return code in rmi_driver_probe()
+
+Xin Long (6):
+      xfrm: allow to accept packets with ipv6 NEXTHDR_HOP in xfrm_input
+      xfrm: call xfrm_output_gso when inner_protocol is set in xfrm_output
+      xfrm: fix a warning in xfrm_policy_insert_list
+      xfrm: fix a NULL-ptr deref in xfrm_local_error
+      ip_vti: receive ipip packet by calling ip_tunnel_rcv
+      esp6: get the right proto for transport mode in esp6_gso_encap
+
+Yuqi Jin (1):
+      net: revert "net: get rid of an signed integer overflow in ip_idents_reserve()"
+
+Łukasz Patron (1):
+      Input: xpad - add custom init packet for Xbox One S controllers
+
