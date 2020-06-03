@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26411ECA3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC881ECA44
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgFCHNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 03:13:11 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:5622 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgFCHNK (ORCPT
+        id S1726141AbgFCHOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 03:14:25 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:29301 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbgFCHOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 03:13:10 -0400
+        Wed, 3 Jun 2020 03:14:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1591168389; x=1622704389;
+  t=1591168464; x=1622704464;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=lNFxVu5oHwO1aOURXAUvUJJi5lK2SkZMFrjh4Wym42s=;
-  b=SpbxWH2fw+duj0UY9nzktm5w4M/1ZwN77XNppN0JUFjvXjUJN//Ixdmi
-   fgozhH87/MBN8zJoUEeu6fvqIOmW7sLFtuEm0Kurm2Aczs2Py2R9wotuP
-   MMQVE7VvLki4axiG3F5MLt33FhM78btANBMQ2ZZ3TbLejs/DFa9eLYfzx
+  bh=/kfAd1XjpVq3L6on7njk4xOmlv6uR7G/4ENC2AijgCU=;
+  b=RdQiG7Vdl8D5xvsi4n96Yh1ugUgMFNQ/puFth7mfc9IOGOA8JNstucit
+   Udhkw21D8PAjMZmI0ZShS91T5SBYlXs/Ox89R78yvKw9brW8bWvqKwl+/
+   m7rpIkHNAI36Y4GIUDdnIAATPgzUN7e1f/tD7nLvx4qg7Mf4oSI6BtLJZ
    k=;
-IronPort-SDR: YTb1zGhebK0YF8XKZG+sGwMlQwqKPLhAuzZHlNyFY7Dr2gZv/c82KfRvUbip+O5rgupPQKEKPt
- w7kI9jtL5aug==
+IronPort-SDR: LhSGDLBJ5HRtVy36/p0AM84Q0ZyaoUHX9GeokDN4aqmODKjlWYoEc4DZSi3kurv3yCs3RClP3u
+ 0+OXVumWR8oQ==
 X-IronPort-AV: E=Sophos;i="5.73,467,1583193600"; 
-   d="scan'208";a="34063678"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 03 Jun 2020 07:12:58 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com (Postfix) with ESMTPS id 759B3A2A37;
-        Wed,  3 Jun 2020 07:12:46 +0000 (UTC)
+   d="scan'208";a="34199761"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-c7c08562.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 03 Jun 2020 07:14:24 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1e-c7c08562.us-east-1.amazon.com (Postfix) with ESMTPS id CE219243DF4;
+        Wed,  3 Jun 2020 07:14:21 +0000 (UTC)
 Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
  EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 3 Jun 2020 07:12:45 +0000
+ id 15.0.1497.2; Wed, 3 Jun 2020 07:14:21 +0000
 Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.26) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 3 Jun 2020 07:12:29 +0000
+ id 15.0.1497.2; Wed, 3 Jun 2020 07:14:06 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -56,9 +56,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <ying.huang@intel.com>, <linux-damon@amazon.com>,
         <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [RFC v10 1/8] mm/madvise: Export do_madvise() to external GPL modules
-Date:   Wed, 3 Jun 2020 09:11:31 +0200
-Message-ID: <20200603071138.8152-2-sjpark@amazon.com>
+Subject: [RFC v10 2/8] mm/damon: Account age of target regions
+Date:   Wed, 3 Jun 2020 09:11:32 +0200
+Message-ID: <20200603071138.8152-3-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200603071138.8152-1-sjpark@amazon.com>
 References: <20200603071138.8152-1-sjpark@amazon.com>
@@ -74,26 +74,132 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit exports 'do_madvise()' to external GPL modules, so that
-other modules including DAMON could use the function.
+DAMON can be used as a primitive for data access pattern aware memory
+management optimizations.  However, users who want such optimizations
+should run DAMON, read the monitoring results, analyze it, plan a new
+memory management scheme, and apply the new scheme by themselves.  It
+would not be too hard, but still require some level of effort.  For
+complicated optimizations, this effort is inevitable.
+
+That said, in many cases, users would simply want to apply an actions to
+a memory region of a specific size having a specific access frequency
+for a specific time.  For example, "page out a memory region larger than
+100 MiB but having a low access frequency more than 10 minutes", or "Use
+THP for a memory region larger than 2 MiB having a high access frequency
+for more than 2 seconds".
+
+For such optimizations, users will need to first account the age of each
+region themselves.  To reduce such efforts, this commit implements a
+simple age account of each region in DAMON.  For each aggregation step,
+DAMON compares the access frequency with that from last aggregation and
+reset the age of the region if the change is significant.  Else, the age
+is incremented.  Also, in case of the merge of regions, the region
+size-weighted average of the ages is set as the age of merged new
+region.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- mm/madvise.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/damon.h | 10 ++++++++++
+ mm/damon.c            | 29 +++++++++++++++++++++--------
+ 2 files changed, 31 insertions(+), 8 deletions(-)
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 1ad7522567d4..fcd951694ebc 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -1171,6 +1171,7 @@ int do_madvise(struct task_struct *target_task, struct mm_struct *mm,
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index c4796a10cb1a..6a8ff2c63c2a 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -24,6 +24,13 @@
+  * @sampling_addr:	Address of the sample for the next access check.
+  * @nr_accesses:	Access frequency of this region.
+  * @list:		List head for siblings.
++ * @age:		Age of this region.
++ * @last_nr_accesses:	Internal value for age calculation.
++ *
++ * @age is initially zero, increased for each aggregation interval, and reset
++ * to zero again if the access frequency is significantly changed.  If two
++ * regions are merged into a new region, both @nr_accesses and @age of the new
++ * region are set as region size-weighted average of those of the two regions.
+  */
+ struct damon_region {
+ 	unsigned long vm_start;
+@@ -31,6 +38,9 @@ struct damon_region {
+ 	unsigned long sampling_addr;
+ 	unsigned int nr_accesses;
+ 	struct list_head list;
++
++	unsigned int age;
++	unsigned int last_nr_accesses;
+ };
  
- 	return error;
+ /**
+diff --git a/mm/damon.c b/mm/damon.c
+index 2c44e0860672..6e9cc3330589 100644
+--- a/mm/damon.c
++++ b/mm/damon.c
+@@ -86,6 +86,9 @@ static struct damon_region *damon_new_region(struct damon_ctx *ctx,
+ 	region->nr_accesses = 0;
+ 	INIT_LIST_HEAD(&region->list);
+ 
++	region->age = 0;
++	region->last_nr_accesses = 0;
++
+ 	return region;
  }
-+EXPORT_SYMBOL_GPL(do_madvise);
  
- SYSCALL_DEFINE3(madvise, unsigned long, start, size_t, len_in, int, behavior)
+@@ -659,6 +662,7 @@ static void kdamond_reset_aggregated(struct damon_ctx *c)
+ 					sizeof(r->nr_accesses));
+ 			trace_damon_aggregated(t->pid, nr,
+ 					r->vm_start, r->vm_end, r->nr_accesses);
++			r->last_nr_accesses = r->nr_accesses;
+ 			r->nr_accesses = 0;
+ 		}
+ 	}
+@@ -672,9 +676,11 @@ static void kdamond_reset_aggregated(struct damon_ctx *c)
+ static void damon_merge_two_regions(struct damon_region *l,
+ 				struct damon_region *r)
  {
+-	l->nr_accesses = (l->nr_accesses * sz_damon_region(l) +
+-			r->nr_accesses * sz_damon_region(r)) /
+-			(sz_damon_region(l) + sz_damon_region(r));
++	unsigned long sz_l = sz_damon_region(l), sz_r = sz_damon_region(r);
++
++	l->nr_accesses = (l->nr_accesses * sz_l + r->nr_accesses * sz_r) /
++			(sz_l + sz_r);
++	l->age = (l->age * sz_l + r->age * sz_r) / (sz_l + sz_r);
+ 	l->vm_end = r->vm_end;
+ 	damon_destroy_region(r);
+ }
+@@ -692,12 +698,16 @@ static void damon_merge_regions_of(struct damon_task *t, unsigned int thres)
+ 	struct damon_region *r, *prev = NULL, *next;
+ 
+ 	damon_for_each_region_safe(r, next, t) {
+-		if (!prev || prev->vm_end != r->vm_start ||
+-		    diff_of(prev->nr_accesses, r->nr_accesses) > thres) {
++		if (diff_of(r->nr_accesses, r->last_nr_accesses) > thres)
++			r->age = 0;
++		else
++			r->age++;
++
++		if (prev && prev->vm_end == r->vm_start &&
++		    diff_of(prev->nr_accesses, r->nr_accesses) <= thres)
++			damon_merge_two_regions(prev, r);
++		else
+ 			prev = r;
+-			continue;
+-		}
+-		damon_merge_two_regions(prev, r);
+ 	}
+ }
+ 
+@@ -733,6 +743,9 @@ static void damon_split_region_at(struct damon_ctx *ctx,
+ 	new = damon_new_region(ctx, r->vm_start + sz_r, r->vm_end);
+ 	r->vm_end = new->vm_start;
+ 
++	new->age = r->age;
++	new->last_nr_accesses = r->last_nr_accesses;
++
+ 	damon_insert_region(new, r, damon_next_region(r));
+ }
+ 
 -- 
 2.17.1
 
