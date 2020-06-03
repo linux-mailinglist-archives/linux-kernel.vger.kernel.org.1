@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0FD1ECA4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C78F1ECA5E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgFCHQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 03:16:07 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58209 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725836AbgFCHQH (ORCPT
+        id S1725917AbgFCHSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 03:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgFCHSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 03:16:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591168566;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=exf763iaQhedfc3bldxc9coywh4msA7jsItB1rYI+1c=;
-        b=N1Ua/0RH7kwpaahXknjY7txWpoSAD2FLW4eqGsLhi59ymPG5vcl9GMJAGd/EFJ7l95sYIV
-        ZJGOvFNgw+DMzIbZ6JiUb4Jt01js2UCg9zLssEWwekjlu7KKKjD231L29nsdJlUMzbH3Kq
-        vpc/DCnsOOBOoZon6CmGNyapIGlAJig=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-350-K5_nyCUBMC-JhoimIte_3Q-1; Wed, 03 Jun 2020 03:16:04 -0400
-X-MC-Unique: K5_nyCUBMC-JhoimIte_3Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F8EB107ACCA;
-        Wed,  3 Jun 2020 07:16:03 +0000 (UTC)
-Received: from [10.72.12.214] (ovpn-12-214.pek2.redhat.com [10.72.12.214])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 33F8911A9F5;
-        Wed,  3 Jun 2020 07:15:55 +0000 (UTC)
-Subject: Re: [PATCH RFC 02/13] vhost: use batched version by default
-To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?Q?Eugenio_P=c3=a9rez?= <eperezma@redhat.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org
-References: <20200602130543.578420-1-mst@redhat.com>
- <20200602130543.578420-3-mst@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <9dc9fb1b-c9d0-7c67-8297-f8a7dcc4c79e@redhat.com>
-Date:   Wed, 3 Jun 2020 15:15:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 3 Jun 2020 03:18:42 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5B7C05BD43
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 00:18:41 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id n11so1175241qkn.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 00:18:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=upUYfRAA3OB+55Uid8yeg7Ykm1ooNkzjA3YEgCJr99I=;
+        b=IwDhT0K292/Bw6J/zj0jh9gBcuBIJl5QMCTXZQwICBLE9l8ck8ixucykHzavVL170l
+         GwGcTb8RqvvbWSXOotRntL7qZtuSKCnHcnb+XjMrfVo0ZmWQPH3G0o7IQjNuZIsCFgpT
+         KBsy+6Ha+U1JN5ac6VzHaGuSaXiEm/rX8praMgfXOlSkWVRMBTHLhTUv2WDgv1AyuQOg
+         M7x0krg0Ab0VmHJZPlaUbvwNxY1sMI43Sx4ovBjHRLtqp6ioG/I/Nos+mdKwzmmLrJp0
+         kAm6wrY8i+NcozOWXiE+PkLWhn1nGFisvrcLZgOLMCZsWDxz8Dl4tHopSzHo0XlfEIZz
+         8vJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=upUYfRAA3OB+55Uid8yeg7Ykm1ooNkzjA3YEgCJr99I=;
+        b=i3MBDsVHjSP2miBaGIOVdV3UXSQ7dnavmhQEwkpUZy4JxmUvebMAQQj2V0gJWmBJlL
+         jIXjvQAxoey0rmrOJpnTO6XT8ThxK7Tw1DXIU7xATKjTf6zzo1Ewyt3wxDhWIy7VPqPh
+         FF8z4Pcw487flhOEXbORLYhRx4uZqLmclALof85gjUR5CpA+0zXli+6tcNktiT6AWKuc
+         iBN6GdIFx1p8YZNgrvXhLLRII1o8Mcom8TMkkU+p2boaZFF8CYR3HND28ie5sO26HE6z
+         JpFqf/1AggxiKqJ9Pr+Jmu7suoT6SJmw4Vg9rUDVPJ5jTjqxDpKlICFp0woYCxNNH1cc
+         ewbA==
+X-Gm-Message-State: AOAM5304gjFeN/5XoTAa3QJeyknIxigxYKDX85PAoQz9+87wt7aIuHSS
+        W64fWJaQFvsbsg53YnjmC1vT4TWdD+7eSHirMUA=
+X-Google-Smtp-Source: ABdhPJw8caa0RkmT/kcE/lPlKwmQw7I0GVvEKAwuuSomY0LIBhKDbsb5isrygm8OpzPqI144baZWIiqEMdxh87QEAYo=
+X-Received: by 2002:a05:620a:15f4:: with SMTP id p20mr26731572qkm.283.1591168720536;
+ Wed, 03 Jun 2020 00:18:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200602130543.578420-3-mst@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20200529033809.113516-1-lizhe67@huawei.com>
+In-Reply-To: <20200529033809.113516-1-lizhe67@huawei.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Wed, 3 Jun 2020 09:18:29 +0200
+Message-ID: <CAFLxGvzkMp3JJHiE3g3LrxVJUgh2Fj6tbGFPSdv-1W2PiYqGjQ@mail.gmail.com>
+Subject: Re: [PATCH] jffs2: fix nothing output for "ls" command
+To:     Zhe Li <lizhe67@huawei.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/6/2 下午9:05, Michael S. Tsirkin wrote:
-> As testing shows no performance change, switch to that now.
+On Fri, May 29, 2020 at 5:38 AM Zhe Li <lizhe67@huawei.com> wrote:
 >
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> Signed-off-by: Eugenio Pérez <eperezma@redhat.com>
-> Link: https://lore.kernel.org/r/20200401183118.8334-3-eperezma@redhat.com
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->   drivers/vhost/vhost.c | 251 +-----------------------------------------
->   drivers/vhost/vhost.h |   4 -
->   2 files changed, 2 insertions(+), 253 deletions(-)
+> Recently I find a bug that I get nothing with shell
+> command "ls". The test steps are listed below.
+> 1. cd $JFFS2_MOUNT_DIR
+> 2. touch file
+> 3. ls
+>
+> Finally I find that when command "ls" going into
+> function jffs2_readdir(), it get non-zero return
+> value from function dir_emit(). So I get nothing
+> from "ls", absolutely.
+>
+> After checking my file system image, I find a raw
+> dirent node with nsize = 0. The full_scan mounting
+> process do not check nsize and the return value
+> of strnlen(rd->name, rd->nsize) carefully, which
+> causes function jffs2_readdir pass 0 to parameter
+> namelen of function dir_emit when we use command
+> "ls".
+>
+> Of course it should never happened to find a raw
+> dirent with nsize = 0. In my opinion, this abnormal
+> phenomenon maybe cause by bad driver or bad medium.
+> But for rebustness reason, jffs2 should handle it.
 
+Well, if driver or medium are bad, the filesystem will die and lose
+data. Instead of papering over the issue and delaying the inevitable
+loss of data, please address the root cause.
 
-Since we don't have a way to switch back, it's better to remove "by 
-default" in the title.
-
-Thanks
-
+-- 
+Thanks,
+//richard
