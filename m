@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9191ECEBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5A11ECEBB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgFCLnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 07:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58696 "EHLO
+        id S1726342AbgFCLmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 07:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgFCLmu (ORCPT
+        with ESMTP id S1726144AbgFCLmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 07:42:50 -0400
+        Wed, 3 Jun 2020 07:42:46 -0400
 Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B29C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 04:42:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A432AC08C5C2
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 04:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=qNhYv2Y/S8hWOcHSxiTZb5nzE+u9vWtPn8+l4Z+FKJU=; b=KVH/fv2Rc7RkLQNfJ8GmBYq0gg
-        lsVwqJnVkpOnDc4HXE3VU7LSY8dMvImrTGZoCf3qf748BDQ2I6ZGmh2Gq8NsbDHEWf6zmbAqJo5YK
-        w5HIQubMCyNESBYw5KyHHaMWxQmDmimsC2dpVyU4CJkuCZ5alV5haeFcPlwMRsDp4JhmThJhSo4Y2
-        Is9IgBf7pvhmXzzU2R0PjEiszmpGI9KOBaL6a2kectSPxBn05RBn5A4uXcaB9/KBmeqlpa0Kjw6Eo
-        P5OT0hLD5BHosYPQ5/8R3Hh6p0L+u7uIxtI5bN3cPsCHhaGaI6q1aPNPNwcZkCriBWGOsCoONZk6+
-        bDyDABhA==;
+        bh=/2QXn+atrvGmy2WDbzn5KMB/u9lheYoEWUB6ctzoU3g=; b=nd5NSFf1K9rXAPZ5EqvJWLfgJj
+        K0Udc3DDJu569lTf2A7VaH8rgTeBA6lWIS81w8GFLRHNd1DAbwtMrCS3Mu9XjgWkIFWRhTFgWeU54
+        CrBJsRr1MxN8ukND6clELPnM/tI5AvfrHJ1VofR37y9xGghURpQQJC+iKuh/uAr25Gr1OUoSXYrJ2
+        C8ryF7mf/xTLWOkDyQbeE+/M+9taxnwG79sXN106K+E5INVrBeyYi6hXYgA5+pEnf3pZXPl4EkTeU
+        glsWl3s65PTcQsfG0mIR9FjqyJWyrnAq1uzQPsh3KMNC6Trn+zZGXDzG7065dRyJr91ynAmtNyAOs
+        zAJBNCZw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jgRms-0005oh-Uh; Wed, 03 Jun 2020 11:42:27 +0000
+        id 1jgRmr-0005oW-FJ; Wed, 03 Jun 2020 11:42:25 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BE803306CDC;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F266B306D6D;
         Wed,  3 Jun 2020 13:42:23 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id AEE09209DB0C8; Wed,  3 Jun 2020 13:42:23 +0200 (CEST)
-Message-ID: <20200603114052.012171668@infradead.org>
+        id B4319209DB0D0; Wed,  3 Jun 2020 13:42:23 +0200 (CEST)
+Message-ID: <20200603114052.070166551@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 03 Jun 2020 13:40:18 +0200
+Date:   Wed, 03 Jun 2020 13:40:19 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de
 Cc:     x86@kernel.org, elver@google.com, paulmck@kernel.org,
         kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
         peterz@infradead.org, will@kernel.org, dvyukov@google.com,
         glider@google.com, andreyknvl@google.com
-Subject: [PATCH 4/9] x86/entry: __always_inline irqflags for noinstr
+Subject: [PATCH 5/9] x86/entry: __always_inline arch_atomic_* for noinstr
 References: <20200603114014.152292216@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,94 +53,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vmlinux.o: warning: objtool: lockdep_hardirqs_on()+0x65: call to arch_local_save_flags() leaves .noinstr.text section
-vmlinux.o: warning: objtool: lockdep_hardirqs_off()+0x5d: call to arch_local_save_flags() leaves .noinstr.text section
-vmlinux.o: warning: objtool: lock_is_held_type()+0x35: call to arch_local_irq_save() leaves .noinstr.text section
-vmlinux.o: warning: objtool: check_preemption_disabled()+0x31: call to arch_local_save_flags() leaves .noinstr.text section
-vmlinux.o: warning: objtool: check_preemption_disabled()+0x33: call to arch_irqs_disabled_flags() leaves .noinstr.text section
-vmlinux.o: warning: objtool: lock_is_held_type()+0x2f: call to native_irq_disable() leaves .noinstr.text section
+vmlinux.o: warning: objtool: rcu_dynticks_eqs_exit()+0x33: call to arch_atomic_and.constprop.0() leaves .noinstr.text section
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/irqflags.h |   20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ arch/x86/include/asm/atomic.h |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
---- a/arch/x86/include/asm/irqflags.h
-+++ b/arch/x86/include/asm/irqflags.h
-@@ -17,7 +17,7 @@
+--- a/arch/x86/include/asm/atomic.h
++++ b/arch/x86/include/asm/atomic.h
+@@ -205,13 +205,13 @@ static __always_inline bool arch_atomic_
+ }
+ #define arch_atomic_try_cmpxchg arch_atomic_try_cmpxchg
  
- /* Declaration required for gcc < 4.9 to prevent -Werror=missing-prototypes */
- extern inline unsigned long native_save_fl(void);
--extern inline unsigned long native_save_fl(void)
-+extern __always_inline unsigned long native_save_fl(void)
+-static inline int arch_atomic_xchg(atomic_t *v, int new)
++static __always_inline int arch_atomic_xchg(atomic_t *v, int new)
  {
- 	unsigned long flags;
+ 	return arch_xchg(&v->counter, new);
+ }
+ #define arch_atomic_xchg arch_atomic_xchg
  
-@@ -44,12 +44,12 @@ extern inline void native_restore_fl(uns
- 		     :"memory", "cc");
+-static inline void arch_atomic_and(int i, atomic_t *v)
++static __always_inline void arch_atomic_and(int i, atomic_t *v)
+ {
+ 	asm volatile(LOCK_PREFIX "andl %1,%0"
+ 			: "+m" (v->counter)
+@@ -219,7 +219,7 @@ static inline void arch_atomic_and(int i
+ 			: "memory");
  }
  
--static inline void native_irq_disable(void)
-+static __always_inline void native_irq_disable(void)
+-static inline int arch_atomic_fetch_and(int i, atomic_t *v)
++static __always_inline int arch_atomic_fetch_and(int i, atomic_t *v)
  {
- 	asm volatile("cli": : :"memory");
+ 	int val = arch_atomic_read(v);
+ 
+@@ -229,7 +229,7 @@ static inline int arch_atomic_fetch_and(
+ }
+ #define arch_atomic_fetch_and arch_atomic_fetch_and
+ 
+-static inline void arch_atomic_or(int i, atomic_t *v)
++static __always_inline void arch_atomic_or(int i, atomic_t *v)
+ {
+ 	asm volatile(LOCK_PREFIX "orl %1,%0"
+ 			: "+m" (v->counter)
+@@ -237,7 +237,7 @@ static inline void arch_atomic_or(int i,
+ 			: "memory");
  }
  
--static inline void native_irq_enable(void)
-+static __always_inline void native_irq_enable(void)
+-static inline int arch_atomic_fetch_or(int i, atomic_t *v)
++static __always_inline int arch_atomic_fetch_or(int i, atomic_t *v)
  {
- 	asm volatile("sti": : :"memory");
- }
-@@ -74,22 +74,22 @@ static inline __cpuidle void native_halt
- #ifndef __ASSEMBLY__
- #include <linux/types.h>
+ 	int val = arch_atomic_read(v);
  
--static inline notrace unsigned long arch_local_save_flags(void)
-+static __always_inline unsigned long arch_local_save_flags(void)
- {
- 	return native_save_fl();
+@@ -247,7 +247,7 @@ static inline int arch_atomic_fetch_or(i
  }
+ #define arch_atomic_fetch_or arch_atomic_fetch_or
  
--static inline notrace void arch_local_irq_restore(unsigned long flags)
-+static __always_inline void arch_local_irq_restore(unsigned long flags)
+-static inline void arch_atomic_xor(int i, atomic_t *v)
++static __always_inline void arch_atomic_xor(int i, atomic_t *v)
  {
- 	native_restore_fl(flags);
+ 	asm volatile(LOCK_PREFIX "xorl %1,%0"
+ 			: "+m" (v->counter)
+@@ -255,7 +255,7 @@ static inline void arch_atomic_xor(int i
+ 			: "memory");
  }
  
--static inline notrace void arch_local_irq_disable(void)
-+static __always_inline void arch_local_irq_disable(void)
+-static inline int arch_atomic_fetch_xor(int i, atomic_t *v)
++static __always_inline int arch_atomic_fetch_xor(int i, atomic_t *v)
  {
- 	native_irq_disable();
- }
- 
--static inline notrace void arch_local_irq_enable(void)
-+static __always_inline void arch_local_irq_enable(void)
- {
- 	native_irq_enable();
- }
-@@ -115,7 +115,7 @@ static inline __cpuidle void halt(void)
- /*
-  * For spinlocks, etc:
-  */
--static inline notrace unsigned long arch_local_irq_save(void)
-+static __always_inline unsigned long arch_local_irq_save(void)
- {
- 	unsigned long flags = arch_local_save_flags();
- 	arch_local_irq_disable();
-@@ -159,12 +159,12 @@ static inline notrace unsigned long arch
- #endif /* CONFIG_PARAVIRT_XXL */
- 
- #ifndef __ASSEMBLY__
--static inline int arch_irqs_disabled_flags(unsigned long flags)
-+static __always_inline int arch_irqs_disabled_flags(unsigned long flags)
- {
- 	return !(flags & X86_EFLAGS_IF);
- }
- 
--static inline int arch_irqs_disabled(void)
-+static __always_inline int arch_irqs_disabled(void)
- {
- 	unsigned long flags = arch_local_save_flags();
+ 	int val = arch_atomic_read(v);
  
 
 
