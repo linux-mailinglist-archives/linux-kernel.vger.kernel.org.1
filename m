@@ -2,137 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD3F1ED966
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 01:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A37781ED977
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 01:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726135AbgFCXdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 19:33:15 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:50471 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726864AbgFCXdH (ORCPT
+        id S1727026AbgFCXdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 19:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgFCXcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 19:33:07 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200603233300epoutp03d7f7a573964f62bf013d4a1055d147e8~VLLC_4caO2863228632epoutp039
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 23:33:00 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200603233300epoutp03d7f7a573964f62bf013d4a1055d147e8~VLLC_4caO2863228632epoutp039
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591227181;
-        bh=dGDVCvjLxDpBE/A7r7Do5LBsJtM5zh/1GdFe9TJZj28=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=qGzEB7INXH/P/NttKRAo/DGU7OFP07NsPyTtnHAXOA0WLV6pQMNs4vDGZ3brm/q8Q
-         YUWA0a0oW2SKzT9GPnAJxiTS4I6R/GqzAykanPwYyDwxAWclLvxqHlfSJwzhNJGMnF
-         1TcAKaCeTBxUgltHsJpF5qYwMEW8YsBlxvbjILPs=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200603233300epcas1p1a2674e256a3bedc1fffdbb6b7b9e0181~VLLCj1id12965129651epcas1p1_;
-        Wed,  3 Jun 2020 23:33:00 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.159]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 49clZg3Ks4zMqYkV; Wed,  3 Jun
-        2020 23:32:59 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        09.53.28581.B2338DE5; Thu,  4 Jun 2020 08:32:59 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200603233258epcas1p3b17bdc6c4f8df1089693eebaf1124d0a~VLLA0YkM_1446414464epcas1p3D;
-        Wed,  3 Jun 2020 23:32:58 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200603233258epsmtrp1dbd5d4e18c4e439b4b94af78dde8a481~VLLAzvAMk0951309513epsmtrp1d;
-        Wed,  3 Jun 2020 23:32:58 +0000 (GMT)
-X-AuditID: b6c32a38-2e3ff70000006fa5-bc-5ed8332bac40
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9B.64.08382.A2338DE5; Thu,  4 Jun 2020 08:32:58 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.88.103.87]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200603233258epsmtip2d835859cbd8f885418c2488a23af86b0~VLLAkKJMs2159721597epsmtip2K;
-        Wed,  3 Jun 2020 23:32:58 +0000 (GMT)
-From:   Namjae Jeon <namjae.jeon@samsung.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
-        Namjae Jeon <namjae.jeon@samsung.com>, stable@vger.kernel.org
-Subject: [PATCH] exfat: fix incorrect update of stream entry in
- __exfat_truncate()
-Date:   Thu,  4 Jun 2020 08:28:08 +0900
-Message-Id: <20200603232808.2397-1-namjae.jeon@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMKsWRmVeSWpSXmKPExsWy7bCmga628Y04g8kzRSz27D3JYnF51xw2
-        ix/T6y22/DvCarFg4yNGB1aPvi2rGD0+b5ILYIrKsclITUxJLVJIzUvOT8nMS7dV8g6Od443
-        NTMw1DW0tDBXUshLzE21VXLxCdB1y8wBWqakUJaYUwoUCkgsLlbSt7Mpyi8tSVXIyC8usVVK
-        LUjJKTA0KNArTswtLs1L10vOz7UyNDAwMgWqTMjJOHymm6XgFmfF9tVP2BoYf7F3MXJySAiY
-        SBz7f4uxi5GLQ0hgB6PEhPWPwBJCAp8YJU5tSIVIfGOUmHj7HwtMx6PPr6E69jJKvFo0gwnC
-        AeqYu3weUIaDg01AW+LPFlEQU0RAUeLyeyeQXmaBSonD1/ezgtjCAiESH55NZwSxWQRUJZZv
-        ewi2mFfAWuLW2yY2iF3yEqs3HGAGGS8h0M4usbJpIdQRLhJTp7czQdjCEq+Ob4F6R0riZX8b
-        O8heCYFqiY/7mSHCHYwSL77bQtjGEjfXb2AFKWEW0JRYv0sfIqwosfP3XEaIM/kk3n3tYYWY
-        wivR0SYEUaIq0XfpMNRSaYmu9g9QSz0kLn99Bw22WIljV+ezTWCUnYWwYAEj4ypGsdSC4tz0
-        1GLDAhPkGNrECE49WhY7GOe+/aB3iJGJg/EQowQHs5IIr5XstTgh3pTEyqrUovz4otKc1OJD
-        jKbA4JrILCWanA9Mfnkl8YamRsbGxhYmZuZmpsZK4rwnrS7ECQmkJ5akZqemFqQWwfQxcXBK
-        NTAlPnIuVT1wTIVBqfztab2zAVeLZsxjUm1pKtYw/NLEvoB7olkEf6KkwGrL2VpyDALJahX/
-        byqEil1U7de4+Tw/Z2bj/wuZ8Q5mh0s9Ahg3rLD+8v9co2nzlDQOQcbkKYF8Rf88Lc7vY9Dz
-        Cdi57nxcr2TAu3l33G7UsH5rffzBtHvbUw3ldYxX+sNnW7m+Tw831Uy8nH/sQvVHH8lVHZuP
-        6F5S/87wanETy+ngFm5T7vK2xo64hWIhb5dXVXUuP5epGrm2uJrfeu/sbw6bWnWKIx1uPF9W
-        H2v8/dIqluqaBUzRKu53Dl3wl5i22/PNvk/hqYZ7p19lkQw8uHOdb+HGmDkuZ/XuVYUt9j33
-        X4mlOCPRUIu5qDgRAD5DZRrGAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrIJMWRmVeSWpSXmKPExsWy7bCSvK6W8Y04g5tv5Cz27D3JYnF51xw2
-        ix/T6y22/DvCarFg4yNGB1aPvi2rGD0+b5ILYIrisklJzcksSy3St0vgyjh8ppul4BZnxfbV
-        T9gaGH+xdzFyckgImEg8+vyasYuRi0NIYDejRF/XPCaIhLTEsRNnmLsYOYBsYYnDh4shaj4w
-        SmzsucUKEmcT0Jb4s0UUxBQRUJS4/N4JxGQWqJVYclAOZIiwQJBE+6pvYJtYBFQllm97CGbz
-        ClhL3HrbxAaxSF5i9YYDzBMYeRYwMqxilEwtKM5Nzy02LDDMSy3XK07MLS7NS9dLzs/dxAgO
-        BS3NHYzbV33QO8TIxMF4iFGCg1lJhNdK9lqcEG9KYmVValF+fFFpTmrxIUZpDhYlcd4bhQvj
-        hATSE0tSs1NTC1KLYLJMHJxSDUwz5Ngvn/I1OGQgLvjAQovvWsSs2zNt932aftNjFQNTL4+0
-        V8zedfsTVl1z+VlZ48yWtMGw9f+uNpuoOzea0v4ejzDR/VXLr5r36ISAU5BN0Jkl86rKl4XH
-        ll5cZff5QpLcvZONeVNrHu6+a+unNO0Re9k+b5eFv5rnNitYTf6lu6lIzSrv+NU0Udn+/VnM
-        NwKn9Pb07otV/3ngRlJCZg5zmwv/zMhFAeyi31befztzzhrxvOq1ZiFpzzZl3GSU63xjJ3hv
-        nZLYhvVrAzL/lgj1tIgd21jPpPTjhtnvws6PPWycs7RXHL+wUyrdSWLKcZsfT185v+rfs2C3
-        rXvpVckzH61b3YUFdF2Ul7tdl1JiKc5INNRiLipOBACk8RijdAIAAA==
-X-CMS-MailID: 20200603233258epcas1p3b17bdc6c4f8df1089693eebaf1124d0a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200603233258epcas1p3b17bdc6c4f8df1089693eebaf1124d0a
-References: <CGME20200603233258epcas1p3b17bdc6c4f8df1089693eebaf1124d0a@epcas1p3.samsung.com>
+        Wed, 3 Jun 2020 19:32:17 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783EEC08C5CA
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 16:32:16 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x11so1370908plv.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 16:32:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qTtOPNd4jQDbpnjSIiHFwEAA5Z8RbHKDqclLSbVwupE=;
+        b=L3CiD9vimsPE3biJcORs0TIspJG17QdlYjK1hsyO1CpCm/6KgpwfWXAS2tyGWxsBcH
+         /W42ojrt2Mj6tht5UeYTtPDOSRLHA+Ktu5e3V7nvmrE9+X5BCIN+2MzS5+eXTjnxYwEB
+         1gir48gjXBoi70n+1+GxzAJgL4KQ0GEivKl2o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qTtOPNd4jQDbpnjSIiHFwEAA5Z8RbHKDqclLSbVwupE=;
+        b=acFazKSDEAsCZoY8BOzt3k3ucGnheD0Hqr0BMcoZcpvj4tKgrNlgIyeQgC9NkcW0YS
+         QEStGkEVhmITzwFXCfqm14Nv1tMOP534crZFKVBmXZW2hohYUA0JzV5nH0WgMieia/1M
+         kMjz0EFBWDa3BPSkFfho3ajoP2kXVz+QMVJYJWb84LJTjiTXZ6fST5SUWVnaKWMYZnj9
+         GaRYa73UyjJx22xZS+V5xVzEG7A37oLiLbkUXsv+5ea7Cm8/Jw9BPjE2dQyBpc8H25TN
+         DaNC2NenboBl9DFuWhQMNraShkliaPT0UWIkAEsMRqoxBBRrIe9Wtbc373I0cJda08cu
+         xN/Q==
+X-Gm-Message-State: AOAM531OPpYunzYEJTSjqzw29TDhmiRMC1+VIHj/HEzDPPouU2mFr3vk
+        mRNMAptM2zr1ouWSiQdlHPma1w==
+X-Google-Smtp-Source: ABdhPJwOS7TMn/QYV4dprlbTtHL9JGY9doYPwZAtpU79Dey5UUT4guoVGcszNVAtjI2DgdIcHUzjeA==
+X-Received: by 2002:a17:90b:3705:: with SMTP id mg5mr2492335pjb.24.1591227135814;
+        Wed, 03 Jun 2020 16:32:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d2sm2763288pfc.7.2020.06.03.16.32.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jun 2020 16:32:12 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-mm@kvack.org, clang-built-linux@googlegroups.com
+Subject: [PATCH 00/10] Remove uninitialized_var() macro
+Date:   Wed,  3 Jun 2020 16:31:53 -0700
+Message-Id: <20200603233203.1695403-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At truncate, there is a problem of incorrect updating in the file entry
-pointer instead of stream entry. This will cause the problem of
-overwriting the time field of the file entry to new_size. Fix it to
-update stream entry.
+Using uninitialized_var() is dangerous as it papers over real bugs[1]
+(or can in the future), and suppresses unrelated compiler warnings
+(e.g. "unused variable"). If the compiler thinks it is uninitialized,
+either simply initialize the variable or make compiler changes.
 
-Fixes: 98d917047e8b ("exfat: add file operations")
-Cc: stable@vger.kernel.org # v5.7
-Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
----
- fs/exfat/file.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+As recommended[2] by[3] Linus[4], remove the macro.
 
-diff --git a/fs/exfat/file.c b/fs/exfat/file.c
-index 8e3f0eef45d7..fce03f318787 100644
---- a/fs/exfat/file.c
-+++ b/fs/exfat/file.c
-@@ -171,11 +171,11 @@ int __exfat_truncate(struct inode *inode, loff_t new_size)
- 
- 		/* File size should be zero if there is no cluster allocated */
- 		if (ei->start_clu == EXFAT_EOF_CLUSTER) {
--			ep->dentry.stream.valid_size = 0;
--			ep->dentry.stream.size = 0;
-+			ep2->dentry.stream.valid_size = 0;
-+			ep2->dentry.stream.size = 0;
- 		} else {
--			ep->dentry.stream.valid_size = cpu_to_le64(new_size);
--			ep->dentry.stream.size = ep->dentry.stream.valid_size;
-+			ep2->dentry.stream.valid_size = cpu_to_le64(new_size);
-+			ep2->dentry.stream.size = ep->dentry.stream.valid_size;
- 		}
- 
- 		if (new_size == 0) {
+Most of the 300 uses don't cause any warnings on gcc 9.3.0, so they're in
+a single treewide commit in this series. A few others needed to actually
+get cleaned up, and I broke those out into individual patches.
+
+-Kees
+
+[1] https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.com/
+[2] https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=1TGqCR5vQkCzWJ0QxK6CernOU6eedsudAixw@mail.gmail.com/
+[3] https://lore.kernel.org/lkml/CA+55aFwgbgqhbp1fkxvRKEpzyR5J8n1vKT1VZdz9knmPuXhOeg@mail.gmail.com/
+[4] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/
+
+Kees Cook (10):
+  x86/mm/numa: Remove uninitialized_var() usage
+  drbd: Remove uninitialized_var() usage
+  b43: Remove uninitialized_var() usage
+  rtlwifi: rtl8192cu: Remove uninitialized_var() usage
+  ide: Remove uninitialized_var() usage
+  clk: st: Remove uninitialized_var() usage
+  spi: davinci: Remove uninitialized_var() usage
+  checkpatch: Remove awareness of uninitialized_var() macro
+  treewide: Remove uninitialized_var() usage
+  compiler: Remove uninitialized_var() macro
+
+ arch/arm/mach-sa1100/assabet.c                 |  2 +-
+ arch/arm/mm/alignment.c                        |  2 +-
+ arch/ia64/kernel/process.c                     |  2 +-
+ arch/ia64/mm/discontig.c                       |  2 +-
+ arch/ia64/mm/tlb.c                             |  2 +-
+ arch/mips/lib/dump_tlb.c                       |  2 +-
+ arch/mips/mm/init.c                            |  2 +-
+ arch/mips/mm/tlb-r4k.c                         |  6 +++---
+ arch/powerpc/kvm/book3s_64_mmu_radix.c         |  2 +-
+ arch/powerpc/kvm/book3s_pr.c                   |  2 +-
+ arch/powerpc/kvm/powerpc.c                     |  2 +-
+ arch/powerpc/platforms/52xx/mpc52xx_pic.c      |  2 +-
+ arch/s390/kernel/smp.c                         |  2 +-
+ arch/x86/kernel/quirks.c                       | 10 +++++-----
+ arch/x86/kvm/mmu/mmu.c                         |  2 +-
+ arch/x86/kvm/mmu/paging_tmpl.h                 |  2 +-
+ arch/x86/kvm/x86.c                             |  2 +-
+ arch/x86/mm/numa.c                             | 18 +++++++++---------
+ block/blk-merge.c                              |  2 +-
+ drivers/acpi/acpi_pad.c                        |  2 +-
+ drivers/ata/libata-scsi.c                      |  2 +-
+ drivers/atm/zatm.c                             |  2 +-
+ drivers/block/drbd/drbd_nl.c                   |  6 +++---
+ drivers/block/drbd/drbd_state.c                |  2 +-
+ drivers/block/rbd.c                            |  2 +-
+ drivers/clk/clk-gate.c                         |  2 +-
+ drivers/clk/spear/clk-vco-pll.c                |  2 +-
+ drivers/clk/st/clkgen-fsyn.c                   |  1 -
+ drivers/crypto/nx/nx-842-powernv.c             |  2 +-
+ drivers/firewire/ohci.c                        | 14 +++++++-------
+ drivers/gpu/drm/bridge/sil-sii8620.c           |  2 +-
+ drivers/gpu/drm/drm_edid.c                     |  2 +-
+ drivers/gpu/drm/exynos/exynos_drm_dsi.c        |  6 +++---
+ drivers/gpu/drm/i915/display/intel_fbc.c       |  2 +-
+ drivers/gpu/drm/i915/gt/intel_lrc.c            |  2 +-
+ drivers/gpu/drm/i915/intel_uncore.c            |  2 +-
+ .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c    |  4 ++--
+ drivers/i2c/busses/i2c-rk3x.c                  |  2 +-
+ drivers/ide/ide-acpi.c                         |  2 +-
+ drivers/ide/ide-atapi.c                        |  2 +-
+ drivers/ide/ide-io-std.c                       |  4 ++--
+ drivers/ide/ide-io.c                           |  8 ++++----
+ drivers/ide/ide-sysfs.c                        |  2 +-
+ drivers/ide/ide-taskfile.c                     |  1 -
+ drivers/ide/umc8672.c                          |  2 +-
+ drivers/idle/intel_idle.c                      |  2 +-
+ drivers/infiniband/core/uverbs_cmd.c           |  4 ++--
+ drivers/infiniband/hw/cxgb4/cm.c               |  2 +-
+ drivers/infiniband/hw/cxgb4/cq.c               |  2 +-
+ drivers/infiniband/hw/mlx4/qp.c                |  6 +++---
+ drivers/infiniband/hw/mlx5/cq.c                |  6 +++---
+ drivers/infiniband/hw/mlx5/devx.c              |  2 +-
+ drivers/infiniband/hw/mlx5/qp.c                |  2 +-
+ drivers/infiniband/hw/mthca/mthca_qp.c         | 10 +++++-----
+ drivers/infiniband/sw/siw/siw_qp_rx.c          |  2 +-
+ drivers/input/serio/serio_raw.c                |  2 +-
+ drivers/input/touchscreen/sur40.c              |  2 +-
+ drivers/iommu/intel-iommu.c                    |  2 +-
+ drivers/md/dm-io.c                             |  2 +-
+ drivers/md/dm-ioctl.c                          |  2 +-
+ drivers/md/dm-snap-persistent.c                |  2 +-
+ drivers/md/dm-table.c                          |  2 +-
+ drivers/md/dm-writecache.c                     |  2 +-
+ drivers/md/raid5.c                             |  2 +-
+ drivers/media/dvb-frontends/rtl2832.c          |  2 +-
+ drivers/media/tuners/qt1010.c                  |  4 ++--
+ drivers/media/usb/gspca/vicam.c                |  2 +-
+ drivers/media/usb/uvc/uvc_video.c              |  8 ++++----
+ drivers/memstick/host/jmb38x_ms.c              |  2 +-
+ drivers/memstick/host/tifm_ms.c                |  2 +-
+ drivers/mmc/host/sdhci.c                       |  2 +-
+ drivers/mtd/nand/raw/nand_ecc.c                |  2 +-
+ drivers/mtd/nand/raw/s3c2410.c                 |  2 +-
+ drivers/mtd/parsers/afs.c                      |  4 ++--
+ drivers/mtd/ubi/eba.c                          |  2 +-
+ drivers/net/can/janz-ican3.c                   |  2 +-
+ drivers/net/ethernet/broadcom/bnx2.c           |  4 ++--
+ .../ethernet/mellanox/mlx5/core/pagealloc.c    |  4 ++--
+ drivers/net/ethernet/neterion/s2io.c           |  2 +-
+ drivers/net/ethernet/qlogic/qla3xxx.c          |  2 +-
+ drivers/net/ethernet/sun/cassini.c             |  2 +-
+ drivers/net/ethernet/sun/niu.c                 |  6 +++---
+ drivers/net/wan/z85230.c                       |  2 +-
+ drivers/net/wireless/ath/ath10k/core.c         |  2 +-
+ drivers/net/wireless/ath/ath6kl/init.c         |  2 +-
+ drivers/net/wireless/ath/ath9k/init.c          |  2 +-
+ drivers/net/wireless/broadcom/b43/debugfs.c    |  2 +-
+ drivers/net/wireless/broadcom/b43/dma.c        |  2 +-
+ drivers/net/wireless/broadcom/b43/lo.c         |  2 +-
+ drivers/net/wireless/broadcom/b43/phy_n.c      | 12 ++++++++----
+ drivers/net/wireless/broadcom/b43/xmit.c       | 12 ++++++------
+ .../net/wireless/broadcom/b43legacy/debugfs.c  |  2 +-
+ drivers/net/wireless/broadcom/b43legacy/main.c |  2 +-
+ drivers/net/wireless/intel/iwlegacy/3945.c     |  2 +-
+ drivers/net/wireless/intel/iwlegacy/4965-mac.c |  2 +-
+ .../wireless/realtek/rtlwifi/rtl8192cu/hw.c    |  8 ++++----
+ drivers/pci/pcie/aer.c                         |  2 +-
+ drivers/platform/x86/hdaps.c                   |  4 ++--
+ drivers/scsi/dc395x.c                          |  2 +-
+ drivers/scsi/pm8001/pm8001_hwi.c               |  2 +-
+ drivers/scsi/pm8001/pm80xx_hwi.c               |  2 +-
+ drivers/spi/spi-davinci.c                      |  1 -
+ drivers/ssb/driver_chipcommon.c                |  4 ++--
+ drivers/tty/cyclades.c                         |  2 +-
+ drivers/tty/isicom.c                           |  2 +-
+ drivers/usb/musb/cppi_dma.c                    |  2 +-
+ drivers/usb/storage/sddr55.c                   |  4 ++--
+ drivers/vhost/net.c                            |  6 +++---
+ drivers/video/fbdev/matrox/matroxfb_maven.c    |  6 +++---
+ drivers/video/fbdev/pm3fb.c                    |  6 +++---
+ drivers/video/fbdev/riva/riva_hw.c             |  3 +--
+ drivers/virtio/virtio_ring.c                   |  6 +++---
+ fs/afs/dir.c                                   |  2 +-
+ fs/afs/security.c                              |  2 +-
+ fs/dlm/netlink.c                               |  2 +-
+ fs/erofs/data.c                                |  4 ++--
+ fs/erofs/zdata.c                               |  2 +-
+ fs/f2fs/data.c                                 |  2 +-
+ fs/fat/dir.c                                   |  2 +-
+ fs/fuse/control.c                              |  4 ++--
+ fs/fuse/cuse.c                                 |  2 +-
+ fs/fuse/file.c                                 |  2 +-
+ fs/gfs2/aops.c                                 |  2 +-
+ fs/gfs2/bmap.c                                 |  2 +-
+ fs/gfs2/lops.c                                 |  2 +-
+ fs/hfsplus/unicode.c                           |  2 +-
+ fs/isofs/namei.c                               |  4 ++--
+ fs/jffs2/erase.c                               |  2 +-
+ fs/nfsd/nfsctl.c                               |  2 +-
+ fs/ocfs2/alloc.c                               |  4 ++--
+ fs/ocfs2/dir.c                                 | 14 +++++++-------
+ fs/ocfs2/extent_map.c                          |  4 ++--
+ fs/ocfs2/namei.c                               |  2 +-
+ fs/ocfs2/refcounttree.c                        |  2 +-
+ fs/ocfs2/xattr.c                               |  2 +-
+ fs/omfs/file.c                                 |  2 +-
+ fs/overlayfs/copy_up.c                         |  4 ++--
+ fs/ubifs/commit.c                              |  6 +++---
+ fs/ubifs/dir.c                                 |  2 +-
+ fs/ubifs/file.c                                |  4 ++--
+ fs/ubifs/journal.c                             |  4 ++--
+ fs/ubifs/lpt.c                                 |  2 +-
+ fs/ubifs/tnc.c                                 |  6 +++---
+ fs/ubifs/tnc_misc.c                            |  4 ++--
+ fs/udf/balloc.c                                |  2 +-
+ fs/xfs/xfs_bmap_util.c                         |  2 +-
+ include/linux/compiler-clang.h                 |  2 --
+ include/linux/compiler-gcc.h                   |  6 ------
+ include/linux/page-flags-layout.h              |  2 +-
+ include/net/flow_offload.h                     |  2 +-
+ kernel/async.c                                 |  4 ++--
+ kernel/audit.c                                 |  2 +-
+ kernel/debug/kdb/kdb_io.c                      |  2 +-
+ kernel/dma/debug.c                             |  2 +-
+ kernel/events/core.c                           |  2 +-
+ kernel/events/uprobes.c                        |  2 +-
+ kernel/exit.c                                  |  2 +-
+ kernel/futex.c                                 | 14 +++++++-------
+ kernel/locking/lockdep.c                       | 16 ++++++++--------
+ kernel/trace/ring_buffer.c                     |  2 +-
+ lib/radix-tree.c                               |  2 +-
+ lib/test_lockup.c                              |  2 +-
+ mm/frontswap.c                                 |  2 +-
+ mm/ksm.c                                       |  2 +-
+ mm/memcontrol.c                                |  2 +-
+ mm/memory.c                                    |  2 +-
+ mm/mempolicy.c                                 |  4 ++--
+ mm/page_alloc.c                                |  2 +-
+ mm/percpu.c                                    |  2 +-
+ mm/slub.c                                      |  4 ++--
+ mm/swap.c                                      |  4 ++--
+ net/dccp/options.c                             |  2 +-
+ net/ipv4/netfilter/nf_socket_ipv4.c            |  6 +++---
+ net/ipv6/ip6_flowlabel.c                       |  2 +-
+ net/ipv6/netfilter/nf_socket_ipv6.c            |  2 +-
+ net/netfilter/nf_conntrack_ftp.c               |  2 +-
+ net/netfilter/nfnetlink_log.c                  |  2 +-
+ net/netfilter/nfnetlink_queue.c                |  4 ++--
+ net/sched/cls_flow.c                           |  2 +-
+ net/sched/sch_cake.c                           |  2 +-
+ net/sched/sch_cbq.c                            |  2 +-
+ net/sched/sch_fq_codel.c                       |  2 +-
+ net/sched/sch_fq_pie.c                         |  2 +-
+ net/sched/sch_hfsc.c                           |  2 +-
+ net/sched/sch_htb.c                            |  2 +-
+ net/sched/sch_sfq.c                            |  2 +-
+ net/sunrpc/svcsock.c                           |  4 ++--
+ net/sunrpc/xprtsock.c                          | 10 +++++-----
+ net/tls/tls_sw.c                               |  2 +-
+ scripts/checkpatch.pl                          | 18 ++++++------------
+ sound/core/control_compat.c                    |  2 +-
+ sound/isa/sb/sb16_csp.c                        |  2 +-
+ sound/usb/endpoint.c                           |  2 +-
+ tools/include/linux/compiler.h                 |  2 --
+ tools/virtio/linux/kernel.h                    |  2 --
+ 195 files changed, 310 insertions(+), 328 deletions(-)
+
 -- 
-2.17.1
+2.25.1
 
