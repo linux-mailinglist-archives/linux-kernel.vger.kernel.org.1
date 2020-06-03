@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A301EC761
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA94B1EC75B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725994AbgFCCc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 22:32:27 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:59266 "EHLO
+        id S1725959AbgFCCcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 22:32:06 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:59074 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgFCCc1 (ORCPT
+        with ESMTP id S1725794AbgFCCcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 22:32:27 -0400
+        Tue, 2 Jun 2020 22:32:06 -0400
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0532QVmr187569;
-        Wed, 3 Jun 2020 02:31:50 GMT
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0532Rlek188123;
+        Wed, 3 Jun 2020 02:31:57 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=cJZJ6Aemad1d2VN1fwzQIoXZHDszWIODTXRnH8VAsQo=;
- b=kcVvjWPAJ4lmtKEbJXD+WlDXIVCFMMHnjWMAO6LbG0h+AsBi+iHosXwow+Ac7fWNgRtH
- LGIDm/tsI3QaGrU+s1pTAZ5BS52SdYDAKtefH2iULK7Y6p/fRRLlhN3KVXiPutLHHbJB
- NxYz37iXvjvQM3qQj90k86lHeKRjQfzdxhm5Zk60uoYZDAFPmoeqpImzq7yXEVarbRI3
- k5/fm4mDP5Am47EXUpBwRh6djaRHjPyf4VxodjkqRbFHOUzQj4sPScyDR+iiPXHFHcWm
- x6L25QNWabEyMA7weqqS/gbiehUR3nyK0F1QBy8wE1sel0BCHaLG3eucBAIXcUylBjUv 0Q== 
+ bh=zzVHRLOiQYXnYFpDFmw0PZpsKu82bGLV3htgEoTFfZg=;
+ b=OBqT39h6c9yfr0rXQsvTEvI+Hegp4MputnxHqQ+as6oadEciK+Yyz1ugGd98JvAeYYK8
+ xyLDx+1cUyGm7RGfq23qrAdUdzuw6hcOz+MzNS5quTVVwBtAhx8rHqlF5ddVs0G7i3Ql
+ u+zE/pgtQnm7q9ZzPNQiE3SQ5PzWO00ttrUt3Q/ZvwlV4Infbn0XHLcZ0iMF87j1liN4
+ KgS8q/vs40ev/mQqpFA3PAf9PAy561LU1UU8O1KUS0ISb1QKa0lXNSNwBF8nDsuXWC9R
+ FDpMaRiO+xfcas8FikwXFWwKtaSSfxl9lqee84YDsZNugYt06V1vW9DZ1AjmPOI0wHDu Tw== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 31bfem6s9k-1
+        by aserp2120.oracle.com with ESMTP id 31bfem6s9r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 03 Jun 2020 02:31:50 +0000
+        Wed, 03 Jun 2020 02:31:57 +0000
 Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0532TQZP164353;
-        Wed, 3 Jun 2020 02:31:50 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 31c12q5cuf-1
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0532TPrb164237;
+        Wed, 3 Jun 2020 02:31:56 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 31c12q5d4v-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Jun 2020 02:31:50 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0532Vlbq032618;
-        Wed, 3 Jun 2020 02:31:47 GMT
+        Wed, 03 Jun 2020 02:31:56 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0532Vnnm015051;
+        Wed, 3 Jun 2020 02:31:54 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Jun 2020 19:31:46 -0700
+        with ESMTP ; Tue, 02 Jun 2020 19:31:49 -0700
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     avri.altman@wdc.com, linux-scsi@vger.kernel.org,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com
+To:     kjlu@umn.edu, "wu000273@umn.edu" <wu000273@umn.edu>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        chun-hung.wu@mediatek.com, asutoshd@codeaurora.org,
-        matthias.bgg@gmail.com, beanhuo@micron.com,
-        kuohong.wang@mediatek.com, bvanassche@acm.org,
-        linux-arm-kernel@lists.infradead.org, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        cang@codeaurora.org, linux-mediatek@lists.infradead.org,
-        peter.wang@mediatek.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: ufs: Remove redundant urgent_bkop_lvl initialization
-Date:   Tue,  2 Jun 2020 22:31:36 -0400
-Message-Id: <159114947917.26776.10217919465331125285.b4-ty@oracle.com>
+        Lee Duncan <lduncan@suse.com>, open-iscsi@googlegroups.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, Chris Leech <cleech@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: Fix reference count leak in iscsi_boot_create_kobj.
+Date:   Tue,  2 Jun 2020 22:31:38 -0400
+Message-Id: <159114947917.26776.6215710664403797046.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200530141200.4616-1-stanley.chu@mediatek.com>
-References: <20200530141200.4616-1-stanley.chu@mediatek.com>
+In-Reply-To: <20200528201353.14849-1-wu000273@umn.edu>
+References: <20200528201353.14849-1-wu000273@umn.edu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
@@ -77,17 +72,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 May 2020 22:12:00 +0800, Stanley Chu wrote:
+On Thu, 28 May 2020 15:13:53 -0500, wu000273@umn.edu wrote:
 
-> In ufshcd_probe_hba(), all BKOP SW tracking variables can be reset
-> together in ufshcd_force_reset_auto_bkops(), thus urgent_bkop_lvl
-> initialization in the beginning of ufshcd_probe_hba() can be merged
-> into ufshcd_force_reset_auto_bkops().
+> kobject_init_and_add() should be handled when it return an error,
+> because kobject_init_and_add() takes reference even when it fails.
+> If this function returns an error, kobject_put() must be called to
+> properly clean up the memory associated with the object. Previous
+> commit "b8eb718348b8" fixed a similar problem. Thus replace calling
+> kfree() by calling kobject_put().
 
 Applied to 5.8/scsi-queue, thanks!
 
-[1/1] scsi: ufs: Remove redundant urgent_bkop_lvl initialization
-      https://git.kernel.org/mkp/scsi/c/7b6668d8b806
+[1/1] scsi: iscsi: Fix reference count leak in iscsi_boot_create_kobj
+      https://git.kernel.org/mkp/scsi/c/0267ffce562c
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
