@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD891ECB37
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73CC1ECB1E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbgFCIPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 04:15:03 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:16762 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgFCIPC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 04:15:02 -0400
-X-Greylist: delayed 354 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jun 2020 04:15:02 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1591172101;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=SMtbScWM+JGPqXIY91ce2dI3CfZP51GyTspyQruYuIs=;
-        b=ShRdjmyA0jM/NQOZ6A8bKp3VH12GfnI5Uz+EvmBAy6OHGQYa/zU3TFcnbwAuRzknCr
-        KoUZwWxpJ+JkQo380VKPk6Cd94DE60dxnPK2hN1Uvrr5N69bgmmNhRudB2OIRt0eMUzn
-        IQgJyHRme1xyVKbzFZENheiORGgxWPKlzghiSlqrBzfU28uxJ1lj9XowjnjIrAc8w1fu
-        mBKVu6kbTFZnsoAmPPMSSfVa5YPKiIzBW91iP7LadFZp8qX5oNnOhFeTx2hH7TbV6a53
-        TSjQD4hIAQhtqj4WhDVLqtcViaNksqFy0gkaZZUcXNolaL8Yw+yWIy5BYCl4KLKV4KTQ
-        U9+A==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaJPSf9iic"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-        by smtp.strato.de (RZmta 46.9.1 DYNA|AUTH)
-        with ESMTPSA id I05374w5388v0vu
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Wed, 3 Jun 2020 10:08:57 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+2e635807decef724a1fa@syzkaller.appspotmail.com>
-Subject: [PATCH] crypto: DRBG - always try to free Jitter RNG instance
-Date:   Wed, 03 Jun 2020 10:08:56 +0200
-Message-ID: <2583872.mvXUDI8C0e@positron.chronox.de>
-In-Reply-To: <0000000000002a280b05a725cd93@google.com>
-References: <0000000000002a280b05a725cd93@google.com>
+        id S1726096AbgFCIKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 04:10:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51416 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725817AbgFCIKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 04:10:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6A628AC37;
+        Wed,  3 Jun 2020 08:10:31 +0000 (UTC)
+Date:   Wed, 3 Jun 2020 10:10:26 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     daniel.thompson@linaro.org, kgdb-bugreport@lists.sourceforge.net,
+        jason.wessel@windriver.com, dianders@chromium.org,
+        sergey.senozhatsky@gmail.com, gregkh@linuxfoundation.org,
+        jslaby@suse.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/4] kdb: Make kdb_printf() console handling more
+ robust
+Message-ID: <20200603081025.GC14855@linux-b0ei>
+References: <1591168935-6382-1-git-send-email-sumit.garg@linaro.org>
+ <1591168935-6382-4-git-send-email-sumit.garg@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1591168935-6382-4-git-send-email-sumit.garg@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Jitter RNG is unconditionally allocated as a seed source follwoing
-the patch 97f2650e5040. Thus, the instance must always be deallocated.
+On Wed 2020-06-03 12:52:14, Sumit Garg wrote:
+> While rounding up CPUs via NMIs, its possible that a rounded up CPU
+> maybe holding a console port lock leading to kgdb master CPU stuck in
+> a deadlock during invocation of console write operations. A similar
+> deadlock could also be possible while using synchronous breakpoints.
+> 
+> So in order to avoid such a deadlock, set oops_in_progress to encourage
+> the console drivers to disregard their internal spin locks: in the
+> current calling context the risk of deadlock is a bigger problem than
+> risks due to re-entering the console driver. We operate directly on
+> oops_in_progress rather than using bust_spinlocks() because the calls
+> bust_spinlocks() makes on exit are not appropriate for this calling
+> context.
+> 
+> Suggested-by: Petr Mladek <pmladek@suse.com>
 
-Reported-by: syzbot+2e635807decef724a1fa@syzkaller.appspotmail.com
-Fixes: 97f2650e5040 ("crypto: drbg - always seeded with SP800-90B ...")
-Signed-off-by: Stephan Mueller <smueller@chronox.de>
----
- crypto/drbg.c | 3 +++
- 1 file changed, 3 insertions(+)
+I think that this was actually suggested by Sergey.
 
-diff --git a/crypto/drbg.c b/crypto/drbg.c
-index 37526eb8c5d5..33d28016da2d 100644
---- a/crypto/drbg.c
-+++ b/crypto/drbg.c
-@@ -1631,6 +1631,9 @@ static int drbg_uninstantiate(struct drbg_state *drbg)
- 	if (drbg->random_ready.func) {
- 		del_random_ready_callback(&drbg->random_ready);
- 		cancel_work_sync(&drbg->seed_work);
-+	}
-+
-+	if (drbg->jent) {
- 		crypto_free_rng(drbg->jent);
- 		drbg->jent = NULL;
- 	}
--- 
-2.26.2
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
+Otherwise, it looks good. With updated suggested by:
 
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-
+Best Regards,
+Petr
