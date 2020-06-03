@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40291ECFD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B0B1ED065
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgFCMdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:33:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgFCMdH (ORCPT
+        id S1726116AbgFCM7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:59:10 -0400
+Received: from www413.your-server.de ([88.198.28.140]:59804 "EHLO
+        www413.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgFCM7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:33:07 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A926C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 05:33:06 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id e4so2497901ljn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 05:33:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ABlOAalG07S3zJOvUC745+rY/SSKj3sE9WPw30YFDjU=;
-        b=j5pGS0saNqzjuUTDnzk4gxvht5sf4S+tv6vSaLTyjDBARzg9FteZcdfRr8S1n9Haet
-         qlFQ2ouaCalHfwiwuUpttmmqx1lTJngtw0F9PY46fo4d1TWbBYkBBagsnh9h6EQ9MVOc
-         6JyNNo3yHbaM81jiBNY2+r2j80yqy65HFeq5pkgjQzdX7SsIMAiAirPsJcSXZwWxfEm0
-         YPDGQJivsMU5zvIDpGScT/yfJu4/a6opRYcIDW6d0yGPuub/53PJ75c1pXgwScnhgJ4c
-         5XrQls/Q8rpqTV/GfeOdwaeFV1TiWN0KM+DqF6XIcKXI0szKCRijrky9/bgKeGp4OX8E
-         Aqfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ABlOAalG07S3zJOvUC745+rY/SSKj3sE9WPw30YFDjU=;
-        b=i7CUlDjqYYoQdbi0RIynVlN1P70iQyLkOWngkz902L2nGtnOD7jEXBos7xKS7FJSlo
-         w9fy6RnWCOuMOjTZ9GG4GjFTRU3BbiVxaPej9U4l6qlRRMNkDOWwfP0wYcOr8RrJct9i
-         gB0HpTvjrXcnty0ZWapP+F8fz4r5AkHpa1Jp1tuzLyGJZoJ6AlgzbrS58uJ3a02OTpyt
-         hMypGFBLRZcf10/ZT1p+q4Pb6ZEcg0WrKHIRTJFvqeNkeTdeplMhjJmjzyWs7MAJB9/e
-         WijKhUuZJ/+S0tfLEPRVbyguvIhZdlf6j0tey0MFiEQn+Ruyih3ZzX9SP8CrYa2FOAy/
-         gC7g==
-X-Gm-Message-State: AOAM531uGYtQjtsF93emMVseU/e7Y5osfcQ8UVkUSJDwea9rHp2CaL3B
-        mHYZmZSAq67jtvgufPr0kNxAh8C8kTepQ1b6/TgdlA==
-X-Google-Smtp-Source: ABdhPJzG/VMlm4Q8bDM7mFUXZQxGPr6AbvJ8r2atD4zrWYykPr7kfUi4nWG5C+/LBdHXHq5+wgxQQwSQFcYGnOURAd4=
-X-Received: by 2002:a2e:350a:: with SMTP id z10mr1923491ljz.104.1591187584647;
- Wed, 03 Jun 2020 05:33:04 -0700 (PDT)
+        Wed, 3 Jun 2020 08:59:09 -0400
+X-Greylist: delayed 1518 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jun 2020 08:59:08 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=cyberus-technology.de; s=default1911; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=WLXbW7eXUFsbHAU7HjXMcrh7C07cQvd1bw2Aquc/MMQ=; b=STO4UMrdwTubX7v2omyrFeJGM
+        qq1ZY5ooXteqYoYSLnmjaa26PlLavdzZlWh+u8ynyZLVI3Q0Uaxf402CkZy/RE4ZV18Od2J2uywZL
+        0B1rHQHjfnHHqiKmwIQUqAiEY2G1DFCmNHqEkClSgIVtDaUl7JOuXXw/PE64bbxZMJNcUEKZW0nmg
+        pWFa9cHKM35fG6Czz9iSJcJUasT2242nsmibkiyGYkBZnDBs8dKH+356OK5Ea5pSGrX0D4tO+G9VV
+        vXtnD3cxWfSWGQHS08JTJ9+oCPvGgxMazUqgZxj8wjIXX0mWAqPmTQ0ufTVzJaFMBwt5o5FVOQ7J+
+        8AQnbtzRA==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www413.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <julian.stecklina@cyberus-technology.de>)
+        id 1jgSaZ-0000IJ-Jk; Wed, 03 Jun 2020 14:33:48 +0200
+Received: from [2001:16b8:5718:c600:5706:3182:8b16:9ba] (helo=linux.fritz.box)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1:ECDHE-RSA-AES256-SHA:256)
+        (Exim 4.92)
+        (envelope-from <julian.stecklina@cyberus-technology.de>)
+        id 1jgSaZ-000LTO-DG; Wed, 03 Jun 2020 14:33:47 +0200
+From:   Julian Stecklina <julian.stecklina@cyberus-technology.de>
+To:     intel-gvt-dev@lists.freedesktop.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Julian Stecklina <julian.stecklina@cyberus-technology.de>,
+        Thomas Prescher <thomas.prescher@cyberus-technology.de>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: [PATCH] drm/i915/gvt: print actionable error message when gm runs out
+Date:   Wed,  3 Jun 2020 14:33:21 +0200
+Message-Id: <20200603123321.263895-1-julian.stecklina@cyberus-technology.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200603013532.755220-1-yukuai3@huawei.com>
-In-Reply-To: <20200603013532.755220-1-yukuai3@huawei.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 3 Jun 2020 14:32:53 +0200
-Message-ID: <CACRpkdYgUCek0WGzqKqH7XzvDaKGK2po7cJse5LG9ahfBQCYZQ@mail.gmail.com>
-Subject: Re: [PATCH V2] pinctrl: sirf: add missing put_device() call in sirfsoc_gpio_probe()
-To:     yu kuai <yukuai3@huawei.com>
-Cc:     Barry Song <baohua@kernel.org>, Yuping Luo <yuping.luo@csr.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        yi.zhang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: julian.stecklina@cyberus-technology.de
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25831/Tue Jun  2 14:41:03 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 3, 2020 at 3:36 AM yu kuai <yukuai3@huawei.com> wrote:
+When a user tries to allocate too many or too big vGPUs and runs out
+of graphics memory, the resulting error message is not actionable and
+looks like an internal error.
 
-> A coccicheck run provided information like the following:
->
-> drivers/pinctrl/sirf/pinctrl-sirf.c:798:2-8: ERROR: missing put_device;
-> call of_find_device_by_node on line 792, but without a corresponding
-> object release within this function.
->
-> Generated by: scripts/coccinelle/free/put_device.cocci
->
-> Thus add a jump target to fix the exception handling for this
-> function implementation.
->
-> Fixes: 5130216265f6 ("PINCTRL: SiRF: add GPIO and GPIO irq support in CSR SiRFprimaII")
-> Signed-off-by: yu kuai <yukuai3@huawei.com>
+Change the error message to clearly point out what actions a user can
+take to resolve this situation.
 
-Patch applied, thanks!
+Cc: Thomas Prescher <thomas.prescher@cyberus-technology.de>
+Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+Signed-off-by: Julian Stecklina <julian.stecklina@cyberus-technology.de>
+---
+ drivers/gpu/drm/i915/gvt/aperture_gm.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-Yours,
-Linus Walleij
+diff --git a/drivers/gpu/drm/i915/gvt/aperture_gm.c b/drivers/gpu/drm/i915/gvt/aperture_gm.c
+index 0d6d598713082..5c5c8e871dae2 100644
+--- a/drivers/gpu/drm/i915/gvt/aperture_gm.c
++++ b/drivers/gpu/drm/i915/gvt/aperture_gm.c
+@@ -69,9 +69,12 @@ static int alloc_gm(struct intel_vgpu *vgpu, bool high_gm)
+ 				  start, end, flags);
+ 	mmio_hw_access_post(gt);
+ 	mutex_unlock(&gt->ggtt->vm.mutex);
+-	if (ret)
+-		gvt_err("fail to alloc %s gm space from host\n",
+-			high_gm ? "high" : "low");
++	if (ret) {
++		gvt_err("vgpu%d: failed to allocate %s gm space from host\n",
++			vgpu->id, high_gm ? "high" : "low");
++		gvt_err("vgpu%d: destroying vGPUs, decreasing vGPU memory size or increasing GPU aperture size may resolve this\n",
++			vgpu->id);
++	}
+ 
+ 	return ret;
+ }
+-- 
+2.26.2
+
