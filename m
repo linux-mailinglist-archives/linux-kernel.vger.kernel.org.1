@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B091ECEA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E4E1ECE6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbgFCLlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 07:41:49 -0400
-Received: from uho.ysoft.cz ([81.19.3.130]:44950 "EHLO uho.ysoft.cz"
+        id S1726141AbgFCLbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 07:31:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbgFCLlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 07:41:49 -0400
-X-Greylist: delayed 591 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jun 2020 07:41:47 EDT
-Received: from iota-build.ysoft.local (unknown [10.1.5.151])
-        by uho.ysoft.cz (Postfix) with ESMTP id CCC01A049E;
-        Wed,  3 Jun 2020 13:31:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
-        s=20160406-ysoft-com; t=1591183914;
-        bh=V5QNjV3HBqRkRY7vTGnb2qSQq5tZGtqOrS/+6XsIqto=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MHTeeHrIuvRI/7zWYgFLuBelsDB7f1T1PstpmOkqcCE9d4l0SacVK6YLNKvN80eX4
-         zoRlkpJBnVyjlwAessVQKU1W/e+BN8maQIphWZA0k1IcN81FHw4gR/0UUtkwp1Dh3z
-         qI0laoN8BXkTUMNVtdDqaT0g3nm5NmysKbMDmfCQ=
-From:   =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH net] net: dsa: qca8k: Fix "Unexpected gfp" kernel exception
-Date:   Wed,  3 Jun 2020 13:31:39 +0200
-Message-Id: <1591183899-24987-1-git-send-email-michal.vokac@ysoft.com>
-X-Mailer: git-send-email 2.1.4
+        id S1725833AbgFCLbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 07:31:48 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD93C20679;
+        Wed,  3 Jun 2020 11:31:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591183907;
+        bh=gM5y3C32ED1XSw4KgaZ6/TuCIlt4f+Y+Lfe6pcm+aas=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B9IrNHP1AzzYH1IFahskpuLNaeFg7oWTsN6QM57NRZ1Lpl8Dmr8iQt2UcVkjEeBVA
+         pYY8BOpBRBN1rfFZyh8q6WaR/F++FmHyTAzrembzuJUx/8/7b4z/ETXJOfqUofCban
+         ixPqDENdgKMszly1ZKo17csizywvQNvhn4+Icjt0=
+Date:   Wed, 3 Jun 2020 12:31:45 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Steve Lee <steves.lee@maximintegrated.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        ckeepax@opensource.cirrus.com, geert@linux-m68k.org,
+        rf@opensource.wolfsonmicro.com, shumingf@realtek.com,
+        srinivas.kandagatla@linaro.org, krzk@kernel.org, dmurphy@ti.com,
+        jack.yu@realtek.com, nuno.sa@analog.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        ryan.lee.maxim@gmail.com, ryans.lee@maximintegrated.com,
+        steves.lee.maxim@gmail.com
+Subject: Re: [PATCH] ASoC: max98390: Fix potential crash during param fw
+ loading
+Message-ID: <20200603113145.GC5327@sirena.org.uk>
+References: <20200603111819.5824-1-steves.lee@maximintegrated.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UPT3ojh+0CqEDtpF"
+Content-Disposition: inline
+In-Reply-To: <20200603111819.5824-1-steves.lee@maximintegrated.com>
+X-Cookie: Your supervisor is thinking about you.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 7e99e3470172 ("net: dsa: remove dsa_switch_alloc helper")
-replaced the dsa_switch_alloc helper by devm_kzalloc in all DSA
-drivers. Unfortunately it introduced a typo in qca8k.c driver and
-wrong argument is passed to the devm_kzalloc function.
 
-This fix mitigates the following kernel exception:
+--UPT3ojh+0CqEDtpF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-  Unexpected gfp: 0x6 (__GFP_HIGHMEM|GFP_DMA32). Fixing up to gfp: 0x101 (GFP_DMA|__GFP_ZERO). Fix your code!
-  CPU: 1 PID: 44 Comm: kworker/1:1 Not tainted 5.5.9-yocto-ua #1
-  Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-  Workqueue: events deferred_probe_work_func
-  [<c0014924>] (unwind_backtrace) from [<c00123bc>] (show_stack+0x10/0x14)
-  [<c00123bc>] (show_stack) from [<c04c8fb4>] (dump_stack+0x90/0xa4)
-  [<c04c8fb4>] (dump_stack) from [<c00e1b10>] (new_slab+0x20c/0x214)
-  [<c00e1b10>] (new_slab) from [<c00e1cd0>] (___slab_alloc.constprop.0+0x1b8/0x540)
-  [<c00e1cd0>] (___slab_alloc.constprop.0) from [<c00e2074>] (__slab_alloc.constprop.0+0x1c/0x24)
-  [<c00e2074>] (__slab_alloc.constprop.0) from [<c00e4538>] (__kmalloc_track_caller+0x1b0/0x298)
-  [<c00e4538>] (__kmalloc_track_caller) from [<c02cccac>] (devm_kmalloc+0x24/0x70)
-  [<c02cccac>] (devm_kmalloc) from [<c030d888>] (qca8k_sw_probe+0x94/0x1ac)
-  [<c030d888>] (qca8k_sw_probe) from [<c0304788>] (mdio_probe+0x30/0x54)
-  [<c0304788>] (mdio_probe) from [<c02c93bc>] (really_probe+0x1e0/0x348)
-  [<c02c93bc>] (really_probe) from [<c02c9884>] (driver_probe_device+0x60/0x16c)
-  [<c02c9884>] (driver_probe_device) from [<c02c7fb0>] (bus_for_each_drv+0x70/0x94)
-  [<c02c7fb0>] (bus_for_each_drv) from [<c02c9708>] (__device_attach+0xb4/0x11c)
-  [<c02c9708>] (__device_attach) from [<c02c8148>] (bus_probe_device+0x84/0x8c)
-  [<c02c8148>] (bus_probe_device) from [<c02c8cec>] (deferred_probe_work_func+0x64/0x90)
-  [<c02c8cec>] (deferred_probe_work_func) from [<c0033c14>] (process_one_work+0x1d4/0x41c)
-  [<c0033c14>] (process_one_work) from [<c00340a4>] (worker_thread+0x248/0x528)
-  [<c00340a4>] (worker_thread) from [<c0039148>] (kthread+0x124/0x150)
-  [<c0039148>] (kthread) from [<c00090d8>] (ret_from_fork+0x14/0x3c)
-  Exception stack(0xee1b5fb0 to 0xee1b5ff8)
-  5fa0:                                     00000000 00000000 00000000 00000000
-  5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-  5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-  qca8k 2188000.ethernet-1:0a: Using legacy PHYLIB callbacks. Please migrate to PHYLINK!
-  qca8k 2188000.ethernet-1:0a eth2 (uninitialized): PHY [2188000.ethernet-1:01] driver [Generic PHY]
-  qca8k 2188000.ethernet-1:0a eth1 (uninitialized): PHY [2188000.ethernet-1:02] driver [Generic PHY]
+On Wed, Jun 03, 2020 at 08:18:19PM +0900, Steve Lee wrote:
 
-Fixes: 7e99e3470172 ("net: dsa: remove dsa_switch_alloc helper")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
----
- drivers/net/dsa/qca8k.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> +	param_start_addr = (dsm_param[0] & 0xff) | (dsm_param[1] & 0xff) << 8;
+> +	param_size = (dsm_param[2] & 0xff) | (dsm_param[3] & 0xff) << 8;
+> +	if (param_size > MAX98390_DSM_PARAM_MAX_SIZE ||
+> +		param_start_addr < DSM_STBASS_HPF_B0_BYTE0) {
+> +		dev_err(component->dev,
+> +			"param fw is invalid.\n");
+> +		goto err_alloc;
+> +	}
 
-diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-index 9f4205b4439b..d2b5ab403e06 100644
---- a/drivers/net/dsa/qca8k.c
-+++ b/drivers/net/dsa/qca8k.c
-@@ -1079,8 +1079,7 @@ qca8k_sw_probe(struct mdio_device *mdiodev)
- 	if (id != QCA8K_ID_QCA8337)
- 		return -ENODEV;
- 
--	priv->ds = devm_kzalloc(&mdiodev->dev, sizeof(*priv->ds),
--				QCA8K_NUM_PORTS);
-+	priv->ds = devm_kzalloc(&mdiodev->dev, sizeof(*priv->ds), GFP_KERNEL);
- 	if (!priv->ds)
- 		return -ENOMEM;
- 
--- 
-2.1.4
+This is now reading the size out of the header of the file which is good
+but it should also validate that the file is big enough to have this
+much data in it, otherwise it's possible to read beyond the end of the
+firmware file (eg, if it got truncated somehow).  Previously the code
+used the size of the file read from disk so that wasn't an issue.
 
+--UPT3ojh+0CqEDtpF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7XiiAACgkQJNaLcl1U
+h9BWzQf/caANAxCS61zFk2A9ang2ns0xTLILhZ3lBoZYjNRa6FOl5piohx/OBPt7
+3qFtraruHxJAimWKqf0ms2LasyxtPhYAUr7NvkTw3eNjVgMIe32eRP8QPY/mJ2D+
+7kg4NLYxWgoTUQHPJWc4OJ7jwHAsemal+6l+t+m5ndUZOgDGcFhP82QrSYa4j+A1
+YVXt/8Kbh3MUjHp+ydjBpOeEjy9c2AdCCqX0B/Ul3z1OjuS6+20UzlbsUCGw0roP
+JUg3e68SzJmRqUroBF/YSRD9skx77tMqvrGTHNKXC/XIO7r0L7IdDgRIjD3ETe7a
+zOwynkWzaydw+v4kmWb0sNfBuIGeoA==
+=leSn
+-----END PGP SIGNATURE-----
+
+--UPT3ojh+0CqEDtpF--
