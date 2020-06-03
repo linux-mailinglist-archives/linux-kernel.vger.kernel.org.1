@@ -2,70 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3D61EC788
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322AF1EC76D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 04:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725916AbgFCCnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Jun 2020 22:43:08 -0400
-Received: from smtp25.cstnet.cn ([159.226.251.25]:42106 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725794AbgFCCnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Jun 2020 22:43:08 -0400
-X-Greylist: delayed 653 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Jun 2020 22:43:06 EDT
-Received: from localhost.localdomain (unknown [159.226.5.100])
-        by APP-05 (Coremail) with SMTP id zQCowACnxRChC9deFbYoAQ--.37618S2;
-        Wed, 03 Jun 2020 10:32:03 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     rth@twiddle.net
-Cc:     ink@jurassic.park.msu.ru, mattst88@gmail.com,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arch: kernel: Replace sg++ with sg = sg_next(sg)
-Date:   Wed,  3 Jun 2020 02:31:59 +0000
-Message-Id: <20200603023159.715-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: zQCowACnxRChC9deFbYoAQ--.37618S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZF18WryxZw1fJrWUCF1DAwb_yoWxAFX_t3
-        Wjqw13GryrCr4a9F1UCw4fCa909a95ZF4S9ayIgrZ7JF1DW3Z3ur4jqrsIqryDC3yxKF4I
-        y343t3Wqyr10kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbwxYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCF
-        x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
-        v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
-        67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
-        IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
-        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcVWlDUUUU
-X-Originating-IP: [159.226.5.100]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAMQA102YLNlQgAAsH
+        id S1725881AbgFCCiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Jun 2020 22:38:06 -0400
+Received: from ozlabs.org ([203.11.71.1]:58067 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725810AbgFCCiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Jun 2020 22:38:06 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49cCkh3Jskz9sSc;
+        Wed,  3 Jun 2020 12:38:04 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1591151884;
+        bh=wCuhGAt2S6T9b9OYrbE0Pz9RT0PDc0H9lp7Q4wq5NWQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=R5925KjMRIkbWX4k/PCW/2DO2Rrcmq0jIAeA2VrJpEm8cGXSiFDyBxlj/uNzorm9J
+         OjsSSDP4XXsbM9XSwuDOFKRQv6l1V0J8oMDzZEnIQAvgYRmP7VYWzSnf0zHQlwAdIK
+         X2vBRbepvfVSyzxrd481hYtqfSovDS+KwmmZJaqje+1ewlEO3zE7H920xakeakDTOl
+         Oo/Ghr6O9YYAMkRHWbN0kkJ2FrsNV8wdRFVGvI6rPAkXmKeBUQeeEc7PdTRGAqgaL9
+         HQ6YcRA2B0hbHSlJRjB5NbbmnXHL78kj139tKXDMOPyoDfZeJLYvy/QGQ6gIib5Dkm
+         IZ7eZBdrsEtgw==
+Date:   Wed, 3 Jun 2020 12:38:03 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the v4l-dvb-next tree with the v4l-dvb
+ tree
+Message-ID: <20200603123803.7e97d3e8@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/u55De0lN8oZiulhevwYInOI";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace sg++ with sg = sg_next(sg).
+--Sig_/u55De0lN8oZiulhevwYInOI
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- arch/alpha/kernel/pci_iommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-diff --git a/arch/alpha/kernel/pci_iommu.c b/arch/alpha/kernel/pci_iommu.c
-index 7f1925a32c99..81037907268d 100644
---- a/arch/alpha/kernel/pci_iommu.c
-+++ b/arch/alpha/kernel/pci_iommu.c
-@@ -638,7 +638,7 @@ sg_fill(struct device *dev, struct scatterlist *leader, struct scatterlist *end,
- 
- 		while (sg+1 < end && (int) sg[1].dma_address == -1) {
- 			size += sg[1].length;
--			sg++;
-+			sg = sg_next(sg);
- 		}
- 
- 		npages = iommu_num_pages(paddr, size, PAGE_SIZE);
--- 
-2.17.1
+Today's linux-next merge of the v4l-dvb-next tree got a conflict in:
 
+  drivers/staging/media/atomisp/pci/sh_css.c
+
+between commit:
+
+  27333dadef57 ("media: atomisp: adjust some code at sh_css that could be b=
+roken")
+
+from the v4l-dvb tree and commits:
+
+  815618c139d7 ("media: atomisp: fix pipeline initialization code")
+  be1fdab273a9 ("media: atomisp: change the detection of ISP2401 at runtime=
+")
+
+from the v4l-dvb-next tree.
+
+I fixed it up (I used the version from the latter tree) and can carry the
+fix as necessary. This is now fixed as far as linux-next is concerned,
+but any non trivial conflicts should be mentioned to your upstream
+maintainer when your tree is submitted for merging.  You may also want
+to consider cooperating with the maintainer of the conflicting tree to
+minimise any particularly complex conflicts.
+
+Can you please make sure that the v4l-dvb tree and v4l-dvb-next tree
+are ins sync?  They share some patches that are not the same commits.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/u55De0lN8oZiulhevwYInOI
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7XDQsACgkQAVBC80lX
+0Gxb6gf+Mhj6yyioEm2vSvjQqRcg85Qfguuo6BmG1cJMZt3eAyZQbMgmpKzJ0VVh
+2gHqOY+4EAVAyY/iqS5SLo4i9yMv8Vzm/+ObpA65v3KS/L4q4OHO6q5NWMPCAGxq
+428WaxjSJODPH8z6NAVH8y/5z5IlwM1uWiExXG12BzyYtqb3/ugxgFSzjwmcxDP0
+0cElCc7Xo4191HVEfX7DzLXb67kkHbkNmkMjRhDN/5jrIoAWa33IAYkmf6DdgVCU
+kYkS+G6AnYJLRxlL2XxzsGrvJg4p10FM9YIpP1VVoX860PTVSS0jpKfRBDcF/ebe
+myDAsOqgUaEtdzRTxgGYZgB5Wfh39A==
+=+n+p
+-----END PGP SIGNATURE-----
+
+--Sig_/u55De0lN8oZiulhevwYInOI--
