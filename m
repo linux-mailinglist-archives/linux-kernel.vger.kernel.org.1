@@ -2,125 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926351ECF26
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB2D1ECEF3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 13:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgFCL7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 07:59:18 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:56518 "EHLO inva021.nxp.com"
+        id S1726234AbgFCLsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 07:48:55 -0400
+Received: from mga17.intel.com ([192.55.52.151]:3399 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725833AbgFCL7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 07:59:17 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D46FD200E3C;
-        Wed,  3 Jun 2020 13:59:15 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9969D200E30;
-        Wed,  3 Jun 2020 13:59:10 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 4045540299;
-        Wed,  3 Jun 2020 19:59:04 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, stigge@antcom.de,
-        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] dt-bindings: rtc: Convert imxdi rtc to json-schema
-Date:   Wed,  3 Jun 2020 19:48:45 +0800
-Message-Id: <1591184925-13055-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725833AbgFCLsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 07:48:54 -0400
+IronPort-SDR: S6B2zTxvRxV32bq+Zu89T3v641Gd5Yr/knYCSFnRMIuNjYb/QYRccBfHfLIyI6DHC5ujn0Emiq
+ 4rdwHBgmrsyA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 04:48:54 -0700
+IronPort-SDR: 4ddw8OIBGud9DgrSrKlodfEOWc4XlfVomUWtecYaXdUmTCaFcQJklBUyp35vy2jCHjjbgwwVh5
+ LfUy+ojYrw6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,467,1583222400"; 
+   d="scan'208";a="312587263"
+Received: from gklab-125-110.igk.intel.com ([10.91.125.110])
+  by FMSMGA003.fm.intel.com with ESMTP; 03 Jun 2020 04:48:52 -0700
+From:   Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Cc:     Piotr Stankiewicz <piotr.stankiewicz@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Allison Randal <allison@lohutok.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 10/15] vmw_vmci: Use PCI_IRQ_ALL_TYPES where appropriate
+Date:   Wed,  3 Jun 2020 13:48:49 +0200
+Message-Id: <20200603114850.13542-1-piotr.stankiewicz@intel.com>
+X-Mailer: git-send-email 2.17.2
+In-Reply-To: <20200603114212.12525-1-piotr.stankiewicz@intel.com>
+References: <20200603114212.12525-1-piotr.stankiewicz@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MXDI RTC binding to DT schema format using json-schema
+Seeing as there is shorthand available to use when asking for any type
+of interrupt, or any type of message signalled interrupt, leverage it.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+Signed-off-by: Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
 ---
- .../devicetree/bindings/rtc/imxdi-rtc.txt          | 20 -----------
- .../devicetree/bindings/rtc/imxdi-rtc.yaml         | 42 ++++++++++++++++++++++
- 2 files changed, 42 insertions(+), 20 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/rtc/imxdi-rtc.txt
- create mode 100644 Documentation/devicetree/bindings/rtc/imxdi-rtc.yaml
+ drivers/misc/vmw_vmci/vmci_guest.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/rtc/imxdi-rtc.txt b/Documentation/devicetree/bindings/rtc/imxdi-rtc.txt
-deleted file mode 100644
-index c797bc9..0000000
---- a/Documentation/devicetree/bindings/rtc/imxdi-rtc.txt
-+++ /dev/null
-@@ -1,20 +0,0 @@
--* i.MX25 Real Time Clock controller
--
--Required properties:
--- compatible: should be: "fsl,imx25-rtc"
--- reg: physical base address of the controller and length of memory mapped
--  region.
--- clocks: should contain the phandle for the rtc clock
--- interrupts: rtc alarm interrupt
--
--Optional properties:
--- interrupts: dryice security violation interrupt (second entry)
--
--Example:
--
--rtc@53ffc000 {
--	compatible = "fsl,imx25-rtc";
--	reg = <0x53ffc000 0x4000>;
--	clocks = <&clks 81>;
--	interrupts = <25 56>;
--};
-diff --git a/Documentation/devicetree/bindings/rtc/imxdi-rtc.yaml b/Documentation/devicetree/bindings/rtc/imxdi-rtc.yaml
-new file mode 100644
-index 0000000..6e43926
---- /dev/null
-+++ b/Documentation/devicetree/bindings/rtc/imxdi-rtc.yaml
-@@ -0,0 +1,42 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/rtc/imxdi-rtc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: i.MX25 Real Time Clock controller
-+
-+maintainers:
-+  - Roland Stigge <stigge@antcom.de>
-+
-+properties:
-+  compatible:
-+    const: fsl,imx25-rtc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    items:
-+      - description: rtc alarm interrupt
-+      - description: dryice security violation interrupt
-+    minItems: 1
-+    maxItems: 2
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+
-+examples:
-+  - |
-+    rtc@53ffc000 {
-+        compatible = "fsl,imx25-rtc";
-+        reg = <0x53ffc000 0x4000>;
-+        clocks = <&clks 81>;
-+        interrupts = <25>, <56>;
-+    };
+diff --git a/drivers/misc/vmw_vmci/vmci_guest.c b/drivers/misc/vmw_vmci/vmci_guest.c
+index cc8eeb361fcd..ea300573f652 100644
+--- a/drivers/misc/vmw_vmci/vmci_guest.c
++++ b/drivers/misc/vmw_vmci/vmci_guest.c
+@@ -584,8 +584,7 @@ static int vmci_guest_probe_device(struct pci_dev *pdev,
+ 	error = pci_alloc_irq_vectors(pdev, VMCI_MAX_INTRS, VMCI_MAX_INTRS,
+ 			PCI_IRQ_MSIX);
+ 	if (error < 0) {
+-		error = pci_alloc_irq_vectors(pdev, 1, 1,
+-				PCI_IRQ_MSIX | PCI_IRQ_MSI | PCI_IRQ_LEGACY);
++		error = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
+ 		if (error < 0)
+ 			goto err_remove_bitmap;
+ 	} else {
 -- 
-2.7.4
+2.17.2
 
