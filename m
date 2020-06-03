@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF161ED88D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 00:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260691ED89D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 00:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgFCWWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 18:22:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56546 "EHLO mail.kernel.org"
+        id S1727027AbgFCWX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 18:23:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726441AbgFCWWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 18:22:49 -0400
+        id S1726645AbgFCWWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 18:22:50 -0400
 Received: from sstabellini-ThinkPad-T480s.hsd1.ca.comcast.net (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D431C2067B;
-        Wed,  3 Jun 2020 22:22:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62443207D0;
+        Wed,  3 Jun 2020 22:22:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1591222969;
-        bh=KkHGhoUNVUm6PPU2Wc3n69d1PFrjoUPau99hvQGcD1E=;
+        bh=z/W3HOqwZFpxh5RTvZrhBEC0DsqYoSYR2jgxAVw6hXQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iS/9d1NEK4nODfzf/8QcScf3N+hmvvrgLTCxl91JpBRBcydxeV138kYdTqiJMEt9b
-         nhYp1DoW/P0X+h2Do5xbSeYfbg7p+rgwfDoq04oiBlfmzPiGObo11WusHd99feCP+G
-         hdz7+XBkfDJCmzl8jFCi1R+GtcVCvV0kGA2FLHcQ=
+        b=A8Gw2iZrApw37MILwEXd0XFn8MbQQTyVONoBAo2odDCqo4bx9EMQ0+3ZRahBnmF3c
+         0SbM5LE5YCEo4zkcQTFe/l6VXtj6IYfiLHSIpwoMiuBD/hlmH+w7eZtnJoVwe8uH1F
+         EBekaEg39hytF9DxdM0Q7iKp0OHg9bfrinazSkS8=
 From:   Stefano Stabellini <sstabellini@kernel.org>
 To:     jgross@suse.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
 Cc:     sstabellini@kernel.org, xen-devel@lists.xenproject.org,
         linux-kernel@vger.kernel.org, tamas@tklengyel.com,
         roman@zededa.com,
         Stefano Stabellini <stefano.stabellini@xilinx.com>
-Subject: [PATCH v2 01/11] swiotlb-xen: use vmalloc_to_page on vmalloc virt addresses
-Date:   Wed,  3 Jun 2020 15:22:37 -0700
-Message-Id: <20200603222247.11681-1-sstabellini@kernel.org>
+Subject: [PATCH v2 02/11] swiotlb-xen: remove start_dma_addr
+Date:   Wed,  3 Jun 2020 15:22:38 -0700
+Message-Id: <20200603222247.11681-2-sstabellini@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <alpine.DEB.2.21.2006031506590.6774@sstabellini-ThinkPad-T480s>
 References: <alpine.DEB.2.21.2006031506590.6774@sstabellini-ThinkPad-T480s>
@@ -40,54 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+From: Stefano Stabellini <stefano.stabellini@xilinx.com>
 
-xen_alloc_coherent_pages might return pages for which virt_to_phys and
-virt_to_page don't work, e.g. ioremap'ed pages.
+It is not strictly needed. Call virt_to_phys on xen_io_tlb_start
+instead. It will be useful not to have a start_dma_addr around with the
+next patches.
 
-So in xen_swiotlb_free_coherent we can't assume that virt_to_page works.
-Instead add a is_vmalloc_addr check and use vmalloc_to_page on vmalloc
-virt addresses.
+Note that virt_to_phys is not the same as xen_virt_to_bus but actually
+it is used to compared again __pa(xen_io_tlb_start) as passed to
+swiotlb_init_with_tbl, so virt_to_phys is actually what we want.
 
-This patch fixes the following crash at boot on RPi4:
-https://marc.info/?l=xen-devel&m=158862573216800
-
-Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
 Tested-by: Corey Minyard <cminyard@mvista.com>
 Tested-by: Roman Shaposhnik <roman@zededa.com>
 ---
 Changes in v2:
 - update commit message
+
 ---
- drivers/xen/swiotlb-xen.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+---
+ drivers/xen/swiotlb-xen.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-index b6d27762c6f8..a42129cba36e 100644
+index a42129cba36e..ed09f8ac34c5 100644
 --- a/drivers/xen/swiotlb-xen.c
 +++ b/drivers/xen/swiotlb-xen.c
-@@ -335,6 +335,7 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
- 	int order = get_order(size);
- 	phys_addr_t phys;
- 	u64 dma_mask = DMA_BIT_MASK(32);
-+	struct page *pg;
+@@ -52,8 +52,6 @@ static unsigned long xen_io_tlb_nslabs;
+  * Quick lookup value of the bus address of the IOTLB.
+  */
  
- 	if (hwdev && hwdev->coherent_dma_mask)
- 		dma_mask = hwdev->coherent_dma_mask;
-@@ -346,9 +347,11 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
- 	/* Convert the size to actually allocated. */
- 	size = 1UL << (order + XEN_PAGE_SHIFT);
+-static u64 start_dma_addr;
+-
+ /*
+  * Both of these functions should avoid XEN_PFN_PHYS because phys_addr_t
+  * can be 32bit when dma_addr_t is 64bit leading to a loss in
+@@ -241,7 +239,6 @@ int __ref xen_swiotlb_init(int verbose, bool early)
+ 		m_ret = XEN_SWIOTLB_EFIXUP;
+ 		goto error;
+ 	}
+-	start_dma_addr = xen_virt_to_bus(xen_io_tlb_start);
+ 	if (early) {
+ 		if (swiotlb_init_with_tbl(xen_io_tlb_start, xen_io_tlb_nslabs,
+ 			 verbose))
+@@ -389,8 +386,8 @@ static dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
+ 	 */
+ 	trace_swiotlb_bounced(dev, dev_addr, size, swiotlb_force);
  
-+	pg = is_vmalloc_addr(vaddr) ? vmalloc_to_page(vaddr) :
-+				      virt_to_page(vaddr);
- 	if (!WARN_ON((dev_addr + size - 1 > dma_mask) ||
- 		     range_straddles_page_boundary(phys, size)) &&
--	    TestClearPageXenRemapped(virt_to_page(vaddr)))
-+	    TestClearPageXenRemapped(pg))
- 		xen_destroy_contiguous_region(phys, order);
+-	map = swiotlb_tbl_map_single(dev, start_dma_addr, phys,
+-				     size, size, dir, attrs);
++	map = swiotlb_tbl_map_single(dev, virt_to_phys(xen_io_tlb_start),
++				     phys, size, size, dir, attrs);
+ 	if (map == (phys_addr_t)DMA_MAPPING_ERROR)
+ 		return DMA_MAPPING_ERROR;
  
- 	xen_free_coherent_pages(hwdev, size, vaddr, (dma_addr_t)phys, attrs);
 -- 
 2.17.1
 
