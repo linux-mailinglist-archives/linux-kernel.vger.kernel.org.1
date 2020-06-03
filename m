@@ -2,166 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C8A1ECAA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A871ECAB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726036AbgFCHhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 03:37:15 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61954 "EHLO m43-7.mailgun.net"
+        id S1725956AbgFCHlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 03:41:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725840AbgFCHhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 03:37:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591169833; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=aJvFtRy1el1NP+Z5+87GQ+m2nk+T28gjost9JU7AaP0=;
- b=qRc63U1EH5D471YJ50iO7V9AwCUorCNv3EzewUIP/9lYrrIqvMIOCsEnebg8ugZvVWqBeC/F
- Dvsg+Ix2FMEncSE3LQA0s9tHQJMkljPPM8kbNfp1Zj23iDAieu1UF2XgJWF6k++bv8dIJfnb
- 38ZZ3kWu2KTbCglluH6UBP9duB4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5ed75326cb04586933e89806 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Jun 2020 07:37:10
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 94CBFC43395; Wed,  3 Jun 2020 07:37:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1725275AbgFCHlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 03:41:01 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: guptap)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D600BC433CA;
-        Wed,  3 Jun 2020 07:37:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57CA12077D;
+        Wed,  3 Jun 2020 07:41:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591170060;
+        bh=ASiJyN9vtoOKWIQVI9sRkrvMVRZLsH73CKMJEX/qka8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hc1h9s4LbZy8hmvFTWK/zlCOn7hSVlKRz27xGeTt12B3JBMR28V/4L1nOZLJKgnnQ
+         VxfYUAHUhtG2rHQ/PTOsl/4YTjQnUnh9og5RvTpYrv3nKjnVqj92/vVJ3aBZ87XxzD
+         jCAxP/wLjitb6jqRTXIHTVqLVldSkYNOw6/XBdnM=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jgO1C-00HNfN-Oj; Wed, 03 Jun 2020 08:40:58 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 03 Jun 2020 13:07:08 +0530
-From:   guptap@codeaurora.org
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     mhocko@suse.com, owner-linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] iommu/dma: limit iova free size to unmmaped iova
-In-Reply-To: <9b5f8501-6e6e-0cd2-7f98-7cfea13051d7@arm.com>
-References: <20200521113004.12438-1-guptap@codeaurora.org>
- <7aaa8dcc-6a47-f256-431d-2a1b034b4076@arm.com>
- <90662ef3123dbf2e93f9718ee5cc14a7@codeaurora.org>
- <2d873ab9-ebb9-3c2d-f129-55a036ab47d0@arm.com>
- <4ba082d3bb965524157704ea1ffb1ff4@codeaurora.org>
- <9b5f8501-6e6e-0cd2-7f98-7cfea13051d7@arm.com>
-Message-ID: <4b6a864674a9231b3ac35e5ce0c7292f@codeaurora.org>
-X-Sender: guptap@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Date:   Wed, 03 Jun 2020 08:40:58 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Neal Liu <neal.liu@mediatek.com>
+Cc:     Julius Werner <jwerner@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Matt Mackall <mpm@selenic.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?UTF-8?Q?Crystal_Guo_=28=E9=83=AD?= =?UTF-8?Q?=E6=99=B6=29?= 
+        <Crystal.Guo@mediatek.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Security Random Number Generator support
+In-Reply-To: <1591169342.4878.9.camel@mtkswgap22>
+References: <1591085678-22764-1-git-send-email-neal.liu@mediatek.com>
+ <CAMj1kXHjAdk5=-uSh_=S9j5cz42zr3h6t+YYGy+obevuQDp0fg@mail.gmail.com>
+ <85dfc0142d3879d50c0ba18bcc71e199@misterjones.org>
+ <1591169342.4878.9.camel@mtkswgap22>
+User-Agent: Roundcube Webmail/1.4.4
+Message-ID: <fcbe37f6f9cbcde24f9c28bc504f1f0e@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: neal.liu@mediatek.com, jwerner@google.com, ardb@kernel.org, devicetree@vger.kernel.org, herbert@gondor.apana.org.au, arnd@arndb.de, gregkh@linuxfoundation.org, sean.wang@kernel.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com, robh+dt@kernel.org, linux-crypto@vger.kernel.org, mpm@selenic.com, matthias.bgg@gmail.com, Crystal.Guo@mediatek.com, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-02 18:37, Robin Murphy wrote:
-> On 2020-05-26 08:19, guptap@codeaurora.org wrote:
->> On 2020-05-22 14:54, Robin Murphy wrote:
->>> On 2020-05-22 07:25, guptap@codeaurora.org wrote:
->>>> On 2020-05-22 01:46, Robin Murphy wrote:
->>>>> On 2020-05-21 12:30, Prakash Gupta wrote:
->> Sorry for delayed response, it was a long weekend.
->> I agree that invalid DMA API call can result in unexpected issues and 
->> client
->> should fix it, but then the present behavior makes it difficult to 
->> catch cases
->> when driver is making wrong DMA API calls. When invalid iova pfn is 
->> passed it
->> doesn't fail then and there, though DMA layer is aware of iova being 
->> invalid. It
->> fails much after that in the context of an valid map/unmap, with 
->> BUG_ON().
+On 2020-06-03 08:29, Neal Liu wrote:
+> On Tue, 2020-06-02 at 21:02 +0800, Marc Zyngier wrote:
+>> On 2020-06-02 13:14, Ard Biesheuvel wrote:
+>> > On Tue, 2 Jun 2020 at 10:15, Neal Liu <neal.liu@mediatek.com> wrote:
+>> >>
+>> >> These patch series introduce a security random number generator
+>> >> which provides a generic interface to get hardware rnd from Secure
+>> >> state. The Secure state can be Arm Trusted Firmware(ATF), Trusted
+>> >> Execution Environment(TEE), or even EL2 hypervisor.
+>> >>
+>> >> Patch #1..2 adds sec-rng kernel driver for Trustzone based SoCs.
+>> >> For security awareness SoCs on ARMv8 with TrustZone enabled,
+>> >> peripherals like entropy sources is not accessible from normal world
+>> >> (linux) and rather accessible from secure world (HYP/ATF/TEE) only.
+>> >> This driver aims to provide a generic interface to Arm Trusted
+>> >> Firmware or Hypervisor rng service.
+>> >>
+>> >>
+>> >> changes since v1:
+>> >> - rename mt67xx-rng to mtk-sec-rng since all MediaTek ARMv8 SoCs can
+>> >> reuse
+>> >>   this driver.
+>> >>   - refine coding style and unnecessary check.
+>> >>
+>> >>   changes since v2:
+>> >>   - remove unused comments.
+>> >>   - remove redundant variable.
+>> >>
+>> >>   changes since v3:
+>> >>   - add dt-bindings for MediaTek rng with TrustZone enabled.
+>> >>   - revise HWRNG SMC call fid.
+>> >>
+>> >>   changes since v4:
+>> >>   - move bindings to the arm/firmware directory.
+>> >>   - revise driver init flow to check more property.
+>> >>
+>> >>   changes since v5:
+>> >>   - refactor to more generic security rng driver which
+>> >>     is not platform specific.
+>> >>
+>> >> *** BLURB HERE ***
+>> >>
+>> >> Neal Liu (2):
+>> >>   dt-bindings: rng: add bindings for sec-rng
+>> >>   hwrng: add sec-rng driver
+>> >>
+>> >
+>> > There is no reason to model a SMC call as a driver, and represent it
+>> > via a DT node like this.
 >> 
->> Downgrading BUG_ON() to WARN_ON() in iova_magazine_free_pfns() will 
->> not help
->> much as invalid iova will cause NULL pointer dereference.
+>> +1.
+>> 
+>> > It would be much better if this SMC interface is made truly generic,
+>> > and wired into the arch_get_random() interface, which can be used much
+>> > earlier.
+>> 
+>> Wasn't there a plan to standardize a SMC call to rule them all?
+>> 
+>>          M.
 > 
-> Obviously I didn't mean a literal s/BUG/WARN/ substitution - some
-> additional control flow to actually handle the error case was implied.
-> 
-> I'll write up the patch myself, since it's easier than further 
-> debating.
-> 
+> Could you give us a hint how to make this SMC interface more generic in
+> addition to my approach?
+> There is no (easy) way to get platform-independent SMC function ID,
+> which is why we encode it into device tree, and provide a generic
+> driver. In this way, different devices can be mapped and then get
+> different function ID internally.
 
-I think it will address the issue I am facing as well. I will wait for 
-your patch.
+The idea is simply to have *one* single ID that caters for all
+implementations, just like we did for PSCI at the time. This
+requires ARM to edict a standard, which is what I was referring
+to above.
 
->> I see no reason why DMA layer wants to free an iova for which unmapped 
->> failed.
->> IMHO queuing an invalid iova (which already failed unmap) to rcache 
->> which
->> eventually going to crash the system looks like iommu-dma layer issue.
-> 
-> What if the unmap fails because the address range is already entirely
-> unmapped? Freeing the IOVA (or at least attempting to) would be
-> logically appropriate in that case. In fact some IOMMU drivers might
-> not even consider that a failure, so the DMA layer may not even be
-> aware that it's been handed a bogus unallocated address.
-> 
-> The point is that unmapping *doesn't* fail under normal and correct
-> operation, so the DMA layer should not expect to have to handle it.
-> Even if it does happen, that's a highly exceptional case that the DMA
-> layer cannot recover from by itself; at best it can just push the
-> problem elsewhere. It's pretty hard to justify doing extra work to
-> simply move an exceptional problem around without really addressing
-> it.
-> 
+There is zero benefit in having a platform-dependent ID. It just
+pointlessly increases complexity, and means we cannot use the RNG
+before the firmware tables are available (yes, we need it that
+early).
 
-iommu_unmap() expects that all areas within unmap size are mapped. 
-infact It
-abandons further unmap if it find any chunk not mapped.  So if an IOMMU
-implementation is not returning failure for already unmapped area,
-then it's prone to issue where DMA API reuse the IOVA, which is already 
-mapped.
-
-In this case where iommu implementation returns error for already 
-unmapped area,
-currently there is no way to distinguish an unmap failure due to range 
-already
-unmapped or say while partially unmapping a section map, memory 
-allocation fails
-and thus unmap returns failure.
-In second case, we will free the iova even with mapping present. And 
-subsequent
-dma mapping will keep on failing if it uses this freed iova. For managed 
-iova
-both unmap/map should be done with dma APIs, it should be safe to expect 
-if a
-range is unmapped with DMA APIs corresponding iova is also freed, so 
-there
-shouldn't be a real need to free iova where unmap fails due to range 
-already
-entirely unmapped.
-
-> And in this particular case, personally I would *much* rather see
-> warnings spewing from both the pagetable and IOVA code as early as
-> possible to clearly indicate that the DMA layer itself has been thrown
-> out of sync, than just have warnings that might represent some other
-> source of pagetable corruption (or at worst, depending on the
-> pagetable code, no warnings at all and only have dma_map_*() calls
-> quietly start failing much, much later due to all the IOVA space
-> having been leaked by bad unmaps).
-> 
-
-I am not sure how useful is this freed iova if corresponding mappings 
-are not
-unmapped. We won't be able to use those iova. The subsequent iommu_map 
-will fail
-if using this freed iova. So it's important to ensure we only free iova 
-which is
-unmapped successfully.
-
-Thanks,
-Prakash
+         M.
+-- 
+Jazz is not dead. It just smells funny...
