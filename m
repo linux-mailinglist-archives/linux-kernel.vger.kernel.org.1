@@ -2,218 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5301ED334
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45281ED338
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726088AbgFCPV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 11:21:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726050AbgFCPV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 11:21:26 -0400
-Received: from tzanussi-mobl (c-73-211-240-131.hsd1.il.comcast.net [73.211.240.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63D22206A2;
-        Wed,  3 Jun 2020 15:21:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591197685;
-        bh=vvT4i23gbvOoeOEQ0XCGFahp/NNWyT1vHHOKhsnSHy8=;
-        h=Subject:From:To:Cc:Date:From;
-        b=SZqnUkOEVFoSOuIuuimrBxTb9C6iKnpt9ei/sjXPs3uoqXtHDEWsPG9jwwwXcZspM
-         Zn2YKIAJ3Qaxw1CZaY1uO2RR6jxfQtFTIz+j52OINElWS3JjZzrQzV3CJK36RaPm/+
-         9/15Bgs6l4OhpcfvZ6SLLcyYKqV06cwril8GFvjE=
-Message-ID: <69c291c76964642a417e5dd170d183ba6b552010.camel@kernel.org>
-Subject: [PATCH] tracing/doc: Fix ascii-art in histogram-design.rst
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 03 Jun 2020 10:21:24 -0500
+        id S1726182AbgFCPV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 11:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726050AbgFCPVy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 11:21:54 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA2DC08C5C0
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 08:21:54 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id n23so1937521pgb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 08:21:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hrMJmm7uV8Kq8FT0QWve+Yk2ZlMASQ0lIxNFVi0I4n8=;
+        b=lV4LTO8Z7CECN0h8bLPSecTfQfT3g1oO1DyrfJYHMsdQ+4mpGA7mv1RKZde+dOOwWz
+         ip0/JO5ZkcDWESyffNkXU9QiEZp0MvcN54BAffNkFC/7jDB7vEruTcPzxB/SDRH3WGJM
+         bf1Kz6QfoMgzuC1uL/1/WqtuG5XyhwbEWMclB94zwrm130ioJTBTLnYP8J8tyg3G9SEh
+         X6a1IwOFXv1cGc6gqCqCpQGAYMeGhb8ym2YMZJtjeqmZwBPx9OGctphAbjm5Ztmiy9up
+         sOX2sGV8hgfrbWPggLrEtdTgdRpHpYjQwPputqh6xWDNoi8DnGd3nSvfrPCOZzOzNQWn
+         Ldmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hrMJmm7uV8Kq8FT0QWve+Yk2ZlMASQ0lIxNFVi0I4n8=;
+        b=UBYvFoRjOqQaejdZsM3yhymQODbtH4YjG2kOdmbZse9iUhrJAMG2adYhgcnnEA9ZTK
+         I4tpXzdez/peop0gHlYj+BDNBzDM9Ss7iQuhnQBUVwISO7AMCkZROr8XbPa39pqwSA8V
+         DKs+DnLDgAmgV+UdRsUz8h7Ze+VXXtk4LBz+vX7aRA24H2YScfb7m6blWknjAxe3trs9
+         1xETBBc3f4G5ALn7n3UBvUBcuJTi79xU78VfxmtYRRnt1rsO6PK5bPY7YIQs8VOqm9o5
+         4HgGuNG+f7gn6QKI0zjDpcMyacxxGr7jFutbCmeq3RT7eaAJeN1pvVQ9yRYDbDPWpgS2
+         8jwA==
+X-Gm-Message-State: AOAM531B4Z2ymTb13aLx4sfoxHuNnlgtKGQQY5IEmma88knVmXRAW2wc
+        E/R/fKA+xmw9PRm9B3EdllEnRkosef/ZaVc9uVYhpw==
+X-Google-Smtp-Source: ABdhPJx7lj+k4HtoDUnAWWncwUPHKPLtPH+5vE4OXVU+sm+4n/l4l4EMI32FhbCzRQUrAy9yuUVXzvZ388i3Ejt1yNo=
+X-Received: by 2002:a63:dd43:: with SMTP id g3mr29777399pgj.286.1591197714146;
+ Wed, 03 Jun 2020 08:21:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <000000000000bbd09005a6fdc6cc@google.com> <0000000000000eb4b905a7277a7d@google.com>
+ <20200603061251.GA531505@kroah.com>
+In-Reply-To: <20200603061251.GA531505@kroah.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 3 Jun 2020 17:21:43 +0200
+Message-ID: <CAAeHK+ykNcRU2yyH_eH1w5Kkh9qp9W=zXS7u=6wwjhG0kJgshg@mail.gmail.com>
+Subject: Re: WARNING in snd_usbmidi_submit_urb/usb_submit_urb
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     syzbot <syzbot+5f1d24c49c1d2c427497@syzkaller.appspotmail.com>,
+        Felipe Balbi <balbi@kernel.org>, ingrassia@epigenesys.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes the Sphinx parallel build error when building htmldocs:
+On Wed, Jun 3, 2020 at 8:12 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Jun 02, 2020 at 10:41:16PM -0700, syzbot wrote:
+> > syzbot has found a reproducer for the following crash on:
+> >
+> > HEAD commit:    1ee08de1 Merge tag 'for-5.8/io_uring-2020-06-01' of git://..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=15f9e516100000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=b46ebd806238a886
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=5f1d24c49c1d2c427497
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > userspace arch: i386
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1667dcca100000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13f9e516100000
+> >
+> > The bug was bisected to:
+> >
+> > commit f2c2e717642c66f7fe7e5dd69b2e8ff5849f4d10
+> > Author: Andrey Konovalov <andreyknvl@google.com>
+> > Date:   Mon Feb 24 16:13:03 2020 +0000
+> >
+> >     usb: gadget: add raw-gadget interface
+>
+> I thought this "bisect to the tool that finds bugs" issue was fixed :)
 
-  docutils.utils.SystemMessage: /home/sfr/next/next/Documentation/trace/histogram-design.rst:219: (SEVERE/4) Unexpected section title.
-
-It also fixes a bunch of other warnings I noticed when fixing the
-above, caused by mixing ascii-art and text.
-
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- Documentation/trace/histogram-design.rst | 48 ++++++++++++------------
- 1 file changed, 24 insertions(+), 24 deletions(-)
-
-diff --git a/Documentation/trace/histogram-design.rst b/Documentation/trace/histogram-design.rst
-index 06f5c7e5f2ee..eef840043da9 100644
---- a/Documentation/trace/histogram-design.rst
-+++ b/Documentation/trace/histogram-design.rst
-@@ -14,7 +14,7 @@ tracing_map.c.
- Note: All the ftrace histogram command examples assume the working
-       directory is the ftrace /tracing directory. For example::
- 
--  # cd /sys/kernel/debug/tracing
-+	# cd /sys/kernel/debug/tracing
- 
- Also, the histogram output displayed for those commands will be
- generally be truncated - only enough to make the point is displayed.
-@@ -107,7 +107,7 @@ for the hitcount and one key field for the pid key.
- Below that is a diagram of a run-time snapshot of what the tracing_map
- might look like for a given run.  It attempts to show the
- relationships between the hist_data fields and the tracing_map
--elements for a couple hypothetical keys and values.
-+elements for a couple hypothetical keys and values.::
- 
-   +------------------+
-   | hist_data        |
-@@ -141,20 +141,20 @@ elements for a couple hypothetical keys and values.
-                              |              |                            |  |
-                              +--------------+                            |  |
-                                             n_keys = n_fields - n_vals   |  |
--		                                                         |  |
-+
- The hist_data n_vals and n_fields delineate the extent of the fields[]   |  |
- array and separate keys from values for the rest of the code.            |  |
--		                                                         |  |
-+
- Below is a run-time representation of the tracing_map part of the        |  |
- histogram, with pointers from various parts of the fields[] array        |  |
- to corresponding parts of the tracing_map.                               |  |
--		                                                         |  |
-+
- The tracing_map consists of an array of tracing_map_entrys and a set     |  |
- of preallocated tracing_map_elts (abbreviated below as map_entry and     |  |
- map_elt).  The total number of map_entrys in the hist_data.map array =   |  |
- map->max_elts (actually map->map_size but only max_elts of those are     |  |
- used.  This is a property required by the map_insert() algorithm).       |  |
--		                                                         |  |
-+
- If a map_entry is unused, meaning no key has yet hashed into it, its     |  |
- .key value is 0 and its .val pointer is NULL.  Once a map_entry has      |  |
- been claimed, the .key value contains the key's hash value and the       |  |
-@@ -163,11 +163,11 @@ for each key or value in the map_elt.fields[] array.  There is an        |  |
- entry in the map_elt.fields[] array corresponding to each hist_field     |  |
- in the histogram, and this is where the continually aggregated sums      |  |
- corresponding to each histogram value are kept.                          |  |
--		                                                         |  |
-+
- The diagram attempts to show the relationship between the                |  |
- hist_data.fields[] and the map_elt.fields[] with the links drawn         |  |
--between diagrams::                                                       |  |
--		                                                         |  |
-+between diagrams::
-+
-   +-----------+		                                                 |  |
-   | hist_data |		                                                 |  |
-   +-----------+		                                                 |  |
-@@ -380,7 +380,7 @@ entry, ts0, corresponding to the ts0 variable in the sched_waking
- trigger above.
- 
- sched_waking histogram
------------------------
-+----------------------::
- 
-   +------------------+
-   | hist_data        |<-------------------------------------------------------+
-@@ -439,25 +439,25 @@ sched_waking histogram
-                            +-----------------+                            | | |
-                                              n_keys = n_fields - n_vals   | | |
-                                                                           | | |
--                                                                          | | |
-+
- This is very similar to the basic case.  In the above diagram, we can     | | |
- see a new .flags member has been added to the struct hist_field           | | |
- struct, and a new entry added to hist_data.fields representing the ts0    | | |
- variable.  For a normal val hist_field, .flags is just 0 (modulo          | | |
- modifier flags), but if the value is defined as a variable, the .flags    | | |
- contains a set FL_VAR bit.                                                | | |
--                                                                          | | |
-+
- As you can see, the ts0 entry's .var.idx member contains the index        | | |
- into the tracing_map_elts' .vars[] array containing variable values.      | | |
- This idx is used whenever the value of the variable is set or read.       | | |
- The map_elt.vars idx assigned to the given variable is assigned and       | | |
- saved in .var.idx by create_tracing_map_fields() after it calls           | | |
- tracing_map_add_var().                                                    | | |
--                                                                          | | |
-+
- Below is a representation of the histogram at run-time, which             | | |
- populates the map, along with correspondence to the above hist_data and   | | |
- hist_field data structures.                                               | | |
--                                                                          | | |
-+
- The diagram attempts to show the relationship between the                 | | |
- hist_data.fields[] and the map_elt.fields[] and map_elt.vars[] with       | | |
- the links drawn between diagrams.  For each of the map_elts, you can      | | |
-@@ -465,8 +465,8 @@ see that the .fields[] members point to the .sum or .offset of a key      | | |
- or val and the .vars[] members point to the value of a variable.  The     | | |
- arrows between the two diagrams show the linkages between those           | | |
- tracing_map members and the field definitions in the corresponding        | | |
--hist_data fields[] members.                                               | | |
--                                                                          | | |
-+hist_data fields[] members.::
-+
-   +-----------+		                                                  | | |
-   | hist_data |		                                                  | | |
-   +-----------+		                                                  | | |
-@@ -564,27 +564,27 @@ hist_data fields[] members.                                               | | |
-                                                       | unused        |     | |
-                                                       |               |     | |
-                                                       +---------------+     | |
--                                                                            | |
-+
- For each used map entry, there's a map_elt pointing to an array of          | |
- .vars containing the current value of the variables associated with         | |
- that histogram entry.  So in the above, the timestamp associated with       | |
- pid 999 is 113345679876, and the timestamp variable in the same             | |
- .var.idx for pid 4444 is 213499240729.                                      | |
--                                                                            | |
-+
- sched_switch histogram                                                      | |
- ----------------------                                                      | |
--                                                                            | |
-+
- The sched_switch histogram paired with the above sched_waking               | |
- histogram is shown below.  The most important aspect of the                 | |
- sched_switch histogram is that it references a variable on the              | |
- sched_waking histogram above.                                               | |
--                                                                            | |
-+
- The histogram diagram is very similar to the others so far displayed,       | |
- but it adds variable references.  You can see the normal hitcount and       | |
- key fields along with a new wakeup_lat variable implemented in the          | |
- same way as the sched_waking ts0 variable, but in addition there's an       | |
- entry with the new FL_VAR_REF (short for HIST_FIELD_FL_VAR_REF) flag.       | |
--                                                                            | |
-+
- Associated with the new var ref field are a couple of new hist_field        | |
- members, var.hist_data and var_ref_idx.  For a variable reference, the      | |
- var.hist_data goes with the var.idx, which together uniquely identify       | |
-@@ -593,10 +593,10 @@ just the index into the var_ref_vals[] array that caches the values of      | |
- each variable whenever a hist trigger is updated.  Those resulting          | |
- values are then finally accessed by other code such as trace action         | |
- code that uses the var_ref_idx values to assign param values.               | |
--                                                                            | |
-+
- The diagram below describes the situation for the sched_switch              | |
--histogram referred to before:                                               | |
--                                                                            | |
-+histogram referred to before::
-+
-   # echo 'hist:keys=next_pid:wakeup_lat=common_timestamp.usecs-$ts0' >>     | |
-           events/sched/sched_switch/trigger                                 | |
-                                                                             | |
--- 
-2.17.1
-
-
+The change was merged after this message was sent, and it also takes
+some time to be deployed.
