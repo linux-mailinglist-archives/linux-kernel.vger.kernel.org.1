@@ -2,74 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4B01ED4FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 19:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177E41ED4E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 19:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgFCRaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 13:30:01 -0400
-Received: from esa1.mentor.iphmx.com ([68.232.129.153]:27176 "EHLO
-        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725956AbgFCRaB (ORCPT
+        id S1726166AbgFCRXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 13:23:10 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:24069 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725956AbgFCRXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 13:30:01 -0400
-X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jun 2020 13:30:00 EDT
-IronPort-SDR: gYEvL9RR6n7QuRr4AOQdxKkoG3j4KYQnpN5LtnvvTLPutPLTJhhGYtjFwooi5fRBEJYrGT4Vx3
- /xSFbDYpQgKXJk/4JvHhdB8p664K6hjxjRuKWv3p9xQrKqV25UcxPai5c9377T7gBj2/kfm1q4
- nRW+kR1+T+GCM5+pKVrc59pCwgy6ENqZeGYgDWwBOWmoCtFvpoRgeqMf5I2HL33hlNT8FZn0gP
- frm5n3SvdT7MByoj5t4b9GCzmD4iakIDr8pbniPWtP2HoMPIay2lDtGcSRAQxgakhiQT/qW0Ka
- aPs=
-X-IronPort-AV: E=Sophos;i="5.73,468,1583222400"; 
-   d="scan'208";a="51537015"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa1.mentor.iphmx.com with ESMTP; 03 Jun 2020 09:22:54 -0800
-IronPort-SDR: VYzD3cG7OQGM/KCsYl7lBRJK8hLhcfaZSJgsx65378x1byGXgOeApjsXtUHPOtwzuUEEHDYhSd
- HaAA9gm9gVdG0Q3Ee/XfNDoGsCkLSRP9ofe4Gw0AhgBbLQgp7lnhnBZaCWrt7BRppp0J8R9B+o
- J4ojxl1Pm/Yqtlyt016eclFV+cvZd2Pb56PDz5RvCorz/a3QTOFL2aGHP/UYmTQUS5FUz2DLRz
- Wa8HdvNcTmAGSPQ8iFBel4T+xGp4S//oYEjDdSOjW4fWyYBUAxVfSZJA3k09eIYfw+wKdXIQfi
- o3k=
-Date:   Wed, 3 Jun 2020 17:22:47 +0000
-From:   Joseph Myers <joseph@codesourcery.com>
-X-X-Sender: jsm28@digraph.polyomino.org.uk
-To:     Florian Weimer <fweimer@redhat.com>
-CC:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Rich Felker <dalias@libc.org>, <libc-alpha@sourceware.org>,
-        <linux-api@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ben Maurer <bmaurer@fb.com>, Dave Watson <davejwatson@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        Paul Turner <pjt@google.com>
-Subject: Re: [PATCH glibc 1/3] glibc: Perform rseq registration at C startup
- and thread creation (v20)
-In-Reply-To: <87d06gxsla.fsf@oldenburg2.str.redhat.com>
-Message-ID: <alpine.DEB.2.21.2006031718070.7179@digraph.polyomino.org.uk>
-References: <20200527185130.5604-1-mathieu.desnoyers@efficios.com> <20200527185130.5604-2-mathieu.desnoyers@efficios.com> <87d06gxsla.fsf@oldenburg2.str.redhat.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Wed, 3 Jun 2020 13:23:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591204988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BBwgQMLjQcT93l5oHgQ0C5n6kW+0rnqW19ugaGnZwA4=;
+        b=JFZ7B1cb6WChq+gNPNtQ8gBxWb7eEq7sHPmbQc4JQ222ELKOvPRnWDp/0LOYp0+Oqz4GXD
+        nGzjo4VfsZSUunXuYYwZuAg/QCUzDqgerWyNTxogoBSGaCbku0s4qcR311w6gUsfyKUwga
+        X4LXWpp+xClKqSeUjvSGwy/ONLwnaG8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-1De3qDeVNDChGHbvHaG4Xg-1; Wed, 03 Jun 2020 13:23:06 -0400
+X-MC-Unique: 1De3qDeVNDChGHbvHaG4Xg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 763921856941;
+        Wed,  3 Jun 2020 17:23:05 +0000 (UTC)
+Received: from x1.home (ovpn-112-195.phx2.redhat.com [10.3.112.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3DB8D10013D0;
+        Wed,  3 Jun 2020 17:23:05 +0000 (UTC)
+Date:   Wed, 3 Jun 2020 11:23:04 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: [GIT PULL] VFIO updates for v5.8-rc1
+Message-ID: <20200603112304.017a7954@x1.home>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2) To
- svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Jun 2020, Florian Weimer via Libc-alpha wrote:
+Hi Linus,
 
-> I'm still waiting for feedback from other maintainers whether the level
-> of documentation and testing is appropriate.
+The following changes since commit 9cb1fd0efd195590b828b9b865421ad345a4a145:
 
-Looking at the documentation in the manual, it doesn't look like it has 
-enough information for someone to use this functionality, or to know when 
-they might want to use it, and nor does it point to external documentation 
-of it.  It would seem appropriate at least to include a link to wherever 
-the external documentation is of what this functionality is good for, how 
-to create and use a "Restartable Sequence critical section", and how to 
-"perform rseq registration to the kernel".
+  Linux 5.7-rc7 (2020-05-24 15:32:54 -0700)
 
--- 
-Joseph S. Myers
-joseph@codesourcery.com
+are available in the Git repository at:
+
+  git://github.com/awilliam/linux-vfio.git tags/vfio-v5.8-rc1
+
+for you to fetch changes up to 4f085ca2f5a8047845ab2d6bbe97089daed28655:
+
+  Merge branch 'v5.8/vfio/kirti-migration-fixes' into v5.8/vfio/next (2020-06-02 13:53:00 -0600)
+
+----------------------------------------------------------------
+VFIO updates for v5.8-rc1
+
+ - Block accesses to disabled MMIO space (Alex Williamson)
+
+ - VFIO device migration API (Kirti Wankhede)
+
+ - type1 IOMMU dirty bitmap API and implementation (Kirti Wankhede)
+
+ - PCI NULL capability masking (Alex Williamson)
+
+ - Memory leak fixes (Qian Cai)
+
+ - Reference leak fix (Qiushi Wu)
+
+----------------------------------------------------------------
+Alex Williamson (7):
+      vfio/type1: Support faulting PFNMAP vmas
+      vfio-pci: Fault mmaps to enable vma tracking
+      vfio-pci: Invalidate mmaps and block MMIO access on disabled memory
+      vfio-pci: Mask cap zero
+      Merge branches 'v5.8/vfio/alex-block-mmio-v3', 'v5.8/vfio/alex-zero-cap-v2' and 'v5.8/vfio/qian-leak-fixes' into v5.8/vfio/next
+      Merge branch 'qiushi-wu-mdev-ref-v1' into v5.8/vfio/next
+      Merge branch 'v5.8/vfio/kirti-migration-fixes' into v5.8/vfio/next
+
+Kirti Wankhede (10):
+      vfio: UAPI for migration interface for device state
+      vfio iommu: Remove atomicity of ref_count of pinned pages
+      vfio iommu: Cache pgsize_bitmap in struct vfio_iommu
+      vfio iommu: Add ioctl definition for dirty pages tracking
+      vfio iommu: Implementation of ioctl for dirty pages tracking
+      vfio iommu: Update UNMAP_DMA ioctl to get dirty bitmap before unmap
+      vfio iommu: Add migration capability to report supported features
+      vfio: Selective dirty page tracking if IOMMU backed device pins pages
+      vfio iommu: Use shift operation for 64-bit integer division
+      vfio iommu: typecast corrections
+
+Qian Cai (2):
+      vfio/pci: fix memory leaks in alloc_perm_bits()
+      vfio/pci: fix memory leaks of eventfd ctx
+
+Qiushi Wu (1):
+      vfio/mdev: Fix reference count leak in add_mdev_supported_type
+
+ drivers/vfio/mdev/mdev_sysfs.c      |   2 +-
+ drivers/vfio/pci/vfio_pci.c         | 353 +++++++++++++++++++--
+ drivers/vfio/pci/vfio_pci_config.c  |  50 ++-
+ drivers/vfio/pci/vfio_pci_intrs.c   |  14 +
+ drivers/vfio/pci/vfio_pci_private.h |  15 +
+ drivers/vfio/pci/vfio_pci_rdwr.c    |  24 +-
+ drivers/vfio/vfio.c                 |  13 +-
+ drivers/vfio/vfio_iommu_type1.c     | 609 ++++++++++++++++++++++++++++++++----
+ include/linux/vfio.h                |   4 +-
+ include/uapi/linux/vfio.h           | 319 +++++++++++++++++++
+ 10 files changed, 1301 insertions(+), 102 deletions(-)
+
