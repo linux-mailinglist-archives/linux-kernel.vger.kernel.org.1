@@ -2,145 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DB11ED172
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 15:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F691ED16F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 15:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726173AbgFCNvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 09:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
+        id S1726126AbgFCNv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 09:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgFCNvr (ORCPT
+        with ESMTP id S1725882AbgFCNvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 09:51:47 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4789DC08C5C0;
-        Wed,  3 Jun 2020 06:51:47 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id w15so1349124lfe.11;
-        Wed, 03 Jun 2020 06:51:47 -0700 (PDT)
+        Wed, 3 Jun 2020 09:51:23 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BE3C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 06:51:22 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id q13so1832613edi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 06:51:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ynGubvv1lmJWgKvcuVKEC2BlJOItbIGYAHQ5FZLJdXc=;
-        b=nv7BQ7nd558gTRBx1gpQtkB4AASf1WpGTDlSi+XRqpqBiWXAdWx7PXZNXp0mAOV7L1
-         IlrO3mgTvKSCwQfsG2jePNFIP3YK/VGecuiVhlhsWPxY008GW5d6vHeCp/1RXbiOAC7h
-         Vk6aI9eBA5aepCJSq4vXw0d7crfqDwVKipz/CIp33JuUqPCKLSi7H7mRT6KMO7Dtzl58
-         foMgeePlRhYWQUZqzW0yjoFvPBO6UyxOXtiR6fqVb1KCckfomW83DxFV4Jo3jmbUthLU
-         YMSikTOTJIkhvjFKesHqmlqBjlMEFRE7qNeSRorEE7CqL5BkTq3QV49RMdPpn0B+qBbj
-         ZuMQ==
+        bh=HT6Jc3j2wV7RmXXPBI9xBKNNCNks3guHWgmY6UH0Bes=;
+        b=TnMhhLK/LjZa4U+b57SZZcXBGH9KbG3fKuIyMZ+4ULLTlthdnE1uS8UF/P8KS5SGpU
+         PqdbHle2YSIuqs9ZzCbKjdr7fdmZlUAveUrmiU7EdOu/coIuttGQ3cKRmONakytLalOv
+         XKK/rkX3xa1/m3TCYYcNwXGHtyTOpNb8SCUER1XcJVSJnKf/iTI/nruI5xBlv2/mQO0Z
+         F/sBstOe57JrH77McxzpfDsa7ENLEpt+GAl0KABK/XptanScNbgIrB5yTpArSCz0EAGU
+         Kn0PAg2HIQypjsIXc/kPkyQ7ewST6SJjJwpjCiXAw308PEXYjgn++N9ozS8EFMr9QGb9
+         7P9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ynGubvv1lmJWgKvcuVKEC2BlJOItbIGYAHQ5FZLJdXc=;
-        b=sx4EldfJ+Khp7HpPMt3PLbOc0ibmf45Cv064KyTFRpqD2XRv4yNkktc6vimwWZulie
-         tydZfKbNAPJ04Y9g13bn77UPAJoFbLYKQClq10CJTZDWKoaWvpA2dBrzBKjEz9j3hIfW
-         tFVGEMQ/w7Iuz+t3cmJsrceg0ozw3Sd+wb++Th5n+QEjMCgRgeIyLbxrRsxFswILhAtU
-         d1Lxi/lD+7lUfioWB/0K5dsdEC3LszF8/qWBVa/w3N+Wccg8OnQquBHn9jXOSEWJf2Z3
-         rH+lf5Phh1m1m4JcFWVTl1dNIOwUule4wsO4jVhBtjw6tgbR8Z0hQUPtuZNy1TY+tGwM
-         ZMcg==
-X-Gm-Message-State: AOAM533pcaMRRw4pca3OQ3+ZCvlHPWr5GDABsQ/UcME3SOwq27HBGc0s
-        qZrLRml2j67dGqEfrhtGTEGkcHl9nDUWora4fiC7hOxLtrA=
-X-Google-Smtp-Source: ABdhPJzwXeSetxU7Ts8RRJiSyxD/Af2iDDUT+Ltxy+kX+GR+P7ziqOKvTXQCW/Fn/KOe+KEQ5e82p437f1NO7Cqi1u0=
-X-Received: by 2002:ac2:5197:: with SMTP id u23mr2534893lfi.109.1591192305763;
- Wed, 03 Jun 2020 06:51:45 -0700 (PDT)
+        bh=HT6Jc3j2wV7RmXXPBI9xBKNNCNks3guHWgmY6UH0Bes=;
+        b=L/41XduIPbOPJwxJ53yUaBNbjA4YmetDw+U0+CVp992/90ZMgwahHBpffXO7WLBNAL
+         1sW0p5QXfoa3kQuKpj7cao2KC0m2XnMVj9x5Q5KSfIkCZu479O2TYwQkFBi5W5QCW0cs
+         OlunhQ+XPUTJHddDzLFz3IijW6cAdQ2Yd2nD9rjimfif8KmVtjioX9yDTHYGkEwCvIt3
+         /mEGy6G4oHzdtimP5S+swNuZhHJKsOl4U8jZ26OaWdB2NVNBJNZ8PkXspz0P/lIhmbPZ
+         qq1Gu0Xd6OqMxC2cBs3Q0Omco21Rp/x9dK/VBx8LpsQ5fDOT/cdpdWNnD04kfpQL7kv5
+         WaIQ==
+X-Gm-Message-State: AOAM530w0YIvDB7PMA7qsMqhTCRfiDwceVizS/T/wVBEmNLEOU7l6rc0
+        hM+jSlkpvrWX6a8+H7n8y0gESjsGiKB2VhToZeuwIQ==
+X-Google-Smtp-Source: ABdhPJwR2vjJry78FpxUk8oMC0I8QgflKiFfnUU3O2YO1V0+Cgkk0EEZfk46wQLVk0jJWhT7WOgQcXIVpsmYLhauAP0=
+X-Received: by 2002:a50:f289:: with SMTP id f9mr20683380edm.188.1591192281579;
+ Wed, 03 Jun 2020 06:51:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200602080425.93712-1-kerneljasonxing@gmail.com>
- <CANn89iLNCDuXAhj4By0PDKbuFvneVfwmwkLbRCEKLBF+pmNEPg@mail.gmail.com>
- <CAL+tcoBjjwrkE5QbXDFADRGJfPoniLL1rMFNUkAKBN9L57UGHA@mail.gmail.com>
- <CANn89iKDKnnW1na_F0ngGh3EEc0quuBB2XWo21oAKaHckdPK4w@mail.gmail.com>
- <CAL+tcoDn_=T--uB0CRymfTGvD022PPDk5Yw2yCxvqOOpZ4G_dQ@mail.gmail.com>
- <CANn89i+dPu9=qJowhRVm9d3CesY4p+zzJ0HGiCMc_yJxux6pow@mail.gmail.com>
- <CAL+tcoC2+vYoFbujkLCF7P3evfirNSBQtJ9bPFHiU2FGOnBo+A@mail.gmail.com>
- <CANn89iJfLM2Hz69d9qOZoRKwzzCCpgVRZ1zbTTbg4vGvSAEZ-w@mail.gmail.com> <CADVnQy=RJfmzHR15DyWdydFAqSqVmFhaW4_cgYYAgnixEa5DNQ@mail.gmail.com>
-In-Reply-To: <CADVnQy=RJfmzHR15DyWdydFAqSqVmFhaW4_cgYYAgnixEa5DNQ@mail.gmail.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Wed, 3 Jun 2020 21:51:09 +0800
-Message-ID: <CAL+tcoCnsEi8KahgbhrVDawdhsjnAS4X8je0oCE-KZoCyf1Gcg@mail.gmail.com>
-Subject: Re: [PATCH] tcp: fix TCP socks unreleased in BBR mode
-To:     Neal Cardwell <ncardwell@google.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        David Miller <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        liweishi <liweishi@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
+References: <cover.1590947174.git.saiprakash.ranjan@codeaurora.org>
+ <28123d1e19f235f97555ee36a5ed8b52d20cbdea.1590947174.git.saiprakash.ranjan@codeaurora.org>
+ <20200601212858.GB24287@xps15> <6d759cc28628ea72767c1304883630eb@codeaurora.org>
+ <CAJ9a7VhMbdqVBHxEXGYxFkgPnnQqNnDAz=wkHP3s7Ntw0iLmKA@mail.gmail.com>
+ <f0357072de96970b641bbd0da98c1d61@codeaurora.org> <CAJ9a7Vj9STJw4jBxWU_9wHftj4Q7+k8o1nTc8tr21KjYi0RkpQ@mail.gmail.com>
+ <4a09cd2e054836d85f2e024ca4435e91@codeaurora.org> <CAJ9a7VgCFeHNbY_9Gwvu6uT9MFBeY=_GCaN4N1dwmm+iNpfJOw@mail.gmail.com>
+ <1a5a6a6d-b86d-df45-cf91-7081e70d88a3@arm.com>
+In-Reply-To: <1a5a6a6d-b86d-df45-cf91-7081e70d88a3@arm.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Wed, 3 Jun 2020 14:51:10 +0100
+Message-ID: <CAJ9a7Vj3sL=4O3DU+aJWYLhue1UxQmX4Ba5JdEnmxKDEYo_z4Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] coresight: tmc: Add shutdown callback for TMC ETR/ETF
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        Coresight ML <coresight@lists.linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 3, 2020 at 8:02 PM Neal Cardwell <ncardwell@google.com> wrote:
+Hi,
+
+
+On Wed, 3 Jun 2020 at 14:34, Robin Murphy <robin.murphy@arm.com> wrote:
 >
-> On Wed, Jun 3, 2020 at 1:44 AM Eric Dumazet <edumazet@google.com> wrote:
+> On 2020-06-03 14:22, Mike Leach wrote:
+> > Hi Sai,
 > >
-> > On Tue, Jun 2, 2020 at 10:05 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
-> > >
-> > > Hi Eric,
-> > >
-> > > I'm still trying to understand what you're saying before. Would this
-> > > be better as following:
-> > > 1) discard the tcp_internal_pacing() function.
-> > > 2) remove where the tcp_internal_pacing() is called in the
-> > > __tcp_transmit_skb() function.
-> > >
-> > > If we do so, we could avoid 'too late to give up pacing'. Meanwhile,
-> > > should we introduce the tcp_wstamp_ns socket field as commit
-> > > (864e5c090749) does?
-> > >
+> > On Wed, 3 Jun 2020 at 13:14, Sai Prakash Ranjan
+> > <saiprakash.ranjan@codeaurora.org> wrote:
+> >>
+> >> Hi Mike,
+> >>
+> >> On 2020-06-03 16:57, Mike Leach wrote:
+> >>> Hi,
+> >>>
+> >>> On Wed, 3 Jun 2020 at 11:24, Sai Prakash Ranjan
+> >>> <saiprakash.ranjan@codeaurora.org> wrote:
+> >>>>
+> >>>> Hi Mike,
+> >>>>
+> >>>> Thanks again for looking at this.
+> >>>>
+> >>>> On 2020-06-03 03:42, Mike Leach wrote:
+> >>>> [...]
+> >>>>
+> >>>>>>
+> >>>>>> SMMU/IOMMU won't be able to do much here as it is the client's
+> >>>>>> responsiblity to
+> >>>>>> properly shutdown and SMMU device link just makes sure that
+> >>>>>> SMMU(supplier) shutdown is
+> >>>>>> called only after its consumers shutdown callbacks are called.
+> >>>>>
+> >>>>> I think this use case can be handled slightly differently than the
+> >>>>> general requirements for modular CoreSight drivers.
+> >>>>>
+> >>>>> What is needed here is a way of stopping the underlying ETR hardware
+> >>>>> from issuing data to the SMMU, until the entire device has been shut
+> >>>>> down, in a way that does not remove the driver, breaking existing
+> >>>>> references and causing a system crash.
+> >>>>>
+> >>>>> We could introduce a new mode to the ETR driver - e.g.
+> >>>>> CS_MODE_SHUTDOWN.
+> >>>>>
+> >>>>> At the end of the block tmc_shutdown(struct amba_device *adev), set
+> >>>>> drvdata->mode to CS_MODE_SHUTDOWN & remove the coresight_unregister().
+> >>>>> This new mode can be used to  prevent the underlying hardware from
+> >>>>> being able to restart until the device is re-powered.
+> >>>>>
+> >>>>> This mode can be detected in the code that enables / disables the ETR
+> >>>>> and handled appropriately (updates to tmc_enable_etr_sink and
+> >>>>> tmc_disable_etr_sink).
+> >>>>> This mode will persist until the device is re-started - but because we
+> >>>>> are on the device shutdown path this is not an issue.
+> >>>>>
+> >>>>> This should leave the CoreSight infrastructure stable until the
+> >>>>> drivers are shut down normally as part of the device power down
+> >>>>> process.
+> >>>>>
+> >>>>
+> >>>> Sounds good to me, but if the coresight_unregister() is the trouble
+> >>>> point
+> >>>> causing these crashes, then can't we just remove that from
+> >>>> tmc_shutdown()
+> >>>> callback? This would be like maintaining the same behaviour as now
+> >>>> where
+> >>>> on reboot/shutdown we basically don't do anything except for disabling
+> >>>> ETR.
+> >>>
+> >>> No - the new mode prevents race conditions where the thread shutting
+> >>> down the SMMU does the ETR shutdown, but then another thread happens
+> >>> to be trying to start trace and restarts the ETR.
+> >>> It also prevents the condition Mathieu discussed where a thread might
+> >>> be attempting to shutdown trace - this could try to disable the
+> >>> hardware again re-releasing resources/ re-flushing and waiting for
+> >>> stop.
+> >>>
+> >>
+> >> I do not think there will a race between SMMU shutdown and ETR shutdown.
+> >> Driver core takes care of calling SMMU shutdown after its consumer
+> >> shutdown callbacks via device link, otherwise there would already be
+> >> bugs in all other client drivers.
+> >>
 > >
-> > Please do not top-post on netdev mailing list.
-> >
-> >
-> > I basically suggested double-checking which point in TCP could end up
-> > calling tcp_internal_pacing()
-> > while the timer was already armed.
-> >
-> > I guess this is mtu probing.
-
-I tested the patch Eric suggested and the system display the stack
-trace which means there's one more exception we have to take into
-consideration. The call trace is listed as following:
- Call Trace:
-  <IRQ>
-  __tcp_retransmit_skb+0x188/0x7f0
-  ? bbr_set_state+0x7f/0x90 [tcp_bbr]
-  tcp_retransmit_skb+0x14/0xc0
-  tcp_retransmit_timer+0x313/0xa10
-  ? native_sched_clock+0x37/0x90
-  ? tcp_write_timer_handler+0x210/0x210
-  tcp_write_timer_handler+0xb1/0x210
-  tcp_write_timer+0x6d/0x80
-  call_timer_fn+0x29/0x110
-  run_timer_softirq+0x3cb/0x400
-  ? native_sched_clock+0x37/0x90
-  __do_softirq+0xdf/0x2ed
-  irq_exit+0xf7/0x100
-  smp_apic_timer_interrupt+0x68/0x120
-  apic_timer_interrupt+0xf/0x20
-  </IRQ>
-
-I admitted that this case is not that easily triggered, but it is the
-one that avoids the check during tcp_mtu_probe() period. The first skb
-is sent out without being checked by tcp_pacing_check  when RTO comes.
-
+> > I am not saying there could be a race between tmc_shutdowm and
+> > Smmu_shutdown - there may be a case if the coresight_disable_path
+> > sequence is running and gets to the point of disabling the ETR after
+> > the SMMU callback has disabled it.
 >
-> Perhaps this could also happen from some of the retransmission code
-> paths that don't use tcp_xmit_retransmit_queue()? Perhaps
-> tcp_retransmit_timer() (RTO) and  tcp_send_loss_probe() TLP? It seems
-> they could indirectly cause a call to __tcp_transmit_skb() and thus
-> tcp_internal_pacing() without first checking if the pacing timer was
-> already armed?
+> I'm confused now - there is no "SMMU callback", we're talking about the
+> system-wide cleanup from kernel_shutdown_prepare() or
+> kernel_restart_prepare(). As far as I'm aware userspace should be long
+> gone by that point, so although trace may have been left running ||
+           ((offset >= TRCCIDCVRn(0)) && (offset <= TRCVMIDCVRn(7)), the
+> chance of racing against other driver operations seems pretty unlikely.
 >
 
-Point taken. There are indeed several places using __tcp_transmit_skb
-where could cause such an issue, that is to say, slab increasing. All
-these particular cases, I think, should all be taken into account.
+Sorry - bad choice of terminology. I was referring to the SMMU
+ensuring that it had all its clients shut-down before if shut down. To
+quote Sai...
 
-Thanks,
-Jason
+>>>>> SMMU device link just makes sure that
+> >>>>>> SMMU(supplier) shutdown is
+> >>>>>> called only after its consumers shutdown callbacks are called.
 
-> neal
+I agree it is unlikely, but if removing the device from the CoreSight
+infrastructure via coresight_unregister() is a potential source of a
+crash, it would seem that there is a potential path where some
+CoreSight driver side work might be possible. therefore a mode to
+prevent this crash, and ensure that the device hardware remains off
+and not sending trace to SMMU until such time as shutdown / reboot
+restart occurs, seemed prudent.
+
+Mike
+
+> Robin.
+
+
+
+--
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
