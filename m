@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222A11ED33C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9404B1ED346
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 17:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbgFCPW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 11:22:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36226 "EHLO mail.kernel.org"
+        id S1726116AbgFCPYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 11:24:42 -0400
+Received: from 8bytes.org ([81.169.241.247]:46066 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726032AbgFCPW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 11:22:26 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E44120738;
-        Wed,  3 Jun 2020 15:22:25 +0000 (UTC)
-Date:   Wed, 3 Jun 2020 11:22:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: linux-next: build failure after merge of the ftrace tree
-Message-ID: <20200603112223.3adc3451@gandalf.local.home>
-In-Reply-To: <20200603174253.60deace5@canb.auug.org.au>
-References: <20200603174253.60deace5@canb.auug.org.au>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1725867AbgFCPYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 11:24:39 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id A9A2028B; Wed,  3 Jun 2020 17:24:37 +0200 (CEST)
+Date:   Wed, 3 Jun 2020 17:24:36 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v3 38/75] x86/sev-es: Add SEV-ES Feature Detection
+Message-ID: <20200603152436.GA17841@8bytes.org>
+References: <20200428151725.31091-1-joro@8bytes.org>
+ <20200428151725.31091-39-joro@8bytes.org>
+ <20200520083916.GB1457@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520083916.GB1457@zn.tnic>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Jun 2020 17:42:53 +1000
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Wed, May 20, 2020 at 10:39:16AM +0200, Borislav Petkov wrote:
+> On Tue, Apr 28, 2020 at 05:16:48PM +0200, Joerg Roedel wrote:
+> > +bool sev_es_active(void)
+> > +{
+> > +	return !!(sev_status & MSR_AMD64_SEV_ES_ENABLED);
+> > +}
+> > +EXPORT_SYMBOL_GPL(sev_es_active);
+> 
+> I don't see this being used in modules anywhere in the patchset. Or am I
+> missing something?
 
-> Hi all,
-> 
-> After merging the ftrace tree, today's linux-next build (htmldocs)
-> failed like this:
-> 
-> 
-> Sphinx parallel build error:
-> docutils.utils.SystemMessage: /home/sfr/next/next/Documentation/trace/histogram-design.rst:219: (SEVERE/4) Unexpected section title.
-> 
-> .
-> .
-> 
-> Caused by commit
-> 
->   16b585fe7192 ("tracing: Add histogram-design document")
-> 
-> I am running a slightly out of date version os sphynx (2.4.3) ...
-> 
+It is used in several places, for example do do_nmi() to conditionally
+re-open the NMI window in SEV-ES guests. But there are other uses too,
+like int sev_es_efi_map_ghcbs() or in sev_es_init_vc_handling() to opt
+out if not running as an SEV-ES guest.
 
-It appears to be the ascii art that is causing the issue. I have no idea
-how to fix it. If someone has a patch they would like to submit, I will
-take it before I push it off to Linus.
 
--- Steve
+	Joerg
+
