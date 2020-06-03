@@ -2,206 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36251ED3F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 18:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C5A1ED3FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 18:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgFCQJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 12:09:46 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39346 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725905AbgFCQJp (ORCPT
+        id S1726077AbgFCQLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 12:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725834AbgFCQL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 12:09:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591200582;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=ETnebDmW4bUx6khOWxhcEydEwi9wb4JEkoLnKF+oCzI=;
-        b=eDAYOKOT4aJBmodOUkp9sl27FoFj2ze8nxRc8IRSpBufJgM1x+3mi9ZFkvCoplwl+2b09U
-        QUmEash4s7rMzlNlSnanrEqU6K+i8HH8MHP2sWoGe0onXKR+dFXgP0juoJ3bxNfvrjOR5U
-        QVYjpB9NnUzXElcV5Rd5PjY6ig1eGBI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-tH3LO5zmM4ewrx7J2dJKIA-1; Wed, 03 Jun 2020 12:09:38 -0400
-X-MC-Unique: tH3LO5zmM4ewrx7J2dJKIA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5100835B42;
-        Wed,  3 Jun 2020 16:09:33 +0000 (UTC)
-Received: from [10.36.113.192] (ovpn-113-192.ams2.redhat.com [10.36.113.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F8175D9CD;
-        Wed,  3 Jun 2020 16:09:22 +0000 (UTC)
-Subject: Re: [RFC v2 7/9] mm/damon: Implement callbacks for physical memory
- monitoring
-To:     SeongJae Park <sjpark@amazon.com>, akpm@linux-foundation.org
-Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
-        aarcange@redhat.com, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, amit@kernel.org,
-        benh@kernel.crashing.org, brendan.d.gregg@gmail.com,
-        brendanhiggins@google.com, cai@lca.pw, colin.king@canonical.com,
-        corbet@lwn.net, dwmw@amazon.com, foersleo@amazon.de,
-        irogers@google.com, jolsa@redhat.com, kirill@shutemov.name,
-        mark.rutland@arm.com, mgorman@suse.de, minchan@kernel.org,
-        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
-        rdunlap@infradead.org, riel@surriel.com, rientjes@google.com,
-        rostedt@goodmis.org, sblbir@amazon.com, shakeelb@google.com,
-        shuah@kernel.org, sj38.park@gmail.com, snu@amazon.de,
-        vbabka@suse.cz, vdavydov.dev@gmail.com, yang.shi@linux.alibaba.com,
-        ying.huang@intel.com, linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200603141135.10575-1-sjpark@amazon.com>
- <20200603141135.10575-8-sjpark@amazon.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABtCREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT6JAlgEEwEIAEICGwMFCQlmAYAGCwkIBwMCBhUI
- AgkKCwQWAgMBAh4BAheAFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl3pImkCGQEACgkQTd4Q
- 9wD/g1o+VA//SFvIHUAvul05u6wKv/pIR6aICPdpF9EIgEU448g+7FfDgQwcEny1pbEzAmiw
- zAXIQ9H0NZh96lcq+yDLtONnXk/bEYWHHUA014A1wqcYNRY8RvY1+eVHb0uu0KYQoXkzvu+s
- Dncuguk470XPnscL27hs8PgOP6QjG4jt75K2LfZ0eAqTOUCZTJxA8A7E9+XTYuU0hs7QVrWJ
- jQdFxQbRMrYz7uP8KmTK9/Cnvqehgl4EzyRaZppshruKMeyheBgvgJd5On1wWq4ZUV5PFM4x
- II3QbD3EJfWbaJMR55jI9dMFa+vK7MFz3rhWOkEx/QR959lfdRSTXdxs8V3zDvChcmRVGN8U
- Vo93d1YNtWnA9w6oCW1dnDZ4kgQZZSBIjp6iHcA08apzh7DPi08jL7M9UQByeYGr8KuR4i6e
- RZI6xhlZerUScVzn35ONwOC91VdYiQgjemiVLq1WDDZ3B7DIzUZ4RQTOaIWdtXBWb8zWakt/
- ztGhsx0e39Gvt3391O1PgcA7ilhvqrBPemJrlb9xSPPRbaNAW39P8ws/UJnzSJqnHMVxbRZC
- Am4add/SM+OCP0w3xYss1jy9T+XdZa0lhUvJfLy7tNcjVG/sxkBXOaSC24MFPuwnoC9WvCVQ
- ZBxouph3kqc4Dt5X1EeXVLeba+466P1fe1rC8MbcwDkoUo65Ag0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAGJAiUEGAECAA8FAlXLn5ECGwwFCQlmAYAACgkQTd4Q
- 9wD/g1qA6w/+M+ggFv+JdVsz5+ZIc6MSyGUozASX+bmIuPeIecc9UsFRatc91LuJCKMkD9Uv
- GOcWSeFpLrSGRQ1Z7EMzFVU//qVs6uzhsNk0RYMyS0B6oloW3FpyQ+zOVylFWQCzoyyf227y
- GW8HnXunJSC+4PtlL2AY4yZjAVAPLK2l6mhgClVXTQ/S7cBoTQKP+jvVJOoYkpnFxWE9pn4t
- H5QIFk7Ip8TKr5k3fXVWk4lnUi9MTF/5L/mWqdyIO1s7cjharQCstfWCzWrVeVctpVoDfJWp
- 4LwTuQ5yEM2KcPeElLg5fR7WB2zH97oI6/Ko2DlovmfQqXh9xWozQt0iGy5tWzh6I0JrlcxJ
- ileZWLccC4XKD1037Hy2FLAjzfoWgwBLA6ULu0exOOdIa58H4PsXtkFPrUF980EEibUp0zFz
- GotRVekFAceUaRvAj7dh76cToeZkfsjAvBVb4COXuhgX6N4pofgNkW2AtgYu1nUsPAo+NftU
- CxrhjHtLn4QEBpkbErnXQyMjHpIatlYGutVMS91XTQXYydCh5crMPs7hYVsvnmGHIaB9ZMfB
- njnuI31KBiLUks+paRkHQlFcgS2N3gkRBzH7xSZ+t7Re3jvXdXEzKBbQ+dC3lpJB0wPnyMcX
- FOTT3aZT7IgePkt5iC/BKBk3hqKteTnJFeVIT7EC+a6YUFg=
-Organization: Red Hat GmbH
-Message-ID: <bd640661-143f-882f-ed92-3d2791b173aa@redhat.com>
-Date:   Wed, 3 Jun 2020 18:09:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 3 Jun 2020 12:11:29 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11A2C08C5C0;
+        Wed,  3 Jun 2020 09:11:29 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t8so3029887ilm.7;
+        Wed, 03 Jun 2020 09:11:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KAeoLtSRuBdsdWrkQtTcxvPxmFn/j7ymXRERq/WsR4w=;
+        b=RBtCC5S3QKIu8PTkhlzuGigk0ejIDpIZOZvBi1kBS1irVrSy29/kRRtz0UkXtRKgUl
+         WJyB+sKnGCJ2U0065sWKv581m1N+wodzCwXcXdP2wZTzNovkxYoufbsn4Kx5LPKht10m
+         U/jE7M6OKNulXH6PY3oHF6AYbPzJiA+9YnSDeCiPXZAXieMXPSQLRBxzE/rFkUXDzzFM
+         C/ujy16B8LPvFHHrfG3yJICj8VB7uAXx8s+EGPfQH7SHTTTydSh7vnFpyUQnfx/QSJsB
+         U5TFoBr+ZMw0j46HdArMd/N0BNi4JYSgJIwo5kvtUeu1q+2Ck+IH/r9hzuhVohZSPVxI
+         QINA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KAeoLtSRuBdsdWrkQtTcxvPxmFn/j7ymXRERq/WsR4w=;
+        b=sIBur7h5cfRp8MiYtKUG71hl2IwUWdfWfHLq8Nz22scjuH2eVe3bduH6IDlAQ9w5jy
+         c0kjiiVIaBn/hZhnozVRlt+gUoK5FuSQIjZOQipUUWiDB+jazraXphu3ENn2V/E0/yx7
+         M8LjH3p7C9hsczvQaHAsu4Ld2RVepowAdpVepxnTs1fpudiM0TSMEbma7wOywl7Hubup
+         JJZgnYhHcLBhV79uioJbjvHa91bIFDZiP0fHOXcCJHq0HYBY9D0sv/Xq7KU9THHcaLw9
+         rXtKzLL2COZ2gHV9AcQ7jmEi5Hm1t/sj+9Y1VY78ytcTIebP8DCgPiXPXU2m8JyffyN8
+         yjzg==
+X-Gm-Message-State: AOAM532jMEiNYocrUWHNXi8r8+rJ2Q3hEFGdCbSaR0ue+RC9UDJz9pjd
+        twYOvIrOCo3uySy6WpGu7moAtW7hjhFKdgGKcgM=
+X-Google-Smtp-Source: ABdhPJyKGBVT83sqUuG8MM33CYOi3fRLfp1EWQVNckSHe/QPBe+OKJ0Wttl06L6pige3o3GFJdiVJhx8eoVmUtFtnR0=
+X-Received: by 2002:a92:1b86:: with SMTP id f6mr263188ill.9.1591200689084;
+ Wed, 03 Jun 2020 09:11:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200603141135.10575-8-sjpark@amazon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200603154559.140418-1-colin.king@canonical.com>
+In-Reply-To: <20200603154559.140418-1-colin.king@canonical.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 3 Jun 2020 19:11:17 +0300
+Message-ID: <CAOQ4uxhLW=MSk=RhUi51EdOticfk1i_pku6qjCp2QpwnpyL5sw@mail.gmail.com>
+Subject: Re: [PATCH][next] ovl: fix null pointer dereference on null stack
+ pointer on error return
+To:     Colin King <colin.king@canonical.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.06.20 16:11, SeongJae Park wrote:
-> From: SeongJae Park <sjpark@amazon.de>
-> 
-> This commit implements the four callbacks (->init_target_regions,
-> ->update_target_regions, ->prepare_access_check, and ->check_accesses)
-> for the basic access monitoring of the physical memory address space.
-> By setting the callback pointers to point those, users can easily
-> monitor the accesses to the physical memory.
-> 
-> Internally, it uses the PTE Accessed bit, as similar to that of the
-> virtual memory support.  Also, it supports only page frames that
-> supported by idle page tracking.  Acutally, most of the code is stollen
-> from idle page tracking.  Users who want to use other access check
-> primitives and monitor the frames that not supported with this
-> implementation could implement their own callbacks on their own.
-> 
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+On Wed, Jun 3, 2020 at 6:46 PM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There are two error return paths where the call to path_put is
+> dereferencing the null pointer 'stack'.  Fix this by avoiding the
+> error exit path via label 'out_err' that will lead to the path_put
+> calls and instead just return the error code directly.
+>
+> Addresses-Coverity: ("Dereference after null check)"
+> Fixes: 4155c10a0309 ("ovl: clean up getting lower layers")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+
+Which branch is that based on?
+Doesn't seem to apply to master nor next
+
 > ---
->  include/linux/damon.h |   5 ++
->  mm/damon.c            | 184 ++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 189 insertions(+)
-> 
-> diff --git a/include/linux/damon.h b/include/linux/damon.h
-> index 1a788bfd1b4e..f96503a532ea 100644
-> --- a/include/linux/damon.h
-> +++ b/include/linux/damon.h
-> @@ -216,6 +216,11 @@ void kdamond_update_vm_regions(struct damon_ctx *ctx);
->  void kdamond_prepare_vm_access_checks(struct damon_ctx *ctx);
->  unsigned int kdamond_check_vm_accesses(struct damon_ctx *ctx);
->  
-> +void kdamond_init_phys_regions(struct damon_ctx *ctx);
-> +void kdamond_update_phys_regions(struct damon_ctx *ctx);
-> +void kdamond_prepare_phys_access_checks(struct damon_ctx *ctx);
-> +unsigned int kdamond_check_phys_accesses(struct damon_ctx *ctx);
-> +
->  int damon_set_pids(struct damon_ctx *ctx, int *pids, ssize_t nr_pids);
->  int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
->  		unsigned long aggr_int, unsigned long regions_update_int,
-> diff --git a/mm/damon.c b/mm/damon.c
-> index f5cbc97a3bbc..6a5c6d540580 100644
-> --- a/mm/damon.c
-> +++ b/mm/damon.c
-> @@ -19,7 +19,9 @@
->  #include <linux/mm.h>
->  #include <linux/module.h>
->  #include <linux/page_idle.h>
-> +#include <linux/pagemap.h>
->  #include <linux/random.h>
-> +#include <linux/rmap.h>
->  #include <linux/sched/mm.h>
->  #include <linux/sched/task.h>
->  #include <linux/slab.h>
-> @@ -480,6 +482,11 @@ void kdamond_init_vm_regions(struct damon_ctx *ctx)
->  	}
->  }
->  
-> +/* Do nothing.  Users should set the initial regions by themselves */
-> +void kdamond_init_phys_regions(struct damon_ctx *ctx)
-> +{
-> +}
-> +
->  static void damon_mkold(struct mm_struct *mm, unsigned long addr)
->  {
->  	pte_t *pte = NULL;
-> @@ -611,6 +618,178 @@ unsigned int kdamond_check_vm_accesses(struct damon_ctx *ctx)
->  	return max_nr_accesses;
->  }
->  
-> +/* access check functions for physical address based regions */
-> +
-> +/* This code is stollen from page_idle.c */
-> +static struct page *damon_phys_get_page(unsigned long pfn)
-> +{
-> +	struct page *page;
-> +	pg_data_t *pgdat;
-> +
-> +	if (!pfn_valid(pfn))
-> +		return NULL;
-> +
-
-Who provides these pfns? Can these be random pfns, supplied unchecked by
-user space? Or are they at least mapped into some user space process?
-
-IOW, do we need a pfn_to_online_page() to make sure the memmap even was
-initialized?
-
--- 
-Thanks,
-
-David / dhildenb
-
+>  fs/overlayfs/super.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+> index 1094836f7e31..4be1b041b32c 100644
+> --- a/fs/overlayfs/super.c
+> +++ b/fs/overlayfs/super.c
+> @@ -1594,20 +1594,18 @@ static struct ovl_entry *ovl_get_lowerstack(struct super_block *sb,
+>         unsigned int i;
+>         struct ovl_entry *oe;
+>
+> -       err = -EINVAL;
+>         if (!ofs->config.upperdir && numlower == 1) {
+>                 pr_err("at least 2 lowerdir are needed while upperdir nonexistent\n");
+> -               goto out_err;
+> +               return ERR_PTR(-EINVAL);
+>         } else if (!ofs->config.upperdir && ofs->config.nfs_export &&
+>                    ofs->config.redirect_follow) {
+>                 pr_warn("NFS export requires \"redirect_dir=nofollow\" on non-upper mount, falling back to nfs_export=off.\n");
+>                 ofs->config.nfs_export = false;
+>         }
+>
+> -       err = -ENOMEM;
+>         stack = kcalloc(numlower, sizeof(struct path), GFP_KERNEL);
+>         if (!stack)
+> -               goto out_err;
+> +               return ERR_PTR(-ENOMEM);
+>
+>         err = -EINVAL;
+>         for (i = 0; i < numlower; i++) {
+> --
+> 2.25.1
+>
