@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F6A1ECAC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6D41ECAC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 09:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbgFCHoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 03:44:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42916 "EHLO mail.kernel.org"
+        id S1726217AbgFCHoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 03:44:44 -0400
+Received: from mga17.intel.com ([192.55.52.151]:47913 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725275AbgFCHoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 03:44:20 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E94E2077D;
-        Wed,  3 Jun 2020 07:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591170259;
-        bh=pFaM0jC/GpF0ltYSGQTJaqEcQbks55Z4VoCbLMtK9zQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BzlwRXNkMlISTN/UJGSM4hieymdJ0+HBWX0LAQQjt3w3LoFk1gw7otIqy7aYyrXGL
-         EN7NAGDx4EbLKrDqoNZorGT2c8p4/rrr27aPT/gQkNMNWU8Hw4EbYzMPPJVs6htG/F
-         AhsJPbvSbDWmCEE72pWO+cgqqF37J9tJ74JuTepM=
-Date:   Wed, 3 Jun 2020 09:44:17 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.6 000/174] 5.6.16-rc2 review
-Message-ID: <20200603074417.GF612108@kroah.com>
-References: <20200602101934.141130356@linuxfoundation.org>
- <20200602191356.GE203031@roeck-us.net>
+        id S1725275AbgFCHon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 03:44:43 -0400
+IronPort-SDR: lCKqzKguZ8/amiF4ER3VJEvMlX6hTDURzB5O25ystJ93NlfmzX3KUfBfbyLmEvd/nJdatn6DI8
+ CpPM6tk0I6Fw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 00:44:43 -0700
+IronPort-SDR: OaoTNCguD6VHZKwpsrKiPC2MBoAyk9VjE5N/uQievj7tI08znPL5Nu6zEZsZDcSuiOCk6XdfUV
+ jFnvU27Mdcdg==
+X-IronPort-AV: E=Sophos;i="5.73,467,1583222400"; 
+   d="scan'208";a="416470260"
+Received: from unknown (HELO [10.239.13.99]) ([10.239.13.99])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 00:44:40 -0700
+Subject: Re: [PATCH 4/6] KVM: X86: Split kvm_update_cpuid()
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+References: <20200529085545.29242-1-xiaoyao.li@intel.com>
+ <20200529085545.29242-5-xiaoyao.li@intel.com>
+ <20200603011059.GB24169@linux.intel.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <5e5574d1-245d-ce57-d7aa-998eed2ca0b6@intel.com>
+Date:   Wed, 3 Jun 2020 15:44:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200602191356.GE203031@roeck-us.net>
+In-Reply-To: <20200603011059.GB24169@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 12:13:56PM -0700, Guenter Roeck wrote:
-> On Tue, Jun 02, 2020 at 12:24:19PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.6.16 release.
-> > There are 174 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 04 Jun 2020 10:16:52 +0000.
-> > Anything received after that time might be too late.
-> > 
-> Build results:
-> 	total: 155 pass: 155 fail: 0
-> Qemu test results:
-> 	total: 429 pass: 429 fail: 0
+On 6/3/2020 9:10 AM, Sean Christopherson wrote:
+> On Fri, May 29, 2020 at 04:55:43PM +0800, Xiaoyao Li wrote:
+>> Split the part of updating KVM states from kvm_update_cpuid(), and put
+>> it into a new kvm_update_state_based_on_cpuid(). So it's clear that
+>> kvm_update_cpuid() is to update guest CPUID settings, while
+>> kvm_update_state_based_on_cpuid() is to update KVM states based on the
+>> updated CPUID settings.
+> 
+> What about kvm_update_vcpu_model()?  "state" isn't necessarily correct
+> either.
+> 
 
-Thanks for testing all of these and letting me know.
-
-greg k-h
+yeah, it's better.
