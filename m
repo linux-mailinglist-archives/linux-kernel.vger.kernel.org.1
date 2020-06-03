@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2631ED04C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE361ED054
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbgFCM4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:56:16 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:34876 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726039AbgFCM4H (ORCPT
+        id S1726195AbgFCM4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:56:30 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:18200 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726034AbgFCM4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Jun 2020 08:56:07 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 053Cpmd2022390;
-        Wed, 3 Jun 2020 14:55:40 +0200
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 053CqLxO011596;
+        Wed, 3 Jun 2020 14:55:39 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-type; s=STMicroelectronics;
- bh=xIcwWUV1/7fk9UmENNXNq1TGvlqB81kqXfVsRVj0uHI=;
- b=GFfZPEHabkVq8nXu4x008IZx0bp9He+Sm7Xg9KF1J52VKBypUMahhXo1BH2uF/a/8AzU
- sxcLCJriiwNM8g5KsxwQzULdtU3qUQd375/NN0G623lm6vK5X9BZ/jx1j2i2ctu6BNFY
- bklaBL5GjHp7U4yIIuvpGUCjY/2pcBFU3KkxJEGcRv49O0bEs0L7NXxIsQABgdXXAyL4
- tXZPV/iQ7bYgZzM4VAc2jb06SLMcOVtqxMW8VXbkp6iHJpUg1eakyDCBDMKIcdTXfehH
- jx6KP882is4BxFX2Cj9aE8zWLhoJeocW72GnS1UEOAu+XeoeUMyNlcAsQaEYo+uNJXgp 7Q== 
+ bh=AXPGvtsGWLkKS+I+Kb5oNNnn9+C77me7iOpHlW+3zcQ=;
+ b=EwNJXCgpwPTH2wp+1MmXoIB2q8Xu/AZZoeu8cbn9XIpZ6YIWUvzjWwAe8mkL+T1PacF5
+ BNCjEmb1KJm+k1UkqAt0XTqg4jGKvOyrCBsL9ROH5Tp548+vG6PJ2GvIKys/4AEjeFkS
+ iq1vQptuiaVsenD1WuE7Swk1kA1WWrPwawrKo+nXtXXWL1ethVAWKdM0CVzcHVKmP/79
+ vqvObc7HtM0fmu8So3hAGzv4/FCdkan3aFZCXIyonSfzz4CvI1llCkmR7nVJTaIDS8ik
+ ZFohtxh3Ninl9EZ64oM/8EwpI59rav6nlg3dny2of0f1t3cfudZygfoTxIfeJfS8HXiu nA== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31becg4dc7-1
+        by mx07-00178001.pphosted.com with ESMTP id 31bcy0mqfs-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Jun 2020 14:55:40 +0200
+        Wed, 03 Jun 2020 14:55:39 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D872F10003B;
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D883010003D;
         Wed,  3 Jun 2020 14:55:38 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A09442CBE8F;
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A642C2CBE90;
         Wed,  3 Jun 2020 14:55:38 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG3NODE3.st.com (10.75.127.9)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 3 Jun 2020 14:54:46
+Received: from localhost (10.75.127.44) by SFHDAG3NODE3.st.com (10.75.127.9)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 3 Jun 2020 14:54:48
  +0200
 From:   Benjamin Gaignard <benjamin.gaignard@st.com>
 To:     <fabrice.gasnier@st.com>, <lee.jones@linaro.org>,
@@ -46,18 +46,17 @@ CC:     <devicetree@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Pascal Paillet <p.paillet@st.com>
-Subject: [RESEND v7 5/6] clocksource: Add Low Power STM32 timers driver
-Date:   Wed, 3 Jun 2020 14:54:38 +0200
-Message-ID: <20200603125439.23275-6-benjamin.gaignard@st.com>
+        Benjamin Gaignard <benjamin.gaignard@st.com>
+Subject: [RESEND v7 6/6] ARM: mach-stm32: select low power timer for STM32MP157
+Date:   Wed, 3 Jun 2020 14:54:39 +0200
+Message-ID: <20200603125439.23275-7-benjamin.gaignard@st.com>
 X-Mailer: git-send-email 2.15.0
 In-Reply-To: <20200603125439.23275-1-benjamin.gaignard@st.com>
 References: <20200603125439.23275-1-benjamin.gaignard@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE3.st.com
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE3.st.com
  (10.75.127.9)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-06-03_12:2020-06-02,2020-06-03 signatures=0
@@ -66,280 +65,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Make MACH_STM32MP157 select CLKSRC_STM32_LP to get a broadcast timer.
 
-Implement clock event driver using low power STM32 timers.
-Low power timer counters running even when CPUs are stopped.
-It could be used as clock event broadcaster to wake up CPUs but not like
-a clocksource because each it rise an interrupt the counter restart from 0.
-
-Low power timers have a 16 bits counter and a prescaler which allow to
-divide the clock per power of 2 to up 128 to target a 32KHz rate.
-
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-Signed-off-by: Pascal Paillet <p.paillet@st.com>
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
 ---
- drivers/clocksource/Kconfig          |   4 +
- drivers/clocksource/Makefile         |   1 +
- drivers/clocksource/timer-stm32-lp.c | 221 +++++++++++++++++++++++++++++++++++
- 3 files changed, 226 insertions(+)
- create mode 100644 drivers/clocksource/timer-stm32-lp.c
+ arch/arm/mach-stm32/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index f2142e6bbea3..22b8d8f1eb40 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -292,6 +292,10 @@ config CLKSRC_STM32
- 	select CLKSRC_MMIO
- 	select TIMER_OF
+diff --git a/arch/arm/mach-stm32/Kconfig b/arch/arm/mach-stm32/Kconfig
+index 57699bd8f107..d78f55b7b1d0 100644
+--- a/arch/arm/mach-stm32/Kconfig
++++ b/arch/arm/mach-stm32/Kconfig
+@@ -46,6 +46,7 @@ if ARCH_MULTI_V7
+ config MACH_STM32MP157
+ 	bool "STMicroelectronics STM32MP157"
+ 	select ARM_ERRATA_814220
++	select CLKSRC_STM32_LP
+ 	default y
  
-+config CLKSRC_STM32_LP
-+	bool "Low power clocksource for STM32 SoCs"
-+	depends on MFD_STM32_LPTIMER || COMPILE_TEST
-+
- config CLKSRC_MPS2
- 	bool "Clocksource for MPS2 SoCs" if COMPILE_TEST
- 	depends on GENERIC_SCHED_CLOCK
-diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
-index 641ba5383ab5..69f744135cb5 100644
---- a/drivers/clocksource/Makefile
-+++ b/drivers/clocksource/Makefile
-@@ -44,6 +44,7 @@ obj-$(CONFIG_BCM_KONA_TIMER)	+= bcm_kona_timer.o
- obj-$(CONFIG_CADENCE_TTC_TIMER)	+= timer-cadence-ttc.o
- obj-$(CONFIG_CLKSRC_EFM32)	+= timer-efm32.o
- obj-$(CONFIG_CLKSRC_STM32)	+= timer-stm32.o
-+obj-$(CONFIG_CLKSRC_STM32_LP)	+= timer-stm32-lp.o
- obj-$(CONFIG_CLKSRC_EXYNOS_MCT)	+= exynos_mct.o
- obj-$(CONFIG_CLKSRC_LPC32XX)	+= timer-lpc32xx.o
- obj-$(CONFIG_CLKSRC_MPS2)	+= mps2-timer.o
-diff --git a/drivers/clocksource/timer-stm32-lp.c b/drivers/clocksource/timer-stm32-lp.c
-new file mode 100644
-index 000000000000..0f06b8a337aa
---- /dev/null
-+++ b/drivers/clocksource/timer-stm32-lp.c
-@@ -0,0 +1,221 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) STMicroelectronics 2019 - All Rights Reserved
-+ * Authors: Benjamin Gaignard <benjamin.gaignard@st.com> for STMicroelectronics.
-+ *	    Pascal Paillet <p.paillet@st.com> for STMicroelectronics.
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/clockchips.h>
-+#include <linux/interrupt.h>
-+#include <linux/mfd/stm32-lptimer.h>
-+#include <linux/module.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_wakeirq.h>
-+
-+#define CFGR_PSC_OFFSET		9
-+#define STM32_LP_RATING		1000
-+#define STM32_TARGET_CLKRATE	(32000 * HZ)
-+#define STM32_LP_MAX_PSC	7
-+
-+struct stm32_lp_private {
-+	struct regmap *reg;
-+	struct clock_event_device clkevt;
-+	unsigned long period;
-+	struct device *dev;
-+};
-+
-+static struct stm32_lp_private*
-+to_priv(struct clock_event_device *clkevt)
-+{
-+	return container_of(clkevt, struct stm32_lp_private, clkevt);
-+}
-+
-+static int stm32_clkevent_lp_shutdown(struct clock_event_device *clkevt)
-+{
-+	struct stm32_lp_private *priv = to_priv(clkevt);
-+
-+	regmap_write(priv->reg, STM32_LPTIM_CR, 0);
-+	regmap_write(priv->reg, STM32_LPTIM_IER, 0);
-+	/* clear pending flags */
-+	regmap_write(priv->reg, STM32_LPTIM_ICR, STM32_LPTIM_ARRMCF);
-+
-+	return 0;
-+}
-+
-+static int stm32_clkevent_lp_set_timer(unsigned long evt,
-+				       struct clock_event_device *clkevt,
-+				       int is_periodic)
-+{
-+	struct stm32_lp_private *priv = to_priv(clkevt);
-+
-+	/* disable LPTIMER to be able to write into IER register*/
-+	regmap_write(priv->reg, STM32_LPTIM_CR, 0);
-+	/* enable ARR interrupt */
-+	regmap_write(priv->reg, STM32_LPTIM_IER, STM32_LPTIM_ARRMIE);
-+	/* enable LPTIMER to be able to write into ARR register */
-+	regmap_write(priv->reg, STM32_LPTIM_CR, STM32_LPTIM_ENABLE);
-+	/* set next event counter */
-+	regmap_write(priv->reg, STM32_LPTIM_ARR, evt);
-+
-+	/* start counter */
-+	if (is_periodic)
-+		regmap_write(priv->reg, STM32_LPTIM_CR,
-+			     STM32_LPTIM_CNTSTRT | STM32_LPTIM_ENABLE);
-+	else
-+		regmap_write(priv->reg, STM32_LPTIM_CR,
-+			     STM32_LPTIM_SNGSTRT | STM32_LPTIM_ENABLE);
-+
-+	return 0;
-+}
-+
-+static int stm32_clkevent_lp_set_next_event(unsigned long evt,
-+					    struct clock_event_device *clkevt)
-+{
-+	return stm32_clkevent_lp_set_timer(evt, clkevt,
-+					   clockevent_state_periodic(clkevt));
-+}
-+
-+static int stm32_clkevent_lp_set_periodic(struct clock_event_device *clkevt)
-+{
-+	struct stm32_lp_private *priv = to_priv(clkevt);
-+
-+	return stm32_clkevent_lp_set_timer(priv->period, clkevt, true);
-+}
-+
-+static int stm32_clkevent_lp_set_oneshot(struct clock_event_device *clkevt)
-+{
-+	struct stm32_lp_private *priv = to_priv(clkevt);
-+
-+	return stm32_clkevent_lp_set_timer(priv->period, clkevt, false);
-+}
-+
-+static irqreturn_t stm32_clkevent_lp_irq_handler(int irq, void *dev_id)
-+{
-+	struct clock_event_device *clkevt = (struct clock_event_device *)dev_id;
-+	struct stm32_lp_private *priv = to_priv(clkevt);
-+
-+	regmap_write(priv->reg, STM32_LPTIM_ICR, STM32_LPTIM_ARRMCF);
-+
-+	if (clkevt->event_handler)
-+		clkevt->event_handler(clkevt);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static void stm32_clkevent_lp_set_prescaler(struct stm32_lp_private *priv,
-+					    unsigned long *rate)
-+{
-+	int i;
-+
-+	for (i = 0; i <= STM32_LP_MAX_PSC; i++) {
-+		if (DIV_ROUND_CLOSEST(*rate, 1 << i) < STM32_TARGET_CLKRATE)
-+			break;
-+	}
-+
-+	regmap_write(priv->reg, STM32_LPTIM_CFGR, i << CFGR_PSC_OFFSET);
-+
-+	/* Adjust rate and period given the prescaler value */
-+	*rate = DIV_ROUND_CLOSEST(*rate, (1 << i));
-+	priv->period = DIV_ROUND_UP(*rate, HZ);
-+}
-+
-+static void stm32_clkevent_lp_init(struct stm32_lp_private *priv,
-+				  struct device_node *np, unsigned long rate)
-+{
-+	priv->clkevt.name = np->full_name;
-+	priv->clkevt.cpumask = cpu_possible_mask;
-+	priv->clkevt.features = CLOCK_EVT_FEAT_PERIODIC |
-+				CLOCK_EVT_FEAT_ONESHOT;
-+	priv->clkevt.set_state_shutdown = stm32_clkevent_lp_shutdown;
-+	priv->clkevt.set_state_periodic = stm32_clkevent_lp_set_periodic;
-+	priv->clkevt.set_state_oneshot = stm32_clkevent_lp_set_oneshot;
-+	priv->clkevt.set_next_event = stm32_clkevent_lp_set_next_event;
-+	priv->clkevt.rating = STM32_LP_RATING;
-+
-+	clockevents_config_and_register(&priv->clkevt, rate, 0x1,
-+					STM32_LPTIM_MAX_ARR);
-+}
-+
-+static int stm32_clkevent_lp_probe(struct platform_device *pdev)
-+{
-+	struct stm32_lptimer *ddata = dev_get_drvdata(pdev->dev.parent);
-+	struct stm32_lp_private *priv;
-+	unsigned long rate;
-+	int ret, irq;
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->reg = ddata->regmap;
-+	ret = clk_prepare_enable(ddata->clk);
-+	if (ret)
-+		return -EINVAL;
-+
-+	rate = clk_get_rate(ddata->clk);
-+	if (!rate) {
-+		ret = -EINVAL;
-+		goto out_clk_disable;
-+	}
-+
-+	irq = platform_get_irq(to_platform_device(pdev->dev.parent), 0);
-+	if (irq <= 0) {
-+		ret = irq;
-+		goto out_clk_disable;
-+	}
-+
-+	if (of_property_read_bool(pdev->dev.parent->of_node, "wakeup-source")) {
-+		ret = device_init_wakeup(&pdev->dev, true);
-+		if (ret)
-+			goto out_clk_disable;
-+
-+		ret = dev_pm_set_wake_irq(&pdev->dev, irq);
-+		if (ret)
-+			goto out_clk_disable;
-+	}
-+
-+	ret = devm_request_irq(&pdev->dev, irq, stm32_clkevent_lp_irq_handler,
-+			       IRQF_TIMER, pdev->name, &priv->clkevt);
-+	if (ret)
-+		goto out_clk_disable;
-+
-+	stm32_clkevent_lp_set_prescaler(priv, &rate);
-+
-+	stm32_clkevent_lp_init(priv, pdev->dev.parent->of_node, rate);
-+
-+	priv->dev = &pdev->dev;
-+
-+	return 0;
-+
-+out_clk_disable:
-+	clk_disable_unprepare(ddata->clk);
-+	return ret;
-+}
-+
-+static int stm32_clkevent_lp_remove(struct platform_device *pdev)
-+{
-+	return -EBUSY; /* cannot unregister clockevent */
-+}
-+
-+static const struct of_device_id stm32_clkevent_lp_of_match[] = {
-+	{ .compatible = "st,stm32-lptimer-timer", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, stm32_clkevent_lp_of_match);
-+
-+static struct platform_driver stm32_clkevent_lp_driver = {
-+	.probe	= stm32_clkevent_lp_probe,
-+	.remove = stm32_clkevent_lp_remove,
-+	.driver	= {
-+		.name = "stm32-lptimer-timer",
-+		.of_match_table = of_match_ptr(stm32_clkevent_lp_of_match),
-+	},
-+};
-+module_platform_driver(stm32_clkevent_lp_driver);
-+
-+MODULE_ALIAS("platform:stm32-lptimer-timer");
-+MODULE_DESCRIPTION("STMicroelectronics STM32 clockevent low power driver");
-+MODULE_LICENSE("GPL v2");
+ endif # ARMv7-A
 -- 
 2.15.0
 
