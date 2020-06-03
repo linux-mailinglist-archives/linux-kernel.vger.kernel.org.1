@@ -2,145 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96F01ECBCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7581ECBBA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 10:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgFCIrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 04:47:20 -0400
-Received: from smtpout1.mo528.mail-out.ovh.net ([46.105.34.251]:48955 "EHLO
-        smtpout1.mo528.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726243AbgFCIrP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 04:47:15 -0400
-Received: from pro2.mail.ovh.net (unknown [10.108.20.52])
-        by mo528.mail-out.ovh.net (Postfix) with ESMTPS id 53FD36094D7B;
-        Wed,  3 Jun 2020 10:47:12 +0200 (CEST)
-Received: from localhost.localdomain (34.103.240.102) by DAG2EX1.emp2.local
- (172.16.2.11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Wed, 3 Jun 2020
- 10:47:11 +0200
-From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
-To:     <linux-iio@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>, <jic23@kernel.org>,
-        <andy.shevchenko@gmail.com>, <pmeerw@pmeerw.net>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>
-Subject: [PATCH v4 4/4] dt-bindings: iio: scd30: add device binding file
-Date:   Wed, 3 Jun 2020 10:44:41 +0200
-Message-ID: <20200603084441.33952-5-tomasz.duszynski@octakon.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200603084441.33952-1-tomasz.duszynski@octakon.com>
-References: <20200603084441.33952-1-tomasz.duszynski@octakon.com>
+        id S1726189AbgFCIpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 04:45:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725854AbgFCIpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 04:45:24 -0400
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90AB92074B;
+        Wed,  3 Jun 2020 08:45:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591173923;
+        bh=cblJEWAd3DPBh04Tlvi8BcWOqhwYMzDqk94d+BenPsg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JMMp8Ma1HO/w/A4xLIz/t4cDUfnR9e6+1nfkhAszV/2t7s5h2fFOHOWb5WhGNIVww
+         HlDhJJr2T/2K1hDog0MaSCnEnalnWwGta927B0xxNxUBzO38h+iAKd2gjX8L/qSCg6
+         T77Fw9B1pB9+weIlI0CutbQ8W7oT1wSKDmnpUmIk=
+Received: by mail-ot1-f43.google.com with SMTP id b18so1281469oti.1;
+        Wed, 03 Jun 2020 01:45:23 -0700 (PDT)
+X-Gm-Message-State: AOAM531oZN/gcuD3wfWmocPmxYLOYYIXle7IE2FwRUMFYasDNB31kidR
+        zuneZdDlmnToPYnMv3EFk7kxaD7TNsx53A7EjMg=
+X-Google-Smtp-Source: ABdhPJzoqH82vfddBcZ2ilJNSYyw2hykyw6p+iOltpxefWYgGi1NHuWQjSjLS+b1Ow7vhgSqC6IYHofRPCZ/ijqKzNE=
+X-Received: by 2002:a9d:7684:: with SMTP id j4mr1249171otl.108.1591173922903;
+ Wed, 03 Jun 2020 01:45:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [34.103.240.102]
-X-ClientProxiedBy: DAG3EX1.emp2.local (172.16.2.21) To DAG2EX1.emp2.local
- (172.16.2.11)
-X-Ovh-Tracer-Id: 7174234207930178583
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrudefledgtdegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvffufffkofgjfhgggfgtihesthekredtredttdenucfhrhhomhepvfhomhgrshiiucffuhhsiiihnhhskhhiuceothhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmqeenucggtffrrghtthgvrhhnpedvffekueetkefhtedufffftdduteehvddvveehhfekffegueefveetjeeitddtleenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgnecukfhppedtrddtrddtrddtpdefgedruddtfedrvdegtddruddtvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehprhhovddrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomhdprhgtphhtthhopehpmhgvvghrfiesphhmvggvrhifrdhnvght
+References: <20200603053313.3863761-1-masahiroy@kernel.org>
+ <CAMj1kXGk-2pyTZ3yNW14Kk4fvtsNOb7maAHVM2C=vVAjaaFRug@mail.gmail.com> <CAK7LNARg70FrTmnuoUiLM6KWxeJ+AeXqgB53GS6sY7z0J+qH6g@mail.gmail.com>
+In-Reply-To: <CAK7LNARg70FrTmnuoUiLM6KWxeJ+AeXqgB53GS6sY7z0J+qH6g@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 3 Jun 2020 10:45:11 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFxmgQ=YzmLNnMO-2gibSGQ1=tXBd07ntqCYYU122zEUw@mail.gmail.com>
+Message-ID: <CAMj1kXFxmgQ=YzmLNnMO-2gibSGQ1=tXBd07ntqCYYU122zEUw@mail.gmail.com>
+Subject: Re: [PATCH] efi/libstub: refactor Makefile to not use lib-y syntax
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SCD30 sensor binding file.
+On Wed, 3 Jun 2020 at 10:36, Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Wed, Jun 3, 2020 at 3:45 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Wed, 3 Jun 2020 at 07:34, Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > >
+> > > Documentation/kbuild/makefiles.rst says:
+> > >
+> > >   Use of lib-y is normally restricted to `lib/` and `arch/*/lib`.
+> > >
+> > > I want to disallow lib-y outside of them.
+> > >
+> >
+> > Why?
+>
+>
+> Because I plan to remove lib-y entirely at some point.
+>
+> lib-y is not so useful to shrink the image size because:
+>
+>   - An object in lib.a can be omitted only when no symbol
+>     in that object is referenced.  This rarely happens.
+>
+>   -  lib-y objects are often exported by nature
+>      because lib-y is a collection of utility functions.
+>      Even if no in-tree user, we always need to keep them
+>      because EXPORT_SYMBOL() is the interface to modules.
+>
+>
+> When I worked on commit 7273ad2b08f8ac9563579d16a3cf528857b26f49,
+> I made some research.
+>
+> The benefit of lib-y is just 362 byte for x86_64_defconfig.
+> ( Before: 26578002, After: 26578364)
+>
+> My hope is lib-y will be replaced by dead-code elimination or
+> ultimately by LTO.
+>
+> drivers/firmware/efi/libstub/Makefile
+> is the only Makefile that breaks the rule:
+> "Use of lib-y is normally restricted to `lib/` and `arch/*/lib`"
+>
+>
+>
+>
+> >
+> > > Add a custom rule to build lib.a, which is linked to the decompressor
+> > > for ARCH=x86, ARCH=arm.
+> > >
+> > > For ARCH=arm64, use obj-y to link objects to vmlinux in the ordinary
+> > > way.
+> > >
+> >
+> > The code works perfectly fine as is, and I don't see what is
+> > fundamentally wrong with using static libraries outside of lib/ and
+> > arch/*/lib.
+>
+> The intended usage of lib-y is to hook lib.a
+> to scripts/vmlinux.sh via KBUILD_VMLINUX_LIBS.
+>
+> This Makefile is just what you found to work.
+>
+>
+> >
+> > Also, I would like this code to still be incorporated as a static
+> > library into arm64 as well, so that only pieces that are actually
+> > needed are incorporated into the final image.
+>
+> No.
+> It is not working like that because you set
+> lib.a to core-y.
+>
+> All objects in core-y are always linked to vmlinux.
+>
 
-Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
----
- .../iio/chemical/sensirion,scd30.yaml         | 68 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 69 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml
+The lib.a file is passed to the linker as a static library, so it will
+only grab what it needs.
 
-diff --git a/Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml b/Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml
-new file mode 100644
-index 000000000000..40d87346ff4c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml
-@@ -0,0 +1,68 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/chemical/sensirion,scd30.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Sensirion SCD30 carbon dioxide sensor
-+
-+maintainers:
-+  - Tomasz Duszynski <tomasz.duszynski@octakon.com>
-+
-+description: |
-+  Air quality sensor capable of measuring co2 concentration, temperature
-+  and relative humidity.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - sensirion,scd30
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  vdd-supply: true
-+
-+  sensirion,sel-gpios:
-+    description: GPIO connected to the SEL line
-+    maxItems: 1
-+
-+  sensirion,pwm-gpios:
-+    description: GPIO connected to the PWM line
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    # include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      co2-sensor@61 {
-+        compatible = "sensirion,scd30";
-+        reg = <0x61>;
-+        vdd-supply = <&vdd>;
-+        interrupt-parent = <&gpio0>;
-+        interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-+      };
-+    };
-+  - |
-+    # include <dt-bindings/interrupt-controller/irq.h>
-+    serial {
-+      co2-sensor {
-+        compatible = "sensirion,scd30";
-+        vdd-supply = <&vdd>;
-+        interrupt-parent = <&gpio0>;
-+        interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-+      };
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5db4b446c8ba..0ab9cf39e051 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15140,6 +15140,7 @@ F:	include/uapi/linux/phantom.h
- SENSIRION SCD30 CARBON DIOXIDE SENSOR DRIVER
- M:	Tomasz Duszynski <tomasz.duszynski@octakon.com>
- S:	Maintained
-+F:	Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml
- F:	drivers/iio/chemical/scd30.h
- F:	drivers/iio/chemical/scd30_core.c
- F:	drivers/iio/chemical/scd30_i2c.c
--- 
-2.27.0
-
+For instance, if you build arm64 from mainline today, the
+efi_relocate_kernel will not be in the final image, even though it is
+built as part of libstub
