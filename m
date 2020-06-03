@@ -2,154 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8D81EC974
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 08:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543BF1EC950
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 08:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgFCGYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 02:24:12 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:54202 "EHLO inva020.nxp.com"
+        id S1725936AbgFCGOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 02:14:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbgFCGYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 02:24:04 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 14A571A0F6F;
-        Wed,  3 Jun 2020 08:24:02 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 02B271A00B2;
-        Wed,  3 Jun 2020 08:23:57 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A8D28402E8;
-        Wed,  3 Jun 2020 14:23:50 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     broonie@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        marex@denx.de, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 3/3] dt-bindings: spi: Convert imx lpspi to json-schema
-Date:   Wed,  3 Jun 2020 14:13:29 +0800
-Message-Id: <1591164809-13964-4-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591164809-13964-1-git-send-email-Anson.Huang@nxp.com>
-References: <1591164809-13964-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725810AbgFCGOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 02:14:46 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB5A22068D;
+        Wed,  3 Jun 2020 06:14:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591164885;
+        bh=S2g2RpDgji3qUmc3Z++eaclycufz5rb3P87OS+u0RYE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hTwbpgCeR3lnlgzpQTl0OccK3xWL9/GCGkqiEaj7wiyWdmtnMpRdeWYU31ZVYwuV5
+         Mf0zMuug1fzNsA7yhsNmRIL7aoC5dM/ECE4dcROExtT+gWr8OcDl8oUxz4ZUNiYDGp
+         Da0cCStH2QmJSG/fTNAMmE2pt96EDWjXbdD5kmlk=
+Date:   Wed, 3 Jun 2020 08:14:43 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "wanghai (M)" <wanghai38@huawei.com>
+Cc:     Markus Elfring <Markus.Elfring@web.de>,
+        linuxppc-dev@lists.ozlabs.org,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Ian Munsie <imunsie@au1.ibm.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] cxl: Fix kobject memory leak in cxl_sysfs_afu_new_cr()
+Message-ID: <20200603061443.GB531505@kroah.com>
+References: <b9791ff3-8397-f6e9-ca88-59c9bbe8c78f@web.de>
+ <25ad528b-beaf-820f-9738-ea304dcbc0d7@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <25ad528b-beaf-820f-9738-ea304dcbc0d7@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX LPSPI binding to DT schema format using json-schema
+On Wed, Jun 03, 2020 at 09:42:41AM +0800, wanghai (M) wrote:
+> 
+> 在 2020/6/3 1:20, Markus Elfring 写道:
+> > > Fix it by adding a call to kobject_put() in the error path of
+> > > kobject_init_and_add().
+> > Thanks for another completion of the exception handling.
+> > 
+> > Would an other patch subject be a bit nicer?
+> Thanks for the guidance, I will perfect this description and send a v2
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- .../devicetree/bindings/spi/spi-fsl-lpspi.txt      | 29 -----------
- .../devicetree/bindings/spi/spi-fsl-lpspi.yaml     | 60 ++++++++++++++++++++++
- 2 files changed, 60 insertions(+), 29 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/spi/spi-fsl-lpspi.txt
- create mode 100644 Documentation/devicetree/bindings/spi/spi-fsl-lpspi.yaml
+Please note that you are responding to someone that a lot of kernel
+developers and maintainers have blacklisted as being very annoying and
+not helpful at all.
 
-diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-lpspi.txt b/Documentation/devicetree/bindings/spi/spi-fsl-lpspi.txt
-deleted file mode 100644
-index e71b81a..0000000
---- a/Documentation/devicetree/bindings/spi/spi-fsl-lpspi.txt
-+++ /dev/null
-@@ -1,29 +0,0 @@
--* Freescale Low Power SPI (LPSPI) for i.MX
--
--Required properties:
--- compatible :
--  - "fsl,imx7ulp-spi" for LPSPI compatible with the one integrated on i.MX7ULP soc
--  - "fsl,imx8qxp-spi" for LPSPI compatible with the one integrated on i.MX8QXP soc
--- reg : address and length of the lpspi master registers
--- interrupt-parent : core interrupt controller
--- interrupts : lpspi interrupt
--- clocks : lpspi clock specifier. Its number and order need to correspond to the
--	   value in clock-names.
--- clock-names : Corresponding to per clock and ipg clock in "clocks"
--		respectively. In i.MX7ULP, it only has per clk, so use CLK_DUMMY
--		to fill the "ipg" blank.
--- spi-slave : spi slave mode support. In slave mode, add this attribute without
--	      value. In master mode, remove it.
--
--Examples:
--
--lpspi2: lpspi@40290000 {
--	compatible = "fsl,imx7ulp-spi";
--	reg = <0x40290000 0x10000>;
--	interrupt-parent = <&intc>;
--	interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
--	clocks = <&clks IMX7ULP_CLK_LPSPI2>,
--		 <&clks IMX7ULP_CLK_DUMMY>;
--	clock-names = "per", "ipg";
--	spi-slave;
--};
-diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-lpspi.yaml b/Documentation/devicetree/bindings/spi/spi-fsl-lpspi.yaml
-new file mode 100644
-index 0000000..d18e2b0f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/spi-fsl-lpspi.yaml
-@@ -0,0 +1,60 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spi/spi-fsl-lpspi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale Low Power SPI (LPSPI) for i.MX
-+
-+maintainers:
-+  - Anson Huang <Anson.Huang@nxp.com>
-+
-+allOf:
-+  - $ref: "/schemas/spi/spi-controller.yaml#"
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx7ulp-spi
-+      - fsl,imx8qxp-spi
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: SoC SPI per clock
-+      - description: SoC SPI ipg clock
-+    maxItems: 2
-+
-+  clock-names:
-+    items:
-+      - const: per
-+      - const: ipg
-+    maxItems: 2
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx7ulp-clock.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    spi@40290000 {
-+        compatible = "fsl,imx7ulp-spi";
-+        reg = <0x40290000 0x10000>;
-+        interrupt-parent = <&intc>;
-+        interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&clks IMX7ULP_CLK_LPSPI2>,
-+                 <&clks IMX7ULP_CLK_DUMMY>;
-+        clock-names = "per", "ipg";
-+        spi-slave;
-+    };
--- 
-2.7.4
+Please do not feel that you need to respond to, or change any patch in
+response to their emails at all.
 
+I strongly recommend you just add them to your filters to not have to
+see their messages.  That's what I have done.
+
+thanks,
+
+greg k-h
