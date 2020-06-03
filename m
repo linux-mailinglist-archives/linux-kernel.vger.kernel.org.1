@@ -2,103 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB7E1ED1BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590E51ED1CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 16:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726026AbgFCOKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 10:10:07 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:38216 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgFCOKG (ORCPT
+        id S1726099AbgFCOMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 10:12:31 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:36119 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbgFCOMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 10:10:06 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053E8Y41164644;
-        Wed, 3 Jun 2020 14:10:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=WZ3n66zvi6zNBFVJdXdKnvrQSPpR0iVYMp8nrrXpTFs=;
- b=ApQBgkyf4WBZ8sRDB4JDSo2ss8a7qxBrc6HwAIviWcbTOopAB/EFsMcVeQdHFHwZHW1n
- PVp1MJHtGd9L3jfLGSJqvsDKN5IkXKMfg6gUU1Qe9k71r9SnUEDX0cUAT+t0bq148k6O
- UrcMu6Kk1oSbnPeTOpkDUzxocTVNpTpFvJDkcSZ99L2aQwYH8Q8bclUykoNuf+8gqvyR
- tj7F4B2DNdl614qRaqvkz5PZoeaV8xlE0ZH64BDZ0o4uCwCdyXZ0szK9mcLY7Ycywqc2
- mrfRL9qtxSXWA7dK+A78/I82C1mQ9LBbTmBLh2THH8mQ7FnQ4G+I2qDEs6ctFP5hw5LY oA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 31bewr1jg1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 03 Jun 2020 14:10:02 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053E82MN082764;
-        Wed, 3 Jun 2020 14:10:02 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 31c25s7saq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Jun 2020 14:10:01 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 053EA014028443;
-        Wed, 3 Jun 2020 14:10:00 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 03 Jun 2020 07:09:59 -0700
-Date:   Wed, 3 Jun 2020 17:09:54 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] input: ims-pcu: remove redundant assignment to variable
- 'error'
-Message-ID: <20200603140953.GL30374@kadam>
-References: <20200603135102.130436-1-colin.king@canonical.com>
+        Wed, 3 Jun 2020 10:12:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1591193549; x=1622729549;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=VSSWvrN/6ooCF8jN2b2oKAZsBnPFQ1RB7gDwHK0r5D4=;
+  b=aNasTH6HaEjK8tTVsGuQvODTnVcuBQe0IENjrHWtqp2CWi9eD265D7cF
+   Na5seeJB0guAHBqU6dSgW2Uos9wzU/9q2Knu42B20zvul+uftQvq9sjqy
+   5ZawGcgxfB0CvoYq1PwqmId3mjIuaGW2T6FfS7/khclk5G7Mj8y5nE5H8
+   E=;
+IronPort-SDR: yCKBXwgrtQgb/fi7ejpvwX8zGmhPIgPob1X0YePWNE2rKJke1i0rPsb1y5UjPcmOq9TMn+Nxdz
+ Vsg8FwzHCUzQ==
+X-IronPort-AV: E=Sophos;i="5.73,467,1583193600"; 
+   d="scan'208";a="35572869"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 03 Jun 2020 14:12:13 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id 47D09A22AA;
+        Wed,  3 Jun 2020 14:12:10 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 3 Jun 2020 14:12:09 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.90) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 3 Jun 2020 14:11:52 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
+        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
+        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
+        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
+        <peterz@infradead.org>, <rdunlap@infradead.org>,
+        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
+        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
+        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
+        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
+        <ying.huang@intel.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [RFC v2 0/9] DAMON: Support Access Monitoring of Any Address Space Including Physical Memory
+Date:   Wed, 3 Jun 2020 16:11:26 +0200
+Message-ID: <20200603141135.10575-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200603135102.130436-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=2 spamscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006030112
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
- phishscore=0 suspectscore=2 impostorscore=0 cotscore=-2147483648
- lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006030112
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.90]
+X-ClientProxiedBy: EX13D45UWB002.ant.amazon.com (10.43.161.78) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 02:51:02PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The variable error is being initialized with a value that is
-> never read and the -ENOMEM error return is being returned anyhow
-> by the error exit path to label err_free_mem.  The assignment is
-> redundant and can be removed.
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/input/misc/ims-pcu.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/input/misc/ims-pcu.c b/drivers/input/misc/ims-pcu.c
-> index d8dbfc030d0f..4ba68aa3d281 100644
-> --- a/drivers/input/misc/ims-pcu.c
-> +++ b/drivers/input/misc/ims-pcu.c
-> @@ -292,7 +292,6 @@ static int ims_pcu_setup_gamepad(struct ims_pcu *pcu)
->  	if (!gamepad || !input) {
->  		dev_err(pcu->dev,
->  			"Not enough memory for gamepad device\n");
-> -		error = -ENOMEM;
->  		goto err_free_mem;
+From: SeongJae Park <sjpark@amazon.de>
 
-It would be better to change the return instead.
+Currently, DAMON[1] supports only virtual memory address spaces because it
+utilizes PTE Accessed bits as its low-level access check primitive and ``struct
+vma`` as a way to address the monitoring target regions.  However, the core
+idea of DAMON, which makes it able to provide the accurate, efficient, and
+scalable monitoring, is in a separate higher layer.  Therefore, DAMON can be
+extended for other various address spaces by changing the two low primitives to
+others for the address spaces.
 
-regards,
-dan carpenter
+This patchset makes the DAMON's low level primitives configurable and provide
+reference implementation of the primitives for the virtual memory address
+spaces and the physical memory address space.  Therefore, users can monitor
+both of the two address spaces by simply configuring the provided low level
+primitives.
+
+Kernel space users can also implement the primitives by themselves for their
+special use cases.  Clean/dirty/entire page cache, NUMA nodes, specific files,
+or block devices would be examples of such special use cases.
+
+[1] https://lore.kernel.org/linux-mm/20200602130125.20467-1-sjpark@amazon.com/
+
+
+Baseline and Complete Git Trees
+===============================
+
+The patches are based on the v5.7 plus DAMON v14 patchset and DAMOS RFC v10
+patchset.  You can also clone the complete git tree:
+
+    $ git clone git://github.com/sjp38/linux -b cdamon/rfc/v2
+
+The web is also available:
+https://github.com/sjp38/linux/releases/tag/cdamon/rfc/v2
+
+[1] https://lore.kernel.org/linux-mm/20200602130125.20467-1-sjpark@amazon.com/
+[2] https://lore.kernel.org/linux-mm/20200603071138.8152-1-sjpark@amazon.com/
+
+
+Sequence of Patches
+===================
+
+The sequence of patches is as follow.  The 1st patch defines the monitoring
+region again based on pure address range abstraction so that no assumption of
+virtual memory is in there.  The following 2nd patch cleans up code using the
+new abstraction.
+
+The 3rd patch allows users to configure the low level pritimives for
+initialization and dynamic update of the target address regions, which were
+previously coupled with virtual memory area.  Then, the 4th patch allow user
+space to also be able to set the monitoring target regions and document it in
+the 5th patch.
+
+The 6th patch further makes the access check primitives, which were based on
+PTE Accessed bit, configurable.  Now any address space can be supported.  The
+7th patch provides the reference implementations of the configurable primitives
+for physical memory monitoring.  The 8th patch makes the debugfs interface to
+be able to use the physical memory monitoring, and finally the 9th patch
+documents this.
+
+
+Patch History
+=============
+
+Changes from RFC v1
+(https://lore.kernel.org/linux-mm/20200409094232.29680-1-sjpark@amazon.com/)
+ - Provide the reference primitive implementations for the physical memory
+ - Connect the extensions with the debugfs interface
+
+SeongJae Park (9):
+  mm/damon: Use vm-independent address range concept
+  mm/damon: Clean up code using 'struct damon_addr_range'
+  mm/damon: Make monitoring target regions init/update configurable
+  mm/damon/debugfs: Allow users to set initial monitoring target regions
+  Docs/damon: Document 'initial_regions' feature
+  mm/damon: Make access check primitive configurable
+  mm/damon: Implement callbacks for physical memory monitoring
+  mm/damon/debugfs: Support physical memory monitoring
+  Docs/damon: Document physical memory monitoring support
+
+ Documentation/admin-guide/mm/damon/usage.rst |  56 ++-
+ include/linux/damon.h                        |  47 +-
+ mm/damon-test.h                              |  78 +--
+ mm/damon.c                                   | 504 ++++++++++++++++---
+ 4 files changed, 564 insertions(+), 121 deletions(-)
+
+-- 
+2.17.1
 
