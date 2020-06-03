@@ -2,93 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893921ED4D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 19:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7145C1ED4DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 19:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgFCRRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 13:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725956AbgFCRRL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 13:17:11 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428B3C08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 10:17:11 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id a25so3746603ljp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 10:17:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aHub1uTy4UEBqMa85bH4hyQo4rSo+RVKxNnJQlGH7V4=;
-        b=XDY9jgsakz9p4vzjxoPfFB+n0zW+QahVTh0VzwRCUGtogxEwUvxNY4pMed/ZIldMfj
-         umKugveGuh+jtvBlqfBOdxCNcs1Kn1aRu/2DZ3dNniDcMBniZGagQQco3K4c81uRmQGN
-         A+XUMWe6pLQ33u12ZEnrpp9dn3mCTlzS+P45E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aHub1uTy4UEBqMa85bH4hyQo4rSo+RVKxNnJQlGH7V4=;
-        b=VjHzV1YXRJbf+1X1rrG4ZJ+wGQs5mzLd+gcsxHNC6IY5Kv99e7q4b1BxK9+E13I51A
-         WGDgG+Y8x3E60maUoLA+FDDsXa53AxliWn2JfKbiKsSTyKnf3kSLs17bPMM0oj5S7jcJ
-         9eKlkunDDBpGoLDR7C01LRKlL6tdzf214hK+DlAIJ9voLm7nU/pHNAu5UqHuG8dB5kAp
-         +hBkxaqe/zFMmsuRar2St0Cd8bzlSVB4jEbSCbFEh9QpuLwRT1OaxT/iA7qct/upKt5h
-         oJUqTyaHv/aoHzn0opwoQDgjhDFKrVWbxTWHYAleU1jpxtNQYQDdXCyk9w8SAYvPP9CT
-         kwWw==
-X-Gm-Message-State: AOAM532/GmX9Erjqr2jzz1aTajDGz4TsYfLArwJI83QAkUqjpYF2lHaG
-        j53THo4h3VdFOq1IaDLMlTZRnnuduZs=
-X-Google-Smtp-Source: ABdhPJxV7qEEkbeDBr1D6rKY7r4epe1pvzc0ZH1ZveEveZF8nugJ4DtYh3JNpDqC40QtrG9yHMtnBA==
-X-Received: by 2002:a2e:584e:: with SMTP id x14mr135849ljd.106.1591204629186;
-        Wed, 03 Jun 2020 10:17:09 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id c20sm803562lfb.33.2020.06.03.10.17.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jun 2020 10:17:08 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id n24so3696810lji.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 10:17:07 -0700 (PDT)
-X-Received: by 2002:a2e:b5d9:: with SMTP id g25mr115613ljn.285.1591204627492;
- Wed, 03 Jun 2020 10:17:07 -0700 (PDT)
+        id S1726236AbgFCRTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 13:19:22 -0400
+Received: from mga03.intel.com ([134.134.136.65]:11535 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726200AbgFCRTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 13:19:20 -0400
+IronPort-SDR: ts83rF7zRRJY5+p968/5w9yHjvO98PiM8ZdDD0Cjn4ORVA1BEWpzIWiXYDXsCfkaSj5zCmaT8h
+ 9gij7nOwHsSg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 10:19:17 -0700
+IronPort-SDR: 2WNpyyaw9slRmGosDm6vRZzsaj3zMwaznLPNqF564PmSdLYyBTAOoUJUysK7dC93wuGh+L25Ne
+ ygFKv46k9N8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,468,1583222400"; 
+   d="scan'208";a="269142999"
+Received: from lkp-server01.sh.intel.com (HELO 8bb2cd163565) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 03 Jun 2020 10:19:11 -0700
+Received: from kbuild by 8bb2cd163565 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jgX2k-00009U-KQ; Wed, 03 Jun 2020 17:19:10 +0000
+Date:   Thu, 04 Jun 2020 01:18:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:core/urgent] BUILD SUCCESS
+ 5fdeefa053df54961c1e9b69a128ddb5185ce150
+Message-ID: <5ed7db4e.KcJmvwjn6Lt8I4bI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <159109968973.14228.6780339995273133401.tglx@nanos.tec.linutronix.de>
- <159109969095.14228.4958990874220284812.tglx@nanos.tec.linutronix.de>
-In-Reply-To: <159109969095.14228.4958990874220284812.tglx@nanos.tec.linutronix.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 3 Jun 2020 10:16:51 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiQr=wMrjpDXfvR=g+muNr4ST6=4O_jv6pOuTbtdbE_aw@mail.gmail.com>
-Message-ID: <CAHk-=wiQr=wMrjpDXfvR=g+muNr4ST6=4O_jv6pOuTbtdbE_aw@mail.gmail.com>
-Subject: Re: [GIT pull] timers/core for v5.8
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 5:09 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> The truly boring timer and clocksource updates for 5.8:
->
->  - Not a single new clocksource or clockevent driver!
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/urgent
+branch HEAD: 5fdeefa053df54961c1e9b69a128ddb5185ce150  Merge branch 'urgent-for-mingo' of git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu into core/urgent
 
-The diffstat proved that to be a filthy lie:
+elapsed time: 481m
 
->  drivers/clocksource/timer-ti-dm-systimer.c         | 727 +++++++++++++++++++++
+configs tested: 97
+configs skipped: 1
 
-comes from
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Tony Lindgren (6):
->       clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a001-20200603
+i386                 randconfig-a006-20200603
+i386                 randconfig-a002-20200603
+i386                 randconfig-a005-20200603
+i386                 randconfig-a003-20200603
+i386                 randconfig-a004-20200603
+x86_64               randconfig-a002-20200603
+x86_64               randconfig-a006-20200603
+x86_64               randconfig-a001-20200603
+x86_64               randconfig-a003-20200603
+x86_64               randconfig-a004-20200603
+x86_64               randconfig-a005-20200603
+i386                 randconfig-a014-20200603
+i386                 randconfig-a015-20200603
+i386                 randconfig-a011-20200603
+i386                 randconfig-a016-20200603
+i386                 randconfig-a012-20200603
+i386                 randconfig-a013-20200603
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allmodconfig
+um                               allyesconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
-Ok, ok, it's "based on existing arch/arm/mach-omap2/timer.c". So I
-guess you considered it one of the device tree cleanups.
-
-But I'm not fooled by your transparent little white lies.  We will
-never ever have a release without new clocksource drivers.
-
-Sob.
-
-                 Linus
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
