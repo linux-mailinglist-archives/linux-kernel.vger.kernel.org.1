@@ -2,53 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D3D1ED5B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 20:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DAD1ED5BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 20:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbgFCSCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 14:02:37 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:35286 "EHLO vps0.lunn.ch"
+        id S1726460AbgFCSEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 14:04:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:36456 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726103AbgFCSCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 14:02:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=CSWKY66DWtze7X4hNKHohygR5t0l+hHbZoF4pXEq1Lw=; b=DaFszbbLzZ2HM7PRFBEFCzWsaI
-        c7sYmhhPTGInhDE16ndxV3lS9cYHCJn11HVwaTX3Z3VINfC1QOZRBiLCBaoemXcfPM/eU9Lm/ANNH
-        AzGOBPSmiYJOBrairjTuraOHAs20SWrmFMlVDbQG/CvelZuZpGNOJKrNEMRUFyz3NqLw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jgXig-0044gK-L2; Wed, 03 Jun 2020 20:02:30 +0200
-Date:   Wed, 3 Jun 2020 20:02:30 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Roelof Berg <rberg@berg-solutions.de>
-Cc:     David Miller <davem@davemloft.net>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lan743x: Added fixed link and RGMII support / debugging
-Message-ID: <20200603180230.GA971209@lunn.ch>
-References: <20200529193003.3717-1-rberg@berg-solutions.de>
- <20200601.115136.1314501977250032604.davem@davemloft.net>
- <D784BC1B-D14C-4FE4-8FD8-76BEBE60A39D@berg-solutions.de>
- <20200603155927.GC869823@lunn.ch>
- <9D950C93-921D-4D50-84C5-A566726B7AA5@berg-solutions.de>
+        id S1725821AbgFCSEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 14:04:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F7AE31B;
+        Wed,  3 Jun 2020 11:04:42 -0700 (PDT)
+Received: from bogus (unknown [10.37.8.135])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ECD343F305;
+        Wed,  3 Jun 2020 11:04:38 -0700 (PDT)
+Date:   Wed, 3 Jun 2020 19:04:35 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC] dt-bindings: mailbox: add doorbell support to ARM MHU
+Message-ID: <20200603180435.GB23722@bogus>
+References: <0a50f0cf5593baeb628dc8606c523665e5e2ae6c.1589519600.git.viresh.kumar@linaro.org>
+ <20200528192005.GA494874@bogus>
+ <20200529040758.kneg2j4n3gxh2rfv@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9D950C93-921D-4D50-84C5-A566726B7AA5@berg-solutions.de>
+In-Reply-To: <20200529040758.kneg2j4n3gxh2rfv@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 06:36:28PM +0200, Roelof Berg wrote:
-> If I find a fix, would I need to submit a delta patch (to our last one) or a full patch ?
+On Fri, May 29, 2020 at 09:37:58AM +0530, Viresh Kumar wrote:
+> On 28-05-20, 13:20, Rob Herring wrote:
+> > Whether Linux
+> > requires serializing mailbox accesses is a separate issue. On that side,
+> > it seems silly to not allow driving the h/w in the most efficient way
+> > possible.
+>
+> That's exactly what we are trying to say. The hardware allows us to
+> write all 32 bits in parallel, without any hardware issues, why
+> shouldn't we do that ? The delay (which Sudeep will find out, he is
+> facing issues with hardware access because of lockdown right now)
 
-A delta.
+OK, I was able to access the setup today. I couldn't reach a point
+where I can do measurements as the system just became unusable with
+one physical channel instead of 2 virtual channels as in my patches.
 
-  Andrew
+My test was simple. Switch to schedutil and read sensors periodically
+via sysfs.
+
+ arm-scmi firmware:scmi: message for 1 is not expected!
+ arm-scmi firmware:scmi: timed out in resp(caller: scmi_sensor_reading_get+0xf4/0x120)
+ arm-scmi firmware:scmi: timed out in resp(caller: scmi_sensor_reading_get+0xf4/0x120)
+ arm-scmi firmware:scmi: message for 1 is not expected!
+ arm-scmi firmware:scmi: timed out in resp(caller: scmi_sensor_reading_get+0xf4/0x120)
+ arm-scmi firmware:scmi: message for 1 is not expected!
+
+With trace enabled I can see even cpufreq_set timing out. Sample trace
+output:
+
+       bash-1019  [005]  1149.452340: scmi_xfer_begin:      transfer_id=1537 msg_id=7 protocol_id=19 seq=0 poll=1
+       bash-1019  [005]  1149.452407: scmi_xfer_end:        transfer_id=1537 msg_id=7 protocol_id=19 seq=0 status=0
+       bash-1526  [000]  1149.472553: scmi_xfer_begin:      transfer_id=1538 msg_id=6 protocol_id=21 seq=0 poll=0
+     <idle>-0     [001]  1149.472733: scmi_xfer_begin:      transfer_id=1539 msg_id=7 protocol_id=19 seq=1 poll=1
+     <idle>-0     [001]  1149.472842: scmi_xfer_end:        transfer_id=1539 msg_id=7 protocol_id=19 seq=1 status=-110
+     <idle>-0     [001]  1149.483040: scmi_xfer_begin:      transfer_id=1540 msg_id=7 protocol_id=19 seq=1 poll=1
+     <idle>-0     [001]  1149.483043: scmi_xfer_end:        transfer_id=1540 msg_id=7 protocol_id=19 seq=1 status=0
+    rs:main-543   [003]  1149.493031: scmi_xfer_begin:      transfer_id=1541 msg_id=7 protocol_id=19 seq=1 poll=1
+    rs:main-543   [003]  1149.493047: scmi_xfer_end:        transfer_id=1541 msg_id=7 protocol_id=19 seq=1 status=0
+     <idle>-0     [000]  1149.507033: scmi_xfer_begin:      transfer_id=1542 msg_id=7 protocol_id=19 seq=1 poll=1
+     <idle>-0     [000]  1149.507044: scmi_xfer_end:        transfer_id=1542 msg_id=7 protocol_id=19 seq=1 status=0
+       bash-1526  [000]  1149.516068: scmi_xfer_end:        transfer_id=1538 msg_id=6 protocol_id=21 seq=0 status=-110
+       bash-1526  [000]  1149.516559: scmi_xfer_begin:      transfer_id=1543 msg_id=6 protocol_id=21 seq=0 poll=0
+     <idle>-0     [001]  1149.516729: scmi_xfer_begin:      transfer_id=1544 msg_id=7 protocol_id=19 seq=1 poll=1
+     <idle>-0     [001]  1149.516837: scmi_xfer_end:        transfer_id=1544 msg_id=7 protocol_id=19 seq=1 status=-110
+ksoftirqd/0-9     [000]  1149.519065: scmi_xfer_begin:      transfer_id=1545 msg_id=7 protocol_id=19 seq=1 poll=1
+ksoftirqd/0-9     [000]  1149.519072: scmi_xfer_end:        transfer_id=1545 msg_id=7 protocol_id=19 seq=1 status=0
+     <idle>-0     [001]  1149.526878: scmi_xfer_begin:      transfer_id=1546 msg_id=7 protocol_id=19 seq=1 poll=1
+     <idle>-0     [001]  1149.526882: scmi_xfer_end:        transfer_id=1546 msg_id=7 protocol_id=19 seq=1 status=0
+     <idle>-0     [000]  1149.551119: scmi_xfer_begin:      transfer_id=1547 msg_id=7 protocol_id=19 seq=1 poll=1
+     <idle>-0     [000]  1149.551138: scmi_xfer_end:        transfer_id=1547 msg_id=7 protocol_id=19 seq=1 status=0
+       bash-1526  [000]  1149.560191: scmi_xfer_end:        transfer_id=1543 msg_id=6 protocol_id=21 seq=0 status=-110
+       bash-1526  [000]  1149.560690: scmi_xfer_begin:      transfer_id=1548 msg_id=6 protocol_id=21 seq=0 poll=0
+     <idle>-0     [001]  1149.560859: scmi_xfer_begin:      transfer_id=1549 msg_id=7 protocol_id=19 seq=1 poll=1
+     <idle>-0     [001]  1149.560968: scmi_xfer_end:        transfer_id=1549 msg_id=7 protocol_id=19 seq=1 status=-110
+
+protocol_id=19 is cpufreq and 21 is sensor. This is simplest test and
+I can easily generate more timeouts starting some stress test with DVFS.
+
+--
+Regards,
+Sudeep
