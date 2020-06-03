@@ -2,60 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCC01ECF66
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8F11ECF6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726015AbgFCMFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:05:38 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48256 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725992AbgFCMFh (ORCPT
+        id S1725995AbgFCMHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbgFCMHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:05:37 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jgS98-00045d-8Y; Wed, 03 Jun 2020 12:05:26 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jeremy Kerr <jk@ozlabs.org>, Joel Stanley <joel@jms.id.au>,
-        Alistar Popple <alistair@popple.id.au>,
-        Eddie James <eajames@linux.ibm.com>, linux-fsi@lists.ozlabs.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fsi: master-ast-cf: fix spelling mistake "firwmare" -> "firmware"
-Date:   Wed,  3 Jun 2020 13:05:26 +0100
-Message-Id: <20200603120526.16178-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 3 Jun 2020 08:07:10 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7756C08C5C0
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 05:07:09 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id b6so2410367ljj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 05:07:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BIbOf5HdtSdKaIH50HNFnmpw4HPy6383aDhwDCSPydo=;
+        b=nHrWWNRbiHniHbGOkTVHxhtEhQJ+Mq5wngAslBJTukuVvBjSNtiIub3q3D8ttCDxqA
+         yD13A7K+uECthSFNgk+eYvEx4Xbxcj+VXXC4xsDXSbeCK6iw5nfvLoQ7w5rNWrek+I31
+         S6Q3/Vc3ZGGSHm2e+ZgGXpyL7IGnDawcSSjT7wa8jbxy5mumQktI+rkcVv1oK7oDzO8v
+         qweoyEFPUlPZcGsQ4/dQjFgRAniTDmoaXcwIecvVac6U6LA5T0Cw+QY8ZTAiCtZlieO9
+         fFaYLnWmgc0FXRTK0Gt8pMt26k6uoZcMjYqkr60oIWRVU1EIHzWqCOVI/cZy7/0v4KPU
+         OFfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BIbOf5HdtSdKaIH50HNFnmpw4HPy6383aDhwDCSPydo=;
+        b=YcvSiEx4hD+cmlw+tFC8q9CXvNc8lAI1KQiAUBu4d12vCTe4CRBd9vtLLNABVrg86Y
+         lZZbOFQ7oSUzqr3IPuDcEWzQwcn2raBvYa8JQAkZGkuyH6D0aO1a9LXWx4pW4nXON6Lm
+         NmQcrFNt/zQuk0rNXNFMKIIRC5K2nWLtlGizuAEO1/me9Cu927NUuH5TAlKFBGQxVjmt
+         iV4ERWExheL8qOdgLwND0KN5xVSAv97GG7zDXNAwP1AiwUilR00BZP+/0mesf+NMsmHn
+         YJaucbCjV3cBkvGi6QYIF0tnm7FERHN9O1Xe0xAY3lmO2khrSrMsU+l9a0jruKQeqY1X
+         ke0g==
+X-Gm-Message-State: AOAM5328uo80PJwrZNjdF+PbsGfrd89EzjuytojPI/IrDYcl31pa99u9
+        OSRHjVufuF04SNghYZ6V7Qkw69kk1AfXiG1qnEdr1A==
+X-Google-Smtp-Source: ABdhPJw2OJ7VQfliCJ0/LvDl5j3aWobde24aTwoXE6TnbIU+ixmWhrNcMl0egFADMrKYzsAd02fTxmxSs78rb5jr5vE=
+X-Received: by 2002:a2e:96da:: with SMTP id d26mr1938365ljj.25.1591186028318;
+ Wed, 03 Jun 2020 05:07:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20200603080304.16548-1-dietmar.eggemann@arm.com> <20200603080304.16548-5-dietmar.eggemann@arm.com>
+In-Reply-To: <20200603080304.16548-5-dietmar.eggemann@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 3 Jun 2020 14:06:56 +0200
+Message-ID: <CAKfTPtBz8Du3=BhdHfxYY03v2FTqyVCNsd=p2z=6Vb9NqgkEiA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] sched/fair: Remove unused 'sd' parameter from scale_rt_capacity()
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, 3 Jun 2020 at 10:03, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> Since commit 8ec59c0f5f49 ("sched/topology: Remove unused 'sd'
+> parameter from arch_scale_cpu_capacity()") it is no longer needed.
+>
+> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> ---
+>  kernel/sched/fair.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
 
-There is a spelling mistake in a dev_err error message. Fix it.
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/fsi/fsi-master-ast-cf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/fsi/fsi-master-ast-cf.c b/drivers/fsi/fsi-master-ast-cf.c
-index 04d10ea8d343..85d9be38b32b 100644
---- a/drivers/fsi/fsi-master-ast-cf.c
-+++ b/drivers/fsi/fsi-master-ast-cf.c
-@@ -838,7 +838,7 @@ static int load_copro_firmware(struct fsi_master_acf *master)
- 	rc = request_firmware(&fw, FW_FILE_NAME, master->dev);
- 	if (rc) {
- 		dev_err(
--			master->dev, "Error %d to load firwmare '%s' !\n",
-+			master->dev, "Error %d to load firmware '%s' !\n",
- 			rc, FW_FILE_NAME);
- 		return rc;
- 	}
--- 
-2.25.1
-
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 5c4a559d0dae..7158d4e3c855 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -8039,7 +8039,7 @@ static inline void init_sd_lb_stats(struct sd_lb_stats *sds)
+>         };
+>  }
+>
+> -static unsigned long scale_rt_capacity(struct sched_domain *sd, int cpu)
+> +static unsigned long scale_rt_capacity(int cpu)
+>  {
+>         struct rq *rq = cpu_rq(cpu);
+>         unsigned long max = arch_scale_cpu_capacity(cpu);
+> @@ -8071,7 +8071,7 @@ static unsigned long scale_rt_capacity(struct sched_domain *sd, int cpu)
+>
+>  static void update_cpu_capacity(struct sched_domain *sd, int cpu)
+>  {
+> -       unsigned long capacity = scale_rt_capacity(sd, cpu);
+> +       unsigned long capacity = scale_rt_capacity(cpu);
+>         struct sched_group *sdg = sd->groups;
+>
+>         cpu_rq(cpu)->cpu_capacity_orig = arch_scale_cpu_capacity(cpu);
+> --
+> 2.17.1
+>
