@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632EB1ED024
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40291ECFD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jun 2020 14:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726088AbgFCMsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 08:48:13 -0400
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17637 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725890AbgFCMsM (ORCPT
+        id S1726189AbgFCMdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 08:33:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgFCMdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:48:12 -0400
-X-Greylist: delayed 907 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jun 2020 08:48:09 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1591187561; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=WNpWJM/pUsoWS83gHJZYdrrzTQYep7WeEETFLQ36uxTHn/SI31eRl9ADfPx+GbpjHsIZL0w/L0yjK9+gqRbrQYUUHHOZPIjyfaPmVU/sNe8/lWsSmmjJOv1uyt7O4Xc6FHU4I0UgSZHT7xjBzJurmW0jVvmhNNWPvCd4OynAeHM=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1591187561; h=Cc:Date:From:Message-ID:Subject:To; 
-        bh=0YrPcEjGR9/k4S5xx47qrbacHYqwp5zgeRisGJY47GI=; 
-        b=KjQ3wfYz0d1wFdNCV3JRsmyon2sG+pn+PuasQf8G3E9wOJFgPZFZ7T6/sqIXvXXP3XHBll9cBlbcT5mhAgyO6pQlt6muW3Yf5H7dKsr6owWSyPsdyczWQ6vQKI2WZsvRsnurR76pqip4Xu+24UJczm8DbzhzCk40WK+AHMhIkAM=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=euphon.net;
-        spf=pass  smtp.mailfrom=fam@euphon.net;
-        dmarc=pass header.from=<fam@euphon.net> header.from=<fam@euphon.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1591187561;
-        s=zoho; d=euphon.net; i=fam@euphon.net;
-        h=From:To:Cc:Subject:Date:Message-Id;
-        bh=0YrPcEjGR9/k4S5xx47qrbacHYqwp5zgeRisGJY47GI=;
-        b=aWwZGeRHY7bYu8JttB+e2OFn0CPjsVjkx51BukM0WksT4gfr9yLoFeOhGRExj07c
-        mUuHaULwshbklPSJkgzx014odRJhYdmNGJzIEsVFdbrurQFTjFpapSJi/6uPvTgD2dp
-        gq0/XMJ7Uz5ISuNvF2bCBm0N5LFM8hm8pom7nwl4=
-Received: from localhost (54.239.6.187 [54.239.6.187]) by mx.zoho.com.cn
-        with SMTPS id 1591187559100493.5928590328281; Wed, 3 Jun 2020 20:32:39 +0800 (CST)
-From:   fam@euphon.net
-To:     linux-kernel@vger.kernel.org
-Cc:     fam@euphon.net, famzheng@amazon.com,
-        Jiri Kosina <trivial@kernel.org>
-Subject: [PATCH] perf: Fix opt help text for --no-bpf-event
-Date:   Wed,  3 Jun 2020 13:32:34 +0100
-Message-Id: <20200603123234.10494-1-fam@euphon.net>
-X-Mailer: git-send-email 2.17.1
-X-ZohoCNMailClient: External
+        Wed, 3 Jun 2020 08:33:07 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A926C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 05:33:06 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id e4so2497901ljn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 05:33:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ABlOAalG07S3zJOvUC745+rY/SSKj3sE9WPw30YFDjU=;
+        b=j5pGS0saNqzjuUTDnzk4gxvht5sf4S+tv6vSaLTyjDBARzg9FteZcdfRr8S1n9Haet
+         qlFQ2ouaCalHfwiwuUpttmmqx1lTJngtw0F9PY46fo4d1TWbBYkBBagsnh9h6EQ9MVOc
+         6JyNNo3yHbaM81jiBNY2+r2j80yqy65HFeq5pkgjQzdX7SsIMAiAirPsJcSXZwWxfEm0
+         YPDGQJivsMU5zvIDpGScT/yfJu4/a6opRYcIDW6d0yGPuub/53PJ75c1pXgwScnhgJ4c
+         5XrQls/Q8rpqTV/GfeOdwaeFV1TiWN0KM+DqF6XIcKXI0szKCRijrky9/bgKeGp4OX8E
+         Aqfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ABlOAalG07S3zJOvUC745+rY/SSKj3sE9WPw30YFDjU=;
+        b=i7CUlDjqYYoQdbi0RIynVlN1P70iQyLkOWngkz902L2nGtnOD7jEXBos7xKS7FJSlo
+         w9fy6RnWCOuMOjTZ9GG4GjFTRU3BbiVxaPej9U4l6qlRRMNkDOWwfP0wYcOr8RrJct9i
+         gB0HpTvjrXcnty0ZWapP+F8fz4r5AkHpa1Jp1tuzLyGJZoJ6AlgzbrS58uJ3a02OTpyt
+         hMypGFBLRZcf10/ZT1p+q4Pb6ZEcg0WrKHIRTJFvqeNkeTdeplMhjJmjzyWs7MAJB9/e
+         WijKhUuZJ/+S0tfLEPRVbyguvIhZdlf6j0tey0MFiEQn+Ruyih3ZzX9SP8CrYa2FOAy/
+         gC7g==
+X-Gm-Message-State: AOAM531uGYtQjtsF93emMVseU/e7Y5osfcQ8UVkUSJDwea9rHp2CaL3B
+        mHYZmZSAq67jtvgufPr0kNxAh8C8kTepQ1b6/TgdlA==
+X-Google-Smtp-Source: ABdhPJzG/VMlm4Q8bDM7mFUXZQxGPr6AbvJ8r2atD4zrWYykPr7kfUi4nWG5C+/LBdHXHq5+wgxQQwSQFcYGnOURAd4=
+X-Received: by 2002:a2e:350a:: with SMTP id z10mr1923491ljz.104.1591187584647;
+ Wed, 03 Jun 2020 05:33:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200603013532.755220-1-yukuai3@huawei.com>
+In-Reply-To: <20200603013532.755220-1-yukuai3@huawei.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 3 Jun 2020 14:32:53 +0200
+Message-ID: <CACRpkdYgUCek0WGzqKqH7XzvDaKGK2po7cJse5LG9ahfBQCYZQ@mail.gmail.com>
+Subject: Re: [PATCH V2] pinctrl: sirf: add missing put_device() call in sirfsoc_gpio_probe()
+To:     yu kuai <yukuai3@huawei.com>
+Cc:     Barry Song <baohua@kernel.org>, Yuping Luo <yuping.luo@csr.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        yi.zhang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fam Zheng <famzheng@amazon.com>
+On Wed, Jun 3, 2020 at 3:36 AM yu kuai <yukuai3@huawei.com> wrote:
 
-The opt name was once inverted but the help text didn't reflect the
-change.
+> A coccicheck run provided information like the following:
+>
+> drivers/pinctrl/sirf/pinctrl-sirf.c:798:2-8: ERROR: missing put_device;
+> call of_find_device_by_node on line 792, but without a corresponding
+> object release within this function.
+>
+> Generated by: scripts/coccinelle/free/put_device.cocci
+>
+> Thus add a jump target to fix the exception handling for this
+> function implementation.
+>
+> Fixes: 5130216265f6 ("PINCTRL: SiRF: add GPIO and GPIO irq support in CSR SiRFprimaII")
+> Signed-off-by: yu kuai <yukuai3@huawei.com>
 
-Fixes: 71184c6ab7e60fd59d8dbc8fed62a1c753dc4934
-Signed-off-by: Fam Zheng <famzheng@amazon.com>
----
- tools/perf/builtin-record.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Patch applied, thanks!
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index e4efdbf1a81e..9b92072b0965 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -2368,7 +2368,7 @@ static struct option __record_options[] = {
- 	OPT_BOOLEAN(0, "tail-synthesize", &record.opts.tail_synthesize,
- 		    "synthesize non-sample events at the end of output"),
- 	OPT_BOOLEAN(0, "overwrite", &record.opts.overwrite, "use overwrite mode"),
--	OPT_BOOLEAN(0, "no-bpf-event", &record.opts.no_bpf_event, "record bpf events"),
-+	OPT_BOOLEAN(0, "no-bpf-event", &record.opts.no_bpf_event, "do not record bpf events"),
- 	OPT_BOOLEAN(0, "strict-freq", &record.opts.strict_freq,
- 		    "Fail if the specified frequency can't be used"),
- 	OPT_CALLBACK('F', "freq", &record.opts, "freq or 'max'",
--- 
-2.17.1
-
+Yours,
+Linus Walleij
