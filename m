@@ -2,153 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60A91EDACB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 03:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7AC1EDA9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 03:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727977AbgFDBwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 21:52:12 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:35608 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727113AbgFDBwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 21:52:02 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3D64420012A;
-        Thu,  4 Jun 2020 03:52:00 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 58A9C200EDD;
-        Thu,  4 Jun 2020 03:51:55 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0FCDD402B0;
-        Thu,  4 Jun 2020 09:51:48 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     ulf.hansson@linaro.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        mpa@pengutronix.de, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V2 3/3] dt-bindings: mmc: Convert mxs mmc to json-schema
-Date:   Thu,  4 Jun 2020 09:41:26 +0800
-Message-Id: <1591234886-15351-4-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591234886-15351-1-git-send-email-Anson.Huang@nxp.com>
-References: <1591234886-15351-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727027AbgFDBon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 21:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726050AbgFDBol (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 21:44:41 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFD6C03E96D
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 18:44:41 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id f3so2601365pfd.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 18:44:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wpybr1+0oFA6UqMQJBfZL+PEEh3VzZMl9GH1YHu1354=;
+        b=AbKWjJtgEgSZdlRzZpINmLHh+V8xJj2UZ2odKQ2c5ZSQmdk1BLZaB0K4agCmc9jSmi
+         AAmX5SqtRhMCVwb4wbdCeXmP+MI0pU+26rg/PWtbK/suB70n8LKxY+RL9wU3Qn6Y4nm2
+         zGn/UOyM2NglkPBkMHcXSP1vQ8Fpyy930e1GY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wpybr1+0oFA6UqMQJBfZL+PEEh3VzZMl9GH1YHu1354=;
+        b=Rbdt6lOhm3kbYuDAdv7g89hyD/a4O77RdBZ8fJcY3MAEpPgQpnOSdug6I9eZxQzB54
+         GMEwuBvKwVHxcfJLSAUXHvMFdBdc9VBCRisZPMXaSlP92F6PF04b1nEctXIC7N1Zkge0
+         9VVYxeRd/23Hd9KPiNOq128hRZrYzfh0tzalRriLkPSfQfGzzNRV/HBdbLpzGpNpwxUW
+         P7d73ufUNAgO+r3cfgEOfg/5ID8ElojSf2hDcPi58EBrhk/WRTB3Y/24UAXPJvImrJxv
+         X8lLSP7J8ZnwZ/aBpBpB9sdDJjBiMcmSs8/esLwlyAebo/iiLcsYH3clHVv/HbjMOCF1
+         DC2Q==
+X-Gm-Message-State: AOAM533ka3/zEc66M3lJ0gs5bkWqEiCu9VA6WQDo25cjMubrbNCBXR/6
+        zZTL/0Bgc6EGtmWol0R1ziFByw==
+X-Google-Smtp-Source: ABdhPJw6n1UeZs2KwVXXpsKVlKB/eX8l0Vu/Wi69L010BRhnAwssMdnRSJ//zeA4lceo/p+HCVbgnA==
+X-Received: by 2002:a63:5f90:: with SMTP id t138mr2082803pgb.122.1591235081380;
+        Wed, 03 Jun 2020 18:44:41 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i21sm2541029pgn.20.2020.06.03.18.44.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jun 2020 18:44:40 -0700 (PDT)
+Date:   Wed, 3 Jun 2020 18:44:39 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-mm@kvack.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH 00/10] Remove uninitialized_var() macro
+Message-ID: <202006031840.E2F0D15D8B@keescook>
+References: <20200603233203.1695403-1-keescook@chromium.org>
+ <CA+icZUVZwjM9o7aNXAkYu8K2BQAajw=60varP4g+NizCqu5gRw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+icZUVZwjM9o7aNXAkYu8K2BQAajw=60varP4g+NizCqu5gRw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the MXS MMC binding to DT schema format using json-schema
+On Thu, Jun 04, 2020 at 03:23:28AM +0200, Sedat Dilek wrote:
+> what is the base for your patchset?
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-Changes since V1:
-	- add "unevaluatedProperties: false".
----
- Documentation/devicetree/bindings/mmc/mxs-mmc.txt  | 27 ----------
- Documentation/devicetree/bindings/mmc/mxs-mmc.yaml | 58 ++++++++++++++++++++++
- 2 files changed, 58 insertions(+), 27 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mmc/mxs-mmc.txt
- create mode 100644 Documentation/devicetree/bindings/mmc/mxs-mmc.yaml
+Hi! This was actually on Linus's latest tree (which is basically -next),
+mostly because I figured this might be a bit of an RFC but if it was
+clean enough, it might actually make the merge window (I can dream).
 
-diff --git a/Documentation/devicetree/bindings/mmc/mxs-mmc.txt b/Documentation/devicetree/bindings/mmc/mxs-mmc.txt
-deleted file mode 100644
-index 515addc..0000000
---- a/Documentation/devicetree/bindings/mmc/mxs-mmc.txt
-+++ /dev/null
-@@ -1,27 +0,0 @@
--* Freescale MXS MMC controller
--
--The Freescale MXS Synchronous Serial Ports (SSP) can act as a MMC controller
--to support MMC, SD, and SDIO types of memory cards.
--
--This file documents differences between the core properties in mmc.txt
--and the properties used by the mxsmmc driver.
--
--Required properties:
--- compatible: Should be "fsl,<chip>-mmc".  The supported chips include
--  imx23 and imx28.
--- interrupts: Should contain ERROR interrupt number
--- dmas: DMA specifier, consisting of a phandle to DMA controller node
--  and SSP DMA channel ID.
--  Refer to dma.txt and fsl-mxs-dma.txt for details.
--- dma-names: Must be "rx-tx".
--
--Examples:
--
--ssp0: ssp@80010000 {
--	compatible = "fsl,imx28-mmc";
--	reg = <0x80010000 2000>;
--	interrupts = <96>;
--	dmas = <&dma_apbh 0>;
--	dma-names = "rx-tx";
--	bus-width = <8>;
--};
-diff --git a/Documentation/devicetree/bindings/mmc/mxs-mmc.yaml b/Documentation/devicetree/bindings/mmc/mxs-mmc.yaml
-new file mode 100644
-index 0000000..1cccc04
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mmc/mxs-mmc.yaml
-@@ -0,0 +1,58 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mmc/mxs-mmc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale MXS MMC controller
-+
-+maintainers:
-+  - Shawn Guo <shawn.guo@linaro.org>
-+
-+description: |
-+  The Freescale MXS Synchronous Serial Ports (SSP) can act as a MMC controller
-+  to support MMC, SD, and SDIO types of memory cards.
-+
-+  This file documents differences between the core properties in mmc.txt
-+  and the properties used by the mxsmmc driver.
-+
-+allOf:
-+  - $ref: "mmc-controller.yaml"
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx23-mmc
-+      - fsl,imx28-mmc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  dmas:
-+    maxItems: 1
-+
-+  dma-names:
-+    const: rx-tx
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - dmas
-+  - dma-names
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    mmc@80010000 {
-+        compatible = "fsl,imx28-mmc";
-+        reg = <0x80010000 2000>;
-+        interrupts = <96>;
-+        dmas = <&dma_apbh 0>;
-+        dma-names = "rx-tx";
-+        bus-width = <8>;
-+    };
+> I would like to test on top of Linux v5.7.
+> 
+> Can you place the series in your Git tree for easy fetching, please?
+
+Sure! https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git in
+the kspp/uninit/v5.7/macro branch. There were three small differences.
+I'm doing the "all my cross compilers allmodconfig" build run now, but
+figured I'd push it for you now so you didn't have to wait.
+
 -- 
-2.7.4
-
+Kees Cook
