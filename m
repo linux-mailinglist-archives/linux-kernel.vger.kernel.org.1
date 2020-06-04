@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CCD1EE501
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CB71EE505
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728336AbgFDNJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 09:09:09 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:42722 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgFDNJH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 09:09:07 -0400
-Received: by mail-io1-f69.google.com with SMTP id v16so3564750ios.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 06:09:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=u+o2RcyaHSofblAhvnfVshy/ql7Met8tthhkmRydCTY=;
-        b=rK+KaOYvwV5puhXTVam8FUnSLMk0YaQa9/7RqhHLpA6vVJ0/iO5Q6valRQXE5E2vR0
-         j3rL+FZ7pZ0bRtJOQj3MZBbeO+pYuqy7Py9V8+43cn7J5DWB4gmcAhe2h20EpE5zr7QR
-         FBVb+vdktCwuoxs/5b4soqDvQj0NDbD4d0tlsLZpXUOdDuVtEV0JiKFf7ZoijU8WdtEU
-         5uu5Jf3SWqNYTmI6Lm+BpAYywYZsIaoyTFz8COP+ekl8oDxbj+0Iq0ZzoyhBAsH1rVD5
-         B7ML84np32dO805S2EAGjD8qYiniHjPNwbIcDgnKDOstAe/tJrki47nYAURyaJ7wO8dD
-         uXqw==
-X-Gm-Message-State: AOAM530piz0sor/t+7NQRDhwGO+VrDEI4DHFhBaQYgFEGIX2Vgy138S/
-        cskxfCKMBPrQP40eASBW50mZCRIfimjMDn+oeXGveD+kCbaB
-X-Google-Smtp-Source: ABdhPJzv0fpa1LEbfmP9G7nInep6IYlF2rdPEZ+bA0p++ozOTMgXiZEO3IRN+O2prm6dT0jXr2eer3ZzH36mkQc4A3bweWh9DzjZ
+        id S1728398AbgFDNKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 09:10:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727850AbgFDNKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 09:10:33 -0400
+Received: from localhost (lfbn-ncy-1-324-171.w83-196.abo.wanadoo.fr [83.196.159.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FD3D206C3;
+        Thu,  4 Jun 2020 13:10:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591276233;
+        bh=KhaotgH0l//otNB03AB1rir98Xd5bkTWiUjmhQOMhDI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yEqGvYPW0O+EKKbZKW/d8lT7v1yqRUrXjq3TUgL2yQzJiHyRK2O+haCEROS2rOul+
+         mhWcLqwSXGU2roa3QPGkCwirNqKuePmcz3vd4D3Oq3+0bv6hCpIbGzH11vLv5CrHvw
+         /wSpvi/1EK177OgJlHaemMBV/STgGQAB3MezK9uA=
+Date:   Thu, 4 Jun 2020 15:10:30 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH 08/10] rcu: Allow to deactivate nocb on a CPU
+Message-ID: <20200604131029.GA27571@lenoir>
+References: <20200513164714.22557-1-frederic@kernel.org>
+ <20200513164714.22557-9-frederic@kernel.org>
+ <20200526212017.GE76276@google.com>
+ <20200526224908.GC16672@google.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:9acc:: with SMTP id c73mr3904247ill.74.1591276146848;
- Thu, 04 Jun 2020 06:09:06 -0700 (PDT)
-Date:   Thu, 04 Jun 2020 06:09:06 -0700
-In-Reply-To: <000000000000c8a76e05a73e3be3@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000078fab705a741d901@google.com>
-Subject: Re: WARNING in kvm_inject_emulated_page_fault
-From:   syzbot <syzbot+2a7156e11dc199bdbd8a@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        junaids@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526224908.GC16672@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this bug to:
+On Tue, May 26, 2020 at 06:49:08PM -0400, Joel Fernandes wrote:
+> On Tue, May 26, 2020 at 05:20:17PM -0400, Joel Fernandes wrote:
+>  
+> > > The switch happens on the target with IRQs disabled and rdp->nocb_lock
+> > > held to avoid races between local callbacks handling and kthread
+> > > offloaded callbacks handling.
+> > > nocb_cb kthread is first parked to avoid any future race with
+> > > concurrent rcu_do_batch() executions. Then the cblist is set to offloaded
+> > > so that the nocb_gp kthread ignores this rdp.
+> > 
+> > nit: you mean cblist is set to non-offloaded mode right?
+> > 
+> > Also, could you clarify better the rcu_barrier bits in the changelog. I know
+> > there's some issue if the cblist has both offloaded and non-offloaded
+> > callbacks, but it would be good to clarify this here better IMHO.
+> 
+> And for archival purposes: rcu_barrier needs excluding here because it is
+> possible that for a brief period of time, the callback kthread has been
+> parked to do the mode-switch, and it could be executing a bunch of callbacks
+> when it was asked to park.
+> 
+> Meanwhile, more interrupts happen and more callbacks are queued which are now
+> executing in softirq. This ruins the ordering of callbacks that rcu_barrier
+> needs.
 
-commit ee1fa209f5e5ca5c1e76c7aa1c2aab292f371f4a
-Author: Junaid Shahid <junaids@google.com>
-Date:   Fri Mar 20 21:28:03 2020 +0000
+I think in that case the callbacks would still be executed in order. We wait
+for the kthread to park before switching to softirq callback execution.
 
-    KVM: x86: Sync SPTEs when injecting page/EPT fault into L1
+Initially it was to avoid callback ordering issues but I don't recall
+exactly which. Maybe it wasn't actually needed. But anyway I'll keep it
+for the next version where, for a brief period of time, nocb kthread will
+be able to compete with callback execution in softirq.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=138f49de100000
-start commit:   cb8e59cc Merge git://git.kernel.org/pub/scm/linux/kernel/g..
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=104f49de100000
-console output: https://syzkaller.appspot.com/x/log.txt?x=178f49de100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a16ddbc78955e3a9
-dashboard link: https://syzkaller.appspot.com/bug?extid=2a7156e11dc199bdbd8a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=134ca2de100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=178272f2100000
+I'll clarify that in the changelog.
 
-Reported-by: syzbot+2a7156e11dc199bdbd8a@syzkaller.appspotmail.com
-Fixes: ee1fa209f5e5 ("KVM: x86: Sync SPTEs when injecting page/EPT fault into L1")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Thanks.
