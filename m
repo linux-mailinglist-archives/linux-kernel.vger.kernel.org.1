@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145411EDEAB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2807A1EDEAF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgFDHlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 03:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46530 "EHLO
+        id S1728143AbgFDHlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 03:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727105AbgFDHlF (ORCPT
+        with ESMTP id S1727105AbgFDHlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 03:41:05 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46833C03E96D
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 00:41:05 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id t18so4945906wru.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 00:41:05 -0700 (PDT)
+        Thu, 4 Jun 2020 03:41:18 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1FAC05BD1E
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 00:41:18 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id r11so2972472vsj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 00:41:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=7ANSCRHoGP+yLgZ4w++LPSO7krhwJHNme8PNHzorV40=;
-        b=qIrP0H3N/9Py644cE7DBX0T7bY9J9xZFEY1XClWzqAEbeSOdEPlpTCGO93VjQgNnoS
-         h/byYR4vrPUhXvZBEihjeyX3zapMx5ISLMlf0MrfIAtKCJHpjmqcHFdCxb8SD1878bZW
-         TTQUoc/l8QcyiLb8z82+0E7oHfAxP0Y7UKQ9dezoJ7bgC0ZKmZiiebDu1Huet1PC0BGe
-         +O5Csy4A6ofqiMQ3B9tVp1tk2tVizCkNgMvzIkid9OHLqjxV2mfHB3yhcGAdmeq06p79
-         MdFy+kXE2l9iBjpaVGO0OBQHYDa91E0Rrru7FZt30jRXUlD5NwGX4+Ly9sV9JlzWCcWu
-         gH2w==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=3niQnp6Xkf21oPQ9gKE5EOxxtej8Exq79aPM4XzaEgA=;
+        b=d3q/z4AicRTdM4+foyhMY15C42iU4t5WCzsjf64ZijBJLM0tkL2a5yhj3y3SusB6Vv
+         rJeHElzvEPL6t/85o6X5HnIuJlW0v1ym28cDT9eOLORdKR9HeRdAMPFI14UmPMG+JLVu
+         DhNrlLUg/WhetUqTD8R9lurElLkANkXxZChTrRPlaU3PwmjmvTBSutruSNdyxZjtn6OD
+         UutTVP7ddkNxAwRgeimQ7bO1hXWGNxTPBvjiNst2COEeRnfWx99tPRPFXl4UYv/r83T3
+         S+vDltzsMWBKDAvUxRzVWJYW7PaU0Bq4LB04ov9H5Wx6EO91mtHTAKQ+8IwfyVBBdZ18
+         LNgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7ANSCRHoGP+yLgZ4w++LPSO7krhwJHNme8PNHzorV40=;
-        b=gYodyJx/Z1DUB+kyVy2PzFb37ZFoBpQ1Q/XF4xWCyHjqwoixYrkcvsbRzm1FP0Lney
-         z8sOE8OehZFxay6GTsQeuH3uFrs0R191K5tjBpcP54EABkfVNoIB6shu83DT+1Y452JP
-         5ywzzqy+9aecZ0oCbKKZKESB/lnlWC/SSe2SP5cDnJ4OH/NvGLepY+3VeGlYf65OhPXi
-         Zi1dVCCx7iWWP1NK1GtJ+Jv/PwyCycDEXCHvJatrxDMumcOu6IQI0E5B2ZBRcfNc+AS4
-         hjXk8kKLPhKWgKXnYiUiIfp6yIWIb555E3jjrcCsSwiQtDSZ0I0ZBSACX6OyNKgYk5/j
-         WtXA==
-X-Gm-Message-State: AOAM531PAkMHPv9l1QhSZu2R/5iTDW5BXXK8bu06HRK0xGgbJwy+/was
-        cCCkEiuePB24XS1xW+LX7qi10g==
-X-Google-Smtp-Source: ABdhPJyhFqgZpjvkbRqAIjH5z/p0+HwMwTMFfsljLtGeh5V8gmW45GgN5zOXyFqaLpClsh++3uVHRQ==
-X-Received: by 2002:adf:82ab:: with SMTP id 40mr2927340wrc.85.1591256463800;
-        Thu, 04 Jun 2020 00:41:03 -0700 (PDT)
-Received: from dell ([95.147.198.92])
-        by smtp.gmail.com with ESMTPSA id z12sm7257136wrg.9.2020.06.04.00.41.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 00:41:03 -0700 (PDT)
-Date:   Thu, 4 Jun 2020 08:41:01 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mailbox: mailbox-test: Fix a potential Oops on
- allocation failure
-Message-ID: <20200604074101.GV3714@dell>
-References: <20200603103329.GB1845750@mwanda>
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=3niQnp6Xkf21oPQ9gKE5EOxxtej8Exq79aPM4XzaEgA=;
+        b=NbMHA7UYPhEawyTtkgedc04WMLRa9QMZOqdHjQsjp7r0kTCfw56uEG8TQgPmvZBWaE
+         ifUdSAB5i4f5mg2BNZ7S1btplaKuW9lsxs/ENe9+7tcJvHJP56XGQI59QXAbUzjyveU0
+         1HpEcUArGxfW9MBGYr1mKvokNLFAdOgbPBUfROOsNToOEcbbIkvtTm1y8p+W7OHm1kcd
+         deefOiNOElsodib3RJSokN4cPi/OAorUOPpalmGr7Bf8OZmLLq6SOFm6LGpxA6L/IEgh
+         mJ12Ch0XYx4qq3ncXHh6WebbXjHmrmmJPoc2TZh3dRWXOv/fRPYO0KMvtKMUt24MaJqa
+         PGOw==
+X-Gm-Message-State: AOAM530a15VArSbeY7Y4A91atPta0wNYCEcCAYzxU4oVAnP7fcy0JaKn
+        cR8yKMdXF7gs5tAQVmZQAoroCcsiMr0zsIN+taE=
+X-Google-Smtp-Source: ABdhPJwX8vqKwQvuWFklrudSkF+jtTsNKg/hYNsYdPFb38HbXW5qkNaqA2zhkK3lMFwegGcXcWBHbj6LXopiv0P8VyQ=
+X-Received: by 2002:a67:b84e:: with SMTP id o14mr2375921vsh.74.1591256477745;
+ Thu, 04 Jun 2020 00:41:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200603103329.GB1845750@mwanda>
+Reply-To: oliviaeorge@hotmail.com
+Received: by 2002:a67:ee82:0:0:0:0:0 with HTTP; Thu, 4 Jun 2020 00:41:17 -0700 (PDT)
+From:   George Olivia <oliviaeorge@gmail.com>
+Date:   Thu, 4 Jun 2020 01:41:17 -0600
+X-Google-Sender-Auth: PD0-u9QR4Uk6GOSjMW9zuefO9lI
+Message-ID: <CAAkOt0eD2P3Q2o8HgOK+zyt50-hUJwEcmvbuUtp6gopeF9LEbQ@mail.gmail.com>
+Subject: Thank you for your understanding, I wait for your response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Jun 2020, Dan Carpenter wrote:
+With due respect, I am Mrs. George Olivia; I have decided to donate
+what I have to you / Motherless babies/Less privileged/Widows' because
+I am dying and diagnosed for cancer for about 2 years ago. I have been
+touched by God Almighty to donate from what I have inherited from my
+late husband to you for good work of God Almighty. I have asked
+Almighty God to forgive me and believe he has, because he is a
+Merciful God I will be going in for an operation surgery soon.
 
-> The callers are expecting NULL on error so if we return an error pointer
-> it eventually results in an Oops.
-> 
-> Fixes: 8ea4484d0c2b ("mailbox: Add generic mechanism for testing Mailbox Controllers")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/mailbox/mailbox-test.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+I decided to will/donate the sum of ($ 8.1 million DOLLARS) to you for
+the good work of God Almighty, and also to help the motherless and
+less privilege and also forth assistance of the widows. At the moment
+I cannot take any telephone calls right now due to the fact that my
+relatives (that have squandered the funds gave them for this purpose
+before) are around me and my health status also. I have adjusted my
+will and my lawyer is aware.
 
-Reviewed-by: Lee Jones <lee.jones@linaro.org>
+I wish you all the best and May the good Lord bless you abundantly,
+and please use the funds judiciously and always extend the good work
+to others. As soon as you get back to me, I shall give you info on
+what I need from you, then you will contact the bank and tell them I
+have willed those properties to you by quoting my personal file
+routing and account information. And I have also notified the bank
+that I am willing that properties to you for a good, effective and
+prudent work. I know I don't know you but I have been directed to do
+this by God Almighty.
 
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I Have all my Hospital document which i can send to you as prove to
+what am tell you and my seriousness to this. If you are interested in
+carrying out this task, get back to me for more details on this noble
+project of mine.
+
+Yours Faithfully,
+Mrs. George Olivia
