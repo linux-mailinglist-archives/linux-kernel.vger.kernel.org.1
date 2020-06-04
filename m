@@ -2,92 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB301EEE75
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 01:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98251EEE7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 01:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbgFDXoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 19:44:23 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:14873 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbgFDXoW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 19:44:22 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ed986fd0000>; Thu, 04 Jun 2020 16:42:54 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 04 Jun 2020 16:44:22 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 04 Jun 2020 16:44:22 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Jun
- 2020 23:44:13 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Thu, 4 Jun 2020 23:44:13 +0000
-Received: from vdumpa-ubuntu.nvidia.com (Not Verified[172.17.173.140]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ed9874c0001>; Thu, 04 Jun 2020 16:44:13 -0700
-From:   Krishna Reddy <vdumpa@nvidia.com>
-CC:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <treding@nvidia.com>,
-        <yhsu@nvidia.com>, <snikam@nvidia.com>, <praithatha@nvidia.com>,
-        <talho@nvidia.com>, <bbiswas@nvidia.com>, <mperttunen@nvidia.com>,
-        <nicolinc@nvidia.com>, <bhuntsman@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        kbuild test robot <lkp@intel.com>
-Subject: [PATCH v6 4/4] iommu/arm-smmu-nvidia: fix the warning reported by kbuild test robot
-Date:   Thu, 4 Jun 2020 16:44:14 -0700
-Message-ID: <20200604234414.21912-5-vdumpa@nvidia.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200604234414.21912-1-vdumpa@nvidia.com>
-References: <20200604234414.21912-1-vdumpa@nvidia.com>
+        id S1726114AbgFDXu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 19:50:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725943AbgFDXuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 19:50:25 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D72D0206DC;
+        Thu,  4 Jun 2020 23:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591314624;
+        bh=ND4kZKs0ckKJG227yGmyY5tVeZis8uDKb/AjmQgSe5E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Z82FfCo8VpvMzN+Q5BfD+99zxNEKMEMVSMOucvDn3D7LsKheLfDHM06gKuJgjHBwg
+         XdS8gjilKZzAHaOu5oZ5jKNANulbg7C0iUpF16jsULH/JwmO1SIhnfGaxxQCKO9AYA
+         JXF0U6CXPd+dnnkGBh3RnFch02RNUqUlURDwr0t0=
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH 1/2] f2fs: add node_io_flag for bio flags likewise data_io_flag
+Date:   Thu,  4 Jun 2020 16:50:22 -0700
+Message-Id: <20200604235023.1954-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.27.0.278.ge193c7cf3a9-goog
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1591314174; bh=2ofUV6N4w8MVqMXhL27SWFuQR3WHDuZrVd5MUpa+Yso=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=I8hehESMwvZR2f+fZE445YwxDRNXgLctdd8NHKLZ2A7c3EDVSuTTi0FTk/Z5qdyHU
-         CG1nkGlM4Yacr5TIDNltsyxdaPp0IrJRSa+FN/AUX9ksGCDnIlFQ9+tro99Dwmk+ZI
-         5IdPA6SDWXL4cAuDDLvfs7HfmDmiPlNAUextWo0FDNUW5VdI/YPj2TQeSqWM3oLwVn
-         aoWOupD2+Yn/nLhUYCoOQcvXqJ47LWYSM+Ht8N6CLn/ebhiF+sFGhZgo7XRAhJ18cf
-         IbJuH/61fiMVLueQm1hJxiuvdAmeIjTbIvtM9+M4RnGPR0SMbVr34ce8Flq+9sC76P
-         TRcVafU8b7/HA==
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> drivers/iommu/arm-smmu-nvidia.c:151:33: sparse: sparse: cast removes
->> address space '<asn:2>' of expression
+This patch adds another way to attach bio flags to node writes.
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Krishna Reddy <vdumpa@nvidia.com>
+Description:   Give a way to attach REQ_META|FUA to node writes
+               given temperature-based bits. Now the bits indicate:
+               *      REQ_META     |      REQ_FUA      |
+               *    5 |    4 |   3 |    2 |    1 |   0 |
+               * Cold | Warm | Hot | Cold | Warm | Hot |
+
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 ---
- drivers/iommu/arm-smmu-nvidia.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/ABI/testing/sysfs-fs-f2fs |  9 ++++++
+ fs/f2fs/data.c                          | 39 ++++++++++++++++++-------
+ fs/f2fs/f2fs.h                          |  1 +
+ fs/f2fs/sysfs.c                         |  2 ++
+ 4 files changed, 40 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/iommu/arm-smmu-nvidia.c b/drivers/iommu/arm-smmu-nvidi=
-a.c
-index 5999b6a770992..6348d8dc17fc2 100644
---- a/drivers/iommu/arm-smmu-nvidia.c
-+++ b/drivers/iommu/arm-smmu-nvidia.c
-@@ -248,7 +248,7 @@ struct arm_smmu_device *nvidia_smmu_impl_init(struct ar=
-m_smmu_device *smmu)
- 			break;
- 		nsmmu->bases[i] =3D devm_ioremap_resource(dev, res);
- 		if (IS_ERR(nsmmu->bases[i]))
--			return (struct arm_smmu_device *)nsmmu->bases[i];
-+			return ERR_CAST(nsmmu->bases[i]);
- 		nsmmu->num_inst++;
- 	}
-=20
---=20
-2.26.2
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 427f5b45c67f1..4bb93a06d8abc 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -333,6 +333,15 @@ Description:	Give a way to attach REQ_META|FUA to data writes
+ 		*    5 |    4 |   3 |    2 |    1 |   0 |
+ 		* Cold | Warm | Hot | Cold | Warm | Hot |
+ 
++What:		/sys/fs/f2fs/<disk>/node_io_flag
++Date:		June 2020
++Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
++Description:	Give a way to attach REQ_META|FUA to node writes
++		given temperature-based bits. Now the bits indicate:
++		*      REQ_META     |      REQ_FUA      |
++		*    5 |    4 |   3 |    2 |    1 |   0 |
++		* Cold | Warm | Hot | Cold | Warm | Hot |
++
+ What:		/sys/fs/f2fs/<disk>/iostat_period_ms
+ Date:		April 2020
+ Contact:	"Daeho Jeong" <daehojeong@google.com>
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index a65bfc07ddb97..2f5293eb5e52a 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -514,26 +514,43 @@ void f2fs_submit_bio(struct f2fs_sb_info *sbi,
+ 	__submit_bio(sbi, bio, type);
+ }
+ 
+-static void __attach_data_io_flag(struct f2fs_io_info *fio)
++static void __attach_io_flag(struct f2fs_io_info *fio)
+ {
+ 	struct f2fs_sb_info *sbi = fio->sbi;
+ 	unsigned int temp_mask = (1 << NR_TEMP_TYPE) - 1;
+-	unsigned int fua_flag = sbi->data_io_flag & temp_mask;
+-	unsigned int meta_flag = (sbi->data_io_flag >> NR_TEMP_TYPE) &
+-								temp_mask;
++
+ 	/*
+ 	 * data io flag bits per temp:
+ 	 *      REQ_META     |      REQ_FUA      |
+ 	 *    5 |    4 |   3 |    2 |    1 |   0 |
+ 	 * Cold | Warm | Hot | Cold | Warm | Hot |
+ 	 */
+-	if (fio->type != DATA)
+-		return;
++	if (fio->type == DATA) {
++		unsigned int fua_flag = sbi->data_io_flag & temp_mask;
++		unsigned int meta_flag = (sbi->data_io_flag >> NR_TEMP_TYPE) &
++								temp_mask;
+ 
+-	if ((1 << fio->temp) & meta_flag)
+-		fio->op_flags |= REQ_META;
+-	if ((1 << fio->temp) & fua_flag)
+-		fio->op_flags |= REQ_FUA;
++		if ((1 << fio->temp) & meta_flag)
++			fio->op_flags |= REQ_META;
++		if ((1 << fio->temp) & fua_flag)
++			fio->op_flags |= REQ_FUA;
++	}
++	/*
++	 * node io flag bits per temp:
++	 *      REQ_META     |      REQ_FUA      |
++	 *    5 |    4 |   3 |    2 |    1 |   0 |
++	 * Cold | Warm | Hot | Cold | Warm | Hot |
++	 */
++	if (fio->type == NODE) {
++		unsigned int fua_flag = sbi->node_io_flag & temp_mask;
++		unsigned int meta_flag = (sbi->node_io_flag >> NR_TEMP_TYPE) &
++								temp_mask;
++
++		if ((1 << fio->temp) & meta_flag)
++			fio->op_flags |= REQ_META;
++		if ((1 << fio->temp) & fua_flag)
++			fio->op_flags |= REQ_FUA;
++	}
+ }
+ 
+ static void __submit_merged_bio(struct f2fs_bio_info *io)
+@@ -543,7 +560,7 @@ static void __submit_merged_bio(struct f2fs_bio_info *io)
+ 	if (!io->bio)
+ 		return;
+ 
+-	__attach_data_io_flag(fio);
++	__attach_io_flag(fio);
+ 	bio_set_op_attrs(io->bio, fio->op, fio->op_flags);
+ 
+ 	if (is_read_io(fio->op))
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index fb180020e175c..50e6cdf20b733 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1568,6 +1568,7 @@ struct f2fs_sb_info {
+ 
+ 	/* to attach REQ_META|REQ_FUA flags */
+ 	unsigned int data_io_flag;
++	unsigned int node_io_flag;
+ 
+ 	/* For sysfs suppport */
+ 	struct kobject s_kobj;
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index a117ae1f9d5f1..fc4a46b689040 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -554,6 +554,7 @@ F2FS_RW_ATTR(FAULT_INFO_RATE, f2fs_fault_info, inject_rate, inject_rate);
+ F2FS_RW_ATTR(FAULT_INFO_TYPE, f2fs_fault_info, inject_type, inject_type);
+ #endif
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, data_io_flag, data_io_flag);
++F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, node_io_flag, node_io_flag);
+ F2FS_GENERAL_RO_ATTR(dirty_segments);
+ F2FS_GENERAL_RO_ATTR(free_segments);
+ F2FS_GENERAL_RO_ATTR(lifetime_write_kbytes);
+@@ -635,6 +636,7 @@ static struct attribute *f2fs_attrs[] = {
+ 	ATTR_LIST(inject_type),
+ #endif
+ 	ATTR_LIST(data_io_flag),
++	ATTR_LIST(node_io_flag),
+ 	ATTR_LIST(dirty_segments),
+ 	ATTR_LIST(free_segments),
+ 	ATTR_LIST(unusable),
+-- 
+2.27.0.278.ge193c7cf3a9-goog
 
