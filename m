@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40081EE89C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 18:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0531EE8A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 18:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729740AbgFDQbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 12:31:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729115AbgFDQbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 12:31:00 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 260AA206DC;
-        Thu,  4 Jun 2020 16:31:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591288260;
-        bh=p22Qks7bzkvMwOfKr4OS5tjK01cXYo3wKjWBTk6+0r4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uV9GQ7XZ003JbvFHFVSz63OBBEqFTRLALl6oVWQ4yfQ9dpq11k7ya0hsCfTXFRHLa
-         TFNkkZQI46i3s3lfPSwRZUD8h19yU6TOb/1ACMlfvrKGQ4yK28x0Xmv0ktc6JPfmys
-         nDkq8YHA/Yi15oa7Wa3949Ccr6aUbWhS6FGGa6DY=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0B6F835228BC; Thu,  4 Jun 2020 09:31:00 -0700 (PDT)
-Date:   Thu, 4 Jun 2020 09:31:00 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Peter Enderborg <peter.enderborg@sony.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Stop shrinker loop
-Message-ID: <20200604163100.GB29598@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200604102320.15914-1-peter.enderborg@sony.com>
- <20200604134255.GA24897@pc636>
+        id S1729765AbgFDQcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 12:32:48 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:42596 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729115AbgFDQcs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 12:32:48 -0400
+Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B42CB20B7185;
+        Thu,  4 Jun 2020 09:32:47 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B42CB20B7185
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1591288367;
+        bh=HSE+hmGxuCSoZdoQKdpxxvMKb/F1FAb7gfSJdIw8nJw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PykBJqC3/hrZtyBrGfy1EsHeBOraUlEDJ0Q/0jAvxU1higWxhzg87HS6DT0j/i9sH
+         +l8uSI5aZH3LZMF8RqRNGKyJJvP/ndOb4OtxdpgyDAioH6E9vHvi7ecTvrjL4D2xsl
+         44Fatr8JRYL994Zcq4NQcOGIWFCbKPY3wGJGdG64=
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+To:     zohar@linux.ibm.com, linux-integrity@vger.kernel.org
+Cc:     tusharsu@linux.microsoft.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] IMA: Add log statements for failure conditions
+Date:   Thu,  4 Jun 2020 09:32:43 -0700
+Message-Id: <20200604163243.2575-1-nramas@linux.microsoft.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200604134255.GA24897@pc636>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 03:42:55PM +0200, Uladzislau Rezki wrote:
-> On Thu, Jun 04, 2020 at 12:23:20PM +0200, Peter Enderborg wrote:
-> > The count and scan can be separated in time. It is a fair chance
-> > that all work is already done when the scan starts. It
-> > then might retry. This is can be avoided with returning SHRINK_STOP.
-> > 
-> > Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
-> > ---
-> >  kernel/rcu/tree.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index c716eadc7617..8b36c6b2887d 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3310,7 +3310,7 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
-> >  			break;
-> >  	}
-> >  
-> > -	return freed;
-> > +	return freed == 0 ? SHRINK_STOP : freed;
-> >  }
-> >  
-> The loop will be stopped anyway sooner or later, but sooner is better :)
-> To me that change makes sense.
-> 
-> Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+The final log statement in process_buffer_measurement() for failure
+condition is at debug level. This does not log the message unless
+the system log level is raised which would significantly increase
+the messages in the system log. Change this log message to error level,
+and add eventname and ima_hooks enum to the message for better triaging
+failures in the function.
 
-Queued, thank you both!
+ima_alloc_key_entry() does not log a message for failure condition.
+Add an error message for failure condition in this function.
 
-							Thanx, Paul
+Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+---
+ security/integrity/ima/ima_main.c       | 3 ++-
+ security/integrity/ima/ima_queue_keys.c | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 9d0abedeae77..3b371f31597b 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -756,7 +756,8 @@ void process_buffer_measurement(const void *buf, int size,
+ 
+ out:
+ 	if (ret < 0)
+-		pr_devel("%s: failed, result: %d\n", __func__, ret);
++		pr_err("%s failed. eventname: %s, func: %d, result: %d\n",
++		       __func__, eventname, func, ret);
+ 
+ 	return;
+ }
+diff --git a/security/integrity/ima/ima_queue_keys.c b/security/integrity/ima/ima_queue_keys.c
+index cb3e3f501593..e51d0eb08d8a 100644
+--- a/security/integrity/ima/ima_queue_keys.c
++++ b/security/integrity/ima/ima_queue_keys.c
+@@ -88,6 +88,8 @@ static struct ima_key_entry *ima_alloc_key_entry(struct key *keyring,
+ 
+ out:
+ 	if (rc) {
++		pr_err("%s failed. keyring: %s, result: %d\n",
++		       __func__, keyring->description, rc);
+ 		ima_free_key_entry(entry);
+ 		entry = NULL;
+ 	}
+-- 
+2.27.0
+
