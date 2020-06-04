@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3661EE450
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 14:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 576961EE456
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 14:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728304AbgFDMTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 08:19:01 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:37134 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727944AbgFDMTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 08:19:00 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jgopP-0008CD-Ij; Thu, 04 Jun 2020 22:18:36 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 04 Jun 2020 22:18:35 +1000
-Date:   Thu, 4 Jun 2020 22:18:35 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     davem@davemloft.net, phemadri@marvell.com, jsrikanth@marvell.com,
-        horia.geanta@nxp.com, gustavo@embeddedor.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v2] crypto: cavium/nitrox - Fix
- 'nitrox_get_first_device()' when ndevlist is fully iterated
-Message-ID: <20200604121835.GB24286@gondor.apana.org.au>
-References: <20200530133537.582843-1-christophe.jaillet@wanadoo.fr>
+        id S1728394AbgFDMT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 08:19:28 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5852 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727944AbgFDMT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 08:19:27 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 4F1943A5487BC59EE09D;
+        Thu,  4 Jun 2020 20:19:22 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 4 Jun 2020
+ 20:19:12 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <jpr@f6fbb.org>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <linux-hams@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <wanghai38@huawei.com>
+Subject: [PATCH] yam: fix possible memory leak in yam_init_driver
+Date:   Thu, 4 Jun 2020 20:18:51 +0800
+Message-ID: <20200604121851.63880-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200530133537.582843-1-christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 30, 2020 at 03:35:37PM +0200, Christophe JAILLET wrote:
-> When a list is completely iterated with 'list_for_each_entry(x, ...)', x is
-> not NULL at the end.
-> 
-> While at it, remove a useless initialization of the ndev variable. It
-> is overridden by 'list_for_each_entry'.
-> 
-> Fixes: f2663872f073 ("crypto: cavium - Register the CNN55XX supported crypto algorithms.")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> v2: Do not introduce an extra variable to check if the list has been fully
->     iterated. Test with "if (&ndev->list == &ndevlist)" instead
-> ---
->  drivers/crypto/cavium/nitrox/nitrox_main.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+If register_netdev(dev) fails, free_netdev(dev) needs
+to be called, otherwise a memory leak will occur.
 
-Patch applied.  Thanks.
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ drivers/net/hamradio/yam.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/hamradio/yam.c b/drivers/net/hamradio/yam.c
+index 71cdef9..5ab53e9 100644
+--- a/drivers/net/hamradio/yam.c
++++ b/drivers/net/hamradio/yam.c
+@@ -1133,6 +1133,7 @@ static int __init yam_init_driver(void)
+ 		err = register_netdev(dev);
+ 		if (err) {
+ 			printk(KERN_WARNING "yam: cannot register net device %s\n", dev->name);
++			free_netdev(dev);
+ 			goto error;
+ 		}
+ 		yam_devs[i] = dev;
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+1.8.3.1
+
