@@ -2,169 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED25D1EE06E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4D51EE087
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgFDJBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 05:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728089AbgFDJBb (ORCPT
+        id S1728476AbgFDJHC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Jun 2020 05:07:02 -0400
+Received: from smtp180.sjtu.edu.cn ([202.120.2.180]:54656 "EHLO
+        smtp180.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728089AbgFDJHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 05:01:31 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63214C03E96D;
-        Thu,  4 Jun 2020 02:01:31 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id s88so917787pjb.5;
-        Thu, 04 Jun 2020 02:01:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PFq0vXrRaSmgWvfmDIPgyoV5VxCvXpSfHJA3tFT8WZg=;
-        b=sVYb4xQhEF7N02+Uf9U0zOPXvoWAfJrAPHSODAEDPsUyPO7LjluXEJSg568Ur1R6fS
-         058N0SrkET5XvVxx77XyKw7l5pPcwkkkFscicMP2l3j93wf+NwZ2vk1SrZF9y8Fw8RDu
-         wepxC7TOXIZ2Lo8Z1I0I5jDF+NxMOiit6FAT108oH+hhUcpelTTXDWKH1avmGAhgxmcz
-         LzdzBDnvas3xLC/QAIvrtQl4eLB3l9RMVm7ouOtOrs8ELospfFFmX+MUuaptbj4IVn3d
-         HiPrxlDUjBtI1VBvLeGfbPaSG9cl2Fsws22EF6jz+yVKcasUModYlX7B8TFJzMTj45e0
-         rmIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PFq0vXrRaSmgWvfmDIPgyoV5VxCvXpSfHJA3tFT8WZg=;
-        b=frF4yL4R3+x0eY3+dIeN9u1EeMP8OS+SQ/D8cuxtI/iQT2ohemuhbDrMXYax2ZQNEN
-         8cqatafx0VHjzarEpuezKJpHQOhJRENA3+ZhTnOr5egloVa4IYaG6Wx0FqPGt4A3KdJB
-         9BC2rxHfW3jIag4UY87psbdD2Dt2pvSldCbs9hCpN+MR1jjGTEp7Cdz0gRBNa0IxLhkv
-         tSEOSKipXfAm6uFpiV/ShJS+Qd3AyObBB3zRR7W0M8Ylm0Dw0iyWpn/vm92vwkGtk0m+
-         Fyef319z2bMtZxWcSDhRQTYWyV43T6OHL7BjKtC9NPTOwpt1y+RgtosAB7MszyrN6q+/
-         B38Q==
-X-Gm-Message-State: AOAM532b4Mey/UN4ihvU+V3pRuX+6H8m6uZDBJRAT6cl0K58z7+dsnby
-        +ahf6nR1NIG+1IDxLgAyyTs=
-X-Google-Smtp-Source: ABdhPJxtCyXiehCK/eWYd3f9upvwKzw3NM8IBsK8vq7igCwcZfq0WI6FS0endAzwaYf28jVOpCay5A==
-X-Received: by 2002:a17:90a:8089:: with SMTP id c9mr5084842pjn.126.1591261290908;
-        Thu, 04 Jun 2020 02:01:30 -0700 (PDT)
-Received: from localhost.localdomain ([45.192.173.253])
-        by smtp.gmail.com with ESMTPSA id g21sm4595307pjl.3.2020.06.04.02.01.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Jun 2020 02:01:29 -0700 (PDT)
-From:   kerneljasonxing@gmail.com
-To:     gregkh@linuxfoundation.org, edumazet@google.com,
-        ncardwell@google.com, davem@davemloft.net, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org
-Cc:     netdev@vger.kernel.org, kerneljasonxing@gmail.com,
-        linux-kernel@vger.kernel.org, liweishi@kuaishou.com,
-        lishujin@kuaishou.com
-Subject: [PATCH v2 4.19] tcp: fix TCP socks unreleased in BBR mode
-Date:   Thu,  4 Jun 2020 17:00:14 +0800
-Message-Id: <20200604090014.23266-1-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20200602080425.93712-1-kerneljasonxing@gmail.com>
-References: <20200602080425.93712-1-kerneljasonxing@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 4 Jun 2020 05:07:02 -0400
+X-Greylist: delayed 350 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Jun 2020 05:07:01 EDT
+Received: from proxy01.sjtu.edu.cn (smtp185.sjtu.edu.cn [202.120.2.185])
+        by smtp180.sjtu.edu.cn (Postfix) with ESMTPS id 8617F1008CA2F
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 17:01:08 +0800 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by proxy01.sjtu.edu.cn (Postfix) with ESMTP id 7CC8F20426A48
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 17:01:08 +0800 (CST)
+X-Virus-Scanned: amavisd-new at proxy01.sjtu.edu.cn
+Received: from proxy01.sjtu.edu.cn ([127.0.0.1])
+        by localhost (proxy01.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id XFgF8pTuBOzj for <linux-kernel@vger.kernel.org>;
+        Thu,  4 Jun 2020 17:01:08 +0800 (CST)
+Received: from fans-air.ipads-lab.se.sjtu.edu.cn (unknown [202.120.40.82])
+        (Authenticated sender: Fan_Yang@sjtu.edu.cn)
+        by proxy01.sjtu.edu.cn (Postfix) with ESMTPSA id 5490820426998
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 17:01:07 +0800 (CST)
+From:   Fan Yang <Fan_Yang@sjtu.edu.cn>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Subject: [PATCH v3] mm: Fix mremap not considering huge pmd devmap
+Message-Id: <A82D1BB5-D868-489A-BFED-9FCE71649A46@sjtu.edu.cn>
+Date:   Thu, 4 Jun 2020 17:01:07 +0800
+To:     linux-kernel@vger.kernel.org
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Xing <kerneljasonxing@gmail.com>
+Hi,
 
-When using BBR mode, too many tcp socks cannot be released because of
-duplicate use of the sock_hold() in the manner of tcp_internal_pacing()
-when RTO happens. Therefore, this situation maddly increases the slab
-memory and then constantly triggers the OOM until crash.
+The original code in mm/mremap.c checks huge pmd by:
 
-Besides, in addition to BBR mode, if some mode applies pacing function,
-it could trigger what we've discussed above,
+		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd)) {
 
-Reproduce procedure:
-0) cat /proc/slabinfo | grep TCP
-1) switch net.ipv4.tcp_congestion_control to bbr
-2) using wrk tool something like that to send packages
-3) using tc to increase the delay and loss to simulate the RTO case.
-4) cat /proc/slabinfo | grep TCP
-5) kill the wrk command and observe the number of objects and slabs in
-TCP.
-6) at last, you could notice that the number would not decrease.
+However, a DAX mapped nvdimm is mapped as huge page (by default) but
+it is not transparent huge page (_PAGE_PSE | PAGE_DEVMAP).  This
+commit changes the condition to include the case.
 
-v2: extend the timer which could cover all those related potential risks
-(suggested by Eric Dumazet and Neal Cardwell)
+This addresses CVE-2020-10757.
 
-Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-Signed-off-by: liweishi <liweishi@kuaishou.com>
-Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+Fixes: 5c7fb56e5e3f ("mm, dax: dax-pmd vs thp-pmd vs hugetlbfs-pmd")
+Cc: <stable@vger.kernel.org>
+Reported-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
+Signed-off-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
+Tested-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
+Tested-by: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+
 ---
- net/ipv4/tcp_output.c | 31 +++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index cc4ba42..4626f4e 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -966,6 +966,8 @@ enum hrtimer_restart tcp_pace_kick(struct hrtimer *timer)
- 
- static void tcp_internal_pacing(struct sock *sk, const struct sk_buff *skb)
- {
-+	struct tcp_sock *tp = tcp_sk(sk);
-+	ktime_t expire, now;
- 	u64 len_ns;
- 	u32 rate;
- 
-@@ -977,12 +979,28 @@ static void tcp_internal_pacing(struct sock *sk, const struct sk_buff *skb)
- 
- 	len_ns = (u64)skb->len * NSEC_PER_SEC;
- 	do_div(len_ns, rate);
--	hrtimer_start(&tcp_sk(sk)->pacing_timer,
--		      ktime_add_ns(ktime_get(), len_ns),
-+	now = ktime_get();
-+	/* If hrtimer is already armed, then our caller has not
-+	 * used tcp_pacing_check().
-+	 */
-+	if (unlikely(hrtimer_is_queued(&tp->pacing_timer))) {
-+		expire = hrtimer_get_softexpires(&tp->pacing_timer);
-+		if (ktime_after(expire, now))
-+			now = expire;
-+		if (hrtimer_try_to_cancel(&tp->pacing_timer) == 1)
-+			__sock_put(sk);
-+	}
-+	hrtimer_start(&tp->pacing_timer, ktime_add_ns(now, len_ns),
- 		      HRTIMER_MODE_ABS_PINNED_SOFT);
- 	sock_hold(sk);
+Changelog v2->v3:
+- Added "Acked-by: Kirill..."
+
+Changelog v1->v2:
+- Removed some paragraph in commit msg, removed the comment in
+  mm/mremap.c, and added a NOTE in where pmd_trans_huge is defined.
+- Added "Reviewed-by: Dan..."
+- Added "Fixes: 5c7fb56e5e3f..."
+- Added "Cc: <stable@vger.kernel.org>"
+---
+ arch/x86/include/asm/pgtable.h | 1 +
+ mm/mremap.c                    | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 4d02e64af1b3..19cdeebfbde6 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -257,6 +257,7 @@ static inline int pmd_large(pmd_t pte)
  }
  
-+static bool tcp_pacing_check(const struct sock *sk)
-+{
-+	return tcp_needs_internal_pacing(sk) &&
-+	       hrtimer_is_queued(&tcp_sk(sk)->pacing_timer);
-+}
-+
- static void tcp_update_skb_after_send(struct tcp_sock *tp, struct sk_buff *skb)
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
++/* NOTE: when predicate huge page, consider also pmd_devmap, or use pmd_large */
+ static inline int pmd_trans_huge(pmd_t pmd)
  {
- 	skb->skb_mstamp = tp->tcp_mstamp;
-@@ -2117,6 +2135,9 @@ static int tcp_mtu_probe(struct sock *sk)
- 	if (!tcp_can_coalesce_send_queue_head(sk, probe_size))
- 		return -1;
- 
-+	if (tcp_pacing_check(sk))
-+		return -1;
-+
- 	/* We're allowed to probe.  Build it now. */
- 	nskb = sk_stream_alloc_skb(sk, probe_size, GFP_ATOMIC, false);
- 	if (!nskb)
-@@ -2190,12 +2211,6 @@ static int tcp_mtu_probe(struct sock *sk)
- 	return -1;
- }
- 
--static bool tcp_pacing_check(const struct sock *sk)
--{
--	return tcp_needs_internal_pacing(sk) &&
--	       hrtimer_is_queued(&tcp_sk(sk)->pacing_timer);
--}
--
- /* TCP Small Queues :
-  * Control number of packets in qdisc/devices to two packets / or ~1 ms.
-  * (These limits are doubled for retransmits)
+ 	return (pmd_val(pmd) & (_PAGE_PSE|_PAGE_DEVMAP)) == _PAGE_PSE;
+diff --git a/mm/mremap.c b/mm/mremap.c
+index 6aa6ea605068..57b1f999f789 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -266,7 +266,7 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
+ 		new_pmd = alloc_new_pmd(vma->vm_mm, vma, new_addr);
+ 		if (!new_pmd)
+ 			break;
+-		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd)) {
++		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd) || pmd_devmap(*old_pmd)) {
+ 			if (extent == HPAGE_PMD_SIZE) {
+ 				bool moved;
+ 				/* See comment in move_ptes() */
 -- 
-1.8.3.1
+2.25.4
+
 
