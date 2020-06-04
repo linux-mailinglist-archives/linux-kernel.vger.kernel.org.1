@@ -2,153 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FBA1EE4FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9921EE502
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728175AbgFDNHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 09:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgFDNHq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 09:07:46 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DBAC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 06:07:46 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id z1so5122739qtn.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 06:07:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=spr/NPPAffPb40s6qAmeni6NJsTnXmWG1bgJUhXLpiA=;
-        b=norj+OxSaUTJR+9g7Idf9dJWECEfCxDtdbIKfefQPmAxyGVw44ghGHtq7QCfhtF2tm
-         9UNCq51UrwREXWhc49MuquhNb9DXGSEZ99NBilcw6sZpXpwnmYtKDXV0d/BcnWAi0nBq
-         N7L2m3cxHRg1ZPEA5LPJgBo6Xc2ffE+1PUBSpzhOutKIY6pSSWsi1Gwo7MbVFIzkfwHW
-         o0slbeVE9Co4pYsw/k0kUK5f1FWTAy3tGm/KNo/kWG91T9wSkjwDyY5MeeBGgOkIefA/
-         9SyR5d0Pl6yih6tSkllfzzujaIozZcx45HgrAxBlIkbrGC1Futr/W3RGxuHgIbD1Tj/C
-         MNOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=spr/NPPAffPb40s6qAmeni6NJsTnXmWG1bgJUhXLpiA=;
-        b=UjP4E+DhYF3nZL2MoE/cOIUK+nJ+FmmjytKEMTiwWUcd5AkBuTSgOrMmF0zJuXHiKs
-         f4C+ZjM92AHonjc0mpTrZ8ML/1xsrDwCP8/dyZnwwQ8oyAggqhOTBj0KxSscBx3yiEdg
-         vbIADQXL7CMMiTPLHjESJ4hRefwBuswR2UpLKhqRNqhk2z/7kwxb/KAdwp1dqINFN4Td
-         LLAe7jpuX2ZrbTgdHijJXZIVDXALiFfQnNsnTeita/iAcWHRgjnOxn1AQyTM2gZ5lN60
-         DrvVdSmCqN6w/BVGCSqSHWKS2kZNOAqNOC93ljEIkxRkR2Jg4fhP7X7iP9xG/ammZVUW
-         NthQ==
-X-Gm-Message-State: AOAM532md3S0W+Lz3iDOVE4qAlN9XAmcF4vaHBxcoQjxda0xp9lky9YF
-        NZE/vz3/kk3Xp0d6MaN29sx9EGoBOOjmywkMtspl/g==
-X-Google-Smtp-Source: ABdhPJzzvRzkjlxDhSeDQfQb84Cx99UMX4PqcBGOgNyhBZlIlFtkEM0SI8ZjH5kLg6imGNDp3dJA30f75fgCcuKlj0M=
-X-Received: by 2002:ac8:36c2:: with SMTP id b2mr4314281qtc.257.1591276064973;
- Thu, 04 Jun 2020 06:07:44 -0700 (PDT)
+        id S1728380AbgFDNJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 09:09:18 -0400
+Received: from mga11.intel.com ([192.55.52.93]:22230 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728353AbgFDNJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 09:09:17 -0400
+IronPort-SDR: UhrolX2Qk/sZxdbQaatv/8mkBUlRyuGSxqNE/BbcU/CJ54ZWyr1JE3lwFeCPjOEXz6pn/uyYR/
+ YhtfziD8WHcQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 06:09:17 -0700
+IronPort-SDR: nJNGNHqQWHM+pu2diaSZcxzHHP8DbnDQVzXJZQiFz38xtTy6PakTnobpmx1cilHM+HSRAWxrj1
+ J6d+44NFPhQg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,472,1583222400"; 
+   d="scan'208";a="304905559"
+Received: from lkp-server02.sh.intel.com (HELO 6de3076d9aaa) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 04 Jun 2020 06:09:15 -0700
+Received: from kbuild by 6de3076d9aaa with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jgpcQ-00000S-Po; Thu, 04 Jun 2020 13:09:14 +0000
+Date:   Thu, 04 Jun 2020 21:08:19 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/test] BUILD SUCCESS
+ 825986b77e4306c8d88168d071ddc0051fbc4433
+Message-ID: <5ed8f243.Y8pD17lDb9c6Wte2%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <cover.1585233617.git.andreyknvl@google.com> <f70377945d1d8e6e4916cbce871a12303d6186b4.1585233617.git.andreyknvl@google.com>
-In-Reply-To: <f70377945d1d8e6e4916cbce871a12303d6186b4.1585233617.git.andreyknvl@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 4 Jun 2020 15:07:33 +0200
-Message-ID: <CACT4Y+axz_FHFBg7nfDt8C4p5uuUR21_22A_kwKMYTh2mW9FZw@mail.gmail.com>
-Subject: Re: [PATCH v4 5/7] kcov: use t->kcov_mode as enabled indicator
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 26, 2020 at 3:44 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> Currently kcov_remote_start() and kcov_remote_stop() check t->kcov to
-> find out whether the coverage is already being collected by the
-> current task. Use t->kcov_mode for that instead. This doesn't change
-> the overall behavior in any way, but serves as a preparation for the
-> following softirq coverage collection support patch.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/test
+branch HEAD: 825986b77e4306c8d88168d071ddc0051fbc4433  torture:  Remove qemu dependency on EFI firmware
 
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+elapsed time: 635m
 
-> ---
->  kernel/kcov.c | 32 +++++++++++++++++++++++---------
->  1 file changed, 23 insertions(+), 9 deletions(-)
->
-> diff --git a/kernel/kcov.c b/kernel/kcov.c
-> index b985b7a72870..e43f06b5b2e4 100644
-> --- a/kernel/kcov.c
-> +++ b/kernel/kcov.c
-> @@ -746,26 +746,33 @@ static const struct file_operations kcov_fops = {
->   * In turns kcov_remote_stop() clears those pointers from task_struct to stop
->   * collecting coverage and copies all collected coverage into the kcov area.
->   */
-> +
-> +static inline bool kcov_mode_enabled(unsigned int mode)
-> +{
-> +       return (mode & ~KCOV_IN_CTXSW) != KCOV_MODE_DISABLED;
-> +}
-> +
->  void kcov_remote_start(u64 handle)
->  {
-> +       struct task_struct *t = current;
->         struct kcov_remote *remote;
->         struct kcov *kcov;
-> +       unsigned int mode;
->         void *area;
-> -       struct task_struct *t;
->         unsigned int size;
-> -       enum kcov_mode mode;
->         int sequence;
->
->         if (WARN_ON(!kcov_check_handle(handle, true, true, true)))
->                 return;
->         if (WARN_ON(!in_task()))
->                 return;
-> -       t = current;
-> +
->         /*
->          * Check that kcov_remote_start is not called twice
->          * nor called by user tasks (with enabled kcov).
->          */
-> -       if (WARN_ON(t->kcov))
-> +       mode = READ_ONCE(t->kcov_mode);
-> +       if (WARN_ON(kcov_mode_enabled(mode)))
->                 return;
->
->         kcov_debug("handle = %llx\n", handle);
-> @@ -863,13 +870,20 @@ static void kcov_move_area(enum kcov_mode mode, void *dst_area,
->  void kcov_remote_stop(void)
->  {
->         struct task_struct *t = current;
-> -       struct kcov *kcov = t->kcov;
-> -       void *area = t->kcov_area;
-> -       unsigned int size = t->kcov_size;
-> -       int sequence = t->kcov_sequence;
-> +       struct kcov *kcov;
-> +       unsigned int mode;
-> +       void *area;
-> +       unsigned int size;
-> +       int sequence;
->
-> -       if (!kcov)
-> +       mode = READ_ONCE(t->kcov_mode);
-> +       barrier();
-> +       if (!kcov_mode_enabled(mode))
->                 return;
-> +       kcov = t->kcov;
-> +       area = t->kcov_area;
-> +       size = t->kcov_size;
-> +       sequence = t->kcov_sequence;
->
->         kcov_stop(t);
->
-> --
-> 2.26.0.rc2.310.g2932bb562d-goog
->
+configs tested: 98
+configs skipped: 1
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm                         hackkit_defconfig
+sh                         apsh4a3a_defconfig
+arm                            mmp2_defconfig
+arm                        neponset_defconfig
+arm                         orion5x_defconfig
+arm                       aspeed_g4_defconfig
+sh                          r7780mp_defconfig
+riscv                            allyesconfig
+mips                        bcm47xx_defconfig
+arm                           tegra_defconfig
+mips                           ci20_defconfig
+arm                         ebsa110_defconfig
+arm                          moxart_defconfig
+arm                     eseries_pxa_defconfig
+arm                           stm32_defconfig
+arm                     am200epdkit_defconfig
+powerpc                    gamecube_defconfig
+nios2                            alldefconfig
+arm                              zx_defconfig
+microblaze                    nommu_defconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                              allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
