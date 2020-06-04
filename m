@@ -2,129 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D3A1EEA27
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D941EEA30
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730360AbgFDSQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 14:16:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729856AbgFDSQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 14:16:19 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 110E3206C3;
-        Thu,  4 Jun 2020 18:16:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591294578;
-        bh=NwKcPM9opORdcXMXFoo6Zvka0pklrKSlzN6W/JgehYc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lJC/NMYNvsAQNHNCYCrZH4JXiRkKVtCEskxnNgz/ZKr9culCDGFxSOOnPmTJSsiu4
-         Rg3rETGfh8soY8g0zT1cpEu0xrZEy+SE69T3piYStco0q1KlTFLhODquEC2Yv+KkYG
-         ga+CKQvCZyGLbKloHGzDVV+UKwjDKDR+Jz21SlKw=
-Date:   Thu, 4 Jun 2020 13:21:23 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH] docs: deprecated.rst: Add note to the use of
- struct_size() helper
-Message-ID: <20200604182123.GD10051@embeddedor>
-References: <20200604172138.GA21820@embeddedor>
- <202006041047.9B3E8FB951@keescook>
+        id S1730725AbgFDSYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 14:24:42 -0400
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:31132 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730714AbgFDSYl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 14:24:41 -0400
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Thu, 4 Jun 2020 11:24:38 -0700
+Received: from akaher-virtual-machine.eng.vmware.com (unknown [10.197.103.239])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 210EF402C6;
+        Thu,  4 Jun 2020 11:24:41 -0700 (PDT)
+From:   Ajay Kaher <akaher@vmware.com>
+To:     <fan_yang@sjtu.edu.cn>
+CC:     <dan.j.williams@intel.com>, <kirill.shutemov@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
+        <gregkh@linuxfoundation.org>, <srivatsab@vmware.com>,
+        <srivatsa@csail.mit.edu>, <akaher@vmware.com>
+Subject: [PATCH v3] mm: Fix mremap not considering huge pmd devmap
+Date:   Thu, 4 Jun 2020 23:53:45 +0530
+Message-ID: <1591295025-1080-1-git-send-email-akaher@vmware.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <FB4049FE-AC4A-4B13-B39D-B96393EFCCB8@sjtu.edu.cn>
+References: <FB4049FE-AC4A-4B13-B39D-B96393EFCCB8@sjtu.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <202006041047.9B3E8FB951@keescook>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: akaher@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 10:49:19AM -0700, Kees Cook wrote:
-> On Thu, Jun 04, 2020 at 12:21:38PM -0500, Gustavo A. R. Silva wrote:
-> > Add a note to educate people about the proper use of struct_size() when
-> > the trailing array in the enclosing structure is a one-element array.
-> > 
-> > Zero-length and one-element arrays will soon be removed from the kernel,
-> > but in the meantime, it's worth letting people know how to correctly
-> > use struct_size() together with such constructs.
-> > 
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > ---
-> > 
-> > Kees,
-> >  
-> > This is not substitute for the patch I'll write about flexible-arrays
-> > and the deprecation of zero-lenght and one-element arrays.
-> 
-> Hm, hm. I think I'd rather just get the 0/1-array docs written, since
-> that will mean this paragraph isn't needed at all. (Or rather, it can be
+Hi Fan,
 
-Yeah. My reasoning for is that it will take a while --at least one 
-development cycle more-- to completely get rid of all the 0/1-arrays.
-Also, this was motivated by the following comments from Christian
-König:
+Able to reproduce this issue on v4.19.y using your test program.
 
-"May I suggest that we add a section how to correctly do this to
-Documentation/process/coding-style.rst or similar document?
+And as per commit message it fixes commit 5c7fb56e5e3f 
+("mm, dax: dax-pmd vs thp-pmd vs hugetlbfs-pmâ€) at kernel version v4.5.
+So, v4.9.y should be vulnerable, however not able to reproduce on v4.9.y.
+Does any specific scenerio need to test for v4.9.y?
 
-I've seen a bunch of different approaches and some even doesn't work
-with some gcc versions and result in a broken binary."[1]
+For v4.9, modified test program as MAP_SHARED_VALIDATE is not available:
+- return mmap(NULL, REGION_PM_SIZE, PROT, MAP_SHARED_VALIDATE|MAP_SYNC,
++ return mmap(NULL, REGION_PM_SIZE, PROT, MAP_SHARED|MAP_SYNC,
 
-> modified to say "if you're using struct_size() on a 1-array, stop using
-> a 1-array, see [link]". If someone is going to switch around their code,
-> they need to switch to flex at the same time, IMO.
-> 
+Let me know if I need to test some other way for v4.9.y.
 
-I agree with this. I can add the comments in quotes you suggest to this
-patch.
+-Ajay 
 
-But I think we can add this note while I continue working on the flexible-array
-conversions. Once that work is complete, I can go back and update the
-documentation. :)
-
-What do you think?
-
-Thanks
---
-Gustavo
-
-[1] https://lore.kernel.org/lkml/1065d63e-7959-e4b4-af4e-70607ba92296@amd.com/
-
-> > 
-> >  Documentation/process/deprecated.rst | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
-> > index 652e2aa02a66c..0b7b37718bf96 100644
-> > --- a/Documentation/process/deprecated.rst
-> > +++ b/Documentation/process/deprecated.rst
-> > @@ -85,6 +85,17 @@ Instead, use the helper::
-> >  
-> >  	header = kzalloc(struct_size(header, item, count), GFP_KERNEL);
-> >  
-> > +NOTE: You might want to use the following form in case the trailing array
-> > +is a one-element array, as unlike zero-length arrays and flexible-array
-> > +members, `one-element arrays occupy at least as much space as a single
-> > +object of the type <https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_,
-> > +hence they contribute to the size of the enclosing structure::
-> > +
-> > +	header = kzalloc(struct_size(header, item, count - 1), GFP_KERNEL);
-> > +
-> > +It's also worth noting that one-element arrays --together with zero-length
-> > +arrays-- will soon be completely removed from the codebase and deprecated.
-> > +
-> >  See array_size(), array3_size(), and struct_size(),
-> >  for more details as well as the related check_add_overflow() and
-> >  check_mul_overflow() family of functions.
-> > -- 
-> > 2.27.0
-> > 
-> 
-> -- 
-> Kees Cook
