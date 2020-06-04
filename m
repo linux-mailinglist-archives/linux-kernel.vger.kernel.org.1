@@ -2,122 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3481EDF51
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 10:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DB91EDF7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 10:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727941AbgFDIND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 04:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
+        id S1728080AbgFDIN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 04:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727895AbgFDIM4 (ORCPT
+        with ESMTP id S1727854AbgFDINU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 04:12:56 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF8FC03E96D
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 01:12:56 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id j198so6255875wmj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 01:12:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tFPcYYVPEczCJNqu565ZZzRL31Ro7iqoJLud+V9/W6s=;
-        b=MV7FJtoEKLyy0r+Z0KoFPEtyhRXEwQ/IbBpYLu8LO9Uc78Ax/2RYA4vzBMjtiJcK6p
-         AdKwrHzr6dzh+N3ms51V1I6le1IjLWDF+LcV9lCl9LStGwUptD8GwQ/Htx2fZJN8DVly
-         sAfPeJLEgUIdNH8S/XB9b4lCyMgUL5KbMtjSc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tFPcYYVPEczCJNqu565ZZzRL31Ro7iqoJLud+V9/W6s=;
-        b=Cf82N4NZhoNKzaeZRGUd6qYWayMuGLiKbRqOi7JxAHmP81VfU9c/as2miD3g3IsN9V
-         B/916iuFdfNayM77dRdgcpQydPz42q9zezlRgtZ0aVjuC/3UVxmDoEEtqKKA24thM/rx
-         DLXlqvzPgunxjB8Wt1wRSxNKFvgUFl+UpGSzZtzCayDlyvm/EghzRw/PHRAVL327UVEX
-         l9ga2Bso0jP6yuAm9fIg+t8QyiRGjNW/WCVTpOzvVIBKVxyAgLxUIVks+fcXAQ+UzWaT
-         O/A5Z/Cc46j8bZGdmB72NukynwQ0/VubMf8hV5uQzIPzBhsnn2p4isaafJPvkToo3Knd
-         a/vA==
-X-Gm-Message-State: AOAM532NZr6kdOe+5Kj1cwhvmh3xgO76aarMi2ArG34O7k6phpYIwmJG
-        W0wFHvqIiHkXS4hPCjMrFxJ7bLr07v4=
-X-Google-Smtp-Source: ABdhPJwyTSsHObvqYxt5vjWFqYKxgNRr/Tg50mOhhgXdXRLp1pp0LpRagZgRAkv0R2QBG8+IZNWOoQ==
-X-Received: by 2002:a7b:c18a:: with SMTP id y10mr3020133wmi.73.1591258374887;
-        Thu, 04 Jun 2020 01:12:54 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f11sm6873305wrj.2.2020.06.04.01.12.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 01:12:54 -0700 (PDT)
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     DRI Development <dri-devel@lists.freedesktop.org>
-Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
+        Thu, 4 Jun 2020 04:13:20 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D95CC03E96D
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 01:13:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=IfinYWvBdTCCIaneu/iWkUgHWl2JfGtLuUEKRHK9Vk4=; b=aHfI3s4WLnLBft+Nady6ib4iGZ
+        uFoN52/Xxc0nrWP7AIy7CcGExAT0vWzl2Aso3MNHXQVdS/19Rz25eI3ZI3fXBlQGPDDCddU3ukVcq
+        9LVWCCuqXhjNrqMqXKlFK9E/AlaWsR+KnBoH2I1jbnEch509QKak3HJ8zbsLTcFHmAp0NxVtHL7zN
+        iVGEF94kTcB9Q5gCXCPDR9GD2ddHv4G1q0fDGEp4ngGxUsABt9YxMEohAtBqIOAZZ7Hc+Azq/2CvN
+        HsJfdsFPiyI8x4556NOrRUX+om8x4kaWsATcFNirIVgWwj5pDKKJcqfy1EM1t8wEWhc/AJAYykJRO
+        KqLOir0w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jgkzz-0004pC-Sy; Thu, 04 Jun 2020 08:13:15 +0000
+Date:   Thu, 4 Jun 2020 01:13:15 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH 18/18] drm/i915: Annotate dma_fence_work
-Date:   Thu,  4 Jun 2020 10:12:24 +0200
-Message-Id: <20200604081224.863494-19-daniel.vetter@ffwll.ch>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
-References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Logan Gunthorpe <logang@deltatee.com>
+Subject: Re: [git pull] drm for 5.8-rc1
+Message-ID: <20200604081315.GA23276@infradead.org>
+References: <CAPM=9txGww+omvateOTizZRV9_wLdAbq6uAz3DRa_S6bn1jQuQ@mail.gmail.com>
+ <20200603201337.GA225528@ziepe.ca>
+ <1d1ad025-e215-da23-5282-bbaf154fa979@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1d1ad025-e215-da23-5282-bbaf154fa979@amd.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i915 does tons of allocations from this worker, which lockdep catches.
+On Thu, Jun 04, 2020 at 10:10:21AM +0200, Christian König wrote:
+> Dave and Daniel explicitly said they want to have this and it is ok as long
+> as I open code it in the driver and keep it AMD internal.
 
-Also generic infrastructure like this with big potential for how
-dma_fence or other cross driver contracts work, really should be
-reviewed on dri-devel. Implementing custom wheels for everything
-within the driver is a classic case of "platform problem" [1]. Which in
-upstream we really shouldn't have.
+But it fundamentally is broken, and we've been through all the arguments
+why it is broken,  and it is not going to be any less broken because
+someone said they want this.
 
-Since there's no quick way to solve these splats (dma_fence_work is
-used a bunch in basic buffer management and command submission) like
-for amdgpu, I'm giving up at this point here. Annotating i915
-scheduler and gpu reset could would be interesting, but since lockdep
-is one-shot we can't see what surprises would lurk there.
-
-1: https://lwn.net/Articles/443531/
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
-Cc: linux-rdma@vger.kernel.org
-Cc: amd-gfx@lists.freedesktop.org
-Cc: intel-gfx@lists.freedesktop.org
-Cc: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Christian KÃ¶nig <christian.koenig@amd.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
----
- drivers/gpu/drm/i915/i915_sw_fence_work.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/gpu/drm/i915/i915_sw_fence_work.c b/drivers/gpu/drm/i915/i915_sw_fence_work.c
-index a3a81bb8f2c3..5b74acadaef5 100644
---- a/drivers/gpu/drm/i915/i915_sw_fence_work.c
-+++ b/drivers/gpu/drm/i915/i915_sw_fence_work.c
-@@ -17,12 +17,15 @@ static void fence_work(struct work_struct *work)
- {
- 	struct dma_fence_work *f = container_of(work, typeof(*f), work);
- 	int err;
-+	bool fence_cookie;
- 
-+	fence_cookie = dma_fence_begin_signalling();
- 	err = f->ops->work(f);
- 	if (err)
- 		dma_fence_set_error(&f->dma, err);
- 
- 	fence_complete(f);
-+	dma_fence_end_signalling(fence_cookie);
- 	dma_fence_put(&f->dma);
- }
- 
--- 
-2.26.2
-
+I have to say I'm really pissed that you guys just sneaked it in.  I've
+been hoping that graphics is getting a litter better, but this attitud
+of we sneak hacks into the driver code that just happen to work on some
+platform you care about instead because you're too lazy to do the proper
+thing has top stop right now.  drm has been creating so much more
+maintainaince nightmares and buggy code than any other subsysem just
+because of that attitude.
