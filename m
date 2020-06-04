@@ -2,85 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 178731EEC98
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 22:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7563C1EECA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 22:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729903AbgFDU5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 16:57:45 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:40895 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725952AbgFDU5h (ORCPT
+        id S1729982AbgFDU6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 16:58:00 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:18801
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729848AbgFDU5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 16:57:37 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591304257; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=/f/Ml8Uw4CsFYme7s4sIwRAl922zMOEAfEPEEjjh3ik=; b=SFLfC3R2iNrtp2BWLMj6c6NfufRmdiBNldP/+zbH6sGQ1yg0Cvkv+ufqbrHOTqdmlvOeMkRW
- kZIKiF25Zkkzv4WJxG9Tm5I2vud+ChUseF8UZuBJZfmRSfNqqB5cmL+1NZEacxnzhqQYKB1c
- 74+ryZee5FqFO9j1bYHDdRokZjk=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
- 5ed9603744a25e0052288e23 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Jun 2020 20:57:27
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 93819C43387; Thu,  4 Jun 2020 20:57:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 68F36C43391;
-        Thu,  4 Jun 2020 20:57:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 68F36C43391
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     freedreno@lists.freedesktop.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Thu, 4 Jun 2020 16:57:47 -0400
+X-IronPort-AV: E=Sophos;i="5.73,472,1583190000"; 
+   d="scan'208";a="350629662"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 22:57:18 +0200
+Date:   Thu, 4 Jun 2020 22:57:18 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Denis Efremov <efremov@linux.com>
+cc:     Joe Perches <joe@perches.com>, cocci@systeme.lip6.fr,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v7 6/6] arm6: dts: qcom: sm845: Set the compatible string for the GPU SMMU
-Date:   Thu,  4 Jun 2020 14:57:10 -0600
-Message-Id: <20200604205710.3167-7-jcrouse@codeaurora.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200604205710.3167-1-jcrouse@codeaurora.org>
-References: <20200604205710.3167-1-jcrouse@codeaurora.org>
+Subject: Re: [Cocci] [PATCH v2] coccinelle: api: add kzfree script
+In-Reply-To: <20200604204846.15897-1-efremov@linux.com>
+Message-ID: <alpine.DEB.2.21.2006042254240.2577@hadrien>
+References: <20200604140805.111613-1-efremov@linux.com> <20200604204846.15897-1-efremov@linux.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the qcom,adreno-smmu compatible string for the GPU SMMU to enable
-split pagetables.
 
-Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
----
 
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, 4 Jun 2020, Denis Efremov wrote:
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 8eb5a31346d2..8b15cd74e9ba 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -3556,7 +3556,7 @@
- 		};
- 
- 		adreno_smmu: iommu@5040000 {
--			compatible = "qcom,sdm845-smmu-v2", "qcom,smmu-v2";
-+			compatible = "qcom,adreno-smmu", "qcom,smmu-v2";
- 			reg = <0 0x5040000 0 0x10000>;
- 			#iommu-cells = <1>;
- 			#global-interrupts = <2>;
--- 
-2.17.1
+> Check for memset()/memset_explicit() with 0 followed by
+> kfree()/vfree()/kvfree().
+>
+> Signed-off-by: Denis Efremov <efremov@linux.com>
+> ---
+> Changes in v2:
+> - memset_explicit() added
+> - kvfree_sensitive() added
+> - forall added to r1
+> - ... between memset and kfree added
+>   Unfortunately, it doesn't work as I would expect it to in "patch"
+>   mode. I've added my comment about it in the rule. It can be safely
+>   removed from the patch if I misunderstood something.
+>
+> Another "strange" behaviour that I faced that r2 rule works only if I
+> write 2 expression lines:
+> expression *E;
+> expression size;
+> If I try to use a single line "expression *E, size;" then r2 matches nothing.
 
+The parser for metavariables is not so smart.  Everything to the left of
+the first metavariable name is the type.  Everything after is the list of
+metavariables of that type.  So if you put them together you require size
+to be a pointer.
+
+On the other hand, do you really require E to be a pointer?  If you do
+that, it will have to find the type of E.  If E refers to a structure
+field, then the type might not be available in the current function, and
+you may need command line argments like --all-includes or
+--recursive-includes.  Is avoiding transforming the case where E is not
+verified to be a pointer a concern?
+
+julia
+
+>
+>  scripts/coccinelle/api/kzfree.cocci | 65 +++++++++++++++++++++++++++++
+>  1 file changed, 65 insertions(+)
+>  create mode 100644 scripts/coccinelle/api/kzfree.cocci
+>
+> diff --git a/scripts/coccinelle/api/kzfree.cocci b/scripts/coccinelle/api/kzfree.cocci
+> new file mode 100644
+> index 000000000000..5c7e4bb13bb7
+> --- /dev/null
+> +++ b/scripts/coccinelle/api/kzfree.cocci
+> @@ -0,0 +1,65 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +///
+> +/// Use kzfree, kvfree_sensitive rather than memset or
+> +/// memset_explicit with 0 followed by kfree
+> +///
+> +// Confidence: High
+> +// Copyright: (C) 2020 Denis Efremov ISPRAS
+> +// Options: --no-includes --include-headers
+> +//
+> +// Keywords: kzfree, kvfree_sensitive
+> +//
+> +
+> +virtual context
+> +virtual patch
+> +virtual org
+> +virtual report
+> +
+> +
+> +// Ignore kzfree definition
+> +// Ignore kasan test
+> +@r depends on !patch && !(file in "lib/test_kasan.c") && !(file in "mm/slab_common.c") forall@
+> +expression *E;
+> +position p;
+> +@@
+> +
+> +* \(memset\|memset_explicit\)(E, 0, ...);
+> +  ... when != E
+> +      when strict
+> +* \(kfree\|vfree\|kvfree\)(E)@p;
+> +
+> +@r1 depends on patch && !(file in "lib/test_kasan.c") && !(file in "mm/slab_common.c")@
+> +expression *E;
+> +expression size;
+> +@@
+> +
+> +- \(memset\|memset_explicit\)(E, 0, size);
+> +/// Unfortunately, it doesn't work as in !patch mode.
+> +/// spatch (v1.0.8) should patch 4 functions in linux 5.7 with this rule
+> +/// and uncommented "when" lines. With only "... when != E" line 2 functions
+> +/// are patched, none with "when strict". 3 functions patch is produced by the
+> +/// rule with "when" lines commented out.
+> +//  ... when != E
+> +//      when strict
+> +(
+> +- kfree(E);
+> ++ kzfree(E);
+> +|
+> +- vfree(E);
+> ++ kvfree_sensitive(E, size);
+> +|
+> +- kvfree(E);
+> ++ kvfree_sensitive(E, size);
+> +)
+> +
+> +@script:python depends on report@
+> +p << r.p;
+> +@@
+> +
+> +coccilib.report.print_report(p[0], "WARNING opportunity for kzfree/kvfree_sensitive")
+> +
+> +@script:python depends on org@
+> +p << r.p;
+> +@@
+> +
+> +coccilib.org.print_todo(p[0], "WARNING opportunity for kzfree/kvfree_sensitive")
+> --
+> 2.26.2
+>
+> _______________________________________________
+> Cocci mailing list
+> Cocci@systeme.lip6.fr
+> https://systeme.lip6.fr/mailman/listinfo/cocci
+>
