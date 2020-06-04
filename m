@@ -2,88 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB641ED9D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 02:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C47451ED9D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 02:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbgFDACh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 20:02:37 -0400
-Received: from smtprelay0073.hostedemail.com ([216.40.44.73]:36988 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725821AbgFDACg (ORCPT
+        id S1726034AbgFDAF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 20:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgFDAF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 20:02:36 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 3A9EC2C88;
-        Thu,  4 Jun 2020 00:02:33 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2566:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6742:7903:8957:9025:10004:10400:10848:11232:11658:11914:12043:12295:12297:12438:12555:12740:12760:12895:12986:13069:13149:13230:13311:13357:13439:14181:14659:14721:14777:21080:21627:21811:21889:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: owner82_280dda526d92
-X-Filterd-Recvd-Size: 2813
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf03.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  4 Jun 2020 00:02:30 +0000 (UTC)
-Message-ID: <ff9087b0571e1fc499bd8a4c9fd99bfc0357f245.camel@perches.com>
-Subject: Re: [PATCH 08/10] checkpatch: Remove awareness of
- uninitialized_var() macro
-From:   Joe Perches <joe@perches.com>
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-mm@kvack.org, clang-built-linux@googlegroups.com
-Date:   Wed, 03 Jun 2020 17:02:29 -0700
-In-Reply-To: <20200603233203.1695403-9-keescook@chromium.org>
-References: <20200603233203.1695403-1-keescook@chromium.org>
-         <20200603233203.1695403-9-keescook@chromium.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Wed, 3 Jun 2020 20:05:58 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD99DC08C5C0
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 17:05:57 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id f3so2506370pfd.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 17:05:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=uF2n/gB3gDDP2hMwoQuaaueDJkaKtOoysRJtoTkMSDw=;
+        b=NASVovjhwK7+HIO80yPXssp+od2Hj2d9eiKlapTw++P1bMpxgSBWmZWUJ0Js8p1fiB
+         COH3UNC0JBHTjqVioC60wuQYj1RX8kglcJJOKWvyGdoUdYxhDo7lgrJJsnWmmwEOOnls
+         GcWCSPxRy9zAbMJ7nMRszUCbpYU4qAb/KhOH8/Np8lUaDK8+qUddDyBu0T7i9cK2Q/z0
+         IDedlFEsLhmXp3TpSpDuCorOYb8vG5doQsgNwk0P5CfjW5HuC7i51dX2b/EN0xJTER0u
+         zGGYodiltvH/TmC9ebxBfVpybt4NFF6aebkphUU9nfM6Eqs+npjtS7j88HNdrymau7A8
+         fObA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=uF2n/gB3gDDP2hMwoQuaaueDJkaKtOoysRJtoTkMSDw=;
+        b=lSPSeTK1NC1VLPGJ6zPhMDh3XBueWapmak8bbuOqJj4bUCv1MJIDd/xRnFr+PXJUCT
+         dAIELZdVmbxEhq98N9sC2lzdGMISlBw0rmtXcACkHqVjltSlqopueNALKr0uuQNHv+hp
+         LXOMWTMrDrh8Mdn7yTNe+hqvRqfY+ZrnJ7jZLFhgtIZoqwrVgf7fN3+N+xut22LYFZA+
+         1neTygB8K8Hn7bY1O1Ywgqs83hFUMsieNZSnj0Hs4OiURNZQ2O+qujWr9EykGzhagE2+
+         k5pOv9qwS6oJGknkr73NS+NqyykXTvjkdF5C3b2S2eHe9KujmmeGEzyOwuFiaVm6zcYq
+         oPyw==
+X-Gm-Message-State: AOAM533tWWRlaHoPtck2Ni7jP3oEAGall/AJICZb57+4hYffPMiRPxEI
+        XG9/fjhCT1Zsv9eLRaq7V0Y=
+X-Google-Smtp-Source: ABdhPJz9ZYK9jizQG8WXYX8Y04FQk4jgCjJhaM7jL6RxuPb2xp3UDdovwx057LKm/fMposyBvBJGzg==
+X-Received: by 2002:a05:6a00:ce:: with SMTP id e14mr1523090pfj.44.1591229157170;
+        Wed, 03 Jun 2020 17:05:57 -0700 (PDT)
+Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id f11sm2767786pfa.32.2020.06.03.17.05.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 03 Jun 2020 17:05:56 -0700 (PDT)
+Date:   Wed, 3 Jun 2020 17:05:52 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        broonie@kernel.org, alsa-devel@alsa-project.org,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] ASoC: fsl_easrc: Fix -Wmissing-prototypes warning
+Message-ID: <20200604000551.GA17364@Asurada-Nvidia>
+References: <cover.1591155860.git.shengjiu.wang@nxp.com>
+ <ab1b83a56c71f4159a98e6da5602c2c36fe59f4d.1591155860.git.shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab1b83a56c71f4159a98e6da5602c2c36fe59f4d.1591155860.git.shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-06-03 at 16:32 -0700, Kees Cook wrote:
-> Using uninitialized_var() is dangerous as it papers over real bugs[1]
-> (or can in the future), and suppresses unrelated compiler warnings
-> (e.g. "unused variable"). If the compiler thinks it is uninitialized,
-> either simply initialize the variable or make compiler changes.
+On Wed, Jun 03, 2020 at 11:39:39AM +0800, Shengjiu Wang wrote:
+> Obtained with:
+> $ make W=1
 > 
-> In preparation for removing[2] the[3] macro[4], effectively revert
-> commit 16b7f3c89907 ("checkpatch: avoid warning about uninitialized_var()")
-> and remove all remaining mentions of uninitialized_var().
+> sound/soc/fsl/fsl_easrc.c:967:5: warning: no previous prototype for function 'fsl_easrc_config_context' [-Wmissing-prototypes]
+> int fsl_easrc_config_context(struct fsl_asrc *easrc, unsigned int ctx_id)
+>     ^
+> sound/soc/fsl/fsl_easrc.c:967:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> int fsl_easrc_config_context(struct fsl_asrc *easrc, unsigned int ctx_id)
+> ^
+> static
+> sound/soc/fsl/fsl_easrc.c:1128:5: warning: no previous prototype for function 'fsl_easrc_set_ctx_format' [-Wmissing-prototypes]
+> int fsl_easrc_set_ctx_format(struct fsl_asrc_pair *ctx,
+>     ^
+> sound/soc/fsl/fsl_easrc.c:1128:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> int fsl_easrc_set_ctx_format(struct fsl_asrc_pair *ctx,
+> ^
+> static
+> sound/soc/fsl/fsl_easrc.c:1201:5: warning: no previous prototype for function 'fsl_easrc_set_ctx_organziation' [-Wmissing-prototypes]
+> int fsl_easrc_set_ctx_organziation(struct fsl_asrc_pair *ctx)
+>     ^
+> sound/soc/fsl/fsl_easrc.c:1201:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> int fsl_easrc_set_ctx_organziation(struct fsl_asrc_pair *ctx)
+> ^
+> static
+> sound/soc/fsl/fsl_easrc.c:1245:5: warning: no previous prototype for function 'fsl_easrc_request_context' [-Wmissing-prototypes]
+> int fsl_easrc_request_context(int channels, struct fsl_asrc_pair *ctx)
+>     ^
+> sound/soc/fsl/fsl_easrc.c:1245:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> int fsl_easrc_request_context(int channels, struct fsl_asrc_pair *ctx)
+> ^
+> static
+> sound/soc/fsl/fsl_easrc.c:1290:6: warning: no previous prototype for function 'fsl_easrc_release_context' [-Wmissing-prototypes]
+> void fsl_easrc_release_context(struct fsl_asrc_pair *ctx)
+>      ^
+> sound/soc/fsl/fsl_easrc.c:1290:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> void fsl_easrc_release_context(struct fsl_asrc_pair *ctx)
+> ^
+> static
+> sound/soc/fsl/fsl_easrc.c:1317:5: warning: no previous prototype for function 'fsl_easrc_start_context' [-Wmissing-prototypes]
+> int fsl_easrc_start_context(struct fsl_asrc_pair *ctx)
+>     ^
+> sound/soc/fsl/fsl_easrc.c:1317:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> int fsl_easrc_start_context(struct fsl_asrc_pair *ctx)
+> ^
+> static
+> sound/soc/fsl/fsl_easrc.c:1335:5: warning: no previous prototype for function 'fsl_easrc_stop_context' [-Wmissing-prototypes]
+> int fsl_easrc_stop_context(struct fsl_asrc_pair *ctx)
+>     ^
+> sound/soc/fsl/fsl_easrc.c:1335:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> int fsl_easrc_stop_context(struct fsl_asrc_pair *ctx)
+> ^
+> static
+> sound/soc/fsl/fsl_easrc.c:1382:18: warning: no previous prototype for function 'fsl_easrc_get_dma_channel' [-Wmissing-prototypes]
+> struct dma_chan *fsl_easrc_get_dma_channel(struct fsl_asrc_pair *ctx,
+>                  ^
+> sound/soc/fsl/fsl_easrc.c:1382:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> struct dma_chan *fsl_easrc_get_dma_channel(struct fsl_asrc_pair *ctx,
+> ^
+> static
 > 
-> [1] https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.com/
-> [2] https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=1TGqCR5vQkCzWJ0QxK6CernOU6eedsudAixw@mail.gmail.com/
-> [3] https://lore.kernel.org/lkml/CA+55aFwgbgqhbp1fkxvRKEpzyR5J8n1vKT1VZdz9knmPuXhOeg@mail.gmail.com/
-> [4] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/
+> Fixes: 955ac624058f ("ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers")
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Reported-by: kbuild test robot <lkp@intel.com>
 
-nack.  see below.
-
-I'd prefer a simple revert, but it shouldn't
-be done here.
-
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -4075,7 +4074,7 @@ sub process {
->  		}
->  
->  # check for function declarations without arguments like "int foo()"
-> -		if ($line =~ /(\b$Type\s*$Ident)\s*\(\s*\)/) {
-> +		if ($line =~ /(\b$Type\s+$Ident)\s*\(\s*\)/) {
-
-This isn't right because $Type includes a possible trailing *
-where there isn't a space between $Type and $Ident
-
-e.g.:	int *bar(void);
-
-Other than that, fine by me...
-
-
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
