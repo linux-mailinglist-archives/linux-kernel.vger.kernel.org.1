@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5839F1EED2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 23:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD9F1EED40
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 23:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgFDVN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 17:13:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726106AbgFDVN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 17:13:58 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2B862067B;
-        Thu,  4 Jun 2020 21:13:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591305238;
-        bh=2TgX524QxU5g09+EVKx4PYrPaxdDEGbnQte8wTn3A9g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P0+MAxQDugaaDhNYggEouW+7JZaR1K/9qYg+H5ysAbLXSygx9WfUNMmDuZMy7whRf
-         BNTFXnwKLHHmis/PZCa5lQE9+DHifYWmPjd7j+ji9JsqBbUNzzSWyrxlf0by09sIIV
-         sZI0jHMx/cz2J2Kv1fiosjazgSo71R3qAQo18pl8=
-Date:   Thu, 4 Jun 2020 16:19:03 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH] docs: deprecated.rst: Add note to the use of
- struct_size() helper
-Message-ID: <20200604211903.GF10051@embeddedor>
-References: <20200604172138.GA21820@embeddedor>
- <202006041047.9B3E8FB951@keescook>
- <20200604182123.GD10051@embeddedor>
- <202006041322.35912ABB@keescook>
+        id S1726321AbgFDVVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 17:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726146AbgFDVVm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 17:21:42 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88688C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 14:21:42 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id jz3so1668248pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 14:21:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HmkJltUO28NwQuxDZ37g/BlLiFgZijm7NPnKleMlL+A=;
+        b=crVfh8S/exP/Ro93kEhQMov5cpjyW13/HCN8lPuDUiXuDLJVKB7KiXGrL0Kxbrbb+R
+         y4t/8dy+BjanjMVpsHrU6L92i0ohEB8W54XGWLynF79P/QR4c9eXofPbSea3/ySYUDrn
+         YHVNv2RNDzIswlImMsOdEa1HU8zDETqXNqJHEH2Thdb926B9l3G37BYImG1bDxGbihKy
+         yXsZFAIHIy2sUCEiA1vFY7mfYaTUWNzh/ikhbECsZ2Ecajhon9XumFqG9MswrzjEmcCc
+         Q+dYDB49gOvaxvKUDdJnHB9BRe43DVMDEm5KG34FQNlFkd67VcISZqs2gzCxnWw1gHE/
+         Cmjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HmkJltUO28NwQuxDZ37g/BlLiFgZijm7NPnKleMlL+A=;
+        b=TglAbGAK58akYhiSoHaeZo9lpfoPyOGjIuUfh2KnB0OuCNcX8spFBiIt8UlbPUECSR
+         CneOwyfLUIPFd6wPId2kh/WknMzbbjw0We7rqaOCpixCR32+39cdh/8D43wG1xijLu6d
+         6lG5IpE7B2SkCCNvA9AmXcAJmJxTtdFQilYPQTDb+nRt1Pivsh/V+haL7w3mtFbY9SN3
+         tvTILu99Z3tE/ulMtbi72vruhVyWgqekyfXpR236zL40LHAD8PHNLi5Ui660pUuLTIIg
+         8w5sCfG0a6jjzN5w/VpnpkEtHKjNTo9j0H5rg+Euddc917VKHol2NugcfbXrqQf+zsgl
+         sxwA==
+X-Gm-Message-State: AOAM530/RvUxdc6K26mkiK45ylftMxh/jBdTsjpfaG7sxd1vCloaTKr0
+        2pcPpyhNuSz+DasKyXWu+jFLyw==
+X-Google-Smtp-Source: ABdhPJzNlal1wl8ySxossrsQYPskSXenK/74RyXOG49eZfvl1keSh8yWC4+TJ+ZVyaS83GMbHk9G5g==
+X-Received: by 2002:a17:902:ab8b:: with SMTP id f11mr6866714plr.145.1591305702081;
+        Thu, 04 Jun 2020 14:21:42 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id y23sm6472519pje.3.2020.06.04.14.21.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jun 2020 14:21:41 -0700 (PDT)
+Date:   Thu, 4 Jun 2020 15:21:39 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, acme@kernel.org,
+        suzuki.poulose@arm.com, peterz@infradead.org, mingo@redhat.com
+Subject: Re: [PATCH v4 1/1] perf: cs-etm: Allow no CoreSight sink to be
+ specified on command line
+Message-ID: <20200604212139.GE18961@xps15>
+References: <20200526105310.9706-1-mike.leach@linaro.org>
+ <20200526105310.9706-2-mike.leach@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202006041322.35912ABB@keescook>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200526105310.9706-2-mike.leach@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 01:25:26PM -0700, Kees Cook wrote:
-> On Thu, Jun 04, 2020 at 01:21:23PM -0500, Gustavo A. R. Silva wrote:
-> > Yeah. My reasoning for is that it will take a while --at least one 
-> > development cycle more-- to completely get rid of all the 0/1-arrays.
+On Tue, May 26, 2020 at 11:53:10AM +0100, Mike Leach wrote:
+> Adjust the handling of the session sink selection to allow no sink to
+> be selected on the command line. This then forwards the sink selection to
+> the CoreSight infrastructure which will attempt to select a sink based
+> on the default sink select priorities.
 > 
-> Right -- but we need a place to point people when we tell them "please
-> don't use 0-byte and 1-byte arrays", and the deprecated.rst is the place
-> for that.
+> Signed-off-by: Mike Leach <mike.leach@linaro.org>
+> ---
+>  tools/perf/arch/arm/util/cs-etm.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> Having it in deprecated.rst once they're all gone only serves to explain
-> why various compiler flags are enabled, etc. But while they're being
-> removed, it serves as a single place to document the issue (as in, much
-> of the flex-array patch commit log "boilerplate" can actually be
-> repeated in deprecated.rst.
-> 
-> > But I think we can add this note while I continue working on the flexible-array
-> > conversions. Once that work is complete, I can go back and update the
-> > documentation. :)
-> > 
-> > What do you think?
-> 
-> I think we need to document it at the beginning of the work (and I
-> should have asked for this earlier). So let's just add a new section on
-> dynamic array usage, etc. It can include a note about struct_size() as
-> an example for why 1-byte arrays are so weird. :)
-> 
+> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+> index 941f814820b8..ed9ea2c60f27 100644
+> --- a/tools/perf/arch/arm/util/cs-etm.c
+> +++ b/tools/perf/arch/arm/util/cs-etm.c
+> @@ -242,10 +242,10 @@ static int cs_etm_set_sink_attr(struct perf_pmu *pmu,
+>  	}
+>  
+>  	/*
+> -	 * No sink was provided on the command line - for _now_ treat
+> -	 * this as an error.
+> +	 * No sink was provided on the command line - allow the CoreSight
+> +	 * system to look for a default
+>  	 */
+> -	return ret;
+> +	return 0;
 
-Got ya. :)
+Leo added a tested-by for this patch. As I wrote on a previous patch we are
+currently in the middle of the merge window and as such this set needs to be
+rebased on v5.8-rc1 (when it comes out) and sent again.
 
-One last thing... I was thinking on adding such section (dynamic array
-usage) to coding-style.rst, explaining how to use struct_size() and
-transform the different open-coded versions we currently have in the
-kernel, e.g. I have seen people use offsetof() --and sometimes open-coded
-versions of sizeof_field()-- and its open-coded version to do arithmetic
-in allocator arguments.
+Thanks,
+Mathieu
 
-Thanks
---
-Gustavo
-
+>  }
+>  
+>  static int cs_etm_recording_options(struct auxtrace_record *itr,
+> -- 
+> 2.17.1
+> 
