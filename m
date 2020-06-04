@@ -2,94 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15E71EDCC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 07:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6AD1EDCC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 07:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbgFDFvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 01:51:00 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:42181 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725959AbgFDFu7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 01:50:59 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9B06E5C0097;
-        Thu,  4 Jun 2020 01:50:58 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Thu, 04 Jun 2020 01:50:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kdrag0n.dev; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=CTralpIdYxIiZtqvW6bRThjsFf
-        dOktVXY3Izef1+RCc=; b=lauG1FI+bcF0kd6b78sqb0nBEZBBQVqiaFdII3fjW7
-        9eo3eI4HuxfHTXyxs7Ra/OqBNNcMFXoy6D8KI6T+v44yQvQxJMTU5dLSLX3PNVWh
-        hlwge95O7QIYiCcBeYv2nGVzIHSqUM+7+1SHgr4RpypGp8o+DFFcNM6c3wo7cScp
-        rD/fFXzA/4UaiTBoTaBo1rWOIZqWTvWw3/FyVbc7zys+W+gd25xVjDH11VvfrwlD
-        U5tH76RnfX+ZGIohW0E9TxsEC+L0nltdhjFOC75qY3qpVBQUJJFKZs8VLOIPIErl
-        yvpcnCJJQDshUu23nQemyAEi+OEHGASHTW9ExLPFlYGA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=CTralpIdYxIiZtqvW
-        6bRThjsFfdOktVXY3Izef1+RCc=; b=NDjhzTvc7/DuH6HLYp0B1A+dvIIF4WkZK
-        pwFBnXL3YM0kbymaTQIVrM+piiivUSDytZ8pLVDsQJCe3J9PujUgTEoMB3eAm1LG
-        d5OcftRBsPbeokLPuzloseCvClRfKJtbYqWBGH1Dg0Lhv/cWfrOPteQbU2g6iRhw
-        x2LOxPoycpP7LCvhAvRexEhBMKf93W5FtA33X1QYMnqVIFZLAFTBb/CEX+xhzZq/
-        KjHmbfZ04Qn/lsz6X9I1R+889TJZNe6Uhh5iW0X3rLOjabQ6TBI2M7TVzLcF2a8n
-        CCjUVciB4gTKpsESUHHjtirn8vYCOnYGgcr1E9QLbw9AiTWL1eQ2g==
-X-ME-Sender: <xms:wovYXiiuDokiKrqfkFEAgg1hcJRPWfwxfOdb1kJcTy8_CExXPQ48MA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudegtddgkeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
-    dttdenucfhrhhomhepffgrnhhnhicunfhinhcuoegurghnnhihsehkughrrghgtdhnrdgu
-    vghvqeenucggtffrrghtthgvrhhnpefhiefhgfelgfdufedvudelvdefvdefgfeiueeufe
-    egteffudekgefhvedtieefteenucfkphepjeefrddvvdehrdegrddufeeknecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepuggrnhhnhieskhgurh
-    grghdtnhdruggvvh
-X-ME-Proxy: <xmx:wovYXjAzjhDln3rsuUa_99wvYQDqmmcuFSAC_U22KdJVRUVSEAQckw>
-    <xmx:wovYXqFDKZYSsXiB11qCh3zPDdfQeE3ppoyQvfsuXm5duFLJflEApA>
-    <xmx:wovYXrTdoz01oiRKiuZJpNKWEgxbOr6rDTb2a69jLcxvuPy8jFvQPw>
-    <xmx:wovYXoprLaslCBaFLnbntHPxCi_3zVeyQQJSyXzdibZTsN2-3mmwqQ>
-Received: from pinwheel.hsd1.wa.comcast.net (c-73-225-4-138.hsd1.wa.comcast.net [73.225.4.138])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 95CC13060F09;
-        Thu,  4 Jun 2020 01:50:57 -0400 (EDT)
-From:   Danny Lin <danny@kdrag0n.dev>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Danny Lin <danny@kdrag0n.dev>
-Subject: [PATCH 1/1] of: reserved_mem: Fix typo in the too-many-regions message
-Date:   Wed,  3 Jun 2020 22:49:00 -0700
-Message-Id: <20200604054900.200317-1-danny@kdrag0n.dev>
-X-Mailer: git-send-email 2.26.2
+        id S1726523AbgFDF4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 01:56:33 -0400
+Received: from mga18.intel.com ([134.134.136.126]:35886 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726104AbgFDF4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 01:56:33 -0400
+IronPort-SDR: VdBwf73mEmuIT44kbrJFXHxKjj0pP2oUkkWw8kRn6ghFkWcujUoXw5CqBwXps2Ez/xcjTF6wvC
+ ZMDmtIFy8+sQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 22:56:31 -0700
+IronPort-SDR: /xfoCmiTbSF1eIMa6iM7jAiEFqX6Yzz6/VdWX8tNSn27aeS7EaSn0GQ1+2/wbAJ5DtWfmyBOjm
+ TRKWlobwUJCQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,471,1583222400"; 
+   d="scan'208";a="378317789"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga001.fm.intel.com with SMTP; 03 Jun 2020 22:56:28 -0700
+Received: by lahna (sSMTP sendmail emulation); Thu, 04 Jun 2020 08:56:27 +0300
+Date:   Thu, 4 Jun 2020 08:56:27 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] thunderbolt: Improve USB4 config symbol help text
+Message-ID: <20200604055627.GI247495@lahna.fi.intel.com>
+References: <20200602122815.32111-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200602122815.32111-1-geert+renesas@glider.be>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minor fix for a missing preposition in the error message that appears
-when there are too many reserved memory regions for the allocated array
-to store.
+Hi,
 
-Signed-off-by: Danny Lin <danny@kdrag0n.dev>
----
- drivers/of/of_reserved_mem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Jun 02, 2020 at 02:28:15PM +0200, Geert Uytterhoeven wrote:
+> Fix the spelling of "specification", and add a missing "the" article.
+> 
+> Fixes: 690ac0d20d4022bb ("thunderbolt: Update Kconfig entries to USB4")
 
-diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-index 1a84bc0d5fa8..e648904347a0 100644
---- a/drivers/of/of_reserved_mem.c
-+++ b/drivers/of/of_reserved_mem.c
-@@ -54,7 +54,7 @@ void __init fdt_reserved_mem_save_node(unsigned long node, const char *uname,
- 	struct reserved_mem *rmem = &reserved_mem[reserved_mem_count];
- 
- 	if (reserved_mem_count == ARRAY_SIZE(reserved_mem)) {
--		pr_err("not enough space all defined regions.\n");
-+		pr_err("not enough space for all defined regions.\n");
- 		return;
- 	}
- 
--- 
-2.26.2
+Maybe Fixes tag here is too strong. It is simply fixing a typo :)
 
+I will pick this one up once v5.8-rc1 is released and drop the Fixes tag.
