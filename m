@@ -2,398 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043DC1EE5B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1961EE59B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728825AbgFDNtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 09:49:01 -0400
-Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:50225 "EHLO
-        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728685AbgFDNsY (ORCPT
+        id S1728678AbgFDNsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 09:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728447AbgFDNsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 09:48:24 -0400
-Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
-        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 054DlxF1011541;
-        Thu, 4 Jun 2020 16:47:59 +0300
-Received: by taln60.nuvoton.co.il (Postfix, from userid 10140)
-        id 43B36639BF; Thu,  4 Jun 2020 16:47:59 +0300 (IDT)
-From:   amirmizi6@gmail.com
-To:     Eyal.Cohen@nuvoton.com, jarkko.sakkinen@linux.intel.com,
-        oshrialkoby85@gmail.com, alexander.steffen@infineon.com,
-        robh+dt@kernel.org,
-        "benoit.houyere@st.com--to=mark.rutland"@arm.com,
-        peterhuewe@gmx.de, christophe-h.richard@st.com, jgg@ziepe.ca,
-        arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
-        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
-        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
-        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com,
-        Amir Mizinski <amirmizi6@gmail.com>,
-        Eddie James <eajames@linux.ibm.com>,
-        Joel Stanley <joel@jms.id.au>
-Subject: [PATCH v10 8/8] tpm: tpm_tis: add tpm_tis_i2c driver
-Date:   Thu,  4 Jun 2020 16:47:13 +0300
-Message-Id: <20200604134713.157951-9-amirmizi6@gmail.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20200604134713.157951-1-amirmizi6@gmail.com>
-References: <20200604134713.157951-1-amirmizi6@gmail.com>
+        Thu, 4 Jun 2020 09:48:15 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674F2C08C5C0;
+        Thu,  4 Jun 2020 06:48:14 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id e125so3650206lfd.1;
+        Thu, 04 Jun 2020 06:48:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iMMF10Nxs4oc2EJJanF54FJNWM4D4Wwm1OdBu2wm4Z4=;
+        b=sFXZR15/LjqG5bpCkxOk37qC9tElVU94FDwkLLfN9UCkQU3wR4HPwpJalmClK0WYId
+         TK6qeC9VmQi1kN/fYn2uo77S6U3dVSlwcJhXWqOrCD8+8PeohG7Xn6gEW02z9J9azgjI
+         LjIhE9h/6nc/czWT+jayLqT96lT+joKTedEpgQuS0967kKFH6QY5aV5KRxzexUCmlutV
+         //C8VFzwL9ddcQVIX3sYK4MI86YxL9Sgu4FZXcZZOv4FFhhtxjlr2srMXtRo63T7hImF
+         WtwQr/H1MPKmgaEzFCK3eUmei3ieS5j+8orUdaYCy6Ex+4mlhdW9tGzjg4AXi0M8CA6d
+         +GUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iMMF10Nxs4oc2EJJanF54FJNWM4D4Wwm1OdBu2wm4Z4=;
+        b=YTT/oiJ6TG5j1stJX+o4rMZogz0rgHW1Uyz8onUU0AwddOi8C2RLnYMrcmlkwlikRp
+         oXuBqFz7+dYl3eFUsGv9bQ3HOdPKSPhqZNkViiLphBcvFWXpVNTvRBU63QXdFNc/H1Yd
+         X6in6E8hrSJOwTzADAse//Af/jOxt/RnYpXezZkKSPmrEvQDL93EbvdlzfQ20TubCa/0
+         5JgzLr0fwQ3jQa0B4Jrox9bQaCsPKmvsBqyKCseThsRLftSGP9xTMEDM+RAgQVRGXoXS
+         64Ox/00BdozijCYyU95ba0Gb+hdj6u2HXxx6sm8EEtpc3VU4J7VFGI25faZysLCa2Kvv
+         Ie3Q==
+X-Gm-Message-State: AOAM532s/gHVlxeceNj4SXIF9C6kt3qa3zNvIhjwqPPjxwl9ZP+0YuTZ
+        FA7mT3oSxFbXm2QGMHarQjYyaLBlpnhVJUPG2go=
+X-Google-Smtp-Source: ABdhPJwIR6Q2Naj2V+WJIUcSDZdWNqsRdct/J8jlK8ybr+qXkoX6RREh9lcQJkoOOoeN0FxBfO3Sew2nuLo6o95L/B0=
+X-Received: by 2002:a19:2358:: with SMTP id j85mr2654922lfj.182.1591278492760;
+ Thu, 04 Jun 2020 06:48:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200602080425.93712-1-kerneljasonxing@gmail.com>
+ <20200604090014.23266-1-kerneljasonxing@gmail.com> <CANn89iKt=3iDZM+vUbCvO_aGuedXFhzdC6OtQMeVTMDxyp9bAg@mail.gmail.com>
+In-Reply-To: <CANn89iKt=3iDZM+vUbCvO_aGuedXFhzdC6OtQMeVTMDxyp9bAg@mail.gmail.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Thu, 4 Jun 2020 21:47:36 +0800
+Message-ID: <CAL+tcoCU157eGmMMabT5icdFJTMEWymNUNxHBbxY1OTir0=0FQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4.19] tcp: fix TCP socks unreleased in BBR mode
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Neal Cardwell <ncardwell@google.com>,
+        David Miller <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        liweishi <liweishi@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amir Mizinski <amirmizi6@gmail.com>
+On Thu, Jun 4, 2020 at 9:10 PM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Thu, Jun 4, 2020 at 2:01 AM <kerneljasonxing@gmail.com> wrote:
+> >
+> > From: Jason Xing <kerneljasonxing@gmail.com>
+> >
+> > When using BBR mode, too many tcp socks cannot be released because of
+> > duplicate use of the sock_hold() in the manner of tcp_internal_pacing()
+> > when RTO happens. Therefore, this situation maddly increases the slab
+> > memory and then constantly triggers the OOM until crash.
+> >
+> > Besides, in addition to BBR mode, if some mode applies pacing function,
+> > it could trigger what we've discussed above,
+> >
+> > Reproduce procedure:
+> > 0) cat /proc/slabinfo | grep TCP
+> > 1) switch net.ipv4.tcp_congestion_control to bbr
+> > 2) using wrk tool something like that to send packages
+> > 3) using tc to increase the delay and loss to simulate the RTO case.
+> > 4) cat /proc/slabinfo | grep TCP
+> > 5) kill the wrk command and observe the number of objects and slabs in
+> > TCP.
+> > 6) at last, you could notice that the number would not decrease.
+> >
+> > v2: extend the timer which could cover all those related potential risks
+> > (suggested by Eric Dumazet and Neal Cardwell)
+> >
+> > Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
+> > Signed-off-by: liweishi <liweishi@kuaishou.com>
+> > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+>
+> That is not how things work really.
+>
+> I will submit this properly so that stable teams do not have to guess
+> how to backport this to various kernels.
+>
+> Changelog is misleading, this has nothing to do with BBR, we need to be precise.
+>
 
-Implements the functionality needed to communicate with an I2C TPM
-according to the TCG TPM I2C Interface Specification.
+Thanks for your help. I can finally apply this patch into my kernel.
 
-Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
-Tested-by: Eddie James <eajames@linux.ibm.com>
-Tested-by: Joel Stanley <joel@jms.id.au>
----
- drivers/char/tpm/Kconfig       |  12 ++
- drivers/char/tpm/Makefile      |   1 +
- drivers/char/tpm/tpm_tis_i2c.c | 292 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 305 insertions(+)
- create mode 100644 drivers/char/tpm/tpm_tis_i2c.c
+Looking forward to your patchset :)
 
-diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
-index aacdeed..2116d94 100644
---- a/drivers/char/tpm/Kconfig
-+++ b/drivers/char/tpm/Kconfig
-@@ -74,6 +74,18 @@ config TCG_TIS_SPI_CR50
- 	  If you have a H1 secure module running Cr50 firmware on SPI bus,
- 	  say Yes and it will be accessible from within Linux.
- 
-+config TCG_TIS_I2C
-+	tristate "TPM I2C Interface Specification"
-+	depends on I2C
-+	select CRC_CCITT
-+	select TCG_TIS_CORE
-+	help
-+	  If you have a TPM security chip which is connected to a regular
-+	  I2C master (i.e. most embedded platforms) that is compliant with the
-+	  TCG TPM I2C Interface Specification say Yes and it will be accessible from
-+	  within Linux. To compile this driver as a module, choose  M here;
-+	  the module will be called tpm_tis_i2c.
-+
- config TCG_TIS_I2C_ATMEL
- 	tristate "TPM Interface Specification 1.2 Interface (I2C - Atmel)"
- 	depends on I2C
-diff --git a/drivers/char/tpm/Makefile b/drivers/char/tpm/Makefile
-index 9567e51..97999cf 100644
---- a/drivers/char/tpm/Makefile
-+++ b/drivers/char/tpm/Makefile
-@@ -26,6 +26,7 @@ obj-$(CONFIG_TCG_TIS_SPI) += tpm_tis_spi.o
- tpm_tis_spi-y := tpm_tis_spi_main.o
- tpm_tis_spi-$(CONFIG_TCG_TIS_SPI_CR50) += tpm_tis_spi_cr50.o
- 
-+obj-$(CONFIG_TCG_TIS_I2C) += tpm_tis_i2c.o
- obj-$(CONFIG_TCG_TIS_I2C_ATMEL) += tpm_i2c_atmel.o
- obj-$(CONFIG_TCG_TIS_I2C_INFINEON) += tpm_i2c_infineon.o
- obj-$(CONFIG_TCG_TIS_I2C_NUVOTON) += tpm_i2c_nuvoton.o
-diff --git a/drivers/char/tpm/tpm_tis_i2c.c b/drivers/char/tpm/tpm_tis_i2c.c
-new file mode 100644
-index 0000000..4c9bad0
---- /dev/null
-+++ b/drivers/char/tpm/tpm_tis_i2c.c
-@@ -0,0 +1,292 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2014-2019 Nuvoton Technology corporation
-+ *
-+ * TPM TIS I2C
-+ *
-+ * TPM TIS I2C Device Driver Interface for devices that implement the TPM I2C
-+ * Interface defined by TCG PC Client Platform TPM Profile (PTP) Specification
-+ * Revision 01.03 v22 at www.trustedcomputinggroup.org
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/slab.h>
-+#include <linux/interrupt.h>
-+#include <linux/wait.h>
-+#include <linux/acpi.h>
-+#include <linux/freezer.h>
-+#include <linux/crc-ccitt.h>
-+
-+#include <linux/module.h>
-+#include <linux/i2c.h>
-+#include <linux/gpio.h>
-+#include <linux/of_irq.h>
-+#include <linux/of_gpio.h>
-+#include <linux/tpm.h>
-+#include "tpm.h"
-+#include "tpm_tis_core.h"
-+
-+#define TPM_LOC_SEL                    0x04
-+#define TPM_I2C_INTERFACE_CAPABILITY   0x30
-+#define TPM_I2C_DEVICE_ADDRESS         0x38
-+#define TPM_DATA_CSUM_ENABLE           0x40
-+#define TPM_DATA_CSUM                  0x44
-+#define TPM_I2C_DID_VID                        0x48
-+#define TPM_I2C_RID                    0x4C
-+
-+//#define I2C_IS_TPM2 1
-+
-+struct tpm_tis_i2c_phy {
-+	struct tpm_tis_data priv;
-+	struct i2c_client *i2c_client;
-+	bool data_csum;
-+	u8 *iobuf;
-+};
-+
-+static inline struct tpm_tis_i2c_phy *to_tpm_tis_i2c_phy(struct tpm_tis_data
-+							 *data)
-+{
-+	return container_of(data, struct tpm_tis_i2c_phy, priv);
-+}
-+
-+static u8 address_to_register(u32 addr)
-+{
-+	addr &= 0xFFF;
-+
-+	switch (addr) {
-+		// adapt register addresses that have changed compared to
-+		// older TIS versions
-+	case TPM_ACCESS(0):
-+		return 0x04;
-+	case TPM_LOC_SEL:
-+		return 0x00;
-+	case TPM_DID_VID(0):
-+		return 0x48;
-+	case TPM_RID(0):
-+		return 0x4C;
-+	default:
-+		return addr;
-+	}
-+}
-+
-+static int tpm_tis_i2c_read_bytes(struct tpm_tis_data *data, u32 addr,
-+				  u16 len, u8 *result)
-+{
-+	struct tpm_tis_i2c_phy *phy = to_tpm_tis_i2c_phy(data);
-+	int ret = 0;
-+	int i = 0;
-+	u8 reg = address_to_register(addr);
-+	struct i2c_msg msgs[] = {
-+		{
-+			.addr = phy->i2c_client->addr,
-+			.len = sizeof(reg),
-+			.buf = &reg,
-+		},
-+		{
-+			.addr = phy->i2c_client->addr,
-+			.len = len,
-+			.buf = result,
-+			.flags = I2C_M_RD,
-+		},
-+	};
-+
-+	do {
-+		ret = i2c_transfer(phy->i2c_client->adapter, msgs,
-+				   ARRAY_SIZE(msgs));
-+		usleep_range(250, 300); // wait default GUARD_TIME of 250µs
-+
-+	} while (ret < 0 && i++ < TPM_RETRY);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int tpm_tis_i2c_write_bytes(struct tpm_tis_data *data, u32 addr,
-+				   u16 len, const u8 *value)
-+{
-+	struct tpm_tis_i2c_phy *phy = to_tpm_tis_i2c_phy(data);
-+	int ret = 0;
-+	int i = 0;
-+
-+	if (phy->iobuf) {
-+		if (len > TPM_BUFSIZE - 1)
-+			return -EIO;
-+
-+		phy->iobuf[0] = address_to_register(addr);
-+		memcpy(phy->iobuf + 1, value, len);
-+
-+		{
-+			struct i2c_msg msgs[] = {
-+				{
-+					.addr = phy->i2c_client->addr,
-+					.len = len + 1,
-+					.buf = phy->iobuf,
-+				},
-+			};
-+
-+			do {
-+				ret = i2c_transfer(phy->i2c_client->adapter,
-+						   msgs, ARRAY_SIZE(msgs));
-+				// wait default GUARD_TIME of 250µs
-+				usleep_range(250, 300);
-+			} while (ret < 0 && i++ < TPM_RETRY);
-+		}
-+	} else {
-+		u8 reg = address_to_register(addr);
-+
-+		struct i2c_msg msgs[] = {
-+			{
-+				.addr = phy->i2c_client->addr,
-+				.len = sizeof(reg),
-+				.buf = &reg,
-+			},
-+			{
-+				.addr = phy->i2c_client->addr,
-+				.len = len,
-+				.buf = (u8 *)value,
-+				.flags = I2C_M_NOSTART,
-+			},
-+		};
-+		do {
-+			ret = i2c_transfer(phy->i2c_client->adapter, msgs,
-+					   ARRAY_SIZE(msgs));
-+			// wait default GUARD_TIME of 250µs
-+			usleep_range(250, 300);
-+		} while (ret < 0 && i++ < TPM_RETRY);
-+	}
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static bool tpm_tis_i2c_verify_data_integrity(struct tpm_tis_data *data,
-+					      const u8 *buf, size_t len)
-+{
-+	struct tpm_tis_i2c_phy *phy = to_tpm_tis_i2c_phy(data);
-+	u16 crc, crc_tpm;
-+	int rc;
-+
-+	if (phy->data_csum) {
-+		crc = crc_ccitt(0x0000, buf, len);
-+		rc = tpm_tis_read16(data, TPM_DATA_CSUM, &crc_tpm);
-+		if (rc < 0)
-+			return false;
-+
-+		crc_tpm = be16_to_cpu(crc_tpm);
-+		return crc == crc_tpm;
-+	}
-+
-+	return true;
-+}
-+
-+static SIMPLE_DEV_PM_OPS(tpm_tis_pm, tpm_pm_suspend, tpm_tis_resume);
-+
-+static int csum_state_store(struct tpm_tis_data *data, u8 new_state)
-+{
-+	struct tpm_tis_i2c_phy *phy = to_tpm_tis_i2c_phy(data);
-+	u8 cur_state;
-+	int rc;
-+
-+	rc = tpm_tis_i2c_write_bytes(&phy->priv, TPM_DATA_CSUM_ENABLE,
-+				     1, &new_state);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = tpm_tis_i2c_read_bytes(&phy->priv, TPM_DATA_CSUM_ENABLE,
-+				    1, &cur_state);
-+	if (rc < 0)
-+		return rc;
-+
-+	if (new_state == cur_state)
-+		phy->data_csum = (bool)new_state;
-+
-+	return rc;
-+}
-+
-+static const struct tpm_tis_phy_ops tpm_i2c_phy_ops = {
-+	.read_bytes = tpm_tis_i2c_read_bytes,
-+	.write_bytes = tpm_tis_i2c_write_bytes,
-+	.verify_data_integrity = tpm_tis_i2c_verify_data_integrity,
-+};
-+
-+static int tpm_tis_i2c_probe(struct i2c_client *dev,
-+			     const struct i2c_device_id *id)
-+{
-+	struct tpm_tis_i2c_phy *phy;
-+	int rc;
-+	int crc_checksum = 0;
-+	const u8 loc_init = 0;
-+	struct device_node *np;
-+
-+	phy = devm_kzalloc(&dev->dev, sizeof(struct tpm_tis_i2c_phy),
-+			   GFP_KERNEL);
-+	if (!phy)
-+		return -ENOMEM;
-+
-+	phy->i2c_client = dev;
-+
-+	if (!i2c_check_functionality(dev->adapter, I2C_FUNC_NOSTART)) {
-+		phy->iobuf = devm_kmalloc(&dev->dev, TPM_BUFSIZE, GFP_KERNEL);
-+		if (!phy->iobuf)
-+			return -ENOMEM;
-+	}
-+
-+	// select locality 0 (the driver will access only via locality 0)
-+	rc = tpm_tis_i2c_write_bytes(&phy->priv, TPM_LOC_SEL, 1, &loc_init);
-+	if (rc < 0)
-+		return rc;
-+
-+	// set CRC checksum calculation enable
-+	np = dev->dev.of_node;
-+	if (of_property_read_bool(np, "crc-checksum"))
-+		crc_checksum = 1;
-+
-+	rc = csum_state_store(&phy->priv, crc_checksum);
-+	if (rc < 0)
-+		return rc;
-+
-+	return tpm_tis_core_init(&dev->dev, &phy->priv, -1, &tpm_i2c_phy_ops,
-+					NULL);
-+}
-+
-+static const struct i2c_device_id tpm_tis_i2c_id[] = {
-+	{"tpm_tis_i2c", 0},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, tpm_tis_i2c_id);
-+
-+static const struct of_device_id of_tis_i2c_match[] = {
-+	{ .compatible = "nuvoton,npct75x", },
-+	{ .compatible = "tcg,tpm-tis-i2c", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, of_tis_i2c_match);
-+
-+static const struct acpi_device_id acpi_tis_i2c_match[] = {
-+	{"SMO0768", 0},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(acpi, acpi_tis_i2c_match);
-+
-+static struct i2c_driver tpm_tis_i2c_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "tpm_tis_i2c",
-+		.pm = &tpm_tis_pm,
-+		.of_match_table = of_match_ptr(of_tis_i2c_match),
-+		.acpi_match_table = ACPI_PTR(acpi_tis_i2c_match),
-+	},
-+	.probe = tpm_tis_i2c_probe,
-+	.id_table = tpm_tis_i2c_id,
-+};
-+
-+module_i2c_driver(tpm_tis_i2c_driver);
-+
-+MODULE_DESCRIPTION("TPM Driver");
-+MODULE_LICENSE("GPL");
--- 
-2.7.4
+Jason
 
+> Thank you.
