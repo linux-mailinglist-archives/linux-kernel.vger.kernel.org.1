@@ -2,139 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD9B1EE328
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE1A1EE32D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726842AbgFDLQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 07:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
+        id S1727118AbgFDLQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 07:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726175AbgFDLQf (ORCPT
+        with ESMTP id S1726444AbgFDLQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 07:16:35 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D88FC03E96D
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 04:16:34 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id n9so2080382plk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 04:16:34 -0700 (PDT)
+        Thu, 4 Jun 2020 07:16:44 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82047C03E96D
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 04:16:44 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id v19so4843995wmj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 04:16:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=DEKbfIfXEu9wF9Z0rkW5J6S6e0LP/FIn5jqzqOD5wDs=;
-        b=J5RJ6b1svg73OcukZzTb62hfadQTam8cpOe6CX7zl/Yqm9toweh+CzSVUszQVZxgHc
-         MrzJlzQHPZiB/HszI+VdlKy0lFN8QKlDyAJ3lMMe45FqOCuMua5MMXQT/dYiM298BrDS
-         PwTgQO5xtayqQSu3nBzYBqxLzKEoVkKZOC5iQ=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=boJyGP+gPrammziGfBa0Rtpgvb7ZM8NCT5rtIiHrchY=;
+        b=B0mnEIdGvO/8pNPYWfxGpx9Fzt94z97xsG2Jy1Xp/LJCeaLS5KYgVDM2lJ+kNOnZqP
+         6a1jdogX8HleRkSrqHQfbaMfaw+YqL7yueS0qKAIj92JcUPAk46ShsuhTkvy2GSPuXH5
+         4eM76bmfxHNXV1FomJBfohipL7/rTTscXBtHCl+c4MPLGuqyo3RUxG4bPlbZydhwOOWX
+         5xrSp8aMRWaxxhtLvbxTLj67wESI0eHy4GOIwW4xYTro+BASCNy3hquFm6LRfbKAmcUE
+         HqiidTxf4xKT6lhHcUOMjpLI6Q0QLYnRnyP4UDisg19Rm7r9/4QCy/UqPsi9l2hDB3Kn
+         /BhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=DEKbfIfXEu9wF9Z0rkW5J6S6e0LP/FIn5jqzqOD5wDs=;
-        b=IHGDD+7MHpb1MTZNnoZLuQqRYuxdL5/3jGcJB8ALjW7elAzadptFe2SSQkxwwdk1Sd
-         RJlrC3CHcL0y++k1che1I+HJ+zXieTS6D3IfTZuuWNaJzPp9qRSkP7VhdhHbQJxiby66
-         APPq9R4tDBnQRGG5YwWzl4oeM3YnUuiYpmJIPinqb3p9QejpzMfbBzSfzNOiMR8Xp84V
-         lzRVDUQlLzAd27xn6qj/rhRVCyqaRXfwlVWz/Ldnd7ezd06nDg8GYqKZVbDEBO2t4Yj8
-         tMILLKnb+k21B4dRRwVFitT6llWvUzisS2wYI75mRljHVGRmMLR15OoixVbKi1bo33dA
-         7EcA==
-X-Gm-Message-State: AOAM532lmsU2Vf/DVb53zK7SRRQxKiL4P6wzIypqoyEaGCxn2nJcPxPC
-        q/ATlFrZAQrqDx6F3sWkSmwPAQ==
-X-Google-Smtp-Source: ABdhPJxCCivBhK/hg9K6wT5AEXVQ71u0Uha04pdnmjNrV/7G1HqPOOjkbI98CsYtuP81QhefKr6diQ==
-X-Received: by 2002:a17:902:aa48:: with SMTP id c8mr4478787plr.128.1591269393407;
-        Thu, 04 Jun 2020 04:16:33 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id a19sm4510338pfd.165.2020.06.04.04.16.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=boJyGP+gPrammziGfBa0Rtpgvb7ZM8NCT5rtIiHrchY=;
+        b=kOYEdhTI+AH4tQn98Hdqj9m6HVsmzf0Lys0wQrRHteplNyIg15kYPaUXAeIM0MSCFP
+         DlfGffsyiVVORvxUB57i/y15tIGZsddRch5V2j1zg5UwHmHOONlJtVkEUFf5tFvh8UFV
+         fauGIa+oBwBqSpJMt75H+2ntFZlXDH5q0VkgyCr58vmmaoJSKQDmc0aacgSdepccVLvS
+         WUuzxKoGKUYm38NUej1pZlL+IZ+1NiQQKCYWknPhAKFOmuC7NLNlBB1QmeXMUwMdfxAJ
+         kV8XlFFiJHNOfPwDsL3IVyZ4srCGCnKxG9HmK8nBT2BIY+9Fo13osEk1XTOI1Q9MrVrj
+         w4fQ==
+X-Gm-Message-State: AOAM533RihLpqAUT/MTjFG51oXzp4PYVZ6cqAG9jSfW2cSNfil2nVpFu
+        G/U1Iov1N8mrbKqSu4GjE82HJQ==
+X-Google-Smtp-Source: ABdhPJxryzqz4ew9/g4Ibkz6WjYMEviCTsNzCQva4r53NLnbdtuaO9mWGbqNGP6OUY7rYgYlXx75OQ==
+X-Received: by 2002:a7b:c204:: with SMTP id x4mr3518122wmi.22.1591269403185;
+        Thu, 04 Jun 2020 04:16:43 -0700 (PDT)
+Received: from dell ([95.147.198.92])
+        by smtp.gmail.com with ESMTPSA id l1sm8856507wrb.31.2020.06.04.04.16.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 04:16:32 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 04 Jun 2020 04:16:42 -0700 (PDT)
+Date:   Thu, 4 Jun 2020 12:16:39 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Subject: Re: [PATCH V2] mfd: sprd: Add wakeup capability for PMIC irq
+Message-ID: <20200604111639.GZ3714@dell>
+References: <20200527062147.680-1-zhang.lyra@gmail.com>
+ <CAAfSe-voe6as4VveyMt2pyJR1jytdzfRCp1z3s9AnS+QzTvPKA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <d9ccf188-4f00-d3ac-ba0f-73f06c087553@codeaurora.org>
-References: <1585718145-29537-1-git-send-email-sanm@codeaurora.org> <1585718145-29537-3-git-send-email-sanm@codeaurora.org> <159120577830.69627.13288547914742515702@swboyd.mtv.corp.google.com> <d9ccf188-4f00-d3ac-ba0f-73f06c087553@codeaurora.org>
-Subject: Re: [PATCH v7 2/4] usb: dwc3: qcom: Add interconnect support in dwc3 driver
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sandeep Maheswaram (Temp) <sanm@codeaurora.org>
-Date:   Thu, 04 Jun 2020 04:16:31 -0700
-Message-ID: <159126939154.69627.13027312816468830595@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAfSe-voe6as4VveyMt2pyJR1jytdzfRCp1z3s9AnS+QzTvPKA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sandeep Maheswaram (Temp) (2020-06-04 02:43:09)
->=20
-> On 6/3/2020 11:06 PM, Stephen Boyd wrote:
-> > Quoting Sandeep Maheswaram (2020-03-31 22:15:43)
-> >> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom=
-.c
-> >> index 1dfd024..d33ae86 100644
-> >> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> >> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> >> @@ -285,6 +307,101 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qc=
-om)
-> >>          return 0;
-> >>   }
-> >>  =20
-> >> +
-> >> +/**
-> >> + * dwc3_qcom_interconnect_init() - Get interconnect path handles
-> >> + * @qcom:                      Pointer to the concerned usb core.
-> >> + *
-> >> + */
-> >> +static int dwc3_qcom_interconnect_init(struct dwc3_qcom *qcom)
-> >> +{
-> >> +       struct device *dev =3D qcom->dev;
-> >> +       int ret;
-> >> +
-> >> +       if (!device_is_bound(&qcom->dwc3->dev))
-> >> +               return -EPROBE_DEFER;
-> > How is this supposed to work? I see that this was added in an earlier
-> > revision of this patch series but there isn't any mention of why
-> > device_is_bound() is used here. It would be great if there was a comment
-> > detailing why this is necessary. It sounds like maximum_speed is
-> > important?
-> >
-> > Furthermore, dwc3_qcom_interconnect_init() is called by
-> > dwc3_qcom_probe() which is the function that registers the device for
-> > qcom->dwc3->dev. If that device doesn't probe between the time it is
-> > registered by dwc3_qcom_probe() and this function is called then we'll
-> > fail dwc3_qcom_probe() with -EPROBE_DEFER. And that will remove the
-> > qcom->dwc3->dev device from the platform bus because we call
-> > of_platform_depopulate() on the error path of dwc3_qcom_probe().
-> >
-> > So isn't this whole thing racy and can potentially lead us to a driver
-> > probe loop where the wrapper (dwc3_qcom) and the core (dwc3) are probing
-> > and we're trying to time it just right so that driver for dwc3 binds
-> > before we setup interconnects? I don't know if dwc3 can communicate to
-> > the wrapper but that would be more of a direct way to do this. Or maybe
-> > the wrapper should try to read the DT property for maximum speed and
-> > fallback to a worst case high bandwidth value if it can't figure it out
-> > itself without help from dwc3 core.
-> >
-> This was added in V4 to address comments from Matthias in V3
->=20
-> https://patchwork.kernel.org/patch/11148587/
->=20
+On Thu, 04 Jun 2020, Chunyan Zhang wrote:
 
-Yes, that why I said:
+> Hi Lee,
+> 
+> On Wed, 27 May 2020 at 14:21, Chunyan Zhang <zhang.lyra@gmail.com> wrote:
+> >
+> > From: Baolin Wang <baolin.wang7@gmail.com>
+> >
+> > When changing to use suspend-to-idle to save power, the PMIC irq can not
+> > wakeup the system due to lack of wakeup capability, which will cause
+> > the sub-irqs (such as power key) of the PMIC can not wake up the system.
+> > Thus we can add the wakeup capability for PMIC irq to solve this issue,
+> > as well as removing the IRQF_NO_SUSPEND flag to allow PMIC irq to be
+> > a wakeup source.
+> >
+> > Reported-by: Chunyan Zhang <zhang.lyra@gmail.com>
+> > Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+> > Tested-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > ---
+> > Changes from v1:
+> > * addressed comments from Lee;
+> > * added tested-by from Chunyan.
+> > (This patch is rebased on branch for-mfd-next)
+> 
+> Could you please pick up this patch if there's no more comments :)
 
-"I see that this was added in an earlier
- revision of this patch series but there isn't any mention of why
- device_is_bound() is used here. It would be great if there was a comment
- detailing why this is necessary. It sounds like maximum_speed is
- important?"
+Please don't send contentless nags.  Your patch is in my queue.
 
-Can you please respond to the rest of my email?
+The merge-window is currently open, which is a) a busy time for
+Maintainers and b) a time where some of us take a little breather
+before the next release.  Please wait until -rc1 has been released
+before sending out your [RESENDS].
+
+> > ---
+> >  drivers/mfd/sprd-sc27xx-spi.c | 28 +++++++++++++++++++++++++++-
+> >  1 file changed, 27 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
+> > index 33336cde4724..adb4a1b13332 100644
+> > --- a/drivers/mfd/sprd-sc27xx-spi.c
+> > +++ b/drivers/mfd/sprd-sc27xx-spi.c
+> > @@ -256,7 +256,7 @@ static int sprd_pmic_probe(struct spi_device *spi)
+> >         }
+> >
+> >         ret = devm_regmap_add_irq_chip(&spi->dev, ddata->regmap, ddata->irq,
+> > -                                      IRQF_ONESHOT | IRQF_NO_SUSPEND, 0,
+> > +                                      IRQF_ONESHOT, 0,
+> >                                        &ddata->irq_chip, &ddata->irq_data);
+> >         if (ret) {
+> >                 dev_err(&spi->dev, "Failed to add PMIC irq chip %d\n", ret);
+> > @@ -272,9 +272,34 @@ static int sprd_pmic_probe(struct spi_device *spi)
+> >                 return ret;
+> >         }
+> >
+> > +       device_init_wakeup(&spi->dev, true);
+> >         return 0;
+> >  }
+> >
+> > +#ifdef CONFIG_PM_SLEEP
+> > +static int sprd_pmic_suspend(struct device *dev)
+> > +{
+> > +       struct sprd_pmic *ddata = dev_get_drvdata(dev);
+> > +
+> > +       if (device_may_wakeup(dev))
+> > +               enable_irq_wake(ddata->irq);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static int sprd_pmic_resume(struct device *dev)
+> > +{
+> > +       struct sprd_pmic *ddata = dev_get_drvdata(dev);
+> > +
+> > +       if (device_may_wakeup(dev))
+> > +               disable_irq_wake(ddata->irq);
+> > +
+> > +       return 0;
+> > +}
+> > +#endif
+> > +
+> > +static SIMPLE_DEV_PM_OPS(sprd_pmic_pm_ops, sprd_pmic_suspend, sprd_pmic_resume);
+> > +
+> >  static const struct of_device_id sprd_pmic_match[] = {
+> >         { .compatible = "sprd,sc2731", .data = &sc2731_data },
+> >         {},
+> > @@ -285,6 +310,7 @@ static struct spi_driver sprd_pmic_driver = {
+> >         .driver = {
+> >                 .name = "sc27xx-pmic",
+> >                 .of_match_table = sprd_pmic_match,
+> > +               .pm = &sprd_pmic_pm_ops,
+> >         },
+> >         .probe = sprd_pmic_probe,
+> >  };
+> >
+
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
