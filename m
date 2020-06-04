@@ -2,85 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A481EDD4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 08:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F071EDD3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 08:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgFDGiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 02:38:05 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:11134 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgFDGiF (ORCPT
+        id S1726921AbgFDGg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 02:36:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726248AbgFDGg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 02:38:05 -0400
-X-Greylist: delayed 346 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Jun 2020 02:38:04 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1591252683;
-        s=strato-dkim-0002; d=hartkopp.net;
-        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=iYDIjqqc8Q9Y3o3HehlKUVb4sDPktGxVlK5z+tGCBwc=;
-        b=N/XziD7ZyPlvy5sBZTvQALHZuUuJSZVp5+tcnGoenhRH2JN2cdqyXJw8da3GF102Ja
-        dR6UCFNOrOIXXUQl7OSnXgRMWXvtbFRM8L4Fr0+BMeHgBxbaC64tLjq3AbA7hRhTFeYz
-        CJf9douk8qU9EAE3uvpal+OfSHFw6jpcU7t3YfDS9NbJ5pRzO38lRWuM805GVpYde0IG
-        RshcbQHQ7Em9VMikkDC2ytxNwWpe5KrlslhvIcClvtjDAiSaTOtFN49Xaofi2Vqv+xN0
-        ZcBMM4oyqJ3Rb47nHByS9h4Y0rt2FL9TyZ5mQ29KusLh1nEmETfYXLyDpfHA/n4dhYaW
-        WJCQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3PMaViOoLMGUch6lU2B"
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.50.177]
-        by smtp.strato.de (RZmta 46.9.1 DYNA|AUTH)
-        with ESMTPSA id V08b19w546W04DJ
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Thu, 4 Jun 2020 08:32:00 +0200 (CEST)
-Subject: Re: [PATCH] can: Replace zero-length array with flexible-array
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200507185118.GA14022@embeddedor>
- <0420f571-2d6a-c830-2029-8da60e3c2094@hartkopp.net>
- <73903bc6-afb7-f30e-28ef-065d41c6ace6@embeddedor.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <74c08a71-afb5-aba4-2c30-c342b4a7e61f@hartkopp.net>
-Date:   Thu, 4 Jun 2020 08:31:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <73903bc6-afb7-f30e-28ef-065d41c6ace6@embeddedor.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 4 Jun 2020 02:36:28 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A80CC05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 23:36:28 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id d6so761571pjs.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 23:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=3OTdeVCvSUjOBcj6MS4hXMUrhdRM9CDvX4e1/CfV3A4=;
+        b=hYKEptt2qyz/b32b0YAtEha20e0sYfLCeLpb93ZQit9FI0v559hjC6QoUSoCMHMQ80
+         FyuIzbyMI9wpBSN0A+N4TmGbIr9/2WEMfeWQddlbcLfBgrIr9wxMDhyOz2MHaB2iLUaF
+         /dug2Tp5tbHXmSmHZ98Kk5UkOGLDij/L9G6vJX76bdfX6cwDM7pnb/+GxQMCDzu7tMjC
+         rCzhLJPGVZZWuXJcsPYBhISx7F5m0v9LV99iQpG15f+jLdRQLs6nvMqQ2zT8OevOehWi
+         fZlEtafJVXEn9qzHeN+ajzCewsWfUR4aVAXkIr2GIUoI/poUsT8rjdoVXQL0nm3H91ye
+         l/YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3OTdeVCvSUjOBcj6MS4hXMUrhdRM9CDvX4e1/CfV3A4=;
+        b=s9h27xUK8ErMyMrxyK9K/AvYvkCSjBPFcBDYokRFt4rYxg95+uEdtr4TzKndQA0Hg2
+         BduEG0TRea4YvwBwByFK1y8SfGWpWt6vVZlwHA157I8lNyOyx/nD0rj99+PuKeUYvG6O
+         KmH+Kcbj8p5v7zEFK8mErlAa50xHBEMmsTV9grzGqn2JE8+Y+JYKnQ5RMFzMMi4KIH0r
+         UxEte6kMBYtECLwG/crz1ukHFOHgbEZMJahQ6fyaUT33XkYbsM2K0Tu0d2cuBZstiozd
+         ItSfNDI4EICCydZKytLz7K6oCh3+lvA0JtRafixh8CDIMoS1QaH4TPp8B2+Rp6pXWZSt
+         s0VQ==
+X-Gm-Message-State: AOAM531tUT84+3gFRvdiokHuCiA0rxuJ54Fg+ysaNAOGeTRbZyoC94ep
+        4j5gwcce65WFh20AJAMkP708ueoUDA==
+X-Google-Smtp-Source: ABdhPJxZFyD9ApfGTaosPM9xnsxT2eLocjXpwskWZ/m7MbjMnO6O7YogS3uzJgd4BXSlU/GvAToGAg==
+X-Received: by 2002:a17:90a:6584:: with SMTP id k4mr4332997pjj.171.1591252587482;
+        Wed, 03 Jun 2020 23:36:27 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:6e90:f3d4:c404:4d38:8396:d1ee])
+        by smtp.gmail.com with ESMTPSA id r205sm2040767pfr.112.2020.06.03.23.36.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jun 2020 23:36:26 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, amit.kucheria@linaro.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH] scsi: ufs: Bump supported UFS HCI version to 3.0
+Date:   Thu,  4 Jun 2020 12:05:59 +0530
+Message-Id: <20200604063559.18080-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gustavo,
+UFS HCI 3.0 versions are being used in Qcom SM8250 based boards. Hence,
+adding it to the list of supported versions.
 
-On 04.06.20 02:58, Gustavo A. R. Silva wrote:
+I don't have the exact information of the additional registers supported
+in version 3.0. Hence the change just adds 0x300 to the list of supported
+versions to remove the below warning:
 
-> Sorry for the late reply. I totally lost track of this thread. :/
+"ufshcd-qcom 1d84000.ufshc: invalid UFS version 0x300"
 
-NP. At least your workflow seems to work :o)
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ drivers/scsi/ufs/ufshci.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-> pahole shows exactly the same output either if cf is a zero-length array or
-> a flexible-array member:
-> 
-> $ pahole -C 'can_skb_priv' drivers/net/can/dev.o
-> 
-> struct can_skb_priv {
-> 	int                        ifindex;              /*     0     4 */
-> 	int                        skbcnt;               /*     4     4 */
-> 	struct can_frame           cf[] __attribute__((__aligned__(8))); /*     8     0 */
-> 
-> 	/* size: 8, cachelines: 1, members: 3 */
-> 	/* forced alignments: 1 */
-> 	/* last cacheline: 8 bytes */
-> } __attribute__((__aligned__(8)));
-> 
-> So, it seems everything should fine. :)
+diff --git a/drivers/scsi/ufs/ufshci.h b/drivers/scsi/ufs/ufshci.h
+index c2961d37cc1c..f2ee81669b00 100644
+--- a/drivers/scsi/ufs/ufshci.h
++++ b/drivers/scsi/ufs/ufshci.h
+@@ -104,6 +104,7 @@ enum {
+ 	UFSHCI_VERSION_11 = 0x00010100, /* 1.1 */
+ 	UFSHCI_VERSION_20 = 0x00000200, /* 2.0 */
+ 	UFSHCI_VERSION_21 = 0x00000210, /* 2.1 */
++	UFSHCI_VERSION_30 = 0x00000300, /* 3.0 */
+ };
+ 
+ /*
+-- 
+2.17.1
 
-Great! Thanks for the info - and how I could have checked it on my own, too.
-
-Best,
-Oliver
