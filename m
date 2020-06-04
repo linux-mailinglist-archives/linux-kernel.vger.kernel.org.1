@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F7D1EE86E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 18:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECD91EE86D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 18:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729785AbgFDQTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 12:19:00 -0400
-Received: from mga02.intel.com ([134.134.136.20]:7759 "EHLO mga02.intel.com"
+        id S1729756AbgFDQSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 12:18:55 -0400
+Received: from mga07.intel.com ([134.134.136.100]:64026 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726026AbgFDQS7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 12:18:59 -0400
-IronPort-SDR: p6ulycz1BjVKGsPvAT97ZS1HzX+RX+Zv1FXt7CuYLMIc3CLyVxocIHzzUO8EfYEoaKQaXccg/D
- yjlPr7aguN8Q==
+        id S1726026AbgFDQSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 12:18:54 -0400
+IronPort-SDR: 2XA3lqAwREO9vAMCwPjXwbRVbQp6B1i3g712zXuLL2igBg1UwWpmM2uiZV/W5YksWjbVEtTa7F
+ oS0rsbmUWjSQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 09:18:59 -0700
-IronPort-SDR: 4pH9rXEgoa7VHTTCbMevjcgWw/Zqc+MwnmVbdk5RMyPg+fP6s7aHUwZDNRhhpemQWgErwdDikT
- QJ5y6/I7vv8g==
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 09:18:54 -0700
+IronPort-SDR: 3iesOQnqNij0d8jQrL1vlVnsBWlqzag1PwNzpIyAUCSuuFsTtf4Ia+xDhPP7ofX5yP13y0Vvbo
+ mXfiE+oCQBqQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,472,1583222400"; 
-   d="scan'208";a="378459559"
+   d="scan'208";a="258931335"
 Received: from lkp-server02.sh.intel.com (HELO 6de3076d9aaa) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Jun 2020 09:18:57 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 04 Jun 2020 09:18:52 -0700
 Received: from kbuild by 6de3076d9aaa with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1jgsa1-00002O-4w; Thu, 04 Jun 2020 16:18:57 +0000
-Date:   Fri, 05 Jun 2020 00:18:22 +0800
+        id 1jgsZv-00002L-Vn; Thu, 04 Jun 2020 16:18:51 +0000
+Date:   Fri, 05 Jun 2020 00:18:25 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:WIP.core/headers] BUILD SUCCESS
- 1d8fcbb76bb17762ca92a79a7db5af98f2fd9fe8
-Message-ID: <5ed91ece.tlop7Avl2x5ljpTW%lkp@intel.com>
+Subject: [tip:master] BUILD SUCCESS
+ 8abcfb969c86dffd06fc02bb9d727dd52977f336
+Message-ID: <5ed91ed1.FU5f3IsxWGEZM/2w%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,10 +43,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  WIP.core/headers
-branch HEAD: 1d8fcbb76bb17762ca92a79a7db5af98f2fd9fe8  compiler.h: Move instrumentation_begin()/end() into new <linux/instrumentation.h> header
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: 8abcfb969c86dffd06fc02bb9d727dd52977f336  Merge branch 'WIP.core/headers'
 
-elapsed time: 482m
+elapsed time: 480m
 
 configs tested: 98
 configs skipped: 1
