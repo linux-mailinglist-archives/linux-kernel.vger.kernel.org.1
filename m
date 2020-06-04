@@ -2,161 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0C91EEAAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191411EEAB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729421AbgFDSze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 14:55:34 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24775 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729141AbgFDSza (ORCPT
+        id S1729253AbgFDS51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 14:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728476AbgFDS51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 14:55:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591296928;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=ES/2U+nNlWHBaABTLa/ag7enpyI1ucrux02WSZ/I5lM=;
-        b=BLiucKUhsKRZ7XOUSL2n5lPrJRW1UKV1IyTBgjZqUj+aPIFdVga6xrySVB1tRwoIdRneh4
-        WGoONnA+LES/TmrBEp0cKDZWNXK0m788eKrAF1RgXpOBQm7ffIVVLpOJ7shyDA6qaWfOcY
-        kMlVhXHvo/s8CC4tqbbblNRvL901tgk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-10-OrwsKud3M9m-_4tDRjRAzg-1; Thu, 04 Jun 2020 14:55:24 -0400
-X-MC-Unique: OrwsKud3M9m-_4tDRjRAzg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C40F41083E80;
-        Thu,  4 Jun 2020 18:55:22 +0000 (UTC)
-Received: from [10.36.112.96] (ovpn-112-96.ams2.redhat.com [10.36.112.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 70A6D61985;
-        Thu,  4 Jun 2020 18:55:20 +0000 (UTC)
-Subject: Re: [PATCH] x86/mm: use max memory block size with unaligned memory
- end
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Sistare <steven.sistare@oracle.com>
-References: <20200604035443.3267046-1-daniel.m.jordan@oracle.com>
- <5827baaf-0eb5-bcea-5d98-727485683512@redhat.com>
- <20200604172213.f5lufktpqvqjkv4u@ca-dmjordan1.us.oracle.com>
- <ebc31650-9e98-f286-6fc2-aafdd3cd9272@redhat.com>
- <20200604181201.lqop72ihg5butlmz@ca-dmjordan1.us.oracle.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
-Organization: Red Hat GmbH
-Message-ID: <34d7b03c-4f32-05c3-b5ce-521951f518e8@redhat.com>
-Date:   Thu, 4 Jun 2020 20:55:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200604181201.lqop72ihg5butlmz@ca-dmjordan1.us.oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Thu, 4 Jun 2020 14:57:27 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E13C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 11:57:26 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id e9so3898597pgo.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 11:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:cc:from:to:message-id;
+        bh=x8TeNbeX47VlJr4ytm2nmwX/C12Vbww0juHrTV1hnpI=;
+        b=Yu41QiekavR3LuHQhEaGdp1xnnE0odpHxlhtP56p1OBe6UEzTar/zSEB9KurLNZwQP
+         VAhXPVj4YEcEQXGImbC43W9yTco3LDws4SdBVfJhu1Y2Q/33awR+ZlSeyyCoWiDeRY2K
+         BEk6/lJfLEdVHtdauOWKfZ0dsMtTqEnoBn4wJpsigkCm8DoqEfhtd9LZ0woWXxcyqvQ9
+         kC7MsWit5tufw1UBXQt1lB1EOvdMxJlWJpuscUkX3tN8O5Qh/VM4clFRPwquoV385sdm
+         jXDdhdBm3+tfWLey9TV/gfi2axtsRsE48A5oS50o0ch4X01H+PYiFxqyWVqQig47YISQ
+         qSyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=x8TeNbeX47VlJr4ytm2nmwX/C12Vbww0juHrTV1hnpI=;
+        b=qXi1/iJf67imCqu26AcP+gTEmlFW2h7GZlTBs2rI+NkbkGu5VUQaU/mMLN72yUtoeb
+         2Cpl5fOP3kFlXlw5KO2dYnARmbQ7xJRcaK5wZWFN22k0pGg3UqMDAVMl+fdtALZGSShT
+         kEgWq6DzYIUgHPNWeG8ZDLwk3EZ6P77Aht9ctl19wXTqrhmCu1OUHvfjCKDtDCCylgoV
+         VsUpZT8t9Hj3tFpWFXvz8NKnUhms1zKtMzZSrWHvzuivD/vjel9DbAeg+XKA8AGx29X+
+         BAcZEr5SBMK8rO37o8UXEGuEkwCkKcqLPlO7WdOFVNfi8Leaxc2lUgiFZBRMYl2FzDR4
+         MENw==
+X-Gm-Message-State: AOAM530UVKX5L8KZz3JyM8FA4vW/Kq6fHlRvWqa536VimtCQheoIkuRy
+        el04tFikL1YAedZAySGbE/kq4Jtd48YmDA==
+X-Google-Smtp-Source: ABdhPJwm5cs4Y7Kn5MQv209qRC18xQ4hfmpd0wRzl8FCOohp4Eynz1xmoRWdTTnfrNm5E9lnq4zDTQ==
+X-Received: by 2002:a63:9d0e:: with SMTP id i14mr5564137pgd.55.1591297045776;
+        Thu, 04 Jun 2020 11:57:25 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id g17sm1360814pju.11.2020.06.04.11.57.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jun 2020 11:57:25 -0700 (PDT)
+Date:   Thu, 04 Jun 2020 11:57:25 -0700 (PDT)
+X-Google-Original-Date: Thu, 04 Jun 2020 11:56:43 PDT (-0700)
+Subject: [GIT PULL] RISC-V Patches for the 5.8 Merge Window, Part 1
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-8ec4417a-1930-4582-b309-e510ebbfb37c@palmerdabbelt-glaptop1>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> E.g., on powerpc that's 16MB so they have *a lot* of memory blocks.
->> That's why that's not papering over the problem. Increasing the memory
->> block size isn't always the answer.
-> 
-> Ok.  If you don't mind, what's the purpose of hotplugging at that granularity?
-> I'm simply curious.
+The following changes since commit b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce:
 
-On bare metal: none with that big machines AFAIKS. :)
+  Linux 5.7-rc6 (2020-05-17 16:48:37 -0700)
 
-For VMs/partitions it gives you much more flexibility ("cloud", kata
-containers, memory overcommit, ...).
+are available in the Git repository at:
 
-Assume you have a VM with some initial memory size (e.g., 32GB). By
-hotplugging up to 256 DIMMs you cab grow in small steps (e.g., 128MB, up
-to 64GB, 256MB, up to 96GB, ...). And if you online all the memory
-blocks MOVABLE, you can shrink in these small steps.
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.8-mw0
 
-Regarding PowerPC, AFAIK it also gives the OS more flexibility to find
-memory blocks that can be offlined and unplugged, especially without the
-MOVABLE zone. Finding some scattered 16MB blocks that can be offlined is
-easier than finding one bigger (e.g., 2GB) memory block that can be
-offlined. And the history of powerpc dlpar dates back to pre-MOVABLE
-days (there is a paper from 2003).
+for you to fetch changes up to 09c0533d129ce460e6214c14f744ddbac3733889:
 
-> 
->>> Yeah, but of course it's not as bad as it was now that it's fully parallelized.
->>
->> Right. I also observed that computing if a zone is contiguous can be
->> expensive.
-> 
-> That's right, I remember that.  It's on my list :)
+  soc: sifive: l2 cache: Mark l2_get_priv_group as static (2020-05-28 15:57:49 -0700)
 
-I do think your change mostly affects bare metal where you do not care
-about hotplugging small memory blocks. Maybe an even better check would be
+----------------------------------------------------------------
+RISC-V Patches for the 5.8 Merge Window, Part 1
 
-if (!in_vm() {
-	bz = MAX_BLOCK_SIZE;
-	goto none;
-}
+* The remainder of the code necessary to support the Kendryte K210.
+    * Support for building device trees into the kernel, as the K210 doesn't
+      have a bootloader that provides one.
+    * A K210 device tree and the associated defconfig update.
+    * Support for skipping PMP initialization on systems that trap on PMP
+      accesses rather than treating them as WARL.
+* Support for KGDB.
+* Improvements to text patching.
+* Some cleanups to the SiFive L2 cache driver.
 
-because I doubt we have bare metal machines > 64 where we want to
-hot(un)plug DIMMs < 2G. But maybe there is a use case I am not aware of
-... and I don't know an easy way to check whether we are running inside
-a VM or not (like kvm_para_available() ... ).
+I may have a second part, but I wanted to get this out earlier rather than
+later as they've been ready to go for a while now.
 
--- 
-Thanks,
+----------------------------------------------------------------
+Damien Le Moal (1):
+      riscv: K210: Update defconfig
 
-David / dhildenb
+Palmer Dabbelt (5):
+      riscv: Allow device trees to be built into the kernel
+      riscv: K210: Add a built-in device tree
+      RISC-V: Skip setting up PMPs on traps
+      soc: sifive: l2 cache: Eliminate an unsigned zero compare warning
+      soc: sifive: l2 cache: Mark l2_get_priv_group as static
 
+Vincent Chen (4):
+      kgdb: Add kgdb_has_hit_break function
+      riscv: Add KGDB support
+      riscv: Use the XML target descriptions to report 3 system registers
+      riscv: Add SW single-step support for KDB
+
+Yash Shah (2):
+      riscv: cacheinfo: Implement cache_get_priv_group with a generic ops structure
+      riscv: Add support to determine no. of L2 cache way enabled
+
+Zong Li (3):
+      riscv: Remove the 'riscv_' prefix of function name
+      riscv: Use NOKPROBE_SYMBOL() instead of __krpobes annotation
+      riscv: Use text_mutex instead of patch_lock
+
+ arch/riscv/Kbuild                       |   1 +
+ arch/riscv/Kconfig                      |   7 +
+ arch/riscv/Kconfig.socs                 |  17 +-
+ arch/riscv/boot/dts/Makefile            |   2 +
+ arch/riscv/boot/dts/kendryte/Makefile   |   4 +-
+ arch/riscv/configs/nommu_k210_defconfig |   7 +-
+ arch/riscv/include/asm/cacheinfo.h      |  15 ++
+ arch/riscv/include/asm/gdb_xml.h        | 117 ++++++++++
+ arch/riscv/include/asm/kdebug.h         |  12 +
+ arch/riscv/include/asm/kgdb.h           | 112 +++++++++
+ arch/riscv/include/asm/parse_asm.h      | 219 ++++++++++++++++++
+ arch/riscv/include/asm/patch.h          |   4 +-
+ arch/riscv/include/asm/soc.h            |  39 ++++
+ arch/riscv/kernel/Makefile              |   1 +
+ arch/riscv/kernel/cacheinfo.c           |  17 ++
+ arch/riscv/kernel/ftrace.c              |  15 +-
+ arch/riscv/kernel/head.S                |  11 +-
+ arch/riscv/kernel/kgdb.c                | 390 ++++++++++++++++++++++++++++++++
+ arch/riscv/kernel/patch.c               |  46 ++--
+ arch/riscv/kernel/setup.c               |   4 +
+ arch/riscv/kernel/soc.c                 |  27 +++
+ arch/riscv/kernel/traps.c               |   5 +
+ arch/riscv/kernel/vmlinux.lds.S         |   5 +
+ arch/riscv/mm/init.c                    |   9 +
+ drivers/soc/kendryte/k210-sysctl.c      |  12 +
+ drivers/soc/sifive/sifive_l2_cache.c    |  40 +++-
+ kernel/debug/debug_core.c               |  12 +
+ 27 files changed, 1119 insertions(+), 31 deletions(-)
+ create mode 100644 arch/riscv/include/asm/cacheinfo.h
+ create mode 100644 arch/riscv/include/asm/gdb_xml.h
+ create mode 100644 arch/riscv/include/asm/kdebug.h
+ create mode 100644 arch/riscv/include/asm/kgdb.h
+ create mode 100644 arch/riscv/include/asm/parse_asm.h
+ create mode 100644 arch/riscv/kernel/kgdb.c
