@@ -2,193 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDF51EECBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 23:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4241EECC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 23:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726106AbgFDVBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 17:01:53 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:44250 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725955AbgFDVBx (ORCPT
+        id S1726268AbgFDVD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 17:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgFDVDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 17:01:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591304511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=2KClr5NiOIWHiuhB5usfKiNb03ChHaaNAYDguDN289c=;
-        b=ezd6V6GQhtp/v753MRk5+G+hUohnptF4WGBooD+hkrVjQLtl8fYfR+Z+Ivl/RHgeb2hhks
-        qO4rpIAvx3P5vpw2WSxh0TaCOaOaMCSrlV/68k2noVm1VrUHkwyFc3Uke4+PryzZPJXtVU
-        0cKuUG5o7q/7TyGDv9D3C6B30FtAtM0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-FAp4gH5uPZKm5qnek9q_Jg-1; Thu, 04 Jun 2020 17:01:49 -0400
-X-MC-Unique: FAp4gH5uPZKm5qnek9q_Jg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A797483DB38;
-        Thu,  4 Jun 2020 21:01:48 +0000 (UTC)
-Received: from llong.com (ovpn-114-13.rdu2.redhat.com [10.10.114.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 413FF5FC2C;
-        Thu,  4 Jun 2020 21:01:40 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
-        Eric Sandeen <sandeen@redhat.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v2] xfs: Fix false positive lockdep warning with sb_internal & fs_reclaim
-Date:   Thu,  4 Jun 2020 17:01:30 -0400
-Message-Id: <20200604210130.697-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Thu, 4 Jun 2020 17:03:25 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D25C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 14:03:24 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id q8so7946816iow.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 14:03:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xVcHrfKW+EZLK5WlvWHRmcrAcLbjRGuWUSEv5Qrs1B4=;
+        b=SGe6Nt4I1FoJ2ANC8HuzMuezUuGCeu8KucBq8Rf8YAAzjJ4WCCfTCSJDkBTI5MPby7
+         olZ3xVaPwehMaSwNyhEU+fpeczpSyIA/hDSC4zLF4GWwLB3nX1siy6Wfqyd5oCZb4tex
+         /ziFT9YowW6F6ToyhHZje6eivMjWP1rVKYNzqA84rhlVKpwXUMNxWPgqCfoqSNITOn2i
+         0I9nKK0BsJ/fBdtLlHabEsaKunPvKpO8EMC4np1uz2KMOMhc2Rs+fke+5WTlS/fjh4sx
+         Mbdx3TTMQ0C+YfPvnrV8GrZ/GJyAoITjJ53BYhYBfzVa7qKrxy5vdZLXzA2PhbQkrv86
+         8vsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xVcHrfKW+EZLK5WlvWHRmcrAcLbjRGuWUSEv5Qrs1B4=;
+        b=XPtgVYr2ws6JBiA1HaCfF+kJE2AO6Qsl+2KtXJ1aZg26777txgE1Zi70cbEAGyfnbG
+         CDYQOo9K41H3B2azIa2nd0LHUcIIReVXY3jDMuvezFUQTKwb+U67XP/0UYrCkZJAgdAp
+         cqgcSHdSmpCH8yescWatViBkUV3EQqiFn5jz2qNnSoDUp8+1Gn2P0rFjkgGigtG6tHZH
+         nLTu+j7jUv5f0lulWK4Pio4n9yw4Ik9ciOjn1EcGSgs9F90TFifAn1vROdqbsPI7aTdX
+         L/xnUrnNT6gfPLHpcljWdQg2W2OTThihR1v5KF+g2zCJ+NrN4hO+h0Ld3PokgV5GIPD2
+         Yl+A==
+X-Gm-Message-State: AOAM533XGY6NbllgJiNy+HUxV6wP5ucTm1zL55819ehuDH84DyZUfMtV
+        Dd/tlE0vW6iIG5Zml4VI/WqXT8xiv8x0txasnJbmag==
+X-Google-Smtp-Source: ABdhPJydaD55JsS0MoPoYnaMrMN3IUQdB136AuNz0druLAaVYc+jwbiq3WE0o9kEigoUYDae316q2Oi5uZR3js1Jn6s=
+X-Received: by 2002:a02:390b:: with SMTP id l11mr6074699jaa.54.1591304603645;
+ Thu, 04 Jun 2020 14:03:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
+ <20200604161523.39962919@why> <20200604154835.GE30223@linux.intel.com>
+ <20200604163532.GE3650@willie-the-truck> <6DBAB6A4-A1F9-40E9-B81B-74182DDCF939@intel.com>
+In-Reply-To: <6DBAB6A4-A1F9-40E9-B81B-74182DDCF939@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 4 Jun 2020 14:03:12 -0700
+Message-ID: <CALMp9eRN-zkvmkYQ0a600SyLA_0ymznBG8jmriTsYMcXkK77Qg@mail.gmail.com>
+Subject: Re: [RFC 00/16] KVM protected memory extension
+To:     "Nakajima, Jun" <jun.nakajima@intel.com>
+Cc:     Will Deacon <will@kernel.org>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        Marc Zyngier <maz@kernel.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "kernel-team@android.com" <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Depending on the workloads, the following circular locking dependency
-warning between sb_internal (a percpu rwsem) and fs_reclaim (a pseudo
-lock) may show up:
+On Thu, Jun 4, 2020 at 12:09 PM Nakajima, Jun <jun.nakajima@intel.com> wrot=
+e:
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.0.0-rc1+ #60 Tainted: G        W
-------------------------------------------------------
-fsfreeze/4346 is trying to acquire lock:
-0000000026f1d784 (fs_reclaim){+.+.}, at:
-fs_reclaim_acquire.part.19+0x5/0x30
+> We (Intel virtualization team) are also working on a similar thing, proto=
+typing to meet such requirements, i..e "some level of confidentiality to gu=
+ests=E2=80=9D. Linux/KVM is the host, and the Kirill=E2=80=99s patches are =
+helpful when removing the mappings from the host to achieve memory isolatio=
+n of a guest. But, it=E2=80=99s not easy to prove there are no other mappin=
+gs.
+>
+> To raise the level of security, our idea is to de-privilege the host kern=
+el just to enforce memory isolation using EPT (Extended Page Table) that vi=
+rtualizes guest (the host kernel in this case) physical memory; almost ever=
+ything is passthrough. And the EPT for the host kernel excludes the memory =
+for the guest(s) that has confidential info. So, the host kernel shouldn=E2=
+=80=99t cause VM exits as long as it=E2=80=99s behaving well (CPUID still c=
+auses a VM exit, though).
 
-but task is already holding lock:
-0000000072bfc54b (sb_internal){++++}, at: percpu_down_write+0xb4/0x650
-
-which lock already depends on the new lock.
-  :
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(sb_internal);
-                               lock(fs_reclaim);
-                               lock(sb_internal);
-  lock(fs_reclaim);
-
- *** DEADLOCK ***
-
-4 locks held by fsfreeze/4346:
- #0: 00000000b478ef56 (sb_writers#8){++++}, at: percpu_down_write+0xb4/0x650
- #1: 000000001ec487a9 (&type->s_umount_key#28){++++}, at: freeze_super+0xda/0x290
- #2: 000000003edbd5a0 (sb_pagefaults){++++}, at: percpu_down_write+0xb4/0x650
- #3: 0000000072bfc54b (sb_internal){++++}, at: percpu_down_write+0xb4/0x650
-
-stack backtrace:
-Call Trace:
- dump_stack+0xe0/0x19a
- print_circular_bug.isra.10.cold.34+0x2f4/0x435
- check_prev_add.constprop.19+0xca1/0x15f0
- validate_chain.isra.14+0x11af/0x3b50
- __lock_acquire+0x728/0x1200
- lock_acquire+0x269/0x5a0
- fs_reclaim_acquire.part.19+0x29/0x30
- fs_reclaim_acquire+0x19/0x20
- kmem_cache_alloc+0x3e/0x3f0
- kmem_zone_alloc+0x79/0x150
- xfs_trans_alloc+0xfa/0x9d0
- xfs_sync_sb+0x86/0x170
- xfs_log_sbcount+0x10f/0x140
- xfs_quiesce_attr+0x134/0x270
- xfs_fs_freeze+0x4a/0x70
- freeze_super+0x1af/0x290
- do_vfs_ioctl+0xedc/0x16c0
- ksys_ioctl+0x41/0x80
- __x64_sys_ioctl+0x73/0xa9
- do_syscall_64+0x18f/0xd23
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-According to Dave Chinner:
-
-  Freezing the filesystem, after all the data has been cleaned. IOWs
-  memory reclaim will never run the above writeback path when
-  the freeze process is trying to allocate a transaction here because
-  there are no dirty data pages in the filesystem at this point.
-
-  Indeed, this xfs_sync_sb() path sets XFS_TRANS_NO_WRITECOUNT so that
-  it /doesn't deadlock/ by taking freeze references for the
-  transaction. We've just drained all the transactions
-  in progress and written back all the dirty metadata, too, and so the
-  filesystem is completely clean and only needs the superblock to be
-  updated to complete the freeze process. And to do that, it does not
-  take a freeze reference because calling sb_start_intwrite() here
-  would deadlock.
-
-  IOWs, this is a false positive, caused by the fact that
-  xfs_trans_alloc() is called from both above and below memory reclaim
-  as well as within /every level/ of freeze processing. Lockdep is
-  unable to describe the staged flush logic in the freeze process that
-  prevents deadlocks from occurring, and hence we will pretty much
-  always see false positives in the freeze path....
-
-Perhaps breaking the fs_reclaim pseudo lock into a per filesystem lock
-may fix the issue. However, that will greatly complicate the logic and
-may not be worth it.
-
-Another way to fix it is to disable the taking of the fs_reclaim
-pseudo lock when in the freezing code path as a reclaim on the freezed
-filesystem is not possible as stated above. Given that a KM_NOLOCKDEP
-flag has been introduced in commit 6dcde60efd94 ("xfs: more lockdep
-whackamole with kmem_alloc*"), this flag can be used to disable lockdep
-when the filesystem has been freezed.
-
-Without this patch, the command sequence below will show that the lock
-dependency chain sb_internal -> fs_reclaim exists.
-
- # fsfreeze -f /home
- # fsfreeze --unfreeze /home
- # grep -i fs_reclaim -C 3 /proc/lockdep_chains | grep -C 5 sb_internal
-
-After applying the patch, such sb_internal -> fs_reclaim lock dependency
-chain can no longer be found. Because of that, the locking dependency
-warning will not be shown.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- fs/xfs/xfs_log.c   | 3 ++-
- fs/xfs/xfs_trans.c | 8 +++++++-
- 2 files changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
-index 00fda2e8e738..d273d4e74ef8 100644
---- a/fs/xfs/xfs_log.c
-+++ b/fs/xfs/xfs_log.c
-@@ -433,7 +433,8 @@ xfs_log_reserve(
- 	XFS_STATS_INC(mp, xs_try_logspace);
- 
- 	ASSERT(*ticp == NULL);
--	tic = xlog_ticket_alloc(log, unit_bytes, cnt, client, permanent, 0);
-+	tic = xlog_ticket_alloc(log, unit_bytes, cnt, client, permanent,
-+			mp->m_super->s_writers.frozen ? KM_NOLOCKDEP : 0);
- 	*ticp = tic;
- 
- 	xlog_grant_push_ail(log, tic->t_cnt ? tic->t_unit_res * tic->t_cnt
-diff --git a/fs/xfs/xfs_trans.c b/fs/xfs/xfs_trans.c
-index 3c94e5ff4316..3a9f394a0f02 100644
---- a/fs/xfs/xfs_trans.c
-+++ b/fs/xfs/xfs_trans.c
-@@ -261,8 +261,14 @@ xfs_trans_alloc(
- 	 * Allocate the handle before we do our freeze accounting and setting up
- 	 * GFP_NOFS allocation context so that we avoid lockdep false positives
- 	 * by doing GFP_KERNEL allocations inside sb_start_intwrite().
-+	 *
-+	 * To prevent false positive lockdep warning of circular locking
-+	 * dependency between sb_internal and fs_reclaim, disable the
-+	 * acquisition of the fs_reclaim pseudo-lock when the superblock
-+	 * has been frozen or in the process of being frozen.
- 	 */
--	tp = kmem_zone_zalloc(xfs_trans_zone, 0);
-+	tp = kmem_zone_zalloc(xfs_trans_zone,
-+		mp->m_super->s_writers.frozen ? KM_NOLOCKDEP : 0);
- 	if (!(flags & XFS_TRANS_NO_WRITECOUNT))
- 		sb_start_intwrite(mp->m_super);
- 
--- 
-2.18.1
-
+You're Intel. Can't you just change the CPUID intercept from required
+to optional? It seems like this should be in the realm of a small
+microcode patch.
