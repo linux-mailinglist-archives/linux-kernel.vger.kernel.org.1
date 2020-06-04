@@ -2,112 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7B21EE66E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 16:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19061EE6B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 16:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728928AbgFDOP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 10:15:58 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5853 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728496AbgFDOP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 10:15:58 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2E9EB9BADC0A4A544A24;
-        Thu,  4 Jun 2020 22:15:50 +0800 (CST)
-Received: from huawei.com (10.175.101.78) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 4 Jun 2020
- 22:15:42 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <b.zolnierkie@samsung.com>, <linux-kernel@vger.kernel.org>
-CC:     <yangyingliang@huawei.com>
-Subject: [PATCH] vgacon: fix a UAF in do_update_region()
-Date:   Thu, 4 Jun 2020 22:38:44 +0800
-Message-ID: <1591281524-114053-1-git-send-email-yangyingliang@huawei.com>
-X-Mailer: git-send-email 1.8.3
+        id S1729030AbgFDOc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 10:32:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59194 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728919AbgFDOc0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 10:32:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591281144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=h9M1fLh8Ru9H4w+WFRAfiLMCmRmx0L8dSLxiYIXuu4E=;
+        b=EA8m89u9f8/g+TqsmQ3ZIOv2b/lDQrZViHjh3wwcFYyFitIOTM6RJ2vnHNK0syReTTUzTN
+        meke3oqv4RBmX0XZtTZRO1q/SUKqMPelHWdY+fAHRnPCO36cop1s2L2vQJp9sr9f2/hQhZ
+        2zAG7HYpcLkVPUsn0wHtyNSoxeqsV9Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-238-QJFS2nS7OyOa-MMajM20aw-1; Thu, 04 Jun 2020 10:32:20 -0400
+X-MC-Unique: QJFS2nS7OyOa-MMajM20aw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B75B1800D42;
+        Thu,  4 Jun 2020 14:32:02 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3C6FB7CCC1;
+        Thu,  4 Jun 2020 14:32:00 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: nVMX: Inject #GP when nested_vmx_get_vmptr() fails to read guest memory
+Date:   Thu,  4 Jun 2020 16:31:58 +0200
+Message-Id: <20200604143158.484651-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.78]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a UAF report in do_update_region() when I doing fuzz test.
+Syzbot reports the following issue:
 
-[   51.161905] BUG: KASAN: use-after-free in do_update_region+0x579/0x600
-[   51.161918] Read of size 2 at addr ffff888000100000 by task test/295
+WARNING: CPU: 0 PID: 6819 at arch/x86/kvm/x86.c:618 kvm_inject_emulated_page_fault+0x210/0x290 arch/x86/kvm/x86.c:618
+...
+Call Trace:
+...
+RIP: 0010:kvm_inject_emulated_page_fault+0x210/0x290 arch/x86/kvm/x86.c:618
+...
+ nested_vmx_get_vmptr+0x1f9/0x2a0 arch/x86/kvm/vmx/nested.c:4638
+ handle_vmon arch/x86/kvm/vmx/nested.c:4767 [inline]
+ handle_vmon+0x168/0x3a0 arch/x86/kvm/vmx/nested.c:4728
+ vmx_handle_exit+0x29c/0x1260 arch/x86/kvm/vmx/vmx.c:6067
 
-[   51.161957] CPU: 2 PID: 295 Comm: test Not tainted 5.7.0+ #975
-[   51.161969] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-[   51.161976] Call Trace:
-[   51.162001]  dump_stack+0xc6/0x11e
-[   51.162019]  ? do_update_region+0x579/0x600
-[   51.162047]  print_address_description.constprop.6+0x1a/0x220
-[   51.162083]  ? vprintk_func+0x66/0xed
-[   51.162100]  ? do_update_region+0x579/0x600
-[   51.162112]  ? do_update_region+0x579/0x600
-[   51.162128]  kasan_report.cold.9+0x37/0x7c
-[   51.162151]  ? do_update_region+0x579/0x600
-[   51.162173]  do_update_region+0x579/0x600
-[   51.162207]  ? con_get_trans_old+0x230/0x230
-[   51.162229]  ? retint_kernel+0x10/0x10
-[   51.162278]  csi_J+0x557/0xa00
-[   51.162307]  do_con_trol+0x49af/0x5cc0
-[   51.162330]  ? lock_downgrade+0x720/0x720
-[   51.162347]  ? reset_palette+0x1b0/0x1b0
-[   51.162369]  ? lockdep_hardirqs_on_prepare+0x379/0x540
-[   51.162393]  ? notifier_call_chain+0x11b/0x160
-[   51.162438]  do_con_write.part.24+0xb0a/0x1a30
-[   51.162501]  ? do_con_trol+0x5cc0/0x5cc0
-[   51.162522]  ? console_unlock+0x7b8/0xb00
-[   51.162555]  ? __mutex_unlock_slowpath+0xd4/0x670
-[   51.162574]  ? this_tty+0xe0/0xe0
-[   51.162589]  ? console_unlock+0x559/0xb00
-[   51.162605]  ? wait_for_completion+0x260/0x260
-[   51.162638]  con_write+0x31/0xb0
-[   51.162658]  n_tty_write+0x4fa/0xd40
-[   51.162710]  ? n_tty_read+0x1800/0x1800
-[   51.162730]  ? prepare_to_wait_exclusive+0x270/0x270
-[   51.162754]  ? __might_fault+0x175/0x1b0
-[   51.162783]  tty_write+0x42b/0x8d0
-[   51.162795]  ? n_tty_read+0x1800/0x1800
-[   51.162825]  ? tty_lookup_driver+0x450/0x450
-[   51.162848]  __vfs_write+0x7c/0x100
-[   51.162875]  vfs_write+0x1c9/0x510
-[   51.162901]  ksys_write+0xff/0x200
-[   51.162918]  ? __ia32_sys_read+0xb0/0xb0
-[   51.162940]  ? do_syscall_64+0x1a/0x520
-[   51.162957]  ? lockdep_hardirqs_on_prepare+0x379/0x540
-[   51.162984]  do_syscall_64+0xa1/0x520
-[   51.163008]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
+'exception' we're trying to inject with kvm_inject_emulated_page_fault() comes from
+  nested_vmx_get_vmptr()
+   kvm_read_guest_virt()
+     kvm_read_guest_virt_helper()
+       vcpu->arch.walk_mmu->gva_to_gpa()
 
-After vgacon_set_origin() is called in set_origin(), the vc_origin is
-set to vga_vram_base, the vc_pos should between vga_vram_base and
-vga_vram_end. But we still use vc_screenbuf_size, if the vga_vram_size
-is smaller than vc_screenbuf_size, vc_pos may be out of bound, using it
-will cause a use-after-free(or out-of-bounds). Fix this by calling
-vc_resize() if vga_vram_size is smaller than vc_screenbuf_size.
+but it is only set when GVA to GPA conversion fails. In case it doesn't but
+we still fail kvm_vcpu_read_guest_page(), X86EMUL_IO_NEEDED is returned and
+nested_vmx_get_vmptr() calls kvm_inject_emulated_page_fault() with zeroed
+'exception'. This happen when e.g. VMXON/VMPTRLD/VMCLEAR argument is MMIO.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+KVM could've handled the request correctly by going to userspace and
+performing I/O but there doesn't seem to be a good need for such requests
+in the first place. Sane guests should not call VMXON/VMPTRLD/VMCLEAR with
+anything but normal memory. Just inject #GP to find insane ones.
+
+Reported-by: syzbot+2a7156e11dc199bdbd8a@syzkaller.appspotmail.com
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 ---
- drivers/video/console/vgacon.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/kvm/vmx/nested.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
-index 998b0de..2ee3d62 100644
---- a/drivers/video/console/vgacon.c
-+++ b/drivers/video/console/vgacon.c
-@@ -1336,6 +1336,9 @@ static int vgacon_set_origin(struct vc_data *c)
- 	if (vga_is_gfx ||	/* We don't play origin tricks in graphic modes */
- 	    (console_blanked && !vga_palette_blanked))	/* Nor we write to blanked screens */
- 		return 0;
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 9c74a732b08d..05d57c3cb1ce 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -4628,14 +4628,29 @@ static int nested_vmx_get_vmptr(struct kvm_vcpu *vcpu, gpa_t *vmpointer)
+ {
+ 	gva_t gva;
+ 	struct x86_exception e;
++	int r;
+ 
+ 	if (get_vmx_mem_address(vcpu, vmx_get_exit_qual(vcpu),
+ 				vmcs_read32(VMX_INSTRUCTION_INFO), false,
+ 				sizeof(*vmpointer), &gva))
+ 		return 1;
+ 
+-	if (kvm_read_guest_virt(vcpu, gva, vmpointer, sizeof(*vmpointer), &e)) {
+-		kvm_inject_emulated_page_fault(vcpu, &e);
++	r = kvm_read_guest_virt(vcpu, gva, vmpointer, sizeof(*vmpointer), &e);
++	if (r != X86EMUL_CONTINUE) {
++		if (r == X86EMUL_PROPAGATE_FAULT) {
++			kvm_inject_emulated_page_fault(vcpu, &e);
++		} else {
++			/*
++			 * X86EMUL_IO_NEEDED is returned when kvm_vcpu_read_guest_page()
++			 * fails to read guest's memory (e.g. when 'gva' points to MMIO
++			 * space). While KVM could've handled the request correctly by
++			 * exiting to userspace and performing I/O, there doesn't seem
++			 * to be a real use-case behind such requests, just inject #GP
++			 * for now.
++			 */
++			kvm_inject_gp(vcpu, 0);
++		}
 +
-+	if (c->vc_screenbuf_size > vga_vram_size)
-+		vc_resize(c, screen_info.orig_video_cols, screen_info.orig_video_lines);
- 	c->vc_origin = c->vc_visible_origin = vga_vram_base;
- 	vga_set_mem_top(c);
- 	vga_rolled_over = 0;
+ 		return 1;
+ 	}
+ 
 -- 
-1.8.3
+2.25.4
 
