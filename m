@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B611EE8DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 18:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8C31EE8DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 18:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729985AbgFDQtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 12:49:55 -0400
-Received: from smtprelay0196.hostedemail.com ([216.40.44.196]:39834 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729115AbgFDQtx (ORCPT
+        id S1729939AbgFDQus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 12:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729115AbgFDQus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 12:49:53 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 5E9B0503E9;
-        Thu,  4 Jun 2020 16:49:51 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:2915:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:5007:6742:10004:10400:10848:11026:11232:11473:11658:11914:12296:12297:12555:12740:12760:12895:12986:13069:13161:13229:13311:13357:13439:14659:14721:21080:21627:21990:30054:30060:30069:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: field18_4511ff726d98
-X-Filterd-Recvd-Size: 2054
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  4 Jun 2020 16:49:49 +0000 (UTC)
-Message-ID: <28b33db24b1dbd15cd6711cd473f1c0e5f801e74.camel@perches.com>
-Subject: Re: [PATCH] linux/bits.h: fix unsigned less than zero warnings
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, emil.l.velikov@gmail.com,
-        Kees Cook <keescook@chromium.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        kbuild test robot <lkp@intel.com>
-Date:   Thu, 04 Jun 2020 09:49:46 -0700
-In-Reply-To: <CAHp75VcNVOF6jHZ7gtpqskg9rDgwt3MmtGZJJOXE-GwvXRPOhw@mail.gmail.com>
-References: <20200603215314.GA916134@rikard>
-         <20200603220226.916269-1-rikard.falkeborn@gmail.com>
-         <CAHp75VcNVOF6jHZ7gtpqskg9rDgwt3MmtGZJJOXE-GwvXRPOhw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Thu, 4 Jun 2020 12:50:48 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E48C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 09:50:47 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id s192so1523930vkh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 09:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=5LEfTuUOwJaeWFd798KHoCqmw1Id8y7UDi1JmDvneuk=;
+        b=h0Dad03pVqrAjgjlA/3QaOCHkbxJ4gIT+/nbSVCYKEOjttJYZwa4C7g6+s8fmwAFuQ
+         XMvinUnU4U/z6jBC1lP5qUhjw3Llq/eLcnMbBF8tX+XtE6eZ4ylJdGOSBhAtUOOqkMMV
+         NiBO/lPXuwrPykHRmRGqasMPciqn/BVIxxDHNBb3GyJhjAKKQ1xiErp8bfyKSiDfRkeJ
+         DXvwsjndJssGGtSuA4QRP1zZ1kvvIJPUM0vVAD8SezTmN6HdWvJ1azuAYU8TKnDXQHWu
+         2dPowa6Wl2IBspXka4XEyhpgOUOwGFxtj5nWw8DigzKe+0ndQHau8d84q28j46WctPos
+         Gz9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=5LEfTuUOwJaeWFd798KHoCqmw1Id8y7UDi1JmDvneuk=;
+        b=YQLbLd7yxhlSHCaoLQveHa6jE2RPnL+/mvo874V/8Ej+tiHN495W5Sr1/KZxmDEyEn
+         RbC0El+JRDgs2BSFysbzFLkVg82eIbtmewU8KEbpyTigPhdwpug0x6qO8rqHkYclrwJB
+         IBHtePZeZZ55JqxJA13Cc8PVDFA35qldZa4h1uhw7k8z5pq0sRt1Pn1aouqFzgNPEqFW
+         Iwns3x3lkmTV17gS+22KEeObKuezuher687NGobF5xnamOL+bDXvSqhCA9/ZtQ76Io1I
+         uDAL6lIgAGajLOPwSRDjRCGSzm38tgPDKmLk/4ZWbgsxdi6bIYbcMM9X0vSgq7zkvU1m
+         bfwA==
+X-Gm-Message-State: AOAM531XtfLKjBw0NOVfCXVrfMlMpbBHPPiNUo4qBuXdjF6k2JHDxMvK
+        Wv9Dz2+ZoxqcdKaB1/I5vFIon3/M/gI5TZ8uL5Q=
+X-Google-Smtp-Source: ABdhPJy4hz5hPsX9Rxif5pElDt+O0280OHVTFazpM2Oj/75mfb/M/CjKa9zWlKcisHsEVkW1DStZzgHIFIVermtm4Z0=
+X-Received: by 2002:a05:6122:106f:: with SMTP id k15mr4069455vko.21.1591289446920;
+ Thu, 04 Jun 2020 09:50:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Reply-To: dennisskosi01@gmail.com
+Received: by 2002:a9f:29c2:0:0:0:0:0 with HTTP; Thu, 4 Jun 2020 09:50:46 -0700 (PDT)
+From:   Dennis Kosi <dennisskosi01@gmail.com>
+Date:   Thu, 4 Jun 2020 16:50:46 +0000
+X-Google-Sender-Auth: lWeKi_zCIxTxG5c4b-MPWifAzq0
+Message-ID: <CANGjjsDjzh4X5S2GJ2_Lssg-gCwSJLc6gXoH3ywEH9bNVMBbaw@mail.gmail.com>
+Subject: Greetings
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-06-04 at 09:41 +0300, Andy Shevchenko wrote:
-> I think there is still a possibility to improve (as I mentioned there
-> are test cases that are absent right now).
-> What if we will have unsigned long value 0x100000001? Would it be 1
-> after casting?
-> 
-> Maybe cast to (long) or (long long) more appropriate?
+I am Mr.Dennis,i work as an accountant in a bank.I am contacting you
+independently of my investigation in my bank,i need your urgent
+assistance in transferring the sum of $11.6million dollars to your
+private bank account,the fund belongs to one of our foreign customer
+who died a longtime with his supposed next of kin since July 22,
+2003.The money has been here in our Bank lying dormant for years now
+without anybody coming for the claim of it.
 
-Another good mechanism would be to compile-time check the use
-of constants in BITS and BITS_ULL and verify that:
-
-range of BITS is:
-	>= 0 && < (BITS_PER_BYTE * sizeof(unsigned int))
-range of BITS_ULL is:
-	>= 0 && < (BITS_PER_BYTE * sizeof(unsigned long long))
-
-There would be duplication similar to the GENMASK_INPUT_CHECK
-macros.
-
-
+I want to release the money to you as the relative to our deceased
+customer,the Banking laws here does not allow such money to stay more
+than 19years,because the money will be recalled to the Bank treasury
+account as unclaimed fund.I am ready to share with you 40% for you and
+60% will be kept for me, by indicating your interest i will send you
+the full details on how the business will be executed.
