@@ -2,147 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEB61EDCCF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 07:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16291EDCD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 07:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgFDF62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 01:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
+        id S1726934AbgFDF7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 01:59:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgFDF60 (ORCPT
+        with ESMTP id S1726887AbgFDF7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 01:58:26 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7872CC05BD43
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 22:58:26 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id k15so6853417ybt.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 22:58:26 -0700 (PDT)
+        Thu, 4 Jun 2020 01:59:08 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F8EC03E96D
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 22:59:06 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id h95so684810pje.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 22:59:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=NuYIYrAbbNb8cb+ywlNdLoxBFeloVlNH+GnFfXqWSZA=;
-        b=kLpY/vYcWlc3f3tgsDeKEZ1ET26FwvIvc+44dkCatzCdP9ZvI02e6f5gcgiWZ6oGXM
-         SjXSH+MzBdwitr3H+kgujRYwv9ukYqvR9vlydv7wGWJCA2Tezw4c34HNU27Y71E2AFSH
-         +OrqbxmO8UVplGwjyR2MagqxBYCcGQnilbsTbg+7pgK78nTjgm6Hg3CX3S93maoAuIZo
-         1u0b3Gc2BSZd/P/JgechVy1XT9nV5lPZwwe8zUuYj64PgVL9z3GA3pYb5MsKBvuiqoaY
-         6aZ1kmpsxZRjYGd9Yr1zbLD9d9FpXZ9U9pv/7q4zO2VkOPumMVC4+LvOwRSBga8akEWG
-         Z31Q==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tUUk7gLCC9sr5iPcgp8jkdDPE9W39BQTP/3fVTPj3aI=;
+        b=hvXrEv5fPtwYgH6i9ONHo+JyteLKKi6xTABhIoSPnsADZSv0IfYCEC+3KK3FEhdA6I
+         +uVPzmYOMuGF5eVAr+Md2FOKA+tjv2TIpfg63YgAjO5KK26egHr5jktwW1NLhesaWYkL
+         Y3jGzqiy5H1UOkhNK3R/Oxt+rdxk7tYSRa6bYZyUMJTaDMnN5OgfYLk8LT5UXZ1fjWLR
+         F3qWUoPX8mvZAWwUDFVdXnhImSux43HOy4cwQR+yPAQkV49/EC7HEu9GV7WBsgXq1FDF
+         nJcjWn/STN/cDe+Zyen7yPQQoIHVyIz0ng/GVnrwb7UllE799CYOteKSShEIv/JymoBm
+         QbEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=NuYIYrAbbNb8cb+ywlNdLoxBFeloVlNH+GnFfXqWSZA=;
-        b=tTwhRhKNoWfdh0AfBEsRPuflgqShHbqptM5Xx+dkJcHZADaNSOiGxeHUSJKyx5R9Nf
-         vxr3tPGZk2ngelG/nq6yo20EwIIUYnxtSe5GyufHbgnf8wNBXmPOjJapO9I+XT8/Pp0z
-         /8hcPRtzAu2R8000SkQLMiwU0WRwTMOYwWp/4IABhLE6m5wOd6Xw+5gaG6Uc/AgLl+3O
-         cWNbvdcThfMmhN9TPS36Eni5lg44THV77c4HDtuZynR2dAkGBN225qKZMYV/qbWEiadp
-         IaZ9hE1ecYHz1PkMt/P64V00CAa/gN2vHANChdFjS67jo1lXahqeupquYDBRNEXMcUsU
-         nNxw==
-X-Gm-Message-State: AOAM53384t/6SL3OKQz9uA85PNSI5N3ZaF54NhubyOuX41J44dt26DLN
-        8ZIDk/XJJ6eLan8ptMqGRqBFW/g+ig==
-X-Google-Smtp-Source: ABdhPJwUw0SUorskQKH7aB/iKpSf4dQTzroTfyBchleSP8od+QgF3fceEuLeKVsMVKiQWng6UdJA3jhrYA==
-X-Received: by 2002:a25:c186:: with SMTP id r128mr5951332ybf.92.1591250305693;
- Wed, 03 Jun 2020 22:58:25 -0700 (PDT)
-Date:   Thu,  4 Jun 2020 07:58:11 +0200
-In-Reply-To: <20200604055811.247298-1-elver@google.com>
-Message-Id: <20200604055811.247298-2-elver@google.com>
-Mime-Version: 1.0
-References: <20200604055811.247298-1-elver@google.com>
-X-Mailer: git-send-email 2.27.0.rc2.251.g90737beb825-goog
-Subject: [PATCH -tip v2 2/2] compiler_types.h: Add __no_sanitize_{address,undefined}
- to noinstr
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com
-Cc:     will@kernel.org, peterz@infradead.org, bp@alien8.de,
-        tglx@linutronix.de, mingo@kernel.org,
-        clang-built-linux@googlegroups.com, paulmck@kernel.org,
-        dvyukov@google.com, glider@google.com, andreyknvl@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        syzbot+dc1fa714cb070b184db5@syzkaller.appspotmail.com,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tUUk7gLCC9sr5iPcgp8jkdDPE9W39BQTP/3fVTPj3aI=;
+        b=F8PlIy3/v66lkycZMJbfludM2m0oDHe8HbRV/mgbbBdbGS4MDeOIqVhP17tCu3tphW
+         pqgh6dogjGto5XY61v1VNG64LD4oa4kr4eyvR9h0wC3hUoPDMggmQMy6Z9weW1Z7/uwT
+         wehkLpgkXzNTXfq0yFuhE4MBaI9/5gcl9aurWNGJVtxkK/HEapz3odlihtJ9huBEfo5Q
+         MZHawgaiHkZSQNu27SVKlD9zdxDksB09FhaAghA5SAGWTZZ4igMLXvuOJIXUOtUhDo6c
+         2oXzIvHZ+G92m4IXAWcPwYnqSmmdRCDU5dDwWumQ+wCZOPW2kKAzwPDri5YsYIG45ZFS
+         9kqw==
+X-Gm-Message-State: AOAM5327y9KyA6Od1uRBBm1U81vM1dAW7wwo/L86q2G3B2nqMi2W4xzj
+        5jd8Ad88ESTQMimmZto7jlwpmw==
+X-Google-Smtp-Source: ABdhPJzeh7kob7ogWckMzO3sBJuBrbSbZ4YSjxaUNcIH/bi/7Ii6yzULiplFHNYkFJS3fY1lPDS7/Q==
+X-Received: by 2002:a17:90a:8a98:: with SMTP id x24mr4038244pjn.103.1591250346020;
+        Wed, 03 Jun 2020 22:59:06 -0700 (PDT)
+Received: from localhost ([122.172.62.209])
+        by smtp.gmail.com with ESMTPSA id m2sm4153047pjk.52.2020.06.03.22.59.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Jun 2020 22:59:05 -0700 (PDT)
+Date:   Thu, 4 Jun 2020 11:29:03 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC] dt-bindings: mailbox: add doorbell support to ARM MHU
+Message-ID: <20200604055903.ycvu6qfnlwgkh52a@vireshk-i7>
+References: <0a50f0cf5593baeb628dc8606c523665e5e2ae6c.1589519600.git.viresh.kumar@linaro.org>
+ <20200528192005.GA494874@bogus>
+ <20200529040758.kneg2j4n3gxh2rfv@vireshk-i7>
+ <20200603180435.GB23722@bogus>
+ <20200603181743.GC23722@bogus>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200603181743.GC23722@bogus>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds the portable definitions for __no_sanitize_address, and
-__no_sanitize_undefined, and subsequently changes noinstr to use the
-attributes to disable instrumentation via KASAN or UBSAN.
+On 03-06-20, 19:17, Sudeep Holla wrote:
+> I just realised that we have the timing info in the traces and you will
+> observe the sensor readings take something in order of 100us to 500-600us
+> or even more based on which sensor is being read. While we have 100us
+> timeout for cpufreq opp set.
 
-Link: https://lore.kernel.org/lkml/000000000000d2474c05a6c938fe@google.com/
-Reported-by: syzbot+dc1fa714cb070b184db5@syzkaller.appspotmail.com
-Acked-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Signed-off-by: Marco Elver <elver@google.com>
----
+Which timeout from opp core are you talking about ?
 
-Note: __no_sanitize_coverage (for KCOV) isn't possible right now,
-because neither GCC nor Clang support such an attribute. This means
-going and changing the compilers again (for Clang it's fine, for GCC,
-it'll take a while).
-
-However, it looks like that KCOV_INSTRUMENT := n is currently in all the
-right places. Short-term, this should be reasonable.
-
-v2:
-* No change.
----
- include/linux/compiler-clang.h | 8 ++++++++
- include/linux/compiler-gcc.h   | 6 ++++++
- include/linux/compiler_types.h | 3 ++-
- 3 files changed, 16 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-index 2cb42d8bdedc..c0e4b193b311 100644
---- a/include/linux/compiler-clang.h
-+++ b/include/linux/compiler-clang.h
-@@ -33,6 +33,14 @@
- #define __no_sanitize_thread
- #endif
- 
-+#if __has_feature(undefined_behavior_sanitizer)
-+/* GCC does not have __SANITIZE_UNDEFINED__ */
-+#define __no_sanitize_undefined \
-+		__attribute__((no_sanitize("undefined")))
-+#else
-+#define __no_sanitize_undefined
-+#endif
-+
- /*
-  * Not all versions of clang implement the the type-generic versions
-  * of the builtin overflow checkers. Fortunately, clang implements
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index 7dd4e0349ef3..1c74464c80c6 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -150,6 +150,12 @@
- #define __no_sanitize_thread
- #endif
- 
-+#if __has_attribute(__no_sanitize_undefined__)
-+#define __no_sanitize_undefined __attribute__((no_sanitize_undefined))
-+#else
-+#define __no_sanitize_undefined
-+#endif
-+
- #if GCC_VERSION >= 50100
- #define COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW 1
- #endif
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index 02becd21d456..89b8c1ae18a1 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -198,7 +198,8 @@ struct ftrace_likely_data {
- 
- /* Section for code which can't be instrumented at all */
- #define noinstr								\
--	noinline notrace __attribute((__section__(".noinstr.text"))) __no_kcsan
-+	noinline notrace __attribute((__section__(".noinstr.text")))	\
-+	__no_kcsan __no_sanitize_address __no_sanitize_undefined
- 
- #endif /* __KERNEL__ */
- 
 -- 
-2.27.0.rc2.251.g90737beb825-goog
-
+viresh
