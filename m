@@ -2,80 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3AC1EE268
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 12:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640771EE258
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 12:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728410AbgFDKZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 06:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728235AbgFDKZb (ORCPT
+        id S1728259AbgFDKXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 06:23:47 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:8933 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726209AbgFDKXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 06:25:31 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFBCCC03E96E
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 03:25:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=oykwMbU7Wmvh1ZGkCXwhZjfvHzNP7lFFbQQT7fF0pCA=; b=zzqrnKvos/Jhw/yC2usTSVagG8
-        tMISst0ceWqCRicCc/W5/SDTTJKufGU2UPP9dPjpLjf+bS6SjYcxSXF0F3satI9G4G6ypQDVYjWPR
-        wDgJ0ur5wcr2AqcHrUylFbPXJ0PDfDnB6Ya/ikUb65BJcYatc3EfYDQNa88CoULmdFHOQhcfmJkA8
-        bITJbZqYb4JCespUqx/TyyIxI+76bo0iKk9OKDaae2nm1hz1oRF97fScsNGZctMkGtzBNWu7LPXIA
-        4bySgaBEO7zdDB64nO9tf/CnSnbc8Z/qWLlD3gfyX3suYdAnj1bqxbhpRHV0ego27SE3REFWZ2beG
-        NT72a2ig==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jgn3e-0003tl-Jp; Thu, 04 Jun 2020 10:25:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 10E6D306E56;
-        Thu,  4 Jun 2020 12:25:08 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id EB8E620CC68B3; Thu,  4 Jun 2020 12:25:07 +0200 (CEST)
-Message-ID: <20200604102428.364746275@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 04 Jun 2020 12:22:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de
-Cc:     x86@kernel.org, elver@google.com, paulmck@kernel.org,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, will@kernel.org, dvyukov@google.com,
-        glider@google.com, andreyknvl@google.com
-Subject: [PATCH 8/8] x86/entry, bug: Comment the instrumentation_begin() usage for WARN()
-References: <20200604102241.466509982@infradead.org>
+        Thu, 4 Jun 2020 06:23:47 -0400
+From:   Peter Enderborg <peter.enderborg@sony.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Peter Enderborg <peter.enderborg@sony.com>
+Subject: [PATCH] rcu: Stop shrinker loop
+Date:   Thu, 4 Jun 2020 12:23:20 +0200
+Message-ID: <20200604102320.15914-1-peter.enderborg@sony.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=VdGJw2h9 c=1 sm=1 tr=0 a=Jtaq2Av1iV2Yg7i8w6AGMw==:117 a=nTHF0DUjJn0A:10 a=z6gsHLkEAAAA:8 a=ZjHLJIMreXujHcPb9Y4A:9 a=d-OLMTCWyvARjPbQ-enb:22
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Explain the rationale for annotating WARN(), even though, strictly
-speaking printk() and friends are very much not safe in many of the
-places we put them.
+The count and scan can be separated in time. It is a fair chance
+that all work is already done when the scan starts. It
+then might retry. This is can be avoided with returning SHRINK_STOP.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
 ---
- arch/x86/include/asm/bug.h |    6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/bug.h
-+++ b/arch/x86/include/asm/bug.h
-@@ -76,6 +76,12 @@ do {								\
- 	unreachable();						\
- } while (0)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index c716eadc7617..8b36c6b2887d 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3310,7 +3310,7 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 			break;
+ 	}
  
-+/*
-+ * This instrumentation_begin() is strictly speaking incorrect; but it
-+ * suppresses the complaints from WARN()s in noinstr code. If such a WARN()
-+ * were to trigger, we'd rather wreck the machine in an attempt to get the
-+ * message out than not know about it.
-+ */
- #define __WARN_FLAGS(flags)					\
- do {								\
- 	instrumentation_begin();				\
-
+-	return freed;
++	return freed == 0 ? SHRINK_STOP : freed;
+ }
+ 
+ static struct shrinker kfree_rcu_shrinker = {
+-- 
+2.17.1
 
