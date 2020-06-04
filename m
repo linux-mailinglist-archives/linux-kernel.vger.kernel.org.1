@@ -2,110 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C5E1EE9B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 19:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C68E1EE9C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 19:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730053AbgFDRsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 13:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56000 "EHLO
+        id S1730282AbgFDRtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 13:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730124AbgFDRsW (ORCPT
+        with ESMTP id S1730148AbgFDRtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 13:48:22 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0AAC08C5C0;
-        Thu,  4 Jun 2020 10:48:22 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id i1so5725874ils.11;
-        Thu, 04 Jun 2020 10:48:22 -0700 (PDT)
+        Thu, 4 Jun 2020 13:49:22 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CCDC08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 10:49:22 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id b201so3611947pfb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 10:49:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/V5YN3JVU+H2ybPVxXGB5Yo/z8JMsprmG2VuUwYuRz4=;
-        b=sI7b/qDlRiArW/5SdFyLqdgMpyDYULV1NOXwELfaYauvEpbt74X36o+SGdZ0XY0oMw
-         EpaXz8RJCt/CpvBzR+OYBkwFOk1WpNZbKQVuTFWUrR3te4T2zmLHJzEFg8hwVsYrB7/N
-         I09OKDJDFNk7f8Tu3D3Zq2YoPScRztc+8zcHKHI/gpfX2mT91iVcUyVT6zLvOGMbNlZn
-         GmUEqrEKUXiNRM5zGBvaonxxjpFF+Wx02FqC+20RilKlSP441jDoLViM/EB9RAxNfmSs
-         4xuC5aMG8pzk1XT0M8/inYWjUyzpCbRIeFMt5CGH2+g+AJ5nS5k8Zcpv4uhrH/Wr155e
-         Frkg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=noG/LYQmpQlBkRLXh/1JDc42VCvjqZbg5EroNmyoqmk=;
+        b=KZNOLW4TTiegIen/0rV+bOBGoAq8LWAoNbsh9LwEnhoa3lm1XLj+Tvo/2Suk+Qqa2r
+         0PK+jR6XoskReuOrGKp43FPISUnxUopcqSZa5nRe9TRsKMCnnc3jcAIcGJbLIExv5j3e
+         dnVQq3+R67BSyVDZGmr+oEsxKSaB4ejH7UTFc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/V5YN3JVU+H2ybPVxXGB5Yo/z8JMsprmG2VuUwYuRz4=;
-        b=tv/WhXF0qEfLdJt0CHJslXD5g+/CDZ4hkRdJNKbOORx+g42bYv3JV+bzViDIWDAcUc
-         AtiTskk/X8dDcGUKibIOya8s0DojmrA3TbhxNg/TezhWsUx6yf8IS1TL7yh3MQRFiTog
-         L0Th0t0mArZ5FitU77irqphhBg2a1haIplexcLBZG1Q3tf9aD4YYLQcUz5ydwUxmH1m0
-         E65usdlsKJOcl/QGQiFF+mzX8OreQpBn+TLlSIsOtQOCiZnbFOYtHG0X1GWO9lS45IR9
-         4RzIgrd1XtUa2LxVGsCFR24pQ7sdNyK5Y8UC7Z/jkE4jEQtofSPhj3lGxbCRrItCAIeb
-         az1w==
-X-Gm-Message-State: AOAM5316GtgdV1awEP+o67E64P2Oqy5+nCV2KYpam6NDNvD1vZnzeKOQ
-        OqUu+NEHRfE25sibP8l2a1JZabnriU/R9D9AeQU=
-X-Google-Smtp-Source: ABdhPJzFeNeeQM7soCpQdZ+IhQ7n6azUC9Mg45G4VT9kcauWSICOdgF4RaKvqGNHiRKEevdJDQLNgIrhu3an3lem1s0=
-X-Received: by 2002:a92:4852:: with SMTP id v79mr1192467ila.172.1591292901477;
- Thu, 04 Jun 2020 10:48:21 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=noG/LYQmpQlBkRLXh/1JDc42VCvjqZbg5EroNmyoqmk=;
+        b=NOO3IqqnRuTpR0ZahIrz5xTbBznKogwg/YOlk71QXu97LWB4FdDro8BtZkXLJZoiXX
+         3HCqJno77FhvVE6ZJmvbdO+wd4f+A7JvkJ87HRPqbHFKPSa3bchiT9t2gA/3TwCtrh08
+         YBDTWkl9IpaqUZa+Uma0PAgYQIkAiEVWc9lTO/GZEpe4P/d1pNqwP1F63XV4gGJKPOTS
+         8Q5NM6IKd0/6j0FtK0VeXwiZf2i7K+4qKQtVn5QZ9OsBAgIUOWguLPnrJLGpdVaVi/iy
+         T4nXDba6ONpog5tyC4hidi6kPpPiFsAtE6KNUE2V1srseR3HhD47q2j2lfC0fra+0Jti
+         uOiQ==
+X-Gm-Message-State: AOAM53311y7t66RWVgyP7hq/jEILqju4n5p3HW2NOr/5vkr0smu+TqTS
+        uWjOe7ULtQfziU+SBNzcc90i6g==
+X-Google-Smtp-Source: ABdhPJysRzlATrCAy0ZPvBedXYSCT6fmmFeq1dUhIpKsU0v0V1SYE8+lycAy6wODSBhqz9XjAONNJw==
+X-Received: by 2002:a63:3188:: with SMTP id x130mr5397319pgx.249.1591292962180;
+        Thu, 04 Jun 2020 10:49:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id l83sm4832663pfd.150.2020.06.04.10.49.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jun 2020 10:49:21 -0700 (PDT)
+Date:   Thu, 4 Jun 2020 10:49:19 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH] docs: deprecated.rst: Add note to the use of
+ struct_size() helper
+Message-ID: <202006041047.9B3E8FB951@keescook>
+References: <20200604172138.GA21820@embeddedor>
 MIME-Version: 1.0
-References: <20200603184104.4475-1-navid.emamdoost@gmail.com> <900909fe-fa15-fbca-80f7-79aeee721ed9@nvidia.com>
-In-Reply-To: <900909fe-fa15-fbca-80f7-79aeee721ed9@nvidia.com>
-From:   Navid Emamdoost <navid.emamdoost@gmail.com>
-Date:   Thu, 4 Jun 2020 12:48:10 -0500
-Message-ID: <CAEkB2ET8+Bo+0xw0TS80tzg0zq0ygPd=GEDsPEnd96k8shMAAg@mail.gmail.com>
-Subject: Re: [PATCH] dmaengine: tegra210-adma: fix pm_runtime_get_sync failure
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Navid Emamdoost <emamd001@umn.edu>,
-        Qiushi Wu <wu000273@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
-        Stephen McCamant <smccaman@umn.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200604172138.GA21820@embeddedor>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 4, 2020 at 12:45 PM Jon Hunter <jonathanh@nvidia.com> wrote:
->
->
-> On 03/06/2020 19:41, Navid Emamdoost wrote:
-> > Calling pm_runtime_get_sync increments the counter even in case of
-> > failure, causing incorrect ref count. Call pm_runtime_put if
-> > pm_runtime_get_sync fails.
-> >
-> > Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-> > ---
-> >  drivers/dma/tegra210-adma.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/dma/tegra210-adma.c b/drivers/dma/tegra210-adma.c
-> > index c4ce5dfb149b..e8c749cd3fe8 100644
-> > --- a/drivers/dma/tegra210-adma.c
-> > +++ b/drivers/dma/tegra210-adma.c
-> > @@ -659,6 +659,7 @@ static int tegra_adma_alloc_chan_resources(struct dma_chan *dc)
-> >       ret = pm_runtime_get_sync(tdc2dev(tdc));
-> >       if (ret < 0) {
-> >               free_irq(tdc->irq, tdc);
-> > +             pm_runtime_put(tdc2dev(tdc));
-> >               return ret;
-> >       }
->
->
-> Please do not send two patches with the same $subject that are fixing
-> two different areas of the driver. In fact, please squash these two
-> patches into a single fix and resend because they are fixing the same issue.
+On Thu, Jun 04, 2020 at 12:21:38PM -0500, Gustavo A. R. Silva wrote:
+> Add a note to educate people about the proper use of struct_size() when
+> the trailing array in the enclosing structure is a one-element array.
+> 
+> Zero-length and one-element arrays will soon be removed from the kernel,
+> but in the meantime, it's worth letting people know how to correctly
+> use struct_size() together with such constructs.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> 
+> Kees,
+>  
+> This is not substitute for the patch I'll write about flexible-arrays
+> and the deprecation of zero-lenght and one-element arrays.
 
-Sure, I will prepare a version 2 with your suggestions.
+Hm, hm. I think I'd rather just get the 0/1-array docs written, since
+that will mean this paragraph isn't needed at all. (Or rather, it can be
+modified to say "if you're using struct_size() on a 1-array, stop using
+a 1-array, see [link]". If someone is going to switch around their code,
+they need to switch to flex at the same time, IMO.
 
->
-> Jon
->
+-Kees
+
+> 
+> Thanks
 > --
-> nvpublic
-
-
+> Gustavo
+> 
+>  Documentation/process/deprecated.rst | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
+> index 652e2aa02a66c..0b7b37718bf96 100644
+> --- a/Documentation/process/deprecated.rst
+> +++ b/Documentation/process/deprecated.rst
+> @@ -85,6 +85,17 @@ Instead, use the helper::
+>  
+>  	header = kzalloc(struct_size(header, item, count), GFP_KERNEL);
+>  
+> +NOTE: You might want to use the following form in case the trailing array
+> +is a one-element array, as unlike zero-length arrays and flexible-array
+> +members, `one-element arrays occupy at least as much space as a single
+> +object of the type <https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_,
+> +hence they contribute to the size of the enclosing structure::
+> +
+> +	header = kzalloc(struct_size(header, item, count - 1), GFP_KERNEL);
+> +
+> +It's also worth noting that one-element arrays --together with zero-length
+> +arrays-- will soon be completely removed from the codebase and deprecated.
+> +
+>  See array_size(), array3_size(), and struct_size(),
+>  for more details as well as the related check_add_overflow() and
+>  check_mul_overflow() family of functions.
+> -- 
+> 2.27.0
+> 
 
 -- 
-Navid.
+Kees Cook
