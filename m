@@ -2,150 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83EC1EEB89
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 22:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EEF41EEB9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 22:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729034AbgFDUI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 16:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728587AbgFDUI5 (ORCPT
+        id S1729118AbgFDUNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 16:13:19 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:60070 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727984AbgFDUNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 16:08:57 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59098C08C5C4
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 13:08:57 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id n23so3980350pgb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 13:08:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AFF1riO+rvi+JtGxWF5qzVLPXHH0Nzh8aZcDxBuji4s=;
-        b=M0mkpsLd7B3310QKl3SLGg22ik2mXjNx5FY1vzJopMffJnCw8jRcmo9fV9LTIHikFp
-         RUv7WnBJ6K5VaUslDx62awUaItJ+YKUKSU3/LS3bQT0QPBOUmH8h7pgLYyxlBLfTzZPU
-         CwkTICvo+M0GUh+egz/pFlCv8tR424B81CNZ9aQO8/k4dMiV20ohQx7N7YX7tjfxxqqp
-         JKfbJIsE+MYGNYLFN8gpzmr0Avp6j5x4qED0RF7A5OiE4WLh5w8/DvLwZz8GAkmSlO6c
-         QbXytbk3xKeeMX1S4Xa0zICtEJbZ60RM6KlvqWwsKz3NAMy2eeUR9b8nqFf/OpAnG9F0
-         SQHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AFF1riO+rvi+JtGxWF5qzVLPXHH0Nzh8aZcDxBuji4s=;
-        b=CeCY4+g+ve/rr4ikveDX1KH+dqmnRNg/Z+o7JElR3ZDZf5ALG7/QGzmyz5KpDIB2nq
-         Xn9t+zRVT4bBE4r2m/+TDYD3NFjMPfTTvnmSZn/YHMeJFg8i93SwJseAZDGnmrWWtekv
-         SHkSGL9o7FP5x6JVhcZJulaoJBeKA0/BPzqL/ErPhmxCAF8IVLiuMwbga3ID9VT7l2wL
-         lrqgfxoNEO//08Kk9dFqNmUF520MPwhe0bI0nlYZYblhQl3qHUs1kCwcB7/g0+vvugh+
-         lpcNLhBnxYCG7MNRGHX+xiqKC5CsBqu3Xzk30mFj1u3aHY1v4LJttodgj9XmAoMMfqN8
-         D5Rg==
-X-Gm-Message-State: AOAM530RjI4zOAxrQ9422S5ZxFQ4mTmSUAohq8PuxMZlqKcIt5QrntRE
-        eo9SueE7lp/EgagRWeaokh3iVD1kLAuW6JWch1G8aw==
-X-Google-Smtp-Source: ABdhPJxLMcvCCgSkDUjAgCX71OWizViN7uenmXgd4TZP4zed6Dsn/5qWQdcJBcIITrWPyVLL/7sbTfhjLEhVY3eJVkA=
-X-Received: by 2002:a63:5644:: with SMTP id g4mr5811569pgm.381.1591301336363;
- Thu, 04 Jun 2020 13:08:56 -0700 (PDT)
+        Thu, 4 Jun 2020 16:13:18 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jgwEm-00039a-Kq; Thu, 04 Jun 2020 14:13:16 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jgwEl-0008Pb-PQ; Thu, 04 Jun 2020 14:13:16 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     <linux-kernel@vger.kernel.org>
+Date:   Thu, 04 Jun 2020 15:09:16 -0500
+Message-ID: <87k10mioer.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20200603233203.1695403-1-keescook@chromium.org> <20200603233203.1695403-4-keescook@chromium.org>
-In-Reply-To: <20200603233203.1695403-4-keescook@chromium.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 4 Jun 2020 13:08:44 -0700
-Message-ID: <CAKwvOdnNuFySqAMk7s_cXqFM=dPX4JfvqNVLCuj90Gn4tzciAw@mail.gmail.com>
-Subject: Re: [PATCH 03/10] b43: Remove uninitialized_var() usage
-To:     Kees Cook <keescook@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Joe Perches <joe@perches.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        b43-dev@lists.infradead.org,
-        Network Development <netdev@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        linux-ide@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-spi@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1jgwEl-0008Pb-PQ;;;mid=<87k10mioer.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/ZkL+F89jjfIpI3mg8ccyT4X1fIe58w40=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMSubMetaSxObfu_03,XMSubMetaSx_00
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4895]
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: ; sa05 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 459 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 12 (2.7%), b_tie_ro: 11 (2.4%), parse: 0.85
+        (0.2%), extract_message_metadata: 4.3 (0.9%), get_uri_detail_list: 2.3
+        (0.5%), tests_pri_-1000: 3.5 (0.8%), tests_pri_-950: 1.16 (0.3%),
+        tests_pri_-900: 0.92 (0.2%), tests_pri_-90: 165 (35.9%), check_bayes:
+        163 (35.5%), b_tokenize: 9 (1.9%), b_tok_get_all: 8 (1.8%),
+        b_comp_prob: 2.8 (0.6%), b_tok_touch_all: 139 (30.4%), b_finish: 0.95
+        (0.2%), tests_pri_0: 248 (54.1%), check_dkim_signature: 0.52 (0.1%),
+        check_dkim_adsp: 2.1 (0.5%), poll_dns_idle: 0.38 (0.1%), tests_pri_10:
+        3.9 (0.9%), tests_pri_500: 12 (2.5%), rewrite_mail: 0.00 (0.0%)
+Subject: [GIT PULL] exec cleanups for v5.8-rc1
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 3, 2020 at 4:32 PM Kees Cook <keescook@chromium.org> wrote:
->
-> Using uninitialized_var() is dangerous as it papers over real bugs[1]
-> (or can in the future), and suppresses unrelated compiler warnings (e.g.
-> "unused variable"). If the compiler thinks it is uninitialized, either
-> simply initialize the variable or make compiler changes. As a precursor
-> to removing[2] this[3] macro[4], just initialize this variable to NULL,
-> and make the (unreachable!) code do a conditional test.
->
-> [1] https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.com/
-> [2] https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=1TGqCR5vQkCzWJ0QxK6CernOU6eedsudAixw@mail.gmail.com/
-> [3] https://lore.kernel.org/lkml/CA+55aFwgbgqhbp1fkxvRKEpzyR5J8n1vKT1VZdz9knmPuXhOeg@mail.gmail.com/
-> [4] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/
->
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  drivers/net/wireless/broadcom/b43/phy_n.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/wireless/broadcom/b43/phy_n.c b/drivers/net/wireless/broadcom/b43/phy_n.c
-> index d3c001fa8eb4..88cdcea10d61 100644
-> --- a/drivers/net/wireless/broadcom/b43/phy_n.c
-> +++ b/drivers/net/wireless/broadcom/b43/phy_n.c
-> @@ -4222,7 +4222,7 @@ static void b43_nphy_tx_gain_table_upload(struct b43_wldev *dev)
 
-The TODOs and `#if 0` in this function are concerning.  It looks like
-`rf_pwr_offset_table` is only used when `phy->rev` is >=7 && < 19.
+Please pull the proc-linus branch from the git tree:
 
-Further, the loop has a case for `phy->rev >= 19` but we would have
-returned earlier if that was the case.
+   git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exec-linus
 
->         u32 rfpwr_offset;
->         u8 pga_gain, pad_gain;
->         int i;
-> -       const s16 *uninitialized_var(rf_pwr_offset_table);
-> +       const s16 *rf_pwr_offset_table = NULL;
->
->         table = b43_nphy_get_tx_gain_table(dev);
->         if (!table)
-> @@ -4256,9 +4256,13 @@ static void b43_nphy_tx_gain_table_upload(struct b43_wldev *dev)
->                         pga_gain = (table[i] >> 24) & 0xf;
->                         pad_gain = (table[i] >> 19) & 0x1f;
->                         if (b43_current_band(dev->wl) == NL80211_BAND_2GHZ)
-> -                               rfpwr_offset = rf_pwr_offset_table[pad_gain];
-> +                               rfpwr_offset = rf_pwr_offset_table
-> +                                               ? rf_pwr_offset_table[pad_gain]
-> +                                               : 0;
->                         else
-> -                               rfpwr_offset = rf_pwr_offset_table[pga_gain];
-> +                               rfpwr_offset = rf_pwr_offset_table
-> +                                               ? rf_pwr_offset_table[pga_gain]
-> +                                               : 0;
+   HEAD: 3977e285ee89a94699255dbbf6eeea13889a1083 exec: Remove the recomputation of bprm->cred
+
+Last cycle for the Nth time I ran into bugs and quality of
+implementation issues related to exec that could not be easily be fixed
+because of the way exec is implemented.  So I have been digging into
+exec and cleanup up what I can.
+
+I don't think I have exec sorted out enough to fix the issues I started
+with but I have made some headway this cycle with 4 sets of changes.
+
+      exec: Promised cleanups after introducing exec_update_mutex
+      exec: Trivial cleanups for exec
+      exec: Control flow simplifications
+      exec: Remove the recomputation of bprm->cred
+
+The net result is code that is a bit easier to understand and work with
+and a decrease in the number of lines of code (if you don't count the
+added tests).
+
+There is a trivial conflict with the transformation of
+copy_strings_kernel into copy_string_kernel by Christoph Hellwig.  These
+changes touch adjacent lines.
+
+Arnd Bergmann (1):
+      binfmt_elf_fdpic: fix execfd build regression
+
+Eric W. Biederman (30):
+      binfmt: Move install_exec_creds after setup_new_exec to match binfmt_elf
+      exec: Make unlocking exec_update_mutex explict
+      exec: Rename the flag called_exec_mmap point_of_no_return
+      exec: Merge install_exec_creds into setup_new_exec
+      exec: In setup_new_exec cache current in the local variable me
+      exec: Move most of setup_new_exec into flush_old_exec
+      exec: Rename flush_old_exec begin_new_exec
+      exec: Promised cleanups after introducing exec_update_mutex
+      exec: Move the comment from above de_thread to above unshare_sighand
+      exec: Fix spelling of search_binary_handler in a comment
+      exec: Run sync_mm_rss before taking exec_update_mutex
+      exec: Move handling of the point of no return to the top level
+      exec: Set the point of no return sooner
+      exec: Trivial cleanups for exec
+      exec: Move would_dump into flush_old_exec
+      Merge f87d1c955916 ("exec: Move would_dump into flush_old_exec")
+      exec: Teach prepare_exec_creds how exec treats uids & gids
+      exec: Factor security_bprm_creds_for_exec out of security_bprm_set_creds
+      exec: Convert security_bprm_set_creds into security_bprm_repopulate_creds
+      exec: Allow load_misc_binary to call prepare_binprm unconditionally
+      exec: Move the call of prepare_binprm into search_binary_handler
+      exec/binfmt_script: Don't modify bprm->buf and then return -ENOEXEC
+      exec: Generic execfd support
+      exec: Remove recursion from search_binary_handler
+      exec: Control flow simplifications
+      exec: Always set cap_ambient in cap_bprm_set_creds
+      Merge commit a4ae32c71fe9 ("exec: Always set cap_ambient in cap_bprm_set_creds")
+      exec: Add a per bprm->file version of per_clear
+      exec: Compute file based creds only once
+      exec: Remove the recomputation of bprm->cred
+
+Kees Cook (1):
+      selftests/exec: Add binfmt_script regression test
+
+ Documentation/trace/ftrace.rst             |   2 +-
+ arch/alpha/kernel/binfmt_loader.c          |  11 +-
+ arch/x86/ia32/ia32_aout.c                  |   4 +-
+ fs/binfmt_aout.c                           |   3 +-
+ fs/binfmt_elf.c                            |   7 +-
+ fs/binfmt_elf_fdpic.c                      |   9 +-
+ fs/binfmt_em86.c                           |  13 +-
+ fs/binfmt_flat.c                           |   4 +-
+ fs/binfmt_misc.c                           |  69 +------
+ fs/binfmt_script.c                         |  82 ++++----
+ fs/exec.c                                  | 320 ++++++++++++++++-------------
+ include/linux/binfmts.h                    |  45 ++--
+ include/linux/lsm_hook_defs.h              |   3 +-
+ include/linux/lsm_hooks.h                  |  56 ++---
+ include/linux/security.h                   |  15 +-
+ kernel/cred.c                              |   3 +
+ kernel/events/core.c                       |   2 +-
+ security/apparmor/domain.c                 |   7 +-
+ security/apparmor/include/domain.h         |   2 +-
+ security/apparmor/lsm.c                    |   2 +-
+ security/commoncap.c                       |  22 +-
+ security/security.c                        |   9 +-
+ security/selinux/hooks.c                   |   8 +-
+ security/smack/smack_lsm.c                 |   9 +-
+ security/tomoyo/tomoyo.c                   |  12 +-
+ tools/testing/selftests/exec/Makefile      |   1 +
+ tools/testing/selftests/exec/binfmt_script | 171 +++++++++++++++
+ 27 files changed, 503 insertions(+), 388 deletions(-)
 
 
-The code is trying to check `phy->rev >= 7 && phy->rev < 19` once
-before the loop, then set `rf_pwr_offset_table`, so having another
-conditional on `rf_pwr_offset_table` in the loop is unnecessary. I'm
-ok with initializing it to `NULL`, but I'm not sure the conditional
-check is necessary.  Do you get a compiler warning otherwise?
-
->                 } else {
->                         pga_gain = (table[i] >> 24) & 0xF;
->                         if (b43_current_band(dev->wl) == NL80211_BAND_2GHZ)
-> --
-> 2.25.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200603233203.1695403-4-keescook%40chromium.org.
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Eric
