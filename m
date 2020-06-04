@@ -2,97 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1481EDCA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 07:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EEA1EDCAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 07:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgFDFFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 01:05:55 -0400
-Received: from [1.202.141.114] ([1.202.141.114]:12645 "EHLO rucdm.com"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726003AbgFDFFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 01:05:55 -0400
-Received: from ztxtawz [101.20.251.7] by rucdm.com with ESMTP
-  (SMTPD32-8.02) id A1EB7DF800EE; Tue, 02 Jan 2018 19:50:03 +0800
-Reply-To: <EMAILQUNFA@163.COM>
-Message-ID: <20180102194646266371@rucdm.com>
-Illegal-Object: Syntax error in From: address found on vger.kernel.org:
-        From:   2018-01-02 19:34:03
-                        ^            ^-illegal special character in phrase
-                 \-extraneous tokens in mailbox
-Subject: =?utf-8?B?4piFIHNtZGJvYmJpbiAtLeKAnDIwMTjkuJY=?=
-        =?utf-8?B?55WM5aSN5ZCI5p2Q5paZ5bGV6KeI5Y+K5Lya6K6u4oCd5bCG5LqO4oCcM+aciOKAneWcqOKAnOazlQ==?=
-        =?utf-8?B?5Zu95be06buO4oCd5Li+6KGMICAgIO+8iOWcsOWPs1AxLUwtTWU=?=
-        =?utf-8?B?77yJ?=
-Date:   Tue, 2 Jan 2018 19:46:32 +0800
+        id S1726516AbgFDFTs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Jun 2020 01:19:48 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:39551 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725959AbgFDFTr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 01:19:47 -0400
+Received: by mail-lj1-f194.google.com with SMTP id a9so2079314ljn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 22:19:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CDYCwrGwgyePOxlS0CraEvHzE1DftCgl+yxJsEBFx8c=;
+        b=JhzRdx8BJGN8tiYa6AAxpCqVsAuOyNAIrPoL9FYfAmrcS/00J9CTMFLVjzZcUuft30
+         KrZZqarp/xDGm0vYKsKqyA7nVoQRGoLCI/euQ4Kq+Zh0FqueZjaUmq/y4a9SzKfhUDfH
+         dB0U6lIJDQLz6IXl8qT40vjvWtgTcNtfrh0xwEScuQ6KdNA9V//I7ibwvh7f+9BtGEty
+         4covMqDnT2VMT8kEuK6fc1hxjWovZM+i49IDOpCnREN42qOF/0YXpID/DosuYR9XKfJl
+         kpPwBupZUdSTQn70ba1jvx7aaIydtnhbVf33jXiJXua3Wx5KfLWSbmPTSwpPXWbuHd9l
+         Tpgw==
+X-Gm-Message-State: AOAM530A9/iFGzVhO3NzLgWwJlVCZjxWEnv51fY/IIKYKc9xUzveCqKH
+        LegJmtRNFTo22nfRUmsVIpF00xoDbMI=
+X-Google-Smtp-Source: ABdhPJyXW8H/eCk2SNRvD/B6QSUvLqnignl92jZLVMtmhXVbcTUHeEXZQetzbdeB8b1vOUp5GtCjnQ==
+X-Received: by 2002:a2e:8290:: with SMTP id y16mr1281144ljg.340.1591247983665;
+        Wed, 03 Jun 2020 22:19:43 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id t12sm951927ljj.139.2020.06.03.22.19.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jun 2020 22:19:43 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id c11so5664340ljn.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 22:19:43 -0700 (PDT)
+X-Received: by 2002:a2e:9246:: with SMTP id v6mr1269112ljg.47.1591247982979;
+ Wed, 03 Jun 2020 22:19:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
-X-mailer: Hqlz 8
-From:   linux-kernel-owner@vger.kernel.org
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200413095457.1176754-1-jernej.skrabec@siol.net>
+ <1742537.tdWV9SEqCh@jernej-laptop> <20200415104214.ndkkxfnufkxgu53r@gilmour.lan>
+ <1785843.taCxCBeP46@jernej-laptop> <20200422092300.444wcaurdwyrorow@gilmour.lan>
+In-Reply-To: <20200422092300.444wcaurdwyrorow@gilmour.lan>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Thu, 4 Jun 2020 13:19:32 +0800
+X-Gmail-Original-Message-ID: <CAGb2v64++4rxcwdQXgz30vNbRRR5+tXehP-CFu9T7Lx7K_QOOw@mail.gmail.com>
+Message-ID: <CAGb2v64++4rxcwdQXgz30vNbRRR5+tXehP-CFu9T7Lx7K_QOOw@mail.gmail.com>
+Subject: Re: [PATCH] drm/sun4i: hdmi ddc clk: Fix size of m divider
+To:     Maxime Ripard <maxime@cerno.tech>,
+        =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@siol.net>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-5bCK5pWs55qEIHNtZGJvYmJpbkAxMjYuY29taHR0cCDkvIHkuJrpooblr7wv5YWs5Y+46LSf6LSj
-5Lq6L+S4mueVjOS4k+Wutu+8jOaCqOWlve+8mg0K44CA44CADQrjgIDjgIDmlrDmnZDmlpnkuLoy
-MeS4lue6quS4ieWkp+WFseaAp+WFs+mUruaKgOacr+S5i+S4gO+8jOW3suaIkOS4uuWFqOeQg+e7
-j+a1jui/hemAn+WinumVv+eahOa6kOWKqOWKm+WSjOaPkOWNh+aguOW/g+ernuS6ieWKm+eahOaI
-mOeVpeeEpueCueOAguadkOaWmeS9nOS4uuWItumAoOS4mueahOWfuuehgO+8jOeJueWIq+aYr+aW
-sOadkOaWmeeglOeptuWSjOS6p+S4muWPkeWxleeahOawtOW5s+S4juinhOaooe+8jOW3sue7j+aI
-kOS4uuihoemHj+S4gOS4quWbveWutuenkeaKgOi/m+atpeWSjOe7vOWQiOWunuWKm+eahOmHjeim
-geagh+W/l+OAguWcqOaWsOadkOaWmeWPkeWxleS4juW6lOeUqOS4re+8jOWkjeWQiOadkOaWmeWN
-oOacieebuOW9k+mHjeimgeeahOWcsOS9je+8jOeJueWIq+W5v+azm+eahOW6lOeUqOWcqOaxvei9
-puOAgeS6pOmAmuOAgemjjuiDveOAgeiIquepuuOAgeiIquWkqeOAgeWFteWZqOOAgeiIueiItuOA
-geWbvemYsuOAgeacuuaisOOAgeeUteWtkOOAgeWMluW3peOAgeW7uuetkeOAgeWGnOS4muOAgea4
-lOS4muOAgee6uue7h+OAgei/kOWKqOWZqOadkOetiemihuWfn++8jOS4gOebtOaYr+S4lueVjOWQ
-hOWbveS8mOWFiOWPkeWxleWSjOernuS6iea/gOeDiOeahOmHjeimgeihjOS4muOAgg0K44CA44CA
-DQrjgIDjgIDigJxKRUPkuJbnlYzlpI3lkIjmnZDmlpnlsZXop4jlj4rkvJrorq7igJ3vvIhKRUMg
-d29ybGQgQ29tcG9zaXRlcyBTaG93ICYgQ29uZmVyZW5jZXPvvInliJvlip7kuo4xOTYz5bm077yM
-5q+P5bm05Li+5Yqe5LiA5bGK77yM6IezMjAxN+W5tOaAu+WFseS4vuWKnuS6hjUy5bGK77yM5Li7
-5Yqe5Y2V5L2N5piv5rOV5Zu9SkVD5aSN5ZCI5p2Q5paZ5Y+R5bGV5L+D6L+b5LyaL0pFQ+mbhuWb
-ou+8jOS4reWbveaAu+WxleWbouWxleWVhue7hOe7h+WNleS9jeS4uuaYoOW+t+WbvemZheS8muWx
-lembhuWbouS4reWbveS7o+ihqOWkhO+8jOWcqOWMl+S6rOOAgeS4iua1t+etieWcsOiuvuacieWI
-huaUr+acuuaehO+8jOi0n+i0o+ivpeWxleS8muWcqOS4reWbveeahOaOqOW5v+WSjOaLm+WVhuW3
-peS9nO+8iEpFQ+S4reWbveaAu+WxleWbouaKpeWQjeeDree6v++8mjQwMDAtNjgwLTg2MOi9rDgx
-NDTjgIE1MjIw77yJ44CCSkVD5aSN5ZCI5p2Q5paZ5bGV5bey5oiQ5Li65LiW55WM5LiK5Y6G5Y+y
-5pyA5oKg5LmF44CB6KeE5qih5pyA5aSn55qE5aSN5ZCI5p2Q5paZ6KGM5Lia5LiT5Lia5bGV6KeI
-5Lya77yM5bGV56S65ZKM5Y+N5pig5LqG5b2T5YmN5aSN5ZCI5p2Q5paZ6KGM5Lia55qE5pyA5paw
-5oqA5pyv5ZKM5bqU55So5oiQ5p6c44CCDQrjgIDjgIANCuOAgOOAgOS4uuS6huWinui/m+WbveWG
-heWkluWkjeWQiOadkOaWmeihjOS4mueahOS6pOa1geS4juWQiOS9nO+8jOWQjOaXtuWxleekuuaI
-keWbveWkjeWQiOadkOaWmeS6p+S4mueahOWPkeWxleS4juaIkOWwse+8jOW4ruWKqeWig+WGheS8
-geS4muW8gOaLk+WbveWGheWkluW4guWcuu+8jOS4reWbveWbvemZheWkjeadkOWNj+S8muOAgeaY
-oOW+t+WbvemZheS8muWxlembhuWbou+8iFlPTkQgRVhQT++8ieS4reWbveS7o+ihqOWkhOW3sui/
-keWNgeW5tOe7hOe7h+S4reWbveS8geS4muWPguS4juivpeWxleS8mu+8jOS4uuS4reWbveWkjeWQ
-iOadkOaWmembhuWbouOAgeS4readkOenkeaKgOOAgeS4remSoumbhuWbouOAgeS4reWbveW7uuad
-kOmbhuWbouOAgeS4reWbveWVhumjnuOAgeWMl+S6rOeOu+mSoumZouOAgeS4iua1t+adsOS6i+ad
-sOaWsOadkOaWmembhuWbouOAgemHjeW6huWbvemZheWkjeWQiOadkOaWmeOAgeS4reWNl+aOp+iC
-oembhuWbouOAgeenpueah+Wym+iAgOWNjueOu+eSg+mSouOAgeeDn+WPsOawqOe6tuOAgeWkqemp
-rOmbhuWbouOAgeWNjuS4nOeQhuW3peWkp+WtpuOAgeWTiOWwlOa7qOW3peS4muWkp+WtpuOAgeW3
-qOefs+mbhuWbouOAgeS4reWGtumbhuWbouOAgemHkeWFiembhuWbouOAgeaxn+iLj+aBkuelnue6
-pOe7tOadkOaWmeOAgemHjeW6huWkp+WtpuOAgeS4iua1t+eOu+eSg+mSoueglOeptumZouOAgeS4
-reWNl+Wkp+WtpuOAgeWTiOWwlOa7qOeOu+eSg+mSoueglOeptumZouetieS8l+WkmuihjOS4muW3
-qOWktOWSjOefpeWQjeacuuaehOaPkOS+m+S6huS8mOi0qOmrmOaViOeahOWig+WkluWxlei0uOac
-jeWKoeOAgg0K44CA44CADQrjgIDjgIDigJxKRUMgd29ybGQgMjAxOCDnrKzkupTljYHkuInkuJbn
-lYzlpI3lkIjmnZDmlpnlsZXop4jlj4rkvJrorq7igJ3lsIbkuo7igJwz5pyIMDYtMDjml6XigJ3l
-nKjigJzms5Xlm73lt7Tpu47lsZXop4jkvJrorq7kuK3lv4PigJ3lho3luqbkuL7ooYzvvIzmiJHk
-u6zor5rpgoDlhajlm73lkITlnLDlpI3lkIjmnZDmlpnlj4rmlrDmnZDmlpnnm7jlhbPljZXkvY3k
-uI7kuJrnlYzkurrlo6vliqDlhaXlkrHku6znmoTkuK3lm73mgLvlsZXlm6LliY3lvoDlj4LlsZXl
-j4Lop4LjgILjgIDjgIANCuOAgOOAgA0K44CA44CA5pyJ5YWz5Y+C5bGV5Y+C6KeC4oCcSkVD5LiW
-55WM5aSN5ZCI5p2Q5paZ5bGV4oCd5LqL5a6c77yM6K+36IGU57uc44CQ5Lit5Zu95oC75bGV5Zui
-44CR57uE5Yqe5pa54oCU4oCUIOWFqOWbvee7n+S4gOWuouacjeeDree6v++8mjQwMDAtNTgwLTg1
-MO+8iOi9rDUyMjDjgIE4MTQ044CBODg4OO+8ieOAgTAxMOKAlDY5MjMtNjk0NO+8myDpgq7nrrEv
-UVHvvJoxMjgwOTM5NSNxcS5jb23vvJsg5b6u5L+h77yaIENhblpoYW5YaWFvWGnvvIjlj4LlsZXm
-tojmga/vvInjgIFaaGFuU2hhbmdaaGlKaWHvvIjlsZXllYbkuYvlrrbvvInvvJsg5b6u5Y2a77ya
-aHR0cDovL3dlaWJvLmNvbS9qZWNzaG9377yI5bGV5Lya77yJ44CBaHR0cDovL3dlaWJvLmNvbS95
-aW5nZGVodWl6aGFu77yI5YWs5Y+477yJ44CCDQrjgIDjgIANCuOAgOOAgOWPguWKoEpFQ+WxleS8
-muaYr+S4gOS4quWkjeWQiOadkOaWmeWPiuaWsOadkOaWmeS8geS4mui1sOWQkeWbvemZheWMluea
-hOagh+W/l+WSjOmAlOW+hO+8gQ0K44CA44CADQrjgIDjgIANCuOAgOOAgA0K44CA44CADQpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19f44CA44CADQrvvIjnmb7kuIfnvqTlj5Hns7vnu5985Li65oKo
-5Y+R6YCBfOWmguS4jeW4jOacm+WGjeaUtuWIsOatpOihjOS4mui1hOiur3zor7flm57lpI3igJxU
-RCtKRUPigJ3oh7Ppgq7nrrExMDU1ODAwODEyQHFxLmNvbe+8iQ0K
+On Wed, Apr 22, 2020 at 5:23 PM Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Hi,
+>
+> On Wed, Apr 15, 2020 at 07:52:28PM +0200, Jernej Škrabec wrote:
+> > Dne sreda, 15. april 2020 ob 12:42:14 CEST je Maxime Ripard napisal(a):
+> > > On Mon, Apr 13, 2020 at 06:09:08PM +0200, Jernej Škrabec wrote:
+> > > > Dne ponedeljek, 13. april 2020 ob 16:12:39 CEST je Chen-Yu Tsai
+> > napisal(a):
+> > > > > On Mon, Apr 13, 2020 at 6:11 PM Chen-Yu Tsai <wens@csie.org> wrote:
+> > > > > > On Mon, Apr 13, 2020 at 5:55 PM Jernej Skrabec
+> > > > > > <jernej.skrabec@siol.net>
+> > > >
+> > > > wrote:
+> > > > > > > m divider in DDC clock register is 4 bits wide. Fix that.
+> > > > > > >
+> > > > > > > Fixes: 9c5681011a0c ("drm/sun4i: Add HDMI support")
+> > > > > > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > > > > >
+> > > > > > Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+> > > > >
+> > > > > Cc stable?
+> > > >
+> > > > I don't think it's necessary:
+> > > > 1. It doesn't change much (anything?) for me when reading EDID. I don't
+> > > > think it's super important to have precise DDC clock in order to properly
+> > > > read EDID. 2. No matter if it has "Cc stable" tag or not, it will be
+> > > > eventually picked for stable due to fixes tag.
+> > > >
+> > > > This was only small observation when I was researching EDID readout issue
+> > > > on A20 board, but sadly, I wasn't able to figure out why reading it
+> > > > sometimes fails. I noticed similar issue on SoCs with DE2 (most
+> > > > prominently on OrangePi PC2 - H5), but there was easy workaround - I just
+> > > > disabled video driver in U- Boot. However, if A20 display driver gets
+> > > > disabled in U-Boot, it totally breaks video output on my TV when Linux
+> > > > boots (no output). I guess there is more fundamental problem with clocks
+> > > > than just field size. I think we should add more constraints in clock
+> > > > driver, like preset some clock parents and not allow to change parents
+> > > > when setting rate, but carefully, so simplefb doesn't break. Such
+> > > > constraints should also solve problems with dual head setups.
+> > > I disagree here. Doing all sorts of special case just doesn't scale,
+> > > and we'll never have the special cases sorted out on all the boards
+> > > (and it's a nightmare to maintain).
+> > >
+> > > Especially since it's basically putting a blanket over the actual
+> > > issue and looking the other way. If there's something wrong with how
+> > > we deal with (re)parenting, we should fix that. It impacts more than
+> > > just DRM, and all the SoCs.
+> >
+> > I agree with you that automatic solution would be best, but I just don't see
+> > it how it would be done.
+>
+> > Dual head display pipeline is pretty complex for clock driver to get it right
+> > on it's own. There are different possible setups and some of them are hot
+> > pluggable, like HDMI.
+>
+> Do you have an actual scenario that is broken right now?
+>
+> > And there are also SoC specific quirks, like A64, where for some reason, MIPI
+> > DPHY and HDMI PHY share same clock parent - PLL_VIDEO0. Technically, MIPI DPHY
+> > can be clocked from PLL_PERIPH0 (fixed to 600 MHz), but that's not really
+> > helpful. I'm not even sure if there is any good solution to this - certainly
+> > HDMI and MIPI can't claim exclusivity and somehow best common rate must be
+> > found for PLL_VIDEO0, if that's even possible.
+>
+> IIRC the DSI DPHY needs a clock running at 297MHz, which is pretty much what the
+> HDMI PHY should need too (or 148.5, but that's pretty easy to generate from
+> 297). So which problem do we have there?
+>
+> > I was sure that HDMI PHY on A64 can be clocked from PLL_VIDEO1, which would
+> > solve main issue, but to date, I didn't find any way to do that.
+> >
+> > That's pretty off topic, so I hope original patch can be merged as-is.
+>
+> It does, sorry
+>
+> Acked-by: Maxime Ripard <maxime@cerno.tech>
 
+Looks like this hasn't landed yet.
 
+ChenYu
