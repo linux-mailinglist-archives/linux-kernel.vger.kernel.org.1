@@ -2,123 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF6D1EEAA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0C91EEAAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729069AbgFDSzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 14:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728938AbgFDSzP (ORCPT
+        id S1729421AbgFDSze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 14:55:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24775 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729141AbgFDSza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 14:55:15 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D50DC08C5C0;
-        Thu,  4 Jun 2020 11:55:15 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id p5so7251252wrw.9;
-        Thu, 04 Jun 2020 11:55:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=uiinNKg/VAAIBsMjrTVJDCNhmBGSNxHkcjt+mWjcnNg=;
-        b=lDrViyRHFcdsinb5IHbP2qqOylfphQlSRMERDMe/wtWEswGJIceld6eWHhWVmj9kwY
-         S9GDEP0NS16fM+nVJhx89txvsDrW8ZZPerN1C/nr8xYKjrLIJ1Dj67yMXuLMtidBXCjv
-         l+uaJ0XsIXIb4XkViWBX1q43C7BVVfOVhxmBNVcFfMDZnzjQcCcXsx+HP2/L33r49U9l
-         1gqQClBCFhkzWQzH5HubbtmYfShFnXIaUk+sA1cOP9p0adzuhnYRYCP3CshXQEppsPs6
-         n5zO4FlxpRudlVm5V/E1QprnephQG9ygNndFspWN/lLh5tZQl0dNtThKw/VNb5KfvKBV
-         gEjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uiinNKg/VAAIBsMjrTVJDCNhmBGSNxHkcjt+mWjcnNg=;
-        b=QCH7i91czk6W90v56naiDA0FNICgQAJPdhTIj7ZylX4PWj+qK5NHWeym5DqAnjb7fP
-         9zcfA6QavklLk+ZqotigUoSDp3uMNGPa9qCcbk4Rw+bvLSwkqZPBi2aVQEGjL1+PsvKs
-         D4PU0vmhrXz0FgoVOG9k5YScnI/Lhl6r122EA6nLfnGocyuJE3oMqtnjmWSZaQra1Opu
-         iXBJUfL7MKkv7Y65o02sXUrYdMuWuF81PF/q0htVWHLCeKJAZN0fp/8NmRnUyx1aiqDi
-         KGEj9AZUWsxZpd4Jnj4/j8SVZN5xfSDzt03McRb4DD5z3N3w3TmKuZAA/KGlWZMfY3up
-         sGgg==
-X-Gm-Message-State: AOAM5336Y8x6g9JU+lnHGMAJ8vuvpQY9dZtcE4RE2/mez2elYwKmvONA
-        4vvLlBr7n4/yHQMdwAjcQJLcSBmeGqceQ1GARKc=
-X-Google-Smtp-Source: ABdhPJyO1qtFfu8kgFgNsp7xryFcB2IwdjYxZjFEdLusH+8TaUd3IzJ4bblyVzCLX2N+e0qXfwjUFreeN2ucvhsw9nc=
-X-Received: by 2002:a5d:6789:: with SMTP id v9mr6163777wru.124.1591296913673;
- Thu, 04 Jun 2020 11:55:13 -0700 (PDT)
+        Thu, 4 Jun 2020 14:55:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591296928;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=ES/2U+nNlWHBaABTLa/ag7enpyI1ucrux02WSZ/I5lM=;
+        b=BLiucKUhsKRZ7XOUSL2n5lPrJRW1UKV1IyTBgjZqUj+aPIFdVga6xrySVB1tRwoIdRneh4
+        WGoONnA+LES/TmrBEp0cKDZWNXK0m788eKrAF1RgXpOBQm7ffIVVLpOJ7shyDA6qaWfOcY
+        kMlVhXHvo/s8CC4tqbbblNRvL901tgk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-10-OrwsKud3M9m-_4tDRjRAzg-1; Thu, 04 Jun 2020 14:55:24 -0400
+X-MC-Unique: OrwsKud3M9m-_4tDRjRAzg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C40F41083E80;
+        Thu,  4 Jun 2020 18:55:22 +0000 (UTC)
+Received: from [10.36.112.96] (ovpn-112-96.ams2.redhat.com [10.36.112.96])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 70A6D61985;
+        Thu,  4 Jun 2020 18:55:20 +0000 (UTC)
+Subject: Re: [PATCH] x86/mm: use max memory block size with unaligned memory
+ end
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Sistare <steven.sistare@oracle.com>
+References: <20200604035443.3267046-1-daniel.m.jordan@oracle.com>
+ <5827baaf-0eb5-bcea-5d98-727485683512@redhat.com>
+ <20200604172213.f5lufktpqvqjkv4u@ca-dmjordan1.us.oracle.com>
+ <ebc31650-9e98-f286-6fc2-aafdd3cd9272@redhat.com>
+ <20200604181201.lqop72ihg5butlmz@ca-dmjordan1.us.oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABtCREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT6JAlgEEwEIAEICGwMFCQlmAYAGCwkIBwMCBhUI
+ AgkKCwQWAgMBAh4BAheAFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl3pImkCGQEACgkQTd4Q
+ 9wD/g1o+VA//SFvIHUAvul05u6wKv/pIR6aICPdpF9EIgEU448g+7FfDgQwcEny1pbEzAmiw
+ zAXIQ9H0NZh96lcq+yDLtONnXk/bEYWHHUA014A1wqcYNRY8RvY1+eVHb0uu0KYQoXkzvu+s
+ Dncuguk470XPnscL27hs8PgOP6QjG4jt75K2LfZ0eAqTOUCZTJxA8A7E9+XTYuU0hs7QVrWJ
+ jQdFxQbRMrYz7uP8KmTK9/Cnvqehgl4EzyRaZppshruKMeyheBgvgJd5On1wWq4ZUV5PFM4x
+ II3QbD3EJfWbaJMR55jI9dMFa+vK7MFz3rhWOkEx/QR959lfdRSTXdxs8V3zDvChcmRVGN8U
+ Vo93d1YNtWnA9w6oCW1dnDZ4kgQZZSBIjp6iHcA08apzh7DPi08jL7M9UQByeYGr8KuR4i6e
+ RZI6xhlZerUScVzn35ONwOC91VdYiQgjemiVLq1WDDZ3B7DIzUZ4RQTOaIWdtXBWb8zWakt/
+ ztGhsx0e39Gvt3391O1PgcA7ilhvqrBPemJrlb9xSPPRbaNAW39P8ws/UJnzSJqnHMVxbRZC
+ Am4add/SM+OCP0w3xYss1jy9T+XdZa0lhUvJfLy7tNcjVG/sxkBXOaSC24MFPuwnoC9WvCVQ
+ ZBxouph3kqc4Dt5X1EeXVLeba+466P1fe1rC8MbcwDkoUo65Ag0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAGJAiUEGAECAA8FAlXLn5ECGwwFCQlmAYAACgkQTd4Q
+ 9wD/g1qA6w/+M+ggFv+JdVsz5+ZIc6MSyGUozASX+bmIuPeIecc9UsFRatc91LuJCKMkD9Uv
+ GOcWSeFpLrSGRQ1Z7EMzFVU//qVs6uzhsNk0RYMyS0B6oloW3FpyQ+zOVylFWQCzoyyf227y
+ GW8HnXunJSC+4PtlL2AY4yZjAVAPLK2l6mhgClVXTQ/S7cBoTQKP+jvVJOoYkpnFxWE9pn4t
+ H5QIFk7Ip8TKr5k3fXVWk4lnUi9MTF/5L/mWqdyIO1s7cjharQCstfWCzWrVeVctpVoDfJWp
+ 4LwTuQ5yEM2KcPeElLg5fR7WB2zH97oI6/Ko2DlovmfQqXh9xWozQt0iGy5tWzh6I0JrlcxJ
+ ileZWLccC4XKD1037Hy2FLAjzfoWgwBLA6ULu0exOOdIa58H4PsXtkFPrUF980EEibUp0zFz
+ GotRVekFAceUaRvAj7dh76cToeZkfsjAvBVb4COXuhgX6N4pofgNkW2AtgYu1nUsPAo+NftU
+ CxrhjHtLn4QEBpkbErnXQyMjHpIatlYGutVMS91XTQXYydCh5crMPs7hYVsvnmGHIaB9ZMfB
+ njnuI31KBiLUks+paRkHQlFcgS2N3gkRBzH7xSZ+t7Re3jvXdXEzKBbQ+dC3lpJB0wPnyMcX
+ FOTT3aZT7IgePkt5iC/BKBk3hqKteTnJFeVIT7EC+a6YUFg=
+Organization: Red Hat GmbH
+Message-ID: <34d7b03c-4f32-05c3-b5ce-521951f518e8@redhat.com>
+Date:   Thu, 4 Jun 2020 20:55:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200604103544.14515-1-colin.king@canonical.com>
-In-Reply-To: <20200604103544.14515-1-colin.king@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 4 Jun 2020 14:55:02 -0400
-Message-ID: <CADnq5_M1f8WrNfmo3xS7G=kVaCougjk1Ebiq1yWN1QG4gTkxZw@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/amd/display: fix spelling mistake:
- "propogation" -> "propagation"
-To:     Colin King <colin.king@canonical.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200604181201.lqop72ihg5butlmz@ca-dmjordan1.us.oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  thanks!
+>> E.g., on powerpc that's 16MB so they have *a lot* of memory blocks.
+>> That's why that's not papering over the problem. Increasing the memory
+>> block size isn't always the answer.
+> 
+> Ok.  If you don't mind, what's the purpose of hotplugging at that granularity?
+> I'm simply curious.
 
-Alex
+On bare metal: none with that big machines AFAIKS. :)
 
-On Thu, Jun 4, 2020 at 6:35 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There is a spelling mistake in a dml_print message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30=
-.c b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
-> index 65da6304d6a6..2a32ed6682fc 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
-> @@ -1308,7 +1308,7 @@ static bool CalculatePrefetchSchedule(
->                 dml_print("DML:  Tr0: %fus - time to fetch first row of d=
-ata pagetables and first row of meta data (done in parallel)\n", TimeForFet=
-chingRowInVBlank);
->                 dml_print("DML:  Tr1: %fus - time to fetch second row of =
-data pagetables and second row of meta data (done in parallel)\n", TimeForF=
-etchingRowInVBlank);
->                 dml_print("DML:  Tsw: %fus =3D time to fetch enough pixel=
- data and cursor data to feed the scalers init position and detile\n", (dou=
-ble)LinesToRequestPrefetchPixelData * LineTime);
-> -               dml_print("DML: To: %fus - time for propogation from scal=
-er to optc\n", (*DSTYAfterScaler + ((*DSTXAfterScaler) / (double) myPipe->H=
-Total)) * LineTime);
-> +               dml_print("DML: To: %fus - time for propagation from scal=
-er to optc\n", (*DSTYAfterScaler + ((*DSTXAfterScaler) / (double) myPipe->H=
-Total)) * LineTime);
->                 dml_print("DML: Tvstartup - Tsetup - Tcalc - Twait - Tpre=
- - To > 0\n");
->                 dml_print("DML: Tslack(pre): %fus - time left over in sch=
-edule\n", VStartup * LineTime - TimeForFetchingMetaPTE - 2 * TimeForFetchin=
-gRowInVBlank - (*DSTYAfterScaler + ((*DSTXAfterScaler) / (double) myPipe->H=
-Total)) * LineTime - TWait - TCalc - Tsetup);
->                 dml_print("DML: row_bytes =3D dpte_row_bytes (per_pipe) =
-=3D PixelPTEBytesPerRow =3D : %d\n", PixelPTEBytesPerRow);
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+For VMs/partitions it gives you much more flexibility ("cloud", kata
+containers, memory overcommit, ...).
+
+Assume you have a VM with some initial memory size (e.g., 32GB). By
+hotplugging up to 256 DIMMs you cab grow in small steps (e.g., 128MB, up
+to 64GB, 256MB, up to 96GB, ...). And if you online all the memory
+blocks MOVABLE, you can shrink in these small steps.
+
+Regarding PowerPC, AFAIK it also gives the OS more flexibility to find
+memory blocks that can be offlined and unplugged, especially without the
+MOVABLE zone. Finding some scattered 16MB blocks that can be offlined is
+easier than finding one bigger (e.g., 2GB) memory block that can be
+offlined. And the history of powerpc dlpar dates back to pre-MOVABLE
+days (there is a paper from 2003).
+
+> 
+>>> Yeah, but of course it's not as bad as it was now that it's fully parallelized.
+>>
+>> Right. I also observed that computing if a zone is contiguous can be
+>> expensive.
+> 
+> That's right, I remember that.  It's on my list :)
+
+I do think your change mostly affects bare metal where you do not care
+about hotplugging small memory blocks. Maybe an even better check would be
+
+if (!in_vm() {
+	bz = MAX_BLOCK_SIZE;
+	goto none;
+}
+
+because I doubt we have bare metal machines > 64 where we want to
+hot(un)plug DIMMs < 2G. But maybe there is a use case I am not aware of
+... and I don't know an easy way to check whether we are running inside
+a VM or not (like kvm_para_available() ... ).
+
+-- 
+Thanks,
+
+David / dhildenb
+
