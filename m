@@ -2,169 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605A21EE39F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CE31EE38F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgFDLnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 07:43:53 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:52864 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727916AbgFDLnx (ORCPT
+        id S1728020AbgFDLlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 07:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgFDLlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 07:43:53 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jgoHn-0006x4-S6; Thu, 04 Jun 2020 05:43:51 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jgoHm-0005J8-T3; Thu, 04 Jun 2020 05:43:51 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     <linux-kernel@vger.kernel.org>, io-uring@vger.kernel.org
-Date:   Thu, 04 Jun 2020 06:39:52 -0500
-Message-ID: <87a71jjbzr.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 4 Jun 2020 07:41:20 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63308C03E96D;
+        Thu,  4 Jun 2020 04:41:20 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id n23so6848933ljh.7;
+        Thu, 04 Jun 2020 04:41:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R0o4OOvzJQjARhQ6/49UmmkOyadJDn2uKBj3nrOAqQo=;
+        b=uOadSoLGhaseNrsSLG0CEfcx1B7ZyXtznA1jW/71TjOkJaQ3v7NhDn32mtbkkPd0Q+
+         1UDuNRM26ag+jysBJHImSQ2kyqAxp6Pbe8OVsuK3/X6E6BLOFRucdGoxisc/QkPMQfn9
+         DSP221R/DYOdjftqL2dmeYiibVPWWApyDr996ybowslc4DnYfcHTAWJ50hppvye4onSW
+         Wki6t+mbrF7ejKkqVkq6hFcUNg4F2aeKBWSYX0y86zDfF0gdQIlIFvOHHUjNdXP4a7ct
+         pto6mvk/UvVFDpzwyBErLblgdgk4M9JUrlkGy+vs2gLKfjfB2m/WaWMIrcXH9QqP6urW
+         FvAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R0o4OOvzJQjARhQ6/49UmmkOyadJDn2uKBj3nrOAqQo=;
+        b=P3AAWUXHRD5t3PsW07iHif5KVUnQhGTqfNZ1nMZ/+oBm6ftVVEBgYqOFJpjVXwCYDl
+         3Bber2Wxs4QJ9bMSg8uM1zAAwd5KMDTHKjJ5tToQVPy+To6oKOA859oNgUJK8Zw7v3ZJ
+         tLvBUVSYzsgMhZSxuFkwM/IDS9xvPeJ0ubRdLYyX/GuoYANchBOmPmPto2+J1FAicESX
+         IwFEZaA8Kuwvd0VQHp2lvzVM2bUaOXxv1Oz1ErDI2qJiW6VI3Z+56JVMCDh3Lqn4miru
+         Uq97hm7jgoQvJJEnmX74CEEcvfU2vTL8t9SDtrY1H3DPv2AYmK27OKcXM8tKGUc8vC1i
+         2Q8A==
+X-Gm-Message-State: AOAM533DlaKn9YP6kYlOx2K2g/zk9vvzB2ox9L9un0eEFKvWvmklROQx
+        jdVIiXEOO3oaHch7bgZuSYiBPdo/rz/D4O0M2pc=
+X-Google-Smtp-Source: ABdhPJxccA+5mnrfVxyneHXrV0mVelE29mG9oDomdWWW1fU5ho8qKcvQdw+EQpyMOql3tRqQBW/MgmXYvs677/gUgQE=
+X-Received: by 2002:a05:651c:11c7:: with SMTP id z7mr2085283ljo.29.1591270878905;
+ Thu, 04 Jun 2020 04:41:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jgoHm-0005J8-T3;;;mid=<87a71jjbzr.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19bzVDa02BMFQbK6IVGpEyjtJ8JcakdHO8=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.1128]
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Jens Axboe <axboe@kernel.dk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 569 ms - load_scoreonly_sql: 0.08 (0.0%),
-        signal_user_changed: 12 (2.1%), b_tie_ro: 10 (1.8%), parse: 1.11
-        (0.2%), extract_message_metadata: 5 (0.9%), get_uri_detail_list: 2.5
-        (0.4%), tests_pri_-1000: 5 (0.9%), tests_pri_-950: 1.72 (0.3%),
-        tests_pri_-900: 1.31 (0.2%), tests_pri_-90: 203 (35.7%), check_bayes:
-        201 (35.3%), b_tokenize: 9 (1.5%), b_tok_get_all: 7 (1.3%),
-        b_comp_prob: 2.5 (0.4%), b_tok_touch_all: 178 (31.4%), b_finish: 1.45
-        (0.3%), tests_pri_0: 315 (55.4%), check_dkim_signature: 1.27 (0.2%),
-        check_dkim_adsp: 2.7 (0.5%), poll_dns_idle: 0.55 (0.1%), tests_pri_10:
-        3.0 (0.5%), tests_pri_500: 12 (2.1%), rewrite_mail: 0.00 (0.0%)
-Subject: io_wq_work task_pid is nonsense
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <20200603233203.1695403-2-keescook@chromium.org> <874krr8dps.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <874krr8dps.fsf@nanos.tec.linutronix.de>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 4 Jun 2020 13:41:07 +0200
+Message-ID: <CANiq72kLqvriYmMkdD3yU+xJwbn-68Eiu-fTNtC+Lb+1ZRM75g@mail.gmail.com>
+Subject: Re: [PATCH 01/10] x86/mm/numa: Remove uninitialized_var() usage
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        b43-dev@lists.infradead.org,
+        Network Development <netdev@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        linux-ide@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-spi@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 4, 2020 at 9:58 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> but if we ever lose the 1 then the above will silently compile the code
+> within the IS_ENABLED() section out.
 
-I was looking at something else and I happened to come across the
-task_pid field in struct io_wq_work.  The field is initialized with
-task_pid_vnr.  Then it is used for cancelling pending work.
+Yeah, I believe `IS_ENABLED()` is only meant for Kconfig symbols, not
+macro defs in general. A better option would be `__is_defined()` which
+works for defined-to-nothing too.
 
-The only appropriate and safe use of task_pid_vnr is for sending
-a pid value to userspace and that is not what is going on here.
-
-This use is particularly bad as it looks like I can start a pid
-namespace create an io work queue and create threads that happen to have
-the userspace pid in question and then terminate them, or close their
-io_work_queue file descriptors, and wind up closing someone else's work.
-
-There is also pid wrap around, and the craziness of de_thread to contend
-with as well.
-
-Perhaps since all the task_pid field is used for is cancelling work for
-an individual task you could do something like the patch below.  I am
-assuming no reference counting is necessary as the field can not live
-past the life of a task.
-
-Of cource the fact that you don't perform this work for file descriptors
-that are closed just before a task exits makes me wonder.
-
-Can you please fix this code up to do something sensible?
-Maybe like below?
-
-Eric
-
-diff --git a/fs/io-wq.h b/fs/io-wq.h
-index 5ba12de7572f..bef29fff7403 100644
---- a/fs/io-wq.h
-+++ b/fs/io-wq.h
-@@ -91,7 +91,7 @@ struct io_wq_work {
- 	const struct cred *creds;
- 	struct fs_struct *fs;
- 	unsigned flags;
--	pid_t task_pid;
-+	struct task_struct *task;
- };
- 
- #define INIT_IO_WORK(work, _func)				\
-@@ -129,7 +129,7 @@ static inline bool io_wq_is_hashed(struct io_wq_work *work)
- 
- void io_wq_cancel_all(struct io_wq *wq);
- enum io_wq_cancel io_wq_cancel_work(struct io_wq *wq, struct io_wq_work *cwork);
--enum io_wq_cancel io_wq_cancel_pid(struct io_wq *wq, pid_t pid);
-+enum io_wq_cancel io_wq_cancel_task(struct io_wq *wq, struct task_struct *task);
- 
- typedef bool (work_cancel_fn)(struct io_wq_work *, void *);
- 
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index 4023c9846860..2139a049d548 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -1004,18 +1004,16 @@ enum io_wq_cancel io_wq_cancel_work(struct io_wq *wq, struct io_wq_work *cwork)
- 	return io_wq_cancel_cb(wq, io_wq_io_cb_cancel_data, (void *)cwork);
- }
- 
--static bool io_wq_pid_match(struct io_wq_work *work, void *data)
-+static bool io_wq_task_match(struct io_wq_work *work, void *data)
- {
--	pid_t pid = (pid_t) (unsigned long) data;
-+	struct task_struct *task = data;
- 
--	return work->task_pid == pid;
-+	return work->task == task;
- }
- 
--enum io_wq_cancel io_wq_cancel_pid(struct io_wq *wq, pid_t pid)
-+enum io_wq_cancel io_wq_cancel_task(struct io_wq *wq, struct task_struct *task)
- {
--	void *data = (void *) (unsigned long) pid;
--
--	return io_wq_cancel_cb(wq, io_wq_pid_match, data);
-+	return io_wq_cancel_cb(wq, io_wq_task_match, task);
- }
- 
- struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index c687f57fb651..b9d557a21a26 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1031,8 +1031,8 @@ static inline void io_req_work_grab_env(struct io_kiocb *req,
- 		}
- 		spin_unlock(&current->fs->lock);
- 	}
--	if (!req->work.task_pid)
--		req->work.task_pid = task_pid_vnr(current);
-+	if (!req->work.task)
-+		req->work.task = current;
- }
- 
- static inline void io_req_work_drop_env(struct io_kiocb *req)
-@@ -7421,7 +7421,7 @@ static int io_uring_flush(struct file *file, void *data)
- 	 * If the task is going away, cancel work it may have pending
- 	 */
- 	if (fatal_signal_pending(current) || (current->flags & PF_EXITING))
--		io_wq_cancel_pid(ctx->io_wq, task_pid_vnr(current));
-+		io_wq_cancel_task(ctx->io_wq, current);
- 
- 	return 0;
- }
+Cheers,
+Miguel
