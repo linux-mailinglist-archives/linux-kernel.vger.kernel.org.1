@@ -2,65 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740FE1EEB7C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 22:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0B41EEB83
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 22:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729719AbgFDUEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 16:04:39 -0400
-Received: from raptor.unsafe.ru ([5.9.43.93]:54048 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729632AbgFDUEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 16:04:35 -0400
-Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-89-102-33-211.net.upcbroadband.cz [89.102.33.211])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id CB15620A01;
-        Thu,  4 Jun 2020 20:04:33 +0000 (UTC)
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 2/2] docs: proc: update documentation about subset= parameter
-Date:   Thu,  4 Jun 2020 22:04:13 +0200
-Message-Id: <20200604200413.587896-3-gladkov.alexey@gmail.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200604200413.587896-1-gladkov.alexey@gmail.com>
-References: <20200604200413.587896-1-gladkov.alexey@gmail.com>
+        id S1729609AbgFDUGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 16:06:32 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49790 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728054AbgFDUGa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 16:06:30 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <seth.forshee@canonical.com>)
+        id 1jgw8B-0000Vx-QH
+        for linux-kernel@vger.kernel.org; Thu, 04 Jun 2020 20:06:27 +0000
+Received: by mail-io1-f70.google.com with SMTP id l19so1198517iol.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 13:06:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t8BNrQ5EvO5CN1P54SLRxErq24g55GKkGlzRsUwueE8=;
+        b=NZUmGGYllPwJW/7yLbnSfcm5efBaD61Z3aj9vPB6vURoH/D49TSKpMqbb8vwY/lBhe
+         HVJbt4hzfxBPIc8rqGOAkGtPgByfUcfCUGwiTx3oPJkSOLIX+ZW7cNpADf0k4LajsD6D
+         Ql+E4TfLBk7sd3188O/AEI2Ias8pCsEhoH/Wx2NzzxsaD9vbcncGJgNDVl+Evfmw6G8g
+         XngUOw4geaIcUImGHSIOso1fq6jAwrhksxPdQM/ql4WoOxoE3dZ2AWw8afT+49Oe7X1P
+         /o1YbTX7O8ylFpkZRxBktkYOCm93kAwDdXHzQnjSYUvCWK1/i+fEPQqM4pTDhNoHq5Si
+         l4Bg==
+X-Gm-Message-State: AOAM530jjbnGbD3QR727ZyRbV7+WCnKsxZjX2gIi4Cz9JWBQBZKFG+5k
+        TqFEvgmo+NcbRpaD/TQMlhPq/5e9d8dYwKlmk6Nmcwvk3xduzKuGpagkuTJgLMMQa1Iu+Au9Z/Z
+        BN3yxKF6CJkoN2fLiJe2MkkKMSvtaTqjdxJUu1nRBOg==
+X-Received: by 2002:a6b:5915:: with SMTP id n21mr5546984iob.103.1591301186521;
+        Thu, 04 Jun 2020 13:06:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbV+LEUf9tEApQ5CzjTpzWgDtZ35W682RhC2YNRXKY30uEF3BNkNH92/6pREx1x5YaL+IOGQ==
+X-Received: by 2002:a6b:5915:: with SMTP id n21mr5546945iob.103.1591301185990;
+        Thu, 04 Jun 2020 13:06:25 -0700 (PDT)
+Received: from localhost ([2605:a601:af9b:a120:2dfd:d485:5170:5d43])
+        by smtp.gmail.com with ESMTPSA id z13sm1890628ilh.82.2020.06.04.13.06.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jun 2020 13:06:25 -0700 (PDT)
+Date:   Thu, 4 Jun 2020 15:06:24 -0500
+From:   Seth Forshee <seth.forshee@canonical.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] selftests/ftrace: Use printf instead of echo in
+ kprobe syntax error tests
+Message-ID: <20200604200624.GD5650@ubuntu-x1>
+References: <20200304222009.34663-1-seth.forshee@canonical.com>
+ <20200529203704.GA57013@ubuntu-x1>
+ <de431b0e-6337-b95a-15c5-1c0c6abe697e@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Thu, 04 Jun 2020 20:04:34 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <de431b0e-6337-b95a-15c5-1c0c6abe697e@linuxfoundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
----
- Documentation/filesystems/proc.rst | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Fri, May 29, 2020 at 03:26:06PM -0600, Shuah Khan wrote:
+> On 5/29/20 2:37 PM, Seth Forshee wrote:
+> > On Wed, Mar 04, 2020 at 04:20:09PM -0600, Seth Forshee wrote:
+> > > Test cases which use echo to write strings containing backslashes
+> > > fail with some shells, as echo's treatment of backslashes in
+> > > strings varies between shell implementations. Use printf instead,
+> > > as it should behave consistently across different shells. This
+> > > requires adjustments to the strings to escape \ and % characters.
+> > > ftrace_errlog_check() must also re-escape these characters after
+> > > processing them to remove ^ characters.
+> > > 
+> > > Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+> > 
+> > Ping. Someone just asked me about this patch, and I noticed that it
+> > hasn't been applied or received any feedback.
+> > 
+> 
+> I pulled in this patch from Masami:
+> 
+> selftests/ftrace: Use printf for backslash included command
+> https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=next&id=8e923a2168afd221ea26e3d9716f21e9578b5c4d
+> 
+> Looks like a duplicate.
+> 
+> Seth,
+> Is your patch still needed?
 
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index e2ecf248feb5..68acd335cd8c 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -2177,6 +2177,12 @@ information about processes information, just add identd to this group.
- subset=pid hides all top level files and directories in the procfs that
- are not related to tasks.
- 
-+subset=NAME[:NAME...] allows to give access to the listed file names or
-+directories located at the top level of procfs. These files and directories
-+do not have to be present at the time of mounting procfs. They may appear later
-+when the kernel module that creates them loads. The list of names can be
-+combined with subst=pid.
-+
- 5	Filesystem behavior
- ----------------------------
- 
--- 
-2.25.4
-
+Nope, Masami's patch seems to fix the issues addressed by my patch.
+Thanks!
