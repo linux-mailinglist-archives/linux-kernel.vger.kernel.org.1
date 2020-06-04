@@ -2,92 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2807A1EDEAF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADEEB1EDEB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbgFDHlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 03:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727105AbgFDHlS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 03:41:18 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1FAC05BD1E
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 00:41:18 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id r11so2972472vsj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 00:41:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=3niQnp6Xkf21oPQ9gKE5EOxxtej8Exq79aPM4XzaEgA=;
-        b=d3q/z4AicRTdM4+foyhMY15C42iU4t5WCzsjf64ZijBJLM0tkL2a5yhj3y3SusB6Vv
-         rJeHElzvEPL6t/85o6X5HnIuJlW0v1ym28cDT9eOLORdKR9HeRdAMPFI14UmPMG+JLVu
-         DhNrlLUg/WhetUqTD8R9lurElLkANkXxZChTrRPlaU3PwmjmvTBSutruSNdyxZjtn6OD
-         UutTVP7ddkNxAwRgeimQ7bO1hXWGNxTPBvjiNst2COEeRnfWx99tPRPFXl4UYv/r83T3
-         S+vDltzsMWBKDAvUxRzVWJYW7PaU0Bq4LB04ov9H5Wx6EO91mtHTAKQ+8IwfyVBBdZ18
-         LNgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=3niQnp6Xkf21oPQ9gKE5EOxxtej8Exq79aPM4XzaEgA=;
-        b=NbMHA7UYPhEawyTtkgedc04WMLRa9QMZOqdHjQsjp7r0kTCfw56uEG8TQgPmvZBWaE
-         ifUdSAB5i4f5mg2BNZ7S1btplaKuW9lsxs/ENe9+7tcJvHJP56XGQI59QXAbUzjyveU0
-         1HpEcUArGxfW9MBGYr1mKvokNLFAdOgbPBUfROOsNToOEcbbIkvtTm1y8p+W7OHm1kcd
-         deefOiNOElsodib3RJSokN4cPi/OAorUOPpalmGr7Bf8OZmLLq6SOFm6LGpxA6L/IEgh
-         mJ12Ch0XYx4qq3ncXHh6WebbXjHmrmmJPoc2TZh3dRWXOv/fRPYO0KMvtKMUt24MaJqa
-         PGOw==
-X-Gm-Message-State: AOAM530a15VArSbeY7Y4A91atPta0wNYCEcCAYzxU4oVAnP7fcy0JaKn
-        cR8yKMdXF7gs5tAQVmZQAoroCcsiMr0zsIN+taE=
-X-Google-Smtp-Source: ABdhPJwX8vqKwQvuWFklrudSkF+jtTsNKg/hYNsYdPFb38HbXW5qkNaqA2zhkK3lMFwegGcXcWBHbj6LXopiv0P8VyQ=
-X-Received: by 2002:a67:b84e:: with SMTP id o14mr2375921vsh.74.1591256477745;
- Thu, 04 Jun 2020 00:41:17 -0700 (PDT)
-MIME-Version: 1.0
-Reply-To: oliviaeorge@hotmail.com
-Received: by 2002:a67:ee82:0:0:0:0:0 with HTTP; Thu, 4 Jun 2020 00:41:17 -0700 (PDT)
-From:   George Olivia <oliviaeorge@gmail.com>
-Date:   Thu, 4 Jun 2020 01:41:17 -0600
-X-Google-Sender-Auth: PD0-u9QR4Uk6GOSjMW9zuefO9lI
-Message-ID: <CAAkOt0eD2P3Q2o8HgOK+zyt50-hUJwEcmvbuUtp6gopeF9LEbQ@mail.gmail.com>
-Subject: Thank you for your understanding, I wait for your response
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        id S1726904AbgFDHov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 03:44:51 -0400
+Received: from 8bytes.org ([81.169.241.247]:46146 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726047AbgFDHou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 03:44:50 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id A93F826F; Thu,  4 Jun 2020 09:44:48 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     peterz@infradead.org, jroedel@suse.de,
+        Andy Lutomirski <luto@kernel.org>,
+        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        manvanth@linux.vnet.ibm.com, linux-next@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linuxppc-dev@lists.ozlabs.org, hch@lst.de,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH] mm: Fix pud_alloc_track()
+Date:   Thu,  4 Jun 2020 09:44:46 +0200
+Message-Id: <20200604074446.23944-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With due respect, I am Mrs. George Olivia; I have decided to donate
-what I have to you / Motherless babies/Less privileged/Widows' because
-I am dying and diagnosed for cancer for about 2 years ago. I have been
-touched by God Almighty to donate from what I have inherited from my
-late husband to you for good work of God Almighty. I have asked
-Almighty God to forgive me and believe he has, because he is a
-Merciful God I will be going in for an operation surgery soon.
+From: Joerg Roedel <jroedel@suse.de>
 
-I decided to will/donate the sum of ($ 8.1 million DOLLARS) to you for
-the good work of God Almighty, and also to help the motherless and
-less privilege and also forth assistance of the widows. At the moment
-I cannot take any telephone calls right now due to the fact that my
-relatives (that have squandered the funds gave them for this purpose
-before) are around me and my health status also. I have adjusted my
-will and my lawyer is aware.
+The pud_alloc_track() needs to do different checks based on whether
+__ARCH_HAS_5LEVEL_HACK is defined, like it already does in
+pud_alloc(). Otherwise it causes boot failures on PowerPC.
 
-I wish you all the best and May the good Lord bless you abundantly,
-and please use the funds judiciously and always extend the good work
-to others. As soon as you get back to me, I shall give you info on
-what I need from you, then you will contact the bank and tell them I
-have willed those properties to you by quoting my personal file
-routing and account information. And I have also notified the bank
-that I am willing that properties to you for a good, effective and
-prudent work. I know I don't know you but I have been directed to do
-this by God Almighty.
+Provide the correct implementations for both possible settings of
+__ARCH_HAS_5LEVEL_HACK to fix the boot problems.
 
-I Have all my Hospital document which i can send to you as prove to
-what am tell you and my seriousness to this. If you are interested in
-carrying out this task, get back to me for more details on this noble
-project of mine.
+Reported-by: Abdul Haleem <abdhalee@linux.vnet.ibm.com>
+Tested-by: Abdul Haleem <abdhalee@linux.vnet.ibm.com>
+Tested-by: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+Fixes: d8626138009b ("mm: add functions to track page directory modifications")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+---
+ include/asm-generic/5level-fixup.h |  5 +++++
+ include/linux/mm.h                 | 26 +++++++++++++-------------
+ 2 files changed, 18 insertions(+), 13 deletions(-)
 
-Yours Faithfully,
-Mrs. George Olivia
+diff --git a/include/asm-generic/5level-fixup.h b/include/asm-generic/5level-fixup.h
+index 58046ddc08d0..afbab31fbd7e 100644
+--- a/include/asm-generic/5level-fixup.h
++++ b/include/asm-generic/5level-fixup.h
+@@ -17,6 +17,11 @@
+ 	((unlikely(pgd_none(*(p4d))) && __pud_alloc(mm, p4d, address)) ? \
+ 		NULL : pud_offset(p4d, address))
+ 
++#define pud_alloc_track(mm, p4d, address, mask)					\
++	((unlikely(pgd_none(*(p4d))) &&						\
++	  (__pud_alloc(mm, p4d, address) || ({*(mask)|=PGTBL_P4D_MODIFIED;0;})))?	\
++	  NULL : pud_offset(p4d, address))
++
+ #define p4d_alloc(mm, pgd, address)		(pgd)
+ #define p4d_alloc_track(mm, pgd, address, mask)	(pgd)
+ #define p4d_offset(pgd, start)			(pgd)
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 66e0977f970a..ad3b31c5bcc3 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2088,35 +2088,35 @@ static inline pud_t *pud_alloc(struct mm_struct *mm, p4d_t *p4d,
+ 		NULL : pud_offset(p4d, address);
+ }
+ 
+-static inline p4d_t *p4d_alloc_track(struct mm_struct *mm, pgd_t *pgd,
++static inline pud_t *pud_alloc_track(struct mm_struct *mm, p4d_t *p4d,
+ 				     unsigned long address,
+ 				     pgtbl_mod_mask *mod_mask)
+-
+ {
+-	if (unlikely(pgd_none(*pgd))) {
+-		if (__p4d_alloc(mm, pgd, address))
++	if (unlikely(p4d_none(*p4d))) {
++		if (__pud_alloc(mm, p4d, address))
+ 			return NULL;
+-		*mod_mask |= PGTBL_PGD_MODIFIED;
++		*mod_mask |= PGTBL_P4D_MODIFIED;
+ 	}
+ 
+-	return p4d_offset(pgd, address);
++	return pud_offset(p4d, address);
+ }
+ 
+-#endif /* !__ARCH_HAS_5LEVEL_HACK */
+-
+-static inline pud_t *pud_alloc_track(struct mm_struct *mm, p4d_t *p4d,
++static inline p4d_t *p4d_alloc_track(struct mm_struct *mm, pgd_t *pgd,
+ 				     unsigned long address,
+ 				     pgtbl_mod_mask *mod_mask)
++
+ {
+-	if (unlikely(p4d_none(*p4d))) {
+-		if (__pud_alloc(mm, p4d, address))
++	if (unlikely(pgd_none(*pgd))) {
++		if (__p4d_alloc(mm, pgd, address))
+ 			return NULL;
+-		*mod_mask |= PGTBL_P4D_MODIFIED;
++		*mod_mask |= PGTBL_PGD_MODIFIED;
+ 	}
+ 
+-	return pud_offset(p4d, address);
++	return p4d_offset(pgd, address);
+ }
+ 
++#endif /* !__ARCH_HAS_5LEVEL_HACK */
++
+ static inline pmd_t *pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long address)
+ {
+ 	return (unlikely(pud_none(*pud)) && __pmd_alloc(mm, pud, address))?
+-- 
+2.26.2
+
