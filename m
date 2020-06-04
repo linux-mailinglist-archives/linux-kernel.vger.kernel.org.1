@@ -2,194 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B441EDD5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 08:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3741EDD78
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 08:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727101AbgFDGni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 02:43:38 -0400
-Received: from mga11.intel.com ([192.55.52.93]:50353 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726248AbgFDGni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 02:43:38 -0400
-IronPort-SDR: yjs1WZ+4yqgFJQFhCUGU/ty04bW+Hfm0paEKyaafTTUVorzi8NtMtpwJzF0J2MkCGZisjfpvKr
- h2ErY3F/JJgw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 23:43:37 -0700
-IronPort-SDR: qLkuqIEEQFEH1TV5HnSysQza63rrf1zfSA97eNVzKr6bXzJ9VY74YOzF3Wl+1ZUuQyJZwMvFxc
- fP2COJ1wBMoA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,471,1583222400"; 
-   d="scan'208";a="304620121"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga002.fm.intel.com with ESMTP; 03 Jun 2020 23:43:36 -0700
-Date:   Wed, 3 Jun 2020 23:43:36 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] arch/{mips,sparc,microblaze,powerpc}: Don't enable
- pagefault/preempt twice
-Message-ID: <20200604064336.GC1740285@iweiny-DESK2.sc.intel.com>
-References: <20200519165422.GA5838@roeck-us.net>
- <20200519184031.GB3356843@iweiny-DESK2.sc.intel.com>
- <20200519194215.GA71941@roeck-us.net>
- <20200520051315.GA3660833@iweiny-DESK2.sc.intel.com>
- <d86dba19-4f4b-061e-a2c7-4f037e9e2de2@roeck-us.net>
- <20200521174250.GB176262@iweiny-DESK2.sc.intel.com>
- <20200603135736.e7b5ded0082a81ae6d9067a0@linux-foundation.org>
- <20200603211416.GA1740285@iweiny-DESK2.sc.intel.com>
- <3538c8ad-674e-d310-d870-4ef6888092ed@roeck-us.net>
- <20200604061805.GA202650@kernel.org>
+        id S1727061AbgFDGqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 02:46:03 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:48690 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726248AbgFDGqC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 02:46:02 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0546c2CR182582;
+        Thu, 4 Jun 2020 06:45:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=vUCYjp1f2wNESYetrOp1ZqmW5F/o/FmwplfPJxUOq/I=;
+ b=BlBWPqpf/PAKOO+PwXnUCnQDAX4S9pnxguIs9OMO5U28MBvSl5RODQ1HT8XkhT7qbhNF
+ +98WlrIe5+MKY2fQPvv2khmj8j7rCy8+eh+Q3XYBJN4dZ2Xpk8H20rKEJCndsF6I2yt3
+ dNxJ7FJ/AjH4yuQ9SvK8tZYHNNtGB2K1I579wIY/IYN35odV1W1hx5oy2/N1M/gQpQrM
+ p/twRrXqlnAmC4M3rows4W88LNsdPvB+3vKKtbyxludRb+L3vyd8Cyv186PcYO/bl/2C
+ Fh5DmC3gY8ndVv/CiS89B6mTqPEHaUt0n0044T+ypPxvsKa23gVvqOyD8Shl+DWpQt0K Uw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 31bewr4x61-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 04 Jun 2020 06:45:51 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0546c4iJ186253;
+        Thu, 4 Jun 2020 06:43:51 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 31dju4gnba-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Jun 2020 06:43:51 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0546hn2R004470;
+        Thu, 4 Jun 2020 06:43:49 GMT
+Received: from [10.159.230.80] (/10.159.230.80)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 03 Jun 2020 23:43:49 -0700
+Subject: Re: [PATCH 1/1] nvme-fcloop: verify wwnn and wwpn format
+From:   Dongli Zhang <dongli.zhang@oracle.com>
+To:     linux-nvme@lists.infradead.org, james.smart@broadcom.com
+Cc:     sagi@grimberg.me, linux-kernel@vger.kernel.org,
+        chaitanya.kulkarni@wdc.com, hch@lst.de
+References: <20200526042118.17836-1-dongli.zhang@oracle.com>
+Message-ID: <38a2cfb9-df2a-c5cb-6797-2b96ef049c7c@oracle.com>
+Date:   Wed, 3 Jun 2020 23:43:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200604061805.GA202650@kernel.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200526042118.17836-1-dongli.zhang@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006040043
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
+ phishscore=0 suspectscore=2 impostorscore=0 cotscore=-2147483648
+ lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006040043
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 09:18:05AM +0300, Mike Rapoport wrote:
-> On Wed, Jun 03, 2020 at 04:44:17PM -0700, Guenter Roeck wrote:
-> > On 6/3/20 2:14 PM, Ira Weiny wrote:
-> > > On Wed, Jun 03, 2020 at 01:57:36PM -0700, Andrew Morton wrote:
-> > >> On Thu, 21 May 2020 10:42:50 -0700 Ira Weiny <ira.weiny@intel.com> wrote:
-> > >>
-> > >>>>>
-> > >>>>> Actually it occurs to me that the patch consolidating kmap_prot is odd for
-> > >>>>> sparc 32 bit...
-> > >>>>>
-> > >>>>> Its a long shot but could you try reverting this patch?
-> > >>>>>
-> > >>>>> 4ea7d2419e3f kmap: consolidate kmap_prot definitions
-> > >>>>>
-> > >>>>
-> > >>>> That is not easy to revert, unfortunately, due to several follow-up patches.
-> > >>>
-> > >>> I have gotten your sparc tests to run and they all pass...
-> > >>>
-> > >>> 08:10:34 > ../linux-build-test/rootfs/sparc/run-qemu-sparc.sh 
-> > >>> Build reference: v5.7-rc4-17-g852b6f2edc0f
-> > >>>
-> > >>> Building sparc32:SPARCClassic:nosmp:scsi:hd ... running ......... passed
-> > >>> Building sparc32:SPARCbook:nosmp:scsi:cd ... running ......... passed
-> > >>> Building sparc32:LX:nosmp:noapc:scsi:hd ... running ......... passed
-> > >>> Building sparc32:SS-4:nosmp:initrd ... running ......... passed
-> > >>> Building sparc32:SS-5:nosmp:scsi:hd ... running ......... passed
-> > >>> Building sparc32:SS-10:nosmp:scsi:cd ... running ......... passed
-> > >>> Building sparc32:SS-20:nosmp:scsi:hd ... running ......... passed
-> > >>> Building sparc32:SS-600MP:nosmp:scsi:hd ... running ......... passed
-> > >>> Building sparc32:Voyager:nosmp:noapc:scsi:hd ... running ......... passed
-> > >>> Building sparc32:SS-4:smp:scsi:hd ... running ......... passed
-> > >>> Building sparc32:SS-5:smp:scsi:cd ... running ......... passed
-> > >>> Building sparc32:SS-10:smp:scsi:hd ... running ......... passed
-> > >>> Building sparc32:SS-20:smp:scsi:hd ... running ......... passed
-> > >>> Building sparc32:SS-600MP:smp:scsi:hd ... running ......... passed
-> > >>> Building sparc32:Voyager:smp:noapc:scsi:hd ... running ......... passed
-> > >>>
-> > >>> Is there another test I need to run?
-> > >>
-> > >> This all petered out, but as I understand it, this patchset still might
-> > >> have issues on various architectures.
-> > >>
-> > >> Can folks please provide an update on the testing status?
-> > > 
-> > > I believe the tests were failing for Guenter due to another patch set...[1]
-> > > 
-> > > My tests with just this series are working.
-> > > 
-> > >>From my understanding the other failures were unrelated.[2]
-> > > 
-> > > 	<quote Mike Rapoport>
-> > > 	I've checked the patch above on top of the mmots which already has
-> > > 	Ira's patches and it booted fine. I've used sparc32_defconfig to build
-> > > 	the kernel and qemu-system-sparc with default machine and CPU.
-> > > 	</quote>
-> > > 
-> > > Mike, am I wrong?  Do you think the kmap() patches are still causing issues?
+May I get feedback for this?
+
+For the first time I use fcloop, I set:
+
+# echo "wwnn=0x3,wwpn=0x1" > /sys/class/fcloop/ctl/add_target_port
+
+However, I would not be able to move forward if I use "0x3" or "0x1" for nvme-fc
+target or host further. Instead, the address and port should be
+0x0000000000000003 and 0x0000000000000001.
+
+This patch would sync the requirements of input format for nvme-fc and
+nvme-fcloop, unless this would break existing test suite (e.g., blktest).
+
+Thank you very much!
+
+Dongli Zhang
+
+On 5/25/20 9:21 PM, Dongli Zhang wrote:
+> The nvme host and target verify the wwnn and wwpn format via
+> nvme_fc_parse_traddr(). For instance, it is required that the length of
+> wwnn to be either 21 ("nn-0x") or 19 (nn-).
 > 
-> sparc32 UP and microblaze work for me with next-20200603, but I didn't
-> test other architectures. 
+> Add this verification to nvme-fcloop so that the input should always be in
+> hex and the length of input should always be 18.
+> 
+> Otherwise, the user may use e.g. 0x2 to create fcloop local port, while
+> 0x0000000000000002 is required for nvme host and target. This makes the
+> requirement of format confusing.
+> 
+> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+> ---
+>  drivers/nvme/target/fcloop.c | 29 +++++++++++++++++++++++------
+>  1 file changed, 23 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/nvme/target/fcloop.c b/drivers/nvme/target/fcloop.c
+> index f69ce66e2d44..14124e6d4bf2 100644
+> --- a/drivers/nvme/target/fcloop.c
+> +++ b/drivers/nvme/target/fcloop.c
+> @@ -43,6 +43,17 @@ static const match_table_t opt_tokens = {
+>  	{ NVMF_OPT_ERR,		NULL		}
+>  };
 >  
-> > For my part, all I can say is that -next is in pretty bad shape right now.
-> > The summary of my tests says:
-> > 
-> > Build results:
-> > 	total: 151 pass: 130 fail: 21
-> > Qemu test results:
-> > 	total: 430 pass: 375 fail: 55
-> > 
-> > sparc32 smp images in next-20200603 still crash for me with a spinlock
-> > recursion.
+> +static int fcloop_verify_addr(substring_t *s)
+> +{
+> +	size_t blen = s->to - s->from + 1;
+> +
+> +	if (strnlen(s->from, blen) != NVME_FC_TRADDR_HEXNAMELEN + 2 ||
+> +	    strncmp(s->from, "0x", 2))
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+>  static int
+>  fcloop_parse_options(struct fcloop_ctrl_options *opts,
+>  		const char *buf)
+> @@ -64,14 +75,16 @@ fcloop_parse_options(struct fcloop_ctrl_options *opts,
+>  		opts->mask |= token;
+>  		switch (token) {
+>  		case NVMF_OPT_WWNN:
+> -			if (match_u64(args, &token64)) {
+> +			if (fcloop_verify_addr(args) ||
+> +			    match_u64(args, &token64)) {
+>  				ret = -EINVAL;
+>  				goto out_free_options;
+>  			}
+>  			opts->wwnn = token64;
+>  			break;
+>  		case NVMF_OPT_WWPN:
+> -			if (match_u64(args, &token64)) {
+> +			if (fcloop_verify_addr(args) ||
+> +			    match_u64(args, &token64)) {
+>  				ret = -EINVAL;
+>  				goto out_free_options;
+>  			}
+> @@ -92,14 +105,16 @@ fcloop_parse_options(struct fcloop_ctrl_options *opts,
+>  			opts->fcaddr = token;
+>  			break;
+>  		case NVMF_OPT_LPWWNN:
+> -			if (match_u64(args, &token64)) {
+> +			if (fcloop_verify_addr(args) ||
+> +			    match_u64(args, &token64)) {
+>  				ret = -EINVAL;
+>  				goto out_free_options;
+>  			}
+>  			opts->lpwwnn = token64;
+>  			break;
+>  		case NVMF_OPT_LPWWPN:
+> -			if (match_u64(args, &token64)) {
+> +			if (fcloop_verify_addr(args) ||
+> +			    match_u64(args, &token64)) {
+>  				ret = -EINVAL;
+>  				goto out_free_options;
+>  			}
+> @@ -141,14 +156,16 @@ fcloop_parse_nm_options(struct device *dev, u64 *nname, u64 *pname,
+>  		token = match_token(p, opt_tokens, args);
+>  		switch (token) {
+>  		case NVMF_OPT_WWNN:
+> -			if (match_u64(args, &token64)) {
+> +			if (fcloop_verify_addr(args) ||
+> +			    match_u64(args, &token64)) {
+>  				ret = -EINVAL;
+>  				goto out_free_options;
+>  			}
+>  			*nname = token64;
+>  			break;
+>  		case NVMF_OPT_WWPN:
+> -			if (match_u64(args, &token64)) {
+> +			if (fcloop_verify_addr(args) ||
+> +			    match_u64(args, &token64)) {
+>  				ret = -EINVAL;
+>  				goto out_free_options;
+>  			}
 > 
-> I think this is because Will's fixes [1] are not yet in -next.
-> 
-> > s390 images hang early in boot. Several others (alpha, arm64,
-> > various ppc) don't even compile. I can run some more bisects over time,
-> > but this is becoming a full-time job :-(.
-> > 
-> > Guenter
-> 
-> [1] https://lore.kernel.org/lkml/20200526173302.377-1-will@kernel.org
-
-I abandoned the bisect and tested with this fix.[1]  It passes.  Guenter, on
-the original thread we had microblaze and ppc working with my fix.
-
-https://lore.kernel.org/lkml/20200519194215.GA71941@roeck-us.net/
-
-Sounds like the current failures above are from something much newer in the
-tree.
-
-Ira
-
-[1]
-23:26:24 > /home/iweiny/dev/linux-build-test/rootfs/sparc/run-qemu-sparc.sh 
-Build reference: next-20200603-3-gf5afe92a2135
-
-Building sparc32:SPARCClassic:nosmp:scsi:hd ... running ......... passed
-Building sparc32:SPARCbook:nosmp:scsi:cd ... running ......... passed
-Building sparc32:LX:nosmp:noapc:scsi:hd ... running ......... passed
-Building sparc32:SS-4:nosmp:initrd ... running ......... passed
-Building sparc32:SS-5:nosmp:scsi:hd ... running ......... passed
-Building sparc32:SS-10:nosmp:scsi:cd ... running ......... passed
-Building sparc32:SS-20:nosmp:scsi:hd ... running ......... passed
-Building sparc32:SS-600MP:nosmp:scsi:hd ... running ......... passed
-Building sparc32:Voyager:nosmp:noapc:scsi:hd ... running ......... passed
-Building sparc32:SS-4:smp:scsi:hd ... running ......... passed
-Building sparc32:SS-5:smp:scsi:cd ... running ......... passed
-Building sparc32:SS-10:smp:scsi:hd ... running ......... passed
-Building sparc32:SS-20:smp:scsi:hd ... running ......... passed
-Building sparc32:SS-600MP:smp:scsi:hd ... running ......... passed
-Building sparc32:Voyager:smp:noapc:scsi:hd ... running ......... passed
-
-
-> -- 
-> Sincerely yours,
-> Mike.
