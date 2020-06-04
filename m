@@ -2,237 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C871EE52E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBFC1EE536
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728434AbgFDNUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 09:20:48 -0400
-Received: from alexa-out-blr-01.qualcomm.com ([103.229.18.197]:55827 "EHLO
-        alexa-out-blr-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728055AbgFDNUr (ORCPT
+        id S1728539AbgFDNWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 09:22:00 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39084 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728473AbgFDNV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 09:20:47 -0400
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by alexa-out-blr-01.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Jun 2020 18:50:05 +0530
-Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 04 Jun 2020 18:49:41 +0530
-Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
-        id 55AFD49A8; Thu,  4 Jun 2020 18:49:40 +0530 (IST)
-From:   Kalyan Thota <kalyan_t@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        seanpaul@chromium.org, hoegsberg@chromium.org,
-        dianders@chromium.org, jsanka@codeaurora.org,
-        mkrishn@codeaurora.org, travitej@codeaurora.org,
-        nganji@codeaurora.org
-Subject: [PATCH v6] drm/msm/dpu: ensure device suspend happens during PM sleep
-Date:   Thu,  4 Jun 2020 18:49:35 +0530
-Message-Id: <1591276775-13949-1-git-send-email-kalyan_t@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        Thu, 4 Jun 2020 09:21:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591276917;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=DHrMnCyPNfTHJnXV1DMm7XzmV+ayRU6NvyYnxtLnRIo=;
+        b=HXy04FH4SWKVknbGvJ5hCh5UR/OGbWMr4MOsSu2x92gqgmXayCiYlr/Da7hfT6B5iaeGRH
+        JbynrbBMxP9OdNwF4nF+Rb+ZZqZ02u+6kQwQDWVcHPlKqJxnF8O0BT3On+WLfWfdUOtSbi
+        JygRR3GCCJMR8VIPpiuyy/qKGY7SxoI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-82-5vhAVLh8OLmA_U0I1odt_Q-1; Thu, 04 Jun 2020 09:21:54 -0400
+X-MC-Unique: 5vhAVLh8OLmA_U0I1odt_Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A8819BFDE;
+        Thu,  4 Jun 2020 13:21:48 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1AE1678F08;
+        Thu,  4 Jun 2020 13:21:16 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>, sgrubb@redhat.com,
+        omosnace@redhat.com, fw@strlen.de, twoerner@redhat.com,
+        eparis@parisplace.org, tgraf@infradead.org,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: [PATCH ghak124 v3] audit: log nftables configuration change events
+Date:   Thu,  4 Jun 2020 09:20:49 -0400
+Message-Id: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"The PM core always increments the runtime usage counter
-before calling the ->suspend() callback and decrements it
-after calling the ->resume() callback"
+iptables, ip6tables, arptables and ebtables table registration,
+replacement and unregistration configuration events are logged for the
+native (legacy) iptables setsockopt api, but not for the
+nftables netlink api which is used by the nft-variant of iptables in
+addition to nftables itself.
 
-DPU and DSI are managed as runtime devices. When
-suspend is triggered, PM core adds a refcount on all the
-devices and calls device suspend, since usage count is
-already incremented, runtime suspend was not getting called
-and it kept the clocks on which resulted in target not
-entering into XO shutdown.
+Add calls to log the configuration actions in the nftables netlink api.
 
-Add changes to force suspend on runtime devices during pm sleep.
+This uses the same NETFILTER_CFG record format but overloads the table
+field.
 
-Changes in v1:
- - Remove unnecessary checks in the function
-    _dpu_kms_disable_dpu (Rob Clark).
+  type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.878:162) : table=?:0;?:0 family=unspecified entries=2 op=nft_register_gen pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+  ...
+  type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.878:162) : table=firewalld:1;?:0 family=inet entries=0 op=nft_register_table pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+  ...
+  type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;filter_FORWARD:85 family=inet entries=8 op=nft_register_chain pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+  ...
+  type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;filter_FORWARD:85 family=inet entries=101 op=nft_register_rule pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+  ...
+  type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;__set0:87 family=inet entries=87 op=nft_register_setelem pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+  ...
+  type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;__set0:87 family=inet entries=0 op=nft_register_set pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
 
-Changes in v2:
- - Avoid using suspend_late to reset the usagecount
-   as suspend_late might not be called during suspend
-   call failures (Doug).
+For further information please see issue
+https://github.com/linux-audit/audit-kernel/issues/124
 
-Changes in v3:
- - Use force suspend instead of managing device usage_count
-   via runtime put and get API's to trigger callbacks (Doug).
-
-Changes in v4:
- - Check the return values of pm_runtime_force_suspend and
-   pm_runtime_force_resume API's and pass appropriately (Doug).
-
-Changes in v5:
- - With v4 patch, test cycle has uncovered issues in device resume.
-
-   On bubs: cmd tx failures were seen as SW is sending panel off
-   commands when the dsi resources are turned off.
-
-   Upon suspend, DRM driver will issue a NULL composition to the
-   dpu, followed by turning off all the HW blocks.
-
-   v5 changes will serialize the NULL commit and resource unwinding
-   by handling them under PM prepare and PM complete phases there by
-   ensuring that clks are on when panel off commands are being
-   processed.
-
-Changes in v6:
-- Use drm_mode_config_helper_suspend/resume() instead of legacy API
-  drm_atomic_helper_suspend/resume() (Doug).
-
-  Trigger runtime callbacks from the suspend/resume call to turn
-  off the resources.
-
-Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c |  2 +
- drivers/gpu/drm/msm/dsi/dsi.c           |  2 +
- drivers/gpu/drm/msm/msm_drv.c           | 67 ++++++++++++++++-----------------
- 3 files changed, 37 insertions(+), 34 deletions(-)
+Changelog:
+v3:
+- inline message type rather than table
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index ce19f1d..b886d9d 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@ -1123,6 +1123,8 @@ static int __maybe_unused dpu_runtime_resume(struct device *dev)
+v2:
+- differentiate between xtables and nftables
+- add set, setelem, obj, flowtable, gen
+- use nentries field as appropriate per type
+- overload the "tables" field with table handle and chain/set/flowtable
+
+ include/linux/audit.h         |  18 ++++++++
+ kernel/auditsc.c              |  24 ++++++++--
+ net/netfilter/nf_tables_api.c | 103 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 142 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/audit.h b/include/linux/audit.h
+index 3fcd9ee49734..604ede630580 100644
+--- a/include/linux/audit.h
++++ b/include/linux/audit.h
+@@ -12,6 +12,7 @@
+ #include <linux/sched.h>
+ #include <linux/ptrace.h>
+ #include <uapi/linux/audit.h>
++#include <uapi/linux/netfilter/nf_tables.h>
  
- static const struct dev_pm_ops dpu_pm_ops = {
- 	SET_RUNTIME_PM_OPS(dpu_runtime_suspend, dpu_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
+ #define AUDIT_INO_UNSET ((unsigned long)-1)
+ #define AUDIT_DEV_UNSET ((dev_t)-1)
+@@ -98,6 +99,23 @@ enum audit_nfcfgop {
+ 	AUDIT_XT_OP_REGISTER,
+ 	AUDIT_XT_OP_REPLACE,
+ 	AUDIT_XT_OP_UNREGISTER,
++	AUDIT_NFT_OP_TABLE_REGISTER,
++	AUDIT_NFT_OP_TABLE_UNREGISTER,
++	AUDIT_NFT_OP_CHAIN_REGISTER,
++	AUDIT_NFT_OP_CHAIN_UNREGISTER,
++	AUDIT_NFT_OP_RULE_REGISTER,
++	AUDIT_NFT_OP_RULE_UNREGISTER,
++	AUDIT_NFT_OP_SET_REGISTER,
++	AUDIT_NFT_OP_SET_UNREGISTER,
++	AUDIT_NFT_OP_SETELEM_REGISTER,
++	AUDIT_NFT_OP_SETELEM_UNREGISTER,
++	AUDIT_NFT_OP_GEN_REGISTER,
++	AUDIT_NFT_OP_OBJ_REGISTER,
++	AUDIT_NFT_OP_OBJ_UNREGISTER,
++	AUDIT_NFT_OP_OBJ_RESET,
++	AUDIT_NFT_OP_FLOWTABLE_REGISTER,
++	AUDIT_NFT_OP_FLOWTABLE_UNREGISTER,
++	AUDIT_NFT_OP_INVALID,
  };
  
- static const struct of_device_id dpu_dt_match[] = {
-diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
-index 55ea4bc2..62704885 100644
---- a/drivers/gpu/drm/msm/dsi/dsi.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi.c
-@@ -161,6 +161,8 @@ static int dsi_dev_remove(struct platform_device *pdev)
+ extern int is_audit_feature_set(int which);
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index 468a23390457..3a9100e95fda 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -75,6 +75,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/fsnotify_backend.h>
+ #include <uapi/linux/limits.h>
++#include <uapi/linux/netfilter/nf_tables.h>
  
- static const struct dev_pm_ops dsi_pm_ops = {
- 	SET_RUNTIME_PM_OPS(msm_dsi_runtime_suspend, msm_dsi_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
+ #include "audit.h"
+ 
+@@ -136,9 +137,26 @@ struct audit_nfcfgop_tab {
  };
  
- static struct platform_driver dsi_driver = {
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 7d985f8..da42ff7 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -1035,75 +1035,74 @@ static int msm_ioctl_submitqueue_close(struct drm_device *dev, void *data,
- 	.patchlevel         = MSM_VERSION_PATCHLEVEL,
+ static const struct audit_nfcfgop_tab audit_nfcfgs[] = {
+-	{ AUDIT_XT_OP_REGISTER,		"register"	},
+-	{ AUDIT_XT_OP_REPLACE,		"replace"	},
+-	{ AUDIT_XT_OP_UNREGISTER,	"unregister"	},
++	{ AUDIT_XT_OP_REGISTER,			"xt_register"		   },
++	{ AUDIT_XT_OP_REPLACE,			"xt_replace"		   },
++	{ AUDIT_XT_OP_UNREGISTER,		"xt_unregister"		   },
++	{ AUDIT_NFT_OP_TABLE_REGISTER,		"nft_register_table"	   },
++	{ AUDIT_NFT_OP_TABLE_UNREGISTER,	"nft_unregister_table"	   },
++	{ AUDIT_NFT_OP_CHAIN_REGISTER,		"nft_register_chain"	   },
++	{ AUDIT_NFT_OP_CHAIN_UNREGISTER,	"nft_unregister_chain"	   },
++	{ AUDIT_NFT_OP_RULE_REGISTER,		"nft_register_rule"	   },
++	{ AUDIT_NFT_OP_RULE_UNREGISTER,		"nft_unregister_rule"	   },
++	{ AUDIT_NFT_OP_SET_REGISTER,		"nft_register_set"	   },
++	{ AUDIT_NFT_OP_SET_UNREGISTER,		"nft_unregister_set"	   },
++	{ AUDIT_NFT_OP_SETELEM_REGISTER,	"nft_register_setelem"	   },
++	{ AUDIT_NFT_OP_SETELEM_UNREGISTER,	"nft_unregister_setelem"   },
++	{ AUDIT_NFT_OP_GEN_REGISTER,		"nft_register_gen"	   },
++	{ AUDIT_NFT_OP_OBJ_REGISTER,		"nft_register_obj"	   },
++	{ AUDIT_NFT_OP_OBJ_UNREGISTER,		"nft_unregister_obj"	   },
++	{ AUDIT_NFT_OP_OBJ_RESET,		"nft_reset_obj"		   },
++	{ AUDIT_NFT_OP_FLOWTABLE_REGISTER,	"nft_register_flowtable"   },
++	{ AUDIT_NFT_OP_FLOWTABLE_UNREGISTER,	"nft_unregister_flowtable" },
++	{ AUDIT_NFT_OP_INVALID,			"nft_invalid"		   },
  };
  
--#ifdef CONFIG_PM_SLEEP
--static int msm_pm_suspend(struct device *dev)
-+#ifdef CONFIG_PM
-+static int msm_runtime_suspend(struct device *dev)
+ static int audit_match_perm(struct audit_context *ctx, int mask)
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 3558e76e2733..b9e7440cc87d 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -12,6 +12,7 @@
+ #include <linux/netlink.h>
+ #include <linux/vmalloc.h>
+ #include <linux/rhashtable.h>
++#include <linux/audit.h>
+ #include <linux/netfilter.h>
+ #include <linux/netfilter/nfnetlink.h>
+ #include <linux/netfilter/nf_tables.h>
+@@ -693,6 +694,16 @@ static void nf_tables_table_notify(const struct nft_ctx *ctx, int event)
  {
- 	struct drm_device *ddev = dev_get_drvdata(dev);
- 	struct msm_drm_private *priv = ddev->dev_private;
-+	struct msm_mdss *mdss = priv->mdss;
- 
--	if (WARN_ON(priv->pm_state))
--		drm_atomic_state_put(priv->pm_state);
-+	DBG("");
- 
--	priv->pm_state = drm_atomic_helper_suspend(ddev);
--	if (IS_ERR(priv->pm_state)) {
--		int ret = PTR_ERR(priv->pm_state);
--		DRM_ERROR("Failed to suspend dpu, %d\n", ret);
--		return ret;
--	}
-+	if (mdss && mdss->funcs)
-+		return mdss->funcs->disable(mdss);
- 
- 	return 0;
- }
- 
--static int msm_pm_resume(struct device *dev)
-+static int msm_runtime_resume(struct device *dev)
- {
- 	struct drm_device *ddev = dev_get_drvdata(dev);
- 	struct msm_drm_private *priv = ddev->dev_private;
--	int ret;
-+	struct msm_mdss *mdss = priv->mdss;
- 
--	if (WARN_ON(!priv->pm_state))
--		return -ENOENT;
-+	DBG("");
- 
--	ret = drm_atomic_helper_resume(ddev, priv->pm_state);
--	if (!ret)
--		priv->pm_state = NULL;
-+	if (mdss && mdss->funcs)
-+		return mdss->funcs->enable(mdss);
- 
--	return ret;
-+	return 0;
- }
- #endif
- 
--#ifdef CONFIG_PM
--static int msm_runtime_suspend(struct device *dev)
-+#ifdef CONFIG_PM_SLEEP
-+static int msm_pm_suspend(struct device *dev)
- {
--	struct drm_device *ddev = dev_get_drvdata(dev);
--	struct msm_drm_private *priv = ddev->dev_private;
--	struct msm_mdss *mdss = priv->mdss;
- 
--	DBG("");
-+	if (pm_runtime_suspended(dev))
-+		return 0;
- 
--	if (mdss && mdss->funcs)
--		return mdss->funcs->disable(mdss);
-+	return msm_runtime_suspend(dev);
-+}
- 
--	return 0;
-+static int msm_pm_resume(struct device *dev)
-+{
-+	if (pm_runtime_suspended(dev))
-+		return 0;
+ 	struct sk_buff *skb;
+ 	int err;
++	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
++			      ctx->table->name, ctx->table->handle);
 +
-+	return msm_runtime_resume(dev);
- }
++	audit_log_nfcfg(buf,
++			ctx->family,
++			ctx->table->use,
++			event == NFT_MSG_NEWTABLE ?
++				AUDIT_NFT_OP_TABLE_REGISTER :
++				AUDIT_NFT_OP_TABLE_UNREGISTER);
++	kfree(buf);
  
--static int msm_runtime_resume(struct device *dev)
-+static int msm_pm_prepare(struct device *dev)
+ 	if (!ctx->report &&
+ 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
+@@ -1428,6 +1439,17 @@ static void nf_tables_chain_notify(const struct nft_ctx *ctx, int event)
  {
- 	struct drm_device *ddev = dev_get_drvdata(dev);
--	struct msm_drm_private *priv = ddev->dev_private;
--	struct msm_mdss *mdss = priv->mdss;
+ 	struct sk_buff *skb;
+ 	int err;
++	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
++			      ctx->table->name, ctx->table->handle,
++			      ctx->chain->name, ctx->chain->handle);
++
++	audit_log_nfcfg(buf,
++			ctx->family,
++			ctx->chain->use,
++			event == NFT_MSG_NEWCHAIN ?
++				AUDIT_NFT_OP_CHAIN_REGISTER :
++				AUDIT_NFT_OP_CHAIN_UNREGISTER);
++	kfree(buf);
  
--	DBG("");
-+	return drm_mode_config_helper_suspend(ddev);
-+}
+ 	if (!ctx->report &&
+ 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
+@@ -2691,6 +2713,17 @@ static void nf_tables_rule_notify(const struct nft_ctx *ctx,
+ {
+ 	struct sk_buff *skb;
+ 	int err;
++	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
++			      ctx->table->name, ctx->table->handle,
++			      ctx->chain->name, ctx->chain->handle);
++
++	audit_log_nfcfg(buf,
++			ctx->family,
++			rule->handle,
++			event == NFT_MSG_NEWRULE ?
++				AUDIT_NFT_OP_RULE_REGISTER :
++				AUDIT_NFT_OP_RULE_UNREGISTER);
++	kfree(buf);
  
--	if (mdss && mdss->funcs)
--		return mdss->funcs->enable(mdss);
-+static void msm_pm_complete(struct device *dev)
-+{
-+	struct drm_device *ddev = dev_get_drvdata(dev);
+ 	if (!ctx->report &&
+ 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
+@@ -3693,6 +3726,17 @@ static void nf_tables_set_notify(const struct nft_ctx *ctx,
+ 	struct sk_buff *skb;
+ 	u32 portid = ctx->portid;
+ 	int err;
++	char *buf = kasprintf(gfp_flags, "%s:%llu;%s:%llu",
++			      ctx->table->name, ctx->table->handle,
++			      set->name, set->handle);
++
++	audit_log_nfcfg(buf,
++			ctx->family,
++			set->field_count,
++			event == NFT_MSG_NEWSET ?
++				AUDIT_NFT_OP_SET_REGISTER :
++				AUDIT_NFT_OP_SET_UNREGISTER);
++	kfree(buf);
  
--	return 0;
-+	drm_mode_config_helper_resume(ddev);
- }
- #endif
+ 	if (!ctx->report &&
+ 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
+@@ -4809,6 +4853,17 @@ static void nf_tables_setelem_notify(const struct nft_ctx *ctx,
+ 	u32 portid = ctx->portid;
+ 	struct sk_buff *skb;
+ 	int err;
++	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
++			      ctx->table->name, ctx->table->handle,
++			      set->name, set->handle);
++
++	audit_log_nfcfg(buf,
++			ctx->family,
++			set->handle,
++			event == NFT_MSG_NEWSETELEM ?
++				AUDIT_NFT_OP_SETELEM_REGISTER :
++				AUDIT_NFT_OP_SETELEM_UNREGISTER);
++	kfree(buf);
  
- static const struct dev_pm_ops msm_pm_ops = {
- 	SET_SYSTEM_SLEEP_PM_OPS(msm_pm_suspend, msm_pm_resume)
- 	SET_RUNTIME_PM_OPS(msm_runtime_suspend, msm_runtime_resume, NULL)
-+	.prepare = msm_pm_prepare,
-+	.complete = msm_pm_complete,
- };
+ 	if (!ctx->report && !nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
+ 		return;
+@@ -5890,6 +5945,19 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
+ 			    obj->ops->type->type != filter->type)
+ 				goto cont;
  
- /*
++			if (reset) {
++				char *buf = kasprintf(GFP_KERNEL,
++						      "%s:%llu;?:0",
++						      table->name,
++						      table->handle);
++
++				audit_log_nfcfg(buf,
++						family,
++						obj->handle,
++						AUDIT_NFT_OP_OBJ_RESET);
++				kfree(buf);
++			}
++
+ 			if (nf_tables_fill_obj_info(skb, net, NETLINK_CB(cb->skb).portid,
+ 						    cb->nlh->nlmsg_seq,
+ 						    NFT_MSG_NEWOBJ,
+@@ -6000,6 +6068,17 @@ static int nf_tables_getobj(struct net *net, struct sock *nlsk,
+ 	if (NFNL_MSG_TYPE(nlh->nlmsg_type) == NFT_MSG_GETOBJ_RESET)
+ 		reset = true;
+ 
++	if (reset) {
++		char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
++				      table->name, table->handle);
++
++		audit_log_nfcfg(buf,
++				family,
++				obj->handle,
++				AUDIT_NFT_OP_OBJ_RESET);
++		kfree(buf);
++	}
++
+ 	err = nf_tables_fill_obj_info(skb2, net, NETLINK_CB(skb).portid,
+ 				      nlh->nlmsg_seq, NFT_MSG_NEWOBJ, 0,
+ 				      family, table, obj, reset);
+@@ -6075,6 +6154,16 @@ void nft_obj_notify(struct net *net, const struct nft_table *table,
+ {
+ 	struct sk_buff *skb;
+ 	int err;
++	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
++			      table->name, table->handle);
++
++	audit_log_nfcfg(buf,
++			family,
++			obj->handle,
++			event == NFT_MSG_NEWOBJ ?
++				AUDIT_NFT_OP_OBJ_REGISTER :
++				AUDIT_NFT_OP_OBJ_UNREGISTER);
++	kfree(buf);
+ 
+ 	if (!report &&
+ 	    !nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
+@@ -6701,6 +6790,17 @@ static void nf_tables_flowtable_notify(struct nft_ctx *ctx,
+ {
+ 	struct sk_buff *skb;
+ 	int err;
++	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
++			      flowtable->table->name, flowtable->table->handle,
++			      flowtable->name, flowtable->handle);
++
++	audit_log_nfcfg(buf,
++			ctx->family,
++			flowtable->hooknum,
++			event == NFT_MSG_NEWFLOWTABLE ?
++				AUDIT_NFT_OP_FLOWTABLE_REGISTER :
++				AUDIT_NFT_OP_FLOWTABLE_UNREGISTER);
++	kfree(buf);
+ 
+ 	if (ctx->report &&
+ 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
+@@ -6822,6 +6922,9 @@ static void nf_tables_gen_notify(struct net *net, struct sk_buff *skb,
+ 	struct sk_buff *skb2;
+ 	int err;
+ 
++	audit_log_nfcfg("?:0;?:0", 0, net->nft.base_seq,
++			AUDIT_NFT_OP_GEN_REGISTER);
++
+ 	if (nlmsg_report(nlh) &&
+ 	    !nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
+ 		return;
 -- 
-1.9.1
+1.8.3.1
 
