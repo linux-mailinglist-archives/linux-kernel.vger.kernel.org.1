@@ -2,127 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE231EE408
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 14:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAFD1EE404
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 14:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728545AbgFDMGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 08:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728494AbgFDMG3 (ORCPT
+        id S1728480AbgFDMG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 08:06:26 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:42200 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728452AbgFDMGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 08:06:29 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7993BC03E96E
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 05:06:29 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id e20so2763808qvu.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 05:06:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J8XXw9bWqog1qXznkBFIaFfGNYcanEbfH23hTVGzPIQ=;
-        b=faSHCfVZTU002i9rOq3081b6hzhIIqH7n5dv5hGRJd8jMEK/WM+98oeWfE+xnoRjTI
-         xwyoBTmd5jkTkC2T2FtyxJh6cTLJurmhk5Kp48DH8KwAg3CCsjlyqPhtYX+t8vlCC9Kc
-         1l0/nu61+qDRbgfmSUXRvlSPGBNhPbZeMTPJBClNBBv85NJMoIeVwAOBeJN3uzZiNTdI
-         0tM1CsKAEz9faQe/svQg9wwSlgpONxqegigWVLrYtNSr8/GJnaRUx7mztf4LMqBfpPu5
-         TXw0mpqlRLDAHb0UL2838SF2FOH0YJ3/K2eGG8/NGgguFUx8fanSmhr6OSVaa41cZ/5z
-         VRdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J8XXw9bWqog1qXznkBFIaFfGNYcanEbfH23hTVGzPIQ=;
-        b=UJ4DBtSRpGj8tdr5ARnXPa38pVZmKqreX55JlQt2TTSNZeVqkbKKbu2Lf3raSSOHP2
-         RxbkfekrHYF75HJTICE/VS5xsxE3G6Lj7w3+qpTi8Wr2VR80mNgmOaCaIcjdNThX7Qtg
-         DUMkEzBQ4muphPcLpJC4yjYthtfJPJKTd/AKgKuXXFolZsNmb0lLm9pZkTmHPSJSAvpa
-         CStJoJDn8L+Glct1P9qCao/+SkgBJ5UjA7QZYdWaKzYoSB9q6htG/Q5RZzRl6VIGW0tL
-         GDE3GiY4Ul8S0F2aLpkDmAvtFkSwh+lLFG5eNDXdeHHCoUck91oQNuWC2+pA4wYdbvoJ
-         uG4A==
-X-Gm-Message-State: AOAM532B/Jn0OnMvy+XT0V00VSqwHIWLFHHaZm9rTTGYmiOoN5YztW4r
-        GoNLfTI0gCxSvsJoLMabn2MMMoZsOevq2N8kTy8YDg==
-X-Google-Smtp-Source: ABdhPJxZCPPf49APC5CxzIFLlJ2ZS0uykwlb6NLcKgK/nhI4HSwy5rWlG4Afb78EiExniD1IYqBpul8PsQDoOd/7vq0=
-X-Received: by 2002:a0c:c70f:: with SMTP id w15mr4544479qvi.34.1591272388478;
- Thu, 04 Jun 2020 05:06:28 -0700 (PDT)
+        Thu, 4 Jun 2020 08:06:23 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7EB4D1C0BD2; Thu,  4 Jun 2020 14:06:21 +0200 (CEST)
+Date:   Thu, 4 Jun 2020 14:06:21 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     jacek.anaszewski@gmail.com, matthias.bgg@gmail.com, dmurphy@ti.com,
+        linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: Re: [PATCH] leds: mt6360: Add LED driver for MT6360
+Message-ID: <20200604120621.GA3560@duo.ucw.cz>
+References: <1591252004-12681-1-git-send-email-gene.chen.richtek@gmail.com>
 MIME-Version: 1.0
-References: <cover.1585233617.git.andreyknvl@google.com> <9d9134359725a965627b7e8f2652069f86f1d1fa.1585233617.git.andreyknvl@google.com>
-In-Reply-To: <9d9134359725a965627b7e8f2652069f86f1d1fa.1585233617.git.andreyknvl@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 4 Jun 2020 14:06:17 +0200
-Message-ID: <CACT4Y+YMd1f_trERXGgcQgXa35cq33kfQd-Fv8_5G6V+XLbqTw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/7] kcov: fix potential use-after-free in kcov_remote_start
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
+Content-Disposition: inline
+In-Reply-To: <1591252004-12681-1-git-send-email-gene.chen.richtek@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 26, 2020 at 3:44 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> If vmalloc() fails in kcov_remote_start() we'll access remote->kcov
-> without holding kcov_remote_lock, so remote might potentially be freed
-> at that point. Cache kcov pointer in a local variable.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  kernel/kcov.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
->
-> diff --git a/kernel/kcov.c b/kernel/kcov.c
-> index f6bd119c9419..cc5900ac2467 100644
-> --- a/kernel/kcov.c
-> +++ b/kernel/kcov.c
-> @@ -748,6 +748,7 @@ static const struct file_operations kcov_fops = {
->  void kcov_remote_start(u64 handle)
->  {
->         struct kcov_remote *remote;
-> +       struct kcov *kcov;
->         void *area;
->         struct task_struct *t;
->         unsigned int size;
-> @@ -774,16 +775,17 @@ void kcov_remote_start(u64 handle)
->                 spin_unlock(&kcov_remote_lock);
->                 return;
->         }
-> +       kcov = remote->kcov;
->         /* Put in kcov_remote_stop(). */
-> -       kcov_get(remote->kcov);
-> -       t->kcov = remote->kcov;
-> +       kcov_get(kcov);
-> +       t->kcov = kcov;
->         /*
->          * Read kcov fields before unlock to prevent races with
->          * KCOV_DISABLE / kcov_remote_reset().
->          */
-> -       size = remote->kcov->remote_size;
-> -       mode = remote->kcov->mode;
-> -       sequence = remote->kcov->sequence;
-> +       size = kcov->remote_size;
-> +       mode = kcov->mode;
-> +       sequence = kcov->sequence;
->         area = kcov_remote_area_get(size);
->         spin_unlock(&kcov_remote_lock);
->
-> @@ -791,7 +793,7 @@ void kcov_remote_start(u64 handle)
->                 area = vmalloc(size * sizeof(unsigned long));
->                 if (!area) {
->                         t->kcov = NULL;
-> -                       kcov_put(remote->kcov);
-> +                       kcov_put(kcov);
->                         return;
->                 }
->         }
-> --
-> 2.26.0.rc2.310.g2932bb562d-goog
->
+Hi!
+
+> Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mode,
+> and 3-channel RGB LED support Register/Flash/Breath Mode
+>=20
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> base-commit: 098c4adf249c198519a4abebe482b1e6b8c50e47
+
+Does this need device tree binding, too?
+
+> +++ b/drivers/leds/leds-mt6360.c
+> @@ -0,0 +1,1061 @@
+> +// SPDX-License-Identifier: GPL-2.0
+
+Could we get GPL 2.0 or later?
+
+Thanks,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--uAKRQypu60I7Lcqm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXtjjvQAKCRAw5/Bqldv6
+8uu2AJ94mDQBXm5GCB+DGTjiC5seurSDSgCaA35bqtIrtU4tkebxxxG9yKvSs5E=
+=/E8n
+-----END PGP SIGNATURE-----
+
+--uAKRQypu60I7Lcqm--
