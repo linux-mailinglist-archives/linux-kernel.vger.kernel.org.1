@@ -2,173 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2BD1EE013
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 10:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBEF1EE016
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 10:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728200AbgFDIuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 04:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726802AbgFDIuF (ORCPT
+        id S1728256AbgFDIuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 04:50:19 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:44336 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728228AbgFDIuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 04:50:05 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783D8C05BD1E
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 01:50:03 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id u13so4411276wml.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 01:50:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i9Lb2kfvjheBiCcoIHR9vzCH13IVr9VVaRPFD6gb2tw=;
-        b=Ybbo+SNCbbdB4Db0BERZoV+IS/ZAal0nUHM3rPHsiXQqvcrG+ZHVRyxh3RH3Omt1c0
-         FReP1+SVrFh7MwOIEhSRfFCGLJHOiF9AZyikehWDzkS5dAWex+8sebsToS3k3C99iZ1H
-         bGMRMBK8useA8FreYZvnAo0KqadijvyGAz87U=
+        Thu, 4 Jun 2020 04:50:18 -0400
+Received: by mail-io1-f71.google.com with SMTP id y14so3182149ion.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 01:50:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=i9Lb2kfvjheBiCcoIHR9vzCH13IVr9VVaRPFD6gb2tw=;
-        b=iS6V3ehx9SD2CzwTd+yWR+zMZfb7ID8Z5INamrhqXUPlqeMIvuq6s1GuXAQCcxu1GH
-         QPrNM4pm5ntMafzq0UYV8MxXl2UKBcllI3LoPu0G6MjpPj0Krhyr6FZzfaXss7oQpi0t
-         DLyRzQL2lS9/FGDXnykmRk4XSnFnXEszDnuoT11UvdOu3o9mRRIUZcbZISXVrRot5603
-         f/w5VMzSAidIiWBtOjSqCRb7yE8QIEtF9R7C63wOJSPpXyiJtYCzW4sTiutLHGPPOHhy
-         CNFMkenSgx7jV1CcNiaIIFaT/ZgPUH6AohKFmgJZba2bkl09h88QsfWI0BZQzWZ2gMy6
-         rPqA==
-X-Gm-Message-State: AOAM531EnQzLk7/x86aqasvkLwiz6U6MTknkWEYcMWe8hTKv6xpAkjFy
-        KRUk5e1q+CY1Pt/xjcSitp5GtQ==
-X-Google-Smtp-Source: ABdhPJzlfYUG7REX7JnlfEgpF/yYLe/bFD3D+XFPyipYhk5uI0hmUf/ZT9TOZo4R/GLocgZ+amrrSQ==
-X-Received: by 2002:a05:600c:2317:: with SMTP id 23mr3019544wmo.139.1591260602159;
-        Thu, 04 Jun 2020 01:50:02 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id t13sm6718960wrn.64.2020.06.04.01.50.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 01:50:01 -0700 (PDT)
-Date:   Thu, 4 Jun 2020 10:49:58 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2 6/6] dma-buf: Remove custom seqcount lockdep class key
-Message-ID: <20200604084958.GU20149@phenom.ffwll.local>
-Mail-Followup-To: "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        David Airlie <airlied@linux.ie>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20200603144949.1122421-1-a.darwish@linutronix.de>
- <20200603144949.1122421-7-a.darwish@linutronix.de>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=A2HBUdAMpWbKBpNbzC++zcPeQhDXmhmI0aCAyr/UXfk=;
+        b=Ck+8vYRPbFPbJUWf9k/CWlUDrqwgrVInb+eE8Np1e30GWRTP5cId0mmxqdD/GoY4EV
+         KPPEK7e/AVy2JGrH9fn7n57ebJ4HHc3RqHv4e+AmAVOexB5//nlsUFGs2qGn9WGsHfLE
+         r9CXnqviP//oTHQqJ2WB1qoqZnMB5Sy+YoGkeuZ+rmJ+OCsWGTsDnSk+Sb5Yn33P3Frz
+         X8nBWJbTTQsCGmqsQBeM49xhU9Pa5pYGL4wo/nt+TFiawWC/5GLWHSNNfOfYmOYtjMMo
+         U6MpQ80WbQITESRrznvxUAv6TQaMsB5QQPeQ/Ut5KI5BhbUVK/9QwtvX8HWUtkk3DfBA
+         0z8Q==
+X-Gm-Message-State: AOAM530sZ5Hdgps7Zv0LC/4xEb27zyigyC/5sGep7rR71Q2iCL8PdPGm
+        2OdbTHNYjnp4Ntb0Izmf6YFwh8iYvLBXU6I5E4QaPeCiWmHz
+X-Google-Smtp-Source: ABdhPJwhHXrd9hyDDeUrOTmPuneHcL4rL4S3D/rQ5xbu/pyI62sptAnY0k9viO1BJbH1sfUlGLIwZjG+dQp3Xr5rsc6hyuJWuFxn
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200603144949.1122421-7-a.darwish@linutronix.de>
-X-Operating-System: Linux phenom 5.6.0-1-amd64 
+X-Received: by 2002:a92:b00e:: with SMTP id x14mr2918527ilh.219.1591260616368;
+ Thu, 04 Jun 2020 01:50:16 -0700 (PDT)
+Date:   Thu, 04 Jun 2020 01:50:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c8a76e05a73e3be3@google.com>
+Subject: WARNING in kvm_inject_emulated_page_fault
+From:   syzbot <syzbot+2a7156e11dc199bdbd8a@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 04:49:49PM +0200, Ahmed S. Darwish wrote:
-> Commit 3c3b177a9369 ("reservation: add support for read-only access
-> using rcu") introduced a sequence counter to manage updates to
-> reservations. Back then, the reservation object initializer
-> reservation_object_init() was always inlined.
-> 
-> Having the sequence counter initialization inlined meant that each of
-> the call sites would have a different lockdep class key, which would've
-> broken lockdep's deadlock detection. The aforementioned commit thus
-> introduced, and exported, a custom seqcount lockdep class key and name.
-> 
-> The commit 8735f16803f00 ("dma-buf: cleanup reservation_object_init...")
-> transformed the reservation object initializer to a normal non-inlined C
-> function. seqcount_init(), which automatically defines the seqcount
-> lockdep class key and must be called non-inlined, can now be safely used.
-> 
-> Remove the seqcount custom lockdep class key, name, and export. Use
-> seqcount_init() inside the dma reservation object initializer.
-> 
-> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-> Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Hello,
 
-Patch lgtm, and Ahmed says plan is that this should land through -tip
-since it's part of a larger series, so
+syzbot found the following crash on:
 
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+HEAD commit:    cb8e59cc Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14dedfe2100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a16ddbc78955e3a9
+dashboard link: https://syzkaller.appspot.com/bug?extid=2a7156e11dc199bdbd8a
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=134ca2de100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=178272f2100000
 
-for merging through whatever tree/branch fits bets. I don't expect
-conflicts here, nothing in-flight touching this. I expect this will show
-up in 5.9-rc1 or so.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+2a7156e11dc199bdbd8a@syzkaller.appspotmail.com
 
-Cheers, Daniel
+L1TF CPU bug present and SMT on, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6819 at arch/x86/kvm/x86.c:618 kvm_inject_emulated_page_fault+0x210/0x290 arch/x86/kvm/x86.c:618
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 6819 Comm: syz-executor268 Not tainted 5.7.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x188/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:221
+ __warn.cold+0x2f/0x35 kernel/panic.c:582
+ report_bug+0x27b/0x2f0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:105 [inline]
+ fixup_bug arch/x86/kernel/traps.c:100 [inline]
+ do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:197
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:216
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:kvm_inject_emulated_page_fault+0x210/0x290 arch/x86/kvm/x86.c:618
+Code: 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 79 48 8b 53 08 4c 89 f6 48 89 ef e8 fa 04 0c 00 e9 10 ff ff ff e8 10 ac 68 00 <0f> 0b e9 3a fe ff ff 4c 89 e7 e8 21 74 a7 00 e9 5d fe ff ff 48 89
+RSP: 0018:ffffc90000f87968 EFLAGS: 00010293
+RAX: ffff888095202540 RBX: ffffc90000f879e0 RCX: ffffffff810ae417
+RDX: 0000000000000000 RSI: ffffffff810ae5e0 RDI: 0000000000000001
+RBP: ffff888088ce0040 R08: ffff888095202540 R09: fffff520001f0f58
+R10: ffffc90000f87abf R11: fffff520001f0f57 R12: 0000000000000000
+R13: 0000000000000001 R14: ffffc90000f87ab8 R15: ffff888088ce0380
+ nested_vmx_get_vmptr+0x1f9/0x2a0 arch/x86/kvm/vmx/nested.c:4638
+ handle_vmon arch/x86/kvm/vmx/nested.c:4767 [inline]
+ handle_vmon+0x168/0x3a0 arch/x86/kvm/vmx/nested.c:4728
+ vmx_handle_exit+0x29c/0x1260 arch/x86/kvm/vmx/vmx.c:6067
+ vcpu_enter_guest arch/x86/kvm/x86.c:8604 [inline]
+ vcpu_run arch/x86/kvm/x86.c:8669 [inline]
+ kvm_arch_vcpu_ioctl_run+0x2723/0x68a0 arch/x86/kvm/x86.c:8890
+ kvm_vcpu_ioctl+0x46a/0xe20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3163
+ vfs_ioctl fs/ioctl.c:47 [inline]
+ ksys_ioctl+0x11a/0x180 fs/ioctl.c:771
+ __do_sys_ioctl fs/ioctl.c:780 [inline]
+ __se_sys_ioctl fs/ioctl.c:778 [inline]
+ __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:778
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x443569
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b 0c fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffece6351a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffece6351b0 RCX: 0000000000443569
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000006
+RBP: 0000000000000000 R08: 0000000020003800 R09: 0000000000400eb0
+R10: 00007ffece633610 R11: 0000000000000246 R12: 0000000000404610
+R13: 00000000004046a0 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-> ---
->  drivers/dma-buf/dma-resv.c | 9 +--------
->  include/linux/dma-resv.h   | 2 --
->  2 files changed, 1 insertion(+), 10 deletions(-)
-> 
-> diff --git a/drivers/dma-buf/dma-resv.c b/drivers/dma-buf/dma-resv.c
-> index 4264e64788c4..590ce7ad60a0 100644
-> --- a/drivers/dma-buf/dma-resv.c
-> +++ b/drivers/dma-buf/dma-resv.c
-> @@ -50,12 +50,6 @@
->  DEFINE_WD_CLASS(reservation_ww_class);
->  EXPORT_SYMBOL(reservation_ww_class);
->  
-> -struct lock_class_key reservation_seqcount_class;
-> -EXPORT_SYMBOL(reservation_seqcount_class);
-> -
-> -const char reservation_seqcount_string[] = "reservation_seqcount";
-> -EXPORT_SYMBOL(reservation_seqcount_string);
-> -
->  /**
->   * dma_resv_list_alloc - allocate fence list
->   * @shared_max: number of fences we need space for
-> @@ -134,9 +128,8 @@ subsys_initcall(dma_resv_lockdep);
->  void dma_resv_init(struct dma_resv *obj)
->  {
->  	ww_mutex_init(&obj->lock, &reservation_ww_class);
-> +	seqcount_init(&obj->seq);
->  
-> -	__seqcount_init(&obj->seq, reservation_seqcount_string,
-> -			&reservation_seqcount_class);
->  	RCU_INIT_POINTER(obj->fence, NULL);
->  	RCU_INIT_POINTER(obj->fence_excl, NULL);
->  }
-> diff --git a/include/linux/dma-resv.h b/include/linux/dma-resv.h
-> index ee50d10f052b..a6538ae7d93f 100644
-> --- a/include/linux/dma-resv.h
-> +++ b/include/linux/dma-resv.h
-> @@ -46,8 +46,6 @@
->  #include <linux/rcupdate.h>
->  
->  extern struct ww_class reservation_ww_class;
-> -extern struct lock_class_key reservation_seqcount_class;
-> -extern const char reservation_seqcount_string[];
->  
->  /**
->   * struct dma_resv_list - a list of shared fences
-> -- 
-> 2.20.1
-> 
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
