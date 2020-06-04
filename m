@@ -2,122 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6687B1EE66C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 16:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D191EE675
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 16:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728889AbgFDOPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 10:15:31 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:58819 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728496AbgFDOPb (ORCPT
+        id S1728933AbgFDOR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 10:17:57 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:7466 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728496AbgFDOR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 10:15:31 -0400
-X-IronPort-AV: E=Sophos;i="5.73,472,1583190000"; 
-   d="scan'208";a="453003555"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 16:15:29 +0200
-Date:   Thu, 4 Jun 2020 16:15:29 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Denis Efremov <efremov@linux.com>
-cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] coccinelle: api: add kzfree script
-In-Reply-To: <20200604140805.111613-1-efremov@linux.com>
-Message-ID: <alpine.DEB.2.21.2006041614300.2577@hadrien>
-References: <20200604140805.111613-1-efremov@linux.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Thu, 4 Jun 2020 10:17:56 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 054ECOxm026960;
+        Thu, 4 Jun 2020 16:17:46 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=nQf9gPDyxy9mJur7bGB7IkT77OqDOBWiOvYcc4OpyWM=;
+ b=xDYlfK3B5PhxNZLmf/R2+Yrq8IX1SoZEfFYk57vYdpODWAY4QQUMuJ9SuyTaPLhc0//6
+ Onh26yIxRWjvcANMvVb8xX2P1iXcHiMQ4lpDOeN5ACtVt3OISTopJlq1Y2h8D24WJwLp
+ sSYMHgwwrbdJI4qgERYvEoJBndRdVVQ7CLuJV20GRDeaVCki/HFgHM1G1Un+uYyv8TYv
+ /SU4gZNbSnSISKIJUKwGhcPFZ5Mm5QVgtIN8bqkP5mQ6vxgOE8Et+dUadI5xTH6qCImR
+ XWzJlg41bFdhdc3Ypf31Z2wrQfwlp5ctFRYdreM9+R4XpuJ5D+8d9waXJYDOJTeW7WPB 7Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 31ejxav9t4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Jun 2020 16:17:46 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AC623100034;
+        Thu,  4 Jun 2020 16:17:45 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9E3C42AE6C0;
+        Thu,  4 Jun 2020 16:17:45 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.50) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Jun
+ 2020 16:16:44 +0200
+Subject: Re: [PATCH v4 9/9] remoteproc: Properly handle firmware name when
+ attaching
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Loic PALLARDY <loic.pallardy@st.com>,
+        "s-anna@ti.com" <s-anna@ti.com>
+References: <20200601175139.22097-1-mathieu.poirier@linaro.org>
+ <20200601175139.22097-10-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <1ddccc88-cde8-91ca-ee17-5fa5955ca80b@st.com>
+Date:   Thu, 4 Jun 2020 16:16:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200601175139.22097-10-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG8NODE1.st.com (10.75.127.22) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-04_10:2020-06-02,2020-06-04 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mathieu,
 
-
-On Thu, 4 Jun 2020, Denis Efremov wrote:
-
-> Check for memset() with 0 followed by kfree().
->
-> Signed-off-by: Denis Efremov <efremov@linux.com>
+On 6/1/20 7:51 PM, Mathieu Poirier wrote:
+> This patch prevents the firmware image name from being displayed when
+> the remoteproc core is attaching to a remote processor. This is needed
+> needed since there is no guarantee about the nature of the firmware
+> image that is loaded by the external entity.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 > ---
-> Patches:
-> 1. kzfree in drivers/w1 https://lkml.org/lkml/2020/6/4/438
-> 2. kzfree in drivers/iommu/ https://lkml.org/lkml/2020/6/4/421
-> 3. kzfree in drivers/scsi/ https://lkml.org/lkml/2020/6/4/442
->
->  scripts/coccinelle/api/kzfree.cocci | 53 +++++++++++++++++++++++++++++
->  1 file changed, 53 insertions(+)
->  create mode 100644 scripts/coccinelle/api/kzfree.cocci
->
-> diff --git a/scripts/coccinelle/api/kzfree.cocci b/scripts/coccinelle/api/kzfree.cocci
-> new file mode 100644
-> index 000000000000..c6b8f7676af4
-> --- /dev/null
-> +++ b/scripts/coccinelle/api/kzfree.cocci
-> @@ -0,0 +1,53 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +///
-> +/// Use kzfree rather than memset with 0 followed by kfree
-> +///
-> +// Confidence: High
-> +// Copyright: (C) 2020 Denis Efremov ISPRAS
-> +// Options: --no-includes --include-headers
-> +//
-> +// Keywords: kzfree
-> +//
+>  drivers/remoteproc/remoteproc_core.c  | 18 ++++++++++++++++++
+>  drivers/remoteproc/remoteproc_sysfs.c | 16 ++++++++++++++--
+>  include/linux/remoteproc.h            |  2 ++
+>  3 files changed, 34 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 0e23284fbd25..a8adc712e7f6 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1642,6 +1642,14 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
+>  
+>  	rproc->state = RPROC_OFFLINE;
+>  
+> +	/*
+> +	 * The remote processor has been stopped and is now offline, which means
+> +	 * that the next time it is brought back online the remoteproc core will
+> +	 * be responsible to load its firmware.  As such it is no longer
+> +	 * autonomous.
+> +	 */
+> +	rproc->autonomous = false;
 > +
-> +virtual context
-> +virtual org
-> +virtual report
-> +virtual patch
+>  	dev_info(dev, "stopped remote processor %s\n", rproc->name);
+>  
+>  	return 0;
+> @@ -2166,6 +2174,16 @@ int rproc_add(struct rproc *rproc)
+>  	/* create debugfs entries */
+>  	rproc_create_debug_dir(rproc);
+>  
+> +	/*
+> +	 * Remind ourselves the remote processor has been attached to rather
+> +	 * than booted by the remoteproc core.  This is important because the
+> +	 * RPROC_DETACHED state will be lost as soon as the remote processor
+> +	 * has been attached to.  Used in firmware_show() and reset in
+> +	 * rproc_stop().
+> +	 */
+> +	if (rproc->state == RPROC_DETACHED)
+> +		rproc->autonomous = true;
 > +
-> +// Ignore kzfree definition
-> +// Ignore kasan test
-> +@r depends on !patch && !(file in "lib/test_kasan.c") && !(file in "mm/slab_common.c")@
-> +expression E;
-> +position p;
-> +@@
+>  	/* if rproc is marked always-on, request it to boot */
+>  	if (rproc->auto_boot) {
+>  		ret = rproc_trigger_auto_boot(rproc);
+> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
+> index 8b462c501465..4ee158431f67 100644
+> --- a/drivers/remoteproc/remoteproc_sysfs.c
+> +++ b/drivers/remoteproc/remoteproc_sysfs.c
+> @@ -14,8 +14,20 @@ static ssize_t firmware_show(struct device *dev, struct device_attribute *attr,
+>  			  char *buf)
+>  {
+>  	struct rproc *rproc = to_rproc(dev);
+> -
+> -	return sprintf(buf, "%s\n", rproc->firmware);
+> +	const char *firmware = rproc->firmware;
 > +
-> +(
-> +* memset(E, 0, ...);
-> +|
-> +* memset(E, '\0', ...);
-> +)
+> +	/*
+> +	 * If the remote processor has been started by an external
+> +	 * entity we have no idea of what image it is running.  As such
+> +	 * simply display a generic string rather then rproc->firmware.
+> +	 *
+> +	 * Here we rely on the autonomous flag because a remote processor
+> +	 * may have been attached to and currently in a running state.
+> +	 */
+> +	if (rproc->autonomous)
+> +		firmware = "unknown";
+> +
+> +	return sprintf(buf, "%s\n", firmware);
+>  }
+>  
+>  /* Change firmware name via sysfs */
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index bf6a310ba870..cf5e31556780 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -491,6 +491,7 @@ struct rproc_dump_segment {
+>   * @table_sz: size of @cached_table
+>   * @has_iommu: flag to indicate if remote processor is behind an MMU
+>   * @auto_boot: flag to indicate if remote processor should be auto-started
+> + * @autonomous: true if an external entity has booted the remote processor
+>   * @dump_segments: list of segments in the firmware
+>   * @nb_vdev: number of vdev currently handled by rproc
+>   */
+> @@ -524,6 +525,7 @@ struct rproc {
+>  	size_t table_sz;
+>  	bool has_iommu;
+>  	bool auto_boot;
+> +	bool autonomous;
 
-You shouldn't need both cases.  0 should be enough.
+Do you need to define a new field? what about using rproc->firmware value?
 
-Did you try ... here but find that some subexpressions of E could be
-modified in between?
+In this case the platform driver could provide a name using rproc_alloc
+even if in attached mode, for instance to identify a firmware version...
 
-julia
+Regards,
+Arnaud
 
-> +* kfree(E)@p;
-> +
-> +@r1 depends on patch && !(file in "lib/test_kasan.c") && !(file in "mm/slab_common.c")@
-> +expression E;
-> +@@
-> +
-> +(
-> +- memset(E, 0, ...);
-> +|
-> +- memset(E, '\0', ...);
-> +)
-> +- kfree(E);
-> ++ kzfree(E);
-> +
-> +@script:python depends on report@
-> +p << r.p;
-> +@@
-> +
-> +coccilib.report.print_report(p[0], "WARNING opportunity for kzfree")
-> +
-> +@script:python depends on org@
-> +p << r.p;
-> +@@
-> +
-> +coccilib.org.print_todo(p[0], "WARNING opportunity for kzfree")
-> --
-> 2.26.2
->
->
+
+
+>  	struct list_head dump_segments;
+>  	int nb_vdev;
+>  	u8 elf_class;
+> 
