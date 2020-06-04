@@ -2,110 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFB91EE93A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 19:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1307E1EE942
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 19:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730057AbgFDRQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 13:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
+        id S1730097AbgFDRRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 13:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729866AbgFDRQY (ORCPT
+        with ESMTP id S1729999AbgFDRRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 13:16:24 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA7BC08C5C0;
-        Thu,  4 Jun 2020 10:16:24 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id gl26so6918892ejb.11;
-        Thu, 04 Jun 2020 10:16:24 -0700 (PDT)
+        Thu, 4 Jun 2020 13:17:50 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F65C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 10:17:50 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id e125so4097491lfd.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 10:17:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CRfOcMPoqX/KzXE7GxOg041+jurRUTvvkpUj9xJq8zg=;
-        b=PICO2eizuNE5hjr+sP+gfZbBjtgfT6TtzqIr9e+TyG8ZJgsRYRn79twhZLNBltnFVh
-         xi40v4Zi6ZWDfa0gVqIXH6DJ2QOxCXyjLLg+VU05S06aVohhxKRfPXTvZfu7nkw+/F7W
-         +sGtI0yY5UxM/pic73mPd0M+iArKST3Dt3CoGjBG77MH61O2ixUnjQ0AqzkUH6hsbh/K
-         laj4eKNzZ1FB62ugvBhZb/aJnzvO5znt7xtXZ0hbJzMGrZ8N162PhUNQSeIpyvTPQzYk
-         5AIxtLv26b39YH7montDb4Inql8/1uRgqjnWneAD67kqeQYiTzqD+8vLr8QaTDkRrlKn
-         DxJw==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=TGj9a9TUKfy7t4uQkBrlCQFOK2AZWtuEUI6gC8S8EE4=;
+        b=EtRF99ZLTpO9+9wIofReF0QI8Pav+aXc4nhoe1/jhwqqEfGKSOxlMZprc0qNvSiap5
+         PP7fibUw1C4IVLn77mG36xirbdd8o7/87P0P4G2HUXUi4LWrBCPCrHRx+KwKfKpwJQlw
+         PzFOBu05rNbepO+TmuajTTI5gwJppEzRRGuy6mW0pmSKOLvVetQwd56sSlxf0jNXhXZ7
+         LpSvZEwMU5RABQTfWEWGUfmS06dyYLbE+ZpO2CrNZJU/6BbJs4YG+2bOyd8si5PU7fWa
+         5PLExYCVAu6LXGxtn277I5fXBuk3HbAJIvv8j7EJEtVVje5qykJU0tRjDRJ8AA5RRTXF
+         te7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CRfOcMPoqX/KzXE7GxOg041+jurRUTvvkpUj9xJq8zg=;
-        b=kZZNI0bRqWYikcXaQTGgmXytcY9do/Ow7RpPYb3cm2CLHuKT7zFdicYnBuIbnU0TJf
-         Jb5Je1PKUWpJ+qxlmYeGlfpwzspTUVixaD0Fooe8JHatMkwNb5LqojvSm/ScfqpBe/s/
-         oWnoMrqKlQbdEkkCNSaDo/JLtzSFVR28N4Qjo8B3VHmurg6ZBK56s+gga27SKHuajqfr
-         nD1cleVELcwokseqGojWV4gZ8zSoJj9KMSzNumafAcli8YXrBJ/KRQVJJiENI6Qjdc2w
-         c6Gx//E9upBXFxvumZBBHwweKjvKA46WWYv9noAyvw2GyEK1AQrozFKFc57b4FrKMivh
-         pB3A==
-X-Gm-Message-State: AOAM531Riu9Jhh3n4J81xYy9PemfVOKQfnNt207W062Hm0cvQqffkud0
-        0jmFa1+reOXtLJjoDvYeAmwlRHEF
-X-Google-Smtp-Source: ABdhPJzunm2D8kpsHfEGd4Z/gRT3o9hShVDtznb4lQmelu3shmPowFVihA962h2nWJiE79OHs/xnZA==
-X-Received: by 2002:a17:906:616:: with SMTP id s22mr4575528ejb.382.1591290983173;
-        Thu, 04 Jun 2020 10:16:23 -0700 (PDT)
-Received: from localhost (pd9e51079.dip0.t-ipconnect.de. [217.229.16.121])
-        by smtp.gmail.com with ESMTPSA id v29sm2904966edb.62.2020.06.04.10.16.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 10:16:21 -0700 (PDT)
-Date:   Thu, 4 Jun 2020 19:16:20 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH] pwm: Add missing "CONFIG_" prefix
-Message-ID: <20200604171620.GA1158773@ulmo>
-References: <202006031539.4198EA6@keescook>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=TGj9a9TUKfy7t4uQkBrlCQFOK2AZWtuEUI6gC8S8EE4=;
+        b=AI3pDE0lr7Aj5CfXGFLMOfviL6Y8F+94hrPeuIU5RdMG9Ak+y7KMa74743WvVMCsvP
+         J2V3gdwyPXjKtJOYR0IVYU6fPRLRlOaiSB2M/xHw2FtejwK70iwdeJwakq2MgOOGHoxq
+         nr0m9tGlgT++xtm55n5hb+DT1FlUBeRZWmcer1vRiDUfdvDMGeb3py/41CT6sASkeoGf
+         akkrMl2ZUHHt8EH8BDVSznYfwU+HC/LpX6dMACadNUnPW2XLH3+b671oDUUcNfHMO9gs
+         K/CLVQG/zUFedha1EqykptOGiJQPirf9lNqZ4CU4h6Ve3tLRFRu5gh+y0QUNjVc8+EV2
+         weRw==
+X-Gm-Message-State: AOAM533WLfOTwnR+dqpO16Pm5Wwl0JKJmck/SCr3w04mN9oClV6mIKU2
+        NQOkOPFt5Isd4RMTCbs/jnQcwvzfXW3gQXrV4ZtpMCaPIJJXsw==
+X-Google-Smtp-Source: ABdhPJx2fVqgmxqQSn7zNeoD7sYRjfqs/7aDGMxuyc/KYvJjxtXDv+GG9/3tZKvUdlueTEd5FWMvp5H6jmyMwvlqsi0=
+X-Received: by 2002:a19:8453:: with SMTP id g80mr3085619lfd.167.1591291068584;
+ Thu, 04 Jun 2020 10:17:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fdj2RfSjLxBAspz7"
-Content-Disposition: inline
-In-Reply-To: <202006031539.4198EA6@keescook>
-User-Agent: Mutt/1.13.1 (2019-12-14)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 4 Jun 2020 22:47:36 +0530
+Message-ID: <CA+G9fYuGwcE3zyMFQPpfA0CyW=4WOg9V=kCfKhS7b8930jQofA@mail.gmail.com>
+Subject: LTP: syscalls: regression on mainline - ioctl_loop01 mknod07 setns01
+To:     LTP List <ltp@lists.linux.it>,
+        open list <linux-kernel@vger.kernel.org>,
+        inux-block@vger.kernel.org
+Cc:     chrubis <chrubis@suse.cz>, Arnd Bergmann <arnd@arndb.de>,
+        maco@android.com, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        Jan Stancek <jstancek@redhat.com>,
+        Yang Xu <xuyang2018.jy@cn.fujitsu.com>,
+        Xiao Yang <yangx.jy@cn.fujitsu.com>,
+        Richard Palethorpe <rpalethorpe@suse.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Following three test cases reported as regression on Linux mainline kernel
+on x86_64, arm64, arm and i386
 
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  ltp-syscalls-tests:
+    * ioctl_loop01
+    * mknod07
+    * setns01
 
-On Wed, Jun 03, 2020 at 03:40:56PM -0700, Kees Cook wrote:
-> The IS_ENABLED() use was missing the CONFIG_ prefix which would have
-> lead to skipping this code.
->=20
-> Fixes: 3ad1f3a33286 ("pwm: Implement some checks for lowlevel drivers")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  drivers/pwm/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+git branch: master
+GOOD:
+  git commit: b23c4771ff62de8ca9b5e4a2d64491b2fb6f8f69
+  git describe: v5.7-1230-gb23c4771ff62
+BAD:
+  git commit: 1ee08de1e234d95b5b4f866878b72fceb5372904
+  git describe: v5.7-3523-g1ee08de1e234
 
-Applied, thanks.
+kernel-config: https://builds.tuxbuild.com/U3bU0dMA62OVHb4DvZIVuw/kernel.config
 
-Thierry
+We are investigating these failures.
 
---fdj2RfSjLxBAspz7
-Content-Type: application/pgp-signature; name="signature.asc"
+tst_test.c:906: CONF: btrfs driver not available
+tst_test.c:1246: INFO: Timeout per run is 0h 15m 00s
+tst_device.c:88: INFO: Found free device 1 '/dev/loop1'
+ioctl_loop01.c:49: PASS: /sys/block/loop1/loop/partscan = 0
+[ 1073.639677] loop_set_status: loop1 () has still dirty pages (nrpages=1)
+ioctl_loop01.c:50: PASS: /sys/block/loop1/loop/autoclear = 0
+ioctl_loop01.c:51: PASS: /sys/block/loop1/loop/backing_file =
+'/scratch/ltp-mnIdulzriQ/9cPtLQ/test.img'
+ioctl_loop01.c:63: FAIL: expect 12 but got 17
+ioctl_loop01.c:67: FAIL: /sys/block/loop1/loop/partscan != 1 got 0
+ioctl_loop01.c:68: FAIL: /sys/block/loop1/loop/autoclear != 1 got 0
+ioctl_loop01.c:79: FAIL: access /dev/loop1p1 fails
+[ 1073.679678] loop_set_status: loop1 () has still dirty pages (nrpages=1)
+ioctl_loop01.c:85: FAIL: access /sys/block/loop1/loop1p1 fails
 
------BEGIN PGP SIGNATURE-----
+HINT: You _MAY_ be missing kernel fixes, see:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=10c70d95c0f2
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl7ZLGAACgkQ3SOs138+
-s6FIpQ/9EdDHxyq+7OCwqubx0/mE/4j7lmsLu+HYUpekTsHkXckRQHO4QO7e7Ii3
-MOksak4nU+QCCkG0xCDWHTvbI4BpaXITB+FjkiPO50m5Fai1YNL9paf19GMx/jvc
-UrPWbYDxYyqK/hhrNyztmwqddeHDPIWgUcUeIFXHhTzAtCZoPNmLW7XX4PZwMazc
-Wn85Uvm5Ydo3DON5YebxJhsbAoYzerh+iSMastl0vnTuBMFRwRSkgDU1HwnHFvaG
-TaFmfWYdlAlq78zwr4YMbScJF98svgUlW9TsB6Bmzou+5U3AWfNR+hxQNhVqoBJ9
-UoCFEZp7EeYlydLGrRP0/ygMoIQDbOIVtAgxlL9zttG6gMw75+IG4Y+fvY8wEYXL
-GyiPzHuQ+sFODN/iSxMuQr4/oXrE1xeSi7vjppfZFIimEQw+sl/fLYxxplilJ2Q0
-i3KZgxytiMySK11VUiF1i5deBF/C7JtnXiMjV5AYpsAMHqwG0dLczmWLFFJy+4i7
-OxlV29miA0bt/Zuz8qYHY9LvbYQT0FGqo8hMA1CrIq5Jj47ZG3zptIjwilhL02kv
-/A8/0pOmpfpZhKgCOcdEh7e19UGU9YwVkcCSe2pwFOT895xql2B2OVNAc3dfZtAf
-11C47mMwG8wwSbVVbpFppgdKWonnul9tJUHh/noI4PYSzCrxTNs=
-=+mI0
------END PGP SIGNATURE-----
+mke2fs 1.43.8 (1-Jan-2018)
+[ 1264.711379] EXT4-fs (loop0): mounting ext2 file system using the
+ext4 subsystem
+[ 1264.716642] EXT4-fs (loop0): mounted filesystem without journal. Opts: (null)
+mknod07     0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+mknod07     0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mknod07     1  TPASS  :  mknod failed as expected:
+TEST_ERRNO=EACCES(13): Permission denied
+mknod07     2  TPASS  :  mknod failed as expected:
+TEST_ERRNO=EACCES(13): Permission denied
+mknod07     3  TFAIL  :  mknod07.c:155: mknod succeeded unexpectedly
+mknod07     4  TPASS  :  mknod failed as expected:
+TEST_ERRNO=EPERM(1): Operation not permitted
+mknod07     5  TPASS  :  mknod failed as expected:
+TEST_ERRNO=EROFS(30): Read-only file system
+mknod07     6  TPASS  :  mknod failed as expected:
+TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
 
---fdj2RfSjLxBAspz7--
+
+setns01     0  TINFO  :  ns_name=ipc, ns_fds[0]=6, ns_types[0]=0x8000000
+setns01     0  TINFO  :  ns_name=mnt, ns_fds[1]=7, ns_types[1]=0x20000
+setns01     0  TINFO  :  ns_name=net, ns_fds[2]=8, ns_types[2]=0x40000000
+setns01     0  TINFO  :  ns_name=pid, ns_fds[3]=9, ns_types[3]=0x20000000
+setns01     0  TINFO  :  ns_name=uts, ns_fds[4]=10, ns_types[4]=0x4000000
+setns01     0  TINFO  :  setns(-1, 0x8000000)
+setns01     1  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(-1, 0x20000)
+setns01     2  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(-1, 0x40000000)
+setns01     3  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(-1, 0x20000000)
+setns01     4  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(-1, 0x4000000)
+setns01     5  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(11, 0x8000000)
+setns01     6  TFAIL  :  setns01.c:176: regular file fd exp_errno=22:
+errno=EBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(11, 0x20000)
+setns01     7  TFAIL  :  setns01.c:176: regular file fd exp_errno=22:
+errno=EBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(11, 0x40000000)
+setns01     8  TFAIL  :  setns01.c:176: regular file fd exp_errno=22:
+errno=EBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(11, 0x20000000)
+setns01     9  TFAIL  :  setns01.c:176: regular file fd exp_errno=22:
+errno=EBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(11, 0x4000000)
+setns01    10  TFAIL  :  setns01.c:176: regular file fd exp_errno=22:
+errno=EBADF(9): Bad file descriptor
+
+Full test log link,
+https://lkft.validation.linaro.org/scheduler/job/1467931#L8047
+
+test results comparison shows this test case started failing from June-2-2020
+https://qa-reports.linaro.org/lkft/linux-mainline-oe/build/v5.7-4092-g38696e33e2bd/testrun/2779586/suite/ltp-syscalls-tests/test/ioctl_loop01/history/
+
+https://qa-reports.linaro.org/lkft/linux-mainline-oe/build/v5.7-4092-g38696e33e2bd/testrun/2779586/suite/ltp-syscalls-tests/test/setns01/history/
+
+https://qa-reports.linaro.org/lkft/linux-mainline-oe/build/v5.7-4092-g38696e33e2bd/testrun/2779586/suite/ltp-syscalls-tests/test/mknod07/history/
+
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
