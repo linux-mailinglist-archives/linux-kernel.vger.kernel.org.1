@@ -2,53 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C611EED39
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 23:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5839F1EED2D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 23:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgFDVPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 17:15:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54218 "EHLO mail.kernel.org"
+        id S1726603AbgFDVN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 17:13:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726842AbgFDVPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 17:15:12 -0400
-Subject: Re: [GIT PULL] exec cleanups for v5.8-rc1
+        id S1726106AbgFDVN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 17:13:58 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2B862067B;
+        Thu,  4 Jun 2020 21:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591305312;
-        bh=z1ahmK8ir9vqTkieu8coaO9Ejgdd4+6c1NBu80hSJnc=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Cfjh1phOy6o2AVxkXgl6IxkzckDELlvCdzLKo/BWPItbrddzqsR6kgAn+JgYpRg2d
-         EEY5muUYQ2+EymhYDA2O3WyPDRKubnmNem5rm55q9xM07XWCFgUZh9EGb7ORF6uKj0
-         TsY35+6dCn0trK/td/Jh0nxAFx7GBnsgnZ2AHLic=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <87k10mioer.fsf@x220.int.ebiederm.org>
-References: <87k10mioer.fsf@x220.int.ebiederm.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87k10mioer.fsf@x220.int.ebiederm.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git
- exec-linus
-X-PR-Tracked-Commit-Id: 3977e285ee89a94699255dbbf6eeea13889a1083
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 15a2bc4dbb9cfed1c661a657fcb10798150b7598
-Message-Id: <159130531241.6506.11306405374069488186.pr-tracker-bot@kernel.org>
-Date:   Thu, 04 Jun 2020 21:15:12 +0000
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
+        s=default; t=1591305238;
+        bh=2TgX524QxU5g09+EVKx4PYrPaxdDEGbnQte8wTn3A9g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P0+MAxQDugaaDhNYggEouW+7JZaR1K/9qYg+H5ysAbLXSygx9WfUNMmDuZMy7whRf
+         BNTFXnwKLHHmis/PZCa5lQE9+DHifYWmPjd7j+ji9JsqBbUNzzSWyrxlf0by09sIIV
+         sZI0jHMx/cz2J2Kv1fiosjazgSo71R3qAQo18pl8=
+Date:   Thu, 4 Jun 2020 16:19:03 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH] docs: deprecated.rst: Add note to the use of
+ struct_size() helper
+Message-ID: <20200604211903.GF10051@embeddedor>
+References: <20200604172138.GA21820@embeddedor>
+ <202006041047.9B3E8FB951@keescook>
+ <20200604182123.GD10051@embeddedor>
+ <202006041322.35912ABB@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202006041322.35912ABB@keescook>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 04 Jun 2020 15:09:16 -0500:
+On Thu, Jun 04, 2020 at 01:25:26PM -0700, Kees Cook wrote:
+> On Thu, Jun 04, 2020 at 01:21:23PM -0500, Gustavo A. R. Silva wrote:
+> > Yeah. My reasoning for is that it will take a while --at least one 
+> > development cycle more-- to completely get rid of all the 0/1-arrays.
+> 
+> Right -- but we need a place to point people when we tell them "please
+> don't use 0-byte and 1-byte arrays", and the deprecated.rst is the place
+> for that.
+> 
+> Having it in deprecated.rst once they're all gone only serves to explain
+> why various compiler flags are enabled, etc. But while they're being
+> removed, it serves as a single place to document the issue (as in, much
+> of the flex-array patch commit log "boilerplate" can actually be
+> repeated in deprecated.rst.
+> 
+> > But I think we can add this note while I continue working on the flexible-array
+> > conversions. Once that work is complete, I can go back and update the
+> > documentation. :)
+> > 
+> > What do you think?
+> 
+> I think we need to document it at the beginning of the work (and I
+> should have asked for this earlier). So let's just add a new section on
+> dynamic array usage, etc. It can include a note about struct_size() as
+> an example for why 1-byte arrays are so weird. :)
+> 
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exec-linus
+Got ya. :)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/15a2bc4dbb9cfed1c661a657fcb10798150b7598
+One last thing... I was thinking on adding such section (dynamic array
+usage) to coding-style.rst, explaining how to use struct_size() and
+transform the different open-coded versions we currently have in the
+kernel, e.g. I have seen people use offsetof() --and sometimes open-coded
+versions of sizeof_field()-- and its open-coded version to do arithmetic
+in allocator arguments.
 
-Thank you!
+Thanks
+--
+Gustavo
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
