@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB6E1EE8AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 18:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E621EE8B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 18:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729863AbgFDQi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 12:38:26 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:52488 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729582AbgFDQi0 (ORCPT
+        id S1729901AbgFDQkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 12:40:02 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:25719 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729657AbgFDQjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 12:38:26 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 054GcKHF027568;
-        Thu, 4 Jun 2020 11:38:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1591288700;
-        bh=vJwfnPNsDW10qGjBVrg/CcyYGe7pIosmHJH5uBXXtM8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=QYcyKHprrCdougNHZgK9/S9X65VMDx3mo+KqQHXacswEaFCEjv/nFI3Q3nciMwkVo
-         SxdzOP6FRRZ7oPIXwcqnwsY6Ddnh+yRYSX9VSXdnLD8GWCUIyl71Mdat3J+2aL1YSy
-         GadSGYh8lW40j79lDcjJ6K2QUDLpMTAkrfvbw1ak=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 054GcKs4071393
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 4 Jun 2020 11:38:20 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Jun
- 2020 11:38:20 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 4 Jun 2020 11:38:20 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 054GcJ1c055968;
-        Thu, 4 Jun 2020 11:38:19 -0500
-Subject: Re: [PATCH net-next v6 4/4] net: dp83869: Add RGMII internal delay
- configuration
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
-        <davem@davemloft.net>, <robh@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20200604111410.17918-1-dmurphy@ti.com>
- <20200604111410.17918-5-dmurphy@ti.com>
- <20200604092545.40c85fce@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <63a53dad-4f0a-31ca-ad1a-361b633c28bf@ti.com>
-Date:   Thu, 4 Jun 2020 11:38:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 4 Jun 2020 12:39:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591288787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sQfD7DfM7A0Gmivi6tpLXZMhnc7A3tGFd2gq5rfU1s4=;
+        b=hgm9HtO2+4NYjpldlY0Xvy8njEXaf9xRZorjXj6JNpqZMLnoABsyBkkTEkeYzU+lAv94CP
+        3MnQ+y5tIvYB4EQogbTX90xpVZsZRgMU+kn5BbgwfGp4m6LnFNiG0AN0ULZKlP+BQBkE/1
+        pMYkiZxiytt3YIhuhr5EUe5sA/Zq4uw=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-4LIgXZ_uOcCTvr2_P8FZcg-1; Thu, 04 Jun 2020 12:39:44 -0400
+X-MC-Unique: 4LIgXZ_uOcCTvr2_P8FZcg-1
+Received: by mail-wr1-f71.google.com with SMTP id h6so2665558wrx.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 09:39:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sQfD7DfM7A0Gmivi6tpLXZMhnc7A3tGFd2gq5rfU1s4=;
+        b=So0GJqJslF2JPv3NSt2a6xFCJXmjEqud1xqUHn+J8xmXczaedU765FAMxXycxlEcBt
+         GGzRR5u/13U6JCUVFyRzwYB7JHd2JzS3CNsMYKC/7JXQQ/zLO9OFuSmkLxpMhz1Xk/0g
+         Zd6MIWAGZX8gq6rjMe6DcogB6Ybl2SEF0mD1FydBhXnIyjNa19TGmj0LVwvBA7+Vfeuw
+         lNBevTkq4TYBacyYWuK1lE3PusIT0TKJjYIqQ4mMZMky261o0gFTK/3vx7ney34Pz55a
+         o8RD/PMTmXp+r4qf0Mt4H2nhEaZ1snB76nessVG/S8AFcnC3TIWxGwllXZzT7YP5BWeG
+         a2dQ==
+X-Gm-Message-State: AOAM531XtnveZy4Ghsz8uPnFGtaG7O+52kbO+n3X24kEbxvJouFVrlAW
+        4DQA5Q52aIflybqnUu8qv8ueT5KqXNkCjsQnad0Vy8zQt6VB+Q+4wMOAGK0t2kHAXYqdfGys2ip
+        44Xm+qNG7Z+iaEP8/NAUyNGNw
+X-Received: by 2002:a05:6000:10c3:: with SMTP id b3mr5605452wrx.53.1591288782771;
+        Thu, 04 Jun 2020 09:39:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx/iZt4qBXPIMd9t0x1KbJliF+RE629lbzbGD/TDpfh53s+jzO/S3om9jhWda/I5co04K1QRg==
+X-Received: by 2002:a05:6000:10c3:: with SMTP id b3mr5605438wrx.53.1591288782588;
+        Thu, 04 Jun 2020 09:39:42 -0700 (PDT)
+Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id p9sm7881636wma.48.2020.06.04.09.39.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jun 2020 09:39:42 -0700 (PDT)
+From:   Julien Thierry <jthierry@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     jpoimboe@redhat.com, peterz@infradead.org, mhelsley@vmware.com,
+        Julien Thierry <jthierry@redhat.com>
+Subject: [PATCH 0/4] Remove dependency of check subcmd upon orc
+Date:   Thu,  4 Jun 2020 17:39:34 +0100
+Message-Id: <20200604163938.21660-1-jthierry@redhat.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-In-Reply-To: <20200604092545.40c85fce@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub
+Hi,
 
-On 6/4/20 11:25 AM, Jakub Kicinski wrote:
-> On Thu, 4 Jun 2020 06:14:10 -0500 Dan Murphy wrote:
->> Add RGMII internal delay configuration for Rx and Tx.
->>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> Hi Dan, please make sure W=1 C=1 build is clean:
->
-> drivers/net/phy/dp83869.c:103:18: warning: â€˜dp83869_internal_delayâ€™ defined but not used [-Wunused-const-variable=]
->    103 | static const int dp83869_internal_delay[] = {250, 500, 750, 1000, 1250, 1500,
->        |                  ^~~~~~~~~~~~~~~~~~~~~~
+Matt Helsley's change[1] provided a base framework to opt-in/out
+objtool subcommands at compile time. This makes it easier for
+architectures to port objtool, one subcommand at a time.
 
-I built with W=1 and C=1 and did not see this warning.
+Orc generation relies on the check operation implementation. However,
+the way this is done causes the check implementation to depend on the
+implementation of orc generation functions to call if orc generation is
+requested. This means that in order to implement check subcmd, orc
+subcmd also need to be implemented.
 
-What defconfig are you using?
+These patches aim at removing that dependency, having orc subcmd
+being built on top of the check subcmd.
 
-Can you check if CONFIG_OF_MDIO is set or not?  That would be the only 
-way that warning would come up.
+[1] https://www.spinics.net/lists/kernel/msg3510844.html
 
-> Also net-next is closed right now, you can post RFCs but normal patches
-> should be deferred until after net-next reopens.
+Cheers,
 
-I know net-next is closed.
+Julien Thierry (4):
+  objtool: Move object file loading out of check
+  objtool: Move orc outside of check
+  objtool: orc: Skip setting orc_entry for non-text sections
+  objtool: orc_gen: Move orc_entry out of instruction structure
 
-I pinged David M when it was open about what is meant by "new" patches 
-in the net-dev FAQ.  So I figured I would send the patches to see what 
-the response was.
+ tools/objtool/builtin-check.c |  7 ++-
+ tools/objtool/builtin-orc.c   | 24 +++++++++-
+ tools/objtool/check.c         | 45 ++++--------------
+ tools/objtool/check.h         |  1 -
+ tools/objtool/objtool.c       | 30 ++++++++++++
+ tools/objtool/objtool.h       |  5 +-
+ tools/objtool/orc_gen.c       | 86 ++++++++++++++++++++---------------
+ tools/objtool/weak.c          |  4 +-
+ 8 files changed, 122 insertions(+), 80 deletions(-)
 
-To me these are not new they are in process patches.  My understand is 
-New is v1 patchesets.
-
-But now I have the answer.
-
-Dan
+--
+2.21.1
 
