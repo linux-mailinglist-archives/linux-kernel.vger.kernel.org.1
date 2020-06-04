@@ -2,104 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968181EDA94
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 03:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729E81EDA7C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 03:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgFDBoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 21:44:03 -0400
-Received: from lucky1.263xmail.com ([211.157.147.132]:34810 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726050AbgFDBoD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 21:44:03 -0400
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jun 2020 21:44:02 EDT
-Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id C4C52D7763;
-        Thu,  4 Jun 2020 09:36:48 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P3328T139696376096512S1591234607300874_;
-        Thu, 04 Jun 2020 09:36:48 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <cc566ee1aa824e72eaab51d6fe3dc3fa>
-X-RL-SENDER: sugar.zhang@rock-chips.com
-X-SENDER: zxg@rock-chips.com
-X-LOGIN-NAME: sugar.zhang@rock-chips.com
-X-FST-TO: vkoul@kernel.org
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-From:   Sugar Zhang <sugar.zhang@rock-chips.com>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Sugar Zhang <sugar.zhang@rock-chips.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] dmaengine: pl330: Make sure the debug is idle before doing DMAGO
-Date:   Thu,  4 Jun 2020 09:36:38 +0800
-Message-Id: <1591234598-78919-1-git-send-email-sugar.zhang@rock-chips.com>
-X-Mailer: git-send-email 2.7.4
+        id S1727824AbgFDBiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 21:38:04 -0400
+Received: from mga05.intel.com ([192.55.52.43]:4723 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726050AbgFDBiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 21:38:03 -0400
+IronPort-SDR: 0sfn51z1d00TTxQzzn4LdWSRJ1ohEjiugFl9PNKdC8GcWtrXiU5TWjP11/otemPeh0C3qI+lWp
+ IV3Pgf6+hEaA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 18:38:02 -0700
+IronPort-SDR: lB7F4LxmOVSL9m3TUe7alqnZZrD+XqL+JrOUcbzmt6D7eq+inSMjzfzzUl2/2tseDdOz/ELHhD
+ HhBh2D4gKzOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,470,1583222400"; 
+   d="scan'208";a="416751073"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.141]) ([10.238.4.141])
+  by orsmga004.jf.intel.com with ESMTP; 03 Jun 2020 18:38:00 -0700
+Reply-To: like.xu@intel.com
+Subject: Re: [PATCH] KVM: VMX: Always treat MSR_IA32_PERF_CAPABILITIES as a
+ valid PMU MSR
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
+References: <20200603203303.28545-1-sean.j.christopherson@intel.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Organization: Intel OTC
+Message-ID: <46f57aa8-e278-b4fd-7ac8-523836308051@intel.com>
+Date:   Thu, 4 Jun 2020 09:37:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
+MIME-Version: 1.0
+In-Reply-To: <20200603203303.28545-1-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the datasheet of pl330:
+On 2020/6/4 4:33, Sean Christopherson wrote:
+> Unconditionally return true when querying the validity of
+> MSR_IA32_PERF_CAPABILITIES so as to defer the validity check to
+> intel_pmu_{get,set}_msr(), which can properly give the MSR a pass when
+> the access is initiated from host userspace.
+Regardless of  the MSR is emulated or not, is it a really good assumption that
+the guest cpuids are not properly ready when we do initialization from host 
+userspace
+?
+> The MSR is emulated so
+> there is no underlying hardware dependency to worry about.
+>
+> Fixes: 27461da31089a ("KVM: x86/pmu: Support full width counting")
+> Cc: Like Xu <like.xu@linux.intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>
+> KVM selftests are completely hosed for me, everything fails on KVM_GET_MSRS.
+At least I tried "make --silent -C tools/testing/selftests/kvm run_tests"
+and how do I reproduce the "everything fails" for this issue ?
 
-Example 2-1 Using DMAGO with the debug instruction registers
-
-1. Create a program for the DMA channel
-2. Store the program in a region of system memory
-3. Poll the DBGSTATUS Register to ensure that the debug is idle
-4. Write to the DBGINST0 Register
-5. Write to the DBGINST1 Register
-6. Write zero to the DBGCMD Register
-
-so, we should make sure the debug is idle before step 4/5/6, not
-only step 6. if not, there maybe a risk that fail to write DBGINST0/1.
-
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
----
-
- drivers/dma/pl330.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
-index 88b884c..6a158ee 100644
---- a/drivers/dma/pl330.c
-+++ b/drivers/dma/pl330.c
-@@ -885,6 +885,12 @@ static inline void _execute_DBGINSN(struct pl330_thread *thrd,
- 	void __iomem *regs = thrd->dmac->base;
- 	u32 val;
- 
-+	/* If timed out due to halted state-machine */
-+	if (_until_dmac_idle(thrd)) {
-+		dev_err(thrd->dmac->ddma.dev, "DMAC halted!\n");
-+		return;
-+	}
-+
- 	val = (insn[0] << 16) | (insn[1] << 24);
- 	if (!as_manager) {
- 		val |= (1 << 0);
-@@ -895,12 +901,6 @@ static inline void _execute_DBGINSN(struct pl330_thread *thrd,
- 	val = le32_to_cpu(*((__le32 *)&insn[2]));
- 	writel(val, regs + DBGINST1);
- 
--	/* If timed out due to halted state-machine */
--	if (_until_dmac_idle(thrd)) {
--		dev_err(thrd->dmac->ddma.dev, "DMAC halted!\n");
--		return;
--	}
--
- 	/* Get going */
- 	writel(0, regs + DBGCMD);
- }
--- 
-2.7.4
-
-
+Thanks,
+Like Xu
+>
+>   arch/x86/kvm/vmx/pmu_intel.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index d33d890b605f..bdcce65c7a1d 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -181,7 +181,7 @@ static bool intel_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
+>   		ret = pmu->version > 1;
+>   		break;
+>   	case MSR_IA32_PERF_CAPABILITIES:
+> -		ret = guest_cpuid_has(vcpu, X86_FEATURE_PDCM);
+> +		ret = 1;
+>   		break;
+>   	default:
+>   		ret = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0) ||
 
