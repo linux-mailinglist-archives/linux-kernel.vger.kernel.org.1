@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E2E1EE4F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD671EE4FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgFDNER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 09:04:17 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:45752 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgFDNEQ (ORCPT
+        id S1728114AbgFDNH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 09:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725926AbgFDNHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 09:04:16 -0400
-Received: by mail-lf1-f66.google.com with SMTP id d7so3529461lfi.12;
-        Thu, 04 Jun 2020 06:04:15 -0700 (PDT)
+        Thu, 4 Jun 2020 09:07:25 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C90C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 06:07:24 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id y1so5063047qtv.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 06:07:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4ClLrIavOqOGDJWYrPRq16jGapJaGkyGJvYKPH8Mh8Y=;
+        b=hAY6TZyUVLdwz5BG4D68XEohh0RwANhV9ipETDtzkliGovl5W+0bYcARhxU0/Rh4tg
+         Cvqr17MrqBWl38Um1cwF9l4iaxAZGbZZyGAsHBTEf2lkSEmVBNePGowfVBYm1WIOQVZ0
+         O2MG10e9I2akcCxna1eN2iTse4VgW3QaZ0Qvoo7xvvwJ2Bp0fjONh0JArZBHueoWmdZE
+         LddK3d+yCLkBw4ukLnwHMKqdyS8u8HJW/VRnDqzwUASK0JOS5C3JrvADDMwWvlSUul26
+         voh3frxAjPQnNGQMI6oPUYkOu6OMFXD6YttSDnm4FIlwMAJInUn6GnbhklJQnso3BP0i
+         UpXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=urAgIqbBzqYwYgj9xnwgXf8/6DMJC8c4LD5osGdOhLY=;
-        b=jvDyhezTeyAmzAK5lCkTlrCy7erWTXtpWKTbpo/Cy9ZKxGjRsWEanXZkG3fH9o6Vhi
-         sIL2nGJfjQVhiYWVDLnISzWSNNbUVJ1sg/a3xFyHxRfOVlTxWZFPKuHCJAObleiWDSbs
-         fy1pYykh2NmSx5BI7VMmgDToz+x5HgusEKE9gxyjiX0jWGDAJM3yew4zLIG0TYSdySo0
-         iw/JpemDtQo/8S1euYgaOVYnRkPSX3KH47qhrI+qtcXsuBZvZcG6fuTdd166uq1DhVpm
-         JgtA9zWr11JgXGGzSocBww8Thml+VkuMG9vp9LSkHswZzmQU6yfrDyRgMWjUfFjIMnNA
-         lP+g==
-X-Gm-Message-State: AOAM530428NUfkW+Yh/MG7S2mlMcjLz+cAim2fV5I3xV/AFciHLE27nk
-        jhVrabIrQyjP51614z3WfdI=
-X-Google-Smtp-Source: ABdhPJzS9kADwtRgaXZHbRJYWBULIzX77aZRmv+Bae/lnf6GOmmkrg7UmLzqiqJoxJPKCK8UP1vo9w==
-X-Received: by 2002:a19:4854:: with SMTP id v81mr2467234lfa.189.1591275854710;
-        Thu, 04 Jun 2020 06:04:14 -0700 (PDT)
-Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
-        by smtp.googlemail.com with ESMTPSA id h13sm1181611ljc.129.2020.06.04.06.04.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 06:04:14 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc:     Denis Efremov <efremov@linux.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-hyperv@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: storvsc: Use kzfree() in storvsc_suspend()
-Date:   Thu,  4 Jun 2020 16:04:06 +0300
-Message-Id: <20200604130406.108940-1-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4ClLrIavOqOGDJWYrPRq16jGapJaGkyGJvYKPH8Mh8Y=;
+        b=snD5HNVWzrsS3ShrckP+2UM4gNwbxSvy2uL1EFvgqRrvE+qxb1BMnKpRjJlvd2VF05
+         NvWbCWLqlfa8weRyb4KHKdCs3PsGgcReOCp19/z5T7jPAghQM8+Gt5v5ZQhClS8BlbfG
+         t5ORMq3WsVhNi26cSEZW1zDPiO5X+dYUKwsew4PWKUxVE5jn4fL3NOuuBfNBREzrAWd5
+         iqxHrIUmMa2yltswv9Rhsp8NbNwxzsjWLz6diEpoUx7f8sYZjAGwD1OmaIhXWeutXtj5
+         AXpYQMZV9AQzw7N9KfBZlDHpK6uHH3KLl2mZOhjDC8OXjyjpFQnALOqSesvYZr0wRMEW
+         JGZQ==
+X-Gm-Message-State: AOAM530sovGIgYwUGlYjr96EGyeeyR2T9dvNUvXJQiyfDSQvuTrcEywS
+        rJXPo0XvVZbditCLyOuF9iMayPNyO4iOJNuVt5ZKUQ==
+X-Google-Smtp-Source: ABdhPJzANH3aPPcoaGhaBOl/6Y4FjEYA167aD7BW2mye/1hE+No7niiOsusJLz1E0fH+Dh1MaO3Jd7aWqFfF+Hy+E/o=
+X-Received: by 2002:ac8:7a87:: with SMTP id x7mr4566443qtr.50.1591276043290;
+ Thu, 04 Jun 2020 06:07:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1585233617.git.andreyknvl@google.com> <5889efe35e0b300e69dba97216b1288d9c2428a8.1585233617.git.andreyknvl@google.com>
+In-Reply-To: <5889efe35e0b300e69dba97216b1288d9c2428a8.1585233617.git.andreyknvl@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 4 Jun 2020 15:07:11 +0200
+Message-ID: <CACT4Y+ZR0FvQeRvfsTpwUMQ8gFfMT4BKPt79PdTN-_HCN8pdAw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/7] kcov: move t->kcov_sequence assignment
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use kzfree() instead of memset() with 0 followed by kfree().
+On Thu, Mar 26, 2020 at 3:44 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> Move t->kcov_sequence assignment before assigning t->kcov_mode
+> for consistency.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
- drivers/scsi/storvsc_drv.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 072ed8728657..e5a19cd8a450 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -2035,10 +2035,7 @@ static int storvsc_suspend(struct hv_device *hv_dev)
- 
- 	vmbus_close(hv_dev->channel);
- 
--	memset(stor_device->stor_chns, 0,
--	       num_possible_cpus() * sizeof(void *));
--
--	kfree(stor_device->stor_chns);
-+	kzfree(stor_device->stor_chns);
- 	stor_device->stor_chns = NULL;
- 
- 	cpumask_clear(&stor_device->alloced_cpus);
--- 
-2.26.2
-
+> ---
+>  kernel/kcov.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/kcov.c b/kernel/kcov.c
+> index 888d0a236b04..b985b7a72870 100644
+> --- a/kernel/kcov.c
+> +++ b/kernel/kcov.c
+> @@ -318,10 +318,10 @@ static void kcov_start(struct task_struct *t, struct kcov *kcov,
+>         /* Cache in task struct for performance. */
+>         t->kcov_size = size;
+>         t->kcov_area = area;
+> +       t->kcov_sequence = sequence;
+>         /* See comment in check_kcov_mode(). */
+>         barrier();
+>         WRITE_ONCE(t->kcov_mode, mode);
+> -       t->kcov_sequence = sequence;
+>  }
+>
+>  static void kcov_stop(struct task_struct *t)
+> --
+> 2.26.0.rc2.310.g2932bb562d-goog
+>
