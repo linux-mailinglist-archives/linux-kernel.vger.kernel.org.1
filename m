@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223641EE7AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 17:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EBE1EE7B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 17:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729533AbgFDPZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 11:25:31 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:29454 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729359AbgFDPZb (ORCPT
+        id S1729543AbgFDPZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 11:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729359AbgFDPZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 11:25:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591284330;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+QNtRZdQksHtLTAxFoyE3GgtLlyfez9R35g/z9pvVhk=;
-        b=eJ3nrJSxcZk3l0F4A/tQie7FfUQ+DPBoOj/tFpN3hMgZID26DoxYdu6JuGTybs5upM9oMS
-        39AbM8VmSP1HfZda5wR8dO8mHQxrZ+0+6I6NDPRaqi8BUOQp7O1lfCF7ndKl2BPsZr66F3
-        cGdsvFKv39D1NGp1pHFx7pSjISBF+Dk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-88-H6Yl6rxpPS2aoSTqNcEvog-1; Thu, 04 Jun 2020 11:25:25 -0400
-X-MC-Unique: H6Yl6rxpPS2aoSTqNcEvog-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9275C805489;
-        Thu,  4 Jun 2020 15:25:23 +0000 (UTC)
-Received: from gondolin (ovpn-112-76.ams2.redhat.com [10.36.112.76])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 882D67A8D2;
-        Thu,  4 Jun 2020 15:25:18 +0000 (UTC)
-Date:   Thu, 4 Jun 2020 17:25:15 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex.williamson@redhat.com, zhenyuw@linux.intel.com,
-        zhi.a.wang@intel.com, kevin.tian@intel.com, shaopeng.he@intel.com,
-        yi.l.liu@intel.com, xin.zeng@intel.com, hang.yuan@intel.com
-Subject: Re: [RFC PATCH v4 04/10] vfio/pci: let vfio_pci know number of
- vendor regions and vendor irqs
-Message-ID: <20200604172515.614e9864.cohuck@redhat.com>
-In-Reply-To: <20200518024944.14263-1-yan.y.zhao@intel.com>
-References: <20200518024202.13996-1-yan.y.zhao@intel.com>
-        <20200518024944.14263-1-yan.y.zhao@intel.com>
-Organization: Red Hat GmbH
+        Thu, 4 Jun 2020 11:25:43 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD13C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 08:25:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7nUdXGk9WUnPOP8CYGbU/r6c+Zp3RIzDzbNwRPB+ALQ=; b=jB26+r1FRQkXtmmAPM7QDg16Tm
+        cl2BkyaI4Uq5YWCZFF7gwLE7+sG/RxCCIGXfcBtiUteR6DDpVon6/n9oCXBwWplkn+GvUXnl9FjdS
+        vPIJHV6kW/eiAdZbWVzETOdnAi9VrPB6APSX6mQWSrCb7LNIRHqvuQJnXQN53UY0gQadjBm8OmsrU
+        vDVrxZnjKJSCDk43BCgsmYKK3gaw1SIymAYGpCWFEU/Zj1VRjk7NaDzplAHme8HuLQOoverLHA3yv
+        N5972lZQTXhkCZUP4WquHfYVVZc/wSfmZ/90JW3rQkvmO/PTupnlre92zYH9hfWyMLs8K5zJMuQHo
+        VIeX47/A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jgrkR-0004vl-76; Thu, 04 Jun 2020 15:25:39 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 549D4301DFD;
+        Thu,  4 Jun 2020 17:25:37 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4045A20E061B2; Thu,  4 Jun 2020 17:25:37 +0200 (CEST)
+Date:   Thu, 4 Jun 2020 17:25:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     bp@alien8.de, tglx@linutronix.de, mingo@kernel.org,
+        clang-built-linux@googlegroups.com, paulmck@kernel.org,
+        dvyukov@google.com, glider@google.com, andreyknvl@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v2 1/2] kcov, objtool: Make runtime functions
+ noinstr-compatible
+Message-ID: <20200604152537.GD3976@hirez.programming.kicks-ass.net>
+References: <20200604145635.21565-1-elver@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200604145635.21565-1-elver@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 May 2020 22:49:44 -0400
-Yan Zhao <yan.y.zhao@intel.com> wrote:
+On Thu, Jun 04, 2020 at 04:56:34PM +0200, Marco Elver wrote:
+> While we lack a compiler attribute to add to noinstr that would disable
+> KCOV, make the KCOV runtime functions return if the caller is in a
+> noinstr section. We then whitelist __sanitizer_cov_*() functions in
+> objtool.
 
-> This allows a simpler VFIO_DEVICE_GET_INFO ioctl in vendor driver
-> 
-> Cc: Kevin Tian <kevin.tian@intel.com>
-> Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
-> ---
->  drivers/vfio/pci/vfio_pci.c         | 23 +++++++++++++++++++++--
->  drivers/vfio/pci/vfio_pci_private.h |  2 ++
->  include/linux/vfio.h                |  3 +++
->  3 files changed, 26 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> index 290b7ab55ecf..30137c1c5308 100644
-> --- a/drivers/vfio/pci/vfio_pci.c
-> +++ b/drivers/vfio/pci/vfio_pci.c
-> @@ -105,6 +105,24 @@ void *vfio_pci_vendor_data(void *device_data)
->  }
->  EXPORT_SYMBOL_GPL(vfio_pci_vendor_data);
->  
-> +int vfio_pci_set_vendor_regions(void *device_data, int num_vendor_regions)
+> __sanitizer_cov_*() cannot safely become safe noinstr functions
+> as-is, as they may fault due to accesses to vmalloc's memory.
+
+I would feel very much better with those actually in noinstr, because
+without it, there is nothing stopping us from adding a kprobe/hw-
+breakpoint or other funny to the function.
+
+Even if they almost instra-return, having a kprobe on the function entry
+or condition check is enough to utterly wreck things.
+
+So something like:
+
+void noinstr __sanitizer_cov_trace_*(...)
+{
+	if (within_noinstr_section(ip))
+		return;
+
+	instrumentation_begin();
+	write_comp_data(...);
+	instrumentation_end();
+}
+
+Would make me feel a whole lot better.
+
+> +static __always_inline bool in_noinstr_section(unsigned long ip)
 > +{
-> +	struct vfio_pci_device *vdev = device_data;
-> +
-> +	vdev->num_vendor_regions = num_vendor_regions;
-
-Do we need any kind of sanity check here, in case this is called with a
-bogus value?
-
-> +	return 0;
+> +	return (unsigned long)__noinstr_text_start <= ip &&
+> +	       ip < (unsigned long)__noinstr_text_end;
 > +}
-> +EXPORT_SYMBOL_GPL(vfio_pci_set_vendor_regions);
-> +
-> +
-> +int vfio_pci_set_vendor_irqs(void *device_data, int num_vendor_irqs)
-> +{
-> +	struct vfio_pci_device *vdev = device_data;
-> +
-> +	vdev->num_vendor_irqs = num_vendor_irqs;
 
-Here as well.
-
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(vfio_pci_set_vendor_irqs);
->  /*
->   * Our VGA arbiter participation is limited since we don't know anything
->   * about the device itself.  However, if the device is the only VGA device
-
-(...)
+.entry.text is also considered noinstr, although I suppose that all
+being in .S files avoids it having annotations inserted, but perhaps a
+comment?
 
