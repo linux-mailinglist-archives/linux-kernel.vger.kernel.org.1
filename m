@@ -2,124 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866F31EDA88
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 03:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 514671EDABE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 03:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgFDBkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 21:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727908AbgFDBkN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 21:40:13 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4526C08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 18:40:11 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id m2so386543pjv.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 18:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RZTkgHwXnV/Mmq7iR84jWoY6DwZ1rOj4qUQ+qrZYDwc=;
-        b=D25kXdKhWQJ/MUHuNLgCYDZUO7VYifzgRU57sW3cCgSotuT36cS0gwMFjJehcx+vT7
-         Qo+Rryfzbt2dW0wLdUcGj9Q0InUDL3Kms87BacBCRrJrfyyPbeQNxvn25asBf8woO+z3
-         +P77gIynfVAOQsI2dG7+NHySk/5WZ7LfsfFJE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RZTkgHwXnV/Mmq7iR84jWoY6DwZ1rOj4qUQ+qrZYDwc=;
-        b=i+6d7hSTcRZWEePKvdYr8J2kFWD2ofHE1iKWZr3UerfTnBDFrFczSf1XzzedJzoztG
-         33r7icY+dV3K/D3vb//143GqyUeh2jzw4QglqD01GgbSH+DHN9dgBj9IuxJqWwKRLXUB
-         /liKJ/82Gf3udva7gg+ukHEzwrBbTp5t5FqhaUoJYq+MSI+PhgRJvns8d8HG6ErbWfdV
-         CV7lXvHxI+r2yxMw6hesRnFg2Kk/wpBJRV5HXzx/cZ4gGqT7n19eMGcwAUU6H0RSssXn
-         5LlVYPpmNs2Z7sAPY/n/grw0ltYczeKjd4Z1TgBUPyYtkeW4nbVo/WS+5z4sOkctYPiV
-         fwFw==
-X-Gm-Message-State: AOAM531m4Fp1sY5APzGDD0Yn5P8386Mmr/VekSje4pT7LR0htgVooIU1
-        b6pzCDeAvtzh8pF6UqL4YwFc6A==
-X-Google-Smtp-Source: ABdhPJyG3cK5GuU0RarjdGROX8AagUDp+h912sluu+H/wdjYIyX1M3u7CAMpBcEf90rpTZQM3JGTsw==
-X-Received: by 2002:a17:90a:dd44:: with SMTP id u4mr2890350pjv.132.1591234811278;
-        Wed, 03 Jun 2020 18:40:11 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o13sm2589124pgs.82.2020.06.03.18.40.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 18:40:10 -0700 (PDT)
-Date:   Wed, 3 Jun 2020 18:40:09 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-mm@kvack.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 08/10] checkpatch: Remove awareness of
- uninitialized_var() macro
-Message-ID: <202006031838.55722640DC@keescook>
-References: <20200603233203.1695403-1-keescook@chromium.org>
- <20200603233203.1695403-9-keescook@chromium.org>
- <ff9087b0571e1fc499bd8a4c9fd99bfc0357f245.camel@perches.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ff9087b0571e1fc499bd8a4c9fd99bfc0357f245.camel@perches.com>
+        id S1726759AbgFDBv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 21:51:58 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:32850 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726462AbgFDBv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 21:51:58 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C2B4E1A10DA;
+        Thu,  4 Jun 2020 03:51:56 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DE2B41A0191;
+        Thu,  4 Jun 2020 03:51:51 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8FC23402A5;
+        Thu,  4 Jun 2020 09:51:45 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     ulf.hansson@linaro.org, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        mpa@pengutronix.de, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2 0/3] Convert i.MX/MXS mmc binding to json-schema
+Date:   Thu,  4 Jun 2020 09:41:23 +0800
+Message-Id: <1591234886-15351-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 05:02:29PM -0700, Joe Perches wrote:
-> On Wed, 2020-06-03 at 16:32 -0700, Kees Cook wrote:
-> > Using uninitialized_var() is dangerous as it papers over real bugs[1]
-> > (or can in the future), and suppresses unrelated compiler warnings
-> > (e.g. "unused variable"). If the compiler thinks it is uninitialized,
-> > either simply initialize the variable or make compiler changes.
-> > 
-> > In preparation for removing[2] the[3] macro[4], effectively revert
-> > commit 16b7f3c89907 ("checkpatch: avoid warning about uninitialized_var()")
-> > and remove all remaining mentions of uninitialized_var().
-> > 
-> > [1] https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.com/
-> > [2] https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=1TGqCR5vQkCzWJ0QxK6CernOU6eedsudAixw@mail.gmail.com/
-> > [3] https://lore.kernel.org/lkml/CA+55aFwgbgqhbp1fkxvRKEpzyR5J8n1vKT1VZdz9knmPuXhOeg@mail.gmail.com/
-> > [4] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/
-> 
-> nack.  see below.
-> 
-> I'd prefer a simple revert, but it shouldn't
-> be done here.
+This patch series converts i.MX and MXS mmc binding to json-schema,
+fix some minor issues in original binding doc, such as node name should be 'mmc',
+compatible name for i.MX27, reg/interrupts should be required properties etc..
 
-What do you mean? (I can't understand this and "fine by me" below?)
+Compared to V1, this patch series adds "unevaluatedProperties: false" for
+each binding doc.
 
-> 
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
-> > @@ -4075,7 +4074,7 @@ sub process {
-> >  		}
-> >  
-> >  # check for function declarations without arguments like "int foo()"
-> > -		if ($line =~ /(\b$Type\s*$Ident)\s*\(\s*\)/) {
-> > +		if ($line =~ /(\b$Type\s+$Ident)\s*\(\s*\)/) {
-> 
-> This isn't right because $Type includes a possible trailing *
-> where there isn't a space between $Type and $Ident
+Anson Huang (3):
+  dt-bindings: mmc: Convert imx esdhc to json-schema
+  dt-bindings: mmc: Convert imx mmc to json-schema
+  dt-bindings: mmc: Convert mxs mmc to json-schema
 
-Ah, hm, that was changed in the mentioned commit:
-
--               if ($line =~ /(\b$Type\s+$Ident)\s*\(\s*\)/) {
-+               if ($line =~ /(\b$Type\s*$Ident)\s*\(\s*\)/) {
-
-> 
-> e.g.:	int *bar(void);
-> 
-> Other than that, fine by me...
-
-Thanks for looking it over! I'll adjust it however you'd like. :)
+ .../devicetree/bindings/mmc/fsl-imx-esdhc.txt      |  67 -----------
+ .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml     | 124 +++++++++++++++++++++
+ .../devicetree/bindings/mmc/fsl-imx-mmc.txt        |  23 ----
+ .../devicetree/bindings/mmc/fsl-imx-mmc.yaml       |  53 +++++++++
+ Documentation/devicetree/bindings/mmc/mxs-mmc.txt  |  27 -----
+ Documentation/devicetree/bindings/mmc/mxs-mmc.yaml |  58 ++++++++++
+ 6 files changed, 235 insertions(+), 117 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.txt
+ create mode 100644 Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mmc/fsl-imx-mmc.txt
+ create mode 100644 Documentation/devicetree/bindings/mmc/fsl-imx-mmc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mmc/mxs-mmc.txt
+ create mode 100644 Documentation/devicetree/bindings/mmc/mxs-mmc.yaml
 
 -- 
-Kees Cook
+2.7.4
+
