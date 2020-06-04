@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBB71EE266
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 12:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F0C1EE264
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 12:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgFDKZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 06:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43874 "EHLO
+        id S1728300AbgFDKZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 06:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728370AbgFDKZb (ORCPT
+        with ESMTP id S1726209AbgFDKZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 06:25:31 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE796C08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 03:25:30 -0700 (PDT)
+        Thu, 4 Jun 2020 06:25:13 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88416C03E96D
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 03:25:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=rJwPalFYVnWeB0dUXsd0mLDO/aHiuwnD6jNPC91vIKI=; b=bi8dzwz+NnTRgQ1CwcaMRmpyce
-        RonFuqPM6RIN8GgN1Mf4Sk5kDA/YZjk3EhD+uyYkZZWrVtJhnTL45diHr7IiE1xf6benXli+Zq60Z
-        8zlmpcnACp6B2LMsTdWg0rTnEFhmp6bYAyB3FMNPFPrSPPY+Mo7beUlMSPdK0ZwidISKaHUG5acs4
-        A6mVhoYjX+tkwk4X7eGHDtx21JpPciR+K+F75ekiSer4tNrIb0mQWAFX3gqYBMeUramfWMEp04yLF
-        UYIONtrClJ3ei/D71/qMVzNKAPKruje7Hq7UKo9MGYWluThYM40Mir4ZcIwI8KAI2p1rcj6g24sys
-        FZMtfaZw==;
+        bh=HLUlGVzGh8D/8ZTgbqliDFpKr8IxVRxtSm/kD93Ik8k=; b=Pc+UK6AQ+epiZFSmkQttxPE1wH
+        bVDuIRIcMZYjH92oSkk1fBAzlV0eUUB0WTnV2xXoMfghdXRhWgee3JpOxsegzMhymXM9Lk2nZhhJo
+        j4warJ9WabkmyPxP+704iiAjQ2MmFnOE2C0q2hTrYxKBSPMfr+xSpfqLPjXhpQhg4KXNZBeVt3HIs
+        vjx5k8rbDwGccgdjsFMHTu7V5CDJNxkioZf8211BTUiTam/EA3WI9gUkPOeNoh8i2Mu5BjkxXGSFn
+        qziJEj5ylnqBJc1PtwjYjr5hqsb24XiRFAuji5wWa6X7/TbesJ0LZ1OgWswbsbvfnqupPvpzyJAfv
+        QWK5yNng==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jgn3e-0003tm-Jw; Thu, 04 Jun 2020 10:25:10 +0000
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jgn3d-0001ap-Io; Thu, 04 Jun 2020 10:25:09 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F011306BB7;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F023306D6D;
         Thu,  4 Jun 2020 12:25:08 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id E51F020CAE76C; Thu,  4 Jun 2020 12:25:07 +0200 (CEST)
-Message-ID: <20200604102428.250420698@infradead.org>
+        id E9B2420CC68B5; Thu,  4 Jun 2020 12:25:07 +0200 (CEST)
+Message-ID: <20200604102428.307943402@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 04 Jun 2020 12:22:47 +0200
+Date:   Thu, 04 Jun 2020 12:22:48 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de
 Cc:     x86@kernel.org, elver@google.com, paulmck@kernel.org,
         kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
         peterz@infradead.org, will@kernel.org, dvyukov@google.com,
         glider@google.com, andreyknvl@google.com
-Subject: [PATCH 6/8] x86/entry, cpumask: Provide non-instrumented variant of cpu_is_offline()
+Subject: [PATCH 7/8] x86/entry, ubsan, objtool: Whitelist __ubsan_handle_*()
 References: <20200604102241.466509982@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,68 +53,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vmlinux.o: warning: objtool: exc_nmi()+0x12: call to cpumask_test_cpu.constprop.0() leaves .noinstr.text section
-vmlinux.o: warning: objtool: mce_check_crashing_cpu()+0x12: call to cpumask_test_cpu.constprop.0()leaves .noinstr.text section
+The UBSAN instrumentation only inserts external CALLs when things go
+'BAD', much like WARN(). So treat them similar to WARN()s for noinstr,
+that is: allow them, at the risk of taking the machine down, to get
+their message out.
 
-  cpumask_test_cpu()
-    test_bit()
-      instrument_atomic_read()
-      arch_test_bit()
-
+Suggested-by: Marco Elver <elver@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Marco Elver <elver@google.com>
 ---
- arch/x86/include/asm/cpumask.h |   18 ++++++++++++++++++
- arch/x86/kernel/cpu/mce/core.c |    2 +-
- arch/x86/kernel/nmi.c          |    2 +-
- 3 files changed, 20 insertions(+), 2 deletions(-)
+ include/linux/compiler_types.h |    2 +-
+ tools/objtool/check.c          |   28 +++++++++++++++++++++++++++-
+ 2 files changed, 28 insertions(+), 2 deletions(-)
 
---- a/arch/x86/include/asm/cpumask.h
-+++ b/arch/x86/include/asm/cpumask.h
-@@ -11,5 +11,23 @@ extern cpumask_var_t cpu_sibling_setup_m
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -199,7 +199,7 @@ struct ftrace_likely_data {
+ /* Section for code which can't be instrumented at all */
+ #define noinstr								\
+ 	noinline notrace __attribute((__section__(".noinstr.text")))	\
+-	__no_kcsan __no_sanitize_address __no_sanitize_undefined
++	__no_kcsan __no_sanitize_address
  
- extern void setup_cpu_local_masks(void);
+ #endif /* __KERNEL__ */
  
-+/*
-+ * NMI and MCE exceptions need cpu_is_offline() _really_ early,
-+ * provide an arch_ special for them to avoid instrumentation.
-+ */
-+#if NR_CPUS > 1
-+static __always_inline bool arch_cpu_online(int cpu)
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2190,10 +2190,36 @@ static inline const char *call_dest_name
+ 	return "{dynamic}";
+ }
+ 
++static inline bool noinstr_call_dest(struct symbol *func)
 +{
-+	return arch_test_bit(cpu, cpumask_bits(cpu_online_mask));
-+}
-+#else
-+static __always_inline bool arch_cpu_online(int cpu)
-+{
-+	return cpu == 0;
-+}
-+#endif
++	/*
++	 * We can't deal with indirect function calls at present;
++	 * assume they're instrumented.
++	 */
++	if (!func)
++		return false;
 +
-+#define arch_cpu_is_offline(cpu)	unlikely(!arch_cpu_online(cpu))
++	/*
++	 * If the symbol is from a noinstr section; we good.
++	 */
++	if (func->sec->noinstr)
++		return true;
 +
- #endif /* __ASSEMBLY__ */
- #endif /* _ASM_X86_CPUMASK_H */
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1083,7 +1083,7 @@ static noinstr bool mce_check_crashing_c
++	/*
++	 * The __ubsan_handle_*() calls are like WARN(), they only happen when
++	 * something 'BAD' happened. At the risk of taking the machine down,
++	 * let them proceed to get the message out.
++	 */
++	if (!strncmp(func->name, "__ubsan_handle_", 15))
++		return true;
++
++	return false;
++}
++
+ static int validate_call(struct instruction *insn, struct insn_state *state)
  {
- 	unsigned int cpu = smp_processor_id();
- 
--	if (cpu_is_offline(cpu) ||
-+	if (arch_cpu_is_offline(cpu) ||
- 	    (crashing_cpu != -1 && crashing_cpu != cpu)) {
- 		u64 mcgstatus;
- 
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -478,7 +478,7 @@ static DEFINE_PER_CPU(unsigned long, nmi
- 
- DEFINE_IDTENTRY_NMI(exc_nmi)
- {
--	if (IS_ENABLED(CONFIG_SMP) && cpu_is_offline(smp_processor_id()))
-+	if (IS_ENABLED(CONFIG_SMP) && arch_cpu_is_offline(smp_processor_id()))
- 		return;
- 
- 	if (this_cpu_read(nmi_state) != NMI_NOT_RUNNING) {
+ 	if (state->noinstr && state->instr <= 0 &&
+-	    (!insn->call_dest || !insn->call_dest->sec->noinstr)) {
++	    !noinstr_call_dest(insn->call_dest)) {
+ 		WARN_FUNC("call to %s() leaves .noinstr.text section",
+ 				insn->sec, insn->offset, call_dest_name(insn));
+ 		return 1;
 
 
