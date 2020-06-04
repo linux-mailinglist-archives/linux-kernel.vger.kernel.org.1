@@ -2,60 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0141EE981
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 19:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2D11EE989
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 19:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730311AbgFDRfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 13:35:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729998AbgFDRfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 13:35:09 -0400
-Subject: Re: [GIT PULL] Smack patches for v5.8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591292109;
-        bh=CBelD9E3n1Uw8g07+kLe/ZsPxXXQ8+K/HGUPGCDgvEg=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=yMRVgMsl/xos9nOC2e1YjTzaeKsLuTgnOSbk2pFsTTsc4+hQ9BxK4ow9vailnSVC+
-         TTHcGG2y/wSrj6bijGj1EOJ2d2hDTabwIQVS0WKOnaJLaUCCeED47JQLSIgyzGyWET
-         lRA3/v6AZ0yl+Ozo26izmK8955SUE2zZaJifXh20=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <02d3f22f-340b-d51b-6dd5-c2011651a145@schaufler-ca.com>
-References: <02d3f22f-340b-d51b-6dd5-c2011651a145.ref@schaufler-ca.com>
- <02d3f22f-340b-d51b-6dd5-c2011651a145@schaufler-ca.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <02d3f22f-340b-d51b-6dd5-c2011651a145@schaufler-ca.com>
-X-PR-Tracked-Remote: https://github.com/cschaufler/smack-next
- tags/Smack-for-5.8
-X-PR-Tracked-Commit-Id: ef26650a201fbbb4ba90b63a82bf7950f2699a82
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: acf25aa66371359f542d14e8d993b530fe25d7ac
-Message-Id: <159129210947.22790.2316140173855199853.pr-tracker-bot@kernel.org>
-Date:   Thu, 04 Jun 2020 17:35:09 +0000
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Maninder Singh <maninder1.s@samsung.com>,
-        YueHaibing <yuehaibing@huawei.com>
+        id S1730179AbgFDRhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 13:37:00 -0400
+Received: from smtprelay0254.hostedemail.com ([216.40.44.254]:41442 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730083AbgFDRhA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 13:37:00 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id EBE1F181B2466;
+        Thu,  4 Jun 2020 17:36:58 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:965:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2196:2199:2393:2559:2562:2693:2828:2892:2894:3138:3139:3140:3141:3142:3352:3622:3653:3870:3871:3872:3876:4321:4385:4390:4395:4605:5007:7875:7903:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14721:21080:21324:21451:21627:30054:30070:30075:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bulb68_170feaa26d99
+X-Filterd-Recvd-Size: 1947
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  4 Jun 2020 17:36:58 +0000 (UTC)
+Message-ID: <7ea2fe7105006f74337498549f167e01d0fd5fc3.camel@perches.com>
+Subject: Re: [PATCH] coccinelle: api: add kzfree script
+From:   Joe Perches <joe@perches.com>
+To:     efremov@linux.com, Julia Lawall <Julia.Lawall@lip6.fr>
+Cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
+Date:   Thu, 04 Jun 2020 10:36:56 -0700
+In-Reply-To: <d0fced31-f1d7-9e0b-1a58-f441891fcbc7@linux.com>
+References: <20200604140805.111613-1-efremov@linux.com>
+         <e4981fd76a88e18376c4e634c235501b57d321e7.camel@perches.com>
+         <d0fced31-f1d7-9e0b-1a58-f441891fcbc7@linux.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 2 Jun 2020 13:38:04 -0700:
+On Thu, 2020-06-04 at 20:30 +0300, Denis Efremov wrote:
+> 
+> On 6/4/20 7:27 PM, Joe Perches wrote:
+> > On Thu, 2020-06-04 at 17:08 +0300, Denis Efremov wrote:
+> > > Check for memset() with 0 followed by kfree().
+> > 
+> > Perhaps those uses should be memzero_explicit or kvfree_sensitive.
+> 
+> Thanks, I will add memzero_explicit(). However, I can't find kvfree_sensitive().
+> Is it in next already?
 
-> https://github.com/cschaufler/smack-next tags/Smack-for-5.8
+Yes
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/acf25aa66371359f542d14e8d993b530fe25d7ac
+$ git grep kvfree_sensitive
+include/linux/mm.h:extern void kvfree_sensitive(const void *addr, size_t len);
+mm/util.c: * kvfree_sensitive - Free a data object containing sensitive information.
+mm/util.c:void kvfree_sensitive(const void *addr, size_t len)
+mm/util.c:EXPORT_SYMBOL(kvfree_sensitive);
+security/keys/keyctl.c: kvfree_sensitive(payload, plen);
+security/keys/keyctl.c: kvfree_sensitive(payload, plen);
+security/keys/keyctl.c:                         kvfree_sensitive(key_data, key_data_len);
+security/keys/keyctl.c: kvfree_sensitive(key_data, key_data_len);
+security/keys/keyctl.c: kvfree_sensitive(payload, plen);
 
-Thank you!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
