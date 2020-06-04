@@ -2,138 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFFD1EEA08
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8991EEA0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730378AbgFDSC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 14:02:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49848 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730055AbgFDSC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 14:02:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 8AD8BAC40;
+        id S1730405AbgFDSCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 14:02:31 -0400
+Received: from smtprelay0191.hostedemail.com ([216.40.44.191]:59524 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730055AbgFDSCa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 14:02:30 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 99980F4D1E;
         Thu,  4 Jun 2020 18:02:27 +0000 (UTC)
-Message-ID: <e096d89ab881d69b2477b209838a308f9de114b1.camel@suse.de>
-Subject: Re: [PATCH v3 12/25] clk: bcm: rpi: Use CCF boundaries instead of
- rolling our own
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Date:   Thu, 04 Jun 2020 20:02:22 +0200
-In-Reply-To: <eb1b2838f1c3c006c24bcb9816f75e1351c63b05.1590594293.git-series.maxime@cerno.tech>
-References: <cover.662a8d401787ef33780d91252a352de91dc4be10.1590594293.git-series.maxime@cerno.tech>
-         <eb1b2838f1c3c006c24bcb9816f75e1351c63b05.1590594293.git-series.maxime@cerno.tech>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-+uejN3Q43Y4PuptNv516"
-User-Agent: Evolution 3.36.2 
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2892:2911:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4425:5007:6119:7903:10004:10400:10848:11232:11658:11914:12297:12663:12679:12740:12760:12895:13069:13095:13255:13311:13357:13439:14096:14097:14659:21080:21433:21451:21627:21790:21939:21987:30054:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: sugar90_6017dc626d99
+X-Filterd-Recvd-Size: 3603
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  4 Jun 2020 18:02:25 +0000 (UTC)
+Message-ID: <c925d033cf566743a1f6255da7843d1b85451d2f.camel@perches.com>
+Subject: Re: [PATCH] pinctrl: pxa: pxa2xx: Remove 'pxa2xx_pinctrl_exit()'
+ which is unused and broken
+From:   Joe Perches <joe@perches.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Julia Lawall <julia.lawall@inria.fr>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Date:   Thu, 04 Jun 2020 11:02:23 -0700
+In-Reply-To: <20200604173500.GI22511@kadam>
+References: <CACRpkdasbS-4_ZwC-Ucm8tkSUW5tAQdUrXjxHXQ3J0goVYfgHw@mail.gmail.com>
+         <20200604083120.GF22511@kadam>
+         <2aa49a543e6f48a6f428a37b63a06f9149870225.camel@perches.com>
+         <alpine.DEB.2.21.2006041147360.2577@hadrien>
+         <32232229031e02edcc268b1074c9bac44012ee35.camel@perches.com>
+         <alpine.DEB.2.21.2006041228520.2577@hadrien>
+         <10e54ee84bd44171ef329bed9e7e6a946bae61ba.camel@perches.com>
+         <alpine.DEB.2.21.2006041328570.2577@hadrien> <20200604123038.GG22511@kadam>
+         <0749ac5e3868c6ba50728ced8366bfd86b0b8500.camel@perches.com>
+         <20200604173500.GI22511@kadam>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2020-06-04 at 20:35 +0300, Dan Carpenter wrote:
+> On Thu, Jun 04, 2020 at 09:08:44AM -0700, Joe Perches wrote:
+> > On Thu, 2020-06-04 at 15:30 +0300, Dan Carpenter wrote:
+> > > On Thu, Jun 04, 2020 at 01:42:12PM +0200, Julia Lawall wrote:
+> > > > OK, I recall a discussion with Dan where he suggested that some things
+> > > > that were not actually bug fixes could also merit a Fixes tag.  But it's
+> > > > probably better if he weighs in directly.
+> > > 
+> > > I generally think Fixes should only be used for "real bug" fixes.
+> > > 
+> > > The one exception is when I'm reviewing a patch that fixes an "unused
+> > > assignment" static checker warning is that I know which commit
+> > > introduced the warning.
 
---=-+uejN3Q43Y4PuptNv516
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Sometimes those warnings are introduced by new compiler
+versions.
 
-On Wed, 2020-05-27 at 17:45 +0200, Maxime Ripard wrote:
-> The raspberrypi firmware clock driver has a min_rate / max_rate clamping =
-by
-> storing the info it needs in a private structure.
->=20
-> However, the CCF already provides such a facility, so we can switch to it
-> to remove the boilerplate.
->=20
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
->  drivers/clk/bcm/clk-raspberrypi.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/clk/bcm/clk-raspberrypi.c b/drivers/clk/bcm/clk-
-> raspberrypi.c
-> index a20492fade6a..e135ad28d38d 100644
-> --- a/drivers/clk/bcm/clk-raspberrypi.c
-> +++ b/drivers/clk/bcm/clk-raspberrypi.c
-> @@ -36,9 +36,6 @@ struct raspberrypi_clk {
->  	struct rpi_firmware *firmware;
->  	struct platform_device *cpufreq;
-> =20
-> -	unsigned long min_rate;
-> -	unsigned long max_rate;
-> -
->  	struct clk_hw pllb;
->  };
-> =20
-> @@ -142,13 +139,11 @@ static int raspberrypi_fw_pll_set_rate(struct clk_h=
-w
-> *hw, unsigned long rate,
->  static int raspberrypi_pll_determine_rate(struct clk_hw *hw,
->  					  struct clk_rate_request *req)
->  {
-> -	struct raspberrypi_clk *rpi =3D container_of(hw, struct raspberrypi_clk=
-,
-> -						   pllb);
->  	u64 div, final_rate;
->  	u32 ndiv, fdiv;
-> =20
->  	/* We can't use req->rate directly as it would overflow */
-> -	final_rate =3D clamp(req->rate, rpi->min_rate, rpi->max_rate);
-> +	final_rate =3D clamp(req->rate, req->min_rate, req->max_rate);
-> =20
->  	div =3D (u64)final_rate << A2W_PLL_FRAC_BITS;
->  	do_div(div, req->best_parent_rate);
-> @@ -215,12 +210,15 @@ static int raspberrypi_register_pllb(struct
-> raspberrypi_clk *rpi)
->  	dev_info(rpi->dev, "CPU frequency range: min %u, max %u\n",
->  		 min_rate, max_rate);
-> =20
-> -	rpi->min_rate =3D min_rate * RPI_FIRMWARE_PLLB_ARM_DIV_RATE;
-> -	rpi->max_rate =3D max_rate * RPI_FIRMWARE_PLLB_ARM_DIV_RATE;
-> -
->  	rpi->pllb.init =3D &init;
-> =20
-> -	return devm_clk_hw_register(rpi->dev, &rpi->pllb);
-> +	ret =3D devm_clk_hw_register(rpi->dev, &rpi->pllb);
-> +	if (!ret)
-> +		clk_hw_set_rate_range(&rpi->pllb,
-> +				      min_rate * RPI_FIRMWARE_PLLB_ARM_DIV_RATE,
-> +				      max_rate *
-> RPI_FIRMWARE_PLLB_ARM_DIV_RATE);
+That's why I don't care for -Werror use in Makefiles.
 
-Isn't there a potential race here? Albeit unlikely, cpufreq could show up a=
-nd
-call clk_round_rate() in between the registration and you setting the range=
-s.
+> > > I don't have strong feelings if it's in the
+> > > Fixes tag or if it's just mentioned in the commit message.
+> > 
+> > My view is that changes that silence compiler warnings are
+> > not fixing bugs and that these changes should generally not
+> > be backported.
+> > 
+> The Fixes tag is useful for backports but that's not whole the point of
+> it.  It's also for collecting metrics.
 
-Regards,
-Nicolas
+Hmm, how are these metrics used?
 
+> Also sometimes we fix the bug
+> before the kernel is released so the Fixes tag means we can automatically
+> ignore those ones when we look at which patches to backport.
+> 
+> I don't care if the "unused assignment" patches use a Fixes tag or just
+> mention the commit.  Either way the information is there for when I
+> review the patch.
 
+Perhaps there could/should be some distinction between
+"real bug" fixes and trivialities like "unused assignment"
 
---=-+uejN3Q43Y4PuptNv516
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Maybe something like:
+	Updates: <commit> ("commit description")
+vs
+	Fixes: <commit> ("commit description")
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7ZNy4ACgkQlfZmHno8
-x/6rLgf+MI7j31eml7V9G28ZgJulg/9yfgQn1humlrU63+IKDhYbogSdbp7/hVJz
-YdQSu0b7LXKltV1XmIB7582ieZxBsAK4nKSmqVq+D2VoEOIm6KgBuFWW/WXIwDS3
-DPavaLSEHlNX/o+9w80P+oQ96HNJszg4n1Nu+1ZpffG51Y/0E8H2s+UNgrZlrRO4
-MYrpfeN0ywrH7euU3T9XSdsJ9H3HwAAj/Osp1Y8P8KcJxBE7vLN3GOqtpMjKReha
-DjtcypqZ1L0chi+C/Nu692yPOMrVjFeYkpLex7GyhWmLe84KRXDFrG0kK5o9c8S5
-j3HLs/hWF7eqO7D/oOKImGbf/nSM9A==
-=57iT
------END PGP SIGNATURE-----
-
---=-+uejN3Q43Y4PuptNv516--
 
