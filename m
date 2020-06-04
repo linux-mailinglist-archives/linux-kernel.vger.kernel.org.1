@@ -2,55 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3781EDB14
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 04:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19C81EDB21
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 04:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgFDCNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 22:13:15 -0400
-Received: from namei.org ([65.99.196.166]:40866 "EHLO namei.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725946AbgFDCNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 22:13:15 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by namei.org (8.14.4/8.14.4) with ESMTP id 0542D9ZU000367;
-        Thu, 4 Jun 2020 02:13:09 GMT
-Date:   Thu, 4 Jun 2020 12:13:09 +1000 (AEST)
-From:   James Morris <jmorris@namei.org>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>, selinux@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] SELinux patches for v5.8
-In-Reply-To: <761f5d15-3422-1834-7be5-8f3276d10172@schaufler-ca.com>
-Message-ID: <alpine.LRH.2.21.2006041212110.335@namei.org>
-References: <CAHC9VhTX8gkUui6AiTJMJgcohXa=TOqdO==rEDk=Mquz9sCNKA@mail.gmail.com> <CAHk-=wiAVfqtJbZ=Ti1oxSvunUvsQ_CsOL5oFJL3mwhqKTeoNw@mail.gmail.com> <290017a8-d943-570f-1f90-acecf1c075a1@schaufler-ca.com> <alpine.LRH.2.21.2006040809280.6050@namei.org>
- <761f5d15-3422-1834-7be5-8f3276d10172@schaufler-ca.com>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        id S1726837AbgFDCVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 22:21:11 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:37645 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbgFDCVH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 22:21:07 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 0542KXGT019289;
+        Thu, 4 Jun 2020 11:20:33 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 0542KXGT019289
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1591237233;
+        bh=j5z5U8gxv5Bq9EeLtwXOFVCIgYpxEiWeySsn4UELVC0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=l3hc3eMTKCTGcLsqrYFNALD8sumV26FfVYsxlenVWAIi++aYmRLSdkFTBSn2sZTU8
+         c4UlrFpODwUKLWfzhGZeGbV7zqcm/dYozKtCix5eaK1jxadWC9bvMUkcxhyIfI83Q7
+         Hr1ppF1CuDETSqcYc/UsK4PDszvtoOI2UacRuJFXPffIdYNvEEM+6EMsHPW69fs+da
+         A7GwZvKXz7gD7+HKTT7TKbqbsNFXpSBBrt5228MENzNr/Sxi5CakeC7cN59zw+zRLM
+         bys0wJxdTHjlhIy5UIJx/2iuxPmNAzktVZJVfXkG3rI4s+/LUjzbmyy4yC4wpcFwGP
+         1mtcRFPtkAzug==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] efi/libstub/arm64: link stub lib.a conditionally
+Date:   Thu,  4 Jun 2020 11:20:30 +0900
+Message-Id: <20200604022031.164207-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Jun 2020, Casey Schaufler wrote:
+Since commit 799c43415442 ("kbuild: thin archives make default for
+all archs"), core-y is passed to the linker with --whole-archive.
+Hence, the whole of stub library is linked to vmlinux.
 
-> On 6/3/2020 3:12 PM, James Morris wrote:
-> > On Wed, 3 Jun 2020, Casey Schaufler wrote:
-> >
-> >> The use of security modules was expected to be rare.
-> > This is not correct. Capabilities were ported to LSM and stacked from the 
-> > beginning, and several major distros worked on LSM so they could ship 
-> > their own security modules.
-> 
-> Capabilities has always been a special case.
-> Until Android adopted SELinux the actual use of LSMs was rare.
+Use libs-y so that lib.a is passed after --no-whole-archive for
+conditional linking.
 
-Nope, it was enabled by default in several distros and very widely 
-deployed in the govt space (at least).
+The unused drivers/firmware/efi/libstub/relocate.o will be dropped
+for ARCH=arm64.
 
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+This patch touches under arch/arm64/, but
+this is more related to efi.
+I am sending this to Ard.
+
+ arch/arm64/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 650e1185c190..48a6afa774fc 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -145,7 +145,7 @@ export	TEXT_OFFSET
+ 
+ core-y		+= arch/arm64/
+ libs-y		:= arch/arm64/lib/ $(libs-y)
+-core-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
++libs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
+ 
+ # Default target when executing plain make
+ boot		:= arch/arm64/boot
 -- 
-James Morris
-<jmorris@namei.org>
+2.25.1
 
