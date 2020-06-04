@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0031D1EE743
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 17:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03731EE73C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 17:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729335AbgFDPEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 11:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
+        id S1729121AbgFDPD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 11:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729308AbgFDPEA (ORCPT
+        with ESMTP id S1728638AbgFDPDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 11:04:00 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DABC08C5C3
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 08:03:59 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b27so6301315qka.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 08:03:59 -0700 (PDT)
+        Thu, 4 Jun 2020 11:03:55 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25AA9C08C5C2
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 08:03:54 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id r125so3770932lff.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 08:03:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bm9LXKRTRAn4ksM+zTELl5Ncxt58Msz6smAUvbLwlQg=;
-        b=PHtn+4sW9oeaaN0KqpSdfnAiSgGTHt2Z0UKpbIriHyOnPUd/JHuaYZWpEdpsIaFaRv
-         YvPtCcDdD0ZUErBQIlaSncoBZYl91ggI8sYHqzw9bR/TZvqy6AN1xRyhmdNp28tW459k
-         zc/ltDhaD7rxGMkMOSnh0JlRrzZf55P5fXoANCNcFe4PK35L1PIIi9SpADQrXNR7/ghu
-         MRG8AChv3Sipl7YoDkSMO58dnI5vaMxvWgOk5kcvZCaGXGfX1ivy5tr2caHeF+hJbc9g
-         4QqkF2HCIZX77Q4uhgsSWHmxgVDjsPrrSuqruV5LzG4O1WK1yxB7R9xOKCdHrDOgU+UW
-         UL+g==
+        bh=8mvYq5u2MuHjycn6hYvFmkcMBPwMkF7OiyTcLEldoKI=;
+        b=Y+qvhynKYSHX8BiDFkP/S4vohEDVw08HK7v0lcnvCMfaGvYH1AK4t29iooALuPlEl/
+         dUXhszVNyTEBEyURpfaENunG4yCA/TI4K2iN0A0ZTaGB4aMvM91PDr6M7ZwHxD6bkePP
+         /xciGEAWGG2mZ2Z7gtaGbqD43ptaZ5jxaMUzg39rD2HaGMweoDIEIKd3i/GYXzcT9wZu
+         wRJJq9suE3fsNqs/5KiB3eqcJLZK7R6Oej4hnCo3dHJA9njIASKHuStAybkBVYGAcqko
+         riBweyZUQS7l7hUZiE9s90RmVzx9hh5iAIGanlL0uaHoV5FseARBu/U10lC5YmVGfZR+
+         7LwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bm9LXKRTRAn4ksM+zTELl5Ncxt58Msz6smAUvbLwlQg=;
-        b=n5syVOTzdwXaRB7ZE/w32zM+DVp4TulIV1tOQvbtZt5Vy4AGa16orZHT8gPhf2WqVq
-         jO8mWKloVzTEsqoBB/vxJOAGPf8YOO86zVFM8hT4piUfNh2LWpl2AfbjLoi+cSghdVSN
-         hOvY4VlFOvKgKqgd5vH5gT9qFFZ83DPvsyPTDzGcf0nDFsfiRAF5e9EHBow0L4wWpQco
-         2e1MQQcwN+I5mJTT3RuXFONKM0o6Ep0YqvwxrzPdbI/BMVpaGVF5zf6UrP38yOGWXDlj
-         c2z8zI7XcFjSnaJUxXLc3PQdV6GCzU419B3ZmT98tmJ5JIm/+rCOVMBanoTiKXItFICP
-         PNhg==
-X-Gm-Message-State: AOAM532rl0beKh4m/eYVwSK7bj6ZtkWrEd7LC8k0Yf/drUBAZ18JvmcQ
-        EopuIXr4XPH8la4vHTHkov9IEg==
-X-Google-Smtp-Source: ABdhPJxpiSlyIl8wDEUjWVCyb1O6lDkKyM6ZF/D0TVbA/KKrBsj4VNmpQA2CqhuZBuHgzP9j4gjV6g==
-X-Received: by 2002:a37:607:: with SMTP id 7mr4857940qkg.385.1591283038460;
-        Thu, 04 Jun 2020 08:03:58 -0700 (PDT)
-Received: from ovpn-112-233.phx2.redhat.com (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id 205sm4560403qkh.94.2020.06.04.08.03.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Jun 2020 08:03:57 -0700 (PDT)
-From:   Qian Cai <cai@lca.pw>
-To:     peterz@infradead.org
-Cc:     mark.rutland@arm.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, Qian Cai <cai@lca.pw>
-Subject: [PATCH -next] fork: silence a false postive warning in __mmdrop
-Date:   Thu,  4 Jun 2020 11:03:44 -0400
-Message-Id: <20200604150344.1796-1-cai@lca.pw>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
+        bh=8mvYq5u2MuHjycn6hYvFmkcMBPwMkF7OiyTcLEldoKI=;
+        b=WZ/pluurYLVU05YVPrjBrYzkn0ftgbZlulT+ZKbazbwupKRU6AiOOamI+IJqIMAN/l
+         NKpR1n76KJX4zqBs5sAXUmA5ErCRZIkwKEmgAjQB8JC9+KpxvLHGxFbRMxKdfzIvsvX6
+         rVxrMJpX5Iq0lPK2CXN4TRC7Gz+M7j3I7f8xZuVUheAZNHbTD87cHcz/5bUWzGRdlrKw
+         rfSCdz7Pq/RV8eRJcnYhm2Z2jQK/y5j05orjgwdgw+EHCWwWdUOn1Hs+NUcOMWeP6tmy
+         g36wyWrd6BlbNt/YKsourZH7pgO7fiP1pwQZCWJNyHg0QJ0oFk7nrtPEPFs2dOuoU8St
+         sYjg==
+X-Gm-Message-State: AOAM5338T3Aavet6/vpgHhGa6n8TBBQLGIBd3Zg96arkAlzVtnx3fSiN
+        RXrlyxYUHI3fOztYVW28/RV4XbLthQg=
+X-Google-Smtp-Source: ABdhPJyjUtNMiJfQCO+6pwW7PpNiXMf463lCpuTEqvxbiXuHw13DlR9CNHnNDe/wZgfZbFie2jnMBg==
+X-Received: by 2002:ac2:5094:: with SMTP id f20mr2852735lfm.128.1591283032156;
+        Thu, 04 Jun 2020 08:03:52 -0700 (PDT)
+Received: from localhost.localdomain ([176.59.41.83])
+        by smtp.gmail.com with ESMTPSA id m15sm1514619lfk.65.2020.06.04.08.03.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jun 2020 08:03:50 -0700 (PDT)
+From:   Maxim Uvarov <maxim.uvarov@linaro.org>
+To:     linux-kernel@vger.kernel.org, tee-dev@lists.linaro.org
+Cc:     peterhuewe@gmx.de, jarkko.sakkinen@linux.intel.com, jgg@ziepe.ca,
+        gregkh@linuxfoundation.org, jens.wiklander@linaro.org,
+        linux-integrity@vger.kernel.org, arnd@linaro.org,
+        sumit.garg@linaro.org, Maxim Uvarov <maxim.uvarov@linaro.org>
+Subject: [PATCHv7 0/3] optee: register drivers on optee bus
+Date:   Thu,  4 Jun 2020 18:03:45 +0300
+Message-Id: <20200604150348.27996-1-maxim.uvarov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The linux-next commit bf2c59fce407 ("sched/core: Fix illegal RCU from
-offline CPUs") delayed,
+v7: - check return value of dev_set_name() (Jarkko Sakkinen)
+v6: - description, comments, patches reorder and destroy workqueue (Sumit Garg)
+v5: - removed pr_err and fix typos in description (Jarkko Sakkinen)
+    - added missed kfree in optee_open()
+v4: - sysfs entry is optee-ta-uuid (Jerome Forissier, Sumit Garg)
+    - added Documentation/ABI/testing/sysfs-bus-optee-devices (Greg Kroah-Hartman)
+v3: - support tee-suppicant restart (Jens Wiklander)
+    - description and comments (Jarkko Sakkinen)
+    - do not name optee drivers by index in sysfs (Sumit Garg)
+v2: - write TEE with capital letters.
+    - declare __optee_enumerate_device() as static.
 
-idle->active_mm = &init_mm;
+Maxim Uvarov (3):
+  optee: use uuid for sysfs driver entry
+  optee: enable support for multi-stage bus enumeration
+  tpm_ftpm_tee: register driver on TEE bus
 
-into finish_cpu() instead of idle_task_exit() which results in a false
-positive warning that was originally designed in the commit 3eda69c92d47
-("kernel/fork.c: detect early free of a live mm").
+ .../ABI/testing/sysfs-bus-optee-devices       |  8 +++
+ MAINTAINERS                                   |  1 +
+ drivers/char/tpm/tpm_ftpm_tee.c               | 70 ++++++++++++++++---
+ drivers/tee/optee/core.c                      | 27 ++++++-
+ drivers/tee/optee/device.c                    | 38 +++++-----
+ drivers/tee/optee/optee_private.h             | 10 ++-
+ 6 files changed, 119 insertions(+), 35 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-optee-devices
 
- WARNING: CPU: 127 PID: 72976 at kernel/fork.c:697
- __mmdrop+0x230/0x2c0
- do_exit+0x424/0xfa0
- Call Trace:
- do_exit+0x424/0xfa0
- do_group_exit+0x64/0xd0
- sys_exit_group+0x24/0x30
- system_call_exception+0x108/0x1d0
- system_call_common+0xf0/0x278
-
-Fixes: bf2c59fce407 ("sched/core: Fix illegal RCU from offline CPUs")
-Signed-off-by: Qian Cai <cai@lca.pw>
----
- kernel/fork.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 142b23645d82..5334efd2a680 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -694,7 +694,6 @@ void __mmdrop(struct mm_struct *mm)
- {
- 	BUG_ON(mm == &init_mm);
- 	WARN_ON_ONCE(mm == current->mm);
--	WARN_ON_ONCE(mm == current->active_mm);
- 	mm_free_pgd(mm);
- 	destroy_context(mm);
- 	mmu_notifier_subscriptions_destroy(mm);
 -- 
-2.21.0 (Apple Git-122.2)
+2.17.1
 
