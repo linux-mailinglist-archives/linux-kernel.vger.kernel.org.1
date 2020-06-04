@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D9C1EE1DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C5C1EE1D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728441AbgFDJwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 05:52:51 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:54088 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728313AbgFDJwt (ORCPT
+        id S1728391AbgFDJwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 05:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726711AbgFDJwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 05:52:49 -0400
-X-IronPort-AV: E=Sophos;i="5.73,471,1583190000"; 
-   d="scan'208";a="452941151"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 11:52:17 +0200
-Date:   Thu, 4 Jun 2020 11:52:17 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Joe Perches <joe@perches.com>
-cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] pinctrl: pxa: pxa2xx: Remove 'pxa2xx_pinctrl_exit()'
- which is unused and broken
-In-Reply-To: <2aa49a543e6f48a6f428a37b63a06f9149870225.camel@perches.com>
-Message-ID: <alpine.DEB.2.21.2006041147360.2577@hadrien>
-References: <20200531073716.593343-1-christophe.jaillet@wanadoo.fr>         <87h7vvb1s3.fsf@belgarion.home>         <a2e34c9a-676f-d83f-f395-7428af038c16@wanadoo.fr>         <20200601183102.GS30374@kadam>         <CACRpkdasbS-4_ZwC-Ucm8tkSUW5tAQdUrXjxHXQ3J0goVYfgHw@mail.gmail.com>
-         <20200604083120.GF22511@kadam> <2aa49a543e6f48a6f428a37b63a06f9149870225.camel@perches.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Thu, 4 Jun 2020 05:52:33 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D44C03E96D
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 02:52:33 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id z145so1112506ooa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 02:52:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dmgCAZztkKponFlSOj9eb5gBCC+mYH067uJY2h6tIxo=;
+        b=E03wrYq2qk/9Su1JbFTFYDDuOW7iHKPMLOx8+W7pS1jZqglh47WBhkKee9QC2VSjEM
+         tvIE+XYqvmo7ESzqR6LVCkHmsd7lNeDiAhYoceTkkuEcgiMKR/9EjPSBxfE1TEpFmiEh
+         bzoaOdFGTAK8+KqrMBwRAIGnAfvFPWkb7OjHd9duKelNwV3gJylT3glftJR/PklCsgWu
+         SACOQ0ZBL47eO0ziL5uk4GtCoozRHtEI5bApsN6wDR6QK3SR2znFluHgB4UIOVCbbOKV
+         vqHVa12JrWiQ/Nv5jd740PBsu3jMVVDZgShkBmSuN/vh30Na+kBpDrHHAI+8TVj3nxax
+         gdWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dmgCAZztkKponFlSOj9eb5gBCC+mYH067uJY2h6tIxo=;
+        b=oKv1WxfWAS9qCx8M2JInpWcV9MyOepPn07f5GFXi8chqvcOiLcQeNUB1YU5aLKdqE8
+         aNxprCJPU5uj2N2YzCshFi0Hqv4p1cl5PzRlJSG6MR9fqaXHb3NPpIMOrqPLOCuCtyro
+         hK2p0C2O0tPxSLmOjNI9kbE18vDjoLV3+bmu4ICkOOD0bZlS/3KPVf15ifZwqNHtJ6Hj
+         wpaC05+/8JC/qtG1Qe+gLoKXWnzZoaJ5s4c+bvBdkL2kjCeCyC+LmT12axBILmRxGMAu
+         ygoNKQrAZHt2w6vLCT6gK1RIycO4d8g5RmQpYJcsKz4BRrQnyWxr6Ul/3CRQxL5we37W
+         yEeA==
+X-Gm-Message-State: AOAM530tx3GSCHLrkhlNvv8zcknOch4h5yHfIRpvQQ9egfOKf1cOJdUq
+        tAvg0mCZxGe+n7Ab8ZJoP30h6cDdTkmjXMM9PJdnQg==
+X-Google-Smtp-Source: ABdhPJx8nxv/Fp5E/Hl1veAJDLXsZdjg22RW8vJHLljIuWAQjL8St9prG4WmEpx9rR9YO0eGNraD3hSeLtKzQnHTHb4=
+X-Received: by 2002:a4a:b54b:: with SMTP id s11mr3156030ooo.14.1591264352701;
+ Thu, 04 Jun 2020 02:52:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200603114014.152292216@infradead.org> <20200603120037.GA2570@hirez.programming.kicks-ass.net>
+ <20200603120818.GC2627@hirez.programming.kicks-ass.net> <CANpmjNOxLkqh=qpHQjUC_bZ0GCjkoJ4NxF3UuNGKhJSvcjavaA@mail.gmail.com>
+ <20200603121815.GC2570@hirez.programming.kicks-ass.net> <CANpmjNPxMo0sNmkbMHmVYn=WJJwtmYR03ZtFDyPhmiMuR1ug=w@mail.gmail.com>
+ <CANpmjNPzmynV2X+e76roUmt_3oq8KDDKyLLsgn__qtAb8i0aXQ@mail.gmail.com>
+ <20200603160722.GD2570@hirez.programming.kicks-ass.net> <20200603181638.GD2627@hirez.programming.kicks-ass.net>
+ <CANpmjNPJ_vTyTYyrXxP2ei0caLo10niDo8PapdJj2s4-w_R3TA@mail.gmail.com> <CANpmjNMyC+KHTbLFSxojV_CTK60t3ayJHxtyH4AckeMD2hGCtg@mail.gmail.com>
+In-Reply-To: <CANpmjNMyC+KHTbLFSxojV_CTK60t3ayJHxtyH4AckeMD2hGCtg@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 4 Jun 2020 11:52:18 +0200
+Message-ID: <CANpmjNM48j4D7F+cgUrrof38d3nLuQjbW6pz3nTwxcZ5Q+GJqQ@mail.gmail.com>
+Subject: Re: [PATCH 0/9] x86/entry fixes
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Thu, 4 Jun 2020, Joe Perches wrote:
-
-> On Thu, 2020-06-04 at 11:31 +0300, Dan Carpenter wrote:
-> > On Thu, Jun 04, 2020 at 12:08:49AM +0200, Linus Walleij wrote:
-> []
-> > > Fixes means it fixes something that was wrong in that commit.
-> > > That's all. Whether syntactic or semantic or regression or
-> > > serious or not does not matter. It is also not compulsory to
-> > > add it is just helpful.
+On Thu, 4 Jun 2020 at 08:00, Marco Elver <elver@google.com> wrote:
+>
+> On Wed, 3 Jun 2020 at 21:10, Marco Elver <elver@google.com> wrote:
 > >
-> > Fixes tag should be compulsory for actual bug fixes.  We had a the
-> > Bad Binder exploit last year because commit f5cb779ba163
-> > ("ANDROID: binder: remove waitqueue when thread exits.") had no Fixes
-> > tag and wasn't backported to Android kernels.
+> > On Wed, 3 Jun 2020 at 20:16, Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Wed, Jun 03, 2020 at 06:07:22PM +0200, Peter Zijlstra wrote:
+> > > > On Wed, Jun 03, 2020 at 04:47:54PM +0200, Marco Elver wrote:
+> > >
+> > > > > With that in mind, you could whitelist "__ubsan_handle"-prefixed
+> > > > > functions in objtool. Given the __always_inline+noinstr+__ubsan_handle
+> > > > > case is quite rare, it might be reasonable.
+> > > >
+> > > > Yes, I think so. Let me go have dinner and then I'll try and do a patch
+> > > > to that effect.
+> > >
+> > > Here's a slightly more radical patch, it unconditionally allows UBSAN.
+> > >
+> > > I've not actually boot tested this.. yet.
+> > >
+> > > ---
+> > > Subject: x86/entry, ubsan, objtool: Whitelist __ubsan_handle_*()
+> > > From: Peter Zijlstra <peterz@infradead.org>
+> > > Date: Wed Jun  3 20:09:06 CEST 2020
+> > >
+> > > The UBSAN instrumentation only inserts external CALLs when things go
+> > > 'BAD', much like WARN(). So treat them similar to WARN()s for noinstr,
+> > > that is: allow them, at the risk of taking the machine down, to get
+> > > their message out.
+> > >
+> > > Suggested-by: Marco Elver <elver@google.com>
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> >
+> > This is much cleaner, as it gets us UBSAN coverage back. Seems to work
+> > fine for me (only lightly tested), so
+> >
+> > Acked-by: Marco Elver <elver@google.com>
+> >
+> > Thanks!
 >
-> Fixes tags IMO should be exclusively for actual bug fixes
-> and should be mandatory.
+> I was thinking that if we remove __no_sanitize_undefined from noinstr,
+> we can lift the hard compiler restriction for UBSAN because
+> __no_sanitize_undefined isn't used anywhere. Turns out, that attribute
+> isn't broken on GCC <= 7, so I've sent v2 of my series:
+> https://lkml.kernel.org/r/20200604055811.247298-1-elver@google.com
 
-I'm not sure that it is always possible to determine the specific commit
-that a patch fixes.  Some bugs are too old.  Some bugs may arise from an
-interaction of issues.  I don't have a concrete example, but I feel uneasy
-about mandator and compulsory.  Neither word is in the proposed text,
-though.
+Now that hopefully KASAN/KCSAN/UBSAN are fine, I'm looking at adding a
+patch for KCOV:
+https://lkml.kernel.org/r/20200604095057.259452-1-elver@google.com
 
-Should Fixes also be used when the change will make it hard to port other
-fixes over it?
+Will that work?
 
-julia
-
->
-> Perhaps:
-> ---
->  Documentation/process/submitting-patches.rst | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
->
-> diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-> index 1699b7f8e63a..285a84ae79de 100644
-> --- a/Documentation/process/submitting-patches.rst
-> +++ b/Documentation/process/submitting-patches.rst
-> @@ -636,12 +636,14 @@ idea was not posted in a public forum. That said, if we diligently credit our
->  idea reporters, they will, hopefully, be inspired to help us again in the
->  future.
->
-> -A Fixes: tag indicates that the patch fixes an issue in a previous commit. It
-> -is used to make it easy to determine where a bug originated, which can help
-> -review a bug fix. This tag also assists the stable kernel team in determining
-> -which stable kernel versions should receive your fix. This is the preferred
-> -method for indicating a bug fixed by the patch. See :ref:`describe_changes`
-> -for more details.
-> +A Fixes: tag indicates that the patch fixes a "bug". i.e.: a logic defect or
-> +regression in a previous commit.  A Fixes: tag should not be used to indicate
-> +that a previous commit had some trivial defect in spelling in the commit log or
-> +some whitespace defect.  The Fixes: tag is used to make it easy to determine
-> +where a bug originated, which can help review a bug fix. The Fixes: tag also
-> +assists the stable kernel team in determining which stable kernel versions
-> +should receive your fix. This is the preferred method for indicating a bug is
-> +fixed by the patch.  See :ref:`describe_changes` for more details.
->
->  .. _the_canonical_patch_format:
->
->
->
+Thanks,
+-- Marco
