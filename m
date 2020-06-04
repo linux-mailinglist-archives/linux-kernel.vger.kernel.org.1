@@ -2,171 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE1A1EE32D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7BF1EE338
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgFDLQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 07:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726444AbgFDLQo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 07:16:44 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82047C03E96D
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 04:16:44 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id v19so4843995wmj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 04:16:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=boJyGP+gPrammziGfBa0Rtpgvb7ZM8NCT5rtIiHrchY=;
-        b=B0mnEIdGvO/8pNPYWfxGpx9Fzt94z97xsG2Jy1Xp/LJCeaLS5KYgVDM2lJ+kNOnZqP
-         6a1jdogX8HleRkSrqHQfbaMfaw+YqL7yueS0qKAIj92JcUPAk46ShsuhTkvy2GSPuXH5
-         4eM76bmfxHNXV1FomJBfohipL7/rTTscXBtHCl+c4MPLGuqyo3RUxG4bPlbZydhwOOWX
-         5xrSp8aMRWaxxhtLvbxTLj67wESI0eHy4GOIwW4xYTro+BASCNy3hquFm6LRfbKAmcUE
-         HqiidTxf4xKT6lhHcUOMjpLI6Q0QLYnRnyP4UDisg19Rm7r9/4QCy/UqPsi9l2hDB3Kn
-         /BhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=boJyGP+gPrammziGfBa0Rtpgvb7ZM8NCT5rtIiHrchY=;
-        b=kOYEdhTI+AH4tQn98Hdqj9m6HVsmzf0Lys0wQrRHteplNyIg15kYPaUXAeIM0MSCFP
-         DlfGffsyiVVORvxUB57i/y15tIGZsddRch5V2j1zg5UwHmHOONlJtVkEUFf5tFvh8UFV
-         fauGIa+oBwBqSpJMt75H+2ntFZlXDH5q0VkgyCr58vmmaoJSKQDmc0aacgSdepccVLvS
-         WUuzxKoGKUYm38NUej1pZlL+IZ+1NiQQKCYWknPhAKFOmuC7NLNlBB1QmeXMUwMdfxAJ
-         kV8XlFFiJHNOfPwDsL3IVyZ4srCGCnKxG9HmK8nBT2BIY+9Fo13osEk1XTOI1Q9MrVrj
-         w4fQ==
-X-Gm-Message-State: AOAM533RihLpqAUT/MTjFG51oXzp4PYVZ6cqAG9jSfW2cSNfil2nVpFu
-        G/U1Iov1N8mrbKqSu4GjE82HJQ==
-X-Google-Smtp-Source: ABdhPJxryzqz4ew9/g4Ibkz6WjYMEviCTsNzCQva4r53NLnbdtuaO9mWGbqNGP6OUY7rYgYlXx75OQ==
-X-Received: by 2002:a7b:c204:: with SMTP id x4mr3518122wmi.22.1591269403185;
-        Thu, 04 Jun 2020 04:16:43 -0700 (PDT)
-Received: from dell ([95.147.198.92])
-        by smtp.gmail.com with ESMTPSA id l1sm8856507wrb.31.2020.06.04.04.16.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 04:16:42 -0700 (PDT)
-Date:   Thu, 4 Jun 2020 12:16:39 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: Re: [PATCH V2] mfd: sprd: Add wakeup capability for PMIC irq
-Message-ID: <20200604111639.GZ3714@dell>
-References: <20200527062147.680-1-zhang.lyra@gmail.com>
- <CAAfSe-voe6as4VveyMt2pyJR1jytdzfRCp1z3s9AnS+QzTvPKA@mail.gmail.com>
+        id S1727902AbgFDLR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 07:17:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726445AbgFDLR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 07:17:29 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EED9C20663;
+        Thu,  4 Jun 2020 11:17:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591269448;
+        bh=TD23lUmHIH4fDCI+FcUMyA2oC82x0Bai1U3IaWCZkEg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q+N79pq8MdT0YLoIZImKz0WOU1Deu3HxicOZmkxWveX1KC5zJCO5lUjeefXxlaNlA
+         nvlomYyqjE0JUNTYYDsUoKmE5l0f+d/we/lrFkL+eaux0MSAA9zCr0YPF7jbG2a1Yb
+         aMHs/qa37gU+2K/Avj/2JrsRlzZ3m9ESbYbEixdA=
+Date:   Thu, 4 Jun 2020 12:17:23 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        peterz@infradead.org
+Subject: Re: linux-next: build failure on powerpc 8xx with 16k pages
+Message-ID: <20200604111723.GA1267@willie-the-truck>
+References: <dc2b16e1-b719-5500-508d-ae97bf50c4a6@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAfSe-voe6as4VveyMt2pyJR1jytdzfRCp1z3s9AnS+QzTvPKA@mail.gmail.com>
+In-Reply-To: <dc2b16e1-b719-5500-508d-ae97bf50c4a6@csgroup.eu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 04 Jun 2020, Chunyan Zhang wrote:
+Hi, [+Peter]
 
-> Hi Lee,
+On Thu, Jun 04, 2020 at 10:48:03AM +0000, Christophe Leroy wrote:
+> Using mpc885_ads_defconfig with CONFIG_PPC_16K_PAGES instead of
+> CONFIG_PPC_4K_PAGES, getting the following build failure:
 > 
-> On Wed, 27 May 2020 at 14:21, Chunyan Zhang <zhang.lyra@gmail.com> wrote:
-> >
-> > From: Baolin Wang <baolin.wang7@gmail.com>
-> >
-> > When changing to use suspend-to-idle to save power, the PMIC irq can not
-> > wakeup the system due to lack of wakeup capability, which will cause
-> > the sub-irqs (such as power key) of the PMIC can not wake up the system.
-> > Thus we can add the wakeup capability for PMIC irq to solve this issue,
-> > as well as removing the IRQF_NO_SUSPEND flag to allow PMIC irq to be
-> > a wakeup source.
-> >
-> > Reported-by: Chunyan Zhang <zhang.lyra@gmail.com>
-> > Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
-> > Tested-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > ---
-> > Changes from v1:
-> > * addressed comments from Lee;
-> > * added tested-by from Chunyan.
-> > (This patch is rebased on branch for-mfd-next)
-> 
-> Could you please pick up this patch if there's no more comments :)
+>   CC      mm/gup.o
+> In file included from ./include/linux/kernel.h:11:0,
+>                  from mm/gup.c:2:
+> In function 'gup_hugepte.constprop',
+>     inlined from 'gup_huge_pd.isra.78' at mm/gup.c:2465:8:
+> ./include/linux/compiler.h:392:38: error: call to '__compiletime_assert_257'
+> declared with attribute error: Unsupported access size for
+> {READ,WRITE}_ONCE().
+>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>                                       ^
+> ./include/linux/compiler.h:373:4: note: in definition of macro
+> '__compiletime_assert'
+>     prefix ## suffix();    \
+>     ^
+> ./include/linux/compiler.h:392:2: note: in expansion of macro
+> '_compiletime_assert'
+>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>   ^
+> ./include/linux/compiler.h:405:2: note: in expansion of macro
+> 'compiletime_assert'
+>   compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long), \
+>   ^
+> ./include/linux/compiler.h:291:2: note: in expansion of macro
+> 'compiletime_assert_rwonce_type'
+>   compiletime_assert_rwonce_type(x);    \
+>   ^
+> mm/gup.c:2428:8: note: in expansion of macro 'READ_ONCE'
+>   pte = READ_ONCE(*ptep);
+>         ^
+> In function 'gup_get_pte',
+>     inlined from 'gup_pte_range' at mm/gup.c:2228:9,
+>     inlined from 'gup_pmd_range' at mm/gup.c:2613:15,
+>     inlined from 'gup_pud_range' at mm/gup.c:2641:15,
+>     inlined from 'gup_p4d_range' at mm/gup.c:2666:15,
+>     inlined from 'gup_pgd_range' at mm/gup.c:2694:15,
+>     inlined from 'internal_get_user_pages_fast' at mm/gup.c:2785:3:
 
-Please don't send contentless nags.  Your patch is in my queue.
+At first glance, this looks like a real bug in the 16k page code -- you're
+loading the pte non-atomically on the fast GUP path and so you're prone to
+tearing, which probably isn't what you want. For a short-term hack, I'd
+suggest having CONFIG_HAVE_FAST_GUP depend on !CONFIG_PPC_16K_PAGES, but if
+you want to support this them you'll need to rework your pte_t so that it
+can be loaded atomically.
 
-The merge-window is currently open, which is a) a busy time for
-Maintainers and b) a time where some of us take a little breather
-before the next release.  Please wait until -rc1 has been released
-before sending out your [RESENDS].
-
-> > ---
-> >  drivers/mfd/sprd-sc27xx-spi.c | 28 +++++++++++++++++++++++++++-
-> >  1 file changed, 27 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
-> > index 33336cde4724..adb4a1b13332 100644
-> > --- a/drivers/mfd/sprd-sc27xx-spi.c
-> > +++ b/drivers/mfd/sprd-sc27xx-spi.c
-> > @@ -256,7 +256,7 @@ static int sprd_pmic_probe(struct spi_device *spi)
-> >         }
-> >
-> >         ret = devm_regmap_add_irq_chip(&spi->dev, ddata->regmap, ddata->irq,
-> > -                                      IRQF_ONESHOT | IRQF_NO_SUSPEND, 0,
-> > +                                      IRQF_ONESHOT, 0,
-> >                                        &ddata->irq_chip, &ddata->irq_data);
-> >         if (ret) {
-> >                 dev_err(&spi->dev, "Failed to add PMIC irq chip %d\n", ret);
-> > @@ -272,9 +272,34 @@ static int sprd_pmic_probe(struct spi_device *spi)
-> >                 return ret;
-> >         }
-> >
-> > +       device_init_wakeup(&spi->dev, true);
-> >         return 0;
-> >  }
-> >
-> > +#ifdef CONFIG_PM_SLEEP
-> > +static int sprd_pmic_suspend(struct device *dev)
-> > +{
-> > +       struct sprd_pmic *ddata = dev_get_drvdata(dev);
-> > +
-> > +       if (device_may_wakeup(dev))
-> > +               enable_irq_wake(ddata->irq);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int sprd_pmic_resume(struct device *dev)
-> > +{
-> > +       struct sprd_pmic *ddata = dev_get_drvdata(dev);
-> > +
-> > +       if (device_may_wakeup(dev))
-> > +               disable_irq_wake(ddata->irq);
-> > +
-> > +       return 0;
-> > +}
-> > +#endif
-> > +
-> > +static SIMPLE_DEV_PM_OPS(sprd_pmic_pm_ops, sprd_pmic_suspend, sprd_pmic_resume);
-> > +
-> >  static const struct of_device_id sprd_pmic_match[] = {
-> >         { .compatible = "sprd,sc2731", .data = &sc2731_data },
-> >         {},
-> > @@ -285,6 +310,7 @@ static struct spi_driver sprd_pmic_driver = {
-> >         .driver = {
-> >                 .name = "sc27xx-pmic",
-> >                 .of_match_table = sprd_pmic_match,
-> > +               .pm = &sprd_pmic_pm_ops,
-> >         },
-> >         .probe = sprd_pmic_probe,
-> >  };
-> >
-
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Will
