@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111551EDBCA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 05:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 956891EDBDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 05:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgFDDjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 23:39:53 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:61994 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726604AbgFDDjw (ORCPT
+        id S1726922AbgFDDq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 23:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726729AbgFDDqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 23:39:52 -0400
-X-UUID: 755fa141118a4201a48e86f265915509-20200604
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=9ohiaeGdFreb1r0AXs539unugde1ILARpYyi69vZq7M=;
-        b=FAAUMXegfjiNk7eBOMTYbUdzdoIslcIAQpe/Cb/PZllnABeI6orW1H/Fvpg4/HThRotVRYZ/RfLlbYXa6A+7xSTX8jThRyjIdY9Z3UYF1i6RV1v87eJBSWVsL1OnrtDWUtp3dnf7zTsTE0QRe1jXTRBVVGgU50XvOi2QqRDCBaU=;
-X-UUID: 755fa141118a4201a48e86f265915509-20200604
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1213929344; Thu, 04 Jun 2020 11:39:49 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 4 Jun 2020 11:39:47 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 4 Jun 2020 11:39:47 +0800
-Message-ID: <1591241987.29475.19.camel@mtkswgap22>
-Subject: Re: [PATCH] mm/memblock: export max_pfn for kernel modules
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     David Hildenbrand <david@redhat.com>
-CC:     Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
-Date:   Thu, 4 Jun 2020 11:39:47 +0800
-In-Reply-To: <23a9a2cc-3461-52bb-4285-b063a01bd7c6@redhat.com>
-References: <20200603161132.2441-1-miles.chen@mediatek.com>
-         <23a9a2cc-3461-52bb-4285-b063a01bd7c6@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 3 Jun 2020 23:46:22 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6386C08C5C5
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 20:46:20 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id a45so1724350pje.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 20:46:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AKUvLro9S597CUdKLkHtfULaMJzReX6aR4Vd+jg9MWw=;
+        b=hKAsiTFpLHHgYk7uxEc64hy/HUaA1WkUjC8d9BKcLM3A/W0jWDjCQVcYLc0TzJIb6c
+         CVvGbgMTwJtWW3d38WnReaNXfUDB6Z7+PjsIdPE8tJzwBE5kkiQFZuUsHl9gXF2t3hNz
+         P/mhkULSwbWlOZpcliQwUyTPCPRZerjJhSiPA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AKUvLro9S597CUdKLkHtfULaMJzReX6aR4Vd+jg9MWw=;
+        b=QvdQO4J3pNRF345GYh2nV/xg73B9nmkFLuWwQ8O5nCbQgnn5i0qa7RHCm7H/wma+wX
+         T9fSBOaeDiOhepUPLcj+oWLyERKWLc448bXNNDI2wxR6CC34fkJnkiQtDG1nTqKqiyKf
+         nbbF97dOcUn2WJ2REjwP9phv0yB7UAp+PHI0+uv657+eXAVnBVu3Gcp73G/Rn2yZoFDU
+         EGsiyT6oomuwAeep5PXUDYe0xufHyLlLK11WQSEE4xA1xhE7nASmXnwmKvykRaSGaj7K
+         exoVDumlmFiTD4E9jfrVSC/l/Bq8ZGUtOCR9O1I/lwfwi9A3OizEcz+6d6dJfzn+nNBD
+         rCyA==
+X-Gm-Message-State: AOAM532+P6yhdcap2F+Pw4RfMvD4uCeYMMPeHXmP8nReh+Sp2yqandBm
+        XOLrQaKW6cvKjH2d8k6C1LZpSA==
+X-Google-Smtp-Source: ABdhPJwgOC5Nh6YRgoFEBFoD4RiNjZ8EE9ykV4UyBnz631Lr2h8YJbe7vzR1a+QiANBM9x+EA79IfA==
+X-Received: by 2002:a17:90a:2461:: with SMTP id h88mr3702337pje.180.1591242379970;
+        Wed, 03 Jun 2020 20:46:19 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a5sm3056506pfi.41.2020.06.03.20.46.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jun 2020 20:46:18 -0700 (PDT)
+Date:   Wed, 3 Jun 2020 20:46:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-mm@kvack.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH 08/10] checkpatch: Remove awareness of
+ uninitialized_var() macro
+Message-ID: <202006032046.96A726426@keescook>
+References: <20200603233203.1695403-1-keescook@chromium.org>
+ <20200603233203.1695403-9-keescook@chromium.org>
+ <ff9087b0571e1fc499bd8a4c9fd99bfc0357f245.camel@perches.com>
+ <202006031838.55722640DC@keescook>
+ <6f921002478544217903ee4bfbe3c400e169687f.camel@perches.com>
+ <202006031944.9551FAA68E@keescook>
+ <CA+icZUVg24VrpPgMdfsgPa+Wckci9XkzKUdtwhVB3ZW96uZOWw@mail.gmail.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: BBB609BC241D5D6326810E159D32C1FFD2E89757713B0F6749736E0F12BB7A882000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+icZUVg24VrpPgMdfsgPa+Wckci9XkzKUdtwhVB3ZW96uZOWw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTA2LTAzIGF0IDE4OjE2ICswMjAwLCBEYXZpZCBIaWxkZW5icmFuZCB3cm90
-ZToNCj4gT24gMDMuMDYuMjAgMTg6MTEsIE1pbGVzIENoZW4gd3JvdGU6DQo+ID4gbWF4X3BmbiBp
-cyB1ZXNkIHRvIGdldCB0aGUgaGlnaGVzdCBwZm4gaW4gdGhlIHN5c3RlbS4gRHJpdmVycyBsaWtl
-DQo+ID4gZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYyBjaGVja3MgbWF4X3BmbiB0byBzZWUgaWYg
-aXQgc2hvdWxkIGVuYWJsZQ0KPiA+IGl0cyAiNEdCIG1vZGUiLg0KPiA+IA0KPiA+IFRoaXMgcGF0
-Y2ggZXhwb3J0cyB0aGUgbWF4X3BmbiBzeW1ib2wsIHNvIHdlIGNhbiBidWlsZCB0aGUgZHJpdmVy
-IGFzDQo+ID4gYSBrZXJuZWwgbW9kdWxlLg0KPiANCj4gUGxlYXNlIGFkZCB0aGF0IGNoYW5nZSB0
-byB0aGUgcmVzcGVjdGl2ZSB1c2VyIHBhdGNoIChhbmQgY2MgTU0tcGVvcGxlDQo+IGZvciB0aGF0
-IHBhdGNoKSwgc28gd2UgaGF2ZSB0aGUgYWN0dWFsIHVzZXIgcmlnaHQgYWxvbmcgdGhlIGNoYW5n
-ZSBhbmQNCj4gY2FuIGZpZ3VyZSBvdXQgaWYgdGhpcyBpcyB0aGUgcmlnaHQgdGhpbmcgdG8gZG8u
-DQo+IA0KDQpUaGFua3MgZm9yIHRoZSBjb21tZW50Lg0KDQpNaWtlIHBvaW50cyBvdXQgYW5vdGhl
-ciBhbHRlcm5hdGl2ZSB3YXkgdG8gZG8gdGhpcyBieSB0b3RhbHJhbV9wYWdlcygpLg0KSSB3aWxs
-IHVzZSB0aGF0IGFwcHJvYWNoIHNvIHdlIGRvbid0IGhhdmUgdG8gZXhwb3J0IG1heF9wZm4gaGVy
-ZS4NCg0KaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMjAvNi8zLzc3MQ0KDQpNaWxlcw0KDQo+ID4g
-DQo+ID4gU2lnbmVkLW9mZi1ieTogTWlsZXMgQ2hlbiA8bWlsZXMuY2hlbkBtZWRpYXRlay5jb20+
-DQo+ID4gLS0tDQo+ID4gIG1tL21lbWJsb2NrLmMgfCAxICsNCj4gPiAgMSBmaWxlIGNoYW5nZWQs
-IDEgaW5zZXJ0aW9uKCspDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL21tL21lbWJsb2NrLmMgYi9t
-bS9tZW1ibG9jay5jDQo+ID4gaW5kZXggYzc5YmE2Zjk5MjBjLi4zYjJiMjFlY2ViYjYgMTAwNjQ0
-DQo+ID4gLS0tIGEvbW0vbWVtYmxvY2suYw0KPiA+ICsrKyBiL21tL21lbWJsb2NrLmMNCj4gPiBA
-QCAtOTksNiArOTksNyBAQCBFWFBPUlRfU1lNQk9MKGNvbnRpZ19wYWdlX2RhdGEpOw0KPiA+ICB1
-bnNpZ25lZCBsb25nIG1heF9sb3dfcGZuOw0KPiA+ICB1bnNpZ25lZCBsb25nIG1pbl9sb3dfcGZu
-Ow0KPiA+ICB1bnNpZ25lZCBsb25nIG1heF9wZm47DQo+ID4gK0VYUE9SVF9TWU1CT0wobWF4X3Bm
-bik7DQo+ID4gIHVuc2lnbmVkIGxvbmcgbG9uZyBtYXhfcG9zc2libGVfcGZuOw0KPiA+ICANCj4g
-PiAgc3RhdGljIHN0cnVjdCBtZW1ibG9ja19yZWdpb24gbWVtYmxvY2tfbWVtb3J5X2luaXRfcmVn
-aW9uc1tJTklUX01FTUJMT0NLX1JFR0lPTlNdIF9faW5pdGRhdGFfbWVtYmxvY2s7DQo+ID4gDQo+
-IA0KPiANCg0K
+On Thu, Jun 04, 2020 at 04:53:34AM +0200, Sedat Dilek wrote:
+> can you push that change also to kees/linux.git#kspp/uninit/v5.7/macro ?
 
+Done! :)
+
+-- 
+Kees Cook
