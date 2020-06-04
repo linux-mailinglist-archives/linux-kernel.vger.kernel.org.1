@@ -2,130 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF8B1EE1DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA9E1EE1FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 12:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgFDJwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 05:52:46 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:57201 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728313AbgFDJwp (ORCPT
+        id S1728368AbgFDKBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 06:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgFDKBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 05:52:45 -0400
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200604095243epoutp0241971949f084ef5253325e2eb241e59a~VToICuXqQ1259012590epoutp02-
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 09:52:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200604095243epoutp0241971949f084ef5253325e2eb241e59a~VToICuXqQ1259012590epoutp02-
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591264363;
-        bh=OaSZFf2qQGBcr7NfAGyghK+7rfdpjrzREc4+KoKyo9c=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=XR8Gc15QbSryNH8B7VuWpu5yQnCFUWakWFDvmadMLD2T3eE6cMBjk+XFZOjFrKLWP
-         DcsDb/MF7JEtU4wZUrhKbxQCFNFYg+Os9+j2smqIiQjVquIE2f80KH/rZV75HWwtrj
-         7MM3sFbZ2la+H3Pse814YSBuLjra/uhwARFjK4RQ=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20200604095243epcas2p2f25665a2a1dc82943d01d64ec0cc6646~VToHtpyas0969709697epcas2p23;
-        Thu,  4 Jun 2020 09:52:43 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.165]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 49d1Kk2ZMtzMqYkf; Thu,  4 Jun
-        2020 09:52:42 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B6.07.27441.A64C8DE5; Thu,  4 Jun 2020 18:52:42 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200604095241epcas2p3bef5ec0a913244bcfd8e7a84827bbf77~VToGeX5Qy3171131711epcas2p3B;
-        Thu,  4 Jun 2020 09:52:41 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200604095241epsmtrp253442ef020d6204a779f921155dbd375~VToGdwMg_1431714317epsmtrp2o;
-        Thu,  4 Jun 2020 09:52:41 +0000 (GMT)
-X-AuditID: b6c32a47-fafff70000006b31-20-5ed8c46a7f9f
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4D.69.08303.964C8DE5; Thu,  4 Jun 2020 18:52:41 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.252.15.188]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200604095241epsmtip158f87366c228730fbf8e464f862b1ca1~VToGS3Ufg2316223162epsmtip1f;
-        Thu,  4 Jun 2020 09:52:41 +0000 (GMT)
-From:   Jeongtae Park <jtp.park@samsung.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jeongtae Park <jtp.park@samsung.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/vmalloc: fix a typo in comment
-Date:   Fri,  5 Jun 2020 03:52:39 +0900
-Message-Id: <20200604185239.20765-1-jtp.park@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIKsWRmVeSWpSXmKPExsWy7bCmhW7WkRtxBm86BS3mrF/DZvFl0jt2
-        i5WrjzJZHFl7lcni8q45bBb31vxndWDz2PRpErvHiRm/WTx232xg8+jbsorR4/MmOY/X+w8x
-        BrBF5dhkpCampBYppOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAJ2h
-        pFCWmFMKFApILC5W0rezKcovLUlVyMgvLrFVSi1IySkwNCjQK07MLS7NS9dLzs+1MjQwMDIF
-        qkzIyXj35iFLwTT2ik1P/7A3ML5i7WLk5JAQMJHY8mAzM4gtJLCDUeLDK9suRi4g+xOjxN97
-        WxghnM+MEps3bGaC6Vj48ykbRGIXo8STOT9Y4aruPd8GVsUmoCUxfWYD2A4RAV2JVc93MYMU
-        MQusZJTY+e0vI0hCWMBI4uGdX2BFLAKqEjde7Qc7hFfAUmLR3gtsEOvkJVZvOADWLCGwiV1i
-        x7GV7F2MHECOi8SKk9oQNcISr45vYYewpSQ+v9vLBlHfzSixqHUFVPMERonv/99AvW0ssfPE
-        JBaQQcwCmhLrd+lDhBUldv6eC3YcswCfRMfhv1C7eCU62oQgSpQk5i2dxwxhS0hcmruFGaLE
-        Q+LRFXFIOMZKtLWcY53AKDsLYf4CRsZVjGKpBcW56anFRgXGyLG0iRGctrTcdzDOePtB7xAj
-        EwfjIUYJDmYlEV4r2WtxQrwpiZVVqUX58UWlOanFhxhNgeE1kVlKNDkfmDjzSuINTY2MjY0t
-        zIyMDU2MlcR5i60uxAkJpCeWpGanphakFsH0MXFwSjUwCfeuN33seGFFWA+bkrpenL7IoiB1
-        +Xf9v7wezjmauchRb+4OVvEXvHyWZb8XfxVO/sBkkT2tav+H56qOM6IlXuTz/JOtkbHaoLFk
-        4/eaqZVy4kYCtp7BUrLcy/9stW6I7tj2+cWlt0+Z//j0WB1+pbpI6/LNLyxPJTk1rk4VPGXR
-        Wzpn76ZPSbuPXTD2CBNpmiEqMUHBZEHBl7WfOF4+MjTMNxabpJqeu/n0S6fqOWp7o/yMG61L
-        /eZsz3id2FzwIMX6y84St+9uKasiRTacK9flX7lZ9MSCe8KHdkudsU98+PyvbUDcjoOTnins
-        EeB+umeKtf0LzeMrkwxnLf/wT+rF1msva1xv/F2S9/i9jBJLcUaioRZzUXEiAKgmWnnkAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPJMWRmVeSWpSXmKPExsWy7bCSnG7mkRtxBu37zCzmrF/DZvFl0jt2
-        i5WrjzJZHFl7lcni8q45bBb31vxndWDz2PRpErvHiRm/WTx232xg8+jbsorR4/MmOY/X+w8x
-        BrBFcdmkpOZklqUW6dslcGW8e/OQpWAae8Wmp3/YGxhfsXYxcnJICJhILPz5lK2LkYtDSGAH
-        o8T1HS+YIRISEss3vGCCsIUl7rccAWsQEvjIKLHtSAiIzSagJTF9ZgNYXERAV2LV813MIIOY
-        BdYySnTd/c0GkhAWMJJ4eOcXWBGLgKrEjVf7wRbwClhKLNp7gQ1igbzE6g0HmCcw8ixgZFjF
-        KJlaUJybnltsWGCUl1quV5yYW1yal66XnJ+7iREcRlpaOxj3rPqgd4iRiYPxEKMEB7OSCK+V
-        7LU4Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4rxfZy2MExJITyxJzU5NLUgtgskycXBKNTDFzt62
-        Y+Hvfdv2tvNUJS3nsrMTzLs0f1bB97KL85W28rjKru67e2fZJGk3wzcTvd9IcvJ8X7CEOz7x
-        WHLQxcRXc61ms2mdf1pvsvDaXQ2h751WHyat+Wmb8fPkV80Tp3gXLsmceMAvsP3bHM5lsqt9
-        FKQKP0+Xb8l4dIvVcquXlz3bOYtmpW61QL8lp2y2FVpphj4+sfGm2ELOa/W5z8/IdR7/6ZqS
-        sCMy5P5n0bfffrRLGfHMMl9te0TKom7GPlWHzZ3OjvPqv56ae27zEjvj7ysjuc9eeK/O+WNx
-        YzU/c3pwjbHfJLFwe63Fbc/aFlkq1Ym/2Jbz6cjjxrSH0ysiTsoK/axXuuGp5OibxPpKiaU4
-        I9FQi7moOBEAVmwMM5ICAAA=
-X-CMS-MailID: 20200604095241epcas2p3bef5ec0a913244bcfd8e7a84827bbf77
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200604095241epcas2p3bef5ec0a913244bcfd8e7a84827bbf77
-References: <CGME20200604095241epcas2p3bef5ec0a913244bcfd8e7a84827bbf77@epcas2p3.samsung.com>
+        Thu, 4 Jun 2020 06:01:40 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197D4C03E96D
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 03:01:40 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a45so2079014pje.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 03:01:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Clstppy/1La57TBLOjLA/wXNlzifwjjs+dcuhmyrmaM=;
+        b=f0FQClfiS3taqRiHZVNQQ/xEoxPu/xT7VUjVZA/dUMwVQlw5oQLsBZsrBsVAMuud5z
+         omxOeJKgsRb4M/AiakjwNjFdLagSAb1wYJ3PCu7bAcxesHdFl8zamT89hjwwAiNKGIxI
+         bC9/cofrq2DuCMPQTgH5g6pU2zuvUPfgsWx8BHdPZW8loHBAuPwPV3VSQrCuTwYy8JAu
+         4VprYlBOiCALNM74NEryhPUfk7bs2b0hjMSbTMxnn9xWNRgYG1pn0fUQaorfVp6gm93h
+         kv428ayG3bxzjYwF3E5c+O4VQrm9gfwf59WpXgwq6XLuWfu6UO/w5jM8so1FeVs53wXY
+         Mkng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Clstppy/1La57TBLOjLA/wXNlzifwjjs+dcuhmyrmaM=;
+        b=lPhCFUsMwiDrW66XkjBaNs6I9oXQFuJ5Jz9k08qlcMaHwrPZbdR2LzSSYYJjF4HJsR
+         YwbUKsapjUSsJGHWfhNLYRllvYQ8Bqg1tof/2f4UpyYaTdOWLAqQNXe5GJSj7zq9PZ9y
+         PrVs2/SztkXecZmfeRgd0PHgZJ4yakOdtzfCY7FHayqJNcBLMGzeI0UY1aM4t8PHPFb6
+         VsURkH93xORZoT188cWc/PTbZYS8D+z0LhJkdcXWvZ4/H0JdMn1m6sVcnZ9ABvZyuP2T
+         pjrWHFf9cY7G9QspPOiwpBV2eNdLSAEmI99b5zzNYXW7tEeXMPe7KhyR2PNSP4abwRGa
+         tJTg==
+X-Gm-Message-State: AOAM5306SKOpAigt+ElT45MxXbQ2bfL3WzPqyGwEfB0bLoWVxz2i4cLY
+        2jZOnnJpFuCOYU3Z5kqls9FjLA==
+X-Google-Smtp-Source: ABdhPJzVjymj2KK9Fb597/6EVryJH8miLwm1wthbBL4tfu3R8Prui6WkFEIdRP6KmrRYYgDI9FEmfw==
+X-Received: by 2002:a17:90a:5aa4:: with SMTP id n33mr5297644pji.226.1591264899492;
+        Thu, 04 Jun 2020 03:01:39 -0700 (PDT)
+Received: from localhost.localdomain ([117.252.66.248])
+        by smtp.gmail.com with ESMTPSA id np5sm5786992pjb.43.2020.06.04.03.01.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Jun 2020 03:01:38 -0700 (PDT)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     daniel.thompson@linaro.org
+Cc:     kgdb-bugreport@lists.sourceforge.net, jason.wessel@windriver.com,
+        dianders@chromium.org, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, gregkh@linuxfoundation.org,
+        jslaby@suse.com, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v6 0/4] kdb: Improve console handling
+Date:   Thu,  4 Jun 2020 15:31:15 +0530
+Message-Id: <1591264879-25920-1-git-send-email-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a typo in comment, fix it.
-"nother" -> "another"
+This patch-set is aimed to improve console handling especially when kdb
+operates in NMI context.
 
-Signed-off-by: Jeongtae Park <jtp.park@samsung.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Christoph Hellwig <hch@lst.de>
----
- mm/vmalloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Brief description of enhancements:
+- Add status check for console prior to invoking corresponding handler.
+- Fixup to avoid possible deadlock in NMI context due to usage of locks
+  in the console handlers.
+- Prefer usage of polling I/O driver mode (lockless APIs) over invocation
+  of console handlers.
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 1e94497b7388..3091c2ca60df 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2317,7 +2317,7 @@ static inline void __vfree_deferred(const void *addr)
- 	 * Use raw_cpu_ptr() because this can be called from preemptible
- 	 * context. Preemption is absolutely fine here, because the llist_add()
- 	 * implementation is lockless, so it works even if we are adding to
--	 * nother cpu's list.  schedule_work() should be fine with this too.
-+	 * another cpu's list. schedule_work() should be fine with this too.
- 	 */
- 	struct vfree_deferred *p = raw_cpu_ptr(&vfree_deferred);
- 
+Changes in v6:
+- Replace early_con -> kgdboc_earlycon_io_ops.cons.
+- Added Petr's review tag on patch #1, #2 and #3.
+- Drop Doug's review tag from patch #4 due to early_con changes which I
+  think needs a re-review.
+
+Changes in v5:
+- Rebased on top of tags/kgdb-5.8-rc1.
+- Get rid of kdb_io_write().
+- Fixed issue reported by kbuild test robot.
+- Remove is_console from kgdboc_earlycon_io_ops as well.
+- Misc. comments.
+- Added Doug's review tag.
+
+Changes in v4:
+- Use dbg_io_ops->write_char() directly instead of passing it as a
+  function pointer.
+- Use "struct console" rather than "struct tty_driver" for comparison.
+- Make commit descriptions and comments more informative.
+- Add review tag for patch #2.
+
+Changes in v3:
+- Split patch to have separate patch for console status check.
+- New patch to re-factor kdb message emit code.
+- New patch to prefer polling I/O over console mode.
+- Add code comments to describe usage of oops_in_progress.
+
+Changes in v2:
+- Use oops_in_progress directly instead of bust_spinlocks().
+
+Sumit Garg (4):
+  kdb: Re-factor kdb_printf() message write code
+  kdb: Check status of console prior to invoking handlers
+  kdb: Make kdb_printf() console handling more robust
+  kdb: Switch to use safer dbg_io_ops over console APIs
+
+ drivers/tty/serial/kgdb_nmi.c |  2 +-
+ drivers/tty/serial/kgdboc.c   | 32 +++++++++----------
+ drivers/usb/early/ehci-dbgp.c |  3 +-
+ include/linux/kgdb.h          |  5 ++-
+ kernel/debug/kdb/kdb_io.c     | 72 ++++++++++++++++++++++++++-----------------
+ 5 files changed, 64 insertions(+), 50 deletions(-)
+
 -- 
-2.17.1
+2.7.4
 
