@@ -2,265 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D62E1EEC4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 22:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E431EEC51
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 22:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730118AbgFDUrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 16:47:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40992 "EHLO mail.kernel.org"
+        id S1730136AbgFDUrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 16:47:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729582AbgFDUrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 16:47:10 -0400
-Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730101AbgFDUrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 16:47:15 -0400
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8F7B2075B;
-        Thu,  4 Jun 2020 20:47:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91390207F9;
+        Thu,  4 Jun 2020 20:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591303628;
-        bh=JbfpxBougyuTtD2mESkC1dTt70lqoBGN25w5IEmpFGU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JH4ZMWhm5cDHbi5KySNdcR8W1wyBZkVuavB1UPSGK3itSDGFxoz9GF5Uzbduhlqqn
-         D0Covk5fIrg3nTuw+0z5OldIcXa4xJ8QhFxVnMxRkmotZArh6ki10sTWzYvyagy+gi
-         XNTLgTbR6bNwrXLTrP2cL1+0a1m/YqD5BaLlwa7Y=
-Received: from mchehab by mail.kernel.org with local (Exim 4.93)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jgwlW-0004AZ-Nm; Thu, 04 Jun 2020 22:47:06 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] media: atomisp: improve sensor detection code to use _DSM table
-Date:   Thu,  4 Jun 2020 22:47:01 +0200
-Message-Id: <b96869eb27f9ec037025b44c46bf9883e4a4f27a.1591303518.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1591303518.git.mchehab+huawei@kernel.org>
-References: <cover.1591303518.git.mchehab+huawei@kernel.org>
+        s=default; t=1591303633;
+        bh=KFodmG5dxLwi01xoHP3XvvFF9k/ifovAv20CD/RAbqo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=k7PE0miyDMbeR8z6yic0GzwJHBc4BnWOuy+uL5PUFHy26zjLx2c7DrAUiWE/dVFDH
+         7HEjNWZWuIzljvHpDgOzFd1//3dVtoLjgsJiP49dP3iJaDk1Ue8EzPwNL0p3YWhvgb
+         /IYet3YsBRn9V4Ll3IT9POl3Aw+S19y36dNyj1yg=
+Received: by mail-oo1-f54.google.com with SMTP id h7so1512372ooc.9;
+        Thu, 04 Jun 2020 13:47:13 -0700 (PDT)
+X-Gm-Message-State: AOAM533liRkyXqGM0J69dbeBl7mUs6bAkO4SaRXaIZnhx/x8s+qHGJUz
+        JiLTBwRY0vz7fyiFKK7H4QOQ/OgfVmq3F0eJTQ==
+X-Google-Smtp-Source: ABdhPJwwaaT3W3YLSJDqZR+blejzcilkUVb+CLjXx9zxnhQgu0H5S8pzGVf0fGb0K342AwgdZ/YgUMdqmCyiyHTPhzI=
+X-Received: by 2002:a4a:2c88:: with SMTP id o130mr5106020ooo.81.1591303632915;
+ Thu, 04 Jun 2020 13:47:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200519224151.2074597-1-lkundrak@v3.sk> <20200519224151.2074597-13-lkundrak@v3.sk>
+In-Reply-To: <20200519224151.2074597-13-lkundrak@v3.sk>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 4 Jun 2020 14:47:01 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJxP8-0amAEW7-zB_QRvXSmmTfgMDj7UOuDX-6z9me0Hw@mail.gmail.com>
+Message-ID: <CAL_JsqJxP8-0amAEW7-zB_QRvXSmmTfgMDj7UOuDX-6z9me0Hw@mail.gmail.com>
+Subject: Re: [PATCH v3 12/13] dt-bindings: clock: Add Marvell MMP Audio Clock
+ Controller binding
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of keep hardcoding device-specific tables, read them
-directly from the ACPI BIOS, if available.
+On Tue, May 19, 2020 at 4:42 PM Lubomir Rintel <lkundrak@v3.sk> wrote:
+>
+> This describes the bindings for a controller that generates master and bit
+> clocks for the I2S interface.
+>
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+>
+> ---
+> Changes since v1:
+> - Fix commit message wording
+> - Define MMP2_CLK_AUDIO_NR_CLKS
+> - Make clock ids start at 0, not 1
+> - Fix dt-bindings/clock/marvell,mmp2-audio.h file name
+> - Rename node from "clocks" to "clock-controller"
+>
+>  .../clock/marvell,mmp2-audio-clock.yaml       | 74 +++++++++++++++++++
+>  .../dt-bindings/clock/marvell,mmp2-audio.h    | 10 +++
+>  2 files changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/marvell,mmp2-audio-clock.yaml
+>  create mode 100644 include/dt-bindings/clock/marvell,mmp2-audio.h
+>
+> diff --git a/Documentation/devicetree/bindings/clock/marvell,mmp2-audio-clock.yaml b/Documentation/devicetree/bindings/clock/marvell,mmp2-audio-clock.yaml
+> new file mode 100644
+> index 000000000000..ab6e82d1d3a9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/marvell,mmp2-audio-clock.yaml
+> @@ -0,0 +1,74 @@
+> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/marvell,mmp2-audio-clock.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell MMP2 Audio Clock Controller
+> +
+> +maintainers:
+> +  - Lubomir Rintel <lkundrak@v3.sk>
+> +
+> +description: |
+> +  The audio clock controller generates and supplies the clocks to the audio
+> +  codec.
+> +
+> +  Each clock is assigned an identifier and client nodes use this identifier
+> +  to specify the clock which they consume.
+> +
+> +  All these identifiers could be found in
+> +  <dt-bindings/clock/marvell,mmp2-audio.h>.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - marvell,mmp2-audio-clock
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Audio subsystem clock
+> +      - description: The crystal oscillator clock
+> +      - description: First I2S clock
+> +      - description: Second I2S clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: audio
+> +      - const: vctcxo
+> +      - const: i2s0
+> +      - const: i2s1
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - '#clock-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/marvell,mmp2-audio.h>
+> +    #include <dt-bindings/power/marvell,mmp2.h>
+> +
+> +    clock-controller@d42a0c30 {
+> +      compatible = "marvell,mmp2-audio-clock";
+> +      reg = <0xd42a0c30 0x10>;
+> +      clock-names = "audio", "vctcxo", "i2s0", "i2s1";
+> +      clocks = <&soc_clocks MMP2_CLK_AUDIO>,
+> +               <&soc_clocks MMP2_CLK_VCTCXO>,
+> +               <&soc_clocks MMP2_CLK_I2S0>,
+> +               <&soc_clocks MMP2_CLK_I2S1>;
 
-This method is know to work with Asus T101HA device. the
-same table is also visible on EzPad devices. So, it seems
-that at least some BIOSes use this method to pass data about
-ISP2401-connected sensors.
+This now breaks linux-next. I think the above defines are missing
+their include.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/staging/media/atomisp/TODO            |  43 +------
- .../media/atomisp/pci/atomisp_gmin_platform.c | 105 +++++++++++++++++-
- 2 files changed, 101 insertions(+), 47 deletions(-)
+My testing wasn't happy either because it couldn't find
+marvell,mmp2.h. I guess that's somewhere in linux-next and now we're
+on to the secondary issue. Once that's fixed, then the schema checks
+will actually run (hint: make sure they pass).
 
-diff --git a/drivers/staging/media/atomisp/TODO b/drivers/staging/media/atomisp/TODO
-index 9e46015ebcd5..6cf90ccf3cf8 100644
---- a/drivers/staging/media/atomisp/TODO
-+++ b/drivers/staging/media/atomisp/TODO
-@@ -18,48 +18,7 @@ TODO
-    This should be converted to the usual way, using V4L2 async subdev
-    framework to wait for cameras to be probed;
- 
--2. Support for newer board-specific data (like Asus T101HA support) uses a
--   DMI match table to retrieve sensor's data, using hard-coded values.
--   It sounds feasible to retrieve those data directly from ACPI via _DSM
--   tables (like this one, associated with CAM1 at the above mentioned
--   hardware):
--
--            Name (C1CD, Buffer (0x0220){})
--            Method (_DSM, 4, NotSerialized)  // _DSM: Device-Specific Method
--            {
--                If ((Arg0 == ToUUID ("dc2f6c4f-045b-4f1d-97b9-882a6860a4be")))
--                {
--                    Local0 = Package (0x12)
--                        {
--                            "CamId",
--                            "ov2680",
--                            "CamType",
--                            "1",
--                            "CsiPort",
--                            "0",
--                            "CsiLanes",
--                            "1",
--                            "CsiFmt",
--                            "15",
--                            "CsiBayer",
--                            "0",
--                            "CamClk",
--                            "1",
--                            "Regulator1p8v",
--                            "0",
--                            "Regulator2p8v",
--                            "0"
--                        }
--                    Return (Local0)
--                }
--
--   The code there at atomisp_gmin_platform has an EFI parser, but it
--   assumes that the information would be stored on a different way.
--
--   As the Kernel has support for reading data from _DSM, via
--   acpi_evaluate_dsm(), it sounds doable to use such infra and remove the
--   DMI match, at least for some devices. This will likely allow covering
--   more devices that could also be using the same EFI UUID.
-+2. Use ACPI _DSM table - DONE!
- 
- 3. Switch the driver to use pm_runtime stuff. Right now, it probes the
-    existing PMIC code and sensors call it directly.
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
-index 5d2bfe2ea971..5f34b2be5153 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
-@@ -388,6 +388,10 @@ static const struct dmi_system_id gmin_vars[] = {
- 				       0xa9, 0x71, 0xe8, 0x77,	   \
- 				       0x75, 0x60, 0x68, 0xf7)
- 
-+static const guid_t atomisp_dsm_guid = GUID_INIT(0xdc2f6c4f, 0x045b, 0x4f1d,
-+						 0x97, 0xb9, 0x88, 0x2a,
-+						 0x68, 0x60, 0xa4, 0xbe);
-+
- #define CFG_VAR_NAME_MAX 64
- 
- #define GMIN_PMC_CLK_NAME 14 /* "pmc_plt_clk_[0..5]" */
-@@ -455,15 +459,28 @@ static int gmin_i2c_write(struct device *dev, u16 i2c_addr, u8 reg,
- 
- static struct gmin_subdev *gmin_subdev_add(struct v4l2_subdev *subdev)
- {
--	int i, ret;
--	struct device *dev;
- 	struct i2c_client *power = NULL, *client = v4l2_get_subdevdata(subdev);
-+	struct acpi_device *adev;
-+	acpi_handle handle;
-+	struct device *dev;
-+	int i, ret;
- 
- 	if (!client)
- 		return NULL;
- 
- 	dev = &client->dev;
- 
-+	handle = ACPI_HANDLE(dev);
-+
-+	// FIXME: may need to release resources allocated by acpi_bus_get_device()
-+	if (!handle || acpi_bus_get_device(handle, &adev)) {
-+		dev_err(dev, "Error could not get ACPI device\n");
-+		return NULL;
-+	}
-+
-+	dev_info(&client->dev, "%s: ACPI detected it on bus ID=%s, HID=%s\n",
-+		__func__, acpi_device_bid(adev), acpi_device_hid(adev));
-+
- 	if (!pmic_id) {
- 		if (gmin_i2c_dev_exists(dev, PMIC_ACPI_TI, &power))
- 			pmic_id = PMIC_TI;
-@@ -944,6 +961,75 @@ static int gmin_get_hardcoded_var(struct gmin_cfg_var *varlist,
- 	return -EINVAL;
- }
- 
-+
-+static int gmin_get_config_dsm_var(struct device *dev,
-+				   const char *var,
-+				   char *out, size_t *out_len)
-+{
-+	acpi_handle handle = ACPI_HANDLE(dev);
-+	union acpi_object *obj, *cur = NULL;
-+	int i;
-+
-+	obj = acpi_evaluate_dsm(handle, &atomisp_dsm_guid, 0, 0, NULL);
-+	if (!obj) {
-+		dev_info_once(dev, "Didn't find ACPI _DSM table.\n");
-+		return -EINVAL;
-+	}
-+
-+#if 0 /* Just for debugging purposes */
-+	for (i = 0; i < obj->package.count; i++) {
-+		union acpi_object *cur = &obj->package.elements[i];
-+
-+		if (cur->type == ACPI_TYPE_INTEGER)
-+			dev_info(dev, "object #%d, type %d, value: %lld\n",
-+				 i, cur->type, cur->integer.value);
-+		else if (cur->type == ACPI_TYPE_STRING)
-+			dev_info(dev, "object #%d, type %d, string: %s\n",
-+				 i, cur->type, cur->string.pointer);
-+		else
-+			dev_info(dev, "object #%d, type %d\n",
-+				 i, cur->type);
-+	}
-+#endif
-+
-+	/* Seek for the desired var */
-+	for (i = 0; i < obj->package.count - 1; i += 2) {
-+		if (obj->package.elements[i].type == ACPI_TYPE_STRING &&
-+		    !strcmp(obj->package.elements[i].string.pointer, var)) {
-+			/* Next element should be the required value */
-+			cur = &obj->package.elements[i + 1];
-+			break;
-+		}
-+	}
-+
-+	if (!cur) {
-+		dev_info(dev, "didn't found _DSM entry for '%s'\n", var);
-+		ACPI_FREE(obj);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * While it could be possible to have an ACPI_TYPE_INTEGER,
-+	 * and read the value from cur->integer.value, the table
-+	 * seen so far uses the string type. So, produce a warning
-+	 * if it founds something different than string, letting it
-+	 * to fall back to the old code.
-+	 */
-+	if (cur && cur->type != ACPI_TYPE_STRING) {
-+		dev_info(dev, "found non-string _DSM entry for '%s'\n", var);
-+		ACPI_FREE(obj);
-+		return -EINVAL;
-+	}
-+
-+	dev_info(dev, "found _DSM entry for '%s': %s\n", var,
-+		 cur->string.pointer);
-+	strscpy(out, cur->string.pointer, *out_len);
-+	*out_len = strlen(cur->string.pointer);
-+
-+	ACPI_FREE(obj);
-+	return 0;
-+}
-+
- /* Retrieves a device-specific configuration variable.  The dev
-  * argument should be a device with an ACPI companion, as all
-  * configuration is based on firmware ID.
-@@ -953,12 +1039,21 @@ static int gmin_get_config_var(struct device *maindev,
- 			       const char *var,
- 			       char *out, size_t *out_len)
- {
--	char var8[CFG_VAR_NAME_MAX];
- 	efi_char16_t var16[CFG_VAR_NAME_MAX];
--	struct efivar_entry *ev;
- 	const struct dmi_system_id *id;
--	int i, ret;
- 	struct device *dev = maindev;
-+	char var8[CFG_VAR_NAME_MAX];
-+	struct efivar_entry *ev;
-+	int i, ret;
-+
-+	/* For sensors, try first to use the _DSM table */
-+	if (!is_gmin) {
-+		ret = gmin_get_config_dsm_var(maindev, var, out, out_len);
-+		if (!ret)
-+			return 0;
-+	}
-+
-+	/* Fall-back to other approaches */
- 
- 	if (!is_gmin && ACPI_COMPANION(dev))
- 		dev = &ACPI_COMPANION(dev)->dev;
--- 
-2.26.2
+Please get this fixed or revert before it is sent to Linus. Maybe we
+can have an rc1 without the schema broken.
 
+Rob
