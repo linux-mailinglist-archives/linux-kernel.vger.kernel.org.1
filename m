@@ -2,110 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E021EEA65
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62721EEA6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbgFDSjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 14:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgFDSjf (ORCPT
+        id S1728452AbgFDSlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 14:41:23 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:23856 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725601AbgFDSlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 14:39:35 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DC0C08C5C0;
-        Thu,  4 Jun 2020 11:39:34 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id s1so8632381ljo.0;
-        Thu, 04 Jun 2020 11:39:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0Q/ce7fKWUL0s8qvvjbmoZjoyGz/9VTtrwk7OIonRS0=;
-        b=Oe7vA6DPMtrxABtP+GfxI19vl/Np0zAoJ3rQVrPyw3dmLRNsP2ttlHE1R2QMJR6tGj
-         gSecfgdkWzxznF6+OQO8LO3/ISzfkTLJoqUnXEXvGsMFoaQgvUZia22V9EkwE+Hhi3tQ
-         JO1TRBRtB7c7yQrmwSBw2pfw+mz1Dnz8iGnEdDR5cLj2uTWaS9pWEdQfTFr1Z3L9vbDA
-         MtXnCKWjyBwc+JtFSRDyMqHngGQxIaHv1qpjz+9EwwcVDLqwC/bq2vMJ8Ic1XWLaqa8o
-         UoZNl78xswtdxfSayg/502LLf76dk9vg/YDFdVgQcOELB19l3dGFSj50fNpj7w1V+sIu
-         ADqg==
+        Thu, 4 Jun 2020 14:41:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591296080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2XePoJNdNVmtKQsPI2i0zLtEeRswapNtM75dwkZ+u3s=;
+        b=KKkWH8YuNAk0Ppzlc2fMysCQiUVybGKYGvPByViJxU6NETJCym4OHT7e9ICU3gQgP6Fnu3
+        uVuqZ7TNjXOMKlK4DgkMgogcoFUN9kH+6P2CppK1OAvGT1W6CHbGwUvZGj6gyLwac6SI77
+        6cf/ntBK0QQ1bmwbomOxeL9bmU2Ej0Y=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-154-XhihjCprO4KQst4QfZY6pg-1; Thu, 04 Jun 2020 14:41:15 -0400
+X-MC-Unique: XhihjCprO4KQst4QfZY6pg-1
+Received: by mail-wr1-f72.google.com with SMTP id w4so2774862wrl.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 11:41:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0Q/ce7fKWUL0s8qvvjbmoZjoyGz/9VTtrwk7OIonRS0=;
-        b=hMONEWFgYcRJNsIWd9VWN6V+WrE2ZkB3t+U6sX+0LkdMS3BzTCvO2E0qBIeD1o41W2
-         QJQzSBmj/GzP1RUxYLRdZAlTHutV1nAI8sNg4dpoeKRIVHtMcioJmEWGb2wAOTY4jWus
-         Jfa4R68UYKF0RTIWL4L/xCWq4Fh2mPDt83G6znZkiTMwKckC4q6WzwlAolTF2FjCqfP7
-         0iz9ihC9Q4/insu7QmwWZJiTowbjCw1NXhcq4MRhoZtCL/PcW8J2zx3tYbNBnrAjqh79
-         A6VqLQIMtU8m2kdEMhgSCb586AgY4aflrukZEbadg1S+oePkGP8pzHsJ4EEvQ8YcCReJ
-         s9rw==
-X-Gm-Message-State: AOAM530hp31aIQO2kKf2gv72LqxEi9IliM5Zs22Qc+IIqRZCPtPcoNkw
-        Z8k/scuzOByiHf8UaX9CHW4=
-X-Google-Smtp-Source: ABdhPJwoA3DeXT6fj2z00w4xH93nWSIkOISXuObAIqJFwXHmR+1sygKwnnL4iCmN7If2mWM9jrGSLQ==
-X-Received: by 2002:a2e:9a81:: with SMTP id p1mr2617188lji.119.1591295972392;
-        Thu, 04 Jun 2020 11:39:32 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id q15sm96025lfc.44.2020.06.04.11.39.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 11:39:30 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 4 Jun 2020 20:39:27 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Peter Enderborg <peter.enderborg@sony.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Stop shrinker loop
-Message-ID: <20200604183927.GA26933@pc636>
-References: <20200604102320.15914-1-peter.enderborg@sony.com>
- <20200604134255.GA24897@pc636>
- <20200604163100.GB29598@paulmck-ThinkPad-P72>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2XePoJNdNVmtKQsPI2i0zLtEeRswapNtM75dwkZ+u3s=;
+        b=BqQZD0TghXRt9nntrnl37iRxlLT2feOGWo9w9UePGmGnIljWAbF5QPsOfv3zts+RsL
+         7fh/TZkzlnMAnakcLysZI4ycWGYqV78FkxXLXMQrXjt0RaIPA2oBbZzD+2WMkDWWKdbx
+         /j42aFfD+J2QrxoQs/Ivvjo+lUc1OnlW72lHypEc3zdLvmgpTvOL7Je2LD8gxrw89VAT
+         c6WFUr7XVDARKBhkKkPwYudUI41TaEhUujtJalKemFcvUyp+ZB0siGafIWdKlZryyrPn
+         0dJQd7H4gBwpEmPkg5vLoDwYAMQ/Rlr2JXzhCIxuediaMU+CflqUcETONXfXMMENV+Qk
+         yTeA==
+X-Gm-Message-State: AOAM532+t0GJm89D1F2QoGvMrHH1+P1ZMcyFrxKea7ig9zz170Pe+IXX
+        TDxHrVTNxMgqraqN1nOGRQfqzFhup5Cnoz7Y34zQ7ITuwUP610NIXpm8HIsY0qwim8rWe268IkY
+        jIC5eE7TrFgZWRLrDFJpR0dZp
+X-Received: by 2002:a1c:6243:: with SMTP id w64mr5155628wmb.162.1591296073706;
+        Thu, 04 Jun 2020 11:41:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy111L7niMul0OsF5rkmGw6PjdHJmyZd1HPbz5VmcAXHvsx/aKHzYnf+RRkcnww5nK/+ZgR+g==
+X-Received: by 2002:a1c:6243:: with SMTP id w64mr5155610wmb.162.1591296073464;
+        Thu, 04 Jun 2020 11:41:13 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:a0c0:5d2e:1d35:17bb? ([2001:b07:6468:f312:a0c0:5d2e:1d35:17bb])
+        by smtp.gmail.com with ESMTPSA id x8sm9042333wrs.43.2020.06.04.11.41.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jun 2020 11:41:12 -0700 (PDT)
+Subject: Re: [PATCH] KVM: Use vmemdup_user()
+To:     Denis Efremov <efremov@linux.com>
+Cc:     joe@perches.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <0c00d96c46d34d69f5f459baebf3c89a507730fc.camel@perches.com>
+ <20200603101131.2107303-1-efremov@linux.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <eb48b6d2-6189-945d-33e2-1f5b29338d96@redhat.com>
+Date:   Thu, 4 Jun 2020 20:41:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200604163100.GB29598@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200603101131.2107303-1-efremov@linux.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Thu, Jun 04, 2020 at 03:42:55PM +0200, Uladzislau Rezki wrote:
-> > On Thu, Jun 04, 2020 at 12:23:20PM +0200, Peter Enderborg wrote:
-> > > The count and scan can be separated in time. It is a fair chance
-> > > that all work is already done when the scan starts. It
-> > > then might retry. This is can be avoided with returning SHRINK_STOP.
-> > > 
-> > > Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
-> > > ---
-> > >  kernel/rcu/tree.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index c716eadc7617..8b36c6b2887d 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -3310,7 +3310,7 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
-> > >  			break;
-> > >  	}
-> > >  
-> > > -	return freed;
-> > > +	return freed == 0 ? SHRINK_STOP : freed;
-> > >  }
-> > >  
-> > The loop will be stopped anyway sooner or later, but sooner is better :)
-> > To me that change makes sense.
-> > 
-> > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On 03/06/20 12:11, Denis Efremov wrote:
+> Replace opencoded alloc and copy with vmemdup_user().
 > 
-> Queued, thank you both!
+> Signed-off-by: Denis Efremov <efremov@linux.com>
+> ---
+> Looks like these are the only places in KVM that are suitable for
+> vmemdup_user().
 > 
-Thank you, Paul!
+>  arch/x86/kvm/cpuid.c | 17 +++++++----------
+>  virt/kvm/kvm_main.c  | 19 ++++++++-----------
+>  2 files changed, 15 insertions(+), 21 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 901cd1fdecd9..27438a2bdb62 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -182,17 +182,14 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
+>  	r = -E2BIG;
+>  	if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
+>  		goto out;
+> -	r = -ENOMEM;
+>  	if (cpuid->nent) {
+> -		cpuid_entries =
+> -			vmalloc(array_size(sizeof(struct kvm_cpuid_entry),
+> -					   cpuid->nent));
+> -		if (!cpuid_entries)
+> -			goto out;
+> -		r = -EFAULT;
+> -		if (copy_from_user(cpuid_entries, entries,
+> -				   cpuid->nent * sizeof(struct kvm_cpuid_entry)))
+> +		cpuid_entries = vmemdup_user(entries,
+> +					     array_size(sizeof(struct kvm_cpuid_entry),
+> +							cpuid->nent));
+> +		if (IS_ERR(cpuid_entries)) {
+> +			r = PTR_ERR(cpuid_entries);
+>  			goto out;
+> +		}
+>  	}
+>  	for (i = 0; i < cpuid->nent; i++) {
+>  		vcpu->arch.cpuid_entries[i].function = cpuid_entries[i].function;
+> @@ -212,8 +209,8 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
+>  	kvm_x86_ops.cpuid_update(vcpu);
+>  	r = kvm_update_cpuid(vcpu);
+>  
+> +	kvfree(cpuid_entries);
+>  out:
+> -	vfree(cpuid_entries);
+>  	return r;
+>  }
+>  
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 731c1e517716..46a3743e95ff 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -3722,21 +3722,18 @@ static long kvm_vm_ioctl(struct file *filp,
+>  		if (routing.flags)
+>  			goto out;
+>  		if (routing.nr) {
+> -			r = -ENOMEM;
+> -			entries = vmalloc(array_size(sizeof(*entries),
+> -						     routing.nr));
+> -			if (!entries)
+> -				goto out;
+> -			r = -EFAULT;
+>  			urouting = argp;
+> -			if (copy_from_user(entries, urouting->entries,
+> -					   routing.nr * sizeof(*entries)))
+> -				goto out_free_irq_routing;
+> +			entries = vmemdup_user(urouting->entries,
+> +					       array_size(sizeof(*entries),
+> +							  routing.nr));
+> +			if (IS_ERR(entries)) {
+> +				r = PTR_ERR(entries);
+> +				goto out;
+> +			}
+>  		}
+>  		r = kvm_set_irq_routing(kvm, entries, routing.nr,
+>  					routing.flags);
+> -out_free_irq_routing:
+> -		vfree(entries);
+> +		kvfree(entries);
+>  		break;
+>  	}
+>  #endif /* CONFIG_HAVE_KVM_IRQ_ROUTING */
+> 
 
---
-Vlad Rezki
+Queued, thanks.
+
+Paolo
+
