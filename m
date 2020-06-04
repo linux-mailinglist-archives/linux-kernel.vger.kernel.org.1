@@ -2,76 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF66D1EE532
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45AC1EE538
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728527AbgFDNVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 09:21:07 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51864 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728450AbgFDNVE (ORCPT
+        id S1728572AbgFDNXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 09:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728474AbgFDNXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 09:21:04 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1EC851C0BD2; Thu,  4 Jun 2020 15:21:03 +0200 (CEST)
-Date:   Thu, 4 Jun 2020 15:21:02 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v18 4/4] leds: multicolor: Introduce a multicolor class
- definition
-Message-ID: <20200604132102.GC7222@duo.ucw.cz>
-References: <20200324181434.24721-1-dmurphy@ti.com>
- <20200324181434.24721-5-dmurphy@ti.com>
- <f43bf4c5-948d-b87f-9b95-98fcfeaae2fa@gmail.com>
- <9a707fe6-31c6-da9e-9372-51ca21bf3c88@ti.com>
+        Thu, 4 Jun 2020 09:23:09 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C92C08C5C4
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 06:23:09 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id q14so5125723qtr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 06:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Zd56CSP9N2M4FrfN9ySWd7Nzjr+sOLOVU8sX9ZsvxYk=;
+        b=Z1SifWi8Glj9s1ZlViEQIoOzrtW4kQqhJPAuBmH8BuAfTlSORzOP5/aBkVIpDCF065
+         4tet6nf/xexKbX9HERYTEiH7bvvMa7jEzJZJ+Y9NbTVNdXZMe5cuQGHU5U8XYpc6rEpA
+         0M5eGOL/GQzV1R+AsSeBTDbzXk+YExg+XOlZLmxAbhKhBOAjkHQZ06AbVHRZdzvZiU7w
+         cHe+L3V8vNXxybekuzSoIvOp1xxWvK8SbdjJVplyLz5vYnbOtUIAIDcZULCyq5qUdBWf
+         hegDa8ghfSlITKfZUXou8d2OJHz3pI/kZh5/E9mjrrfnPUc08cS9ulbxQPmbEBYY1pID
+         +u9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Zd56CSP9N2M4FrfN9ySWd7Nzjr+sOLOVU8sX9ZsvxYk=;
+        b=U8kGlmCJ486+hI8PBw8XYiwLVj5Yum/Y3EUWsANxVCdImNyJw6SeoZ0apZRiKcw6wO
+         O71n/cNOubhhAkqZQKi+6RIB5HVPS4w9T6j/LChAUoZ2JvZkFESaXwCeP+L2d6p29OtC
+         Td/CizQEUDaXE2fpX1htMdtLMfggbX5hOUuvbQl2asGYhrVhittGmeaQ4Wso6tIvtL7o
+         NI6w5pTcMKEU9OOD7UM4DcFlaLmhibrOshcnIES65YQoNGs9SYkFYJAs2nSYk6CJPpuU
+         Y/pGe7t1Wg18AAkNVZrewtCKMM2r8e0R5m8394HxRxA+qyVXTztsms7GLlC3h8wPoqp2
+         D9EA==
+X-Gm-Message-State: AOAM533kSddhC7Wy/i1NqxgxmnujPRdd/G9xMwvivoUnHSH+ykWO1tHU
+        CAu95YRKatiGHNq500JCkh88oQ==
+X-Google-Smtp-Source: ABdhPJxRZn/pXIUEkZhANETiTogTGf06kqn6Gs1x5NZFGFUPmFe5McyxpBqwN0tWHmbj+GOZ4kP/eQ==
+X-Received: by 2002:aed:3fa5:: with SMTP id s34mr4444014qth.343.1591276988114;
+        Thu, 04 Jun 2020 06:23:08 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id 126sm4330150qkj.89.2020.06.04.06.23.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jun 2020 06:23:07 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jgppq-001CIj-Sr; Thu, 04 Jun 2020 10:23:06 -0300
+Date:   Thu, 4 Jun 2020 10:23:06 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-mm@kvack.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 09/10] treewide: Remove uninitialized_var() usage
+Message-ID: <20200604132306.GO6578@ziepe.ca>
+References: <20200603233203.1695403-1-keescook@chromium.org>
+ <20200603233203.1695403-10-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="sHrvAb52M6C8blB9"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9a707fe6-31c6-da9e-9372-51ca21bf3c88@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200603233203.1695403-10-keescook@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 03, 2020 at 04:32:02PM -0700, Kees Cook wrote:
+> Using uninitialized_var() is dangerous as it papers over real bugs[1]
+> (or can in the future), and suppresses unrelated compiler warnings
+> (e.g. "unused variable"). If the compiler thinks it is uninitialized,
+> either simply initialize the variable or make compiler changes.
+> 
+> I preparation for removing[2] the[3] macro[4], remove all remaining
+> needless uses with the following script:
+> 
+> git grep '\buninitialized_var\b' | cut -d: -f1 | sort -u | \
+> 	xargs perl -pi -e \
+> 		's/\buninitialized_var\(([^\)]+)\)/\1/g;
+> 		 s:\s*/\* (GCC be quiet|to make compiler happy) \*/$::g;'
+> 
+> drivers/video/fbdev/riva/riva_hw.c was manually tweaked to avoid
+> pathological white-space.
+> 
+> No outstanding warnings were found building allmodconfig with GCC 9.3.0
+> for x86_64, i386, arm64, arm, powerpc, powerpc64le, s390x, mips, sparc64,
+> alpha, and m68k.
 
---sHrvAb52M6C8blB9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+At least in the infiniband part I'm confident that old gcc versions
+will print warnings after this patch.
 
-Hi!
+As the warnings are wrong, do we care? Should old gcc maybe just -Wno-
+the warning?
 
-> > > +Description:	read
-> > > +		Maximum intensity level for the LED color within the array.
-> > > +		The max intensities for each color must be entered based on the
-> > > +		color_index array.
-> > I wonder if we should mention here that each LED within a cluster should
-> > have the same maximum intensity for linear color lightness calculation
-> > via brightness file.
->=20
-> Does it really have to?
+Otherwise the IB bits look ok to me
 
-Yes it does. Anything else is unneccessarily complex.
+Acked-by: Jason Gunthorpe <jgg@mellanox.com>
 
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---sHrvAb52M6C8blB9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXtj1PgAKCRAw5/Bqldv6
-8qatAJ4u6W8VQzR8pf32e+wX/xMXb1e10QCeOOW9iBoX3jcny6s21E32jzpK7jM=
-=DoKN
------END PGP SIGNATURE-----
-
---sHrvAb52M6C8blB9--
+Jason
