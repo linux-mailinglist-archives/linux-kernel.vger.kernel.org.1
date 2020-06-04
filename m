@@ -2,97 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0E11EDC1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 06:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386CA1EDC5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 06:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgFDEP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 00:15:26 -0400
-Received: from mail1.windriver.com ([147.11.146.13]:62675 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725959AbgFDEP0 (ORCPT
+        id S1728071AbgFDEfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 00:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726661AbgFDEfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 00:15:26 -0400
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 0544F8Uj017628
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Wed, 3 Jun 2020 21:15:08 -0700 (PDT)
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 3 Jun 2020 21:14:50 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <gregkh@linuxfoundation.org>
-CC:     <linux-usb@vger.kernel.org>, <kt0755@gmail.com>,
-        <stern@rowland.harvard.edu>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] usb: usbtest: fix missing kfree(dev->buf) in usbtest_disconnect
-Date:   Thu, 4 Jun 2020 12:23:41 +0800
-Message-ID: <20200604042341.25305-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.24.1
+        Thu, 4 Jun 2020 00:35:07 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F16EC05BD43
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 21:35:07 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id b5so4796330iln.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 21:35:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=g+64I7JZp1JXS80n8G4BLUDcZzIS9BkuQYkabG+zwps=;
+        b=AhwvEZTgFuvltvPU8KBCKvxVuGI0BR7fYtPWZvsfPhapBV6dbvgPl0k9VcIcG5U7WO
+         ITwqw0rXEPIg0WAJ/I1z7J8ih3dlvz9wWcm2Lmc2NX4mHjFwO0xN8iZ3bSWyH+f4XGj3
+         waL/8DTQJ9A5pSnXJLcJdVPBohzSQVkde58DeBk6HxMV2jM62Bez7XEsFenQXcrFXDBz
+         scQ7HaAGgXYD0DYQGq6Ly4m9ZOCiLjqtG85+39MmB/+5vSpQJ6+KA4cU00F/oiRue8TU
+         eYGzYLLXyTQdJrUE3I8qGms2BQADyObokXNkoU0zMsqo3mANxayQPQdQvdgCCaZNdREe
+         9uqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=g+64I7JZp1JXS80n8G4BLUDcZzIS9BkuQYkabG+zwps=;
+        b=S7yiYrAcz6C87L88Y5WSvWGvGQses3mFQJ7qMmRAJB5TkrhNMvac+RkAQSpaiVx3K8
+         xpm8+Pj4jXKfBmQEGVaZ0QePLoGAaWJcRKn6UWzbiiG280Kv39QVWTiim8j5b8hV+8SD
+         MO6zKj/ttflLBSePo72YJei7JeT+hKyWUME8vEC6mvk4Ow3lFZ5NUve8yJnstOyh6753
+         z/L7V/tOJDkPtUOj/yZUIc7WcTAonDernMxO6TZcKLLiwd6ij4cCgTo4VvSBkuJ9vtln
+         phGQTXosGkwRYagbaeohYala2F285wfm4LH+LEKFa5Oe7RFlrc/BEvHuryAq3ehx0Uv3
+         5wiw==
+X-Gm-Message-State: AOAM533FnVX3OJjcoqvTbtNXCafItJpnlnOm2IZC9c1CVoGoZe3xAQ1D
+        b3GYAwBQ/xbXUPzrocbHJGi1nvsyVxnTJps5HbQ=
+X-Google-Smtp-Source: ABdhPJwqtGQ0Huvfnt9AjzvUGB7RCsJHSwB61wTKamI8d0uPbjkflX/+h8yjUR6HrSrd6SSwRsXU4LDXrXdyGFkKZi0=
+X-Received: by 2002:a92:5dd2:: with SMTP id e79mr2331818ilg.94.1591245306792;
+ Wed, 03 Jun 2020 21:35:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Received: by 2002:ac0:d54a:0:0:0:0:0 with HTTP; Wed, 3 Jun 2020 21:35:06 -0700 (PDT)
+From:   youling 257 <youling257@gmail.com>
+Date:   Thu, 4 Jun 2020 12:35:06 +0800
+Message-ID: <CAOzgRdZQjuDfA1wa9AGYjRa-mNWbTNQNCOS60eHzDLeW9WCXpg@mail.gmail.com>
+Subject: Re: [PATCH v6 10/12] mmap locking API: rename mmap_sem to mmap_lock
+To:     walken@google.com
+Cc:     Liam.Howlett@oracle.com, akpm@linux-foundation.org,
+        daniel.m.jordan@oracle.com, dave@stgolabs.net, hughd@google.com,
+        jgg@ziepe.ca, jglisse@redhat.com, jhubbard@nvidia.com,
+        ldufour@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, peterz@infradead.org, rientjes@google.com,
+        vbabka@suse.cz, willy@infradead.org, yinghan@google.com,
+        youling257 <youling257@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+I have build error about kernel/sys.c,
 
-BUG: memory leak
-unreferenced object 0xffff888055046e00 (size 256):
-  comm "kworker/2:9", pid 2570, jiffies 4294942129 (age 1095.500s)
-  hex dump (first 32 bytes):
-    00 70 04 55 80 88 ff ff 18 bb 5a 81 ff ff ff ff  .p.U......Z.....
-    f5 96 78 81 ff ff ff ff 37 de 8e 81 ff ff ff ff  ..x.....7.......
-  backtrace:
-    [<00000000d121dccf>] kmemleak_alloc_recursive
-include/linux/kmemleak.h:43 [inline]
-    [<00000000d121dccf>] slab_post_alloc_hook mm/slab.h:586 [inline]
-    [<00000000d121dccf>] slab_alloc_node mm/slub.c:2786 [inline]
-    [<00000000d121dccf>] slab_alloc mm/slub.c:2794 [inline]
-    [<00000000d121dccf>] kmem_cache_alloc_trace+0x15e/0x2d0 mm/slub.c:2811
-    [<000000005c3c3381>] kmalloc include/linux/slab.h:555 [inline]
-    [<000000005c3c3381>] usbtest_probe+0x286/0x19d0
-drivers/usb/misc/usbtest.c:2790
-    [<000000001cec6910>] usb_probe_interface+0x2bd/0x870
-drivers/usb/core/driver.c:361
-    [<000000007806c118>] really_probe+0x48d/0x8f0 drivers/base/dd.c:551
-    [<00000000a3308c3e>] driver_probe_device+0xfc/0x2a0 drivers/base/dd.c:724
-    [<000000003ef66004>] __device_attach_driver+0x1b6/0x240
-drivers/base/dd.c:831
-    [<00000000eee53e97>] bus_for_each_drv+0x14e/0x1e0 drivers/base/bus.c:431
-    [<00000000bb0648d0>] __device_attach+0x1f9/0x350 drivers/base/dd.c:897
-    [<00000000838b324a>] device_initial_probe+0x1a/0x20 drivers/base/dd.c:944
-    [<0000000030d501c1>] bus_probe_device+0x1e1/0x280 drivers/base/bus.c:491
-    [<000000005bd7adef>] device_add+0x131d/0x1c40 drivers/base/core.c:2504
-    [<00000000a0937814>] usb_set_configuration+0xe84/0x1ab0
-drivers/usb/core/message.c:2030
-    [<00000000e3934741>] generic_probe+0x6a/0xe0 drivers/usb/core/generic.c:210
-    [<0000000098ade0f1>] usb_probe_device+0x90/0xd0
-drivers/usb/core/driver.c:266
-    [<000000007806c118>] really_probe+0x48d/0x8f0 drivers/base/dd.c:551
-    [<00000000a3308c3e>] driver_probe_device+0xfc/0x2a0 drivers/base/dd.c:724
 
-Reported-by: Kyungtae Kim <kt0755@gmail.com>
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
----
- v1->v2:
- Remove Fixes field.
+kernel/sys.c: In function =E2=80=98prctl_set_vma=E2=80=99:
 
- drivers/usb/misc/usbtest.c | 1 +
- 1 file changed, 1 insertion(+)
+kernel/sys.c:2392:18: error:
 
-diff --git a/drivers/usb/misc/usbtest.c b/drivers/usb/misc/usbtest.c
-index 98ada1a3425c..bae88893ee8e 100644
---- a/drivers/usb/misc/usbtest.c
-+++ b/drivers/usb/misc/usbtest.c
-@@ -2873,6 +2873,7 @@ static void usbtest_disconnect(struct usb_interface *intf)
- 
- 	usb_set_intfdata(intf, NULL);
- 	dev_dbg(&intf->dev, "disconnect\n");
-+	kfree(dev->buf);
- 	kfree(dev);
- }
- 
--- 
-2.24.1
+=E2=80=98struct mm_struct=E2=80=99 has no member named =E2=80=98mmap_sem=E2=
+=80=99; did you mean
 
+=E2=80=98mmap_base=E2=80=99?
+
+  2392 |  down_write(&mm->mmap_sem);
+
+       |                  ^~~~~~~~
+
+       |                  mmap_base
+
+kernel/sys.c:2402:16: error:
+
+=E2=80=98struct mm_struct=E2=80=99 has no member named =E2=80=98mmap_sem=E2=
+=80=99; did you mean
+
+=E2=80=98mmap_base=E2=80=99?
+
+  2402 |  up_write(&mm->mmap_sem);
+
+       |                ^~~~~~~~
+
+       |                mmap_base
+
+
+
+why not rename kernel/sys.c mmap_sem to mmap_lock?
+
+
+diff --git a/kernel/sys.c b/kernel/sys.c
+
+index 113955fe1c6b..043c04a745a9 100644
+
+--- a/kernel/sys.c
+
++++ b/kernel/sys.c
+
+@@ -2389,7 +2389,7 @@ static int prctl_set_vma(unsigned long opt,
+unsigned long start,
+
+      if (end =3D=3D start)
+
+          return 0;
+
+-    down_write(&mm->mmap_sem);
+
++    down_write(&mm->mmap_lock);
+
+      switch (opt) {
+
+      case PR_SET_VMA_ANON_NAME:
+
+@@ -2399,7 +2399,7 @@ static int prctl_set_vma(unsigned long opt,
+unsigned long start,
+
+          error =3D -EINVAL;
+
+      }
+
+-    up_write(&mm->mmap_sem);
+
++    up_write(&mm->mmap_lock);
+
+      return error;
+
+  }
