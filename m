@@ -2,117 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23571EE9EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 19:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422331EE9F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 19:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730401AbgFDR6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 13:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
+        id S1730417AbgFDR7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 13:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730326AbgFDR6C (ORCPT
+        with ESMTP id S1730303AbgFDR67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 13:58:02 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28319C08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 10:58:01 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id c185so6987303qke.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 10:58:01 -0700 (PDT)
+        Thu, 4 Jun 2020 13:58:59 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E1DC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 10:58:57 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id y11so6796781ljm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 10:58:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ylFM7xcrRPttXnSFsxxMsniM496bjo9TahOp0BQ4KWQ=;
-        b=dp1MW0oLsIVpf8P1GqlJ7ywKbTALgi380UyzwJhLZxxjLZbExXSS3+DNraBRJx+RxA
-         2YNRIqPWKCJwUAt2Ionyk91M424aXFCth771TTbwhKuAi/5z09C6/Wr39Wytw6IFYat4
-         ROGMU+gTfjKOfKx/KnMfK4lHl61/+H90NG+NU9ft1Ad329Ugd8oNWQRmnDyTDrH84VcG
-         NHqJ/pa7Z8WtA7tv5ssR9OBolcmhh/Z0Chu/DqhjQRZD68jbMjVitMLn9/18eeVfDBtl
-         W6iFo32dBc0/Xz9TBC1xS9lWFSwriSPTsiMKkjJI2/Fy1v0kJA0h8NiDLZa3m0zxOiRF
-         iMLw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ke3Q3IrQeyEZTnLG9bUCuuMoRX7XeInSOniRN9QrWyw=;
+        b=dMSTxduor75B36dsm5lF9BdhoZTWK4g1WCBYjsGcF4rH1IXuRZggRQdr2L8j36g92/
+         ujsCRblCF0VuBQtFBpaILEOp1bhrR+4g/VkJtTvxd/KR1A9yCwxIBjwyNi2tjIwXhCBm
+         5EggjScaRgNpKYNBveyn3lBp4sOgrTffF+pRGbRbMocLMz5kLhoBDlNwZINl31aDc8rG
+         0gt3pOnKQxAmImVYVFBR5SXGrd4X8zV03C9txoofqjsY7+QEBxQ8OV28zGKFbYcDBwnS
+         6O/eytJRxBC1PI987lky1URpfSArBu6wqQBE6GznsYXRfaHpA/pHg7i4dTeP3a0sBU+T
+         OWRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ylFM7xcrRPttXnSFsxxMsniM496bjo9TahOp0BQ4KWQ=;
-        b=oIvx8MzqYTVYAA8ARtm1w3qKHuJU58xHNhC2/zV59QHkBwneiEmIXRF3r1drU56GzE
-         24PNkUcOcwg8PCEcc1L8SS1HXvimfHVbEcPkQpXuhwt5pRqmlBWL4+q8weZ0A0fRh25d
-         TRqvVKx+asBSAcOsmGVxFWuzyIip+KYxG65RY0L8QlQGnr2zi7lUJH8QYtxlYVa3qZc8
-         0zQapJyZVRKzVG2bdV2YfVDH5nv0xDRRR6BxdZBJgLFEzqs00CGrFoAEnYy3VDStDRm6
-         XsP9UBV/O1QRQBc7s2+gyOjb1cS72ce76uuG5RrwG5Qk4KDDUUQwnIQvKbGsLHIz3jml
-         nEKQ==
-X-Gm-Message-State: AOAM530LHhZhlSRpbPetzg7b4y7REXeshJxvMQd3kOT0NiwwUu//vYAv
-        hK//qJPGQFdNfSMdfaNtkqaVmQ==
-X-Google-Smtp-Source: ABdhPJzYt2lslt13YiEsonKEZ+jBx4HFt1d65mCYXH6vxqHPQIS81ppOdKBUfUx77lLK8R8poNgzug==
-X-Received: by 2002:ae9:ebd2:: with SMTP id b201mr5788109qkg.409.1591293480332;
-        Thu, 04 Jun 2020 10:58:00 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id t43sm5788444qtj.85.2020.06.04.10.57.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ke3Q3IrQeyEZTnLG9bUCuuMoRX7XeInSOniRN9QrWyw=;
+        b=Un2BtYVfqWptFo1+o+bjCJm9j3DE+IgYJmhloJ3Vo29aDoOFtwBmefDMkkTlm9ssV4
+         MpCwXdoEqXBHRWsUKaRBQswbiBPwRwybpPtfmbozsOMbikOjUpTKkkRRPhbKE4rhLegA
+         dQ7rQeOujyfNwOlz1WkIUNbXbMJem8LSSSMgzSqTPkHcWfiq6Celjc07ijPZkb8KNcig
+         CdfvFcs/m/98SaCd9uD0b3lqzoiiBuFIs9J33US8QCmE7mQDqzzVpPZ+eg6nkc8GclQp
+         sXk4v6x2kW0RuJwEcBGYZk35iMnJX8hYhy6kR0NHljpLS7T8B2RL1xdkH5csZ6TuhAek
+         g4cw==
+X-Gm-Message-State: AOAM5312Wbf/IV0+O/28Y9Xl7H80peaOtAy3hTGDdOBHdWwqMUaWlEj+
+        gaO0ZRXSBOtXFXatIDHrM03yBB+H5V0=
+X-Google-Smtp-Source: ABdhPJyXtDReEdUGVRWF6bduD+Zt+lORttxj9OlsLpivIBNj2COer68yLoqIPKpG/wYvgAqZwdLhPA==
+X-Received: by 2002:a2e:b0c4:: with SMTP id g4mr2802442ljl.360.1591293535880;
+        Thu, 04 Jun 2020 10:58:55 -0700 (PDT)
+Received: from localhost.localdomain ([176.59.41.83])
+        by smtp.gmail.com with ESMTPSA id y17sm72404lfa.77.2020.06.04.10.58.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 10:57:59 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jgu7r-001H95-GE; Thu, 04 Jun 2020 14:57:59 -0300
-Date:   Thu, 4 Jun 2020 14:57:59 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Joe Perches <joe@perches.com>,
-        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-mm@kvack.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 09/10] treewide: Remove uninitialized_var() usage
-Message-ID: <20200604175759.GQ6578@ziepe.ca>
-References: <20200603233203.1695403-1-keescook@chromium.org>
- <20200603233203.1695403-10-keescook@chromium.org>
- <20200604132306.GO6578@ziepe.ca>
- <202006040757.0DFC3F28E@keescook>
+        Thu, 04 Jun 2020 10:58:55 -0700 (PDT)
+From:   Maxim Uvarov <maxim.uvarov@linaro.org>
+To:     linux-kernel@vger.kernel.org, tee-dev@lists.linaro.org
+Cc:     peterhuewe@gmx.de, jarkko.sakkinen@linux.intel.com, jgg@ziepe.ca,
+        gregkh@linuxfoundation.org, jens.wiklander@linaro.org,
+        linux-integrity@vger.kernel.org, arnd@linaro.org,
+        sumit.garg@linaro.org, Maxim Uvarov <maxim.uvarov@linaro.org>
+Subject: [PATCHv8 0/3] optee: register drivers on optee bus
+Date:   Thu,  4 Jun 2020 20:58:48 +0300
+Message-Id: <20200604175851.758-1-maxim.uvarov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202006040757.0DFC3F28E@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 07:59:40AM -0700, Kees Cook wrote:
-> On Thu, Jun 04, 2020 at 10:23:06AM -0300, Jason Gunthorpe wrote:
-> > On Wed, Jun 03, 2020 at 04:32:02PM -0700, Kees Cook wrote:
-> > > Using uninitialized_var() is dangerous as it papers over real bugs[1]
-> > > (or can in the future), and suppresses unrelated compiler warnings
-> > > (e.g. "unused variable"). If the compiler thinks it is uninitialized,
-> > > either simply initialize the variable or make compiler changes.
-> > > 
-> > > I preparation for removing[2] the[3] macro[4], remove all remaining
-> > > needless uses with the following script:
-> > > 
-> > > git grep '\buninitialized_var\b' | cut -d: -f1 | sort -u | \
-> > > 	xargs perl -pi -e \
-> > > 		's/\buninitialized_var\(([^\)]+)\)/\1/g;
-> > > 		 s:\s*/\* (GCC be quiet|to make compiler happy) \*/$::g;'
-> > > 
-> > > drivers/video/fbdev/riva/riva_hw.c was manually tweaked to avoid
-> > > pathological white-space.
-> > > 
-> > > No outstanding warnings were found building allmodconfig with GCC 9.3.0
-> > > for x86_64, i386, arm64, arm, powerpc, powerpc64le, s390x, mips, sparc64,
-> > > alpha, and m68k.
-> > 
-> > At least in the infiniband part I'm confident that old gcc versions
-> > will print warnings after this patch.
-> > 
-> > As the warnings are wrong, do we care? Should old gcc maybe just -Wno-
-> > the warning?
-> 
-> I *think* a lot of those are from -Wmaybe-uninitialized, but Linus just
-> turned that off unconditionally in v5.7:
-> 78a5255ffb6a ("Stop the ad-hoc games with -Wno-maybe-initialized")
+v8: - fix v7 check.
+v7: - check return value of dev_set_name() (Jarkko Sakkinen)
+v6: - description, comments, patches reorder and destroy workqueue (Sumit Garg)
+v5: - removed pr_err and fix typos in description (Jarkko Sakkinen)
+    - added missed kfree in optee_open()
+v4: - sysfs entry is optee-ta-uuid (Jerome Forissier, Sumit Garg)
+    - added Documentation/ABI/testing/sysfs-bus-optee-devices (Greg Kroah-Hartman)
+v3: - support tee-suppicant restart (Jens Wiklander)
+    - description and comments (Jarkko Sakkinen)
+    - do not name optee drivers by index in sysfs (Sumit Garg)
+v2: - write TEE with capital letters.
+    - declare __optee_enumerate_device() as static.
 
-Yah, that alone is justification enough to do this purge.
+Maxim Uvarov (3):
+  optee: use uuid for sysfs driver entry
+  optee: enable support for multi-stage bus enumeration
+  tpm_ftpm_tee: register driver on TEE bus
 
-Jason
+ .../ABI/testing/sysfs-bus-optee-devices       |  8 +++
+ MAINTAINERS                                   |  1 +
+ drivers/char/tpm/tpm_ftpm_tee.c               | 70 ++++++++++++++++---
+ drivers/tee/optee/core.c                      | 27 ++++++-
+ drivers/tee/optee/device.c                    | 38 +++++-----
+ drivers/tee/optee/optee_private.h             | 10 ++-
+ 6 files changed, 119 insertions(+), 35 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-optee-devices
+
+-- 
+2.17.1
+
