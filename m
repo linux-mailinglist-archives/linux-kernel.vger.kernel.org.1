@@ -2,84 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695CF1EE7C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 17:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3571EE7C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 17:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729534AbgFDPaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 11:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
+        id S1729304AbgFDPb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 11:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729035AbgFDPaf (ORCPT
+        with ESMTP id S1729078AbgFDPbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 11:30:35 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D679BC08C5C0;
-        Thu,  4 Jun 2020 08:30:34 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f112d0035262982e5edc845.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:2d00:3526:2982:e5ed:c845])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3817D1EC0118;
-        Thu,  4 Jun 2020 17:30:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1591284633;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=dgOFdDW+wev1gcsAysq51nTpw31Zuln3/0Xnz7fwqtE=;
-        b=lY1y2A+1RzmtxBuefUaVNKu/Y1Wj+Nvw4Y9pBw79JG/+MQBzPlnZkr2uFIyLIkrGlRb4iB
-        eZMF4rQHg/FKxFGQd6yAn+xN5lvToN5VcyMpqXNH3MT4NvtumJjwozsbFNTSnB9ZJhLOnC
-        47J+naxjkG0RfuLl25dliKfHi+8JGD8=
-Date:   Thu, 4 Jun 2020 17:30:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v3 42/75] x86/sev-es: Setup GHCB based boot #VC handler
-Message-ID: <20200604153021.GC2246@zn.tnic>
-References: <20200428151725.31091-1-joro@8bytes.org>
- <20200428151725.31091-43-joro@8bytes.org>
- <20200520192230.GK1457@zn.tnic>
- <20200604120749.GC30945@8bytes.org>
+        Thu, 4 Jun 2020 11:31:25 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76838C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 08:31:24 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id s88so1323336pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 08:31:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xhswYDutUFPJgb8N0mTl46V4k906NYmLzRtiupxWANA=;
+        b=ffLk41faa7mwXKQQnk5dKmHTMftBh9aYYkjKMsLOHu0mx/nu7lwZSQV2WrD8lG1qt7
+         JxoH1nQt0se/yYCGkcpoZSftzkxxKght2CG8Gb9srTVekcJMG7jIne+w+5sO6v44JCgl
+         bxda8ZxDGJwjUokJaL1wa1OtLurTNJhySWNb4iKWvlBpeEP9sKboGvyi2s5FT7h4+F6D
+         nzPA5VcLTctdIXWkUXWVea1EoEfwIu7pq14OA49PQHrwzWUjbU9rkQRBJxOOPP0aZlfs
+         35hhQeRkPVRsaKYSVSIV737+hVfNH9x4nA6SGIdv3Xy5SGNV4ZSE3Anid3ZUnwK5SSa5
+         icqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xhswYDutUFPJgb8N0mTl46V4k906NYmLzRtiupxWANA=;
+        b=Ne1RcKFg14+ZNUJrHgBw3QZPZN5R9T8aMw8ReI6of0C7Hizj4KnPF6ypZuQoomUnx+
+         5MoVeRqLPl+JoTtsq+/4KuFFVUagTT6afl7HVWirvuJctbIf4x+j9PhdsF0RmAojCJla
+         HNf5xkL/D1fzBSCozdEzDY9A4/+JgB1R6eQepnk6w1N/V3z2desl8UhKHI+GLNrpUpIz
+         JX0hrfNOtzHDBHVy4DXGftfSF3Eje78IzpRfWfXxpWHIM6ZJkw7EmkaAt6VO87azls9N
+         949ae0zO4xehtoOG7cUgRe0L1vaw+cgdbi3uuRBNrQjS2vU64zHaoaZyvL04K/bHbz0u
+         JN2w==
+X-Gm-Message-State: AOAM531GiggIXqiMISnd7alFCYDg0BDWAQ+fkNBJ10zBGEU2oLJst9QA
+        xjJkr03KH2k6hTDK/Gf0Aws=
+X-Google-Smtp-Source: ABdhPJxUxp3Z32L5nfJqOxzuA535QyPjHazSxz35A3u5AdsMw+4hopPxmnomDltbOfRdq2a+3OfLxA==
+X-Received: by 2002:a17:90a:c094:: with SMTP id o20mr3406247pjs.37.1591284683937;
+        Thu, 04 Jun 2020 08:31:23 -0700 (PDT)
+Received: from localhost ([162.211.223.96])
+        by smtp.gmail.com with ESMTPSA id mw5sm6795722pjb.27.2020.06.04.08.31.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 04 Jun 2020 08:31:23 -0700 (PDT)
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     p.zabel@pengutronix.de, broonie@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v1] reset: intel: fix a compile warning about REG_OFFSET redefined
+Date:   Thu,  4 Jun 2020 23:30:39 +0800
+Message-Id: <20200604153039.22957-1-zhengdejin5@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200604120749.GC30945@8bytes.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 02:07:49PM +0200, Joerg Roedel wrote:
-> This are IDT entry points and the names above follow the convention for
-> them, like e.g. 'page_fault', 'nmi' or 'general_protection'. Should I
-> still add the verbs or just add a comment explaining what those symbols
-> are?
+kernel test robot reports a compile warning about REG_OFFSET redefined
+in the reset-intel-gw.c after merging commit e44ab4e14d6f4 ("regmap:
+Simplify implementation of the regmap_read_poll_timeout() macro"). the
+warning is like that:
 
-Hmmkay, I see vc_no_ghcb doing
+drivers/reset/reset-intel-gw.c:18:0: warning: "REG_OFFSET" redefined
+ #define REG_OFFSET GENMASK(31, 16)
 
-call    do_vc_no_ghcb
+In file included from ./arch/arm/mach-ixp4xx/include/mach/hardware.h:30:0,
+                 from ./arch/arm/mach-ixp4xx/include/mach/io.h:15,
+                 from ./arch/arm/include/asm/io.h:198,
+                 from ./include/linux/io.h:13,
+                 from ./include/linux/iopoll.h:14,
+                 from ./include/linux/regmap.h:20,
+                 from drivers/reset/reset-intel-gw.c:12:
+./arch/arm/mach-ixp4xx/include/mach/platform.h:25:0: note: this is the location of the previous definition
+ #define REG_OFFSET 3
 
-and that's setup in early_idt_setup().
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: e44ab4e14d6f4 ("regmap: Simplify implementation of the regmap_read_poll_timeout() macro")
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+---
+ drivers/reset/reset-intel-gw.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-vc_boot_ghcb(), OTOH, is called by do_early_exception() only so that one
-could be called handle_vc_boot_ghcb(), no? I.e., I don't see it being an
-IDT entry point.
-
+diff --git a/drivers/reset/reset-intel-gw.c b/drivers/reset/reset-intel-gw.c
+index 854238444616..5cfb4892b399 100644
+--- a/drivers/reset/reset-intel-gw.c
++++ b/drivers/reset/reset-intel-gw.c
+@@ -15,7 +15,7 @@
+ #define RCU_RST_STAT	0x0024
+ #define RCU_RST_REQ	0x0048
+ 
+-#define REG_OFFSET	GENMASK(31, 16)
++#define REG_OFFSET_MASK	GENMASK(31, 16)
+ #define BIT_OFFSET	GENMASK(15, 8)
+ #define STAT_BIT_OFFSET	GENMASK(7, 0)
+ 
+@@ -51,7 +51,7 @@ static u32 id_to_reg_and_bit_offsets(struct intel_reset_data *data,
+ 				     unsigned long id, u32 *rst_req,
+ 				     u32 *req_bit, u32 *stat_bit)
+ {
+-	*rst_req = FIELD_GET(REG_OFFSET, id);
++	*rst_req = FIELD_GET(REG_OFFSET_MASK, id);
+ 	*req_bit = FIELD_GET(BIT_OFFSET, id);
+ 
+ 	if (data->soc_data->legacy)
+@@ -141,7 +141,7 @@ static int intel_reset_xlate(struct reset_controller_dev *rcdev,
+ 	if (spec->args[1] > 31)
+ 		return -EINVAL;
+ 
+-	id = FIELD_PREP(REG_OFFSET, spec->args[0]);
++	id = FIELD_PREP(REG_OFFSET_MASK, spec->args[0]);
+ 	id |= FIELD_PREP(BIT_OFFSET, spec->args[1]);
+ 
+ 	if (data->soc_data->legacy) {
+@@ -210,7 +210,7 @@ static int intel_reset_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	data->reboot_id = FIELD_PREP(REG_OFFSET, rb_id[0]);
++	data->reboot_id = FIELD_PREP(REG_OFFSET_MASK, rb_id[0]);
+ 	data->reboot_id |= FIELD_PREP(BIT_OFFSET, rb_id[1]);
+ 
+ 	if (data->soc_data->legacy)
 -- 
-Regards/Gruss,
-    Boris.
+2.25.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
