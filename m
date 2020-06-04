@@ -2,132 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0939F1EE805
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 17:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602B81EE80C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 17:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729612AbgFDPsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 11:48:38 -0400
-Received: from mga12.intel.com ([192.55.52.136]:39160 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729302AbgFDPsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 11:48:37 -0400
-IronPort-SDR: 9atNL4XUTZ19L5gP8tQAWfViLRx27VV39bZUzYFE2wr//jNLRr0MMbrx091SntBXHG2XNJ0+LA
- adakuz7Lj1Eg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 08:48:35 -0700
-IronPort-SDR: czgfksgqsVm/VnDrBXeRHwEEa5jbQTP7gldiJ1egYZulRkXR9PaUheprFn3q2xd5lhLpAlflog
- lDqkO3C6d/Jw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,472,1583222400"; 
-   d="scan'208";a="312930509"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by FMSMGA003.fm.intel.com with ESMTP; 04 Jun 2020 08:48:34 -0700
-Date:   Thu, 4 Jun 2020 08:48:35 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        kernel-team@android.com, will@kernel.org,
-        Jun Nakajima <jun.nakajima@intel.com>
-Subject: Re: [RFC 00/16] KVM protected memory extension
-Message-ID: <20200604154835.GE30223@linux.intel.com>
-References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
- <20200604161523.39962919@why>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1729616AbgFDPwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 11:52:44 -0400
+Received: from m9a0013g.houston.softwaregrp.com ([15.124.64.91]:35471 "EHLO
+        m9a0013g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729216AbgFDPwn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 11:52:43 -0400
+Received: FROM m9a0013g.houston.softwaregrp.com (15.121.0.191) BY m9a0013g.houston.softwaregrp.com WITH ESMTP;
+ Thu,  4 Jun 2020 15:51:43 +0000
+Received: from M4W0335.microfocus.com (2002:f78:1193::f78:1193) by
+ M9W0068.microfocus.com (2002:f79:bf::f79:bf) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Thu, 4 Jun 2020 15:50:18 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (15.124.8.13) by
+ M4W0335.microfocus.com (15.120.17.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Thu, 4 Jun 2020 15:50:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JbEGnwDOrXLqO4TFcsYcoFWCP9oyT5fmE8hrxFvfM6szJh9CqwuLShYjDJcXIQRMMPeoYfT9F8cA9euuF2LYenV5d0VBYMADMjQffop8CJR1YkxpzlvLhrMK2DULGtfpejPfogLHx5UxmxDKMwHF6c/kpvIAyc3fmmIeRLdaViDAqTB8+vjmmBKdSO4ZaQRyyvQS4Mj7ck6teZk3IeUx/VLOlG0AJDXsfvtjp9XS3+uuJTSx53+beL93nmKzJPCR9seNHxAoc5Nv7RqpxGNJFKTYxgHxy1p30vtXpq9EpHsDBOsGSDgTYN0y0EUyW+cnq/nZqHpJkG+x5KXRODPTig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NM8oNXAvbeZP1HYFf+xXLOsjI2sB1T19VvO9Qr7E2UQ=;
+ b=UeV/m2eN0e+4r2wpjHQlePivamyS+29u2gLekdSJvFMEA+bxVuAjtn3mbwR+RbR+/KXjU1r5mgerh3nO0UFL64tX2bFOFdAfrcG41N7NjlWZrnNByEIWXwT4+W8maOUKZOv49E3RFLepSq2K1/cMvkl12YPTSZu5ofuMAtyK492wtnsbaToFz/LM3gbtYX1yZ+vSlBKlJQVzmVwkr6XMZXVtiNFbBHdrzWi7uPnKMFK1dnyM53HIk/vtDdXKpl8DmzyOv437Oa3GeRy4RAMV2U9LBYELiSBiQM/+b9P5Avy3o5/YNTFAGDmia610ddXyqwJX4KOWUtSqTEjD8C5f6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: broadcom.com; dkim=none (message not signed)
+ header.d=none;broadcom.com; dmarc=none action=none header.from=suse.com;
+Received: from MW3PR18MB3658.namprd18.prod.outlook.com (2603:10b6:303:54::24)
+ by MW3PR18MB3627.namprd18.prod.outlook.com (2603:10b6:303:5c::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18; Thu, 4 Jun
+ 2020 15:50:17 +0000
+Received: from MW3PR18MB3658.namprd18.prod.outlook.com
+ ([fe80::2da0:153f:7d56:210d]) by MW3PR18MB3658.namprd18.prod.outlook.com
+ ([fe80::2da0:153f:7d56:210d%5]) with mapi id 15.20.3066.018; Thu, 4 Jun 2020
+ 15:50:17 +0000
+Date:   Thu, 4 Jun 2020 23:50:09 +0800
+From:   Kai Liu <kai.liu@suse.com>
+To:     Chandrakanth Patil <chandrakanth.patil@broadcom.com>
+CC:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Xiaoming Gao <newtongao@tencent.com>,
+        Shivasharan Srikanteshwara 
+        <shivasharan.srikanteshwara@broadcom.com>,
+        <xiakaixu1987@gmail.com>, <jejb@linux.ibm.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: megaraid_sas: fix kdump kernel boot hung caused by
+ JBOD
+Message-ID: <20200604155009.63mhbsoaoq6yra77@suse.com>
+References: <1590651115-9619-1-git-send-email-newtongao@tencent.com>
+ <yq17dwp9bss.fsf@ca-mkp.ca.oracle.com>
+ <4779a72c878774e4e3525aae8932feda@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200604161523.39962919@why>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <4779a72c878774e4e3525aae8932feda@mail.gmail.com>
+User-Agent: NeoMutt/20200501
+X-ClientProxiedBy: HK2P15301CA0023.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:202:1::33) To MW3PR18MB3658.namprd18.prod.outlook.com
+ (2603:10b6:303:54::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (113.116.105.151) by HK2P15301CA0023.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.3 via Frontend Transport; Thu, 4 Jun 2020 15:50:16 +0000
+X-Originating-IP: [113.116.105.151]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 104ef5ee-3a06-4184-acc3-08d8089efa7c
+X-MS-TrafficTypeDiagnostic: MW3PR18MB3627:
+X-Microsoft-Antispam-PRVS: <MW3PR18MB3627D1BBCE78F2537C47A24E98890@MW3PR18MB3627.namprd18.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 04244E0DC5
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4QgSw2wda1+YrUxqJljgy8NJAkMEa2z7BoPXHt9+f9tusUt/yG+707FP7j+5awR5Chr5hRXDJp7LijZJgcFIJgbyRM7lxtkIm44nLNllw63l+BzxfOg+S8KZjO4/ngtRYsJlG5ruJkbyGdCeLupdVb8q8GqgW9YPL886wnDAZmyVQL2j3YhZWFedleIqZiExO6EUp8dO+nt2jYBPndni7M6rIo8eR1clZ7amMO97s4EQpcq/zB2vL8JZcvUvR9t4ogoSRi8J4LC1EDdle12eOS51OtPB7R2cSkJ7qQp91EMio+oAbrtbHH1++KWyS1CX9fKvx9wZhTVA0uthrqs3ZQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR18MB3658.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(396003)(39860400002)(376002)(346002)(136003)(36756003)(8936002)(316002)(1076003)(66476007)(6496006)(6486002)(6916009)(52116002)(6666004)(5660300002)(86362001)(8676002)(66556008)(4326008)(4744005)(66946007)(186003)(7416002)(956004)(83380400001)(2906002)(26005)(16526019)(2616005)(54906003)(44832011)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: dHaUxS5jRE92UnH2krEMlQVAHSTkDllhz61WnYxxnCn/3q5sFADzGDrExlZ4klfEaJdBiX9fvEBLhTsv17Yqo6P9FKLudLh+mSCdLQWKj5uXvmgxk/8oEQImW41vWjt3uYLu4fs8xSj2+G+YljEl72vQvL8c4nL7DXU4FKNEuo3T6Yh9mjshU8C25nccmnOZx0mf8lisLs815vcGLc7AO6Z7Oq02zkNKJSKhhtpw7w+GynYeskZobUA5FF0m/H865DNiVibN17oAhdxmVqf+DsU7mpm7wZlEiIvsoQoP1anBdVHNO855Q0+j+Q7b3tdjn1xto2eLOnnAcMmlA7UGOJUWV1qTivjMS/IEnK8ZCP1/GZqekDJEWAfoWCoAe6Xk/4KqyqEvAG6/3tYZAnCayJMAtdRBwvGpz57AYcVp3z35nZ88J2g7PpfxMDA1yzwJGyLg7COHpC/Rqk/iw8fyCF/jjfJ5GBHtb8vxCm1s5rMX7Zt6SqsfIUcaKubYo4Y7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 104ef5ee-3a06-4184-acc3-08d8089efa7c
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2020 15:50:17.6142
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xS7otCYHsTDsqLaBHFspO+xsyOXyOG2tFU052ItLITHCk0qxTlUYnWtxIUKVSKNZoaNcSlAjco2xwMWmJLPw3Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR18MB3627
+X-OriginatorOrg: suse.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Jun
+On 2020/06/04 Thu 16:39, Chandrakanth Patil wrote:
+>
+>Hi Martin, Xiaoming Gao, Kai Liu,
+>
+>It is a known firmware issue and has been fixed. Please update to the
+>latest firmware available in the Broadcom support website.
+>Please let me know if you need any further information.
 
-On Thu, Jun 04, 2020 at 04:15:23PM +0100, Marc Zyngier wrote:
-> Hi Kirill,
-> 
-> Thanks for this.
-> 
-> On Fri, 22 May 2020 15:51:58 +0300
-> "Kirill A. Shutemov" <kirill@shutemov.name> wrote:
-> 
-> > == Background / Problem ==
-> > 
-> > There are a number of hardware features (MKTME, SEV) which protect guest
-> > memory from some unauthorized host access. The patchset proposes a purely
-> > software feature that mitigates some of the same host-side read-only
-> > attacks.
-> > 
-> > 
-> > == What does this set mitigate? ==
-> > 
-> >  - Host kernel ”accidental” access to guest data (think speculation)
-> > 
-> >  - Host kernel induced access to guest data (write(fd, &guest_data_ptr, len))
-> > 
-> >  - Host userspace access to guest data (compromised qemu)
-> > 
-> > == What does this set NOT mitigate? ==
-> > 
-> >  - Full host kernel compromise.  Kernel will just map the pages again.
-> > 
-> >  - Hardware attacks
-> 
-> Just as a heads up, we (the Android kernel team) are currently
-> involved in something pretty similar for KVM/arm64 in order to bring
-> some level of confidentiality to guests.
-> 
-> The main idea is to de-privilege the host kernel by wrapping it in its
-> own nested set of page tables which allows us to remove memory
-> allocated to guests on a per-page basis. The core hypervisor runs more
-> or less independently at its own privilege level. It still is KVM
-> though, as we don't intend to reinvent the wheel.
-> 
-> Will has written a much more lingo-heavy description here:
-> https://lore.kernel.org/kvmarm/20200327165935.GA8048@willie-the-truck/
+Hi Chandrakanth,
 
-Pardon my arm64 ignorance...
+Could you let me know which megaraid based controllers are affected by 
+this issue? All or some models or some generations?
 
-IIUC, in this mode, the host kernel runs at EL1?  And to switch to a guest
-it has to bounce through EL2, which is KVM, or at least a chunk of KVM?
-I assume the EL1->EL2->EL1 switch is done by trapping an exception of some
-form?
-
-If all of the above are "yes", does KVM already have the necessary logic to
-perform the EL1->EL2->EL1 switches, or is that being added as part of the
-de-privileging effort?
- 
-> This works for one of the virtualization modes that arm64 can use (what
-> we call non-VHE, or nVHE for short). The other mode (VHE), is much more
-> similar to what happens on other architectures, where the kernel and
-> the hypervisor are one single entity. In this case, we cannot use the
-> same trick with nested page tables, and have to rely on something that
-> would very much look like what you're proposing.
-> 
-> Note that the two modes of the architecture would benefit from this
-> work anyway, as I'd like the host to know that we've pulled memory
-> from under its feet. Since you have done most of the initial work, I
-> intend to give it a go on arm64 shortly and see what sticks.
-
-
+Best regards,
+Kai Liu
