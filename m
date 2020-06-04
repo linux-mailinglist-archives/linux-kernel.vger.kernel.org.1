@@ -2,180 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BA31EE33B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0E71EE346
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgFDLSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 07:18:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33388 "EHLO mx2.suse.de"
+        id S1726887AbgFDLUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 07:20:10 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:11956 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726061AbgFDLSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 07:18:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EF205ABF4;
-        Thu,  4 Jun 2020 11:18:42 +0000 (UTC)
-Message-ID: <d1f54bfccb7aa91949ddb2c1643308a52ab0c161.camel@suse.de>
-Subject: Re: [PATCH v3 0/2] usb: xhci: Load Raspberry Pi 4 VL805's firmware
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Marek Vasut <marex@denx.de>, mbrugger@suse.com,
-        u-boot@lists.denx.de, bmeng.cn@gmail.com,
-        linux-kernel@vger.kernel.org
-Cc:     sjg@chromium.org, m.szyprowski@samsung.com, s.nawrocki@samsung.com,
-        mark.kettenis@xs4all.nl
-Date:   Thu, 04 Jun 2020 13:18:37 +0200
-In-Reply-To: <ec76c8bb-63c1-8ccc-c1d5-5878bc01343b@denx.de>
-References: <20200505162607.334-1-nsaenzjulienne@suse.de>
-         <2a8f0190c9d418cee89451c7dc3a227b9d0b5f45.camel@suse.de>
-         <bf73b73e-c251-7ac8-c245-a3b3d2be2420@denx.de>
-         <9aea19124817a3d9fa004ec495ea6d1036d2dc8d.camel@suse.de>
-         <c32541a5-2dce-1fb2-7f3d-dfe03bcfb52c@denx.de>
-         <c29968027d3a555de89eae7599dcfd513744076f.camel@suse.de>
-         <ec76c8bb-63c1-8ccc-c1d5-5878bc01343b@denx.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-rz87Kq66AL3pHD2lR4/F"
-User-Agent: Evolution 3.36.2 
+        id S1726288AbgFDLUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 07:20:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591269608; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=wujjCCv5SBbDohkrY5pxRpykfjsvxoLNEBFwiJIHO5E=;
+ b=l/4PuShVgea5y7aMeV8UVs+mh40329xf5SVDUetDSVriGQvZqdyGfeT7zVMgJxq+/PQPKX8H
+ YXNlwtvTWMgKvsMaIWDHaDTG/gGFtZsoMm6QsNqW7KCI7Bw5GIdCIaqjyiSolJzrcH48qmtp
+ BRQ+xonA0ex6334jEucqJxFagmc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5ed8d8d7c0031c71c2f7c6ca (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Jun 2020 11:19:51
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D3165C43387; Thu,  4 Jun 2020 11:19:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kalyan_t)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 76333C433CA;
+        Thu,  4 Jun 2020 11:19:49 +0000 (UTC)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 04 Jun 2020 16:49:49 +0530
+From:   kalyan_t@codeaurora.org
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Sean Paul <seanpaul@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, mkrishn@codeaurora.org,
+        travitej@codeaurora.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@gmail.com>, nganji@codeaurora.org,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Jeykumar Sankaran <jsanka@codeaurora.org>
+Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: ensure device suspend happens
+ during PM sleep
+In-Reply-To: <CAD=FV=XphGpmBwZdL0jZ5HEFdxY3L7nH+s9_A0Kjamtg7j3R9w@mail.gmail.com>
+References: <1588339863-1322-1-git-send-email-kalyan_t@codeaurora.org>
+ <CAD=FV=UJGivCyp=t0J++1DbSFDVf+5zSCcXgh83VZtssBmavjg@mail.gmail.com>
+ <32c01e9a5277bdbdbab868eb71688184@codeaurora.org>
+ <CAD=FV=VVi6oUDx_2Yf543ZphS1oQJiQU8St0XNUHs7HyPkoTeg@mail.gmail.com>
+ <CAD=FV=XphGpmBwZdL0jZ5HEFdxY3L7nH+s9_A0Kjamtg7j3R9w@mail.gmail.com>
+Message-ID: <40f3b31549cd5bb80a8454836ffb0ad4@codeaurora.org>
+X-Sender: kalyan_t@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-05-28 03:41, Doug Anderson wrote:
+> Hi,
+> 
+> On Fri, May 15, 2020 at 9:37 AM Doug Anderson <dianders@chromium.org> 
+> wrote:
+>> 
+>> Hi,
+>> 
+>> On Fri, May 15, 2020 at 5:06 AM <kalyan_t@codeaurora.org> wrote:
+>> >
+>> > On 2020-05-14 21:47, Doug Anderson wrote:
+>> > > Hi,
+>> > >
+>> > > On Fri, May 1, 2020 at 6:31 AM Kalyan Thota <kalyan_t@codeaurora.org>
+>> > > wrote:
+>> > >>
+>> > >> "The PM core always increments the runtime usage counter
+>> > >> before calling the ->suspend() callback and decrements it
+>> > >> after calling the ->resume() callback"
+>> > >>
+>> > >> DPU and DSI are managed as runtime devices. When
+>> > >> suspend is triggered, PM core adds a refcount on all the
+>> > >> devices and calls device suspend, since usage count is
+>> > >> already incremented, runtime suspend was not getting called
+>> > >> and it kept the clocks on which resulted in target not
+>> > >> entering into XO shutdown.
+>> > >>
+>> > >> Add changes to force suspend on runtime devices during pm sleep.
+>> > >>
+>> > >> Changes in v1:
+>> > >>  - Remove unnecessary checks in the function
+>> > >>     _dpu_kms_disable_dpu (Rob Clark).
+>> > >>
+>> > >> Changes in v2:
+>> > >>  - Avoid using suspend_late to reset the usagecount
+>> > >>    as suspend_late might not be called during suspend
+>> > >>    call failures (Doug).
+>> > >>
+>> > >> Changes in v3:
+>> > >>  - Use force suspend instead of managing device usage_count
+>> > >>    via runtime put and get API's to trigger callbacks (Doug).
+>> > >>
+>> > >> Changes in v4:
+>> > >>  - Check the return values of pm_runtime_force_suspend and
+>> > >>    pm_runtime_force_resume API's and pass appropriately (Doug).
+>> > >>
+>> > >> Changes in v5:
+>> > >
+>> > > Can you please put the version number properly in your subject?  It's
+>> > > really hard to tell one version of your patch from another.
+>> > >
+>> > >
+>> > >>  - With v4 patch, test cycle has uncovered issues in device resume.
+>> > >>
+>> > >>    On bubs: cmd tx failures were seen as SW is sending panel off
+>> > >>    commands when the dsi resources are turned off.
+>> > >>
+>> > >>    Upon suspend, DRM driver will issue a NULL composition to the
+>> > >>    dpu, followed by turning off all the HW blocks.
+>> > >>
+>> > >>    v5 changes will serialize the NULL commit and resource unwinding
+>> > >>    by handling them under PM prepare and PM complete phases there by
+>> > >>    ensuring that clks are on when panel off commands are being
+>> > >>    processed.
+>> > >
+>> > > I'm still most definitely not an expert in how all the DRM pieces all
+>> > > hook up together, but the solution you have in this patch seems wrong
+>> > > to me.  As far as I can tell the "prepare" state isn't supposed to be
+>> > > actually doing the suspend work and here that's exactly what you're
+>> > > doing.  I think you should find a different solution to ensure
+>> > > ordering is correct.
+>> > >
+>> > > -Doug
+>> > >
+>> >
+>> > Hi,
+>> 
+>> Quite honestly I'm probably not the right person to be reviewing this
+>> code.  I mostly just noticed one of your early patches and it looked
+>> strange to me.  Hopefully someone with actual experience in how all
+>> the DRM components work together can actually review and see if this
+>> makes sense.  Maybe Sean would know better?
+>> 
+>> That being said, let me at least look at what you're saying...
+>> 
+>> 
+>> > Prepare and Complete are callbacks defined as part of Sleep and Resume
+>> > sequence
+>> >
+>> > Entering PM SUSPEND the phases are : prepare --> suspend -->
+>> > suspend_late --> suspend_noirq.
+>> > While leaving PM SUSPEND the phases are: resume_noirq --> resume_early
+>> > --> resume --> complete.
+>> 
+>> Sure, it's part of the sequence.  It's also documented in pm.h as:
+>> 
+>>  * The principal role of this callback is to prevent new children of
+>>  * the device from being registered after it has returned (the 
+>> driver's
+>>  * subsystem and generally the rest of the kernel is supposed to 
+>> prevent
+>>  * new calls to the probe method from being made too once @prepare() 
+>> has
+>>  * succeeded).
+>> 
+>> It does not feel like that matches your usage of this call.
+>> 
+>> 
+>> > The reason to push drm suspend handling to PM prepare phase is that
+>> > parent here will trigger a modeset to turn off the timing and
+>> > subsequently the panel.
+>> > the child devices should not turn of their clocks before parent unwinds
+>> > the composition. Hence they are serialized as per the sequence mentioned
+>> > above.
+>> 
+>> So the general model in Linux is that children suspend before their
+>> parents, right?  So you're saying that, in this case, the parent needs
+>> to act on the child before the child suspends.  Is that correct?
+>> 
+>> Rather than hijacking the prepare/complete, I'd be at least slightly
+>> inclined to move the other driver to turn off its clocks in
+>> suspend_late and to turn them back on in resume_early?  That seems to
+>> be what was done in "analogix_dp-rockchip.c" to solve a similar
+>> problem.
+>> 
+>> 
+>> > A similar approach is taken by other driver that use drm framework. In
+>> > this driver, the device registers for prepare and complete callbacks to
+>> > handle drm_suspend and drm_resume.
+>> > https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/gpu/drm/exynos/exynos_drm_drv.c#L163
+>> 
+>> OK, if there is another driver in DRM then I guess I won't object too
+>> strongly.  Note that when searching for other drivers I noticed this
+>> bit in todo.rst:
+>> 
+>> * Most drivers (except i915 and nouveau) that use
+>> * drm_atomic_helper_suspend/resume() can probably be converted to use
+>> * drm_mode_config_helper_suspend/resume(). Also there's still 
+>> open-coded version
+>> * of the atomic suspend/resume code in older atomic modeset drivers.
+>> 
+>> Does anything get fixed if you do that?  It seems like it'd cleanup
+>> your code a bit so maybe worth doing anyway...
+>> 
+>> ---
+>> 
+>> I guess the last question I'd want resolved is why you have this 
+>> asymmetry:
+>> 
+>> SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, msm_pm_resume)
+>> 
+>> Why couldn't you use pm_runtime_force_resume()?
+> 
+> I'm curious if you had answers to any of the questions I posed in my 
+> review.
+> 
+> -Doug
 
---=-rz87Kq66AL3pHD2lR4/F
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2020-06-01 at 17:27 +0200, Marek Vasut wrote:
-> On 6/1/20 4:41 PM, Nicolas Saenz Julienne wrote:
-> > On Mon, 2020-06-01 at 13:12 +0200, Marek Vasut wrote:
-> > > On 6/1/20 1:09 PM, Nicolas Saenz Julienne wrote:
-> > > > On Mon, 2020-06-01 at 12:53 +0200, Marek Vasut wrote:
-> > > > > On 6/1/20 12:47 PM, Nicolas Saenz Julienne wrote:
-> > > > > > On Tue, 2020-05-05 at 18:26 +0200, Nicolas Saenz Julienne wrote=
-:
-> > > > > > > Newer revisions of the RPi4 need their xHCI chip, VL805, firm=
-ware
-> > > > > > > to
-> > > > > > > be
-> > > > > > > loaded explicitly. Earlier versions didn't need that as they =
-where
-> > > > > > > using
-> > > > > > > an EEPROM for that purpose. This series takes care of setting=
- up
-> > > > > > > the
-> > > > > > > relevant infrastructure and run the firmware loading routine =
-at
-> > > > > > > the
-> > > > > > > right moment.
-> > > > > > >=20
-> > > > > > > Note that this builds on top of Sylwester Nawrocki's "USB hos=
-t
-> > > > > > > support
-> > > > > > > for Raspberry Pi 4 board" series.
-> > > > > > >=20
-> > > > > > > ---
-> > > > > >=20
-> > > > > > Please don't forget about this series. The new 8GB RPi4 contain=
-s
-> > > > > > this HW
-> > > > > > design
-> > > > > > change and USB will not work without it. See this discussion on=
- the
-> > > > > > downstream
-> > > > > > kernel github, where other OS/bootloaders are hitting the issue=
-:
-> > > > > >=20
-> > > > > > https://github.com/raspberrypi/firmware/issues/1402
-> > > > > >=20
-> > > > > > Otherwise, the Linux version of this is already in linux-next:
-> > > > > >=20
-> > > > > >=20
-> >=20
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/=
-drivers/usb/host/pci-quirks.c?h=3Dnext-20200529&id=3Dc65822fef4adc0ba40c37a=
-47337376ce75f7a7bc
-> > > > > We're already at 2020.07-rc3 , so unless this is a bugfix (does n=
-ot
-> > > > > look
-> > > > > that way), this will have to wait for next release cycle.
-> > > >=20
-> > > > Of course. As long as it eventually gets in I'm happy (not implying=
- this
-> > > > specific series is flawless, but the overall mechanism). I'm just
-> > > > worried
-> > > > this
-> > > > gets lost.
-> > > >=20
-> > > > > Also, it seems
-> > > > > there was a lengthy ongoing discussion, is that already sorted ou=
-t ?
-> > > >=20
-> > > > Well, there was some discussion on how to incorporate the platform
-> > > > specific
-> > > > callback into XCHI's code. Which this revision of the series addres=
-ses.
-> > > > But,
-> > > > IIRC, that's pretty much it as far as discussion is concerned.
-> > >=20
-> > > Oh, right, since the firmware loading hook looks like a reset hook, w=
-hy
-> > > isn't that implemented via reset controller API instead ?
-> >=20
-> > That could be pretty clean, I hadn't though about it that way. Some
-> > questions:
-> >=20
-> > - Being a PCIe device the XHCI controller doesn't show up in the device=
--
-> > tree. I
-> >   guess it could be added as a child node of pcie-brcmstb, but is that =
-even
-> >   acceptable?
->=20
-> Yes, there are other such DTs .
->=20
-> > - Same goes for xhci-pci being a consumer of the reset controller. Give=
-n the
-> >   reset scheme is board specific (the chip can be found all over the pl=
-ace,
-> > but
-> >   the firmware loading scheme is 100% RPi specific), to what extent we =
-can
-> >   introduce that as a binding?
->=20
-> I'm not sure what you're asking me here, you'll just have some reset
-> controller in a DT and a phandle from the xhci-controller to this reset
-> controller.
+1) i'll update the patch to use "drm_mode_config_helper_suspend/resume". 
+This will help in additional cleanup such as enabling FBDEV emulation in 
+the build.
 
-Sorry I wasn't clear, overall my concern here is that xhic-pci maintainers,
-both in u-boot y linux (as I'd like to have the same solution on both sides=
-,
-since it involves changes in dt), might see it as too platform specific to =
-add
-it into an otherwise generic xhci-pci implmentation.
+2) For the asymmetry part,
+  pm_runtime_force_resume() was not waking up the device forcefully if 
+the usage count is 1. PM core thinks that if usage count is 1 then 
+device can be runtime resumed after suspend/resume sequence is complete. 
+This is true for all the child nodes and the parent node. Hence to 
+overcome that i used pm_runtime_resume on parent.
 
-But nevermind, I'll just post the series and see what happens :).
+I have explored a bit on how to handle this cleanly, found an old thread 
+discussing on the similar problem 
+(https://lists.gt.net/linux/kernel/1556562  post no#4 Alan Stern ) the 
+suggestion was to use runtime API's directly in PM Suspend/Resume.
 
-Regards,
-Nicolas
+I have found few example implementations on similar lines.
+https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/media/platform/mtk-mdp/mtk_mdp_core.c#L279
+https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/media/i2c/ak7375.c#L273
+https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/gnss/sirf.c#L377
 
+I have changed the implementation on those lines in v6.
 
---=-rz87Kq66AL3pHD2lR4/F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Summary of the flow now:
 
------BEGIN PGP SIGNATURE-----
+PM Sleep -->  pm_prepare for parent ( Disable all the DRM CRTCs) --> 
+Suspend for child1, child2 ( turn off child clocks )--> Suspend for 
+parent (turn off parent clocks )
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7Y2I0ACgkQlfZmHno8
-x/7tiQgAlYpWM4m3PSWPJdp1KwO3Por2fHNbKzjlqimLUrsgr79OFqZsK57qZowc
-Oszt7W/gV0NlVanYKaL7pIphgJq25H0f95TEM+hfQpNCRdAmBmIbF346dGD0rx/Q
-t+OcjafuC2I8V0TFYlqk+xCIrmwsDQ/Ee+s3PL+TpVkbN8XGhhPHMLMjHBCpF/0u
-y4Na9QSwpoK2bRnITH7j7YaUZi1bsOaCN/xv05JT+0oIK339J5CruNK4Na7LWQ1f
-L4nqwH02nF3z+SxCFonC0rVLvLamQI93qzwMUwlBGIAbvmoYFRw+jmz2Fz9ylR52
-r+3YjBCTLDB/FZFzdl1uiJ12ziRNgQ==
-=/X9Y
------END PGP SIGNATURE-----
+PM Wakeup --> Resume for child1, child2 ( force resume is inactive due 
+to usage count 1, but the call is needed to undo the force suspend 
+things ) --> Resume for Parent (turn on parent clocks ) --> PM_complete 
+for Parent.( By the time we reach here, PM core will remove the usage 
+count for all the children and they are ready for runtime resume. Parent 
+enables CRTCs which will runtime resume all the child clocks)
 
---=-rz87Kq66AL3pHD2lR4/F--
+Let me know your views on it.
 
+--Kalyan
+
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
