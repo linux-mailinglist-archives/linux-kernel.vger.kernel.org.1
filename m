@@ -2,173 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A251EE315
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44C01EE335
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726994AbgFDLO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 07:14:26 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52574 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726446AbgFDLOV (ORCPT
+        id S1727845AbgFDLRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 07:17:10 -0400
+Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:62205 "EHLO
+        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727768AbgFDLRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 07:14:21 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 054BED4j039112;
-        Thu, 4 Jun 2020 06:14:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1591269253;
-        bh=sgtW79HiUB/IYbIQdwVgNlZtG2gnFZnYkjyftZWduLU=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=pF2Po7Ue7m3KRcnK6WY4WBk9Of34E8opz5xbBvF0x55QlQwzrnDWZ6upoBqfgdkfX
-         sNQ6iMPrNgK5sic7TgIsHmPJIuG4lKgLoz8zkBYsSHqSY4gphaf2Bnbxf7NK4uHUD9
-         /G8UJ9AuxYyWhLrDgUGcY8VbvyUdEtmKDH2FXXu4=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 054BEDvB126043;
-        Thu, 4 Jun 2020 06:14:13 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Jun
- 2020 06:14:12 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 4 Jun 2020 06:14:12 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 054BEC06112941;
-        Thu, 4 Jun 2020 06:14:12 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
-        <davem@davemloft.net>, <robh@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH net-next v6 4/4] net: dp83869: Add RGMII internal delay configuration
-Date:   Thu, 4 Jun 2020 06:14:10 -0500
-Message-ID: <20200604111410.17918-5-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200604111410.17918-1-dmurphy@ti.com>
-References: <20200604111410.17918-1-dmurphy@ti.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Thu, 4 Jun 2020 07:17:08 -0400
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Jun 2020 16:45:16 +0530
+Received: from c-ppvk-linux.qualcomm.com ([10.206.24.34])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 04 Jun 2020 16:44:46 +0530
+Received: by c-ppvk-linux.qualcomm.com (Postfix, from userid 2304101)
+        id B0FB6191B; Thu,  4 Jun 2020 16:44:45 +0530 (IST)
+From:   Pradeep P V K <ppvk@codeaurora.org>
+To:     bjorn.andersson@linaro.org, adrian.hunter@intel.com,
+        robh+dt@kernel.org, ulf.hansson@linaro.org,
+        vbadigan@codeaurora.org, sboyd@kernel.org,
+        georgi.djakov@linaro.org, mka@chromium.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mmc-owner@vger.kernel.org, rnayak@codeaurora.org,
+        sibis@codeaurora.org, matthias@chromium.org,
+        Pradeep P V K <ppvk@codeaurora.org>
+Subject: [PATCH V2 0/2] Add SDHC interconnect bandwidth scaling 
+Date:   Thu,  4 Jun 2020 16:44:41 +0530
+Message-Id: <1591269283-24084-1-git-send-email-ppvk@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add RGMII internal delay configuration for Rx and Tx.
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/net/phy/dp83869.c | 53 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 50 insertions(+), 3 deletions(-)
+Add interconnect bandwidths for SDHC driver using OPP framework that
+is required by SDHC driver based on the clock frequency and bus width
+of the card. Otherwise, the system clocks may run at minimum clock
+speed and thus affecting the performance.
 
-diff --git a/drivers/net/phy/dp83869.c b/drivers/net/phy/dp83869.c
-index cfb22a21a2e6..801341edbe31 100644
---- a/drivers/net/phy/dp83869.c
-+++ b/drivers/net/phy/dp83869.c
-@@ -64,6 +64,10 @@
- #define DP83869_RGMII_TX_CLK_DELAY_EN		BIT(1)
- #define DP83869_RGMII_RX_CLK_DELAY_EN		BIT(0)
- 
-+/* RGMIIDCTL */
-+#define DP83869_RGMII_CLK_DELAY_SHIFT		4
-+#define DP83869_CLK_DELAY_DEF			7
-+
- /* STRAP_STS1 bits */
- #define DP83869_STRAP_OP_MODE_MASK		GENMASK(2, 0)
- #define DP83869_STRAP_STS1_RESERVED		BIT(11)
-@@ -78,9 +82,6 @@
- #define DP83869_PHYCR_FIFO_DEPTH_MASK	GENMASK(15, 12)
- #define DP83869_PHYCR_RESERVED_MASK	BIT(11)
- 
--/* RGMIIDCTL bits */
--#define DP83869_RGMII_TX_CLK_DELAY_SHIFT	4
--
- /* IO_MUX_CFG bits */
- #define DP83869_IO_MUX_CFG_IO_IMPEDANCE_CTRL	0x1f
- 
-@@ -99,6 +100,10 @@
- #define DP83869_OP_MODE_MII			BIT(5)
- #define DP83869_SGMII_RGMII_BRIDGE		BIT(6)
- 
-+static const int dp83869_internal_delay[] = {250, 500, 750, 1000, 1250, 1500,
-+					     1750, 2000, 2250, 2500, 2750, 3000,
-+					     3250, 3500, 3750, 4000};
-+
- enum {
- 	DP83869_PORT_MIRRORING_KEEP,
- 	DP83869_PORT_MIRRORING_EN,
-@@ -108,6 +113,8 @@ enum {
- struct dp83869_private {
- 	int tx_fifo_depth;
- 	int rx_fifo_depth;
-+	s32 rx_id_delay;
-+	s32 tx_id_delay;
- 	int io_impedance;
- 	int port_mirroring;
- 	bool rxctrl_strap_quirk;
-@@ -182,6 +189,7 @@ static int dp83869_of_init(struct phy_device *phydev)
- 	struct dp83869_private *dp83869 = phydev->priv;
- 	struct device *dev = &phydev->mdio.dev;
- 	struct device_node *of_node = dev->of_node;
-+	int delay_size = ARRAY_SIZE(dp83869_internal_delay);
- 	int ret;
- 
- 	if (!of_node)
-@@ -232,6 +240,20 @@ static int dp83869_of_init(struct phy_device *phydev)
- 				 &dp83869->tx_fifo_depth))
- 		dp83869->tx_fifo_depth = DP83869_PHYCR_FIFO_DEPTH_4_B_NIB;
- 
-+	dp83869->rx_id_delay = phy_get_internal_delay(phydev, dev,
-+						     &dp83869_internal_delay[0],
-+						      delay_size, true);
-+	if (dp83869->rx_id_delay < 0)
-+		dp83869->rx_id_delay =
-+				dp83869_internal_delay[DP83869_CLK_DELAY_DEF];
-+
-+	dp83869->tx_id_delay = phy_get_internal_delay(phydev, dev,
-+						     &dp83869_internal_delay[0],
-+						      delay_size, false);
-+	if (dp83869->tx_id_delay < 0)
-+		dp83869->tx_id_delay =
-+				dp83869_internal_delay[DP83869_CLK_DELAY_DEF];
-+
- 	return ret;
- }
- #else
-@@ -394,6 +416,31 @@ static int dp83869_config_init(struct phy_device *phydev)
- 				     dp83869->clk_output_sel <<
- 				     DP83869_IO_MUX_CFG_CLK_O_SEL_SHIFT);
- 
-+	if (phy_interface_is_rgmii(phydev)) {
-+		ret = phy_write_mmd(phydev, DP83869_DEVADDR, DP83869_RGMIIDCTL,
-+				    dp83869->rx_id_delay |
-+			dp83869->tx_id_delay << DP83869_RGMII_CLK_DELAY_SHIFT);
-+		if (ret)
-+			return ret;
-+
-+		val = phy_read_mmd(phydev, DP83869_DEVADDR, DP83869_RGMIICTL);
-+		val &= ~(DP83869_RGMII_TX_CLK_DELAY_EN |
-+			 DP83869_RGMII_RX_CLK_DELAY_EN);
-+
-+		if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID)
-+			val |= (DP83869_RGMII_TX_CLK_DELAY_EN |
-+				DP83869_RGMII_RX_CLK_DELAY_EN);
-+
-+		if (phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID)
-+			val |= DP83869_RGMII_TX_CLK_DELAY_EN;
-+
-+		if (phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID)
-+			val |= DP83869_RGMII_RX_CLK_DELAY_EN;
-+
-+		ret = phy_write_mmd(phydev, DP83869_DEVADDR, DP83869_RGMIICTL,
-+				    val);
-+	}
-+
- 	return ret;
- }
- 
+This change is based on
+[1] [Patch v8] Introduce OPP bandwidth bindings
+(https://lkml.org/lkml/2020/5/12/493)
+
+[2] [Patch v3 09/17] mmc: sdhci-msm: Fix error handling
+for dev_pm_opp_of_add_table()
+(https://lkml.org/lkml/2020/5/5/491)
+
+[3] [RFC v6 2/2] dt-bindings: mmc: sdhci-msm: Add interconnect BW
+scaling strings
+(https://lkml.org/lkml/2020/3/23/409)
+
+as there were no extra changes made on [3], retaining the Acked-by and
+Reviewed-by sign-off from [3].
+
+Pradeep P V K (2):
+  mmc: sdhci-msm: Add interconnect bandwidth scaling support
+  dt-bindings: mmc: sdhci-msm: Add interconnect BW scaling strings
+
+ Documentation/devicetree/bindings/mmc/sdhci-msm.txt | 18 ++++++++++++++++++
+ drivers/mmc/host/sdhci-msm.c                        | 13 +++++++++++++
+ 2 files changed, 31 insertions(+)
+
 -- 
-2.26.2
-
+changes since V1:
+- Added dev_pm_opp_find_icc_paths() to check for icc paths.
