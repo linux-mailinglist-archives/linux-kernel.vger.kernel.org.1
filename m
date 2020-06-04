@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA5C1EDA0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 02:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F651EDA0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 02:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgFDAkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 20:40:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42268 "EHLO mail.kernel.org"
+        id S1727909AbgFDAkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 20:40:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726200AbgFDAkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 20:40:02 -0400
-Subject: Re: [git pull] vfs.git work.splice
+        id S1727878AbgFDAkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 20:40:07 -0400
+Subject: Re: [git pull] uaccess comedi compat
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591231202;
-        bh=mR/6t41xHDwuWo4akouNtVq9KIPhkz/TTN3BcZHyqM8=;
+        s=default; t=1591231207;
+        bh=4A/Y77ldlhorBhFLx/InIGAQjVNif68g4+o79CFctVI=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Q5SpiSUXAiieN1UCrIJLSpl2943/eAuqJLvG9Hi8aYzzjlY9c+Pcv3qJMCOm0vAo+
-         BTPY+ArL0bqitJvadby/RiWPLznt4z/bnLGTT2aOEvYwnGgAEUIeltrqQkk6SI3QRC
-         DlSh5LPXuW7iE9Dq1XFIyr6DX0fbCisrWbZx6wbc=
+        b=YatkLY9YmLEBrDi+i0aGM0mHY2dbRc+h77Gt8qAcIWFiVYzflMeTroBBtfNKU1+yi
+         oJW8jDEFBrVyfmOAFUrunOQrgLDjklEMtm7IaZgoc5uf9YZi9BiugDESuSKu8XYsZX
+         D/aIKXQOFf6cXzHLtfcLHPdhtaC0i87r6BOhfGis=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200603192615.GY23230@ZenIV.linux.org.uk>
-References: <20200603192615.GY23230@ZenIV.linux.org.uk>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200603192615.GY23230@ZenIV.linux.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.splice
-X-PR-Tracked-Commit-Id: c928f642c29a5ffb02e16f2430b42b876dde69de
+In-Reply-To: <20200603193127.GZ23230@ZenIV.linux.org.uk>
+References: <20200603193127.GZ23230@ZenIV.linux.org.uk>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200603193127.GZ23230@ZenIV.linux.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git uaccess.comedi
+X-PR-Tracked-Commit-Id: bac42fb21259783cb748ae54227a5e755340a396
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ae03c53d005ef8a1e0253ad67b7b62103ea1fae6
-Message-Id: <159123120205.4554.14301966296868802715.pr-tracker-bot@kernel.org>
-Date:   Thu, 04 Jun 2020 00:40:02 +0000
+X-PR-Merge-Commit-Id: 2e63f6ce7ed2c4ff83ba30ad9ccad422289a6c63
+Message-Id: <159123120749.4554.5394403198787278653.pr-tracker-bot@kernel.org>
+Date:   Thu, 04 Jun 2020 00:40:07 +0000
 To:     Al Viro <viro@zeniv.linux.org.uk>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        Ian Abbott <abbotti@mev.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 3 Jun 2020 20:26:15 +0100:
+The pull request you sent on Wed, 3 Jun 2020 20:31:27 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.splice
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git uaccess.comedi
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ae03c53d005ef8a1e0253ad67b7b62103ea1fae6
+https://git.kernel.org/torvalds/c/2e63f6ce7ed2c4ff83ba30ad9ccad422289a6c63
 
 Thank you!
 
