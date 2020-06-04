@@ -2,79 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28021EDE3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA051EDE31
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbgFDHaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 03:30:22 -0400
-Received: from smtprelay0189.hostedemail.com ([216.40.44.189]:50026 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728149AbgFDH3l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 03:29:41 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 73A8E7FD8D;
-        Thu,  4 Jun 2020 07:29:40 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2110:2393:2525:2553:2561:2564:2682:2685:2736:2828:2859:2895:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6119:8985:9025:10004:10400:10848:11232:11658:11854:11914:12043:12295:12297:12740:12760:12895:13069:13071:13311:13357:13439:14096:14097:14180:14181:14659:14721:21060:21080:21324:21451:21627:30025:30054:30060:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: wren59_311223326d95
-X-Filterd-Recvd-Size: 2163
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  4 Jun 2020 07:29:39 +0000 (UTC)
-Message-ID: <97eb5b4e4db4b50462032b1da0788dd61ed0a30e.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Avoid missing typo suggestions
-From:   Joe Perches <joe@perches.com>
-To:     Maxim Uvarov <maxim.uvarov@linaro.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Date:   Thu, 04 Jun 2020 00:29:36 -0700
-In-Reply-To: <CAD8XO3bezWoM7Pc0VoiFgoDWTLMN6VwV1vEFL7PR=_iohV82Ag@mail.gmail.com>
-References: <202006031618.DA25142@keescook>
-         <a3c22bbd360d2148bf097d3c55a89ea13e07b719.camel@perches.com>
-         <CAD8XO3bezWoM7Pc0VoiFgoDWTLMN6VwV1vEFL7PR=_iohV82Ag@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        id S1728218AbgFDH35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 03:29:57 -0400
+Received: from mail-eopbgr1400115.outbound.protection.outlook.com ([40.107.140.115]:61477
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728198AbgFDH3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 03:29:54 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FYV3LXNOh4WLO0dk8BhVetwsywZFp3xQSmO3o6gX09/oFS99r0Dhtx36p+gWM/2eyT05P61zBOLW6AkChWamAPi1oQxoGcyawJ+e5cJcuGalVp+YMUJI4zziosjLCgmrufkl9UFIQvavm6hW9tKtapv8LJctwObQ+yiTLEfv8NZ+ct55p+2McPVmqBlcrXdgmL7VA9zzy+6XoC4v7eHZHcy59zYtjYF7a2sJ3BWkk5iw1YVaV4SJnrdeU1qHJVX4ylIgv04lkKWS1UL9GDW1kgbKXKofAYdYvbQO7lTp/Ir9Di/vsN+z8KGeTRpbztwPp4O3KVG3FLI95r+07YzEIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lJJveFjxg5MyDnLPdCOmwTN6UkaubPru6J+BBIzOTbU=;
+ b=anLZxCVlrfiKk4aQSjpRWJiG9I/+ST87sZXF3hvmSr1C5Axx0OGZdDwnL/ak5XhOXjOmuouOHcKQ6WYJ5/zBPyG9XnzWtwgnn8qbZw37e3aTqLnbzW6X1nsCHOJ0eBqJDuNIIrLqyu4U3BO6NnWwyEjNwlWo7z7OKx/nDAI6AhE6rKG/zOUcJ5Buiv4LbNTMiqfyyNqrvBw5jeCrAjnYWD22Xakm0PC7XX7f3hd74snQdtdrsb6VKYUw9BYZCbNo6+/mg/OV2lKSM8KOck4Nw8ydCaOMG/oaY5GXPR0PJGq4PuleVUVHUCsdGIxgX912kXYmFIkj4ZPSqt3W3bNz7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=sony.com; dmarc=pass action=none header.from=sony.com;
+ dkim=pass header.d=sony.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Sony.onmicrosoft.com;
+ s=selector2-Sony-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lJJveFjxg5MyDnLPdCOmwTN6UkaubPru6J+BBIzOTbU=;
+ b=gR4XktBIrN9gYL6Qy8jOcwmdTuuQRe/5MfM9eljzfUNl3HBfXx48GIksAW2+O69j8GHYo8FfQWcW9il+wfYkgbYfQa5g0I9C7orVU1nTvtowqBPTv9jeXNzIE/6R6OPNI5frPSPJnxIkQBx/7CFjVkrN9EpBIcE6TAwyif5sMug=
+Received: from TYXPR01MB1503.jpnprd01.prod.outlook.com (2603:1096:403:e::12)
+ by TYXPR01MB1774.jpnprd01.prod.outlook.com (2603:1096:403:e::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21; Thu, 4 Jun
+ 2020 07:29:49 +0000
+Received: from TYXPR01MB1503.jpnprd01.prod.outlook.com
+ ([fe80::6508:8e66:164c:3dbe]) by TYXPR01MB1503.jpnprd01.prod.outlook.com
+ ([fe80::6508:8e66:164c:3dbe%7]) with mapi id 15.20.3045.018; Thu, 4 Jun 2020
+ 07:29:49 +0000
+From:   "Tada, Kenta (Sony)" <Kenta.Tada@sony.com>
+To:     Waiman Long <longman@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "pawan.kumar.gupta@linux.intel.com" 
+        <pawan.kumar.gupta@linux.intel.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] x86/speculation: Check whether speculation is force
+ disabled
+Thread-Topic: [PATCH] x86/speculation: Check whether speculation is force
+ disabled
+Thread-Index: AdY5cwNjHOfD1WXzRFK+VbW3aFu0ZgASi0kAACClRRA=
+Date:   Thu, 4 Jun 2020 07:29:48 +0000
+Message-ID: <TYXPR01MB1503D6F73C6356DED5D2C849F5890@TYXPR01MB1503.jpnprd01.prod.outlook.com>
+References: <TYXPR01MB150318D484EE220452A5085AF5880@TYXPR01MB1503.jpnprd01.prod.outlook.com>
+ <d0356d0a-83dd-f3ae-c0ba-82089976c014@redhat.com>
+In-Reply-To: <d0356d0a-83dd-f3ae-c0ba-82089976c014@redhat.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=sony.com;
+x-originating-ip: [211.125.130.1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e327e089-aba4-40a3-9f22-08d808591042
+x-ms-traffictypediagnostic: TYXPR01MB1774:
+x-microsoft-antispam-prvs: <TYXPR01MB177458E27DE799D0AFB7881DF5890@TYXPR01MB1774.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-forefront-prvs: 04244E0DC5
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MTG9LWe/56jO/nM+tvm1Lltb5eox0rYHK1uoyqjqOqSYq8uvscAlizvl6ITLu6LJQrGOj6cmEu6xulRIC3Md6axa9D8PXs0i8FsH7bcadCkLN6aV8y02k2wWVhkMsWVdDDoEjJU53MYZjtBQOom6cWIcDZU5w1XCG6SPTa9UvHBV0hqas2WxXnX769rFrh3XkDM7EFpVL7RKwie3DAwCFQDPEwq7zZ8hU0QEZixu678SCwvhVQJpcHH9IrZX4WasibrGq92sIZmBzZJohU1qWfBBpWwrfSTBsEOgoL2iDAI0jtiV9zZeQEq7pI6JMt4Rv5QZpyUsrxM8hoiUhgHt+NDeEHTvrQ296ksC/0A+dCKXoTDm5p6IBfnPDr1XnlCj
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYXPR01MB1503.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(39860400002)(346002)(136003)(396003)(316002)(53546011)(33656002)(71200400001)(4326008)(8676002)(26005)(86362001)(8936002)(2906002)(64756008)(7416002)(110136005)(6506007)(66446008)(83380400001)(66556008)(66946007)(5660300002)(9686003)(7696005)(76116006)(52536014)(478600001)(186003)(66476007)(55016002)(921003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: e6THDXd1vHlivvfGx/ELEnUWgBujbJTy0wPW2th1iI6TtyzdjFSeSmHicLdjt88IYwYkdVaHKqkp0FW4MoxBIvoMCk7AMpHRwI6j7sQUGIuyer2h0o/v2h2ei71Nv0Dgemq63FLRTTFPGy3wfgzg1bHsX+KKgxfk6MzMtDdaFWx+epFzRDB30I76dLFVBJyvlRkHhqV/rgekvBmiLvT5uAnvl6EeFxbZYzz+1H5seqmrVc03EtEhaLJXbKmWvrcap7HEfmry+bB7S6MW1h4C5CCzItecirCNaZl5wpyhiWkc/0uAhLrVj9WmX/NvS7FDyZ/Pux3o21eDV4E4Thzbs29zy8FuconWREQgD7j1HPfn2E2MoZv5St4hHb/GAknBxKiphfCBuRvHeDX8t+VyRVcxDjBfilXDNLmlC6tFfhAraSW9JEg3J3rR3SzzbJKWq4y7QsZquTOS6mIFwjCJ0JKDAmwaCGQ/ewkur8OP7tZQz0I2Chp700b2MGefBsTg
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: sony.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e327e089-aba4-40a3-9f22-08d808591042
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2020 07:29:48.8269
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 66c65d8a-9158-4521-a2d8-664963db48e4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9hOYYY10xaEnY6CDaqYXmP4TWH/NHQvNlay4ClmZcTaZLCVDo+XqNXezLDNybKyrBnJKw5YSGBMQck0+4Nj00A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYXPR01MB1774
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-06-04 at 09:55 +0300, Maxim Uvarov wrote:
-> On Thu, 4 Jun 2020 at 03:39, Joe Perches <joe@perches.com> wrote:
-
-Hi Maxim.
-
-> > btw: My codespell dictionary file moved to
-> > /usr/lib/python3/dist-packages/codespell_lib/data/dictionary.txt
-> > 
-> > and I had to use --codespell --codespellfile=(above) so
-> > maybe there should be multiple lookups for this file
-> > like the array below.
-> > 
-> > Are there other standard codespell dictionary locations?
-> 
-> It might be better to support standard and non standard locations.
-
-It already does with the --codespellfile=<location> opti.
-
-> I think it's better to request from codespell where his dictionary is.
-
-Maybe a good idea, but looking at the codespell git, for
-versions 1.17 on there are several standard dictionaries.
-https://github.com/codespell-project/codespell/tree/v1.17.1/codespell_lib/data
-
-> I created ticket for this:
-> https://github.com/codespell-project/codespell/issues/1540
-
-Even if codespell is updated, the script would have to deal
-with older versions that don't support requesting that option.
-
-cheers, Joe
-
-
+Pkl0IGNvbmZsaWN0cyB3aXRoIHlvdXIgbmV3IGNvZGUuIFdlIGNhbiBoYXZlIGFuIGFyZ3VtZW50
+IG9uIHdoZXRoZXIgSUIgc2hvdWxkIGZvbGxvdyBob3cgU1NCIGlzIGJlaW5nIGhhbmRsZWQuIEJl
+Zm9yZSB0aGF0IGlzIHNldHRsZWQsDQoNClRoYW5rIHlvdSBmb3IgdGhlIGluZm9ybWF0aW9uLg0K
+SXQgY29uZmxpY3RzIGJ1dCBJIHRoaW5rIHVzZXJzIHdobyByZWFkIHRoZSBiZWxvdyBkb2N1bWVu
+dCBnZXQgY29uZnVzZWQuDQpEb2N1bWVudGF0aW9uL3VzZXJzcGFjZS1hcGkvc3BlY19jdHJsLnJz
+dC4NCg0KRXNwZWNpYWxseSwgc2VjY29tcCB1c2VycyBtdXN0IGtub3cgdGhlIGRpZmZlcmVuY2Ug
+b2YgdGhpcyBpbXBsaWNpdCBzcGVjaWZpY2F0aW9uDQpiZWNhdXNlIGJvdGggSUIgYW5kIFNTQiBh
+cmUgZm9yY2UgZGlzYWJsZWQgc2ltdWx0YW5lb3VzbHkgd2hlbiBzZWNjb21wIGlzIGVuYWJsZWQN
+CndpdGhvdXQgU0VDQ09NUF9GSUxURVJfRkxBR19TUEVDX0FMTE9XIG9uIHg4Ni4NCg0KLS0tLS1P
+cmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFdhaW1hbiBMb25nIDxsb25nbWFuQHJlZGhhdC5j
+b20+IA0KU2VudDogVGh1cnNkYXksIEp1bmUgNCwgMjAyMCAxMjo0MCBBTQ0KVG86IFRhZGEsIEtl
+bnRhIChTb255KSA8S2VudGEuVGFkYUBzb255LmNvbT47IHg4NkBrZXJuZWwub3JnOyB0Z2x4QGxp
+bnV0cm9uaXguZGU7IG1pbmdvQHJlZGhhdC5jb207IGJwQGFsaWVuOC5kZTsgaHBhQHp5dG9yLmNv
+bTsganBvaW1ib2VAcmVkaGF0LmNvbTsgcGV0ZXJ6QGluZnJhZGVhZC5vcmc7IHRvbnkubHVja0Bp
+bnRlbC5jb207IHBhd2FuLmt1bWFyLmd1cHRhQGxpbnV4LmludGVsLmNvbQ0KQ2M6IGxpbnV4LWtl
+cm5lbEB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBbUEFUQ0hdIHg4Ni9zcGVjdWxhdGlv
+bjogQ2hlY2sgd2hldGhlciBzcGVjdWxhdGlvbiBpcyBmb3JjZSBkaXNhYmxlZA0KDQpPbiA2LzMv
+MjAgMzoxMiBBTSwgVGFkYSwgS2VudGEgKFNvbnkpIHdyb3RlOg0KPiBPbmNlIFBSX1NQRUNfRk9S
+Q0VfRElTQUJMRSBpcyBzZXQsIHVzZXJzIGNhbm5vdCBzZXQgUFJfU1BFQ19FTkFCTEUuDQo+IFRo
+aXMgY29tbWl0IGNoZWNrcyB3aGV0aGVyIFBSX1NQRUNfRk9SQ0VfRElTQUJMRSB3YXMgcHJldmlv
+dXNseSBzZXQuDQo+DQo+IFNpZ25lZC1vZmYtYnk6IEtlbnRhIFRhZGEgPEtlbnRhLlRhZGFAc29u
+eS5jb20+DQo+IC0tLQ0KPiAgIGFyY2gveDg2L2tlcm5lbC9jcHUvYnVncy5jIHwgMyArKysNCj4g
+ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspDQo+DQo+IGRpZmYgLS1naXQgYS9hcmNo
+L3g4Ni9rZXJuZWwvY3B1L2J1Z3MuYyBiL2FyY2gveDg2L2tlcm5lbC9jcHUvYnVncy5jIA0KPiBp
+bmRleCBlZDU0YjNiMjFjMzkuLjY3OGFjZTE1NzAzNSAxMDA2NDQNCj4gLS0tIGEvYXJjaC94ODYv
+a2VybmVsL2NwdS9idWdzLmMNCj4gKysrIGIvYXJjaC94ODYva2VybmVsL2NwdS9idWdzLmMNCj4g
+QEAgLTExNzMsNiArMTE3Myw5IEBAIHN0YXRpYyBpbnQgaWJfcHJjdGxfc2V0KHN0cnVjdCB0YXNr
+X3N0cnVjdCAqdGFzaywgdW5zaWduZWQgbG9uZyBjdHJsKQ0KPiAgIAkJaWYgKHNwZWN0cmVfdjJf
+dXNlciA9PSBTUEVDVFJFX1YyX1VTRVJfU1RSSUNUIHx8DQo+ICAgCQkgICAgc3BlY3RyZV92Ml91
+c2VyID09IFNQRUNUUkVfVjJfVVNFUl9TVFJJQ1RfUFJFRkVSUkVEKQ0KPiAgIAkJCXJldHVybiAt
+RVBFUk07DQo+ICsJCS8qIElmIHNwZWN1bGF0aW9uIGlzIGZvcmNlIGRpc2FibGVkLCBlbmFibGUg
+aXMgbm90IGFsbG93ZWQgKi8NCj4gKwkJaWYgKHRhc2tfc3BlY19pYl9mb3JjZV9kaXNhYmxlKHRh
+c2spKQ0KPiArCQkJcmV0dXJuIC1FUEVSTTsNCj4gICAJCXRhc2tfY2xlYXJfc3BlY19pYl9kaXNh
+YmxlKHRhc2spOw0KPiAgIAkJdGFza191cGRhdGVfc3BlY190aWYodGFzayk7DQo+ICAgCQlicmVh
+azsNCg0KVGhlcmUgaXMgYSBjb21tZW50IHVwIGEgZmV3IGxpbmVzIGFib3V0IHRoaXM6DQoNCiDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLyoNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCAqIEluZGlyZWN0IGJyYW5jaCBzcGVjdWxhdGlvbiBpcyBhbHdheXMgYWxsb3dl
+ZCB3aGVuDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiBtaXRpZ2F0aW9uIGlz
+IGZvcmNlIGRpc2FibGVkLg0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICovDQpJ
+dCBjb25mbGljdHMgd2l0aCB5b3VyIG5ldyBjb2RlLiBXZSBjYW4gaGF2ZSBhbiBhcmd1bWVudCBv
+biB3aGV0aGVyIElCIHNob3VsZCBmb2xsb3cgaG93IFNTQiBpcyBiZWluZyBoYW5kbGVkLiBCZWZv
+cmUgdGhhdCBpcyBzZXR0bGVkLA0KDQpOYWNrZWQtYnk6IFdhaW1hbiBMb25nIDxsb25nbWFuQHJl
+ZGhhdC5jb20+DQoNCg==
