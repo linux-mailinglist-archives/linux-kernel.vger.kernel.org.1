@@ -2,178 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0411EE6B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 16:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3515C1EE6C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 16:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729057AbgFDOe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 10:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729037AbgFDOe5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 10:34:57 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CE3C08C5C5
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 07:34:57 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ga6so1207837pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 07:34:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ove4i1/jldMZ8oj/uY7NqV8r09suzUfhCHwuSYH9N6k=;
-        b=TjCwc4Glzpv6zTuI4ORcCO3GKt0+Ccro7aRK1+e6UcK9/8RNeB8TRca2cDcrCZcFnw
-         dOZz9z/5MHyMXIaUdvhXgJxFJWPi992hZGVtspEgPL5VJyozAoxBel+yRY8wrOsFSawW
-         q/r0W2zg8NzemNia+bwbRZAfOWsgUJYKa74vc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ove4i1/jldMZ8oj/uY7NqV8r09suzUfhCHwuSYH9N6k=;
-        b=saQci245N3DDv1P9N2YyR8Wx6i3jFpWrq13CHgsuRo/HffMhqitLaX7b2K5ygu4EZE
-         gqZrjZZGFEpvDSvtk40d/ndBk8wLlH4goJ5UP6QXtroG4C+6yu4s4zKq35lLZIK51RMf
-         +iDkGgC6yUUkro6E+9Jq09hxsLj6HVwSMoVh6xtBrRdFLD8Zj/pRNQnSYVnW8TCtfGmO
-         7anAbNJubfPssNkYlObgIZ/t8RDhaJnGOiNxnejlVIV89hgtnm8h9p1kQpd016DkOqs9
-         E/Q3dMwvGw9/6TwgdFpOGxccYCnRkDCpGWRsHCh0HGeWysScxqrGZs1ejzqwFIvaRc+5
-         mqnA==
-X-Gm-Message-State: AOAM5317CnkhxxdO+OnOEvUM8t58BAa5iS+vNlaP1n096q1oM/Hm7bf/
-        u7+8o62GCClO6baYLZh703ywaA==
-X-Google-Smtp-Source: ABdhPJwYFZeK5TkHVANf3TB7Mzvs6z8AC7rMNyAbLjxTjQqaX9yKSG5fQNVZZytsALVosdoYYC3FFg==
-X-Received: by 2002:a17:90a:950e:: with SMTP id t14mr5847304pjo.99.1591281296926;
-        Thu, 04 Jun 2020 07:34:56 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q8sm6069346pjj.51.2020.06.04.07.34.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 07:34:55 -0700 (PDT)
-Date:   Thu, 4 Jun 2020 07:34:54 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Joe Perches <joe@perches.com>,
-        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-mm@kvack.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 01/10] x86/mm/numa: Remove uninitialized_var() usage
-Message-ID: <202006040728.8797FAA4@keescook>
-References: <20200603233203.1695403-2-keescook@chromium.org>
- <874krr8dps.fsf@nanos.tec.linutronix.de>
+        id S1729088AbgFDOjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 10:39:11 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:58339 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728682AbgFDOjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 10:39:10 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49d7hB0LCzzB09bC;
+        Thu,  4 Jun 2020 16:39:06 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id HcnqsAQAgwl5; Thu,  4 Jun 2020 16:39:05 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49d7h96hCgzB09bB;
+        Thu,  4 Jun 2020 16:39:05 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CFDAC8B8CE;
+        Thu,  4 Jun 2020 16:39:07 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Sy6zOSmi2CZ5; Thu,  4 Jun 2020 16:39:07 +0200 (CEST)
+Received: from pc16570vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [10.25.210.22])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 620E88B8C9;
+        Thu,  4 Jun 2020 16:39:07 +0200 (CEST)
+Subject: Re: linux-next: build failure on powerpc 8xx with 16k pages
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <dc2b16e1-b719-5500-508d-ae97bf50c4a6@csgroup.eu>
+ <20200604111723.GA1267@willie-the-truck>
+ <20200604120007.GA4117@hirez.programming.kicks-ass.net>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <1160ea76-729b-60a2-31d6-998c57b77858@csgroup.eu>
+Date:   Thu, 4 Jun 2020 14:35:14 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874krr8dps.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20200604120007.GA4117@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 09:58:07AM +0200, Thomas Gleixner wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> > -#ifdef NODE_NOT_IN_PAGE_FLAGS
-> > -	pfn_align = node_map_pfn_alignment();
-> > -	if (pfn_align && pfn_align < PAGES_PER_SECTION) {
-> > -		printk(KERN_WARNING "Node alignment %LuMB < min %LuMB, rejecting NUMA config\n",
-> > -		       PFN_PHYS(pfn_align) >> 20,
-> > -		       PFN_PHYS(PAGES_PER_SECTION) >> 20);
-> > -		return -EINVAL;
-> > +	if (IS_ENABLED(NODE_NOT_IN_PAGE_FLAGS)) {
+
+
+On 06/04/2020 12:00 PM, Peter Zijlstra wrote:
+> On Thu, Jun 04, 2020 at 12:17:23PM +0100, Will Deacon wrote:
+>> Hi, [+Peter]
+>>
+>> On Thu, Jun 04, 2020 at 10:48:03AM +0000, Christophe Leroy wrote:
+>>> Using mpc885_ads_defconfig with CONFIG_PPC_16K_PAGES instead of
+>>> CONFIG_PPC_4K_PAGES, getting the following build failure:
+>>>
+>>>    CC      mm/gup.o
+>>> In file included from ./include/linux/kernel.h:11:0,
+>>>                   from mm/gup.c:2:
+>>> In function 'gup_hugepte.constprop',
+>>>      inlined from 'gup_huge_pd.isra.78' at mm/gup.c:2465:8:
+>>> ./include/linux/compiler.h:392:38: error: call to '__compiletime_assert_257'
+>>> declared with attribute error: Unsupported access size for
+>>> {READ,WRITE}_ONCE().
+>>>    _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>>>                                        ^
+>>> ./include/linux/compiler.h:373:4: note: in definition of macro
+>>> '__compiletime_assert'
+>>>      prefix ## suffix();    \
+>>>      ^
+>>> ./include/linux/compiler.h:392:2: note: in expansion of macro
+>>> '_compiletime_assert'
+>>>    _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>>>    ^
+>>> ./include/linux/compiler.h:405:2: note: in expansion of macro
+>>> 'compiletime_assert'
+>>>    compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long), \
+>>>    ^
+>>> ./include/linux/compiler.h:291:2: note: in expansion of macro
+>>> 'compiletime_assert_rwonce_type'
+>>>    compiletime_assert_rwonce_type(x);    \
+>>>    ^
+>>> mm/gup.c:2428:8: note: in expansion of macro 'READ_ONCE'
+>>>    pte = READ_ONCE(*ptep);
+>>>          ^
+>>> In function 'gup_get_pte',
+>>>      inlined from 'gup_pte_range' at mm/gup.c:2228:9,
+>>>      inlined from 'gup_pmd_range' at mm/gup.c:2613:15,
+>>>      inlined from 'gup_pud_range' at mm/gup.c:2641:15,
+>>>      inlined from 'gup_p4d_range' at mm/gup.c:2666:15,
+>>>      inlined from 'gup_pgd_range' at mm/gup.c:2694:15,
+>>>      inlined from 'internal_get_user_pages_fast' at mm/gup.c:2785:3:
+>>
+>> At first glance, this looks like a real bug in the 16k page code -- you're
+>> loading the pte non-atomically on the fast GUP path and so you're prone to
+>> tearing, which probably isn't what you want. For a short-term hack, I'd
+>> suggest having CONFIG_HAVE_FAST_GUP depend on !CONFIG_PPC_16K_PAGES, but if
+>> you want to support this them you'll need to rework your pte_t so that it
+>> can be loaded atomically.
 > 
-> Hrm, clever ...
+> Looking at commit 55c8fc3f49302, they're all the exact same value, so
+> what they could do is grow another special gup_get_pte() variant that
+> just loads the first value.
 > 
-> > +		unsigned long pfn_align = node_map_pfn_alignment();
-> > +
-> > +		if (pfn_align && pfn_align < PAGES_PER_SECTION) {
-> > +			pr_warn("Node alignment %LuMB < min %LuMB, rejecting NUMA config\n",
-> > +				PFN_PHYS(pfn_align) >> 20,
-> > +				PFN_PHYS(PAGES_PER_SECTION) >> 20);
-> > +			return -EINVAL;
-> > +		}
-> >  	}
-> > -#endif
-> >  	if (!numa_meminfo_cover_memory(mi))
-> >  		return -EINVAL;
-> >  
-> > diff --git a/include/linux/page-flags-layout.h b/include/linux/page-flags-layout.h
-> > index 71283739ffd2..1a4cdec2bd29 100644
-> > --- a/include/linux/page-flags-layout.h
-> > +++ b/include/linux/page-flags-layout.h
-> > @@ -100,7 +100,7 @@
-> >   * there.  This includes the case where there is no node, so it is implicit.
-> >   */
-> >  #if !(NODES_WIDTH > 0 || NODES_SHIFT == 0)
-> > -#define NODE_NOT_IN_PAGE_FLAGS
-> > +#define NODE_NOT_IN_PAGE_FLAGS 1
+> Also, per that very same commit, there's a distinct lack of WRITE_ONCE()
+> in the pte_update() / __set_pte_at() paths for much of Power.
 > 
-> but if we ever lose the 1 then the above will silently compile the code
-> within the IS_ENABLED() section out.
 
-That's true, yes. I considered two other ways to do this:
+Thanks for the idea.
 
-1) smallest patch, but more #ifdef:
+Now I get the same issue at
 
-diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-index 59ba008504dc..fbf5231a3d35 100644
---- a/arch/x86/mm/numa.c
-+++ b/arch/x86/mm/numa.c
-@@ -541,7 +541,9 @@ static void __init numa_clear_kernel_node_hotplug(void)
- 
- static int __init numa_register_memblks(struct numa_meminfo *mi)
- {
--	unsigned long uninitialized_var(pfn_align);
-+#ifdef NODE_NOT_IN_PAGE_FLAGS
-+	unsigned long pfn_align;
-+#endif
- 	int i, nid;
- 
- 	/* Account for nodes with cpus and no memory */
+    CC      mm/mincore.o
+In file included from ./include/asm-generic/bug.h:5:0,
+                  from ./arch/powerpc/include/asm/bug.h:109,
+                  from ./include/linux/bug.h:5,
+                  from ./include/linux/mmdebug.h:5,
+                  from ./include/linux/mm.h:9,
+                  from ./include/linux/pagemap.h:8,
+                  from mm/mincore.c:11:
+In function 'huge_ptep_get',
+     inlined from 'mincore_hugetlb' at mm/mincore.c:35:20:
+./include/linux/compiler.h:392:38: error: call to 
+'__compiletime_assert_218' declared with attribute error: Unsupported 
+access size for {READ,WRITE}_ONCE().
+   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+                                       ^
+./include/linux/compiler.h:373:4: note: in definition of macro 
+'__compiletime_assert'
+     prefix ## suffix();    \
+     ^
+./include/linux/compiler.h:392:2: note: in expansion of macro 
+'_compiletime_assert'
+   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+   ^
+./include/linux/compiler.h:405:2: note: in expansion of macro 
+'compiletime_assert'
+   compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long), \
+   ^
+./include/linux/compiler.h:291:2: note: in expansion of macro 
+'compiletime_assert_rwonce_type'
+   compiletime_assert_rwonce_type(x);    \
+   ^
+./include/asm-generic/hugetlb.h:125:9: note: in expansion of macro 
+'READ_ONCE'
+   return READ_ONCE(*ptep);
+          ^
+make[2]: *** [mm/mincore.o] Error 1
 
-2) medium size, weird style:
+I guess for this one I have to implement platform specific huge_ptep_get()
 
-diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-index 59ba008504dc..0df7ba9b21b2 100644
---- a/arch/x86/mm/numa.c
-+++ b/arch/x86/mm/numa.c
-@@ -541,7 +541,6 @@ static void __init numa_clear_kernel_node_hotplug(void)
- 
- static int __init numa_register_memblks(struct numa_meminfo *mi)
- {
--	unsigned long uninitialized_var(pfn_align);
- 	int i, nid;
- 
- 	/* Account for nodes with cpus and no memory */
-@@ -570,12 +569,15 @@ static int __init numa_register_memblks(struct numa_meminfo *mi)
- 	 * whether its granularity is fine enough.
- 	 */
- #ifdef NODE_NOT_IN_PAGE_FLAGS
--	pfn_align = node_map_pfn_alignment();
--	if (pfn_align && pfn_align < PAGES_PER_SECTION) {
--		printk(KERN_WARNING "Node alignment %LuMB < min %LuMB, rejecting NUMA config\n",
--		       PFN_PHYS(pfn_align) >> 20,
--		       PFN_PHYS(PAGES_PER_SECTION) >> 20);
--		return -EINVAL;
-+	{
-+		unsigned long pfn_align = node_map_pfn_alignment();
-+
-+		if (pfn_align && pfn_align < PAGES_PER_SECTION) {
-+			pr_warn("Node alignment %LuMB < min %LuMB, rejecting NUMA config\n",
-+			       PFN_PHYS(pfn_align) >> 20,
-+			       PFN_PHYS(PAGES_PER_SECTION) >> 20);
-+			return -EINVAL;
-+		}
- 	}
- #endif
- 	if (!numa_meminfo_cover_memory(mi))
-
-and 3 is what I sent: biggest, but removes #ifdef
-
-Any preference?
-
-Thanks!
-
--- 
-Kees Cook
+Christophe
