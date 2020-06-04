@@ -2,165 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E431EEC51
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 22:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FF91EEC57
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 22:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730136AbgFDUrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 16:47:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41170 "EHLO mail.kernel.org"
+        id S1730085AbgFDUrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 16:47:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730101AbgFDUrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 16:47:15 -0400
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729672AbgFDUrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 16:47:10 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91390207F9;
-        Thu,  4 Jun 2020 20:47:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACB9A207D3;
+        Thu,  4 Jun 2020 20:47:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591303633;
-        bh=KFodmG5dxLwi01xoHP3XvvFF9k/ifovAv20CD/RAbqo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=k7PE0miyDMbeR8z6yic0GzwJHBc4BnWOuy+uL5PUFHy26zjLx2c7DrAUiWE/dVFDH
-         7HEjNWZWuIzljvHpDgOzFd1//3dVtoLjgsJiP49dP3iJaDk1Ue8EzPwNL0p3YWhvgb
-         /IYet3YsBRn9V4Ll3IT9POl3Aw+S19y36dNyj1yg=
-Received: by mail-oo1-f54.google.com with SMTP id h7so1512372ooc.9;
-        Thu, 04 Jun 2020 13:47:13 -0700 (PDT)
-X-Gm-Message-State: AOAM533liRkyXqGM0J69dbeBl7mUs6bAkO4SaRXaIZnhx/x8s+qHGJUz
-        JiLTBwRY0vz7fyiFKK7H4QOQ/OgfVmq3F0eJTQ==
-X-Google-Smtp-Source: ABdhPJwwaaT3W3YLSJDqZR+blejzcilkUVb+CLjXx9zxnhQgu0H5S8pzGVf0fGb0K342AwgdZ/YgUMdqmCyiyHTPhzI=
-X-Received: by 2002:a4a:2c88:: with SMTP id o130mr5106020ooo.81.1591303632915;
- Thu, 04 Jun 2020 13:47:12 -0700 (PDT)
+        s=default; t=1591303628;
+        bh=eInHzdkkZpVoAvTbVpOBmReGXIyBOk+Y+9JMudJzEPc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=w1w6muRwWYqIXeWC+t027ibMlcZML2lXN8+ZL92/nlDJ9uCZG6SC7c6AdFj+U6sa7
+         tW03hIhRK+YZML9u1b4iTJR9iEQCxV9ipKbXj54u6X8hbGCK37a0p4L9PLfjJGhbCf
+         g/S2gnVfsUyHkINP1VylXO5np+zcBMymHWSt4Kss=
+Received: from mchehab by mail.kernel.org with local (Exim 4.93)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jgwlW-0004Ad-Pf; Thu, 04 Jun 2020 22:47:06 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/5] Revert "media: atomisp: Add some ACPI detection info"
+Date:   Thu,  4 Jun 2020 22:47:02 +0200
+Message-Id: <f236116962c61bf8608ef7ff558bca6d739c8e8b.1591303518.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1591303518.git.mchehab+huawei@kernel.org>
+References: <cover.1591303518.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20200519224151.2074597-1-lkundrak@v3.sk> <20200519224151.2074597-13-lkundrak@v3.sk>
-In-Reply-To: <20200519224151.2074597-13-lkundrak@v3.sk>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 4 Jun 2020 14:47:01 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJxP8-0amAEW7-zB_QRvXSmmTfgMDj7UOuDX-6z9me0Hw@mail.gmail.com>
-Message-ID: <CAL_JsqJxP8-0amAEW7-zB_QRvXSmmTfgMDj7UOuDX-6z9me0Hw@mail.gmail.com>
-Subject: Re: [PATCH v3 12/13] dt-bindings: clock: Add Marvell MMP Audio Clock
- Controller binding
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 4:42 PM Lubomir Rintel <lkundrak@v3.sk> wrote:
->
-> This describes the bindings for a controller that generates master and bit
-> clocks for the I2S interface.
->
-> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
->
-> ---
-> Changes since v1:
-> - Fix commit message wording
-> - Define MMP2_CLK_AUDIO_NR_CLKS
-> - Make clock ids start at 0, not 1
-> - Fix dt-bindings/clock/marvell,mmp2-audio.h file name
-> - Rename node from "clocks" to "clock-controller"
->
->  .../clock/marvell,mmp2-audio-clock.yaml       | 74 +++++++++++++++++++
->  .../dt-bindings/clock/marvell,mmp2-audio.h    | 10 +++
->  2 files changed, 84 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/marvell,mmp2-audio-clock.yaml
->  create mode 100644 include/dt-bindings/clock/marvell,mmp2-audio.h
->
-> diff --git a/Documentation/devicetree/bindings/clock/marvell,mmp2-audio-clock.yaml b/Documentation/devicetree/bindings/clock/marvell,mmp2-audio-clock.yaml
-> new file mode 100644
-> index 000000000000..ab6e82d1d3a9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/marvell,mmp2-audio-clock.yaml
-> @@ -0,0 +1,74 @@
-> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/marvell,mmp2-audio-clock.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Marvell MMP2 Audio Clock Controller
-> +
-> +maintainers:
-> +  - Lubomir Rintel <lkundrak@v3.sk>
-> +
-> +description: |
-> +  The audio clock controller generates and supplies the clocks to the audio
-> +  codec.
-> +
-> +  Each clock is assigned an identifier and client nodes use this identifier
-> +  to specify the clock which they consume.
-> +
-> +  All these identifiers could be found in
-> +  <dt-bindings/clock/marvell,mmp2-audio.h>.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - marvell,mmp2-audio-clock
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: Audio subsystem clock
-> +      - description: The crystal oscillator clock
-> +      - description: First I2S clock
-> +      - description: Second I2S clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: audio
-> +      - const: vctcxo
-> +      - const: i2s0
-> +      - const: i2s1
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - '#clock-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/marvell,mmp2-audio.h>
-> +    #include <dt-bindings/power/marvell,mmp2.h>
-> +
-> +    clock-controller@d42a0c30 {
-> +      compatible = "marvell,mmp2-audio-clock";
-> +      reg = <0xd42a0c30 0x10>;
-> +      clock-names = "audio", "vctcxo", "i2s0", "i2s1";
-> +      clocks = <&soc_clocks MMP2_CLK_AUDIO>,
-> +               <&soc_clocks MMP2_CLK_VCTCXO>,
-> +               <&soc_clocks MMP2_CLK_I2S0>,
-> +               <&soc_clocks MMP2_CLK_I2S1>;
+This reverts commit 0d64e9420583cbc3c4a3f949ebe38fd8f7769281.
 
-This now breaks linux-next. I think the above defines are missing
-their include.
+As gmin_subdev_add() now takes the ACPI handle directly,
+we can deprecate the code that were doing this inside each
+I2C driver.
 
-My testing wasn't happy either because it couldn't find
-marvell,mmp2.h. I guess that's somewhere in linux-next and now we're
-on to the secondary issue. Once that's fixed, then the schema checks
-will actually run (hint: make sure they pass).
+PS.: This also reverts commit c03496b3bd92 ("media: atomisp: add a notice about possible leak resources")
 
-Please get this fixed or revert before it is sent to Linus. Maybe we
-can have an rc1 without the schema broken.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/staging/media/atomisp/i2c/atomisp-gc0310.c    | 11 -----------
+ drivers/staging/media/atomisp/i2c/atomisp-gc2235.c    | 11 -----------
+ drivers/staging/media/atomisp/i2c/atomisp-lm3554.c    | 11 -----------
+ drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c   | 11 -----------
+ drivers/staging/media/atomisp/i2c/atomisp-ov2680.c    | 11 -----------
+ drivers/staging/media/atomisp/i2c/atomisp-ov2722.c    | 11 -----------
+ .../staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c | 11 -----------
+ 7 files changed, 77 deletions(-)
 
-Rob
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+index 3fbd585d45ed..2b71de722ec3 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+@@ -1310,17 +1310,6 @@ static int gc0310_probe(struct i2c_client *client)
+ 	int ret;
+ 	void *pdata;
+ 	unsigned int i;
+-	acpi_handle handle;
+-	struct acpi_device *adev;
+-
+-	handle = ACPI_HANDLE(&client->dev);
+-	if (!handle || acpi_bus_get_device(handle, &adev)) {
+-		dev_err(&client->dev, "Error could not get ACPI device\n");
+-		return -ENODEV;
+-	}
+-	pr_info("%s: ACPI detected it on bus ID=%s, HID=%s\n",
+-		__func__, acpi_device_bid(adev), acpi_device_hid(adev));
+-	// FIXME: may need to release resources allocated by acpi_bus_get_device()
+ 
+ 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+ 	if (!dev)
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+index ae36dd4e9d0f..78147ffb6099 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+@@ -1052,17 +1052,6 @@ static int gc2235_probe(struct i2c_client *client)
+ 	void *gcpdev;
+ 	int ret;
+ 	unsigned int i;
+-	acpi_handle handle;
+-	struct acpi_device *adev;
+-
+-	handle = ACPI_HANDLE(&client->dev);
+-	if (!handle || acpi_bus_get_device(handle, &adev)) {
+-		dev_err(&client->dev, "Error could not get ACPI device\n");
+-		return -ENODEV;
+-	}
+-	pr_info("%s: ACPI detected it on bus ID=%s, HID=%s\n",
+-		__func__, acpi_device_bid(adev), acpi_device_hid(adev));
+-	// FIXME: may need to release resources allocated by acpi_bus_get_device()
+ 
+ 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+ 	if (!dev)
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c b/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
+index 85c90c663613..809010af7855 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
+@@ -851,17 +851,6 @@ static int lm3554_probe(struct i2c_client *client)
+ 	struct lm3554 *flash;
+ 	unsigned int i;
+ 	int ret;
+-	acpi_handle handle;
+-	struct acpi_device *adev;
+-
+-	handle = ACPI_HANDLE(&client->dev);
+-	if (!handle || acpi_bus_get_device(handle, &adev)) {
+-		dev_err(&client->dev, "Error could not get ACPI device\n");
+-		return -ENODEV;
+-	}
+-	pr_info("%s: ACPI detected it on bus ID=%s, HID=%s\n",
+-		__func__, acpi_device_bid(adev), acpi_device_hid(adev));
+-	// FIXME: may need to release resources allocated by acpi_bus_get_device()
+ 
+ 	flash = kzalloc(sizeof(*flash), GFP_KERNEL);
+ 	if (!flash)
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index a76031f9c799..0d60918a9b19 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -1817,17 +1817,6 @@ static int mt9m114_probe(struct i2c_client *client)
+ 	int ret = 0;
+ 	unsigned int i;
+ 	void *pdata;
+-	acpi_handle handle;
+-	struct acpi_device *adev;
+-
+-	handle = ACPI_HANDLE(&client->dev);
+-	if (!handle || acpi_bus_get_device(handle, &adev)) {
+-		dev_err(&client->dev, "Error could not get ACPI device\n");
+-		return -ENODEV;
+-	}
+-	pr_info("%s: ACPI detected it on bus ID=%s, HID=%s\n",
+-		__func__, acpi_device_bid(adev), acpi_device_hid(adev));
+-	// FIXME: may need to release resources allocated by acpi_bus_get_device()
+ 
+ 	/* Setup sensor configuration structure */
+ 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+index 8f548351142a..90d125ba080f 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+@@ -1244,17 +1244,6 @@ static int ov2680_probe(struct i2c_client *client)
+ 	int ret;
+ 	void *pdata;
+ 	unsigned int i;
+-	acpi_handle handle;
+-	struct acpi_device *adev;
+-
+-	handle = ACPI_HANDLE(&client->dev);
+-	if (!handle || acpi_bus_get_device(handle, &adev)) {
+-		dev_err(&client->dev, "Error could not get ACPI device\n");
+-		return -ENODEV;
+-	}
+-	dev_info(&client->dev, "%s: ACPI detected it on bus ID=%s, HID=%s\n",
+-		__func__, acpi_device_bid(adev), acpi_device_hid(adev));
+-	// FIXME: may need to release resources allocated by acpi_bus_get_device()
+ 
+ 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+ 	if (!dev)
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+index 9f3e99be810d..eecefcd734d0 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+@@ -1215,17 +1215,6 @@ static int ov2722_probe(struct i2c_client *client)
+ 	struct ov2722_device *dev;
+ 	void *ovpdev;
+ 	int ret;
+-	acpi_handle handle;
+-	struct acpi_device *adev;
+-
+-	handle = ACPI_HANDLE(&client->dev);
+-	if (!handle || acpi_bus_get_device(handle, &adev)) {
+-		dev_err(&client->dev, "Error could not get ACPI device\n");
+-		return -ENODEV;
+-	}
+-	pr_info("%s: ACPI detected it on bus ID=%s, HID=%s\n",
+-		__func__, acpi_device_bid(adev), acpi_device_hid(adev));
+-	// FIXME: may need to release resources allocated by acpi_bus_get_device()
+ 
+ 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+ 	if (!dev)
+diff --git a/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c b/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c
+index da5b1a31e82f..97ab10bc45ca 100644
+--- a/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c
++++ b/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c
+@@ -1902,17 +1902,6 @@ static int ov5693_probe(struct i2c_client *client)
+ 	int ret = 0;
+ 	void *pdata;
+ 	unsigned int i;
+-	acpi_handle handle;
+-	struct acpi_device *adev;
+-
+-	handle = ACPI_HANDLE(&client->dev);
+-	if (!handle || acpi_bus_get_device(handle, &adev)) {
+-		dev_err(&client->dev, "Error could not get ACPI device\n");
+-		return -ENODEV;
+-	}
+-	pr_info("%s: ACPI detected it on bus ID=%s, HID=%s\n",
+-		__func__, acpi_device_bid(adev), acpi_device_hid(adev));
+-	// FIXME: may need to release resources allocated by acpi_bus_get_device()
+ 
+ 	/*
+ 	 * Firmware workaround: Some modules use a "secondary default"
+-- 
+2.26.2
+
