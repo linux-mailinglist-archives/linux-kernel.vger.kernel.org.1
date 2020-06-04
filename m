@@ -2,171 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDA81EE85D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 18:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B9F1EE862
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 18:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729762AbgFDQNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 12:13:09 -0400
-Received: from relay.sw.ru ([185.231.240.75]:35432 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729745AbgFDQNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 12:13:05 -0400
-Received: from [172.16.25.93] (helo=amikhalitsyn-pc0.sw.ru)
-        by relay3.sw.ru with esmtp (Exim 4.93)
-        (envelope-from <alexander.mikhalitsyn@virtuozzo.com>)
-        id 1jgsUC-0003Zt-U1; Thu, 04 Jun 2020 19:12:56 +0300
-From:   Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
-To:     miklos@szeredi.hu
-Cc:     avagin@openvz.org, ptikhomirov@virtuozzo.com,
-        khorenko@virtuozzo.com, vvs@virtuozzo.com, ktkhai@virtuozzo.com,
-        Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] overlayfs: add mnt_id paths options
-Date:   Thu,  4 Jun 2020 19:11:33 +0300
-Message-Id: <20200604161133.20949-3-alexander.mikhalitsyn@virtuozzo.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200604161133.20949-1-alexander.mikhalitsyn@virtuozzo.com>
-References: <20200604161133.20949-1-alexander.mikhalitsyn@virtuozzo.com>
+        id S1729773AbgFDQOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 12:14:41 -0400
+Received: from smtp4-g21.free.fr ([212.27.42.4]:30694 "EHLO smtp4-g21.free.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728972AbgFDQOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 12:14:41 -0400
+Received: from [192.168.1.91] (unknown [77.207.133.132])
+        (Authenticated sender: marc.w.gonzalez)
+        by smtp4-g21.free.fr (Postfix) with ESMTPSA id D6B3219F5E1;
+        Thu,  4 Jun 2020 18:13:26 +0200 (CEST)
+Subject: Re: [PATCH v5 0/2] Small devm helper for devm implementations
+From:   Marc Gonzalez <marc.w.gonzalez@free.fr>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-clk <linux-clk@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <e8221bff-3e2a-7607-c5c8-abcf9cebb1b5@free.fr>
+Message-ID: <217b892d-678f-8c32-b9ab-a3dd238c197a@free.fr>
+Date:   Thu, 4 Jun 2020 18:13:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <e8221bff-3e2a-7607-c5c8-abcf9cebb1b5@free.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds config OVERLAY_FS_PATH_OPTIONS_MNT_ID
-compile-time option, and "mnt_id_path_opts" runtime module option.
-If enabled, user may see mnt_ids for lowerdir, upperdir paths
-in mountinfo in separate lowerdir_mnt_id/upperdir_mnt_id options.
+Looks like this series has fallen through the cracks :(
+Greg, you would be taking the drivers/base/devres.c changes?
+As mentioned in patch 2, "This patch needs testing on a platform with many clocks."
+(I've only tested using a trivial kernel module)
 
-This patch is very helpful to checkpoint/restore functionality
-of overlayfs mounts in case when we have overmounts on
-lowerdir, workdir, upperdir paths.
+On 10/03/2020 11:11, Marc Gonzalez wrote:
 
-Signed-off-by: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
----
- fs/overlayfs/Kconfig     | 26 ++++++++++++++++++++++++++
- fs/overlayfs/overlayfs.h |  2 ++
- fs/overlayfs/super.c     | 15 +++++++++++++++
- fs/overlayfs/util.c      | 21 +++++++++++++++++++++
- 4 files changed, 64 insertions(+)
-
-diff --git a/fs/overlayfs/Kconfig b/fs/overlayfs/Kconfig
-index c24988527ef3..2797869c8d16 100644
---- a/fs/overlayfs/Kconfig
-+++ b/fs/overlayfs/Kconfig
-@@ -154,4 +154,30 @@ config OVERLAY_FS_DYNAMIC_RESOLVE_PATH_OPTIONS
- 
- 	  For more information, see Documentation/filesystems/overlayfs.txt
- 
-+	  If unsure, say N.
-+
-+config OVERLAY_FS_PATH_OPTIONS_MNT_ID
-+	bool "Overlayfs: show mnt_id for all mount paths options"
-+	default y
-+	depends on OVERLAY_FS
-+	help
-+	  This option helps checkpoint/restore of overlayfs mounts.
-+	  If N selected, old behavior is saved.
-+
-+	  If this config option is enabled then in overlay filesystems mount
-+	  options you will be able to see additional parameters lowerdir_mnt_id/
-+	  upperdir_mnt_id with corresponding mnt_ids.
-+
-+	  It's also possible to change this behavior on overlayfs module loading or
-+	  through sysfs (mnt_id_path_opts parameter).
-+
-+	  Disable this to get a backward compatible with previous kernels configuration,
-+	  but in this case checkpoint/restore functionality for overlayfs mounts
-+	  may not fully work.
-+
-+	  If backward compatibility is not an issue, then it is safe and
-+	  recommended to say Y here.
-+
-+	  For more information, see Documentation/filesystems/overlayfs.txt
-+
- 	  If unsure, say N.
-\ No newline at end of file
-diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
-index 8722ed556e11..980fe06d15b5 100644
---- a/fs/overlayfs/overlayfs.h
-+++ b/fs/overlayfs/overlayfs.h
-@@ -305,6 +305,8 @@ ssize_t ovl_getxattr(struct dentry *dentry, char *name, char **value,
- void print_path_option(struct seq_file *m, const char *name, struct path *path);
- void print_paths_option(struct seq_file *m, const char *name,
- 			struct path *paths, unsigned int num);
-+void print_mnt_id_option(struct seq_file *m, const char *name, struct path *path);
-+void print_mnt_ids_option(struct seq_file *m, const char *name,
- 			struct path *paths, unsigned int num);
- 
- static inline bool ovl_is_impuredir(struct dentry *dentry)
-diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-index a449b6bb4b20..ee2ed125341c 100644
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -57,6 +57,10 @@ static bool ovl_dyn_path_opts = IS_ENABLED(CONFIG_OVERLAY_FS_DYNAMIC_RESOLVE_PAT
- module_param_named(dyn_path_opts, ovl_dyn_path_opts, bool, 0644);
- MODULE_PARM_DESC(dyn_path_opts, "dyn_path_opts feature enabled");
- 
-+static bool ovl_mnt_id_path_opts = IS_ENABLED(OVERLAY_FS_PATH_OPTIONS_MNT_ID);
-+module_param_named(mnt_id_path_opts, ovl_mnt_id_path_opts, bool, 0644);
-+MODULE_PARM_DESC(mnt_id_path_opts, "mnt_id_path_opts feature enabled");
-+
- static void ovl_entry_stack_free(struct ovl_entry *oe)
- {
- 	unsigned int i;
-@@ -362,6 +366,17 @@ static int ovl_show_options(struct seq_file *m, struct dentry *dentry)
- 			seq_show_option(m, "workdir", ofs->config.workdir);
- 		}
- 	}
-+
-+	if (ovl_mnt_id_path_opts) {
-+		print_mnt_ids_option(m, "lowerdir_mnt_id", ofs->lowerpaths, ofs->numlayer);
-+		/*
-+		 * We don't need to show mnt_id for workdir because it
-+		 * on the same mount as upperdir.
-+		 */
-+		if (ofs->config.upperdir)
-+			print_mnt_id_option(m, "upperdir_mnt_id", &ofs->upperpath);
-+	}
-+
- 	if (ofs->config.default_permissions)
- 		seq_puts(m, ",default_permissions");
- 	if (strcmp(ofs->config.redirect_mode, ovl_redirect_mode_def()) != 0)
-diff --git a/fs/overlayfs/util.c b/fs/overlayfs/util.c
-index 36bb98c14d35..85106b2ed00a 100644
---- a/fs/overlayfs/util.c
-+++ b/fs/overlayfs/util.c
-@@ -14,6 +14,7 @@
- #include <linux/namei.h>
- #include <linux/ratelimit.h>
- #include <linux/seq_file.h>
-+#include "../mount.h"
- #include "overlayfs.h"
- 
- int ovl_want_write(struct dentry *dentry)
-@@ -941,3 +942,23 @@ void print_paths_option(struct seq_file *m, const char *name,
- 		seq_path(m, &paths[i], ", \t\n\\");
- 	}
- }
-+
-+void print_mnt_id_option(struct seq_file *m, const char *name, struct path *path)
-+{
-+	seq_show_option(m, name, "");
-+	seq_printf(m, "%i", real_mount(path->mnt)->mnt_id);
-+}
-+
-+void print_mnt_ids_option(struct seq_file *m, const char *name,
-+			struct path *paths, unsigned int num)
-+{
-+	int i;
-+
-+	seq_show_option(m, name, "");
-+
-+	for (i = 0; i < num; i++) {
-+		if (i)
-+			seq_putc(m, ':');
-+		seq_printf(m, "%i", real_mount(paths[i].mnt)->mnt_id);
-+	}
-+}
--- 
-2.17.1
-
+> Differences from v4 to v5
+> x Fix the grammar in devm_add comments [Geert]
+> x Undo an unrelated change in devm_clk_put [Geert]
+> 
+> Differences from v3 to v4
+> x Add a bunch of kerneldoc above devm_add() [Greg KH]
+> x Split patch in two [Greg KH]
+> 
+> Differences from v2 to v3
+> x Make devm_add() return an error-code rather than the raw data pointer
+>   (in case devres_alloc ever returns an ERR_PTR) as suggested by Geert
+> x Provide a variadic version devm_vadd() to work with structs as suggested
+>   by Geert
+> x Don't use nested ifs in clk_devm* implementations (hopefully simpler
+>   code logic to follow) as suggested by Geert
+> 
+> Marc Gonzalez (2):
+>   devres: Provide new helper for devm functions
+>   clk: Use devm_add in managed functions
+> 
+>  drivers/base/devres.c    | 28 ++++++++++++
+>  drivers/clk/clk-devres.c | 97 +++++++++++++++-------------------------
+>  include/linux/device.h   |  3 ++
+>  3 files changed, 67 insertions(+), 61 deletions(-)
