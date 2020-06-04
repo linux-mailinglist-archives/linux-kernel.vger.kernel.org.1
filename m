@@ -2,60 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E663F1EDD37
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 08:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A481EDD4B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 08:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgFDGgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 02:36:04 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:45908 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726248AbgFDGgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 02:36:04 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BF60B20116D;
-        Thu,  4 Jun 2020 08:36:02 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4017C201020;
-        Thu,  4 Jun 2020 08:35:58 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 25296402A5;
-        Thu,  4 Jun 2020 14:35:52 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl-asoc-card: Defer probe when fail to find codec device
-Date:   Thu,  4 Jun 2020 14:25:30 +0800
-Message-Id: <1591251930-4111-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727088AbgFDGiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 02:38:05 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:11134 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726364AbgFDGiF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 02:38:05 -0400
+X-Greylist: delayed 346 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Jun 2020 02:38:04 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1591252683;
+        s=strato-dkim-0002; d=hartkopp.net;
+        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=iYDIjqqc8Q9Y3o3HehlKUVb4sDPktGxVlK5z+tGCBwc=;
+        b=N/XziD7ZyPlvy5sBZTvQALHZuUuJSZVp5+tcnGoenhRH2JN2cdqyXJw8da3GF102Ja
+        dR6UCFNOrOIXXUQl7OSnXgRMWXvtbFRM8L4Fr0+BMeHgBxbaC64tLjq3AbA7hRhTFeYz
+        CJf9douk8qU9EAE3uvpal+OfSHFw6jpcU7t3YfDS9NbJ5pRzO38lRWuM805GVpYde0IG
+        RshcbQHQ7Em9VMikkDC2ytxNwWpe5KrlslhvIcClvtjDAiSaTOtFN49Xaofi2Vqv+xN0
+        ZcBMM4oyqJ3Rb47nHByS9h4Y0rt2FL9TyZ5mQ29KusLh1nEmETfYXLyDpfHA/n4dhYaW
+        WJCQ==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3PMaViOoLMGUch6lU2B"
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.50.177]
+        by smtp.strato.de (RZmta 46.9.1 DYNA|AUTH)
+        with ESMTPSA id V08b19w546W04DJ
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 4 Jun 2020 08:32:00 +0200 (CEST)
+Subject: Re: [PATCH] can: Replace zero-length array with flexible-array
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200507185118.GA14022@embeddedor>
+ <0420f571-2d6a-c830-2029-8da60e3c2094@hartkopp.net>
+ <73903bc6-afb7-f30e-28ef-065d41c6ace6@embeddedor.com>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <74c08a71-afb5-aba4-2c30-c342b4a7e61f@hartkopp.net>
+Date:   Thu, 4 Jun 2020 08:31:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <73903bc6-afb7-f30e-28ef-065d41c6ace6@embeddedor.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Defer probe when fail to find codec device, because the codec
-device maybe probed later than machine driver.
+Hi Gustavo,
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl-asoc-card.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 04.06.20 02:58, Gustavo A. R. Silva wrote:
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index cf4feb835743..00be73900888 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -581,7 +581,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 
- 	if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
- 		dev_err(&pdev->dev, "failed to find codec device\n");
--		ret = -EINVAL;
-+		ret = -EPROBE_DEFER;
- 		goto asrc_fail;
- 	}
- 
--- 
-2.21.0
+> Sorry for the late reply. I totally lost track of this thread. :/
 
+NP. At least your workflow seems to work :o)
+
+> pahole shows exactly the same output either if cf is a zero-length array or
+> a flexible-array member:
+> 
+> $ pahole -C 'can_skb_priv' drivers/net/can/dev.o
+> 
+> struct can_skb_priv {
+> 	int                        ifindex;              /*     0     4 */
+> 	int                        skbcnt;               /*     4     4 */
+> 	struct can_frame           cf[] __attribute__((__aligned__(8))); /*     8     0 */
+> 
+> 	/* size: 8, cachelines: 1, members: 3 */
+> 	/* forced alignments: 1 */
+> 	/* last cacheline: 8 bytes */
+> } __attribute__((__aligned__(8)));
+> 
+> So, it seems everything should fine. :)
+
+Great! Thanks for the info - and how I could have checked it on my own, too.
+
+Best,
+Oliver
