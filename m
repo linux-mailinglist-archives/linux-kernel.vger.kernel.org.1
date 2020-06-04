@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6265A1EDEEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3551EDEF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgFDH6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 03:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
+        id S1726887AbgFDH70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 03:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbgFDH6T (ORCPT
+        with ESMTP id S1725950AbgFDH70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 03:58:19 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208C7C05BD1E;
-        Thu,  4 Jun 2020 00:58:19 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jgklM-0007rw-IR; Thu, 04 Jun 2020 09:58:08 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id CB26BFFBE0; Thu,  4 Jun 2020 09:58:07 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Joe Perches <joe@perches.com>,
-        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-mm@kvack.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 01/10] x86/mm/numa: Remove uninitialized_var() usage
-In-Reply-To: <20200603233203.1695403-2-keescook@chromium.org>
-Date:   Thu, 04 Jun 2020 09:58:07 +0200
-Message-ID: <874krr8dps.fsf@nanos.tec.linutronix.de>
+        Thu, 4 Jun 2020 03:59:26 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1204BC05BD1E
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 00:59:26 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id s10so3157888pgm.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 00:59:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VX+yGAffSeajwf7uN6dwW7IpTMshFF/QkNyfthZYOH4=;
+        b=a7oQr88HgpJ+c8tpkiiO7Vqmf7hNy663uXVB0eFDMvkPVJjrx8LbG3zZSfC+cQ4vWi
+         TKGCuLdwGG0fOsmbd4gGB2xZH9OrQjwL61xv/+FbVKnYD0vpJOg7T81t7zReUr0D0aKN
+         XjU9hb09HKBHMzFKzH6odlMRSQpKjlJw6/CBP9YSxazTAbSsLasWI+nXacfTySV3mdYt
+         Irt8c20yRlUxyIoSEiydY5AiPYMp71c88/LZ0Ggx9S3CdY2j3AaWKCYVkF68Z8DJ6UQV
+         sPYdy+oea9ZoVuvLdZ28w4ZmWKfMqPOjDz2v8EhB7kn0A53CWl0cVgXrf9mcPQLHBo3H
+         HyKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VX+yGAffSeajwf7uN6dwW7IpTMshFF/QkNyfthZYOH4=;
+        b=BfMk/D9G4Yu6/4ngcKJwPSkz2k+LVEjn1qh6gZWeitdewW4VrEtzVJRzav9B1ZNbwz
+         Zs1neqoHgU7XOt/rXVR2Do2YGjcXl1/PSfjJDKpJPEvsCWGVrRT+FX4bKcWMqGWFU83Y
+         0qiwDvaB6drz4vXfrzAzLCosCN+HJizlEqEb8pWNXNdWDRTYtqlcAdRye8e/YIPE58HI
+         tDU0tt+Dm7Bi2F2nFZd1FjDsamiZWGyAiv7c/rTXIS31cniGmdTdEhgRudladOLthKbV
+         aCKm/HL59UQyzom7cabZdDYiQSTQ0Y5xCoXvHLOA5/YpTmaAAZD9Gbc6yLZcMGenlqf/
+         KRFg==
+X-Gm-Message-State: AOAM531ogvI9GY1NKkn27mxxF11vZaqyTUoej4juW3M8dpiZI4kJaf3n
+        eZpIjnSze5mYSwm+fRkT4Nc=
+X-Google-Smtp-Source: ABdhPJzHSwkU8Jr60yIaVJyCvsyyRXl67tIPyGy60cXqtHMYMlUMEdn/5Cjy/F5HaK89Z2AUL9y7iA==
+X-Received: by 2002:a63:6604:: with SMTP id a4mr3344000pgc.12.1591257565526;
+        Thu, 04 Jun 2020 00:59:25 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id m12sm4580285pjs.41.2020.06.04.00.59.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jun 2020 00:59:24 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Date:   Thu, 4 Jun 2020 16:59:22 +0900
+To:     Cheng Jian <cj.chengjian@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, chenwandun@huawei.com,
+        xiexiuqi@huawei.com, bobo.shaobowang@huawei.com,
+        huawei.libin@huawei.com, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, rostedt@goodmis.org
+Subject: Re: [RFC PATCH] panic: fix deadlock in panic()
+Message-ID: <20200604075922.GA143696@jagdpanzerIV.localdomain>
+References: <20200603141915.38739-1-cj.chengjian@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200603141915.38739-1-cj.chengjian@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
-> -#ifdef NODE_NOT_IN_PAGE_FLAGS
-> -	pfn_align = node_map_pfn_alignment();
-> -	if (pfn_align && pfn_align < PAGES_PER_SECTION) {
-> -		printk(KERN_WARNING "Node alignment %LuMB < min %LuMB, rejecting NUMA config\n",
-> -		       PFN_PHYS(pfn_align) >> 20,
-> -		       PFN_PHYS(PAGES_PER_SECTION) >> 20);
-> -		return -EINVAL;
-> +	if (IS_ENABLED(NODE_NOT_IN_PAGE_FLAGS)) {
+On (20/06/03 14:19), Cheng Jian wrote:
+>  A deadlock caused by logbuf_lock occurs when panic:
+> 
+> 	a) Panic CPU is running in non-NMI context
+> 	b) Panic CPU sends out shutdown IPI via NMI vector
+> 	c) One of the CPUs that we bring down via NMI vector holded logbuf_lock
+> 	d) Panic CPU try to hold logbuf_lock, then deadlock occurs.
+> 
+> we try to re-init the logbuf_lock in printk_safe_flush_on_panic()
+> to avoid deadlock, but it does not work here, because :
+> 
+> Firstly, it is inappropriate to check num_online_cpus() here.
+> When the CPU bring down via NMI vector, the panic CPU willn't
+> wait too long for other cores to stop, so when this problem
+> occurs, num_online_cpus() may be greater than 1.
+> 
+> Secondly, printk_safe_flush_on_panic() is called after panic
+> notifier callback, so if printk() is called in panic notifier
+> callback, deadlock will still occurs. Eg, if ftrace_dump_on_oops
+> is set, we print some debug information, it will try to hold the
+> logbuf_lock.
+> 
+> To avoid this deadlock, drop the num_online_cpus() check and call
+> the printk_safe_flush_on_panic() before panic_notifier_list callback,
+> attempt to re-init logbuf_lock from panic CPU.
 
-Hrm, clever ...
+We hopefully will get rid of some of these locks (around 5.9 kernel
+maybe), so the deadlocks (at least in the printk-code) should become
+less common.
 
-> +		unsigned long pfn_align = node_map_pfn_alignment();
-> +
-> +		if (pfn_align && pfn_align < PAGES_PER_SECTION) {
-> +			pr_warn("Node alignment %LuMB < min %LuMB, rejecting NUMA config\n",
-> +				PFN_PHYS(pfn_align) >> 20,
-> +				PFN_PHYS(PAGES_PER_SECTION) >> 20);
-> +			return -EINVAL;
-> +		}
->  	}
-> -#endif
->  	if (!numa_meminfo_cover_memory(mi))
->  		return -EINVAL;
->  
-> diff --git a/include/linux/page-flags-layout.h b/include/linux/page-flags-layout.h
-> index 71283739ffd2..1a4cdec2bd29 100644
-> --- a/include/linux/page-flags-layout.h
-> +++ b/include/linux/page-flags-layout.h
-> @@ -100,7 +100,7 @@
->   * there.  This includes the case where there is no node, so it is implicit.
->   */
->  #if !(NODES_WIDTH > 0 || NODES_SHIFT == 0)
-> -#define NODE_NOT_IN_PAGE_FLAGS
-> +#define NODE_NOT_IN_PAGE_FLAGS 1
-
-but if we ever lose the 1 then the above will silently compile the code
-within the IS_ENABLED() section out.
-
-Thanks,
-
-        tglx
+	-ss
