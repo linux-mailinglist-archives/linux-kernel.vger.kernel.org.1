@@ -2,164 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B92D1EDD9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFBD1EDDCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgFDHAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 03:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727769AbgFDHAF (ORCPT
+        id S1727103AbgFDHNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 03:13:09 -0400
+Received: from esa1.hc3370-68.iphmx.com ([216.71.145.142]:65395 "EHLO
+        esa1.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725959AbgFDHNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 03:00:05 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8604C05BD1E
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 00:00:02 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x22so2869229pfn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 00:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=ehnvTHrC4FiL82yKM8mB6k6smyhfZQn4QW5Pmpjoujo=;
-        b=WNeCSo/6X9jnPJN+T6rzzS/5NWS+b/GuJrQza+Ug291tJqT3pqMSPUgcJNsT7tyGVq
-         5axyUMwjNCuEOcXMe48YN9w1FgT5IQHFUGed5OYfeIpXkxi7IqOkuauXJcUVkWoX6YSu
-         jxf01kqpxgW0PEOpm1vz3SsmzWE/ywFVLNBEBdgIJwBYQoqBH0pVUMDGVwDNcAuJHvXw
-         /2uk5Xlo4tEqO/pgcD6onbxG5eSa6yoggwvBNr1sTV/ui0RNLVsVHofGmIAqWUQx9Izd
-         TTt0S+vlo925mKxLXv2VLDyU2saDLBsbCBywYEkd7YAER6DRg0epJAq8PL/KwxGmafsn
-         S/7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ehnvTHrC4FiL82yKM8mB6k6smyhfZQn4QW5Pmpjoujo=;
-        b=olrOuV0shDg660/KnVlyBlhMs5Crk3gNlAc9bycpI23EtKFXpDYpTgvcam1ALPfbon
-         61cGA2fmqGSnYpKtv40nok9ny7GUMcSSa4Fywc57HJ4xYRAlTEp+A5T1FfrLyysdLxnO
-         /UJFpe7fmSfS1b+++hUuEd/ceMHuQ2UN1LO9X4TrA8Sxd6+DNYt754aWMZ41tzcQwBra
-         952TE/+z8KBIrFzyPqhmYKc/qv6t6LtwJ4on80oube+kAuxR6ex+PvpavSLj1v3ano+j
-         xLOIWoq7tbnCx64hVN3dgnN48LFw2owHPJvowuqIf13MFngp5MyqGDZ9QyvIqfVZtK1T
-         Wyjw==
-X-Gm-Message-State: AOAM532i5cEhUgGEF6G5JvJqYXKvxqq7uF8UdZ1KqZC/gPYsGO6ZpI7w
-        u0iZ23hT9GHV2+KZiPglgVq7TA==
-X-Google-Smtp-Source: ABdhPJykEG0SED6v8LSCoEE9WQwCMwwXMzcJGMOaYd65TAXcNdkwIlReguS5Z7Rth31A8lHbXUQkcg==
-X-Received: by 2002:a05:6a00:843:: with SMTP id q3mr2764044pfk.107.1591254002252;
-        Thu, 04 Jun 2020 00:00:02 -0700 (PDT)
-Received: from localhost.localdomain ([117.252.66.248])
-        by smtp.gmail.com with ESMTPSA id q6sm1703309pff.163.2020.06.03.23.59.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Jun 2020 00:00:01 -0700 (PDT)
-From:   Sumit Garg <sumit.garg@linaro.org>
-To:     jens.wiklander@linaro.org, corbet@lwn.net
-Cc:     maxim.uvarov@linaro.org, jarkko.sakkinen@linux.intel.com,
-        tee-dev@lists.linaro.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH v2] Documentation: tee: Document TEE kernel interface
-Date:   Thu,  4 Jun 2020 12:29:39 +0530
-Message-Id: <1591253979-29067-1-git-send-email-sumit.garg@linaro.org>
-X-Mailer: git-send-email 2.7.4
+        Thu, 4 Jun 2020 03:13:09 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Jun 2020 03:13:08 EDT
+Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: 9zAhf83GSgEwVQAlNLIU0pGVdGDAshbC0Sjobq4FVFCviv2UJIg1ceYEsq+Yy0UQBCh1NFfEVy
+ iMLTX3yV7vbF6Waw25yG9y+zEinLLz1zR9Lro1huou6GtYPZBtzM7yyyrAbkeV8wwEgZAesGPR
+ 9t4kRazxWGZKk+HF81fNvmBeezr3rFw/eWaf2A0imOXifNpt7cl+sNxzIbSZAhzYx7lP3DUvFq
+ UuLfxFcBZb2rPfRlU+omrackTfSfGDW1cThP56PbO0AyoTGYXRLwTK9XnJksPbOfMd9H9U2L+p
+ U9U=
+X-SBRS: 2.7
+X-MesageID: 19486747
+X-Ironport-Server: esa1.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.73,471,1583211600"; 
+   d="scan'208";a="19486747"
+Date:   Thu, 4 Jun 2020 09:05:48 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     "Agarwal, Anchal" <anchalag@amazon.com>
+CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Kamata, Munehisa" <kamatam@amazon.com>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "len.brown@intel.com" <len.brown@intel.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Valentin, Eduardo" <eduval@amazon.com>,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>
+Subject: Re: [PATCH 06/12] xen-blkfront: add callbacks for PM suspend and
+ hibernation]
+Message-ID: <20200604070548.GH1195@Air-de-Roger>
+References: <7FD7505E-79AA-43F6-8D5F-7A2567F333AB@amazon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <7FD7505E-79AA-43F6-8D5F-7A2567F333AB@amazon.com>
+X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
+ AMSPEX02CL02.citrite.net (10.69.22.126)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update documentation with TEE bus infrastructure which provides an
-interface for kernel client drivers to communicate with corresponding
-Trusted Application.
+Hello,
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
+On Wed, Jun 03, 2020 at 11:33:52PM +0000, Agarwal, Anchal wrote:
+>  CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> 
+> 
+> 
+>     On Tue, May 19, 2020 at 11:27:50PM +0000, Anchal Agarwal wrote:
+>     > From: Munehisa Kamata <kamatam@amazon.com>
+>     > 
+>     > S4 power transition states are much different than xen
+>     > suspend/resume. Former is visible to the guest and frontend drivers should
+>     > be aware of the state transitions and should be able to take appropriate
+>     > actions when needed. In transition to S4 we need to make sure that at least
+>     > all the in-flight blkif requests get completed, since they probably contain
+>     > bits of the guest's memory image and that's not going to get saved any
+>     > other way. Hence, re-issuing of in-flight requests as in case of xen resume
+>     > will not work here. This is in contrast to xen-suspend where we need to
+>     > freeze with as little processing as possible to avoid dirtying RAM late in
+>     > the migration cycle and we know that in-flight data can wait.
+>     > 
+>     > Add freeze, thaw and restore callbacks for PM suspend and hibernation
+>     > support. All frontend drivers that needs to use PM_HIBERNATION/PM_SUSPEND
+>     > events, need to implement these xenbus_driver callbacks. The freeze handler
+>     > stops block-layer queue and disconnect the frontend from the backend while
+>     > freeing ring_info and associated resources. Before disconnecting from the
+>     > backend, we need to prevent any new IO from being queued and wait for existing
+>     > IO to complete. Freeze/unfreeze of the queues will guarantee that there are no
+>     > requests in use on the shared ring. However, for sanity we should check
+>     > state of the ring before disconnecting to make sure that there are no
+>     > outstanding requests to be processed on the ring. The restore handler
+>     > re-allocates ring_info, unquiesces and unfreezes the queue and re-connect to
+>     > the backend, so that rest of the kernel can continue to use the block device
+>     > transparently.
+>     > 
+>     > Note:For older backends,if a backend doesn't have commit'12ea729645ace'
+>     > xen/blkback: unmap all persistent grants when frontend gets disconnected,
+>     > the frontend may see massive amount of grant table warning when freeing
+>     > resources.
+>     > [   36.852659] deferring g.e. 0xf9 (pfn 0xffffffffffffffff)
+>     > [   36.855089] xen:grant_table: WARNING:e.g. 0x112 still in use!
+>     > 
+>     > In this case, persistent grants would need to be disabled.
+>     > 
+>     > [Anchal Changelog: Removed timeout/request during blkfront freeze.
+>     > Reworked the whole patch to work with blk-mq and incorporate upstream's
+>     > comments]
+> 
+>     Please tag versions using vX and it would be helpful if you could list
+>     the specific changes that you performed between versions. There where
+>     3 RFC versions IIRC, and there's no log of the changes between them.
+> 
+> I will elaborate on "upstream's comments" in my changelog in my next round of patches.
 
-Changes in v2:
-- Add TEE client driver example snippet.
+Sorry for being picky, but can you please make sure your email client
+properly quotes previous emails on reply. Note the lack of '>' added
+to the quoted parts of your reply.
 
- Documentation/tee.txt | 68 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 68 insertions(+)
+>     > +                     }
+>     > +
+>     >                       break;
+>     > +             }
+>     > +
+>     > +             /*
+>     > +              * We may somehow receive backend's Closed again while thawing
+>     > +              * or restoring and it causes thawing or restoring to fail.
+>     > +              * Ignore such unexpected state regardless of the backend state.
+>     > +              */
+>     > +             if (info->connected == BLKIF_STATE_FROZEN) {
+> 
+>     I think you can join this with the previous dev->state == XenbusStateClosed?
+> 
+>     Also, won't the device be in the Closed state already if it's in state
+>     frozen?
+> Yes but I think this mostly due to a hypothetical case if during thawing backend switches to Closed state.
+> I am not entirely sure if that could happen. Could use some expertise here.
 
-diff --git a/Documentation/tee.txt b/Documentation/tee.txt
-index c8fad81..350dd40 100644
---- a/Documentation/tee.txt
-+++ b/Documentation/tee.txt
-@@ -53,6 +53,66 @@ clients, forward them to the TEE and send back the results. In the case of
- supplicants the communication goes in the other direction, the TEE sends
- requests to the supplicant which then sends back the result.
- 
-+The TEE kernel interface
-+========================
-+
-+Kernel provides a TEE bus infrastructure where a Trusted Application is
-+represented as a device identified via Universally Unique Identifier (UUID) and
-+client drivers register a table of supported device UUIDs.
-+
-+TEE bus infrastructure registers following APIs:
-+-  match(): iterates over the client driver UUID table to find a corresponding
-+   match for device UUID. If a match is found, then this particular device is
-+   probed via corresponding probe API registered by the client driver. This
-+   process happens whenever a device or a client driver is registered with TEE
-+   bus.
-+-  uevent(): notifies user-space (udev) whenever a new device is registered on
-+   TEE bus for auto-loading of modularized client drivers.
-+
-+TEE bus device enumeration is specific to underlying TEE implementation, so it
-+is left open for TEE drivers to provide corresponding implementation.
-+
-+Then TEE client driver can talk to a matched Trusted Application using APIs
-+listed in include/linux/tee_drv.h.
-+
-+TEE client driver example
-+-------------------------
-+
-+Suppose a TEE client driver needs to communicate with a Trusted Application
-+having UUID: ``ac6a4085-0e82-4c33-bf98-8eb8e118b6c2``, so driver registration
-+snippet would look like::
-+
-+	static const struct tee_client_device_id client_id_table[] = {
-+		{UUID_INIT(0xac6a4085, 0x0e82, 0x4c33,
-+			   0xbf, 0x98, 0x8e, 0xb8, 0xe1, 0x18, 0xb6, 0xc2)},
-+		{}
-+	};
-+
-+	MODULE_DEVICE_TABLE(tee, client_id_table);
-+
-+	static struct tee_client_driver client_driver = {
-+		.id_table	= client_id_table,
-+		.driver		= {
-+			.name		= DRIVER_NAME,
-+			.bus		= &tee_bus_type,
-+			.probe		= client_probe,
-+			.remove		= client_remove,
-+		},
-+	};
-+
-+	static int __init client_init(void)
-+	{
-+		return driver_register(&client_driver.driver);
-+	}
-+
-+	static void __exit client_exit(void)
-+	{
-+		driver_unregister(&client_driver.driver);
-+	}
-+
-+	module_init(client_init);
-+	module_exit(client_exit);
-+
- OP-TEE driver
- =============
- 
-@@ -112,6 +172,14 @@ kernel are handled by the kernel driver. Other RPC messages will be forwarded to
- tee-supplicant without further involvement of the driver, except switching
- shared memory buffer representation.
- 
-+OP-TEE device enumeration
-+-------------------------
-+
-+OP-TEE provides a pseudo Trusted Application: drivers/tee/optee/device.c in
-+order to support device enumeration. In other words, OP-TEE driver invokes this
-+application to retrieve a list of Trusted Applications which can be registered
-+as devices on the TEE bus.
-+
- AMD-TEE driver
- ==============
- 
--- 
-2.7.4
+I think the frontend seeing the backend in the closed state during
+restore would be a bug that should prevent the frontend from
+resuming.
 
+>     > +     /* Kick the backend to disconnect */
+>     > +     xenbus_switch_state(dev, XenbusStateClosing);
+>     > +
+>     > +     /*
+>     > +      * We don't want to move forward before the frontend is diconnected
+>     > +      * from the backend cleanly.
+>     > +      */
+>     > +     timeout = wait_for_completion_timeout(&info->wait_backend_disconnected,
+>     > +                                           timeout);
+>     > +     if (!timeout) {
+>     > +             err = -EBUSY;
+> 
+>     Note err is only used here, and I think could just be dropped.
+> 
+> This err is what's being returned from the function. Am I missing anything?
+
+Just 'return -EBUSY;' directly, and remove the top level variable. You
+can also use -EBUSY directly in the xenbus_dev_error call. Anyway, not
+that important.
+
+>     > +             xenbus_dev_error(dev, err, "Freezing timed out;"
+>     > +                              "the device may become inconsistent state");
+> 
+>     Leaving the device in this state is quite bad, as it's in a closed
+>     state and with the queues frozen. You should make an attempt to
+>     restore things to a working state.
+> 
+> You mean if backend closed after timeout? Is there a way to know that? I understand it's not good to 
+> leave it in this state however, I am still trying to find if there is a good way to know if backend is still connected after timeout.
+> Hence the message " the device may become inconsistent state".  I didn't see a timeout not even once on my end so that's why 
+> I may be looking for an alternate perspective here. may be need to thaw everything back intentionally is one thing I could think of.
+
+You can manually force this state, and then check that it will behave
+correctly. I would expect that on a failure to disconnect from the
+backend you should switch the frontend to the 'Init' state in order to
+try to reconnect to the backend when possible.
+
+>     > +     }
+>     > +
+>     > +     return err;
+>     > +}
+>     > +
+>     > +static int blkfront_restore(struct xenbus_device *dev)
+>     > +{
+>     > +     struct blkfront_info *info = dev_get_drvdata(&dev->dev);
+>     > +     int err = 0;
+>     > +
+>     > +     err = talk_to_blkback(dev, info);
+>     > +     blk_mq_unquiesce_queue(info->rq);
+>     > +     blk_mq_unfreeze_queue(info->rq);
+>     > +     if (!err)
+>     > +         blk_mq_update_nr_hw_queues(&info->tag_set, info->nr_rings);
+> 
+>     Bad indentation. Also shouldn't you first update the queues and then
+>     unfreeze them?
+> Please correct me if I am wrong, blk_mq_update_nr_hw_queues freezes the queue
+> So I don't think the order could be reversed.
+
+Regardless of what blk_mq_update_nr_hw_queues does, I don't think it's
+correct to unfreeze the queues without having updated them. Also the
+freezing/unfreezing uses a refcount, so I think it's perfectly fine to
+call blk_mq_update_nr_hw_queues first and then unfreeze the queues.
+
+Also note that talk_to_blkback returning an error should likely
+prevent any unfreezing, as the queues won't be updated to match the
+parameters of the backend.
+
+Thanks, Roger.
