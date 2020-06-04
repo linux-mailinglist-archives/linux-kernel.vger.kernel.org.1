@@ -2,56 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976F11EEAB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F021EEACF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 21:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729343AbgFDS6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 14:58:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729122AbgFDS6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 14:58:15 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64191206C3;
-        Thu,  4 Jun 2020 18:58:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591297095;
-        bh=f6SyfWm0wc5LAIl0L85mmf5BHNbNVTMvYK2Ad0cEaIQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1wp6QRY/EAUj+SwlQvoCkg+5y9+eU2EEZ8UwzevBLo3seCHifSbTDwJbZPmLCXBBG
-         Llw/ywQAlLzHHRIO2NutaxHWXKfeeo5am9eeu419E1EBPCgkGcGFrnWpPdLMDhAeKO
-         87YnFab5Bvi2Zcnp+x/Ikq1cdr8p7dG45VdjYILA=
-Date:   Thu, 4 Jun 2020 14:03:21 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] can: Replace zero-length array with flexible-array
-Message-ID: <20200604190321.GE10051@embeddedor>
-References: <20200507185118.GA14022@embeddedor>
- <0420f571-2d6a-c830-2029-8da60e3c2094@hartkopp.net>
- <73903bc6-afb7-f30e-28ef-065d41c6ace6@embeddedor.com>
- <74c08a71-afb5-aba4-2c30-c342b4a7e61f@hartkopp.net>
+        id S1729562AbgFDTFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 15:05:03 -0400
+Received: from static-185-78-50-24.pia1.naquadria.net ([185.78.50.24]:34579
+        "EHLO kp-sp-fe-01.kpeople.it" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728967AbgFDTFC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 15:05:02 -0400
+X-Greylist: delayed 568 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Jun 2020 15:05:02 EDT
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kp-sp-fe-01.kpeople.it (iRedMail) with ESMTP id 807CB175328C
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 18:55:29 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at kp-sp-fe-01.kpeople.it
+Received: from kp-sp-fe-01.kpeople.it ([127.0.0.1])
+        by localhost (kp-sp-fe-01.kpeople.it [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id T50qdD2t7NPB for <linux-kernel@vger.kernel.org>;
+        Thu,  4 Jun 2020 20:55:29 +0200 (CEST)
+Received: from mail.kpeople.it (unknown [45.190.220.217])
+        by kp-sp-fe-01.kpeople.it (iRedMail) with ESMTPA id 7850B1752265
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 18:55:28 +0000 (UTC)
+Date:   Thu, 4 Jun 2020 21:56:36 +0300
+Subject: 
+Message-Id: <pntz7w9t4gphchhg8cdgxysx.15912969966028@email.android.com>
+From:   "Chris Rankin" <rankincj@hwss.it>
+To:     "linux kernel" <linux-kernel@vger.kernel.org>
+Reply-To: "Chris Rankin" <rankincjr@yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <74c08a71-afb5-aba4-2c30-c342b4a7e61f@hartkopp.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 08:31:55AM +0200, Oliver Hartkopp wrote:
-> 
-> Great! Thanks for the info - and how I could have checked it on my own, too.
-> 
+TGludXggICAgaHR0cHM6Ly9iaXQubHkvMlhyV3ZyYyAgICAgDQpDaHJpcw==
 
-No problem. :)
-
-Thanks
---
-Gustavo
