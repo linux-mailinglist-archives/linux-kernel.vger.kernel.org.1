@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 509BF1EE3F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 14:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE231EE408
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 14:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgFDMGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 08:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
+        id S1728545AbgFDMGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 08:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728349AbgFDMGA (ORCPT
+        with ESMTP id S1728494AbgFDMG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 08:06:00 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBE8C03E96D
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 05:06:00 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id c185so5647719qke.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 05:06:00 -0700 (PDT)
+        Thu, 4 Jun 2020 08:06:29 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7993BC03E96E
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 05:06:29 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id e20so2763808qvu.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 05:06:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=10X0map6UOeGNTOAtJjcoZkFS3kyuEeuHwD1SVPg4bQ=;
-        b=oMfNEmOdO72lJE24/sRZRqyyzU5L87JXMiN39g3iZUSaUx9wGVBhJG1llfPoLRVu3C
-         E5CpVUeXgMGfCdXjSVFDTiEk8nzlkvW4IV1oEmJ1+5lhBQunofLf7lEl72TMswUFJmIW
-         u++eT1tLghLvdkLJ5KIiOBYR8bDEtNBbjgsvJlVje96CGYMmWTba7TN7FPpfUOpV/r2+
-         4idVzgLlaBUxE0hLzDNbcmvNmifHVOfZOKTrtpZR2czWRAq2uoVStcZTZ0wwilOwRwLj
-         DX2fH4nTRvvwaaIBVnPUuEUQQaTgxYahsW3t+32m5Rbrh0BoAKnUcK5EKEi69m5WrGbp
-         S5Aw==
+        bh=J8XXw9bWqog1qXznkBFIaFfGNYcanEbfH23hTVGzPIQ=;
+        b=faSHCfVZTU002i9rOq3081b6hzhIIqH7n5dv5hGRJd8jMEK/WM+98oeWfE+xnoRjTI
+         xwyoBTmd5jkTkC2T2FtyxJh6cTLJurmhk5Kp48DH8KwAg3CCsjlyqPhtYX+t8vlCC9Kc
+         1l0/nu61+qDRbgfmSUXRvlSPGBNhPbZeMTPJBClNBBv85NJMoIeVwAOBeJN3uzZiNTdI
+         0tM1CsKAEz9faQe/svQg9wwSlgpONxqegigWVLrYtNSr8/GJnaRUx7mztf4LMqBfpPu5
+         TXw0mpqlRLDAHb0UL2838SF2FOH0YJ3/K2eGG8/NGgguFUx8fanSmhr6OSVaa41cZ/5z
+         VRdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=10X0map6UOeGNTOAtJjcoZkFS3kyuEeuHwD1SVPg4bQ=;
-        b=sbZ4HvPaGYQ6y2vRcYwuVfD1/K2YwiS2oP9pTr7JYq8I9DNstQMEAbAglcRbrsqMQ/
-         n57iNc5RF4plBEGcy7n+4X9QSed5wzlJM6T1a8wMnxEflAGQMHUHS5gA8Dn8OQWIlSXu
-         QOp4Y/TkXS5Co6E0LSy0s389O7G5typNLH9Ag0Whz8wbt7mMwOOQMxV9heoAYNHN4oWn
-         IEAK04g2ZW+7NBL1kXsfpu88yJAJknDc+eRIa5X8JA1je9CPi2RLUS9BoTb0Iey+C5eb
-         Q9/LPOPoUh+dXcx3CLcStNqw/yrwJkl7JfChaEjYK97+m92YcPOUQ8LUd8PGGaLXjs0i
-         8+HA==
-X-Gm-Message-State: AOAM530pr3FM9ZA/JD/C6AHoPNVD/CToQ9MLUt/SDi51jRljxc2zVKDV
-        RRDGwqlR8xsPnTq65po7FQHDqZEiOZAw9SkNt/W0Ow==
-X-Google-Smtp-Source: ABdhPJwaLx2c3GthlyRENjofbQ7WxrJN7J7wcw4AxJv+iQH571VLbg+tKGZ3VinkSLrSzyFY8gg6Aqh5LxfbzUfAsAQ=
-X-Received: by 2002:a05:620a:1428:: with SMTP id k8mr4067003qkj.43.1591272358982;
- Thu, 04 Jun 2020 05:05:58 -0700 (PDT)
+        bh=J8XXw9bWqog1qXznkBFIaFfGNYcanEbfH23hTVGzPIQ=;
+        b=UJ4DBtSRpGj8tdr5ARnXPa38pVZmKqreX55JlQt2TTSNZeVqkbKKbu2Lf3raSSOHP2
+         RxbkfekrHYF75HJTICE/VS5xsxE3G6Lj7w3+qpTi8Wr2VR80mNgmOaCaIcjdNThX7Qtg
+         DUMkEzBQ4muphPcLpJC4yjYthtfJPJKTd/AKgKuXXFolZsNmb0lLm9pZkTmHPSJSAvpa
+         CStJoJDn8L+Glct1P9qCao/+SkgBJ5UjA7QZYdWaKzYoSB9q6htG/Q5RZzRl6VIGW0tL
+         GDE3GiY4Ul8S0F2aLpkDmAvtFkSwh+lLFG5eNDXdeHHCoUck91oQNuWC2+pA4wYdbvoJ
+         uG4A==
+X-Gm-Message-State: AOAM532B/Jn0OnMvy+XT0V00VSqwHIWLFHHaZm9rTTGYmiOoN5YztW4r
+        GoNLfTI0gCxSvsJoLMabn2MMMoZsOevq2N8kTy8YDg==
+X-Google-Smtp-Source: ABdhPJxZCPPf49APC5CxzIFLlJ2ZS0uykwlb6NLcKgK/nhI4HSwy5rWlG4Afb78EiExniD1IYqBpul8PsQDoOd/7vq0=
+X-Received: by 2002:a0c:c70f:: with SMTP id w15mr4544479qvi.34.1591272388478;
+ Thu, 04 Jun 2020 05:06:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1585233617.git.andreyknvl@google.com> <ab5e2885ce674ba6e04368551e51eeb6a2c11baf.1585233617.git.andreyknvl@google.com>
-In-Reply-To: <ab5e2885ce674ba6e04368551e51eeb6a2c11baf.1585233617.git.andreyknvl@google.com>
+References: <cover.1585233617.git.andreyknvl@google.com> <9d9134359725a965627b7e8f2652069f86f1d1fa.1585233617.git.andreyknvl@google.com>
+In-Reply-To: <9d9134359725a965627b7e8f2652069f86f1d1fa.1585233617.git.andreyknvl@google.com>
 From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 4 Jun 2020 14:05:47 +0200
-Message-ID: <CACT4Y+bn1xR6YS-+mLsoneMriYEJRz37D-NDwp_M=4f3u0f_Zw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/7] kcov: cleanup debug messages
+Date:   Thu, 4 Jun 2020 14:06:17 +0200
+Message-ID: <CACT4Y+YMd1f_trERXGgcQgXa35cq33kfQd-Fv8_5G6V+XLbqTw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/7] kcov: fix potential use-after-free in kcov_remote_start
 To:     Andrey Konovalov <andreyknvl@google.com>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Alan Stern <stern@rowland.harvard.edu>,
@@ -67,148 +67,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Mar 26, 2020 at 3:44 PM Andrey Konovalov <andreyknvl@google.com> wrote:
 >
-> Previous commit left a lot of excessive debug messages, clean them up.
+> If vmalloc() fails in kcov_remote_start() we'll access remote->kcov
+> without holding kcov_remote_lock, so remote might potentially be freed
+> at that point. Cache kcov pointer in a local variable.
 >
 > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
 Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 
 > ---
->  kernel/kcov.c | 22 ++--------------------
->  1 file changed, 2 insertions(+), 20 deletions(-)
+>  kernel/kcov.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
 >
 > diff --git a/kernel/kcov.c b/kernel/kcov.c
-> index f50354202dbe..f6bd119c9419 100644
+> index f6bd119c9419..cc5900ac2467 100644
 > --- a/kernel/kcov.c
 > +++ b/kernel/kcov.c
-> @@ -98,6 +98,7 @@ static struct kcov_remote *kcov_remote_find(u64 handle)
->         return NULL;
->  }
->
-> +/* Must be called with kcov_remote_lock locked. */
->  static struct kcov_remote *kcov_remote_add(struct kcov *kcov, u64 handle)
+> @@ -748,6 +748,7 @@ static const struct file_operations kcov_fops = {
+>  void kcov_remote_start(u64 handle)
 >  {
 >         struct kcov_remote *remote;
-> @@ -119,16 +120,13 @@ static struct kcov_remote_area *kcov_remote_area_get(unsigned int size)
->         struct kcov_remote_area *area;
->         struct list_head *pos;
->
-> -       kcov_debug("size = %u\n", size);
->         list_for_each(pos, &kcov_remote_areas) {
->                 area = list_entry(pos, struct kcov_remote_area, list);
->                 if (area->size == size) {
->                         list_del(&area->list);
-> -                       kcov_debug("rv = %px\n", area);
->                         return area;
->                 }
->         }
-> -       kcov_debug("rv = NULL\n");
->         return NULL;
->  }
->
-> @@ -136,7 +134,6 @@ static struct kcov_remote_area *kcov_remote_area_get(unsigned int size)
->  static void kcov_remote_area_put(struct kcov_remote_area *area,
->                                         unsigned int size)
->  {
-> -       kcov_debug("area = %px, size = %u\n", area, size);
->         INIT_LIST_HEAD(&area->list);
->         area->size = size;
->         list_add(&area->list, &kcov_remote_areas);
-> @@ -366,7 +363,6 @@ static void kcov_remote_reset(struct kcov *kcov)
->         hash_for_each_safe(kcov_remote_map, bkt, tmp, remote, hnode) {
->                 if (remote->kcov != kcov)
->                         continue;
-> -               kcov_debug("removing handle %llx\n", remote->handle);
->                 hash_del(&remote->hnode);
->                 kfree(remote);
->         }
-> @@ -553,7 +549,6 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
->
->         switch (cmd) {
->         case KCOV_INIT_TRACE:
-> -               kcov_debug("KCOV_INIT_TRACE\n");
->                 /*
->                  * Enable kcov in trace mode and setup buffer size.
->                  * Must happen before anything else.
-> @@ -572,7 +567,6 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
->                 kcov->mode = KCOV_MODE_INIT;
->                 return 0;
->         case KCOV_ENABLE:
-> -               kcov_debug("KCOV_ENABLE\n");
->                 /*
->                  * Enable coverage for the current task.
->                  * At this point user must have been enabled trace mode,
-> @@ -598,7 +592,6 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
->                 kcov_get(kcov);
->                 return 0;
->         case KCOV_DISABLE:
-> -               kcov_debug("KCOV_DISABLE\n");
->                 /* Disable coverage for the current task. */
->                 unused = arg;
->                 if (unused != 0 || current->kcov != kcov)
-> @@ -610,7 +603,6 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
->                 kcov_put(kcov);
->                 return 0;
->         case KCOV_REMOTE_ENABLE:
-> -               kcov_debug("KCOV_REMOTE_ENABLE\n");
->                 if (kcov->mode != KCOV_MODE_INIT || !kcov->area)
->                         return -EINVAL;
->                 t = current;
-> @@ -629,7 +621,6 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
->                 kcov->remote_size = remote_arg->area_size;
->                 spin_lock(&kcov_remote_lock);
->                 for (i = 0; i < remote_arg->num_handles; i++) {
-> -                       kcov_debug("handle %llx\n", remote_arg->handles[i]);
->                         if (!kcov_check_handle(remote_arg->handles[i],
->                                                 false, true, false)) {
->                                 spin_unlock(&kcov_remote_lock);
-> @@ -644,8 +635,6 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
->                         }
->                 }
->                 if (remote_arg->common_handle) {
-> -                       kcov_debug("common handle %llx\n",
-> -                                       remote_arg->common_handle);
->                         if (!kcov_check_handle(remote_arg->common_handle,
->                                                 true, false, false)) {
->                                 spin_unlock(&kcov_remote_lock);
-> @@ -782,7 +771,6 @@ void kcov_remote_start(u64 handle)
->         spin_lock(&kcov_remote_lock);
->         remote = kcov_remote_find(handle);
->         if (!remote) {
-> -               kcov_debug("no remote found");
+> +       struct kcov *kcov;
+>         void *area;
+>         struct task_struct *t;
+>         unsigned int size;
+> @@ -774,16 +775,17 @@ void kcov_remote_start(u64 handle)
 >                 spin_unlock(&kcov_remote_lock);
 >                 return;
 >         }
-> @@ -810,8 +798,6 @@ void kcov_remote_start(u64 handle)
->         /* Reset coverage size. */
->         *(u64 *)area = 0;
->
-> -       kcov_debug("area = %px, size = %u", area, size);
-> -
->         kcov_start(t, size, area, mode, sequence);
->
->  }
-> @@ -881,10 +867,8 @@ void kcov_remote_stop(void)
->         unsigned int size = t->kcov_size;
->         int sequence = t->kcov_sequence;
->
-> -       if (!kcov) {
-> -               kcov_debug("no kcov found\n");
-> +       if (!kcov)
->                 return;
-> -       }
->
->         kcov_stop(t);
->         t->kcov = NULL;
-> @@ -894,8 +878,6 @@ void kcov_remote_stop(void)
->          * KCOV_DISABLE could have been called between kcov_remote_start()
->          * and kcov_remote_stop(), hence the check.
+> +       kcov = remote->kcov;
+>         /* Put in kcov_remote_stop(). */
+> -       kcov_get(remote->kcov);
+> -       t->kcov = remote->kcov;
+> +       kcov_get(kcov);
+> +       t->kcov = kcov;
+>         /*
+>          * Read kcov fields before unlock to prevent races with
+>          * KCOV_DISABLE / kcov_remote_reset().
 >          */
-> -       kcov_debug("move if: %d == %d && %d\n",
-> -               sequence, kcov->sequence, (int)kcov->remote);
->         if (sequence == kcov->sequence && kcov->remote)
->                 kcov_move_area(kcov->mode, kcov->area, kcov->size, area);
->         spin_unlock(&kcov->lock);
+> -       size = remote->kcov->remote_size;
+> -       mode = remote->kcov->mode;
+> -       sequence = remote->kcov->sequence;
+> +       size = kcov->remote_size;
+> +       mode = kcov->mode;
+> +       sequence = kcov->sequence;
+>         area = kcov_remote_area_get(size);
+>         spin_unlock(&kcov_remote_lock);
+>
+> @@ -791,7 +793,7 @@ void kcov_remote_start(u64 handle)
+>                 area = vmalloc(size * sizeof(unsigned long));
+>                 if (!area) {
+>                         t->kcov = NULL;
+> -                       kcov_put(remote->kcov);
+> +                       kcov_put(kcov);
+>                         return;
+>                 }
+>         }
 > --
 > 2.26.0.rc2.310.g2932bb562d-goog
 >
