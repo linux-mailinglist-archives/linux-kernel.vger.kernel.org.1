@@ -2,165 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A5D1EE18B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB0F1EE1A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728180AbgFDJlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 05:41:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47768 "EHLO mail.kernel.org"
+        id S1728228AbgFDJna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 05:43:30 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:63004 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726248AbgFDJlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 05:41:51 -0400
-Received: from kernel.org (unknown [87.71.78.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728083AbgFDJna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 05:43:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591263808; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=ptxzvOIILTUUiR4YCCWVTeqV1s61jkQ9pE3WHk/M/wg=; b=tsmvzPcw780NTVl7QWc2VIDdGF26C5hgcwwnYFnbZIBXJ2hH7KQcwdwDmBWBlmbs+HqgUdsl
+ dm070QtLu3GS/vekvONvxvq2wcQ48P0qZqu6e9/7Sno9FjP60t59WAUWBpHvLDW6GiB1XuDN
+ gjMJufjEnKo2CTUexHPfohxM/tg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n14.prod.us-east-1.postgun.com with SMTP id
+ 5ed8c23676fccbb4c8c9b656 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Jun 2020 09:43:18
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B7140C43387; Thu,  4 Jun 2020 09:43:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.206.24.160] (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3FDC206C3;
-        Thu,  4 Jun 2020 09:41:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591263710;
-        bh=1Q3d66uzBYSZVsxgnp/NnELnCNnx2g8D9fS4fWf1tZU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C4SWVhgke8okNdSNThzzm+pvB0BBxC+L9XfiRpfWwdENE32NTRySuxE9r/7AGBN52
-         VQ5bSYln8QHw7vVdtvRzDfqt4APeQDd4kA7Xe8CNmHjvD48410i6h4eSQt1s7mqDXL
-         qqxMB94j2dQ/XCuBIdXsQpiPRrpdWdkx5G8lu2ug=
-Date:   Thu, 4 Jun 2020 12:41:33 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] arch/{mips,sparc,microblaze,powerpc}: Don't enable
- pagefault/preempt twice
-Message-ID: <20200604094133.GC202650@kernel.org>
-References: <20200518184843.3029640-1-ira.weiny@intel.com>
- <20200519165422.GA5838@roeck-us.net>
- <20200519184031.GB3356843@iweiny-DESK2.sc.intel.com>
- <20200519194215.GA71941@roeck-us.net>
- <20200520051315.GA3660833@iweiny-DESK2.sc.intel.com>
- <d86dba19-4f4b-061e-a2c7-4f037e9e2de2@roeck-us.net>
- <20200521174250.GB176262@iweiny-DESK2.sc.intel.com>
- <20200603135736.e7b5ded0082a81ae6d9067a0@linux-foundation.org>
- <20200603211416.GA1740285@iweiny-DESK2.sc.intel.com>
- <3538c8ad-674e-d310-d870-4ef6888092ed@roeck-us.net>
+        (Authenticated sender: sanm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 87E81C433C6;
+        Thu,  4 Jun 2020 09:43:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 87E81C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sanm@codeaurora.org
+Subject: Re: [PATCH v7 2/4] usb: dwc3: qcom: Add interconnect support in dwc3
+ driver
+To:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
+References: <1585718145-29537-1-git-send-email-sanm@codeaurora.org>
+ <1585718145-29537-3-git-send-email-sanm@codeaurora.org>
+ <159120577830.69627.13288547914742515702@swboyd.mtv.corp.google.com>
+From:   "Sandeep Maheswaram (Temp)" <sanm@codeaurora.org>
+Message-ID: <d9ccf188-4f00-d3ac-ba0f-73f06c087553@codeaurora.org>
+Date:   Thu, 4 Jun 2020 15:13:09 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3538c8ad-674e-d310-d870-4ef6888092ed@roeck-us.net>
+In-Reply-To: <159120577830.69627.13288547914742515702@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 04:44:17PM -0700, Guenter Roeck wrote:
-> 
-> sparc32 smp images in next-20200603 still crash for me with a spinlock
-> recursion. s390 images hang early in boot. Several others (alpha, arm64,
-> various ppc) don't even compile. I can run some more bisects over time,
-> but this is becoming a full-time job :-(.
 
-I've been able to bisect s390 hang to commit b614345f52bc ("x86/entry:
-Clarify irq_{enter,exit}_rcu()").
+On 6/3/2020 11:06 PM, Stephen Boyd wrote:
+> Quoting Sandeep Maheswaram (2020-03-31 22:15:43)
+>> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+>> index 1dfd024..d33ae86 100644
+>> --- a/drivers/usb/dwc3/dwc3-qcom.c
+>> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+>> @@ -76,8 +85,13 @@ struct dwc3_qcom {
+>>          enum usb_dr_mode        mode;
+>>          bool                    is_suspended;
+>>          bool                    pm_suspended;
+>> +       struct icc_path         *usb_ddr_icc_path;
+>> +       struct icc_path         *apps_usb_icc_path;
+>>   };
+>>   
+>> +static int dwc3_qcom_interconnect_enable(struct dwc3_qcom *qcom);
+>> +static int dwc3_qcom_interconnect_disable(struct dwc3_qcom *qcom);
+> Please get rid of these. We shouldn't need forward declarations.
+Will do in next version.
+>
+>> +
+>>   static inline void dwc3_qcom_setbits(void __iomem *base, u32 offset, u32 val)
+>>   {
+>>          u32 reg;
+>> @@ -285,6 +307,101 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom)
+>>          return 0;
+>>   }
+>>   
+>> +
+>> +/**
+>> + * dwc3_qcom_interconnect_init() - Get interconnect path handles
+>> + * @qcom:                      Pointer to the concerned usb core.
+>> + *
+>> + */
+>> +static int dwc3_qcom_interconnect_init(struct dwc3_qcom *qcom)
+>> +{
+>> +       struct device *dev = qcom->dev;
+>> +       int ret;
+>> +
+>> +       if (!device_is_bound(&qcom->dwc3->dev))
+>> +               return -EPROBE_DEFER;
+> How is this supposed to work? I see that this was added in an earlier
+> revision of this patch series but there isn't any mention of why
+> device_is_bound() is used here. It would be great if there was a comment
+> detailing why this is necessary. It sounds like maximum_speed is
+> important?
+>
+> Furthermore, dwc3_qcom_interconnect_init() is called by
+> dwc3_qcom_probe() which is the function that registers the device for
+> qcom->dwc3->dev. If that device doesn't probe between the time it is
+> registered by dwc3_qcom_probe() and this function is called then we'll
+> fail dwc3_qcom_probe() with -EPROBE_DEFER. And that will remove the
+> qcom->dwc3->dev device from the platform bus because we call
+> of_platform_depopulate() on the error path of dwc3_qcom_probe().
+>
+> So isn't this whole thing racy and can potentially lead us to a driver
+> probe loop where the wrapper (dwc3_qcom) and the core (dwc3) are probing
+> and we're trying to time it just right so that driver for dwc3 binds
+> before we setup interconnects? I don't know if dwc3 can communicate to
+> the wrapper but that would be more of a direct way to do this. Or maybe
+> the wrapper should try to read the DT property for maximum speed and
+> fallback to a worst case high bandwidth value if it can't figure it out
+> itself without help from dwc3 core.
+>
+This was added in V4 to address comments from Matthias in V3
 
-After this commit, lockdep_hardirq_exit() is called twice on s390 (and
-others) - one time in irq_exit_rcu() and another one in irq_exit():
-
-/**
- * irq_exit_rcu() - Exit an interrupt context without updating RCU
- *
- * Also processes softirqs if needed and possible.
- */
-void irq_exit_rcu(void)
-{
-	__irq_exit_rcu();
-	 /* must be last! */
-	lockdep_hardirq_exit();
-}
-
-/**
- * irq_exit - Exit an interrupt context, update RCU and lockdep
- *
- * Also processes softirqs if needed and possible.
- */
-void irq_exit(void)
-{
-	irq_exit_rcu();
-	rcu_irq_exit();
-	 /* must be last! */
-	lockdep_hardirq_exit();
-}
-
-Removing the call in irq_exit() make s390 boot again, and judgung by the
-x86 entry code, the comment /* must be last! */ is stale...
-
-@Peter, @Thomas, can you comment please?
-
-From e51d50ee6f4d1f446decf91c2c67230da14ff82c Mon Sep 17 00:00:00 2001
-From: Mike Rapoport <rppt@linux.ibm.com>
-Date: Thu, 4 Jun 2020 12:37:03 +0300
-Subject: [PATCH] softirq: don't call lockdep_hardirq_exit() twice
-
-After commit b614345f52bc ("x86/entry: Clarify irq_{enter,exit}_rcu()")
-lockdep_hardirq_exit() is called twice on every architecture that uses
-irq_exit(): one time in irq_exit_rcu() and another one in irq_exit().
-
-Remove the extra call in irq_exit().
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- kernel/softirq.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index a3eb6eba8c41..7523f4ce4c1d 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -427,7 +427,6 @@ static inline void __irq_exit_rcu(void)
- void irq_exit_rcu(void)
- {
- 	__irq_exit_rcu();
--	 /* must be last! */
- 	lockdep_hardirq_exit();
- }
- 
-@@ -440,8 +439,6 @@ void irq_exit(void)
- {
- 	irq_exit_rcu();
- 	rcu_irq_exit();
--	 /* must be last! */
--	lockdep_hardirq_exit();
- }
- 
- /*
--- 
-2.26.2
-
-
-
-> Guenter
+https://patchwork.kernel.org/patch/11148587/
 
 -- 
-Sincerely yours,
-Mike.
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+
