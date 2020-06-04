@@ -2,115 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D591EE2F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2727C1EE300
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726612AbgFDLIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 07:08:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50542 "EHLO
+        id S1726735AbgFDLJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 07:09:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725881AbgFDLIr (ORCPT
+        with ESMTP id S1726639AbgFDLJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 07:08:47 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391CDC03E96D;
-        Thu,  4 Jun 2020 04:08:47 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49d31R2lbyz9sSn;
-        Thu,  4 Jun 2020 21:08:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1591268923;
-        bh=K79lzCubQbJZW5qR1JuzI86y9iQNVkA+csPsrM3RczE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ci3Ljv/vAVYlVHoTIky+EPiWBoZ/qP/g7N6KWHXOVSJJTjcC367wU1iWmHfBhSt3Y
-         uSmR+cwhT60XEuJd1Oso1sSxwygbnWOHScELhmohpX34l26G6URw0az8cikf9rv/vS
-         hfRmBO3M6+D5cTfGIkxcdMG3GG4u6VJ882GiNf9Q4mEOJ4KI6s1Enk2OrTzmghMxDG
-         FyiROSiQRdJxJXIhccK6btWQBE1aNHSVMjVifHXDpg42+bkmr2OLu+tDpHxzhoICMz
-         Q++MeLQ5hsdCHlUwNsL8eUOpPNHvp1Af26iZauzfRSHp6RqKlewl7w25DMmT1ZaCdE
-         J24kqt/6xD4fg==
-Date:   Thu, 4 Jun 2020 21:08:42 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: linux-next: fix ups for clashes between akpm and powerpc trees
-Message-ID: <20200604210842.6e128144@canb.auug.org.au>
-In-Reply-To: <20200604174925.3610fdd1@canb.auug.org.au>
-References: <20200603202655.0ad0eacc@canb.auug.org.au>
-        <20200604165246.436f02ba@canb.auug.org.au>
-        <20200604174925.3610fdd1@canb.auug.org.au>
+        Thu, 4 Jun 2020 07:09:48 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5666C03E96D
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 04:09:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YWhHltp0HfbKPBvZhE5nAcBu90lHTux6EoGengUlZUY=; b=EHN6SZoT1AGLXLg6ILzh9fyvWu
+        +CCU3esUOwX7At2JOffTBvgl/aMm1ZE/HMlXJEpyR2fLWUqc9xkh38DTb0rQGQqPLmxkFZG3MZu8Z
+        S91E+nWHd4zY2/n1Sg0ldzNokSPYHiuoLaO9A2PuammUh4fa+61gCj7CLv3Gm71PMixxyFRj924gm
+        cjiUZkg4prc+AYW2pw5di8BMYTp94v2eOfQplC/pJfTDf9Swvq8H5NEXbU/1CrIMkNo6Qmwxbm2Ic
+        2UgGBsgZOLTqfvB6K7o6MHwHsIINKTVByuzFjv17cDZuPlv37iHz4PDkplC7ueU4tLUKQR+Y5eZsH
+        NC3uPwhg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jgnkP-00054A-Bw; Thu, 04 Jun 2020 11:09:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A8A1430008D;
+        Thu,  4 Jun 2020 13:09:18 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 81C4A20DF6C6C; Thu,  4 Jun 2020 13:09:18 +0200 (CEST)
+Date:   Thu, 4 Jun 2020 13:09:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     bp@alien8.de, tglx@linutronix.de, mingo@kernel.org,
+        clang-built-linux@googlegroups.com, paulmck@kernel.org,
+        dvyukov@google.com, glider@google.com, andreyknvl@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -tip] kcov: Make runtime functions noinstr-compatible
+Message-ID: <20200604110918.GA2750@hirez.programming.kicks-ass.net>
+References: <20200604095057.259452-1-elver@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dXXN7Tr4ujmem3SXFI1Rdp1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200604095057.259452-1-elver@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dXXN7Tr4ujmem3SXFI1Rdp1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jun 04, 2020 at 11:50:57AM +0200, Marco Elver wrote:
+> The KCOV runtime is very minimal, only updating a field in 'current',
+> and none of __sanitizer_cov-functions generates reports nor calls any
+> other external functions.
 
-Hi all,
+Not quite true; it writes to t->kcov_area, and we need to make
+absolutely sure that doesn't take faults or triggers anything else
+untowards.
 
-On Thu, 4 Jun 2020 17:49:25 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> diff --cc arch/powerpc/include/asm/nohash/32/pgtable.h
-> index 639f3b3713ec,eb8538c85077..1927e1b653f2
-> --- a/arch/powerpc/include/asm/nohash/32/pgtable.h
-> +++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
-> @@@ -204,13 -205,6 +205,9 @@@ static inline void pmd_clear(pmd_t *pmd
->   	*pmdp =3D __pmd(0);
->   }
->  =20
-> -=20
-> - /* to find an entry in a kernel page-table-directory */
-> - #define pgd_offset_k(address) pgd_offset(&init_mm, address)
-> -=20
->  +/* to find an entry in a page-table-directory */
->  +#define pgd_index(address)	 ((address) >> PGDIR_SHIFT)
->  +#define pgd_offset(mm, address)	 ((mm)->pgd + pgd_index(address))
->  =20
->   /*
->    * PTE updates. This function is called whenever an existing
-> @@@ -240,7 -234,7 +237,7 @@@ static inline pte_basic_t pte_update(st
->   	pte_basic_t old =3D pte_val(*p);
->   	pte_basic_t new =3D (old & ~(pte_basic_t)clr) | set;
->   	int num, i;
-> --	pmd_t *pmd =3D pmd_offset(pud_offset(pgd_offset(mm, addr), addr), addr=
-);
-> ++	pmd_t *pmd =3D pmd_offset(pud_offset(p4d_offset(pgd_offset(mm, addr), =
-addr), addr), addr);
->  =20
->   	if (!huge)
->   		num =3D PAGE_SIZE / SZ_4K;
+> Therefore we can make the KCOV runtime noinstr-compatible by:
+> 
+>   1. always-inlining internal functions and marking
+>      __sanitizer_cov-functions noinstr. The function write_comp_data() is
+>      now guaranteed to be inlined into __sanitize_cov_trace_*cmp()
+>      functions, which saves a call in the fast-path and reduces stack
+>      pressure due to the first argument being a constant.
+> 
+>   2. For Clang, correctly pass -fno-stack-protector via a separate
+>      cc-option, as -fno-conserve-stack does not exist on Clang.
+> 
+> The major benefit compared to adding another attribute to 'noinstr' to
+> not collect coverage information, is that we retain coverage visibility
+> in noinstr functions. We also currently lack such an attribute in both
+> GCC and Clang.
+> 
 
-I have added those hunks (more or less) to linux-next for tomorrow as a
-fix for mm-consolidate-pgd_index-and-pgd_offset_k-definitions.
---=20
-Cheers,
-Stephen Rothwell
+> -static void notrace write_comp_data(u64 type, u64 arg1, u64 arg2, u64 ip)
+> +static __always_inline void write_comp_data(u64 type, u64 arg1, u64 arg2, u64 ip)
+>  {
+>  	struct task_struct *t;
+>  	u64 *area;
+> @@ -231,59 +231,59 @@ static void notrace write_comp_data(u64 type, u64 arg1, u64 arg2, u64 ip)
+>  	}
+>  }
 
---Sig_/dXXN7Tr4ujmem3SXFI1Rdp1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+This thing; that appears to be the meat of it, right?
 
------BEGIN PGP SIGNATURE-----
+I can't find where t->kcov_area comes from.. is that always
+kcov_mmap()'s vmalloc_user() ?
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7Y1joACgkQAVBC80lX
-0Gx3pgf+Mn7BRXOxObGN3++NOIeZTrVUPPh44KZI+DUFc8z3Ep+BwSjtw0cwpy2A
-MnGKmG8EoYj4mQQPYqb6yR9VTs0rbTc1WOcd0zWbCNx6TcSHFPuY4N9A//b6CL6o
-4jR0d2u+SBLAo0CvxQXy2wzieiDxcPIk+0cLzjMpOzawQ9PIyZda7ZU8mjrprKRy
-P8tpd7zVTlp0xX3lCxN48hKa7iZ+v/Y9J3ZPowM1L52qRWCWiLw1Y5E2/WuHUI8c
-mBTJIlbicbjpoAX/BnUMcfe10nlFqQX40e1wLDvaM7uUyuaWFc4BmNiYHht5dEls
-1JWABzQ+sOgZlogNRgLyb1yf51/vSg==
-=5ege
------END PGP SIGNATURE-----
+That whole kcov_remote stuff confuses me.
 
---Sig_/dXXN7Tr4ujmem3SXFI1Rdp1--
+KCOV_ENABLE() has kcov_fault_in_area(), which supposedly takes the
+vmalloc faults for the current task, but who does it for the remote?
+
+Now, luckily Joerg went and ripped out the vmalloc faults, let me check
+where those patches are... w00t, they're upstream in this merge window.
+
+So no #PF from writing to t->kcov_area then, under the assumption that
+the vmalloc_user() is the only allocation site.
+
+But then there's hardware watchpoints, if someone goes and sets a data
+watchpoint in the kcov_area we're screwed. Nothing actively prevents
+that from happening. Then again, the same is currently true for much of
+current :/
+
+Also, I think you need __always_inline on kaslr_offset()
+
+
+And, unrelated to this patch in specific, I suppose I'm going to have to
+extend objtool to look for data that is used from noinstr, to make sure
+we exclude it from inspection and stuff, like that kaslr offset crud for
+example.
+
+Anyway, yes, it appears you're lucky (for having Joerg remove vmalloc
+faults) and this mostly should work as is.
