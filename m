@@ -2,158 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214621EEC20
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 22:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA521EEC15
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 22:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729944AbgFDUh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 16:37:28 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:39988 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728721AbgFDUh1 (ORCPT
+        id S1729731AbgFDUeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 16:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728800AbgFDUeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 16:37:27 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jgwc9-00064N-Lz; Thu, 04 Jun 2020 14:37:25 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jgwc8-0000m9-GV; Thu, 04 Jun 2020 14:37:25 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexey Gladkov <gladkov.alexey@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Containers <containers@lists.linux-foundation.org>
-References: <20200604200413.587896-1-gladkov.alexey@gmail.com>
-Date:   Thu, 04 Jun 2020 15:33:25 -0500
-In-Reply-To: <20200604200413.587896-1-gladkov.alexey@gmail.com> (Alexey
-        Gladkov's message of "Thu, 4 Jun 2020 22:04:11 +0200")
-Message-ID: <87ftbah8q2.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 4 Jun 2020 16:34:21 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB7DC08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 13:34:20 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id c1so4310444vsc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 13:34:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QccmPOAwdRsqU+gseuKb7TceQ37JHCZ0c4E7yU4KiQA=;
+        b=ctMItykuizT2FjCtlj3c7yeA8hejo1Eu0YvNGbgfHWNvUAZmSu1iqvjTuxpl6Rm/XM
+         /bOQT4clHDMwkaa7CQpWJ+/aULE1pYzv7SNXe1g+1d4Jvdus2Zf/u2kDn//UPtypAuEw
+         ce+XSToUwc8hZkd4Z5GjQqIAIMzFGI0iD70BY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QccmPOAwdRsqU+gseuKb7TceQ37JHCZ0c4E7yU4KiQA=;
+        b=ZlTt8w/uc/F4hgfV2N7HroOdWxba0VgbGS6iKaZ2bZu+YaoBcihRxrjaaZ6OBY0YdR
+         Vb8LNbm+aSC62SzCnhaVHpVcPzUiUlvT/jHpGnsLt/aAkua2QfyvZDKPQyCU1xYFXTVs
+         ah0G5HQnl9fW/kcBfxfIFY/295BHHU2NrUfcLAtloWR7mnuekVt2WIjlmGAnzo4wgC+e
+         ibbhQtkxN1Og/7Qvq717YwhM1TPF9yxofNaIKiakxYyS1YuE/+6mUVpVnGl/lNNuuSUv
+         9u9RWe7ca8+6pooUFCPpznHGew2A/RMuNkHfJwH+A+MD1kMccdh1+rnpxdc4GaNoqdM7
+         yHeQ==
+X-Gm-Message-State: AOAM5324FyF3Ut7PWZ8NbSSyQagIiqnICGPOtp/AUH5cUjhIoDhi7cqx
+        4lEmSt5btb3OLNaJtFbDjvXAB1E/ncw=
+X-Google-Smtp-Source: ABdhPJzBZ0W+Vb3bd6RvKhc94OMKFh7YiFpuJmzz3ughImkG2VD97GXYBdO6VUUmvq7ryEotQu58oQ==
+X-Received: by 2002:a67:d381:: with SMTP id b1mr4724561vsj.148.1591302859591;
+        Thu, 04 Jun 2020 13:34:19 -0700 (PDT)
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
+        by smtp.gmail.com with ESMTPSA id l14sm850014vkl.47.2020.06.04.13.34.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jun 2020 13:34:18 -0700 (PDT)
+Received: by mail-vs1-f48.google.com with SMTP id r11so4337248vsj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 13:34:17 -0700 (PDT)
+X-Received: by 2002:a67:8881:: with SMTP id k123mr5087675vsd.198.1591302857244;
+ Thu, 04 Jun 2020 13:34:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jgwc8-0000m9-GV;;;mid=<87ftbah8q2.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+vjCBiGzqIgIt/FfYuiYQafWqnnlO4w2E=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.2 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.0608]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa03 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa03 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Alexey Gladkov <gladkov.alexey@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 352 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.8 (1.1%), b_tie_ro: 2.7 (0.8%), parse: 0.71
-        (0.2%), extract_message_metadata: 3.0 (0.8%), get_uri_detail_list:
-        1.59 (0.5%), tests_pri_-1000: 2.8 (0.8%), tests_pri_-950: 0.98 (0.3%),
-        tests_pri_-900: 0.78 (0.2%), tests_pri_-90: 55 (15.7%), check_bayes:
-        54 (15.4%), b_tokenize: 6 (1.8%), b_tok_get_all: 8 (2.3%),
-        b_comp_prob: 1.94 (0.6%), b_tok_touch_all: 35 (10.0%), b_finish: 0.63
-        (0.2%), tests_pri_0: 271 (77.1%), check_dkim_signature: 0.39 (0.1%),
-        check_dkim_adsp: 2.2 (0.6%), poll_dns_idle: 0.91 (0.3%), tests_pri_10:
-        1.71 (0.5%), tests_pri_500: 5 (1.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 0/2] proc: use subset option to hide some top-level procfs entries
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <1591276775-13949-1-git-send-email-kalyan_t@codeaurora.org>
+In-Reply-To: <1591276775-13949-1-git-send-email-kalyan_t@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 4 Jun 2020 13:34:05 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=V7ce7EGqJh6aga4yH3NqdgXMHBe=EOONtcd2LFDX75_A@mail.gmail.com>
+Message-ID: <CAD=FV=V7ce7EGqJh6aga4yH3NqdgXMHBe=EOONtcd2LFDX75_A@mail.gmail.com>
+Subject: Re: [PATCH v6] drm/msm/dpu: ensure device suspend happens during PM sleep
+To:     Kalyan Thota <kalyan_t@codeaurora.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        Jeykumar Sankaran <jsanka@codeaurora.org>,
+        mkrishn@codeaurora.org, travitej@codeaurora.org,
+        nganji@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Gladkov <gladkov.alexey@gmail.com> writes:
+Hi,
 
-> Greetings!
+On Thu, Jun 4, 2020 at 6:20 AM Kalyan Thota <kalyan_t@codeaurora.org> wrote:
 >
-> Preface
-> -------
-> This patch set can be applied over:
+> -#ifdef CONFIG_PM
+> -static int msm_runtime_suspend(struct device *dev)
+> +#ifdef CONFIG_PM_SLEEP
+> +static int msm_pm_suspend(struct device *dev)
+>  {
+> -       struct drm_device *ddev = dev_get_drvdata(dev);
+> -       struct msm_drm_private *priv = ddev->dev_private;
+> -       struct msm_mdss *mdss = priv->mdss;
 >
-> git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git d35bec8a5788
 
-I am not going to seriously look at this for merging until after the
-merge window closes. 
+nit: remove blank line at the start of this function
 
-Have you thought about the possibility of relaxing the permission checks
-to mount proc such that we don't need to verify there is an existing
-mount of proc?  With just the subset pids I think this is feasible.  It
-might not be worth it at this point, but it is definitely worth asking
-the question.  As one of the benefits early propopents of the idea of a
-subset of proc touted was that they would not be as restricted as they
-are with today's proc.
+>  static const struct dev_pm_ops msm_pm_ops = {
+>         SET_SYSTEM_SLEEP_PM_OPS(msm_pm_suspend, msm_pm_resume)
+>         SET_RUNTIME_PM_OPS(msm_runtime_suspend, msm_runtime_resume, NULL)
+> +       .prepare = msm_pm_prepare,
+> +       .complete = msm_pm_complete,
 
-I ask because this has a bearing on the other options you are playing
-with.
-
-Do we want to find a way to have the benefit of relaxed permission
-checks while still including a few more files.
-
-> Overview
-> --------
-> Directories and files can be created and deleted by dynamically loaded modules.
-> Not all of these files are virtualized and safe inside the container.
->
-> However, subset=pid is not enough because many containers wants to have
-> /proc/meminfo, /proc/cpuinfo, etc. We need a way to limit the visibility of
-> files per procfs mountpoint.
-
-Is it desirable to have meminfo and cpuinfo as they are today or do
-people want them to reflect the ``container'' context.   So that
-applications like the JVM don't allocation too many cpus or don't try
-and consume too much memory, or run on nodes that cgroups current make
-unavailable.
-
-Are there any users or planned users of this functionality yet?
-
-I am concerned that you might be adding functionality that no one will
-ever use that will just add code to the kernel that no one cares about,
-that will then accumulate bugs.  Having had to work through a few of
-those cases to make each mount of proc have it's own super block I am
-not a great fan of adding another one.
-
-If the runc, lxc and other container runtime folks can productively use
-such and option to do useful things and they are sensible things to do I
-don't have any fundamental objection.  But I do want to be certain this
-is a feature that is going to be used.
-
-Eric
+Presumably you will get a compile failure if someone compiles without
+CONFIG_PM_SLEEP since msm_pm_prepare() and msm_pm_complete() won't be
+defined but you refer to them unconditionally.  Probably the best
+solution is to just add "__maybe_unused" to your prepare/complete
+function and then always define them.
 
 
-> Introduced changes
-> ------------------
-> Allow to specify the names of files and directories in the subset= parameter and
-> thereby make a whitelist of top-level permitted names.
->
->
-> Alexey Gladkov (2):
->   proc: use subset option to hide some top-level procfs entries
->   docs: proc: update documentation about subset= parameter
->
->  Documentation/filesystems/proc.rst |  6 +++
->  fs/proc/base.c                     | 15 +++++-
->  fs/proc/generic.c                  | 75 +++++++++++++++++++++------
->  fs/proc/inode.c                    | 18 ++++---
->  fs/proc/internal.h                 | 12 +++++
->  fs/proc/root.c                     | 81 ++++++++++++++++++++++++------
->  include/linux/proc_fs.h            | 11 ++--
->  7 files changed, 175 insertions(+), 43 deletions(-)
+I can't say I've thought through every corner case but at least this
+change no longer raises alarm bells in my mind when I look at it.  ;-)
+ If it works for you and nobody else has objections then it seems good
+enough and we can always make more improvements later.  Feel free to
+add my Reviewed-by tag when my nit is fixed and you make sure it
+compiles even if CONFIG_PM_SLEEP isn't defined.
+
+-Doug
