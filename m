@@ -2,178 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A2E1EDE01
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2A11EDE1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgFDH1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 03:27:06 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:39602 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727916AbgFDH1F (ORCPT
+        id S1728023AbgFDH3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 03:29:22 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:16598 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727768AbgFDH3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 03:27:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1591255624; x=1622791624;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=+aJnrbUqvIFf7ohzedUN3gFIX2zz4KmsEL9w8+oGKN4=;
-  b=WnzST6NSZtPmoQZ4DcOQPA7mnUK2a7XFRjYsi/mRneofh6PyBWGbhxOt
-   d+36W7kEEZmx4ed7s/ex0uKD2THxzb+212VahwvGxIinthhJZdnF7JpVB
-   v1aCxPlBi1esF1TKDzFOlEKXzgmMDrePuwnVMwD+2Osc2D9u6kAOct+Cz
-   U=;
-IronPort-SDR: J426QVX8oEfi7sc+ZPTlCCdn2WttshPkHh3eyOgQx47XJSmAizil8O2vjaFySFbrmJzpkfYb28
- Pt2T5fDVQU2Q==
-X-IronPort-AV: E=Sophos;i="5.73,471,1583193600"; 
-   d="scan'208";a="34436999"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-e7be2041.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 04 Jun 2020 07:26:47 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-e7be2041.us-west-2.amazon.com (Postfix) with ESMTPS id 9A103A25A5;
-        Thu,  4 Jun 2020 07:26:44 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 4 Jun 2020 07:26:44 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.53) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 4 Jun 2020 07:26:26 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     David Hildenbrand <david@redhat.com>
-CC:     SeongJae Park <sjpark@amazon.com>, <akpm@linux-foundation.org>,
-        "SeongJae Park" <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
-        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
-        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
-        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
-        <ying.huang@intel.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [RFC v2 7/9] mm/damon: Implement callbacks for physical memory monitoring
-Date:   Thu, 4 Jun 2020 09:26:11 +0200
-Message-ID: <20200604072611.11049-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <bd640661-143f-882f-ed92-3d2791b173aa@redhat.com> (raw)
+        Thu, 4 Jun 2020 03:29:21 -0400
+X-UUID: 085839d8068b4b0386376325890c0989-20200604
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=uB/eaRDqLP8g/98zHxi4C86lzCa4pVEjbzjzQz34ezU=;
+        b=m2O2xQ21gZsfetgrCsc46/U5CtfXhF4gtjsmnjp8rY28MFLIT/lhBXMPKx8v0ysirqdscYOZyrZUekBxWABYxaiTube0IprUoAjyXYMlsE7MSQQjW8bwpqW80+g05WMiRrQHhy4asfJixKbXvKyY2nO0s/uD6Htvp5neisluPNE=;
+X-UUID: 085839d8068b4b0386376325890c0989-20200604
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <xia.jiang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 933793228; Thu, 04 Jun 2020 15:29:16 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 4 Jun 2020 15:29:13 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 4 Jun 2020 15:29:11 +0800
+From:   Xia Jiang <xia.jiang@mediatek.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rick Chang <rick.chang@mediatek.com>
+CC:     <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        <srv_heupstream@mediatek.com>, <senozhatsky@chromium.org>,
+        <mojahsu@chromium.org>, <drinkcat@chromium.org>,
+        <maoguang.meng@mediatek.com>, <sj.huang@mediatek.com>,
+        Xia Jiang <xia.jiang@mediatek.com>
+Subject: [PATCH v9 01/18] media: platform: Improve subscribe event flow for bug fixing
+Date:   Thu, 4 Jun 2020 15:26:51 +0800
+Message-ID: <20200604072708.9468-2-xia.jiang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20200604072708.9468-1-xia.jiang@mediatek.com>
+References: <20200604072708.9468-1-xia.jiang@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.43.162.53]
-X-ClientProxiedBy: EX13D10UWA002.ant.amazon.com (10.43.160.228) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Jun 2020 18:09:21 +0200 David Hildenbrand <david@redhat.com> wrote:
+TGV0IHY0bDJfY3RybF9zdWJzY3JpYmVfZXZlbnQoKSBkbyB0aGUgam9iIGZvciBvdGhlciB0eXBl
+cyBleGNlcHQNClY0TDJfRVZFTlRfU09VUkNFX0NIQU5HRS4NCg0KUmV2aWV3ZWQtYnk6IFRvbWFz
+eiBGaWdhIDx0ZmlnYUBjaHJvbWl1bS5vcmc+DQpTaWduZWQtb2ZmLWJ5OiBYaWEgSmlhbmcgPHhp
+YS5qaWFuZ0BtZWRpYXRlay5jb20+DQotLS0NCnY5OiBubyBjaGFuZ2VzDQotLS0NCiBkcml2ZXJz
+L21lZGlhL3BsYXRmb3JtL210ay1qcGVnL210a19qcGVnX2NvcmUuYyB8IDQgKystLQ0KIDEgZmls
+ZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQg
+YS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay1qcGVnL210a19qcGVnX2NvcmUuYyBiL2RyaXZl
+cnMvbWVkaWEvcGxhdGZvcm0vbXRrLWpwZWcvbXRrX2pwZWdfY29yZS5jDQppbmRleCBmODJhODFh
+M2JkZWUuLjRhZDRhNGIzMGEwZSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0v
+bXRrLWpwZWcvbXRrX2pwZWdfY29yZS5jDQorKysgYi9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210
+ay1qcGVnL210a19qcGVnX2NvcmUuYw0KQEAgLTQ0Niw5ICs0NDYsOSBAQCBzdGF0aWMgaW50IG10
+a19qcGVnX3N1YnNjcmliZV9ldmVudChzdHJ1Y3QgdjRsMl9maCAqZmgsDQogCXN3aXRjaCAoc3Vi
+LT50eXBlKSB7DQogCWNhc2UgVjRMMl9FVkVOVF9TT1VSQ0VfQ0hBTkdFOg0KIAkJcmV0dXJuIHY0
+bDJfc3JjX2NoYW5nZV9ldmVudF9zdWJzY3JpYmUoZmgsIHN1Yik7DQotCWRlZmF1bHQ6DQotCQly
+ZXR1cm4gLUVJTlZBTDsNCiAJfQ0KKw0KKwlyZXR1cm4gdjRsMl9jdHJsX3N1YnNjcmliZV9ldmVu
+dChmaCwgc3ViKTsNCiB9DQogDQogc3RhdGljIGludCBtdGtfanBlZ19nX3NlbGVjdGlvbihzdHJ1
+Y3QgZmlsZSAqZmlsZSwgdm9pZCAqcHJpdiwNCi0tIA0KMi4xOC4wDQo=
 
-> On 03.06.20 16:11, SeongJae Park wrote:
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > This commit implements the four callbacks (->init_target_regions,
-> > ->update_target_regions, ->prepare_access_check, and ->check_accesses)
-> > for the basic access monitoring of the physical memory address space.
-> > By setting the callback pointers to point those, users can easily
-> > monitor the accesses to the physical memory.
-> > 
-> > Internally, it uses the PTE Accessed bit, as similar to that of the
-> > virtual memory support.  Also, it supports only page frames that
-> > supported by idle page tracking.  Acutally, most of the code is stollen
-> > from idle page tracking.  Users who want to use other access check
-> > primitives and monitor the frames that not supported with this
-> > implementation could implement their own callbacks on their own.
-> > 
-> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > ---
-> >  include/linux/damon.h |   5 ++
-> >  mm/damon.c            | 184 ++++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 189 insertions(+)
-> > 
-> > diff --git a/include/linux/damon.h b/include/linux/damon.h
-> > index 1a788bfd1b4e..f96503a532ea 100644
-> > --- a/include/linux/damon.h
-> > +++ b/include/linux/damon.h
-> > @@ -216,6 +216,11 @@ void kdamond_update_vm_regions(struct damon_ctx *ctx);
-> >  void kdamond_prepare_vm_access_checks(struct damon_ctx *ctx);
-> >  unsigned int kdamond_check_vm_accesses(struct damon_ctx *ctx);
-> >  
-> > +void kdamond_init_phys_regions(struct damon_ctx *ctx);
-> > +void kdamond_update_phys_regions(struct damon_ctx *ctx);
-> > +void kdamond_prepare_phys_access_checks(struct damon_ctx *ctx);
-> > +unsigned int kdamond_check_phys_accesses(struct damon_ctx *ctx);
-> > +
-> >  int damon_set_pids(struct damon_ctx *ctx, int *pids, ssize_t nr_pids);
-> >  int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
-> >  		unsigned long aggr_int, unsigned long regions_update_int,
-> > diff --git a/mm/damon.c b/mm/damon.c
-> > index f5cbc97a3bbc..6a5c6d540580 100644
-> > --- a/mm/damon.c
-> > +++ b/mm/damon.c
-> > @@ -19,7 +19,9 @@
-> >  #include <linux/mm.h>
-> >  #include <linux/module.h>
-> >  #include <linux/page_idle.h>
-> > +#include <linux/pagemap.h>
-> >  #include <linux/random.h>
-> > +#include <linux/rmap.h>
-> >  #include <linux/sched/mm.h>
-> >  #include <linux/sched/task.h>
-> >  #include <linux/slab.h>
-> > @@ -480,6 +482,11 @@ void kdamond_init_vm_regions(struct damon_ctx *ctx)
-> >  	}
-> >  }
-> >  
-> > +/* Do nothing.  Users should set the initial regions by themselves */
-> > +void kdamond_init_phys_regions(struct damon_ctx *ctx)
-> > +{
-> > +}
-> > +
-> >  static void damon_mkold(struct mm_struct *mm, unsigned long addr)
-> >  {
-> >  	pte_t *pte = NULL;
-> > @@ -611,6 +618,178 @@ unsigned int kdamond_check_vm_accesses(struct damon_ctx *ctx)
-> >  	return max_nr_accesses;
-> >  }
-> >  
-> > +/* access check functions for physical address based regions */
-> > +
-> > +/* This code is stollen from page_idle.c */
-> > +static struct page *damon_phys_get_page(unsigned long pfn)
-> > +{
-> > +	struct page *page;
-> > +	pg_data_t *pgdat;
-> > +
-> > +	if (!pfn_valid(pfn))
-> > +		return NULL;
-> > +
-> 
-> Who provides these pfns? Can these be random pfns, supplied unchecked by
-> user space? Or are they at least mapped into some user space process?
-
-Your guess is right, users can give random physical address and that will be
-translated into pfn.
-
-> 
-> IOW, do we need a pfn_to_online_page() to make sure the memmap even was
-> initialized?
-
-Thank you for pointing out this!  I will use it in the next spin.  Also, this
-code is stollen from page_idle_get_page().  Seems like it should also be
-modified to use it.  I will send the patch for it, either.
-
-
-Thanks,
-SeongJae Park
-
-> 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
