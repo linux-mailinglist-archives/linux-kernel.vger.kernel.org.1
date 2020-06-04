@@ -2,124 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543161EE454
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 14:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F06B1EE45F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 14:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728347AbgFDMTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 08:19:08 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:43626 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727944AbgFDMTH (ORCPT
+        id S1728339AbgFDM2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 08:28:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728262AbgFDM2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 08:19:07 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1D19A1C0BD2; Thu,  4 Jun 2020 14:19:06 +0200 (CEST)
-Date:   Thu, 4 Jun 2020 14:19:05 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        jacek.anaszewski@gmail.com, linux-leds@vger.kernel.org
-Subject: [GIT PULL] LEDs changes for v5.8-rc1
-Message-ID: <20200604121905.GA4931@duo.ucw.cz>
+        Thu, 4 Jun 2020 08:28:08 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611ADC08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 05:28:08 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id x93so4520112ede.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 05:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lSORlFcZSsY0YSYfNIbAg9Ey6cjiYjeRcAyhIYfab3I=;
+        b=aAOzMm5UYQpWbPFKaS58u3xmexgi14qRjZYMPdk27iHfnfatHZaJkoaaGb7u4J4r9h
+         MK5gOApbLjnpV4o3ZLyoqRvc7tyN8lL08IP+a1sy8UllVWCC9SHMmBoFda5JhMIFjJL8
+         y8CFvNqAK3/9VmtctD+5twE1KWqehVim9TOxeQl49SbPWpd8IWOTaD/SiUwTgAJ1vgkb
+         e3VXOjKeFEY6Jys8jWzuZQdwLeml0XCPJO4T/XiFADDsLllmN8lfzOIE/0/wtgisrwPK
+         +u7+VwUM5hjfsmumtmwa+air5aMBVhpBeNa3XCBzPduaXSC3z0x6TexwzznqQS2Dv6bG
+         uLBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lSORlFcZSsY0YSYfNIbAg9Ey6cjiYjeRcAyhIYfab3I=;
+        b=trFrZr7MPFveADy25TWtuIHr+c5nU4dpFdjKbn22R9UkUwnexLmefcNBJFGUxkqtOa
+         hoyW9VMw5/zOK9xBY2UfORzsvvmcVryKJTRI7KvtAtLzthytI9o86BxGwOJ3f5qrRB2E
+         S//rXTjZMowVcTcotKG+2hnkEO3HeyFHACZp8pI69xRvubTFQQJTRQ6tSJHSye8jruzz
+         qtwTDycKLKYNmaGv9L5a6jDx1lfuf8NQbga1ojPofMOif95WFj4cyvnGr3Iq6+Xk3ftr
+         /5bIpME68ecFdKX3gHFuE42Mg/u3rze/VohH2lrYwJkA5PXZL8lGOVkksKeBqhncxHR3
+         gFGw==
+X-Gm-Message-State: AOAM533GxzxujdmZ/y795X0+eHGBicmDPE8yTmwDiMR5uGAtKh6G7a9p
+        B0Gzaw0I0ABM1QwbZIGP1jA=
+X-Google-Smtp-Source: ABdhPJzOw5woxF7veFSGEA0tzhjvmTBEPptBE1hMxqScPSnhB4e++LViGz+BdbMPMrtZaf1if/o+cA==
+X-Received: by 2002:aa7:d6d0:: with SMTP id x16mr4172336edr.175.1591273687067;
+        Thu, 04 Jun 2020 05:28:07 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id la5sm2084347ejb.94.2020.06.04.05.28.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 04 Jun 2020 05:28:06 -0700 (PDT)
+Date:   Thu, 4 Jun 2020 12:28:05 +0000
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Wei Yang <richard.weiyang@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [Patch v2] lib: test get_count_order/long in test_bitops.c
+Message-ID: <20200604122805.d2ndjmkmti6wl3nz@master>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
+References: <20200602223728.32722-1-richard.weiyang@gmail.com>
+ <CAMuHMdUfnmm4bXVRvFOmG5DFYR+LtcZ1UviDszr9bByiN=DO+Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="nFreZHaLTZJo0R7j"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAMuHMdUfnmm4bXVRvFOmG5DFYR+LtcZ1UviDszr9bByiN=DO+Q@mail.gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 04, 2020 at 01:50:13PM +0200, Geert Uytterhoeven wrote:
+>Hi Wei,
+>
+>On Wed, Jun 3, 2020 at 1:11 AM Wei Yang <richard.weiyang@gmail.com> wrote:
+>> Add some test for get_count_order/long in test_bitops.c.
+>>
+>> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+>
+>Thanks for your patch, which is now commit 7851d6639caeea40 ("lib:
+>test get_count_order/long in test_bitops.c") in linux-next.
+>
+>> --- a/lib/test_bitops.c
+>> +++ b/lib/test_bitops.c
+>
+>> @@ -24,6 +28,26 @@ enum bitops_fun {
+>>
+>>  static DECLARE_BITMAP(g_bitmap, BITOPS_LENGTH);
+>>
+>> +unsigned int order_comb[][2] = {
+>> +       {0x00000003,  2},
+>> +       {0x00000004,  2},
+>> +       {0x00001fff, 13},
+>> +       {0x00002000, 13},
+>> +       {0x50000000, 31},
+>> +       {0x80000000, 31},
+>> +       {0x80003000, 32},
+>> +};
+>> +
+>> +unsigned long order_comb_long[][2] = {
+>> +       {0x0000000300000000, 34},
+>> +       {0x0000000400000000, 34},
+>> +       {0x00001fff00000000, 45},
+>> +       {0x0000200000000000, 45},
+>> +       {0x5000000000000000, 63},
+>> +       {0x8000000000000000, 63},
+>> +       {0x8000300000000000, 64},
+>> +};
+>
+>noreply@ellerman.id.au reported for m68k-allmodconfig:
+>
+>lib/test_bitops.c:42:3: error: unsigned conversion from 'long long
+>int' to 'long unsigned int' changes value from '12884901888' to '0'
+>[-Werror=overflow]
+>lib/test_bitops.c:43:3: error: unsigned conversion from 'long long
+>int' to 'long unsigned int' changes value from '17179869184' to '0'
+>[-Werror=overflow]
+>lib/test_bitops.c:44:3: error: unsigned conversion from 'long long
+>int' to 'long unsigned int' changes value from '35180077121536' to '0'
+>[-Werror=overflow]
+>lib/test_bitops.c:45:3: error: unsigned conversion from 'long long
+>int' to 'long unsigned int' changes value from '35184372088832' to '0'
+>[-Werror=overflow]
+>lib/test_bitops.c:46:3: error: unsigned conversion from 'long long
+>int' to 'long unsigned int' changes value from '5764607523034234880'
+>to '0' [-Werror=overflow]
+>lib/test_bitops.c:47:3: error: conversion from 'long long unsigned
+>int' to 'long unsigned int' changes value from '9223372036854775808'
+>to '0' [-Werror=overflow]
+>lib/test_bitops.c:48:3: error: conversion from 'long long unsigned
+>int' to 'long unsigned int' changes value from '9223424813412909056'
+>to '0' [-Werror=overflow]
+>
+>Indeed, on 32-bit, none of these values fit in unsigned long.
+>
 
---nFreZHaLTZJo0R7j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hmm... I didn't test on 32bit platform. Sorry for that.
 
-The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
+>>  static int __init test_bitops_startup(void)
+>>  {
+>>         pr_warn("Loaded test module\n");
+>> @@ -32,6 +56,18 @@ static int __init test_bitops_startup(void)
+>>         set_bit(BITOPS_11, g_bitmap);
+>>         set_bit(BITOPS_31, g_bitmap);
+>>         set_bit(BITOPS_88, g_bitmap);
+>> +
+>> +       for (i = 0; i < ARRAY_SIZE(order_comb); i++) {
+>> +               if (order_comb[i][1] != get_count_order(order_comb[i][0]))
+>> +                       pr_warn("get_count_order wrong for %x\n",
+>> +                                      order_comb[i][0]); }
+>> +
+>> +       for (i = 0; i < ARRAY_SIZE(order_comb_long); i++) {
+>> +               if (order_comb_long[i][1] !=
+>> +                              get_count_order_long(order_comb_long[i][0]))
+>> +                       pr_warn("get_count_order_long wrong for %lx\n",
+>> +                                      order_comb_long[i][0]); }
+>> +
+>>         return 0;
+>
+>BTW, shouldn't get_count_order_long() be tested with the values in
+>order_comb[], too?
+>
 
-  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
+You mean 
 
-are available in the Git repository at:
+       {0x0000000000000003,  2},
+       {0x0000000000000004,  2},
+       {0x0000000000001fff, 13},
+       {0x0000000000002000, 13},
+       {0x0000000050000000, 31},
+       {0x0000000080000000, 31},
+       {0x0000000080003000, 32},
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ tags/=
-leds-5.8-rc1
+>Gr{oetje,eeting}s,
+>
+>                        Geert
+>
+>-- 
+>Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+>In personal conversations with technical people, I call myself a hacker. But
+>when I'm talking to journalists I just say "programmer" or something like that.
+>                                -- Linus Torvalds
 
-for you to fetch changes up to 59ea3c9faf3235b66bc31ca883d59ce58b8b2b27:
-
-  leds: add aw2013 driver (2020-05-25 12:56:39 +0200)
-
-----------------------------------------------------------------
-LEDs pull request for 5.8-rc1.
-
-New drivers: aw2013, sgm3140, ariel, and some fixes. Nothing much to
-see here, next release should be more interesting.
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      leds: trigger: remove redundant assignment to variable ret
-
-Denis Osterland-Heim (1):
-      leds: pwm: check result of led_pwm_set() in led_pwm_add()
-
-Linus Walleij (5):
-      leds: lm355x: Drop surplus include
-      leds: lp3952: Include the right header
-      leds: lt3593: Drop surplus include
-      leds: tca6507: Include the right header
-      leds: netxbig: Convert to use GPIO descriptors
-
-Lubomir Rintel (1):
-      leds: ariel: Add driver for status LEDs on Dell Wyse 3020
-
-Luca Weiss (2):
-      dt-bindings: leds: Add binding for sgm3140
-      leds: add sgm3140 driver
-
-Nikita Travkin (2):
-      dt-bindings: leds: Add binding for aw2013
-      leds: add aw2013 driver
-
-Tomi Valkeinen (1):
-      leds: tlc591xxt: hide error on EPROBE_DEFER
-
- .../devicetree/bindings/leds/leds-aw2013.yaml      |  91 +++++
- .../devicetree/bindings/leds/leds-sgm3140.yaml     |  62 +++
- drivers/leds/Kconfig                               |  29 ++
- drivers/leds/Makefile                              |   3 +
- drivers/leds/leds-ariel.c                          | 133 +++++++
- drivers/leds/leds-aw2013.c                         | 436 +++++++++++++++++=
-++++
- drivers/leds/leds-lm355x.c                         |   1 -
- drivers/leds/leds-lp3952.c                         |   2 +-
- drivers/leds/leds-lt3593.c                         |   1 -
- drivers/leds/leds-netxbig.c                        | 148 +++----
- drivers/leds/leds-pwm.c                            |  16 +-
- drivers/leds/leds-sgm3140.c                        | 320 +++++++++++++++
- drivers/leds/leds-tca6507.c                        |   2 +-
- drivers/leds/leds-tlc591xx.c                       |   5 +-
- drivers/leds/trigger/ledtrig-timer.c               |   4 +-
- 15 files changed, 1173 insertions(+), 80 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/leds/leds-aw2013.yaml
- create mode 100644 Documentation/devicetree/bindings/leds/leds-sgm3140.yaml
- create mode 100644 drivers/leds/leds-ariel.c
- create mode 100644 drivers/leds/leds-aw2013.c
- create mode 100644 drivers/leds/leds-sgm3140.c
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---nFreZHaLTZJo0R7j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXtjmuQAKCRAw5/Bqldv6
-8u48AJ47Nco4fZbvtuQJwKDHcNHcgKOSRwCgtQoaxP2tbH7XobuH4CGyLtEFCNY=
-=Asf1
------END PGP SIGNATURE-----
-
---nFreZHaLTZJo0R7j--
+-- 
+Wei Yang
+Help you, Help me
