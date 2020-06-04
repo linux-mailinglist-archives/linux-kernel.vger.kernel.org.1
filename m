@@ -2,120 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1141EE422
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 14:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509BF1EE3F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 14:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgFDMG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 08:06:58 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:58388 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728554AbgFDMGy (ORCPT
+        id S1728137AbgFDMGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 08:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728349AbgFDMGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 08:06:54 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 054C6ppK052371;
-        Thu, 4 Jun 2020 07:06:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1591272411;
-        bh=4Fus+1STo6fJcdmND8htjDFw0u7LkR/zKPWh9+ob2Js=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=hYSwI/eGXMp7yn+i3Inq8LU+AxNNq7YwGvPHaXqnLMonjAxwo32s6O4A5tQM3xpzq
-         JBDbjFOAhRNPO7kLDBQ7mgN2xafXpKbAeUiiUQFVK9d7kPrwvNKKC23KsvD7tgB17w
-         h31Jce0ehDk8ncP+XRR+44t4jkzMVbm6fJRJEs5I=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 054C6pIc060297;
-        Thu, 4 Jun 2020 07:06:51 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Jun
- 2020 07:06:51 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 4 Jun 2020 07:06:51 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 054C6ple017453;
-        Thu, 4 Jun 2020 07:06:51 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
-CC:     <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH v26 15/15] leds: lp5523: Fix various formatting issues in the code
-Date:   Thu, 4 Jun 2020 07:05:04 -0500
-Message-ID: <20200604120504.32425-16-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200604120504.32425-1-dmurphy@ti.com>
-References: <20200604120504.32425-1-dmurphy@ti.com>
+        Thu, 4 Jun 2020 08:06:00 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBE8C03E96D
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 05:06:00 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id c185so5647719qke.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 05:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=10X0map6UOeGNTOAtJjcoZkFS3kyuEeuHwD1SVPg4bQ=;
+        b=oMfNEmOdO72lJE24/sRZRqyyzU5L87JXMiN39g3iZUSaUx9wGVBhJG1llfPoLRVu3C
+         E5CpVUeXgMGfCdXjSVFDTiEk8nzlkvW4IV1oEmJ1+5lhBQunofLf7lEl72TMswUFJmIW
+         u++eT1tLghLvdkLJ5KIiOBYR8bDEtNBbjgsvJlVje96CGYMmWTba7TN7FPpfUOpV/r2+
+         4idVzgLlaBUxE0hLzDNbcmvNmifHVOfZOKTrtpZR2czWRAq2uoVStcZTZ0wwilOwRwLj
+         DX2fH4nTRvvwaaIBVnPUuEUQQaTgxYahsW3t+32m5Rbrh0BoAKnUcK5EKEi69m5WrGbp
+         S5Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=10X0map6UOeGNTOAtJjcoZkFS3kyuEeuHwD1SVPg4bQ=;
+        b=sbZ4HvPaGYQ6y2vRcYwuVfD1/K2YwiS2oP9pTr7JYq8I9DNstQMEAbAglcRbrsqMQ/
+         n57iNc5RF4plBEGcy7n+4X9QSed5wzlJM6T1a8wMnxEflAGQMHUHS5gA8Dn8OQWIlSXu
+         QOp4Y/TkXS5Co6E0LSy0s389O7G5typNLH9Ag0Whz8wbt7mMwOOQMxV9heoAYNHN4oWn
+         IEAK04g2ZW+7NBL1kXsfpu88yJAJknDc+eRIa5X8JA1je9CPi2RLUS9BoTb0Iey+C5eb
+         Q9/LPOPoUh+dXcx3CLcStNqw/yrwJkl7JfChaEjYK97+m92YcPOUQ8LUd8PGGaLXjs0i
+         8+HA==
+X-Gm-Message-State: AOAM530pr3FM9ZA/JD/C6AHoPNVD/CToQ9MLUt/SDi51jRljxc2zVKDV
+        RRDGwqlR8xsPnTq65po7FQHDqZEiOZAw9SkNt/W0Ow==
+X-Google-Smtp-Source: ABdhPJwaLx2c3GthlyRENjofbQ7WxrJN7J7wcw4AxJv+iQH571VLbg+tKGZ3VinkSLrSzyFY8gg6Aqh5LxfbzUfAsAQ=
+X-Received: by 2002:a05:620a:1428:: with SMTP id k8mr4067003qkj.43.1591272358982;
+ Thu, 04 Jun 2020 05:05:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <cover.1585233617.git.andreyknvl@google.com> <ab5e2885ce674ba6e04368551e51eeb6a2c11baf.1585233617.git.andreyknvl@google.com>
+In-Reply-To: <ab5e2885ce674ba6e04368551e51eeb6a2c11baf.1585233617.git.andreyknvl@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 4 Jun 2020 14:05:47 +0200
+Message-ID: <CACT4Y+bn1xR6YS-+mLsoneMriYEJRz37D-NDwp_M=4f3u0f_Zw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/7] kcov: cleanup debug messages
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix checkpatch errors and warnings for the LP5523.c device
-driver.
+On Thu, Mar 26, 2020 at 3:44 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> Previous commit left a lot of excessive debug messages, clean them up.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Acked-by: Pavel Machek <pavel@ucw.cz>
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/leds/leds-lp5523.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 
-diff --git a/drivers/leds/leds-lp5523.c b/drivers/leds/leds-lp5523.c
-index 9776dc72a764..f55d97258d5e 100644
---- a/drivers/leds/leds-lp5523.c
-+++ b/drivers/leds/leds-lp5523.c
-@@ -23,13 +23,13 @@
- 
- #define LP5523_PROGRAM_LENGTH		32	/* bytes */
- /* Memory is used like this:
--   0x00 engine 1 program
--   0x10 engine 2 program
--   0x20 engine 3 program
--   0x30 engine 1 muxing info
--   0x40 engine 2 muxing info
--   0x50 engine 3 muxing info
--*/
-+ * 0x00 engine 1 program
-+ * 0x10 engine 2 program
-+ * 0x20 engine 3 program
-+ * 0x30 engine 1 muxing info
-+ * 0x40 engine 2 muxing info
-+ * 0x50 engine 3 muxing info
-+ */
- #define LP5523_MAX_LEDS			9
- 
- /* Registers */
-@@ -326,7 +326,7 @@ static int lp5523_update_program_memory(struct lp55xx_chip *chip,
- 					const u8 *data, size_t size)
- {
- 	u8 pattern[LP5523_PROGRAM_LENGTH] = {0};
--	unsigned cmd;
-+	unsigned int cmd;
- 	char c[3];
- 	int nrchars;
- 	int ret;
-@@ -468,6 +468,7 @@ static int lp5523_mux_parse(const char *buf, u16 *mux, size_t len)
- static void lp5523_mux_to_array(u16 led_mux, char *array)
- {
- 	int i, pos = 0;
-+
- 	for (i = 0; i < LP5523_MAX_LEDS; i++)
- 		pos += sprintf(array + pos, "%x", LED_ACTIVE(led_mux, i));
- 
-@@ -506,7 +507,7 @@ static int lp5523_load_mux(struct lp55xx_chip *chip, u16 mux, int nr)
- 	if (ret)
- 		return ret;
- 
--	ret = lp55xx_write(chip, LP5523_REG_PROG_MEM , (u8)(mux >> 8));
-+	ret = lp55xx_write(chip, LP5523_REG_PROG_MEM, (u8)(mux >> 8));
- 	if (ret)
- 		return ret;
- 
--- 
-2.26.2
-
+> ---
+>  kernel/kcov.c | 22 ++--------------------
+>  1 file changed, 2 insertions(+), 20 deletions(-)
+>
+> diff --git a/kernel/kcov.c b/kernel/kcov.c
+> index f50354202dbe..f6bd119c9419 100644
+> --- a/kernel/kcov.c
+> +++ b/kernel/kcov.c
+> @@ -98,6 +98,7 @@ static struct kcov_remote *kcov_remote_find(u64 handle)
+>         return NULL;
+>  }
+>
+> +/* Must be called with kcov_remote_lock locked. */
+>  static struct kcov_remote *kcov_remote_add(struct kcov *kcov, u64 handle)
+>  {
+>         struct kcov_remote *remote;
+> @@ -119,16 +120,13 @@ static struct kcov_remote_area *kcov_remote_area_get(unsigned int size)
+>         struct kcov_remote_area *area;
+>         struct list_head *pos;
+>
+> -       kcov_debug("size = %u\n", size);
+>         list_for_each(pos, &kcov_remote_areas) {
+>                 area = list_entry(pos, struct kcov_remote_area, list);
+>                 if (area->size == size) {
+>                         list_del(&area->list);
+> -                       kcov_debug("rv = %px\n", area);
+>                         return area;
+>                 }
+>         }
+> -       kcov_debug("rv = NULL\n");
+>         return NULL;
+>  }
+>
+> @@ -136,7 +134,6 @@ static struct kcov_remote_area *kcov_remote_area_get(unsigned int size)
+>  static void kcov_remote_area_put(struct kcov_remote_area *area,
+>                                         unsigned int size)
+>  {
+> -       kcov_debug("area = %px, size = %u\n", area, size);
+>         INIT_LIST_HEAD(&area->list);
+>         area->size = size;
+>         list_add(&area->list, &kcov_remote_areas);
+> @@ -366,7 +363,6 @@ static void kcov_remote_reset(struct kcov *kcov)
+>         hash_for_each_safe(kcov_remote_map, bkt, tmp, remote, hnode) {
+>                 if (remote->kcov != kcov)
+>                         continue;
+> -               kcov_debug("removing handle %llx\n", remote->handle);
+>                 hash_del(&remote->hnode);
+>                 kfree(remote);
+>         }
+> @@ -553,7 +549,6 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
+>
+>         switch (cmd) {
+>         case KCOV_INIT_TRACE:
+> -               kcov_debug("KCOV_INIT_TRACE\n");
+>                 /*
+>                  * Enable kcov in trace mode and setup buffer size.
+>                  * Must happen before anything else.
+> @@ -572,7 +567,6 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
+>                 kcov->mode = KCOV_MODE_INIT;
+>                 return 0;
+>         case KCOV_ENABLE:
+> -               kcov_debug("KCOV_ENABLE\n");
+>                 /*
+>                  * Enable coverage for the current task.
+>                  * At this point user must have been enabled trace mode,
+> @@ -598,7 +592,6 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
+>                 kcov_get(kcov);
+>                 return 0;
+>         case KCOV_DISABLE:
+> -               kcov_debug("KCOV_DISABLE\n");
+>                 /* Disable coverage for the current task. */
+>                 unused = arg;
+>                 if (unused != 0 || current->kcov != kcov)
+> @@ -610,7 +603,6 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
+>                 kcov_put(kcov);
+>                 return 0;
+>         case KCOV_REMOTE_ENABLE:
+> -               kcov_debug("KCOV_REMOTE_ENABLE\n");
+>                 if (kcov->mode != KCOV_MODE_INIT || !kcov->area)
+>                         return -EINVAL;
+>                 t = current;
+> @@ -629,7 +621,6 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
+>                 kcov->remote_size = remote_arg->area_size;
+>                 spin_lock(&kcov_remote_lock);
+>                 for (i = 0; i < remote_arg->num_handles; i++) {
+> -                       kcov_debug("handle %llx\n", remote_arg->handles[i]);
+>                         if (!kcov_check_handle(remote_arg->handles[i],
+>                                                 false, true, false)) {
+>                                 spin_unlock(&kcov_remote_lock);
+> @@ -644,8 +635,6 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
+>                         }
+>                 }
+>                 if (remote_arg->common_handle) {
+> -                       kcov_debug("common handle %llx\n",
+> -                                       remote_arg->common_handle);
+>                         if (!kcov_check_handle(remote_arg->common_handle,
+>                                                 true, false, false)) {
+>                                 spin_unlock(&kcov_remote_lock);
+> @@ -782,7 +771,6 @@ void kcov_remote_start(u64 handle)
+>         spin_lock(&kcov_remote_lock);
+>         remote = kcov_remote_find(handle);
+>         if (!remote) {
+> -               kcov_debug("no remote found");
+>                 spin_unlock(&kcov_remote_lock);
+>                 return;
+>         }
+> @@ -810,8 +798,6 @@ void kcov_remote_start(u64 handle)
+>         /* Reset coverage size. */
+>         *(u64 *)area = 0;
+>
+> -       kcov_debug("area = %px, size = %u", area, size);
+> -
+>         kcov_start(t, size, area, mode, sequence);
+>
+>  }
+> @@ -881,10 +867,8 @@ void kcov_remote_stop(void)
+>         unsigned int size = t->kcov_size;
+>         int sequence = t->kcov_sequence;
+>
+> -       if (!kcov) {
+> -               kcov_debug("no kcov found\n");
+> +       if (!kcov)
+>                 return;
+> -       }
+>
+>         kcov_stop(t);
+>         t->kcov = NULL;
+> @@ -894,8 +878,6 @@ void kcov_remote_stop(void)
+>          * KCOV_DISABLE could have been called between kcov_remote_start()
+>          * and kcov_remote_stop(), hence the check.
+>          */
+> -       kcov_debug("move if: %d == %d && %d\n",
+> -               sequence, kcov->sequence, (int)kcov->remote);
+>         if (sequence == kcov->sequence && kcov->remote)
+>                 kcov_move_area(kcov->mode, kcov->area, kcov->size, area);
+>         spin_unlock(&kcov->lock);
+> --
+> 2.26.0.rc2.310.g2932bb562d-goog
+>
