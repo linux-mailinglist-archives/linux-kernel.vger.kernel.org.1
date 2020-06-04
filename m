@@ -2,227 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1438C1EE7DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 17:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5681EE7E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 17:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729585AbgFDPeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 11:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
+        id S1729599AbgFDPfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 11:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729035AbgFDPem (ORCPT
+        with ESMTP id S1729402AbgFDPfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 11:34:42 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F96EC08C5C0;
-        Thu,  4 Jun 2020 08:34:42 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id p5so6586897wrw.9;
-        Thu, 04 Jun 2020 08:34:42 -0700 (PDT)
+        Thu, 4 Jun 2020 11:35:31 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60665C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 08:35:31 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id u5so3618191pgn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 08:35:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=D3By0h98qnolfLM0+QRpl2dqCpgdvgnNY+OucjDnKDY=;
-        b=vZt0DMCfoJUEXzeTrBICKPyqGfuBe7vx1mxfTRfe7AMZfEO9MgZiR1mPQATjGg7sos
-         L2gEppsjZRToGPjruQDj6PgcZ9k1LIUGD0iWIyOtnINMSac6a+7rCj3z4QC4lrZCdKFE
-         k2yM8OXoWQeV2IMPxu2sJJA6xUKeMYmYvndml0HnOewX3ksq8F1r9goi9s79mQpwsSIb
-         c5mAXaNTKzUmdLKel6x7irCbEI4DTv2oXtv/qN7Oxn1zzp0W/r8QazRbJWdm+blAf/6N
-         mqCzGRjWNAgSpkjxibd5bm0M9tIZAW+bPd5JKLWcPAMtTD2J+9FPsJ68L+Qr8Bw98u2/
-         uiog==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Wax4PTMKC91KYPdKcHl2puiFv+eU6eLijgiQ1wOXRG4=;
+        b=MO+8OXTGBmz97fF3PSAUhzNy/sUteX25T2uHr/xf1tHYvpVUxG1XScpC05FjrpAK4s
+         zpKeD88G8PrmeBKrg918QFJTO/D2/5OWiEiOdU2xUPdPNigNXVLxMaY0cxTABLqPzHmB
+         A6xODYnbuSBQfyTq668XHZWQDIS1meYvH6f47xEt6iTKFIj3nT03WfcqwrHXB8Ia8oYk
+         JwpqYWJffVZ8EiOIlAuBZEljfybk2eJXZVa8oElFQ7sMgIMnbEYGOM20gXzna0n5JXyB
+         R9zpfR9B+p/GfOruu+bdkIQleOHG1lTkQaLGIXgJXmNZrdXMMxt3Wh/hDcTwiqoDgj7e
+         M/XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=D3By0h98qnolfLM0+QRpl2dqCpgdvgnNY+OucjDnKDY=;
-        b=JZ8eG8tE4Lrj45800Q9lSdVl1iphQ/O0A/WBiZSX/qfUZrp9kuz9mx7Aas4wk9Cz2t
-         YOyhEGAOox3UiNgIhxGiEAdmW7/I6HpNeqd3ac3pf7rNg0bQSMSYM2OoJx6UDo0UrMhT
-         IODk77ghGzgKxAftTjwQDWJZcTMSBxjDQtlOKmdYnIHBeNr7DuFOpkeRD5sNTnD7QDMW
-         c66hlInF0eD4sknRVCkMOquRbw11MXQ6XFqsX+FDPbfLLc9Ix6P21O0X9JkCpZuCNoQ8
-         cMzt5mI8yG+KHkq896a/kZcL3/uZ/Pf1OayiCs2sbzNkK7lddWbrIhuV6t1jFQ1bFWE7
-         GH+w==
-X-Gm-Message-State: AOAM531sL81mAp0DcxfV/kkabS5Uu5LKAFtK6gzhHQqXxIpKx19EmvSx
-        J6WaYub0DBy0Omn3nc9kPcKtaZmjiMY=
-X-Google-Smtp-Source: ABdhPJxfqtpJqbRTF++Qa4Ke2KxsNtWe0xpkNWVokflegjt7JKKLmL/tz6wJQHjKWgmRMZK5uAnt/Q==
-X-Received: by 2002:adf:f0d2:: with SMTP id x18mr4926753wro.250.1591284880431;
-        Thu, 04 Jun 2020 08:34:40 -0700 (PDT)
-Received: from [192.168.8.102] ([194.230.155.251])
-        by smtp.gmail.com with ESMTPSA id q1sm7431317wmc.12.2020.06.04.08.34.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jun 2020 08:34:39 -0700 (PDT)
-Subject: Re: [PATCH v3 2/7] documentation for stats_fs
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        kvm@vger.kernel.org
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        David Rientjes <rientjes@google.com>,
-        Jonathan Adams <jwadams@google.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org
-References: <20200526110318.69006-1-eesposit@redhat.com>
- <20200526110318.69006-3-eesposit@redhat.com>
- <c9ddaed1-0efc-650b-6a51-ad5fc431af69@infradead.org>
-From:   Emanuele Giuseppe Esposito <e.emanuelegiuseppe@gmail.com>
-Message-ID: <dcaab39e-6cd3-c6cf-1515-7067a8b0ed9f@gmail.com>
-Date:   Thu, 4 Jun 2020 17:34:37 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Wax4PTMKC91KYPdKcHl2puiFv+eU6eLijgiQ1wOXRG4=;
+        b=iKNl6Qr8nWr9wpJ/hCpWGT/Mn3VPTw+sBIfGiCNdXuRtqiD2TJUJPlzs2PhmC1Dd5u
+         Tu6z2feQAIJt2CwSjGw5vX5Uk2NJBxmKxK2VQVaMDGGxY0234LGx5+JZIuQ909BjMpgn
+         zlnwYlVT/6zsMHssRYitu3LYcx+LPEYYpddLjgtaoihuwjnEfnwPXCUBqzFZVPCXHfSU
+         bVtld5gVoMDkPzGgUfBdJWqx54pLDHB0oW72SYQoLbj70zdhUJaBxv6rKrmiYcAPcCHa
+         890TwH4TayzpaKisJ6USQHteMd0lzMdU+UcdJl9aYRvHHeIyA4B3deb3nrMTND4mwZsH
+         E+Ag==
+X-Gm-Message-State: AOAM532E/qq8LtM4h062VfwaFcSGIPB1UXn6HfXkwKrrjlJwGEu14IjU
+        EbMtMq+rlALcm7khYWVLPuM=
+X-Google-Smtp-Source: ABdhPJw2DdFyJawgCi1P2eY4+hgKaq55kDmEbpBocB7gjS8MfwwT/nXsKXMA9165aRyW/aow1QtOJQ==
+X-Received: by 2002:aa7:8506:: with SMTP id v6mr4883505pfn.303.1591284930918;
+        Thu, 04 Jun 2020 08:35:30 -0700 (PDT)
+Received: from localhost ([162.211.223.96])
+        by smtp.gmail.com with ESMTPSA id np5sm6659239pjb.43.2020.06.04.08.35.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 04 Jun 2020 08:35:30 -0700 (PDT)
+Date:   Thu, 4 Jun 2020 23:35:18 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: drivers/reset/reset-intel-gw.c:18: warning: "REG_OFFSET"
+ redefined
+Message-ID: <20200604153518.GA23034@nuc8i5>
+References: <202006041903.Mwlo5QJ5%lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <c9ddaed1-0efc-650b-6a51-ad5fc431af69@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202006041903.Mwlo5QJ5%lkp@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jun 04, 2020 at 07:37:06PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   6929f71e46bdddbf1c4d67c2728648176c67c555
+> commit: e44ab4e14d6f4c448ae555132090c1a116b19e5c regmap: Simplify implementation of the regmap_read_poll_timeout() macro
+> date:   6 weeks ago
+> config: arm-randconfig-r035-20200604 (attached as .config)
+> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         git checkout e44ab4e14d6f4c448ae555132090c1a116b19e5c
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arm 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+Hi
 
->> +
->> +The STATS_FS_HIDDEN attribute won't affect the aggregation, it will only
->> +block the creation of the files.
-> 
-> Why does HIDDEN block the creation of files?  instead of their visibility?
+Thanks very much for report this issue to me, and very very sorry for
+that. I submit a commit to fix it. it is in here:
+https://lkml.org/lkml/2020/6/4/606
 
-The file itself is used to allow the user to view the content of a 
-value. In order to make it hidden, the framework just doesn't create the 
-file.
-The structure is still present and considered in statsfs, however.
+BR,
+Dejin
 
-Hidden in this case means not visible at all thus not created, not the 
-hidden file concept of dotted files (".filename")
+> All warnings (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> >> drivers/reset/reset-intel-gw.c:18: warning: "REG_OFFSET" redefined
+> 18 | #define REG_OFFSET GENMASK(31, 16)
+> |
+> In file included from arch/arm/mach-ixp4xx/include/mach/hardware.h:30,
+> from arch/arm/mach-ixp4xx/include/mach/io.h:15,
+> from arch/arm/include/asm/io.h:198,
+> from include/linux/io.h:13,
+> from include/linux/iopoll.h:14,
+> from include/linux/regmap.h:20,
+> from drivers/reset/reset-intel-gw.c:12:
+> arch/arm/mach-ixp4xx/include/mach/platform.h:25: note: this is the location of the previous definition
+> 25 | #define REG_OFFSET 3
+> |
+> 
+> vim +/REG_OFFSET +18 drivers/reset/reset-intel-gw.c
+> 
+> c9aef213e38cde Dilip Kota 2020-01-03  17  
+> c9aef213e38cde Dilip Kota 2020-01-03 @18  #define REG_OFFSET	GENMASK(31, 16)
+> c9aef213e38cde Dilip Kota 2020-01-03  19  #define BIT_OFFSET	GENMASK(15, 8)
+> c9aef213e38cde Dilip Kota 2020-01-03  20  #define STAT_BIT_OFFSET	GENMASK(7, 0)
+> c9aef213e38cde Dilip Kota 2020-01-03  21  
+> 
+> :::::: The code at line 18 was first introduced by commit
+> :::::: c9aef213e38cde27d4689a5cbe25a7c1b1db9fad reset: intel: Add system reset controller driver
+> 
+> :::::: TO: Dilip Kota <eswara.kota@linux.intel.com>
+> :::::: CC: Philipp Zabel <p.zabel@pengutronix.de>
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-> 
->> +
->> +Add values to parent and child (also here order doesn't matter)::
->> +
->> +        struct kvm *base_ptr = kmalloc(..., sizeof(struct kvm));
->> +        ...
->> +        stats_fs_source_add_values(child_source, kvm_stats, base_ptr, 0);
->> +        stats_fs_source_add_values(parent_source, kvm_stats, NULL, STATS_FS_HIDDEN);
->> +
->> +``child_source`` will be a simple value, since it has a non-NULL base
->> +pointer, while ``parent_source`` will be an aggregate. During the adding
->> +phase, also values can optionally be marked as hidden, so that the folder
->> +and other values can be still shown.
->> +
->> +Of course the same ``struct stats_fs_value`` array can be also passed with a
->> +different base pointer, to represent the same value but in another instance
->> +of the kvm struct.
->> +
->> +Search:
->> +
->> +Fetch a value from the child source, returning the value
->> +pointed by ``(uint64_t *) base_ptr + kvm_stats[0].offset``::
->> +
->> +        uint64_t ret_child, ret_parent;
->> +
->> +        stats_fs_source_get_value(child_source, &kvm_stats[0], &ret_child);
->> +
->> +Fetch an aggregate value, searching all subsources of ``parent_source`` for
->> +the specified ``struct stats_fs_value``::
->> +
->> +        stats_fs_source_get_value(parent_source, &kvm_stats[0], &ret_parent);
->> +
->> +        assert(ret_child == ret_parent); // check expected result
->> +
->> +To make it more interesting, add another child::
->> +
->> +        struct stats_fs_source child_source2 = stats_fs_source_create(0, "child2");
->> +
->> +        stats_fs_source_add_subordinate(parent_source, child_source2);
->> +        // now  the structure is parent -> child1
->> +        //                              -> child2
-> 
-> Is that the same as                 parent -> child1 -> child2
-> ?  It could almost be read as
->                                      parent -> child1
->                                      parent -> child2
 
-No the example in the documentation shows the relationship
-parent -> child1 and
-parent -> child2.
-It's not the same as
-parent -> child1 -> child2.
-In order to do the latter, one would need to do:
-
-stats_fs_source_add_subordinate(parent_source, child_source1);
-stats_fs_source_add_subordinate(child_source1, child_source2);
-
-Hope that this clarifies it.
-
-> 
-> Whichever it is, can you make it more explicit, please?
-> 
-> 
->> +
->> +        struct kvm *other_base_ptr = kmalloc(..., sizeof(struct kvm));
->> +        ...
->> +        stats_fs_source_add_values(child_source2, kvm_stats, other_base_ptr, 0);
->> +
->> +Note that other_base_ptr points to another instance of kvm, so the struct
->> +stats_fs_value is the same but the address at which they point is not.
->> +
->> +Now get the aggregate value::
->> +
->> +        uint64_t ret_child, ret_child2, ret_parent;
->> +
->> +        stats_fs_source_get_value(child_source, &kvm_stats[0], &ret_child);
->> +        stats_fs_source_get_value(parent_source, &kvm_stats[0], &ret_parent);
->> +        stats_fs_source_get_value(child_source2, &kvm_stats[0], &ret_child2);
->> +
->> +        assert((ret_child + ret_child2) == ret_parent);
->> +
->> +Cleanup::
->> +
->> +        stats_fs_source_remove_subordinate(parent_source, child_source);
->> +        stats_fs_source_revoke(child_source);
->> +        stats_fs_source_put(child_source);
->> +
->> +        stats_fs_source_remove_subordinate(parent_source, child_source2);
->> +        stats_fs_source_revoke(child_source2);
->> +        stats_fs_source_put(child_source2);
->> +
->> +        stats_fs_source_put(parent_source);
->> +        kfree(other_base_ptr);
->> +        kfree(base_ptr);
->> +
->> +Calling stats_fs_source_revoke is very important, because it will ensure
-> 
->             stats_fs_source_revoke()
-> 
->> +that stats_fs will not access the data that were passed to
->> +stats_fs_source_add_value for this source.
->> +
->> +Because open files increase the reference count for a stats_fs_source, the
->> +source can end up living longer than the data that provides the values for
->> +the source.  Calling stats_fs_source_revoke just before the backing data
-> 
->                          stats_fs_source_revoke()
-> 
->> +is freed avoids accesses to freed data structures. The sources will return
->> +0.
->> +
->> +This is not needed for the parent_source, since it just contains
->> +aggregates that would be 0 anyways if no matching child value exist.
->> +
->> +API Documentation
->> +=================
->> +
->> +.. kernel-doc:: include/linux/stats_fs.h
->> +   :export: fs/stats_fs/*.c
->> \ No newline at end of file
-> 
-> Please fix that. ^^^^^
-> 
-> 
-> Thanks for the documentation.
-> 
-
-Thank you for the feedback,
-Emanuele
