@@ -2,109 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8181EE255
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 12:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DC41EE26B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 12:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgFDKWT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Jun 2020 06:22:19 -0400
-Received: from smtp180.sjtu.edu.cn ([202.120.2.180]:56320 "EHLO
-        smtp180.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgFDKWT (ORCPT
+        id S1728525AbgFDKZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 06:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728460AbgFDKZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 06:22:19 -0400
-Received: from proxy01.sjtu.edu.cn (smtp185.sjtu.edu.cn [202.120.2.185])
-        by smtp180.sjtu.edu.cn (Postfix) with ESMTPS id 16D4B1008CA21;
-        Thu,  4 Jun 2020 18:22:16 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by proxy01.sjtu.edu.cn (Postfix) with ESMTP id D103220426A63;
-        Thu,  4 Jun 2020 18:22:15 +0800 (CST)
-X-Virus-Scanned: amavisd-new at proxy01.sjtu.edu.cn
-Received: from proxy01.sjtu.edu.cn ([127.0.0.1])
-        by localhost (proxy01.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id b4y9uFH9wMra; Thu,  4 Jun 2020 18:22:15 +0800 (CST)
-Received: from fans-air.ipads-lab.se.sjtu.edu.cn (unknown [202.120.40.82])
-        (Authenticated sender: Fan_Yang@sjtu.edu.cn)
-        by proxy01.sjtu.edu.cn (Postfix) with ESMTPSA id 9EA9920426A59;
-        Thu,  4 Jun 2020 18:22:08 +0800 (CST)
-From:   Fan Yang <Fan_Yang@sjtu.edu.cn>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: [PATCH v3] mm: Fix mremap not considering huge pmd devmap
-Message-Id: <FB4049FE-AC4A-4B13-B39D-B96393EFCCB8@sjtu.edu.cn>
-Date:   Thu, 4 Jun 2020 18:22:07 +0800
-Cc:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-To:     linux-kernel@vger.kernel.org
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Thu, 4 Jun 2020 06:25:33 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDACC03E96D
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 03:25:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=mArLRZM2rhn2tsk3MmdLOGj2f8ZPcyzKUmaO03kjRtI=; b=E1ja0y8TjbGhXVql2tI7qUV3DM
+        A23QwT0REI46wybtTRxyq+CMyVXLWvduJVqY8NCK3CE41P2dfPbVmiiLQBZQaO1sFUK3WjQoD7MPq
+        k3Y/oy0qRnLJ1ZJpp/gP+XL6DzLXau/TqJlwpO14WKvW+rAlbxb/+fbReHZSbaLkmjvWpwo0/a6DU
+        UZm9cq4IqLiQXH9jAjGQojni0GqlnaeothLXuzs3iKJClpPQIwyJvuaTp1BwlHS/3tmfKGvMt/1Pa
+        sYMFwQuU+bzTizDFTKq6+XUyt/YbcS7Y8X/0hEv2culXwDPYNZkwz/MjEHMYZH96FCfESQW7GPsPx
+        K1uD7B9g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jgn3d-0003ta-4b; Thu, 04 Jun 2020 10:25:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EBD5D304D28;
+        Thu,  4 Jun 2020 12:25:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id D312B20C23590; Thu,  4 Jun 2020 12:25:07 +0200 (CEST)
+Message-ID: <20200604102241.466509982@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 04 Jun 2020 12:22:41 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     tglx@linutronix.de
+Cc:     x86@kernel.org, elver@google.com, paulmck@kernel.org,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, will@kernel.org, dvyukov@google.com,
+        glider@google.com, andreyknvl@google.com
+Subject: [PATCH 0/8] x86/entry: KCSAN/KASAN/UBSAN vs noinstr
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original code in mm/mremap.c checks huge pmd by:
+Hai,
 
-		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd)) {
-
-However, a DAX mapped nvdimm is mapped as huge page (by default) but
-it is not transparent huge page (_PAGE_PSE | PAGE_DEVMAP).  This
-commit changes the condition to include the case.
-
-This addresses CVE-2020-10757.
-
-Fixes: 5c7fb56e5e3f ("mm, dax: dax-pmd vs thp-pmd vs hugetlbfs-pmd")
-Cc: <stable@vger.kernel.org>
-Reported-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
-Signed-off-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
-Tested-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
-Tested-by: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-
----
-
-Changelog v2->v3:
-- Added "Acked-by: Kirill..."
-
-Changelog v1->v2:
-- Removed some paragraph in commit msg, removed the comment in
-  mm/mremap.c, and added a NOTE in where pmd_trans_huge is defined.
-- Added "Reviewed-by: Dan..."
-- Added "Fixes: 5c7fb56e5e3f..."
-- Added "Cc: <stable@vger.kernel.org>"
----
- arch/x86/include/asm/pgtable.h | 1 +
- mm/mremap.c                    | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index 4d02e64af1b3..19cdeebfbde6 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -257,6 +257,7 @@ static inline int pmd_large(pmd_t pte)
- }
- 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+/* NOTE: when predicate huge page, consider also pmd_devmap, or use pmd_large */
- static inline int pmd_trans_huge(pmd_t pmd)
- {
- 	return (pmd_val(pmd) & (_PAGE_PSE|_PAGE_DEVMAP)) == _PAGE_PSE;
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 6aa6ea605068..57b1f999f789 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -266,7 +266,7 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
- 		new_pmd = alloc_new_pmd(vma->vm_mm, vma, new_addr);
- 		if (!new_pmd)
- 			break;
--		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd)) {
-+		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd) || pmd_devmap(*old_pmd)) {
- 			if (extent == HPAGE_PMD_SIZE) {
- 				bool moved;
- 				/* See comment in move_ptes() */
--- 
-2.25.4
+Here's the remaining few patches to make KCSAN/KASAN and UBSAN work with noinstr.
 
 
