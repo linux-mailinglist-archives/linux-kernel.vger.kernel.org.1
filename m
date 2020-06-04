@@ -2,244 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27ECF1EE077
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A859E1EE07E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728446AbgFDJDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 05:03:32 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38322 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728259AbgFDJDb (ORCPT
+        id S1728450AbgFDJFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 05:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726664AbgFDJFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 05:03:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591261409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kIAb7NyvRkDdFjS5z3YNHayJvBeusj5SE6fr0SttD8A=;
-        b=fPcz5jBQ+JKfNWFuAWktKK19jLgDtZpkts0Qtc0pLpVjxVZGpuFPxHIAEfRQ05HIApTObE
-        FtOtq1fuR7+J2d3gFOnn19qU5ZR+7IER5GSul90U2c9el25EFeF+Ss51qviKyBkOX98zZj
-        Cc9r9qlcX2dHiCEErv/20gzs+t58GQE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-308-fzfd5c4QNNuFahRLCM1DAw-1; Thu, 04 Jun 2020 05:03:27 -0400
-X-MC-Unique: fzfd5c4QNNuFahRLCM1DAw-1
-Received: by mail-wr1-f71.google.com with SMTP id o1so2132648wrm.17
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 02:03:27 -0700 (PDT)
+        Thu, 4 Jun 2020 05:05:40 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E05C03E96D
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 02:05:39 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id u17so2580722ybi.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 02:05:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2anrII6963AR/Wz74rXx28vPNao9EA9gxM6bR73yPeI=;
+        b=f1H/yZCDQdANRjrTLUGN/RkXjoJIzHFS696pGR0pXRViXoZLAKh/UARuvbh1X48Px3
+         JDn5L8mFulCRzmlgrYou9g9uuqW6R55VzVfbojHMDy4l9EGI0h6ixdXC4UWNS9iVMyqE
+         +eGtlEnlrUBl4D6vfz2nvp7MGO3JAWA5Y5esSE2hRUsZjnJ0ACkFYl77Pq90F6jZuf2v
+         us1jJeoPwL9TBVt9oo0GPoFus0A0dkbk77Cqg6X6v8UCk48uLpMjIGdUe5dmTdVMHPbz
+         xSZx/poAtg4RW8kP3IbNEIMW+tUPFq1GeeVizmyh8ku4O/MqrX+Xcy5vpHNIuNsatf5Y
+         hhBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=kIAb7NyvRkDdFjS5z3YNHayJvBeusj5SE6fr0SttD8A=;
-        b=bSx9FfVB7DAFg7LbkhUKf+14Zs0PkzrikI5U+7G/bJxgzFnUn/UGqJAQ/tbWBmiVh/
-         7+N/VYp7AEw0xFwkBZfuAKkAE6KNQVjZl2Uu9lYAEUeJkFBGou89/8g5tTYBuEzulGN7
-         kgZcVCziw7JcT5bXWsJ0blxhwcNrqFDU/5svRl4+FxYo2CvV9puRdrNSVvk7i49c0Jg8
-         cN0x3qEp1vaVat/i65R8Ea52JsxOUUrKqTjFXqZBQbulRNzgno2OAK7yE8jyjVwCVr7+
-         0o61f1LB0VETAppba3W3usVvpLiHinDi2nxb5yIxSlOcjMYdFYXW/GoKjgXYKbtERC6n
-         UIwg==
-X-Gm-Message-State: AOAM531GHjiXSgoewnFbQfI0BLJHGey390ivYx9CMI5/A/Hk4a52u6b9
-        9yIIYnIsGfUptHnUcu3n4agOS3cALyaIayKnlq5f2j8hdv8bLQA1Ec0Hs615G4AQBhSVpHIL/q/
-        gd6uuYrBSO7Z7uw2Rt5thEYx1
-X-Received: by 2002:a7b:c84b:: with SMTP id c11mr2984630wml.78.1591261406175;
-        Thu, 04 Jun 2020 02:03:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzK8wfsCxu3E9p7ycUHfNx0D5YgutQJ5LV0RZsf7ra/tC4JM/gzDFfv1l4UJCevPLTlT9guOg==
-X-Received: by 2002:a7b:c84b:: with SMTP id c11mr2984604wml.78.1591261405902;
-        Thu, 04 Jun 2020 02:03:25 -0700 (PDT)
-Received: from redhat.com ([2a00:a040:185:f65:9a3b:8fff:fed3:ad8d])
-        by smtp.gmail.com with ESMTPSA id u12sm7129873wrq.90.2020.06.04.02.03.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 02:03:25 -0700 (PDT)
-Date:   Thu, 4 Jun 2020 05:03:20 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH RFC 07/13] vhost: format-independent API for used buffers
-Message-ID: <20200604050135-mutt-send-email-mst@kernel.org>
-References: <20200602130543.578420-1-mst@redhat.com>
- <20200602130543.578420-8-mst@redhat.com>
- <6d98f2cc-2084-cde0-c938-4ca01692adf9@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2anrII6963AR/Wz74rXx28vPNao9EA9gxM6bR73yPeI=;
+        b=YVSNGP1tZ1cQtlf659cGLYVzhvm1xWfWhMVK/w1Hq+Cp8IJ8yGqQMe/GO+QiDwRuh1
+         i52QTIXldJMwGp8RT8yhEcrik4cgIl5VBYVKveqsk1SS+3MxLUp5Vu0Cil0dABLxJG0b
+         97WYtt1t0yNqoyfAuA2g6i957t+N4hoz6yTsNbh6nbNRPlVjz8984T65//R3CD1CZyl/
+         bNtZXg6IRN8CgxlaQ2KCgXF+O9v2aaVg9BqizotgYsD7e1m9LG9aJGrH3cn6Q/Sh7Ftc
+         zIf8SjWkEhyaKNqH6h1Jr1KrbQpCQ+/iRQoFjkkkW01qqXdSC53xzWRzB4EZOM78ewZv
+         jr3g==
+X-Gm-Message-State: AOAM532CLFJFT/bjRYQqp6nclHW0xJOMAqNE6UkISXkNRjJe1cK6gCpC
+        EMKHddBFPFx6HYgjTvrsaN+3az9yH8P+z5/fzan2Zw==
+X-Google-Smtp-Source: ABdhPJwUB8zlPDVGkckdwEUKCDS5uUAO24MKWJlh2vcz2/rOaAjyIUp+4d29i9exJq+fCNdYlP9yughLP5I8FopI27I=
+X-Received: by 2002:a25:4f08:: with SMTP id d8mr6779430ybb.125.1591261538833;
+ Thu, 04 Jun 2020 02:05:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6d98f2cc-2084-cde0-c938-4ca01692adf9@redhat.com>
+References: <1591253979-29067-1-git-send-email-sumit.garg@linaro.org>
+In-Reply-To: <1591253979-29067-1-git-send-email-sumit.garg@linaro.org>
+From:   Maxim Uvarov <maxim.uvarov@linaro.org>
+Date:   Thu, 4 Jun 2020 12:05:27 +0300
+Message-ID: <CAD8XO3bw5zofRynNWUW61nb8Y=2sVMqXE0zWKFQYCHr5CQTNYg@mail.gmail.com>
+Subject: Re: [PATCH v2] Documentation: tee: Document TEE kernel interface
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>, corbet@lwn.net,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
+        linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        op-tee@lists.trustedfirmware.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 03:58:26PM +0800, Jason Wang wrote:
-> 
-> On 2020/6/2 下午9:06, Michael S. Tsirkin wrote:
-> > Add a new API that doesn't assume used ring, heads, etc.
-> > For now, we keep the old APIs around to make it easier
-> > to convert drivers.
-> > 
-> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > ---
-> >   drivers/vhost/vhost.c | 52 ++++++++++++++++++++++++++++++++++---------
-> >   drivers/vhost/vhost.h | 17 +++++++++++++-
-> >   2 files changed, 58 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-> > index b4a6e44d56a8..be822f0c9428 100644
-> > --- a/drivers/vhost/vhost.c
-> > +++ b/drivers/vhost/vhost.c
-> > @@ -2292,13 +2292,12 @@ static int fetch_descs(struct vhost_virtqueue *vq)
-> >    * number of output then some number of input descriptors, it's actually two
-> >    * iovecs, but we pack them into one and note how many of each there were.
-> >    *
-> > - * This function returns the descriptor number found, or vq->num (which is
-> > - * never a valid descriptor number) if none was found.  A negative code is
-> > - * returned on error. */
-> > -int vhost_get_vq_desc(struct vhost_virtqueue *vq,
-> > -		      struct iovec iov[], unsigned int iov_size,
-> > -		      unsigned int *out_num, unsigned int *in_num,
-> > -		      struct vhost_log *log, unsigned int *log_num)
-> > + * This function returns a value > 0 if a descriptor was found, or 0 if none were found.
-> > + * A negative code is returned on error. */
-> > +int vhost_get_avail_buf(struct vhost_virtqueue *vq, struct vhost_buf *buf,
-> > +			struct iovec iov[], unsigned int iov_size,
-> > +			unsigned int *out_num, unsigned int *in_num,
-> > +			struct vhost_log *log, unsigned int *log_num)
-> >   {
-> >   	int ret = fetch_descs(vq);
-> >   	int i;
-> > @@ -2311,6 +2310,8 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
-> >   	*out_num = *in_num = 0;
-> >   	if (unlikely(log))
-> >   		*log_num = 0;
-> > +	buf->in_len = buf->out_len = 0;
-> > +	buf->descs = 0;
-> >   	for (i = vq->first_desc; i < vq->ndescs; ++i) {
-> >   		unsigned iov_count = *in_num + *out_num;
-> > @@ -2340,6 +2341,7 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
-> >   			/* If this is an input descriptor,
-> >   			 * increment that count. */
-> >   			*in_num += ret;
-> > +			buf->in_len += desc->len;
-> >   			if (unlikely(log && ret)) {
-> >   				log[*log_num].addr = desc->addr;
-> >   				log[*log_num].len = desc->len;
-> > @@ -2355,9 +2357,11 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
-> >   				goto err;
-> >   			}
-> >   			*out_num += ret;
-> > +			buf->out_len += desc->len;
-> >   		}
-> > -		ret = desc->id;
-> > +		buf->id = desc->id;
-> > +		++buf->descs;
-> >   		if (!(desc->flags & VRING_DESC_F_NEXT))
-> >   			break;
-> > @@ -2365,7 +2369,7 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
-> >   	vq->first_desc = i + 1;
-> > -	return ret;
-> > +	return 1;
-> >   err:
-> >   	for (i = vq->first_desc; i < vq->ndescs; ++i)
-> > @@ -2375,7 +2379,15 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
-> >   	return ret;
-> >   }
-> > -EXPORT_SYMBOL_GPL(vhost_get_vq_desc);
-> > +EXPORT_SYMBOL_GPL(vhost_get_avail_buf);
-> > +
-> > +/* Reverse the effect of vhost_get_avail_buf. Useful for error handling. */
-> > +void vhost_discard_avail_bufs(struct vhost_virtqueue *vq,
-> > +			      struct vhost_buf *buf, unsigned count)
-> > +{
-> > +	vhost_discard_vq_desc(vq, count);
-> > +}
-> > +EXPORT_SYMBOL_GPL(vhost_discard_avail_bufs);
-> >   static int __vhost_add_used_n(struct vhost_virtqueue *vq,
-> >   			    struct vring_used_elem *heads,
-> > @@ -2459,6 +2471,26 @@ int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int len)
-> >   }
-> >   EXPORT_SYMBOL_GPL(vhost_add_used);
-> > +int vhost_put_used_buf(struct vhost_virtqueue *vq, struct vhost_buf *buf)
-> > +{
-> > +	return vhost_add_used(vq, buf->id, buf->in_len);
-> > +}
-> > +EXPORT_SYMBOL_GPL(vhost_put_used_buf);
-> > +
-> > +int vhost_put_used_n_bufs(struct vhost_virtqueue *vq,
-> > +			  struct vhost_buf *bufs, unsigned count)
-> > +{
-> > +	unsigned i;
-> > +
-> > +	for (i = 0; i < count; ++i) {
-> > +		vq->heads[i].id = cpu_to_vhost32(vq, bufs[i].id);
-> > +		vq->heads[i].len = cpu_to_vhost32(vq, bufs[i].in_len);
-> > +	}
-> > +
-> > +	return vhost_add_used_n(vq, vq->heads, count);
-> > +}
-> > +EXPORT_SYMBOL_GPL(vhost_put_used_n_bufs);
-> > +
-> >   static bool vhost_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
-> >   {
-> >   	__u16 old, new;
-> > diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
-> > index a67bda9792ec..6c10e99ff334 100644
-> > --- a/drivers/vhost/vhost.h
-> > +++ b/drivers/vhost/vhost.h
-> > @@ -67,6 +67,13 @@ struct vhost_desc {
-> >   	u16 id;
-> >   };
-> > +struct vhost_buf {
-> > +	u32 out_len;
-> > +	u32 in_len;
-> > +	u16 descs;
-> > +	u16 id;
-> > +};
-> 
-> 
-> So it looks to me the struct vhost_buf can work for both split ring and
-> packed ring.
-> 
-> If this is true, we'd better make struct vhost_desc work for both.
-> 
-> Thanks
+Looks good for me.
 
-Both vhost_desc and vhost_buf can work for split and packed.
+Reviewed-by: Maxim Uvarov <maxim.uvarov@linaro.org>
 
-Do you mean we should add packed ring support based on this?
-For sure, this is one of the motivators for the patchset.
-
-
-> 
-> > +
-> >   /* The virtqueue structure describes a queue attached to a device. */
-> >   struct vhost_virtqueue {
-> >   	struct vhost_dev *dev;
-> > @@ -193,7 +200,12 @@ int vhost_get_vq_desc(struct vhost_virtqueue *,
-> >   		      unsigned int *out_num, unsigned int *in_num,
-> >   		      struct vhost_log *log, unsigned int *log_num);
-> >   void vhost_discard_vq_desc(struct vhost_virtqueue *, int n);
-> > -
-> > +int vhost_get_avail_buf(struct vhost_virtqueue *, struct vhost_buf *buf,
-> > +			struct iovec iov[], unsigned int iov_count,
-> > +			unsigned int *out_num, unsigned int *in_num,
-> > +			struct vhost_log *log, unsigned int *log_num);
-> > +void vhost_discard_avail_bufs(struct vhost_virtqueue *,
-> > +			      struct vhost_buf *, unsigned count);
-> >   int vhost_vq_init_access(struct vhost_virtqueue *);
-> >   int vhost_add_used(struct vhost_virtqueue *, unsigned int head, int len);
-> >   int vhost_add_used_n(struct vhost_virtqueue *, struct vring_used_elem *heads,
-> > @@ -202,6 +214,9 @@ void vhost_add_used_and_signal(struct vhost_dev *, struct vhost_virtqueue *,
-> >   			       unsigned int id, int len);
-> >   void vhost_add_used_and_signal_n(struct vhost_dev *, struct vhost_virtqueue *,
-> >   			       struct vring_used_elem *heads, unsigned count);
-> > +int vhost_put_used_buf(struct vhost_virtqueue *, struct vhost_buf *buf);
-> > +int vhost_put_used_n_bufs(struct vhost_virtqueue *,
-> > +			  struct vhost_buf *bufs, unsigned count);
-> >   void vhost_signal(struct vhost_dev *, struct vhost_virtqueue *);
-> >   void vhost_disable_notify(struct vhost_dev *, struct vhost_virtqueue *);
-> >   bool vhost_vq_avail_empty(struct vhost_dev *, struct vhost_virtqueue *);
-
+On Thu, 4 Jun 2020 at 10:00, Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> Update documentation with TEE bus infrastructure which provides an
+> interface for kernel client drivers to communicate with corresponding
+> Trusted Application.
+>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>
+> Changes in v2:
+> - Add TEE client driver example snippet.
+>
+>  Documentation/tee.txt | 68 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>
+> diff --git a/Documentation/tee.txt b/Documentation/tee.txt
+> index c8fad81..350dd40 100644
+> --- a/Documentation/tee.txt
+> +++ b/Documentation/tee.txt
+> @@ -53,6 +53,66 @@ clients, forward them to the TEE and send back the results. In the case of
+>  supplicants the communication goes in the other direction, the TEE sends
+>  requests to the supplicant which then sends back the result.
+>
+> +The TEE kernel interface
+> +========================
+> +
+> +Kernel provides a TEE bus infrastructure where a Trusted Application is
+> +represented as a device identified via Universally Unique Identifier (UUID) and
+> +client drivers register a table of supported device UUIDs.
+> +
+> +TEE bus infrastructure registers following APIs:
+> +-  match(): iterates over the client driver UUID table to find a corresponding
+> +   match for device UUID. If a match is found, then this particular device is
+> +   probed via corresponding probe API registered by the client driver. This
+> +   process happens whenever a device or a client driver is registered with TEE
+> +   bus.
+> +-  uevent(): notifies user-space (udev) whenever a new device is registered on
+> +   TEE bus for auto-loading of modularized client drivers.
+> +
+> +TEE bus device enumeration is specific to underlying TEE implementation, so it
+> +is left open for TEE drivers to provide corresponding implementation.
+> +
+> +Then TEE client driver can talk to a matched Trusted Application using APIs
+> +listed in include/linux/tee_drv.h.
+> +
+> +TEE client driver example
+> +-------------------------
+> +
+> +Suppose a TEE client driver needs to communicate with a Trusted Application
+> +having UUID: ``ac6a4085-0e82-4c33-bf98-8eb8e118b6c2``, so driver registration
+> +snippet would look like::
+> +
+> +       static const struct tee_client_device_id client_id_table[] = {
+> +               {UUID_INIT(0xac6a4085, 0x0e82, 0x4c33,
+> +                          0xbf, 0x98, 0x8e, 0xb8, 0xe1, 0x18, 0xb6, 0xc2)},
+> +               {}
+> +       };
+> +
+> +       MODULE_DEVICE_TABLE(tee, client_id_table);
+> +
+> +       static struct tee_client_driver client_driver = {
+> +               .id_table       = client_id_table,
+> +               .driver         = {
+> +                       .name           = DRIVER_NAME,
+> +                       .bus            = &tee_bus_type,
+> +                       .probe          = client_probe,
+> +                       .remove         = client_remove,
+> +               },
+> +       };
+> +
+> +       static int __init client_init(void)
+> +       {
+> +               return driver_register(&client_driver.driver);
+> +       }
+> +
+> +       static void __exit client_exit(void)
+> +       {
+> +               driver_unregister(&client_driver.driver);
+> +       }
+> +
+> +       module_init(client_init);
+> +       module_exit(client_exit);
+> +
+>  OP-TEE driver
+>  =============
+>
+> @@ -112,6 +172,14 @@ kernel are handled by the kernel driver. Other RPC messages will be forwarded to
+>  tee-supplicant without further involvement of the driver, except switching
+>  shared memory buffer representation.
+>
+> +OP-TEE device enumeration
+> +-------------------------
+> +
+> +OP-TEE provides a pseudo Trusted Application: drivers/tee/optee/device.c in
+> +order to support device enumeration. In other words, OP-TEE driver invokes this
+> +application to retrieve a list of Trusted Applications which can be registered
+> +as devices on the TEE bus.
+> +
+>  AMD-TEE driver
+>  ==============
+>
+> --
+> 2.7.4
+>
