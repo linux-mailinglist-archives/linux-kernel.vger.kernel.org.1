@@ -2,120 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5F91EE07D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B0D1EE070
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgFDJFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 05:05:24 -0400
-Received: from mga03.intel.com ([134.134.136.65]:17895 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726664AbgFDJFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 05:05:22 -0400
-IronPort-SDR: BkG9audbXH0Q7wDp9MGIArZWnhRhMsVX2J7xviMCdUpeJjwl4b1QJC9QhQUZ+wo+AqOj+YGXxi
- 56+JQfpUaCfw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 02:05:20 -0700
-IronPort-SDR: lGWk+CCUCdOR70V4sjK0oQFGaloxTVzUi5nUADrIKYP+gEPX0IEIgsg1wyHyEChiyyFFEZLdIQ
- EVBzvpSpMRCw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,471,1583222400"; 
-   d="scan'208";a="294264505"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga004.fm.intel.com with ESMTP; 04 Jun 2020 02:05:17 -0700
-Date:   Thu, 4 Jun 2020 17:01:50 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     mfd@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, bhu@redhat.com, mtosatti@redhat.com,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v6 0/7] Add interrupt support to FPGA DFL drivers
-Message-ID: <20200604090150.GA15317@yilunxu-OptiPlex-7050>
-References: <1591260388-15128-1-git-send-email-yilun.xu@intel.com>
+        id S1728423AbgFDJCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 05:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728089AbgFDJCq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 05:02:46 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EF0C03E96E
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 02:02:46 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id y13so5243362eju.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 02:02:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hHof+p3C9Md136JQ7k0tl8hMmspaaFCEsQhKQBHmNxA=;
+        b=p1RLJkFHX+/HAaWtEy3jwsTfPtsNiJliZpFxTrV1XyeKjW6c+81N5TFAVnh6b9eAUz
+         1jWiOzZBl9rVUsnqfcwlgM80fjmLjwZLhpOMjlH8Xwr+lIx4p8FvCKMk7EMGSiBE1ZTu
+         A/1zi/2qERY0KAaorMMvNhuDbklge4kwZ1/mrDweImSwz9dFh9KTjtNMJh7UlIicpjhm
+         G7viBE1GVTYYXxOz5KFnKImb03jUw45EXUrtQwO18cQ7C70e+BiXsjBXL065BXKh8mhs
+         7Qu51pm3knq8tG30mIZjKZtSMOMGlGYqIxd9WeAdOYJN2qShg9dZ0QETGacpX92pOqQG
+         g6kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hHof+p3C9Md136JQ7k0tl8hMmspaaFCEsQhKQBHmNxA=;
+        b=G507xFkhaHcvmljn6xglvRbaptXE5LaSKLoONx6ibchl91eg12xnaHgdA7XK/RLRY3
+         g6+KTF6RnoAN/p5Wkoc8eIbci0TCrxnFm3zf3gHXcBJM7EYQEDzYsMskFGuyljRLirgI
+         qUy4KfiELzyA4z89mXMQx5XJDLCo5Wenj6pjO6DQ8qqmg6TTFDpHLT/nlRS3c4O6IghG
+         fgb2tJtQ8xtQzxeWgLBlgESwjzg4CFz6prZB2xGuCHrzrFwnG9Tm1B6Swh/gNcY+PP7r
+         MEb1iPzw7yw4Pd7fKuLOhKBkeRwUM1LOvUK4ca1/lFDP7XOaaIDSB+pYMeGswH5omSx/
+         nyog==
+X-Gm-Message-State: AOAM533bAk3lvTk543xEx5ZWCSjtR/iMhsL8Tb1g3MiX8rPo+f8ymVf7
+        l8SmyASX5liWuszJM1/YxZCUw+tUq1Socw==
+X-Google-Smtp-Source: ABdhPJw5awrswXBB9T1X5H66YVQsV9+7Luv3jbVtzXFoUYhvXcs3GavJwgAMyZ94YIO/oW7JPztvmQ==
+X-Received: by 2002:a17:906:69d1:: with SMTP id g17mr2840858ejs.521.1591261365181;
+        Thu, 04 Jun 2020 02:02:45 -0700 (PDT)
+Received: from [192.168.1.4] (212-5-158-209.ip.btc-net.bg. [212.5.158.209])
+        by smtp.googlemail.com with ESMTPSA id gt26sm1592670ejb.107.2020.06.04.02.02.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jun 2020 02:02:44 -0700 (PDT)
+Subject: Re: [PATCH] v4l2-ctrl: add control for thumnails
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>,
+        Tomasz Figa <tfiga@chromium.org>
+References: <20200526085446.30956-1-stanimir.varbanov@linaro.org>
+ <65ac9697-a43f-7025-e6fe-69c4a44c6d9a@xs4all.nl>
+ <ce28a840-a763-6700-16dd-d708e570d55c@linaro.org>
+Message-ID: <d02c6cd0-a502-dc52-519e-54b6328d5373@linaro.org>
+Date:   Thu, 4 Jun 2020 12:02:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1591260388-15128-1-git-send-email-yilun.xu@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <ce28a840-a763-6700-16dd-d708e570d55c@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I misspelled Moritz's mail address. I'll resent the patchset. Please
-ignore this set.
+Hi Hans,
 
-Sorry for inconvenience.
+On 5/27/20 12:53 AM, Stanimir Varbanov wrote:
+> Hi Hans,
+> 
+> On 5/26/20 3:04 PM, Hans Verkuil wrote:
+>> On 26/05/2020 10:54, Stanimir Varbanov wrote:
+>>> Add v4l2 control for decoder thumbnail.
+>>>
+>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>>> ---
+>>>  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 7 +++++++
+>>>  drivers/media/v4l2-core/v4l2-ctrls.c                      | 2 ++
+>>>  include/uapi/linux/v4l2-controls.h                        | 2 ++
+>>>  3 files changed, 11 insertions(+)
+>>>
+>>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>> index d0d506a444b1..e838e410651b 100644
+>>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>> @@ -3726,6 +3726,13 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>>>      disables generating SPS and PPS at every IDR. Setting it to one enables
+>>>      generating SPS and PPS at every IDR.
+>>>  
+>>> +``V4L2_CID_MPEG_VIDEO_DECODER_THUMBNAIL (button)``
+>>> +    Instructs the decoder to produce immediate output. The decoder should
+>>> +    consume first input buffer for progressive stream (or first two buffers
+>>> +    for interlace). Decoder should not allocate more output buffers that it
+>>> +    is required to consume one input frame. Usually the decoder input
+>>> +    buffers will contain only I/IDR frames but it is not mandatory.
+>>
+>> This is very vague. It doesn't explain why the control is called 'THUMBNAIL',
+>> but more importantly it doesn't explain how this relates to normal decoding.
+> 
+> If in the normal decode the capture queue buffers are 5, in the
+> thumbnail mode the number of buffers will be only 1 (if the bitstream is
+> progressive) and this will guarantee low memory usage. The other
+> difference is that the decoder will produce decoded frames (without
+> errors) only for I/IDR (sync frames).
+> 
+>>
+>> I.e. if you are decoding and 'press' this control, what happens then?
+> 
+> Might be the button type wasn't great idea. In fact the control should
+> be set before streamon so that the driver returns min_capture_bufs 1.
+> 
+>>
+>> What exactly is the use-case?
+> 
+> It could be used to generate thumbnails of all video clips in a folder
+> or when you open a Gallery application on your phone.
+> 
 
-On Thu, Jun 04, 2020 at 04:46:21PM +0800, Xu Yilun wrote:
-> This patchset add interrupt support to FPGA DFL drivers.
-> 
-> With these patches, DFL driver will parse and assign interrupt resources
-> for enumerated feature devices and their sub features.
-> 
-> This patchset also introduces a set of APIs for user to monitor DFL
-> interrupts. Three sub features (DFL FME error, DFL AFU error and user
-> interrupt) drivers now support these APIs.
-> 
-> Patch #1: DFL framework change. Accept interrupt info input from DFL bus
->           driver, and add interrupt parsing and assignment for feature
->           sub devices.
-> Patch #2: DFL pci driver change, add interrupt info on DFL enumeration.
-> Patch #3: DFL framework change. Add helper functions for feature sub
->           device drivers to handle interrupt and notify users.
-> Patch #4: Add interrupt support for AFU error reporting sub feature.
-> Patch #5: Add interrupt support for FME global error reporting sub
->           feature.
-> Patch #6: Add interrupt support for a new sub feature, to handle user
->           interrupts implemented in AFU.
-> Patch #7: Documentation for DFL interrupt handling.
-> 
-> Main changes from v1: 
->  - Early validating irq table for each feature in parse_feature_irq()
->    in Patch #1. 
->  - Changes IOCTL interfaces. use DFL_FPGA_FME/PORT_XXX_GET_IRQ_NUM
->    instead of DFL_FPGA_FME/PORT_XXX_GET_INFO, delete flag field for 
->    DFL_FPGA_FME/PORT_XXX_SET_IRQ param
-> 
-> Main changes from v2:
->  - put parse_feature_irqs() inside create_feature_instance().
->  - refines code for dfl_fpga_set_irq_triggers, delete local variable j.
->  - put_user() instead of copy_to_user() for DFL_FPGA_XXX_GET_IRQ_NUM IOCTL
-> 
-> Main changes from v3:
->  - rebased to 5.7-rc1.
->  - fail the dfl enumeration when irq parsing error happens.
->  - Add 2 helper functions in dfl.c to handle generic irq ioctls in feature
->    drivers.
-> 
-> Main changes from v4:
->  - Minor fixes for Hao's comments.
-> 
-> Main changes from v5:
->  - Remove unnecessary type casting in Patch #1 & #3.
->  - Minor fixes for Moritz's comments.
-> 
-> Xu Yilun (7):
->   fpga: dfl: parse interrupt info for feature devices on enumeration
->   fpga: dfl: pci: add irq info for feature devices enumeration
->   fpga: dfl: introduce interrupt trigger setting API
->   fpga: dfl: afu: add interrupt support for port error reporting
->   fpga: dfl: fme: add interrupt support for global error reporting
->   fpga: dfl: afu: add AFU interrupt support
->   Documentation: fpga: dfl: add descriptions for interrupt related
->     interfaces.
-> 
->  Documentation/fpga/dfl.rst    |  19 +++
->  drivers/fpga/dfl-afu-error.c  |  17 +++
->  drivers/fpga/dfl-afu-main.c   |  32 +++++
->  drivers/fpga/dfl-fme-error.c  |  18 +++
->  drivers/fpga/dfl-fme-main.c   |   6 +
->  drivers/fpga/dfl-pci.c        |  81 +++++++++--
->  drivers/fpga/dfl.c            | 308 ++++++++++++++++++++++++++++++++++++++++++
->  drivers/fpga/dfl.h            |  57 ++++++++
->  include/uapi/linux/fpga-dfl.h |  82 +++++++++++
->  9 files changed, 611 insertions(+), 9 deletions(-)
-> 
-> -- 
-> 2.7.4
+What is your opinion on that control? I could consider to make it Venus
+custom control but from the use-case it looks other drivers also can
+benefit of it.
+
+I tried to make more generic one [1] but it looks it will be too difficult.
+
+-- 
+regards,
+Stan
+
+[1] https://www.spinics.net/lists/linux-media/msg167794.html
