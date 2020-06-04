@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775781EE506
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1A61EE50B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728439AbgFDNK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 09:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgFDNKz (ORCPT
+        id S1728453AbgFDNLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 09:11:52 -0400
+Received: from freki.datenkhaos.de ([81.7.17.101]:60592 "EHLO
+        freki.datenkhaos.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726003AbgFDNLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 09:10:55 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76CFC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 06:10:55 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id n123so2892823ybf.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 06:10:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bsgm/TKaQa1WLgF7Jlo3Jkj2UeTFocZUCUKf1011cuc=;
-        b=dNTx6mqqy7cKYr6LeBPm8T8QMP1bWemgs9tn5LA8PwwT5b9uYGoEOO7nrOaxI8HSgF
-         sEkATWLylk3rMeS/XsK4JQOIle/TBs+afxA6rQs0zIYiJ0x62J6r+GwZ2LCTYxp0BCKb
-         9rt5tPJGyKGDibCWDRwcopwAeXl7sqD6BwjYGQY47CJ0L6/WdO4AHMy9r1ZUDb133Xjn
-         nui8+40mbwrG5+Ol0llqxLbYmTQHQtjzRbkxRoIm0I+24yleuQpyUDGZ6vqGtTLdPtGL
-         4t1QXO+QZbPsYYArVgVv0FvLy1RiB6Sph6aE7NfPVSzXPeciKWwSSTs8wAsr4xPySlWW
-         ikTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bsgm/TKaQa1WLgF7Jlo3Jkj2UeTFocZUCUKf1011cuc=;
-        b=e7Nn//LPnsccPw8YJ7ToWSPGa6Ax0t8llAXr3kiC7bVU2ddEFbkdbkv7Xj9jfqLoFi
-         Sk7tV1KHKCLDLwpPR0FjjiMNaLKml1u+qIbESUdQS6EX7gRxBbv2Fif5NcZchLL+Hoso
-         T7Jka6KQKriOYxhXVMo2mJ4K090I26nVRuiVHXUZ/eAiHvjHF51jat6couFf0L/8HAmO
-         gQRB8g28+KbvNXCqg2CWxs+bNkCfJJ463m1w1P+G9F9TER+5urzfq7CNByh9VhBSqwqy
-         PC6Y/bZEkWrLKYm5yF4bJCli5WjKDq9ugNcCRjn9mXamlQ4I/fCxuaFyNckQryDzzpce
-         uJrQ==
-X-Gm-Message-State: AOAM5309HYBhzC4BqOHXraE9JY1arYhvbYgjMNNH8GdMgLgJ+OUm3mJ2
-        If1oiIf/VfHtdIImKh4xQxNbf+S2d1IFBlRU1jtcUg==
-X-Google-Smtp-Source: ABdhPJznZ4kgf3E7pVsIR+yXbd62nObH+ZoygHL56PaPVrmzBCCzB1mkH7ELrGSGj1vCTfsXKYF+txj1dTIRXd0BCe0=
-X-Received: by 2002:a25:4cc4:: with SMTP id z187mr8163120yba.274.1591276254605;
- Thu, 04 Jun 2020 06:10:54 -0700 (PDT)
+        Thu, 4 Jun 2020 09:11:51 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by freki.datenkhaos.de (Postfix) with ESMTP id 619B62BBC375;
+        Thu,  4 Jun 2020 15:11:50 +0200 (CEST)
+Received: from freki.datenkhaos.de ([127.0.0.1])
+        by localhost (freki.datenkhaos.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 8PHAwIxS7RRD; Thu,  4 Jun 2020 15:11:46 +0200 (CEST)
+Received: from latitude (vpn137.rz.tu-ilmenau.de [141.24.172.137])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by freki.datenkhaos.de (Postfix) with ESMTPSA;
+        Thu,  4 Jun 2020 15:11:46 +0200 (CEST)
+Date:   Thu, 4 Jun 2020 15:11:41 +0200
+From:   Johannes Hirte <johannes.hirte@datenkhaos.de>
+To:     Stephane Eranian <eranian@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, mingo@elte.hu,
+        Ian Rogers <irogers@google.com>,
+        "Phillips, Kim" <kim.phillips@amd.com>,
+        Jiri Olsa <jolsa@redhat.com>
+Subject: Re: [PATCH v2 1/5] perf/x86/rapl: move RAPL support to common x86
+ code
+Message-ID: <20200604131141.GA678989@latitude>
+References: <20200527224659.206129-1-eranian@google.com>
+ <20200527224659.206129-2-eranian@google.com>
+ <20200601123850.GA213137@latitude>
+ <CABPqkBSKF_4BpXxT=LDb786cW5euuOk7oUbnem5=P6BpMtk0ZA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200602080425.93712-1-kerneljasonxing@gmail.com> <20200604090014.23266-1-kerneljasonxing@gmail.com>
-In-Reply-To: <20200604090014.23266-1-kerneljasonxing@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 4 Jun 2020 06:10:43 -0700
-Message-ID: <CANn89iKt=3iDZM+vUbCvO_aGuedXFhzdC6OtQMeVTMDxyp9bAg@mail.gmail.com>
-Subject: Re: [PATCH v2 4.19] tcp: fix TCP socks unreleased in BBR mode
-To:     Jason Xing <kerneljasonxing@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Neal Cardwell <ncardwell@google.com>,
-        David Miller <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, liweishi@kuaishou.com,
-        Shujin Li <lishujin@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABPqkBSKF_4BpXxT=LDb786cW5euuOk7oUbnem5=P6BpMtk0ZA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 4, 2020 at 2:01 AM <kerneljasonxing@gmail.com> wrote:
->
-> From: Jason Xing <kerneljasonxing@gmail.com>
->
-> When using BBR mode, too many tcp socks cannot be released because of
-> duplicate use of the sock_hold() in the manner of tcp_internal_pacing()
-> when RTO happens. Therefore, this situation maddly increases the slab
-> memory and then constantly triggers the OOM until crash.
->
-> Besides, in addition to BBR mode, if some mode applies pacing function,
-> it could trigger what we've discussed above,
->
-> Reproduce procedure:
-> 0) cat /proc/slabinfo | grep TCP
-> 1) switch net.ipv4.tcp_congestion_control to bbr
-> 2) using wrk tool something like that to send packages
-> 3) using tc to increase the delay and loss to simulate the RTO case.
-> 4) cat /proc/slabinfo | grep TCP
-> 5) kill the wrk command and observe the number of objects and slabs in
-> TCP.
-> 6) at last, you could notice that the number would not decrease.
->
-> v2: extend the timer which could cover all those related potential risks
-> (suggested by Eric Dumazet and Neal Cardwell)
->
-> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-> Signed-off-by: liweishi <liweishi@kuaishou.com>
-> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+On 2020 Jun 01, Stephane Eranian wrote:
+> On Mon, Jun 1, 2020 at 5:39 AM Johannes Hirte
+> <johannes.hirte@datenkhaos.de> wrote:
+> >
+> > On 2020 Mai 27, Stephane Eranian wrote:
+> >
+> > ...
+> > > diff --git a/arch/x86/events/Makefile b/arch/x86/events/Makefile
+> > > index 6f1d1fde8b2de..12c42eba77ec3 100644
+> > > --- a/arch/x86/events/Makefile
+> > > +++ b/arch/x86/events/Makefile
+> > > @@ -1,5 +1,6 @@
+> > >  # SPDX-License-Identifier: GPL-2.0-only
+> > >  obj-y                                        += core.o probe.o
+> > > +obj-$(PERF_EVENTS_INTEL_RAPL)                += rapl.o
+> > >  obj-y                                        += amd/
+> > >  obj-$(CONFIG_X86_LOCAL_APIC)            += msr.o
+> > >  obj-$(CONFIG_CPU_SUP_INTEL)          += intel/
+> >
+> > With this change, rapl won't be build. Must be:
+> >
+> > obj-$(CONFIG_PERF_EVENTS_INTEL_RAPL)                += rapl.o
+> >
+> Correct. I posted a patch last week to fix that.
+> Thanks.
 
-That is not how things work really.
+Yes, it just wasn't in tip when I've tested. Sorry for the noise.
 
-I will submit this properly so that stable teams do not have to guess
-how to backport this to various kernels.
+-- 
+Regards,
+  Johannes Hirte
 
-Changelog is misleading, this has nothing to do with BBR, we need to be precise.
-
-Thank you.
