@@ -2,137 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2A31EDC1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 06:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0F11EDC23
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 06:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgFDENm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 00:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726004AbgFDENl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 00:13:41 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28625C03E96D
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 21:13:41 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id n23so5509871ljh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 21:13:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x+NrqN+0xbQXOWLT6R62mZhI75888x+45r0FZYiQvi4=;
-        b=Gsr5lN9LD8WT3djx/WpsXxGUrPz8bH8FVB0oU047nVrriDXWLxousSD6QAE6djVWhp
-         87R3f/XeWUBxR1JOs/dxzvYX2IVp0MFK0CUObhFX39bp0Pnswj79PJRrIjHnMOS/gaWX
-         +0mM9d0u66/Dew3fTDnMCmjIwdXBg3bbVAXGs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x+NrqN+0xbQXOWLT6R62mZhI75888x+45r0FZYiQvi4=;
-        b=SUBOEZuLKB3bkIw+5xCRFcfFNRmb30tENI64fqFbLRrd+j/YeLBTyO57mw4yoSolmR
-         wzwznXt1MIxMtvYQAEhiUfktrirBOLCwLdkireSBNpGdx4PONErB9qAxdkYaPkaebJIw
-         9fm3ZNh0llEXdhuK9XbzJz10vZ6yHg+toABDH4Afibq2aOtzKa2/td0RZ4Vc+MAbK4JH
-         4Ml/Clk7fnG6/ySRqm8gojH6MC1Rzg1aSF/abyb2rlJCsYSXWeTCd5K7/B5El+BqMFNR
-         XGLC2Nnf3vb75fvJAfRtNnizB+hz+eJ2SWFu9Beis4cgl1/KZVduggAnF3v9O2K2Ek31
-         nZNw==
-X-Gm-Message-State: AOAM530FmBK0FnnLIR2Cd8Twf/Fpn4jRrL9G8Y0IBKqt0HENIFCfb3yV
-        Q1j4gYe6+QB9ArFuigqXKfKiK1fDufE=
-X-Google-Smtp-Source: ABdhPJyuCY0lMmhTUe8hXu0AyFBzAF+cgBW38fccrYJppdbQRRlvho6yiCv0OpXwkiEXn41J0TtCGg==
-X-Received: by 2002:a2e:9818:: with SMTP id a24mr1103253ljj.161.1591244018956;
-        Wed, 03 Jun 2020 21:13:38 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id t22sm1130019lji.90.2020.06.03.21.13.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jun 2020 21:13:37 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id a25so5521922ljp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 21:13:37 -0700 (PDT)
-X-Received: by 2002:a2e:974e:: with SMTP id f14mr1100137ljj.102.1591244017171;
- Wed, 03 Jun 2020 21:13:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200603100559.2718efba@coco.lan>
-In-Reply-To: <20200603100559.2718efba@coco.lan>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 3 Jun 2020 21:13:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg=CTtNrxPeFzkDw053dY3urchiyxevHnUXHhTGbK=9OQ@mail.gmail.com>
-Message-ID: <CAHk-=wg=CTtNrxPeFzkDw053dY3urchiyxevHnUXHhTGbK=9OQ@mail.gmail.com>
-Subject: Re: [GIT PULL for v5.8-rc1] media updates
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726465AbgFDERJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 00:17:09 -0400
+Received: from mga05.intel.com ([192.55.52.43]:16104 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725959AbgFDERI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 00:17:08 -0400
+IronPort-SDR: UtNw6hvOlDZdYbt12xOlrfJfSWOBksFqXNVKHxUawtL/IyEtVn0biCoTJ0Y8i+PmWiGyteyjie
+ MiQnqlMDMecg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 21:17:08 -0700
+IronPort-SDR: pT9a6wKXzrM+ieidBq3xAmrP+FCuj7BAtH3eZh6VKon148ga1t7N9JD1jIjMENjgD2ReP1SSvH
+ euQ9AdxBkgNg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,471,1583222400"; 
+   d="scan'208";a="416782285"
+Received: from lxy-dell.sh.intel.com ([10.239.159.21])
+  by orsmga004.jf.intel.com with ESMTP; 03 Jun 2020 21:17:06 -0700
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: [PATCH v2] KVM: x86: Assign correct value to array.maxnent
+Date:   Thu,  4 Jun 2020 12:16:36 +0800
+Message-Id: <20200604041636.1187-1-xiaoyao.li@intel.com>
+X-Mailer: git-send-email 2.18.2
+Reply-To: <20200604024304.14643-1-xiaoyao.li@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 3, 2020 at 1:06 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> PS.: The diffstat is so big that I almost dropped it, as it is almost
-> useless for humans to read. I ended by not doing it just because perhaps
-> you could be using some sort of script to check diffstat.
+Delay the assignment of array.maxnent to use correct value for the case
+cpuid->nent > KVM_MAX_CPUID_ENTRIES.
 
-No, but I do compare the basics, and you don't have to more than scan
-it to see that "ok, it only touches area xyz".
+Fixes: e53c95e8d41e ("KVM: x86: Encapsulate CPUID entries and metadata in struct")
+Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+---
+v2:
+   - remove "const" of maxnent to fix build error.
+---
+ arch/x86/kvm/cpuid.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-And it turns out that it is huge for you partly because you have the
-default (fairly low) git rename detection limits, in order to avoid
-using a lot of CPU or memory for rename detection.
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 253b8e875ccd..3d88ddf781d0 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -426,7 +426,7 @@ EXPORT_SYMBOL_GPL(kvm_set_cpu_caps);
+ 
+ struct kvm_cpuid_array {
+ 	struct kvm_cpuid_entry2 *entries;
+-	const int maxnent;
++	int maxnent;
+ 	int nent;
+ };
+ 
+@@ -870,7 +870,6 @@ int kvm_dev_ioctl_get_cpuid(struct kvm_cpuid2 *cpuid,
+ 
+ 	struct kvm_cpuid_array array = {
+ 		.nent = 0,
+-		.maxnent = cpuid->nent,
+ 	};
+ 	int r, i;
+ 
+@@ -887,6 +886,8 @@ int kvm_dev_ioctl_get_cpuid(struct kvm_cpuid2 *cpuid,
+ 	if (!array.entries)
+ 		return -ENOMEM;
+ 
++	array.maxnent = cpuid->nent;
++
+ 	for (i = 0; i < ARRAY_SIZE(funcs); i++) {
+ 		r = get_cpuid_func(&array, funcs[i], type);
+ 		if (r)
+-- 
+2.18.2
 
-So you get:
-
->  2181 files changed, 260633 insertions(+), 106012 deletions(-)
-
-while I get
-
- 1698 files changed, 161922 insertions(+), 7301 deletions(-)
-
-which is a noticeable difference. Still a big diffstat, but quite a
-bit smaller than yours.
-
-You also get a _lot_ more noise in the form of "create mode xyz" and
-"delete mode abc" notices, while for me a lot of them are just "rename
-abc => xyz". So there's a double whammy for you.
-
-The reason is that your diff only has renames for the 100% matches like this:
-
->  rename Documentation/{media/v4l-drivers => admin-guide/media}/au0828-cardlist.rst (100%)
-
-which git can detect purely by seeing "oh, same exact SHA1".
-
-But you don't have any non-100% renames.
-
-In contrast, the diffstat I see also has the inexact renames like
-
- rename Documentation/{media/v4l-drivers =>
-admin-guide/media}/bttv-cardlist.rst (99%)
- rename Documentation/{media/v4l-drivers => admin-guide/media}/bttv.rst (79%)
-
-because I have done
-
-   git config diff.renamelimit 0
-
-to make the rename detection limit be infinite (alternatively, just
-edit your ~/.gitconfig file manually - it's often easier than
-remembering what the "git config" syntax is).
-
-You want to see
-
-  [diff]
-        renamelimit = 0
-
-in your ~/.gitconfig file (or, alternatively, if you want the setting
-to be per-repo, in your .git/config file in your repository).
-
-The default git limits for "should I spend CPU time and memory on
-detecting inexact renames" are fairly low, because people use git on
-fairly low-end machines.
-
-I bet your development machine isn't some kind of low-end toy, and
-rename detection is not _that_ expensive.
-
-              Linus
