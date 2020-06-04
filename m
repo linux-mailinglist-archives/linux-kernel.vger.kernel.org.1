@@ -2,87 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E1A1EDE20
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B571EDE04
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 09:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgFDH3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 03:29:34 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:15107 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728061AbgFDH33 (ORCPT
+        id S1727979AbgFDH1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 03:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727909AbgFDH1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 03:29:29 -0400
-X-UUID: e8eeac1351eb4b0c9231d7b289c30470-20200604
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=ZTXG1swxMq+6u0sp84wMTHDYveVRdbBvoRAsf7UsS68=;
-        b=Sm4x5YXrlQbiEIsi6vDqn27KOZpz91o1tHw658+1YjRjYgsRavKK2fax8vaTtot6UsogWHuF651v1LzZXoqhVZtf626l8iGSWTuW7Pp7Oj2MDkxv1rVVu3hN59pnlIDRrnuO6ZjApV3Rgcp2cYEw0Xq9u5IgzP+2yVORqzPkbTs=;
-X-UUID: e8eeac1351eb4b0c9231d7b289c30470-20200604
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <xia.jiang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1167496728; Thu, 04 Jun 2020 15:29:24 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 4 Jun 2020 15:29:22 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 4 Jun 2020 15:29:20 +0800
-From:   Xia Jiang <xia.jiang@mediatek.com>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rick Chang <rick.chang@mediatek.com>
-CC:     <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        <srv_heupstream@mediatek.com>, <senozhatsky@chromium.org>,
-        <mojahsu@chromium.org>, <drinkcat@chromium.org>,
-        <maoguang.meng@mediatek.com>, <sj.huang@mediatek.com>,
-        Xia Jiang <xia.jiang@mediatek.com>
-Subject: [PATCH v9 07/18] media: platform: Improve the implementation of the system PM ops
-Date:   Thu, 4 Jun 2020 15:26:57 +0800
-Message-ID: <20200604072708.9468-8-xia.jiang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200604072708.9468-1-xia.jiang@mediatek.com>
-References: <20200604072708.9468-1-xia.jiang@mediatek.com>
+        Thu, 4 Jun 2020 03:27:11 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A71C05BD1E;
+        Thu,  4 Jun 2020 00:27:10 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id q8so5209892iow.7;
+        Thu, 04 Jun 2020 00:27:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=mGOxjTCdefrrnR0hBKEqLE+5+y5wUx6BcOT52JEiO/w=;
+        b=ZS4bR5ylkA3qMyDfT9teREVYO+h3tibjnXyMJoJVX+G5mJ13iGtF5nRneHn2y4BXKk
+         lbuA38DH8PUg7+NnR/cRrvaPdec+9VbV7j8bpXSIvpgF1JXXQjjbiwoR4VphfuiGExJt
+         hLAd/KpHYlSGyG+SYPS4B4UqdSRoUABVvzmUhM84xdRr3+M7Ejw5zRXRHI9S7C4ge69w
+         pHHApPVvaksuEjuQWJYGIZ58KDToZLKr1OfN8O/H8RmdIn0p+KhbEW4AU6+9mOsYqoG0
+         i4HZ9VdbrqFEIkfk7P5p1r/q/z2DKw42yvXNm3xth1WgLu9BQ1Leo+hkaKoCcnQ7shWy
+         D+2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=mGOxjTCdefrrnR0hBKEqLE+5+y5wUx6BcOT52JEiO/w=;
+        b=WBkGpG1JIPkpiRgZ/zPYX4aOJd0rsTgI+A8sH52mYb8Y6itTIY2Dbq3LbG0CVvyK8d
+         7yeRCbcN+rivF4csTFIXvbi+gr7hWPpzyfZwL2PxM04ycVCFXbtpxNPt4h2V2bzuXUE8
+         PcaY//RmkERKRY/6jh26rxI7sZw6to9isozf/71MdKKcD1M1LlulxXv46yL35S9B8QwG
+         +ltyiwm2ubKPo+Bssw0jrCZRhzlbUTp2MPPgk5kL+KUU6gls5pUnyzui9mVhHqB5mkZ/
+         Egk+dmWoRKME3fyNxQ4jD5e7XhDP2GPHYiAzaBxED/iW4KvGHMjKOKc5jHL/14+49F0F
+         VQ/w==
+X-Gm-Message-State: AOAM532k0J3AmCTtfrEaXOWyQ3SiwDSc5kEctZRh8wd4btl+fWuEuPla
+        szJlYdGSIuS73EwThbuD14hmIlwjsOMYhoPwmgFg1/y3
+X-Google-Smtp-Source: ABdhPJwrHY2BsggDHErpO1Iuf0ec8cSLwXn1wO03W9qrRj259eIfuSS5XQEsDKLZy/A8Pd7aPUbrd6qaIHCM8QmxBFo=
+X-Received: by 2002:a5d:91cc:: with SMTP id k12mr2896278ior.135.1591255630008;
+ Thu, 04 Jun 2020 00:27:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200603233203.1695403-1-keescook@chromium.org> <20200604033347.GA3962068@ubuntu-n2-xlarge-x86>
+In-Reply-To: <20200604033347.GA3962068@ubuntu-n2-xlarge-x86>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 4 Jun 2020 09:26:58 +0200
+Message-ID: <CA+icZUU4Re5g3rRJ=WF3_KiCEc3CUmbH_PibTunuK_E1QskEjQ@mail.gmail.com>
+Subject: Re: [PATCH 00/10] Remove uninitialized_var() macro
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-mm@kvack.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIHY0bDJfbTJtX3N1c3BlbmQoKSBmdW5jdGlvbiBjYWxsIGluIG10a19qcGVnX3N1c3BlbmQo
-KSB0byBtYWtlIHN1cmUNCnRoYXQgdGhlIGN1cnJlbnQgZnJhbWUgaXMgcHJvY2Vzc2VkIGNvbXBs
-ZXRlbHkgYmVmb3JlIHN1c3BlbmQuDQpBZGQgdjRsMl9tMm1fcmVzdW1lKCkgZnVuY3Rpb24gY2Fs
-bCBpbiBtdGtfanBlZ19yZXN1bWUoKSB0byB1bmJsb2NrIHRoZQ0KZHJpdmVyIGZyb20gc2NoZWR1
-bGluZyBuZXh0IGZyYW1lLg0KDQpTaWduZWQtb2ZmLWJ5OiBYaWEgSmlhbmcgPHhpYS5qaWFuZ0Bt
-ZWRpYXRlay5jb20+DQotLS0NCnY5OiB1c2UgdjRsMl9tMm1fc3VzcGVuZCgpIGFuZCB2NGwyX20y
-bV9yZXN1bWUoKSB0byBpbXByb3ZlIHRoZQ0KICAgIGltcGxlbWVudGlvbiBvZiB0aGUgc3lzdGVt
-IFBNIG9wcw0KLS0tDQogZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstanBlZy9tdGtfanBlZ19j
-b3JlLmMgfCA2ICsrKysrKw0KIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKykNCg0KZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLWpwZWcvbXRrX2pwZWdfY29yZS5j
-IGIvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstanBlZy9tdGtfanBlZ19jb3JlLmMNCmluZGV4
-IDdmNzQ1OTcyNjJmYy4uNDliZGJmMWM0MzVmIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9tZWRpYS9w
-bGF0Zm9ybS9tdGstanBlZy9tdGtfanBlZ19jb3JlLmMNCisrKyBiL2RyaXZlcnMvbWVkaWEvcGxh
-dGZvcm0vbXRrLWpwZWcvbXRrX2pwZWdfY29yZS5jDQpAQCAtMTIwOCwxMCArMTIwOCwxMyBAQCBz
-dGF0aWMgX19tYXliZV91bnVzZWQgaW50IG10a19qcGVnX3BtX3Jlc3VtZShzdHJ1Y3QgZGV2aWNl
-ICpkZXYpDQogc3RhdGljIF9fbWF5YmVfdW51c2VkIGludCBtdGtfanBlZ19zdXNwZW5kKHN0cnVj
-dCBkZXZpY2UgKmRldikNCiB7DQogCWludCByZXQ7DQorCXN0cnVjdCBtdGtfanBlZ19kZXYgKmpw
-ZWcgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCiANCiAJaWYgKHBtX3J1bnRpbWVfc3VzcGVuZGVk
-KGRldikpDQogCQlyZXR1cm4gMDsNCiANCisJdjRsMl9tMm1fc3VzcGVuZChqcGVnLT5tMm1fZGV2
-KTsNCisNCiAJcmV0ID0gbXRrX2pwZWdfcG1fc3VzcGVuZChkZXYpOw0KIAlyZXR1cm4gcmV0Ow0K
-IH0NCkBAIC0xMjE5LDEyICsxMjIyLDE1IEBAIHN0YXRpYyBfX21heWJlX3VudXNlZCBpbnQgbXRr
-X2pwZWdfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpDQogc3RhdGljIF9fbWF5YmVfdW51c2Vk
-IGludCBtdGtfanBlZ19yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2KQ0KIHsNCiAJaW50IHJldDsN
-CisJc3RydWN0IG10a19qcGVnX2RldiAqanBlZyA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KIA0K
-IAlpZiAocG1fcnVudGltZV9zdXNwZW5kZWQoZGV2KSkNCiAJCXJldHVybiAwOw0KIA0KIAlyZXQg
-PSBtdGtfanBlZ19wbV9yZXN1bWUoZGV2KTsNCiANCisJdjRsMl9tMm1fcmVzdW1lKGpwZWctPm0y
-bV9kZXYpOw0KKw0KIAlyZXR1cm4gcmV0Ow0KIH0NCiANCi0tIA0KMi4xOC4wDQo=
+On Thu, Jun 4, 2020 at 5:33 AM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Wed, Jun 03, 2020 at 04:31:53PM -0700, Kees Cook wrote:
+> > Using uninitialized_var() is dangerous as it papers over real bugs[1]
+> > (or can in the future), and suppresses unrelated compiler warnings
+> > (e.g. "unused variable"). If the compiler thinks it is uninitialized,
+> > either simply initialize the variable or make compiler changes.
+> >
+> > As recommended[2] by[3] Linus[4], remove the macro.
+> >
+> > Most of the 300 uses don't cause any warnings on gcc 9.3.0, so they're in
+> > a single treewide commit in this series. A few others needed to actually
+> > get cleaned up, and I broke those out into individual patches.
+> >
+> > -Kees
+> >
+> > [1] https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.com/
+> > [2] https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=1TGqCR5vQkCzWJ0QxK6CernOU6eedsudAixw@mail.gmail.com/
+> > [3] https://lore.kernel.org/lkml/CA+55aFwgbgqhbp1fkxvRKEpzyR5J8n1vKT1VZdz9knmPuXhOeg@mail.gmail.com/
+> > [4] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/
+> >
+> > Kees Cook (10):
+> >   x86/mm/numa: Remove uninitialized_var() usage
+> >   drbd: Remove uninitialized_var() usage
+> >   b43: Remove uninitialized_var() usage
+> >   rtlwifi: rtl8192cu: Remove uninitialized_var() usage
+> >   ide: Remove uninitialized_var() usage
+> >   clk: st: Remove uninitialized_var() usage
+> >   spi: davinci: Remove uninitialized_var() usage
+> >   checkpatch: Remove awareness of uninitialized_var() macro
+> >   treewide: Remove uninitialized_var() usage
+> >   compiler: Remove uninitialized_var() macro
+>
+> I applied all of these on top of cb8e59cc8720 and ran a variety of
+> builds with clang for arm32, arm64, mips, powerpc, s390, and x86_64 [1]
+> and only saw one warning pop up (which was about a variable being
+> unused, commented on patch 9 about it). No warnings about uninitialized
+> variables came up; clang's -Wuninitialized was not impacted by
+> 78a5255ffb6a ("Stop the ad-hoc games with -Wno-maybe-initialized") so it
+> should have caught anything egregious.
+>
+> [1]: https://github.com/nathanchance/llvm-kernel-testing
+>
+> For the series, consider it:
+>
+> Tested-by: Nathan Chancellor <natechancellor@gmail.com> [build]
+>
 
+Hi Kees,
+
+I tried with updated version (checkpatch) of your tree and see no
+(new) warnings in my build-log.
+
+Feel free to add my...
+
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+
+Thanks.
+
+Regards,
+- Sedat -
