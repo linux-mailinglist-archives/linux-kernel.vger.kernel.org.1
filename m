@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC7E1EEA1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6291EEA2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730343AbgFDSNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 14:13:51 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57320 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729856AbgFDSNu (ORCPT
+        id S1730374AbgFDSRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 14:17:38 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:42332 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729856AbgFDSRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 14:13:50 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 054ICJmT164296;
-        Thu, 4 Jun 2020 18:13:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=nzwZOlHPbMBuxy9DuovN5RoN5aL2B3OynDdOfCsfpvE=;
- b=lrrQ3nqJHmFQunu1FVaWsDgD5WJKNCj3+HDvqpLhwTbEuUj0MDcxk1JlU3nd/Q2JtAXX
- vq3wkA9Wi5ed4kZ4VZW3SwAorydLTGKX+rmrmM0Fbg3jj7fp2mYNBnPpdHA8PrBgJQjc
- 4Dao3pk/zLbNpPBm4K+40/8v5SwYrEUlgNJQT405BSje4fqD0nJFKpzfoh1WDv03hNVV
- wT+OylcNi4ConNZzDn0RoFr1zOP2V9u8p9EZSZDQc2PmstjXKThvehoF3tg2UoX03DkM
- F2Rc/izOYUv9krZ7cVYDEMua8floww+a9rO7PHJAaGeHvXBGPdAgMaBoSOB8jH6y/hWd fQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 31ev96u679-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 04 Jun 2020 18:13:39 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 054I86G0096243;
-        Thu, 4 Jun 2020 18:11:39 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 31dju5d81f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Jun 2020 18:11:39 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 054IBade005799;
-        Thu, 4 Jun 2020 18:11:37 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 04 Jun 2020 11:11:36 -0700
-Date:   Thu, 4 Jun 2020 14:12:01 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Sistare <steven.sistare@oracle.com>
-Subject: Re: [PATCH] x86/mm: use max memory block size with unaligned memory
- end
-Message-ID: <20200604181201.lqop72ihg5butlmz@ca-dmjordan1.us.oracle.com>
-References: <20200604035443.3267046-1-daniel.m.jordan@oracle.com>
- <5827baaf-0eb5-bcea-5d98-727485683512@redhat.com>
- <20200604172213.f5lufktpqvqjkv4u@ca-dmjordan1.us.oracle.com>
- <ebc31650-9e98-f286-6fc2-aafdd3cd9272@redhat.com>
+        Thu, 4 Jun 2020 14:17:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591294657; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Sy6oxi6dVwjeydEC93CEgvW6xjF1Nhp3WKKAo+y1MfI=;
+ b=Fu/N7sB+5NZPSCm6DJPjuIJ/Ysj+1WR2g5Gfzzd4CvcPWgePAsMBvmWqdnC3ooJwyRGGV3yS
+ JVDBaCZl8/+be0NZNPAdfqulntxXI5r32ze8Kx0jT4NckqciCv6hTfuEynx2RVGJ5ZCe/OG1
+ 1OU74cTF75u6H/J1xBAuEbp+9W4=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5ed93ab044a25e0052dcd58b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Jun 2020 18:17:20
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 679C6C43387; Thu,  4 Jun 2020 18:17:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ADA4AC433C6;
+        Thu,  4 Jun 2020 18:17:18 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ebc31650-9e98-f286-6fc2-aafdd3cd9272@redhat.com>
-User-Agent: NeoMutt/20180716
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9642 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006040127
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9642 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- malwarescore=0 priorityscore=1501 cotscore=-2147483648 impostorscore=0
- spamscore=0 phishscore=0 mlxscore=0 clxscore=1015 bulkscore=0
- mlxlogscore=999 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006040128
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 04 Jun 2020 23:47:18 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     govinds@codeaurora.org
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Brian Norris <briannorris@chromium.org>,
+        John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Rakesh Pillai <pillair@qti.qualcomm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Niklas Cassel <niklas.cassel@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        ath10k <ath10k@lists.infradead.org>,
+        linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH] wireless: ath10k: Return early in
+ ath10k_qmi_event_server_exit() to avoid hard crash on reboot
+In-Reply-To: <4e0642b9882c41f4c10963b265bf6d9f@codeaurora.org>
+References: <20200602052533.15048-1-john.stultz@linaro.org>
+ <CA+ASDXMbNvbBdsC11dzUPX7RkMFYhJev2npPsRD_SnGQB+1hag@mail.gmail.com>
+ <CALAqxLVA1ZQjwEdbX5KGbSyLnMBAzm9PoN_Ta_Z7rBf4w3GOvQ@mail.gmail.com>
+ <CA+ASDXPddgOvEX___unx7N2YsQctsZN+1vkwPbi8Ab_zfwFfzw@mail.gmail.com>
+ <20200603002715.GA5349@Mani-XPS-13-9360>
+ <4e0642b9882c41f4c10963b265bf6d9f@codeaurora.org>
+Message-ID: <40a7d87e5774d56d9ca31e4de0c17831@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 07:45:40PM +0200, David Hildenbrand wrote:
-> On 04.06.20 19:22, Daniel Jordan wrote:
-> > IMHO the root cause of this is really the small block size.  Building a cache
-> > on top to avoid iterating over tons of small blocks seems like papering over
-> > the problem, especially when one of the two affected paths in boot is a
+On 2020-06-03 15:37, govinds@codeaurora.org wrote:
+> Hi Mani,
 > 
-> The memory block size dictates your memory hot(un)plug granularity.
-
-Indeed.
-
-> E.g., on powerpc that's 16MB so they have *a lot* of memory blocks.
-> That's why that's not papering over the problem. Increasing the memory
-> block size isn't always the answer.
-
-Ok.  If you don't mind, what's the purpose of hotplugging at that granularity?
-I'm simply curious.
-
-> > cautious check that might be ready to be removed by now[0]:
+> On 2020-06-03 05:57, Manivannan Sadhasivam wrote:
+>> On Tue, Jun 02, 2020 at 01:04:26PM -0700, Brian Norris wrote:
+>>> On Tue, Jun 2, 2020 at 12:40 PM John Stultz <john.stultz@linaro.org> 
+>>> wrote:
+>>> > On Tue, Jun 2, 2020 at 12:16 PM Brian Norris <briannorris@chromium.org> wrote:
+>>> > > On Mon, Jun 1, 2020 at 10:25 PM John Stultz <john.stultz@linaro.org> wrote:
+>>> > > >
+>>> > > > Ever since 5.7-rc1, if we call
+>>> > > > ath10k_qmi_remove_msa_permission(), the db845c hard crashes on
+>>> > > > reboot, resulting in the device getting stuck in the usb crash
+>>> > > > debug mode and not coming back up wihthout a hard power off.
+>>> > > >
+>>> > > > This hack avoids the issue by returning early in
+>>> > > > ath10k_qmi_event_server_exit().
+>>> > > >
+>>> > > > A better solution is very much desired!
+>>> > >
+>>> > > Any chance you can bisect what caused this? There are a lot of
+>>> > > non-ath10k pieces involved in this stuff.
+>>> >
+>>> > Amit had spent some work on chasing it down to the in kernel qrtr-ns
+>>> > work, and reported it here:
+>>> >   https://lists.infradead.org/pipermail/ath10k/2020-April/014970.html
+>>> >
+>>> > But that discussion seemingly stalled out, so I came up with this hack
+>>> > to workaround it for us.
+>>> 
+>>> If I'm reading it right, then that means we should revert this stuff
+>>> from v5.7-rc1:
+>>> 
+>>> 0c2204a4ad71 net: qrtr: Migrate nameservice to kernel from userspace
+>>> 
+>>> At least, until people can resolve the tail end of that thread. New
+>>> features (ath11k, etc.) are not a reason to break existing features
+>>> (ath10k/wcn3990).
+>> 
+>> I don't agree with this. If you read through the replies to the bug 
+>> report,
+>> it is clear that NS migration uncovered a corner case or even a bug. 
+>> So we
+>> should try to fix that indeed.
+>> 
+>> Govind: Did you get chance to work on fixing this issue?
+>> 
 > 
-> Yeah, we discussed that somewhere already. My change only highlighted
-> the problem. And now that it's cheap, it can just stay unless there is a
-> very good reason not to do it.
+> I have done basic testing by moving msa map/unmap from qmi service
+> callbacks to init/de-init path.
+> I will send patch for review.
+> Reason for del_server needs to investigated from rproc side.
 
-Agreed.
+Govind,
+On receiving SIGTERM, rmtfs would try
+to perform a graceful shutdown of the
+modem, that should be the source of
+the del_server.
 
-> > Yeah, but of course it's not as bad as it was now that it's fully parallelized.
 > 
-> Right. I also observed that computing if a zone is contiguous can be
-> expensive.
+>> Thanks,
+>> Mani
+>> 
+>>> 
+>>> Brian
+> 
+> Thanks,
+> Govind
 
-That's right, I remember that.  It's on my list :)
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
