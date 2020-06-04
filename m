@@ -2,125 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E1F1EE701
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 16:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3565E1EE717
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 16:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729147AbgFDOx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 10:53:58 -0400
-Received: from mga09.intel.com ([134.134.136.24]:7508 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729115AbgFDOx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 10:53:58 -0400
-IronPort-SDR: 12LJ8/wV8Ft7m3YTxGepw3c8Yhy72NMhbO6OrV/5aRf6OVycD3H4u9pA2PgTP+51p2A89j2q3l
- BvJU3K3W8lMQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 07:53:57 -0700
-IronPort-SDR: 8ETeAVtoSYMA43db23qetcezChvupW5d/MOYb+LcSrr6k/pIV2RwyqAHZSpqC3QdHWLcEvJAXD
- 0p5mi5Yv8yeg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,472,1583222400"; 
-   d="scan'208";a="471444497"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by fmsmga006.fm.intel.com with ESMTP; 04 Jun 2020 07:53:57 -0700
-Date:   Thu, 4 Jun 2020 07:53:57 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: nVMX: Inject #GP when nested_vmx_get_vmptr() fails
- to read guest memory
-Message-ID: <20200604145357.GA30223@linux.intel.com>
-References: <20200604143158.484651-1-vkuznets@redhat.com>
- <da7acd6f-204d-70e2-52aa-915a4d9163ef@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <da7acd6f-204d-70e2-52aa-915a4d9163ef@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S1729175AbgFDO4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 10:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729153AbgFDO4r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 10:56:47 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D764FC08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 07:56:46 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id i82so3860860qke.10
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 07:56:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=I7c54UO+jBDB8Mu0xGlRZFnGkQOtoIXkr80oIo5a6yg=;
+        b=WdAR16zYbaIpErpsEUjQUxhf/HVJmWp9W2xV9KUpPSOChHzHXHifTJoWwWOYOgQr66
+         0tu9vvF0JqyYKkPP+BQVmRzBp26oSZ6f5MBQIGKG9QuJ+2MeZlMY19pWKVIj+DjzY8x+
+         IFeOAnr488HRfID5IN9RfVX7CdLbjjQrnAA6c6fCFlYMlZ385fOeMUsizNK0tkN+DBK7
+         M3P20DNhi79d33RVXcTSYH8WcEQjbOohH22CnJjNh7PCoeNx0EGyMUlhMdc59XV2JLn9
+         1+s2pMv/7JWlvLF+V2r97qS7XXEKlFVPKO7k/2NxgzCW1Gu8GNAKXCbVEp2GmdyG9Ytf
+         hksA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=I7c54UO+jBDB8Mu0xGlRZFnGkQOtoIXkr80oIo5a6yg=;
+        b=WJYnH5y9t2LW7o802HIaDiVUdTub/paXHaG+inwWhkL3FWF1NUpRvA7F8v3yC1ntyK
+         nSqINW0JP9DgPM3zvyHKxvJbpUbgln7j4/nzwybkRTllFczQFJhwOvtSSzUqljLBVaJj
+         yNNQTQk2vj+kL9HRO0fjWm2f1tEptRGqR0xWiSM5ZCm+e1JSmiNMLGY05LuWueKqMgJF
+         gQvAHwj5wQllauz6X2Kw9LdLxYqJp52pv2Ti5c8ppf7ymOAhAlazlTTbWWHmc4CHwOgJ
+         A+PAkaJA8zpN7t+Ta6ZjvXyua495LeCQlw0gHInD7Zn2GN49nVXeIM2S07vXdEYlhKHd
+         1TJg==
+X-Gm-Message-State: AOAM5302lHlJSLhJFLzGx04a+ttmroY4PFMHOBWwLWq856okVrByaJeY
+        jvMfp/nwjz3iIh0NTKfl0ioq5lY6qA==
+X-Google-Smtp-Source: ABdhPJyAh8LeK70LOHp8HEnAZAPVHdn5vz8HSU2QyqdrJk5KJMZ8eiFT3HVtWniKuUOz4CDcEf60hO0/UA==
+X-Received: by 2002:ad4:556b:: with SMTP id w11mr5001166qvy.171.1591282605967;
+ Thu, 04 Jun 2020 07:56:45 -0700 (PDT)
+Date:   Thu,  4 Jun 2020 16:56:34 +0200
+Message-Id: <20200604145635.21565-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.rc2.251.g90737beb825-goog
+Subject: [PATCH v2 1/2] kcov, objtool: Make runtime functions noinstr-compatible
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com
+Cc:     peterz@infradead.org, bp@alien8.de, tglx@linutronix.de,
+        mingo@kernel.org, clang-built-linux@googlegroups.com,
+        paulmck@kernel.org, dvyukov@google.com, glider@google.com,
+        andreyknvl@google.com, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 04:40:52PM +0200, Paolo Bonzini wrote:
-> On 04/06/20 16:31, Vitaly Kuznetsov wrote:
+While we lack a compiler attribute to add to noinstr that would disable
+KCOV, make the KCOV runtime functions return if the caller is in a
+noinstr section. We then whitelist __sanitizer_cov_*() functions in
+objtool. __sanitizer_cov_*() cannot safely become safe noinstr functions
+as-is, as they may fault due to accesses to vmalloc's memory.
 
-...
+Declare write_comp_data() as __always_inline to ensure it is inlined,
+and reduce stack usage and remove one extra call from the fast-path.
 
-> > KVM could've handled the request correctly by going to userspace and
-> > performing I/O but there doesn't seem to be a good need for such requests
-> > in the first place. Sane guests should not call VMXON/VMPTRLD/VMCLEAR with
-> > anything but normal memory. Just inject #GP to find insane ones.
-> > 
-> > Reported-by: syzbot+2a7156e11dc199bdbd8a@syzkaller.appspotmail.com
-> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > ---
-> >  arch/x86/kvm/vmx/nested.c | 19 +++++++++++++++++--
-> >  1 file changed, 17 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > index 9c74a732b08d..05d57c3cb1ce 100644
-> > --- a/arch/x86/kvm/vmx/nested.c
-> > +++ b/arch/x86/kvm/vmx/nested.c
-> > @@ -4628,14 +4628,29 @@ static int nested_vmx_get_vmptr(struct kvm_vcpu *vcpu, gpa_t *vmpointer)
-> >  {
-> >  	gva_t gva;
-> >  	struct x86_exception e;
-> > +	int r;
-> >  
-> >  	if (get_vmx_mem_address(vcpu, vmx_get_exit_qual(vcpu),
-> >  				vmcs_read32(VMX_INSTRUCTION_INFO), false,
-> >  				sizeof(*vmpointer), &gva))
-> >  		return 1;
-> >  
-> > -	if (kvm_read_guest_virt(vcpu, gva, vmpointer, sizeof(*vmpointer), &e)) {
-> > -		kvm_inject_emulated_page_fault(vcpu, &e);
-> > +	r = kvm_read_guest_virt(vcpu, gva, vmpointer, sizeof(*vmpointer), &e);
-> > +	if (r != X86EMUL_CONTINUE) {
-> > +		if (r == X86EMUL_PROPAGATE_FAULT) {
-> > +			kvm_inject_emulated_page_fault(vcpu, &e);
-> > +		} else {
-> > +			/*
-> > +			 * X86EMUL_IO_NEEDED is returned when kvm_vcpu_read_guest_page()
-> > +			 * fails to read guest's memory (e.g. when 'gva' points to MMIO
-> > +			 * space). While KVM could've handled the request correctly by
-> > +			 * exiting to userspace and performing I/O, there doesn't seem
-> > +			 * to be a real use-case behind such requests, just inject #GP
-> > +			 * for now.
-> > +			 */
-> > +			kvm_inject_gp(vcpu, 0);
-> > +		}
-> > +
-> >  		return 1;
-> >  	}
-> >  
-> > 
-> 
-> Hi Vitaly,
-> 
-> looks good but we need to do the same in handle_vmread, handle_vmwrite,
-> handle_invept and handle_invvpid.  Which probably means adding something
-> like nested_inject_emulation_fault to commonize the inner "if".
+In future, our compilers may provide an attribute to implement
+__no_sanitize_coverage, which can then be added to noinstr, and the
+checks added in this patch can be guarded by an #ifdef checking if the
+compiler has such an attribute or not.
 
-Can we just kill the guest already instead of throwing more hacks at this
-and hoping something sticks?  We already have one in
-kvm_write_guest_virt_system...
+Signed-off-by: Marco Elver <elver@google.com>
+---
+Apply after:
+https://lkml.kernel.org/r/20200604102241.466509982@infradead.org
 
-  commit 541ab2aeb28251bf7135c7961f3a6080eebcc705
-  Author: Fuqian Huang <huangfq.daxian@gmail.com>
-  Date:   Thu Sep 12 12:18:17 2019 +0800
+v2:
+* Rewrite based on Peter's and Andrey's feedback -- v1 worked because we
+  got lucky. Let's not rely on luck, as it will be difficult to ensure the
+  same conditions remain true in future.
 
-    KVM: x86: work around leak of uninitialized stack contents
+v1: https://lkml.kernel.org/r/20200604095057.259452-1-elver@google.com
 
-    Emulation of VMPTRST can incorrectly inject a page fault
-    when passed an operand that points to an MMIO address.
-    The page fault will use uninitialized kernel stack memory
-    as the CR2 and error code.
+Note: There are a set of KCOV patches from Andrey in -next:
+https://lkml.kernel.org/r/cover.1585233617.git.andreyknvl@google.com --
+Git cleanly merges this patch with those patches, and no merge conflict
+is expected.
+---
+ kernel/kcov.c         | 19 +++++++++++++++++--
+ tools/objtool/check.c |  7 +++++++
+ 2 files changed, 24 insertions(+), 2 deletions(-)
 
-    The right behavior would be to abort the VM with a KVM_EXIT_INTERNAL_ERROR
-    exit to userspace; however, it is not an easy fix, so for now just ensure
-    that the error code and CR2 are zero.
+diff --git a/kernel/kcov.c b/kernel/kcov.c
+index 8accc9722a81..3329a0fdb868 100644
+--- a/kernel/kcov.c
++++ b/kernel/kcov.c
+@@ -24,6 +24,7 @@
+ #include <linux/refcount.h>
+ #include <linux/log2.h>
+ #include <asm/setup.h>
++#include <asm/sections.h>
+ 
+ #define kcov_debug(fmt, ...) pr_debug("%s: " fmt, __func__, ##__VA_ARGS__)
+ 
+@@ -172,6 +173,12 @@ static notrace unsigned long canonicalize_ip(unsigned long ip)
+ 	return ip;
+ }
+ 
++static __always_inline bool in_noinstr_section(unsigned long ip)
++{
++	return (unsigned long)__noinstr_text_start <= ip &&
++	       ip < (unsigned long)__noinstr_text_end;
++}
++
+ /*
+  * Entry point from instrumented code.
+  * This is called once per basic-block/edge.
+@@ -180,13 +187,18 @@ void notrace __sanitizer_cov_trace_pc(void)
+ {
+ 	struct task_struct *t;
+ 	unsigned long *area;
+-	unsigned long ip = canonicalize_ip(_RET_IP_);
++	unsigned long ip;
+ 	unsigned long pos;
+ 
++	if (unlikely(in_noinstr_section(_RET_IP_)))
++		return;
++
+ 	t = current;
+ 	if (!check_kcov_mode(KCOV_MODE_TRACE_PC, t))
+ 		return;
+ 
++	ip = canonicalize_ip(_RET_IP_);
++
+ 	area = t->kcov_area;
+ 	/* The first 64-bit word is the number of subsequent PCs. */
+ 	pos = READ_ONCE(area[0]) + 1;
+@@ -198,12 +210,15 @@ void notrace __sanitizer_cov_trace_pc(void)
+ EXPORT_SYMBOL(__sanitizer_cov_trace_pc);
+ 
+ #ifdef CONFIG_KCOV_ENABLE_COMPARISONS
+-static void notrace write_comp_data(u64 type, u64 arg1, u64 arg2, u64 ip)
++static __always_inline void write_comp_data(u64 type, u64 arg1, u64 arg2, u64 ip)
+ {
+ 	struct task_struct *t;
+ 	u64 *area;
+ 	u64 count, start_index, end_pos, max_pos;
+ 
++	if (unlikely(in_noinstr_section(ip)))
++		return;
++
+ 	t = current;
+ 	if (!check_kcov_mode(KCOV_MODE_TRACE_CMP, t))
+ 		return;
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 3e214f879ada..cb208959f560 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2213,6 +2213,13 @@ static inline bool noinstr_call_dest(struct symbol *func)
+ 	if (!strncmp(func->name, "__ubsan_handle_", 15))
+ 		return true;
+ 
++	/*
++	 * The __sanitizer_cov_*() calls include a check if the caller is in the
++	 * noinstr section, and simply return if that is the case.
++	 */
++	if (!strncmp(func->name, "__sanitizer_cov_", 16))
++		return true;
++
+ 	return false;
+ }
+ 
+-- 
+2.27.0.rc2.251.g90737beb825-goog
 
