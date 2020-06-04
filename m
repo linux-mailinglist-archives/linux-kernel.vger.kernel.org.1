@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F0C1EE264
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 12:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3AC1EE268
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 12:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728300AbgFDKZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 06:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43818 "EHLO
+        id S1728410AbgFDKZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 06:25:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgFDKZN (ORCPT
+        with ESMTP id S1728235AbgFDKZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 06:25:13 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88416C03E96D
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 03:25:13 -0700 (PDT)
+        Thu, 4 Jun 2020 06:25:31 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFBCCC03E96E
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 03:25:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=HLUlGVzGh8D/8ZTgbqliDFpKr8IxVRxtSm/kD93Ik8k=; b=Pc+UK6AQ+epiZFSmkQttxPE1wH
-        bVDuIRIcMZYjH92oSkk1fBAzlV0eUUB0WTnV2xXoMfghdXRhWgee3JpOxsegzMhymXM9Lk2nZhhJo
-        j4warJ9WabkmyPxP+704iiAjQ2MmFnOE2C0q2hTrYxKBSPMfr+xSpfqLPjXhpQhg4KXNZBeVt3HIs
-        vjx5k8rbDwGccgdjsFMHTu7V5CDJNxkioZf8211BTUiTam/EA3WI9gUkPOeNoh8i2Mu5BjkxXGSFn
-        qziJEj5ylnqBJc1PtwjYjr5hqsb24XiRFAuji5wWa6X7/TbesJ0LZ1OgWswbsbvfnqupPvpzyJAfv
-        QWK5yNng==;
+        bh=oykwMbU7Wmvh1ZGkCXwhZjfvHzNP7lFFbQQT7fF0pCA=; b=zzqrnKvos/Jhw/yC2usTSVagG8
+        tMISst0ceWqCRicCc/W5/SDTTJKufGU2UPP9dPjpLjf+bS6SjYcxSXF0F3satI9G4G6ypQDVYjWPR
+        wDgJ0ur5wcr2AqcHrUylFbPXJ0PDfDnB6Ya/ikUb65BJcYatc3EfYDQNa88CoULmdFHOQhcfmJkA8
+        bITJbZqYb4JCespUqx/TyyIxI+76bo0iKk9OKDaae2nm1hz1oRF97fScsNGZctMkGtzBNWu7LPXIA
+        4bySgaBEO7zdDB64nO9tf/CnSnbc8Z/qWLlD3gfyX3suYdAnj1bqxbhpRHV0ego27SE3REFWZ2beG
+        NT72a2ig==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jgn3d-0001ap-Io; Thu, 04 Jun 2020 10:25:09 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jgn3e-0003tl-Jp; Thu, 04 Jun 2020 10:25:10 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F023306D6D;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 10E6D306E56;
         Thu,  4 Jun 2020 12:25:08 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id E9B2420CC68B5; Thu,  4 Jun 2020 12:25:07 +0200 (CEST)
-Message-ID: <20200604102428.307943402@infradead.org>
+        id EB8E620CC68B3; Thu,  4 Jun 2020 12:25:07 +0200 (CEST)
+Message-ID: <20200604102428.364746275@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 04 Jun 2020 12:22:48 +0200
+Date:   Thu, 04 Jun 2020 12:22:49 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de
 Cc:     x86@kernel.org, elver@google.com, paulmck@kernel.org,
         kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
         peterz@infradead.org, will@kernel.org, dvyukov@google.com,
         glider@google.com, andreyknvl@google.com
-Subject: [PATCH 7/8] x86/entry, ubsan, objtool: Whitelist __ubsan_handle_*()
+Subject: [PATCH 8/8] x86/entry, bug: Comment the instrumentation_begin() usage for WARN()
 References: <20200604102241.466509982@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,69 +53,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The UBSAN instrumentation only inserts external CALLs when things go
-'BAD', much like WARN(). So treat them similar to WARN()s for noinstr,
-that is: allow them, at the risk of taking the machine down, to get
-their message out.
+Explain the rationale for annotating WARN(), even though, strictly
+speaking printk() and friends are very much not safe in many of the
+places we put them.
 
-Suggested-by: Marco Elver <elver@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Marco Elver <elver@google.com>
 ---
- include/linux/compiler_types.h |    2 +-
- tools/objtool/check.c          |   28 +++++++++++++++++++++++++++-
- 2 files changed, 28 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/bug.h |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -199,7 +199,7 @@ struct ftrace_likely_data {
- /* Section for code which can't be instrumented at all */
- #define noinstr								\
- 	noinline notrace __attribute((__section__(".noinstr.text")))	\
--	__no_kcsan __no_sanitize_address __no_sanitize_undefined
-+	__no_kcsan __no_sanitize_address
+--- a/arch/x86/include/asm/bug.h
++++ b/arch/x86/include/asm/bug.h
+@@ -76,6 +76,12 @@ do {								\
+ 	unreachable();						\
+ } while (0)
  
- #endif /* __KERNEL__ */
- 
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -2190,10 +2190,36 @@ static inline const char *call_dest_name
- 	return "{dynamic}";
- }
- 
-+static inline bool noinstr_call_dest(struct symbol *func)
-+{
-+	/*
-+	 * We can't deal with indirect function calls at present;
-+	 * assume they're instrumented.
-+	 */
-+	if (!func)
-+		return false;
-+
-+	/*
-+	 * If the symbol is from a noinstr section; we good.
-+	 */
-+	if (func->sec->noinstr)
-+		return true;
-+
-+	/*
-+	 * The __ubsan_handle_*() calls are like WARN(), they only happen when
-+	 * something 'BAD' happened. At the risk of taking the machine down,
-+	 * let them proceed to get the message out.
-+	 */
-+	if (!strncmp(func->name, "__ubsan_handle_", 15))
-+		return true;
-+
-+	return false;
-+}
-+
- static int validate_call(struct instruction *insn, struct insn_state *state)
- {
- 	if (state->noinstr && state->instr <= 0 &&
--	    (!insn->call_dest || !insn->call_dest->sec->noinstr)) {
-+	    !noinstr_call_dest(insn->call_dest)) {
- 		WARN_FUNC("call to %s() leaves .noinstr.text section",
- 				insn->sec, insn->offset, call_dest_name(insn));
- 		return 1;
++/*
++ * This instrumentation_begin() is strictly speaking incorrect; but it
++ * suppresses the complaints from WARN()s in noinstr code. If such a WARN()
++ * were to trigger, we'd rather wreck the machine in an attempt to get the
++ * message out than not know about it.
++ */
+ #define __WARN_FLAGS(flags)					\
+ do {								\
+ 	instrumentation_begin();				\
 
 
