@@ -2,128 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956771EE0CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E351EE0EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgFDJJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 05:09:09 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:48021 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728593AbgFDJI5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 05:08:57 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id glrkjqbQWCKzeglrojT6Dn; Thu, 04 Jun 2020 11:08:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1591261733; bh=j4KmuNfoaD1xgru0STWLiixs8IWyKqQToaes8a8SFfM=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=g8wRyxaisc9bkXrFJVdkVtuRd2L6hwzYieCL0LlDIbz33nd1dewAnqgXtrDi3kg6+
-         z52Y5SlGec3+bDQkPxR7u+Q+/pzvkHDEhsgTz50AYTzfCdoyMxFbTbDdmUssUIu6oG
-         0X96eGKhSwseQQEJrDApfpn8gyWc9M03uMxdGMSnicxFXVak5OvHUqoRhqAHr1u2u3
-         6xA4kdiI9VHe7xLw2GTIYd8vec1J4Bshyt9q1Q/zpM5fOpGtBCvfhB8dWqPlwg4v3u
-         fwsB9oFdWUPStNFc7FpAb7ZOYraW0M/IAKnohSDo6ST4XOKz18772ymn4FZykvRZd5
-         BOdkwfoYWGf2A==
-Subject: Re: [PATCH] v4l2-ctrl: add control for thumnails
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Tomasz Figa <tfiga@chromium.org>
-References: <20200526085446.30956-1-stanimir.varbanov@linaro.org>
- <65ac9697-a43f-7025-e6fe-69c4a44c6d9a@xs4all.nl>
- <ce28a840-a763-6700-16dd-d708e570d55c@linaro.org>
- <d02c6cd0-a502-dc52-519e-54b6328d5373@linaro.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <544b19dd-4883-bae0-b488-46c856eb207d@xs4all.nl>
-Date:   Thu, 4 Jun 2020 11:08:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1727938AbgFDJLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 05:11:45 -0400
+Received: from mga18.intel.com ([134.134.136.126]:53413 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgFDJLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 05:11:44 -0400
+IronPort-SDR: q9ftkWAVfmkDfw81Ue33LBL5mRtgerCK7OU5HpAZsvdZe+DeirtgpaMtW3TPc5yC1G3SXgdPmA
+ wEfznuD8eBvg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 02:11:42 -0700
+IronPort-SDR: Bjt1fsQ7QbkytZHScnCfcqKu96M115amcI2jnzZ1/3tv1GgDkHseKssXXvkAz7KSi2a2tM+3yM
+ r+DMrpq42fig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,471,1583222400"; 
+   d="scan'208";a="258841168"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
+  by fmsmga008.fm.intel.com with ESMTP; 04 Jun 2020 02:11:39 -0700
+Subject: Re: [PATCH v4] usb: host: xhci-mtk: avoid runtime suspend when
+ removing hcd
+To:     Macpaul Lin <macpaul.lin@mediatek.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul.lin@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-usb@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        stable@vger.kernel.org
+References: <1591189767-21988-1-git-send-email-macpaul.lin@mediatek.com>
+ <1591239713-5081-1-git-send-email-macpaul.lin@mediatek.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
+ 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 fiD/
+Message-ID: <d65bf50c-b1de-ece4-f14d-8f54418108ad@linux.intel.com>
+Date:   Thu, 4 Jun 2020 12:14:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <d02c6cd0-a502-dc52-519e-54b6328d5373@linaro.org>
+In-Reply-To: <1591239713-5081-1-git-send-email-macpaul.lin@mediatek.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfOu4u7+06bZWadT4Jj2h7ITjojpPgQdZS6iYuSScB0bwJDJKgOYDMWrCCgR3/hc+zzs9RxjvajWgWKm+2+ECdZPg2LTa7RSThVQS/dpGg1aydxRnlYLQ
- ds2ZbWaNfnyu00wa1qHKHkXmBp7ldPKGxJsito5iVTSnt3G//dag3X72ALBl8qZKlK8Yay55eRhqqjgmc7YmMntDQWDxHubleUnMd7PN7ZeZmVGTqEBUoxqA
- clljEZOnnkNcuK2+GIlc8GcI/EnIw15gzJM/KJwlhGyE7zcDwLm26NmrzWZ2spFLqoXgb9wo2AZ8Epade4OoAIBTZmpd9OMWiMebB+/A7rjmy+jShgF9QHp/
- vwoLSVfm3f6lREjN+mTpJqBi71csCXvTyMArAMRPQ4ZUjo2aQdssjO9W5mfmPULGsvuvK++3IF/97cw9caxBCpZ64PHy3Q==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/06/2020 11:02, Stanimir Varbanov wrote:
-> Hi Hans,
+On 4.6.2020 6.01, Macpaul Lin wrote:
+> When runtime suspend was enabled, runtime suspend might happen
+> when xhci is removing hcd. This might cause kernel panic when hcd
+> has been freed but runtime pm suspend related handle need to
+> reference it.
 > 
-> On 5/27/20 12:53 AM, Stanimir Varbanov wrote:
->> Hi Hans,
->>
->> On 5/26/20 3:04 PM, Hans Verkuil wrote:
->>> On 26/05/2020 10:54, Stanimir Varbanov wrote:
->>>> Add v4l2 control for decoder thumbnail.
->>>>
->>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->>>> ---
->>>>  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 7 +++++++
->>>>  drivers/media/v4l2-core/v4l2-ctrls.c                      | 2 ++
->>>>  include/uapi/linux/v4l2-controls.h                        | 2 ++
->>>>  3 files changed, 11 insertions(+)
->>>>
->>>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>>> index d0d506a444b1..e838e410651b 100644
->>>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>>> @@ -3726,6 +3726,13 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->>>>      disables generating SPS and PPS at every IDR. Setting it to one enables
->>>>      generating SPS and PPS at every IDR.
->>>>  
->>>> +``V4L2_CID_MPEG_VIDEO_DECODER_THUMBNAIL (button)``
->>>> +    Instructs the decoder to produce immediate output. The decoder should
->>>> +    consume first input buffer for progressive stream (or first two buffers
->>>> +    for interlace). Decoder should not allocate more output buffers that it
->>>> +    is required to consume one input frame. Usually the decoder input
->>>> +    buffers will contain only I/IDR frames but it is not mandatory.
->>>
->>> This is very vague. It doesn't explain why the control is called 'THUMBNAIL',
->>> but more importantly it doesn't explain how this relates to normal decoding.
->>
->> If in the normal decode the capture queue buffers are 5, in the
->> thumbnail mode the number of buffers will be only 1 (if the bitstream is
->> progressive) and this will guarantee low memory usage. The other
->> difference is that the decoder will produce decoded frames (without
->> errors) only for I/IDR (sync frames).
-
-Isn't this really a "DECODE_SYNC_FRAMES_ONLY" control? That's what it does,
-right? Skip any B/P frames and only decode sync frames.
-
-That this is useful for creating thumbnails is just a specific use-case.
-
-Regards,
-
-	Hans
-
->>
->>>
->>> I.e. if you are decoding and 'press' this control, what happens then?
->>
->> Might be the button type wasn't great idea. In fact the control should
->> be set before streamon so that the driver returns min_capture_bufs 1.
->>
->>>
->>> What exactly is the use-case?
->>
->> It could be used to generate thumbnails of all video clips in a folder
->> or when you open a Gallery application on your phone.
->>
-> 
-> What is your opinion on that control? I could consider to make it Venus
-> custom control but from the use-case it looks other drivers also can
-> benefit of it.
-> 
-> I tried to make more generic one [1] but it looks it will be too difficult.
+> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+> Reviewed-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> Cc: stable@vger.kernel.org
+> ---
+> Changes for v3:
+>   - Replace better sequence for disabling the pm_runtime suspend.
+> Changes for v4:
+>   - Thanks for Sergei's review, typo in commit description has been corrected.
 > 
 
+Thanks, added to queue
+
+-Mathias
