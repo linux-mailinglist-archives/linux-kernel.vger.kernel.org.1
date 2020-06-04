@@ -2,109 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C688E1EEAA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B021EEABB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 20:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729303AbgFDSzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 14:55:25 -0400
-Received: from mailoutvs56.siol.net ([185.57.226.247]:52722 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729141AbgFDSzX (ORCPT
+        id S1729337AbgFDS7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 14:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729076AbgFDS7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 14:55:23 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 77EC0521370;
-        Thu,  4 Jun 2020 20:55:20 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 22HNnnPf64Hw; Thu,  4 Jun 2020 20:55:20 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 2AD98521295;
-        Thu,  4 Jun 2020 20:55:20 +0200 (CEST)
-Received: from kista.localdomain (cpe-194-152-20-232.static.triera.net [194.152.20.232])
-        (Authenticated sender: 031275009)
-        by mail.siol.net (Postfix) with ESMTPSA id D2A915211F9;
-        Thu,  4 Jun 2020 20:55:17 +0200 (CEST)
-From:   Jernej Skrabec <jernej.skrabec@siol.net>
-To:     paul.kocialkowski@bootlin.com, mripard@kernel.org
-Cc:     mchehab@kernel.org, wens@csie.org, hverkuil-cisco@xs4all.nl,
-        gregkh@linuxfoundation.org, jonas@kwiboo.se, nicolas@ndufresne.ca,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 3/3] media: cedrus: h264: Fix frame list construction
-Date:   Thu,  4 Jun 2020 20:57:45 +0200
-Message-Id: <20200604185745.23568-4-jernej.skrabec@siol.net>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200604185745.23568-1-jernej.skrabec@siol.net>
-References: <20200604185745.23568-1-jernej.skrabec@siol.net>
+        Thu, 4 Jun 2020 14:59:15 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13D0C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 11:59:15 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id m2so5606839otr.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 11:59:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:mime-version
+         :content-disposition:user-agent;
+        bh=O/Cab+u4ryADYeVDtsfv5F0l84DgLwwEoZEafL+lgHs=;
+        b=mFnYc9KB/90X8Z+3+YeS9uvEEUKHAWpmrW3FNY3VRXhdByVTByineni0qIX/1PjC8p
+         VaUW3YWslLh3XR6g4cA/BWIQhDLplVN4v3GGaodFrJpKsotMeyE0MZMufhTHVkUK0jWW
+         vjPGxPTvu+DlCmY+YKa7OtQeU4L5YHDb84L20Pj+Gf6hskSKmt4V8fdjOCTJmqhPm64g
+         Ca+fuylKiHiwUs4lLgTKGNDXg7gQFJhLLD9u/4CiN/HUbS8C9PtTqMUAaKQzfDB4aORf
+         1SACY+2df0LM70HNqAT3jesysgaJBjFC5kS4G3AKOyKtrNfOA/BMDVrHavHk0GXVOLYI
+         aUag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:mime-version:content-disposition:user-agent;
+        bh=O/Cab+u4ryADYeVDtsfv5F0l84DgLwwEoZEafL+lgHs=;
+        b=ODWzQXhHTO2EpIDTLHJ5zOPMxuKE3kn453sXliBUe+N7QPqSf2Nu2cwawWa+YkSI41
+         r/T/vPrzoUxp2wxOh4eXvPZT1CuIAMb9nb0Dy9PYLowl8ZwwD4dC5TMkB039sE9zhzG9
+         KvB4CY+gL0GMYgWX28b3TNLkEEsNEoojekip+f4Zk8z6aFwLbl7VgeBPIRFrvb9umJZb
+         2yA4kkga/FDT7oQw9daJWxuFmvOzVUjLS5h371Yy2sMbwTVGVK3Fdg9N5ngH/eVACeD8
+         t2AtoIgCKQk0mqw5Yg2vMODtkA+/WH9lK3biwIyWobagb5SNVxtlwSV9eAe9jfthDMB1
+         Bthw==
+X-Gm-Message-State: AOAM530cEuWC0Fr7+BSLb14nh7VWGk1iX52snxLUXt0RMXtpunKwVz1I
+        uM4YwHdSgp8rotQGxpoWug==
+X-Google-Smtp-Source: ABdhPJwiMHjVXm++PkbFZdIMmw6LD9IBOvoIvtpFTRdu16nYsunUDtJST06TJxsOX3k8/crWRezplg==
+X-Received: by 2002:a05:6830:2089:: with SMTP id y9mr5082850otq.308.1591297155106;
+        Thu, 04 Jun 2020 11:59:15 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id l9sm224427oot.2.2020.06.04.11.59.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jun 2020 11:59:14 -0700 (PDT)
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:e4c9:2a79:bb80:2326])
+        by serve.minyard.net (Postfix) with ESMTPSA id 4907118003A;
+        Thu,  4 Jun 2020 18:59:13 +0000 (UTC)
+Date:   Thu, 4 Jun 2020 13:59:12 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        openipmi-developer@lists.sourceforge.net
+Subject: [GIT PULL] IPMI bug fixes for 5.8
+Message-ID: <20200604185912.GA19831@minyard.net>
+Reply-To: minyard@acm.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current frame list construction algorithm assumes that decoded image
-will be output into its own buffer. That is true for progressive content
-but not for interlaced where each field is decoded separately into same
-buffer.
+The following changes since commit b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce:
 
-Fix that by checking if capture buffer is listed in DPB. If it is, reuse
-it.
+  Linux 5.7-rc6 (2020-05-17 16:48:37 -0700)
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
----
- drivers/staging/media/sunxi/cedrus/cedrus_h264.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+are available in the Git repository at:
 
-diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/s=
-taging/media/sunxi/cedrus/cedrus_h264.c
-index c87717d17ec5..4f79386315ae 100644
---- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-@@ -102,7 +102,7 @@ static void cedrus_write_frame_list(struct cedrus_ctx=
- *ctx,
- 	struct cedrus_dev *dev =3D ctx->dev;
- 	unsigned long used_dpbs =3D 0;
- 	unsigned int position;
--	unsigned int output =3D 0;
-+	int output =3D -1;
- 	unsigned int i;
-=20
- 	cap_q =3D v4l2_m2m_get_vq(ctx->fh.m2m_ctx, V4L2_BUF_TYPE_VIDEO_CAPTURE)=
-;
-@@ -125,6 +125,11 @@ static void cedrus_write_frame_list(struct cedrus_ct=
-x *ctx,
- 		position =3D cedrus_buf->codec.h264.position;
- 		used_dpbs |=3D BIT(position);
-=20
-+		if (run->dst->vb2_buf.timestamp =3D=3D dpb->reference_ts) {
-+			output =3D position;
-+			continue;
-+		}
-+
- 		if (!(dpb->flags & V4L2_H264_DPB_ENTRY_FLAG_ACTIVE))
- 			continue;
-=20
-@@ -132,13 +137,11 @@ static void cedrus_write_frame_list(struct cedrus_c=
-tx *ctx,
- 				    dpb->top_field_order_cnt,
- 				    dpb->bottom_field_order_cnt,
- 				    &pic_list[position]);
--
--		output =3D max(position, output);
- 	}
-=20
--	position =3D find_next_zero_bit(&used_dpbs, CEDRUS_H264_FRAME_NUM,
--				      output);
--	if (position >=3D CEDRUS_H264_FRAME_NUM)
-+	if (output >=3D 0)
-+		position =3D output;
-+	else
- 		position =3D find_first_zero_bit(&used_dpbs, CEDRUS_H264_FRAME_NUM);
-=20
- 	output_buf =3D vb2_to_cedrus_buffer(&run->dst->vb2_buf);
---=20
-2.27.0
+  https://github.com/cminyard/linux-ipmi.git tags/for-linus-5.8-1
+
+for you to fetch changes up to 2a556ce779e39b15cbb74e896ca640e86baeb1a1:
+
+  ipmi:ssif: Remove dynamic platform device handing (2020-05-27 18:25:56 -0500)
+
+----------------------------------------------------------------
+IPMI update for 5.8
+
+A few small fixes for things, nothing earth shattering.
+
+-corey
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      ipmi: Replace guid_copy() with import_guid() where it makes sense
+
+Corey Minyard (2):
+      Try to load acpi_ipmi when an SSIF ACPI IPMI interface is added
+      ipmi:ssif: Remove dynamic platform device handing
+
+Feng Tang (1):
+      ipmi: use vzalloc instead of kmalloc for user creation
+
+Stuart Hayes (1):
+      ipmi_si: Load acpi_ipmi when ACPI IPMI interface added
+
+Tang Bin (3):
+      ipmi:bt-bmc: Avoid unnecessary check
+      ipmi:bt-bmc: Fix some format issue of the code
+      ipmi:bt-bmc: Fix error handling and status check
+
+ drivers/char/ipmi/bt-bmc.c           | 21 +++++++++------------
+ drivers/char/ipmi/ipmi_msghandler.c  |  9 +++++----
+ drivers/char/ipmi/ipmi_si_platform.c |  2 ++
+ drivers/char/ipmi/ipmi_ssif.c        | 24 ++----------------------
+ 4 files changed, 18 insertions(+), 38 deletions(-)
 
