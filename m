@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B834D1ED9E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 02:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CC61ED9E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 02:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgFDARE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 20:17:04 -0400
-Received: from mga02.intel.com ([134.134.136.20]:50997 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725946AbgFDARD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 20:17:03 -0400
-IronPort-SDR: +rFKHX+H3B2p2Sp+AnAYvHeJHdAEWNAhXQBxGVo+cD5HjfkfpPWJNDhlAgPtq1jsix+hJjNTF8
- Gz+ektxfNe0Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 17:17:03 -0700
-IronPort-SDR: sPBO2MhJa/2O5WbvWn1JQCmgd3+rjkI/Y5faZkoSCUZXYwyxGD01/SMaTFrDfd3dXrYc1xhz1g
- +NSZ/hoIN89Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,470,1583222400"; 
-   d="scan'208";a="294150329"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 03 Jun 2020 17:17:01 -0700
-Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>, Qian Cai <cai@lca.pw>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] iommu: Move Intel and AMD drivers into their own
- subdirectory
-To:     Joerg Roedel <joro@8bytes.org>
-References: <20200602092616.24638-1-joro@8bytes.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <148834f4-849e-acf1-c347-e25093aac518@linux.intel.com>
-Date:   Thu, 4 Jun 2020 08:13:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726380AbgFDAN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 20:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgFDAN6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 20:13:58 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBC8C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 17:13:58 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id z9so5000355ljh.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 17:13:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rWe2Q0RVzrp4gR0EET85HSpI5Y5evJHsyhPkQ14mL0k=;
+        b=bt0TGPg3m1SCTLBdHymXFLfl3E3L3r+udH7rn8D+EBhHjSsJezRKQc5I44quK2Ep95
+         n7O9rGE+x0OuzzxK9JDFKVEZNlNil/zWzB2OtsPvSkq3h3Byx+1A/PbyAJD8T+ACtvtF
+         KVePdWwwaM3XuFRkXqkGtRQjsVdhDo42Nx8Z8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rWe2Q0RVzrp4gR0EET85HSpI5Y5evJHsyhPkQ14mL0k=;
+        b=ZoCkascaD4PXlHIwDb3puZVEbip8cR7HgUdQvE/Nbm6uWWPAdS46QvwyN9qaTDcPga
+         LX64d/uwfl5C5jErpbFmEJuC3nnx3dK1fnZTeTEGSaNjJi7LXahDhmCzRpj6lj+bgn4+
+         BcIfZ+pWpulW8G9pMQ8ePDXWwr2noq1AtdH7/GCzuhjLnDXIeFhmLEEg/mY/1sNI9acx
+         xEU8s5rhCE+FS78CiQaqcYWio135jZhscf0M6EDyQTtAbmtOe8+ZlMH1f/ElaI2+es4r
+         H8Q3N1uES+OI0yIS1kgciPBTWaBDkRYcoFzHakETNUuQAsBoAUDv/TmN7+cYlc59yGjb
+         AdBg==
+X-Gm-Message-State: AOAM532bSIdk3u8YrkEdxhGutGa9E3X5qseGO+VLNzibZmqdmfOm2NOJ
+        gfG7sYiVvbkV7vcyceJZSWC7ZwUDTQk=
+X-Google-Smtp-Source: ABdhPJwZYDfDLZVIm4Br+CGgDfQtwpj6uJFNLyR/DN3sUl4t5yxG1FVOWXZ3AhROm1+a6s+mbCM6pQ==
+X-Received: by 2002:a05:651c:544:: with SMTP id q4mr832295ljp.310.1591229635982;
+        Wed, 03 Jun 2020 17:13:55 -0700 (PDT)
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
+        by smtp.gmail.com with ESMTPSA id t7sm1059215lfq.64.2020.06.03.17.13.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jun 2020 17:13:52 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id b6so5063114ljj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 17:13:52 -0700 (PDT)
+X-Received: by 2002:a2e:7e0a:: with SMTP id z10mr790807ljc.314.1591229631853;
+ Wed, 03 Jun 2020 17:13:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200602092616.24638-1-joro@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200602204219.186620-1-christian.brauner@ubuntu.com>
+ <CAHk-=wjy234P7tvpQb6bnd1rhO78Uc+B0g1CPg9VOhJNTxmtWw@mail.gmail.com>
+ <20200602233355.zdwcfow3ff4o2dol@wittgenstein> <CAHk-=wimp3tNuMcix2Z3uCF0sFfQt5GhVku=yhJAmSALucYGjg@mail.gmail.com>
+ <20200603232410.i3opsbmepv5ktsjq@wittgenstein>
+In-Reply-To: <20200603232410.i3opsbmepv5ktsjq@wittgenstein>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 3 Jun 2020 17:13:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgTpLOeMjpLOc8hY7KC6Qv+jR-hBacyBSajJ6iUKasmKA@mail.gmail.com>
+Message-ID: <CAHk-=wgTpLOeMjpLOc8hY7KC6Qv+jR-hBacyBSajJ6iUKasmKA@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] close_range()
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kyle Evans <self@kyle-evans.net>,
+        Victor Stinner <victor.stinner@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        "Dmitry V. Levin" <ldv@altlinux.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
+On Wed, Jun 3, 2020 at 4:24 PM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+>
+> Ok, here's what I have. Does the below look somewhat sane?
 
-On 6/2/20 5:26 PM, Joerg Roedel wrote:
-> Hi,
-> 
-> two small patches to move the Intel and AMD IOMMU drivers into their own
-> subdirectory under drivers/iommu/ to make the file structure a bit less
-> cluttered.
-> 
+Probably. Needs lots of testing. But this one looks wrong:
 
-Does the MAINTAINERS file need to update?
+> +int __close_range(unsigned fd, unsigned max_fd, unsigned int flags)
+>  {
+> +               if ((max_fd + 1) >= cur_max)
+> +                       max_unshare_fds = fd;
 
-Best regards,
-baolu
+A normal value for "close everything starting at X" would have a
+max_fd value of ~0.
 
-> Regards,
-> 
-> 	Joerg
-> 
-> Joerg Roedel (2):
->    iommu/amd: Move AMD IOMMU driver into subdirectory
->    iommu/vt-d: Move Intel IOMMU driver into subdirectory
-> 
->   drivers/iommu/Makefile                         | 18 +++++++++---------
->   drivers/iommu/{ => amd}/amd_iommu.h            |  0
->   drivers/iommu/{ => amd}/amd_iommu_types.h      |  0
->   .../{amd_iommu_debugfs.c => amd/debugfs.c}     |  0
->   drivers/iommu/{amd_iommu_init.c => amd/init.c} |  2 +-
->   drivers/iommu/{amd_iommu.c => amd/iommu.c}     |  2 +-
->   .../iommu/{amd_iommu_v2.c => amd/iommu_v2.c}   |  0
->   .../iommu/{amd_iommu_quirks.c => amd/quirks.c} |  0
->   .../{intel-iommu-debugfs.c => intel/debugfs.c} |  0
->   drivers/iommu/{ => intel}/dmar.c               |  2 +-
->   drivers/iommu/{ => intel}/intel-pasid.h        |  0
->   drivers/iommu/{intel-iommu.c => intel/iommu.c} |  2 +-
->   .../irq_remapping.c}                           |  2 +-
->   drivers/iommu/{intel-pasid.c => intel/pasid.c} |  0
->   drivers/iommu/{intel-svm.c => intel/svm.c}     |  0
->   drivers/iommu/{intel-trace.c => intel/trace.c} |  0
->   16 files changed, 14 insertions(+), 14 deletions(-)
->   rename drivers/iommu/{ => amd}/amd_iommu.h (100%)
->   rename drivers/iommu/{ => amd}/amd_iommu_types.h (100%)
->   rename drivers/iommu/{amd_iommu_debugfs.c => amd/debugfs.c} (100%)
->   rename drivers/iommu/{amd_iommu_init.c => amd/init.c} (99%)
->   rename drivers/iommu/{amd_iommu.c => amd/iommu.c} (99%)
->   rename drivers/iommu/{amd_iommu_v2.c => amd/iommu_v2.c} (100%)
->   rename drivers/iommu/{amd_iommu_quirks.c => amd/quirks.c} (100%)
->   rename drivers/iommu/{intel-iommu-debugfs.c => intel/debugfs.c} (100%)
->   rename drivers/iommu/{ => intel}/dmar.c (99%)
->   rename drivers/iommu/{ => intel}/intel-pasid.h (100%)
->   rename drivers/iommu/{intel-iommu.c => intel/iommu.c} (99%)
->   rename drivers/iommu/{intel_irq_remapping.c => intel/irq_remapping.c} (99%)
->   rename drivers/iommu/{intel-pasid.c => intel/pasid.c} (100%)
->   rename drivers/iommu/{intel-svm.c => intel/svm.c} (100%)
->   rename drivers/iommu/{intel-trace.c => intel/trace.c} (100%)
-> 
+So "max_fd+1" would overflow to 0, and then this would never trigger.
+
+Other than that it looks what what I imagine my feverdreams were about.
+
+              Linus
