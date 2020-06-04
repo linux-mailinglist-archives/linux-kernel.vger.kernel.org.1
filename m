@@ -2,120 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A661EE62F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106561EE61B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 15:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728926AbgFDN7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 09:59:46 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:1504 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728604AbgFDN7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 09:59:45 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49d6pf2rwCzB09Zt;
-        Thu,  4 Jun 2020 15:59:38 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id xNYjkAss7B_l; Thu,  4 Jun 2020 15:59:38 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49d6pf1vcCzB09Zq;
-        Thu,  4 Jun 2020 15:59:38 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 30FE18B8C6;
-        Thu,  4 Jun 2020 15:59:40 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 7rmDmWjkLUfq; Thu,  4 Jun 2020 15:59:40 +0200 (CEST)
-Received: from pc16570vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [10.25.210.22])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B7C278B8C4;
-        Thu,  4 Jun 2020 15:59:39 +0200 (CEST)
-Subject: Re: linux-next: build failure on powerpc 8xx with 16k pages
-To:     Will Deacon <will@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        peterz@infradead.org
-References: <dc2b16e1-b719-5500-508d-ae97bf50c4a6@csgroup.eu>
- <20200604111723.GA1267@willie-the-truck>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <96fdc23c-ca08-6b6a-ebdd-23cedfada77d@csgroup.eu>
-Date:   Thu, 4 Jun 2020 13:55:45 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1728882AbgFDN4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 09:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728337AbgFDN4J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 09:56:09 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC85BC08C5C0;
+        Thu,  4 Jun 2020 06:56:09 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id k8so4795520edq.4;
+        Thu, 04 Jun 2020 06:56:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xt+qXlJ/w/CHGInS8iFF4yNL9YX64MPwrfuBL7dI4q4=;
+        b=N5OLUKPFgcli+zUSxnqsncN7jxB9gjk3ZCEvyN1giZvfYm1xVPt+tNEhB5WcBaFFGe
+         yT+tzW8k5Mw4yUZKUMuiKI7dBoXD0zq25WalgyKkg1yFmvFX0I/aixQZClKmUxBvM4V3
+         UxW/K0z+V0aKWOcAKpKaMGwDuvG9yfsFPlB+bbnv4sL0c9x1MGFSZxKcahEZRR6OEKEU
+         R7rSE8O6T9UQd0lbN5M5uE6ebqzM73Nfh4J1bX9cdPfCX1v0BxrV6vEThzMGFuwmn/Bt
+         QiNfukXkp1APXxATxv7HQvCoYLdql3DzQ7QQN/lLQ5JGSzL64c5VEeWARepWQHlgjg5k
+         10UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xt+qXlJ/w/CHGInS8iFF4yNL9YX64MPwrfuBL7dI4q4=;
+        b=I9cxQOpCewh2IZbo1by6McABJ0DCLrQhfGImtguxX9Ae3I/h8yEqv4O/r/BUxYlMsp
+         ohDdnSw+tIBEVs07i43dXqSr07LDiFWhTAGXpR4iGEXZNX5mi5YeFvBADcD/EBbfv/3b
+         RFOtTbKtK04js9+l20RtVPLQufsbdAgLyJC4yLlCDyl4iCMefMACZR8QnHh4kNAbWl2X
+         qK7bTAQ7q1YDqwK1SuU/LDug2bgNbtirJuFEALzYs/i0xtpJqOc3UUoqTFMCvmF8jJIb
+         Sejw48Fku2bQSJl1K5oe5Uifj6D0gfgffw1V7QqCBYAK1TVRQf3yKkENQYcALD9IlCL2
+         PALQ==
+X-Gm-Message-State: AOAM530lBJ7wDYJErD9nbpSjAbUtb++IeovFlRg7g9XwG5mhqz6gq+eR
+        vHZGzdHakPoaLZv4u8VdVqs=
+X-Google-Smtp-Source: ABdhPJzw1NIuAeA/NKqB3LPilD16ORfGsYt3arn8mpO186HyKfuiNhGudCWjjzj61bIU1fjludSbeA==
+X-Received: by 2002:aa7:d6d0:: with SMTP id x16mr4542349edr.175.1591278968447;
+        Thu, 04 Jun 2020 06:56:08 -0700 (PDT)
+Received: from localhost (pd9e51079.dip0.t-ipconnect.de. [217.229.16.121])
+        by smtp.gmail.com with ESMTPSA id kt10sm2217467ejb.54.2020.06.04.06.56.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jun 2020 06:56:07 -0700 (PDT)
+Date:   Thu, 4 Jun 2020 15:56:06 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Nagarjuna Kristam <nkristam@nvidia.com>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, jonathanh@nvidia.com,
+        mark.rutland@arm.com, robh+dt@kernel.org, kishon@ti.com,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 6/8] phy: tegra: xusb: Add support for charger detect
+Message-ID: <20200604135606.GC1138399@ulmo>
+References: <1589437363-16727-1-git-send-email-nkristam@nvidia.com>
+ <1589437363-16727-7-git-send-email-nkristam@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20200604111723.GA1267@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4jXrM3lyYWu4nBt5"
+Content-Disposition: inline
+In-Reply-To: <1589437363-16727-7-git-send-email-nkristam@nvidia.com>
+User-Agent: Mutt/1.13.1 (2019-12-14)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--4jXrM3lyYWu4nBt5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 06/04/2020 11:17 AM, Will Deacon wrote:
-> Hi, [+Peter]
-> 
-> On Thu, Jun 04, 2020 at 10:48:03AM +0000, Christophe Leroy wrote:
->> Using mpc885_ads_defconfig with CONFIG_PPC_16K_PAGES instead of
->> CONFIG_PPC_4K_PAGES, getting the following build failure:
->>
->>    CC      mm/gup.o
->> In file included from ./include/linux/kernel.h:11:0,
->>                   from mm/gup.c:2:
->> In function 'gup_hugepte.constprop',
->>      inlined from 'gup_huge_pd.isra.78' at mm/gup.c:2465:8:
->> ./include/linux/compiler.h:392:38: error: call to '__compiletime_assert_257'
->> declared with attribute error: Unsupported access size for
->> {READ,WRITE}_ONCE().
->>    _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->>                                        ^
->> ./include/linux/compiler.h:373:4: note: in definition of macro
->> '__compiletime_assert'
->>      prefix ## suffix();    \
->>      ^
->> ./include/linux/compiler.h:392:2: note: in expansion of macro
->> '_compiletime_assert'
->>    _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->>    ^
->> ./include/linux/compiler.h:405:2: note: in expansion of macro
->> 'compiletime_assert'
->>    compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long), \
->>    ^
->> ./include/linux/compiler.h:291:2: note: in expansion of macro
->> 'compiletime_assert_rwonce_type'
->>    compiletime_assert_rwonce_type(x);    \
->>    ^
->> mm/gup.c:2428:8: note: in expansion of macro 'READ_ONCE'
->>    pte = READ_ONCE(*ptep);
->>          ^
->> In function 'gup_get_pte',
->>      inlined from 'gup_pte_range' at mm/gup.c:2228:9,
->>      inlined from 'gup_pmd_range' at mm/gup.c:2613:15,
->>      inlined from 'gup_pud_range' at mm/gup.c:2641:15,
->>      inlined from 'gup_p4d_range' at mm/gup.c:2666:15,
->>      inlined from 'gup_pgd_range' at mm/gup.c:2694:15,
->>      inlined from 'internal_get_user_pages_fast' at mm/gup.c:2785:3:
-> 
-> At first glance, this looks like a real bug in the 16k page code -- you're
-> loading the pte non-atomically on the fast GUP path and so you're prone to
-> tearing, which probably isn't what you want. For a short-term hack, I'd
-> suggest having CONFIG_HAVE_FAST_GUP depend on !CONFIG_PPC_16K_PAGES, but if
-> you want to support this them you'll need to rework your pte_t so that it
-> can be loaded atomically.
+On Thu, May 14, 2020 at 11:52:41AM +0530, Nagarjuna Kristam wrote:
+> Perform charger-detect operation if corresponding dt property is enabled.
+> Update usb-phy with the detected charger state and max current values.
+> Register charger-detect API's of usb-phy to provide needed functionalitie=
+s.
+>=20
+> Signed-off-by: Nagarjuna Kristam <nkristam@nvidia.com>
+> ---
+> V3:
+>  - Allighed functions and its arguments.
+>  - replaced spaced by tabs for MACRO definition allignments.
+>  - Unified primary and secondary charger detect API's.
+>  - Used readl_poll_timeout instead of while loop condition check for regi=
+ster.
+>  - Fixed other comments as per inputs from Thierry.
+> ---
+> V2:
+>  - Patch re-based.
+> ---
+>  drivers/phy/tegra/Makefile |   2 +-
+>  drivers/phy/tegra/cd.c     | 283 +++++++++++++++++++++++++++++++++++++++=
+++++++
+>  drivers/phy/tegra/xusb.c   |  80 +++++++++++++
+>  drivers/phy/tegra/xusb.h   |   7 ++
+>  4 files changed, 371 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/phy/tegra/cd.c
 
-What do you mean by *rework* pte_t ?
-pte are 32 bits words in size and are spread every 4 words in memory. 
-Therefore pte_t has to be 128 bits because unlike huge_pte handling 
-which always use huge_pte_offset() in loops, many many places in the 
-kernel do pte++, so we need the pte type to be the size of the interval 
-from one pte to the next one.
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-Christophe
+--4jXrM3lyYWu4nBt5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl7Y/XYACgkQ3SOs138+
+s6F9wA//c1AJ3FHM0Hd0rv+zsl52J25fXL900vW2xXJen+Y78K4WsUeU0DrOVWLL
+Jb1uuFoKiiGvOfRKIPK986xWqECWMz9E/dz7GTgsngBiu5db3Ndc3gPBYDu2FfNu
+B4ZV5yY11shrWHNxahITTivyGfJLOtCFQh18BjhJOjJ5vLwlj/FWdvWVMY7s+rbU
+0mURwNp7bHTajE+mKN58eY3AxY6RZ8+083I3hWXW3TreGxCMvVVNFRB1D8+Mk+X1
+nvwWziAugYRnlLMt5L2vvEeiPDiQjbzGqfP6vxgRXZrEL/TLoQK2MC3c6v3ZQYsY
+9ms7ZmQUTAHh4omhYJPaldWPYTQ95Dqw5lAHEaers7MkqPSGOedfLBsINCtBt6f1
+iwJY6YOkAG9q8adHZN8RWTtdirqOhLH2o29RUCqD5vv9Oqg9zhrF+bJHQmwOJix8
++Rs8KwndDSwuEuR8KF646FgLJH5LOODFMSLl7cB0/N+MRLehAfn/ItuwtujDXGln
+EIwpS3rd45U5rslitfsr3J491GFJyF8dEeUTnNFJjRUoOR8vSKYo0ckDLwLY5xHc
+yl/ufE2sFqLcAuU/9T8yxTGElnyQ1B18Og5QwZYUtE5BnzF22r3jbWc3TkmOXtTI
+yCKcLMH0fWkTb0tA3JLq6ps09ATBjQbv3koCi6hmcLfnh04NvFY=
+=+q6H
+-----END PGP SIGNATURE-----
+
+--4jXrM3lyYWu4nBt5--
