@@ -2,187 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3741EDD78
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 08:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF871EDD67
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 08:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727061AbgFDGqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 02:46:03 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:48690 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbgFDGqC (ORCPT
+        id S1727111AbgFDGo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 02:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727054AbgFDGo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 02:46:02 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0546c2CR182582;
-        Thu, 4 Jun 2020 06:45:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=vUCYjp1f2wNESYetrOp1ZqmW5F/o/FmwplfPJxUOq/I=;
- b=BlBWPqpf/PAKOO+PwXnUCnQDAX4S9pnxguIs9OMO5U28MBvSl5RODQ1HT8XkhT7qbhNF
- +98WlrIe5+MKY2fQPvv2khmj8j7rCy8+eh+Q3XYBJN4dZ2Xpk8H20rKEJCndsF6I2yt3
- dNxJ7FJ/AjH4yuQ9SvK8tZYHNNtGB2K1I579wIY/IYN35odV1W1hx5oy2/N1M/gQpQrM
- p/twRrXqlnAmC4M3rows4W88LNsdPvB+3vKKtbyxludRb+L3vyd8Cyv186PcYO/bl/2C
- Fh5DmC3gY8ndVv/CiS89B6mTqPEHaUt0n0044T+ypPxvsKa23gVvqOyD8Shl+DWpQt0K Uw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 31bewr4x61-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 04 Jun 2020 06:45:51 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0546c4iJ186253;
-        Thu, 4 Jun 2020 06:43:51 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 31dju4gnba-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Jun 2020 06:43:51 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0546hn2R004470;
-        Thu, 4 Jun 2020 06:43:49 GMT
-Received: from [10.159.230.80] (/10.159.230.80)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 03 Jun 2020 23:43:49 -0700
-Subject: Re: [PATCH 1/1] nvme-fcloop: verify wwnn and wwpn format
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-To:     linux-nvme@lists.infradead.org, james.smart@broadcom.com
-Cc:     sagi@grimberg.me, linux-kernel@vger.kernel.org,
-        chaitanya.kulkarni@wdc.com, hch@lst.de
-References: <20200526042118.17836-1-dongli.zhang@oracle.com>
-Message-ID: <38a2cfb9-df2a-c5cb-6797-2b96ef049c7c@oracle.com>
-Date:   Wed, 3 Jun 2020 23:43:47 -0700
+        Thu, 4 Jun 2020 02:44:28 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30022C03E96E
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 23:44:28 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id f3so2827928pfd.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 23:44:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=lQVlXH+uj/MULxrEGj2byT6IBDKh5uPIe65HnVp2khs=;
+        b=gzRnbTkcAnqvYEoVW9YseGY+0u1VoTMW/IO49nxbU4/b5h6mTCySH8tG+xs+BPJv/6
+         KRDGlwtV9Ah7167fzuEQ8xp4anjyd5TQkJJ69SvgbXyirs97ICE1UiVX3L19uqWuQjAP
+         3sot+5jrOtfXbLnpKCD/twibMkrA8D4z22h6fVm1qdzWoymfGSQkMemFvoN8iU3SWC3J
+         10VJ1+++UoYEjyFX96NS4Co2pCuWJ/3yrjzugj9djTKFrXCDsNYr3XinRwGWguYuoCwg
+         fyPAolJ41+4q6j+lvVYWBlvSj23VuYFXKER+6olegZJTTXe1Cl3lXoVoe6USONUNZocH
+         Fz9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=lQVlXH+uj/MULxrEGj2byT6IBDKh5uPIe65HnVp2khs=;
+        b=QNdxIHTPaxoKg28I7fdte/qkKcVOoGVn9IbRysBsyjSDp6iIWlRhAha6jjOStXnOaC
+         cZ2XrmPgfY1IxRqS5cuJPsnziAwIRtkJgJ91Xh/QnEQZ/ISGFc6/uxx6RB9qgFWpDTIY
+         c5Adm//OCoZj/xf57p8naBm9qDqX3uCQHu9LXaSe8ljYVW3soQaFzRiIPP7E4Cvojbx8
+         kDee+fDaYxXb05dyaZpdWmeXooP6AtGBGQye8zMbJ1Aw6bb4qgUarL9t6Gop6YXc45Mk
+         dDTzrxVaK4UweI4FVde82Snyg8iRDMx3cURApmWr+qessNGtC6R253x8HWnQV+Cs3kz7
+         ddaw==
+X-Gm-Message-State: AOAM532751CjdrjMNYZAa5SkG0JrDJS3QkQKd43olk0V2+ZGARWRYNTZ
+        YNRA6eb2TwnxeIPCJEOsX2lmJQ==
+X-Google-Smtp-Source: ABdhPJyTNTnMWGua4MqL8tx6aHu8UCUxEO5kUDj97h0sJ9J229Uu3bn79HTRPASqqjCM+e2BTW3S9Q==
+X-Received: by 2002:a63:ad43:: with SMTP id y3mr2934343pgo.435.1591253067552;
+        Wed, 03 Jun 2020 23:44:27 -0700 (PDT)
+Received: from [10.15.1.238] ([45.135.186.21])
+        by smtp.gmail.com with ESMTPSA id b140sm3461949pfb.119.2020.06.03.23.44.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jun 2020 23:44:27 -0700 (PDT)
+Subject: Re: [PATCH] crypto: hisilicon - fix strncpy warning with strlcpy
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        wangzhou1 <wangzhou1@hisilicon.com>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        kbuild-all@lists.01.org
+References: <202006032110.BEbKqovX%lkp@intel.com>
+ <1591241524-6452-1-git-send-email-zhangfei.gao@linaro.org>
+ <20200604033918.GA2286@gondor.apana.org.au>
+ <b6ad8af2-1cb7-faac-0446-5e09e97f3616@linaro.org>
+ <20200604061811.GA28759@gondor.apana.org.au>
+From:   Zhangfei Gao <zhangfei.gao@linaro.org>
+Message-ID: <b23433f8-d95d-8142-c830-fb92e5ccd4a1@linaro.org>
+Date:   Thu, 4 Jun 2020 14:44:16 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200526042118.17836-1-dongli.zhang@oracle.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200604061811.GA28759@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
- suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006040043
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
- phishscore=0 suspectscore=2 impostorscore=0 cotscore=-2147483648
- lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006040043
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-May I get feedback for this?
 
-For the first time I use fcloop, I set:
 
-# echo "wwnn=0x3,wwpn=0x1" > /sys/class/fcloop/ctl/add_target_port
+On 2020/6/4 下午2:18, Herbert Xu wrote:
+> On Thu, Jun 04, 2020 at 02:10:37PM +0800, Zhangfei Gao wrote:
+>>> Should this even allow truncation? Perhaps it'd be better to fail
+>>> in case of an overrun?
+>> I think we do not need consider overrun, since it at most copy size-1 bytes
+>> to dest.
+>>  From the manual: strlcpy()
+>>         This  function  is  similar  to  strncpy(), but it copies at most
+>> size-1 bytes to dest, always adds a terminating null
+>>         byte,
+>> And simple tested with smaller SIZE of interface.name,  only SIZE-1 is
+>> copied, so it is safe.
+>> -#define UACCE_MAX_NAME_SIZE    64
+>> +#define UACCE_MAX_NAME_SIZE    4
+> That's not what I meant.  As it is if you do exceed the limit the
+> name is silently truncated.  Wouldn't it be better to fail the
+> allocation instead?
+I think it is fine.
+1. Currently the name size is 64, bigger enough.
+Simply grep in driver name, 64 should be enough.
+We can make it larger when there is a request.
+2. it does not matter what the name is, since it is just an interface.
+cat /sys/class/uacce/hisi_zip-0/flags
+cat /sys/class/uacce/his-0/flags
+should be both fine to app only they can be distinguished.
+3. It maybe a hard restriction to fail just because of a long name.
 
-However, I would not be able to move forward if I use "0x3" or "0x1" for nvme-fc
-target or host further. Instead, the address and port should be
-0x0000000000000003 and 0x0000000000000001.
+What do you think.
 
-This patch would sync the requirements of input format for nvme-fc and
-nvme-fcloop, unless this would break existing test suite (e.g., blktest).
-
-Thank you very much!
-
-Dongli Zhang
-
-On 5/25/20 9:21 PM, Dongli Zhang wrote:
-> The nvme host and target verify the wwnn and wwpn format via
-> nvme_fc_parse_traddr(). For instance, it is required that the length of
-> wwnn to be either 21 ("nn-0x") or 19 (nn-).
-> 
-> Add this verification to nvme-fcloop so that the input should always be in
-> hex and the length of input should always be 18.
-> 
-> Otherwise, the user may use e.g. 0x2 to create fcloop local port, while
-> 0x0000000000000002 is required for nvme host and target. This makes the
-> requirement of format confusing.
-> 
-> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
-> ---
->  drivers/nvme/target/fcloop.c | 29 +++++++++++++++++++++++------
->  1 file changed, 23 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/nvme/target/fcloop.c b/drivers/nvme/target/fcloop.c
-> index f69ce66e2d44..14124e6d4bf2 100644
-> --- a/drivers/nvme/target/fcloop.c
-> +++ b/drivers/nvme/target/fcloop.c
-> @@ -43,6 +43,17 @@ static const match_table_t opt_tokens = {
->  	{ NVMF_OPT_ERR,		NULL		}
->  };
->  
-> +static int fcloop_verify_addr(substring_t *s)
-> +{
-> +	size_t blen = s->to - s->from + 1;
-> +
-> +	if (strnlen(s->from, blen) != NVME_FC_TRADDR_HEXNAMELEN + 2 ||
-> +	    strncmp(s->from, "0x", 2))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
->  static int
->  fcloop_parse_options(struct fcloop_ctrl_options *opts,
->  		const char *buf)
-> @@ -64,14 +75,16 @@ fcloop_parse_options(struct fcloop_ctrl_options *opts,
->  		opts->mask |= token;
->  		switch (token) {
->  		case NVMF_OPT_WWNN:
-> -			if (match_u64(args, &token64)) {
-> +			if (fcloop_verify_addr(args) ||
-> +			    match_u64(args, &token64)) {
->  				ret = -EINVAL;
->  				goto out_free_options;
->  			}
->  			opts->wwnn = token64;
->  			break;
->  		case NVMF_OPT_WWPN:
-> -			if (match_u64(args, &token64)) {
-> +			if (fcloop_verify_addr(args) ||
-> +			    match_u64(args, &token64)) {
->  				ret = -EINVAL;
->  				goto out_free_options;
->  			}
-> @@ -92,14 +105,16 @@ fcloop_parse_options(struct fcloop_ctrl_options *opts,
->  			opts->fcaddr = token;
->  			break;
->  		case NVMF_OPT_LPWWNN:
-> -			if (match_u64(args, &token64)) {
-> +			if (fcloop_verify_addr(args) ||
-> +			    match_u64(args, &token64)) {
->  				ret = -EINVAL;
->  				goto out_free_options;
->  			}
->  			opts->lpwwnn = token64;
->  			break;
->  		case NVMF_OPT_LPWWPN:
-> -			if (match_u64(args, &token64)) {
-> +			if (fcloop_verify_addr(args) ||
-> +			    match_u64(args, &token64)) {
->  				ret = -EINVAL;
->  				goto out_free_options;
->  			}
-> @@ -141,14 +156,16 @@ fcloop_parse_nm_options(struct device *dev, u64 *nname, u64 *pname,
->  		token = match_token(p, opt_tokens, args);
->  		switch (token) {
->  		case NVMF_OPT_WWNN:
-> -			if (match_u64(args, &token64)) {
-> +			if (fcloop_verify_addr(args) ||
-> +			    match_u64(args, &token64)) {
->  				ret = -EINVAL;
->  				goto out_free_options;
->  			}
->  			*nname = token64;
->  			break;
->  		case NVMF_OPT_WWPN:
-> -			if (match_u64(args, &token64)) {
-> +			if (fcloop_verify_addr(args) ||
-> +			    match_u64(args, &token64)) {
->  				ret = -EINVAL;
->  				goto out_free_options;
->  			}
-> 
+Thanks
