@@ -2,256 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F061EE8B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 18:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60051EE8BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 18:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729891AbgFDQjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 12:39:55 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56065 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729870AbgFDQjw (ORCPT
+        id S1729917AbgFDQkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 12:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729657AbgFDQkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 12:39:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591288789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NF2VWmtkVvO+oeaxQB5cRYXlRd5YODZUpdBaRJJyuxY=;
-        b=JA/AYhCv1gpJh2cxF/SNevytUgNeqFOCGgKREap3x1HvAPmSIzOTBua88ip8dwpCQk45hJ
-        ggLf/PpJocLQHBzFAgBKswjRuQ9EcpM8wfA9GMFiDalAgddTGNP1s4E8VuRM7bGi7RFldq
-        1yLq5a53xrEUsnM2g39NZG8/agqQ+6A=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240-bxUu6voQPoCX2Yz43unlkA-1; Thu, 04 Jun 2020 12:39:48 -0400
-X-MC-Unique: bxUu6voQPoCX2Yz43unlkA-1
-Received: by mail-wm1-f70.google.com with SMTP id l26so2177393wmh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 09:39:48 -0700 (PDT)
+        Thu, 4 Jun 2020 12:40:19 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D251C08C5C0;
+        Thu,  4 Jun 2020 09:40:19 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id 5so1420863pjd.0;
+        Thu, 04 Jun 2020 09:40:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=A3i1Y/uWZjvOKPJmr6UpXk+ssrbNL04u8CPNIJtcrUM=;
+        b=Ib7Wc1GnX3qN2AImWV6NMbcrCTmw3Q2G02/8t7+ZAdbp5pnq9zar82fav50SR9V44Z
+         bHjAdfvge/2orXyJV5wgsojwuGWWeM8BgfXjl8HSXxmLvi+1qEokqYWq7UmS1fhwRdLr
+         elmkEava9W0hOtXbWzHrlRGI17+TdRAKuAL94+RbdHYU3oQBIM8UkNzUBmPd6WOV1QpC
+         OxLxBZeLEdsfu+h1pDPd9m26bbqadt8vw+l3N2zfGSLoVqLR0QfzZ/inWMB6FTkxcD33
+         WalkNDwcneAwdvMp+8b6LeV/4ICyRepKs/T5hOcVuQFGKLaH3ok60zkF8ci34OXkMZYT
+         1B/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NF2VWmtkVvO+oeaxQB5cRYXlRd5YODZUpdBaRJJyuxY=;
-        b=qffWlaLUF3oqoVd+VFB5nI8SaWtfgRsov7Q7JlciHBzhZTVthE4QexRpFCo7os4xOQ
-         TwbVGKVIilkIeIH2qSPUcjoZYF/S5RGez6MpbKdC68oFNr0GYjLhyxzpa/eAHhzlr41j
-         grY2WjIdavkvT2AtWo1d+buCkczUqzlOOZ3PQ1wL+wttTfP3mZpzW+/c7a8KgLLdSSJm
-         zPXTuUz/I7fe0h1kFJpyb7rvvd9MRtUvoW1NqOrfIIqR9pYg2xeaiRjquntn/JZsbvvP
-         NxEcyaz8nNgqZmCCcjw2+ErJpYG2fmpzytN7ICXCasPoiZpm43eyuQsGzX2iszhpWFHk
-         o52A==
-X-Gm-Message-State: AOAM532MoJpI91zGXlZmM82YVv6fW2PdqvQ2m8bsJ5DF2WwmfWVwdxOd
-        P2R2pHh18atP4kRetjksKjjYcnv12UF5F7WDpTl/zyH4PP0MWYEDT1pGdYt07pjNUR3vtE3sLaM
-        rBZPAX57723AUHD5SF75W3LUv
-X-Received: by 2002:a7b:cae2:: with SMTP id t2mr4885319wml.150.1591288787127;
-        Thu, 04 Jun 2020 09:39:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxGIG9Pfd7dIp+fBM1Zqy4JU1CRS4AWh3kfAVD0A17nuZ8iAGuKV57PyHrfO0vZBTYFbTjJTg==
-X-Received: by 2002:a7b:cae2:: with SMTP id t2mr4885299wml.150.1591288786889;
-        Thu, 04 Jun 2020 09:39:46 -0700 (PDT)
-Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id p9sm7881636wma.48.2020.06.04.09.39.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 09:39:45 -0700 (PDT)
-From:   Julien Thierry <jthierry@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     jpoimboe@redhat.com, peterz@infradead.org, mhelsley@vmware.com,
-        Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH 4/4] objtool: orc_gen: Move orc_entry out of instruction structure
-Date:   Thu,  4 Jun 2020 17:39:38 +0100
-Message-Id: <20200604163938.21660-5-jthierry@redhat.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200604163938.21660-1-jthierry@redhat.com>
-References: <20200604163938.21660-1-jthierry@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A3i1Y/uWZjvOKPJmr6UpXk+ssrbNL04u8CPNIJtcrUM=;
+        b=bGWV9GVGhYXXtpHeaGORX5GFm4vdiX4VQ/ynERJhX6t43q2J4ezNlZEIplpxqJSjhm
+         MeCynOvWNeJFHhlJP4u7/VlVtzRYqVDREXA/SmlYWv30Z4ZhbIu55FL/VjX4PoKxUhac
+         7svMPQD2yMYWrWiatv4Bd1FwZiMD6h7RWLq4zw8vHAYxdGa0y2MSzK/KWaxlXKuG616K
+         +Qb5impTU7Ag5pMVXeaCagzmyR7CAkd4RHqyano+4CRWu0peoi5Ub8+l+BGQ7QvDweBX
+         I2LhLYNa+xkixinB12fJHFnqYNenl8v2kNKMqLzpZW1HW6nO01qlzRiB7Nefqp28JdP9
+         GdGQ==
+X-Gm-Message-State: AOAM533yiivvByCAZnAUMswxsodNH4Tfngu+1spVOO+uXDy0GqwRZ3+1
+        4RnLBWY0IVS6CoMRi8rLios=
+X-Google-Smtp-Source: ABdhPJwHCqIPELRZMH+m8w5zHxSff7d/Jnxr6zWedksxAa4bE5qv/P/51TM6EZ2sLGPMS2V0vMUnJA==
+X-Received: by 2002:a17:90b:3651:: with SMTP id nh17mr7093309pjb.4.1591288818763;
+        Thu, 04 Jun 2020 09:40:18 -0700 (PDT)
+Received: from [10.230.188.43] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id j8sm5807508pjw.11.2020.06.04.09.40.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jun 2020 09:40:16 -0700 (PDT)
+Subject: Re: [PATCH 2/3] ARM: dts: bcm2711: Update SPI nodes compatible
+ strings
+To:     Lukas Wunner <lukas@wunner.de>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Martin Sperl <kernel@martin.sperl.org>
+References: <20200604034655.15930-1-f.fainelli@gmail.com>
+ <20200604034655.15930-3-f.fainelli@gmail.com>
+ <20200604042038.jzolu6k7q3d6bsvq@wunner.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <15c3995e-87de-0f2b-3424-5dd698b181d3@gmail.com>
+Date:   Thu, 4 Jun 2020 09:40:12 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200604042038.jzolu6k7q3d6bsvq@wunner.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One orc_entry is associated with each instruction in the object file,
-but having the orc_entry contained by the instruction structure forces
-architectures not implementing the orc subcommands to provide a dummy
-definition of the orc_entry.
 
-Avoid that by having orc_entries in a separate list, part of the
-objtool_file.
 
-Signed-off-by: Julien Thierry <jthierry@redhat.com>
----
- tools/objtool/check.h   |  1 -
- tools/objtool/objtool.c |  1 +
- tools/objtool/objtool.h |  1 +
- tools/objtool/orc_gen.c | 83 +++++++++++++++++++++++------------------
- 4 files changed, 49 insertions(+), 37 deletions(-)
+On 6/3/2020 9:20 PM, Lukas Wunner wrote:
+> On Wed, Jun 03, 2020 at 08:46:54PM -0700, Florian Fainelli wrote:
+>> The BCM2711 SoC features 5 SPI controllers which all share the same
+>> interrupt line, the SPI driver needs to support interrupt sharing,
+>> therefore use the chip specific compatible string to help with that.
+> 
+> You're saying above that the 5 controllers all share the interrupt
+> but below you're only changing the compatible string of 4 controllers.
+> 
+> So I assume spi0 still has its own interrupt and only the additional
+> 4 controllers present on the BCM2711/BCM7211 share their interrupt?
 
-diff --git a/tools/objtool/check.h b/tools/objtool/check.h
-index 906b5210f7ca..49f9a5cc4228 100644
---- a/tools/objtool/check.h
-+++ b/tools/objtool/check.h
-@@ -42,7 +42,6 @@ struct instruction {
- 	struct symbol *func;
- 	struct list_head stack_ops;
- 	struct cfi_state cfi;
--	struct orc_entry orc;
- };
- 
- struct instruction *find_insn(struct objtool_file *file,
-diff --git a/tools/objtool/objtool.c b/tools/objtool/objtool.c
-index 71c4122cf491..4b2e8013edb8 100644
---- a/tools/objtool/objtool.c
-+++ b/tools/objtool/objtool.c
-@@ -61,6 +61,7 @@ struct objtool_file *objtool_setup_file(const char *_objname, bool writable)
- 
- 	INIT_LIST_HEAD(&file.insn_list);
- 	hash_init(file.insn_hash);
-+	INIT_LIST_HEAD(&file.orc_data_list);
- 	file.c_file = find_section_by_name(file.elf, ".comment");
- 	file.ignore_unreachables = no_unreachable;
- 	file.hints = false;
-diff --git a/tools/objtool/objtool.h b/tools/objtool/objtool.h
-index be526f3d294d..e782c4206cb2 100644
---- a/tools/objtool/objtool.h
-+++ b/tools/objtool/objtool.h
-@@ -16,6 +16,7 @@ struct objtool_file {
- 	struct elf *elf;
- 	struct list_head insn_list;
- 	DECLARE_HASHTABLE(insn_hash, 20);
-+	struct list_head orc_data_list;
- 	bool ignore_unreachables, c_file, hints, rodata;
- };
- 
-diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-index e74578640705..b8d199682530 100644
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -9,14 +9,32 @@
- #include "check.h"
- #include "warn.h"
- 
-+struct orc_data {
-+	struct list_head list;
-+	struct instruction *insn;
-+	struct orc_entry orc;
-+};
-+
- int create_orc(struct objtool_file *file)
- {
- 	struct instruction *insn;
- 
- 	for_each_insn(file, insn) {
--		struct orc_entry *orc = &insn->orc;
- 		struct cfi_reg *cfa = &insn->cfi.cfa;
- 		struct cfi_reg *bp = &insn->cfi.regs[CFI_BP];
-+		struct orc_entry *orc;
-+		struct orc_data *od;
-+
-+		if (!insn->sec->text)
-+			continue;
-+
-+		od = calloc(1, sizeof(*od));
-+		if (!od)
-+			return -1;
-+		od->insn = insn;
-+		list_add_tail(&od->list, &file->orc_data_list);
-+
-+		orc = &od->orc;
- 
- 		if (!insn->sec->text)
- 			continue;
-@@ -139,7 +157,7 @@ static int create_orc_entry(struct elf *elf, struct section *u_sec, struct secti
- 
- int create_orc_sections(struct objtool_file *file)
- {
--	struct instruction *insn, *prev_insn;
-+	struct orc_data *od, *prev_od;
- 	struct section *sec, *u_sec, *ip_relasec;
- 	unsigned int idx;
- 
-@@ -157,23 +175,21 @@ int create_orc_sections(struct objtool_file *file)
- 
- 	/* count the number of needed orcs */
- 	idx = 0;
--	for_each_sec(file, sec) {
--		if (!sec->text)
--			continue;
--
--		prev_insn = NULL;
--		sec_for_each_insn(file, sec, insn) {
--			if (!prev_insn ||
--			    memcmp(&insn->orc, &prev_insn->orc,
--				   sizeof(struct orc_entry))) {
--				idx++;
--			}
--			prev_insn = insn;
-+	prev_od = NULL;
-+	list_for_each_entry(od, &file->orc_data_list, list) {
-+		if (!prev_od ||
-+		    memcmp(&od->orc, &prev_od->orc, sizeof(struct orc_entry))) {
-+			idx++;
- 		}
- 
-+		prev_od = od;
-+
- 		/* section terminator */
--		if (prev_insn)
-+		if (list_is_last(&od->insn->list, &file->insn_list) ||
-+		    list_next_entry(od->insn, list)->sec != od->insn->sec) {
-+			prev_od = NULL;
- 			idx++;
-+		}
- 	}
- 	if (!idx)
- 		return -1;
-@@ -194,33 +210,28 @@ int create_orc_sections(struct objtool_file *file)
- 
- 	/* populate sections */
- 	idx = 0;
--	for_each_sec(file, sec) {
--		if (!sec->text)
--			continue;
--
--		prev_insn = NULL;
--		sec_for_each_insn(file, sec, insn) {
--			if (!prev_insn || memcmp(&insn->orc, &prev_insn->orc,
--						 sizeof(struct orc_entry))) {
--
--				if (create_orc_entry(file->elf, u_sec, ip_relasec, idx,
--						     insn->sec, insn->offset,
--						     &insn->orc))
--					return -1;
--
--				idx++;
--			}
--			prev_insn = insn;
-+	prev_od = NULL;
-+	list_for_each_entry(od, &file->orc_data_list, list) {
-+		if (!prev_od ||
-+		    memcmp(&od->orc, &prev_od->orc, sizeof(struct orc_entry))) {
-+			if (create_orc_entry(file->elf, u_sec, ip_relasec, idx,
-+					     od->insn->sec, od->insn->offset,
-+					     &od->orc))
-+				return -1;
-+			idx++;
- 		}
- 
-+		prev_od = od;
-+
- 		/* section terminator */
--		if (prev_insn) {
-+		if (list_is_last(&od->insn->list, &file->insn_list) ||
-+		    list_next_entry(od->insn, list)->sec != od->insn->sec) {
- 			if (create_orc_entry(file->elf, u_sec, ip_relasec, idx,
--					     prev_insn->sec,
--					     prev_insn->offset + prev_insn->len,
-+					     prev_od->insn->sec,
-+					     prev_od->insn->offset + prev_od->insn->len,
- 					     &empty))
- 				return -1;
--
-+			prev_od = NULL;
- 			idx++;
- 		}
- 	}
+Correct, there are 5 instances, but only the 4 that were added for 2711
+actually share the interrupt line, I will correct that in the next patch
+version.
 -- 
-2.21.1
-
+Florian
