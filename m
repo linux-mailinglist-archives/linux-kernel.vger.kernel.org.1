@@ -2,153 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6DD1EE30D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EBC1EE314
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 13:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgFDLN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 07:13:58 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:58609 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726061AbgFDLN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 07:13:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591269237; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=FGQ3twZFTwvr0xbvXHPXtxfqUMKDj7xP+zfVZfXNXqM=;
- b=mkgwdtgSqKV7FAIB1w9cI+Lwy4W2xLnku5yJOYdBDVXAhFIZwjkjsoU8aeRz62QNtz42VjsU
- xmqtEVLeS/Y2bma9Hj69j6i26acWmiLrufA6H7ZiO/nXVR9Nz5hAaloby+MctEy3A+AlTcDF
- FcDAnF88EkJjLF3LK2f6Ffvp89s=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n15.prod.us-west-2.postgun.com with SMTP id
- 5ed8d76e9077f356cba8c2e8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Jun 2020 11:13:50
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E1C17C433C6; Thu,  4 Jun 2020 11:13:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: ppvk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 35603C433CA;
-        Thu,  4 Jun 2020 11:13:49 +0000 (UTC)
+        id S1726904AbgFDLOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 07:14:23 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:43710 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726559AbgFDLOV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 07:14:21 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 054BECJh117018;
+        Thu, 4 Jun 2020 06:14:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591269252;
+        bh=XwPye/lXt4xwD158SWEeAIdpmucSTrF0pqrdUf2BvTI=;
+        h=From:To:CC:Subject:Date;
+        b=lFoXN+fC3TDWkKHblozftAgdjC26t/rBwnF4lm3XvypSEQWJJBSWIl8licVgCjITV
+         Ajev7e85B3vighDES54zGkGRyQ9S0F9+i+B1qc8C9s26apkZv/cFt3ovmGk/Hra8wq
+         r8XVJ7niPCI/HlAndmJaP2b9qpm7pzFc48a2SY3Y=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 054BECLu117133
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 4 Jun 2020 06:14:12 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Jun
+ 2020 06:14:12 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 4 Jun 2020 06:14:12 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 054BEBrg061694;
+        Thu, 4 Jun 2020 06:14:11 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
+        <davem@davemloft.net>, <robh@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH net-next v6 0/4] RGMII Internal delay common property
+Date:   Thu, 4 Jun 2020 06:14:06 -0500
+Message-ID: <20200604111410.17918-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 04 Jun 2020 16:43:49 +0530
-From:   ppvk@codeaurora.org
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, adrian.hunter@intel.com,
-        robh+dt@kernel.org, ulf.hansson@linaro.org,
-        vbadigan@codeaurora.org, sboyd@kernel.org,
-        georgi.djakov@linaro.org, mka@chromium.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mmc-owner@vger.kernel.org, rnayak@codeaurora.org,
-        matthias@chromium.org, linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [PATCH V1 1/2] mmc: sdhci-msm: Add interconnect bandwidth scaling
- support
-In-Reply-To: <29826613b412e4f4db4289e292a1fe57@codeaurora.org>
-References: <1591175376-2374-1-git-send-email-ppvk@codeaurora.org>
- <1591175376-2374-2-git-send-email-ppvk@codeaurora.org>
- <29826613b412e4f4db4289e292a1fe57@codeaurora.org>
-Message-ID: <8865e3b00fce4f28264b60cd498fcf02@codeaurora.org>
-X-Sender: ppvk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sibi,
+Hello
 
-Thanks for the review!!
+The RGMII internal delay is a common setting found in most RGMII capable PHY
+devices.  It was found that many vendor specific device tree properties exist
+to do the same function. This creates a common property to be used for PHY's
+that have tunable internal delays for the Rx and Tx paths.
 
-On 2020-06-03 17:22, Sibi Sankar wrote:
-> Hey Pradeep,
-> Thanks for the patch.
-> 
-> On 2020-06-03 14:39, Pradeep P V K wrote:
->> Interconnect bandwidth scaling support is now added as a
->> part of OPP [1]. So, make sure interconnect driver is ready
->> before handling interconnect scaling.
->> 
->> This change is based on
->> [1] [Patch v8] Introduce OPP bandwidth bindings
->> (https://lkml.org/lkml/2020/5/12/493)
->> 
->> [2] [Patch v3] mmc: sdhci-msm: Fix error handling
->> for dev_pm_opp_of_add_table()
->> (https://lkml.org/lkml/2020/5/5/491)
->> 
->> Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
->> ---
->>  drivers/mmc/host/sdhci-msm.c | 16 ++++++++++++++++
->>  1 file changed, 16 insertions(+)
->> 
->> diff --git a/drivers/mmc/host/sdhci-msm.c 
->> b/drivers/mmc/host/sdhci-msm.c
->> index b277dd7..bf95484 100644
->> --- a/drivers/mmc/host/sdhci-msm.c
->> +++ b/drivers/mmc/host/sdhci-msm.c
->> @@ -14,6 +14,7 @@
->>  #include <linux/slab.h>
->>  #include <linux/iopoll.h>
->>  #include <linux/regulator/consumer.h>
->> +#include <linux/interconnect.h>
->> 
->>  #include "sdhci-pltfm.h"
->>  #include "cqhci.h"
->> @@ -1999,6 +2000,7 @@ static int sdhci_msm_probe(struct 
->> platform_device *pdev)
->>  	struct sdhci_pltfm_host *pltfm_host;
->>  	struct sdhci_msm_host *msm_host;
->>  	struct clk *clk;
->> +	struct icc_path *sdhc_path;
->>  	int ret;
->>  	u16 host_version, core_minor;
->>  	u32 core_version, config;
->> @@ -2070,6 +2072,20 @@ static int sdhci_msm_probe(struct 
->> platform_device *pdev)
->>  	}
->>  	msm_host->bulk_clks[0].clk = clk;
->> 
->> +	/* Make sure that ICC driver is ready for interconnect bandwdith
->> +	 * scaling before registering the device for OPP.
->> +	 */
->> +	sdhc_path = of_icc_get(&pdev->dev, NULL);
->> +	ret = PTR_ERR_OR_ZERO(sdhc_path);
->> +	if (ret) {
->> +		if (ret == -EPROBE_DEFER)
->> +			dev_info(&pdev->dev, "defer icc path: %d\n", ret);
->> +		else
->> +			dev_err(&pdev->dev, "failed to get icc path:%d\n", ret);
->> +		goto bus_clk_disable;
->> +	}
->> +	icc_put(sdhc_path);
-> 
-> ret = dev_pm_opp_of_find_icc_paths(&pdev->dev, NULL);
-> 
-> since there are multiple paths
-> described in the bindings you
-> should use ^^ instead and you
-> can drop temporary path as well.
-> 
-Ok. of_icc_get() used above is only to test if ICC driver is ready or 
-not. I'm not
-really using the multiple paths here. Anyhow i will use 
-dev_pm_opp_of_find_icc_paths()
-to get rid of some extra lines of code.
+Dan Murphy (4):
+  dt-bindings: net: Add tx and rx internal delays
+  net: phy: Add a helper to return the index for of the internal delay
+  dt-bindings: net: Add RGMII internal delay for DP83869
+  net: dp83869: Add RGMII internal delay configuration
 
->> +
->>  	msm_host->opp_table = dev_pm_opp_set_clkname(&pdev->dev, "core");
->>  	if (IS_ERR(msm_host->opp_table)) {
->>  		ret = PTR_ERR(msm_host->opp_table);
+ .../devicetree/bindings/net/ethernet-phy.yaml | 13 ++++
+ .../devicetree/bindings/net/ti,dp83869.yaml   | 16 ++++-
+ drivers/net/phy/dp83869.c                     | 53 ++++++++++++++-
+ drivers/net/phy/phy_device.c                  | 68 +++++++++++++++++++
+ include/linux/phy.h                           |  4 ++
+ 5 files changed, 150 insertions(+), 4 deletions(-)
+
+-- 
+2.26.2
+
