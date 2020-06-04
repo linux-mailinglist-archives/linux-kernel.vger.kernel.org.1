@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CBD1EECFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 23:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F821EED25
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 23:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727988AbgFDVLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 17:11:46 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:52541 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726319AbgFDVLb (ORCPT
+        id S1727103AbgFDVMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 17:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726594AbgFDVMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 17:11:31 -0400
-Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 89FA923068;
-        Thu,  4 Jun 2020 23:11:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1591305089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5ltDxDEQqoNxt8d4SzlK52JEqovfZ9pOb0c+YAdkDG4=;
-        b=B6O/qU/qvinG8mLcaE73rYjL8BIrI4Bb3zq51UxZM5HVKdRDFFsG6lR4AOLwLJKiu/xDYj
-        6X8txx9kqChdxE0AWXK5/SxvTNAZ6GG5rDPHu1+bYGcf15P/ywR2mAm5PwFMhK+cVQOrVu
-        cop2VJdzEzcHhtpod0O7NywQt3eGMr0=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH v4 11/11] arm64: dts: freescale: sl28: enable fan support
-Date:   Thu,  4 Jun 2020 23:10:39 +0200
-Message-Id: <20200604211039.12689-12-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200604211039.12689-1-michael@walle.cc>
-References: <20200604211039.12689-1-michael@walle.cc>
+        Thu, 4 Jun 2020 17:12:35 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A731C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 14:12:34 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id n24so9078432lji.10
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 14:12:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iWfV8unn/jDE1IkKTi4eGizRqjMmsf8nkdeQumfmS/E=;
+        b=eLzKDDXnYRS3ogKAIKxWM8vlr/7ibcc+4K80kkfpHelwK6HG/xaXBI7lZRs20yuBnj
+         Q6PHndcgxKCdrbLWBQe/Arz9rHYXCpgLIyc+ywNXJz0I23n/DmY2AynhZ6lw9Y2KGg/6
+         iCRx1EhfcYmsGfUulJaHdN2J3/aIshUlzi+kk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iWfV8unn/jDE1IkKTi4eGizRqjMmsf8nkdeQumfmS/E=;
+        b=PtsUt3U7Bi8gBKt0qfETBxl73xNSXwztiFRX89EUAXxB3goFae5wUj8KnLIBHp6g9T
+         3+tzhgPkuIwldBJgLlIAOdFtFPm0p96peziEpqIbep+JGGw6kjK0ZMZCYHhrgNYxZWh2
+         jSTD76lAEcp2wg1ION0daAL0bC9yepE9qwT66PFffPWN5qMWTqff/3+kE23SoJ++Wmtl
+         C4UG8a7pV+iUtD8g1bvtu8nbL+dVbtMU4ZT5LKuSsngyG1kippaqgnCxeauaTnE7lvSD
+         TCjuYwO2cX2lSzHiJKV5Jak3QdsfDSeZ3KDMFL2O8AxGYwF1GFrq00g1QDNWLoa/3lpd
+         Kwbw==
+X-Gm-Message-State: AOAM5339VP1CfwVAha29pmvgahF1fdPqiy7izWUJIAzgjOsIxp6xTagQ
+        9dKjdMkZ9bY4JqNgJVoyxTUvGh1flKY=
+X-Google-Smtp-Source: ABdhPJwNRjyUpp2KtAy94AJ+Ct/3b6jegjbHKkmp74fD4zxvaNorMMNXB3FJKkU4IEojDJhBp3uxzg==
+X-Received: by 2002:a2e:8290:: with SMTP id y16mr3215560ljg.340.1591305152098;
+        Thu, 04 Jun 2020 14:12:32 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id s20sm170252lfb.48.2020.06.04.14.12.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jun 2020 14:12:31 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id c21so4489107lfb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 14:12:30 -0700 (PDT)
+X-Received: by 2002:a05:6512:62:: with SMTP id i2mr3473576lfo.152.1591305150398;
+ Thu, 04 Jun 2020 14:12:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+References: <20200603232311.GA205619@roeck-us.net> <20200604083512.GN6857@suse.de>
+ <CAHk-=wj2_YdxPaRFqBUUDZvtZKKG5To2KJhciJmDbchW2NFLnw@mail.gmail.com> <20200604140617.e340dd507ee68b0a05bd21cb@linux-foundation.org>
+In-Reply-To: <20200604140617.e340dd507ee68b0a05bd21cb@linux-foundation.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 4 Jun 2020 14:12:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjm+RrcTjB7KYCCsOouE2EyzRcwWUE9TVq6OCYYAt9Zyw@mail.gmail.com>
+Message-ID: <CAHk-=wjm+RrcTjB7KYCCsOouE2EyzRcwWUE9TVq6OCYYAt9Zyw@mail.gmail.com>
+Subject: Re: [PATCH] mm/vmalloc: track which page-table levels were modified
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Joerg Roedel <jroedel@suse.de>, Guenter Roeck <linux@roeck-us.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a pwm-fan mapped to the PWM channel 0 which is connected to the
-fan connector of the carrier.
+On Thu, Jun 4, 2020 at 2:06 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> As discussed over in
+> https://lore.kernel.org/linux-mm/20200604164814.GA7600@kernel.org/,
+> Mike's "mm: remove __ARCH_HAS_5LEVEL_HACK" patchset
+> (http://lkml.kernel.org/r/20200414153455.21744-1-rppt@kernel.org) is
+> expected to fix this.  5level-fixup.h gets removed.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- .../dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Ok, even better.
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts
-index 0973a6a45217..c45d7b40e374 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts
-@@ -15,6 +15,15 @@
- 	compatible = "kontron,sl28-var3-ads2", "kontron,sl28-var3",
- 		     "kontron,sl28", "fsl,ls1028a";
- 
-+	pwm-fan {
-+		compatible = "pwm-fan";
-+		cooling-min-state = <0>;
-+		cooling-max-state = <3>;
-+		#cooling-cells = <2>;
-+		pwms = <&sl28cpld_pwm0 0 4000000>;
-+		cooling-levels = <1 128 192 255>;
-+	};
-+
- 	sound {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
--- 
-2.20.1
+That said, the commentary about "why is p.._alloc_track() in such a
+core header file, when it's only used by two special cases" is
+probably still true regardless of the 5-level fixup header.. I assume
+Mike didn't do those kinds of changes?
 
+Yeah, I'm probably flailing at windmills, but I do dislike how we
+often end up just growing the very core headers that get included by
+everybody without ever trying to fix that uncontrolled growth..
+
+               Linus
