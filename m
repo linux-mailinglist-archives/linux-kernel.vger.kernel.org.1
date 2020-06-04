@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAFD1EE404
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 14:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C86B1EE418
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 14:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgFDMG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 08:06:26 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:42200 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728452AbgFDMGX (ORCPT
+        id S1728494AbgFDMGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 08:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728554AbgFDMGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 08:06:23 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 7EB4D1C0BD2; Thu,  4 Jun 2020 14:06:21 +0200 (CEST)
-Date:   Thu, 4 Jun 2020 14:06:21 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     jacek.anaszewski@gmail.com, matthias.bgg@gmail.com, dmurphy@ti.com,
-        linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH] leds: mt6360: Add LED driver for MT6360
-Message-ID: <20200604120621.GA3560@duo.ucw.cz>
-References: <1591252004-12681-1-git-send-email-gene.chen.richtek@gmail.com>
+        Thu, 4 Jun 2020 08:06:42 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE99C03E96E
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 05:06:42 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id w3so5658068qkb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 05:06:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jSQHC1o3f5m5emzxu9YBcPNRqKngKwzMlx+TKTi0XtU=;
+        b=JDruNPPkDTGBxJQk+jI2G9ZRH1SJmQtyus/t8H9KtBs8Rb9bGj1e1/ClynWK9gEbBt
+         HNqs7c/AEdpw4zCNLIOrzC5Ucd6TqJ/WwrO92NFNQ7GuGw4DK8IcjKP4jYtD7snAe5TV
+         EbAhGhVO9jTc/GFjwupNGZYe+owFtDNwy+IiVXJwWWYCw/LvGGu3mvWmnTLKootUzVYp
+         wBUdWNuAD+BbmlCaVCq8otnoeyQhpefh5XQbTMZbDph6YeNPhYhZ0mSQgHl0VzmNxUi2
+         7bp0NDj74Krnv/WHb1hoA6WXqF+9hYvtvmnAD5KROSA5bDkPaAHjX3DiaAuzTy5BhyzC
+         M70A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jSQHC1o3f5m5emzxu9YBcPNRqKngKwzMlx+TKTi0XtU=;
+        b=A5/azaVOWTYU6Dm4Np5lt95Z5vdeJegZtSU5UdbXtciZecJMw0rUkNP+UgCq+DL2f5
+         1coSGLkHh27KibtbSGwfR21lAxn0Jtn1yandMFq4DBW6Luq/HIoiWRCfkhb5+sN0X/0p
+         z//3OvxMXijPJldNDojPi8zjIWJJwSf4G+GtXtropDBdA8IgM+rFlxouRmK19pGcNQMo
+         nN5DMWR9W9fkVa6xSbhfs7sqMbhuyqMgAMPJG/aIWas6A/i77Kw6hrbFHcr1idYt05Vv
+         3YguLgwyDfGoE9oN/swc4xNTFdnHS/lfPWDYF/jpkJeA2lVWiYtsH6h9sKJC2Uup8zP4
+         J5PA==
+X-Gm-Message-State: AOAM533HYToDLFq9VaB45UXsroMYHYguO8SujG9VfymylLHaN+nb1pLo
+        WJTeH6PK78iIIMUsVlm2FSZ5/A2hXvkVWORTK+Ktvw==
+X-Google-Smtp-Source: ABdhPJyD7+lCfVAQJ1oyaF8Br8FLt6SIzAwugbG4sH7U8+avpScU5Ikt1971Gx8kBKqzvlH6XR8X0LSQxEeSj6gFrB4=
+X-Received: by 2002:a37:aac4:: with SMTP id t187mr3933753qke.263.1591272401774;
+ Thu, 04 Jun 2020 05:06:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
-Content-Disposition: inline
-In-Reply-To: <1591252004-12681-1-git-send-email-gene.chen.richtek@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200516064507.19058-1-warthog618@gmail.com> <CACRpkdbputuoHFWL_FhUNR-ZywvJt=qYdaa+i2cLt-Odmgxe2w@mail.gmail.com>
+ <20200525141902.GA27938@sol> <CACRpkda4PEYd5UGbLkq9w1RBbtOdZxuMQ75k-nu5YfoKTZ_azA@mail.gmail.com>
+In-Reply-To: <CACRpkda4PEYd5UGbLkq9w1RBbtOdZxuMQ75k-nu5YfoKTZ_azA@mail.gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 4 Jun 2020 14:06:31 +0200
+Message-ID: <CAMpxmJVzMJkPSrL4uhfCgjXb7CkLSOH3kW=aeb68LRNJenKRiQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] gpio: uapi: v2 proposal
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+=C5=9Br., 27 maj 2020 o 07:58 Linus Walleij <linus.walleij@linaro.org> napi=
+sa=C5=82(a):
+>
+> On Mon, May 25, 2020 at 4:19 PM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> > > > +struct gpioline_config {
+> > > > +       __u8 default_values[GPIOLINES_MAX];
+> > >
+> > > So 32 bytes
+> > >
+> >
+> > Actually that one is 64 bytes, which is the same as v1, i.e. GPIOLINES_=
+MAX
+> > is the same as GPIOHANDLES_MAX - just renamed.
+> >
+> > On the subject of values, is there any reason to use a byte for each li=
+ne
+> > rather value than a bit?
+>
+> Not really, other than making things simple for userspace.
+>
 
---uAKRQypu60I7Lcqm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm in favor of using bits here. I think we can rely on libgpiod to
+make things simple for user-space, the kernel interface can be as
+brief as possible.
 
-Hi!
-
-> Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mode,
-> and 3-channel RGB LED support Register/Flash/Breath Mode
->=20
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> base-commit: 098c4adf249c198519a4abebe482b1e6b8c50e47
-
-Does this need device tree binding, too?
-
-> +++ b/drivers/leds/leds-mt6360.c
-> @@ -0,0 +1,1061 @@
-> +// SPDX-License-Identifier: GPL-2.0
-
-Could we get GPL 2.0 or later?
-
-Thanks,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---uAKRQypu60I7Lcqm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXtjjvQAKCRAw5/Bqldv6
-8uu2AJ94mDQBXm5GCB+DGTjiC5seurSDSgCaA35bqtIrtU4tkebxxxG9yKvSs5E=
-=/E8n
------END PGP SIGNATURE-----
-
---uAKRQypu60I7Lcqm--
+Bart
