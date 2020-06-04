@@ -2,127 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C5C1EE1D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 11:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132131EE1F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 12:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbgFDJwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 05:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726711AbgFDJwd (ORCPT
+        id S1728256AbgFDKAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 06:00:24 -0400
+Received: from smtprelay0084.hostedemail.com ([216.40.44.84]:40988 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726469AbgFDKAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 05:52:33 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D44C03E96D
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 02:52:33 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id z145so1112506ooa.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 02:52:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dmgCAZztkKponFlSOj9eb5gBCC+mYH067uJY2h6tIxo=;
-        b=E03wrYq2qk/9Su1JbFTFYDDuOW7iHKPMLOx8+W7pS1jZqglh47WBhkKee9QC2VSjEM
-         tvIE+XYqvmo7ESzqR6LVCkHmsd7lNeDiAhYoceTkkuEcgiMKR/9EjPSBxfE1TEpFmiEh
-         bzoaOdFGTAK8+KqrMBwRAIGnAfvFPWkb7OjHd9duKelNwV3gJylT3glftJR/PklCsgWu
-         SACOQ0ZBL47eO0ziL5uk4GtCoozRHtEI5bApsN6wDR6QK3SR2znFluHgB4UIOVCbbOKV
-         vqHVa12JrWiQ/Nv5jd740PBsu3jMVVDZgShkBmSuN/vh30Na+kBpDrHHAI+8TVj3nxax
-         gdWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dmgCAZztkKponFlSOj9eb5gBCC+mYH067uJY2h6tIxo=;
-        b=oKv1WxfWAS9qCx8M2JInpWcV9MyOepPn07f5GFXi8chqvcOiLcQeNUB1YU5aLKdqE8
-         aNxprCJPU5uj2N2YzCshFi0Hqv4p1cl5PzRlJSG6MR9fqaXHb3NPpIMOrqPLOCuCtyro
-         hK2p0C2O0tPxSLmOjNI9kbE18vDjoLV3+bmu4ICkOOD0bZlS/3KPVf15ifZwqNHtJ6Hj
-         wpaC05+/8JC/qtG1Qe+gLoKXWnzZoaJ5s4c+bvBdkL2kjCeCyC+LmT12axBILmRxGMAu
-         ygoNKQrAZHt2w6vLCT6gK1RIycO4d8g5RmQpYJcsKz4BRrQnyWxr6Ul/3CRQxL5we37W
-         yEeA==
-X-Gm-Message-State: AOAM530tx3GSCHLrkhlNvv8zcknOch4h5yHfIRpvQQ9egfOKf1cOJdUq
-        tAvg0mCZxGe+n7Ab8ZJoP30h6cDdTkmjXMM9PJdnQg==
-X-Google-Smtp-Source: ABdhPJx8nxv/Fp5E/Hl1veAJDLXsZdjg22RW8vJHLljIuWAQjL8St9prG4WmEpx9rR9YO0eGNraD3hSeLtKzQnHTHb4=
-X-Received: by 2002:a4a:b54b:: with SMTP id s11mr3156030ooo.14.1591264352701;
- Thu, 04 Jun 2020 02:52:32 -0700 (PDT)
+        Thu, 4 Jun 2020 06:00:20 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 1F58E837F24D;
+        Thu,  4 Jun 2020 10:00:19 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2691:2693:2828:3138:3139:3140:3141:3142:3350:3622:3865:3866:3867:3872:3873:3874:4321:5007:10004:10400:10848:11232:11658:11914:12294:12297:12740:12760:12895:13069:13161:13229:13255:13311:13357:13439:14659:21080:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:6,LUA_SUMMARY:none
+X-HE-Tag: bulb80_04152dd26d96
+X-Filterd-Recvd-Size: 2074
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  4 Jun 2020 10:00:17 +0000 (UTC)
+Message-ID: <32232229031e02edcc268b1074c9bac44012ee35.camel@perches.com>
+Subject: Re: [PATCH] pinctrl: pxa: pxa2xx: Remove 'pxa2xx_pinctrl_exit()'
+ which is unused and broken
+From:   Joe Perches <joe@perches.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Date:   Thu, 04 Jun 2020 03:00:16 -0700
+In-Reply-To: <alpine.DEB.2.21.2006041147360.2577@hadrien>
+References: <20200531073716.593343-1-christophe.jaillet@wanadoo.fr>
+                 <87h7vvb1s3.fsf@belgarion.home>
+                 <a2e34c9a-676f-d83f-f395-7428af038c16@wanadoo.fr>
+                 <20200601183102.GS30374@kadam>
+                 <CACRpkdasbS-4_ZwC-Ucm8tkSUW5tAQdUrXjxHXQ3J0goVYfgHw@mail.gmail.com>
+         <20200604083120.GF22511@kadam>
+         <2aa49a543e6f48a6f428a37b63a06f9149870225.camel@perches.com>
+         <alpine.DEB.2.21.2006041147360.2577@hadrien>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-References: <20200603114014.152292216@infradead.org> <20200603120037.GA2570@hirez.programming.kicks-ass.net>
- <20200603120818.GC2627@hirez.programming.kicks-ass.net> <CANpmjNOxLkqh=qpHQjUC_bZ0GCjkoJ4NxF3UuNGKhJSvcjavaA@mail.gmail.com>
- <20200603121815.GC2570@hirez.programming.kicks-ass.net> <CANpmjNPxMo0sNmkbMHmVYn=WJJwtmYR03ZtFDyPhmiMuR1ug=w@mail.gmail.com>
- <CANpmjNPzmynV2X+e76roUmt_3oq8KDDKyLLsgn__qtAb8i0aXQ@mail.gmail.com>
- <20200603160722.GD2570@hirez.programming.kicks-ass.net> <20200603181638.GD2627@hirez.programming.kicks-ass.net>
- <CANpmjNPJ_vTyTYyrXxP2ei0caLo10niDo8PapdJj2s4-w_R3TA@mail.gmail.com> <CANpmjNMyC+KHTbLFSxojV_CTK60t3ayJHxtyH4AckeMD2hGCtg@mail.gmail.com>
-In-Reply-To: <CANpmjNMyC+KHTbLFSxojV_CTK60t3ayJHxtyH4AckeMD2hGCtg@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 4 Jun 2020 11:52:18 +0200
-Message-ID: <CANpmjNM48j4D7F+cgUrrof38d3nLuQjbW6pz3nTwxcZ5Q+GJqQ@mail.gmail.com>
-Subject: Re: [PATCH 0/9] x86/entry fixes
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Jun 2020 at 08:00, Marco Elver <elver@google.com> wrote:
->
-> On Wed, 3 Jun 2020 at 21:10, Marco Elver <elver@google.com> wrote:
-> >
-> > On Wed, 3 Jun 2020 at 20:16, Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Wed, Jun 03, 2020 at 06:07:22PM +0200, Peter Zijlstra wrote:
-> > > > On Wed, Jun 03, 2020 at 04:47:54PM +0200, Marco Elver wrote:
-> > >
-> > > > > With that in mind, you could whitelist "__ubsan_handle"-prefixed
-> > > > > functions in objtool. Given the __always_inline+noinstr+__ubsan_handle
-> > > > > case is quite rare, it might be reasonable.
-> > > >
-> > > > Yes, I think so. Let me go have dinner and then I'll try and do a patch
-> > > > to that effect.
-> > >
-> > > Here's a slightly more radical patch, it unconditionally allows UBSAN.
-> > >
-> > > I've not actually boot tested this.. yet.
-> > >
-> > > ---
-> > > Subject: x86/entry, ubsan, objtool: Whitelist __ubsan_handle_*()
-> > > From: Peter Zijlstra <peterz@infradead.org>
-> > > Date: Wed Jun  3 20:09:06 CEST 2020
-> > >
-> > > The UBSAN instrumentation only inserts external CALLs when things go
-> > > 'BAD', much like WARN(). So treat them similar to WARN()s for noinstr,
-> > > that is: allow them, at the risk of taking the machine down, to get
-> > > their message out.
-> > >
-> > > Suggested-by: Marco Elver <elver@google.com>
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> >
-> > This is much cleaner, as it gets us UBSAN coverage back. Seems to work
-> > fine for me (only lightly tested), so
-> >
-> > Acked-by: Marco Elver <elver@google.com>
-> >
-> > Thanks!
->
-> I was thinking that if we remove __no_sanitize_undefined from noinstr,
-> we can lift the hard compiler restriction for UBSAN because
-> __no_sanitize_undefined isn't used anywhere. Turns out, that attribute
-> isn't broken on GCC <= 7, so I've sent v2 of my series:
-> https://lkml.kernel.org/r/20200604055811.247298-1-elver@google.com
+On Thu, 2020-06-04 at 11:52 +0200, Julia Lawall wrote:
+> Should Fixes also be used when the change will make it hard to port other
+> fixes over it?
 
-Now that hopefully KASAN/KCSAN/UBSAN are fine, I'm looking at adding a
-patch for KCOV:
-https://lkml.kernel.org/r/20200604095057.259452-1-elver@google.com
+If it's a logic defect or regression that's being fixed,
+shouldn't the logic defect or regression be fixed as
+reasonably soon as possible?
 
-Will that work?
+The nature of the fix should ideally be optimal for
+backporting, but I believe that should not stop any
+consideration for the standalone fix itself.
 
-Thanks,
--- Marco
+What do you think?
+
