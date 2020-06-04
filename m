@@ -2,236 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE76F1EDD8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 08:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D771EDD93
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 08:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgFDGwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 02:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbgFDGwt (ORCPT
+        id S1727834AbgFDGyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 02:54:13 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:9536 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726422AbgFDGyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 02:52:49 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B378BC05BD1E;
-        Wed,  3 Jun 2020 23:52:49 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49cxL72snVz9sSg;
-        Thu,  4 Jun 2020 16:52:47 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1591253567;
-        bh=/r1CAKtCIxiqFy4xQJQMesnAJdFfw5/dQLpE/npLIT0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MKA7/UW2zHGF4/Ep53TjO8O+xzBvfOfwwQeuzljVQiSPr2oQ17NwVp8W8cMNJh8E3
-         OOIKMik9FErkmWTuT32PvY5i6N7WBY3S8YXHmEesh3SzVT5nAzHYfeCyWfetkz0yXe
-         +FPkEWwixoviwKgRnA+b7xA4kUpJ3DEdo8UW+4WpwkXrRrIGHiGEAluUtOAIs0rr4K
-         QVbjA2vr2oBnNYBkkdzSbdz9VNiYeDmnU87tdL1S5Fw5J/0On196RJ6l/hJwgIrKJ+
-         n19FSmN6gRoOq06lXfQ14VNePMCGIimtbTpqXqpqUbA1apRjCewBkmulIZJR8MwVH5
-         aJOrtbXhvhPVw==
-Date:   Thu, 4 Jun 2020 16:52:46 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: linux-next: fix ups for clashes between akpm and powerpc trees
-Message-ID: <20200604165246.436f02ba@canb.auug.org.au>
-In-Reply-To: <20200603202655.0ad0eacc@canb.auug.org.au>
-References: <20200603202655.0ad0eacc@canb.auug.org.au>
+        Thu, 4 Jun 2020 02:54:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1591253659; x=1622789659;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=7VwoXqyWdPrk1BZq7hleWaNmZXYoXElAIpudK5dOl9w=;
+  b=S+0ZZeEFNsy9AmwrMPAlPdTvepsXQUPlOoh/C5dNDb8CVkb4BpAVmqLn
+   y1xi7+OJf51N07WgqaC/Gj/TYAPUUXRIYwyGiuteptWXz4kFjlhuwgv1k
+   MpZnkcUCa+BvQIA4NfbbqGoP0W8q4yQINT/RbRyx5GoJKzatCKUnbJvSj
+   SBQPhuKWI67I5+Xn6xJHP14Igupn9PM420qEu36EiPK6ZFdsBulV1cyiR
+   3eZJLjSZufK4MvR6oEETQvNgEPFJATO4pE7ltN80kBL9DZ5haHyqCDM2X
+   3in1tpdzMFLS+bbrWa3eLKFJjn0waxvWT4MtMHVzorzONg+pBVGYd4D79
+   w==;
+IronPort-SDR: i7DgDgNievU0AX3bTaBZfH7X3R0E29bKykT571zLDAmWZ2wXiZ1V3AKWBbBBNh259WCkRNcQUe
+ bwPvRX/XPuHPA2HnGnzJRKsWo4MMZcBY4EGqw/Uv1t+qSl47Xujr3Jk52DcETphll3Z6UfBGdj
+ TV6xQihKU4xt38XIWiV9ptHHnoSNuqgIHG707JH6IoZnd8iOppHj/hRn8T+Z0F1wx2IHVqwQkI
+ Qtm9v9gURfD09g8AefUk8U/0oqXSrey3mYA8pTYnbX+Sk00GRkbEM+sQ/mVwdNy/HgrFkgAj3c
+ Lrs=
+X-IronPort-AV: E=Sophos;i="5.73,471,1583164800"; 
+   d="scan'208";a="242046900"
+Received: from mail-mw2nam10lp2103.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.103])
+  by ob1.hgst.iphmx.com with ESMTP; 04 Jun 2020 14:54:17 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hAsM0fc1umClmmimqe5phTLCVZrEDHu4x2NjL+6SRFuhHXVpDsS4yHsSA76pRW12+3krneWG7UKmm6sjB7KPZGSSP0YMs8velS+OJlS++u2ku+GdUWlM+nqos7YWvhmToBnGh+u88gqylHDeSEtyaKf57xn4tgdqPsUSrtSL7BtLGchlJcxsR0WeZi31s+I18hQngJYVqMkW1+O4sL5R+/x+jPHPXpddZIqLzJ1LXtRnYE9WcOW+BxWUdgEm12cTLKIEFgHh2NEm+AZ8vHemGp2IHWf2ny4LJhRFtZv5siaMlKITukkNfWe2VjLNxnOALkEbClC9IXjuNf4m7SeWQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7VwoXqyWdPrk1BZq7hleWaNmZXYoXElAIpudK5dOl9w=;
+ b=FpBA38bwhua+9oiovFKSSXKLAraBdXEv01V1HqykQ6ip5GyQCSYpqsO9phoZINmNBeftzwCIKKyxMcl80xK1zMn5zQjldCq9lRPiRxXJ1Xv/cHHL3nkOLONZ+R4kGJtJW+EMeYEMRRrFkxFI7ZqTF6qN5JkVRN472J67uecMMmuOYM2BVnHEkfc1Kecn+0WETtmOwhg+T6vs8wRxtHyqdjh47YZUbma6iKb3ZjdKwJtMrPJaoK+Uom4RfjBtL9oJiiu2fNP9/uZHyqFkfvlMKj500HxuNPzWsO+e7xSRxnmg+jZt4P1QDTeaTkBWrwBRIyEf8y45ih8ILefGt3Agow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7VwoXqyWdPrk1BZq7hleWaNmZXYoXElAIpudK5dOl9w=;
+ b=YPqMINu6NW9KXaIp+O52U1sr0+r2l3w9aj2zoJULT+lnl3tYoDUIQ9PckKvRbu+/mSNoygxFoWgR2mdbMn8VIWMDw/hiSkyj0jmNiJ05WXLTIgTbjogHp35R8RFSRbEUbqxeFKEGtQntZ3avXvEWbR5xpQDy+IBclMcvPlUOVeE=
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
+ by BYAPR04MB5911.namprd04.prod.outlook.com (2603:10b6:a03:10c::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.19; Thu, 4 Jun
+ 2020 06:54:10 +0000
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::4d72:27c:c075:c5e6]) by BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::4d72:27c:c075:c5e6%7]) with mapi id 15.20.3066.018; Thu, 4 Jun 2020
+ 06:54:10 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Dongli Zhang <dongli.zhang@oracle.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "james.smart@broadcom.com" <james.smart@broadcom.com>
+CC:     "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] nvme-fcloop: verify wwnn and wwpn format
+Thread-Topic: [PATCH 1/1] nvme-fcloop: verify wwnn and wwpn format
+Thread-Index: AQHWMxYvcSawy1rsD0W643/8Q572ww==
+Date:   Thu, 4 Jun 2020 06:54:10 +0000
+Message-ID: <BYAPR04MB49650D649A53B89DBFE1461286890@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <20200526042118.17836-1-dongli.zhang@oracle.com>
+ <38a2cfb9-df2a-c5cb-6797-2b96ef049c7c@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [199.255.45.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 67381f92-666e-48b2-e59c-08d8085415b4
+x-ms-traffictypediagnostic: BYAPR04MB5911:
+x-microsoft-antispam-prvs: <BYAPR04MB591184522F1DFD42EFCB496786890@BYAPR04MB5911.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 04244E0DC5
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GV1lCU5ZPyjR8ZCEMpkC8Olu4QunlLr1sLj1U8TQBMJiuQ/tq3hRZhTNAVasH4da/FxNzZzHdvY0mCF6qR/2sfVc+M62MF9XDOrReueSrczsTL1Mlym5JTQwIz+8u4gleL5z59RMWlYcXSxPuXrULiMBXafHYi/fpWkzaAoTIMRfY5eRmOq7c5+igvk/XU3wll7IzPvFowfZiuKx1OndOAETjLXAc3acFDF6f2D0qBtFNvJTOOZMHK6QcSgSgDdSJqYd/YsWcrKoFdq4OrB2WkG7jJZPJexL7aougfDwdGhmbxuUQjBQlGGtq0LMM1gZ8PVkRFnUm07eaKR0wTIl7w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(396003)(346002)(39860400002)(366004)(376002)(6506007)(26005)(186003)(2906002)(8676002)(55016002)(9686003)(4326008)(8936002)(7696005)(86362001)(316002)(54906003)(4744005)(110136005)(53546011)(478600001)(52536014)(66446008)(5660300002)(33656002)(76116006)(64756008)(66476007)(66556008)(71200400001)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: Vc8TDzgMYP6dhAMgymmK0PMc3+4DYTXWWz1U+SQpC8SEik2RC0ynFqyjkZ/L2fYLDMF7WWB+69fLwiwtfXshwso/0n7ETgatW55Y2JTECPYDLPNEhiaLgxGclieLIzEo0Qca5IyMmk1RO7Q4LhzkZOYhruf9gpx5UgN+eV6l4+J+WzPDU3UNwpdrQ2r+LW9vxCNmlIKNfWfzJ43Fg5qGQonsDxdfGkAaEdvjrEg5gSfWxmMGVhAVCfYsHOzPFHCdqOZD8HSA7E48Okr0RaD6e9WSepcYAs99DZhlAADp4UuehyfnWxdlFD7YvQw+xXPzewPCPggAAfL08B8kKb9NnEN/BnvyEpMrpa17czJtX/YzCLLIPOvjkSkOLkU3Brm7oOdRAN8f2Nrxlio/KIXIOphG11nKbiwYqK+JsNYQqJl+m6HhJlbiegBSWfQYIaHe8LOeQ+D4R373QdbWj51Vd2nezSGoiZLQfTOWjgCezUE=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=DWI=A5QvwYmtmW3ryBDDxf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67381f92-666e-48b2-e59c-08d8085415b4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2020 06:54:10.5648
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UpnAyOx9yPQCva99EUNUBpF3uk+kBq9RD45I5MhAsdh1xXtdn2LURtFWrGKAXsAIYW7o2c1yy6dlW3o1Wm1X5lAsWa3gY2jFUN7wEBkNlCk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5911
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=DWI=A5QvwYmtmW3ryBDDxf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Wed, 3 Jun 2020 20:26:55 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> Some things turned up in the powerpc tree today that required some changes
-> to patches in the akpm tree and also the following fixup patch provided
-> (mostly) by Michael. I have applied this as a single patch today, but
-> parts of it should probably go in some other patches.
->=20
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Wed, 3 Jun 2020 20:03:49 +1000
-> Subject: [PATCH] powerpc fixes for changes clashing with akpm tree changes
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
-
-I applied this again today.  It is slightly different and now looks like th=
-is:
-
-diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/in=
-clude/asm/book3s/64/pgtable.h
-index 25c3cb8272c0..a6799723cd98 100644
---- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-@@ -1008,6 +1008,12 @@ extern struct page *p4d_page(p4d_t p4d);
- #define pud_page_vaddr(pud)	__va(pud_val(pud) & ~PUD_MASKED_BITS)
- #define p4d_page_vaddr(p4d)	__va(p4d_val(p4d) & ~P4D_MASKED_BITS)
-=20
-+static inline unsigned long pgd_index(unsigned long address)
-+{
-+	return (address >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1);
-+}
-+#define pgd_index pgd_index
-+
- #define pte_ERROR(e) \
- 	pr_err("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
- #define pmd_ERROR(e) \
-diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/in=
-clude/asm/nohash/32/pgtable.h
-index c188a6f64bcd..1927e1b653f2 100644
---- a/arch/powerpc/include/asm/nohash/32/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
-@@ -205,10 +205,6 @@ static inline void pmd_clear(pmd_t *pmdp)
- 	*pmdp =3D __pmd(0);
- }
-=20
--
--/* to find an entry in a kernel page-table-directory */
--#define pgd_offset_k(address) pgd_offset(&init_mm, address)
--
- /* to find an entry in a page-table-directory */
- #define pgd_index(address)	 ((address) >> PGDIR_SHIFT)
- #define pgd_offset(mm, address)	 ((mm)->pgd + pgd_index(address))
-@@ -241,7 +237,7 @@ static inline pte_basic_t pte_update(struct mm_struct *=
-mm, unsigned long addr, p
- 	pte_basic_t old =3D pte_val(*p);
- 	pte_basic_t new =3D (old & ~(pte_basic_t)clr) | set;
- 	int num, i;
--	pmd_t *pmd =3D pmd_offset(pud_offset(pgd_offset(mm, addr), addr), addr);
-+	pmd_t *pmd =3D pmd_offset(pud_offset(p4d_offset(pgd_offset(mm, addr), add=
-r), addr), addr);
-=20
- 	if (!huge)
- 		num =3D PAGE_SIZE / SZ_4K;
-@@ -341,6 +337,10 @@ static inline int pte_young(pte_t pte)
- 	pfn_to_page((__pa(pmd_val(pmd)) >> PAGE_SHIFT))
- #endif
-=20
-+#define pte_offset_kernel(dir, addr)	\
-+	(pmd_bad(*(dir)) ? NULL : (pte_t *)pmd_page_vaddr(*(dir)) + \
-+				  pte_index(addr))
-+
- /*
-  * Encode and decode a swap entry.
-  * Note that the bits we use in a PTE for representing a swap entry
-diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
-index db4ef44af22f..569d98a41881 100644
---- a/arch/powerpc/mm/kasan/8xx.c
-+++ b/arch/powerpc/mm/kasan/8xx.c
-@@ -10,7 +10,7 @@
- static int __init
- kasan_init_shadow_8M(unsigned long k_start, unsigned long k_end, void *blo=
-ck)
- {
--	pmd_t *pmd =3D pmd_ptr_k(k_start);
-+	pmd_t *pmd =3D pmd_off_k(k_start);
- 	unsigned long k_cur, k_next;
-=20
- 	for (k_cur =3D k_start; k_cur !=3D k_end; k_cur =3D k_next, pmd +=3D 2, b=
-lock +=3D SZ_8M) {
-@@ -59,7 +59,7 @@ int __init kasan_init_region(void *start, size_t size)
- 		return ret;
-=20
- 	for (; k_cur < k_end; k_cur +=3D PAGE_SIZE) {
--		pmd_t *pmd =3D pmd_ptr_k(k_cur);
-+		pmd_t *pmd =3D pmd_off_k(k_cur);
- 		void *va =3D block + k_cur - k_start;
- 		pte_t pte =3D pfn_pte(PHYS_PFN(__pa(va)), PAGE_KERNEL);
-=20
-diff --git a/arch/powerpc/mm/kasan/book3s_32.c b/arch/powerpc/mm/kasan/book=
-3s_32.c
-index 4bc491a4a1fd..a32b4640b9de 100644
---- a/arch/powerpc/mm/kasan/book3s_32.c
-+++ b/arch/powerpc/mm/kasan/book3s_32.c
-@@ -46,7 +46,7 @@ int __init kasan_init_region(void *start, size_t size)
- 	kasan_update_early_region(k_start, k_cur, __pte(0));
-=20
- 	for (; k_cur < k_end; k_cur +=3D PAGE_SIZE) {
--		pmd_t *pmd =3D pmd_ptr_k(k_cur);
-+		pmd_t *pmd =3D pmd_off_k(k_cur);
- 		void *va =3D block + k_cur - k_start;
- 		pte_t pte =3D pfn_pte(PHYS_PFN(__pa(va)), PAGE_KERNEL);
-=20
-diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
-index 286441bbbe49..92e8929cbe3e 100644
---- a/arch/powerpc/mm/nohash/8xx.c
-+++ b/arch/powerpc/mm/nohash/8xx.c
-@@ -74,7 +74,7 @@ static pte_t __init *early_hugepd_alloc_kernel(hugepd_t *=
-pmdp, unsigned long va)
- static int __ref __early_map_kernel_hugepage(unsigned long va, phys_addr_t=
- pa,
- 					     pgprot_t prot, int psize, bool new)
- {
--	pmd_t *pmdp =3D pmd_ptr_k(va);
-+	pmd_t *pmdp =3D pmd_off_k(va);
- 	pte_t *ptep;
-=20
- 	if (WARN_ON(psize !=3D MMU_PAGE_512K && psize !=3D MMU_PAGE_8M))
-diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
-index 45a0556089e8..1136257c3a99 100644
---- a/arch/powerpc/mm/pgtable.c
-+++ b/arch/powerpc/mm/pgtable.c
-@@ -264,7 +264,7 @@ int huge_ptep_set_access_flags(struct vm_area_struct *v=
-ma,
- #if defined(CONFIG_PPC_8xx)
- void set_huge_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep=
-, pte_t pte)
- {
--	pmd_t *pmd =3D pmd_ptr(mm, addr);
-+	pmd_t *pmd =3D pmd_off(mm, addr);
- 	pte_basic_t val;
- 	pte_basic_t *entry =3D &ptep->pte;
- 	int num =3D is_hugepd(*((hugepd_t *)pmd)) ? 1 : SZ_512K / SZ_4K;
-diff --git a/arch/powerpc/mm/pgtable_32.c b/arch/powerpc/mm/pgtable_32.c
-index e2d054c9575e..6eb4eab79385 100644
---- a/arch/powerpc/mm/pgtable_32.c
-+++ b/arch/powerpc/mm/pgtable_32.c
-@@ -40,7 +40,7 @@ notrace void __init early_ioremap_init(void)
- {
- 	unsigned long addr =3D ALIGN_DOWN(FIXADDR_START, PGDIR_SIZE);
- 	pte_t *ptep =3D (pte_t *)early_fixmap_pagetable;
--	pmd_t *pmdp =3D pmd_ptr_k(addr);
-+	pmd_t *pmdp =3D pmd_off_k(addr);
-=20
- 	for (; (s32)(FIXADDR_TOP - addr) > 0;
- 	     addr +=3D PGDIR_SIZE, ptep +=3D PTRS_PER_PTE, pmdp++)
---=20
-2.26.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/=DWI=A5QvwYmtmW3ryBDDxf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7Ymj4ACgkQAVBC80lX
-0Gz/0wf+PinPxZIEIlFjnePxzC9hCdnNEhidEzKZWTzJkTgsvCkilgqD8I6ZH1wg
-xrbfVB9kzujL7ahA8xK//2uFRO5NUZS+qQXfQyCgl3UxigBpuFM5nCksuiOrgb3D
-8pd/gYXvzhNRhLWwYQvoW1peYUjk0qk4CqCRnZqXp6F6J9DUnlMQi5df+uD/hPga
-97cpICa+4PQqj4KpuywBnlLq/Zyr+Gp3QaxprG/3iVQd2F0GRosUFLt6IOo58Y8q
-5Yx56F0Jl75JG/spsZK2VkNnQyi0O3uFK1X++q2olcb8m8Sm51IDGkYuT7NOXKLX
-bnwZ45IXwoszHUpqUQpOK2rY9d25mg==
-=9mCQ
------END PGP SIGNATURE-----
-
---Sig_/=DWI=A5QvwYmtmW3ryBDDxf--
+On 6/3/20 11:46 PM, Dongli Zhang wrote:=0A=
+> May I get feedback for this?=0A=
+> =0A=
+> For the first time I use fcloop, I set:=0A=
+> =0A=
+> # echo "wwnn=3D0x3,wwpn=3D0x1" > /sys/class/fcloop/ctl/add_target_port=0A=
+> =0A=
+> However, I would not be able to move forward if I use "0x3" or "0x1" for =
+nvme-fc=0A=
+> target or host further. Instead, the address and port should be=0A=
+> 0x0000000000000003 and 0x0000000000000001.=0A=
+> =0A=
+> This patch would sync the requirements of input format for nvme-fc and=0A=
+> nvme-fcloop, unless this would break existing test suite (e.g., blktest).=
+=0A=
+If I remember correctly I don't think we have fc-loop testcases (correct =
+=0A=
+me if I'm wrong).=0A=
+=0A=
+Not an fc expert, but having uniform format for the input make sense to =0A=
+me (unless there is an explicit reason). I'll let James have a final say.=
+=0A=
