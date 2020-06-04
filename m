@@ -2,70 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F2D1EDBC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 05:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B52F1EDBCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 05:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgFDDjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Jun 2020 23:39:39 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:35698 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726604AbgFDDjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Jun 2020 23:39:39 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jggis-0000jQ-Bm; Thu, 04 Jun 2020 13:39:19 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 04 Jun 2020 13:39:18 +1000
-Date:   Thu, 4 Jun 2020 13:39:18 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Zhangfei Gao <zhangfei.gao@linaro.org>
-Cc:     =?iso-8859-1?Q?=A0Greg_Kroah-Hartman=A0?= 
-        <gregkh@linuxfoundation.org>,
-        =?iso-8859-1?Q?=A0Jonathan_Cameron=A0?= 
-        <Jonathan.Cameron@huawei.com>,
-        =?iso-8859-1?Q?=A0wangzhou1=A0?= <wangzhou1@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        kbuild-all@lists.01.org
-Subject: Re: [PATCH] crypto: hisilicon - fix strncpy warning with strlcpy
-Message-ID: <20200604033918.GA2286@gondor.apana.org.au>
-References: <202006032110.BEbKqovX%lkp@intel.com>
- <1591241524-6452-1-git-send-email-zhangfei.gao@linaro.org>
+        id S1727024AbgFDDj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Jun 2020 23:39:57 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:19964 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726604AbgFDDj4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Jun 2020 23:39:56 -0400
+X-UUID: 594cecd9cb784878b791891d003735b8-20200604
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=gg0xFQsrpVwavUKDGPkf/KTKDKCcT5COSQE37vYTZu4=;
+        b=Uz2Fe97+pGFfmbd7GLVLPa3P27PFL8rgTvzACaOi2WWmU/yTSWuIvKFwx4ChkNsakc0lnik5OJMTgoG18bVo2er8g11PHMHZJqbmJ+yHdenqacBaXwOG4Tc7PLGib65OcwGcQlyef48dW2KDFh+h5CJQZ+m7dCfz7x+YWWZ1ORo=;
+X-UUID: 594cecd9cb784878b791891d003735b8-20200604
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <miles.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 850519545; Thu, 04 Jun 2020 11:39:54 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 4 Jun 2020 11:39:46 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 4 Jun 2020 11:39:46 +0800
+Message-ID: <1591241986.29475.18.camel@mtkswgap22>
+Subject: Re: [PATCH] mm/memblock: export max_pfn for kernel modules
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
+Date:   Thu, 4 Jun 2020 11:39:46 +0800
+In-Reply-To: <20200603170624.GA202648@linux.ibm.com>
+References: <20200603161132.2441-1-miles.chen@mediatek.com>
+         <20200603170624.GA202648@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1591241524-6452-1-git-send-email-zhangfei.gao@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 11:32:04AM +0800, Zhangfei Gao wrote:
-> Use strlcpy to fix the warning
-> warning: 'strncpy' specified bound 64 equals destination size
->          [-Wstringop-truncation]
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> ---
->  drivers/crypto/hisilicon/qm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-> index f795fb5..224f3e2 100644
-> --- a/drivers/crypto/hisilicon/qm.c
-> +++ b/drivers/crypto/hisilicon/qm.c
-> @@ -1574,7 +1574,7 @@ static int qm_alloc_uacce(struct hisi_qm *qm)
->  		.ops = &uacce_qm_ops,
->  	};
->  
-> -	strncpy(interface.name, pdev->driver->name, sizeof(interface.name));
-> +	strlcpy(interface.name, pdev->driver->name, sizeof(interface.name));
+T24gV2VkLCAyMDIwLTA2LTAzIGF0IDIwOjA2ICswMzAwLCBNaWtlIFJhcG9wb3J0IHdyb3RlOg0K
+PiBPbiBUaHUsIEp1biAwNCwgMjAyMCBhdCAxMjoxMTozMkFNICswODAwLCBNaWxlcyBDaGVuIHdy
+b3RlOg0KPiA+IG1heF9wZm4gaXMgdWVzZCB0byBnZXQgdGhlIGhpZ2hlc3QgcGZuIGluIHRoZSBz
+eXN0ZW0uIERyaXZlcnMgbGlrZQ0KPiA+IGRyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmMgY2hlY2tz
+IG1heF9wZm4gdG8gc2VlIGlmIGl0IHNob3VsZCBlbmFibGUNCj4gPiBpdHMgIjRHQiBtb2RlIi4N
+Cj4gPiANCj4gPiBUaGlzIHBhdGNoIGV4cG9ydHMgdGhlIG1heF9wZm4gc3ltYm9sLCBzbyB3ZSBj
+YW4gYnVpbGQgdGhlIGRyaXZlciBhcw0KPiA+IGEga2VybmVsIG1vZHVsZS4NCj4gDQo+IFlvdSBj
+YW4gdXNlIHRvdGFscmFtX3BhZ2VzKCksIGxpa2UgZS5nLg0KPiBkcml2ZXJzL21lZGlhL3BsYXRm
+b3JtL210ay12cHUvbXRrX3ZwdS5jOg0KPiANCj4gJCBnaXQgZ3JlcCAtbnAgdG90YWxyYW1fcGFn
+ZXMgZHJpdmVycy9tZWRodHRwczovL2xrbWwub3JnL2xrbWwvMjAyMC81LzMwLzEyM2lhLw0KPiBk
+cml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12cHUvbXRrX3ZwdS5jPTc3OT1zdGF0aWMgaW50IG10
+a192cHVfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gZHJpdmVycy9tZWRp
+YS9wbGF0Zm9ybS9tdGstdnB1L210a192cHUuYzo4NjE6ICAgdnB1LT5lbmFibGVfNEdCID0gISEo
+dG90YWxyYW1fcGFnZXMoKSA+IChTWl8yRyA+PiBQQUdFX1NISUZUKSk7DQo+IA0KDQpUaGFua3Mg
+Zm9yIHRoZSBzdWdnZXN0aW9uLg0KdG90YWxyYW1fcGFnZXMoKSB3b3JrcyBhbmQgSSBjYW4gZm9s
+bG93IHRoaXMgZXhhbXBsZS4NCg0KTWlsZXMNCg0KPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBNaWxl
+cyBDaGVuIDxtaWxlcy5jaGVuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgbW0vbWVtYmxv
+Y2suYyB8IDEgKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gPiANCj4g
+PiBkaWZmIC0tZ2l0IGEvbW0vbWVtYmxvY2suYyBiL21tL21lbWJsb2NrLmMNCj4gPiBpbmRleCBj
+NzliYTZmOTkyMGMuLjNiMmIyMWVjZWJiNiAxMDA2NDQNCj4gPiAtLS0gYS9tbS9tZW1ibG9jay5j
+DQo+ID4gKysrIGIvbW0vbWVtYmxvY2suYw0KPiA+IEBAIC05OSw2ICs5OSw3IEBAIEVYUE9SVF9T
+WU1CT0woY29udGlnX3BhZ2VfZGF0YSk7DQo+ID4gIHVuc2lnbmVkIGxvbmcgbWF4X2xvd19wZm47
+DQo+ID4gIHVuc2lnbmVkIGxvbmcgbWluX2xvd19wZm47DQo+ID4gIHVuc2lnbmVkIGxvbmcgbWF4
+X3BmbjsNCj4gPiArRVhQT1JUX1NZTUJPTChtYXhfcGZuKTsNCj4gPiAgdW5zaWduZWQgbG9uZyBs
+b25nIG1heF9wb3NzaWJsZV9wZm47DQo+ID4gIA0KPiA+ICBzdGF0aWMgc3RydWN0IG1lbWJsb2Nr
+X3JlZ2lvbiBtZW1ibG9ja19tZW1vcnlfaW5pdF9yZWdpb25zW0lOSVRfTUVNQkxPQ0tfUkVHSU9O
+U10gX19pbml0ZGF0YV9tZW1ibG9jazsNCj4gPiAtLSANCj4gPiAyLjE4LjANCj4gDQoNCg==
 
-Should this even allow truncation? Perhaps it'd be better to fail
-in case of an overrun?
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
