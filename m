@@ -2,124 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6011EDD71
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 08:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE6D1EDD7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jun 2020 08:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgFDGov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 02:44:51 -0400
-Received: from mga09.intel.com ([134.134.136.24]:30581 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727774AbgFDGoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 02:44:46 -0400
-IronPort-SDR: V6OsyqcfcyOBgZQlHSsptKANTSuPSl6zBXklPJyl2I4yhhXIS53l9C+c2oH+ZlsHow0c8Sny6k
- 1rEBEMBBocsg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 23:44:45 -0700
-IronPort-SDR: Hi+ARyh48YSb32/Pt8vOy4p7zx/cFnMDyZyMrnGYxWixi6a4PkX1oDrgQ4wPYlujYL2xH3fTes
- IcRlwA5YSB6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,471,1583222400"; 
-   d="scan'208";a="445398016"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga005.jf.intel.com with ESMTP; 03 Jun 2020 23:44:44 -0700
-Date:   Wed, 3 Jun 2020 23:44:44 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] arch/{mips,sparc,microblaze,powerpc}: Don't enable
- pagefault/preempt twice
-Message-ID: <20200604064444.GD1740285@iweiny-DESK2.sc.intel.com>
-References: <20200519184031.GB3356843@iweiny-DESK2.sc.intel.com>
- <20200519194215.GA71941@roeck-us.net>
- <20200520051315.GA3660833@iweiny-DESK2.sc.intel.com>
- <d86dba19-4f4b-061e-a2c7-4f037e9e2de2@roeck-us.net>
- <20200521174250.GB176262@iweiny-DESK2.sc.intel.com>
- <20200603135736.e7b5ded0082a81ae6d9067a0@linux-foundation.org>
- <20200603211416.GA1740285@iweiny-DESK2.sc.intel.com>
- <3538c8ad-674e-d310-d870-4ef6888092ed@roeck-us.net>
- <20200604062226.GA1740345@iweiny-DESK2.sc.intel.com>
- <20200604063745.GB202650@kernel.org>
+        id S1727107AbgFDGri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 02:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726248AbgFDGrh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 02:47:37 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81ECCC05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Jun 2020 23:47:37 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id l11so4826854wru.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jun 2020 23:47:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=VXWuc3acfN5ShHd6vrfkl/0I+q0bP7rAYqkXwWwUYns=;
+        b=Zl2aZthWUNH2LE30gnjjE0uKjkUi2uVMRg18sdyUg/70mHMVe1wiP9jIKG0maz9fFp
+         mR+++xw/PBLqFP/i0JgzMwaO1vi+gROG9XzoLOp3QhTxhjc1G7sIE5W48fjq7qmoKlB+
+         u3DWH0GM82npEhMKjz5iO4ldgdON+fIPzWmiAiyTsACihIxb3jsTeNPxILSp0ZtGwJaY
+         5zoVxlGHUn80bq10kkYQKkfaISpePg9VMSrJBT/bLeT+w1C9YDkVvW23Jx6/wfhlMjr5
+         fQqFrnMxc1YkafXZWP7Lq1HYCw8Xgv05txiPckOQ4J3kawh2s/9VAJ9zbu8CtgOjgELI
+         Yong==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=VXWuc3acfN5ShHd6vrfkl/0I+q0bP7rAYqkXwWwUYns=;
+        b=oKQcoVxDmegU02tnfZSMWv4/7Rpv5xLTC2MUpUxnrYGy7qz3ubk81BaLLjEdqV2zjO
+         OWzDreYr6OsqLo07B3QbQqgYm3RDWzltlITI0yuStvyWN40GSf5SJKTmq1X+dGhUOlX5
+         agoLOy30jCt+bZUxE1wIINgWKL6Jjd8RKc3messECeRnZUDWGCUsPThhkb6P8dXd4IWA
+         oZL1/Az5/KaQS03KvqGHzYHZBpMpbAuqQvUDHFDf8upVIzosPw3xfeKDqv3f2akM9ODW
+         V/xFdM5fjWPEZ1s2gxSWLaYQeOpIHi7z3B0KHzU5mSZSxrf0kdC8vesAlmui1Zlci29R
+         50nA==
+X-Gm-Message-State: AOAM532LsXew3DdlPTJT1A0ZnTIFPe9zbyhLUp2sV2i87rnE1cUmTIqE
+        JXMUtiU0g3TBv2WZdQ2JBPDmmQ==
+X-Google-Smtp-Source: ABdhPJwqTdrJ/z7s+BjLjkIXpv3lZj668hWy9pLg2vWSkiz7Ttn5Z3cHrAmX7wYGyvzymxhq2IvqQw==
+X-Received: by 2002:adf:f84d:: with SMTP id d13mr2658231wrq.99.1591253256261;
+        Wed, 03 Jun 2020 23:47:36 -0700 (PDT)
+Received: from dell ([95.147.198.92])
+        by smtp.gmail.com with ESMTPSA id g18sm5855948wme.17.2020.06.03.23.47.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jun 2020 23:47:35 -0700 (PDT)
+Date:   Thu, 4 Jun 2020 07:47:34 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Keerthy <j-keerthy@ti.com>, Axel Lin <axel.lin@ingics.com>
+Subject: Re: [RFC 2/4] regulator: lp87565: dt: remove duplicated section
+Message-ID: <20200604064734.GS3714@dell>
+References: <20200603200319.16184-1-luca@lucaceresoli.net>
+ <20200603200319.16184-3-luca@lucaceresoli.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200604063745.GB202650@kernel.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200603200319.16184-3-luca@lucaceresoli.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 09:37:45AM +0300, Mike Rapoport wrote:
-> On Wed, Jun 03, 2020 at 11:22:26PM -0700, Ira Weiny wrote:
-> > On Wed, Jun 03, 2020 at 04:44:17PM -0700, Guenter Roeck wrote:
-> > 
-> > With linux-next on sparc I too see the spinlock issue; something like:
-> > 
-> > ...
-> > Starting syslogd: BUG: spinlock recursion on CPU#0, S01syslogd/139
-> >  lock: 0xf53ef350, .magic: dead4ead, .owner: S01syslogd/139, .owner_cpu: 0
-> > CPU: 0 PID: 139 Comm: S01syslogd Not tainted 5.7.0-next-20200603 #1
-> > [f0067d00 : 
-> > do_raw_spin_lock+0xa8/0xd8 ] 
-> > [f00d598c : 
-> > copy_page_range+0x328/0x804 ] 
-> > [f0025c34 : 
-> > dup_mm+0x334/0x434 ] 
-> > [f0027198 : 
-> > copy_process+0x1248/0x12d4 ] 
-> > [f00273b8 : 
-> > _do_fork+0x54/0x30c ] 
-> > [f00276e4 : 
-> > do_fork+0x5c/0x6c ] 
-> > [f000de44 : 
-> > sparc_do_fork+0x18/0x38 ] 
-> > [f000b7f4 : 
-> > do_syscall+0x34/0x40 ] 
-> > [5010cd4c : 
-> > 0x5010cd4c ] 
-> > 
-> > 
-> > I'm going to bisect between there and HEAD.
+On Wed, 03 Jun 2020, Luca Ceresoli wrote:
+
+> The "Required properties:" section is copied verbatim for each of the two
+> supported chips. In preparation to add a new chip variant make it a common
+> section and keep the two examples to differentiate between the two chips.
 > 
-> The sparc issue should be fixed by 
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> ---
+>  .../devicetree/bindings/mfd/lp87565.txt       | 21 ++++---------------
+>  1 file changed, 4 insertions(+), 17 deletions(-)
 > 
-> https://lore.kernel.org/lkml/20200526173302.377-1-will@kernel.org
-
-Saw your other email.  And yes they are!
-
-Thanks!
-Ira
-
+> diff --git a/Documentation/devicetree/bindings/mfd/lp87565.txt b/Documentation/devicetree/bindings/mfd/lp87565.txt
+> index 41671e0dc26b..b75ae23a1ef3 100644
+> --- a/Documentation/devicetree/bindings/mfd/lp87565.txt
+> +++ b/Documentation/devicetree/bindings/mfd/lp87565.txt
+> @@ -1,7 +1,7 @@
+>  TI LP87565 PMIC MFD driver
 >  
-> > Ira
-> 
-> -- 
-> Sincerely yours,
-> Mike.
+>  Required properties:
+> -  - compatible:	"ti,lp87565", "ti,lp87565-q1"
+> +  - compatible:		one of "ti,lp87565", "ti,lp87565-q1", "ti,lp87561-q1"
+
+What happened to your tabbing here?
+
+All the other entries start with a capital letter.  So should this.
+
+>    - reg:		I2C slave address.
+>    - gpio-controller:	Marks the device node as a GPIO Controller.
+>    - #gpio-cells:	Should be two.  The first cell is the pin number and
+> @@ -10,7 +10,8 @@ Required properties:
+>    - xxx-in-supply:	Phandle to parent supply node of each regulator
+>  			populated under regulators node. xxx should match
+>  			the supply_name populated in driver.
+> -Example:
+> +
+> +Example for the TI LP87565-Q1 PMIC (dual 2-phase output configuration):
+>  
+>  lp87565_pmic: pmic@60 {
+>  	compatible = "ti,lp87565-q1";
+> @@ -42,21 +43,7 @@ lp87565_pmic: pmic@60 {
+>  	};
+>  };
+>  
+> -TI LP87561 PMIC:
+> -
+> -This is a single output 4-phase regulator configuration
+> -
+> -Required properties:
+> -  - compatible:	"ti,lp87561-q1"
+> -  - reg:		I2C slave address.
+> -  - gpio-controller:	Marks the device node as a GPIO Controller.
+> -  - #gpio-cells:	Should be two.  The first cell is the pin number and
+> -			the second cell is used to specify flags.
+> -			See ../gpio/gpio.txt for more information.
+> -  - xxx-in-supply:	Phandle to parent supply node of each regulator
+> -			populated under regulators node. xxx should match
+> -			the supply_name populated in driver.
+> -Example:
+> +Example for the TI LP87561 PMIC (single 4-phase output configuration):
+>  
+>  lp87561_pmic: pmic@62 {
+>  	compatible = "ti,lp87561-q1";
+
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
