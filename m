@@ -2,150 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBD21EF64A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 13:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18D61EF64C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 13:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbgFELPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 07:15:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726054AbgFELPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 07:15:36 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEF2F206E6;
-        Fri,  5 Jun 2020 11:15:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591355735;
-        bh=WgImx3Bjbq4F1CvFFXofVfZoXhOUaK/+2yuYYVEWOGI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bp/upE2tCLakigDXhi/n981g2AixI6Js8sGUxL90joRWo9OsO16m/hs2cL33FOnsT
-         UsG+MgfLW1+3p4z6OhQiK6XZCpExus3MAVzXtN9w+w/Mt1WtFAVQa+cuUOSuGzEcIM
-         OTdtiU19Uik7Me91B6vJnlNZaQ7yKrlP2JhO/OZ8=
-Date:   Fri, 5 Jun 2020 12:15:31 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Marco Elver <elver@google.com>
-Subject: Re: [GIT pull - RFC] locking/kcsan for v5.8
-Message-ID: <20200605111531.GA19216@willie-the-truck>
-References: <159110310259.14558.3096683243532489290.tglx@nanos.tec.linutronix.de>
+        id S1726828AbgFELP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 07:15:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:38264 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726465AbgFELP6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 07:15:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591355757;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I8a2f7F+3vcKM6ztM/s5dArCF02jWdgvQcQyvf03Ew0=;
+        b=It7x1aurSz7sqSBEFlTeOvv4g6OA/D+B1Oz5hIOro/lTp+uwYOCDZ4UeKJOUZ2EzEHLP+x
+        ZunuzfhzXqwVsR0SJva1SnmqNc+KTVIOUgxjhMGVT9+V9PFuihmVAu4tiwR435AcVayW+5
+        nhFYVp0J+NDYM+k2tWAE/dJa554WxMk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-135-TD5crfOYM5Sor3dcPbqebw-1; Fri, 05 Jun 2020 07:15:55 -0400
+X-MC-Unique: TD5crfOYM5Sor3dcPbqebw-1
+Received: by mail-wm1-f71.google.com with SMTP id p24so2900093wmc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 04:15:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=I8a2f7F+3vcKM6ztM/s5dArCF02jWdgvQcQyvf03Ew0=;
+        b=bgGH5O3UnT2Y1RbS2rv7i5t/1h2W7SqPOJnFnwub2F6HehdcbjzneXqXrwdbO2AiDY
+         0XjuBKluXFFGH5ZPQTDM2vOzNuJ3ZLWvoA7GliKm3zAhTVXrpgX7fV2NxldNExNz4Q6i
+         hXbXu9/KMGDmNr3CqkbfcdQA/sOqS0/bR/bS0JbR8rHgK+g38RwCWsgbamQYqbo3Taw0
+         DQCUf+uybrveoXYkXX6McLTDxJKO5mPcZ3lYyVCT/w6jRB+nrQC8+1cuWKcLU+RpARM9
+         N+UWvuwcw6dg0xiqoKjipJGenCgyKhfZvv9QRtbDBg61NKweNqGmh9Q1HX8eKTbkphT6
+         RF7A==
+X-Gm-Message-State: AOAM533SYyjHiAztOK8F1PuJ6nGYKxBeP18Z+sdlVBJJ3aN0tj8yiiGl
+        7sJMGVrAcuvsqNOfJxf+0gGMRxxaFCmngCY3uOKy5hTMi9xgT1d+exFev0bGBYPSSEcQw/KwlCx
+        M4yBKvLgCeqXfiRc5XpkTJYbD
+X-Received: by 2002:a7b:c951:: with SMTP id i17mr2133195wml.44.1591355754775;
+        Fri, 05 Jun 2020 04:15:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzVGG6rFBv8a0ZRPRpzrY2u/qF8bg879nEI6FUkBwSoWqVtIk43Mjl/J9pn3/3MezPpMKQYiA==
+X-Received: by 2002:a7b:c951:: with SMTP id i17mr2133161wml.44.1591355754512;
+        Fri, 05 Jun 2020 04:15:54 -0700 (PDT)
+Received: from [192.168.178.58] ([151.20.243.176])
+        by smtp.gmail.com with ESMTPSA id q1sm10556883wmc.12.2020.06.05.04.15.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Jun 2020 04:15:53 -0700 (PDT)
+Subject: =?UTF-8?B?UmU6IOetlOWkjTog562U5aSNOiBbUEFUQ0hdW3Y2XSBLVk06IFg4Njog?=
+ =?UTF-8?Q?support_APERF/MPERF_registers?=
+To:     "Li,Rongqing" <lirongqing@baidu.com>,
+        Like Xu <like.xu@linux.intel.com>,
+        "like.xu@intel.com" <like.xu@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+        "xiaoyao.li@intel.com" <xiaoyao.li@intel.com>,
+        "wei.huang2@amd.com" <wei.huang2@amd.com>
+References: <1591321466-2046-1-git-send-email-lirongqing@baidu.com>
+ <be39b88c-bfb7-0634-c53b-f00d8fde643c@intel.com>
+ <c21c6ffa19b6483ea57feab3f98f279c@baidu.com>
+ <3a88bd63-ff51-ad70-d92e-893660c63bca@linux.intel.com>
+ <c67d15322f9942aa92b6cf57011c0abe@baidu.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d4edabf8-b8c6-e60b-1a78-6aaa9bb7b5e1@redhat.com>
+Date:   Fri, 5 Jun 2020 13:15:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159110310259.14558.3096683243532489290.tglx@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <c67d15322f9942aa92b6cf57011c0abe@baidu.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
+On 05/06/20 11:41, Li,Rongqing wrote:
+>>
+>> As you said, "Pass-though: it is only suitable for KVM_HINTS_REALTIME", which
+>> means, KVM needs to make sure the kvm->arch.aperfmperf_mode value could
+>> "only" be set to KVM_APERFMPERF_PT when the check
+>> kvm_para_has_hint(KVM_HINTS_REALTIME) is passed.
+>>
+> pining vcpu can ensure that guest get correct mperf/aperf, but a user
+> has the choice to not pin, at that condition, do not think it is bug, this wants to say
 
-On Tue, Jun 02, 2020 at 01:05:02PM -0000, Thomas Gleixner wrote:
-> Linus,
-> 
-> please consider to pull the latest locking/kcsan branch from:
-> 
->    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-kcsan-2020-06-02
-> 
-> up to:  f05e1242fbb2: compiler_types.h: Use unoptimized __unqual_scalar_typeof for sparse
+Also, userspace can also pin without exposing KVM_HINTS_REALTIME.  So
+it's better not to check.
 
-Just in case it's not clear, this pull request also contains the READ_ONCE
-rework I've been working on for a while, which bumps the minimum GCC version
-and improves code-gen on arm64 when stack protector is enabled:
+Paolo
 
-> Will Deacon (19):
->       sparc32: mm: Fix argument checking in __srmmu_get_nocache()
->       sparc32: mm: Restructure sparc32 MMU page-table layout
->       sparc32: mm: Change pgtable_t type to pte_t * instead of struct page *
->       sparc32: mm: Reduce allocation size for PMD and PTE tables
->       compiler/gcc: Raise minimum GCC version for kernel builds to 4.8
->       linux/compiler.h: Remove redundant '#else'
->       netfilter: Avoid assigning 'const' pointer to non-const pointer
->       net: tls: Avoid assigning 'const' pointer to non-const pointer
->       fault_inject: Don't rely on "return value" from WRITE_ONCE()
->       arm64: csum: Disable KASAN for do_csum()
->       READ_ONCE: Simplify implementations of {READ,WRITE}_ONCE()
->       READ_ONCE: Enforce atomicity for {READ,WRITE}_ONCE() memory accesses
->       READ_ONCE: Drop pointer qualifiers when reading from scalar types
->       locking/barriers: Use '__unqual_scalar_typeof' for load-acquire macros
->       arm64: barrier: Use '__unqual_scalar_typeof' for acquire/release macros
->       gcov: Remove old GCC 3.4 support
->       kcsan: Rework data_race() so that it can be used by READ_ONCE()
->       READ_ONCE: Use data_race() to avoid KCSAN instrumentation
->       READ_ONCE: Fix comment describing 2x32-bit atomicity
-
-The reason it's bundled up with KCSAN is because of conflicts in linux-next
-but the series is reasonably mature so it would be a shame if it missed 5.8.
-
-On the off-chance that this lot doesn't make it (it is, after all, an RFC!),
-I've stuck the READ_ONCE stuff on its own branch (see below), with some
-cherry-picks of fixes that ended up in -tip. The sparc patches are all
-sitting in sparc-next, so they'll come in via davem.
-
-Obviously it would better if everything went upstream, but I'm just trying
-to avoid throwing the baby out with the bathwater if KCSAN needs a little
-longer to bake.
-
-Cheers,
-
-Will
-
---->8
-
-The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
-
-  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git rwonce/rework
-
-for you to fetch changes up to b398ace5d2ea0b7f00d9f1ce23c647e289c206ca:
-
-  compiler_types.h: Use unoptimized __unqual_scalar_typeof for sparse (2020-06-05 11:40:01 +0100)
-
-----------------------------------------------------------------
-Marco Elver (2):
-      compiler_types.h: Optimize __unqual_scalar_typeof compilation time
-      compiler_types.h: Use unoptimized __unqual_scalar_typeof for sparse
-
-Will Deacon (14):
-      compiler/gcc: Raise minimum GCC version for kernel builds to 4.8
-      netfilter: Avoid assigning 'const' pointer to non-const pointer
-      net: tls: Avoid assigning 'const' pointer to non-const pointer
-      fault_inject: Don't rely on "return value" from WRITE_ONCE()
-      arm64: csum: Disable KASAN for do_csum()
-      READ_ONCE: Simplify implementations of {READ,WRITE}_ONCE()
-      READ_ONCE: Enforce atomicity for {READ,WRITE}_ONCE() memory accesses
-      READ_ONCE: Drop pointer qualifiers when reading from scalar types
-      locking/barriers: Use '__unqual_scalar_typeof' for load-acquire macros
-      arm64: barrier: Use '__unqual_scalar_typeof' for acquire/release macros
-      gcov: Remove old GCC 3.4 support
-      READ_ONCE: Fix comment describing 2x32-bit atomicity
-      compiler-types.h: Include naked type in __pick_integer_type() match
-      compiler.h: Enforce that READ_ONCE_NOCHECK() access size is sizeof(long)
-
- Documentation/process/changes.rst |   2 +-
- arch/arm/crypto/Kconfig           |  12 +-
- arch/arm64/include/asm/barrier.h  |  16 +-
- arch/arm64/lib/csum.c             |  20 +-
- crypto/Kconfig                    |   1 -
- drivers/xen/time.c                |   2 +-
- include/asm-generic/barrier.h     |  16 +-
- include/linux/compiler-gcc.h      |   5 +-
- include/linux/compiler.h          | 148 +++++-----
- include/linux/compiler_types.h    |  47 ++++
- init/Kconfig                      |   1 -
- kernel/gcov/Kconfig               |  24 --
- kernel/gcov/Makefile              |   3 +-
- kernel/gcov/gcc_3_4.c             | 573 --------------------------------------
- lib/fault-inject.c                |   4 +-
- net/netfilter/core.c              |   2 +-
- net/tls/tls_main.c                |   2 +-
- scripts/gcc-plugins/Kconfig       |   2 +-
- 18 files changed, 161 insertions(+), 719 deletions(-)
- delete mode 100644 kernel/gcov/gcc_3_4.c
