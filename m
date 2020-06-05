@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE9F1F023D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 23:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30931F0284
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 23:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729052AbgFEVmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 17:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34014 "EHLO
+        id S1728864AbgFEVoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 17:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728739AbgFEVmB (ORCPT
+        with ESMTP id S1728341AbgFEVoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 17:42:01 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4051C08C5C4;
-        Fri,  5 Jun 2020 14:42:00 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id u13so9675884wml.1;
-        Fri, 05 Jun 2020 14:42:00 -0700 (PDT)
+        Fri, 5 Jun 2020 17:44:02 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD3EC08C5C3
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 14:44:02 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 69so8803857otv.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 14:44:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UdH/nxi/Mb+fPq3ivMKnio5NEFoRZDU+dnCa779cs8Y=;
-        b=RviLL0UINg3jkOxwq2cq1ILmV2hNHNPulQTObBCk5eUSy4EowbVzT1Dnm0ULW+l50r
-         ws5ltl+P7nSUcdTtGs6dQA/1AFZoxyErSxIz9NEtQY4XupgQrp7SI/BlfP61EnpRQ0nf
-         sfPkOHbLtu/JiFUNXRbV6wlVDjy/YCqyqKveLt1jECajPZ45o1pxdgodShqAAhDJVjLR
-         9TAuvdqzCM3393zRQDTWEaZ8xZkyi8C37V+QGg6E8zBTfV+fpbpBIOrz+lxUdKryjIgx
-         JXdqvcBijPIDXuW38GaX6gq/ZBKwS9yfzw+IhSGPB5yv1v0ZQ9KFAzheQh7oPa5TE6FP
-         hYbw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u7vrFLbpJQAV1cQ0kbQVK9ZLFY1aWi9nsqpax6+qOtQ=;
+        b=g2Pa/sksz/aYmEqxoJrzi8zsTy59HbDtq07j/fkreeSaJe3dQOsO526DKGeQaw0yPm
+         9AnGaueO42FfatnAKl4P9xpq+EvS/6yZKuVn9jTUA1yzzqBSoag7Qnti6NiJXTrEu38E
+         U9gEoKN7o0Oq9W2lOJNNppm6wgniFrffmaebApav2KRi5cSExINsz1PN+ZEqp05XzSpK
+         FwkPU3yyVUV7fucokyE3BLb1vo+pxXGN7b3n4sJfGa4sIM3nyqeZ5DIhr0HIEC8LG4Ce
+         uJqsElJiNcSkRj6JO05c7uQ1hHZkQCmXuyvvyPaFLCcN94CtOXKDvp6IhikkDR8afowM
+         nzXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UdH/nxi/Mb+fPq3ivMKnio5NEFoRZDU+dnCa779cs8Y=;
-        b=aGXFllGKoINY9bp9GVeh2zUWaaW71rKk0HTNHsQXSVwvuGxvb3aYMJiWOZITCJhgaS
-         JSFVUXfQafa6fiVmQcaFLM7KsXiklhRV2bD3RiCJgkR+LoFzBDy+xJHqTOFQK39Qi1Gc
-         UROPM6pFVsgrw39EVoPV+lT+GzjiuF4L5Br72byNNzENSdqlNaU2XxqrDZM1n5OrWTP2
-         Aqlb/wSjkkV+oPI0htbRIs70IeGSvfIIJbWdtBB6DBGQtgyWUXB3UwEGtHpO0WsqueYT
-         20n7W5uorubzPffOfO4NNVmCf9Mmf9GrEnZtKWtYQFs5U364H+igEyOvrV+H4I5aOf6F
-         O7TQ==
-X-Gm-Message-State: AOAM531iw6NuK/tbVStzzTpoS5zEAZBRu8Y4/jdoluCYJJ1GjepduEku
-        FJQ8Ydla6V1HAHoD1YUJtos94YhH
-X-Google-Smtp-Source: ABdhPJwZAB8sYp0qQRP3K7v5LcMrPrJKP4i5Otr+cK7ECVE4aprBSt1yIizfQYfZZAw/QFRrX56kLQ==
-X-Received: by 2002:a1c:7e52:: with SMTP id z79mr4733418wmc.104.1591393318899;
-        Fri, 05 Jun 2020 14:41:58 -0700 (PDT)
-Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id l17sm11998448wmi.3.2020.06.05.14.41.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Jun 2020 14:41:58 -0700 (PDT)
-Subject: Re: [PATCH v4 05/12] PCI: brcmstb: Add suspend and resume pm_ops
-To:     Jim Quinlan <james.quinlan@broadcom.com>,
-        linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200605212706.7361-1-james.quinlan@broadcom.com>
- <20200605212706.7361-6-james.quinlan@broadcom.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <5014b30f-a1bf-66ab-0626-8816a3cde5ff@gmail.com>
-Date:   Fri, 5 Jun 2020 14:41:53 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u7vrFLbpJQAV1cQ0kbQVK9ZLFY1aWi9nsqpax6+qOtQ=;
+        b=BcCJo1T6nomvdltoQMB4aIJBN4NVYBQ0ER5Iei+Dt4S5UpVsrHG9yr5Fwvg5lBC0Vm
+         azjOXQzlNMI9Netb0A2upDTdlgikh1z4sO4g4DK/YduAzRo82vEjs9SQFnOrfiD+Oo7V
+         1SMqqD+gaY+rkdnxZrqgK5Uh/gjJnLblBrcUwea3Qu5DLh8SZypzCc/8S8xNGuX5SiJn
+         OYwgoRiND9vmmv+vMogfBYfScxVJTt+GYkfCpqZ59SNe10AUG8hNjPMiPpCr9jkLTd52
+         hY2DHuGFYVOPVAKpxNOct4ujC/mjgPdS/1KsluUukJVKv4XxInVAfsL7TBHh29cdHByY
+         c7pA==
+X-Gm-Message-State: AOAM5323zJMAa1ERNEZtrfUD5T2RPYAyiyQMCNdsLS4XXIATRQLQOtDq
+        dT4sPAfIt7O0HGyYu5b1RCUorQlqCzoBa+SVEUAQf5QIlLA=
+X-Google-Smtp-Source: ABdhPJwGmnxfoPiUbeKtyigW8TXtBuxy9Ingfhpbpr0TlDgmdeKUKLB60VrpSFlnEVS0oTCt4mU9IQZtiti2l2eVbxE=
+X-Received: by 2002:a9d:4c0b:: with SMTP id l11mr9559158otf.139.1591393441466;
+ Fri, 05 Jun 2020 14:44:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200605212706.7361-6-james.quinlan@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200605211925.87873-1-john.stultz@linaro.org>
+In-Reply-To: <20200605211925.87873-1-john.stultz@linaro.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 5 Jun 2020 14:43:25 -0700
+Message-ID: <CAGETcx_-ZknGcGJQMesLFWAwUyidK00-6bqF6ZZPbyyYtSPcew@mail.gmail.com>
+Subject: Re: [RFC][PATCH] slimbus: core: Set fwnode for a device when setting of_node
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi John,
 
+On Fri, Jun 5, 2020 at 2:19 PM John Stultz <john.stultz@linaro.org> wrote:
+>
+> From: Saravana Kannan <saravanak@google.com>
+>
+> When setting the of_node for a newly created device, also set the
+> fwnode. This allows fw_devlink to work for slimbus devices.
+>
+> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
 
-On 6/5/2020 2:26 PM, Jim Quinlan wrote:
-> From: Jim Quinlan <jquinlan@broadcom.com>
-> 
-> Broadcom Set-top (BrcmSTB) boards typically support S2, S3, and S5 suspend
-> and resume.  Now the PCIe driver may do so as well.
-> 
-> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+I thought Srinivas already picked this up and sent it to Greg.
+https://lore.kernel.org/lkml/20200511151334.362-1-srinivas.kandagatla@linaro.org/
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Am I missing something?
+
+-Saravana
