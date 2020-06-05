@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E260B1EFA98
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B881EFA62
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728793AbgFEOTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:19:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49784 "EHLO mail.kernel.org"
+        id S1728379AbgFEORE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:17:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728782AbgFEOTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:19:04 -0400
+        id S1728312AbgFEOQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:16:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7F14208E4;
-        Fri,  5 Jun 2020 14:19:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9EECA20835;
+        Fri,  5 Jun 2020 14:16:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366744;
-        bh=kFwCRCraMBRyepMZo+yl/SXXPj0zsoJ7YQUxEPQ2XHA=;
+        s=default; t=1591366610;
+        bh=04t9itlU1J/2xv4vUewI0M8oZPMJaRDzx3JulnAkUFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fWYomZb+mZ9XVVzHzNBXR+NOOxdeIsVJnvAZYFqDKwIJd9MLsr9TU4LuYykPPxxFq
-         IrznQWqh2V9SWUKxTX9XaUTKuUkAEbIRqL7JLJSWcibEZAyhELS3M4Rb8hfALgLy1/
-         UW8HZPNfTsqVU7HZFJ1hcxITWjNMj3Sq3n1t/PDw=
+        b=is+SIp8swWgEo6uES4MQYy697JEDxB1+PLQXA3x6h91o0OIkcQ7GZgzL6sqksQxjE
+         tl+1JLCEZzRoPgjsB1SkON17bpH8KYfOVaePkNBaRsrMLgfUGA1eYgYRt9fCZsW2d4
+         YaDSzRy8FtmP9jZiAeR4zp0cv90jpEQ2BiHSPfI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.4 09/38] mmc: fix compilation of user API
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 22/43] riscv: Fix print_vm_layout build error if NOMMU
 Date:   Fri,  5 Jun 2020 16:14:52 +0200
-Message-Id: <20200605140253.121452688@linuxfoundation.org>
+Message-Id: <20200605140153.686917117@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200605140252.542768750@linuxfoundation.org>
-References: <20200605140252.542768750@linuxfoundation.org>
+In-Reply-To: <20200605140152.493743366@linuxfoundation.org>
+References: <20200605140152.493743366@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-commit 83fc5dd57f86c3ec7d6d22565a6ff6c948853b64 upstream.
+[ Upstream commit 8fa3cdff05f009855a6a99a7d77a41004009bbab ]
 
-The definitions of MMC_IOC_CMD  and of MMC_IOC_MULTI_CMD rely on
-MMC_BLOCK_MAJOR:
+arch/riscv/mm/init.c: In function ‘print_vm_layout’:
+arch/riscv/mm/init.c:68:37: error: ‘FIXADDR_START’ undeclared (first use in this function);
+arch/riscv/mm/init.c:69:20: error: ‘FIXADDR_TOP’ undeclared
+arch/riscv/mm/init.c:70:37: error: ‘PCI_IO_START’ undeclared
+arch/riscv/mm/init.c:71:20: error: ‘PCI_IO_END’ undeclared
+arch/riscv/mm/init.c:72:38: error: ‘VMEMMAP_START’ undeclared
+arch/riscv/mm/init.c:73:20: error: ‘VMEMMAP_END’ undeclared (first use in this function);
 
-    #define MMC_IOC_CMD       _IOWR(MMC_BLOCK_MAJOR, 0, struct mmc_ioc_cmd)
-    #define MMC_IOC_MULTI_CMD _IOWR(MMC_BLOCK_MAJOR, 1, struct mmc_ioc_multi_cmd)
-
-However, MMC_BLOCK_MAJOR is defined in linux/major.h and
-linux/mmc/ioctl.h did not include it.
-
-Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200511161902.191405-1-Jerome.Pouiller@silabs.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/uapi/linux/mmc/ioctl.h |    1 +
- 1 file changed, 1 insertion(+)
+ arch/riscv/mm/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/uapi/linux/mmc/ioctl.h
-+++ b/include/uapi/linux/mmc/ioctl.h
-@@ -3,6 +3,7 @@
- #define LINUX_MMC_IOCTL_H
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 157924baa191..1dc26384a6c4 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -46,7 +46,7 @@ static void setup_zero_page(void)
+ 	memset((void *)empty_zero_page, 0, PAGE_SIZE);
+ }
  
- #include <linux/types.h>
-+#include <linux/major.h>
- 
- struct mmc_ioc_cmd {
- 	/*
+-#ifdef CONFIG_DEBUG_VM
++#if defined(CONFIG_MMU) && defined(CONFIG_DEBUG_VM)
+ static inline void print_mlk(char *name, unsigned long b, unsigned long t)
+ {
+ 	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld kB)\n", name, b, t,
+-- 
+2.25.1
+
 
 
