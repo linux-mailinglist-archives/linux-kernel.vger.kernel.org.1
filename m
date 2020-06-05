@@ -2,165 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918B31EF097
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 06:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA38B1EF0A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 06:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgFEE3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 00:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726207AbgFEE3q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 00:29:46 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12378C08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 21:29:45 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id r9so2854082ual.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 21:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yh4QPGB6BpMImnDSPQmPa4HQGaoN/XctUaVKXi5QYwY=;
-        b=PDrkFN970k1ALTuEhfgcTlUwB71dPxvhGxU0C4VZu6nTHpZ+sXfAM6AMHZbir+bQX3
-         7z5G2kw9yGZ+5zsqkvnXyaXOISL9lrVRVLvMfkr2sxLbV2+X63lVdLn9xYSDDlAj7Wgj
-         FaiW9XEJ4Ha98qEQZAHR40fvGQ1NwOWOVeP6c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yh4QPGB6BpMImnDSPQmPa4HQGaoN/XctUaVKXi5QYwY=;
-        b=WHNKCqjsU7F3MCFzE4aayQDPCgTBv8t63c8IGpH41ueoT5FPVeEIcjA4axCVLjymNr
-         cMpAAtcrBoXcxW1A/MhVGZEbsdXBSKG2DMKVZLty2pBmgf9YkdWM9pW5MvSDl7h/UdLx
-         pfM041jP/n42TmIW5G4CnRJLwK2CBHpkTfKIk8ADPfa1KACl3CCCC6HTRbRXab/pZP3Q
-         Cm1ajqBjGxXnVa63rVL2rOLiN3ngu0fsRcPMiUmp/3vz1rKkGyMrFTyKLuGbGb77UF8M
-         HGV6n0bYxsIF5KzpcOjHnlsFgGSngnmXeMQn3Hgjc/MdXJTHgocGKL5/WUxvIKbL1FRl
-         kl0Q==
-X-Gm-Message-State: AOAM533b9W98XiXz4wW+QT+gN5mtzcKcm1qCLW4XkgJnv0022bju/KpS
-        15bB/K88VT8OvdCvqpnQrN0FihhG/4aHnXiCpcq8Tg==
-X-Google-Smtp-Source: ABdhPJxhlP+sLLzHaVKCIe6JgoxP8u6LPLZcqp5spma74BIukNjafi2Z1Xz/y+YXGyeAOVQ0H5gOM4Gf+h35CPbav1Q=
-X-Received: by 2002:ab0:2bd4:: with SMTP id s20mr5781588uar.136.1591331384169;
- Thu, 04 Jun 2020 21:29:44 -0700 (PDT)
+        id S1726183AbgFEEjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 00:39:45 -0400
+Received: from mx24.baidu.com ([111.206.215.185]:60194 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725968AbgFEEjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 00:39:44 -0400
+X-Greylist: delayed 954 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Jun 2020 00:39:42 EDT
+Received: from BJHW-Mail-Ex14.internal.baidu.com (unknown [10.127.64.37])
+        by Forcepoint Email with ESMTPS id 5A5E9675E2089BB4C91E;
+        Fri,  5 Jun 2020 12:23:42 +0800 (CST)
+Received: from BJHW-Mail-Ex13.internal.baidu.com (10.127.64.36) by
+ BJHW-Mail-Ex14.internal.baidu.com (10.127.64.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1713.5; Fri, 5 Jun 2020 12:23:41 +0800
+Received: from BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) by
+ BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) with mapi id
+ 15.01.1713.004; Fri, 5 Jun 2020 12:23:36 +0800
+From:   "Li,Rongqing" <lirongqing@baidu.com>
+To:     "like.xu@intel.com" <like.xu@intel.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "xiaoyao.li@intel.com" <xiaoyao.li@intel.com>,
+        "wei.huang2@amd.com" <wei.huang2@amd.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdW3Y2XSBLVk06IFg4Njogc3VwcG9ydCBBUEVSRi9N?=
+ =?utf-8?Q?PERF_registers?=
+Thread-Topic: [PATCH][v6] KVM: X86: support APERF/MPERF registers
+Thread-Index: AQHWOtrZ4X/t3pkmBEG7o3WCZUgoeKjIxz2AgAChEWA=
+Date:   Fri, 5 Jun 2020 04:23:36 +0000
+Message-ID: <c21c6ffa19b6483ea57feab3f98f279c@baidu.com>
+References: <1591321466-2046-1-git-send-email-lirongqing@baidu.com>
+ <be39b88c-bfb7-0634-c53b-f00d8fde643c@intel.com>
+In-Reply-To: <be39b88c-bfb7-0634-c53b-f00d8fde643c@intel.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.198.27]
+x-baidu-bdmsfe-datecheck: 1_BJHW-Mail-Ex14_2020-06-05 12:23:42:248
+x-baidu-bdmsfe-viruscheck: BJHW-Mail-Ex14_GRAY_Inside_WithoutAtta_2020-06-05
+ 12:23:42:216
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200603132148.1.I0ec31d716619532fc007eac081e827a204ba03de@changeid>
- <CAJZ5v0i5VPk+HUb6P43Apb=MwanTkeWqjBMEemDo+fiBTM+eOg@mail.gmail.com>
-In-Reply-To: <CAJZ5v0i5VPk+HUb6P43Apb=MwanTkeWqjBMEemDo+fiBTM+eOg@mail.gmail.com>
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Date:   Thu, 4 Jun 2020 21:29:30 -0700
-Message-ID: <CANFp7mWHX15oJAe_RgYbN+sHbPXmUYkYtvT9V0oszOc0Y=7TKg@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: Allow suspend even when preparation has failed
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Len Brown <len.brown@intel.com>,
-        Todd Brandt <todd.e.brandt@linux.intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>,
-        ChromeOS Bluetooth Upstreaming 
-        <chromeos-bluetooth-upstreaming@chromium.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sent a v2 with proper fixes and reported-by tags.
-
-Thanks
-Abhishek
-
-On Thu, Jun 4, 2020 at 3:46 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Wed, Jun 3, 2020 at 10:22 PM Abhishek Pandit-Subedi
-> <abhishekpandit@chromium.org> wrote:
-> >
-> > It is preferable to allow suspend even when Bluetooth has problems
-> > preparing for sleep. When Bluetooth fails to finish preparing for
-> > suspend, log the error and allow the suspend notifier to continue
-> > instead.
-> >
-> > To also make it clearer why suspend failed, change bt_dev_dbg to
-> > bt_dev_err when handling the suspend timeout.
-> >
-> > Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
->
-> Thanks for the patch, it looks reasonable to me.
->
-> It would be good to add a Fixes tag to it to indicate that it works
-> around an issue introduced by an earlier commit.
->
-> Len, Todd, would it be possible to test this one on the affected machines?
->
-> > ---
-> > To verify this is properly working, I added an additional change to
-> > hci_suspend_wait_event to always return -16. This validates that suspend
-> > continues even when an error has occurred during the suspend
-> > preparation.
-> >
-> > Example on Chromebook:
-> > [   55.834524] PM: Syncing filesystems ... done.
-> > [   55.841930] PM: Preparing system for sleep (s2idle)
-> > [   55.940492] Bluetooth: hci_core.c:hci_suspend_notifier() hci0: Suspend notifier action (3) failed: -16
-> > [   55.940497] Freezing user space processes ... (elapsed 0.001 seconds) done.
-> > [   55.941692] OOM killer disabled.
-> > [   55.941693] Freezing remaining freezable tasks ... (elapsed 0.000 seconds) done.
-> > [   55.942632] PM: Suspending system (s2idle)
-> >
-> > I ran this through a suspend_stress_test in the following scenarios:
-> > * Peer classic device connected: 50+ suspends
-> > * No devices connected: 100 suspends
-> > * With the above test case returning -EBUSY: 50 suspends
-> >
-> > I also ran this through our automated testing for suspend and wake on
-> > BT from suspend continues to work.
-> >
-> >
-> >  net/bluetooth/hci_core.c | 17 ++++++++++-------
-> >  1 file changed, 10 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> > index dbe2d79f233fba..54da48441423e0 100644
-> > --- a/net/bluetooth/hci_core.c
-> > +++ b/net/bluetooth/hci_core.c
-> > @@ -3289,10 +3289,10 @@ static int hci_suspend_wait_event(struct hci_dev *hdev)
-> >                                      WAKE_COND, SUSPEND_NOTIFIER_TIMEOUT);
-> >
-> >         if (ret == 0) {
-> > -               bt_dev_dbg(hdev, "Timed out waiting for suspend");
-> > +               bt_dev_err(hdev, "Timed out waiting for suspend events");
-> >                 for (i = 0; i < __SUSPEND_NUM_TASKS; ++i) {
-> >                         if (test_bit(i, hdev->suspend_tasks))
-> > -                               bt_dev_dbg(hdev, "Bit %d is set", i);
-> > +                               bt_dev_err(hdev, "Suspend timeout bit: %d", i);
-> >                         clear_bit(i, hdev->suspend_tasks);
-> >                 }
-> >
-> > @@ -3360,12 +3360,15 @@ static int hci_suspend_notifier(struct notifier_block *nb, unsigned long action,
-> >                 ret = hci_change_suspend_state(hdev, BT_RUNNING);
-> >         }
-> >
-> > -       /* If suspend failed, restore it to running */
-> > -       if (ret && action == PM_SUSPEND_PREPARE)
-> > -               hci_change_suspend_state(hdev, BT_RUNNING);
-> > -
-> >  done:
-> > -       return ret ? notifier_from_errno(-EBUSY) : NOTIFY_STOP;
-> > +       /* We always allow suspend even if suspend preparation failed and
-> > +        * attempt to recover in resume.
-> > +        */
-> > +       if (ret)
-> > +               bt_dev_err(hdev, "Suspend notifier action (%x) failed: %d",
-> > +                          action, ret);
-> > +
-> > +       return NOTIFY_STOP;
-> >  }
-> >
-> >  /* Alloc HCI device */
-> > --
-> > 2.27.0.rc2.251.g90737beb825-goog
-> >
+DQoNCj4gLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0KPiDlj5Hku7bkuro6IFh1LCBMaWtlIFttYWls
+dG86bGlrZS54dUBpbnRlbC5jb21dDQo+IOWPkemAgeaXtumXtDogMjAyMOW5tDbmnIg15pelIDEw
+OjMyDQo+IOaUtuS7tuS6ujogTGksUm9uZ3FpbmcgPGxpcm9uZ3FpbmdAYmFpZHUuY29tPg0KPiDm
+ioTpgIE6IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGt2bUB2Z2VyLmtlcm5lbC5vcmc7
+IHg4NkBrZXJuZWwub3JnOw0KPiBocGFAenl0b3IuY29tOyBicEBhbGllbjguZGU7IG1pbmdvQHJl
+ZGhhdC5jb207IHRnbHhAbGludXRyb25peC5kZTsNCj4gam1hdHRzb25AZ29vZ2xlLmNvbTsgd2Fu
+cGVuZ2xpQHRlbmNlbnQuY29tOyB2a3V6bmV0c0ByZWRoYXQuY29tOw0KPiBzZWFuLmouY2hyaXN0
+b3BoZXJzb25AaW50ZWwuY29tOyBwYm9uemluaUByZWRoYXQuY29tOyB4aWFveWFvLmxpQGludGVs
+LmNvbTsNCj4gd2VpLmh1YW5nMkBhbWQuY29tDQo+IOS4u+mimDogUmU6IFtQQVRDSF1bdjZdIEtW
+TTogWDg2OiBzdXBwb3J0IEFQRVJGL01QRVJGIHJlZ2lzdGVycw0KPiANCj4gSGkgUm9uZ1Fpbmcs
+DQo+IA0KPiBPbiAyMDIwLzYvNSA5OjQ0LCBMaSBSb25nUWluZyB3cm90ZToNCj4gPiBHdWVzdCBr
+ZXJuZWwgcmVwb3J0cyBhIGZpeGVkIGNwdSBmcmVxdWVuY3kgaW4gL3Byb2MvY3B1aW5mbywgdGhp
+cyBpcw0KPiA+IGNvbmZ1c2VkIHRvIHVzZXIgd2hlbiB0dXJibyBpcyBlbmFibGUsIGFuZCBhcGVy
+Zi9tcGVyZiBjYW4gYmUgdXNlZCB0bw0KPiA+IHNob3cgY3VycmVudCBjcHUgZnJlcXVlbmN5IGFm
+dGVyIDdkNTkwNWRjMTRhDQo+ID4gIih4ODYgLyBDUFU6IEFsd2F5cyBzaG93IGN1cnJlbnQgQ1BV
+IGZyZXF1ZW5jeSBpbiAvcHJvYy9jcHVpbmZvKSINCj4gPiBzbyBndWVzdCBzaG91bGQgc3VwcG9y
+dCBhcGVyZi9tcGVyZiBjYXBhYmlsaXR5DQo+ID4NCj4gPiBUaGlzIHBhdGNoIGltcGxlbWVudHMg
+YXBlcmYvbXBlcmYgYnkgdGhyZWUgbW9kZTogbm9uZSwgc29mdHdhcmUNCj4gPiBlbXVsYXRpb24s
+IGFuZCBwYXNzLXRocm91Z2gNCj4gPg0KPiA+IE5vbmU6IGRlZmF1bHQgbW9kZSwgZ3Vlc3QgZG9l
+cyBub3Qgc3VwcG9ydCBhcGVyZi9tcGVyZg0KPiBzL05vbmUvTm90ZQ0KPiA+DQo+ID4gU29mdHdh
+cmUgZW11bGF0aW9uOiB0aGUgcGVyaW9kIG9mIGFwZXJmL21wZXJmIGluIGd1ZXN0IG1vZGUgYXJl
+DQo+ID4gYWNjdW11bGF0ZWQgYXMgZW11bGF0ZWQgdmFsdWUNCj4gPg0KPiA+IFBhc3MtdGhvdWdo
+OiBpdCBpcyBvbmx5IHN1aXRhYmxlIGZvciBLVk1fSElOVFNfUkVBTFRJTUUsIEJlY2F1c2UgdGhh
+dA0KPiA+IGhpbnQgZ3VhcmFudGVlcyB3ZSBoYXZlIGEgMToxIHZDUFU6Q1BVIGJpbmRpbmcgYW5k
+IGd1YXJhbnRlZWQgbm8NCj4gPiBvdmVyLWNvbW1pdC4NCj4gVGhlIGZsYWcgIktWTV9ISU5UU19S
+RUFMVElNRSAwIiAoaW4gdGhlIERvY3VtZW50YXRpb24vdmlydC9rdm0vY3B1aWQucnN0KQ0KPiBp
+cyBjbGFpbWVkIGFzICJndWVzdCBjaGVja3MgdGhpcyBmZWF0dXJlIGJpdCB0byBkZXRlcm1pbmUg
+dGhhdCB2Q1BVcyBhcmUgbmV2ZXINCj4gcHJlZW1wdGVkIGZvciBhbiB1bmxpbWl0ZWQgdGltZSBh
+bGxvd2luZyBvcHRpbWl6YXRpb25zIi4NCj4gDQo+IEkgY291bGRuJ3Qgc2VlIGl0cyByZWxhdGlv
+bnNoaXAgd2l0aCAiMToxIHZDUFU6IHBDUFUgYmluZGluZyIuDQo+IFRoZSBwYXRjaCBkb2Vzbid0
+IGNoZWNrIHRoaXMgZmxhZyBhcyB3ZWxsIGZvciB5b3VyIHBhc3MtdGhyb3VnaCBwdXJwb3NlLg0K
+PiANCj4gVGhhbmtzLA0KPiBMaWtlIFh1DQoNCg0KSSB0aGluayB0aGlzIGlzIHVzZXIgc3BhY2Ug
+am9icyB0byBiaW5kIEhJTlRfUkVBTFRJTUUgYW5kIG1wZXJmIHBhc3N0aHJvdWdoLCBLVk0ganVz
+dCBkbyB3aGF0IHVzZXJzcGFjZSB3YW50cy4NCg0KYW5kIHRoaXMgZ2l2ZXMgdXNlciBzcGFjZSBh
+IHBvc3NpYmlsaXR5LCBndWVzdCBoYXMgcGFzc3Rocm91Z2ggbXBlcmZhcGVyZiB3aXRob3V0IEhJ
+TlRfUkVBTFRJTUUsIGd1ZXN0IGNhbiBnZXQgY29hcnNlIGNwdSBmcmVxdWVuY3kgd2l0aG91dCBw
+ZXJmb3JtYW5jZSBlZmZlY3QgaWYgZ3Vlc3QgY2FuIGVuZHVyZSBlcnJvciBmcmVxdWVuY3kgb2Nj
+YXNpb25hbGx5DQoNCg0KLUxpIA0KDQo=
