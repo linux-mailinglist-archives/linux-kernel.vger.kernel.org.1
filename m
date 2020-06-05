@@ -2,141 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9725A1EEF8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D3B1EEF94
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgFEChA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 22:37:00 -0400
-Received: from mx.socionext.com ([202.248.49.38]:40148 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726026AbgFECg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 22:36:59 -0400
-Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 05 Jun 2020 11:36:56 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id 64803605FA;
-        Fri,  5 Jun 2020 11:36:56 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 5 Jun 2020 11:36:56 +0900
-Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
-        by kinkan.css.socionext.com (Postfix) with ESMTP id CEDE91A01BB;
-        Fri,  5 Jun 2020 11:36:08 +0900 (JST)
-Received: from [10.213.29.9] (unknown [10.213.29.9])
-        by yuzu.css.socionext.com (Postfix) with ESMTP id 5D105120133;
-        Fri,  5 Jun 2020 11:36:08 +0900 (JST)
-Subject: Re: [PATCH v3 2/6] PCI: uniphier: Add misc interrupt handler to
- invoke PME and AER
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>
-References: <1591174481-13975-1-git-send-email-hayashi.kunihiko@socionext.com>
- <1591174481-13975-3-git-send-email-hayashi.kunihiko@socionext.com>
- <78af3b11de9c513f9be2a1f42f273f27@kernel.org>
- <2e07d3d3-515b-57e1-0a36-8892bc38bb7b@socionext.com>
- <9cbfdacba32c5e351fd9e14444768666@kernel.org>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <1d98ef53-fe81-6de2-bd65-dd88d6875cb8@socionext.com>
-Date:   Fri, 5 Jun 2020 11:36:08 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1726069AbgFECli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 22:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgFECli (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 22:41:38 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB99C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 19:41:37 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id z9so9811632ljh.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 19:41:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zd+zdiSrHowHhh1b+J06lfUeaSm83BjFgaTjWHrczMU=;
+        b=J0K9miM4j9eF68SRGydo2qWV257tzFgn+zXZgNDlVsN8UI+P56NCvzd8J7lUUxCTVF
+         RN855Q453tWgwpcbwuzrZuZ03GApAlS3UX5S6Wkwpc0dTKDYGPS/rpTgc1HE8kW4OGhp
+         bPp8+wXoytif/zHrGcv7OHSPUioe7Y0P9NRMc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zd+zdiSrHowHhh1b+J06lfUeaSm83BjFgaTjWHrczMU=;
+        b=HThFX43E4QnaxdMMQC1TbGYmxbZIAKgFl2XexLoCQP0NHYiB3pGcZ+AwBIrc1lWNgY
+         ZLKXlQxV1XfNd3CVIhInVI2qs4QkNX05Im4i27e9GhK7btMbUmAqiBGG16KT/MkrGjeM
+         2Q0yFHN2CVxC/MLTgM/IWRoClYcvmzB97GpoUXFcM2lKFbp7oHz1ksydRTu3xQAwcELr
+         486euim9jhjg1XyXdk8lRt1TxyKSZezmC/ptDJ0kbSPWO1K5fEsMtbNoSDGfJ7A/y4K4
+         s0GZ8qo97SvZo4YoDjoHf2UTdZYhRJhDo6lB0J80mH3IfkzF+Hk76HM6Y+mlbF7iiGRB
+         W3eA==
+X-Gm-Message-State: AOAM530xMPNovE2RaGMDbNT3SdtsT1hvH28DPJCdQ6QsgC/XJ9c5nqfS
+        XCmpFj3wvDpPvdN4YaULRlyxsdCLggo=
+X-Google-Smtp-Source: ABdhPJxamV2I1bVkaQ7h1A79LW0WyLatXasNpLUR6ztHgyGeU0EedzfjX01D2OD7hXbirpW4pVEwIw==
+X-Received: by 2002:a05:651c:10c:: with SMTP id a12mr3327463ljb.356.1591324894967;
+        Thu, 04 Jun 2020 19:41:34 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id u4sm284545ljh.12.2020.06.04.19.41.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jun 2020 19:41:33 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id r125so4824269lff.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 19:41:33 -0700 (PDT)
+X-Received: by 2002:a19:d52:: with SMTP id 79mr4118228lfn.125.1591324892777;
+ Thu, 04 Jun 2020 19:41:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9cbfdacba32c5e351fd9e14444768666@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200601170102.GA1346815@gmail.com> <CAHk-=wgXf_wQ9zrJKv2Hy4EpEbLuqty-Cjbs2u00gm7XcYHBfw@mail.gmail.com>
+ <20200602073350.GA481221@gmail.com> <b159ba4c53fcf04cc4eb747c45e1d4d2d83310a3.camel@kernel.crashing.org>
+ <871rmxgw4d.fsf@nanos.tec.linutronix.de> <CAHk-=wgOFnMW-EgymmrTyqTPLrpGJrUJ_wBzehMpyT=SO4-JRQ@mail.gmail.com>
+ <20200604172904.GA1751362@gmail.com>
+In-Reply-To: <20200604172904.GA1751362@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 4 Jun 2020 19:41:16 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whK846PwG_qNqyb-q-BSPALb=xZ9k6ThVjRm8u=vCpkqA@mail.gmail.com>
+Message-ID: <CAHk-=whK846PwG_qNqyb-q-BSPALb=xZ9k6ThVjRm8u=vCpkqA@mail.gmail.com>
+Subject: Re: [GIT PULL v2] x86/mm changes for v5.8
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Balbir Singh <sblbir@amazon.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On Thu, Jun 4, 2020 at 10:29 AM Ingo Molnar <mingo@kernel.org> wrote:
+>
+> Yeah, sure - here's the updated pull request for the rest:
+>
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-mm-2020-06-04
+>
+>    # HEAD: bd1de2a7aace4d1d312fb1be264b8fafdb706208 x86/tlb/uv: Add a forward declaration for struct flush_tlb_info
 
-On 2020/06/04 19:11, Marc Zyngier wrote:
-> On 2020-06-04 10:43, Kunihiko Hayashi wrote:
-> 
-> [...]
-> 
->>>> -static void uniphier_pcie_irq_handler(struct irq_desc *desc)
->>>> +static void uniphier_pcie_misc_isr(struct pcie_port *pp)
->>>>  {
->>>> -    struct pcie_port *pp = irq_desc_get_handler_data(desc);
->>>>      struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->>>>      struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
->>>> -    struct irq_chip *chip = irq_desc_get_chip(desc);
->>>> -    unsigned long reg;
->>>> -    u32 val, bit, virq;
->>>> +    u32 val, virq;
->>>>
->>>> -    /* INT for debug */
->>>>      val = readl(priv->base + PCL_RCV_INT);
->>>>
->>>>      if (val & PCL_CFG_BW_MGT_STATUS)
->>>>          dev_dbg(pci->dev, "Link Bandwidth Management Event\n");
->>>> +
->>>>      if (val & PCL_CFG_LINK_AUTO_BW_STATUS)
->>>>          dev_dbg(pci->dev, "Link Autonomous Bandwidth Event\n");
->>>> -    if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS)
->>>> -        dev_dbg(pci->dev, "Root Error\n");
->>>> -    if (val & PCL_CFG_PME_MSI_STATUS)
->>>> -        dev_dbg(pci->dev, "PME Interrupt\n");
->>>> +
->>>> +    if (pci_msi_enabled()) {
->>>
->>> This checks whether the kernel supports MSIs. Not that they are
->>> enabled in your controller. Is that really what you want to do?
->>
->> The below two status bits are valid when the interrupt for MSI is asserted.
->> That is, pci_msi_enabled() is wrong.
->>
->> I'll modify the function to check the two bits only if this function is
->> called from MSI handler.
->>
->>>
->>>> +        if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS) {
->>>> +            dev_dbg(pci->dev, "Root Error Status\n");
->>>> +            virq = irq_linear_revmap(pp->irq_domain, 0);
->>>> +            generic_handle_irq(virq);
->>>> +        }
->>>> +
->>>> +        if (val & PCL_CFG_PME_MSI_STATUS) {
->>>> +            dev_dbg(pci->dev, "PME Interrupt\n");
->>>> +            virq = irq_linear_revmap(pp->irq_domain, 0);
->>>> +            generic_handle_irq(virq);
->>>> +        }
->>>
->>> These two cases do the exact same thing, calling the same interrupt.
->>> What is the point of dealing with them independently?
->>
->> Both PME and AER are asserted from MSI-0, and each handler checks its own
->> status bit in the PCIe register (aer_irq() in pcie/aer.c and pcie_pme_irq()
->> in pcie/pme.c).
->> So I think this handler calls generic_handle_irq() for the same MSI-0.
-> 
-> So what is wrong with
-> 
->          if (val & (PCL_CFG_AER_RC_ERR_MSI_STATUS |
->                     PCL_CFG_PME_MSI_STATUS)) {
->                  // handle interrupt
->          }
-> 
-> ?
+Nope, that still points to
 
-No problem.
-I'll rewrite it in the same way as yours in handling interrupts.
+ 0fcfdf55db9e1ecf85edd6aa8d0bc78a448cb96a Documentation: Add L1D
+flushing Documentation
 
-> If you have two handlers for the same interrupt, this is a shared
-> interrupt and each handler will be called in turn.
-Yes, MSI-0 is shared with PME and AER, and it will be like that.
+although it looks like the 'x86/mm' _branch_ does point to that commit
+bd1de2a7aace.
 
-Thank you,
+You did something odd where you created a new tag, but used the old branch. Hmm?
 
----
-Best Regards
-Kunihiko Hayashi
+                Linus
