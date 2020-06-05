@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596711EFDD1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA821EFDD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728651AbgFEQ2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 12:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
+        id S1726857AbgFEQ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 12:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728593AbgFEQ2E (ORCPT
+        with ESMTP id S1728599AbgFEQ2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 12:28:04 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A4FC08C5C2;
-        Fri,  5 Jun 2020 09:28:04 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id s13so8060479otd.7;
-        Fri, 05 Jun 2020 09:28:04 -0700 (PDT)
+        Fri, 5 Jun 2020 12:28:06 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B9BC08C5C3
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 09:28:06 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id j189so8682353oih.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 09:28:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/oUceEEdytDmHRfTQhpFS2WzwHNKr0aNr163SQEkf6I=;
-        b=CEsnFpinX3I865NmQLP7DvnIRAXAajmqoLq7xpAt6Juh7IUg6VVtWPPj7H4g+PR4Do
-         zYvLbji+muIZH7rhoCmpKQo2c0ii8SzNNatqcpilhq54x6h7f3qVj73agHUfPvO6WgTW
-         BjVRWV9sPgC0M+eRgqecJBTmXWOaXS0R138y/bUx4ZyBvj3G0YflFpHjeIYEWwLwTvHq
-         jXQaYa0O0kkKYhUQTjQv0B1xDWcliPrmskQmaOOC8YQdeTwUdX0Xa5TciwlzbO1+6Xsj
-         k7Fs85FuLwLRSnsQuC/BzEF+BZI53ktAR8UbydJG8dAJksY/Bw4EtTC5Sh71cVcvvzxl
-         WWjw==
+        bh=7RE3ZTC1uKnp0KJXJWlYbd5oQY2S0Xfa/C4GEXt6hnI=;
+        b=Q2zMPlv8fnoS4MyyIENAh9gYDyQI3ieSnmoc6Is3chUok3DrIgKb4aHhAeu+AyzN+y
+         K/pDhxMxXSbB7OojbU2qV1J/iHR+ELUyuwlZDdlGmKX2z8vHu5zAGAb2psK7p56NGTEW
+         Zx7ods7yczkDj1QM7rT+vwuMuUOuJTMySBRmThnu9a0ILaN95hMm3WiYyww3WPYNnAyK
+         hfm8hxXs21kATUxkm6FCn3MygTZ8rlKSASD7WCVhcIwfwzvSCbQEymJ1ef+CsQoyTnEW
+         xhJ0pVwHcZmMo2zIwejJhDRYR6llI6v3DfvNuGg2Js7BfZt62SHM1uin50EzcIQVzIP0
+         Tw7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/oUceEEdytDmHRfTQhpFS2WzwHNKr0aNr163SQEkf6I=;
-        b=OhPNjzzW/ti6wSI3LHAa8yCIk+/Al0/Woq+yCO12wCqAjSE431S8ZJDDv8L26awzuk
-         wcvIEf+akBiHwtgJQON0KrmXqo2JEPQ4Pl6HgT6YM4N+44RuhOMycDw1lQ/bQ/zAQSvl
-         vvzBMwcftgtCSz/0oPzMzZJR9VLp1g+l7Arl+E7O53yMUtb3jW0jpGheenNiXOFd+O2r
-         mBvHbVB+yamjmjrz/h7Zs5kCOdfdY+6Gs5VeQLq1JD2Pk/OzlbojSLDa9mX+BZNabe/h
-         ns0GnzwXnJW9m0stj4tF8FRNrjfhAOu/efIbvJoj/LxiTsBPdvPvYpuA3SM8iOOfUJfr
-         KO3Q==
-X-Gm-Message-State: AOAM533CUfsdyeqKdaPvDusdSPsAU0ov63y4qKsnlEGjHSfSULYUFvIK
-        +JxWe0XdP0DPye6ANNENr9g=
-X-Google-Smtp-Source: ABdhPJwbInfd1k/guqnCfu8qXaqvZZYTk7PGs9wTxq3qjLt4wKsMNeOHD88XRQY+ITEYKw5lGyjVtw==
-X-Received: by 2002:a9d:6044:: with SMTP id v4mr5705327otj.157.1591374483421;
-        Fri, 05 Jun 2020 09:28:03 -0700 (PDT)
+        bh=7RE3ZTC1uKnp0KJXJWlYbd5oQY2S0Xfa/C4GEXt6hnI=;
+        b=RgYMfr9BuEYjEpvv+znh+01WGsaXGAreSUgTS9Wa/vXHypDPiY2heGuYTmlGQ2yXQ5
+         75s7yEI+3Tvn2BAXuNUXe6mw0kMhpbX/UxDk9EGu9WbwyEzQLDuMMRzPMs9EGM7OThy+
+         l3xW+Mxo3pGtTp8pPMoPtGJI7YR+Ua2/Ho6NnvcmkKsCZQp2v3in5/n7G3YIg20IYjmN
+         ObM0W7c7eaVR8JobT8svUkN/lIR+PDCTHPXUg9csPF3R4eEtiE3BGl1GEmyE8vK4irOu
+         PZgb86mUKBS5yN6/l9+nnbmDpKnPDHZAFU/mvT6VXdujhkyQXnjiucj9HDBdkAm91N0q
+         iihA==
+X-Gm-Message-State: AOAM531osqQCOWhGtXedTuUme73QsQFB009VQtDwPcaG4Jn3X9x92J4j
+        6TCQvov1SA9h1M38lYgodlM=
+X-Google-Smtp-Source: ABdhPJwN3us3PJBGrAiqwIcqPu+iC+WPnhJWZY3/ark5BRceL1iCGDT8v85jOEf4nXzjnyRy95zl8w==
+X-Received: by 2002:aca:3d09:: with SMTP id k9mr2293908oia.160.1591374485755;
+        Fri, 05 Jun 2020 09:28:05 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::aaac])
-        by smtp.googlemail.com with ESMTPSA id z13sm813894ooa.28.2020.06.05.09.28.02
+        by smtp.googlemail.com with ESMTPSA id z13sm813894ooa.28.2020.06.05.09.28.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 09:28:02 -0700 (PDT)
+        Fri, 05 Jun 2020 09:28:05 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
-Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Will Deacon <will@kernel.org>, linux-doc@vger.kernel.org
-Subject: [PATCH 13/16] dyndbg: extend ddebug_parse_flags to accept optional leading filter-flags
-Date:   Fri,  5 Jun 2020 10:26:42 -0600
-Message-Id: <20200605162645.289174-14-jim.cromie@gmail.com>
+Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH 14/16] dyndbg: prefer declarative init in caller, to memset in callee
+Date:   Fri,  5 Jun 2020 10:26:43 -0600
+Message-Id: <20200605162645.289174-15-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200605162645.289174-1-jim.cromie@gmail.com>
 References: <20200605162645.289174-1-jim.cromie@gmail.com>
@@ -67,100 +65,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-change ddebug_parse_flags to accept optional filterflags before OP.
-this now sets the parameter added in ~1
+drop memset in ddebug_parse_query, instead initialize the stack
+variable in the caller; let the compiler decide how to do it.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- .../admin-guide/dynamic-debug-howto.rst       | 18 +++++++----
- lib/dynamic_debug.c                           | 30 ++++++++++---------
- 2 files changed, 28 insertions(+), 20 deletions(-)
+ lib/dynamic_debug.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-index 880d33d1782f..250ab30e2080 100644
---- a/Documentation/admin-guide/dynamic-debug-howto.rst
-+++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-@@ -212,13 +212,19 @@ line
- 	line -1605          // the 1605 lines from line 1 to line 1605
- 	line 1600-          // all lines from line 1600 to the end of the file
- 
--The flags specification comprises a change operation followed
--by one or more flag characters.  The change operation is one
--of the characters::
-+Flags Specification::
- 
--  -    remove the given flags
--  +    add the given flags
--  =    set the flags to the given flags
-+  flagspec	::= filterflags? OP modflags
-+  filterflags	::= flagset
-+  modflags	::= flagset
-+  flagset	::= ([pfmltu_] | [PFMLTU_])+	# also cant have pP etc
-+  OP		::= [-+=]
-+
-+OP: modify callsites per following flagset::
-+
-+  -    remove the following flags
-+  +    add the following flags
-+  =    set the flags to the following flags
- 
- The flags are::
- 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 32eb7d9545c7..90061833ef3f 100644
+index 90061833ef3f..f0c0c31e91ea 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -440,34 +440,36 @@ static int ddebug_read_flags(const char *str, struct flagsettings *f)
- }
- 
- /*
-- * Parse `str' as a flags specification, format [-+=][p]+.
-- * Sets up *maskp and *flagsp to be used when changing the
-- * flags fields of matched _ddebug's.  Returns 0 on success
-- * or <0 on error.
-+ * Parse `str' as a flags-spec, ie: [pfmlt_]*[-+=][pfmlt_]+
-+ * Fills flagsettings provided.  Returns 0 on success or <0 on error.
-  */
--
- static int ddebug_parse_flags(const char *str,
- 			      struct flagsettings *mods,
- 			      struct flagsettings *filter)
- {
- 	int op;
-+	char *opp = strpbrk(str, "-+=");
- 
--	switch (*str) {
--	case '+':
--	case '-':
--	case '=':
--		op = *str++;
--		break;
--	default:
--		pr_err("bad flag-op %c, at start of %s\n", *str, str);
-+	if (!opp) {
-+		pr_err("no OP given in %s\n", str);
+@@ -372,7 +372,6 @@ static int ddebug_parse_query(char *words[], int nwords,
+ 		pr_err("expecting pairs of match-spec <value>\n");
  		return -EINVAL;
  	}
-+	op = *opp;
- 	vpr_info("op='%c'\n", op);
+-	memset(query, 0, sizeof(*query));
  
-+	if (opp != str) {
-+		/* filterflags precedes OP, grab it */
-+		*opp++ = '\0';
-+		if (ddebug_read_flags(str, filter))
-+			return -EINVAL;
-+		str = opp;
-+	} else
-+		str++;
-+
- 	if (ddebug_read_flags(str, mods))
- 		return -EINVAL;
- 
--	/* calculate final flags, mask based upon op */
-+	/* calculate final mods: flags, mask based upon op */
- 	switch (op) {
- 	case '=':
- 		mods->mask = 0;
+ 	if (modname)
+ 		/* support $modname.dyndbg=<multiple queries> */
+@@ -493,7 +492,7 @@ static int ddebug_exec_query(char *query_string, const char *modname)
+ {
+ 	struct flagsettings mods = {};
+ 	struct flagsettings filter = {};
+-	struct ddebug_query query;
++	struct ddebug_query query = {};
+ #define MAXWORDS 9
+ 	int nwords, nfound;
+ 	char *words[MAXWORDS];
 -- 
 2.26.2
 
