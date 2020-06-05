@@ -2,131 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8591EFA36
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAA61EFB2F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgFEOP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:15:27 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:13629 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726553AbgFEOP1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:15:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591366527; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=wedy4cKwLDkJueE39OQ5A/Ljrp4rU5VxwwQZUZ2wqrI=;
- b=hBjPJaEPLutlToyvVLnwUek1PoBAX/LmfRcCpw2Bx0j+y6en65SMd7rOGiJPG3gZNmb6KHpO
- 1EZXrSPRJVceoiehjZBODlDZLw0CW0v2bfL5J6arsFrqj3sE21vIxdC9alX1dYLdx2InqyRn
- 1lJsy4H9HWlKnjef8hs0l5oRNnI=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
- 5eda5368ea0dfa490ee91cc7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Jun 2020 14:15:04
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 00B07C43391; Fri,  5 Jun 2020 14:15:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1728459AbgFEORZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:17:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728431AbgFEORS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:17:18 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4ECBBC433CA;
-        Fri,  5 Jun 2020 14:15:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E374020B80;
+        Fri,  5 Jun 2020 14:17:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591366637;
+        bh=Pkcwu9AqmId6jd12wS0uGd4NuEHW69FIQ87ZrnjzgDk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gKq2OmYbOm/cLJlrmqzieF/NS3kD6rmBmdsVKNK8ANsT147Lem8twCImRmXMV3ibX
+         PEq+Y3/bJ1Ph52nA90u88UImLhP6xbtFabrLplvx01CU2ln7PyIXTHhpsZgbB7SwWD
+         /kvpKpf3rZfzaV5mJ0KFrhIdzUGNv1RuHGfNOC98=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: [PATCH 5.6 33/43] HID: multitouch: enable multi-input as a quirk for some devices
+Date:   Fri,  5 Jun 2020 16:15:03 +0200
+Message-Id: <20200605140154.258356179@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200605140152.493743366@linuxfoundation.org>
+References: <20200605140152.493743366@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 05 Jun 2020 19:45:03 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree-owner@vger.kernel.org
-Subject: Re: [PATCH 1/6] arm64: dts: qcom: sm8150: add apps_smmu node
-In-Reply-To: <d35d2d1b64622ae83ffd9a963aadcad4@codeaurora.org>
-References: <20200524023815.21789-1-jonathan@marek.ca>
- <20200524023815.21789-2-jonathan@marek.ca>
- <d35d2d1b64622ae83ffd9a963aadcad4@codeaurora.org>
-Message-ID: <66453e142fb3798b86159a5d473efabb@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-25 15:07, Sai Prakash Ranjan wrote:
-> Hi Jonathan,
-> 
-> On 2020-05-24 08:08, Jonathan Marek wrote:
->> Add the apps_smmu node for sm8150. Note that adding the iommus field 
->> for
->> UFS is required because initializing the iommu removes the bypass 
->> mapping
->> that created by the bootloader.
->> 
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
->> ---
->>  arch/arm64/boot/dts/qcom/sm8150.dtsi | 91 
->> ++++++++++++++++++++++++++++
->>  1 file changed, 91 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi
->> b/arch/arm64/boot/dts/qcom/sm8150.dtsi
->> index a36512d1f6a1..acb839427b12 100644
->> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
->> @@ -442,6 +442,8 @@ ufs_mem_hc: ufshc@1d84000 {
->>  			resets = <&gcc GCC_UFS_PHY_BCR>;
->>  			reset-names = "rst";
->> 
->> +			iommus = <&apps_smmu 0x300 0>;
->> +
->>  			clock-names =
->>  				"core_clk",
->>  				"bus_aggr_clk",
->> @@ -706,6 +708,7 @@ usb_1_dwc3: dwc3@a600000 {
->>  				compatible = "snps,dwc3";
->>  				reg = <0 0x0a600000 0 0xcd00>;
->>  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
->> +				iommus = <&apps_smmu 0x140 0>;
->>  				snps,dis_u2_susphy_quirk;
->>  				snps,dis_enblslpm_quirk;
->>  				phys = <&usb_1_hsphy>, <&usb_1_ssphy>;
->> @@ -742,6 +745,94 @@ spmi_bus: spmi@c440000 {
->>  			cell-index = <0>;
->>  		};
->> 
->> +		apps_smmu: iommu@15000000 {
->> +			compatible = "qcom,sdm845-smmu-500", "arm,mmu-500";
-> 
-> This should be qcom,sm8150-smmu-500 and also you need to update the 
-> arm-smmu
-> binding with this compatible in a separate patch.
-> 
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 
-I tested out this series with my coresight patches for enabling SMMU 
-translation
-for ETR on SM8150, it works fine. With this above comment addressed and 
-with
-Bjorn's comments on commit description addressed,
+commit 40d5bb87377a599d0405af765290f28aaa6abb1e upstream.
 
-Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Two touchpad/trackstick combos are currently not behaving properly.
+They define a mouse emulation collection, as per Win8 requirements,
+but also define a separate mouse collection for the trackstick.
 
-Thanks,
-Sai
+The way the kernel currently treat the collections is that it
+merges both in one device. However, given that the first mouse
+collection already defines X,Y and left, right buttons, when
+mapping the events from the second mouse collection, hid-multitouch
+sees that these events are already mapped, and simply ignores them.
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+To be able to report events from the tracktick, add a new quirked
+class for it, and manually add the 2 devices we know about.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=207235
+Cc: stable@vger.kernel.org
+Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/hid/hid-multitouch.c |   26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -69,6 +69,7 @@ MODULE_LICENSE("GPL");
+ #define MT_QUIRK_ASUS_CUSTOM_UP		BIT(17)
+ #define MT_QUIRK_WIN8_PTP_BUTTONS	BIT(18)
+ #define MT_QUIRK_SEPARATE_APP_REPORT	BIT(19)
++#define MT_QUIRK_FORCE_MULTI_INPUT	BIT(20)
+ 
+ #define MT_INPUTMODE_TOUCHSCREEN	0x02
+ #define MT_INPUTMODE_TOUCHPAD		0x03
+@@ -189,6 +190,7 @@ static void mt_post_parse(struct mt_devi
+ #define MT_CLS_WIN_8				0x0012
+ #define MT_CLS_EXPORT_ALL_INPUTS		0x0013
+ #define MT_CLS_WIN_8_DUAL			0x0014
++#define MT_CLS_WIN_8_FORCE_MULTI_INPUT		0x0015
+ 
+ /* vendor specific classes */
+ #define MT_CLS_3M				0x0101
+@@ -279,6 +281,15 @@ static const struct mt_class mt_classes[
+ 			MT_QUIRK_CONTACT_CNT_ACCURATE |
+ 			MT_QUIRK_WIN8_PTP_BUTTONS,
+ 		.export_all_inputs = true },
++	{ .name = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
++		.quirks = MT_QUIRK_ALWAYS_VALID |
++			MT_QUIRK_IGNORE_DUPLICATES |
++			MT_QUIRK_HOVERING |
++			MT_QUIRK_CONTACT_CNT_ACCURATE |
++			MT_QUIRK_STICKY_FINGERS |
++			MT_QUIRK_WIN8_PTP_BUTTONS |
++			MT_QUIRK_FORCE_MULTI_INPUT,
++		.export_all_inputs = true },
+ 
+ 	/*
+ 	 * vendor specific classes
+@@ -1714,6 +1725,11 @@ static int mt_probe(struct hid_device *h
+ 	if (id->group != HID_GROUP_MULTITOUCH_WIN_8)
+ 		hdev->quirks |= HID_QUIRK_MULTI_INPUT;
+ 
++	if (mtclass->quirks & MT_QUIRK_FORCE_MULTI_INPUT) {
++		hdev->quirks &= ~HID_QUIRK_INPUT_PER_APP;
++		hdev->quirks |= HID_QUIRK_MULTI_INPUT;
++	}
++
+ 	timer_setup(&td->release_timer, mt_expired_timeout, 0);
+ 
+ 	ret = hid_parse(hdev);
+@@ -1926,6 +1942,11 @@ static const struct hid_device_id mt_dev
+ 		MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
+ 			USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_C002) },
+ 
++	/* Elan devices */
++	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
++		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
++			USB_VENDOR_ID_ELAN, 0x313a) },
++
+ 	/* Elitegroup panel */
+ 	{ .driver_data = MT_CLS_SERIAL,
+ 		MT_USB_DEVICE(USB_VENDOR_ID_ELITEGROUP,
+@@ -2056,6 +2077,11 @@ static const struct hid_device_id mt_dev
+ 		MT_USB_DEVICE(USB_VENDOR_ID_STANTUM_STM,
+ 			USB_DEVICE_ID_MTP_STM)},
+ 
++	/* Synaptics devices */
++	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
++		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
++			USB_VENDOR_ID_SYNAPTICS, 0xce08) },
++
+ 	/* TopSeed panels */
+ 	{ .driver_data = MT_CLS_TOPSEED,
+ 		MT_USB_DEVICE(USB_VENDOR_ID_TOPSEED2,
+
+
