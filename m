@@ -2,120 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941EF1EF9E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57101EF9F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728041AbgFEODu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:03:50 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:63614 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728023AbgFEODu (ORCPT
+        id S1727913AbgFEOGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726553AbgFEOGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:03:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591365830; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ZPrxxS+20A8R406jZPIf8TWcYL+cMfqMteAA8b140DQ=;
- b=Soo0YocpPdpeQoX+22O+X75dFi87sSBg+mPf+YJig2VvvNO0lktN+MY5guiDkdgDMaDRTlwU
- UQih2jhofZxGcGgAGo7p9bS9MXM9GPUwWNww0hx5gXTlE3Vuyuym8xqbcELL8k8eaSUQAApH
- TrJlQOy53EFABZLTgOQ2OpndTUU=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5eda50a344a25e0052a8d7f9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Jun 2020 14:03:15
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1E0D0C433CB; Fri,  5 Jun 2020 14:03:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4031C433C6;
-        Fri,  5 Jun 2020 14:03:13 +0000 (UTC)
+        Fri, 5 Jun 2020 10:06:33 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6F8C08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 07:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3646+nLfQNB1TESO4RVGCLY9LYs5rMvIB3rw1pnYSU8=; b=24/s0S7879gySR/FmN/u7FND91
+        f1N7ToulvAIFplRet12L9lK1cliyd4euZm6tTDUazi8qkZrpHzjtya4OvCdBkYOY+K+I/IDb/WcLZ
+        MY5l7iaVCUbtctX2cg59+ZfrRlI3xBYajFLmhMwG4m1y/iyMl/yL5Q4WrzcTjqOU69i/IMqex0b4A
+        +icQc/XM37OL/4GshMXhxYflgQLSXEceptaBxryvYbmF98Pk70pWycXYAcbS43usFWbJkcXbTJJ+Q
+        p6YfrhxfgMSPpCy4TC/Cp+pHIAzD6fqdcBeutmyfgDm2YYHk2IyN+1JQsH1r+sGgzKQcc1l3kk8jZ
+        takv0BLQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jhCyN-0002yk-5a; Fri, 05 Jun 2020 14:05:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F2F6D301ABC;
+        Fri,  5 Jun 2020 16:05:21 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CCAA821A74B45; Fri,  5 Jun 2020 16:05:21 +0200 (CEST)
+Date:   Fri, 5 Jun 2020 16:05:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        Yuqi Jin <jinyuqi@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Jiong Wang <jiongwang@huawei.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [net] a6211caa63:
+ dmesg.UBSAN:signed-integer-overflow_in_arch/x86/include/asm/atomic.h
+Message-ID: <20200605140521.GD4117@hirez.programming.kicks-ass.net>
+References: <20200605080929.GK12456@shao2-debian>
+ <CANn89iK1EfAqw-SkXyQR=88fKnBpXCcR_FaiFkVDUNazNgAX1g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 05 Jun 2020 19:33:13 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        devicetree-owner@vger.kernel.org
-Subject: Re: [PATCH 1/6] arm64: dts: qcom: sm8150: add apps_smmu node
-In-Reply-To: <20200529031520.GA1799770@builder.lan>
-References: <20200524023815.21789-1-jonathan@marek.ca>
- <20200524023815.21789-2-jonathan@marek.ca>
- <20200529025246.GV279327@builder.lan>
- <d0908f34-a698-3449-35b9-7a98e9641295@marek.ca>
- <20200529031520.GA1799770@builder.lan>
-Message-ID: <91eb7ee0e549b10724c724aebfd91996@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANn89iK1EfAqw-SkXyQR=88fKnBpXCcR_FaiFkVDUNazNgAX1g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-29 08:45, Bjorn Andersson wrote:
-> On Thu 28 May 20:02 PDT 2020, Jonathan Marek wrote:
+On Fri, Jun 05, 2020 at 06:17:51AM -0700, Eric Dumazet wrote:
+> On Fri, Jun 5, 2020 at 1:10 AM kernel test robot <rong.a.chen@intel.com> wrote:
+
+> There you go.
 > 
->> 
->> 
->> On 5/28/20 10:52 PM, Bjorn Andersson wrote:
->> > On Sat 23 May 19:38 PDT 2020, Jonathan Marek wrote:
->> >
->> > > Add the apps_smmu node for sm8150. Note that adding the iommus field for
->> > > UFS is required because initializing the iommu removes the bypass mapping
->> > > that created by the bootloader.
->> > >
->> >
->> > Unrelated to the patch itself; how do you disable the splash screen on
->> > 8150? "fastboot oem select-display-panel none" doesn't seem to work for
->> > me on the MTP - and hence this would prevent my device from booting.
->> >
->> > Thanks,
->> > Bjorn
->> >
->> 
->> I don't have a MTP, but on HDK855, "fastboot oem select-display-panel 
->> none"
->> combined with setting the physical switch to HDMI mode (which switches 
->> off
->> the 1440x2560 panel) gets it to not setup the display at all (just the
->> fastboot command isn't enough).
->> 
+> We decided this was a bogus report, and that UBSAN requires sane compilers.
 > 
-> Okay, I don't think we have anything equivalent on the MTP, but good to
-> know.
+> Please read the fine comment that was added in this commit and update
+> your compiler or do not mess with compiler flags.
 > 
+> +       /* If UBSAN reports an error there, please make sure your compiler
+> +        * supports -fno-strict-overflow before reporting it that was a bug
+> +        * in UBSAN, and it has been fixed in GCC-8.
+> +        */
+> +       return atomic_add_return(segs + delta, p_id) - segs;
 
-Actually I tried out this in SM8150 MTP and it works fine for me,
+> >         make HOSTCC=gcc-4.9 CC=gcc-4.9 ARCH=i386 olddefconfig prepare modules_prepare bzImage
 
-"fastboot set_active a; fastboot set_active b; fastboot set_active a; 
-fastboot oem select-display-panel none; fastboot reboot bootloader; 
-fastboot boot boot-sm8150.img"
-
-Also I need to switch slots everytime like above, otherwise I always see 
-some error
-while loading the boot image.
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Rong, can you make sure to exclude gcc<8 for UBSAN reports ?
