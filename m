@@ -2,208 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFBC1EEFAB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB911EEFB3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 05:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726069AbgFEC5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 22:57:20 -0400
-Received: from mail.windriver.com ([147.11.1.11]:49772 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbgFEC5U (ORCPT
+        id S1726039AbgFEDBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 23:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725954AbgFEDBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 22:57:20 -0400
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
-        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 0552uj75005311
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Thu, 4 Jun 2020 19:56:45 -0700 (PDT)
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 4 Jun 2020 19:56:44 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <balbi@kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] usb: gadget: function: printer: fix use-after-free in __lock_acquire
-Date:   Fri, 5 Jun 2020 11:05:33 +0800
-Message-ID: <20200605030533.10102-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.24.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+        Thu, 4 Jun 2020 23:01:01 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86627C08C5C0;
+        Thu,  4 Jun 2020 20:01:00 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id i1so6952223ils.11;
+        Thu, 04 Jun 2020 20:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=dMlRURD0AMV5m7nsP7Rq9ppWitDs8+6K6/cTTPcy4TM=;
+        b=VtUTM0qn7CTaNao5hjVsEXiwUgUnBhKH925UHNI+uAyzcwMhfsq36V6iHXDGgcJKoD
+         BmZMuTPjd9qeP5i4yspQEsrfNpGIHzHqBmPEbPaj8JDY1CHTrro1SnYbTKGwd3iwlb5v
+         nIiJs1yhqmW/KwPIgKTPkLP5NitRPEPr9fHQ6nf99Ey2lNGBUQIynVyjBbUpy4S2fHF2
+         JrnHQi+vt6cNU9JKRRsspY4VihzLZisqneNP1zJMXzRz8gdNX2MzF7mnYHOALiu++cE5
+         v8+CPyH6lYqYiPIKJKq7+40FZAK9eSC3z91rlxQzzQv62XJaNlWlZX1FXvxLQq8XdYn0
+         d1rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=dMlRURD0AMV5m7nsP7Rq9ppWitDs8+6K6/cTTPcy4TM=;
+        b=qkVeMHC9wddjWOwLnsoSgHq0rrASVyX4N3z5+6wMDZ9GcfMdGoENm/6vbcxDafwAq1
+         NhdRWKCwiZe19ajmMd8PQvbnDe/C9DW2eOUaOXSFIwbp/9uEFGMPvEE13GFiMEdF1rzM
+         EY17mc2ap+a1ZtSW6RrUY/81SxEtr3S1e7iyGEqywWXVsZLbOo7x66MW5Xym85EPX6uM
+         5Fs7W4oQcHWbF1BlgL69jigt3m54WN8GuqP3B9H0yHAcyOcC+IYgaxRVlZ1wOVwHHY4j
+         ga/kn7rKy9LALO+1ELcFC9Wx6yTxvRKeWYkWojvtzC0iDRGc8yg0om0Bhdf82ohdqW8w
+         R8Yg==
+X-Gm-Message-State: AOAM532m83aOwvU5QGQvsnylnGHL//wCoPlFxOzPuXWBjfqYGACELfYX
+        SgqN4mwKCJgsE6Oe1bHgmAg=
+X-Google-Smtp-Source: ABdhPJw65TE6nd6bypfAwdXMpluubPfORSaChczPfQHt4+6ldcKas7EH4A/dfERJ++EUdv98ERCbiA==
+X-Received: by 2002:a92:b603:: with SMTP id s3mr6921538ili.175.1591326059820;
+        Thu, 04 Jun 2020 20:00:59 -0700 (PDT)
+Received: from cs-u-kase.dtc.umn.edu (cs-u-kase.cs.umn.edu. [160.94.64.2])
+        by smtp.googlemail.com with ESMTPSA id d11sm727854iod.11.2020.06.04.20.00.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jun 2020 20:00:59 -0700 (PDT)
+From:   Navid Emamdoost <navid.emamdoost@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        patches@opensource.cirrus.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu, smccaman@umn.edu,
+        Navid Emamdoost <navid.emamdoost@gmail.com>
+Subject: [PATCH] gpio: arizona: put pm_runtime in case of failure
+Date:   Thu,  4 Jun 2020 22:00:52 -0500
+Message-Id: <20200605030052.78235-1-navid.emamdoost@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+Calling pm_runtime_get_sync increments the counter even in case of
+failure, causing incorrect ref count if pm_runtime_put is not called in
+error handling paths. Call pm_runtime_put if pm_runtime_get_sync fails.
 
-Fix this by increase object reference count.
-
-BUG: KASAN: use-after-free in __lock_acquire+0x3fd4/0x4180
-kernel/locking/lockdep.c:3831
-Read of size 8 at addr ffff8880683b0018 by task syz-executor.0/3377
-
-CPU: 1 PID: 3377 Comm: syz-executor.0 Not tainted 5.6.11 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xce/0x128 lib/dump_stack.c:118
- print_address_description.constprop.4+0x21/0x3c0 mm/kasan/report.c:374
- __kasan_report+0x131/0x1b0 mm/kasan/report.c:506
- kasan_report+0x12/0x20 mm/kasan/common.c:641
- __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:135
- __lock_acquire+0x3fd4/0x4180 kernel/locking/lockdep.c:3831
- lock_acquire+0x127/0x350 kernel/locking/lockdep.c:4488
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x35/0x50 kernel/locking/spinlock.c:159
- printer_ioctl+0x4a/0x110 drivers/usb/gadget/function/f_printer.c:723
- vfs_ioctl fs/ioctl.c:47 [inline]
- ksys_ioctl+0xfb/0x130 fs/ioctl.c:763
- __do_sys_ioctl fs/ioctl.c:772 [inline]
- __se_sys_ioctl fs/ioctl.c:770 [inline]
- __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:770
- do_syscall_64+0x9e/0x510 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x4531a9
-Code: ed 60 fc ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 0f 83 bb 60 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fd14ad72c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000073bfa8 RCX: 00000000004531a9
-RDX: fffffffffffffff9 RSI: 000000000000009e RDI: 0000000000000003
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004bbd61
-R13: 00000000004d0a98 R14: 00007fd14ad736d4 R15: 00000000ffffffff
-
-Allocated by task 2393:
- save_stack+0x21/0x90 mm/kasan/common.c:72
- set_track mm/kasan/common.c:80 [inline]
- __kasan_kmalloc.constprop.3+0xa7/0xd0 mm/kasan/common.c:515
- kasan_kmalloc+0x9/0x10 mm/kasan/common.c:529
- kmem_cache_alloc_trace+0xfa/0x2d0 mm/slub.c:2813
- kmalloc include/linux/slab.h:555 [inline]
- kzalloc include/linux/slab.h:669 [inline]
- gprinter_alloc+0xa1/0x870 drivers/usb/gadget/function/f_printer.c:1416
- usb_get_function+0x58/0xc0 drivers/usb/gadget/functions.c:61
- config_usb_cfg_link+0x1ed/0x3e0 drivers/usb/gadget/configfs.c:444
- configfs_symlink+0x527/0x11d0 fs/configfs/symlink.c:202
- vfs_symlink+0x33d/0x5b0 fs/namei.c:4201
- do_symlinkat+0x11b/0x1d0 fs/namei.c:4228
- __do_sys_symlinkat fs/namei.c:4242 [inline]
- __se_sys_symlinkat fs/namei.c:4239 [inline]
- __x64_sys_symlinkat+0x73/0xb0 fs/namei.c:4239
- do_syscall_64+0x9e/0x510 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Freed by task 3368:
- save_stack+0x21/0x90 mm/kasan/common.c:72
- set_track mm/kasan/common.c:80 [inline]
- kasan_set_free_info mm/kasan/common.c:337 [inline]
- __kasan_slab_free+0x135/0x190 mm/kasan/common.c:476
- kasan_slab_free+0xe/0x10 mm/kasan/common.c:485
- slab_free_hook mm/slub.c:1444 [inline]
- slab_free_freelist_hook mm/slub.c:1477 [inline]
- slab_free mm/slub.c:3034 [inline]
- kfree+0xf7/0x410 mm/slub.c:3995
- gprinter_free+0x49/0xd0 drivers/usb/gadget/function/f_printer.c:1353
- usb_put_function+0x38/0x50 drivers/usb/gadget/functions.c:87
- config_usb_cfg_unlink+0x2db/0x3b0 drivers/usb/gadget/configfs.c:485
- configfs_unlink+0x3b9/0x7f0 fs/configfs/symlink.c:250
- vfs_unlink+0x287/0x570 fs/namei.c:4073
- do_unlinkat+0x4f9/0x620 fs/namei.c:4137
- __do_sys_unlink fs/namei.c:4184 [inline]
- __se_sys_unlink fs/namei.c:4182 [inline]
- __x64_sys_unlink+0x42/0x50 fs/namei.c:4182
- do_syscall_64+0x9e/0x510 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-The buggy address belongs to the object at ffff8880683b0000
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 24 bytes inside of
- 1024-byte region [ffff8880683b0000, ffff8880683b0400)
-The buggy address belongs to the page:
-page:ffffea0001a0ec00 refcount:1 mapcount:0 mapping:ffff88806c00e300
-index:0xffff8880683b1800 compound_mapcount: 0
-flags: 0x100000000010200(slab|head)
-raw: 0100000000010200 0000000000000000 0000000600000001 ffff88806c00e300
-raw: ffff8880683b1800 000000008010000a 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Reported-by: Kyungtae Kim <kt0755@gmail.com>
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
 ---
- drivers/usb/gadget/function/f_printer.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/gpio/gpio-arizona.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/function/f_printer.c b/drivers/usb/gadget/function/f_printer.c
-index 9c7ed2539ff7..8ed1295d7e35 100644
---- a/drivers/usb/gadget/function/f_printer.c
-+++ b/drivers/usb/gadget/function/f_printer.c
-@@ -31,6 +31,7 @@
- #include <linux/types.h>
- #include <linux/ctype.h>
- #include <linux/cdev.h>
-+#include <linux/kref.h>
+diff --git a/drivers/gpio/gpio-arizona.c b/drivers/gpio/gpio-arizona.c
+index 7520a13b4c7c..5bda38e0780f 100644
+--- a/drivers/gpio/gpio-arizona.c
++++ b/drivers/gpio/gpio-arizona.c
+@@ -64,6 +64,7 @@ static int arizona_gpio_get(struct gpio_chip *chip, unsigned offset)
+ 		ret = pm_runtime_get_sync(chip->parent);
+ 		if (ret < 0) {
+ 			dev_err(chip->parent, "Failed to resume: %d\n", ret);
++			pm_runtime_put_autosuspend(chip->parent);
+ 			return ret;
+ 		}
  
- #include <asm/byteorder.h>
- #include <linux/io.h>
-@@ -64,7 +65,7 @@ struct printer_dev {
- 	struct usb_gadget	*gadget;
- 	s8			interface;
- 	struct usb_ep		*in_ep, *out_ep;
--
-+	struct kref             kref;
- 	struct list_head	rx_reqs;	/* List of free RX structs */
- 	struct list_head	rx_reqs_active;	/* List of Active RX xfers */
- 	struct list_head	rx_buffers;	/* List of completed xfers */
-@@ -218,6 +219,13 @@ static inline struct usb_endpoint_descriptor *ep_desc(struct usb_gadget *gadget,
+@@ -72,12 +73,15 @@ static int arizona_gpio_get(struct gpio_chip *chip, unsigned offset)
+ 		if (ret < 0) {
+ 			dev_err(chip->parent, "Failed to drop cache: %d\n",
+ 				ret);
++			pm_runtime_put_autosuspend(chip->parent);
+ 			return ret;
+ 		}
  
- /*-------------------------------------------------------------------------*/
+ 		ret = regmap_read(arizona->regmap, reg, &val);
+-		if (ret < 0)
++		if (ret < 0) {
++			pm_runtime_put_autosuspend(chip->parent);
+ 			return ret;
++		}
  
-+static void printer_dev_free(struct kref *kref)
-+{
-+	struct printer_dev *dev = container_of(kref, struct printer_dev, kref);
-+
-+	kfree(dev);
-+}
-+
- static struct usb_request *
- printer_req_alloc(struct usb_ep *ep, unsigned len, gfp_t gfp_flags)
- {
-@@ -348,6 +356,7 @@ printer_open(struct inode *inode, struct file *fd)
- 
- 	spin_unlock_irqrestore(&dev->lock, flags);
- 
-+	kref_get(&dev->kref);
- 	DBG(dev, "printer_open returned %x\n", ret);
- 	return ret;
- }
-@@ -365,6 +374,7 @@ printer_close(struct inode *inode, struct file *fd)
- 	dev->printer_status &= ~PRINTER_SELECTED;
- 	spin_unlock_irqrestore(&dev->lock, flags);
- 
-+	kref_put(&dev->kref, printer_dev_free);
- 	DBG(dev, "printer_close\n");
- 
- 	return 0;
-@@ -1350,7 +1360,8 @@ static void gprinter_free(struct usb_function *f)
- 	struct f_printer_opts *opts;
- 
- 	opts = container_of(f->fi, struct f_printer_opts, func_inst);
--	kfree(dev);
-+
-+	kref_put(&dev->kref, printer_dev_free);
- 	mutex_lock(&opts->lock);
- 	--opts->refcnt;
- 	mutex_unlock(&opts->lock);
-@@ -1419,6 +1430,7 @@ static struct usb_function *gprinter_alloc(struct usb_function_instance *fi)
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
-+	kref_init(&dev->kref);
- 	++opts->refcnt;
- 	dev->minor = opts->minor;
- 	dev->pnp_string = opts->pnp_string;
+ 		pm_runtime_mark_last_busy(chip->parent);
+ 		pm_runtime_put_autosuspend(chip->parent);
 -- 
-2.24.1
+2.17.1
 
