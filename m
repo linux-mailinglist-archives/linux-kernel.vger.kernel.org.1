@@ -2,60 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFAD1EFDB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB771EFDBE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgFEQ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 12:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
+        id S1728482AbgFEQ13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 12:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728138AbgFEQ1H (ORCPT
+        with ESMTP id S1728452AbgFEQ1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 12:27:07 -0400
+        Fri, 5 Jun 2020 12:27:24 -0400
 Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A1B8C08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 09:27:07 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id 25so7766437oiy.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 09:27:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335ACC08C5C2;
+        Fri,  5 Jun 2020 09:27:24 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id s21so8680671oic.9;
+        Fri, 05 Jun 2020 09:27:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GQFydgePOocQu3btyVs/kadHJxlM7zf0jsKl5sc8/Uw=;
-        b=BIYaazuOnrhe77bys+7h1TZcEGy4/RV6AqtwKjOULq4WDQyi+BTcvp0rJQ6n2ievEr
-         DtC7ooUnjoTDiJc8ogHbzCqVCWaMULJBus72RTTHYTbZMhFtaopcDG6gzbGjc0gyAkKZ
-         eE1WU9AMl2kk8N6bVPgMLHqEsubDfg0QMCwoNVjjD0tG5xvQf7d0o8dU8botxv/BCh3Y
-         zcPNcvsiIu60CizeOM5CaEUuDADsYbIF30G3VFus6fg1NEUfBxLtzhBSTbHFKreyo/gb
-         T0oJg3ks95Rqvt5SXCgiNHDMclWIykdXpTqn2o6xW/v+vDCOB/9rP7/pPCX4wLq8Cizw
-         twtQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8ahUNwnpDeVrZ05fDXn6O0ce9OHzcqmipfeAiUk4NtQ=;
+        b=FvQ3gDTVw28Qv+cd9RYJBHugxgyROQOBB9HT6IUhSlZoZWYMH+xNBAMMIRbMv/cnF4
+         BS4ndbRfZqbXCJN9iecIIRaVANGYTLZ6nExhI0ah3JhZpwJqRAxFL1Kwn5Xkg3CxvufI
+         0TdrkWSOtV2Md9V/IVhv90BjB7il6546MeZMpxFKoLs711eFmSwcSSilAnoJtWOrGMVz
+         b87iblus/3Cx2TXA6cjJMpP9ZzsnO1AxXk79kvmeZl343troGPMI/9h7gU7qmu4V0XFQ
+         mEBDTd9U0C+3A9gGC8mGa/bAoyiuQtkdPbyaQaDxtlh8s5YqyFGSH/6gNzIUIr2NqLaJ
+         0bAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GQFydgePOocQu3btyVs/kadHJxlM7zf0jsKl5sc8/Uw=;
-        b=rA8iuqn4RlNbW6NDvGjswPV9m2iZcT9rsfGPIYi1NmH2cM/yZBz4NlGyxBy3lUc5Jx
-         MxQXgqbBkBnbYwYFFO8WEmGsfhXYKjzlHBOXagkJSOzQwIpCt/6U3c7t0T/4isg3LG2s
-         2Uskvhc+lT4CjG5XOwPJVwL6vh0ynQLGa7+IV4X81FiqAWm9cE8QXa03f5MVw5d1dg7G
-         2Q5RFQcdyFE6+UrweAMyjRwKDVpk/xbrBappwgDXVCMf12steujrhVDQ5Jc8v81onLZA
-         urzV7rc81rI3Am6ibqAuvwK8rHkMc2wP9vEKMBgM8bWGzqLmnezPtl+neq95Ojn3+rrf
-         LxIw==
-X-Gm-Message-State: AOAM531JsGcpfdzPhFyxnaukVVdakM9xhHrFFMiJnn6W8VeTYGZ4qxDw
-        VPUXmflz/q/zQAETVdwQFYs=
-X-Google-Smtp-Source: ABdhPJyn3UxZ8n8J6M6rCNDUlKnhz8dpwkHSPU+52oytYgd8b4M+EdjoN+3dByYbLy/QJ/lzwnGCWw==
-X-Received: by 2002:aca:3c82:: with SMTP id j124mr2455122oia.62.1591374426634;
-        Fri, 05 Jun 2020 09:27:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8ahUNwnpDeVrZ05fDXn6O0ce9OHzcqmipfeAiUk4NtQ=;
+        b=WJQyP7bfu5xqdvKjfljdZodZ5u6RHJNYuKrjCVV5w+bBinRQuVVg4p7VcT7uFd2GGG
+         7br/l2bsFHuJ+yF+LS3Mfiuy5REI46qNhFXI1lhwUP1lFFwA0lPG9Ldh6AFs9lWLjCXV
+         P034WmzDuSKfFXkLwFR/ElueJ3mpO0WntQ7DQHmd+vK9EC2OVlIUsi8/ybD+MknF61oc
+         AxpRzsT+0mk7bG36EBS+QtAqr7c0rfTX8UKlp2vBwvEUWi/EzWoejb/tcgt4BQLq7zv+
+         +0XDqTEC3KnrQD0iKqZ9LBeYDgiQt12sVufkVd79xsQ40/ec6Ip1UOzobNgCXvh1CeUR
+         FTFw==
+X-Gm-Message-State: AOAM533zTCMQGxM0gPUYcRtmia/Sz0TrSeISC+D3ABgssJut2g15Tpfd
+        hj9RE9t7zyUx8rjuLAQ00EA=
+X-Google-Smtp-Source: ABdhPJye/+D0bkUo+/ZfqemhiAPbod6iBp0Jn1ZIGvKrs9gn4Gru6uAEiOe/Mm3ytSEf+d6YWQwPPw==
+X-Received: by 2002:aca:f185:: with SMTP id p127mr2530729oih.120.1591374443539;
+        Fri, 05 Jun 2020 09:27:23 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::aaac])
-        by smtp.googlemail.com with ESMTPSA id z13sm813894ooa.28.2020.06.05.09.27.05
+        by smtp.googlemail.com with ESMTPSA id z13sm813894ooa.28.2020.06.05.09.27.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 09:27:05 -0700 (PDT)
+        Fri, 05 Jun 2020 09:27:22 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
-Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH 00/16] dynamic_debug: cleanups, 2 features
-Date:   Fri,  5 Jun 2020 10:26:29 -0600
-Message-Id: <20200605162645.289174-1-jim.cromie@gmail.com>
+Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Will Deacon <will@kernel.org>, linux-doc@vger.kernel.org
+Subject: [PATCH 01/16] dyndbg-docs: eschew file /full/path query in docs
+Date:   Fri,  5 Jun 2020 10:26:30 -0600
+Message-Id: <20200605162645.289174-2-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200605162645.289174-1-jim.cromie@gmail.com>
+References: <20200605162645.289174-1-jim.cromie@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -63,66 +67,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patchset starts with 7 "cleanups";
-- it changes section name from vague "__verbose" to "__dyndbg"
-- cleaner docs, drop obsolete comment & useless debug prints, refine
-  verbosity, fix a BUG_ON, ram reporting miscounts.
+Regarding:
+commit 2b6783191da7 ("dynamic_debug: add trim_prefix() to provide source-root relative paths")
+commit a73619a845d5 ("kbuild: use -fmacro-prefix-map to make __FILE__ a relative path")
 
-It adds a few query parsing conveniences;
-accept combined file:line & file:func forms
+2nd commit broke dynamic-debug's "file $fullpath" query form, but
+nobody noticed because 1st commit had trimmed prefixes from
+control-file output, so the click-copy-pasting of fullpaths into new
+queries had ceased; that query form became unused.
 
-  file inode.c:100-200		# file & line-range
-  file inode.c:start_*		# file & function
+Removing the function is cleanest, but it could be useful in
+old-compiler corner cases, where __FILE__ still has /full/path,
+and it safely does nothing otherwize.
 
-Then it expands flags:
+So instead, quietly deprecate "file /full/path" query form, by
+removing all /full/paths examples in the docs.  I skipped adding a
+back-compat note.
 
-Adds 'u' user flag, allowing user to compose an arbitrary set of
-callsites by marking them with 'u', without altering current
-print-modifying flags.
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+ .../admin-guide/dynamic-debug-howto.rst       | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-Adds 'PFMLTU' flags, which negate their lower-case counterparts.
-
-Extends flags-spec with filter-flags, which select callsites for
-modification based upon their current flags.  This lets user activate
-the set of callsites marked with 'u' in a batch.
-
-  echo 'u+p' > control
-
-This was previously submitted before events overtook.
- v1: https://lkml.org/lkml/2019/10/29/989
- v2: https://lkml.org/lkml/2019/11/27/547
-
-Jim Cromie (16):
-cleanups:
-  dyndbg-docs: eschew file /full/path query in docs
-  dyndbg: drop obsolete comment on ddebug_proc_open
-  dyndbg: refine debug verbosity
-  dyndbg: rename __verbose section to __dyndbg
-  dyndbg: fix overcounting of ram used by dyndbg
-  dyndbg: fix a BUG_ON in ddebug_describe_flags
-  dyndbg: make ddebug_tables list LIFO for add/remove_module
-new features:
--parsing conveniences
-  dyndbg: refactor parse_linerange out of ddebug_parse_query
-  dyndbg: accept 'file foo.c:func1' and 'file foo.c:10-100'
--flags extensions
---internal rework
-  dyndbg: refactor ddebug_read_flags out of ddebug_parse_flags
-  dyndbg: combine flags & mask into a struct, use that
-  dyndbg: add filter parameter to ddebug_parse_flags
-  dyndbg: extend ddebug_parse_flags to accept optional filter-flags
-  dyndbg: prefer declarative init in caller, to memset in callee
---expose the features
-  dyndbg: add user-flag, negating-flags, and filtering on flags
-  dyndbg: allow negating flag-chars in modflags
-
- .../admin-guide/dynamic-debug-howto.rst       |  75 +++--
- include/asm-generic/vmlinux.lds.h             |   6 +-
- include/linux/dynamic_debug.h                 |   5 +-
- kernel/module.c                               |   2 +-
- lib/dynamic_debug.c                           | 282 ++++++++++--------
- 5 files changed, 225 insertions(+), 145 deletions(-)
-
+diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+index 0dc2eb8e44e5..2854d418b31b 100644
+--- a/Documentation/admin-guide/dynamic-debug-howto.rst
++++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+@@ -65,10 +65,10 @@ statements via::
+ 
+   nullarbor:~ # cat <debugfs>/dynamic_debug/control
+   # filename:lineno [module]function flags format
+-  /usr/src/packages/BUILD/sgi-enhancednfs-1.4/default/net/sunrpc/svc_rdma.c:323 [svcxprt_rdma]svc_rdma_cleanup =_ "SVCRDMA Module Removed, deregister RPC RDMA transport\012"
+-  /usr/src/packages/BUILD/sgi-enhancednfs-1.4/default/net/sunrpc/svc_rdma.c:341 [svcxprt_rdma]svc_rdma_init =_ "\011max_inline       : %d\012"
+-  /usr/src/packages/BUILD/sgi-enhancednfs-1.4/default/net/sunrpc/svc_rdma.c:340 [svcxprt_rdma]svc_rdma_init =_ "\011sq_depth         : %d\012"
+-  /usr/src/packages/BUILD/sgi-enhancednfs-1.4/default/net/sunrpc/svc_rdma.c:338 [svcxprt_rdma]svc_rdma_init =_ "\011max_requests     : %d\012"
++  net/sunrpc/svc_rdma.c:323 [svcxprt_rdma]svc_rdma_cleanup =_ "SVCRDMA Module Removed, deregister RPC RDMA transport\012"
++  net/sunrpc/svc_rdma.c:341 [svcxprt_rdma]svc_rdma_init =_ "\011max_inline       : %d\012"
++  net/sunrpc/svc_rdma.c:340 [svcxprt_rdma]svc_rdma_init =_ "\011sq_depth         : %d\012"
++  net/sunrpc/svc_rdma.c:338 [svcxprt_rdma]svc_rdma_init =_ "\011max_requests     : %d\012"
+   ...
+ 
+ 
+@@ -88,7 +88,7 @@ the debug statement callsites with any non-default flags::
+ 
+   nullarbor:~ # awk '$3 != "=_"' <debugfs>/dynamic_debug/control
+   # filename:lineno [module]function flags format
+-  /usr/src/packages/BUILD/sgi-enhancednfs-1.4/default/net/sunrpc/svcsock.c:1603 [sunrpc]svc_send p "svc_process: st_sendto returned %d\012"
++  net/sunrpc/svcsock.c:1603 [sunrpc]svc_send p "svc_process: st_sendto returned %d\012"
+ 
+ Command Language Reference
+ ==========================
+@@ -161,13 +161,12 @@ func
+ 	func svc_tcp_accept
+ 
+ file
+-    The given string is compared against either the full pathname, the
+-    src-root relative pathname, or the basename of the source file of
+-    each callsite.  Examples::
++    The given string is compared against either the src-root relative
++    pathname, or the basename of the source file of each callsite.
++    Examples::
+ 
+ 	file svcsock.c
+-	file kernel/freezer.c
+-	file /usr/src/packages/BUILD/sgi-enhancednfs-1.4/default/net/sunrpc/svcsock.c
++	file kernel/freezer.c	# ie column 1 of control file
+ 
+ module
+     The given string is compared against the module name
 -- 
 2.26.2
 
