@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986A31EFA45
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CA91EFB24
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbgFEOQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:16:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45076 "EHLO mail.kernel.org"
+        id S1728965AbgFEOXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:23:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728082AbgFEOQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:16:07 -0400
+        id S1728600AbgFEOSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:18:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9ADAB2075B;
-        Fri,  5 Jun 2020 14:16:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF68A214F1;
+        Fri,  5 Jun 2020 14:18:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366567;
-        bh=pcwZ8QAtQqf2jGKfibADVbKbceKZrKRWppgjgQ5/tFw=;
+        s=default; t=1591366687;
+        bh=kT9GL7Y6XK75ZPRKJrNeL+EQ+QvF63CVbQb4WwFxR88=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uzgcbxcfQ0y2/RM6msfsi8lFezEmMjlE09+tZPFieBzRQSCh+LFdkwYCHvdrHj7wp
-         pAvM73OWwf/Cfy5VUQh0Ik42qJm7uCDCBopKHXpY2VXHIJUWhRXfxBSyh40DYl0ykT
-         MSakJu8TELi8YNZqJ1Swmee20MiGfT3yWWo+rqI4=
+        b=u3H1anJde0mome1fK4GPdBHceaWgI4eqDbvCUbjtjAyD7PgkdEeN98QUg0lkgQawf
+         WxAH+/B/4ZN11n2cywGT1brYMxtNvysRQv4KZI+8+qlyEEQNq1X4uOz3KtSDhLjHdl
+         /Saot8JY4lE/udeJuW3UGX6GyiYLS4KjW43JCqs4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Giuseppe Marco Randazzo <gmrandazzo@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Christian Lamparter <chunkeey@gmail.com>
-Subject: [PATCH 5.7 06/14] p54usb: add AirVasT USB stick device-id
+        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 13/38] net: dsa: mt7530: set CPU port to fallback mode
 Date:   Fri,  5 Jun 2020 16:14:56 +0200
-Message-Id: <20200605135951.392458504@linuxfoundation.org>
+Message-Id: <20200605140253.364735702@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200605135951.018731965@linuxfoundation.org>
-References: <20200605135951.018731965@linuxfoundation.org>
+In-Reply-To: <20200605140252.542768750@linuxfoundation.org>
+References: <20200605140252.542768750@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +44,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giuseppe Marco Randazzo <gmrandazzo@gmail.com>
+From: DENG Qingfang <dqfext@gmail.com>
 
-commit 63e49a9fdac1b4e97ac26cb3fe953f210d83bc53 upstream.
+commit 38152ea37d8bdaffa22603e0a5b5b86cfa8714c9 upstream.
 
-This patch adds the AirVasT USB wireless devices 124a:4026
-to the list of supported devices. It's using the ISL3886
-usb firmware. Without this modification, the wiki adapter
-is not recognized.
+Currently, setting a bridge's self PVID to other value and deleting
+the default VID 1 renders untagged ports of that VLAN unable to talk to
+the CPU port:
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Giuseppe Marco Randazzo <gmrandazzo@gmail.com>
-Signed-off-by: Christian Lamparter <chunkeey@gmail.com> [formatted, reworded]
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200405220659.45621-1-chunkeey@gmail.com
+	bridge vlan add dev br0 vid 2 pvid untagged self
+	bridge vlan del dev br0 vid 1 self
+	bridge vlan add dev sw0p0 vid 2 pvid untagged
+	bridge vlan del dev sw0p0 vid 1
+	# br0 cannot send untagged frames out of sw0p0 anymore
+
+That is because the CPU port is set to security mode and its PVID is
+still 1, and untagged frames are dropped due to VLAN member violation.
+
+Set the CPU port to fallback mode so untagged frames can pass through.
+
+Fixes: 83163f7dca56 ("net: dsa: mediatek: add VLAN support for MT7530")
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/intersil/p54/p54usb.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/dsa/mt7530.c |   11 ++++++++---
+ drivers/net/dsa/mt7530.h |    6 ++++++
+ 2 files changed, 14 insertions(+), 3 deletions(-)
 
---- a/drivers/net/wireless/intersil/p54/p54usb.c
-+++ b/drivers/net/wireless/intersil/p54/p54usb.c
-@@ -61,6 +61,7 @@ static const struct usb_device_id p54u_t
- 	{USB_DEVICE(0x0db0, 0x6826)},	/* MSI UB54G (MS-6826) */
- 	{USB_DEVICE(0x107b, 0x55f2)},	/* Gateway WGU-210 (Gemtek) */
- 	{USB_DEVICE(0x124a, 0x4023)},	/* Shuttle PN15, Airvast WM168g, IOGear GWU513 */
-+	{USB_DEVICE(0x124a, 0x4026)},	/* AirVasT USB wireless device */
- 	{USB_DEVICE(0x1435, 0x0210)},	/* Inventel UR054G */
- 	{USB_DEVICE(0x15a9, 0x0002)},	/* Gemtek WUBI-100GW 802.11g */
- 	{USB_DEVICE(0x1630, 0x0005)},	/* 2Wire 802.11g USB (v1) / Z-Com */
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -818,10 +818,15 @@ mt7530_port_set_vlan_aware(struct dsa_sw
+ 		   PCR_MATRIX_MASK, PCR_MATRIX(MT7530_ALL_MEMBERS));
+ 
+ 	/* Trapped into security mode allows packet forwarding through VLAN
+-	 * table lookup.
++	 * table lookup. CPU port is set to fallback mode to let untagged
++	 * frames pass through.
+ 	 */
+-	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
+-		   MT7530_PORT_SECURITY_MODE);
++	if (dsa_is_cpu_port(ds, port))
++		mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
++			   MT7530_PORT_FALLBACK_MODE);
++	else
++		mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
++			   MT7530_PORT_SECURITY_MODE);
+ 
+ 	/* Set the port as a user port which is to be able to recognize VID
+ 	 * from incoming packets before fetching entry within the VLAN table.
+--- a/drivers/net/dsa/mt7530.h
++++ b/drivers/net/dsa/mt7530.h
+@@ -148,6 +148,12 @@ enum mt7530_port_mode {
+ 	/* Port Matrix Mode: Frames are forwarded by the PCR_MATRIX members. */
+ 	MT7530_PORT_MATRIX_MODE = PORT_VLAN(0),
+ 
++	/* Fallback Mode: Forward received frames with ingress ports that do
++	 * not belong to the VLAN member. Frames whose VID is not listed on
++	 * the VLAN table are forwarded by the PCR_MATRIX members.
++	 */
++	MT7530_PORT_FALLBACK_MODE = PORT_VLAN(1),
++
+ 	/* Security Mode: Discard any frame due to ingress membership
+ 	 * violation or VID missed on the VLAN table.
+ 	 */
 
 
