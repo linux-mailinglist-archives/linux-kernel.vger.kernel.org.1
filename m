@@ -2,76 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD1A1F010D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 22:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5CD1F0123
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 22:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbgFEUir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 16:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52174 "EHLO
+        id S1728396AbgFEUpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 16:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728275AbgFEUir (ORCPT
+        with ESMTP id S1728338AbgFEUo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 16:38:47 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C414DC08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 13:38:46 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id h188so6570699lfd.7
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 13:38:46 -0700 (PDT)
+        Fri, 5 Jun 2020 16:44:57 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17ABC08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 13:44:56 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id x93so8440488ede.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 13:44:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FH95ibhtHjzCQf5JaVO7CI8yDEGZvTMnjh0aZYzquSU=;
-        b=HwsGLu2Axjp4iMbTJca781tfoN6FfcigKyNrRDuFlE9Bc8sSLIpaeWs+c4hftPgT4n
-         U9r0pW+BGh8JplPa3RBas2mRbG7oj5Qq3EPgEfpa0SXXfnPoXmCL4jO+7NXunnInMTFL
-         kGXsbt8bTVVQiirsEBNXnjiA2JieM0l2rZ3TA=
+        bh=8qMV9KxwdmsZX+Eg7b8uIKpKh+L6ERIeG0MgUjSlWGY=;
+        b=dADgwH7HLX3Ef50nfWyXB0qJfBAkA4toklDET3r14dvzwUvOOHWJPSPxqvIAj8Hnqz
+         uAo/tEBpNiuHuvb7vCyFfELFzlsPN7GC2kh35ivVAaWd4qFpAcUGYcwhiMkU/id7MW/n
+         UEzobQLweBKm1LElBmSjOoiSVbWI/e7jjz2WA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FH95ibhtHjzCQf5JaVO7CI8yDEGZvTMnjh0aZYzquSU=;
-        b=bkvgJnFxEIWjl4sPr2wymooichxvFQwbwzxPsfH7//ZUqWGPzGbcCVITUB80oKX1+3
-         AcaFKrBwLUC9b2l/qxxEY90Zx0PonRSt/NatJepN+i2ELaI9aOKNT7ZQWdWqwl5mUTo0
-         mQ8TJiR6EE+8vUIl96UlXrHvxu5Oqp1/ZYVdCoSXf1LiYee7LuscQhHaSlo+HF/IUshn
-         DYTx9EzQVeSezDOtN3c1gdu9qlRrsSbL3KJh52NHzYw8yy9YL+3ByEEkpidsVz36D4+y
-         eqTfGAqJZbQgFPJLtIzvGK/mOV+0rts++/53myaKrLIIl13x4KhIFPzzh21HXsUSPpjp
-         QQiQ==
-X-Gm-Message-State: AOAM5301o4jtvZhJNvMzcaSbSnrESom3ADHslci00eP7YYDeIEG7sbR6
-        Wbhm4iq4U9YmxDXHn6dQ5UiEfhHNsGE=
-X-Google-Smtp-Source: ABdhPJw4ft02zoG5JgxeZZe50WFiypy8UrtNhe83rXlrJu8VCtdDDtt3IW8yZTTE2JT8xDx9gs9LNQ==
-X-Received: by 2002:ac2:59c3:: with SMTP id x3mr6323188lfn.117.1591389524650;
-        Fri, 05 Jun 2020 13:38:44 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id p1sm1348989lfo.66.2020.06.05.13.38.43
+        bh=8qMV9KxwdmsZX+Eg7b8uIKpKh+L6ERIeG0MgUjSlWGY=;
+        b=Upi9UHS6BCEZ8F5K0TtUzu/K3aEpYg9QjJ5Wfw5HIXvFMDcFdQ1rN8ylxqZxx3Zw7E
+         D4meRKAtHDwIdAQbFCeHOJEq2DFFDDw3XZ7HLjhMApGHECqpLchUmu4AZi8Z1kVGR6kN
+         6/ycdf1wVF02K35XuvgDkEaTojXcoQ6fw76T5Wlk9mgwqAUqHkUZlAuu41p+Bf8R34OT
+         8WEWj8p2iuhKsZTXpT+d4/mVSzou46ZqqlrpgoHNNlNps5bZaDdJf5uLHstsleHaK6y2
+         Lwvv4HpivyDiGnXUAH8SRzvm6bt0nKjCP5K3E2iUXxQaYnSsan0yKGwkdjDEYrw+WUwy
+         TTkQ==
+X-Gm-Message-State: AOAM531qIEx8KgfdbkH197uquHjn/XuH/NnfWlhCprlq0+wL9z5LuQIa
+        HxdMvkKkPiBIPP3Do04hHJmQ6NkRl7s=
+X-Google-Smtp-Source: ABdhPJwS7/rMESqds8jR02udPjc5kLZEuLwMKQPIyiYyOPxZZ8PFWNtiW48PAJG1Ly3mpKZjbGDnww==
+X-Received: by 2002:a05:6402:30ae:: with SMTP id df14mr10722152edb.310.1591389895108;
+        Fri, 05 Jun 2020 13:44:55 -0700 (PDT)
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
+        by smtp.gmail.com with ESMTPSA id bg21sm5228591ejb.90.2020.06.05.13.44.54
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Jun 2020 13:38:43 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id y11so11678366ljm.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 13:38:43 -0700 (PDT)
-X-Received: by 2002:a2e:7e0a:: with SMTP id z10mr5488926ljc.314.1591389523194;
- Fri, 05 Jun 2020 13:38:43 -0700 (PDT)
+        Fri, 05 Jun 2020 13:44:54 -0700 (PDT)
+Received: by mail-wr1-f53.google.com with SMTP id l11so11046431wru.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 13:44:54 -0700 (PDT)
+X-Received: by 2002:a2e:b5d7:: with SMTP id g23mr5213330ljn.70.1591389567802;
+ Fri, 05 Jun 2020 13:39:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200605093354.GA23721@linux-8ccs.fritz.box>
-In-Reply-To: <20200605093354.GA23721@linux-8ccs.fritz.box>
+References: <87eeqth3hi.fsf@mpe.ellerman.id.au> <CAHk-=wh5vSwYqF=YiKOOGBHE=hCwnes_ndbP4QOyjPK_Xocz7w@mail.gmail.com>
+In-Reply-To: <CAHk-=wh5vSwYqF=YiKOOGBHE=hCwnes_ndbP4QOyjPK_Xocz7w@mail.gmail.com>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 5 Jun 2020 13:38:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgNqzQ0CUJ9LP+cLR8FMKwHTqOuSzqvFFKn7Duqquxo1g@mail.gmail.com>
-Message-ID: <CAHk-=wgNqzQ0CUJ9LP+cLR8FMKwHTqOuSzqvFFKn7Duqquxo1g@mail.gmail.com>
-Subject: Re: [GIT PULL] Modules updates for v5.8
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 5 Jun 2020 13:39:11 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg33hLZHjqcMhvWzmgNrE6Gv+xpEcFXUx7iUHS2t5QtdQ@mail.gmail.com>
+Message-ID: <CAHk-=wg33hLZHjqcMhvWzmgNrE6Gv+xpEcFXUx7iUHS2t5QtdQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.8-1 tag
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, ajd@linux.ibm.com,
+        alistair@popple.id.au,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Qian Cai <cai@lca.pw>,
+        chenzhou10@huawei.com,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        christophe.leroy@csgroup.eu, clg@kaod.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        ego@linux.vnet.ibm.com,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        emmanuel.nicolet@gmail.com, fbarrat@linux.ibm.com,
+        geoff@infradead.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        haren@linux.ibm.com, hbathini@linux.ibm.com,
+        Herbert Xu <herbert@gondor.apana.org.au>, huhai@tj.kylinos.cn,
+        jniethe5@gmail.com, kernelfans@gmail.com, kjain@linux.ibm.com,
+        leobras.c@gmail.com, leonardo@linux.ibm.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linuxram@us.ibm.com, mahesh@linux.ibm.com, michal.simek@xilinx.com,
+        mikey@neuling.org, Nathan Chancellor <natechancellor@gmail.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        rzinsly@linux.ibm.com, sbobroff@linux.ibm.com,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, st5pub@yandex.ru,
+        Takashi Iwai <tiwai@suse.de>, wangxiongfeng2@huawei.com,
+        wsa@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 2:34 AM Jessica Yu <jeyu@kernel.org> wrote:
+On Fri, Jun 5, 2020 at 12:01 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> Please pull below to receive modules updates for the v5.8 merge window.
+> ..and then when I actually compared whether I otherwise got the same
+> result as you, I realized that this all depends on the module tree.
+>
+> I'll go merge that first, and then re-do this all. Oh well.
 
-Done. Considering the confusion this merge window with the
-dependencies of trees with each other, can you verify that what I got
-matches what you expect?
+Ok, redone and pushed out. Can you check that the end result makes sense?
 
-                  Linus
+              Linus
