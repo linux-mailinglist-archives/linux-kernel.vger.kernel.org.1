@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033EB1F017F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 23:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E681F0187
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 23:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728285AbgFEVZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 17:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59580 "EHLO
+        id S1728441AbgFEV0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 17:26:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726664AbgFEVZd (ORCPT
+        with ESMTP id S1726664AbgFEV0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 17:25:33 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFF1C08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 14:25:33 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id z9so13431720ljh.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 14:25:33 -0700 (PDT)
+        Fri, 5 Jun 2020 17:26:39 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37D5C08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 14:26:38 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id n2so4182444pld.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 14:26:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=su7aBmgFp3s3EJEbluac4gd2OffM4+Zbo0KIh4RzQsY=;
-        b=BFxg4A1iQISYNle2o8Aci5KXRtbIdPHwQx4ahwVCRIsqw7qP2LtsnzMGqouiwT/1Ne
-         Gh+CpFuVtvi7JTd652vUpzoNdKMVixC6MQbw/ApfQeW6EMncuiHAV/EkbQ6FpIMX1Cfl
-         cJDAMDEF6JteXq2Kw8YyEVH4kk1sJf5fPD26A=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VeRb96m3xb6MVLzkZ/9bi8Q4G4C90sZuPgPUM9psnlg=;
+        b=g6yt5mowRomsCxHiTj+rCKQTPIaAlRT3+6FakMUq17fUAUSWHCWdqhopSjjJkFIDA5
+         dfGjWJilOucVdz4mqVU7cY+rQEki0+UNYc/UVTAG3xfptu0L1WsBJMzErpMNcjTeoyGy
+         ZG4IzyxBW7zpLK2FoAUiqwNhUmpEqqjumjDtE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=su7aBmgFp3s3EJEbluac4gd2OffM4+Zbo0KIh4RzQsY=;
-        b=St+DOLakxMX0ey0xayGAEppkc28jdGjUnsAaeeL3Kid3SgpDkAayRorlSlv/SzMBMg
-         EbbRdshh/oNqjiGY78Pd45MhKoM8EihZTDaUVLc/o94Qa1yqAD55HcBvlm/JilAc37Mx
-         UqPPKi/5ZvV6J6v3soQovLd/z5ZiP2suNJrGVHYC9nMGPd0Q3+Do09SYk7XXcKAwXI2N
-         W/0UjFyV+wdYHiDVh1JQGH9qqydqgXFuZBMwW2YJcH/pKjNAuAHYPVWxZklffL6wE8A+
-         qsG3TD1Rbxqrge0F0dizCj37GUkJf7CIMVlzEWxfkxSI9ub2vN7tfS0cOkR3/+cE4rqL
-         GUBw==
-X-Gm-Message-State: AOAM5330hB6msnIe/x3i6X4muWgJvCX5/XRJ3S9DF9ddyIyPRvHokc7Z
-        TRfEVRoI72miC/S2kzn0yZ6qWYnjJ+U=
-X-Google-Smtp-Source: ABdhPJzvjMjNX32cLWdVV5qZ5L1dhfbhhCwjvdy/EE1YrFd25nAab9vmgvtMDfFkRINcRNRg7xAhSg==
-X-Received: by 2002:a2e:854c:: with SMTP id u12mr5586913ljj.422.1591392331499;
-        Fri, 05 Jun 2020 14:25:31 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id f12sm1197611ljk.44.2020.06.05.14.25.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Jun 2020 14:25:30 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id c17so13429086lji.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 14:25:30 -0700 (PDT)
-X-Received: by 2002:a2e:b5d9:: with SMTP id g25mr5996890ljn.285.1591392329927;
- Fri, 05 Jun 2020 14:25:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VeRb96m3xb6MVLzkZ/9bi8Q4G4C90sZuPgPUM9psnlg=;
+        b=YmnmKSswxi27sJHf42vQuwL0OHJyA9n1GnUPnMzaccE6yEezcxBXp3ercWGtrDcKXI
+         beymdZsm1j7tO8OBJiy4dbfdLFYLW037bqW/zoxoDQG6Lw+XB0/3dMYELs1X6kvSi7/m
+         HPnOq0uuCp/k22sFjvu+Yjq9PatQPpj+2riWxNc3wnKbLls+u+Hh4C0y43M95tupvG+F
+         PFM46YXIcHY+n5avshYDR1/1gO9bMk7wOM4wHHIWVSPMfGQoO+u2mmd8Eu0VbZtM87xR
+         35OvBeR6Nq15l/oSC5QxPw2WNBPGxg8HoBIEx0b8HqVyNK1A/TMSR6PFfuTqUd8auEcm
+         9UIA==
+X-Gm-Message-State: AOAM530x/0eZkcHMqaljUFBnVPoz39XrwLwr/lyK8/RTSuHIOZnhkBME
+        iuC0dNKmDGLpFe0GnEuJPVn2bw==
+X-Google-Smtp-Source: ABdhPJw0V3kMeUm0jvO13avWqD+DqRkUeahiiWaS1x3LL2XqbIN2sZ84eMR0ycj8tzYPERJRxmEJ8g==
+X-Received: by 2002:a17:90a:ac0f:: with SMTP id o15mr5167862pjq.105.1591392398559;
+        Fri, 05 Jun 2020 14:26:38 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o18sm528652pfu.138.2020.06.05.14.26.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jun 2020 14:26:37 -0700 (PDT)
+Date:   Fri, 5 Jun 2020 14:26:36 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     jmorris@namei.org, sashal@kernel.org, pmladek@suse.com,
+        ebiederm@xmission.com, anton@enomsg.org, ccross@android.com,
+        tony.luck@intel.com, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kexec: dump kmessage before machine_kexec
+Message-ID: <202006051426.4F06C696@keescook>
+References: <20200605194642.62278-1-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
-References: <1591332925.3685.16.camel@HansenPartnership.com>
- <CAHk-=wjiQmscZHzOYKmMpFoy4h4xF1Mvf9O8i6qtTtS38t6Wsg@mail.gmail.com> <1591391891.4728.96.camel@HansenPartnership.com>
-In-Reply-To: <1591391891.4728.96.camel@HansenPartnership.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 5 Jun 2020 14:25:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjy8sMqjft6ALTo28UECex84uiYEo=BJbLUJ_CHrPmOEQ@mail.gmail.com>
-Message-ID: <CAHk-=wjy8sMqjft6ALTo28UECex84uiYEo=BJbLUJ_CHrPmOEQ@mail.gmail.com>
-Subject: Re: [GIT PULL] first round of SCSI updates for the 5.6+ merge window
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200605194642.62278-1-pasha.tatashin@soleen.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 2:18 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> Um, no, shuffles feet ... I actually tagged the wrong branch:
+On Fri, Jun 05, 2020 at 03:46:42PM -0400, Pavel Tatashin wrote:
+> kmsg_dump(KMSG_DUMP_SHUTDOWN) is called before
+> machine_restart(), machine_halt(), machine_power_off(), the only one that
+> is missing is  machine_kexec().
+> 
+> The dmesg output that it contains can be used to study the shutdown
+> performance of both kernel and systemd during kexec reboot.
+> 
+> Here is example of dmesg data collected after kexec:
+> 
+> root@dplat-cp22:~# cat /sys/fs/pstore/dmesg-ramoops-0 | tail
+> ...
+> <6>[   70.914592] psci: CPU3 killed (polled 0 ms)
+> <5>[   70.915705] CPU4: shutdown
+> <6>[   70.916643] psci: CPU4 killed (polled 4 ms)
+> <5>[   70.917715] CPU5: shutdown
+> <6>[   70.918725] psci: CPU5 killed (polled 0 ms)
+> <5>[   70.919704] CPU6: shutdown
+> <6>[   70.920726] psci: CPU6 killed (polled 4 ms)
+> <5>[   70.921642] CPU7: shutdown
+> <6>[   70.922650] psci: CPU7 killed (polled 0 ms)
+> 
+> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
 
-Ok, now I see the changes, but I see more than you reported.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-These seem to be new compared to your pull request:
-
-Al Viro (4):
-      scsi: hpsa: Lift {BIG_,}IOCTL_Command_struct copy{in,out} into
-hpsa_ioctl()
-      scsi: hpsa: Don't bother with vmalloc for BIG_IOCTL_Command_struct
-      scsi: hpsa: Get rid of compat_alloc_user_space()
-      scsi: hpsa: hpsa_ioctl(): Tidy up a bit
-
-Can Guo (1):
-      scsi: ufs: Don't update urgent bkops level when toggling auto bkops
-
-Stanley Chu (1):
-      scsi: ufs: Remove redundant urgent_bkop_lvl initialization
-
-They don't look alarming, but I don't like how I don't see what you
-_claim_ I should see.
-
-Hmm?
-
-              Linus
+-- 
+Kees Cook
