@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927AD1EF8DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 15:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89501EF8DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 15:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727004AbgFENWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 09:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
+        id S1727043AbgFENWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 09:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726848AbgFENWY (ORCPT
+        with ESMTP id S1726848AbgFENW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 09:22:24 -0400
+        Fri, 5 Jun 2020 09:22:26 -0400
 Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5E2C08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 06:22:23 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l26so8419190wme.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 06:22:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC4F9C08C5C3
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 06:22:24 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id r15so9092658wmh.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 06:22:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AyRjljUpDkkPT0X2xA5gUgYnRQ59vhQhn5X65KNC7rQ=;
-        b=tWAHvL8W04kR4YL2QU/YKUyrSEk9ARg1cFFClA1ukhQB1s6XrqnCnldv3bY66c6cmT
-         fa/LlGyHGZ8bH1ZalJoWS83dLtPEj8gr73UYnWhRarT38YUMwymJeXKXsaXKrBJIYtDL
-         2uixWuTe3XwlcDlztHuPlREun36iBUB284UEqkKAHiIKf/jylPAMA2W/VlC3d4lFk5bN
-         NAcnJgstabA6TYJ5cvzp2Ix63m1A6/HRPXohHzICl39NxJah2FUqP6lGcTRoY4xfZ7UF
-         kgzbf9f01FqsMV7mZCGkbYbjriWUm3LsJ6xspuLj0RNSagObE700+fa2wtc2gnfDMmDD
-         lCZA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=xAlKxt3CeRGgnokjPKgwbHDWms7QUL6gxBaF1E7hzHQ=;
+        b=yYiav+kMyZ2Ix7WiVK7dI5HnTMjAng05HBGjcV43tWiZ6XDmWimy/6ZQNI7sxlIeF0
+         ny/pb2rEHxegQzT78UTHLx57Bavu+D8NPjlonHJRBg6EZ9iiNlX+eQ7e1zjdEgQSejc6
+         f20Onq0IJRAlGwXVdIKKG73OrUMooHFJPdDDKhBMmrFbRI7PzSYUnX5X7YwtML9MBhpb
+         N6Ue6HDCNLoLE/Pwz9P/J0wj27Hid2yPPeQdp0icf93cf5xbDIpv2D/dhNngYGAyL/sg
+         bDY9CaZ+0Fse6H5ZAjs5SGLwks3JyrNKZq5zD9AEb66Zor5YraVenWPJFPis3j/fjPgY
+         0C8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AyRjljUpDkkPT0X2xA5gUgYnRQ59vhQhn5X65KNC7rQ=;
-        b=QL4nq7XLdLX4Lbg0t/SioHUiu9Jl47fdcpip73gl5ebtT8wcwhdvs4mGAvSzyvYuqu
-         /aKPI0bnrLYK6udVO1kTaTMBlAuFYmfQ2T4A87UjAwxl4VG04P3RnL4z+j4fFPpaRFVq
-         JmCaTplWfH4lNRIKkfsU5ZWQo4FwehZy5dJ495F0qy3OliCt9nc+UteeOY+uRCJ5ClKz
-         E2T8fhB3mqkaYsqoCepUMRvaZDFBpGc1oIkQFTWEyxITWvMqzeD+tndxmqWNfyU7Q06j
-         iwOdXJsaI+lblYFpOHPq6/Hj6i/7xASpYm7cjmkIicYnRbF52UuHEfz9mxk9LqhgQ7pE
-         +TPA==
-X-Gm-Message-State: AOAM532Sw+DiOGdQ/oN4uLgKXDzClgzr3tEtRZzYKy9Dxcji75BqvP4E
-        /IgQ4VcxtZSaZyeVJpj8lbN6mw==
-X-Google-Smtp-Source: ABdhPJyD2N+8/KLPeltMYhSgqYV0q1j45k/hgbvLUvQmsugDxdxYuMfU7CHginJ5acv3Vmlk6qFVzw==
-X-Received: by 2002:a1c:7917:: with SMTP id l23mr2905652wme.117.1591363341962;
-        Fri, 05 Jun 2020 06:22:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xAlKxt3CeRGgnokjPKgwbHDWms7QUL6gxBaF1E7hzHQ=;
+        b=n+/hHY3AD9NcqwrMkZ3Pf/iHRrBGdXcsYYbc4/ZDI94S4Xb8mtzl99Y4vqgOIJeOtq
+         NafI8nw0+TJh8eRxPY0+qgmJtBN7b2we1dIx7knf73/w6m/hFWSBZHztyDGVdcHJfpvN
+         v0yFjZ9Qvq79N+YLUlyKegL90bA3RabkT9GJ2WxuYGMp9CFq3s8XEchBkZD/rH0UFBW4
+         7hEN++M5w8izoPacLU3ZyoOR1jNVZvZlAY//yXhnFlUA47GzJ47ej5Soax5bpC3Xxbvf
+         RxXo/pUINjQQqP7lrLBkLJEhUDa45r8c6DPtS4ZE/Cs2biBGCJ0N0QeEER5bnx8tB1qj
+         ON0g==
+X-Gm-Message-State: AOAM533Wh1AZD072inh17tdinRZcI++1kkoOsyE1hcyeM4dxObvCY5nX
+        9hdJKwa8MemadyqQCQSFjVS77A==
+X-Google-Smtp-Source: ABdhPJyt8YO6c3MFb5eo6VCQfHwV4YCdIkN/j71Gnogub1Z5Ahg9B5DQxJEiYFr2NP7rx7grZEK9JQ==
+X-Received: by 2002:a7b:c0cc:: with SMTP id s12mr2780173wmh.111.1591363343349;
+        Fri, 05 Jun 2020 06:22:23 -0700 (PDT)
 Received: from wychelm.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id 1sm11419211wmz.13.2020.06.05.06.22.20
+        by smtp.gmail.com with ESMTPSA id 1sm11419211wmz.13.2020.06.05.06.22.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 06:22:21 -0700 (PDT)
+        Fri, 05 Jun 2020 06:22:22 -0700 (PDT)
 From:   Daniel Thompson <daniel.thompson@linaro.org>
 To:     Jason Wessel <jason.wessel@windriver.com>,
         Douglas Anderson <dianders@chromium.org>
@@ -56,10 +56,12 @@ Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
         pmladek@suse.com, sergey.senozhatsky@gmail.com, will@kernel.org,
         kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
         patches@linaro.org
-Subject: [RFC PATCH 0/4] kgdb: Honour the kprobe blacklist when setting breakpoints
-Date:   Fri,  5 Jun 2020 14:21:26 +0100
-Message-Id: <20200605132130.1411255-1-daniel.thompson@linaro.org>
+Subject: [RFC PATCH 1/4] kgdb: Honour the kprobe blacklist when setting breakpoints
+Date:   Fri,  5 Jun 2020 14:21:27 +0100
+Message-Id: <20200605132130.1411255-2-daniel.thompson@linaro.org>
 X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200605132130.1411255-1-daniel.thompson@linaro.org>
+References: <20200605132130.1411255-1-daniel.thompson@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,72 +69,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kgdb has traditionally adopted a no safety rails approach to breakpoint
-placement. If the debugger is commanded to place a breakpoint at an
-address then it will do so even if that breakpoint results in kgdb
-becoming inoperable.
+Currently kgdb has absolutely no safety rails in place to discourage or
+prevent a user from placing a breakpoint in dangerous places such as
+the debugger's own trap entry/exit and other places where it is not safe
+to take synchronous traps.
 
-A stop-the-world debugger with memory peek/poke does intrinsically
-provide its operator with the means to hose their system in all manner
-of exciting ways (not least because stopping-the-world is already a DoS
-attack ;-) ) but the current no safety rail approach is not easy to
-defend, especially given kprobes provides us with plenty of machinery to
-mark parts of the kernel where breakpointing is discouraged.
+Modify the default implementation of kgdb_validate_break_address() so
+that we honour the kprobe blacklist (if there is one). The resulting
+blacklist will include code that kgdb could, in fact, debug but I think
+we can assume that anyone with sufficient knowledge to meaningfully
+debug that code would trivially be able to find and remove the safety
+rail if they need to.
 
-This patchset introduces some safety rails by using the existing
-kprobes infrastructure. It does not cover all locations where
-breakpoints can cause trouble but it will definitely block off several
-avenues, including the architecture specific parts that are handled by
-arch_within_kprobe_blacklist().
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+---
+ kernel/debug/debug_core.c | 11 +++++++++++
+ kernel/debug/kdb/kdb_bp.c |  9 +++++++++
+ 2 files changed, 20 insertions(+)
 
-This patch is an RFC because:
-
-1. My workstation is still chugging through the compile testing.
-
-2. Patch 4 needs more runtime testing.
-
-3. The code to extract the kprobe blacklist code (patch 4 again) needs
-   more review especially for its impact on arch specific code.
-
-To be clear I do plan to do the detailed review of the kprobe blacklist
-stuff but would like to check the direction of travel first since the
-change is already surprisingly big and maybe there's a better way to
-organise things.
-
-
-Daniel.
-
-
-Daniel Thompson (4):
-  kgdb: Honour the kprobe blacklist when setting breakpoints
-  kgdb: Use the kprobe blacklist to limit single stepping
-  kgdb: Add NOKPROBE labels on the trap handler functions
-  kprobes: Allow the kprobes blacklist to be compiled independently
-
- arch/Kconfig                            |   6 +-
- arch/arm/probes/kprobes/Makefile        |   1 +
- arch/arm/probes/kprobes/blacklist.c     |  37 ++++
- arch/arm/probes/kprobes/core.c          |  10 -
- arch/powerpc/kernel/Makefile            |   1 +
- arch/powerpc/kernel/kprobes-blacklist.c |  34 ++++
- arch/powerpc/kernel/kprobes.c           |   8 -
- include/asm-generic/kprobes.h           |   2 +-
- include/asm-generic/vmlinux.lds.h       |   2 +-
- include/linux/kgdb.h                    |   1 +
- include/linux/kprobes.h                 |  29 ++-
- kernel/Makefile                         |   1 +
- kernel/debug/debug_core.c               |  31 +++
- kernel/debug/gdbstub.c                  |  10 +-
- kernel/debug/kdb/kdb_bp.c               |  17 +-
- kernel/debug/kdb/kdb_main.c             |  10 +-
- kernel/kprobes.c                        | 204 +------------------
- kernel/kprobes_blacklist.c              | 260 ++++++++++++++++++++++++
- lib/Kconfig.kgdb                        |   1 +
- 19 files changed, 427 insertions(+), 238 deletions(-)
- create mode 100644 arch/arm/probes/kprobes/blacklist.c
- create mode 100644 arch/powerpc/kernel/kprobes-blacklist.c
- create mode 100644 kernel/kprobes_blacklist.c
-
---
+diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+index ef94e906f05a..81f56d616e04 100644
+--- a/kernel/debug/debug_core.c
++++ b/kernel/debug/debug_core.c
+@@ -56,6 +56,7 @@
+ #include <linux/vmacache.h>
+ #include <linux/rcupdate.h>
+ #include <linux/irq.h>
++#include <linux/kprobes.h>
+ 
+ #include <asm/cacheflush.h>
+ #include <asm/byteorder.h>
+@@ -188,6 +189,16 @@ int __weak kgdb_validate_break_address(unsigned long addr)
+ {
+ 	struct kgdb_bkpt tmp;
+ 	int err;
++
++	/*
++	 * Disallow breakpoints that are marked as unsuitable for kprobing.
++	 * This check is a little over-zealous because it does include
++	 * code that kgdb is entirely capable of debugging but in exchange
++	 * we can avoid recursive trapping (and all the problems that brings).
++	 */
++	if (within_kprobe_blacklist(addr))
++		return -EINVAL;
++
+ 	/* Validate setting the breakpoint and then removing it.  If the
+ 	 * remove fails, the kernel needs to emit a bad message because we
+ 	 * are deep trouble not being able to put things back the way we
+diff --git a/kernel/debug/kdb/kdb_bp.c b/kernel/debug/kdb/kdb_bp.c
+index d7ebb2c79cb8..ec4940146612 100644
+--- a/kernel/debug/kdb/kdb_bp.c
++++ b/kernel/debug/kdb/kdb_bp.c
+@@ -306,6 +306,15 @@ static int kdb_bp(int argc, const char **argv)
+ 	if (!template.bp_addr)
+ 		return KDB_BADINT;
+ 
++	/*
++	 * This check is redundant (since the breakpoint machinery should
++	 * be doing the same check during kdb_bp_install) but gives the
++	 * user immediate feedback.
++	 */
++	diag = kgdb_validate_break_address(template.bp_addr);
++	if (diag)
++		return diag;
++
+ 	/*
+ 	 * Find an empty bp structure to allocate
+ 	 */
+-- 
 2.25.4
 
