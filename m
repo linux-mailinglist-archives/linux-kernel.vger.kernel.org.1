@@ -2,197 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2681F00B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 22:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59D61F00B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 22:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgFEUF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 16:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
+        id S1728181AbgFEUGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 16:06:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728050AbgFEUFz (ORCPT
+        with ESMTP id S1727863AbgFEUGF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 16:05:55 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913C5C08C5C3;
-        Fri,  5 Jun 2020 13:05:54 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id p18so8393397eds.7;
-        Fri, 05 Jun 2020 13:05:54 -0700 (PDT)
+        Fri, 5 Jun 2020 16:06:05 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22177C08C5C2;
+        Fri,  5 Jun 2020 13:06:05 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id j32so9558012qte.10;
+        Fri, 05 Jun 2020 13:06:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=cdTWhOG1UWOoPBY6TOfHy1iJMeJj/vYsvQR2Zo9re08=;
-        b=jBIADCe3mSW32NwPh6NWYZYAtNiGD7wgRTVY1vdpb+meE7s6DtGBONYaNBjSJRZon9
-         r0JnxTmrhosVJ8aWVkobitXJrxE4qQ+XP97mEzbbflAWMY0DoUqI579ecEUwGV1k9DKb
-         CIy4asEAUpKxemfxHJ1Ey3PYod2CMkS+66sody+JcUjhtvgEUu8Mj1+lIP4HbTIdywk1
-         6BLdfQoEG84MrY2WBWbkJ4vbbl7g7vjED5r6sZGgJyL2gTuxwON5sspI2FSENzjWfrB8
-         lHgum+9p3QzVjmRVMmBVQcyFkVOJNxx8SVk308Ay2Uo3xKHYH+Wg0NU7h30wjhzfnr0m
-         iAqg==
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=JTkFUvaRvYSG6ygtt1GZV9UfYQcME0QUIQgnCNhspzw=;
+        b=LujWpYSX9TMTA4Reh58wuCm3r1H0Yl5Mifzj7Q9qRPX8q4rB2cXcnuI7G9ELPvtpTF
+         dgro1uYoKRf1Gnvcc8GSjfxy2GlyibIg60ztwrMN5t0kJZoHlGF2e/zLLeiw/gMii0CL
+         f+duJNpaVmhE8t12pBVy/xvYlv0YzP6gNBEiYBum8vpszAqUs361QZdFZtg2MhXVFW6d
+         cfkH7Pp/5xbe25VKKgmMnWdy6cvSAlguFc3SpyfEHhGu8y/VAOox9N++Q6unj5HdxT14
+         zzy7S+7NUmLZOX0Y0vA6YVvwqTuNS2+cycw/30J2LR+P1xdfjPpDlIq/aHOkfXQqrjGx
+         amLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=cdTWhOG1UWOoPBY6TOfHy1iJMeJj/vYsvQR2Zo9re08=;
-        b=COeIDWxS8inLoXgOUqMdv7hzUGDaypRfyzWTPcJvLOu5XTnHB2ya5f4Iham0yfa4zx
-         Pg6yjwMUs1wXRftFfyamqn4aHyqbsOaHuIHAXcE+/64GWBmrHqoJ10Ue0qRyNXAtn4bL
-         pgJ7UMRgsWOb2rLGsmvhVUBnSEeMeMEraAjNz9KVG+FOKrkVcTKo/U2wyGekD3yD/juh
-         Il+V/t4lbVXLbz8vE+6MMg+JkikYqdvHRJiJxqBHWIpQAAa5SENAuroxgswTehG1Nb0C
-         9vi4xdXD51ciVkVLRhWmcdQm1U9V7OPwJoBUfUySpOJ3Xr/V7I0GFvrxL1H2iKKMM07R
-         qeLg==
-X-Gm-Message-State: AOAM533RLhH5aditzccaYQs+iDO9rXCvaLwFElr7LY4m8Sv84s1VOn+T
-        qwwcVStsUW5DvIJWF13F9x4=
-X-Google-Smtp-Source: ABdhPJzlrE5+nev7+1hAJwaFIB5XJdCm96QOyY17sYn3fUEex3+lnje193kJsFY0yPLk7mKGS3pYmQ==
-X-Received: by 2002:aa7:c81a:: with SMTP id a26mr11249292edt.353.1591387553258;
-        Fri, 05 Jun 2020 13:05:53 -0700 (PDT)
-Received: from localhost.localdomain (ip5f5bfcfd.dynamic.kabel-deutschland.de. [95.91.252.253])
-        by smtp.gmail.com with ESMTPSA id b21sm5224430ejz.28.2020.06.05.13.05.52
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=JTkFUvaRvYSG6ygtt1GZV9UfYQcME0QUIQgnCNhspzw=;
+        b=qnLEAODtfW4vtW2SULA5OniZArHU+IZdhUaTULLIe2DOrWgv6r4doA7zPxlScNa4PC
+         VGxGK+hQUurFgxn0UkkyriGEfH5K577y9e6+zJ6v54IKQBjHbYsAoYgY4N7FNBrYWXEN
+         kRSlMFCxOfVYA0/2rATC+KIre7NfIIlo5CqY1P4KH9DgRMsFzUwIpxTEy1PiQDFVPkOD
+         RjTKbVmDPqjNPmgpUqOQO01a9DBwrVOfp6+5YoEwVfgDLgd4QsGsjVcHjj+9apGV818X
+         ion9GakG7qV+WESfPlmEhvU9BZma63yY9OlODnYplJFO0qkkoIj3cPgJ8c4B/jxingEq
+         nz5Q==
+X-Gm-Message-State: AOAM532kkQj4RRxWp1GS4iTGPGvnk6W/XZTWaa9NosyI9uaA2qqZf9rR
+        HsEqUVTubD9iTMPlQcgS3VoLcLcI
+X-Google-Smtp-Source: ABdhPJxA24UWMHhoPj3bxG2+IXRRn/DllUkA3pM3drpQ60gBUrA6zd03FpJ84dOWRShQMDV/5TQ3oA==
+X-Received: by 2002:aed:2d23:: with SMTP id h32mr10303700qtd.69.1591387563816;
+        Fri, 05 Jun 2020 13:06:03 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:86c8])
+        by smtp.gmail.com with ESMTPSA id a7sm654103qth.61.2020.06.05.13.06.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 13:05:52 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org, ebiggers@kernel.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] scsi: ufs: remove wrapper function ufshcd_setup_clocks()
-Date:   Fri,  5 Jun 2020 22:05:20 +0200
-Message-Id: <20200605200520.20831-3-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200605200520.20831-1-huobean@gmail.com>
-References: <20200605200520.20831-1-huobean@gmail.com>
+        Fri, 05 Jun 2020 13:06:02 -0700 (PDT)
+Date:   Fri, 5 Jun 2020 16:06:01 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [GIT PULL] cgroup changes for v5.8-rc1
+Message-ID: <20200605200601.GJ31548@mtj.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+Hello, Linus.
 
-The static function ufshcd_setup_clocks() is just a wrapper around
-__ufshcd_setup_clocks(), remove it. Rename original function wrapped
-__ufshcd_setup_clocks() to new ufshcd_setup_clocks().
+Just two patches. One to add system-level cpu.stat to the root cgroup for
+convenience and a trivial comment update.
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/scsi/ufs/ufshcd.c | 32 ++++++++++++--------------------
- 1 file changed, 12 insertions(+), 20 deletions(-)
+Thanks.
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index ec4f55211648..531d0b7878db 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -215,9 +215,7 @@ static int ufshcd_eh_host_reset_handler(struct scsi_cmnd *cmd);
- static int ufshcd_clear_tm_cmd(struct ufs_hba *hba, int tag);
- static void ufshcd_hba_exit(struct ufs_hba *hba);
- static int ufshcd_probe_hba(struct ufs_hba *hba, bool async);
--static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
--				 bool skip_ref_clk);
--static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on);
-+static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on, bool skip_ref_clk);
- static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
- static inline void ufshcd_add_delay_before_dme_cmd(struct ufs_hba *hba);
- static int ufshcd_host_reset_and_restore(struct ufs_hba *hba);
-@@ -1497,7 +1495,7 @@ static void ufshcd_ungate_work(struct work_struct *work)
- 	}
- 
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
--	ufshcd_setup_clocks(hba, true);
-+	ufshcd_setup_clocks(hba, true, false);
- 
- 	ufshcd_enable_irq(hba);
- 
-@@ -1655,10 +1653,10 @@ static void ufshcd_gate_work(struct work_struct *work)
- 	ufshcd_disable_irq(hba);
- 
- 	if (!ufshcd_is_link_active(hba))
--		ufshcd_setup_clocks(hba, false);
-+		ufshcd_setup_clocks(hba, false, false);
- 	else
- 		/* If link is active, device ref_clk can't be switched off */
--		__ufshcd_setup_clocks(hba, false, true);
-+		ufshcd_setup_clocks(hba, false, true);
- 
- 	/*
- 	 * In case you are here to cancel this work the gating state
-@@ -7683,8 +7681,7 @@ static int ufshcd_init_hba_vreg(struct ufs_hba *hba)
- 	return 0;
- }
- 
--static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
--					bool skip_ref_clk)
-+static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on, bool skip_ref_clk)
- {
- 	int ret = 0;
- 	struct ufs_clk_info *clki;
-@@ -7747,11 +7744,6 @@ static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
- 	return ret;
- }
- 
--static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on)
--{
--	return  __ufshcd_setup_clocks(hba, on, false);
--}
--
- static int ufshcd_init_clocks(struct ufs_hba *hba)
- {
- 	int ret = 0;
-@@ -7858,7 +7850,7 @@ static int ufshcd_hba_init(struct ufs_hba *hba)
- 	if (err)
- 		goto out_disable_hba_vreg;
- 
--	err = ufshcd_setup_clocks(hba, true);
-+	err = ufshcd_setup_clocks(hba, true, false);
- 	if (err)
- 		goto out_disable_hba_vreg;
- 
-@@ -7880,7 +7872,7 @@ static int ufshcd_hba_init(struct ufs_hba *hba)
- out_disable_vreg:
- 	ufshcd_setup_vreg(hba, false);
- out_disable_clks:
--	ufshcd_setup_clocks(hba, false);
-+	ufshcd_setup_clocks(hba, false, false);
- out_disable_hba_vreg:
- 	ufshcd_setup_hba_vreg(hba, false);
- out:
-@@ -7896,7 +7888,7 @@ static void ufshcd_hba_exit(struct ufs_hba *hba)
- 		if (ufshcd_is_clkscaling_supported(hba))
- 			if (hba->devfreq)
- 				ufshcd_suspend_clkscaling(hba);
--		ufshcd_setup_clocks(hba, false);
-+		ufshcd_setup_clocks(hba, false, false);
- 		ufshcd_setup_hba_vreg(hba, false);
- 		hba->is_powered = false;
- 		ufs_put_device_desc(hba);
-@@ -8259,10 +8251,10 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	ufshcd_disable_irq(hba);
- 
- 	if (!ufshcd_is_link_active(hba))
--		ufshcd_setup_clocks(hba, false);
-+		ufshcd_setup_clocks(hba, false, false);
- 	else
- 		/* If link is active, device ref_clk can't be switched off */
--		__ufshcd_setup_clocks(hba, false, true);
-+		ufshcd_setup_clocks(hba, false, true);
- 
- 	hba->clk_gating.state = CLKS_OFF;
- 	trace_ufshcd_clk_gating(dev_name(hba->dev), hba->clk_gating.state);
-@@ -8321,7 +8313,7 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 
- 	ufshcd_hba_vreg_set_hpm(hba);
- 	/* Make sure clocks are enabled before accessing controller */
--	ret = ufshcd_setup_clocks(hba, true);
-+	ret = ufshcd_setup_clocks(hba, true, false);
- 	if (ret)
- 		goto out;
- 
-@@ -8404,7 +8396,7 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	ufshcd_disable_irq(hba);
- 	if (hba->clk_scaling.is_allowed)
- 		ufshcd_suspend_clkscaling(hba);
--	ufshcd_setup_clocks(hba, false);
-+	ufshcd_setup_clocks(hba, false, false);
- out:
- 	hba->pm_op_in_progress = 0;
- 	if (ret)
+The following changes since commit eec8fd0277e37cf447b88c6be181e81df867bcf1:
+
+  device_cgroup: Cleanup cgroup eBPF device filter code (2020-04-13 14:41:54 -0400)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.8
+
+for you to fetch changes up to 936f2a70f2077f64fab1dcb3eca71879e82ecd3f:
+
+  cgroup: add cpu.stat file to root cgroup (2020-05-28 10:06:35 -0400)
+
+----------------------------------------------------------------
+Boris Burkov (1):
+      cgroup: add cpu.stat file to root cgroup
+
+Zefan Li (1):
+      cgroup: Remove stale comments
+
+ Documentation/admin-guide/cgroup-v2.rst |  6 ++--
+ kernel/cgroup/cgroup.c                  | 10 +-----
+ kernel/cgroup/rstat.c                   | 60 ++++++++++++++++++++++++++++-----
+ 3 files changed, 55 insertions(+), 21 deletions(-)
+
 -- 
-2.17.1
-
+tejun
