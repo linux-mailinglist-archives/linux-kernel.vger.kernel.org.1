@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D511EFFA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 20:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240081EFFB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 20:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgFESIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 14:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726077AbgFESIg (ORCPT
+        id S1728167AbgFESLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 14:11:17 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52808 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726077AbgFESLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 14:08:36 -0400
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20426C08C5C2;
-        Fri,  5 Jun 2020 11:08:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=Content-Type:MIME-Version:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=qOWKSN6fy8i1wsii+C9kQcUD/H3uhG0+JUSv3RW0hT8=; b=EDGj7zDa0TosrsbOciky1SiUJp
-        hH5AbltKRt7XwbyothGG3DvtRN5/x8PcufbF4rTxO1RvJkDXpt5juFNR0pgzaRqAtBvK6KYRlAHm7
-        Kx30rPWd7H71ZMLfPQfuyY+rxZOI1hF0TfFQd403uzctnlHu86hrmm5oE40bqaIhfohWWfVt+KmT7
-        Utv38QoYMznVK1t/o2+p+iZLlB9JDc6t6r3U1UHQNoytKfdF7BaToc1aWs7nbZbcb5Mak6uraC29h
-        2aP++vY/IOw78Vnqbum7SqfKF+pEWeXs9cl29thqP4VaVLMDx0mAmGDVE5wF50NSiJGKEJpTIfNcO
-        lhTQpTkw==;
-Received: from [2001:4d48:ad59:1409:4::2] (helo=youmian.o362.us)
-        by the.earth.li with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1jhGlZ-00037H-Ea; Fri, 05 Jun 2020 19:08:29 +0100
-Date:   Fri, 5 Jun 2020 19:08:24 +0100
-From:   Jonathan McDowell <noodles@earth.li>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH 0/2] net: dsa: qca8k: Add SGMII configuration options
-Message-ID: <cover.1591380105.git.noodles@earth.li>
+        Fri, 5 Jun 2020 14:11:14 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 055I8CQ5102490;
+        Fri, 5 Jun 2020 18:10:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=a4XaveQpAaQa2mw3il6Qi66Kdmgjqk/04IfyDbfuZOQ=;
+ b=TOJoy37INOWoUNxh4EAkC3tJJh/ECSCuvtOhWAS4NSeZyCjRrCsD3Z6EetUvUSKmEpeZ
+ E3ytfPKjbZvHXMkE1Swau4LvjbD5QlmLYz+FR3/6i34071X0mYTEReOpYGAdX4KGVbCp
+ myCums3m3orFSmWW+bojM2PR10BZE0EX8efh9tHMtZg2v1HwZ+JhXz3bXXzUhdErnbFe
+ IK3q+Ui7W47bNb+YTwqM4kpK2eT9tP5bLdgaroFCzxRztvvp+RtWr5v7XJhA2Mxft5F2
+ ozk92BhoV8J20fNyWVJGvnWMPaD/Qq3hMbyn5ImjbQFbYgh9MDypv9SYYQkDz196ksQX OA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 31f926445u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 05 Jun 2020 18:10:59 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 055I88MV181261;
+        Fri, 5 Jun 2020 18:08:58 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 31f928aagq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 05 Jun 2020 18:08:58 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 055I8tPQ026391;
+        Fri, 5 Jun 2020 18:08:56 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 05 Jun 2020 11:08:54 -0700
+Date:   Fri, 5 Jun 2020 21:08:45 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Jason Yan <yanaijie@huawei.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hulkci@huawei.com, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Ming Lei <ming.lei@redhat.com>
+Subject: Re: [PATCH v2] block: Fix use-after-free in blkdev_get()
+Message-ID: <20200605180845.GU30374@kadam>
+References: <88676ff2-cb7e-70ec-4421-ecf8318990b1@web.de>
+ <5fa658bf-3028-9b5c-30cc-dbdef6bf8f7a@huawei.com>
+ <20200605094353.GS30374@kadam>
+ <20200605144236.GB13248@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200605144236.GB13248@quack2.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9643 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 mlxscore=0 adultscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006050134
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9643 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
+ suspectscore=0 cotscore=-2147483648 bulkscore=0 clxscore=1015
+ impostorscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999
+ spamscore=0 lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006050134
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This pair of patches adds some SGMII device tree configuration options
-for the QCA8K switch driver, and the associated documentation.
+On Fri, Jun 05, 2020 at 04:42:36PM +0200, Jan Kara wrote:
+> On Fri 05-06-20 12:43:54, Dan Carpenter wrote:
+> > I wonder if maybe the best fix is to re-add the "if (!res) " check back
+> > to blkdev_get().
+> 
+> Well, it won't be that simple since we need to call bd_abort_claiming()
+> under bdev->bd_mutex. And the fact that __blkdev_get() frees the reference
+> you pass to it is somewhat subtle and surprising so I think we are better
+> off getting rid of that.
 
-At present the driver does no configuration of the SGMII port, even if
-it is selected. These changes allow configuration of how it is connected
-up (i.e. connected to an external phy, or to a CPU, or to an SFP cage)
-as well as allowing for autonegotiation to be disabled and a delay
-configured.
+Fair enough.
 
-Tested on a MikroTik RB3011; the second switch is connected to the CPU
-via SGMII.
+Jason Yan sent a v3 of this patch that frees "whole".  I've looked it
+over pretty close and I think it's probably correct.
 
-Jonathan McDowell (2):
-  dt-bindings: net: dsa: qca8k: document SGMII properties
-  net: dsa: qca8k: introduce SGMII configuration options
+(not that my opinion should count for much because I don't know this
+code very well at all).
 
- .../devicetree/bindings/net/dsa/qca8k.txt     |  4 ++
- drivers/net/dsa/qca8k.c                       | 44 ++++++++++++++++++-
- drivers/net/dsa/qca8k.h                       | 12 +++++
- 3 files changed, 59 insertions(+), 1 deletion(-)
-
--- 
-2.20.1
+regards,
+dan carpenter
 
