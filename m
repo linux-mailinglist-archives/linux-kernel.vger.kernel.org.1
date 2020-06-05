@@ -2,79 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A181EFD21
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03DE1EFD28
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726963AbgFEP74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 11:59:56 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:41472 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgFEP74 (ORCPT
+        id S1728091AbgFEQA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 12:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727798AbgFEQAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 11:59:56 -0400
-Date:   Fri, 5 Jun 2020 11:59:54 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org,
-        ysato@users.sourceforge.jp, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, Rob Landley <rob@landley.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] sh: remove sh5 support
-Message-ID: <20200605155954.GV1079@brightrain.aerifal.cx>
-References: <20200528054600.GA29717@infradead.org>
- <20200528161416.GY1079@brightrain.aerifal.cx>
- <20200529143059.GA25475@infradead.org>
- <20200529175335.GK1079@brightrain.aerifal.cx>
- <e86e1d78-9597-811a-da0e-42a910b0c9fe@physik.fu-berlin.de>
- <20200601181259.GV1079@brightrain.aerifal.cx>
- <20200602013332.GY1079@brightrain.aerifal.cx>
- <0af28795-b27a-2dd9-0d0f-c2a8d4b8d512@physik.fu-berlin.de>
- <20200605154343.GU1079@brightrain.aerifal.cx>
- <c4900bf6-99b3-c9b9-4fd0-7f491bd46de6@physik.fu-berlin.de>
+        Fri, 5 Jun 2020 12:00:21 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B2BC08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 09:00:21 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b5so5082999pfp.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 09:00:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sFzuPg87lia15bj0MACfGhh8dROQtUU99JStdLteJm8=;
+        b=N87sRbGURjNVH3cGexUjqOcgDYvYJMy8VoG9ckFH0aB1QHhjcmTB3IoUw+n7gla5Gl
+         Nu4+9An1lTW5DFM57UkJtPrMYk4gc1B2g3ORLnaocIqUJYsZ+6I4d5lvKJr/btsT+ObU
+         4d5/LypDNzjbQvWdIBOtLpeN/dS/2bG1Wvp5E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sFzuPg87lia15bj0MACfGhh8dROQtUU99JStdLteJm8=;
+        b=RdiOZqFV4851tRJqpv3Tl5398QtxUTZw8vdDgBE9nW0eL2zPRqKqz42dONrkV8qdMd
+         heoM5+QCxI4Bm4QcUoHbNqPS5qtmuBp9zahgMlWBIAIGfwvw0lPnjo6aKRjyxe4sAvMX
+         pHktp4BIQYNfq9L00i73Jaya3m8WCOnKPlt3fk1xucUve3sZiXFInwjYaum8SPBxFlea
+         k3I0bc6kv/pNbXPV6ovNrBN8tt4LMc6pTc4ZMAKon33w4fLtf3NTKHzd+i59MTgHTmZs
+         ViXuFROnZd07a4D+vXClMr9GOB6upg9KWP719+QYt+U+S3C0yMAOLTDUNgtN0KPDUeqo
+         hjnA==
+X-Gm-Message-State: AOAM5335R2W5fLQfMR50m2gO7QzpHArLxuO5O5yKwqdjwR2NPwo2C75h
+        rx7e9pE7dkfTHmxquXCAa51seQ==
+X-Google-Smtp-Source: ABdhPJzZcH6mbwWsYQHLkHWiTXgnP9bVA4PXBKPDvl3u7f6oXPodSpEarfATZfskj2IlzdjeiODrfg==
+X-Received: by 2002:a63:3384:: with SMTP id z126mr9940695pgz.7.1591372820569;
+        Fri, 05 Jun 2020 09:00:20 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id gm11sm8391860pjb.9.2020.06.05.09.00.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jun 2020 09:00:18 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers3@gmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] Relocate execve() sanity checks
+Date:   Fri,  5 Jun 2020 09:00:10 -0700
+Message-Id: <20200605160013.3954297-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4900bf6-99b3-c9b9-4fd0-7f491bd46de6@physik.fu-berlin.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 05:47:34PM +0200, John Paul Adrian Glaubitz wrote:
-> On 6/5/20 5:43 PM, Rich Felker wrote:
-> >> Can you include the patch as well?
-> > 
-> > This one is outside arch/sh and I'm not sure it's permissible to go up
-> > through my tree. I was also under the impression that only part 1 was
-> > needed to fix the immediate problem on sh and tha part 2 was for
-> > completeness and to make sure the same doesn't happen on other archs
-> > in the future, but maybe my understanding here is incorrect.
-> 
-> Ah, sorry, I missed that. You're right, it should probably go through
-> someone else's tree then.
+Hi,
 
-Do you know if it's needed to un-break sh4? If so we should push to
-get whoever has jurisdiction over it to include it; otherwise I'm
-indifferent.
+While looking at the code paths for the proposed O_MAYEXEC flag, I saw
+some things that looked like they should be fixed up.
 
-> >> And would it be okay to send a PR to Linus
-> >> after that?
-> > 
-> > Sure, will do right away once we resolve what to do with the above,
-> > and provided you don't have anything else you want me to evaluate for
-> > inclusion.
-> 
-> Since we haven't agreed on the __get_user_64() patch yet, I would be
-> in favor of getting the changes pulled in that have already been
-> reviewed and acknowledged. I rather don't want the other contributors
-> to wait any longer. Arnd in particular has done a tremendous job to
-> untangle all the SH-5 code and I think we should finally get this
-> in :).
+  exec: Change uselib(2) IS_SREG() failure to EACCES
+	This just regularizes the return code on uselib(2).
 
-Absolutely agreed.
+  exec: Move S_ISREG() check earlier
+	This moves the S_ISREG() check even earlier than it was already.
 
-Rich
+  exec: Move path_noexec() check earlier
+	This adds the path_noexec() check to the same place as the
+	S_ISREG() check.
+
+v2:
+- move checks into may_open() using acc_mode instead of f_mode to correctly
+  compose with other inode file type tests[1].
+- drop the FMODE_EXEC f_flags -> f_mode change for now since it remains
+  unclear if it's useful (and is not needed any more for this series).
+v1: https://lore.kernel.org/linux-api/20200518055457.12302-1-keescook@chromium.org/
+
+Thanks!
+
+-Kees
+
+[1] https://lore.kernel.org/lkml/202006041910.9EF0C602@keescook/
+
+Kees Cook (3):
+  exec: Change uselib(2) IS_SREG() failure to EACCES
+  exec: Move S_ISREG() check earlier
+  exec: Move path_noexec() check earlier
+
+ fs/exec.c  | 23 ++++++++++++++---------
+ fs/namei.c | 10 ++++++++--
+ fs/open.c  |  6 ------
+ 3 files changed, 22 insertions(+), 17 deletions(-)
+
+-- 
+2.25.1
+
