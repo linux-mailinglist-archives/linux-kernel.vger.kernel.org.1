@@ -2,93 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075B51EF430
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0231EF439
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgFEJbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 05:31:07 -0400
-Received: from alexa-out-blr-01.qualcomm.com ([103.229.18.197]:26194 "EHLO
-        alexa-out-blr-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726217AbgFEJbG (ORCPT
+        id S1726729AbgFEJbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 05:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgFEJbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 05:31:06 -0400
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by alexa-out-blr-01.qualcomm.com with ESMTP/TLS/AES256-SHA; 05 Jun 2020 15:01:01 +0530
-Received: from c-ppvk-linux.qualcomm.com ([10.206.24.34])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 05 Jun 2020 15:00:34 +0530
-Received: by c-ppvk-linux.qualcomm.com (Postfix, from userid 2304101)
-        id D7F7E48CC; Fri,  5 Jun 2020 15:00:33 +0530 (IST)
-From:   Pradeep P V K <ppvk@codeaurora.org>
-To:     bjorn.andersson@linaro.org, adrian.hunter@intel.com,
-        robh+dt@kernel.org, ulf.hansson@linaro.org,
-        vbadigan@codeaurora.org, sboyd@kernel.org,
-        georgi.djakov@linaro.org, mka@chromium.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mmc-owner@vger.kernel.org, rnayak@codeaurora.org,
-        sibis@codeaurora.org, matthias@chromium.org,
-        Pradeep P V K <ppvk@codeaurora.org>
-Subject: =?y?q?=5BPATCH=C2=A0V3=202/2=5D=20dt-bindings=3A=20mmc=3A=20sdhci-msm=3A=20Add=20interconnect=20BW=20scaling=20strings?=
-Date:   Fri,  5 Jun 2020 15:00:27 +0530
-Message-Id: <1591349427-27004-3-git-send-email-ppvk@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1591349427-27004-1-git-send-email-ppvk@codeaurora.org>
-References: <1591269283-24084-1-git-send-email-ppvk@codeaurora.org>
- <1591349427-27004-1-git-send-email-ppvk@codeaurora.org>
+        Fri, 5 Jun 2020 05:31:24 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7541DC08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 02:31:24 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id y20so673013wmi.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 02:31:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NAWEqwQD/F5TIg0bPgl0uKs0kGQlTjN/ATKL4zcYsUY=;
+        b=Nwc67yJKdX9+1Qop0ErvOGkV+cGnmtPwvls0qkrXVjEC11iL63CnWkgWMJo9Tdj4T/
+         YPn1VNsQsFVPcZ9IGbuPYi2eS3BxJhoEtAWcqDJYvL/36xJ/Hjo67IqgwIxzuiFq64nO
+         Rbtrq0ZFV3X+ZvYrfx3nxEdAWGGUvjxxSuT6sj/YF88RyxhFRZ2pPmpYWu8URT12MGBl
+         vNSrF6Yq5z5cMZ/4TmqxoVJC5uB4NBvbOlTX0BD/3S9k+46P/uwo4u7iZE55w603a6QC
+         ay24sCyvBcROAdiEkD7qKWpHmkXK2Zir9gyrREVSy6XHu7l0lCFuvK9OrQZxj5Bdfgh2
+         foow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NAWEqwQD/F5TIg0bPgl0uKs0kGQlTjN/ATKL4zcYsUY=;
+        b=roHrUUbt+4khBgwtC1wATlQjDtCaa7FpYkDrG4bpERPtQNB7AFL6hjXhSlajmw4ZHm
+         HKcq+VZy5pDLW6/Ule7d6M2U0u4uLyXdW+jjIUr+gXCL5iV3A48mBkKbQn+w4vknaiRi
+         jIlbsOBIWysDZPypFi9NPXn55xNVLA64vb1yKuzGVo38iDPebSuOREc9tzN2srSv+ZXh
+         py0PpUG+NIba9dcUT/TAIj62dI4SMiokxAYTH2uVhPNuyAsxP6PecBOl+07xkShvvIlo
+         oBkebYvKoWdGIellZ6bYuhuUCC3NZPkNYzDZgALZraTA8CD+YgdA2nfGydW+xCjHauXk
+         zPpw==
+X-Gm-Message-State: AOAM5313d5+uVKR4qeiBVlCHXyAmD/vc6u7Fe053qIbFdvKJ6Y2ByZEO
+        +BNoFjFRYmkIe4i4nUV/2077voIJmy+F80PXp10=
+X-Google-Smtp-Source: ABdhPJwCbRoR+xa510LuZxAlNcsHnZzTgWupJPpuEOXyASWrrgyDvVSefRYiw7PUocuAw5wnlsNYfRVLgYROAUBeGBk=
+X-Received: by 2002:a7b:cbd9:: with SMTP id n25mr1791465wmi.30.1591349483211;
+ Fri, 05 Jun 2020 02:31:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=y
-Content-Transfer-Encoding: 8bit
+References: <20200605092502.18018-1-sjpark@amazon.com> <20200605092502.18018-2-sjpark@amazon.com>
+In-Reply-To: <20200605092502.18018-2-sjpark@amazon.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Fri, 5 Jun 2020 11:31:12 +0200
+Message-ID: <CAM9Jb+i5zA7BV51Vnw13xLmbuS0qtSHjZ-NvP7v0vc35jCObkA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm/page_idle.c: Skip offline pages
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        SeongJae Park <sjpark@amazon.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add interconnect bandwidth scaling supported strings for qcom-sdhci
-controller.
+> From: SeongJae Park <sjpark@amazon.de>
+>
+> 'Idle page tracking' users can pass random pfn that might be mapped to
+> an offline page.  To avoid accessing such pages, this commit modifies
+> the 'page_idle_get_page()' to use 'pfn_to_online_page()' instead of
+> 'pfn_valid()' and 'pfn_to_page()' combination, so that the pfn mapped to
+> an offline page can be skipped.
+>
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> Reported-by: David Hildenbrand <david@redhat.com>
+> ---
+>  mm/page_idle.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+>
+> diff --git a/mm/page_idle.c b/mm/page_idle.c
+> index 295512465065..057c61df12db 100644
+> --- a/mm/page_idle.c
+> +++ b/mm/page_idle.c
+> @@ -4,6 +4,7 @@
+>  #include <linux/fs.h>
+>  #include <linux/sysfs.h>
+>  #include <linux/kobject.h>
+> +#include <linux/memory_hotplug.h>
+>  #include <linux/mm.h>
+>  #include <linux/mmzone.h>
+>  #include <linux/pagemap.h>
+> @@ -30,13 +31,9 @@
+>   */
+>  static struct page *page_idle_get_page(unsigned long pfn)
+>  {
+> -       struct page *page;
+> +       struct page *page = pfn_to_online_page(pfn);
+>         pg_data_t *pgdat;
+>
+> -       if (!pfn_valid(pfn))
+> -               return NULL;
+> -
+> -       page = pfn_to_page(pfn);
+>         if (!page || !PageLRU(page) ||
+>             !get_page_unless_zero(page))
+>                 return NULL;
 
-Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
-Acked-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- Documentation/devicetree/bindings/mmc/sdhci-msm.txt | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/mmc/sdhci-msm.txt b/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
-index b8e1d2b..3b602fd 100644
---- a/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
-+++ b/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
-@@ -54,6 +54,21 @@ Required properties:
- - qcom,dll-config: Chipset and Platform specific value. Use this field to
- 	specify the DLL_CONFIG register value as per Hardware Programming Guide.
- 
-+Optional Properties:
-+* Following bus parameters are required for interconnect bandwidth scaling:
-+- interconnects: Pairs of phandles and interconnect provider specifier
-+		 to denote the edge source and destination ports of
-+		 the interconnect path.
-+
-+- interconnect-names: For sdhc, we have two main paths.
-+		1. Data path : sdhc to ddr
-+		2. Config path : cpu to sdhc
-+		For Data interconnect path the name supposed to be
-+		is "sdhc-ddr" and for config interconnect path it is
-+		"cpu-sdhc".
-+		Please refer to Documentation/devicetree/bindings/
-+		interconnect/ for more details.
-+
- Example:
- 
- 	sdhc_1: sdhci@f9824900 {
-@@ -71,6 +86,9 @@ Example:
- 
- 		clocks = <&gcc GCC_SDCC1_APPS_CLK>, <&gcc GCC_SDCC1_AHB_CLK>;
- 		clock-names = "core", "iface";
-+		interconnects = <&qnoc MASTER_SDCC_ID &qnoc SLAVE_DDR_ID>,
-+				<&qnoc MASTER_CPU_ID &qnoc SLAVE_SDCC_ID>;
-+		interconnect-names = "sdhc-ddr","cpu-sdhc";
- 
- 		qcom,dll-config = <0x000f642c>;
- 		qcom,ddr-config = <0x80040868>;
--- 
-1.9.1
-
+Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
