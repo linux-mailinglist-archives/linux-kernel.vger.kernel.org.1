@@ -2,191 +2,1369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D671EEF40
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 03:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82DA81EEF50
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbgFEBxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 21:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgFEBxy (ORCPT
+        id S1726084AbgFECKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 22:10:12 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:33215 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725497AbgFECKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 21:53:54 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9925BC08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 18:53:52 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id u13so6973823wml.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 18:53:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=U4CZosCgrOco+0qX9JfsnJUkrPPDI6uu5MxkB4nkR6o=;
-        b=HuJvNTbC7yu3dhhouWqHe74UiZWFmMLxhe4kcFamGNSRP7J+7L14dKfv5b4AZD7dCw
-         SywGJg61ciHTa4/uU6OtMBNcLClDeRdZzfFLtS3mMeXAL9EdqUeh4AObQwxzcg5BT7Nm
-         bKgowOoFtVUfKiC0M30n/UIz2Akrebr6RppfpOeaKlcs0MhT2H+ZlVdpgqLpMZEZ7GzK
-         rcKBDLh/mmBLtk6AcjRS2QvWYyhNi1+KvpNucB0134E7o7XwYx5kB4zZE1xHXzvXC7ut
-         808GhiM99zuIxTidP/vCzH90R9jY5eQhcx26qlN4R6JweaZQfcXfrnPKVs2gNVAD/X+T
-         CDdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=U4CZosCgrOco+0qX9JfsnJUkrPPDI6uu5MxkB4nkR6o=;
-        b=nuWni1rdF3zeUlZuQ5HpsuE78wFjQccQwkxMmdzPZhvBkj80SYgecZsbUqrenEhSRO
-         365gGy30wV+LG3gre+2y7EBns9jz9ZqFWmhtC3CIzQK/LvwfFWi04ZLBEZL2lgT98OFH
-         ERouZqpUzR00OTrg+Ipqj2cdbbbq1K51xnbi1tVB3pgtMI4iowP+tvDmWlVrr3ohxCus
-         Nhso05vYAeGzw5DlXVr4W8nJbgfVC7UyN8UT+NpvVJMdsHjEAX6i/NyeU8ndaxVzQKER
-         g3fd/WAfJvjZHdy8LlcMLlYXDg233ucG50oGGYbqaOF8dufuudS6iN76PV0t2v+N1X14
-         YvxA==
-X-Gm-Message-State: AOAM5334895R502xcKWM5BSBCWhaWQKXaUe4ELZ2325PdNnHMzNQqdIo
-        NAJvhwqflFkp2w7us0fqOCOvtGANEZSNGjFyRDQ=
-X-Google-Smtp-Source: ABdhPJw8if8OhVcmzWAvMi+CdfmYoq0LWuDN09khwUdOEfAMuIZ2h0feechMs60u6jZX25A+N99hK7LpkqfgJ+XWXic=
-X-Received: by 2002:a7b:cd04:: with SMTP id f4mr202787wmj.3.1591322031098;
- Thu, 04 Jun 2020 18:53:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200527062147.680-1-zhang.lyra@gmail.com> <CAAfSe-voe6as4VveyMt2pyJR1jytdzfRCp1z3s9AnS+QzTvPKA@mail.gmail.com>
- <20200604111639.GZ3714@dell>
-In-Reply-To: <20200604111639.GZ3714@dell>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Fri, 5 Jun 2020 09:53:14 +0800
-Message-ID: <CAAfSe-uuzWp+NS9dMj5=f-UFRyYR0XvuX0D_sJ0JpSRVJxnyiA@mail.gmail.com>
-Subject: Re: [PATCH V2] mfd: sprd: Add wakeup capability for PMIC irq
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 4 Jun 2020 22:10:12 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200605021002epoutp03a719ea95753f105c179b48dcf800db3b~Vg9b7LLoW0605106051epoutp03U
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 02:10:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200605021002epoutp03a719ea95753f105c179b48dcf800db3b~Vg9b7LLoW0605106051epoutp03U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591323002;
+        bh=t1zwQHAj/WFP23iujtLUHlkWSk6G0AZnz9AdUTbf1Yo=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=R3Wae1er5SL72jTQniNFIP0G3YLI4nppv/Zh+YATE3Ej9p8wH4M8lEZvss2nnCz1q
+         UBTUh9iJW6FoLkldHkrjUjmihiolI38mTFUk56u/v4kZzPl08FrD6yNtodYVIGOe+M
+         dDWAix0McbZebtFHj+f3mGhjywzpb3kRtNeviDGk=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p4.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200605021002epcas1p488d92f0f56ebdd80e71ef86ec7586f8e~Vg9biZT3R2295122951epcas1p4O;
+        Fri,  5 Jun 2020 02:10:02 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [RFC PATCH 4/5] scsi: ufs: L2P map management for HPB read
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <231786897.01591322101492.JavaMail.epsvc@epcpadp1>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <963815509.21591323002276.JavaMail.epsvc@epcpadp1>
+Date:   Fri, 05 Jun 2020 10:56:21 +0900
+X-CMS-MailID: 20200605015621epcms2p23ab90af27dcca5e2d884a4812fdff3c3
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882
+References: <231786897.01591322101492.JavaMail.epsvc@epcpadp1>
+        <336371513.41591320902369.JavaMail.epsvc@epcpadp1>
+        <963815509.21591320301642.JavaMail.epsvc@epcpadp1>
+        <231786897.01591320001492.JavaMail.epsvc@epcpadp1>
+        <CGME20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882@epcms2p2>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Jun 2020 at 19:16, Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Thu, 04 Jun 2020, Chunyan Zhang wrote:
->
-> > Hi Lee,
-> >
-> > On Wed, 27 May 2020 at 14:21, Chunyan Zhang <zhang.lyra@gmail.com> wrot=
-e:
-> > >
-> > > From: Baolin Wang <baolin.wang7@gmail.com>
-> > >
-> > > When changing to use suspend-to-idle to save power, the PMIC irq can =
-not
-> > > wakeup the system due to lack of wakeup capability, which will cause
-> > > the sub-irqs (such as power key) of the PMIC can not wake up the syst=
-em.
-> > > Thus we can add the wakeup capability for PMIC irq to solve this issu=
-e,
-> > > as well as removing the IRQF_NO_SUSPEND flag to allow PMIC irq to be
-> > > a wakeup source.
-> > >
-> > > Reported-by: Chunyan Zhang <zhang.lyra@gmail.com>
-> > > Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
-> > > Tested-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > > ---
-> > > Changes from v1:
-> > > * addressed comments from Lee;
-> > > * added tested-by from Chunyan.
-> > > (This patch is rebased on branch for-mfd-next)
-> >
-> > Could you please pick up this patch if there's no more comments :)
->
-> Please don't send contentless nags.  Your patch is in my queue.
->
-> The merge-window is currently open, which is a) a busy time for
+This is a patch for managing L2P map in HPB module.
 
-I understand that very much, and also appreciate all maintainer's
-works for the great opensource project.
-And just because of that I know you're busy during merge-window, I was
-worried that this patch was left out, since I didn't see it at
-mfd-next.
-I apologize if the last email made you unhappay. I will not send
-reminder email to you anymore.
+The HPB divides logical addresses into several regions. A region consists
+of several sub-regions. The sub-region is a basic unit where L2P mapping is
+managed. The driver loads L2P mapping data of each sub-region. The loaded
+sub-region is called active-state. The HPB driver unloads L2P mapping data
+as region unit. The unloaded region is called inactive-state.
 
-Best regards,
-Chunyan
+Sub-region/region candidates to be loaded and unloaded are delivered from
+the UFS device. The UFS device delivers the recommended active sub-region
+and inactivate region to the driver using sensedata.
+The HPB module performs L2P mapping management on the host through the
+delivered information.
 
-> Maintainers and b) a time where some of us take a little breather
-> before the next release.  Please wait until -rc1 has been released
-> before sending out your [RESENDS].
->
-> > > ---
-> > >  drivers/mfd/sprd-sc27xx-spi.c | 28 +++++++++++++++++++++++++++-
-> > >  1 file changed, 27 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-=
-spi.c
-> > > index 33336cde4724..adb4a1b13332 100644
-> > > --- a/drivers/mfd/sprd-sc27xx-spi.c
-> > > +++ b/drivers/mfd/sprd-sc27xx-spi.c
-> > > @@ -256,7 +256,7 @@ static int sprd_pmic_probe(struct spi_device *spi=
-)
-> > >         }
-> > >
-> > >         ret =3D devm_regmap_add_irq_chip(&spi->dev, ddata->regmap, dd=
-ata->irq,
-> > > -                                      IRQF_ONESHOT | IRQF_NO_SUSPEND=
-, 0,
-> > > +                                      IRQF_ONESHOT, 0,
-> > >                                        &ddata->irq_chip, &ddata->irq_=
-data);
-> > >         if (ret) {
-> > >                 dev_err(&spi->dev, "Failed to add PMIC irq chip %d\n"=
-, ret);
-> > > @@ -272,9 +272,34 @@ static int sprd_pmic_probe(struct spi_device *sp=
-i)
-> > >                 return ret;
-> > >         }
-> > >
-> > > +       device_init_wakeup(&spi->dev, true);
-> > >         return 0;
-> > >  }
-> > >
-> > > +#ifdef CONFIG_PM_SLEEP
-> > > +static int sprd_pmic_suspend(struct device *dev)
-> > > +{
-> > > +       struct sprd_pmic *ddata =3D dev_get_drvdata(dev);
-> > > +
-> > > +       if (device_may_wakeup(dev))
-> > > +               enable_irq_wake(ddata->irq);
-> > > +
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +static int sprd_pmic_resume(struct device *dev)
-> > > +{
-> > > +       struct sprd_pmic *ddata =3D dev_get_drvdata(dev);
-> > > +
-> > > +       if (device_may_wakeup(dev))
-> > > +               disable_irq_wake(ddata->irq);
-> > > +
-> > > +       return 0;
-> > > +}
-> > > +#endif
-> > > +
-> > > +static SIMPLE_DEV_PM_OPS(sprd_pmic_pm_ops, sprd_pmic_suspend, sprd_p=
-mic_resume);
-> > > +
-> > >  static const struct of_device_id sprd_pmic_match[] =3D {
-> > >         { .compatible =3D "sprd,sc2731", .data =3D &sc2731_data },
-> > >         {},
-> > > @@ -285,6 +310,7 @@ static struct spi_driver sprd_pmic_driver =3D {
-> > >         .driver =3D {
-> > >                 .name =3D "sc27xx-pmic",
-> > >                 .of_match_table =3D sprd_pmic_match,
-> > > +               .pm =3D &sprd_pmic_pm_ops,
-> > >         },
-> > >         .probe =3D sprd_pmic_probe,
-> > >  };
-> > >
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Linaro Services Technical Lead
-> Linaro.org =E2=94=82 Open source software for ARM SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+A pinned region is a pre-set regions on the UFS device that is always
+activate-state and
+
+The data structure for map data request and L2P map uses mempool API,
+minimizing allocation overhead while avoiding static allocation.
+
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+---
+ drivers/scsi/ufs/ufshpb.c | 1005 ++++++++++++++++++++++++++++++++++++-
+ drivers/scsi/ufs/ufshpb.h |   72 +++
+ 2 files changed, 1073 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index cb0ad4d16d0f..f1aa8e7b5ce0 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -46,6 +46,63 @@ static struct ufshpb_driver ufshpb_drv;
+ 
+ static int ufshpb_create_sysfs(struct ufs_hba *hba, struct ufshpb_lu *hpb);
+ 
++static inline bool ufshpb_is_general_lun(int lun)
++{
++	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
++}
++
++static inline bool
++ufshpb_is_pinned_region(struct ufshpb_lu *hpb, int rgn_idx)
++{
++	if (hpb->lu_pinned_end != PINNED_NOT_SET &&
++	    rgn_idx >= hpb->lu_pinned_start &&
++	    rgn_idx <= hpb->lu_pinned_end)
++		return true;
++
++	return false;
++}
++
++static bool ufshpb_is_empty_rsp_lists(struct ufshpb_lu *hpb)
++{
++	bool ret = true;
++	unsigned long flags;
++
++	spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++	if (!list_empty(&hpb->lh_inact_rgn) || !list_empty(&hpb->lh_act_srgn))
++		ret = false;
++	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++
++	return ret;
++}
++
++static inline int ufshpb_may_field_valid(struct ufs_hba *hba,
++					 struct ufshcd_lrb *lrbp,
++					 struct ufshpb_rsp_field *rsp_field)
++{
++	if (be16_to_cpu(rsp_field->sense_data_len) != DEV_SENSE_SEG_LEN ||
++	    rsp_field->desc_type != DEV_DES_TYPE ||
++	    rsp_field->additional_len != DEV_ADDITIONAL_LEN ||
++	    rsp_field->hpb_type == HPB_RSP_NONE ||
++	    rsp_field->active_rgn_cnt > MAX_ACTIVE_NUM ||
++	    rsp_field->inactive_rgn_cnt > MAX_INACTIVE_NUM ||
++	    (!rsp_field->active_rgn_cnt && !rsp_field->inactive_rgn_cnt))
++		return -EINVAL;
++
++	if (!ufshpb_is_general_lun(lrbp->lun)) {
++		dev_warn(hba->dev, "ufshpb: lun(%d) not supported\n",
++			 lrbp->lun);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++
++static inline struct ufshpb_lu *ufshpb_get_hpb_data(struct scsi_cmnd *cmd)
++{
++	return cmd->device->hostdata;
++}
++
+ static inline int ufshpb_get_state(struct ufshpb_lu *hpb)
+ {
+ 	return atomic_read(&hpb->hpb_state);
+@@ -80,6 +137,789 @@ static inline void ufshpb_lu_put(struct ufshpb_lu *hpb)
+ 	put_device(&hpb->hpb_lu_dev);
+ }
+ 
++static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
++					     struct ufshpb_subregion *srgn)
++{
++	struct ufshpb_req *map_req;
++	struct request *req;
++	struct bio *bio;
++
++	map_req = kmem_cache_alloc(hpb->map_req_cache, GFP_KERNEL);
++	if (!map_req)
++		return NULL;
++
++	req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
++			      REQ_OP_SCSI_IN, BLK_MQ_REQ_PREEMPT);
++	if (IS_ERR(req))
++		goto free_map_req;
++
++	bio = bio_alloc(GFP_KERNEL, hpb->pages_per_srgn);
++	if (!bio) {
++		blk_put_request(req);
++		goto free_map_req;
++	}
++
++	map_req->hpb = hpb;
++	map_req->req = req;
++	map_req->bio = bio;
++
++	map_req->rgn_idx = srgn->rgn_idx;
++	map_req->srgn_idx = srgn->srgn_idx;
++	map_req->mctx = srgn->mctx;
++	map_req->lun = hpb->lun;
++
++	return map_req;
++free_map_req:
++	kmem_cache_free(hpb->map_req_cache, map_req);
++	return NULL;
++}
++
++static inline void ufshpb_put_map_req(struct ufshpb_lu *hpb,
++				      struct ufshpb_req *map_req)
++{
++	bio_put(map_req->bio);
++	blk_put_request(map_req->req);
++	kmem_cache_free(hpb->map_req_cache, map_req);
++}
++
++
++static inline int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
++				     struct ufshpb_subregion *srgn)
++{
++	WARN_ON(!srgn->mctx);
++	bitmap_zero(srgn->mctx->ppn_dirty, hpb->entries_per_srgn);
++	return 0;
++}
++
++static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int rgn_idx,
++				      int srgn_idx)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	list_del_init(&rgn->list_inact_rgn);
++
++	if (list_empty(&srgn->list_act_srgn))
++		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
++}
++
++static void ufshpb_update_inactive_info(struct ufshpb_lu *hpb, int rgn_idx)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	int srgn_idx;
++
++	rgn = hpb->rgn_tbl + rgn_idx;
++
++	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
++		srgn = rgn->srgn_tbl + srgn_idx;
++
++		list_del_init(&srgn->list_act_srgn);
++	}
++
++	if (list_empty(&rgn->list_inact_rgn))
++		list_add_tail(&rgn->list_inact_rgn, &hpb->lh_inact_rgn);
++}
++
++static void ufshpb_clean_active_subregion(struct ufshpb_lu *hpb,
++					  struct ufshpb_subregion *srgn)
++{
++	struct ufshpb_region *rgn;
++
++	/*
++	 * If there is no mctx in subregion
++	 * after I/O progress for HPB_READ_BUFFER, the region to which the
++	 * subregion belongs was evicted.
++	 * Mask sure the the region must not evict in I/O progress
++	 */
++	WARN_ON(!srgn->mctx);
++
++	rgn = hpb->rgn_tbl + srgn->rgn_idx;
++
++	if (unlikely(rgn->rgn_state == HPB_RGN_INACTIVE)) {
++		dev_err(&hpb->hpb_lu_dev,
++			"region %d subregion %d evicted\n",
++			srgn->rgn_idx, srgn->srgn_idx);
++		return;
++	}
++	srgn->srgn_state = HPB_SRGN_CLEAN;
++}
++
++static void ufshpb_map_req_compl_fn(struct request *req, blk_status_t error)
++{
++	struct ufshpb_req *map_req = (struct ufshpb_req *) req->end_io_data;
++	struct ufshpb_lu *hpb = map_req->hpb;
++	struct ufshpb_subregion *srgn;
++	unsigned long flags;
++
++	srgn = hpb->rgn_tbl[map_req->rgn_idx].srgn_tbl +
++		map_req->srgn_idx;
++
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	ufshpb_clean_active_subregion(hpb, srgn);
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++
++	ufshpb_put_map_req(map_req->hpb, map_req);
++	ufshpb_lu_put(hpb);
++}
++
++static inline void ufshpb_set_read_buf_cmd(unsigned char *cdb, int rgn_idx,
++					   int srgn_idx, int srgn_mem_size)
++{
++	cdb[0] = UFSHPB_READ_BUFFER;
++	cdb[1] = UFSHPB_READ_BUFFER_ID;
++
++	put_unaligned_be32(srgn_mem_size, &cdb[5]);
++	/* cdb[5] = 0x00; */
++	put_unaligned_be16(rgn_idx, &cdb[2]);
++	put_unaligned_be16(srgn_idx, &cdb[4]);
++
++	cdb[9] = 0x00;
++}
++
++static int ufshpb_map_req_add_bio_page(struct ufshpb_lu *hpb,
++				       struct request_queue *q, struct bio *bio,
++				       struct ufshpb_map_ctx *mctx)
++{
++	int i, ret = 0;
++
++	for (i = 0; i < hpb->pages_per_srgn; i++) {
++		ret = bio_add_pc_page(q, bio, mctx->m_page[i], PAGE_SIZE, 0);
++		if (ret != PAGE_SIZE) {
++			dev_notice(&hpb->hpb_lu_dev,
++				   "bio_add_pc_page fail %d\n", ret);
++			return -ENOMEM;
++		}
++	}
++
++	return 0;
++}
++
++static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
++				  struct ufshpb_req *map_req)
++{
++	struct request_queue *q;
++	struct request *req;
++	struct scsi_request *rq;
++	int ret = 0;
++
++	q = hpb->sdev_ufs_lu->request_queue;
++	ret = ufshpb_map_req_add_bio_page(hpb, q, map_req->bio,
++					  map_req->mctx);
++	if (ret) {
++		dev_notice(&hpb->hpb_lu_dev,
++			   "map_req_add_bio_page fail %d - %d\n",
++			   map_req->rgn_idx, map_req->srgn_idx);
++		return ret;
++	}
++
++	req = map_req->req;
++
++	blk_rq_append_bio(req, &map_req->bio);
++	req->rq_flags |= RQF_QUIET;
++	req->timeout = MAP_REQ_TIMEOUT;
++	req->end_io_data = (void *)map_req;
++
++	rq = scsi_req(req);
++	ufshpb_set_read_buf_cmd(rq->cmd, map_req->rgn_idx,
++				map_req->srgn_idx, hpb->srgn_mem_size);
++	rq->cmd_len = HPB_READ_BUFFER_CMD_LENGTH;
++
++	blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_map_req_compl_fn);
++
++	atomic_inc(&hpb->stats.map_req_cnt);
++	return 0;
++}
++
++static struct ufshpb_map_ctx *ufshpb_get_map_ctx(struct ufshpb_lu *hpb)
++{
++	struct ufshpb_map_ctx *mctx;
++	int i, j;
++
++	mctx = mempool_alloc(ufshpb_drv.ufshpb_mctx_pool, GFP_KERNEL);
++	if (!mctx)
++		return NULL;
++
++	mctx->m_page = kmem_cache_alloc(hpb->m_page_cache, GFP_KERNEL);
++	if (!mctx->m_page)
++		goto release_mctx;
++
++	mctx->ppn_dirty = bitmap_zalloc(hpb->entries_per_srgn, GFP_KERNEL);
++	if (!mctx->ppn_dirty)
++		goto release_m_page;
++
++	for (i = 0; i < hpb->pages_per_srgn; i++) {
++		mctx->m_page[i] = mempool_alloc(ufshpb_drv.ufshpb_page_pool,
++						GFP_KERNEL);
++		memset(page_address(mctx->m_page[i]), 0, PAGE_SIZE);
++		if (!mctx->m_page[i]) {
++			for (j = 0; j < i; j++)
++				mempool_free(mctx->m_page[j],
++					     ufshpb_drv.ufshpb_page_pool);
++			goto release_ppn_dirty;
++		}
++	}
++
++	return mctx;
++release_ppn_dirty:
++	bitmap_free(mctx->ppn_dirty);
++release_m_page:
++	kmem_cache_free(hpb->m_page_cache, mctx->m_page);
++release_mctx:
++	mempool_free(mctx, ufshpb_drv.ufshpb_mctx_pool);
++	return NULL;
++}
++
++static inline void ufshpb_put_map_ctx(struct ufshpb_lu *hpb,
++				      struct ufshpb_map_ctx *mctx)
++{
++	int i;
++
++	for (i = 0; i < hpb->pages_per_srgn; i++)
++		mempool_free(mctx->m_page[i],
++			     ufshpb_drv.ufshpb_page_pool);
++
++	bitmap_free(mctx->ppn_dirty);
++	kmem_cache_free(hpb->m_page_cache, mctx->m_page);
++	mempool_free(mctx, ufshpb_drv.ufshpb_mctx_pool);
++}
++
++static int ufshpb_check_issue_state_srgns(struct ufshpb_lu *hpb,
++					  struct ufshpb_region *rgn)
++{
++	struct ufshpb_subregion *srgn;
++	int srgn_idx;
++
++	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
++		srgn  = rgn->srgn_tbl + srgn_idx;
++
++		if (srgn->srgn_state == HPB_SRGN_ISSUED)
++			return -EPERM;
++	}
++	return 0;
++}
++
++static inline void ufshpb_add_lru_info(struct victim_select_info *lru_info,
++				       struct ufshpb_region *rgn)
++{
++	struct ufshpb_subregion *srgn;
++	int srgn_idx;
++
++	rgn->rgn_state = HPB_RGN_ACTIVE;
++	list_add_tail(&rgn->list_lru_rgn, &lru_info->lh_lru_rgn);
++	atomic_inc(&lru_info->active_cnt);
++
++	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
++		srgn = rgn->srgn_tbl + srgn_idx;
++		srgn->srgn_state = HPB_SRGN_DIRTY;
++	}
++}
++
++static inline void ufshpb_hit_lru_info(struct victim_select_info *lru_info,
++				       struct ufshpb_region *rgn)
++{
++	list_move_tail(&rgn->list_lru_rgn, &lru_info->lh_lru_rgn);
++}
++
++static struct ufshpb_region *ufshpb_victim_lru_info(struct ufshpb_lu *hpb)
++{
++	struct victim_select_info *lru_info = &hpb->lru_info;
++	struct ufshpb_region *rgn, *victim_rgn = NULL;
++
++	list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn) {
++		WARN_ON(!rgn);
++		if (ufshpb_check_issue_state_srgns(hpb, rgn))
++			continue;
++
++		victim_rgn = rgn;
++		break;
++	}
++
++	return victim_rgn;
++}
++
++static inline void ufshpb_cleanup_lru_info(struct victim_select_info *lru_info,
++					   struct ufshpb_region *rgn)
++{
++	list_del_init(&rgn->list_lru_rgn);
++	rgn->rgn_state = HPB_RGN_INACTIVE;
++	atomic_dec(&lru_info->active_cnt);
++}
++
++
++static inline int ufshpb_add_region(struct ufshpb_lu *hpb,
++				    struct ufshpb_region *rgn)
++{
++	struct ufshpb_subregion *srgn;
++	int srgn_idx, j;
++	int err = 0;
++
++	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
++		srgn = rgn->srgn_tbl + srgn_idx;
++
++		srgn->mctx = ufshpb_get_map_ctx(hpb);
++		if (!srgn->mctx) {
++			dev_info(&hpb->hpb_lu_dev,
++				 "alloc mctx failed regions %d - %d",
++				 rgn->rgn_idx, srgn_idx);
++			err = -ENOMEM;
++			goto release_mctx;
++		}
++	}
++
++	return 0;
++release_mctx:
++	for (j = 0; j < srgn_idx; j++) {
++		srgn = rgn->srgn_tbl + j;
++		ufshpb_put_map_ctx(hpb, srgn->mctx);
++	}
++	return err;
++}
++
++static inline void ufshpb_purge_active_subregion(struct ufshpb_lu *hpb,
++						 struct ufshpb_subregion *srgn,
++						 int state)
++{
++	if (state == HPB_SRGN_UNUSED) {
++		ufshpb_put_map_ctx(hpb, srgn->mctx);
++		srgn->mctx = NULL;
++	}
++
++	srgn->srgn_state = state;
++}
++
++static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
++				  struct ufshpb_region *rgn)
++{
++	struct victim_select_info *lru_info;
++	struct ufshpb_subregion *srgn;
++	int srgn_idx;
++
++	lru_info = &hpb->lru_info;
++
++	dev_dbg(&hpb->hpb_lu_dev, "evict region %d\n", rgn->rgn_idx);
++
++	ufshpb_cleanup_lru_info(lru_info, rgn);
++
++	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
++		srgn = rgn->srgn_tbl + srgn_idx;
++
++		ufshpb_purge_active_subregion(hpb, srgn, HPB_SRGN_UNUSED);
++	}
++}
++
++static int ufshpb_evict_region(struct ufshpb_lu *hpb, struct ufshpb_region *rgn)
++{
++	unsigned long flags;
++	int ret = 0;
++
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	if (rgn->rgn_state == HPB_RGN_PINNED) {
++		dev_warn(&hpb->hpb_lu_dev,
++			 "pinned region cannot drop-out. region %d\n",
++			 rgn->rgn_idx);
++		goto out;
++	}
++
++	if (!list_empty(&rgn->list_lru_rgn)) {
++		if (ufshpb_check_issue_state_srgns(hpb, rgn)) {
++			ret = -EBUSY;
++			goto out;
++		}
++
++		__ufshpb_evict_region(hpb, rgn);
++	}
++out:
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++	return ret;
++}
++
++static inline struct
++ufshpb_rsp_field *ufshpb_get_hpb_rsp(struct ufshcd_lrb *lrbp)
++{
++	return (struct ufshpb_rsp_field *)&lrbp->ucd_rsp_ptr->sr.sense_data_len;
++}
++
++static int ufshpb_issue_map_req(struct ufshpb_lu *hpb,
++				struct ufshpb_region *rgn,
++				struct ufshpb_subregion *srgn)
++{
++	struct ufshpb_req *map_req;
++	unsigned long flags;
++	int ret = 0;
++
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	/*
++	 * Since the region state change occurs only in the hpb task-work,
++	 * the state of the region cannot HPB_RGN_INACTIVE at this point.
++	 * The region state must be changed in the hpb task-work
++	 */
++	WARN_ON(rgn->rgn_state == HPB_RGN_INACTIVE);
++
++	/*
++	 * If the subregion is already ISSUED state,
++	 * a specific event (e.g., GC or wear-leveling, etc.) occurs in
++	 * the device and HPB response for map loading is received.
++	 * In this case, after finishing the HPB_READ_BUFFER,
++	 * the next HPB_READ_BUFFER is performed again to obtain the latest
++	 * map data
++	 */
++	if (srgn->srgn_state == HPB_SRGN_ISSUED) {
++		ret = -EAGAIN;
++		goto unlock_out;
++	}
++
++	ufshpb_clear_dirty_bitmap(hpb, srgn);
++	srgn->srgn_state = HPB_SRGN_ISSUED;
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++
++	map_req = ufshpb_get_map_req(hpb, srgn);
++	if (!map_req) {
++		ret = -EAGAIN;
++		goto out;
++	}
++
++	ret = ufshpb_lu_get(hpb);
++	if (unlikely(ret)) {
++		dev_notice(&hpb->hpb_lu_dev,
++			   "%s: ufshpb_lu_get failed: %d", __func__, ret);
++		ret = -EAGAIN;
++		goto free_map_req;
++	}
++
++	ret = ufshpb_execute_map_req(hpb, map_req);
++	if (ret) {
++		dev_notice(&hpb->hpb_lu_dev,
++			   "%s: issue map_req failed: %d, region %d - %d\n",
++			   __func__, ret, srgn->rgn_idx, srgn->srgn_idx);
++		ufshpb_lu_put(hpb);
++		goto free_map_req;
++	}
++	return ret;
++free_map_req:
++	ufshpb_put_map_req(hpb, map_req);
++unlock_out:
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++out:
++	return ret;
++}
++
++static int ufshpb_load_region(struct ufshpb_lu *hpb, struct ufshpb_region *rgn)
++{
++	struct ufshpb_region *victim_rgn;
++	struct victim_select_info *lru_info = &hpb->lru_info;
++	unsigned long flags;
++	int ret = 0;
++
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	/*
++	 * If region belongs to lru_list, just move the region
++	 * to the front of lru list. because the state of the region
++	 * is already active-state
++	 */
++	if (!list_empty(&rgn->list_lru_rgn)) {
++		ufshpb_hit_lru_info(lru_info, rgn);
++		goto out;
++	}
++
++	if (rgn->rgn_state == HPB_RGN_INACTIVE) {
++		if (atomic_read(&lru_info->active_cnt)
++		    == lru_info->max_lru_active_cnt) {
++			/*
++			 * If the maximum number of active regions
++			 * is exceeded, evict the least recently used region.
++			 * This case may occur when the device responds
++			 * to the eviction information late.
++			 * It is okay to evict the least recently used region,
++			 * because the device could detect this region
++			 * by not issuing HPB_READ
++			 */
++			victim_rgn = ufshpb_victim_lru_info(hpb);
++			if (!victim_rgn) {
++				dev_warn(&hpb->hpb_lu_dev,
++				    "cannot get victim region error\n");
++				ret = -ENOMEM;
++				goto out;
++			}
++
++			dev_dbg(&hpb->hpb_lu_dev,
++				"LRU full (%d), choost victim %d\n",
++				atomic_read(&lru_info->active_cnt),
++				victim_rgn->rgn_idx);
++			__ufshpb_evict_region(hpb, victim_rgn);
++		}
++
++		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++		ret = ufshpb_add_region(hpb, rgn);
++		if (ret) {
++			dev_info(&hpb->hpb_lu_dev,
++				 "ufshpb_add_region %d add failed\n",
++				 rgn->rgn_idx);
++			goto out;
++		}
++		spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++		/*
++		 * When a region is added to lru_info list_head,
++		 * it is guaranteed that the subregion has been
++		 * assigned all mctx. If failed, try to receive mctx again
++		 * without being added to lru_info list_head
++		 */
++		ufshpb_add_lru_info(lru_info, rgn);
++	}
++out:
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++	return ret;
++}
++
++static void ufshpb_rsp_req_region_update(struct ufshpb_lu *hpb,
++					 struct ufshpb_rsp_field *rsp_field)
++{
++	int i, rgn_idx, srgn_idx;
++
++	/*
++	 * If the active region and the inactive region are the same,
++	 * we will inactivate this region.
++	 * The device could check this (region inactivated) and
++	 * will response the proper active region information
++	 */
++	spin_lock(&hpb->rsp_list_lock);
++	for (i = 0; i < rsp_field->active_rgn_cnt; i++) {
++		rgn_idx =
++			be16_to_cpu(rsp_field->hpb_active_field[i].active_rgn);
++		srgn_idx =
++			be16_to_cpu(rsp_field->hpb_active_field[i].active_srgn);
++
++		dev_dbg(&hpb->hpb_lu_dev, "activate(%d) region %d - %d\n",
++			i, rgn_idx, srgn_idx);
++		ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
++		atomic_inc(&hpb->stats.rb_active_cnt);
++	}
++
++	for (i = 0; i < rsp_field->inactive_rgn_cnt; i++) {
++		rgn_idx = be16_to_cpu(rsp_field->hpb_inactive_field[i]);
++		dev_dbg(&hpb->hpb_lu_dev, "inactivate(%d) region %d\n",
++			i, rgn_idx);
++		ufshpb_update_inactive_info(hpb, rgn_idx);
++		atomic_inc(&hpb->stats.rb_inactive_cnt);
++	}
++	spin_unlock(&hpb->rsp_list_lock);
++
++	dev_dbg(&hpb->hpb_lu_dev, "Noti: #ACT %u #INACT %u\n",
++		rsp_field->active_rgn_cnt, rsp_field->inactive_rgn_cnt);
++
++	queue_work(ufshpb_drv.ufshpb_wq, &hpb->map_work);
++}
++
++/* routine : isr (ufs) */
++static void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
++{
++	struct ufshpb_lu *hpb;
++	struct ufshpb_rsp_field *rsp_field;
++	int data_seg_len, ret;
++
++	data_seg_len = be32_to_cpu(lrbp->ucd_rsp_ptr->header.dword_2)
++		& MASK_RSP_UPIU_DATA_SEG_LEN;
++
++	if (!data_seg_len) {
++		if (!ufshpb_is_general_lun(lrbp->lun))
++			return;
++
++		hpb = ufshpb_get_hpb_data(lrbp->cmd);
++		ret = ufshpb_lu_get(hpb);
++		if (ret)
++			return;
++
++		if (!ufshpb_is_empty_rsp_lists(hpb))
++			queue_work(ufshpb_drv.ufshpb_wq, &hpb->map_work);
++
++		goto put_hpb;
++	}
++
++	rsp_field = ufshpb_get_hpb_rsp(lrbp);
++	if (ufshpb_may_field_valid(hba, lrbp, rsp_field))
++		return;
++
++	hpb = ufshpb_get_hpb_data(lrbp->cmd);
++	ret = ufshpb_lu_get(hpb);
++	if (ret)
++		return;
++
++	atomic_inc(&hpb->stats.rb_noti_cnt);
++
++	switch (rsp_field->hpb_type) {
++	case HPB_RSP_REQ_REGION_UPDATE:
++		WARN_ON(data_seg_len != DEV_DATA_SEG_LEN);
++		ufshpb_rsp_req_region_update(hpb, rsp_field);
++		break;
++	default:
++		dev_notice(&hpb->hpb_lu_dev, "hpb_type is not available: %d\n",
++			   rsp_field->hpb_type);
++		break;
++	}
++put_hpb:
++	ufshpb_lu_put(hpb);
++}
++
++static void ufshpb_add_active_list(struct ufshpb_lu *hpb,
++				   struct ufshpb_region *rgn,
++				   struct ufshpb_subregion *srgn)
++{
++	if (!list_empty(&rgn->list_inact_rgn))
++		return;
++
++	if (!list_empty(&srgn->list_act_srgn)) {
++		list_move(&srgn->list_act_srgn, &hpb->lh_act_srgn);
++		return;
++	}
++
++	list_add(&srgn->list_act_srgn, &hpb->lh_act_srgn);
++}
++
++static void ufshpb_add_starved_list(struct ufshpb_lu *hpb,
++				    struct ufshpb_region *rgn,
++				    struct list_head *starved_list)
++{
++	struct ufshpb_subregion *srgn;
++	int srgn_idx;
++
++	if (!list_empty(&rgn->list_inact_rgn))
++		return;
++
++	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
++		srgn = rgn->srgn_tbl + srgn_idx;
++
++		if (!list_empty(&srgn->list_act_srgn))
++			return;
++	}
++
++	list_add_tail(&rgn->list_inact_rgn, starved_list);
++}
++
++static void ufshpb_run_active_subregion_list(struct ufshpb_lu *hpb)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	unsigned long flags;
++	int ret = 0;
++
++	spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++	while ((srgn = list_first_entry_or_null(&hpb->lh_act_srgn,
++						struct ufshpb_subregion,
++						list_act_srgn))) {
++		list_del_init(&srgn->list_act_srgn);
++		spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++
++		rgn = hpb->rgn_tbl + srgn->rgn_idx;
++		ret = ufshpb_load_region(hpb, rgn);
++		if (ret)
++			break;
++
++		ret = ufshpb_issue_map_req(hpb, rgn, srgn);
++		if (ret) {
++			dev_notice(&hpb->hpb_lu_dev,
++			    "issue map_req failed. ret %d, region %d - %d\n",
++			    ret, rgn->rgn_idx, srgn->srgn_idx);
++			break;
++		}
++		spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++	}
++
++	if (ret) {
++		dev_notice(&hpb->hpb_lu_dev, "region %d - %d, will retry\n",
++			   rgn->rgn_idx, srgn->srgn_idx);
++		spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++		srgn->srgn_state = HPB_SRGN_DIRTY;
++		ufshpb_add_active_list(hpb, rgn, srgn);
++	}
++	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++}
++
++static void ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
++{
++	struct ufshpb_region *rgn;
++	unsigned long flags;
++	int ret;
++	LIST_HEAD(starved_list);
++
++	spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++	while ((rgn = list_first_entry_or_null(&hpb->lh_inact_rgn,
++					       struct ufshpb_region,
++					       list_inact_rgn))) {
++		list_del_init(&rgn->list_inact_rgn);
++		spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++
++		ret = ufshpb_evict_region(hpb, rgn);
++		if (ret) {
++			spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++			ufshpb_add_starved_list(hpb, rgn, &starved_list);
++			spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++		}
++
++		spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++	}
++
++	list_splice(&starved_list, &hpb->lh_inact_rgn);
++	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++}
++
++static void ufshpb_map_work_handler(struct work_struct *work)
++{
++	struct ufshpb_lu *hpb;
++	int ret;
++
++	hpb = container_of(work, struct ufshpb_lu, map_work);
++	ret = ufshpb_lu_get(hpb);
++	if (ret) {
++		dev_info(&hpb->hpb_lu_dev, "%s: exit, state %d\n",
++			 __func__, ufshpb_get_state(hpb));
++		return;
++	}
++
++	ufshpb_run_inactive_region_list(hpb);
++	ufshpb_run_active_subregion_list(hpb);
++
++	ufshpb_lu_put(hpb);
++}
++
++/*
++ * this function doesn't need to hold lock due to be called in init.
++ * (hpb_state_lock, rsp_list_lock, etc..)
++ */
++static int ufshpb_init_pinned_active_region(struct ufs_hba *hba,
++					    struct ufshpb_lu *hpb,
++					    struct ufshpb_region *rgn)
++{
++	struct ufshpb_subregion *srgn;
++	int srgn_idx, j;
++	int err = 0;
++
++	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
++		srgn = rgn->srgn_tbl + srgn_idx;
++
++		srgn->mctx = ufshpb_get_map_ctx(hpb);
++		if (!srgn->mctx) {
++			dev_err(hba->dev,
++				"alloc mctx for pinned region failed\n");
++			goto release;
++		}
++
++		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
++	}
++
++	rgn->rgn_state = HPB_RGN_PINNED;
++	return 0;
++
++release:
++	for (j = 0; j < srgn_idx; j++) {
++		srgn = rgn->srgn_tbl + j;
++		ufshpb_put_map_ctx(hpb, srgn->mctx);
++	}
++	return err;
++}
++
+ static void ufshpb_init_subregion_tbl(struct ufshpb_lu *hpb,
+ 				      struct ufshpb_region *rgn)
+ {
+@@ -88,6 +928,8 @@ static void ufshpb_init_subregion_tbl(struct ufshpb_lu *hpb,
+ 	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
+ 		struct ufshpb_subregion *srgn = rgn->srgn_tbl + srgn_idx;
+ 
++		INIT_LIST_HEAD(&srgn->list_act_srgn);
++
+ 		srgn->rgn_idx = rgn->rgn_idx;
+ 		srgn->srgn_idx = srgn_idx;
+ 		srgn->srgn_state = HPB_SRGN_UNUSED;
+@@ -120,6 +962,8 @@ static void ufshpb_init_lu_parameter(struct ufs_hba *hba,
+ 	hpb->lu_pinned_end = hpb_lu_info->num_pinned ?
+ 		(hpb_lu_info->pinned_start + hpb_lu_info->num_pinned - 1)
+ 		: PINNED_NOT_SET;
++	hpb->lru_info.max_lru_active_cnt =
++		hpb_lu_info->max_active_rgns - hpb_lu_info->num_pinned;
+ 
+ 	rgn_mem_size = (1ULL << hpb_dev_info->rgn_size) * HPB_RGN_SIZE_UNIT
+ 		/ HPB_ENTRY_BLOCK_SIZE * HPB_ENTRY_SIZE;
+@@ -174,6 +1018,9 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
+ 		rgn = rgn_table + rgn_idx;
+ 		rgn->rgn_idx = rgn_idx;
+ 
++		INIT_LIST_HEAD(&rgn->list_inact_rgn);
++		INIT_LIST_HEAD(&rgn->list_lru_rgn);
++
+ 		srgn_cnt = min(total_srgn_cnt, hpb->srgns_per_rgn);
+ 
+ 		ret = ufshpb_alloc_subregion_tbl(hpb, rgn, srgn_cnt);
+@@ -181,7 +1028,12 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
+ 			goto release_srgn_table;
+ 		ufshpb_init_subregion_tbl(hpb, rgn);
+ 
+-		rgn->rgn_state = HPB_RGN_INACTIVE;
++		if (ufshpb_is_pinned_region(hpb, rgn_idx)) {
++			ret = ufshpb_init_pinned_active_region(hba, hpb, rgn);
++			if (ret)
++				goto release_srgn_table;
++		} else {
++			rgn->rgn_state = HPB_RGN_INACTIVE;
+ 		}
+ 	}
+ 
+@@ -195,8 +1047,15 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
+ release_srgn_table:
+ 	for (i = 0; i < rgn_idx; i++) {
+ 		rgn = rgn_table + i;
+-		if (rgn->srgn_tbl)
++		if (rgn->srgn_tbl) {
++			for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt;
++			     srgn_idx++) {
++				srgn = rgn->srgn_tbl + srgn_idx;
++				if (srgn->mctx)
++					ufshpb_put_map_ctx(hpb, srgn->mctx);
++			}
+ 			kvfree(rgn->srgn_tbl);
++		}
+ 	}
+ 	kvfree(rgn_table);
+ 	return ret;
+@@ -212,6 +1071,8 @@ static void ufshpb_destroy_subregion_tbl(struct ufshpb_lu *hpb,
+ 
+ 		srgn = rgn->srgn_tbl + srgn_idx;
+ 		srgn->srgn_state = HPB_SRGN_UNUSED;
++
++		ufshpb_put_map_ctx(hpb, srgn->mctx);
+ 	}
+ }
+ 
+@@ -241,10 +1102,37 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb,
+ 	int ret;
+ 
+ 	spin_lock_init(&hpb->hpb_state_lock);
++	spin_lock_init(&hpb->rsp_list_lock);
++
++	INIT_LIST_HEAD(&hpb->lru_info.lh_lru_rgn);
++	INIT_LIST_HEAD(&hpb->lh_act_srgn);
++	INIT_LIST_HEAD(&hpb->lh_inact_rgn);
++	INIT_LIST_HEAD(&hpb->list_hpb_lu);
++
++	INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
++
++	hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
++			  sizeof(struct ufshpb_req), 0, 0, NULL);
++	if (!hpb->map_req_cache) {
++		dev_err(hba->dev, "ufshpb(%d) ufshpb_req_cache create fail",
++			hpb->lun);
++		return -ENOMEM;
++	}
++
++	hpb->m_page_cache = kmem_cache_create("ufshpb_m_page_cache",
++			  sizeof(struct page *) * hpb->pages_per_srgn,
++			  0, 0, NULL);
++	if (!hpb->m_page_cache) {
++		dev_err(hba->dev, "ufshpb(%d) ufshpb_m_page_cache create fail",
++			hpb->lun);
++		ret = -ENOMEM;
++		goto release_req_cache;
++	}
++
+ 
+ 	ret = ufshpb_alloc_region_tbl(hba, hpb);
+ 	if (ret)
+-		return ret;
++		goto release_m_page_cache;
+ 
+ 	ret = ufshpb_create_sysfs(hba, hpb);
+ 	if (ret)
+@@ -254,6 +1142,10 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb,
+ 
+ release_rgn_table:
+ 	ufshpb_destroy_region_tbl(hpb);
++release_m_page_cache:
++	kmem_cache_destroy(hpb->m_page_cache);
++release_req_cache:
++	kmem_cache_destroy(hpb->map_req_cache);
+ 	return ret;
+ }
+ 
+@@ -285,10 +1177,42 @@ static struct ufshpb_lu *ufshpb_alloc_hpb_lu(struct ufs_hba *hba, int lun,
+ 	return NULL;
+ }
+ 
++static void ufshpb_discard_rsp_lists(struct ufshpb_lu *hpb)
++{
++	struct ufshpb_region *rgn, *next_rgn;
++	struct ufshpb_subregion *srgn, *next_srgn;
++	unsigned long flags;
++
++	/*
++	 * If the device reset occurred, the remained HPB region information
++	 * may be stale. Therefore, by dicarding the lists of HPB response
++	 * that remained after reset, it prevents unnecessary work.
++	 */
++	spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++	list_for_each_entry_safe(rgn, next_rgn, &hpb->lh_inact_rgn,
++				 list_inact_rgn)
++		list_del_init(&rgn->list_inact_rgn);
++
++	list_for_each_entry_safe(srgn, next_srgn, &hpb->lh_act_srgn,
++				 list_act_srgn)
++		list_del_init(&srgn->list_act_srgn);
++	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++}
++
++static inline void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
++{
++	cancel_work_sync(&hpb->map_work);
++}
++
+ static void ufshpb_lu_release(struct ufshpb_lu *hpb)
+ {
++	ufshpb_cancel_jobs(hpb);
++
+ 	ufshpb_destroy_region_tbl(hpb);
+ 
++	kmem_cache_destroy(hpb->map_req_cache);
++	kmem_cache_destroy(hpb->m_page_cache);
++
+ 	list_del_init(&hpb->list_hpb_lu);
+ }
+ 
+@@ -369,6 +1293,9 @@ static void ufshpb_reset_host(struct ufs_hba *hba)
+ 		dev_info(&hpb->hpb_lu_dev, "ufshpb run reset_host");
+ 
+ 		ufshpb_set_state(hpb, HPB_RESET);
++		ufshpb_cancel_jobs(hpb);
++		ufshpb_discard_rsp_lists(hpb);
++
+ 		ufshpb_lu_put(hpb);
+ 	}
+ }
+@@ -383,6 +1310,7 @@ static void ufshpb_suspend(struct ufs_hba *hba)
+ 
+ 		dev_info(&hpb->hpb_lu_dev, "ufshpb goto suspend");
+ 		ufshpb_set_state(hpb, HPB_SUSPEND);
++		ufshpb_cancel_jobs(hpb);
+ 
+ 		ufshpb_lu_put(hpb);
+ 	}
+@@ -398,6 +1326,9 @@ static void ufshpb_resume(struct ufs_hba *hba)
+ 
+ 		dev_info(&hpb->hpb_lu_dev, "ufshpb resume");
+ 		ufshpb_set_state(hpb, HPB_PRESENT);
++		if (!ufshpb_is_empty_rsp_lists(hpb))
++			queue_work(ufshpb_drv.ufshpb_wq, &hpb->map_work);
++
+ 		ufshpb_lu_put(hpb);
+ 	}
+ }
+@@ -656,6 +1587,14 @@ static void ufshpb_scan_hpb_lu(struct ufs_hba *hba,
+ 		list_for_each_entry(hpb, &ufshpb_drv.lh_hpb_lu, list_hpb_lu) {
+ 			dev_info(&hpb->hpb_lu_dev, "set state to present\n");
+ 			ufshpb_set_state(hpb, HPB_PRESENT);
++
++			if ((hpb->lu_pinned_end - hpb->lu_pinned_start) > 0) {
++				dev_info(&hpb->hpb_lu_dev,
++				    "loading pinned regions %d - %d\n",
++				    hpb->lu_pinned_start, hpb->lu_pinned_end);
++				queue_work(ufshpb_drv.ufshpb_wq,
++					&hpb->map_work);
++			}
+ 		}
+ 	}
+ }
+@@ -727,6 +1666,8 @@ static int ufshpb_remove(struct device *dev)
+ 		sdev = hpb->sdev_ufs_lu;
+ 		sdev->hostdata = NULL;
+ 
++		ufshpb_cancel_jobs(hpb);
++
+ 		device_del(&hpb->hpb_lu_dev);
+ 
+ 		dev_info(&hpb->hpb_lu_dev, "hpb_lu_dev refcnt %d\n",
+@@ -751,6 +1692,7 @@ static struct ufshpb_driver ufshpb_drv = {
+ 		.reset_host = ufshpb_reset_host,
+ 		.suspend = ufshpb_suspend,
+ 		.resume = ufshpb_resume,
++		.rsp_upiu = ufshpb_rsp_upiu,
+ 	},
+ };
+ 
+@@ -761,17 +1703,72 @@ MODULE_PARM_DESC(ufshpb_host_map_kbytes,
+ 
+ static int __init ufshpb_init(void)
+ {
++	unsigned int pool_size;
+ 	int ret;
+ 
++
++	ufshpb_drv.ufshpb_mctx_cache = kmem_cache_create("ufshpb_mctx_cache",
++					sizeof(struct ufshpb_map_ctx),
++					0, 0, NULL);
++	if (!ufshpb_drv.ufshpb_mctx_cache) {
++		pr_err("ufshpb: cannot init mctx cache\n");
++		return -ENOMEM;
++	}
++
++	pool_size = DIV_ROUND_UP(ufshpb_host_map_kbytes * 1024, 4096);
++	pr_info("%s:%d ufshpb_host_map_kbytes %u pool_size %u\n",
++	       __func__, __LINE__, ufshpb_host_map_kbytes, pool_size);
++
++	ufshpb_drv.ufshpb_mctx_pool = mempool_create_slab_pool(
++				     pool_size, ufshpb_drv.ufshpb_mctx_cache);
++	if (!ufshpb_drv.ufshpb_mctx_pool) {
++		pr_err("ufshpb: cannot init mctx pool\n");
++		ret = -ENOMEM;
++		goto release_mctx_cache;
++	}
++
++	ufshpb_drv.ufshpb_page_pool = mempool_create_page_pool(pool_size, 0);
++	if (!ufshpb_drv.ufshpb_page_pool) {
++		pr_err("ufshpb: cannot init page pool\n");
++		ret = -ENOMEM;
++		goto release_mctx_pool;
++	}
++
++	ufshpb_drv.ufshpb_wq = alloc_workqueue("ufshpb-wq",
++					WQ_UNBOUND | WQ_MEM_RECLAIM, 0);
++	if (!ufshpb_drv.ufshpb_wq) {
++		pr_err("ufshpb: alloc workqueue failed\n");
++		ret = -ENOMEM;
++		goto release_page_pool;
++	}
++
+ 	ret = driver_register(&ufshpb_drv.drv);
+-	if (ret)
++	if (ret) {
+ 		pr_err("ufshpb: driver register failed\n");
++		goto release_wq;
++	}
++
++	return 0;
++release_wq:
++	destroy_workqueue(ufshpb_drv.ufshpb_wq);
++release_page_pool:
++	mempool_destroy(ufshpb_drv.ufshpb_page_pool);
++release_mctx_pool:
++	mempool_destroy(ufshpb_drv.ufshpb_mctx_pool);
++release_mctx_cache:
++	kmem_cache_destroy(ufshpb_drv.ufshpb_mctx_cache);
+ 	return ret;
+ }
+ 
+ static void __exit ufshpb_exit(void)
+ {
+ 	driver_unregister(&ufshpb_drv.drv);
++
++	mempool_destroy(ufshpb_drv.ufshpb_page_pool);
++	mempool_destroy(ufshpb_drv.ufshpb_mctx_pool);
++	kmem_cache_destroy(ufshpb_drv.ufshpb_mctx_cache);
++
++	destroy_workqueue(ufshpb_drv.ufshpb_wq);
+ }
+ 
+ MODULE_AUTHOR("Yongmyong Lee <ymhungry.lee@samsung.com>");
+diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+index c6dd88e00849..8f2c73f585cc 100644
+--- a/drivers/scsi/ufs/ufshpb.h
++++ b/drivers/scsi/ufs/ufshpb.h
+@@ -124,10 +124,36 @@ struct ufshpb_lu_info {
+ 	int max_active_rgns;
+ };
+ 
++struct ufshpb_active_field {
++	__be16 active_rgn;
++	__be16 active_srgn;
++} __packed;
++
++struct ufshpb_rsp_field {
++	__be16 sense_data_len;
++	u8 desc_type;
++	u8 additional_len;
++	u8 hpb_type;
++	u8 reserved;
++	u8 active_rgn_cnt;
++	u8 inactive_rgn_cnt;
++	struct ufshpb_active_field hpb_active_field[2];
++	__be16 hpb_inactive_field[2];
++} __packed;
++
++struct ufshpb_map_ctx {
++	struct page **m_page;
++	unsigned long *ppn_dirty;
++};
++
+ struct ufshpb_subregion {
++	struct ufshpb_map_ctx *mctx;
+ 	enum HPB_SRGN_STATE srgn_state;
+ 	int rgn_idx;
+ 	int srgn_idx;
++
++	/* below information is used by rsp_list */
++	struct list_head list_act_srgn;
+ };
+ 
+ struct ufshpb_region {
+@@ -135,6 +161,39 @@ struct ufshpb_region {
+ 	enum HPB_RGN_STATE rgn_state;
+ 	int rgn_idx;
+ 	int srgn_cnt;
++
++	/* below information is used by rsp_list */
++	struct list_head list_inact_rgn;
++
++	/* below information is used by lru */
++	struct list_head list_lru_rgn;
++};
++
++/**
++ * struct ufshpb_req - UFSHPB READ BUFFER (for caching map) request structure
++ * @req: block layer request for READ BUFFER
++ * @bio: bio for holding map page
++ * @hpb: ufshpb_lu structure that related to the L2P map
++ * @mctx: L2P map information
++ * @rgn_idx: target region index
++ * @srgn_idx: target sub-region index
++ * @lun: target logical unit number
++ */
++struct ufshpb_req {
++	struct request *req;
++	struct bio *bio;
++	struct ufshpb_lu *hpb;
++	struct ufshpb_map_ctx *mctx;
++
++	unsigned int rgn_idx;
++	unsigned int srgn_idx;
++	unsigned int lun;
++};
++
++struct victim_select_info {
++	struct list_head lh_lru_rgn;
++	int max_lru_active_cnt; /* supported hpb #region - pinned #region */
++	atomic_t active_cnt;
+ };
+ 
+ struct ufshpb_stats {
+@@ -157,6 +216,16 @@ struct ufshpb_lu {
+ 	spinlock_t hpb_state_lock;
+ 	atomic_t hpb_state; /* hpb_state_lock */
+ 
++	spinlock_t rsp_list_lock;
++	struct list_head lh_act_srgn; /* rsp_list_lock */
++	struct list_head lh_inact_rgn; /* rsp_list_lock */
++
++	/* cached L2P map management worker */
++	struct work_struct map_work;
++
++	/* for selecting victim */
++	struct victim_select_info lru_info;
++
+ 	/* pinned region information */
+ 	u32 lu_pinned_start;
+ 	u32 lu_pinned_end;
+@@ -175,6 +244,9 @@ struct ufshpb_lu {
+ 
+ 	struct ufshpb_stats stats;
+ 
++	struct kmem_cache *map_req_cache;
++	struct kmem_cache *m_page_cache;
++
+ 	struct ufsf_feature_info *ufsf;
+ 	struct list_head list_hpb_lu;
+ };
+-- 
+2.17.1
+
