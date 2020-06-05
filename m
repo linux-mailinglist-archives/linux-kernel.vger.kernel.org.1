@@ -2,134 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2611EFABC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AA81EFAD7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728942AbgFEOUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728889AbgFEOTz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:19:55 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F16FC08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 07:19:55 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id s10so5235333pgm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 07:19:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=I/KKVhuE8TSr5CEPiD/eAOjx+oGBg92j9fEZOcTd8zg=;
-        b=jarSB6Qs7gLwZLwAII57y/JKWmy3ExqgUg4+qPkwLvqLeaEWf1Kixa0LjlOiCp5DkE
-         iCWhitxnz+om4kZ6TOMl20AvHbhxvPjnM3uoi2UXR9fkMS25nSr4jQnu8W7AZGeI6Rdr
-         TdVp/eUHb7jMMzX2WNXMl1/zWXVpFdErX2PJ8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=I/KKVhuE8TSr5CEPiD/eAOjx+oGBg92j9fEZOcTd8zg=;
-        b=uRcix9BCvqX0BuRB1A+YGr8+nZ+D4MkDTrRk9dyUR/d4Wjqidk7+kfxL3OjvcYFp+Z
-         FIJV/opkToeF9jReoQq+xok7NvuTV9L4xLzTrQndzAqaZ/tQxqCKbZv5wbbds4QJ2Wys
-         TULcpBzN9D55iOBYXv+QMlRXDRW1/kq0V6QD8RQ1oRFd4l+AlRbPDU/PHVG4dH8IYJKc
-         ts2kMILSzEwImhwTFmSa3XO8lxEHQkn1QTuLoRnRAwcBOo8V+bzqqEcKylAWKHNeTKFD
-         uq+gwobyYHqkDNMDMt1bsl1PJwXP0dJRQAljd2fB3iPUpAkeQgK9YCg4wvIJDtD3dHpg
-         BVkQ==
-X-Gm-Message-State: AOAM531QnZD81K7b1Ahet5VBW07LNvSBlTV/tXqp0mArQGONu+cjNUnS
-        /BOPK0w0dahpz78/80ksPsCVkA==
-X-Google-Smtp-Source: ABdhPJz7HFAhlb37GBve0BZLBLu80nmLbK9xyenwxebfEX6BJX1qGBnd3RV1CVMHJdneQ+1UKXbDhw==
-X-Received: by 2002:a63:f854:: with SMTP id v20mr10018864pgj.0.1591366794973;
-        Fri, 05 Jun 2020 07:19:54 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x11sm7568429pfm.196.2020.06.05.07.19.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 07:19:54 -0700 (PDT)
-Date:   Fri, 5 Jun 2020 07:19:53 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Joe Perches <joe@perches.com>, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/i915: Fix comments mentioning typo in IS_ENABLED()
-Message-ID: <202006050718.9D4FCFC2E@keescook>
+        id S1729035AbgFEOV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:21:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728935AbgFEOUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:20:15 -0400
+Received: from linux-8ccs.fritz.box (p57a23121.dip0.t-ipconnect.de [87.162.49.33])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F392A208A9;
+        Fri,  5 Jun 2020 14:20:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591366814;
+        bh=lQhl9VjPpQqPHD07ccAprin/eMBfjjoE6H6u38WkXG4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B1bANglDGNNAxIm0D9lBYOGI2a3GiqmxrciDb1YXY62MpCrwmyvnZ0UUHn99RQxRC
+         funpZ/+Xjg/7isnDOsQkO1gbdu7SXGgfi1ab41YnAwhfM8JG4vMPvUhHKmDIJfZCaw
+         MR5vvR3PNQleUjcEPg3nh34HLCQ+Y0eA0bL7IeMw=
+Date:   Fri, 5 Jun 2020 16:20:10 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v4 11/11] module: Make module_enable_ro() static again
+Message-ID: <20200605142009.GA5150@linux-8ccs.fritz.box>
+References: <cover.1588173720.git.jpoimboe@redhat.com>
+ <d8b705c20aee017bf9a694c0462a353d6a9f9001.1588173720.git.jpoimboe@redhat.com>
+ <20200605132450.GA257550@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
+In-Reply-To: <20200605132450.GA257550@roeck-us.net>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This has no code changes, but the typo is clearly getting copy/pasted,
-so better to avoid this now and fix the typo. IS_ENABLED() takes full
-names, and must have the "CONFIG_" prefix.
++++ Guenter Roeck [05/06/20 06:24 -0700]:
+>On Wed, Apr 29, 2020 at 10:24:53AM -0500, Josh Poimboeuf wrote:
+>> Now that module_enable_ro() has no more external users, make it static
+>> again.
+>>
+>> Suggested-by: Jessica Yu <jeyu@kernel.org>
+>> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+>> Acked-by: Miroslav Benes <mbenes@suse.cz>
+>
+>Apparently this patch made it into the upstream kernel on its own,
+>not caring about its dependencies. Results are impressive.
+>
+>Build results:
+>	total: 155 pass: 101 fail: 54
+>Qemu test results:
+>	total: 431 pass: 197 fail: 234
+>
+>That means bisects will be all but impossible until this is fixed.
+>Was that really necessary ?
 
-Reported-by: Joe Perches <joe@perches.com>
-Link: https://lore.kernel.org/lkml/b08611018fdb6d88757c6008a5c02fa0e07b32fb.camel@perches.com
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/dma-buf/selftests.h                          | 2 +-
- drivers/gpu/drm/i915/selftests/i915_live_selftests.h | 2 +-
- drivers/gpu/drm/i915/selftests/i915_mock_selftests.h | 2 +-
- drivers/gpu/drm/i915/selftests/i915_perf_selftests.h | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+Sigh, I am really sorry about this. We made a mistake in handling
+inter-tree dependencies between livepatching and modules-next,
+unfortunately :-( Merging the modules-next pull request next should
+resolve the module_enable_ro() not defined for
+!ARCH_HAS_STRICT_MODULE_RWX build issue. The failure was hidden in
+linux-next since both trees were always merged together. Again, it
+doesn't excuse us from build testing our separate trees more
+rigorously.
 
-diff --git a/drivers/dma-buf/selftests.h b/drivers/dma-buf/selftests.h
-index 55918ef9adab..bc8cea67bf1e 100644
---- a/drivers/dma-buf/selftests.h
-+++ b/drivers/dma-buf/selftests.h
-@@ -5,7 +5,7 @@
-  * a module parameter. It must be unique and legal for a C identifier.
-  *
-  * The function should be of type int function(void). It may be conditionally
-- * compiled using #if IS_ENABLED(DRM_I915_SELFTEST).
-+ * compiled using #if IS_ENABLED(CONFIG_DRM_I915_SELFTEST).
-  *
-  * Tests are executed in order by igt/dmabuf_selftest
-  */
-diff --git a/drivers/gpu/drm/i915/selftests/i915_live_selftests.h b/drivers/gpu/drm/i915/selftests/i915_live_selftests.h
-index 5dd5d81646c4..e42ea9c6703b 100644
---- a/drivers/gpu/drm/i915/selftests/i915_live_selftests.h
-+++ b/drivers/gpu/drm/i915/selftests/i915_live_selftests.h
-@@ -11,7 +11,7 @@
-  * a module parameter. It must be unique and legal for a C identifier.
-  *
-  * The function should be of type int function(void). It may be conditionally
-- * compiled using #if IS_ENABLED(DRM_I915_SELFTEST).
-+ * compiled using #if IS_ENABLED(CONFIG_DRM_I915_SELFTEST).
-  *
-  * Tests are executed in order by igt/drv_selftest
-  */
-diff --git a/drivers/gpu/drm/i915/selftests/i915_mock_selftests.h b/drivers/gpu/drm/i915/selftests/i915_mock_selftests.h
-index 6a2be7d0dd95..4be044198af9 100644
---- a/drivers/gpu/drm/i915/selftests/i915_mock_selftests.h
-+++ b/drivers/gpu/drm/i915/selftests/i915_mock_selftests.h
-@@ -11,7 +11,7 @@
-  * a module parameter. It must be unique and legal for a C identifier.
-  *
-  * The function should be of type int function(void). It may be conditionally
-- * compiled using #if IS_ENABLED(DRM_I915_SELFTEST).
-+ * compiled using #if IS_ENABLED(CONFIG_DRM_I915_SELFTEST).
-  *
-  * Tests are executed in order by igt/drv_selftest
-  */
-diff --git a/drivers/gpu/drm/i915/selftests/i915_perf_selftests.h b/drivers/gpu/drm/i915/selftests/i915_perf_selftests.h
-index d8da142985eb..c2389f8a257d 100644
---- a/drivers/gpu/drm/i915/selftests/i915_perf_selftests.h
-+++ b/drivers/gpu/drm/i915/selftests/i915_perf_selftests.h
-@@ -11,7 +11,7 @@
-  * a module parameter. It must be unique and legal for a C identifier.
-  *
-  * The function should be of type int function(void). It may be conditionally
-- * compiled using #if IS_ENABLED(DRM_I915_SELFTEST).
-+ * compiled using #if IS_ENABLED(CONFIG_DRM_I915_SELFTEST).
-  *
-  * Tests are executed in order by igt/i915_selftest
-  */
--- 
-2.25.1
-
-
--- 
-Kees Cook
