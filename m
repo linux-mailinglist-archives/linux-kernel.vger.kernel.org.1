@@ -2,233 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D211EFB9B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7B81EFB73
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgFEOk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:40:56 -0400
-Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:43478 "EHLO
-        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727113AbgFEOkz (ORCPT
+        id S1728161AbgFEObV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728088AbgFEObU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:40:55 -0400
-X-Greylist: delayed 588 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Jun 2020 10:40:53 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id DD4433F6A7;
-        Fri,  5 Jun 2020 16:31:03 +0200 (CEST)
-Authentication-Results: ste-pvt-msa2.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=P1NrJ9Ks;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.099
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.099 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, URIBL_BLOCKED=0.001]
-        autolearn=ham autolearn_force=no
-Authentication-Results: ste-ftg-msa2.bahnhof.se (amavisd-new);
-        dkim=pass (1024-bit key) header.d=shipmail.org
-Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ZzJm3QusKM0P; Fri,  5 Jun 2020 16:30:59 +0200 (CEST)
-Received: from mail1.shipmail.org (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        (Authenticated sender: mb878879)
-        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 750183F628;
-        Fri,  5 Jun 2020 16:30:57 +0200 (CEST)
-Received: from localhost.localdomain (unknown [134.134.139.76])
-        by mail1.shipmail.org (Postfix) with ESMTPSA id 7F8493601AD;
-        Fri,  5 Jun 2020 16:30:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
-        t=1591367457; bh=WmmKpNHpyNnLQkrBY2MHybJLK6DanaIpP6iniTFoQGE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=P1NrJ9Ksaz/Mu6lOw3BCKxoGnXwlsK564hqTfU32mVfedyJmsS5c4seF5zeSaZ46q
-         FuEfibE+fHQnpa/x39VHqeB3JqC21BmEctstREEAZPA7snFzoBcA/MTtT9uxkwoKDG
-         yaqYCBUWv+y/aIgYJaCH0q5RNYvlG+HbUYplB8yE=
-Subject: Re: [PATCH] dma-fence: basic lockdep annotations
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Cc:     linux-rdma@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        linaro-mm-sig@lists.linaro.org,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        linux-media@vger.kernel.org,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-References: <20200604081224.863494-4-daniel.vetter@ffwll.ch>
- <20200605132953.899664-1-daniel.vetter@ffwll.ch>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Message-ID: <83805409-ad4a-65a3-d9cf-21878308dc92@shipmail.org>
-Date:   Fri, 5 Jun 2020 16:30:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 5 Jun 2020 10:31:20 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86458C08C5C5
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 07:31:19 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id n123so4883494ybf.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 07:31:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WOsCrCTNiZk4z+CHWASXWYuAh1VB0KhtNd4BIKGCzJI=;
+        b=OUIw/jA7GurZ4+wdldpY/tDf9ZOqqgayumJTo2diTmo50FUSPj0nwWMdttY/TJtsXH
+         j9lNXy4OmfX3l7Cg8vE3jEzfXyn+sHapl9ZpX1PoVf2sm5k/yzULPT/TX7D4sfTUpg8V
+         p9tmddxnUfE3GuLyXTdTjrBY3VwIyLbtQdCg0MAYe82KdacOL1AApsNq4ahwOmtkVqc0
+         CJrXkFYb6LPVrG80d7Oykp2kJj98tolgdAielogldvlmZevSsIIcpFe2TFtQzNLqGNf4
+         F8dN2FZmwfaJjb3QNkedLVz6JNsR7Nudthi6q6gRu9ceYGHId2/8545yIK6Ygs7EtSXL
+         C6FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WOsCrCTNiZk4z+CHWASXWYuAh1VB0KhtNd4BIKGCzJI=;
+        b=GZKNoF4OTV9EiavOmDH9K4Trq109v2SwK8/ohfMkSYyqv9c8RBKVLWsEvzl+CeqQUd
+         CYx8raF7hY/W9XCUSq6lj9L+zSIZ7bh9yPvdp6cfRRBV7h3uu+nzFgG5HBon5Np4Ipu7
+         eE7yy1sHnrlTEtvhrAUcB/aW6uuyWLFIvjMKXpag415pgidF8/xkI2zFGlk60ctmqiGh
+         02U5XELChEv6Ccw6/hAlO3hY4GwBIwOeC2AhZ8SA8eiDnvODSlgLVop5Z4p5Z9TM6Tgh
+         IPSjViPkK84F6mEJOjD/HHqHYoJHNbNJJW9ATnRYli3UTYM9X7fAxY4YA2JQKibMu05G
+         UgpQ==
+X-Gm-Message-State: AOAM53304h+LTvXhmeguPdI7r97cnGHr3B+am24Z1L1pusF5SfJBNt+f
+        eotDnpgSCXi8CbaA+U8SQaGJ7OVE7KSd0TQLz5xgWg==
+X-Google-Smtp-Source: ABdhPJym9u6hVVH2jk8MmIvgD+zczkiUi9KmFGJ+AvzBdGI1kaQnqrM3IEsoTTd/O7hYVXqf/JR8tqSePI3hD4yEHXk=
+X-Received: by 2002:a25:b442:: with SMTP id c2mr17737809ybg.273.1591367478104;
+ Fri, 05 Jun 2020 07:31:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200605132953.899664-1-daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200524023815.21789-1-jonathan@marek.ca> <20200524023815.21789-2-jonathan@marek.ca>
+ <20200529025246.GV279327@builder.lan> <d0908f34-a698-3449-35b9-7a98e9641295@marek.ca>
+ <20200529031520.GA1799770@builder.lan> <91eb7ee0e549b10724c724aebfd91996@codeaurora.org>
+ <8cf134f0-381f-7765-2496-e5abd77f3087@marek.ca> <e9800dbb6531c9b57a855f41f68753bd@codeaurora.org>
+In-Reply-To: <e9800dbb6531c9b57a855f41f68753bd@codeaurora.org>
+From:   Nicolas Dechesne <nicolas.dechesne@linaro.org>
+Date:   Fri, 5 Jun 2020 16:31:07 +0200
+Message-ID: <CAP71WjwjZgD=msK_2W8eBBk6axZ_uMNurEm9F76u6aHscXPf9Q@mail.gmail.com>
+Subject: Re: [PATCH 1/6] arm64: dts: qcom: sm8150: add apps_smmu node
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Jonathan Marek <jonathan@marek.ca>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        devicetree-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 5, 2020 at 4:14 PM Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> On 2020-06-05 19:40, Jonathan Marek wrote:
+> > On 6/5/20 10:03 AM, Sai Prakash Ranjan wrote:
+> >> On 2020-05-29 08:45, Bjorn Andersson wrote:
+> >>> On Thu 28 May 20:02 PDT 2020, Jonathan Marek wrote:
+> >>>
+> >>>>
+> >>>>
+> >>>> On 5/28/20 10:52 PM, Bjorn Andersson wrote:
+> >>>> > On Sat 23 May 19:38 PDT 2020, Jonathan Marek wrote:
+> >>>> >
+> >>>> > > Add the apps_smmu node for sm8150. Note that adding the iommus field for
+> >>>> > > UFS is required because initializing the iommu removes the bypass mapping
+> >>>> > > that created by the bootloader.
+> >>>> > >
+> >>>> >
+> >>>> > Unrelated to the patch itself; how do you disable the splash screen on
+> >>>> > 8150? "fastboot oem select-display-panel none" doesn't seem to work for
+> >>>> > me on the MTP - and hence this would prevent my device from booting.
+> >>>> >
+> >>>> > Thanks,
+> >>>> > Bjorn
+> >>>> >
+> >>>>
+> >>>> I don't have a MTP, but on HDK855, "fastboot oem
+> >>>> select-display-panel none"
+> >>>> combined with setting the physical switch to HDMI mode (which
+> >>>> switches off
+> >>>> the 1440x2560 panel) gets it to not setup the display at all (just
+> >>>> the
+> >>>> fastboot command isn't enough).
+> >>>>
+> >>>
+> >>> Okay, I don't think we have anything equivalent on the MTP, but good
+> >>> to
+> >>> know.
+> >>>
+> >>
+> >> Actually I tried out this in SM8150 MTP and it works fine for me,
+> >>
+> >> "fastboot set_active a; fastboot set_active b; fastboot set_active a;
+> >> fastboot oem select-display-panel none; fastboot reboot bootloader;
+> >> fastboot boot boot-sm8150.img"
+> >>
+> >> Also I need to switch slots everytime like above, otherwise I always
+> >> see some error
+> >> while loading the boot image.
+> >>
+> >
+> > What is the error? If it is "FAILED (remote: Failed to
+> > load/authenticate boot image: Load Error)" then flashing/erasing
+> > boot_a will make it go away ("fastboot erase boot_a") for the next 6
+> > or so "failed" boots.
+> >
+>
+> Yes this exact error.
 
-On 6/5/20 3:29 PM, Daniel Vetter wrote:
-> Design is similar to the lockdep annotations for workers, but with
-> some twists:
->
-> - We use a read-lock for the execution/worker/completion side, so that
->    this explicit annotation can be more liberally sprinkled around.
->    With read locks lockdep isn't going to complain if the read-side
->    isn't nested the same way under all circumstances, so ABBA deadlocks
->    are ok. Which they are, since this is an annotation only.
->
-> - We're using non-recursive lockdep read lock mode, since in recursive
->    read lock mode lockdep does not catch read side hazards. And we
->    _very_ much want read side hazards to be caught. For full details of
->    this limitation see
->
->    commit e91498589746065e3ae95d9a00b068e525eec34f
->    Author: Peter Zijlstra <peterz@infradead.org>
->    Date:   Wed Aug 23 13:13:11 2017 +0200
->
->        locking/lockdep/selftests: Add mixed read-write ABBA tests
->
-> - To allow nesting of the read-side explicit annotations we explicitly
->    keep track of the nesting. lock_is_held() allows us to do that.
->
-> - The wait-side annotation is a write lock, and entirely done within
->    dma_fence_wait() for everyone by default.
->
-> - To be able to freely annotate helper functions I want to make it ok
->    to call dma_fence_begin/end_signalling from soft/hardirq context.
->    First attempt was using the hardirq locking context for the write
->    side in lockdep, but this forces all normal spinlocks nested within
->    dma_fence_begin/end_signalling to be spinlocks. That bollocks.
->
->    The approach now is to simple check in_atomic(), and for these cases
->    entirely rely on the might_sleep() check in dma_fence_wait(). That
->    will catch any wrong nesting against spinlocks from soft/hardirq
->    contexts.
->
-> The idea here is that every code path that's critical for eventually
-> signalling a dma_fence should be annotated with
-> dma_fence_begin/end_signalling. The annotation ideally starts right
-> after a dma_fence is published (added to a dma_resv, exposed as a
-> sync_file fd, attached to a drm_syncobj fd, or anything else that
-> makes the dma_fence visible to other kernel threads), up to and
-> including the dma_fence_wait(). Examples are irq handlers, the
-> scheduler rt threads, the tail of execbuf (after the corresponding
-> fences are visible), any workers that end up signalling dma_fences and
-> really anything else. Not annotated should be code paths that only
-> complete fences opportunistically as the gpu progresses, like e.g.
-> shrinker/eviction code.
->
-> The main class of deadlocks this is supposed to catch are:
->
-> Thread A:
->
-> 	mutex_lock(A);
-> 	mutex_unlock(A);
->
-> 	dma_fence_signal();
->
-> Thread B:
->
-> 	mutex_lock(A);
-> 	dma_fence_wait();
-> 	mutex_unlock(A);
->
-> Thread B is blocked on A signalling the fence, but A never gets around
-> to that because it cannot acquire the lock A.
->
-> Note that dma_fence_wait() is allowed to be nested within
-> dma_fence_begin/end_signalling sections. To allow this to happen the
-> read lock needs to be upgraded to a write lock, which means that any
-> other lock is acquired between the dma_fence_begin_signalling() call and
-> the call to dma_fence_wait(), and still held, this will result in an
-> immediate lockdep complaint. The only other option would be to not
-> annotate such calls, defeating the point. Therefore these annotations
-> cannot be sprinkled over the code entirely mindless to avoid false
-> positives.
->
-> Originally I hope that the cross-release lockdep extensions would
-> alleviate the need for explicit annotations:
->
-> https://lwn.net/Articles/709849/
->
-> But there's a few reasons why that's not an option:
->
-> - It's not happening in upstream, since it got reverted due to too
->    many false positives:
->
-> 	commit e966eaeeb623f09975ef362c2866fae6f86844f9
-> 	Author: Ingo Molnar <mingo@kernel.org>
-> 	Date:   Tue Dec 12 12:31:16 2017 +0100
->
-> 	    locking/lockdep: Remove the cross-release locking checks
->
-> 	    This code (CONFIG_LOCKDEP_CROSSRELEASE=y and CONFIG_LOCKDEP_COMPLETIONS=y),
-> 	    while it found a number of old bugs initially, was also causing too many
-> 	    false positives that caused people to disable lockdep - which is arguably
-> 	    a worse overall outcome.
->
-> - cross-release uses the complete() call to annotate the end of
->    critical sections, for dma_fence that would be dma_fence_signal().
->    But we do not want all dma_fence_signal() calls to be treated as
->    critical, since many are opportunistic cleanup of gpu requests. If
->    these get stuck there's still the main completion interrupt and
->    workers who can unblock everyone. Automatically annotating all
->    dma_fence_signal() calls would hence cause false positives.
->
-> - cross-release had some educated guesses for when a critical section
->    starts, like fresh syscall or fresh work callback. This would again
->    cause false positives without explicit annotations, since for
->    dma_fence the critical sections only starts when we publish a fence.
->
-> - Furthermore there can be cases where a thread never does a
->    dma_fence_signal, but is still critical for reaching completion of
->    fences. One example would be a scheduler kthread which picks up jobs
->    and pushes them into hardware, where the interrupt handler or
->    another completion thread calls dma_fence_signal(). But if the
->    scheduler thread hangs, then all the fences hang, hence we need to
->    manually annotate it. cross-release aimed to solve this by chaining
->    cross-release dependencies, but the dependency from scheduler thread
->    to the completion interrupt handler goes through hw where
->    cross-release code can't observe it.
->
-> In short, without manual annotations and careful review of the start
-> and end of critical sections, cross-relese dependency tracking doesn't
-> work. We need explicit annotations.
->
-> v2: handle soft/hardirq ctx better against write side and dont forget
-> EXPORT_SYMBOL, drivers can't use this otherwise.
->
-> v3: Kerneldoc.
->
-> v4: Some spelling fixes from Mika
->
-> v5: Amend commit message to explain in detail why cross-release isn't
-> the solution.
->
-> Cc: Mika Kuoppala <mika.kuoppala@intel.com>
-> Cc: Thomas Hellstrom <thomas.hellstrom@intel.com>
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Cc: linux-rdma@vger.kernel.org
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: intel-gfx@lists.freedesktop.org
-> Cc: Chris Wilson <chris@chris-wilson.co.uk>
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Christian König <christian.koenig@amd.com>
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> ---
+The bootloader maintains a 'boot status' in one of the partition
+attributes. After a certain amount of 'failed' boot , it will switch
+to the other boot partition. It's the same thing on RB3/DB845c. In our
+release for DB845c, we are patching the bootloader so that this
+behavior is bypassed. On typical 'product' there is a user space
+application that will come and set the partition attribute to indicate
+the boot was successful.
 
-Reviewed-by: Thomas Hellström <thomas.hellstrom@intel.com>
+For the record, this is the patch we use on 845c:
+https://git.linaro.org/landing-teams/working/qualcomm/abl.git/commit/?h=release/LE.UM.2.3.7-09200-sda845.0&id=e3dc60213234ed626161a568ba587ddac63c5158
 
+rebuilding EDK2/ABL requires access to signing tools.. so it might not
+be possible for everyone. but in case you can, it should be
+straightforward to reuse this patch.
 
+>
+>
+> -Sai
+>
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+> member
+> of Code Aurora Forum, hosted by The Linux Foundation
