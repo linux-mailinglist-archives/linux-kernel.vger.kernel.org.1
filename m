@@ -2,109 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BFC1EF4B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752A61EF4C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726417AbgFEJym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 05:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726270AbgFEJym (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 05:54:42 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96206C08C5C4
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 02:54:40 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id k8so6974832edq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 02:54:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kQ16o+qUwgYcoh0hZifP35qFFRDEvSaPDsLpEh1ikCk=;
-        b=rCaoirU7A0HN6aBgr2LdE3yr5g17a+UroWILMuXJVVtYCBdmWed1GS8GwUni1Mn4bs
-         WiCixcK2FEbDfiqcT5aI8OwT4CDrGCx8TZ3kDHlnVgJ+ErAZ6buF8PeNt5p6EhEJTg76
-         RwBhpNX0IUheJeDrz936ea+31jUlqJ1kNQaSM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kQ16o+qUwgYcoh0hZifP35qFFRDEvSaPDsLpEh1ikCk=;
-        b=hnOOxxa5bU8736TXEzBjUaRJuuYd5AKXy9J8h2q7yTdxozxP3jzA9hngKYqkNhsL4g
-         dMLNsyMwK5xu3zuevvnhjUOXNdYZoBEFPWVwihNcU+vRlHT9PvQ0kTLWTGhmWmOk1qiu
-         KMDBU3+p39TgISCRnb4AhQPcETe+uBBF1788S658qSEbha4w3NCHtWKChxFBcsHj7OJi
-         PWyctviMu2oTrvo4GKjWkXWPoZEfLXL1JMQEbpvXs81nVJ5E/qmKlTjZh/mUL01WPihe
-         7B45Gr6/cmR7nf22TVPMKQy1T61NLD6wElVOT/Psh9THk9wOzgUZ4TPnCp0NHvPSn7OA
-         kG+A==
-X-Gm-Message-State: AOAM530B1NrNGYs6QA+kUHvAg67loAvLwJbGAxa4gX+MwyQuN4wB8kGB
-        xiYFTRQ445zSBmhi61YmDC7gGeRYiT+ZxXPIkn3ngg==
-X-Google-Smtp-Source: ABdhPJxPXhJVSPka5expBk13ruYWdBASBt1uTHiBSxAcue4V3qBGXozjJwtdDHlzLpa3GAZtoYQwqOkGqSuOZOhiOKI=
-X-Received: by 2002:aa7:d785:: with SMTP id s5mr8857980edq.17.1591350879015;
- Fri, 05 Jun 2020 02:54:39 -0700 (PDT)
+        id S1726312AbgFEJ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 05:57:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725280AbgFEJ5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 05:57:34 -0400
+Received: from linux-8ccs (p57a23121.dip0.t-ipconnect.de [87.162.49.33])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DFD892075B;
+        Fri,  5 Jun 2020 09:57:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591351054;
+        bh=rfylPv3H3z+tdHudrRYNXqWRsJ0KNJa9SUb7O3OTitY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oBpyFHAekvsx8ocPNLR08b4BRt+CfNiYu38/QyeB7Y2IbyRiq7RGh1WSuyRFIDxxT
+         sDc/jsOvoYluHCAuJM4aJkLCyjSonF700qSuQ9BQcA/DV5O9kDLvroZkVKIOLylLzN
+         brDigqZNGBQF5CSgqIYgnHjRrL54oRpcfryFqXL4=
+Date:   Fri, 5 Jun 2020 11:57:29 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     Max Filippov <jcmvbkbc@gmail.com>, linux-kernel@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] kernel/modules: fix build without
+ ARCH_HAS_STRICT_MODULE_RWX
+Message-ID: <20200605095729.GB24474@linux-8ccs>
+References: <20200604210115.16826-1-jcmvbkbc@gmail.com>
+ <alpine.LSU.2.21.2006050949210.10354@pobox.suse.cz>
 MIME-Version: 1.0
-References: <20200604084245.161480-1-glider@google.com> <202006040844.C50B47699@keescook>
-In-Reply-To: <202006040844.C50B47699@keescook>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 5 Jun 2020 11:54:27 +0200
-Message-ID: <CAJfpegsNL17k+Yv1-4bmogqjzq-rO9H1xT-+DM2m7qq7oH25MQ@mail.gmail.com>
-Subject: Re: [PATCH] ovl: explicitly initialize error in ovl_copy_xattr()
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, royyang@google.com,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.LSU.2.21.2006050949210.10354@pobox.suse.cz>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 4, 2020 at 5:57 PM Kees Cook <keescook@chromium.org> wrote:
++++ Miroslav Benes [05/06/20 09:50 +0200]:
+>Hi,
 >
-> On Thu, Jun 04, 2020 at 10:42:45AM +0200, glider@google.com wrote:
-> > Under certain circumstances (we found this out running Docker on a
-> > Clang-built kernel with CONFIG_INIT_STACK_ALL) ovl_copy_xattr() may
-> > return uninitialized value of |error| from ovl_copy_xattr().
-> > It is then returned by ovl_create() to lookup_open(), which casts it to
-> > an invalid dentry pointer, that can be further read or written by the
-> > lookup_open() callers.
-> >
-> > The uninitialized value is returned when all the xattr on the file
-> > are ovl_is_private_xattr(), which is actually a successful case,
-> > therefore we initialize |error| with 0.
-> >
-> > Signed-off-by: Alexander Potapenko <glider@google.com>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Roy Yang <royyang@google.com>
-> > Cc: <stable@vger.kernel.org> # 4.1
+>On Thu, 4 Jun 2020, Max Filippov wrote:
 >
-> Please include a Fixes (more below) and Link tags for details to help
-> guide backporting, then you don't need to bother with with "# 4.1",
-> the -stable tools will figure it out with a "Fixes" tag.
+>> On configurations with CONFIG_ARCH_HAS_STRICT_MODULE_RWX disabled kernel
+>> build fails with the following message:
+>>
+>>   kernel/module.c:3593:2: error: implicit declaration of function
+>>   ‘module_enable_ro’;
+>>
+>> Add empty module_enable_ro definition to fix the build.
+>>
+>> Fixes: e6eff4376e28 ("module: Make module_enable_ro() static again")
+>> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 >
-> Thanks for the v2!
->
-> Link: https://bugs.chromium.org/p/chromium/issues/detail?id=1050405
-> Reviewed-by: Kees Cook <keescook@chromium.org>
->
-> > The bug seem to date back to at least v4.1 where the annotation has been
-> > introduced (i.e. the compilers started noticing error could be used
-> > before being initialized). I hovever didn't try to prove that the
-> > problem is actually reproducible on such ancient kernels. We've seen it
-> > on a real machine running v4.4 as well.
->
-> It seems like it came from this, but that's v4.5:
->
-> Fixes: e4ad29fa0d22 ("ovl: use a minimal buffer in ovl_copy_xattr")
+>I think the problem should disappear once Jessica sends her pull request
+>for modules tree.
 
-
-I believe it's actually:
-
-Fixes: 0956254a2d5b ("ovl: don't copy up opaqueness")
-
-That patch added the ovl_is_private_xattr() check in ovl_copy_xattr(),
-without which 'error' was always initilalized.
+Yep, the pull request was sent today. So this should get resolved in
+the next day or two.
 
 Thanks,
-Miklos
+
+Jessica
