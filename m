@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B901EF4BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347C31EF4B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgFEJz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 05:55:58 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:53639 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726243AbgFEJz5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 05:55:57 -0400
-X-UUID: 5a23448968a6405aa6d23791e456fa95-20200605
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=aftpXunH1eDQjPXFO8QI2IEzKcVO0kd6k1ZnXlRllyc=;
-        b=q5kzpTKE1GnRrlfGC5KCRFDhLvUfLRl0CYVPAWH2+mWbTHODnekQlMoGXww0khiUM15wKDDM287u4OxakLmQgsuVEQmkq7YsM0FQ6+/zG0ubtxVBC9DsI7LUF/RYnk9fqSgUZoxgAXtN2pKTCxncYiMqGsnreTrpvdtOmP0XuCI=;
-X-UUID: 5a23448968a6405aa6d23791e456fa95-20200605
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <jiaxin.yu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1655380788; Fri, 05 Jun 2020 17:55:53 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 5 Jun 2020 17:55:52 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 5 Jun 2020 17:55:51 +0800
-From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
-        <matthias.bgg@gmail.com>, <hariprasad.kelam@gmail.com>
-CC:     <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <howie.huang@mediatek.com>,
-        <tzungbi@google.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>
-Subject: [v2, 2/2] ASoC: dt-bindings: mediatek: mt6358: add dmic-mode property
-Date:   Fri, 5 Jun 2020 17:53:45 +0800
-Message-ID: <1591350825-18152-2-git-send-email-jiaxin.yu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1591350825-18152-1-git-send-email-jiaxin.yu@mediatek.com>
-References: <1591350825-18152-1-git-send-email-jiaxin.yu@mediatek.com>
+        id S1726409AbgFEJx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 05:53:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58760 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726270AbgFEJx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 05:53:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 34AA6ACCC;
+        Fri,  5 Jun 2020 09:54:01 +0000 (UTC)
+Date:   Fri, 5 Jun 2020 11:53:56 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     daniel.thompson@linaro.org, kgdb-bugreport@lists.sourceforge.net,
+        jason.wessel@windriver.com, dianders@chromium.org,
+        sergey.senozhatsky@gmail.com, gregkh@linuxfoundation.org,
+        jslaby@suse.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/4] kdb: Switch to use safer dbg_io_ops over console
+ APIs
+Message-ID: <20200605095356.GK22497@linux-b0ei>
+References: <1591264879-25920-1-git-send-email-sumit.garg@linaro.org>
+ <1591264879-25920-5-git-send-email-sumit.garg@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: DA84537A393A2A092512B040C0A414505375F5DBD6BEBB53201491E8557FD55F2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1591264879-25920-5-git-send-email-sumit.garg@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkcyBkbWljLW1vZGUgcHJvcGVydHkgYW5kIHVwZGF0ZXMgZXhhbXBsZS4NCg0KU2lnbmVkLW9m
-Zi1ieTogSmlheGluIFl1IDxqaWF4aW4ueXVAbWVkaWF0ZWsuY29tPg0KLS0tDQogRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL210NjM1OC50eHQgfCA2ICsrKysrKw0KIDEg
-ZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9tdDYzNTgudHh0IGIvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL210NjM1OC50eHQNCmluZGV4IDU0NjU3MzAuLjU5YTcz
-ZmYgMTAwNjQ0DQotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQv
-bXQ2MzU4LnR4dA0KKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5k
-L210NjM1OC50eHQNCkBAIC0xMCw5ICsxMCwxNSBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVzOg0KIC0g
-Y29tcGF0aWJsZSA6ICJtZWRpYXRlayxtdDYzNTgtc291bmQiLg0KIC0gQXZkZC1zdXBwbHkgOiBw
-b3dlciBzb3VyY2Ugb2YgQVZERA0KIA0KK09wdGlvbmFsIHByb3BlcnRpZXM6DQorLSBtZWRpYXRl
-ayxkbWljLW1vZGUgOiBJbmRpY2F0ZXMgaG93IG1hbnkgZGF0YSBwaW5zIGFyZSB1c2VkIHRvIHRy
-YW5zbWl0IHR3bw0KKwljaGFubmVscyBvZiBQRE0gc2lnbmFsLiAwIG1lYW5zIHR3byB3aXJlcywg
-MSBtZWFucyBvbmUgd2lyZS4gRGVmYXVsdA0KKwl2YWx1ZSBpcyAwLg0KKw0KIEV4YW1wbGU6DQog
-DQogbXQ2MzU4X3NuZCB7DQogCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2MzU4LXNvdW5kIjsN
-CiAJQXZkZC1zdXBwbHkgPSA8Jm10NjM1OF92YXVkMjhfcmVnPjsNCisJbWVkaWF0ZWssZG1pYy1t
-b2RlID0gPDA+Ow0KIH07DQotLSANCjEuOC4xLjEuZGlydHkNCg==
+On Thu 2020-06-04 15:31:19, Sumit Garg wrote:
+> In kgdb context, calling console handlers aren't safe due to locks used
+> in those handlers which could in turn lead to a deadlock. Although, using
+> oops_in_progress increases the chance to bypass locks in most console
+> handlers but it might not be sufficient enough in case a console uses
+> more locks (VT/TTY is good example).
+> 
+> Currently when a driver provides both polling I/O and a console then kdb
+> will output using the console. We can increase robustness by using the
+> currently active polling I/O driver (which should be lockless) instead
+> of the corresponding console. For several common cases (e.g. an
+> embedded system with a single serial port that is used both for console
+> output and debugger I/O) this will result in no console handler being
+> used.
+> 
+> In order to achieve this we need to reverse the order of preference to
+> use dbg_io_ops (uses polling I/O mode) over console APIs. So we just
+> store "struct console" that represents debugger I/O in dbg_io_ops and
+> while emitting kdb messages, skip console that matches dbg_io_ops
+> console in order to avoid duplicate messages. After this change,
+> "is_console" param becomes redundant and hence removed.
+> 
+> Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 
+Looks good to me now:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
