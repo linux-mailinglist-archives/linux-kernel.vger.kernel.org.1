@@ -2,78 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F991F01A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 23:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181FA1F01C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 23:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728637AbgFEV1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 17:27:54 -0400
-Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170]:38940 "EHLO
-        rnd-relay.smtp.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728625AbgFEV1u (ORCPT
+        id S1728321AbgFEVdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 17:33:53 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:27297 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728225AbgFEVdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 17:27:50 -0400
-Received: from mail-irv-17.broadcom.com (mail-irv-17.lvn.broadcom.net [10.75.242.48])
-        by rnd-relay.smtp.broadcom.com (Postfix) with ESMTP id 0D00930D85A;
-        Fri,  5 Jun 2020 14:27:49 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 rnd-relay.smtp.broadcom.com 0D00930D85A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1591392469;
-        bh=8FEz65bQoxeORMmqky+vo5W9886Kbt7oxwYJ+ALCY6k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iaX51n98p5kOYp4nGEhg4NqU2V/yb+zMlS0cgUPMklSpDEKqNkEmiRp03tBsIFywi
-         4Aa36qsgPPFBjHqzKeG/ZoX0N0TDiIcQvj734HyYHOIG0M9DvRlyHkhemKgrjTq5R5
-         lCEh7uoysRgxrGiYtJ37CVn7ThebFTTWwZ2GF3DM=
-Received: from stbsrv-and-01.and.broadcom.net (stbsrv-and-01.and.broadcom.net [10.28.16.211])
-        by mail-irv-17.broadcom.com (Postfix) with ESMTP id 8734314008B;
-        Fri,  5 Jun 2020 14:27:47 -0700 (PDT)
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-To:     linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 12/12] PCI: brcmstb: Add bcm7211, bcm7216, bcm7445, bcm7278 to match list
-Date:   Fri,  5 Jun 2020 17:26:52 -0400
-Message-Id: <20200605212706.7361-13-james.quinlan@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200605212706.7361-1-james.quinlan@broadcom.com>
-References: <20200605212706.7361-1-james.quinlan@broadcom.com>
+        Fri, 5 Jun 2020 17:33:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591392832; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=IAHtev+drdjHORDurNRZb9RBH0LS4soHB+6HHbpezn4=; b=Bdo2gvXx2E3eyNZWdNCr9qQLi+nDw/abO7EOSh4pJEf1nqs+X7GU0qcdfr7Cz/3s28XwEmfv
+ Np+4LBxx+qCc7tX9V/0dFroTxhf1X5f5GQ/kEeEMmdUU7fNPumUtlbmkz16QxGtzlMxelB4q
+ aYflWCT8LsEujxQEaRsxWyH3dmc=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5edaba3d2c549984755f608a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Jun 2020 21:33:49
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BCB36C43395; Fri,  5 Jun 2020 21:33:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4A5F8C433C6;
+        Fri,  5 Jun 2020 21:33:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4A5F8C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        georgi.djakov@linaro.org, saravanak@google.com, mka@chromium.org
+Cc:     nm@ti.com, bjorn.andersson@linaro.org, agross@kernel.org,
+        rjw@rjwysocki.net, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dianders@chromium.org, vincent.guittot@linaro.org,
+        amit.kucheria@linaro.org, lukasz.luba@arm.com,
+        sudeep.holla@arm.com, smasetty@codeaurora.org,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH v6 0/5] DDR/L3 Scaling support on SDM845 and SC7180 SoCs
+Date:   Sat,  6 Jun 2020 03:03:27 +0530
+Message-Id: <20200605213332.609-1-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.24.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the support is in place with previous commits, we add several
-chips that use the BrcmSTB driver.
+This patch series aims to extend cpu based scaling support to L3/DDR on
+SDM845 and SC7180 SoCs.
 
-Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/pci/controller/pcie-brcmstb.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Patches [1-2] - Blacklist SDM845 and SC7180 in cpufreq-dt-platdev
+Patches [3-5] - Update bw levels based on cpu frequency change
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 7d068cec1ae2..0002752c4d74 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -1189,6 +1189,10 @@ static int brcm_pcie_remove(struct platform_device *pdev)
- 
- static const struct of_device_id brcm_pcie_match[] = {
- 	{ .compatible = "brcm,bcm2711-pcie", .data = &bcm2711_cfg },
-+	{ .compatible = "brcm,bcm7211-pcie", .data = &generic_cfg },
-+	{ .compatible = "brcm,bcm7278-pcie", .data = &bcm7278_cfg },
-+	{ .compatible = "brcm,bcm7216-pcie", .data = &bcm7278_cfg },
-+	{ .compatible = "brcm,bcm7445-pcie", .data = &generic_cfg },
- 	{},
- };
- 
+Based on Viresh's opp-next:
+https://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git/log/?h=opp/linux-next
+
+V6:
+ * Add global flag to distinguish between voltage update and opp add.
+   Use the same flag before trying to scale ddr/l3 bw [Viresh]
+ * Use dev_pm_opp_find_freq_ceil to grab all opps [Viresh] 
+ * Move dev_pm_opp_of_find_icc_paths into probe [Viresh]
+
+V5:
+ * Pick up R-bs from Amit
+ * Drop icc tag support/dt changes till the a consensus is achieved
+ * Use dev_pm_opp_adjust_voltage instead [Viresh]
+ * Drop dev_pm_opp_get_path_count [Saravana]
+ * Rework dev_pm_opp_set_bw
+
+V4:
+ * Migrate to using Georgi's new bindings
+ * Misc fixups based on Matthias comments
+ * API fixups based on Bjorn's comments on v2
+ * Picked up a few R-bs from Matthias
+
+v3:
+ * Migrated to using Saravana's opp-kBps bindings [1]
+ * Fixed some misc comments from Rajendra
+ * Added support for SC7180
+
+v2:
+ * Incorporated Viresh's comments from:
+ https://lore.kernel.org/lkml/20190410102429.r6j6brm5kspmqxc3@vireshk-i7/
+ https://lore.kernel.org/lkml/20190410112516.gnh77jcwawvld6et@vireshk-i7/
+ * Dropped cpufreq-map passive governor
+
+Sibi Sankar (5):
+  cpufreq: blacklist SDM845 in cpufreq-dt-platdev
+  cpufreq: blacklist SC7180 in cpufreq-dt-platdev
+  OPP: Add and export helper to set bandwidth
+  cpufreq: qcom: Update the bandwidth levels on frequency change
+  cpufreq: qcom: Disable fast switch when scaling DDR/L3
+
+ drivers/cpufreq/cpufreq-dt-platdev.c |  2 +
+ drivers/cpufreq/qcom-cpufreq-hw.c    | 86 ++++++++++++++++++++++++++--
+ drivers/opp/core.c                   | 31 ++++++++++
+ include/linux/pm_opp.h               |  6 ++
+ 4 files changed, 121 insertions(+), 4 deletions(-)
+
 -- 
-2.17.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
