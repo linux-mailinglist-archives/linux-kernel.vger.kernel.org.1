@@ -2,71 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB9E1EF131
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 08:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4301EF135
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 08:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726099AbgFEGJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 02:09:06 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:52685 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgFEGJG (ORCPT
+        id S1726171AbgFEGJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 02:09:14 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12904 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726117AbgFEGJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 02:09:06 -0400
-Received: by mail-il1-f199.google.com with SMTP id m7so5671618ill.19
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 23:09:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=zfMfzlBlpd3qWkpJFKroTeMQT3G8z4wtkn9pQpVcdFM=;
-        b=J/RIiYhKAmM8SIATN3tYffXP+MYRorN72rvgV4GWxM+NL9dA85zdwDP6S5sq8iR/CA
-         vTYxawwpkosOuM6veX95EDLua6ELnwrkyibOZazNWahJ8Ce6kE4vVQmD8egIAIwIWf3O
-         NFSQydEPSy3reXMrgsthaeGcz+u0RHykwicdfj3nFdS8zqz1TzGzmq5i4iNsg1ddeYCb
-         4jkuag/lgkesTwdAf2b0CgqWo9GsiUV3zQWtwgWpBVaIVzagryK+/bCF3lSu4x6vVAiW
-         asz3E7pfsIpoZtMODqfYL6HjbzzktGQKCxcHLmGVVExiaSY7Z1EgC0w6k/JhhuHllAa4
-         iMjg==
-X-Gm-Message-State: AOAM532Z/Lg1RmKnJ3mAnjwjD5gjpvClvLwEg6b8hpYcs3ew9n3e2VhH
-        zJ8FoPh1L17aZZyyXjonfgXh+jioHGaIqHYx9y/4uCCGCkjr
-X-Google-Smtp-Source: ABdhPJwAkYKDZuKJ3kL67cziO2fZITVmB5aBx55QUMPXRpbP4Pme2q99pelZ8TGD+wxZ2eem8686PfvQe7n18DFSv54D+fOIMPXJ
+        Fri, 5 Jun 2020 02:09:10 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ed9e1790001>; Thu, 04 Jun 2020 23:08:57 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Thu, 04 Jun 2020 23:09:09 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Thu, 04 Jun 2020 23:09:09 -0700
+Received: from [10.26.75.201] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Jun
+ 2020 06:09:06 +0000
+Subject: Re: [PATCH] spi: tegra114: missing put on pm_runtime_get_sync failure
+To:     Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        <linux-spi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <emamd001@umn.edu>, <wu000273@umn.edu>, <kjlu@umn.edu>,
+        <mccamant@cs.umn.edu>
+References: <20200602045506.40574-1-navid.emamdoost@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <f928fb02-47d7-b6f9-6198-bd549d6ac6b5@nvidia.com>
+Date:   Fri, 5 Jun 2020 07:09:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:c9ce:: with SMTP id k14mr7131158ilq.250.1591337343956;
- Thu, 04 Jun 2020 23:09:03 -0700 (PDT)
-Date:   Thu, 04 Jun 2020 23:09:03 -0700
-In-Reply-To: <000000000000a363b205a74ca6a2@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001ac18b05a75019ab@google.com>
-Subject: Re: BUG: using smp_processor_id() in preemptible code in radix_tree_node_alloc
-From:   syzbot <syzbot+3eec59e770685e3dc879@syzkaller.appspotmail.com>
-To:     bjorn.andersson@linaro.org, davem@davemloft.net,
-        ebiggers@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        manivannan.sadhasivam@linaro.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200602045506.40574-1-navid.emamdoost@gmail.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1591337337; bh=Fs5owMcBXZxBEaKBbscTgxeCUWoaivJ3Phc/NIsnyRA=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=pT7K+wZxTxAM/7Fb/3IhfkqXAJjNb8HdOJ8Fo2q+92NqX/+HJ09awi4kcZJvoCcup
+         7W8bIKNxyWNXUa59jz+N2/L746R7Acm1dva9z6HdRYG8TEpiH6AhCN2k6YpQGiz4UJ
+         7hlv0uO4OTkx3lINoHLtJdgRp63wRkxr8/km/em+Zm7VkMSTXLN97oRXZcJMI8BriF
+         6BTHlzUwl3gGgB15bsJ5KwIRwGZJRy8mK4DV2hHFVG9+hqK324dzqpjLjbiZKAST6n
+         jRVIbHYRGmQeuIPFwnsVuLCHBteUUveQFwsJZFtZeR/oaDu1PtLQ+YRl0Tp8brpRUR
+         U0s+MaSlg7Tbg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this bug to:
 
-commit e42671084361302141a09284fde9bbc14fdd16bf
-Author: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date:   Thu May 7 12:53:06 2020 +0000
+On 02/06/2020 05:55, Navid Emamdoost wrote:
+> the call to pm_runtime_get_sync increments the counter even 
+> in case of failure leading to incorrect ref count.
+> Call pm_runtime_put if pm_runtime_get_sync fails.
+> 
+> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+> ---
+>  drivers/spi/spi-tegra114.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-tegra114.c b/drivers/spi/spi-tegra114.c
+> index 83edabdb41ad..dccd2ac1a975 100644
+> --- a/drivers/spi/spi-tegra114.c
+> +++ b/drivers/spi/spi-tegra114.c
+> @@ -974,6 +974,7 @@ static int tegra_spi_setup(struct spi_device *spi)
+>  		dev_err(tspi->dev, "pm runtime failed, e = %d\n", ret);
+>  		if (cdata)
+>  			tegra_spi_cleanup(spi);
+> +		pm_runtime_put(tspi->dev);
+>  		return ret;
+>  	}
+>  
+> @@ -1398,6 +1399,7 @@ static int tegra_spi_probe(struct platform_device *pdev)
+>  	ret = pm_runtime_get_sync(&pdev->dev);
+>  	if (ret < 0) {
+>  		dev_err(&pdev->dev, "pm runtime get failed, e = %d\n", ret);
+> +		pm_runtime_put(&pdev->dev);
+>  		goto exit_pm_disable;
+>  	}
 
-    net: qrtr: Do not depend on ARCH_QCOM
+I am wondering if it is better we use put_sync() here to ensure that
+this happens before we exit the probe.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17e22212100000
-start commit:   acf25aa6 Merge tag 'Smack-for-5.8' of git://github.com/csc..
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=14122212100000
-console output: https://syzkaller.appspot.com/x/log.txt?x=10122212100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5263d9b5bce03c67
-dashboard link: https://syzkaller.appspot.com/bug?extid=3eec59e770685e3dc879
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15bd4c1e100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1520c9de100000
+Jon
 
-Reported-by: syzbot+3eec59e770685e3dc879@syzkaller.appspotmail.com
-Fixes: e42671084361 ("net: qrtr: Do not depend on ARCH_QCOM")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+nvpublic
