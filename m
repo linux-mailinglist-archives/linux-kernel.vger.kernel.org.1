@@ -2,122 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D591EF0D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 07:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE5C1EF0C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 07:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726135AbgFEFKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 01:10:10 -0400
-Received: from mga09.intel.com ([134.134.136.24]:21900 "EHLO mga09.intel.com"
+        id S1726084AbgFEFBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 01:01:00 -0400
+Received: from mga04.intel.com ([192.55.52.120]:51777 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725280AbgFEFKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 01:10:10 -0400
-IronPort-SDR: GF9rJsIpdPDqTCZsWnDhkiNGYGJ9eMDSzSNerqBaDTC/R42iP5R2FtKApIfcjL5/pLb1j7oiy2
- byBzoMz+2Pnw==
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
+        id S1725280AbgFEFA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 01:00:59 -0400
+IronPort-SDR: 6i/DvY34nhiow8PBjqidsyf4LC1He06SSXVlt6Vu6BwS32Tw2KBRn1oRwdhJfaMN/807d7Gm5g
+ lg5pF+/QWtYg==
+X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 22:10:09 -0700
-IronPort-SDR: 4idtIugdnOHQYK2nosQvAUNWjA4rL6bAZOJwhqMG8P8YiBjNHy5yvSIA3oUSYEWxW9LZRDSuZc
- TLH/up3j8ssQ==
-X-ExtLoop1: 1
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 22:00:58 -0700
+IronPort-SDR: KTmbzwYRqU1143COmUSMc9+OGMtwL3lsPG0+NcNGGyVs3xfGObUzjSMCKihL7MdI/OF0qBWxY8
+ ZaKijs/d9awA==
 X-IronPort-AV: E=Sophos;i="5.73,475,1583222400"; 
-   d="asc'?scan'208";a="445768791"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
-  by orsmga005.jf.intel.com with ESMTP; 04 Jun 2020 22:10:07 -0700
-Date:   Fri, 5 Jun 2020 12:54:30 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Julian Stecklina <julian.stecklina@cyberus-technology.de>
-Cc:     intel-gvt-dev@lists.freedesktop.org,
-        Thomas Prescher <thomas.prescher@cyberus-technology.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/i915/gvt: print actionable error message when gm
- runs out
-Message-ID: <20200605045430.GS5687@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20200603123321.263895-1-julian.stecklina@cyberus-technology.de>
+   d="scan'208";a="471784741"
+Received: from unknown (HELO [10.239.13.99]) ([10.239.13.99])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 22:00:55 -0700
+Subject: Re: [PATCH][v6] KVM: X86: support APERF/MPERF registers
+To:     Li RongQing <lirongqing@baidu.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, x86@kernel.org, hpa@zytor.com, bp@alien8.de,
+        mingo@redhat.com, tglx@linutronix.de, jmattson@google.com,
+        wanpengli@tencent.com, vkuznets@redhat.com,
+        sean.j.christopherson@intel.com, pbonzini@redhat.com,
+        wei.huang2@amd.com
+References: <1591321466-2046-1-git-send-email-lirongqing@baidu.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <b70d03dd-947f-dee5-5499-3b381372497d@intel.com>
+Date:   Fri, 5 Jun 2020 13:00:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="tuFXEhzhBeitrIAu"
-Content-Disposition: inline
-In-Reply-To: <20200603123321.263895-1-julian.stecklina@cyberus-technology.de>
-User-Agent: Mutt/1.10.0 (2018-05-17)
+In-Reply-To: <1591321466-2046-1-git-send-email-lirongqing@baidu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---tuFXEhzhBeitrIAu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 2020.06.03 14:33:21 +0200, Julian Stecklina wrote:
-> When a user tries to allocate too many or too big vGPUs and runs out
-> of graphics memory, the resulting error message is not actionable and
-> looks like an internal error.
->=20
-> Change the error message to clearly point out what actions a user can
-> take to resolve this situation.
->=20
-> Cc: Thomas Prescher <thomas.prescher@cyberus-technology.de>
-> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-> Signed-off-by: Julian Stecklina <julian.stecklina@cyberus-technology.de>
+On 6/5/2020 9:44 AM, Li RongQing wrote:
+> Guest kernel reports a fixed cpu frequency in /proc/cpuinfo,
+> this is confused to user when turbo is enable, and aperf/mperf
+> can be used to show current cpu frequency after 7d5905dc14a
+> "(x86 / CPU: Always show current CPU frequency in /proc/cpuinfo)"
+> so guest should support aperf/mperf capability
+> 
+> This patch implements aperf/mperf by three mode: none, software
+> emulation, and pass-through
+> 
+> None: default mode, guest does not support aperf/mperf
+> 
+> Software emulation: the period of aperf/mperf in guest mode are
+> accumulated as emulated value
+> 
+> Pass-though: it is only suitable for KVM_HINTS_REALTIME, Because
+> that hint guarantees we have a 1:1 vCPU:CPU binding and guaranteed
+> no over-commit.
+> 
+> And a per-VM capability is added to configure aperfmperf mode
+> 
+> Signed-off-by: Li RongQing <lirongqing@baidu.com>
+> Signed-off-by: Chai Wen <chaiwen@baidu.com>
+> Signed-off-by: Jia Lina <jialina01@baidu.com>
 > ---
->  drivers/gpu/drm/i915/gvt/aperture_gm.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/i915/gvt/aperture_gm.c b/drivers/gpu/drm/i91=
-5/gvt/aperture_gm.c
-> index 0d6d598713082..5c5c8e871dae2 100644
-> --- a/drivers/gpu/drm/i915/gvt/aperture_gm.c
-> +++ b/drivers/gpu/drm/i915/gvt/aperture_gm.c
-> @@ -69,9 +69,12 @@ static int alloc_gm(struct intel_vgpu *vgpu, bool high=
-_gm)
->  				  start, end, flags);
->  	mmio_hw_access_post(gt);
->  	mutex_unlock(&gt->ggtt->vm.mutex);
-> -	if (ret)
-> -		gvt_err("fail to alloc %s gm space from host\n",
-> -			high_gm ? "high" : "low");
-> +	if (ret) {
-> +		gvt_err("vgpu%d: failed to allocate %s gm space from host\n",
-> +			vgpu->id, high_gm ? "high" : "low");
-> +		gvt_err("vgpu%d: destroying vGPUs, decreasing vGPU memory size or incr=
-easing GPU aperture size may resolve this\n",
-> +			vgpu->id);
+> diff v5:
+> return error if guest is configured with mperf/aperf, but host cpu has not
+> 
+> diff v4:
+> fix maybe-uninitialized warning
+> 
+> diff v3:
+> fix interception of MSR_IA32_MPERF/APERF in svm
+> 
+> diff v2:
+> support aperfmperf pass though
+> move common codes to kvm_get_msr_common
+> 
+> diff v1:
+> 1. support AMD, but not test
+> 2. support per-vm capability to enable
+> 
+> 
+>   Documentation/virt/kvm/api.rst  | 10 ++++++++++
+>   arch/x86/include/asm/kvm_host.h | 11 +++++++++++
+>   arch/x86/kvm/cpuid.c            | 15 ++++++++++++++-
+>   arch/x86/kvm/svm/svm.c          |  8 ++++++++
+>   arch/x86/kvm/vmx/vmx.c          |  6 ++++++
+>   arch/x86/kvm/x86.c              | 42 +++++++++++++++++++++++++++++++++++++++++
+>   arch/x86/kvm/x86.h              | 15 +++++++++++++++
+>   include/uapi/linux/kvm.h        |  1 +
+>   8 files changed, 107 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index d871dacb984e..f854f4da6fd8 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -6126,3 +6126,13 @@ KVM can therefore start protected VMs.
+>   This capability governs the KVM_S390_PV_COMMAND ioctl and the
+>   KVM_MP_STATE_LOAD MP_STATE. KVM_SET_MP_STATE can fail for protected
+>   guests when the state change is invalid.
+> +
+> +8.23 KVM_CAP_APERFMPERF
+> +----------------------------
+> +
+> +:Architectures: x86
+> +:Parameters: args[0] is aperfmperf mode;
+> +             0 for not support, 1 for software emulation, 2 for pass-through
+> +:Returns: 0 on success; -1 on error
+> +
+> +This capability indicates that KVM supports APERF and MPERF MSR registers
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index fd78bd44b2d6..14643f8af9c4 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -824,6 +824,9 @@ struct kvm_vcpu_arch {
+>   
+>   	/* AMD MSRC001_0015 Hardware Configuration */
+>   	u64 msr_hwcr;
+> +
+> +	u64 v_mperf;
+> +	u64 v_aperf;
+>   };
+>   
+>   struct kvm_lpage_info {
+> @@ -889,6 +892,12 @@ enum kvm_irqchip_mode {
+>   	KVM_IRQCHIP_SPLIT,        /* created with KVM_CAP_SPLIT_IRQCHIP */
+>   };
+>   
+> +enum kvm_aperfmperf_mode {
+> +	KVM_APERFMPERF_NONE,
+> +	KVM_APERFMPERF_SOFT,      /* software emulate aperfmperf */
+> +	KVM_APERFMPERF_PT,        /* pass-through aperfmperf to guest */
+> +};
+> +
+>   #define APICV_INHIBIT_REASON_DISABLE    0
+>   #define APICV_INHIBIT_REASON_HYPERV     1
+>   #define APICV_INHIBIT_REASON_NESTED     2
+> @@ -986,6 +995,8 @@ struct kvm_arch {
+>   
+>   	struct kvm_pmu_event_filter *pmu_event_filter;
+>   	struct task_struct *nx_lpage_recovery_thread;
+> +
+> +	enum kvm_aperfmperf_mode aperfmperf_mode;
+>   };
+>   
+>   struct kvm_vm_stat {
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index cd708b0b460a..80f18b29a845 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -122,6 +122,16 @@ int kvm_update_cpuid(struct kvm_vcpu *vcpu)
+>   					   MSR_IA32_MISC_ENABLE_MWAIT);
+>   	}
+>   
+> +	best = kvm_find_cpuid_entry(vcpu, 6, 0);
+> +	if (best) {
+> +		if (guest_has_aperfmperf(vcpu->kvm)) {
+> +			if (!boot_cpu_has(X86_FEATURE_APERFMPERF))
+> +				return -EINVAL;
 
-Currently we can't decrease vGPU mem size as defined by mdev type,
-so actually you may try different vGPU type. And aperture size is
-also handled for supported vGPU mdev types, so assume user should
-already be awared of that too. I just don't want us to be too chatty. :)
+kvm_vm_ioctl_enable_cap() ensures that guest_has_aperfmperf() always 
+aligns with boot_cpu_has(X86_FEATURE_APERFMPERF). So above is unnecessary.
 
+> +			best->ecx |= 1;
+> +		} else {
+> +			best->ecx &= ~1;
+> +		}
 > +	}
-> =20
->  	return ret;
->  }
-> --=20
-> 2.26.2
->=20
-> _______________________________________________
-> intel-gvt-dev mailing list
-> intel-gvt-dev@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
 
---=20
-Open Source Technology Center, Intel ltd.
+you could do
 
-$gpg --keyserver wwwkeys.pgp.net --recv-keys 4D781827
+	bool guest_cpuid_aperfmperf = false;
+	if (best)
+		guest_cpuid_aperfmperf = !!(best->ecx & BIT(0));
 
---tuFXEhzhBeitrIAu
-Content-Type: application/pgp-signature; name="signature.asc"
+	if (guest_cpuid_aperfmerf != guest_has_aperfmperf(vcpu->kvm))
+		return -EINVAL;
 
------BEGIN PGP SIGNATURE-----
 
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCXtnQBgAKCRCxBBozTXgY
-J/c4AKCKRut0XbYE1ZzbeKKaRdpwFEG8cgCfRE5+/HXqXZ4OypqRUdPCM+ACVTk=
-=2IF1
------END PGP SIGNATURE-----
+In fact, I think we can do nothing here. Leave it as what usersapce 
+wants just like how KVM treats other CPUID bits.
 
---tuFXEhzhBeitrIAu--
+Paolo,
+
+What's your point?
+
+>   	/* Note, maxphyaddr must be updated before tdp_level. */
+>   	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
+>   	vcpu->arch.tdp_level = kvm_x86_ops.get_tdp_level(vcpu);
+
+[...]
+
+> @@ -4930,6 +4939,11 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>   		kvm->arch.exception_payload_enabled = cap->args[0];
+>   		r = 0;
+>   		break;
+> +	case KVM_CAP_APERFMPERF:
+> +		kvm->arch.aperfmperf_mode =
+> +			boot_cpu_has(X86_FEATURE_APERFMPERF) ? cap->args[0] : 0;
+
+Shouldn't check whether cap->args[0] is a valid value?
+
+> +		r = 0;
+> +		break;
+>   	default:
+>   		r = -EINVAL;
+>   		break;
+
+
