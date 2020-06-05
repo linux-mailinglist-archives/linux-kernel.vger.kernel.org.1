@@ -2,55 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B98C1F0164
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 23:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE981F016B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 23:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728587AbgFEVPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 17:15:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728548AbgFEVPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 17:15:17 -0400
-Subject: Re: [GIT PULL] Bulk GPIO changes for v5.8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591391717;
-        bh=9VQN3uC2vV5ELJ6LIaLUAU//aK5hXgvOhUtIGb8Kx28=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=rKw+J9wyDVSEIjs75Mcbd/IdCSNR7z6fVyorzVyU2vLo4Ek7cfZMMUJSR9PD5VKZT
-         Ysph7ExgzZa52Sz4KPw7NKDFuRDGME8qcsXaBYlceHmOrxaaMZLA1NgIIWRTK8qVLj
-         i/LI1RWvR+Jicqnz8hpDAnvUTSatXIpleMf1aCp4=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdY=R5_g+Vrjtj9tZ=5gxh5qPWqm-yqtFB5GbKC75Yskxg@mail.gmail.com>
-References: <CACRpkdY=R5_g+Vrjtj9tZ=5gxh5qPWqm-yqtFB5GbKC75Yskxg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdY=R5_g+Vrjtj9tZ=5gxh5qPWqm-yqtFB5GbKC75Yskxg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
- tags/gpio-v5.8-1
-X-PR-Tracked-Commit-Id: 74910e15ab25f95f162bc4d4a634d029186543ce
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3f7e82379fc91102d82ed89822bd4242c83e40d5
-Message-Id: <159139171705.26946.10369365814347507554.pr-tracker-bot@kernel.org>
-Date:   Fri, 05 Jun 2020 21:15:17 +0000
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+        id S1728408AbgFEVSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 17:18:14 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:55214 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728248AbgFEVSO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 17:18:14 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id A9DD88EE17B;
+        Fri,  5 Jun 2020 14:18:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1591391893;
+        bh=fvQ5lXXp/5KD4vDVeCdckFEdmRAm58yLylnHAerd8EU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Y1Q6AJdFWs4C6umRRKaOSsAkd/aZ6/KFnDKUFTM3cXGn6h86cY8WVEgtgKRezjGvf
+         QgB4Lh5qDjbdFrE3JKJDJlQK1fupF4Y4YDgbMV+T2FXYGD0Kv5QjpOM/6VXROHazGI
+         6akCNl4ynYPVK+eWThXfjCi7o3PAX1v4XL1eLbBg=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3JikwkIJJBpC; Fri,  5 Jun 2020 14:18:13 -0700 (PDT)
+Received: from [153.66.254.194] (unknown [50.35.76.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id E5F0F8EE0CE;
+        Fri,  5 Jun 2020 14:18:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1591391893;
+        bh=fvQ5lXXp/5KD4vDVeCdckFEdmRAm58yLylnHAerd8EU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Y1Q6AJdFWs4C6umRRKaOSsAkd/aZ6/KFnDKUFTM3cXGn6h86cY8WVEgtgKRezjGvf
+         QgB4Lh5qDjbdFrE3JKJDJlQK1fupF4Y4YDgbMV+T2FXYGD0Kv5QjpOM/6VXROHazGI
+         6akCNl4ynYPVK+eWThXfjCi7o3PAX1v4XL1eLbBg=
+Message-ID: <1591391891.4728.96.camel@HansenPartnership.com>
+Subject: Re: [GIT PULL] first round of SCSI updates for the 5.6+ merge window
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 05 Jun 2020 14:18:11 -0700
+In-Reply-To: <CAHk-=wjiQmscZHzOYKmMpFoy4h4xF1Mvf9O8i6qtTtS38t6Wsg@mail.gmail.com>
+References: <1591332925.3685.16.camel@HansenPartnership.com>
+         <CAHk-=wjiQmscZHzOYKmMpFoy4h4xF1Mvf9O8i6qtTtS38t6Wsg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 4 Jun 2020 23:51:30 +0200:
+On Fri, 2020-06-05 at 14:11 -0700, Linus Torvalds wrote:
+> On Thu, Jun 4, 2020 at 9:55 PM James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-
+> > misc
+> 
+>    "Already up to date."
+> 
+> Did you forget to force a push? That scsi-misc tag is your tag from
+> April 10.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git tags/gpio-v5.8-1
+Um, no, shuffles feet ... I actually tagged the wrong branch:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3f7e82379fc91102d82ed89822bd4242c83e40d5
+https://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git/tag/?h=scsi-fixes
 
-Thank you!
+I've tagged the right branch now if you repull the scsi-misc tag. 
+Sorry about that; I think it's finger memory from so many fixes
+updates.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+James
+
