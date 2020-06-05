@@ -2,239 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3942B1EF8D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 15:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B701EF8E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 15:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgFENVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 09:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgFENVi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 09:21:38 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A02DC08C5C3
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 06:21:37 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id c11so11738340ljn.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 06:21:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=npO6Xx111vYtSO61NgRog+dLyg7Zh/nU9iarUcpFEzo=;
-        b=BaYt+8sLySFAo/AJdgsrU0i42aIMZuELEwCmtWYbAkMOR9MT3sfPHT/goQGqDX6u9N
-         ujgFLYkOs9lnYHNPrnDmPviKxyRhPa3wAdfpzpnokUOr1nHduLp37/2VCzS3UewtTaH+
-         9YMKCz069P3CEmOhLRACg8jpPvk5+zUFMjxup8UhoF4l4LxUCqslQAa/yzA42uZL4Iap
-         UCKtjFnTdCgaSl2OunhW7CRgW/4nggaMlTMU+Tv0sgQj0L7CU+vPSDAX72XtnM7vIQxy
-         Z9ihme+PD83mLeflboO9MDhhXmVoJvfUaR5RKNYqFubacLwfIrj+sKnDnQSXNYzo07n0
-         Wz9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=npO6Xx111vYtSO61NgRog+dLyg7Zh/nU9iarUcpFEzo=;
-        b=C3iTTM0UIrFQ8TnsBHrsxuQmnd5+dFLvLgzGnber0YZo/fnfsViMO/vBzLR/86t8H1
-         n8TwyVdY+p/Nh5VqvMoh9vNsetGFd4/HNRNwAgt6ieDE6xbY5FTYwOsBFlRXB05FvzHB
-         dnOIYACXwZTUQ0URlaSuqcUYXO1Z0HIOvQFq0ehu+iUj+mDy4Gl6YfBYR2RlFfiQXDs3
-         E3b0Mw4/cin9ufxWb/ryMWdrx0DLTMgbOPzOKVhMKE6YLulZJGn1YA3R+YVgH2Sk2Noi
-         XRT8X7kgE2RzCXhc6Co8lSHzElFZilXt/SIEU5CUyhomFBHlMlTJ/w5cQdhq0vmVXIgS
-         9emA==
-X-Gm-Message-State: AOAM530KacErAzJYGVwif6fhcFUIuunAeIV/QQnw0X5iu9sGqv1q0EvQ
-        9EaDYLQrsOAPO5lrGCtHOe6H9w==
-X-Google-Smtp-Source: ABdhPJwCA5uqky+cVncXQ8y6SrBtfMTJs/nFlEH5EUPIWrkmswBKE9ncxkN1e4NHB18RN/s6Wrsj1g==
-X-Received: by 2002:a2e:9e87:: with SMTP id f7mr1210036ljk.44.1591363295925;
-        Fri, 05 Jun 2020 06:21:35 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id x69sm920805lff.19.2020.06.05.06.21.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 06:21:34 -0700 (PDT)
-Date:   Fri, 5 Jun 2020 15:21:34 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Chris Brandt <chris.brandt@renesas.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: irqchip: renesas-rza1-irqc: Convert to
- json-schema
-Message-ID: <20200605132134.GA385628@oden.dyn.berto.se>
-References: <20200528132853.1751-1-geert+renesas@glider.be>
+        id S1727078AbgFENYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 09:24:06 -0400
+Received: from mout.web.de ([212.227.15.3]:41993 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726894AbgFENYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 09:24:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1591363423;
+        bh=tuG0dZ1YiipXhKqpByGWLeDV+TUK9ozfY2PMN7JgfY0=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=ZSlKtdDTbAsej8vgSsmeCzAeOeXKqASnz5uXWtDauAIQXvRrAezErr7Nolyyzqk1P
+         X2gWxm4lf8y6K/EjyHHItJIyB0J09N/8tHUWDW2NK7vWpmQw5BNYp1ojQjdffN2aIc
+         +PsIrDZ7Sky3kOs7wIa8PTQKaEUpvN+aW70Tv/Mk=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.102.114]) by smtp.web.de (mrweb002
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MX0q4-1jV4p91lW0-00VxiJ; Fri, 05
+ Jun 2020 15:23:43 +0200
+Subject: Re: block: Fix use-after-free in blkdev_get()
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jason Yan <yanaijie@huawei.com>, hulkci@huawei.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Ming Lei <ming.lei@redhat.com>
+References: <88676ff2-cb7e-70ec-4421-ecf8318990b1@web.de>
+ <5fa658bf-3028-9b5c-30cc-dbdef6bf8f7a@huawei.com>
+ <20200605094353.GS30374@kadam> <2ee6f2f7-eaec-e748-bead-0ad59f4c378b@web.de>
+ <20200605111049.GA19604@bombadil.infradead.org>
+ <b6c8ebd7-ccd3-2a94-05b2-7b92a30ec8a9@web.de>
+ <20200605115158.GD19604@bombadil.infradead.org>
+ <453060f2-80af-86a4-7e33-78d4cc87503f@web.de>
+ <1d95e2f6-7cf8-f0d3-bf8a-54d0a99c9ba1@kernel.dk>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <b642a81c-84cd-ca05-5708-c109dc2e5ea8@web.de>
+Date:   Fri, 5 Jun 2020 15:23:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200528132853.1751-1-geert+renesas@glider.be>
+In-Reply-To: <1d95e2f6-7cf8-f0d3-bf8a-54d0a99c9ba1@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+X-Provags-ID: V03:K1:BwE1qV5V3yoaN8alh2loRJYQ/SNkXOJw/is3lGQ+r33syBYM4rc
+ 7tZT4t8XdjBmX/Pko0yuAeYfpre4BQVQOX6GukHH8Ozp3tQd/PqNbT/VNYj1IE4B5jHyFPr
+ FGDcqZHx1bq2oxmylMjbydGs2kt44oZEEcwsE5RZygiiElElHKZFJdhyo+Sq1572LbVSsPz
+ 4SjcToTf3mJGRwmRKbopA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:iozseHijVFE=:ffGMyIeUiaLTrjIaP9Ukdo
+ BHUF88Mw2P6UnEgz9e9WavSgrUb+6Ucv5WY5HS7Mjjt8oucC36Q26jMwzsh2sD6QZ3K+ytfWQ
+ bbn1h9w8M0B0N2eCXmDVYuWffyoprKsCQRkPegyFazaX2Xr/HqpmqhQYb8DGguBc+ycGeuRtX
+ AgAEvsccSX5SzCwrV3f9f53N0IYJ1t54FAw+XOl3HV2TrLZnQDGVAC518VWc1WI4wHx+nURT8
+ 4N3zsPYnywl54C/+o5M09fdaIYibYxeh7fTMDVdUIzVR4jMaPCWO2Dod8Aaqs7OlCIAh6hMVl
+ mKKo1HzBixSQ7mch9gRRZ8TbFLaOtwA5u3/ACRGkDCwl7HY8OEsSkDPasxx9nUop5kRCDzAvR
+ L72lPfBQewEEFbcwQxdpb7rG0v3K11jCZUWrJOIaE2SD1reqQagggqgMe07h9Jz9R4eBpXfny
+ Xvacb974arGEmsDS02fx8GEGb1nwB6COrW50QAt8Cug2Lp0c/u6dqb5YO8rzxN2bmiuTbyGxd
+ 7fP0+m+q6vZtqoiYP942FaoA9eIL+JZ4A9rG7YZt/8anX4V5sgOA1EwNY/nC+jSYshE4ZURAy
+ 0yqvZ+I/G/gOwnskwapZk0Y6OkrxwysFJrcoCyr8EpbNTLuzTuXcupci7qDhrgTwddDSx5Acm
+ DYcF3/PY79kpzmNlr7rQweuRUrulWXQnfPYfOWQg99g+bLOCxDZ3WdeAzzWl/KUkurWBvaZmJ
+ DiBOyoBSouG9+lVLm0fdaANcBNn7mwJuJqem5rE3NSbFha1+56ZzUbjsp7XTVPjAbTRcjEFLl
+ 2wPK0ECkhoFjq2HOxkxptY8w++OpfF7hfu2lK3IMHSOi6Xa+WMcfIsnbCzgSS0R+WlTB+wEat
+ dPpy4M1sjrykyVrMMgkVnuQMQnyKlwvye3PHVDBLEqbmJr43Dif25WNDnpXOFPL1XXQynNIU3
+ mEEb1dBHZPVfEHkdi/2R8U9lZy1/F6uBT0YTXqMBBVk3hx7siDZkkG3wUuV0cwk1hIG9AUK2i
+ Xxbo+Ct4vpHYJ3rChyJpXOAi0CQ39H7imbTx9olDZ7UvMaSPj9g2bQ5KYslSlE0LNgWcfFfyG
+ MPtGFzgFKjMiBnh+ZJwB/JtVXiVaBEJBjdT7/f1BAiv2O9RTBIKORqlw4yPvcQBGS+kBcIlKB
+ 1fOGn+1Ix/KxDoyxlmOKKRonT6AbpCkNlKUUu7rYMcOeeMuBtDVTJXdLVxlJMMNF5jDtYEBNk
+ 0Ym1+aXaS64XShxPR
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+> Maintainers generally do change commit messages to improve them,
+> if needed.
 
-Thanks for your work.
+You have got a documented choice here.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=435faf5c218a47fd6258187f62d9bb1009717896#n468
 
-On 2020-05-28 15:28:53 +0200, Geert Uytterhoeven wrote:
-> Convert the Renesas RZ/A1 Interrupt Controller Device Tree binding
-> documentation to json-schema.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-
-> ---
-> Validation depends on "[PATCH dt-schema] Fix interrupt controllers with
-> interrupt-map".
-> http://lore.kernel.org/r/20200528132323.30288-1-geert+renesas@glider.be
-> ---
->  .../renesas,rza1-irqc.txt                     | 43 ----------
->  .../renesas,rza1-irqc.yaml                    | 80 +++++++++++++++++++
->  2 files changed, 80 insertions(+), 43 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.txt
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.txt b/Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.txt
-> deleted file mode 100644
-> index 727b7e4cd6e01110..0000000000000000
-> --- a/Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.txt
-> +++ /dev/null
-> @@ -1,43 +0,0 @@
-> -DT bindings for the Renesas RZ/A1 Interrupt Controller
-> -
-> -The RZ/A1 Interrupt Controller is a front-end for the GIC found on Renesas
-> -RZ/A1 and RZ/A2 SoCs:
-> -  - IRQ sense select for 8 external interrupts, 1:1-mapped to 8 GIC SPI
-> -    interrupts,
-> -  - NMI edge select.
-> -
-> -Required properties:
-> -  - compatible: Must be "renesas,<soctype>-irqc", and "renesas,rza1-irqc" as
-> -		fallback.
-> -		Examples with soctypes are:
-> -		  - "renesas,r7s72100-irqc" (RZ/A1H)
-> -		  - "renesas,r7s9210-irqc" (RZ/A2M)
-> -  - #interrupt-cells: Must be 2 (an interrupt index and flags, as defined
-> -				 in interrupts.txt in this directory)
-> -  - #address-cells: Must be zero
-> -  - interrupt-controller: Marks the device as an interrupt controller
-> -  - reg: Base address and length of the memory resource used by the interrupt
-> -         controller
-> -  - interrupt-map: Specifies the mapping from external interrupts to GIC
-> -		   interrupts
-> -  - interrupt-map-mask: Must be <7 0>
-> -
-> -Example:
-> -
-> -	irqc: interrupt-controller@fcfef800 {
-> -		compatible = "renesas,r7s72100-irqc", "renesas,rza1-irqc";
-> -		#interrupt-cells = <2>;
-> -		#address-cells = <0>;
-> -		interrupt-controller;
-> -		reg = <0xfcfef800 0x6>;
-> -		interrupt-map =
-> -			<0 0 &gic GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
-> -			<1 0 &gic GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
-> -			<2 0 &gic GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
-> -			<3 0 &gic GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
-> -			<4 0 &gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-> -			<5 0 &gic GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
-> -			<6 0 &gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-> -			<7 0 &gic GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
-> -		interrupt-map-mask = <7 0>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.yaml b/Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.yaml
-> new file mode 100644
-> index 0000000000000000..755cdfabfcd06c85
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.yaml
-> @@ -0,0 +1,80 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/interrupt-controller/renesas,rza1-irqc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Renesas RZ/A1 Interrupt Controller
-> +
-> +maintainers:
-> +  - Chris Brandt <chris.brandt@renesas.com>
-> +  - Geert Uytterhoeven <geert+renesas@glider.be>
-> +
-> +description: |
-> +  The RZ/A1 Interrupt Controller is a front-end for the GIC found on Renesas RZ/A1 and
-> +  RZ/A2 SoCs:
-> +    - IRQ sense select for 8 external interrupts, 1:1-mapped to 8 GIC SPI interrupts,
-> +    - NMI edge select.
-> +
-> +allOf:
-> +  - $ref: /schemas/interrupt-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - renesas,r7s72100-irqc # RZ/A1H
-> +          - renesas,r7s9210-irqc  # RZ/A2M
-> +      - const: renesas,rza1-irqc
-> +
-> +  '#interrupt-cells':
-> +    const: 2
-> +
-> +  '#address-cells':
-> +    const: 0
-> +
-> +  interrupt-controller: true
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupt-map:
-> +    maxItems: 8
-> +    description: Specifies the mapping from external interrupts to GIC interrupts.
-> +
-> +  interrupt-map-mask:
-> +    items:
-> +      - const: 7
-> +      - const: 0
-> +
-> +required:
-> +  - compatible
-> +  - '#interrupt-cells'
-> +  - '#address-cells'
-> +  - interrupt-controller
-> +  - reg
-> +  - interrupt-map
-> +  - interrupt-map-mask
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    irqc: interrupt-controller@fcfef800 {
-> +            compatible = "renesas,r7s72100-irqc", "renesas,rza1-irqc";
-> +            #interrupt-cells = <2>;
-> +            #address-cells = <0>;
-> +            interrupt-controller;
-> +            reg = <0xfcfef800 0x6>;
-> +            interrupt-map =
-> +                    <0 0 &gic GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
-> +                    <1 0 &gic GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
-> +                    <2 0 &gic GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
-> +                    <3 0 &gic GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
-> +                    <4 0 &gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-> +                    <5 0 &gic GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
-> +                    <6 0 &gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-> +                    <7 0 &gic GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
-> +            interrupt-map-mask = <7 0>;
-> +    };
-> -- 
-> 2.17.1
-> 
-
--- 
 Regards,
-Niklas Söderlund
+Markus
