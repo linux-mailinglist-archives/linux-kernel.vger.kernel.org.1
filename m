@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACAFC1EF2CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 10:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3651EF2D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 10:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726218AbgFEIJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 04:09:33 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44844 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726024AbgFEIJc (ORCPT
+        id S1726200AbgFEIKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 04:10:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726116AbgFEIKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 04:09:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591344569;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QrVbv0LAvfoDVrxdU1Wp4ZS7+oUmRvbMHHEQQfIJrYQ=;
-        b=d+3Jq24POlPaVoQ7KymsVIV/Rhuxw2/ApIfFv0S0ho4BUCb90ZTkrJX5AywNBgbdiJLDOn
-        cSj42Ww1KSVYkf59rYciRCENbkigy4JGN2LSskrarJfkyYdmyhxbINgvr32HY0sNP93Zg8
-        rA86o8ykPdPq/JZGFW19yxFmuI/nVY0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-_g3o_KtqNdKZsXrJ-1xJmQ-1; Fri, 05 Jun 2020 04:09:27 -0400
-X-MC-Unique: _g3o_KtqNdKZsXrJ-1xJmQ-1
-Received: by mail-wm1-f72.google.com with SMTP id 11so2459519wmj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 01:09:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QrVbv0LAvfoDVrxdU1Wp4ZS7+oUmRvbMHHEQQfIJrYQ=;
-        b=fszq9fn6fSLB1fQRLbjthhfqZM8S012g9scoejwAXl/suwYJBzWq2wJKU7IZeFa4rT
-         0gtEbbJyMeSAQf3VXhbjU7FyAbueAqOmd6XcH3mSAXSSdEK78XrTsfF/5qHRohtLDwZi
-         69E7Wmm6rpCYNYxBSki/9W5dmH7odV5OmYU6ZegktV/OSNDdNPZe/nCu4ofrnufwvQ+A
-         BbUq9qZC0kEd2+zobu/ElhQQkf9EBYQb3CizTrA6PtrLoPdtzyGTqfhzZ65LX3i27xt3
-         Ejr50xL0uNlIr3rmaucKNmbmHciYzbJc++bb6KPQKT96+pUUkXgGr59t4GpteH3QaMaj
-         TkjQ==
-X-Gm-Message-State: AOAM530KOlmAK2Gic79RxgrGCEHWrC0fdSJwsloKtGYMW8U8E51wHSMi
-        yu1AFZxq9NTE8tVYSEDqTsR/zJu+Xr+e65rwJ53o2nu2+ga6ewYTpJliSae470+0z0QRm++qRI6
-        uaTdZL8B4tq10Ptbqnmg/3+DX
-X-Received: by 2002:adf:910e:: with SMTP id j14mr3063156wrj.278.1591344566572;
-        Fri, 05 Jun 2020 01:09:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzIuVyoaDb2G7McATYKVs9RHDnOjJKTbctGFe7ylZ0JJN3Ab9BRicQxXsudMj+hwx2qABEvPw==
-X-Received: by 2002:adf:910e:: with SMTP id j14mr3063139wrj.278.1591344566346;
-        Fri, 05 Jun 2020 01:09:26 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:a0c0:5d2e:1d35:17bb? ([2001:b07:6468:f312:a0c0:5d2e:1d35:17bb])
-        by smtp.gmail.com with ESMTPSA id l18sm9796731wmj.22.2020.06.05.01.09.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Jun 2020 01:09:25 -0700 (PDT)
-Subject: Re: system time goes weird in kvm guest after host suspend/resume
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, kvm@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org
-References: <87pnagf912.fsf@nanos.tec.linutronix.de>
- <87367a91rn.fsf@nanos.tec.linutronix.de>
- <CAJfpegvchB2H=NK3JU0BQS7h=kXyifgKD=JHjjT6vTYVMspY2A@mail.gmail.com>
- <1a1c32fe-d124-0e47-c9e4-695be7ea7567@redhat.com>
- <CAJfpegvwBx49j9XwJZXcSUK=V9oHES31zB2sev0xwS4wfhah-g@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4c3c4a5a-e11b-1a27-0e25-9696e407bd0a@redhat.com>
-Date:   Fri, 5 Jun 2020 10:09:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Fri, 5 Jun 2020 04:10:54 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0203AC08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 01:10:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LYbrvHl+6WGEwIJSwoPQG9jzYvDaEq0yN9w5xqYNTiM=; b=EfJ17X+OT8Hy1PtSBIVdh/CyUL
+        AMq23Ad0Hv4Y3bwVg/LQRXnq9y9C2FOm0piheCNLeibLBtCSETEE+7oFFlYkeRzgG9Ytj5nQyvEsM
+        b+F6LWh/R2WeK8J7QsIwyOjiO/iDI+Xyw9NMWVFV5z/h40dFEyg6kGp5v1v3lawLB9UDX67Bwz56a
+        mukBjxFqaHOhH/wFa+V4c3dyO3beZzVvmdhL+ViFt7lQH006Sm0uvAytJdkZ6JtL9MN2LOB7kYGSf
+        +ZkUTUXV0FF5F4YqRpvmEedwspx57BwoqwWy03/Acnb4DkbOdyaSOhP/1vwhLNKYc6TP4ra9IIqL/
+        pxS6scWg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jh7Qt-0002Sa-Tr; Fri, 05 Jun 2020 08:10:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 15018304BDF;
+        Fri,  5 Jun 2020 10:10:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F28D020CC3FCD; Fri,  5 Jun 2020 10:10:28 +0200 (CEST)
+Date:   Fri, 5 Jun 2020 10:10:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     tglx@linutronix.de, frederic@kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org, cai@lca.pw,
+        mgorman@techsingularity.net
+Subject: Re: [RFC][PATCH 7/7] sched: Replace rq::wake_list
+Message-ID: <20200605081028.GC2750@hirez.programming.kicks-ass.net>
+References: <20200526161057.531933155@infradead.org>
+ <20200526161908.129371594@infradead.org>
+ <20200604141837.GA179816@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <CAJfpegvwBx49j9XwJZXcSUK=V9oHES31zB2sev0xwS4wfhah-g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200604141837.GA179816@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/06/20 09:35, Miklos Szeredi wrote:
->> time(2) instead should actually be gettimeofday(2), which just returns
->> tk->xtime_sec.  So the problem is the nanosecond part which is off by
->> 2199*10^9 nanoseconds, and that is suspiciously close to 2^31...
-> Yep: looking at the nanosecond values as well, the difference is
-> exactly 2199023255552 which is 2^41.
+On Thu, Jun 04, 2020 at 07:18:37AM -0700, Guenter Roeck wrote:
+> On Tue, May 26, 2020 at 06:11:04PM +0200, Peter Zijlstra wrote:
 
-Umpf, I was off by 3, it's not related to 2^31.  But yeah the cause of
-the bug seems to be the botched nanosecond part, which I'm sure is not
-supposed to be much bigger than 10^9.
+> > +	BUILD_BUG_ON(offsetof(struct task_struct, wake_entry_type) - offsetof(struct task_struct, wake_entry) !=
+> > +		     offsetof(struct __call_single_data, flags) - offsetof(struct __call_single_data, llist));
+> > +
+> 
+> There is no guarantee in C that
+> 
+> 	type1 a;
+> 	type2 b;
+> 
+> in two different data structures means that offsetof(b) - offsetof(a)
+> is the same in both data structures unless attributes such as
+> __attribute__((__packed__)) are used.
 
-Paolo
+Do tell more; the alignment requirements and size of the types remains
+the same, this resulting in different layout is unlikely.
 
+I found this excellent quote on Hacker News this morning:
+
+ "I think the attitude of compiler writers is a good reason to fix the
+  spec so they can't keep ratfucking developers trying to get work done."
+
+> As result, this does and will cause a variety of build errors depending
+> on the compiler version and compile flags.
+
+The only thing I can think of that's actually a problem is that retarded
+struct randomization stuff.
+
+Anyway, I'll move cleaning it up a little higher on the todo list.
