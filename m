@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94ACC1EF3E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E961EF3DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726284AbgFEJTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 05:19:00 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:51844 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726260AbgFEJTA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 05:19:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591348739; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=rOuMTfuZSakOmsFGGhwcSiyz0vHtYC8PrlCFy1ZsKyw=; b=LrCc0pF9xRFoIwtHrKiZQFGPZKRBas+l8BfdnZkELj+iysMGVaw/bfzIjGrQO2PioMdO1w3Z
- TPWDgiD3TiOAPgkbHFQgeb5tGEONQTrx3UT68uqqFrhiGMzDflVik1IDrutpxkJp13i5uXlw
- k+LxdCtwK5BWfRJcOeN9RA26gAM=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5eda0df6c0031c71c2438ccc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Jun 2020 09:18:46
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1EAEEC433B2; Fri,  5 Jun 2020 09:18:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726242AbgFEJSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 05:18:30 -0400
+Received: from a.mx.secunet.com ([62.96.220.36]:45324 "EHLO a.mx.secunet.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726184AbgFEJSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 05:18:30 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 7DC472051F;
+        Fri,  5 Jun 2020 11:18:28 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id QbH6BSzxoDwq; Fri,  5 Jun 2020 11:18:28 +0200 (CEST)
+Received: from mail-essen-01.secunet.de (mail-essen-01.secunet.de [10.53.40.204])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B846EC43387;
-        Fri,  5 Jun 2020 09:18:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B846EC43387
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Joe Perches <joe@perches.com>,
-        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-mm@kvack.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 04/10] rtlwifi: rtl8192cu: Remove uninitialized_var() usage
-References: <20200603233203.1695403-1-keescook@chromium.org>
-        <20200603233203.1695403-5-keescook@chromium.org>
-Date:   Fri, 05 Jun 2020 12:18:22 +0300
-In-Reply-To: <20200603233203.1695403-5-keescook@chromium.org> (Kees Cook's
-        message of "Wed, 3 Jun 2020 16:31:57 -0700")
-Message-ID: <87h7vpg9b5.fsf@tynnyri.adurom.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 174382052E;
+        Fri,  5 Jun 2020 11:18:28 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ mail-essen-01.secunet.de (10.53.40.204) with Microsoft SMTP Server (TLS) id
+ 14.3.487.0; Fri, 5 Jun 2020 11:18:27 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Fri, 5 Jun 2020
+ 11:18:27 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)      id 21A1531801FA;
+ Fri,  5 Jun 2020 11:18:27 +0200 (CEST)
+Date:   Fri, 5 Jun 2020 11:18:27 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     David Ahern <dsahern@gmail.com>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: linux-next: manual merge of the ipsec-next tree with Linus' tree
+Message-ID: <20200605091827.GD19286@gauss3.secunet.de>
+References: <20200511130015.37103884@canb.auug.org.au>
+ <20200602092040.5ef52300@canb.auug.org.au>
+ <6092c5eb-6e50-97bc-90db-4f7a0ca29c6e@gmail.com>
+ <20200604112606.25ffde35@canb.auug.org.au>
+ <8d943a28-2e9f-9c61-9cff-899e907d6b86@gmail.com>
+ <20200604064149.GT19286@gauss3.secunet.de>
+ <9b338449-e342-96ab-0ba1-a73058fac037@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <9b338449-e342-96ab-0ba1-a73058fac037@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
+On Thu, Jun 04, 2020 at 06:44:10AM -0600, David Ahern wrote:
+> On 6/4/20 12:41 AM, Steffen Klassert wrote:
+> > On Wed, Jun 03, 2020 at 08:55:01PM -0600, David Ahern wrote:
+> >> On 6/3/20 7:26 PM, Stephen Rothwell wrote:
+> >>>
+> >>> And now the net-next tree has been merged into Linus' tree without this fix :-(
+> >>>
+> >>
+> >> I took a look earlier and I think it is fine. Some code was moved around
+> >> in ipsec-next and I think the merge is good. I'll run the test cases
+> >> later this week and double check. Thanks for the reminder
+> > 
+> > The setting of XFRM_TRANSFORMED moved to xfrm_output() and depends
+> > on CONFIG_NETFILTER. So I think the fix is needed. After the merge
+> > of the net tree today, I have both conflicting patches patches in
+> > the ipsec tree. I'd apply the fix from Stephen unless you say
+> > it is not needed.
+> > 
+> 
+> Indeed. I must have been looking at -net. Both -net and -net-next have
+> it conditional, so yes a fixup patch is needed.
 
-> Using uninitialized_var() is dangerous as it papers over real bugs[1]
-> (or can in the future), and suppresses unrelated compiler warnings (e.g.
-> "unused variable"). If the compiler thinks it is uninitialized, either
-> simply initialize the variable or make compiler changes. As a precursor
-> to removing[2] this[3] macro[4], just initialize this variable to NULL,
-> and avoid sending garbage by returning.
->
-> [1] https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.com/
-> [2] https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=1TGqCR5vQkCzWJ0QxK6CernOU6eedsudAixw@mail.gmail.com/
-> [3] https://lore.kernel.org/lkml/CA+55aFwgbgqhbp1fkxvRKEpzyR5J8n1vKT1VZdz9knmPuXhOeg@mail.gmail.com/
-> [4] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/
->
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-To which tree should this go? If something else than wireless-drivers
-tree:
-
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
-
-But let me know if you want me to take this.
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+The fixup patch from Stephen is now applied to the ipsec tree.
