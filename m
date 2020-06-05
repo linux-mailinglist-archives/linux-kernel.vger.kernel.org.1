@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CBC1EF11E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 08:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375D61EF118
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 08:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgFEGEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 02:04:30 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:3601 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725962AbgFEGE3 (ORCPT
+        id S1726114AbgFEGCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 02:02:46 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12532 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725986AbgFEGCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 02:04:29 -0400
-X-UUID: e14f76053beb48bdbb8fddce40959679-20200605
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=5zTg+Ae3aI1oUNdcUL6hKGmNs4wF6e1l6u5UQkutTio=;
-        b=oFs3Ny0Ob60ZMWSxzSRXOV/zfLBO7m3HchUR7My58YphoF8wMAzqtny8E4uI4SWIZ+NPuE+vuqybkFLHr8MZF1ZwNnyHZGDqJkBfUGMXP20FQykTnCo4ULKTQN+lTrB1q9rK6V054rDhxymkxVNAg1e/HOlHJvI/Ja7lp2CdcH4=;
-X-UUID: e14f76053beb48bdbb8fddce40959679-20200605
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <xia.jiang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1031911475; Fri, 05 Jun 2020 14:04:23 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 5 Jun
- 2020 14:04:21 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 5 Jun 2020 14:04:19 +0800
-Message-ID: <1591336937.31802.2.camel@mhfsdcap03>
-Subject: Re: [PATCH v8 04/14] media: platform: Change the fixed device node
- number to unfixed value
-From:   Xia Jiang <xia.jiang@mediatek.com>
-To:     Tomasz Figa <tfiga@chromium.org>
-CC:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Rick Chang <rick.chang@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        <srv_heupstream@mediatek.com>, <senozhatsky@chromium.org>,
-        <mojahsu@chromium.org>, <drinkcat@chromium.org>,
-        <maoguang.meng@mediatek.com>, <sj.huang@mediatek.com>
-Date:   Fri, 5 Jun 2020 14:02:17 +0800
-In-Reply-To: <20200521135937.GD209565@chromium.org>
-References: <20200403094033.8288-1-xia.jiang@mediatek.com>
-         <20200403094033.8288-5-xia.jiang@mediatek.com>
-         <20200521135937.GD209565@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Fri, 5 Jun 2020 02:02:45 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ed9dff90000>; Thu, 04 Jun 2020 23:02:33 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 04 Jun 2020 23:02:45 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 04 Jun 2020 23:02:45 -0700
+Received: from [10.26.75.201] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Jun
+ 2020 06:02:42 +0000
+Subject: Re: [PATCH] spi: tegra20-slink: add missing pm_runtime_put
+To:     Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        <linux-spi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <emamd001@umn.edu>, <wu000273@umn.edu>, <kjlu@umn.edu>,
+        <smccaman@umn.edu>
+References: <20200602052602.91374-1-navid.emamdoost@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <555a3d93-ea24-a633-2ea4-904fcd8fd8a2@nvidia.com>
+Date:   Fri, 5 Jun 2020 07:02:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: C643C80CC609DDC425F0E80F5429FEB6BC9807E21373CF433474C9660B3CCD582000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200602052602.91374-1-navid.emamdoost@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1591336953; bh=mppFNzTH6LZ5rq9HNWYw/2EXLZTDgKQIdkoIRo40OzY=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=erAw05C/uAFBnKnBPShjFQiFW54fajoyweUFrcpn2gwxnEmRgNdUc+VSIuIMvak93
+         7gZHxe1opyXZ+dOGJjk0ayQ9o0LPFAEHun9iBmFxdijBkRF2Gw/N5Q8WAR/Bf4SjPS
+         yXckO92hQuz5bv/E7rs8Kt7ZQ9n9V+WDUSht7d4pRdtDOuKd0TdB9M8Agdv7XFkZ/A
+         SPKBsYyC8SpYXGcP6ek4KANfyXaGzMU4eyRF0PGEkC5aNaCpJqii4SA/VnVaAaAruV
+         F3iFCbyoXJshW5qzX4yhsgaLAh098kTJp1WydRYs7XSUa83gSxCrzYYjbPXX02wPi7
+         rQPL5Oa+7jXgQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA1LTIxIGF0IDEzOjU5ICswMDAwLCBUb21hc3ogRmlnYSB3cm90ZToNCj4g
-SGkgWGlhLA0KPiANCj4gT24gRnJpLCBBcHIgMDMsIDIwMjAgYXQgMDU6NDA6MjNQTSArMDgwMCwg
-WGlhIEppYW5nIHdyb3RlOg0KPiA+IENoYW5nZSBkZXZpY2Ugbm9kZSBudW1iZXIgZnJvbSAzIHRv
-IC0xIGJlY2F1c2UgdGhhdCB0aGUgZHJpdmVyIHdpbGwNCj4gPiBhbHNvIHN1cHBvcnQganBlZyBl
-bmNvZGVyLg0KPiA+IA0KPiANCj4gVGhhbmtzIGZvciB0aGUgcGF0Y2guIFRoZSBjaGFuZ2UgaXMg
-Y29ycmVjdCwgYnV0IEkgdGhpbmsgdGhlIGNvbW1pdA0KPiBtZXNzYWdlIGRvZXNuJ3QgcmVhbGx5
-IGV4cGxhaW4gdGhlIHJlYWwgcmVhc29uIGZvciBpdC4gUGVyaGFwcyBzb21ldGhpbmcNCj4gbGlr
-ZQ0KPiANCj4gIlRoZSBkcml2ZXIgY2FuIGJlIGluc3RhbnRpYXRlZCBtdWx0aXBsZSB0aW1lcywg
-ZS5nLiBmb3IgYSBkZWNvZGVyIGFuZA0KPiBhbiBlbmNvZGVyLiBNb3Jlb3Zlciwgb3RoZXIgZHJp
-dmVycyBjb3VsZCBjb2V4aXN0IG9uIHRoZSBzYW1lIHN5c3RlbS4NCj4gVGhpcyBtYWtlcyB0aGUg
-c3RhdGljIHZpZGVvIG5vZGUgbnVtYmVyIGFzc2lnbm1lbnQgcG9pbnRsZXNzLCBzbyBzd2l0Y2gN
-Cj4gdG8gYXV0b21hdGljIGFzc2lnbm1lbnQgaW5zdGVhZC4iDQo+IA0KPiBXRFlUPw0KRGVhciBU
-b21hc3osDQpUaGFua3MgZm9yIHlvdXIgYWR2aWNlLkkgaGF2ZSBjaGFuZ2VkIGl0IGluIG5ldyB2
-OSAuDQoNCkJlc3QgUmVnYXJkcywNClhpYSBKaWFuZw0KPiANCj4gQmVzdCByZWdhcmRzLA0KPiBU
-b21hc3oNCg0K
 
+On 02/06/2020 06:26, Navid Emamdoost wrote:
+> Call to pm_runtime_get_sync increments counter even in case of
+> failure leading to incorrect ref count.
+> Call pm_runtime_put if pm_runtime_get_sync fails.
+> 
+> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+> ---
+>  drivers/spi/spi-tegra20-slink.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
+> index 7f4d932dade7..0675b36d647b 100644
+> --- a/drivers/spi/spi-tegra20-slink.c
+> +++ b/drivers/spi/spi-tegra20-slink.c
+> @@ -1192,6 +1192,7 @@ static int tegra_slink_resume(struct device *dev)
+>  	ret = pm_runtime_get_sync(dev);
+>  	if (ret < 0) {
+>  		dev_err(dev, "pm runtime failed, e = %d\n", ret);
+> +		pm_runtime_put(dev);
+>  		return ret;
+>  	}
+>  	tegra_slink_writel(tspi, tspi->command_reg, SLINK_COMMAND);
+
+Please squash this patch with the other 2 that are fixing the same
+issues in the same driver.
+
+Jon
+
+-- 
+nvpublic
