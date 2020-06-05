@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2311EF7F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 14:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8C11EF7F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 14:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727963AbgFEMav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 08:30:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56972 "EHLO mail.kernel.org"
+        id S1728069AbgFEMaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 08:30:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726771AbgFEMZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 08:25:33 -0400
+        id S1726825AbgFEMZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 08:25:36 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 218B6207F5;
-        Fri,  5 Jun 2020 12:25:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFC0C206DC;
+        Fri,  5 Jun 2020 12:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591359932;
-        bh=DiGuxViRlLGjO9gfWYS9oT1apYy3kT5tzqGXQnS425o=;
+        s=default; t=1591359935;
+        bh=YlJD6YMMhL+i0hLnJJh5R5tyM7+o3K7d6jXSpkPPa7c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gj6panYjYFO1YPwoK8L6qmkGxUm7SrThAzX7H0NmXlFbw3PsOqcm9yt9zFIOQJryF
-         E8oAsy6oxwclW7miM7ClkSCP4YgYSJSc+FwyqO2LsnmekknqZ8LdqYKulbRyWrlrkS
-         dJaU/4p9yPAbmZ91qV8DUMGv0U75MKXjvlBTmKIU=
+        b=FrOC/K5UVGtKmdbU1t6USEevian+kaDJCceGQk5O4voOq4hcvKUzRWMXgKyS1wq3T
+         iJZrKJxU7yDcn3OlDSz+Wo/ZElhowdCDJlaD1kD/Jba4KthTJwIqx20IRRB0YIRsLL
+         EtcdnvowPt1liZZA57veMV6pDo1TW4YWXOoA0mqE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
-Subject: [PATCH AUTOSEL 5.6 12/17] gfs2: Even more gfs2_find_jhead fixes
-Date:   Fri,  5 Jun 2020 08:25:11 -0400
-Message-Id: <20200605122517.2882338-12-sashal@kernel.org>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 14/17] net/mlx5e: replace EINVAL in mlx5e_flower_parse_meta()
+Date:   Fri,  5 Jun 2020 08:25:13 -0400
+Message-Id: <20200605122517.2882338-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200605122517.2882338-1-sashal@kernel.org>
 References: <20200605122517.2882338-1-sashal@kernel.org>
@@ -43,89 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 20be493b787cd581c9fffad7fcd6bfbe6af1050c ]
+[ Upstream commit a683012a8e77675a1947cc8f11f97cdc1d5bb769 ]
 
-Fix several issues in the previous gfs2_find_jhead fix:
-* When updating @blocks_submitted, @block refers to the first block block not
-  submitted yet, not the last block submitted, so fix an off-by-one error.
-* We want to ensure that @blocks_submitted is far enough ahead of @blocks_read
-  to guarantee that there is in-flight I/O.  Otherwise, we'll eventually end up
-  waiting for pages that haven't been submitted, yet.
-* It's much easier to compare the number of blocks added with the number of
-  blocks submitted to limit the maximum bio size.
-* Even with bio chaining, we can keep adding blocks until we reach the maximum
-  bio size, as long as we stop at a page boundary.  This simplifies the logic.
+The drivers reports EINVAL to userspace through netlink on invalid meta
+match. This is confusing since EINVAL is usually reserved for malformed
+netlink messages. Replace it by more meaningful codes.
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Reviewed-by: Bob Peterson <rpeterso@redhat.com>
+Fixes: 6d65bc64e232 ("net/mlx5e: Add mlx5e_flower_parse_meta support")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/lops.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/gfs2/lops.c b/fs/gfs2/lops.c
-index 3a020bdc358c..966ed37c9acd 100644
---- a/fs/gfs2/lops.c
-+++ b/fs/gfs2/lops.c
-@@ -505,12 +505,12 @@ int gfs2_find_jhead(struct gfs2_jdesc *jd, struct gfs2_log_header_host *head,
- 	unsigned int bsize = sdp->sd_sb.sb_bsize, off;
- 	unsigned int bsize_shift = sdp->sd_sb.sb_bsize_shift;
- 	unsigned int shift = PAGE_SHIFT - bsize_shift;
--	unsigned int max_bio_size = 2 * 1024 * 1024;
-+	unsigned int max_blocks = 2 * 1024 * 1024 >> bsize_shift;
- 	struct gfs2_journal_extent *je;
- 	int sz, ret = 0;
- 	struct bio *bio = NULL;
- 	struct page *page = NULL;
--	bool bio_chained = false, done = false;
-+	bool done = false;
- 	errseq_t since;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index 4659c205cc01..46ff83408d05 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -1824,7 +1824,7 @@ static int mlx5e_flower_parse_meta(struct net_device *filter_dev,
+ 	flow_rule_match_meta(rule, &match);
+ 	if (match.mask->ingress_ifindex != 0xFFFFFFFF) {
+ 		NL_SET_ERR_MSG_MOD(extack, "Unsupported ingress ifindex mask");
+-		return -EINVAL;
++		return -EOPNOTSUPP;
+ 	}
  
- 	memset(head, 0, sizeof(*head));
-@@ -533,10 +533,7 @@ int gfs2_find_jhead(struct gfs2_jdesc *jd, struct gfs2_log_header_host *head,
- 				off = 0;
- 			}
+ 	ingress_dev = __dev_get_by_index(dev_net(filter_dev),
+@@ -1832,13 +1832,13 @@ static int mlx5e_flower_parse_meta(struct net_device *filter_dev,
+ 	if (!ingress_dev) {
+ 		NL_SET_ERR_MSG_MOD(extack,
+ 				   "Can't find the ingress port to match on");
+-		return -EINVAL;
++		return -ENOENT;
+ 	}
  
--			if (!bio || (bio_chained && !off) ||
--			    bio->bi_iter.bi_size >= max_bio_size) {
--				/* start new bio */
--			} else {
-+			if (bio && (off || block < blocks_submitted + max_blocks)) {
- 				sector_t sector = dblock << sdp->sd_fsb2bb_shift;
+ 	if (ingress_dev != filter_dev) {
+ 		NL_SET_ERR_MSG_MOD(extack,
+ 				   "Can't match on the ingress filter port");
+-		return -EINVAL;
++		return -EOPNOTSUPP;
+ 	}
  
- 				if (bio_end_sector(bio) == sector) {
-@@ -549,19 +546,17 @@ int gfs2_find_jhead(struct gfs2_jdesc *jd, struct gfs2_log_header_host *head,
- 						(PAGE_SIZE - off) >> bsize_shift;
- 
- 					bio = gfs2_chain_bio(bio, blocks);
--					bio_chained = true;
- 					goto add_block_to_new_bio;
- 				}
- 			}
- 
- 			if (bio) {
--				blocks_submitted = block + 1;
-+				blocks_submitted = block;
- 				submit_bio(bio);
- 			}
- 
- 			bio = gfs2_log_alloc_bio(sdp, dblock, gfs2_end_log_read);
- 			bio->bi_opf = REQ_OP_READ;
--			bio_chained = false;
- add_block_to_new_bio:
- 			sz = bio_add_page(bio, page, bsize, off);
- 			BUG_ON(sz != bsize);
-@@ -569,7 +564,7 @@ int gfs2_find_jhead(struct gfs2_jdesc *jd, struct gfs2_log_header_host *head,
- 			off += bsize;
- 			if (off == PAGE_SIZE)
- 				page = NULL;
--			if (blocks_submitted < 2 * max_bio_size >> bsize_shift) {
-+			if (blocks_submitted <= blocks_read + max_blocks) {
- 				/* Keep at least one bio in flight */
- 				continue;
- 			}
+ 	return 0;
 -- 
 2.25.1
 
