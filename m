@@ -2,112 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390AF1EFA8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8591EFA36
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728696AbgFEOSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:18:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728666AbgFEOS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:18:26 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728015AbgFEOP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:15:27 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:13629 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726553AbgFEOP1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:15:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591366527; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=wedy4cKwLDkJueE39OQ5A/Ljrp4rU5VxwwQZUZ2wqrI=;
+ b=hBjPJaEPLutlToyvVLnwUek1PoBAX/LmfRcCpw2Bx0j+y6en65SMd7rOGiJPG3gZNmb6KHpO
+ 1EZXrSPRJVceoiehjZBODlDZLw0CW0v2bfL5J6arsFrqj3sE21vIxdC9alX1dYLdx2InqyRn
+ 1lJsy4H9HWlKnjef8hs0l5oRNnI=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
+ 5eda5368ea0dfa490ee91cc7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Jun 2020 14:15:04
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 00B07C43391; Fri,  5 Jun 2020 14:15:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27AB82086A;
-        Fri,  5 Jun 2020 14:18:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366705;
-        bh=jZU+7oxL2h7ADuMpEuIHAqjKMflvYcAP/bZoBRQXAHc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KLF4onLh1yj4enQZzCM6vkesoCAvojhDYDv87UI4Mboj/V0hURCV4qeAnKoPDgTvH
-         ZhsErthTFbGbak7rBmZhSA6NIGIJwZWzAHYTl4TexSy9AsbZSWc0xtnqo/3SpAmVn+
-         fZDDEQMKUN4AG2A3nFXhWo1hkpo7dw+8lIZm91oI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 20/38] ASoC: intel - fix the card names
-Date:   Fri,  5 Jun 2020 16:15:03 +0200
-Message-Id: <20200605140253.776451245@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200605140252.542768750@linuxfoundation.org>
-References: <20200605140252.542768750@linuxfoundation.org>
-User-Agent: quilt/0.66
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4ECBBC433CA;
+        Fri,  5 Jun 2020 14:15:03 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 05 Jun 2020 19:45:03 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree-owner@vger.kernel.org
+Subject: Re: [PATCH 1/6] arm64: dts: qcom: sm8150: add apps_smmu node
+In-Reply-To: <d35d2d1b64622ae83ffd9a963aadcad4@codeaurora.org>
+References: <20200524023815.21789-1-jonathan@marek.ca>
+ <20200524023815.21789-2-jonathan@marek.ca>
+ <d35d2d1b64622ae83ffd9a963aadcad4@codeaurora.org>
+Message-ID: <66453e142fb3798b86159a5d473efabb@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaroslav Kysela <perex@perex.cz>
+On 2020-05-25 15:07, Sai Prakash Ranjan wrote:
+> Hi Jonathan,
+> 
+> On 2020-05-24 08:08, Jonathan Marek wrote:
+>> Add the apps_smmu node for sm8150. Note that adding the iommus field 
+>> for
+>> UFS is required because initializing the iommu removes the bypass 
+>> mapping
+>> that created by the bootloader.
+>> 
+>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sm8150.dtsi | 91 
+>> ++++++++++++++++++++++++++++
+>>  1 file changed, 91 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+>> b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+>> index a36512d1f6a1..acb839427b12 100644
+>> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+>> @@ -442,6 +442,8 @@ ufs_mem_hc: ufshc@1d84000 {
+>>  			resets = <&gcc GCC_UFS_PHY_BCR>;
+>>  			reset-names = "rst";
+>> 
+>> +			iommus = <&apps_smmu 0x300 0>;
+>> +
+>>  			clock-names =
+>>  				"core_clk",
+>>  				"bus_aggr_clk",
+>> @@ -706,6 +708,7 @@ usb_1_dwc3: dwc3@a600000 {
+>>  				compatible = "snps,dwc3";
+>>  				reg = <0 0x0a600000 0 0xcd00>;
+>>  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+>> +				iommus = <&apps_smmu 0x140 0>;
+>>  				snps,dis_u2_susphy_quirk;
+>>  				snps,dis_enblslpm_quirk;
+>>  				phys = <&usb_1_hsphy>, <&usb_1_ssphy>;
+>> @@ -742,6 +745,94 @@ spmi_bus: spmi@c440000 {
+>>  			cell-index = <0>;
+>>  		};
+>> 
+>> +		apps_smmu: iommu@15000000 {
+>> +			compatible = "qcom,sdm845-smmu-500", "arm,mmu-500";
+> 
+> This should be qcom,sm8150-smmu-500 and also you need to update the 
+> arm-smmu
+> binding with this compatible in a separate patch.
+> 
 
-[ Upstream commit d745cc1ab65945b2d17ec9c5652f38299c054649 ]
+I tested out this series with my coresight patches for enabling SMMU 
+translation
+for ETR on SM8150, it works fine. With this above comment addressed and 
+with
+Bjorn's comments on commit description addressed,
 
-Those strings are exposed to the user space as the
-card name thus used in the GUIs. The common
-standard is to avoid '_' here. The worst case
-is 'sof-skl_hda_card' string.
+Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191028164624.14334-1-perex@perex.cz
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
- sound/soc/intel/boards/skl_hda_dsp_generic.c        | 2 +-
- sound/soc/intel/boards/sof_rt5682.c                 | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Thanks,
+Sai
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 67b276a65a8d..8ad31c91fc75 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -626,7 +626,7 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
-  * kabylake audio machine driver for  MAX98927 + RT5514 + RT5663
-  */
- static struct snd_soc_card kabylake_audio_card = {
--	.name = "kbl_r5514_5663_max",
-+	.name = "kbl-r5514-5663-max",
- 	.owner = THIS_MODULE,
- 	.dai_link = kabylake_dais,
- 	.num_links = ARRAY_SIZE(kabylake_dais),
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-index 1778acdc367c..e8d676c192f6 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
-+++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-@@ -90,7 +90,7 @@ skl_hda_add_dai_link(struct snd_soc_card *card, struct snd_soc_dai_link *link)
- }
- 
- static struct snd_soc_card hda_soc_card = {
--	.name = "skl_hda_card",
-+	.name = "hda-dsp",
- 	.owner = THIS_MODULE,
- 	.dai_link = skl_hda_be_dai_links,
- 	.dapm_widgets = skl_hda_widgets,
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 06b7d6c6c9a0..302ca1920791 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -374,7 +374,7 @@ static int dmic_init(struct snd_soc_pcm_runtime *rtd)
- 
- /* sof audio machine driver for rt5682 codec */
- static struct snd_soc_card sof_audio_card_rt5682 = {
--	.name = "sof_rt5682",
-+	.name = "rt5682", /* the sof- prefix is added by the core */
- 	.owner = THIS_MODULE,
- 	.controls = sof_controls,
- 	.num_controls = ARRAY_SIZE(sof_controls),
 -- 
-2.25.1
-
-
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
