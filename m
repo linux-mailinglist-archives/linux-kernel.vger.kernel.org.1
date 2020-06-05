@@ -2,136 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5B11EF134
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 08:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9271EF13A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 08:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbgFEGJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 02:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgFEGJI (ORCPT
+        id S1726183AbgFEGKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 02:10:20 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17274 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbgFEGKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 02:09:08 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85C8C08C5C2
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 23:09:07 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id h5so8441443wrc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 23:09:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=eBnPTpjo4sbfxNdiUeiX3hhoM91GdEyE1vjnsfKmQVs=;
-        b=ZPGZGYsacwgv8VJ1gxNwyvJc0rK46BuynGTaIPFX6flqj0fXKLKT2rw2orZ5Mxgg4k
-         EjtsPcjlXrKc/vneYc8K0n1wXtTql1ci6zn8j9y+Mrhr0uvDyVTAeXguOcUCzBrKts2+
-         CDruOwthB7t76QoX+SgVB2jm57hgTj9kE0onuPssSMXILpV4izp/hhF7KmTC6j8HOQuk
-         8ExQ/ESTlfnFM57O/ar+uQcjgAe3yc4m6HBVidOYugehw8tjCWdqj9HZ5uVxdTlZJGN0
-         J1jfrg9caFgmZZEar53OhUDVQmGaCsBWQoGYh4Rar6R/fDGqoBnq8IaaSssZa1DGMJhn
-         sCXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=eBnPTpjo4sbfxNdiUeiX3hhoM91GdEyE1vjnsfKmQVs=;
-        b=PkB+cktczzCw/5TYKWaabMiVS6b8yChWthJUEdcgsdzo2M/+ONhSfQskT8tmjgIUKA
-         0V+dyOk5L5/INVaPb4OW3eEBbJfbVmQqB5C3VAz9Azn3etU56gs466wok9v1x/Z1GfPp
-         JvyQwLqvaKO6HFAmm3LZJy9PHq1tVXHDd26mLa9vVVz4yIMBx9/7MHLzA1OD12LiHnc3
-         6dpLLdLoJdgdO70KEKGQLAc8Q3kSqashsVtA+/A3Vg4km9olaD/hiG8J48v0z4CmAuWy
-         ccYnyUOYzRBJDK1FR42cuD6gCYXoX/bYFseqnZsH2k/pFbRklqDvK4o8B35dbB+R/Df8
-         B+aw==
-X-Gm-Message-State: AOAM5334Vp/mSVd2BZNEj9D0Hm/BJBWaNUsqxd70JrN4v6u/7gUN6lLj
-        wReriKIT+Tsc9B/aXyLk/2hW9g==
-X-Google-Smtp-Source: ABdhPJyO0VqBURko0Faf4hiaDVUBAKMjf83HPbx/6POOw7QaVSJEbD9QQ0OLSM2AvmmABejZKv/WZQ==
-X-Received: by 2002:adf:eec2:: with SMTP id a2mr7535060wrp.136.1591337346299;
-        Thu, 04 Jun 2020 23:09:06 -0700 (PDT)
-Received: from dell ([95.147.198.92])
-        by smtp.gmail.com with ESMTPSA id t8sm9900817wmi.46.2020.06.04.23.09.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 23:09:05 -0700 (PDT)
-Date:   Fri, 5 Jun 2020 07:09:04 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: Re: [PATCH V2] mfd: sprd: Add wakeup capability for PMIC irq
-Message-ID: <20200605060904.GB3714@dell>
-References: <20200527062147.680-1-zhang.lyra@gmail.com>
- <CAAfSe-voe6as4VveyMt2pyJR1jytdzfRCp1z3s9AnS+QzTvPKA@mail.gmail.com>
- <20200604111639.GZ3714@dell>
- <CAAfSe-uuzWp+NS9dMj5=f-UFRyYR0XvuX0D_sJ0JpSRVJxnyiA@mail.gmail.com>
+        Fri, 5 Jun 2020 02:10:19 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ed9e1680002>; Thu, 04 Jun 2020 23:08:40 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 04 Jun 2020 23:10:19 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 04 Jun 2020 23:10:19 -0700
+Received: from [10.26.75.201] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Jun
+ 2020 06:10:16 +0000
+Subject: Re: [PATCH] spi: tegra20-sflash: call pm_runtime_put in case of
+ pm_runtime_get failure
+To:     Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        <linux-spi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <emamd001@umn.edu>, <wu000273@umn.edu>, <kjlu@umn.edu>,
+        <smccaman@umn.edu>
+References: <20200602044049.17378-1-navid.emamdoost@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <9fffd3eb-3e96-7abd-b5ff-9cf01f4f4ef7@nvidia.com>
+Date:   Fri, 5 Jun 2020 07:10:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAfSe-uuzWp+NS9dMj5=f-UFRyYR0XvuX0D_sJ0JpSRVJxnyiA@mail.gmail.com>
+In-Reply-To: <20200602044049.17378-1-navid.emamdoost@gmail.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1591337320; bh=EKFZ7Q61dWsOII8i+yLowyby25pEgFm/0n03Sh7qxzs=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=liTuqd65mcSB9xFZz1dJY9qdgpXLpjb+AQ5kKXKSePQPnEKysXbmKDb7k0MPleGza
+         F5IyltbqvV82LFHZjv/aQrEzUmYPletOuWdPwddLz9d2MbohAaWhLJLtR+paNi1ift
+         Ay/jCEymGDk7w8ONWA8F4HJiPzdt6A35NlPMkrDWYDZWLFSX2cr+aS+sOTNKmnWti/
+         7Z1j/UbPJ65e0RcViUhFpkYEyzm/v4XRdj/nni9GjoT7kP8P5+0OQdhW32cdXEwzfa
+         qsCRlyTWuTlR4mpSKF/3iXclSoiBePSeNQ0bx3baxkZb5gLDcmixB34J6u44Oq2zBy
+         qjEaKT+tg5QPA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 05 Jun 2020, Chunyan Zhang wrote:
 
-> On Thu, 4 Jun 2020 at 19:16, Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Thu, 04 Jun 2020, Chunyan Zhang wrote:
-> >
-> > > Hi Lee,
-> > >
-> > > On Wed, 27 May 2020 at 14:21, Chunyan Zhang <zhang.lyra@gmail.com> wrote:
-> > > >
-> > > > From: Baolin Wang <baolin.wang7@gmail.com>
-> > > >
-> > > > When changing to use suspend-to-idle to save power, the PMIC irq can not
-> > > > wakeup the system due to lack of wakeup capability, which will cause
-> > > > the sub-irqs (such as power key) of the PMIC can not wake up the system.
-> > > > Thus we can add the wakeup capability for PMIC irq to solve this issue,
-> > > > as well as removing the IRQF_NO_SUSPEND flag to allow PMIC irq to be
-> > > > a wakeup source.
-> > > >
-> > > > Reported-by: Chunyan Zhang <zhang.lyra@gmail.com>
-> > > > Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
-> > > > Tested-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > > > ---
-> > > > Changes from v1:
-> > > > * addressed comments from Lee;
-> > > > * added tested-by from Chunyan.
-> > > > (This patch is rebased on branch for-mfd-next)
-> > >
-> > > Could you please pick up this patch if there's no more comments :)
-> >
-> > Please don't send contentless nags.  Your patch is in my queue.
-> >
-> > The merge-window is currently open, which is a) a busy time for
+On 02/06/2020 05:40, Navid Emamdoost wrote:
+> The counter is incremented via pm_runtime_get even in failure case.
+> To correct the counter call pm_runtime_put in case of failure, too.
 > 
-> I understand that very much, and also appreciate all maintainer's
-> works for the great opensource project.
-> And just because of that I know you're busy during merge-window, I was
-> worried that this patch was left out, since I didn't see it at
-> mfd-next.
+> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+> ---
+>  drivers/spi/spi-tegra20-sflash.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/spi/spi-tegra20-sflash.c b/drivers/spi/spi-tegra20-sflash.c
+> index 514429379206..33c34f9c2021 100644
+> --- a/drivers/spi/spi-tegra20-sflash.c
+> +++ b/drivers/spi/spi-tegra20-sflash.c
+> @@ -552,6 +552,7 @@ static int tegra_sflash_resume(struct device *dev)
+>  
+>  	ret = pm_runtime_get_sync(dev);
+>  	if (ret < 0) {
+> +		pm_runtime_put(dev);
+>  		dev_err(dev, "pm runtime failed, e = %d\n", ret);
+>  		return ret;
+>  	}
 
-It was left out, as it was sent during -rc7.  Very few patches sent to
-late in the release cycle are applied during this time, since it
-leaves too little time to soak in -next.
+There is another instance of this in this driver that needs fixing.
 
-The patch should make it into the next kernel release (v5.9) without
-issue.
-
-> I apologize if the last email made you unhappay. I will not send
-> reminder email to you anymore.
-
-If more than 2 weeks have passed and you genuinely believe your patch
-has been forgotten.  The correct means to solve the issue is to submit
-a [RESEND].
-
-> > Maintainers and b) a time where some of us take a little breather
-> > before the next release.  Please wait until -rc1 has been released
-> > before sending out your [RESENDS].
+Jon
 
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+nvpublic
