@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5CE1EFABD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492C61EFA88
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbgFEOUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:20:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50852 "EHLO mail.kernel.org"
+        id S1728157AbgFEOSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:18:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728881AbgFEOTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:19:53 -0400
+        id S1728115AbgFEOS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:18:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F145C2086A;
-        Fri,  5 Jun 2020 14:19:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78623208C3;
+        Fri,  5 Jun 2020 14:18:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366792;
-        bh=BIYWajaI1KvjRnL5KKXrEQDz4NUESrwTb95Dq8TCVnk=;
+        s=default; t=1591366707;
+        bh=YIcdnnyOKEuV0vIUAYtbmWYzxLxPDM2ybURBJcpbMzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C+rnbEzlrsmj1ukJacz88HrCIx6EViU968If+TvKwyEQuE9UmiYKCH+a6YJ26OB/9
-         GZlGbQIX/6mqwGkejIfDJ8TdMW3BM3FqlkOXbZph0tP4SWvuMK2epoqp2UAdLcBI1o
-         49y2ST31MWXckc6+GnnAMVaSuZQwhAzb/kv/+MOU=
+        b=PQMrlsBCYNBgnPUuR+z0JUNzTnJKINvwdP1sW47rIPLvhcgyjc415XLLtiPUS5l5G
+         6W9/cGyNrzIy0m1dYbysXPPPn4wHNZQYxpu68+H6qOyEkM3caMPMWXQtTvUZ9jvv+q
+         svRxaLpb7fyJ8xR8GwMZNrDHlAmkkLqcwz9x/BxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: =?UTF-8?q?=5BPATCH=204=2E19=2002/28=5D=20libnvdimm=3A=20Fix=20endian=20conversion=20issues=C2=A0?=
+        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 21/38] s390/ftrace: save traced function caller
 Date:   Fri,  5 Jun 2020 16:15:04 +0200
-Message-Id: <20200605140252.475940014@linuxfoundation.org>
+Message-Id: <20200605140253.841296290@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200605140252.338635395@linuxfoundation.org>
-References: <20200605140252.338635395@linuxfoundation.org>
+In-Reply-To: <20200605140252.542768750@linuxfoundation.org>
+References: <20200605140252.542768750@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,75 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+From: Vasily Gorbik <gor@linux.ibm.com>
 
-commit 86aa66687442ef45909ff9814b82b4d2bb892294 upstream.
+[ Upstream commit b4adfe55915d8363e244e42386d69567db1719b9 ]
 
-nd_label->dpa issue was observed when trying to enable the namespace created
-with little-endian kernel on a big-endian kernel. That made me run
-`sparse` on the rest of the code and other changes are the result of that.
+A typical backtrace acquired from ftraced function currently looks like
+the following (e.g. for "path_openat"):
 
-Fixes: d9b83c756953 ("libnvdimm, btt: rework error clearing")
-Fixes: 9dedc73a4658 ("libnvdimm/btt: Fix LBA masking during 'free list' population")
-Reviewed-by: Vishal Verma <vishal.l.verma@intel.com>
-Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Link: https://lore.kernel.org/r/20190809074726.27815-1-aneesh.kumar@linux.ibm.com
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+arch_stack_walk+0x15c/0x2d8
+stack_trace_save+0x50/0x68
+stack_trace_call+0x15a/0x3b8
+ftrace_graph_caller+0x0/0x1c
+0x3e0007e3c98 <- ftraced function caller (should be do_filp_open+0x7c/0xe8)
+do_open_execat+0x70/0x1b8
+__do_execve_file.isra.0+0x7d8/0x860
+__s390x_sys_execve+0x56/0x68
+system_call+0xdc/0x2d8
 
+Note random "0x3e0007e3c98" stack value as ftraced function caller. This
+value causes either imprecise unwinder result or unwinding failure.
+That "0x3e0007e3c98" comes from r14 of ftraced function stack frame, which
+it haven't had a chance to initialize since the very first instruction
+calls ftrace code ("ftrace_caller"). (ftraced function might never
+save r14 as well). Nevertheless according to s390 ABI any function
+is called with stack frame allocated for it and r14 contains return
+address. "ftrace_caller" itself is called with "brasl %r0,ftrace_caller".
+So, to fix this issue simply always save traced function caller onto
+ftraced function stack frame.
+
+Reported-by: Sven Schnelle <svens@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvdimm/btt.c            |    8 ++++----
- drivers/nvdimm/namespace_devs.c |    7 ++++---
- 2 files changed, 8 insertions(+), 7 deletions(-)
+ arch/s390/kernel/mcount.S | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/nvdimm/btt.c
-+++ b/drivers/nvdimm/btt.c
-@@ -400,9 +400,9 @@ static int btt_flog_write(struct arena_i
- 	arena->freelist[lane].sub = 1 - arena->freelist[lane].sub;
- 	if (++(arena->freelist[lane].seq) == 4)
- 		arena->freelist[lane].seq = 1;
--	if (ent_e_flag(ent->old_map))
-+	if (ent_e_flag(le32_to_cpu(ent->old_map)))
- 		arena->freelist[lane].has_err = 1;
--	arena->freelist[lane].block = le32_to_cpu(ent_lba(ent->old_map));
-+	arena->freelist[lane].block = ent_lba(le32_to_cpu(ent->old_map));
- 
- 	return ret;
- }
-@@ -568,8 +568,8 @@ static int btt_freelist_init(struct aren
- 		 * FIXME: if error clearing fails during init, we want to make
- 		 * the BTT read-only
- 		 */
--		if (ent_e_flag(log_new.old_map) &&
--				!ent_normal(log_new.old_map)) {
-+		if (ent_e_flag(le32_to_cpu(log_new.old_map)) &&
-+		    !ent_normal(le32_to_cpu(log_new.old_map))) {
- 			arena->freelist[i].has_err = 1;
- 			ret = arena_clear_freelist_error(arena, i);
- 			if (ret)
---- a/drivers/nvdimm/namespace_devs.c
-+++ b/drivers/nvdimm/namespace_devs.c
-@@ -1996,7 +1996,7 @@ static struct device *create_namespace_p
- 		nd_mapping = &nd_region->mapping[i];
- 		label_ent = list_first_entry_or_null(&nd_mapping->labels,
- 				typeof(*label_ent), list);
--		label0 = label_ent ? label_ent->label : 0;
-+		label0 = label_ent ? label_ent->label : NULL;
- 
- 		if (!label0) {
- 			WARN_ON(1);
-@@ -2332,8 +2332,9 @@ static struct device **scan_labels(struc
- 			continue;
- 
- 		/* skip labels that describe extents outside of the region */
--		if (nd_label->dpa < nd_mapping->start || nd_label->dpa > map_end)
--			continue;
-+		if (__le64_to_cpu(nd_label->dpa) < nd_mapping->start ||
-+		    __le64_to_cpu(nd_label->dpa) > map_end)
-+				continue;
- 
- 		i = add_namespace_resource(nd_region, nd_label, devs, count);
- 		if (i < 0)
+diff --git a/arch/s390/kernel/mcount.S b/arch/s390/kernel/mcount.S
+index 3431b2d5e334..f942341429b1 100644
+--- a/arch/s390/kernel/mcount.S
++++ b/arch/s390/kernel/mcount.S
+@@ -41,6 +41,7 @@ EXPORT_SYMBOL(_mcount)
+ ENTRY(ftrace_caller)
+ 	.globl	ftrace_regs_caller
+ 	.set	ftrace_regs_caller,ftrace_caller
++	stg	%r14,(__SF_GPRS+8*8)(%r15)	# save traced function caller
+ 	lgr	%r1,%r15
+ #if !(defined(CC_USING_HOTPATCH) || defined(CC_USING_NOP_MCOUNT))
+ 	aghi	%r0,MCOUNT_RETURN_FIXUP
+-- 
+2.25.1
+
 
 
