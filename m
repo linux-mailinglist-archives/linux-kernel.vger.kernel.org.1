@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0016F1EF6CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 13:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47021EF6E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 13:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgFELv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 07:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726324AbgFELv6 (ORCPT
+        id S1726409AbgFEL4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 07:56:54 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:44339 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726314AbgFEL4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 07:51:58 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B34C08C5C2;
-        Fri,  5 Jun 2020 04:51:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XMIUr7QQnBAMG/5n56k4P+c+DXhD2JhaWi3/bfA8kU0=; b=AmUizXlhfS4T140zZqpI0Yfzmp
-        JH+u5PKoAX0bZNDzeRNaDmdLeSyuWIqPb6JcttVdRebusPaSMCGXAO3ToV7RPVg/HZ8MP/kS67eqo
-        kYB3rPYKUEZGEIDuf8DiKRK1a5VccmhsJ8F/zzVr2cHJpIt7HBBhhJMzyd1dLNSWULfDA9bHUwuqt
-        8g6OVELcIR54uJXNNcBVbTGkB5bXn3EeBDAN2yJ/uNH5nnJ54pqYaKUycRvbPtgDjc/wEKzv7Z8it
-        xlTdbDJ0TpH+VIUp1fuZSWUSMhatsHuMk5QF2Q/ztmb8Az/2zu2rLnFN2AyMP+JelN/eCnY2hOc7N
-        l2/Njn6A==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jhAtC-0001E0-BT; Fri, 05 Jun 2020 11:51:58 +0000
-Date:   Fri, 5 Jun 2020 04:51:58 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jason Yan <yanaijie@huawei.com>, hulkci@huawei.com,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>
-Subject: Re: block: Fix use-after-free in blkdev_get()
-Message-ID: <20200605115158.GD19604@bombadil.infradead.org>
-References: <88676ff2-cb7e-70ec-4421-ecf8318990b1@web.de>
- <5fa658bf-3028-9b5c-30cc-dbdef6bf8f7a@huawei.com>
- <20200605094353.GS30374@kadam>
- <2ee6f2f7-eaec-e748-bead-0ad59f4c378b@web.de>
- <20200605111049.GA19604@bombadil.infradead.org>
- <b6c8ebd7-ccd3-2a94-05b2-7b92a30ec8a9@web.de>
+        Fri, 5 Jun 2020 07:56:54 -0400
+Received: by mail-ot1-f67.google.com with SMTP id e5so7351197ote.11;
+        Fri, 05 Jun 2020 04:56:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qInNzFs9OuInC8XUdISfvho2DGF8I27nH1b8Z9VVeDA=;
+        b=j5JzhS49igjJPCiKhvbCUw8tHRafRRt5fj/pYCDuMjW+zEUJmXI0tseXCONtO1fV6e
+         lzBDHS3P6ux8UHfMHa54FMY26YIxPru/LLkbWXYWNSlbMrBmDM1oVM2MavUlqeZ3h6Kb
+         RDEe4YBspnvsIuWPPs1pe5/ReSsBwZNlHOJyhlXBs372xYgGidHR2P+9OIcA/X7EBKS+
+         HV6LkBG2+KA7byPJ9zTdtRF/QEB5AMTqsKRKrw3CqBjqeC0u1TECBkrWdGBS09cXbHMN
+         Lby+kUzQWKj0nnUFBOaSeJDUGoU5wN/aFU5EEhfmIxZsjxITKpSx/tDuoSmloTn15YjV
+         +ZJg==
+X-Gm-Message-State: AOAM530XUO6MWPjmCnKq9lST2UvhVu/cBmnMGkU6ipbmifZEi5RQ2Ypo
+        z/6APCQ2a+Dw5cka/WmRAcSSUqUPJDKqRvW6r+8=
+X-Google-Smtp-Source: ABdhPJxRLaIx3AEGb1LLnk6ZGsFvh4ZBuPVgMUwGbOd63KGxEAuLoT1dNUTMppRydnaZ9O3PLo5VZ1HV+Bn9eWw2Yxo=
+X-Received: by 2002:a9d:39f5:: with SMTP id y108mr701232otb.262.1591358212129;
+ Fri, 05 Jun 2020 04:56:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b6c8ebd7-ccd3-2a94-05b2-7b92a30ec8a9@web.de>
+References: <20200531210059.647066-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20200531210059.647066-1-christophe.jaillet@wanadoo.fr>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 5 Jun 2020 13:56:41 +0200
+Message-ID: <CAJZ5v0gCZtAxsLi8LdDDDnUg6resj8WvKOberoJ+9VznwWpmAQ@mail.gmail.com>
+Subject: Re: [PATCH] kernel: power: swap: mark a function as __init to save
+ some memory
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 01:48:43PM +0200, Markus Elfring wrote:
-> >> I am trying to contribute a bit of patch review as usual.
-> >
-> > Please stop criticising people's commit messages.  Your suggestions
-> > are usually not improvements.
-> 
-> The details can vary also for my suggestions.
-> Would you point any more disagreemnents out on concrete items?
+On Sun, May 31, 2020 at 11:01 PM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> 'swsusp_header_init()' is only called via 'core_initcall'.
+> It can be marked as __init to save a few bytes of memory.
+>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  kernel/power/swap.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+> index ca0fcb5ced71..01e2858b5fe3 100644
+> --- a/kernel/power/swap.c
+> +++ b/kernel/power/swap.c
+> @@ -1590,7 +1590,7 @@ int swsusp_unmark(void)
+>  }
+>  #endif
+>
+> -static int swsusp_header_init(void)
+> +static int __init swsusp_header_init(void)
+>  {
+>         swsusp_header = (struct swsusp_header*) __get_free_page(GFP_KERNEL);
+>         if (!swsusp_header)
+> --
 
-That's exactly the problem with many of your comments.  They're
-vague to the point of unintelligibility.
-
-> > But refcount -> reference count is not particularly interesting.
-> 
-> Can a wording clarification become helpful also for this issue?
-
-This is a great example.  I have no idea what this sentence means.
-I speak some German; how would you say this in German?
+Applied as 5.8-rc material under the "PM: hibernate: Add __init
+annotation to swsusp_header_init()" subject, thanks!
