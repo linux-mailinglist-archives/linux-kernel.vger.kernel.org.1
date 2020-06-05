@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63761EFA60
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F6D1EFA3E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728368AbgFEORA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:17:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45982 "EHLO mail.kernel.org"
+        id S1728120AbgFEOQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:16:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728298AbgFEOQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:16:48 -0400
+        id S1728103AbgFEOP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:15:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 631CF20835;
-        Fri,  5 Jun 2020 14:16:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90619206A2;
+        Fri,  5 Jun 2020 14:15:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366607;
-        bh=5ytxPpxU0m3lHoVVGX4RTX2V48UhxcGD1rEGh/T19/c=;
+        s=default; t=1591366558;
+        bh=UQfNMTHAc2f9gnIpSWOEPRseL9YyyO0D2SIx74i2LB4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z+1Zk3GAHb5VyLeSqvzIn8rFSkxF22GRvyWvmJ3bCsw7XweT7MRuF6ZaVLWEhYS9e
-         g8qCa0G94t8548Xox4rwvzrNuxzni6ei7FZwZ9ZaON6gUuf+pmiO5TSgR1qkxrPLOh
-         OTpIEllt3EpU4HhduuDlCDunrndA2Ya9fzCvOXdY=
+        b=w7G4AkdIdwvzueEBxJsTWBwAsGKukLl49iSVe0NFtEtG+fbBTybOrHHW4V34YG6uy
+         xqGyAznXxfsD8gaef5oYQnZmtDJx8tDsTDlLDq/RTYMDaQqjbuSwLRlwCQf4fkUmNI
+         1NhH9rB5m3AYRj53oSjyOgTx/5wv7U4A1fFzTc2g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vladimir Stempen <vladimir.stempen@amd.com>,
-        Wenjing Liu <Wenjing.Liu@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 21/43] drm/amd/display: DP training to set properly SCRAMBLING_DISABLE
-Date:   Fri,  5 Jun 2020 16:14:51 +0200
-Message-Id: <20200605140153.634806305@linuxfoundation.org>
+        stable@vger.kernel.org, Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.7 02/14] mm: Fix mremap not considering huge pmd devmap
+Date:   Fri,  5 Jun 2020 16:14:52 +0200
+Message-Id: <20200605135951.176220041@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200605140152.493743366@linuxfoundation.org>
-References: <20200605140152.493743366@linuxfoundation.org>
+In-Reply-To: <20200605135951.018731965@linuxfoundation.org>
+References: <20200605135951.018731965@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,74 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Stempen <vladimir.stempen@amd.com>
+From: Fan Yang <Fan_Yang@sjtu.edu.cn>
 
-[ Upstream commit b6ef55ccba7ed00fc10e3e6f619c8f886162427f ]
+commit 5bfea2d9b17f1034a68147a8b03b9789af5700f9 upstream.
 
-[Why]
-DP training sequence to set SCRAMBLING_DISABLE bit properly based on
-training pattern - per DP Spec.
+The original code in mm/mremap.c checks huge pmd by:
 
-[How]
-Update dpcd_pattern.v1_4.SCRAMBLING_DISABLE with 1 for TPS1, TPS2, TPS3,
-but not for TPS4.
+		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd)) {
 
-Signed-off-by: Vladimir Stempen <vladimir.stempen@amd.com>
-Reviewed-by: Wenjing Liu <Wenjing.Liu@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+However, a DAX mapped nvdimm is mapped as huge page (by default) but it
+is not transparent huge page (_PAGE_PSE | PAGE_DEVMAP).  This commit
+changes the condition to include the case.
+
+This addresses CVE-2020-10757.
+
+Fixes: 5c7fb56e5e3f ("mm, dax: dax-pmd vs thp-pmd vs hugetlbfs-pmd")
+Cc: <stable@vger.kernel.org>
+Reported-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
+Signed-off-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
+Tested-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
+Tested-by: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- .../gpu/drm/amd/display/dc/core/dc_link_dp.c  | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ arch/x86/include/asm/pgtable.h |    1 +
+ mm/mremap.c                    |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-index 1b6c75a4dd60..fbcd979438e2 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-@@ -220,6 +220,30 @@ static enum dpcd_training_patterns
- 	return dpcd_tr_pattern;
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -257,6 +257,7 @@ static inline int pmd_large(pmd_t pte)
  }
  
-+static uint8_t dc_dp_initialize_scrambling_data_symbols(
-+	struct dc_link *link,
-+	enum dc_dp_training_pattern pattern)
-+{
-+	uint8_t disable_scrabled_data_symbols = 0;
-+
-+	switch (pattern) {
-+	case DP_TRAINING_PATTERN_SEQUENCE_1:
-+	case DP_TRAINING_PATTERN_SEQUENCE_2:
-+	case DP_TRAINING_PATTERN_SEQUENCE_3:
-+		disable_scrabled_data_symbols = 1;
-+		break;
-+	case DP_TRAINING_PATTERN_SEQUENCE_4:
-+		disable_scrabled_data_symbols = 0;
-+		break;
-+	default:
-+		ASSERT(0);
-+		DC_LOG_HW_LINK_TRAINING("%s: Invalid HW Training pattern: %d\n",
-+			__func__, pattern);
-+		break;
-+	}
-+	return disable_scrabled_data_symbols;
-+}
-+
- static inline bool is_repeater(struct dc_link *link, uint32_t offset)
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
++/* NOTE: when predicate huge page, consider also pmd_devmap, or use pmd_large */
+ static inline int pmd_trans_huge(pmd_t pmd)
  {
- 	return (!link->is_lttpr_mode_transparent && offset != 0);
-@@ -252,6 +276,9 @@ static void dpcd_set_lt_pattern_and_lane_settings(
- 	dpcd_pattern.v1_4.TRAINING_PATTERN_SET =
- 		dc_dp_training_pattern_to_dpcd_training_pattern(link, pattern);
- 
-+	dpcd_pattern.v1_4.SCRAMBLING_DISABLE =
-+		dc_dp_initialize_scrambling_data_symbols(link, pattern);
-+
- 	dpcd_lt_buffer[DP_TRAINING_PATTERN_SET - DP_TRAINING_PATTERN_SET]
- 		= dpcd_pattern.raw;
- 
--- 
-2.25.1
-
+ 	return (pmd_val(pmd) & (_PAGE_PSE|_PAGE_DEVMAP)) == _PAGE_PSE;
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -266,7 +266,7 @@ unsigned long move_page_tables(struct vm
+ 		new_pmd = alloc_new_pmd(vma->vm_mm, vma, new_addr);
+ 		if (!new_pmd)
+ 			break;
+-		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd)) {
++		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd) || pmd_devmap(*old_pmd)) {
+ 			if (extent == HPAGE_PMD_SIZE) {
+ 				bool moved;
+ 				/* See comment in move_ptes() */
 
 
