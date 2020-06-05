@@ -2,125 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F4F1F00ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 22:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16CF1F0103
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 22:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbgFEUWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 16:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
+        id S1728189AbgFEUeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 16:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727960AbgFEUWr (ORCPT
+        with ESMTP id S1727888AbgFEUeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 16:22:47 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB032C08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 13:22:46 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id y20so2544381wmi.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 13:22:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=uTMAaxncG+Me0xx+KCoU1ptabFLLTGeceHoPa9bDApo=;
-        b=VUbf9r64iToIMgEegbDS0vWvfQ56a0ra9l+fmE4LWl17RkpbyYfvJRMRnwfCtj0KGA
-         MtnssM4pJs5/skbUQ3XYyRQ7usJteJubtTi5prGACcPswHfsvYmMe/AiH6GKrryvpAqg
-         bg8nZAraljSnLaE7SK10caET+CZ7UiVmxfOHa4yzff6YKHlOIQ9VFZ/0zSBkYbZbQ+VR
-         0i4oVUVkqQivr1QnGnkiaNq7jb4MHOhS0te/hmT+vf/SNyFPfQhU7DfUvdfNHtxDWUGJ
-         gH5bp49kujyl6tQMkeAU+E9kRTh0I/Y4QlRMwq8rzH4cEuY7S2gCkco9xlTMXoWLSJJt
-         8O/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=uTMAaxncG+Me0xx+KCoU1ptabFLLTGeceHoPa9bDApo=;
-        b=n+p4H3wvTiNVWJvdAdGvI07QvtZZ6drsfZ4yDy1KNgYGSuPBo9X3fYkOnJxb+OLs4B
-         1gdH6utmeJ1NZiVawqZn+q8Xnh7gpn6M19QlaW5yQrBPPt1LMuuRvtOSl0Mo7AvC493S
-         FyAKNXktIvvNJk/dmRTAhd8mcxW+rqBUZbq1btY9Z9yKE0lUAYmAZfZ0w3tp8d46YO97
-         cFPsLUJA6dohg6cJdSs8dAJKS4utH1LkrcRWO/4B2SGWfF89sENXjuHZPKlbchd8iYHq
-         PV/a43xvl33V2hkH69m2xlrIpRjzbugJTfbKmTCpCX9IsoH5Swp9J8Ksj8IseA/QiDdJ
-         Wl3Q==
-X-Gm-Message-State: AOAM532qdy9an4V4VeVuqBdGqkmZOWMZ7dXzngKgI4puAYUvU50g/HRL
-        e7XCBkaIoG+/2DDW5m1vXVHDvIbU
-X-Google-Smtp-Source: ABdhPJwnl2YmA+JRklXnIxSuQbiP1/Dt0sCvyx8Aj5PrHZSEKO6CmbREPkbAqnKWeUzH+ywKLRABCg==
-X-Received: by 2002:a7b:cb93:: with SMTP id m19mr4439361wmi.165.1591388565321;
-        Fri, 05 Jun 2020 13:22:45 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([31.154.190.6])
-        by smtp.gmail.com with ESMTPSA id i10sm13160993wrw.51.2020.06.05.13.22.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 13:22:44 -0700 (PDT)
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Cc:     gregkh@linuxfoundation.org, Omer Shpigelman <oshpigelman@habana.ai>
-Subject: [PATCH 2/2] habanalabs: use PI in MMU cache invalidation
-Date:   Sat,  6 Jun 2020 00:28:42 +0300
-Message-Id: <20200605212842.18424-2-oded.gabbay@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200605212842.18424-1-oded.gabbay@gmail.com>
-References: <20200605212842.18424-1-oded.gabbay@gmail.com>
+        Fri, 5 Jun 2020 16:34:22 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D9CC08C5C2;
+        Fri,  5 Jun 2020 13:34:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mw8VvWe7EE3uVg13FxiUrEz8BgF0q+z7XfuLsYKCdMs=; b=XHAiRDHRfrtWsqJ/5YI/J+wEym
+        fa0fexDxTJwq+EdTS7AbxsFSe4+NNIUeHBU/6Rxr80OklDhzTfHrDx9rfj9NSAHJ1sEzKB3Fsr4u6
+        uuB6SkvEOPuqg9UUbJSS7oXcrqYzKKDLrV065Z6kEWqNL7fkS7OZVR4ZQFImCgKTTGtdGdogA5nVU
+        YPTBrWzCqBkNOdpvF6yG3rYiCeMxY1W4IuK89xhywUDqKsA0Bgd1ubp+pbpOE93I3yqPqG9Ef8bzv
+        3qH49us5CbN4FNIv4YyIW05myBHUjNt//8ENJgJi93Gfqf2IVDhXIAa7NtDsxP4dwt/xCFNiIs0Wz
+        P80sOuYg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jhJ2E-0003eW-T9; Fri, 05 Jun 2020 20:33:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 65DBB30067C;
+        Fri,  5 Jun 2020 22:33:47 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0E18221A308C6; Fri,  5 Jun 2020 22:33:47 +0200 (CEST)
+Date:   Fri, 5 Jun 2020 22:33:47 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Alexander Monakov <amonakov@ispras.ru>,
+        linux-kernel@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>, qperret@google.com,
+        juri.lelli@redhat.com,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Doug Smythies <dsmythies@telus.net>
+Subject: Re: schedutil issue with serial workloads
+Message-ID: <20200605203347.GM3976@hirez.programming.kicks-ass.net>
+References: <alpine.LNX.2.20.13.2006042341160.3984@monopod.intra.ispras.ru>
+ <c3145e26-56c8-4979-513c-cfac191e989b@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3145e26-56c8-4979-513c-cfac191e989b@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Omer Shpigelman <oshpigelman@habana.ai>
+On Fri, Jun 05, 2020 at 06:51:12PM +0200, Rafael J. Wysocki wrote:
+> On 6/4/2020 11:29 PM, Alexander Monakov wrote:
 
-The PS flow for MMU cache invalidation caused timeouts in stress tests.
-Use PS + PI flow so no timeouts should happen whatsoever.
+> > this is a question/bugreport about behavior of schedutil on serial workloads
+> > such as rsync, or './configure', or 'make install'. These workloads are
+> > such that there's no single task that takes a substantial portion of CPU
+> > time, but at any moment there's at least one runnable task, and overall
+> > the workload is compute-bound. To run the workload efficiently, cpufreq
+> > governor should select a high frequency.
+> > 
+> > Assume the system is idle except for the workload in question.
+> > 
+> > Sadly, schedutil will select the lowest frequency, unless the workload is
+> > confined to one core with taskset (in which case it will select the
+> > highest frequency, correctly though somewhat paradoxically).
+> 
+> That's because the CPU utilization generated by the workload on all CPUs is
+> small.
+> 
+> Confining it to one CPU causes the utilization of this one to grow and so
+> schedutil selects a higher frequency for it.
 
-Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
----
- drivers/misc/habanalabs/gaudi/gaudi.c  | 8 ++++++++
- drivers/misc/habanalabs/gaudi/gaudiP.h | 3 +++
- 2 files changed, 11 insertions(+)
+My initial question was why doesn't io-boosting fix this up, but a quick
+look at our pipe code shows me that it doesn't seem to use
+io_schedule().
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index f34ac8d35a14..211547d4f8a7 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -2725,6 +2725,12 @@ static int gaudi_mmu_init(struct hl_device *hdev)
- 	WREG32(mmSTLB_HOP_CONFIGURATION,
- 			hdev->mmu_huge_page_opt ? 0x30440 : 0x40440);
- 
-+	/*
-+	 * The H/W expects the first PI after init to be 1. After wraparound
-+	 * we'll write 0.
-+	 */
-+	gaudi->mmu_cache_inv_pi = 1;
-+
- 	gaudi->hw_cap_initialized |= HW_CAP_MMU;
- 
- 	return 0;
-@@ -6017,6 +6023,8 @@ static int gaudi_mmu_invalidate_cache(struct hl_device *hdev, bool is_hard,
- 	mutex_lock(&hdev->mmu_cache_lock);
- 
- 	/* L0 & L1 invalidation */
-+	WREG32(mmSTLB_INV_PS, 3);
-+	WREG32(mmSTLB_CACHE_INV, gaudi->mmu_cache_inv_pi++);
- 	WREG32(mmSTLB_INV_PS, 2);
- 
- 	rc = hl_poll_timeout(
-diff --git a/drivers/misc/habanalabs/gaudi/gaudiP.h b/drivers/misc/habanalabs/gaudi/gaudiP.h
-index a46530d375fa..41a8d9bff6bf 100644
---- a/drivers/misc/habanalabs/gaudi/gaudiP.h
-+++ b/drivers/misc/habanalabs/gaudi/gaudiP.h
-@@ -229,6 +229,8 @@ struct gaudi_internal_qman_info {
-  * @multi_msi_mode: whether we are working in multi MSI single MSI mode.
-  *                  Multi MSI is possible only with IOMMU enabled.
-  * @ext_queue_idx: helper index for external queues initialization.
-+ * @mmu_cache_inv_pi: PI for MMU cache invalidation flow. The H/W expects an
-+ *                    8-bit value so use u8.
-  */
- struct gaudi_device {
- 	int (*armcp_info_get)(struct hl_device *hdev);
-@@ -248,6 +250,7 @@ struct gaudi_device {
- 	u32				hw_cap_initialized;
- 	u8				multi_msi_mode;
- 	u8				ext_queue_idx;
-+	u8				mmu_cache_inv_pi;
- };
- 
- void gaudi_init_security(struct hl_device *hdev);
--- 
-2.17.1
+That is currently our only means to express 'someone is waiting on us'
+to which we then say 'lets hurry up a bit'.
 
+Because, as you've found, if the tasks do not queue up, there is nothing
+to push the frequency up.
