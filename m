@@ -2,114 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF771EFD5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E03E11EFD66
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgFEQRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 12:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
+        id S1726749AbgFEQSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 12:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgFEQRg (ORCPT
+        with ESMTP id S1726040AbgFEQS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 12:17:36 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3310BC08C5C2;
-        Fri,  5 Jun 2020 09:17:36 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b16so5092665pfi.13;
-        Fri, 05 Jun 2020 09:17:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oz12W4OVrbNOgGMsh8I+jAxp2YubJbboBbG03Fa/oXI=;
-        b=Hyt42FlcFFALqfldGOAovOa2QRyETHSK9S42gEPIYHOF5By/+AKoYYpTfR0MFoYVbs
-         xOHvc8halwmgm+2N15/ofKAQA/SafDir8rX8fD1Dfi0YJcWCEb+uF/SP+Dk7JAiynn33
-         mIlXzeuVP9ix2aJCJob+ajOW+pCZ7mzO/ooN+VJweN3s3Z+Qd2DQ+JxaOpYOolwI65kp
-         S5tJOyE06WvAISOqwP8+AU61UKcDtRqzksAzY9MCyrLcyrR00z5QIbweD7ML/DBtSY3o
-         R+wcsS0Ftr3/zjYoEhQ+iZaAOMniwOk7mHIrqIOOdrfjTSKi67nl182hyqNBPJF91a3P
-         XlIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oz12W4OVrbNOgGMsh8I+jAxp2YubJbboBbG03Fa/oXI=;
-        b=mgP7VCSt6WZ4Bc3CeAdh6oaxALmL+tou39EjHwc+d0UfNDkpdhZq3gUCNDB0bHQBWd
-         6A4X/DyPmxS+Yyk7PG6+eCksjhy/6WTkZbbPmcToMQgLl7Dtkto2rn/El90i4rdrY8vA
-         zwbXjJrO21yEx9JSxFTgHZ3EdmnhxmoNmTnMxfnm/jpZDnTLi1qquVSjhYyDiCXXjoIN
-         FzUMreW5F2wahU8lI9rAIjEDtz7B017PXwEXx2PgwNSSm/J1RAw3sHv8I8Z3FKm4nv4C
-         hAwqFPyczBzvDwMzX4vCZODCA4RNrDWo/y7XI8GQXvd2TS55LgUEwiIX9Wyd6DB61yff
-         0X6g==
-X-Gm-Message-State: AOAM531sKrakVmONvCBA3AWoJuvymoNWodyCGpgKgxAA+CoHwcYCVCrf
-        FreTT0j4aNINHRDlsNtgp4I=
-X-Google-Smtp-Source: ABdhPJx/DaXVteQD3W5hotkPFuAo6WAe9llC7W9COBIzoySJtE4s3siyoNuPt/Hurax1ZW3xeyXfiA==
-X-Received: by 2002:a63:8c52:: with SMTP id q18mr2643914pgn.306.1591373855776;
-        Fri, 05 Jun 2020 09:17:35 -0700 (PDT)
-Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
-        by smtp.gmail.com with ESMTPSA id 73sm75440pge.15.2020.06.05.09.17.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 09:17:35 -0700 (PDT)
-From:   Chuhong Yuan <hslester96@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH v2] media: budget-core: Improve exception handling in budget_register()
-Date:   Sat,  6 Jun 2020 00:17:28 +0800
-Message-Id: <20200605161728.2513316-1-hslester96@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 5 Jun 2020 12:18:29 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8B1C08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 09:18:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=utNI+MJiTsn2M/U2LdUZJZhP8QgBIUppz4EFqbydICQ=; b=DcMnVH1eeOjboyoQ+gRrYAcCyS
+        46RZsQvjM4nxsU2esHscYyjqQ5edut8vaP/p08P3+Am7IbAycNYmQnxgYcML+74qlFbudvkM6f+hZ
+        LK9iX1uhdpdi+lBJ+qeKvEaD5s0T7+WbgHsJRZnu+f8uRul7/AfktTr6KFjda10YtdE4eNFjDbUX/
+        3xXOmN5h8JfZuF+Do0ZjFt0UJ/wdtmyMzGJ7XTGHwofLMQB/i375bCuyc9hhusqW7AceqK4KExgut
+        0xRTTx9NEYCTQ6E1h+OgveY3oMUT43JygzMwNjOw+6eftMRejVawk3tD4N/n5NiAzqrN1u3Kx0LxC
+        mlNf5ymQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jhF2c-000626-LE; Fri, 05 Jun 2020 16:17:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6DA17301A7A;
+        Fri,  5 Jun 2020 18:17:54 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B7D61214D7C2F; Fri,  5 Jun 2020 18:17:54 +0200 (CEST)
+Date:   Fri, 5 Jun 2020 18:17:54 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, x86@kernel.org,
+        cai@lca.pw, mgorman@techsingularity.net, sfr@canb.auug.org.au,
+        linux@roeck-us.net, keescook@chromium.org
+Subject: Re: [RFC][PATCH 5/7] irq_work, smp: Allow irq_work on
+ call_single_queue
+Message-ID: <20200605161754.GK3976@hirez.programming.kicks-ass.net>
+References: <20200526161057.531933155@infradead.org>
+ <20200526161908.011635912@infradead.org>
+ <20200528234031.GB551@lenoir>
+ <20200529133641.GM706495@hirez.programming.kicks-ass.net>
+ <20200605093704.GB2948@hirez.programming.kicks-ass.net>
+ <20200605150207.GA9599@lenoir>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200605150207.GA9599@lenoir>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-budget_register() has no error handling after its failure.
-Add the missed undo functions for error handling to fix it.
+On Fri, Jun 05, 2020 at 05:02:08PM +0200, Frederic Weisbecker wrote:
+> On Fri, Jun 05, 2020 at 11:37:04AM +0200, Peter Zijlstra wrote:
+> >  struct irq_work {
+> > -	struct llist_node llnode;
+> > -	atomic_t flags;
+> > +	union {
+> > +		struct __call_single_node node;
+> > +		struct {
+> > +			struct llist_node llnode;
+> > +			atomic_t flags;
+> > +		};
+> > +	};
+> 
+> So why not just embed struct __call_single_node in
+> struct irq_work and struct __call_single_data ?
+> 
+> Is the point of that anonymous second union layer to
+> shorten the lines while accessing members?
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
----
-Changes in v2:
-  - Modify the label of error handler.
+To cut down on all the churn. irq_work is small and could easily be
+fixed up, but csd is used in quite a few places.
 
- drivers/media/pci/ttpci/budget-core.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/media/pci/ttpci/budget-core.c b/drivers/media/pci/ttpci/budget-core.c
-index fadbdeeb4495..293867b9e796 100644
---- a/drivers/media/pci/ttpci/budget-core.c
-+++ b/drivers/media/pci/ttpci/budget-core.c
-@@ -369,20 +369,25 @@ static int budget_register(struct budget *budget)
- 	ret = dvbdemux->dmx.add_frontend(&dvbdemux->dmx, &budget->hw_frontend);
- 
- 	if (ret < 0)
--		return ret;
-+		goto err_release_dmx;
- 
- 	budget->mem_frontend.source = DMX_MEMORY_FE;
- 	ret = dvbdemux->dmx.add_frontend(&dvbdemux->dmx, &budget->mem_frontend);
- 	if (ret < 0)
--		return ret;
-+		goto err_release_dmx;
- 
- 	ret = dvbdemux->dmx.connect_frontend(&dvbdemux->dmx, &budget->hw_frontend);
- 	if (ret < 0)
--		return ret;
-+		goto err_release_dmx;
- 
- 	dvb_net_init(&budget->dvb_adapter, &budget->dvb_net, &dvbdemux->dmx);
- 
- 	return 0;
-+
-+err_release_dmx:
-+	dvb_dmxdev_release(&budget->dmxdev);
-+	dvb_dmx_release(&budget->demux);
-+	return ret;
- }
- 
- static void budget_unregister(struct budget *budget)
--- 
-2.26.2
 
