@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD501EF3DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94ACC1EF3E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726240AbgFEJRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 05:17:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35734 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgFEJRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 05:17:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0D03DAD33;
-        Fri,  5 Jun 2020 09:17:18 +0000 (UTC)
-Date:   Fri, 5 Jun 2020 11:17:14 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Julien Thierry <jthierry@redhat.com>
-cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        peterz@infradead.org, mhelsley@vmware.com
-Subject: Re: [PATCH 4/4] objtool: orc_gen: Move orc_entry out of instruction
- structure
-In-Reply-To: <20200604163938.21660-5-jthierry@redhat.com>
-Message-ID: <alpine.LSU.2.21.2006051115020.10354@pobox.suse.cz>
-References: <20200604163938.21660-1-jthierry@redhat.com> <20200604163938.21660-5-jthierry@redhat.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1726284AbgFEJTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 05:19:00 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:51844 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726260AbgFEJTA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 05:19:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591348739; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=rOuMTfuZSakOmsFGGhwcSiyz0vHtYC8PrlCFy1ZsKyw=; b=LrCc0pF9xRFoIwtHrKiZQFGPZKRBas+l8BfdnZkELj+iysMGVaw/bfzIjGrQO2PioMdO1w3Z
+ TPWDgiD3TiOAPgkbHFQgeb5tGEONQTrx3UT68uqqFrhiGMzDflVik1IDrutpxkJp13i5uXlw
+ k+LxdCtwK5BWfRJcOeN9RA26gAM=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5eda0df6c0031c71c2438ccc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Jun 2020 09:18:46
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1EAEEC433B2; Fri,  5 Jun 2020 09:18:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B846EC43387;
+        Fri,  5 Jun 2020 09:18:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B846EC43387
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-mm@kvack.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 04/10] rtlwifi: rtl8192cu: Remove uninitialized_var() usage
+References: <20200603233203.1695403-1-keescook@chromium.org>
+        <20200603233203.1695403-5-keescook@chromium.org>
+Date:   Fri, 05 Jun 2020 12:18:22 +0300
+In-Reply-To: <20200603233203.1695403-5-keescook@chromium.org> (Kees Cook's
+        message of "Wed, 3 Jun 2020 16:31:57 -0700")
+Message-ID: <87h7vpg9b5.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Kees Cook <keescook@chromium.org> writes:
 
-a nit below...
+> Using uninitialized_var() is dangerous as it papers over real bugs[1]
+> (or can in the future), and suppresses unrelated compiler warnings (e.g.
+> "unused variable"). If the compiler thinks it is uninitialized, either
+> simply initialize the variable or make compiler changes. As a precursor
+> to removing[2] this[3] macro[4], just initialize this variable to NULL,
+> and avoid sending garbage by returning.
+>
+> [1] https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.com/
+> [2] https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=1TGqCR5vQkCzWJ0QxK6CernOU6eedsudAixw@mail.gmail.com/
+> [3] https://lore.kernel.org/lkml/CA+55aFwgbgqhbp1fkxvRKEpzyR5J8n1vKT1VZdz9knmPuXhOeg@mail.gmail.com/
+> [4] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/
+>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-On Thu, 4 Jun 2020, Julien Thierry wrote:
+To which tree should this go? If something else than wireless-drivers
+tree:
 
-> One orc_entry is associated with each instruction in the object file,
-> but having the orc_entry contained by the instruction structure forces
-> architectures not implementing the orc subcommands to provide a dummy
-> definition of the orc_entry.
-> 
-> Avoid that by having orc_entries in a separate list, part of the
-> objtool_file.
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
 
->  int create_orc(struct objtool_file *file)
->  {
->  	struct instruction *insn;
->  
->  	for_each_insn(file, insn) {
-> -		struct orc_entry *orc = &insn->orc;
->  		struct cfi_reg *cfa = &insn->cfi.cfa;
->  		struct cfi_reg *bp = &insn->cfi.regs[CFI_BP];
-> +		struct orc_entry *orc;
-> +		struct orc_data *od;
-> +
-> +		if (!insn->sec->text)
-> +			continue;
+But let me know if you want me to take this.
 
-You have the same check added by the previous check a couple of lines 
-below.
-
-> +		od = calloc(1, sizeof(*od));
-> +		if (!od)
-> +			return -1;
-> +		od->insn = insn;
-> +		list_add_tail(&od->list, &file->orc_data_list);
-> +
-> +		orc = &od->orc;
->  
->  		if (!insn->sec->text)
->  			continue;
-
-Here.
-
-The rest looks good to me, but I should probably check again with a 
-clearer head.
-
-Overall, the patch set is a nice improvement.
-
-Miroslav
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
