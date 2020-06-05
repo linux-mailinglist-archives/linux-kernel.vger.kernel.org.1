@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A44F1EF869
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 14:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346341EF867
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 14:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgFEMzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 08:55:54 -0400
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:44396 "EHLO
+        id S1726748AbgFEMzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 08:55:50 -0400
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:58710 "EHLO
         smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726409AbgFEMzw (ORCPT
+        by vger.kernel.org with ESMTP id S1726553AbgFEMzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 08:55:52 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2249545|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00490445-0.00740592-0.98769;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03267;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.Hib7hso_1591361738;
+        Fri, 5 Jun 2020 08:55:50 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1869643|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_social|0.00106272-0.000406173-0.998531;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03294;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.Hib7hso_1591361738;
 Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.Hib7hso_1591361738)
           by smtp.aliyun-inc.com(10.147.41.143);
-          Fri, 05 Jun 2020 20:55:44 +0800
+          Fri, 05 Jun 2020 20:55:47 +0800
 From:   Frank Lee <frank@allwinnertech.com>
 To:     chaotian.jing@mediatek.com, ulf.hansson@linaro.org,
         matthias.bgg@gmail.com, mripard@kernel.org, wens@csie.org,
@@ -23,10 +23,12 @@ To:     chaotian.jing@mediatek.com, ulf.hansson@linaro.org,
         marex@denx.de, linux-mmc@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] mmc: sunxi-mmc: do not hide address in sunxi_mmc_irq()
-Date:   Fri,  5 Jun 2020 20:55:44 +0800
-Message-Id: <20200605125545.31974-1-frank@allwinnertech.com>
+Subject: [PATCH 2/2] mmc: mediatek: do not hide address in msdc_request_timeout()
+Date:   Fri,  5 Jun 2020 20:55:45 +0800
+Message-Id: <20200605125545.31974-2-frank@allwinnertech.com>
 X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20200605125545.31974-1-frank@allwinnertech.com>
+References: <20200605125545.31974-1-frank@allwinnertech.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -36,28 +38,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yangtao Li <tiny.windzz@gmail.com>
 
-Using %px to show the actual address in sunxi_mmc_irq()
+Using %px to show the actual address in msdc_request_timeout()
 to help us to debug issue.
 
 Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
 Signed-off-by: Frank Lee <frank@allwinnertech.com>
 ---
- drivers/mmc/host/sunxi-mmc.c | 2 +-
+ drivers/mmc/host/mtk-sd.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sunxi-mmc.c b/drivers/mmc/host/sunxi-mmc.c
-index 5e95bbc51644..dcd30c3e1fac 100644
---- a/drivers/mmc/host/sunxi-mmc.c
-+++ b/drivers/mmc/host/sunxi-mmc.c
-@@ -574,7 +574,7 @@ static irqreturn_t sunxi_mmc_irq(int irq, void *dev_id)
- 	idma_int  = mmc_readl(host, REG_IDST);
- 	msk_int   = mmc_readl(host, REG_MISTA);
- 
--	dev_dbg(mmc_dev(host->mmc), "irq: rq %p mi %08x idi %08x\n",
-+	dev_dbg(mmc_dev(host->mmc), "irq: rq %px mi %08x idi %08x\n",
- 		host->mrq, msk_int, idma_int);
- 
- 	mrq = host->mrq;
+diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+index 39e7fc54c438..28b4a136fc72 100644
+--- a/drivers/mmc/host/mtk-sd.c
++++ b/drivers/mmc/host/mtk-sd.c
+@@ -1411,7 +1411,7 @@ static void msdc_request_timeout(struct work_struct *work)
+ 	/* simulate HW timeout status */
+ 	dev_err(host->dev, "%s: aborting cmd/data/mrq\n", __func__);
+ 	if (host->mrq) {
+-		dev_err(host->dev, "%s: aborting mrq=%p cmd=%d\n", __func__,
++		dev_err(host->dev, "%s: aborting mrq=%px cmd=%d\n", __func__,
+ 				host->mrq, host->mrq->cmd->opcode);
+ 		if (host->cmd) {
+ 			dev_err(host->dev, "%s: aborting cmd=%d\n",
 -- 
 2.24.0
 
