@@ -2,92 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EAB1EF79E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 14:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208ED1EF7D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 14:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728033AbgFEM1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 08:27:39 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:44631 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbgFEM1g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 08:27:36 -0400
-Received: by mail-oi1-f194.google.com with SMTP id x202so8027412oix.11;
-        Fri, 05 Jun 2020 05:27:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HU1RM6XFyALR3u5LYsJyULZbc8RDM1S6If7s7JUVYl0=;
-        b=SbOMpO1ZY5oAqNIcsjVuHIhinDqiSVIvW+2sV41guKniuZBQ/yUrpZYwQEKwnIsOTc
-         TrA8qAuj2fmHI4gTDSXob9LIr8PNQfo4HBJF10vQ0kqemiLMEGf3Gm8ijM1qOSH1BiFr
-         tkBUN1f6jt2FZWYEatueZh92IVlkoJrrEWQ7QFisje5ex5lnzOja86FBEChgbsZ4lkYL
-         sk3h8dPahIQz+n4hDwFTaiKRbT22SH1BG4exbf0dranw0emHgunbBA2afSLMKJa+4Qxg
-         WQY05LAJ2cAhzeWy1fa8eLGzQ//BhdeswbpXHbGkTVkFzqsSy29N5yspC+ZchwpH7/p5
-         sgzA==
-X-Gm-Message-State: AOAM531luX9wQ60VycjZ1iP7w7ecWSMmpTvenuGyOAyzvmlzNOBEdDXx
-        CH9X2+avAIupCOwwEfaKTqFADbRWHu5sb9ZSaX0=
-X-Google-Smtp-Source: ABdhPJyv9eA2nqvV1xxk2+5oDIKvkNs/bzH9H56dHKfSDxeJvNkDGGqadnhS5cy9QvwnES0yc/uWfLn979ls+iXx53g=
-X-Received: by 2002:aca:1a19:: with SMTP id a25mr1759190oia.54.1591360055179;
- Fri, 05 Jun 2020 05:27:35 -0700 (PDT)
+        id S1726742AbgFEMZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 08:25:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726385AbgFEMZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 08:25:22 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCFC9206E6;
+        Fri,  5 Jun 2020 12:25:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591359921;
+        bh=JaAgU929H/sHzVvkGs0E1ui40+lainALY9/ORBjgk5s=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Mtgu/4HNqIJ9PtItDXtuIEDnQjoF/k2ofwpk8f3qCwWX7acYQ2Lw7bRl5MpvLJOre
+         JyiyAL9WOViy3EoZ1n+boEG1VMdgfZTgvCId9MtlSltprBqe5Bd3HlkJL2xEeNTjvF
+         5Iy8FFbw8mrbFf2cQ3buETGBHb40ogtvjuNbcIsk=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Fredrik Strupe <fredrik@strupe.net>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.6 03/17] ARM: 8977/1: ptrace: Fix mask for thumb breakpoint hook
+Date:   Fri,  5 Jun 2020 08:25:02 -0400
+Message-Id: <20200605122517.2882338-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200605122517.2882338-1-sashal@kernel.org>
+References: <20200605122517.2882338-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <1590586141-21006-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1590586141-21006-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 5 Jun 2020 14:27:23 +0200
-Message-ID: <CAMuHMdX+M+k-JRy1Ps=hRZR=mSuexSQbJ0+Cw1337uO6nak_qQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: r8a7742-iwg21d-q7-dbcm-ca: Add device tree for
- camera DB
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+From: Fredrik Strupe <fredrik@strupe.net>
 
-On Wed, May 27, 2020 at 3:29 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add support for the camera daughter board which is connected to
-> iWave's RZ/G1H Qseven carrier board. Also enable ttySC[0135] and
-> ethernet1 interfaces.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+[ Upstream commit 3866f217aaa81bf7165c7f27362eee5d7919c496 ]
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+call_undef_hook() in traps.c applies the same instr_mask for both 16-bit
+and 32-bit thumb instructions. If instr_mask then is only 16 bits wide
+(0xffff as opposed to 0xffffffff), the first half-word of 32-bit thumb
+instructions will be masked out. This makes the function match 32-bit
+thumb instructions where the second half-word is equal to instr_val,
+regardless of the first half-word.
 
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
+The result in this case is that all undefined 32-bit thumb instructions
+with the second half-word equal to 0xde01 (udf #1) work as breakpoints
+and will raise a SIGTRAP instead of a SIGILL, instead of just the one
+intended 16-bit instruction. An example of such an instruction is
+0xeaa0de01, which is unallocated according to Arm ARM and should raise a
+SIGILL, but instead raises a SIGTRAP.
 
-> +&scifb1 {
-> +       pinctrl-0 = <&scifb1_pins>;
-> +       pinctrl-names = "default";
-> +       status = "okay";
+This patch fixes the issue by setting all the bits in instr_mask, which
+will still match the intended 16-bit thumb instruction (where the
+upper half is always 0), but not any 32-bit thumb instructions.
 
-Before I queue this in renesas-devel for v5.9, I have on question:
-As this port carries RTS/CTS signals, perhaps you want to add
+Cc: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/kernel/ptrace.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-    rts-gpios = <&gpio4 21 GPIO_ACTIVE_LOW>;
-    cts-gpios = <&gpio4 17 GPIO_ACTIVE_LOW>;
-
-?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
+index b606cded90cd..4cc6a7eff635 100644
+--- a/arch/arm/kernel/ptrace.c
++++ b/arch/arm/kernel/ptrace.c
+@@ -219,8 +219,8 @@ static struct undef_hook arm_break_hook = {
+ };
+ 
+ static struct undef_hook thumb_break_hook = {
+-	.instr_mask	= 0xffff,
+-	.instr_val	= 0xde01,
++	.instr_mask	= 0xffffffff,
++	.instr_val	= 0x0000de01,
+ 	.cpsr_mask	= PSR_T_BIT,
+ 	.cpsr_val	= PSR_T_BIT,
+ 	.fn		= break_trap,
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
