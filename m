@@ -2,159 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6F41EFD5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F461EFD78
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgFEQQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 12:16:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55258 "EHLO mail.kernel.org"
+        id S1726900AbgFEQVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 12:21:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725944AbgFEQQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 12:16:38 -0400
-Received: from embeddedor (unknown [189.207.59.248])
+        id S1726108AbgFEQVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 12:21:51 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A5DE206DB;
-        Fri,  5 Jun 2020 16:16:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D067A2074B;
+        Fri,  5 Jun 2020 16:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591373797;
-        bh=u4vNXlvIttpUyWdzC4Wb34JSjU+zkePyE/jsafOj3I4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GcLy723DEess98mUgahMXgm/bWTMAG5DXkxBb2W8MLL8ZO32t8JQq87sZm1O19YzR
-         HLO33O5SuSkQaxCzDkKttk7oqvjwpfMRfLL6ciO7p0+B2WcvJOVrYglDUOzlLz2dHl
-         sLzTBfLrgz2bmgF2mtxacnzMz0iYKsYTPhit6Kjg=
-Date:   Fri, 5 Jun 2020 11:21:42 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>, Kees Cook <keescook@chromium.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH v2] docs: deprecated.rst: Add zero-length and one-element
- arrays
-Message-ID: <20200605162142.GA1617@embeddedor>
+        s=default; t=1591374111;
+        bh=yXlHNujYNL2zAYwsJV+R7NnqHW/0LBT1FPOxbjdwRJs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yJIvkNDYzI7j7qwWd7DibhmEZte6uMEeS/RI1cJoQQ546UDZY532LtucZHSOGZlEt
+         zHpD+dK/AyW3kmxG4Vc1jZdpBmj3CXP5kU62zXLreSpw2sCniKa1h4g6TPr9os6J8D
+         2ELPKq/pTH2Ms6+PHCGtb9MJ20CnP6brn+e89zXc=
+Date:   Fri, 5 Jun 2020 09:21:49 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Stephan Mueller <smueller@chronox.de>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>, davem@davemloft.net,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+2e635807decef724a1fa@syzkaller.appspotmail.com>
+Subject: Re: [PATCH v2] crypto: DRBG - always try to free Jitter RNG instance
+Message-ID: <20200605162149.GE1373@sol.localdomain>
+References: <0000000000002a280b05a725cd93@google.com>
+ <5789529.snvNDI1NMy@tauon.chronox.de>
+ <20200605061646.GA107328@sol.localdomain>
+ <4575667.y41LbVH5lo@tauon.chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4575667.y41LbVH5lo@tauon.chronox.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add zero-length and one-element arrays to the list.
+On Fri, Jun 05, 2020 at 08:52:57AM +0200, Stephan Mueller wrote:
+> Am Freitag, 5. Juni 2020, 08:16:46 CEST schrieb Eric Biggers:
+> 
+> Hi Eric,
+> 
+> > On Fri, Jun 05, 2020 at 07:58:15AM +0200, Stephan Mueller wrote:
+> > > Am Freitag, 5. Juni 2020, 02:43:36 CEST schrieb Eric Biggers:
+> > > 
+> > > Hi Eric,
+> > > 
+> > > > On Thu, Jun 04, 2020 at 08:41:00AM +0200, Stephan Müller wrote:
+> > > > > The Jitter RNG is unconditionally allocated as a seed source follwoing
+> > > > > the patch 97f2650e5040. Thus, the instance must always be deallocated.
+> > > > > 
+> > > > > Reported-by: syzbot+2e635807decef724a1fa@syzkaller.appspotmail.com
+> > > > > Fixes: 97f2650e5040 ("crypto: drbg - always seeded with SP800-90B
+> > > > > ...")
+> > > > > Signed-off-by: Stephan Mueller <smueller@chronox.de>
+> > > > > ---
+> > > > > 
+> > > > >  crypto/drbg.c | 3 +++
+> > > > >  1 file changed, 3 insertions(+)
+> > > > > 
+> > > > > diff --git a/crypto/drbg.c b/crypto/drbg.c
+> > > > > index 37526eb8c5d5..8a0f16950144 100644
+> > > > > --- a/crypto/drbg.c
+> > > > > +++ b/crypto/drbg.c
+> > > > > @@ -1631,6 +1631,9 @@ static int drbg_uninstantiate(struct drbg_state
+> > > > > *drbg)>
+> > > > > 
+> > > > >  	if (drbg->random_ready.func) {
+> > > > >  	
+> > > > >  		del_random_ready_callback(&drbg->random_ready);
+> > > > >  		cancel_work_sync(&drbg->seed_work);
+> > > > > 
+> > > > > +	}
+> > > > > +
+> > > > > +	if (!IS_ERR_OR_NULL(drbg->jent)) {
+> > > > > 
+> > > > >  		crypto_free_rng(drbg->jent);
+> > > > >  		drbg->jent = NULL;
+> > > > >  	
+> > > > >  	}
+> > > > 
+> > > > It it okay that ->jent can be left as an ERR_PTR() value?
+> > > > 
+> > > > Perhaps it should always be set to NULL?
+> > > 
+> > > The error value is used in the drbg_instantiate function. There it is
+> > > checked whether -ENOENT (i.e. the cipher is not available) or any other
+> > > error is present. I am not sure we should move that check.
+> > > 
+> > > Thanks for the review.
+> > 
+> > drbg_seed() and drbg_async_seed() check for drbg->jent being NULL.
+> > 
+> > Will that now break due it drbg->jent possibly being an ERR_PTR()?
+> > 
+> > Hence why I'm asking whether drbg_uninstantiate() should set it to NULL.
+> 
+> The allocation happens in drbg_prepare_hrng that is only invoked by 
+> drbg_instantiate.
+> 
+> drbg_instantiate checks for the ERR_PTR and sets it to NULL in case the error 
+> is deemed ok.
+> 
+> Thus, any subsequent functions would see either a valid pointer or NULL. The 
+> only exception is drbg_uninstantiate when invoked from the error case 
+> 
+>                 ret = drbg_prepare_hrng(drbg);
+>                 if (ret)
+>                         goto free_everything;
+> 
+> Thus, I think that the two functions you mention will never see any values 
+> other than NULL or a valid pointer.
+> 
 
-While I continue replacing zero-length and one-element arrays with
-flexible-array members, I need a reference to point people to, so
-they don't introduce more instances of such arrays. And while here,
-add a note to the "open-coded arithmetic in allocator arguments"
-section, on the use of struct_size() and the arrays-to-deprecate
-mentioned here.
+To be concrete, I'm suggesting:
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v2:
- - Adjust some markup links for readability.
+	if (!IS_ERR_OR_NULL(drbg->jent))
+		crypto_free_rng(drbg->jent);
+	drbg->jent = NULL;
 
- Documentation/process/deprecated.rst | 83 ++++++++++++++++++++++++++++
- 1 file changed, 83 insertions(+)
+This would be similar to how drbg_dealloc_state() sets lots of other fields of
+the drbg_state to NULL.
 
-diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
-index 652e2aa02a66c..042c21c968e19 100644
---- a/Documentation/process/deprecated.rst
-+++ b/Documentation/process/deprecated.rst
-@@ -85,6 +85,11 @@ Instead, use the helper::
- 
- 	header = kzalloc(struct_size(header, item, count), GFP_KERNEL);
- 
-+NOTE: If you are using struct_size() on a structure containing a zero-length
-+or a one-element array as a trailing array member, stop using such arrays
-+and switch to `flexible arrays <#zero-length-and-one-element-arrays>`_
-+instead.
-+
- See array_size(), array3_size(), and struct_size(),
- for more details as well as the related check_add_overflow() and
- check_mul_overflow() family of functions.
-@@ -200,3 +205,81 @@ All switch/case blocks must end in one of:
- * continue;
- * goto <label>;
- * return [expression];
-+
-+Zero-length and one-element arrays
-+----------------------------------
-+Old code in the kernel uses the zero-length and one-element array extensions
-+to the C90 standard, but the `preferred mechanism to declare variable-length
-+types
-+<https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_
-+such as these ones is a `flexible array member`, introduced in C99::
-+
-+        struct something {
-+                int length;
-+                char data[];
-+        };
-+
-+        struct something *instance;
-+
-+        instance = kmalloc(struct_size(instance, data, size), GFP_KERNEL);
-+        instance->length = size;
-+        memcpy(instance->data, source, size);
-+
-+By making use of the mechanism above, we get a compiler error in case the
-+flexible array does not occur last in the structure, which helps to prevent
-+some kind of `undefined behavior
-+<https://git.kernel.org/linus/76497732932f15e7323dc805e8ea8dc11bb587cf>`_
-+bugs from being inadvertently introduced to the codebase.
-+
-+It is also important to notice that zero-length and one-element arrays pose
-+confusion for things like sizeof() and `CONFIG_FORTIFY_SOURCE`. For instance,
-+there is no mechanism that warns us that the following application of the
-+sizeof() operator to a zero-length array always results in zero::
-+
-+        struct something {
-+                int length;
-+                char data[0];
-+        };
-+
-+        struct something *instance;
-+
-+        instance = kmalloc(struct_size(instance, data, size), GFP_KERNEL);
-+        instance->length = size;
-+        memcpy(instance->data, source, size);
-+        ...
-+        size = sizeof(instance->data);
-+
-+At the last line of code above, ``size`` turns out to be zero --when one might have
-+thought differently. Here are a couple examples of this issue: `link 1
-+<https://git.kernel.org/linus/f2cd32a443da694ac4e28fbf4ac6f9d5cc63a539>`_,
-+`link 2
-+<https://git.kernel.org/linus/ab91c2a89f86be2898cee208d492816ec238b2cf>`_.
-+On the other hand, `flexible array members have incomplete type, and so the sizeof()
-+operator may not be applied <https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_,
-+so any  misuse of such  operator will be immediately noticed at build time.
-+
-+
-+With respect to one-element arrays, one has to be acutely aware that `such arrays
-+occupy at least as much space as a single object of the type
-+<https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_,
-+hence they contribute to the size of the enclosing structure. This is prone
-+to error every time people want to calculate the total size of dynamic memory
-+to allocate for a structure containing an array of this kind as a member::
-+
-+        struct something {
-+                int length;
-+                char data[1];
-+        };
-+
-+        struct something *instance;
-+
-+        instance = kmalloc(struct_size(instance, data, size - 1), GFP_KERNEL);
-+        instance->length = size;
-+        memcpy(instance->data, source, size);
-+
-+In the example above, we had to remember to calculate ``size - 1`` when using
-+the struct_size() helper, otherwise we would have --unintentionally-- allocated
-+memory for one too many ``data`` objects. The cleanest and least error-prone way
-+to implement this is through the use of a `flexible array member`, which is
-+exemplified at the `beginning <#zero-length-and-one-element-arrays>`_ of this
-+section.
--- 
-2.27.0
+It's your call though.  I haven't properly read this code; the above is just
+what makes sense to me at first glance...
 
+- Eric
