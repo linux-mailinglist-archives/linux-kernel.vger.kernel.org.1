@@ -2,141 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656DB1EF56B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 12:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A7A1EF579
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 12:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgFEKbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 06:31:25 -0400
-Received: from mga18.intel.com ([134.134.136.126]:57119 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726729AbgFEKbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 06:31:17 -0400
-IronPort-SDR: sXaWKxSFYYfNT7jmkvjSDQ1pVRkH1t0Ol/nl9ELK0sxC5gKaqPqMqM2tC8j2C5aI9LlVTe9Teu
- 8uh/RM1ls4JQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2020 03:31:15 -0700
-IronPort-SDR: 0bnmV3ZfwMXxA2zLksdHpWARfLlbGjwdubLD8bLlPGSTLXWzssphfZ5b3Q4oRgssZCY8EbyV4l
- 28ztewRd4jMg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,476,1583222400"; 
-   d="scan'208";a="305024968"
-Received: from unknown (HELO localhost.localdomain.bj.intel.com) ([10.240.192.131])
-  by fmsmga002.fm.intel.com with ESMTP; 05 Jun 2020 03:31:13 -0700
-From:   Zhu Lingshan <lingshan.zhu@intel.com>
-To:     mst@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        jasowang@redhat.com
-Cc:     lulu@redhat.com, dan.daly@intel.com, cunming.liang@intel.com,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: [PATCH RESEND 5/5] ifcvf: implement config interrupt in IFCVF
-Date:   Fri,  5 Jun 2020 18:27:15 +0800
-Message-Id: <1591352835-22441-6-git-send-email-lingshan.zhu@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1591352835-22441-1-git-send-email-lingshan.zhu@intel.com>
-References: <1591352835-22441-1-git-send-email-lingshan.zhu@intel.com>
+        id S1726616AbgFEKf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 06:35:58 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:31171 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726465AbgFEKf5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 06:35:57 -0400
+X-UUID: 1a82d9ddb32f49f8a64f95d3434ca921-20200605
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=nsUntpG+2ZTGK4HrWe8pIq15nHkMfEaQcUq9M+NOtWk=;
+        b=ZziRepXD1Tc2tvW8UgCB9U8mMFj8HAhFyvII54fN0S5EPTBx0ntD9TZ9Jxgc6oMQi+wii8CRsxB8x9POeeJox6t0LZCwazYx5uJYvCREmw543rnnsapfKScKefLEbGZ793KXzKseHNCQ4P3zNQbhhoO7AsDOMFNjqEJ40LFE7XM=;
+X-UUID: 1a82d9ddb32f49f8a64f95d3434ca921-20200605
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <jiaxin.yu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 158510851; Fri, 05 Jun 2020 18:35:49 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 5 Jun 2020 18:35:46 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 5 Jun 2020 18:35:45 +0800
+From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
+        <matthias.bgg@gmail.com>, <hariprasad.kelam@gmail.com>
+CC:     <alsa-devel@alsa-project.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <howie.huang@mediatek.com>,
+        <tzungbi@google.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>
+Subject: [PATCH v2 0/2] ASoC: mediatek: mt6358: support DMIC one-wire mode
+Date:   Fri, 5 Jun 2020 18:33:40 +0800
+Message-ID: <1591353222-18576-1-git-send-email-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 8183516B6E5D2C2436F93EBC972FC14D6494A6210300ACC0EE968670B2FED9B22000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit implements config interrupt support
-in IFC VF
-
-Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/vdpa/ifcvf/ifcvf_base.c |  3 +++
- drivers/vdpa/ifcvf/ifcvf_base.h |  4 ++++
- drivers/vdpa/ifcvf/ifcvf_main.c | 23 ++++++++++++++++++++++-
- 3 files changed, 29 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/vdpa/ifcvf/ifcvf_base.c b/drivers/vdpa/ifcvf/ifcvf_base.c
-index e24371d..94bf032 100644
---- a/drivers/vdpa/ifcvf/ifcvf_base.c
-+++ b/drivers/vdpa/ifcvf/ifcvf_base.c
-@@ -185,6 +185,9 @@ void ifcvf_set_status(struct ifcvf_hw *hw, u8 status)
- 
- void ifcvf_reset(struct ifcvf_hw *hw)
- {
-+	hw->config_cb.callback = NULL;
-+	hw->config_cb.private = NULL;
-+
- 	ifcvf_set_status(hw, 0);
- 	/* flush set_status, make sure VF is stopped, reset */
- 	ifcvf_get_status(hw);
-diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h b/drivers/vdpa/ifcvf/ifcvf_base.h
-index e803070..f455441 100644
---- a/drivers/vdpa/ifcvf/ifcvf_base.h
-+++ b/drivers/vdpa/ifcvf/ifcvf_base.h
-@@ -27,6 +27,7 @@
- 		((1ULL << VIRTIO_NET_F_MAC)			| \
- 		 (1ULL << VIRTIO_F_ANY_LAYOUT)			| \
- 		 (1ULL << VIRTIO_F_VERSION_1)			| \
-+		 (1ULL << VIRTIO_NET_F_STATUS)			| \
- 		 (1ULL << VIRTIO_F_ORDER_PLATFORM)		| \
- 		 (1ULL << VIRTIO_F_IOMMU_PLATFORM)		| \
- 		 (1ULL << VIRTIO_NET_F_MRG_RXBUF))
-@@ -81,6 +82,9 @@ struct ifcvf_hw {
- 	void __iomem *net_cfg;
- 	struct vring_info vring[IFCVF_MAX_QUEUE_PAIRS * 2];
- 	void __iomem * const *base;
-+	char config_msix_name[256];
-+	struct vdpa_callback config_cb;
-+
- };
- 
- struct ifcvf_adapter {
-diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-index 63a6366..f5a60c1 100644
---- a/drivers/vdpa/ifcvf/ifcvf_main.c
-+++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-@@ -18,6 +18,16 @@
- #define DRIVER_AUTHOR   "Intel Corporation"
- #define IFCVF_DRIVER_NAME       "ifcvf"
- 
-+static irqreturn_t ifcvf_config_changed(int irq, void *arg)
-+{
-+	struct ifcvf_hw *vf = arg;
-+
-+	if (vf->config_cb.callback)
-+		return vf->config_cb.callback(vf->config_cb.private);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static irqreturn_t ifcvf_intr_handler(int irq, void *arg)
- {
- 	struct vring_info *vring = arg;
-@@ -59,6 +69,14 @@ static int ifcvf_request_irq(struct ifcvf_adapter *adapter)
- 		return ret;
- 	}
- 
-+	snprintf(vf->config_msix_name, 256, "ifcvf[%s]-config\n",
-+		 pci_name(pdev));
-+	vector = 0;
-+	irq = pci_irq_vector(pdev, vector);
-+	ret = devm_request_irq(&pdev->dev, irq,
-+			       ifcvf_config_changed, 0,
-+			       vf->config_msix_name, vf);
-+
- 	for (i = 0; i < IFCVF_MAX_QUEUE_PAIRS * 2; i++) {
- 		snprintf(vf->vring[i].msix_name, 256, "ifcvf[%s]-%d\n",
- 			 pci_name(pdev), i);
-@@ -328,7 +346,10 @@ static void ifcvf_vdpa_set_config(struct vdpa_device *vdpa_dev,
- static void ifcvf_vdpa_set_config_cb(struct vdpa_device *vdpa_dev,
- 				     struct vdpa_callback *cb)
- {
--	/* We don't support config interrupt */
-+	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
-+
-+	vf->config_cb.callback = cb->callback;
-+	vf->config_cb.private = cb->private;
- }
- 
- /*
--- 
-1.8.3.1
+djIgY2hhbmdlczoNCgkxLiBVc2VzIGEgRFQgcHJvcGVydHkgdG8gc2VsZWN0IERNSUMgbW9kZSBp
+bnN0ZWFkIG9mIGEgbWl4ZXIgY29udHJvbC4NCg0KdjEgY2hhbmdlczoNCgkxLiBVc2VzIGEgbWl4
+ZXIgY29udHJvbCB0byBzZWxlY3QgRE1JQyBtb2RlLg0KCTIuIHBhdGNod29yayBsaXN0Og0KCQlo
+dHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzExNTc4MzA5DQoNCkppYXhpbiBZdSAo
+Mik6DQogIEFTb0M6IG1lZGlhdGVrOiBtdDYzNTg6IHN1cHBvcnQgRE1JQyBvbmUtd2lyZSBtb2Rl
+DQogIEFTb0M6IGR0LWJpbmRpbmdzOiBtZWRpYXRlazogbXQ2MzU4OiBhZGQgZG1pYy1tb2RlIHBy
+b3BlcnR5DQoNCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvbXQ2MzU4
+LnR4dCB8ICA2ICsrKysrKw0KIHNvdW5kL3NvYy9jb2RlY3MvbXQ2MzU4LmMgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHwgMjMgKysrKysrKysrKysrKysrKysrKysrLQ0KIDIgZmlsZXMgY2hhbmdl
+ZCwgMjggaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KDQotLSANCjEuOC4xLjEuZGlydHkN
+Cg==
 
