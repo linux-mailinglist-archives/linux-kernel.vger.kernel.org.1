@@ -2,118 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBEB1EEFBC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 05:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D55D31EEFBE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 05:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726119AbgFEDGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 23:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgFEDGy (ORCPT
+        id S1726099AbgFEDIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 23:08:09 -0400
+Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:46107 "EHLO
+        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725883AbgFEDIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 23:06:54 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DE9C08C5C0;
-        Thu,  4 Jun 2020 20:06:52 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id k18so8766921ion.0;
-        Thu, 04 Jun 2020 20:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=SEMVIaaP+S5d2kqcTtBSWBSkbg2/3nX3N1FhHRAIYII=;
-        b=U/0NRK4nanZ7ouRVvRks6dfdyOA7bQhUudb/hvMEW2cG9EhzVVYNuXs5zSSbzAgWJB
-         QgLv1AaWVX0/Z3+uCKL2LvhZAMI5XVqXLLfuo9pq3vZMtxgBz/MGEow/vvB+Un6gHCrV
-         US2DRMwU4uBnaS7zhK+ujwr9qTs3Pzy5cj89yzlB5Y/actfjHq9piMSZQruCEexFtC2t
-         yMTPrfoNLFX0Diif66qN+L/XoJCDqQR7/lsAjn7TxB3nsHFoktqCfZYvnXGH05XH4Ouw
-         2LAALEjgKXoddL7aqilXkqfc2nRJA1hVcWvRwkOyGjM0/QFzv2u8d7xG92A0S4rDHrjp
-         i2Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=SEMVIaaP+S5d2kqcTtBSWBSkbg2/3nX3N1FhHRAIYII=;
-        b=qLaMNJyMRMT/X1yV8e/lHUauETtp+2vGvylzXIVmlhTPUat+EttMJogO/fX3dLyLZb
-         PMY+dlfq0iFeLxgxk/WV6oDvNCT0gUbpKOuCxi1o4TGncQfScBDmTt+r8xSez3y7ZT8r
-         Y/CriZ0nka1kGp+eq2YUMSJPN2fY1H+Miuf7o+b12yOk2mQkIN9F6FqXE/Tlq+gINcQ6
-         QI39orsJmbAL/dyB7cqrP/Zx9fnVjbxb31JjK9EzP02MB479/OfRenns2rojGZkht9Ns
-         x7hCGYqKUodPm2GlT66+5ORBipGqeJu67zIVXBJlkxKIqv3K46/W8FD+SDL+M6GrSCfr
-         1D4A==
-X-Gm-Message-State: AOAM532zMGWLAd8w/bSulJBLhtSmiF+Mx4IgphI0bTNsI9n5tdi6+h6h
-        2j1RewfjasqCOzdic4jdRp8AtNUCjpA=
-X-Google-Smtp-Source: ABdhPJzpJipSoZ1M8HHrUu4HljRD6OB4ebYX9EKJHhPU/+0/qzf384rZtu+gKb3f+4J3bEbEqEF0cw==
-X-Received: by 2002:a02:654a:: with SMTP id u71mr7187436jab.7.1591326412272;
-        Thu, 04 Jun 2020 20:06:52 -0700 (PDT)
-Received: from cs-u-kase.dtc.umn.edu (cs-u-kase.cs.umn.edu. [160.94.64.2])
-        by smtp.googlemail.com with ESMTPSA id z4sm2324277ilm.72.2020.06.04.20.06.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 20:06:51 -0700 (PDT)
-From:   Navid Emamdoost <navid.emamdoost@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
+        Thu, 4 Jun 2020 23:08:09 -0400
+Received: from dread.disaster.area (pa49-180-124-177.pa.nsw.optusnet.com.au [49.180.124.177])
+        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 0B30BD588CC;
+        Fri,  5 Jun 2020 13:08:04 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jh2i6-0002cj-5n; Fri, 05 Jun 2020 13:07:58 +1000
+Date:   Fri, 5 Jun 2020 13:07:58 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu, smccaman@umn.edu,
-        Navid Emamdoost <navid.emamdoost@gmail.com>
-Subject: [PATCH] sata_rcar: handle pm_runtime_get_sync failure cases
-Date:   Thu,  4 Jun 2020 22:06:43 -0500
-Message-Id: <20200605030643.91801-1-navid.emamdoost@gmail.com>
-X-Mailer: git-send-email 2.17.1
+Subject: Re: [PATCH] iomap: Handle I/O errors gracefully in page_mkwrite
+Message-ID: <20200605030758.GB2040@dread.disaster.area>
+References: <20200604202340.29170-1-willy@infradead.org>
+ <20200604225726.GU2040@dread.disaster.area>
+ <20200604230519.GW19604@bombadil.infradead.org>
+ <20200604233053.GW2040@dread.disaster.area>
+ <20200604235050.GX19604@bombadil.infradead.org>
+ <20200605003159.GX2040@dread.disaster.area>
+ <20200605022451.GZ19604@bombadil.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200605022451.GZ19604@bombadil.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
+        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=7-415B0cAAAA:8
+        a=ruQhQeNdVRnZAG6APzsA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling pm_runtime_get_sync increments the counter even in case of
-failure, causing incorrect ref count. Call pm_runtime_put if
-pm_runtime_get_sync fails.
+On Thu, Jun 04, 2020 at 07:24:51PM -0700, Matthew Wilcox wrote:
+> On Fri, Jun 05, 2020 at 10:31:59AM +1000, Dave Chinner wrote:
+> > On Thu, Jun 04, 2020 at 04:50:50PM -0700, Matthew Wilcox wrote:
+> > > > Sure, but that's not really what I was asking: why isn't this
+> > > > !uptodate state caught before the page fault code calls
+> > > > ->page_mkwrite? The page fault code has a reference to the page,
+> > > > after all, and in a couple of paths it even has the page locked.
+> > > 
+> > > If there's already a PTE present, then the page fault code doesn't
+> > > check the uptodate bit.  Here's the path I'm looking at:
+> > > 
+> > > do_wp_page()
+> > >  -> vm_normal_page()
+> > >  -> wp_page_shared()
+> > >      -> do_page_mkwrite()
+> > > 
+> > > I don't see anything in there that checked Uptodate.
+> > 
+> > Yup, exactly the code I was looking at when I asked this question.
+> > The kernel has invalidated the contents of a page, yet we still have
+> > it mapped into userspace as containing valid contents, and we don't
+> > check it at all when userspace generates a protection fault on the
+> > page?
+> 
+> Right.  The iomap error path only clears PageUptodate.  It doesn't go
+> to the effort of unmapping the page from userspace, so userspace has a
+> read-only view of a !Uptodate page.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
----
- drivers/ata/sata_rcar.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+Hmmm - did you miss the ->discard_page() callout just before we call
+ClearPageUptodate() on error in iomap_writepage_map()? That results
+in XFS calling iomap_invalidatepage() on the page, which ....
 
-diff --git a/drivers/ata/sata_rcar.c b/drivers/ata/sata_rcar.c
-index 980aacdbcf3b..141ac600b64c 100644
---- a/drivers/ata/sata_rcar.c
-+++ b/drivers/ata/sata_rcar.c
-@@ -907,7 +907,7 @@ static int sata_rcar_probe(struct platform_device *pdev)
- 	pm_runtime_enable(dev);
- 	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0)
--		goto err_pm_disable;
-+		goto err_pm_put;
- 
- 	host = ata_host_alloc(dev, 1);
- 	if (!host) {
-@@ -937,7 +937,6 @@ static int sata_rcar_probe(struct platform_device *pdev)
- 
- err_pm_put:
- 	pm_runtime_put(dev);
--err_pm_disable:
- 	pm_runtime_disable(dev);
- 	return ret;
- }
-@@ -991,8 +990,10 @@ static int sata_rcar_resume(struct device *dev)
- 	int ret;
- 
- 	ret = pm_runtime_get_sync(dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put(dev);
- 		return ret;
-+	}
- 
- 	if (priv->type == RCAR_GEN3_SATA) {
- 		sata_rcar_init_module(priv);
-@@ -1017,8 +1018,10 @@ static int sata_rcar_restore(struct device *dev)
- 	int ret;
- 
- 	ret = pm_runtime_get_sync(dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put(dev);
- 		return ret;
-+	}
- 
- 	sata_rcar_setup_port(host);
- 
+/me sighs as he realises that ->invalidatepage doesn't actually
+invalidate page mappings but only clears the page dirty state and
+releases filesystem references to the page.
+
+Yay. We leave -invalidated page cache pages- mapped into userspace,
+and page faults on those pages don't catch access to invalidated
+pages.
+
+Geez, we really suck at this whole software thing, don't we?
+
+It's not clear to me that we can actually unmap those pages safely
+in a race free manner from this code - can we actually do that from
+the page writeback path?
+
+> > > I think the iomap code is the only filesystem which clears PageUptodate
+> > > on errors. 
+> > 
+> > I don't think you looked very hard. A quick scan shows at least
+> > btrfs, f2fs, hostfs, jffs2, reiserfs, vboxfs and anything using the
+> > iomap path will call ClearPageUptodate() on a write IO error.
+> 
+> I'll give you btrfs and jffs2, but I don't think it's true for f2fs.
+> The only other filesystem using the iomap bufferd IO paths today
+> is zonefs, afaik.
+
+gfs2 as well.
+
+-Dave.
 -- 
-2.17.1
-
+Dave Chinner
+david@fromorbit.com
