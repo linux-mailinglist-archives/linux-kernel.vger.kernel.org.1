@@ -2,105 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E3E1EF159
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 08:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DF71EF15B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 08:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726084AbgFEGbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 02:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgFEGbH (ORCPT
+        id S1726112AbgFEGdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 02:33:15 -0400
+Received: from sonic305-1.consmr.mail.bf2.yahoo.com ([74.6.133.40]:34137 "EHLO
+        sonic305-1.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725280AbgFEGdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 02:31:07 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0C0C08C5C2;
-        Thu,  4 Jun 2020 23:31:07 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id o5so9046758iow.8;
-        Thu, 04 Jun 2020 23:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AwDhq08cjD5JqZTeO0Y9UdSU2XkQsUbpJ8EXCL/HMHE=;
-        b=hIrhYQ/Ib+LMc/lM8TkkboBA43CJMvk8zLm4ZNrhrhhPe44AThnqI1MtOmXnBLUo6b
-         W91iiSy/AvYKOUOfr5GNwDxO1RwGoglhDLE+fWDlIP53CSNTE0YwTQxk+1wK2sTtzLR8
-         Krxss4eKSQo8FWkgEAaXX8heaJnqfCIJNY7rVT2Wt9GpTGcz5L5Q4yMgkHr84bdLs8gu
-         gNOz6oy6QOtm6JuIVM2hBvCf6+8hrK2mNd2SMrY74C24UAzF9z85HCwp4pb7r+/rmyUW
-         1XDRD+nIE8Ik1NuLKByDtAHKujMdUKMsNwylY39JqoW5nGa6gkn8lylg5AeirjcRmRAw
-         QjJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AwDhq08cjD5JqZTeO0Y9UdSU2XkQsUbpJ8EXCL/HMHE=;
-        b=l6XpFN5oxMkld0/HjgriP9cc9Zo4io9SPkHITPWPTdh4PbBzh0qQEegnetmo+CWMS7
-         V4AJkHL6rktbaNUemDxlcF/LlPUhHmJI6fEE/FFoh/KK93Nm/HkrS3qcl7GOxk425zhH
-         kRxOkoLbMW2t1u+5BzLg+MfufpFT1u/6Jo5cVAVWklbwZRbtt+A58HdrRSLmST268eBy
-         Ud1K7qtnWy6CYHUT8L1uxAZ9fJuZ4v0t6g3zvq4mM0DJhyKzyZOkhSvX6fOLxGzLhDZM
-         tj198RvoH6hN9w0eHOPzhRQLJOD1iCSqHzVqLO5XXjAZoUIM3Lpunqh8ytxCUJs8eLuL
-         hP4w==
-X-Gm-Message-State: AOAM531zzADrY2wI5Xt3BPL+sVQPb2pMB9yzIvBEGqRdFPMxQGL6QdOt
-        LW0KCedQLgnoUrTlJKXH+Dg9jptkJIRH6pxxOg0=
-X-Google-Smtp-Source: ABdhPJwfxG2xuH353FOlKdoATjIRdV+1mkAMbDgGbPrRb2tsKonvfuPWxT4EOWzLvMycv3HDOoS7PqnFNKbNhrJLhKI=
-X-Received: by 2002:a5d:8958:: with SMTP id b24mr7266854iot.53.1591338665743;
- Thu, 04 Jun 2020 23:31:05 -0700 (PDT)
+        Fri, 5 Jun 2020 02:33:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591338793; bh=T+HL8b202M5prJrGoveqOp5+tc3db6bJ+vH0TMitLlA=; h=Date:From:Reply-To:Subject:References:From:Subject; b=fjdUTO1d+7JH3xdmXsK6EcKKqWiqbi5Yy+TeeQW+zgqBPphnb/05cEJ7DYSq1LCcfKGhDTsYSBQjX/4AoKB3Ysy9Y7EV3yiIVw7EqmnMDEw+1PcPTI2Pqsd7u0Tm/9yYNiwZL4a54lSy+M/iU7rr1lyaRtT303ztuVQvnH5tIAjbBp36stoCkPrZy5gxwkyfggtAt1s9jY8obk/kKH05AB6Cqn2c97kC03HVqECnmbV6CpzVLwKAT+/tbtRHbTAuGx0fX29aWaQ0cct/UmXBAB3cIEy/XV6+SMyiAr/AZeer1cT8vq+TymaaFnWh7TajjtYNPmf8iiCPsLJ8HKGngg==
+X-YMail-OSG: 9VrzQvgVM1lTQ6jz_WOxuuHyqOcZ5HewN1xmcUlkXRqffpSGvHF6DpisKC69Guc
+ x5H65dJR_gU5X.sBctBLXHI___COuQcpJY3R2fqTUc47x72HjiF9poXKabRHrUyDtzEGHgBOF3BE
+ XkajANCVifNLZzCTmmpYUffTJtxFSxbF.DxnYrtXKjRDE6S.A6_SJgA8Fhs8OQqiQKGTfT1eIcdp
+ KVZlV11gd.5zxhHPEibqSQxIWRx7oKvUk6mNwmpBApR1UHx2i_rGpy42vDBItNNZ8U5CUqpoZ5bn
+ wHWTJeBDz7T0HAC2DzsBYu84.OQL49fwCQ._px4nozrACZ7yl0vu6q0oXtfCUIJPp7ZLv1MOfquW
+ Fmfd8EmSH8sxiBf38oGT6cllVrRd9Q5vvdLQ_AaDYC6uFxaGnaWzw1tPfNJgkNe9bD2o0YIuwwg3
+ y1sqb1jFQJMOfrOAqNDhaSdc94UDv1qiOsz.Oku6whALpDXBvoKbMt6GIOOj.1JbU0WJa6Mwedw2
+ BfXRNrAInf0LMMqyYXlObbrB20J8d4VP.qHAnssCDQjyLaHGLZlbxsgHTlFl9O296z.RcOuOBMmo
+ rhofnX8vsgszBM_BZYnl5zuBBt0THz5.HgDInCaVcIBj3sB51YjMtQXLR1YiiOcwKtoQBlEQ.kgG
+ nhgN4Dl.Scz75PS0fnFWSPoZf0TxcTnYEMuKiJPo2l3BpHeqX9a4ByPS5dhMozfEN8TFXy3ZdvYi
+ TGOHZivUhM_hj0VhtZeMDvQuXy89s56ipg9kW_aqF797DH5fme3b9baCNP.2HVZXedFMkOVmCMKR
+ imhi5TMY6AiztVedcJN0gF8Ylu0EhXCytvXbZjAi74uVuVyWv1gSluZspEsxi6lsfrOV.Fse1c97
+ JHKsNMme3xm9ruafq6jLe0fT4iulvSdcXjlLCoB3k9.HtA3OvLJqHYfU.8UCRS9NOt8g2k3.12E0
+ hKXN._Hu7nEnvupJ1tvxA9prS8v5CGDeH0ceUluKxDTny0eTZOz75XjZURQpSdZWSWY1kT8LtPO5
+ 8ieAgPRdSPrSqvr8_Vvp4.7yHFLSPLPncckJhQuMPKsBVC8iDufaJwWjYKMmbuC4QaMaq.njlj2I
+ Cy6X7GuV4N4L4X7o.ScgkMAj09gF44R4DEHYStdidXfYSdM3aJn_mcyCEeEgEzLfXV9T6Gj2teA3
+ DIAGtb1jjx3c_Sr7bjuXSjREL_b3b8OwCq1oK4r6QXZghvylfIkvRprZluW_9004cTH3S0a5WgGi
+ 1Ro3gXhqz5ZT6wEk2CG0VRg8CAKCdhqMPBCQjNQJ4PpAua0Rh0OT15J3HxONwCLfBbDYXr9p0XhB
+ E
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.bf2.yahoo.com with HTTP; Fri, 5 Jun 2020 06:33:13 +0000
+Date:   Fri, 5 Jun 2020 06:33:11 +0000 (UTC)
+From:   Mrs Suzara Maling Wan <mrssuzaramalingwan12@gmail.com>
+Reply-To: mrssuzaramalingwan2@gmail.com
+Message-ID: <637424962.2155286.1591338791209@mail.yahoo.com>
+Subject: Hello
 MIME-Version: 1.0
-References: <0a50f0cf5593baeb628dc8606c523665e5e2ae6c.1589519600.git.viresh.kumar@linaro.org>
- <20200528192005.GA494874@bogus> <20200529040758.kneg2j4n3gxh2rfv@vireshk-i7>
- <20200603180435.GB23722@bogus> <CABb+yY0cW1GZHVmwEr19JRdJTmsAxw9uq83QV_aq-tdPJO5_Fg@mail.gmail.com>
- <20200604092052.GD8814@bogus> <CABb+yY27Ngb0C-onkU2qyt=uKgG4iVrcv8hGkC+anypQbTRA1w@mail.gmail.com>
- <20200605045645.GD12397@bogus>
-In-Reply-To: <20200605045645.GD12397@bogus>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Fri, 5 Jun 2020 01:30:54 -0500
-Message-ID: <CABb+yY2YZ99NjHYNi0=KLGFDsVUeJmqiJD3E25Chwk-THJV4iw@mail.gmail.com>
-Subject: Re: [RFC] dt-bindings: mailbox: add doorbell support to ARM MHU
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <637424962.2155286.1591338791209.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:77.0) Gecko/20100101 Firefox/77.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 4, 2020 at 11:56 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+Hello
+I'm "Mrs Suzara Maling Wan" married to Mr. Wan( an International
+Contractor and Oil Merchant/ jointly in Exposition of Agro  Equipment
+) who died in  Burkina Faso attack,  i am 64 years old and diagnosed
+of cancer for about 2 years ago  and my husband informed me that he
+deposited the sum of (14.3Million USD Only) with a Finance house) in
+UAGADOUGOU BURKINA FASO.
 
->
-> > >>     bash-1526  [000]  1149.472553: scmi_xfer_begin:      transfer_id=1538 msg_id=6 protocol_id=21 seq=0 poll=0
-> > >>      <idle>-0     [001]  1149.472733: scmi_xfer_begin:      transfer_id=1539 msg_id=7 protocol_id=19 seq=1 poll=1
-> > >
-> > Here another request is started before the first is finished.
->
-> Ah, the prints are when the client requested. It is not when the mailbox
-> started it. So this just indicates the beginning of the transfer from the
-> client.
->
-There maybe condition on a sensor read to finish within 1ms, but there
-is no condition for the read to _start_ at this very moment (usually
-there are sleeps in the path to sensor requests).
+I want you to help me to use this money  for a charity project before
+I die, for the Poor, Less-privileged and  ORPHANAGES in
+your country.  Please kindly respond
 
-> > If you want this to work you have to serialise access to the single
-> > physical channel and/or run the remote firmware in asynchronous mode -
-> > that is, the firmware ack the bit as soon as it sees and starts
-> > working in the background, so that we return in ~3usec always, while
-> > the data returns whenever it is ready.
->
-> Yes it does that for few requests like DVFS while it uses synchronous
-> mode for few others. While ideally I agree everything in asynchronous
-> most is better, I don't know there may be reasons for such design.
->
-The reason is that, if the firmware works asynchronously, every call
-would return in ~3usec and you won't think you need virtual channels.
+quickly for further details.
 
-You have shared only 'bad' log without serialising access. Please
-share log after serialising access to the channel and the 'good' log
-with virtual channels.  That should put the topic to rest.
-
-thanks.
+Yours fairly friend,
+Mrs Suzara Maling Wan
