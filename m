@@ -2,100 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A301EF329
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 10:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2059A1EF338
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 10:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgFEIeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 04:34:15 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:49397 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726062AbgFEIeO (ORCPT
+        id S1726249AbgFEIgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 04:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbgFEIgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 04:34:14 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0558Vbfp007720;
-        Fri, 5 Jun 2020 10:33:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=iGCDghN3T5Y00zNouGbtPQSvGhwl/OIHxAZ2MQmEADQ=;
- b=nL0pF5rGY/jyCNuJ0G2qPbh4gN6O3khPft35loOo04bnl3OFdlRNleY8BhAympZK8jar
- j7od9FNVKlF1uIOGoNZ/h59WOpGa97iI2E6yCvudb/wcSaIZnP1Jyd3CO/Nq/oqKtkuD
- sfIUPDfsrLvCuRa/9IbJhzreTtyjkLTCPTlaSP2Fl5IO/ftV9z5khLbP65v3+2XRsJ91
- ZnvwKmoT932kj3Nf7z0gZ9qqUG/nPf/2EAgLVcx6gH4scyqXDvWwSDsn4ISzHac+Nv2L
- RQsJlKjVGFYgLZ5g5RFMS4vq/acD48U8LJlll/rlFRlFf/xZzk+OOnwPEMA32cYItFs6 Sw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31fat4j5ms-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Jun 2020 10:33:57 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1C04910002A;
-        Fri,  5 Jun 2020 10:33:57 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0DDBF2B21C0;
-        Fri,  5 Jun 2020 10:33:57 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG3NODE3.st.com (10.75.127.9)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 5 Jun 2020 10:33:56
- +0200
-From:   Benjamin Gaignard <benjamin.gaignard@st.com>
-To:     <robh+dt@kernel.org>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@st.com>, <linus.walleij@linaro.org>,
-        <gregkh@linuxfoundation.org>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <stefano.stabellini@xilinx.com>,
-        <tomase@xilinx.com>, Benjamin Gaignard <benjamin.gaignard@st.com>
-Subject: [PATCH v4 5/5] ARM: dts: stm32: Use ETZPC firewall bus
-Date:   Fri, 5 Jun 2020 10:33:48 +0200
-Message-ID: <20200605083348.13880-6-benjamin.gaignard@st.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <20200605083348.13880-1-benjamin.gaignard@st.com>
-References: <20200605083348.13880-1-benjamin.gaignard@st.com>
+        Fri, 5 Jun 2020 04:36:21 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E13C08C5C2;
+        Fri,  5 Jun 2020 01:36:20 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id c3so8811685wru.12;
+        Fri, 05 Jun 2020 01:36:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Dq3oPyfqozgQNVIyIv74mybfG/tMTEM6HNLPoiq4pKw=;
+        b=A4LMRLaae+oW4ofvbcr0vG+xLYd3wW/c/tZNs4zYNUsY2KdfkVkjco81/u5+zkqaYA
+         5ZFsk0kX/XNnx3J/rZR+Q6+T1QJbYbHk9l4wc9sV7lpSh8IKD81cXLxrt16H7KZES1AW
+         p1tWvEsGcmydNz6zRfdQJ9Lh4cCTh4gqVI4nMXlutJw6DoR01pWTFqCliysDRxZFyXHQ
+         oNa5pis/C+LHiI4IHs8MFEIy4xSziE8BtWvW+lcckJvqjqZ6Phb3egKj/lCIw2r0OXTf
+         J3/UbsfBK8Y3apbwhwGvmpSYTokD92yJ7hn3ElrnaNiJsnOq5cPqEvjNp63hl5619sKp
+         j+5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Dq3oPyfqozgQNVIyIv74mybfG/tMTEM6HNLPoiq4pKw=;
+        b=cE9EQnG/esfcbgrs5IxhCqpt0ydWV4h9oGrF9wLYBCHDVAkkd2nJ9oBrDatSOQwj3P
+         UUWLmBuuBi7S0qJohgtZXHcWl6Ub/IdSYS3QknLrvpvcIW/Vp2Bmvjb693aV8pn+ChH0
+         SM7vNY1abNCWp0ZYyJNwxntNJpIvK4AiaiU+BAqHcduZ7ZBlxZfhfh7vjZNZESWalDTL
+         bv6Swn4aLrOMmmah7hf+SSrns8ASZRer/qsjsC7IMZCnT3GRQ7qHLFiWD5VznI/PI0xK
+         32iiZSLB3IYb0xyRP2iO729UGvyTElmKhN6yAKP8Ums6l1Hef3BQBzSr3d9o4tXg2SOa
+         xUuA==
+X-Gm-Message-State: AOAM533FrP7Otr2rApQlrp6gmDOxMAoyySz+EoIjOlOEZpnVKv1vD/o2
+        V/IWIMQpEAhldGyU+4IqLNL01baIOFQ=
+X-Google-Smtp-Source: ABdhPJzYVycY3bZlLV6BrfEAJMimdCMCrmHbb+PtL0pnGXLNxfuetQ/tdoRiqKM0eEmwT7Y9paVK0Q==
+X-Received: by 2002:adf:feca:: with SMTP id q10mr7852058wrs.380.1591346178861;
+        Fri, 05 Jun 2020 01:36:18 -0700 (PDT)
+Received: from localhost ([51.15.41.238])
+        by smtp.gmail.com with ESMTPSA id c81sm10935509wmd.42.2020.06.05.01.36.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jun 2020 01:36:18 -0700 (PDT)
+Date:   Fri, 5 Jun 2020 09:36:16 +0100
+From:   Stefan Hajnoczi <stefanha@gmail.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH RFC 11/13] vhost/scsi: switch to buf APIs
+Message-ID: <20200605083616.GB59410@stefanha-x1.localdomain>
+References: <20200602130543.578420-1-mst@redhat.com>
+ <20200602130543.578420-12-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG5NODE3.st.com (10.75.127.15) To SFHDAG3NODE3.st.com
- (10.75.127.9)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-05_01:2020-06-04,2020-06-05 signatures=0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="WYTEVAkct0FjGQmd"
+Content-Disposition: inline
+In-Reply-To: <20200602130543.578420-12-mst@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow STM32 ETZPC to check firewall configuration before populating
-the platform bus.
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
----
- arch/arm/boot/dts/stm32mp151.dtsi | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+--WYTEVAkct0FjGQmd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 3ea05ba48215..0290eb6f3c35 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -4,6 +4,7 @@
-  * Author: Ludovic Barre <ludovic.barre@st.com> for STMicroelectronics.
-  */
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/bus/stm32/stm32-etzpc.h>
- #include <dt-bindings/clock/stm32mp1-clks.h>
- #include <dt-bindings/reset/stm32mp1-resets.h>
- 
-@@ -110,8 +111,10 @@
- 		status = "disabled";
- 	};
- 
--	soc {
--		compatible = "simple-bus";
-+	etzpc_bus: soc@5c007000 {
-+		compatible = "st,stm32-etzpc-bus", "simple-bus";
-+		reg = <0x5c007000 0x400>;
-+		#firewall-cells = <2>;
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		interrupt-parent = <&intc>;
--- 
-2.15.0
+On Tue, Jun 02, 2020 at 09:06:20AM -0400, Michael S. Tsirkin wrote:
+> Switch to buf APIs. Doing this exposes a spec violation in vhost scsi:
+> all used bufs are marked with length 0.
+> Fix that is left for another day.
+>=20
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>  drivers/vhost/scsi.c | 73 ++++++++++++++++++++++++++------------------
+>  1 file changed, 44 insertions(+), 29 deletions(-)
+>=20
+> diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
+> index c39952243fd3..c426c4e899c7 100644
+> --- a/drivers/vhost/scsi.c
+> +++ b/drivers/vhost/scsi.c
+> @@ -71,8 +71,8 @@ struct vhost_scsi_inflight {
+>  };
+> =20
+>  struct vhost_scsi_cmd {
+> -	/* Descriptor from vhost_get_vq_desc() for virt_queue segment */
+> -	int tvc_vq_desc;
+> +	/* Descriptor from vhost_get_avail_buf() for virt_queue segment */
+> +	struct vhost_buf tvc_vq_desc;
+>  	/* virtio-scsi initiator task attribute */
+>  	int tvc_task_attr;
+>  	/* virtio-scsi response incoming iovecs */
+> @@ -213,7 +213,7 @@ struct vhost_scsi {
+>   * Context for processing request and control queue operations.
+>   */
+>  struct vhost_scsi_ctx {
+> -	int head;
+> +	struct vhost_buf buf;
+>  	unsigned int out, in;
+>  	size_t req_size, rsp_size;
+>  	size_t out_size, in_size;
+> @@ -443,6 +443,20 @@ static int vhost_scsi_check_stop_free(struct se_cmd =
+*se_cmd)
+>  	return target_put_sess_cmd(se_cmd);
+>  }
+> =20
+> +/* Signal to guest that request finished with no input buffer. */
+> +/* TODO calling this when writing into buffer and most likely a bug */
+> +static void vhost_scsi_signal_noinput(struct vhost_dev *vdev,
+> +				      struct vhost_virtqueue *vq,
+> +				      struct vhost_buf *bufp)
+> +{
+> +	struct vhost_buf buf =3D *bufp;
+> +
+> +	buf.in_len =3D 0;
+> +	vhost_put_used_buf(vq, &buf);
 
+Yes, this behavior differs from the QEMU virtio-scsi device
+implementation. I think it's just a quirk that is probably my fault (I
+guess I thought the length information is already encoded in the payload
+SCSI headers so we have no use for the used descriptor length field).
+
+Whether it's worth changing now or is an interesting question. In theory
+it would make vhost-scsi more spec compliant and guest drivers might be
+happier (especially drivers for niche OSes that were only tested against
+QEMU's virtio-scsi). On the other hand, it's a guest-visible change that
+could break similar niche drivers that assume length is always 0.
+
+I'd leave it as-is unless people hit issues that justify the risk of
+changing it.
+
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+
+--WYTEVAkct0FjGQmd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl7aBAAACgkQnKSrs4Gr
+c8hc2AgAhA2GdtNYe8p56IbAFfd8fkuwV0WVMyeBsCNkDsrJLQqfOtQ9EGUI3lir
+8Xfy6Gr4Swoy+7HIeicp4dmOCrY6J+gJx3ORqS1UncMUJghROp1Iucm/MK3VZq81
+bY9Xx07KuKFJHv6127fdnjw36uQdIJxRWMfYW1EeGLeLLWxzyYv6E1ajDo5USsrG
+/nlX5NHWdz1CZbQc8HZnuZ9dwTsMuLJYYyhQFUtaHm3UYQ+39XHFtk12dJiHhDvD
+2QdziP4TCejE+N4ICXV9M9uLRPAMFHbhAdMTbCGjwYpk01FxGIQ/hD87TtBMiyNB
+gINncRUX153Pu1g/rx/FGzPJ+rBTRQ==
+=9PYW
+-----END PGP SIGNATURE-----
+
+--WYTEVAkct0FjGQmd--
