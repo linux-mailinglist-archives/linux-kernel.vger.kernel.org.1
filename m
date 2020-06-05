@@ -2,95 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B29EB1EFB6D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D211EFB9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgFEOaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727945AbgFEOaE (ORCPT
+        id S1728198AbgFEOk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:40:56 -0400
+Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:43478 "EHLO
+        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727113AbgFEOkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:30:04 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65F0C08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 07:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dQozpauM+B1HUAZG/afzEGekuT2pBrCyXAH6b1RYzE4=; b=blC/DwwD+vyB/QngYMRyJPdJ8C
-        V/5m7Ky94t+nyRbIDIUeFa8RemAN6Mv0NKXuzcOm12jCNeumPX6PkLdSHeSP/NPKSPbnFV9EX1baf
-        I72TSiScqkQ9b9vjFRdJpJT6f5YNVARLIhUOBFxffwVktD3uuTWKh5RuI1Q38xM4adem6gu3oR5h7
-        RhlAwEXeObcvsurFcBwrW//vfTvnYtor7Ynf0pPc+WpHe7WXyZ5RCIQMIN+HnMVPDIfHEoUCRvMNA
-        qikHKMuyXY6kzMnKyvtPZpClw+6YTt2EkljoptEuZtzZ0FyxFx2aUJSHprjZMfl+pus1CxJ7FR7En
-        9CQA/zgA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jhDM2-0001lD-Vx; Fri, 05 Jun 2020 14:29:55 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2E14E304BDF;
-        Fri,  5 Jun 2020 16:29:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0FD4621A74B3C; Fri,  5 Jun 2020 16:29:53 +0200 (CEST)
-Date:   Fri, 5 Jun 2020 16:29:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        sumit.garg@linaro.org, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, will@kernel.org,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        patches@linaro.org, Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [RFC PATCH 0/4] kgdb: Honour the kprobe blacklist when setting
- breakpoints
-Message-ID: <20200605142953.GP2750@hirez.programming.kicks-ass.net>
-References: <20200605132130.1411255-1-daniel.thompson@linaro.org>
+        Fri, 5 Jun 2020 10:40:55 -0400
+X-Greylist: delayed 588 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Jun 2020 10:40:53 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id DD4433F6A7;
+        Fri,  5 Jun 2020 16:31:03 +0200 (CEST)
+Authentication-Results: ste-pvt-msa2.bahnhof.se;
+        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=P1NrJ9Ks;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.099
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.099 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, URIBL_BLOCKED=0.001]
+        autolearn=ham autolearn_force=no
+Authentication-Results: ste-ftg-msa2.bahnhof.se (amavisd-new);
+        dkim=pass (1024-bit key) header.d=shipmail.org
+Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ZzJm3QusKM0P; Fri,  5 Jun 2020 16:30:59 +0200 (CEST)
+Received: from mail1.shipmail.org (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
+        (Authenticated sender: mb878879)
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 750183F628;
+        Fri,  5 Jun 2020 16:30:57 +0200 (CEST)
+Received: from localhost.localdomain (unknown [134.134.139.76])
+        by mail1.shipmail.org (Postfix) with ESMTPSA id 7F8493601AD;
+        Fri,  5 Jun 2020 16:30:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
+        t=1591367457; bh=WmmKpNHpyNnLQkrBY2MHybJLK6DanaIpP6iniTFoQGE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=P1NrJ9Ksaz/Mu6lOw3BCKxoGnXwlsK564hqTfU32mVfedyJmsS5c4seF5zeSaZ46q
+         FuEfibE+fHQnpa/x39VHqeB3JqC21BmEctstREEAZPA7snFzoBcA/MTtT9uxkwoKDG
+         yaqYCBUWv+y/aIgYJaCH0q5RNYvlG+HbUYplB8yE=
+Subject: Re: [PATCH] dma-fence: basic lockdep annotations
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Cc:     linux-rdma@vger.kernel.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        linaro-mm-sig@lists.linaro.org,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        linux-media@vger.kernel.org,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+References: <20200604081224.863494-4-daniel.vetter@ffwll.ch>
+ <20200605132953.899664-1-daniel.vetter@ffwll.ch>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Message-ID: <83805409-ad4a-65a3-d9cf-21878308dc92@shipmail.org>
+Date:   Fri, 5 Jun 2020 16:30:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200605132130.1411255-1-daniel.thompson@linaro.org>
+In-Reply-To: <20200605132953.899664-1-daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 02:21:26PM +0100, Daniel Thompson wrote:
-> kgdb has traditionally adopted a no safety rails approach to breakpoint
-> placement. If the debugger is commanded to place a breakpoint at an
-> address then it will do so even if that breakpoint results in kgdb
-> becoming inoperable.
-> 
-> A stop-the-world debugger with memory peek/poke does intrinsically
-> provide its operator with the means to hose their system in all manner
-> of exciting ways (not least because stopping-the-world is already a DoS
-> attack ;-) ) but the current no safety rail approach is not easy to
-> defend, especially given kprobes provides us with plenty of machinery to
-> mark parts of the kernel where breakpointing is discouraged.
-> 
-> This patchset introduces some safety rails by using the existing
-> kprobes infrastructure. It does not cover all locations where
-> breakpoints can cause trouble but it will definitely block off several
-> avenues, including the architecture specific parts that are handled by
-> arch_within_kprobe_blacklist().
-> 
-> This patch is an RFC because:
-> 
-> 1. My workstation is still chugging through the compile testing.
-> 
-> 2. Patch 4 needs more runtime testing.
-> 
-> 3. The code to extract the kprobe blacklist code (patch 4 again) needs
->    more review especially for its impact on arch specific code.
-> 
-> To be clear I do plan to do the detailed review of the kprobe blacklist
-> stuff but would like to check the direction of travel first since the
-> change is already surprisingly big and maybe there's a better way to
-> organise things.
 
-Thanks for doing these patches, esp 1-3 look very good to me.
+On 6/5/20 3:29 PM, Daniel Vetter wrote:
+> Design is similar to the lockdep annotations for workers, but with
+> some twists:
+>
+> - We use a read-lock for the execution/worker/completion side, so that
+>    this explicit annotation can be more liberally sprinkled around.
+>    With read locks lockdep isn't going to complain if the read-side
+>    isn't nested the same way under all circumstances, so ABBA deadlocks
+>    are ok. Which they are, since this is an annotation only.
+>
+> - We're using non-recursive lockdep read lock mode, since in recursive
+>    read lock mode lockdep does not catch read side hazards. And we
+>    _very_ much want read side hazards to be caught. For full details of
+>    this limitation see
+>
+>    commit e91498589746065e3ae95d9a00b068e525eec34f
+>    Author: Peter Zijlstra <peterz@infradead.org>
+>    Date:   Wed Aug 23 13:13:11 2017 +0200
+>
+>        locking/lockdep/selftests: Add mixed read-write ABBA tests
+>
+> - To allow nesting of the read-side explicit annotations we explicitly
+>    keep track of the nesting. lock_is_held() allows us to do that.
+>
+> - The wait-side annotation is a write lock, and entirely done within
+>    dma_fence_wait() for everyone by default.
+>
+> - To be able to freely annotate helper functions I want to make it ok
+>    to call dma_fence_begin/end_signalling from soft/hardirq context.
+>    First attempt was using the hardirq locking context for the write
+>    side in lockdep, but this forces all normal spinlocks nested within
+>    dma_fence_begin/end_signalling to be spinlocks. That bollocks.
+>
+>    The approach now is to simple check in_atomic(), and for these cases
+>    entirely rely on the might_sleep() check in dma_fence_wait(). That
+>    will catch any wrong nesting against spinlocks from soft/hardirq
+>    contexts.
+>
+> The idea here is that every code path that's critical for eventually
+> signalling a dma_fence should be annotated with
+> dma_fence_begin/end_signalling. The annotation ideally starts right
+> after a dma_fence is published (added to a dma_resv, exposed as a
+> sync_file fd, attached to a drm_syncobj fd, or anything else that
+> makes the dma_fence visible to other kernel threads), up to and
+> including the dma_fence_wait(). Examples are irq handlers, the
+> scheduler rt threads, the tail of execbuf (after the corresponding
+> fences are visible), any workers that end up signalling dma_fences and
+> really anything else. Not annotated should be code paths that only
+> complete fences opportunistically as the gpu progresses, like e.g.
+> shrinker/eviction code.
+>
+> The main class of deadlocks this is supposed to catch are:
+>
+> Thread A:
+>
+> 	mutex_lock(A);
+> 	mutex_unlock(A);
+>
+> 	dma_fence_signal();
+>
+> Thread B:
+>
+> 	mutex_lock(A);
+> 	dma_fence_wait();
+> 	mutex_unlock(A);
+>
+> Thread B is blocked on A signalling the fence, but A never gets around
+> to that because it cannot acquire the lock A.
+>
+> Note that dma_fence_wait() is allowed to be nested within
+> dma_fence_begin/end_signalling sections. To allow this to happen the
+> read lock needs to be upgraded to a write lock, which means that any
+> other lock is acquired between the dma_fence_begin_signalling() call and
+> the call to dma_fence_wait(), and still held, this will result in an
+> immediate lockdep complaint. The only other option would be to not
+> annotate such calls, defeating the point. Therefore these annotations
+> cannot be sprinkled over the code entirely mindless to avoid false
+> positives.
+>
+> Originally I hope that the cross-release lockdep extensions would
+> alleviate the need for explicit annotations:
+>
+> https://lwn.net/Articles/709849/
+>
+> But there's a few reasons why that's not an option:
+>
+> - It's not happening in upstream, since it got reverted due to too
+>    many false positives:
+>
+> 	commit e966eaeeb623f09975ef362c2866fae6f86844f9
+> 	Author: Ingo Molnar <mingo@kernel.org>
+> 	Date:   Tue Dec 12 12:31:16 2017 +0100
+>
+> 	    locking/lockdep: Remove the cross-release locking checks
+>
+> 	    This code (CONFIG_LOCKDEP_CROSSRELEASE=y and CONFIG_LOCKDEP_COMPLETIONS=y),
+> 	    while it found a number of old bugs initially, was also causing too many
+> 	    false positives that caused people to disable lockdep - which is arguably
+> 	    a worse overall outcome.
+>
+> - cross-release uses the complete() call to annotate the end of
+>    critical sections, for dma_fence that would be dma_fence_signal().
+>    But we do not want all dma_fence_signal() calls to be treated as
+>    critical, since many are opportunistic cleanup of gpu requests. If
+>    these get stuck there's still the main completion interrupt and
+>    workers who can unblock everyone. Automatically annotating all
+>    dma_fence_signal() calls would hence cause false positives.
+>
+> - cross-release had some educated guesses for when a critical section
+>    starts, like fresh syscall or fresh work callback. This would again
+>    cause false positives without explicit annotations, since for
+>    dma_fence the critical sections only starts when we publish a fence.
+>
+> - Furthermore there can be cases where a thread never does a
+>    dma_fence_signal, but is still critical for reaching completion of
+>    fences. One example would be a scheduler kthread which picks up jobs
+>    and pushes them into hardware, where the interrupt handler or
+>    another completion thread calls dma_fence_signal(). But if the
+>    scheduler thread hangs, then all the fences hang, hence we need to
+>    manually annotate it. cross-release aimed to solve this by chaining
+>    cross-release dependencies, but the dependency from scheduler thread
+>    to the completion interrupt handler goes through hw where
+>    cross-release code can't observe it.
+>
+> In short, without manual annotations and careful review of the start
+> and end of critical sections, cross-relese dependency tracking doesn't
+> work. We need explicit annotations.
+>
+> v2: handle soft/hardirq ctx better against write side and dont forget
+> EXPORT_SYMBOL, drivers can't use this otherwise.
+>
+> v3: Kerneldoc.
+>
+> v4: Some spelling fixes from Mika
+>
+> v5: Amend commit message to explain in detail why cross-release isn't
+> the solution.
+>
+> Cc: Mika Kuoppala <mika.kuoppala@intel.com>
+> Cc: Thomas Hellstrom <thomas.hellstrom@intel.com>
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Cc: linux-rdma@vger.kernel.org
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: intel-gfx@lists.freedesktop.org
+> Cc: Chris Wilson <chris@chris-wilson.co.uk>
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Christian König <christian.koenig@amd.com>
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> ---
 
-I've taken the liberty to bounce the entire set to Masami-San, who is
-the kprobes maintainer for comments as well.
+Reviewed-by: Thomas Hellström <thomas.hellstrom@intel.com>
+
+
