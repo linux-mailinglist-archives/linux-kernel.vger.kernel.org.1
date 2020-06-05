@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0631EEFD8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 05:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30A01EEFDA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 05:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgFEDWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 23:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59936 "EHLO
+        id S1726096AbgFEDW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 23:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbgFEDWg (ORCPT
+        with ESMTP id S1725954AbgFEDW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 23:22:36 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19CB9C08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 20:22:36 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 185so4457742pgb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 20:22:36 -0700 (PDT)
+        Thu, 4 Jun 2020 23:22:57 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8251C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 20:22:56 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id m2so2130127pjv.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 20:22:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0BsPlBCClkNY3i19jkCcpmxryGhoEl1mZzp7w55xl5k=;
-        b=NeGwUC5SuWEfR36Y2HWPbDGCVuTwY3L6o3gm4YbT6IoH+Rj+6El+FYcN/56JxNZ+oO
-         bTRhTltrhc+Ffwikfu/W8ddkhlceItIcenPlaR2KQ7iqGJqnHqt3IH9T0tHB0xSHwet4
-         FG7ZCQzpNkJGFhgY4NgBjN3Nzv1tHo5Lh+jWlK8kaIMBXNMDcCfLRhCpM0s+MIZ4rv+D
-         7jTlQMsbHXUm1/vBnTfNwfGc2yHXzG2UXCHffwM6/SWYmarIjfEy72pAbEfGow8g+gSS
-         PB6b/03bgu7bQq3MQ2P9p72etuZ51h6xArh/42oDdyGpHEn5SCZnaguxp0I3LTIcsM/n
-         jgGw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QyQw+sLIla93dlac0TERwcz4aWSKJuqSco16Wn/VCK0=;
+        b=oApTUVbvRfwUXQkyK9U+0EK+y9ZjZdvqoGei9Z2c+lWyA4V9WeC6RwySmnttTG6h6R
+         J5FKeKiU9vufOnBhhFWruh7l2jnbuXC8HWckjX0IWbOhN+hgkr19jyYnvyUKtb9GTheu
+         evTg8bf8NZZU26vKyLPUwu2n9wMheLWcgtUV6877z7H0Zr5+wAxY7sqTsokSArUmkoJa
+         77CgaSzTGld6I7+o8tUozYfgSTrnAM0/BRZqTO7g6feV+eKBM4odUNA3qXqctA8zH9JB
+         ScsFF9jE/IDuxxV3ZgUfLedbHUBWt3W81bm87m3jv5JSAc39E9TYoGsaPR5oEcTt461g
+         XBSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=0BsPlBCClkNY3i19jkCcpmxryGhoEl1mZzp7w55xl5k=;
-        b=Fqt3A3Jr1oSb2oa7DzS6tYY37T5deP3U79PS/4TcxfqWhYbBce/fdttMtUovcijlLC
-         gw2RtV0ox5jxHgEg2JfDulPe4xuvRJx5GtsmlxHl4hDHNmGwGcY8KQowgFag7IyyGnFW
-         UzJRtKhEQysRGZjQtCLugizMlHC6pFBcnuxp6jeovoI7ZbPECscCErgSz7Pmj6d+iYOm
-         FNqsPNOJdyKfDlzi+GDgRkUSX1xRLsrszZwHaKDYj5pviHfgwYyQjhyAHvIxh/EVsi11
-         eHb54EWKwsQ3V8/UTagY8MYPSKDC9Em6EP9Ii9avb4SddKgW2jnzE1od96qt9KVaSHYO
-         CJJA==
-X-Gm-Message-State: AOAM53099+TaafY4WwOZ51AWNtRcNO9AQ6KLnOx96AOo4IgYwwuuHmAk
-        bvYbwJVLWeHWEbeRg4pfRbM=
-X-Google-Smtp-Source: ABdhPJytvjFMr1e82qYio8uFLx+ShTDgJaWolaqdqqamVortvV8WNBsc755YCgcIe15apNvm12G5aw==
-X-Received: by 2002:a63:c948:: with SMTP id y8mr7468775pgg.118.1591327355373;
-        Thu, 04 Jun 2020 20:22:35 -0700 (PDT)
-Received: from localhost.localdomain ([223.29.222.28])
-        by smtp.gmail.com with ESMTPSA id nl8sm7685405pjb.13.2020.06.04.20.22.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 20:22:34 -0700 (PDT)
-From:   Divyansh Kamboj <kambojdivyansh2000@gmail.com>
-To:     abbotti@mev.co.uk
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        kambojdivyansh2000@gmail.com
-Subject: [PATCH] Staging: comedi: Added blank lines to fix coding style issue
-Date:   Fri,  5 Jun 2020 08:51:40 +0530
-Message-Id: <20200605032140.31287-1-kambojdivyansh2000@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        bh=QyQw+sLIla93dlac0TERwcz4aWSKJuqSco16Wn/VCK0=;
+        b=q5gsd4cQQitwBYy6RNrJ7zBr4bbHeDlQMcbMdvhdZpiIRgA9/gqah33+4EKktZMwix
+         LugPcqF0okcUfuKSjaW5ahewVFco/mmSCA5i46+Z+DtMiuwnuSdNkhAUA4QzVl2n7dQw
+         EzZITIJ/Q8peLTEBnNHYf+JrqEW4oSuE2cB0kgKuy2uBtiv2yPbv4wT/J/vPOaToEKO/
+         p5Xc3xPH8bb2G39/jg1nN2JUveq6zqcPP2WNj1ka66nzELcDbFrEQR81ELN+CpXqj51e
+         6pjPOLRKUgce6RjT8GGFXP3Oi+84rIgsi/dL7pZ+3gKKC7eA4Q73PBjeJafX2Zq1EEHu
+         6S4w==
+X-Gm-Message-State: AOAM531isvJ7pf7KxRH7A11befVXHv4QZXNmjNcmvwvk8UKjnYW3wMOi
+        i/qunaTvryfQ5ZhPnmuMdljJrg==
+X-Google-Smtp-Source: ABdhPJwxXh8FFNGBgBksKWyrxn6L7WMe3Dlu7Qjsdz92aLKnsM1nGvuXZeAExnd99VH2EfqwFr5bhg==
+X-Received: by 2002:a17:90a:2222:: with SMTP id c31mr570134pje.200.1591327376490;
+        Thu, 04 Jun 2020 20:22:56 -0700 (PDT)
+Received: from [192.168.1.188] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id a14sm5520589pfc.133.2020.06.04.20.22.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jun 2020 20:22:55 -0700 (PDT)
+Subject: Re: [PATCH v2 5/6] block: nr_sects_write(): Disable preemption on
+ seqcount write
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vivek Goyal <vgoyal@redhat.com>, linux-block@vger.kernel.org
+References: <20200603144949.1122421-1-a.darwish@linutronix.de>
+ <20200603144949.1122421-6-a.darwish@linutronix.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b8440471-e78d-8112-2ab3-c2a948095fa8@kernel.dk>
+Date:   Thu, 4 Jun 2020 21:22:53 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200603144949.1122421-6-a.darwish@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed a coding style issue by adding a blank line after declarations
+On 6/3/20 8:49 AM, Ahmed S. Darwish wrote:
+> For optimized block readers not holding a mutex, the "number of sectors"
+> 64-bit value is protected from tearing on 32-bit architectures by a
+> sequence counter.
+> 
+> Disable preemption before entering that sequence counter's write side
+> critical section. Otherwise, the read side can preempt the write side
+> section and spin for the entire scheduler tick. If the reader belongs to
+> a real-time scheduling class, it can spin forever and the kernel will
+> livelock.
 
-Signed-off-by: Divyansh Kamboj <kambojdivyansh2000@gmail.com>
----
- drivers/staging/comedi/comedi_fops.c | 3 +++
- 1 file changed, 3 insertions(+)
+Applied, thanks.
 
-diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
-index e85a99b68f31..3f70e5dfac39 100644
---- a/drivers/staging/comedi/comedi_fops.c
-+++ b/drivers/staging/comedi/comedi_fops.c
-@@ -2169,6 +2169,7 @@ static long comedi_unlocked_ioctl(struct file *file, unsigned int cmd,
- 		break;
- 	case COMEDI_CHANINFO: {
- 		struct comedi_chaninfo it;
-+
- 		if (copy_from_user(&it, (void __user *)arg, sizeof(it)))
- 			rc = -EFAULT;
- 		else
-@@ -2177,6 +2178,7 @@ static long comedi_unlocked_ioctl(struct file *file, unsigned int cmd,
- 	}
- 	case COMEDI_RANGEINFO: {
- 		struct comedi_rangeinfo it;
-+
- 		if (copy_from_user(&it, (void __user *)arg, sizeof(it)))
- 			rc = -EFAULT;
- 		else
-@@ -2249,6 +2251,7 @@ static long comedi_unlocked_ioctl(struct file *file, unsigned int cmd,
- 	}
- 	case COMEDI_INSN: {
- 		struct comedi_insn insn;
-+
- 		if (copy_from_user(&insn, (void __user *)arg, sizeof(insn)))
- 			rc = -EFAULT;
- 		else
 -- 
-2.26.2
+Jens Axboe
 
