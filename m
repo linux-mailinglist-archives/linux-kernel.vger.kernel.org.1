@@ -2,101 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240081EFFB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 20:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194801EFFAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 20:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728167AbgFESLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 14:11:17 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:52808 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726077AbgFESLO (ORCPT
+        id S1727960AbgFESKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 14:10:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726077AbgFESKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 14:11:14 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 055I8CQ5102490;
-        Fri, 5 Jun 2020 18:10:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=a4XaveQpAaQa2mw3il6Qi66Kdmgjqk/04IfyDbfuZOQ=;
- b=TOJoy37INOWoUNxh4EAkC3tJJh/ECSCuvtOhWAS4NSeZyCjRrCsD3Z6EetUvUSKmEpeZ
- E3ytfPKjbZvHXMkE1Swau4LvjbD5QlmLYz+FR3/6i34071X0mYTEReOpYGAdX4KGVbCp
- myCums3m3orFSmWW+bojM2PR10BZE0EX8efh9tHMtZg2v1HwZ+JhXz3bXXzUhdErnbFe
- IK3q+Ui7W47bNb+YTwqM4kpK2eT9tP5bLdgaroFCzxRztvvp+RtWr5v7XJhA2Mxft5F2
- ozk92BhoV8J20fNyWVJGvnWMPaD/Qq3hMbyn5ImjbQFbYgh9MDypv9SYYQkDz196ksQX OA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 31f926445u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 05 Jun 2020 18:10:59 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 055I88MV181261;
-        Fri, 5 Jun 2020 18:08:58 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 31f928aagq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Jun 2020 18:08:58 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 055I8tPQ026391;
-        Fri, 5 Jun 2020 18:08:56 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 05 Jun 2020 11:08:54 -0700
-Date:   Fri, 5 Jun 2020 21:08:45 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Jason Yan <yanaijie@huawei.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        hulkci@huawei.com, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Ming Lei <ming.lei@redhat.com>
-Subject: Re: [PATCH v2] block: Fix use-after-free in blkdev_get()
-Message-ID: <20200605180845.GU30374@kadam>
-References: <88676ff2-cb7e-70ec-4421-ecf8318990b1@web.de>
- <5fa658bf-3028-9b5c-30cc-dbdef6bf8f7a@huawei.com>
- <20200605094353.GS30374@kadam>
- <20200605144236.GB13248@quack2.suse.cz>
+        Fri, 5 Jun 2020 14:10:10 -0400
+Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10A4C08C5C2;
+        Fri,  5 Jun 2020 11:10:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
+         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
+        :To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=uX7WkPPY5DHynO/kH95BbeRu3QRcHZ3RT6LKeg6R+k0=; b=LxfpePMGvwk9Hyci3o22CrWB8f
+        e7a+sb2Wmh8g0jqcKTPAywOHbaxyy0yxzEQwFJ5tS50zNMRIrz8wn6tID27Nwr23Hs8cZrFUBCpiK
+        2qv2iFaR1gTfIHmdg4YOY/RojDX8uvWUsCuoobdK/oZ0yXNspTJMvKM/qM0QQ0N8UBLpZoZTZKBVT
+        3eN3/rBYXEPvkepqKXVEnTvKTn2ztfISyMilYPUK/ZOj7EBzOXaWzRNOcsjjcfHkOX7JYVBAdY0Vc
+        fPGdcFgmdjAcHsD59cxaqZt8fGpalQdiJpJMFaVWvOik+JC2qZbIgpSDq4tXxpK8tjM3DusiBHZyo
+        3SsKK73g==;
+Received: from [2001:4d48:ad59:1409:4::2] (helo=youmian.o362.us)
+        by the.earth.li with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <noodles@earth.li>)
+        id 1jhGn8-0003Cr-ST; Fri, 05 Jun 2020 19:10:06 +0100
+Date:   Fri, 5 Jun 2020 19:10:02 +0100
+From:   Jonathan McDowell <noodles@earth.li>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: net: dsa: qca8k: document SGMII properties
+Message-ID: <ca767d2dd00280f7c0826c133d1ff6f262b6736d.1591380105.git.noodles@earth.li>
+References: <cover.1591380105.git.noodles@earth.li>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200605144236.GB13248@quack2.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9643 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
- suspectscore=0 mlxscore=0 adultscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006050134
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9643 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
- suspectscore=0 cotscore=-2147483648 bulkscore=0 clxscore=1015
- impostorscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999
- spamscore=0 lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006050134
+In-Reply-To: <cover.1591380105.git.noodles@earth.li>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 04:42:36PM +0200, Jan Kara wrote:
-> On Fri 05-06-20 12:43:54, Dan Carpenter wrote:
-> > I wonder if maybe the best fix is to re-add the "if (!res) " check back
-> > to blkdev_get().
-> 
-> Well, it won't be that simple since we need to call bd_abort_claiming()
-> under bdev->bd_mutex. And the fact that __blkdev_get() frees the reference
-> you pass to it is somewhat subtle and surprising so I think we are better
-> off getting rid of that.
+This patch documents the qca8k's SGMII related properties that allow
+configuration of the SGMII port.
 
-Fair enough.
+Signed-off-by: Jonathan McDowell <noodles@earth.li>
+---
+ Documentation/devicetree/bindings/net/dsa/qca8k.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Jason Yan sent a v3 of this patch that frees "whole".  I've looked it
-over pretty close and I think it's probably correct.
-
-(not that my opinion should count for much because I don't know this
-code very well at all).
-
-regards,
-dan carpenter
+diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+index ccbc6d89325d..9e7d74a248ad 100644
+--- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
++++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+@@ -11,7 +11,11 @@ Required properties:
+ 
+ Optional properties:
+ 
++- disable-serdes-autoneg: Boolean, disables auto-negotiation on the SerDes
+ - reset-gpios: GPIO to be used to reset the whole device
++- sgmii-delay: Boolean, presence delays SGMII clock by 2ns
++- sgmii-mode: String, operation mode of the SGMII interface.
++  Supported values are: "basex", "mac", "phy".
+ 
+ Subnodes:
+ 
+-- 
+2.20.1
 
