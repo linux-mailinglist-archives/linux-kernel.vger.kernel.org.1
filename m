@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533061EFACA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F14C1EFA7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729009AbgFEOUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:20:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51822 "EHLO mail.kernel.org"
+        id S1728570AbgFEOR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:17:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728957AbgFEOU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:20:27 -0400
+        id S1727907AbgFEORr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:17:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 295912074B;
-        Fri,  5 Jun 2020 14:20:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 68F4220B80;
+        Fri,  5 Jun 2020 14:17:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366826;
-        bh=0Sdw19cZUj8gXdGRxHjvIBv37iyXz0YRfj4NGJbcFrc=;
+        s=default; t=1591366666;
+        bh=Scdha6iQPtZn1Tntw8fZXJD+kymQVK8iBLPJRJSVIsI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FPOshHwGmSNKAS5YBXgaRnsH4OU0Vm4dPQEk00KZrxLzhGu7bcTbA64Mh1sE0Xcov
-         Q3E09yfyTzb9N/l3Q0JBXMGZKvljSpPGW7R/CJP9hB9Y86UAkWwcpcDe0SHDng8pIY
-         1SNnR3l91r4sPCn+hx2RDSvdmxKk+n/YsjKkTGtk=
+        b=XfdYC7wrrg3RZ6UnfkKEms2cwPOLbGx5XnDSaBWKZ77JawG/PfF4MmyzJQb24MIST
+         tSo1XN/VrjJIcEBgZXvtPnUTirbGv/8k+R8QaqtwNN6yeS3EksXRi1UL4iI/khOOzY
+         oa29ggTQ3ygb4dcZt2ri49OIUyC+yfgn0bM5aQok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 4.19 08/28] mmc: fix compilation of user API
+        stable@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.6 40/43] media: Revert "staging: imgu: Address a compiler warning on alignment"
 Date:   Fri,  5 Jun 2020 16:15:10 +0200
-Message-Id: <20200605140252.829389737@linuxfoundation.org>
+Message-Id: <20200605140154.625330245@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200605140252.338635395@linuxfoundation.org>
-References: <20200605140252.338635395@linuxfoundation.org>
+In-Reply-To: <20200605140152.493743366@linuxfoundation.org>
+References: <20200605140152.493743366@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-commit 83fc5dd57f86c3ec7d6d22565a6ff6c948853b64 upstream.
+commit 81d1adeb52c97fbe097e8c94e36c3eb702cdb110 upstream.
 
-The definitions of MMC_IOC_CMD  and of MMC_IOC_MULTI_CMD rely on
-MMC_BLOCK_MAJOR:
+This reverts commit c9d52c114a9fcc61c30512c7f810247a9f2812af.
 
-    #define MMC_IOC_CMD       _IOWR(MMC_BLOCK_MAJOR, 0, struct mmc_ioc_cmd)
-    #define MMC_IOC_MULTI_CMD _IOWR(MMC_BLOCK_MAJOR, 1, struct mmc_ioc_multi_cmd)
+The patch being reverted changed the memory layout of struct
+ipu3_uapi_acc_param. Revert it, and address the compiler warning issues in
+further patches.
 
-However, MMC_BLOCK_MAJOR is defined in linux/major.h and
-linux/mmc/ioctl.h did not include it.
-
-Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200511161902.191405-1-Jerome.Pouiller@silabs.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: commit c9d52c114a9f ("media: staging: imgu: Address a compiler warning on alignment")
+Reported-by: Tomasz Figa <tfiga@chromium.org>
+Tested-by: Bingbu Cao <bingbu.cao@intel.com>
+Cc: stable@vger.kernel.org # for v5.3 and up
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/uapi/linux/mmc/ioctl.h |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/staging/media/ipu3/include/intel-ipu3.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/uapi/linux/mmc/ioctl.h
-+++ b/include/uapi/linux/mmc/ioctl.h
-@@ -3,6 +3,7 @@
- #define LINUX_MMC_IOCTL_H
- 
- #include <linux/types.h>
-+#include <linux/major.h>
- 
- struct mmc_ioc_cmd {
- 	/* Implies direction of data.  true = write, false = read */
+--- a/drivers/staging/media/ipu3/include/intel-ipu3.h
++++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
+@@ -2477,7 +2477,7 @@ struct ipu3_uapi_acc_param {
+ 	struct ipu3_uapi_yuvp1_yds_config yds2 __attribute__((aligned(32)));
+ 	struct ipu3_uapi_yuvp2_tcc_static_config tcc __attribute__((aligned(32)));
+ 	struct ipu3_uapi_anr_config anr;
+-	struct ipu3_uapi_awb_fr_config_s awb_fr __attribute__((aligned(32)));
++	struct ipu3_uapi_awb_fr_config_s awb_fr;
+ 	struct ipu3_uapi_ae_config ae;
+ 	struct ipu3_uapi_af_config_s af;
+ 	struct ipu3_uapi_awb_config awb;
 
 
