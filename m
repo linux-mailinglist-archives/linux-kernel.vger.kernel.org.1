@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B881EFA62
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A61511EFA42
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgFEORE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:17:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46042 "EHLO mail.kernel.org"
+        id S1728156AbgFEOQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:16:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728312AbgFEOQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:16:50 -0400
+        id S1728028AbgFEOQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:16:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EECA20835;
-        Fri,  5 Jun 2020 14:16:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEDBB2063A;
+        Fri,  5 Jun 2020 14:15:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366610;
-        bh=04t9itlU1J/2xv4vUewI0M8oZPMJaRDzx3JulnAkUFw=;
+        s=default; t=1591366560;
+        bh=D4r6OX5ozF6eB8oFMSsc6D1ClCAeu0v3Pg3qY5inDxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=is+SIp8swWgEo6uES4MQYy697JEDxB1+PLQXA3x6h91o0OIkcQ7GZgzL6sqksQxjE
-         tl+1JLCEZzRoPgjsB1SkON17bpH8KYfOVaePkNBaRsrMLgfUGA1eYgYRt9fCZsW2d4
-         YaDSzRy8FtmP9jZiAeR4zp0cv90jpEQ2BiHSPfI0=
+        b=eN1BQSLOo5V4ZGS6hVLXxcku+0q8UbqLfb2yH1Cm/KEXuiFIMu5sZRTen8XAo2ei0
+         etyhwoJN+pXdby4AHdDjHXps8W507h7dq0rzdfmQChy8BtlLmkdZ/VzJ+HfFv81Oej
+         czZBqaOf8ZoTZgTeq7OaU8zPeK86l1PC4ohmausk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 22/43] riscv: Fix print_vm_layout build error if NOMMU
-Date:   Fri,  5 Jun 2020 16:14:52 +0200
-Message-Id: <20200605140153.686917117@linuxfoundation.org>
+        stable@vger.kernel.org, Scott Shumate <scott.shumate@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 5.7 03/14] HID: sony: Fix for broken buttons on DS3 USB dongles
+Date:   Fri,  5 Jun 2020 16:14:53 +0200
+Message-Id: <20200605135951.231302633@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200605140152.493743366@linuxfoundation.org>
-References: <20200605140152.493743366@linuxfoundation.org>
+In-Reply-To: <20200605135951.018731965@linuxfoundation.org>
+References: <20200605135951.018731965@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+From: Scott Shumate <scott.shumate@gmail.com>
 
-[ Upstream commit 8fa3cdff05f009855a6a99a7d77a41004009bbab ]
+commit e72455b898ac678667c5674668186b4670d87d11 upstream.
 
-arch/riscv/mm/init.c: In function ‘print_vm_layout’:
-arch/riscv/mm/init.c:68:37: error: ‘FIXADDR_START’ undeclared (first use in this function);
-arch/riscv/mm/init.c:69:20: error: ‘FIXADDR_TOP’ undeclared
-arch/riscv/mm/init.c:70:37: error: ‘PCI_IO_START’ undeclared
-arch/riscv/mm/init.c:71:20: error: ‘PCI_IO_END’ undeclared
-arch/riscv/mm/init.c:72:38: error: ‘VMEMMAP_START’ undeclared
-arch/riscv/mm/init.c:73:20: error: ‘VMEMMAP_END’ undeclared (first use in this function);
+Fix for non-working buttons on knock-off USB dongles for Sony
+controllers. These USB dongles are used to connect older Sony DA/DS1/DS2
+controllers via USB and are common on Amazon, AliExpress, etc.  Without
+the patch, the square, X, and circle buttons do not function.  These
+dongles used to work prior to kernel 4.10 but removing the global DS3
+report fixup in commit e19a267b9987 ("HID: sony: DS3 comply to Linux gamepad
+spec") exposed the problem.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Many people reported the problem on the Ubuntu forums and are working
+around the problem by falling back to the 4.9 hid-sony driver.
+
+The problem stems from these dongles incorrectly reporting their button
+count as 13 instead of 16.  This patch fixes up the report descriptor by
+changing the button report count to 16 and removing 3 padding bits.
+
+Cc: stable@vger.kernel.org
+Fixes: e19a267b9987 ("HID: sony: DS3 comply to Linux gamepad spec")
+Signed-off-by: Scott Shumate <scott.shumate@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/riscv/mm/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/hid-sony.c |   17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 157924baa191..1dc26384a6c4 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -46,7 +46,7 @@ static void setup_zero_page(void)
- 	memset((void *)empty_zero_page, 0, PAGE_SIZE);
+--- a/drivers/hid/hid-sony.c
++++ b/drivers/hid/hid-sony.c
+@@ -867,6 +867,23 @@ static u8 *sony_report_fixup(struct hid_
+ 	if (sc->quirks & PS3REMOTE)
+ 		return ps3remote_fixup(hdev, rdesc, rsize);
+ 
++	/*
++	 * Some knock-off USB dongles incorrectly report their button count
++	 * as 13 instead of 16 causing three non-functional buttons.
++	 */
++	if ((sc->quirks & SIXAXIS_CONTROLLER_USB) && *rsize >= 45 &&
++		/* Report Count (13) */
++		rdesc[23] == 0x95 && rdesc[24] == 0x0D &&
++		/* Usage Maximum (13) */
++		rdesc[37] == 0x29 && rdesc[38] == 0x0D &&
++		/* Report Count (3) */
++		rdesc[43] == 0x95 && rdesc[44] == 0x03) {
++		hid_info(hdev, "Fixing up USB dongle report descriptor\n");
++		rdesc[24] = 0x10;
++		rdesc[38] = 0x10;
++		rdesc[44] = 0x00;
++	}
++
+ 	return rdesc;
  }
  
--#ifdef CONFIG_DEBUG_VM
-+#if defined(CONFIG_MMU) && defined(CONFIG_DEBUG_VM)
- static inline void print_mlk(char *name, unsigned long b, unsigned long t)
- {
- 	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld kB)\n", name, b, t,
--- 
-2.25.1
-
 
 
