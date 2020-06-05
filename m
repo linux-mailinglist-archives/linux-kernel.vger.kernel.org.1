@@ -2,54 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAFD1F00DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 22:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084731F00DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 22:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgFEURS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 16:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
+        id S1728242AbgFEUSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 16:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728088AbgFEURR (ORCPT
+        with ESMTP id S1727087AbgFEUSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 16:17:17 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91A4C08C5C2;
-        Fri,  5 Jun 2020 13:17:17 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 60571127B0A88;
-        Fri,  5 Jun 2020 13:17:17 -0700 (PDT)
-Date:   Fri, 05 Jun 2020 13:17:16 -0700 (PDT)
-Message-Id: <20200605.131716.1384746623877149157.davem@davemloft.net>
-To:     keescook@chromium.org
-Cc:     joe@perches.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: ethtool: Fix comment mentioning typo in
- IS_ENABLED()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <202006050720.D741B4C@keescook>
-References: <202006050720.D741B4C@keescook>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 05 Jun 2020 13:17:17 -0700 (PDT)
+        Fri, 5 Jun 2020 16:18:42 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97F1C08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 13:18:41 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id z9so13246708ljh.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 13:18:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IyZXapUgSv5A3j8QPmWLFE2iYeTmmUoWDYx23agQz54=;
+        b=YYiqnQqM7NGXKi3qv8b8zw6+JFTu2Oks5vDFwqewXnT0C6nTwpTLvRv+w2vnIa50ux
+         JZ7XEsvqzKMuyX0XT2Geu6g1Zz10yr/6Oj4g/6IlEAL2qAV72//YEpWmVsYTPafRKhOj
+         Z3RVMkeziQuTJT8/AGw71xR8ZWIsB0ShrmBC0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IyZXapUgSv5A3j8QPmWLFE2iYeTmmUoWDYx23agQz54=;
+        b=m83CVICiLW1a3fk70gTs0V2s/D84fuJ6ySolcgPXCsakugB4w8ABNiSKn6s/tWNZa6
+         PeVW9/vNraGJ71UaSeXRXNJqRFFc60Nx04MAl9wXZWCd2rUVhi4me1uCC+gJ4LzKrHDz
+         oojZwfYwh+BSr0B+f7fT1U3Qw0+IrVmBQpQHFXXJK7cpOSIaFRz2Wf39aNhxHJaJJpLa
+         oXMzcWndSxDGDfvbnsGgkxKCVrnJ/pCeElWptHEP1wbj2qlEQYcBrTjzow06djh6bp9V
+         ZqfOZ+G9nf/1IsmaOWsFVcT19E65nm1fZK858QsgBqIrk3YSYZaNK62oZ7aS4UBP2Rl3
+         YHIw==
+X-Gm-Message-State: AOAM531kooFeUCU5kJqdC63SifRTBmSt8LZt/gbgQSL9k7hJbtQCBvrN
+        zZFLan5YP/1QbShK35JkmMFAcyGPED4=
+X-Google-Smtp-Source: ABdhPJxMnZA23uvoSC5hJeeWT4rdq5uGVaivX1I0UwRSjpXMQLXd85Tj/qVGG04KipPnddJrK64H6Q==
+X-Received: by 2002:a05:651c:391:: with SMTP id e17mr5173018ljp.373.1591388319552;
+        Fri, 05 Jun 2020 13:18:39 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id w25sm1359068lfn.42.2020.06.05.13.18.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Jun 2020 13:18:38 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id a9so9717717ljn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 13:18:38 -0700 (PDT)
+X-Received: by 2002:a2e:b5d9:: with SMTP id g25mr5890987ljn.285.1591388317824;
+ Fri, 05 Jun 2020 13:18:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200605142300.14591-1-linux@rasmusvillemoes.dk>
+In-Reply-To: <20200605142300.14591-1-linux@rasmusvillemoes.dk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 5 Jun 2020 13:18:21 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgz68f2u7bFPZCWgbsbEJw+2HWTJFXSg_TguY+xJ8WrNw@mail.gmail.com>
+Message-ID: <CAHk-=wgz68f2u7bFPZCWgbsbEJw+2HWTJFXSg_TguY+xJ8WrNw@mail.gmail.com>
+Subject: Re: [PATCH resend] fs/namei.c: micro-optimize acl_permission_check
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="0000000000006294c705a75bf797"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
-Date: Fri, 5 Jun 2020 07:21:22 -0700
+--0000000000006294c705a75bf797
+Content-Type: text/plain; charset="UTF-8"
 
-> This has no code changes, but it's a typo noticed in other clean-ups,
-> so we might as well fix it. IS_ENABLED() takes full names, and should
-> have the "CONFIG_" prefix.
-> 
-> Reported-by: Joe Perches <joe@perches.com>
-> Link: https://lore.kernel.org/lkml/b08611018fdb6d88757c6008a5c02fa0e07b32fb.camel@perches.com
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Fri, Jun 5, 2020 at 7:23 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> +               /*
+> +                * If the "group" and "other" permissions are the same,
+> +                * there's no point calling in_group_p() to decide which
+> +                * set to use.
+> +                */
+> +               if ((((mode >> 3) ^ mode) & 7) && in_group_p(inode->i_gid))
+>                         mode >>= 3;
 
-Applied, thank you.
+Ugh. Not only is this ugly, but it's not even the best optimization.
+
+We don't care that group and other match exactly. We only care that
+they match in the low 3 bits of the "mask" bits.
+
+So if we want this optimization - and it sounds worth it - I think we
+should do it right. But I also think it should be written more
+legibly.
+
+And the "& 7" is the same "& (MAY_READ | MAY_WRITE | MAY_EXEC)" we do later.
+
+In other words, if we do this, I'd like it to be done even more
+aggressively, but I'd also like the end result to be a lot more
+readable and have more comments about why we do that odd thing.
+
+Something like this *UNTESTED* patch, perhaps?
+
+I might have gotten something wrong, so this would need
+double-checking, but if it's right, I find it a _lot_ more easy to
+understand than making one expression that is pretty complicated and
+opaque.
+
+Hmm?
+
+                 Linus
+
+--0000000000006294c705a75bf797
+Content-Type: application/octet-stream; name=patch
+Content-Disposition: attachment; filename=patch
+Content-Transfer-Encoding: base64
+Content-ID: <f_kb2ni6c00>
+X-Attachment-Id: f_kb2ni6c00
+
+IGZzL25hbWVpLmMgfCAzNyArKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tCiAx
+IGZpbGUgY2hhbmdlZCwgMjMgaW5zZXJ0aW9ucygrKSwgMTQgZGVsZXRpb25zKC0pCgpkaWZmIC0t
+Z2l0IGEvZnMvbmFtZWkuYyBiL2ZzL25hbWVpLmMKaW5kZXggZDgxZjczZmYxYThiLi41MTdiZDZh
+MjU3NjEgMTAwNjQ0Ci0tLSBhL2ZzL25hbWVpLmMKKysrIGIvZnMvbmFtZWkuYwpAQCAtMjk0LDI1
+ICsyOTQsMzQgQEAgc3RhdGljIGludCBhY2xfcGVybWlzc2lvbl9jaGVjayhzdHJ1Y3QgaW5vZGUg
+Kmlub2RlLCBpbnQgbWFzaykKIHsKIAl1bnNpZ25lZCBpbnQgbW9kZSA9IGlub2RlLT5pX21vZGU7
+CiAKLQlpZiAobGlrZWx5KHVpZF9lcShjdXJyZW50X2ZzdWlkKCksIGlub2RlLT5pX3VpZCkpKQot
+CQltb2RlID4+PSA2OwotCWVsc2UgewotCQlpZiAoSVNfUE9TSVhBQ0woaW5vZGUpICYmIChtb2Rl
+ICYgU19JUldYRykpIHsKLQkJCWludCBlcnJvciA9IGNoZWNrX2FjbChpbm9kZSwgbWFzayk7Ci0J
+CQlpZiAoZXJyb3IgIT0gLUVBR0FJTikKLQkJCQlyZXR1cm4gZXJyb3I7Ci0JCX0KKwltYXNrICY9
+IE1BWV9SRUFEIHwgTUFZX1dSSVRFIHwgTUFZX0VYRUM7CiAKKwkvKiBBcmUgd2UgdGhlIG93bmVy
+PyBJZiBzbywgQUNMJ3MgZG9uJ3QgbWF0dGVyICovCisJaWYgKGxpa2VseSh1aWRfZXEoY3VycmVu
+dF9mc3VpZCgpLCBpbm9kZS0+aV91aWQpKSkgeworCQlpZiAoKG1hc2sgPDwgNikgJiB+bW9kZSkK
+KwkJCXJldHVybiAtRUFDQ0VTOworCQlyZXR1cm4gMDsKKwl9CisKKwkvKiBEbyB3ZSBoYXZlIEFD
+TCdzPyAqLworCWlmIChJU19QT1NJWEFDTChpbm9kZSkgJiYgKG1vZGUgJiBTX0lSV1hHKSkgewor
+CQlpbnQgZXJyb3IgPSBjaGVja19hY2woaW5vZGUsIG1hc2spOworCQlpZiAoZXJyb3IgIT0gLUVB
+R0FJTikKKwkJCXJldHVybiBlcnJvcjsKKwl9CisKKwkvKgorCSAqIEFyZSB0aGUgZ3JvdXAgcGVy
+bWlzc2lvbnMgZGlmZmVyZW50IGZyb20KKwkgKiB0aGUgb3RoZXIgcGVybWlzc2lvbnMgaW4gdGhl
+IGJpdHMgd2UgY2FyZQorCSAqIGFib3V0PyBOZWVkIHRvIGNoZWNrIGdyb3VwIG93bmVyc2hpcCBp
+ZiBzby4KKwkgKi8KKwlpZiAobWFzayAmIChtb2RlIF4gKG1vZGUgPj4gMykpKSB7CiAJCWlmIChp
+bl9ncm91cF9wKGlub2RlLT5pX2dpZCkpCiAJCQltb2RlID4+PSAzOwogCX0KIAotCS8qCi0JICog
+SWYgdGhlIERBQ3MgYXJlIG9rIHdlIGRvbid0IG5lZWQgYW55IGNhcGFiaWxpdHkgY2hlY2suCi0J
+ICovCi0JaWYgKChtYXNrICYgfm1vZGUgJiAoTUFZX1JFQUQgfCBNQVlfV1JJVEUgfCBNQVlfRVhF
+QykpID09IDApCi0JCXJldHVybiAwOwotCXJldHVybiAtRUFDQ0VTOworCS8qIEJpdHMgaW4gJ21v
+ZGUnIGNsZWFyIHRoYXQgd2UgcmVxdWlyZT8gKi8KKwlyZXR1cm4gKG1hc2sgJiB+bW9kZSkgPyAt
+RUFDQ0VTIDogMDsKIH0KIAogLyoqCg==
+--0000000000006294c705a75bf797--
