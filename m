@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123281EF576
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 12:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13631EF57D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 12:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgFEKei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 06:34:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55158 "EHLO mx2.suse.de"
+        id S1726663AbgFEKhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 06:37:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:53410 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbgFEKeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 06:34:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 182A9B1BA;
-        Fri,  5 Jun 2020 10:34:39 +0000 (UTC)
-Message-ID: <9c3d28922f343bcb19243894d3385a8fe1fb3606.camel@suse.de>
-Subject: Re: [PATCH v3 17/25] clk: bcm: rpi: Split pllb clock hooks
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Tim Gover <tim.gover@raspberrypi.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        linux-arm-kernel@lists.infradead.org
-Date:   Fri, 05 Jun 2020 12:34:32 +0200
-In-Reply-To: <10e269b4c3c5cf38eba9c0684341b191b9ab7abe.1590594293.git-series.maxime@cerno.tech>
-References: <cover.662a8d401787ef33780d91252a352de91dc4be10.1590594293.git-series.maxime@cerno.tech>
-         <10e269b4c3c5cf38eba9c0684341b191b9ab7abe.1590594293.git-series.maxime@cerno.tech>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-kBBCKrUQb2v8gZXGREOB"
-User-Agent: Evolution 3.36.2 
+        id S1726465AbgFEKhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 06:37:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 574262B;
+        Fri,  5 Jun 2020 03:37:16 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.11.98])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 880453F52E;
+        Fri,  5 Jun 2020 03:37:08 -0700 (PDT)
+Date:   Fri, 5 Jun 2020 11:37:05 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Wooyeon Kim <wooy88.kim@samsung.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, hk92.kim@samsung.com,
+        Wooki Min <wooki.min@samsung.com>,
+        Bhupesh Sharma <bhsharma@redhat.com>, yb.song@samsung.com,
+        yj.yim@samsung.com, Julien Grall <julien.grall@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Sanghoon Lee <shoon114.lee@samsung.com>,
+        jinsoo37.kim@samsung.com, hyewon.ryu@samsung.com,
+        yhwan.joo@samsung.com, Anisse Astier <aastier@freebox.fr>,
+        Marc Zyngier <maz@kernel.org>, dongww.kim@samsung.com,
+        linux-arm-kernel@lists.infradead.org, jihun.kim@samsung.com,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        junik.lee@samsung.com, sgun.bae@samsung.com,
+        Jeongtae Park <jtp.park@samsung.com>, kgene.kim@samsung.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Steve Capper <steve.capper@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        hyeyeon5.shim@samsung.com, dh.han@samsung.com
+Subject: Re: [PATCH] arm64: fpsimd: Added API to manage fpsimd state inside
+ kernel
+Message-ID: <20200605103705.GD85498@C02TD0UTHF1T.local>
+References: <CGME20200605073214epcas2p1576f3f90dbcefaad6180f2559ca5980d@epcas2p1.samsung.com>
+ <20200605073052.23044-1-wooy88.kim@samsung.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200605073052.23044-1-wooy88.kim@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Wooyeon,
 
---=-kBBCKrUQb2v8gZXGREOB
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+There are a *lot* of people Cc' here, many of whomo will find this
+irrelevant. Please try to keep the Cc list constrained to a reasonable
+number of interested parties.
 
-On Wed, 2020-05-27 at 17:45 +0200, Maxime Ripard wrote:
-> The driver only supports the pllb for now and all the clock framework hoo=
-ks
-> are a mix of the generic firmware interface and the specifics of the pllb=
-.
-> Since we will support more clocks in the future let's split the generic a=
-nd
-> specific hooks
->=20
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: linux-clk@vger.kernel.org
-> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
+On Fri, Jun 05, 2020 at 04:30:52PM +0900, Wooyeon Kim wrote:
+> From: Wooki Min <wooki.min@samsung.com>
+> 
+>      This is an patch to use FPSIMD register in Kernel space.
+>      It need to manage to use FPSIMD register without damaging it
+>      of the user task.
+>      Following items have been implemented and added.
 
-Acked-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Please introduce the problem you are trying to solve in more detail. We
+already have kernel_neon_{begin,end}() for kernel-mode NEON; why is that
+not sufficient for your needs? Please answer this before considering
+other details.
 
-Regards,
-Nicolas
+What do you want to use this for?
 
+> 
+>      1. Using FPSIMD in ISR (in_interrupt)
+> 	It can used __efi_fpsimd_begin/__efi_fpsimd_end
+> 	which is already implemented.
+> 	Save fpsimd state before entering ISR,
+> 	and restore fpsimd state after ISR ends.
+> 	For use in external kernel module,
+> 	it is declared as EXPORT_SYMBOL.
 
---=-kBBCKrUQb2v8gZXGREOB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+This patch adds no in-tree modular users of this, so per the usual
+conventions, NAK to EXPORT_SYMBOL().
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7aH7gACgkQlfZmHno8
-x/4xWwf/RYRgzsbakQqmxDtyx2MpHrL5pyM3SCfIlrEoNmp0pInOHxEiPDyM4gHG
-M1nMPJiZqDKXKYbbTXB4LkzLt7OelM3FEtgUiZYUOiKk/kKmFeXdXpRUY9yLtcGg
-mwypxmeNKfXXX7NAH+UOuuvxv1luAgeW+FP8hGQVoDp12R6TDScRHHJu9OJC/2CO
-fWwOCU4ROOiIqbPAL/YdOXdfEN62D6AJhDIoviS1zU4QG0+pMsxdERkcGac1Hr26
-lDYR8ManeMQPO03IUZGcOKcDdY2iflgzaQvFBvSHeFiOIkGYucDFMF0q173q+O8X
-S+mbc0Xe4WLmffWUA6EmQ0s73kLt6w==
-=ayQ0
------END PGP SIGNATURE-----
-
---=-kBBCKrUQb2v8gZXGREOB--
-
+Thanks,
+Mark.
