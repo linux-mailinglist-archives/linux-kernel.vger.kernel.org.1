@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0307C1EFAFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8091EFAAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728825AbgFEOWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:22:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49484 "EHLO mail.kernel.org"
+        id S1728875AbgFEOTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:19:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728748AbgFEOSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:18:51 -0400
+        id S1728846AbgFEOTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:19:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 722C3208A7;
-        Fri,  5 Jun 2020 14:18:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF078208A9;
+        Fri,  5 Jun 2020 14:19:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366730;
-        bh=ASIx1f7M2i1M5BhfB5V08l+8rsFnCdCEoy/P7rov25k=;
+        s=default; t=1591366774;
+        bh=MYJqfoYIbEzY1UIFb/rjRLJvQvUWngWnN24BHuAkXuQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cxGETOPVHW5w1jmoJjGRaeeHRwJ3iiqPd1CcjxU9Lv3P9pmBb54DvcIu4EwF/jBox
-         OQHZG8vb6m1rL85aWcmdOJQU7OXzhYL5ar5TKaLtABqHeNm+b8EjmryvbD7MnsBveB
-         sndokBBIbazHOTBIPHwBROwTFkP1rqziHAhOJv9I=
+        b=kQpmU2EDQ8G6iT2ratAgjJWDELIkZ/AOFUKkkjtB5/47ToXXAKwxp6uVLEO7hdjiJ
+         6H3nWzaNdF4NmcaHqIVzOPSmD44AQIlpwSSECACOrAn0UQQ9hAlPLV+8O+FdKSaAuB
+         v5AHV1kSh9ottvVQU9rNWwfzKQBNMYwUnQ1Bruao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Borislav Petkov <bp@suse.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 30/38] x86/mmiotrace: Use cpumask_available() for cpumask_var_t variables
-Date:   Fri,  5 Jun 2020 16:15:13 +0200
-Message-Id: <20200605140254.433457105@linuxfoundation.org>
+        stable@vger.kernel.org, Lucas De Marchi <lucas.demarchi@intel.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 12/28] drm/i915: fix port checks for MST support on gen >= 11
+Date:   Fri,  5 Jun 2020 16:15:14 +0200
+Message-Id: <20200605140253.085150761@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200605140252.542768750@linuxfoundation.org>
-References: <20200605140252.542768750@linuxfoundation.org>
+In-Reply-To: <20200605140252.338635395@linuxfoundation.org>
+References: <20200605140252.338635395@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,65 +44,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Lucas De Marchi <lucas.demarchi@intel.com>
 
-[ Upstream commit d7110a26e5905ec2fe3fc88bc6a538901accb72b ]
+[ Upstream commit 10d987fd1b7baceaafa78d805e71427ab735b4e4 ]
 
-When building with Clang + -Wtautological-compare and
-CONFIG_CPUMASK_OFFSTACK unset:
+Both Ice Lake and Elkhart Lake (gen 11) support MST on all external
+connections except DDI A. Tiger Lake (gen 12) supports on all external
+connections.
 
-  arch/x86/mm/mmio-mod.c:375:6: warning: comparison of array 'downed_cpus'
-  equal to a null pointer is always false [-Wtautological-pointer-compare]
-          if (downed_cpus == NULL &&
-              ^~~~~~~~~~~    ~~~~
-  arch/x86/mm/mmio-mod.c:405:6: warning: comparison of array 'downed_cpus'
-  equal to a null pointer is always false [-Wtautological-pointer-compare]
-          if (downed_cpus == NULL || cpumask_weight(downed_cpus) == 0)
-              ^~~~~~~~~~~    ~~~~
-  2 warnings generated.
+Move the check to happen inside intel_dp_mst_encoder_init() and add
+specific platform checks.
 
-Commit
+v2: Replace != with == checks for ports on gen < 11 (Ville)
 
-  f7e30f01a9e2 ("cpumask: Add helper cpumask_available()")
-
-added cpumask_available() to fix warnings of this nature. Use that here
-so that clang does not warn regardless of CONFIG_CPUMASK_OFFSTACK's
-value.
-
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Link: https://github.com/ClangBuiltLinux/linux/issues/982
-Link: https://lkml.kernel.org/r/20200408205323.44490-1-natechancellor@gmail.com
+Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
+Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20191015164029.18431-3-lucas.demarchi@intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/mm/mmio-mod.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/i915/intel_dp.c     |  7 ++-----
+ drivers/gpu/drm/i915/intel_dp_mst.c | 22 ++++++++++++++++------
+ 2 files changed, 18 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/mm/mmio-mod.c b/arch/x86/mm/mmio-mod.c
-index b8ef8557d4b3..2a36902d418c 100644
---- a/arch/x86/mm/mmio-mod.c
-+++ b/arch/x86/mm/mmio-mod.c
-@@ -372,7 +372,7 @@ static void enter_uniprocessor(void)
- 	int cpu;
- 	int err;
+diff --git a/drivers/gpu/drm/i915/intel_dp.c b/drivers/gpu/drm/i915/intel_dp.c
+index 20cd4c8acecc..77a2f7fc2b37 100644
+--- a/drivers/gpu/drm/i915/intel_dp.c
++++ b/drivers/gpu/drm/i915/intel_dp.c
+@@ -6288,11 +6288,8 @@ intel_dp_init_connector(struct intel_digital_port *intel_dig_port,
+ 		intel_connector->get_hw_state = intel_connector_get_hw_state;
  
--	if (downed_cpus == NULL &&
-+	if (!cpumask_available(downed_cpus) &&
- 	    !alloc_cpumask_var(&downed_cpus, GFP_KERNEL)) {
- 		pr_notice("Failed to allocate mask\n");
- 		goto out;
-@@ -402,7 +402,7 @@ static void leave_uniprocessor(void)
- 	int cpu;
- 	int err;
+ 	/* init MST on ports that can support it */
+-	if (HAS_DP_MST(dev_priv) && !intel_dp_is_edp(intel_dp) &&
+-	    (port == PORT_B || port == PORT_C ||
+-	     port == PORT_D || port == PORT_F))
+-		intel_dp_mst_encoder_init(intel_dig_port,
+-					  intel_connector->base.base.id);
++	intel_dp_mst_encoder_init(intel_dig_port,
++				  intel_connector->base.base.id);
  
--	if (downed_cpus == NULL || cpumask_weight(downed_cpus) == 0)
-+	if (!cpumask_available(downed_cpus) || cpumask_weight(downed_cpus) == 0)
- 		return;
- 	pr_notice("Re-enabling CPUs...\n");
- 	for_each_cpu(cpu, downed_cpus) {
+ 	if (!intel_edp_init_connector(intel_dp, intel_connector)) {
+ 		intel_dp_aux_fini(intel_dp);
+diff --git a/drivers/gpu/drm/i915/intel_dp_mst.c b/drivers/gpu/drm/i915/intel_dp_mst.c
+index 58ba14966d4f..c7d52c66ff29 100644
+--- a/drivers/gpu/drm/i915/intel_dp_mst.c
++++ b/drivers/gpu/drm/i915/intel_dp_mst.c
+@@ -588,21 +588,31 @@ intel_dp_create_fake_mst_encoders(struct intel_digital_port *intel_dig_port)
+ int
+ intel_dp_mst_encoder_init(struct intel_digital_port *intel_dig_port, int conn_base_id)
+ {
++	struct drm_i915_private *i915 = to_i915(intel_dig_port->base.base.dev);
+ 	struct intel_dp *intel_dp = &intel_dig_port->dp;
+-	struct drm_device *dev = intel_dig_port->base.base.dev;
++	enum port port = intel_dig_port->base.port;
+ 	int ret;
+ 
+-	intel_dp->can_mst = true;
++	if (!HAS_DP_MST(i915) || intel_dp_is_edp(intel_dp))
++		return 0;
++
++	if (INTEL_GEN(i915) < 12 && port == PORT_A)
++		return 0;
++
++	if (INTEL_GEN(i915) < 11 && port == PORT_E)
++		return 0;
++
+ 	intel_dp->mst_mgr.cbs = &mst_cbs;
+ 
+ 	/* create encoders */
+ 	intel_dp_create_fake_mst_encoders(intel_dig_port);
+-	ret = drm_dp_mst_topology_mgr_init(&intel_dp->mst_mgr, dev,
++	ret = drm_dp_mst_topology_mgr_init(&intel_dp->mst_mgr, &i915->drm,
+ 					   &intel_dp->aux, 16, 3, conn_base_id);
+-	if (ret) {
+-		intel_dp->can_mst = false;
++	if (ret)
+ 		return ret;
+-	}
++
++	intel_dp->can_mst = true;
++
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
