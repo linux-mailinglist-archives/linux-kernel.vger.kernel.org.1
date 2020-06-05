@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E502D1EFB17
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390AF1EFA8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728836AbgFEOXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:23:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48868 "EHLO mail.kernel.org"
+        id S1728696AbgFEOSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:18:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728655AbgFEOSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:18:21 -0400
+        id S1728666AbgFEOS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:18:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A249A208E4;
-        Fri,  5 Jun 2020 14:18:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27AB82086A;
+        Fri,  5 Jun 2020 14:18:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366701;
-        bh=AkXn3F1QP5BSV0KUEGG2OW8Bi82lChNVpLv1xxfpwO8=;
+        s=default; t=1591366705;
+        bh=jZU+7oxL2h7ADuMpEuIHAqjKMflvYcAP/bZoBRQXAHc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w5PkN8fMXeIVGeh2f0whIaCXXi+tWri2TylU313EaIMfE7B9i15qzZ0a2eX37cEG7
-         O0KBHRPnW0e7OLS4QFtrEk7RhOSqneFymQ+gcLLT/sbUzEzpzKLaUIMgkJ4d2fzTXV
-         21tMVGYJb9kHKyuHOKwb6Jvup3q/M2IgCkyjXeFI=
+        b=KLF4onLh1yj4enQZzCM6vkesoCAvojhDYDv87UI4Mboj/V0hURCV4qeAnKoPDgTvH
+         ZhsErthTFbGbak7rBmZhSA6NIGIJwZWzAHYTl4TexSy9AsbZSWc0xtnqo/3SpAmVn+
+         fZDDEQMKUN4AG2A3nFXhWo1hkpo7dw+8lIZm91oI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, fengsheng <fengsheng5@huawei.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 19/38] spi: dw: use "smp_mb()" to avoid sending spi data error
-Date:   Fri,  5 Jun 2020 16:15:02 +0200
-Message-Id: <20200605140253.715066792@linuxfoundation.org>
+Subject: [PATCH 5.4 20/38] ASoC: intel - fix the card names
+Date:   Fri,  5 Jun 2020 16:15:03 +0200
+Message-Id: <20200605140253.776451245@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200605140252.542768750@linuxfoundation.org>
 References: <20200605140252.542768750@linuxfoundation.org>
@@ -45,46 +45,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xinwei Kong <kong.kongxinwei@hisilicon.com>
+From: Jaroslav Kysela <perex@perex.cz>
 
-[ Upstream commit bfda044533b213985bc62bd7ca96f2b984d21b80 ]
+[ Upstream commit d745cc1ab65945b2d17ec9c5652f38299c054649 ]
 
-Because of out-of-order execution about some CPU architecture,
-In this debug stage we find Completing spi interrupt enable ->
-prodrucing TXEI interrupt -> running "interrupt_transfer" function
-will prior to set "dw->rx and dws->rx_end" data, so this patch add
-memory barrier to enable dw->rx and dw->rx_end to be visible and
-solve to send SPI data error.
-eg:
-it will fix to this following low possibility error in testing environment
-which using SPI control to connect TPM Modules
+Those strings are exposed to the user space as the
+card name thus used in the GUIs. The common
+standard is to avoid '_' here. The worst case
+is 'sof-skl_hda_card' string.
 
-kernel: tpm tpm0: Operation Timed out
-kernel: tpm tpm0: tpm_relinquish_locality: : error -1
-
-Signed-off-by: fengsheng <fengsheng5@huawei.com>
-Signed-off-by: Xinwei Kong <kong.kongxinwei@hisilicon.com>
-Link: https://lore.kernel.org/r/1578019930-55858-1-git-send-email-kong.kongxinwei@hisilicon.com
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191028164624.14334-1-perex@perex.cz
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-dw.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
+ sound/soc/intel/boards/skl_hda_dsp_generic.c        | 2 +-
+ sound/soc/intel/boards/sof_rt5682.c                 | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
-index 11cac7e10663..d2ca3b357cfe 100644
---- a/drivers/spi/spi-dw.c
-+++ b/drivers/spi/spi-dw.c
-@@ -297,6 +297,9 @@ static int dw_spi_transfer_one(struct spi_controller *master,
- 	dws->len = transfer->len;
- 	spin_unlock_irqrestore(&dws->buf_lock, flags);
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 67b276a65a8d..8ad31c91fc75 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -626,7 +626,7 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
+  * kabylake audio machine driver for  MAX98927 + RT5514 + RT5663
+  */
+ static struct snd_soc_card kabylake_audio_card = {
+-	.name = "kbl_r5514_5663_max",
++	.name = "kbl-r5514-5663-max",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = kabylake_dais,
+ 	.num_links = ARRAY_SIZE(kabylake_dais),
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+index 1778acdc367c..e8d676c192f6 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+@@ -90,7 +90,7 @@ skl_hda_add_dai_link(struct snd_soc_card *card, struct snd_soc_dai_link *link)
+ }
  
-+	/* Ensure dw->rx and dw->rx_end are visible */
-+	smp_mb();
-+
- 	spi_enable_chip(dws, 0);
+ static struct snd_soc_card hda_soc_card = {
+-	.name = "skl_hda_card",
++	.name = "hda-dsp",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = skl_hda_be_dai_links,
+ 	.dapm_widgets = skl_hda_widgets,
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 06b7d6c6c9a0..302ca1920791 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -374,7 +374,7 @@ static int dmic_init(struct snd_soc_pcm_runtime *rtd)
  
- 	/* Handle per transfer options for bpw and speed */
+ /* sof audio machine driver for rt5682 codec */
+ static struct snd_soc_card sof_audio_card_rt5682 = {
+-	.name = "sof_rt5682",
++	.name = "rt5682", /* the sof- prefix is added by the core */
+ 	.owner = THIS_MODULE,
+ 	.controls = sof_controls,
+ 	.num_controls = ARRAY_SIZE(sof_controls),
 -- 
 2.25.1
 
