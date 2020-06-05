@@ -2,130 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE4C1EFF81
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 19:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF2F1EFF93
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 20:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbgFER6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 13:58:35 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:39331 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726294AbgFER6f (ORCPT
+        id S1726963AbgFESCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 14:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726077AbgFESCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 13:58:35 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1jhGbu-0042VL-NU; Fri, 05 Jun 2020 19:58:30 +0200
-Received: from p57bd9955.dip0.t-ipconnect.de ([87.189.153.85] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jhGbu-0005Mo-GN; Fri, 05 Jun 2020 19:58:30 +0200
-Subject: Re: [GIT PULL] sh: remove sh5 support
-To:     Rich Felker <dalias@libc.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org,
-        ysato@users.sourceforge.jp, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, Rob Landley <rob@landley.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200528054600.GA29717@infradead.org>
- <20200528161416.GY1079@brightrain.aerifal.cx>
- <20200529143059.GA25475@infradead.org>
- <20200529175335.GK1079@brightrain.aerifal.cx>
- <e86e1d78-9597-811a-da0e-42a910b0c9fe@physik.fu-berlin.de>
- <20200601181259.GV1079@brightrain.aerifal.cx>
- <20200602013332.GY1079@brightrain.aerifal.cx>
- <0af28795-b27a-2dd9-0d0f-c2a8d4b8d512@physik.fu-berlin.de>
- <20200605154343.GU1079@brightrain.aerifal.cx>
- <c4900bf6-99b3-c9b9-4fd0-7f491bd46de6@physik.fu-berlin.de>
- <20200605155954.GV1079@brightrain.aerifal.cx>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <25e0729d-8158-94a4-f081-ccdfa50ecb1d@physik.fu-berlin.de>
-Date:   Fri, 5 Jun 2020 19:58:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Fri, 5 Jun 2020 14:02:06 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5DBC08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 11:02:05 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b7so3497935pju.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 11:02:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HHvqFJ8oCcu50e+zYBwkicGtXHwb2WQMqQiqUSCHqLM=;
+        b=lrLHiQpwrf3PSMg0+BYQkXEEFNO8TIAgOHdxf3VJP8Y7tqyWo6tsUDc0dqusobqRF4
+         7bs1I5NhcgtPDdgOFWoBiCTIfz2A0TyAjtktSJCsHdSEuImxvJFfiruh5PxXricNXJ1K
+         oIEyNoJYBqpjou5qSJMFi/BjGGW18QVKvOc60BFFpfPjcfql46+LG0LYwGzlM3ry+tMM
+         5kYWQNIdNbrBEWTEJE2+F/xU2b1TWP4DgaK5ZcaRoUog5QJt2MBkuf2WmxZLcOgHEGk2
+         wvBdswWjUkPa5JhmNiDmcWdCQBL8A1+GfPd515riCZao4TZU5yfnLEpxUDUbZ8R1j7dO
+         9LiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HHvqFJ8oCcu50e+zYBwkicGtXHwb2WQMqQiqUSCHqLM=;
+        b=E0QZajqPh4+cWWH9xnBkIBcwwArjZ3lSloWajLnsS5KhlEVpw/4JMJ78DW+Jt4/Hif
+         bfHSfghWBsT7VecPCZPO6l+ISsTuYz61/8NDa8IvpVSpSaloka75xp/7qaVQhqmLdSxB
+         dITwozgcUBxtdRKx5ZsOtramG4gxbIZZVNGX84tEi5riS11/wBPI5MvBbjfPbM2tmzuy
+         +kjx/qyRYbTXKDYhZQagaQMXeKwhceYZGuHA9bNU5flO2d+ymYEpL/gFBVsCfN2vXGG1
+         +oCz8kv4LRXrtB5sc2YsHT9+UUdNEOpkA1Sv1kCUejRPio2VMvuaOyJ4nrKGVolit8gO
+         +mwA==
+X-Gm-Message-State: AOAM533ZGLGvlzCBv3Rd0kJpOBWu0/gs3WDFdl9zqm9NmfyyfE9cpj6l
+        nkjcSqmtwd+ZEHNUCPuiB/IZyuNv1lpK5CBQvX8ZRw==
+X-Google-Smtp-Source: ABdhPJzc0mV2oziH4qGkpO5HC1UUDuJQsq6zz1Mj5V4/F/xYGsYIIdQgPNHbGtJnaWfjtaNY6UGENHHwjf5vXw6oKnQ=
+X-Received: by 2002:a17:90a:34cc:: with SMTP id m12mr4415124pjf.123.1591380124156;
+ Fri, 05 Jun 2020 11:02:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200605155954.GV1079@brightrain.aerifal.cx>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.153.85
+References: <20200604195658.66201-1-mathewk@chromium.org> <CAJZ5v0iteOV=4CnQrVx5ZmnWq5Uf88k7UMMmKcMxgJnco3kxvg@mail.gmail.com>
+In-Reply-To: <CAJZ5v0iteOV=4CnQrVx5ZmnWq5Uf88k7UMMmKcMxgJnco3kxvg@mail.gmail.com>
+From:   Mat King <mathewk@google.com>
+Date:   Fri, 5 Jun 2020 12:01:52 -0600
+Message-ID: <CAL_quvQRT+3wnxO9NsqHG+UcJiCc5aucN4a7V0mpMy2MxoX+ng@mail.gmail.com>
+Subject: Re: [PATCH] acpi: battery: Always read fresh battery state on update
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Mathew King <mathewk@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rich!
+On Fri, Jun 5, 2020 at 5:30 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Thu, Jun 4, 2020 at 9:57 PM Mathew King <mathewk@chromium.org> wrote:
+> >
+> > When the ACPI battery receives a notification event it should always
+> > read the battery state fresh from the ACPI device and not use the cached
+> > state.
+>
+> Why should it?
 
-On 6/5/20 5:59 PM, Rich Felker wrote:
->> Ah, sorry, I missed that. You're right, it should probably go through
->> someone else's tree then.
-> 
-> Do you know if it's needed to un-break sh4? If so we should push to
-> get whoever has jurisdiction over it to include it; otherwise I'm
-> indifferent.
+According to the ACPI Spec 10.2.1 Battery Events, "When the present
+state of the battery has changed or when the trip point set by the
+_BTP control method is reached or crossed, the hardware will assert a
+general purpose event." So when this event is received we should
+assume that the cached state of the battery is no longer valid
 
-No, the patch is only necessary when enabling Infiniband support with
-CONFIG_INFINIBAND_USER_ACCESS enabled.
+>
+> > Currently the cached state stays valid and the new state may not
+> > be read when a notification occurs. This can lead to a udev event
+> > showing that the battery has changed but the sysfs state will still have
+> > the cached state values.
+>
+> Is there a bug entry or similar related to that which can be referred
+> to from this patch?
 
-However, according to Geert, every architecture is supposed to have
-64-bit get_user() these days, therefore my patch is required anyways,
-but it's not an acute problem.
+No, I discovered this issue while working on an internal issue where
+it was observed that udev events generated when a battery changed did
+not accurately reflect the state of the battery. I initially suspected
+that the EC may not be updating its state before generating the ACPI
+event, however after much debugging I discovered that the battery
+driver was caching the state and the state is not always immediately
+updated when the event is received. If there is a more formal process
+to discuss the issue I will work through that process.
 
-Adrian
+>
+> > This change invalidates the update time forcing
+> > the state to be updated before notifying the power_supply subsystem of
+> > the change.
+> >
+> > Signed-off-by: Mathew King <mathewk@chromium.org>
+> > ---
+> >  drivers/acpi/battery.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
+> > index 366c389175d8..ab7fa4879fbe 100644
+> > --- a/drivers/acpi/battery.c
+> > +++ b/drivers/acpi/battery.c
+> > @@ -981,6 +981,7 @@ static int acpi_battery_update(struct acpi_battery *battery, bool resume)
+> >                 acpi_battery_init_alarm(battery);
+> >         }
+> >
+> > +       battery->update_time = 0;
+>
+> AFAICS this is equivalent to dropping battery->update_time altogether.
+> Isn't that a bit too excessive?
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+It is not the same as dropping the update_time. The cached state is
+still used when acpi_battery_get_property() is called which happens
+anytime userspace accesses the sysfs properties it is also what is
+called by the power_supply subsystem when creating the environment for
+the udev events. In those cases the cache still works and makes sense.
+The acpi_battery_update() function is only called in a handful of
+cases and in all of these cases reading the battery state fresh makes
+sense to me. Those cases are:
+
+1. When the battery is added with acpi_battery_add(), this case the
+update_time is already cleared
+2. On system resume with acpi_battery_resume(), in this case
+update_time is cleared before calling acpi_battery_update() so that
+static battery info is also updated by calling acpi_battery_get_info()
+3. The acpi_battery_update() is called from procfs power functions
+which should not be called a frequency where reading fresh battery
+state from ACPI will have a performance impact
+4. Finally it is called from acpi_battery_notify() when a battery
+event is received from firmware that the state has changed
+
+I considered clearing the update_time in acpi_battery_notify() before
+acpi_battery_update() is called but if I did that by itself then
+acpi_battery_get_info() would also get called and I wasn't sure that
+behavior would be wanted. So invalidating the cache where I did seemed
+to be the least disruptive way to fix the problem. I can see
+opportunities to refactor this driver and I felt that this fix was
+acceptable until a refactor could be done.
+
+>
+> >         result = acpi_battery_get_state(battery);
+> >         if (result)
+> >                 return result;
+> > --
