@@ -2,78 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6131EEED6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 02:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1564E1EEEDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 02:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726115AbgFEAni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 20:43:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725955AbgFEAni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 20:43:38 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726173AbgFEAqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 20:46:39 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25247 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725943AbgFEAqi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 20:46:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591317996;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qN6FayC+qA0+96UlgWwhkCkAADNK7Ccaqf13OR7p4ao=;
+        b=Uvvg4akvlAYlIzO2D2gAThURmX5rCgXhVlgXH/ND6NBb5Ruvc4Irto/06g3GhM+BrNOyC/
+        MTvKT/cCXk47XeyRPhNdGD5ntXJCS2UD2CbX1BSS6qEI6JDU4c/vlHQngAWH3u2uOxhXvi
+        1vHZz/K1DIQbKa8PDCP2LzNEbFG8hJU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-489-64GWhhW_M9apNEvChjZi1Q-1; Thu, 04 Jun 2020 20:46:28 -0400
+X-MC-Unique: 64GWhhW_M9apNEvChjZi1Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92B41206DC;
-        Fri,  5 Jun 2020 00:43:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591317817;
-        bh=JEz/i2vtRp2cUc9b42d0KplmYCWeHtbLReqkDwAq4bY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xAX8xta8/6NDVO2Ll9J9IjALaiko3WCQJwhqASXX0kO8iYaeEF5bubQBwMvfo6vrY
-         jEkbVvqvpieS8DSZs0ZKJYNDpg1AdLxpwebor85+lYLmAcdu1WmhUxVu/UXvEmiOCx
-         VeZDEUqBBRT7VyMKdzqKPlcS3BcVwnCMKbvRV3zU=
-Date:   Thu, 4 Jun 2020 17:43:36 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>, davem@davemloft.net,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+2e635807decef724a1fa@syzkaller.appspotmail.com>
-Subject: Re: [PATCH v2] crypto: DRBG - always try to free Jitter RNG instance
-Message-ID: <20200605004336.GC148196@sol.localdomain>
-References: <0000000000002a280b05a725cd93@google.com>
- <2583872.mvXUDI8C0e@positron.chronox.de>
- <20200603110919.GK30374@kadam>
- <2551009.mvXUDI8C0e@positron.chronox.de>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD567800C78;
+        Fri,  5 Jun 2020 00:46:27 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-114-13.rdu2.redhat.com [10.10.114.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ACEE35D9D3;
+        Fri,  5 Jun 2020 00:46:23 +0000 (UTC)
+Subject: Re: [PATCH v2] xfs: Fix false positive lockdep warning with
+ sb_internal & fs_reclaim
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Qian Cai <cai@lca.pw>, Eric Sandeen <sandeen@redhat.com>
+References: <20200604210130.697-1-longman@redhat.com>
+ <20200604231327.GV2040@dread.disaster.area>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <cd66acb9-2129-2a21-936c-9cce3d9dba4e@redhat.com>
+Date:   Thu, 4 Jun 2020 20:46:23 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2551009.mvXUDI8C0e@positron.chronox.de>
+In-Reply-To: <20200604231327.GV2040@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 08:41:00AM +0200, Stephan Müller wrote:
-> The Jitter RNG is unconditionally allocated as a seed source follwoing
-> the patch 97f2650e5040. Thus, the instance must always be deallocated.
-> 
-> Reported-by: syzbot+2e635807decef724a1fa@syzkaller.appspotmail.com
-> Fixes: 97f2650e5040 ("crypto: drbg - always seeded with SP800-90B ...")
-> Signed-off-by: Stephan Mueller <smueller@chronox.de>
-> ---
->  crypto/drbg.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/crypto/drbg.c b/crypto/drbg.c
-> index 37526eb8c5d5..8a0f16950144 100644
-> --- a/crypto/drbg.c
-> +++ b/crypto/drbg.c
-> @@ -1631,6 +1631,9 @@ static int drbg_uninstantiate(struct drbg_state *drbg)
->  	if (drbg->random_ready.func) {
->  		del_random_ready_callback(&drbg->random_ready);
->  		cancel_work_sync(&drbg->seed_work);
-> +	}
-> +
-> +	if (!IS_ERR_OR_NULL(drbg->jent)) {
->  		crypto_free_rng(drbg->jent);
->  		drbg->jent = NULL;
->  	}
+On 6/4/20 7:13 PM, Dave Chinner wrote:
+> On Thu, Jun 04, 2020 at 05:01:30PM -0400, Waiman Long wrote:
+>> ---
+>>   fs/xfs/xfs_log.c   | 3 ++-
+>>   fs/xfs/xfs_trans.c | 8 +++++++-
+>>   2 files changed, 9 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
+>> index 00fda2e8e738..d273d4e74ef8 100644
+>> --- a/fs/xfs/xfs_log.c
+>> +++ b/fs/xfs/xfs_log.c
+>> @@ -433,7 +433,8 @@ xfs_log_reserve(
+>>   	XFS_STATS_INC(mp, xs_try_logspace);
+>>   
+>>   	ASSERT(*ticp == NULL);
+>> -	tic = xlog_ticket_alloc(log, unit_bytes, cnt, client, permanent, 0);
+>> +	tic = xlog_ticket_alloc(log, unit_bytes, cnt, client, permanent,
+>> +			mp->m_super->s_writers.frozen ? KM_NOLOCKDEP : 0);
+>>   	*ticp = tic;
+> Hi Waiman,
+>
+> As I originally stated when you posted this the first time 6 months
+> ago: we are not going to spread this sort of conditional gunk though
+> the XFS codebase just to shut up lockdep false positives.
+>
+> I pointed you at the way to conditionally turn of lockdep for
+> operations where we are doing transactions when the filesystem has
+> already frozen the transaction subsystem. That is:
+>
+>>   
+>>   	xlog_grant_push_ail(log, tic->t_cnt ? tic->t_unit_res * tic->t_cnt
+>> diff --git a/fs/xfs/xfs_trans.c b/fs/xfs/xfs_trans.c
+>> index 3c94e5ff4316..3a9f394a0f02 100644
+>> --- a/fs/xfs/xfs_trans.c
+>> +++ b/fs/xfs/xfs_trans.c
+>> @@ -261,8 +261,14 @@ xfs_trans_alloc(
+>>   	 * Allocate the handle before we do our freeze accounting and setting up
+>>   	 * GFP_NOFS allocation context so that we avoid lockdep false positives
+>>   	 * by doing GFP_KERNEL allocations inside sb_start_intwrite().
+>> +	 *
+>> +	 * To prevent false positive lockdep warning of circular locking
+>> +	 * dependency between sb_internal and fs_reclaim, disable the
+>> +	 * acquisition of the fs_reclaim pseudo-lock when the superblock
+>> +	 * has been frozen or in the process of being frozen.
+>>   	 */
+>> -	tp = kmem_zone_zalloc(xfs_trans_zone, 0);
+>> +	tp = kmem_zone_zalloc(xfs_trans_zone,
+>> +		mp->m_super->s_writers.frozen ? KM_NOLOCKDEP : 0);
+>>   	if (!(flags & XFS_TRANS_NO_WRITECOUNT))
+> We only should be setting KM_NOLOCKDEP when XFS_TRANS_NO_WRITECOUNT
+> is set.  That's the flag that transactions set when they run in a
+> fully frozen context to avoid deadlocking with the freeze in
+> progress, and that's the only case where we should be turning off
+> lockdep.
+>
+> And, as I also mentioned, this should be done via a process flag -
+> PF_MEMALLOC_NOLOCKDEP - so that it is automatically inherited by
+> all subsequent memory allocations done in this path. That way we
+> only need this wrapping code in xfs_trans_alloc():
+>
+> 	if (flags & XFS_TRANS_NO_WRITECOUNT)
+> 		memalloc_nolockdep_save()
+>
+> 	.....
+>
+> 	if (flags & XFS_TRANS_NO_WRITECOUNT)
+> 		memalloc_nolockdep_restore()
+>
+> and nothing else needs to change.
+>
+> Cheers,
+>
+> Dave.
 
-It it okay that ->jent can be left as an ERR_PTR() value?
+Thanks for the reminder, I will look into that.
 
-Perhaps it should always be set to NULL?
+Cheers,
+Longman
 
-- Eric
