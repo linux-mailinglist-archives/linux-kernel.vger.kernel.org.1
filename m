@@ -2,207 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D4E1EFFB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 20:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903CF1EFFBF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 20:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728130AbgFESLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 14:11:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47988 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726077AbgFESLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 14:11:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D2843AF48;
-        Fri,  5 Jun 2020 18:11:07 +0000 (UTC)
-Message-ID: <977dd9ba222d8c513b09743da5cb53fd14bfd9a0.camel@suse.de>
-Subject: Re: [PATCH v3 004/105] clk: bcm: Add BCM2711 DVP driver
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     devicetree@vger.kernel.org, Tim Gover <tim.gover@raspberrypi.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-clk@vger.kernel.org, Eric Anholt <eric@anholt.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        linux-arm-kernel@lists.infradead.org
-Date:   Fri, 05 Jun 2020 20:11:01 +0200
-In-Reply-To: <20200605174329.hf5d6oulmcewzw63@gilmour.lan>
-References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
-         <6615a61b8af240e3d10f8890e4b2462ccdaac9b9.1590594512.git-series.maxime@cerno.tech>
-         <faacbc33174e77500e04e609a654c5810045cb42.camel@suse.de>
-         <20200605174329.hf5d6oulmcewzw63@gilmour.lan>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-+FKCCfaEGN1+KOjI+Hug"
-User-Agent: Evolution 3.36.2 
+        id S1726958AbgFESPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 14:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726351AbgFESP2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 14:15:28 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F49DC08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 11:15:28 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id b201so5367155pfb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 11:15:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=esmpnZfFmK3cVOEF7B5Xrx0JRzL/dAN0UyhbSUY5XOU=;
+        b=cOcYA+tCbSiD62uF7VZPNASE+6dozCHWTwtyvAv86J4CHtUt/BKZxe9Hl8emWeJu32
+         NmToqo3tnfYNAFrtfZAe9DVKolOa1e6H2hwmafgv8/uG4iS4t+bJfKetLXM5cH7dUqwK
+         3Wi+k5Txc+6B/rmQRnq5aNqkpcI8toqLOgkyk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=esmpnZfFmK3cVOEF7B5Xrx0JRzL/dAN0UyhbSUY5XOU=;
+        b=DvU+ZWkmoGSughiTKK7ebZpcgsiGCO0IfeySYKFtmyhITKOQrsjyxSC6Z2pGy46Anb
+         Q6YVTnT35N61JpxvCQdZaqAs/zMkpfCpDXRFhwsRRrXBJMRdqmQRuwdfnNTM3s2FgUAB
+         3VoUtES0AbgpJE5VPkPkh56xaFsBsFjKbEOkbI9FpzXToK7mbXR/A4nYuLgSn6Xul0ba
+         PZPD3caRoW3u1U+o2ksqFfAvtZy6fKKLdMMcUbKOQkQfz+KSdm1etabmSf7lMu1Iyssq
+         A6bpt9yIXxBVpxskKMDBwxqZShhSw6zEkXTDo37PloHV9WXiGyGNMNLCZiI4OfYVBbj3
+         5P2A==
+X-Gm-Message-State: AOAM531cAzwVoDWhkUsdzRTUiOhecs539O4mBA1/z/l/2t4Vo/3FM4K9
+        Mfs3cbv7Zr4xl6Ts+AH6Zc9l1+W/WAwLwXYRUegq5fYhgVHKgLl1lZ120L/ev0LDlYPJvQul0hM
+        29H2q6bc5AXQ1g0lKh87L2J5r0Nsa77WDnY+K/gV9dgZ2gDuYsYlMJfnFyX0biZB2kk63HMZ7SN
+        IAGwG+ljNwCmI=
+X-Google-Smtp-Source: ABdhPJx44Y+GjhW2vgNui0lp10q3hv9zSss9PMmRFy4YprMV+idGKYTS6mCLEIhZlMSH2tpAFlibiw==
+X-Received: by 2002:a63:9d0a:: with SMTP id i10mr10476176pgd.209.1591380926608;
+        Fri, 05 Jun 2020 11:15:26 -0700 (PDT)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id w24sm286555pfn.11.2020.06.05.11.15.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Jun 2020 11:15:25 -0700 (PDT)
+Subject: Re: [PATCH 0/3] fs: reduce export usage of kerne_read*() calls
+To:     Mimi Zohar <zohar@linux.ibm.com>, Kees Cook <keescook@chromium.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, viro@zeniv.linux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        ebiederm@xmission.com, jeyu@kernel.org, jmorris@namei.org,
+        paul@paul-moore.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, nayna@linux.ibm.com,
+        dan.carpenter@oracle.com, skhan@linuxfoundation.org,
+        geert@linux-m68k.org, tglx@linutronix.de, bauerman@linux.ibm.com,
+        dhowells@redhat.com, linux-integrity@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, kexec@lists.infradead.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200513152108.25669-1-mcgrof@kernel.org>
+ <20200513181736.GA24342@infradead.org>
+ <20200515212933.GD11244@42.do-not-panic.com>
+ <20200518062255.GB15641@infradead.org>
+ <1589805462.5111.107.camel@linux.ibm.com>
+ <7525ca03-def7-dfe2-80a9-25270cb0ae05@broadcom.com>
+ <202005221551.5CA1372@keescook>
+ <c48a80f5-a09c-6747-3db8-be23a260a0cb@broadcom.com>
+ <1590288736.5111.431.camel@linux.ibm.com>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <1c68c0c7-1b0a-dfec-0e50-1b65eedc3dc7@broadcom.com>
+Date:   Fri, 5 Jun 2020 11:15:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <1590288736.5111.431.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mimi,
 
---=-+FKCCfaEGN1+KOjI+Hug
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 2020-05-23 7:52 p.m., Mimi Zohar wrote:
+> On Fri, 2020-05-22 at 16:25 -0700, Scott Branden wrote:
+>> Hi Kees,
+>>
+>> On 2020-05-22 4:04 p.m., Kees Cook wrote:
+>>> On Fri, May 22, 2020 at 03:24:32PM -0700, Scott Branden wrote:
+>>>> On 2020-05-18 5:37 a.m., Mimi Zohar wrote:
+>>>>> On Sun, 2020-05-17 at 23:22 -0700, Christoph Hellwig wrote:
+>>>>>> On Fri, May 15, 2020 at 09:29:33PM +0000, Luis Chamberlain wrote:
+>>>>>>> On Wed, May 13, 2020 at 11:17:36AM -0700, Christoph Hellwig wrote:
+>>>>>>>> Can you also move kernel_read_* out of fs.h?  That header gets pulled
+>>>>>>>> in just about everywhere and doesn't really need function not related
+>>>>>>>> to the general fs interface.
+>>>>>>> Sure, where should I dump these?
+>>>>>> Maybe a new linux/kernel_read_file.h?  Bonus points for a small top
+>>>>>> of the file comment explaining the point of the interface, which I
+>>>>>> still don't get :)
+>>>>> Instead of rolling your own method of having the kernel read a file,
+>>>>> which requires call specific security hooks, this interface provides a
+>>>>> single generic set of pre and post security hooks.  The
+>>>>> kernel_read_file_id enumeration permits the security hook to
+>>>>> differentiate between callers.
+>>>>>
+>>>>> To comply with secure and trusted boot concepts, a file cannot be
+>>>>> accessible to the caller until after it has been measured and/or the
+>>>>> integrity (hash/signature) appraised.
+>>>>>
+>>>>> In some cases, the file was previously read twice, first to measure
+>>>>> and/or appraise the file and then read again into a buffer for
+>>>>> use.  This interface reads the file into a buffer once, calls the
+>>>>> generic post security hook, before providing the buffer to the caller.
+>>>>>     (Note using firmware pre-allocated memory might be an issue.)
+>>>>>
+>>>>> Partial reading firmware will result in needing to pre-read the entire
+>>>>> file, most likely on the security pre hook.
+>>>> The entire file may be very large and not fit into a buffer.
+>>>> Hence one of the reasons for a partial read of the file.
+>>>> For security purposes, you need to change your code to limit the amount
+>>>> of data it reads into a buffer at one time to not consume or run out of much
+>>>> memory.
+>>> Hm? That's not how whole-file hashing works. :)
+>>> These hooks need to finish their hashing and policy checking before they
+>>> can allow the rest of the code to move forward. (That's why it's a
+>>> security hook.) If kernel memory utilization is the primary concern,
+>>> then sure, things could be rearranged to do partial read and update the
+>>> hash incrementally, but the entire file still needs to be locked,
+>>> entirely hashed by hook, then read by the caller, then unlocked and
+>>> released.
+> Exactly.
+>
+>>> So, if you want to have partial file reads work, you'll need to
+>>> rearchitect the way this works to avoid regressing the security coverage
+>>> of these operations.
+>> I am not familiar with how the security handling code works at all.
+>> Is the same security check run on files opened from user space?
+>> A file could be huge.
+>>
+>> If it assumes there is there is enough memory available to read the
+>> entire file into kernel space then the improvement below can be left as
+>> a memory optimization to be done in an independent (or future) patch series.
+> There are two security hooks - security_kernel_read_file(),
+> security_kernel_post_read_file - in kernel_read_file().  The first
+> hook is called before the file is read into a buffer, while the second
+> hook is called afterwards.
+>
+> For partial reads, measuring the firmware and verifying the firmware's
+> signature will need to be done on the security_kernel_read_file()
+> hook.
+>
+>>> So, probably, the code will look something like:
+>>>
+>>>
+>>> file = kernel_open_file_for_reading(...)
+>>> 	file = open...
+>>> 	disallow_writes(file);
+>>> 	while (processed < size-of-file) {
+>>> 		buf = read(file, size...)
+>>> 		security_file_read_partial(buf)
+>>> 	}
+>>> 	ret = security_file_read_finished(file);
+>>> 	if (ret < 0) {
+>>> 		allow_writes(file);
+>>> 		return PTR_ERR(ret);
+>>> 	}
+>>> 	return file;
+>>>
+>>> while (processed < size-of-file) {
+>>> 	buf = read(file, size...)
+>>> 	firmware_send_partial(buf);
+>>> }
+>>>
+>>> kernel_close_file_for_reading(file)
+>>> 	allow_writes(file);
+> Right, the ima_file_mmap(), ima_bprm_check(), and ima_file_check()
+> hooks call process_measurement() to do this.  ima_post_read_file()
+> passes a buffer to process_measurement() instead.
+>
+> Scott, the change should be straight forward.  The additional patch
+> needs to:
+> - define a new kernel_read_file_id enumeration, like
+> FIRMWARE_PARTIAL_READ.
+> - Currently ima_read_file() has a comment about pre-allocated firmware
+> buffers.  Update ima_read_file() to call process_measurement() for the
+> new enumeration FIRMWARE_PARTIAL_READ and update ima_post_read_file()
+> to return immediately.
+Should this be what is in ima_read_file?
+{
+     enum ima_hooks func;
+     u32 secid;
 
-On Fri, 2020-06-05 at 19:43 +0200, Maxime Ripard wrote:
-> Hi Nicolas,
->=20
-> On Thu, Jun 04, 2020 at 07:26:07PM +0200, Nicolas Saenz Julienne wrote:
-> > On Wed, 2020-05-27 at 17:47 +0200, Maxime Ripard wrote:
-> > > The HDMI block has a block that controls clocks and reset signals to =
-the
-> > > HDMI0 and HDMI1 controllers.
-> >=20
-> > Why not having two separate drivers?
->=20
-> They share the same address space, so it wouldn't really make sense to
-> split it into two drivers and an MFD, especially when the clock/reset
-> association is fairly common.
+     if (read_id != READING_FIRMWARE_PARTIAL_READ)
+         return 0;
 
-Fair enough.
+     if (!file) { /* should never happen */
+         if (ima_appraise & IMA_APPRAISE_ENFORCE)
+             return -EACCES;
+         return 0;
+     }
 
->=20
-> > > Let's expose that through a clock driver implementing a clock and res=
-et
-> > > provider.
-> > >=20
-> > > Cc: Michael Turquette <mturquette@baylibre.com>
-> > > Cc: Stephen Boyd <sboyd@kernel.org>
-> > > Cc: Rob Herring <robh+dt@kernel.org>
-> > > Cc: linux-clk@vger.kernel.org
-> > > Cc: devicetree@vger.kernel.org
-> > > Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-> > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > > ---
-> > >  drivers/clk/bcm/Kconfig           |  11 +++-
-> > >  drivers/clk/bcm/Makefile          |   1 +-
-> > >  drivers/clk/bcm/clk-bcm2711-dvp.c | 127 ++++++++++++++++++++++++++++=
-+++-
-> > >  3 files changed, 139 insertions(+)
-> > >  create mode 100644 drivers/clk/bcm/clk-bcm2711-dvp.c
-> > >=20
-> > > diff --git a/drivers/clk/bcm/Kconfig b/drivers/clk/bcm/Kconfig
-> > > index 8c83977a7dc4..784f12c72365 100644
-> > > --- a/drivers/clk/bcm/Kconfig
-> > > +++ b/drivers/clk/bcm/Kconfig
-> > > @@ -1,4 +1,15 @@
-> > >  # SPDX-License-Identifier: GPL-2.0-only
-> > > +
-> > > +config CLK_BCM2711_DVP
-> > > +	tristate "Broadcom BCM2711 DVP support"
-> > > +	depends on ARCH_BCM2835 ||COMPILE_TEST
-> > > +	depends on COMMON_CLK
-> > > +	default ARCH_BCM2835
-> > > +	select RESET_SIMPLE
-> > > +	help
-> > > +	  Enable common clock framework support for the Broadcom BCM2711
-> > > +	  DVP Controller.
-> > > +
-> > >  config CLK_BCM2835
-> > >  	bool "Broadcom BCM2835 clock support"
-> > >  	depends on ARCH_BCM2835 || ARCH_BRCMSTB || COMPILE_TEST
-> > > diff --git a/drivers/clk/bcm/Makefile b/drivers/clk/bcm/Makefile
-> > > index 0070ddf6cdd2..2c1349062147 100644
-> > > --- a/drivers/clk/bcm/Makefile
-> > > +++ b/drivers/clk/bcm/Makefile
-> > > @@ -6,6 +6,7 @@ obj-$(CONFIG_CLK_BCM_KONA)	+=3D clk-kona-setup.o
-> > >  obj-$(CONFIG_CLK_BCM_KONA)	+=3D clk-bcm281xx.o
-> > >  obj-$(CONFIG_CLK_BCM_KONA)	+=3D clk-bcm21664.o
-> > >  obj-$(CONFIG_COMMON_CLK_IPROC)	+=3D clk-iproc-armpll.o clk-iproc-pll=
-.o
-> > > clk-iproc-asiu.o
-> > > +obj-$(CONFIG_CLK_BCM2835)	+=3D clk-bcm2711-dvp.o
-> > >  obj-$(CONFIG_CLK_BCM2835)	+=3D clk-bcm2835.o
-> > >  obj-$(CONFIG_CLK_BCM2835)	+=3D clk-bcm2835-aux.o
-> > >  obj-$(CONFIG_CLK_RASPBERRYPI)	+=3D clk-raspberrypi.o
-> > > diff --git a/drivers/clk/bcm/clk-bcm2711-dvp.c b/drivers/clk/bcm/clk-
-> > > bcm2711-
-> > > dvp.c
-> > > new file mode 100644
-> > > index 000000000000..c1c4b5857d32
-> > > --- /dev/null
-> > > +++ b/drivers/clk/bcm/clk-bcm2711-dvp.c
-> > > @@ -0,0 +1,127 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > > +// Copyright 2020 Cerno
-> > > +
-> > > +#include <linux/clk-provider.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/platform_device.h>
-> > > +#include <linux/reset-controller.h>
-> > > +#include <linux/reset/reset-simple.h>
-> > > +
-> > > +#define DVP_HT_RPI_SW_INIT	0x04
-> > > +#define DVP_HT_RPI_MISC_CONFIG	0x08
-> > > +
-> > > +#define NR_CLOCKS	2
-> > > +#define NR_RESETS	6
-> > > +
-> > > +struct clk_dvp {
-> > > +	struct clk_hw_onecell_data	*data;
-> > > +	struct reset_simple_data	reset;
-> > > +};
-> > > +
-> > > +static const struct clk_parent_data clk_dvp_parent =3D {
-> > > +	.index	=3D 0,
-> > > +};
-> > > +
-> > > +static int clk_dvp_probe(struct platform_device *pdev)
-> > > +{
-> > > +	struct clk_hw_onecell_data *data;
-> > > +	struct resource *res;
-> > > +	struct clk_dvp *dvp;
-> > > +	void __iomem *base;
-> > > +	int ret;
-> > > +
-> > > +	dvp =3D devm_kzalloc(&pdev->dev, sizeof(*dvp), GFP_KERNEL);
-> > > +	if (!dvp)
-> > > +		return -ENOMEM;
-> > > +	platform_set_drvdata(pdev, dvp);
-> > > +
-> > > +	dvp->data =3D devm_kzalloc(&pdev->dev,
-> > > +				 struct_size(dvp->data, hws, NR_CLOCKS),
-> > > +				 GFP_KERNEL);
-> > > +	if (!dvp->data)
-> > > +		return -ENOMEM;
-> > > +	data =3D dvp->data;
-> > > +
-> > > +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > > +	base =3D devm_ioremap_resource(&pdev->dev, res);
-> >=20
-> > I think the cool function to use these days is
-> > devm_platform_get_and_ioremap_resource().
->=20
-> i'll change it, thanks!
-
-Reviewed-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-
-Regards,
-Nicolas
-
-
---=-+FKCCfaEGN1+KOjI+Hug
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7airUACgkQlfZmHno8
-x/6RAwgAoMvooAyRe7S9Zeth+KfsqdhHw7fSaIfcyW+1B1hAhY9U35yLYXdM9MqY
-aYWnkeHuMN+ic3frCKcxnR4ySNuiDgvYl9jFOhaEZZePo7dnVoLVrOTaMBs421SQ
-0+roDhCtWXx2tUMKkNLK7w7YRMyDrHP0xFO0+3gFV0k4dD4bBQYwTpT7Yz9k6Big
-wDDlyAeh+Tj5UlMZ7ADJx4Du6nPMDk0P/urKo0AyrnegExOBwlDLKDInRHZg5+G8
-VzgHMoQylpyo3hTBHpSYv2ZXtk3MwvJHi22o42gDzKSfsy6xCrI+/FxdJ+JFmd5i
-Eb0zIV6tEQZNERBn5IILIGn3CWeKzA==
-=i89s
------END PGP SIGNATURE-----
-
---=-+FKCCfaEGN1+KOjI+Hug--
+     security_task_getsecid(current, &secid);
+     return process_measurement(file, current_cred(), secid, NULL,
+                    0, MAY_READ, FILE_CHECK);
+}
+>
+> The built-in IMA measurement policy contains a rule to measure
+> firmware.  The policy can be specified on the boot command line by
+> specifying "ima_policy=tcb".  After reading the firmware, the firmware
+> measurement should be in <securityfs>/ima/ascii_runtime_measurements.
+>
+> thanks,
+>
+> Mimi
 
