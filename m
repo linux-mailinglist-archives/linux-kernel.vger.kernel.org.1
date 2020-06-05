@@ -2,86 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F44B1EEEF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 03:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85ACD1EEEF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 03:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgFEBM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 21:12:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726036AbgFEBM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 21:12:56 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C098207ED;
-        Fri,  5 Jun 2020 01:12:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591319575;
-        bh=TIPus6gLZUqRCrDwXh04rz7C8bizFW3qdvMap51arRc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H4ZfSJ4ijkcGAzuSUpydSU/l1U0WIm0FYmZJi5YLeRIIAhzEv23EJV4f2GpnCReZb
-         mkGDynfcqOD1AFrbfSvefkXY3qHxGjREI5xKDoSeoqAxn+uNOBjbgV48nRYL0rd5r6
-         nFNmYnT+iXg2kghSpVh8mlfkJcbYq1QFKYyzHw+I=
-Date:   Thu, 4 Jun 2020 21:12:54 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     David =?utf-8?Q?Bala=C5=BEic?= <xerces9@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Guillaume Nault <gnault@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 4.19 12/80] pppoe: only process PADT targeted at local
- interfaces
-Message-ID: <20200605011254.GR1407771@sasha-vm>
-References: <20200518173450.097837707@linuxfoundation.org>
- <20200518173452.813559136@linuxfoundation.org>
- <CAPJ9Yc8YOeqeO4mo80iVMf3ay+CkdMvYzJY1BqXMNPcKzL6_zg@mail.gmail.com>
- <20200604201712.GB1308830@kroah.com>
- <CAPJ9Yc-0jocU2WJP_27hQa43XFwGWJJx0LBNXShoryZE1K54sQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPJ9Yc-0jocU2WJP_27hQa43XFwGWJJx0LBNXShoryZE1K54sQ@mail.gmail.com>
+        id S1726164AbgFEBUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 21:20:08 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:36210 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726134AbgFEBUF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 21:20:05 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200605012002epoutp046dab4fcad4d6bff297de26fdc98cc953~VgRxZLCiX2170621706epoutp04h
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 01:20:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200605012002epoutp046dab4fcad4d6bff297de26fdc98cc953~VgRxZLCiX2170621706epoutp04h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591320002;
+        bh=jutr7CvxY0Z0Ep4LAxqYwasBfx4P75gJk8iYttlHMAc=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=b8wLoTuTr/rqiEjfa1zD5pzk1ZqT+GZ9lzTMjyhrlhxRE4zwy+D9A3Pml8/Q4V2j4
+         DWGdcR1gsn13y+LQ6LaIAngXlW0925lYZC5TjLLzxjarA7Mk4kfkUi6uJU3EX0EZJI
+         3PZb/YvpaC6G7BpxdIdgUMIKv2jrv6Vg1PBs0Axw=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p3.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200605012001epcas1p38044c63946e19a5bd85da1b0b7d084b7~VgRw1tlm60328903289epcas1p3A;
+        Fri,  5 Jun 2020 01:20:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [RFC PATCH 0/5] scsi: ufs: Add Host Performance Booster Support
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01591320001492.JavaMail.epsvc@epcpadp1>
+Date:   Fri, 05 Jun 2020 10:16:04 +0900
+X-CMS-MailID: 20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882
+References: <CGME20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882@epcms2p8>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 12:31:31AM +0200, David Balažic wrote:
->On Thu, 4 Jun 2020 at 22:17, Greg Kroah-Hartman
-><gregkh@linuxfoundation.org> wrote:
->>
->> On Thu, Jun 04, 2020 at 08:39:00PM +0200, David Balažic wrote:
->> > Hi!
->> >
->> > Is there a good reason this did not land in 4.14 branch?
->> >
->> > Openwrt is using that and so it missed this patch.
->> >
->> > Any chance it goes in in next round?
->>
->> Does it apply and build cleanly?
->>
->> I don't know why I didn't backport it further, something must have
->> broke...
->
->The patch from the above applies to linux-4.14.183
->
->If I apply it manually (open pppoe.c in editor and add the two lines
->from the patch) then it builds.
->Until LD      vmlinux.o when I run out of disk space...
->I applied it by editor because the first time something went wrong
->when copying the patch from the email and it did not apply.
->
->So it looks OK, but someone else should try it too.
->My build system is not exactly great.. (it is a VM I created for
->openwrt builds and it is after midnight and I don't feel like
->extending the virtual disk.. sorry, maybe tomorrow).
+NAND flash memory-based storage devices use Flash Translation Layer (FTL)
+to translate logical addresses of I/O requests to corresponding flash
+memory addresses. Mobile storage devices typically have RAM with
+constrained size, thus lack in memory to keep the whole mapping table.
+Therefore, mapping tables are partially retrieved from NAND flash on
+demand, causing random-read performance degradation.
 
-Hm, indeed it looks ok for 4.14 (and 4.9, 4.4) so I've queued it up,
-thank you.
+To improve random read performance, we propose HPB (Host Performance
+Booster) which uses host system memory as a cache for the FTL mapping
+table. By using HPB, FTL data can be read from host memory faster than from
+NAND flash memory. 
 
--- 
-Thanks,
-Sasha
+The current version only supports the DCM (device control mode).
+This patch consists of 4 parts to support HPB feature.
+
+1) UFS-feature layer
+2) HPB probe and initialization process
+3) READ -> HPB READ using cached map information
+4) L2P (logical to physical) map management
+
+The UFS-feature is an additional layer to avoid the structure in which the
+UFS-core driver and the UFS-feature are entangled with each other in a 
+single module.
+By adding the layer, UFS-features composed of various combinations can be
+supported. Also, even if a new feature is added, modification of the 
+UFS-core driver can be minimized.
+
+In the HPB probe and init process, the device information of the UFS is
+queried. After checking supported features, the data structure for the HPB
+is initialized according to the device information.
+
+A read I/O in the active sub-region where the map is cached is changed to
+HPB READ by the HPB module.
+
+The HPB module manages the L2P map using information received from the
+device. For active sub-region, the HPB module caches through ufshpb_map
+request. For the in-active region, the HPB module discards the L2P map.
+When a write I/O occurs in an active sub-region area, associated dirty
+bitmap checked as dirty for preventing stale read.
+
+HPB is shown to have a performance improvement of 58 - 67% for random read
+workload. [1]
+
+This series patches are based on the "5.8/scsi-queue" branch.
+
+[1]:
+https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
+
+Daejun park (5):
+ scsi: ufs: Add UFS feature related parameter
+ scsi: ufs: Add UFS feature layer
+ scsi: ufs: Introduce HPB module
+ scsi: ufs: L2P map management for HPB read
+ scsi: ufs: Prepare HPB read for cached sub-region
+ 
+ drivers/scsi/ufs/Kconfig      |    8 +
+ drivers/scsi/ufs/Makefile     |    3 +-
+ drivers/scsi/ufs/ufs.h        |   11 +
+ drivers/scsi/ufs/ufsfeature.c |  178 ++++
+ drivers/scsi/ufs/ufsfeature.h |   95 ++
+ drivers/scsi/ufs/ufshcd.c     |   19 +
+ drivers/scsi/ufs/ufshcd.h     |    3 +
+ drivers/scsi/ufs/ufshpb.c     | 2029 +++++++++++++++++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufshpb.h     |  257 ++++++
+ 9 files changed, 2602 insertions(+), 1 deletion(-)
+ created mode 100644 drivers/scsi/ufs/ufsfeature.c
+ created mode 100644 drivers/scsi/ufs/ufsfeature.h
+ created mode 100644 drivers/scsi/ufs/ufshpb.c
+ created mode 100644 drivers/scsi/ufs/ufshpb.h
