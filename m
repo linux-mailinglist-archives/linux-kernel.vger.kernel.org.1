@@ -2,126 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2D81EF5BE
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDCE1EF5BF
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 12:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgFEKu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 06:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726637AbgFEKu4 (ORCPT
+        id S1726879AbgFEKvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 06:51:02 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:51609 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726637AbgFEKvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 06:50:56 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC1EC08C5C2;
-        Fri,  5 Jun 2020 03:50:55 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id jz3so2444893pjb.0;
-        Fri, 05 Jun 2020 03:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jm0v4NSQR1eScm4hhrK2IVUXqo9gKL1/dYB+J6Im5x0=;
-        b=K7KhDXCAN4clMZH/9uQj6/jxUV9WXBwbtZ3UN/nOr0eCOZx7zi8KmoNF1OOCbLvD/Q
-         yCeXrjx95GEfn9SFJy/kuOFU0e5hZ7TxwAzd2yJ6KatQ9UAiQtKXcqZjeRrOxs6gUvvy
-         /iD0SENH6qBwJH0O61kFDFhPIGIGy8OSbaVutwR5NpdNYCz0wbhqcsy2mVCoCe4WzyHL
-         RiHAo/+E/znba4TKYpbeiFhAWsha+Fx0H0Le9HVZxYeLgyxR+cTOvGVHZhmGGYvDE0co
-         oqFHhCL+74ImcrYmdoqftf3xhzH1oJLn1tecMG8FD2gp2mkeO2/RUFI/W5hSliYsW+VN
-         vUog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jm0v4NSQR1eScm4hhrK2IVUXqo9gKL1/dYB+J6Im5x0=;
-        b=GQ5iqnQHB8idRGvkJqsPfkiaO35K9hJfbjIwFUSCBl84mhwqoz/mPDpwW/KFZGSGTM
-         gJojmLwfMLRI8vtu7NZNDk7l6ELFKlwsVURJevZ0gVrZO/6A/Tc7Ne+vl79mGNfshWxq
-         l4EO4pH2yQyH5gaSeAbfaY8O+8+uroyJx3Sc23yeb4HzCnMic8vGivwiQE0dEdyEXJRd
-         MnZDUoBAzJnpP6mtVDNWrHP7a3/J7xqRP/hUtE2OipFVAkX3dut7TAGdafDSpni6v+Ml
-         Y0Q+nVFhMpcJSjhHIoqWmeLvYaVO9scLqYWIuh6Snx6ykh1c+qZv0+7OpzQvKA8CUkJa
-         rKRQ==
-X-Gm-Message-State: AOAM532fgdzubpb8foLOLkInfngmJHRyDjQ4LKBY7r5dziPlHdFKEDYs
-        nkB7OJxN2+sst1mMIrdU4tc9B0ooBGf+blB8xNfJBBmscnw=
-X-Google-Smtp-Source: ABdhPJy8g7xgtcfoQmROz1emJfu6kg9Wd3RE5AUde8dS472m5XXCXD1Sghv319T4YYpsCAKy9z10aBn1woa6UmZUj/k=
-X-Received: by 2002:a17:90a:ac05:: with SMTP id o5mr2414679pjq.228.1591354255458;
- Fri, 05 Jun 2020 03:50:55 -0700 (PDT)
+        Fri, 5 Jun 2020 06:51:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591354259;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jBPNXeumoB2edMU7rBwZo/XR6v1tVQAaNzjEQzvK0+w=;
+        b=b5DprF4IPtbaFPjIWiKXqEX47S+skBDeZGcCwabyJoGY1qsXD/vx0opsgJF2rUGHePIUsS
+        PZ/miKW4z9Y6Iu7LbYctQzXauXd4M8lnkid43Cq5Oq10zfA7DVPXl68chOndKMbpHD8y5z
+        apKJ3ZszqMKroR6DHNEcPynh6rEXKAU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-145-avP1jYz7PEG9B5RZuDWbAA-1; Fri, 05 Jun 2020 06:50:56 -0400
+X-MC-Unique: avP1jYz7PEG9B5RZuDWbAA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA12D464;
+        Fri,  5 Jun 2020 10:50:54 +0000 (UTC)
+Received: from krava (unknown [10.40.193.237])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 85A72100238D;
+        Fri,  5 Jun 2020 10:50:52 +0000 (UTC)
+Date:   Fri, 5 Jun 2020 12:50:51 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 01/13] tools/libperf: introduce notion of static
+ polled file descriptors
+Message-ID: <20200605105051.GA1404794@krava>
+References: <5de4b954-24f0-1e8d-5a0d-7b12783b8218@linux.intel.com>
+ <3c92a0ad-d7d3-4e78-f0b8-1d3a7122c69e@linux.intel.com>
 MIME-Version: 1.0
-References: <20200604211039.12689-1-michael@walle.cc> <20200604211039.12689-5-michael@walle.cc>
- <CAHp75VdeD6zDc--R4NPHsiqQerzfNGwUikLN+WHMiZZVsQ8QSA@mail.gmail.com> <8f042c2442852c29519c381833f3d289@walle.cc>
-In-Reply-To: <8f042c2442852c29519c381833f3d289@walle.cc>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 5 Jun 2020 13:50:43 +0300
-Message-ID: <CAHp75VfY0BD4CFu6Thx1wE-U0Zt1q8uTOLxkWTMdFk0MBuhYFQ@mail.gmail.com>
-Subject: Re: [PATCH v4 04/11] watchdog: add support for sl28cpld watchdog
-To:     Michael Walle <michael@walle.cc>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3c92a0ad-d7d3-4e78-f0b8-1d3a7122c69e@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 1:24 PM Michael Walle <michael@walle.cc> wrote:
-> Am 2020-06-05 10:14, schrieb Andy Shevchenko:
-> > On Fri, Jun 5, 2020 at 12:14 AM Michael Walle <michael@walle.cc> wrote:
+On Wed, Jun 03, 2020 at 06:52:59PM +0300, Alexey Budankov wrote:
+> 
+> Implement adding of file descriptors by fdarray__add_stat() to
+> fix-sized (currently 1) stat_entries array located at struct fdarray.
+> Append added file descriptors to the array used by poll() syscall
+> during fdarray__poll() call. Copy poll() result of the added
+> descriptors from the array back to the storage for analysis.
+> 
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> ---
+>  tools/lib/api/fd/array.c                 | 42 +++++++++++++++++++++++-
+>  tools/lib/api/fd/array.h                 |  7 ++++
+>  tools/lib/perf/evlist.c                  | 11 +++++++
+>  tools/lib/perf/include/internal/evlist.h |  2 ++
+>  4 files changed, 61 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
+> index 58d44d5eee31..b0027f2169c7 100644
+> --- a/tools/lib/api/fd/array.c
+> +++ b/tools/lib/api/fd/array.c
+> @@ -11,10 +11,16 @@
+>  
+>  void fdarray__init(struct fdarray *fda, int nr_autogrow)
+>  {
+> +	int i;
+> +
+>  	fda->entries	 = NULL;
+>  	fda->priv	 = NULL;
+>  	fda->nr		 = fda->nr_alloc = 0;
+>  	fda->nr_autogrow = nr_autogrow;
+> +
+> +	fda->nr_stat = 0;
+> +	for (i = 0; i < FDARRAY__STAT_ENTRIES_MAX; i++)
+> +		fda->stat_entries[i].fd = -1;
+>  }
+>  
+>  int fdarray__grow(struct fdarray *fda, int nr)
+> @@ -83,6 +89,20 @@ int fdarray__add(struct fdarray *fda, int fd, short revents)
+>  	return pos;
+>  }
+>  
+> +int fdarray__add_stat(struct fdarray *fda, int fd, short revents)
+> +{
+> +	int pos = fda->nr_stat;
+> +
+> +	if (pos >= FDARRAY__STAT_ENTRIES_MAX)
+> +		return -1;
+> +
+> +	fda->stat_entries[pos].fd = fd;
+> +	fda->stat_entries[pos].events = revents;
+> +	fda->nr_stat++;
+> +
+> +	return pos;
+> +}
+> +
+>  int fdarray__filter(struct fdarray *fda, short revents,
+>  		    void (*entry_destructor)(struct fdarray *fda, int fd, void *arg),
+>  		    void *arg)
+> @@ -113,7 +133,27 @@ int fdarray__filter(struct fdarray *fda, short revents,
+>  
+>  int fdarray__poll(struct fdarray *fda, int timeout)
+>  {
+> -	return poll(fda->entries, fda->nr, timeout);
+> +	int nr, i, pos, res;
+> +
+> +	nr = fda->nr;
+> +
+> +	for (i = 0; i < fda->nr_stat; i++) {
+> +		if (fda->stat_entries[i].fd != -1) {
+> +			pos = fdarray__add(fda, fda->stat_entries[i].fd,
+> +					   fda->stat_entries[i].events);
 
-...
+so every call to fdarray__poll will add whatever is
+in stat_entries to entries? how is it removed?
 
-> >> +static bool nowayout = WATCHDOG_NOWAYOUT;
-> >> +module_param(nowayout, bool, 0);
-> >> +MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started
-> >> (default="
-> >> +                               __MODULE_STRING(WATCHDOG_NOWAYOUT)
-> >> ")");
-> >> +
-> >> +static int timeout;
-> >> +module_param(timeout, int, 0);
-> >> +MODULE_PARM_DESC(timeout, "Initial watchdog timeout in seconds");
-> >
-> > Guenter ACKed this, but I'm wondering why we still need module
-> > parameters...
->
-> How would a user change the nowayout or the timeout? For the latter
-> there is
-> a device tree entry, but thats not easy changable by the user.
+I think you should either follow what Adrian said
+and put 'static' descriptors early and check for
+filter number to match it as an 'quick fix'
 
-Yes, it's more question to VIm and Guenter than to you.
+or we should fix it for real and make it generic
 
-...
+so currently the interface is like this:
 
-> >> +       if (status & WDT_CTRL_EN) {
-> >> +               sl28cpld_wdt_start(wdd);
-> >
-> >> +               set_bit(WDOG_HW_RUNNING, &wdd->status);
-> >
-> > Do you need atomic op here? Why?
->
-> I'd say consistency, all watchdog drivers do it like that. I just
-> had a look at where this is used, but it looks like access from
-> userspace is protected by a lock.
+  pos1 = fdarray__add(a, fd1 ... );
+  pos2 = fdarray__add(a, fd2 ... );
+  pos3 = fdarray__add(a, fd2 ... );
 
-Okay then.
+  fdarray__poll(a);
 
--- 
-With Best Regards,
-Andy Shevchenko
+  num = fdarray__filter(a, revents, destructor, arg);
+
+when fdarray__filter removes some of the fds the 'pos1,pos2,pos3'
+indexes are not relevant anymore
+
+how about we make the 'pos indexes' being stable by allocating
+separate object for each added descriptor and each poll call
+would create pollfd array from current objects, and entries
+would keep pointer to its pollfd entry
+
+  struct fdentry *entry {
+       int              fd;
+       int              events;
+       struct pollfd   *pollfd;
+  }
+
+  entry1 = fdarray__add(a, fd1 ...);
+  entry2 = fdarray__add(a, fd2 ...);
+  entry3 = fdarray__add(a, fd3 ...);
+
+  fdarray__poll(a);
+
+  struct pollfd *fdarray__entry_pollfd(a, entry1);
+
+or smoething like that ;-)
+
+jirka
+
