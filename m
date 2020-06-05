@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799161EEEB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 02:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2021EEEBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 02:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgFEAPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 20:15:48 -0400
-Received: from mga09.intel.com ([134.134.136.24]:64305 "EHLO mga09.intel.com"
+        id S1726076AbgFEAYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 20:24:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725986AbgFEAPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 20:15:47 -0400
-IronPort-SDR: ezMOngJyfryD0Q40WG7mRJKECQlrFvad0iJcpN8xBZTVpGoGx/V+oWLwYXmyvincXwlkGQohK2
- q2+BdRbfQUiA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 17:15:46 -0700
-IronPort-SDR: 5N6C2ToGgttdbw3hpTCJTivhdhcLus3ANU9los7TrjJlJLkEZt5HIQ72fBdijiCbHUnHuVKT2u
- CVLic+ig+kFw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,474,1583222400"; 
-   d="scan'208";a="269588272"
-Received: from zyu4-mobl2.ccr.corp.intel.com (HELO [10.255.30.96]) ([10.255.30.96])
-  by orsmga003.jf.intel.com with ESMTP; 04 Jun 2020 17:15:44 -0700
-Subject: Re: [LKP] Re: [netfilter] e32a4dc651:
- BUG:using_smp_processor_id()in_preemptible
-To:     Stefano Brivio <sbrivio@redhat.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <20200603084934.GF12456@shao2-debian>
- <20200605002323.501b1cc6@redhat.com>
-From:   Liu Yiding <yidingx.liu@intel.com>
-Message-ID: <7dd4f0d2-34a7-8086-99cb-424ff2e039ca@intel.com>
-Date:   Fri, 5 Jun 2020 08:15:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+        id S1725955AbgFEAYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 20:24:40 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66BDC206A2;
+        Fri,  5 Jun 2020 00:24:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591316679;
+        bh=mdqRpyRzRhFj4mKG7HsIVWexcD/UT90uTpSNsdJPuwU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L215KL500TjgPhYb1Q0IQJKuxcmCFrb1XZf1UmDBT0+xUOMSzQRkcpwpSLk5buV1y
+         yd1zmpGbpseNnrrPR9NUte72tcA5f9F4ywZxMb6EIQhkHvVovYGDYIpy9/DdR5eTHd
+         UNR63vQSO238FYf4jmDS03PFxH8a96j+1S5ASHS4=
+Date:   Thu, 4 Jun 2020 17:24:33 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        frederic@kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        cai@lca.pw, mgorman@techsingularity.net
+Subject: Re: [RFC][PATCH 7/7] sched: Replace rq::wake_list
+Message-ID: <20200605002433.GA148196@sol.localdomain>
+References: <20200526161057.531933155@infradead.org>
+ <20200526161908.129371594@infradead.org>
+ <20200604141837.GA179816@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <20200605002323.501b1cc6@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <20200604141837.GA179816@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jun 04, 2020 at 07:18:37AM -0700, Guenter Roeck wrote:
+> On Tue, May 26, 2020 at 06:11:04PM +0200, Peter Zijlstra wrote:
+> > The recent commit: 90b5363acd47 ("sched: Clean up scheduler_ipi()")
+> > got smp_call_function_single_async() subtly wrong. Even though it will
+> > return -EBUSY when trying to re-use a csd, that condition is not
+> > atomic and still requires external serialization.
+> > 
+> > The change in ttwu_queue_remote() got this wrong.
+> > 
+> > While on first reading ttwu_queue_remote() has an atomic test-and-set
+> > that appears to serialize the use, the matching 'release' is not in
+> > the right place to actually guarantee this serialization.
+> > 
+> > The actual race is vs the sched_ttwu_pending() call in the idle loop;
+> > that can run the wakeup-list without consuming the CSD.
+> > 
+> > Instead of trying to chain the lists, merge them.
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> ...
+> > +	/*
+> > +	 * Assert the CSD_TYPE_TTWU layout is similar enough
+> > +	 * for task_struct to be on the @call_single_queue.
+> > +	 */
+> > +	BUILD_BUG_ON(offsetof(struct task_struct, wake_entry_type) - offsetof(struct task_struct, wake_entry) !=
+> > +		     offsetof(struct __call_single_data, flags) - offsetof(struct __call_single_data, llist));
+> > +
+> 
+> There is no guarantee in C that
+> 
+> 	type1 a;
+> 	type2 b;
+> 
+> in two different data structures means that offsetof(b) - offsetof(a)
+> is the same in both data structures unless attributes such as
+> __attribute__((__packed__)) are used.
+> 
+> As result, this does and will cause a variety of build errors depending
+> on the compiler version and compile flags.
+> 
+> Guenter
 
-On 6/5/20 6:23 AM, Stefano Brivio wrote:
-> Hi,
->
-> On Wed, 3 Jun 2020 16:49:34 +0800
-> kernel test robot <lkp@intel.com> wrote:
->
->> Greeting,
->>
->> FYI, we noticed the following commit (built with gcc-7):
->>
->> commit: e32a4dc6512ce3c1a1920531246e7037896e510a ("netfilter: nf_tables: make sets built-in")
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
->>
->> in testcase: kernel-selftests
->> with following parameters:
->>
->> 	group: kselftests-netfilter
-> I couldn't find this information in the report. Would it be possible to
-> have here an indication of what kselftest specifically is failing?
-> There are a number of tests in that group. I have an obvious suspicion
-> here (nft_concat_range.sh), but it would be nice to know, in general.
+Yep, this breaks the build for me.
 
-
-Yes, it's nft_concat_range.sh caused this error.
-
-```
-
-[  165.249447] # selftests: netfilter: nft_concat_range.sh
-[  165.249453]
-[  165.295336] # TEST: reported issues
-[  165.295342]
-[  165.316525] BUG: using smp_processor_id() in preemptible [00000000] 
-code: nft/6247
-[  165.319547] caller is nft_pipapo_insert+0x464/0x610 [nf_tables]
-[  165.321846] CPU: 1 PID: 6247 Comm: nft Not tainted 
-5.6.0-rc5-01595-ge32a4dc6512ce3 #1
-
-```
-
-
-And i think this error is caused by some kconfigs.
-
-This test was passed until we enabled all kconfigs defined in 
-netfilter/config. :-(
-
-
->
->> [...]
->>
->> [  165.316525] BUG: using smp_processor_id() in preemptible [00000000] code: nft/6247
->> [  165.319547] caller is nft_pipapo_insert+0x464/0x610 [nf_tables]
-> I'll take care of this, thanks Florian for forwarding.
->
--- 
-Best regards.
-Liu Yiding
-
+  CC      kernel/smp.o
+In file included from ./arch/x86/include/asm/atomic.h:5,
+                 from ./include/linux/atomic.h:7,
+                 from ./include/linux/llist.h:51,
+                 from ./include/linux/irq_work.h:5,
+                 from kernel/smp.c:10:
+kernel/smp.c: In function ‘smp_init’:
+./include/linux/compiler.h:403:38: error: call to ‘__compiletime_assert_68’ declared with attribute error: BUILD_BUG_ON failed: offsetof(struct task_struct, wake_entry_type) - offsetof(struct task_struct, wake_entry) != offsetof(struct __call_single_data, flags) - offsetof(struct __call_single_data, llist)
+  403 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+      |                                      ^
+./include/linux/compiler.h:384:4: note: in definition of macro ‘__compiletime_assert’
+  384 |    prefix ## suffix();    \
+      |    ^~~~~~
+./include/linux/compiler.h:403:2: note: in expansion of macro ‘_compiletime_assert’
+  403 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+      |  ^~~~~~~~~~~~~~~~~~~
+./include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
+   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+      |                                     ^~~~~~~~~~~~~~~~~~
+./include/linux/build_bug.h:50:2: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
+   50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+      |  ^~~~~~~~~~~~~~~~
+kernel/smp.c:687:2: note: in expansion of macro ‘BUILD_BUG_ON’
+  687 |  BUILD_BUG_ON(offsetof(struct task_struct, wake_entry_type) - offsetof(struct task_struct, wake_entry) !=
+      |  ^~~~~~~~~~~~
+make[1]: *** [scripts/Makefile.build:267: kernel/smp.o] Error 1
+make: *** [Makefile:1735: kernel] Error 2
