@@ -2,178 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7DF1EFE79
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 19:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182EA1EFE7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 19:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgFERGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 13:06:45 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:42832 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726218AbgFERGp (ORCPT
+        id S1727002AbgFERGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 13:06:47 -0400
+Received: from sonic301-21.consmr.mail.sg3.yahoo.com ([106.10.242.84]:41846
+        "EHLO sonic301-21.consmr.mail.sg3.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726026AbgFERGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 13:06:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591376803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=fn51+xgx98oZsB/D59Na1SLBQWdWeTshRNoFGM9XJVg=;
-        b=FhIg8aK56SkWujMQEK4whbCDaJv8+sxO+NEfmxd731g4gbcn72SBl9D2cpsK/gDnS9fj4E
-        2gyDWOaLue9JO31OkapiBcTUV3F9COhHqBP4mi2PuPO1nUtK33c/XbtruZq5ND4jJf6zu1
-        pohJdYFF4SHWuJP0fqHYBLtlUCf5S/g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-331-NfHEDjfTMZS_9-9DlOrH2w-1; Fri, 05 Jun 2020 13:06:42 -0400
-X-MC-Unique: NfHEDjfTMZS_9-9DlOrH2w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2514E106B208;
-        Fri,  5 Jun 2020 17:06:35 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3EEAE707C7;
-        Fri,  5 Jun 2020 17:06:34 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     vkuznets@redhat.com,
-        syzbot+705f4401d5a93a59b87d@syzkaller.appspotmail.com
-Subject: [PATCH] KVM: let kvm_destroy_vm_debugfs clean up vCPU debugfs directories
-Date:   Fri,  5 Jun 2020 13:06:33 -0400
-Message-Id: <20200605170633.16766-1-pbonzini@redhat.com>
+        Fri, 5 Jun 2020 13:06:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591376800; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=PI1kQDgmmd1ZCZ/UtYVRZanCoyv7PXcBjlaSDI/43Rwmw12xrWFCxFJVTxbb7NUGcPl2M88nuhXWAXRjFX2l8LA360OgQ4U70fL7cb6EQ6D9qcw/X/IPA8JLxJiO/yk36cDgOK2O+U8PtFYWkv5rHtNNbWytab0ZFQTqAkwnQtClrsXjWR9/TLRbG0089Boi7r7f8rsInhSYqlEmwRBZR0MSCda1DQ4PkPGssYYCPdi+u7NitEmZ/icjfkPlg0OSFJcjeA7lN+6fVWRypk2/YGrQFo0HcRLpypNYBD6c6UuGrWxSsVA4uRLQv8CkWsGdmd6rX15qzgSTPkNRxLQlMQ==
+X-YMail-OSG: JtuyPrsVM1keWEVUKXlQ0f5jBZU6YSFG5n_CbflFuU9Pfr8IXXYzIjAHGtc4RwD
+ 8u07TIi3zMV4TxCKuRkDaHfKhSV9VwGlf5SrJeRudvwmN1uMersdMgMpHmFZHAJ_zkIUxGKFZ4u6
+ enTIQgzlWn_Nj_p.m4IE65aRuu7EPGaO0GVxtBlsOErT0wQ4y5fFOnbO9gp9j.DQfcoVCGE6Hv9F
+ IuuFxD2aOZXqLxaR6HA530nMhukiQfViE7C6pf.hxMwxFN0s.jzyjVIvCRoFz3jVx8vOEB5UGmjf
+ KycomQZRe52fmN4ISOHWtBA6vTR.L4bsHtDOVKios2Y7WG6QYKQPig3yioae.lhboBsDYIMY.m33
+ rTa1YcSlGIui5EHTMqmlSmiRqpcwCmxYnJxBIqvzLYe7EOU7Ovs.LP3l049QACpkle9oZR9n2RY_
+ Ou1nBEsDt9Qs6TQUPCk7uz2p0uiUS9D7l.Ehf7YqIEvDiVa3DjEkR1KsO_ZV3w4VXeoLwCC5RnPz
+ W6m3FcEet1jdJRVvuOliO__Gb5yh0zJwaleLCN10WBZaJ2yVHY2snmTPTZ2ZmX6TaRXKOdbAyUfv
+ 4akPyjHGIFsnqj5G3zQW_8ILrD_EQ_XJP9ErYZgk3gvl11X4RiYy2bT7S7WkMHWg9IeBLaGXG_6s
+ sh43.WYYI1PiM8ub8aX8YOSovFiu41mZXqexhhXCsiccFruQyFN7oOBKYK56p3gwzux.wusjPt.u
+ xUMuD.8.jpzdxMbjYijWihGzn3.1CpUsm4FjOPTQfSdWtjiGHSGgxXrqxGYw5uwlxNjJrI62Al2D
+ XPJ3.rR2Q174pN7G9WULNLqtmE0EJt1g8Z973RB1F3JoxtbDZ2DN1OwOdY7ZkV7qsIiloN0OOGeF
+ 4so5oC5_DUlbY7ij2yUOMhknN3PVHssG0Nke2sPSIdfzvm_cWAEA9q4br4ti96PqEXWe9aoJyGuq
+ qsxDXIDh.BgFysNnJxuC0rT.4vMZ47pqAQ3EvRe.OkIsHIW8C6ICZjjTbHbbQELnHv8W9jBm_Uwc
+ DTwvFquflOrfj_npuUIq4QiHY_hM0w.TwcTNh.rniqwwHbbRj_uIkP75dMV3_mpn6P8uopDH6A88
+ OrSf5kOSnM6YAUqn.STj2Pv7ht7BHeS7msFwpSI9I4IIpV49aqNNvl5QpqreQLN.QGSmuHykHly7
+ _M03Uw5BqSPvSrmOr8qAskyH8lK7HgH4oHhUhBGIAHGA158esvxcMb1WXl7tOfpSNrpRcPF5MVPO
+ nVjE5AV82UxnFLyoRKa8gURz3KutaGlo.CqpPyfGjBUcJU0XU.KfoqB4uixKIh5bAWhWHcnmSBJa
+ Fz_o-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.sg3.yahoo.com with HTTP; Fri, 5 Jun 2020 17:06:40 +0000
+Date:   Fri, 5 Jun 2020 17:06:36 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrsminaabrunel2@gmail.com>
+Reply-To: smrsminaabrunel63@gmail.com
+Message-ID: <1637124243.1895722.1591376796684@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1637124243.1895722.1591376796684.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 63d0434 ("KVM: x86: move kvm_create_vcpu_debugfs after
-last failure point") we are creating the pre-vCPU debugfs files
-after the creation of the vCPU file descriptor.  This makes it
-possible for userspace to reach kvm_vcpu_release before
-kvm_create_vcpu_debugfs has finished.  The vcpu->debugfs_dentry
-then does not have any associated inode anymore, and this causes
-a NULL-pointer dereference in debugfs_create_file.
 
-The solution is simply to avoid removing the files; they are
-cleaned up when the VM file descriptor is closed (and that must be
-after KVM_CREATE_VCPU returns).  We can stop storing the dentry
-in struct kvm_vcpu too, because it is not needed anywhere after
-kvm_create_vcpu_debugfs returns.
 
-Reported-by: syzbot+705f4401d5a93a59b87d@syzkaller.appspotmail.com
-Fixes: 63d04348371b ("KVM: x86: move kvm_create_vcpu_debugfs after last failure point")
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/arm64/kvm/arm.c     |  5 -----
- arch/x86/kvm/debugfs.c   | 10 +++++-----
- include/linux/kvm_host.h |  3 +--
- virt/kvm/kvm_main.c      |  8 ++++----
- 4 files changed, 10 insertions(+), 16 deletions(-)
+My Dear in the lord
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 7a57381c05e8..45276ed50dd6 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -144,11 +144,6 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
- 	return ret;
- }
- 
--int kvm_arch_create_vcpu_debugfs(struct kvm_vcpu *vcpu)
--{
--	return 0;
--}
--
- vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
- {
- 	return VM_FAULT_SIGBUS;
-diff --git a/arch/x86/kvm/debugfs.c b/arch/x86/kvm/debugfs.c
-index 018aebce33ff..7e818d64bb4d 100644
---- a/arch/x86/kvm/debugfs.c
-+++ b/arch/x86/kvm/debugfs.c
-@@ -43,22 +43,22 @@ static int vcpu_get_tsc_scaling_frac_bits(void *data, u64 *val)
- 
- DEFINE_SIMPLE_ATTRIBUTE(vcpu_tsc_scaling_frac_fops, vcpu_get_tsc_scaling_frac_bits, NULL, "%llu\n");
- 
--void kvm_arch_create_vcpu_debugfs(struct kvm_vcpu *vcpu)
-+void kvm_arch_create_vcpu_debugfs(struct kvm_vcpu *vcpu, struct dentry *debugfs_dentry)
- {
--	debugfs_create_file("tsc-offset", 0444, vcpu->debugfs_dentry, vcpu,
-+	debugfs_create_file("tsc-offset", 0444, debugfs_dentry, vcpu,
- 			    &vcpu_tsc_offset_fops);
- 
- 	if (lapic_in_kernel(vcpu))
- 		debugfs_create_file("lapic_timer_advance_ns", 0444,
--				    vcpu->debugfs_dentry, vcpu,
-+				    debugfs_dentry, vcpu,
- 				    &vcpu_timer_advance_ns_fops);
- 
- 	if (kvm_has_tsc_control) {
- 		debugfs_create_file("tsc-scaling-ratio", 0444,
--				    vcpu->debugfs_dentry, vcpu,
-+				    debugfs_dentry, vcpu,
- 				    &vcpu_tsc_scaling_fops);
- 		debugfs_create_file("tsc-scaling-ratio-frac-bits", 0444,
--				    vcpu->debugfs_dentry, vcpu,
-+				    debugfs_dentry, vcpu,
- 				    &vcpu_tsc_scaling_frac_fops);
- 	}
- }
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index f43b59b1294c..d38d6b9c24be 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -318,7 +318,6 @@ struct kvm_vcpu {
- 	bool preempted;
- 	bool ready;
- 	struct kvm_vcpu_arch arch;
--	struct dentry *debugfs_dentry;
- };
- 
- static inline int kvm_vcpu_exiting_guest_mode(struct kvm_vcpu *vcpu)
-@@ -888,7 +887,7 @@ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu);
- void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu);
- 
- #ifdef __KVM_HAVE_ARCH_VCPU_DEBUGFS
--void kvm_arch_create_vcpu_debugfs(struct kvm_vcpu *vcpu);
-+void kvm_arch_create_vcpu_debugfs(struct kvm_vcpu *vcpu, struct dentry *debugfs_dentry);
- #endif
- 
- int kvm_arch_hardware_enable(void);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 7fa1e38e1659..3577eb84eac0 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -2973,7 +2973,6 @@ static int kvm_vcpu_release(struct inode *inode, struct file *filp)
- {
- 	struct kvm_vcpu *vcpu = filp->private_data;
- 
--	debugfs_remove_recursive(vcpu->debugfs_dentry);
- 	kvm_put_kvm(vcpu->kvm);
- 	return 0;
- }
-@@ -3000,16 +2999,17 @@ static int create_vcpu_fd(struct kvm_vcpu *vcpu)
- static void kvm_create_vcpu_debugfs(struct kvm_vcpu *vcpu)
- {
- #ifdef __KVM_HAVE_ARCH_VCPU_DEBUGFS
-+	struct dentry *debugfs_dentry;
- 	char dir_name[ITOA_MAX_LEN * 2];
- 
- 	if (!debugfs_initialized())
- 		return;
- 
- 	snprintf(dir_name, sizeof(dir_name), "vcpu%d", vcpu->vcpu_id);
--	vcpu->debugfs_dentry = debugfs_create_dir(dir_name,
--						  vcpu->kvm->debugfs_dentry);
-+	debugfs_dentry = debugfs_create_dir(dir_name,
-+					    vcpu->kvm->debugfs_dentry);
- 
--	kvm_arch_create_vcpu_debugfs(vcpu);
-+	kvm_arch_create_vcpu_debugfs(vcpu, debugfs_dentry);
- #endif
- }
- 
--- 
-2.26.2
 
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
+ gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
+ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
+on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
+u the capital city of of Burkina in West Africa. The money was from the sal=
+e of his company and death benefits payment and entitlements of my deceased=
+ husband by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
