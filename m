@@ -2,145 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0FF1EF691
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 13:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 923F51EF696
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 13:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbgFELlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 07:41:06 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:45296 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726303AbgFELlF (ORCPT
+        id S1726512AbgFELmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 07:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgFELmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 07:41:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591357264; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=lyPYOzLX8Vuo1M7AG9NpLi25wODcB0QLRhTvvaOQYkg=;
- b=jHLkiLybzRrnx0sW09Mm7rY/qe0+X4Y+CPUSWIv4PhHONByb66qE4OXxKUhNZNeA9oOCNz0G
- 21lJz4fmowd42g3Q54n+lexrUXV7zGvYO57wWd9JjYAUNvSsWRVv4+NGIG4pC6I5UQNJK9eo
- wgdeWiDNU1VNP9m5FncFKCYCNdo=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5eda2f4127386861269869b3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Jun 2020 11:40:49
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8C5FCC433CA; Fri,  5 Jun 2020 11:40:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E6338C433C6;
-        Fri,  5 Jun 2020 11:40:47 +0000 (UTC)
+        Fri, 5 Jun 2020 07:42:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40677C08C5C2;
+        Fri,  5 Jun 2020 04:42:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GvsW7zdrUIqmvXgAJrllNLf1O1seE5aFbC1JusbrvcI=; b=rYJr3ZgM4OLQq4cmCbWihqvWX1
+        cNYPHtzQjittlKB9+HDAOi7uZ1YQJZBxxuxGyXCYYEB1odBNw58jCW5h3rZ6Hx2eJh/wHADb8gGUz
+        4+1dzkdivSIJ0OZzNcFr5DYmt0iDJZlqLUDl87yzDBB60YC+cD0TnQ1G1M2+W6DQOS5HwJ+90wNFa
+        eY+yHqVlmy5yrIzsk8hEOUQNtMT5Xe9PLeGh4Mb9MxYf9cR6cVSxsHM5swrBQlIsp5EuMQqyeRmeg
+        NAuYYbDAklhTiprOyPo724hi+oUXjMhej9qLr7pLM4OAl0iCa6bHLGFdo0gHCOtJMZTj/bcoBES3f
+        QgHNSQGw==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jhAjg-0003Rg-Rq; Fri, 05 Jun 2020 11:42:08 +0000
+Date:   Fri, 5 Jun 2020 04:42:08 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jason Yan <yanaijie@huawei.com>, hulkci@huawei.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>
+Subject: Re: block: Fix use-after-free in blkdev_get()
+Message-ID: <20200605114208.GC19604@bombadil.infradead.org>
+References: <88676ff2-cb7e-70ec-4421-ecf8318990b1@web.de>
+ <5fa658bf-3028-9b5c-30cc-dbdef6bf8f7a@huawei.com>
+ <20200605094353.GS30374@kadam>
+ <2ee6f2f7-eaec-e748-bead-0ad59f4c378b@web.de>
+ <20200605111039.GL22511@kadam>
+ <63e57552-ab95-7bb4-b4f1-70a307b6381d@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 05 Jun 2020 17:10:47 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Pradeep P V K <ppvk@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, adrian.hunter@intel.com,
-        robh+dt@kernel.org, ulf.hansson@linaro.org,
-        vbadigan@codeaurora.org, sboyd@kernel.org,
-        georgi.djakov@linaro.org, mka@chromium.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mmc-owner@vger.kernel.org, rnayak@codeaurora.org,
-        matthias@chromium.org, linux-arm-msm-owner@vger.kernel.org
-Subject: =?UTF-8?Q?Re=3A_=5BPATCH=C2=A0V3_1/2=5D_mmc=3A_sdhci-msm=3A_Add_?=
- =?UTF-8?Q?interconnect_bandwidth_scaling_support?=
-In-Reply-To: <1591349427-27004-2-git-send-email-ppvk@codeaurora.org>
-References: <1591269283-24084-1-git-send-email-ppvk@codeaurora.org>
- <1591349427-27004-1-git-send-email-ppvk@codeaurora.org>
- <1591349427-27004-2-git-send-email-ppvk@codeaurora.org>
-Message-ID: <8b2808215a09871bfccccb72cfa01e60@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <63e57552-ab95-7bb4-b4f1-70a307b6381d@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Pradeep,
-Thanks for the patch.
-
-On 2020-06-05 15:00, Pradeep P V K wrote:
-> Interconnect bandwidth scaling support is now added as a
-> part of OPP [1]. So, make sure interconnect driver is ready
-
-can you please replace driver with paths
-instead?
-
-> before handling interconnect scaling.
+On Fri, Jun 05, 2020 at 01:40:37PM +0200, Markus Elfring wrote:
+> >> I am trying to contribute a bit of patch review as usual.
+> >
+> > We have asked you again and again to stop commenting on commit messages.
 > 
-> This change is based on
-> [1] [Patch v8] Introduce OPP bandwidth bindings
-> (https://lkml.org/lkml/2020/5/12/493)
+> I am going to continue with constructive feedback at some places.
 > 
-> [2] [Patch v3] mmc: sdhci-msm: Fix error handling
-> for dev_pm_opp_of_add_table()
-> (https://lkml.org/lkml/2020/5/5/491)
-
-sry didn't notice ^^ earlier
-you might want to place these
-comments and dependencies similar
-to the following patch.
-https://patchwork.kernel.org/patch/11573903/
-
 > 
-> Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
-> ---
->  drivers/mmc/host/sdhci-msm.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> > New kernel developers have emailed me privately to say that your review
+> > comments confused and discouraged them.
 > 
-> diff --git a/drivers/mmc/host/sdhci-msm.c 
-> b/drivers/mmc/host/sdhci-msm.c
-> index b277dd7..a945e84 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -14,6 +14,7 @@
->  #include <linux/slab.h>
->  #include <linux/iopoll.h>
->  #include <linux/regulator/consumer.h>
-> +#include <linux/interconnect.h>
+> Did these contributors not dare to ask me directly about mentioned details?
 > 
->  #include "sdhci-pltfm.h"
->  #include "cqhci.h"
-> @@ -2070,6 +2071,13 @@ static int sdhci_msm_probe(struct 
-> platform_device *pdev)
->  	}
->  	msm_host->bulk_clks[0].clk = clk;
-> 
-> +	/* Make sure that ICC driver is ready for interconnect bandwdith
+> Some developers found parts of my reviews helpful, didn't they?
 
-typo /s/bandwdith/bandwidth
-
-> +	 * scaling before registering the device for OPP.
-> +	 */
-
-/* Check for optional interconnect paths */
-Maybe using ^^ would suffice since
-that's what we are actually doing
-
-Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
-
-> +	ret = dev_pm_opp_of_find_icc_paths(&pdev->dev, NULL);
-> +	if (ret)
-> +		goto bus_clk_disable;
-> +
->  	msm_host->opp_table = dev_pm_opp_set_clkname(&pdev->dev, "core");
->  	if (IS_ERR(msm_host->opp_table)) {
->  		ret = PTR_ERR(msm_host->opp_table);
-
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Overall you are a net negative to kernel development.  Please change
+how you contribute.
