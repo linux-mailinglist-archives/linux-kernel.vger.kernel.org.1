@@ -2,144 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0C21EEF91
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFBC1EEFAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgFECiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 22:38:16 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:49210 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725883AbgFECiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 22:38:15 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 961954AA5641024DAF77;
-        Fri,  5 Jun 2020 10:38:13 +0800 (CST)
-Received: from huawei.com (10.175.101.78) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 5 Jun 2020
- 10:38:07 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <yangyingliang@huawei.com>
-Subject: [PATCH] hfs: fix null-ptr-deref in hfs_find_init()
-Date:   Fri, 5 Jun 2020 11:01:07 +0800
-Message-ID: <1591326067-29972-1-git-send-email-yangyingliang@huawei.com>
-X-Mailer: git-send-email 1.8.3
+        id S1726069AbgFEC5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 22:57:20 -0400
+Received: from mail.windriver.com ([147.11.1.11]:49772 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725954AbgFEC5U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 22:57:20 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 0552uj75005311
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Thu, 4 Jun 2020 19:56:45 -0700 (PDT)
+Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
+ ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 4 Jun 2020 19:56:44 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <balbi@kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] usb: gadget: function: printer: fix use-after-free in __lock_acquire
+Date:   Fri, 5 Jun 2020 11:05:33 +0800
+Message-ID: <20200605030533.10102-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.78]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a null-ptr-deref in hfs_find_init():
+From: Zqiang <qiang.zhang@windriver.com>
 
-[  107.092729] hfs: continuing without an alternate MDB
-[  107.097632] general protection fault, probably for non-canonical address 0xdffffc0000000008: 0000 [#1] SMP KASAN PTI
-[  107.104679] KASAN: null-ptr-deref in range [0x0000000000000040-0x0000000000000047]
-[  107.109100] CPU: 0 PID: 379 Comm: hfs_inject Not tainted 5.7.0-rc7-00001-g24627f5f2973 #897
-[  107.114142] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-[  107.121095] RIP: 0010:hfs_find_init+0x72/0x170
-[  107.123609] Code: c1 ea 03 80 3c 02 00 0f 85 e6 00 00 00 4c 8d 65 40 48 c7 43 18 00 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e a5 00 00 00 8b 45 40 be c0 0c
-[  107.134660] RSP: 0018:ffff88810291f3f8 EFLAGS: 00010202
-[  107.137897] RAX: dffffc0000000000 RBX: ffff88810291f468 RCX: 1ffff110175cdf05
-[  107.141874] RDX: 0000000000000008 RSI: ffff88810291f468 RDI: ffff88810291f480
-[  107.145844] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffed1020381013
-[  107.149431] R10: ffff88810291f500 R11: ffffed1020381012 R12: 0000000000000040
-[  107.152315] R13: 0000000000000000 R14: ffff888101c0814a R15: ffff88810291f468
-[  107.155464] FS:  00000000009ea880(0000) GS:ffff88810c600000(0000) knlGS:0000000000000000
-[  107.159795] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  107.162987] CR2: 00005605a19dd284 CR3: 0000000103a0c006 CR4: 0000000000020ef0
-[  107.166665] Call Trace:
-[  107.167969]  ? find_held_lock+0x33/0x1c0
-[  107.169972]  hfs_ext_read_extent+0x16b/0xb00
-[  107.172092]  ? create_page_buffers+0x14e/0x1b0
-[  107.174303]  ? hfs_free_extents+0x280/0x280
-[  107.176437]  ? lock_downgrade+0x730/0x730
-[  107.178272]  hfs_get_block+0x496/0x8a0
-[  107.179972]  block_read_full_page+0x241/0x8d0
-[  107.181971]  ? hfs_extend_file+0xae0/0xae0
-[  107.183814]  ? end_buffer_async_read_io+0x10/0x10
-[  107.185954]  ? add_to_page_cache_lru+0x13f/0x1f0
-[  107.188006]  ? add_to_page_cache_locked+0x10/0x10
-[  107.190175]  do_read_cache_page+0xc6a/0x1180
-[  107.192096]  ? generic_file_read_iter+0x4c0/0x4c0
-[  107.194234]  ? hfs_btree_open+0x408/0x1000
-[  107.196068]  ? lock_downgrade+0x730/0x730
-[  107.197926]  ? wake_bit_function+0x180/0x180
-[  107.199845]  ? lockdep_init_map_waits+0x267/0x7c0
-[  107.201895]  hfs_btree_open+0x455/0x1000
-[  107.203479]  hfs_mdb_get+0x122c/0x1ae8
-[  107.205065]  ? hfs_mdb_put+0x350/0x350
-[  107.206590]  ? queue_work_node+0x260/0x260
-[  107.208309]  ? rcu_read_lock_sched_held+0xa1/0xd0
-[  107.210227]  ? lockdep_init_map_waits+0x267/0x7c0
-[  107.212144]  ? lockdep_init_map_waits+0x267/0x7c0
-[  107.213979]  hfs_fill_super+0x9ba/0x1280
-[  107.215444]  ? bdev_name.isra.9+0xf1/0x2b0
-[  107.217028]  ? hfs_remount+0x190/0x190
-[  107.218428]  ? pointer+0x5da/0x710
-[  107.219745]  ? file_dentry_name+0xf0/0xf0
-[  107.221262]  ? mount_bdev+0xd1/0x330
-[  107.222592]  ? vsnprintf+0x7bd/0x1250
-[  107.224007]  ? pointer+0x710/0x710
-[  107.225332]  ? down_write+0xe5/0x160
-[  107.226698]  ? hfs_remount+0x190/0x190
-[  107.228120]  ? snprintf+0x91/0xc0
-[  107.229388]  ? vsprintf+0x10/0x10
-[  107.230628]  ? sget+0x3af/0x4a0
-[  107.231848]  ? hfs_remount+0x190/0x190
-[  107.233300]  mount_bdev+0x26e/0x330
-[  107.234611]  ? hfs_statfs+0x540/0x540
-[  107.236015]  legacy_get_tree+0x101/0x1f0
-[  107.237431]  ? security_capable+0x58/0x90
-[  107.238832]  vfs_get_tree+0x89/0x2d0
-[  107.240082]  ? ns_capable_common+0x5c/0xd0
-[  107.241521]  do_mount+0xd8a/0x1720
-[  107.242727]  ? lock_downgrade+0x730/0x730
-[  107.244116]  ? copy_mount_string+0x20/0x20
-[  107.245557]  ? _copy_from_user+0xbe/0x100
-[  107.246967]  ? memdup_user+0x47/0x70
-[  107.248212]  __x64_sys_mount+0x162/0x1b0
-[  107.249537]  do_syscall_64+0xa5/0x4f0
-[  107.250742]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
-[  107.252369] RIP: 0033:0x44e8ea
-[  107.253360] Code: 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-[  107.259240] RSP: 002b:00007ffd910e4c28 EFLAGS: 00000207 ORIG_RAX: 00000000000000a5
-[  107.261668] RAX: ffffffffffffffda RBX: 0000000000400400 RCX: 000000000044e8ea
-[  107.263920] RDX: 000000000049321e RSI: 0000000000493222 RDI: 00007ffd910e4d00
-[  107.266177] RBP: 00007ffd910e5d10 R08: 0000000000000000 R09: 000000000000000a
-[  107.268451] R10: 0000000000000001 R11: 0000000000000207 R12: 0000000000401c40
-[  107.270721] R13: 0000000000000000 R14: 00000000006ba018 R15: 0000000000000000
-[  107.273025] Modules linked in:
-[  107.274029] Dumping ftrace buffer:
-[  107.275121]    (ftrace buffer empty)
-[  107.276370] ---[ end trace c5e0b9d684f3570e ]---
+Fix this by increase object reference count.
 
-We need check tree in hfs_find_init().
+BUG: KASAN: use-after-free in __lock_acquire+0x3fd4/0x4180
+kernel/locking/lockdep.c:3831
+Read of size 8 at addr ffff8880683b0018 by task syz-executor.0/3377
 
-https://lore.kernel.org/linux-fsdevel/20180419024358.GA5215@bombadil.infradead.org/
-https://marc.info/?l=linux-fsdevel&m=152406881024567&w=2
-References: CVE-2018-12928
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+CPU: 1 PID: 3377 Comm: syz-executor.0 Not tainted 5.6.11 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xce/0x128 lib/dump_stack.c:118
+ print_address_description.constprop.4+0x21/0x3c0 mm/kasan/report.c:374
+ __kasan_report+0x131/0x1b0 mm/kasan/report.c:506
+ kasan_report+0x12/0x20 mm/kasan/common.c:641
+ __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:135
+ __lock_acquire+0x3fd4/0x4180 kernel/locking/lockdep.c:3831
+ lock_acquire+0x127/0x350 kernel/locking/lockdep.c:4488
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x35/0x50 kernel/locking/spinlock.c:159
+ printer_ioctl+0x4a/0x110 drivers/usb/gadget/function/f_printer.c:723
+ vfs_ioctl fs/ioctl.c:47 [inline]
+ ksys_ioctl+0xfb/0x130 fs/ioctl.c:763
+ __do_sys_ioctl fs/ioctl.c:772 [inline]
+ __se_sys_ioctl fs/ioctl.c:770 [inline]
+ __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:770
+ do_syscall_64+0x9e/0x510 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x4531a9
+Code: ed 60 fc ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 0f 83 bb 60 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fd14ad72c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000073bfa8 RCX: 00000000004531a9
+RDX: fffffffffffffff9 RSI: 000000000000009e RDI: 0000000000000003
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004bbd61
+R13: 00000000004d0a98 R14: 00007fd14ad736d4 R15: 00000000ffffffff
+
+Allocated by task 2393:
+ save_stack+0x21/0x90 mm/kasan/common.c:72
+ set_track mm/kasan/common.c:80 [inline]
+ __kasan_kmalloc.constprop.3+0xa7/0xd0 mm/kasan/common.c:515
+ kasan_kmalloc+0x9/0x10 mm/kasan/common.c:529
+ kmem_cache_alloc_trace+0xfa/0x2d0 mm/slub.c:2813
+ kmalloc include/linux/slab.h:555 [inline]
+ kzalloc include/linux/slab.h:669 [inline]
+ gprinter_alloc+0xa1/0x870 drivers/usb/gadget/function/f_printer.c:1416
+ usb_get_function+0x58/0xc0 drivers/usb/gadget/functions.c:61
+ config_usb_cfg_link+0x1ed/0x3e0 drivers/usb/gadget/configfs.c:444
+ configfs_symlink+0x527/0x11d0 fs/configfs/symlink.c:202
+ vfs_symlink+0x33d/0x5b0 fs/namei.c:4201
+ do_symlinkat+0x11b/0x1d0 fs/namei.c:4228
+ __do_sys_symlinkat fs/namei.c:4242 [inline]
+ __se_sys_symlinkat fs/namei.c:4239 [inline]
+ __x64_sys_symlinkat+0x73/0xb0 fs/namei.c:4239
+ do_syscall_64+0x9e/0x510 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Freed by task 3368:
+ save_stack+0x21/0x90 mm/kasan/common.c:72
+ set_track mm/kasan/common.c:80 [inline]
+ kasan_set_free_info mm/kasan/common.c:337 [inline]
+ __kasan_slab_free+0x135/0x190 mm/kasan/common.c:476
+ kasan_slab_free+0xe/0x10 mm/kasan/common.c:485
+ slab_free_hook mm/slub.c:1444 [inline]
+ slab_free_freelist_hook mm/slub.c:1477 [inline]
+ slab_free mm/slub.c:3034 [inline]
+ kfree+0xf7/0x410 mm/slub.c:3995
+ gprinter_free+0x49/0xd0 drivers/usb/gadget/function/f_printer.c:1353
+ usb_put_function+0x38/0x50 drivers/usb/gadget/functions.c:87
+ config_usb_cfg_unlink+0x2db/0x3b0 drivers/usb/gadget/configfs.c:485
+ configfs_unlink+0x3b9/0x7f0 fs/configfs/symlink.c:250
+ vfs_unlink+0x287/0x570 fs/namei.c:4073
+ do_unlinkat+0x4f9/0x620 fs/namei.c:4137
+ __do_sys_unlink fs/namei.c:4184 [inline]
+ __se_sys_unlink fs/namei.c:4182 [inline]
+ __x64_sys_unlink+0x42/0x50 fs/namei.c:4182
+ do_syscall_64+0x9e/0x510 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+The buggy address belongs to the object at ffff8880683b0000
+ which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 24 bytes inside of
+ 1024-byte region [ffff8880683b0000, ffff8880683b0400)
+The buggy address belongs to the page:
+page:ffffea0001a0ec00 refcount:1 mapcount:0 mapping:ffff88806c00e300
+index:0xffff8880683b1800 compound_mapcount: 0
+flags: 0x100000000010200(slab|head)
+raw: 0100000000010200 0000000000000000 0000000600000001 ffff88806c00e300
+raw: ffff8880683b1800 000000008010000a 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Reported-by: Kyungtae Kim <kt0755@gmail.com>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 ---
- fs/hfs/bfind.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/gadget/function/f_printer.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/fs/hfs/bfind.c b/fs/hfs/bfind.c
-index 4af318f..aafa6bd 100644
---- a/fs/hfs/bfind.c
-+++ b/fs/hfs/bfind.c
-@@ -16,6 +16,8 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
- {
- 	void *ptr;
+diff --git a/drivers/usb/gadget/function/f_printer.c b/drivers/usb/gadget/function/f_printer.c
+index 9c7ed2539ff7..8ed1295d7e35 100644
+--- a/drivers/usb/gadget/function/f_printer.c
++++ b/drivers/usb/gadget/function/f_printer.c
+@@ -31,6 +31,7 @@
+ #include <linux/types.h>
+ #include <linux/ctype.h>
+ #include <linux/cdev.h>
++#include <linux/kref.h>
  
-+	if (!tree)
-+		return -EINVAL;
- 	fd->tree = tree;
- 	fd->bnode = NULL;
- 	ptr = kmalloc(tree->max_key_len * 2 + 4, GFP_KERNEL);
+ #include <asm/byteorder.h>
+ #include <linux/io.h>
+@@ -64,7 +65,7 @@ struct printer_dev {
+ 	struct usb_gadget	*gadget;
+ 	s8			interface;
+ 	struct usb_ep		*in_ep, *out_ep;
+-
++	struct kref             kref;
+ 	struct list_head	rx_reqs;	/* List of free RX structs */
+ 	struct list_head	rx_reqs_active;	/* List of Active RX xfers */
+ 	struct list_head	rx_buffers;	/* List of completed xfers */
+@@ -218,6 +219,13 @@ static inline struct usb_endpoint_descriptor *ep_desc(struct usb_gadget *gadget,
+ 
+ /*-------------------------------------------------------------------------*/
+ 
++static void printer_dev_free(struct kref *kref)
++{
++	struct printer_dev *dev = container_of(kref, struct printer_dev, kref);
++
++	kfree(dev);
++}
++
+ static struct usb_request *
+ printer_req_alloc(struct usb_ep *ep, unsigned len, gfp_t gfp_flags)
+ {
+@@ -348,6 +356,7 @@ printer_open(struct inode *inode, struct file *fd)
+ 
+ 	spin_unlock_irqrestore(&dev->lock, flags);
+ 
++	kref_get(&dev->kref);
+ 	DBG(dev, "printer_open returned %x\n", ret);
+ 	return ret;
+ }
+@@ -365,6 +374,7 @@ printer_close(struct inode *inode, struct file *fd)
+ 	dev->printer_status &= ~PRINTER_SELECTED;
+ 	spin_unlock_irqrestore(&dev->lock, flags);
+ 
++	kref_put(&dev->kref, printer_dev_free);
+ 	DBG(dev, "printer_close\n");
+ 
+ 	return 0;
+@@ -1350,7 +1360,8 @@ static void gprinter_free(struct usb_function *f)
+ 	struct f_printer_opts *opts;
+ 
+ 	opts = container_of(f->fi, struct f_printer_opts, func_inst);
+-	kfree(dev);
++
++	kref_put(&dev->kref, printer_dev_free);
+ 	mutex_lock(&opts->lock);
+ 	--opts->refcnt;
+ 	mutex_unlock(&opts->lock);
+@@ -1419,6 +1430,7 @@ static struct usb_function *gprinter_alloc(struct usb_function_instance *fi)
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+ 
++	kref_init(&dev->kref);
+ 	++opts->refcnt;
+ 	dev->minor = opts->minor;
+ 	dev->pnp_string = opts->pnp_string;
 -- 
-1.8.3
+2.24.1
 
