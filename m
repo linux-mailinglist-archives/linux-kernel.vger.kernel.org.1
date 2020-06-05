@@ -2,136 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65331EF820
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 14:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE601EF828
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 14:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgFEMlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 08:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726537AbgFEMlr (ORCPT
+        id S1726802AbgFEMmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 08:42:52 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33110 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726409AbgFEMmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 08:41:47 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8063AC08C5C4
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 05:41:46 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id c194so8085437oig.5
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 05:41:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b8lHa3VSsS3EH4GstrmtufuSPQnby9wIaLbKSXX2gR4=;
-        b=Y0FSL3jop1Ktvp+81IKa884hHcJEOFCxyltl1k0MHEops3eSwWVVNdvKPpCE7Zx9WU
-         //QeTiDmbXPc/dqdkmu7fHeWYxTzH103/85ltphoFY/gEm8OQl2oqXW4w61a7KN1Jhgb
-         CSloh85q5YYyHCGG2UV5knxi5s6dBfhtE6irk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b8lHa3VSsS3EH4GstrmtufuSPQnby9wIaLbKSXX2gR4=;
-        b=WNbJhFEcQOR2X0qZVcArvoDdfX8kdO2QSKdlx7vBhic1ntv3Xok9mwzc+k2/C/2H9x
-         7ktWMeUbXF1AOuCnXuw7S9/MGFuIX+Vire9L0l5h8OG2zC52hfCwypL0u6YMquuwMoMI
-         0+2js2tUxxA1ZZGY7CF0pKZkNB0EVi+gZjfzmzwfb4jJS4bpD9TTvOZ4qvdRxFXHYPcd
-         sosKigin8GjTSuVq1j7ErwSN/N/l6KrLC0ua6TNyesJqF8yydITgGfmeRwuatpErWxp0
-         m6UingOsHfUhMyRxiPrpCjOc0lDSCIuvWrhrykSLNnJbSoqkzDxZGdhn80uOXaGKIRw2
-         wfWA==
-X-Gm-Message-State: AOAM530q0WBwZxhtFMXFKQeECapQfEkIV5jHAZMZ7y4NJEFwiPDXgDX5
-        tlrmKTLkXz36EadONomrPqOWKQn4k8ND5ilnvMICJQ==
-X-Google-Smtp-Source: ABdhPJxDBFuxj/jT06KYKDwsSDsZtaJk7DJpn+CTYVJxr0/W+a1EfH/HPafid8DVkUdwYip+bwgoQY+h1NITtsGMh7k=
-X-Received: by 2002:aca:ed42:: with SMTP id l63mr1645633oih.101.1591360905783;
- Fri, 05 Jun 2020 05:41:45 -0700 (PDT)
+        Fri, 5 Jun 2020 08:42:51 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 055Cgjed040494;
+        Fri, 5 Jun 2020 07:42:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591360965;
+        bh=oT1gIBxDDUEHLfBPD+U2tTYn+54H+gzmNsjUa42oJTI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=U+K1MK30/03I0t/wRyi73OF265yw11zdP54ULxAbvMhKNLkLMsnNAlWiYA0H7vLqi
+         MMzFsMl4Qd41UpXPE/e7DKIWGrS0Wh35/tRJXe7OVNRGxxSc6bNJMdiKEg/ABI7Gvk
+         6rx1gjhrlvHjXJm+bNvaHMBF6MXSy8C3GJX3whOg=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 055CgjWU068954
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 5 Jun 2020 07:42:45 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 5 Jun
+ 2020 07:42:45 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 5 Jun 2020 07:42:45 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 055Cgi4D020074;
+        Fri, 5 Jun 2020 07:42:45 -0500
+Subject: Re: [PATCH v26 01/15] dt: bindings: Add multicolor class dt bindings
+ documention
+To:     Rob Herring <robh@kernel.org>
+CC:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>,
+        <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200604120504.32425-1-dmurphy@ti.com>
+ <20200604120504.32425-2-dmurphy@ti.com> <20200604224026.GA4153787@bogus>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <8b32231a-90d8-258e-d828-362af8cbfbb5@ti.com>
+Date:   Fri, 5 Jun 2020 07:42:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
- <20200604081224.863494-14-daniel.vetter@ffwll.ch> <e0bfd872-5d38-6718-a23d-6b14b3c14f25@amd.com>
-In-Reply-To: <e0bfd872-5d38-6718-a23d-6b14b3c14f25@amd.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Fri, 5 Jun 2020 14:41:34 +0200
-Message-ID: <CAKMK7uG6VN93ZS3Rbi6edvDAMefXJ6CotMx5j916VcUy2nuvqQ@mail.gmail.com>
-Subject: Re: [PATCH 13/18] drm/amdgpu/dc: Stop dma_resv_lock inversion in commit_tail
-To:     Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200604224026.GA4153787@bogus>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 10:30 AM Pierre-Eric Pelloux-Prayer
-<pierre-eric.pelloux-prayer@amd.com> wrote:
->
-> Hi Daniel,
->
-> On 04/06/2020 10:12, Daniel Vetter wrote:
-> [...]
-> > @@ -6910,7 +6910,11 @@ static void amdgpu_dm_commit_planes(struct drm_atomic_state *state,
-> >                * explicitly on fences instead
-> >                * and in general should be called for
-> >                * blocking commit to as per framework helpers
-> > +              *
-> > +              * Yes, this deadlocks, since you're calling dma_resv_lock in a
-> > +              * path that leads to a dma_fence_signal(). Don't do that.
-> >                */
-> > +#if 0
-> >               r = amdgpu_bo_reserve(abo, true);
-> >               if (unlikely(r != 0))
-> >                       DRM_ERROR("failed to reserve buffer before flip\n");
-> > @@ -6920,6 +6924,12 @@ static void amdgpu_dm_commit_planes(struct drm_atomic_state *state,
-> >               tmz_surface = amdgpu_bo_encrypted(abo);
-> >
-> >               amdgpu_bo_unreserve(abo);
-> > +#endif
-> > +             /*
-> > +              * this races anyway, so READ_ONCE isn't any better or worse
-> > +              * than the stuff above. Except the stuff above can deadlock.
-> > +              */
-> > +             tiling_flags = READ_ONCE(abo->tiling_flags);
->
-> With this change "tmz_surface" won't be initialized properly.
-> Adding the following line should fix it:
->
->   tmz_surface = READ_ONCE(abo->flags) & AMDGPU_GEM_CREATE_ENCRYPTED;
+Rob
 
-So to make this clear, I'm not really proposing to fix up all the
-drivers in detail. There's a lot more bugs in all the other drivers,
-I'm pretty sure. The driver fixups really are just quick hacks to
-illustrate the problem, and at least in some cases, maybe illustrate a
-possible solution.
-
-For the real fixes I think this needs driver teams working on this,
-and make sure it's all solid. I can help a bit with review (especially
-for placing the annotations, e.g. the one I put in cs_submit()
-annotates a bit too much), but that's it.
-
-Also I think the patch is from before tmz landed, and I just blindly
-rebased over it :-)
--Daniel
-
+On 6/4/20 5:40 PM, Rob Herring wrote:
+> On Thu, Jun 04, 2020 at 07:04:50AM -0500, Dan Murphy wrote:
+>> Add DT bindings for the LEDs multicolor class framework.
+>> Add multicolor ID to the color ID list for device tree bindings.
+>>
+>> CC: Rob Herring <robh@kernel.org>
+>> Acked-by: Pavel Machek <pavel@ucw.cz>
+>> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> ---
+>>   .../bindings/leds/leds-class-multicolor.yaml  | 39 +++++++++++++++++++
+>>   include/dt-bindings/leds/common.h             |  3 +-
+>>   2 files changed, 41 insertions(+), 1 deletion(-)
+>>   create mode 100644 Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml b/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
+>> new file mode 100644
+>> index 000000000000..6cab2a1405e1
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
+>> @@ -0,0 +1,39 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/leds/leds-class-multicolor.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Common properties for the multicolor LED class.
+>> +
+>> +maintainers:
+>> +  - Dan Murphy <dmurphy@ti.com>
+>> +
+>> +description: |
+>> +  Bindings for multi color LEDs show how to describe current outputs of
+>> +  either integrated multi-color LED elements (like RGB, RGBW, RGBWA-UV
+>> +  etc.) or standalone LEDs, to achieve logically grouped multi-color LED
+>> +  modules. This is achieved by adding multi-led nodes layer to the
+>> +  monochrome LED bindings.
+>> +  The nodes and properties defined in this document are unique to the multicolor
+>> +  LED class.  Common LED nodes and properties are inherited from the common.txt
+>> +  within this documentation directory.
+>> +
+>> +patternProperties:
+>> +  "^multi-led@([0-9a-f])$":
+>> +    type: object
+>> +    description: Represents the LEDs that are to be grouped.
+>> +    properties:
+>> +      #allOf:
+>> +        #- $ref: "common.yaml#"
+> Why is this commented out? Other than it is wrong. Uncommented, this
+> would be defining a DT property called 'allOf'.
 >
->
-> Pierre-Eric
->
->
-> >
-> >               fill_dc_plane_info_and_addr(
-> >                       dm->adev, new_plane_state, tiling_flags,
-> >
+> You can drop 'allOf' now. '$ref' should be at the level of 'properties'.
 
+I used the example from the rohm,bd71828-leds.yaml where these lines appear.
 
+So that binding is wrong as well.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+>> +
+>> +      color:
+>> +        $ref: /schemas/types.yaml#definitions/uint32
+> common.yaml already defines the type, so drop this.
+
+OK
+
+Dan
+
