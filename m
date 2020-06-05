@@ -2,180 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141201EEF4D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD311EEF5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726016AbgFECIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 22:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbgFECIy (ORCPT
+        id S1726096AbgFECMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 22:12:17 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:16941 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725601AbgFECMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 22:08:54 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A062FC08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 19:08:54 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id w90so7254856qtd.8
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 19:08:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Vf1+KHa5uVuveCfYB76JgHx3nwRL/i8E8jzR5pXq5CM=;
-        b=euNrCaxH1KD7AV8Ltzxg+pF2OicrHC9eosYbKlPS9yspzyxSLHdEDhK+gwP174CANT
-         I726a5JHAECbl2yPLpfkoLZJks3n2YOWhSdOa3N/UZAoESjmvTFcyhPuiT502bf4cwfk
-         kGgmZctsJzKwL+RfJOv0eGa2ZxtGNtBtpnsV7YyldrjTJV2dng6ZlVB+wAIn+aCsVL5+
-         W1DRqtWE8gUFRMnjVRllJjW9SbjQXLWLLnW89vC2/NRnlVPlmqbnZ1kuXLnpHQEjg5w5
-         7jUU4ot8icIRIRTXimqXnU7/smEBkAb4QQxctoSMlCq1pMCCtxqTgEANHMs9JVv7MrZU
-         4r6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vf1+KHa5uVuveCfYB76JgHx3nwRL/i8E8jzR5pXq5CM=;
-        b=BuAp9+dTjjddrl7mqvvZFuGi5X9cEAzIFLuyLSl/gbxoJDjWiDvdRVBhyugfxiIbTj
-         FbuDCWOb/f9+hGzFfOS4ToImKwZeFHV34qiGzsD7uG4jlChttpIW3nHC4bNQnvmJCzaM
-         8XO57pjrXl4LM6s8uKXQzS2/avKnxOS7cmNcohzOrxnj8OLCQnDNCQN3YCyI9/bCTe/1
-         uZvIhW49lROk01nMwvVWBti2dO+n/nO5f3A69BFIOeiL4yiKFeaxTvdbfHo5jKVSVHDg
-         hYhw5kkFSU3tX3ZgD6XQaGzkkFDvgrCMiAhw5hjMibat2yUl58PGTYtjbu9ktEWAaoR2
-         QPcQ==
-X-Gm-Message-State: AOAM530UVfOSjvhMQ+1qwe80Ci1On3tac0qfrIv21BN5SkWYyrvxuvtK
-        cq8vtE/G6kfpTEnPFyePx48TDRZxHEaLnyEzuTCNTyia7+cKUw==
-X-Google-Smtp-Source: ABdhPJxOJKnhu6jfZnkPiuUcCcpd1Ww4p4I+9IJ5b5szM6uLrmJpaYMzwcR+/qwxiGYdRlE8nD9F2V9RjT/WG6zQjP0=
-X-Received: by 2002:ac8:7ca:: with SMTP id m10mr7590184qth.86.1591322932936;
- Thu, 04 Jun 2020 19:08:52 -0700 (PDT)
+        Thu, 4 Jun 2020 22:12:16 -0400
+X-IronPort-AV: E=Sophos;i="5.73,474,1583164800"; 
+   d="scan'208";a="93871124"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 05 Jun 2020 10:12:12 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id DF8CC4BCC8A8;
+        Fri,  5 Jun 2020 10:12:07 +0800 (CST)
+Received: from [10.167.225.141] (10.167.225.141) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Fri, 5 Jun 2020 10:12:08 +0800
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogUmU6IFtSRkMgUEFUQ0ggMC84XSBkYXg6IEFkZCBh?=
+ =?UTF-8?Q?_dax-rmap_tree_to_support_reflink?=
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+CC:     Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "Qi, Fuli" <qi.fuli@fujitsu.com>,
+        "Gotou, Yasunori" <y-goto@fujitsu.com>
+References: <20200427084750.136031-1-ruansy.fnst@cn.fujitsu.com>
+ <20200427122836.GD29705@bombadil.infradead.org>
+ <em33c55fa5-15ca-4c46-8c27-6b0300fa4e51@g08fnstd180058>
+ <20200428064318.GG2040@dread.disaster.area>
+ <153e13e6-8685-fb0d-6bd3-bb553c06bf51@cn.fujitsu.com>
+ <20200604145107.GA1334206@magnolia>
+From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Message-ID: <b9f3e089-476d-b31f-c2f2-0dfb8741b584@cn.fujitsu.com>
+Date:   Fri, 5 Jun 2020 10:11:51 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <CAOnJCU+jkYSVa-vMjabdnRpubK0c52VgjjVreC=07L_Vr3C64g@mail.gmail.com>
- <mhng-6a5f967f-96fa-4476-ad99-50b2c3962a66@palmerdabbelt-glaptop1>
-In-Reply-To: <mhng-6a5f967f-96fa-4476-ad99-50b2c3962a66@palmerdabbelt-glaptop1>
-From:   Vincent Chen <vincent.chen@sifive.com>
-Date:   Fri, 5 Jun 2020 10:08:42 +0800
-Message-ID: <CABvJ_xiJ9iMiqCo-xtCvsOTQcsUwAXQmunbz1a+Qkf__5NJw_w@mail.gmail.com>
-Subject: Re: [GIT PULL] RISC-V Patches for the 5.8 Merge Window, Part 1
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Atish Patra <atishp@atishpatra.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200604145107.GA1334206@magnolia>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.167.225.141]
+X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
+X-yoursite-MailScanner-ID: DF8CC4BCC8A8.AF5BC
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 4:15 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->
-> On Thu, 04 Jun 2020 12:50:13 PDT (-0700), atishp@atishpatra.org wrote:
-> > On Thu, Jun 4, 2020 at 11:57 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> >>
-> >> The following changes since commit b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce:
-> >>
-> >>   Linux 5.7-rc6 (2020-05-17 16:48:37 -0700)
-> >>
-> >> are available in the Git repository at:
-> >>
-> >>   git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.8-mw0
-> >>
-> >> for you to fetch changes up to 09c0533d129ce460e6214c14f744ddbac3733889:
-> >>
-> >>   soc: sifive: l2 cache: Mark l2_get_priv_group as static (2020-05-28 15:57:49 -0700)
-> >>
-> >> ----------------------------------------------------------------
-> >> RISC-V Patches for the 5.8 Merge Window, Part 1
-> >>
-> >> * The remainder of the code necessary to support the Kendryte K210.
-> >>     * Support for building device trees into the kernel, as the K210 doesn't
-> >>       have a bootloader that provides one.
-> >>     * A K210 device tree and the associated defconfig update.
-> >>     * Support for skipping PMP initialization on systems that trap on PMP
-> >>       accesses rather than treating them as WARL.
-> >> * Support for KGDB.
-> >> * Improvements to text patching.
-> >> * Some cleanups to the SiFive L2 cache driver.
-> >>
-> >> I may have a second part, but I wanted to get this out earlier rather than
-> >> later as they've been ready to go for a while now.
-> >>
-> > Hi Palmer,
-> > Can you also add the run time cpu hotplug fix patch if it is not too late?
-> >
-> > https://patchwork.kernel.org/patch/11581221/
-> >
-> > Without the patch, cpu hotplug will broken for 5.8-rc1 too.
->
-> It looks like there's enough to warrant a part 2 (that fix, the vDSO stuff,
-> some Kconfig stuff, and the interrupt stuff).  Some of that was held back to
-> avoid conflicts, so it'd be easier for me if this just goes in as-is and I can
-> start putting together another PR based on the post-merge commit.
->
-> >> ----------------------------------------------------------------
-> >> Damien Le Moal (1):
-> >>       riscv: K210: Update defconfig
-> >>
-> >> Palmer Dabbelt (5):
-> >>       riscv: Allow device trees to be built into the kernel
-> >>       riscv: K210: Add a built-in device tree
-> >>       RISC-V: Skip setting up PMPs on traps
-> >>       soc: sifive: l2 cache: Eliminate an unsigned zero compare warning
-> >>       soc: sifive: l2 cache: Mark l2_get_priv_group as static
-> >>
-> >> Vincent Chen (4):
-> >>       kgdb: Add kgdb_has_hit_break function
-> >>       riscv: Add KGDB support
-> >>       riscv: Use the XML target descriptions to report 3 system registers
-> >>       riscv: Add SW single-step support for KDB
-> >>
-Hi Palmer:
-The "kgdb: enable arch to support XML packet support." patch seems to
-be missing in this pull request. By the way, I recently sent the v5
-KGDB patch set to fix some compile warning reported by Kbuild system
-and select CONFIG ARCH_OPTIONAL_KERNEL_RWX in Kconfig to enable KGDB
-to insert software breakpoints. If the v5 KGDB patch set is OK for
-you, could you replace it with the v5 KGDB patch set?
-Thank you.
 
-> >> Yash Shah (2):
-> >>       riscv: cacheinfo: Implement cache_get_priv_group with a generic ops structure
-> >>       riscv: Add support to determine no. of L2 cache way enabled
-> >>
-> >> Zong Li (3):
-> >>       riscv: Remove the 'riscv_' prefix of function name
-> >>       riscv: Use NOKPROBE_SYMBOL() instead of __krpobes annotation
-> >>       riscv: Use text_mutex instead of patch_lock
-> >>
-> >>  arch/riscv/Kbuild                       |   1 +
-> >>  arch/riscv/Kconfig                      |   7 +
-> >>  arch/riscv/Kconfig.socs                 |  17 +-
-> >>  arch/riscv/boot/dts/Makefile            |   2 +
-> >>  arch/riscv/boot/dts/kendryte/Makefile   |   4 +-
-> >>  arch/riscv/configs/nommu_k210_defconfig |   7 +-
-> >>  arch/riscv/include/asm/cacheinfo.h      |  15 ++
-> >>  arch/riscv/include/asm/gdb_xml.h        | 117 ++++++++++
-> >>  arch/riscv/include/asm/kdebug.h         |  12 +
-> >>  arch/riscv/include/asm/kgdb.h           | 112 +++++++++
-> >>  arch/riscv/include/asm/parse_asm.h      | 219 ++++++++++++++++++
-> >>  arch/riscv/include/asm/patch.h          |   4 +-
-> >>  arch/riscv/include/asm/soc.h            |  39 ++++
-> >>  arch/riscv/kernel/Makefile              |   1 +
-> >>  arch/riscv/kernel/cacheinfo.c           |  17 ++
-> >>  arch/riscv/kernel/ftrace.c              |  15 +-
-> >>  arch/riscv/kernel/head.S                |  11 +-
-> >>  arch/riscv/kernel/kgdb.c                | 390 ++++++++++++++++++++++++++++++++
-> >>  arch/riscv/kernel/patch.c               |  46 ++--
-> >>  arch/riscv/kernel/setup.c               |   4 +
-> >>  arch/riscv/kernel/soc.c                 |  27 +++
-> >>  arch/riscv/kernel/traps.c               |   5 +
-> >>  arch/riscv/kernel/vmlinux.lds.S         |   5 +
-> >>  arch/riscv/mm/init.c                    |   9 +
-> >>  drivers/soc/kendryte/k210-sysctl.c      |  12 +
-> >>  drivers/soc/sifive/sifive_l2_cache.c    |  40 +++-
-> >>  kernel/debug/debug_core.c               |  12 +
-> >>  27 files changed, 1119 insertions(+), 31 deletions(-)
-> >>  create mode 100644 arch/riscv/include/asm/cacheinfo.h
-> >>  create mode 100644 arch/riscv/include/asm/gdb_xml.h
-> >>  create mode 100644 arch/riscv/include/asm/kdebug.h
-> >>  create mode 100644 arch/riscv/include/asm/kgdb.h
-> >>  create mode 100644 arch/riscv/include/asm/parse_asm.h
-> >>  create mode 100644 arch/riscv/kernel/kgdb.c
-> >>
->
+
+On 2020/6/4 下午10:51, Darrick J. Wong wrote:
+> On Thu, Jun 04, 2020 at 03:37:42PM +0800, Ruan Shiyang wrote:
+>>
+>>
+>> On 2020/4/28 下午2:43, Dave Chinner wrote:
+>>> On Tue, Apr 28, 2020 at 06:09:47AM +0000, Ruan, Shiyang wrote:
+>>>>
+>>>> 在 2020/4/27 20:28:36, "Matthew Wilcox" <willy@infradead.org> 写道:
+>>>>
+>>>>> On Mon, Apr 27, 2020 at 04:47:42PM +0800, Shiyang Ruan wrote:
+>>>>>>    This patchset is a try to resolve the shared 'page cache' problem for
+>>>>>>    fsdax.
+>>>>>>
+>>>>>>    In order to track multiple mappings and indexes on one page, I
+>>>>>>    introduced a dax-rmap rb-tree to manage the relationship.  A dax entry
+>>>>>>    will be associated more than once if is shared.  At the second time we
+>>>>>>    associate this entry, we create this rb-tree and store its root in
+>>>>>>    page->private(not used in fsdax).  Insert (->mapping, ->index) when
+>>>>>>    dax_associate_entry() and delete it when dax_disassociate_entry().
+>>>>>
+>>>>> Do we really want to track all of this on a per-page basis?  I would
+>>>>> have thought a per-extent basis was more useful.  Essentially, create
+>>>>> a new address_space for each shared extent.  Per page just seems like
+>>>>> a huge overhead.
+>>>>>
+>>>> Per-extent tracking is a nice idea for me.  I haven't thought of it
+>>>> yet...
+>>>>
+>>>> But the extent info is maintained by filesystem.  I think we need a way
+>>>> to obtain this info from FS when associating a page.  May be a bit
+>>>> complicated.  Let me think about it...
+>>>
+>>> That's why I want the -user of this association- to do a filesystem
+>>> callout instead of keeping it's own naive tracking infrastructure.
+>>> The filesystem can do an efficient, on-demand reverse mapping lookup
+>>> from it's own extent tracking infrastructure, and there's zero
+>>> runtime overhead when there are no errors present.
+>>
+>> Hi Dave,
+>>
+>> I ran into some difficulties when trying to implement the per-extent rmap
+>> tracking.  So, I re-read your comments and found that I was misunderstanding
+>> what you described here.
+>>
+>> I think what you mean is: we don't need the in-memory dax-rmap tracking now.
+>> Just ask the FS for the owner's information that associate with one page
+>> when memory-failure.  So, the per-page (even per-extent) dax-rmap is
+>> needless in this case.  Is this right?
+> 
+> Right.  XFS already has its own rmap tree.
+> 
+>> Based on this, we only need to store the extent information of a fsdax page
+>> in its ->mapping (by searching from FS).  Then obtain the owners of this
+>> page (also by searching from FS) when memory-failure or other rmap case
+>> occurs.
+> 
+> I don't even think you need that much.  All you need is the "physical"
+> offset of that page within the pmem device (e.g. 'this is the 307th 4k
+> page == offset 1257472 since the start of /dev/pmem0') and xfs can look
+> up the owner of that range of physical storage and deal with it as
+> needed.
+
+Yes, I think so.
+
+> 
+>> So, a fsdax page is no longer associated with a specific file, but with a
+>> FS(or the pmem device).  I think it's easier to understand and implement.
+> 
+> Yes.  I also suspect this will be necessary to support reflink...
+> 
+> --D
+
+OK, Thank you very much.
+
+
+--
+Thanks,
+Ruan Shiyang.
+
+> 
+>>
+>> --
+>> Thanks,
+>> Ruan Shiyang.
+>>>
+>>> At the moment, this "dax association" is used to "report" a storage
+>>> media error directly to userspace. I say "report" because what it
+>>> does is kill userspace processes dead. The storage media error
+>>> actually needs to be reported to the owner of the storage media,
+>>> which in the case of FS-DAX is the filesytem.
+>>>
+>>> That way the filesystem can then look up all the owners of that bad
+>>> media range (i.e. the filesystem block it corresponds to) and take
+>>> appropriate action. e.g.
+>>>
+>>> - if it falls in filesytem metadata, shutdown the filesystem
+>>> - if it falls in user data, call the "kill userspace dead" routines
+>>>     for each mapping/index tuple the filesystem finds for the given
+>>>     LBA address that the media error occurred.
+>>>
+>>> Right now if the media error is in filesystem metadata, the
+>>> filesystem isn't even told about it. The filesystem can't even shut
+>>> down - the error is just dropped on the floor and it won't be until
+>>> the filesystem next tries to reference that metadata that we notice
+>>> there is an issue.
+>>>
+>>> Cheers,
+>>>
+>>> Dave.
+>>>
+>>
+>>
+> 
+> 
+
+
