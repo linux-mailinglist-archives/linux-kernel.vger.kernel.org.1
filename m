@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD2A1EF62B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 13:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81451EF636
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 13:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbgFELIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 07:08:36 -0400
-Received: from www413.your-server.de ([88.198.28.140]:37706 "EHLO
-        www413.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726225AbgFELIg (ORCPT
+        id S1726828AbgFELLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 07:11:07 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:36006 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726225AbgFELLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 07:08:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=cyberus-technology.de; s=default1911; h=Content-Transfer-Encoding:
-        MIME-Version:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=3NH0uxciW9wNmCNchpq6bM+XDejEEyxzy2dajdLeTWo=; b=RLBZLCNnSMgKapiRRH0snatQ9
-        7hWvpFAqDlDO/6hY0S3n1zww8LPaufZjRi69WpU2U9fD/aYUcP1xk7PJe3v9/kcZ0W1PTQddayhmW
-        L3B1rg7BEWjG38nnXKuA5UsVYwKI7DfJkkjkZWWRTSHvYMSMUJnSoxk4tGKj1uKugSaQbHmx8XLpR
-        dzCjXFVT/n3uG5vBmyIowx3tBTerdgF9VGapd8LQmu6oMmTAFo5j9kFC8p8IeBvLrzSQsR3mm5B66
-        nH5FwNMz8ulminYxmJM5+11f1wd81YnpUU0e4F8m7DDBmVu42FQfAwTb4ow24fKn6yGLGqGFro6+c
-        3/0FVlvuA==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www413.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <julian.stecklina@cyberus-technology.de>)
-        id 1jhADB-0004sx-PN; Fri, 05 Jun 2020 13:08:33 +0200
-Received: from [2001:16b8:57f2:b00:9e42:55f5:e968:2436] (helo=linux.fritz.box)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <julian.stecklina@cyberus-technology.de>)
-        id 1jhADB-0006U5-H8; Fri, 05 Jun 2020 13:08:33 +0200
-Message-ID: <15677f9958dfe4dfdbb3dda978c84a64427fa00f.camel@cyberus-technology.de>
-Subject: Re: [PATCH] drm/i915/gvt: print actionable error message when gm
- runs out
-From:   Julian Stecklina <julian.stecklina@cyberus-technology.de>
-To:     Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc:     intel-gvt-dev@lists.freedesktop.org,
-        Thomas Prescher <thomas.prescher@cyberus-technology.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Date:   Fri, 05 Jun 2020 13:08:32 +0200
-In-Reply-To: <20200605045430.GS5687@zhen-hp.sh.intel.com>
-References: <20200603123321.263895-1-julian.stecklina@cyberus-technology.de>
-         <20200605045430.GS5687@zhen-hp.sh.intel.com>
-Organization: Cyberus Technology GmbH
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        Fri, 5 Jun 2020 07:11:06 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 055B83lh168014;
+        Fri, 5 Jun 2020 11:10:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=ewGA2tK1MJb/nDf13NL3fAygRBoRCzb/PU2eg7IcvtE=;
+ b=vmHgHKU/GHGV9FwOTVWJEitxYR5oZ2OjM82lWn8jXPLys/J2hiBKL/3FoLQ8kSDMMEN8
+ dTraEpCr8zciqFBLj2owYktLWrf4eA+oi16DRSk0JJMpavfV8rEzbXYLcWLyMoPHcElV
+ Cia620ZygGjCXpI88uJ03FIG9IbTmj7pFntrS0xlwG+E7IftFERD6SNqWVsef10ua/Oy
+ 0Jgona1+QEVAUVSXm7OUlOQqW1MB9CD3+5eAjkXUg0dpzbXo1l0rOk3nqy5vdHq9Gzlb
+ 2XRCJRXoq3kMj1DT3R+KgZImRieAoMT/KiN02IAzWBApRjDZ5S+Ye4pGXzgi3t8GILzp nA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 31f9242b9x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 05 Jun 2020 11:10:52 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 055B7bj3036919;
+        Fri, 5 Jun 2020 11:10:51 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 31f925af9t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 05 Jun 2020 11:10:51 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 055BAmZG002688;
+        Fri, 5 Jun 2020 11:10:48 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 05 Jun 2020 04:10:47 -0700
+Date:   Fri, 5 Jun 2020 14:10:39 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Jason Yan <yanaijie@huawei.com>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, hulkci@huawei.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>
+Subject: Re: [PATCH v2] block: Fix use-after-free in blkdev_get()
+Message-ID: <20200605111039.GL22511@kadam>
+References: <88676ff2-cb7e-70ec-4421-ecf8318990b1@web.de>
+ <5fa658bf-3028-9b5c-30cc-dbdef6bf8f7a@huawei.com>
+ <20200605094353.GS30374@kadam>
+ <2ee6f2f7-eaec-e748-bead-0ad59f4c378b@web.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: julian.stecklina@cyberus-technology.de
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25833/Thu Jun  4 14:45:29 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2ee6f2f7-eaec-e748-bead-0ad59f4c378b@web.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9642 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=908
+ malwarescore=0 bulkscore=0 mlxscore=0 spamscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006050086
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9642 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
+ adultscore=0 priorityscore=1501 mlxlogscore=942 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 cotscore=-2147483648 phishscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006050086
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-06-05 at 12:54 +0800, Zhenyu Wang wrote:
-> On 2020.06.03 14:33:21 +0200, Julian Stecklina wrote:
-> > +		gvt_err("vgpu%d: failed to allocate %s gm space from host\n",
-> > +			vgpu->id, high_gm ? "high" : "low");
-> > +		gvt_err("vgpu%d: destroying vGPUs, decreasing vGPU memory size
-> > or increasing GPU aperture size may resolve this\n",
-> > +			vgpu->id);
+On Fri, Jun 05, 2020 at 12:56:45PM +0200, Markus Elfring wrote:
+> > A lot of maintainers have blocked Markus and asked him to stop trying
+> > to help people write commit message.
 > 
-> Currently we can't decrease vGPU mem size as defined by mdev type,
-> so actually you may try different vGPU type.
+> I am trying to contribute a bit of patch review as usual.
+> 
 
-Yes, that's what I meant.
+We have asked you again and again to stop commenting on commit messages.
+New kernel developers have emailed me privately to say that your review
+comments confused and discouraged them.  Greg has created a email bot to
+respond to your commit message reviews.
 
->  And aperture size is
-> also handled for supported vGPU mdev types, so assume user should
-> already be awared of that too. I just don't want us to be too chatty. :)
-
-Our users typically hit this particular error message when they haven't
-configured the GPU aperture size in the system BIOS correctly. Many laptops we
-see have the aperture set to 256MB and this is simply not enough.
-
-I don't cling to the specific wording of the error message, but any hint in the
-error message that this is not an obscure, internal error or bug, but something
-that the user can actually fix, would be helpful.
-
-Julian
+regards,
+dan carpenter
 
