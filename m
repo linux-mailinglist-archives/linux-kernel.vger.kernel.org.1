@@ -2,104 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D42D1F0239
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 23:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE9F1F023D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 23:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729012AbgFEVly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 17:41:54 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:55416 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728727AbgFEVlv (ORCPT
+        id S1729052AbgFEVmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 17:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728739AbgFEVmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 17:41:51 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id A01C58EE17B;
-        Fri,  5 Jun 2020 14:41:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1591393310;
-        bh=48ApKiNXm1HVa5YUU3DA6ohP4QLZPkpj74quohwZYgg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Y0H7ex29UCo8zPQYDi5nCfRpjQWAm775FNM/UFgVrZh8rLlEge0bx+egKbRxEdFsF
-         CY0SlgpElW2MMZHaVxCQ2EGsnkoXF+Liw172+53rQ+Du4in2k3oDMlgSsQksCkvN7p
-         8OpMbLJvv5TRPstNgVE4jVP+fBLHNzwTOp6IuZJw=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 92iVsJ_6Q6Tk; Fri,  5 Jun 2020 14:41:50 -0700 (PDT)
-Received: from [153.66.254.194] (unknown [50.35.76.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 06C268EE0CE;
-        Fri,  5 Jun 2020 14:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1591393310;
-        bh=48ApKiNXm1HVa5YUU3DA6ohP4QLZPkpj74quohwZYgg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Y0H7ex29UCo8zPQYDi5nCfRpjQWAm775FNM/UFgVrZh8rLlEge0bx+egKbRxEdFsF
-         CY0SlgpElW2MMZHaVxCQ2EGsnkoXF+Liw172+53rQ+Du4in2k3oDMlgSsQksCkvN7p
-         8OpMbLJvv5TRPstNgVE4jVP+fBLHNzwTOp6IuZJw=
-Message-ID: <1591393308.4728.100.camel@HansenPartnership.com>
-Subject: Re: [GIT PULL] first round of SCSI updates for the 5.6+ merge window
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 05 Jun 2020 14:41:48 -0700
-In-Reply-To: <CAHk-=wjy8sMqjft6ALTo28UECex84uiYEo=BJbLUJ_CHrPmOEQ@mail.gmail.com>
-References: <1591332925.3685.16.camel@HansenPartnership.com>
-         <CAHk-=wjiQmscZHzOYKmMpFoy4h4xF1Mvf9O8i6qtTtS38t6Wsg@mail.gmail.com>
-         <1591391891.4728.96.camel@HansenPartnership.com>
-         <CAHk-=wjy8sMqjft6ALTo28UECex84uiYEo=BJbLUJ_CHrPmOEQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
+        Fri, 5 Jun 2020 17:42:01 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4051C08C5C4;
+        Fri,  5 Jun 2020 14:42:00 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id u13so9675884wml.1;
+        Fri, 05 Jun 2020 14:42:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UdH/nxi/Mb+fPq3ivMKnio5NEFoRZDU+dnCa779cs8Y=;
+        b=RviLL0UINg3jkOxwq2cq1ILmV2hNHNPulQTObBCk5eUSy4EowbVzT1Dnm0ULW+l50r
+         ws5ltl+P7nSUcdTtGs6dQA/1AFZoxyErSxIz9NEtQY4XupgQrp7SI/BlfP61EnpRQ0nf
+         sfPkOHbLtu/JiFUNXRbV6wlVDjy/YCqyqKveLt1jECajPZ45o1pxdgodShqAAhDJVjLR
+         9TAuvdqzCM3393zRQDTWEaZ8xZkyi8C37V+QGg6E8zBTfV+fpbpBIOrz+lxUdKryjIgx
+         JXdqvcBijPIDXuW38GaX6gq/ZBKwS9yfzw+IhSGPB5yv1v0ZQ9KFAzheQh7oPa5TE6FP
+         hYbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UdH/nxi/Mb+fPq3ivMKnio5NEFoRZDU+dnCa779cs8Y=;
+        b=aGXFllGKoINY9bp9GVeh2zUWaaW71rKk0HTNHsQXSVwvuGxvb3aYMJiWOZITCJhgaS
+         JSFVUXfQafa6fiVmQcaFLM7KsXiklhRV2bD3RiCJgkR+LoFzBDy+xJHqTOFQK39Qi1Gc
+         UROPM6pFVsgrw39EVoPV+lT+GzjiuF4L5Br72byNNzENSdqlNaU2XxqrDZM1n5OrWTP2
+         Aqlb/wSjkkV+oPI0htbRIs70IeGSvfIIJbWdtBB6DBGQtgyWUXB3UwEGtHpO0WsqueYT
+         20n7W5uorubzPffOfO4NNVmCf9Mmf9GrEnZtKWtYQFs5U364H+igEyOvrV+H4I5aOf6F
+         O7TQ==
+X-Gm-Message-State: AOAM531iw6NuK/tbVStzzTpoS5zEAZBRu8Y4/jdoluCYJJ1GjepduEku
+        FJQ8Ydla6V1HAHoD1YUJtos94YhH
+X-Google-Smtp-Source: ABdhPJwZAB8sYp0qQRP3K7v5LcMrPrJKP4i5Otr+cK7ECVE4aprBSt1yIizfQYfZZAw/QFRrX56kLQ==
+X-Received: by 2002:a1c:7e52:: with SMTP id z79mr4733418wmc.104.1591393318899;
+        Fri, 05 Jun 2020 14:41:58 -0700 (PDT)
+Received: from [10.230.188.43] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id l17sm11998448wmi.3.2020.06.05.14.41.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Jun 2020 14:41:58 -0700 (PDT)
+Subject: Re: [PATCH v4 05/12] PCI: brcmstb: Add suspend and resume pm_ops
+To:     Jim Quinlan <james.quinlan@broadcom.com>,
+        linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200605212706.7361-1-james.quinlan@broadcom.com>
+ <20200605212706.7361-6-james.quinlan@broadcom.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <5014b30f-a1bf-66ab-0626-8816a3cde5ff@gmail.com>
+Date:   Fri, 5 Jun 2020 14:41:53 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.8.1
+MIME-Version: 1.0
+In-Reply-To: <20200605212706.7361-6-james.quinlan@broadcom.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-06-05 at 14:25 -0700, Linus Torvalds wrote:
-> On Fri, Jun 5, 2020 at 2:18 PM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > 
-> > Um, no, shuffles feet ... I actually tagged the wrong branch:
-> 
-> Ok, now I see the changes, but I see more than you reported.
-> 
-> These seem to be new compared to your pull request:
-> 
-> Al Viro (4):
->       scsi: hpsa: Lift {BIG_,}IOCTL_Command_struct copy{in,out} into
-> hpsa_ioctl()
->       scsi: hpsa: Don't bother with vmalloc for
-> BIG_IOCTL_Command_struct
->       scsi: hpsa: Get rid of compat_alloc_user_space()
->       scsi: hpsa: hpsa_ioctl(): Tidy up a bit
-> 
-> Can Guo (1):
->       scsi: ufs: Don't update urgent bkops level when toggling auto
-> bkops
-> 
-> Stanley Chu (1):
->       scsi: ufs: Remove redundant urgent_bkop_lvl initialization
-> 
-> They don't look alarming, but I don't like how I don't see what you
-> _claim_ I should see.
-> 
-> Hmm?
-
-Ah right, my MO is to do the first push and then start gathering for
-the second.  pushing the tag again picked up the new stuff I've been
-gathering.  Let me rewind the tag back to where it was for the original
-push and then try again.
-
-Done.  You should now see no stray additional patches on the scsi-misc
-tag.
-
-Sorry again, I believe I've actually fully verified the diffstat
-matches this time ... (famous last words ..)
-
-James
 
 
+On 6/5/2020 2:26 PM, Jim Quinlan wrote:
+> From: Jim Quinlan <jquinlan@broadcom.com>
+> 
+> Broadcom Set-top (BrcmSTB) boards typically support S2, S3, and S5 suspend
+> and resume.  Now the PCIe driver may do so as well.
+> 
+> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
