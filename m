@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0551EEFC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 05:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50191EEFC4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 05:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgFEDMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 23:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
+        id S1726085AbgFEDON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 23:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgFEDMr (ORCPT
+        with ESMTP id S1725883AbgFEDON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 23:12:47 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D0EC08C5C0;
-        Thu,  4 Jun 2020 20:12:46 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id b5so8183100iln.5;
-        Thu, 04 Jun 2020 20:12:46 -0700 (PDT)
+        Thu, 4 Jun 2020 23:14:13 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF02BC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Jun 2020 20:14:12 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 5so2121354pjd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 20:14:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Bwy3kLbPJLykuSYZEsLy4fGgrjBMNY4QghQaNEXTtao=;
-        b=minHNrYKJRdYHWBYj4vN7Rb/TAGIa2odYSuDObBhK7QokvuNPQVPNbVaVi5uKij9JM
-         HzQsSfEMUepG6RwIwvXO3Z/Kz3a8Ene3LxdZvVs7eGjVyywQJ3teK8k8ZZv/tBnq8Enp
-         VX3KgHaVBkC/0QG+z6+hxrNZhB9Na00xSC+4wHVcmydicW8DgzzrcsmNlRUa/Sq783Se
-         KyyGvIewIje/bwRFDs5ZkbPpxhuT0SLEsvhTuPxMrci1betWf68FX7C6QA5kK5wMqY1k
-         qjQEesTBNeE0g8H0257ofiIw7KGD0OYRc3Yp7qGGg2oDvMsRcbBQPokXsQJRiwRASJ0J
-         hEfg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6KKE6NK5t9Roonzbio2T7KL2VGRRj3+kmOOOa7VG8/s=;
+        b=fI1F/2Sa266KWRP/4o4oPDAY7hothAQoi9UFJqV6trb/SYEHzkFAolymEWGiiiZBG8
+         h8O2+6IQ2W7tzG5TmaZMAxinUdqYVgimPqyTK0KxM3A1Xps67siipQVTQbMHkSkUnfPg
+         IIjzkYRRKdgYICncw5jTv/hgTFjB9NVm5/WZeMKGSpK6TO3eYKqEvwayr4maTmw1anit
+         SuGCUe6r9YOFOs9yNnbD/VI5HEeYl6mV7YlilU2FiPIwDX0MLGxSL+iyFxl6rxfHrCp9
+         xYqT/wEObSkN5A5+5VSU/SwunR6E0dRe+/B2+G3h/HSmmVKmXDLIdTl68YrjPAJIdYwy
+         ceNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Bwy3kLbPJLykuSYZEsLy4fGgrjBMNY4QghQaNEXTtao=;
-        b=V/YbDdtKVbBSRNeNWSKZb7TMspWoIMsmyp8glrYp+MRqWsiyUJR3Hdfn9/Z7/CZy35
-         KAUpDf4z01dY5z2ChJEj7fpIhbalRF0vtc1xcaq/nSnzaSJwZz4YFTY1U4x9ObDGbT2D
-         KQg/aNccBv3aD7uxDs271AuTmqvDx1opeaeqeNJek8huqydkx963rluKWDmoQeZ2qmrI
-         lBlnrDV1Qa8tsc391BKYEmmfiY1hkcDh8ei2dnJigSywFK8Y6Wl8YGxPsHoGtcLX7L1X
-         HcvYwkNfTlpMA6JV5ox+4djqsC/qoLZisCQc/X0EldJ2YnSK4Ls5iiTiBrITCgjcFh7w
-         bhZg==
-X-Gm-Message-State: AOAM531WGTQH8V5cYyyNu2ct0LKwv+By8UNE5kWa7ViMnNqrwP1RGNVD
-        OuTeROAOCqqQS+kKi3AIT/o=
-X-Google-Smtp-Source: ABdhPJymLCD7irIm72PYWJoFekESbRyoxTq1Bfb0WvWMHqV/VHJFkRKN3Wuo/+2aJY3jVun6wOy0HA==
-X-Received: by 2002:a92:cb91:: with SMTP id z17mr6552981ilo.305.1591326765968;
-        Thu, 04 Jun 2020 20:12:45 -0700 (PDT)
-Received: from cs-u-kase.dtc.umn.edu (cs-u-kase.cs.umn.edu. [160.94.64.2])
-        by smtp.googlemail.com with ESMTPSA id k126sm767149iof.50.2020.06.04.20.12.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 20:12:45 -0700 (PDT)
-From:   Navid Emamdoost <navid.emamdoost@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu, smccaman@umn.edu,
-        Navid Emamdoost <navid.emamdoost@gmail.com>
-Subject: [PATCH] PCI: tegra: handle failure case of pm_runtime_get_sync
-Date:   Thu,  4 Jun 2020 22:12:39 -0500
-Message-Id: <20200605031239.6638-1-navid.emamdoost@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6KKE6NK5t9Roonzbio2T7KL2VGRRj3+kmOOOa7VG8/s=;
+        b=pwXUgv0BS2lLV71fQbxLExEaUwy4O5l6B2X7AUJMHqd9Ln21e+6DvJoI+JytENEQXj
+         CYDRaaJrC9hEdRv8IMymcpXfJ4Tngamf6U9TmFWehsh5SERz6ReLHcpROCvN9ruy149C
+         mLGljE74c2ksebZF9pkVoCS6AcbCEC8iN7uTg2owGEze7rvNlK0H72Iv7lfBFB7M4MYK
+         GhPxzuPWFgZ8ip6qO6wkdR9x+724AB1Cif7figoMH9RIPIPmMBO80JiEfcaiMeEMDHDq
+         ahHkHlMQxsSTiurYH9u3NPD/7hde/tOEk7wGnawa5aX+FbG9+PIrIfSO20E30rtpo4lK
+         x53g==
+X-Gm-Message-State: AOAM532vEGUm9Kxn++jPidRwRgsxojkYfDG9r4rVrZIS5KTosBKJgA8Y
+        UsawMJs7jxY6kgnmmJSG3SqhIfpu50Ks5w==
+X-Google-Smtp-Source: ABdhPJwVc7r07LTRQdHM5JOUgiO7JxGpa/iZLCMO//6XZc4ZtRE//eys78KGf1TSoqDNWxdX4SB7KQ==
+X-Received: by 2002:a17:902:9a03:: with SMTP id v3mr7842163plp.6.1591326851673;
+        Thu, 04 Jun 2020 20:14:11 -0700 (PDT)
+Received: from [192.168.1.188] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id 124sm5682949pfb.15.2020.06.04.20.14.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jun 2020 20:14:10 -0700 (PDT)
+Subject: Re: [PATCH] loop: Fix wrong masking of status flags
+To:     Martijn Coenen <maco@android.com>, hch@lst.de,
+        naresh.kamboju@linaro.org
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200604202520.66459-1-maco@android.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c5190958-b32a-6b22-c180-dc4bda785689@kernel.dk>
+Date:   Thu, 4 Jun 2020 21:14:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200604202520.66459-1-maco@android.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling pm_runtime_get_sync increments the counter even in case of
-failure, causing incorrect ref count. Call pm_runtime_put if
-pm_runtime_get_sync fails.
+On 6/4/20 2:25 PM, Martijn Coenen wrote:
+> In faf1d25440d6, loop_set_status() now assigns lo_status directly from
+> the passed in lo_flags, but then fixes it up by masking out flags that
+> can't be set by LOOP_SET_STATUS; unfortunately the mask was negated.
+> 
+> Re-ran all ltp ioctl_loop tests, and they all passed.
+> 
+> Pass run of the previously failing one:
+> 
+> tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+> tst_device.c:88: INFO: Found free device 0 '/dev/loop0'
+> ioctl_loop01.c:49: PASS: /sys/block/loop0/loop/partscan = 0
+> ioctl_loop01.c:50: PASS: /sys/block/loop0/loop/autoclear = 0
+> ioctl_loop01.c:51: PASS: /sys/block/loop0/loop/backing_file =
+> '/tmp/ZRJ6H4/test.img'
+> ioctl_loop01.c:65: PASS: get expected lo_flag 12
+> ioctl_loop01.c:67: PASS: /sys/block/loop0/loop/partscan = 1
+> ioctl_loop01.c:68: PASS: /sys/block/loop0/loop/autoclear = 1
+> ioctl_loop01.c:77: PASS: access /dev/loop0p1 succeeds
+> ioctl_loop01.c:83: PASS: access /sys/block/loop0/loop0p1 succeeds
+> 
+> Summary:
+> passed   8
+> failed   0
+> skipped  0
+> warnings 0
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
----
- drivers/pci/controller/pci-tegra.c | 1 +
- 1 file changed, 1 insertion(+)
+Applied, thanks.
 
-diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
-index 3e64ba6a36a8..3d4b448fd8df 100644
---- a/drivers/pci/controller/pci-tegra.c
-+++ b/drivers/pci/controller/pci-tegra.c
-@@ -2712,6 +2712,7 @@ static int tegra_pcie_probe(struct platform_device *pdev)
- 	err = pm_runtime_get_sync(pcie->dev);
- 	if (err < 0) {
- 		dev_err(dev, "fail to enable pcie controller: %d\n", err);
-+		pm_runtime_put_sync(pcie->dev);
- 		goto teardown_msi;
- 	}
- 
 -- 
-2.17.1
+Jens Axboe
 
