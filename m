@@ -2,532 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4621EEF1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 03:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482F41EEF16
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 03:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbgFEBfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 21:35:07 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:12172 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725863AbgFEBfH (ORCPT
+        id S1726188AbgFEBan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 21:30:43 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:50240 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726060AbgFEBaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 21:35:07 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200605013502epoutp01573ffe3fa082e46333c955d2d7d64316~Vge4Y39LL0424304243epoutp01k
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 01:35:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200605013502epoutp01573ffe3fa082e46333c955d2d7d64316~Vge4Y39LL0424304243epoutp01k
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591320903;
-        bh=yBOOpZHK+T1wXWIvlooCMpPM8S4RbTXRZae8l66y5Rw=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=G21YkRydt0rIic72KVVl6XnR5XMFmLGdaq6ZyfaCnU8fyp2BeNhA+v0CaVyGazI2Q
-         YC2WvG9Tt2q0Kz9rd0jgZdEAJ8CfotaxNBKX8k1rcnSyxvtxAaqsK+pqJ3Eyopd1Cx
-         UFfYjAPDOs/0Gz/pXtlAAwl9+dPpYR1FfuFwSvsQ=
-Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p4.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200605013502epcas1p41ed004e0b4cd398e11f11ee962c0f2e6~Vge31o3Wq1890718907epcas1p4N;
-        Fri,  5 Jun 2020 01:35:02 +0000 (GMT)
-Mime-Version: 1.0
-Subject: [RFC PATCH 2/5] scsi: ufs: Add UFS-feature layer
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Daejun Park <daejun7.park@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Thu, 4 Jun 2020 21:30:39 -0400
+Received: from dread.disaster.area (pa49-180-124-177.pa.nsw.optusnet.com.au [49.180.124.177])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id CA2095AB25B;
+        Fri,  5 Jun 2020 11:30:32 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jh1Bf-00026O-Bh; Fri, 05 Jun 2020 11:30:23 +1000
+Date:   Fri, 5 Jun 2020 11:30:23 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>,
+        Matthew Wilcox <willy@infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <963815509.21591320301642.JavaMail.epsvc@epcpadp1>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <336371513.41591320902369.JavaMail.epsvc@epcpadp1>
-Date:   Fri, 05 Jun 2020 10:30:08 +0900
-X-CMS-MailID: 20200605013008epcms2p17127588c869c75798abbfa6ebf2f7e57
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882
-References: <963815509.21591320301642.JavaMail.epsvc@epcpadp1>
-        <231786897.01591320001492.JavaMail.epsvc@epcpadp1>
-        <CGME20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882@epcms2p1>
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "Qi, Fuli" <qi.fuli@fujitsu.com>,
+        "Gotou, Yasunori" <y-goto@fujitsu.com>
+Subject: Re: =?utf-8?B?5Zue5aSNOiBSZQ==?= =?utf-8?Q?=3A?= [RFC PATCH 0/8]
+ dax: Add a dax-rmap tree to support reflink
+Message-ID: <20200605013023.GZ2040@dread.disaster.area>
+References: <20200427084750.136031-1-ruansy.fnst@cn.fujitsu.com>
+ <20200427122836.GD29705@bombadil.infradead.org>
+ <em33c55fa5-15ca-4c46-8c27-6b0300fa4e51@g08fnstd180058>
+ <20200428064318.GG2040@dread.disaster.area>
+ <153e13e6-8685-fb0d-6bd3-bb553c06bf51@cn.fujitsu.com>
+ <20200604145107.GA1334206@magnolia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200604145107.GA1334206@magnolia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
+        a=IkcTkHD0fZMA:10 a=nTHF0DUjJn0A:10 a=5KLPUuaC_9wA:10 a=JfrnYn6hAAAA:8
+        a=7-415B0cAAAA:8 a=Ta0clAhtVI-YSBJ3DlQA:9 a=J8Q19hsgq330FmqU:21
+        a=uNIap141QPGCy0-l:21 a=QEXdDO2ut3YA:10 a=1CNFftbPRP8L7MoqJWF3:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is adding UFS feature layer to UFS core driver.
+On Thu, Jun 04, 2020 at 07:51:07AM -0700, Darrick J. Wong wrote:
+> On Thu, Jun 04, 2020 at 03:37:42PM +0800, Ruan Shiyang wrote:
+> > 
+> > 
+> > On 2020/4/28 下午2:43, Dave Chinner wrote:
+> > > On Tue, Apr 28, 2020 at 06:09:47AM +0000, Ruan, Shiyang wrote:
+> > > > 
+> > > > 在 2020/4/27 20:28:36, "Matthew Wilcox" <willy@infradead.org> 写道:
+> > > > 
+> > > > > On Mon, Apr 27, 2020 at 04:47:42PM +0800, Shiyang Ruan wrote:
+> > > > > >   This patchset is a try to resolve the shared 'page cache' problem for
+> > > > > >   fsdax.
+> > > > > > 
+> > > > > >   In order to track multiple mappings and indexes on one page, I
+> > > > > >   introduced a dax-rmap rb-tree to manage the relationship.  A dax entry
+> > > > > >   will be associated more than once if is shared.  At the second time we
+> > > > > >   associate this entry, we create this rb-tree and store its root in
+> > > > > >   page->private(not used in fsdax).  Insert (->mapping, ->index) when
+> > > > > >   dax_associate_entry() and delete it when dax_disassociate_entry().
+> > > > > 
+> > > > > Do we really want to track all of this on a per-page basis?  I would
+> > > > > have thought a per-extent basis was more useful.  Essentially, create
+> > > > > a new address_space for each shared extent.  Per page just seems like
+> > > > > a huge overhead.
+> > > > > 
+> > > > Per-extent tracking is a nice idea for me.  I haven't thought of it
+> > > > yet...
+> > > > 
+> > > > But the extent info is maintained by filesystem.  I think we need a way
+> > > > to obtain this info from FS when associating a page.  May be a bit
+> > > > complicated.  Let me think about it...
+> > > 
+> > > That's why I want the -user of this association- to do a filesystem
+> > > callout instead of keeping it's own naive tracking infrastructure.
+> > > The filesystem can do an efficient, on-demand reverse mapping lookup
+> > > from it's own extent tracking infrastructure, and there's zero
+> > > runtime overhead when there are no errors present.
+> > 
+> > Hi Dave,
+> > 
+> > I ran into some difficulties when trying to implement the per-extent rmap
+> > tracking.  So, I re-read your comments and found that I was misunderstanding
+> > what you described here.
+> > 
+> > I think what you mean is: we don't need the in-memory dax-rmap tracking now.
+> > Just ask the FS for the owner's information that associate with one page
+> > when memory-failure.  So, the per-page (even per-extent) dax-rmap is
+> > needless in this case.  Is this right?
+> 
+> Right.  XFS already has its own rmap tree.
 
-UFS Driver data structure (struct ufs_hba)
-=09=E2=94=82
-=E2=94=8C--------------=E2=94=90
-=E2=94=82 UFS feature  =E2=94=82 <-- HPB module
-=E2=94=82    layer     =E2=94=82 <-- other extended feature module
-=E2=94=94--------------=E2=94=98
-Each extended UFS-Feature module has a bus of ufs-ext feature type.
-The UFS feature layer manages common APIs used by each extended feature
-module. The APIs are set of UFS Query requests and UFS Vendor commands
-related to each extended feature module.
+*nod*
 
-The following 6 callback functions have been added to "ufshcd.c".
-prep_fn: called after construct upiu structure
-reset: called after proving hba
-reset_host: called before ufshcd_host_reset_and_restore
-suspend: called before ufshcd_suspend
-resume: called after ufshcd_resume
-rsp_upiu: called in ufshcd_transfer_rsp_status with SAM_STAT_GOOD state
+> > Based on this, we only need to store the extent information of a fsdax page
+> > in its ->mapping (by searching from FS).  Then obtain the owners of this
+> > page (also by searching from FS) when memory-failure or other rmap case
+> > occurs.
+> 
+> I don't even think you need that much.  All you need is the "physical"
+> offset of that page within the pmem device (e.g. 'this is the 307th 4k
+> page == offset 1257472 since the start of /dev/pmem0') and xfs can look
+> up the owner of that range of physical storage and deal with it as
+> needed.
 
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- drivers/scsi/ufs/Makefile     |   2 +-
- drivers/scsi/ufs/ufsfeature.c | 178 ++++++++++++++++++++++++++++++++++
- drivers/scsi/ufs/ufsfeature.h |  95 ++++++++++++++++++
- drivers/scsi/ufs/ufshcd.c     |  17 ++++
- drivers/scsi/ufs/ufshcd.h     |   3 +
- 5 files changed, 294 insertions(+), 1 deletion(-)
- create mode 100644 drivers/scsi/ufs/ufsfeature.c
- create mode 100644 drivers/scsi/ufs/ufsfeature.h
+Right. If we have the dax device associated with the page that had
+the failure, then we can determine the offset of the page into the
+block device address space and that's all we need to find the owner
+of the page in the filesystem.
 
-diff --git a/drivers/scsi/ufs/Makefile b/drivers/scsi/ufs/Makefile
-index 94c6c5d7334b..fe3a92b06c87 100644
---- a/drivers/scsi/ufs/Makefile
-+++ b/drivers/scsi/ufs/Makefile
-@@ -5,7 +5,7 @@ obj-$(CONFIG_SCSI_UFS_DWC_TC_PLATFORM) +=3D tc-dwc-g210-plt=
-frm.o ufshcd-dwc.o tc-d
- obj-$(CONFIG_SCSI_UFS_CDNS_PLATFORM) +=3D cdns-pltfrm.o
- obj-$(CONFIG_SCSI_UFS_QCOM) +=3D ufs-qcom.o
- obj-$(CONFIG_SCSI_UFSHCD) +=3D ufshcd-core.o
--ufshcd-core-y=09=09=09=09+=3D ufshcd.o ufs-sysfs.o
-+ufshcd-core-y=09=09=09=09+=3D ufshcd.o ufs-sysfs.o ufsfeature.o
- ufshcd-core-$(CONFIG_SCSI_UFS_BSG)=09+=3D ufs_bsg.o
- obj-$(CONFIG_SCSI_UFSHCD_PCI) +=3D ufshcd-pci.o
- obj-$(CONFIG_SCSI_UFSHCD_PLATFORM) +=3D ufshcd-pltfrm.o
-diff --git a/drivers/scsi/ufs/ufsfeature.c b/drivers/scsi/ufs/ufsfeature.c
-new file mode 100644
-index 000000000000..a6671962fad2
---- /dev/null
-+++ b/drivers/scsi/ufs/ufsfeature.c
-@@ -0,0 +1,178 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Universal Flash Storage Feature Support
-+ *
-+ * Copyright (C) 2017-2018 Samsung Electronics Co., Ltd.
-+ *
-+ * Authors:
-+ *=09Yongmyung Lee <ymhungry.lee@samsung.com>
-+ *=09Jinyoung Choi <j-young.choi@samsung.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * as published by the Free Software Foundation; either version 2
-+ * of the License, or (at your option) any later version.
-+ * See the COPYING file in the top-level directory or visit
-+ * <http://www.gnu.org/licenses/gpl-2.0.html>
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * This program is provided "AS IS" and "WITH ALL FAULTS" and
-+ * without warranty of any kind. You are solely responsible for
-+ * determining the appropriateness of using and distributing
-+ * the program and assume all risks associated with your exercise
-+ * of rights with respect to the program, including but not limited
-+ * to infringement of third party rights, the risks and costs of
-+ * program errors, damage to or loss of data, programs or equipment,
-+ * and unavailability or interruption of operations. Under no
-+ * circumstances will the contributor of this Program be liable for
-+ * any damages of any kind arising from your use or distribution of
-+ * this program.
-+ *
-+ * The Linux Foundation chooses to take subject only to the GPLv2
-+ * license terms, and distributes only under these terms.
-+ */
-+
-+#include "ufshcd.h"
-+#include "ufsfeature.h"
-+
-+inline void ufsf_slave_configure(struct ufs_hba *hba,
-+=09=09=09=09 struct scsi_device *sdev)
-+{
-+=09/* skip well-known LU */
-+=09if (sdev->lun >=3D UFS_UPIU_MAX_UNIT_NUM_ID)
-+=09=09return;
-+
-+=09if (!(hba->dev_info.b_ufs_feature_sup & UFS_FEATURE_SUPPORT_HPB_BIT))
-+=09=09return;
-+
-+=09atomic_inc(&hba->ufsf.slave_conf_cnt);
-+=09smp_mb__after_atomic(); /* for slave_conf_cnt */
-+
-+=09/* waiting sdev init.*/
-+=09if (waitqueue_active(&hba->ufsf.sdev_wait))
-+=09=09wake_up(&hba->ufsf.sdev_wait);
-+}
-+
-+inline void ufsf_ops_prep_fn(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-+{
-+=09struct ufshpb_driver *ufshpb_drv;
-+
-+=09ufshpb_drv =3D dev_get_drvdata(&hba->ufsf.hpb_dev);
-+
-+=09if (ufshpb_drv && ufshpb_drv->ufshpb_ops.prep_fn)
-+=09=09ufshpb_drv->ufshpb_ops.prep_fn(hba, lrbp);
-+}
-+
-+inline void ufsf_ops_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp=
-)
-+{
-+=09struct ufshpb_driver *ufshpb_drv;
-+
-+=09ufshpb_drv =3D dev_get_drvdata(&hba->ufsf.hpb_dev);
-+
-+=09if (ufshpb_drv && ufshpb_drv->ufshpb_ops.rsp_upiu)
-+=09=09ufshpb_drv->ufshpb_ops.rsp_upiu(hba, lrbp);
-+}
-+
-+inline void ufsf_ops_reset_host(struct ufs_hba *hba)
-+{
-+=09struct ufshpb_driver *ufshpb_drv;
-+
-+=09ufshpb_drv =3D dev_get_drvdata(&hba->ufsf.hpb_dev);
-+
-+=09if (ufshpb_drv && ufshpb_drv->ufshpb_ops.reset_host)
-+=09=09ufshpb_drv->ufshpb_ops.reset_host(hba);
-+}
-+
-+inline void ufsf_ops_reset(struct ufs_hba *hba)
-+{
-+=09struct ufshpb_driver *ufshpb_drv;
-+
-+=09ufshpb_drv =3D dev_get_drvdata(&hba->ufsf.hpb_dev);
-+
-+=09if (ufshpb_drv && ufshpb_drv->ufshpb_ops.reset)
-+=09=09ufshpb_drv->ufshpb_ops.reset(hba);
-+}
-+
-+inline void ufsf_ops_suspend(struct ufs_hba *hba)
-+{
-+=09struct ufshpb_driver *ufshpb_drv;
-+
-+=09ufshpb_drv =3D dev_get_drvdata(&hba->ufsf.hpb_dev);
-+
-+=09if (ufshpb_drv && ufshpb_drv->ufshpb_ops.suspend)
-+=09=09ufshpb_drv->ufshpb_ops.suspend(hba);
-+}
-+
-+inline void ufsf_ops_resume(struct ufs_hba *hba)
-+{
-+=09struct ufshpb_driver *ufshpb_drv;
-+
-+=09ufshpb_drv =3D dev_get_drvdata(&hba->ufsf.hpb_dev);
-+
-+=09if (ufshpb_drv && ufshpb_drv->ufshpb_ops.resume)
-+=09=09ufshpb_drv->ufshpb_ops.resume(hba);
-+}
-+
-+struct device_type ufshpb_dev_type =3D {
-+=09.name =3D "ufshpb_device"
-+};
-+EXPORT_SYMBOL(ufshpb_dev_type);
-+
-+static int ufsf_bus_match(struct device *dev,
-+=09=09=09 struct device_driver *gendrv)
-+{
-+=09if (dev->type =3D=3D &ufshpb_dev_type)
-+=09=09return 1;
-+
-+=09return 0;
-+}
-+
-+struct bus_type ufsf_bus_type =3D {
-+=09.name =3D "ufsf_bus",
-+=09.match =3D ufsf_bus_match,
-+};
-+EXPORT_SYMBOL(ufsf_bus_type);
-+
-+static void ufsf_dev_release(struct device *dev)
-+{
-+=09put_device(dev->parent);
-+}
-+
-+void ufsf_scan_features(struct ufs_hba *hba)
-+{
-+=09int ret;
-+
-+=09init_waitqueue_head(&hba->ufsf.sdev_wait);
-+=09atomic_set(&hba->ufsf.slave_conf_cnt, 0);
-+
-+=09if (hba->dev_info.wspecversion >=3D HPB_SUPPORTED_VERSION &&
-+=09    (hba->dev_info.b_ufs_feature_sup & UFS_FEATURE_SUPPORT_HPB_BIT)) {
-+=09=09device_initialize(&hba->ufsf.hpb_dev);
-+
-+=09=09hba->ufsf.hpb_dev.bus =3D &ufsf_bus_type;
-+=09=09hba->ufsf.hpb_dev.type =3D &ufshpb_dev_type;
-+=09=09hba->ufsf.hpb_dev.parent =3D get_device(hba->dev);
-+=09=09hba->ufsf.hpb_dev.release =3D ufsf_dev_release;
-+
-+=09=09dev_set_name(&hba->ufsf.hpb_dev, "ufshpb");
-+=09=09ret =3D device_add(&hba->ufsf.hpb_dev);
-+=09=09if (ret)
-+=09=09=09dev_warn(hba->dev, "ufshpb: failed to add device\n");
-+=09}
-+}
-+
-+static int __init ufsf_init(void)
-+{
-+=09int ret;
-+
-+=09ret =3D bus_register(&ufsf_bus_type);
-+=09if (ret)
-+=09=09pr_err("%s bus_register failed\n", __func__);
-+
-+=09return ret;
-+}
-+device_initcall(ufsf_init);
-diff --git a/drivers/scsi/ufs/ufsfeature.h b/drivers/scsi/ufs/ufsfeature.h
-new file mode 100644
-index 000000000000..cbac848ec6c6
---- /dev/null
-+++ b/drivers/scsi/ufs/ufsfeature.h
-@@ -0,0 +1,95 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Universal Flash Storage Feature Support
-+ *
-+ * Copyright (C) 2017-2018 Samsung Electronics Co., Ltd.
-+ *
-+ * Authors:
-+ *=09Yongmyung Lee <ymhungry.lee@samsung.com>
-+ *=09Jinyoung Choi <j-young.choi@samsung.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * as published by the Free Software Foundation; either version 2
-+ * of the License, or (at your option) any later version.
-+ * See the COPYING file in the top-level directory or visit
-+ * <http://www.gnu.org/licenses/gpl-2.0.html>
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * This program is provided "AS IS" and "WITH ALL FAULTS" and
-+ * without warranty of any kind. You are solely responsible for
-+ * determining the appropriateness of using and distributing
-+ * the program and assume all risks associated with your exercise
-+ * of rights with respect to the program, including but not limited
-+ * to infringement of third party rights, the risks and costs of
-+ * program errors, damage to or loss of data, programs or equipment,
-+ * and unavailability or interruption of operations. Under no
-+ * circumstances will the contributor of this Program be liable for
-+ * any damages of any kind arising from your use or distribution of
-+ * this program.
-+ *
-+ * The Linux Foundation chooses to take subject only to the GPLv2
-+ * license terms, and distributes only under these terms.
-+ */
-+
-+#ifndef _UFSFEATURE_H_
-+#define _UFSFEATURE_H_
-+
-+#define HPB_SUPPORTED_VERSION=09=09=090x0310
-+#define UFS_FEATURE_SUPPORT_HPB_BIT=09=090x80
-+
-+struct ufs_hba;
-+struct ufshcd_lrb;
-+
-+/**
-+ * struct ufsf_operation - UFS feature specific callbacks
-+ * @prep_fn: called after construct upiu structure
-+ * @reset: called after proving hba
-+ * @reset_host: called before ufshcd_host_reset_and_restore
-+ * @suspend: called before ufshcd_suspend
-+ * @resume: called after ufshcd_resume
-+ * @rsp_upiu: called in ufshcd_transfer_rsp_status with SAM_STAT_GOOD stat=
-e
-+ */
-+struct ufsf_operation {
-+=09void (*prep_fn)(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
-+=09void (*reset)(struct ufs_hba *hba);
-+=09void (*reset_host)(struct ufs_hba *hba);
-+=09void (*suspend)(struct ufs_hba *hba);
-+=09void (*resume)(struct ufs_hba *hba);
-+=09void (*rsp_upiu)(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
-+};
-+
-+struct ufshpb_driver {
-+=09struct device_driver drv;
-+=09struct list_head lh_hpb_lu;
-+
-+=09struct ufsf_operation ufshpb_ops;
-+
-+=09/* memory management */
-+=09struct kmem_cache *ufshpb_mctx_cache;
-+=09mempool_t *ufshpb_mctx_pool;
-+=09mempool_t *ufshpb_page_pool;
-+
-+=09struct workqueue_struct *ufshpb_wq;
-+};
-+
-+struct ufsf_feature_info {
-+=09atomic_t slave_conf_cnt;
-+=09wait_queue_head_t sdev_wait;
-+=09struct device hpb_dev;
-+};
-+
-+void ufsf_slave_configure(struct ufs_hba *hba, struct scsi_device *sdev);
-+void ufsf_scan_features(struct ufs_hba *hba);
-+void ufsf_ops_prep_fn(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
-+void ufsf_ops_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
-+void ufsf_ops_reset_host(struct ufs_hba *hba);
-+void ufsf_ops_reset(struct ufs_hba *hba);
-+void ufsf_ops_suspend(struct ufs_hba *hba);
-+void ufsf_ops_resume(struct ufs_hba *hba);
-+
-+#endif /* End of Header */
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 5db18f444ea9..de57ba2a0b03 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -2525,6 +2525,8 @@ static int ufshcd_queuecommand(struct Scsi_Host *host=
-, struct scsi_cmnd *cmd)
-=20
- =09ufshcd_comp_scsi_upiu(hba, lrbp);
-=20
-+=09ufsf_ops_prep_fn(hba, lrbp);
-+
- =09err =3D ufshcd_map_sg(hba, lrbp);
- =09if (err) {
- =09=09lrbp->cmd =3D NULL;
-@@ -4645,6 +4647,8 @@ static int ufshcd_slave_configure(struct scsi_device =
-*sdev)
- =09struct ufs_hba *hba =3D shost_priv(sdev->host);
- =09struct request_queue *q =3D sdev->request_queue;
-=20
-+=09ufsf_slave_configure(hba, sdev);
-+
- =09blk_queue_update_dma_pad(q, PRDT_DATA_BYTE_COUNT_PAD - 1);
-=20
- =09if (ufshcd_is_rpm_autosuspend_allowed(hba))
-@@ -4765,6 +4769,9 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, struc=
-t ufshcd_lrb *lrbp)
- =09=09=09=09 */
- =09=09=09=09pm_runtime_get_noresume(hba->dev);
- =09=09=09}
-+
-+=09=09=09if (scsi_status =3D=3D SAM_STAT_GOOD)
-+=09=09=09=09ufsf_ops_rsp_upiu(hba, lrbp);
- =09=09=09break;
- =09=09case UPIU_TRANSACTION_REJECT_UPIU:
- =09=09=09/* TODO: handle Reject UPIU Response */
-@@ -6508,6 +6515,8 @@ static int ufshcd_host_reset_and_restore(struct ufs_h=
-ba *hba)
- =09 * Stop the host controller and complete the requests
- =09 * cleared by h/w
- =09 */
-+=09ufsf_ops_reset_host(hba);
-+
- =09ufshcd_hba_stop(hba);
-=20
- =09spin_lock_irqsave(hba->host->host_lock, flags);
-@@ -6934,6 +6943,7 @@ static int ufs_get_device_desc(struct ufs_hba *hba)
- =09/* getting Specification Version in big endian format */
- =09dev_info->wspecversion =3D desc_buf[DEVICE_DESC_PARAM_SPEC_VER] << 8 |
- =09=09=09=09      desc_buf[DEVICE_DESC_PARAM_SPEC_VER + 1];
-+=09dev_info->b_ufs_feature_sup =3D desc_buf[DEVICE_DESC_PARAM_UFS_FEAT];
-=20
- =09model_index =3D desc_buf[DEVICE_DESC_PARAM_PRDCT_NAME];
-=20
-@@ -7350,6 +7360,7 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
- =09}
-=20
- =09ufs_bsg_probe(hba);
-+=09ufsf_scan_features(hba);
- =09scsi_scan_host(hba->host);
- =09pm_runtime_put_sync(hba->dev);
-=20
-@@ -7442,6 +7453,7 @@ static int ufshcd_probe_hba(struct ufs_hba *hba, bool=
- async)
- =09/* Enable Auto-Hibernate if configured */
- =09ufshcd_auto_hibern8_enable(hba);
-=20
-+=09ufsf_ops_reset(hba);
- out:
-=20
- =09trace_ufshcd_init(dev_name(hba->dev), ret,
-@@ -8199,6 +8211,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum u=
-fs_pm_op pm_op)
- =09=09req_link_state =3D UIC_LINK_OFF_STATE;
- =09}
-=20
-+=09ufsf_ops_suspend(hba);
-+
- =09/*
- =09 * If we can't transition into any of the low power modes
- =09 * just gate the clocks.
-@@ -8320,6 +8334,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum u=
-fs_pm_op pm_op)
- =09hba->clk_gating.is_suspended =3D false;
- =09hba->dev_info.b_rpm_dev_flush_capable =3D false;
- =09ufshcd_release(hba);
-+=09ufsf_ops_resume(hba);
- out:
- =09if (hba->dev_info.b_rpm_dev_flush_capable) {
- =09=09schedule_delayed_work(&hba->rpm_dev_flush_recheck_work,
-@@ -8416,6 +8431,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum uf=
-s_pm_op pm_op)
- =09/* Enable Auto-Hibernate if configured */
- =09ufshcd_auto_hibern8_enable(hba);
-=20
-+=09ufsf_ops_resume(hba);
-+
- =09if (hba->dev_info.b_rpm_dev_flush_capable) {
- =09=09hba->dev_info.b_rpm_dev_flush_capable =3D false;
- =09=09cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index bf97d616e597..47866ab722ff 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -71,6 +71,7 @@
- #include "ufs.h"
- #include "ufs_quirks.h"
- #include "ufshci.h"
-+#include "ufsfeature.h"
-=20
- #define UFSHCD "ufshcd"
- #define UFSHCD_DRIVER_VERSION "0.2"
-@@ -746,6 +747,8 @@ struct ufs_hba {
- =09bool wb_buf_flush_enabled;
- =09bool wb_enabled;
- =09struct delayed_work rpm_dev_flush_recheck_work;
-+
-+=09struct ufsf_feature_info ufsf;
- };
-=20
- /* Returns true if clocks can be gated. Otherwise false */
---=20
-2.17.1
+Note that there may actually be no owner - the page that had the
+fault might land in free space, in which case we can simply zero
+the page and clear the error.
+
+> > So, a fsdax page is no longer associated with a specific file, but with a
+> > FS(or the pmem device).  I think it's easier to understand and implement.
+
+Effectively, yes. But we shouldn't need to actually associate the
+page with anything at the filesystem level because it is already
+associated with a DAX device at a lower level via a dev_pagemap.
+The hardware page fault already runs thought this code
+memory_failure_dev_pagemap() before it gets to the DAX code, so
+really all we need to is have that function pass us the page, offset
+into the device and, say, the struct dax_device associated with that
+page so we can get to the filesystem superblock we can then use for
+rmap lookups on...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
