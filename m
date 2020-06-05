@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E381EFA85
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06FE1EFB34
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728646AbgFEOST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:18:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48682 "EHLO mail.kernel.org"
+        id S1728407AbgFEORL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:17:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728047AbgFEOSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:18:12 -0400
+        id S1728380AbgFEORE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:17:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D478208C9;
-        Fri,  5 Jun 2020 14:18:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57CCA206A2;
+        Fri,  5 Jun 2020 14:17:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366692;
-        bh=ZGMog9yqu0TCyJN1EWr5F2XERNVBALJNbXJoL/6fjq0=;
+        s=default; t=1591366623;
+        bh=gs9/lY+1QDQ5E52V460MMXznwqxNumfuWvVTDb9U+uo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Itjjys8oYcaTTjEBVM/ltNBzPK/wSO7McofwuEIU0urzRgRt/nP7F3KFhCGDf8uez
-         cQ0MxC8n3UCW2ge5X6UFvXhZxYp98x19l2ykN6oPM8y48qGtZeX+jCgz2pH5Cx0oii
-         HMPH5tcG0JrJ9btjR6rwNINQPFi5yZsnRSNvOZJs=
+        b=hhO2/9IrU7IspBJ58prpwMhelImop+aW5d8BDpvpaKZIgok4/Yr8gHyBOrQoCMpu/
+         +R7jhHrhU1z75sk2Zd4H8nTyB8nt4qbjQKUaVGsmLQbXq6hkAiiUij6PgVJYSWcesS
+         pwWK47DkXKQkpHKEt2gkUEy7f8fKTPwbPJQQU7KY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lucas De Marchi <lucas.demarchi@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 15/38] drm/i915: fix port checks for MST support on gen >= 11
+        stable@vger.kernel.org, Amit Cohen <amitc@mellanox.com>,
+        Petr Machata <petrm@mellanox.com>,
+        Ido Schimmel <idosch@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 28/43] selftests: mlxsw: qos_mc_aware: Specify arping timeout as an integer
 Date:   Fri,  5 Jun 2020 16:14:58 +0200
-Message-Id: <20200605140253.489209653@linuxfoundation.org>
+Message-Id: <20200605140153.998720440@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200605140252.542768750@linuxfoundation.org>
-References: <20200605140252.542768750@linuxfoundation.org>
+In-Reply-To: <20200605140152.493743366@linuxfoundation.org>
+References: <20200605140152.493743366@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,87 +46,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lucas De Marchi <lucas.demarchi@intel.com>
+From: Amit Cohen <amitc@mellanox.com>
 
-[ Upstream commit 10d987fd1b7baceaafa78d805e71427ab735b4e4 ]
+[ Upstream commit 46ca11177ed593f39d534f8d2c74ec5344e90c11 ]
 
-Both Ice Lake and Elkhart Lake (gen 11) support MST on all external
-connections except DDI A. Tiger Lake (gen 12) supports on all external
-connections.
+Starting from iputils s20190709 (used in Fedora 31), arping does not
+support timeout being specified as a decimal:
 
-Move the check to happen inside intel_dp_mst_encoder_init() and add
-specific platform checks.
+$ arping -c 1 -I swp1 -b 192.0.2.66 -q -w 0.1
+arping: invalid argument: '0.1'
 
-v2: Replace != with == checks for ports on gen < 11 (Ville)
+Previously, such timeouts were rounded to an integer.
 
-Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
-Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20191015164029.18431-3-lucas.demarchi@intel.com
+Fix this by specifying the timeout as an integer.
+
+Fixes: a5ee171d087e ("selftests: mlxsw: qos_mc_aware: Add a test for UC awareness")
+Signed-off-by: Amit Cohen <amitc@mellanox.com>
+Reviewed-by: Petr Machata <petrm@mellanox.com>
+Signed-off-by: Ido Schimmel <idosch@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/display/intel_dp.c     |  7 ++-----
- drivers/gpu/drm/i915/display/intel_dp_mst.c | 22 +++++++++++++++------
- 2 files changed, 18 insertions(+), 11 deletions(-)
+ tools/testing/selftests/drivers/net/mlxsw/qos_mc_aware.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-index 9b15ac4f2fb6..4ab6531a4a74 100644
---- a/drivers/gpu/drm/i915/display/intel_dp.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp.c
-@@ -7218,11 +7218,8 @@ intel_dp_init_connector(struct intel_digital_port *intel_dig_port,
- 		intel_connector->get_hw_state = intel_connector_get_hw_state;
+diff --git a/tools/testing/selftests/drivers/net/mlxsw/qos_mc_aware.sh b/tools/testing/selftests/drivers/net/mlxsw/qos_mc_aware.sh
+index 24dd8ed48580..b025daea062d 100755
+--- a/tools/testing/selftests/drivers/net/mlxsw/qos_mc_aware.sh
++++ b/tools/testing/selftests/drivers/net/mlxsw/qos_mc_aware.sh
+@@ -300,7 +300,7 @@ test_uc_aware()
+ 	local i
  
- 	/* init MST on ports that can support it */
--	if (HAS_DP_MST(dev_priv) && !intel_dp_is_edp(intel_dp) &&
--	    (port == PORT_B || port == PORT_C ||
--	     port == PORT_D || port == PORT_F))
--		intel_dp_mst_encoder_init(intel_dig_port,
--					  intel_connector->base.base.id);
-+	intel_dp_mst_encoder_init(intel_dig_port,
-+				  intel_connector->base.base.id);
- 
- 	if (!intel_edp_init_connector(intel_dp, intel_connector)) {
- 		intel_dp_aux_fini(intel_dp);
-diff --git a/drivers/gpu/drm/i915/display/intel_dp_mst.c b/drivers/gpu/drm/i915/display/intel_dp_mst.c
-index 600873c796d0..74d45a0eecb8 100644
---- a/drivers/gpu/drm/i915/display/intel_dp_mst.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp_mst.c
-@@ -653,21 +653,31 @@ intel_dp_mst_encoder_active_links(struct intel_digital_port *intel_dig_port)
- int
- intel_dp_mst_encoder_init(struct intel_digital_port *intel_dig_port, int conn_base_id)
- {
-+	struct drm_i915_private *i915 = to_i915(intel_dig_port->base.base.dev);
- 	struct intel_dp *intel_dp = &intel_dig_port->dp;
--	struct drm_device *dev = intel_dig_port->base.base.dev;
-+	enum port port = intel_dig_port->base.port;
- 	int ret;
- 
--	intel_dp->can_mst = true;
-+	if (!HAS_DP_MST(i915) || intel_dp_is_edp(intel_dp))
-+		return 0;
-+
-+	if (INTEL_GEN(i915) < 12 && port == PORT_A)
-+		return 0;
-+
-+	if (INTEL_GEN(i915) < 11 && port == PORT_E)
-+		return 0;
-+
- 	intel_dp->mst_mgr.cbs = &mst_cbs;
- 
- 	/* create encoders */
- 	intel_dp_create_fake_mst_encoders(intel_dig_port);
--	ret = drm_dp_mst_topology_mgr_init(&intel_dp->mst_mgr, dev,
-+	ret = drm_dp_mst_topology_mgr_init(&intel_dp->mst_mgr, &i915->drm,
- 					   &intel_dp->aux, 16, 3, conn_base_id);
--	if (ret) {
--		intel_dp->can_mst = false;
-+	if (ret)
- 		return ret;
--	}
-+
-+	intel_dp->can_mst = true;
-+
- 	return 0;
- }
+ 	for ((i = 0; i < attempts; ++i)); do
+-		if $ARPING -c 1 -I $h1 -b 192.0.2.66 -q -w 0.1; then
++		if $ARPING -c 1 -I $h1 -b 192.0.2.66 -q -w 1; then
+ 			((passes++))
+ 		fi
  
 -- 
 2.25.1
