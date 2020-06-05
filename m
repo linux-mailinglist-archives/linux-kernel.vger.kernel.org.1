@@ -2,156 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96BC1EEF71
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017ED1EEF80
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgFECYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 22:24:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725883AbgFECYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 22:24:40 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EE902074B;
-        Fri,  5 Jun 2020 02:24:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591323880;
-        bh=YQtG1+E9SrqAmxEtDAvp5km0QQeWwy9JUKjo7pm80Ts=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RAAAOa54T9fzg+pPeAtX+MJm7Mn0tqYsWTdPcvIvXgJjAZOyPH+8YMOlfOt1xyv5/
-         wuDLcJnY2hL3loxljR4ldHx5LDLMsTsTnHihQy8YmXcqIUmSKg07tBBEclwPPaE3ek
-         6KBy3XzC1Sz3Fh+u59DdcNlRCosoDt9CQtKzlLkk=
-Date:   Thu, 4 Jun 2020 21:29:45 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>, Kees Cook <keescook@chromium.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] docs: deprecated.rst: Add zero-length and one-element arrays
-Message-ID: <20200605022945.GA520@embeddedor>
+        id S1726062AbgFECbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 22:31:21 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:50835 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725944AbgFECbV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 22:31:21 -0400
+X-IronPort-AV: E=Sophos;i="5.73,474,1583164800"; 
+   d="scan'208";a="93872612"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 05 Jun 2020 10:31:16 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id BB1894BCC8B9;
+        Fri,  5 Jun 2020 10:31:13 +0800 (CST)
+Received: from [10.167.225.141] (10.167.225.141) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Fri, 5 Jun 2020 10:31:13 +0800
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogUmU6IFtSRkMgUEFUQ0ggMC84XSBkYXg6IEFkZCBh?=
+ =?UTF-8?Q?_dax-rmap_tree_to_support_reflink?=
+To:     Dave Chinner <david@fromorbit.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+CC:     Matthew Wilcox <willy@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "Qi, Fuli" <qi.fuli@fujitsu.com>,
+        "Gotou, Yasunori" <y-goto@fujitsu.com>
+References: <20200427084750.136031-1-ruansy.fnst@cn.fujitsu.com>
+ <20200427122836.GD29705@bombadil.infradead.org>
+ <em33c55fa5-15ca-4c46-8c27-6b0300fa4e51@g08fnstd180058>
+ <20200428064318.GG2040@dread.disaster.area>
+ <153e13e6-8685-fb0d-6bd3-bb553c06bf51@cn.fujitsu.com>
+ <20200604145107.GA1334206@magnolia>
+ <20200605013023.GZ2040@dread.disaster.area>
+From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Message-ID: <841a9dbb-daa7-3827-6bf9-664187e45a94@cn.fujitsu.com>
+Date:   Fri, 5 Jun 2020 10:30:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200605013023.GZ2040@dread.disaster.area>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.167.225.141]
+X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
+X-yoursite-MailScanner-ID: BB1894BCC8B9.AEB9F
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add zero-length and one-element arrays to the list.
 
-While I continue replacing zero-length and one-element arrays with
-flexible-array members, I need a reference to point people to, so
-they don't introduce more instances of such arrays. And while here,
-add a note to the "open-coded arithmetic in allocator arguments"
-section, on the use of struct_size() and the arrays-to-deprecate
-mentioned here.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- Documentation/process/deprecated.rst | 84 ++++++++++++++++++++++++++++
- 1 file changed, 84 insertions(+)
+On 2020/6/5 上午9:30, Dave Chinner wrote:
+> On Thu, Jun 04, 2020 at 07:51:07AM -0700, Darrick J. Wong wrote:
+>> On Thu, Jun 04, 2020 at 03:37:42PM +0800, Ruan Shiyang wrote:
+>>>
+>>>
+>>> On 2020/4/28 下午2:43, Dave Chinner wrote:
+>>>> On Tue, Apr 28, 2020 at 06:09:47AM +0000, Ruan, Shiyang wrote:
+>>>>>
+>>>>> 在 2020/4/27 20:28:36, "Matthew Wilcox" <willy@infradead.org> 写道:
+>>>>>
+>>>>>> On Mon, Apr 27, 2020 at 04:47:42PM +0800, Shiyang Ruan wrote:
+>>>>>>>    This patchset is a try to resolve the shared 'page cache' problem for
+>>>>>>>    fsdax.
+>>>>>>>
+>>>>>>>    In order to track multiple mappings and indexes on one page, I
+>>>>>>>    introduced a dax-rmap rb-tree to manage the relationship.  A dax entry
+>>>>>>>    will be associated more than once if is shared.  At the second time we
+>>>>>>>    associate this entry, we create this rb-tree and store its root in
+>>>>>>>    page->private(not used in fsdax).  Insert (->mapping, ->index) when
+>>>>>>>    dax_associate_entry() and delete it when dax_disassociate_entry().
+>>>>>>
+>>>>>> Do we really want to track all of this on a per-page basis?  I would
+>>>>>> have thought a per-extent basis was more useful.  Essentially, create
+>>>>>> a new address_space for each shared extent.  Per page just seems like
+>>>>>> a huge overhead.
+>>>>>>
+>>>>> Per-extent tracking is a nice idea for me.  I haven't thought of it
+>>>>> yet...
+>>>>>
+>>>>> But the extent info is maintained by filesystem.  I think we need a way
+>>>>> to obtain this info from FS when associating a page.  May be a bit
+>>>>> complicated.  Let me think about it...
+>>>>
+>>>> That's why I want the -user of this association- to do a filesystem
+>>>> callout instead of keeping it's own naive tracking infrastructure.
+>>>> The filesystem can do an efficient, on-demand reverse mapping lookup
+>>>> from it's own extent tracking infrastructure, and there's zero
+>>>> runtime overhead when there are no errors present.
+>>>
+>>> Hi Dave,
+>>>
+>>> I ran into some difficulties when trying to implement the per-extent rmap
+>>> tracking.  So, I re-read your comments and found that I was misunderstanding
+>>> what you described here.
+>>>
+>>> I think what you mean is: we don't need the in-memory dax-rmap tracking now.
+>>> Just ask the FS for the owner's information that associate with one page
+>>> when memory-failure.  So, the per-page (even per-extent) dax-rmap is
+>>> needless in this case.  Is this right?
+>>
+>> Right.  XFS already has its own rmap tree.
+> 
+> *nod*
+> 
+>>> Based on this, we only need to store the extent information of a fsdax page
+>>> in its ->mapping (by searching from FS).  Then obtain the owners of this
+>>> page (also by searching from FS) when memory-failure or other rmap case
+>>> occurs.
+>>
+>> I don't even think you need that much.  All you need is the "physical"
+>> offset of that page within the pmem device (e.g. 'this is the 307th 4k
+>> page == offset 1257472 since the start of /dev/pmem0') and xfs can look
+>> up the owner of that range of physical storage and deal with it as
+>> needed.
+> 
+> Right. If we have the dax device associated with the page that had
+> the failure, then we can determine the offset of the page into the
+> block device address space and that's all we need to find the owner
+> of the page in the filesystem.
+> 
+> Note that there may actually be no owner - the page that had the
+> fault might land in free space, in which case we can simply zero
+> the page and clear the error.
 
-diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
-index 652e2aa02a66c..622c8ac72a615 100644
---- a/Documentation/process/deprecated.rst
-+++ b/Documentation/process/deprecated.rst
-@@ -85,6 +85,12 @@ Instead, use the helper::
- 
- 	header = kzalloc(struct_size(header, item, count), GFP_KERNEL);
- 
-+NOTE: If you are using struct_size() on a structure containing a zero-length
-+or a one-element array as a trailing array member, stop using such arrays
-+and switch to `flexible arrays
-+<https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays>`_
-+instead.
-+
- See array_size(), array3_size(), and struct_size(),
- for more details as well as the related check_add_overflow() and
- check_mul_overflow() family of functions.
-@@ -200,3 +206,81 @@ All switch/case blocks must end in one of:
- * continue;
- * goto <label>;
- * return [expression];
-+
-+Zero-length and one-element arrays
-+----------------------------------
-+Old code in the kernel uses the zero-length and one-element array extensions
-+to the C90 standard, but the `preferred mechanism to declare variable-length
-+types
-+<https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_
-+such as these ones is a `flexible array member`, introduced in C99::
-+
-+        struct something {
-+                int length;
-+                char data[];
-+        };
-+
-+        struct something *instance;
-+
-+        instance = kmalloc(struct_size(instance, data, size), GFP_KERNEL);
-+        instance->length = size;
-+        memcpy(instance->data, source, size);
-+
-+By making use of the mechanism above, we get a compiler error in case the
-+flexible array does not occur last in the structure, which helps to prevent
-+some kind of `undefined behavior <https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=76497732932f15e7323dc805e8ea8dc11bb587cf>`_ bugs from being inadvertently introduced to
-+the codebase.
-+
-+It is also important to notice that zero-length and one-element arrays pose
-+confusion for things like sizeof() and `CONFIG_FORTIFY_SOURCE`. For instance,
-+there is no mechanism that warns us that the following application of the
-+sizeof() operator to a zero-length array always results in zero::
-+
-+        struct something {
-+                int length;
-+                char data[0];
-+        };
-+
-+        struct something *instance;
-+
-+        instance = kmalloc(struct_size(instance, data, size), GFP_KERNEL);
-+        instance->length = size;
-+        memcpy(instance->data, source, size);
-+        ...
-+        size = sizeof(instance->data);
-+
-+At the last line of code above, ``size`` turns out to be zero --when one might have
-+thought differently. Here are a couple examples of this issue `link 1
-+<https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f2cd32a443da694ac4e28fbf4ac6f9d5cc63a539>`_,
-+`link 2
-+<https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ab91c2a89f86be2898cee208d492816ec238b2cf>`_.
-+On the other hand, `flexible array members have incomplete type, and so the sizeof()
-+operator may not be applied <https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_,
-+so any  misuse of such  operator will be immediately noticed at build time.
-+
-+
-+With respect to one-element arrays, one has to be acutely aware that `such arrays
-+occupy at least as much space as a single object of the type
-+<https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_,
-+hence they contribute to the size of the enclosing structure. This is prone
-+to error every time people want to calculate the total size of dynamic memory
-+to allocate for a structure containing an array of this kind as a member::
-+
-+        struct something {
-+                int length;
-+                char data[1];
-+        };
-+
-+        struct something *instance;
-+
-+        instance = kmalloc(struct_size(instance, data, size - 1), GFP_KERNEL);
-+        instance->length = size;
-+        memcpy(instance->data, source, size);
-+
-+In the example above, we had to remember to calculate ``size - 1`` when using
-+the struct_size() helper, otherwise we would have --unintentionally-- allocated
-+memory for one too many ``data`` objects. The cleanest and least error-prone way
-+to implement this is through the use of a `flexible array member`, which is
-+exemplified at the `beginning
-+<https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays>`_
-+of this section.
--- 
-2.27.0
+OK.  Thanks for pointing out.
+
+> 
+>>> So, a fsdax page is no longer associated with a specific file, but with a
+>>> FS(or the pmem device).  I think it's easier to understand and implement.
+> 
+> Effectively, yes. But we shouldn't need to actually associate the
+> page with anything at the filesystem level because it is already
+> associated with a DAX device at a lower level via a dev_pagemap.
+> The hardware page fault already runs thought this code
+> memory_failure_dev_pagemap() before it gets to the DAX code, so
+> really all we need to is have that function pass us the page, offset
+> into the device and, say, the struct dax_device associated with that
+> page so we can get to the filesystem superblock we can then use for
+> rmap lookups on...
+> 
+
+OK.  I was just thinking about how can I execute the FS rmap search from 
+the memory-failure.  Thanks again for pointing out. :)
+
+
+--
+Thanks,
+Ruan Shiyang.
+
+> Cheers,
+> 
+> Dave.
+> 
+
 
