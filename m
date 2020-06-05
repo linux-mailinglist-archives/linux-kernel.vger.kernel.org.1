@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FE11EFB3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26B31EFB3C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgFEOZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:25:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46236 "EHLO mail.kernel.org"
+        id S1729015AbgFEOY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:24:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728347AbgFEOQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:16:57 -0400
+        id S1728364AbgFEORA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:17:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8415B20835;
-        Fri,  5 Jun 2020 14:16:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCF28206A2;
+        Fri,  5 Jun 2020 14:16:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366617;
-        bh=2+TLxM3G8QfbMlQcupi4uaoiUaXyEpZ8gudy8Moj2iY=;
+        s=default; t=1591366619;
+        bh=K7lgPnmnyd9zaQE8Biv09xlGJPFmPcPUvqaqpNNNsKY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yascjMMdbbacvJBj5T8hgyukCA4FLzwSe6Yj+ediCA/ezyEDSzZBZcGEdfeUn+5KI
-         CbhHlL5qP9ZtG43h9cLkjhjATDJTOdI96flxRw98Qka+j5zRf7hTbQc3JQDemW3yAK
-         lew0uykjBAWHeG4nJTjr4Kahb0gs6oiLMzBhToG0=
+        b=DCqEhtklUEc7a2CUP9F8iqd21F1eb5dT8K8L0anlZ+Vqh9D9kSubcMWztXm5wiwBu
+         dBf37rrjw8Uq+Ga+h7v3EXHefk4vbOBTPH1uRpm7cTPetbvFhDFU907QkS+b1iH5Bi
+         sbP7j3dqG1J+w6br79T8JxsApVbdBYd6MjYUgFPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
+        stable@vger.kernel.org, Valentin Longchamp <valentin@longchamp.me>,
+        Matteo Ghidoni <matteo.ghidoni@ch.abb.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 25/43] net: ethernet: ti: fix some return value check of cpsw_ale_create()
-Date:   Fri,  5 Jun 2020 16:14:55 +0200
-Message-Id: <20200605140153.842363853@linuxfoundation.org>
+Subject: [PATCH 5.6 26/43] net/ethernet/freescale: rework quiesce/activate for ucc_geth
+Date:   Fri,  5 Jun 2020 16:14:56 +0200
+Message-Id: <20200605140153.894270623@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200605140152.493743366@linuxfoundation.org>
 References: <20200605140152.493743366@linuxfoundation.org>
@@ -45,71 +45,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Valentin Longchamp <valentin@longchamp.me>
 
-[ Upstream commit 3469660d1b15ccfdf7b33295c306b6298ca730aa ]
+[ Upstream commit 79dde73cf9bcf1dd317a2667f78b758e9fe139ed ]
 
-cpsw_ale_create() can return both NULL and PTR_ERR(), but all of
-the caller only check NULL for error handling. This patch convert
-it to only return PTR_ERR() in all error cases, and the caller using
-IS_ERR() instead of NULL test.
+ugeth_quiesce/activate are used to halt the controller when there is a
+link change that requires to reconfigure the mac.
 
-Fixes: 4b41d3436796 ("net: ethernet: ti: cpsw: allow untagged traffic on host port")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+The previous implementation called netif_device_detach(). This however
+causes the initial activation of the netdevice to fail precisely because
+it's detached. For details, see [1].
+
+A possible workaround was the revert of commit
+net: linkwatch: add check for netdevice being present to linkwatch_do_dev
+However, the check introduced in the above commit is correct and shall be
+kept.
+
+The netif_device_detach() is thus replaced with
+netif_tx_stop_all_queues() that prevents any tranmission. This allows to
+perform mac config change required by the link change, without detaching
+the corresponding netdevice and thus not preventing its initial
+activation.
+
+[1] https://lists.openwall.net/netdev/2020/01/08/201
+
+Signed-off-by: Valentin Longchamp <valentin@longchamp.me>
+Acked-by: Matteo Ghidoni <matteo.ghidoni@ch.abb.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ti/cpsw_ale.c    | 2 +-
- drivers/net/ethernet/ti/cpsw_priv.c   | 4 ++--
- drivers/net/ethernet/ti/netcp_ethss.c | 4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/freescale/ucc_geth.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/ti/cpsw_ale.c b/drivers/net/ethernet/ti/cpsw_ale.c
-index ecdbde539eb7..4eb14b174c1a 100644
---- a/drivers/net/ethernet/ti/cpsw_ale.c
-+++ b/drivers/net/ethernet/ti/cpsw_ale.c
-@@ -917,7 +917,7 @@ struct cpsw_ale *cpsw_ale_create(struct cpsw_ale_params *params)
+diff --git a/drivers/net/ethernet/freescale/ucc_geth.c b/drivers/net/ethernet/freescale/ucc_geth.c
+index 0d101c00286f..ab1b4a77b4a3 100644
+--- a/drivers/net/ethernet/freescale/ucc_geth.c
++++ b/drivers/net/ethernet/freescale/ucc_geth.c
+@@ -42,6 +42,7 @@
+ #include <soc/fsl/qe/ucc.h>
+ #include <soc/fsl/qe/ucc_fast.h>
+ #include <asm/machdep.h>
++#include <net/sch_generic.h>
  
- 	ale = devm_kzalloc(params->dev, sizeof(*ale), GFP_KERNEL);
- 	if (!ale)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
+ #include "ucc_geth.h"
  
- 	ale->p0_untag_vid_mask =
- 		devm_kmalloc_array(params->dev, BITS_TO_LONGS(VLAN_N_VID),
-diff --git a/drivers/net/ethernet/ti/cpsw_priv.c b/drivers/net/ethernet/ti/cpsw_priv.c
-index 97a058ca60ac..d0b6c418a870 100644
---- a/drivers/net/ethernet/ti/cpsw_priv.c
-+++ b/drivers/net/ethernet/ti/cpsw_priv.c
-@@ -490,9 +490,9 @@ int cpsw_init_common(struct cpsw_common *cpsw, void __iomem *ss_regs,
- 	ale_params.ale_ports		= CPSW_ALE_PORTS_NUM;
+@@ -1548,11 +1549,8 @@ static int ugeth_disable(struct ucc_geth_private *ugeth, enum comm_dir mode)
  
- 	cpsw->ale = cpsw_ale_create(&ale_params);
--	if (!cpsw->ale) {
-+	if (IS_ERR(cpsw->ale)) {
- 		dev_err(dev, "error initializing ale engine\n");
--		return -ENODEV;
-+		return PTR_ERR(cpsw->ale);
- 	}
+ static void ugeth_quiesce(struct ucc_geth_private *ugeth)
+ {
+-	/* Prevent any further xmits, plus detach the device. */
+-	netif_device_detach(ugeth->ndev);
+-
+-	/* Wait for any current xmits to finish. */
+-	netif_tx_disable(ugeth->ndev);
++	/* Prevent any further xmits */
++	netif_tx_stop_all_queues(ugeth->ndev);
  
- 	dma_params.dev		= dev;
-diff --git a/drivers/net/ethernet/ti/netcp_ethss.c b/drivers/net/ethernet/ti/netcp_ethss.c
-index fb36115e9c51..fdbae734acce 100644
---- a/drivers/net/ethernet/ti/netcp_ethss.c
-+++ b/drivers/net/ethernet/ti/netcp_ethss.c
-@@ -3704,9 +3704,9 @@ static int gbe_probe(struct netcp_device *netcp_device, struct device *dev,
- 		ale_params.nu_switch_ale = true;
- 	}
- 	gbe_dev->ale = cpsw_ale_create(&ale_params);
--	if (!gbe_dev->ale) {
-+	if (IS_ERR(gbe_dev->ale)) {
- 		dev_err(gbe_dev->dev, "error initializing ale engine\n");
--		ret = -ENODEV;
-+		ret = PTR_ERR(gbe_dev->ale);
- 		goto free_sec_ports;
- 	} else {
- 		dev_dbg(gbe_dev->dev, "Created a gbe ale engine\n");
+ 	/* Disable the interrupt to avoid NAPI rescheduling. */
+ 	disable_irq(ugeth->ug_info->uf_info.irq);
+@@ -1565,7 +1563,10 @@ static void ugeth_activate(struct ucc_geth_private *ugeth)
+ {
+ 	napi_enable(&ugeth->napi);
+ 	enable_irq(ugeth->ug_info->uf_info.irq);
+-	netif_device_attach(ugeth->ndev);
++
++	/* allow to xmit again  */
++	netif_tx_wake_all_queues(ugeth->ndev);
++	__netdev_watchdog_up(ugeth->ndev);
+ }
+ 
+ /* Called every time the controller might need to be made
 -- 
 2.25.1
 
