@@ -2,281 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC651EFBC7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049731EFBBC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728175AbgFEOrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:47:49 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:35350 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727101AbgFEOrq (ORCPT
+        id S1728007AbgFEOpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727113AbgFEOpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:47:46 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 055Ekb5t002278;
-        Fri, 5 Jun 2020 14:47:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=VLw7SULwH8cvgHH/9FjoXViVSzh+U9OXfZkSN4vYUIk=;
- b=v+23+yRwx3krrkwtFiH602kYnFUf31f6hGB/tld0kK5K7O825B0rP25UfBSuMSBlqcNX
- DIqsTA2e5d5lfOR4tAC3ZlaEoHw5insH32AN9/YsXTX6Hiy2hyAJsY2Yicaey7jKW0wQ
- g3gCh+pGeh7cDj8bO/cxwQlfxrOkXH8y76FBpxEH18z3dEx4Lwbwcyy314da8Dv2XYAk
- skp72yT6NE/u2Pf8WQpT3jpUAvf668aiKmZY8ynMR7xcMpfBqfHZdqRde/+qRCVtvPjb
- KmBwpizr98bOnqgKaAoqR8bG/Dpne+fJEH2c+fUR4WuN9MFRaZ+HefUU4++vGErGyX4/ 2A== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 31f91du8v4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 05 Jun 2020 14:46:59 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 055EhR94122774;
-        Fri, 5 Jun 2020 14:44:59 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 31f92svwbn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Jun 2020 14:44:59 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 055EivT8013734;
-        Fri, 5 Jun 2020 14:44:57 GMT
-Received: from [10.175.51.78] (/10.175.51.78)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 05 Jun 2020 07:44:56 -0700
-Subject: Re: slub freelist issue / BUG: unable to handle page fault for
- address: 000000003ffe0018
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Waiman Long <longman@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <4dc93ff8-f86e-f4c9-ebeb-6d3153a78d03@oracle.com>
- <7839183d-1c0b-da02-73a2-bf5e1e8b02b9@suse.cz>
- <94296941-1073-913c-2adb-bf2e41be9f0f@oracle.com>
- <202006041054.874AA564@keescook>
- <cb0cdaaa-7825-0b87-0384-db22329305bb@suse.cz>
- <34455dce-6675-1fc2-8d61-45bf56f3f554@suse.cz>
- <6b2b149e-c2bc-f87a-ea2c-3046c5e39bf9@oracle.com>
- <faea2c18-edbe-f8b4-b171-6be866624856@oracle.com>
- <CAJZ5v0jqmUmf7mv3wjniVM-YqPqhDSjxunU0E4VYCsUQqvrF_Q@mail.gmail.com>
- <ce333dcb-2b2c-3e1f-2a7e-02a7819b1db4@suse.cz>
-From:   Vegard Nossum <vegard.nossum@oracle.com>
-Message-ID: <894e8cee-33df-1f63-fb12-72dceb024ea7@oracle.com>
-Date:   Fri, 5 Jun 2020 16:44:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 5 Jun 2020 10:45:24 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B660AC08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 07:45:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2KqS9GDLfei9p1sb6woUsx+zVR7cGlA+3c0QP7ohtJE=; b=eGAfBDDR7VUNIJzUpO+py0WWxs
+        BZuhWABbN4umtgrUOxi0KQDThDNapT2Y1yAdhk3iFtrsXKYHw/WUrd4VIEdLR+nl+sj/NMFPTHclo
+        Tzsf+CuoDXhf8R3h8hX01pjeC7EQEnF0xUk+YjSs641SLUg/TjCKTkkpg1NJYj7RMtvidKG048JC+
+        c7mb8z+X8AGcls8wVUy01BRpMh+uTth0oq9WQy/ammynLRuK7vkPMB3CtEm8bMU39GJz5gNyAqQeo
+        TruqEvcTdD8xVNDN7AMnFDMbf8aUFd4pcqOML6X7ulX/hZJQVRMRJ4h3QXrOunvTUGgO4l3PLtmPM
+        9Bcb+IMA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jhDac-0004EE-OP; Fri, 05 Jun 2020 14:44:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3D3D8301ABC;
+        Fri,  5 Jun 2020 16:44:57 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 27DB921A74B41; Fri,  5 Jun 2020 16:44:57 +0200 (CEST)
+Date:   Fri, 5 Jun 2020 16:44:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        sumit.garg@linaro.org, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, will@kernel.org,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        patches@linaro.org, Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [RFC PATCH 0/4] kgdb: Honour the kprobe blacklist when setting
+ breakpoints
+Message-ID: <20200605144457.GD2948@hirez.programming.kicks-ass.net>
+References: <20200605132130.1411255-1-daniel.thompson@linaro.org>
+ <20200605142953.GP2750@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <ce333dcb-2b2c-3e1f-2a7e-02a7819b1db4@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9642 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 mlxscore=0
- malwarescore=0 spamscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006050110
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9642 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 bulkscore=0
- clxscore=1011 cotscore=-2147483648 malwarescore=0 adultscore=0
- priorityscore=1501 suspectscore=0 phishscore=0 spamscore=0 mlxscore=0
- impostorscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006050110
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200605142953.GP2750@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-05 16:08, Vlastimil Babka wrote:
-> On 6/5/20 3:12 PM, Rafael J. Wysocki wrote:
->> On Fri, Jun 5, 2020 at 2:48 PM Vegard Nossum <vegard.nossum@oracle.com> wrote:
->>>
->>> On 2020-06-05 11:36, Vegard Nossum wrote:
->>>>
->>>> On 2020-06-05 11:11, Vlastimil Babka wrote:
->>>>> On 6/4/20 8:46 PM, Vlastimil Babka wrote:
->>>>>> On 6/4/20 7:57 PM, Kees Cook wrote:
->>>>>>> On Thu, Jun 04, 2020 at 07:20:18PM +0200, Vegard Nossum wrote:
->>>>>>>> On 2020-06-04 19:18, Vlastimil Babka wrote:
->>>>>>>>> On 6/4/20 7:14 PM, Vegard Nossum wrote:
->>>>>>>>>>
->>>>>>>>>> Hi all,
->>>>>>>>>>
->>>>>>>>>> I ran into a boot problem with latest linus/master
->>>>>>>>>> (6929f71e46bdddbf1c4d67c2728648176c67c555) that manifests like this:
->>>>>>>>>
->>>>>>>>> Hi, what's the .config you use?
->>>>>>>>
->>>>>>>> Pretty much x86_64 defconfig minus a few options (PCI, USB, ...)
->>>>>>>
->>>>>>> Oh yes indeed. I immediately crash in the same way with this config.
->>>>>>> I'll
->>>>>>> start digging...
->>>>>>>
->>>>>>> (defconfig finishes boot)
->>>>>>
->>>>>> This is funny, booting with slub_debug=F results in:
->>>>>> I'm not sure if it's ACPI or ftrace wrong here, but looks like the
->>>>>> changed
->>>>>> free pointer offset merely exposes a bug in something else.
->>>>>
->>>>> So, with Kees' patch reverted, booting with slub_debug=F (or even more
->>>>> specific slub_debug=F,ftrace_event_field) also hits this bug below. I
->>>>> wanted to bisect it, but v5.7 was also bad, and also v5.6. Didn't try
->>>>> further in history. So it's not new at all, and likely very specific to
->>>>> your config+QEMU? (and related to the ACPI error messages that precede
->>>>> it?).
->>>>
->>>> I see it too, but not on v5.0. I can bisect it.
->>>
->>> commit 67a72420a326b45514deb3f212085fb2cd1595b5
->>> Author: Bob Moore <robert.moore@intel.com>
->>> Date:   Fri Aug 16 14:43:21 2019 -0700
->>>
->>>       ACPICA: Increase total number of possible Owner IDs
->>>
->>>       ACPICA commit 1f1652dad88b9d767767bc1f7eb4f7d99e6b5324
->>>
->>>       From 255 to 4095 possible IDs.
->>>
->>>       Link: https://github.com/acpica/acpica/commit/1f1652da
->>>       Reported-by: Hedi Berriche <hedi.berriche @hpe.com>
->>>       Signed-off-by: Bob Moore <robert.moore@intel.com>
->>>       Signed-off-by: Erik Schmauss <erik.schmauss@intel.com>
->>>       Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>
->> Bob, Erik, did we miss something in that patch?
+On Fri, Jun 05, 2020 at 04:29:53PM +0200, Peter Zijlstra wrote:
+> On Fri, Jun 05, 2020 at 02:21:26PM +0100, Daniel Thompson wrote:
+> > kgdb has traditionally adopted a no safety rails approach to breakpoint
+> > placement. If the debugger is commanded to place a breakpoint at an
+> > address then it will do so even if that breakpoint results in kgdb
+> > becoming inoperable.
+> > 
+> > A stop-the-world debugger with memory peek/poke does intrinsically
+> > provide its operator with the means to hose their system in all manner
+> > of exciting ways (not least because stopping-the-world is already a DoS
+> > attack ;-) ) but the current no safety rail approach is not easy to
+> > defend, especially given kprobes provides us with plenty of machinery to
+> > mark parts of the kernel where breakpointing is discouraged.
+> > 
+> > This patchset introduces some safety rails by using the existing
+> > kprobes infrastructure. It does not cover all locations where
+> > breakpoints can cause trouble but it will definitely block off several
+> > avenues, including the architecture specific parts that are handled by
+> > arch_within_kprobe_blacklist().
+> > 
+> > This patch is an RFC because:
+> > 
+> > 1. My workstation is still chugging through the compile testing.
+> > 
+> > 2. Patch 4 needs more runtime testing.
+> > 
+> > 3. The code to extract the kprobe blacklist code (patch 4 again) needs
+> >    more review especially for its impact on arch specific code.
+> > 
+> > To be clear I do plan to do the detailed review of the kprobe blacklist
+> > stuff but would like to check the direction of travel first since the
+> > change is already surprisingly big and maybe there's a better way to
+> > organise things.
 > 
-> Maybe the patch just changes layout in a way that exposes the bug.
+> Thanks for doing these patches, esp 1-3 look very good to me.
 > 
-> Anyway the "ftrace_event_field" cache is not really involved, this is just
-> because of slab merging. After adding "slub_nomerge" to "slub_debug=F", it
-> starts making more sense, as the cache becomes Acpi-Namespace
-> 
-> [    0.140408] ------------[ cut here ]------------
-> [    0.140837] cache_from_obj: Wrong slab cache. Acpi-Namespace but object is from kmalloc-64
-> [    0.141406] WARNING: CPU: 0 PID: 1 at mm/slab.h:524 kmem_cache_free+0x1d3/0x250
-> [    0.142105] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.7.0+ #45
-> [    0.142393] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
-> [    0.142393] RIP: 0010:kmem_cache_free+0x1d3/0x250
-> [    0.142393] Code: 18 4d 85 ed 0f 84 10 ff ff ff 4c 39 ed 74 2f 49 8b 4d 58 48 8b 55 58 48 c7 c6 10 47 a1 ac 48 c7 c7 00 c2 b0 ac e8 b1 cc eb ff <0f> 0b 48 89 de 4c 89 ef e8 10 d7 ff ff 48 8b 15 59 36 9b 00 4c 89
-> [    0.142393] RSP: 0018:ffffb39cc0013dc0 EFLAGS: 00010282
-> [    0.142393] RAX: 0000000000000000 RBX: ffff937287409e00 RCX: 0000000000000000
-> [    0.142393] RDX: 0000000000000001 RSI: 0000000000000092 RDI: ffffffffacfdd32c
-> [    0.142393] RBP: ffff93728742ef00 R08: ffffb39cc0013c7d R09: 00000000000000fc
-> [    0.142393] R10: ffffb39cc0013c78 R11: ffffb39cc0013c7d R12: ffff937307409e00
-> [    0.142393] R13: ffff937287401d00 R14: 0000000000000000 R15: 0000000000000000
-> [    0.142393] FS:  0000000000000000(0000) GS:ffff937287a00000(0000) knlGS:0000000000000000
-> [    0.142393] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    0.142393] CR2: 0000000000000000 CR3: 0000000003a0a000 CR4: 00000000003406f0
-> [    0.142393] Call Trace:
-> [    0.142393]  acpi_os_release_object+0x5/0x10
-> [    0.142393]  acpi_ns_delete_children+0x46/0x59
-> [    0.142393]  acpi_ns_delete_namespace_subtree+0x5c/0x79
-> [    0.142393]  ? acpi_sleep_proc_init+0x1f/0x1f
-> [    0.142393]  acpi_ns_terminate+0xc/0x31
-> [    0.142393]  acpi_ut_subsystem_shutdown+0x45/0xa3
-> [    0.142393]  ? acpi_sleep_proc_init+0x1f/0x1f
-> [    0.142393]  acpi_terminate+0x5/0xf
-> [    0.142393]  acpi_init+0x27b/0x308
-> [    0.142393]  ? video_setup+0x79/0x79
-> [    0.142393]  do_one_initcall+0x7b/0x160
-> [    0.142393]  kernel_init_freeable+0x190/0x1f2
-> [    0.142393]  ? rest_init+0x9a/0x9a
-> [    0.142393]  kernel_init+0x5/0xf6
-> [    0.142393]  ret_from_fork+0x22/0x30
-> [    0.142393] ---[ end trace 3539f236ef812ba1 ]---
-> [    0.142396] ------------[ cut here ]------------
-> 
-> I've also changed the warning so it's not printed just once, and also prints tracking info
-> (see the hunk at the end of my mail, I'll turn this to a proper patch later).
-> 
-> With "slub_debug=FU slub_nomerge" there are now multiple warnings, but they all look the same:
-> 
-> [    0.143815] ------------[ cut here ]------------
-> [    0.144131] cache_from_obj: Wrong slab cache. Acpi-Namespace but object is from kmalloc-64
-> [    0.144929] WARNING: CPU: 0 PID: 1 at mm/slab.h:524 kmem_cache_free+0x1d3/0x250
-> [    0.145129] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.7.0+ #45
-> [    0.145129] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
-> [    0.145129] RIP: 0010:kmem_cache_free+0x1d3/0x250
-> [    0.145129] Code: 18 4d 85 ed 0f 84 10 ff ff ff 4c 39 ed 74 2f 49 8b 4d 58 48 8b 55 58 48 c7 c6 10 47 c1 8d 48 c7 c7 00 c2 d0 8d e8 b1 cc eb ff <0f> 0b 48 89 de 4c 89 ef e8 10 d7 ff ff 48 8b 15 59 36 9b 00 4c 89
-> [    0.145129] RSP: 0018:ffff990b80013dc0 EFLAGS: 00010282
-> [    0.145129] RAX: 0000000000000000 RBX: ffff972d474ada80 RCX: 0000000000000000
-> [    0.145129] RDX: 0000000000000001 RSI: 0000000000000092 RDI: ffffffff8e1dd32c
-> [    0.145129] RBP: ffff972d47425680 R08: ffff990b80013c7d R09: 00000000000000fc
-> [    0.145129] R10: ffff990b80013c78 R11: ffff990b80013c7d R12: ffff972dc74ada80
-> [    0.145129] R13: ffff972d474038c0 R14: 0000000000000000 R15: 0000000000000000
-> [    0.145129] FS:  0000000000000000(0000) GS:ffff972d47a00000(0000) knlGS:0000000000000000
-> [    0.145129] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    0.145129] CR2: 0000000000000000 CR3: 000000000660a000 CR4: 00000000003406f0
-> [    0.145129] Call Trace:
-> [    0.145129]  acpi_os_release_object+0x5/0x10
-> [    0.145129]  acpi_ns_delete_children+0x46/0x59
-> [    0.145129]  acpi_ns_delete_namespace_subtree+0x5c/0x79
-> [    0.145129]  ? acpi_sleep_proc_init+0x1f/0x1f
-> [    0.145129]  acpi_ns_terminate+0xc/0x31
-> [    0.145129]  acpi_ut_subsystem_shutdown+0x45/0xa3
-> [    0.145129]  ? acpi_sleep_proc_init+0x1f/0x1f
-> [    0.145129]  acpi_terminate+0x5/0xf
-> [    0.145129]  acpi_init+0x27b/0x308
-> [    0.145129]  ? video_setup+0x79/0x79
-> [    0.145129]  do_one_initcall+0x7b/0x160
-> [    0.145129]  kernel_init_freeable+0x190/0x1f2
-> [    0.145129]  ? rest_init+0x9a/0x9a
-> [    0.145129]  kernel_init+0x5/0xf6
-> [    0.145129]  ret_from_fork+0x22/0x30
-> [    0.145129] ---[ end trace 574554fca7bd06bb ]---
-> [    0.145133] INFO: Allocated in acpi_ns_root_initialize+0xb6/0x2d1 age=58 cpu=0 pid=0
-> [    0.145881]  kmem_cache_alloc_trace+0x1a9/0x1c0
-> [    0.146132]  acpi_ns_root_initialize+0xb6/0x2d1
-> [    0.146578]  acpi_initialize_subsystem+0x65/0xa8
-> [    0.147024]  acpi_early_init+0x5d/0xd1
-> [    0.147132]  start_kernel+0x45b/0x518
-> [    0.147491]  secondary_startup_64+0xb6/0xc0
-> [    0.147897] ------------[ cut here ]------------
-> 
-> And it seems ACPI is allocating an object via kmalloc() and then freeing it
-> via kmem_cache_free(<"Acpi-Namespace" kmem_cache>) which is wrong.
-> 
->> ./scripts/faddr2line vmlinux 'acpi_ns_root_initialize+0xb6'
-> acpi_ns_root_initialize+0xb6/0x2d1:
-> kmalloc at include/linux/slab.h:555
-> (inlined by) kzalloc at include/linux/slab.h:669
-> (inlined by) acpi_os_allocate_zeroed at include/acpi/platform/aclinuxex.h:57
-> (inlined by) acpi_ns_root_initialize at drivers/acpi/acpica/nsaccess.c:102
-> 
+> I've taken the liberty to bounce the entire set to Masami-San, who is
+> the kprobes maintainer for comments as well.
 
-That's it :-) This fixes it for me:
+OK, after having had a second look, one thing we can perhaps address
+with the last patch, or perhaps on top of that, is extending the
+kprobes_blacklist() with data regions.
 
-diff --git a/drivers/acpi/acpica/nsaccess.c b/drivers/acpi/acpica/nsaccess.c
-index 2566e2d4c7803..b76bbab917941 100644
---- a/drivers/acpi/acpica/nsaccess.c
-+++ b/drivers/acpi/acpica/nsaccess.c
-@@ -98,14 +98,12 @@ acpi_status acpi_ns_root_initialize(void)
-                  * predefined names are at the root level. It is much 
-easier to
-                  * just create and link the new node(s) here.
-                  */
--               new_node =
--                   ACPI_ALLOCATE_ZEROED(sizeof(struct 
-acpi_namespace_node));
-+               new_node = acpi_ns_create_node(*ACPI_CAST_PTR (u32, 
-init_val->name));
-                 if (!new_node) {
-                         status = AE_NO_MEMORY;
-                         goto unlock_and_exit;
-                 }
-
--               ACPI_COPY_NAMESEG(new_node->name.ascii, init_val->name);
-                 new_node->descriptor_type = ACPI_DESC_TYPE_NAMED;
-                 new_node->type = init_val->type;
+Because these patches only exclude kgdb from setting breakpoints on
+code; data breakpoints do not match what we do with
+arch_build_bp_info().
 
 
-Vegard
