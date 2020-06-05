@@ -2,132 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37281F0048
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 21:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3ED1F003C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 21:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbgFETIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 15:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
+        id S1728069AbgFETFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 15:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726959AbgFETIj (ORCPT
+        with ESMTP id S1726958AbgFETFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 15:08:39 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97251C08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 12:08:38 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id r125so6410968lff.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 12:08:38 -0700 (PDT)
+        Fri, 5 Jun 2020 15:05:15 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80161C08C5C2;
+        Fri,  5 Jun 2020 12:05:15 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id v26so1164977oof.7;
+        Fri, 05 Jun 2020 12:05:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AcezGontWez8pNBdgQEac8VyYkNUk3H4r/f/qgUnO2g=;
-        b=bVtxxK21u8dFZ9y31drF87QSfC9BKTKsr0QMyL11UqoPm2rvFF7BO1to+YkhbH9K8w
-         FAPjZj+mG/ocCBLoRw2vDGFIpRTeL5h7SNors+NuUGyYuGvDUO6BWjXJVACFmpJqoK0t
-         HOXqsiJN6v4QGn38rZPSZWveRUy/PbCeGcbzo=
+        bh=Qs9QY5b17T4Lq7hXEjIEKo/PvUm237YC2CaO1E2diG8=;
+        b=VFJHWNkvJmJX90giuV61jQ7kiccmFLdEVVLKXu4PxdWYurrYFYiz8lZuwxQWZ0n7Wc
+         yqhbt4czbepmBIz1HVMw2BU/xHofgVZYcZm0m0aVuYOen8J93WMKJpwRqnhpQwseb4iP
+         nTFIBviunhhNqVx4bUpLna4pcFh6INqif/J0SF3SC+uoE8WFCRj2qscO9r/1vfsmztE3
+         o7wjoeaB2YtJa4j9v5pgS8XhcZUXkTN99tYl0TCs6fCTmvGrocK2Mq38lJW1pjm8rDWH
+         UN4rar2FhGwgjKTcGmzkuz1GVOX1F7W+0aC+6XQe/gtufZf02nh1NDaa2YE7hsg6x5mN
+         130w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AcezGontWez8pNBdgQEac8VyYkNUk3H4r/f/qgUnO2g=;
-        b=j7d2022jNjPP5qNCx+mfv2NKMmKYGo+rhWlzszK/ZXPiHWZ3RTC5IMRBV7eC9NplW3
-         3rAwolFpGTXOwo8I/m6JGu7cnpo3MCOoJ+dT9r1NZdg2GrD5BlYJfAf+39+Sog3qDya0
-         jK1P1iLiZOO+FdfVFdzOBk3y0c3/Qt7KgGsMc5H8CKHZT4WfBLQWZHj4fAE/bD0Tu1e+
-         tI1FDcePnZ4TgBnXZIJiKa15mBU/RThbpi2Cedz/S9rsnjRpYtrrEMnBmXPpiSZ9JOTX
-         +fs2ARBNup/tBOnwtZa1gMuV99sPmN1jzRhvYMauB7lDHxWBtrJL6rsrsC+8i3cpTCLb
-         b8xg==
-X-Gm-Message-State: AOAM531D0p9fuE7RxpG6r20rRL5MOFjOqyrOQ3H6ISkU3iFMRRKS9bkE
-        c3veWv1u6p6+Ay0viM5YYSmLec6f6qs=
-X-Google-Smtp-Source: ABdhPJyUnTzm359V12LBsSh8bVGmQyU8LnO+LtkMcsb1TngRcDZrSnkbTqx4L6IA53vTs2gehtZwMQ==
-X-Received: by 2002:ac2:48a3:: with SMTP id u3mr6155299lfg.115.1591384116608;
-        Fri, 05 Jun 2020 12:08:36 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id 205sm1297825lfe.73.2020.06.05.12.08.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Jun 2020 12:08:36 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id y11so11397498ljm.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 12:08:36 -0700 (PDT)
-X-Received: by 2002:a05:651c:2c6:: with SMTP id f6mr5235749ljo.371.1591383681430;
- Fri, 05 Jun 2020 12:01:21 -0700 (PDT)
+        bh=Qs9QY5b17T4Lq7hXEjIEKo/PvUm237YC2CaO1E2diG8=;
+        b=TldVy0fnyLJPvGIiWrUizTZ9+bIIuaPwSkDB8wesOC2zE+HWvyT8R3/28vcFIQriM5
+         y1gvwowYvkDK/nqgXiWJNdmszB6z48do0/PXmuPmfhe6r7G4tKsA6CsPxrTO6S/oO8e7
+         xQWCBBuZScLEoc617x7ZL3S0lVortx88gdzFwG8jMOM31fnHpsvox2hjSOqUGoKIXtXd
+         QxPmP7SMiZcS+OfGoKl+/KXb1H8AyQbhj+XxpQNU8AMtOhbT2xs//V8NwgXPfqB/MEQc
+         LgeXS3qYUPTauw81bSvhQMHEXGQO1Xl2RxaSJUjm3fZKPCba1DLTSCtsXEWkMO7aHk9n
+         LL5g==
+X-Gm-Message-State: AOAM532x30ZhCouE1J8abR888VZie9+WiJSR+1xL3uXZdSLsP2DBjsn0
+        iGjX5OG13egn2NvM1TMd9o3fSl6hwWYNvLCz0Kw=
+X-Google-Smtp-Source: ABdhPJzW6MwzWQBJS+ULgHeL/swNJlQvIM9FQrimswHIkx7+3vzQXKk44yBXf+5Rg347qSGB5Q2c1/W7jwgGKQuIKYI=
+X-Received: by 2002:a4a:98c7:: with SMTP id b7mr8842755ooj.42.1591383914796;
+ Fri, 05 Jun 2020 12:05:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <87eeqth3hi.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87eeqth3hi.fsf@mpe.ellerman.id.au>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 5 Jun 2020 12:01:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh5vSwYqF=YiKOOGBHE=hCwnes_ndbP4QOyjPK_Xocz7w@mail.gmail.com>
-Message-ID: <CAHk-=wh5vSwYqF=YiKOOGBHE=hCwnes_ndbP4QOyjPK_Xocz7w@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.8-1 tag
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, ajd@linux.ibm.com,
-        alistair@popple.id.au,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Qian Cai <cai@lca.pw>,
-        chenzhou10@huawei.com,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        christophe.leroy@csgroup.eu, clg@kaod.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        ego@linux.vnet.ibm.com,
-        Markus Elfring <elfring@users.sourceforge.net>,
-        emmanuel.nicolet@gmail.com, fbarrat@linux.ibm.com,
-        geoff@infradead.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        haren@linux.ibm.com, hbathini@linux.ibm.com,
-        Herbert Xu <herbert@gondor.apana.org.au>, huhai@tj.kylinos.cn,
-        jniethe5@gmail.com, kernelfans@gmail.com, kjain@linux.ibm.com,
-        leobras.c@gmail.com, leonardo@linux.ibm.com,
+References: <1588542414-14826-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1588542414-14826-11-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXgSWHd-w_vgv-2mrYwJ2trcdDNniKFGCDGbn3ts-CkjA@mail.gmail.com>
+In-Reply-To: <CAMuHMdXgSWHd-w_vgv-2mrYwJ2trcdDNniKFGCDGbn3ts-CkjA@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 5 Jun 2020 20:04:48 +0100
+Message-ID: <CA+V-a8skA0Gf+bnWJA_TaVsX2uLCrdGqVkZnioW0X0XULVeDrg@mail.gmail.com>
+Subject: Re: [PATCH v2 10/10] ARM: dts: r8a7742-iwg21d-q7: Add support for
+ iWave G21D-Q7 board based on RZ/G1H
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linuxram@us.ibm.com, mahesh@linux.ibm.com, michal.simek@xilinx.com,
-        mikey@neuling.org, Nathan Chancellor <natechancellor@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        rzinsly@linux.ibm.com, sbobroff@linux.ibm.com,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, st5pub@yandex.ru,
-        Takashi Iwai <tiwai@suse.de>, wangxiongfeng2@huawei.com,
-        wsa@kernel.org
+        dmaengine <dmaengine@vger.kernel.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 9:38 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+Hi Geert,
+
+On Fri, Jun 5, 2020 at 1:52 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> I've pushed the result of my resolution of the conflicts to the powerpc/merge
-> branch, if you want to look at that, though I've also tried to describe it in
-> full below.
+> Hi Prabhakar,
+>
+> On Sun, May 3, 2020 at 11:47 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Add support for iWave RainboW-G21D-Qseven board based on RZ/G1H.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+>
+> > --- /dev/null
+> > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > @@ -0,0 +1,37 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Device Tree Source for the iWave-RZ/G1H Qseven board
+> > + *
+> > + * Copyright (C) 2020 Renesas Electronics Corp.
+> > + */
+> > +
+> > +/dts-v1/;
+> > +#include "r8a7742-iwg21m.dtsi"
+> > +
+> > +/ {
+> > +       model = "iWave Systems RainboW-G21D-Qseven board based on RZ/G1H";
+> > +       compatible = "iwave,g21d", "iwave,g21m", "renesas,r8a7742";
+> > +
+> > +       aliases {
+> > +               serial2 = &scifa2;
+> > +       };
+> > +
+> > +       chosen {
+> > +               bootargs = "ignore_loglevel root=/dev/mmcblk0p1 rw rootwait";
+> > +               stdout-path = "serial2:115200n8";
+> > +       };
+> > +};
+> > +
+> > +&pfc {
+> > +       scifa2_pins: scifa2 {
+> > +               groups = "scifa2_data_c";
+>
+> Upon second look, I think this group is wrong.  While labeled SCIFA2 in
+> the SOM schematics, these signals seem to be connected to a debugging
+> interface.
+>
+> The real UART2 seems to be present on the camera daughter board.  Those
+> signals are labeled "SCIFA2" in the camera board schematics, but "SCIF2"
+> in the SOM schematics.  This is OK, as "scif2_data" and "scifa2_data"
+> share the same pins, so you can choose either SCIF2 or SCIFA2 to drive
+> them.
+>
+> If I'm right, please change the group, and move all serial2 descriptions
+> to the camera board DTS.
+>
+I took a closer look at the schematics, SCIFA2 is connected to the
+debug interface similarly on G1M where SCIF0 is connected to the debug
+interface.
 
-I ended up doing the machine_check_exception() differently, because I
-felt the code itself was done wrong and I wanted to add a note about
-that.
+I will send the user guide privately which should clarify the serial
+interfaces on the board.
 
-Having the same function have completely different semantics depending
-on a platform issue is just fundamentally wrong, and makes not just
-for fragile code, but also means that you can't do single image
-kernels.
+Cheers,
+--Prabhakar
 
-It should be two different functions, possibly just
 
-   non_nmi_fn() { ... }
-
-   nmi_fn() { nmi_enter(); non_nmi_fn(); nmi_exit(); }
-
-and now you don't have odd rules for the same function that depends on
-how the platform happens to call it.
-
-I didn't do the above. I did something that looked like the old code,
-but had a comment. Oh well.
-
-But thanks for describing the merge, I'd have missed the place where
-there was a new use of pgd_oiffset().
-
-..and then when I actually compared whether I otherwise got the same
-result as you, I realized that this all depends on the module tree.
-
-I'll go merge that first, and then re-do this all. Oh well.
-
-               Linus
+> > +               function = "scifa2";
+> > +       };
+> > +};
+> > +
+> > +&scifa2 {
+> > +       pinctrl-0 = <&scifa2_pins>;
+> > +       pinctrl-names = "default";
+> > +
+> > +       status = "okay";
+> > +};
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
