@@ -2,416 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0748F1EF7F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 14:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D331EF80D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 14:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728140AbgFEMag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 08:30:36 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:64269 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728023AbgFEMac (ORCPT
+        id S1726709AbgFEMiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 08:38:14 -0400
+Received: from static-27.netfusion.at ([83.215.238.27]:57162 "EHLO
+        mail.inliniac.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726409AbgFEMiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 08:30:32 -0400
-X-Originating-IP: 90.112.45.105
-Received: from [192.168.1.11] (lfbn-gre-1-325-105.w90-112.abo.wanadoo.fr [90.112.45.105])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 99A19240005;
-        Fri,  5 Jun 2020 12:30:18 +0000 (UTC)
-Subject: Re: [PATCH v4 1/4] riscv: Move kernel mapping to vmalloc zone
-To:     Zong Li <zong.li@sifive.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-riscv <linux-riscv@lists.infradead.org>
-References: <20200603080010.13366-1-alex@ghiti.fr>
- <20200603080010.13366-2-alex@ghiti.fr>
- <CANXhq0qjWKCqbY4BmCa1wZKYY_Dax8fGj1s4Q_ZipaFPo9dz8g@mail.gmail.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <5dc1b95b-607f-177e-fd00-ee8c1a93e66f@ghiti.fr>
-Date:   Fri, 5 Jun 2020 08:30:18 -0400
+        Fri, 5 Jun 2020 08:38:13 -0400
+Received: from [192.168.0.36] (a212-238-163-105.adsl.xs4all.nl [212.238.163.105])
+        (Authenticated sender: victor)
+        by mail.inliniac.net (Postfix) with ESMTPSA id 901B110C;
+        Fri,  5 Jun 2020 14:40:22 +0200 (CEST)
+Subject: Re: [PATCH net-next v2] af-packet: new flag to indicate all csums are
+ good
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Mao Wenan <maowenan@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
+        Neil Horman <nhorman@tuxdriver.com>, linux-doc@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexander Drozdov <al.drozdov@gmail.com>,
+        Tom Herbert <tom@herbertland.com>
+References: <20200602080535.1427-1-victor@inliniac.net>
+ <CA+FuTSfD2-eF0H=Qu09=JXK6WTiWKNtcqRXqv3TfMfB-=0GiMg@mail.gmail.com>
+ <b0a9d785-9d5e-9897-b051-6d9a1e8f914e@inliniac.net>
+ <CA+FuTSd07inNysGhx088hq_jybrikSQdxw8HYjmP84foXhnXOA@mail.gmail.com>
+ <06479df9-9da4-dbda-5bd1-f6e4d61471d0@inliniac.net>
+ <CA+FuTSci29=W89CLweZcW=RTKwEXpUdPjsLGTB95iSNcnpU_Lw@mail.gmail.com>
+ <6a3dcce9-4635-28e9-d78e-1c7f1f7874da@inliniac.net>
+ <CA+FuTSdmtC4+0cnC2K1gwRLksXgb4hffUpyRbHjjGZbOJOfL0w@mail.gmail.com>
+ <21a2224a-65f2-6375-589d-9cadb4fab840@inliniac.net>
+ <CA+FuTSdczH+i8+FO+eQ+OT4-bsRAKG+jacPiuRu3jMszpV_2XA@mail.gmail.com>
+ <904a4ad6-650b-8097-deff-989f1936064b@inliniac.net>
+ <CA+FuTScfqM-okTLa1JfkDuhnKZ4DTxmupCwc0NrJQbM0PZ3ssg@mail.gmail.com>
+From:   Victor Julien <victor@inliniac.net>
+Autocrypt: addr=victor@inliniac.net; prefer-encrypt=mutual; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUVOQkZBamQvUUJDQURY
+ S3FvR0xmclhGTDB5R2k3cHozdjU5dG5TN3hsVTl0NHVSUnd6YThrN3piVW9oTFlJCkFNVkp1
+ dFk5Mm9BRDYrOTJtSVNIZDNDZkU0bGZuRlFBNHY1MllXOUUvRHBTaVQzWnFMZ0RHcmdVMHRs
+ Qm1OUG8Kd0tJMjZyUnVCejBER3dVZkdocjlud3dTbVRDM213NU80cFlYR0wyd3ludHA0THZ2
+ Q1lTdFJDVkZIMEhWL0lDVwozT2d6ejQzNGdtelU2N2xOaXpxMDdmL1R2SWtkd3ZHL1ZGVU5u
+ WTZLQXRzUysrRTZZdzl5MEo5SStVYktFUDl4CnkySHl3RFFLRVVqck9FMCtlREtoblRXVGhX
+ YnZEZm5CTGZJUGNla3dYbXVPYjVycGFXblE1MTkwNXVETTFzcm8KUGFZK015NEQ3b3N2ZUFN
+ di9SbmhuN1VuVlg5M3JUS05RRUhaQUJFQkFBRzBJMVpwWTNSdmNpQktkV3hwWlc0ZwpQSFpw
+ WTNSdmNrQnBibXhwYm1saFl5NXVaWFEraVFFN0JCTUJBZ0FsQWhzREJnc0pDQWNEQWdZVkNB
+ SUpDZ3NFCkZnSURBUUllQVFJWGdBVUNVQ045WWdJWkFRQUtDUkRCOUpYamttaFd0SlFOQi85
+ UVhwOXZCbnlwbm1RaDlHb2cKNE0vR2V6TERWbFJoVnQxL2FnYXByWDFhR09kZ29uRHd4WFR1
+ MUs3Wnk5RkcrZysrb3lkRzdaYzFaT3JwSEtjTQp4dWxGams2MUEvODVMLzg1ZktHM0hlTFpX
+ M2szR0p1OUhCRnZqNllrbXdmbHdTRk9KWmdkT3k5SGh0b3hTQnVwCmI4WTlKL0Q5MVB5Vi91
+ YWdaa21ITjRuQmJldGNkSU9PNXdudWV0VnNrNGJsVjdhVk1kU2JEVXNrbU9Nc0hWTDcKRDN2
+ WGFwSG1MbGhWSXZNQjBPTndQQVY5MHV6WUtNRlQ0SWdFbm04VXBFT0hsL0tFNWJyWlAzQkU4
+ SXRJajUrZwpJRkNMNTRrdVphMWY5MUlDMzNocUJaNUZQNitNamt3ZmswOVdyQURsVmt4S3NP
+ RkgyMHQ2NVVLT2EyeTNLM3pyCnhaYll0Q05XYVdOMGIzSWdTblZzYVdWdUlEeDJhV04wYjNK
+ QWRuVjFjbTExZFhJdWIzSm5Qb2tCT0FRVEFRSUEKSWdVQ1VDTjVwZ0liQXdZTENRZ0hBd0lH
+ RlFnQ0NRb0xCQllDQXdFQ0hnRUNGNEFBQ2drUXdmU1Y0NUpvVnJSawpxZ2dBa01pODdnZzNT
+ K3FkQlVjSjVXd3VLTERPL1M0MTNzR09FaEU0SzU3YXpUVTNOVWNPVnVOZW5mNDB1L3F3Ckt4
+ VitEUDJuSzE4Rk9CdDdwcVdyQzRrNThaUWMxTm9SR0VWQjY4elhieVI5L2xIMWNocXB5Mmhv
+ enoyL0xhRG4KT0ptUWgvWUorYUhZbVdETGVuK3BtNWc5NzFJTUE5bUdiK3FrMTQ4aFBBMTBn
+ b0h0ZHIyNzNPeXpQaldzU0JnVwp4bVU2amhNOE1Ld0tSSkFsTmxoMTVSbFpWNEM5Rmhkdi9V
+ b01LZXhpaWltbGZIY1hVR1dtZ2I2RXBnVW5ab2piCklYQlNsYk5FMVZFTk5IcDVaeEhYNUU5
+ dmQxV3BiMFV0Zmd2ZCtqaWo5VEtuMHpSSDlFTHFTYmxtUTFTamF4bEsKVnhhUDd1ejRpUHpJ
+ NFk0RDVxMHJERHhTVmJRcGEyVjVZbUZ6WlM1cGJ5OXBibXhwYm1saFl5QThhVzVzYVc1cApZ
+ V05BYTJWNVltRnpaUzVwYno2SkFTMEVFd0VLQUJjRkFsQWpkL1FDR3dNREN3a0hBeFVLQ0FJ
+ ZUFRSVhnQUFLCkNSREI5Slhqa21oV3RKdndCLzlNdDZCWXkzTlZMUU1WQ05YSjRzZm95eUJJ
+ Q1p2ODNnN3lpQzVEako2dUxXUE0KVFl2M0ZLRDFWa2tUQ2hWOHNXaDhvMkhHUGduUVk5eisx
+ Q1hQM1dSUFdkWG9MNTFha3lPd3pFdEZVRG5JaHBtMApkWFhxQlJ3Qi90WExXN3R0VnkxR3VF
+ eExkaDNaaDkwOHZ3SU1xVU51NC83ODB1VTZiRFpLQW9rZmZKekcxbzZMCm45dVF3bEx1WmNH
+ MnhnTTZiN0RaN2MvNHZ5ejM1ak9jWUozWkREb25xR3BETTNvZFdnWXp4UHN4a0JVRnlKeFkK
+ aDA4MHhzdHR0MFVJMWlmODRyVmdtQXRHblZFQjJ3YklsSktTa3d5ZXI0NGFTQ201WTEyNXNn
+ MUtIZFQwMEREQgpWTTRNZ3k0NTJJYUZJVndpNHcwdVdZR09nblQ1MWx2VTY4NmV3VHh2dVFF
+ TkJGQWpkL1FCQ0FEVkFoU08wR1YwCkxHdnh0a0hWQ1hzaGdSR2srNmdTSFpRVzc4a3F2V0dM
+ OU95UDhzK0ZpUS8vQWFMa1NETzNpSVZTbWVrZVhiZlkKNkcxa2l2aDJLN0NaYlBTMzdDVGVL
+ L0p0L2ZFbzY1bTJvcWtMWStDTnZVeElvYVdhMitQY1Z4UXNLem1aZ0hDRApDRVdzN21rK01Z
+ UUxNZnluanVoVVorWmlaa2Y1U2ZBY1hQTEQ5emRkTFlSdUJtOTgwRDN1UVJsbXlqRTVOZTJa
+ CkRZVEMwU1ZLNDFRMVVDdDFoZFdNOUlWczg2UXEybUU5Y21KWkthUUNRc1ZEMVlMZUdxYTJk
+ UVdLYnIyc2EyRHUKd2pCbEhzWk83NFZjTHR2L2lQV1Nad2FxNkdBZTJGZXB0TFhJQWd2Y3lB
+ WDlxOHczWDBjdWtsa1RTWFUwbU5ISQpuWHFnRHRBRGtOVnRBQkVCQUFHSkFSOEVHQUVDQUFr
+ RkFsQWpkL1FDR3d3QUNna1F3ZlNWNDVKb1ZyU01od2dBCmlicHNMNUtnaEhnK0h2TktocXpV
+ b0JGTDMya2xNS1R5Ums0ekhzbzZDNHBKVDNvbjRqOVF2dnJLU2tsaUJ4a1IKM2ZMdVFOVWE5
+ YlVYeDNmeUFheVF2ekxnV1FycVc3eTU1Z1dCRUZPQTVQQXdFU1pDdTNYKzNGODZPK2w0N1k0
+ dwpOZTRDRDJLYTRLKzlXTHQvR3RlUnBQQU5lVldNUHRRQktqc3BFSFBSeWNidnJGV20xMUJI
+ djV2eC9GYVNXN2tICjdkaHFkRHNxMFlJaWYwUkdjUVNySlBBQm00ZHkva1hrcFJQUEFHSGdN
+ dVMvejZwY3c0RFVsaTZQVE1aTzNyT0oKbVJQQUlFRUNTVngvRlZERjJXeVREQUlWanBuMENN
+ Zjl1dnliVEU4Q25CNEQxcDZLNkgyZ0d0YVRlRlhJUVkraAoxcmNDY0JVNE9zZlQvWFkwZXZO
+ aWpnPT0KPWFWT0YKLS0tLS1FTkQgUEdQIFBVQkxJQyBLRVkgQkxPQ0stLS0tLQo=
+Message-ID: <a4a1968b-d073-64a9-83e0-6e42492d234f@inliniac.net>
+Date:   Fri, 5 Jun 2020 14:38:09 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <CANXhq0qjWKCqbY4BmCa1wZKYY_Dax8fGj1s4Q_ZipaFPo9dz8g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CA+FuTScfqM-okTLa1JfkDuhnKZ4DTxmupCwc0NrJQbM0PZ3ssg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Language: fr
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zong,
+On 04-06-2020 15:48, Willem de Bruijn wrote:
+> On Thu, Jun 4, 2020 at 5:47 AM Victor Julien <victor@inliniac.net> wrote:
+>>
+>> On 02-06-2020 22:18, Willem de Bruijn wrote:
+>>> On Tue, Jun 2, 2020 at 4:05 PM Victor Julien <victor@inliniac.net> wrote:
+>>>>
+>>>> On 02-06-2020 21:38, Willem de Bruijn wrote:
+>>>>> On Tue, Jun 2, 2020 at 3:22 PM Victor Julien <victor@inliniac.net> wrote:
+>>>>>>
+>>>>>> On 02-06-2020 21:03, Willem de Bruijn wrote:
+>>>>>>> On Tue, Jun 2, 2020 at 2:31 PM Victor Julien <victor@inliniac.net> wrote:
+>>>>>>>> On 02-06-2020 19:37, Willem de Bruijn wrote:
+>>>>>>>>> On Tue, Jun 2, 2020 at 1:03 PM Victor Julien <victor@inliniac.net> wrote:
+>>>>>>>>>>
+>>>>>>>>>> On 02-06-2020 16:29, Willem de Bruijn wrote:
+>>>>>>>>>>> On Tue, Jun 2, 2020 at 4:05 AM Victor Julien <victor@inliniac.net> wrote:
+>>>>>>>>>>>>
+>>>>>>>>>>>> Introduce a new flag (TP_STATUS_CSUM_UNNECESSARY) to indicate
+>>>>>>>>>>>> that the driver has completely validated the checksums in the packet.
+>>>>>>>>>>>>
+>>>>>>>>>>>> The TP_STATUS_CSUM_UNNECESSARY flag differs from TP_STATUS_CSUM_VALID
+>>>>>>>>>>>> in that the new flag will only be set if all the layers are valid,
+>>>>>>>>>>>> while TP_STATUS_CSUM_VALID is set as well if only the IP layer is valid.
+>>>>>>>>>>>
+>>>>>>>>>>> transport, not ip checksum.
+>>>>>>>>>>
+>>>>>>>>>> Allow me a n00b question: what does transport refer to here? Things like
+>>>>>>>>>> ethernet? It isn't clear to me from the doc.
+>>>>>>>>>
+>>>>>>>>> The TCP/UDP/.. transport protocol checksum.
+>>>>>>>>
+>>>>>>>> Hmm that is what I thought originally, but then it didn't seem to work.
+>>>>>>>> Hence my patch.
+>>>>>>>>
+>>>>>>>> However I just redid my testing. I took the example tpacketv3 program
+>>>>>>>> and added the status flag checks to the 'display()' func:
+>>>>>>>>
+>>>>>>>>                 if (ppd->tp_status & TP_STATUS_CSUM_VALID) {
+>>>>>>>>                         printf("TP_STATUS_CSUM_VALID, ");
+>>>>>>>>                 }
+>>>>>>>>                 if (ppd->tp_status & (1<<8)) {
+>>>>>>>>                         printf("TP_STATUS_CSUM_UNNECESSARY, ");
+>>>>>>>>
+>>>>>>>>                 }
+>>>>>>>>
+>>>>>>>> Then using scapy sent some packets in 2 variants:
+>>>>>>>> - default (good csums)
+>>>>>>>> - deliberately bad csums
+>>>>>>>> (then also added a few things like ip6 over ip)
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> srp1(Ether()/IP(src="1.2.3.4", dst="5.6.7.8")/IPv6()/TCP(),
+>>>>>>>> iface="enp1s0") // good csums
+>>>>>>>>
+>>>>>>>> srp1(Ether()/IP(src="1.2.3.4", dst="5.6.7.8")/IPv6()/TCP(chksum=1),
+>>>>>>>> iface="enp1s0") //bad tcp
+>>>>>>>
+>>>>>>> Is this a test between two machines? What is the device driver of the
+>>>>>>> machine receiving and printing the packet? It would be helpful to know
+>>>>>>> whether this uses CHECKSUM_COMPLETE or CHECKSUM_UNNECESSARY.
+>>>>>>
+>>>>>> Yes 2 machines, or actually 2 machines and a VM. The receiving Linux
+>>>>>> sits in a kvm vm with network pass through and uses the virtio driver
+>>>>>> (host uses e1000e). Based on a quick 'git grep CHECKSUM_UNNECESSARY'
+>>>>>> virtio seems to support that.
+>>>>>>
+>>>>>> I've done some more tests. In a pcap replay that I know contains packet
+>>>>>> with bad TCP csums (but good IP csums for those pkts), to a physical
+>>>>>> host running Ubuntu Linux kernel 5.3:
+>>>>>>
+>>>>>> - receiver uses nfp (netronome) driver: TP_STATUS_CSUM_VALID set for
+>>>>>> every packet, including the bad TCP ones
+>>>>>> - receiver uses ixgbe driver: TP_STATUS_CSUM_VALID not set for the bad
+>>>>>> packets.
+>>>>>
+>>>>> Great. Thanks a lot for running all these experiments.
+>>>>>
+>>>>> We might have to drop the TP_STATUS_CSUM_VALID with CHECKSUM_COMPLETE
+>>>>> unless skb->csum_valid.
+>>>>>
+>>>>> For packets with multiple transport layer checksums,
+>>>>> CHECKSUM_UNNECESSARY should mean that all have been verified.
+>>>>>
+>>>>> I believe that in the case of multiple transport headers, csum_valid
+>>>>> similarly ensures all checksums up to csum_start are valid. Will need
+>>>>> to double check.
+>>>>>
+>>>>> If so, there probably is no need for a separate new TP_STATUS.
+>>>>> TP_STATUS_CSUM_VALID is reported only when all checksums are valid.
+>>>>
+>>>> So if I understand you correctly the key may be in the call to
+>>>> `skb_csum_unnecessary`:
+>>>>
+>>>> That reads:
+>>>>
+>>>> static inline int skb_csum_unnecessary(const struct sk_buff *skb)
+>>>> {
+>>>>         return ((skb->ip_summed == CHECKSUM_UNNECESSARY) ||
+>>>>                 skb->csum_valid ||
+>>>>                 (skb->ip_summed == CHECKSUM_PARTIAL &&
+>>>>                  skb_checksum_start_offset(skb) >= 0));
+>>>> }
+>>>>
+>>>> But really only the first 2 conditions are reachable
+>>>
+>>> .. from this codepath. That function is called in other codepaths as well.
+>>>
+>>>> , as we already know
+>>>> skb->ip_summed is not CHECKSUM_PARTIAL when we call it.
+>>>>
+>>>> So our unmodified check is:
+>>>>
+>>>>         else if (skb->pkt_type != PACKET_OUTGOING &&
+>>>>                 (skb->ip_summed == CHECKSUM_COMPLETE ||
+>>>>                  skb->ip_summed == CHECKSUM_UNNECESSARY ||
+>>>>                  skb->csum_valid))
+>>>>
+>>>> Should this become something like:
+>>>>
+>>>>         else if (skb->pkt_type != PACKET_OUTGOING &&
+>>>>                 (skb->ip_summed == CHECKSUM_COMPLETE &&
+>>>>                  skb->csum_valid) ||
+>>>>                  skb->ip_summed == CHECKSUM_UNNECESSARY)
+>>>>
+>>>> Is this what you had in mind?
+>>>
+>>> I don't suggest modifying skb_csum_unnecessary probably. Certainly not
+>>> until I've looked at all other callers of it.
+>>>
+>>> But in case of packet sockets, yes, adding that csum_valid check is my
+>>> first rough approximation.
+>>>
+>>> That said, first let's give others more familiar with
+>>> TP_STATUS_CSUM_VALID some time to comment.
+>>>
+>>
+>> I did some more experiments, on real hw this time. I made the following
+>> change to 5.7.0 (wasn't brave enough to remote upgrade a box to netnext):
+>>
+>> diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+>> index 29bd405adbbd..3afb1913837a 100644
+>> --- a/net/packet/af_packet.c
+>> +++ b/net/packet/af_packet.c
+>> @@ -2216,8 +2216,8 @@ static int tpacket_rcv(struct sk_buff *skb, struct
+>> net_device *dev,
+>>         if (skb->ip_summed == CHECKSUM_PARTIAL)
+>>                 status |= TP_STATUS_CSUMNOTREADY;
+>>         else if (skb->pkt_type != PACKET_OUTGOING &&
+>> -                (skb->ip_summed == CHECKSUM_COMPLETE ||
+>> -                 skb_csum_unnecessary(skb)))
+>> +                ((skb->ip_summed == CHECKSUM_COMPLETE &&
+>> skb->csum_valid) ||
+>> +                  skb->ip_summed == CHECKSUM_UNNECESSARY))
+>>                 status |= TP_STATUS_CSUM_VALID;
+>>
+>>         if (snaplen > res)
+>>
+>> With this change it seems the TP_STATUS_CSUM_VALID flag is *never* set
+>> for the nfp driver.
+> 
+> I was mistaken. skb->csum_valid only signals whether the skb->csum
+> field is initialized. As of commit 573e8fca255a ("net: skb_gro_checksum_*
+> functions") skb->csum_valid it is always set if CHECKSUM_COMPLETE.
+> This does not imply that the checksum field in the header is correct.
+> 
+> The checksum field may get checked against the known checksum of
+> the payload in skb->csum before __netif_receive_skb_core and thus
+> before packet sockets during GRO when that is enabled. But not
+> always. Not if the packet gets flushed, for instance, see tcp4_gro_receive.
+> 
+> Commit 662880f44203 ("net: Allow GRO to use and set levels of checksum
+> unnecessary") indicates that the original assumption in this patch
+> that CHECKSUM_UNNECESSARY implies all checksums being valid does not
+> necessarily hold. Drivers are expected to set up skb->csum_level when
+> they have verified more than just the inner transport header.
+> 
 
-Le 6/3/20 à 10:52 PM, Zong Li a écrit :
-> On Wed, Jun 3, 2020 at 4:01 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
->> This is a preparatory patch for relocatable kernel.
->>
->> The kernel used to be linked at PAGE_OFFSET address and used to be loaded
->> physically at the beginning of the main memory. Therefore, we could use
->> the linear mapping for the kernel mapping.
->>
->> But the relocated kernel base address will be different from PAGE_OFFSET
->> and since in the linear mapping, two different virtual addresses cannot
->> point to the same physical address, the kernel mapping needs to lie outside
->> the linear mapping.
->>
->> In addition, because modules and BPF must be close to the kernel (inside
->> +-2GB window), the kernel is placed at the end of the vmalloc zone minus
->> 2GB, which leaves room for modules and BPF. The kernel could not be
->> placed at the beginning of the vmalloc zone since other vmalloc
->> allocations from the kernel could get all the +-2GB window around the
->> kernel which would prevent new modules and BPF programs to be loaded.
->>
->> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
->> ---
->>   arch/riscv/boot/loader.lds.S     |  3 +-
->>   arch/riscv/include/asm/page.h    | 10 +++++-
->>   arch/riscv/include/asm/pgtable.h | 38 ++++++++++++++-------
->>   arch/riscv/kernel/head.S         |  3 +-
->>   arch/riscv/kernel/module.c       |  4 +--
->>   arch/riscv/kernel/vmlinux.lds.S  |  3 +-
->>   arch/riscv/mm/init.c             | 58 +++++++++++++++++++++++++-------
->>   arch/riscv/mm/physaddr.c         |  2 +-
->>   8 files changed, 88 insertions(+), 33 deletions(-)
->>
->> diff --git a/arch/riscv/boot/loader.lds.S b/arch/riscv/boot/loader.lds.S
->> index 47a5003c2e28..62d94696a19c 100644
->> --- a/arch/riscv/boot/loader.lds.S
->> +++ b/arch/riscv/boot/loader.lds.S
->> @@ -1,13 +1,14 @@
->>   /* SPDX-License-Identifier: GPL-2.0 */
->>
->>   #include <asm/page.h>
->> +#include <asm/pgtable.h>
->>
->>   OUTPUT_ARCH(riscv)
->>   ENTRY(_start)
->>
->>   SECTIONS
->>   {
->> -       . = PAGE_OFFSET;
->> +       . = KERNEL_LINK_ADDR;
->>
->>          .payload : {
->>                  *(.payload)
->> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
->> index 2d50f76efe48..48bb09b6a9b7 100644
->> --- a/arch/riscv/include/asm/page.h
->> +++ b/arch/riscv/include/asm/page.h
->> @@ -90,18 +90,26 @@ typedef struct page *pgtable_t;
->>
->>   #ifdef CONFIG_MMU
->>   extern unsigned long va_pa_offset;
->> +extern unsigned long va_kernel_pa_offset;
->>   extern unsigned long pfn_base;
->>   #define ARCH_PFN_OFFSET                (pfn_base)
->>   #else
->>   #define va_pa_offset           0
->> +#define va_kernel_pa_offset    0
->>   #define ARCH_PFN_OFFSET                (PAGE_OFFSET >> PAGE_SHIFT)
->>   #endif /* CONFIG_MMU */
->>
->>   extern unsigned long max_low_pfn;
->>   extern unsigned long min_low_pfn;
->> +extern unsigned long kernel_virt_addr;
->>
->>   #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
->> -#define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
->> +#define linear_mapping_va_to_pa(x)     ((unsigned long)(x) - va_pa_offset)
->> +#define kernel_mapping_va_to_pa(x)     \
->> +       ((unsigned long)(x) - va_kernel_pa_offset)
->> +#define __va_to_pa_nodebug(x)          \
->> +       (((x) >= PAGE_OFFSET) ?         \
->> +               linear_mapping_va_to_pa(x) : kernel_mapping_va_to_pa(x))
->>
->>   #ifdef CONFIG_DEBUG_VIRTUAL
->>   extern phys_addr_t __virt_to_phys(unsigned long x);
->> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
->> index 35b60035b6b0..94ef3b49dfb6 100644
->> --- a/arch/riscv/include/asm/pgtable.h
->> +++ b/arch/riscv/include/asm/pgtable.h
->> @@ -11,23 +11,29 @@
->>
->>   #include <asm/pgtable-bits.h>
->>
->> -#ifndef __ASSEMBLY__
->> -
->> -/* Page Upper Directory not used in RISC-V */
->> -#include <asm-generic/pgtable-nopud.h>
->> -#include <asm/page.h>
->> -#include <asm/tlbflush.h>
->> -#include <linux/mm_types.h>
->> -
->> -#ifdef CONFIG_MMU
->> +#ifndef CONFIG_MMU
->> +#define KERNEL_VIRT_ADDR       PAGE_OFFSET
->> +#define KERNEL_LINK_ADDR       PAGE_OFFSET
->> +#else
->> +/*
->> + * Leave 2GB for modules and BPF that must lie within a 2GB range around
->> + * the kernel.
->> + */
->> +#define KERNEL_VIRT_ADDR       (VMALLOC_END - SZ_2G + 1)
->> +#define KERNEL_LINK_ADDR       KERNEL_VIRT_ADDR
->>
->>   #define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
->>   #define VMALLOC_END      (PAGE_OFFSET - 1)
->>   #define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
->>
->>   #define BPF_JIT_REGION_SIZE    (SZ_128M)
->> -#define BPF_JIT_REGION_START   (PAGE_OFFSET - BPF_JIT_REGION_SIZE)
->> -#define BPF_JIT_REGION_END     (VMALLOC_END)
->> +#define BPF_JIT_REGION_START   PFN_ALIGN((unsigned long)&_end)
->> +#define BPF_JIT_REGION_END     (BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
->> +
->> +#ifdef CONFIG_64BIT
->> +#define VMALLOC_MODULE_START   BPF_JIT_REGION_END
->> +#define VMALLOC_MODULE_END     (((unsigned long)&_start & PAGE_MASK) + SZ_2G)
->> +#endif
->>
->>   /*
->>    * Roughly size the vmemmap space to be large enough to fit enough
->> @@ -57,9 +63,16 @@
->>   #define FIXADDR_SIZE     PGDIR_SIZE
->>   #endif
->>   #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
->> -
->>   #endif
->>
->> +#ifndef __ASSEMBLY__
->> +
->> +/* Page Upper Directory not used in RISC-V */
->> +#include <asm-generic/pgtable-nopud.h>
->> +#include <asm/page.h>
->> +#include <asm/tlbflush.h>
->> +#include <linux/mm_types.h>
->> +
->>   #ifdef CONFIG_64BIT
->>   #include <asm/pgtable-64.h>
->>   #else
->> @@ -483,6 +496,7 @@ static inline void __kernel_map_pages(struct page *page, int numpages, int enabl
->>
->>   #define kern_addr_valid(addr)   (1) /* FIXME */
->>
->> +extern char _start[];
->>   extern void *dtb_early_va;
->>   void setup_bootmem(void);
->>   void paging_init(void);
->> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
->> index 98a406474e7d..8f5bb7731327 100644
->> --- a/arch/riscv/kernel/head.S
->> +++ b/arch/riscv/kernel/head.S
->> @@ -49,7 +49,8 @@ ENTRY(_start)
->>   #ifdef CONFIG_MMU
->>   relocate:
->>          /* Relocate return address */
->> -       li a1, PAGE_OFFSET
->> +       la a1, kernel_virt_addr
->> +       REG_L a1, 0(a1)
->>          la a2, _start
->>          sub a1, a1, a2
->>          add ra, ra, a1
->> diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
->> index 8bbe5dbe1341..1a8fbe05accf 100644
->> --- a/arch/riscv/kernel/module.c
->> +++ b/arch/riscv/kernel/module.c
->> @@ -392,12 +392,10 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
->>   }
->>
->>   #if defined(CONFIG_MMU) && defined(CONFIG_64BIT)
->> -#define VMALLOC_MODULE_START \
->> -        max(PFN_ALIGN((unsigned long)&_end - SZ_2G), VMALLOC_START)
->>   void *module_alloc(unsigned long size)
->>   {
->>          return __vmalloc_node_range(size, 1, VMALLOC_MODULE_START,
->> -                                   VMALLOC_END, GFP_KERNEL,
->> +                                   VMALLOC_MODULE_END, GFP_KERNEL,
->>                                      PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
->>                                      __builtin_return_address(0));
->>   }
->> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
->> index 0339b6bbe11a..a9abde62909f 100644
->> --- a/arch/riscv/kernel/vmlinux.lds.S
->> +++ b/arch/riscv/kernel/vmlinux.lds.S
->> @@ -4,7 +4,8 @@
->>    * Copyright (C) 2017 SiFive
->>    */
->>
->> -#define LOAD_OFFSET PAGE_OFFSET
->> +#include <asm/pgtable.h>
->> +#define LOAD_OFFSET KERNEL_LINK_ADDR
->>   #include <asm/vmlinux.lds.h>
->>   #include <asm/page.h>
->>   #include <asm/cache.h>
->> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
->> index 736de6c8739f..37be2eb45e58 100644
->> --- a/arch/riscv/mm/init.c
->> +++ b/arch/riscv/mm/init.c
->> @@ -22,6 +22,9 @@
->>
->>   #include "../kernel/head.h"
->>
->> +unsigned long kernel_virt_addr = KERNEL_VIRT_ADDR;
->> +EXPORT_SYMBOL(kernel_virt_addr);
->> +
->>   unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)]
->>                                                          __page_aligned_bss;
->>   EXPORT_SYMBOL(empty_zero_page);
->> @@ -178,8 +181,12 @@ void __init setup_bootmem(void)
->>   }
->>
->>   #ifdef CONFIG_MMU
->> +/* Offset between linear mapping virtual address and kernel load address */
->>   unsigned long va_pa_offset;
->>   EXPORT_SYMBOL(va_pa_offset);
->> +/* Offset between kernel mapping virtual address and kernel load address */
->> +unsigned long va_kernel_pa_offset;
->> +EXPORT_SYMBOL(va_kernel_pa_offset);
->>   unsigned long pfn_base;
->>   EXPORT_SYMBOL(pfn_base);
->>
->> @@ -271,7 +278,7 @@ static phys_addr_t __init alloc_pmd(uintptr_t va)
->>          if (mmu_enabled)
->>                  return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
->>
->> -       pmd_num = (va - PAGE_OFFSET) >> PGDIR_SHIFT;
->> +       pmd_num = (va - kernel_virt_addr) >> PGDIR_SHIFT;
->>          BUG_ON(pmd_num >= NUM_EARLY_PMDS);
->>          return (uintptr_t)&early_pmd[pmd_num * PTRS_PER_PMD];
->>   }
->> @@ -372,14 +379,30 @@ static uintptr_t __init best_map_size(phys_addr_t base, phys_addr_t size)
->>   #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
->>   #endif
->>
->> +static uintptr_t load_pa, load_sz;
->> +
->> +void create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
-> It could be static if this function is only used in this file, as
-> kbuild test reported.
-> Apart from this, it looks good to me.
-> Reviewed-by: Zong Li <zong.li@sifive.com>
+I think I found another case in the kernel that does seem to assume we
+can rely on skb_csum_unnecessary.
 
+496e4ae7dc94 ("netfilter: nf_queue: add NFQA_SKB_CSUM_NOTVERIFIED info
+flag") seems to try to do what I'm after for nfqueue, but with an
+inverted flag. I assume that if the flag is not set (and neither
+NFQA_SKB_CSUMNOTREADY) it means we should be able to infer that the
+csums are valid. Otherwise, what would be the point of the flag.
 
-Thanks, that was the missing Reviewed-by of this series :) I send a v5 
-right now.
+The logic seems to come down to:
 
-Looking forward to seeing your KASLR patchset on top of that.
+                csum_verify = !skb_csum_unnecessary(entskb);
 
-Alex
+(for ip_summed != CHECKSUM_PARTIAL)
 
+The it's passed to userspace:
 
->
->> +{
->> +       uintptr_t va, end_va;
->> +
->> +       end_va = kernel_virt_addr + load_sz;
->> +       for (va = kernel_virt_addr; va < end_va; va += map_size)
->> +               create_pgd_mapping(pgdir, va,
->> +                                  load_pa + (va - kernel_virt_addr),
->> +                                  map_size, PAGE_KERNEL_EXEC);
->> +}
->> +
->>   asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->>   {
->>          uintptr_t va, end_va;
->> -       uintptr_t load_pa = (uintptr_t)(&_start);
->> -       uintptr_t load_sz = (uintptr_t)(&_end) - load_pa;
->>          uintptr_t map_size = best_map_size(load_pa, MAX_EARLY_MAPPING_SIZE);
->>
->> +       load_pa = (uintptr_t)(&_start);
->> +       load_sz = (uintptr_t)(&_end) - load_pa;
->> +
->>          va_pa_offset = PAGE_OFFSET - load_pa;
->> +       va_kernel_pa_offset = kernel_virt_addr - load_pa;
->> +
->>          pfn_base = PFN_DOWN(load_pa);
->>
->>          /*
->> @@ -402,26 +425,22 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->>          create_pmd_mapping(fixmap_pmd, FIXADDR_START,
->>                             (uintptr_t)fixmap_pte, PMD_SIZE, PAGE_TABLE);
->>          /* Setup trampoline PGD and PMD */
->> -       create_pgd_mapping(trampoline_pg_dir, PAGE_OFFSET,
->> +       create_pgd_mapping(trampoline_pg_dir, kernel_virt_addr,
->>                             (uintptr_t)trampoline_pmd, PGDIR_SIZE, PAGE_TABLE);
->> -       create_pmd_mapping(trampoline_pmd, PAGE_OFFSET,
->> +       create_pmd_mapping(trampoline_pmd, kernel_virt_addr,
->>                             load_pa, PMD_SIZE, PAGE_KERNEL_EXEC);
->>   #else
->>          /* Setup trampoline PGD */
->> -       create_pgd_mapping(trampoline_pg_dir, PAGE_OFFSET,
->> +       create_pgd_mapping(trampoline_pg_dir, kernel_virt_addr,
->>                             load_pa, PGDIR_SIZE, PAGE_KERNEL_EXEC);
->>   #endif
->>
->>          /*
->> -        * Setup early PGD covering entire kernel which will allows
->> +        * Setup early PGD covering entire kernel which will allow
->>           * us to reach paging_init(). We map all memory banks later
->>           * in setup_vm_final() below.
->>           */
->> -       end_va = PAGE_OFFSET + load_sz;
->> -       for (va = PAGE_OFFSET; va < end_va; va += map_size)
->> -               create_pgd_mapping(early_pg_dir, va,
->> -                                  load_pa + (va - PAGE_OFFSET),
->> -                                  map_size, PAGE_KERNEL_EXEC);
->> +       create_kernel_page_table(early_pg_dir, map_size);
->>
->>          /* Create fixed mapping for early FDT parsing */
->>          end_va = __fix_to_virt(FIX_FDT) + FIX_FDT_SIZE;
->> @@ -441,6 +460,7 @@ static void __init setup_vm_final(void)
->>          uintptr_t va, map_size;
->>          phys_addr_t pa, start, end;
->>          struct memblock_region *reg;
->> +       static struct vm_struct vm_kernel = { 0 };
->>
->>          /* Set mmu_enabled flag */
->>          mmu_enabled = true;
->> @@ -467,10 +487,22 @@ static void __init setup_vm_final(void)
->>                  for (pa = start; pa < end; pa += map_size) {
->>                          va = (uintptr_t)__va(pa);
->>                          create_pgd_mapping(swapper_pg_dir, va, pa,
->> -                                          map_size, PAGE_KERNEL_EXEC);
->> +                                          map_size, PAGE_KERNEL);
->>                  }
->>          }
->>
->> +       /* Map the kernel */
->> +       create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
->> +
->> +       /* Reserve the vmalloc area occupied by the kernel */
->> +       vm_kernel.addr = (void *)kernel_virt_addr;
->> +       vm_kernel.phys_addr = load_pa;
->> +       vm_kernel.size = (load_sz + PMD_SIZE - 1) & ~(PMD_SIZE - 1);
->> +       vm_kernel.flags = VM_MAP | VM_NO_GUARD;
->> +       vm_kernel.caller = __builtin_return_address(0);
->> +
->> +       vm_area_add_early(&vm_kernel);
->> +
->>          /* Clear fixmap PTE and PMD mappings */
->>          clear_fixmap(FIX_PTE);
->>          clear_fixmap(FIX_PMD);
->> diff --git a/arch/riscv/mm/physaddr.c b/arch/riscv/mm/physaddr.c
->> index e8e4dcd39fed..35703d5ef5fd 100644
->> --- a/arch/riscv/mm/physaddr.c
->> +++ b/arch/riscv/mm/physaddr.c
->> @@ -23,7 +23,7 @@ EXPORT_SYMBOL(__virt_to_phys);
->>
->>   phys_addr_t __phys_addr_symbol(unsigned long x)
->>   {
->> -       unsigned long kernel_start = (unsigned long)PAGE_OFFSET;
->> +       unsigned long kernel_start = (unsigned long)kernel_virt_addr;
->>          unsigned long kernel_end = (unsigned long)_end;
->>
->>          /*
->> --
->> 2.20.1
->>
+        if (packet->ip_summed == CHECKSUM_PARTIAL)
+                flags = NFQA_SKB_CSUMNOTREADY;
+        else if (csum_verify)
+                flags = NFQA_SKB_CSUM_NOTVERIFIED;
+
+So according to this code, if skb_csum_unnecessary returns false the
+csums is not verified, implying that it is when skb_csum_unnecessary
+returns true.
+
+I have no idea if this can be mapped directly to af-packet like this.
+
+Despite reading 77cffe23c1f8 ("net: Clarification of
+CHECKSUM_UNNECESSARY") multiple times I'm still not sure. If we get a
+straightforward IPv4/TCP or IPv6/UDP does it mean that if
+CHECKSUM_UNNECESSARY is set we can trust the csums of those layers are
+validated?
+
+If properly documented that would cover all the use cases I initially
+care about, although it would of course be nice if the kernel already
+knows the VXLAN encapsulated traffic was also verified that we can pass
+this on as well.
+
+-- 
+---------------------------------------------
+Victor Julien
+http://www.inliniac.net/
+PGP: http://www.inliniac.net/victorjulien.asc
+---------------------------------------------
+
