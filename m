@@ -2,183 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD311EEF5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF7B1EEF6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgFECMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 22:12:17 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:16941 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725601AbgFECMQ (ORCPT
+        id S1726144AbgFECUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 22:20:08 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:24142 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgFECUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 22:12:16 -0400
-X-IronPort-AV: E=Sophos;i="5.73,474,1583164800"; 
-   d="scan'208";a="93871124"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 05 Jun 2020 10:12:12 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id DF8CC4BCC8A8;
-        Fri,  5 Jun 2020 10:12:07 +0800 (CST)
-Received: from [10.167.225.141] (10.167.225.141) by
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Fri, 5 Jun 2020 10:12:08 +0800
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTogUmU6IFtSRkMgUEFUQ0ggMC84XSBkYXg6IEFkZCBh?=
- =?UTF-8?Q?_dax-rmap_tree_to_support_reflink?=
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-CC:     Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
+        Thu, 4 Jun 2020 22:20:07 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200605022003epoutp0241fce069c32ae520b26e4ca9d8ab7b12~VhGL0zA4N0434604346epoutp02m
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 02:20:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200605022003epoutp0241fce069c32ae520b26e4ca9d8ab7b12~VhGL0zA4N0434604346epoutp02m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591323603;
+        bh=HqJ9XLtjvCGgP5la8izwY+izOX7HRKP7K+U8sm7hxpA=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=QM7J95yiUtC/9OK9lOopbNOlPnQDId06Dw8lDRtVOAX15IqF5GurDU5RGpGytPuNW
+         srV04bkw7/8EMcgFaf/tL/tU6rVf6X6zsrj+ocrxymgUk4CsEc1q7wHjR86Dfojo7T
+         FRarcbEV3Ivun8Tta/apWHXQilZHXJOD7ugN21uk=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p4.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200605022003epcas1p4b3dbe280d30a997ebc5a051e4ba70f10~VhGLK5ZTw1786717867epcas1p4W;
+        Fri,  5 Jun 2020 02:20:03 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [RFC PATCH 5/5] scsi: ufs: Prepare HPB read for cached sub-region
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
-        "Qi, Fuli" <qi.fuli@fujitsu.com>,
-        "Gotou, Yasunori" <y-goto@fujitsu.com>
-References: <20200427084750.136031-1-ruansy.fnst@cn.fujitsu.com>
- <20200427122836.GD29705@bombadil.infradead.org>
- <em33c55fa5-15ca-4c46-8c27-6b0300fa4e51@g08fnstd180058>
- <20200428064318.GG2040@dread.disaster.area>
- <153e13e6-8685-fb0d-6bd3-bb553c06bf51@cn.fujitsu.com>
- <20200604145107.GA1334206@magnolia>
-From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Message-ID: <b9f3e089-476d-b31f-c2f2-0dfb8741b584@cn.fujitsu.com>
-Date:   Fri, 5 Jun 2020 10:11:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200604145107.GA1334206@magnolia>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
-X-yoursite-MailScanner-ID: DF8CC4BCC8A8.AF5BC
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <963815509.21591323002276.JavaMail.epsvc@epcpadp1>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <336371513.41591323603173.JavaMail.epsvc@epcpadp1>
+Date:   Fri, 05 Jun 2020 11:12:16 +0900
+X-CMS-MailID: 20200605021216epcms2p2034fed78fd0e5d15083066ef5e99ce21
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882
+References: <963815509.21591323002276.JavaMail.epsvc@epcpadp1>
+        <231786897.01591322101492.JavaMail.epsvc@epcpadp1>
+        <336371513.41591320902369.JavaMail.epsvc@epcpadp1>
+        <963815509.21591320301642.JavaMail.epsvc@epcpadp1>
+        <231786897.01591320001492.JavaMail.epsvc@epcpadp1>
+        <CGME20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882@epcms2p2>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch changes the read I/O to the HPB read I/O.
 
+If the logical address of the read I/O belongs to active sub-region, the
+HPB driver modifies the read I/O command to HPB read. It modifies the upiu
+command of UFS instead of modifying the existing SCSI command.
 
-On 2020/6/4 下午10:51, Darrick J. Wong wrote:
-> On Thu, Jun 04, 2020 at 03:37:42PM +0800, Ruan Shiyang wrote:
->>
->>
->> On 2020/4/28 下午2:43, Dave Chinner wrote:
->>> On Tue, Apr 28, 2020 at 06:09:47AM +0000, Ruan, Shiyang wrote:
->>>>
->>>> 在 2020/4/27 20:28:36, "Matthew Wilcox" <willy@infradead.org> 写道:
->>>>
->>>>> On Mon, Apr 27, 2020 at 04:47:42PM +0800, Shiyang Ruan wrote:
->>>>>>    This patchset is a try to resolve the shared 'page cache' problem for
->>>>>>    fsdax.
->>>>>>
->>>>>>    In order to track multiple mappings and indexes on one page, I
->>>>>>    introduced a dax-rmap rb-tree to manage the relationship.  A dax entry
->>>>>>    will be associated more than once if is shared.  At the second time we
->>>>>>    associate this entry, we create this rb-tree and store its root in
->>>>>>    page->private(not used in fsdax).  Insert (->mapping, ->index) when
->>>>>>    dax_associate_entry() and delete it when dax_disassociate_entry().
->>>>>
->>>>> Do we really want to track all of this on a per-page basis?  I would
->>>>> have thought a per-extent basis was more useful.  Essentially, create
->>>>> a new address_space for each shared extent.  Per page just seems like
->>>>> a huge overhead.
->>>>>
->>>> Per-extent tracking is a nice idea for me.  I haven't thought of it
->>>> yet...
->>>>
->>>> But the extent info is maintained by filesystem.  I think we need a way
->>>> to obtain this info from FS when associating a page.  May be a bit
->>>> complicated.  Let me think about it...
->>>
->>> That's why I want the -user of this association- to do a filesystem
->>> callout instead of keeping it's own naive tracking infrastructure.
->>> The filesystem can do an efficient, on-demand reverse mapping lookup
->>> from it's own extent tracking infrastructure, and there's zero
->>> runtime overhead when there are no errors present.
->>
->> Hi Dave,
->>
->> I ran into some difficulties when trying to implement the per-extent rmap
->> tracking.  So, I re-read your comments and found that I was misunderstanding
->> what you described here.
->>
->> I think what you mean is: we don't need the in-memory dax-rmap tracking now.
->> Just ask the FS for the owner's information that associate with one page
->> when memory-failure.  So, the per-page (even per-extent) dax-rmap is
->> needless in this case.  Is this right?
-> 
-> Right.  XFS already has its own rmap tree.
-> 
->> Based on this, we only need to store the extent information of a fsdax page
->> in its ->mapping (by searching from FS).  Then obtain the owners of this
->> page (also by searching from FS) when memory-failure or other rmap case
->> occurs.
-> 
-> I don't even think you need that much.  All you need is the "physical"
-> offset of that page within the pmem device (e.g. 'this is the 307th 4k
-> page == offset 1257472 since the start of /dev/pmem0') and xfs can look
-> up the owner of that range of physical storage and deal with it as
-> needed.
+In the HPB version 1.0, the maximum read I/O size that can be converted to
+HPB read is 4KB.
 
-Yes, I think so.
+The dirty map of the active sub-region prevents an incorrect HPB read that
+has stale physical page number which is updated by previous write I/O.
 
-> 
->> So, a fsdax page is no longer associated with a specific file, but with a
->> FS(or the pmem device).  I think it's easier to understand and implement.
-> 
-> Yes.  I also suspect this will be necessary to support reflink...
-> 
-> --D
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+---
+ drivers/scsi/ufs/ufshpb.c | 249 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 249 insertions(+)
 
-OK, Thank you very much.
-
-
---
-Thanks,
-Ruan Shiyang.
-
-> 
->>
->> --
->> Thanks,
->> Ruan Shiyang.
->>>
->>> At the moment, this "dax association" is used to "report" a storage
->>> media error directly to userspace. I say "report" because what it
->>> does is kill userspace processes dead. The storage media error
->>> actually needs to be reported to the owner of the storage media,
->>> which in the case of FS-DAX is the filesytem.
->>>
->>> That way the filesystem can then look up all the owners of that bad
->>> media range (i.e. the filesystem block it corresponds to) and take
->>> appropriate action. e.g.
->>>
->>> - if it falls in filesytem metadata, shutdown the filesystem
->>> - if it falls in user data, call the "kill userspace dead" routines
->>>     for each mapping/index tuple the filesystem finds for the given
->>>     LBA address that the media error occurred.
->>>
->>> Right now if the media error is in filesystem metadata, the
->>> filesystem isn't even told about it. The filesystem can't even shut
->>> down - the error is just dropped on the floor and it won't be until
->>> the filesystem next tries to reference that metadata that we notice
->>> there is an issue.
->>>
->>> Cheers,
->>>
->>> Dave.
->>>
->>
->>
-> 
-> 
-
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index f1aa8e7b5ce0..b3e488ef8675 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -46,6 +46,35 @@ static struct ufshpb_driver ufshpb_drv;
+ 
+ static int ufshpb_create_sysfs(struct ufs_hba *hba, struct ufshpb_lu *hpb);
+ 
++static inline int ufshpb_is_valid_srgn(struct ufshpb_region *rgn,
++			     struct ufshpb_subregion *srgn)
++{
++	return rgn->rgn_state != HPB_RGN_INACTIVE &&
++		srgn->srgn_state == HPB_SRGN_CLEAN;
++}
++
++static inline bool ufshpb_is_read_cmd(struct scsi_cmnd *cmd)
++{
++	if (cmd->cmnd[0] == READ_10 || cmd->cmnd[0] == READ_16)
++		return true;
++
++	return false;
++}
++
++static inline bool ufshpb_is_write_discard_cmd(struct scsi_cmnd *cmd)
++{
++	if (cmd->cmnd[0] == WRITE_10 || cmd->cmnd[0] == WRITE_16 ||
++	    cmd->cmnd[0] == UNMAP)
++		return true;
++
++	return false;
++}
++
++static inline bool ufshpb_is_support_chunk(int transfer_len)
++{
++	return transfer_len <= HPB_MULTI_CHUNK_HIGH;
++}
++
+ static inline bool ufshpb_is_general_lun(int lun)
+ {
+ 	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
+@@ -137,6 +166,225 @@ static inline void ufshpb_lu_put(struct ufshpb_lu *hpb)
+ 	put_device(&hpb->hpb_lu_dev);
+ }
+ 
++static inline u32 ufshpb_get_lpn(struct scsi_cmnd *cmnd)
++{
++	return blk_rq_pos(cmnd->request) >>
++		(ilog2(cmnd->device->sector_size) - 9);
++}
++
++static inline unsigned int ufshpb_get_len(struct scsi_cmnd *cmnd)
++{
++	return blk_rq_sectors(cmnd->request) >>
++		(ilog2(cmnd->device->sector_size) - 9);
++}
++
++static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
++			     int srgn_idx, int srgn_offset, int cnt)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	int set_bit_len;
++	int bitmap_len = hpb->entries_per_srgn;
++
++next_srgn:
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	if ((srgn_offset + cnt) > bitmap_len)
++		set_bit_len = bitmap_len - srgn_offset;
++	else
++		set_bit_len = cnt;
++
++	if (rgn->rgn_state != HPB_RGN_INACTIVE)
++		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
++
++	srgn_offset = 0;
++	if (++srgn_idx == hpb->srgns_per_rgn) {
++		srgn_idx = 0;
++		rgn_idx++;
++	}
++
++	cnt -= set_bit_len;
++	if (cnt > 0)
++		goto next_srgn;
++
++	WARN_ON(cnt < 0);
++}
++
++static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
++				   int srgn_idx, int srgn_offset, int cnt)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	int bitmap_len = hpb->entries_per_srgn;
++	int i, bit_len;
++
++next_srgn:
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	if (!ufshpb_is_valid_srgn(rgn, srgn))
++		return true;
++
++	/*
++	 * If the region state is active, mctx must be allocated.
++	 * In this case, check whether the region is evicted or
++	 * mctx allcation fail.
++	 */
++	WARN_ON(!srgn->mctx);
++
++	if ((srgn_offset + cnt) > bitmap_len)
++		bit_len = bitmap_len - srgn_offset;
++	else
++		bit_len = cnt;
++
++	for (i = 0; i < bit_len; i++) {
++		if (test_bit(srgn_offset + i, srgn->mctx->ppn_dirty))
++			return true;
++	}
++
++	srgn_offset = 0;
++	if (++srgn_idx == hpb->srgns_per_rgn) {
++		srgn_idx = 0;
++		rgn_idx++;
++	}
++
++	cnt -= bit_len;
++	if (cnt > 0)
++		goto next_srgn;
++
++	return false;
++}
++
++static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
++			  struct ufshpb_map_ctx *mctx, int pos, int *error)
++{
++	u64 *ppn_table;
++	struct page *page;
++	int index, offset;
++
++	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
++	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
++
++	page = mctx->m_page[index];
++	if (unlikely(!page)) {
++		*error = -ENOMEM;
++		dev_err(&hpb->hpb_lu_dev,
++			"error. cannot find page in mctx\n");
++		return 0;
++	}
++
++	ppn_table = page_address(page);
++	if (unlikely(!ppn_table)) {
++		*error = -ENOMEM;
++		dev_err(&hpb->hpb_lu_dev, "error. cannot get ppn_table\n");
++		return 0;
++	}
++
++	return ppn_table[offset];
++}
++
++static inline void
++ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
++			int *srgn_idx, int *offset)
++{
++	int rgn_offset;
++
++	*rgn_idx = lpn >> hpb->entries_per_rgn_shift;
++	rgn_offset = lpn & hpb->entries_per_rgn_mask;
++	*srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
++	*offset = rgn_offset & hpb->entries_per_srgn_mask;
++}
++
++static void
++ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
++				  u32 lpn, u64 ppn,  unsigned int transfer_len)
++{
++	unsigned char *cdb = lrbp->ucd_req_ptr->sc.cdb;
++
++	cdb[0] = UFSHPB_READ;
++
++	put_unaligned_be32(lpn, &cdb[2]);
++	put_unaligned_be64(ppn, &cdb[6]);
++	cdb[14] = transfer_len;
++}
++
++/* routine : READ10 -> HPB_READ  */
++static void ufshpb_prep_fn(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
++{
++	struct ufshpb_lu *hpb;
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	struct scsi_cmnd *cmd = lrbp->cmd;
++	u32 lpn;
++	u64 ppn;
++	unsigned long flags;
++	int transfer_len, rgn_idx, srgn_idx, srgn_offset;
++	int err = 0;
++
++	hpb = ufshpb_get_hpb_data(cmd);
++	err = ufshpb_lu_get(hpb);
++	if (unlikely(err))
++		return;
++
++	WARN_ON(hpb->lun != cmd->device->lun);
++	if (!ufshpb_is_write_discard_cmd(cmd) &&
++	    !ufshpb_is_read_cmd(cmd))
++		goto put_hpb;
++
++	transfer_len = ufshpb_get_len(cmd);
++	if (unlikely(!transfer_len))
++		goto put_hpb;
++
++	lpn = ufshpb_get_lpn(cmd);
++	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	/* If commnad type is WRITE and DISCARD, set bitmap as drity */
++	if (ufshpb_is_write_discard_cmd(cmd)) {
++		spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
++				 transfer_len);
++		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++		goto put_hpb;
++	}
++
++	WARN_ON(!ufshpb_is_read_cmd(cmd));
++
++	if (!ufshpb_is_support_chunk(transfer_len))
++		goto put_hpb;
++
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
++				   transfer_len)) {
++		atomic_inc(&hpb->stats.miss_cnt);
++		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++		goto put_hpb;
++	}
++
++	ppn = ufshpb_get_ppn(hpb, srgn->mctx, srgn_offset, &err);
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++	if (unlikely(err)) {
++		/*
++		 * In this case, the region state is active,
++		 * but the ppn table is not allocated.
++		 * Make sure that ppn tabie must be allocated on
++		 * active state
++		 */
++		WARN_ON(true);
++		dev_err(&hpb->hpb_lu_dev,
++			"ufshpb_get_ppn failed. err %d\n", err);
++		goto put_hpb;
++	}
++
++	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
++
++	atomic_inc(&hpb->stats.hit_cnt);
++put_hpb:
++	ufshpb_lu_put(hpb);
++}
++
+ static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
+ 					     struct ufshpb_subregion *srgn)
+ {
+@@ -1688,6 +1936,7 @@ static struct ufshpb_driver ufshpb_drv = {
+ 		.bus = &ufsf_bus_type,
+ 	},
+ 	.ufshpb_ops = {
++		.prep_fn = ufshpb_prep_fn,
+ 		.reset = ufshpb_reset,
+ 		.reset_host = ufshpb_reset_host,
+ 		.suspend = ufshpb_suspend,
+-- 
+2.17.1
 
