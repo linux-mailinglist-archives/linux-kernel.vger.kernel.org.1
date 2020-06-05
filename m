@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F611EFD52
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410A71EFD57
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726213AbgFEQOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 12:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
+        id S1726288AbgFEQP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 12:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgFEQOm (ORCPT
+        with ESMTP id S1725944AbgFEQPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 12:14:42 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA165C08C5C2;
-        Fri,  5 Jun 2020 09:14:41 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 64so5096993pfg.8;
-        Fri, 05 Jun 2020 09:14:41 -0700 (PDT)
+        Fri, 5 Jun 2020 12:15:55 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A5DC08C5C2;
+        Fri,  5 Jun 2020 09:15:54 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d8so624050plo.12;
+        Fri, 05 Jun 2020 09:15:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=eOl8Flzh5QfUAmLnA9UWhjEFQAgb6tPF02nTEzrngmE=;
-        b=o/GhGmZWIxJqhVDJKsQKGbPLqyjuawNYlFwCMSB1dmIOnfTQOWz+gyD8F4W9+foEip
-         sGduLULJG3sp/+AjRqE7W7sqIbpzF2ncOlDLUlwBVeO7u63L6GeeAJoLYaYkLFetqG3E
-         cz1WbWSYBHkNRKVGkVnDkY4ZkLUKwviwZlOaDS2pzxWLrpS/5HQ7hthbe7Su8fHi+iim
-         I2io55Tb7ZkkiWMfLsORboU0m+a4utgq3W2V8f7U83kFohzNiF3NHOyEZy+TTW4bxcht
-         O7tpsqxzHlkh8w48zv4OFSjGN8q5TA5nkf3R5zWuI5LGR/xmCGyGJRCgk4jIUrsDggjR
-         wqYQ==
+        bh=Fuq8iZ/w30hGFlRF7P+LbLAz0hBlIdSZDfbjIwkl+Ys=;
+        b=MttvX8sgmxw6H5NSZaRGauZRhobavEOiAKvRo0ATGJCUoMGnKdk/fOph76//jM0WtB
+         hI1o++k/E5WSqsPG3+snSomrZmq03ik1WZV8syJgto7yOOBqR3u1v4d7WyAfNwii+ryQ
+         FsTf5b7/qZJwcD4yUmaYBuO/cF/262SwLp/o79UopfS3oCmY3ej3Dd+xK/NPYmmUKb8w
+         0GPNNvBejEWzW+/37kuMLoSuBdUjUc1qfM1t+hS9qzqZEQISQ5d4umuKrVK2VxqZTzoC
+         EpEpDSETY+CuB6AmdsG0fGilKthilo6GE7WiOFD42IHE47ErvP0srMy28Ra0Ewh1ae+v
+         DkCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=eOl8Flzh5QfUAmLnA9UWhjEFQAgb6tPF02nTEzrngmE=;
-        b=e7Dp2bKlOXURHR5+3S6wEVQffRDJYxhLdaDHtKDy1nf1g3nDAb1MaykksqInqz4VfY
-         yrS05sgRe8gcRNmXJ/Q7K3Rl3d0wMcKC1CgUg0K089T2OSSIZNx+E0RfZ+gj1nNTQj9K
-         ctmSuQDRwVSM+5Ys0eDLCobck3VtSKI7eWQs2xobXrHVn00JA+nJQ0pDkGw3ezbSQJk9
-         wIPH6Y6CR6XItCi/6L+O+Y7PoxVjBD1P7uReGDmtYnZ2uP2LEOD5Klhb554MQcwbhruC
-         ihXDPSZ1QH0XegZVJ2nsWzmyqpmqdYmSonvuhvoFZ74rlCJc2oJ2Qx7bAl63oRb4Y3wT
-         C0vQ==
-X-Gm-Message-State: AOAM531og9G4j88KoKNAgs7HlyiLC20ONFm7o/ZjhQbOIffLzu69+X9C
-        tfYuLHkIQMrrFru4Bu6qo2M=
-X-Google-Smtp-Source: ABdhPJx+oYs7CN1MRuADp7QymAO8VtA4DAeydYgA4KPRUXclZZTlBFTS70qpwF1A3FJ1zbMweHcCNQ==
-X-Received: by 2002:a63:6447:: with SMTP id y68mr9800595pgb.395.1591373681240;
-        Fri, 05 Jun 2020 09:14:41 -0700 (PDT)
+        bh=Fuq8iZ/w30hGFlRF7P+LbLAz0hBlIdSZDfbjIwkl+Ys=;
+        b=Alhe8Dohs7QDLdIie8YZzKorJUd57K3OnSSV+QoBI5wI1Nkh8CVsK9Iue1eUC0Q8dG
+         PhsiN6GlSeS5kWdILeljULhXx/TEef3XPPMZYBXIFlUy2k6kv3sxUKmxxW92FCMdF0yZ
+         IOGhB75AutqRbfpKqau41ypYfdy1zTwAqpvCExa87O9EybRtIvzIEZz7CJA2w61s2gAX
+         CpF48AuEGSuIX7mr0RAFlyYV+n9oaEUaoaAGeYq0J69xenGhXzBmjhu4PaJ3MsRB4LE1
+         lNKUwbzDiKKlbRmLfHdPrqB1daAfH24Ie+2gEK4a0IY4UX0phY8S483LXJAQiT1VuMDE
+         cpeQ==
+X-Gm-Message-State: AOAM532Zk4AlK07d+fS+zudH34xw7M3Dqn6pX7vEDX4wbtr4tA5cdR8P
+        d236mo5uelzgDfRyGX33lYU=
+X-Google-Smtp-Source: ABdhPJw+Yh+6a9DtpZMLVt18+l2rdWHlZ/HrTCVinrjrjK1NAV9KB7wxpACoWzuM2Yd6mArQ1x72xQ==
+X-Received: by 2002:a17:902:bc4c:: with SMTP id t12mr10171340plz.141.1591373754191;
+        Fri, 05 Jun 2020 09:15:54 -0700 (PDT)
 Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
-        by smtp.gmail.com with ESMTPSA id g19sm63576pfo.209.2020.06.05.09.14.36
+        by smtp.gmail.com with ESMTPSA id h17sm62665pgv.41.2020.06.05.09.15.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 09:14:40 -0700 (PDT)
+        Fri, 05 Jun 2020 09:15:53 -0700 (PDT)
 From:   Chuhong Yuan <hslester96@gmail.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+Cc:     Andres Salomon <dilinger@queued.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Adrian Bunk <bunk@stusta.de>,
         Markus Elfring <Markus.Elfring@web.de>,
-        Akshu Agrawal <Akshu.Agrawal@amd.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Daniel Kurtz <djkurtz@chromium.org>, linux-clk@vger.kernel.org,
+        James Simmons <jsimmons@infradead.org>,
+        David Vrabel <dvrabel@arcom.com>,
+        Andrew Morton <akpm@osdl.org>, linux-geode@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH v2] clk: clk-st: Add missed return value checks in st_clk_probe()
-Date:   Sat,  6 Jun 2020 00:14:30 +0800
-Message-Id: <20200605161430.2513121-1-hslester96@gmail.com>
+Subject: [PATCH v2] fbdev: geode: Add the missed pci_disable_device() in gx1fb_map_video_memory()
+Date:   Sat,  6 Jun 2020 00:14:58 +0800
+Message-Id: <20200605161458.2513177-1-hslester96@gmail.com>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -68,53 +70,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return values were not checked after calls of the following functions.
-  - clk_hw_register_mux
-  - clk_hw_register_gate
-  - devm_clk_hw_register_clkdev
+Although gx1fb_probe() has handled the failure of gx1fb_map_video_memory()
+partly, it does not call pci_disable_device() as gx1fb_map_video_memory()
+calls pci_enable_device().
+Add the missed function call to fix the bug.
 
-Thus add error detection and the corresponding exception handling.
-
-Return the value from the function call "devm_clk_hw_register_clkdev"
-at the end of this function implementation.
-
-Fixes: 421bf6a1f061 ("clk: x86: Add ST oscout platform clock")
+Fixes: 53eed4ec8bcd ("[PATCH] fbdev: geode updates]")
 Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
 ---
 Changes in v2:
-  - Modify description.
-
- drivers/clk/x86/clk-st.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/clk/x86/clk-st.c b/drivers/clk/x86/clk-st.c
-index 25d4b97aff9b..e6ee6ea2568b 100644
---- a/drivers/clk/x86/clk-st.c
-+++ b/drivers/clk/x86/clk-st.c
-@@ -46,16 +46,20 @@ static int st_clk_probe(struct platform_device *pdev)
- 		clk_oscout1_parents, ARRAY_SIZE(clk_oscout1_parents),
- 		0, st_data->base + CLKDRVSTR2, OSCOUT1CLK25MHZ, 3, 0, NULL);
+  - Fix the typo in the subject.
+  - Modify the label of error handler.
+  - Refactor the code.
  
-+	if (IS_ERR(hws[ST_CLK_MUX]))
-+		return PTR_ERR(hws[ST_CLK_MUX]);
+ drivers/video/fbdev/geode/gx1fb_core.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/video/fbdev/geode/gx1fb_core.c b/drivers/video/fbdev/geode/gx1fb_core.c
+index 5d34d89fb665..15645244e4d0 100644
+--- a/drivers/video/fbdev/geode/gx1fb_core.c
++++ b/drivers/video/fbdev/geode/gx1fb_core.c
+@@ -208,29 +208,39 @@ static int gx1fb_map_video_memory(struct fb_info *info, struct pci_dev *dev)
+ 
+ 	ret = pci_request_region(dev, 0, "gx1fb (video)");
+ 	if (ret < 0)
+-		return ret;
++		goto err_disable_device;
+ 	par->vid_regs = pci_ioremap_bar(dev, 0);
+ 	if (!par->vid_regs)
+-		return -ENOMEM;
++		goto err_nomem;
+ 
+-	if (!request_mem_region(gx_base + 0x8300, 0x100, "gx1fb (display controller)"))
+-		return -EBUSY;
++	if (!request_mem_region(gx_base + 0x8300, 0x100,
++				"gx1fb (display controller)")) {
++		ret = -EBUSY;
++		goto err_disable_device;
++	}
+ 	par->dc_regs = ioremap(gx_base + 0x8300, 0x100);
+ 	if (!par->dc_regs)
+-		return -ENOMEM;
++		goto err_nomem;
+ 
+ 	if ((fb_len = gx1_frame_buffer_size()) < 0)
+-		return -ENOMEM;
++		goto err_nomem;
 +
- 	clk_set_parent(hws[ST_CLK_MUX]->clk, hws[ST_CLK_48M]->clk);
+ 	info->fix.smem_start = gx_base + 0x800000;
+ 	info->fix.smem_len = fb_len;
+ 	info->screen_base = ioremap(info->fix.smem_start, info->fix.smem_len);
+ 	if (!info->screen_base)
+-		return -ENOMEM;
++		goto err_nomem;
  
- 	hws[ST_CLK_GATE] = clk_hw_register_gate(NULL, "oscout1", "oscout1_mux",
- 		0, st_data->base + MISCCLKCNTL1, OSCCLKENB,
- 		CLK_GATE_SET_TO_DISABLE, NULL);
+ 	dev_info(&dev->dev, "%d Kibyte of video memory at 0x%lx\n",
+ 		 info->fix.smem_len / 1024, info->fix.smem_start);
  
--	devm_clk_hw_register_clkdev(&pdev->dev, hws[ST_CLK_GATE], "oscout1",
--				    NULL);
-+	if (IS_ERR(hws[ST_CLK_GATE]))
-+		return PTR_ERR(hws[ST_CLK_GATE]);
- 
--	return 0;
-+	return devm_clk_hw_register_clkdev(&pdev->dev, hws[ST_CLK_GATE],
-+					   "oscout1", NULL);
+ 	return 0;
++
++err_nomem:
++	ret = -ENOMEM;
++err_disable_device:
++	pci_disable_device(dev);
++	return ret;
  }
  
- static int st_clk_remove(struct platform_device *pdev)
+ static int parse_panel_option(struct fb_info *info)
 -- 
 2.26.2
 
