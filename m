@@ -2,146 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B39F1EF40A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996301EF400
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgFEJ0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 05:26:10 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:39765 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726188AbgFEJ0J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 05:26:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1591349168; x=1622885168;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=6B6Tnzu3jtZ/RshEoNxGPE1rQ9DjLk4r5yTIvbGNx7s=;
-  b=iO4S+ArA+gejJd7owt5xryfO5b4OnFaQQmhledcUfMbHnBjcf5+YWOcp
-   5r5HvWVrV6hTzX1bqfULzzwXwdOKvT2MLP0St5cwZT9KWVQ/uqPETjYLT
-   n2bjXbMuIkJfEw+5/GdELOtBfJgtGxO+gz7OLVa5+NoNO+3Nddd/RphX4
-   I=;
-IronPort-SDR: KjIoxxJb00zsEQY5N0jHC/jnAZr9jpUe0SyJ0MqwJAKn0J+tjHWvv2mtXAVFgOFS883wV7JA3i
- ev00Fy9J+qVw==
-X-IronPort-AV: E=Sophos;i="5.73,475,1583193600"; 
-   d="scan'208";a="34615536"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-807d4a99.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 05 Jun 2020 09:26:07 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1a-807d4a99.us-east-1.amazon.com (Postfix) with ESMTPS id 3719DA1CD8;
-        Fri,  5 Jun 2020 09:26:05 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 5 Jun 2020 09:25:46 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.200) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 5 Jun 2020 09:25:41 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     <david@redhat.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, SeongJae Park <sjpark@amazon.de>
-Subject: [PATCH 2/2] scripts/spelling: Add a few more typos
-Date:   Fri, 5 Jun 2020 11:25:02 +0200
-Message-ID: <20200605092502.18018-3-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200605092502.18018-1-sjpark@amazon.com>
-References: <20200605092502.18018-1-sjpark@amazon.com>
+        id S1726235AbgFEJZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 05:25:36 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:48657 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726177AbgFEJZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 05:25:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591349135; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=4DMYxLsLHIEhVdnqccTaMZxujDa7ILXa6vhA3dmslLM=; b=vMmkFBDyiOeF+faKF7BAQshNlOfmUayttpTHpkAOzyizVhTIzjP5t8FxD6CfDHilyQH4CpHt
+ m8RM52KoI5R5FQlm+RQI0oCGsutgxCL0mb92qmAtXzF9ss1he0UkAAnO0Thj8dPbl0ZV2arT
+ qYuMIdi67dp71Le91WRhWvy+eqI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5eda0f792738686126653d53 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Jun 2020 09:25:13
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3E72CC433A0; Fri,  5 Jun 2020 09:25:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EA82AC433C6;
+        Fri,  5 Jun 2020 09:25:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EA82AC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-mm@kvack.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 09/10] treewide: Remove uninitialized_var() usage
+References: <20200603233203.1695403-1-keescook@chromium.org>
+        <20200603233203.1695403-10-keescook@chromium.org>
+Date:   Fri, 05 Jun 2020 12:25:05 +0300
+In-Reply-To: <20200603233203.1695403-10-keescook@chromium.org> (Kees Cook's
+        message of "Wed, 3 Jun 2020 16:32:02 -0700")
+Message-ID: <878sh1g8zy.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.43.162.200]
-X-ClientProxiedBy: EX13D32UWB003.ant.amazon.com (10.43.161.220) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Kees Cook <keescook@chromium.org> writes:
 
-This commit adds typos I found from another works.
+> Using uninitialized_var() is dangerous as it papers over real bugs[1]
+> (or can in the future), and suppresses unrelated compiler warnings
+> (e.g. "unused variable"). If the compiler thinks it is uninitialized,
+> either simply initialize the variable or make compiler changes.
+>
+> I preparation for removing[2] the[3] macro[4], remove all remaining
+> needless uses with the following script:
+>
+> git grep '\buninitialized_var\b' | cut -d: -f1 | sort -u | \
+> 	xargs perl -pi -e \
+> 		's/\buninitialized_var\(([^\)]+)\)/\1/g;
+> 		 s:\s*/\* (GCC be quiet|to make compiler happy) \*/$::g;'
+>
+> drivers/video/fbdev/riva/riva_hw.c was manually tweaked to avoid
+> pathological white-space.
+>
+> No outstanding warnings were found building allmodconfig with GCC 9.3.0
+> for x86_64, i386, arm64, arm, powerpc, powerpc64le, s390x, mips, sparc64,
+> alpha, and m68k.
+>
+> [1] https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.com/
+> [2] https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=1TGqCR5vQkCzWJ0QxK6CernOU6eedsudAixw@mail.gmail.com/
+> [3] https://lore.kernel.org/lkml/CA+55aFwgbgqhbp1fkxvRKEpzyR5J8n1vKT1VZdz9knmPuXhOeg@mail.gmail.com/
+> [4] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/
+>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- scripts/spelling.txt | 9 +++++++++
- 1 file changed, 9 insertions(+)
+[...]
 
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index d9cd24cf0d40..c45e9afaab2d 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -59,6 +59,7 @@ actualy||actually
- acumulating||accumulating
- acumulative||accumulative
- acumulator||accumulator
-+acutally||actually
- adapater||adapter
- addional||additional
- additionaly||additionally
-@@ -249,6 +250,7 @@ calescing||coalescing
- calle||called
- callibration||calibration
- callled||called
-+callser||caller
- calucate||calculate
- calulate||calculate
- cancelation||cancellation
-@@ -671,6 +673,7 @@ hanlde||handle
- hanled||handled
- happend||happened
- harware||hardware
-+havind||having
- heirarchically||hierarchically
- helpfull||helpful
- hexdecimal||hexadecimal
-@@ -845,6 +848,7 @@ logile||logfile
- loobpack||loopback
- loosing||losing
- losted||lost
-+maangement||management
- machinary||machinery
- maibox||mailbox
- maintainance||maintenance
-@@ -905,6 +909,7 @@ modfiy||modify
- modulues||modules
- momery||memory
- memomry||memory
-+monitring||monitoring
- monochorome||monochrome
- monochromo||monochrome
- monocrome||monochrome
-@@ -1010,6 +1015,7 @@ partiton||partition
- pased||passed
- passin||passing
- pathes||paths
-+pattrns||patterns
- pecularities||peculiarities
- peformance||performance
- peforming||performing
-@@ -1256,6 +1262,7 @@ shoule||should
- shrinked||shrunk
- siginificantly||significantly
- signabl||signal
-+significanly||significantly
- similary||similarly
- similiar||similar
- simlar||similar
-@@ -1371,6 +1378,7 @@ thead||thread
- therfore||therefore
- thier||their
- threds||threads
-+threee||three
- threshhold||threshold
- thresold||threshold
- throught||through
-@@ -1410,6 +1418,7 @@ tyep||type
- udpate||update
- uesd||used
- uknown||unknown
-+usccess||success
- usupported||unsupported
- uncommited||uncommitted
- unconditionaly||unconditionally
+>  drivers/net/wireless/ath/ath10k/core.c           |  2 +-
+>  drivers/net/wireless/ath/ath6kl/init.c           |  2 +-
+>  drivers/net/wireless/ath/ath9k/init.c            |  2 +-
+>  drivers/net/wireless/broadcom/b43/debugfs.c      |  2 +-
+>  drivers/net/wireless/broadcom/b43/dma.c          |  2 +-
+>  drivers/net/wireless/broadcom/b43/lo.c           |  2 +-
+>  drivers/net/wireless/broadcom/b43/phy_n.c        |  2 +-
+>  drivers/net/wireless/broadcom/b43/xmit.c         | 12 ++++++------
+>  .../net/wireless/broadcom/b43legacy/debugfs.c    |  2 +-
+>  drivers/net/wireless/broadcom/b43legacy/main.c   |  2 +-
+>  drivers/net/wireless/intel/iwlegacy/3945.c       |  2 +-
+>  drivers/net/wireless/intel/iwlegacy/4965-mac.c   |  2 +-
+>  .../net/wireless/realtek/rtlwifi/rtl8192cu/hw.c  |  4 ++--
+
+For wireless drivers:
+
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
+
 -- 
-2.17.1
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
