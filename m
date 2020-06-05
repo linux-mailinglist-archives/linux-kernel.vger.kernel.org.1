@@ -2,143 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059AA1F0384
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 01:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAC51F0388
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 01:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728483AbgFEXbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 19:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51200 "EHLO
+        id S1728452AbgFEXd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 19:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728405AbgFEXbT (ORCPT
+        with ESMTP id S1728370AbgFEXd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 19:31:19 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9527C08C5C3
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 16:31:19 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id h185so5670307pfg.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 16:31:19 -0700 (PDT)
+        Fri, 5 Jun 2020 19:33:57 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3915DC08C5C3
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 16:33:56 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id b6so13784212ljj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 16:33:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=QT3TOfTZM7n8upLOBb9CoT35uLEYwP8QmqKQlYpotu8=;
-        b=aRVd9mVasyOpi3qj6L+9LPZYEZeqaeUcati7cYFOWdqTeHQHVCYu1Mg3TZAEJ+Cemq
-         dfXKAo+Q6UNAFsH/2ZXA/hLBkWgSa0nz4wSjsYb/wFS0rixfFi3JJfcl8n4oR6+Ps1Qy
-         U+/FztKv09P0+eWToCYdTvhCeWQASBbcJYwWw=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ClAVloF54JIqrc+m+0ATOT37Q30+IcoX9urgdaodTTM=;
+        b=HenIB/3KEnX6g7OVHqu+kSDDosed1DGCBW9BlMitBhtXu1qUftlTh0ByQYgIxxzPaJ
+         v1BjKRoudpt4MRAW4isZGAyfXDO8MooDq35/5ak4ac6HzntoEvXpzd5SVBQKA2dAjkgz
+         VEzncixfstBUoWrWg53pxL1hUYFIG0E2zxjFk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=QT3TOfTZM7n8upLOBb9CoT35uLEYwP8QmqKQlYpotu8=;
-        b=JI0lLwQyKt/TC+v3X1IYgDS39W5ZmU8p9ASmDwZYsQdoBYErpoQImVk3X6MMr5NQzf
-         InAYMJOwuxhuOZxQ3WPhFmxGWCMxo8sJNPrNHjy6dw5W4Ektbz9AWmBQmp6uZRod3woB
-         vTDaPqJKu5wZZTqZcLqxUiz1HHQLrqeO4ViZSjcoMkqqzCX8M/smEENULOxi6G44ZIH5
-         WjHAOiqzHK3GLtOZm5Mkgc3XnpdyLkmPVCZGyb/dQsYJmqFJnuLI24vQJbQ9kQesKsQk
-         NDaqmwazEkrQCO4wZBNOL9ER72KCbqgNWLmjSCDe2kv3Ce7PDltWd6+6H3DIlm1uFsp+
-         UlbA==
-X-Gm-Message-State: AOAM530A2gJPgT5gARbKeWYhl9mgQiFAF7Gpyrfhyr0Ii+KtktvlglZB
-        EZOOesyPv3GEJiV5J+ZNiS2I4g==
-X-Google-Smtp-Source: ABdhPJyjNvTuZNiXBWA+wu5gD204795YG4uT5HA5nAd7pQQKXRGvD9NKYFP7JEix9AMrHm3M2js3SQ==
-X-Received: by 2002:a65:6715:: with SMTP id u21mr12073266pgf.365.1591399879036;
-        Fri, 05 Jun 2020 16:31:19 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id 125sm588134pff.130.2020.06.05.16.31.15
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ClAVloF54JIqrc+m+0ATOT37Q30+IcoX9urgdaodTTM=;
+        b=obz0XpL57QAV9akfnUe1k9Mr8TXbWJpR8UvrXQl6iubTpzPpJL6a9DS543byFLPODi
+         yyUx1dQxjgL0cTO0b2bIZvsrUJD9hrIfWXsV55Ld1IhAttzGyuCu3yFz2WOx1ZZnFGE/
+         24Bo9l3D25l7d9M0nP+WYnsIn1m+XNmH372rS37t3RAg9r6EB4zMhvmn1W2SOeVZMVcW
+         v2NGOuzeDJ+oaaxW1kjnnmg/Wkt3o1vTJytDId2s2dQ3m14U+ri7Op7zKBEsKQySLfO+
+         MX+0upJWNuGxfoZXOdNWak6TZWGDOKjuRJP6T6A9myAi6HU0u6vGH2K4wUDM/ZVV1Nfg
+         NFyQ==
+X-Gm-Message-State: AOAM530UrLelpHaqTRSyxWxqlkBPPhkPqD8Vhpp9e99pEhbahFLRp1sJ
+        Sm3GX1MGSI/MIamBieVZBaeG0hB/zvI=
+X-Google-Smtp-Source: ABdhPJxwAZn8pejrqIJX36pC2/e3/SUWmdpAe1bVvyanS+9qI3soZ+24pb4iBDRDAOHeLaigO8x3qQ==
+X-Received: by 2002:a2e:97c3:: with SMTP id m3mr5861578ljj.312.1591400033960;
+        Fri, 05 Jun 2020 16:33:53 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id p1sm1487563lfo.66.2020.06.05.16.33.52
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Jun 2020 16:31:17 -0700 (PDT)
-Subject: Re: [PATCH v6 8/8] ima: add FIRMWARE_PARTIAL_READ support
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-References: <20200605225959.12424-1-scott.branden@broadcom.com>
- <20200605225959.12424-9-scott.branden@broadcom.com>
- <1591399166.4615.37.camel@linux.ibm.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <824407ae-8ab8-0fe3-bd72-270fce960ac5@broadcom.com>
-Date:   Fri, 5 Jun 2020 16:31:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 05 Jun 2020 16:33:52 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id 9so4097740ljv.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 16:33:52 -0700 (PDT)
+X-Received: by 2002:a2e:b5d7:: with SMTP id g23mr5449089ljn.70.1591400031826;
+ Fri, 05 Jun 2020 16:33:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1591399166.4615.37.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <2240660.1591289899@warthog.procyon.org.uk>
+In-Reply-To: <2240660.1591289899@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 5 Jun 2020 16:33:35 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgsxbn2QamOL_xu0F8srnpmsAZ-k6eJMCFazAKOcJ4t9w@mail.gmail.com>
+Message-ID: <CAHk-=wgsxbn2QamOL_xu0F8srnpmsAZ-k6eJMCFazAKOcJ4t9w@mail.gmail.com>
+Subject: Re: [GIT PULL] afs: Improvements for v5.8
+To:     David Howells <dhowells@redhat.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        linux-afs@lists.infradead.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mimi,
-
-On 2020-06-05 4:19 p.m., Mimi Zohar wrote:
-> Hi Scott,
+On Thu, Jun 4, 2020 at 9:58 AM David Howells <dhowells@redhat.com> wrote:
 >
-> On Fri, 2020-06-05 at 15:59 -0700, Scott Branden wrote:
->> @@ -648,6 +667,9 @@ int ima_post_read_file(struct file *file, void *buf, loff_t size,
->>   	enum ima_hooks func;
->>   	u32 secid;
->>   
->> +	if (!file && read_id == READING_FIRMWARE_PARTIAL_READ)
->> +		return 0;
-> The file should be measured on the pre security hook, not here on the
-> post security hook.  Here, whether "file" is defined or not, is
-> irrelevant.  The test should just check "read_id".
-OK, will remove the !file from here.
->
-> Have you tested measuring the firmware by booting a system with
-> "ima_policy=tcb" specified on the boot command line and compared the
-> measurement entry in the IMA measurement list with the file hash (eg.
-> sha1sum, sha256sum)?
-Yes, I enabled IMA in my kernel and added ima_policy=tsb to the boot 
-command line,
+>  (4) Improve Ext4's time updating.  Konstantin Khlebnikov said "For now,
+>      I've plugged this issue with try-lock in ext4 lazy time update.  This
+>      solution is much better."
 
-Here are the entries from 
-/sys/kernel/security/ima/ascii_runtime_measurements of the files I am 
-accessing.
-Please let me know if I am doing anything incorrectly.
+It would have been good to get acks on this from the ext4 people, but
+I've merged this as-is (but it's still going through my sanity tests,
+so if that triggers something it might get unpulled again).
 
-10 4612bce355b2dbc45ecd95e17001636be8832c7f ima-ng 
-sha1:fddd9a28c2b15acf3b0fc9ec0cf187cb2153d7f2 
-/lib/firmware/vk-boot1-bcm958401m2.ecdsa.bin
-10 4c0eb0fc30eb7ac3a30a27f05c1d2a8d28d6a9ec ima-ng 
-sha1:b16d343dd63352d10309690c71b110762a9444c3 
-/lib/firmware/vk-boot2-bcm958401m2_a72.ecdsn
-
-The sha1 sum matches:
-root@genericx86-64:/sys/kernel/security/ima# sha1sum 
-/lib/firmware/vk-boot1-bcm958401m2.ecdsa.bin
-fddd9a28c2b15acf3b0fc9ec0cf187cb2153d7f2 
-/lib/firmware/vk-boot1-bcm958401m2.ecdsa.bin
-
-root@genericx86-64:/sys/kernel/security/ima# sha1sum 
-/lib/firmware/vk-boot2-bcm958401m2_a72.ecdsa.bin
-b16d343dd63352d10309690c71b110762a9444c3 
-/lib/firmware/vk-boot2-bcm958401m2_a72.ecdsa.bin
-
-
->
-> Mimi
->
->> +
->>   	if (!file && read_id == READING_FIRMWARE) {
->>   		if ((ima_appraise & IMA_APPRAISE_FIRMWARE) &&
->>   		    (ima_appraise & IMA_APPRAISE_ENFORCE)) {
-
+                  Linus
