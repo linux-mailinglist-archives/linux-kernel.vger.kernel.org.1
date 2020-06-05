@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C751EFAD1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640011EFADB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728587AbgFEOVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:21:09 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:27313 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728971AbgFEOUk (ORCPT
+        id S1728641AbgFEOVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729029AbgFEOVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:20:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591366838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=tYrH+EqixLCGC0o9Vgv8h3T7kXXMELTRVth7woAonUk=;
-        b=ZcD+SvbYI+xwFHK8R/lo6oC7BSQikOCWkpYy/QFUOWXxYHTg8+/nauHUVwaBBNv05/3RTz
-        jqN98n6Nfa9shlAVK0l/ICC5otmSqnuceWVUyOaS5df9LG8J0QdnSEMaHoKtAJ12IK2VDz
-        sth0q32TpNIE15OAoZxFx4+FCuxrOFM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-480-Dy9Io7yKN9-dp3U52YM0uA-1; Fri, 05 Jun 2020 10:20:37 -0400
-X-MC-Unique: Dy9Io7yKN9-dp3U52YM0uA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91AEB1005510;
-        Fri,  5 Jun 2020 14:20:35 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E6B2E6292E;
-        Fri,  5 Jun 2020 14:20:29 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Marcelo Bandeira Condotta <mcondotta@redhat.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        Fri, 5 Jun 2020 10:21:25 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFA4C08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 07:21:24 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id u5so5202971pgn.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 07:21:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=yGP/Kfk+N8F8iZAeQuKesLiAArFiMOYLOk6KSc6Id+U=;
+        b=mM0dkv5fgPUEDI5+Ig/8tYdMEQmoq5Dzw8QTDcSds5R0+fQNHXb4dUYu1nC+79LLo5
+         AASqF7MxiF78fW0sLSHZTi7h9+wBVO8sWFHgviQ/Eb398TEPl1k94wIUW4Oxz2pozRcS
+         qXcKXSCrV1kTgEZCQM4OOzAsC2tk6MzytRuZo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=yGP/Kfk+N8F8iZAeQuKesLiAArFiMOYLOk6KSc6Id+U=;
+        b=Q4CB1iZWMPissc/Ge0KWSRLyzyZbFFeuo+r01+di4YTv86baGadzOcIFmVOe0y80h3
+         cLs8K1kR5N57r1u+mEY8K97RoID7ZxsVMlQnsHzLoSMRcyS1NjM4M0wNfq9BAzM2xtU/
+         IRpTKt6pOpLMFntbowOln/Yqz2+VgHmOE1XWVrFt25eyFb6GWOmuw17xT9zoaXTVMlX7
+         tDkAhc2ZLy/JHqSm3TQeQKg7n02dLnDJcm78xJ6WJTH7CA3v/40Msc5IUgzmtegDnXXp
+         Cx/UiqFmc8znIePefW09VtiRAqa2Bc6CawJKw0VHtAIdD0Kb70b1KdMyFCUFkWMX+FIZ
+         Gaiw==
+X-Gm-Message-State: AOAM533iS8uEKnvPlBSkuKKIAEESFmI8W/fFBeOmy7ic/L+8zUYKBBMp
+        suIteAxTg1R0ZRGbBLVK5af/Mw==
+X-Google-Smtp-Source: ABdhPJwKFbHKpewYCO4uc2+sCQtwLv9h6tPVlXqTY10U5LySFMOcXvTJZbnlv1WBth8q9WueJjPOZw==
+X-Received: by 2002:a63:3347:: with SMTP id z68mr10089302pgz.61.1591366883923;
+        Fri, 05 Jun 2020 07:21:23 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x191sm7750890pfd.37.2020.06.05.07.21.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jun 2020 07:21:23 -0700 (PDT)
+Date:   Fri, 5 Jun 2020 07:21:22 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Joe Perches <joe@perches.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: selftests: Fix "make ARCH=x86_64" build with
-Date:   Fri,  5 Jun 2020 16:20:28 +0200
-Message-Id: <20200605142028.550068-1-vkuznets@redhat.com>
+Subject: [PATCH] net: ethtool: Fix comment mentioning typo in IS_ENABLED()
+Message-ID: <202006050720.D741B4C@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marcelo reports that kvm selftests fail to build with
-"make ARCH=x86_64":
+This has no code changes, but it's a typo noticed in other clean-ups,
+so we might as well fix it. IS_ENABLED() takes full names, and should
+have the "CONFIG_" prefix.
 
-gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
- -fno-stack-protector -fno-PIE -I../../../../tools/include
- -I../../../../tools/arch/x86_64/include  -I../../../../usr/include/
- -Iinclude -Ilib -Iinclude/x86_64 -I.. -c lib/kvm_util.c
- -o /var/tmp/20200604202744-bin/lib/kvm_util.o
-
-In file included from lib/kvm_util.c:11:
-include/x86_64/processor.h:14:10: fatal error: asm/msr-index.h: No such
- file or directory
-
- #include <asm/msr-index.h>
-          ^~~~~~~~~~~~~~~~~
-compilation terminated.
-
-"make ARCH=x86", however, works. The problem is that arch specific headers
-for x86_64 live in 'tools/arch/x86/include', not in
-'tools/arch/x86_64/include'.
-
-Fixes: 66d69e081b52 ("selftests: fix kvm relocatable native/cross builds and installs")
-Reported-by: Marcelo Bandeira Condotta <mcondotta@redhat.com>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Reported-by: Joe Perches <joe@perches.com>
+Link: https://lore.kernel.org/lkml/b08611018fdb6d88757c6008a5c02fa0e07b32fb.camel@perches.com
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- tools/testing/selftests/kvm/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/linux/ethtool_netlink.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index b4ff112e5c7e..4a166588d99f 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -83,7 +83,11 @@ LIBKVM += $(LIBKVM_$(UNAME_M))
- INSTALL_HDR_PATH = $(top_srcdir)/usr
- LINUX_HDR_PATH = $(INSTALL_HDR_PATH)/include/
- LINUX_TOOL_INCLUDE = $(top_srcdir)/tools/include
-+ifeq ($(ARCH),x86_64)
-+LINUX_TOOL_ARCH_INCLUDE = $(top_srcdir)/tools/arch/x86/include
-+else
- LINUX_TOOL_ARCH_INCLUDE = $(top_srcdir)/tools/arch/$(ARCH)/include
-+endif
- CFLAGS += -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99 \
- 	-fno-stack-protector -fno-PIE -I$(LINUX_TOOL_INCLUDE) \
- 	-I$(LINUX_TOOL_ARCH_INCLUDE) -I$(LINUX_HDR_PATH) -Iinclude \
+diff --git a/include/linux/ethtool_netlink.h b/include/linux/ethtool_netlink.h
+index 8fbe4f97ffad..1e7bf78cb382 100644
+--- a/include/linux/ethtool_netlink.h
++++ b/include/linux/ethtool_netlink.h
+@@ -67,5 +67,5 @@ static inline int ethnl_cable_test_step(struct phy_device *phydev, u32 first,
+ {
+ 	return -EOPNOTSUPP;
+ }
+-#endif /* IS_ENABLED(ETHTOOL_NETLINK) */
++#endif /* IS_ENABLED(CONFIG_ETHTOOL_NETLINK) */
+ #endif /* _LINUX_ETHTOOL_NETLINK_H_ */
 -- 
-2.25.4
+2.25.1
 
+
+-- 
+Kees Cook
