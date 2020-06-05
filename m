@@ -2,140 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF8B1EF0C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 06:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D591EF0D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 07:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbgFEE4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 00:56:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:50564 "EHLO foss.arm.com"
+        id S1726135AbgFEFKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 01:10:10 -0400
+Received: from mga09.intel.com ([134.134.136.24]:21900 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725986AbgFEE4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 00:56:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 00B832B;
-        Thu,  4 Jun 2020 21:56:51 -0700 (PDT)
-Received: from bogus (unknown [10.37.12.7])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65DA43F6CF;
-        Thu,  4 Jun 2020 21:56:48 -0700 (PDT)
-Date:   Fri, 5 Jun 2020 05:56:45 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jassi Brar <jassisinghbrar@gmail.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] dt-bindings: mailbox: add doorbell support to ARM MHU
-Message-ID: <20200605045645.GD12397@bogus>
-References: <0a50f0cf5593baeb628dc8606c523665e5e2ae6c.1589519600.git.viresh.kumar@linaro.org>
- <20200528192005.GA494874@bogus>
- <20200529040758.kneg2j4n3gxh2rfv@vireshk-i7>
- <20200603180435.GB23722@bogus>
- <CABb+yY0cW1GZHVmwEr19JRdJTmsAxw9uq83QV_aq-tdPJO5_Fg@mail.gmail.com>
- <20200604092052.GD8814@bogus>
- <CABb+yY27Ngb0C-onkU2qyt=uKgG4iVrcv8hGkC+anypQbTRA1w@mail.gmail.com>
+        id S1725280AbgFEFKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 01:10:10 -0400
+IronPort-SDR: GF9rJsIpdPDqTCZsWnDhkiNGYGJ9eMDSzSNerqBaDTC/R42iP5R2FtKApIfcjL5/pLb1j7oiy2
+ byBzoMz+2Pnw==
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 22:10:09 -0700
+IronPort-SDR: 4idtIugdnOHQYK2nosQvAUNWjA4rL6bAZOJwhqMG8P8YiBjNHy5yvSIA3oUSYEWxW9LZRDSuZc
+ TLH/up3j8ssQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,475,1583222400"; 
+   d="asc'?scan'208";a="445768791"
+Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
+  by orsmga005.jf.intel.com with ESMTP; 04 Jun 2020 22:10:07 -0700
+Date:   Fri, 5 Jun 2020 12:54:30 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Julian Stecklina <julian.stecklina@cyberus-technology.de>
+Cc:     intel-gvt-dev@lists.freedesktop.org,
+        Thomas Prescher <thomas.prescher@cyberus-technology.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/i915/gvt: print actionable error message when gm
+ runs out
+Message-ID: <20200605045430.GS5687@zhen-hp.sh.intel.com>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20200603123321.263895-1-julian.stecklina@cyberus-technology.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="tuFXEhzhBeitrIAu"
 Content-Disposition: inline
-In-Reply-To: <CABb+yY27Ngb0C-onkU2qyt=uKgG4iVrcv8hGkC+anypQbTRA1w@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200603123321.263895-1-julian.stecklina@cyberus-technology.de>
+User-Agent: Mutt/1.10.0 (2018-05-17)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 10:15:55AM -0500, Jassi Brar wrote:
-> On Thu, Jun 4, 2020 at 4:20 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > On Wed, Jun 03, 2020 at 01:32:42PM -0500, Jassi Brar wrote:
-> > > On Wed, Jun 3, 2020 at 1:04 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > > >
-> > > > On Fri, May 29, 2020 at 09:37:58AM +0530, Viresh Kumar wrote:
-> > > > > On 28-05-20, 13:20, Rob Herring wrote:
-> > > > > > Whether Linux
-> > > > > > requires serializing mailbox accesses is a separate issue. On that side,
-> > > > > > it seems silly to not allow driving the h/w in the most efficient way
-> > > > > > possible.
-> > > > >
-> > > > > That's exactly what we are trying to say. The hardware allows us to
-> > > > > write all 32 bits in parallel, without any hardware issues, why
-> > > > > shouldn't we do that ? The delay (which Sudeep will find out, he is
-> > > > > facing issues with hardware access because of lockdown right now)
-> > > >
-> > > > OK, I was able to access the setup today. I couldn't reach a point
-> > > > where I can do measurements as the system just became unusable with
-> > > > one physical channel instead of 2 virtual channels as in my patches.
-> > > >
-> > > > My test was simple. Switch to schedutil and read sensors periodically
-> > > > via sysfs.
-> > > >
-> > > >  arm-scmi firmware:scmi: message for 1 is not expected!
-> > > >
-> > > This sounds like you are not serialising requests on a shared channel.
-> > > Can you please also share the patch?
-> >
-> > OK, I did try with a small patch initially and then realised we must hit
-> > issue with mainline as is. Tried and the behaviour is exact same. All
-> > I did is removed my patches and use bit[0] as the signal. It doesn't
-> > matter as writes to the register are now serialised. Oh, the above
-> > message comes when OS times out in advance while firmware continues to
-> > process the old request and respond.
-> >
-> > The trace I sent gives much better view of what's going on.
-> >
-> BTW, you didn't even share 'good' vs 'bad' log for me to actually see
-> if the api lacks.
->
-> Let us look closely ...
->
->  >>    bash-1019  [005]  1149.452340: scmi_xfer_begin:
-> transfer_id=1537 msg_id=7 protocol_id=19 seq=0 poll=1
->  >>    bash-1019  [005]  1149.452407: scmi_xfer_end:
-> transfer_id=1537 msg_id=7 protocol_id=19 seq=0 status=0
-> >
-> This round trip took  67usecs.  (log shows some at even 3usecs)
-> That includes mailbox api overhead, memcpy and the time taken by
-> remote to respond.
 
-This is DVFS request which firmware acknowledges quickly and expected
-to at most 100us.
+--tuFXEhzhBeitrIAu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> So the api is definitely capable of much faster transfers than you require.
->
+On 2020.06.03 14:33:21 +0200, Julian Stecklina wrote:
+> When a user tries to allocate too many or too big vGPUs and runs out
+> of graphics memory, the resulting error message is not actionable and
+> looks like an internal error.
+>=20
+> Change the error message to clearly point out what actions a user can
+> take to resolve this situation.
+>=20
+> Cc: Thomas Prescher <thomas.prescher@cyberus-technology.de>
+> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+> Signed-off-by: Julian Stecklina <julian.stecklina@cyberus-technology.de>
+> ---
+>  drivers/gpu/drm/i915/gvt/aperture_gm.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/i915/gvt/aperture_gm.c b/drivers/gpu/drm/i91=
+5/gvt/aperture_gm.c
+> index 0d6d598713082..5c5c8e871dae2 100644
+> --- a/drivers/gpu/drm/i915/gvt/aperture_gm.c
+> +++ b/drivers/gpu/drm/i915/gvt/aperture_gm.c
+> @@ -69,9 +69,12 @@ static int alloc_gm(struct intel_vgpu *vgpu, bool high=
+_gm)
+>  				  start, end, flags);
+>  	mmio_hw_access_post(gt);
+>  	mutex_unlock(&gt->ggtt->vm.mutex);
+> -	if (ret)
+> -		gvt_err("fail to alloc %s gm space from host\n",
+> -			high_gm ? "high" : "low");
+> +	if (ret) {
+> +		gvt_err("vgpu%d: failed to allocate %s gm space from host\n",
+> +			vgpu->id, high_gm ? "high" : "low");
+> +		gvt_err("vgpu%d: destroying vGPUs, decreasing vGPU memory size or incr=
+easing GPU aperture size may resolve this\n",
+> +			vgpu->id);
 
-I am not complaining about that. The delay is mostly due to the load on
-the mailbox and parallelising helps is the focus here.
+Currently we can't decrease vGPU mem size as defined by mdev type,
+so actually you may try different vGPU type. And aperture size is
+also handled for supported vGPU mdev types, so assume user should
+already be awared of that too. I just don't want us to be too chatty. :)
 
-> >>     bash-1526  [000]  1149.472553: scmi_xfer_begin:      transfer_id=1538 msg_id=6 protocol_id=21 seq=0 poll=0
-> >>      <idle>-0     [001]  1149.472733: scmi_xfer_begin:      transfer_id=1539 msg_id=7 protocol_id=19 seq=1 poll=1
-> >
-> Here another request is started before the first is finished.
+> +	}
+> =20
+>  	return ret;
+>  }
+> --=20
+> 2.26.2
+>=20
+> _______________________________________________
+> intel-gvt-dev mailing list
+> intel-gvt-dev@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
 
-Ah, the prints are when the client requested. It is not when the mailbox
-started it. So this just indicates the beginning of the transfer from the
-client. I must have mentioned that earlier. Some request timeout before
-being picked up by mailbox if the previous request is not acknowledge
-quickly. E.g. Say a sensor command started which may take upto 1ms,
-almost 5-6 DVFS request after that will timeout.
+--=20
+Open Source Technology Center, Intel ltd.
 
-> If you want this to work you have to serialise access to the single
-> physical channel and/or run the remote firmware in asynchronous mode -
-> that is, the firmware ack the bit as soon as it sees and starts
-> working in the background, so that we return in ~3usec always, while
-> the data returns whenever it is ready.
+$gpg --keyserver wwwkeys.pgp.net --recv-keys 4D781827
 
-Yes it does that for few requests like DVFS while it uses synchronous
-mode for few others. While ideally I agree everything in asynchronous
-most is better, I don't know there may be reasons for such design. Also
-the solution given is to use different bits as independent channels
-which hardware allows. Anyways it's open source SCP project[1].
+--tuFXEhzhBeitrIAu
+Content-Type: application/pgp-signature; name="signature.asc"
 
---
-Regards,
-Sudeep
+-----BEGIN PGP SIGNATURE-----
 
-[1] https://github.com/ARM-software/SCP-firmware
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCXtnQBgAKCRCxBBozTXgY
+J/c4AKCKRut0XbYE1ZzbeKKaRdpwFEG8cgCfRE5+/HXqXZ4OypqRUdPCM+ACVTk=
+=2IF1
+-----END PGP SIGNATURE-----
+
+--tuFXEhzhBeitrIAu--
