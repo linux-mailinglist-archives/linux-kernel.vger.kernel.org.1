@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889B91EF891
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 15:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C56C1EF89A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 15:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726837AbgFENFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 09:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726647AbgFENFB (ORCPT
+        id S1726953AbgFENFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 09:05:43 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:13986 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726719AbgFENFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 09:05:01 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5DAC08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 06:05:00 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id x11so3613705plv.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 06:05:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qMmRPUhgtpuS6TTG/GuqLkNjYHA8c+3dVy8v0SMwjMk=;
-        b=bkqNLpnPAhUUJPYxLvISfFtr4FvME2B0TRGC5RqPoNt2xKQMu5TPyH7bQDFNomaW2y
-         cdr68bxUbRNBYT56MpvLzMeWjqQKNeF6hCrfo/lQoE1/Op2UPzMm4h+6k3GRrK+xoyhJ
-         jDJ79wGBXsMM6klm3WxyJ3PrEmmtbfPDKp/odfEuUPRyo2qdgY5Pwu2UggruUrqkZVLd
-         V1/7DbEG/cyRRKhiiR4HVe0XetnFxxfYwe30V9ywHzffwSLPzwQY9QyB5LQxjExieX/Q
-         d7ANk0zYFIrS0TD4DN9WEE5hJGkIeF348d8XPrtZsFZjaG7jaCjZPQJNKfsvsF0L/y78
-         4+Kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qMmRPUhgtpuS6TTG/GuqLkNjYHA8c+3dVy8v0SMwjMk=;
-        b=ayme8/HQNZEfS1OFMCbypOn48C2yz3Uo6bOnJUTupXbY6IQTVFYwk4egafZYiUqcrr
-         XIjO+FI9KL9bTLO0GkNCxYz1sxamOlir9e1NfQna6mH3CtUL3BbbwK09UMpnCFAkx9BB
-         gcFlRPVvgFDHzCrq6cQ3AlanzT2QvkhCFG/xR5ov2CrkPfT9DewlNEOFCD6IuSEcI8Kq
-         KWcZe72p+K5gN4h4Y8dPedX6q6yI61vNiA5Bljto4AGnlXPNTbm831cCWEhJQo7ZPidc
-         21ojrFn4UlLp8frRYRDB59b/X12+D+6R7Yk9AnDSdC7YMKtDXPgqf/17a/2Tma5ZXnTU
-         bavg==
-X-Gm-Message-State: AOAM532ZnuFLknPjYjbepCUXzd9Y6aLeW6gOhSws8oT98OpzjSSwDLZ2
-        AP8Rd9OrCCkb5j8izVXwPCwY2A==
-X-Google-Smtp-Source: ABdhPJztl3sgTYmes9QTZ50W/VL5LHmidIjsSGXV5BWpaw3tcv1f91aOZKJu3/pXlLzzR6iDp493gQ==
-X-Received: by 2002:a17:902:41:: with SMTP id 59mr9814427pla.104.1591362299795;
-        Fri, 05 Jun 2020 06:04:59 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id 136sm7448369pfa.152.2020.06.05.06.04.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Jun 2020 06:04:58 -0700 (PDT)
-Subject: Re: block: Fix use-after-free in blkdev_get()
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Jason Yan <yanaijie@huawei.com>, hulkci@huawei.com,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Ming Lei <ming.lei@redhat.com>
-References: <88676ff2-cb7e-70ec-4421-ecf8318990b1@web.de>
- <5fa658bf-3028-9b5c-30cc-dbdef6bf8f7a@huawei.com>
- <20200605094353.GS30374@kadam> <2ee6f2f7-eaec-e748-bead-0ad59f4c378b@web.de>
- <20200605111049.GA19604@bombadil.infradead.org>
- <b6c8ebd7-ccd3-2a94-05b2-7b92a30ec8a9@web.de>
- <20200605115158.GD19604@bombadil.infradead.org>
- <453060f2-80af-86a4-7e33-78d4cc87503f@web.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <1d95e2f6-7cf8-f0d3-bf8a-54d0a99c9ba1@kernel.dk>
-Date:   Fri, 5 Jun 2020 07:04:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 5 Jun 2020 09:05:34 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 055D2RnM005857;
+        Fri, 5 Jun 2020 15:05:22 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=8N3eVj4nAPochlinsyGa/KTizCaO/PHeruM6iKW/aDc=;
+ b=SLS407qU1Z9F+tF6q5vFRFJR785CroSIa1H4SlRTUAq1DcayxdSrZILrWXbQvkSs38as
+ t4BhMYV2SEcX97GziY6PhSm9leR3QDIQAi1rUPHO0B6PEY7t2zLWMP9OWTeOYGoLDp6J
+ A1vkrJhJjTzfrXze2kPk0DgOOSdtNCGx71Mn8x4RNLykjeyvKsJZTcj6zpir65+5RQu3
+ GC29ctnlyt4vw2TEx7qzJ/0qH5BMIRcWIgep/5nDXGw4ZYemdk3OcW1bC1cUzaTi1sw9
+ TL+fuoQL2jboRji1sapVjuS14HJ1voCn/af6zC4LQ49o850gcYm81Njn/YiIr8r+jIET Tw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 31fasmbkcp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Jun 2020 15:05:22 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EA26A100034;
+        Fri,  5 Jun 2020 15:05:21 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B435B2C50BF;
+        Fri,  5 Jun 2020 15:05:21 +0200 (CEST)
+Received: from localhost (10.75.127.47) by SFHDAG3NODE3.st.com (10.75.127.9)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 5 Jun 2020 15:05:21
+ +0200
+From:   Benjamin Gaignard <benjamin.gaignard@st.com>
+To:     <hugues.fruchet@st.com>, <mchehab@kernel.org>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
+CC:     <linux-media@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <vincent.guittot@linaro.org>,
+        <valentin.schneider@arm.com>, <rjw@rjwysocki.net>,
+        Benjamin Gaignard <benjamin.gaignard@st.com>
+Subject: [PATCH v4 0/3] DCMI set minimum cpufreq requirement
+Date:   Fri, 5 Jun 2020 15:05:16 +0200
+Message-ID: <20200605130519.4184-1-benjamin.gaignard@st.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-In-Reply-To: <453060f2-80af-86a4-7e33-78d4cc87503f@web.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG5NODE1.st.com (10.75.127.13) To SFHDAG3NODE3.st.com
+ (10.75.127.9)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-05_04:2020-06-04,2020-06-05 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/5/20 7:01 AM, Markus Elfring wrote:
->>> The details can vary also for my suggestions.
->>> Would you point any more disagreements out on concrete items?
->>
->> That's exactly the problem with many of your comments.
->> They're vague to the point of unintelligibility.
-> 
-> Was is so vague about possibilities which I point out for patch reviews
-> (for example)?
-> * Spelling corrections
-> * Additional wording alternatives
+This series allow to STM32 camera interface (DCMI) to require a minimum
+frequency to the CPUs before start streaming frames from the sensor.
+The minimum frequency requirement is provided in the devide-tree node.
 
-I'll make this very simple - don't reply making suggestions to commit
-messages, ever. The "improvements" aren't usually improvements, and it
-causes more confusion for the submitter.
+Setting a minimum frequency for the CPUs is needed to ensure a quick handling
+of the interrupts between two sensor frames and avoid dropping half of them.
 
-Maintainers generally do change commit messages to improve them, if
-needed.
+version 4:
+- simplify irq affinity handling by using only dcmi_irq_notifier_notify() 
 
-No reply is needed to this e-mail.
+version 3:
+- add a cpumask field to track boosted CPUs
+- add irq_affinity_notify callback
+- protect cpumask field with a mutex 
+
+Benjamin Gaignard (3):
+  dt-bindings: media: stm32-dcmi: Add DCMI min frequency property
+  media: stm32-dcmi: Set minimum cpufreq requirement
+  ARM: dts: stm32: Set DCMI frequency requirement for stm32mp15x
+
+ .../devicetree/bindings/media/st,stm32-dcmi.yaml   |   8 ++
+ arch/arm/boot/dts/stm32mp151.dtsi                  |   1 +
+ drivers/media/platform/stm32/stm32-dcmi.c          | 122 +++++++++++++++++++--
+ 3 files changed, 123 insertions(+), 8 deletions(-)
 
 -- 
-Jens Axboe
+2.15.0
 
