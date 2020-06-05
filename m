@@ -2,258 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 827251EF615
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 13:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F371EF625
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 13:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgFELGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 07:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726690AbgFELGN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 07:06:13 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331E1C08C5C3;
-        Fri,  5 Jun 2020 04:06:08 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id e11so4023483ilr.4;
-        Fri, 05 Jun 2020 04:06:08 -0700 (PDT)
+        id S1726942AbgFELHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 07:07:54 -0400
+Received: from mail-co1nam11on2082.outbound.protection.outlook.com ([40.107.220.82]:6134
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726507AbgFELHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 07:07:54 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XJ0FcBYZBBRoK0w4futHpKkx6TzPBD5DO84+Q67f8QLkxOP/8YM6qbNBBYy0s6yEQXjGWjdfhZ8TuqTmKw2eAbjygqjps+3QvTOOa59bHcQ1E388HxcRCYOjKo+16jADZbTjmDMHTRQwKExnFQL522kN4u9ZEgTipRPOsVbPGPj0H9Vvk7jlaUlB8ibLviw1yWmKKAB3XZs+el048FAh9s5mV2HVPSdoDuZ51DVA9VlN0gnoGKpFFk1mF2Wq0PLnMowXWUkgvFc6Y5eBPaRFkthjEq4Rf/KjG+I9rzWR9Pg7qF9/nwUoUoeSplK0k/4iZHdHQsu2i02wwu111UUXbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ik0XCRDqVwwOuciP5ij4Sy+ot28ozVbQ7LZbXtfU+Lg=;
+ b=FICFou71lDM2xRwHNCsFe//LKUMiCjq0XP/QWMlAzZfqShXv1P6dOhkbNshTpRlexawkqszakDIF/D5D+wMkzPtIxckhkQ9QH9hAYt+4F4yK0Uks7NmkpiUzxMZuk+NesRfz15K9F9bS5kZ43bZ83vQF06CCwFBxI34ieWVDR0JqAn0heV4pwySHAcrIkdSar/rZ7mcNCGQKPAN86lNav7uh0/j3CR2zfCn7JI9mqEZVstrXuYFzLRRQdbcgmpURLpoYJebAcfHHKtImgfR6vDXHMwmw/y9xh5a/cbc9djmxcF0rszFDJpHljBuNXb/WOseCNVHmGJiljYr7V0YxNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=+VjCdw30w2Q+2F0bQm7D6xci037AIztHw8WSQCjuJhc=;
-        b=H3KcyY5bXpn+V4vb3etflUsQqYoN4droIJGI1EwZT/I4UDpCPIKz4MaNs+6iPTE4Nu
-         PzpeiMA4B9RMmyA0uNibApwQfcnQrC0E+J4DMWs4iXQOvP+XmLXK3ipU4IPDu2Jef6WW
-         3gVqpL8nyxM4bOKTvmM2Y9BjSRvGf+p9944zAeBD6ojaRBUHdfgid0CLfgUOte/MRw1q
-         Lbp+NV0EI8oTcjc5P1sHEaclOD1A2q5Hu13b01GzFYKUWiFCneoMPp0wWMdEwqHnvbW+
-         6uKEWJhrCt1Xo8T0zuE8jNfaK2GE2Md6gDHrK3i0nGCj+6VBtXFaGzzP9DiTENV+tT0E
-         NoTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=+VjCdw30w2Q+2F0bQm7D6xci037AIztHw8WSQCjuJhc=;
-        b=lQWRHwUPsOqkNJBBeVHEMx26S6TsM4P8SQ5tagQt0QQrinYd8sJxNAhuxIZLrx1z4b
-         mJ4ZblHwN6eCcVXxhHlgBrpYMqFqa8YcbUv570ifHxkV+KCePx7Df7lgY9mYHQPJ5FTe
-         kCtnmGxT6ZQHKFDcyvx80HdlcCA3AcLLDrkYuEXbKAcqgRfMTlDwprhPkU16A22XsM4H
-         oe25qGIT5tncE8t5Sz4Pl6WAij9rfCJeXo/dYU0X/Iyk04wEiBgNGs1PJQGMDpCBK41L
-         ltOpdRHi2CzpWRCZkTXxd/JtfHQJ0RJjxoqgId+MtwMjQ+76y4QhNNgZpwU++2qecIf0
-         joIA==
-X-Gm-Message-State: AOAM532tN1jbcoLxLa+pVIF/p0dbBuq66iJYUYcdcsgb+zzEGEkjVOvL
-        mARvFZsQ6G3Omns9N50Tt0dk2HnQJ1y/G9HCXEs=
-X-Google-Smtp-Source: ABdhPJzF8kP7uzUYyd9tEHXliWSes50ds4mLitS1rXYOpqVmd0mJGHR6x8nhbj6SgYyoXc1x6p7WSNa5KNEFeOTPPcs=
-X-Received: by 2002:a92:898e:: with SMTP id w14mr7638188ilk.212.1591355167447;
- Fri, 05 Jun 2020 04:06:07 -0700 (PDT)
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ik0XCRDqVwwOuciP5ij4Sy+ot28ozVbQ7LZbXtfU+Lg=;
+ b=pplRLbuMxw6LagaibqlPsv9OlqBJ+etddK8cWuoVggeCdOmXC6flSLLF0jnCbTMXWe7HKvjFl/mmbkQIth9+2ZazzPK03t61fnZMjUZujtRTz30YLk/QYPx3S4DGNU56cdZqu9WAxWthZtsUjPaCxdgZZDcwaFuIlP13uf1wQ9U=
+Received: from SN6PR01CA0024.prod.exchangelabs.com (2603:10b6:805:b6::37) by
+ BY5PR02MB6258.namprd02.prod.outlook.com (2603:10b6:a03:1b1::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18; Fri, 5 Jun
+ 2020 11:07:51 +0000
+Received: from SN1NAM02FT018.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:805:b6:cafe::82) by SN6PR01CA0024.outlook.office365.com
+ (2603:10b6:805:b6::37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18 via Frontend
+ Transport; Fri, 5 Jun 2020 11:07:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ SN1NAM02FT018.mail.protection.outlook.com (10.152.72.122) with Microsoft SMTP
+ Server id 15.20.3066.18 via Frontend Transport; Fri, 5 Jun 2020 11:07:51
+ +0000
+Received: from [149.199.38.66] (port=45043 helo=xsj-pvapsmtp01)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1jhABi-0000ej-RU; Fri, 05 Jun 2020 04:07:02 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by xsj-pvapsmtp01 with smtp (Exim 4.63)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1jhACV-0007tP-5u; Fri, 05 Jun 2020 04:07:51 -0700
+Received: from [172.30.17.109]
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <michals@xilinx.com>)
+        id 1jhACR-0007t2-Fz; Fri, 05 Jun 2020 04:07:47 -0700
+Subject: Re: [PATCH] soc: xilinx: Fix error code in zynqmp_pm_probe()
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Tejas Patel <tejas.patel@xilinx.com>
+Cc:     Rajan Vaja <rajan.vaja@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jolly Shah <jolly.shah@xilinx.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20200605110020.GA978434@mwanda>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <951de328-3647-ea49-ecec-1f0f98ceb4b1@xilinx.com>
+Date:   Fri, 5 Jun 2020 13:07:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200605104558.16686-1-yanaijie@huawei.com>
-In-Reply-To: <20200605104558.16686-1-yanaijie@huawei.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 5 Jun 2020 13:05:55 +0200
-Message-ID: <CA+icZUU4osBYvjkyZRpuGc8epnEkjeQCEX3kSHFhgFJ+dMOgTw@mail.gmail.com>
-Subject: Re: [PATCH v3] block: Fix use-after-free in blkdev_get()
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Ming Lei <ming.lei@redhat.com>, Jan Kara <jack@suse.cz>,
-        Hulk Robot <hulkci@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200605110020.GA978434@mwanda>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(136003)(346002)(376002)(39860400002)(396003)(46966005)(36756003)(8936002)(336012)(83380400001)(31686004)(426003)(186003)(81166007)(26005)(9786002)(47076004)(31696002)(356005)(2616005)(82310400002)(82740400003)(54906003)(478600001)(44832011)(110136005)(70206006)(2906002)(316002)(4326008)(8676002)(6636002)(6666004)(70586007)(5660300002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a6d2e917-f5c5-4d28-2f0b-08d80940b069
+X-MS-TrafficTypeDiagnostic: BY5PR02MB6258:
+X-Microsoft-Antispam-PRVS: <BY5PR02MB62587C5F12AD9158C1173602C6860@BY5PR02MB6258.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:1468;
+X-Forefront-PRVS: 0425A67DEF
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hYfliUgxGG6e7BW/A6Yg7frorBlDM2j8FUj/7aXR1PaMJBINYB+h+SSn65ikDOxcPLvizJbnzJiNSEbefA5v5q7aXwipafBways4hgy17WEvaJdqxJUUsM7fn013euGtD+3+T6LO86J0VpRPoP1DjegbuIX3EAkCxl4PjObGxtNb5y9wE9vYUjRiF4a3WuEbQLHPoXG+F+vdY5kePATYGrRlMRS6RVKNQfQxJuKmDaWD0VI1+sGXdYXW8FoRlfzV14L93pvxUuRkDQvw9j9XdSEwUfg11Yo+zeLfwg+Oba1jonYMp4/owVnNqrtWuBYKD6tVPGm9mIgf17DnyC4sg4/w0PKCN0pVgcM08ZJEPDTpJ6ECtN/lfQUs2ZVcr84Nr6WQFbuZRpNTc4OrbNT80soEJaQUyWyoeyL3k1MMlbvhr1j4Tj6BWgpKX4HdlO7d
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2020 11:07:51.5085
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a6d2e917-f5c5-4d28-2f0b-08d80940b069
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6258
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 12:23 PM Jason Yan <yanaijie@huawei.com> wrote:
->
-> In blkdev_get() we call __blkdev_get() to do some internal jobs and if
-> there is some errors in __blkdev_get(), the bdput() is called which
-> means we have released the refcount of the bdev (actually the refcount of
-> the bdev inode). This means we cannot access bdev after that point. But
-> accually bdev is still accessed in blkdev_get() after calling
-> __blkdev_get(). This may leads to use-after-free if the refcount is the
-> last one we released in __blkdev_get(). Let's take a look at the
-> following scenerio:
->
->   CPU0            CPU1                    CPU2
-> blkdev_open     blkdev_open           Remove disk
->                   bd_acquire
->                   blkdev_get
->                     __blkdev_get      del_gendisk
->                                         bdev_unhash_inode
->   bd_acquire          bdev_get_gendisk
->     bd_forget           failed because of unhashed
->           bdput
->                       bdput (the last one)
->                         bdev_evict_inode
->
->                     access bdev => use after free
->
-> [  459.350216] BUG: KASAN: use-after-free in __lock_acquire+0x24c1/0x31b0
-> [  459.351190] Read of size 8 at addr ffff88806c815a80 by task syz-executor.0/20132
-> [  459.352347]
-> [  459.352594] CPU: 0 PID: 20132 Comm: syz-executor.0 Not tainted 4.19.90 #2
-> [  459.353628] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
-> [  459.354947] Call Trace:
-> [  459.355337]  dump_stack+0x111/0x19e
-> [  459.355879]  ? __lock_acquire+0x24c1/0x31b0
-> [  459.356523]  print_address_description+0x60/0x223
-> [  459.357248]  ? __lock_acquire+0x24c1/0x31b0
-> [  459.357887]  kasan_report.cold+0xae/0x2d8
-> [  459.358503]  __lock_acquire+0x24c1/0x31b0
-> [  459.359120]  ? _raw_spin_unlock_irq+0x24/0x40
-> [  459.359784]  ? lockdep_hardirqs_on+0x37b/0x580
-> [  459.360465]  ? _raw_spin_unlock_irq+0x24/0x40
-> [  459.361123]  ? finish_task_switch+0x125/0x600
-> [  459.361812]  ? finish_task_switch+0xee/0x600
-> [  459.362471]  ? mark_held_locks+0xf0/0xf0
-> [  459.363108]  ? __schedule+0x96f/0x21d0
-> [  459.363716]  lock_acquire+0x111/0x320
-> [  459.364285]  ? blkdev_get+0xce/0xbe0
-> [  459.364846]  ? blkdev_get+0xce/0xbe0
-> [  459.365390]  __mutex_lock+0xf9/0x12a0
-> [  459.365948]  ? blkdev_get+0xce/0xbe0
-> [  459.366493]  ? bdev_evict_inode+0x1f0/0x1f0
-> [  459.367130]  ? blkdev_get+0xce/0xbe0
-> [  459.367678]  ? destroy_inode+0xbc/0x110
-> [  459.368261]  ? mutex_trylock+0x1a0/0x1a0
-> [  459.368867]  ? __blkdev_get+0x3e6/0x1280
-> [  459.369463]  ? bdev_disk_changed+0x1d0/0x1d0
-> [  459.370114]  ? blkdev_get+0xce/0xbe0
-> [  459.370656]  blkdev_get+0xce/0xbe0
-> [  459.371178]  ? find_held_lock+0x2c/0x110
-> [  459.371774]  ? __blkdev_get+0x1280/0x1280
-> [  459.372383]  ? lock_downgrade+0x680/0x680
-> [  459.373002]  ? lock_acquire+0x111/0x320
-> [  459.373587]  ? bd_acquire+0x21/0x2c0
-> [  459.374134]  ? do_raw_spin_unlock+0x4f/0x250
-> [  459.374780]  blkdev_open+0x202/0x290
-> [  459.375325]  do_dentry_open+0x49e/0x1050
-> [  459.375924]  ? blkdev_get_by_dev+0x70/0x70
-> [  459.376543]  ? __x64_sys_fchdir+0x1f0/0x1f0
-> [  459.377192]  ? inode_permission+0xbe/0x3a0
-> [  459.377818]  path_openat+0x148c/0x3f50
-> [  459.378392]  ? kmem_cache_alloc+0xd5/0x280
-> [  459.379016]  ? entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> [  459.379802]  ? path_lookupat.isra.0+0x900/0x900
-> [  459.380489]  ? __lock_is_held+0xad/0x140
-> [  459.381093]  do_filp_open+0x1a1/0x280
-> [  459.381654]  ? may_open_dev+0xf0/0xf0
-> [  459.382214]  ? find_held_lock+0x2c/0x110
-> [  459.382816]  ? lock_downgrade+0x680/0x680
-> [  459.383425]  ? __lock_is_held+0xad/0x140
-> [  459.384024]  ? do_raw_spin_unlock+0x4f/0x250
-> [  459.384668]  ? _raw_spin_unlock+0x1f/0x30
-> [  459.385280]  ? __alloc_fd+0x448/0x560
-> [  459.385841]  do_sys_open+0x3c3/0x500
-> [  459.386386]  ? filp_open+0x70/0x70
-> [  459.386911]  ? trace_hardirqs_on_thunk+0x1a/0x1c
-> [  459.387610]  ? trace_hardirqs_off_caller+0x55/0x1c0
-> [  459.388342]  ? do_syscall_64+0x1a/0x520
-> [  459.388930]  do_syscall_64+0xc3/0x520
-> [  459.389490]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> [  459.390248] RIP: 0033:0x416211
-> [  459.390720] Code: 75 14 b8 02 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83
-> 04 19 00 00 c3 48 83 ec 08 e8 0a fa ff ff 48 89 04 24 b8 02 00 00 00 0f
->    05 <48> 8b 3c 24 48 89 c2 e8 53 fa ff ff 48 89 d0 48 83 c4 08 48 3d
->       01
-> [  459.393483] RSP: 002b:00007fe45dfe9a60 EFLAGS: 00000293 ORIG_RAX: 0000000000000002
-> [  459.394610] RAX: ffffffffffffffda RBX: 00007fe45dfea6d4 RCX: 0000000000416211
-> [  459.395678] RDX: 00007fe45dfe9b0a RSI: 0000000000000002 RDI: 00007fe45dfe9b00
-> [  459.396758] RBP: 000000000076bf20 R08: 0000000000000000 R09: 000000000000000a
-> [  459.397930] R10: 0000000000000075 R11: 0000000000000293 R12: 00000000ffffffff
-> [  459.399022] R13: 0000000000000bd9 R14: 00000000004cdb80 R15: 000000000076bf2c
-> [  459.400168]
-> [  459.400430] Allocated by task 20132:
-> [  459.401038]  kasan_kmalloc+0xbf/0xe0
-> [  459.401652]  kmem_cache_alloc+0xd5/0x280
-> [  459.402330]  bdev_alloc_inode+0x18/0x40
-> [  459.402970]  alloc_inode+0x5f/0x180
-> [  459.403510]  iget5_locked+0x57/0xd0
-> [  459.404095]  bdget+0x94/0x4e0
-> [  459.404607]  bd_acquire+0xfa/0x2c0
-> [  459.405113]  blkdev_open+0x110/0x290
-> [  459.405702]  do_dentry_open+0x49e/0x1050
-> [  459.406340]  path_openat+0x148c/0x3f50
-> [  459.406926]  do_filp_open+0x1a1/0x280
-> [  459.407471]  do_sys_open+0x3c3/0x500
-> [  459.408010]  do_syscall_64+0xc3/0x520
-> [  459.408572]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> [  459.409415]
-> [  459.409679] Freed by task 1262:
-> [  459.410212]  __kasan_slab_free+0x129/0x170
-> [  459.410919]  kmem_cache_free+0xb2/0x2a0
-> [  459.411564]  rcu_process_callbacks+0xbb2/0x2320
-> [  459.412318]  __do_softirq+0x225/0x8ac
->
-> Fix this by delaying bdput() to the end of blkdev_get() which means we
-> have finished accessing bdev.
->
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Ming Lei <ming.lei@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-
-In things of Fixes: tag...
-
-For the 1st hunk I found:
-
-commit 8266602033d6adc6d10cb8811c1fd694767909b0 ("fix bdev leak in
-block_dev.c do_open()")
-
-- Sedat -
-
+On 05. 06. 20 13:00, Dan Carpenter wrote:
+> This should be returning PTR_ERR() but it returns IS_ERR() instead.
+> 
+> Fixes: ffdbae28d9d1 ("drivers: soc: xilinx: Use mailbox IPI callback")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > ---
->  v3: Add bdput() when __blkdev_get() calling itself failed.
->  v2: Add Reported-by tag and cc linux-block mailing list
->
->  fs/block_dev.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 47860e589388..d7b74e44ad5a 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -1566,7 +1566,6 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, int for_part)
->         if (!for_part) {
->                 ret = devcgroup_inode_permission(bdev->bd_inode, perm);
->                 if (ret != 0) {
-> -                       bdput(bdev);
->                         return ret;
->                 }
->         }
-> @@ -1637,8 +1636,10 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, int for_part)
->                                 goto out_clear;
->                         BUG_ON(for_part);
->                         ret = __blkdev_get(whole, mode, 1);
-> -                       if (ret)
-> +                       if (ret) {
-> +                               bdput(whole);
->                                 goto out_clear;
-> +                       }
->                         bdev->bd_contains = whole;
->                         bdev->bd_part = disk_get_part(disk, partno);
->                         if (!(disk->flags & GENHD_FL_UP) ||
-> @@ -1688,7 +1689,6 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, int for_part)
->         disk_unblock_events(disk);
->         put_disk_and_module(disk);
->   out:
-> -       bdput(bdev);
->
->         return ret;
->  }
-> @@ -1755,6 +1755,9 @@ int blkdev_get(struct block_device *bdev, fmode_t mode, void *holder)
->                 bdput(whole);
->         }
->
-> +       if (res)
-> +               bdput(bdev);
-> +
->         return res;
->  }
->  EXPORT_SYMBOL(blkdev_get);
-> --
-> 2.21.3
->
+>  drivers/soc/xilinx/zynqmp_power.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/xilinx/zynqmp_power.c b/drivers/soc/xilinx/zynqmp_power.c
+> index 31ff49fcd078b..c556623dae024 100644
+> --- a/drivers/soc/xilinx/zynqmp_power.c
+> +++ b/drivers/soc/xilinx/zynqmp_power.c
+> @@ -205,7 +205,7 @@ static int zynqmp_pm_probe(struct platform_device *pdev)
+>  		rx_chan = mbox_request_channel_byname(client, "rx");
+>  		if (IS_ERR(rx_chan)) {
+>  			dev_err(&pdev->dev, "Failed to request rx channel\n");
+> -			return IS_ERR(rx_chan);
+> +			return PTR_ERR(rx_chan);
+>  		}
+>  	} else if (of_find_property(pdev->dev.of_node, "interrupts", NULL)) {
+>  		irq = platform_get_irq(pdev, 0);
+> 
+
+Reviewed-by: Michal Simek <michal.simek@xilinx.com>
+
+Thanks,
+Michal
