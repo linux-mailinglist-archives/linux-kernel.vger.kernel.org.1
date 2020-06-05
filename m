@@ -2,109 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1CD1EFB22
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1E91EFB2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728923AbgFEOXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728387AbgFEOXd (ORCPT
+        id S1729100AbgFEOYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:24:19 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16400 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728988AbgFEOYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:23:33 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F318C08C5C4
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 07:23:32 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id n24so10330985ejd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 07:23:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XgY4I2DT6NHuEBJVBWH5xaWHKtAb7Acjuq8xM3DNBZs=;
-        b=QTElvvtJbPz7O4l0N2vXVv9mj1TLExtC0raNDMa24L8UfKR1yYUuYHL9CxjaruDrjh
-         aefJM28+QoU0J+hH7LcJY9hLj2TeIZpO1d1afTdHbgITtKVt276YnRSIFQtqPC3dyyfI
-         ovRyDY8g9W4NZLaLUUq/4fqdIhDWT8EwOvTWA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XgY4I2DT6NHuEBJVBWH5xaWHKtAb7Acjuq8xM3DNBZs=;
-        b=m7TSc3xTwUNsJQs3vy2oMRaeLmotV1ZeIdkWDdk5JKu73xGm+8+E85+drjbIAS/PB1
-         57wKa6UPhK9ut66RiDtAoUZEqe8/bV9H1PA+cd8wLaRvtbkJwiXGy1LCjCNBkGkQwOih
-         +HUEFPE1HjOqjE9bGy9p1590OnHXYcFdO7bdTZHz7g4diWsket9W/drugkFDTDoHz29h
-         6CJTjFCdSthzX/CLKjTROojXSjhifvDOrx66jOpVQmLMmAr8pvjgmL4IHTFbe3BxLJdf
-         PG3vle+B5m8Vg70txjJCMBIsMqM6nFLtKcvpX+cIXsmcj2Azr0KxwX7C052ErZ3cB8Be
-         pGCw==
-X-Gm-Message-State: AOAM531ci+LhelwJgyrb+VH/d3OcKALbRLnpKfyERX8yki0WZFET6kF7
-        0iT+nb6R1sIeEN7s395RhpGHKQ==
-X-Google-Smtp-Source: ABdhPJx6dbhFdXcLh9Fw1Irene3+drPlsNF3oWeBEhsMBqDdvPnhWWVIhBS0bvJAttcjyHDwhAkrGQ==
-X-Received: by 2002:a17:906:cb97:: with SMTP id mf23mr4356134ejb.468.1591367011198;
-        Fri, 05 Jun 2020 07:23:31 -0700 (PDT)
-Received: from prevas-ravi.prevas.se (ip-5-186-116-45.cgn.fibianet.dk. [5.186.116.45])
-        by smtp.gmail.com with ESMTPSA id qp16sm4421833ejb.64.2020.06.05.07.23.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 07:23:30 -0700 (PDT)
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH resend] fs/namei.c: micro-optimize acl_permission_check
-Date:   Fri,  5 Jun 2020 16:23:00 +0200
-Message-Id: <20200605142300.14591-1-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.23.0
+        Fri, 5 Jun 2020 10:24:11 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eda55320000>; Fri, 05 Jun 2020 07:22:42 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 05 Jun 2020 07:24:11 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 05 Jun 2020 07:24:11 -0700
+Received: from [10.2.165.41] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Jun
+ 2020 14:24:05 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+CC:     Matthew Wilcox <willy@infradead.org>, <linux-mm@kvack.org>,
+        <hughd@google.com>, <daniel.m.jordan@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2] mm/vmstat: Add events for THP migration without split
+Date:   Fri, 5 Jun 2020 10:24:03 -0400
+X-Mailer: MailMate (1.13.1r5690)
+Message-ID: <890AA27D-29BA-45A9-B868-5533645D73D5@nvidia.com>
+In-Reply-To: <9e4acb98-c9fd-a998-03b3-38947cf61bd9@arm.com>
+References: <1591243245-23052-1-git-send-email-anshuman.khandual@arm.com>
+ <20200604113421.GU19604@bombadil.infradead.org>
+ <CBF71911-6BB7-4AA7-AC0F-95AADBB45569@nvidia.com>
+ <20200604163657.GV19604@bombadil.infradead.org>
+ <2735DD7E-0DBF-428B-AAD8-FC6DAAA9CB1E@nvidia.com>
+ <9e4acb98-c9fd-a998-03b3-38947cf61bd9@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: multipart/signed;
+        boundary="=_MailMate_5668B8FE-2BF9-4763-AE2B-2B434AABB132_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1591366962; bh=bGum21iIYvkCRjYyGHObBLXtcMZVn88CB45dQfPvG9w=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:MIME-Version:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type;
+        b=fxe9u6khtSqLi1h/vDUqooF2QYuW/I0EXKsdDtWcWPOHKMb3D5do2bHtcjV7PKKr6
+         4BbqPPuTNILMc7xJkHPIM2woGJNMcIpAZTVaUmcDxSOEU9p6CNbZW8sSDIUb5zdWjS
+         zFJBxTup0sr9eDgWUP8Wi2Z1JuBpuKwBziSJLiBlHy/9NDNlhRZxmZPVqJLVpbJ651
+         WwziC1mBlfXGqiE0sPuC5GG1hS6000XFSXNmF6W1WAxcZkJpAlaB4lTiBOqBhCvllJ
+         Dsa9+Kp3Js9bBSwyt3j32z1cnVcRBy4vPhoAeXfM8x96Z1gBCl7rCWN1SYbNuNIY+M
+         sY6+q4jeM384w==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just something like open(/usr/include/sys/stat.h) causes five calls of
-generic_permission -> acl_permission_check -> in_group_p; if the
-compiler first tried /usr/local/include/..., that would be a few
-more.
+--=_MailMate_5668B8FE-2BF9-4763-AE2B-2B434AABB132_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Altogether, on a bog-standard Ubuntu 20.04 install, a workload
-consisting of compiling lots of userspace programs (i.e., calling lots
-of short-lived programs that all need to get their shared libs mapped
-in, and the compilers poking around looking for system headers - lots
-of /usr/lib, /usr/bin, /usr/include/ accesses) puts in_group_p around
-0.1% according to perf top. With an artificial load such as
+On 4 Jun 2020, at 23:35, Anshuman Khandual wrote:
 
-  while true ; do find /usr/ -print0 | xargs -0 stat > /dev/null ; done
+> On 06/04/2020 10:19 PM, Zi Yan wrote:
+>> On 4 Jun 2020, at 12:36, Matthew Wilcox wrote:
+>>
+>>> On Thu, Jun 04, 2020 at 09:51:10AM -0400, Zi Yan wrote:
+>>>> On 4 Jun 2020, at 7:34, Matthew Wilcox wrote:
+>>>>> On Thu, Jun 04, 2020 at 09:30:45AM +0530, Anshuman Khandual wrote:
+>>>>>> +Quantifying Migration
+>>>>>> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>>>>> +Following events can be used to quantify page migration.
+>>>>>> +
+>>>>>> +- PGMIGRATE_SUCCESS
+>>>>>> +- PGMIGRATE_FAIL
+>>>>>> +- THP_MIGRATION_SUCCESS
+>>>>>> +- THP_MIGRATION_FAILURE
+>>>>>> +
+>>>>>> +THP_MIGRATION_FAILURE in particular represents an event when a TH=
+P could not be
+>>>>>> +migrated as a single entity following an allocation failure and e=
+nded up getting
+>>>>>> +split into constituent normal pages before being retried. This ev=
+ent, along with
+>>>>>> +PGMIGRATE_SUCCESS and PGMIGRATE_FAIL will help in quantifying and=
+ analyzing THP
+>>>>>> +migration events including both success and failure cases.
+>>>>>
+>>>>> First, I'd suggest running this paragraph through 'fmt'.  That way =
+you
+>>>>> don't have to care about line lengths.
+>>>>>
+>>>>> Second, this paragraph doesn't really explain what I need to know t=
+o
+>>>>> understand the meaning of these numbers.  When Linux attempts to mi=
+grate
+>>>>> a THP, one of three things can happen:
+>>>>>
+>>>>>  - It is migrated as a single THP
+>>>>>  - It is migrated, but had to be split
+>>>>>  - Migration fails
+>>>>>
+>>>>> How do I turn these four numbers into an understanding of how often=
+ each
+>>>>> of those three situations happen?  And why do we need four numbers =
+to
+>>>>> report three situations?
+>>>>>
+>>>>> Or is there something else that can happen?  If so, I'd like that e=
+xplained
+>>>>> here too ;-)
+>>>>
+>>>> PGMIGRATE_SUCCESS and PGMIGRATE_FAIL record a combination of differe=
+nt events,
+>>>> so it is not easy to interpret them. Let me try to explain them.
+>>>
+>>> Thanks!  Very helpful explanation.
+>>>
+>>>> 1. migrating only base pages: PGMIGRATE_SUCCESS and PGMIGRATE_FAIL j=
+ust mean
+>>>> these base pages are migrated and fail to migrate respectively.
+>>>> THP_MIGRATION_SUCCESS and THP_MIGRATION_FAILURE should be 0 in this =
+case.
+>>>> Simple.
+>>>>
+>>>> 2. migrating only THPs:
+>>>> 	- PGMIGRATE_SUCCESS means THPs that are migrated and base pages
+>>>> 	(from the split of THPs) that are migrated,
+>>>>
+>>>> 	- PGMIGRATE_FAIL means THPs that fail to migrate and base pages tha=
+t fail to migrated.
+>>>>
+>>>> 	- THP_MIGRATION_SUCCESS means THPs that are migrated.
+>>>>
+>>>> 	- THP_MIGRATION_FAILURE means THPs that are split.
+>>>>
+>>>> So PGMIGRATE_SUCCESS - THP_MIGRATION_SUCCESS means the number of mig=
+rated base pages,
+>>>> which are from the split of THPs.
+>>>
+>>> Are you sure about that?  If I split a THP and each of those subpages=
 
-that jumps to over 0.4%.
+>>> migrates, won't I then see PGMIGRATE_SUCCESS increase by 512?
+>>
+>> That is what I mean. I guess my words did not work. I should have used=
+ subpages.
+>>
+>>>
+>>>> When it comes to analyze failed migration, PGMIGRATE_FAIL - THP_MIGR=
+ATION_FAILURE
+>>>> means the number of pages that are failed to migrate, but we cannot =
+tell how many
+>>>> are base pages and how many are THPs.
+>>>>
+>>>> 3. migrating base pages and THP:
+>>>>
+>>>> The math should be very similar to the second case, except that
+>>>> a) from PGMIGRATE_SUCCESS - THP_MIGRATION_SUCCESS, we cannot tell ho=
+w many are pages begin
+>>>> as base pages and how many are pages begin as THPs but become base p=
+ages after split;
+>>>> b) from PGMIGRATE_FAIL - THP_MIGRATION_FAILURE, an additional case,
+>>>> base pages that begin as base pages fail to migrate, is mixed into t=
+he number and we
+>>>> cannot tell three cases apart.
+>>>
+>>> So why don't we just expose PGMIGRATE_SPLIT?  That would be defined a=
+s
+>>> the number of times we succeeded in migrating a THP but had to split =
+it
+>>> to succeed.
+>>
+>> It might need extra code to get that number. Currently, the subpages f=
+rom split
+>> THPs are appended to the end of the original page list, so we might ne=
+ed a separate
+>> page list for these subpages to count PGMIGRATE_SPLIT. Also what if so=
+me of the
+>> subpages fail to migrate? Do we increase PGMIGRATE_SPLIT or not?
+>
+> Thanks Zi, for such a detailed explanation. Ideally, we should separate=
+ THP
+> migration from base page migration in terms of statistics. PGMIGRATE_SU=
+CCESS
+> and PGMIGRATE_FAIL should continue to track statistics when migration s=
+tarts
+> with base pages. But for THP, we should track the following events.
 
-System-installed files are almost always 0755 (directories and
-binaries) or 0644, so in most cases, we can avoid the binary search
-and the cost of pulling the cred->groups array and in_group_p() .text
-into the cpu cache.
+You mean PGMIGRATE_SUCCESS and PGMIGRATE_FAIL will not track the number o=
+f migrated subpages
+from split THPs? Will it cause userspace issues since their semantics are=
+ changed?
 
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- fs/namei.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> 1. THP_MIGRATION_SUCCESS 	- THP migration is successful, without split
+> 2. THP_MIGRATION_FAILURE 	- THP could neither be migrated, nor be split=
 
-diff --git a/fs/namei.c b/fs/namei.c
-index d81f73ff1a8b..c6f0c6643db5 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -303,7 +303,12 @@ static int acl_permission_check(struct inode *inode, int mask)
- 				return error;
- 		}
- 
--		if (in_group_p(inode->i_gid))
-+		/*
-+		 * If the "group" and "other" permissions are the same,
-+		 * there's no point calling in_group_p() to decide which
-+		 * set to use.
-+		 */
-+		if ((((mode >> 3) ^ mode) & 7) && in_group_p(inode->i_gid))
- 			mode >>= 3;
- 	}
- 
--- 
-2.23.0
 
+They make sense to me.
+
+> 3. THP_MIGRATION_SPLIT_SUCCESS  - THP got split and all sub pages migra=
+ted
+> 4. THP_MIGRATION_SPLIT_FAILURE  - THP got split but all sub pages could=
+ not be migrated
+>
+> THP_MIGRATION_SPLIT_FAILURE could either increment once for a single TH=
+P or
+> number of subpages that did not get migrated after split. As you mentio=
+ned,
+> this will need some extra code in the core migration. Nonetheless, if t=
+hese
+> new events look good, will be happy to make required changes.
+
+Maybe THP_MIGRATION_SPLIT would be simpler? My concern is that whether we=
+ need such
+detailed information or not. Maybe trace points would be good enough for =
+3 and 4.
+But if you think it is useful to you, feel free to implement them.
+
+BTW, in terms of stats tracking, what do you think of my patch below? I a=
+m trying to
+aggregate all stats counting in one place. Feel free to use it if you thi=
+nk it works
+for you.
+
+
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 7bfd0962149e..0f3c60470489 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1429,9 +1429,14 @@ int migrate_pages(struct list_head *from, new_page=
+_t get_new_page,
+                enum migrate_mode mode, int reason)
+ {
+        int retry =3D 1;
++       int thp_retry =3D 1;
+        int nr_failed =3D 0;
++       int nr_thp_failed =3D 0;
++       int nr_thp_split =3D 0;
+        int nr_succeeded =3D 0;
++       int nr_thp_succeeded =3D 0;
+        int pass =3D 0;
++       bool is_thp =3D false;
+        struct page *page;
+        struct page *page2;
+        int swapwrite =3D current->flags & PF_SWAPWRITE;
+@@ -1440,11 +1445,13 @@ int migrate_pages(struct list_head *from, new_pag=
+e_t get_new_page,
+        if (!swapwrite)
+                current->flags |=3D PF_SWAPWRITE;
+
+-       for(pass =3D 0; pass < 10 && retry; pass++) {
++       for(pass =3D 0; pass < 10 && (retry || thp_retry); pass++) {
+                retry =3D 0;
++               thp_retry =3D 0;
+
+                list_for_each_entry_safe(page, page2, from, lru) {
+ retry:
++                       is_thp =3D PageTransHuge(page);
+                        cond_resched();
+
+                        if (PageHuge(page))
+@@ -1475,15 +1482,20 @@ int migrate_pages(struct list_head *from, new_pag=
+e_t get_new_page,
+                                        unlock_page(page);
+                                        if (!rc) {
+                                                list_safe_reset_next(page=
+, page2, lru);
++                                               nr_thp_split++;
+                                                goto retry;
+                                        }
+                                }
+                                nr_failed++;
+                                goto out;
+                        case -EAGAIN:
++                               if (is_thp)
++                                       thp_retry++;
+                                retry++;
+                                break;
+                        case MIGRATEPAGE_SUCCESS:
++                               if (is_thp)
++                                       nr_thp_succeeded++;
+                                nr_succeeded++;
+                                break;
+                        default:
+@@ -1493,18 +1505,27 @@ int migrate_pages(struct list_head *from, new_pag=
+e_t get_new_page,
+                                 * removed from migration page list and n=
+ot
+                                 * retried in the next outer loop.
+                                 */
++                               if (is_thp)
++                                       nr_thp_failed++;
+                                nr_failed++;
+                                break;
+                        }
+                }
+        }
+        nr_failed +=3D retry;
++       nr_thp_failed +=3D thp_retry;
+        rc =3D nr_failed;
+ out:
+        if (nr_succeeded)
+                count_vm_events(PGMIGRATE_SUCCESS, nr_succeeded);
+        if (nr_failed)
+                count_vm_events(PGMIGRATE_FAIL, nr_failed);
++       if (nr_thp_succeeded)
++               count_vm_events(THP_MIGRATION_SUCCESS, nr_thp_succeeded);=
+
++       if (nr_thp_failed)
++               count_vm_events(THP_MIGRATION_FAIL, nr_thp_failed);
++       if (nr_thp_split)
++               count_vm_events(THP_MIGRATION_SPLIT, nr_thp_split);
+        trace_mm_migrate_pages(nr_succeeded, nr_failed, mode, reason);
+
+        if (!swapwrite)
+
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_5668B8FE-2BF9-4763-AE2B-2B434AABB132_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl7aVYMPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKZ7AQAIYwKTJC6JaWsTU0mqwLJt5Jr8udBGGcl772
+k1qpsv0HjkNMRNS3dWGgvdVnBkunKp5rJlXdXPmEy0qvgNafa2vYgMFZql1O/brF
+s7vGXByT5dyHbrt2TaGv+clr+CEfk6gT3QDFJ+HeZn2Q92SRlIe4Ife0mAOwKHiU
+t2KZ4ZUYU1NM4P/9ab0Da55NhP+4Y4Fvs14LxKdc+8OokssA/+02BAQz2WI74D8d
+d4l5IbQU6faj9nhdwRc2pmWpFXFEp3CQomwyGkYWeU1k5VEz43MU0sM3pR2yltzc
+Jizh5XalnUGr9QY6S9hWRSiv5k7Ma2XJUtH3xfWnvDB3vAUtQdZGz5LRzOJ9ECcg
+kT5o9Skw7x60wDFw1UPyPDpH8pLNmsDuxmij3h18OyzJJl5hYGIqNwfxMwxrua9n
+mXyhTyNwSbf5XKvhaYcJKQpkW4R0YTmljHXufa9bnv73/70vfzJM/y1s0F1Fsnsq
+r0qeDPrjiyirNNNMcDUZcXrZDllN2IxbMfnfhr20DpCdtpQWFObKSMdhWijdNGdR
+2NMpqIiUGOnKqSCtocQmxc5Gl5kwebHnJGb5mRJF9dW5g6Po4hgbLOdCgD2yKhOR
+SuUGKGsf3ob8hFji+pK8YWq37jC+GZbYUAn+Kk7BRoVfnzx8F5/hLhOPoH1WQZhk
+P4TEXsH1
+=suKQ
+-----END PGP SIGNATURE-----
+
+--=_MailMate_5668B8FE-2BF9-4763-AE2B-2B434AABB132_=--
