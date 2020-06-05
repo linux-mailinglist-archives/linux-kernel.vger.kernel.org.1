@@ -2,70 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4BA1EF578
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 12:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123281EF576
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 12:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbgFEKgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 06:36:03 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:51852 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726516AbgFEKf6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 06:35:58 -0400
-X-UUID: 452175213f474d4f84d19a4d95870696-20200605
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=aftpXunH1eDQjPXFO8QI2IEzKcVO0kd6k1ZnXlRllyc=;
-        b=imIUKZaEboJB+oYJioFi8Jf7gpXIPl8fkBtXskcquOfpS1GrHlHu5Tm/rk4clIdBrfK0XgRD8I8Ll4/kG6CaK053VqtXv+HpFhexz8/jQWaVWOa85syyuFQDnqMocVEckNyTK9NG1UecQHmimBO6gC5yuX7XwiOqxGtQLST99O0=;
-X-UUID: 452175213f474d4f84d19a4d95870696-20200605
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <jiaxin.yu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1145695321; Fri, 05 Jun 2020 18:35:52 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 5 Jun 2020 18:35:51 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 5 Jun 2020 18:35:49 +0800
-From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
-        <matthias.bgg@gmail.com>, <hariprasad.kelam@gmail.com>
-CC:     <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <howie.huang@mediatek.com>,
-        <tzungbi@google.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>
-Subject: [PATCH v2 2/2] ASoC: dt-bindings: mediatek: mt6358: add dmic-mode property
-Date:   Fri, 5 Jun 2020 18:33:42 +0800
-Message-ID: <1591353222-18576-3-git-send-email-jiaxin.yu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1591353222-18576-1-git-send-email-jiaxin.yu@mediatek.com>
-References: <1591353222-18576-1-git-send-email-jiaxin.yu@mediatek.com>
+        id S1726559AbgFEKei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 06:34:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55158 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726367AbgFEKeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 06:34:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 182A9B1BA;
+        Fri,  5 Jun 2020 10:34:39 +0000 (UTC)
+Message-ID: <9c3d28922f343bcb19243894d3385a8fe1fb3606.camel@suse.de>
+Subject: Re: [PATCH v3 17/25] clk: bcm: rpi: Split pllb clock hooks
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Tim Gover <tim.gover@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org
+Date:   Fri, 05 Jun 2020 12:34:32 +0200
+In-Reply-To: <10e269b4c3c5cf38eba9c0684341b191b9ab7abe.1590594293.git-series.maxime@cerno.tech>
+References: <cover.662a8d401787ef33780d91252a352de91dc4be10.1590594293.git-series.maxime@cerno.tech>
+         <10e269b4c3c5cf38eba9c0684341b191b9ab7abe.1590594293.git-series.maxime@cerno.tech>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-kBBCKrUQb2v8gZXGREOB"
+User-Agent: Evolution 3.36.2 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: B6D503AACFAC6336B1F99D24FEE7774998F44BBDEEE0678BB989AFCEBCD95E0C2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkcyBkbWljLW1vZGUgcHJvcGVydHkgYW5kIHVwZGF0ZXMgZXhhbXBsZS4NCg0KU2lnbmVkLW9m
-Zi1ieTogSmlheGluIFl1IDxqaWF4aW4ueXVAbWVkaWF0ZWsuY29tPg0KLS0tDQogRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL210NjM1OC50eHQgfCA2ICsrKysrKw0KIDEg
-ZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9tdDYzNTgudHh0IGIvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL210NjM1OC50eHQNCmluZGV4IDU0NjU3MzAuLjU5YTcz
-ZmYgMTAwNjQ0DQotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQv
-bXQ2MzU4LnR4dA0KKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5k
-L210NjM1OC50eHQNCkBAIC0xMCw5ICsxMCwxNSBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVzOg0KIC0g
-Y29tcGF0aWJsZSA6ICJtZWRpYXRlayxtdDYzNTgtc291bmQiLg0KIC0gQXZkZC1zdXBwbHkgOiBw
-b3dlciBzb3VyY2Ugb2YgQVZERA0KIA0KK09wdGlvbmFsIHByb3BlcnRpZXM6DQorLSBtZWRpYXRl
-ayxkbWljLW1vZGUgOiBJbmRpY2F0ZXMgaG93IG1hbnkgZGF0YSBwaW5zIGFyZSB1c2VkIHRvIHRy
-YW5zbWl0IHR3bw0KKwljaGFubmVscyBvZiBQRE0gc2lnbmFsLiAwIG1lYW5zIHR3byB3aXJlcywg
-MSBtZWFucyBvbmUgd2lyZS4gRGVmYXVsdA0KKwl2YWx1ZSBpcyAwLg0KKw0KIEV4YW1wbGU6DQog
-DQogbXQ2MzU4X3NuZCB7DQogCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2MzU4LXNvdW5kIjsN
-CiAJQXZkZC1zdXBwbHkgPSA8Jm10NjM1OF92YXVkMjhfcmVnPjsNCisJbWVkaWF0ZWssZG1pYy1t
-b2RlID0gPDA+Ow0KIH07DQotLSANCjEuOC4xLjEuZGlydHkNCg==
+
+--=-kBBCKrUQb2v8gZXGREOB
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2020-05-27 at 17:45 +0200, Maxime Ripard wrote:
+> The driver only supports the pllb for now and all the clock framework hoo=
+ks
+> are a mix of the generic firmware interface and the specifics of the pllb=
+.
+> Since we will support more clocks in the future let's split the generic a=
+nd
+> specific hooks
+>=20
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: linux-clk@vger.kernel.org
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
+
+Acked-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+
+Regards,
+Nicolas
+
+
+--=-kBBCKrUQb2v8gZXGREOB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7aH7gACgkQlfZmHno8
+x/4xWwf/RYRgzsbakQqmxDtyx2MpHrL5pyM3SCfIlrEoNmp0pInOHxEiPDyM4gHG
+M1nMPJiZqDKXKYbbTXB4LkzLt7OelM3FEtgUiZYUOiKk/kKmFeXdXpRUY9yLtcGg
+mwypxmeNKfXXX7NAH+UOuuvxv1luAgeW+FP8hGQVoDp12R6TDScRHHJu9OJC/2CO
+fWwOCU4ROOiIqbPAL/YdOXdfEN62D6AJhDIoviS1zU4QG0+pMsxdERkcGac1Hr26
+lDYR8ManeMQPO03IUZGcOKcDdY2iflgzaQvFBvSHeFiOIkGYucDFMF0q173q+O8X
+S+mbc0Xe4WLmffWUA6EmQ0s73kLt6w==
+=ayQ0
+-----END PGP SIGNATURE-----
+
+--=-kBBCKrUQb2v8gZXGREOB--
 
