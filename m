@@ -2,159 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A1B1EFBC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A1D1EFBE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728126AbgFEOre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:47:34 -0400
-Received: from mga02.intel.com ([134.134.136.20]:22528 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727101AbgFEOrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:47:33 -0400
-IronPort-SDR: emjq8j6Uf7Hvui7rJhK1Yyy7mYqm0WP+TecBACIKER1Fb2oBl0T9IKx9U6FMX03Qc2DCDX0Omc
- czZ/Doa7AHKw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2020 07:47:32 -0700
-IronPort-SDR: 1r8QDFTlHGj0Gbr3R32FmKCmc+dxYSVnMCZqyuSz8efxxc/l7322tU5jKcbejJTq9Zs9ajAOJC
- DJXjOEGCGH9w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,476,1583222400"; 
-   d="scan'208";a="294712837"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Jun 2020 07:47:31 -0700
-Received: from [10.249.226.228] (abudanko-mobl.ccr.corp.intel.com [10.249.226.228])
-        by linux.intel.com (Postfix) with ESMTP id 45C5F580569;
-        Fri,  5 Jun 2020 07:47:29 -0700 (PDT)
-Subject: Re: [PATCH v5 13/13] perf record: introduce --ctl-fd[-ack] options
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <e5cac8dd-7aa4-ec7c-671c-07756907acba@linux.intel.com>
- <8ffc9f9f-af58-deea-428b-f8a69004e3cb@linux.intel.com>
- <923c40c7-7c0b-9fad-314d-69e7acbee201@intel.com>
- <937c8cc1-b4c2-8531-3fa4-d0ad9df6a65f@linux.intel.com>
- <20200601233732.GA691017@tassilo.jf.intel.com>
- <1bc7c72b-9d78-5184-a27c-8025beadaaf0@linux.intel.com>
- <d7924d7c-e2e5-c067-b9e0-cfea919e7780@linux.intel.com>
- <935187e8-6fc8-5f47-b88d-6e8c92a27286@intel.com>
- <20200605105108.GB1404794@krava>
- <3ac6d0b8-5fae-348f-8556-4bf7a66285f6@linux.intel.com>
- <20200605135743.GD1404794@krava>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <c4f3fc64-0ea1-8a5a-ee9d-7d581510c70b@linux.intel.com>
-Date:   Fri, 5 Jun 2020 17:47:28 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1728025AbgFEOv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:51:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727839AbgFEOv6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:51:58 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFFAC08C5C4
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 07:51:58 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id a80so4938639ybg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 07:51:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gIdG6UEiHEb5RjVC13mngSWyhrH+zQoFoNg2xv+5i6E=;
+        b=UT0pXXm62kWCAETgUQiiH7SuR9KrWgIUH7xO+XOxKabMOeXEO12SG7QaazeRz6Br8D
+         z3BPm87kFauLqS3D0xvAtd2zzJ9zTG9JFO0Sxf5/1N2KxsMC7egH+e/mdFP6KUW419ft
+         xj5dZbauTAdbE8zrymV1plXyNlQtKy/GivJm41qLbOcWvy5l5Gq4wMBhZb/50wmI7W/w
+         RVG7hty/w46U8WFREfq12rK509On5eGVLpzLXcSEYNB2mNx9UResQ08CIIUeZUNf1sbl
+         yVH1X5odJ9G/oZbt7oKWpomC6v4eE12zM3tnxpn0yakECSD1rGRYQb3+67tkFwkBIsUl
+         Wc9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gIdG6UEiHEb5RjVC13mngSWyhrH+zQoFoNg2xv+5i6E=;
+        b=AD4kyWXIEaOFmkhOWGjPcR3VK6AriAuKXnMf3uFbql0TRDwOf2L1/Rrdygsghpf9mO
+         2VnspzFPbbkjTNl/xSaBpls483eVenRE3ebMz/fJ0kScJW4zESwooktWhG/oIKxAybKO
+         wnf5bVJKJLAzJjO5cDuYpFJYSdpm28d9OUAi9aUlISTmte5b+h0ZwlsMg9cSGveU2rA6
+         OO4TlxDVKs5/AvzvE55F7Bw25FBTznzMBh9fUuT3ltU+tEAkUumPXAFsVKcErGCRElrl
+         Xo5nj/WEZLSqKyQj4/iGXk4biKaDLO6rcyI3JfxmICGRBQ8hDO5nwpLSfbtEhjYPegbw
+         QPkQ==
+X-Gm-Message-State: AOAM530SXN0lx4Me1iCSKRW9HVaBRDA/7mo5W67IMiucB6VCxcB5WrpB
+        yAjZpCDFz0tvqx2TGmLZ0RIUu8/2NsH1bPLxeoFE9w==
+X-Google-Smtp-Source: ABdhPJyuTGP1hAakt+L74reWI5CvDw60cyJJlrXPwu7+Qgb3VpYZNx4PYFeBCNPAXb/UaoUqkRzhlCB+z7OD6q6xaqo=
+X-Received: by 2002:a25:8b0c:: with SMTP id i12mr18084529ybl.371.1591368717101;
+ Fri, 05 Jun 2020 07:51:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200605135743.GD1404794@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200524023815.21789-1-jonathan@marek.ca> <20200524023815.21789-2-jonathan@marek.ca>
+ <20200529025246.GV279327@builder.lan> <d0908f34-a698-3449-35b9-7a98e9641295@marek.ca>
+ <20200529031520.GA1799770@builder.lan> <91eb7ee0e549b10724c724aebfd91996@codeaurora.org>
+ <8cf134f0-381f-7765-2496-e5abd77f3087@marek.ca> <e9800dbb6531c9b57a855f41f68753bd@codeaurora.org>
+ <CAP71WjwjZgD=msK_2W8eBBk6axZ_uMNurEm9F76u6aHscXPf9Q@mail.gmail.com> <81a9d07c0c8d76abf0ef734963788884@codeaurora.org>
+In-Reply-To: <81a9d07c0c8d76abf0ef734963788884@codeaurora.org>
+From:   Nicolas Dechesne <nicolas.dechesne@linaro.org>
+Date:   Fri, 5 Jun 2020 16:51:46 +0200
+Message-ID: <CAP71WjzMgYb921dV1eJ0zHDAAc33HFsegAw7U_0NcKAn96fJvw@mail.gmail.com>
+Subject: Re: [PATCH 1/6] arm64: dts: qcom: sm8150: add apps_smmu node
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Jonathan Marek <jonathan@marek.ca>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        devicetree-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 5, 2020 at 4:39 PM Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> Hi Nico,
+>
+> On 2020-06-05 20:01, Nicolas Dechesne wrote:
+> > On Fri, Jun 5, 2020 at 4:14 PM Sai Prakash Ranjan
+> > <saiprakash.ranjan@codeaurora.org> wrote:
+> >>
+> >> On 2020-06-05 19:40, Jonathan Marek wrote:
+> >> > On 6/5/20 10:03 AM, Sai Prakash Ranjan wrote:
+> >> >> On 2020-05-29 08:45, Bjorn Andersson wrote:
+> >> >>> On Thu 28 May 20:02 PDT 2020, Jonathan Marek wrote:
+> >> >>>
+> >> >>>>
+> >> >>>>
+> >> >>>> On 5/28/20 10:52 PM, Bjorn Andersson wrote:
+> >> >>>> > On Sat 23 May 19:38 PDT 2020, Jonathan Marek wrote:
+> >> >>>> >
+> >> >>>> > > Add the apps_smmu node for sm8150. Note that adding the iommus field for
+> >> >>>> > > UFS is required because initializing the iommu removes the bypass mapping
+> >> >>>> > > that created by the bootloader.
+> >> >>>> > >
+> >> >>>> >
+> >> >>>> > Unrelated to the patch itself; how do you disable the splash screen on
+> >> >>>> > 8150? "fastboot oem select-display-panel none" doesn't seem to work for
+> >> >>>> > me on the MTP - and hence this would prevent my device from booting.
+> >> >>>> >
+> >> >>>> > Thanks,
+> >> >>>> > Bjorn
+> >> >>>> >
+> >> >>>>
+> >> >>>> I don't have a MTP, but on HDK855, "fastboot oem
+> >> >>>> select-display-panel none"
+> >> >>>> combined with setting the physical switch to HDMI mode (which
+> >> >>>> switches off
+> >> >>>> the 1440x2560 panel) gets it to not setup the display at all (just
+> >> >>>> the
+> >> >>>> fastboot command isn't enough).
+> >> >>>>
+> >> >>>
+> >> >>> Okay, I don't think we have anything equivalent on the MTP, but good
+> >> >>> to
+> >> >>> know.
+> >> >>>
+> >> >>
+> >> >> Actually I tried out this in SM8150 MTP and it works fine for me,
+> >> >>
+> >> >> "fastboot set_active a; fastboot set_active b; fastboot set_active a;
+> >> >> fastboot oem select-display-panel none; fastboot reboot bootloader;
+> >> >> fastboot boot boot-sm8150.img"
+> >> >>
+> >> >> Also I need to switch slots everytime like above, otherwise I always
+> >> >> see some error
+> >> >> while loading the boot image.
+> >> >>
+> >> >
+> >> > What is the error? If it is "FAILED (remote: Failed to
+> >> > load/authenticate boot image: Load Error)" then flashing/erasing
+> >> > boot_a will make it go away ("fastboot erase boot_a") for the next 6
+> >> > or so "failed" boots.
+> >> >
+> >>
+> >> Yes this exact error.
+> >
+> > The bootloader maintains a 'boot status' in one of the partition
+> > attributes. After a certain amount of 'failed' boot , it will switch
+> > to the other boot partition. It's the same thing on RB3/DB845c. In our
+> > release for DB845c, we are patching the bootloader so that this
+> > behavior is bypassed. On typical 'product' there is a user space
+> > application that will come and set the partition attribute to indicate
+> > the boot was successful.
+> >
+> > For the record, this is the patch we use on 845c:
+> > https://git.linaro.org/landing-teams/working/qualcomm/abl.git/commit/?h=release/LE.UM.2.3.7-09200-sda845.0&id=e3dc60213234ed626161a568ba587ddac63c5158
+> >
+> > rebuilding EDK2/ABL requires access to signing tools.. so it might not
+> > be possible for everyone. but in case you can, it should be
+> > straightforward to reuse this patch.
+> >
+>
+> Thank you for these details and the patch, it's very useful.
+> I do have access to ABL code and the signing tools and can build one.
 
-On 05.06.2020 16:57, Jiri Olsa wrote:
-> On Fri, Jun 05, 2020 at 04:15:52PM +0300, Alexey Budankov wrote:
->>
->> On 05.06.2020 13:51, Jiri Olsa wrote:
->>> On Tue, Jun 02, 2020 at 04:43:58PM +0300, Adrian Hunter wrote:
->>>> On 2/06/20 12:12 pm, Alexey Budankov wrote:
->>>>>
->>>>> On 02.06.2020 11:32, Alexey Budankov wrote:
->>>>>>
->>>>>> On 02.06.2020 2:37, Andi Kleen wrote:
->>>>>>>>> or a pathname, or including also the event default of "disabled".
->>>>>>>>
->>>>>>>> For my cases conversion of pathnames into open fds belongs to external
->>>>>>>> controlling process e.g. like in the examples provided in the patch set.
->>>>>>>> Not sure about "event default of 'disabled'"
->>>>>>>
->>>>>>> It would be nicer for manual use cases if perf supported the path names
->>>>>>> directly like in Adrian's example, not needing a complex wrapper script.
->>>>>>
->>>>>> fds interface is required for VTune integration since VTune wants control
->>>>>> over files creation aside of Perf tool process. The script demonstrates
->>>>>> just one possible use case.
->>>>>>
->>>>>> Control files could easily be implemented on top of fds making open operations
->>>>>> for paths and then initializing fds. Interface below is vague and with explicit
->>>>>> options like below it could be more explicit:
->>>>>> --ctl-file /tmp/my-perf.fifo --ctl-file-ack /tmp/my-perf-ack.fifo
->>>>>
->>>>> Or even clearer:
->>>>>
->>>>> --ctl-fifo /tmp/my-perf --ctl-fifo-ack /tmp/my-perf-ack
->>>>
->>>> If people are OK with having so many options, then that is fine by me.
->>>
->>> the single option Adrian suggested seems better to me:
->>>
->>>  --control
->>>  --control 11
->>>  --control 11,15
->>
->> What if a user specifies fifos named like this above, not fds?
->>
->>>  --control 11,15,disabled
->>>  --control 11,,disabled
->>>  --control /tmp/my-perf.fifo
->>>  --control /tmp/my-perf.fifo,/tmp/my-perf-ack.fifo
->>
->> What if a user wants not fifos but other type of comm channels?
->>
->>>  --control /tmp/my-perf.fifo,/tmp/my-perf-ack.fifo,disabled
->>>  --control /tmp/my-perf.fifo,,disabled
->>>
->>> we already support this kind of options arguments, like for --call-graph
->>>
->>> jirka
->>>
->>
->> IMHO,
->> this interface, of course, looks more compact (in amount of options) however
->> the other side it is less user friendly. One simple option for one simple
->> purpose is more convenient as for users as for developers. Also complex
->> option syntax tends to have limitations and there are probably more
->> non-obvious ones.
->>
->> Please speak up. I might have missed something meaningful.
-> 
-> how about specify the type like:
-> 
-> --control fd:1,2,...
+Good. Then the next problem you will likely face is that building QCOM
+ABL is far from being straightforward. Why would it be? ;)
+That's the script we use to build it ourselves:
+https://git.linaro.org/ci/job/configs.git/tree/lt-qcom-bootloader/dragonboard845c/builders.sh#n61
 
-What do these ... mean?
+It has a reference to sectools which we have (internally) access to,
+but you have it too, and you should be able to leverage most of the
+script.
 
-> --control fifo:/tmp/fifo1,/tmp/fifo2
-> --control xxx:....
-> 
-> this way we can extend the functionality in the future
-> and stay backward compatible, while keeping single option
-
-Well, it clarifies more. However it still implicitly assumes
-and requires proper ordering e.g. 1 is ctl-fd and 2 is ack-fd
-and if there are some more positions there will be gaps like
---control fd:10,,something,,something ...
-
-Why is one single option with complex syntax more preferable
-than several simple options? Also it would still consume almost
-equal amount of command line space in shell.
-
-Thanks,
-Alexey
-
-> 
-> jirka
-> 
+>
+> Thanks,
+> Sai
+>
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+> member
+> of Code Aurora Forum, hosted by The Linux Foundation
