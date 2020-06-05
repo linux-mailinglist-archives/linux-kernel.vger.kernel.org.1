@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F14C1EFA7C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2BE1EFACB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728570AbgFEOR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:17:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48082 "EHLO mail.kernel.org"
+        id S1728531AbgFEOU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:20:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727907AbgFEORr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:17:47 -0400
+        id S1728016AbgFEOU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:20:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68F4220B80;
-        Fri,  5 Jun 2020 14:17:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67439206F0;
+        Fri,  5 Jun 2020 14:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366666;
-        bh=Scdha6iQPtZn1Tntw8fZXJD+kymQVK8iBLPJRJSVIsI=;
+        s=default; t=1591366828;
+        bh=+lEalpydFPuoTLmL+lIAkvgtLcYak05gGNyBg7fZBME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XfdYC7wrrg3RZ6UnfkKEms2cwPOLbGx5XnDSaBWKZ77JawG/PfF4MmyzJQb24MIST
-         tSo1XN/VrjJIcEBgZXvtPnUTirbGv/8k+R8QaqtwNN6yeS3EksXRi1UL4iI/khOOzY
-         oa29ggTQ3ygb4dcZt2ri49OIUyC+yfgn0bM5aQok=
+        b=CVKsuq5ZU5hhN2UeczcCjS6aFsGQ4/TgwWmuuk1FQIJdtO0oQAq0qw60WcGOrTUB6
+         LpIiLeapnGjeKHO1rFx0lIOYd8t9lQLSVTT/OILyUm+swc/q1f0tYfQO9utiFxGGPz
+         DxMM6SQvzGfOOPr8WwEaaHVIoHnl5a1UltJv11GM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.6 40/43] media: Revert "staging: imgu: Address a compiler warning on alignment"
-Date:   Fri,  5 Jun 2020 16:15:10 +0200
-Message-Id: <20200605140154.625330245@linuxfoundation.org>
+        stable@vger.kernel.org, Bean Huo <beanhuo@micron.com>,
+        Can Guo <cang@codeaurora.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 4.19 09/28] scsi: ufs: Release clock if DMA map fails
+Date:   Fri,  5 Jun 2020 16:15:11 +0200
+Message-Id: <20200605140252.892569834@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200605140152.493743366@linuxfoundation.org>
-References: <20200605140152.493743366@linuxfoundation.org>
+In-Reply-To: <20200605140252.338635395@linuxfoundation.org>
+References: <20200605140252.338635395@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Can Guo <cang@codeaurora.org>
 
-commit 81d1adeb52c97fbe097e8c94e36c3eb702cdb110 upstream.
+commit 17c7d35f141ef6158076adf3338f115f64fcf760 upstream.
 
-This reverts commit c9d52c114a9fcc61c30512c7f810247a9f2812af.
+In queuecommand path, if DMA map fails, it bails out with clock held.  In
+this case, release the clock to keep its usage paired.
 
-The patch being reverted changed the memory layout of struct
-ipu3_uapi_acc_param. Revert it, and address the compiler warning issues in
-further patches.
+[mkp: applied by hand]
 
-Fixes: commit c9d52c114a9f ("media: staging: imgu: Address a compiler warning on alignment")
-Reported-by: Tomasz Figa <tfiga@chromium.org>
-Tested-by: Bingbu Cao <bingbu.cao@intel.com>
-Cc: stable@vger.kernel.org # for v5.3 and up
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Link: https://lore.kernel.org/r/0101016ed3d66395-1b7e7fce-b74d-42ca-a88a-4db78b795d3b-000000@us-west-2.amazonses.com
+Reviewed-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+[EB: resolved cherry-pick conflict caused by newer kernels not having
+ the clear_bit_unlock() line]
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/staging/media/ipu3/include/intel-ipu3.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/ufs/ufshcd.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/staging/media/ipu3/include/intel-ipu3.h
-+++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
-@@ -2477,7 +2477,7 @@ struct ipu3_uapi_acc_param {
- 	struct ipu3_uapi_yuvp1_yds_config yds2 __attribute__((aligned(32)));
- 	struct ipu3_uapi_yuvp2_tcc_static_config tcc __attribute__((aligned(32)));
- 	struct ipu3_uapi_anr_config anr;
--	struct ipu3_uapi_awb_fr_config_s awb_fr __attribute__((aligned(32)));
-+	struct ipu3_uapi_awb_fr_config_s awb_fr;
- 	struct ipu3_uapi_ae_config ae;
- 	struct ipu3_uapi_af_config_s af;
- 	struct ipu3_uapi_awb_config awb;
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -2505,6 +2505,7 @@ static int ufshcd_queuecommand(struct Sc
+ 
+ 	err = ufshcd_map_sg(hba, lrbp);
+ 	if (err) {
++		ufshcd_release(hba);
+ 		lrbp->cmd = NULL;
+ 		clear_bit_unlock(tag, &hba->lrb_in_use);
+ 		goto out;
 
 
