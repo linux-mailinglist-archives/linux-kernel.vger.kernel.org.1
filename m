@@ -2,119 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757141EFEA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 19:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3824E1EFEAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 19:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbgFERQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 13:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbgFERQi (ORCPT
+        id S1727098AbgFERSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 13:18:55 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1625 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726026AbgFERSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 13:16:38 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680C4C08C5C3
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 10:16:38 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id g62so5570735qtd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 10:16:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=mKwEVWcuU9C/nuiwJL6rIyPwKlGow9qq7XqSXfkexXo=;
-        b=JW744sp/ZMjgMWxCbk1XkfcVNgxRtWJfRjXsMlGfic0he3IcOG6TbcxkuoS6aVv+t8
-         kDDT5uGYJ5bjzaOwha4LHAMoOg6Lc3du03KhN9t/isduEood6I/Cd4VVWfqG/AR5aqRQ
-         wHLEAUjBttw/BNHBpoZnVQwf0JU9LF//utPqtTRBcVqB4gVrBNzRsRhqt+aZeb6ljsKR
-         91ZwfT3zsbqz3vAFDlgJzxFOMtHOxedLf2wfwdvbjTDkDsqo7Pq3FIt8qNYvO34vWM6r
-         XYnk3HQGO9F3lI3Y2P9upf3S/zZx/j+5pluLh1M3B+eeB7PDjz55IADa/ghUI3Tj+b3z
-         zywA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=mKwEVWcuU9C/nuiwJL6rIyPwKlGow9qq7XqSXfkexXo=;
-        b=Er99yP0l26xTaED6qBAuHgHEa4GdfrXvYuvWuf+Hwrdft4gVQSTFQ7raZMPbXaxO/t
-         CcsQRFscmaQSgEDe5AoU/kuBijvoGIHxPeJYuAB/Lx6Y2t8zb6eBc+UHIIoGGKBpjMEo
-         749ZfoBmk4bRlTKFAisLECfVRI1P17UoVxWQdY8gn62LErORrZpnBVQm8r7dqV9JW4xm
-         MGrLK+iEznJ6t15BDGCYfNtxwkbVst3HdqMrLnmH2MGBJil+2frqaYU+5TFDzpmvJ/3u
-         rnQ93aawAvAMs4oRtz8rQR1lybFJtoN+85juRANTtsjyw1YQ96sdyEwY7lGzGkn+22qO
-         UJjg==
-X-Gm-Message-State: AOAM533jQlMBnbDuttCLI2RMzan+MydGGK8Jc7AoZO7rQS2SsfzC1Toc
-        +Ilkv63/Zceu6A3+rf1FQQPxxQ==
-X-Google-Smtp-Source: ABdhPJz14TforE3jgSwXfr9lStxyBFF1sjMdKoGyrBGGeSClYBkD8DrTRaHF2oSD9Cx42KVrs/3p2w==
-X-Received: by 2002:ac8:42ce:: with SMTP id g14mr10938312qtm.117.1591377397661;
-        Fri, 05 Jun 2020 10:16:37 -0700 (PDT)
-Received: from skullcanyon ([192.222.193.21])
-        by smtp.gmail.com with ESMTPSA id z4sm330982qtu.33.2020.06.05.10.16.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 10:16:36 -0700 (PDT)
-Message-ID: <7e74e15b7b3f9fc765182f1a43cfcf1e0e9602fc.camel@ndufresne.ca>
-Subject: Re: [PATCH 2/3] media: cedrus: h264: Properly configure reference
- field
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        paul.kocialkowski@bootlin.com, mripard@kernel.org
-Cc:     mchehab@kernel.org, wens@csie.org, hverkuil-cisco@xs4all.nl,
-        gregkh@linuxfoundation.org, jonas@kwiboo.se,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org
-Date:   Fri, 05 Jun 2020 13:16:35 -0400
-In-Reply-To: <20200604185745.23568-3-jernej.skrabec@siol.net>
-References: <20200604185745.23568-1-jernej.skrabec@siol.net>
-         <20200604185745.23568-3-jernej.skrabec@siol.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        Fri, 5 Jun 2020 13:18:55 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eda7e730000>; Fri, 05 Jun 2020 10:18:43 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 05 Jun 2020 10:18:54 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 05 Jun 2020 10:18:54 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Jun
+ 2020 17:18:54 +0000
+Received: from krypton.plattnerplace.us.com (172.20.13.39) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server id
+ 15.0.1473.3 via Frontend Transport; Fri, 5 Jun 2020 17:18:54 +0000
+From:   Aaron Plattner <aplattner@nvidia.com>
+To:     Takashi Iwai <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
+        "Jaroslav Kysela" <perex@perex.cz>
+CC:     <linux-kernel@vger.kernel.org>, Nikhil Mahale <nmahale@nvidia.com>,
+        "Aaron Plattner" <aplattner@nvidia.com>
+Subject: [PATCH] ALSA: hda: Add NVIDIA codec IDs 9a & 9d through a0 to patch table
+Date:   Fri, 5 Jun 2020 10:17:07 -0700
+Message-ID: <20200605171707.8587-1-aplattner@nvidia.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1591377523; bh=4vKiQC0k5/Y1e+l/fdi2Rbr4+Z932FCpGYPw+w3DM5A=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=Q/hodN43vB/JJ3Z1HVP78W2LrW5ptEfI+AadaKDc98LaW/DiCjP/X48fLbvxNQf6E
+         lOnUqFXJMV0BlEToT4paVoVM8Zg6Y5HvBw1e14Ij1qW59tpzaed6KTbqCBIpCjunnn
+         5uBt5oYjSpphbY4BuomJA8jA6G5EZaPse5Oz0B14z8o/VM4dZdW7lz1FnHgXkNsgtV
+         nzfZJYjcpuIw+39Z/8HQt//wqMvbVlhGONGc4a8BocC1/zTXnjHDZIvO8KzLwntH4v
+         mmBBkwq+T3GUsMyNq+95h9hTfKyp48+2e4UOtmoGcv7ZSohl1aRHP4/RiMFMqyz8XG
+         9axOYzYUtpHtA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le jeudi 04 juin 2020 à 20:57 +0200, Jernej Skrabec a écrit :
-> When interlaced H264 content is being decoded, references must indicate
-> which field is being referenced. Currently this was done by checking
-> capture buffer flags. However, that is not correct because capture
-> buffer may hold both fields.
-> 
-> Fix this by checking newly introduced flags in reference lists.
-> 
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
+---
+ sound/pci/hda/patch_hdmi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Perhaps an additional patch could cleanup the miss-leading comment in
-v4l2_h264_dpb_entry definition.
-
-Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-
-> ---
->  drivers/staging/media/sunxi/cedrus/cedrus_h264.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> index cce527bbdf86..c87717d17ec5 100644
-> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> @@ -183,7 +183,6 @@ static void _cedrus_write_ref_list(struct cedrus_ctx *ctx,
->  	for (i = 0; i < num_ref; i++) {
->  		const struct v4l2_h264_dpb_entry *dpb;
->  		const struct cedrus_buffer *cedrus_buf;
-> -		const struct vb2_v4l2_buffer *ref_buf;
->  		unsigned int position;
->  		int buf_idx;
->  		u8 dpb_idx;
-> @@ -198,12 +197,11 @@ static void _cedrus_write_ref_list(struct cedrus_ctx *ctx,
->  		if (buf_idx < 0)
->  			continue;
->  
-> -		ref_buf = to_vb2_v4l2_buffer(cap_q->bufs[buf_idx]);
-> -		cedrus_buf = vb2_v4l2_to_cedrus_buffer(ref_buf);
-> +		cedrus_buf = vb2_to_cedrus_buffer(cap_q->bufs[buf_idx]);
->  		position = cedrus_buf->codec.h264.position;
->  
->  		sram_array[i] |= position << 1;
-> -		if (ref_buf->field == V4L2_FIELD_BOTTOM)
-> +		if (ref_list[i].flags & V4L2_H264_REFERENCE_FLAG_BOTTOM_FIELD)
->  			sram_array[i] |= BIT(0);
->  	}
->  
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index fbd7cc6026d8..e2b21ef5d7d1 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -4145,6 +4145,11 @@ HDA_CODEC_ENTRY(0x10de0095, "GPU 95 HDMI/DP",	patch_=
+nvhdmi),
+ HDA_CODEC_ENTRY(0x10de0097, "GPU 97 HDMI/DP",	patch_nvhdmi),
+ HDA_CODEC_ENTRY(0x10de0098, "GPU 98 HDMI/DP",	patch_nvhdmi),
+ HDA_CODEC_ENTRY(0x10de0099, "GPU 99 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de009a, "GPU 9a HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de009d, "GPU 9d HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de009e, "GPU 9e HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de009f, "GPU 9f HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de00a0, "GPU a0 HDMI/DP",	patch_nvhdmi),
+ HDA_CODEC_ENTRY(0x10de8001, "MCP73 HDMI",	patch_nvhdmi_2ch),
+ HDA_CODEC_ENTRY(0x10de8067, "MCP67/68 HDMI",	patch_nvhdmi_2ch),
+ HDA_CODEC_ENTRY(0x11069f80, "VX900 HDMI/DP",	patch_via_hdmi),
+--=20
+2.27.0
 
