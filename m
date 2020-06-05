@@ -2,79 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AF21EF98C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 15:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EFD1EF9A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 15:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgFENq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 09:46:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:56078 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726553AbgFENq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 09:46:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4E77131B;
-        Fri,  5 Jun 2020 06:46:56 -0700 (PDT)
-Received: from [10.57.10.23] (unknown [10.57.10.23])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E0C83F305;
-        Fri,  5 Jun 2020 06:46:53 -0700 (PDT)
-Subject: Re: [PATCH v2] spi: bcm2835: Enable shared interrupt support
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        lukas@wunner.de,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Martin Sperl <kernel@martin.sperl.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20200604212819.715-1-f.fainelli@gmail.com>
- <142d48ae-2725-1368-3e11-658449662371@arm.com>
- <20200605132037.GF5413@sirena.org.uk>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <2e371a32-fb52-03a2-82e4-5733d9f139cc@arm.com>
-Date:   Fri, 5 Jun 2020 14:46:49 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727768AbgFENuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 09:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726981AbgFENuR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 09:50:17 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C32C08C5C2;
+        Fri,  5 Jun 2020 06:50:16 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1jhCjT-003agQ-4G; Fri, 05 Jun 2020 13:50:03 +0000
+Date:   Fri, 5 Jun 2020 14:50:03 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     David Howells <dhowells@redhat.com>
+Cc:     torvalds@linux-foundation.org,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        linux-afs@lists.infradead.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] afs: Improvements for v5.8
+Message-ID: <20200605135003.GH23230@ZenIV.linux.org.uk>
+References: <2240660.1591289899@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20200605132037.GF5413@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2240660.1591289899@warthog.procyon.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-05 14:20, Mark Brown wrote:
-> On Fri, Jun 05, 2020 at 12:34:36PM +0100, Robin Murphy wrote:
->> On 2020-06-04 22:28, Florian Fainelli wrote:
+On Thu, Jun 04, 2020 at 05:58:19PM +0100, David Howells wrote:
+> Hi Linus,
 > 
->>> For the BCM2835 case which is deemed performance critical, we would like
->>> to continue using an interrupt handler which does not have the extra
->>> comparison on BCM2835_SPI_CS_INTR.
+> Is it too late to put in a pull request for AFS changes?  Apologies - I was
+> holding off and hoping that I could get Al to review the changes I made to
+> the core VFS change commit (first in the series) in response to his earlier
+> review comments.  I have an ack for the Ext4 changes made, though.  If you
+> would prefer it to be held off at this point, fair enough.
 > 
->> FWIW, if I'm reading the patch correctly, then with sensible codegen that
->> "overhead" should amount to a bit test on a live register plus a not-taken
->> conditional branch - according to the 1176 TRM that should add up to a
->> whopping 2 cycles. If that's really significant then I'd have to wonder
->> whether you want to be at the mercy of the whole generic IRQ stack at all,
->> and should perhaps consider using FIQ instead.
-> 
-> Yes, and indeed the compiler does seem to manage that.  It *is* non-zero
-> overhead though.
+> Note that the series also got rebased to -rc7 to remove the dependency on
+> fix patches that got merged through the net tree.
 
-True, but so's the existing level of pointer-chasing indirection that 
-with some straightforward refactoring could be taken right out of the 
-critical path and confined to just the conditional complete() call. 
-That's the kind of thing leaving me unconvinced that this is code where 
-every single cycle counts ;)
-
-Robin.
+FWIW, I can live with fs/inode.c part in its current form
