@@ -2,176 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1951EFC53
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 17:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117A51EFC5A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 17:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728278AbgFEPPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 11:15:53 -0400
-Received: from orion.archlinux.org ([88.198.91.70]:43476 "EHLO
-        orion.archlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgFEPPw (ORCPT
+        id S1728137AbgFEPSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 11:18:16 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:47429 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726601AbgFEPSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 11:15:52 -0400
-Received: from orion.archlinux.org (localhost [127.0.0.1])
-        by orion.archlinux.org (Postfix) with ESMTP id 0B59C1C90FD6B1;
-        Fri,  5 Jun 2020 15:15:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on orion.archlinux.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.7 required=5.0 tests=ALL_TRUSTED=-1,BAYES_00=-1,
-        DMARC_FAIL_NONE=0.25,T_DMARC_POLICY_NONE=0.01,T_DMARC_TESTS_FAIL=0.01
-        autolearn=no autolearn_force=no version=3.4.4
-X-Spam-BL-Results: 
-Received: from genesis (unknown [IPv6:2001:8a0:f254:2300:34be:8c97:bb49:e7fd])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: ffy00)
-        by orion.archlinux.org (Postfix) with ESMTPSA;
-        Fri,  5 Jun 2020 15:15:44 +0000 (UTC)
-Message-ID: <137acb00c6ec098d7506901df05067e8d7207aa9.camel@archlinux.org>
-Subject: Re: [PATCH v2] HID: logitech-hidpp: add support for Logitech G533
- headset
-From:   Filipe =?ISO-8859-1?Q?La=EDns?= <lains@archlinux.org>
-To:     Kamil =?UTF-8?Q?Doma=C5=84ski?= <kamil@domanski.co>,
-        linux-kernel@vger.kernel.org
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Nestor Lopez Casado <nlopezcasad@logitech.com>
-In-Reply-To: <023148f582cc20bef7079508ce417c8ebeb0febb.camel@domanski.co>
-References: <023148f582cc20bef7079508ce417c8ebeb0febb.camel@domanski.co>
-Organization: Archlinux
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-MLffL35euR0/LFoSi3jD"
-Date:   Fri, 05 Jun 2020 16:15:43 +0100
+        Fri, 5 Jun 2020 11:18:15 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 1B2636C7;
+        Fri,  5 Jun 2020 11:18:14 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 05 Jun 2020 11:18:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=eDXBvR6YBBtfhuiC0E7a3EHj/Ym
+        N6ySkgO12Cpj2Nrw=; b=ExN7CqWrg4jyViAfCa+fhX2rn1O70zwpNpT8K2nymCT
+        EuTVoVh9M//JKOtrBcux+WH0wuXC8PziL8fNrzpSYTpyRE2wef7A4T0PnafZpjud
+        6sN3kEk4DoSg3t9Y8mnsNgaT8x1mF+fwcOQl7syJlyahtXCmIbndzuSAKNT+FxBs
+        1cvp4M5CWvtPKzQjvmEcBK40/5fMlaEXeZ12+KTQEpcRukiquUZIuvF/J0dV4azf
+        7IkhOjzRYHRM8bm24gnasbK95WWj0gIZWErDzl4NNfVDCl9ZKJCMIMdxxFwCVrxf
+        0t5vWIQwi3/8NXvVfgnZ0LFbKE0L3ckwIQtqFCzn6Fg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=eDXBvR
+        6YBBtfhuiC0E7a3EHj/YmN6ySkgO12Cpj2Nrw=; b=F0SyF/JMN+D6e7CqCPOP8K
+        6avtHMvP25wWVwrKG5TCReTrYZ3fDN2pHRRntboqsU9Ga54gNOPT3nZVxQQMCYdk
+        2aB8dJcV2gykE3hO8WIXSLj0x3VzvNaR66QhRbjKhNGYGT7g5xwACa7XD0tNlblp
+        uHmki7hCqRI45kd2mFgN8KmpY8ZGuM1uDEGtlW8k1Jr7LjmdXHNBWZantFQsk0YA
+        rH7hRjfm1lnRi2epqsx4zxHIhI18Mbyr3ZIlYxIUzDY9d4GgVC+NUarxm3Fk+Tvq
+        FbDtnDDMZ0rUQFamzs49qJ4+qf2wsYKqX3H5rOlw0uwfMUvhvjeHSAqjh4gAHRFw
+        ==
+X-ME-Sender: <xms:NGLaXsqg53A4vXafdJw4pq_lA7qt40tpwRF8q4-tc0E1SUULdOQmdA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudegfedgjeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:NGLaXioOQ9sTvkE8t2fbvYnoB0Xdmszj0f2VF6Phs5vc2DkgVxKx2g>
+    <xmx:NGLaXhMcXwxl2_nKkYrgvE1SLyP_jqHsdtXwd4bNpkxWdr6SjKT2SQ>
+    <xmx:NGLaXj5yH1gEu92lw8JY84PtauSDbXcZZBVvgtet0WogpEJQhdQadg>
+    <xmx:NWLaXlsvqfIBPxsHWFF7JELiV3ds3aGkrB2r5WzrUyP-TK4b56pJuQhRsR8>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id F39FF3280065;
+        Fri,  5 Jun 2020 11:18:11 -0400 (EDT)
+Date:   Fri, 5 Jun 2020 17:18:10 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Frank Lee <frank@allwinnertech.com>
+Cc:     chaotian.jing@mediatek.com, ulf.hansson@linaro.org,
+        matthias.bgg@gmail.com, wens@csie.org, tiny.windzz@gmail.com,
+        rmfrfs@gmail.com, marex@denx.de, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mmc: sunxi-mmc: do not hide address in
+ sunxi_mmc_irq()
+Message-ID: <20200605151810.vmgnnzp7cadfwsu5@gilmour.lan>
+References: <20200605125545.31974-1-frank@allwinnertech.com>
 MIME-Version: 1.0
-User-Agent: Evolution 3.36.3 
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="lqyrkswqzjhc3pkq"
+Content-Disposition: inline
+In-Reply-To: <20200605125545.31974-1-frank@allwinnertech.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-MLffL35euR0/LFoSi3jD
-Content-Type: text/plain; charset="UTF-8"
+--lqyrkswqzjhc3pkq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Kamil,
+Hi,
 
-On v2 patches it s usual to add a changelog (could be small) to help
-keep track of what changed.
+On Fri, Jun 05, 2020 at 08:55:44PM +0800, Frank Lee wrote:
+> From: Yangtao Li <tiny.windzz@gmail.com>
+>=20
+> Using %px to show the actual address in sunxi_mmc_irq()
+> to help us to debug issue.
+>=20
+> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+> Signed-off-by: Frank Lee <frank@allwinnertech.com>
 
-On Fri, 2020-06-05 at 16:59 +0200, Kamil Doma=C5=84ski wrote:
-> Signed-off-by: Kamil Doma=C5=84ski <kamil@domanski.co>
+I'm fairly sure this hash is on purpose, and both the commit log of the
+%px introduction (ad67b74d2469) and the checkpatch message are pretty
+explicit about it.
 
-*snip*
+What issue were you trying to solve here?
 
-> +/**
-> + * hidpp20_adc_map_status_voltage() - convert HID++ code to power supply=
- status
-> + * @hidpp: HID++ device struct.
-> + * @data: ADC report data.
-> + * @voltage: Pointer to variable where the ADC voltage shall be written.
-> + *
-> + * This function decodes the ADC voltage and charge status
-> + * of the device's battery.
-> + *
-> + * Return: Returns the power supply charge status code.
-> + */
-> +static int hidpp20_adc_map_status_voltage(struct hidpp_device *hidpp,
-> +						u8 data[3], int *voltage)
-> +{
-> +	bool isConnected;
-> +	bool isCharging;
-> +	bool chargingComplete;
-> +	bool chargingFault;
+Maxime
 
-=46rom my initial comments:
-
-> We use snake case.
-
-> +
-> +	long flags =3D (long) data[2];
-
-> Use u8 instead. Why are we even using a variable for this?
-
-My main point here is that long means different things in different
-architectures, and we only want one byte so I would go for u8.
-
-> +
-> +	*voltage =3D get_unaligned_be16(data);
-> +	isConnected =3D test_bit(0, &flags);
-> +	isCharging =3D test_bit(1, &flags);
-> +	chargingComplete =3D test_bit(2, &flags);
-> +	chargingFault =3D test_bit(3, &flags);
-
-> I don't think this is needed, just do it in the ifs directly.
->
-> Here I would add a #define for each bit:
->
-> #define FLAG_ADC_MAP_STATUS_CONNECTED 0
-> ...
-> if (data[2] & FLAG_ADC_MAP_STATUS_CONNECTED)
-
-> +
-> +	if (!isConnected)
-> +		return POWER_SUPPLY_STATUS_UNKNOWN;
-> +
-> +	if (isCharging) {
-> +		if (chargingFault)
-> +			return POWER_SUPPLY_STATUS_NOT_CHARGING;
-> +
-> +		if (chargingComplete)
-> +			return POWER_SUPPLY_STATUS_FULL;
-> +
-> +		return POWER_SUPPLY_STATUS_CHARGING;
-> +	}
-> +
-> +	return POWER_SUPPLY_STATUS_DISCHARGING;
-> +}
-
-The algorithm is now correct, thanks!
-
-*snip*
-
-> @@ -3994,6 +4190,8 @@ static const struct hid_device_id hidpp_devices[] =
-=3D {
-> =20
->  	{ /* Logitech G403 Wireless Gaming Mouse over USB */
->  	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC082) },
-> +	{ /* Logitech G533 Wireless Headset over USB */
-> +	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0x0A66) },
->  	{ /* Logitech G703 Gaming Mouse over USB */
->  	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC087) },
->  	{ /* Logitech G703 Hero Gaming Mouse over USB */
-
-Same thing here. We should see if the device supports the DJ protocol
-and add it in hid-logitech-dj instead.
-
-Most of my comments here are nitpicks, I am not sure how strict
-Benjamin/Jiri are about that.
-
-Cheers,
-Filipe La=C3=ADns
-
---=-MLffL35euR0/LFoSi3jD
+--lqyrkswqzjhc3pkq
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEE0jW0leqs33gyftiw+JPGdIFqqV0FAl7aYZoACgkQ+JPGdIFq
-qV1MDw//Rds5LDFHwKnq32ug4ZUStpKPmjdZDXd6JzMdXFtxSALCXM1jKm/sebdQ
-QtWrsoayLNYav0X3zhauM0OmDg+qnsuvQHLrHzebzw6nGdF6jNJa5vZzwiyT0DHi
-u5yUbQuteer4vi2Z8XLSw/NM7tgoSTupbdF/LpYt3RAv1c00Lt/9BQ8ecwCdmxuV
-ogo5XKi3z524uh6r4WsA8DHE3a7BPgyYTn3kTAZDm2bqCqKQGZRXIaI6u9l457nV
-VfhkqBetAvyXXq2E/6JUKbpuiJr+Gbfze8aHd053zKzH5Fu4Ya5oQhw5RY07x8nX
-N6RGj154gZO4Ghcc0KOxRUZku7nroelWWXFhq7ovH78EFYI2ALZDxN7XN8aIflkY
-B7NMdGgvb9Qgddys6bw8jI2VdqgxOMKe47uekcZT0SzU54tS2IfAIFkofDeWRcry
-lGD5Ly7WPdYLcmJVDKyGMjE5Dv+eRBGdaGxhqRc30uLMkZfvQSMA2EbP+ZEGdl/q
-E1GP+8D1zSoAH0BiaBVvMKuJwtQymp2jEDV9hQDpGzhLf0v3SZ8zCBZrto94w7xi
-nF1D1grXZic0Ou0Z0v/1E3u09dk2iTaPTL59cQiXAnRuZeTJBgA/TS1bws58lDKD
-P1d6kR+nInLBXXu93A0B8ua3saN4dEght+Ma3pI8RKiXCZY9uY4=
-=16Uj
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXtpiMgAKCRDj7w1vZxhR
+xX8tAQCtvLK2kLjK9ek6BhW0HKPRmxoCrg3HRrnR7yKGjtdBLgD/Ru2M3MqS1iws
+hyuU+IoR9fzMA4nBd/Rq7FQ104ypeQQ=
+=VGny
 -----END PGP SIGNATURE-----
 
---=-MLffL35euR0/LFoSi3jD--
+--lqyrkswqzjhc3pkq--
