@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CA91EFB24
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDF51EFA64
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728965AbgFEOXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:23:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48588 "EHLO mail.kernel.org"
+        id S1728394AbgFEORH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:17:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728600AbgFEOSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:18:07 -0400
+        id S1728373AbgFEORC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:17:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF68A214F1;
-        Fri,  5 Jun 2020 14:18:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E59B20820;
+        Fri,  5 Jun 2020 14:17:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366687;
-        bh=kT9GL7Y6XK75ZPRKJrNeL+EQ+QvF63CVbQb4WwFxR88=;
+        s=default; t=1591366621;
+        bh=O5JZywhz7iAfb7m4Z4WcOq4q0ejSwcFYHqTjUmqM/h8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u3H1anJde0mome1fK4GPdBHceaWgI4eqDbvCUbjtjAyD7PgkdEeN98QUg0lkgQawf
-         WxAH+/B/4ZN11n2cywGT1brYMxtNvysRQv4KZI+8+qlyEEQNq1X4uOz3KtSDhLjHdl
-         /Saot8JY4lE/udeJuW3UGX6GyiYLS4KjW43JCqs4=
+        b=rri9CENTStIQxe68OqdBc1VarHtHXh9BvaMOFutzsrGeA+9/oqxFrwEiCpl1rO0px
+         9jhtmyjggNxK7n80mGxTp5seCMavd1+siWzGX09KziWYUPm2rpoq9ulJpjqmSFJr2k
+         hc6JvYv9XOzCyy68jUaGF4T4X9BXpiv+JOWliuGE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 13/38] net: dsa: mt7530: set CPU port to fallback mode
-Date:   Fri,  5 Jun 2020 16:14:56 +0200
-Message-Id: <20200605140253.364735702@linuxfoundation.org>
+        stable@vger.kernel.org, Jonathan McDowell <noodles@earth.li>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 27/43] net: ethernet: stmmac: Enable interface clocks on probe for IPQ806x
+Date:   Fri,  5 Jun 2020 16:14:57 +0200
+Message-Id: <20200605140153.945772434@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200605140252.542768750@linuxfoundation.org>
-References: <20200605140252.542768750@linuxfoundation.org>
+In-Reply-To: <20200605140152.493743366@linuxfoundation.org>
+References: <20200605140152.493743366@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,71 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: DENG Qingfang <dqfext@gmail.com>
+From: Jonathan McDowell <noodles@earth.li>
 
-commit 38152ea37d8bdaffa22603e0a5b5b86cfa8714c9 upstream.
+[ Upstream commit a96ac8a0045e3cbe3e5af6d1b3c78c6c2065dec5 ]
 
-Currently, setting a bridge's self PVID to other value and deleting
-the default VID 1 renders untagged ports of that VLAN unable to talk to
-the CPU port:
+The ipq806x_gmac_probe() function enables the PTP clock but not the
+appropriate interface clocks. This means that if the bootloader hasn't
+done so attempting to bring up the interface will fail with an error
+like:
 
-	bridge vlan add dev br0 vid 2 pvid untagged self
-	bridge vlan del dev br0 vid 1 self
-	bridge vlan add dev sw0p0 vid 2 pvid untagged
-	bridge vlan del dev sw0p0 vid 1
-	# br0 cannot send untagged frames out of sw0p0 anymore
+[   59.028131] ipq806x-gmac-dwmac 37600000.ethernet: Failed to reset the dma
+[   59.028196] ipq806x-gmac-dwmac 37600000.ethernet eth1: stmmac_hw_setup: DMA engine initialization failed
+[   59.034056] ipq806x-gmac-dwmac 37600000.ethernet eth1: stmmac_open: Hw setup failed
 
-That is because the CPU port is set to security mode and its PVID is
-still 1, and untagged frames are dropped due to VLAN member violation.
+This patch, a slightly cleaned up version of one posted by Sergey
+Sergeev in:
 
-Set the CPU port to fallback mode so untagged frames can pass through.
+https://forum.openwrt.org/t/support-for-mikrotik-rb3011uias-rm/4064/257
 
-Fixes: 83163f7dca56 ("net: dsa: mediatek: add VLAN support for MT7530")
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+correctly enables the clock; we have already configured the source just
+before this.
+
+Tested on a MikroTik RB3011.
+
+Signed-off-by: Jonathan McDowell <noodles@earth.li>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/mt7530.c |   11 ++++++++---
- drivers/net/dsa/mt7530.h |    6 ++++++
- 2 files changed, 14 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -818,10 +818,15 @@ mt7530_port_set_vlan_aware(struct dsa_sw
- 		   PCR_MATRIX_MASK, PCR_MATRIX(MT7530_ALL_MEMBERS));
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+index 6ae13dc19510..02102c781a8c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+@@ -319,6 +319,19 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 	/* Enable PTP clock */
+ 	regmap_read(gmac->nss_common, NSS_COMMON_CLK_GATE, &val);
+ 	val |= NSS_COMMON_CLK_GATE_PTP_EN(gmac->id);
++	switch (gmac->phy_mode) {
++	case PHY_INTERFACE_MODE_RGMII:
++		val |= NSS_COMMON_CLK_GATE_RGMII_RX_EN(gmac->id) |
++			NSS_COMMON_CLK_GATE_RGMII_TX_EN(gmac->id);
++		break;
++	case PHY_INTERFACE_MODE_SGMII:
++		val |= NSS_COMMON_CLK_GATE_GMII_RX_EN(gmac->id) |
++				NSS_COMMON_CLK_GATE_GMII_TX_EN(gmac->id);
++		break;
++	default:
++		/* We don't get here; the switch above will have errored out */
++		unreachable();
++	}
+ 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_GATE, val);
  
- 	/* Trapped into security mode allows packet forwarding through VLAN
--	 * table lookup.
-+	 * table lookup. CPU port is set to fallback mode to let untagged
-+	 * frames pass through.
- 	 */
--	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
--		   MT7530_PORT_SECURITY_MODE);
-+	if (dsa_is_cpu_port(ds, port))
-+		mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
-+			   MT7530_PORT_FALLBACK_MODE);
-+	else
-+		mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
-+			   MT7530_PORT_SECURITY_MODE);
- 
- 	/* Set the port as a user port which is to be able to recognize VID
- 	 * from incoming packets before fetching entry within the VLAN table.
---- a/drivers/net/dsa/mt7530.h
-+++ b/drivers/net/dsa/mt7530.h
-@@ -148,6 +148,12 @@ enum mt7530_port_mode {
- 	/* Port Matrix Mode: Frames are forwarded by the PCR_MATRIX members. */
- 	MT7530_PORT_MATRIX_MODE = PORT_VLAN(0),
- 
-+	/* Fallback Mode: Forward received frames with ingress ports that do
-+	 * not belong to the VLAN member. Frames whose VID is not listed on
-+	 * the VLAN table are forwarded by the PCR_MATRIX members.
-+	 */
-+	MT7530_PORT_FALLBACK_MODE = PORT_VLAN(1),
-+
- 	/* Security Mode: Discard any frame due to ingress membership
- 	 * violation or VID missed on the VLAN table.
- 	 */
+ 	if (gmac->phy_mode == PHY_INTERFACE_MODE_SGMII) {
+-- 
+2.25.1
+
 
 
