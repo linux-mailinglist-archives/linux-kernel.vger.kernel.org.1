@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DF71EF15B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 08:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BB71EF186
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 08:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgFEGdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 02:33:15 -0400
-Received: from sonic305-1.consmr.mail.bf2.yahoo.com ([74.6.133.40]:34137 "EHLO
-        sonic305-1.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725280AbgFEGdO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 02:33:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591338793; bh=T+HL8b202M5prJrGoveqOp5+tc3db6bJ+vH0TMitLlA=; h=Date:From:Reply-To:Subject:References:From:Subject; b=fjdUTO1d+7JH3xdmXsK6EcKKqWiqbi5Yy+TeeQW+zgqBPphnb/05cEJ7DYSq1LCcfKGhDTsYSBQjX/4AoKB3Ysy9Y7EV3yiIVw7EqmnMDEw+1PcPTI2Pqsd7u0Tm/9yYNiwZL4a54lSy+M/iU7rr1lyaRtT303ztuVQvnH5tIAjbBp36stoCkPrZy5gxwkyfggtAt1s9jY8obk/kKH05AB6Cqn2c97kC03HVqECnmbV6CpzVLwKAT+/tbtRHbTAuGx0fX29aWaQ0cct/UmXBAB3cIEy/XV6+SMyiAr/AZeer1cT8vq+TymaaFnWh7TajjtYNPmf8iiCPsLJ8HKGngg==
-X-YMail-OSG: 9VrzQvgVM1lTQ6jz_WOxuuHyqOcZ5HewN1xmcUlkXRqffpSGvHF6DpisKC69Guc
- x5H65dJR_gU5X.sBctBLXHI___COuQcpJY3R2fqTUc47x72HjiF9poXKabRHrUyDtzEGHgBOF3BE
- XkajANCVifNLZzCTmmpYUffTJtxFSxbF.DxnYrtXKjRDE6S.A6_SJgA8Fhs8OQqiQKGTfT1eIcdp
- KVZlV11gd.5zxhHPEibqSQxIWRx7oKvUk6mNwmpBApR1UHx2i_rGpy42vDBItNNZ8U5CUqpoZ5bn
- wHWTJeBDz7T0HAC2DzsBYu84.OQL49fwCQ._px4nozrACZ7yl0vu6q0oXtfCUIJPp7ZLv1MOfquW
- Fmfd8EmSH8sxiBf38oGT6cllVrRd9Q5vvdLQ_AaDYC6uFxaGnaWzw1tPfNJgkNe9bD2o0YIuwwg3
- y1sqb1jFQJMOfrOAqNDhaSdc94UDv1qiOsz.Oku6whALpDXBvoKbMt6GIOOj.1JbU0WJa6Mwedw2
- BfXRNrAInf0LMMqyYXlObbrB20J8d4VP.qHAnssCDQjyLaHGLZlbxsgHTlFl9O296z.RcOuOBMmo
- rhofnX8vsgszBM_BZYnl5zuBBt0THz5.HgDInCaVcIBj3sB51YjMtQXLR1YiiOcwKtoQBlEQ.kgG
- nhgN4Dl.Scz75PS0fnFWSPoZf0TxcTnYEMuKiJPo2l3BpHeqX9a4ByPS5dhMozfEN8TFXy3ZdvYi
- TGOHZivUhM_hj0VhtZeMDvQuXy89s56ipg9kW_aqF797DH5fme3b9baCNP.2HVZXedFMkOVmCMKR
- imhi5TMY6AiztVedcJN0gF8Ylu0EhXCytvXbZjAi74uVuVyWv1gSluZspEsxi6lsfrOV.Fse1c97
- JHKsNMme3xm9ruafq6jLe0fT4iulvSdcXjlLCoB3k9.HtA3OvLJqHYfU.8UCRS9NOt8g2k3.12E0
- hKXN._Hu7nEnvupJ1tvxA9prS8v5CGDeH0ceUluKxDTny0eTZOz75XjZURQpSdZWSWY1kT8LtPO5
- 8ieAgPRdSPrSqvr8_Vvp4.7yHFLSPLPncckJhQuMPKsBVC8iDufaJwWjYKMmbuC4QaMaq.njlj2I
- Cy6X7GuV4N4L4X7o.ScgkMAj09gF44R4DEHYStdidXfYSdM3aJn_mcyCEeEgEzLfXV9T6Gj2teA3
- DIAGtb1jjx3c_Sr7bjuXSjREL_b3b8OwCq1oK4r6QXZghvylfIkvRprZluW_9004cTH3S0a5WgGi
- 1Ro3gXhqz5ZT6wEk2CG0VRg8CAKCdhqMPBCQjNQJ4PpAua0Rh0OT15J3HxONwCLfBbDYXr9p0XhB
- E
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.bf2.yahoo.com with HTTP; Fri, 5 Jun 2020 06:33:13 +0000
-Date:   Fri, 5 Jun 2020 06:33:11 +0000 (UTC)
-From:   Mrs Suzara Maling Wan <mrssuzaramalingwan12@gmail.com>
-Reply-To: mrssuzaramalingwan2@gmail.com
-Message-ID: <637424962.2155286.1591338791209@mail.yahoo.com>
-Subject: Hello
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <637424962.2155286.1591338791209.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:77.0) Gecko/20100101 Firefox/77.0
-To:     unlisted-recipients:; (no To-header on input)
+        id S1726144AbgFEGpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 02:45:11 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:51472 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725280AbgFEGpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 02:45:10 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 309A71A1F06;
+        Fri,  5 Jun 2020 08:45:09 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8D8C21A1F00;
+        Fri,  5 Jun 2020 08:45:04 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9254140296;
+        Fri,  5 Jun 2020 14:44:58 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     aisheng.dong@nxp.com, festevam@gmail.com, shawnguo@kernel.org,
+        stefan@agner.ch, kernel@pengutronix.de, linus.walleij@linaro.org,
+        s.hauer@pengutronix.de, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH 0/8] Support i.MX8 SoCs pinctrl drivers built as module
+Date:   Fri,  5 Jun 2020 14:34:26 +0800
+Message-Id: <1591338874-4733-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
-I'm "Mrs Suzara Maling Wan" married to Mr. Wan( an International
-Contractor and Oil Merchant/ jointly in Exposition of Agro  Equipment
-) who died in  Burkina Faso attack,  i am 64 years old and diagnosed
-of cancer for about 2 years ago  and my husband informed me that he
-deposited the sum of (14.3Million USD Only) with a Finance house) in
-UAGADOUGOU BURKINA FASO.
+There are more and mroe requirements that SoC specific modules should be
+built as module in order to support generic kernel image, such as Android
+GKI concept.
 
-I want you to help me to use this money  for a charity project before
-I die, for the Poor, Less-privileged and  ORPHANAGES in
-your country.  Please kindly respond
+This patch series supports i.MX8 SoCs pinctrl drivers to be built as module,
+including i.MX8MQ/MM/MN/MP/QXP/QM/DXL SoCs.
 
-quickly for further details.
+Anson Huang (8):
+  pinctrl: imx: Export necessary APIs for i.MX pinctrl drivers
+  pinctrl: imx8mm: Support building as module
+  pinctrl: imx8mn: Support building as module
+  pinctrl: imx8mq: Support building as module
+  pinctrl: imx8mp: Support building as module
+  pinctrl: imx8qxp: Support building as module
+  pinctrl: imx8qm: Support building as module
+  pinctrl: imx8dxl: Support building as module
 
-Yours fairly friend,
-Mrs Suzara Maling Wan
+ drivers/pinctrl/freescale/Kconfig           | 14 +++++++-------
+ drivers/pinctrl/freescale/pinctrl-imx.c     |  2 ++
+ drivers/pinctrl/freescale/pinctrl-imx8dxl.c |  9 +++------
+ drivers/pinctrl/freescale/pinctrl-imx8mm.c  | 10 ++++------
+ drivers/pinctrl/freescale/pinctrl-imx8mn.c  | 10 ++++------
+ drivers/pinctrl/freescale/pinctrl-imx8mp.c  | 10 ++++------
+ drivers/pinctrl/freescale/pinctrl-imx8mq.c  |  9 ++++-----
+ drivers/pinctrl/freescale/pinctrl-imx8qm.c  |  9 +++------
+ drivers/pinctrl/freescale/pinctrl-imx8qxp.c |  9 +++------
+ drivers/pinctrl/freescale/pinctrl-scu.c     |  1 +
+ 10 files changed, 35 insertions(+), 48 deletions(-)
+
+-- 
+2.7.4
+
