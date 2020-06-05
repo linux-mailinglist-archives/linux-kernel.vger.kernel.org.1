@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0AA81EFAD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C751EFAD1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729035AbgFEOV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:21:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51462 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728935AbgFEOUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:20:15 -0400
-Received: from linux-8ccs.fritz.box (p57a23121.dip0.t-ipconnect.de [87.162.49.33])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728587AbgFEOVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:21:09 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:27313 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728971AbgFEOUk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:20:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591366838;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tYrH+EqixLCGC0o9Vgv8h3T7kXXMELTRVth7woAonUk=;
+        b=ZcD+SvbYI+xwFHK8R/lo6oC7BSQikOCWkpYy/QFUOWXxYHTg8+/nauHUVwaBBNv05/3RTz
+        jqN98n6Nfa9shlAVK0l/ICC5otmSqnuceWVUyOaS5df9LG8J0QdnSEMaHoKtAJ12IK2VDz
+        sth0q32TpNIE15OAoZxFx4+FCuxrOFM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-Dy9Io7yKN9-dp3U52YM0uA-1; Fri, 05 Jun 2020 10:20:37 -0400
+X-MC-Unique: Dy9Io7yKN9-dp3U52YM0uA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F392A208A9;
-        Fri,  5 Jun 2020 14:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366814;
-        bh=lQhl9VjPpQqPHD07ccAprin/eMBfjjoE6H6u38WkXG4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B1bANglDGNNAxIm0D9lBYOGI2a3GiqmxrciDb1YXY62MpCrwmyvnZ0UUHn99RQxRC
-         funpZ/+Xjg/7isnDOsQkO1gbdu7SXGgfi1ab41YnAwhfM8JG4vMPvUhHKmDIJfZCaw
-         MR5vvR3PNQleUjcEPg3nh34HLCQ+Y0eA0bL7IeMw=
-Date:   Fri, 5 Jun 2020 16:20:10 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v4 11/11] module: Make module_enable_ro() static again
-Message-ID: <20200605142009.GA5150@linux-8ccs.fritz.box>
-References: <cover.1588173720.git.jpoimboe@redhat.com>
- <d8b705c20aee017bf9a694c0462a353d6a9f9001.1588173720.git.jpoimboe@redhat.com>
- <20200605132450.GA257550@roeck-us.net>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91AEB1005510;
+        Fri,  5 Jun 2020 14:20:35 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.93])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E6B2E6292E;
+        Fri,  5 Jun 2020 14:20:29 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Marcelo Bandeira Condotta <mcondotta@redhat.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: selftests: Fix "make ARCH=x86_64" build with
+Date:   Fri,  5 Jun 2020 16:20:28 +0200
+Message-Id: <20200605142028.550068-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200605132450.GA257550@roeck-us.net>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Guenter Roeck [05/06/20 06:24 -0700]:
->On Wed, Apr 29, 2020 at 10:24:53AM -0500, Josh Poimboeuf wrote:
->> Now that module_enable_ro() has no more external users, make it static
->> again.
->>
->> Suggested-by: Jessica Yu <jeyu@kernel.org>
->> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
->> Acked-by: Miroslav Benes <mbenes@suse.cz>
->
->Apparently this patch made it into the upstream kernel on its own,
->not caring about its dependencies. Results are impressive.
->
->Build results:
->	total: 155 pass: 101 fail: 54
->Qemu test results:
->	total: 431 pass: 197 fail: 234
->
->That means bisects will be all but impossible until this is fixed.
->Was that really necessary ?
+Marcelo reports that kvm selftests fail to build with
+"make ARCH=x86_64":
 
-Sigh, I am really sorry about this. We made a mistake in handling
-inter-tree dependencies between livepatching and modules-next,
-unfortunately :-( Merging the modules-next pull request next should
-resolve the module_enable_ro() not defined for
-!ARCH_HAS_STRICT_MODULE_RWX build issue. The failure was hidden in
-linux-next since both trees were always merged together. Again, it
-doesn't excuse us from build testing our separate trees more
-rigorously.
+gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
+ -fno-stack-protector -fno-PIE -I../../../../tools/include
+ -I../../../../tools/arch/x86_64/include  -I../../../../usr/include/
+ -Iinclude -Ilib -Iinclude/x86_64 -I.. -c lib/kvm_util.c
+ -o /var/tmp/20200604202744-bin/lib/kvm_util.o
+
+In file included from lib/kvm_util.c:11:
+include/x86_64/processor.h:14:10: fatal error: asm/msr-index.h: No such
+ file or directory
+
+ #include <asm/msr-index.h>
+          ^~~~~~~~~~~~~~~~~
+compilation terminated.
+
+"make ARCH=x86", however, works. The problem is that arch specific headers
+for x86_64 live in 'tools/arch/x86/include', not in
+'tools/arch/x86_64/include'.
+
+Fixes: 66d69e081b52 ("selftests: fix kvm relocatable native/cross builds and installs")
+Reported-by: Marcelo Bandeira Condotta <mcondotta@redhat.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ tools/testing/selftests/kvm/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index b4ff112e5c7e..4a166588d99f 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -83,7 +83,11 @@ LIBKVM += $(LIBKVM_$(UNAME_M))
+ INSTALL_HDR_PATH = $(top_srcdir)/usr
+ LINUX_HDR_PATH = $(INSTALL_HDR_PATH)/include/
+ LINUX_TOOL_INCLUDE = $(top_srcdir)/tools/include
++ifeq ($(ARCH),x86_64)
++LINUX_TOOL_ARCH_INCLUDE = $(top_srcdir)/tools/arch/x86/include
++else
+ LINUX_TOOL_ARCH_INCLUDE = $(top_srcdir)/tools/arch/$(ARCH)/include
++endif
+ CFLAGS += -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99 \
+ 	-fno-stack-protector -fno-PIE -I$(LINUX_TOOL_INCLUDE) \
+ 	-I$(LINUX_TOOL_ARCH_INCLUDE) -I$(LINUX_HDR_PATH) -Iinclude \
+-- 
+2.25.4
 
