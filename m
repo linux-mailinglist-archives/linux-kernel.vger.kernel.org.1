@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D291EF11C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 08:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233D61EF112
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 08:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726135AbgFEGEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 02:04:23 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.167]:34769 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgFEGEW (ORCPT
+        id S1726148AbgFEGAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 02:00:54 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16714 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgFEGAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 02:04:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1591337060;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=xQf/uo4q6K1iZBsnpyYY+Pgu4F2NoH+wnims7GdkxsI=;
-        b=ZkmjUnuOCOj6MxYn2yi+s5oUYPVr4VpFGgUKFHIv5ExXkdNzfPmdY7ZbnmXPVQ6JtU
-        +25eRwfNUesdA9gYDyt2FxyKv8gzy0FtyI+cp1bWQsPQGNVbqYuU9gVy50G93c29+Za0
-        16lhrBUxj3PhUbGOLwMdLGartp8PQfWpGThQDkoGw0EMHn9j4yrBbWJcXjisDI/tuvas
-        hX6YLoJOwVqgLgyorVAPlanyzkMAvZN7pxxouaGkYICNy8CeQ6jiIEt9is0MtQeiAgAU
-        E9OWmXDhQT004ANCtXGoxfBUN5DekVmTTviUJVgvmtY0AalyKGv6BFVsqkh/H64jA2ok
-        0BiA==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXvdOeueZtw="
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-        by smtp.strato.de (RZmta 46.9.1 DYNA|AUTH)
-        with ESMTPSA id I05374w555wF9Vz
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Fri, 5 Jun 2020 07:58:15 +0200 (CEST)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>, davem@davemloft.net,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+2e635807decef724a1fa@syzkaller.appspotmail.com>
-Subject: Re: [PATCH v2] crypto: DRBG - always try to free Jitter RNG instance
-Date:   Fri, 05 Jun 2020 07:58:15 +0200
-Message-ID: <5789529.snvNDI1NMy@tauon.chronox.de>
-In-Reply-To: <20200605004336.GC148196@sol.localdomain>
-References: <0000000000002a280b05a725cd93@google.com> <2551009.mvXUDI8C0e@positron.chronox.de> <20200605004336.GC148196@sol.localdomain>
+        Fri, 5 Jun 2020 02:00:53 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ed9df320001>; Thu, 04 Jun 2020 22:59:14 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 04 Jun 2020 23:00:53 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 04 Jun 2020 23:00:53 -0700
+Received: from [10.26.75.201] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Jun
+ 2020 06:00:49 +0000
+Subject: Re: [PATCH] media: staging: tegra-vde: add missing
+ pm_runtime_put_autosuspend
+To:     Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        <linux-media@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>
+CC:     <emamd001@umn.edu>, <wu000273@umn.edu>, <kjlu@umn.edu>,
+        <smccaman@umn.edu>
+References: <20200602054841.15746-1-navid.emamdoost@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <7061eb81-c00c-9978-5e4b-f9896c0ffd5e@nvidia.com>
+Date:   Fri, 5 Jun 2020 07:00:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+In-Reply-To: <20200602054841.15746-1-navid.emamdoost@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1591336754; bh=0dUrBQuoU0VRakO1MH9S67i+J3/nQDDpMEAcgsefyrU=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=R2Vq88wUbD09A+WcyBIhBotOM28XgztvZhV8dSXRV85oGVoan2uEgy1pSjb3Holxt
+         PvIsxh7u7siC7ICTBTkp+RRjCSDJ17jxniW5x/LqC8+sy/xSRamXN1pcd3DQGpoyUE
+         oSQ2GQ4Et0c32vMLlCHe2mYcxvHnoZ1pxHZTRNIOWlriT750mG73hET133SuVnQn9P
+         t/zp6OrtY/4DkBAZQlMFcxwxJHcbTD5D6hVbvYAH7U8QAEC2bhCsU45h5JUVHdpGtg
+         Ht/FOCL/0+Q/ZdMo4937jJhuU7DmdlB2Lgj1MCKiPWZ6DXVYWm78r4CCA8aLtrChA+
+         ZcQyme+ON5FcQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, 5. Juni 2020, 02:43:36 CEST schrieb Eric Biggers:
 
-Hi Eric,
+On 02/06/2020 06:48, Navid Emamdoost wrote:
+> Call to pm_runtime_get_sync increments counter even in case of
+> failure leading to incorrect ref count.
+> Call pm_runtime_put_autosuspend if pm_runtime_get_sync fails.
+> 
+> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+> ---
+>  drivers/staging/media/tegra-vde/vde.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/tegra-vde/vde.c b/drivers/staging/media/tegra-vde/vde.c
+> index d3e63512a765..52cdd4a91e93 100644
+> --- a/drivers/staging/media/tegra-vde/vde.c
+> +++ b/drivers/staging/media/tegra-vde/vde.c
+> @@ -776,8 +776,10 @@ static int tegra_vde_ioctl_decode_h264(struct tegra_vde *vde,
+>  		goto release_dpb_frames;
+>  
+>  	ret = pm_runtime_get_sync(dev);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		pm_runtime_put_autosuspend(dev);
+>  		goto unlock;
+> +	}
+>  
+>  	/*
+>  	 * We rely on the VDE registers reset value, otherwise VDE
 
-> On Thu, Jun 04, 2020 at 08:41:00AM +0200, Stephan M=FCller wrote:
-> > The Jitter RNG is unconditionally allocated as a seed source follwoing
-> > the patch 97f2650e5040. Thus, the instance must always be deallocated.
-> >=20
-> > Reported-by: syzbot+2e635807decef724a1fa@syzkaller.appspotmail.com
-> > Fixes: 97f2650e5040 ("crypto: drbg - always seeded with SP800-90B ...")
-> > Signed-off-by: Stephan Mueller <smueller@chronox.de>
-> > ---
-> >=20
-> >  crypto/drbg.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >=20
-> > diff --git a/crypto/drbg.c b/crypto/drbg.c
-> > index 37526eb8c5d5..8a0f16950144 100644
-> > --- a/crypto/drbg.c
-> > +++ b/crypto/drbg.c
-> > @@ -1631,6 +1631,9 @@ static int drbg_uninstantiate(struct drbg_state
-> > *drbg)>=20
-> >  	if (drbg->random_ready.func) {
-> >  =09
-> >  		del_random_ready_callback(&drbg->random_ready);
-> >  		cancel_work_sync(&drbg->seed_work);
-> >=20
-> > +	}
-> > +
-> > +	if (!IS_ERR_OR_NULL(drbg->jent)) {
-> >=20
-> >  		crypto_free_rng(drbg->jent);
-> >  		drbg->jent =3D NULL;
-> >  =09
-> >  	}
->=20
-> It it okay that ->jent can be left as an ERR_PTR() value?
->=20
-> Perhaps it should always be set to NULL?
+Please use the put in the error path.
 
-The error value is used in the drbg_instantiate function. There it is check=
-ed=20
-whether -ENOENT (i.e. the cipher is not available) or any other error is=20
-present. I am not sure we should move that check.
+Jon
 
-Thanks for the review.
->=20
-> - Eric
-
-
-Ciao
-Stephan
-
-
+-- 
+nvpublic
