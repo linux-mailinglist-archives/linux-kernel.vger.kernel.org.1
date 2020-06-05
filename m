@@ -2,69 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395D71EF485
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3B11EF48C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgFEJpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 05:45:02 -0400
-Received: from mx.socionext.com ([202.248.49.38]:45701 "EHLO mx.socionext.com"
+        id S1726541AbgFEJqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 05:46:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:52782 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726409AbgFEJos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 05:44:48 -0400
-Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 05 Jun 2020 18:44:47 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id 5273860066;
-        Fri,  5 Jun 2020 18:44:47 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 5 Jun 2020 18:44:47 +0900
-Received: from plum.e01.socionext.com (unknown [10.213.132.32])
-        by kinkan.css.socionext.com (Postfix) with ESMTP id 92B701A12AD;
-        Fri,  5 Jun 2020 18:44:46 +0900 (JST)
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: [PATCH v4 6/6] PCI: uniphier: Use devm_platform_ioremap_resource_byname()
-Date:   Fri,  5 Jun 2020 18:44:36 +0900
-Message-Id: <1591350276-15816-7-git-send-email-hayashi.kunihiko@socionext.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591350276-15816-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1591350276-15816-1-git-send-email-hayashi.kunihiko@socionext.com>
+        id S1726287AbgFEJqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 05:46:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2729A2B;
+        Fri,  5 Jun 2020 02:46:14 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 62EC23F52E;
+        Fri,  5 Jun 2020 02:46:13 -0700 (PDT)
+References: <20200603173150.GB1551@shell.armlinux.org.uk> <jhjh7vshvwl.mognet@arm.com> <20200603184500.GC1551@shell.armlinux.org.uk> <CAKfTPtBdN30ChMgFqqT1bzeU6HExXEQFrQjxbCK-hRT4HEiQkQ@mail.gmail.com> <20200603195853.GD1551@shell.armlinux.org.uk> <jhjftbbj3qi.mognet@arm.com> <a34fcb9a-ba4b-0c9e-328f-1244c2720ed2@linaro.org> <jhjeeqvi3m1.mognet@arm.com> <20200604092901.GE1551@shell.armlinux.org.uk> <jhjbllzhzg9.mognet@arm.com> <CALD-y_zQms4YQup2MgAfNhWSu=ewkhossHma2TKqfTcOFaG=uA@mail.gmail.com> <jhja71ij0xr.mognet@arm.com> <CAKfTPtCPSk8wAyVeFDeywbUF6qQcjKw2OsvweW3MLLLdOdK+oQ@mail.gmail.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: v5.7: new core kernel option missing help text
+In-reply-to: <CAKfTPtCPSk8wAyVeFDeywbUF6qQcjKw2OsvweW3MLLLdOdK+oQ@mail.gmail.com>
+Date:   Fri, 05 Jun 2020 10:46:04 +0100
+Message-ID: <jhj8sh1j15v.mognet@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_platform_ioremap_resource_byname() to simplify the code a bit.
 
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
----
- drivers/pci/controller/dwc/pcie-uniphier.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+On 05/06/20 08:03, Vincent Guittot wrote:
+> On Thu, 4 Jun 2020 at 17:38, Valentin Schneider
+> <valentin.schneider@arm.com> wrote:
+>> ---
+>> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+>> index 16fbf74030fe..1e92080dc275 100644
+>> --- a/arch/arm/Kconfig
+>> +++ b/arch/arm/Kconfig
+>> @@ -46,6 +46,7 @@ config ARM
+>>         select EDAC_ATOMIC_SCRUB
+>>         select GENERIC_ALLOCATOR
+>>         select GENERIC_ARCH_TOPOLOGY if ARM_CPU_TOPOLOGY
+>> +       select SCHED_THERMAL_PRESSURE if GENERIC_ARCH_TOPOLOGY
+>
+> I think that SCHED_THERMAL_PRESSURE depends on ARM_CPU_TOPOLOGY but
+> not on GENERIC_ARCH_TOPOLOGY.
+> ARM_CPU_TOPOLOGY is used to define arch_scale_thermal_pressure for arm
+> architecture
+> and we only use the header file of the generic arch_topology.h.
+> Function like arch_set_thermal_pressure() is in sched/core.c
+>
 
-diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
-index 8356dd3..233d624 100644
---- a/drivers/pci/controller/dwc/pcie-uniphier.c
-+++ b/drivers/pci/controller/dwc/pcie-uniphier.c
-@@ -456,8 +456,7 @@ static int uniphier_pcie_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->pci.atu_base))
- 		priv->pci.atu_base = NULL;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "link");
--	priv->base = devm_ioremap_resource(dev, res);
-+	priv->base = devm_platform_ioremap_resource_byname(pdev, "link");
- 	if (IS_ERR(priv->base))
- 		return PTR_ERR(priv->base);
- 
--- 
-2.7.4
-
+You're right, oh well... Let me spend a bit more time on this and I'll
+send actual patches.
