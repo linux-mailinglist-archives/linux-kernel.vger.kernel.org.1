@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267121EFC09
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 17:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156E91EFC13
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 17:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgFEPBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 11:01:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58854 "EHLO mail.kernel.org"
+        id S1728158AbgFEPCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 11:02:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727857AbgFEPBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 11:01:06 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1726911AbgFEPCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 11:02:11 -0400
+Received: from localhost (lfbn-ncy-1-324-171.w83-196.abo.wanadoo.fr [83.196.159.171])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83F232065C;
-        Fri,  5 Jun 2020 15:01:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4582A2065C;
+        Fri,  5 Jun 2020 15:02:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591369266;
-        bh=atSo0Qb+rMrsZv5QANKFcbcUcwoez30MfjPtT8ppNS8=;
+        s=default; t=1591369330;
+        bh=bgpj3gym6zcyvL/796ubDk2qM6lfHTKVZtpH2tmkf9g=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iNOTh3GVfGr8Oi8u3jquG56gWGC7TwnPsXkrbsAbPb8no4OYQZMIe9uExtbQjaTy9
-         gN0gj1O7xUzlW4M5FuRDzTu1MTHRk5b2MVEdO6hxErTu4/ctKjd4fisO4gD4RRctgv
-         mk+YqE/s7yEhcLm0OsNy9zGIzVtS6bdm06fJsPTI=
-Date:   Fri, 5 Jun 2020 16:01:03 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     mark.rutland@arm.com, robh+dt@kernel.org, catalin.marinas@arm.com,
-        vkoul@kernel.org, will.deacon@arm.com, shawnguo@kernel.org,
-        festevam@gmail.com, s.hauer@pengutronix.de,
-        martin.fuzzey@flowbird.group, u.kleine-koenig@pengutronix.de,
-        dan.j.williams@intel.com, matthias.schiffer@ew.tq-group.com,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel@pengutronix.de, linux-imx@nxp.com, dmaengine@vger.kernel.org
-Subject: Re: [PATCH v9 05/14] spi: imx: fallback to PIO if dma setup failure
-Message-ID: <20200605150103.GG5413@sirena.org.uk>
-References: <1591392755-19136-1-git-send-email-yibin.gong@nxp.com>
- <1591392755-19136-6-git-send-email-yibin.gong@nxp.com>
+        b=QzA81FUfegKp0dfBpnQUt8XpUpBzawuvILeJRfM+nYLMdlLKlodlV8zxWDCGKJMPW
+         ZG3lFRIy+reihhtlXBx6kqEgxcyGZL/F87aP0pSv7V/qx0jwOq8hH11UiqxdbRMqHy
+         pUjTUVGvXHA9qHRLvna8jym0tLANpot9QJo5pGMo=
+Date:   Fri, 5 Jun 2020 17:02:08 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, x86@kernel.org,
+        cai@lca.pw, mgorman@techsingularity.net, sfr@canb.auug.org.au,
+        linux@roeck-us.net
+Subject: Re: [RFC][PATCH 5/7] irq_work, smp: Allow irq_work on
+ call_single_queue
+Message-ID: <20200605150207.GA9599@lenoir>
+References: <20200526161057.531933155@infradead.org>
+ <20200526161908.011635912@infradead.org>
+ <20200528234031.GB551@lenoir>
+ <20200529133641.GM706495@hirez.programming.kicks-ass.net>
+ <20200605093704.GB2948@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+sHJum3is6Tsg7/J"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1591392755-19136-6-git-send-email-yibin.gong@nxp.com>
-X-Cookie: Air is water with holes in it.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200605093704.GB2948@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 05, 2020 at 11:37:04AM +0200, Peter Zijlstra wrote:
+> On Fri, May 29, 2020 at 03:36:41PM +0200, Peter Zijlstra wrote:
+> > Maybe I can anonymous-union my way around it, dunno. I'll think about
+> > it. I'm certainly not proud of this. But at least the BUILD_BUG_ON()s
+> > should catch the more blatant breakage here.
+> 
+> How's this then? Differently ugly, but at least it compiles with that
+> horrible struct randomization junk enabled.
+> 
+> ---
+>  include/linux/irq_work.h  |   28 ++++++-------------
+>  include/linux/sched.h     |    4 +-
+>  include/linux/smp.h       |   25 ++++++-----------
+>  include/linux/smp_types.h |   66 ++++++++++++++++++++++++++++++++++++++++++++++
+>  kernel/sched/core.c       |    6 ++--
+>  kernel/smp.c              |   18 ------------
+>  6 files changed, 89 insertions(+), 58 deletions(-)
+> 
+> --- a/include/linux/irq_work.h
+> +++ b/include/linux/irq_work.h
+> @@ -2,7 +2,7 @@
+>  #ifndef _LINUX_IRQ_WORK_H
+>  #define _LINUX_IRQ_WORK_H
+>  
+> -#include <linux/llist.h>
+> +#include <linux/smp_types.h>
+>  
+>  /*
+>   * An entry can be in one of four states:
+> @@ -13,26 +13,16 @@
+>   * busy      NULL, 2 -> {free, claimed} : callback in progress, can be claimed
+>   */
+>  
+> -/* flags share CSD_FLAG_ space */
+> -
+> -#define IRQ_WORK_PENDING	BIT(0)
+> -#define IRQ_WORK_BUSY		BIT(1)
+> -
+> -/* Doesn't want IPI, wait for tick: */
+> -#define IRQ_WORK_LAZY		BIT(2)
+> -/* Run hard IRQ context, even on RT */
+> -#define IRQ_WORK_HARD_IRQ	BIT(3)
+> -
+> -#define IRQ_WORK_CLAIMED	(IRQ_WORK_PENDING | IRQ_WORK_BUSY)
+> -
+> -/*
+> - * structure shares layout with single_call_data_t.
+> - */
+>  struct irq_work {
+> -	struct llist_node llnode;
+> -	atomic_t flags;
+> +	union {
+> +		struct __call_single_node node;
+> +		struct {
+> +			struct llist_node llnode;
+> +			atomic_t flags;
+> +		};
+> +	};
 
---+sHJum3is6Tsg7/J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So why not just embed struct __call_single_node in
+struct irq_work and struct __call_single_data ?
 
-On Sat, Jun 06, 2020 at 05:32:26AM +0800, Robin Gong wrote:
-> Fallback to PIO in case dma setup failed. For example, sdma firmware not
-> updated but ERR009165 workaroud added in kernel.
+Is the point of that anonymous second union layer to
+shorten the lines while accessing members?
 
-Please do not submit new versions of already applied patches, please
-submit incremental updates to the existing code.  Modifying existing
-commits creates problems for other users building on top of those
-commits so it's best practice to only change pubished git commits if
-absolutely essential.
-
---+sHJum3is6Tsg7/J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7aXi8ACgkQJNaLcl1U
-h9ACrwf/RD2Rv/jpt2YPaf64q5u9KvPJTvEmVU5U5Bntbxu4kMr9w/H6cT0QyhUg
-pfOGftQDcUXm9x+HC0Q+xC3+bPmgzzzbjGZLxMfVfgvpyV6JJ+GhTVX/LjR6Jpi+
-eyVMWffvIVKSZH8PO+nymh1/fcrOLbz3g+6D7fQJ+XNh7XmJJV0ysIpE/43KLvZs
-X4netF+zcPwX2jBYdDpP0WRi+yzBDaJSNv3rV2AJgxO0Yug7d31On8HkRYxCoMaz
-q0RJ/8s/ol2Pv0uT8GaVF7wJbDLA4XKhR53l4EeaBluFn9bh9lLYf9i3Mi53mbJQ
-2XlQLzL/GxTo2szSSv9mBII/D6nXaA==
-=LU0r
------END PGP SIGNATURE-----
-
---+sHJum3is6Tsg7/J--
+Thanks.
