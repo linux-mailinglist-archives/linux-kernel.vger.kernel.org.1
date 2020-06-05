@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294141EFDCA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4C61EFDDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728567AbgFEQ16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 12:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41066 "EHLO
+        id S1728666AbgFEQ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 12:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728524AbgFEQ1r (ORCPT
+        with ESMTP id S1728530AbgFEQ1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 12:27:47 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B9CC08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 09:27:47 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id b18so8077202oti.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 09:27:47 -0700 (PDT)
+        Fri, 5 Jun 2020 12:27:49 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75235C08C5C4
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 09:27:49 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id 69so8072887otv.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 09:27:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=M4Zj1NyIo3A3+P7k3my4X+Y2SafDKAk7x+LNWA9+5Sk=;
-        b=CggemrQbWUkbHidqgNu3yAuE+Q8XAe4PHdBIxXUMHCMtVUtXVt9WhsZmugXWSXjI2N
-         QIVjnS/hSqVQ8UQjhfKZVCYyh8GGun7YMFm85pWqC/mQ+PxpVESdL8dNccX+hNif28oE
-         eFpQqWRDAvPDb1vdJVdEVJqE2kazftxboi7t3Yk4+aiaOGeIARVxe4AGI390j3NIqIuz
-         rKEkydCTJUbVCojJ0TOr9M37owECUYiVaTZIahA3SMBi/G/45MvjqMSY7cptGlo7Se2u
-         Qo4GD4xdS3nnFxIEYvaQsN7A/NP3bUf0WFkyXaJ0ONTZbiofK9Hp6bHyYyfZYyyyLWiY
-         qiDA==
+        bh=h0TqppIn6BuRHaNOgh5AvgWTO95AAjy++fKL00K6NjM=;
+        b=hj/801q0vd3JtRrTWASWK3loeGEI8BUp1dBrQehyCTrhSYQcY3OzL76dvXzSdtWMQm
+         msFFu96s0A+bvbe+LYAffWzoJiuWZTTo8LT2IZ1dYtAX5FvF6oa9z1w9qHuUms5Ju0Zl
+         fSsM3V58iGiIq6T16raITGmJcaPW/I8kpPAwr2zXWH52sHW6MIQ7p1jHT34I8+nU275u
+         OpHnxpHJ9YI92dokvEUfUaXAIUJyl0QDmFp3YO+7qnqq+aerMYLth0XCuTHUGjcHNBZ7
+         z9ujlwKpmbjgMmbgKVFVTO/4qshgUrNM7SLG6+NAITvijGXqwwcWkhO1NW072K+utfm1
+         qZCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=M4Zj1NyIo3A3+P7k3my4X+Y2SafDKAk7x+LNWA9+5Sk=;
-        b=S/CFwxT1oUUKd1nvX8L1HFwtwV/AOfS2+yvPfSxYY7x0HRf9YBC+SMYGCY3oOwCMB2
-         gu9cb3N3IC/iZh9PM4lRuH5vp4tnhzjMebAqAfMEsbKvMdH6RN+kyi6gdcIXO1NanASa
-         LD06qbqBgHk5lN4BxHQXe31pQX0cJhwTheKlj7spfLJ53CrBHICyJxNjxHh5ifQGuV0J
-         058Ak5oJIEC0Ygsn3KqweZL7rXcKRQVlD4/qRDQfUnvD1YENJutYgQdLw6pLsultgXoA
-         EEGFFtzgajTw0o+wSlf2K/Ul3AsNDWjCFXLUc3fjIP9N67C3vGvHOF/ZBTpCKKWcT065
-         CuaQ==
-X-Gm-Message-State: AOAM530JPc48065mo9mE9i3dIykkIJOq4T084+1CeNpPMHi9zFFiI5GA
-        XrkTgm2DyNS2hMw3girEo3/kdvnt
-X-Google-Smtp-Source: ABdhPJwJChPsKSNetPGGrTSI9HjAMM6B+REkcSkDtID8k8omSqNyzlkmWseXndmSwXUD3GeuA/jGmQ==
-X-Received: by 2002:a9d:459c:: with SMTP id x28mr8431621ote.18.1591374466545;
-        Fri, 05 Jun 2020 09:27:46 -0700 (PDT)
+        bh=h0TqppIn6BuRHaNOgh5AvgWTO95AAjy++fKL00K6NjM=;
+        b=kAmQb/1ga7sP53pgBCjKRpcG5GUfNEMglazvsLdi/dUGY2HV0RIFk+CPeLgVy2K+7m
+         ajGIACfn+qzKrSiPpQ3wYvFbKeDYU3se+OxIqRECIzTkrB2FlxB0jcX3DjSqrdozvs2f
+         nFIImfHmlN7DDti4mf6iDUCs4xSXcM/i3+1Fq51oAkaPIDQIlg26dCX0+I3GcFmpZUFV
+         7Gq3c8rxWG8PuaZ6apSKXYvwFzKODch1yowmDZjiFfB5BlLHBFaJuCfAHmpM4qkHztto
+         MkGRVV9MiAZ8l36nuNegeUm2ahQ1q/4R2sRQZHy+RKrIbeyNkXrx3zPlfcMiwc5Nk/nm
+         4k+Q==
+X-Gm-Message-State: AOAM531iKJg7UnXdY/GLh9uRD4QVFrCmmqZqrAtUyU/2ekDoPkmnKQ7Z
+        GTftgzxyV3V3fPp4WKO5OH4=
+X-Google-Smtp-Source: ABdhPJxfNudU4C2BMwt48tt/YYP60TrFleXRpo8vJ0Y1bU2FDNvw+zYiWf7QMZMdVncQbcsN9AxfJA==
+X-Received: by 2002:a9d:2253:: with SMTP id o77mr8129433ota.236.1591374468821;
+        Fri, 05 Jun 2020 09:27:48 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::aaac])
-        by smtp.googlemail.com with ESMTPSA id z13sm813894ooa.28.2020.06.05.09.27.45
+        by smtp.googlemail.com with ESMTPSA id z13sm813894ooa.28.2020.06.05.09.27.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 09:27:45 -0700 (PDT)
+        Fri, 05 Jun 2020 09:27:47 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
 Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH 07/16] dyndbg: make ddebug_tables list LIFO for add/remove_module
-Date:   Fri,  5 Jun 2020 10:26:36 -0600
-Message-Id: <20200605162645.289174-8-jim.cromie@gmail.com>
+Subject: [PATCH 08/16] dyndbg: refactor parse_linerange out of ddebug_parse_query
+Date:   Fri,  5 Jun 2020 10:26:37 -0600
+Message-Id: <20200605162645.289174-9-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200605162645.289174-1-jim.cromie@gmail.com>
 References: <20200605162645.289174-1-jim.cromie@gmail.com>
@@ -65,29 +65,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-loadable modules are the last in on this list, and are the only
-modules that could be removed.  ddebug_remove_module() searches from
-head, but ddebug_add_module() uses list_add_tail().  Change it to
-list_add() for a micro-optimization.
+make the code-block reusable to later handle "file foo.c:101-200" etc.
+This should be a 90%+ code-move, with minimal adaptations; reindent,
+and scafolding.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/dynamic_debug.c | 61 +++++++++++++++++++++++++--------------------
+ 1 file changed, 34 insertions(+), 27 deletions(-)
 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 08b8c9c04a17..494856c04fa7 100644
+index 494856c04fa7..d43bc3547d3a 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -896,7 +896,7 @@ int ddebug_add_module(struct _ddebug *tab, unsigned int n,
- 	dt->ddebugs = tab;
+@@ -291,6 +291,39 @@ static inline int parse_lineno(const char *str, unsigned int *val)
+ 	return 0;
+ }
  
- 	mutex_lock(&ddebug_lock);
--	list_add_tail(&dt->link, &ddebug_tables);
-+	list_add(&dt->link, &ddebug_tables);
- 	mutex_unlock(&ddebug_lock);
- 
- 	v2pr_info("%u debug prints in module %s\n", n, dt->mod_name);
++static int parse_linerange(struct ddebug_query *query, const char *first)
++{
++	char *last = strchr(first, '-');
++
++	if (query->first_lineno || query->last_lineno) {
++		pr_err("match-spec: line used 2x\n");
++		return -EINVAL;
++	}
++	if (last)
++		*last++ = '\0';
++	if (parse_lineno(first, &query->first_lineno) < 0)
++		return -EINVAL;
++	if (last) {
++		/* range <first>-<last> */
++		if (parse_lineno(last, &query->last_lineno) < 0)
++			return -EINVAL;
++
++		/* special case for last lineno not specified */
++		if (query->last_lineno == 0)
++			query->last_lineno = UINT_MAX;
++
++		if (query->last_lineno < query->first_lineno) {
++			pr_err("last-line:%d < 1st-line:%d\n",
++			       query->last_lineno,
++			       query->first_lineno);
++			return -EINVAL;
++		}
++	} else {
++		query->last_lineno = query->first_lineno;
++	}
++	return 0;
++}
++
+ static int check_set(const char **dest, char *src, char *name)
+ {
+ 	int rc = 0;
+@@ -349,34 +382,8 @@ static int ddebug_parse_query(char *words[], int nwords,
+ 							    UNESCAPE_SPECIAL);
+ 			rc = check_set(&query->format, words[i+1], "format");
+ 		} else if (!strcmp(words[i], "line")) {
+-			char *first = words[i+1];
+-			char *last = strchr(first, '-');
+-			if (query->first_lineno || query->last_lineno) {
+-				pr_err("match-spec: line used 2x\n");
+-				return -EINVAL;
+-			}
+-			if (last)
+-				*last++ = '\0';
+-			if (parse_lineno(first, &query->first_lineno) < 0)
++			if (parse_linerange(query, words[i+1]))
+ 				return -EINVAL;
+-			if (last) {
+-				/* range <first>-<last> */
+-				if (parse_lineno(last, &query->last_lineno) < 0)
+-					return -EINVAL;
+-
+-				/* special case for last lineno not specified */
+-				if (query->last_lineno == 0)
+-					query->last_lineno = UINT_MAX;
+-
+-				if (query->last_lineno < query->first_lineno) {
+-					pr_err("last-line:%d < 1st-line:%d\n",
+-						query->last_lineno,
+-						query->first_lineno);
+-					return -EINVAL;
+-				}
+-			} else {
+-				query->last_lineno = query->first_lineno;
+-			}
+ 		} else {
+ 			pr_err("unknown keyword \"%s\"\n", words[i]);
+ 			return -EINVAL;
 -- 
 2.26.2
 
