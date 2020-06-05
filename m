@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345711EF7DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 14:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2311EF7F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 14:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgFEMZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 08:25:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56918 "EHLO mail.kernel.org"
+        id S1727963AbgFEMav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 08:30:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726753AbgFEMZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 08:25:31 -0400
+        id S1726771AbgFEMZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 08:25:33 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 964A3207D0;
-        Fri,  5 Jun 2020 12:25:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 218B6207F5;
+        Fri,  5 Jun 2020 12:25:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591359930;
-        bh=XSED5VucqbaIM9KAXQKYBziYyqoyqr+tNkKG5o4T0yw=;
+        s=default; t=1591359932;
+        bh=DiGuxViRlLGjO9gfWYS9oT1apYy3kT5tzqGXQnS425o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=To0fcKyoFzQ1W0f4gED+kaquygOKLRayC0HmKGL8ZaBvR98LKq27l97RPoKdRWsBl
-         1gEUGv7DRnEtAmD22lVD3V4nVUmdNIGMJ6AEv6M0PXzQZZELK1NI18+/kmNJxtOK7D
-         FfHZ9MaqUZVgOcBTYPoNFgyz8RBc2EKIQ0MAIx1Y=
+        b=gj6panYjYFO1YPwoK8L6qmkGxUm7SrThAzX7H0NmXlFbw3PsOqcm9yt9zFIOQJryF
+         E8oAsy6oxwclW7miM7ClkSCP4YgYSJSc+FwyqO2LsnmekknqZ8LdqYKulbRyWrlrkS
+         dJaU/4p9yPAbmZ91qV8DUMGv0U75MKXjvlBTmKIU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 10/17] net: dsa: felix: send VLANs on CPU port as egress-tagged
-Date:   Fri,  5 Jun 2020 08:25:09 -0400
-Message-Id: <20200605122517.2882338-10-sashal@kernel.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
+Subject: [PATCH AUTOSEL 5.6 12/17] gfs2: Even more gfs2_find_jhead fixes
+Date:   Fri,  5 Jun 2020 08:25:11 -0400
+Message-Id: <20200605122517.2882338-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200605122517.2882338-1-sashal@kernel.org>
 References: <20200605122517.2882338-1-sashal@kernel.org>
@@ -44,62 +43,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Andreas Gruenbacher <agruenba@redhat.com>
 
-[ Upstream commit 183be6f967fe37c3154bfac39e913c3bafe89d1b ]
+[ Upstream commit 20be493b787cd581c9fffad7fcd6bfbe6af1050c ]
 
-As explained in other commits before (b9cd75e66895 and 87b0f983f66f),
-ocelot switches have a single egress-untagged VLAN per port, and the
-driver would deny adding a second one while an egress-untagged VLAN
-already exists.
+Fix several issues in the previous gfs2_find_jhead fix:
+* When updating @blocks_submitted, @block refers to the first block block not
+  submitted yet, not the last block submitted, so fix an off-by-one error.
+* We want to ensure that @blocks_submitted is far enough ahead of @blocks_read
+  to guarantee that there is in-flight I/O.  Otherwise, we'll eventually end up
+  waiting for pages that haven't been submitted, yet.
+* It's much easier to compare the number of blocks added with the number of
+  blocks submitted to limit the maximum bio size.
+* Even with bio chaining, we can keep adding blocks until we reach the maximum
+  bio size, as long as we stop at a page boundary.  This simplifies the logic.
 
-But on the CPU port (where the VLAN configuration is implicit, because
-there is no net device for the bridge to control), the DSA core attempts
-to add a VLAN using the same flags as were used for the front-panel
-port. This would make adding any untagged VLAN fail due to the CPU port
-rejecting the configuration:
-
-bridge vlan add dev swp0 vid 100 pvid untagged
-[ 1865.854253] mscc_felix 0000:00:00.5: Port already has a native VLAN: 1
-[ 1865.860824] mscc_felix 0000:00:00.5: Failed to add VLAN 100 to port 5: -16
-
-(note that port 5 is the CPU port and not the front-panel swp0).
-
-So this hardware will send all VLANs as tagged towards the CPU.
-
-Fixes: 56051948773e ("net: dsa: ocelot: add driver for Felix switch family")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Reviewed-by: Bob Peterson <rpeterso@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/ocelot/felix.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/gfs2/lops.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/dsa/ocelot/felix.c b/drivers/net/dsa/ocelot/felix.c
-index b74580e87be8..5d9db8d042c1 100644
---- a/drivers/net/dsa/ocelot/felix.c
-+++ b/drivers/net/dsa/ocelot/felix.c
-@@ -100,13 +100,17 @@ static void felix_vlan_add(struct dsa_switch *ds, int port,
- 			   const struct switchdev_obj_port_vlan *vlan)
- {
- 	struct ocelot *ocelot = ds->priv;
-+	u16 flags = vlan->flags;
- 	u16 vid;
- 	int err;
+diff --git a/fs/gfs2/lops.c b/fs/gfs2/lops.c
+index 3a020bdc358c..966ed37c9acd 100644
+--- a/fs/gfs2/lops.c
++++ b/fs/gfs2/lops.c
+@@ -505,12 +505,12 @@ int gfs2_find_jhead(struct gfs2_jdesc *jd, struct gfs2_log_header_host *head,
+ 	unsigned int bsize = sdp->sd_sb.sb_bsize, off;
+ 	unsigned int bsize_shift = sdp->sd_sb.sb_bsize_shift;
+ 	unsigned int shift = PAGE_SHIFT - bsize_shift;
+-	unsigned int max_bio_size = 2 * 1024 * 1024;
++	unsigned int max_blocks = 2 * 1024 * 1024 >> bsize_shift;
+ 	struct gfs2_journal_extent *je;
+ 	int sz, ret = 0;
+ 	struct bio *bio = NULL;
+ 	struct page *page = NULL;
+-	bool bio_chained = false, done = false;
++	bool done = false;
+ 	errseq_t since;
  
-+	if (dsa_is_cpu_port(ds, port))
-+		flags &= ~BRIDGE_VLAN_INFO_UNTAGGED;
-+
- 	for (vid = vlan->vid_begin; vid <= vlan->vid_end; vid++) {
- 		err = ocelot_vlan_add(ocelot, port, vid,
--				      vlan->flags & BRIDGE_VLAN_INFO_PVID,
--				      vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED);
-+				      flags & BRIDGE_VLAN_INFO_PVID,
-+				      flags & BRIDGE_VLAN_INFO_UNTAGGED);
- 		if (err) {
- 			dev_err(ds->dev, "Failed to add VLAN %d to port %d: %d\n",
- 				vid, port, err);
+ 	memset(head, 0, sizeof(*head));
+@@ -533,10 +533,7 @@ int gfs2_find_jhead(struct gfs2_jdesc *jd, struct gfs2_log_header_host *head,
+ 				off = 0;
+ 			}
+ 
+-			if (!bio || (bio_chained && !off) ||
+-			    bio->bi_iter.bi_size >= max_bio_size) {
+-				/* start new bio */
+-			} else {
++			if (bio && (off || block < blocks_submitted + max_blocks)) {
+ 				sector_t sector = dblock << sdp->sd_fsb2bb_shift;
+ 
+ 				if (bio_end_sector(bio) == sector) {
+@@ -549,19 +546,17 @@ int gfs2_find_jhead(struct gfs2_jdesc *jd, struct gfs2_log_header_host *head,
+ 						(PAGE_SIZE - off) >> bsize_shift;
+ 
+ 					bio = gfs2_chain_bio(bio, blocks);
+-					bio_chained = true;
+ 					goto add_block_to_new_bio;
+ 				}
+ 			}
+ 
+ 			if (bio) {
+-				blocks_submitted = block + 1;
++				blocks_submitted = block;
+ 				submit_bio(bio);
+ 			}
+ 
+ 			bio = gfs2_log_alloc_bio(sdp, dblock, gfs2_end_log_read);
+ 			bio->bi_opf = REQ_OP_READ;
+-			bio_chained = false;
+ add_block_to_new_bio:
+ 			sz = bio_add_page(bio, page, bsize, off);
+ 			BUG_ON(sz != bsize);
+@@ -569,7 +564,7 @@ int gfs2_find_jhead(struct gfs2_jdesc *jd, struct gfs2_log_header_host *head,
+ 			off += bsize;
+ 			if (off == PAGE_SIZE)
+ 				page = NULL;
+-			if (blocks_submitted < 2 * max_bio_size >> bsize_shift) {
++			if (blocks_submitted <= blocks_read + max_blocks) {
+ 				/* Keep at least one bio in flight */
+ 				continue;
+ 			}
 -- 
 2.25.1
 
