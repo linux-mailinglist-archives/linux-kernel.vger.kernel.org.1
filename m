@@ -2,125 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BE91EEF5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F22B1EEF46
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbgFECKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 22:10:52 -0400
-Received: from mail-eopbgr50086.outbound.protection.outlook.com ([40.107.5.86]:45569
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726148AbgFECKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 22:10:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=POXDS+Cg0PIg9P9yJ9SgCYudsqaxeOoxARRNGhPvAEXa6aNH4VAE7nx6tymls8TEMcrTOYXrdg4CMSaNxQw0P62N9SpWzZiHOqOH8EXtcsssuUh8Hj/edKkNah8EZBy2mRZzQhakZzPlWOs5LWkYXCnkwl3lDvsJLLJ6onhscRxuJyhhlVLACVfuD9kSLcpsTE+uEKKn79+w2QKiFLMA7KPemIXw2128//dFnDnY2p7L+5kjOG5a8m0yCX5avjbGgXxLnlQGHz76aY4SkNF7vEKrpJ/x0fBVyYm6NL2IDViHocccBtx6LRXG9NdvpKSO/m8WBOHTR3wUNhe2vCVVGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kTNMJKnmzYPf2aJxxbbqOyDbOxZ83LKwA9t9cMSoDrc=;
- b=AT+IzNx5vUUUgkFAMFJucgxLGyyJYpBOPU7SASXBekAsZ69QhrAePXko79miCJU0USLa/4Z4eDNzid0we8H7C+iO70Fs/Iq/euUyz0Jd5wqu4Tg+TTZmghclsmoSbijtgihoQwreHXPXvDYiLF3lZ5sUsPMJG0tkVqLytrHtCb3iJhGz9OztRuwtyIZm8ce3oOEe0toZPOFq86afAlHnyb61C7N+eBlx/zjNdWpICaZkvao3MIksZxdHPyrNEq4+UFvgHyo19tHFmaPq1y7qdzXn5Fyf6CfjbjbvP1HIn71awBDbxMQk3IQBzYZTZybFQcoOMO3MwXEcJveTGDfGcA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kTNMJKnmzYPf2aJxxbbqOyDbOxZ83LKwA9t9cMSoDrc=;
- b=ax2Rzb74CRGG9d5pF0pFsSi4QvrUETB2o6CQKcTwNK0pz0lnqLYwyzDkhCjMcTkfaDXiPUlP/WaxT1t7X5r8ybDBAEBXb7vqW3J6W3t6ObqpWzfjvBE0IkRdrrEe9ON4ESuHYbqbtqBu2/0eymVk1+IYvu83+76elDJ24Kdt6nc=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB6PR0402MB2696.eurprd04.prod.outlook.com (2603:10a6:4:a1::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18; Fri, 5 Jun
- 2020 02:10:46 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.3066.018; Fri, 5 Jun 2020
- 02:10:46 +0000
-From:   peng.fan@nxp.com
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de, aisheng.dong@nxp.com
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux@rempel-privat.de,
-        leonard.crestez@nxp.com, daniel.baluta@nxp.com,
-        qiangqing.zhang@nxp.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        franck.lenormand@nxp.com, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V3 3/3] firmware: imx: scu-pd: add more cm4 resources
-Date:   Fri,  5 Jun 2020 09:59:32 +0800
-Message-Id: <1591322372-3793-4-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591322372-3793-1-git-send-email-peng.fan@nxp.com>
-References: <1591322372-3793-1-git-send-email-peng.fan@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SGAP274CA0014.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::26)
- To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+        id S1726066AbgFECCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 22:02:21 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:54048 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgFECCT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 22:02:19 -0400
+Received: by mail-io1-f71.google.com with SMTP id g3so4795528ioc.20
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 19:02:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=4rcueDE6zN7DRRKwO+S7Sh4oUwAm56CiDtVj9788tc0=;
+        b=oTmVXdNOWolvaKe+gzOgsthBrGRlYjYr2UAAcliIXQf85A/gBpcLY1KLOzifb2Qg85
+         ijNqrBHB1PdXivlewen+rsasfQNxLitmLzR8FMbXbF0X198FTBLy6OfbKKdebu24SmZ/
+         fapOaRIRnnW6H6wZ9VkSO5/xvtnRy6Y32CcwfevxyznovX4lSpAImj68js3cYUco3FW4
+         7m7Gi4gP3x33JMTPganUx93sfzvD1RFjW6agNsP3fAVNHA5gW8LZdoZbapt2EJOsMVJf
+         2iA7jpeU/zsl3Rgrp1VNzvyO5r142yOjUtN5n3DMUXIXQMYVXhXESaUt/2lWiS5/1FUG
+         uVFw==
+X-Gm-Message-State: AOAM532Fxbz+sgwVMzybERraFHUzQzgUU0CXVKK2+XIcKvFgzs1SL48c
+        +5PBv0ZLd2JcwRZWmI9CGoY1gfTzEaYZkI2Ng5tEmx0q9jTF
+X-Google-Smtp-Source: ABdhPJwn6iMhHcIMJ4Cst6v/CJSQLfOI0lmzwZsatfmQ5asx8AtEQcplJ+OCDFRmExBxWwU+vH6o0TkPdU7g27IJoghKIzVu4vmb
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SGAP274CA0014.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3066.18 via Frontend Transport; Fri, 5 Jun 2020 02:10:41 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.66]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: f79eaed5-4b36-47da-c4ea-08d808f5a865
-X-MS-TrafficTypeDiagnostic: DB6PR0402MB2696:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6PR0402MB2696DB0E2FBDB2C2D8B22F8388860@DB6PR0402MB2696.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:364;
-X-Forefront-PRVS: 0425A67DEF
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NrGuVoncW1u9tnGuSHmL3wFuHKr8sM35Ej7M/azG8faU5QBEjL99R6g+5j1DEXO4givrCOiEz6VSkheyRPj41OA633qdwWWz5nRiFoXMBu/Nz679T2VCUtboeiCxC4dqVWhkiwP/1a+sFGWuN8cIYoIReVqvgsJ1z9bY0l0kvrx9z0fLFrct8x1ZiEN+jIq0wsHL2cuADAb7Bw/0GDb/n1h/Ck68c2U3HswAzmTKUlY1tpZGrBjcjdD8qnqBPV4lwl5pXT411KWLGqOlo4lO0qtIvynDM7hHqMDUdZFixoo3HINcUVRExpyLLFzExuUIk3TSRRw0p454AeX8HOv79jPkkn4XGWs6Ws1wClw+4jqPiysw13w1iYskcJFZU8kl
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(136003)(39860400002)(396003)(366004)(86362001)(83380400001)(6506007)(52116002)(478600001)(66556008)(66946007)(8676002)(9686003)(66476007)(6512007)(8936002)(2906002)(186003)(36756003)(2616005)(6486002)(956004)(4326008)(69590400007)(16526019)(6666004)(26005)(5660300002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: CHKyqFLh6VGa8efsS7qiLWV9x3qY1ehlZtc9Sq9e1o2r+W7Nd/MP+7cRw3VnJGZWblSrf0jKM/t+gHQ9FRQqvZRHsjnz6vASz1GfUOa7yBgPK5X1LX0bpOGuQYWjgRMVHJ3Z3Fjj0Bfnjalvsq0BEkvtqKzOg8mOI8WGxTcv6PfzaC6bHERW18iKB5YuLltxOjVMsLXqoGE72qa1N2pUqy5Dtc4mF9/ZCooZtTuMHOva1WEZUD2WOxYZzYdc2e8yRsAHIqj7os4aHPsNbZCtEpzar4REM2SinP77e/DiF7sHRTpgA+pbYKidBTng5VQH1wB5RpmghusRuBju4UpK8nbpRZtOWkKsFcbMON/HyiLe9vf5ykHNlsxQIf40ToRmoVBPVnmTFZHQWdUwL0H9WgpX0pgVCYF3GKkMT/ibiYU1CDw03cknC5NwmpQhevZCfH+l1CrroRtEMY7S4rwODnw5grv8yyQhr/TeV9+aNT1EFMNqYYDuMhx7y63AmUJ0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f79eaed5-4b36-47da-c4ea-08d808f5a865
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2020 02:10:46.0555
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: c63ZYavQYsfLWxToPVop6E+BBFA7erYoxdocm1nRcW2WJEWF8ihIFEJIax+H+tpPnHeIrx/UfrokDroGJHla8g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2696
+X-Received: by 2002:a02:908b:: with SMTP id x11mr6533785jaf.41.1591322538916;
+ Thu, 04 Jun 2020 19:02:18 -0700 (PDT)
+Date:   Thu, 04 Jun 2020 19:02:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a7be4a05a74ca69a@google.com>
+Subject: linux-next test error: BUG: using smp_processor_id() in preemptible
+ [ADDR] code: systemd-rfkill/6728
+From:   syzbot <syzbot+aed048f49c59eb997737@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+Hello,
 
-Add more cm4 resources, then linux could use cm4's i2c/lpuart and
-could kick cm4 core.
+syzbot found the following crash on:
 
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
+HEAD commit:    0e21d462 Add linux-next specific files for 20200602
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10461661100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ecc1aef35f550ee3
+dashboard link: https://syzkaller.appspot.com/bug?extid=aed048f49c59eb997737
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+aed048f49c59eb997737@syzkaller.appspotmail.com
+
+BUG: using smp_processor_id() in preemptible [00000000] code: systemd-rfkill/6728
+caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+CPU: 1 PID: 6728 Comm: systemd-rfkill Not tainted 5.7.0-next-20200602-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
+ ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+ ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
+ ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+ ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
+ ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
+ ext4_append+0x153/0x360 fs/ext4/namei.c:67
+ ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
+ ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
+ vfs_mkdir+0x419/0x690 fs/namei.c:3632
+ do_mkdirat+0x21e/0x280 fs/namei.c:3655
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f9ffaa79687
+Code: Bad RIP value.
+RSP: 002b:00007ffeb3197c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 000055c2e6155985 RCX: 00007f9ffaa79687
+RDX: 00007ffeb3197b00 RSI: 00000000000001ed RDI: 000055c2e6155985
+RBP: 00007f9ffaa79680 R08: 0000000000000100 R09: 0000000000000000
+R10: 000055c2e6155980 R11: 0000000000000246 R12: 00000000000001ed
+R13: 00007ffeb3197dc0 R14: 0000000000000000 R15: 0000000000000000
+
+
 ---
- drivers/firmware/imx/scu-pd.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/firmware/imx/scu-pd.c b/drivers/firmware/imx/scu-pd.c
-index d1b313fa7b96..af3d6d9ead28 100644
---- a/drivers/firmware/imx/scu-pd.c
-+++ b/drivers/firmware/imx/scu-pd.c
-@@ -167,8 +167,18 @@ static const struct imx_sc_pd_range imx8qxp_scu_pd_ranges[] = {
- 	{ "dc0-pll", IMX_SC_R_DC_0_PLL_0, 2, true, 0 },
- 
- 	/* CM40 SS */
--	{ "cm40_i2c", IMX_SC_R_M4_0_I2C, 1, false, 0 },
--	{ "cm40_intmux", IMX_SC_R_M4_0_INTMUX, 1, false, 0 },
-+	{ "cm40-i2c", IMX_SC_R_M4_0_I2C, 1, false, 0 },
-+	{ "cm40-intmux", IMX_SC_R_M4_0_INTMUX, 1, false, 0 },
-+	{ "cm40-pid", IMX_SC_R_M4_0_PID0, 5, true, 0},
-+	{ "cm40-mu-a1", IMX_SC_R_M4_0_MU_1A, 1, false, 0},
-+	{ "cm40-lpuart", IMX_SC_R_M4_0_UART, 1, false, 0},
-+
-+	/* CM41 SS */
-+	{ "cm41-i2c", IMX_SC_R_M4_1_I2C, 1, false, 0 },
-+	{ "cm41-intmux", IMX_SC_R_M4_1_INTMUX, 1, false, 0 },
-+	{ "cm41-pid", IMX_SC_R_M4_1_PID0, 5, true, 0},
-+	{ "cm41-mu-a1", IMX_SC_R_M4_1_MU_1A, 1, false, 0},
-+	{ "cm41-lpuart", IMX_SC_R_M4_1_UART, 1, false, 0},
- };
- 
- static const struct imx_sc_pd_soc imx8qxp_scu_pd = {
--- 
-2.16.4
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
