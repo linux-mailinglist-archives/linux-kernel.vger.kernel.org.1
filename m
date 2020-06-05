@@ -2,138 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521EC1EF31A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 10:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A508B1EF2D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 10:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbgFEIaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 04:30:21 -0400
-Received: from mail-eopbgr750089.outbound.protection.outlook.com ([40.107.75.89]:4357
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725986AbgFEIaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 04:30:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n1fsN5TJ7nE3lJObOaeznCmPlHI1ujtQWpQuCYu0oDK7aHz1R6n4ovCAWxJaLCIMdfnqxotQdRyfjhQwLn1vxqpGDIt3nj/1af/luFx/8ITP1DynGokxToy6STXtuBkoXpJQbGFFGkHcPv9XLUpTwWJ+KFXBCx2ee0XT9WS489RvKXPsoVC4Vz3DqKaHuT15LZ/EWB4YTve3MOi8gMuZM1LmUUpBdlno5jjZvBhDYhqsoAGeuVBNdEhFyjQvE24s95JoYzfDX8c02SokuVtXcQe8oicPAwKhll+nsWJVt++P89iiWcaVOiEEhAPOyHHGtggIn6DQwH8vwyGwOgP5gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RlIY35sSAkhhyE5Yx/QV3T0MEr4hUbB/90b5vlWJ6eo=;
- b=F8sv7mqNaVhsy/0jn0l7SDCSxJgYaLq4jK42glUH2E0Ri1YsdVv8RYKlkOMSHZ4YmDft0omsdW+6M4Ick+qkFNxrCsWCuLliuF4P+bYfLtjs0OEhzFF8OPOUNexjqw+pzQNnNVTJRVnZyAwQX71ghl98pmWLVkchO5oAWt6/XxJKvLKjzXrHI5zhpywXuZ14ZAD3JGZHI0ComQz4eyHdzfUYRhnjDA1w7MMklhTJZ8FErPqiMuJv1bgKayLPk7vfj/DBERMsx+9WTE6f4XQgsTE1uguDhrW0FXrygTxd7hH0AgfGadSyhMgV85RsX+mBxJR5ZRTbYol+ssIUvScbag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RlIY35sSAkhhyE5Yx/QV3T0MEr4hUbB/90b5vlWJ6eo=;
- b=4FmlkDJ/jwg5GB0WyndDOEbSf8l2FHSzgqpg4RZ+AeHHpJxoa6151no7MdZfvoP8klcyhAGVdG8syHng2omzfKPOto9BgaB09JGAywGFA9yXPK1nVVy6pY+NM+6rez3jpOQl3Et+pLIVyCrjSq5IyPlqqSzuW8gid2+X2Nu8TGk=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MW2PR12MB2586.namprd12.prod.outlook.com (2603:10b6:907:11::21)
- by MW2PR12MB2427.namprd12.prod.outlook.com (2603:10b6:907:a::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18; Fri, 5 Jun
- 2020 08:30:10 +0000
-Received: from MW2PR12MB2586.namprd12.prod.outlook.com
- ([fe80::693d:7e71:3a0d:b6d4]) by MW2PR12MB2586.namprd12.prod.outlook.com
- ([fe80::693d:7e71:3a0d:b6d4%7]) with mapi id 15.20.3066.018; Fri, 5 Jun 2020
- 08:30:09 +0000
-Subject: Re: [PATCH 13/18] drm/amdgpu/dc: Stop dma_resv_lock inversion in
- commit_tail
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Cc:     linux-rdma@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        linaro-mm-sig@lists.linaro.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        linux-media@vger.kernel.org
-References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
- <20200604081224.863494-14-daniel.vetter@ffwll.ch>
-From:   Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>
-Message-ID: <e0bfd872-5d38-6718-a23d-6b14b3c14f25@amd.com>
-Date:   Fri, 5 Jun 2020 10:30:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-In-Reply-To: <20200604081224.863494-14-daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Language: fr
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR0P264CA0188.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1c::32) To MW2PR12MB2586.namprd12.prod.outlook.com
- (2603:10b6:907:11::21)
+        id S1726207AbgFEILe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 04:11:34 -0400
+Received: from hosted-by.rootlayer.net ([185.222.58.142]:61484 "EHLO gmail.com"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726116AbgFEILe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 04:11:34 -0400
+X-Greylist: delayed 160696 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Jun 2020 04:11:32 EDT
+Reply-To: fasail.fmfashion@gmail.com
+From:   =?UTF-8?B?SXJpcyBQcsO8ZmVy?= <hildredtjalkabota@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Subject: NEW ORDER !!!!!!
+Date:   5 Jun 2020 08:11:31 -0700
+Message-ID: <20200605081131.112E8F1D96F1F147@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.100.219] (109.190.135.109) by PR0P264CA0188.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1c::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18 via Frontend Transport; Fri, 5 Jun 2020 08:30:06 +0000
-X-Originating-IP: [109.190.135.109]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: bb324d56-271f-4356-2754-08d8092aa87c
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2427:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW2PR12MB24275F7354CC06AAFE2C148C8D860@MW2PR12MB2427.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
-X-Forefront-PRVS: 0425A67DEF
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 810Kczd3PTLYFhIDGBMqwZu2HH3fiXBmzDv7Kedl9vnnXD/3JIiiGHD7cIAETelLJJW2wWoYFhmjevG5kHBvps3Y1Mvg/nVkrS9CPUH/L2RFEWH7ASZjlas5QSLsurU4zH66FXYYnm7XwUUFybCIZ0ri1r7X5dVhda9dijpbiNLKR2BsIz9sAyU5ghusvXvFIot7QNonP5Nq0qoOSm8ADKeekJk4e1n7v7agLN9trI2+kdTicKjKyx5M6KBwIP3baKzD7Lk4GCOitTLbW6zOjvNopS3QRgq2G1yMhY5fJXBitnKVXlyFFPVSboC0/vg20pRIsUsSzuLoLkD2sY0Y9C9BcuTl5I8bDvbXYw6+v+E3QOJkoU7F38BjM5NWbSmW
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB2586.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(376002)(39860400002)(136003)(366004)(346002)(31696002)(8936002)(478600001)(86362001)(54906003)(5660300002)(6486002)(6666004)(110136005)(8676002)(55236004)(316002)(16576012)(53546011)(66946007)(26005)(31686004)(16526019)(186003)(2906002)(66556008)(66476007)(83380400001)(36756003)(956004)(2616005)(4326008)(7416002)(52116002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: KWj9D+1sTSyKCbiraKO70pvR6tuws1tf5LLVW9wBhc1OwJtYcGR3DnFPseTNwn17xZYejtmfR4JRI/dTjMfkXExTR7aA6b6IRPoyj0a/T0XSFX2V4V39DUioHkSYD8QiBkJ3IkcKQIVmSyLwmymtbYfYU+exTNRXMxe6EBW1ElSqeG7XQk3XzLo73BdaIUuNtsgqG96xK2PLEtMrzxfOkUmjze5sWOgM5oegmwpvg7QJ8q+H+9JlFMx7/dhXMqqJN6DP37+UDUY9ngNuiYU4kWUnW7OpSB/6IKfGT4Z2IDW6Jkc53XzrG4nLa5BKBOkA+tDqHVLxyEPmVMsH0r8LpPQZcsRwvqZ2FHB2rsK4iFqcDUTlubAwz9oSVEUDpZDkB5KLrzIAE0e1nnDlNiajfd2C5PXBewD7o0UdaM9zl5LIg20xSlM6rekELEhTYHp403k+fwD7MA74XaKpv3P3ladACQzbEgFg2axBf6t8gUXOWz0MhbZAt/+2KXFNYmpE
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb324d56-271f-4356-2754-08d8092aa87c
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2020 08:30:09.7937
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +xfdZI8gCJOL2JBDjKfXizcMW9aTh6gxHH2+jZ6NrDK2hBEtDfB3TDHzj43+i884cxij4I2FeA/ZS24JIkmJdw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2427
+Content-Type: multipart/mixed;
+        boundary="----=_NextPart_000_0012_4D60A9D3.BCD703FB"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+This is a multi-part message in MIME format.
 
-On 04/06/2020 10:12, Daniel Vetter wrote:
-[...]
-> @@ -6910,7 +6910,11 @@ static void amdgpu_dm_commit_planes(struct drm_atomic_state *state,
->  		 * explicitly on fences instead
->  		 * and in general should be called for
->  		 * blocking commit to as per framework helpers
-> +		 *
-> +		 * Yes, this deadlocks, since you're calling dma_resv_lock in a
-> +		 * path that leads to a dma_fence_signal(). Don't do that.
->  		 */
-> +#if 0
->  		r = amdgpu_bo_reserve(abo, true);
->  		if (unlikely(r != 0))
->  			DRM_ERROR("failed to reserve buffer before flip\n");
-> @@ -6920,6 +6924,12 @@ static void amdgpu_dm_commit_planes(struct drm_atomic_state *state,
->  		tmz_surface = amdgpu_bo_encrypted(abo);
->  
->  		amdgpu_bo_unreserve(abo);
-> +#endif
-> +		/*
-> +		 * this races anyway, so READ_ONCE isn't any better or worse
-> +		 * than the stuff above. Except the stuff above can deadlock.
-> +		 */
-> +		tiling_flags = READ_ONCE(abo->tiling_flags);
+------=_NextPart_000_0012_4D60A9D3.BCD703FB
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-With this change "tmz_surface" won't be initialized properly.
-Adding the following line should fix it:
-
-  tmz_surface = READ_ONCE(abo->flags) & AMDGPU_GEM_CREATE_ENCRYPTED;
+NEW ORDER!!!!
 
 
-Pierre-Eric
+Hi 
 
+How are you=E2=80=A6.hope everything is fine and doing great with the=20
+business=E2=80=A6
 
->  
->  		fill_dc_plane_info_and_addr(
->  			dm->adev, new_plane_state, tiling_flags,
-> 
+Please find attached our new order of Logona and Sante products=E2=80=A6.
+
+Could you please inform us when do you plan the relaunched of=20
+anti-age collection products=E2=80=A6..Also do you have some products of=20=
+
+this collection (before relaunching the new ones) on discount????
+ 
+
+Mit freundlichen Gr=C3=BC=C3=9Fen/
+
+Kind regards,
+
+Iris Pr=C3=BCfer.
+Key Account Management Europe
+
+Vertrieb International
+Tel. +49 (5153) 809 342 =C2=B7 Fax. +49 (5153) 809 366
+
+LOGOCOS Naturkosmetik AG
+E-Mail: post@logocos.de =C2=B7 Tel. +49 (5153) 809 00 =C2=B7 Fax. +49=20
+(5153) 809 88
+Internet: www.logocos.de
+
+Zur Kr=C3=A4uterwiese, D-31020 Salzhemmendorf
+Handelsregister: Amtsgericht Hannover HR B 203 235
+Vorsitzender des Aufsichtsrates: Marc Christian Wedekind
+Vorstand: Dirk H=C3=B6fer, Alexander Welter
+Denken Sie an die Umwelt, bevor Sie die Mail ausdrucken
+
+Wegen Inventurarbeiten erfolgt vom 27.09.18 bis einschlie=C3=9Flich=20
+01.10.2018 keine Warenannahme !=20
+Vom 24. bis 26.09.2018 ist eine Warenannahme nur nach vorheriger=20
+Absprache m=C3=B6glich.=20
+Wir bitten um Ber=C3=BCcksichtigung. Vielen Dank !
+
+------=_NextPart_000_0012_4D60A9D3.BCD703FB
+Content-Type: application/msword; name="New Order.doc"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="New Order.doc"
+
+e1xydGYzOTQxe1xvYmplY3RcZnRlY2hcZm1vZGVybjg3NTZcZnRlY2hcZm1vZGVybjUzMzdc
+ZmJpZGk1MjU2XGZuaWxcZm5pbDQ5ODBcZnRlY2hcZmJpZGlcZnNjcmlwdFxmcm9tYW4yNzc1
+XGZ0ZWNoXGZiaWRpODk5N1xmc2NyaXB0Mzg0NlxmZGVjb3JcZnJvbWFuMzIxMlxmbmlsNjYz
+MlxmYmlkaVxmbW9kZXJuNzQyNlxmc3dpc3M3NzAzXGZ0ZWNoXGZkZWNvcjE2NDFcZmJpZGk0
+ODlcZnRlY2hcZmJpZGlcZnJvbWFuMTEyM1xmZGVjb3I0MTg1XGZyb21hblxmdGVjaDc2Nlxm
+c3dpc3M2ODZcZm1vZGVyblxmbW9kZXJuNDA5XGZiaWRpNzE4NVxmZGVjb3JcZmJpZGk1Mlxm
+dGVjaFxmYmlkaTE2OFxmc3dpc3M3OTc5XGZzd2lzczE5MDBcZnJvbWFuXGZ0ZWNoNzYyMlxm
+YmlkaTgzOTlcZmRlY29yMjg1NVxmZGVjb3IzMTMyXGZyb21hblxmYmlkaTcwNjlcZmJpZGlc
+ZnJvbWFuMTQwMFxmcm9tYW4xMjg0XGZtb2Rlcm42OTg5XGZuaWxcZm1vZGVybjU0OThcZnRl
+Y2hcZmRlY29yNjExNFxmZGVjb3JcZmRlY29yNTgzN1xmcm9tYW4yNjE0XGZuaWxcZm5pbDM3
+NjZcZnRlY2g5MTEzXGZzd2lzc1xmc2NyaXB0MzQwOFxmbW9kZXJuNTYxM1xmc2NyaXB0XGZy
+b21hbjMwNTFcZnN3aXNzMzgyOFxmdGVjaFxmZGVjb3IyNjk0XGZiaWRpMzI4XGZuaWxcZnN3
+aXNzMjMzN1xmbW9kZXJuNjgyOFxmc3dpc3NcZnRlY2gxOTgwXGZuaWwzMzI4XGZ0ZWNoOTI3
+XGZuaWwzNDg5XGZzd2lzc1xmbmlsNTE0MVxmc3dpc3NcZnNjcmlwdDgwNDJcZnN3aXNzOTM1
+NFxmYmlkaTczNDZcZm1vZGVyblxmc2NyaXB0MzU2OVxmcm9tYW5cZmRlY29yMTA0M1xmdGVj
+aFxmbW9kZXJuODQ4MFxmc3dpc3M3NTQyXGZuaWxcZm5pbDgxMjJcZnJvbWFuNTc1N1xmc3dp
+c3NcZnN3aXNzNjA1MVxmdGVjaDIyNTdcZnNjcmlwdFxmYmlkaTU2OTRcZm1vZGVybjg3NTZc
+ZnRlY2hcZm1vZGVybjUzMzdcZmJpZGk1MjU2XGZuaWxcZm5pbDQ5ODBcZnRlY2hcZmJpZGlc
+ZnNjcmlwdFxmcm9tYW4yNzc1XGZ0ZWNoXGZiaWRpODk5N1xmc2NyaXB0Mzg0NlxmZGVjb3Jc
+ZnJvbWFuMzIxMlxmbmlsNjYzMlxmYmlkaVxmbW9kZXJuNzQyNlxmc3dpc3M3NzAzXGZ0ZWNo
+XGZkZWNvcjE2NDF7XDc1NzUwMDQ4fVxvYmpvY3h7XDc1NzUwMDQ4fVxvYmp3MTY3NXtcNzU3
+NTAwNDh9XG9iamgzMTA3e1w3NTc1MDA0OH17XDc1NzUwMDQ4fVxvYmp1cGRhdGUzODI5MTc1
+Nzh7XCpcb2JqZGF0YXtcbWNHcDQ2OTM2NUhIZ0dGdG5QR1hTa2FuNDY5MzY1XHVjNDY5MzY1
+ICAgICAgICAgICAgIFxtY0dwNDY5MzY1SEhnR0Z0blBHWFNrYW40NjkzNjVcdWM0NjkzNjV9
+XHJ0Zg0NZGRhODhkNmIwMjAwMDAwMDBiMDAwMDAwNjV7fTUxNzU0MTU0NDk2ZjRlMmUzMzAw
+MDAwMDAwMDAwMDAwMDAwMGZjMDgwMDAwMDM1MWUyZTAyZTE4MDEwOGNjXGJpbjAwMDAwMDAw
+DWE4YmU0YTQyMTMyMTgxZWUwZTg1Y2QyMDhiM2U4YjFmYmZjZjI5M2E0ZDgxYzdlMTNkMGNi
+MzhiMTc1M2ZmZDIwNWI0MjJmYTNhMDU1N2RlMDVjNWZmZTA2ODNiN2Q0MjAwMjg2MWZiMGYz
+YjYxYjEyZWI3NTRmZGQwZjA0ODc1Nzg2ZGM1OGJhZThmNTYxNDQ0Yzg5NDZjOGQ1YzQyYTBm
+OTc5MTllMzJlY2Y3OGMwOGU3MjE1MjJiNjA0NDVkMjhiYmUyOTgxMzg4MjlhZDAzMGMxZTNh
+MTU3ZDRlOTBjMGQxZGU4NDM3N2ViMDJiZDQzOTcwZDAyODY1Yjg3NTk0ZGFiMWJjYmJiZDlm
+OGI3ZDU3YjIwM2U4NTFhM2Y5NDI1OGVjNWMzZjNmNTVhNjE4ZGRmYzMwNmJmZGI4ZDRjODRi
+ZDU3MzJkMjFlYWEzOGE4ZjdjZTg4NmI4MDVmNzhmZDVlYWJjNTRmMjZhMjU0MTYwZWM5Y2Iw
+YmM3OWJlMzVmOGU5ZTJkM2ViNGI4M2NmZWM4MDVmNjgyYWMzMWU5M2FiNjliNWRkYTBhYmFi
+NTYzN2ZhZGE1YWVhZTMyNGI3M2QwYWY2YjVmNTQ2MjE5OTgwZTUzYjRlNTljNTk4OWRjY2I5
+OWQyMGI3ZTUxOThlMzIwODI5NzFiZjMxZGEzMzVjNmU5ZjIwMTAwMDBkYzMzMzdlNDQ1OTk3
+ZGI1NmQ1MmE0MjcyY2JjMTg2YTlhYWYyZTRhNTZiMzYwNWZjMzQ2ODc1NzQ1MTkyODM4OGE1
+M2EzOWFiZGM5ODNlNWQzNGJiMzk5YzFkYWMzOGJiZmVkMjgyMzhlYTk3ODk5YjAzMGIzM2Vh
+YmNmNzdiMzQ5NGQ0OTM0ZDgyNmQwYzk2YmMzMWE5MjE3YzZkNzAxMzc0NjlhMWZhOTBjMWNj
+ODExZDU3OGU3MTE5MjcwYzU5OGE3YTgzNDEzMmVlOGUyYjIzNzVjOGVhZGZmZDQ0YzdlM2Uw
+NmMxMjU1ZGM3NmM2MGI3NTZkOGY5ZTE5MmVhZjlkYzQwMWFlZjY2NDhiMTJiMjhmNzEyMDYw
+NTNhZWMxOTUzZWE4OTgwMWFmYzA1MjM1OGNjOGRlMzNkNWRhNGViNzA5MTYyZWM0ODcxYjU1
+NTE2Njk5ODllNTg4YjYwODIwNGM3ZjUzZWM0MzkxMmQ0MzM1Yzg1NGIyNTUxNzNlZGUwMWI5
+MThhNTllNDZkYjE4MDM2YTRmODc4NDMyYjNlZDIxZTg3ZGRkYjAxMTVmOGNlODY0NWI2MWNl
+ZmQ3ODJhYzVmMjU0ODE3MWU1YmJkZTlkYmI2OTVlNWU0Y2FjYTNkNmRiZWRjZGZkMDhlMGRh
+M2M3NDlhMmEwYjQ1MDI2NTZkYTlmYTkwMmE0ZmVmOWNmZDk0YmYxMWRlZmJkYTdjNTM3MTli
+ZDUwMjlmYjkzMzdhMzExOGYyZjIzNWU1ZDVjMGY3YzI4OThmMGQ1ZTdiMWIxZTY4ZGE0ZTM4
+NjU2ZWNmNzE5ZmRhZDhiZGQwODA5OTcxZWZkNGNiYjgyYTI0MDdlM2Y0YTVlODc2MjA3MTBl
+MjA4ZWJmODNlYTQ1NTJkMzIzZTIwNzg3NWIzZjA5NjIyZjI2YTc4ZmMzYTdhODFhNDY4OGRj
+ZmU2MjNkNjZiZWEyZDhhOWE4NDk3MjUwZDY1MDlhNDMwNjlmZmM4NjBjOTA5NWIyZjY2MDg2
+NDlmMDY3NTcyNmU4ZTlhZDc0NTRjZDZlYTA2MzNkZTQ2MDkxM2Y4MDg1NWU1NDExM2U3MDhl
+NjRiZjI3OTZhZGQxYjFmZTc3NmI4ZmY0NjhhMWE4OTg1OGJjMWM5ZmIzOGEzYjk4ZWNkNjg2
+YmY2NGRhYzYwMDdiYzQzYjVlMjY4NzM3MTNkMWQzMmI5YTY2ZDZkMWNiOWVlNGFjYjZjN2I1
+OWQ2NDc3M2U3N2FhMmY5MmY1MWVkMmZhMjlhZWQ4NDI4N2JmYWUzNTYzYzNjMDFiZThhZjI5
+MjFlYjNiNDkwYWNlOGI1MDIwMDAwOWM1M2ViMGFiYmU1Yzg2NTE3Mzk0ZTIzZTZkOThkOWIw
+NTAxMDAwMDhkOWI0NTc4MDAwMDhkOWJhYTZkMDAwMDgxYzM4NDYyMDAwMDgxZWI5NDNkMDAw
+MDViOWRlOTY4MDIwMDAwZTkzMzAyMDAwMGU5ZWEwMDAwMDBlOTUyMDIwMDAwZWIwODA4ODUw
+ZmM3YzkzOWFjZmNlOWZjMDAwMDAwZTkwNjAyMDAwMGViMTRlOTdlMDIwMDAwZTkyODAxMDAw
+MGU5Y2YwMDAwMDBlOWI2MDAwMDAwZWIwNWU5ODkwMTAwMDBlOTNkMDIwMDAwZTkzMTAyMDAw
+MDU3NWZlOTQyMDEwMDAwZTk5MjAxMDAwMDljNTY1MjgxZWU0Mjc3MDAwMDgxYzJhNTBiMDAw
+MDVhNWU5ZGU5ZjMwMDAwMDBlYjU1NTc1ZmU5YTQwMDAwMDA4MWM2ZDE3NDJjNjNlOWY1MDEw
+MDAwZTk4MGViMWZlOWE5MDEwMDAwZWJlYWU5YTQwMjAwMDBlOWRjMDEwMDAwZWIwNWU5ODcw
+MDAwMDBlOWJlMDAwMDAwZWI0YmU5OGYwMTAwMDBlOWIyMDAwMDAwZTliYTAxMDAwMGU5YzQw
+MDAwMDBlOWEzMDAwMDAwZTkxYzAxMDAwMGViYjJlOWM1MDEwMDAwZTk1ODAyMDAwMDUwNThl
+OWExMDEwMDAwZTlhODAxMDAwMGU5NzJmZmZmZmY5MGU5NDBmZmZmZmZlYjA4NGU3NDM1ZDU4
+ZmQwNDRlNmU5ZDUwMDAwMDA4M2MyMDRlOWM0MDEwMDAwZWIyOWU5ODYwMDAwMDBlOTczMDEw
+MDAwZWIwNTU5Y2JkODY1YmFlOTBhZmZmZmZmZWIwMmNmNTllYmFhZTlkNDAwMDAwMGU5NzRm
+ZmZmZmZlYjA1OTBlYjZhZWJkM2U5YWUwMDAwMDA5YzU2NTI4MWVlZmI3MjAwMDA4MWM2YmI3
+ZDAwMDA5MDU2NWU4MWM2NWYxYjAwMDA4MWM2ZmMzODAwMDA4MWMyNDMzYzAwMDA1YTVlOWRl
+YjIzNTY1ZWU5YTBmZWZmZmZlYjFhZTk0ZjAxMDAwMGU5NDdmZmZmZmZlOWM4ZmVmZmZmOTBl
+OTJiZmZmZmZmZTk4NGZlZmZmZjZiZjYwMGU5YWYwMDAwMDBlOTY2ZmZmZmZmZTkwM2ZmZmZm
+ZmU5NGRmZmZmZmZlOTIwZmZmZmZmZTk5ZWZlZmZmZjljZWIwNTFiNDgyZDQ1YjQ1NjUxOGRi
+NjljMzYwMDAwODFjNmJkMDkwMDAwODFlOThmNDAwMDAwODFlOTI5NjQwMDAwODFlZWE3Mjkw
+MDAwNTk1ZTlkOTBlOWRiZmVmZmZmZWIwMjk5YzVlOTMwMDEwMDAwZWIwNWU5M2NmZmZmZmZl
+OTc0ZmZmZmZmZTkxYmZmZmZmZjhkODI4NzAyMDAwMGU5MjdmZmZmZmZlOWY3ZmVmZmZmOWM1
+MzUyODFjM2MyMGQwMDAwODFjMzA3MDUwMDAwZWIwMzU0MWY0NDgxYzNhZjQxMDAwMDUyNWE4
+MWMzZjUzMTAwMDA4ZDkzNDc3MTAwMDA4ZDkzYTUwYTAwMDA1YTViOWRlOWM2ZmVmZmZmZTlm
+ZDAwMDAwMGU5Y2JmZWZmZmY2OWY2YzE1MmFhMjNlOTQ3ZmVmZmZmZTllODAwMDAwMGU5YmEw
+MDAwMDA5YzU3NTA1MzhkODBkNzMxMDAwMDgxZWIzMTMwMDAwMDViNTg1ZjlkZWIxZmU5MTRm
+ZmZmZmZlOWNjZmRmZmZmZTllNWZlZmZmZjMxMzJlYjNjZTkwZWZmZmZmZmU5MjRmZWZmZmZl
+YjEzNWE4MWMyNmUwMzAwMDBlOWMzZmRmZmZmZTkxMWZlZmZmZmViMmJlOTZiZmRmZmZmNTE1
+OWViMDQ1ZjQ4NmY5ZDkwZTkzYmZmZmZmZmU5MGJmZWZmZmZlOTIzZmVmZmZmZWIxZWViMGFl
+OTJkZmZmZmZmZTlhN2ZlZmZmZjM5YzJlYjcxZTk4OGZkZmZmZmViMDUyZDhhMDYwY2E0ZWJj
+M2U5MWRmZWZmZmZlOWI3ZmVmZmZmZTlhMmZkZmZmZmU5NzFmZWZmZmY5YzU3NTY1MzgxZWJk
+MzE3MDAwMDgxZWViZTI3MDAwMDgxZWUxNTNlMDAwMDViNWU1NjVlNWY5ZGU5MTJmZGZmZmZl
+OTViZmVmZmZmOWM1MDhkODBmNzMzMDAwMDJkNjkxYjAwMDAyZDFlNWUwMDAwNTg5ZDkwZTk1
+YmZkZmZmZmU5NjFmZGZmZmZlOWE3ZmVmZmZmZTlmMGZjZmZmZjBmODJmZGZlZmZmZjUwOTg1
+MDYyNjI3ODBkOThiMzlhY2Y5YWM0MGUxYjE2OTUxNTg1NjUyNjM2NTZjYTc3YTU2MjE1ODgy
+YjhiZjA1OTZlYjIzYzAyMmE2ZDRhM2JjY2NiOTQyODRiMWIxZjZmMmM4MGMxZWZlMTllNzIx
+ZjU1MzliMjk5ZjAxZDY0ZTExNzRlNTQxN2YzNGNlMWFjNzY4NDkyYjAyMDVkZDhkNmNlYTE5
+N2YyMThmZDY3MGUwNDAzZTA5ODVhZGZmMDExMDFlNTkyOWVkMzdkYWMyMjI5M2VlYzMxMmJl
+MGU2N2U3NGQ1N2JkMDY3Nzc3NzBmYjM2NjBhNDgyYWU4ZDNmMWY3YWFmMzhhMDQ5YTY2ZDM1
+MDY5YzBhNWE5YzNkY2Y0YjU2ZmNiMWFkMzQ4ZGVkZmVhMjA0M2UyZjk2NWNlM2QxYTg0YzE0
+NDhjMWFiYjE4ZDg2MTBkMjYxNzJhYTk3MTM5ZjIxYTg2OGM0ZGIxMzE0ZTExYmEzMDFhMGI4
+ODA2OWUzZDlhYzc5NzhhM2E4YzI1YmNkOTIzODgzZDU1YzViNDZjNjYxYTkzMDk0ZmM5MzRh
+NWZiZGM5YzZiZGNlMGRiMjczYTFhZTVjMzlkMDE1MTVkNWZmMTQ4Mjc5YTFmNGVjZjU4ZGU3
+ZTY0Mjk1YjQ2OWQwYzZmMzhhODU3NjVlMDY4MmNjYzQwMDhjOTlmMjhkMDQ2NzBhNjc3NjFm
+YTI0NjM0YjQ5ODA0YmFiZTNiMDc0NWRhY2RiNjYzZmFlOGJkZjk4MDQwMWM3MWI3YjA2NzA3
+ZTVjNGI0YmQ2NWQ5OWRhNzI5YThlYWE1YjRkNzUyMTYyMTlmZGRiZTI2MDI0M2I0NDY0Y2Vi
+OGFkMjM4MzZlNDU0NjkwY2YwOGVhOWFiYmViMzVlNzJlM2ZiMzhiMzM2MGI3NTU0MDdiZGFi
+YzNiMzVjNTA1NmRhZWFmMjNkOWZjOWNiOGZmNTg0OTY4OGM3NGZlYWVlNTJiMjU4YzA1MTQw
+YThhYzY3ZjViODczOWVjNGY0NmQ5ZTA0MTQyMWQxYzI4MTY3NjAwYjBkNTViNWJkNjY2YTM1
+NGIyYWFlNWM1YmI3MmE1ZDNiOTNmMWU3ODJlODliNDE4OWJlMjZlYjFmZWZkY2I2MzcxMzRk
+OWQzNDRlYzRlMjcyYmYzZjU3YTdiNDE5YTNhYzQ2YWI5NTM1OWUzZjQ1NGUxYmNkYmM4YmYz
+MTJmOWM4ZWQ1NWNlMjk5ZTRhYTQ3NjI0NGNjOTA5ZTlmNDIzY2UwMjVmM2ZkM2I4M2Y5OTYy
+OGM1NGVkNWIwZGU1ZTg1Y2M4MDRiY2I5ZDgzZDQ5ZTYyODQ3MTA2YTBkZWJkZTUyNThmM2Qx
+OTA5ZjRjYmMzZDg3ZDFiNjE0NjI3MWRjMTFhYTM4Y2Y5NjRkMTIxYzVhZDJkYzAyNzViMmVk
+YThhNTJkMjA0Y2JlMWUyYzFiMWZmNWE1MDJiY2MzZWUxZGIxNmFkMmNkMDc2ZmFkYWRiNGY2
+ZGRmNjBlNGQyMjAyNDZhYmQ2MmZkN2IzMDcwZGEzN2NhMjc1ZTlkYzIwMDE2ZDJiNjJmNzcx
+MDY0OWI5MzVmMzA4MGIwZWZjYWRjZmFjZDg4MGNhZmNkMTNkMTNlOGIyZmM2OWU0NDBkNDdl
+MmFjNDhiNDQ3YmQzYTAzODZjNmQzOGUyMjYwNjU5ZmJmMmVjZGNlNDJjMGM3NzNkMDczN2Yw
+NDAwMDAwMDAwfX19
+
+------=_NextPart_000_0012_4D60A9D3.BCD703FB--
