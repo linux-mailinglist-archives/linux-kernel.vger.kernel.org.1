@@ -2,139 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F92F1EFD75
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6F41EFD5A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 18:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726856AbgFEQVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 12:21:43 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34548 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgFEQVm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 12:21:42 -0400
-Received: by mail-ot1-f65.google.com with SMTP id b18so8061249oti.1;
-        Fri, 05 Jun 2020 09:21:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tNm/MEsuRiThlj0w2Ep6hniygV5tFbfb9SR7Z3GLj9Y=;
-        b=YbkqS2xAQNP8YNDMayOSoXFruFdNzU6pLFsUOiZKSdsZZL3FM+8Wqb6AAeGLdsmALy
-         1PicxwCxQIF+e7CJMPqTAKkVZySs+wchMe6cppRL94vAUOEF9+xUmOgqEWxzEKbJCeOv
-         wP0g1h2BlTcQe/3vPYZ8+AM25UX8VsPCCKBTgbqvcUwzzyC5cgwb8rJoWyaW3KzGR+Ir
-         gy5Jbe9YbjRfTm5q4NVKXytBdxK9gqQtRNXEGsZu/6/u677XXIc7jjxQH+6OKIgFXRc8
-         6cdA/Ib/FFou+s4u7/PvCq6iEH5oUlBTEGB9bv/OKM2lFGGuEn98bWqhKvHydC2QUOAF
-         k0MQ==
-X-Gm-Message-State: AOAM532ZOfGX0J0IYOGZlVy7UJFUHXP51uO8WoBGkzESzkylvHplMCVo
-        rqv0i064/mgK78sm/E5rkhASMb7eFpLysByHxeI=
-X-Google-Smtp-Source: ABdhPJwGbBmx3OnMsin8+/tCfwolPcXpa3AYr4pgSORGQmWTl8u3ZgO7Zkxncv+YIFsOCyUUBnNaQR6wgbRYJGe3OY4=
-X-Received: by 2002:a05:6830:20d1:: with SMTP id z17mr7872068otq.167.1591374101775;
- Fri, 05 Jun 2020 09:21:41 -0700 (PDT)
+        id S1726492AbgFEQQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 12:16:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725944AbgFEQQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 12:16:38 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A5DE206DB;
+        Fri,  5 Jun 2020 16:16:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591373797;
+        bh=u4vNXlvIttpUyWdzC4Wb34JSjU+zkePyE/jsafOj3I4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GcLy723DEess98mUgahMXgm/bWTMAG5DXkxBb2W8MLL8ZO32t8JQq87sZm1O19YzR
+         HLO33O5SuSkQaxCzDkKttk7oqvjwpfMRfLL6ciO7p0+B2WcvJOVrYglDUOzlLz2dHl
+         sLzTBfLrgz2bmgF2mtxacnzMz0iYKsYTPhit6Kjg=
+Date:   Fri, 5 Jun 2020 11:21:42 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>, Kees Cook <keescook@chromium.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH v2] docs: deprecated.rst: Add zero-length and one-element
+ arrays
+Message-ID: <20200605162142.GA1617@embeddedor>
 MIME-Version: 1.0
-References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com>
- <CAJZ5v0gq55A7880dOJD7skwx7mnjsqbCqEGFvEo552U9W2zH3Q@mail.gmail.com> <CAPcyv4gQNPNOmSVrp7epS5_10qLUuGbutQ2xz7LXnpEhkWeA_w@mail.gmail.com>
-In-Reply-To: <CAPcyv4gQNPNOmSVrp7epS5_10qLUuGbutQ2xz7LXnpEhkWeA_w@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 5 Jun 2020 18:21:30 +0200
-Message-ID: <CAJZ5v0g-TSk+7d-b0j5THeNtuSDeSJmKZHcG3mBesVZgkCyJOg@mail.gmail.com>
-Subject: Re: [PATCH v2] ACPI: Drop rcu usage for MMIO mappings
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Stable <stable@vger.kernel.org>, Len Brown <lenb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 6:18 PM Dan Williams <dan.j.williams@intel.com> wrote:
->
-> On Fri, Jun 5, 2020 at 6:32 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Fri, May 8, 2020 at 1:55 AM Dan Williams <dan.j.williams@intel.com> wrote:
-> > >
-> > > Recently a performance problem was reported for a process invoking a
-> > > non-trival ASL program. The method call in this case ends up
-> > > repetitively triggering a call path like:
-> > >
-> > >     acpi_ex_store
-> > >     acpi_ex_store_object_to_node
-> > >     acpi_ex_write_data_to_field
-> > >     acpi_ex_insert_into_field
-> > >     acpi_ex_write_with_update_rule
-> > >     acpi_ex_field_datum_io
-> > >     acpi_ex_access_region
-> > >     acpi_ev_address_space_dispatch
-> > >     acpi_ex_system_memory_space_handler
-> > >     acpi_os_map_cleanup.part.14
-> > >     _synchronize_rcu_expedited.constprop.89
-> > >     schedule
-> > >
-> > > The end result of frequent synchronize_rcu_expedited() invocation is
-> > > tiny sub-millisecond spurts of execution where the scheduler freely
-> > > migrates this apparently sleepy task. The overhead of frequent scheduler
-> > > invocation multiplies the execution time by a factor of 2-3X.
-> > >
-> > > For example, performance improves from 16 minutes to 7 minutes for a
-> > > firmware update procedure across 24 devices.
-> > >
-> > > Perhaps the rcu usage was intended to allow for not taking a sleeping
-> > > lock in the acpi_os_{read,write}_memory() path which ostensibly could be
-> > > called from an APEI NMI error interrupt?
-> >
-> > Not really.
-> >
-> > acpi_os_{read|write}_memory() end up being called from non-NMI
-> > interrupt context via acpi_hw_{read|write}(), respectively, and quite
-> > obviously ioremap() cannot be run from there, but in those cases the
-> > mappings in question are there in the list already in all cases and so
-> > the ioremap() isn't used then.
-> >
-> > RCU is there to protect these users from walking the list while it is
-> > being updated.
-> >
-> > > Neither rcu_read_lock() nor ioremap() are interrupt safe, so add a WARN_ONCE() to validate that rcu
-> > > was not serving as a mechanism to avoid direct calls to ioremap().
-> >
-> > But it would produce false-positives if the IRQ context was not NMI,
-> > wouldn't it?
-> >
-> > > Even the original implementation had a spin_lock_irqsave(), but that is not
-> > > NMI safe.
-> >
-> > Which is not a problem (see above).
-> >
-> > > APEI itself already has some concept of avoiding ioremap() from
-> > > interrupt context (see erst_exec_move_data()), if the new warning
-> > > triggers it means that APEI either needs more instrumentation like that
-> > > to pre-emptively fail, or more infrastructure to arrange for pre-mapping
-> > > the resources it needs in NMI context.
-> >
-> > Well, I'm not sure about that.
->
-> Right, this patch set is about 2-3 generations behind the architecture
-> of the fix we are discussing internally, you might mention that.
+Add zero-length and one-element arrays to the list.
 
-Yes, sorry.
+While I continue replacing zero-length and one-element arrays with
+flexible-array members, I need a reference to point people to, so
+they don't introduce more instances of such arrays. And while here,
+add a note to the "open-coded arithmetic in allocator arguments"
+section, on the use of struct_size() and the arrays-to-deprecate
+mentioned here.
 
-> The fix we are looking at now is to pre-map operation regions in a
-> similar manner as the way APEI resources are pre-mapped. The
-> pre-mapping would arrange for synchronize_rcu_expedited() to be elided
-> on each dynamic mapping attempt. The other piece is to arrange for
-> operation-regions to be mapped at their full size at once rather than
-> a page at a time.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Adjust some markup links for readability.
 
-However, if the RCU usage in ACPI OSL can be replaced with an rwlock,
-some of the ACPICA changes above may not be necessary anymore (even
-though some of them may still be worth making).
+ Documentation/process/deprecated.rst | 83 ++++++++++++++++++++++++++++
+ 1 file changed, 83 insertions(+)
+
+diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
+index 652e2aa02a66c..042c21c968e19 100644
+--- a/Documentation/process/deprecated.rst
++++ b/Documentation/process/deprecated.rst
+@@ -85,6 +85,11 @@ Instead, use the helper::
+ 
+ 	header = kzalloc(struct_size(header, item, count), GFP_KERNEL);
+ 
++NOTE: If you are using struct_size() on a structure containing a zero-length
++or a one-element array as a trailing array member, stop using such arrays
++and switch to `flexible arrays <#zero-length-and-one-element-arrays>`_
++instead.
++
+ See array_size(), array3_size(), and struct_size(),
+ for more details as well as the related check_add_overflow() and
+ check_mul_overflow() family of functions.
+@@ -200,3 +205,81 @@ All switch/case blocks must end in one of:
+ * continue;
+ * goto <label>;
+ * return [expression];
++
++Zero-length and one-element arrays
++----------------------------------
++Old code in the kernel uses the zero-length and one-element array extensions
++to the C90 standard, but the `preferred mechanism to declare variable-length
++types
++<https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_
++such as these ones is a `flexible array member`, introduced in C99::
++
++        struct something {
++                int length;
++                char data[];
++        };
++
++        struct something *instance;
++
++        instance = kmalloc(struct_size(instance, data, size), GFP_KERNEL);
++        instance->length = size;
++        memcpy(instance->data, source, size);
++
++By making use of the mechanism above, we get a compiler error in case the
++flexible array does not occur last in the structure, which helps to prevent
++some kind of `undefined behavior
++<https://git.kernel.org/linus/76497732932f15e7323dc805e8ea8dc11bb587cf>`_
++bugs from being inadvertently introduced to the codebase.
++
++It is also important to notice that zero-length and one-element arrays pose
++confusion for things like sizeof() and `CONFIG_FORTIFY_SOURCE`. For instance,
++there is no mechanism that warns us that the following application of the
++sizeof() operator to a zero-length array always results in zero::
++
++        struct something {
++                int length;
++                char data[0];
++        };
++
++        struct something *instance;
++
++        instance = kmalloc(struct_size(instance, data, size), GFP_KERNEL);
++        instance->length = size;
++        memcpy(instance->data, source, size);
++        ...
++        size = sizeof(instance->data);
++
++At the last line of code above, ``size`` turns out to be zero --when one might have
++thought differently. Here are a couple examples of this issue: `link 1
++<https://git.kernel.org/linus/f2cd32a443da694ac4e28fbf4ac6f9d5cc63a539>`_,
++`link 2
++<https://git.kernel.org/linus/ab91c2a89f86be2898cee208d492816ec238b2cf>`_.
++On the other hand, `flexible array members have incomplete type, and so the sizeof()
++operator may not be applied <https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_,
++so any  misuse of such  operator will be immediately noticed at build time.
++
++
++With respect to one-element arrays, one has to be acutely aware that `such arrays
++occupy at least as much space as a single object of the type
++<https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_,
++hence they contribute to the size of the enclosing structure. This is prone
++to error every time people want to calculate the total size of dynamic memory
++to allocate for a structure containing an array of this kind as a member::
++
++        struct something {
++                int length;
++                char data[1];
++        };
++
++        struct something *instance;
++
++        instance = kmalloc(struct_size(instance, data, size - 1), GFP_KERNEL);
++        instance->length = size;
++        memcpy(instance->data, source, size);
++
++In the example above, we had to remember to calculate ``size - 1`` when using
++the struct_size() helper, otherwise we would have --unintentionally-- allocated
++memory for one too many ``data`` objects. The cleanest and least error-prone way
++to implement this is through the use of a `flexible array member`, which is
++exemplified at the `beginning <#zero-length-and-one-element-arrays>`_ of this
++section.
+-- 
+2.27.0
+
