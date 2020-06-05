@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B291F038D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 01:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A109A1F0393
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 01:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728563AbgFEXm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 19:42:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57542 "EHLO mail.kernel.org"
+        id S1728640AbgFEXmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 19:42:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728378AbgFEXmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 19:42:23 -0400
+        id S1728381AbgFEXmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 19:42:24 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DEB8207D8;
+        by mail.kernel.org (Postfix) with ESMTPSA id 6171A207ED;
         Fri,  5 Jun 2020 23:42:23 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jhLyg-002sBt-9U; Fri, 05 Jun 2020 19:42:22 -0400
-Message-ID: <20200605234222.155657946@goodmis.org>
+        id 1jhLyg-002sCP-E7; Fri, 05 Jun 2020 19:42:22 -0400
+Message-ID: <20200605234222.323583308@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 05 Jun 2020 19:41:52 -0400
+Date:   Fri, 05 Jun 2020 19:41:53 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org,
         linux-rt-users <linux-rt-users@vger.kernel.org>
@@ -30,8 +30,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
         Tom Zanussi <zanussi@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Subject: [PATCH RT 3/8] Revert "rt: Improve the serial console PASS_LIMIT"
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
+        Liwei Song <liwei.song@windriver.com>
+Subject: [PATCH RT 4/8] mm: Dont warn about atomic memory allocations during suspend
 References: <20200605234149.965509211@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +46,59 @@ If anyone has any objections, please let me know.
 
 ------------------
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Liwei Song <liwei.song@windriver.com>
 
-There is no need to loop for longer. The message of too much work was
-removed in commit
-    9d7c249a1ef9b ("serial: 8250: drop the printk from serial8250_interrupt()")
+The ACPI code allocates larger amount of memory during resume. This
+triggers a warning because the allocation happens with disabled
+interrupts.
+At this stage only one CPU is active so there should be no lock
+contention. If SLUB needs to call into the buddy allocator for more
+memory then it should not enable interrupts.
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Limit the check to system state with more CPUs and scheduling and only
+enable interrupts in SLUB at this stage.
+
+Signed-off-by: Liwei Song <liwei.song@windriver.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+[bigeasy: commit description, allocate_slab() hunk]
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- drivers/tty/serial/8250/8250_core.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ mm/slub.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
-index 809a65f68028..02bfafa8a672 100644
---- a/drivers/tty/serial/8250/8250_core.c
-+++ b/drivers/tty/serial/8250/8250_core.c
-@@ -55,16 +55,7 @@ static struct uart_driver serial8250_reg;
+diff --git a/mm/slub.c b/mm/slub.c
+index 44a602fc8a16..bea18bbae247 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1635,7 +1635,7 @@ static struct page *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
+ 		enableirqs = true;
  
- static unsigned int skip_txen_test; /* force skip of txen test at init time */
+ #ifdef CONFIG_PREEMPT_RT
+-	if (system_state > SYSTEM_BOOTING)
++	if (system_state > SYSTEM_BOOTING && system_state < SYSTEM_SUSPEND)
+ 		enableirqs = true;
+ #endif
+ 	if (enableirqs)
+@@ -2751,7 +2751,8 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
+ 	unsigned long tid;
  
--/*
-- * On -rt we can have a more delays, and legitimately
-- * so - so don't drop work spuriously and spam the
-- * syslog:
-- */
--#ifdef CONFIG_PREEMPT_RT
--# define PASS_LIMIT	1000000
--#else
--# define PASS_LIMIT	512
--#endif
-+#define PASS_LIMIT	512
+ 	if (IS_ENABLED(CONFIG_PREEMPT_RT) && IS_ENABLED(CONFIG_DEBUG_ATOMIC_SLEEP))
+-		WARN_ON_ONCE(!preemptible() && system_state >= SYSTEM_SCHEDULING);
++		WARN_ON_ONCE(!preemptible() &&
++			     (system_state > SYSTEM_BOOTING && system_state < SYSTEM_SUSPEND));
  
- #include <asm/serial.h>
- /*
+ 	s = slab_pre_alloc_hook(s, gfpflags);
+ 	if (!s)
+@@ -3216,7 +3217,8 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+ 	int i;
+ 
+ 	if (IS_ENABLED(CONFIG_PREEMPT_RT) && IS_ENABLED(CONFIG_DEBUG_ATOMIC_SLEEP))
+-		WARN_ON_ONCE(!preemptible() && system_state >= SYSTEM_SCHEDULING);
++		WARN_ON_ONCE(!preemptible() &&
++			     (system_state > SYSTEM_BOOTING && system_state < SYSTEM_SUSPEND));
+ 
+ 	/* memcg and kmem_cache debug support */
+ 	s = slab_pre_alloc_hook(s, flags);
 -- 
 2.26.2
 
