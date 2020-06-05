@@ -2,112 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64981EEF45
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FC91EEF60
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgFECCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 22:02:20 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:49892 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbgFECCT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 22:02:19 -0400
-Received: by mail-io1-f71.google.com with SMTP id h17so4773007ior.16
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jun 2020 19:02:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=szPEl64cpoHvhxXlR5lo+T/AwMKKhjIH6u2ObmlDQ8E=;
-        b=ucIOsIBvwG1r28OmENYjOt+Zt15brxvFFUPmVH3H/YklLpCNhBAvPICpN4kwKHNcMi
-         8imHRP3SwgKKNiDLByjo2DKcDpj+fdPfZClg2h8sGCAJY81Ls771Vov0cFv2XSguFuR8
-         INiGJgQ3qd/kHIl2Uqh30if/dTAGd98XcpQ20xy0hF7p09qBuOZt5BUY2hTAG/XOCb0A
-         VvL/TVaMR7zzpXNJ1wqo3HCg9Pk6Vidmwz18Z74HXHOMUtNGhwnB6sbJAzjw+xvYGmQg
-         4CaskrCdAhLS4WT2MLa68HIoWWIZQiLyA85peXGHgmYJKXYC/abQtEtmk65dLhNOo/I0
-         hOaw==
-X-Gm-Message-State: AOAM533rksifp208t6+HzdP0Z+dsxxmihMby2GonJ37ok0t1zZYuEory
-        etPUqrhsBozWXL5Wv7pTnMvJXXWPCEwB/vgQIg5Gqrevbn2q
-X-Google-Smtp-Source: ABdhPJy35sGcsK5T99oV/Miqd0MTFmMIRGWwz7NG7KYR7p84q6J2DjC+KVRxWgwyPqvZlI1/vg6BarUMynCMXcFO+QudDyc1gEy4
+        id S1726072AbgFECNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 22:13:35 -0400
+Received: from mga12.intel.com ([192.55.52.136]:37038 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbgFECNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 22:13:33 -0400
+IronPort-SDR: 01CEsNVrnqV8kkESzOoKJS2LJfmyUh90NK5ACBd8q5Qje8Ik1lGljaZPfyf3vtF+1cpaA+a+jS
+ w0RMJiadz02Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 19:12:31 -0700
+IronPort-SDR: uBZCnW47vhqASYTQw67hEfMf2OLrdUlZRX2RjdFTVDlO53dtx/Wg2n95mRNB5KuUs/dCfU0lhD
+ YMSXiuq90jVw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,474,1583222400"; 
+   d="scan'208";a="258549649"
+Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
+  by orsmga007.jf.intel.com with ESMTP; 04 Jun 2020 19:12:28 -0700
+Date:   Thu, 4 Jun 2020 22:02:31 -0400
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cohuck@redhat.com, zhenyuw@linux.intel.com, zhi.a.wang@intel.com,
+        kevin.tian@intel.com, shaopeng.he@intel.com, yi.l.liu@intel.com,
+        xin.zeng@intel.com, hang.yuan@intel.com
+Subject: Re: [RFC PATCH v4 07/10] vfio/pci: introduce a new irq type
+ VFIO_IRQ_TYPE_REMAP_BAR_REGION
+Message-ID: <20200605020231.GE12300@joy-OptiPlex-7040>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20200518025245.14425-1-yan.y.zhao@intel.com>
+ <20200529154547.19a6685f@x1.home>
+ <20200601065726.GA5906@joy-OptiPlex-7040>
+ <20200601104307.259b0fe1@x1.home>
+ <20200602082858.GA8915@joy-OptiPlex-7040>
+ <20200602133435.1ab650c5@x1.home>
+ <20200603014058.GA12300@joy-OptiPlex-7040>
+ <20200603170452.7f172baf@x1.home>
+ <20200604024228.GD12300@joy-OptiPlex-7040>
+ <20200603221058.1927a0fc@x1.home>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cc4e:: with SMTP id t14mr4239598ilq.138.1591322538629;
- Thu, 04 Jun 2020 19:02:18 -0700 (PDT)
-Date:   Thu, 04 Jun 2020 19:02:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a363b205a74ca6a2@google.com>
-Subject: BUG: using smp_processor_id() in preemptible code in radix_tree_node_alloc
-From:   syzbot <syzbot+3eec59e770685e3dc879@syzkaller.appspotmail.com>
-To:     bjorn.andersson@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200603221058.1927a0fc@x1.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jun 03, 2020 at 10:10:58PM -0600, Alex Williamson wrote:
+> On Wed, 3 Jun 2020 22:42:28 -0400
+> Yan Zhao <yan.y.zhao@intel.com> wrote:
+> 
+> > On Wed, Jun 03, 2020 at 05:04:52PM -0600, Alex Williamson wrote:
+> > > On Tue, 2 Jun 2020 21:40:58 -0400
+> > > Yan Zhao <yan.y.zhao@intel.com> wrote:
+> > >   
+> > > > On Tue, Jun 02, 2020 at 01:34:35PM -0600, Alex Williamson wrote:  
+> > > > > I'm not at all happy with this.  Why do we need to hide the migration
+> > > > > sparse mmap from the user until migration time?  What if instead we
+> > > > > introduced a new VFIO_REGION_INFO_CAP_SPARSE_MMAP_SAVING capability
+> > > > > where the existing capability is the normal runtime sparse setup and
+> > > > > the user is required to use this new one prior to enabled device_state
+> > > > > with _SAVING.  The vendor driver could then simply track mmap vmas to
+> > > > > the region and refuse to change device_state if there are outstanding
+> > > > > mmaps conflicting with the _SAVING sparse mmap layout.  No new IRQs
+> > > > > required, no new irqfds, an incremental change to the protocol,
+> > > > > backwards compatible to the extent that a vendor driver requiring this
+> > > > > will automatically fail migration.
+> > > > >     
+> > > > right. looks we need to use this approach to solve the problem.
+> > > > thanks for your guide.
+> > > > so I'll abandon the current remap irq way for dirty tracking during live
+> > > > migration.
+> > > > but anyway, it demos how to customize irq_types in vendor drivers.
+> > > > then, what do you think about patches 1-5?  
+> > > 
+> > > In broad strokes, I don't think we've found the right solution yet.  I
+> > > really question whether it's supportable to parcel out vfio-pci like
+> > > this and I don't know how I'd support unraveling whether we have a bug
+> > > in vfio-pci, the vendor driver, or how the vendor driver is making use
+> > > of vfio-pci.
+> > >
+> > > Let me also ask, why does any of this need to be in the kernel?  We
+> > > spend 5 patches slicing up vfio-pci so that we can register a vendor
+> > > driver and have that vendor driver call into vfio-pci as it sees fit.
+> > > We have two patches creating device specific interrupts and a BAR
+> > > remapping scheme that we've decided we don't need.  That brings us to
+> > > the actual i40e vendor driver, where the first patch is simply making
+> > > the vendor driver work like vfio-pci already does, the second patch is
+> > > handling the migration region, and the third patch is implementing the
+> > > BAR remapping IRQ that we decided we don't need.  It's difficult to
+> > > actually find the small bit of code that's required to support
+> > > migration outside of just dealing with the protocol we've defined to
+> > > expose this from the kernel.  So why are we trying to do this in the
+> > > kernel?  We have quirk support in QEMU, we can easily flip
+> > > MemoryRegions on and off, etc.  What access to the device outside of
+> > > what vfio-pci provides to the user, and therefore QEMU, is necessary to
+> > > implement this migration support for i40e VFs?  Is this just an
+> > > exercise in making use of the migration interface?  Thanks,
+> > >   
+> > hi Alex
+> > 
+> > There was a description of intention of this series in RFC v1
+> > (https://www.spinics.net/lists/kernel/msg3337337.html).
+> > sorry, I didn't include it in starting from RFC v2.
+> > 
+> > "
+> > The reason why we don't choose the way of writing mdev parent driver is
+> > that
+> 
+> I didn't mention an mdev approach, I'm asking what are we accomplishing
+> by doing this in the kernel at all versus exposing the device as normal
+> through vfio-pci and providing the migration support in QEMU.  Are you
+> actually leveraging having some sort of access to the PF in supporting
+> migration of the VF?  Is vfio-pci masking the device in a way that
+> prevents migrating the state from QEMU?
+>
+yes, communication to PF is required. VF state is managed by PF and is
+queried from PF when VF is stopped.
 
-syzbot found the following crash on:
+migration support in QEMU seems only suitable to devices with dirty
+pages and device state available by reading/writing device MMIOs, which
+is not the case for most devices.
 
-HEAD commit:    acf25aa6 Merge tag 'Smack-for-5.8' of git://github.com/csc..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13d6307a100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5263d9b5bce03c67
-dashboard link: https://syzkaller.appspot.com/bug?extid=3eec59e770685e3dc879
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15bd4c1e100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1520c9de100000
+> > (1) VFs are almost all the time directly passthroughed. Directly binding
+> > to vfio-pci can make most of the code shared/reused. If we write a
+> > vendor specific mdev parent driver, most of the code (like passthrough
+> > style of rw/mmap) still needs to be copied from vfio-pci driver, which is
+> > actually a duplicated and tedious work.
+> > (2) For features like dynamically trap/untrap pci bars, if they are in
+> > vfio-pci, they can be available to most people without repeated code
+> > copying and re-testing.
+> > (3) with a 1:1 mdev driver which passes through VFs most of the time, people
+> > have to decide whether to bind VFs to vfio-pci or mdev parent driver before
+> > it runs into a real migration need. However, if vfio-pci is bound
+> > initially, they have no chance to do live migration when there's a need
+> > later.
+> > "
+> > particularly, there're some devices (like NVMe) they purely reply on
+> > vfio-pci to do device pass-through and they have no standalone parent driver
+> > to do mdev way.
+> > 
+> > I think live migration is a general requirement for most devices and to
+> > interact with the migration interface requires vendor drivers to do
+> > device specific tasks like geting/seting device state, starting/stopping
+> > devices, tracking dirty data, report migration capabilities... all those
+> > works need be in kernel.
+> 
+> I think Alex Graf proved they don't necessarily need to be done in
+> kernel back in 2015: https://www.youtube.com/watch?v=4RFsSgzuFso
+> He was able to achieve i40e VF live migration by only hacking QEMU.  In
+I checked the qemu code. https://github.com/agraf/qemu/tree/vfio-i40vf.
+a new vfio-i40e device type is registered as a child type of vfio-pci, as well
+as its exclusive savevm handlers, which are not compatible to Kirti's
+general VFIO live migration framework.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+3eec59e770685e3dc879@syzkaller.appspotmail.com
+> this series you're allowing a vendor driver to interpose itself between
+> the user (QEMU) and vfio-pci such that we switch to the vendor code
+> during migration.  Why can't that interpose layer be in QEMU rather
+> than the kernel?  It seems that it only must be in the kernel if we
+> need to provide migration state via backdoor, perhaps like going
+> through the PF.  So what access to the i40e VF device is not provided to
+> the user through vfio-pci that is necessary to implement migration of
+> this device?  The tasks listed above are mostly standard device driver
+> activities and clearly vfio-pci allows userspace device drivers.
+> 
+tasks like interacting with PF driver, preparing resources and tracking dirty
+pages in device internal memory, detecting of whether dirty page is able
+to be tracked by hardware and reporting migration capabilities, exposing
+hardware dirty bitmap buffer... all those are hard to be done in QEMU.
 
-RAX: ffffffffffffffda RBX: 00007ffdf01d56d0 RCX: 00000000004406c9
-RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000003
-RBP: 0000000000000005 R08: 0000000000000001 R09: 0000000000000031
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401f50
-R13: 0000000000401fe0 R14: 0000000000000000 R15: 0000000000000000
-BUG: using smp_processor_id() in preemptible [00000000] code: syz-executor036/6796
-caller is radix_tree_node_alloc.constprop.0+0x200/0x330 lib/radix-tree.c:262
-CPU: 0 PID: 6796 Comm: syz-executor036 Not tainted 5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- check_preemption_disabled lib/smp_processor_id.c:47 [inline]
- debug_smp_processor_id.cold+0x88/0x9b lib/smp_processor_id.c:57
- radix_tree_node_alloc.constprop.0+0x200/0x330 lib/radix-tree.c:262
- radix_tree_extend+0x256/0x4e0 lib/radix-tree.c:424
- idr_get_free+0x60c/0x8e0 lib/radix-tree.c:1492
- idr_alloc_u32+0x170/0x2d0 lib/idr.c:46
- idr_alloc+0xc2/0x130 lib/idr.c:87
- qrtr_port_assign net/qrtr/qrtr.c:703 [inline]
- __qrtr_bind.isra.0+0x12e/0x5c0 net/qrtr/qrtr.c:756
- qrtr_autobind net/qrtr/qrtr.c:787 [inline]
- qrtr_autobind+0xaf/0xf0 net/qrtr/qrtr.c:775
- qrtr_sendmsg+0x1d6/0x770 net/qrtr/qrtr.c:895
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e6/0x810 net/socket.c:2352
- ___sys_sendmsg+0x100/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x4406c9
-Code: 25 02 00 85 c0 b8 00 00 00 00 48 0f 44 c3 5b c3 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffdf01d56c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007ffdf01d56d0 RCX: 00000000004406c9
-RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000003
-RBP: 0000000000000005 R08: 0000000000000001 R09: 0000000000000031
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401f50
-R13: 0000000000401fe0 R14: 0000000000000000 R15: 0000000000000000
+maintaining migration code in kernel can also allow vendors to re-use common
+code for devices across generations. e.g. for i40e, in some generations,
+software dirty page track is used,  some generations hardware dirty
+track is enabled and some other generations leveraging IOMMU A/D bit is
+feasible. is QEMU quirks allowing such flexibility as in kernel?
 
+besides, migration version string as a sysfs attribute requires a vendor
+driver to generate.
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > do you think it's better to create numerous vendor quirks in vfio-pci?
+> 
+> In QEMU, perhaps.  Alternatively, let's look at exactly what access is
+> not provided through vfio-pci that's necessary for this and decide if
+> we want to enable that access or if cracking vfio-pci wide open for
+> vendor drivers to pick and choose when and how to use it is really the
+> right answer.
+> 
+I think the position of vendor modules is just like vfio_pci_igd.c under
+vfio-pci. the difference is that the vendor modules are able to be
+dynamically loaded outside of vfio-pci.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> > as to this series, though patch 9/10 currently only demos reporting a
+> > migration region, it actually shows the capability iof vendor driver to
+> > customize device regions. e.g. in patch 10/10, it customizes the BAR0 to
+> > be read/write. and though we abandoned the REMAP BAR irq_type in patch
+> > 10/10 for migration purpose, I have to say this irq_type has its usage
+> > in other use cases, where synchronization is not a hard requirement and
+> > all it needs is a notification channel from kernel to use. this series
+> > just provides a possibility for vendors to customize device regions and
+> > irqs.
+> 
+> I don't disagree that a device specific interrupt might be useful, but
+> I would object to implementing this one only as an artificial use case.
+> We can wait for a legitimate use case to implement that.
+>
+ok. sure.
+
+> > for interfaces exported in patch 3/10-5/10, they anyway need to be
+> > exported for writing mdev parent drivers that pass through devices at
+> > normal time to avoid duplication. and yes, your worry about
+> 
+> Where are those parent drivers?  What are their actual requirements?
+>
+if this way of registering vendor ops to vfio-pci is not permitted,
+vendors have to resort to writing its mdev parent drivers for VFs. Those
+parent drivers need to pass through VFs at normal time, doing exactly what
+vfio-pci does and only doing what vendor ops does during migration.
+
+if vfio-pci could export common code to those parent drivers, lots of
+duplicated code can be avoided.
+
+> > identification of bug sources is reasonable. but if a device is binding
+> > to vfio-pci with a vendor module loaded, and there's a bug, they can do at
+> > least two ways to identify if it's a bug in vfio-pci itself.
+> > (1) prevent vendor modules from loading and see if the problem exists
+> > with pure vfio-pci.
+> > (2) do what's demoed in patch 8/10, i.e. do nothing but simply pass all
+> > operations to vfio-pci.
+> 
+> The code split is still extremely ad-hoc, there's no API.  An mdev
+> driver isn't even a sub-driver of vfio-pci like you're trying to
+> accomplish here, there would need to be a much more defined API when
+> the base device isn't even a vfio_pci_device.  I don't see how this
+> series would directly enable an mdev use case.
+> 
+similar to Yi's series https://patchwork.kernel.org/patch/11320841/.
+we can parcel the vdev creation code in vfio_pci_probe() to allow calling from
+mdev parent probe routine. (of course, also need to parcel code to free vdev)
+e.g.
+
+void *vfio_pci_alloc_vdev(struct pci_dev *pdev, const struct pci_device_id *id)
+{
+	struct vfio_pci_device *vdev;
+        vdev = kzalloc(sizeof(*vdev), GFP_KERNEL);
+        if (!vdev) {
+                ret = -ENOMEM;
+                goto out_group_put;
+        }
+
+        vdev->pdev = pdev;
+        vdev->irq_type = VFIO_PCI_NUM_IRQS;
+        mutex_init(&vdev->igate);
+        spin_lock_init(&vdev->irqlock);
+        mutex_init(&vdev->ioeventfds_lock);
+        INIT_LIST_HEAD(&vdev->ioeventfds_list);
+	...
+	vfio_pci_probe_power_state(vdev);
+
+        if (!disable_idle_d3) {
+                vfio_pci_set_power_state(vdev, PCI_D0);
+                vfio_pci_set_power_state(vdev, PCI_D3hot);
+        }
+	return vdev;
+}
+
+static int vfio_mdev_pci_driver_probe(struct pci_dev *pdev, const struct pci_device_id *id))
+{
+
+       void *vdev = vfio_pci_alloc_vdev(pdev, id);
+
+       //save the vdev pointer 
+
+}
+then all the exported interfaces from this series can also benefit the
+mdev use case.
+
+> > so, do you think this series has its merit and we can continue improving
+> > it?
+> 
+> I think this series is trying to push an artificial use case that is
+> perhaps better done in userspace.  What is the actual interaction with
+> the VF device that can only be done in the host kernel for this
+> example?  Thanks,
+>
+yes, as with shaopeng's reply, looking forward to their early release of
+code.
+Besides, there're other real use cases as well, like NVMe, QAT.
+we can show the interactions for those devices as well.
+
+Thanks
+Yan
