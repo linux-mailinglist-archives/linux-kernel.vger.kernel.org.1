@@ -2,142 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8725D1EFA2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872031EFA26
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgFEOOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726553AbgFEOOt (ORCPT
+        id S1727887AbgFEONR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:13:17 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:51409 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727103AbgFEONR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:14:49 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8838C08C5C2;
-        Fri,  5 Jun 2020 07:14:48 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id c1so5655904vsc.11;
-        Fri, 05 Jun 2020 07:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=92tfzhWVlr2aeqK6HzMd7FHEFDVr/SwIXq1vTN+sBsE=;
-        b=slC13LUI63Z1B/lBFeHzqxfKXgHGu+NWsOaWx/VY3tEIMAz36JD2glQbgAOqnCdXbr
-         vcJoMUqM1fMC4H4ja7kjAkGBV8O28unPretRpywWtW9KDU3RkUc15rSc7Onpivvqzdfw
-         SVboV6cjc7XBfCVbQKKB8foHRY2gSgkTSfYs68RQmE69KBrm6rbOBrM+p03DAe3omKG2
-         GsAjLEuDzhg8NN7ew4JTjebwu69A/Y8G5Zwd3lpuczD/gi8N+9ovP4AUZoCqoQIwjsc0
-         CpGc3tKy8ZoDo3NHDt4K5McRKhuNv1DkmxfHtPQM45sWoMsaF3nBj3QOf6ex3gX2zoAo
-         F2dQ==
+        Fri, 5 Jun 2020 10:13:17 -0400
+Received: by mail-io1-f72.google.com with SMTP id c5so5786434iok.18
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 07:13:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=92tfzhWVlr2aeqK6HzMd7FHEFDVr/SwIXq1vTN+sBsE=;
-        b=ZxH/tY2zuX5fWVfInWuwC0oiwsQM9PcCO6oSalDlHG1tt7xuuICzCyNf4tP9Y9cMYX
-         RZZKXC8PPVzuGCZMRE88/5cD6AqB7jw7qztmDBBQJd/e4QhnF67UFtcVkJMRjTeRjxqR
-         PcYXGP35PjcWPyEgdPHG9AQSbdUVyLeFkb9z1qBZCz8tiZiVUeMQwOoG+9DR+AuzsIEX
-         eDuIpt6gZNyk8PGHDOPGn9cDn/1ntxUvH+VFBWxQBg6623gBut6CS3zZ+QiUHzsCpPLz
-         hFByCgzN/EElpdcT6nG370+A6ep69FKY/eYCNOux4B423489sLvxngPzauuKNdGHzh15
-         +Y9A==
-X-Gm-Message-State: AOAM531c8z0Nl2XM4HJ489OXQkgdWugeZurM71BhQkUiUlzO/QhauNdr
-        gSTr04isaE9U1omtX302D+zHw5c5+S5SD7KTisM=
-X-Google-Smtp-Source: ABdhPJxwwCSalJFjI5Abuw6mc/isptPZeXUnUU8oFM57642z1EvQWUDOIZOqC/bjcW+INW9fkNsyYq792j8ZcgxWh/k=
-X-Received: by 2002:a67:b149:: with SMTP id z9mr6882548vsl.85.1591366487388;
- Fri, 05 Jun 2020 07:14:47 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=rauaL61yD1b5TzBW2vli0M2yuBKLHU5KSUzfs5rkcSU=;
+        b=PQpOtoclY8EdsfObIBt2EjIYxPwoG/IkAMS2f4Yxu+0SMBW2G18SsGudUsfejW7Ky9
+         hk03AlrjVnOUOox2Bk2sCSz+KPPcNmNF9scso3P2yyeSlEsjfB32WqTYr+ufGYbPtPFj
+         t+BvSXTLfz656RPjihBeJqcw+drEhWFPqla9f0/dLUL1XNV2JkhghdsXlGGUC/qucp60
+         9Ug5LFXIbmrUNwFOsJtfw/P3KUrGgjXem9SbwnpvCwvjMRbqhdHMUqJ1K/IDQqMvIjrf
+         X6G802ajQPfPeZd3U58TbNYfjpEcvFdgWa2xmVXIhD7pg10+u9a6qed7Ei8LDV9SAcfr
+         4slQ==
+X-Gm-Message-State: AOAM530fgY5ptkWyq67RqnOUT6saO1fgYRl7ZZsmBEcRUQgaych9TSlU
+        83KxMOhLsHDM31TlW1Yf8bNzaV1MJ05MEqorijhTHT4A5FeE
+X-Google-Smtp-Source: ABdhPJwSkPouCqieqp4ZCn3u8m242dOVPy70VunYtbo8fv6L+1FTqnL2Xpq50eAm+Ig92E3Jv0bp1PQ4QQp+gWB5D/a1+VdbDSAE
 MIME-Version: 1.0
-References: <1591009402-681-1-git-send-email-mkrishn@codeaurora.org>
- <CACvgo50eb5_jp_6B5tkV9cX_X2_y2Xnavu+wvUUhHN5FsV9hiw@mail.gmail.com>
- <cd61dd742e73b89794fc1b812d9fdcd9@codeaurora.org> <CACvgo50b+m2+onak=AZfgihkBXEP9POjMR52087v==-puLdkQQ@mail.gmail.com>
- <8742ac6fbd498fdc22dcd469c3a2d52a@codeaurora.org>
-In-Reply-To: <8742ac6fbd498fdc22dcd469c3a2d52a@codeaurora.org>
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-Date:   Fri, 5 Jun 2020 15:11:24 +0100
-Message-ID: <CACvgo52Rz+QzA4k7ttg6Gh124fZBAfaX0nrPpaMTECvr_8D2zw@mail.gmail.com>
-Subject: Re: [v2] drm/msm: add shutdown support for display platform_driver
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno@lists.freedesktop.org,
-        devicetree <devicetree@vger.kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Sean Paul <seanpaul@chromium.org>, kalyan_t@codeaurora.org,
-        "Kristian H . Kristensen" <hoegsberg@chromium.org>,
-        mka@chromium.org, devicetree-owner@vger.kernel.org
+X-Received: by 2002:a6b:e714:: with SMTP id b20mr8736368ioh.195.1591366396000;
+ Fri, 05 Jun 2020 07:13:16 -0700 (PDT)
+Date:   Fri, 05 Jun 2020 07:13:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bdc60705a756dcd2@google.com>
+Subject: WARNING in snd_usbmidi_input_start/usb_submit_urb
+From:   syzbot <syzbot+0f4ecfe6a2c322c81728@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, balbi@kernel.org,
+        gregkh@linuxfoundation.org, ingrassia@epigenesys.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Jun 2020 at 17:10, Sai Prakash Ranjan
-<saiprakash.ranjan@codeaurora.org> wrote:
->
-> Hi Emil,
->
-> On 2020-06-02 21:09, Emil Velikov wrote:
-> > On Tue, 2 Jun 2020 at 15:49, Sai Prakash Ranjan
-> > <saiprakash.ranjan@codeaurora.org> wrote:
-> >>
-> >> Hi Emil,
-> >>
-> >> On 2020-06-02 19:43, Emil Velikov wrote:
-> >> > Hi Krishna,
-> >> >
-> >> > On Tue, 2 Jun 2020 at 08:17, Krishna Manikandan
-> >> > <mkrishn@codeaurora.org> wrote:
-> >> >>
-> >> >> Define shutdown callback for display drm driver,
-> >> >> so as to disable all the CRTCS when shutdown
-> >> >> notification is received by the driver.
-> >> >>
-> >> >> This change will turn off the timing engine so
-> >> >> that no display transactions are requested
-> >> >> while mmu translations are getting disabled
-> >> >> during reboot sequence.
-> >> >>
-> >> >> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
-> >> >>
-> >> > AFAICT atomics is setup in msm_drm_ops::bind and shutdown in
-> >> > msm_drm_ops::unbind.
-> >> >
-> >> > Are you saying that unbind never triggers? If so, then we should
-> >> > really fix that instead, since this patch seems more like a
-> >> > workaround.
-> >> >
-> >>
-> >> Which path do you suppose that the unbind should be called from,
-> >> remove
-> >> callback? Here we are talking about the drivers which are builtin,
-> >> where
-> >> remove callbacks are not called from the driver core during
-> >> reboot/shutdown,
-> >> instead shutdown callbacks are called which needs to be defined in
-> >> order
-> >> to
-> >> trigger unbind. So AFAICS there is nothing to be fixed.
-> >>
-> > Interesting - in drm effectively only drm panels implement .shutdown.
-> > So my naive assumption was that .remove was used implicitly by core,
-> > as part of the shutdown process. Yet that's not the case, so it seems
-> > that many drivers could use some fixes.
-> >
-> > Then again, that's an existing problem which is irrelevant for msm.
-> > -Emil
->
-> To give more context, we are actually targeting the clients/consumers
-> of SMMU/IOMMU here because we have to make sure that before the supplier
-> (SMMU) shuts down, its consumers/clients need to be shutdown properly.
-> Now the ordering of this is taken care in the SMMU driver via
-> device_link
-> which makes sure that consumer shutdown callbacks are called first, but
-> we
-> need to define shutdown callbacks for all its consumers to make sure we
-> actually shutdown the clients or else it would invite the crashes during
-> reboot
-> which in this case was seen for display.
->
-Thank you very much for the extra details. I think other DRM drivers
-will be safe as-is.
+Hello,
 
--Emil
+syzbot found the following crash on:
+
+HEAD commit:    1ee08de1 Merge tag 'for-5.8/io_uring-2020-06-01' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1132dfe2100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=764b977f857603f1
+dashboard link: https://syzkaller.appspot.com/bug?extid=0f4ecfe6a2c322c81728
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12aa59ce100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1701eb91100000
+
+The bug was bisected to:
+
+commit f2c2e717642c66f7fe7e5dd69b2e8ff5849f4d10
+Author: Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon Feb 24 16:13:03 2020 +0000
+
+    usb: gadget: add raw-gadget interface
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=171c33ee100000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=149c33ee100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=109c33ee100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+0f4ecfe6a2c322c81728@syzkaller.appspotmail.com
+Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface")
+
+------------[ cut here ]------------
+URB 00000000bfcadc71 submitted while active
+WARNING: CPU: 0 PID: 8955 at drivers/usb/core/urb.c:363 usb_submit_urb+0xe3d/0x13e0 drivers/usb/core/urb.c:363
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 8955 Comm: syz-executor958 Not tainted 5.7.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1e9/0x30e lib/dump_stack.c:118
+ panic+0x264/0x7a0 kernel/panic.c:221
+ __warn+0x209/0x210 kernel/panic.c:582
+ report_bug+0x1ac/0x2d0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:105 [inline]
+ do_error_trap+0xca/0x1c0 arch/x86/kernel/traps.c:197
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:216
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:usb_submit_urb+0xe3d/0x13e0 drivers/usb/core/urb.c:363
+Code: 00 04 00 00 eb 50 e8 82 20 3e fc eb 49 e8 7b 20 3e fc c6 05 c8 a5 32 04 01 48 c7 c7 30 02 fe 88 4c 89 ee 31 c0 e8 13 10 10 fc <0f> 0b e9 38 f2 ff ff e8 57 20 3e fc c7 04 24 80 00 00 00 eb 17 e8
+RSP: 0018:ffffc90007c072e8 EFLAGS: 00010246
+RAX: f3c090533e8e2b00 RBX: ffff88809ff85b08 RCX: ffff8880a84e6400
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 0000000000000cc0 R08: ffffffff815cbfb9 R09: ffffed1015d06660
+R10: ffffed1015d06660 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff88809ff85b00 R14: dffffc0000000000 R15: ffff8880924c0000
+ snd_usbmidi_submit_urb sound/usb/midi.c:194 [inline]
+ snd_usbmidi_input_start_ep sound/usb/midi.c:2313 [inline]
+ snd_usbmidi_input_start+0x15f/0x7a0 sound/usb/midi.c:2329
+ substream_open+0x22b/0x6e0 sound/usb/midi.c:1119
+ open_substream+0x369/0x6a0 sound/core/rawmidi.c:299
+ rawmidi_open_priv+0x99/0x900 sound/core/rawmidi.c:342
+ snd_rawmidi_kernel_open+0x1db/0x270 sound/core/rawmidi.c:382
+ midisynth_subscribe+0x93/0x280 sound/core/seq/seq_midi.c:170
+ subscribe_port sound/core/seq/seq_ports.c:412 [inline]
+ check_and_subscribe_port+0x62c/0xb10 sound/core/seq/seq_ports.c:495
+ snd_seq_port_connect+0x20f/0x460 sound/core/seq/seq_ports.c:564
+ snd_seq_ioctl_subscribe_port+0x349/0x6c0 sound/core/seq/seq_clientmgr.c:1484
+ snd_seq_oss_midi_open+0x4db/0x830 sound/core/seq/oss/seq_oss_midi.c:364
+ snd_seq_oss_synth_setup_midi+0x108/0x510 sound/core/seq/oss/seq_oss_synth.c:269
+ snd_seq_oss_open+0x899/0xe90 sound/core/seq/oss/seq_oss_init.c:261
+ odev_open+0x5e/0x90 sound/core/seq/oss/seq_oss.c:125
+ chrdev_open+0x498/0x580 fs/char_dev.c:414
+ do_dentry_open+0x808/0x1020 fs/open.c:828
+ do_open fs/namei.c:3229 [inline]
+ path_openat+0x2790/0x38b0 fs/namei.c:3346
+ do_filp_open+0x191/0x3a0 fs/namei.c:3373
+ do_sys_openat2+0x463/0x770 fs/open.c:1179
+ do_sys_open fs/open.c:1195 [inline]
+ __do_sys_openat fs/open.c:1209 [inline]
+ __se_sys_openat fs/open.c:1204 [inline]
+ __x64_sys_openat+0x1c8/0x1f0 fs/open.c:1204
+ do_syscall_64+0xf3/0x1b0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x445719
+Code: e8 8c e8 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 eb cc fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff79d9b7c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000445719
+RDX: 0000000000000000 RSI: 0000000020000280 RDI: ffffffffffffff9c
+RBP: 000000000008b2e3 R08: 0000000000000000 R09: 00000000004002e0
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402890
+R13: 0000000000402920 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
