@@ -2,183 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADE41EF45C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148611EF456
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgFEJhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 05:37:31 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:58176 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726226AbgFEJha (ORCPT
+        id S1726351AbgFEJgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 05:36:54 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:56547 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726291AbgFEJgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 05:37:30 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0559WPe4020478;
-        Fri, 5 Jun 2020 09:36:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=B2li6JE+2+Vyucl3OG9dx1eiyf5W8A5lM7qPWKwY84M=;
- b=mVEBu5qrk339LfMFIPTc6sRrEKxc6Si/vtYTBTfE+2AqtJcyqdE3ZaVfqdA0SfoPStkl
- A/EeGVAEoY12R/D+HfFmx0Zng/fE8Lc4N9k5aBFT06xqGXzMLMcvb2ciTvbyqNp9VMBO
- EIOPiQrEI8eP+MneM5kvN2Z6Lx5t/rqOLLm6YU5GPUAAMQ8dtm3m+FeBXjA6mOxswvEp
- G3+h9FGDeDrBlltoXVsF2xqJtVIi3VgiH5D+p5Kq1C9a0DMBlJ2iQ/Nv9djn3o7wtK1w
- NQLHNHi74RvSsQoWWDUdVPQviYtpp5esHp71n/TNY0BQ6PMrYliRPouXgqzKXOL/xISp qQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 31f92621ew-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 05 Jun 2020 09:36:39 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0559Xp6D025708;
-        Fri, 5 Jun 2020 09:36:39 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 31f92571ne-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Jun 2020 09:36:39 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0559abin019098;
-        Fri, 5 Jun 2020 09:36:37 GMT
-Received: from [10.175.51.78] (/10.175.51.78)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 05 Jun 2020 02:36:36 -0700
-Subject: Re: slub freelist issue / BUG: unable to handle page fault for
- address: 000000003ffe0018
-To:     Vlastimil Babka <vbabka@suse.cz>, Kees Cook <keescook@chromium.org>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Waiman Long <longman@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, linux-acpi@vger.kernel.org,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <4dc93ff8-f86e-f4c9-ebeb-6d3153a78d03@oracle.com>
- <7839183d-1c0b-da02-73a2-bf5e1e8b02b9@suse.cz>
- <94296941-1073-913c-2adb-bf2e41be9f0f@oracle.com>
- <202006041054.874AA564@keescook>
- <cb0cdaaa-7825-0b87-0384-db22329305bb@suse.cz>
- <34455dce-6675-1fc2-8d61-45bf56f3f554@suse.cz>
-From:   Vegard Nossum <vegard.nossum@oracle.com>
-Message-ID: <6b2b149e-c2bc-f87a-ea2c-3046c5e39bf9@oracle.com>
-Date:   Fri, 5 Jun 2020 11:36:31 +0200
+        Fri, 5 Jun 2020 05:36:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591349811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=1rlOZyMPwx6i+zE1nR5fGGCMec/zDQQDIPW7PFTof6o=;
+        b=SRH3WRx6h630Cxdb8r2loc7KpPxNoFWOuZk6fJwrPy6lGgeYbiuxDihGlygrQSWFlRaikV
+        0/d13Y70ouAXpnHl3/ckO3iasU5THo+Ew+A8Q8FH6er21hAbTm/XeWtRpTXGqZz48VX0V6
+        mooIfPg9naAjuylD9vBNxclTSAhxCPc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-288-K-pnhr5JMqiI6rt9YliBkg-1; Fri, 05 Jun 2020 05:36:49 -0400
+X-MC-Unique: K-pnhr5JMqiI6rt9YliBkg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D4FD084B8A0;
+        Fri,  5 Jun 2020 09:36:47 +0000 (UTC)
+Received: from [10.36.114.72] (ovpn-114-72.ams2.redhat.com [10.36.114.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E8015D9DA;
+        Fri,  5 Jun 2020 09:36:46 +0000 (UTC)
+Subject: Re: [PATCH 2/2] scripts/spelling: Add a few more typos
+To:     SeongJae Park <sjpark@amazon.com>, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        SeongJae Park <sjpark@amazon.de>
+References: <20200605092502.18018-1-sjpark@amazon.com>
+ <20200605092502.18018-3-sjpark@amazon.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Organization: Red Hat GmbH
+Message-ID: <3e56face-4502-59bb-cda9-2701d00a462a@redhat.com>
+Date:   Fri, 5 Jun 2020 11:36:45 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <34455dce-6675-1fc2-8d61-45bf56f3f554@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200605092502.18018-3-sjpark@amazon.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9642 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- malwarescore=0 bulkscore=0 mlxscore=0 spamscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006050074
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9642 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
- suspectscore=0 cotscore=-2147483648 bulkscore=0 clxscore=1011
- impostorscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999
- spamscore=0 lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006050074
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020-06-05 11:11, Vlastimil Babka wrote:
-> On 6/4/20 8:46 PM, Vlastimil Babka wrote:
->> On 6/4/20 7:57 PM, Kees Cook wrote:
->>> On Thu, Jun 04, 2020 at 07:20:18PM +0200, Vegard Nossum wrote:
->>>> On 2020-06-04 19:18, Vlastimil Babka wrote:
->>>>> On 6/4/20 7:14 PM, Vegard Nossum wrote:
->>>>>>
->>>>>> Hi all,
->>>>>>
->>>>>> I ran into a boot problem with latest linus/master
->>>>>> (6929f71e46bdddbf1c4d67c2728648176c67c555) that manifests like this:
->>>>>
->>>>> Hi, what's the .config you use?
->>>>
->>>> Pretty much x86_64 defconfig minus a few options (PCI, USB, ...)
->>>
->>> Oh yes indeed. I immediately crash in the same way with this config. I'll
->>> start digging...
->>>
->>> (defconfig finishes boot)
->>
->> This is funny, booting with slub_debug=F results in:
->> I'm not sure if it's ACPI or ftrace wrong here, but looks like the changed
->> free pointer offset merely exposes a bug in something else.
+On 05.06.20 11:25, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
 > 
-> So, with Kees' patch reverted, booting with slub_debug=F (or even more
-> specific slub_debug=F,ftrace_event_field) also hits this bug below. I
-> wanted to bisect it, but v5.7 was also bad, and also v5.6. Didn't try
-> further in history. So it's not new at all, and likely very specific to
-> your config+QEMU? (and related to the ACPI error messages that precede it?).
-
-I see it too, but not on v5.0. I can bisect it.
-
-Also, panic_on_warn is apparently a core parameter, it should probably 
-be __setup()...
-
-
-Vegard
-
+> This commit adds typos I found from another works.
 > 
->> This would mean acpi_os_release_object() calling kmem_cache_free(ftrace_event_field, x)
->> where x is actually from kmalloc-64? Both parts of that sounds wrong.
->>
->> Thread starts here: https://lore.kernel.org/linux-mm/4dc93ff8-f86e-f4c9-ebeb-6d3153a78d03@oracle.com/
->>
->> [    0.144386] ACPI: Added _OSI(Module Device)
->> [    0.144496] ACPI: Added _OSI(Processor Device)
->> [    0.144956] ACPI: Added _OSI(3.0 _SCP Extensions)
->> [    0.145432] ACPI: Added _OSI(Processor Aggregator Device)
->> [    0.145501] ACPI: Added _OSI(Linux-Dell-Video)
->> [    0.145951] ACPI: Added _OSI(Linux-Lenovo-NV-HDMI-Audio)
->> [    0.146522] ACPI: Added _OSI(Linux-HPI-Hybrid-Graphics)
->> [    0.147070] ACPI Error: AE_BAD_PARAMETER, During Region initialization (20200430/tbxfload-52)
->> [    0.147494] ACPI: Unable to load the System Description Tables
->> [    0.148104] ACPI Error: Could not remove SCI handler (20200430/evmisc-251)
->> [    0.148507] ------------[ cut here ]------------
->> [    0.148985] cache_from_obj: Wrong slab cache. ftrace_event_field but object is from kmalloc-64
->> [    0.149502] WARNING: CPU: 0 PID: 1 at mm/slab.h:523 kmem_cache_free+0x248/0x260
->> [    0.150254] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.7.0+ #43
->> [    0.150490] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
->> [    0.150490] RIP: 0010:kmem_cache_free+0x248/0x260
->> [    0.150490] Code: ff 0f 0b e9 9d fe ff ff 49 8b 4d 58 48 8b 55 58 48 c7 c6 10 47 c1 a4 48 c7 c7 f0 c1 d0 a4 c6 05 9f 05 b1 00 01 e8 bc cc eb ff <0f> 0b 48 8b 15 5f 36 9b 00 4c 89 ed e9 d6 fd ff ff 0f 1f 80 00 00
->> [    0.150490] RSP: 0018:ffffb4dac0013dc0 EFLAGS: 00010282
->> [    0.150490] RAX: 0000000000000000 RBX: ffffa38a07409e00 RCX: 0000000000000000
->> [    0.150490] RDX: 0000000000000001 RSI: 0000000000000092 RDI: ffffffffa51dd32c
->> [    0.150490] RBP: ffffa38a07403900 R08: ffffb4dac0013c7d R09: 00000000000000eb
->> [    0.150490] R10: ffffb4dac0013c78 R11: ffffb4dac0013c7d R12: ffffa38a87409e00
->> [    0.150490] R13: ffffa38a07401d00 R14: 0000000000000000 R15: 0000000000000000
->> [    0.150490] FS:  0000000000000000(0000) GS:ffffa38a07a00000(0000) knlGS:0000000000000000
->> [    0.150490] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [    0.150490] CR2: 0000000000000000 CR3: 000000000560a000 CR4: 00000000003406f0
->> [    0.150490] Call Trace:
->> [    0.150490]  acpi_os_release_object+0x5/0x10
->> [    0.150490]  acpi_ns_delete_children+0x46/0x59
->> [    0.150490]  acpi_ns_delete_namespace_subtree+0x5c/0x79
->> [    0.150490]  ? acpi_sleep_proc_init+0x1f/0x1f
->> [    0.150490]  acpi_ns_terminate+0xc/0x31
->> [    0.150490]  acpi_ut_subsystem_shutdown+0x45/0xa3
->> [    0.150490]  ? acpi_sleep_proc_init+0x1f/0x1f
->> [    0.150490]  acpi_terminate+0x5/0xf
->> [    0.150490]  acpi_init+0x27b/0x308
->> [    0.150490]  ? video_setup+0x79/0x79
->> [    0.150490]  do_one_initcall+0x7b/0x160
->> [    0.150490]  kernel_init_freeable+0x190/0x1f2
->> [    0.150490]  ? rest_init+0x9a/0x9a
->> [    0.150490]  kernel_init+0x5/0xf6
->> [    0.150490]  ret_from_fork+0x22/0x30
->> [    0.150490] ---[ end trace 967e9fbc065d7911 ]---
->>
->>
->>
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>  scripts/spelling.txt | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
+> diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+> index d9cd24cf0d40..c45e9afaab2d 100644
+> --- a/scripts/spelling.txt
+> +++ b/scripts/spelling.txt
+> @@ -59,6 +59,7 @@ actualy||actually
+>  acumulating||accumulating
+>  acumulative||accumulative
+>  acumulator||accumulator
+> +acutally||actually
+>  adapater||adapter
+>  addional||additional
+>  additionaly||additionally
+> @@ -249,6 +250,7 @@ calescing||coalescing
+>  calle||called
+>  callibration||calibration
+>  callled||called
+> +callser||caller
+>  calucate||calculate
+>  calulate||calculate
+>  cancelation||cancellation
+> @@ -671,6 +673,7 @@ hanlde||handle
+>  hanled||handled
+>  happend||happened
+>  harware||hardware
+> +havind||having
+>  heirarchically||hierarchically
+>  helpfull||helpful
+>  hexdecimal||hexadecimal
+> @@ -845,6 +848,7 @@ logile||logfile
+>  loobpack||loopback
+>  loosing||losing
+>  losted||lost
+> +maangement||management
+>  machinary||machinery
+>  maibox||mailbox
+>  maintainance||maintenance
+> @@ -905,6 +909,7 @@ modfiy||modify
+>  modulues||modules
+>  momery||memory
+>  memomry||memory
+> +monitring||monitoring
+>  monochorome||monochrome
+>  monochromo||monochrome
+>  monocrome||monochrome
+> @@ -1010,6 +1015,7 @@ partiton||partition
+>  pased||passed
+>  passin||passing
+>  pathes||paths
+> +pattrns||patterns
+>  pecularities||peculiarities
+>  peformance||performance
+>  peforming||performing
+> @@ -1256,6 +1262,7 @@ shoule||should
+>  shrinked||shrunk
+>  siginificantly||significantly
+>  signabl||signal
+> +significanly||significantly
+>  similary||similarly
+>  similiar||similar
+>  simlar||similar
+> @@ -1371,6 +1378,7 @@ thead||thread
+>  therfore||therefore
+>  thier||their
+>  threds||threads
+> +threee||three
+>  threshhold||threshold
+>  thresold||threshold
+>  throught||through
+> @@ -1410,6 +1418,7 @@ tyep||type
+>  udpate||update
+>  uesd||used
+>  uknown||unknown
+> +usccess||success
+>  usupported||unsupported
+>  uncommited||uncommitted
+>  unconditionaly||unconditionally
+> 
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Thanks,
+
+David / dhildenb
 
