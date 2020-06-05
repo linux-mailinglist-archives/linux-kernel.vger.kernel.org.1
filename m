@@ -2,111 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525091EEF76
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D536D1EEF65
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 04:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726115AbgFECZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Jun 2020 22:25:42 -0400
-Received: from mga01.intel.com ([192.55.52.88]:40097 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725883AbgFECZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Jun 2020 22:25:42 -0400
-IronPort-SDR: P28gXnUD9VtcaUuaaeAPmrHXOr4uK424NV3pqrDa8cPNUKvITy0n3GIBCia4xSX899pOUZKJum
- XHHxzAtM6bEw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 19:25:41 -0700
-IronPort-SDR: mxrNqdaQqXQ2gqe6aEfcouUu7qOgm5ZEOjRThWqrlDi6crK3gAbnwHRXVZgkN/dqQzt+JyL14q
- mtXqo5zNvWkA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,474,1583222400"; 
-   d="scan'208";a="313070957"
-Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
-  by FMSMGA003.fm.intel.com with ESMTP; 04 Jun 2020 19:25:39 -0700
-Date:   Thu, 4 Jun 2020 22:15:42 -0400
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex.williamson@redhat.com, zhenyuw@linux.intel.com,
-        zhi.a.wang@intel.com, kevin.tian@intel.com, shaopeng.he@intel.com,
-        yi.l.liu@intel.com, xin.zeng@intel.com, hang.yuan@intel.com
-Subject: Re: [RFC PATCH v4 04/10] vfio/pci: let vfio_pci know number of
- vendor regions and vendor irqs
-Message-ID: <20200605021542.GG12300@joy-OptiPlex-7040>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20200518024202.13996-1-yan.y.zhao@intel.com>
- <20200518024944.14263-1-yan.y.zhao@intel.com>
- <20200604172515.614e9864.cohuck@redhat.com>
+        id S1726026AbgFECSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Jun 2020 22:18:34 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:38327 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725497AbgFECSe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Jun 2020 22:18:34 -0400
+X-UUID: 9d188a1cb38342b5905f6a4dbdc13962-20200605
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=lpy8EnZ6wUWyr0sPLWYCdBeo3+Sir5kSAhPwv1xe/Ls=;
+        b=V2CWKQwrCl90ERhCFVSY8Z3+QDkWvLIs8BfvyGx9L/B4BSJGrNH8j+FB7BZcu0Bk4atIrO02HqOgcdjYwUyi/ezlXKIw6aHfjj+bkkAOdAL82tpCSVG29lOpLYa3A+IXaOR66z33C9lZE1274gJa4DhQfTRHQlytX01cXzkwAzc=;
+X-UUID: 9d188a1cb38342b5905f6a4dbdc13962-20200605
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 2091216620; Fri, 05 Jun 2020 10:18:31 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 5 Jun 2020 10:18:30 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 5 Jun 2020 10:18:28 +0800
+Message-ID: <1591323509.7223.2.camel@mtkswgap22>
+Subject: Re: linux-next: build failure after merge of the sound-current tree
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     Takashi Iwai <tiwai@suse.de>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 5 Jun 2020 10:18:29 +0800
+In-Reply-To: <20200605084307.47d31882@canb.auug.org.au>
+References: <20200605084307.47d31882@canb.auug.org.au>
+Content-Type: text/plain; charset="ISO-8859-1"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200604172515.614e9864.cohuck@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-TM-SNTS-SMTP: 6EEC0A4E971896C348324CFA9779EA8B98CCFDC9C9561AEEDC292991E6ED77A62000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 05:25:15PM +0200, Cornelia Huck wrote:
-> On Sun, 17 May 2020 22:49:44 -0400
-> Yan Zhao <yan.y.zhao@intel.com> wrote:
-> 
-> > This allows a simpler VFIO_DEVICE_GET_INFO ioctl in vendor driver
-> > 
-> > Cc: Kevin Tian <kevin.tian@intel.com>
-> > Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
-> > ---
-> >  drivers/vfio/pci/vfio_pci.c         | 23 +++++++++++++++++++++--
-> >  drivers/vfio/pci/vfio_pci_private.h |  2 ++
-> >  include/linux/vfio.h                |  3 +++
-> >  3 files changed, 26 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> > index 290b7ab55ecf..30137c1c5308 100644
-> > --- a/drivers/vfio/pci/vfio_pci.c
-> > +++ b/drivers/vfio/pci/vfio_pci.c
-> > @@ -105,6 +105,24 @@ void *vfio_pci_vendor_data(void *device_data)
-> >  }
-> >  EXPORT_SYMBOL_GPL(vfio_pci_vendor_data);
-> >  
-> > +int vfio_pci_set_vendor_regions(void *device_data, int num_vendor_regions)
-> > +{
-> > +	struct vfio_pci_device *vdev = device_data;
-> > +
-> > +	vdev->num_vendor_regions = num_vendor_regions;
-> 
-> Do we need any kind of sanity check here, in case this is called with a
-> bogus value?
->
-you are right. it at least needs to be >=0.
-maybe type of "unsigned int" is more appropriate for num_vendor_regions.
-we don't need to check its max value as QEMU would check it.
+T24gRnJpLCAyMDIwLTA2LTA1IGF0IDA4OjQzICsxMDAwLCBTdGVwaGVuIFJvdGh3ZWxsIHdyb3Rl
+Og0KPiBIaSBhbGwsDQo+IA0KPiBBZnRlciBtZXJnaW5nIHRoZSBzb3VuZC1jdXJyZW50IHRyZWUs
+IHRvZGF5J3MgbGludXgtbmV4dCBidWlsZCAoYXJtDQo+IG11bHRpX3Y3X2RlZmNvbmZpZykgZmFp
+bGVkIGxpa2UgdGhpczoNCj4gDQo+IC9ob21lL3Nmci9uZXh0L25leHQvc291bmQvdXNiL2NhcmQu
+YzogSW4gZnVuY3Rpb24gJ3NuZF91c2JfYXV0b3Jlc3VtZSc6DQo+IC9ob21lL3Nmci9uZXh0L25l
+eHQvc291bmQvdXNiL2NhcmQuYzo4NDE6Mjk6IGVycm9yOiBleHBlY3RlZCAnOycgYmVmb3JlICcp
+JyB0b2tlbg0KPiAgIDg0MSB8ICAgIGF0b21pY19kZWMoJmNoaXAtPmFjdGl2ZSkpDQo+ICAgICAg
+IHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4NCj4gICAgICAgfCAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgOw0KPiANCj4gQ2F1c2VkIGJ5IGNvbW1pdA0KPiANCj4gICAzMzk4ZTVj
+N2IwMzggKCJBTFNBOiB1c2ItYXVkaW86IE1hbmFnZSBhdXRvLXBtIG9mIGFsbCBidW5kbGVkIGlu
+dGVyZmFjZXMiKQ0KPiANCj4gSSBoYXZlIHJldmVydGVkIHRoYXQgY29tbWl0IGZvciB0b2RheS4N
+Cj4gDQoNClNvcnJ5IEkndmUgdGVzdGVkIGl0cyBmdW5jdGlvbiBieSAicGF0Y2ggYmFjayIgdG8g
+b2xkZXIga2VybmVsIHZlcnNpb24NCjQuMTQuDQpBZnRlciBjaGVja2luZyB0aGUgbGF0ZXN0IHBh
+dGNoIGFnYWluLCB0aGVyZSBpcyBpbmRlZWQgYSB0eXBvIGhlcmUuDQoNClRoYW5rcw0KTWFjcGF1
+bCBMaW4NCg==
 
-> > +	return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(vfio_pci_set_vendor_regions);
-> > +
-> > +
-> > +int vfio_pci_set_vendor_irqs(void *device_data, int num_vendor_irqs)
-> > +{
-> > +	struct vfio_pci_device *vdev = device_data;
-> > +
-> > +	vdev->num_vendor_irqs = num_vendor_irqs;
-> 
-> Here as well.
-yes. will change the type to "unsigned int". 
-Thank you for kindly reviewing:)
-
-Yan
-
-> 
-> > +	return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(vfio_pci_set_vendor_irqs);
-> >  /*
-> >   * Our VGA arbiter participation is limited since we don't know anything
-> >   * about the device itself.  However, if the device is the only VGA device
-> 
-> (...)
-> 
