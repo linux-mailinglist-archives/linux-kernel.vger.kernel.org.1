@@ -2,187 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF461EF4B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF2E1EF4BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 11:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726398AbgFEJxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 05:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726270AbgFEJxR (ORCPT
+        id S1726446AbgFEJ4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 05:56:01 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:11769 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726243AbgFEJz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 05:53:17 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D201C08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 02:53:16 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id g3so8907350ilq.10
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 02:53:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=monHGGTUzGlIMbzMGDloNi/6krZ+xGxUI2rFPNJjxTY=;
-        b=V5npm3uYtWnPdZRtIjCSGN4UzEKRD+kpzLNoDt/2wNMZS+pA1BykjEHGnh5FU+V+dH
-         37562hI81mQk3yHDBNNdX0gtWzOMVOEia5ZQBSj+i7hkmz/mVR5zXQWcNBHc1JUu0QA3
-         JQttBF10iGKSAxh5+9G+rBzecWEXustZu9sNiTZdxsMIoXmuC4ZTRQpE7ISWXLb0AOos
-         OAoW/n2HjGw59BsuTVimY9spxFYa6hdTH4pR7v+y2mBUl2Vu9DklQZHowPKTZppx0r0L
-         1JKjhzazMZC5aH5ERCP0HbxOCtVkc6l+pZnOOqtH0TNrHOoPndH4qYOqB5pVxaGU3msK
-         KPeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=monHGGTUzGlIMbzMGDloNi/6krZ+xGxUI2rFPNJjxTY=;
-        b=Hv2XmVnB6ZfXvMTEDPOqGDiMGXEQdZy57IRXJ7vRMc1Ea/A5TC1dHvK9jGoMiQJihA
-         QKXSKRROadXM/uuXF+I2QAf/JxJq0PHrruAMjlJIJDSJO4RqO/LCxJp+OzZ3+Xu5/BgB
-         paYg/PmVaJYEnBcLziBZBSJ4c9qZi2oeCD/HGreSBGknSwzwsCBOvO9gcCJWEMRw2GVC
-         s5YSKWg956c562wEdBEpL5XGAddN4/4hO96mzuxNHPPbZeZHjOhq9cxXyVX64hVsH//2
-         QZRcQxLs9MDHJX15X1/HkvRcTpsj2U1ynj7LCBQ52WGGzPoXBvpNPqwG75/LnuCKT0yc
-         fltw==
-X-Gm-Message-State: AOAM531H5QmwtAqIw+kGCQxiFZhItmw2GlEN3py5U06ymVQlpcXWw4Kh
-        BPsTUw/LZYyLhzubEPF6gplidUfUUsGBL3rAB88T340m6Wk=
-X-Google-Smtp-Source: ABdhPJwx2Nz2JkEdMTbkVEC6JMT2EVTx3YpWl7aoDh3PV+ttAcyMw/OpxBWaFU4vhs4p46N6KJQUAUEDTYujrzaQpuU=
-X-Received: by 2002:a92:dd04:: with SMTP id n4mr7420168ilm.220.1591350795826;
- Fri, 05 Jun 2020 02:53:15 -0700 (PDT)
+        Fri, 5 Jun 2020 05:55:59 -0400
+X-UUID: 03a96d29eece400781d4f1ede98062e7-20200605
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=0zI7CVoALCkpFWkgGGj1AbfVE36QPtMcgdNgl75YRMo=;
+        b=cXcIEIsqrnB6Rr8oAwIuCJtu9hryZbshnsvBjGe5LPrLEVJ5WKnWdHRo1GMetj2b/dFjP4QeLCJMvQwkRaOWCnPFWlG8GHdU13iB4Rf0g1LPyVj0hoJmf384UyBvgMQLojAQNfP/4y5fly96WiXnR9xMl9wHpJwgL77GSusvuWM=;
+X-UUID: 03a96d29eece400781d4f1ede98062e7-20200605
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <jiaxin.yu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 9677772; Fri, 05 Jun 2020 17:55:52 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 5 Jun 2020 17:55:49 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 5 Jun 2020 17:55:50 +0800
+From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
+        <matthias.bgg@gmail.com>, <hariprasad.kelam@gmail.com>
+CC:     <alsa-devel@alsa-project.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <howie.huang@mediatek.com>,
+        <tzungbi@google.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>
+Subject: [v2, 1/2] ASoC: mediatek: mt6358: support DMIC one-wire mode
+Date:   Fri, 5 Jun 2020 17:53:44 +0800
+Message-ID: <1591350825-18152-1-git-send-email-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-References: <20200516064507.19058-1-warthog618@gmail.com> <CAMpxmJUbC4qmUGM0Z-6hXsYPRSpEpNM7iXgc7XbMcf_epi0Lig@mail.gmail.com>
- <20200604160006.GA5730@sol>
-In-Reply-To: <20200604160006.GA5730@sol>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 5 Jun 2020 11:53:05 +0200
-Message-ID: <CAMRc=MfS1sCTU3vs5Gq_6+Ubt_89HX34mqabtpGbAASo+SfzSw@mail.gmail.com>
-Subject: Re: [RFC PATCH] gpio: uapi: v2 proposal
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 069F9BBDD4B821B89F92B59CD0BC2631142D0F22892B0205B49D61B390E5C21F2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-czw., 4 cze 2020 o 18:00 Kent Gibson <warthog618@gmail.com> napisa=C5=82(a)=
-:
->
+U3VwcG9ydHMgRE1JQyBvbmUtd2lyZSBtb2RlLiBVc2VzIGEgRFQgcHJvcGVydHkgImRtaWMtbW9k
+ZSIgdG8gc2VsZWN0Lg0KDQpTaWduZWQtb2ZmLWJ5OiBKaWF4aW4gWXUgPGppYXhpbi55dUBtZWRp
+YXRlay5jb20+DQotLS0NCiBzb3VuZC9zb2MvY29kZWNzL210NjM1OC5jIHwgMjMgKysrKysrKysr
+KysrKysrKysrKysrKy0NCiAxIGZpbGUgY2hhbmdlZCwgMjIgaW5zZXJ0aW9ucygrKSwgMSBkZWxl
+dGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9tdDYzNTguYyBiL3NvdW5k
+L3NvYy9jb2RlY3MvbXQ2MzU4LmMNCmluZGV4IDFiODMwZWEuLjFmMzlkNTkgMTAwNjQ0DQotLS0g
+YS9zb3VuZC9zb2MvY29kZWNzL210NjM1OC5jDQorKysgYi9zb3VuZC9zb2MvY29kZWNzL210NjM1
+OC5jDQpAQCAtOTUsNiArOTUsOCBAQCBzdHJ1Y3QgbXQ2MzU4X3ByaXYgew0KIAlzdHJ1Y3QgcmVn
+dWxhdG9yICphdmRkX3JlZzsNCiANCiAJaW50IHdvdl9lbmFibGVkOw0KKw0KKwl1bnNpZ25lZCBp
+bnQgZG1pY19vbmVfd2lyZV9tb2RlOw0KIH07DQogDQogaW50IG10NjM1OF9zZXRfbXRrYWlmX3By
+b3RvY29sKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY21wbnQsDQpAQCAtMTgzMSw3ICsxODMz
+LDEwIEBAIHN0YXRpYyBpbnQgbXQ2MzU4X2RtaWNfZW5hYmxlKHN0cnVjdCBtdDYzNThfcHJpdiAq
+cHJpdikNCiAJbXQ2MzU4X210a2FpZl90eF9lbmFibGUocHJpdik7DQogDQogCS8qIFVMIGRtaWMg
+c2V0dGluZyAqLw0KLQlyZWdtYXBfd3JpdGUocHJpdi0+cmVnbWFwLCBNVDYzNThfQUZFX1VMX1NS
+Q19DT04wX0gsIDB4MDA4MCk7DQorCWlmIChwcml2LT5kbWljX29uZV93aXJlX21vZGUpDQorCQly
+ZWdtYXBfd3JpdGUocHJpdi0+cmVnbWFwLCBNVDYzNThfQUZFX1VMX1NSQ19DT04wX0gsIDB4MDQw
+MCk7DQorCWVsc2UNCisJCXJlZ21hcF93cml0ZShwcml2LT5yZWdtYXAsIE1UNjM1OF9BRkVfVUxf
+U1JDX0NPTjBfSCwgMHgwMDgwKTsNCiANCiAJLyogVUwgdHVybiBvbiAqLw0KIAlyZWdtYXBfd3Jp
+dGUocHJpdi0+cmVnbWFwLCBNVDYzNThfQUZFX1VMX1NSQ19DT04wX0wsIDB4MDAwMyk7DQpAQCAt
+MjQyNiw2ICsyNDMxLDIwIEBAIHN0YXRpYyBpbnQgbXQ2MzU4X2NvZGVjX3Byb2JlKHN0cnVjdCBz
+bmRfc29jX2NvbXBvbmVudCAqY21wbnQpDQogCS5udW1fZGFwbV9yb3V0ZXMgPSBBUlJBWV9TSVpF
+KG10NjM1OF9kYXBtX3JvdXRlcyksDQogfTsNCiANCitzdGF0aWMgdm9pZCBtdDYzNThfcGFyc2Vf
+ZHQoc3RydWN0IG10NjM1OF9wcml2ICpwcml2KQ0KK3sNCisJaW50IHJldDsNCisJc3RydWN0IGRl
+dmljZSAqZGV2ID0gcHJpdi0+ZGV2Ow0KKw0KKwlyZXQgPSBvZl9wcm9wZXJ0eV9yZWFkX3UzMihk
+ZXYtPm9mX25vZGUsICJtZWRpYXRlayxkbWljLW1vZGUiLA0KKwkJCQkgICAmcHJpdi0+ZG1pY19v
+bmVfd2lyZV9tb2RlKTsNCisJaWYgKHJldCkgew0KKwkJZGV2X3dhcm4ocHJpdi0+ZGV2LCAiJXMo
+KSBmYWlsZWQgdG8gcmVhZCBkbWljLW1vZGVcbiIsDQorCQkJIF9fZnVuY19fKTsNCisJCXByaXYt
+PmRtaWNfb25lX3dpcmVfbW9kZSA9IDA7DQorCX0NCit9DQorDQogc3RhdGljIGludCBtdDYzNThf
+cGxhdGZvcm1fZHJpdmVyX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQogew0K
+IAlzdHJ1Y3QgbXQ2MzU4X3ByaXYgKnByaXY7DQpAQCAtMjQ0NSw2ICsyNDY0LDggQEAgc3RhdGlj
+IGludCBtdDYzNThfcGxhdGZvcm1fZHJpdmVyX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2Ug
+KnBkZXYpDQogCWlmIChJU19FUlIocHJpdi0+cmVnbWFwKSkNCiAJCXJldHVybiBQVFJfRVJSKHBy
+aXYtPnJlZ21hcCk7DQogDQorCW10NjM1OF9wYXJzZV9kdChwcml2KTsNCisNCiAJZGV2X2luZm8o
+cHJpdi0+ZGV2LCAiJXMoKSwgZGV2IG5hbWUgJXNcbiIsDQogCQkgX19mdW5jX18sIGRldl9uYW1l
+KCZwZGV2LT5kZXYpKTsNCiANCi0tIA0KMS44LjEuMS5kaXJ0eQ0K
 
-[snip!]
-
-> > > +
-> > > +enum gpioline_edge {
-> > > +       GPIOLINE_EDGE_NONE              =3D 0,
-> > > +       GPIOLINE_EDGE_RISING            =3D 1,
-> > > +       GPIOLINE_EDGE_FALLING           =3D 2,
-> > > +       GPIOLINE_EDGE_BOTH              =3D 3,
-> > > +};
-> >
-> > I would skip the names of the enum types if we're not reusing them anyw=
-here.
-> >
->
-> I thought it was useful to name them even if it was just to be able to
-> reference them in the documentation for relevant fields, such as that in
-> struct gpioline_config below, rather than having to either list all
-> possible values or a GPIOLINE_EDGE_* glob.
->
-> And I'm currently using enum gpioline_edge in my edge detector
-> implementation - is that sufficient?
->
-
-The documentation argument is more convincing. :)
-
-> > > +
-> > > +/* Line flags - V2 */
-> > > +#define GPIOLINE_FLAG_V2_KERNEL                (1UL << 0) /* Line us=
-ed by the kernel */
-> >
-> > In v1 this flag is also set if the line is used by user-space. Maybe a
-> > simple GPIOLINE_FLAG_V2_USED would be better?
-> >
->
-> Agreed - the _KERNEL name is confusing.
-> In my latest draft I've already renamed it GPIOLINE_FLAG_V2_BUSY,
-> as EBUSY is what the ioctl returns when you try to request such a line.
-> Does that work for you?
-> I was also considering _IN_USE, and was using _UNAVAILABLE for a while.
->
-
-BUSY sounds less precise to me than USED or IN_USE of which both are
-fine (with a preference for the former).
-
-[snip!]
-
-> > > +
-> > > +/**
-> > > + * struct gpioline_values - Values of GPIO lines
-> > > + * @values: when getting the state of lines this contains the curren=
-t
-> > > + * state of a line, when setting the state of lines these should con=
-tain
-> > > + * the desired target state
-> > > + */
-> > > +struct gpioline_values {
-> > > +       __u8 values[GPIOLINES_MAX];
-> >
-> > Same here for bitfield. And maybe reuse this structure in
-> > gpioline_config for default values?
-> >
->
-> Can do.  What makes me reticent is the extra level of indirection
-> and the stuttering that would cause when referencing them.
-> e.g. config.default_values.values
-> So not sure the gain is worth the pain.
->
-
-I'd say yes - consolidation and reuse of data structures is always
-good and normally they are going to be wrapped in some kind of
-low-level user-space library anyway.
-
-> And I've renamed "default_values" to just "values" in my latest draft
-> which doesn't help with the stuttering.
->
-
-Why though? Aren't these always default values for output?
-
-[snip!]
-
-> > > +
-> > > +/**
-> > > + * struct gpioline_event - The actual event being pushed to userspac=
-e
-> > > + * @timestamp: best estimate of time of event occurrence, in nanosec=
-onds
-> > > + * @id: event identifier with value from enum gpioline_event_id
-> > > + * @offset: the offset of the line that triggered the event
-> > > + * @padding: reserved for future use
-> > > + */
-> > > +struct gpioline_event {
-> > > +       __u64 timestamp;
-> >
-> > I'd specify in the comment the type of clock used for the timestamp.
-> >
->
-> Agreed - as this one will be guaranteed to be CLOCK_MONOTONIC.
->
-> I'm also kicking around the idea of adding sequence numbers to events,
-> one per line and one per handle, so userspace can more easily detect
-> mis-ordering or buffer overflows.  Does that make any sense?
->
-
-Hmm, now that you mention it - and in the light of the recent post by
-Ryan Lovelett about polling precision - I think it makes sense to have
-this. Especially since it's very easy to add.
-
-> And would it be useful for userspace to be able to influence the size of
-> the event buffer (currently fixed at 16 events per line)?
->
-
-Good question. I would prefer to not overdo it though. The event
-request would need to contain the desired kfifo size and we'd only
-allow to set it on request, right?
-
-[snip!]
-
-Bartosz
