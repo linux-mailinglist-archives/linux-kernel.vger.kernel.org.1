@@ -2,83 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57101EF9F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D9D1EF9EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 16:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbgFEOGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 10:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
+        id S1727843AbgFEOF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 10:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726553AbgFEOGd (ORCPT
+        with ESMTP id S1726553AbgFEOF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:06:33 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6F8C08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 07:06:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3646+nLfQNB1TESO4RVGCLY9LYs5rMvIB3rw1pnYSU8=; b=24/s0S7879gySR/FmN/u7FND91
-        f1N7ToulvAIFplRet12L9lK1cliyd4euZm6tTDUazi8qkZrpHzjtya4OvCdBkYOY+K+I/IDb/WcLZ
-        MY5l7iaVCUbtctX2cg59+ZfrRlI3xBYajFLmhMwG4m1y/iyMl/yL5Q4WrzcTjqOU69i/IMqex0b4A
-        +icQc/XM37OL/4GshMXhxYflgQLSXEceptaBxryvYbmF98Pk70pWycXYAcbS43usFWbJkcXbTJJ+Q
-        p6YfrhxfgMSPpCy4TC/Cp+pHIAzD6fqdcBeutmyfgDm2YYHk2IyN+1JQsH1r+sGgzKQcc1l3kk8jZ
-        takv0BLQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jhCyN-0002yk-5a; Fri, 05 Jun 2020 14:05:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F2F6D301ABC;
-        Fri,  5 Jun 2020 16:05:21 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CCAA821A74B45; Fri,  5 Jun 2020 16:05:21 +0200 (CEST)
-Date:   Fri, 5 Jun 2020 16:05:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        Yuqi Jin <jinyuqi@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Jiong Wang <jiongwang@huawei.com>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: Re: [net] a6211caa63:
- dmesg.UBSAN:signed-integer-overflow_in_arch/x86/include/asm/atomic.h
-Message-ID: <20200605140521.GD4117@hirez.programming.kicks-ass.net>
-References: <20200605080929.GK12456@shao2-debian>
- <CANn89iK1EfAqw-SkXyQR=88fKnBpXCcR_FaiFkVDUNazNgAX1g@mail.gmail.com>
+        Fri, 5 Jun 2020 10:05:58 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D807C08C5C2;
+        Fri,  5 Jun 2020 07:05:58 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id a25so11901869ljp.3;
+        Fri, 05 Jun 2020 07:05:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=E2imZowYcWsqMuYyPOGiSh8Vkqqat7rhLhXVyMR2k0w=;
+        b=D/wJ7NyAluy19hD4lOArO9SudJkVEhvukrBzFKZOOidCtGQr8L7Zz5q/SToiDFhpSb
+         p5UTbi5gebuWIbN8mFJ80H3cJ+qyXanlpYp6tAHrZnkCfsCkbTwF1pe0eHBrfooqhwlU
+         lpiMA4Yehiqnot+x/r0IkPCAWzTBw/N1Xos/ndEeL78XLizAf9w1AGm+gMTtpRc64OZH
+         mtHx+WeQepSOZP6of5WOZkXFBatcKPwQuk8aBMzg4/tBJcTerQNqSLHw6ddo540CyJgG
+         iM1hrslBg2I3UsbIqpUSRl2OdYaIQLPTJBXg6hK8wDEeQv8sPB2PZpXzEjhIeR0jUM0d
+         g8mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E2imZowYcWsqMuYyPOGiSh8Vkqqat7rhLhXVyMR2k0w=;
+        b=KG8jhXBpuPxdAspOVP+TA7DyLrL8yxAEP6D3sudjYr2SLPXMWMohYfyOIvLXJUW2Kw
+         zF+ya/b4fip+OCmEhuVzE7+YH2vdqyhSV6JDfXMD+bFZC6a7HJ1zlrfGHaHUGXRMfDAH
+         oQJz/N8mbtumpMmeiAc6hLhZntAX1WIv51l6R5zZQ7L7XjS0oneRJ7QL/d77P78wO6Hb
+         JljU8VqK6Pl4WthWkRzMgtLp+6RLeVXCNfo7+vL9/zu8TWIZyAxyYvVs29H6lLFjuOXm
+         gvfIXnAU6LJewePeEdMww+VTzFPilCeM64XuIuezOEPIS1B67ObOOE+Lhz/Lp1pdLdqF
+         nJBQ==
+X-Gm-Message-State: AOAM533FUVdAYhZASJC3IpV0Si/u5twza8QIwz8w7/M0/VLBbyEJrHKg
+        SUKQDIt42wEaclfRxcm5aIM=
+X-Google-Smtp-Source: ABdhPJyhDQJ3TrPRcEnQIaSKKUFiV1lqR92HYbBU8YHDoEyM3qNNPqHz0h+AjVhHM+ruxqLhmDTBYg==
+X-Received: by 2002:a2e:975a:: with SMTP id f26mr4974996ljj.302.1591365956611;
+        Fri, 05 Jun 2020 07:05:56 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-173-94.dynamic.spd-mgts.ru. [109.252.173.94])
+        by smtp.googlemail.com with ESMTPSA id z133sm980669lfa.41.2020.06.05.07.05.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Jun 2020 07:05:47 -0700 (PDT)
+Subject: Re: [PATCH] media: staging: tegra-vde: add missing
+ pm_runtime_put_autosuspend
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Cc:     emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu, smccaman@umn.edu
+References: <20200602054841.15746-1-navid.emamdoost@gmail.com>
+ <7061eb81-c00c-9978-5e4b-f9896c0ffd5e@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b03670e5-2718-062e-0f53-d596434fe9a4@gmail.com>
+Date:   Fri, 5 Jun 2020 17:05:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANn89iK1EfAqw-SkXyQR=88fKnBpXCcR_FaiFkVDUNazNgAX1g@mail.gmail.com>
+In-Reply-To: <7061eb81-c00c-9978-5e4b-f9896c0ffd5e@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 06:17:51AM -0700, Eric Dumazet wrote:
-> On Fri, Jun 5, 2020 at 1:10 AM kernel test robot <rong.a.chen@intel.com> wrote:
-
-> There you go.
+05.06.2020 09:00, Jon Hunter пишет:
 > 
-> We decided this was a bogus report, and that UBSAN requires sane compilers.
+> On 02/06/2020 06:48, Navid Emamdoost wrote:
+>> Call to pm_runtime_get_sync increments counter even in case of
+>> failure leading to incorrect ref count.
+>> Call pm_runtime_put_autosuspend if pm_runtime_get_sync fails.
+>>
+>> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+>> ---
+>>  drivers/staging/media/tegra-vde/vde.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/staging/media/tegra-vde/vde.c b/drivers/staging/media/tegra-vde/vde.c
+>> index d3e63512a765..52cdd4a91e93 100644
+>> --- a/drivers/staging/media/tegra-vde/vde.c
+>> +++ b/drivers/staging/media/tegra-vde/vde.c
+>> @@ -776,8 +776,10 @@ static int tegra_vde_ioctl_decode_h264(struct tegra_vde *vde,
+>>  		goto release_dpb_frames;
+>>  
+>>  	ret = pm_runtime_get_sync(dev);
+>> -	if (ret < 0)
+>> +	if (ret < 0) {
+>> +		pm_runtime_put_autosuspend(dev);
+>>  		goto unlock;
+>> +	}
+>>  
+>>  	/*
+>>  	 * We rely on the VDE registers reset value, otherwise VDE
 > 
-> Please read the fine comment that was added in this commit and update
-> your compiler or do not mess with compiler flags.
-> 
-> +       /* If UBSAN reports an error there, please make sure your compiler
-> +        * supports -fno-strict-overflow before reporting it that was a bug
-> +        * in UBSAN, and it has been fixed in GCC-8.
-> +        */
-> +       return atomic_add_return(segs + delta, p_id) - segs;
+> Please use the put in the error path.
 
-> >         make HOSTCC=gcc-4.9 CC=gcc-4.9 ARCH=i386 olddefconfig prepare modules_prepare bzImage
+This is a third version of the patch [1][2].
 
-Rong, can you make sure to exclude gcc<8 for UBSAN reports ?
+[1]
+https://patchwork.ozlabs.org/project/linux-tegra/patch/20200514210847.9269-2-digetx@gmail.com/
+[2]
+https://patchwork.ozlabs.org/project/linux-tegra/patch/20200520095148.10995-1-dinghao.liu@zju.edu.cn/
+
+I'd prefer to stick with my variant of the patch [1] because in my
+opinion it's most straightforward variant and I actually tested that it
+works properly.
+
+Navid, anyways thank you for the patch. Next time please check if
+somebody else already sent similar patches before you.
