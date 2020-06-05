@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C9D1F014C
+	by mail.lfdr.de (Postfix) with ESMTP id 9DADD1F014D
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jun 2020 23:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbgFEVGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 17:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56616 "EHLO
+        id S1728257AbgFEVHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 17:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727888AbgFEVGw (ORCPT
+        with ESMTP id S1727888AbgFEVHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 17:06:52 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5617FC08C5C3
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 14:06:51 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id nm22so3157846pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 14:06:51 -0700 (PDT)
+        Fri, 5 Jun 2020 17:07:12 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D865BC08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 14:07:12 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o8so5736124pgm.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 14:07:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=KxCH5EFraXoQSEVf3oiNZdVbXVBoYbhiatH91ouNAhE=;
-        b=AqB3Nh2mTRZNCXSeorHCNmPub68+StVvbdM9uqA0v/3Yb3F91Cs5xewCqGEpfFrNHK
-         FO1K+k2kdb9Skdy/iEqfAG/yRuLdkl2FmeJHFJK2Yoc+cTqTUIvq6DuSuJ55FJffurvr
-         sYO6fsoN3uCqh+5ieK6JgXecwbgdXOM7W8u9c=
+        bh=DIl1c/a1tJwzu9tj9OScxdWzLfr1jbFnh4gamMfxa4U=;
+        b=mXXZdi6vgof7yFFLz8NliqYNwbHFEsnjcD1553WxFYKTO+lNtkWjleP7CfaBTgtaLT
+         kIUVtn5rZ05qv7bMbRv7xg4VnziO3GIAvq3eObq5WOeJTUYqEK90uH8n4lq86F/4xRkd
+         o67qykTVOGIsy++F8bU8ZV7fdZi5diKQuY3rI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=KxCH5EFraXoQSEVf3oiNZdVbXVBoYbhiatH91ouNAhE=;
-        b=R6T9mTyYSMwpwIgZa3ROgRwRs+g6G750nRa60jfwLXjW7rYpU4EmK9tx1u70i5bGZr
-         IrfBJuZFQ0fpoeJq0PBo+NDKNxN2gBQ1kSL3cG7tQ0cvncXZYnkHdz/by9ZXMLYEWQ/g
-         7NQli/5WFyUmT0u9XPk3BoHhd4s2xpKvsOTrowI7l4hQYJQylL5kF3P800fn6Qq6zn3z
-         DPApmlIiS7ZbCy7Nto5/ZAxN1eouZfAgFwRr/IbL7BlAdGPF/AVzyRx7guA+30THi7uq
-         stY5dtaHrzstVhfzO4+AHzXWQkiXrFy7xTOfiN9lYNnU8vahREawBLMw8aJZ0e11fnZH
-         aEIA==
-X-Gm-Message-State: AOAM532MZgqUKedSQZiULfP48JGT1NRTHDo8mQE2+wfbFnj+Y4snLRg4
-        Mx+Zk9G8JGu1Ea3L9llLYulkAQ==
-X-Google-Smtp-Source: ABdhPJwRIjKh0eeXvoAeIZcWHp5tbfvmDAMH4VkEyiDjLHJF5f6StU5vQ6ved+Dmiup8SU8qxDzpPw==
-X-Received: by 2002:a17:90a:ae11:: with SMTP id t17mr5275490pjq.157.1591391210874;
-        Fri, 05 Jun 2020 14:06:50 -0700 (PDT)
+        bh=DIl1c/a1tJwzu9tj9OScxdWzLfr1jbFnh4gamMfxa4U=;
+        b=OisGn0ZRe5TsbI98JIq+xmxPDH0YQ2LAig26E4/HqHzl+WPaBTXek2Gtl9OwGaXOXs
+         dY7Iaf3FjXLk3BG1SeTtwnMq3iBhkLNJJ1MY21SsCPliuf0L1NOSqeRkmeoIzCil3U/H
+         Uvt4SPYX07RbAaBccpSO87DIClQVqFQ5fj7ZULunEIBbNDWCJPoOZaqw0OjKBCvbjiYB
+         ucP1LdgtdkiJtRJW1E7IdYQWOPj5TIpVfN4uWcCT2vy77N5AcHqL3CmbXLzh3iKfukVw
+         F9duXJkoIVnm5EZVyrwk1sWbZP9agFa1FoTrsW5jgCdmxxv7c/3zSxq9AnPKYcCLfPPS
+         0RHQ==
+X-Gm-Message-State: AOAM532Ey2La5Z0pe/IXMZ5SyNlGeE/Z9pb/T0Onyn7objqj1U4cuqlE
+        VxyymlSpBtbLY4vstTrOd6meTw==
+X-Google-Smtp-Source: ABdhPJw3UK7yUcQVNPpsOFwlgYtR9GiEv04lfxyiuj3QJg6BkE/hP4K05bbCQ0Ja4mdmIJqn069GoA==
+X-Received: by 2002:a65:6801:: with SMTP id l1mr11113171pgt.73.1591391232412;
+        Fri, 05 Jun 2020 14:07:12 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y9sm9183236pjy.56.2020.06.05.14.06.49
+        by smtp.gmail.com with ESMTPSA id ca6sm8589394pjb.46.2020.06.05.14.07.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 14:06:50 -0700 (PDT)
-Date:   Fri, 5 Jun 2020 14:06:49 -0700
+        Fri, 05 Jun 2020 14:07:11 -0700 (PDT)
+Date:   Fri, 5 Jun 2020 14:07:10 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     Vlastimil Babka <vbabka@suse.cz>
 Cc:     Christoph Lameter <cl@linux.com>,
@@ -56,41 +56,34 @@ Cc:     Christoph Lameter <cl@linux.com>,
         vinmenon@codeaurora.org, Matthew Garrett <mjg59@google.com>,
         Jann Horn <jannh@google.com>,
         Vijayanand Jitta <vjitta@codeaurora.org>
-Subject: Re: [RFC PATCH 3/5] mm, slub: remove runtime allocation order changes
-Message-ID: <202006051406.A7AF17B6@keescook>
+Subject: Re: [RFC PATCH 4/5] mm, slub: make remaining slub_debug related
+ attributes read-only
+Message-ID: <202006051407.F7E66272DA@keescook>
 References: <20200602141519.7099-1-vbabka@suse.cz>
- <20200602141519.7099-4-vbabka@suse.cz>
+ <20200602141519.7099-5-vbabka@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200602141519.7099-4-vbabka@suse.cz>
+In-Reply-To: <20200602141519.7099-5-vbabka@suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 04:15:17PM +0200, Vlastimil Babka wrote:
-> SLUB allows runtime changing of page allocation order by writing into the
-> /sys/kernel/slab/<cache>/order file. Jann has reported [1] that this interface
-> allows the order to be set too small, leading to crashes.
+On Tue, Jun 02, 2020 at 04:15:18PM +0200, Vlastimil Babka wrote:
+> SLUB_DEBUG creates several files under /sys/kernel/slab/<cache>/ that can be
+> read to check if the respective debugging options are enabled for given cache.
+> Some options, namely sanity_checks, trace, and failslab can be also enabled and
+> disabled at runtime by writing into the files.
 > 
-> While it's possible to fix the immediate issue, closer inspection reveals
-> potential races. Storing the new order calls calculate_sizes() which
-> non-atomically updates a lot of kmem_cache fields while the cache is still in
-> use. Unexpected behavior might occur even if the fields are set to the same
-> value as they were.
+> The runtime toggling is racy. Some options disable __CMPXCHG_DOUBLE when
+> enabled, which means that in case of concurrent allocations, some can still use
+> __CMPXCHG_DOUBLE and some not, leading to potential corruption. The s->flags
+> field is also not updated or checked atomically. The simplest solution is to
+> remove the runtime toggling. The extended slub_debug boot parameter syntax
+> introduced by earlier patch should allow to fine-tune the debugging
+> configuration during boot with same granularity.
 > 
-> This could be fixed by splitting out the part of calculate_sizes() that depends
-> on forced_order, so that we only update kmem_cache.oo field. This could still
-> race with init_cache_random_seq(), shuffle_freelist(), allocate_slab(). Perhaps
-> it's possible to audit and e.g. add some READ_ONCE/WRITE_ONCE accesses, it
-> might be easier just to remove the runtime order changes, which is what this
-> patch does. If there are valid usecases for per-cache order setting, we could
-> e.g. extend the boot parameters to do that.
-> 
-> [1] https://lore.kernel.org/r/CAG48ez31PP--h6_FzVyfJ4H86QYczAFPdxtJHUEEan+7VJETAQ@mail.gmail.com
-> 
-> Reported-by: Jann Horn <jannh@google.com>
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
