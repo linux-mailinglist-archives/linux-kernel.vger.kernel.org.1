@@ -2,88 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7751F064E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 13:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 891161F0659
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 13:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728734AbgFFLLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Jun 2020 07:11:49 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:20090 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725831AbgFFLLt (ORCPT
+        id S1728784AbgFFLW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Jun 2020 07:22:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23048 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728718AbgFFLW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Jun 2020 07:11:49 -0400
-X-IronPort-AV: E=Sophos;i="5.73,479,1583190000"; 
-   d="scan'208";a="453305694"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Jun 2020 13:11:47 +0200
-Date:   Sat, 6 Jun 2020 13:11:46 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Markus Elfring <Markus.Elfring@web.de>
-cc:     Denis Efremov <efremov@linux.com>,
-        Coccinelle <cocci@systeme.lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: coccinelle: api: add kvfree script
-In-Reply-To: <51a176d4-8c59-5da1-b4d2-c97b17b691a7@web.de>
-Message-ID: <alpine.DEB.2.21.2006061307020.2578@hadrien>
-References: <99ed463c-b7ba-0400-7cf7-5bcc1992baef@web.de> <alpine.DEB.2.21.2006060944320.2578@hadrien> <51a176d4-8c59-5da1-b4d2-c97b17b691a7@web.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Sat, 6 Jun 2020 07:22:28 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 056B1KJP149205;
+        Sat, 6 Jun 2020 07:21:51 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31g42qq2d9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 06 Jun 2020 07:21:51 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 056BClkk177079;
+        Sat, 6 Jun 2020 07:21:50 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31g42qq2cs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 06 Jun 2020 07:21:50 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 056BF2Od015969;
+        Sat, 6 Jun 2020 11:21:49 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 31g2s7rj7r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 06 Jun 2020 11:21:48 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 056BLkna67043406
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 6 Jun 2020 11:21:46 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3934A4060;
+        Sat,  6 Jun 2020 11:21:46 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D48F4A4054;
+        Sat,  6 Jun 2020 11:21:42 +0000 (GMT)
+Received: from vajain21-in-ibm-com (unknown [9.85.89.98])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Sat,  6 Jun 2020 11:21:42 +0000 (GMT)
+Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Sat, 06 Jun 2020 16:51:41 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>
+Cc:     Santosh Sivaraj <santosh@fossix.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH v10 4/6] powerpc/papr_scm: Improve error logging and handling papr_scm_ndctl()
+In-Reply-To: <CAPcyv4g2x7LV3ARRj-RBS1K84WNayr9oDcupzPQ1gtK1A_e+aQ@mail.gmail.com>
+References: <20200604234136.253703-1-vaibhav@linux.ibm.com> <20200604234136.253703-5-vaibhav@linux.ibm.com> <20200605171313.GO1505637@iweiny-DESK2.sc.intel.com> <CAPcyv4g2x7LV3ARRj-RBS1K84WNayr9oDcupzPQ1gtK1A_e+aQ@mail.gmail.com>
+Date:   Sat, 06 Jun 2020 16:51:41 +0530
+Message-ID: <87zh9gfni2.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-06_06:2020-06-04,2020-06-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ clxscore=1015 malwarescore=0 bulkscore=0 priorityscore=1501
+ mlxlogscore=999 suspectscore=1 cotscore=-2147483648 lowpriorityscore=0
+ adultscore=0 mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006060084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ira and Dan,
 
+Thanks for reviewing this patch. Have updated the patch based on your
+feedback to upadate cmd_rc only when the nd_cmd was handled and return
+'0' in that case.
 
-On Sat, 6 Jun 2020, Markus Elfring wrote:
+Other errors in case the nd_cmd was unrecognized or invalid result in
+error returned from this functions as you suggested.
 
-> >>> +    E = \(kmalloc@kok\|kzalloc@kok\|krealloc@kok\|kcalloc@kok\|kmalloc_node@kok\|kzalloc_node@kok\|kmalloc_array@kok\|kmalloc_array_node@kok\|kcalloc_node@kok\)(...)
-> >>
-> >> I would prefer an other coding style here.
-> >>
-> >> * Items for such SmPL disjunctions can be specified also on multiple lines.
-> >>
-> >> * The semantic patch language supports further means to handle function name lists
-> >>   in more convenient ways.
-> >>   Would you like to work with customised constraints?
-> >
-> > Please don't follow this advice.
+~ Vaibhav
+
+Dan Williams <dan.j.williams@intel.com> writes:
+
+> On Fri, Jun 5, 2020 at 10:13 AM Ira Weiny <ira.weiny@intel.com> wrote:
+>>
+>> On Fri, Jun 05, 2020 at 05:11:34AM +0530, Vaibhav Jain wrote:
+>> > Since papr_scm_ndctl() can be called from outside papr_scm, its
+>> > exposed to the possibility of receiving NULL as value of 'cmd_rc'
+>> > argument. This patch updates papr_scm_ndctl() to protect against such
+>> > possibility by assigning it pointer to a local variable in case cmd_rc
+>> > == NULL.
+>> >
+>> > Finally the patch also updates the 'default' clause of the switch-case
+>> > block removing a 'return' statement thereby ensuring that value of
+>> > 'cmd_rc' is always logged when papr_scm_ndctl() returns.
+>> >
+>> > Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+>> > Cc: Dan Williams <dan.j.williams@intel.com>
+>> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> > Cc: Ira Weiny <ira.weiny@intel.com>
+>> > Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+>> > ---
+>> > Changelog:
+>> >
+>> > v9..v10
+>> > * New patch in the series
+>>
+>> Thanks for making this a separate patch it is easier to see what is going on
+>> here.
+>>
+>> > ---
+>> >  arch/powerpc/platforms/pseries/papr_scm.c | 10 ++++++++--
+>> >  1 file changed, 8 insertions(+), 2 deletions(-)
+>> >
+>> > diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
+>> > index 0c091622b15e..6512fe6a2874 100644
+>> > --- a/arch/powerpc/platforms/pseries/papr_scm.c
+>> > +++ b/arch/powerpc/platforms/pseries/papr_scm.c
+>> > @@ -355,11 +355,16 @@ static int papr_scm_ndctl(struct nvdimm_bus_descriptor *nd_desc,
+>> >  {
+>> >       struct nd_cmd_get_config_size *get_size_hdr;
+>> >       struct papr_scm_priv *p;
+>> > +     int rc;
+>> >
+>> >       /* Only dimm-specific calls are supported atm */
+>> >       if (!nvdimm)
+>> >               return -EINVAL;
+>> >
+>> > +     /* Use a local variable in case cmd_rc pointer is NULL */
+>> > +     if (!cmd_rc)
+>> > +             cmd_rc = &rc;
+>> > +
+>>
+>> This protects you from the NULL.  However...
+>>
+>> >       p = nvdimm_provider_data(nvdimm);
+>> >
+>> >       switch (cmd) {
+>> > @@ -381,12 +386,13 @@ static int papr_scm_ndctl(struct nvdimm_bus_descriptor *nd_desc,
+>> >               break;
+>> >
+>> >       default:
+>> > -             return -EINVAL;
+>> > +             dev_dbg(&p->pdev->dev, "Unknown command = %d\n", cmd);
+>> > +             *cmd_rc = -EINVAL;
+>>
+>> ... I think you are conflating rc and cmd_rc...
+>>
+>> >       }
+>> >
+>> >       dev_dbg(&p->pdev->dev, "returned with cmd_rc = %d\n", *cmd_rc);
+>> >
+>> > -     return 0;
+>> > +     return *cmd_rc;
+>>
+>> ... this changes the behavior of the current commands.  Now if the underlying
+>> papr_scm_meta_[get|set]() fails you return that failure as rc rather than 0.
+>>
+>> Is that ok?
 >
-> I have got recurring understanding difficulties with such a response.
-> Will quoted patch review issues clarified in any other ways?
+> The expectation is that rc is "did the command get sent to the device,
+> or did it fail for 'transport' reasons". The role of cmd_rc is to
+> translate the specific status response of the command into a common
+> error code. The expectations are:
+
 >
+> rc < 0: Error code, Linux terminated the ioctl before talking to hardware
 >
-> > Coccinelle is not able to optimize its search process according to
-> > the information in constraints.  It will needlessly parse many files.
+> rc == 0: Linux successfully submitted the command to hardware, cmd_rc
+> is valid for command specific response
 >
-> The software supports also SmPL constraints for some reasons.
-> Why should such functionality be used at all if the immediate reminder is
-> there seem to be more important optimisation aspects to consider before?
+> rc > 0: Linux successfully submitted the command, but detected that
+> only a subset of the data was accepted for "write"-style commands, or
+> that only subset of data was returned for "read"-style commands. I.e.
+> short-write / short-read semantics. cmd_rc is valid in this case and
+> its up to userspace to determine if a short transfer is an error or
+> not.
+>
+>> Also 'logging cmd_rc' in the invalid cmd case does not seem quite right unless
+>> you really want rc to be cmd_rc.
+>>
+>> The architecture is designed to separate errors which occur in the kernel vs
+>> errors in the firmware/dimm.  Are they always the same?  The current code
+>> differentiates them.
+>
+> Yeah, they're distinct, transport vs end-point / command-specific
+> status returns.
 
-If the number of functions is really large, constraints may be a better
-idea.
 
-If the names of the functions are not actually known, constraints may be a
-better idea.
-
-If it is desired to collect some statistics about the matching process,
-constraints allow that.
-
-If it is desired to reason about values, for example that a constant is
-greater or less than some value, then constraints allow that.
-
-If it is desired to avoid changing code in a particular function, then
-constraints allow that.
-
-So there are a lot of reasons why constraints are useful.  There are
-likely even more.  But hiding information that could be apparent to the
-SmPL compiler and could be used to improve the performance of the matching
-process is not one of them.
-
-julia
+-- 
+Cheers
+~ Vaibhav
