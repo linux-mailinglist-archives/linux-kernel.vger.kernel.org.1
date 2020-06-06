@@ -2,122 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826271F04EC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 06:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E951F04F2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 06:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728561AbgFFE04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Jun 2020 00:26:56 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:39437 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728554AbgFFE0z (ORCPT
+        id S1726352AbgFFEgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Jun 2020 00:36:40 -0400
+Received: from [192.146.154.243] ([192.146.154.243]:59784 "EHLO
+        mcp01.nutanix.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725931AbgFFEgj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Jun 2020 00:26:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591417615; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=3Tbq314xTu2mZgk8XZHCKH3g0sEpANHcL/rn9MNYhE0=; b=AlWyne4q9tHYhT5/ih8BEx7CO43mzvRzI4mLCIS976dBIdHwoWOisz8NJ0Hs0/vK4GogZ17t
- n18eSmD30XGbE0iqrdlSkYsqRVzBC90G17Yk4v9ePGhUd+7VsK73J6rhPlhSokhRDwkmTiVh
- rJiDeO4n4sW+VRjKzVvjRXdvW5s=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5edb1afc583b2d42d5f18335 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 06 Jun 2020 04:26:36
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 25785C433B2; Sat,  6 Jun 2020 04:26:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld559.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: smasetty)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 11E84C433C6;
-        Sat,  6 Jun 2020 04:26:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 11E84C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=smasetty@codeaurora.org
-From:   Sharat Masetty <smasetty@codeaurora.org>
-To:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
-        mka@chromium.org, sibis@codeaurora.org, saravanak@google.com,
-        viresh.kumar@linaro.org, robdclark@gmail.com,
-        Sharat Masetty <smasetty@codeaurora.org>
-Subject: [PATCH v3 6/6] arm64: dts: qcom: sc7180: Add opp-peak-kBps to GPU opp
-Date:   Sat,  6 Jun 2020 09:55:51 +0530
-Message-Id: <1591417551-38051-7-git-send-email-smasetty@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591417551-38051-1-git-send-email-smasetty@codeaurora.org>
-References: <1591417551-38051-1-git-send-email-smasetty@codeaurora.org>
+        Sat, 6 Jun 2020 00:36:39 -0400
+X-Greylist: delayed 557 seconds by postgrey-1.27 at vger.kernel.org; Sat, 06 Jun 2020 00:36:39 EDT
+Received: from C02Z20B5LVDL.corp.nutanix.com (unknown [10.150.245.9])
+        by mcp01.nutanix.com (Postfix) with ESMTP id A26EB102CA91;
+        Sat,  6 Jun 2020 04:27:18 +0000 (UTC)
+From:   Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+To:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     felipe.franciosi@nutanix.com, rkrcmar@redhat.com,
+        Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Subject: [RFC PATCH] KVM: x86: Fix APIC page invalidation race
+Date:   Sat,  6 Jun 2020 13:26:27 +0900
+Message-Id: <20200606042627.61070-1-eiichi.tsukata@nutanix.com>
+X-Mailer: git-send-email 2.25.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add opp-peak-kBps bindings to the GPU opp table, listing the peak
-GPU -> DDR bandwidth requirement for each opp level. This will be
-used to scale the DDR bandwidth along with the GPU frequency dynamically.
+Commit b1394e745b94 ("KVM: x86: fix APIC page invalidation") tried to
+fix inappropriate APIC page invalidation by re-introducing arch specific
+kvm_arch_mmu_notifier_invalidate_range() and calling it from
+kvm_mmu_notifier_invalidate_range_start. But threre could be the
+following race because VMCS APIC address cache can be updated
+*before* it is unmapped.
 
-Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Race:
+  (Invalidator) kvm_mmu_notifier_invalidate_range_start()
+  (Invalidator) kvm_make_all_cpus_request(kvm, KVM_REQ_APIC_PAGE_RELOAD)
+  (KVM VCPU) vcpu_enter_guest()
+  (KVM VCPU) kvm_vcpu_reload_apic_access_page()
+  (Invalidator) actually unmap page
+
+Symptom:
+  The above race can make Guest OS see already freed page and Guest OS
+will see broken APIC register values. Especially, Windows OS checks
+LAPIC modification so it can cause BSOD crash with BugCheck
+CRITICAL_STRUCTURE_CORRUPTION (109). These symptoms are the same as we
+previously saw in https://bugzilla.kernel.org/show_bug.cgi?id=197951 and
+we are currently seeing in
+https://bugzilla.redhat.com/show_bug.cgi?id=1751017.
+
+To prevent Guest OS from accessing already freed page, this patch calls
+kvm_arch_mmu_notifier_invalidate_range() from
+kvm_mmu_notifier_invalidate_range() instead of ..._range_start().
+
+Fixes: b1394e745b94 ("KVM: x86: fix APIC page invalidation")
+Signed-off-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
 ---
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/x86/kvm/x86.c       |  7 ++-----
+ include/linux/kvm_host.h |  4 ++--
+ virt/kvm/kvm_main.c      | 26 ++++++++++++++++----------
+ 3 files changed, 20 insertions(+), 17 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 34004ad..7bef42b 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -1505,36 +1505,43 @@
- 				opp-800000000 {
- 					opp-hz = /bits/ 64 <800000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_TURBO>;
-+					opp-peak-kBps = <8532000>;
- 				};
-
- 				opp-650000000 {
- 					opp-hz = /bits/ 64 <650000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
-+					opp-peak-kBps = <7216000>;
- 				};
-
- 				opp-565000000 {
- 					opp-hz = /bits/ 64 <565000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
-+					opp-peak-kBps = <5412000>;
- 				};
-
- 				opp-430000000 {
- 					opp-hz = /bits/ 64 <430000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
-+					opp-peak-kBps = <5412000>;
- 				};
-
- 				opp-355000000 {
- 					opp-hz = /bits/ 64 <355000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
-+					opp-peak-kBps = <3072000>;
- 				};
-
- 				opp-267000000 {
- 					opp-hz = /bits/ 64 <267000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
-+					opp-peak-kBps = <3072000>;
- 				};
-
- 				opp-180000000 {
- 					opp-hz = /bits/ 64 <180000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
-+					opp-peak-kBps = <1804000>;
- 				};
- 			};
- 		};
---
-2.7.4
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index c17e6eb9ad43..1700aade39d1 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8150,9 +8150,8 @@ static void vcpu_load_eoi_exitmap(struct kvm_vcpu *vcpu)
+ 	kvm_x86_ops.load_eoi_exitmap(vcpu, eoi_exit_bitmap);
+ }
+ 
+-int kvm_arch_mmu_notifier_invalidate_range(struct kvm *kvm,
+-		unsigned long start, unsigned long end,
+-		bool blockable)
++void kvm_arch_mmu_notifier_invalidate_range(struct kvm *kvm,
++					    unsigned long start, unsigned long end)
+ {
+ 	unsigned long apic_address;
+ 
+@@ -8163,8 +8162,6 @@ int kvm_arch_mmu_notifier_invalidate_range(struct kvm *kvm,
+ 	apic_address = gfn_to_hva(kvm, APIC_DEFAULT_PHYS_BASE >> PAGE_SHIFT);
+ 	if (start <= apic_address && apic_address < end)
+ 		kvm_make_all_cpus_request(kvm, KVM_REQ_APIC_PAGE_RELOAD);
+-
+-	return 0;
+ }
+ 
+ void kvm_vcpu_reload_apic_access_page(struct kvm_vcpu *vcpu)
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 131cc1527d68..92efa39ea3d7 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1406,8 +1406,8 @@ static inline long kvm_arch_vcpu_async_ioctl(struct file *filp,
+ }
+ #endif /* CONFIG_HAVE_KVM_VCPU_ASYNC_IOCTL */
+ 
+-int kvm_arch_mmu_notifier_invalidate_range(struct kvm *kvm,
+-		unsigned long start, unsigned long end, bool blockable);
++void kvm_arch_mmu_notifier_invalidate_range(struct kvm *kvm,
++					    unsigned long start, unsigned long end);
+ 
+ #ifdef CONFIG_HAVE_KVM_VCPU_RUN_PID_CHANGE
+ int kvm_arch_vcpu_run_pid_change(struct kvm_vcpu *vcpu);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 731c1e517716..77aa91fb08d2 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -155,10 +155,9 @@ static void kvm_uevent_notify_change(unsigned int type, struct kvm *kvm);
+ static unsigned long long kvm_createvm_count;
+ static unsigned long long kvm_active_vms;
+ 
+-__weak int kvm_arch_mmu_notifier_invalidate_range(struct kvm *kvm,
+-		unsigned long start, unsigned long end, bool blockable)
++__weak void kvm_arch_mmu_notifier_invalidate_range(struct kvm *kvm,
++						   unsigned long start, unsigned long end)
+ {
+-	return 0;
+ }
+ 
+ bool kvm_is_zone_device_pfn(kvm_pfn_t pfn)
+@@ -384,6 +383,18 @@ static inline struct kvm *mmu_notifier_to_kvm(struct mmu_notifier *mn)
+ 	return container_of(mn, struct kvm, mmu_notifier);
+ }
+ 
++static void kvm_mmu_notifier_invalidate_range(struct mmu_notifier *mn,
++					      struct mm_struct *mm,
++					      unsigned long start, unsigned long end)
++{
++	struct kvm *kvm = mmu_notifier_to_kvm(mn);
++	int idx;
++
++	idx = srcu_read_lock(&kvm->srcu);
++	kvm_arch_mmu_notifier_invalidate_range(kvm, start, end);
++	srcu_read_unlock(&kvm->srcu, idx);
++}
++
+ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
+ 					struct mm_struct *mm,
+ 					unsigned long address,
+@@ -408,7 +419,6 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+ {
+ 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+ 	int need_tlb_flush = 0, idx;
+-	int ret;
+ 
+ 	idx = srcu_read_lock(&kvm->srcu);
+ 	spin_lock(&kvm->mmu_lock);
+@@ -425,14 +435,9 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+ 		kvm_flush_remote_tlbs(kvm);
+ 
+ 	spin_unlock(&kvm->mmu_lock);
+-
+-	ret = kvm_arch_mmu_notifier_invalidate_range(kvm, range->start,
+-					range->end,
+-					mmu_notifier_range_blockable(range));
+-
+ 	srcu_read_unlock(&kvm->srcu, idx);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
+@@ -538,6 +543,7 @@ static void kvm_mmu_notifier_release(struct mmu_notifier *mn,
+ }
+ 
+ static const struct mmu_notifier_ops kvm_mmu_notifier_ops = {
++	.invalidate_range	= kvm_mmu_notifier_invalidate_range,
+ 	.invalidate_range_start	= kvm_mmu_notifier_invalidate_range_start,
+ 	.invalidate_range_end	= kvm_mmu_notifier_invalidate_range_end,
+ 	.clear_flush_young	= kvm_mmu_notifier_clear_flush_young,
+-- 
+2.21.3
 
