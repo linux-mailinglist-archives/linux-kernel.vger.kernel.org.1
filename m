@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E091F0AAB
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 11:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8391F0AAE
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 11:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgFGJgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 05:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
+        id S1726563AbgFGJgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 05:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726502AbgFGJgH (ORCPT
+        with ESMTP id S1726503AbgFGJgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 7 Jun 2020 05:36:07 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06D5C08C5C3
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 02:36:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878F0C08C5C4;
+        Sun,  7 Jun 2020 02:36:07 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jhrie-0000K4-Ui; Sun, 07 Jun 2020 11:35:57 +0200
+        id 1jhrif-0000K8-Ok; Sun, 07 Jun 2020 11:35:57 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id F02F5FF805;
-        Sun,  7 Jun 2020 11:35:55 +0200 (CEST)
-Message-Id: <20200606215114.380723277@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 36C5C10108F;
+        Sun,  7 Jun 2020 11:35:57 +0200 (CEST)
+Message-Id: <20200606221531.845475036@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Sat, 06 Jun 2020 23:51:14 +0200
+Date:   Sat, 06 Jun 2020 23:51:15 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Miklos Szeredi <miklos@szeredi.hu>, x86@kernel.org,
@@ -33,8 +33,12 @@ Cc:     Miklos Szeredi <miklos@szeredi.hu>, x86@kernel.org,
         Andy Lutomirski <luto@kernel.org>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Juergen Gross <jgross@suse.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [patch 0/3] vdso: Unbreak VDSO with PV and HyperV clocksources
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        stable@vger.kernel.org
+Subject: [patch 1/3] clocksource: Remove obsolete ifdef
+References: <20200606215114.380723277@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
 X-Linutronix-Spam-Score: -1.0
 X-Linutronix-Spam-Level: -
@@ -44,34 +48,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miklos reported [1] that the recent VDSO changes broke paravirt clocksource
-based VDSO in the case that the clocksource is invalidated by the
-hypervisor which happens after a suspend/resume cycle of the host.
+CONFIG_GENERIC_VDSO_CLOCK_MODE was a transitional config switch which got
+removed after all architectures got converted to the new storage model.
 
-The result is a stale clocksource which is about 2200 seconds ahead of the
-actual time and jumps forward by 2200 seconds once 2200 seconds have
-elapsed.
+But the removal forgot to remove the #ifdef which guards the
+vdso_clock_mode sanity check, which effectively disables the sanity check.
 
-The reason for this is the core code change which optimized the VDSO
-clocksource validation by checking for the clocksource mode instead of
-using the rather subtle check for the clocksource read return value whether
-it has bit 63 set.
+Remove it now.
 
-For some reason my brain blanked when doing that change, even if I should
-have known better.
+Fixes: f86fd32db706 ("lib/vdso: Cleanup clock mode storage leftovers")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+---
+ kernel/time/clocksource.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-The following series restores the previous behaviour but preserves the
-initially intended optimization for architectures which don't need that PV
-handling.
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -928,14 +928,12 @@ int __clocksource_register_scale(struct
+ 
+ 	clocksource_arch_init(cs);
+ 
+-#ifdef CONFIG_GENERIC_VDSO_CLOCK_MODE
+ 	if (cs->vdso_clock_mode < 0 ||
+ 	    cs->vdso_clock_mode >= VDSO_CLOCKMODE_MAX) {
+ 		pr_warn("clocksource %s registered with invalid VDSO mode %d. Disabling VDSO support.\n",
+ 			cs->name, cs->vdso_clock_mode);
+ 		cs->vdso_clock_mode = VDSO_CLOCKMODE_NONE;
+ 	}
+-#endif
+ 
+ 	/* Initialize mult/shift and max_idle_ns */
+ 	__clocksource_update_freq_scale(cs, scale, freq);
 
-Thanks,
-
-	tglx
-
-[1] https://lore.kernel.org/r/CAJfpegstNYeseo_C4KOF9Y74qRxr78x2tK-9rTgmYM4CK30nRQ@mail.gmail.com
-
-8<-----------------
- arch/x86/include/asm/vdso/gettimeofday.h |   18 ++++++++++++++++++
- kernel/time/clocksource.c                |    2 --
- lib/vdso/gettimeofday.c                  |   19 +++++++++++++++++++
- 3 files changed, 37 insertions(+), 2 deletions(-)
