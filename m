@@ -2,96 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30391F0815
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 20:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA551F0819
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 20:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728849AbgFFSJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Jun 2020 14:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728788AbgFFSJr (ORCPT
+        id S1728855AbgFFSNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Jun 2020 14:13:23 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:39798 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728791AbgFFSNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Jun 2020 14:09:47 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E16DC08C5C2
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Jun 2020 11:09:47 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a25so15656079ljp.3
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jun 2020 11:09:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rfZS6FD3PVKTeFod390EA9OFYChxy7azm74/xGOYsC8=;
-        b=DgKPeLGSSTDInt10KbPCgP/rEDD+SgAJgEOpT14iuC7S68iv3fc74iAjfj9WZwuQ+d
-         IqXb0HmIOILsKK7OCe3VsJaTzPGBsuOsqIQmnh5yznNkRCCilV2PA6SxzfGNjIy9nRZj
-         S+Nb/3+/qsy0PuBAn7+aTt/7b4XFUNq/GACwQ=
+        Sat, 6 Jun 2020 14:13:18 -0400
+Received: by mail-il1-f199.google.com with SMTP id o12so8843289ilf.6
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jun 2020 11:13:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rfZS6FD3PVKTeFod390EA9OFYChxy7azm74/xGOYsC8=;
-        b=N2unQ3Dhp9FA5XZ/+FpUDXAXql/PfnplgKwpw0qtWojXPlFRDwuxb8D/OVC+EfYDhw
-         WYe6KtllfIMxqFopCeXmFgEeer19g0NgarSuTFfGwOB/3JH7aLAynavksSWUvhT3/XEm
-         NAWJ9wh5FAGMecnxAmQTd4eV1ng7An1EL49MMwao88wPqRBQoNx7wmYtR8B8HGI5noh9
-         U6i4FMvKsYkSiYX1itlhFRKikFk9Mks938Ax5dlrkLwfaEG6BNS+DMaxM8DLCtJiApKR
-         sn4Ln77g/3Mmqpb6Zj4cjNAphbOuFzCOXtgFZdyraW/PIdwO5mZbOUzAy8hwkE1RGmVw
-         KWyA==
-X-Gm-Message-State: AOAM5323swQ7khqHaL9XrcPr65F9t44WVscChFiCzx+7YAW1VZRhJhH2
-        8dS/ot696o92UuTSH1qfCFhpCLDrD+o=
-X-Google-Smtp-Source: ABdhPJwmbpOfy04J/heXu/JMBcDGlIIgaBlaVdXCrnyjjSpcDJ+2Rxf37MiudrxwH7SEZCq7on9sIg==
-X-Received: by 2002:a2e:b8d4:: with SMTP id s20mr7570282ljp.177.1591466984700;
-        Sat, 06 Jun 2020 11:09:44 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id k27sm2411528lfe.88.2020.06.06.11.09.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Jun 2020 11:09:43 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id c17so15610415lji.11
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jun 2020 11:09:43 -0700 (PDT)
-X-Received: by 2002:a2e:97c3:: with SMTP id m3mr7519625ljj.312.1591466982709;
- Sat, 06 Jun 2020 11:09:42 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=CjXuFVsN1v3XRE0SfwegOmV6httWcBVTr91Vy0R3PQU=;
+        b=Ac/c3/bj1AShZlN+2WU9Mk9vekKXUd8oBeayGLn6ggCRmiMBi3ft8hAQ5N+IlSoQ0T
+         HnpvicBLOBO4cS/ENHCURjZG8GyUfDxF2iQyChKo0FA8G5VenXMqHKx0971V9wXUr1fa
+         JvTsP4QwUQpoSTo0G/9SsOhJ5b34qNFa0jw+5QgL2ti3CC0PbWrai6Z36lkcEgF9ohv7
+         pnLVIFsccHNjFAU0X+ljYenT3/j1UdC6RqY9Jc6eoXr/aFN/wyaEECP+lhT8L94otRGD
+         W4vAlBdC7JDcfKt0AjvCfXkAs37K19lpsI/Ss5GP9HedjTsKrdA7xKGM2juQm4TUWbHW
+         Gmzw==
+X-Gm-Message-State: AOAM531DlbioBmOBmfXFoL/7bPfhtLWmfyAOOgLt9Jv4ay3s6N4BYE0J
+        zq8+v1eh1EELxAXrtXAXBbKg/VUeyILyst4EQ1K9oZdzbZph
+X-Google-Smtp-Source: ABdhPJzoEPt/cYW7SK0R/7SyDub9h6KU3fJ2MfSo5JcWozzx1CWwc4avJz5TimBb5kbq+I2ieJYg3F+jG7iKKnnwBbFeGFRYO05K
 MIME-Version: 1.0
-References: <20200605202257.GA1152522@bjorn-Precision-5520>
-In-Reply-To: <20200605202257.GA1152522@bjorn-Precision-5520>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 6 Jun 2020 11:09:26 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wien36zOp4aqf6XULz+7uM5rtxUb21xh8PGbTa-gL06aQ@mail.gmail.com>
-Message-ID: <CAHk-=wien36zOp4aqf6XULz+7uM5rtxUb21xh8PGbTa-gL06aQ@mail.gmail.com>
-Subject: Re: [GIT PULL] PCI changes for v5.8
-To:     Bjorn Helgaas <helgaas@kernel.org>, Rob Herring <robh@kernel.org>
-Cc:     linux-pci@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
+X-Received: by 2002:a05:6638:dd3:: with SMTP id m19mr14680067jaj.106.1591467196413;
+ Sat, 06 Jun 2020 11:13:16 -0700 (PDT)
+Date:   Sat, 06 Jun 2020 11:13:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e9fc4a05a76e54f8@google.com>
+Subject: WARNING in tipc_msg_append
+From:   syzbot <syzbot+75139a7d2605236b0b7f@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jmaloy@redhat.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        tipc-discussion@lists.sourceforge.net, tuong.t.lien@dektech.com.au,
+        ying.xue@windriver.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 1:23 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> You should see two conflicts:
->
->   2) Documentation/devicetree/bindings/pci/cdns-pcie.yaml: conflict
->   between Rob's 3d21a4609335 ("dt-bindings: Remove cases of 'allOf'
->   containing a '$ref'") and Kishon's fb5f8f3ca5f8 ("dt-bindings: PCI:
->   cadence: Deprecate inbound/outbound specific bindings").
->
->   Kishon moved a hunk from cdns-pcie.yaml to cdns-pcie-ep.yaml and
->   cdns-pcie-host.yaml, so I think the new homes need Rob's change:
->
->     Documentation/devicetree/bindings/pci/cdns-pcie-ep.yaml
->     Documentation/devicetree/bindings/pci/cdns-pcie-host.yaml
+Hello,
 
-I decided not to touch those two files, because the AllOf rules seem
-strange, and not all were updated anyway, so I'm going to leave it to
-others (ie Rob) to decide how they want to handle it.
+syzbot found the following crash on:
 
-I suspect your resolution is correct, but I also suspect it doesn't
-_matter_, and since I don't understand the yaml rules I'll leave it
-alone.
+HEAD commit:    5e9eeccc tipc: fix NULL pointer dereference in streaming
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=15ee307a100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a16ddbc78955e3a9
+dashboard link: https://syzkaller.appspot.com/bug?extid=75139a7d2605236b0b7f
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=118e2961100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10534c1e100000
 
-Rob?
+The bug was bisected to:
 
-              Linus
+commit 0a3e060f340dbe232ffa290c40f879b7f7db595b
+Author: Tuong Lien <tuong.t.lien@dektech.com.au>
+Date:   Tue May 26 09:38:38 2020 +0000
+
+    tipc: add test for Nagle algorithm effectiveness
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1097e65a100000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=1297e65a100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1497e65a100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+75139a7d2605236b0b7f@syzkaller.appspotmail.com
+Fixes: 0a3e060f340d ("tipc: add test for Nagle algorithm effectiveness")
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6808 at include/linux/thread_info.h:150 check_copy_size include/linux/thread_info.h:150 [inline]
+WARNING: CPU: 0 PID: 6808 at include/linux/thread_info.h:150 copy_from_iter include/linux/uio.h:144 [inline]
+WARNING: CPU: 0 PID: 6808 at include/linux/thread_info.h:150 tipc_msg_append+0x49a/0x5e0 net/tipc/msg.c:242
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 6808 Comm: syz-executor028 Not tainted 5.7.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x188/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:221
+ __warn.cold+0x2f/0x35 kernel/panic.c:582
+ report_bug+0x27b/0x2f0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:105 [inline]
+ fixup_bug arch/x86/kernel/traps.c:100 [inline]
+ do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:197
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:216
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:check_copy_size include/linux/thread_info.h:150 [inline]
+RIP: 0010:copy_from_iter include/linux/uio.h:144 [inline]
+RIP: 0010:tipc_msg_append+0x49a/0x5e0 net/tipc/msg.c:242
+Code: 18 48 89 f8 48 c1 e8 03 42 80 3c 38 00 0f 85 2e 01 00 00 49 83 7e 18 00 0f 84 d4 fc ff ff e8 4d e7 da f9 0f 0b e8 46 e7 da f9 <0f> 0b 41 bc f2 ff ff ff e8 39 e7 da f9 44 89 e0 48 83 c4 50 5b 5d
+RSP: 0018:ffffc90001627770 EFLAGS: 00010293
+RAX: ffff88808efd0580 RBX: 0000000000000018 RCX: ffffffff8798a901
+RDX: 0000000000000000 RSI: ffffffff8798aaaa RDI: 0000000000000007
+RBP: ffffffffffffffe8 R08: ffff88808efd0580 R09: ffffed1012e78f1d
+R10: ffff8880973c78e7 R11: ffffed1012e78f1c R12: ffff8880973c78e8
+R13: ffff8880973c78d0 R14: ffff888095fbecc0 R15: dffffc0000000000
+ __tipc_sendstream+0xac3/0x1200 net/tipc/socket.c:1578
+ tipc_sendstream+0x4c/0x70 net/tipc/socket.c:1533
+ tipc_send_packet+0x3c/0x60 net/tipc/socket.c:1638
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x32f/0x810 net/socket.c:2352
+ ___sys_sendmsg+0x100/0x170 net/socket.c:2406
+ __sys_sendmmsg+0x195/0x480 net/socket.c:2496
+ __do_sys_sendmmsg net/socket.c:2525 [inline]
+ __se_sys_sendmmsg net/socket.c:2522 [inline]
+ __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2522
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x4401e9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff7b6a58b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004401e9
+RDX: 04924924924926c8 RSI: 0000000020236fc8 RDI: 0000000000000004
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401a70
+R13: 0000000000401b00 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
