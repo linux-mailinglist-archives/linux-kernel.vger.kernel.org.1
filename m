@@ -2,91 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517B11F0565
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 08:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6261F056F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 08:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgFFGcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Jun 2020 02:32:10 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1502 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgFFGcJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Jun 2020 02:32:09 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5edb38100000>; Fri, 05 Jun 2020 23:30:40 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 05 Jun 2020 23:32:09 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 05 Jun 2020 23:32:09 -0700
-Received: from [10.26.72.65] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 6 Jun
- 2020 06:32:07 +0000
-Subject: Re: [PATCH 4.19 00/28] 4.19.127-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
-        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200605140252.338635395@linuxfoundation.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <29f81676-b293-2264-b7b4-77ebcd6326f1@nvidia.com>
-Date:   Sat, 6 Jun 2020 07:32:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200605140252.338635395@linuxfoundation.org>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1591425040; bh=OZHQ47mDxq6zFilAAEclFEWXhcggRYiBL/bQd3vSZpk=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=SiCFxSQR149DTuOIhyHR+CM6OOtEHbk8DIO79DK5zagerJ4nyKQxonKwmIGunCWi2
-         zBsqXbouINkUd5MeAmpmHoggtqzSxncRosgV8w7xR7Pruj41jkEtP5HLhd0o0zGzY7
-         yx9UO6dpYhXQx2mnqZgKVFBZn5nTdSux3wxHMzyZ/ygl/Y4mfHKrUnApuuLMuHyBIR
-         1elq9IlZDVqJzvH8GB0CximWO1ZRoN0I26eKa4X2wNFUJ1uQg96sRjkh5+XZaqxY2Y
-         6HET2GaI+0R8SuOPKZM24j0AfmorM9RLSnnGjOxRuNQU85+dB0stdwlsk5DpRMEp84
-         Y69M+mO4YianQ==
+        id S1728640AbgFFGcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Jun 2020 02:32:33 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:38850 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727077AbgFFGc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Jun 2020 02:32:29 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxj2p0ONtesFg+AA--.1141S2;
+        Sat, 06 Jun 2020 14:32:20 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH 1/3] fs: Use get_max_files() instead of files_stat.max_files in alloc_empty_file()
+Date:   Sat,  6 Jun 2020 14:32:18 +0800
+Message-Id: <1591425140-20613-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxj2p0ONtesFg+AA--.1141S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKr15KFyrAry5tw4xZryDtrb_yoWfZrb_Z3
+        srtryDurWUAr4rXas2yrW5Xr9Yg34UAw4Fvw4YgrZFv3W3X3yxJw4Dur1rCF4UZa17CFnY
+        qr1rWFykCryq9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_
+        Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJV
+        WxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r47
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU1MKuUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It is better to use get_max_files() instead of files_stat.max_files
+to improve readability.
 
-On 05/06/2020 15:15, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.127 release.
-> There are 28 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 07 Jun 2020 13:54:56 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.127-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ fs/file_table.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-All tests are passing for Tegra. I am missing the report for this one. I
-can see everything passed but now our builders have been off-lined for
-the weekend. Can't believe we are giving the builders the weekend off!
-
-Cheers
-Jon
-
+diff --git a/fs/file_table.c b/fs/file_table.c
+index 656647f..26516d0 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -139,12 +139,12 @@ struct file *alloc_empty_file(int flags, const struct cred *cred)
+ 	/*
+ 	 * Privileged users can go above max_files
+ 	 */
+-	if (get_nr_files() >= files_stat.max_files && !capable(CAP_SYS_ADMIN)) {
++	if (get_nr_files() >= get_max_files() && !capable(CAP_SYS_ADMIN)) {
+ 		/*
+ 		 * percpu_counters are inaccurate.  Do an expensive check before
+ 		 * we go and fail.
+ 		 */
+-		if (percpu_counter_sum_positive(&nr_files) >= files_stat.max_files)
++		if (percpu_counter_sum_positive(&nr_files) >= get_max_files())
+ 			goto over;
+ 	}
+ 
 -- 
-nvpublic
+2.1.0
+
