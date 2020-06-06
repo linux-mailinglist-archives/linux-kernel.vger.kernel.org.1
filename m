@@ -2,83 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73231F0458
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 05:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7938F1F045B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 05:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728566AbgFFDDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 23:03:18 -0400
-Received: from mga14.intel.com ([192.55.52.115]:15627 "EHLO mga14.intel.com"
+        id S1728561AbgFFDLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 23:11:33 -0400
+Received: from mx2.freebsd.org ([96.47.72.81]:24233 "EHLO mx2.freebsd.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728390AbgFFDDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 23:03:18 -0400
-IronPort-SDR: 1PBqU7sDNs4OOz5KaiqMstFDSwrFpOnYZ3UnHHTyPhlFXhFSBeL20t5YfceHktlcF/gT9fCsJ8
- Qlbe5Uzea8pQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2020 20:03:18 -0700
-IronPort-SDR: wEF+1kd51aRzfdSObmlDpRVOambjQk0OeFZRP2myEztEe1jvDy6ZrDWeWy22bg2VV21s7c7u/T
- UwKN/FYnPl2w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,478,1583222400"; 
-   d="scan'208";a="294885055"
-Received: from wdu1-mobl3.ccr.corp.intel.com (HELO [10.255.30.207]) ([10.255.30.207])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Jun 2020 20:03:14 -0700
-Subject: Re: [net] a6211caa63:
- dmesg.UBSAN:signed-integer-overflow_in_arch/x86/include/asm/atomic.h
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Yuqi Jin <jinyuqi@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Jiong Wang <jiongwang@huawei.com>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <20200605080929.GK12456@shao2-debian>
- <CANn89iK1EfAqw-SkXyQR=88fKnBpXCcR_FaiFkVDUNazNgAX1g@mail.gmail.com>
- <20200605140521.GD4117@hirez.programming.kicks-ass.net>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <a33f477a-3847-f870-bf3f-845910b90665@intel.com>
-Date:   Sat, 6 Jun 2020 11:03:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728506AbgFFDLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 23:11:31 -0400
+Received: from mx1.freebsd.org (mx1.freebsd.org [IPv6:2610:1c1:1:606c::19:1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mx1.freebsd.org", Issuer "Let's Encrypt Authority X3" (verified OK))
+        by mx2.freebsd.org (Postfix) with ESMTPS id A092A892E6
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Jun 2020 03:11:26 +0000 (UTC)
+        (envelope-from kevans@freebsd.org)
+Received: from smtp.freebsd.org (smtp.freebsd.org [96.47.72.83])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "smtp.freebsd.org", Issuer "Let's Encrypt Authority X3" (verified OK))
+        by mx1.freebsd.org (Postfix) with ESMTPS id 49f4Kp36tLz4cKc
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Jun 2020 03:11:26 +0000 (UTC)
+        (envelope-from kevans@freebsd.org)
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client CN "smtp.gmail.com", Issuer "GTS CA 1O1" (verified OK))
+        (Authenticated sender: kevans)
+        by smtp.freebsd.org (Postfix) with ESMTPSA id 3F5B92188C
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Jun 2020 03:11:26 +0000 (UTC)
+        (envelope-from kevans@freebsd.org)
+Received: by mail-qk1-f181.google.com with SMTP id b27so11879747qka.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jun 2020 20:11:26 -0700 (PDT)
+X-Gm-Message-State: AOAM531pXJJFKTFOTNhKiVkmj1BmohBoH7pr6fWzTip5+8iy3djWusnS
+        yYBj2OBpDDCCnxkEZes7NMwJ0ow8UO3f4ANNhBY=
+X-Received: by 2002:a37:a3ce:: with SMTP id m197mt14010554qke.493.1591413085829;
+ Fri, 05 Jun 2020 20:11:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200605140521.GD4117@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200602204219.186620-1-christian.brauner@ubuntu.com>
+ <20200602204219.186620-2-christian.brauner@ubuntu.com> <20200605145549.GC673948@port70.net>
+ <CACNAnaEjjQBB8ieZH+td8jk-Aitg3CjGB1WwGQwEv-STg5Do+g@mail.gmail.com>
+In-Reply-To: <CACNAnaEjjQBB8ieZH+td8jk-Aitg3CjGB1WwGQwEv-STg5Do+g@mail.gmail.com>
+From:   Kyle Evans <kevans@freebsd.org>
+Date:   Fri, 5 Jun 2020 22:11:14 -0500
+X-Gmail-Original-Message-ID: <CACNAnaGKr2WMGhiXUb4_HVQCKwe5RH7fTNuRHuwCtbfnBK-gXQ@mail.gmail.com>
+Message-ID: <CACNAnaGKr2WMGhiXUb4_HVQCKwe5RH7fTNuRHuwCtbfnBK-gXQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] open: add close_range()
+Cc:     Szabolcs Nagy <nsz@port70.net>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        torvalds@linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Victor Stinner <victor.stinner@gmail.com>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, fweimer@redhat.com, jannh@google.com,
+        oleg@redhat.com, arnd@arndb.de, shuah@kernel.org,
+        dhowells@redhat.com, ldv@altlinux.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 5, 2020 at 9:54 PM Kyle Evans <kevans@freebsd.org> wrote:
+>
+> On Fri, Jun 5, 2020 at 9:55 AM Szabolcs Nagy <nsz@port70.net> wrote:
+> >
+> > * Christian Brauner <christian.brauner@ubuntu.com> [2020-06-02 22:42:17 +0200]:
+> > > [... snip ...]
+> > >
+> > > First, it helps to close all file descriptors of an exec()ing task. This
+> > > can be done safely via (quoting Al's example from [1] verbatim):
+> > >
+> > >         /* that exec is sensitive */
+> > >         unshare(CLONE_FILES);
+> > >         /* we don't want anything past stderr here */
+> > >         close_range(3, ~0U);
+> > >         execve(....);
+> >
+> > this api needs a documentation patch if there isn't yet.
+> >
+> > currently there is no libc interface contract in place that
+> > says which calls may use libc internal fds e.g. i've seen
+> >
+> >   openlog(...) // opens libc internal syslog fd
+> >   ...
+> >   fork()
+> >   closefrom(...) // close syslog fd
+> >   open(...) // something that reuses the closed fd
+> >   syslog(...) // unsafe: uses the wrong fd
+> >   execve(...)
+> >
+> > syslog uses a libc internal fd that the user trampled on and
+> > this can go bad in many ways depending on what libc apis are
+> > used between closefrom (or equivalent) and exec.
+> >
+>
+> Documentation is good. :-) I think you'll find that while this example
+> seems to be innocuous on FreeBSD (and likely other *BSD), this is an
+> atypical scenario and generally not advised.  You would usually not
+> start closing until you're actually ready to exec/fail.
+>
 
-
-On 6/5/2020 10:05 PM, Peter Zijlstra wrote:
-> On Fri, Jun 05, 2020 at 06:17:51AM -0700, Eric Dumazet wrote:
->> On Fri, Jun 5, 2020 at 1:10 AM kernel test robot <rong.a.chen@intel.com> wrote:
->> There you go.
->>
->> We decided this was a bogus report, and that UBSAN requires sane compilers.
->>
->> Please read the fine comment that was added in this commit and update
->> your compiler or do not mess with compiler flags.
->>
->> +       /* If UBSAN reports an error there, please make sure your compiler
->> +        * supports -fno-strict-overflow before reporting it that was a bug
->> +        * in UBSAN, and it has been fixed in GCC-8.
->> +        */
->> +       return atomic_add_return(segs + delta, p_id) - segs;
->>>          make HOSTCC=gcc-4.9 CC=gcc-4.9 ARCH=i386 olddefconfig prepare modules_prepare bzImage
-> Rong, can you make sure to exclude gcc<8 for UBSAN reports ?
-
-Got it, thank's for your warning.
-
-Best Regards,
-Rong Chen
-
-
+Minor correction: not innocuous here, either; O_CLOFORK is not yet a thing. :-)
