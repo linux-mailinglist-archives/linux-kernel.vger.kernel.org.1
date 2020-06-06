@@ -2,208 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78191F0718
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 16:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9F21F071F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 16:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728841AbgFFOnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Jun 2020 10:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgFFOnt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Jun 2020 10:43:49 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82028C03E96A
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Jun 2020 07:43:49 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id n9so4885981plk.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jun 2020 07:43:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Yl5B71x5WRVLHY9W7Cygav4B233CiJaZgXz0nwScr1k=;
-        b=nmaR+Yx16ZjKd4987CctgQlRiXBAarBAYrESs0qnk4hOuejlJHIaCnBTE4LyDJRAtV
-         2gApuzJp7sBDEzKVtYcsZYoA1fI3EH6fbk4KKpNS5hC9XkaiT2+8CUaEakAkwq89VUi1
-         +yfvMFxMexAVK5huM1fOu6m4sbDe2pbCeFpnh4Z3zyqihFg+j0+ctveq8gcIv4AYqFyF
-         We4MUAhJtkj39ZphDK2MXX47OLD4OyIGRicLM0nkH+zWo6CjZCPrbC6Y8lMbSfkR3g60
-         domcYIOyPha9iNLfzUI4V4sTXF2tTfWojKbokml3gHD6yPRE/WW+Q+SS6nAjadEUNzMf
-         5BPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Yl5B71x5WRVLHY9W7Cygav4B233CiJaZgXz0nwScr1k=;
-        b=egy2q64l9YVhMW2bWGG2pX5VcTgMWWHr/Ho+TAecGLRHOnOE/LlU6jtWMmJz2PpzzB
-         a2mAX09wY9ukRpye4wQDioDAPOHIfFJNKeOlI8LRVx67CfFM2HGEtkEiJ1PrGhjktnal
-         IjXN8cLNgiEcx4iiNkPD60YzB+oFRN9E7FV8enAcRcYcFZxPuXvpN5m525K59R3wrInc
-         IMvJNWL2zRKTwkYtLiJiYIwUwK24EY12Itid/hpGgNQReQNtLlLwNs5M8GEhh5NjRENm
-         N3YrVytLQO6EmXJaNFhJFzWAuADtx+AxJvYq+mUrW/5ZOPsdU/f/H9WyoSll9htiSbF2
-         4XYQ==
-X-Gm-Message-State: AOAM53169FxAqE/VXOInrCJiiQdPKE8Uk8yW3FyUpLkVkd3Ai6G3RUof
-        3vOcWOlabShscQtpQSxcgnA=
-X-Google-Smtp-Source: ABdhPJy/0V3hV9sjcZWZaG1l826/LBrZHpl+dR6t5xULcD/GRwSzFhV/crvumHrjdD9J86PAr0e3TA==
-X-Received: by 2002:a17:90a:65c9:: with SMTP id i9mr8477138pjs.201.1591454629003;
-        Sat, 06 Jun 2020 07:43:49 -0700 (PDT)
-Received: from mail.google.com ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id l63sm2553795pfd.122.2020.06.06.07.43.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jun 2020 07:43:48 -0700 (PDT)
-Date:   Sat, 6 Jun 2020 22:43:38 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Changbin Du <changbin.du@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/19] perf ftrace: add option '-b/--buffer-size' to set
- per-cpu buffer size
-Message-ID: <20200606144338.fz6soq2sirjiyi7w@mail.google.com>
-References: <20200510150628.16610-1-changbin.du@gmail.com>
- <20200510150628.16610-14-changbin.du@gmail.com>
- <20200520210814.GB32678@kernel.org>
+        id S1728770AbgFFOqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Jun 2020 10:46:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728630AbgFFOqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Jun 2020 10:46:07 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1F1320723;
+        Sat,  6 Jun 2020 14:46:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591454767;
+        bh=PBym/DGHE9NjcaE0h+p9wR4vb3R6jof0PH+usemivzI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=F4YXPTm3dniH8D5Dv2Qb5R9QGBzWomEEaJ3psaxgtE9IhLaxVfC2iw77xoV3AvGFf
+         Cvg7XeMUPZzHdnNgLSSMVrs6GKKopZewjdFXJPKeI6iI+xX4Qj2xrNFrUefovlugQr
+         eCMiGwes5PeWq5iTcCUuNtztPSbQXePD4io/2DPk=
+Date:   Sat, 6 Jun 2020 15:46:03 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Matt Ranostay <matt.ranostay@konsulko.com>
+Cc:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Matt Ranostay <mranostay@gmail.com>
+Subject: Re: [PATCH] iio: improve IIO_CONCENTRATION channel type description
+Message-ID: <20200606154603.0fd52019@archlinux>
+In-Reply-To: <CAJCx=gkXrNV1pHHBYFcKUttkN=Vc9i_1fOh4stCG3f_GWVJfYA@mail.gmail.com>
+References: <20200601161552.34579-1-tomasz.duszynski@octakon.com>
+        <CAJCx=gkXrNV1pHHBYFcKUttkN=Vc9i_1fOh4stCG3f_GWVJfYA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200520210814.GB32678@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 06:08:14PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Sun, May 10, 2020 at 11:06:22PM +0800, Changbin Du escreveu:
-> > This adds an option '-b/--buffer-size' to allow us set the size of per-cpu
-> > tracing buffer.
-> 
-> -m
->
-sure.
+On Mon, 1 Jun 2020 14:19:43 -0700
+Matt Ranostay <matt.ranostay@konsulko.com> wrote:
 
-> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> On Mon, Jun 1, 2020 at 9:18 AM Tomasz Duszynski
+> <tomasz.duszynski@octakon.com> wrote:
+> >
+> > IIO_CONCENTRATION together with INFO_RAW specifier is used for reporting
+> > raw concentrations of pollutants. Raw value should be meaningless
+> > before being properly scaled. Because of that description shouldn't
+> > mention raw value unit whatsoever.
+> >
+> > Fix this by rephrasing existing description so it follows conventions
+> > used throughout IIO ABI docs.  
+> 
+> Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
+
+Thanks for tidying that up.
+
+Applied to the togreg branch of iio.git and pushed out as testing for
+the autobuilders to ignore.
+
+Thanks,
+
+Jonathan
+
+> 
+> >
+> > Fixes: 8ff6b3bc94930 ("iio: chemical: Add IIO_CONCENTRATION channel type")
+> > Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
 > > ---
-> >  tools/perf/builtin-ftrace.c | 45 ++++++++++++++++++++++++++++---------
-> >  1 file changed, 35 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-> > index 8fd95c109fe8..a93fbdac6aa4 100644
-> > --- a/tools/perf/builtin-ftrace.c
-> > +++ b/tools/perf/builtin-ftrace.c
-> > @@ -47,6 +47,7 @@ struct perf_ftrace {
-> >  	bool			long_info;
-> >  	unsigned		tracing_thresh;
-> >  	bool			trace_children;
-> > +	unsigned		buffer_size_kb;
-> >  };
+> >  Documentation/ABI/testing/sysfs-bus-iio | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+> > index d3e53a6d8331..5c62bfb0f3f5 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-iio
+> > +++ b/Documentation/ABI/testing/sysfs-bus-iio
+> > @@ -1569,7 +1569,8 @@ What:             /sys/bus/iio/devices/iio:deviceX/in_concentrationX_voc_raw
+> >  KernelVersion: 4.3
+> >  Contact:       linux-iio@vger.kernel.org
+> >  Description:
+> > -               Raw (unscaled no offset etc.) percentage reading of a substance.
+> > +               Raw (unscaled no offset etc.) reading of a substance. Units
+> > +               after application of scale and offset are percents.
+> >
+> >  What:          /sys/bus/iio/devices/iio:deviceX/in_resistance_raw
+> >  What:          /sys/bus/iio/devices/iio:deviceX/in_resistanceX_raw
+> > --
+> > 2.26.2
 > >  
-> >  struct filter_entry {
-> > @@ -187,6 +188,17 @@ static int read_tracing_file_to_stdout(const char *name)
-> >  	return ret;
-> >  }
-> >  
-> > +static int write_tracing_file_int(const char *name, int value)
-> > +{
-> > +	char buf[16];
-> > +
-> > +	snprintf(buf, sizeof(buf), "%d", value);
-> > +	if (write_tracing_file(name, buf) < 0)
-> > +		return -1;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int reset_tracing_cpu(void);
-> >  static void reset_tracing_filters(void);
-> >  
-> > @@ -360,8 +372,6 @@ static void reset_tracing_filters(void)
-> >  
-> >  static int set_tracing_depth(struct perf_ftrace *ftrace)
-> >  {
-> > -	char buf[16];
-> > -
-> >  	if (ftrace->graph_depth == 0)
-> >  		return 0;
-> >  
-> > @@ -370,9 +380,7 @@ static int set_tracing_depth(struct perf_ftrace *ftrace)
-> >  		return -1;
-> >  	}
-> >  
-> > -	snprintf(buf, sizeof(buf), "%d", ftrace->graph_depth);
-> > -
-> > -	if (write_tracing_file("max_graph_depth", buf) < 0)
-> > +	if (write_tracing_file_int("max_graph_depth", ftrace->graph_depth) < 0)
-> >  		return -1;
-> >  
-> >  	return 0;
-> > @@ -419,14 +427,10 @@ static int set_tracing_long_info(struct perf_ftrace *ftrace)
-> >  
-> >  static int set_tracing_thresh(struct perf_ftrace *ftrace)
-> >  {
-> > -	char buf[16];
-> > -
-> >  	if (ftrace->tracing_thresh == 0)
-> >  		return 0;
-> >  
-> > -	snprintf(buf, sizeof(buf), "%d", ftrace->tracing_thresh);
-> > -
-> > -	if (write_tracing_file("tracing_thresh", buf) < 0)
-> > +	if (write_tracing_file_int("tracing_thresh", ftrace->tracing_thresh) < 0)
-> >  		return -1;
-> >  
-> >  	return 0;
-> > @@ -454,6 +458,20 @@ static int set_tracing_trace_children(struct perf_ftrace *ftrace)
-> >  	return 0;
-> >  }
-> >  
-> > +static int set_tracing_buffer_size_kb(struct perf_ftrace *ftrace)
-> > +{
-> > +	int ret;
-> > +
-> > +	if (ftrace->buffer_size_kb == 0)
-> > +		return 0;
-> > +
-> > +	ret = write_tracing_file_int("buffer_size_kb", ftrace->buffer_size_kb);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
-> >  {
-> >  	char *trace_file;
-> > @@ -557,6 +575,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
-> >  		goto out_reset;
-> >  	}
-> >  
-> > +	if (set_tracing_buffer_size_kb(ftrace) < 0) {
-> > +		pr_err("failed to set tracing per-cpu buffer size\n");
-> > +		goto out_reset;
-> > +	}
-> > +
-> >  	if (write_tracing_file("current_tracer", ftrace->tracer) < 0) {
-> >  		pr_err("failed to set current_tracer to %s\n", ftrace->tracer);
-> >  		goto out_reset;
-> > @@ -706,6 +729,8 @@ int cmd_ftrace(int argc, const char **argv)
-> >  		     "Only show functions of which the duration is greater than <n>µs"),
-> >  	OPT_BOOLEAN(0, "trace-children", &ftrace.trace_children,
-> >  		    "Trace children processes"),
-> > +	OPT_UINTEGER('b', "buffer-size", &ftrace.buffer_size_kb,
-> > +		     "size of per cpu buffer in kb"),
-> >  	OPT_END()
-> >  	};
-> >  
-> > -- 
-> > 2.25.1
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
 
--- 
-Cheers,
-Changbin Du
