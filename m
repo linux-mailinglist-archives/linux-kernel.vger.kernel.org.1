@@ -2,130 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18ABD1F07BC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 17:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB371F07C4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 17:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728768AbgFFPwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Jun 2020 11:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727100AbgFFPw3 (ORCPT
+        id S1728850AbgFFPx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Jun 2020 11:53:28 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59560 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727100AbgFFPx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Jun 2020 11:52:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E378C03E96A;
-        Sat,  6 Jun 2020 08:52:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9Knot+Lv+Z0XYiseAFBiA62c5+NhkBbKX/gLTI08qrs=; b=BIkLwIVPjTQ4Z6dLUSwN9BNF2d
-        jF6fhDw7QKtkUY0qVUNSVq9AuL8hjm+dtqFVaVANc6f6TM0lnrILTlyCzv0Zn5AN1XdlGt9cdBwHi
-        zD4X30KKbBKG0kzETQ6drLgJ3Xm5yfjabYFhl168BExjPSZP8wck4zfkTJ/uEj0mPlieD9rGrnMG6
-        oHS20QVWiOO4dubZEecydxU8HQa8CKlZjNY5CeOYhnFTWlNFS18HJHQ5PEw6bzRyrREoU/dHDX3lo
-        5nr4gMAxgOOu45lOty30n8+bLPrmT9YJXIxJAyFMEXFkjOBDaMyZrsiHZP9xz4cTJdqHnZJglVMc5
-        Y9vIXEPQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jhb7I-0001SV-JG; Sat, 06 Jun 2020 15:52:16 +0000
-Date:   Sat, 6 Jun 2020 08:52:16 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v7 1/8] fs: introduce kernel_pread_file* support
-Message-ID: <20200606155216.GP19604@bombadil.infradead.org>
-References: <20200606050458.17281-1-scott.branden@broadcom.com>
- <20200606050458.17281-2-scott.branden@broadcom.com>
+        Sat, 6 Jun 2020 11:53:27 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 2C2871C0C0B; Sat,  6 Jun 2020 17:53:25 +0200 (CEST)
+Date:   Sat, 6 Jun 2020 17:53:24 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     jacek.anaszewski@gmail.com, devicetree@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v26 03/15] leds: multicolor: Introduce a multicolor class
+ definition
+Message-ID: <20200606155324.GA21130@amd>
+References: <20200604120504.32425-1-dmurphy@ti.com>
+ <20200604120504.32425-4-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
 Content-Disposition: inline
-In-Reply-To: <20200606050458.17281-2-scott.branden@broadcom.com>
+In-Reply-To: <20200604120504.32425-4-dmurphy@ti.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 10:04:51PM -0700, Scott Branden wrote:
-> -int kernel_read_file(struct file *file, void **buf, loff_t *size,
-> -		     loff_t max_size, enum kernel_read_file_id id)
-> -{
-> -	loff_t i_size, pos;
-> +int kernel_pread_file(struct file *file, void **buf, loff_t *size,
-> +		      loff_t pos, loff_t max_size,
-> +		      enum kernel_pread_opt opt,
-> +		      enum kernel_read_file_id id)
-> +{
-> +	loff_t alloc_size;
-> +	loff_t buf_pos;
-> +	loff_t read_end;
-> +	loff_t i_size;
->  	ssize_t bytes = 0;
->  	int ret;
->  
 
-Look, it's not your fault, but this is a great example of how we end
-up with atrocious interfaces.  Someone comes along and implements a
-simple DWIM interface that solves their problem.  Then somebody else
-adds a slight variant that solves their problem, and so on and so on,
-and we end up with this bonkers API where the arguments literally change
-meaning depending on other arguments.
+--OgqxwSJOaUobr8KG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> @@ -950,21 +955,31 @@ int kernel_read_file(struct file *file, void **buf, loff_t *size,
->  		ret = -EINVAL;
->  		goto out;
->  	}
-> -	if (i_size > SIZE_MAX || (max_size > 0 && i_size > max_size)) {
+Hi!
+
+> Introduce a multicolor class that groups colored LEDs
+> within a LED node.
+>=20
+> The multi color class groups monochrome LEDs and allows controlling two
+> aspects of the final combined color: hue and lightness. The former is
+> controlled via the intensity file and the latter is controlled
+> via brightness file.
+>=20
+> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+
+> diff --git a/Documentation/ABI/testing/sysfs-class-led-multicolor b/Docum=
+entation/ABI/testing/sysfs-class-led-multicolor
+> new file mode 100644
+> index 000000000000..7d33a82a4b07
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-class-led-multicolor
+> @@ -0,0 +1,34 @@
+> +What:		/sys/class/leds/<led>/brightness
+> +Date:		March 2020
+> +KernelVersion:	5.8
+> +Contact:	Dan Murphy <dmurphy@ti.com>
+> +Description:	read/write
+> +		Writing to this file will update all LEDs within the group to a
+> +		calculated percentage of what each color LED intensity is set
+> +		to. The percentage is calculated for each grouped LED via the
+> +		equation below:
+
+> +		led_brightness =3D brightness * multi_intensity/max_brightness
 > +
-> +	/* Default read to end of file */
-> +	read_end = i_size;
+> +		For additional details please refer to
+> +		Documentation/leds/leds-class-multicolor.rst.
 > +
-> +	/* Allow reading partial portion of file */
-> +	if ((opt == KERNEL_PREAD_PART) &&
-> +	    (i_size > (pos + max_size)))
-> +		read_end = pos + max_size;
-> +
-> +	alloc_size = read_end - pos;
-> +	if (i_size > SIZE_MAX || (max_size > 0 && alloc_size > max_size)) {
->  		ret = -EFBIG;
->  		goto out;
+> +		The value of the color is from 0 to
+> +		/sys/class/leds/<led>/max_brightness.
 
-... like that.
+It is not too clear to me what "color" means here.
 
-I think what we actually want is:
+It would be worth mentioning that this is single integer.
 
-ssize_t vmap_file_range(struct file *, loff_t start, loff_t end, void **bufp);
-void vunmap_file_range(struct file *, void *buf);
+> +What:		/sys/class/leds/<led>/multi_index
+> +Date:		March 2020
+> +KernelVersion:	5.8
+> +Contact:	Dan Murphy <dmurphy@ti.com>
+> +Description:	read
+> +		The multi_index array, when read, will output the LED colors
+> +		by name as they are indexed in the multi_intensity file.
 
-If end > i_size, limit the allocation to i_size.  Returns the number
-of bytes allocated, or a negative errno.  Writes the pointer allocated
-to *bufp.  Internally, it should use the page cache to read in the pages
-(taking appropriate reference counts).  Then it maps them using vmap()
-instead of copying them to a private vmalloc() array.
+This should specify that it is array of strings.
 
-kernel_read_file() can be converted to use this API.  The users will
-need to be changed to call kernel_read_end(struct file *file, void *buf)
-instead of vfree() so it can call allow_write_access() for them.
+> +What:		/sys/class/leds/<led>/multi_intensity
+> +Date:		March 2020
+> +KernelVersion:	5.8
+> +Contact:	Dan Murphy <dmurphy@ti.com>
+> +Description:	read/write
+> +		Intensity level for the LED color within the array.
+> +		The intensities for each color must be entered based on the
+> +		multi_index array.
 
-vmap_file_range() has a lot of potential uses.  I'm surprised we don't
-have it already, to be honest.
+I'd mention here that it is array of integers, and what the maximum
+values are.
+
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9533,6 +9533,14 @@ F:	Documentation/devicetree/bindings/leds/
+>  F:	drivers/leds/
+>  F:	include/linux/leds.h
+> =20
+> +LED MULTICOLOR FRAMEWORK
+> +M:	Dan Murphy <dmurphy@ti.com>
+> +L:	linux-leds@vger.kernel.org
+
+I'd like to be mentioned here, too. "M: Pavel Machek
+<pavel@ucw.cz>". And I'm not sure if I should be taking MAINTAINER
+file update through a LED tree. Should definitely go to separate
+patch.
+
+> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> index 9cdc4cfc5d11..fe7d90d4fa23 100644
+> --- a/drivers/leds/Kconfig
+> +++ b/drivers/leds/Kconfig
+> @@ -30,6 +30,16 @@ config LEDS_CLASS_FLASH
+>  	  for the flash related features of a LED device. It can be built
+>  	  as a module.
+> =20
+> +config LEDS_CLASS_MULTI_COLOR
+> +	tristate "LED MultiColor LED Class Support"
+
+"LED MultiColor Class Support"
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--OgqxwSJOaUobr8KG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl7bu/QACgkQMOfwapXb+vIzgQCfSrppct2w8jufcl83cYjriW8p
+LL4An0F9azcmyG2TDnmsc9jyN8wb+0mg
+=atC2
+-----END PGP SIGNATURE-----
+
+--OgqxwSJOaUobr8KG--
