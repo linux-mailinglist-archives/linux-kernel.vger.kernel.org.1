@@ -2,128 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFEE1F0791
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 17:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1741F0743
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 17:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727914AbgFFP0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Jun 2020 11:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727100AbgFFP0f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Jun 2020 11:26:35 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B233BC08C5C2
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Jun 2020 08:26:34 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id y18so4896098plr.4
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jun 2020 08:26:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bdDQGQlfMyBLNXHlU2gdYlCWamJEqiCQQxBbDFu1aeM=;
-        b=K9ghdPHNAlyzGuATlYcfEHNxLaHm4h9S2LHHY/dMpyLgOo4v3RreEZntj66ZLPdaic
-         rAw0SWHdhck6AUnJoLnntMvLA/N76aAcUMS1IstEVw3vQaoyA9npBZvZVLCCtlLe9sAf
-         q6cOxcFgOpBHPQ0mZNhcvDODp/CzSFlEyoWEc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bdDQGQlfMyBLNXHlU2gdYlCWamJEqiCQQxBbDFu1aeM=;
-        b=apZb+oLgY+k/winljkaQmRo83ErSom/WYoY/PX/n5aG7VGhSiPpCnoYQLfnB8Zl/cA
-         l9Do5YmUknzb71OqA741x+aAUr+Uc3Ec5Yp9KGES1zkEQU/lPUIsLuzPerz+aCiqlzkF
-         WWCUVM8qP6IroBtTCwqX2rnbLyOBC4P5xDWsce0TNZsAOH1y14EW7W7nCMHYYCUNIfyg
-         fIinE3idvC1evMySjQ48k2zQoGuNnHIBiH5GpTrIkizUXr9NYyuZSHQoOousqpgt7u/e
-         RcQuFQ0d7ZF7f0LKrDnOCv5dbNdxu5apLT+XrSaQdXbjUD+cQDkuii7vUGp7IkcQEGMF
-         EIBQ==
-X-Gm-Message-State: AOAM532cZ9mmfKEfZT4x8fKbC6owj/NQ544qHxfx8t374/HLNwwidQ9F
-        ZKSYszKW2pltg98n9VAerCDpqA==
-X-Google-Smtp-Source: ABdhPJwBATYFPJ7Fwfk/1+/kvzEPGCdlVMRuOFUkvWLBdcyrFSrRgLoIy939Wrz41s26vJNamrsEHg==
-X-Received: by 2002:a17:90a:65c5:: with SMTP id i5mr8534128pjs.155.1591457194172;
-        Sat, 06 Jun 2020 08:26:34 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
-        by smtp.gmail.com with ESMTPSA id x197sm2697496pfc.13.2020.06.06.08.26.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Jun 2020 08:26:33 -0700 (PDT)
-Date:   Sat, 6 Jun 2020 08:26:32 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     bgodavar@codeaurora.org
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org,
-        Rocky Liao <rjliao@codeaurora.org>,
-        Zijun Hu <zijuhu@codeaurora.org>, linux-kernel@vger.kernel.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Claire Chang <tientzu@chromium.org>
-Subject: Re: [PATCH 1/3] Bluetooth: hci_qca: Only remove TX clock vote after
- TX is completed
-Message-ID: <20200606152632.GR4525@google.com>
-References: <20200605184611.252218-1-mka@chromium.org>
- <20200605114552.1.I7bcad9d672455473177ddbc7db08cc1adcdee1dc@changeid>
- <534a51662c623a512780e20162138469@codeaurora.org>
+        id S1728740AbgFFPVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Jun 2020 11:21:14 -0400
+Received: from mail-eopbgr60072.outbound.protection.outlook.com ([40.107.6.72]:60166
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727089AbgFFPVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Jun 2020 11:21:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IYb1sutWPYEoVJSv419dQ7tmaKSDU3fS8tWc3MJqKk96l5bL4ri1OJaOhbZJwyT+WtedaQN35MbHGBUnLEPAnrqJ9m5ZlMrjWGkN32zBj7o2HbEBD76B1CcRQUtxjm/bNfCTYtzLa3YxFeOztpFgqvea4gAXQyUEN0AD2dyVJlOt+NQz6600HzoBnwEMqOoLL61BepEEBoviKmbFNgWVeuWbGcIxXzjL5ZkWNiN0Nwvuhps+ejz5zUfOco8rDaZ8NatuhxS229ZVa97vMWi6hzyehMt/n9q6apDf+aurCbAmasyFlslhmxVK8Ei/r94mHdT+hpYiOnyRv/6HutYU5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oZpmqO2oHdeXDFr7hNrHeCQjrrs0RHrCSx5R7z4Nrwo=;
+ b=kn0yvTX5be4n5JwMYpTmqMwxfZIxaklt6w8toU7udOo9QEDtkSlKajc7JtxK/S2SJCRC84+7kf6KYbfdBLOmaVviVXaHXgrMgzpfCkfQ1eYU7lNBLiWzjufrHM1/naL3zF6nzq8CepEfVJNz37M3Q82OypRZZ7kgfKIWJ4DPR64GPvrpyBbnjtnXc10XthKGviLmgKW93ZDjXV8f3LcHTunC3eDF7FrGG89/gHHCfDY3rLyNX+CDG2m5G+y7vLndXzAhXjXqujOPs6ZCg0aLKVvK2OBAVCLItV58wu7aUFSZSO5dS/42ZeF2OcucsewBG9stWDP2sk4KcXOhzOBVAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oZpmqO2oHdeXDFr7hNrHeCQjrrs0RHrCSx5R7z4Nrwo=;
+ b=pt06oYzmjk4C2i0xOylLmNvQ/377974IETKzasD1lOFGsSs84qR73qGkRgYiwMQNgQdPbHUTn4cSrl6w28zSGgpcLJW6IAjTatbRPfrwp5lyIDuzmG+cxXx/lMoDbCc0MLjJ8H7Si4X0h+eeS/t1qY3+BW5R22RMB0J9VqYzPBU=
+Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=nxp.com;
+Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
+ by VE1PR04MB6511.eurprd04.prod.outlook.com (2603:10a6:803:11f::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.20; Sat, 6 Jun
+ 2020 15:21:05 +0000
+Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
+ ([fe80::5cc4:23a5:ca17:da7d]) by VE1PR04MB6638.eurprd04.prod.outlook.com
+ ([fe80::5cc4:23a5:ca17:da7d%6]) with mapi id 15.20.3066.019; Sat, 6 Jun 2020
+ 15:21:05 +0000
+From:   Robin Gong <yibin.gong@nxp.com>
+To:     mark.rutland@arm.com, broonie@kernel.org, robh+dt@kernel.org,
+        catalin.marinas@arm.com, vkoul@kernel.org, will.deacon@arm.com,
+        shawnguo@kernel.org, festevam@gmail.com, s.hauer@pengutronix.de,
+        martin.fuzzey@flowbird.group, u.kleine-koenig@pengutronix.de,
+        dan.j.williams@intel.com, matthias.schiffer@ew.tq-group.com
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel@pengutronix.de, linux-imx@nxp.com, dmaengine@vger.kernel.org
+Subject: [PATCH v9 RESEND 00/13] add ecspi ERR009165 for i.mx6/7 soc family
+Date:   Sun,  7 Jun 2020 07:21:04 +0800
+Message-Id: <1591485677-20533-1-git-send-email-yibin.gong@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR04CA0184.apcprd04.prod.outlook.com
+ (2603:1096:4:14::22) To VE1PR04MB6638.eurprd04.prod.outlook.com
+ (2603:10a6:803:119::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <534a51662c623a512780e20162138469@codeaurora.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.66) by SG2PR04CA0184.apcprd04.prod.outlook.com (2603:1096:4:14::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3066.18 via Frontend Transport; Sat, 6 Jun 2020 15:21:00 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.66]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 88c68ebb-5007-45c3-a21d-08d80a2d3b03
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6511:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB651199B5654AD96618EAD46589870@VE1PR04MB6511.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-Forefront-PRVS: 04267075BD
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: guoJ+c1s16rmY7C9xICeUn2O+EDCcm03UaZX4bPejGt4z511oy0eudWSRnPjM4qkynUVzllL+0zbGDf+B1ueEh8moZFsPjz4cuR3yWA7lAWfrVekNuDzMvCS0a/+MvUTGnSKqiZuxfkL3kj9+jR7hPSw3YZpkRb8IkvINW2jdevK+y6d1nk+7jLAY5yhxVnPrMqMK6QxRSacnzvLTL1KeSeYyfryP/CLsIaODwXgZ4hetacEsMNcdhbey6wJ/+Czjpzu09uox0Ibsh3M8FHoTppl/ruiT98pP/rA5etBf8+ICoPG65zE33TiTP7zTmIVX5JSQvbGH8YwSZ3PkxiOhAWB1JTisUnQyLBBh8mQbtgFX4RDGY3sClPUqK90nYBK+LRReTgqlHXKvL90BxUoRTfl41RIMxPBsHvm7Ssu0+glEmYD0l/WQESkhQ9Pthi5
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(366004)(346002)(39860400002)(376002)(86362001)(5660300002)(66476007)(16526019)(6506007)(66946007)(956004)(2616005)(186003)(36756003)(2906002)(7416002)(316002)(66556008)(4326008)(478600001)(52116002)(26005)(6486002)(966005)(6512007)(8676002)(83380400001)(8936002)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: cGurvKvXiyo8N/P/U+fj/23Iua+7d3VvxNhl/W7EFpDjH+ggkK3c6tf/aQUu71Vf6ayzlxxgOtVsliBo0zcbxKbAafW4Z+xJS/PEt1X9jG4HXgJ8VM7/c2d1adJGEdiAciRkMkICG3e1UHiRVPQTD7Sz1czJ5uFY8S2vm2CMzzjgioaVS1cFUBGme+j/F9S5tdiBM07A/q+gQ9d9kPQHLRJkJQsmPZ2xDVQiXqTtA+8b1eHiyg74KSMY023F9DuF0OztqKS52tuZCF43sD8MeceHdH/QSd5NoyOBrdndo0s7G9R5tRssmxytndQSI3kOBDDMJ9LRUHs8IOWtUzlYLPlpaGEyJePLwiQGkOce5KDi8HrAIIFnLk5k138LeaWG0dsI5IbO8k1zMiv9r0IrpnA1IB/HnBf/KrtEliRBmKCp55bzjSOWCtZVo0N0M0Ra46yIhwHhOcBh8s9ce0N4U66kRNgltA22xDk4B3t8AHY=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88c68ebb-5007-45c3-a21d-08d80a2d3b03
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2020 15:21:05.5293
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WFpvAZesSv8XZcs1x0r+SuIVWpvlFDgK6giKNCbFk/2dbQ8K0rLI4LVb0N6DFFu9ob21dNkqAKPZVCfBhPnz2g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6511
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bala,
+There is ecspi ERR009165 on i.mx6/7 soc family, which cause FIFO
+transfer to be send twice in DMA mode. Please get more information from:
+https://www.nxp.com/docs/en/errata/IMX6DQCE.pdf. The workaround is adding
+new sdma ram script which works in XCH  mode as PIO inside sdma instead
+of SMC mode, meanwhile, 'TX_THRESHOLD' should be 0. The issue should be
+exist on all legacy i.mx6/7 soc family before i.mx6ul.
+NXP fix this design issue from i.mx6ul, so newer chips including i.mx6ul/
+6ull/6sll do not need this workaroud anymore. All other i.mx6/7/8 chips
+still need this workaroud. This patch set add new 'fsl,imx6ul-ecspi'
+for ecspi driver and 'ecspi_fixed' in sdma driver to choose if need errata
+or not.
+The first two reverted patches should be the same issue, though, it
+seems 'fixed' by changing to other shp script. Hope Sean or Sascha could
+have the chance to test this patch set if could fix their issues.
+Besides, enable sdma support for i.mx8mm/8mq and fix ecspi1 not work
+on i.mx8mm because the event id is zero.
 
-On Sat, Jun 06, 2020 at 06:23:13PM +0530, bgodavar@codeaurora.org wrote:
-> Hi Matthias,
-> 
-> On 2020-06-06 00:16, Matthias Kaehlcke wrote:
-> > qca_suspend() removes the vote for the UART TX clock after
-> > writing an IBS sleep request to the serial buffer. This is
-> > not a good idea since there is no guarantee that the request
-> > has been sent at this point. Instead remove the vote after
-> > successfully entering IBS sleep. This also fixes the issue
-> > of the vote being removed in case of an aborted suspend due
-> > to a failure of entering IBS sleep.
-> > 
-> > Fixes: 41d5b25fed0a0 ("Bluetooth: hci_qca: add PM support")
-> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> > ---
-> > 
-> >  drivers/bluetooth/hci_qca.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-> > index ece9f91cc3deb..b1d82d32892e9 100644
-> > --- a/drivers/bluetooth/hci_qca.c
-> > +++ b/drivers/bluetooth/hci_qca.c
-> > @@ -2083,8 +2083,6 @@ static int __maybe_unused qca_suspend(struct
-> > device *dev)
-> > 
-> >  		qca->tx_ibs_state = HCI_IBS_TX_ASLEEP;
-> >  		qca->ibs_sent_slps++;
-> > -
-> > -		qca_wq_serial_tx_clock_vote_off(&qca->ws_tx_vote_off);
-> >  		break;
-> > 
-> >  	case HCI_IBS_TX_ASLEEP:
-> > @@ -2112,8 +2110,10 @@ static int __maybe_unused qca_suspend(struct
-> > device *dev)
-> >  			qca->rx_ibs_state == HCI_IBS_RX_ASLEEP,
-> >  			msecs_to_jiffies(IBS_BTSOC_TX_IDLE_TIMEOUT_MS));
-> > 
-> > -	if (ret > 0)
-> > +	if (ret > 0) {
-> > +		qca_wq_serial_tx_clock_vote_off(&qca->ws_tx_vote_off);
-> [Bala]: qca_wq_serial_tx_clock_vote_off votes for Tx clock off, when both Tx
-> clock and Rx clock voted to off.
-> then only actual call to clock off is called.
-> https://elixir.bootlin.com/linux/latest/source/drivers/bluetooth/hci_qca.c#L312
-> I would recommend to vote Tx clock off after sending SLEEP BYTE from HOST TO
-> BT SOC.
+PS:
+   Please get sdma firmware from below linux-firmware and copy it to your
+local rootfs /lib/firmware/imx/sdma.
+https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/imx/sdma
 
-Are you suggesting to move the vote after _wait_until_sent() and before
-waiting for RX_SLEEP?
+v2:
+  1.Add commit log for reverted patches.
+  2.Add comment for 'ecspi_fixed' in sdma driver.
+  3.Add 'fsl,imx6sll-ecspi' compatible instead of 'fsl,imx6ul-ecspi'
+    rather than remove.
+v3:
+  1.Confirm with design team make sure ERR009165 fixed on i.mx6ul/i.mx6ull
+    /i.mx6sll, not fixed on i.mx8m/8mm and other i.mx6/7 legacy chips.
+    Correct dts related dts patch in v2.
+  2.Clean eratta information in binding doc and new 'tx_glitch_fixed' flag
+    in spi-imx driver to state ERR009165 fixed or not.
+  3.Enlarge burst size to fifo size for tx since tx_wml set to 0 in the
+    errata workaroud, thus improve performance as possible.
+v4:
+  1.Add Ack tag from Mark and Vinod
+  2.Remove checking 'event_id1' zero as 'event_id0'.
+v5:
+  1.Add the last patch for compatible with the current uart driver which
+    using rom script, so both uart ram script and rom script supported
+    in latest firmware, by default uart rom script used. UART driver
+    will be broken without this patch.
+v6:
+  1.Resend after rebase the latest next branch.
+  2.Remove below No.13~No.15 patches of v5 because they were mergered.
+  	ARM: dts: imx6ul: add dma support on ecspi
+  	ARM: dts: imx6sll: correct sdma compatible
+  	arm64: defconfig: Enable SDMA on i.mx8mq/8mm
+  3.Revert "dmaengine: imx-sdma: fix context cache" since
+    'context_loaded' removed.
+v7:
+  1.Put the last patch 13/13 'Revert "dmaengine: imx-sdma: fix context
+    cache"' to the ahead of 03/13 'Revert "dmaengine: imx-sdma: refine
+    to load context only once" so that no building waring during comes out
+    during bisect.
+  2.Address Sascha's comments, including eliminating any i.mx6sx in this
+    series, adding new 'is_imx6ul_ecspi()' instead imx in imx51 and taking
+    care SMC bit for PIO.
+  3.Add back missing 'Reviewed-by' tag on 08/15(v5):09/13(v7)
+   'spi: imx: add new i.mx6ul compatible name in binding doc'
+v8:
+  1.remove 0003-Revert-dmaengine-imx-sdma-fix-context-cache.patch and merge
+    it into 04/13 of v7
+  2.add 0005-spi-imx-fallback-to-PIO-if-dma-setup-failure.patch for no any
+    ecspi function broken even if sdma firmware not updated.
+  3.merge 'tx.dst_maxburst' changes in the two continous patches into one
+    patch to avoid confusion.
+  4.fix typo 'duplicated'.
+v9:
+  1. add "spi: imx: add dma_sync_sg_for_device after fallback from dma"
+     to fix the potential issue brought by commit bcd8e7761ec9("spi: imx:
+     fallback to PIO if dma setup failure") which is the only one patch
+     of v8 merged. Thanks Matthias for reporting:
+     https://lore.kernel.org/linux-arm-kernel/5d246dd81607bb6e5cb9af86ad4e53f7a7a99c50.camel@ew.tq-group.com/
+  2. remove 05/13 of v8 "spi: imx:fallback to PIO if dma setup failure"
+     since it's been merged.
 
-I think if the vote is done before RX_SLEEP and going to RX_SLEEP fails the
-variables qca->tx_vote and qca->tx_votes_off would have the wrong state, even
-if that doesn't lead to actually switching the clock off. I might be missing
-something though, I'm not very familiar with this part.
+Robin Gong (13):
+  spi: imx: add dma_sync_sg_for_device after fallback from dma
+  Revert "ARM: dts: imx6q: Use correct SDMA script for SPI5 core"
+  Revert "ARM: dts: imx6: Use correct SDMA script for SPI cores"
+  Revert "dmaengine: imx-sdma: refine to load context only once"
+  dmaengine: imx-sdma: remove duplicated sdma_load_context
+  dmaengine: imx-sdma: add mcu_2_ecspi script
+  spi: imx: fix ERR009165
+  spi: imx: remove ERR009165 workaround on i.mx6ul
+  spi: imx: add new i.mx6ul compatible name in binding doc
+  dmaengine: imx-sdma: remove ERR009165 on i.mx6ul
+  dma: imx-sdma: add i.mx6ul compatible name
+  dmaengine: imx-sdma: fix ecspi1 rx dma not work on i.mx8mm
+  dmaengine: imx-sdma: add uart rom script
+
+ .../devicetree/bindings/dma/fsl-imx-sdma.txt       |  1 +
+ .../devicetree/bindings/spi/fsl-imx-cspi.txt       |  1 +
+ arch/arm/boot/dts/imx6q.dtsi                       |  2 +-
+ arch/arm/boot/dts/imx6qdl.dtsi                     |  8 +--
+ drivers/dma/imx-sdma.c                             | 67 ++++++++++++--------
+ drivers/spi/spi-imx.c                              | 73 +++++++++++++++++++---
+ include/linux/platform_data/dma-imx-sdma.h         |  8 ++-
+ 7 files changed, 120 insertions(+), 40 deletions(-)
+
+-- 
+2.7.4
+
