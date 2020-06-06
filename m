@@ -2,52 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6BA1F0801
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 19:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 646EB1F0806
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 19:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728862AbgFFRPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Jun 2020 13:15:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39310 "EHLO mail.kernel.org"
+        id S1728849AbgFFRR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Jun 2020 13:17:26 -0400
+Received: from mga07.intel.com ([134.134.136.100]:44122 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728844AbgFFRPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Jun 2020 13:15:15 -0400
-Subject: Re: [GIT PULL] cgroup changes for v5.8-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591463715;
-        bh=hvG55LaXo/IMf3DM80rTa78o0nrlJRathGCSMBEJC2U=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=JFYmQyePdV5uhcpGz4azvtwZiYPWgHD4v3jCgPPe39fL8mNmw9vVQjou0H8IoDXwS
-         ISWprOyn+KOZEW0M2UalL8OivWdekpSgK4M7uSDiBdvLbvTUsp0Oe0Evh8y/5hHCEV
-         3rXVUgd+5fhrqY13ZDGCd2UZvHARpkSMstylNi/8=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200605200601.GJ31548@mtj.thefacebook.com>
-References: <20200605200601.GJ31548@mtj.thefacebook.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200605200601.GJ31548@mtj.thefacebook.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.8
-X-PR-Tracked-Commit-Id: 936f2a70f2077f64fab1dcb3eca71879e82ecd3f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4a7e89c5ec0238017a757131eb9ab8dc111f961c
-Message-Id: <159146371502.31751.904509182514760412.pr-tracker-bot@kernel.org>
-Date:   Sat, 06 Jun 2020 17:15:15 +0000
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+        id S1726389AbgFFRR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Jun 2020 13:17:26 -0400
+IronPort-SDR: 8Q6KPWq+seKknQelPUbgjuXiUpwYkzIio3C2QENmQEF1MqoblsXTuQfbmX8VkaUqtnQaPO646T
+ 1nasLXgkGRiQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2020 10:17:24 -0700
+IronPort-SDR: j5v0gMfuGTjpLcr+3dT2X/x/7FkneIpNZ+Q06w7AiHW57U44I1+haxyfwLkFnvCrITwArhsAhc
+ FNXDJ8IXMbWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,481,1583222400"; 
+   d="scan'208";a="472257243"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by fmsmga005.fm.intel.com with ESMTP; 06 Jun 2020 10:17:22 -0700
+Date:   Sun, 7 Jun 2020 01:18:23 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2][RFC] PM-runtime: Move all runtime usage related
+ function to runtime.c
+Message-ID: <20200606171822.GA3705@chenyu-office.sh.intel.com>
+References: <cover.1591380524.git.yu.c.chen@intel.com>
+ <3e7c571eb9e444c6e326d5cbb1f6e2dce4bb52fe.1591380524.git.yu.c.chen@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e7c571eb9e444c6e326d5cbb1f6e2dce4bb52fe.1591380524.git.yu.c.chen@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 5 Jun 2020 16:06:01 -0400:
+On Sat, Jun 06, 2020 at 03:05:35AM +0800, Chen Yu wrote:
+> In order to track all the runtime usage count change, move the code
+> related to runtime usage count change from pm_runtime.h to runtime.c,
+> so that in runtime.c we can leverage trace event to do the tracking.
+> Meanwhile export pm_runtime_get_noresume() and pm_runtime_put_noidle()
+> so the module can use them.
+> 
+> No functional change.
+>
+There is a compile issue found by lkp, will send a
+new version out.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.8
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4a7e89c5ec0238017a757131eb9ab8dc111f961c
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Thanks,
+Chenyu
