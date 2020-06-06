@@ -2,130 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED461F069D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 14:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5360D1F069B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 14:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728845AbgFFM6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Jun 2020 08:58:10 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:26816 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728796AbgFFM6I (ORCPT
+        id S1728824AbgFFM6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Jun 2020 08:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725831AbgFFM6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Jun 2020 08:58:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591448287; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=L0dPa4WboKgSG/BnSettdX0rSi6ZEV66DQzLoB4TqbA=;
- b=Z8/PWot/mZJpZ6offqOlc5SSFc4YZOvHO41zPKsZo9Glg0S1hFBnYnYMSe6f5Ovn4ygV7g6u
- qGZYVfCLFv9idF5EwKYG/IRKroCaxQwI21G9YjQY2H/yt7GO+X+v6ZCo41LHNMsw3G3wBqwK
- mBMiW/O9okwMb12HsbEWuP41Lic=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5edb92d8b2f512dd9d5705bd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 06 Jun 2020 12:58:00
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D4F1BC43391; Sat,  6 Jun 2020 12:57:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bgodavar)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 42C22C433CA;
-        Sat,  6 Jun 2020 12:57:59 +0000 (UTC)
+        Sat, 6 Jun 2020 08:58:04 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0283AC03E96A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Jun 2020 05:58:03 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id m7so4809445plt.5
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jun 2020 05:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=RiscDRwAw+vb1Ik/i1z3SqKgnnBA5d2CLXBdhmYXSaU=;
+        b=j+cggzOZPwTyxSd4wHIE7OqZ/SbYUeAuerhl/CHnAZZ7qT5T66fBwrgaesyx7uMnDd
+         OUKW6hUz/WcUoiQs4d0jvNE518SPBTIeDzz5oR6IIurRWGi6HVmY6gQZAWZNa5U1rGEv
+         xd1/dfAtyWPe5WhK21WEJDJ+9ciEKf7I/gw6dk+I9nIRSr+vcnCG10+c75L0unIY1un7
+         2fYi9qLFT48NlJg6Qf/9mre73p35Jq4nE2Td1dgY54u9BEcLEz/eQzJesMfAKatsVVSI
+         /ZeQmZFmD3GtwjYESUcjOVcbRVSRYXjbNYVxSAjCkJCnedAkkMF3fDVh6VG3i8N8G+Yf
+         i4dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=RiscDRwAw+vb1Ik/i1z3SqKgnnBA5d2CLXBdhmYXSaU=;
+        b=T6QqCj059N4arAKnmkdHzSpnihYsahnAbfcIN8j7R8QMWuKI5As9SCOx34rcBb+O+2
+         T7MV2Vg+VhvCCkQ0iqar0WnFeI2mINx69SN4oVTX8ngphLyEqk2mdhH4I2ZBsPXmxhdo
+         2sygjujIE57rqTCT0dqHHxzwGbpRrHpoQlm/eZR3qc34/Mwa8obKMy9R/jJ3byBwTe1W
+         y1oJWtQGTismRQQZRf9QQ1Hc5l2HyuAtbytMCSwgcwG+v2Mle4hKl2qE+qcuEENthWM0
+         7DHrXsFdvIMn4WvfCB/UyH1Vdmb9AQS7qK+6A1iOEtVLRcfMgmbU0ZUfubKAbU4cK+ek
+         eYEg==
+X-Gm-Message-State: AOAM5337DV7ycHOrraWbNdgh1YM9ftjdR4TgOaG6J2rni2+R7gm7KJnV
+        iI6ZJ6dUpTGN7B74IZxoWm/03J9Tj6IvZmRfXzw=
+X-Google-Smtp-Source: ABdhPJymzYlozmOhFE0CulbjhD6cLLElBUMFEWirdszfP6yfL4bocl4woymEPebR5hEE33r3FsVgQmyR17Nd+lyAqzw=
+X-Received: by 2002:a17:902:c30c:: with SMTP id k12mr14365931plx.130.1591448283462;
+ Sat, 06 Jun 2020 05:58:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 06 Jun 2020 18:27:59 +0530
-From:   bgodavar@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org,
-        Rocky Liao <rjliao@codeaurora.org>,
-        Zijun Hu <zijuhu@codeaurora.org>, linux-kernel@vger.kernel.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Claire Chang <tientzu@chromium.org>, hemantg@codeaurora.org
-Subject: Re: [PATCH 2/3] Bluetooth: hci_qca: Skip serdev wait when no transfer
- is pending
-In-Reply-To: <20200605114552.2.I2a095adb2a9a98b15c11d7310db142b27f8cab28@changeid>
-References: <20200605184611.252218-1-mka@chromium.org>
- <20200605114552.2.I2a095adb2a9a98b15c11d7310db142b27f8cab28@changeid>
-Message-ID: <ca3bb368e9959770720c8a3fbe149652@codeaurora.org>
-X-Sender: bgodavar@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Received: by 2002:a17:90a:8806:0:0:0:0 with HTTP; Sat, 6 Jun 2020 05:58:03
+ -0700 (PDT)
+Reply-To: sandrajohntg@gmail.com
+From:   Mrs Sandra John <johndoejr4@gmail.com>
+Date:   Sat, 6 Jun 2020 12:58:03 +0000
+Message-ID: <CABwMGrtLkbg5p3B8U_nJ9tu_w8i4kjz+zRagMhLHKV0zzd020Q@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi matthias,
+Good afternoon
+I hope you received my previous email. I would greatly appreciate it
+if you could review the message and respond within days.
+Yours sincerely,
 
-On 2020-06-06 00:16, Matthias Kaehlcke wrote:
-> qca_suspend() calls serdev_device_wait_until_sent() regardless of
-> whether a transfer is pending. While it does no active harm since
-> the function should return immediately it makes the code more
-> confusing. Add a flag to track whether a transfer is pending and
-> only call serdev_device_wait_until_sent() is needed.
-> 
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
-> 
->  drivers/bluetooth/hci_qca.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-> index b1d82d32892e9..90ffd8ca1fb0d 100644
-> --- a/drivers/bluetooth/hci_qca.c
-> +++ b/drivers/bluetooth/hci_qca.c
-> @@ -2050,6 +2050,7 @@ static int __maybe_unused qca_suspend(struct 
-> device *dev)
->  	struct hci_uart *hu = &qcadev->serdev_hu;
->  	struct qca_data *qca = hu->priv;
->  	unsigned long flags;
-> +	bool tx_pending = false;
->  	int ret = 0;
->  	u8 cmd;
-> 
-> @@ -2083,6 +2084,7 @@ static int __maybe_unused qca_suspend(struct 
-> device *dev)
-> 
->  		qca->tx_ibs_state = HCI_IBS_TX_ASLEEP;
->  		qca->ibs_sent_slps++;
-> +		tx_pending = true;
->  		break;
-> 
->  	case HCI_IBS_TX_ASLEEP:
-> @@ -2099,8 +2101,10 @@ static int __maybe_unused qca_suspend(struct 
-> device *dev)
->  	if (ret < 0)
->  		goto error;
-> 
-> -	serdev_device_wait_until_sent(hu->serdev,
-> -				      msecs_to_jiffies(CMD_TRANS_TIMEOUT_MS));
-> +	if (tx_pending) {
-[Bala]: Good idea why don't we move this call to switch case under 
-HCI_IBS_TX_AWAKE
-https://elixir.bootlin.com/linux/latest/source/drivers/bluetooth/hci_qca.c#L1994
-
-i.e. i would recommend below sequence
-
-1. Send SLEEP BYTE
-2. wait for some time to write SLEEP Byte on Tx line
-3. call for Tx clock off qca_wq_serial_tx_clock_vote_off
-
-> +		serdev_device_wait_until_sent(hu->serdev,
-> +					      msecs_to_jiffies(CMD_TRANS_TIMEOUT_MS));
-> +	}
-> 
->  	/* Wait for HCI_IBS_SLEEP_IND sent by device to indicate its Tx is 
-> going
->  	 * to sleep, so that the packet does not wake the system later.
+Mrs Sandra John
