@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D812E1F0A9F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 11:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E091F0AAB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 11:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgFGJV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 05:21:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58654 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726375AbgFGJVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 05:21:55 -0400
-Received: from localhost (p5486cb80.dip0.t-ipconnect.de [84.134.203.128])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D054020663;
-        Sun,  7 Jun 2020 09:21:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591521715;
-        bh=LHu8Je2iFMQ+RisxyR/UI9uRpVWn2Y0Lc1Cp+/YeenY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GGo/ngLpWBFwbICNIUGJIa9T9e6YpPanaIp6t1ghNKY9xEiGJjDP/1LASjkMoMGd9
-         bSjsLLAq7wP/10lNqfL+BEhTTPfUiMJdqZH7u1E3eurA/lGQsJpESm5h51GyaS8D5S
-         f6gjORQLPBoluzkPHTFxO/bH3rqsbzSxSifcaqmg=
-Date:   Sun, 7 Jun 2020 11:21:51 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Tali Perry <tali.perry1@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH] i2c: npcm7xx: Remove unnecessary parentheses
-Message-ID: <20200607092150.GA981@ninjato>
-References: <20200604153957.GA14839@embeddedor>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6TrnltStXW4iwmi0"
-Content-Disposition: inline
-In-Reply-To: <20200604153957.GA14839@embeddedor>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726545AbgFGJgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 05:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726502AbgFGJgH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 05:36:07 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06D5C08C5C3
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 02:36:06 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jhrie-0000K4-Ui; Sun, 07 Jun 2020 11:35:57 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id F02F5FF805;
+        Sun,  7 Jun 2020 11:35:55 +0200 (CEST)
+Message-Id: <20200606215114.380723277@linutronix.de>
+User-Agent: quilt/0.65
+Date:   Sat, 06 Jun 2020 23:51:14 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, x86@kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: [patch 0/3] vdso: Unbreak VDSO with PV and HyperV clocksources
+Content-transfer-encoding: 8-bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Miklos reported [1] that the recent VDSO changes broke paravirt clocksource
+based VDSO in the case that the clocksource is invalidated by the
+hypervisor which happens after a suspend/resume cycle of the host.
 
---6TrnltStXW4iwmi0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The result is a stale clocksource which is about 2200 seconds ahead of the
+actual time and jumps forward by 2200 seconds once 2200 seconds have
+elapsed.
 
-On Thu, Jun 04, 2020 at 10:39:57AM -0500, Gustavo A. R. Silva wrote:
-> Remove unnecessary parentheses around _bus_.
->=20
-> This issue was found with the help of Coccinelle.
->=20
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+The reason for this is the core code change which optimized the VDSO
+clocksource validation by checking for the clocksource mode instead of
+using the rather subtle check for the clocksource read return value whether
+it has bit 63 set.
 
-Applied to for-next, thanks!
+For some reason my brain blanked when doing that change, even if I should
+have known better.
 
+The following series restores the previous behaviour but preserves the
+initially intended optimization for architectures which don't need that PV
+handling.
 
---6TrnltStXW4iwmi0
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
 
------BEGIN PGP SIGNATURE-----
+	tglx
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl7csaoACgkQFA3kzBSg
-KbZ34w/9F7glIsi9VLOyKc2V+vuK9byLCo9tK4y7lCQzzwialHHVNqoEMYuLMYCC
-CWwJ0JDjG88ys9gCOmCbSaHOPiY52dbFH1QlU3DMQQOEoKHcCrKkoy15gQMbMwXn
-R2bEw0D5U65GYc9QtGokQtFUSqfNGQqxY7oEEN1B2A0WtuPeH2PqCSvN7O6YVIte
-2q+0RFiyuqFGU/LlPhjkE5F26/T9SvrFKLgRwUzBPTXs/lZM/7pv1F6Ia+okjApR
-3WaPR/+IboLAxZ85tbcKzPX4BOr0KhmNS6PSSeeHo+n9fMB4j+nD7/9UQ0YGvHm+
-jXfHIfdcZDT3kM1CZaK5G1fJjEUyVe1ixg2uJrWsB4w6nltFazOtyAkp8QbuI9XB
-eZEwdYDV+9FHJhhEoDrUMcr3gAc15Wox29t1oqfQfih8zW0xxCevOZfFoPrJE+12
-+ZRFrIfBjQzl6gI22wftNYQYZhbQsfiKNqIkDUVx5D1OkXFbO5nnhDVcsEo+NLeT
-S2YFu16SLTD/Acjmi0en+NvbQXim++4vr0NmxrmE7pB3LYgUeP0wpRH/ANZHQiV+
-YFFPmNCdUnVB64Q1W4TR5ufniXwDmmbGHFHcUeBEP9uhVh7z7ecyWQi4WdpWRyam
-oPbxZU2p430+gflPMq5cayRgtHV7n5ey4MMx8uoruQzcUvsyBRI=
-=n8mE
------END PGP SIGNATURE-----
+[1] https://lore.kernel.org/r/CAJfpegstNYeseo_C4KOF9Y74qRxr78x2tK-9rTgmYM4CK30nRQ@mail.gmail.com
 
---6TrnltStXW4iwmi0--
+8<-----------------
+ arch/x86/include/asm/vdso/gettimeofday.h |   18 ++++++++++++++++++
+ kernel/time/clocksource.c                |    2 --
+ lib/vdso/gettimeofday.c                  |   19 +++++++++++++++++++
+ 3 files changed, 37 insertions(+), 2 deletions(-)
