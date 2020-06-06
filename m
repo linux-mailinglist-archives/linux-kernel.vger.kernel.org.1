@@ -2,35 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABA91F0408
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 02:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949491F040F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 02:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728493AbgFFApX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Jun 2020 20:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728402AbgFFApX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Jun 2020 20:45:23 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E8EC08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Jun 2020 17:45:22 -0700 (PDT)
+        id S1728493AbgFFAuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Jun 2020 20:50:00 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:41287 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728353AbgFFAuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Jun 2020 20:50:00 -0400
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49f1566Qpzz9sSc;
-        Sat,  6 Jun 2020 10:45:14 +1000 (AEST)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49f1BX1WpMz9sPF;
+        Sat,  6 Jun 2020 10:49:56 +1000 (AEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1591404320;
-        bh=IaU5svNPQHhne20TEVlRZ0Kl72R9wx14Smw0PSgLfqw=;
+        s=201909; t=1591404598;
+        bh=bpz89eaW2nodXZsziinGBtDvy2HqL3ahKn1/V/FFoQg=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=PpRZ5bzYtwIKvGBjTsE7uAgTTrKf58mi2pjY4JzXmNwpk062tb0AdkqDy4/SvuLyM
-         7pUvSDSiEw0bJQwnSXcKitUASlKYBKt9o0WseERFR8HMlCPyASqDOEzCvzczeqyjWw
-         JpGj8nEf+7EG02SGd8auYupz7qxKQMGdhOgkSIRNsp7KGg2NpWN36py1I1geCAuxce
-         ee3s3G5NfaHuMBqbrn48ApQism1lFWVgryRfFyOUSN2n4NYysIxZ/8QVKVwJaYe44S
-         nj3oN2p7KiG9iJhxMW7zR2/LOvR3hu+Ywcfn8kzsHyfZdxrfArZH0EI0Gqcj/BAFyw
-         QIHwQdTvjAkWw==
+        b=lfkkMYR9ta/gv5TFJjtrQEC8a8XmvWYaxu1udQreNWFEiovWa5hqfxX1/GkNas9Jb
+         353UR7g42BQnlkRNxq+dLf+Krax6hZenJ/w8DCede5c5a6ueCGAu+BIeeun3UgCuTh
+         THB64aOM7w/RyfJlxpp5cVVImWQ274o/DDXqPglIJaBOoVMR8AA3eQwpAfjFhtmoCz
+         YPNHWcS0xAySPVmHcT5FgsM+qenQfehzI4Z7VU/aNTMyu9LlFtM5yA/wtM5Ol/irC8
+         8w51uT9sez3I0LiF+T68/LXhAdE8CZyJsNbEP3FOwTROQVu95OpZK/zz0brfVC98kH
+         rbamWSCf12F+g==
 From:   Michael Ellerman <mpe@ellerman.id.au>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>, ajd@linux.ibm.com,
@@ -64,10 +60,10 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>, ajd@linux.ibm.com,
         Takashi Iwai <tiwai@suse.de>, wangxiongfeng2@huawei.com,
         wsa@kernel.org
 Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.8-1 tag
-In-Reply-To: <CAHk-=wh5vSwYqF=YiKOOGBHE=hCwnes_ndbP4QOyjPK_Xocz7w@mail.gmail.com>
-References: <87eeqth3hi.fsf@mpe.ellerman.id.au> <CAHk-=wh5vSwYqF=YiKOOGBHE=hCwnes_ndbP4QOyjPK_Xocz7w@mail.gmail.com>
-Date:   Sat, 06 Jun 2020 10:45:37 +1000
-Message-ID: <87a71hggy6.fsf@mpe.ellerman.id.au>
+In-Reply-To: <CAHk-=wg33hLZHjqcMhvWzmgNrE6Gv+xpEcFXUx7iUHS2t5QtdQ@mail.gmail.com>
+References: <87eeqth3hi.fsf@mpe.ellerman.id.au> <CAHk-=wh5vSwYqF=YiKOOGBHE=hCwnes_ndbP4QOyjPK_Xocz7w@mail.gmail.com> <CAHk-=wg33hLZHjqcMhvWzmgNrE6Gv+xpEcFXUx7iUHS2t5QtdQ@mail.gmail.com>
+Date:   Sat, 06 Jun 2020 10:50:22 +1000
+Message-ID: <877dwlggq9.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
@@ -76,53 +72,16 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Linus Torvalds <torvalds@linux-foundation.org> writes:
-> On Fri, Jun 5, 2020 at 9:38 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+> On Fri, Jun 5, 2020 at 12:01 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
 >>
->> I've pushed the result of my resolution of the conflicts to the powerpc/merge
->> branch, if you want to look at that, though I've also tried to describe it in
->> full below.
+>> ..and then when I actually compared whether I otherwise got the same
+>> result as you, I realized that this all depends on the module tree.
+>>
+>> I'll go merge that first, and then re-do this all. Oh well.
 >
-> I ended up doing the machine_check_exception() differently, because I
-> felt the code itself was done wrong and I wanted to add a note about
-> that.
->
-> Having the same function have completely different semantics depending
-> on a platform issue is just fundamentally wrong, and makes not just
-> for fragile code, but also means that you can't do single image
-> kernels.
+> Ok, redone and pushed out. Can you check that the end result makes sense?
 
-Yeah I agree it's not that nicely structured.
-
-In this case CONFIG_PPC_BOOK3S_64 is one of our top-level compile time
-switches anyway, so the single image thing at least isn't a concern.
-
-> It should be two different functions, possibly just
->
->    non_nmi_fn() { ... }
->
->    nmi_fn() { nmi_enter(); non_nmi_fn(); nmi_exit(); }
->
-> and now you don't have odd rules for the same function that depends on
-> how the platform happens to call it.
-
-Agreed.
-
-> I didn't do the above. I did something that looked like the old code,
-> but had a comment. Oh well.
-
-Thanks, we can restructure it later.
-
-> But thanks for describing the merge, I'd have missed the place where
-> there was a new use of pgd_oiffset().
-
-Yeah I missed it to begin with :}
-
-> ..and then when I actually compared whether I otherwise got the same
-> result as you, I realized that this all depends on the module tree.
->
-> I'll go merge that first, and then re-do this all. Oh well.
-
-Darn it. I figured you'd have merged that by the time you saw my pull,
-will mention anything similar in future.
+Yep, looks good to me. Has passed all my basic build & boot tests.
 
 cheers
