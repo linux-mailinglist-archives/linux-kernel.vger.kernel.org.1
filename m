@@ -2,103 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C303C1F078D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 17:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFEE1F0791
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jun 2020 17:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbgFFPZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Jun 2020 11:25:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728588AbgFFPZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Jun 2020 11:25:24 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A01A207BC;
-        Sat,  6 Jun 2020 15:25:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591457124;
-        bh=Ijxz6nrVlTapeHb7V5fHGePLuao8sVVuail/bq1MCDk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CtPvFsVsK201iwyNxyOlKqs06CLqLP2LTFVWxY/kYYzyZt6Q3sdlg+gZlkVopm4+Y
-         qAzl6L3QWqUE68uMxJwAN/32YWduT5A+rVQLF5fR1E55lAoqeIS8L0knfJMuWwf78j
-         9A3rubHimjAsJwDGToFAGoj3GfHtUNFytJFTi2A4=
-Date:   Sat, 6 Jun 2020 16:25:20 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <johan@kernel.org>, <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2 2/6] iio: core: add iio_device_set_parent() helper
-Message-ID: <20200606162520.5f314bc5@archlinux>
-In-Reply-To: <20200603114023.175102-3-alexandru.ardelean@analog.com>
-References: <20200603114023.175102-1-alexandru.ardelean@analog.com>
-        <20200603114023.175102-3-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727914AbgFFP0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Jun 2020 11:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727100AbgFFP0f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Jun 2020 11:26:35 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B233BC08C5C2
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Jun 2020 08:26:34 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id y18so4896098plr.4
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jun 2020 08:26:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bdDQGQlfMyBLNXHlU2gdYlCWamJEqiCQQxBbDFu1aeM=;
+        b=K9ghdPHNAlyzGuATlYcfEHNxLaHm4h9S2LHHY/dMpyLgOo4v3RreEZntj66ZLPdaic
+         rAw0SWHdhck6AUnJoLnntMvLA/N76aAcUMS1IstEVw3vQaoyA9npBZvZVLCCtlLe9sAf
+         q6cOxcFgOpBHPQ0mZNhcvDODp/CzSFlEyoWEc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bdDQGQlfMyBLNXHlU2gdYlCWamJEqiCQQxBbDFu1aeM=;
+        b=apZb+oLgY+k/winljkaQmRo83ErSom/WYoY/PX/n5aG7VGhSiPpCnoYQLfnB8Zl/cA
+         l9Do5YmUknzb71OqA741x+aAUr+Uc3Ec5Yp9KGES1zkEQU/lPUIsLuzPerz+aCiqlzkF
+         WWCUVM8qP6IroBtTCwqX2rnbLyOBC4P5xDWsce0TNZsAOH1y14EW7W7nCMHYYCUNIfyg
+         fIinE3idvC1evMySjQ48k2zQoGuNnHIBiH5GpTrIkizUXr9NYyuZSHQoOousqpgt7u/e
+         RcQuFQ0d7ZF7f0LKrDnOCv5dbNdxu5apLT+XrSaQdXbjUD+cQDkuii7vUGp7IkcQEGMF
+         EIBQ==
+X-Gm-Message-State: AOAM532cZ9mmfKEfZT4x8fKbC6owj/NQ544qHxfx8t374/HLNwwidQ9F
+        ZKSYszKW2pltg98n9VAerCDpqA==
+X-Google-Smtp-Source: ABdhPJwBATYFPJ7Fwfk/1+/kvzEPGCdlVMRuOFUkvWLBdcyrFSrRgLoIy939Wrz41s26vJNamrsEHg==
+X-Received: by 2002:a17:90a:65c5:: with SMTP id i5mr8534128pjs.155.1591457194172;
+        Sat, 06 Jun 2020 08:26:34 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id x197sm2697496pfc.13.2020.06.06.08.26.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Jun 2020 08:26:33 -0700 (PDT)
+Date:   Sat, 6 Jun 2020 08:26:32 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     bgodavar@codeaurora.org
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-bluetooth@vger.kernel.org,
+        Rocky Liao <rjliao@codeaurora.org>,
+        Zijun Hu <zijuhu@codeaurora.org>, linux-kernel@vger.kernel.org,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Claire Chang <tientzu@chromium.org>
+Subject: Re: [PATCH 1/3] Bluetooth: hci_qca: Only remove TX clock vote after
+ TX is completed
+Message-ID: <20200606152632.GR4525@google.com>
+References: <20200605184611.252218-1-mka@chromium.org>
+ <20200605114552.1.I7bcad9d672455473177ddbc7db08cc1adcdee1dc@changeid>
+ <534a51662c623a512780e20162138469@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <534a51662c623a512780e20162138469@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Jun 2020 14:40:19 +0300
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+Hi Bala,
 
-> By default, the device allocation will also assign a parent device to the
-> IIO device object. In cases where devm_iio_device_alloc() is used,
-> sometimes the parent device must be different than the device used to
-> manage the allocation.
+On Sat, Jun 06, 2020 at 06:23:13PM +0530, bgodavar@codeaurora.org wrote:
+> Hi Matthias,
 > 
-> In that case, this helper should be used to change the parent, hence the
-> requirement to call this between allocation & registration.
-> 
-> This pattern/requirement is not very common in the IIO space, and it may be
-> cleaned up later.
-> But until then, assigning the parent manually between allocation &
-> registration is slightly easier.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> On 2020-06-06 00:16, Matthias Kaehlcke wrote:
+> > qca_suspend() removes the vote for the UART TX clock after
+> > writing an IBS sleep request to the serial buffer. This is
+> > not a good idea since there is no guarantee that the request
+> > has been sent at this point. Instead remove the vote after
+> > successfully entering IBS sleep. This also fixes the issue
+> > of the vote being removed in case of an aborted suspend due
+> > to a failure of entering IBS sleep.
+> > 
+> > Fixes: 41d5b25fed0a0 ("Bluetooth: hci_qca: add PM support")
+> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > ---
+> > 
+> >  drivers/bluetooth/hci_qca.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+> > index ece9f91cc3deb..b1d82d32892e9 100644
+> > --- a/drivers/bluetooth/hci_qca.c
+> > +++ b/drivers/bluetooth/hci_qca.c
+> > @@ -2083,8 +2083,6 @@ static int __maybe_unused qca_suspend(struct
+> > device *dev)
+> > 
+> >  		qca->tx_ibs_state = HCI_IBS_TX_ASLEEP;
+> >  		qca->ibs_sent_slps++;
+> > -
+> > -		qca_wq_serial_tx_clock_vote_off(&qca->ws_tx_vote_off);
+> >  		break;
+> > 
+> >  	case HCI_IBS_TX_ASLEEP:
+> > @@ -2112,8 +2110,10 @@ static int __maybe_unused qca_suspend(struct
+> > device *dev)
+> >  			qca->rx_ibs_state == HCI_IBS_RX_ASLEEP,
+> >  			msecs_to_jiffies(IBS_BTSOC_TX_IDLE_TIMEOUT_MS));
+> > 
+> > -	if (ret > 0)
+> > +	if (ret > 0) {
+> > +		qca_wq_serial_tx_clock_vote_off(&qca->ws_tx_vote_off);
+> [Bala]: qca_wq_serial_tx_clock_vote_off votes for Tx clock off, when both Tx
+> clock and Rx clock voted to off.
+> then only actual call to clock off is called.
+> https://elixir.bootlin.com/linux/latest/source/drivers/bluetooth/hci_qca.c#L312
+> I would recommend to vote Tx clock off after sending SLEEP BYTE from HOST TO
+> BT SOC.
 
-That does the job nicely.
+Are you suggesting to move the vote after _wait_until_sent() and before
+waiting for RX_SLEEP?
 
-Applied,
-
-Jonathan
-
-> ---
->  include/linux/iio/iio.h | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
-> index 91a69f4751aa..5784f8c9508f 100644
-> --- a/include/linux/iio/iio.h
-> +++ b/include/linux/iio/iio.h
-> @@ -649,6 +649,26 @@ static inline struct iio_dev *iio_device_get(struct iio_dev *indio_dev)
->  	return indio_dev ? dev_to_iio_dev(get_device(&indio_dev->dev)) : NULL;
->  }
->  
-> +/**
-> + * iio_device_set_parent() - assign parent device to the IIO device object
-> + * @indio_dev: 		IIO device structure
-> + * @parent:		reference to parent device object
-> + *
-> + * This utility must be called between IIO device allocation
-> + * (via devm_iio_device_alloc()) & IIO device registration
-> + * (via {devm_}iio_device_register()).
-> + * By default, the device allocation will also assign a parent device to
-> + * the IIO device object. In cases where devm_iio_device_alloc() is used,
-> + * sometimes the parent device must be different than the device used to
-> + * manage the allocation.
-> + * In that case, this helper should be used to change the parent, hence the
-> + * requirement to call this between allocation & registration.
-> + **/
-> +static inline void iio_device_set_parent(struct iio_dev *indio_dev,
-> +					 struct device *parent)
-> +{
-> +	indio_dev->dev.parent = parent;
-> +}
->  
->  /**
->   * iio_device_set_drvdata() - Set device driver data
-
+I think if the vote is done before RX_SLEEP and going to RX_SLEEP fails the
+variables qca->tx_vote and qca->tx_votes_off would have the wrong state, even
+if that doesn't lead to actually switching the clock off. I might be missing
+something though, I'm not very familiar with this part.
