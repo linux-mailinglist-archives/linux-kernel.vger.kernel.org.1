@@ -2,171 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4E91F0A99
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 11:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD0F1F0A9B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 11:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726439AbgFGJKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 05:10:19 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:55586 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726375AbgFGJKS (ORCPT
+        id S1726434AbgFGJOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 05:14:45 -0400
+Received: from sonic306-1.consmr.mail.bf2.yahoo.com ([74.6.132.40]:46488 "EHLO
+        sonic306-1.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726375AbgFGJOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 05:10:18 -0400
-Received: by mail-il1-f198.google.com with SMTP id l20so9365599ilk.22
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 02:10:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Ui/zAEDfK90KrltMW5xg+UzIIlbJSijIM/qfQmLPS5s=;
-        b=ESE0GojERnzyVBEhB2xfwDjN3Zo9arVika//prqMfHSPwjZDPtI0aooZUFC/yoWViz
-         BJCaGasNE29vAcM+G7KekogFvXqCFzUEjTNXZFWgIZTlag2H+16LImLiwWWHjHsxaqkD
-         byhhNI/qxJzQ9z65y/IKuYPs1OsO9sYgpx+1nXKbCUem9vSiwnpP14l9hRsiD/jyYgC2
-         PevFTaZpeRM42eXkMpZVOuEX3zG9iHwDC1HjM5swjWJ3t32SBXm+jiumBJELbC1bEO/V
-         EozihD9mTFKucFNFSYWWE+gN0kaU+88lFP6oss2+k+UF0VjtZamSrUyiGXRzGLubg5Xl
-         ODoA==
-X-Gm-Message-State: AOAM532EYIyWGB9E+/85RtIybn1PeeOxr/O0BwJeza7BlxceXgj87jpU
-        NbLkB3sTIq6YcOsbDF1IjzNIhnN+g+TEt5KFscs5qHdwEPGM
-X-Google-Smtp-Source: ABdhPJw0e3NJwysfxMm6yR80gJYmJSMsrKxAo1PuB7fK3kPaZDupYG5BtoZOTOk+9TWGFgP8dt8M4cb7uLDBt1xasEE0iAKb/a4M
+        Sun, 7 Jun 2020 05:14:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591521283; bh=FxteAL4f7ZlzpT4ZdNdEGTtGaJUjMVyx0IzkN6XgoRQ=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Gjay3ykjulDZf3E29jVeNpZVX53JuJ66bthSjHBdv4FpGEzx+MNyUoK6YyN12v+UDOOMN/CfFIWO94OoHctE0x39M2z6Txy8H2EC89E1G5iPKkRi2naCOv4KMF71ppEeagkdI8nHw1HC98wML4DFhKoFUPOcd4yrfhZSMks8XSMcoZFt3bqWH/nJxPkq4bxb39XHRXh9fgm0SE7XbwlpxgXS5yjSQRWr27WR0yhxfoWjLyCT3YukHK70ZdjG9riYYOXKqDkUcSfbHK6e0DQsaJ02PwW7Q1ziWKjxk4oPQOtMXuZezoXIJl6G1kuvpycOcw9ekh9gMd8WqqDoc1DD/g==
+X-YMail-OSG: U7gl9BwVM1k1cSoytfcacc6ufJfDuFsW4xnsiYZ2dF_MZEXQT48woD2CQNJVjMa
+ F1KznMd47YC9CT3584avtZpBGBRSZtkiS5GKKuQJFOTDyhyURjC7Hz0Ew8V8RZ1gY11Ep8.azn3h
+ CC_o_HljTJuXRphnNtFt3RivfoPBuZ.PiaVf.dl2y3.ZKS7ymr7cHb4DdfiBtQEOdC2WMmFmf6hp
+ 5Z7hSXv8GLaGG_Uj.hZYYiS_CmUpW4lRPSz7fL0nwetvdZ8GK1I2S2ZrOAWdEiV0StHFomvGNPiU
+ 9HNNqj9e4ZZ6v8eaBfUj0D2nE3cirPvd0dTHEnHEtgFPiwvwSnz.dITH8caeMgtZg6HSDBLsWlY0
+ QRTv5WDMHYyzYl_UckgHKmPijSg1fPCJydC0iV5jPJO0s_O31qs7G4twkYB7QEygXGXBWWrMFHdO
+ R7PJws5Xntu3uikPYCYwe2C2yCPqdVQWxYIGjZGIW4xG5jKOSd4Yuh_7JEx982YvtKYqT5d0LPe8
+ 0o7pY0n7E0DUFyUlQraz5Lciw_EdVRgUXhwmAM2J852UTE4gGB6ez_9gfhPtTaDSdGjYm9ZQhuzy
+ SUx1UswY4tTqzOano3aZxOJRj1t0CH29c8PmIqQx0MKOX.Tiqw5I_sE0dLDMXKanddwb4iZ9y4yt
+ 3fkWvIxrfCg2RiNJOmU8x9nie8wzNC.LHFTpavmdEAa_nIsOfweiqN8wY1TjRtWAziB7vd2jcWvY
+ IV4BjwNW6YEbqkhIuzbxktN1bItrMM116PQVtxvFBKigS3wCCwiwVdT.SHgW3vqcWLmoXEcy6rEh
+ XxnlzJXkJoQ_co21Xmuo.YwmC5_dkeOIWtCHqto3cZWxCHAkVXCUPId3IjSPAF4DS7UrM7z897re
+ .oBIKjsMUrae13nwQStBpAObTg8P3tRq0km1qUNTVkAua3rHezdlYnn7lzNS0V5q9vIEbvlcHZMb
+ ihVMxcDz66D61dSM.GA3obBIADs_2nXSy58ap4nN9AgRvNS_EbaWB47AU3HYY_prsw5Y3FKp66cy
+ 1ExDykbH9VRqEX3yqst0gnH_euzaJSqB1WDZJj1q2B_iqutseIDh.rV.PD68uGIsZO_03xi8.INV
+ F_iN7W8JM.5fx9_5cpMgo4Bce29JdlhBqghjoOtzj6Rs0q8i2mcBLyceIDHRdLwEjVFT4wfEI.Jj
+ R861uWdUb3kW3UB2yI_._i5ohb6MnbSNSTlRCKyDjY574X6WxX2hrA32F2ahbA5_gdxCT4t8pH58
+ Kz3v1k045XcH2DVZSf8Oj6NsZYDLQdbfrtO3cqKW1VTRQ5hv5vnYtGcYeU9EhPfkLf0cLfy_a
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.bf2.yahoo.com with HTTP; Sun, 7 Jun 2020 09:14:43 +0000
+Date:   Sun, 7 Jun 2020 09:14:38 +0000 (UTC)
+From:   Mr Suleman Bello <mrsulemanbello863@gmail.com>
+Reply-To: mrsfatimakargbo@outlook.com
+Message-ID: <1952979051.322591.1591521278959@mail.yahoo.com>
+Subject: Can i trust you?
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:d05:: with SMTP id q5mr16196892jaj.2.1591521017199;
- Sun, 07 Jun 2020 02:10:17 -0700 (PDT)
-Date:   Sun, 07 Jun 2020 02:10:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e2105b05a77adc57@google.com>
-Subject: KASAN: use-after-free Write in start_creating
-From:   syzbot <syzbot+ee19362d7c0417910752@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1952979051.322591.1591521278959.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16072 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Dear Friend,
 
-syzbot found the following crash on:
+Please i want you to read this letter very carefully and i must apologize for berging this message into your mail box without any formal introduction due to the urgency and confidential of this issue and i know that this message will come to you as a surprise, Please this is not a joke and i will not like you to joke with it.I am Mr.Suleman Bello, a staff in African Development Bank (A.D.B) Ouagadougou, Burkina faso West Africa.I discovered existing dormant account for years. When I discovered that there had been neither continuation nor withdrawals from this account for this long period and according to the laws and constitution guiding this banking institution, any unserviceable account for more than (7) seven years, that fund will be transferred to national treasury as unclaimed fund.
 
-HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1441c9de100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d195fe572fb15312
-dashboard link: https://syzkaller.appspot.com/bug?extid=ee19362d7c0417910752
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+I Hoped that you will not expose or betray this trust and confident that i am about to extablish with you for the mutual benefit of you and i,I need your urgent assistance in transferring the sum of $10.5 )million usd into your account within 7 banking days. This money has been dormant for years in our Bank, and The request of foreigner in this transaction is necessary because our late customer was a foreigner and a burkinabe cannot stand as next of kin to a foreigner.Because of the static of this transaction I want you to stand as the next of kin so that our bank will accord you the recognition and have the fund transferred to your account.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+Upon your response, I shall then provide you with further information and more deities that will help you understand the transaction. I am expecting your urgent response to enable me inform you on how the business will be executed. Please I would like you to keep this transaction confidential and as a top secret or delete if you are not interested.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+ee19362d7c0417910752@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in atomic64_set include/asm-generic/atomic-instrumented.h:854 [inline]
-BUG: KASAN: use-after-free in atomic_long_set include/asm-generic/atomic-long.h:40 [inline]
-BUG: KASAN: use-after-free in rwsem_set_owner kernel/locking/rwsem.c:176 [inline]
-BUG: KASAN: use-after-free in __down_write kernel/locking/rwsem.c:1391 [inline]
-BUG: KASAN: use-after-free in down_write+0xdb/0x150 kernel/locking/rwsem.c:1532
-Write of size 8 at addr ffff8880277496e8 by task syz-executor.3/17503
-
-CPU: 1 PID: 17503 Comm: syz-executor.3 Not tainted 5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xd3/0x413 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x141/0x190 mm/kasan/generic.c:192
- atomic64_set include/asm-generic/atomic-instrumented.h:854 [inline]
- atomic_long_set include/asm-generic/atomic-long.h:40 [inline]
- rwsem_set_owner kernel/locking/rwsem.c:176 [inline]
- __down_write kernel/locking/rwsem.c:1391 [inline]
- down_write+0xdb/0x150 kernel/locking/rwsem.c:1532
- inode_lock include/linux/fs.h:799 [inline]
- start_creating+0xa8/0x250 fs/debugfs/inode.c:334
- __debugfs_create_file+0x62/0x400 fs/debugfs/inode.c:383
- kvm_arch_create_vcpu_debugfs+0x52/0x200 arch/x86/kvm/debugfs.c:48
- kvm_create_vcpu_debugfs arch/x86/kvm/../../../virt/kvm/kvm_main.c:3012 [inline]
- kvm_vm_ioctl_create_vcpu arch/x86/kvm/../../../virt/kvm/kvm_main.c:3089 [inline]
- kvm_vm_ioctl+0x1c0b/0x2440 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3617
- vfs_ioctl fs/ioctl.c:47 [inline]
- ksys_ioctl+0x11a/0x180 fs/ioctl.c:771
- __do_sys_ioctl fs/ioctl.c:780 [inline]
- __se_sys_ioctl fs/ioctl.c:778 [inline]
- __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:778
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45ca69
-Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f40f5451c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000004e7400 RCX: 000000000045ca69
-RDX: 0000000000000000 RSI: 000000000000ae41 RDI: 0000000000000005
-RBP: 000000000078bfa0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000396 R14: 00000000004c6306 R15: 00007f40f54526d4
-
-Allocated by task 17503:
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc mm/kasan/common.c:494 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:467
- slab_post_alloc_hook mm/slab.h:586 [inline]
- slab_alloc mm/slab.c:3320 [inline]
- kmem_cache_alloc+0x11b/0x740 mm/slab.c:3484
- alloc_inode+0x164/0x1e0 fs/inode.c:234
- new_inode_pseudo+0x14/0xe0 fs/inode.c:928
- new_inode+0x1b/0x40 fs/inode.c:957
- debugfs_get_inode+0x1a/0x130 fs/debugfs/inode.c:67
- debugfs_create_dir+0x71/0x390 fs/debugfs/inode.c:544
- kvm_create_vcpu_debugfs arch/x86/kvm/../../../virt/kvm/kvm_main.c:3009 [inline]
- kvm_vm_ioctl_create_vcpu arch/x86/kvm/../../../virt/kvm/kvm_main.c:3089 [inline]
- kvm_vm_ioctl+0x1bd8/0x2440 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3617
- vfs_ioctl fs/ioctl.c:47 [inline]
- ksys_ioctl+0x11a/0x180 fs/ioctl.c:771
- __do_sys_ioctl fs/ioctl.c:780 [inline]
- __se_sys_ioctl fs/ioctl.c:778 [inline]
- __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:778
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-Freed by task 2478:
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- kasan_set_free_info mm/kasan/common.c:316 [inline]
- __kasan_slab_free+0xf7/0x140 mm/kasan/common.c:455
- __cache_free mm/slab.c:3426 [inline]
- kmem_cache_free+0x7f/0x320 mm/slab.c:3694
- i_callback+0x3f/0x70 fs/inode.c:221
- rcu_do_batch kernel/rcu/tree.c:2396 [inline]
- rcu_core+0x59f/0x1370 kernel/rcu/tree.c:2623
- __do_softirq+0x26c/0x9f7 kernel/softirq.c:292
-
-The buggy address belongs to the object at ffff888027749600
- which belongs to the cache inode_cache of size 1024
-The buggy address is located 232 bytes inside of
- 1024-byte region [ffff888027749600, ffff888027749a00)
-The buggy address belongs to the page:
-page:ffffea00009dd240 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888027749ffd
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0001412e48 ffffea00009db2c8 ffff8880aa201380
-raw: ffff888027749ffd ffff888027749180 0000000100000003 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888027749580: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888027749600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888027749680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                          ^
- ffff888027749700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888027749780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks
+Mr.Suleman Bello.
