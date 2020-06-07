@@ -2,180 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91DAF1F104C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 00:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9541F1051
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 01:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727786AbgFGWxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 18:53:39 -0400
-Received: from sonic302-22.consmr.mail.gq1.yahoo.com ([98.137.68.148]:33186
-        "EHLO sonic302-22.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726764AbgFGWxi (ORCPT
+        id S1727798AbgFGXId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 19:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726922AbgFGXIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 18:53:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1591570417; bh=OVgJpBhhhhk5NwW2tudXI5m0eiQU8G4TUKDcix9LmsY=; h=Date:From:Subject:To:Cc:References:In-Reply-To:From:Subject; b=JvS/cP/QAY94+2UYF1anFgfmEPAkfPx8Q7+0fDcUkUPKK9avDW+BUjDy4YaEEskeNrmveiUbJSQ6pi7VkoSUNES5W1ArYIi6z6kL1Aj3Gu7EcT0aq5EkeGzQ0FkAoTp6vhzk4uBJLS9mFDlp113ouMUPtiM9cc67som0lc0PiqICCWjy4Zu70niYUox7oGCEt4gd2RiRMEgGqBripUow9TEy3jDYFbm5UCfFIg9Q6Z3nkeXaD3UfoIb/G0HOW8zudnAHfHoT56SFUz+MWMxqOhpnR3BLXk4s44IDj7Vq2OlXuxaJZyO1ggGqtTVnxd9jS6ya5N1DGJfTAsSBOHeHcw==
-X-YMail-OSG: Qymo6RcVM1n2O9WHY3Yfpsyc1gmeSUzg2OFgrfiZKyjRrwHhpveFhWF4SsWU_7L
- 6IfOXTVScc2CtR1JZ1mV7Z3hkEjVE3dvG_6XCYHXGUogQ8DZBrGBbOtVD2_nYJJu95XEKJMfWu4w
- ved5kqIt5G0NCRgF9lNtEdFJsOgqioq.feXZX6A1rQhxgIvpC8PZ9_WC4TR23l_sO6uoK7cVLfLm
- 1S7XS6u3gHJ5GS.OL8OBbGg5Y713Gq7f2aF..1gECptNvlc0j5PAmfb9mgYj4Gi57Iv0eSFBvpF7
- LZCyULVkJtpDcD4YKTmMVUhJLo52twf9nxHZHBEv4o4lka11J7t417IMdSKBISpoMoDVDBR.bCFE
- c5w1HwxCH7Stujk97nZKx6WtvwSQ3rSXiN9WcU2qZm66zSbVjKZOJ0xxZtHh9_wX2oYgRWqlL4xp
- fxfeY2kQmM7VZL6wrWZWs49X1G5TVgFspbZlimFK9yNuD6mTkLnqqbMvSpRMjc0DbmyO_yxfjTIb
- hsUPFNixrXwCfaAGDvD7YxomX3UfcPJeG6aFo00oZrJrzbgxOaTzMVfKl.XbNsNYhe6h6VCKuGE4
- uEjTsUmkgyOCJSmlVI4bTU1F_T8r7ktyAsADhMEJbvgzV6YXSZLgT93Iz4isESZyd4FAlGTXNqlj
- XpopHWGzSUpcnPhX4om8ikVQuv.SAyikUOn7OilC9xviTmydLhbxQhOSrwsQAKLompBQAlh1NT5N
- qoAe4MuuVIqDSw15_tiqvSAsrb6ZDaEWAjFEt18Iei0cawqvOnNmgbBHXylk8SdC6.qR4moTrnA3
- 5RBJ_n6rXNn2vb6Fbjs5JZttjYQyvjvDljpcoZYS7WaMhxwJNpqkPhTIQvDkYMAP0_zDC.kLv.JT
- O16MfDFOhSP_wDcIgFGs3Zg_9Qdk8VS1Iisdz3CWqoGQCJ5zTSG85FFPOr8kBti6aHZKQEn024Yt
- 3twmbQtNfk.WFYJrEukQCrRDq4CSw1u9PAEb80O8ouX3nIuH.CL3wsRNquu9MRfiz3IK2seoM9Xa
- f9xNIjW76MCpJmyABW9ydtiCWJ8gUBi3Fx8FMAiwanA_IFzW90A7mVPWCD0rO1gvdQY0aOw8_hmb
- a0jN5wMi5hXtO3XVlj7CHbGin6EcRZW2IJnprFsyB_qVqxsXtkHQ0lnse6jb5731sGLhokRIsGUq
- .pAOc8C_qFEt3Wx_pIFf3oaoecZFcUlc082CY7spy8E3Qt5.7IRBQUNvVCuadbrvu3zte.9z1My0
- 6dA18TT32QtIhxB5sTW8IOldctvr7doFGvhi_BROtN.PWwbm7xti0bTqhee7rxZZv2b.k8ZAdew9
- R8qk.cGXlW6DpLXZTh3D2r2I4mDTCHg7dL4hAJVbKoNtVOWZF6kU03QqAbnXWs5rAz2mZ37tvRWB
- eVURHxYRHLzSMRlhh
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.gq1.yahoo.com with HTTP; Sun, 7 Jun 2020 22:53:37 +0000
-Received: by smtp423.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID fcfa050da610cf30279390720f9d5e2e;
-          Sun, 07 Jun 2020 22:53:35 +0000 (UTC)
-Date:   Sun, 07 Jun 2020 18:53:32 -0400
-From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Subject: Re: 82fef0ad811f "x86/mm: unencrypted non-blocking DMA allocations
- use coherent pools" was Re: next-0519 on thinkpad x60: sound related? window
- manager crash
-To:     David Rientjes <rientjes@google.com>
-Cc:     alsa-devel@alsa-project.org, bp@alien8.de, hch@infradead.org,
-        hch@lst.de, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, perex@perex.cz, tglx@linutronix.de,
-        tiwai@suse.com, x86@kernel.org, Pavel Machek <pavel@ucw.cz>
-References: <20200520111136.GA3802@amd>
-        <1591545088.74ii116nf2.none@localhost> <20200607163803.GA10303@duo.ucw.cz>
-        <alpine.DEB.2.22.394.2006071209470.84952@chino.kir.corp.google.com>
-In-Reply-To: <alpine.DEB.2.22.394.2006071209470.84952@chino.kir.corp.google.com>
+        Sun, 7 Jun 2020 19:08:32 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B46C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 16:08:32 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id n24so16231882ejd.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 16:08:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=CSNKchGUr4MxPlFPOJ4gpb6b4A5Pg9JJmbCHjf+fXJ8=;
+        b=X4nnBHVhTGMoCE7TozWtCvcGnsz6i6EN5i/ZvNibT+mt7sUgcqXYpUiMpPuZqSGkNS
+         oiFi6z8DWaVj8hOITISbIS1GMZbLw1XHow+fQUSRpym5zxd/tsUgNFsOZyjqoCkO7X8O
+         aukz9azUuVuAAOxw+r1TI+ZLEBZ4DlubGwkPDnTj1qmljfPcTrK3vlVeaMCPXvyU1lOD
+         sjUAmdingJVxv6qgn8nm0+1BlJWPBkjsEQqq5VbLJ+HmRVeRKwscBEPAugczX1UbYqe8
+         hFj6zb548RLyjy+P89Lvy/hTahwgpzh9smSRwd+TVG7Q2QdzrBZLlREILKVlt8PRa7E/
+         3dbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=CSNKchGUr4MxPlFPOJ4gpb6b4A5Pg9JJmbCHjf+fXJ8=;
+        b=h3UWtYC5g7kO6MnH8AZJvNZkvd2S6G542F4WgPEYgEJcFsnYe3MActRxSRMQI8irtr
+         R+a4dLJFNvbRmOHN3ASoGvVHziayGCxWGA5QGk0DnSg0h9gCn6U+EZlWNZtCLpapVurx
+         voQeoNHErtgl3G90otqDKtaah2M1un914RwEyo7x06dvGyJTSoJIVxnK1wE7q+bx9bGw
+         rZR8JVGv0TOlRJ2wGD5B2IbhvqtWuo8K9l6aE1F5EzxxR3OVunZXKeWXtLGc9cbCBjDI
+         CWNXMHTtK5ogWOXbVTBMywaOBq+XSc46X+W6Ny7cOLZAUKx8slX5shDYlXYnBDiDm31d
+         NwHg==
+X-Gm-Message-State: AOAM533xdWYtS9kwipQteUY4tuvQWbDX3GvUGO56ofAYIyg9M07R6wd2
+        wtR1eSV+jm9FJsXN3MFyuJoZO+dIBQYA0Bams44=
+X-Google-Smtp-Source: ABdhPJx/f3gU/NgX60MT/0w8GxIoENayguglVHsyhUOxwmN8ljfy2gnv0l1D6M0FWM09LSylxkIg8uiF7zWuaXTObaE=
+X-Received: by 2002:a17:906:a88a:: with SMTP id ha10mr19179344ejb.353.1591571310814;
+ Sun, 07 Jun 2020 16:08:30 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <1591570155.2tn9o40h95.none@localhost>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: WebService/1.1.16072 hermes_yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
+Received: by 2002:a50:5285:0:0:0:0:0 with HTTP; Sun, 7 Jun 2020 16:08:30 -0700 (PDT)
+Reply-To: dunawattara96@outlook.com
+From:   Mr Duna Wattara <mrharword.somda@gmail.com>
+Date:   Sun, 7 Jun 2020 16:08:30 -0700
+Message-ID: <CACA8Y7uvk1Vdky3VbLOuwofR=K2z+Od9tr+xN4cxJcrk=8_GAg@mail.gmail.com>
+Subject: with due respect
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from David Rientjes's message of June 7, 2020 3:41 pm:
-> On Sun, 7 Jun 2020, Pavel Machek wrote:
->=20
->> > I have a similar issue, caused between aaa2faab4ed8 and b170290c2836.
->> >=20
->> > [   20.263098] BUG: unable to handle page fault for address: ffffb2b58=
-2cc2000
->> > [   20.263104] #PF: supervisor write access in kernel mode
->> > [   20.263105] #PF: error_code(0x000b) - reserved bit violation
->> > [   20.263107] PGD 3fd03b067 P4D 3fd03b067 PUD 3fd03c067 PMD 3f8822067=
- PTE 8000273942ab2163
->> > [   20.263113] Oops: 000b [#1] PREEMPT SMP
->> > [   20.263117] CPU: 3 PID: 691 Comm: mpv Not tainted 5.7.0-11262-gb170=
-290c2836 #1
->> > [   20.263119] Hardware name: To Be Filled By O.E.M. To Be Filled By O=
-.E.M./B450 Pro4, BIOS P4.10 03/05/2020
->> > [   20.263125] RIP: 0010:__memset+0x24/0x30
->> > [   20.263128] Code: cc cc cc cc cc cc 0f 1f 44 00 00 49 89 f9 48 89 d=
-1 83 e2 07 48 c1 e9 03 40 0f b6 f6 48 b8 01 01 01 01 01 01 01 01 48 0f af c=
-6 <f3> 48 ab 89 d1 f3 aa 4c 89 c8 c3 90 49 89 f9 40 88 f0 48 89 d1 f3
->> > [   20.263131] RSP: 0018:ffffb2b583d07e10 EFLAGS: 00010216
->> > [   20.263133] RAX: 0000000000000000 RBX: ffff8b8000102c00 RCX: 000000=
-0000004000
->> > [   20.263134] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffb2=
-b582cc2000
->> > [   20.263136] RBP: ffff8b8000101000 R08: 0000000000000000 R09: ffffb2=
-b582cc2000
->> > [   20.263137] R10: 0000000000005356 R11: ffff8b8000102c18 R12: 000000=
-0000000000
->> > [   20.263139] R13: 0000000000000000 R14: ffff8b8039944200 R15: ffffff=
-ff9794daa0
->> > [   20.263141] FS:  00007f41aa4b4200(0000) GS:ffff8b803ecc0000(0000) k=
-nlGS:0000000000000000
->> > [   20.263143] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> > [   20.263144] CR2: ffffb2b582cc2000 CR3: 00000003b6731000 CR4: 000000=
-00003406e0
->> > [   20.263146] Call Trace:
->> > [   20.263151]  ? snd_pcm_hw_params+0x3f3/0x47a
->> > [   20.263154]  ? snd_pcm_common_ioctl+0xf2/0xf73
->> > [   20.263158]  ? snd_pcm_ioctl+0x1e/0x29
->> > [   20.263161]  ? ksys_ioctl+0x77/0x91
->> > [   20.263163]  ? __x64_sys_ioctl+0x11/0x14
->> > [   20.263166]  ? do_syscall_64+0x3d/0xf5
->> > [   20.263170]  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> > [   20.263173] Modules linked in: uvcvideo videobuf2_vmalloc videobuf2=
-_memops videobuf2_v4l2 videodev snd_usb_audio videobuf2_common snd_hwdep sn=
-d_usbmidi_lib input_leds snd_rawmidi led_class
->> > [   20.263182] CR2: ffffb2b582cc2000
->> > [   20.263184] ---[ end trace c6b47a774b91f0a0 ]---
->> > [   20.263187] RIP: 0010:__memset+0x24/0x30
->> > [   20.263190] Code: cc cc cc cc cc cc 0f 1f 44 00 00 49 89 f9 48 89 d=
-1 83 e2 07 48 c1 e9 03 40 0f b6 f6 48 b8 01 01 01 01 01 01 01 01 48 0f af c=
-6 <f3> 48 ab 89 d1 f3 aa 4c 89 c8 c3 90 49 89 f9 40 88 f0 48 89 d1 f3
->> > [   20.263192] RSP: 0018:ffffb2b583d07e10 EFLAGS: 00010216
->> > [   20.263193] RAX: 0000000000000000 RBX: ffff8b8000102c00 RCX: 000000=
-0000004000
->> > [   20.263195] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffb2=
-b582cc2000
->> > [   20.263196] RBP: ffff8b8000101000 R08: 0000000000000000 R09: ffffb2=
-b582cc2000
->> > [   20.263197] R10: 0000000000005356 R11: ffff8b8000102c18 R12: 000000=
-0000000000
->> > [   20.263199] R13: 0000000000000000 R14: ffff8b8039944200 R15: ffffff=
-ff9794daa0
->> > [   20.263201] FS:  00007f41aa4b4200(0000) GS:ffff8b803ecc0000(0000) k=
-nlGS:0000000000000000
->> > [   20.263202] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> > [   20.263204] CR2: ffffb2b582cc2000 CR3: 00000003b6731000 CR4: 000000=
-00003406e0
->> >=20
->> > I bisected this to 82fef0ad811f "x86/mm: unencrypted non-blocking DMA=20
->> > allocations use coherent pools". Reverting 1ee18de92927 resolves the=20
->> > issue.
->> >=20
->> > Looks like Thinkpad X60 doesn't have VT-d, but could still be DMA=20
->> > related.
->>=20
->> Note that newer -next releases seem to behave okay for me. The commit
->> pointed out by siection is really simple:
->>=20
->> AFAIK you could verify it is responsible by turning off
->> CONFIG_AMD_MEM_ENCRYPT on latest kernel...
->>=20
->> Best regards,
->> 								Pavel
->>=20
->> index 1d6104ea8af0..2bf2222819d3 100644
->> --- a/arch/x86/Kconfig
->> +++ b/arch/x86/Kconfig
->> @@ -1520,6 +1520,7 @@ config X86_CPA_STATISTICS
->>  config AMD_MEM_ENCRYPT
->>         bool "AMD Secure Memory Encryption (SME) support"
->>         depends on X86_64 && CPU_SUP_AMD
->> +       select DMA_COHERENT_POOL
->>         select DYNAMIC_PHYSICAL_MASK
->>         select ARCH_USE_MEMREMAP_PROT
->>         select ARCH_HAS_FORCE_DMA_UNENCRYPTED
->=20
-> Thanks for the report!
->=20
-> Besides CONFIG_AMD_MEM_ENCRYPT, do you have CONFIG_DMA_DIRECT_REMAP=20
-> enabled?  If so, it may be caused by the virtual address passed to the=20
-> set_memory_{decrypted,encrypted}() functions.
->=20
-> And I assume you are enabling SME by using mem_encrypt=3Don on the kernel=
-=20
-> command line or CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT is enabled.
->=20
-> We likely need an atomic pool for devices that support DMA to addresses i=
-n=20
-> sme_me_mask as well.  I can test this tomorrow, but wanted to get it out=20
-> early to see if it helps?
+ Dear Friend,
 
-This patch doesn't seem to help. I have the same problem (kernel page=20
-fault, __memset, snd_pcm_hw_params...).
+I know that this mail will come to you as a surprise as we have never
+met before, but need not to worry as I am contacting you independently
+of my investigation and no one is informed of this communication.
 
-I don't have CONFIG_DMA_DIRECT_REMAP enabled, and AFAICT it doesn't seem=20
-to be selectable currently on x86, unless there are some patches=20
-floating around for that.
+I need your urgent assistance in transferring the sum of $11.3million
+immediately to your private account.The money has been here in our
+Bank lying dormant for years now without anybody coming for the claim of it.
+
+I want to release the money to you as the relative to our deceased
+customer (the account owner) who died a long with his supposed NEXT OF
+KIN since 16th October 2005. The Banking laws here does not allow such
+money to stay more than 15 years, because the money will be recalled
+to the Bank treasury account as unclaimed fund.
+
+By indicating your interest I will send you the full details on how
+the business will be executed.
+
+Please respond urgently and delete if you are not interested.
+
+Best Regards,
+Mr. Duna Wattara.
