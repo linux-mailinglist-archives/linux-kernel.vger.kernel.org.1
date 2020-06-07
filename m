@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8BC1F0E28
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 20:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6570C1F0E32
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 20:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgFGSmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 14:42:18 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:53263 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728629AbgFGSmL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 14:42:11 -0400
-X-IronPort-AV: E=Sophos;i="5.73,485,1583161200"; 
-   d="scan'208";a="49036351"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 08 Jun 2020 03:42:10 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 6161640CD55B;
-        Mon,  8 Jun 2020 03:42:08 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 11/11] arm64: dts: renesas: Add HiHope RZ/G2N Rev2.0/3.0/4.0 board with idk-1110wr display
-Date:   Sun,  7 Jun 2020 19:41:07 +0100
-Message-Id: <1591555267-21822-11-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591555267-21822-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <1591555267-21822-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1727055AbgFGSqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 14:46:07 -0400
+Received: from www.zeus03.de ([194.117.254.33]:59774 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726881AbgFGSqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 14:46:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=KMLSh2UfURcetn72D61oTlOE6OdF
+        ooRMz6SLcFP6dQk=; b=puekgSe8QJadZ5X8CG/NdjPsGlJKr2ZcX9G07PRuRXVD
+        fT+5LGKMr1ELMIeM7R25Ih8rnAdvfogowIXZvNvWf7OrsMbSbJRBAcsf1SBssaZX
+        5v+EI755xxXz5MitKTBtGk15cejAekr+UaL8Re2eAAdteVUc++n1QQJDhp/YjGs=
+Received: (qmail 2771393 invoked from network); 7 Jun 2020 20:46:04 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 7 Jun 2020 20:46:04 +0200
+X-UD-Smtp-Session: l3s3148p1@FAEV6IKneKkgAwDPXy3ZACQyXnoVRx3W
+Date:   Sun, 7 Jun 2020 20:46:04 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Max Staudt <max@enpas.org>
+Cc:     linux-i2c@vger.kernel.org, linux-m68k@vger.kernel.org,
+        linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] i2c: icy: Fix build with CONFIG_AMIGA_PCMCIA=n
+Message-ID: <20200607184604.GA12911@ninjato>
+References: <20200607182812.9438-1-max@enpas.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EVF5PPMfhYS0aIcm"
+Content-Disposition: inline
+In-Reply-To: <20200607182812.9438-1-max@enpas.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HiHope RZ/G2N variants are advertised as compatible with panel
-idk-1110wr from Advantech, however the panel isn't sold alongside the
-board. New dts's, enabling the lvds node to get the panel to work with
-all the HiHope RZ/G2N variants.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
----
- arch/arm64/boot/dts/renesas/Makefile              |  2 ++
- .../r8a774b1-hihope-rzg2n-ex-idk-1110wr.dts       | 15 +++++++++++++++
- .../r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dts  | 15 +++++++++++++++
- 3 files changed, 32 insertions(+)
- create mode 100644 arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-idk-1110wr.dts
- create mode 100644 arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dts
+--EVF5PPMfhYS0aIcm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
-index 6ac2a197e06e..21cc63469082 100644
---- a/arch/arm64/boot/dts/renesas/Makefile
-+++ b/arch/arm64/boot/dts/renesas/Makefile
-@@ -9,6 +9,8 @@ dtb-$(CONFIG_ARCH_R8A774B1) += r8a774b1-hihope-rzg2n.dtb \
- 			       r8a774b1-hihope-rzg2n-rev2.dtb
- dtb-$(CONFIG_ARCH_R8A774B1) += r8a774b1-hihope-rzg2n-ex.dtb \
- 			       r8a774b1-hihope-rzg2n-rev2-ex.dtb
-+dtb-$(CONFIG_ARCH_R8A774B1) += r8a774b1-hihope-rzg2n-ex-idk-1110wr.dtb \
-+			       r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dtb
- dtb-$(CONFIG_ARCH_R8A774C0) += r8a774c0-cat874.dtb r8a774c0-ek874.dtb \
- 			       r8a774c0-ek874-idk-2121wr.dtb \
- 			       r8a774c0-ek874-mipi-2.1.dtb
-diff --git a/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-idk-1110wr.dts b/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-idk-1110wr.dts
-new file mode 100644
-index 000000000000..4b5154f029a5
---- /dev/null
-+++ b/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-idk-1110wr.dts
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Device Tree Source for the HiHope RZ/G2N Rev.3.0/4.0 with sub board connected
-+ * to an Advantech IDK-1110WR 10.1" LVDS panel
-+ *
-+ * Copyright (C) 2020 Renesas Electronics Corp.
-+ */
-+
-+#include "r8a774b1-hihope-rzg2n-ex.dts"
-+#include "hihope-rzg2-ex-lvds.dtsi"
-+#include "rzg2-advantech-idk-1110wr-panel.dtsi"
-+
-+&lvds0 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dts b/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dts
-new file mode 100644
-index 000000000000..e730b3b25dbe
---- /dev/null
-+++ b/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dts
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Device Tree Source for the HiHope RZ/G2N Rev.2.0 with sub board connected
-+ * to an Advantech IDK-1110WR 10.1" LVDS panel
-+ *
-+ * Copyright (C) 2020 Renesas Electronics Corp.
-+ */
-+
-+#include "r8a774b1-hihope-rzg2n-rev2-ex.dts"
-+#include "hihope-rzg2-ex-lvds.dtsi"
-+#include "rzg2-advantech-idk-1110wr-panel.dtsi"
-+
-+&lvds0 {
-+	status = "okay";
-+};
--- 
-2.17.1
+On Sun, Jun 07, 2020 at 08:28:12PM +0200, Max Staudt wrote:
+> This has been found by the Kernel Test Robot:
+> http://lkml.iu.edu/hypermail/linux/kernel/2006.0/06862.html
+>=20
+> With CONFIG_AMIGA_PCMCIA=3Dn, io_mm.h does not pull in amigahw.h and
+> ZTWO_VADDR is undefined. Add forgotten include to i2c-icy.c
+>=20
+> Fixes: 4768e90ecaec ("i2c: Add i2c-icy for I2C on m68k/Amiga")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Max Staudt <max@enpas.org>
 
+Applied to for-next (i.e. for-5.8), thanks!
+
+
+--EVF5PPMfhYS0aIcm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl7dNecACgkQFA3kzBSg
+KbYwoxAArfkCxw9qH+Qy6A6Slh2+plQr6o4BywjoAJoolZ2/AleathzwM/rH7+g4
+QkAuwn/daVjBkDk3BC4HGLh/1iHycpo5agr/EpBxAWGS+cLA58IKS1M4uUVFzOcV
+DN1eUVUTTBj+XNzWYQwBngaE6ovbDobFGw82V1q98wmBSSt4vzXRZxLr+XAK+iz0
+YzihJa6/K24CRQJOgrsOxCtibUkUkI+yJSb6WzG3QeDUVi78fgBwoO9CK7/As09t
+kQfOPFaPPUFG38HyEM3FkfRvksYGi5f0/pekmcsm87B3CVEsOdho22rUAruCEl5F
+mmMn0b9r8uqf11oSTHDQ4KsjmqeBcr8wzcQXyYtv6uFdmd5YkSQOFzRNfgmHwV1t
+glafoz54RciFXmfuRNgOcJePQuqTYPS9Rd+8EwT2bDhqeV8I1jVRQt9txefYHvOv
+h20o8PasqqxooLN0oLFZ1Um389IM8wllhs2mYM6o7BoswAztLSrtwaRNZbTdAwQd
+gqfbJLd0xHtHS3Y7fthi7wLazDMSXFm/yzCQtk7LqzYPmhSCAJOVpnWWaprukp+v
+hE9GedHD4LHzswVgznAH9fcTByulDwb/uIrY+L+7b0XVV4FZWYPu2xgNUdVnLKqD
+ZMVLZwE+BE4F32uUu/e/hE7wpGYVI20Zjasu2YQ4OXQssJ/ZLCE=
+=NyL2
+-----END PGP SIGNATURE-----
+
+--EVF5PPMfhYS0aIcm--
