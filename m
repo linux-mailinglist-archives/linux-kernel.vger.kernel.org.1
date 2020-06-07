@@ -2,99 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954931F0AE4
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 13:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A481F0AEB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 13:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgFGLNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 07:13:23 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:44594 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgFGLNP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 07:13:15 -0400
-Received: by mail-il1-f198.google.com with SMTP id l11so8704385ils.11
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 04:13:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=W1Rg6cRe7b/N6uSt4UPD2jGQ5CGoT9dlXj8hlmAKSYs=;
-        b=LAeqZcuwOxTS/OPfyIr8jACA+oRz8lG7zPJIrGZ4AyY44bUXkvEyCcXAQ7E1WlOuuC
-         R15reirBHDkUsCaPBlYTTNLajc2gWCY1qWdsekCvp1mfeCfXIqCcngDyJXKIeJ5kL6AD
-         SxmYRItiitGXzAF5K578zx5qX4hbBIX+tUlLr3t431XuEfh27PjCyn8aqLIUEh8WXJiz
-         yPC6GUN6a6NbdG4RGoUk86zjzjHmekPQ5GzPEhSKeG/rq9qrmRYK8Cuwslbh4aP/WlwH
-         LxK570DWY4K0EFi8Cc7r+Q+lzF/lgjfQ8ZykIzzImORshS1C/l6hizQA6dFW+9767yxm
-         z85g==
-X-Gm-Message-State: AOAM533uGfn/PtYvVb6e86JQP6GjKq6nWJS47QIpRpRvC076FFSesxlt
-        jkPltfbaUcb7fGnlp54D30TitTCqBuZEfGW/vdCdRqqMvhyW
-X-Google-Smtp-Source: ABdhPJzzsk4M1SaDCyyuCP8qH1WADQT+dguvupEBiykLFaRHd7dCPmivZyOvpG9rapZLEmbc3p0IlXcIk+WJTKcmQUCwbKker/ry
+        id S1726493AbgFGLSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 07:18:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726446AbgFGLS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 07:18:29 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A459E20663;
+        Sun,  7 Jun 2020 11:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591528709;
+        bh=zxofbnThS4Dt2UXvOR5tDVXfnh9SzujjlcICZIeQrm4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CWcSwkt2Z4Mm5Asvc4K8Tl3yJYAYdsBxZvBeOeZZKK8xLIwCqzKdPkrbvBueKa6Xr
+         +nASUwFPNgFU5Q61uqvw4829W6Ba7Ry9FS9PmXPBBfqs/TVot555S5euYr79o+pnp2
+         LsjT+qvfXoGFYal7rmRxaTa88LP10RhJB1+pTNlk=
+Date:   Sun, 7 Jun 2020 13:18:26 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, ben.hutchings@codethink.co.uk,
+        lkft-triage@lists.linaro.org, stable@vger.kernel.org
+Subject: Re: [PATCH 5.7 00/14] 5.7.1-rc1 review
+Message-ID: <20200607111826.GA47740@kroah.com>
+References: <20200605135951.018731965@linuxfoundation.org>
+ <ca04681a-77a3-09b8-d399-a27f1e48ba75@linuxfoundation.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1067:: with SMTP id q7mr13709118ilj.71.1591528393221;
- Sun, 07 Jun 2020 04:13:13 -0700 (PDT)
-Date:   Sun, 07 Jun 2020 04:13:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000872ad205a77c947c@google.com>
-Subject: linux-next test error: BUG: using smp_processor_id() in preemptible
- [ADDR] code: syz-fuzzer/6793
-From:   syzbot <syzbot+878f276b4892a4438f95@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca04681a-77a3-09b8-d399-a27f1e48ba75@linuxfoundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Jun 05, 2020 at 04:11:49PM -0600, Shuah Khan wrote:
+> On 6/5/20 8:14 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.7.1 release.
+> > There are 14 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sun, 07 Jun 2020 13:54:56 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.1-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> 
+> Compiled and booted on my test system. No dmesg regressions.
 
-syzbot found the following crash on:
+Thanks for testing all of these and letting me know.
 
-HEAD commit:    48f99181 Add linux-next specific files for 20200603
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1006bca6100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=365f706273eaf502
-dashboard link: https://syzkaller.appspot.com/bug?extid=878f276b4892a4438f95
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+878f276b4892a4438f95@syzkaller.appspotmail.com
-
-BUG: using smp_processor_id() in preemptible [00000000] code: syz-fuzzer/6793
-caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
-CPU: 1 PID: 6793 Comm: syz-fuzzer Not tainted 5.7.0-next-20200603-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
- ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
- ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
- ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
- ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
- ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
- ext4_append+0x153/0x360 fs/ext4/namei.c:67
- ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
- ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
- vfs_mkdir+0x419/0x690 fs/namei.c:3632
- do_mkdirat+0x21e/0x280 fs/namei.c:3655
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4b02a0
-Code: Bad RIP value.
-RSP: 002b:000000c00004f4b8 EFLAGS: 00000212 ORIG_RAX: 0000000000000102
-RAX: ffffffffffffffda RBX: 000000c00002c000 RCX: 00000000004b02a0
-RDX: 00000000000001c0 RSI: 000000c000026960 RDI: ffffffffffffff9c
-RBP: 000000c00004f510 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000212 R12: ffffffffffffffff
-R13: 000000000000004c R14: 000000000000004b R15: 0000000000000100
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+greg k-h
