@@ -2,143 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77D41F0D8F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 20:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4016A1F0D93
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 20:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbgFGSBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 14:01:01 -0400
-Received: from smtpout1.mo803.mail-out.ovh.net ([79.137.123.219]:43659 "EHLO
-        smtpout1.mo803.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726870AbgFGSAp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 14:00:45 -0400
-Received: from pro2.mail.ovh.net (unknown [10.109.156.68])
-        by mo803.mail-out.ovh.net (Postfix) with ESMTPS id 4516A55D9B74;
-        Sun,  7 Jun 2020 20:00:43 +0200 (CEST)
-Received: from arch.lan (89.70.180.118) by DAG2EX1.emp2.local (172.16.2.11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Sun, 7 Jun 2020
- 20:00:37 +0200
-From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
-To:     <linux-iio@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>, <jic23@kernel.org>,
-        <andy.shevchenko@gmail.com>, <pmeerw@pmeerw.net>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>
-Subject: [PATCH v5 4/4] dt-bindings: iio: scd30: add device binding file
-Date:   Sun, 7 Jun 2020 19:58:12 +0200
-Message-ID: <20200607175812.95777-5-tomasz.duszynski@octakon.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [89.70.180.118]
-X-ClientProxiedBy: DAG2EX2.emp2.local (172.16.2.12) To DAG2EX1.emp2.local
- (172.16.2.11)
-X-Ovh-Tracer-Id: 3119587170107218967
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrudegledguddvvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhephffvufffkffoggfgtghisehtkeertdertddtnecuhfhrohhmpefvohhmrghsiicuffhushiihihnshhkihcuoehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomheqnecuggftrfgrthhtvghrnhepgfethfeffedtffelheevgfehkeehkeeuueetiedvheetledufffhudfhueelgefhnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucfkpheptddrtddrtddrtddpkeelrdejtddrudektddruddukeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehprhhovddrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomhdprhgtphhtthhopehpmhgvvghrfiesphhmvggvrhifrdhnvght
+        id S1728994AbgFGSKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 14:10:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728977AbgFGSKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 14:10:19 -0400
+Subject: Re: [GIT PULL] USB/PHY driver update for 5.8-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591553418;
+        bh=Rp3t/Pdj8TnycDaoG2l3HKJnueizd14qsxZOkP9W4mA=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=qgTZxt3+Xd2ObZhvUMtZAxdpYMAPU9GMC4v07JZGF1tRvLRCj9X/srN1FjGXO3bZx
+         IZtKPkK9Cp9ON0ahdmQjZzK3XhCLShnesrGDYt7+7m+gil5HuCE0YaMp3f3+TMcbT9
+         a39IDmNCifUdHMSpZtI1xad6Ppnblsqp306AbTMM=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200607132701.GA168046@kroah.com>
+References: <20200607132701.GA168046@kroah.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200607132701.GA168046@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.8-rc1
+X-PR-Tracked-Commit-Id: 347052e3bf1b62a25c11f7a673acfbaf554d67a1
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e611c0fe318c6d6827ee2bba660fbc23cf73f7dc
+Message-Id: <159155341887.28494.14195988327420438133.pr-tracker-bot@kernel.org>
+Date:   Sun, 07 Jun 2020 18:10:18 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SCD30 sensor binding file.
+The pull request you sent on Sun, 7 Jun 2020 15:27:01 +0200:
 
-Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
----
- .../iio/chemical/sensirion,scd30.yaml         | 68 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 69 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.8-rc1
 
-diff --git a/Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml b/Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml
-new file mode 100644
-index 000000000000..40d87346ff4c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml
-@@ -0,0 +1,68 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/chemical/sensirion,scd30.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Sensirion SCD30 carbon dioxide sensor
-+
-+maintainers:
-+  - Tomasz Duszynski <tomasz.duszynski@octakon.com>
-+
-+description: |
-+  Air quality sensor capable of measuring co2 concentration, temperature
-+  and relative humidity.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - sensirion,scd30
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  vdd-supply: true
-+
-+  sensirion,sel-gpios:
-+    description: GPIO connected to the SEL line
-+    maxItems: 1
-+
-+  sensirion,pwm-gpios:
-+    description: GPIO connected to the PWM line
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    # include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      co2-sensor@61 {
-+        compatible = "sensirion,scd30";
-+        reg = <0x61>;
-+        vdd-supply = <&vdd>;
-+        interrupt-parent = <&gpio0>;
-+        interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-+      };
-+    };
-+  - |
-+    # include <dt-bindings/interrupt-controller/irq.h>
-+    serial {
-+      co2-sensor {
-+        compatible = "sensirion,scd30";
-+        vdd-supply = <&vdd>;
-+        interrupt-parent = <&gpio0>;
-+        interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-+      };
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5db4b446c8ba..0ab9cf39e051 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15140,6 +15140,7 @@ F:	include/uapi/linux/phantom.h
- SENSIRION SCD30 CARBON DIOXIDE SENSOR DRIVER
- M:	Tomasz Duszynski <tomasz.duszynski@octakon.com>
- S:	Maintained
-+F:	Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml
- F:	drivers/iio/chemical/scd30.h
- F:	drivers/iio/chemical/scd30_core.c
- F:	drivers/iio/chemical/scd30_i2c.c
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e611c0fe318c6d6827ee2bba660fbc23cf73f7dc
+
+Thank you!
+
 -- 
-2.27.0
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
