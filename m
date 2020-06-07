@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F9C1F0B07
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 14:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E581F0B0D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 14:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgFGMAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 08:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbgFGMAx (ORCPT
+        id S1726566AbgFGMDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 08:03:22 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:38744 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726510AbgFGMDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 08:00:53 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CD2C08C5C2
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 05:00:53 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jhtxy-0001Yd-Hk; Sun, 07 Jun 2020 13:59:54 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id B5D5810108F; Sun,  7 Jun 2020 13:59:53 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Qian Cai <cai@lca.pw>, Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        Alexander Potapenko <glider@google.com>
-Subject: Re: [patch V9 10/39] x86/entry: Provide helpers for execute on irqstack
-In-Reply-To: <20200605175200.GA5393@lca.pw>
-References: <20200521200513.656533920@linutronix.de> <20200521202117.763775313@linutronix.de> <20200605171816.GA4259@lca.pw> <20200605173622.GL3976@hirez.programming.kicks-ass.net> <20200605175200.GA5393@lca.pw>
-Date:   Sun, 07 Jun 2020 13:59:53 +0200
-Message-ID: <87v9k3jdc6.fsf@nanos.tec.linutronix.de>
+        Sun, 7 Jun 2020 08:03:19 -0400
+Received: by mail-io1-f70.google.com with SMTP id l19so5955364iol.5
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 05:03:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=LwmS02Wlb0NnV55+lsR7tpUbRWv1SSOP95Em+xpAvzA=;
+        b=QAPn2loTV9YM1O77LFOB6oJ//Utsc/Lsq0OClf2ODCgKD4BXHNClEwazANYO4oMk2l
+         hX/zrw0DfWJlrg2YMRiVoUAalgYncjBrExtjo3cmhbNUTde7K3lvXuZYNTe9YBatntKy
+         QP7BnS5xc7OyWFOOu8R5T6W1kwVfAZ3jjvLn5vp3/w7dRPntpQNzwaVH5KgOkCYvx5v5
+         PMJsJB3dXQUBWvf7+0R9AOzo3Q5UlIjkOmL8TFG53c5nowZd0JBISnyltTppx4wvPPKM
+         YikHh6uq1VJswP0B0hHEBg6h/EhN/1MMoti4cNYcbNb9BSsJ6OsO1PBgWPj3mD5Uv4LE
+         1+0Q==
+X-Gm-Message-State: AOAM532ux/NyTHOeSmb3zk4cmYGUON281jSUvoEyc4nBx9r64pICYLeP
+        fdsKMrAizuZ7WFMztsctmXPe5l/AMbTOoAFdBfUMeUloSiAq
+X-Google-Smtp-Source: ABdhPJzdfQagu9v+gJh2CU+shree7b3tGfL8R5L38284jwzSuTtx4MFro8jyubjE/vdTypbMfpkE/kdpWWh/JN4VQNRwIdZK2mwN
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+X-Received: by 2002:a02:952f:: with SMTP id y44mr17257602jah.128.1591531398058;
+ Sun, 07 Jun 2020 05:03:18 -0700 (PDT)
+Date:   Sun, 07 Jun 2020 05:03:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a1595c05a77d47c4@google.com>
+Subject: linux-next test error: BUG: using smp_processor_id() in preemptible
+ code in ext4_mb_new_blocks
+From:   syzbot <syzbot+f72682b02970a74a7858@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-CC:+ Alexander
+syzbot found the following crash on:
 
-Qian Cai <cai@lca.pw> writes:
-> On Fri, Jun 05, 2020 at 07:36:22PM +0200, Peter Zijlstra wrote:
->> > [ 9371.959858]  asm_call_on_stack+0x12/0x20
->> > asm_call_on_stack at arch/x86/entry/entry_64.S:710
->
-> This is one piece of call from the warning call traces that introduced
-> by the patch which leads me to revert the commit in the first place. It
-> may or may not be the real culprit, but just wanted to highlight it in
-> case.
+HEAD commit:    af30725c Add linux-next specific files for 20200605
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=126f99a6100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=579d800cf0c74ef
+dashboard link: https://syzkaller.appspot.com/bug?extid=f72682b02970a74a7858
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
-Oh well. The warning is a storage check in the stack depot code,
-i.e. stack depot ran out of storage space.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+f72682b02970a74a7858@syzkaller.appspotmail.com
 
-Even if that commit causes stack traces to be larger that revert does
-not make any sense at all and handwaving about recursions does not help
-either. If that commit introduced a recursion then that would have worse
-effects than triggering this warning.
+BUG: using smp_processor_id() in preemptible [00000000] code: systemd-rfkill/6769
+caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+CPU: 1 PID: 6769 Comm: systemd-rfkill Not tainted 5.7.0-next-20200605-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
+ ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+ ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
+ ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+ ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
+ ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
+ ext4_append+0x153/0x360 fs/ext4/namei.c:67
+ ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
+ ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
+ vfs_mkdir+0x419/0x690 fs/namei.c:3632
+ do_mkdirat+0x21e/0x280 fs/namei.c:3655
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f6d60012687
+Code: Bad RIP value.
+RSP: 002b:00007ffd286d9ca8 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 000055f82bd8d985 RCX: 00007f6d60012687
+RDX: 00007ffd286d9b70 RSI: 00000000000001ed RDI: 000055f82bd8d985
+RBP: 00007f6d60012680 R08: 0000000000000100 R09: 0000000000000000
+R10: 000055f82bd8d980 R11: 0000000000000246 R12: 00000000000001ed
+R13: 00007ffd286d9e30 R14: 0000000000000000 R15: 0000000000000000
 
-The difference between the interrupt stack switching introduced by this
-commit is that it generates another entry in the stack trace compared to
-the state before it, which obviously has an effect on the storage
-requirements in the stack depot.
 
-Thanks,
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-        tglx
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
