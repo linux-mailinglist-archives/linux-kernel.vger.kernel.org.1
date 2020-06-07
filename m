@@ -2,249 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED39B1F0C88
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 17:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EE11F0CB7
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 17:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726941AbgFGPoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 11:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726772AbgFGPnw (ORCPT
+        id S1726852AbgFGP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 11:58:33 -0400
+Received: from sonic306-20.consmr.mail.gq1.yahoo.com ([98.137.68.83]:39587
+        "EHLO sonic306-20.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726643AbgFGP6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 11:43:52 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D32C08C5C5;
-        Sun,  7 Jun 2020 08:43:51 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id n24so17386255lji.10;
-        Sun, 07 Jun 2020 08:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QbHfwqyyiLFFX5w6pOn6caFubgEp5DBFvOpDMoX05Ck=;
-        b=HlDd062xLSbFihPoDHrl/WN97+BBIbvOETmUUNbLvV6/7zJhxVhNXIfst7kLiWcG3A
-         /MhT8bGB6Vtyc2ANFUIOyd1NHqzNdLJaa5r10GHTki4UpwSvRHkgSb+QB/Osw6JUmb2q
-         ki7aeshajHS9Dqq169Y5v3GQ+Apj1ZsEP9Tfbzou9vfjkXVrNIXoNy94MRyEewd1r2Sl
-         8tEkar+/v7iDs2nxjUPR9Dsx+cgF+J7VCiODaEE+M1hlJb9nRs3Ggkq/HR33eP6gkHiS
-         78hMeMuIH0l7C+iUzmfwakiQtMf9Lz1VXxcv097MZEe7Q/umQ9ZyNv0nb495jsAXMon6
-         oa5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QbHfwqyyiLFFX5w6pOn6caFubgEp5DBFvOpDMoX05Ck=;
-        b=sPym2A6fbb5QEfDuCx4qRG2YKX/65MqU1VvFFi2WjJrx3t8RBv4TMKEli5syUn5nqc
-         8AJntAXHPxQvo57G+jspxbjVlW8Sjcy9u08G+A6NnLslx21SeziqRrOqHd0hq4Mhubr9
-         5s91H9aDmA1LgeqA/i/A+MtDTbRZPhZy3H48weylZxtCsHEsREUPLdkZuCx4m2/Vi5qy
-         Mc6JEduQYKX8ko+4lsQx6TToqv5Hfy2oiz51a3hu/4mMQirJoXxwX5/tqAn/RjtIH8hj
-         bzJYLg5jjXuV+wMCJry3m002Sm7Z1Fuv0hVoQGuAFm0zgFA5Mh2ng2qGpeQaGfMV2fzd
-         n0LQ==
-X-Gm-Message-State: AOAM531LpVvU3ItLbkhazVFm2UBvwbwo7Zqqh7jHJoBh0KEpZZZBhIQh
-        mQYjGClqGzSgOBVXxe5yttI=
-X-Google-Smtp-Source: ABdhPJzdhNKwyaj7t0j8mYVRIr/7iSSzepCA3Kh9rhQFz3pRc9HAcks1st+fCpwN7yjREjKBwLuV/A==
-X-Received: by 2002:a2e:7203:: with SMTP id n3mr9151671ljc.231.1591544630135;
-        Sun, 07 Jun 2020 08:43:50 -0700 (PDT)
-Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id a7sm3592234lfm.4.2020.06.07.08.43.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jun 2020 08:43:49 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        David Heidelberg <david@ixit.cz>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        =?UTF-8?q?Pedro=20=C3=82ngelo?= <pangelo@void.io>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Zack Pearsall <zpearsall@yahoo.com>
-Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 6/6] ARM: tegra_defconfig: Enable options useful for Nexus 7 and Acer A500
-Date:   Sun,  7 Jun 2020 18:43:27 +0300
-Message-Id: <20200607154327.18589-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200607154327.18589-1-digetx@gmail.com>
-References: <20200607154327.18589-1-digetx@gmail.com>
+        Sun, 7 Jun 2020 11:58:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1591545509; bh=gn35HSrHYOJAQb1YaX/sGMc9WwyDxI0ZEwhA1Fm0Nl0=; h=Date:From:Subject:To:References:In-Reply-To:From:Subject; b=cPwMoAgBFVNlX53Q97Is0Lh3Gp6Wp4ZbHd+PxQramaNkIggCiGKOmF705rbfh/C+YSAeOlEqu8hB7uD+tjbB3tIHFBPMu5pUoj1wSOy0DhKOR722pkzBIZ9sweMcGALklwZy+5MCUOa06/aTmPQcUX4cVk/5n8DkcuWGE2w4kbc3kywRCquEj3M/Myf5cX4U79q7K4fgGjMRACDBhFYgbRvbWfgJfBYAk3YDfuhGRTOq7JVjb4WAhs9dq1k864L5MFvmfCl7iE4snU3b5UKzyqcReMDy7pdDUj3dKb9gxLpAfP1u6xmNbq47wob+sjADxbi+jT4h/LKjRGxOQxopXA==
+X-YMail-OSG: CH_y2LcVM1kni9prA9rHrkitoJn.snJUJHz8BF5dv_2gayrwZ_aHp9PmiN0tYkK
+ 4N5gG1LoFvL5zGaWm1iE7x05SeX7F.rifuz6xKRvbWxQ_4Pvb4eyzmYWET.tgl_jCEAmTOdh0DW4
+ 6pIj4Yi_FdisPZ7RabAi9iIQr47f1D_L4XyI4C5pHmXilB0ZAfpAXeNcx6HVKoaQKyq6c.iAeJ1q
+ cwn3XssAbgz0NQrG8khXJ1XZIVsK0zqijyD7N630EJOZmW1FwZS.tNK0RdtEsuT3yx57DCFDiETU
+ 2A9hC2fAkX5aCmqnvLLl7QC5uP8fanwwlEqHZwUdJJBNvwSWtIrxRjpDEEDJ8u2bNlY2o2mHOEu9
+ wgsgmQ6qEkvSoYQkDUbaO2h5w4eIxjox_hnzDapUJTWIZF2APYUsoiNXHoxfOBnn3tJ3WzlY7GyT
+ 7SIPnKRI2xmwiUOlgV16qRPFsjHGeg33C2jU4Y8XPejvY_LWhNQ781NbYfQ7Ht3IeIyuOXrgFSR.
+ aDhMkWATK56cPZPTwNDejJBLZXOqYIIMa.qPmh6GYQBr24oVuYxa_uVHa8o0dWHV1UVlUS8Lo54t
+ GFYMX.uX4kSrX9QfAx6sfZekOPOhsAfp7JhWYJCxz9az5dbbPQhaD8XVgG3Y5iQmPWIrZisJCfRo
+ b0I9AWgQ4BFoLYsg7wedLG3Bht1P6z9iEnFD9H5CciXWESeG6m91anQ928r_utAsA455hZQ4Our0
+ HD438m9PUHup7KDrMJfFF.Hg34kEgSqYl53w1NZRA65APFDedQz0DVI304Bp5wNuzQKdoTjxl1he
+ WLcRTnh3r4kJtawl8jU50nq6LllEBY0FE5_soIochWY8msEStIACVW.aktbKj0pSuDNJ72KuB_wm
+ 7yns1igsn_aF.Gf6EigZ5cm31LGVmM4GSzDQCyUm.5v6UMOP04r99cG0o5nynv2T7O9HbPh86To4
+ xREG9wC0HmjQF1d7qn7rY4xc3tA0JEf5DtMvEmwpR8Wx1aoS5LCq6OxDS5ARoN5e5MCQfnDuCC6z
+ rSsShOWa59w8juClInAH4ownYTs0kQI86aOg3hsqa6QKzuUCP74lXk4T4NPOpqRBoaBWtERgDEBS
+ q8K0teRq0thKyYqLIooc_EPrycv9znTyPrVvMOIyHGYFD5pL1A5.er0gFKl8o3htqbvYNdjRfZi3
+ otLzsre32plq35WjLRrvTrvQzOyOF2Rt2_0uQDDiwp4GxpPgLxo4a45g_k5_wwUDyXshciyZJS64
+ AfPNtGFH2uvqj9yocePGAMvBTBGb0gVTKL1T6EE4aSSpo01sKjeu9_8MHzzZbe60HL0Ep39egc5S
+ tXWpc1hqGgGEpL..r.ygzA0itd63MiX.Iy6VJDnxgIzRQ.LHnbPTHGWgHq9SU6rdLaxgbzljP4y1
+ 1SQ--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.gq1.yahoo.com with HTTP; Sun, 7 Jun 2020 15:58:29 +0000
+Received: by smtp419.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 26ae148dccc7e2160186bcd03cf9103f;
+          Sun, 07 Jun 2020 15:58:24 +0000 (UTC)
+Date:   Sun, 07 Jun 2020 11:58:21 -0400
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
+To:     alsa-devel@alsa-project.org, bp@alien8.de, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        Pavel Machek <pavel@ucw.cz>, perex@perex.cz,
+        tglx@linutronix.de, tiwai@suse.com, x86@kernel.org,
+        rientjes@google.com, hch@lst.de, hch@infradead.org
+References: <20200520111136.GA3802@amd>
+In-Reply-To: <20200520111136.GA3802@amd>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <1591545088.74ii116nf2.none@localhost>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: WebService/1.1.16072 hermes_yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable several very useful options and drivers for hardware that is found
-on Nexus 7 and Acer A500 tablet devices. Please note that some drivers may
-require firmware files extracted from original Android image.
+I have a similar issue, caused between aaa2faab4ed8 and b170290c2836.
 
-Link: https://github.com/grate-driver/linux-firmware
-Link: https://github.com/grate-driver/alsa-ucm-conf
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/configs/tegra_defconfig | 42 ++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+[   20.263098] BUG: unable to handle page fault for address: ffffb2b582cc20=
+00
+[   20.263104] #PF: supervisor write access in kernel mode
+[   20.263105] #PF: error_code(0x000b) - reserved bit violation
+[   20.263107] PGD 3fd03b067 P4D 3fd03b067 PUD 3fd03c067 PMD 3f8822067 PTE =
+8000273942ab2163
+[   20.263113] Oops: 000b [#1] PREEMPT SMP
+[   20.263117] CPU: 3 PID: 691 Comm: mpv Not tainted 5.7.0-11262-gb170290c2=
+836 #1
+[   20.263119] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M.=
+/B450 Pro4, BIOS P4.10 03/05/2020
+[   20.263125] RIP: 0010:__memset+0x24/0x30
+[   20.263128] Code: cc cc cc cc cc cc 0f 1f 44 00 00 49 89 f9 48 89 d1 83 =
+e2 07 48 c1 e9 03 40 0f b6 f6 48 b8 01 01 01 01 01 01 01 01 48 0f af c6 <f3=
+> 48 ab 89 d1 f3 aa 4c 89 c8 c3 90 49 89 f9 40 88 f0 48 89 d1 f3
+[   20.263131] RSP: 0018:ffffb2b583d07e10 EFLAGS: 00010216
+[   20.263133] RAX: 0000000000000000 RBX: ffff8b8000102c00 RCX: 00000000000=
+04000
+[   20.263134] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffb2b582c=
+c2000
+[   20.263136] RBP: ffff8b8000101000 R08: 0000000000000000 R09: ffffb2b582c=
+c2000
+[   20.263137] R10: 0000000000005356 R11: ffff8b8000102c18 R12: 00000000000=
+00000
+[   20.263139] R13: 0000000000000000 R14: ffff8b8039944200 R15: ffffffff979=
+4daa0
+[   20.263141] FS:  00007f41aa4b4200(0000) GS:ffff8b803ecc0000(0000) knlGS:=
+0000000000000000
+[   20.263143] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   20.263144] CR2: ffffb2b582cc2000 CR3: 00000003b6731000 CR4: 00000000003=
+406e0
+[   20.263146] Call Trace:
+[   20.263151]  ? snd_pcm_hw_params+0x3f3/0x47a
+[   20.263154]  ? snd_pcm_common_ioctl+0xf2/0xf73
+[   20.263158]  ? snd_pcm_ioctl+0x1e/0x29
+[   20.263161]  ? ksys_ioctl+0x77/0x91
+[   20.263163]  ? __x64_sys_ioctl+0x11/0x14
+[   20.263166]  ? do_syscall_64+0x3d/0xf5
+[   20.263170]  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   20.263173] Modules linked in: uvcvideo videobuf2_vmalloc videobuf2_memo=
+ps videobuf2_v4l2 videodev snd_usb_audio videobuf2_common snd_hwdep snd_usb=
+midi_lib input_leds snd_rawmidi led_class
+[   20.263182] CR2: ffffb2b582cc2000
+[   20.263184] ---[ end trace c6b47a774b91f0a0 ]---
+[   20.263187] RIP: 0010:__memset+0x24/0x30
+[   20.263190] Code: cc cc cc cc cc cc 0f 1f 44 00 00 49 89 f9 48 89 d1 83 =
+e2 07 48 c1 e9 03 40 0f b6 f6 48 b8 01 01 01 01 01 01 01 01 48 0f af c6 <f3=
+> 48 ab 89 d1 f3 aa 4c 89 c8 c3 90 49 89 f9 40 88 f0 48 89 d1 f3
+[   20.263192] RSP: 0018:ffffb2b583d07e10 EFLAGS: 00010216
+[   20.263193] RAX: 0000000000000000 RBX: ffff8b8000102c00 RCX: 00000000000=
+04000
+[   20.263195] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffb2b582c=
+c2000
+[   20.263196] RBP: ffff8b8000101000 R08: 0000000000000000 R09: ffffb2b582c=
+c2000
+[   20.263197] R10: 0000000000005356 R11: ffff8b8000102c18 R12: 00000000000=
+00000
+[   20.263199] R13: 0000000000000000 R14: ffff8b8039944200 R15: ffffffff979=
+4daa0
+[   20.263201] FS:  00007f41aa4b4200(0000) GS:ffff8b803ecc0000(0000) knlGS:=
+0000000000000000
+[   20.263202] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   20.263204] CR2: ffffb2b582cc2000 CR3: 00000003b6731000 CR4: 00000000003=
+406e0
 
-diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
-index 0029259a6bf5..b382f06f835b 100644
---- a/arch/arm/configs/tegra_defconfig
-+++ b/arch/arm/configs/tegra_defconfig
-@@ -10,6 +10,8 @@ CONFIG_RT_GROUP_SCHED=y
- CONFIG_CGROUP_FREEZER=y
- CONFIG_CGROUP_CPUACCT=y
- CONFIG_CGROUP_DEBUG=y
-+CONFIG_NAMESPACES=y
-+CONFIG_USER_NS=y
- CONFIG_BLK_DEV_INITRD=y
- # CONFIG_ELF_CORE is not set
- CONFIG_EMBEDDED=y
-@@ -18,6 +20,7 @@ CONFIG_SLAB=y
- CONFIG_ARCH_TEGRA=y
- CONFIG_SMP=y
- CONFIG_HIGHMEM=y
-+CONFIG_SECCOMP=y
- CONFIG_ZBOOT_ROM_TEXT=0x0
- CONFIG_ZBOOT_ROM_BSS=0x0
- CONFIG_KEXEC=y
-@@ -63,11 +66,17 @@ CONFIG_BT_RFCOMM=y
- CONFIG_BT_BNEP=y
- CONFIG_BT_HIDP=y
- CONFIG_BT_HCIBTUSB=m
-+CONFIG_BT_HCIUART=y
-+CONFIG_BT_HCIUART_BCM=y
- CONFIG_CFG80211=y
- CONFIG_MAC80211=y
- CONFIG_RFKILL=y
- CONFIG_RFKILL_INPUT=y
- CONFIG_RFKILL_GPIO=y
-+CONFIG_NFC=y
-+CONFIG_NFC_HCI=y
-+CONFIG_NFC_SHDLC=y
-+CONFIG_NFC_PN544_I2C=y
- CONFIG_PCI=y
- CONFIG_PCIEPORTBUS=y
- CONFIG_PCI_MSI=y
-@@ -106,20 +115,24 @@ CONFIG_INPUT_JOYDEV=y
- CONFIG_INPUT_EVDEV=y
- CONFIG_KEYBOARD_GPIO=y
- CONFIG_KEYBOARD_TEGRA=y
-+CONFIG_KEYBOARD_CAP11XX=y
- CONFIG_KEYBOARD_CROS_EC=y
- CONFIG_MOUSE_PS2_ELANTECH=y
- CONFIG_INPUT_TOUCHSCREEN=y
- CONFIG_TOUCHSCREEN_ATMEL_MXT=y
-+CONFIG_TOUCHSCREEN_ELAN=y
- CONFIG_TOUCHSCREEN_WM97XX=y
- # CONFIG_TOUCHSCREEN_WM9705 is not set
- # CONFIG_TOUCHSCREEN_WM9713 is not set
- CONFIG_TOUCHSCREEN_STMPE=y
- CONFIG_INPUT_MISC=y
-+CONFIG_INPUT_GPIO_VIBRA=y
- # CONFIG_LEGACY_PTYS is not set
- CONFIG_SERIAL_8250=y
- CONFIG_SERIAL_8250_CONSOLE=y
- CONFIG_SERIAL_OF_PLATFORM=y
- CONFIG_SERIAL_TEGRA=y
-+CONFIG_SERIAL_DEV_BUS=y
- # CONFIG_HW_RANDOM is not set
- # CONFIG_I2C_COMPAT is not set
- CONFIG_I2C_CHARDEV=y
-@@ -131,10 +144,12 @@ CONFIG_SPI_TEGRA114=y
- CONFIG_SPI_TEGRA20_SFLASH=y
- CONFIG_SPI_TEGRA20_SLINK=y
- CONFIG_PINCTRL_AS3722=y
-+CONFIG_PINCTRL_MAX77620=y
- CONFIG_PINCTRL_PALMAS=y
- CONFIG_GPIO_SYSFS=y
- CONFIG_GPIO_PCA953X=y
- CONFIG_GPIO_PCA953X_IRQ=y
-+CONFIG_GPIO_MAX77620=y
- CONFIG_GPIO_PALMAS=y
- CONFIG_GPIO_TPS6586X=y
- CONFIG_GPIO_TPS65910=y
-@@ -142,13 +157,21 @@ CONFIG_POWER_RESET=y
- CONFIG_POWER_RESET_AS3722=y
- CONFIG_POWER_RESET_GPIO=y
- CONFIG_BATTERY_SBS=y
-+CONFIG_BATTERY_BQ27XXX=y
-+CONFIG_CHARGER_GPIO=y
-+CONFIG_CHARGER_SMB347=y
- CONFIG_CHARGER_TPS65090=y
- CONFIG_SENSORS_LM90=y
- CONFIG_SENSORS_LM95245=y
-+CONFIG_THERMAL=y
-+CONFIG_THERMAL_STATISTICS=y
-+CONFIG_CPU_THERMAL=y
- CONFIG_WATCHDOG=y
-+CONFIG_MAX77620_WATCHDOG=y
- CONFIG_TEGRA_WATCHDOG=y
- CONFIG_MFD_AS3722=y
- CONFIG_MFD_CROS_EC=y
-+CONFIG_MFD_MAX77620=y
- CONFIG_MFD_MAX8907=y
- CONFIG_MFD_STMPE=y
- CONFIG_MFD_PALMAS=y
-@@ -159,6 +182,7 @@ CONFIG_REGULATOR=y
- CONFIG_REGULATOR_FIXED_VOLTAGE=y
- CONFIG_REGULATOR_AS3722=y
- CONFIG_REGULATOR_GPIO=y
-+CONFIG_REGULATOR_MAX77620=y
- CONFIG_REGULATOR_MAX8907=y
- CONFIG_REGULATOR_PALMAS=y
- CONFIG_REGULATOR_TPS51632=y
-@@ -174,7 +198,10 @@ CONFIG_USB_GSPCA=y
- CONFIG_DRM=y
- CONFIG_DRM_NOUVEAU=m
- CONFIG_DRM_TEGRA=y
-+CONFIG_DRM_TEGRA_STAGING=y
-+CONFIG_DRM_PANEL_LVDS=y
- CONFIG_DRM_PANEL_SIMPLE=y
-+CONFIG_DRM_LVDS_CODEC=y
- # CONFIG_LCD_CLASS_DEVICE is not set
- CONFIG_BACKLIGHT_CLASS_DEVICE=y
- # CONFIG_BACKLIGHT_GENERIC is not set
-@@ -238,6 +265,7 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_AS3722=y
- CONFIG_RTC_DRV_DS1307=y
- CONFIG_RTC_DRV_MAX8907=y
-+CONFIG_RTC_DRV_MAX77686=y
- CONFIG_RTC_DRV_PALMAS=y
- CONFIG_RTC_DRV_TPS6586X=y
- CONFIG_RTC_DRV_TPS65910=y
-@@ -259,11 +287,18 @@ CONFIG_ARCH_TEGRA_2x_SOC=y
- CONFIG_ARCH_TEGRA_3x_SOC=y
- CONFIG_ARCH_TEGRA_114_SOC=y
- CONFIG_ARCH_TEGRA_124_SOC=y
-+CONFIG_PM_DEVFREQ=y
-+CONFIG_ARM_TEGRA_DEVFREQ=y
-+CONFIG_ARM_TEGRA20_DEVFREQ=y
- CONFIG_MEMORY=y
- CONFIG_IIO=y
-+CONFIG_KXCJK1013=y
- CONFIG_MPU3050_I2C=y
-+CONFIG_INV_MPU6050_I2C=y
-+CONFIG_AL3010=y
- CONFIG_SENSORS_ISL29018=y
- CONFIG_SENSORS_ISL29028=y
-+CONFIG_AK8974=y
- CONFIG_AK8975=y
- CONFIG_PWM=y
- CONFIG_PWM_TEGRA=y
-@@ -283,6 +318,13 @@ CONFIG_TMPFS_POSIX_ACL=y
- CONFIG_SQUASHFS=y
- CONFIG_SQUASHFS_LZO=y
- CONFIG_SQUASHFS_XZ=y
-+CONFIG_PSTORE=y
-+CONFIG_PSTORE_LZO_COMPRESS=y
-+CONFIG_PSTORE_LZ4_COMPRESS=y
-+CONFIG_PSTORE_LZ4HC_COMPRESS=y
-+CONFIG_PSTORE_842_COMPRESS=y
-+CONFIG_PSTORE_CONSOLE=y
-+CONFIG_PSTORE_RAM=y
- CONFIG_NFS_FS=y
- CONFIG_NFS_V4=y
- CONFIG_ROOT_NFS=y
--- 
-2.26.0
+I bisected this to 82fef0ad811f "x86/mm: unencrypted non-blocking DMA=20
+allocations use coherent pools". Reverting 1ee18de92927 resolves the=20
+issue.
 
+Looks like Thinkpad X60 doesn't have VT-d, but could still be DMA=20
+related.
