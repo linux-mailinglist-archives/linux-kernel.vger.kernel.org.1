@@ -2,198 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCFA1F0D0D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 18:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E5C1F0D28
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 18:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727961AbgFGQbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 12:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727886AbgFGQbL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 12:31:11 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E30C08C5C3
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 09:31:10 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 9so17482629ljc.8
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 09:31:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dfWTJRln/wUkUezGYMWTWyc7bZ4R2M6yJEVL+/18MoU=;
-        b=JhsWDMxQZ1/NcZTwhhTdjBGtnXX8mULfjvyeevpeheQhRviLws+dfkfdQQLxDVl7XV
-         kQYSxeIEb3bwXQcd/xxgN7wftXcZhFuWXw1Y3/OSDttBaHgtpHvyJSBjkBxv/NvRCzZY
-         OQzXZmRokwALTD+miJSukeoL7BDilVnyKmxe++oZBGg1yJ0sB3YJFTw4X8/2iPRCg2sp
-         WvLs6+AEZkY6J2r9jYaLN7UlJuLa7EeEMYBmXiyu65TTLJ7elaktN3aXkEB/JbnBCCRv
-         5gZxFwmw4m1zYZke5l3KcAJ3+E8603d/UBkq2Wh+JRaGFvyVu4nVqHm/7crlEN3x2i43
-         d85A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=dfWTJRln/wUkUezGYMWTWyc7bZ4R2M6yJEVL+/18MoU=;
-        b=UCgUNqMZxkAK/OErmHORoCNWLk+QJ3ty68yv+a4gRGeWIhYleLzhoixnq18lQCsXLn
-         sqSZj+F0H4ke7PDRHsk+l1s0KiY1zpXfr/ezwa108Qy66uLegpLZYdGB/CYWrvmVPBb2
-         ojriq/7YUbP7/3X4tcDHVs3fmQivnnjJZDpCICjFcuG7CMB3Rz/Se2ilNWrXL0FEHfPQ
-         HZGVxL6pQOSNb/KfAxSdKY14M/QpUTIbf8y+zNOMlCAgdbU98WIXJRFCwEzhkKgBCmC5
-         T9TmdiYhBnwmSH4JT5+Ke5USPm4oEJkj9Z3JrnzZ47maBHkoQo5yKvliD65QFRo7OAX6
-         Ttdw==
-X-Gm-Message-State: AOAM530F4unhMjwEJ+jmp85z3ez19eEN1XAU2xrVwqLcVZFYlRgxWJn2
-        NxTXp7EOy85zpKfHFLW+Yo6FhA==
-X-Google-Smtp-Source: ABdhPJy7RVt9fRqw1XY48kyWG2iJArPS9Cv81DF9HQ1xCb1mlZVeQ5/Ic48+BpzKbmrWsyCDcUCcpw==
-X-Received: by 2002:a2e:7303:: with SMTP id o3mr9826431ljc.100.1591547469072;
-        Sun, 07 Jun 2020 09:31:09 -0700 (PDT)
-Received: from localhost.localdomain (37-144-159-139.broadband.corbina.ru. [37.144.159.139])
-        by smtp.googlemail.com with ESMTPSA id l7sm1726511ljj.55.2020.06.07.09.31.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jun 2020 09:31:08 -0700 (PDT)
-From:   Andrey Konovalov <andrey.konovalov@linaro.org>
-To:     mchehab@kernel.org, sakari.ailus@iki.fi,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        c.barrett@framos.com, a.brela@framos.com, peter.griffin@linaro.org,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-Subject: [PATCH v4 10/10] media: i2c: imx290: set bus_type before calling v4l2_fwnode_endpoint_alloc_parse()
-Date:   Sun,  7 Jun 2020 19:30:25 +0300
-Message-Id: <20200607163025.8409-11-andrey.konovalov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200607163025.8409-1-andrey.konovalov@linaro.org>
-References: <20200607163025.8409-1-andrey.konovalov@linaro.org>
+        id S1726764AbgFGQea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 12:34:30 -0400
+Received: from mga07.intel.com ([134.134.136.100]:58842 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726646AbgFGQe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 12:34:29 -0400
+IronPort-SDR: UFC7Ab1xN9mMIw+3cO9GT6fLGmIBJT4aLikBO+OucFtE6gIEWtvtT0tJ2/TxGqNdSbKIIK411G
+ 961vTGiXO+YQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2020 09:34:28 -0700
+IronPort-SDR: Fyk1InqYMPYgh1T0kcnxxfilbZ5XgWp5wHXXAKKqigkdTzUJ4X4gN7NUquJyqONUiDLVB/kR+a
+ Tw6xi5oUdIhQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,484,1583222400"; 
+   d="scan'208";a="258486290"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga007.fm.intel.com with ESMTP; 07 Jun 2020 09:34:28 -0700
+Date:   Sun, 7 Jun 2020 09:34:28 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, kbuild-all@lists.01.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Brad Campbell <lists2009@fnarfbargle.com>
+Subject: Re: [PATCH] x86/cpu: Reinitialize IA32_FEAT_CTL MSR on BSP during
+ wakeup
+Message-ID: <20200607163428.GB24576@linux.intel.com>
+References: <20200605200728.10145-1-sean.j.christopherson@intel.com>
+ <202006060421.fTpTXYbe%lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202006060421.fTpTXYbe%lkp@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bus_type field of v4l2_fwnode_endpoint structure passed as the argument
-to v4l2_fwnode_endpoint_alloc_parse() function must be initiaized.
-Set it to V4L2_MBUS_CSI2_DPHY, and check for -ENXIO which is returned
-when the requested media bus type doesn't match the fwnode.
+On Sat, Jun 06, 2020 at 05:08:38AM +0800, kernel test robot wrote:
+ arch/x86/kernel/cpu/centaur.c: In function 'init_centaur':
+> >> arch/x86/kernel/cpu/centaur.c:219:2: error: implicit declaration of function 'init_ia32_feat_ctl' [-Werror=implicit-function-declaration]
+> 219 |  init_ia32_feat_ctl(c);
+> |  ^~~~~~~~~~~~~~~~~~
+> cc1: some warnings being treated as errors
+> --
+> arch/x86/kernel/cpu/zhaoxin.c: In function 'init_zhaoxin':
+> >> arch/x86/kernel/cpu/zhaoxin.c:110:2: error: implicit declaration of function 'init_ia32_feat_ctl' [-Werror=implicit-function-declaration]
+> 110 |  init_ia32_feat_ctl(c);
+> |  ^~~~~~~~~~~~~~~~~~
+> cc1: some warnings being treated as errors
 
-Also remove v4l2_fwnode_endpoint field from struct imx290 as it is only
-needed in the probe function: use the local variable for this purpose.
+Blech, zhaoxin.c an centaur.c don't include asm/cpu.h, and I (obviously)
+don't have them enabled in my configs.  I'll wait a day or two more before
+sending v2.
 
-Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
----
- drivers/media/i2c/imx290.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+diff --git a/arch/x86/kernel/cpu/centaur.c b/arch/x86/kernel/cpu/centaur.c
+index 426792565d86..c5cf336e5077 100644
+--- a/arch/x86/kernel/cpu/centaur.c
++++ b/arch/x86/kernel/cpu/centaur.c
+@@ -3,6 +3,7 @@
+ #include <linux/sched.h>
+ #include <linux/sched/clock.h>
 
-diff --git a/drivers/media/i2c/imx290.c b/drivers/media/i2c/imx290.c
-index 02001c1b0dfc..9c97830164e9 100644
---- a/drivers/media/i2c/imx290.c
-+++ b/drivers/media/i2c/imx290.c
-@@ -70,7 +70,6 @@ struct imx290 {
- 	u8 bpp;
- 
- 	struct v4l2_subdev sd;
--	struct v4l2_fwnode_endpoint ep;
- 	struct media_pad pad;
- 	struct v4l2_mbus_framefmt current_format;
- 	const struct imx290_mode *current_mode;
-@@ -914,17 +913,18 @@ static const struct media_entity_operations imx290_subdev_entity_ops = {
-  * of MIPI data lanes are mentioned in the device tree, or the value of the
-  * first missing frequency otherwise.
-  */
--static s64 imx290_check_link_freqs(const struct imx290 *imx290)
-+static s64 imx290_check_link_freqs(const struct imx290 *imx290,
-+				   const struct v4l2_fwnode_endpoint *ep)
- {
- 	int i, j;
- 	const s64 *freqs = imx290_link_freqs_ptr(imx290);
- 	int freqs_count = imx290_link_freqs_num(imx290);
- 
- 	for (i = 0; i < freqs_count; i++) {
--		for (j = 0; j < imx290->ep.nr_of_link_frequencies; j++)
--			if (freqs[i] == imx290->ep.link_frequencies[j])
-+		for (j = 0; j < ep->nr_of_link_frequencies; j++)
-+			if (freqs[i] == ep->link_frequencies[j])
- 				break;
--		if (j == imx290->ep.nr_of_link_frequencies)
-+		if (j == ep->nr_of_link_frequencies)
- 			return freqs[i];
- 	}
- 	return 0;
-@@ -934,6 +934,10 @@ static int imx290_probe(struct i2c_client *client)
- {
- 	struct device *dev = &client->dev;
- 	struct fwnode_handle *endpoint;
-+	/* Only CSI2 is supported for now: */
-+	struct v4l2_fwnode_endpoint ep = {
-+		.bus_type = V4L2_MBUS_CSI2_DPHY
-+	};
- 	struct imx290 *imx290;
- 	u32 xclk_freq;
- 	s64 fq;
-@@ -956,15 +960,18 @@ static int imx290_probe(struct i2c_client *client)
- 		return -EINVAL;
- 	}
- 
--	ret = v4l2_fwnode_endpoint_alloc_parse(endpoint, &imx290->ep);
-+	ret = v4l2_fwnode_endpoint_alloc_parse(endpoint, &ep);
- 	fwnode_handle_put(endpoint);
--	if (ret) {
-+	if (ret == -ENXIO) {
-+		dev_err(dev, "Unsupported bus type, should be CSI2\n");
-+		goto free_err;
-+	} else if (ret) {
- 		dev_err(dev, "Parsing endpoint node failed\n");
- 		goto free_err;
- 	}
- 
- 	/* Get number of data lanes */
--	imx290->nlanes = imx290->ep.bus.mipi_csi2.num_data_lanes;
-+	imx290->nlanes = ep.bus.mipi_csi2.num_data_lanes;
- 	if (imx290->nlanes != 2 && imx290->nlanes != 4) {
- 		dev_err(dev, "Invalid data lanes: %d\n", imx290->nlanes);
- 		ret = -EINVAL;
-@@ -973,27 +980,20 @@ static int imx290_probe(struct i2c_client *client)
- 
- 	dev_dbg(dev, "Using %u data lanes\n", imx290->nlanes);
- 
--	if (!imx290->ep.nr_of_link_frequencies) {
-+	if (!ep.nr_of_link_frequencies) {
- 		dev_err(dev, "link-frequency property not found in DT\n");
- 		ret = -EINVAL;
- 		goto free_err;
- 	}
- 
- 	/* Check that link frequences for all the modes are in device tree */
--	fq = imx290_check_link_freqs(imx290);
-+	fq = imx290_check_link_freqs(imx290, &ep);
- 	if (fq) {
- 		dev_err(dev, "Link frequency of %lld is not supported\n", fq);
- 		ret = -EINVAL;
- 		goto free_err;
- 	}
- 
--	/* Only CSI2 is supported for now */
--	if (imx290->ep.bus_type != V4L2_MBUS_CSI2_DPHY) {
--		dev_err(dev, "Unsupported bus type, should be CSI2\n");
--		ret = -EINVAL;
--		goto free_err;
--	}
--
- 	/* get system clock (xclk) */
- 	imx290->xclk = devm_clk_get(dev, "xclk");
- 	if (IS_ERR(imx290->xclk)) {
-@@ -1108,7 +1108,7 @@ static int imx290_probe(struct i2c_client *client)
- 	pm_runtime_enable(dev);
- 	pm_runtime_idle(dev);
- 
--	v4l2_fwnode_endpoint_free(&imx290->ep);
-+	v4l2_fwnode_endpoint_free(&ep);
- 
- 	return 0;
- 
-@@ -1118,7 +1118,7 @@ static int imx290_probe(struct i2c_client *client)
- 	v4l2_ctrl_handler_free(&imx290->ctrls);
- 	mutex_destroy(&imx290->lock);
- free_err:
--	v4l2_fwnode_endpoint_free(&imx290->ep);
-+	v4l2_fwnode_endpoint_free(&ep);
- 
- 	return ret;
- }
--- 
-2.17.1
++#include <asm/cpu.h>
+ #include <asm/cpufeature.h>
+ #include <asm/e820/api.h>
+ #include <asm/mtrr.h>
+diff --git a/arch/x86/kernel/cpu/zhaoxin.c b/arch/x86/kernel/cpu/zhaoxin.c
+index df1358ba622b..05fa4ef63490 100644
+--- a/arch/x86/kernel/cpu/zhaoxin.c
++++ b/arch/x86/kernel/cpu/zhaoxin.c
+@@ -2,6 +2,7 @@
+ #include <linux/sched.h>
+ #include <linux/sched/clock.h>
+
++#include <asm/cpu.h>
+ #include <asm/cpufeature.h>
+
+ #include "cpu.h"
 
