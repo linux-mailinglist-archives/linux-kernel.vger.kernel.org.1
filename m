@@ -2,132 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435CF1F0F8F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 22:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939211F0F92
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 22:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727972AbgFGUY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 16:24:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60100 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727065AbgFGUY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 16:24:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 95E8AAC4A;
-        Sun,  7 Jun 2020 20:24:58 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 3F05F602EB; Sun,  7 Jun 2020 22:24:52 +0200 (CEST)
-Date:   Sun, 7 Jun 2020 22:24:52 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "John W. Linville" <linville@tuxdriver.com>,
-        David Jander <david@protonic.nl>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
-        Marek Vasut <marex@denx.de>,
-        Christian Herber <christian.herber@nxp.com>,
-        Amit Cohen <amitc@mellanox.com>,
-        Petr Machata <petrm@mellanox.com>
-Subject: Re: [PATCH v2 3/3] netlink: add LINKSTATE SQI support
-Message-ID: <20200607202452.md4nnp47cfjetylp@lion.mk-sys.cz>
-References: <20200528115414.11516-1-o.rempel@pengutronix.de>
- <20200528115414.11516-4-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6rexytvx3x3wksna"
-Content-Disposition: inline
-In-Reply-To: <20200528115414.11516-4-o.rempel@pengutronix.de>
+        id S1728094AbgFGUZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 16:25:27 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:9485 "EHLO
+        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726679AbgFGUZ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 16:25:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+        h=from:subject:to:cc:content-type:content-transfer-encoding;
+        s=001; bh=9+UFvR2HLQ1OtsQEFQDlYZvMrwIZ+EbLi39KqEqSC5c=;
+        b=PT5/SPwDAKr7hCt/j9ChohbEuXIFE9HVYER3FGySHJCRHG8yfhB5E5ill2UxtU5r+Oll
+        ahdPcZND/NfLoiG/dgAGsTGi8C8EG6vGNDhFFZ7UhkZ2jnl1J6j1Tc9hwk5pKPAzJeNt+3
+        YJfqoUmq/C7tUiJfY2lPmGR0UToA2v3Ng=
+Received: by filterdrecv-p3mdw1-6f5df8956d-x2qpw with SMTP id filterdrecv-p3mdw1-6f5df8956d-x2qpw-20-5EDD4D35-1
+        2020-06-07 20:25:25.100926506 +0000 UTC m=+346300.487522929
+Received: from bionic.localdomain (unknown)
+        by ismtpd0001p1lon1.sendgrid.net (SG) with ESMTP
+        id zJEc6mt4Tsa6oQIoDupI0g
+        Sun, 07 Jun 2020 20:25:24.908 +0000 (UTC)
+From:   Jonas Karlman <jonas@kwiboo.se>
+Subject: [PATCH 0/2] drm: rockchip: add NV15 and NV20 support
+Date:   Sun, 07 Jun 2020 20:25:25 +0000 (UTC)
+Message-Id: <20200607202521.18438-1-jonas@kwiboo.se>
+X-Mailer: git-send-email 2.17.1
+X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h6O1z6Pg2iWyq5iV4?=
+ =?us-ascii?Q?A+F4I6TvUqYcjYtDAgN2Hadv6t1FKJVFTvJ+DT8?=
+ =?us-ascii?Q?LaIMpqOITdDIRmvVNs35SgjYXThyqH1kd6iaExO?=
+ =?us-ascii?Q?R90pp6lr8CkFY4cDML31=2FBkIMO2LIq+GtHuReav?=
+ =?us-ascii?Q?t32QWEkXhPVkqLFsMb5z=2F1Kv0WvITuAHEopipmr?=
+ =?us-ascii?Q?PCqn2V36JAyTakxZJCy9w=3D=3D?=
+To:     Sandy Huang <hjc@rock-chips.com>,
+        Heiko =?iso-8859-1?q?St=FCbner?= <heiko@sntech.de>
+Cc:     Jonas Karlman <jonas@kwiboo.se>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Ben Davis <ben.davis@arm.com>,
+        Brian Starkey <brian.starkey@arm.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---6rexytvx3x3wksna
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series adds support for displaying 10-bit 4:2:0 and 4:2:2 formats produced
+by the Rockchip Video Decoder on RK322X, RK3288, RK3328, RK3368 and RK3399.
 
-On Thu, May 28, 2020 at 01:54:14PM +0200, Oleksij Rempel wrote:
-> Some PHYs provide Signal Quality Index (SQI) if the link is in active
-> state. This information can help to diagnose cable and system design
-> related issues.
->=20
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+First patch adds a new fourcc 10-bit YUV format with 4:2:2 sub-sampling.
+Second patch adds support for using the the two new fourcc formats.
+Both depend on "drm: drm_fourcc: add NV15, Q410, Q401 YUV formats" at [1].
 
-Reviewed-by: Michal Kubecek <mkubecek@suse.cz>
+This series can also be found at [2], and can be tested on RK3399 using an
+upcoming rkvdec series at [3] together with ffmpeg at [4] and kodi-gbm or mpv.
 
-> ---
->  netlink/desc-ethtool.c |  2 ++
->  netlink/settings.c     | 16 ++++++++++++++++
->  2 files changed, 18 insertions(+)
->=20
-> diff --git a/netlink/desc-ethtool.c b/netlink/desc-ethtool.c
-> index b0a793c..8f4c36b 100644
-> --- a/netlink/desc-ethtool.c
-> +++ b/netlink/desc-ethtool.c
-> @@ -93,6 +93,8 @@ static const struct pretty_nla_desc __linkstate_desc[] =
-=3D {
->  	NLATTR_DESC_INVALID(ETHTOOL_A_LINKSTATE_UNSPEC),
->  	NLATTR_DESC_NESTED(ETHTOOL_A_LINKSTATE_HEADER, header),
->  	NLATTR_DESC_BOOL(ETHTOOL_A_LINKSTATE_LINK),
-> +	NLATTR_DESC_U32(ETHTOOL_A_LINKSTATE_SQI),
-> +	NLATTR_DESC_U32(ETHTOOL_A_LINKSTATE_SQI_MAX),
->  };
-> =20
->  static const struct pretty_nla_desc __debug_desc[] =3D {
-> diff --git a/netlink/settings.c b/netlink/settings.c
-> index 851de15..cd4b9a7 100644
-> --- a/netlink/settings.c
-> +++ b/netlink/settings.c
-> @@ -638,6 +638,22 @@ int linkstate_reply_cb(const struct nlmsghdr *nlhdr,=
- void *data)
->  		printf("\tLink detected: %s\n", val ? "yes" : "no");
->  	}
-> =20
-> +	if (tb[ETHTOOL_A_LINKSTATE_SQI]) {
-> +		uint32_t val =3D mnl_attr_get_u32(tb[ETHTOOL_A_LINKSTATE_SQI]);
-> +
-> +		print_banner(nlctx);
-> +		printf("\tSQI: %u", val);
-> +
-> +		if (tb[ETHTOOL_A_LINKSTATE_SQI_MAX]) {
-> +			uint32_t max;
-> +
-> +			max =3D mnl_attr_get_u32(tb[ETHTOOL_A_LINKSTATE_SQI_MAX]);
-> +			printf("/%u\n", max);
-> +		} else {
-> +			printf("\n");
-> +		}
-> +	}
-> +
->  	return MNL_CB_OK;
->  }
-> =20
-> --=20
-> 2.26.2
->=20
+[1] https://patchwork.freedesktop.org/series/76326/
+[2] https://github.com/Kwiboo/linux-rockchip/commits/next-20200605-fmt_10
+[3] https://github.com/Kwiboo/linux-rockchip/commits/next-20200605-rkvdec
+[4] https://github.com/Kwiboo/FFmpeg/commits/v4l2-request-hwaccel-4.2.2-rkvdec
 
---6rexytvx3x3wksna
-Content-Type: application/pgp-signature; name="signature.asc"
+Regards,
+Jonas
 
------BEGIN PGP SIGNATURE-----
+Jonas Karlman (2):
+  drm: drm_fourcc: add NV20 YUV format
+  drm: rockchip: add NV15 and NV20 support
 
-iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAl7dTRQACgkQ538sG/LR
-dpXMcgf/aGnDZaDpaT7K8y35E0CVbPgFarkAgkDcEFirAQpugKWj/EUo93DXoMor
-5q5vy72IpW4R2tZvGYDQ42hltd2n2Y1vOFs13ElgUTqfk7UGUFpBzKXfuLCGY1yN
-rd+BWgWTK02dSqHyF7Vb+2FVfxNfo27n21btYa7iCMAxFWyDm6xrbONPP/lcu/+O
-8wRmAG+51q4rbc9pETQ1KwQc9EZ58hQglXPeUQzzQR+aiCVSP7gud6IXiUOVhmah
-w/MWl8SRIU1sOjwTkXQha5TDXDq7KxG8Gc4YdmtNQFjW8wz3+msVfjNeeCtFK14u
-GVB1itG2veq/GAEcSN4X5imlvEFkFA==
-=Qh5H
------END PGP SIGNATURE-----
+ drivers/gpu/drm/drm_fourcc.c                |  4 +++
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 27 ++++++++++++++++--
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.h |  1 +
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 31 +++++++++++++++++----
+ include/uapi/drm/drm_fourcc.h               |  1 +
+ 5 files changed, 56 insertions(+), 8 deletions(-)
 
---6rexytvx3x3wksna--
+-- 
+2.17.1
+
