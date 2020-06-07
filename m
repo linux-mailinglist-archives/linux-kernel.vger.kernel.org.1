@@ -2,104 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B56A1F0C6C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 17:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376CE1F0C79
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 17:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgFGPeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 11:34:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
+        id S1726673AbgFGPnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 11:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbgFGPeM (ORCPT
+        with ESMTP id S1726595AbgFGPnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 11:34:12 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA180C08C5C4;
-        Sun,  7 Jun 2020 08:34:11 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id t18so14740768wru.6;
-        Sun, 07 Jun 2020 08:34:11 -0700 (PDT)
+        Sun, 7 Jun 2020 11:43:13 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DDCC08C5C3;
+        Sun,  7 Jun 2020 08:43:13 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id gl26so15464778ejb.11;
+        Sun, 07 Jun 2020 08:43:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=YAsUrh63goZyXNgXwopjHb3IQJxC4ZmIiqNb64E7YCE=;
-        b=d/BegjzMabzoMQJbU2EkOFWM7Su8kLnBd8zd6hTi/klxPkj1gMpciKuIN8I18/Zva4
-         AkUQP8uNuYNWvUYSWwo9tVy53irMxjJtZiT5C55XvoTlmeWOO4T1HuJoeFuQsSNbkJUv
-         Jb5Qpt/2j1jKKtamgrd0WNKFj60Sy2M6mGvzbFLV3Ss/I53q314L4cNu1dRn9GWrir7M
-         ktVen5I/I2FqctEcGteagB7/gIl7r01wWTtYpeau5nrw/vhO4NNXkUyiG4h62edPi9Jh
-         9GmEZYDPaUkYATIjbv95HKffnRvFysB1Yw3aJYy2tvsH7WTa36e4bzesYF3IRB0BFAYH
-         RCZQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QCe7MTPBluIQ+Z4ZBffv4cvKmqrkB70PcCAPj5Z/6/M=;
+        b=PURl8DuPm18P85nvRkNFBSVL56dyuzstSURexfOKdBK8mcAm3gyieRPV3BlgVa3SSE
+         N0wW8j4f11D+ttsY+i3qVNHBnXa39L8BSI62z7AM6JWKDZE+/gQzBa5Z6CHtV9xpgxV7
+         YkTVmcgCjU5DylWKrmJycRLfWKDJKvzUlt/Ul9DK/Q73l8RjJ8oWNTrbRqhifmZinZYM
+         jyMRBvVpbieP7ndnOv/6WHW9S3AZtGWDaH7O2U7ldJ/u97UESY9HZrWYYQYjOtV620+3
+         Lot10ftS5416syWttEH5NflrM0/vix58FQefD1dNP3lUa3aeRpDscZwAdI7GCmt5v4KS
+         2Smw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YAsUrh63goZyXNgXwopjHb3IQJxC4ZmIiqNb64E7YCE=;
-        b=qdexcsFJg6+fJMW2R2psm5hqx7oT0udt6Exc9rQVyW3jxEro4UaGmeDt3T88xBCC/4
-         DEdJg2P0QK2d5OuYObcGn5Vm32tRHtmvcn3GrsT3K38Mx515M/LPGsxx4ASvC/XL/C4U
-         ZTb47ZojNVDtx1cRTyse0VhHZAQWfUs8/CAWbzmQQKI2K9Rstnc91BgEXPR8+C56I2fa
-         iXrbP5aSGB4BKOhmXTDyP0OU70ArcFlZGxCJaK0q0hkEd0mbXqAO3CCduT1194MHpROo
-         EK3lSHP4DJSof6jsAX4/FYwx57+J8Y7u+JVIGw3SFKV0HnaHXledfYRmfauQ47seuAsp
-         6KYQ==
-X-Gm-Message-State: AOAM533sCqqBiOXTHPovRXMDWBLKsgjBWYetgkGXyOWpwdiRd8Fn6pYS
-        mtmWtFjL8In7bBE4iisXI3orR4+8
-X-Google-Smtp-Source: ABdhPJyMEDjmKxVLRT2WZxxYzrQQOyr3M+Kv5WuLxbpYve49Slt1Tjb9NQ50EkEIfWA0lbhO5ihUaw==
-X-Received: by 2002:adf:a51c:: with SMTP id i28mr19090257wrb.78.1591544050431;
-        Sun, 07 Jun 2020 08:34:10 -0700 (PDT)
-Received: from localhost.localdomain ([5.100.193.151])
-        by smtp.gmail.com with ESMTPSA id 1sm19589015wmz.13.2020.06.07.08.34.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QCe7MTPBluIQ+Z4ZBffv4cvKmqrkB70PcCAPj5Z/6/M=;
+        b=EFFdoPEPLa5yuS2RbUMXsq0tq7HV1UPMf4IMuGznoy3nRJRAlZKulB/1bJh0QglsVW
+         KPRyFtnP1CZPsrE+FsPmOD5Ov7K/5QKYT7xJF6wKD2wXLAMmZlQ0wmdvTEk2WQcdLHSc
+         FQwgoRhCDVdSB+2sJ7XXYlsx4nyzatyZxYBdBQTOz8K5r3KG+HD3d4KBJ0aIvNZxV8j4
+         M869kppJWRJ7DqzfwoOpiKQCTto91giuU6XTvBRZIGnNXQHGclSoDnRyVjT3l25ZX74A
+         ry/kr9ipIS8k04FU93oU56wPzfNX8ocUMXNWe+rjRbxN98H/8SJDyInRurvGpORxJww6
+         1qnA==
+X-Gm-Message-State: AOAM530alrlj7rd7xqXoOZnU2ff9xT97jjgZpsXr2TbbVwZRGPhuTrKU
+        mChn7f0FIsAczIsW1oZklMEDo16cs6wGIw==
+X-Google-Smtp-Source: ABdhPJxNQ9+nxJwOsJeEozyjH/xmSciV4dHlbIHLKHmqctmbT0MNAgwDY4ybECcF32Vz8qtYUYKbKw==
+X-Received: by 2002:a17:907:20e5:: with SMTP id rh5mr17929162ejb.80.1591544591522;
+        Sun, 07 Jun 2020 08:43:11 -0700 (PDT)
+Received: from andrea (ip-213-220-210-175.net.upcbroadband.cz. [213.220.210.175])
+        by smtp.gmail.com with ESMTPSA id ce16sm8638425ejb.76.2020.06.07.08.43.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jun 2020 08:34:10 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] io_uring: batch cancel in io_uring_cancel_files()
-Date:   Sun,  7 Jun 2020 18:32:25 +0300
-Message-Id: <156ed08ba6c25ce97f6ba3261e64b2ffba6b2b58.1591541128.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <cover.1591541128.git.asml.silence@gmail.com>
-References: <cover.1591541128.git.asml.silence@gmail.com>
+        Sun, 07 Jun 2020 08:43:10 -0700 (PDT)
+Date:   Sun, 7 Jun 2020 17:42:59 +0200
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Nuno Das Neves <nuno.das@microsoft.com>
+Subject: Re: [RFC PATCH 0/2] VMBus channel interrupts re-balancing
+Message-ID: <20200607154259.GA10780@andrea>
+References: <20200526223218.184057-1-parri.andrea@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526223218.184057-1-parri.andrea@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of waiting for each request one by one, first try to cancel all
-of them in a batched manner, and then go over inflight_list/etc to reap
-leftovers.
+> These changes originated from (and address /try to resolve) two known
+> limitations of the current interrupts-to-CPUs mapping scheme, that is,
+> (1) the "static" nature of this mapping scheme (that, e.g., can end up
+> preventing the hot removal of certain CPUs) and (2) the lack of global
+> visibility in such scheme (where devices/channels are mapped only "one
+> at a time"/as they are offered, with the end result that globally the
+> various interrupts are not always evenly spread across CPUs).
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- fs/io_uring.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+One thing I didn't mention here is that, well, we probably don't want
+any of this when CONFIG_SMP=n:  clearly, I didn't pay much attention
+to (optimize) this config in this RFC (FWIW, neither seems to do the
+current mapping scheme) but I'll look into this if there is interest
+on this regard (once back from vacation of course  ;-) and, probably,
+at the cost of adding some #ifdeffery to this RFC).
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index bcfb3b14b888..3aebbf96c123 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -7519,9 +7519,22 @@ static int io_uring_release(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
-+static bool io_wq_files_match(struct io_wq_work *work, void *data)
-+{
-+	struct files_struct *files = data;
-+
-+	return work->files == files;
-+}
-+
- static void io_uring_cancel_files(struct io_ring_ctx *ctx,
- 				  struct files_struct *files)
- {
-+	if (list_empty_careful(&ctx->inflight_list))
-+		return;
-+
-+	/* cancel all at once, should be faster than doing it one by one*/
-+	io_wq_cancel_cb(ctx->io_wq, io_wq_files_match, files, true);
-+
- 	while (!list_empty_careful(&ctx->inflight_list)) {
- 		struct io_kiocb *cancel_req = NULL, *req;
- 		DEFINE_WAIT(wait);
--- 
-2.24.0
-
+Thanks,
+  Andrea
