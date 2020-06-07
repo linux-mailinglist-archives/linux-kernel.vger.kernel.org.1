@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EF81F0B34
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 14:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8C21F0B39
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 15:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgFGM7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 08:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
+        id S1726606AbgFGNDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 09:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726554AbgFGM7l (ORCPT
+        with ESMTP id S1726465AbgFGNDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 08:59:41 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B509C08C5C2
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 05:59:41 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id y18so5574234plr.4
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 05:59:41 -0700 (PDT)
+        Sun, 7 Jun 2020 09:03:08 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03E4C08C5C2;
+        Sun,  7 Jun 2020 06:03:07 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id n21so780895ejg.3;
+        Sun, 07 Jun 2020 06:03:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=13Yqp6cwkFCZ9XR53+tBkYuICFMznkDxO3gGMIN0iL8=;
-        b=iksT6XN5g4yhaxFtLLKlddI7+CySOqTPEAHzw9yQGDPzU4V2r9rA5XS6xSv+2xgKl0
-         rqPbFedISCJmLiswEZdbLRJDRVEO5P8GhZqBqt+nxHT7/jpnzDmg7Ah3t3LG3Rh59XT+
-         xDlCvdLC54WKOt3K1cwvLAhqpSaazrqw+lquSK/P/dtwLYLybCmDhRnASk8v5SKXEFme
-         o2JQkxQxdLcUNrhBCVR8/3QoI8kgLhADVAyESFB+WodtcBAAk8IY/cvQEjxiuosdkpjB
-         jD0FgcQ4nYo2XeuaPEzZhOcIk0vnL0kDKMDnbbG8DwT6IdWBY0xaWeMq2aMyuQAHPDCi
-         z+Pw==
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Sz9gBVVeMmCOLNwfNEr8y0q2MmnBrNbnLVxb2Hv4PU0=;
+        b=ARi2s5xQ5Lsat1eRCYPXeFBJ06VCGZ6cXtLmcoYjte5ZtXv0dj3FczN5JWPBzVZt+p
+         sGAK5EbjlR8dodw9v0TMJi/JUvpCP8kgnbat4Maeu2QcTFZTv5NEox6crNHPQLgojHia
+         488Wz13L3SLutQ8wH9XUOFxaJ83r3KOBnTELPrEJPjLx/WCxT1TwWQ0q2lxGheQATHjM
+         oxncJ9/xtXHiNsbC8LpbeJ69NyCwzReao2RAYxzdvcJOZz7RwDyo+6UU7+KVrIR01CZH
+         9e1o+EIpiSlkR8/4K0meYbL1EDgebzIifl5KZtNqCWrbFqJkUWtuE/TfqSYRmaZWl9Ns
+         nSuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=13Yqp6cwkFCZ9XR53+tBkYuICFMznkDxO3gGMIN0iL8=;
-        b=l/Hs0ANqv1XUPC0hRuMbNy3++BzA7wswle7tGNrUVDcqzXrrVstpUSQJ0II/Gy9cj0
-         OENAwSo6drbcTPHtK29UqF2SczSCx/iHb/QOQkZH9KHRGPQfls7XYpKIuViHBYToehRT
-         Xv25njuQACegq33jrsWRKDd7Dg9g4SunYUkt81BvQMYPw+97UpFQUMu8n1F1tGrnWlnV
-         qAASpPTm8nAUCScRqOnDD7aPhiI9l3HqsGxuWD9FLQoEhL4yyr+Y+Q80E04HvQJxM036
-         b3oTxbexc938K6w8zZkE7hQYOW9wIhVo6vWrOgnEn/3h/RHP29FJxYi7UCtBYb4RW3D6
-         yN2Q==
-X-Gm-Message-State: AOAM532jx9qF+kZBbxtPo1knE8A76zRDsj/xHv21jBY9xePG7a6+Yiu2
-        9GXoUGxAWTz4o5UImaJNCt7+Tt5v
-X-Google-Smtp-Source: ABdhPJxFibV/dZxY6uOTSc5YZxGEi/sbNehCkRkwBNNnmxni3lI0utK+5zrEeYfqoZXWbj4MlibPNA==
-X-Received: by 2002:a17:90a:a897:: with SMTP id h23mr12310158pjq.90.1591534780441;
-        Sun, 07 Jun 2020 05:59:40 -0700 (PDT)
-Received: from localhost ([49.207.54.208])
-        by smtp.gmail.com with ESMTPSA id u35sm3656450pgm.48.2020.06.07.05.59.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 07 Jun 2020 05:59:39 -0700 (PDT)
-Date:   Sun, 7 Jun 2020 18:29:32 +0530
-From:   afzal mohammed <afzal.mohd.ma@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: ARM: vmsplit 4g/4g
-Message-ID: <20200607125932.GA4576@afzalpc>
-References: <20200511142113.GA31707@afzalpc>
- <CAK8P3a0=+aBJLTvHOskTv=tba_s5b5MzWrYG8mxH3iLNy4hfBw@mail.gmail.com>
- <20200512104758.GA12980@afzalpc>
- <CAK8P3a1DQWG1+ab2+vQ2XCAKYxPUjJk5g3W3094j-adDXSQfzQ@mail.gmail.com>
- <20200514111755.GA4997@afzalpc>
- <CAK8P3a2PNZY-9L9+SFDLtrp731ZGo6Nbs-7jY6E2PwWXa0kfKw@mail.gmail.com>
- <20200514133545.GA5020@afzalpc>
- <CAK8P3a1PVwkAi8ycUAB-7EMk4nQ_qOu0rC5vJAQk_q9j5xvOJw@mail.gmail.com>
- <20200516060624.GA6371@afzalpc>
- <CAK8P3a01FYoWY9sZKU1q=UQ3ut4srwXXUeGRzW6APi+GpoKo1w@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Sz9gBVVeMmCOLNwfNEr8y0q2MmnBrNbnLVxb2Hv4PU0=;
+        b=uTFnOeapvmaiBkriHxSHTgOLkY60I/wSds6MRVKV9v3oCmwgtcawk4/6dq0GDof8fp
+         +g7toG/vVBStWLhlkuCEuzDP0BB/DF01qujNP1QfvGx8HUtqvbRcv1t1Fd1y9bWbJha9
+         rBDmp7T3L3rogwZfJBSPbG6jDhGEwVJTCTWfipzHCt2/bxOWue4vMI98b09wa26gAgCc
+         jrsNNaVhtLOKR53+7jqvrgm8cDzWCqvq2PZ7Z9pY7xLNFCjeANpMTtIjRzSOieywLpxQ
+         l67RcDcdJecbEg/+o38Dv9NtvlNaoYl3S/ggKUzuO7LeoC+DGW2ZqMYkFCi+xrQ2YjZQ
+         FCNA==
+X-Gm-Message-State: AOAM533Yf1lasHdPt3cxCxDHCw1Vb4uE5dTnxzo9vwo06Inh+bAofRBw
+        7KA5fcinJcMtOEu17ahgue4=
+X-Google-Smtp-Source: ABdhPJwdy0HIwwfTUs9lnh2a8Ajb3MOjrSbkREmlPVg91dTI+wf9sPUDsdMtsr6lXoxqJmB7ppnVYA==
+X-Received: by 2002:a17:906:b55:: with SMTP id v21mr15930486ejg.298.1591534984853;
+        Sun, 07 Jun 2020 06:03:04 -0700 (PDT)
+Received: from localhost.localdomain (p200300f137189200428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3718:9200:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id ew9sm8588784ejb.121.2020.06.07.06.03.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Jun 2020 06:03:04 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     hauke@hauke-m.de, netdev@vger.kernel.org
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH net v1] net: dsa: lantiq_gswip: fix and improve the unsupported interface error
+Date:   Sun,  7 Jun 2020 15:02:58 +0200
+Message-Id: <20200607130258.3020392-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a01FYoWY9sZKU1q=UQ3ut4srwXXUeGRzW6APi+GpoKo1w@mail.gmail.com>
-User-Agent: Mutt/1.9.3 (2018-01-21)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+While trying to use the lantiq_gswip driver on one of my boards I made
+a mistake when specifying the phy-mode (because the out-of-tree driver
+wants phy-mode "gmii" or "mii" for the internal PHYs). In this case the
+following error is printed multiple times:
+  Unsupported interface: 3
 
-On Sat, May 16, 2020 at 09:35:57AM +0200, Arnd Bergmann wrote:
-> On Sat, May 16, 2020 at 8:06 AM afzal mohammed <afzal.mohd.ma@gmail.com> wrote:
+While it gives at least a hint at what may be wrong it is not very user
+friendly. Print the human readable phy-mode and also which port is
+configured incorrectly (this hardware supports ports 0..6) to improve
+the cases where someone made a mistake.
 
-> > Okay, so the conclusion i take is,
-> > 1. VMSPLIT 4G/4G have to live alongside highmem
-> > 2. For user space copy, do pinning followed by kmap
+Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+ drivers/net/dsa/lantiq_gswip.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> Right, though kmap_atomic() should be sufficient here
-> because it is always a short-lived mapping.
+diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+index cf6fa8fede33..521ebc072903 100644
+--- a/drivers/net/dsa/lantiq_gswip.c
++++ b/drivers/net/dsa/lantiq_gswip.c
+@@ -1452,7 +1452,8 @@ static void gswip_phylink_validate(struct dsa_switch *ds, int port,
+ 
+ unsupported:
+ 	bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
+-	dev_err(ds->dev, "Unsupported interface: %d\n", state->interface);
++	dev_err(ds->dev, "Unsupported interface '%s' for port %d\n",
++		phy_modes(state->interface), port);
+ 	return;
+ }
+ 
+-- 
+2.27.0
 
-get_user_pages_fast() followed by kmap_atomic() & then memcpy() seems
-to work in principle for user copy.
-
-Verified in a crude way by pointing TTBR0 to a location that has user
-pgd's cleared upon entry to copy_to_user() & restoring TTBR0 to
-earlier value after user copying was done and ensuring boot.
-
-Meanwhile more testing w/ kernel static mapping in vmalloc space
-revealed a major issue, w/ LPAE it was not booting. There were issues
-related to pmd handling, w/ !LPAE those issues were not present as pmd
-is in effect equivalent to pgd. The issues has been fixed, though now
-LPAE boots, but feel a kind of fragile, will probably have to revisit
-it.
-
-Regards
-afzal
