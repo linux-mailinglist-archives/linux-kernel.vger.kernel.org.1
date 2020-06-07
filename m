@@ -2,138 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C6D1F0C09
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 16:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196E21F0BF7
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 16:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgFGOpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 10:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46086 "EHLO
+        id S1726626AbgFGOmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 10:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726762AbgFGOp2 (ORCPT
+        with ESMTP id S1726566AbgFGOmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 10:45:28 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1543FC08C5C3;
-        Sun,  7 Jun 2020 07:45:28 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a9so13751195ljn.6;
-        Sun, 07 Jun 2020 07:45:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lfL/r1htdP9PiIBaZcQxVZ6voLKiwdEQ8IbCOeWza6A=;
-        b=F2mKAwuzjxAgedp/+YsmHWSd/69jzNNmCqJbuVTXk5OZFvOBQ2uxLjW/SdgzELRfaH
-         8onq9IUyf6hOkjsCWURnrDfC/ltXl8Qv3iwoa98AN3eSueCbgWOGhmA4X4p0tN478dXX
-         U+m8CwOZmLhPmjzwqA17KZn+h1whAaB+5zOYIV4UM7y9zLbbf45naMpbpIEkq5KD10xQ
-         0TcMRj88h/2OFul3mbMqqcRXrBR17F7YnqUGg17E79Q+y3rEjcP5vFyQPqvvwPFSVun/
-         3o1oexIGGbz0YElqBWWLvov52XuwsRFuEvKToCOAgSyufte5awTv2jkVTW19oUc9UMCQ
-         J0iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lfL/r1htdP9PiIBaZcQxVZ6voLKiwdEQ8IbCOeWza6A=;
-        b=b4EAnJgnYuta7t/Lfz6303qPuQX/orkfYHBNLa4OfOE770zQJHh5img4+TGENTARIQ
-         TnymuUmSvpdetfv8itFk+YWhD7KDHWLV/8qq5mPeWhAYdI9MRcl3+MZB548SN4WclcE2
-         /9xaKY85g4JnFLpNTzuGExxdWuUh/d8MAXaVx4chaqWWckrSfFn7BcoCQb4nj4AMXcsJ
-         5cxx53ejD8WdntN0k+f0QIOsuRxQQVnatzfpdZolZuhe1fhIBEJihIB4Werpy4F10vQL
-         jEKyiDKl6mG8QsoxNepWjSNNNR1dwDQ/QE/BfDJ+r8p6ZNrADHDQfUJMk7LrLGcaxjNF
-         80qw==
-X-Gm-Message-State: AOAM5322i3uXs6GYOnwPfKxXr55ND7oQq80JOWHZ+vs4w4cI6NQzC715
-        zTDNZBsW9+1yAXsxpvUIKzE=
-X-Google-Smtp-Source: ABdhPJw2hnkRZpEz3xvP42UA6MOStGsDyxqyIF/rxMxPa659kz9A/8+dqsknHvl1DT4uiVe2y6zzeA==
-X-Received: by 2002:a05:651c:233:: with SMTP id z19mr9481431ljn.428.1591541126619;
-        Sun, 07 Jun 2020 07:45:26 -0700 (PDT)
-Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id g24sm4059724lfh.90.2020.06.07.07.45.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jun 2020 07:45:26 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Heidelberg <david@ixit.cz>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Jonghwa Lee <jonghwa3.lee@samsung.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Vinay Simha BN <simhavcs@gmail.com>
-Subject: [PATCH v2 9/9] ARM: dts: qcom: apq8064-nexus7: Add SMB345 charger node
-Date:   Sun,  7 Jun 2020 17:41:13 +0300
-Message-Id: <20200607144113.10202-10-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200607144113.10202-1-digetx@gmail.com>
-References: <20200607144113.10202-1-digetx@gmail.com>
+        Sun, 7 Jun 2020 10:42:01 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D24C08C5C3;
+        Sun,  7 Jun 2020 07:42:01 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1jhwUi-004fd3-1z; Sun, 07 Jun 2020 14:41:52 +0000
+Date:   Sun, 7 Jun 2020 15:41:52 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     David Miller <davem@davemloft.net>
+Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [git pull] a couple of sparc ptrace fixes
+Message-ID: <20200607144152.GM23230@ZenIV.linux.org.uk>
+References: <20200531010414.GW23230@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200531010414.GW23230@ZenIV.linux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+On Sun, May 31, 2020 at 02:04:14AM +0100, Al Viro wrote:
+> The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
+> 
+>   Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
+> 
+> are available in the git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git for-davem
+> 
+> for you to fetch changes up to cf51e129b96847f969bfb8af1ee1516a01a70b39:
+> 
+>   sparc32: fix register window handling in genregs32_[gs]et() (2020-05-20 13:29:37 -0400)
+> 
+> ----------------------------------------------------------------
+> Al Viro (2):
+>       sparc64: fix misuses of access_process_vm() in genregs32_[sg]et()
+>       sparc32: fix register window handling in genregs32_[gs]et()
+> 
+>  arch/sparc/kernel/ptrace_32.c | 228 ++++++++++++++++++------------------------
+>  arch/sparc/kernel/ptrace_64.c |  17 +---
+>  2 files changed, 101 insertions(+), 144 deletions(-)
 
-Add SMB345 charger node to Nexus 7 2013 DTS.
-Proper charger configuration prevents battery from overcharging.
+Grrr...  
 
-Original author: Vinay Simha BN <simhavcs@gmail.com>
+sparc32 fix had breakage of its own; I've pushed a fix into #for-davem.  Fixup
+follows.  Could you pull it?
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- .../boot/dts/qcom-apq8064-asus-nexus7-flo.dts | 23 +++++++++++++++++++
- 1 file changed, 23 insertions(+)
+commit 9d964e1b82d8182184153b70174f445ea616f053
+Author: Al Viro <viro@zeniv.linux.org.uk>
+Date:   Sat Jun 6 23:44:24 2020 -0400
 
-diff --git a/arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dts b/arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dts
-index a701d4bac320..7a7784206dd8 100644
---- a/arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dts
-+++ b/arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dts
-@@ -3,6 +3,7 @@
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-+#include <dt-bindings/power/summit,smb347-charger.h>
- / {
- 	model = "Asus Nexus7(flo)";
- 	compatible = "asus,nexus7-flo", "qcom,apq8064";
-@@ -56,6 +57,11 @@ volume_down {
- 		};
- 	};
+    fix a braino in "sparc32: fix register window handling in genregs32_[gs]et()"
+    
+    lost npc in PTRACE_SETREGSET, breaking PTRACE_SETREGS as well
+    
+    Fixes: cf51e129b968 "sparc32: fix register window handling in genregs32_[gs]et()"
+    Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+
+diff --git a/arch/sparc/kernel/ptrace_32.c b/arch/sparc/kernel/ptrace_32.c
+index 60f7205ebe40..646dd58169ec 100644
+--- a/arch/sparc/kernel/ptrace_32.c
++++ b/arch/sparc/kernel/ptrace_32.c
+@@ -168,12 +168,17 @@ static int genregs32_set(struct task_struct *target,
+ 	if (ret || !count)
+ 		return ret;
+ 	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+-				 &regs->y,
++				 &regs->npc,
+ 				 34 * sizeof(u32), 35 * sizeof(u32));
+ 	if (ret || !count)
+ 		return ret;
++	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
++				 &regs->y,
++				 35 * sizeof(u32), 36 * sizeof(u32));
++	if (ret || !count)
++		return ret;
+ 	return user_regset_copyin_ignore(&pos, &count, &kbuf, &ubuf,
+-					 35 * sizeof(u32), 38 * sizeof(u32));
++					 36 * sizeof(u32), 38 * sizeof(u32));
+ }
  
-+	battery_cell: battery-cell {
-+		compatible = "simple-battery";
-+		constant-charge-current-max-microamp = <1800000>;
-+	};
-+
- 	soc {
- 		rpm@108000 {
- 			regulators {
-@@ -296,8 +302,25 @@ eeprom@52 {
- 				bq27541@55 {
- 					compatible = "ti,bq27541";
- 					reg = <0x55>;
-+					power-supplies = <&power_supply>;
-+					monitored-battery = <&battery_cell>;
- 				};
- 
-+				power_supply: charger@6a {
-+					compatible = "summit,smb345";
-+					reg = <0x6a>;
-+
-+					interrupt-parent = <&tlmm_pinmux>;
-+					interrupts = <23 IRQ_TYPE_EDGE_BOTH>;
-+
-+					summit,chip-temperature-threshold-celsius = <110>;
-+					summit,usb-current-limit-microamp = <500000>;
-+					summit,enable-charge-control = <SMB3XX_CHG_ENABLE_SW>;
-+					summit,enable-usb-charging;
-+					summit,enable-otg-charging;
-+
-+					monitored-battery = <&battery_cell>;
-+				};
- 			};
- 		};
- 
--- 
-2.26.0
-
+ static int fpregs32_get(struct task_struct *target,
