@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60D21F0D00
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 18:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28531F0D1E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 18:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgFGQaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 12:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
+        id S1728089AbgFGQbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 12:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726872AbgFGQat (ORCPT
+        with ESMTP id S1726764AbgFGQav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 12:30:49 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910ADC08C5C4
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 09:30:47 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id h188so8722510lfd.7
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 09:30:47 -0700 (PDT)
+        Sun, 7 Jun 2020 12:30:51 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC86AC08C5C6
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 09:30:49 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id e4so17531927ljn.4
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 09:30:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=xeJmQRJvkh8fRKHXAH/W536lRiSffIGCx+R099ed5PQ=;
-        b=cWHbKehKHIDF062O/92MuKOTWDReA/eMg+2MWo7iENt0FzGGlbcQHmhxWZorGSbmAM
-         uc7zGnxHEe1MUmNlY+bGjoJMYJ6MtMyIKDi42imxeId/vOh3PE1qgbEJVCUdbk/ZQlTq
-         BPB2NjB2AWvTlQ0eFu9CzcpTKCowVtbXC/UNqY8R/PzETERaT9zsc+VUAXXaF6zoHUqB
-         G21musHG+MCTXQW9HLMc5rOj4gujqvo0V1Xnga40s8Rjx/sLUD8Jf0a+9VblX/NHDMbP
-         +CfTEdGPe0aKpfM3Zbl3qOk3Tk5BdJLCEW8d4W5NdkVAN/hkC2MLSstUvfCCMFBYtKs9
-         ehMg==
+        bh=ythenNMgCasy/26fjGx9+1WbKj8OM9GaH/NHc6AXhOM=;
+        b=aD4r7KAYyBWRL+r3cCNFwandPIp1eaBY0+mJVtAAbLtlNeZCVeWmO4LdP98zGXkx2f
+         mWWk3CuksVHnax1r1AAVz5876ez1ow5sbWhBGtJY0DmabUBtHAGnvlt1bxUVFJwk9OLz
+         7X0SneyAfRhAjPkbAtwQ5OMzdMWIBSmbJvkSdy+lvAsyfSJErqbJmvJThSZjFU1KJrCe
+         cpuYcZOGcVK3QquNEw3olj2fEPbf6FCVU/qXa6LhWsako84djR1C25QZQWcwdUQSgW8x
+         SvqFhDiRFY/zVHG2Bw1dgI24DdE66sH6Hwl+PPj1Wzd/7mBFNJSFnOWgN0q14Jl7jDgy
+         ft4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=xeJmQRJvkh8fRKHXAH/W536lRiSffIGCx+R099ed5PQ=;
-        b=um0UsFtIV1k4yVpzlI63Xm1dumafQ0na4DxDeLSiFhrbKYOvM6Qhs2UjZrvlT/bC+h
-         qjMNgY5iwIP8BUtWHMEhdSLPCJKRwEdSVpMOo03X7mLVJk5XNaaUiuy5VlyWChoBSmfa
-         ERaOvWvPCdesRbP9QzVxHz6BZ5wS5zGRUaQGgC+J/WMplW2Ddlea5zLRBSue/WdQzi8r
-         f2Af8iRy5zuOfppOWCXv9WY92nG3ulMmYtyKah4Oll1aNZ2W1aY0SxLWGerJIM1NYrDp
-         9tJAnH/4cg/n8Nbb//lTRY0E3D/5Wr1/khg2K+ZvFwe+lwVTTDGxxDrSGFWgQdbRQssO
-         2dig==
-X-Gm-Message-State: AOAM5334/3/SXQ07ELLovKhodPFIgnoHuFxTL30xOjqMA0UjD4ztnmJe
-        qguHkmRuZ7gyQb+wBZdW6fLgjQ==
-X-Google-Smtp-Source: ABdhPJxth+i63WhQaXwjfVhDSLOI1ZX4ELYq67YtASPe86NC6Fn9Cnu2AFDuq7cDjzyYCb5ga9xmZw==
-X-Received: by 2002:ac2:4d25:: with SMTP id h5mr10414421lfk.87.1591547446112;
-        Sun, 07 Jun 2020 09:30:46 -0700 (PDT)
+        bh=ythenNMgCasy/26fjGx9+1WbKj8OM9GaH/NHc6AXhOM=;
+        b=nc/Yvr1HzmPaSabU+7THBcVpxqSECaRH+Hi/AEQZOZ3pQ3/Dn38Pbmclg4RN11JN6/
+         XACnlKCJ0oyx7qNJtYJcaLwyvfZz9Zu7ZUoJhXW6zqru3iSuD5l9KtBrmoja1dNyLGUu
+         ICLTPmljoTGIF94z6gLhda9wOpcJEnUVI09kBPaR3G6EpB1SsBMTbPNxP8sOrnTQNiZt
+         kkqimSiUCibtn+nJsMQrfmHLkE5wajkRSraGWyGO3toDaffUlOSiDdzJ5Iy/47CI6xwi
+         vIoDByDejAalJXnzZX0REi53L5FivUF1j1mLpmVwzYS2RHvfoAyqL5kv6zn7uSlQ/Bwq
+         3fcg==
+X-Gm-Message-State: AOAM532yJEoVDkpg3vjjY0Z2SM4MQvkaMl0xerKFcOC+MLsyivo4wLnx
+        gt6Yv2hVrZN40vrG3gJ2eSecVA==
+X-Google-Smtp-Source: ABdhPJztgQw/a4CxBiVGeklrqq34QTqDSxO6rZE1olhTeauKdcDOH+dSCnusoO2D30v2fZFAEdjbEQ==
+X-Received: by 2002:a05:651c:1103:: with SMTP id d3mr9651976ljo.110.1591547448299;
+        Sun, 07 Jun 2020 09:30:48 -0700 (PDT)
 Received: from localhost.localdomain (37-144-159-139.broadband.corbina.ru. [37.144.159.139])
-        by smtp.googlemail.com with ESMTPSA id l7sm1726511ljj.55.2020.06.07.09.30.44
+        by smtp.googlemail.com with ESMTPSA id l7sm1726511ljj.55.2020.06.07.09.30.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jun 2020 09:30:45 -0700 (PDT)
+        Sun, 07 Jun 2020 09:30:47 -0700 (PDT)
 From:   Andrey Konovalov <andrey.konovalov@linaro.org>
 To:     mchehab@kernel.org, sakari.ailus@iki.fi,
         manivannan.sadhasivam@linaro.org
@@ -54,9 +54,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         c.barrett@framos.com, a.brela@framos.com, peter.griffin@linaro.org,
         Andrey Konovalov <andrey.konovalov@linaro.org>
-Subject: [PATCH v4 01/10] media: i2c: imx290: set the format before VIDIOC_SUBDEV_G_FMT is called
-Date:   Sun,  7 Jun 2020 19:30:16 +0300
-Message-Id: <20200607163025.8409-2-andrey.konovalov@linaro.org>
+Subject: [PATCH v4 02/10] media: i2c: imx290: fix the order of the args in SET_RUNTIME_PM_OPS()
+Date:   Sun,  7 Jun 2020 19:30:17 +0300
+Message-Id: <20200607163025.8409-3-andrey.konovalov@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200607163025.8409-1-andrey.konovalov@linaro.org>
 References: <20200607163025.8409-1-andrey.konovalov@linaro.org>
@@ -65,48 +65,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the current driver 'media-ctl -p' issued right after the imx290 driver
-is loaded prints:
-pad0: Source
-             [fmt:unknown/0x0]
-
-The format value of zero is due to the current_format field of the imx290
-struct not being initialized yet.
-
-As imx290_entity_init_cfg() calls imx290_set_fmt(), the current_mode field
-is also initialized, so the line which set current_mode to a default value
-in driver's probe() function is no longer needed.
+This macro is defined as SET_RUNTIME_PM_OPS(suspend_fn, resume_fn, idle_fn),
+so imx290_power_off must be the 1st arg, and imx290_power_on the 2nd.
 
 Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/media/i2c/imx290.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/media/i2c/imx290.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/media/i2c/imx290.c b/drivers/media/i2c/imx290.c
-index f7678e5a5d87..2d8c38ffe2f0 100644
+index 2d8c38ffe2f0..d0322f9a8856 100644
 --- a/drivers/media/i2c/imx290.c
 +++ b/drivers/media/i2c/imx290.c
-@@ -722,9 +722,6 @@ static int imx290_probe(struct i2c_client *client)
- 		goto free_err;
- 	}
+@@ -648,7 +648,7 @@ static int imx290_power_off(struct device *dev)
+ }
  
--	/* Set default mode to max resolution */
--	imx290->current_mode = &imx290_modes[0];
--
- 	/* get system clock (xclk) */
- 	imx290->xclk = devm_clk_get(dev, "xclk");
- 	if (IS_ERR(imx290->xclk)) {
-@@ -809,6 +806,9 @@ static int imx290_probe(struct i2c_client *client)
- 		goto free_ctrl;
- 	}
+ static const struct dev_pm_ops imx290_pm_ops = {
+-	SET_RUNTIME_PM_OPS(imx290_power_on, imx290_power_off, NULL)
++	SET_RUNTIME_PM_OPS(imx290_power_off, imx290_power_on, NULL)
+ };
  
-+	/* Initialize the frame format (this also sets imx290->current_mode) */
-+	imx290_entity_init_cfg(&imx290->sd, NULL);
-+
- 	ret = v4l2_async_register_subdev(&imx290->sd);
- 	if (ret < 0) {
- 		dev_err(dev, "Could not register v4l2 device\n");
+ static const struct v4l2_subdev_video_ops imx290_video_ops = {
 -- 
 2.17.1
 
