@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28531F0D1E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 18:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE8E1F0D02
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 18:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728089AbgFGQbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 12:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
+        id S1727029AbgFGQa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 12:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726764AbgFGQav (ORCPT
+        with ESMTP id S1726982AbgFGQaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 12:30:51 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC86AC08C5C6
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 09:30:49 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id e4so17531927ljn.4
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 09:30:49 -0700 (PDT)
+        Sun, 7 Jun 2020 12:30:52 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BBCC08C5C3
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 09:30:52 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id a9so13935846ljn.6
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 09:30:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ythenNMgCasy/26fjGx9+1WbKj8OM9GaH/NHc6AXhOM=;
-        b=aD4r7KAYyBWRL+r3cCNFwandPIp1eaBY0+mJVtAAbLtlNeZCVeWmO4LdP98zGXkx2f
-         mWWk3CuksVHnax1r1AAVz5876ez1ow5sbWhBGtJY0DmabUBtHAGnvlt1bxUVFJwk9OLz
-         7X0SneyAfRhAjPkbAtwQ5OMzdMWIBSmbJvkSdy+lvAsyfSJErqbJmvJThSZjFU1KJrCe
-         cpuYcZOGcVK3QquNEw3olj2fEPbf6FCVU/qXa6LhWsako84djR1C25QZQWcwdUQSgW8x
-         SvqFhDiRFY/zVHG2Bw1dgI24DdE66sH6Hwl+PPj1Wzd/7mBFNJSFnOWgN0q14Jl7jDgy
-         ft4A==
+        bh=cA0rxP4uX8r0J5dTgAkrFDikDC5/+iYQEYBegCVDUX8=;
+        b=ASfk4mbizWj5L7lpupyxEymymo/ZPFF5KNCbDMYF6Et1/uJaP800Mfx0DoYPGapzb3
+         hv+HiIqeR8Jmk4vCo83x/+lGNoqGIhXXzuS7cqSUerNNvoyN+x+fG13WxaDOjJb1P7zY
+         Hq00PryzQhJZ5KYXKmAzcJzfwntzokREZ+XswmdY6VcJHEszaNWj2fnnA1Pab+RGwv8b
+         hQxJ7lsbe7/eI/X8X/Vo44h3opbHOiIy5xfS29Vu0NQ7uivA+7aD2UN+EMTD/qlmCC+U
+         ml+/P1OFSTs+7tzsHv2dzm7qCRG1MvFt5+YpubFXKPhydNo/YV+sVDIvl7zNr8I2E3iJ
+         M3vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=ythenNMgCasy/26fjGx9+1WbKj8OM9GaH/NHc6AXhOM=;
-        b=nc/Yvr1HzmPaSabU+7THBcVpxqSECaRH+Hi/AEQZOZ3pQ3/Dn38Pbmclg4RN11JN6/
-         XACnlKCJ0oyx7qNJtYJcaLwyvfZz9Zu7ZUoJhXW6zqru3iSuD5l9KtBrmoja1dNyLGUu
-         ICLTPmljoTGIF94z6gLhda9wOpcJEnUVI09kBPaR3G6EpB1SsBMTbPNxP8sOrnTQNiZt
-         kkqimSiUCibtn+nJsMQrfmHLkE5wajkRSraGWyGO3toDaffUlOSiDdzJ5Iy/47CI6xwi
-         vIoDByDejAalJXnzZX0REi53L5FivUF1j1mLpmVwzYS2RHvfoAyqL5kv6zn7uSlQ/Bwq
-         3fcg==
-X-Gm-Message-State: AOAM532yJEoVDkpg3vjjY0Z2SM4MQvkaMl0xerKFcOC+MLsyivo4wLnx
-        gt6Yv2hVrZN40vrG3gJ2eSecVA==
-X-Google-Smtp-Source: ABdhPJztgQw/a4CxBiVGeklrqq34QTqDSxO6rZE1olhTeauKdcDOH+dSCnusoO2D30v2fZFAEdjbEQ==
-X-Received: by 2002:a05:651c:1103:: with SMTP id d3mr9651976ljo.110.1591547448299;
-        Sun, 07 Jun 2020 09:30:48 -0700 (PDT)
+        bh=cA0rxP4uX8r0J5dTgAkrFDikDC5/+iYQEYBegCVDUX8=;
+        b=dBUm70uVd7VlB5LikSBXDm+rAQqhtEvtFB6VuNSCGpbhyNWlXwEHGqcVlxZ6LAQbtj
+         lMmHgKxtsGYmRNn+iRXP595lUP6gDUX1ogEAqq2b1O4EuxmbUgHcvI+lVutiTY9kRqZT
+         /WHAC4xU5h30dMPQG5boBQkq3VMWQWIIgqn82Pvwel7LmcCU7iv9r6MQCzC6kTS56RkG
+         jOeYRbRQHKnLL14Jd7sjkcBFGsy99zOG0BneuDofpkE0Xrjr/MkN2XJGa1fmcHCqaYjs
+         yQmnLb3wM2mXydoevB6nET7G+ZFf1Jml9tU/PU+QH4juajyDylA/z3gbfEMC7BcEAuSD
+         B7pw==
+X-Gm-Message-State: AOAM531EsnjI5O9vBnkMPYGjSfSSjF7e/5PAK/8pIGh75c7lOEw9Nvv6
+        2QpH1dG+TQ/RX4wstm9b94Rsrw==
+X-Google-Smtp-Source: ABdhPJyjLyOxmRLxqc1IiL0wIQLnC2WD0apwurqLMvIwHjY92oYJs7K6WG3OlmNqcFSoR6JrCrCN7w==
+X-Received: by 2002:a2e:1412:: with SMTP id u18mr9629998ljd.309.1591547450613;
+        Sun, 07 Jun 2020 09:30:50 -0700 (PDT)
 Received: from localhost.localdomain (37-144-159-139.broadband.corbina.ru. [37.144.159.139])
-        by smtp.googlemail.com with ESMTPSA id l7sm1726511ljj.55.2020.06.07.09.30.47
+        by smtp.googlemail.com with ESMTPSA id l7sm1726511ljj.55.2020.06.07.09.30.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jun 2020 09:30:47 -0700 (PDT)
+        Sun, 07 Jun 2020 09:30:50 -0700 (PDT)
 From:   Andrey Konovalov <andrey.konovalov@linaro.org>
 To:     mchehab@kernel.org, sakari.ailus@iki.fi,
         manivannan.sadhasivam@linaro.org
@@ -54,9 +54,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         c.barrett@framos.com, a.brela@framos.com, peter.griffin@linaro.org,
         Andrey Konovalov <andrey.konovalov@linaro.org>
-Subject: [PATCH v4 02/10] media: i2c: imx290: fix the order of the args in SET_RUNTIME_PM_OPS()
-Date:   Sun,  7 Jun 2020 19:30:17 +0300
-Message-Id: <20200607163025.8409-3-andrey.konovalov@linaro.org>
+Subject: [PATCH v4 03/10] media: i2c: imx290: fix reset GPIO pin handling
+Date:   Sun,  7 Jun 2020 19:30:18 +0300
+Message-Id: <20200607163025.8409-4-andrey.konovalov@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200607163025.8409-1-andrey.konovalov@linaro.org>
 References: <20200607163025.8409-1-andrey.konovalov@linaro.org>
@@ -65,28 +65,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This macro is defined as SET_RUNTIME_PM_OPS(suspend_fn, resume_fn, idle_fn),
-so imx290_power_off must be the 1st arg, and imx290_power_on the 2nd.
+According to https://www.kernel.org/doc/Documentation/gpio/consumer.txt,
+
+- all of the gpiod_set_value_xxx() functions operate with the *logical* value.
+So in imx290_power_on() the reset signal should be cleared/de-asserted with
+gpiod_set_value_cansleep(imx290->rst_gpio, 0), and in imx290_power_off() the
+value of 1 must be used to apply/assert the reset to the sensor. In the device
+tree the reset pin is described as GPIO_ACTIVE_LOW, and gpiod_set_value_xxx()
+functions take this into account,
+
+- when devm_gpiod_get_optional() is called with GPIOD_ASIS, the GPIO is not
+initialized, and the direction must be set later; using a GPIO
+without setting its direction first is illegal and will result in undefined
+behavior. Fix this by using GPIOD_OUT_HIGH instead of GPIOD_ASIS (this asserts
+the reset signal to the sensor initially).
 
 Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/media/i2c/imx290.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/i2c/imx290.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/i2c/imx290.c b/drivers/media/i2c/imx290.c
-index 2d8c38ffe2f0..d0322f9a8856 100644
+index d0322f9a8856..7b1de1f0c8b7 100644
 --- a/drivers/media/i2c/imx290.c
 +++ b/drivers/media/i2c/imx290.c
-@@ -648,7 +648,7 @@ static int imx290_power_off(struct device *dev)
- }
+@@ -628,7 +628,7 @@ static int imx290_power_on(struct device *dev)
+ 	}
  
- static const struct dev_pm_ops imx290_pm_ops = {
--	SET_RUNTIME_PM_OPS(imx290_power_on, imx290_power_off, NULL)
-+	SET_RUNTIME_PM_OPS(imx290_power_off, imx290_power_on, NULL)
- };
+ 	usleep_range(1, 2);
+-	gpiod_set_value_cansleep(imx290->rst_gpio, 1);
++	gpiod_set_value_cansleep(imx290->rst_gpio, 0);
+ 	usleep_range(30000, 31000);
  
- static const struct v4l2_subdev_video_ops imx290_video_ops = {
+ 	return 0;
+@@ -641,7 +641,7 @@ static int imx290_power_off(struct device *dev)
+ 	struct imx290 *imx290 = to_imx290(sd);
+ 
+ 	clk_disable_unprepare(imx290->xclk);
+-	gpiod_set_value_cansleep(imx290->rst_gpio, 0);
++	gpiod_set_value_cansleep(imx290->rst_gpio, 1);
+ 	regulator_bulk_disable(IMX290_NUM_SUPPLIES, imx290->supplies);
+ 
+ 	return 0;
+@@ -757,7 +757,8 @@ static int imx290_probe(struct i2c_client *client)
+ 		goto free_err;
+ 	}
+ 
+-	imx290->rst_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_ASIS);
++	imx290->rst_gpio = devm_gpiod_get_optional(dev, "reset",
++						   GPIOD_OUT_HIGH);
+ 	if (IS_ERR(imx290->rst_gpio)) {
+ 		dev_err(dev, "Cannot get reset gpio\n");
+ 		ret = PTR_ERR(imx290->rst_gpio);
 -- 
 2.17.1
 
