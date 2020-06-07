@@ -2,199 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AF01F0BC4
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 16:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FEF1F0BE1
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 16:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgFGOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 10:12:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47387 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726996AbgFGOL6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 10:11:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591539116;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BdT/NVEYKIP5krUx3MbnbeOT2Gkkz8v5cdPwDSMfuzw=;
-        b=EQDwV0mobcDsgEqgAWZITbPyPU1dwr3Hm6EmRdsUqh/DydzMCOq8jh0SGl5zHdOD33YAM1
-        IXjmQ8FZGEL0XtwXuMUkBOMYiUhZ6PLc9z/fWh1n6V37cRa725gH00Ubm8vz5x5RWETlt0
-        t6cdfCTDcGnccd5zYCCGp1fNMYzKJdo=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-_KM3DwXAPt-AnRVW4oPq8w-1; Sun, 07 Jun 2020 10:11:54 -0400
-X-MC-Unique: _KM3DwXAPt-AnRVW4oPq8w-1
-Received: by mail-wr1-f71.google.com with SMTP id e1so6071676wrm.3
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 07:11:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BdT/NVEYKIP5krUx3MbnbeOT2Gkkz8v5cdPwDSMfuzw=;
-        b=qcVQ3bo/FvRvIFhBm4TYcW5okv8ZVyESPdZ5WTyCo6e7IS82dB6xfTDoGp0Q14oZNz
-         c0SOB0FRnqScxdfARbPhSeKLjDkI8xmVB4pymfn48O5tpL+WGISIM5HdVhZ4dCoftPk6
-         FgbecRsUcmIYc7zDj6bailHJi1HFlaITp5PXfDJ326Ul6AwOVbxoCLUMOKVRIH8lZGt7
-         195KuFhSCSdNKWLkLxQrA/w0/y+EWGshi3MUOx6DwKObSv/wZSW7UJgd0YCgXMGkFJoq
-         KPWmej1kh7+4yVLIFDBFTuQMDsZwlZ4Zy27C4c0UXNKTXoJVlE+v0h0wTadYLF6vP7iz
-         oQlA==
-X-Gm-Message-State: AOAM530K8C+TqQKKYRvWL7g9M+fnk/pw7s3pmGTr6bZmTyE98/AiB6rg
-        QDw5S/xfz0d0D2vOMgy7D5VCVeeggszszDttDo19/CopCEffjIewOjhfwl9k5Mu7R5LLafn5mWl
-        mAGA/FX7darcoZMto+Bll6Vs1
-X-Received: by 2002:adf:aa42:: with SMTP id q2mr20101723wrd.360.1591539113490;
-        Sun, 07 Jun 2020 07:11:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxEuiY3dY5m3J+lc+g7iAjevWjCfgDBijLQ0kLevfltCIsWHMIGkkxV9D36m8hDgKdaJ2qeiA==
-X-Received: by 2002:adf:aa42:: with SMTP id q2mr20101707wrd.360.1591539113282;
-        Sun, 07 Jun 2020 07:11:53 -0700 (PDT)
-Received: from redhat.com (bzq-82-81-31-23.red.bezeqint.net. [82.81.31.23])
-        by smtp.gmail.com with ESMTPSA id c70sm8895722wme.32.2020.06.07.07.11.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jun 2020 07:11:52 -0700 (PDT)
-Date:   Sun, 7 Jun 2020 10:11:51 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        eperezma@redhat.com
-Subject: [PATCH RFC v5 13/13] vhost: drop head based APIs
-Message-ID: <20200607141057.704085-14-mst@redhat.com>
-References: <20200607141057.704085-1-mst@redhat.com>
+        id S1726626AbgFGOX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 10:23:58 -0400
+Received: from ozlabs.org ([203.11.71.1]:57835 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726169AbgFGOX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 10:23:57 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49fzCC53lKz9sRR;
+        Mon,  8 Jun 2020 00:23:51 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1591539833;
+        bh=sign7HCXhQks4EnxUBru8K2wgTWjPPDKEPvMkvEAujU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TaqYME+Lebx0Y6c8f9AWZFLpmXTHyuBY7newi4MN2a6czctKH3yRFAoeyajIOaV7Q
+         J6cEuJ8KJ9/+JEtz6FRADwcVZXdyPLRLRTi3uHzhWF1FE3/gkEb35hxGnm1wfj0WFI
+         A7F6jbXdP0y/MswHkPY1GNQJiKtYo00+at0/YrXvfygSpmxzYgh1D4dOLZuK521uOJ
+         JmGI4mJINRxftyg7g1ULzPuB6IsWbEIVcjgPywuULn2gZRaZPXJBEeGzSYJ3YPP3VH
+         q5XrrkOwiu155TLiJ/VvUWrOQpiwsesz3AfwuRKdyO19tuT8tJtSOFm/5sSJbqe4z5
+         yeYo4FrC5KaAA==
+Date:   Mon, 8 Jun 2020 00:23:49 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     syzbot <syzbot+9ce464e21fc2ab95dbf3@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Subject: Re: linux-next test error: BUG: using smp_processor_id() in
+ preemptible [ADDR] code: kworker/u4:LINE/41
+Message-ID: <20200608002349.085eac93@canb.auug.org.au>
+In-Reply-To: <00000000000082afe105a77c949d@google.com>
+References: <00000000000082afe105a77c949d@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200607141057.704085-1-mst@redhat.com>
-X-Mailer: git-send-email 2.24.1.751.gd10ce2899c
-X-Mutt-Fcc: =sent
+Content-Type: multipart/signed; boundary="Sig_/cLVs8J9Z/CEtitwu6A8qcPX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Everyone's using buf APIs, no need for head based ones anymore.
+--Sig_/cLVs8J9Z/CEtitwu6A8qcPX
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/vhost/vhost.c | 36 ++++++++----------------------------
- drivers/vhost/vhost.h | 12 ------------
- 2 files changed, 8 insertions(+), 40 deletions(-)
+Hi syzbot,
 
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 72ee55c810c4..e6931b760b61 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -2299,12 +2299,12 @@ static int fetch_buf(struct vhost_virtqueue *vq)
- 	return 1;
- }
- 
--/* Reverse the effect of vhost_get_vq_desc. Useful for error handling. */
-+/* Revert the effect of fetch_buf. Useful for error handling. */
-+static
- void vhost_discard_vq_desc(struct vhost_virtqueue *vq, int n)
- {
- 	vq->last_avail_idx -= n;
- }
--EXPORT_SYMBOL_GPL(vhost_discard_vq_desc);
- 
- /* This function returns a value > 0 if a descriptor was found, or 0 if none were found.
-  * A negative code is returned on error. */
-@@ -2464,8 +2464,7 @@ static int __vhost_add_used_n(struct vhost_virtqueue *vq,
- 	return 0;
- }
- 
--/* After we've used one of their buffers, we tell them about it.  We'll then
-- * want to notify the guest, using eventfd. */
-+static
- int vhost_add_used_n(struct vhost_virtqueue *vq, struct vring_used_elem *heads,
- 		     unsigned count)
- {
-@@ -2499,10 +2498,8 @@ int vhost_add_used_n(struct vhost_virtqueue *vq, struct vring_used_elem *heads,
- 	}
- 	return r;
- }
--EXPORT_SYMBOL_GPL(vhost_add_used_n);
- 
--/* After we've used one of their buffers, we tell them about it.  We'll then
-- * want to notify the guest, using eventfd. */
-+static
- int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int len)
- {
- 	struct vring_used_elem heads = {
-@@ -2512,14 +2509,17 @@ int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int len)
- 
- 	return vhost_add_used_n(vq, &heads, 1);
- }
--EXPORT_SYMBOL_GPL(vhost_add_used);
- 
-+/* After we've used one of their buffers, we tell them about it.  We'll then
-+ * want to notify the guest, using vhost_signal. */
- int vhost_put_used_buf(struct vhost_virtqueue *vq, struct vhost_buf *buf)
- {
- 	return vhost_add_used(vq, buf->id, buf->in_len);
- }
- EXPORT_SYMBOL_GPL(vhost_put_used_buf);
- 
-+/* After we've used one of their buffers, we tell them about it.  We'll then
-+ * want to notify the guest, using vhost_signal. */
- int vhost_put_used_n_bufs(struct vhost_virtqueue *vq,
- 			  struct vhost_buf *bufs, unsigned count)
- {
-@@ -2580,26 +2580,6 @@ void vhost_signal(struct vhost_dev *dev, struct vhost_virtqueue *vq)
- }
- EXPORT_SYMBOL_GPL(vhost_signal);
- 
--/* And here's the combo meal deal.  Supersize me! */
--void vhost_add_used_and_signal(struct vhost_dev *dev,
--			       struct vhost_virtqueue *vq,
--			       unsigned int head, int len)
--{
--	vhost_add_used(vq, head, len);
--	vhost_signal(dev, vq);
--}
--EXPORT_SYMBOL_GPL(vhost_add_used_and_signal);
--
--/* multi-buffer version of vhost_add_used_and_signal */
--void vhost_add_used_and_signal_n(struct vhost_dev *dev,
--				 struct vhost_virtqueue *vq,
--				 struct vring_used_elem *heads, unsigned count)
--{
--	vhost_add_used_n(vq, heads, count);
--	vhost_signal(dev, vq);
--}
--EXPORT_SYMBOL_GPL(vhost_add_used_and_signal_n);
--
- /* return true if we're sure that avaiable ring is empty */
- bool vhost_vq_avail_empty(struct vhost_dev *dev, struct vhost_virtqueue *vq)
- {
-diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
-index 28eea0155efb..264a2a2fae97 100644
---- a/drivers/vhost/vhost.h
-+++ b/drivers/vhost/vhost.h
-@@ -197,11 +197,6 @@ long vhost_vring_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *arg
- bool vhost_vq_access_ok(struct vhost_virtqueue *vq);
- bool vhost_log_access_ok(struct vhost_dev *);
- 
--int vhost_get_vq_desc(struct vhost_virtqueue *,
--		      struct iovec iov[], unsigned int iov_count,
--		      unsigned int *out_num, unsigned int *in_num,
--		      struct vhost_log *log, unsigned int *log_num);
--void vhost_discard_vq_desc(struct vhost_virtqueue *, int n);
- int vhost_get_avail_buf(struct vhost_virtqueue *, struct vhost_buf *buf,
- 			struct iovec iov[], unsigned int iov_count,
- 			unsigned int *out_num, unsigned int *in_num,
-@@ -209,13 +204,6 @@ int vhost_get_avail_buf(struct vhost_virtqueue *, struct vhost_buf *buf,
- void vhost_discard_avail_bufs(struct vhost_virtqueue *,
- 			      struct vhost_buf *, unsigned count);
- int vhost_vq_init_access(struct vhost_virtqueue *);
--int vhost_add_used(struct vhost_virtqueue *, unsigned int head, int len);
--int vhost_add_used_n(struct vhost_virtqueue *, struct vring_used_elem *heads,
--		     unsigned count);
--void vhost_add_used_and_signal(struct vhost_dev *, struct vhost_virtqueue *,
--			       unsigned int id, int len);
--void vhost_add_used_and_signal_n(struct vhost_dev *, struct vhost_virtqueue *,
--			       struct vring_used_elem *heads, unsigned count);
- int vhost_put_used_buf(struct vhost_virtqueue *, struct vhost_buf *buf);
- int vhost_put_used_n_bufs(struct vhost_virtqueue *,
- 			  struct vhost_buf *bufs, unsigned count);
--- 
-MST
+On Sun, 07 Jun 2020 04:13:12 -0700 syzbot <syzbot+9ce464e21fc2ab95dbf3@syzk=
+aller.appspotmail.com> wrote:
+>
+> Hello,
+>=20
+> syzbot found the following crash on:
+>=20
+> HEAD commit:    48f99181 Add linux-next specific files for 20200603
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D16a4c051100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D365f706273eaf=
+502
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D9ce464e21fc2ab9=
+5dbf3
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+>=20
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+9ce464e21fc2ab95dbf3@syzkaller.appspotmail.com
+>=20
+> BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u4:=
+2/41
+> caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+> CPU: 0 PID: 41 Comm: kworker/u4:2 Not tainted 5.7.0-next-20200603-syzkall=
+er #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 01/01/2011
+> Workqueue: writeback wb_workfn (flush-8:0)
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
+>  ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+>  ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
+>  ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+>  mpage_map_one_extent fs/ext4/inode.c:2377 [inline]
+>  mpage_map_and_submit_extent fs/ext4/inode.c:2430 [inline]
+>  ext4_writepages+0x1ab5/0x3400 fs/ext4/inode.c:2782
+>  do_writepages+0xfa/0x2a0 mm/page-writeback.c:2354
+>  __writeback_single_inode+0x12a/0x13d0 fs/fs-writeback.c:1452
+>  writeback_sb_inodes+0x515/0xdc0 fs/fs-writeback.c:1716
+>  __writeback_inodes_wb+0xc3/0x250 fs/fs-writeback.c:1785
+>  wb_writeback+0x8db/0xd50 fs/fs-writeback.c:1894
+>  wb_check_old_data_flush fs/fs-writeback.c:1996 [inline]
+>  wb_do_writeback fs/fs-writeback.c:2049 [inline]
+>  wb_workfn+0xab3/0x1090 fs/fs-writeback.c:2078
+>  process_one_work+0x965/0x1690 kernel/workqueue.c:2269
+>  worker_thread+0x96/0xe10 kernel/workqueue.c:2415
+>  kthread+0x3b5/0x4a0 kernel/kthread.c:291
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+> BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u4:=
+2/41
+> caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+> CPU: 0 PID: 41 Comm: kworker/u4:2 Not tainted 5.7.0-next-20200603-syzkall=
+er #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 01/01/2011
+> Workqueue: writeback wb_workfn (flush-8:0)
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
+>  ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+>  ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
+>  ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+>  mpage_map_one_extent fs/ext4/inode.c:2377 [inline]
+>  mpage_map_and_submit_extent fs/ext4/inode.c:2430 [inline]
+>  ext4_writepages+0x1ab5/0x3400 fs/ext4/inode.c:2782
+>  do_writepages+0xfa/0x2a0 mm/page-writeback.c:2354
+>  __writeback_single_inode+0x12a/0x13d0 fs/fs-writeback.c:1452
+>  writeback_sb_inodes+0x515/0xdc0 fs/fs-writeback.c:1716
+>  __writeback_inodes_wb+0xc3/0x250 fs/fs-writeback.c:1785
+>  wb_writeback+0x8db/0xd50 fs/fs-writeback.c:1894
+>  wb_check_old_data_flush fs/fs-writeback.c:1996 [inline]
+>  wb_do_writeback fs/fs-writeback.c:2049 [inline]
+>  wb_workfn+0xab3/0x1090 fs/fs-writeback.c:2078
+>  process_one_work+0x965/0x1690 kernel/workqueue.c:2269
+>  worker_thread+0x96/0xe10 kernel/workqueue.c:2415
+>  kthread+0x3b5/0x4a0 kernel/kthread.c:291
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+> BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u4:=
+2/41
+> caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+> CPU: 0 PID: 41 Comm: kworker/u4:2 Not tainted 5.7.0-next-20200603-syzkall=
+er #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 01/01/2011
+> Workqueue: writeback wb_workfn (flush-8:0)
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
+>  ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+>  ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
+>  ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+>  mpage_map_one_extent fs/ext4/inode.c:2377 [inline]
+>  mpage_map_and_submit_extent fs/ext4/inode.c:2430 [inline]
+>  ext4_writepages+0x1ab5/0x3400 fs/ext4/inode.c:2782
+>  do_writepages+0xfa/0x2a0 mm/page-writeback.c:2354
+>  __writeback_single_inode+0x12a/0x13d0 fs/fs-writeback.c:1452
+>  writeback_sb_inodes+0x515/0xdc0 fs/fs-writeback.c:1716
+>  __writeback_inodes_wb+0xc3/0x250 fs/fs-writeback.c:1785
+>  wb_writeback+0x8db/0xd50 fs/fs-writeback.c:1894
+>  wb_check_old_data_flush fs/fs-writeback.c:1996 [inline]
+>  wb_do_writeback fs/fs-writeback.c:2049 [inline]
+>  wb_workfn+0xab3/0x1090 fs/fs-writeback.c:2078
+>  process_one_work+0x965/0x1690 kernel/workqueue.c:2269
+>  worker_thread+0x96/0xe10 kernel/workqueue.c:2415
+>  kthread+0x3b5/0x4a0 kernel/kthread.c:291
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+> BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u4:=
+2/41
+> caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+> CPU: 1 PID: 41 Comm: kworker/u4:2 Not tainted 5.7.0-next-20200603-syzkall=
+er #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 01/01/2011
+> Workqueue: writeback wb_workfn (flush-8:0)
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
+>  ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+>  ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
+>  ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+>  mpage_map_one_extent fs/ext4/inode.c:2377 [inline]
+>  mpage_map_and_submit_extent fs/ext4/inode.c:2430 [inline]
+>  ext4_writepages+0x1ab5/0x3400 fs/ext4/inode.c:2782
+>  do_writepages+0xfa/0x2a0 mm/page-writeback.c:2354
+>  __writeback_single_inode+0x12a/0x13d0 fs/fs-writeback.c:1452
+>  writeback_sb_inodes+0x515/0xdc0 fs/fs-writeback.c:1716
+>  __writeback_inodes_wb+0xc3/0x250 fs/fs-writeback.c:1785
+>  wb_writeback+0x8db/0xd50 fs/fs-writeback.c:1894
+>  wb_check_old_data_flush fs/fs-writeback.c:1996 [inline]
+>  wb_do_writeback fs/fs-writeback.c:2049 [inline]
+>  wb_workfn+0xab3/0x1090 fs/fs-writeback.c:2078
+>  process_one_work+0x965/0x1690 kernel/workqueue.c:2269
+>  worker_thread+0x96/0xe10 kernel/workqueue.c:2415
+>  kthread+0x3b5/0x4a0 kernel/kthread.c:291
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+> BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u4:=
+2/41
+> caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+> CPU: 1 PID: 41 Comm: kworker/u4:2 Not tainted 5.7.0-next-20200603-syzkall=
+er #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 01/01/2011
+> Workqueue: writeback wb_workfn (flush-8:0)
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
+>  ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+>  ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
+>  ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+>  mpage_map_one_extent fs/ext4/inode.c:2377 [inline]
+>  mpage_map_and_submit_extent fs/ext4/inode.c:2430 [inline]
+>  ext4_writepages+0x1ab5/0x3400 fs/ext4/inode.c:2782
+>  do_writepages+0xfa/0x2a0 mm/page-writeback.c:2354
+>  __writeback_single_inode+0x12a/0x13d0 fs/fs-writeback.c:1452
+>  writeback_sb_inodes+0x515/0xdc0 fs/fs-writeback.c:1716
+>  __writeback_inodes_wb+0xc3/0x250 fs/fs-writeback.c:1785
+>  wb_writeback+0x8db/0xd50 fs/fs-writeback.c:1894
+>  wb_check_old_data_flush fs/fs-writeback.c:1996 [inline]
+>  wb_do_writeback fs/fs-writeback.c:2049 [inline]
+>  wb_workfn+0xab3/0x1090 fs/fs-writeback.c:2078
+>  process_one_work+0x965/0x1690 kernel/workqueue.c:2269
+>  worker_thread+0x96/0xe10 kernel/workqueue.c:2415
+>  kthread+0x3b5/0x4a0 kernel/kthread.c:291
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+> tipc: TX() has been purged, node left!
+>=20
+>=20
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>=20
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+#syz dup: linux-next test error: BUG: using smp_processor_id() in preemptib=
+le  [ADDR] code: syz-fuzzer/6792
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/cLVs8J9Z/CEtitwu6A8qcPX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7c+HUACgkQAVBC80lX
+0GwD/wgApmcWzxjDflgE53BC0ZSSmA+VcLUgKTqd20wr+bUvZ9j+SJ7jdLkuFyWz
+oVIehpEBBOPeOT2n4ayN/Uq4jk/u8UBtuB3MEh7BAGMjrWmHXwUfK+SjAm55PkvC
+29ufi2nnvg0jjFydlhDwIyHjv9ukVYACEI0K+M+TFeFwFE+6KbDTpFwaKmibCN5v
+3mk1EmXK7cBp9lm6kCYqRQJnAt6KIDSWxMepbj/y74fp8/WCJWXrd2+5aChuRXRe
+9XnCYahi/3yifg/QUczC/aLxYfl1ZCixXq7sIjz98IfuF2FXNS1v52PCOLAkgeCO
+dSxiuMVzL4M5PI6tmPObgucBkMxYQA==
+=+hcp
+-----END PGP SIGNATURE-----
+
+--Sig_/cLVs8J9Z/CEtitwu6A8qcPX--
