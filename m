@@ -2,114 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6121F0AAA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 11:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178251F0AA2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jun 2020 11:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgFGJgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 05:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726418AbgFGJgH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 05:36:07 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA65FC08C5C2;
-        Sun,  7 Jun 2020 02:36:06 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jhrii-0000LD-62; Sun, 07 Jun 2020 11:36:00 +0200
-Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id A89A110108F;
-        Sun,  7 Jun 2020 11:35:59 +0200 (CEST)
-Message-Id: <20200606221532.080560273@linutronix.de>
-User-Agent: quilt/0.65
-Date:   Sat, 06 Jun 2020 23:51:17 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, x86@kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Juergen Gross <jgross@suse.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        stable@vger.kernel.org
-Subject: [patch 3/3] x86/vdso: Unbreak paravirt VDSO clocks
-References: <20200606215114.380723277@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+        id S1726455AbgFGJcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 05:32:00 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:8716 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726418AbgFGJcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 05:32:00 -0400
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app2 (Coremail) with SMTP id by_KCgB375b2s9xeoZiZAA--.56237S4;
+        Sun, 07 Jun 2020 17:31:38 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] PCI: rcar: Fix runtime PM imbalance on error
+Date:   Sun,  7 Jun 2020 17:31:33 +0800
+Message-Id: <20200607093134.6393-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgB375b2s9xeoZiZAA--.56237S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFyDGryUXFyDAryfXw4fXwb_yoW8Jw4rpF
+        W7Way2yF4kX3y5Zr45JF1kZFyav3ZYy347J397Ww17Zwnxua4ktryFkFyFqFyUKFW8X3WU
+        t3W5tay8CFW5JrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvK1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
+        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
+        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+        VjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgsEBlZdtOgTHAAAsT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The conversion of x86 VDSO to the generic clock mode storage broke the
-paravirt and hyperv clocksource logic. These clock sources have their own
-internal sequence counter to validate the clocksource at the point of
-reading it. This is necessary because the hypervisor can invalidate the
-clocksource asynchronously so a check during the VDSO data update is not
-sufficient. If the internal check during read invalidates the clocksource
-the read return U64_MAX. The original code checked this efficiently by
-testing whether the result (casted to signed) is negative, i.e. bit 63 is
-set. This was done that way because an extra indicator for the validity had
-more overhead.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+the call returns an error code. Thus a corresponding decrement is
+needed on the error handling path to keep the counter balanced.
 
-The conversion broke this check because the check was replaced by a check
-for a valid VDSO clock mode.
-
-The wreckage manifests itself when the paravirt clock is installed as a
-valid VDSO clock and during runtime invalidated by the hypervisor,
-e.g. after a host suspend/resume cycle. After the invalidation the read
-function returns U64_MAX which is used as cycles and makes the clock jump
-by ~2200 seconds, and become stale until the 2200 seconds have elapsed
-where it starts to jump again. The period of this effect depends on the
-shift/mult pair of the clocksource and the jumps and staleness are an
-artifact of undefined but reproducible behaviour of math overflow.
-
-Implement an x86 version of the new vdso_cycles_ok() inline which adds this
-check back and a variant of vdso_clocksource_ok() which lets the compiler
-optimize it out to avoid the extra conditional. That's suboptimal when the
-system does not have a VDSO capable clocksource, but that's not the case
-which is optimized for.
-
-Reported-by: Miklos Szeredi <miklos@szeredi.hu>
-Fixes: 5d51bee725cc ("clocksource: Add common vdso clock mode storage")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- arch/x86/include/asm/vdso/gettimeofday.h |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
 
---- a/arch/x86/include/asm/vdso/gettimeofday.h
-+++ b/arch/x86/include/asm/vdso/gettimeofday.h
-@@ -271,6 +271,24 @@ static __always_inline const struct vdso
- 	return __vdso_data;
- }
+Changelog:
+
+v2: - Remove unnecessary 'err_pm_put' label.
+      Refine commit message.
+---
+ drivers/pci/controller/pcie-rcar.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/pci/controller/pcie-rcar.c b/drivers/pci/controller/pcie-rcar.c
+index 759c6542c5c8..f9595ab54bc4 100644
+--- a/drivers/pci/controller/pcie-rcar.c
++++ b/drivers/pci/controller/pcie-rcar.c
+@@ -1143,7 +1143,7 @@ static int rcar_pcie_probe(struct platform_device *pdev)
+ 	err = rcar_pcie_get_resources(pcie);
+ 	if (err < 0) {
+ 		dev_err(dev, "failed to request resources: %d\n", err);
+-		goto err_pm_put;
++		goto err_pm_disable;
+ 	}
  
-+static inline bool arch_vdso_clocksource_ok(const struct vdso_data *vd)
-+{
-+	return true;
-+}
-+#define vdso_clocksource_ok arch_vdso_clocksource_ok
-+
-+/*
-+ * Clocksource read value validation to handle PV and HyperV clocksources
-+ * which can be invalidated asynchronously and indicate invalidation by
-+ * returning U64_MAX, which can be effectively tested by checking for a
-+ * negative value after casting it to s64.
-+ */
-+static inline bool arch_vdso_cycles_ok(u64 cycles)
-+{
-+	return (s64)cycles >= 0;
-+}
-+#define vdso_cycles_ok arch_vdso_cycles_ok
-+
- /*
-  * x86 specific delta calculation.
-  *
+ 	err = clk_prepare_enable(pcie->bus_clk);
+@@ -1206,10 +1206,8 @@ static int rcar_pcie_probe(struct platform_device *pdev)
+ 	irq_dispose_mapping(pcie->msi.irq2);
+ 	irq_dispose_mapping(pcie->msi.irq1);
+ 
+-err_pm_put:
+-	pm_runtime_put(dev);
+-
+ err_pm_disable:
++	pm_runtime_put(dev);
+ 	pm_runtime_disable(dev);
+ 	pci_free_resource_list(&pcie->resources);
+ 
+-- 
+2.17.1
 
