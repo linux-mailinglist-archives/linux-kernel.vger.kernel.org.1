@@ -2,38 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01271F2FC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97A91F2D72
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729722AbgFIAxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:53:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55566 "EHLO mail.kernel.org"
+        id S1732030AbgFIAdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:33:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728493AbgFHXJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:09:44 -0400
+        id S1729921AbgFHXOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:14:54 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BC99208C3;
-        Mon,  8 Jun 2020 23:09:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C11FA216FD;
+        Mon,  8 Jun 2020 23:14:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657783;
-        bh=OElQhyIJryCo7sc7zfIolQZsTrPafdjXCRJf/g/xOGE=;
+        s=default; t=1591658092;
+        bh=REDsuEysCkGozpy/tAflcxRA3nXs5g++jF7F2KLZaHI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dGbtmQlR9zxd74LislBdQ/5of/4qN01XDz1a103Ij1O/MsLDXlD9kBRYSRmieqJks
-         +m8Sqg6d8J8qd1N2NwvIgwjOLDTYVyjYq+LyJHh+nOvOhe+l3O/N5+ZKUY4tDburjL
-         XN8NAuwL1Is5K5FxaKo/6bGbcoE7WBmRVUvTfR3w=
+        b=eyB+LWtf2Wpc9hQKGLhZ9l6PSY/3eoHvzFsN+ZQgd0J8H5NGtbXLpPFUj7q3YKxD/
+         uLQYyx9Z6Mr6ElAm710/3J+zo1t9i2RX38LTRb5zzGYxvEwiM60Ijt+zGkNAKaR559
+         IDItDmr2HEFmB9DHVW/X9gDzMh+TwOHUVk2pAlyY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sasha Levin <sashal@kernel.org>, linux-xfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 165/274] xfs: clean up the error handling in xfs_swap_extents
-Date:   Mon,  8 Jun 2020 19:04:18 -0400
-Message-Id: <20200608230607.3361041-165-sashal@kernel.org>
+Cc:     Aymeric Agon-Rambosson <aymeric.agon@yandex.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Nikolay Borisov <n.borisov.lkml@gmail.com>,
+        Jackie Liu <liuyun01@kylinos.cn>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 134/606] scripts/gdb: repair rb_first() and rb_last()
+Date:   Mon,  8 Jun 2020 19:04:19 -0400
+Message-Id: <20200608231211.3363633-134-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,34 +51,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
+From: Aymeric Agon-Rambosson <aymeric.agon@yandex.com>
 
-[ Upstream commit 8bc3b5e4b70d28f8edcafc3c9e4de515998eea9e ]
+[ Upstream commit 50e36be1fb9572b2e4f2753340bdce3116bf2ce7 ]
 
-Make sure we release resources properly if we cannot clean out the COW
-extents in preparation for an extent swap.
+The current implementations of the rb_first() and rb_last() gdb
+functions have a variable that references itself in its instanciation,
+which causes the function to throw an error if a specific condition on
+the argument is met.  The original author rather intended to reference
+the argument and made a typo.  Referring the argument instead makes the
+function work as intended.
 
-Fixes: 96987eea537d6c ("xfs: cancel COW blocks before swapext")
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Aymeric Agon-Rambosson <aymeric.agon@yandex.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Cc: Jan Kiszka <jan.kiszka@siemens.com>
+Cc: Kieran Bingham <kbingham@kernel.org>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Nikolay Borisov <n.borisov.lkml@gmail.com>
+Cc: Jackie Liu <liuyun01@kylinos.cn>
+Cc: Jason Wessel <jason.wessel@windriver.com>
+Link: http://lkml.kernel.org/r/20200427051029.354840-1-aymeric.agon@yandex.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_bmap_util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/gdb/linux/rbtree.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
-index 4f800f7fe888..cc23a3e23e2d 100644
---- a/fs/xfs/xfs_bmap_util.c
-+++ b/fs/xfs/xfs_bmap_util.c
-@@ -1606,7 +1606,7 @@ xfs_swap_extents(
- 	if (xfs_inode_has_cow_data(tip)) {
- 		error = xfs_reflink_cancel_cow_range(tip, 0, NULLFILEOFF, true);
- 		if (error)
--			return error;
-+			goto out_unlock;
- 	}
+diff --git a/scripts/gdb/linux/rbtree.py b/scripts/gdb/linux/rbtree.py
+index 39db889b874c..c4b991607917 100644
+--- a/scripts/gdb/linux/rbtree.py
++++ b/scripts/gdb/linux/rbtree.py
+@@ -12,7 +12,7 @@ rb_node_type = utils.CachedType("struct rb_node")
  
- 	/*
+ def rb_first(root):
+     if root.type == rb_root_type.get_type():
+-        node = node.address.cast(rb_root_type.get_type().pointer())
++        node = root.address.cast(rb_root_type.get_type().pointer())
+     elif root.type != rb_root_type.get_type().pointer():
+         raise gdb.GdbError("Must be struct rb_root not {}".format(root.type))
+ 
+@@ -28,7 +28,7 @@ def rb_first(root):
+ 
+ def rb_last(root):
+     if root.type == rb_root_type.get_type():
+-        node = node.address.cast(rb_root_type.get_type().pointer())
++        node = root.address.cast(rb_root_type.get_type().pointer())
+     elif root.type != rb_root_type.get_type().pointer():
+         raise gdb.GdbError("Must be struct rb_root not {}".format(root.type))
+ 
 -- 
 2.25.1
 
