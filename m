@@ -2,119 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D81A1F205B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 21:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244701F2055
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 21:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726568AbgFHT5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 15:57:38 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57986 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726212AbgFHT5h (ORCPT
+        id S1726460AbgFHT4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 15:56:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726409AbgFHT4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 15:57:37 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 058JqQeF116937;
-        Mon, 8 Jun 2020 19:57:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=KDFjcWm9j7Q4j8SV51GuXqHkSHKfdCAlDd8oZwlZJUU=;
- b=gZsTvqRsizIQv9Mzkcr+RseyRpK3il3RRv9/9k8lzK42626sp7VrkybGtYtNxvzIccLq
- vipb0Wtj7op1BhCJjlIp9qFscdQlJE1EOU5jlis2mlbLzdN9r3LAY16jtlvhGlSF+qz7
- Vym2RtTw7hjIPKiauZMVc2hvuFPojcAsqfgHjHdau5LbihbjtnTNiuXAlSlUE28WDdX0
- Y+PMcNNSjD2qA2PJpL0FXqWOCDAq2tNmBKDJihAALw9zheMBlgbfl65iBpkIL0IWO1hM
- Xxq2HXeBZ11ImUTaCnEi3hcGvLtPhvV+Yw6ZEWbY/cClkQ+1MzusFDbCnuvMOkk2hST7 Bw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 31g3smrp1w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 08 Jun 2020 19:57:30 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 058JsJHo017653;
-        Mon, 8 Jun 2020 19:55:29 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 31gn23sput-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Jun 2020 19:55:29 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 058JtSb7014764;
-        Mon, 8 Jun 2020 19:55:28 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 08 Jun 2020 12:55:28 -0700
-Date:   Mon, 8 Jun 2020 22:55:21 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        Bharath Vedartham <linux.bhar@gmail.com>,
-        harshjain32@gmail.com, John Hubbard <jhubbard@nvidia.com>,
-        Simon =?iso-8859-1?Q?Sandstr=F6m?= <simon@nikanor.nu>,
-        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
-        jane.pnx9@gmail.com
-Subject: Re: [PATCH] staging: kpc2000: kpc_dma: Convert get_user_pages() -->
- pin_user_pages()
-Message-ID: <20200608195520.GB30374@kadam>
-References: <1590947491-11194-1-git-send-email-jrdr.linux@gmail.com>
- <7e725dd0-7423-b85b-ff56-9705419d13b9@nvidia.com>
- <CAFqt6zbsNcHWF-0Na2xMKdJQs2kVkLHTCw=cytvdo+z-axx97Q@mail.gmail.com>
- <20200608191459.GZ30374@kadam>
- <CAFqt6zYqnRWYSKoZ2yAdcAK7WWa311Mmmc3Y3dm8CO9r79ZtYg@mail.gmail.com>
+        Mon, 8 Jun 2020 15:56:40 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C13C08C5C2
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 12:56:40 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id p70so16452957oic.12
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 12:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QI4DBqiHipPrknIn6E/MZB9oOApEWMv02YSz8O1GoXE=;
+        b=mhdT/14/y+LuftE2pLrKRm0IWxTJRt61cO1+DoKJtrRZaHiFa83D6XIKMV21rQUvUM
+         yKPuD1Z5Od3gE7jdhouLm0ZYbXtt5cetxSpR9fAiX7aeEpsUQopUx+0YdAu+hyL7vqDs
+         FPz+o9bjxPDZxclk68ou2cgpTfI8gfp6ZoggJtbJCogXKOHAsB954ZofUpK2lyjZ8ETH
+         +wCP4rjsWhc/gxxRn6QFj5Gv1AJaPY7FtygYzdXa9i2clqJkzxDfCVYa2BDPRS7zNXh3
+         m9b69f+hV6ALOD4EOKin3TiWD84lwlVS4If07oMp/czF+bDKaOSN4ggIr1LwWYUdxJlk
+         hySg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QI4DBqiHipPrknIn6E/MZB9oOApEWMv02YSz8O1GoXE=;
+        b=GaIHqqYmR/KD+57IuR1Jgr8UbAl8B++fQdp+TmQ5WQgsFJALEIQDIEYSWylkR/da6n
+         7uhwVocghbMWKRTTGR8xG3rv1CZTphW8p2x9eqO/Yo39ANZk4kcN1XnAmct56Inhuk/M
+         WpitvBmlxqTh2lUcc5alBZsUevmF/hSJLbiUiB3kyvn0n8svMRMRZnz3gbUbfRLEYK/J
+         FvWuHRM03Xxpzg4ImQcNynPf3TUPoFMXVrNc15Orog228HaYGL73/dipoHsRSIYruK32
+         HcnBeVEVFVAdzuRrV+jjp6WAxmeGEjQOzp5ALCBbefXWl32LTKMp2S/TbMnQtZxX4lYH
+         ylHQ==
+X-Gm-Message-State: AOAM5315PaP+cDdvQLH8fsIRpmD89GjbMYRom44ULVTImki9iMGAYMBH
+        tGy4++CCwGke5VAoZyYYW2ETCKPG1JoqH/hpC2nTfw==
+X-Google-Smtp-Source: ABdhPJw7mGQpUxVFbuvjiMKl0lQ+CQSX9cQTTq2S1vcZhHzOJE7gr55nvYM9qbmEF6JZhVRyvkq8qPPkNqcZXcW/sig=
+X-Received: by 2002:aca:530e:: with SMTP id h14mr812444oib.172.1591646199540;
+ Mon, 08 Jun 2020 12:56:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFqt6zYqnRWYSKoZ2yAdcAK7WWa311Mmmc3Y3dm8CO9r79ZtYg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9646 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=2 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006080138
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9646 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=2
- spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006080138
+References: <20200513124021.GB20278@willie-the-truck> <CANpmjNM5XW+ufJ6Mw2Tn7aShRCZaUPGcH=u=4Sk5kqLKyf3v5A@mail.gmail.com>
+ <20200513165008.GA24836@willie-the-truck> <CANpmjNN=n59ue06s0MfmRFvKX=WB2NgLgbP6kG_MYCGy2R6PHg@mail.gmail.com>
+ <20200513174747.GB24836@willie-the-truck> <CANpmjNNOpJk0tprXKB_deiNAv_UmmORf1-2uajLhnLWQQ1hvoA@mail.gmail.com>
+ <20200513212520.GC28594@willie-the-truck> <CANpmjNOAi2K6knC9OFUGjpMo-rvtLDzKMb==J=vTRkmaWctFaQ@mail.gmail.com>
+ <20200514110537.GC4280@willie-the-truck> <20200603185220.GA20613@zn.tnic>
+ <20200603192353.GA180529@google.com> <87213fd1-950d-c2d5-4aa0-2f53ea3b505c@suse.cz>
+In-Reply-To: <87213fd1-950d-c2d5-4aa0-2f53ea3b505c@suse.cz>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 8 Jun 2020 21:56:23 +0200
+Message-ID: <CANpmjNNRz5OVKb6PE7K6GjfoGbht_ZhyPkNG9aD+KjNDzK7hGg@mail.gmail.com>
+Subject: Re: [PATCH v5 00/18] Rework READ_ONCE() to improve codegen
+To:     =?UTF-8?Q?Martin_Li=C5=A1ka?= <mliska@suse.cz>
+Cc:     Borislav Petkov <bp@alien8.de>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 01:03:51AM +0530, Souptick Joarder wrote:
-> On Tue, Jun 9, 2020 at 12:47 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+On Mon, 8 Jun 2020 at 19:32, Martin Li=C5=A1ka <mliska@suse.cz> wrote:
+>
+> On 6/3/20 9:23 PM, Marco Elver wrote:
 > >
-> > On Tue, Jun 09, 2020 at 12:31:42AM +0530, Souptick Joarder wrote:
-> > > > > @@ -189,10 +192,9 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
-> > > > >       sg_free_table(&acd->sgt);
-> > > > >    err_dma_map_sg:
-> > > > >    err_alloc_sg_table:
-> > > >
-> > > > So now we end up with two unnecessary labels. Probably best to delete two of these
-> > > > three and name the remaining one appropriately:
-> > >
-> > > Hmm, I thought about it. But later decided to wait for review comments
-> > > on the same in v1.
-> > > I will remove it now.
 > >
-> > These are all unrelated to pin_user_pages().  Please don't do it in the
-> > same patch. Staging code is there because it's ugly...  If you don't
-> > want to do unrelated changes to label names then you don't have to.
-> 
-> What I am planning is to put this changes in a series. One patch will take care
-> of pin_user_pages() related changes, 2nd patch will take care of minor bug
-> fix in error path + level correction and 3rd patch
-> will take care of set_page_dirty() -> set_page_dirty_lock().
+> > On Wed, 03 Jun 2020, Borislav Petkov wrote:
+> >
+> >> On Thu, May 14, 2020 at 12:05:38PM +0100, Will Deacon wrote:
+> >>> Talking off-list, Clang >=3D 7 is pretty reasonable wrt inlining deci=
+sions
+> >>> and the behaviour for __always_inline is:
+> >>>
+> >>>    * An __always_inline function inlined into a __no_sanitize functio=
+n is
+> >>>      not instrumented
+> >>>    * An __always_inline function inlined into an instrumented functio=
+n is
+> >>>      instrumented
+> >>>    * You can't mark a function as both __always_inline __no_sanitize,=
+ because
+> >>>      __no_sanitize functions are never inlined
+> >>>
+> >>> GCC, on the other hand, may still inline __no_sanitize functions and =
+then
+> >>> subsequently instrument them.
+> >>
+> >> Yeah, about that: I've been looking for a way to trigger this so that
+> >> I can show preprocessed source to gcc people. So do you guys have a
+> >> .config or somesuch I can try?
+> >
+> > For example take this:
+> >
+> >       int x;
+> >
+> >       static inline __attribute__((no_sanitize_thread)) void do_not_san=
+itize(void) {
+> >         x++;
+> >       }
+> >
+> >       void sanitize_this(void) {
+> >         do_not_sanitize();
+> >       }
+> >
+> > Then
+> >
+> >       gcc-10 -O3 -fsanitize=3Dthread -o example.o -c example.c
+> >       objdump -D example.o
+>
+> Hello.
+>
+> Thank you for the example. It seems to me that Clang does not inline a no=
+_sanitize_* function
+> into one which is instrumented. Is it a documented behavior ([1] doesn't =
+mention that)?
+> If so, we can do the same in GCC.
+
+It is not explicitly mentioned in [1]. But the contract of
+"no_sanitize" is "that a particular instrumentation or set of
+instrumentations should not be applied". That contract is broken if a
+function is instrumented, however that may happen. It sadly does
+happen with GCC when a function is inlined. Presumably because the
+sanitizer passes for TSAN/ASAN/MSAN run after the optimizer -- this
+definitely can't change. Also because it currently gives us the
+property that __always_inline functions are instrumented according to
+the function they are inlined into (a property we want).
+
+The easy fix to no_sanitize seems to be to do what Clang does, and
+never inline no_sanitize functions (with or without "inline"
+attribute).  always_inline functions should remain unchanged
+(specifying no_sanitize on an always_inline function is an error).
+
+Note this applies to all sanitizers (TSAN/ASAN/MSAN) and their
+no_sanitize attribute that GCC has.
+
+The list of requirements were also summarized in more detail here:
+https://lore.kernel.org/lkml/CANpmjNMTsY_8241bS7=3DXAfqvZHFLrVEkv_uM4aDUWE_=
+kh3Rvbw@mail.gmail.com/
+
+Hope that makes sense. (I also need to send a v2 for param
+tsan-distinguish-volatile, but haven't gotten around to it yet --
+hopefully soon. And then we also need a param
+tsan-instrument-func-entry-exit, which LLVM has for TSAN. One step at
+a time though.)
+
+Thanks,
+-- Marco
 
 
-Always do bug fixes first.  Always do the easiest least controversial
-after first.
-
-Do the error handling bug first.  Change "rv" to int.  That's closely
-related to the error handling.  Then set_page_dirty_lock().  Then the
-conversion to pin_user_pages().
-
-Then if you want you can do any unrelated clean ups and error label
-renames as patch 4.
-
-regards,
-dan carpenter
-
+> Thanks,
+> Martin
+>
+> [1] https://clang.llvm.org/docs/AttributeReference.html#no-sanitize
+>
+> >
+> > will show that do_not_sanitize() was inlined into sanitize_this() and i=
+s
+> > instrumented. (With Clang this doesn't happen.)
+> >
+> > Hope this is enough.
+> >
+> > Thanks,
+> > -- Marco
+> >
+>
