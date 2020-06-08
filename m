@@ -2,265 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4984F1F1AA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 16:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE481F1AB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 16:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729952AbgFHOLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 10:11:36 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:25418 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729751AbgFHOLb (ORCPT
+        id S1729901AbgFHOOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 10:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729565AbgFHOOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 10:11:31 -0400
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 08 Jun 2020 07:11:30 -0700
-Received: from sivaprak-linux.qualcomm.com ([10.201.3.202])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 08 Jun 2020 07:11:26 -0700
-Received: by sivaprak-linux.qualcomm.com (Postfix, from userid 459349)
-        id 76A0C21875; Mon,  8 Jun 2020 19:41:21 +0530 (IST)
-From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        vkoul@kernel.org, robh+dt@kernel.org, mgautam@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Sivaprakash Murugesan <sivaprak@codeaurora.org>
-Subject: [PATCH V3 5/5] arm64: dts: ipq8074: enable USB support
-Date:   Mon,  8 Jun 2020 19:41:19 +0530
-Message-Id: <1591625479-4483-6-git-send-email-sivaprak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591625479-4483-1-git-send-email-sivaprak@codeaurora.org>
-References: <1591625479-4483-1-git-send-email-sivaprak@codeaurora.org>
+        Mon, 8 Jun 2020 10:14:44 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AFFC08C5C4;
+        Mon,  8 Jun 2020 07:14:43 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1jiIXt-005G4l-9S; Mon, 08 Jun 2020 14:14:37 +0000
+Date:   Mon, 8 Jun 2020 15:14:37 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: fixes for work.sysctl
+Message-ID: <20200608141437.GP23230@ZenIV.linux.org.uk>
+References: <20200603055237.677416-1-hch@lst.de>
+ <20200608130246.GA22803@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200608130246.GA22803@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPQ8074 has two super speed usb ports, add phy and dwc3 nodes
-to enable them.
+On Mon, Jun 08, 2020 at 03:02:46PM +0200, Christoph Hellwig wrote:
+> ping?  Can you pick these up now that the original patches are in
+> Linus' tree?
 
-Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/ipq8074-hk01.dts |  24 +++++
- arch/arm64/boot/dts/qcom/ipq8074.dtsi     | 167 ++++++++++++++++++++++++++++++
- 2 files changed, 191 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts b/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
-index 6754cb0..dadaa8e 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
-+++ b/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
-@@ -82,3 +82,27 @@
- 		nand-bus-width = <8>;
- 	};
- };
-+
-+&qusb_phy_0 {
-+	status = "ok";
-+};
-+
-+&qusb_phy_1 {
-+	status = "ok";
-+};
-+
-+&ssphy_0 {
-+	status = "ok";
-+};
-+
-+&ssphy_1 {
-+	status = "ok";
-+};
-+
-+&usb_0 {
-+	status = "ok";
-+};
-+
-+&usb_1 {
-+	status = "ok";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 5303821..506a8ac 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -82,6 +82,91 @@
- 		ranges = <0 0 0 0xffffffff>;
- 		compatible = "simple-bus";
- 
-+		ssphy_1: phy@58000 {
-+			compatible = "qcom,ipq8074-qmp-usb3-phy";
-+			reg = <0x00058000 0x1c4>;
-+			#clock-cells = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+
-+			clocks = <&gcc GCC_USB1_AUX_CLK>,
-+				<&gcc GCC_USB1_PHY_CFG_AHB_CLK>,
-+				<&xo>;
-+			clock-names = "aux", "cfg_ahb", "ref";
-+
-+			resets =  <&gcc GCC_USB1_PHY_BCR>,
-+				<&gcc GCC_USB3PHY_1_PHY_BCR>;
-+			reset-names = "phy","common";
-+			status = "disabled";
-+
-+			usb1_ssphy: lane@58200 {
-+				reg = <0x00058200 0x130>,       /* Tx */
-+				      <0x00058400 0x200>,     /* Rx */
-+				      <0x00058800 0x1f8>,     /* PCS  */
-+				      <0x00058600 0x044>;     /* PCS misc*/
-+				#phy-cells = <0>;
-+				clocks = <&gcc GCC_USB1_PIPE_CLK>;
-+				clock-names = "pipe0";
-+				clock-output-names = "gcc_usb1_pipe_clk_src";
-+			};
-+		};
-+
-+		qusb_phy_1: phy@59000 {
-+			compatible = "qcom,ipq8074-qusb2-phy";
-+			reg = <0x00059000 0x180>;
-+			#phy-cells = <0>;
-+
-+			clocks = <&gcc GCC_USB1_PHY_CFG_AHB_CLK>,
-+				 <&xo>;
-+			clock-names = "cfg_ahb", "ref";
-+
-+			resets = <&gcc GCC_QUSB2_1_PHY_BCR>;
-+			status = "disabled";
-+		};
-+
-+		ssphy_0: phy@78000 {
-+			compatible = "qcom,ipq8074-qmp-usb3-phy";
-+			reg = <0x00078000 0x1c4>;
-+			#clock-cells = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+
-+			clocks = <&gcc GCC_USB0_AUX_CLK>,
-+				<&gcc GCC_USB0_PHY_CFG_AHB_CLK>,
-+				<&xo>;
-+			clock-names = "aux", "cfg_ahb", "ref";
-+
-+			resets =  <&gcc GCC_USB0_PHY_BCR>,
-+				<&gcc GCC_USB3PHY_0_PHY_BCR>;
-+			reset-names = "phy","common";
-+			status = "disabled";
-+
-+			usb0_ssphy: lane@78200 {
-+				reg = <0x00078200 0x130>,       /* Tx */
-+				      <0x00078400 0x200>,     /* Rx */
-+				      <0x00078800 0x1f8>,     /* PCS  */
-+				      <0x00078600 0x044>;     /* PCS misc*/
-+				#phy-cells = <0>;
-+				clocks = <&gcc GCC_USB0_PIPE_CLK>;
-+				clock-names = "pipe0";
-+				clock-output-names = "gcc_usb0_pipe_clk_src";
-+			};
-+		};
-+
-+		qusb_phy_0: phy@79000 {
-+			compatible = "qcom,ipq8074-qusb2-phy";
-+			reg = <0x00079000 0x180>;
-+			#phy-cells = <0>;
-+
-+			clocks = <&gcc GCC_USB0_PHY_CFG_AHB_CLK>,
-+				 <&xo>;
-+			clock-names = "cfg_ahb", "ref";
-+
-+			resets = <&gcc GCC_QUSB2_0_PHY_BCR>;
-+		};
-+
- 		pcie_phy0: phy@86000 {
- 			compatible = "qcom,ipq8074-qmp-pcie-phy";
- 			reg = <0x00086000 0x1000>;
-@@ -294,6 +379,88 @@
- 			status = "disabled";
- 		};
- 
-+		usb_0: usb@8af8800 {
-+			compatible = "qcom,dwc3";
-+			reg = <0x08af8800 0x400>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+
-+			clocks = <&gcc GCC_SYS_NOC_USB0_AXI_CLK>,
-+				<&gcc GCC_USB0_MASTER_CLK>,
-+				<&gcc GCC_USB0_SLEEP_CLK>,
-+				<&gcc GCC_USB0_MOCK_UTMI_CLK>;
-+			clock-names = "sys_noc_axi",
-+				"master",
-+				"sleep",
-+				"mock_utmi";
-+
-+			assigned-clocks = <&gcc GCC_SYS_NOC_USB0_AXI_CLK>,
-+					  <&gcc GCC_USB0_MASTER_CLK>,
-+					  <&gcc GCC_USB0_MOCK_UTMI_CLK>;
-+			assigned-clock-rates = <133330000>,
-+						<133330000>,
-+						<19200000>;
-+
-+			resets = <&gcc GCC_USB0_BCR>;
-+			status = "disabled";
-+
-+			dwc_0: dwc3@8a00000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x8a00000 0xcd00>;
-+				interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
-+				phys = <&qusb_phy_0>, <&usb0_ssphy>;
-+				phy-names = "usb2-phy", "usb3-phy";
-+				tx-fifo-resize;
-+				snps,is-utmi-l1-suspend;
-+				snps,hird-threshold = /bits/ 8 <0x0>;
-+				snps,dis_u2_susphy_quirk;
-+				snps,dis_u3_susphy_quirk;
-+				dr_mode = "host";
-+			};
-+		};
-+
-+		usb_1: usb@8cf8800 {
-+			compatible = "qcom,dwc3";
-+			reg = <0x08cf8800 0x400>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+
-+			clocks = <&gcc GCC_SYS_NOC_USB1_AXI_CLK>,
-+				<&gcc GCC_USB1_MASTER_CLK>,
-+				<&gcc GCC_USB1_SLEEP_CLK>,
-+				<&gcc GCC_USB1_MOCK_UTMI_CLK>;
-+			clock-names = "sys_noc_axi",
-+				"master",
-+				"sleep",
-+				"mock_utmi";
-+
-+			assigned-clocks = <&gcc GCC_SYS_NOC_USB1_AXI_CLK>,
-+					  <&gcc GCC_USB1_MASTER_CLK>,
-+					  <&gcc GCC_USB1_MOCK_UTMI_CLK>;
-+			assigned-clock-rates = <133330000>,
-+						<133330000>,
-+						<19200000>;
-+
-+			resets = <&gcc GCC_USB1_BCR>;
-+			status = "disabled";
-+
-+			dwc_1: dwc3@8c00000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x8c00000 0xcd00>;
-+				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
-+				phys = <&qusb_phy_1>, <&usb1_ssphy>;
-+				phy-names = "usb2-phy", "usb3-phy";
-+				tx-fifo-resize;
-+				snps,is-utmi-l1-suspend;
-+				snps,hird-threshold = /bits/ 8 <0x0>;
-+				snps,dis_u2_susphy_quirk;
-+				snps,dis_u3_susphy_quirk;
-+				dr_mode = "host";
-+			};
-+		};
-+
- 		intc: interrupt-controller@b000000 {
- 			compatible = "qcom,msm-qgic2";
- 			interrupt-controller;
--- 
-2.7.4
-
+Applied and pushed; will send pull request later today.
