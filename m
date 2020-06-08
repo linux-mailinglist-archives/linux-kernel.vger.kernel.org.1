@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F181F2D7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABA31F2F22
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733088AbgFIAd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:33:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35260 "EHLO mail.kernel.org"
+        id S1728836AbgFHXLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:11:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729903AbgFHXOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:14:45 -0400
+        id S1728472AbgFHXJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:09:40 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC51B2158C;
-        Mon,  8 Jun 2020 23:14:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A180208FE;
+        Mon,  8 Jun 2020 23:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658085;
-        bh=mRhGw7qR37r16r1P8tKnMThQNVCj3v9b08mSdxj9QVw=;
+        s=default; t=1591657780;
+        bh=b8sF3nzdbNYI7vM2opADzKQK1kEfaHKTQBe+5In3VHI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G5Ur+A9Ck0zyRNmmAIThPUlLHiLun/te3bWu0SqKiUbeabmqLs8vdyOoeC6VRGFFf
-         0dhwjViWWQEkw8V+ar+tPDpDysLHz38mmJX0BbQziHkHU2PSE1yVOCUkaOpWsOYG1y
-         XEiT7+crIzhA4ahm5GlMWA7NHa0gUkHkXEoAcIBU=
+        b=JFTDTcU7Ygj5En4fIVpl2rsFlvk/UtkG6RAoa6Ql6oznxpzDHfCr9+sCeBzW9gZD6
+         JZ2cysQxKEM9AwGYkN728Zvg96MX/wJ6CUSaOTUDZv4fkfrcn5iQHuLBOUyA9sGz4z
+         tDyrS3bA7B5iBp+LtTCiDZ9Ots5SB8hpJqQvwGgc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Roman Li <roman.li@amd.com>, Zhan Liu <Zhan.Liu@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.6 129/606] drm/amd/display: fix counter in wait_for_no_pipes_pending
-Date:   Mon,  8 Jun 2020 19:04:14 -0400
-Message-Id: <20200608231211.3363633-129-sashal@kernel.org>
+Cc:     Tamizh Chelvam <tamizhr@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 162/274] ath11k: fix kernel panic by freeing the msdu received with invalid length
+Date:   Mon,  8 Jun 2020 19:04:15 -0400
+Message-Id: <20200608230607.3361041-162-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,43 +44,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Li <roman.li@amd.com>
+From: Tamizh Chelvam <tamizhr@codeaurora.org>
 
-[ Upstream commit 80797dd6f1a525d1160c463d6a9f9d29af182cbb ]
+[ Upstream commit d7d43782d541edb8596d2f4fc7f41b0734948ec5 ]
 
-[Why]
-Wait counter is not being reset for each pipe.
+In certain scenario host receives the packets with invalid length
+which causes below kernel panic. Free up those msdus to avoid
+this kernel panic.
 
-[How]
-Move counter reset into pipe loop scope.
+ 2270.028121:   <6> task: ffffffc0008306d0 ti: ffffffc0008306d0 task.ti: ffffffc0008306d0
+ 2270.035247:   <2> PC is at skb_panic+0x40/0x44
+ 2270.042784:   <2> LR is at skb_panic+0x40/0x44
+ 2270.521775:   <2> [<ffffffc0004a06e0>] skb_panic+0x40/0x44
+ 2270.524039:   <2> [<ffffffc0004a1278>] skb_put+0x54/0x5c
+ 2270.529264:   <2> [<ffffffbffcc373a8>] ath11k_dp_process_rx_err+0x320/0x5b0 [ath11k]
+ 2270.533860:   <2> [<ffffffbffcc30b68>] ath11k_dp_service_srng+0x80/0x268 [ath11k]
+ 2270.541063:   <2> [<ffffffbffcc1d554>] ath11k_hal_rx_reo_ent_buf_paddr_get+0x200/0xb64 [ath11k]
+ 2270.547917:   <2> [<ffffffc0004b1f74>] net_rx_action+0xf8/0x274
+ 2270.556247:   <2> [<ffffffc000099df4>] __do_softirq+0x128/0x228
+ 2270.561625:   <2> [<ffffffc00009a130>] irq_exit+0x84/0xcc
+ 2270.567008:   <2> [<ffffffc0000cfb28>] __handle_domain_irq+0x8c/0xb0
+ 2270.571695:   <2> [<ffffffc000082484>] gic_handle_irq+0x6c/0xbc
 
-Signed-off-by: Roman Li <roman.li@amd.com>
-Reviewed-by: Zhan Liu <Zhan.Liu@amd.com>
-Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Tamizh Chelvam <tamizhr@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1588611568-20791-1-git-send-email-tamizhr@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath11k/dp_rx.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index 188e51600070..b3987124183a 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -803,11 +803,10 @@ static void disable_dangling_plane(struct dc *dc, struct dc_state *context)
- static void wait_for_no_pipes_pending(struct dc *dc, struct dc_state *context)
- {
- 	int i;
--	int count = 0;
--	struct pipe_ctx *pipe;
- 	PERF_TRACE();
- 	for (i = 0; i < MAX_PIPES; i++) {
--		pipe = &context->res_ctx.pipe_ctx[i];
-+		int count = 0;
-+		struct pipe_ctx *pipe = &context->res_ctx.pipe_ctx[i];
+diff --git a/drivers/net/wireless/ath/ath11k/dp_rx.c b/drivers/net/wireless/ath/ath11k/dp_rx.c
+index 34b1e8e6a7fb..007bb73d6c61 100644
+--- a/drivers/net/wireless/ath/ath11k/dp_rx.c
++++ b/drivers/net/wireless/ath/ath11k/dp_rx.c
+@@ -2265,6 +2265,7 @@ static int ath11k_dp_rx_process_msdu(struct ath11k *ar,
+ 	struct ieee80211_hdr *hdr;
+ 	struct sk_buff *last_buf;
+ 	u8 l3_pad_bytes;
++	u8 *hdr_status;
+ 	u16 msdu_len;
+ 	int ret;
  
- 		if (!pipe->plane_state)
- 			continue;
+@@ -2293,8 +2294,13 @@ static int ath11k_dp_rx_process_msdu(struct ath11k *ar,
+ 		skb_pull(msdu, HAL_RX_DESC_SIZE);
+ 	} else if (!rxcb->is_continuation) {
+ 		if ((msdu_len + HAL_RX_DESC_SIZE) > DP_RX_BUFFER_SIZE) {
++			hdr_status = ath11k_dp_rx_h_80211_hdr(rx_desc);
+ 			ret = -EINVAL;
+ 			ath11k_warn(ar->ab, "invalid msdu len %u\n", msdu_len);
++			ath11k_dbg_dump(ar->ab, ATH11K_DBG_DATA, NULL, "", hdr_status,
++					sizeof(struct ieee80211_hdr));
++			ath11k_dbg_dump(ar->ab, ATH11K_DBG_DATA, NULL, "", rx_desc,
++					sizeof(struct hal_rx_desc));
+ 			goto free_out;
+ 		}
+ 		skb_put(msdu, HAL_RX_DESC_SIZE + l3_pad_bytes + msdu_len);
+@@ -3389,6 +3395,7 @@ ath11k_dp_process_rx_err_buf(struct ath11k *ar, u32 *ring_desc, int buf_id, bool
+ 	struct sk_buff *msdu;
+ 	struct ath11k_skb_rxcb *rxcb;
+ 	struct hal_rx_desc *rx_desc;
++	u8 *hdr_status;
+ 	u16 msdu_len;
+ 
+ 	spin_lock_bh(&rx_ring->idr_lock);
+@@ -3426,6 +3433,17 @@ ath11k_dp_process_rx_err_buf(struct ath11k *ar, u32 *ring_desc, int buf_id, bool
+ 
+ 	rx_desc = (struct hal_rx_desc *)msdu->data;
+ 	msdu_len = ath11k_dp_rx_h_msdu_start_msdu_len(rx_desc);
++	if ((msdu_len + HAL_RX_DESC_SIZE) > DP_RX_BUFFER_SIZE) {
++		hdr_status = ath11k_dp_rx_h_80211_hdr(rx_desc);
++		ath11k_warn(ar->ab, "invalid msdu leng %u", msdu_len);
++		ath11k_dbg_dump(ar->ab, ATH11K_DBG_DATA, NULL, "", hdr_status,
++				sizeof(struct ieee80211_hdr));
++		ath11k_dbg_dump(ar->ab, ATH11K_DBG_DATA, NULL, "", rx_desc,
++				sizeof(struct hal_rx_desc));
++		dev_kfree_skb_any(msdu);
++		goto exit;
++	}
++
+ 	skb_put(msdu, HAL_RX_DESC_SIZE + msdu_len);
+ 
+ 	if (ath11k_dp_rx_frag_h_mpdu(ar, msdu, ring_desc)) {
 -- 
 2.25.1
 
