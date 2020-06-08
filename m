@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CB51F25C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662201F28AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732375AbgFHXaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:30:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50728 "EHLO mail.kernel.org"
+        id S1731578AbgFHXYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:24:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387508AbgFHXYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:24:35 -0400
+        id S1729186AbgFHXSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:18:44 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF1BC20899;
-        Mon,  8 Jun 2020 23:24:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1566A20842;
+        Mon,  8 Jun 2020 23:18:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658674;
-        bh=Ljoi6SPtp9BQsszabiJzv6FOpQKYVjz22TNrx7xiH/E=;
+        s=default; t=1591658324;
+        bh=yelJ21b3v0Rc7rYz3Zzu5h2wxtT86ub0XQvVeh7D2zE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ejASoqjemsbEHFaqD9mmmftna/M6mOvEPCS4OBNBUVuG331pa4Th9gdDRc6HJx/JG
-         g2wZitxGYlHqIudqo6TYCXh+TD626p/vUYyaey4f7BFQ6AvnLT5O3wfGyKyjs3TAMh
-         QVFW6h7pv6IP+Qyzqe7zgxug5hdSdi5qg78fxewQ=
+        b=13+czhf0MrDvFxljm2he3+ntQM/pIT958vXsn/NOHq9yqrPAfmmbnPWTm3anPzZNE
+         XklqtRQgCy9wsXNrVQsfKTDnKG3/rXnnibhZ59aA/iHJQvEhDrKnAkLbBHJDstQi9W
+         eaZeY0DTJN1k4zKylzxAyFEZ2VSot2YAuCU5Ggz0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 086/106] btrfs: qgroup: mark qgroup inconsistent if we're inherting snapshot to a new qgroup
-Date:   Mon,  8 Jun 2020 19:22:18 -0400
-Message-Id: <20200608232238.3368589-86-sashal@kernel.org>
+Cc:     Kailang Yang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.6 324/606] ALSA: hda/realtek - Add new codec supported for ALC287
+Date:   Mon,  8 Jun 2020 19:07:29 -0400
+Message-Id: <20200608231211.3363633-324-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608232238.3368589-1-sashal@kernel.org>
-References: <20200608232238.3368589-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,121 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Kailang Yang <kailang@realtek.com>
 
-[ Upstream commit cbab8ade585a18c4334b085564d9d046e01a3f70 ]
+[ Upstream commit 630e36126e420e1756378b3427b42711ce0b9ddd ]
 
-[BUG]
-For the following operation, qgroup is guaranteed to be screwed up due
-to snapshot adding to a new qgroup:
+Enable new codec supported for ALC287.
 
-  # mkfs.btrfs -f $dev
-  # mount $dev $mnt
-  # btrfs qgroup en $mnt
-  # btrfs subv create $mnt/src
-  # xfs_io -f -c "pwrite 0 1m" $mnt/src/file
-  # sync
-  # btrfs qgroup create 1/0 $mnt/src
-  # btrfs subv snapshot -i 1/0 $mnt/src $mnt/snapshot
-  # btrfs qgroup show -prce $mnt/src
-  qgroupid         rfer         excl     max_rfer     max_excl parent  child
-  --------         ----         ----     --------     -------- ------  -----
-  0/5          16.00KiB     16.00KiB         none         none ---     ---
-  0/257         1.02MiB     16.00KiB         none         none ---     ---
-  0/258         1.02MiB     16.00KiB         none         none 1/0     ---
-  1/0             0.00B        0.00B         none         none ---     0/258
-	        ^^^^^^^^^^^^^^^^^^^^
-
-[CAUSE]
-The problem is in btrfs_qgroup_inherit(), we don't have good enough
-check to determine if the new relation would break the existing
-accounting.
-
-Unlike btrfs_add_qgroup_relation(), which has proper check to determine
-if we can do quick update without a rescan, in btrfs_qgroup_inherit() we
-can even assign a snapshot to multiple qgroups.
-
-[FIX]
-Fix it by manually marking qgroup inconsistent for snapshot inheritance.
-
-For subvolume creation, since all its extents are exclusively owned, we
-don't need to rescan.
-
-In theory, we should call relation check like quick_update_accounting()
-when doing qgroup inheritance and inform user about qgroup accounting
-inconsistency.
-
-But we don't have good mechanism to relay that back to the user in the
-snapshot creation context, thus we can only silently mark the qgroup
-inconsistent.
-
-Anyway, user shouldn't use qgroup inheritance during snapshot creation,
-and should add qgroup relationship after snapshot creation by 'btrfs
-qgroup assign', which has a much better UI to inform user about qgroup
-inconsistent and kick in rescan automatically.
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/dcf5ce5507104d0589a917cbb71dc3c6@realtek.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/qgroup.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ sound/pci/hda/patch_realtek.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index cbd40826f5dc..c8ed4db73b84 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -2259,6 +2259,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	struct btrfs_root *quota_root;
- 	struct btrfs_qgroup *srcgroup;
- 	struct btrfs_qgroup *dstgroup;
-+	bool need_rescan = false;
- 	u32 level_size = 0;
- 	u64 nums;
- 
-@@ -2402,6 +2403,13 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 				goto unlock;
- 		}
- 		++i_qgroups;
-+
-+		/*
-+		 * If we're doing a snapshot, and adding the snapshot to a new
-+		 * qgroup, the numbers are guaranteed to be incorrect.
-+		 */
-+		if (srcid)
-+			need_rescan = true;
- 	}
- 
- 	for (i = 0; i <  inherit->num_ref_copies; ++i, i_qgroups += 2) {
-@@ -2421,6 +2429,9 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 
- 		dst->rfer = src->rfer - level_size;
- 		dst->rfer_cmpr = src->rfer_cmpr - level_size;
-+
-+		/* Manually tweaking numbers certainly needs a rescan */
-+		need_rescan = true;
- 	}
- 	for (i = 0; i <  inherit->num_excl_copies; ++i, i_qgroups += 2) {
- 		struct btrfs_qgroup *src;
-@@ -2439,6 +2450,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 
- 		dst->excl = src->excl + level_size;
- 		dst->excl_cmpr = src->excl_cmpr + level_size;
-+		need_rescan = true;
- 	}
- 
- unlock:
-@@ -2446,6 +2458,8 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- out:
- 	if (!committing)
- 		mutex_unlock(&fs_info->qgroup_ioctl_lock);
-+	if (need_rescan)
-+		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
- 	return ret;
- }
- 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 92c6e58c3862..e62d58872b6e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -384,6 +384,7 @@ static void alc_fill_eapd_coef(struct hda_codec *codec)
+ 	case 0x10ec0282:
+ 	case 0x10ec0283:
+ 	case 0x10ec0286:
++	case 0x10ec0287:
+ 	case 0x10ec0288:
+ 	case 0x10ec0285:
+ 	case 0x10ec0298:
+@@ -8292,6 +8293,7 @@ static int patch_alc269(struct hda_codec *codec)
+ 	case 0x10ec0215:
+ 	case 0x10ec0245:
+ 	case 0x10ec0285:
++	case 0x10ec0287:
+ 	case 0x10ec0289:
+ 		spec->codec_variant = ALC269_TYPE_ALC215;
+ 		spec->shutup = alc225_shutup;
+@@ -9570,6 +9572,7 @@ static const struct hda_device_id snd_hda_id_realtek[] = {
+ 	HDA_CODEC_ENTRY(0x10ec0284, "ALC284", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0285, "ALC285", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0286, "ALC286", patch_alc269),
++	HDA_CODEC_ENTRY(0x10ec0287, "ALC287", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0288, "ALC288", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0289, "ALC289", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0290, "ALC290", patch_alc269),
 -- 
 2.25.1
 
