@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CF61F2FC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CBC1F2D6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730460AbgFIAxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:53:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55604 "EHLO mail.kernel.org"
+        id S1730967AbgFIAd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:33:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727111AbgFHXJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:09:46 -0400
+        id S1728746AbgFHXOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:14:55 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76B6120B80;
-        Mon,  8 Jun 2020 23:09:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DF0E21532;
+        Mon,  8 Jun 2020 23:14:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657786;
-        bh=WbypKLIbtcVOwzPyhZ4KFwIQhQ7w3yZw6d1nuMf9yqk=;
+        s=default; t=1591658094;
+        bh=zkzHQ3L6t8f+yP/wGT2EgnhMayEURSqiXPI+bmXbr6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ByRfLa+IM7qb0iNDpe8KwbNOfHY0ya6tbveOFpoVWStYQFp4IrmSdcUFgniXvfmDj
-         xl2i9muI34vj03AEQw1nc8josI6WhISCo7BhtTVZl1JTpnRnlbHl5ffo8MdlYWbDXl
-         oGoYSmq4hFN8jiQOpJ2DMJxP1kZCX8CLEhNqtvH8=
+        b=Bh0yGGoLRoIAjOrSn2SarRTwDcRrLIGQY10UHe15/4rO1eKzla1j0JLVx7rYUj+vR
+         6byqBCdAv1aCrpjzAvUXaKYLuHi9k1zu5j8teRIZWR6LEAM7OrsXWLUprxIENHr5fJ
+         jRmPzU7cP77qXhNiJsXwOctK/jGvcviJuAI9dRbE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Devulapally Shiva Krishna <shiva@chelsio.com>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 167/274] Crypto/chcr: fix for ccm(aes) failed test
-Date:   Mon,  8 Jun 2020 19:04:20 -0400
-Message-Id: <20200608230607.3361041-167-sashal@kernel.org>
+Cc:     Kailang Yang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.6 136/606] ALSA: hda/realtek - Add HP new mute led supported for ALC236
+Date:   Mon,  8 Jun 2020 19:04:21 -0400
+Message-Id: <20200608231211.3363633-136-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,37 +42,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Devulapally Shiva Krishna <shiva@chelsio.com>
+From: Kailang Yang <kailang@realtek.com>
 
-[ Upstream commit 10b0c75d7bc19606fa9a62c8ab9180e95c0e0385 ]
+[ Upstream commit 24164f434dc9c23cd34fca1e36acea9d0581bdde ]
 
-The ccm(aes) test fails when req->assoclen > ~240bytes.
+HP new platform has new mute led feature.
+COEF index 0x34 bit 5 to control playback mute led.
+COEF index 0x35 bit 2 and bit 3 to control Mic mute led.
 
-The problem is the value assigned to auth_offset is wrong.
-As auth_offset is unsigned char, it can take max value as 255.
-So fix it by making it unsigned int.
+[ corrected typos by tiwai ]
 
-Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
-Signed-off-by: Devulapally Shiva Krishna <shiva@chelsio.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Link: https://lore.kernel.org/r/6741211598ba499687362ff2aa30626b@realtek.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/chelsio/chcr_algo.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 44 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
-diff --git a/drivers/crypto/chelsio/chcr_algo.c b/drivers/crypto/chelsio/chcr_algo.c
-index 446fb896ee6d..6c2cd36048ea 100644
---- a/drivers/crypto/chelsio/chcr_algo.c
-+++ b/drivers/crypto/chelsio/chcr_algo.c
-@@ -2925,7 +2925,7 @@ static void fill_sec_cpl_for_aead(struct cpl_tx_sec_pdu *sec_cpl,
- 	unsigned int mac_mode = CHCR_SCMD_AUTH_MODE_CBCMAC;
- 	unsigned int rx_channel_id = reqctx->rxqidx / ctx->rxq_perchan;
- 	unsigned int ccm_xtra;
--	unsigned char tag_offset = 0, auth_offset = 0;
-+	unsigned int tag_offset = 0, auth_offset = 0;
- 	unsigned int assoclen;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 44fbd5d2d89c..368ed3678fc2 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4223,6 +4223,23 @@ static void alc285_fixup_hp_mute_led_coefbit(struct hda_codec *codec,
+ 	}
+ }
  
- 	if (get_aead_subtype(tfm) == CRYPTO_ALG_SUB_TYPE_AEAD_RFC4309)
++static void alc236_fixup_hp_mute_led_coefbit(struct hda_codec *codec,
++					  const struct hda_fixup *fix,
++					  int action)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		spec->mute_led_polarity = 0;
++		spec->mute_led_coef_idx = 0x34;
++		spec->mute_led_coefbit_mask = 1<<5;
++		spec->mute_led_coefbit_on = 0;
++		spec->mute_led_coefbit_off = 1<<5;
++		spec->gen.vmaster_mute.hook = alc_fixup_mute_led_coefbit_hook;
++		spec->gen.vmaster_mute_enum = 1;
++	}
++}
++
+ /* turn on/off mic-mute LED per capture hook by coef bit */
+ static void alc_hp_cap_micmute_update(struct hda_codec *codec)
+ {
+@@ -4250,6 +4267,20 @@ static void alc285_fixup_hp_coef_micmute_led(struct hda_codec *codec,
+ 	}
+ }
+ 
++static void alc236_fixup_hp_coef_micmute_led(struct hda_codec *codec,
++				const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		spec->mic_led_coef_idx = 0x35;
++		spec->mic_led_coefbit_mask = 3<<2;
++		spec->mic_led_coefbit_on = 2<<2;
++		spec->mic_led_coefbit_off = 1<<2;
++		snd_hda_gen_add_micmute_led(codec, alc_hp_cap_micmute_update);
++	}
++}
++
+ static void alc285_fixup_hp_mute_led(struct hda_codec *codec,
+ 				const struct hda_fixup *fix, int action)
+ {
+@@ -4257,6 +4288,13 @@ static void alc285_fixup_hp_mute_led(struct hda_codec *codec,
+ 	alc285_fixup_hp_coef_micmute_led(codec, fix, action);
+ }
+ 
++static void alc236_fixup_hp_mute_led(struct hda_codec *codec,
++				const struct hda_fixup *fix, int action)
++{
++	alc236_fixup_hp_mute_led_coefbit(codec, fix, action);
++	alc236_fixup_hp_coef_micmute_led(codec, fix, action);
++}
++
+ #if IS_REACHABLE(CONFIG_INPUT)
+ static void gpio2_mic_hotkey_event(struct hda_codec *codec,
+ 				   struct hda_jack_callback *event)
+@@ -6056,6 +6094,7 @@ enum {
+ 	ALC294_FIXUP_ASUS_COEF_1B,
+ 	ALC285_FIXUP_HP_GPIO_LED,
+ 	ALC285_FIXUP_HP_MUTE_LED,
++	ALC236_FIXUP_HP_MUTE_LED,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7208,6 +7247,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc285_fixup_hp_mute_led,
+ 	},
++	[ALC236_FIXUP_HP_MUTE_LED] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc236_fixup_hp_mute_led,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7354,6 +7397,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x877a, "HP", ALC285_FIXUP_HP_MUTE_LED),
++	SND_PCI_QUIRK(0x103c, 0x877d, "HP", ALC236_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
 -- 
 2.25.1
 
