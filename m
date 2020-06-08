@@ -2,206 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145501F221D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF421F2204
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726954AbgFHXGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:06:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49134 "EHLO mail.kernel.org"
+        id S1726867AbgFHXBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:01:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726933AbgFHXGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:06:19 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        id S1726746AbgFHXBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:01:54 -0400
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83AF82078B;
-        Mon,  8 Jun 2020 23:06:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D666206D5;
+        Mon,  8 Jun 2020 23:01:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657578;
-        bh=Mo/LmzV2QH5IQjVnMsc7iY/hSjl6NooGCziyrango3A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PaZI19HqaswJ2RRRfF6TMBox4I5+8A9tCnSqXso92wcV+bTthSBYnR8N4jlrXOGrm
-         +qK4Z82ucPg1pQqh4rwciI61DEpr+JnSvOQUbxGW8/NrnpS5vWMmT3Ec0/NWAim8uu
-         ndu3d3CjJfQLVuuTdLlf8hyOCGV1oFRLHY69EwlI=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.7 008/274] media: imx: imx7-mipi-csis: Cleanup and fix subdev pad format handling
-Date:   Mon,  8 Jun 2020 19:01:41 -0400
-Message-Id: <20200608230607.3361041-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+        s=default; t=1591657313;
+        bh=E2VDSxyTsjme/SDDJYb/Ce8BPIu8k9mIpohu+7Y2fi4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QCmsWHtuUrkP99N9zTwI1IYiExbKn+Evf9ftBvwrf3b5ttojeS+Hyn7Edq402+ZVR
+         Qy7IVlA83KbFqbAghS2O1o9Vfm+cSqA6RtCL0MpFakR/wFQqZ6tZbJBuAzjZoGNeG2
+         9graD5Nhc6mPEcrc7kgBH5k8/4opuDcpntGKKAM4=
+Received: by mail-oi1-f178.google.com with SMTP id k4so15398485oik.2;
+        Mon, 08 Jun 2020 16:01:53 -0700 (PDT)
+X-Gm-Message-State: AOAM5302k/rABPCTx/593gRZMYGMQl2cwuIZFRGWeaYBw7mBzlcjtIaT
+        6XSWpGN70ngCIKTBF5rToMP2bi0ZDjDcLPmCow==
+X-Google-Smtp-Source: ABdhPJxObAvxE+OOnTXcIgh61N2TLSHvj0BypJ4NL+n+aOPoAluENZ8Z4kbXmRaFm6G3U4eAOxdn3BnGxOwTfQQTlPQ=
+X-Received: by 2002:aca:d454:: with SMTP id l81mr1365615oig.152.1591657312818;
+ Mon, 08 Jun 2020 16:01:52 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
+ <e85e24a494a3ff41177c94673ced0f4280b6a0ee.1590594512.git-series.maxime@cerno.tech>
+ <20200529181833.GA2685451@bogus> <20200602150834.6xovwdxpgncq3ybh@gilmour>
+In-Reply-To: <20200602150834.6xovwdxpgncq3ybh@gilmour>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 8 Jun 2020 17:01:41 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJShNcyUDv1JmdanLKZqFa0TeJGazwmPz6eJ_Rq0GtkpQ@mail.gmail.com>
+Message-ID: <CAL_JsqJShNcyUDv1JmdanLKZqFa0TeJGazwmPz6eJ_Rq0GtkpQ@mail.gmail.com>
+Subject: Re: [PATCH v3 104/105] dt-bindings: display: vc4: hdmi: Add BCM2711
+ HDMI controllers bindings
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+On Tue, Jun 2, 2020 at 9:08 AM Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Hi Rob,
+>
+> On Fri, May 29, 2020 at 12:18:33PM -0600, Rob Herring wrote:
+> > On Wed, May 27, 2020 at 05:49:14PM +0200, Maxime Ripard wrote:
+> > > The HDMI controllers found in the BCM2711 SoC need some adjustments to the
+> > > bindings, especially since the registers have been shuffled around in more
+> > > register ranges.
+> > >
+> > > Cc: Rob Herring <robh+dt@kernel.org>
+> > > Cc: devicetree@vger.kernel.org
+> > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > > ---
+> > >  Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml | 109 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+> > >  1 file changed, 109 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
+> > > new file mode 100644
+> > > index 000000000000..6091fe3d315b
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
+> > > @@ -0,0 +1,109 @@
+> > > +# SPDX-License-Identifier: GPL-2.0
+> >
+> > Dual license...
+> >
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/display/brcm,bcm2711-hdmi.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Broadcom BCM2711 HDMI Controller Device Tree Bindings
+> > > +
+> > > +maintainers:
+> > > +  - Eric Anholt <eric@anholt.net>
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - brcm,bcm2711-hdmi0
+> > > +      - brcm,bcm2711-hdmi1
+> >
+> > What's the difference between the 2 blocks?
+>
+> The register layout and the lane mapping in the PHY change a bit.
+>
+> > > +
+> > > +  reg:
+> > > +    items:
+> > > +      - description: HDMI controller register range
+> > > +      - description: DVP register range
+> > > +      - description: HDMI PHY register range
+> > > +      - description: Rate Manager register range
+> > > +      - description: Packet RAM register range
+> > > +      - description: Metadata RAM register range
+> > > +      - description: CSC register range
+> > > +      - description: CEC register range
+> > > +      - description: HD register range
+> > > +
+> > > +  reg-names:
+> > > +    items:
+> > > +      - const: hdmi
+> > > +      - const: dvp
+> > > +      - const: phy
+> > > +      - const: rm
+> > > +      - const: packet
+> > > +      - const: metadata
+> > > +      - const: csc
+> > > +      - const: cec
+> > > +      - const: hd
+> > > +
+> > > +  clocks:
+> > > +    description: The HDMI state machine clock
+> > > +
+> > > +  clock-names:
+> > > +    const: hdmi
+> > > +
+> > > +  ddc:
+> > > +    allOf:
+> > > +      - $ref: /schemas/types.yaml#/definitions/phandle
+> > > +    description: >
+> > > +      Phandle of the I2C controller used for DDC EDID probing
+> >
+> > Goes in the connector.
+> >
+> > And isn't the standard name ddc-i2c-bus?
+> >
+> > > +
+> > > +  hpd-gpios:
+> > > +    description: >
+> > > +      The GPIO pin for the HDMI hotplug detect (if it doesn't appear
+> > > +      as an interrupt/status bit in the HDMI controller itself)
+> >
+> > Goes in the connector.
+>
+> If this was an entirely new binding, I would agree, but this is not
+> really the case here.
+>
+> We discussed it already for the v2, and this binding is essentially the
+> same one than the bcm2835 HDMI controller.
+>
+> I initially sent a patch adding conditionnals for the clocks and regs
+> differences too, and you asked to split the binding into a separate file
+> to simplify it a bit.
 
-[ Upstream commit d321dd233b9f2bb407b8e6b4759408f09ec207c3 ]
+Ah... Best to assume I don't remember what happened last week. ;)
 
-The subdev set pad format operation currently misbehaves in multiple ways:
+> Supporting both the old binding, and the new one based on the connector
+> is going to make the code significantly more complicated, and I'm not
+> really sure why we would here.
 
-- mipi_csis_try_format() unconditionally stores the format in the device
-  state, even for V4L2_SUBDEV_FORMAT_TRY.
+I'm not really sure I agree on the complexity, but that can be a
+discussion for another day.
 
-- The format is never stored in the pad cfg, but the pad cfg format
-  always overwrites the format requested by the user.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-- The sink format is not propagated to the source.
-
-Fix all this by reworking the set format operation as follows:
-
-1. For the source pad, turn set() into get() as the source format is not
-   modifiable.
-2. Validate the requested format and updated the stored format
-   accordingly.
-3. Return the format actually set.
-4. Propagate the format from sink to source.
-
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/staging/media/imx/imx7-mipi-csis.c | 82 ++++++++++------------
- 1 file changed, 37 insertions(+), 45 deletions(-)
-
-diff --git a/drivers/staging/media/imx/imx7-mipi-csis.c b/drivers/staging/media/imx/imx7-mipi-csis.c
-index fbc1a924652a..6318f0aebb4b 100644
---- a/drivers/staging/media/imx/imx7-mipi-csis.c
-+++ b/drivers/staging/media/imx/imx7-mipi-csis.c
-@@ -669,28 +669,6 @@ static int mipi_csis_init_cfg(struct v4l2_subdev *mipi_sd,
- 	return 0;
- }
- 
--static struct csis_pix_format const *
--mipi_csis_try_format(struct v4l2_subdev *mipi_sd, struct v4l2_mbus_framefmt *mf)
--{
--	struct csi_state *state = mipi_sd_to_csis_state(mipi_sd);
--	struct csis_pix_format const *csis_fmt;
--
--	csis_fmt = find_csis_format(mf->code);
--	if (!csis_fmt)
--		csis_fmt = &mipi_csis_formats[0];
--
--	v4l_bound_align_image(&mf->width, 1, CSIS_MAX_PIX_WIDTH,
--			      csis_fmt->pix_width_alignment,
--			      &mf->height, 1, CSIS_MAX_PIX_HEIGHT, 1,
--			      0);
--
--	state->format_mbus.code = csis_fmt->code;
--	state->format_mbus.width = mf->width;
--	state->format_mbus.height = mf->height;
--
--	return csis_fmt;
--}
--
- static struct v4l2_mbus_framefmt *
- mipi_csis_get_format(struct csi_state *state,
- 		     struct v4l2_subdev_pad_config *cfg,
-@@ -703,53 +681,67 @@ mipi_csis_get_format(struct csi_state *state,
- 	return &state->format_mbus;
- }
- 
--static int mipi_csis_set_fmt(struct v4l2_subdev *mipi_sd,
-+static int mipi_csis_get_fmt(struct v4l2_subdev *mipi_sd,
- 			     struct v4l2_subdev_pad_config *cfg,
- 			     struct v4l2_subdev_format *sdformat)
- {
- 	struct csi_state *state = mipi_sd_to_csis_state(mipi_sd);
--	struct csis_pix_format const *csis_fmt;
- 	struct v4l2_mbus_framefmt *fmt;
- 
--	if (sdformat->pad >= CSIS_PADS_NUM)
--		return -EINVAL;
--
--	fmt = mipi_csis_get_format(state, cfg, sdformat->which, sdformat->pad);
--
- 	mutex_lock(&state->lock);
--	if (sdformat->pad == CSIS_PAD_SOURCE) {
--		sdformat->format = *fmt;
--		goto unlock;
--	}
--
--	csis_fmt = mipi_csis_try_format(mipi_sd, &sdformat->format);
--
-+	fmt = mipi_csis_get_format(state, cfg, sdformat->which, sdformat->pad);
- 	sdformat->format = *fmt;
--
--	if (csis_fmt && sdformat->which == V4L2_SUBDEV_FORMAT_ACTIVE)
--		state->csis_fmt = csis_fmt;
--	else
--		cfg->try_fmt = sdformat->format;
--
--unlock:
- 	mutex_unlock(&state->lock);
- 
- 	return 0;
- }
- 
--static int mipi_csis_get_fmt(struct v4l2_subdev *mipi_sd,
-+static int mipi_csis_set_fmt(struct v4l2_subdev *mipi_sd,
- 			     struct v4l2_subdev_pad_config *cfg,
- 			     struct v4l2_subdev_format *sdformat)
- {
- 	struct csi_state *state = mipi_sd_to_csis_state(mipi_sd);
-+	struct csis_pix_format const *csis_fmt;
- 	struct v4l2_mbus_framefmt *fmt;
- 
--	mutex_lock(&state->lock);
-+	/*
-+	 * The CSIS can't transcode in any way, the source format can't be
-+	 * modified.
-+	 */
-+	if (sdformat->pad == CSIS_PAD_SOURCE)
-+		return mipi_csis_get_fmt(mipi_sd, cfg, sdformat);
-+
-+	if (sdformat->pad != CSIS_PAD_SINK)
-+		return -EINVAL;
- 
- 	fmt = mipi_csis_get_format(state, cfg, sdformat->which, sdformat->pad);
- 
-+	mutex_lock(&state->lock);
-+
-+	/* Validate the media bus code and clamp the size. */
-+	csis_fmt = find_csis_format(sdformat->format.code);
-+	if (!csis_fmt)
-+		csis_fmt = &mipi_csis_formats[0];
-+
-+	fmt->code = csis_fmt->code;
-+	fmt->width = sdformat->format.width;
-+	fmt->height = sdformat->format.height;
-+
-+	v4l_bound_align_image(&fmt->width, 1, CSIS_MAX_PIX_WIDTH,
-+			      csis_fmt->pix_width_alignment,
-+			      &fmt->height, 1, CSIS_MAX_PIX_HEIGHT, 1, 0);
-+
- 	sdformat->format = *fmt;
- 
-+	/* Propagate the format from sink to source. */
-+	fmt = mipi_csis_get_format(state, cfg, sdformat->which,
-+				   CSIS_PAD_SOURCE);
-+	*fmt = sdformat->format;
-+
-+	/* Store the CSIS format descriptor for active formats. */
-+	if (sdformat->which == V4L2_SUBDEV_FORMAT_ACTIVE)
-+		state->csis_fmt = csis_fmt;
-+
- 	mutex_unlock(&state->lock);
- 
- 	return 0;
--- 
-2.25.1
-
+Rob
