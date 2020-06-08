@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FCF1F22A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3951F23E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgFHXJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:09:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54482 "EHLO mail.kernel.org"
+        id S1730462AbgFHXRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:17:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728282AbgFHXIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:08:55 -0400
+        id S1728931AbgFHXOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:14:05 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A9BB208B6;
-        Mon,  8 Jun 2020 23:08:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9654B214D8;
+        Mon,  8 Jun 2020 23:14:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657734;
-        bh=fe6JlMkedmaY+Fx6mlPmGF1n1tIJcCuXDwOukd/h1yw=;
+        s=default; t=1591658045;
+        bh=ZrjVoD4ZwV/tZz4fxl1W6b/CNXJM9Tqt8/6U32PtV6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PKn5jX7dIGmba3l9J/1JuUoIlobHcVR7Y24KQowsnG2bojfmF6gOU7LXjMlYQBYbL
-         kn8RberEpnIz4gtEQnTWPZrCcFgV9+BFBMBdNi9V6KJRle2wuoG7rv5azTsWftpgDl
-         BvXLQrJw8nmg0k3z+XPfo3BIjgEfthyOSuQjYrUk=
+        b=WY0w7yHgumIB0bS3ic4RHKt5Gk/F9PJed0ZovmG55p7A68QsCLChOMOqH5HqgeGYf
+         0sxdG2eUWQwV255H8oJsheiNN2/QzuUTs6b7dpcMEchIuXM0qO9kbixPExVq8k7Kq0
+         6r0TeYpTCyMA1sUyNKiuUzQKF29wmurhG2ckcjgk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wei Yongjun <weiyongjun1@huawei.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 125/274] ath11k: use GFP_ATOMIC under spin lock
-Date:   Mon,  8 Jun 2020 19:03:38 -0400
-Message-Id: <20200608230607.3361041-125-sashal@kernel.org>
+Cc:     Raul E Rangel <rrangel@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Sasha Levin <sashal@kernel.org>,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH AUTOSEL 5.6 094/606] iommu/amd: Fix get_acpihid_device_id()
+Date:   Mon,  8 Jun 2020 19:03:39 -0400
+Message-Id: <20200608231211.3363633-94-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,34 +46,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Raul E Rangel <rrangel@chromium.org>
 
-[ Upstream commit 69c93f9674c97dc439cdc0527811f8ad104c2e35 ]
+[ Upstream commit ea90228c7b2ae6646bb6381385229aabb6f14cd2 ]
 
-A spin lock is taken here so we should use GFP_ATOMIC.
+acpi_dev_hid_uid_match() expects a null pointer for UID if it doesn't
+exist. The acpihid_map_entry contains a char buffer for holding the
+UID. If no UID was provided in the IVRS table, this buffer will be
+zeroed. If we pass in a null string, acpi_dev_hid_uid_match() will
+return false because it will try and match an empty string to the ACPI
+UID of the device.
 
-Fixes: d5c65159f289 ("ath11k: driver for Qualcomm IEEE 802.11ax devices")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200427092417.56236-1-weiyongjun1@huawei.com
+Fixes: ae5e6c6439c3 ("iommu/amd: Switch to use acpi_dev_hid_uid_match()")
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20200511103229.v2.1.I6f1b6f973ee6c8af1348611370c73a0ec0ea53f1@changeid
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath11k/dp_rx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iommu/amd_iommu.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/dp_rx.c b/drivers/net/wireless/ath/ath11k/dp_rx.c
-index f74a0e74bf3e..34b1e8e6a7fb 100644
---- a/drivers/net/wireless/ath/ath11k/dp_rx.c
-+++ b/drivers/net/wireless/ath/ath11k/dp_rx.c
-@@ -892,7 +892,7 @@ int ath11k_peer_rx_tid_setup(struct ath11k *ar, const u8 *peer_mac, int vdev_id,
- 	else
- 		hw_desc_sz = ath11k_hal_reo_qdesc_size(DP_BA_WIN_SZ_MAX, tid);
+diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
+index 500d0a8c966f..1d8634250afc 100644
+--- a/drivers/iommu/amd_iommu.c
++++ b/drivers/iommu/amd_iommu.c
+@@ -127,7 +127,8 @@ static inline int get_acpihid_device_id(struct device *dev,
+ 		return -ENODEV;
  
--	vaddr = kzalloc(hw_desc_sz + HAL_LINK_DESC_ALIGN - 1, GFP_KERNEL);
-+	vaddr = kzalloc(hw_desc_sz + HAL_LINK_DESC_ALIGN - 1, GFP_ATOMIC);
- 	if (!vaddr) {
- 		spin_unlock_bh(&ab->base_lock);
- 		return -ENOMEM;
+ 	list_for_each_entry(p, &acpihid_map, list) {
+-		if (acpi_dev_hid_uid_match(adev, p->hid, p->uid)) {
++		if (acpi_dev_hid_uid_match(adev, p->hid,
++					   p->uid[0] ? p->uid : NULL)) {
+ 			if (entry)
+ 				*entry = p;
+ 			return p->devid;
 -- 
 2.25.1
 
