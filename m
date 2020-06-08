@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8D51F2448
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2108D1F2346
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730445AbgFHXUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:20:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
+        id S1729397AbgFHXN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:13:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730187AbgFHXQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:16:10 -0400
+        id S1727920AbgFHXLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:11:17 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE0FC2078C;
-        Mon,  8 Jun 2020 23:16:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DF86212CC;
+        Mon,  8 Jun 2020 23:11:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658170;
-        bh=Sp34QcXNnxLdREDvyYQ8VkxY0hFWQfze28x7WgtpEng=;
+        s=default; t=1591657877;
+        bh=WalAKmd2wJyO633C/RRtz+BX1RofonbPiTJF5TW5uS0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zQb/Vxt9S8uG+OXBaQhP1uMQEfso667h4nxPrawSUI2s+yEOgyvbEzelmVdQEUPJZ
-         0vZ6JrnS+3/31zVO4YFwuoVZZiqd2agkIlESUzjaEPeGODji9wsjXG5F7n2WiI7Afb
-         TWxmGMt4y9SRwApvo5N5VqB6nVyfPaE6K3ightUQ=
+        b=Cm0AFNWnARbden/cCzJHjYhiAHojxkFzVL3SSQ4YgraW+FAC1pDDOyjrbteTIZlG5
+         hW+OLl7V0QzKuHt5UZokqLqR8bfRAAxpqmwCevnhQtreCKAK9eBHPoX3Zgh0modg5A
+         B3tBtg/1WbdWZrV4DnTStEcn7mj1rs+vGXUNUc7A=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Philipp Rudo <prudo@linux.ibm.com>,
-        Lianbo Jiang <lijiang@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 197/606] s390/kexec_file: fix initrd location for kdump kernel
-Date:   Mon,  8 Jun 2020 19:05:22 -0400
-Message-Id: <20200608231211.3363633-197-sashal@kernel.org>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 234/274] ACPI: video: Use native backlight on Acer TravelMate 5735Z
+Date:   Mon,  8 Jun 2020 19:05:27 -0400
+Message-Id: <20200608230607.3361041-234-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -46,39 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Rudo <prudo@linux.ibm.com>
+From: Paul Menzel <pmenzel@molgen.mpg.de>
 
-commit 70b690547d5ea1a3d135a4cc39cd1e08246d0c3a upstream.
+[ Upstream commit c41c36e900a337b4132b12ccabc97f5578248b44 ]
 
-initrd_start must not point at the location the initrd is loaded into
-the crashkernel memory but at the location it will be after the
-crashkernel memory is swapped with the memory at 0.
+Currently, changing the brightness of the internal display of the Acer
+TravelMate 5735Z does not work. Pressing the function keys or changing the
+slider, GNOME Shell 3.36.2 displays the OSD (five steps), but the
+brightness does not change.
 
-Fixes: ee337f5469fd ("s390/kexec_file: Add crash support to image loader")
-Reported-by: Lianbo Jiang <lijiang@redhat.com>
-Signed-off-by: Philipp Rudo <prudo@linux.ibm.com>
-Tested-by: Lianbo Jiang <lijiang@redhat.com>
-Link: https://lore.kernel.org/r/20200512193956.15ae3f23@laptop2-ibm.local
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The Acer TravelMate 5735Z shipped with Windows 7 and as such does not
+trigger our "win8 ready" heuristic for preferring the native backlight
+interface.
+
+Still ACPI backlight control doesn't work on this model, where as the
+native (intel_video) backlight interface does work by adding
+`acpi_backlight=native` or `acpi_backlight=none` to Linux’ command line.
+
+So, add a quirk to force using native backlight control on this model.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=207835
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/machine_kexec_file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/video_detect.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/s390/kernel/machine_kexec_file.c b/arch/s390/kernel/machine_kexec_file.c
-index 8415ae7d2a23..f9e4baa64b67 100644
---- a/arch/s390/kernel/machine_kexec_file.c
-+++ b/arch/s390/kernel/machine_kexec_file.c
-@@ -151,7 +151,7 @@ static int kexec_file_add_initrd(struct kimage *image,
- 		buf.mem += crashk_res.start;
- 	buf.memsz = buf.bufsz;
+diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
+index b4994e50608d..2499d7e3c710 100644
+--- a/drivers/acpi/video_detect.c
++++ b/drivers/acpi/video_detect.c
+@@ -361,6 +361,16 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
+ 		DMI_MATCH(DMI_BOARD_NAME, "JV50"),
+ 		},
+ 	},
++	{
++	 /* https://bugzilla.kernel.org/show_bug.cgi?id=207835 */
++	 .callback = video_detect_force_native,
++	 .ident = "Acer TravelMate 5735Z",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++		DMI_MATCH(DMI_PRODUCT_NAME, "TravelMate 5735Z"),
++		DMI_MATCH(DMI_BOARD_NAME, "BA51_MV"),
++		},
++	},
  
--	data->parm->initrd_start = buf.mem;
-+	data->parm->initrd_start = data->memsz;
- 	data->parm->initrd_size = buf.memsz;
- 	data->memsz += buf.memsz;
- 
+ 	/*
+ 	 * Desktops which falsely report a backlight and which our heuristics
 -- 
 2.25.1
 
