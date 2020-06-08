@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115AA1F27FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9191F278F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731862AbgFHXZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:25:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44646 "EHLO mail.kernel.org"
+        id S1731952AbgFHX0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:26:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730002AbgFHXUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:20:48 -0400
+        id S1728871AbgFHXUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:20:55 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12F722086A;
-        Mon,  8 Jun 2020 23:20:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C637120870;
+        Mon,  8 Jun 2020 23:20:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658448;
-        bh=4D/TzCF5dNrWPr8uoeNBCXOeMzlLAPWBUdsM219bCok=;
+        s=default; t=1591658455;
+        bh=GZYPLYE2TO3fT5PWQzRX0GmAaj6ck3IWKzJ3TDMR2rk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0MS1wW7ZrXpZOZO2Y/RawGcVm+gKZrlBu2y9FRw469SnSx/D28ReVJCa5H+Bx0/aY
-         Tbq03RJ6vdmKiTM/O8YHjGVQCHnKWQazUKe9jrHLISaXKu3WIB4Jt15oHFZMmpOxyX
-         O1cIgZkzQVxMecS51xvDpF7mrVNPwHOb4LsXLOUM=
+        b=F14TeTDB4f9N8G5FbZr1JeMkCU6TAtF/svCmwO7PSuhTu8F/Uml++TbXAtPa7t/g/
+         sXah2QkX/PUvjtC9PqaUO1nkaIjzO4d+F8VBPch4Bs0l2YLCzfPCbTgIU1lnJfe01R
+         KhgLVlcOMx9gLlBI8Q6px+U6XHQsK8bHN43V4OR4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 090/175] drivers/perf: hisi: Fix typo in events attribute array
-Date:   Mon,  8 Jun 2020 19:17:23 -0400
-Message-Id: <20200608231848.3366970-90-sashal@kernel.org>
+Cc:     Yunjian Wang <wangyunjian@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 096/175] net: allwinner: Fix use correct return type for ndo_start_xmit()
+Date:   Mon,  8 Jun 2020 19:17:29 -0400
+Message-Id: <20200608231848.3366970-96-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -44,36 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shaokun Zhang <zhangshaokun@hisilicon.com>
+From: Yunjian Wang <wangyunjian@huawei.com>
 
-[ Upstream commit 88562f06ebf56587788783e5420f25fde3ca36c8 ]
+[ Upstream commit 09f6c44aaae0f1bdb8b983d7762676d5018c53bc ]
 
-Fix up one typo: wr_dr_64b -> wr_ddr_64b.
+The method ndo_start_xmit() returns a value of type netdev_tx_t. Fix
+the ndo function to use the correct type. And emac_start_xmit() can
+leak one skb if 'channel' == 3.
 
-Fixes: 2bab3cf9104c ("perf: hisi: Add support for HiSilicon SoC HHA PMU driver")
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Link: https://lore.kernel.org/r/1587643530-34357-1-git-send-email-zhangshaokun@hisilicon.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/perf/hisilicon/hisi_uncore_hha_pmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/allwinner/sun4i-emac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c b/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
-index f28063873e11..0d6325d6a4ec 100644
---- a/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
-@@ -285,7 +285,7 @@ static struct attribute *hisi_hha_pmu_events_attr[] = {
- 	HISI_PMU_EVENT_ATTR(rx_wbip,		0x05),
- 	HISI_PMU_EVENT_ATTR(rx_wtistash,	0x11),
- 	HISI_PMU_EVENT_ATTR(rd_ddr_64b,		0x1c),
--	HISI_PMU_EVENT_ATTR(wr_dr_64b,		0x1d),
-+	HISI_PMU_EVENT_ATTR(wr_ddr_64b,		0x1d),
- 	HISI_PMU_EVENT_ATTR(rd_ddr_128b,	0x1e),
- 	HISI_PMU_EVENT_ATTR(wr_ddr_128b,	0x1f),
- 	HISI_PMU_EVENT_ATTR(spill_num,		0x20),
+diff --git a/drivers/net/ethernet/allwinner/sun4i-emac.c b/drivers/net/ethernet/allwinner/sun4i-emac.c
+index 0537df06a9b5..ff318472a3ee 100644
+--- a/drivers/net/ethernet/allwinner/sun4i-emac.c
++++ b/drivers/net/ethernet/allwinner/sun4i-emac.c
+@@ -432,7 +432,7 @@ static void emac_timeout(struct net_device *dev)
+ /* Hardware start transmission.
+  * Send a packet to media from the upper layer.
+  */
+-static int emac_start_xmit(struct sk_buff *skb, struct net_device *dev)
++static netdev_tx_t emac_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	struct emac_board_info *db = netdev_priv(dev);
+ 	unsigned long channel;
+@@ -440,7 +440,7 @@ static int emac_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 
+ 	channel = db->tx_fifo_stat & 3;
+ 	if (channel == 3)
+-		return 1;
++		return NETDEV_TX_BUSY;
+ 
+ 	channel = (channel == 1 ? 1 : 0);
+ 
 -- 
 2.25.1
 
