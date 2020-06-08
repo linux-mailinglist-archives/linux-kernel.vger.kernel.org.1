@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7621F16A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 12:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD861F16AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 12:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbgFHK2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 06:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbgFHK2C (ORCPT
+        id S1729408AbgFHK21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 06:28:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57882 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729393AbgFHK2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 06:28:02 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D63CC08C5C3
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 03:28:01 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id n9so6505225plk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 03:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=39m+2LLbv6DmBKnk5P51Aj/s0CDKaXKRY6RVZpmO47k=;
-        b=WAGe9EfgYRXcs6oNuDgg+A5B5DLZKzh4sjoqPNRbHSPYUsD654Ef1u0NL1YTyBQJbH
-         3AAQHDRAFqZYQHcRUlc7swh6QESQXgVdWti12n2MKx0W1qMmCYiJOf3wVNg3llo5qVzU
-         jeLX7I4WOEoskkTxzZilOnuhERrqKx2CArW9Ay9eBSsErMEDyjfiinrbF1tbnOIfRVKT
-         zYqOwFTR6JxFVjVfjYdV1Ozd+PV88T94fYPeucXCSGHFqpmfTc6v3FhZUeqIRJwyqwLC
-         6pGwNOxhVFiddns9nUl45WEcBbvoHqPVAC2h8E95E+7t447c4eMegnPjx9xnAmolpzvJ
-         4j4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=39m+2LLbv6DmBKnk5P51Aj/s0CDKaXKRY6RVZpmO47k=;
-        b=JPorqSVQatEAA4eBf4TTj9Rayxp59ctHgfOiLwZFzUxHCp5eJoU+FZ8eHPljz0ErPV
-         BdhkngMWontKtljvokVlFhjV/n4myoerHlIKu5OTHowrcZNaU6VgntF9ukvUHNp5ex6f
-         9gTLE9S+rCYYchhVE4MhbkQqtKZblxbvgdyPV8c4UfLOPYrGCs6ccNmcu8KCnBzAFPmx
-         +0L1iYV0pG4yVUaVQvQ1sspgFPPXjwnDHFn0izEQGGf8lDnOetjqrR1q5ZO9z+bBnL2k
-         UwVF5MXhvTHBEKbtzU9b+Y1BJqHb0aVphuGoe6ofkj8J+EHFZS7JquIGwrQp2J+Ioz/b
-         2zkA==
-X-Gm-Message-State: AOAM531JJmqf5aCMahoSZ8WwKHEVjN9GoHQj021ZUJXFj1OxGVLgIdLI
-        b2JHuVQcmzzp8JW8yHijmVVeAw==
-X-Google-Smtp-Source: ABdhPJy7tUDmw7E2+N2dP4+jFgxDi565u5EZbJy/npJ1/aTQhfV9kSuAXl9CPg0tBQD4hXT6yfe9gg==
-X-Received: by 2002:a17:902:6bc8:: with SMTP id m8mr20467004plt.138.1591612080996;
-        Mon, 08 Jun 2020 03:28:00 -0700 (PDT)
-Received: from localhost ([122.172.62.209])
-        by smtp.gmail.com with ESMTPSA id n24sm14806270pjt.47.2020.06.08.03.27.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Jun 2020 03:28:00 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 15:57:58 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     sboyd@kernel.org, georgi.djakov@linaro.org, saravanak@google.com,
-        mka@chromium.org, nm@ti.com, bjorn.andersson@linaro.org,
-        agross@kernel.org, rjw@rjwysocki.net,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, dianders@chromium.org,
-        vincent.guittot@linaro.org, amit.kucheria@linaro.org,
-        lukasz.luba@arm.com, sudeep.holla@arm.com, smasetty@codeaurora.org
-Subject: Re: [PATCH v6 0/5] DDR/L3 Scaling support on SDM845 and SC7180 SoCs
-Message-ID: <20200608102758.54vdswjievx3cc7l@vireshk-i7>
-References: <20200605213332.609-1-sibis@codeaurora.org>
+        Mon, 8 Jun 2020 06:28:25 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 058ABstu178122;
+        Mon, 8 Jun 2020 06:28:10 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31g59r9m0u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Jun 2020 06:28:10 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 058AMoMC010283;
+        Mon, 8 Jun 2020 06:28:09 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31g59r9kyv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Jun 2020 06:28:09 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 058AQ566011235;
+        Mon, 8 Jun 2020 10:28:07 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 31g2s7sgxw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Jun 2020 10:28:07 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 058AS5bq6685010
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Jun 2020 10:28:05 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F0AF7AE056;
+        Mon,  8 Jun 2020 10:28:04 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 242A6AE053;
+        Mon,  8 Jun 2020 10:28:04 +0000 (GMT)
+Received: from oc3871087118.ibm.com (unknown [9.145.56.93])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon,  8 Jun 2020 10:28:04 +0000 (GMT)
+Date:   Mon, 8 Jun 2020 12:28:02 +0200
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390@vger.kernel.org, Stable <stable@vger.kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Amritha Nambiar <amritha.nambiar@intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        "Tobin C . Harding" <tobin@kernel.org>,
+        Vineet Gupta <vineet.gupta1@synopsys.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Willem de Bruijn <willemb@google.com>
+Subject: Re: [PATCH RESEND] lib: fix bitmap_parse() on 64-bit big endian archs
+Message-ID: <20200608102801.GA22989@oc3871087118.ibm.com>
+References: <1589798090-11136-1-git-send-email-agordeev@linux.ibm.com>
+ <CAHp75VdM2yrpd2d3pK2RkmbhF3yiM4=fiTXL4i3yu3AxV3wY-A@mail.gmail.com>
+ <20200518115059.GA19150@oc3871087118.ibm.com>
+ <20200602102430.GA17703@oc3871087118.ibm.com>
+ <20200605132558.GM2428291@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200605213332.609-1-sibis@codeaurora.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20200605132558.GM2428291@smile.fi.intel.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-08_07:2020-06-08,2020-06-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ impostorscore=0 clxscore=1015 adultscore=0 spamscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=999 cotscore=-2147483648 bulkscore=0
+ suspectscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006080073
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06-06-20, 03:03, Sibi Sankar wrote:
-> This patch series aims to extend cpu based scaling support to L3/DDR on
-> SDM845 and SC7180 SoCs.
-> 
-> Patches [1-2] - Blacklist SDM845 and SC7180 in cpufreq-dt-platdev
-> Patches [3-5] - Update bw levels based on cpu frequency change
-> 
-> Based on Viresh's opp-next:
-> https://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git/log/?h=opp/linux-next
-> 
-> V6:
->  * Add global flag to distinguish between voltage update and opp add.
->    Use the same flag before trying to scale ddr/l3 bw [Viresh]
->  * Use dev_pm_opp_find_freq_ceil to grab all opps [Viresh] 
->  * Move dev_pm_opp_of_find_icc_paths into probe [Viresh]
+On Fri, Jun 05, 2020 at 04:25:58PM +0300, Andy Shevchenko wrote:
+> Test case, please.
 
-Picked for 5.9, will push to my branch after rc1 is out.
+Hi Andy,
 
--- 
-viresh
+Below is the output of the runtime kernel test "test_bitmap".
+I resent the patch with Andrew Morton on CC, but did not include
+the excessive test output:
+
+test_bitmap: parse: 4: input is 1, result is 0x100000000, expected 0x1
+test_bitmap: parse: 5: input is deadbeef, result is 0xdeadbeef00000000, expected 0xdeadbeef
+test_bitmap: parse: 6: input is 1,0, result is 0x1, expected 0x100000000
+test_bitmap: parse: 7: input is deadbeef,,0,1, result is 0x1, expected 0xdeadbeef
+test_bitmap: parse: 8: input is deadbeef,1,0, result is 0x1, expected 0x100000000
+test_bitmap: parse: 9: input is baadf00d,deadbeef,1,0, result is 0x1, expected 0x100000000
+test_bitmap: parse: 10: input is badf00d,deadbeef,1,0, errno is -75, expected 0
+test_bitmap: parse: 11: input is badf00d,deadbeef,1,0, errno is -75, expected 0
+test_bitmap: parse: 12: input is   badf00d,deadbeef,1,0  , errno is -75, expected 0
+test_bitmap: parse: 13: input is  , badf00d,deadbeef,1,0 , , errno is -75, expected 0
+test_bitmap: parse: 14: input is  , badf00d, ,, ,,deadbeef,1,0 , , errno is -75, expected 0
+test_bitmap: parse: 16: input is 3,0, errno is 0, expected -75
+test_bitmap: parse_user: 4: input is 1, result is 0x100000000, expected 0x1
+test_bitmap: parse_user: 5: input is deadbeef, result is 0xdeadbeef00000000, expected 0xdeadbeef
+test_bitmap: parse_user: 6: input is 1,0, result is 0x1, expected 0x100000000
+test_bitmap: parse_user: 7: input is deadbeef,,0,1, result is 0x1, expected 0xdeadbeef
+test_bitmap: parse_user: 8: input is deadbeef,1,0, result is 0x1, expected 0x100000000
+test_bitmap: parse_user: 9: input is baadf00d,deadbeef,1,0, result is 0x1, expected 0x100000000
+test_bitmap: parse_user: 10: input is badf00d,deadbeef,1,0, errno is -75, expected 0
+test_bitmap: parse_user: 11: input is badf00d,deadbeef,1,0, errno is -75, expected 0
+test_bitmap: parse_user: 12: input is   badf00d,deadbeef,1,0  , errno is -75, expected 0
+test_bitmap: parse_user: 13: input is  , badf00d,deadbeef,1,0 , , errno is -75, expected 0
+test_bitmap: parse_user: 14: input is  , badf00d, ,, ,,deadbeef,1,0 , , errno is -75, expected 0
+test_bitmap: parse_user: 16: input is 3,0, errno is 0, expected -75
+
+Thanks!
+
+
+> Yes, you can simulate BE test case on LE platform and vise versa.
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
