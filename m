@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDF01F1FB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 21:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1B41F1FB9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 21:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgFHTZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 15:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgFHTZ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 15:25:29 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB35C08C5C3
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 12:25:28 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id r7so18735257wro.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 12:25:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=mxhIGg2cqw/XPpjpdkJxjIWYKGlCg1JDkmDrxitivV0=;
-        b=Wki+dDfEOx3kuXRK+0nd8CQVmYMtGONVjSJ0CpY4bqVlR6pKRBsGxFhvST7jSBd/nu
-         lwCgE8jIyWk6DG440Ct3cbpaBp8xUef4NsWL1Jog+ra+Ni5Vk0HEwG911gY+gHoJkAd6
-         UFjvY0Nf8yaU6dFsgNu/Iwmed1BJTj1Csr3fDu8b0dq1sgC3EspY5WgW9MEDv/R4TJ1O
-         IRFnUC63VOciy7ODCbAZ9qho4x3FX4vE4rcqv+kK7HLDhRq/gfdTSmv92nLqKOV8IG3C
-         FuMcKLcSHJgDP6xG3GuiZsj4Auv32h4sDbD5A0ogpKPTVd7lmh+IiTN0fBxoT5MxAanj
-         EUZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=mxhIGg2cqw/XPpjpdkJxjIWYKGlCg1JDkmDrxitivV0=;
-        b=i/TuDT4ZINJWTYwVVVwbQR9prB5De2Y1sgquKCGTf9k+rGrat1EmExWz6lham+CDxD
-         BAAk+TmNE6OJVGME3KEw13WpxvxI7rDTZ4LZwiHKgg59POpF+AlG9EWIwq4djEKSo8J/
-         mU+MKPxXYIHg8bO/2WLNwUGqIeSgFTGckk01qrJVA5qPXdJmRfZP1F1IFSIEXGCiQwEb
-         aSFd6L32jRigjfElmZL8I3ocgyFply1QiOpko0/UE6NFYOn9nCf0221y0anm6p5iwuOL
-         NSx30wMMO/QxEeS/xFsxUDsDG4gkH+2i8lKjRd+fioYsvk6v2IqSgva172pGvFrXgrzD
-         Af5A==
-X-Gm-Message-State: AOAM5313q8S2CXTV4DfzrhOCDAvWUCmnaeokJTv+Eh3FfQWPsbrYydLT
-        JMVihW4gg1Thf7v7AZr8nuw7Tw==
-X-Google-Smtp-Source: ABdhPJyI9mGXeNtCefguGgkN84Z6BMGgUJsgmPkK8phVYm55kKWSXwGkpNK7uvgqjHjERUfVR7OTUg==
-X-Received: by 2002:adf:a34d:: with SMTP id d13mr324885wrb.270.1591644326744;
-        Mon, 08 Jun 2020 12:25:26 -0700 (PDT)
-Received: from dell ([95.147.198.92])
-        by smtp.gmail.com with ESMTPSA id z206sm472761wmg.30.2020.06.08.12.25.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 12:25:25 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 20:25:24 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <fancer.lancer@gmail.com>, linux-gpio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: Re: [PATCH v1 3/6] mfd: core: Propagate software node group to the
- sub devices
-Message-ID: <20200608192524.GF4106@dell>
-References: <20200608134300.76091-1-andriy.shevchenko@linux.intel.com>
- <20200608134300.76091-4-andriy.shevchenko@linux.intel.com>
+        id S1726578AbgFHT1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 15:27:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39542 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726406AbgFHT1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 15:27:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id E1636AE41;
+        Mon,  8 Jun 2020 19:27:31 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     f.fainelli@gmail.com, gregkh@linuxfoundation.org, wahrenst@gmx.net,
+        robh@kernel.org, mathias.nyman@linux.intel.com,
+        Eric Anholt <eric@anholt.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-usb@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, tim.gover@raspberrypi.org,
+        helgaas@kernel.org, lorenzo.pieralisi@arm.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: [PATCH 0/9] Raspberry Pi 4 USB firmware initialization rework
+Date:   Mon,  8 Jun 2020 21:26:52 +0200
+Message-Id: <20200608192701.18355-1-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200608134300.76091-4-andriy.shevchenko@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Jun 2020, Andy Shevchenko wrote:
+On the Raspberry Pi 4, after a PCI reset, VL805's firmware may either be
+loaded directly from an EEPROM or, if not present, by the SoC's
+co-processor, VideoCore. This series reworks how we handle this.
 
-> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> 
-> When ever device properties are supplied for a sub device, a software node
-> (fwnode) is actually created and then associated with that device. By allowing
-> the drivers to supply the complete software node group instead of just the
-> properties in it, the drivers can take advantage of the other features the
-> software nodes have on top of supplying the device properties.
-> 
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/mfd/mfd-core.c   | 31 +++++++++++++++++++++++++++----
->  include/linux/mfd/core.h |  3 +++
->  2 files changed, 30 insertions(+), 4 deletions(-)
+The previous solution makes use of PCI quirks and exporting platform
+specific functions. Albeit functional it feels pretty shoehorned. This
+proposes an alternative way of handling the triggering of the xHCI chip
+initialization trough means of a reset controller.
 
-I'm not sure a change to the API is justified presently (same does go
-for 'properties' really, but as it was only a couple of lines, it
-didn't seem too intrusive).
+The benefits are pretty evident: less platform churn in core xHCI code,
+and no explicit device dependency management in pcie-brcmstb.
 
-My recommendation is to handle this in-house (i.e. locally in-driver)
-for now.  When (if) more users adopt the practice, then we should
-consider to draw down on line numbers and repetition and make it part
-of the API.
+Note that patch #1 depend on another series[1].
+
+The series is based on next-20200605.
+
+[1] https://lwn.net/ml/linux-kernel/cover.662a8d401787ef33780d91252a352de91dc4be10.1590594293.git-series.maxime@cerno.tech/
+
+---
+
+Nicolas Saenz Julienne (9):
+  dt-bindings: reset: Add a binding for the RPi Firmware USB reset
+  reset: Add Raspberry Pi 4 firmware USB reset controller
+  ARM: dts: bcm2711: Add firmware usb reset node
+  ARM: dts: bcm2711: Add reset controller to xHCI node
+  usb: xhci-pci: Add support for reset controllers
+  Revert "USB: pci-quirks: Add Raspberry Pi 4 quirk"
+  usb: host: pci-quirks: Bypass xHCI quirks for Raspberry Pi 4
+  Revert "firmware: raspberrypi: Introduce vl805 init routine"
+  Revert "PCI: brcmstb: Wait for Raspberry Pi's firmware when present"
+
+ .../arm/bcm/raspberrypi,bcm2835-firmware.yaml |  21 +++
+ arch/arm/boot/dts/bcm2711-rpi-4-b.dts         |  12 ++
+ drivers/firmware/Kconfig                      |   3 +-
+ drivers/firmware/raspberrypi.c                |  61 ---------
+ drivers/pci/controller/pcie-brcmstb.c         |  17 ---
+ drivers/reset/Kconfig                         |   9 ++
+ drivers/reset/Makefile                        |   1 +
+ drivers/reset/reset-raspberrypi-usb.c         | 122 ++++++++++++++++++
+ drivers/usb/host/pci-quirks.c                 |  22 ++--
+ drivers/usb/host/xhci-pci.c                   |   9 ++
+ include/soc/bcm2835/raspberrypi-firmware.h    |   7 -
+ 11 files changed, 184 insertions(+), 100 deletions(-)
+ create mode 100644 drivers/reset/reset-raspberrypi-usb.c
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.26.2
+
