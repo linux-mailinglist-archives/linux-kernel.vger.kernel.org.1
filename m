@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0541F2D23
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4741F2E46
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730060AbgFHXPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:15:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60868 "EHLO mail.kernel.org"
+        id S1730968AbgFIAkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:40:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729198AbgFHXNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:13:01 -0400
+        id S1729206AbgFHXNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:13:02 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7222421501;
-        Mon,  8 Jun 2020 23:12:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D77AF208C7;
+        Mon,  8 Jun 2020 23:13:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657980;
-        bh=576Ow5ZT61zgY2FffwPpL3/kpHTlNTB4V+Udpiiiqq0=;
+        s=default; t=1591657981;
+        bh=ykA2/1B6WlQZ3TXxlaaNUqKEm5FMxSR7j0S3cwhJ6Vk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kl9DaJ8Jud5+lA0O8Cw647Q1Yq4UG5neNJiSX5xdCu/aMCKfFl/e0BL/DUvlpqwvO
-         T6u1ORcsg3Mx60qdG+UbF7pS5dcpSCTczakDVDWuQ/P75ihIf62PYItsm4Lrwmn5hp
-         XNN416SO1EuIDkAVQU5ls+SsSf59w1fTECXG8dJI=
+        b=ADKYFVZe8XuzibmgVvYqd1ZF5DH2wVEwOI0JxgwuwfXbvwsi9eGV1qS40aH1c7dmM
+         FZd3oAHFc9KjMGAxMooxYYNDrEVa1KZ0sgdG89IcweTqUMpIXcU6mjWOamVrsp2bxc
+         XpaMxvHc6ahoV5zdcWtxb1AG/GEbuczUvr1XaZzM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Babu Moger <babu.moger@amd.com>, Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+Cc:     Borislav Petkov <bp@suse.de>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kvm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 041/606] KVM: x86: Fix pkru save/restore when guest CR4.PKE=0, move it to x86.c
-Date:   Mon,  8 Jun 2020 19:02:46 -0400
-Message-Id: <20200608231211.3363633-41-sashal@kernel.org>
+        xen-devel@lists.xenproject.org, linux-sparse@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 042/606] x86: Fix early boot crash on gcc-10, third try
+Date:   Mon,  8 Jun 2020 19:02:47 -0400
+Message-Id: <20200608231211.3363633-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,128 +46,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Babu Moger <babu.moger@amd.com>
+From: Borislav Petkov <bp@suse.de>
 
-commit 37486135d3a7b03acc7755b63627a130437f066a upstream.
+commit a9a3ed1eff3601b63aea4fb462d8b3b92c7c1e7e upstream.
 
-Though rdpkru and wrpkru are contingent upon CR4.PKE, the PKRU
-resource isn't. It can be read with XSAVE and written with XRSTOR.
-So, if we don't set the guest PKRU value here(kvm_load_guest_xsave_state),
-the guest can read the host value.
+... or the odyssey of trying to disable the stack protector for the
+function which generates the stack canary value.
 
-In case of kvm_load_host_xsave_state, guest with CR4.PKE clear could
-potentially use XRSTOR to change the host PKRU value.
+The whole story started with Sergei reporting a boot crash with a kernel
+built with gcc-10:
 
-While at it, move pkru state save/restore to common code and the
-host_pkru field to kvm_vcpu_arch.  This will let SVM support protection keys.
+  Kernel panic — not syncing: stack-protector: Kernel stack is corrupted in: start_secondary
+  CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.6.0-rc5—00235—gfffb08b37df9 #139
+  Hardware name: Gigabyte Technology Co., Ltd. To be filled by O.E.M./H77M—D3H, BIOS F12 11/14/2013
+  Call Trace:
+    dump_stack
+    panic
+    ? start_secondary
+    __stack_chk_fail
+    start_secondary
+    secondary_startup_64
+  -—-[ end Kernel panic — not syncing: stack—protector: Kernel stack is corrupted in: start_secondary
 
-Cc: stable@vger.kernel.org
-Reported-by: Jim Mattson <jmattson@google.com>
-Signed-off-by: Babu Moger <babu.moger@amd.com>
-Message-Id: <158932794619.44260.14508381096663848853.stgit@naples-babu.amd.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+This happens because gcc-10 tail-call optimizes the last function call
+in start_secondary() - cpu_startup_entry() - and thus emits a stack
+canary check which fails because the canary value changes after the
+boot_init_stack_canary() call.
+
+To fix that, the initial attempt was to mark the one function which
+generates the stack canary with:
+
+  __attribute__((optimize("-fno-stack-protector"))) ... start_secondary(void *unused)
+
+however, using the optimize attribute doesn't work cumulatively
+as the attribute does not add to but rather replaces previously
+supplied optimization options - roughly all -fxxx options.
+
+The key one among them being -fno-omit-frame-pointer and thus leading to
+not present frame pointer - frame pointer which the kernel needs.
+
+The next attempt to prevent compilers from tail-call optimizing
+the last function call cpu_startup_entry(), shy of carving out
+start_secondary() into a separate compilation unit and building it with
+-fno-stack-protector, was to add an empty asm("").
+
+This current solution was short and sweet, and reportedly, is supported
+by both compilers but we didn't get very far this time: future (LTO?)
+optimization passes could potentially eliminate this, which leads us
+to the third attempt: having an actual memory barrier there which the
+compiler cannot ignore or move around etc.
+
+That should hold for a long time, but hey we said that about the other
+two solutions too so...
+
+Reported-by: Sergei Trofimovich <slyfox@gentoo.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Kalle Valo <kvalo@codeaurora.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20200314164451.346497-1-slyfox@gentoo.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/vmx/vmx.c          | 18 ------------------
- arch/x86/kvm/x86.c              | 17 +++++++++++++++++
- 3 files changed, 18 insertions(+), 18 deletions(-)
+ arch/x86/include/asm/stackprotector.h | 7 ++++++-
+ arch/x86/kernel/smpboot.c             | 8 ++++++++
+ arch/x86/xen/smp_pv.c                 | 1 +
+ include/linux/compiler.h              | 6 ++++++
+ init/main.c                           | 2 ++
+ 5 files changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 7ba99c0759cf..c121b8f24597 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -574,6 +574,7 @@ struct kvm_vcpu_arch {
- 	unsigned long cr4;
- 	unsigned long cr4_guest_owned_bits;
- 	unsigned long cr8;
-+	u32 host_pkru;
- 	u32 pkru;
- 	u32 hflags;
- 	u64 efer;
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index c1ffe7d24f83..a83c94a971ee 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1380,7 +1380,6 @@ void vmx_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 
- 	vmx_vcpu_pi_load(vcpu, cpu);
- 
--	vmx->host_pkru = read_pkru();
- 	vmx->host_debugctlmsr = get_debugctlmsr();
- }
- 
-@@ -6538,11 +6537,6 @@ static void vmx_vcpu_run(struct kvm_vcpu *vcpu)
- 
- 	kvm_load_guest_xsave_state(vcpu);
- 
--	if (static_cpu_has(X86_FEATURE_PKU) &&
--	    kvm_read_cr4_bits(vcpu, X86_CR4_PKE) &&
--	    vcpu->arch.pkru != vmx->host_pkru)
--		__write_pkru(vcpu->arch.pkru);
--
- 	pt_guest_enter(vmx);
- 
- 	atomic_switch_perf_msrs(vmx);
-@@ -6631,18 +6625,6 @@ static void vmx_vcpu_run(struct kvm_vcpu *vcpu)
- 
- 	pt_guest_exit(vmx);
- 
--	/*
--	 * eager fpu is enabled if PKEY is supported and CR4 is switched
--	 * back on host, so it is safe to read guest PKRU from current
--	 * XSAVE.
--	 */
--	if (static_cpu_has(X86_FEATURE_PKU) &&
--	    kvm_read_cr4_bits(vcpu, X86_CR4_PKE)) {
--		vcpu->arch.pkru = rdpkru();
--		if (vcpu->arch.pkru != vmx->host_pkru)
--			__write_pkru(vmx->host_pkru);
--	}
--
- 	kvm_load_host_xsave_state(vcpu);
- 
- 	vmx->nested.nested_run_pending = 0;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 17650bda4331..56a21dd7c1a0 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -809,11 +809,25 @@ void kvm_load_guest_xsave_state(struct kvm_vcpu *vcpu)
- 		    vcpu->arch.ia32_xss != host_xss)
- 			wrmsrl(MSR_IA32_XSS, vcpu->arch.ia32_xss);
- 	}
-+
-+	if (static_cpu_has(X86_FEATURE_PKU) &&
-+	    (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
-+	     (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU)) &&
-+	    vcpu->arch.pkru != vcpu->arch.host_pkru)
-+		__write_pkru(vcpu->arch.pkru);
- }
- EXPORT_SYMBOL_GPL(kvm_load_guest_xsave_state);
- 
- void kvm_load_host_xsave_state(struct kvm_vcpu *vcpu)
+diff --git a/arch/x86/include/asm/stackprotector.h b/arch/x86/include/asm/stackprotector.h
+index 91e29b6a86a5..9804a7957f4e 100644
+--- a/arch/x86/include/asm/stackprotector.h
++++ b/arch/x86/include/asm/stackprotector.h
+@@ -55,8 +55,13 @@
+ /*
+  * Initialize the stackprotector canary value.
+  *
+- * NOTE: this must only be called from functions that never return,
++ * NOTE: this must only be called from functions that never return
+  * and it must always be inlined.
++ *
++ * In addition, it should be called from a compilation unit for which
++ * stack protector is disabled. Alternatively, the caller should not end
++ * with a function call which gets tail-call optimized as that would
++ * lead to checking a modified canary value.
+  */
+ static __always_inline void boot_init_stack_canary(void)
  {
-+	if (static_cpu_has(X86_FEATURE_PKU) &&
-+	    (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
-+	     (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU))) {
-+		vcpu->arch.pkru = rdpkru();
-+		if (vcpu->arch.pkru != vcpu->arch.host_pkru)
-+			__write_pkru(vcpu->arch.host_pkru);
-+	}
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 69881b2d446c..9674321ce3a3 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -262,6 +262,14 @@ static void notrace start_secondary(void *unused)
+ 
+ 	wmb();
+ 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
 +
- 	if (kvm_read_cr4_bits(vcpu, X86_CR4_OSXSAVE)) {
++	/*
++	 * Prevent tail call to cpu_startup_entry() because the stack protector
++	 * guard has been changed a couple of function calls up, in
++	 * boot_init_stack_canary() and must not be checked before tail calling
++	 * another function.
++	 */
++	prevent_tail_call_optimization();
+ }
  
- 		if (vcpu->arch.xcr0 != host_xcr0)
-@@ -3529,6 +3543,9 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+ /**
+diff --git a/arch/x86/xen/smp_pv.c b/arch/x86/xen/smp_pv.c
+index 802ee5bba66c..0cebe5db691d 100644
+--- a/arch/x86/xen/smp_pv.c
++++ b/arch/x86/xen/smp_pv.c
+@@ -92,6 +92,7 @@ asmlinkage __visible void cpu_bringup_and_idle(void)
+ 	cpu_bringup();
+ 	boot_init_stack_canary();
+ 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
++	prevent_tail_call_optimization();
+ }
  
- 	kvm_x86_ops->vcpu_load(vcpu, cpu);
+ void xen_smp_intr_free_pv(unsigned int cpu)
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index 034b0a644efc..448c91bf543b 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -356,4 +356,10 @@ static inline void *offset_to_ptr(const int *off)
+ /* &a[0] degrades to a pointer: a different type from an array */
+ #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
  
-+	/* Save host pkru register if supported */
-+	vcpu->arch.host_pkru = read_pkru();
++/*
++ * This is needed in functions which generate the stack canary, see
++ * arch/x86/kernel/smpboot.c::start_secondary() for an example.
++ */
++#define prevent_tail_call_optimization()	mb()
 +
- 	/* Apply any externally detected TSC adjustments (due to suspend) */
- 	if (unlikely(vcpu->arch.tsc_offset_adjustment)) {
- 		adjust_tsc_offset_host(vcpu, vcpu->arch.tsc_offset_adjustment);
+ #endif /* __LINUX_COMPILER_H */
+diff --git a/init/main.c b/init/main.c
+index 8ee04f875b21..6bcad75d60ad 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1032,6 +1032,8 @@ asmlinkage __visible void __init start_kernel(void)
+ 
+ 	/* Do the rest non-__init'ed, we're now alive */
+ 	arch_call_rest_init();
++
++	prevent_tail_call_optimization();
+ }
+ 
+ /* Call all constructor functions linked into the kernel. */
 -- 
 2.25.1
 
