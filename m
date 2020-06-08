@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F101F23D5
+	by mail.lfdr.de (Postfix) with ESMTP id 872351F23D6
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730387AbgFHXRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:17:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33906 "EHLO mail.kernel.org"
+        id S1729889AbgFHXRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:17:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728249AbgFHXN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:13:58 -0400
+        id S1728111AbgFHXN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:13:59 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4C91208C3;
-        Mon,  8 Jun 2020 23:13:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D51D0212CC;
+        Mon,  8 Jun 2020 23:13:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658038;
-        bh=5dYKczIvQ+iFI127IXOGGHsWU0/YsZaZeXftt1nV9sg=;
+        s=default; t=1591658039;
+        bh=laFJJFYyv4B1e4mrKe19o3ReXIflnahoOiDPh8QGyZk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NkRzZo2QJ8th5SxXeyPHztf26SBMrdfWnbMdXzfhtnjIYdoltg2m6VyEYAED40S6n
-         Xzg9WiOa0GoQE0FHoMMlA/6ShUBXbQQR1f2Ok9wHWxLkiI1bg2pKh/V9i3F7gufOfk
-         FRi9Mt81q0+N8GalzXaO2XumN1R51Z3eZFLY1V6o=
+        b=LGRxUixesW2uS95Uj6emrvxSuwqRLDlkZoqsq5jt8q4Ri68zqkYzc5UaBcm5J0trs
+         ka4/wdOHnhu2NFuPDI1keFJsGh5Rr4OjrJQKznig5vA+fOK4Sa2advOcgNFX9tjbbQ
+         jWpebJk7oMWknOQrOPzbi7xQO+0U/DJjS7gcuDzY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Richard Weinberger <richard@nod.at>,
-        Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.6 088/606] mtd: spinand: Propagate ECC information to the MTD structure
-Date:   Mon,  8 Jun 2020 19:03:33 -0400
-Message-Id: <20200608231211.3363633-88-sashal@kernel.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, stable@kernel.org,
+        Thiago Macieira <thiago.macieira@intel.com>,
+        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 089/606] fix multiplication overflow in copy_fdtable()
+Date:   Mon,  8 Jun 2020 19:03:34 -0400
+Message-Id: <20200608231211.3363633-89-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -44,39 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-[ Upstream commit 3507273d5a4d3c2e46f9d3f9ed9449805f5dff07 ]
+[ Upstream commit 4e89b7210403fa4a8acafe7c602b6212b7af6c3b ]
 
-This is done by default in the raw NAND core (nand_base.c) but was
-missing in the SPI-NAND core. Without these two lines the ecc_strength
-and ecc_step_size values are not exported to the user through sysfs.
+cpy and set really should be size_t; we won't get an overflow on that,
+since sysctl_nr_open can't be set above ~(size_t)0 / sizeof(void *),
+so nr that would've managed to overflow size_t on that multiplication
+won't get anywhere near copy_fdtable() - we'll fail with EMFILE
+before that.
 
-Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Cc: stable@kernel.org # v2.6.25+
+Fixes: 9cfe015aa424 (get rid of NR_OPEN and introduce a sysctl_nr_open)
+Reported-by: Thiago Macieira <thiago.macieira@intel.com>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/spi/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 8dda51bbdd11..0d21c68bfe24 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1049,6 +1049,10 @@ static int spinand_init(struct spinand_device *spinand)
+diff --git a/fs/file.c b/fs/file.c
+index c8a4e4c86e55..abb8b7081d7a 100644
+--- a/fs/file.c
++++ b/fs/file.c
+@@ -70,7 +70,7 @@ static void copy_fd_bitmaps(struct fdtable *nfdt, struct fdtable *ofdt,
+  */
+ static void copy_fdtable(struct fdtable *nfdt, struct fdtable *ofdt)
+ {
+-	unsigned int cpy, set;
++	size_t cpy, set;
  
- 	mtd->oobavail = ret;
+ 	BUG_ON(nfdt->max_fds < ofdt->max_fds);
  
-+	/* Propagate ECC information to mtd_info */
-+	mtd->ecc_strength = nand->eccreq.strength;
-+	mtd->ecc_step_size = nand->eccreq.step_size;
-+
- 	return 0;
- 
- err_cleanup_nanddev:
 -- 
 2.25.1
 
