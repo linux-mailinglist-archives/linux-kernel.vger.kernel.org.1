@@ -2,46 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCDDE1F2445
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139401F231B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730857AbgFHXTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:19:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37138 "EHLO mail.kernel.org"
+        id S1728562AbgFHXMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:12:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730136AbgFHXP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:15:58 -0400
+        id S1728795AbgFHXK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:10:58 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B42C120760;
-        Mon,  8 Jun 2020 23:15:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DC3020CC7;
+        Mon,  8 Jun 2020 23:10:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658158;
-        bh=8oY5NOb43ECW2UuHijbZc/Fbrh+sjRf3T0dHqJZ28CQ=;
+        s=default; t=1591657858;
+        bh=ulf2SztqD35ITArIHACtWdmO6AcDVM1Uqldkqoc+rQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jKMP9b2KNY0f7qAij0PKq6hIUuXj7vrfuB2kGJw7e1sUuHjjQWxV5/6aqFBRdUyej
-         IEl4orlb0DzhOa04nSw2m5bnJ9peOWKnpLvvAqs1C96xMEC8aRCIuRf0gNKk3/9seL
-         6YDb1x0f8o8gZd6Bl2cPUvY+KzSdtCFOPkVflBYY=
+        b=De+4KpYGNwnXl/FdJsiQZUsI4wC686zjANFRFDfRkOO1SkcbUGc2QBzqfVjmkeC6u
+         JEhRlqDuz2MWW1rWE3teUJrMNrByx38Cfncn5Sl9ux3kw6AEM6S18uR5P410LtuXfX
+         xNzZol4PgvAWHb9muN396RV9Bn40AFkm5wKtkC2Q=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Marco Elver <elver@google.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Qian Cai <cai@lca.pw>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 5.6 188/606] kasan: disable branch tracing for core runtime
-Date:   Mon,  8 Jun 2020 19:05:13 -0400
-Message-Id: <20200608231211.3363633-188-sashal@kernel.org>
+Cc:     Nicolas Toromanoff <nicolas.toromanoff@st.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 221/274] crypto: stm32/crc32 - fix run-time self test issue.
+Date:   Mon,  8 Jun 2020 19:05:14 -0400
+Message-Id: <20200608230607.3361041-221-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -51,86 +45,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
+From: Nicolas Toromanoff <nicolas.toromanoff@st.com>
 
-commit 33cd65e73abd693c00c4156cf23677c453b41b3b upstream.
+[ Upstream commit a8cc3128bf2c01c4d448fe17149e87132113b445 ]
 
-During early boot, while KASAN is not yet initialized, it is possible to
-enter reporting code-path and end up in kasan_report().
+Fix wrong crc32 initialisation value:
+"alg: shash: stm32_crc32 test failed (wrong result) on test vector 0,
+cfg="init+update+final aligned buffer"
+cra_name="crc32c" expects an init value of 0XFFFFFFFF,
+cra_name="crc32" expects an init value of 0.
 
-While uninitialized, the branch there prevents generating any reports,
-however, under certain circumstances when branches are being traced
-(TRACE_BRANCH_PROFILING), we may recurse deep enough to cause kernel
-reboots without warning.
+Fixes: b51dbe90912a ("crypto: stm32 - Support for STM32 CRC32 crypto module")
 
-To prevent similar issues in future, we should disable branch tracing
-for the core runtime.
-
-[elver@google.com: remove duplicate DISABLE_BRANCH_PROFILING, per Qian Cai]
-  Link: https://lore.kernel.org/lkml/20200517011732.GE24705@shao2-debian/
-  Link: http://lkml.kernel.org/r/20200522075207.157349-1-elver@google.com
-Reported-by: kernel test robot <rong.a.chen@intel.com>
-Signed-off-by: Marco Elver <elver@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Qian Cai <cai@lca.pw>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r//20200517011732.GE24705@shao2-debian/
-Link: http://lkml.kernel.org/r/20200519182459.87166-1-elver@google.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/kasan/Makefile  | 8 ++++----
- mm/kasan/generic.c | 1 -
- mm/kasan/tags.c    | 1 -
- 3 files changed, 4 insertions(+), 6 deletions(-)
+ drivers/crypto/stm32/stm32-crc32.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
-index 08b43de2383b..f36ffc090f5f 100644
---- a/mm/kasan/Makefile
-+++ b/mm/kasan/Makefile
-@@ -14,10 +14,10 @@ CFLAGS_REMOVE_tags.o = $(CC_FLAGS_FTRACE)
- # Function splitter causes unnecessary splits in __asan_load1/__asan_store1
- # see: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63533
+diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
+index c6156bf6c603..1c3e411b7acb 100644
+--- a/drivers/crypto/stm32/stm32-crc32.c
++++ b/drivers/crypto/stm32/stm32-crc32.c
+@@ -28,10 +28,10 @@
  
--CFLAGS_common.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
--CFLAGS_generic.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
--CFLAGS_generic_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
--CFLAGS_tags.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
-+CFLAGS_common.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
-+CFLAGS_generic.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
-+CFLAGS_generic_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
-+CFLAGS_tags.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
+ /* Registers values */
+ #define CRC_CR_RESET            BIT(0)
+-#define CRC_INIT_DEFAULT        0xFFFFFFFF
+ #define CRC_CR_REV_IN_WORD      (BIT(6) | BIT(5))
+ #define CRC_CR_REV_IN_BYTE      BIT(5)
+ #define CRC_CR_REV_OUT          BIT(7)
++#define CRC32C_INIT_DEFAULT     0xFFFFFFFF
  
- obj-$(CONFIG_KASAN) := common.o init.o report.o
- obj-$(CONFIG_KASAN_GENERIC) += generic.o generic_report.o quarantine.o
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 616f9dd82d12..76a80033e0b7 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -15,7 +15,6 @@
-  */
+ #define CRC_AUTOSUSPEND_DELAY	50
  
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
--#define DISABLE_BRANCH_PROFILING
+@@ -65,7 +65,7 @@ static int stm32_crc32_cra_init(struct crypto_tfm *tfm)
+ {
+ 	struct stm32_crc_ctx *mctx = crypto_tfm_ctx(tfm);
  
- #include <linux/export.h>
- #include <linux/interrupt.h>
-diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
-index 0e987c9ca052..caf4efd9888c 100644
---- a/mm/kasan/tags.c
-+++ b/mm/kasan/tags.c
-@@ -12,7 +12,6 @@
-  */
+-	mctx->key = CRC_INIT_DEFAULT;
++	mctx->key = 0;
+ 	mctx->poly = CRC32_POLY_LE;
+ 	return 0;
+ }
+@@ -74,7 +74,7 @@ static int stm32_crc32c_cra_init(struct crypto_tfm *tfm)
+ {
+ 	struct stm32_crc_ctx *mctx = crypto_tfm_ctx(tfm);
  
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
--#define DISABLE_BRANCH_PROFILING
- 
- #include <linux/export.h>
- #include <linux/interrupt.h>
+-	mctx->key = CRC_INIT_DEFAULT;
++	mctx->key = CRC32C_INIT_DEFAULT;
+ 	mctx->poly = CRC32C_POLY_LE;
+ 	return 0;
+ }
 -- 
 2.25.1
 
