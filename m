@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FAE1F1942
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AB81F1949
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729785AbgFHMxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 08:53:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28699 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729698AbgFHMxV (ORCPT
+        id S1729104AbgFHMyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 08:54:13 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:39513 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729715AbgFHMxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 08:53:21 -0400
+        Mon, 8 Jun 2020 08:53:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591620798;
+        s=mimecast20190719; t=1591620800;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=TEosg1cbEhe9hhKHYKqZg2N/D89Ri/A+CQJLw8Cq4Bg=;
-        b=bvmfN3v+w6ikhXyCNHkoWNLwdTWu9IdmgCnc4ftx6Dz8lhUTnHYT7h5RxWKw2GIUrFJKgy
-        24Iz8Dm5czNCSVusW8d7fhgEGIZ5tQTtES0SA5/nNQ/ih5MgNwpbtk8NQWmGQAqkMuLBvD
-        WXRPJQMR+bnz022eKkKTfLZiBKj3Rj8=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-186-25DAsKq-OpS2qmmO48JsVQ-1; Mon, 08 Jun 2020 08:53:16 -0400
-X-MC-Unique: 25DAsKq-OpS2qmmO48JsVQ-1
-Received: by mail-wr1-f69.google.com with SMTP id t5so7100488wro.20
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 05:53:16 -0700 (PDT)
+        bh=53ZvoqSQRb7zo4P/bKE7PS6beB3wyT4RaZMP+gyjZts=;
+        b=hOTw0c8TQrYD8fwTe11orABRd59qSwRlBGJaD051xDgrRkr+Kxmp1TSJAIRjNGnbnWiVnM
+        A0pXoXeZsWfZRTK55bfUVqJZw0SkLkBen3/HgnQteCCfo02I/PASfwUJBGyg20vv4fI4Lz
+        IVTf9AjO1ksNAHseG2LZmucjCoCV4q8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-340-tq0HIjndNkyDboq_MTUq_w-1; Mon, 08 Jun 2020 08:53:19 -0400
+X-MC-Unique: tq0HIjndNkyDboq_MTUq_w-1
+Received: by mail-wr1-f71.google.com with SMTP id a4so7112903wrp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 05:53:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=TEosg1cbEhe9hhKHYKqZg2N/D89Ri/A+CQJLw8Cq4Bg=;
-        b=NUF9XZG1zeqt+vBZH9gveha0xTmudSKoKJFpHCegM8lz5wdXUVZrpygmfgSbiQy6B6
-         DOUd6Mq7dTHtYv87lD5D6HMjRJBgC55rfTQy0CBvna1mShxOJuQqZq+Q5G+t601BRFkX
-         FNH2EoXn9Of4qJt9A4zM9yqQcDfjSq+FBSoUpZd2AY97TsAjSxvCxcwtAAMiM/UoFzXY
-         qQN2b4/tbJAv9LLQtLxUdTBTPepEp03PPcB8K/VlyFUgnyajzHIRYikWMjIOwqZKte9t
-         5AfgiyFjalZoAYrPngBQDXmEKyaoTIyvWnkbpjDRZDrUSYFwq3TG4vT5tlOCg75mvH3w
-         lQYA==
-X-Gm-Message-State: AOAM532+3iBn+Q3lpPyzXbKPFRDWkoDQeSS/LcO+HZx4pS7IQhB5namK
-        z+v9nDFlQEowJLcdMLdTVfdPdnhTb0WqeHwQvhJtFaB8K/opdjzUKsRetWgEZHTC5AtS3YRJoH/
-        nS5zFJIT00FgNEECzwmuJrbBC
-X-Received: by 2002:adf:9d8e:: with SMTP id p14mr22776197wre.236.1591620795493;
-        Mon, 08 Jun 2020 05:53:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzojN0Rni5a/KRQQtayEgafAMQjL2u7TFZEVEHmdO1lnxFxUgOcYrWuJF226hamluzbsGThDA==
-X-Received: by 2002:adf:9d8e:: with SMTP id p14mr22776176wre.236.1591620795249;
-        Mon, 08 Jun 2020 05:53:15 -0700 (PDT)
+        bh=53ZvoqSQRb7zo4P/bKE7PS6beB3wyT4RaZMP+gyjZts=;
+        b=atzUg1BzzhL3a+Xoq/OS4ugGm7XAB8FmRM4AKQJrcCu5bnbqeRqttT/Q8i55AQtQYM
+         fQojtXowIv/gsEkaYq7Yf3IV83Lvz6JJZccYx81TqoNz3pzLo34Kt2DYdpdHKpuZZ3Na
+         wGMTyoEaqql+z+nzLfZmIEPXp+9QUi5A2LUwc6WEquw4GIxdylbe7YhFK5Z/cifEqH2A
+         NJBtL/e+g8GRpB6IkfIBb0Sy4GCXwqnsAzChih8LElO3hb5fqlYVbjriFYz1IKR2/Y1V
+         As2ePcMJX+hHWbWqsp1WDBjYfvRE7TQSjughTmDV3Zer+dCZSX8DX131QnfAXPvS+1PP
+         nnHg==
+X-Gm-Message-State: AOAM531BW19aK4P7/kbu7vPa1PTW1MunOmczdDE6uuWqyWcBTOW8/LE6
+        /aO9xAysbWOWIw1Bu3zyLmJQKqC5tLYV7iaLE8ximiYQbzaI1+z/jCgSw0zcLDHdByKxaQj3oTA
+        92TkH+4KjqtqGr4N/n/+q14Yx
+X-Received: by 2002:adf:a18b:: with SMTP id u11mr23319165wru.102.1591620797779;
+        Mon, 08 Jun 2020 05:53:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwqxu8B0D+dmfKRmG6m0k8N+mfH4DtG2okPcTFiiTciSa1DwJ+py71/ReHBdaFke8bA3qVg4w==
+X-Received: by 2002:adf:a18b:: with SMTP id u11mr23319147wru.102.1591620797545;
+        Mon, 08 Jun 2020 05:53:17 -0700 (PDT)
 Received: from redhat.com (bzq-109-64-41-91.red.bezeqint.net. [109.64.41.91])
-        by smtp.gmail.com with ESMTPSA id i10sm22891380wrw.51.2020.06.08.05.53.13
+        by smtp.gmail.com with ESMTPSA id c16sm8782123wml.45.2020.06.08.05.53.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 05:53:14 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 08:53:13 -0400
+        Mon, 08 Jun 2020 05:53:17 -0700 (PDT)
+Date:   Mon, 8 Jun 2020 08:53:15 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
         netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        eperezma@redhat.com, Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>
-Subject: [PATCH RFC v6 10/11] vhost/vsock: switch to the buf API
-Message-ID: <20200608125238.728563-11-mst@redhat.com>
+        eperezma@redhat.com
+Subject: [PATCH RFC v6 11/11] vhost: drop head based APIs
+Message-ID: <20200608125238.728563-12-mst@redhat.com>
 References: <20200608125238.728563-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,97 +70,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A straight-forward conversion.
+Everyone's using buf APIs, no need for head based ones anymore.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- drivers/vhost/vsock.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ drivers/vhost/vhost.c | 43 ++++++++-----------------------------------
+ drivers/vhost/vhost.h | 12 ------------
+ 2 files changed, 8 insertions(+), 47 deletions(-)
 
-diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-index a483cec31d5c..61c6d3dd2ae3 100644
---- a/drivers/vhost/vsock.c
-+++ b/drivers/vhost/vsock.c
-@@ -103,7 +103,8 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
- 		unsigned out, in;
- 		size_t nbytes;
- 		size_t iov_len, payload_len;
--		int head;
-+		struct vhost_buf buf;
-+		int ret;
+diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+index f4a6ff9ef77a..7bd4bc581fc9 100644
+--- a/drivers/vhost/vhost.c
++++ b/drivers/vhost/vhost.c
+@@ -2429,18 +2429,11 @@ EXPORT_SYMBOL_GPL(vhost_get_avail_buf);
+ void vhost_discard_avail_bufs(struct vhost_virtqueue *vq,
+ 			      struct vhost_buf *buf, unsigned count)
+ {
+-	vhost_discard_vq_desc(vq, count);
++	unfetch_descs(vq);
++	vq->last_avail_idx -= count;
+ }
+ EXPORT_SYMBOL_GPL(vhost_discard_avail_bufs);
  
- 		spin_lock_bh(&vsock->send_pkt_list_lock);
- 		if (list_empty(&vsock->send_pkt_list)) {
-@@ -117,16 +118,17 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
- 		list_del_init(&pkt->list);
- 		spin_unlock_bh(&vsock->send_pkt_list_lock);
+-/* Reverse the effect of vhost_get_vq_desc. Useful for error handling. */
+-void vhost_discard_vq_desc(struct vhost_virtqueue *vq, int n)
+-{
+-	unfetch_descs(vq);
+-	vq->last_avail_idx -= n;
+-}
+-EXPORT_SYMBOL_GPL(vhost_discard_vq_desc);
+-
+ static int __vhost_add_used_n(struct vhost_virtqueue *vq,
+ 			    struct vring_used_elem *heads,
+ 			    unsigned count)
+@@ -2473,8 +2466,7 @@ static int __vhost_add_used_n(struct vhost_virtqueue *vq,
+ 	return 0;
+ }
  
--		head = vhost_get_vq_desc(vq, vq->iov, ARRAY_SIZE(vq->iov),
--					 &out, &in, NULL, NULL);
--		if (head < 0) {
-+		ret = vhost_get_avail_buf(vq, &buf,
-+					  vq->iov, ARRAY_SIZE(vq->iov),
-+					  &out, &in, NULL, NULL);
-+		if (ret < 0) {
- 			spin_lock_bh(&vsock->send_pkt_list_lock);
- 			list_add(&pkt->list, &vsock->send_pkt_list);
- 			spin_unlock_bh(&vsock->send_pkt_list_lock);
- 			break;
- 		}
+-/* After we've used one of their buffers, we tell them about it.  We'll then
+- * want to notify the guest, using eventfd. */
++static
+ int vhost_add_used_n(struct vhost_virtqueue *vq, struct vring_used_elem *heads,
+ 		     unsigned count)
+ {
+@@ -2508,10 +2500,8 @@ int vhost_add_used_n(struct vhost_virtqueue *vq, struct vring_used_elem *heads,
+ 	}
+ 	return r;
+ }
+-EXPORT_SYMBOL_GPL(vhost_add_used_n);
  
--		if (head == vq->num) {
-+		if (!ret) {
- 			spin_lock_bh(&vsock->send_pkt_list_lock);
- 			list_add(&pkt->list, &vsock->send_pkt_list);
- 			spin_unlock_bh(&vsock->send_pkt_list_lock);
-@@ -186,7 +188,8 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
- 		 */
- 		virtio_transport_deliver_tap_pkt(pkt);
+-/* After we've used one of their buffers, we tell them about it.  We'll then
+- * want to notify the guest, using eventfd. */
++static
+ int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int len)
+ {
+ 	struct vring_used_elem heads = {
+@@ -2521,14 +2511,17 @@ int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int len)
  
--		vhost_add_used(vq, head, sizeof(pkt->hdr) + payload_len);
-+		buf.in_len = sizeof(pkt->hdr) + payload_len;
-+		vhost_put_used_buf(vq, &buf);
- 		added = true;
+ 	return vhost_add_used_n(vq, &heads, 1);
+ }
+-EXPORT_SYMBOL_GPL(vhost_add_used);
  
- 		pkt->off += payload_len;
-@@ -440,7 +443,8 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
- 	struct vhost_vsock *vsock = container_of(vq->dev, struct vhost_vsock,
- 						 dev);
- 	struct virtio_vsock_pkt *pkt;
--	int head, pkts = 0, total_len = 0;
-+	int ret, pkts = 0, total_len = 0;
-+	struct vhost_buf buf;
- 	unsigned int out, in;
- 	bool added = false;
++/* After we've used one of their buffers, we tell them about it.  We'll then
++ * want to notify the guest, using vhost_signal. */
+ int vhost_put_used_buf(struct vhost_virtqueue *vq, struct vhost_buf *buf)
+ {
+ 	return vhost_add_used(vq, buf->id, buf->in_len);
+ }
+ EXPORT_SYMBOL_GPL(vhost_put_used_buf);
  
-@@ -461,12 +465,13 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
- 			goto no_more_replies;
- 		}
++/* After we've used one of their buffers, we tell them about it.  We'll then
++ * want to notify the guest, using vhost_signal. */
+ int vhost_put_used_n_bufs(struct vhost_virtqueue *vq,
+ 			  struct vhost_buf *bufs, unsigned count)
+ {
+@@ -2589,26 +2582,6 @@ void vhost_signal(struct vhost_dev *dev, struct vhost_virtqueue *vq)
+ }
+ EXPORT_SYMBOL_GPL(vhost_signal);
  
--		head = vhost_get_vq_desc(vq, vq->iov, ARRAY_SIZE(vq->iov),
--					 &out, &in, NULL, NULL);
--		if (head < 0)
-+		ret = vhost_get_avail_buf(vq, &buf,
-+					  vq->iov, ARRAY_SIZE(vq->iov),
-+					  &out, &in, NULL, NULL);
-+		if (ret < 0)
- 			break;
+-/* And here's the combo meal deal.  Supersize me! */
+-void vhost_add_used_and_signal(struct vhost_dev *dev,
+-			       struct vhost_virtqueue *vq,
+-			       unsigned int head, int len)
+-{
+-	vhost_add_used(vq, head, len);
+-	vhost_signal(dev, vq);
+-}
+-EXPORT_SYMBOL_GPL(vhost_add_used_and_signal);
+-
+-/* multi-buffer version of vhost_add_used_and_signal */
+-void vhost_add_used_and_signal_n(struct vhost_dev *dev,
+-				 struct vhost_virtqueue *vq,
+-				 struct vring_used_elem *heads, unsigned count)
+-{
+-	vhost_add_used_n(vq, heads, count);
+-	vhost_signal(dev, vq);
+-}
+-EXPORT_SYMBOL_GPL(vhost_add_used_and_signal_n);
+-
+ /* return true if we're sure that avaiable ring is empty */
+ bool vhost_vq_avail_empty(struct vhost_dev *dev, struct vhost_virtqueue *vq)
+ {
+diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
+index 28eea0155efb..264a2a2fae97 100644
+--- a/drivers/vhost/vhost.h
++++ b/drivers/vhost/vhost.h
+@@ -197,11 +197,6 @@ long vhost_vring_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *arg
+ bool vhost_vq_access_ok(struct vhost_virtqueue *vq);
+ bool vhost_log_access_ok(struct vhost_dev *);
  
--		if (head == vq->num) {
-+		if (!ret) {
- 			if (unlikely(vhost_enable_notify(&vsock->dev, vq))) {
- 				vhost_disable_notify(&vsock->dev, vq);
- 				continue;
-@@ -494,7 +499,8 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
- 			virtio_transport_free_pkt(pkt);
- 
- 		len += sizeof(pkt->hdr);
--		vhost_add_used(vq, head, len);
-+		buf.in_len = len;
-+		vhost_put_used_buf(vq, &buf);
- 		total_len += len;
- 		added = true;
- 	} while(likely(!vhost_exceeds_weight(vq, ++pkts, total_len)));
+-int vhost_get_vq_desc(struct vhost_virtqueue *,
+-		      struct iovec iov[], unsigned int iov_count,
+-		      unsigned int *out_num, unsigned int *in_num,
+-		      struct vhost_log *log, unsigned int *log_num);
+-void vhost_discard_vq_desc(struct vhost_virtqueue *, int n);
+ int vhost_get_avail_buf(struct vhost_virtqueue *, struct vhost_buf *buf,
+ 			struct iovec iov[], unsigned int iov_count,
+ 			unsigned int *out_num, unsigned int *in_num,
+@@ -209,13 +204,6 @@ int vhost_get_avail_buf(struct vhost_virtqueue *, struct vhost_buf *buf,
+ void vhost_discard_avail_bufs(struct vhost_virtqueue *,
+ 			      struct vhost_buf *, unsigned count);
+ int vhost_vq_init_access(struct vhost_virtqueue *);
+-int vhost_add_used(struct vhost_virtqueue *, unsigned int head, int len);
+-int vhost_add_used_n(struct vhost_virtqueue *, struct vring_used_elem *heads,
+-		     unsigned count);
+-void vhost_add_used_and_signal(struct vhost_dev *, struct vhost_virtqueue *,
+-			       unsigned int id, int len);
+-void vhost_add_used_and_signal_n(struct vhost_dev *, struct vhost_virtqueue *,
+-			       struct vring_used_elem *heads, unsigned count);
+ int vhost_put_used_buf(struct vhost_virtqueue *, struct vhost_buf *buf);
+ int vhost_put_used_n_bufs(struct vhost_virtqueue *,
+ 			  struct vhost_buf *bufs, unsigned count);
 -- 
 MST
 
