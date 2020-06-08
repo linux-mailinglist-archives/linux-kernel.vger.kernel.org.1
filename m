@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49B01F2454
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A221F234B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730951AbgFHXUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:20:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37826 "EHLO mail.kernel.org"
+        id S1729532AbgFHXNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:13:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730218AbgFHXQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:16:27 -0400
+        id S1728902AbgFHXLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:11:25 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47CF020775;
-        Mon,  8 Jun 2020 23:16:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 538F020B80;
+        Mon,  8 Jun 2020 23:11:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658187;
-        bh=U0mGWfLnsVmloTJ83K1kKc/LB2uPVbUSQIKW8pBlkuM=;
+        s=default; t=1591657885;
+        bh=cxtuvjAdp9f4Te01/+BlbAfNdOyNnBZ251CMnNbZcN4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ipih5X8B6VFwOS2PDe1WQ5hRJTc73YRUzcqlYKSyuXabHaRetSMxUj6swL7dnlGrZ
-         TMi5UiidDrTb/jDw+N5ATMUHuCRgXrSkGISyU4LegiPqiS0ZS2GXX6yH6gtB/28rgf
-         X9O5M+FV319EMC3eL8ZKfPrEYqV6kqWV3RHmmZQ0=
+        b=UXZE9uecEFG/RGV1hTcN/ZpNH6INmOv/mvA2v97cy0oMqxE0AfL/WcerD2RGhHLKU
+         oybdXOHZJq6ZbWnOPOsjBhm6LzU7D+27vHd0dfY7RnbrpxwcgGHMDbJlmioMpQV7qs
+         Na+Kew31n3rbNPZDP/M/oYCXI4zoIiynRzZN+iyE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Michal Kubecek <mkubecek@suse.cz>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 209/606] ethtool: count header size in reply size estimate
+Cc:     Coly Li <colyli@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>, linux-bcache@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 241/274] bcache: fix refcount underflow in bcache_device_free()
 Date:   Mon,  8 Jun 2020 19:05:34 -0400
-Message-Id: <20200608231211.3363633-209-sashal@kernel.org>
+Message-Id: <20200608230607.3361041-241-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,60 +42,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Kubecek <mkubecek@suse.cz>
+From: Coly Li <colyli@suse.de>
 
-[ Upstream commit 7c87e32d2e380228ada79d20ac5b7674718ef097 ]
+[ Upstream commit 86da9f736740eba602389908574dfbb0f517baa5 ]
 
-As ethnl_request_ops::reply_size handlers do not include common header
-size into calculated/estimated reply size, it needs to be added in
-ethnl_default_doit() and ethnl_default_notify() before allocating the
-message. On the other hand, strset_reply_size() should not add common
-header size.
+The problematic code piece in bcache_device_free() is,
 
-Fixes: 728480f12442 ("ethtool: default handlers for GET requests")
-Reported-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ 785 static void bcache_device_free(struct bcache_device *d)
+ 786 {
+ 787     struct gendisk *disk = d->disk;
+ [snipped]
+ 799     if (disk) {
+ 800             if (disk->flags & GENHD_FL_UP)
+ 801                     del_gendisk(disk);
+ 802
+ 803             if (disk->queue)
+ 804                     blk_cleanup_queue(disk->queue);
+ 805
+ 806             ida_simple_remove(&bcache_device_idx,
+ 807                               first_minor_to_idx(disk->first_minor));
+ 808             put_disk(disk);
+ 809         }
+ [snipped]
+ 816 }
+
+At line 808, put_disk(disk) may encounter kobject refcount of 'disk'
+being underflow.
+
+Here is how to reproduce the issue,
+- Attche the backing device to a cache device and do random write to
+  make the cache being dirty.
+- Stop the bcache device while the cache device has dirty data of the
+  backing device.
+- Only register the backing device back, NOT register cache device.
+- The bcache device node /dev/bcache0 won't show up, because backing
+  device waits for the cache device shows up for the missing dirty
+  data.
+- Now echo 1 into /sys/fs/bcache/pendings_cleanup, to stop the pending
+  backing device.
+- After the pending backing device stopped, use 'dmesg' to check kernel
+  message, a use-after-free warning from KASA reported the refcount of
+  kobject linked to the 'disk' is underflow.
+
+The dropping refcount at line 808 in the above code piece is added by
+add_disk(d->disk) in bch_cached_dev_run(). But in the above condition
+the cache device is not registered, bch_cached_dev_run() has no chance
+to be called and the refcount is not added. The put_disk() for a non-
+added refcount of gendisk kobject triggers a underflow warning.
+
+This patch checks whether GENHD_FL_UP is set in disk->flags, if it is
+not set then the bcache device was not added, don't call put_disk()
+and the the underflow issue can be avoided.
+
+Signed-off-by: Coly Li <colyli@suse.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ethtool/netlink.c | 4 ++--
- net/ethtool/strset.c  | 1 -
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ drivers/md/bcache/super.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
-index fc9e0b806889..d863dffbe53c 100644
---- a/net/ethtool/netlink.c
-+++ b/net/ethtool/netlink.c
-@@ -334,7 +334,7 @@ static int ethnl_default_doit(struct sk_buff *skb, struct genl_info *info)
- 	ret = ops->reply_size(req_info, reply_data);
- 	if (ret < 0)
- 		goto err_cleanup;
--	reply_len = ret;
-+	reply_len = ret + ethnl_reply_header_size();
- 	ret = -ENOMEM;
- 	rskb = ethnl_reply_init(reply_len, req_info->dev, ops->reply_cmd,
- 				ops->hdr_attr, info, &reply_payload);
-@@ -573,7 +573,7 @@ static void ethnl_default_notify(struct net_device *dev, unsigned int cmd,
- 	ret = ops->reply_size(req_info, reply_data);
- 	if (ret < 0)
- 		goto err_cleanup;
--	reply_len = ret;
-+	reply_len = ret + ethnl_reply_header_size();
- 	ret = -ENOMEM;
- 	skb = genlmsg_new(reply_len, GFP_KERNEL);
- 	if (!skb)
-diff --git a/net/ethtool/strset.c b/net/ethtool/strset.c
-index 8e5911887b4c..fb7b3585458d 100644
---- a/net/ethtool/strset.c
-+++ b/net/ethtool/strset.c
-@@ -309,7 +309,6 @@ static int strset_reply_size(const struct ethnl_req_info *req_base,
- 	int len = 0;
- 	int ret;
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index d98354fa28e3..4d8bf731b118 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -797,7 +797,9 @@ static void bcache_device_free(struct bcache_device *d)
+ 		bcache_device_detach(d);
  
--	len += ethnl_reply_header_size();
- 	for (i = 0; i < ETH_SS_COUNT; i++) {
- 		const struct strset_info *set_info = &data->sets[i];
+ 	if (disk) {
+-		if (disk->flags & GENHD_FL_UP)
++		bool disk_added = (disk->flags & GENHD_FL_UP) != 0;
++
++		if (disk_added)
+ 			del_gendisk(disk);
  
+ 		if (disk->queue)
+@@ -805,7 +807,8 @@ static void bcache_device_free(struct bcache_device *d)
+ 
+ 		ida_simple_remove(&bcache_device_idx,
+ 				  first_minor_to_idx(disk->first_minor));
+-		put_disk(disk);
++		if (disk_added)
++			put_disk(disk);
+ 	}
+ 
+ 	bioset_exit(&d->bio_split);
 -- 
 2.25.1
 
