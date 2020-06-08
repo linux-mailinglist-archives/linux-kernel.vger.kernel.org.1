@@ -2,291 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E611E1F136C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 09:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9141F1331
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 09:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728961AbgFHHRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 03:17:50 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:37738 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728885AbgFHHRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 03:17:50 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F1EA3200D08;
-        Mon,  8 Jun 2020 09:17:47 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E1738200D10;
-        Mon,  8 Jun 2020 09:17:42 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 964B340299;
-        Mon,  8 Jun 2020 15:17:36 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     lars@metafoo.de, perex@perex.cz, tiwai@suse.com,
-        lgirdwood@gmail.com, broonie@kernel.org, timur@kernel.org,
-        nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [RFC PATCH] ASoC: fsl_asrc_dma: Fix warning "Cannot create DMA dma:tx symlink"
-Date:   Mon,  8 Jun 2020 15:07:00 +0800
-Message-Id: <83e1682e88baf127d25e3470011bd034cfc32032.1591598561.git.shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1729014AbgFHHIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 03:08:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44897 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728053AbgFHHIM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 03:08:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591600091;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wizDwfwyoMPPXV4GkKbxmYvGh2D3w1K1LtMuM+YAACM=;
+        b=c7QAzb+8vc+37HVzJSIMlX8sP3lTCp2E3Y95Q9rettJgJ7hLVpkMNKl8zHtfO1MeF7BMPI
+        hrAdjXKc/sURCiZ9Ka4q/PMNDirOSi4mBYqAQsXvu7FM/DsOOwkWjPbY3ERXPBq1Zc4R+A
+        /RbaYelrqUAA7LGczgFBOhYyVndcLLM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-59-cWUFPO7AOP6J7nUWXrhhWw-1; Mon, 08 Jun 2020 03:08:08 -0400
+X-MC-Unique: cWUFPO7AOP6J7nUWXrhhWw-1
+Received: by mail-wm1-f71.google.com with SMTP id u15so3599182wmm.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 00:08:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wizDwfwyoMPPXV4GkKbxmYvGh2D3w1K1LtMuM+YAACM=;
+        b=ViCRGufKApHi6VHK0Lzf5Z/itgVYWy5bkd7xaGEXrMcLtrPClyFMXWPSQTT3HDVVz3
+         6FjxrHh4wwlbghc5mlyQy4zhS+53dnrNQgHKluQKSVxRmkXKMSNwzsIXTJE+F1sUr41L
+         AKd24JoaDeha+lpBydPcttVuPbDlmeNTUqm1l0UCKf2RJZcwa93wLiSLBwJhpRkert3k
+         oM250elaRWuIT+TGmMWTWqofdIj/09KN8oDKvAV3rVvJZjx+QGTLYeprmYGKJ0iL7BzB
+         J9yEVj8oBiDAJbyRBiNXK18QiTt5Ze73aLuuimi7pHf32sO+mcqkGaiLYMryi4wI/Xdb
+         namg==
+X-Gm-Message-State: AOAM5327duJZr2rGl9hM6zZ8pVtFdzIIk0AAh/ODpTaz8sE2Ti2KwY+o
+        13VvjH+HPZm00L+CM+3r7CQH3vHJgnBms8lTWXYf4HqMRdnuwzvI5UJmefwZuxHbvqBNMqrC3Ul
+        7VXJNA4+YWSXX6Jxd5nioALI8
+X-Received: by 2002:a5d:67c8:: with SMTP id n8mr21994662wrw.343.1591600087650;
+        Mon, 08 Jun 2020 00:08:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyGXpbzzaidmlnwd5ycIBSHFuqY9ai9qcMz+leuBEUc2i8LDNf3lxQQHaqRmYeHsaCi3Ivgmg==
+X-Received: by 2002:a5d:67c8:: with SMTP id n8mr21994630wrw.343.1591600087357;
+        Mon, 08 Jun 2020 00:08:07 -0700 (PDT)
+Received: from redhat.com (bzq-109-64-41-91.red.bezeqint.net. [109.64.41.91])
+        by smtp.gmail.com with ESMTPSA id x205sm22956704wmx.21.2020.06.08.00.08.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jun 2020 00:08:06 -0700 (PDT)
+Date:   Mon, 8 Jun 2020 03:08:04 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        virtualization@lists.linux-foundation.org,
+        teawater <teawaterz@linux.alibaba.com>
+Subject: Re: [PATCH] virtio_mem: prevent overflow with subblock size
+Message-ID: <20200608030423-mutt-send-email-mst@kernel.org>
+References: <20200608061406.709211-1-mst@redhat.com>
+ <0930c9d0-0708-c079-29bd-b80d4e3ce446@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0930c9d0-0708-c079-29bd-b80d4e3ce446@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The issue log is:
+On Mon, Jun 08, 2020 at 08:58:31AM +0200, David Hildenbrand wrote:
+> On 08.06.20 08:14, Michael S. Tsirkin wrote:
+> > If subblock size is large (e.g. 1G) 32 bit math involving it
+> > can overflow. Rather than try to catch all instances of that,
+> > let's tweak block size to 64 bit.
+> 
+> I fail to see where we could actually trigger an overflow. The reported
+> warning looked like a false positive to me.
 
-[   48.021506] CPU: 0 PID: 664 Comm: aplay Not tainted 5.7.0-rc1-13120-g12b434cbbea0 #343
-[   48.031063] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-[   48.037638] [<c0110dd8>] (unwind_backtrace) from [<c010b8ec>] (show_stack+0x10/0x14)
-[   48.045413] [<c010b8ec>] (show_stack) from [<c0557fc0>] (dump_stack+0xe4/0x118)
-[   48.052757] [<c0557fc0>] (dump_stack) from [<c032aeb4>] (sysfs_warn_dup+0x50/0x64)
-[   48.060357] [<c032aeb4>] (sysfs_warn_dup) from [<c032b1a8>] (sysfs_do_create_link_sd+0xc8/0xd4)
-[   48.069086] [<c032b1a8>] (sysfs_do_create_link_sd) from [<c05dc668>] (dma_request_chan+0xb0/0x210)
-[   48.078068] [<c05dc668>] (dma_request_chan) from [<c05dc7d0>] (dma_request_slave_channel+0x8/0x14)
-[   48.087060] [<c05dc7d0>] (dma_request_slave_channel) from [<c09d5cd4>] (fsl_asrc_dma_hw_params+0x1dc/0x434)
-[   48.096831] [<c09d5cd4>] (fsl_asrc_dma_hw_params) from [<c09c143c>] (soc_pcm_hw_params+0x4b0/0x650)
-[   48.105903] [<c09c143c>] (soc_pcm_hw_params) from [<c09c36a8>] (dpcm_fe_dai_hw_params+0x70/0xe4)
-[   48.114715] [<c09c36a8>] (dpcm_fe_dai_hw_params) from [<c099b274>] (snd_pcm_hw_params+0x158/0x418)
-[   48.123701] [<c099b274>] (snd_pcm_hw_params) from [<c099c5a0>] (snd_pcm_ioctl+0x734/0x183c)
-[   48.132079] [<c099c5a0>] (snd_pcm_ioctl) from [<c029ff94>] (ksys_ioctl+0x2ac/0xb98)
-[   48.139765] [<c029ff94>] (ksys_ioctl) from [<c0100080>] (ret_fast_syscall+0x0/0x28)
-[   48.147440] Exception stack(0xed3c5fa8 to 0xed3c5ff0)
-[   48.152515] 5fa0:                   bec28670 00e92870 00000004 c25c4111 bec28670 0002000f
-[   48.160716] 5fc0: bec28670 00e92870 00e92820 00000036 0000bb80 00000000 0002c2f8 00000003
-[   48.168913] 5fe0: b6f4d3fc bec2853c b6ee7655 b6e22cf8
-[   48.174236] fsl-esai-dai 2024000.esai: Cannot create DMA dma:tx symlink
 
-The dma channel is already requested by Back-End cpu dai driver,
-if fsl_asrc_dma requests dma chan with same dma:tx symlink, then
-this warning comes out.
+So
 
-The warning is added by
-commit 71723a96b8b1 ("dmaengine: Create symlinks between DMA channels and slaves")
-commit bad83565eafe ("dmaengine: Cleanups for the slave <-> channel symlink support")
+    const uint64_t size = count * vm->subblock_size;
 
-As the dma channel is requested by Back-End, we need to reuse the channel
-and avoid to request a new one, then the issue can be fixed.
+is it unreasonable for count to be 4K with subblock_size being 1M?
 
-In order to get the dma channel which is already requested in Back-End.
-we export two functions (snd_soc_lookup_component_nolocked and
-soc_component_to_pcm), if we can get the dma channel, then reuse it.
-if can't, then request a new one.
+> > 
+> > It ripples through UAPI which is an ABI change, but it's not too late to
+> > make it, and it will allow supporting >4Gbyte blocks while might
+> > become necessary down the road.
+> > 
+> 
+> This might break cloud-hypervisor, who's already implementing this
+> protocol upstream (ccing Hui).
+> https://github.com/cloud-hypervisor/cloud-hypervisor/blob/master/vm-virtio/src/mem.rs
+> 
+> (blocks in the gigabyte range were never the original intention of
+> virtio-mem, but I am not completely opposed to that)
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- include/sound/dmaengine_pcm.h         | 11 ++++++
- include/sound/soc.h                   |  2 ++
- sound/soc/fsl/fsl_asrc_common.h       |  2 ++
- sound/soc/fsl/fsl_asrc_dma.c          | 49 +++++++++++++++++++++------
- sound/soc/soc-core.c                  |  3 +-
- sound/soc/soc-generic-dmaengine-pcm.c | 12 -------
- 6 files changed, 55 insertions(+), 24 deletions(-)
 
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index b65220685920..8c5e38180fb0 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -161,4 +161,15 @@ int snd_dmaengine_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
- 
- #define SND_DMAENGINE_PCM_DRV_NAME "snd_dmaengine_pcm"
- 
-+struct dmaengine_pcm {
-+	struct dma_chan *chan[SNDRV_PCM_STREAM_LAST + 1];
-+	const struct snd_dmaengine_pcm_config *config;
-+	struct snd_soc_component component;
-+	unsigned int flags;
-+};
-+
-+static inline struct dmaengine_pcm *soc_component_to_pcm(struct snd_soc_component *p)
-+{
-+	return container_of(p, struct dmaengine_pcm, component);
-+}
- #endif
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 74868436ac79..565612a8d690 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -444,6 +444,8 @@ int devm_snd_soc_register_component(struct device *dev,
- 			 const struct snd_soc_component_driver *component_driver,
- 			 struct snd_soc_dai_driver *dai_drv, int num_dai);
- void snd_soc_unregister_component(struct device *dev);
-+struct snd_soc_component *snd_soc_lookup_component_nolocked(struct device *dev,
-+							    const char *driver_name);
- struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
- 						   const char *driver_name);
- 
-diff --git a/sound/soc/fsl/fsl_asrc_common.h b/sound/soc/fsl/fsl_asrc_common.h
-index 77665b15c8db..09512bc79b80 100644
---- a/sound/soc/fsl/fsl_asrc_common.h
-+++ b/sound/soc/fsl/fsl_asrc_common.h
-@@ -32,6 +32,7 @@ enum asrc_pair_index {
-  * @dma_chan: inputer and output DMA channels
-  * @dma_data: private dma data
-  * @pos: hardware pointer position
-+ * @req_dma_chan_dev_to_dev: flag for release dev_to_dev chan
-  * @private: pair private area
-  */
- struct fsl_asrc_pair {
-@@ -45,6 +46,7 @@ struct fsl_asrc_pair {
- 	struct dma_chan *dma_chan[2];
- 	struct imx_dma_data dma_data;
- 	unsigned int pos;
-+	bool req_dma_chan_dev_to_dev;
- 
- 	void *private;
- };
-diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-index d6a3fc5f87e5..3ad862225326 100644
---- a/sound/soc/fsl/fsl_asrc_dma.c
-+++ b/sound/soc/fsl/fsl_asrc_dma.c
-@@ -135,6 +135,7 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
- 	struct snd_dmaengine_dai_dma_data *dma_params_be = NULL;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct fsl_asrc_pair *pair = runtime->private_data;
-+	struct snd_soc_component *component_be = NULL;
- 	struct fsl_asrc *asrc = pair->asrc;
- 	struct dma_slave_config config_fe, config_be;
- 	enum asrc_pair_index index = pair->index;
-@@ -142,7 +143,7 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
- 	int stream = substream->stream;
- 	struct imx_dma_data *tmp_data;
- 	struct snd_soc_dpcm *dpcm;
--	struct dma_chan *tmp_chan;
-+	struct dma_chan *tmp_chan = NULL, *tmp_chan_new = NULL;
- 	struct device *dev_be;
- 	u8 dir = tx ? OUT : IN;
- 	dma_cap_mask_t mask;
-@@ -160,6 +161,7 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
- 		substream_be = snd_soc_dpcm_get_substream(be, stream);
- 		dma_params_be = snd_soc_dai_get_dma_data(dai, substream_be);
- 		dev_be = dai->dev;
-+		component_be = snd_soc_lookup_component_nolocked(dev_be, SND_DMAENGINE_PCM_DRV_NAME);
- 		break;
- 	}
- 
-@@ -205,10 +207,16 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
- 	 */
- 	if (!asrc->use_edma) {
- 		/* Get DMA request of Back-End */
--		tmp_chan = dma_request_slave_channel(dev_be, tx ? "tx" : "rx");
-+		if (component_be)
-+			tmp_chan = soc_component_to_pcm(component_be)->chan[substream->stream];
-+		if (!tmp_chan) {
-+			tmp_chan_new = dma_request_slave_channel(dev_be, tx ? "tx" : "rx");
-+			tmp_chan = tmp_chan_new;
-+		}
- 		tmp_data = tmp_chan->private;
- 		pair->dma_data.dma_request = tmp_data->dma_request;
--		dma_release_channel(tmp_chan);
-+		if (tmp_chan_new)
-+			dma_release_channel(tmp_chan_new);
- 
- 		/* Get DMA request of Front-End */
- 		tmp_chan = asrc->get_dma_channel(pair, dir);
-@@ -220,9 +228,26 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
- 
- 		pair->dma_chan[dir] =
- 			dma_request_channel(mask, filter, &pair->dma_data);
-+		pair->req_dma_chan_dev_to_dev = true;
- 	} else {
--		pair->dma_chan[dir] =
--			asrc->get_dma_channel(pair, dir);
-+		/* With EDMA, there is two dma channels can be used for p2p,
-+		 * one is from ASRC, one is from another peripheral
-+		 * (ESAI or SAI) previously we select the dma channel of ASRC,
-+		 * but find an issue for ideal ratio case, there is no control
-+		 * for data copy speed, the speed is faster than sample
-+		 * frequency.
-+		 *
-+		 * So we switch to dma channel of peripheral (ESAI or SAI),
-+		 * that copy speed of DMA is controlled by data consumption
-+		 * speed in the peripheral FIFO.
-+		 */
-+		pair->req_dma_chan_dev_to_dev = false;
-+		if (component_be)
-+			pair->dma_chan[dir] = soc_component_to_pcm(component_be)->chan[substream->stream];;
-+		if (!pair->dma_chan[dir]) {
-+			pair->dma_chan[dir] = dma_request_slave_channel(dev_be, tx ? "tx" : "rx");
-+			pair->req_dma_chan_dev_to_dev = true;
-+		}
- 	}
- 
- 	if (!pair->dma_chan[dir]) {
-@@ -273,19 +298,21 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
- static int fsl_asrc_dma_hw_free(struct snd_soc_component *component,
- 				struct snd_pcm_substream *substream)
- {
-+	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct fsl_asrc_pair *pair = runtime->private_data;
-+	u8 dir = tx ? OUT : IN;
- 
- 	snd_pcm_set_runtime_buffer(substream, NULL);
- 
--	if (pair->dma_chan[IN])
--		dma_release_channel(pair->dma_chan[IN]);
-+	if (pair->dma_chan[!dir])
-+		dma_release_channel(pair->dma_chan[!dir]);
- 
--	if (pair->dma_chan[OUT])
--		dma_release_channel(pair->dma_chan[OUT]);
-+	if (pair->dma_chan[dir] && pair->req_dma_chan_dev_to_dev)
-+		dma_release_channel(pair->dma_chan[dir]);
- 
--	pair->dma_chan[IN] = NULL;
--	pair->dma_chan[OUT] = NULL;
-+	pair->dma_chan[!dir] = NULL;
-+	pair->dma_chan[dir] = NULL;
- 
- 	return 0;
- }
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b07eca2c6ccc..d4c73e86d058 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -310,7 +310,7 @@ struct snd_soc_component *snd_soc_rtdcom_lookup(struct snd_soc_pcm_runtime *rtd,
- }
- EXPORT_SYMBOL_GPL(snd_soc_rtdcom_lookup);
- 
--static struct snd_soc_component
-+struct snd_soc_component
- *snd_soc_lookup_component_nolocked(struct device *dev, const char *driver_name)
- {
- 	struct snd_soc_component *component;
-@@ -329,6 +329,7 @@ static struct snd_soc_component
- 
- 	return found_component;
- }
-+EXPORT_SYMBOL_GPL(snd_soc_lookup_component_nolocked);
- 
- struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
- 						   const char *driver_name)
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index f728309a0833..80a4e71f2d95 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -21,18 +21,6 @@
-  */
- #define SND_DMAENGINE_PCM_FLAG_NO_RESIDUE BIT(31)
- 
--struct dmaengine_pcm {
--	struct dma_chan *chan[SNDRV_PCM_STREAM_LAST + 1];
--	const struct snd_dmaengine_pcm_config *config;
--	struct snd_soc_component component;
--	unsigned int flags;
--};
--
--static struct dmaengine_pcm *soc_component_to_pcm(struct snd_soc_component *p)
--{
--	return container_of(p, struct dmaengine_pcm, component);
--}
--
- static struct device *dmaengine_dma_dev(struct dmaengine_pcm *pcm,
- 	struct snd_pcm_substream *substream)
- {
--- 
-2.21.0
+So in that case, can you code up validation in the probe function?
+
+
+> > Fixes: 5f1f79bbc9e26 ("virtio-mem: Paravirtualized memory hotplug")
+> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > ---
+> >  drivers/virtio/virtio_mem.c     | 14 +++++++-------
+> >  include/uapi/linux/virtio_mem.h |  4 ++--
+> >  2 files changed, 9 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+> > index 2f357142ea5e..7b1bece8a331 100644
+> > --- a/drivers/virtio/virtio_mem.c
+> > +++ b/drivers/virtio/virtio_mem.c
+> > @@ -77,7 +77,7 @@ struct virtio_mem {
+> >  	uint64_t requested_size;
+> >  
+> >  	/* The device block size (for communicating with the device). */
+> > -	uint32_t device_block_size;
+> > +	uint64_t device_block_size;
+> >  	/* The translated node id. NUMA_NO_NODE in case not specified. */
+> >  	int nid;
+> >  	/* Physical start address of the memory region. */
+> > @@ -86,7 +86,7 @@ struct virtio_mem {
+> >  	uint64_t region_size;
+> >  
+> >  	/* The subblock size. */
+> > -	uint32_t subblock_size;
+> > +	uint64_t subblock_size;
+> >  	/* The number of subblocks per memory block. */
+> >  	uint32_t nb_sb_per_mb;
+> >  
+> > @@ -1698,9 +1698,9 @@ static int virtio_mem_init(struct virtio_mem *vm)
+> >  	 * - At least the device block size.
+> >  	 * In the worst case, a single subblock per memory block.
+> >  	 */
+> > -	vm->subblock_size = PAGE_SIZE * 1u << max_t(uint32_t, MAX_ORDER - 1,
+> > -						    pageblock_order);
+> > -	vm->subblock_size = max_t(uint32_t, vm->device_block_size,
+> > +	vm->subblock_size = PAGE_SIZE * 1ul << max_t(uint32_t, MAX_ORDER - 1,
+> > +						     pageblock_order);
+> > +	vm->subblock_size = max_t(uint64_t, vm->device_block_size,
+> >  				  vm->subblock_size);
+> >  	vm->nb_sb_per_mb = memory_block_size_bytes() / vm->subblock_size;
+> >  
+> > @@ -1713,8 +1713,8 @@ static int virtio_mem_init(struct virtio_mem *vm)
+> >  
+> >  	dev_info(&vm->vdev->dev, "start address: 0x%llx", vm->addr);
+> >  	dev_info(&vm->vdev->dev, "region size: 0x%llx", vm->region_size);
+> > -	dev_info(&vm->vdev->dev, "device block size: 0x%x",
+> > -		 vm->device_block_size);
+> > +	dev_info(&vm->vdev->dev, "device block size: 0x%llx",
+> > +		 (unsigned long long)vm->device_block_size);
+> >  	dev_info(&vm->vdev->dev, "memory block size: 0x%lx",
+> >  		 memory_block_size_bytes());
+> >  	dev_info(&vm->vdev->dev, "subblock size: 0x%x",
+> > diff --git a/include/uapi/linux/virtio_mem.h b/include/uapi/linux/virtio_mem.h
+> > index a455c488a995..a9ffe041843c 100644
+> > --- a/include/uapi/linux/virtio_mem.h
+> > +++ b/include/uapi/linux/virtio_mem.h
+> > @@ -185,10 +185,10 @@ struct virtio_mem_resp {
+> >  
+> >  struct virtio_mem_config {
+> >  	/* Block size and alignment. Cannot change. */
+> > -	__u32 block_size;
+> > +	__u64 block_size;
+> >  	/* Valid with VIRTIO_MEM_F_ACPI_PXM. Cannot change. */
+> >  	__u16 node_id;
+> > -	__u16 padding;
+> > +	__u8 padding[6];
+> >  	/* Start address of the memory region. Cannot change. */
+> >  	__u64 addr;
+> >  	/* Region size (maximum). Cannot change. */
+> > 
+> 
+> 
+> -- 
+> Thanks,
+> 
+> David / dhildenb
 
