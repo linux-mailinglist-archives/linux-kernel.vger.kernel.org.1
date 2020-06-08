@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750441F22A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B2F1F23D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728518AbgFHXJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:09:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54208 "EHLO mail.kernel.org"
+        id S1730339AbgFHXQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:16:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726992AbgFHXIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:08:45 -0400
+        id S1728799AbgFHXNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:13:55 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13A8C2085B;
-        Mon,  8 Jun 2020 23:08:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1EC9621508;
+        Mon,  8 Jun 2020 23:13:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657725;
-        bh=TT+8tMvqgygFxoAAc7BZuKJHREEz6edhkE6V6E4qA9c=;
+        s=default; t=1591658034;
+        bh=OSIyjFeWmXecL53OVI8UGmOLm+YGOusPJaisg9IFerw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=af7CblJ72Q4b5/8AjOe6ptfhTA2uhYvi5uJb841LlN4IvzfOkiIRs2LgTOWYYxAhX
-         QJW4lms//2dBFCVDEw3ktK1hCYaAGc2pjYIghk9LlbXqp1a+gbWU+e+aimRkmWGL3I
-         Fl2yHb0NU0HSPJvJXxZlwJgcRTkVsYCMyN4oNYkY=
+        b=r0CyB6Wv9ntcJb8uRrEkdQr9q8g9TvE+LCOqaWDLE/Dz+vE6SphJ1Akncw7qM+Sbg
+         ln2S7i/onmE9dx++yzsnrHi1P+w0daRC4jzmW/PgWRXpLXt33Ff/PvU64ZO5MhEd+z
+         qdtiHkYBxJIxxktceAHg3TeTOzuOGRO69vlTvC2o=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Paul Hsieh <paul.hsieh@amd.com>, Eric Yang <eric.yang2@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.7 117/274] drm/amd/display: dmcu wait loop calculation is incorrect in RV
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, linux-unionfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 085/606] ovl: potential crash in ovl_fid_to_fh()
 Date:   Mon,  8 Jun 2020 19:03:30 -0400
-Message-Id: <20200608230607.3361041-117-sashal@kernel.org>
+Message-Id: <20200608231211.3363633-85-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,40 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Hsieh <paul.hsieh@amd.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 7fc5c319efceaed1a23b7ef35c333553ce39fecf ]
+[ Upstream commit 9aafc1b0187322fa4fd4eb905d0903172237206c ]
 
-[Why]
-Driver already get display clock from SMU base on MHz, but driver read
-again and mutiple 1000 cause wait loop value is overflow.
+The "buflen" value comes from the user and there is a potential that it
+could be zero.  In do_handle_to_path() we know that "handle->handle_bytes"
+is non-zero and we do:
 
-[How]
-remove coding error
+	handle_dwords = handle->handle_bytes >> 2;
 
-Signed-off-by: Paul Hsieh <paul.hsieh@amd.com>
-Reviewed-by: Eric Yang <eric.yang2@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+So values 1-3 become zero.  Then in ovl_fh_to_dentry() we do:
+
+	int len = fh_len << 2;
+
+So now len is in the "0,4-128" range and a multiple of 4.  But if
+"buflen" is zero it will try to copy negative bytes when we do the
+memcpy in ovl_fid_to_fh().
+
+	memcpy(&fh->fb, fid, buflen - OVL_FH_WIRE_OFFSET);
+
+And that will lead to a crash.  Thanks to Amir Goldstein for his help
+with this patch.
+
+Fixes: cbe7fba8edfc ("ovl: make sure that real fid is 32bit aligned in memory")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+Cc: <stable@vger.kernel.org> # v5.5
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c   | 3 ---
- 1 file changed, 3 deletions(-)
+ fs/overlayfs/export.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c
-index 97b7f32294fd..c320b7af7d34 100644
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c
-@@ -97,9 +97,6 @@ int rv1_vbios_smu_set_dispclk(struct clk_mgr_internal *clk_mgr, int requested_di
- 			VBIOSSMC_MSG_SetDispclkFreq,
- 			requested_dispclk_khz / 1000);
+diff --git a/fs/overlayfs/export.c b/fs/overlayfs/export.c
+index 6f54d70cef27..e605017031ee 100644
+--- a/fs/overlayfs/export.c
++++ b/fs/overlayfs/export.c
+@@ -777,6 +777,9 @@ static struct ovl_fh *ovl_fid_to_fh(struct fid *fid, int buflen, int fh_type)
+ 	if (fh_type != OVL_FILEID_V0)
+ 		return ERR_PTR(-EINVAL);
  
--	/* Actual dispclk set is returned in the parameter register */
--	actual_dispclk_set_mhz = REG_READ(MP1_SMN_C2PMSG_83) * 1000;
--
- 	if (!IS_FPGA_MAXIMUS_DC(dc->ctx->dce_environment)) {
- 		if (dmcu && dmcu->funcs->is_dmcu_initialized(dmcu)) {
- 			if (clk_mgr->dfs_bypass_disp_clk != actual_dispclk_set_mhz)
++	if (buflen <= OVL_FH_WIRE_OFFSET)
++		return ERR_PTR(-EINVAL);
++
+ 	fh = kzalloc(buflen, GFP_KERNEL);
+ 	if (!fh)
+ 		return ERR_PTR(-ENOMEM);
 -- 
 2.25.1
 
