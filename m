@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC041F3005
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098CF1F2DAA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731307AbgFIAzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:55:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54986 "EHLO mail.kernel.org"
+        id S1730420AbgFIAfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:35:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728377AbgFHXJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:09:16 -0400
+        id S1729794AbgFHXOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:14:24 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1E2120890;
-        Mon,  8 Jun 2020 23:09:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5CE4A21501;
+        Mon,  8 Jun 2020 23:14:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657755;
-        bh=shKfPmny0Xk+z6QTEuZIiryuf3ktSCpn4+P8VnIPKmM=;
+        s=default; t=1591658064;
+        bh=4VPdxXWjr16mx7dly3zIokwM4xa2s8mgnV64LSzfatA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iFs9iKl+90UzgJN8wlwBZyDZ+0q2sMLFIpwErgqLD+ZTuOzusiv547ZAAn2l/VhjY
-         7kgb9NOnrhSMjjXXOSbY4gBlpIf3koGIT4ax+oH07l4uFqbCDZOcawRPghWvU/a2Gy
-         FskhDJWRzJuNFZiGRzy9QDTAFkbup53ehIlCj+dM=
+        b=Dt5xH+95hIBLp0PK4KJOui+8gFpZtjdfaw8uP96SS4sXuhvJ1AI+dRDNQe35j3vO3
+         /Pjas30mClH2ei4rMvZbdv3hU/RWGamCmFQ3uWG6SF7z7JMRJdc9p0fPpZsCp6IbXV
+         42nLRrRlxe+18q6Mwha7wUtrywC+W4RhPmuFJA+w=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.7 141/274] lib/mpi: Fix 64-bit MIPS build with Clang
-Date:   Mon,  8 Jun 2020 19:03:54 -0400
-Message-Id: <20200608230607.3361041-141-sashal@kernel.org>
+Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, Christoph Hellwig <hch@lst.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 110/606] configfs: fix config_item refcnt leak in configfs_rmdir()
+Date:   Mon,  8 Jun 2020 19:03:55 -0400
+Message-Id: <20200608231211.3363633-110-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,67 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit 18f1ca46858eac22437819937ae44aa9a8f9f2fa ]
+[ Upstream commit 8aebfffacfa379ba400da573a5bf9e49634e38cb ]
 
-When building 64r6_defconfig with CONFIG_MIPS32_O32 disabled and
-CONFIG_CRYPTO_RSA enabled:
+configfs_rmdir() invokes configfs_get_config_item(), which returns a
+reference of the specified config_item object to "parent_item" with
+increased refcnt.
 
-lib/mpi/generic_mpih-mul1.c:37:24: error: invalid use of a cast in a
-inline asm context requiring an l-value: remove the cast
-or build with -fheinous-gnu-extensions
-                umul_ppmm(prod_high, prod_low, s1_ptr[j], s2_limb);
-                ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-lib/mpi/longlong.h:664:22: note: expanded from macro 'umul_ppmm'
-                 : "=d" ((UDItype)(w0))
-                         ~~~~~~~~~~^~~
-lib/mpi/generic_mpih-mul1.c:37:13: error: invalid use of a cast in a
-inline asm context requiring an l-value: remove the cast
-or build with -fheinous-gnu-extensions
-                umul_ppmm(prod_high, prod_low, s1_ptr[j], s2_limb);
-                ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-lib/mpi/longlong.h:668:22: note: expanded from macro 'umul_ppmm'
-                 : "=d" ((UDItype)(w1))
-                         ~~~~~~~~~~^~~
-2 errors generated.
+When configfs_rmdir() returns, local variable "parent_item" becomes
+invalid, so the refcount should be decreased to keep refcount balanced.
 
-This special case for umul_ppmm for MIPS64r6 was added in
-commit bbc25bee37d2b ("lib/mpi: Fix umul_ppmm() for MIPS64r6"), due to
-GCC being inefficient and emitting a __multi3 intrinsic.
+The reference counting issue happens in one exception handling path of
+configfs_rmdir(). When down_write_killable() fails, the function forgets
+to decrease the refcnt increased by configfs_get_config_item(), causing
+a refcnt leak.
 
-There is no such issue with clang; with this patch applied, I can build
-this configuration without any problems and there are no link errors
-like mentioned in the commit above (which I can still reproduce with
-GCC 9.3.0 when that commit is reverted). Only use this definition when
-GCC is being used.
+Fix this issue by calling config_item_put() when down_write_killable()
+fails.
 
-This really should have been caught by commit b0c091ae04f67 ("lib/mpi:
-Eliminate unused umul_ppmm definitions for MIPS") when I was messing
-around in this area but I was not testing 64-bit MIPS at the time.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/885
-Reported-by: Dmitry Golovin <dima@golovin.in>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/mpi/longlong.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/configfs/dir.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/lib/mpi/longlong.h b/lib/mpi/longlong.h
-index 891e1c3549c4..afbd99987cf8 100644
---- a/lib/mpi/longlong.h
-+++ b/lib/mpi/longlong.h
-@@ -653,7 +653,7 @@ do {						\
- 	**************  MIPS/64  **************
- 	***************************************/
- #if (defined(__mips) && __mips >= 3) && W_TYPE_SIZE == 64
--#if defined(__mips_isa_rev) && __mips_isa_rev >= 6
-+#if defined(__mips_isa_rev) && __mips_isa_rev >= 6 && defined(CONFIG_CC_IS_GCC)
- /*
-  * GCC ends up emitting a __multi3 intrinsic call for MIPS64r6 with the plain C
-  * code below, so we special case MIPS64r6 until the compiler can do better.
+diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
+index cf7b7e1d5bd7..cb733652ecca 100644
+--- a/fs/configfs/dir.c
++++ b/fs/configfs/dir.c
+@@ -1519,6 +1519,7 @@ static int configfs_rmdir(struct inode *dir, struct dentry *dentry)
+ 		spin_lock(&configfs_dirent_lock);
+ 		configfs_detach_rollback(dentry);
+ 		spin_unlock(&configfs_dirent_lock);
++		config_item_put(parent_item);
+ 		return -EINTR;
+ 	}
+ 	frag->frag_dead = true;
 -- 
 2.25.1
 
