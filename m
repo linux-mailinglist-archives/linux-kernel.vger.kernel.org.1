@@ -2,116 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426941F18F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117D31F18F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbgFHMni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 08:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727052AbgFHMnh (ORCPT
+        id S1729060AbgFHMo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 08:44:29 -0400
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:47663 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726660AbgFHMo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 08:43:37 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E498EC08C5C2
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 05:43:36 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id c71so15177506wmd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 05:43:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OnT205P+Q9ExcEEivUSebKDFNf0i4UfVrNiNXILSir4=;
-        b=S1ULEvkPVLdl7+HUPl+/XXL5M1NFP/GaiAuNCbCi57rh3L6BKfVw6ceUIPW2qrC4UZ
-         3duKjga+IN3TmxRo8schydvUJ3X3maD5P8eU2C9vbYcYlGhARdUAHSwXB37O046n7Ucw
-         taGXyrZoNAwtnc/zKdtbW+83nurquibXu8b8TCjEaira/VpoOuakEA7Kn6QoPmmhiBIk
-         73bqZaYgJbRIyva9gUbJG8IhhrNjiWdOgJkuJhEKelzcnGPwLa3XY9vYDtqd50diaNH/
-         7E4wQmACp5f5AcRWKf9JTvuwzh+NNDp0QKe8XIe1gNveRK3+VJVX/NXRzzZHhH/h1nUe
-         nbmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OnT205P+Q9ExcEEivUSebKDFNf0i4UfVrNiNXILSir4=;
-        b=H0DNmI4POpMRPYEBurtVZ97Q2SLe87H0+3YUSZMUWE2RCXA8UQ1CZFrADSnT07e/w6
-         xRncQ208BcFDdV9f7gpzd9vQh+ntRLEI+0ZNS+kzgOHRUQ9zbqYA2u6yNye8oevqR49q
-         uJ+UvdIQojXNYmS2zWyn5XdvGxd8bol1zmBJGTRTNEFxqVMr4fzErPLNsNrecVmMs8Id
-         xT5yWDtCjwwKA6LatqWOatMVIe6pzJISZS8qPjPQlLK101lbsP5iiCkYy/7np3gGvwhL
-         m1FPfdlvP85E6qDC77J+WZpWApdTRhRHRvC+FN2titiizWq66bUACXJyo1NVxpJNQat6
-         7Lmg==
-X-Gm-Message-State: AOAM532TESvZQHmW3ZGwiohsOaAHRR4/bRm94wrfjQjuXme3zj5/sToP
-        nsKyKJpRNeLimSX5fUYCn9LbDw==
-X-Google-Smtp-Source: ABdhPJx+7QzV+Jtitmm3hlNM56KPb2eBH9iZ9cIJDY4H4CUVnxl+GEds1CPcDVPg+D3E5Mfdwdb4ZA==
-X-Received: by 2002:a1c:6006:: with SMTP id u6mr15373622wmb.39.1591620215530;
-        Mon, 08 Jun 2020 05:43:35 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id l17sm23442506wrq.17.2020.06.08.05.43.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 05:43:34 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 13:43:32 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        sumit.garg@linaro.org, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, will@kernel.org,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        patches@linaro.org, Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [RFC PATCH 0/4] kgdb: Honour the kprobe blacklist when setting
- breakpoints
-Message-ID: <20200608124332.mzamwmdowu6dlh6k@holly.lan>
-References: <20200605132130.1411255-1-daniel.thompson@linaro.org>
- <20200605142953.GP2750@hirez.programming.kicks-ass.net>
+        Mon, 8 Jun 2020 08:44:26 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id iH8VjR7zuCKzeiH8YjmFnO; Mon, 08 Jun 2020 14:44:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1591620263; bh=gF581gTEUympfVx+AW0UuyWGtPAlwAJVJujGyvGSLJY=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=qtGVhKAMAf54+7aOkzEd4YU368vd0L3sPBElYst13pnASFyV4CufNNiPKNZ8kzv6E
+         tg2HcRlzAEh9w1pC0o+h/knlh7To9HA9uW5VGOAKsbe1tsWIOyi0jbTAhgxJw1q83J
+         NnlHN7AO/uIUPWB4t53SVUoSVlcEqFlkyFrTWfeVGEw6hKvKfRVkF2sfsZWQnasArh
+         HhH6rZ4lF1KYMktuxC7YnmnmHdHDqBosHAed7f0zZG0cUmn6opLY97+zK5qpG2kdOE
+         Crqcgm0Tyngw+gLjRj3egHbyMRTefARUNcLLJFpmQGTLkj+kP/CS3drfc0fZXjUAk0
+         /1a0zUm4uf2zw==
+Subject: Re: [RFC PATCH] vimc: Add colors' order over test image
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Kaaira Gupta <kgupta@es.iitr.ac.in>,
+        linux-media@vger.kernel.org,
+        Helen Koike <helen.koike@collabora.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, kieran.bingham@ideasonboard.com
+References: <20200607135325.GA16838@kaaira-HP-Pavilion-Notebook>
+ <5866f6c9-36c7-ffe3-41b3-94f184cd9e5d@collabora.com>
+ <38db03a4-6b22-c341-103c-ed0d4dcce856@xs4all.nl>
+ <20200608121238.GB5896@pendragon.ideasonboard.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <6d29fefd-65cc-20a6-3c3a-b8144d7b3dc3@xs4all.nl>
+Date:   Mon, 8 Jun 2020 14:44:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200605142953.GP2750@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200608121238.GB5896@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfJwaXKFuYKOvZEtYyiiAu67YQuhMDw5vqI1AbvF/kUnN81ZKlw+W/e6iY/SOu4ziq9fWTsQuPBeeAeGCyy/rDHh8Hom3CPRoyL8KjPt1QtqaAUuKJr5c
+ tt4L7wblEBelq5sWFFF5JLlHCba4IDD5vDhjN+5+xbyVZoaPtQGm8R1CEINQWyEoG5qd4NI8HVdmazYHQMcSdyAxLL6b5YjEnT5+uvxeNLCGSdBbFR2IX6U5
+ vbcDlYImF7FMTIW8YpHcvgAtwEGiyMqSQbdUrmTAy01BsQyEWJ9yf9gwAyryo/CamzSeq2nkDUl5wHLe11Ch0CdTfl+LkkufvbpJMMxpPxvlkT3ru5pjw+yD
+ Wrqu1JrAU5VZ1n4PopHEE22ChTC6G/ONVM+D5jUVDmHIXogNXkTYl6T/gggN/ITrxIpEtlr76Jv/dCDgIPByl+yqc7zWliO89y/ZleCPbMn/c/p7+BetXwvm
+ gjWd9plum86Wid/WjiREDiL0HjDd+H3ue3SNCw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 04:29:53PM +0200, Peter Zijlstra wrote:
-> On Fri, Jun 05, 2020 at 02:21:26PM +0100, Daniel Thompson wrote:
-> > kgdb has traditionally adopted a no safety rails approach to breakpoint
-> > placement. If the debugger is commanded to place a breakpoint at an
-> > address then it will do so even if that breakpoint results in kgdb
-> > becoming inoperable.
-> > 
-> > A stop-the-world debugger with memory peek/poke does intrinsically
-> > provide its operator with the means to hose their system in all manner
-> > of exciting ways (not least because stopping-the-world is already a DoS
-> > attack ;-) ) but the current no safety rail approach is not easy to
-> > defend, especially given kprobes provides us with plenty of machinery to
-> > mark parts of the kernel where breakpointing is discouraged.
-> > 
-> > This patchset introduces some safety rails by using the existing
-> > kprobes infrastructure. It does not cover all locations where
-> > breakpoints can cause trouble but it will definitely block off several
-> > avenues, including the architecture specific parts that are handled by
-> > arch_within_kprobe_blacklist().
-> > 
-> > This patch is an RFC because:
-> > 
-> > 1. My workstation is still chugging through the compile testing.
-> > 
-> > 2. Patch 4 needs more runtime testing.
-> > 
-> > 3. The code to extract the kprobe blacklist code (patch 4 again) needs
-> >    more review especially for its impact on arch specific code.
-> > 
-> > To be clear I do plan to do the detailed review of the kprobe blacklist
-> > stuff but would like to check the direction of travel first since the
-> > change is already surprisingly big and maybe there's a better way to
-> > organise things.
+On 08/06/2020 14:12, Laurent Pinchart wrote:
+> Hello,
 > 
-> Thanks for doing these patches, esp 1-3 look very good to me.
+> On Mon, Jun 08, 2020 at 11:33:21AM +0200, Hans Verkuil wrote:
+>> On 08/06/2020 09:10, Dafna Hirschfeld wrote:
+>>> On 07.06.20 15:53, Kaaira Gupta wrote:
+>>>> Currently there is no method to know if the test image generated by vimc
+>>>> is correct (except for comparing it with a known 'correct' image). Add
+>>>> text over the test image, representing the correct order of colors.
+>>>>
+>>>> I have sent it as an RFC because we can add the text as an optional
+>>>> control, and maybe we can print some other useful information as well
+>>>> (like vivid does).
+>>>
+>>> Yes, it seems like a good idea to add it as a control of the sensor.
+>>>
+>>>> Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
+>>>> --->   drivers/media/test-drivers/vimc/Kconfig       | 2 ++
+>>>>   drivers/media/test-drivers/vimc/vimc-core.c   | 9 +++++++++
+>>>>   drivers/media/test-drivers/vimc/vimc-sensor.c | 8 ++++++++
+>>>>   3 files changed, 19 insertions(+)
+>>>>
+>>>> diff --git a/drivers/media/test-drivers/vimc/Kconfig b/drivers/media/test-drivers/vimc/Kconfig
+>>>> index 4068a67585f9..da4b2ad6e40c 100644
+>>>> --- a/drivers/media/test-drivers/vimc/Kconfig
+>>>> +++ b/drivers/media/test-drivers/vimc/Kconfig
+>>>> @@ -2,6 +2,8 @@
+>>>>   config VIDEO_VIMC
+>>>>   	tristate "Virtual Media Controller Driver (VIMC)"
+>>>>   	depends on VIDEO_DEV && VIDEO_V4L2
+>>>> +	select FONT_SUPPORT
+>>>> +	select FONT_8x16
+>>>>   	select MEDIA_CONTROLLER
+>>>>   	select VIDEO_V4L2_SUBDEV_API
+>>>>   	select VIDEOBUF2_VMALLOC
+>>>> diff --git a/drivers/media/test-drivers/vimc/vimc-core.c b/drivers/media/test-drivers/vimc/vimc-core.c
+>>>> index 11210aaa2551..8142bfbcbd49 100644
+>>>> --- a/drivers/media/test-drivers/vimc/vimc-core.c
+>>>> +++ b/drivers/media/test-drivers/vimc/vimc-core.c
+>>>> @@ -5,10 +5,12 @@
+>>>>    * Copyright (C) 2015-2017 Helen Koike <helen.fornazier@gmail.com>
+>>>>    */
+>>>>   
+>>>> +#include <linux/font.h>
+>>>>   #include <linux/init.h>
+>>>>   #include <linux/module.h>
+>>>>   #include <linux/platform_device.h>
+>>>>   #include <media/media-device.h>
+>>>> +#include <media/tpg/v4l2-tpg.h>
+>>>>   #include <media/v4l2-device.h>
+>>>>   
+>>>>   #include "vimc-common.h"
+>>>> @@ -265,7 +267,14 @@ static int vimc_probe(struct platform_device *pdev)
+>>>>   {
+>>>>   	struct vimc_device *vimc;
+>>>>   	int ret;
+>>>> +	const struct font_desc *font = find_font("VGA8x16");
+>>>>   
+>>>> +	if (font == NULL) {
+>>>> +		pr_err("vimc: could not find font\n");
+>>>> +		return -ENODEV;
+>>>> +	}
+>>>> +
+>>>> +	tpg_set_font(font->data);
+>>>
+>>> I think the code that set the format should move to the
+>>> code that registers the sensor in vimc-sensor.c
+>>>
+>>>>   	dev_dbg(&pdev->dev, "probe");
+>>>>   
+>>>>   	vimc = kzalloc(sizeof(*vimc), GFP_KERNEL);
+>>>> diff --git a/drivers/media/test-drivers/vimc/vimc-sensor.c b/drivers/media/test-drivers/vimc/vimc-sensor.c
+>>>> index a2f09ac9a360..4b13955c502a 100644
+>>>> --- a/drivers/media/test-drivers/vimc/vimc-sensor.c
+>>>> +++ b/drivers/media/test-drivers/vimc/vimc-sensor.c
+>>>> @@ -185,10 +185,18 @@ static const struct v4l2_subdev_pad_ops vimc_sen_pad_ops = {
+>>>>   static void *vimc_sen_process_frame(struct vimc_ent_device *ved,
+>>>>   				    const void *sink_frame)
+>>>>   {
+>>>> +	u8 *basep[TPG_MAX_PLANES][2];
+>>>> +	char str[100];
+>>>>   	struct vimc_sen_device *vsen = container_of(ved, struct vimc_sen_device,
+>>>>   						    ved);
+>>>>   
+>>>> +	tpg_calc_text_basep(&vsen->tpg, basep, 0, vsen->frame);
+>>>>   	tpg_fill_plane_buffer(&vsen->tpg, 0, 0, vsen->frame);
+>>>> +
+>>>> +	snprintf(str, sizeof(str),
+>>>> +		 "Order: white, yellow, cyan, green, magenta, red, blue, black");
+>>> The colors are generated by the tpg, so I think it should be a feature of the tpg to print the colors.
+>>
+>> I agree. The tpg knows where each color is and based on the width and height it can
+>> print the text. A tpg_gen_pattern_text() function that does the work would be very
+>> nice.
 > 
-> I've taken the liberty to bounce the entire set to Masami-San, who is
-> the kprobes maintainer for comments as well.
+> Could we go one step further, and print the colour name on each colour
+> bar ?
 
-Not a liberty... leaving out Masami-san was an oversight on my part.
-Thanks for connecting!
+I think we mean the same thing: tpg_gen_pattern_text() would write the name of the
+color on each color bar.
 
+Regards,
 
-Daniel.
+	Hans
+
+> 
+>> It also doesn't make sense for all patterns, so this is really a nice feature to
+>> incorporate into the TPG itself and enable it via a vivid and vimc control.
+>>
+>>> For example, a function in v4l2-tpg-core.c that get the pattern as an argument and return
+>>> this string, or maybe returns a const pointer to the array of colors, or something like that.
+>>> Then maybe we can add a control in vivid for the same tpg feature.
+>>>
+>>> Note also that the sensor has a control to change the pattern: vimc_sen_ctrl_test_pattern
+>>> So the string depends on that pattern.
+>>>
+>>>> +	tpg_gen_text(&vsen->tpg, basep, 1, 1, str);
+>>>> +
+>>>>   	return vsen->frame;
+>>>>   }
+>>>>   
+> 
+
