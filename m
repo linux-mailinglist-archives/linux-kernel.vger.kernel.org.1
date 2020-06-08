@@ -2,353 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3C51F2EAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219C71F302D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbgFIAny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:43:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727885AbgFHXMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:12:07 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D0E1212CC;
-        Mon,  8 Jun 2020 23:12:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657926;
-        bh=0JLWASTL5xGUzP3q7YptMaYlpjr+ZGwM8leBvaxzYx4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CfRiDZXS5wHoGGWL/J0dpxjMOKprwF2AFSzIUMl9e7GLgqE2gr/1M2bOxZz4+n08a
-         PvQ5fmxcuyQWeNW2JxCxFdbbajDLonw1ee2tCiBNZjENS4eI6Sbs4WiaeusR/lSLLl
-         Gtdl8e/pdebFY2XVD+uQzIYUNkRMbdoiI1qbm1Jo=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Daniel Axtens <dja@axtens.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Gow <davidgow@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.7 274/274] string.h: fix incompatibility between FORTIFY_SOURCE and KASAN
-Date:   Mon,  8 Jun 2020 19:06:07 -0400
-Message-Id: <20200608230607.3361041-274-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+        id S1728277AbgFHXIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:08:54 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64790 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728020AbgFHXHw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:07:52 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 058N7o17012050
+        for <linux-kernel@vger.kernel.org>; Mon, 8 Jun 2020 16:07:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=NR0PB4rwSShMC0lNgDcnDeL9udt2jccWe3mfSH0bNtQ=;
+ b=MgjOWyttCh74BHUkUCYJ5Wk15LuJqe8Lm1hXG09KNgQgO+6GpPs8WnY6CQnqBCvsVwWN
+ g0yK/f1m8SeYiXIsNKikdjP+X08ZnWowunF+sscBJO3EZR6jj1vBgi6q01VEFySKuVaQ
+ N6IU13Pv71PDwGbl8/9A/CW6Th3w1WbH+bw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 31g6tkjf44-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 16:07:50 -0700
+Received: from intmgw002.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 8 Jun 2020 16:07:12 -0700
+Received: by devvm1291.vll0.facebook.com (Postfix, from userid 111017)
+        id 3CB1A1D8FE44; Mon,  8 Jun 2020 16:07:00 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Roman Gushchin <guro@fb.com>
+Smtp-Origin-Hostname: devvm1291.vll0.facebook.com
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <kernel-team@fb.com>,
+        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
+Smtp-Origin-Cluster: vll0c01
+Subject: [PATCH v6 05/19] mm: memcontrol: decouple reference counting from page accounting
+Date:   Mon, 8 Jun 2020 16:06:40 -0700
+Message-ID: <20200608230654.828134-6-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200608230654.828134-1-guro@fb.com>
+References: <20200608230654.828134-1-guro@fb.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-08_18:2020-06-08,2020-06-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
+ impostorscore=0 bulkscore=0 clxscore=1015 cotscore=-2147483648
+ adultscore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006080161
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Axtens <dja@axtens.net>
+From: Johannes Weiner <hannes@cmpxchg.org>
 
-[ Upstream commit 47227d27e2fcb01a9e8f5958d8997cf47a820afc ]
+The reference counting of a memcg is currently coupled directly to how
+many 4k pages are charged to it. This doesn't work well with Roman's
+new slab controller, which maintains pools of objects and doesn't want
+to keep an extra balance sheet for the pages backing those objects.
 
-The memcmp KASAN self-test fails on a kernel with both KASAN and
-FORTIFY_SOURCE.
+This unusual refcounting design (reference counts usually track
+pointers to an object) is only for historical reasons: memcg used to
+not take any css references and simply stalled offlining until all
+charges had been reparented and the page counters had dropped to
+zero. When we got rid of the reparenting requirement, the simple
+mechanical translation was to take a reference for every charge.
 
-When FORTIFY_SOURCE is on, a number of functions are replaced with
-fortified versions, which attempt to check the sizes of the operands.
-However, these functions often directly invoke __builtin_foo() once they
-have performed the fortify check.  Using __builtins may bypass KASAN
-checks if the compiler decides to inline it's own implementation as
-sequence of instructions, rather than emit a function call that goes out
-to a KASAN-instrumented implementation.
+More historical context can be found in commit e8ea14cc6ead ("mm:
+memcontrol: take a css reference for each charged page"),
+commit 64f219938941 ("mm: memcontrol: remove obsolete kmemcg pinning
+tricks") and commit b2052564e66d ("mm: memcontrol: continue cache
+reclaim from offlined groups").
 
-Why is only memcmp affected?
-============================
+The new slab controller exposes the limitations in this scheme, so
+let's switch it to a more idiomatic reference counting model based on
+actual kernel pointers to the memcg:
 
-Of the string and string-like functions that kasan_test tests, only memcmp
-is replaced by an inline sequence of instructions in my testing on x86
-with gcc version 9.2.1 20191008 (Ubuntu 9.2.1-9ubuntu2).
+- The per-cpu stock holds a reference to the memcg its caching
 
-I believe this is due to compiler heuristics.  For example, if I annotate
-kmalloc calls with the alloc_size annotation (and disable some fortify
-compile-time checking!), the compiler will replace every memset except the
-one in kmalloc_uaf_memset with inline instructions.  (I have some WIP
-patches to add this annotation.)
+- User pages hold a reference for their page->mem_cgroup. Transparent
+  huge pages will no longer acquire tail references in advance, we'll
+  get them if needed during the split.
 
-Does this affect other functions in string.h?
-=============================================
+- Kernel pages hold a reference for their page->mem_cgroup
 
-Yes. Anything that uses __builtin_* rather than __real_* could be
-affected. This looks like:
+- Pages allocated in the root cgroup will acquire and release css
+  references for simplicity. css_get() and css_put() optimize that.
 
- - strncpy
- - strcat
- - strlen
- - strlcpy maybe, under some circumstances?
- - strncat under some circumstances
- - memset
- - memcpy
- - memmove
- - memcmp (as noted)
- - memchr
- - strcpy
+- The current memcg_charge_slab() already hacked around the per-charge
+  references; this change gets rid of that as well.
 
-Whether a function call is emitted always depends on the compiler.  Most
-bugs should get caught by FORTIFY_SOURCE, but the missed memcmp test shows
-that this is not always the case.
+Roman:
+1) Rebased on top of the current mm tree: added css_get() in
+   mem_cgroup_charge(), dropped mem_cgroup_try_charge() part
+2) I've reformatted commit references in the commit log to make
+   checkpatch.pl happy.
 
-Isn't FORTIFY_SOURCE disabled with KASAN?
-========================================-
-
-The string headers on all arches supporting KASAN disable fortify with
-kasan, but only when address sanitisation is _also_ disabled.  For example
-from x86:
-
- #if defined(CONFIG_KASAN) && !defined(__SANITIZE_ADDRESS__)
- /*
-  * For files that are not instrumented (e.g. mm/slub.c) we
-  * should use not instrumented version of mem* functions.
-  */
- #define memcpy(dst, src, len) __memcpy(dst, src, len)
- #define memmove(dst, src, len) __memmove(dst, src, len)
- #define memset(s, c, n) __memset(s, c, n)
-
- #ifndef __NO_FORTIFY
- #define __NO_FORTIFY /* FORTIFY_SOURCE uses __builtin_memcpy, etc. */
- #endif
-
- #endif
-
-This comes from commit 6974f0c4555e ("include/linux/string.h: add the
-option of fortified string.h functions"), and doesn't work when KASAN is
-enabled and the file is supposed to be sanitised - as with test_kasan.c
-
-I'm pretty sure this is not wrong, but not as expansive it should be:
-
- * we shouldn't use __builtin_memcpy etc in files where we don't have
-   instrumentation - it could devolve into a function call to memcpy,
-   which will be instrumented. Rather, we should use __memcpy which
-   by convention is not instrumented.
-
- * we also shouldn't be using __builtin_memcpy when we have a KASAN
-   instrumented file, because it could be replaced with inline asm
-   that will not be instrumented.
-
-What is correct behaviour?
-==========================
-
-Firstly, there is some overlap between fortification and KASAN: both
-provide some level of _runtime_ checking. Only fortify provides
-compile-time checking.
-
-KASAN and fortify can pick up different things at runtime:
-
- - Some fortify functions, notably the string functions, could easily be
-   modified to consider sub-object sizes (e.g. members within a struct),
-   and I have some WIP patches to do this. KASAN cannot detect these
-   because it cannot insert poision between members of a struct.
-
- - KASAN can detect many over-reads/over-writes when the sizes of both
-   operands are unknown, which fortify cannot.
-
-So there are a couple of options:
-
- 1) Flip the test: disable fortify in santised files and enable it in
-    unsanitised files. This at least stops us missing KASAN checking, but
-    we lose the fortify checking.
-
- 2) Make the fortify code always call out to real versions. Do this only
-    for KASAN, for fear of losing the inlining opportunities we get from
-    __builtin_*.
-
-(We can't use kasan_check_{read,write}: because the fortify functions are
-_extern inline_, you can't include _static_ inline functions without a
-compiler warning. kasan_check_{read,write} are static inline so we can't
-use them even when they would otherwise be suitable.)
-
-Take approach 2 and call out to real versions when KASAN is enabled.
-
-Use __underlying_foo to distinguish from __real_foo: __real_foo always
-refers to the kernel's implementation of foo, __underlying_foo could be
-either the kernel implementation or the __builtin_foo implementation.
-
-This is sometimes enough to make the memcmp test succeed with
-FORTIFY_SOURCE enabled. It is at least enough to get the function call
-into the module. One more fix is needed to make it reliable: see the next
-patch.
-
-Fixes: 6974f0c4555e ("include/linux/string.h: add the option of fortified string.h functions")
-Signed-off-by: Daniel Axtens <dja@axtens.net>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Tested-by: David Gow <davidgow@google.com>
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-Cc: Daniel Micay <danielmicay@gmail.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Alexander Potapenko <glider@google.com>
-Link: http://lkml.kernel.org/r/20200423154503.5103-3-dja@axtens.net
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Acked-by: Roman Gushchin <guro@fb.com>
 ---
- include/linux/string.h | 60 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 48 insertions(+), 12 deletions(-)
+ mm/memcontrol.c | 37 +++++++++++++++++++++----------------
+ mm/slab.h       |  2 --
+ 2 files changed, 21 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/string.h b/include/linux/string.h
-index 6dfbb2efa815..9b7a0632e87a 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -272,6 +272,31 @@ void __read_overflow3(void) __compiletime_error("detected read beyond size of ob
- void __write_overflow(void) __compiletime_error("detected write beyond size of object passed as 1st parameter");
- 
- #if !defined(__NO_FORTIFY) && defined(__OPTIMIZE__) && defined(CONFIG_FORTIFY_SOURCE)
-+
-+#ifdef CONFIG_KASAN
-+extern void *__underlying_memchr(const void *p, int c, __kernel_size_t size) __RENAME(memchr);
-+extern int __underlying_memcmp(const void *p, const void *q, __kernel_size_t size) __RENAME(memcmp);
-+extern void *__underlying_memcpy(void *p, const void *q, __kernel_size_t size) __RENAME(memcpy);
-+extern void *__underlying_memmove(void *p, const void *q, __kernel_size_t size) __RENAME(memmove);
-+extern void *__underlying_memset(void *p, int c, __kernel_size_t size) __RENAME(memset);
-+extern char *__underlying_strcat(char *p, const char *q) __RENAME(strcat);
-+extern char *__underlying_strcpy(char *p, const char *q) __RENAME(strcpy);
-+extern __kernel_size_t __underlying_strlen(const char *p) __RENAME(strlen);
-+extern char *__underlying_strncat(char *p, const char *q, __kernel_size_t count) __RENAME(strncat);
-+extern char *__underlying_strncpy(char *p, const char *q, __kernel_size_t size) __RENAME(strncpy);
-+#else
-+#define __underlying_memchr	__builtin_memchr
-+#define __underlying_memcmp	__builtin_memcmp
-+#define __underlying_memcpy	__builtin_memcpy
-+#define __underlying_memmove	__builtin_memmove
-+#define __underlying_memset	__builtin_memset
-+#define __underlying_strcat	__builtin_strcat
-+#define __underlying_strcpy	__builtin_strcpy
-+#define __underlying_strlen	__builtin_strlen
-+#define __underlying_strncat	__builtin_strncat
-+#define __underlying_strncpy	__builtin_strncpy
-+#endif
-+
- __FORTIFY_INLINE char *strncpy(char *p, const char *q, __kernel_size_t size)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d18bf93e0f19..80282b2e8b7f 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2094,13 +2094,17 @@ static void drain_stock(struct memcg_stock_pcp *s=
+tock)
  {
- 	size_t p_size = __builtin_object_size(p, 0);
-@@ -279,14 +304,14 @@ __FORTIFY_INLINE char *strncpy(char *p, const char *q, __kernel_size_t size)
- 		__write_overflow();
- 	if (p_size < size)
- 		fortify_panic(__func__);
--	return __builtin_strncpy(p, q, size);
-+	return __underlying_strncpy(p, q, size);
- }
- 
- __FORTIFY_INLINE char *strcat(char *p, const char *q)
- {
- 	size_t p_size = __builtin_object_size(p, 0);
- 	if (p_size == (size_t)-1)
--		return __builtin_strcat(p, q);
-+		return __underlying_strcat(p, q);
- 	if (strlcat(p, q, p_size) >= p_size)
- 		fortify_panic(__func__);
- 	return p;
-@@ -300,7 +325,7 @@ __FORTIFY_INLINE __kernel_size_t strlen(const char *p)
- 	/* Work around gcc excess stack consumption issue */
- 	if (p_size == (size_t)-1 ||
- 	    (__builtin_constant_p(p[p_size - 1]) && p[p_size - 1] == '\0'))
--		return __builtin_strlen(p);
-+		return __underlying_strlen(p);
- 	ret = strnlen(p, p_size);
- 	if (p_size <= ret)
- 		fortify_panic(__func__);
-@@ -333,7 +358,7 @@ __FORTIFY_INLINE size_t strlcpy(char *p, const char *q, size_t size)
- 			__write_overflow();
- 		if (len >= p_size)
- 			fortify_panic(__func__);
--		__builtin_memcpy(p, q, len);
-+		__underlying_memcpy(p, q, len);
- 		p[len] = '\0';
+ 	struct mem_cgroup *old =3D stock->cached;
+=20
++	if (!old)
++		return;
++
+ 	if (stock->nr_pages) {
+ 		page_counter_uncharge(&old->memory, stock->nr_pages);
+ 		if (do_memsw_account())
+ 			page_counter_uncharge(&old->memsw, stock->nr_pages);
+-		css_put_many(&old->css, stock->nr_pages);
+ 		stock->nr_pages =3D 0;
  	}
- 	return ret;
-@@ -346,12 +371,12 @@ __FORTIFY_INLINE char *strncat(char *p, const char *q, __kernel_size_t count)
- 	size_t p_size = __builtin_object_size(p, 0);
- 	size_t q_size = __builtin_object_size(q, 0);
- 	if (p_size == (size_t)-1 && q_size == (size_t)-1)
--		return __builtin_strncat(p, q, count);
-+		return __underlying_strncat(p, q, count);
- 	p_len = strlen(p);
- 	copy_len = strnlen(q, count);
- 	if (p_size < p_len + copy_len + 1)
- 		fortify_panic(__func__);
--	__builtin_memcpy(p + p_len, q, copy_len);
-+	__underlying_memcpy(p + p_len, q, copy_len);
- 	p[p_len + copy_len] = '\0';
- 	return p;
++
++	css_put(&old->css);
+ 	stock->cached =3D NULL;
  }
-@@ -363,7 +388,7 @@ __FORTIFY_INLINE void *memset(void *p, int c, __kernel_size_t size)
- 		__write_overflow();
- 	if (p_size < size)
- 		fortify_panic(__func__);
--	return __builtin_memset(p, c, size);
-+	return __underlying_memset(p, c, size);
- }
- 
- __FORTIFY_INLINE void *memcpy(void *p, const void *q, __kernel_size_t size)
-@@ -378,7 +403,7 @@ __FORTIFY_INLINE void *memcpy(void *p, const void *q, __kernel_size_t size)
+=20
+@@ -2136,6 +2140,7 @@ static void refill_stock(struct mem_cgroup *memcg, =
+unsigned int nr_pages)
+ 	stock =3D this_cpu_ptr(&memcg_stock);
+ 	if (stock->cached !=3D memcg) { /* reset if necessary */
+ 		drain_stock(stock);
++		css_get(&memcg->css);
+ 		stock->cached =3D memcg;
  	}
- 	if (p_size < size || q_size < size)
- 		fortify_panic(__func__);
--	return __builtin_memcpy(p, q, size);
-+	return __underlying_memcpy(p, q, size);
+ 	stock->nr_pages +=3D nr_pages;
+@@ -2594,12 +2599,10 @@ static int try_charge(struct mem_cgroup *memcg, g=
+fp_t gfp_mask,
+ 	page_counter_charge(&memcg->memory, nr_pages);
+ 	if (do_memsw_account())
+ 		page_counter_charge(&memcg->memsw, nr_pages);
+-	css_get_many(&memcg->css, nr_pages);
+=20
+ 	return 0;
+=20
+ done_restock:
+-	css_get_many(&memcg->css, batch);
+ 	if (batch > nr_pages)
+ 		refill_stock(memcg, batch - nr_pages);
+=20
+@@ -2657,8 +2660,6 @@ static void cancel_charge(struct mem_cgroup *memcg,=
+ unsigned int nr_pages)
+ 	page_counter_uncharge(&memcg->memory, nr_pages);
+ 	if (do_memsw_account())
+ 		page_counter_uncharge(&memcg->memsw, nr_pages);
+-
+-	css_put_many(&memcg->css, nr_pages);
  }
- 
- __FORTIFY_INLINE void *memmove(void *p, const void *q, __kernel_size_t size)
-@@ -393,7 +418,7 @@ __FORTIFY_INLINE void *memmove(void *p, const void *q, __kernel_size_t size)
- 	}
- 	if (p_size < size || q_size < size)
- 		fortify_panic(__func__);
--	return __builtin_memmove(p, q, size);
-+	return __underlying_memmove(p, q, size);
- }
- 
- extern void *__real_memscan(void *, int, __kernel_size_t) __RENAME(memscan);
-@@ -419,7 +444,7 @@ __FORTIFY_INLINE int memcmp(const void *p, const void *q, __kernel_size_t size)
- 	}
- 	if (p_size < size || q_size < size)
- 		fortify_panic(__func__);
--	return __builtin_memcmp(p, q, size);
-+	return __underlying_memcmp(p, q, size);
- }
- 
- __FORTIFY_INLINE void *memchr(const void *p, int c, __kernel_size_t size)
-@@ -429,7 +454,7 @@ __FORTIFY_INLINE void *memchr(const void *p, int c, __kernel_size_t size)
- 		__read_overflow();
- 	if (p_size < size)
- 		fortify_panic(__func__);
--	return __builtin_memchr(p, c, size);
-+	return __underlying_memchr(p, c, size);
- }
- 
- void *__real_memchr_inv(const void *s, int c, size_t n) __RENAME(memchr_inv);
-@@ -460,11 +485,22 @@ __FORTIFY_INLINE char *strcpy(char *p, const char *q)
- 	size_t p_size = __builtin_object_size(p, 0);
- 	size_t q_size = __builtin_object_size(q, 0);
- 	if (p_size == (size_t)-1 && q_size == (size_t)-1)
--		return __builtin_strcpy(p, q);
-+		return __underlying_strcpy(p, q);
- 	memcpy(p, q, strlen(q) + 1);
- 	return p;
- }
- 
-+/* Don't use these outside the FORITFY_SOURCE implementation */
-+#undef __underlying_memchr
-+#undef __underlying_memcmp
-+#undef __underlying_memcpy
-+#undef __underlying_memmove
-+#undef __underlying_memset
-+#undef __underlying_strcat
-+#undef __underlying_strcpy
-+#undef __underlying_strlen
-+#undef __underlying_strncat
-+#undef __underlying_strncpy
  #endif
- 
+=20
+@@ -2964,6 +2965,7 @@ int __memcg_kmem_charge_page(struct page *page, gfp=
+_t gfp, int order)
+ 		if (!ret) {
+ 			page->mem_cgroup =3D memcg;
+ 			__SetPageKmemcg(page);
++			return 0;
+ 		}
+ 	}
+ 	css_put(&memcg->css);
+@@ -2986,12 +2988,11 @@ void __memcg_kmem_uncharge_page(struct page *page=
+, int order)
+ 	VM_BUG_ON_PAGE(mem_cgroup_is_root(memcg), page);
+ 	__memcg_kmem_uncharge(memcg, nr_pages);
+ 	page->mem_cgroup =3D NULL;
++	css_put(&memcg->css);
+=20
+ 	/* slab pages do not have PageKmemcg flag set */
+ 	if (PageKmemcg(page))
+ 		__ClearPageKmemcg(page);
+-
+-	css_put_many(&memcg->css, nr_pages);
+ }
+ #endif /* CONFIG_MEMCG_KMEM */
+=20
+@@ -3003,13 +3004,16 @@ void __memcg_kmem_uncharge_page(struct page *page=
+, int order)
+  */
+ void mem_cgroup_split_huge_fixup(struct page *head)
+ {
++	struct mem_cgroup *memcg =3D head->mem_cgroup;
+ 	int i;
+=20
+ 	if (mem_cgroup_disabled())
+ 		return;
+=20
+-	for (i =3D 1; i < HPAGE_PMD_NR; i++)
+-		head[i].mem_cgroup =3D head->mem_cgroup;
++	for (i =3D 1; i < HPAGE_PMD_NR; i++) {
++		css_get(&memcg->css);
++		head[i].mem_cgroup =3D memcg;
++	}
+ }
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+=20
+@@ -5454,7 +5458,10 @@ static int mem_cgroup_move_account(struct page *pa=
+ge,
+ 	 */
+ 	smp_mb();
+=20
+-	page->mem_cgroup =3D to; 	/* caller should have done css_get */
++	css_get(&to->css);
++	css_put(&from->css);
++
++	page->mem_cgroup =3D to;
+=20
+ 	__unlock_page_memcg(from);
+=20
+@@ -6540,6 +6547,7 @@ int mem_cgroup_charge(struct page *page, struct mm_=
+struct *mm, gfp_t gfp_mask)
+ 	if (ret)
+ 		goto out_put;
+=20
++	css_get(&memcg->css);
+ 	commit_charge(page, memcg);
+=20
+ 	local_irq_disable();
+@@ -6594,9 +6602,6 @@ static void uncharge_batch(const struct uncharge_ga=
+ther *ug)
+ 	__this_cpu_add(ug->memcg->vmstats_percpu->nr_page_events, ug->nr_pages)=
+;
+ 	memcg_check_events(ug->memcg, ug->dummy_page);
+ 	local_irq_restore(flags);
+-
+-	if (!mem_cgroup_is_root(ug->memcg))
+-		css_put_many(&ug->memcg->css, ug->nr_pages);
+ }
+=20
+ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+@@ -6634,6 +6639,7 @@ static void uncharge_page(struct page *page, struct=
+ uncharge_gather *ug)
+=20
+ 	ug->dummy_page =3D page;
+ 	page->mem_cgroup =3D NULL;
++	css_put(&ug->memcg->css);
+ }
+=20
+ static void uncharge_list(struct list_head *page_list)
+@@ -6739,8 +6745,8 @@ void mem_cgroup_migrate(struct page *oldpage, struc=
+t page *newpage)
+ 	page_counter_charge(&memcg->memory, nr_pages);
+ 	if (do_memsw_account())
+ 		page_counter_charge(&memcg->memsw, nr_pages);
+-	css_get_many(&memcg->css, nr_pages);
+=20
++	css_get(&memcg->css);
+ 	commit_charge(newpage, memcg);
+=20
+ 	local_irq_save(flags);
+@@ -6977,8 +6983,7 @@ void mem_cgroup_swapout(struct page *page, swp_entr=
+y_t entry)
+ 	mem_cgroup_charge_statistics(memcg, page, -nr_entries);
+ 	memcg_check_events(memcg, page);
+=20
+-	if (!mem_cgroup_is_root(memcg))
+-		css_put_many(&memcg->css, nr_entries);
++	css_put(&memcg->css);
+ }
+=20
  /**
--- 
-2.25.1
+diff --git a/mm/slab.h b/mm/slab.h
+index 633eedb6bad1..8a574d9361c1 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -373,9 +373,7 @@ static __always_inline int memcg_charge_slab(struct p=
+age *page,
+ 	lruvec =3D mem_cgroup_lruvec(memcg, page_pgdat(page));
+ 	mod_lruvec_state(lruvec, cache_vmstat_idx(s), nr_pages << PAGE_SHIFT);
+=20
+-	/* transer try_charge() page references to kmem_cache */
+ 	percpu_ref_get_many(&s->memcg_params.refcnt, nr_pages);
+-	css_put_many(&memcg->css, nr_pages);
+ out:
+ 	css_put(&memcg->css);
+ 	return ret;
+--=20
+2.25.4
 
