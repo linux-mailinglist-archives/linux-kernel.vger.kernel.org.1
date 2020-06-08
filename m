@@ -2,147 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4A91F1DD8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 18:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAEA1F1DE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 18:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387480AbgFHQw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 12:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730637AbgFHQw4 (ORCPT
+        id S1730675AbgFHQ4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 12:56:50 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:38297 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730523AbgFHQ4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 12:52:56 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D731BC08C5C2
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 09:52:55 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id a80so9567906ybg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 09:52:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LxC9yr5pcIbFYNuvtgd8dcuLjHwvYsOdMQD9eBhAIIs=;
-        b=ICRkLk+EWV0XKL+5j4ZWGdsA2MnZSDJ8kyz0KyhVYqMiL922ZjMPhIUPkNsklFgaw1
-         4jlS72yUIFx/SnaqlPgIOub3YmR3SuvS7HukJFo2fMf3uU8aTGhcZRAL+PBkNI36jEz+
-         XJQMGgmzsWOnt7rmV/jLxDkwDBY48dmzkK0vLfyjDU8fgdKfvse/1V0Bah79RckaVE9W
-         UirUP5/JwFIx8yvP/g0F9c1us4il4kxmzlUd1YRNyZ9FMYeoBURGLaaGWQjx4kUf6hqH
-         yN+B172w1HFnnyrQNwHJArrFh9tKra8O5a4jLARwSRwSXsY0XUTaBzTk8rVxOdSKUwzl
-         819w==
+        Mon, 8 Jun 2020 12:56:50 -0400
+Received: by mail-pg1-f195.google.com with SMTP id u5so9021161pgn.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 09:56:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LxC9yr5pcIbFYNuvtgd8dcuLjHwvYsOdMQD9eBhAIIs=;
-        b=TXZvI1Db3c4/fafEYp0ZTCsVWDvNJKxmn8UWnwDIUKIE4yuGcVSKMwLVjTNHYAreq1
-         am6rtHPgtfN6yWVSkHjGtgVLCM9J7rmIXX0ZPiKkoBRG+YS00d0hRFczGZwICAPNSlzi
-         l+fm0R/vX9tVkMWKpMc0Ds7nBZ6C9BZciCh+y0kP6Cp6fEx1XSHAaUzm17J5WAPbxnfI
-         TE0AvIQM55p/RzQ0kOu18pP+EM9CvnoTDWZw2aH2PMY8rBFX4YMfv30RP1bcOS33Lj5o
-         6XBNCIHb71kambBCMl5DnFzK6ZjehJnZ50TB2b+od+TvLRqtzjs9u6ia+QZwZPSzAQm5
-         1xdQ==
-X-Gm-Message-State: AOAM532cSw2e1Q4seMfta8tUrcZnI1dDUh+7GeN/4ZsePRgfmsB0x9z4
-        o1imUgFHTUJz4DtQcXulYdlegtMEU0i7VIZAnI2Ffg==
-X-Google-Smtp-Source: ABdhPJzk/ToSU4eBaN+gQQO6z9MooSc81KgTbKAz11Ec1pWQtsNNSDUQWFLkl+kO95xnA6Lnr7FX5q/i7PUyAR4ElFM=
-X-Received: by 2002:a5b:f4d:: with SMTP id y13mr7799523ybr.286.1591635174852;
- Mon, 08 Jun 2020 09:52:54 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+        b=rTHrus3i4YQ4mhGZ0ttj8n5T/WxhfxgK+isF/FbLcdX5APIPOI7FJyHdvSEwdfMFjU
+         p9jAcnNcqGLZnjBP15Oxim4pr9zmcuywx9/ku5rfZAU23R37O9dtMGchYVHd28rN/lqn
+         5Ttbp3pq0hR/j0spAKUg4EogtNBAfCu1ynuh3sLLt1hNa8oJSt5WkqAxIugpe1yi77ue
+         flAjwIJST8yhWVYQNrcT1HVXy2lekAER5d/p50lmykCdB/uis4AJm5VKmXDJMZgc7Nbt
+         efJeSrJg3g3YwKxOI2POYgZEVqSx1VtAgnRf//x/e85hJvbd2Zmv0ztXRDMI5j9zeH1i
+         VlHg==
+X-Gm-Message-State: AOAM532SgPGSPePL3NfkMkfaa+bhVo9FGIegHuXxn+Z0qTz/hI2+3jOC
+        Y8LZIjX2x1wc1W1+dWJ5d1s=
+X-Google-Smtp-Source: ABdhPJxkaMnGp5/oDgkdCmAw7VoDdkdA6yItkr/GRn1VNxTA5ppA2XiR8Yaqv54AJuE9hAxW6CwYyw==
+X-Received: by 2002:a62:848f:: with SMTP id k137mr12333025pfd.99.1591635409659;
+        Mon, 08 Jun 2020 09:56:49 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:5183:321c:38f8:ee16? ([2601:647:4802:9070:5183:321c:38f8:ee16])
+        by smtp.gmail.com with ESMTPSA id h17sm7550090pfo.168.2020.06.08.09.56.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jun 2020 09:56:48 -0700 (PDT)
+Subject: Re: [PATCH 1/2] nvmet-loop: remove unused 'target_ctrl' in
+ nvme_loop_ctrl
+To:     Dongli Zhang <dongli.zhang@oracle.com>,
+        linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, hch@lst.de,
+        chaitanya.kulkarni@wdc.com, kbusch@kernel.org, axboe@fb.com
+References: <20200608162002.17017-1-dongli.zhang@oracle.com>
+ <20200608162002.17017-2-dongli.zhang@oracle.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <512568ce-0bcc-7940-c2a0-a6416788cd7c@grimberg.me>
+Date:   Mon, 8 Jun 2020 09:56:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200608161805.65841-1-eranian@google.com>
-In-Reply-To: <20200608161805.65841-1-eranian@google.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 8 Jun 2020 09:52:43 -0700
-Message-ID: <CAP-5=fXmrbBqDj6udGJCLHF5ePERr1S5qTKGZZAUBC1EmA-8LQ@mail.gmail.com>
-Subject: Re: [PATCH] perf headers: fix processing of pmu_mappings
-To:     Stephane Eranian <eranian@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, mingo@elte.hu
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200608162002.17017-2-dongli.zhang@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 8, 2020 at 9:18 AM Stephane Eranian <eranian@google.com> wrote:
->
-> This patch fixes a bug in process_pmu_mappings() where the code
-> would not produce an env->pmu_mappings string that was easily parsable.
-> The function parses the PMU_MAPPING header information into a string
-> consisting of value:name pairs where value is the PMU type identifier
-> and name is the PMU name, e.g., 10:ibs_fetch. As it was, the code
-> was producing a truncated string with only the first pair showing
-> even though the rest was there but after the \0.
-> This patch fixes the problem byt adding a proper white space between
-> pairs and moving the \0 termination to the end. With this patch applied,
-> all pairs appear and are easily parsed.
->
-> Before:
-> 14:amd_iommu_1
->
-> After:
-> 14:amd_iommu_1 7:uprobe 5:breakpoint 10:amd_l3 19:amd_iommu_6 8:power 4:cpu 17:amd_iommu_4 15:amd_iommu_2 1:software 6:kprobe 13:amd_iommu_0 9:amd_df 20:amd_iommu_7 18:amd_iommu_5 2:tracepoint 21:msr 12:ibs_op 16:amd_iommu_3 11:ibs_fetch
->
-> Signed-off-by: Stephane Eranian <eranian@google.com>
-> ---
->  tools/perf/util/header.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index 7a67d017d72c3..cf72124da9350 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -2462,13 +2462,15 @@ static int process_numa_topology(struct feat_fd *ff, void *data __maybe_unused)
->  static int process_pmu_mappings(struct feat_fd *ff, void *data __maybe_unused)
->  {
->         char *name;
-> -       u32 pmu_num;
-> +       u32 pmu_num, o_num;
->         u32 type;
->         struct strbuf sb;
->
->         if (do_read_u32(ff, &pmu_num))
->                 return -1;
->
-> +       o_num = pmu_num;
-> +
->         if (!pmu_num) {
->                 pr_debug("pmu mappings not available\n");
->                 return 0;
-> @@ -2486,10 +2488,11 @@ static int process_pmu_mappings(struct feat_fd *ff, void *data __maybe_unused)
->                 if (!name)
->                         goto error;
->
-> -               if (strbuf_addf(&sb, "%u:%s", type, name) < 0)
-> +               /* add proper spacing between entries */
-> +               if (pmu_num < o_num && strbuf_add(&sb, " ", 1) < 0)
->                         goto error;
-> -               /* include a NULL character at the end */
-> -               if (strbuf_add(&sb, "", 1) < 0)
-> +
-> +               if (strbuf_addf(&sb, "%u:%s", type, name) < 0)
->                         goto error;
->
->                 if (!strcmp(name, "msr"))
-> @@ -2498,6 +2501,9 @@ static int process_pmu_mappings(struct feat_fd *ff, void *data __maybe_unused)
->                 free(name);
->                 pmu_num--;
->         }
-> +       /* include a NULL character at the end */
-> +       if (strbuf_add(&sb, "", 1) < 0)
-> +               goto error;
->         ff->ph->env.pmu_mappings = strbuf_detach(&sb, NULL);
->         return 0;
->
-> --
-> 2.27.0.278.ge193c7cf3a9-goog
-
-Acked-by: Ian Rogers <irogers@google.com>
-
-A lot of the complexity in this code came from strbuf not \0
-terminating strings. Would a strbuf that always \0 terminated be a
-useful change? In general there's a lack of consistent style with
-strbuf, strcat and asprintf being used in different parts of the code.
-Perhaps strbuf use should migrate to asprintf? There are currently
-just 13 callers of strbuf_init.
-
-Thanks,
-Ian
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
