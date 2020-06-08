@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6071B1F24F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DA51F24FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730121AbgFHXYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:24:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41534 "EHLO mail.kernel.org"
+        id S1730489AbgFHXY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:24:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727045AbgFHXS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:18:58 -0400
+        id S1729136AbgFHXTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:19:11 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3A052083E;
-        Mon,  8 Jun 2020 23:18:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61E0C2089D;
+        Mon,  8 Jun 2020 23:19:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658337;
-        bh=Z16FR46Wfib9ObRljsI1+fcv3Z7krEYvl7iFsM+AQ1E=;
+        s=default; t=1591658351;
+        bh=wYOBonMFOcw+NCR1S5pFDveiILnmyP7Jt2GUW7nzcvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PJRRCIJZnJZyCqWKOipkwMHBZMblHLBwvFMh0HtZ5qZnm7q+vb5V5bDWDRSf1xvBy
-         b8zRYTKfrJ8h4zVPHrO85nfZlyOBX1GXDqF/H97G4rK5BdYe2KEOZ18Hn+z8kQhIqr
-         800IX81HAhqB4Ywou/KARP5BvXE4Cmcb9sjR1yn8=
+        b=cBZu0zdpyQA1kELPM1ysfKWcx3oMuPSQrVavJY0C1cIAgoSsT1PQUe2PgKlVK48hj
+         16kvqMEs6mBkI4DK7qwheJA/p3fZjvHt9mRFcn1Y34F0qsdkvu/QBAH61xViIJreoh
+         ny0x1ou3upl2Lz9x+TnQtpCOK/L0rHOaYL2Ic4FI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bingbu Cao <bingbu.cao@intel.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: [PATCH AUTOSEL 5.4 007/175] media: staging: imgu: do not hold spinlock during freeing mmu page table
-Date:   Mon,  8 Jun 2020 19:16:00 -0400
-Message-Id: <20200608231848.3366970-7-sashal@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 018/175] x86,smap: Fix smap_{save,restore}() alternatives
+Date:   Mon,  8 Jun 2020 19:16:11 -0400
+Message-Id: <20200608231848.3366970-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -46,63 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bingbu Cao <bingbu.cao@intel.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit e1ebe9f9c88e5a78fcc4670a9063c9b3cd87dda4 ]
+[ Upstream commit 1ff865e343c2b59469d7e41d370a980a3f972c71 ]
 
-ImgU need set the mmu page table in memory as uncached, and set back
-to write-back when free the page table by set_memory_wb(),
-set_memory_wb() can not do flushing without interrupt, so the spinlock
-should not be hold during ImgU page alloc and free, the interrupt
-should be enabled during memory cache flush.
+As reported by objtool:
 
-This patch release spinlock before freeing pages table.
+  lib/ubsan.o: warning: objtool: .altinstr_replacement+0x0: alternative modifies stack
+  lib/ubsan.o: warning: objtool: .altinstr_replacement+0x7: alternative modifies stack
 
-Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+the smap_{save,restore}() alternatives violate (the newly enforced)
+rule on stack invariance. That is, due to there only being a single
+ORC table it must be valid to any alternative. These alternatives
+violate this with the direct result that unwinds will not be correct
+when it hits between the PUSH and POP instructions.
+
+Rewrite the functions to only have a conditional jump.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://lkml.kernel.org/r/20200429101802.GI13592@hirez.programming.kicks-ass.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/ipu3/ipu3-mmu.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/smap.h | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/media/ipu3/ipu3-mmu.c b/drivers/staging/media/ipu3/ipu3-mmu.c
-index 3d969b0522ab..abcf1f3e5f63 100644
---- a/drivers/staging/media/ipu3/ipu3-mmu.c
-+++ b/drivers/staging/media/ipu3/ipu3-mmu.c
-@@ -174,8 +174,10 @@ static u32 *imgu_mmu_get_l2pt(struct imgu_mmu *mmu, u32 l1pt_idx)
- 	spin_lock_irqsave(&mmu->lock, flags);
+diff --git a/arch/x86/include/asm/smap.h b/arch/x86/include/asm/smap.h
+index 27c47d183f4b..8b58d6975d5d 100644
+--- a/arch/x86/include/asm/smap.h
++++ b/arch/x86/include/asm/smap.h
+@@ -57,8 +57,10 @@ static __always_inline unsigned long smap_save(void)
+ {
+ 	unsigned long flags;
  
- 	l2pt = mmu->l2pts[l1pt_idx];
--	if (l2pt)
--		goto done;
-+	if (l2pt) {
-+		spin_unlock_irqrestore(&mmu->lock, flags);
-+		return l2pt;
-+	}
+-	asm volatile (ALTERNATIVE("", "pushf; pop %0; " __ASM_CLAC,
+-				  X86_FEATURE_SMAP)
++	asm volatile ("# smap_save\n\t"
++		      ALTERNATIVE("jmp 1f", "", X86_FEATURE_SMAP)
++		      "pushf; pop %0; " __ASM_CLAC "\n\t"
++		      "1:"
+ 		      : "=rm" (flags) : : "memory", "cc");
  
- 	spin_unlock_irqrestore(&mmu->lock, flags);
+ 	return flags;
+@@ -66,7 +68,10 @@ static __always_inline unsigned long smap_save(void)
  
-@@ -190,8 +192,9 @@ static u32 *imgu_mmu_get_l2pt(struct imgu_mmu *mmu, u32 l1pt_idx)
- 
- 	l2pt = mmu->l2pts[l1pt_idx];
- 	if (l2pt) {
-+		spin_unlock_irqrestore(&mmu->lock, flags);
- 		imgu_mmu_free_page_table(new_l2pt);
--		goto done;
-+		return l2pt;
- 	}
- 
- 	l2pt = new_l2pt;
-@@ -200,7 +203,6 @@ static u32 *imgu_mmu_get_l2pt(struct imgu_mmu *mmu, u32 l1pt_idx)
- 	pteval = IPU3_ADDR2PTE(virt_to_phys(new_l2pt));
- 	mmu->l1pt[l1pt_idx] = pteval;
- 
--done:
- 	spin_unlock_irqrestore(&mmu->lock, flags);
- 	return l2pt;
+ static __always_inline void smap_restore(unsigned long flags)
+ {
+-	asm volatile (ALTERNATIVE("", "push %0; popf", X86_FEATURE_SMAP)
++	asm volatile ("# smap_restore\n\t"
++		      ALTERNATIVE("jmp 1f", "", X86_FEATURE_SMAP)
++		      "push %0; popf\n\t"
++		      "1:"
+ 		      : : "g" (flags) : "memory", "cc");
  }
+ 
 -- 
 2.25.1
 
