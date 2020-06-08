@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064771F2687
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1B01F268B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732027AbgFHX0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:26:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45532 "EHLO mail.kernel.org"
+        id S1732048AbgFHX0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:26:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730049AbgFHXVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:21:22 -0400
+        id S1731157AbgFHXVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:21:32 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE014208C9;
-        Mon,  8 Jun 2020 23:21:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A272208B8;
+        Mon,  8 Jun 2020 23:21:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658481;
-        bh=CarzX7jrFj2dLReUZB4e6YJK8BhpEudbGb6UOINdud4=;
+        s=default; t=1591658491;
+        bh=17kbZ1WrKBdQWj2NDXfl3kg9/sIviW/uMiZRiZRnHHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ulmOF4UpHUzAUjgoU1B0h1CkNqmzHZFvLxYVi+2f54LlxC5FOcRB/1mAK5aU0J0qp
-         hNESV/gyvUQLPmgkzIRYB8Zvzch3QDv6/1/Y+C11nmp+UHFu256FjpCG8xoZM9wm92
-         vaCNizWZJx1MHzwVolxUp2tInYZn3RUctvXiEQuY=
+        b=QggN4+cXg9hQ0HqFj0JlZxUOYZ/QwZ+06mEgMGaJTpwGjrVfpNGgUWrSJHxL91nnj
+         QjwZcNqcwMAi1ZIVFmjYf6w1MTwfSHwDLRoPaxlFgr85e7sLnw3rZixM2i9dfLgEWv
+         uauh4i2m/HwDXInlTPjR96N9zzjANgWMR7opEz8I=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 117/175] wcn36xx: Fix error handling path in 'wcn36xx_probe()'
-Date:   Mon,  8 Jun 2020 19:17:50 -0400
-Message-Id: <20200608231848.3366970-117-sashal@kernel.org>
+Cc:     Vlad Buslov <vladbu@mellanox.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 125/175] selftests: fix flower parent qdisc
+Date:   Mon,  8 Jun 2020 19:17:58 -0400
+Message-Id: <20200608231848.3366970-125-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -45,54 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Vlad Buslov <vladbu@mellanox.com>
 
-[ Upstream commit a86308fc534edeceaf64670c691e17485436a4f4 ]
+[ Upstream commit 0531b0357ba37464e5c0033e1b7c69bbf5ecd8fb ]
 
-In case of error, 'qcom_wcnss_open_channel()' must be undone by a call to
-'rpmsg_destroy_ept()', as already done in the remove function.
+Flower tests used to create ingress filter with specified parent qdisc
+"parent ffff:" but dump them on "ingress". With recent commit that fixed
+tcm_parent handling in dump those are not considered same parent anymore,
+which causes iproute2 tc to emit additional "parent ffff:" in first line of
+filter dump output. The change in output causes filter match in tests to
+fail.
 
-Fixes: 5052de8deff5 ("soc: qcom: smd: Transition client drivers from smd to rpmsg")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200507043619.200051-1-christophe.jaillet@wanadoo.fr
+Prevent parent qdisc output when dumping filters in flower tests by always
+correctly specifying "ingress" parent both when creating and dumping
+filters.
+
+Fixes: a7df4870d79b ("net_sched: fix tcm_parent in tc filter dump")
+Signed-off-by: Vlad Buslov <vladbu@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/wcn36xx/main.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../selftests/tc-testing/tc-tests/filters/tests.json        | 6 +++---
+ tools/testing/selftests/tc-testing/tdc_batch.py             | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
-index 79998a3ddb7a..ad051f34e65b 100644
---- a/drivers/net/wireless/ath/wcn36xx/main.c
-+++ b/drivers/net/wireless/ath/wcn36xx/main.c
-@@ -1341,7 +1341,7 @@ static int wcn36xx_probe(struct platform_device *pdev)
- 	if (addr && ret != ETH_ALEN) {
- 		wcn36xx_err("invalid local-mac-address\n");
- 		ret = -EINVAL;
--		goto out_wq;
-+		goto out_destroy_ept;
- 	} else if (addr) {
- 		wcn36xx_info("mac address: %pM\n", addr);
- 		SET_IEEE80211_PERM_ADDR(wcn->hw, addr);
-@@ -1349,7 +1349,7 @@ static int wcn36xx_probe(struct platform_device *pdev)
+diff --git a/tools/testing/selftests/tc-testing/tc-tests/filters/tests.json b/tools/testing/selftests/tc-testing/tc-tests/filters/tests.json
+index 0f89cd50a94b..152ffa45e857 100644
+--- a/tools/testing/selftests/tc-testing/tc-tests/filters/tests.json
++++ b/tools/testing/selftests/tc-testing/tc-tests/filters/tests.json
+@@ -54,7 +54,7 @@
+         "setup": [
+             "$TC qdisc add dev $DEV2 ingress"
+         ],
+-        "cmdUnderTest": "$TC filter add dev $DEV2 protocol ip pref 1 parent ffff: handle 0xffffffff flower action ok",
++        "cmdUnderTest": "$TC filter add dev $DEV2 protocol ip pref 1 ingress handle 0xffffffff flower action ok",
+         "expExitCode": "0",
+         "verifyCmd": "$TC filter show dev $DEV2 ingress",
+         "matchPattern": "filter protocol ip pref 1 flower.*handle 0xffffffff",
+@@ -99,9 +99,9 @@
+         },
+         "setup": [
+             "$TC qdisc add dev $DEV2 ingress",
+-            "$TC filter add dev $DEV2 protocol ip prio 1 parent ffff: flower dst_mac e4:11:22:11:4a:51 src_mac e4:11:22:11:4a:50 ip_proto tcp src_ip 1.1.1.1 dst_ip 2.2.2.2 action drop"
++            "$TC filter add dev $DEV2 protocol ip prio 1 ingress flower dst_mac e4:11:22:11:4a:51 src_mac e4:11:22:11:4a:50 ip_proto tcp src_ip 1.1.1.1 dst_ip 2.2.2.2 action drop"
+         ],
+-        "cmdUnderTest": "$TC filter add dev $DEV2 protocol ip prio 1 parent ffff: flower dst_mac e4:11:22:11:4a:51 src_mac e4:11:22:11:4a:50 ip_proto tcp src_ip 1.1.1.1 dst_ip 2.2.2.2 action drop",
++        "cmdUnderTest": "$TC filter add dev $DEV2 protocol ip prio 1 ingress flower dst_mac e4:11:22:11:4a:51 src_mac e4:11:22:11:4a:50 ip_proto tcp src_ip 1.1.1.1 dst_ip 2.2.2.2 action drop",
+         "expExitCode": "2",
+         "verifyCmd": "$TC -s filter show dev $DEV2 ingress",
+         "matchPattern": "filter protocol ip pref 1 flower chain 0 handle",
+diff --git a/tools/testing/selftests/tc-testing/tdc_batch.py b/tools/testing/selftests/tc-testing/tdc_batch.py
+index 6a2bd2cf528e..995f66ce43eb 100755
+--- a/tools/testing/selftests/tc-testing/tdc_batch.py
++++ b/tools/testing/selftests/tc-testing/tdc_batch.py
+@@ -72,21 +72,21 @@ mac_prefix = args.mac_prefix
  
- 	ret = wcn36xx_platform_get_resources(wcn, pdev);
- 	if (ret)
--		goto out_wq;
-+		goto out_destroy_ept;
+ def format_add_filter(device, prio, handle, skip, src_mac, dst_mac,
+                       share_action):
+-    return ("filter add dev {} {} protocol ip parent ffff: handle {} "
++    return ("filter add dev {} {} protocol ip ingress handle {} "
+             " flower {} src_mac {} dst_mac {} action drop {}".format(
+                 device, prio, handle, skip, src_mac, dst_mac, share_action))
  
- 	wcn36xx_init_ieee80211(wcn);
- 	ret = ieee80211_register_hw(wcn->hw);
-@@ -1361,6 +1361,8 @@ static int wcn36xx_probe(struct platform_device *pdev)
- out_unmap:
- 	iounmap(wcn->ccu_base);
- 	iounmap(wcn->dxe_base);
-+out_destroy_ept:
-+	rpmsg_destroy_ept(wcn->smd_channel);
- out_wq:
- 	ieee80211_free_hw(hw);
- out_err:
+ 
+ def format_rep_filter(device, prio, handle, skip, src_mac, dst_mac,
+                       share_action):
+-    return ("filter replace dev {} {} protocol ip parent ffff: handle {} "
++    return ("filter replace dev {} {} protocol ip ingress handle {} "
+             " flower {} src_mac {} dst_mac {} action drop {}".format(
+                 device, prio, handle, skip, src_mac, dst_mac, share_action))
+ 
+ 
+ def format_del_filter(device, prio, handle, skip, src_mac, dst_mac,
+                       share_action):
+-    return ("filter del dev {} {} protocol ip parent ffff: handle {} "
++    return ("filter del dev {} {} protocol ip ingress handle {} "
+             "flower".format(device, prio, handle))
+ 
+ 
 -- 
 2.25.1
 
