@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A431F2F6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234B01F2DA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgFHXKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:10:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55008 "EHLO mail.kernel.org"
+        id S1730824AbgFIAf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:35:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726939AbgFHXJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:09:18 -0400
+        id S1729815AbgFHXO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:14:27 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02FCD208A9;
-        Mon,  8 Jun 2020 23:09:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C800921582;
+        Mon,  8 Jun 2020 23:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657757;
-        bh=bPijKvbdkE4m5opaHN4/KMkGmc5AfHZ03wHvgv5RCjs=;
+        s=default; t=1591658067;
+        bh=t8k+A26nle/JylAK0rDU4ayMbCakUSWlwZOpncrVqrs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=snT6sf2/woAJFpDwv6GJn72OEZpW9uXahpFrj65V7Kj5/a+25/B1OyivBe/ugwGZE
-         8fpnk+8H8XRGtecuKqWaMW1qGsnzG7wRq8L59LycqMEkmcgsOz7my+oLSN47j1DuGT
-         9Brq0ePrFRBZPmnIj/t6NVZ79bL8eJGWvx6uu21g=
+        b=nJRJpktBCbWglKwcsT4L70nh3m6HsfpyW/RVC4/3avtDawY2VuAXazFE2pXXccH84
+         zGXDO0CWjBEIawufyHxwZLAEi43+plskiBh/Apf6uTAaXsHjEkhsuTnFu4jIQWIz4x
+         wyDC8bhmZJbkb8C1Vddl79Twn+Ugv5NpetolycDI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Barret Rhoden <brho@google.com>,
-        syzbot+bb4935a5c09b5ff79940@syzkaller.appspotmail.com,
-        Peter Zijlstra <peterz@infradead.org>,
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.7 143/274] perf: Add cond_resched() to task_function_call()
-Date:   Mon,  8 Jun 2020 19:03:56 -0400
-Message-Id: <20200608230607.3361041-143-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 113/606] component: Silence bind error on -EPROBE_DEFER
+Date:   Mon,  8 Jun 2020 19:03:58 -0400
+Message-Id: <20200608231211.3363633-113-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,70 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Barret Rhoden <brho@google.com>
+From: James Hilliard <james.hilliard1@gmail.com>
 
-[ Upstream commit 2ed6edd33a214bca02bd2b45e3fc3038a059436b ]
+[ Upstream commit 7706b0a76a9697021e2bf395f3f065c18f51043d ]
 
-Under rare circumstances, task_function_call() can repeatedly fail and
-cause a soft lockup.
+If a component fails to bind due to -EPROBE_DEFER we should not log an
+error as this is not a real failure.
 
-There is a slight race where the process is no longer running on the cpu
-we targeted by the time remote_function() runs.  The code will simply
-try again.  If we are very unlucky, this will continue to fail, until a
-watchdog fires.  This can happen in a heavily loaded, multi-core virtual
-machine.
+Fixes messages like:
+vc4-drm soc:gpu: failed to bind 3f902000.hdmi (ops vc4_hdmi_ops): -517
+vc4-drm soc:gpu: master bind failed: -517
 
-Reported-by: syzbot+bb4935a5c09b5ff79940@syzkaller.appspotmail.com
-Signed-off-by: Barret Rhoden <brho@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200414222920.121401-1-brho@google.com
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Link: https://lore.kernel.org/r/20200411190241.89404-1-james.hilliard1@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/events/core.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ drivers/base/component.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 633b4ae72ed5..1dd91f960839 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -95,11 +95,11 @@ static void remote_function(void *data)
-  * @info:	the function call argument
-  *
-  * Calls the function @func when the task is currently running. This might
-- * be on the current CPU, which just calls the function directly
-+ * be on the current CPU, which just calls the function directly.  This will
-+ * retry due to any failures in smp_call_function_single(), such as if the
-+ * task_cpu() goes offline concurrently.
-  *
-- * returns: @func return value, or
-- *	    -ESRCH  - when the process isn't running
-- *	    -EAGAIN - when the process moved away
-+ * returns @func return value or -ESRCH when the process isn't running
-  */
- static int
- task_function_call(struct task_struct *p, remote_function_f func, void *info)
-@@ -112,11 +112,16 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
- 	};
- 	int ret;
+diff --git a/drivers/base/component.c b/drivers/base/component.c
+index c7879f5ae2fb..53b19daca750 100644
+--- a/drivers/base/component.c
++++ b/drivers/base/component.c
+@@ -256,7 +256,8 @@ static int try_to_bring_up_master(struct master *master,
+ 	ret = master->ops->bind(master->dev);
+ 	if (ret < 0) {
+ 		devres_release_group(master->dev, NULL);
+-		dev_info(master->dev, "master bind failed: %d\n", ret);
++		if (ret != -EPROBE_DEFER)
++			dev_info(master->dev, "master bind failed: %d\n", ret);
+ 		return ret;
+ 	}
  
--	do {
--		ret = smp_call_function_single(task_cpu(p), remote_function, &data, 1);
--		if (!ret)
--			ret = data.ret;
--	} while (ret == -EAGAIN);
-+	for (;;) {
-+		ret = smp_call_function_single(task_cpu(p), remote_function,
-+					       &data, 1);
-+		ret = !ret ? data.ret : -EAGAIN;
-+
-+		if (ret != -EAGAIN)
-+			break;
-+
-+		cond_resched();
-+	}
+@@ -610,8 +611,9 @@ static int component_bind(struct component *component, struct master *master,
+ 		devres_release_group(component->dev, NULL);
+ 		devres_release_group(master->dev, NULL);
+ 
+-		dev_err(master->dev, "failed to bind %s (ops %ps): %d\n",
+-			dev_name(component->dev), component->ops, ret);
++		if (ret != -EPROBE_DEFER)
++			dev_err(master->dev, "failed to bind %s (ops %ps): %d\n",
++				dev_name(component->dev), component->ops, ret);
+ 	}
  
  	return ret;
- }
 -- 
 2.25.1
 
