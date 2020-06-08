@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B3F1F217F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 23:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3417B1F2190
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 23:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgFHVaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 17:30:03 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:46176 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726705AbgFHVaC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 17:30:02 -0400
-Received: from [192.168.0.20] (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BC9B62C9;
-        Mon,  8 Jun 2020 23:29:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1591651800;
-        bh=5648b7zLWqMKR5MbS2MpnHHlZD+5zBO3a0GztfnN9s0=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Swx/mncbCCeCY3s9gmp/Kg9vFqKn3uGXqIwzumYd/BGYjbpKLdGkl5YTVs0Lf9JMU
-         b70JvRt5/kHzCorFR6BeVE8xagLHUM5dHDx0pjQz5S9H6kze3uszPUFU9tEoNsiueP
-         8utZUFXIdQLA1izbWrsYXb4P0yT+BkBgaFvhPA4k=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH] [v2] media: vsp1: Fix runtime PM imbalance on error
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200608052919.4984-1-dinghao.liu@zju.edu.cn>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <dad95caa-0cbc-7df2-8187-af5f38dee1da@ideasonboard.com>
-Date:   Mon, 8 Jun 2020 22:29:56 +0100
+        id S1726758AbgFHVpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 17:45:12 -0400
+Received: from mga18.intel.com ([134.134.136.126]:58551 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726612AbgFHVpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 17:45:11 -0400
+IronPort-SDR: Kjr0fvbO4wMKbHsCuV3IbVzWbLK5n9NTj1WIwuUe/mcu7sQ52tWzmndKwyxRNB6Y4LJPw65GtV
+ NC9fg5NAU5wQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2020 14:45:11 -0700
+IronPort-SDR: DU8R5tImE9vZHiPtIilv5iHBhl5CA8wcR6ayCC7WH33b+u2Avrt89QbWBRmW4gjEd5SLowwSa9
+ wtm8NtaPcy7g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,489,1583222400"; 
+   d="scan'208";a="446893866"
+Received: from skarmaka-mobl2.amr.corp.intel.com (HELO [10.254.104.56]) ([10.254.104.56])
+  by orsmga005.jf.intel.com with ESMTP; 08 Jun 2020 14:45:10 -0700
+Subject: Re: [PATCH 4/5] soundwire: qcom: avoid dependency on CONFIG_SLIMBUS
+To:     Jonathan Marek <jonathan@marek.ca>, alsa-devel@alsa-project.org
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>
+References: <20200608204347.19685-1-jonathan@marek.ca>
+ <20200608204347.19685-5-jonathan@marek.ca>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <33017798-9546-12dc-b857-493f56c3d557@linux.intel.com>
+Date:   Mon, 8 Jun 2020 16:20:54 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200608052919.4984-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+In-Reply-To: <20200608204347.19685-5-jonathan@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dinghao,
 
-On 08/06/2020 06:29, Dinghao Liu wrote:
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> when it returns an error code. Thus a pairing decrement is needed on
-> the error handling path to keep the counter balanced.
+
+On 6/8/20 3:43 PM, Jonathan Marek wrote:
+> The driver may be used without slimbus, so don't depend on slimbus.
 > 
-
-Looks good to me:
-
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 > ---
+>   drivers/soundwire/Kconfig | 1 -
+>   drivers/soundwire/qcom.c  | 5 +++++
+>   2 files changed, 5 insertions(+), 1 deletion(-)
 > 
-> Changelog:
-> 
-> v2: - Fix the imbalance in vsp1_device_get().
->       Use vsp1_device_get() and vsp1_device_put()
->       to replace pm_runtime_get_sync() and
->       pm_runtime_put_sync() in vsp1_probe().
-
-That looks like a helpful addition!
-
-> ---
->  drivers/media/platform/vsp1/vsp1_drv.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
-> index c650e45bb0ad..dc62533cf32c 100644
-> --- a/drivers/media/platform/vsp1/vsp1_drv.c
-> +++ b/drivers/media/platform/vsp1/vsp1_drv.c
-> @@ -562,7 +562,12 @@ int vsp1_device_get(struct vsp1_device *vsp1)
->  	int ret;
->  
->  	ret = pm_runtime_get_sync(vsp1->dev);
-> -	return ret < 0 ? ret : 0;
-> +	if (ret < 0) {
-> +		pm_runtime_put_noidle(vsp1->dev);
-
-Hrm... I was going to query the _noidle here, as I presume the device is
-likely already idle ... but actually this looks like it simply adds
-protection against decrementing the refcnt below zero, so it is likely
-useful.
+> diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+> index fa2b4ab92ed9..d121cf739090 100644
+> --- a/drivers/soundwire/Kconfig
+> +++ b/drivers/soundwire/Kconfig
+> @@ -33,7 +33,6 @@ config SOUNDWIRE_INTEL
+>   
+>   config SOUNDWIRE_QCOM
+>   	tristate "Qualcomm SoundWire Master driver"
+> -	depends on SLIMBUS
+>   	depends on SND_SOC
+>   	help
+>   	  SoundWire Qualcomm Master driver.
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index 14334442615f..ac81c64768ea 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -769,13 +769,18 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>   	if (!ctrl)
+>   		return -ENOMEM;
+>   
+> +#ifdef CONFIG_SLIMBUS
+>   	if (dev->parent->bus == &slimbus_bus) {
+> +#else
+> +	if (false) {
+> +#endif
 
 
+maybe:
 
-> +		return ret;
-> +	}
+if (IS_ENABLED(CONFIG_SLIMBUS) &&
+     dev->parent->bus == &slimbus_bus)
+
+
+>   		ctrl->reg_read = qcom_swrm_ahb_reg_read;
+>   		ctrl->reg_write = qcom_swrm_ahb_reg_write;
+>   		ctrl->regmap = dev_get_regmap(dev->parent, NULL);
+>   		if (!ctrl->regmap)
+>   			return -EINVAL;
+>   	} else {
 > +
-> +	return 0;
->  }
->  
->  /*
-> @@ -845,12 +850,12 @@ static int vsp1_probe(struct platform_device *pdev)
->  	/* Configure device parameters based on the version register. */
->  	pm_runtime_enable(&pdev->dev);
->  
-> -	ret = pm_runtime_get_sync(&pdev->dev);
-> +	ret = vsp1_device_get(vsp1);
->  	if (ret < 0)
->  		goto done;
->  
->  	vsp1->version = vsp1_read(vsp1, VI6_IP_VERSION);
-> -	pm_runtime_put_sync(&pdev->dev);
-> +	vsp1_device_put(vsp1);
->  
->  	for (i = 0; i < ARRAY_SIZE(vsp1_device_infos); ++i) {
->  		if ((vsp1->version & VI6_IP_VERSION_MODEL_MASK) ==
+>   		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>   
+>   		ctrl->reg_read = qcom_swrm_cpu_reg_read;
 > 
-
