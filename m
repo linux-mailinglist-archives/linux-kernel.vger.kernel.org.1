@@ -2,82 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CF71F186A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050161F187E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729742AbgFHMEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 08:04:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:51946 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729665AbgFHMEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 08:04:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9697B1FB;
-        Mon,  8 Jun 2020 05:04:00 -0700 (PDT)
-Received: from [10.57.9.113] (unknown [10.57.9.113])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 84C973F52E;
-        Mon,  8 Jun 2020 05:03:59 -0700 (PDT)
-Subject: Re: [PATCH] dma-pool: Fix too large DMA pools on medium systems
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        David Rientjes <rientjes@google.com>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20200608085231.8924-1-geert@linux-m68k.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <92b53a24-2f1f-2add-6bea-eeda7317520f@arm.com>
-Date:   Mon, 8 Jun 2020 13:03:54 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729716AbgFHMIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 08:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729607AbgFHMIe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 08:08:34 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749D5C08C5C2
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 05:08:33 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a9so16582306ljn.6
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 05:08:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jVAlJ3ENw6iA1llBw77h70B7LKCg5s0+Fsgmgt32t0A=;
+        b=NUFbq78O8TZa5gq48JT652lCI13tv+Cj890fyZENeoLHgvu0yriNuP84rHD4AFNmRP
+         nbf0XqeFJDEnrQrMiaLB1FTwaMk37gtPlL7fHuX257DuLecgRLhbgGxUiB50sqmFxt7T
+         ovo7cQQA59+hPnNclow+RLxZMM0iwNCwYM7KWQnH0qScFp2IdaCAx3sXJuYM73CMIaoG
+         NardiJ1us3g5b9B4PdTnP7j+63esEy8uUrhwbKYSVUreMH4lULwxeik5AUnSAjit4jMT
+         l7QGBMyY+vPOtl6cc6ap2cIR31UZbaide0nqXX2nxbqKpCqiXBYnpiWLPOa3m586t5ci
+         ymrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jVAlJ3ENw6iA1llBw77h70B7LKCg5s0+Fsgmgt32t0A=;
+        b=dF3NnOp9rdlXc+9xNkIrvHUkioCLu3ogfNscPtGGBHHUCljODmf22YZzJjIcuQmIC7
+         jDu+/9KWY8A9R6q+Kt2eQN/ZjN7jaCZfO1GtbKW86f8ErhgkOHAR54FTgMETh5K914hp
+         atkn2AnrfZEn38IGQobu/wmTTD/tT3vYYMtWvjRj4NCleJh45e2SUL/BFxjyUk4pNCrU
+         v6lLXfNVCNYBFjI2kBygk7yE155gCpaUwtzwtDX5yP+D3m+8SIugwgKHZbglg2TjNTpH
+         5d6wvysTpYrDecHNUUKB2BADEJfQmv5NqFL1fSTofTS187dx9mYoz+7ZXnTuUz0d1Cce
+         qr5Q==
+X-Gm-Message-State: AOAM530kNgggScOmzWIYW19sfUD29+drXqfYEi6+9+xU+Hnv9RJuqQ+c
+        SExQQTJgT+cVDTwvkK62BLmG2fk9WTWonGCLpJc=
+X-Google-Smtp-Source: ABdhPJxjEDGndqA79nMvT+RfirGdYB/AMAQHxy38HosGZ4pQ3QHmx1QVN56pdxR8Crg2cSGSfeFDv68qgIP2MaDKfyA=
+X-Received: by 2002:a2e:1453:: with SMTP id 19mr11718756lju.155.1591618111949;
+ Mon, 08 Jun 2020 05:08:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200608085231.8924-1-geert@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <202006080221.W31nOYBR%lkp@intel.com>
+In-Reply-To: <202006080221.W31nOYBR%lkp@intel.com>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Mon, 8 Jun 2020 20:07:29 +0800
+Message-ID: <CADBw62qBkjftmi-4pR+NVs3P=os+nzjF9wK06=oU89w9kdxQAg@mail.gmail.com>
+Subject: Re: drivers/hwspinlock/sirf_hwspinlock.c:87:34: warning: unused
+ variable 'sirf_hwpinlock_ids'
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-08 09:52, Geert Uytterhoeven wrote:
-> On systems with at least 32 MiB, but less than 32 GiB of RAM, the DMA
-> memory pools are much larger than intended (e.g. 2 MiB instead of 128
-> KiB on a 256 MiB system).
-> 
-> Fix this by correcting the calculation of the number of GiBs of RAM in
-> the system.
-> 
-> Fixes: 1d659236fb43c4d2 ("dma-pool: scale the default DMA coherent pool size with memory capacity")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Mon, Jun 8, 2020 at 2:38 AM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Baolin,
+>
+> First bad commit (maybe != root cause):
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   3b69e8b4571125bec1f77f886174fe6cab6b9d75
+> commit: ffd0bbfb378ecd56eac22bf932ccdbf89ac7f725 hwspinlock: Allow drivers to be built with COMPILE_TEST
+> date:   2 months ago
+> config: arm-randconfig-r001-20200607 (attached as .config)
+> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project e429cffd4f228f70c1d9df0e5d77c08590dd9766)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm cross compiling tool for clang build
+>         # apt-get install binutils-arm-linux-gnueabi
+>         git checkout ffd0bbfb378ecd56eac22bf932ccdbf89ac7f725
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>, old ones prefixed by <<):
+>
+> >> drivers/hwspinlock/sirf_hwspinlock.c:87:34: warning: unused variable 'sirf_hwpinlock_ids' [-Wunused-const-variable]
+> static const struct of_device_id sirf_hwpinlock_ids[] = {
+
+In your testing configuration, the CONFIG_OF is not select, so the
+macro 'of_match_ptr' becomes NULL, which triggers this waring. I think
+we can remove the redundant "of_match_ptr" to fix this warning. Thanks
+for your report.
+
+> ^
+> 1 warning generated.
+>
+> vim +/sirf_hwpinlock_ids +87 drivers/hwspinlock/sirf_hwspinlock.c
+>
+> cc16d664e21ef6 Wei Chen 2015-05-26  86
+> cc16d664e21ef6 Wei Chen 2015-05-26 @87  static const struct of_device_id sirf_hwpinlock_ids[] = {
+> cc16d664e21ef6 Wei Chen 2015-05-26  88          { .compatible = "sirf,hwspinlock", },
+> cc16d664e21ef6 Wei Chen 2015-05-26  89          {},
+> cc16d664e21ef6 Wei Chen 2015-05-26  90  };
+> cc16d664e21ef6 Wei Chen 2015-05-26  91  MODULE_DEVICE_TABLE(of, sirf_hwpinlock_ids);
+> cc16d664e21ef6 Wei Chen 2015-05-26  92
+>
+> :::::: The code at line 87 was first introduced by commit
+> :::::: cc16d664e21ef640faaf51e9952384cf90b92d9f hwspinlock: add a CSR atlas7 driver
+>
+> :::::: TO: Wei Chen <wei.chen@csr.com>
+> :::::: CC: Ohad Ben-Cohen <ohad@wizery.com>
+>
 > ---
->   kernel/dma/pool.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-> index 35bb51c31fff370f..1c7eab2cc0498003 100644
-> --- a/kernel/dma/pool.c
-> +++ b/kernel/dma/pool.c
-> @@ -175,8 +175,8 @@ static int __init dma_atomic_pool_init(void)
->   	 * sizes to 128KB per 1GB of memory, min 128KB, max MAX_ORDER-1.
->   	 */
->   	if (!atomic_pool_size) {
-> -		atomic_pool_size = max(totalram_pages() >> PAGE_SHIFT, 1UL) *
-> -					SZ_128K;
-> +		unsigned long gigs = totalram_pages() >> (30 - PAGE_SHIFT);
-> +		atomic_pool_size = max(gigs, 1UL) * SZ_128K;
->   		atomic_pool_size = min_t(size_t, atomic_pool_size,
->   					 1 << (PAGE_SHIFT + MAX_ORDER-1));
->   	}
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-Nit: although this probably is right, it seems even less readable than 
-the broken version (where at least some at-a-glance 'dimensional 
-analysis' flags up "(number of pages) >> PAGE_SHIFT" as rather 
-suspicious). How about a something a little more self-explanatory, e.g.:
 
-	unsigned long pages = totalram_pages() * SZ_128K / SZ_1GB;
-	atomic_pool_size = min(pages, MAX_ORDER_NR_PAGES) << PAGE_SHIFT;
-	atomic_pool_size = max_t(size_t, atomic_pool_size, SZ_128K);
 
-?
-
-Robin.
+-- 
+Baolin Wang
