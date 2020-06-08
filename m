@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57501F237F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8451F2260
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbgFHXPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:15:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60008 "EHLO mail.kernel.org"
+        id S1728016AbgFHXHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:07:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729107AbgFHXM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:12:29 -0400
+        id S1727809AbgFHXHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:07:08 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F2D120897;
-        Mon,  8 Jun 2020 23:12:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E230E20820;
+        Mon,  8 Jun 2020 23:07:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657949;
-        bh=dCH3TA1DCiaFdQ1F7bwY/Y5DKvvY+zxPYFzhURPkjUM=;
+        s=default; t=1591657627;
+        bh=xww3ha3RV/sRMp/8nxc5RDnUU7jjFcQdrVOpE9QJWXg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NQ+tn1mlFxMw1n+s0+rRdP9kEDIVtLaQF9lQEiS6hdBw+O8J1cJMg2d9RI2ht/L7V
-         uxuRcTy6KkNmmgGZeckd37wZUiaO9CULQD7MMK6JRW1FtTWUyMOv9vcqQkIgBuN+Oy
-         w2TTiK1jMkB0pVJpLRouUPh+3T7TWcHvYnDDMhMI=
+        b=EvyKP7PP36r1tHKLVdgkpW/otyMeNLX0oplZZ6vPn4TqeM11xoB7AgVjJr2RuSKET
+         P7eanSnH6ZyD/cP2tVWJ2TzcdoKnV0H+ucJ5Atqxczoh+qMnKZ4WxQEZeCUpXgB22t
+         pHrvBQMPqyMemO7lGtD67gT0W1diaiS77g8Opft4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 014/606] gcc-10: disable 'restrict' warning for now
-Date:   Mon,  8 Jun 2020 19:02:19 -0400
-Message-Id: <20200608231211.3363633-14-sashal@kernel.org>
+Cc:     Jeremy Cline <jcline@redhat.com>,
+        "Frank Ch . Eigler" <fche@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 047/274] lockdown: Allow unprivileged users to see lockdown status
+Date:   Mon,  8 Jun 2020 19:02:20 -0400
+Message-Id: <20200608230607.3361041-47-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,68 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Jeremy Cline <jcline@redhat.com>
 
-commit adc71920969870dfa54e8f40dac8616284832d02 upstream.
+[ Upstream commit 60cf7c5ed5f7087c4de87a7676b8c82d96fd166c ]
 
-gcc-10 now warns about passing aliasing pointers to functions that take
-restricted pointers.
+A number of userspace tools, such as systemtap, need a way to see the
+current lockdown state so they can gracefully deal with the kernel being
+locked down. The state is already exposed in
+/sys/kernel/security/lockdown, but is only readable by root. Adjust the
+permissions so unprivileged users can read the state.
 
-That's actually a great warning, and if we ever start using 'restrict'
-in the kernel, it might be quite useful.  But right now we don't, and it
-turns out that the only thing this warns about is an idiom where we have
-declared a few functions to be "printf-like" (which seems to make gcc
-pick up the restricted pointer thing), and then we print to the same
-buffer that we also use as an input.
-
-And people do that as an odd concatenation pattern, with code like this:
-
-    #define sysfs_show_gen_prop(buffer, fmt, ...) \
-        snprintf(buffer, PAGE_SIZE, "%s"fmt, buffer, __VA_ARGS__)
-
-where we have 'buffer' as both the destination of the final result, and
-as the initial argument.
-
-Yes, it's a bit questionable.  And outside of the kernel, people do have
-standard declarations like
-
-    int snprintf( char *restrict buffer, size_t bufsz,
-                  const char *restrict format, ... );
-
-where that output buffer is marked as a restrict pointer that cannot
-alias with any other arguments.
-
-But in the context of the kernel, that 'use snprintf() to concatenate to
-the end result' does work, and the pattern shows up in multiple places.
-And we have not marked our own version of snprintf() as taking restrict
-pointers, so the warning is incorrect for now, and gcc picks it up on
-its own.
-
-If we do start using 'restrict' in the kernel (and it might be a good
-idea if people find places where it matters), we'll need to figure out
-how to avoid this issue for snprintf and friends.  But in the meantime,
-this warning is not useful.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 000d388ed3bb ("security: Add a static lockdown policy LSM")
+Cc: Frank Ch. Eigler <fche@redhat.com>
+Signed-off-by: Jeremy Cline <jcline@redhat.com>
+Signed-off-by: James Morris <jmorris@namei.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile | 3 +++
- 1 file changed, 3 insertions(+)
+ security/lockdown/lockdown.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index 8584003bfbca..955b57a8ec15 100644
---- a/Makefile
-+++ b/Makefile
-@@ -862,6 +862,9 @@ KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
- KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
- KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
+diff --git a/security/lockdown/lockdown.c b/security/lockdown/lockdown.c
+index 5a952617a0eb..87cbdc64d272 100644
+--- a/security/lockdown/lockdown.c
++++ b/security/lockdown/lockdown.c
+@@ -150,7 +150,7 @@ static int __init lockdown_secfs_init(void)
+ {
+ 	struct dentry *dentry;
  
-+# Another good warning that we'll want to enable eventually
-+KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
-+
- # Enabled with W=2, disabled by default as noisy
- KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
- 
+-	dentry = securityfs_create_file("lockdown", 0600, NULL, NULL,
++	dentry = securityfs_create_file("lockdown", 0644, NULL, NULL,
+ 					&lockdown_ops);
+ 	return PTR_ERR_OR_ZERO(dentry);
+ }
 -- 
 2.25.1
 
