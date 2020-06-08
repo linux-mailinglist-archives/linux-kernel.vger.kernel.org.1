@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C261F230A
+	by mail.lfdr.de (Postfix) with ESMTP id 36A591F2307
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729022AbgFHXL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:11:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56360 "EHLO mail.kernel.org"
+        id S1729011AbgFHXLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:11:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728593AbgFHXKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:10:14 -0400
+        id S1728599AbgFHXKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:10:16 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8C17214F1;
-        Mon,  8 Jun 2020 23:10:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 243D4208A9;
+        Mon,  8 Jun 2020 23:10:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657814;
-        bh=aAJYvm9d6p5eO8dZlrOnhcqUZPhDSrpeh5Xn8NraI1g=;
+        s=default; t=1591657816;
+        bh=5itkUDluYpaS3Zxz7oL2dZm1OCRzVTnguZY9d4Ovqcg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i4EiJ4Aa9art/OcN1e+Ro7TpC7JKLxd+oHj64pUT1Yb7SlaUw3C9jJo+jWfEPXukh
-         bVuXWnFuuulSl2uyDuf872AhFx77ToIn+SbLPWSD4T/7Z2Qmff1lBpjja2wnxXT3Nm
-         oUW8W2Zjgg7JDyz+jxvkHlXBUAr/mUoO4WhQwOgs=
+        b=CZ7plkCrPkDrRgea6NdYDVaUTu/XP1wglSFD+VvXneIOnMABxu4hKk3uJOcFLRP8i
+         ea9XDisjhl/Tgdf8wAFtlKnTZ5ep3K+wv4z+zr3oAMeF+qd6NEA826f1wJnHqCviEA
+         gVRyCgNyI3DjEOsbAZs0IfPFSjkZ6I8hWqGOIpT8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mattia Dongili <malattia@linux.it>,
-        Dominik Mierzejewski <dominik@greysector.net>,
-        William Bader <williambader@hotmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 189/274] platform/x86: sony-laptop: SNC calls should handle BUFFER types
-Date:   Mon,  8 Jun 2020 19:04:42 -0400
-Message-Id: <20200608230607.3361041-189-sashal@kernel.org>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 190/274] mt76: mt7663: fix mt7615_mac_cca_stats_reset routine
+Date:   Mon,  8 Jun 2020 19:04:43 -0400
+Message-Id: <20200608230607.3361041-190-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -46,116 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mattia Dongili <malattia@linux.it>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 47828d22539f76c8c9dcf2a55f18ea3a8039d8ef ]
+[ Upstream commit 886a862d3677ac0d3b57d19ffcf5b2d48b9c5267 ]
 
-After commit 6d232b29cfce ("ACPICA: Dispatcher: always generate buffer
-objects for ASL create_field() operator") ACPICA creates buffers even
-when new fields are small enough to fit into an integer.
-Many SNC calls counted on the old behaviour.
-Since sony-laptop already handles the INTEGER/BUFFER case in
-sony_nc_buffer_call, switch sony_nc_int_call to use its more generic
-function instead.
+Fix PHYMUX_5 register definition for mt7663 in
+mt7615_mac_cca_stats_reset routine
 
-Fixes: 6d232b29cfce ("ACPICA: Dispatcher: always generate buffer objects for ASL create_field() operator")
-Reported-by: Dominik Mierzejewski <dominik@greysector.net>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207491
-Reported-by: William Bader <williambader@hotmail.com>
-Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1830150
-Signed-off-by: Mattia Dongili <malattia@linux.it>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Fixes: f40ac0f3d3c0 ("mt76: mt7615: introduce mt7663e support")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/sony-laptop.c | 53 +++++++++++++-----------------
- 1 file changed, 23 insertions(+), 30 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7615/mac.c  | 8 +++++++-
+ drivers/net/wireless/mediatek/mt76/mt7615/regs.h | 1 +
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/sony-laptop.c b/drivers/platform/x86/sony-laptop.c
-index e4ef3dc3bc2f..e5a1b5533408 100644
---- a/drivers/platform/x86/sony-laptop.c
-+++ b/drivers/platform/x86/sony-laptop.c
-@@ -757,33 +757,6 @@ static union acpi_object *__call_snc_method(acpi_handle handle, char *method,
- 	return result;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
+index a27a6d164009..656231786d55 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
+@@ -1574,8 +1574,14 @@ void mt7615_mac_cca_stats_reset(struct mt7615_phy *phy)
+ {
+ 	struct mt7615_dev *dev = phy->dev;
+ 	bool ext_phy = phy != &dev->phy;
+-	u32 reg = MT_WF_PHY_R0_PHYMUX_5(ext_phy);
++	u32 reg;
+ 
++	if (is_mt7663(&dev->mt76))
++		reg = MT7663_WF_PHY_R0_PHYMUX_5;
++	else
++		reg = MT_WF_PHY_R0_PHYMUX_5(ext_phy);
++
++	/* reset PD and MDRDY counters */
+ 	mt76_clear(dev, reg, GENMASK(22, 20));
+ 	mt76_set(dev, reg, BIT(22) | BIT(20));
  }
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/regs.h b/drivers/net/wireless/mediatek/mt76/mt7615/regs.h
+index 1e0d95b917e1..f7c2a633841c 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/regs.h
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/regs.h
+@@ -151,6 +151,7 @@ enum mt7615_reg_base {
+ #define MT_WF_PHY_WF2_RFCTRL0_LPBCN_EN	BIT(9)
  
--static int sony_nc_int_call(acpi_handle handle, char *name, int *value,
--		int *result)
--{
--	union acpi_object *object = NULL;
--	if (value) {
--		u64 v = *value;
--		object = __call_snc_method(handle, name, &v);
--	} else
--		object = __call_snc_method(handle, name, NULL);
--
--	if (!object)
--		return -EINVAL;
--
--	if (object->type != ACPI_TYPE_INTEGER) {
--		pr_warn("Invalid acpi_object: expected 0x%x got 0x%x\n",
--				ACPI_TYPE_INTEGER, object->type);
--		kfree(object);
--		return -EINVAL;
--	}
--
--	if (result)
--		*result = object->integer.value;
--
--	kfree(object);
--	return 0;
--}
--
- #define MIN(a, b)	(a > b ? b : a)
- static int sony_nc_buffer_call(acpi_handle handle, char *name, u64 *value,
- 		void *buffer, size_t buflen)
-@@ -795,17 +768,20 @@ static int sony_nc_buffer_call(acpi_handle handle, char *name, u64 *value,
- 	if (!object)
- 		return -EINVAL;
+ #define MT_WF_PHY_R0_PHYMUX_5(_phy)	MT_WF_PHY(0x0614 + ((_phy) << 9))
++#define MT7663_WF_PHY_R0_PHYMUX_5	MT_WF_PHY(0x0414)
  
--	if (object->type == ACPI_TYPE_BUFFER) {
-+	if (!buffer) {
-+		/* do nothing */
-+	} else if (object->type == ACPI_TYPE_BUFFER) {
- 		len = MIN(buflen, object->buffer.length);
-+		memset(buffer, 0, buflen);
- 		memcpy(buffer, object->buffer.pointer, len);
- 
- 	} else if (object->type == ACPI_TYPE_INTEGER) {
- 		len = MIN(buflen, sizeof(object->integer.value));
-+		memset(buffer, 0, buflen);
- 		memcpy(buffer, &object->integer.value, len);
- 
- 	} else {
--		pr_warn("Invalid acpi_object: expected 0x%x got 0x%x\n",
--				ACPI_TYPE_BUFFER, object->type);
-+		pr_warn("Unexpected acpi_object: 0x%x\n", object->type);
- 		ret = -EINVAL;
- 	}
- 
-@@ -813,6 +789,23 @@ static int sony_nc_buffer_call(acpi_handle handle, char *name, u64 *value,
- 	return ret;
- }
- 
-+static int sony_nc_int_call(acpi_handle handle, char *name, int *value, int
-+		*result)
-+{
-+	int ret;
-+
-+	if (value) {
-+		u64 v = *value;
-+
-+		ret = sony_nc_buffer_call(handle, name, &v, result,
-+				sizeof(*result));
-+	} else {
-+		ret =  sony_nc_buffer_call(handle, name, NULL, result,
-+				sizeof(*result));
-+	}
-+	return ret;
-+}
-+
- struct sony_nc_handles {
- 	u16 cap[0x10];
- 	struct device_attribute devattr;
+ #define MT_WF_PHY_R0_PHYCTRL_STS0(_phy)	MT_WF_PHY(0x020c + ((_phy) << 9))
+ #define MT_WF_PHYCTRL_STAT_PD_OFDM	GENMASK(31, 16)
 -- 
 2.25.1
 
