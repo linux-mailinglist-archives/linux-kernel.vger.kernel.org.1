@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1305B1F2AB8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922D31F2CF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730527AbgFHXTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:19:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37292 "EHLO mail.kernel.org"
+        id S2387715AbgFIA3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:29:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730163AbgFHXQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:16:04 -0400
+        id S1730191AbgFHXQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:16:13 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 914762076C;
-        Mon,  8 Jun 2020 23:16:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4139920823;
+        Mon,  8 Jun 2020 23:16:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658163;
-        bh=DeTCi+evNa25ktxq1NUlS81kxYThJ6DbPYwt78qnKrc=;
+        s=default; t=1591658172;
+        bh=RfxFKmhgcRkNvGD3wM7B5OoR3tKuCY7MGRl46QgFn9o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pnSKcxu0oHzosChxZachnqvWDKSeL3Oufd18X6/oMM034JwiLhHy+JJn4+eto5GbP
-         Xeowak7D8p12Q6qA5YLfE7u2Pc28VgNU35yjPSMQIqrESnYIqsi2Y4Bd1yA9OvYp0u
-         uOjk2lpmVwhriM3zADYIwi5almyPw18o1hSqHejs=
+        b=IXp3jO3EmyvQiUhEoU2xKvj94o7fpn2tCLM3xnQzEF82EPAHnIZSCnZhENsyTBJ1s
+         bqJ46zEtT1sBH8kO/ze6iqR1ah/0iUBHxnnifbV9MA3H1H2wnBYcXsepT9YdsaLCiF
+         cbAt/CGTSDPcT1+r6oa/vGaN2FFIOQDGS4bn+DBs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Uladzislau Rezki <uladzislau.rezki@sony.com>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Qian Cai <cai@lca.pw>, Raymond Jennings <shentino@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 5.6 192/606] z3fold: fix use-after-free when freeing handles
-Date:   Mon,  8 Jun 2020 19:05:17 -0400
-Message-Id: <20200608231211.3363633-192-sashal@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH AUTOSEL 5.6 199/606] x86/unwind/orc: Fix unwind_get_return_address_ptr() for inactive tasks
+Date:   Mon,  8 Jun 2020 19:05:24 -0400
+Message-Id: <20200608231211.3363633-199-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -47,89 +44,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uladzislau Rezki <uladzislau.rezki@sony.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-commit d8f117abb380ba968b5e3ef2042d901c02872a4c upstream.
+commit 187b96db5ca79423618dfa29a05c438c34f9e1f0 upstream.
 
-free_handle() for a foreign handle may race with inter-page compaction,
-what can lead to memory corruption.
+Normally, show_trace_log_lvl() scans the stack, looking for text
+addresses to print.  In parallel, it unwinds the stack with
+unwind_next_frame().  If the stack address matches the pointer returned
+by unwind_get_return_address_ptr() for the current frame, the text
+address is printed normally without a question mark.  Otherwise it's
+considered a breadcrumb (potentially from a previous call path) and it's
+printed with a question mark to indicate that the address is unreliable
+and typically can be ignored.
 
-To avoid that, take write lock not read lock in free_handle to be
-synchronized with __release_z3fold_page().
+Since the following commit:
 
-For example KASAN can detect it:
+  f1d9a2abff66 ("x86/unwind/orc: Don't skip the first frame for inactive tasks")
 
-  ==================================================================
-  BUG: KASAN: use-after-free in LZ4_decompress_safe+0x2c4/0x3b8
-  Read of size 1 at addr ffffffc976695ca3 by task GoogleApiHandle/4121
+... for inactive tasks, show_trace_log_lvl() prints *only* unreliable
+addresses (prepended with '?').
 
-  CPU: 0 PID: 4121 Comm: GoogleApiHandle Tainted: P S         OE     4.19.81-perf+ #162
-  Hardware name: Sony Mobile Communications. PDX-203(KONA) (DT)
-  Call trace:
-     LZ4_decompress_safe+0x2c4/0x3b8
-     lz4_decompress_crypto+0x3c/0x70
-     crypto_decompress+0x58/0x70
-     zcomp_decompress+0xd4/0x120
-     ...
+That happens because, for the first frame of an inactive task,
+unwind_get_return_address_ptr() returns the wrong return address
+pointer: one word *below* the task stack pointer.  show_trace_log_lvl()
+starts scanning at the stack pointer itself, so it never finds the first
+'reliable' address, causing only guesses to being printed.
 
-Apart from that, initialize zhdr->mapped_count in init_z3fold_page() and
-remove "newpage" variable because it is not used anywhere.
+The first frame of an inactive task isn't a normal stack frame.  It's
+actually just an instance of 'struct inactive_task_frame' which is left
+behind by __switch_to_asm().  Now that this inactive frame is actually
+exposed to callers, fix unwind_get_return_address_ptr() to interpret it
+properly.
 
-Signed-off-by: Uladzislau Rezki <uladzislau.rezki@sony.com>
-Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Qian Cai <cai@lca.pw>
-Cc: Raymond Jennings <shentino@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200520082100.28876-1-vitaly.wool@konsulko.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: f1d9a2abff66 ("x86/unwind/orc: Don't skip the first frame for inactive tasks")
+Reported-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200522135435.vbxs7umku5pyrdbk@treble
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/z3fold.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ arch/x86/kernel/unwind_orc.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/mm/z3fold.c b/mm/z3fold.c
-index 42f31c4b53ad..8c3bb5e508b8 100644
---- a/mm/z3fold.c
-+++ b/mm/z3fold.c
-@@ -318,16 +318,16 @@ static inline void free_handle(unsigned long handle)
- 	slots = handle_to_slots(handle);
- 	write_lock(&slots->lock);
- 	*(unsigned long *)handle = 0;
--	write_unlock(&slots->lock);
--	if (zhdr->slots == slots)
-+	if (zhdr->slots == slots) {
-+		write_unlock(&slots->lock);
- 		return; /* simple case, nothing else to do */
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index 9414f02a55ea..1a90abeca5f3 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -314,12 +314,19 @@ EXPORT_SYMBOL_GPL(unwind_get_return_address);
+ 
+ unsigned long *unwind_get_return_address_ptr(struct unwind_state *state)
+ {
++	struct task_struct *task = state->task;
++
+ 	if (unwind_done(state))
+ 		return NULL;
+ 
+ 	if (state->regs)
+ 		return &state->regs->ip;
+ 
++	if (task != current && state->sp == task->thread.sp) {
++		struct inactive_task_frame *frame = (void *)task->thread.sp;
++		return &frame->ret_addr;
 +	}
++
+ 	if (state->sp)
+ 		return (unsigned long *)state->sp - 1;
  
- 	/* we are freeing a foreign handle if we are here */
- 	zhdr->foreign_handles--;
- 	is_free = true;
--	read_lock(&slots->lock);
- 	if (!test_bit(HANDLES_ORPHANED, &slots->pool)) {
--		read_unlock(&slots->lock);
-+		write_unlock(&slots->lock);
- 		return;
- 	}
- 	for (i = 0; i <= BUDDY_MASK; i++) {
-@@ -336,7 +336,7 @@ static inline void free_handle(unsigned long handle)
- 			break;
- 		}
- 	}
--	read_unlock(&slots->lock);
-+	write_unlock(&slots->lock);
- 
- 	if (is_free) {
- 		struct z3fold_pool *pool = slots_to_pool(slots);
-@@ -422,6 +422,7 @@ static struct z3fold_header *init_z3fold_page(struct page *page, bool headless,
- 	zhdr->start_middle = 0;
- 	zhdr->cpu = -1;
- 	zhdr->foreign_handles = 0;
-+	zhdr->mapped_count = 0;
- 	zhdr->slots = slots;
- 	zhdr->pool = pool;
- 	INIT_LIST_HEAD(&zhdr->buddy);
 -- 
 2.25.1
 
