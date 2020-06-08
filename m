@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A01FF1F2621
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8921F2622
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732522AbgFHXc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:32:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54420 "EHLO mail.kernel.org"
+        id S1731213AbgFHXdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:33:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732015AbgFHX0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:26:44 -0400
+        id S1731656AbgFHX0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:26:45 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 897742072F;
-        Mon,  8 Jun 2020 23:26:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C24472074B;
+        Mon,  8 Jun 2020 23:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658803;
-        bh=CW+S2I9j3FWtgNNgKAVdRFjVBnucE7ZH77BuXJM6opA=;
+        s=default; t=1591658804;
+        bh=jIWMJy0Y8klCuejhD7uNt/cCKtnlVzy7LJ0nZ60RZzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=skzpsOPcskjL4emzul0v8yqnKidI+E866p7PkFvNxnioTGlcVzhif3k/jdIAkK2P/
-         ejzpqCU5YqYRso10mJJmth5qIf8zHjTsdOL1MhEUMwh+lWy7gInEUzR5r++DANbhhV
-         AsjLFJiEmTxKWuxiM8kuNVaIXfedI6dbN5DoVmxA=
+        b=ivpd9Ayls0GI4DtkfO6MMwUXl5MKy9F5bGwwWH1XJw8N0bVls3yVIHciLlqmcQ3Dx
+         zLSuwp+mDHCJgbM7nkwMNedmD5P9vH2IJV9SaUaCt65c1X8sMmgHkF1Js7wPCF7Xgl
+         YAh6zmJAbOhFev8ZPHJOgLFAJIAste0P396TT/gw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qiujun Huang <hqjagain@gmail.com>,
-        syzbot+b1c61e5f11be5782f192@syzkaller.appspotmail.com,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 02/50] ath9k: Fix use-after-free Write in ath9k_htc_rx_msg
-Date:   Mon,  8 Jun 2020 19:25:52 -0400
-Message-Id: <20200608232640.3370262-2-sashal@kernel.org>
+Cc:     Brad Love <brad@nextdimension.cc>, Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 03/50] media: si2157: Better check for running tuner in init
+Date:   Mon,  8 Jun 2020 19:25:53 -0400
+Message-Id: <20200608232640.3370262-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608232640.3370262-1-sashal@kernel.org>
 References: <20200608232640.3370262-1-sashal@kernel.org>
@@ -45,59 +43,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiujun Huang <hqjagain@gmail.com>
+From: Brad Love <brad@nextdimension.cc>
 
-[ Upstream commit e4ff08a4d727146bb6717a39a8d399d834654345 ]
+[ Upstream commit e955f959ac52e145f27ff2be9078b646d0352af0 ]
 
-Write out of slab bounds. We should check epid.
+Getting the Xtal trim property to check if running is less error prone.
+Reset if_frequency if state is unknown.
 
-The case reported by syzbot:
-https://lore.kernel.org/linux-usb/0000000000006ac55b05a1c05d72@google.com
-BUG: KASAN: use-after-free in htc_process_conn_rsp
-drivers/net/wireless/ath/ath9k/htc_hst.c:131 [inline]
-BUG: KASAN: use-after-free in ath9k_htc_rx_msg+0xa25/0xaf0
-drivers/net/wireless/ath/ath9k/htc_hst.c:443
-Write of size 2 at addr ffff8881cea291f0 by task swapper/1/0
+Replaces the previous "garbage check".
 
-Call Trace:
- htc_process_conn_rsp drivers/net/wireless/ath/ath9k/htc_hst.c:131
-[inline]
-ath9k_htc_rx_msg+0xa25/0xaf0
-drivers/net/wireless/ath/ath9k/htc_hst.c:443
-ath9k_hif_usb_reg_in_cb+0x1ba/0x630
-drivers/net/wireless/ath/ath9k/hif_usb.c:718
-__usb_hcd_giveback_urb+0x29a/0x550 drivers/usb/core/hcd.c:1650
-usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1716
-dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
-call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
-expire_timers kernel/time/timer.c:1449 [inline]
-__run_timers kernel/time/timer.c:1773 [inline]
-__run_timers kernel/time/timer.c:1740 [inline]
-run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
-
-Reported-and-tested-by: syzbot+b1c61e5f11be5782f192@syzkaller.appspotmail.com
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200404041838.10426-4-hqjagain@gmail.com
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath9k/htc_hst.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/media/tuners/si2157.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/htc_hst.c b/drivers/net/wireless/ath/ath9k/htc_hst.c
-index fd85f996c554..257b6ee51e54 100644
---- a/drivers/net/wireless/ath/ath9k/htc_hst.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
-@@ -114,6 +114,9 @@ static void htc_process_conn_rsp(struct htc_target *target,
+diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
+index 57b250847cd3..72a47da0db2a 100644
+--- a/drivers/media/tuners/si2157.c
++++ b/drivers/media/tuners/si2157.c
+@@ -84,24 +84,23 @@ static int si2157_init(struct dvb_frontend *fe)
+ 	struct si2157_cmd cmd;
+ 	const struct firmware *fw;
+ 	const char *fw_name;
+-	unsigned int uitmp, chip_id;
++	unsigned int chip_id, xtal_trim;
  
- 	if (svc_rspmsg->status == HTC_SERVICE_SUCCESS) {
- 		epid = svc_rspmsg->endpoint_id;
-+		if (epid < 0 || epid >= ENDPOINT_MAX)
-+			return;
+ 	dev_dbg(&client->dev, "\n");
+ 
+-	/* Returned IF frequency is garbage when firmware is not running */
+-	memcpy(cmd.args, "\x15\x00\x06\x07", 4);
++	/* Try to get Xtal trim property, to verify tuner still running */
++	memcpy(cmd.args, "\x15\x00\x04\x02", 4);
+ 	cmd.wlen = 4;
+ 	cmd.rlen = 4;
+ 	ret = si2157_cmd_execute(client, &cmd);
+-	if (ret)
+-		goto err;
+ 
+-	uitmp = cmd.args[2] << 0 | cmd.args[3] << 8;
+-	dev_dbg(&client->dev, "if_frequency kHz=%u\n", uitmp);
++	xtal_trim = cmd.args[2] | (cmd.args[3] << 8);
+ 
+-	if (uitmp == dev->if_frequency / 1000)
++	if (ret == 0 && xtal_trim < 16)
+ 		goto warm;
+ 
++	dev->if_frequency = 0; /* we no longer know current tuner state */
 +
- 		service_id = be16_to_cpu(svc_rspmsg->service_id);
- 		max_msglen = be16_to_cpu(svc_rspmsg->max_msg_len);
- 		endpoint = &target->endpoint[epid];
+ 	/* power up */
+ 	if (dev->chiptype == SI2157_CHIPTYPE_SI2146) {
+ 		memcpy(cmd.args, "\xc0\x05\x01\x00\x00\x0b\x00\x00\x01", 9);
 -- 
 2.25.1
 
