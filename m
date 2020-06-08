@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9291F2A28
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA7D1F2CDF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730565AbgFHXUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:20:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37660 "EHLO mail.kernel.org"
+        id S1732715AbgFIA2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:28:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729612AbgFHXQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:16:20 -0400
+        id S1728743AbgFHXQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:16:26 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A17E520775;
-        Mon,  8 Jun 2020 23:16:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18E962078D;
+        Mon,  8 Jun 2020 23:16:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658180;
-        bh=kx3TrV2JbUKa+5KdldsNkanjDhdA6+qB50fP9MVXPMs=;
+        s=default; t=1591658185;
+        bh=r5tRlKrPIjPzgPOx5E5MajABmzT+tdUaLM1FnQDBtfA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vOCgadq7YszEENxvdyYBClhq69kGPeAT9zfgo3j6B3voo/+C/MykClxAIcEARiARN
-         f4RTcWLglraPJ2HrBBxPiLBbxz0oeZ7viggbzUCzPQHNSVPuGxG5QKPmcuoMhcdX1H
-         WglQDm5eP43+PxeLSE2EEC9C4/kmuMGb1SfRNWwk=
+        b=ujFjlWUg8aVF/2iczQPzeNJbmOMvXkvhP+H0DpHrkJWssRWGJsljEcZX8MDCetWA8
+         bvIxreNwWj1FJwbjMixDJnqk5gulfUqGIlEp9mebZiOLFB5yYaqoWULQVuah+4J0+4
+         iAbkrjpR90eHy4X3T8ttKQAUfaZL6+IuPBGF/nGM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Phil Auld <pauld@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.6 205/606] sched/fair: Fix enqueue_task_fair() warning some more
-Date:   Mon,  8 Jun 2020 19:05:30 -0400
-Message-Id: <20200608231211.3363633-205-sashal@kernel.org>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 208/606] dpaa_eth: fix usage as DSA master, try 3
+Date:   Mon,  8 Jun 2020 19:05:33 -0400
+Message-Id: <20200608231211.3363633-208-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -45,55 +45,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phil Auld <pauld@redhat.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit b34cb07dde7c2346dec73d053ce926aeaa087303 ]
+[ Upstream commit 5d14c304bfc14b4fd052dc83d5224376b48f52f0 ]
 
-sched/fair: Fix enqueue_task_fair warning some more
+The dpaa-eth driver probes on compatible string for the MAC node, and
+the fman/mac.c driver allocates a dpaa-ethernet platform device that
+triggers the probing of the dpaa-eth net device driver.
 
-The recent patch, fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
-did not fully resolve the issues with the rq->tmp_alone_branch !=
-&rq->leaf_cfs_rq_list warning in enqueue_task_fair. There is a case where
-the first for_each_sched_entity loop exits due to on_rq, having incompletely
-updated the list.  In this case the second for_each_sched_entity loop can
-further modify se. The later code to fix up the list management fails to do
-what is needed because se does not point to the sched_entity which broke out
-of the first loop. The list is not fixed up because the throttled parent was
-already added back to the list by a task enqueue in a parallel child hierarchy.
+All of this is fine, but the problem is that the struct device of the
+dpaa_eth net_device is 2 parents away from the MAC which can be
+referenced via of_node. So of_find_net_device_by_node can't find it, and
+DSA switches won't be able to probe on top of FMan ports.
 
-Address this by calling list_add_leaf_cfs_rq if there are throttled parents
-while doing the second for_each_sched_entity loop.
+It would be a bit silly to modify a core function
+(of_find_net_device_by_node) to look for dev->parent->parent->of_node
+just for one driver. We're just 1 step away from implementing full
+recursion.
 
-Fixes: fe61468b2cb ("sched/fair: Fix enqueue_task_fair warning")
-Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Phil Auld <pauld@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20200512135222.GC2201@lorien.usersys.redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Actually there have already been at least 2 previous attempts to make
+this work:
+- Commit a1a50c8e4c24 ("fsl/man: Inherit parent device and of_node")
+- One or more of the patches in "[v3,0/6] adapt DPAA drivers for DSA":
+  https://patchwork.ozlabs.org/project/netdev/cover/1508178970-28945-1-git-send-email-madalin.bucur@nxp.com/
+  (I couldn't really figure out which one was supposed to solve the
+  problem and how).
+
+Point being, it looks like this is still pretty much a problem today.
+On T1040, the /sys/class/net/eth0 symlink currently points to
+
+../../devices/platform/ffe000000.soc/ffe400000.fman/ffe4e6000.ethernet/dpaa-ethernet.0/net/eth0
+
+which pretty much illustrates the problem. The closest of_node we've got
+is the "fsl,fman-memac" at /soc@ffe000000/fman@400000/ethernet@e6000,
+which is what we'd like to be able to reference from DSA as host port.
+
+For of_find_net_device_by_node to find the eth0 port, we would need the
+parent of the eth0 net_device to not be the "dpaa-ethernet" platform
+device, but to point 1 level higher, aka the "fsl,fman-memac" node
+directly. The new sysfs path would look like this:
+
+../../devices/platform/ffe000000.soc/ffe400000.fman/ffe4e6000.ethernet/net/eth0
+
+And this is exactly what SET_NETDEV_DEV does. It sets the parent of the
+net_device. The new parent has an of_node associated with it, and
+of_dev_node_match already checks for the of_node of the device or of its
+parent.
+
+Fixes: a1a50c8e4c24 ("fsl/man: Inherit parent device and of_node")
+Fixes: c6e26ea8c893 ("dpaa_eth: change device used")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/sched/fair.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 7cd86641b44b..603d3d3cbf77 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5298,6 +5298,13 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 		/* end evaluation on encountering a throttled cfs_rq */
- 		if (cfs_rq_throttled(cfs_rq))
- 			goto enqueue_throttle;
-+
-+               /*
-+                * One parent has been throttled and cfs_rq removed from the
-+                * list. Add it back to not break the leaf list.
-+                */
-+               if (throttled_hierarchy(cfs_rq))
-+                       list_add_leaf_cfs_rq(cfs_rq);
+diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+index ca74a684a904..ab337632793b 100644
+--- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
++++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+@@ -2902,7 +2902,7 @@ static int dpaa_eth_probe(struct platform_device *pdev)
  	}
  
- enqueue_throttle:
+ 	/* Do this here, so we can be verbose early */
+-	SET_NETDEV_DEV(net_dev, dev);
++	SET_NETDEV_DEV(net_dev, dev->parent);
+ 	dev_set_drvdata(dev, net_dev);
+ 
+ 	priv = netdev_priv(net_dev);
 -- 
 2.25.1
 
