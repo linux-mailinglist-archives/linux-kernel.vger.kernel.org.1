@@ -2,73 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337CC1F1C6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 17:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E631F1C6F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 17:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730352AbgFHPvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 11:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55012 "EHLO
+        id S1730365AbgFHPwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 11:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730326AbgFHPvg (ORCPT
+        with ESMTP id S1730264AbgFHPwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 11:51:36 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6E5C08C5C2;
-        Mon,  8 Jun 2020 08:51:35 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id z9so21094472ljh.13;
-        Mon, 08 Jun 2020 08:51:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=11CKmyRNW5Oq497UrHzsLRutqSfI3PndTJkmpjfHIrk=;
-        b=vP7pw5ktVHCRc/yUU4LgDQt32+2h4R5mXztJMsQGrJWsUBNj9eUc4g6LxZ/DUTOTqF
-         iZ0a9QBF7/GqdYeTsRLND953RGfDC2HNTlzTrZEm394eEqodV9qH137e6cYkyindV2H9
-         PX+MuTC0iMY/+nE9rsoy6yYA00J0Qkfh3aJo7sg3/soQMxOYSQUr4VNc+8hZrRy/SfLV
-         x8ZxKZ0JRxFafOSMcbCtJg+NZ2uIAwSkKTm37oj27kYoSsc8b16nkwS3PyI4md6HS65Q
-         Tfi2oDA9ibnq+fYH2zYAHRNuoYmR7SgdioQEq2tUWpCL4iX/5B0AHR3mPSbFvPQxOXKN
-         3MVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=11CKmyRNW5Oq497UrHzsLRutqSfI3PndTJkmpjfHIrk=;
-        b=CYi2C3j2S8Sct4zBCkmjh8+mzr4uziEEdqOZD8ZQ6eEc/x/VCME2PbwrSC9f/tqIQ4
-         KFUazgCpVskbQBL6tKPqU/U8hFPPBGbCw4hhdsIWUVuK+5b+k28na9oLT6hY66Ki0Qfu
-         swMT/sfk/3mDQy28rjxTq1PIaLY0IujJIJptvABau55jssKI4rVVdi/E5f/wWJbgqK/K
-         8YYb3fUyk0sg47BlS3KQF9X/AEQrtJ//PTDrShndDtXlxA7pY5wpUDBE6LBZCwUC1Oxv
-         urqU4ZaAPd+dLnH3eyzjqBDYFGga5/npJ0feIyUy33rexr3pUFOQgumq1ojWgnX0AN83
-         ZWhA==
-X-Gm-Message-State: AOAM5319jwU2CyIOat7BAccg5892meLN2n7uGUiPpfrx0cSTvBRLNPKF
-        03dg8TnPhSa7DfcRjzk/D6MEjOq3TV6wn/O0ZQkiSUpR0n0=
-X-Google-Smtp-Source: ABdhPJzZett5LjDcKZXE+Kl7sTdWmXeTjGjx4y9ppn3HQnIvQIcVdMQKhr31bqQPF8p07FiaERsjdSCpI3pRjwhGESo=
-X-Received: by 2002:a2e:9e87:: with SMTP id f7mr8139499ljk.44.1591631493481;
- Mon, 08 Jun 2020 08:51:33 -0700 (PDT)
+        Mon, 8 Jun 2020 11:52:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F28C08C5C2;
+        Mon,  8 Jun 2020 08:52:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=7YZ+NEpUkUU01S+Ul8fTEjP7uNZSOxcsEbJYlol5Gxs=; b=elzwh9ujcAt3twEQf4TkbxU4HP
+        wBCpKh63dAQ0/re1iUHWxOjOP9gSySekqlUiiHVkQfePH1as9TdP8l5/6lXlnNo1F4wyaQHcRQoaf
+        ZPLn9GbYvD/1yrqg+Rk6uu0TfYaRzA/Q9qHC7EoaM4qsnUb7+alp8PLPsy2CAQJBkgb3DmsdPD9ih
+        bVK3uZHqBvWa1Cd2dzPtxEQMNHMP8NlqFg4NU9Q+/ZZrfzJqTscIztyijSHJJPIdTG3GOx3JfdCet
+        Lk7nKDiKL45GPFwFSLD2HPY/YlcSAwAbKJmgycFoJFidpMzGgeS0Je/5i1jXoZKKKnFEXeESFEdD8
+        CBeJYGyA==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jiK4p-0005YC-MB; Mon, 08 Jun 2020 15:52:43 +0000
+Date:   Mon, 8 Jun 2020 08:52:43 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-fsdevel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Tetsuhiro Kohada <kohada.t2@gmail.com>
+Subject: Re: [PATCH] exfat: Fix use after free in exfat_load_upcase_table()
+Message-ID: <20200608155243.GX19604@bombadil.infradead.org>
+References: <9b9272fb-b265-010b-0696-4c0579abd841@web.de>
 MIME-Version: 1.0
-References: <20200608151012.7296-1-frieder.schrempf@kontron.de>
-In-Reply-To: <20200608151012.7296-1-frieder.schrempf@kontron.de>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 8 Jun 2020 12:51:20 -0300
-Message-ID: <CAOMZO5BHF6ftHVgzKQ29o_G7Y+O6nrbDH1+J5+BYaONz==WebQ@mail.gmail.com>
-Subject: Re: [PATCH] serial: imx: Fix handling of TC irq in combination with DMA
-To:     Schrempf Frieder <frieder.schrempf@kontron.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9b9272fb-b265-010b-0696-4c0579abd841@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 8, 2020 at 12:12 PM Schrempf Frieder
-<frieder.schrempf@kontron.de> wrote:
+On Mon, Jun 08, 2020 at 05:07:33PM +0200, Markus Elfring wrote:
+> > This code calls brelse(bh) and then dereferences "bh" on the next line
+> > resulting in a possible use after free.
+> 
+> There is an unfortunate function call sequence.
+> 
+> 
+> > The brelse() should just be moved down a line.
+> 
+> How do you think about a wording variant like the following?
+> 
+>    Thus move a call of the function “brelse” one line down.
+> 
+> 
+> Would you like to omit a word from the patch subject so that
+> a typo will be avoided there?
 
->         if (port->rs485.flags & SER_RS485_ENABLED) {
->                 temp = readl(port->membase + UCR2);
-> +
+Markus, please go away.  This comment is entirely unhelpful.
 
-This looks like an unrelated change.
