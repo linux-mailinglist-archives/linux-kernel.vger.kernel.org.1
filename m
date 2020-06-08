@@ -2,223 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92181F1E5B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 19:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0A81F1E62
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 19:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387600AbgFHRaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 13:30:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27966 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2387589AbgFHRac (ORCPT
+        id S1730746AbgFHRca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 13:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgFHRc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 13:30:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591637429;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CydLNuieMFXuTeLFl9DAS3JoZAu9uEAH3zDcoHjZ+rw=;
-        b=aHeeXl+q56AQPJhlUi+GwAsJoE1uMUPzPepF1+HzEqknlog8PkO0ukdrHpbKBgl0Tn2nVh
-        sbwBSTuWxfK2yfTJYN6gEH5HGUKHUgSjQ4vMjS+8zsQjU8hUaeikbWWKRRN63RnAJ7z3tP
-        qCDLluiwlJJA8Qp5jPljMfIRuD9ysjM=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-Iy_uPyU1Pl6teQrH6xe-Cg-1; Mon, 08 Jun 2020 13:30:24 -0400
-X-MC-Unique: Iy_uPyU1Pl6teQrH6xe-Cg-1
-Received: by mail-wr1-f70.google.com with SMTP id r5so7460737wrt.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 10:30:24 -0700 (PDT)
+        Mon, 8 Jun 2020 13:32:29 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D42C08C5C2;
+        Mon,  8 Jun 2020 10:32:28 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id n11so18071330qkn.8;
+        Mon, 08 Jun 2020 10:32:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wiyYnmTzYSUjW1pI9XvsoK8vnffjXKMIWRhj22x93qs=;
+        b=b2exqroGLJlKAiaFUB2ayaR382R7eYydqlnzQ3J8KOhtVI+eCiT6ow6HhiuRmKrFxe
+         A/roIyJagDiFHrSCNYv3d2Ne1RDCywJiVAMlJSblHpyxM5w9LoxUD3gBDmr6k1JI64S6
+         mCY/VfNsW5JeIlU0+VffIKg8OFUhV3hcLdRQfm9QwedkklNCWWt2/HPWV+lpuSSkK9Yo
+         FqPKBfxxPpRlJ/UVrIcCqM3zsoqhzWF5/RMC8jgD9zWVTQvJvKj7UfrI1maibEIzcpi5
+         Ru7wbKiFTlweCkKeZA3MEsegm9xKPQGXwpsFOiKl58mGoeGdy27fRVDdZsxuu0ZKp7zQ
+         tXWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CydLNuieMFXuTeLFl9DAS3JoZAu9uEAH3zDcoHjZ+rw=;
-        b=ZbPY12OU1gKOsn2ygfNFxztaRPhqMAQekQAR+93oOWfGNAKSkJ2p4L1RPpRPW+nkvi
-         l+MXKGImI0H4bcZw3XMrHdxn5EgEJ9yF7BSluKyGYiKWTMPC49cuEKkSUILzROrPzfeG
-         dV8n3C3H3GlDI/txAJ47IJkugkKErSMPbEtzgfsalItVNlH7IEHSt/1BbaN2vugHAGJp
-         LoUxRxF4D0s/ZhMESSYtEYGWMGS0/pckn/juw+hNXiM3Mt539jjrwOmycSg3YbNQnp+d
-         d0yj4L9dK3qQQMtlMRL/N9o2tkJQ2RgWMAT1pDVhpC+jJdPyH+9KrKbapOO890BbrxPK
-         7bPQ==
-X-Gm-Message-State: AOAM531azIX/nSm5My8+RznjNrFjwVPoeY36A+aINCbl6uuliRKezQDx
-        UBzZlCsVY8JHIcmhRwdwueD0u2eZ8MRcIAlgOoa54I2WG7iuMXnCeiN7kRQf+9exIArqCaKO/ml
-        xvNnoY74bNxH/sGtRdAmGVcvc
-X-Received: by 2002:a1c:1983:: with SMTP id 125mr370293wmz.43.1591637421981;
-        Mon, 08 Jun 2020 10:30:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxawQBk2KuedCoeq45qKTknHdFZ/Hzdg0iNXD3UZKIwvVktz96TcUIMIJ1pKhk0TcTZ2sCXUw==
-X-Received: by 2002:a1c:1983:: with SMTP id 125mr370264wmz.43.1591637421518;
-        Mon, 08 Jun 2020 10:30:21 -0700 (PDT)
-Received: from steredhat ([79.49.207.108])
-        by smtp.gmail.com with ESMTPSA id v19sm219936wml.26.2020.06.08.10.30.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 10:30:20 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 19:30:18 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        eperezma@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH RFC v6 00/11] vhost: ring format independence
-Message-ID: <20200608173018.2l5wywnscyinf4w7@steredhat>
-References: <20200608125238.728563-1-mst@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wiyYnmTzYSUjW1pI9XvsoK8vnffjXKMIWRhj22x93qs=;
+        b=C6T19w4XkHfEIfDAyP6fIATwhiIaA4cRUWvkLpr+M6CJxQhaPYm9ti2VUXxBAGLvEd
+         t3p1z7oS6eU3mOKgwEk4p3KuXuV2Sfsf+RHI9MakHrZlvlbknEtusInlD39AuOn4HiLw
+         hCbyWYb7Q8vnK/vl/ZeiVJlJO0La4qcCUzAAydFSwCTRTmmroNsHFN+wyyjQ7PQif8VZ
+         9GAcpN19AosPG4VzwHZI53O1Hm+IEzreSquZ8bzaY5JD2omWGFleqTy9kWg4HMltXNmf
+         Aoi6nSysVGL74po1niYfbAiKB1vHHpSXWeQxA667ZCBtqX7Je9pE/C3X3aYmN+Jc+F+B
+         YvBA==
+X-Gm-Message-State: AOAM531rbTJaHQBMIHQL0HTUepNFPNKDQJT4X6wXGXxIcXDck9Bist+t
+        /bQ2mEXW43Kk2gLFl366p93h68jIYVin2DujyWQ=
+X-Google-Smtp-Source: ABdhPJxRA8BbenfYxtHxRI4JRkin2d7mG5O5bq5gnYS6ILL2A+WZIOC5fFk25VSq99xAbRWYSrTHHmhgaavstmXh/pk=
+X-Received: by 2002:a37:a89:: with SMTP id 131mr23050145qkk.92.1591637547514;
+ Mon, 08 Jun 2020 10:32:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200608125238.728563-1-mst@redhat.com>
+References: <20200608161150.GA3073@kernel.org>
+In-Reply-To: <20200608161150.GA3073@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 8 Jun 2020 10:32:16 -0700
+Message-ID: <CAEf4BzbEcV6YaezP4yY8J=kYSBhh0cRHCvgCUe9xvB12mF08qg@mail.gmail.com>
+Subject: Re: libbpf's hashmap use of __WORDSIZE
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Irina Tirdea <irina.tirdea@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+On Mon, Jun 8, 2020 at 9:11 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+> Hi Andrii,
+>
+>         We've got that hashmap.[ch] copy from libbpf so that we can
+> build perf in systems where libbpf isn't available, and to make it build
+> in all the containers I regularly test build perf I had to add the patch
+> below, I test build with many versions of both gcc and clang and
+> multiple libcs.
+>
+>   https://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html
+>
+> The way that tools/include/linux/bitops.h has been doing since 2012 is
+> explained in:
+>
+>   http://git.kernel.org/torvalds/c/3f34f6c0233ae055b5
+>
+> Please take a look and see if you find it acceptable,
+>
+> Thanks,
+>
+> - Arnaldo
+>
+>   Warning: Kernel ABI header at 'tools/perf/util/hashmap.h' differs from latest version at 'tools/lib/bpf/hashmap.h'
+>   diff -u tools/perf/util/hashmap.h tools/lib/bpf/hashmap.h
+>
+> $ diff -u tools/lib/bpf/hashmap.h tools/perf/util/hashmap.h
+> --- tools/lib/bpf/hashmap.h     2020-06-05 13:25:27.822079838 -0300
+> +++ tools/perf/util/hashmap.h   2020-06-05 13:25:27.838079794 -0300
+> @@ -10,10 +10,9 @@
+>
+>  #include <stdbool.h>
+>  #include <stddef.h>
+> -#ifdef __GLIBC__
+> -#include <bits/wordsize.h>
+> -#else
+> -#include <bits/reg.h>
+> +#include <limits.h>
+> +#ifndef __WORDSIZE
+> +#define __WORDSIZE (__SIZEOF_LONG__ * 8)
+>  #endif
 
-On Mon, Jun 08, 2020 at 08:52:51AM -0400, Michael S. Tsirkin wrote:
-> 
-> 
-> This adds infrastructure required for supporting
-> multiple ring formats.
-> 
-> The idea is as follows: we convert descriptors to an
-> independent format first, and process that converting to
-> iov later.
-> 
-> Used ring is similar: we fetch into an independent struct first,
-> convert that to IOV later.
-> 
-> The point is that we have a tight loop that fetches
-> descriptors, which is good for cache utilization.
-> This will also allow all kind of batching tricks -
-> e.g. it seems possible to keep SMAP disabled while
-> we are fetching multiple descriptors.
-> 
-> For used descriptors, this allows keeping track of the buffer length
-> without need to rescan IOV.
-> 
-> This seems to perform exactly the same as the original
-> code based on a microbenchmark.
-> Lightly tested.
-> More testing would be very much appreciated.
+This looks fine, I also build-tested it in Travis CI, so all good.
+There is actually __SIZEOF_SIZE_T__, which is more directly what
+hash_bits work with, but I don't think it matters for any reasonable
+system in use :)
 
-while testing the vhost-vsock I found some issues in vhost-net (the VM
-had also a virtio-net device).
+So yeah,
 
-This is the dmesg of the host (it is a QEMU VM):
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-[  171.860074] CPU: 0 PID: 16613 Comm: vhost-16595 Not tainted 5.7.0-ste-12703-gaf7b4801030c-dirty #6
-[  171.862210] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-[  171.865998] Call Trace:
-[  171.866440]  <IRQ>
-[  171.866817]  dump_stack+0x57/0x7a
-[  171.867440]  nmi_cpu_backtrace.cold+0x14/0x54
-[  171.868233]  ? lapic_can_unplug_cpu.cold+0x3b/0x3b
-[  171.869153]  nmi_trigger_cpumask_backtrace+0x85/0x92
-[  171.870143]  arch_trigger_cpumask_backtrace+0x19/0x20
-[  171.871134]  rcu_dump_cpu_stacks+0xa0/0xd2
-[  171.872203]  rcu_sched_clock_irq.cold+0x23a/0x41c
-[  171.873098]  update_process_times+0x2c/0x60
-[  171.874119]  tick_sched_timer+0x59/0x160
-[  171.874777]  ? tick_switch_to_oneshot.cold+0x79/0x79
-[  171.875602]  __hrtimer_run_queues+0x10d/0x290
-[  171.876317]  hrtimer_interrupt+0x109/0x220
-[  171.877025]  smp_apic_timer_interrupt+0x76/0x150
-[  171.877875]  apic_timer_interrupt+0xf/0x20
-[  171.878563]  </IRQ>
-[  171.878897] RIP: 0010:vhost_get_avail_buf+0x5f8/0x860 [vhost]
-[  171.879951] Code: 48 8b bb 88 00 00 00 48 85 ff 0f 84 ad 00 00 00 be 01 00 00 00 44 89 45 80 e8 24 52 08 c1 8b 43 68 44 8b 45 80 e9 e9 fb ff ff <45> 85 c0 0f 85 48 fd ff ff 48 8b 43 38 48 83 bb 38 45 00 00 00 48
-[  171.889938] RSP: 0018:ffffc90000397c40 EFLAGS: 00000246 ORIG_RAX: ffffffffffffff13
-[  171.896828] RAX: 0000000000000040 RBX: ffff88822c3f4688 RCX: ffff888231090000
-[  171.898903] RDX: 0000000000000440 RSI: ffff888231090000 RDI: ffffc90000397c80
-[  171.901025] RBP: ffffc90000397ce8 R08: 0000000000000001 R09: ffffc90000397dc4
-[  171.903136] R10: 000000231edc461f R11: 0000000000000003 R12: 0000000000000001
-[  171.905213] R13: 0000000000000001 R14: ffffc90000397dd4 R15: ffff88822c3f87a8
-[  171.907553]  get_tx_bufs+0x49/0x180 [vhost_net]
-[  171.909142]  handle_tx_copy+0xb4/0x5c0 [vhost_net]
-[  171.911495]  ? update_curr+0x67/0x160
-[  171.913376]  handle_tx+0xb0/0xe0 [vhost_net]
-[  171.916451]  handle_tx_kick+0x15/0x20 [vhost_net]
-[  171.919912]  vhost_worker+0xb3/0x110 [vhost]
-[  171.923379]  kthread+0x106/0x140
-[  171.925314]  ? __vhost_add_used_n+0x1c0/0x1c0 [vhost]
-[  171.933388]  ? kthread_park+0x90/0x90
-[  171.936148]  ret_from_fork+0x22/0x30
-[  234.859212] rcu: INFO: rcu_sched self-detected stall on CPU
-[  234.860036] rcu: 	0-....: (20981 ticks this GP) idle=962/1/0x4000000000000002 softirq=15513/15513 fqs=10340
-[  234.861547] 	(t=21003 jiffies g=24773 q=2390)
-[  234.862158] NMI backtrace for cpu 0
-[  234.862638] CPU: 0 PID: 16613 Comm: vhost-16595 Not tainted 5.7.0-ste-12703-gaf7b4801030c-dirty #6
-[  234.864008] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-[  234.866084] Call Trace:
-[  234.866395]  <IRQ>
-[  234.866648]  dump_stack+0x57/0x7a
-[  234.867079]  nmi_cpu_backtrace.cold+0x14/0x54
-[  234.867679]  ? lapic_can_unplug_cpu.cold+0x3b/0x3b
-[  234.868322]  nmi_trigger_cpumask_backtrace+0x85/0x92
-[  234.869013]  arch_trigger_cpumask_backtrace+0x19/0x20
-[  234.869747]  rcu_dump_cpu_stacks+0xa0/0xd2
-[  234.870267]  rcu_sched_clock_irq.cold+0x23a/0x41c
-[  234.870960]  update_process_times+0x2c/0x60
-[  234.871578]  tick_sched_timer+0x59/0x160
-[  234.872148]  ? tick_switch_to_oneshot.cold+0x79/0x79
-[  234.872949]  __hrtimer_run_queues+0x10d/0x290
-[  234.873711]  hrtimer_interrupt+0x109/0x220
-[  234.874271]  smp_apic_timer_interrupt+0x76/0x150
-[  234.874913]  apic_timer_interrupt+0xf/0x20
-[  234.876507]  </IRQ>
-[  234.876799] RIP: 0010:vhost_get_avail_buf+0x8a/0x860 [vhost]
-[  234.877828] Code: 8d 72 06 00 00 85 c0 0f 85 fb 02 00 00 8b 57 70 89 d0 2d 00 04 00 00 0f 88 72 06 00 00 45 31 c0 4c 8d bb 20 41 00 00 4d 89 ee <44> 0f b7 a3 08 01 00 00 66 44 3b a3 0a 01 00 00 0f 84 58 05 00 00
-[  234.882059] RSP: 0018:ffffc90000397c40 EFLAGS: 00000283 ORIG_RAX: ffffffffffffff13
-[  234.883227] RAX: 0000000000000040 RBX: ffff88822c3f4688 RCX: ffff888231090000
-[  234.884317] RDX: 0000000000000440 RSI: ffff888231090000 RDI: ffffc90000397c80
-[  234.886531] RBP: ffffc90000397ce8 R08: 0000000000000001 R09: ffffc90000397dc4
-[  234.891840] R10: 000000231edc461f R11: 0000000000000003 R12: 0000000000000001
-[  234.896670] R13: 0000000000000001 R14: ffffc90000397dd4 R15: ffff88822c3f87a8
-[  234.900918]  get_tx_bufs+0x49/0x180 [vhost_net]
-[  234.904280]  handle_tx_copy+0xb4/0x5c0 [vhost_net]
-[  234.916402]  ? update_curr+0x67/0x160
-[  234.917688]  handle_tx+0xb0/0xe0 [vhost_net]
-[  234.918865]  handle_tx_kick+0x15/0x20 [vhost_net]
-[  234.920366]  vhost_worker+0xb3/0x110 [vhost]
-[  234.921500]  kthread+0x106/0x140
-[  234.922219]  ? __vhost_add_used_n+0x1c0/0x1c0 [vhost]
-[  234.923595]  ? kthread_park+0x90/0x90
-[  234.924442]  ret_from_fork+0x22/0x30
-[  297.870095] rcu: INFO: rcu_sched self-detected stall on CPU
-[  297.871352] rcu: 	0-....: (36719 ticks this GP) idle=962/1/0x4000000000000002 softirq=15513/15513 fqs=18087
-[  297.873585] 	(t=36756 jiffies g=24773 q=2853)
-[  297.874478] NMI backtrace for cpu 0
-[  297.875229] CPU: 0 PID: 16613 Comm: vhost-16595 Not tainted 5.7.0-ste-12703-gaf7b4801030c-dirty #6
-[  297.877204] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-[  297.881644] Call Trace:
-[  297.882185]  <IRQ>
-[  297.882621]  dump_stack+0x57/0x7a
-[  297.883387]  nmi_cpu_backtrace.cold+0x14/0x54
-[  297.884390]  ? lapic_can_unplug_cpu.cold+0x3b/0x3b
-[  297.885568]  nmi_trigger_cpumask_backtrace+0x85/0x92
-[  297.886746]  arch_trigger_cpumask_backtrace+0x19/0x20
-[  297.888260]  rcu_dump_cpu_stacks+0xa0/0xd2
-[  297.889508]  rcu_sched_clock_irq.cold+0x23a/0x41c
-[  297.890803]  update_process_times+0x2c/0x60
-[  297.893357]  tick_sched_timer+0x59/0x160
-[  297.895143]  ? tick_switch_to_oneshot.cold+0x79/0x79
-[  297.897832]  __hrtimer_run_queues+0x10d/0x290
-[  297.899841]  hrtimer_interrupt+0x109/0x220
-[  297.900909]  smp_apic_timer_interrupt+0x76/0x150
-[  297.903543]  apic_timer_interrupt+0xf/0x20
-[  297.906509]  </IRQ>
-[  297.908004] RIP: 0010:vhost_get_avail_buf+0x92/0x860 [vhost]
-[  297.911536] Code: 85 fb 02 00 00 8b 57 70 89 d0 2d 00 04 00 00 0f 88 72 06 00 00 45 31 c0 4c 8d bb 20 41 00 00 4d 89 ee 44 0f b7 a3 08 01 00 00 <66> 44 3b a3 0a 01 00 00 0f 84 58 05 00 00 8b 43 28 83 e8 01 41 21
-[  297.930274] RSP: 0018:ffffc90000397c40 EFLAGS: 00000283 ORIG_RAX: ffffffffffffff13
-[  297.934056] RAX: 0000000000000040 RBX: ffff88822c3f4688 RCX: ffff888231090000
-[  297.938371] RDX: 0000000000000440 RSI: ffff888231090000 RDI: ffffc90000397c80
-[  297.944222] RBP: ffffc90000397ce8 R08: 0000000000000001 R09: ffffc90000397dc4
-[  297.953817] R10: 000000231edc461f R11: 0000000000000003 R12: 0000000000000001
-[  297.956453] R13: 0000000000000001 R14: ffffc90000397dd4 R15: ffff88822c3f87a8
-[  297.960873]  get_tx_bufs+0x49/0x180 [vhost_net]
-[  297.964163]  handle_tx_copy+0xb4/0x5c0 [vhost_net]
-[  297.965871]  ? update_curr+0x67/0x160
-[  297.966893]  handle_tx+0xb0/0xe0 [vhost_net]
-[  297.968442]  handle_tx_kick+0x15/0x20 [vhost_net]
-[  297.971327]  vhost_worker+0xb3/0x110 [vhost]
-[  297.974275]  kthread+0x106/0x140
-[  297.976141]  ? __vhost_add_used_n+0x1c0/0x1c0 [vhost]
-[  297.979518]  ? kthread_park+0x90/0x90
-[  297.981665]  ret_from_fork+0x22/0x30
+Are you going to do this change for libbpf's variant, or should I
+submit a separate patch?
 
+>
+>  static inline size_t hash_bits(size_t h, int bits)
