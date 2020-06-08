@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FBF1F235E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E181F245C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729690AbgFHXOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:14:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58584 "EHLO mail.kernel.org"
+        id S1731024AbgFHXUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:20:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728931AbgFHXLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:11:37 -0400
+        id S1727887AbgFHXQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:16:40 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 402C72100A;
-        Mon,  8 Jun 2020 23:11:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABCE420842;
+        Mon,  8 Jun 2020 23:16:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657897;
-        bh=khwqOgzIKy4HdyDJxlADdur1zwDQ2QxqGZxNDiHr2Sg=;
+        s=default; t=1591658200;
+        bh=cpNcsyP96V0xPvcpUSTt8b+S6Y2aJ4SjDn/xXmL06hI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WZ7SEphqmAl7WwvXWSQVgN8OxL88Wm7Kutp7nfFP+ItfW4uZEtiQeYUcuUTc3U62h
-         nXU2EUFsg71kgoKCbxpAyL2h/KXpyymvrX/I1Bl7Z+S2YquT3ihZ74V5o8kSH1ZVHF
-         2mhfy61x7YgvcbVf6yTpXAfUvnBF/PPigqL16FRI=
+        b=SEdkfIoywhUtSCHGrsSkzonhdqhbw6AK3i1tfPGAyzPPSGH0DzT3kT+giH5espemC
+         xpyAp+fFP9DmB3TapTkLrTGLbGzOn/jKj5MOY6RMJzw/qeeDJ0ulAAg6SGHh34frCb
+         Rvsk10x6hew5ksblmdzErIWjn6zGFDY4c95YktOw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jacob Keller <jacob.e.keller@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 251/274] ice: fix potential double free in probe unrolling
-Date:   Mon,  8 Jun 2020 19:05:44 -0400
-Message-Id: <20200608230607.3361041-251-sashal@kernel.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        kbuild test robot <lkp@intel.com>,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 220/606] net: qrtr: Fix passing invalid reference to qrtr_local_enqueue()
+Date:   Mon,  8 Jun 2020 19:05:45 -0400
+Message-Id: <20200608231211.3363633-220-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,47 +47,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacob Keller <jacob.e.keller@intel.com>
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-[ Upstream commit bc3a024101ca497bea4c69be4054c32a5c349f1d ]
+[ Upstream commit d28ea1fbbf437054ef339afec241019f2c4e2bb6 ]
 
-If ice_init_interrupt_scheme fails, ice_probe will jump to clearing up
-the interrupts. This can lead to some static analysis tools such as the
-compiler sanitizers complaining about double free problems.
+Once the traversal of the list is completed with list_for_each_entry(),
+the iterator (node) will point to an invalid object. So passing this to
+qrtr_local_enqueue() which is outside of the iterator block is erroneous
+eventhough the object is not used.
 
-Since ice_init_interrupt_scheme already unrolls internally on failure,
-there is no need to call ice_clear_interrupt_scheme when it fails. Add
-a new unroll label and use that instead.
+So fix this by passing NULL to qrtr_local_enqueue().
 
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
+Reported-by: kbuild test robot <lkp@intel.com>
+Reported-by: Julia Lawall <julia.lawall@lip6.fr>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ice/ice_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/qrtr/qrtr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index 545817dbff67..69e50331e08e 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -3298,7 +3298,7 @@ ice_probe(struct pci_dev *pdev, const struct pci_device_id __always_unused *ent)
- 	if (err) {
- 		dev_err(dev, "ice_init_interrupt_scheme failed: %d\n", err);
- 		err = -EIO;
--		goto err_init_interrupt_unroll;
-+		goto err_init_vsi_unroll;
+diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
+index b7b854621c26..9d38c14d251a 100644
+--- a/net/qrtr/qrtr.c
++++ b/net/qrtr/qrtr.c
+@@ -855,7 +855,7 @@ static int qrtr_bcast_enqueue(struct qrtr_node *node, struct sk_buff *skb,
  	}
+ 	mutex_unlock(&qrtr_node_lock);
  
- 	/* Driver is mostly up */
-@@ -3387,6 +3387,7 @@ ice_probe(struct pci_dev *pdev, const struct pci_device_id __always_unused *ent)
- 	ice_free_irq_msix_misc(pf);
- err_init_interrupt_unroll:
- 	ice_clear_interrupt_scheme(pf);
-+err_init_vsi_unroll:
- 	devm_kfree(dev, pf->vsi);
- err_init_pf_unroll:
- 	ice_deinit_pf(pf);
+-	qrtr_local_enqueue(node, skb, type, from, to);
++	qrtr_local_enqueue(NULL, skb, type, from, to);
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
