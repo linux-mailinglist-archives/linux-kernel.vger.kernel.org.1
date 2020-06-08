@@ -2,184 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED1C1F1A64
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 15:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D077A1F1A6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 15:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729941AbgFHNuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 09:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729051AbgFHNuU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 09:50:20 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB4FC08C5C2
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 06:50:20 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id p5so17462549wrw.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 06:50:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uvwgW89KNJaCpkAay5Bmt5Q5u2ENn3zZzl6ZGX4sCzs=;
-        b=QdtkN0Q9RhALxTt6SR7EAnfG+MxLms9iFM1XlfFaX0Xwax8Yy7wnlMt9Q4uqkWNiNO
-         yQcijaXgdzVVThzSCn1F39bQPrgg8Epv3ZU/I9X2WPoqLaobrA/VXlhp7L5Wpo+mZEzk
-         umMCiPHVf3iLmTUC9l6VPIRYd/3wlECWqnFKKO2yQ24XXVWUmu4KJaLZ9vLeNXXBX8qt
-         Z1xEpquBVDkr2nAeHkeNe2k3DoSeeM5/eif9NWZvMF0cDrH9pAe6xOLbr33B5mP9goDa
-         3WcenuwKEHCmcNsaARbkiGPI3ePRu8Y/5rcenAcFP0bd6IQzgXUrCS//aYArpnR4jmLH
-         /2tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uvwgW89KNJaCpkAay5Bmt5Q5u2ENn3zZzl6ZGX4sCzs=;
-        b=Fk6qBHU8PDgFTw8S/qJRaFZCJ6tjl5TjMuRP6zke08AkCTL/jHNz0wgEI6Io3S8J1R
-         qhYMCWH6sqi3eYA26qgEaHDwxoYQ2Ce/7eCX9lXUcN20pCDvR8WY8b0fjcMTrvhvDi5o
-         ELF5Dsbubik/m+0fbW929YbvntdYtHXnWsAIcgtzBIWIkOOSYBdqYxztipO6bgNp9m34
-         2Yj5BBusQx2AzumDyNb91llPMl1H+Ucy3zhG2dt3aJmORnhsFU30Du6Qv02WNQ2RyTX1
-         n1Ch/+n/0AO4NXaasW5RDdK3S5sDuZkArbuGYsJfTEuGpR0v/QeJaTysjPyhBDhNmoBv
-         2sEA==
-X-Gm-Message-State: AOAM530UYqZKMcEob+Aw9b6H7D+XbEDRHifKvwL2tCNoPMcyn9GMbQno
-        tamBP1u5BiVCW3ULzB3zeXLG5oB2cHs=
-X-Google-Smtp-Source: ABdhPJwXhuwBVRp078X1AQ9dwW6AAdWmm8G4+q5L37eauA5bHgAS+mkxL5jmNO0JlGeaG6UMB4wowg==
-X-Received: by 2002:a5d:4385:: with SMTP id i5mr23168437wrq.420.1591624219092;
-        Mon, 08 Jun 2020 06:50:19 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id h15sm22724547wrt.73.2020.06.08.06.50.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 06:50:18 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 14:50:16 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        sumit.garg@linaro.org, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, will@kernel.org,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        patches@linaro.org, Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [RFC PATCH 0/4] kgdb: Honour the kprobe blacklist when setting
- breakpoints
-Message-ID: <20200608135016.5pdxidpepjujqw6b@holly.lan>
-References: <20200605132130.1411255-1-daniel.thompson@linaro.org>
- <20200605142953.GP2750@hirez.programming.kicks-ass.net>
- <20200605144457.GD2948@hirez.programming.kicks-ass.net>
+        id S1729956AbgFHNue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 09:50:34 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:24496 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729949AbgFHNud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 09:50:33 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591624231; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=BeW+XFvH8gEbAcXx9Jn4/gY3Kx/KL0fZNhe2EoXlSQQ=;
+ b=g7Qus5qzgMO2ImAOIPzc7iElmZVy8uFuVM1nxr18I7bw1V0MgjqZbUsCZnW0Dogap32w9Oe3
+ SSnM+lqDEJg4KfUNFfYTbOpicnuJd1PsFdtMyfMKGPWPYRzwyKsEfXE9p2muBQqJ/sr6GOuq
+ PTbKZK+0deCAldtbgh+H3IpF+5Y=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5ede421a5c89e47d732ac7e0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Jun 2020 13:50:18
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5805BC433CB; Mon,  8 Jun 2020 13:50:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 376ACC433CA;
+        Mon,  8 Jun 2020 13:50:17 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200605144457.GD2948@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 08 Jun 2020 19:20:17 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH] iommu/arm-smmu: Remove shutdown callback
+In-Reply-To: <e072f61a-d6cf-2e34-efd5-c1db38c5c622@arm.com>
+References: <20200607110918.1733-1-saiprakash.ranjan@codeaurora.org>
+ <20200608081846.GA1542@willie-the-truck>
+ <08c293eefc20bc2c67f2d2639b93f0a5@codeaurora.org>
+ <e072f61a-d6cf-2e34-efd5-c1db38c5c622@arm.com>
+Message-ID: <c5a86b3a5a8a6d32e094b6ebde23f869@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 04:44:57PM +0200, Peter Zijlstra wrote:
-> On Fri, Jun 05, 2020 at 04:29:53PM +0200, Peter Zijlstra wrote:
-> > On Fri, Jun 05, 2020 at 02:21:26PM +0100, Daniel Thompson wrote:
-> > > kgdb has traditionally adopted a no safety rails approach to breakpoint
-> > > placement. If the debugger is commanded to place a breakpoint at an
-> > > address then it will do so even if that breakpoint results in kgdb
-> > > becoming inoperable.
-> > > 
-> > > A stop-the-world debugger with memory peek/poke does intrinsically
-> > > provide its operator with the means to hose their system in all manner
-> > > of exciting ways (not least because stopping-the-world is already a DoS
-> > > attack ;-) ) but the current no safety rail approach is not easy to
-> > > defend, especially given kprobes provides us with plenty of machinery to
-> > > mark parts of the kernel where breakpointing is discouraged.
-> > > 
-> > > This patchset introduces some safety rails by using the existing
-> > > kprobes infrastructure. It does not cover all locations where
-> > > breakpoints can cause trouble but it will definitely block off several
-> > > avenues, including the architecture specific parts that are handled by
-> > > arch_within_kprobe_blacklist().
-> > > 
-> > > This patch is an RFC because:
-> > > 
-> > > 1. My workstation is still chugging through the compile testing.
-> > > 
-> > > 2. Patch 4 needs more runtime testing.
-> > > 
-> > > 3. The code to extract the kprobe blacklist code (patch 4 again) needs
-> > >    more review especially for its impact on arch specific code.
-> > > 
-> > > To be clear I do plan to do the detailed review of the kprobe blacklist
-> > > stuff but would like to check the direction of travel first since the
-> > > change is already surprisingly big and maybe there's a better way to
-> > > organise things.
-> > 
-> > Thanks for doing these patches, esp 1-3 look very good to me.
-> > 
-> > I've taken the liberty to bounce the entire set to Masami-San, who is
-> > the kprobes maintainer for comments as well.
+Hi Robin,
+
+On 2020-06-08 16:56, Robin Murphy wrote:
+> On 2020-06-08 10:13, Sai Prakash Ranjan wrote:
+>> Hi Will,
+>> 
+>> On 2020-06-08 13:48, Will Deacon wrote:
+>>> On Sun, Jun 07, 2020 at 04:39:18PM +0530, Sai Prakash Ranjan wrote:
+>>>> Remove SMMU shutdown callback since it seems to cause more
+>>>> problems than benefits. With this callback, we need to make
+>>>> sure that all clients/consumers of SMMU do not perform any
+>>>> DMA activity once the SMMU is shutdown and translation is
+>>>> disabled. In other words we need to add shutdown callbacks
+>>>> for all those clients to make sure they do not perform any
+>>>> DMA or else we see all kinds of weird crashes during reboot
+>>>> or shutdown. This is clearly not scalable as the number of
+>>>> clients of SMMU would vary across SoCs and we would need to
+>>>> add shutdown callbacks to almost all drivers eventually.
+>>>> This callback was added for kexec usecase where it was known
+>>>> to cause memory corruptions when SMMU was not shutdown but
+>>>> that does not directly relate to SMMU because the memory
+>>>> corruption could be because of the client of SMMU which is
+>>>> not shutdown properly before booting into new kernel. So in
+>>>> that case, we need to identify the client of SMMU causing
+>>>> the memory corruption and add appropriate shutdown callback
+>>>> to the client rather than to the SMMU.
+>>>> 
+>>>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>>>> ---
+>>>>  drivers/iommu/arm-smmu-v3.c | 6 ------
+>>>>  drivers/iommu/arm-smmu.c    | 6 ------
+>>>>  2 files changed, 12 deletions(-)
+>>> 
+>>> This feels like a giant bodge to me and I think that any driver which
+>>> continues to perform DMA after its ->shutdown() function has been 
+>>> invoked
+>>> is buggy. Wouldn't that cause problems with kexec(), for example?
+>>> 
+>> 
+>> Yes it is definitely a bug in the client driver if DMA is performed
+>> after shutdown callback of that respective driver is invoked and it 
+>> must
+>> be fixed in that driver. But here the problem I was describing is not 
+>> that,
+>> most of the drivers do not have a shutdown callback to begin with and 
+>> adding
+>> it just because of shutdown dependency on SMMU doesn't seem so well 
+>> because
+>> we can have many more such clients in the future and then we have to 
+>> just go
+>> on adding the shutdown callbacks everywhere.
 > 
-> OK, after having had a second look, one thing we can perhaps address
-> with the last patch, or perhaps on top of that, is extending the
-> kprobes_blacklist() with data regions.
+> Yes, indeed we do. Like it or not, kexec is a thing, and about 98% of
+> drivers will have been written without considering it.
 > 
-> Because these patches only exclude kgdb from setting breakpoints on
-> code; data breakpoints do not match what we do with
-> arch_build_bp_info().
+> If fixing one problem exposes lots of other problems, can you honestly
+> say that the best solution is to go back and re-break the original
+> thing?
+> 
 
-Right, my patches will only affect the code paths where kgdb sets
-software breakpoints.
+No, definitely not. I was under the wrong impression that *kexec thing*
+was more due to the client driver bugs rather than the SMMU.
 
-In principle h/w breakpoints, whether they are code or data, should be
-able to rely on hw_breakpoint_arch_parse() and any errors from the hw
-breakpoint API will propagate into the kgdb core and do the right
-thing.
+>>> There's a clear shutdown dependency ordering, where the clients of 
+>>> the
+>>> SMMU need to shutdown before the SMMU itself, but that's not really
+>>> the SMMU driver's problem to solve.
+>>> 
+>> 
+>> The problem with kexec may not be directly related to SMMU as you said
+>> above if DMA is performed after the client shutdown callback, then its 
+>> a
+>> bug in the client driver, so that needs to be fixed in the client 
+>> driver,
+>> not the SMMU. So is there any point in having the SMMU shutdown 
+>> callback?
+> 
+> The point is that kexec needs to return the system to a state as close
+> to reset as possible. The SMMU is at least as relevant as any other
+> device in that regard, if not far more so - consider if the first
+> kernel *did* leave it enabled with whatever left-over translations in
+> place, and kexec'ed into another OS that wasn't SMMU-aware...
+> 
 
-In practice it looks like kgdb/x86/hw_breakpoint have plumbed together
-in a manner that circumvents the parse (and therefore#
-arch_build_bp_info() never runs). Rather the h/w/ break problem using
-the kprobe blacklist I think we could just fix these code paths.
+Yes understood. I wrongly assumed that the kexec problem was more
+of a client driver bugs rather than SMMU. But I see that we indeed
+need to shutdown SMMU as any other driver.
 
-The following is 100% untested (not even compile) and I copied a line
-or two from register_perf_hw_breakpoint() without checking what they
-do ;-). Nevertheless I hope it gives a clear idea about what I am
-talking about! If this was developed into a "real" patch then I think
-dbg_release_bp_slot() should perhaps be replaced with a better API that
-doesn't bypass the checks rather than solving everything in kgdb.c .
+>> As you see, with this SMMU shutdown callback, we need to add shutdown
+>> callbacks in all the client drivers.
+> 
+> Yes. And if you really want to argue against that, then at least be
+> consistent and propose removing shutdown from *all* the IOMMU drivers.
+> And then probably propose removing kexec support from all their
+> respective architectures... ;)
+> 
 
+Not my intention to break or remove kexec, hence the RFC tag :)
+As for the consistent part, out of 18 iommu drivers only 5
+have shutdown callbacks, so nothing much to remove there and
+kexec is broken there probably. However I got your point and
+will drop this patch.
 
-Daniel.
+Thanks,
+Sai
 
-
-diff --git a/arch/x86/kernel/kgdb.c b/arch/x86/kernel/kgdb.c
-index c44fe7d8d9a4..64ac0ee9b55c 100644
---- a/arch/x86/kernel/kgdb.c
-+++ b/arch/x86/kernel/kgdb.c
-@@ -223,11 +223,12 @@ static void kgdb_correct_hw_break(void)
- 		hw_breakpoint_restore();
- }
- 
--static int hw_break_reserve_slot(int breakno)
-+static int kgdb_register_hw_break(int breakno)
- {
- 	int cpu;
- 	int cnt = 0;
- 	struct perf_event **pevent;
-+        struct arch_hw_breakpoint hw = { };
- 
- 	if (dbg_is_early)
- 		return 0;
-@@ -237,6 +238,11 @@ static int hw_break_reserve_slot(int breakno)
- 		pevent = per_cpu_ptr(breakinfo[breakno].pev, cpu);
- 		if (dbg_reserve_bp_slot(*pevent))
- 			goto fail;
-+		if (hw_breakpoint_arch_parse(*pevent, &(*pevent)->attr, hw)) {
-+			cnt++;
-+			goto fail;
-+		}
-+		(*pevent)->hw.info = hw;
- 	}
- 
- 	return 0;
-@@ -361,7 +367,7 @@ kgdb_set_hw_break(unsigned long addr, int len, enum kgdb_bptype bptype)
- 		return -1;
- 	}
- 	breakinfo[i].addr = addr;
--	if (hw_break_reserve_slot(i)) {
-+	if (kgdb_register_hw_break(i)) {
- 		breakinfo[i].addr = 0;
- 		return -1;
- 	}
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
