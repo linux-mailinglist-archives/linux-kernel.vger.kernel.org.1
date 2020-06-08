@@ -2,119 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DD91F1F21
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 20:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9BC1F1F28
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 20:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726030AbgFHSkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 14:40:25 -0400
-Received: from mout.web.de ([212.227.17.11]:37317 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725280AbgFHSkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 14:40:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1591641616;
-        bh=HsC+w8dunnbHNKQH7ymo+2rXPeBinbvbCV8bV6qXMOI=;
-        h=X-UI-Sender-Class:Cc:Subject:To:From:Date;
-        b=HyOkmT0yTgEyjAPJKvoAbezDVbSTXV3MBKh/b/bX3uAjZscf1u5a7u4ls0I26Qljf
-         5qSW1494pVw4CUTqSMYMjS1miJe6NG2c9/6CMujDL7/o0ZRCWkmfXxBz3Dg9waAkHo
-         lXueo5DF4kMT40vohl1otsgGN4CXUS3mj1SLxWxo=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.116.236]) by smtp.web.de (mrweb103
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0LxfGh-1itU6N2GaJ-017Fq8; Mon, 08
- Jun 2020 20:40:16 +0200
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] coccinelle: api: filter out memdup_user
- definitions
-To:     Denis Efremov <efremov@linux.com>,
-        Coccinelle <cocci@systeme.lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Julia Lawall <Julia.Lawall@lip6.fr>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <623c6271-4cce-55c1-a15b-4a1ce4365fe8@web.de>
-Date:   Mon, 8 Jun 2020 20:40:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1726098AbgFHSmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 14:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726027AbgFHSl7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 14:41:59 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D52C08C5C2
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 11:41:58 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id n23so21813738ljh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 11:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xdYVMi4TB1AynZV/TE42S+K8GYgFVjpwEvPiHdeHwW0=;
+        b=IUlTeRvUgK8FEJG+Sn6jQfueJQe1C/imU4WYRWV2PuXL0DIMXxcRLd3RBoYavNHScZ
+         vX2zz4xElfE07LNxxcY2PcKOxWZWYDTr8eMWppKxcAh/KsojiLKR0rLTYeoejnobKNG2
+         pZZpZMagWFDlGfMHVB9lzDhGFxuyRd9QkEU5pjXEJUfHLdAGS+6qV2MaQqpWxMcvG49q
+         Iulw8WcBepoCEeFsp2tPHSSde26hUfJCgue82fduBrgy5NlOaekOMZ0Hch2/fBWLkiYF
+         8BspwkgWLKWZedKJ76UM/ofI/g9mHhZeGTfF/87eYzZ17X6TjR5lB+2Y3N9AL7r9yqi1
+         gSjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xdYVMi4TB1AynZV/TE42S+K8GYgFVjpwEvPiHdeHwW0=;
+        b=ErEvR3d82HUeSxUNSCdW8Z9nIIJPjJfqCqM+H9OXhEnl8VISgnmM/ae+x6/jH4rs7M
+         SkkqGlnhelbP4aahUzXvefD+b1QZMpx5b3JOIZ4L6MFE2G/SGPxgFMK3ZZjOb51Sv1pc
+         ksnOFv8c1TMtvZth9DnXH/AJQVzepYEJHIxJx83JT2rCQYsgqTGvf68/LdIlAZFQ86l2
+         nyWluj6MnqcUvCd4pt/4fRqnWOteqsPlvRPfIkG4SkgQBFv8/EVvDXnx1FwQkV+MQJrk
+         KF9Yp19ID73AfibXu4fK7QoBQoV/XmGXv2OOJZ289yx5FnYHF/yOgWyB+FgJHweZZskX
+         Y8cg==
+X-Gm-Message-State: AOAM5311s1baVQjqkrj1eQdaODGHA2f34+iiQ9j3oHrxh+sz1lyk4Obz
+        tgXHmzZqlIr+6obnHTPkyrR/x3/n+tYHAXgSEW6dJQ==
+X-Google-Smtp-Source: ABdhPJzTbJz0aBGuHmzGA+lFFgmNz5sWB5R746ny52RgSF2CDnKe0/GyLz0cvZeq0OMLOIp+8mvZ6xdkOTsXbpZwDuA=
+X-Received: by 2002:a2e:908f:: with SMTP id l15mr7160592ljg.307.1591641716733;
+ Mon, 08 Jun 2020 11:41:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-X-Provags-ID: V03:K1:bz34Uiz7xaBIUF3SMjCHf3vyWYKMHYDd/st1vIF9u1xt2kO3JAs
- uFCKCaR+ZnpOzhLZtkCgkDJcIjR4q6Vpn6pT/ZADIe5J3grBwfVrOtJOrpDeb7LWoteFFhp
- p8208XNnIq91Ow5dWOBjx8CUbsxoy7QrrU4Djq9Pn+yEaWAkWY/eoE5QsMzvgdyGO2G8Sm5
- y4ct4sUoDndok08phzLpA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MMICAGTd+wA=:dkGjTMf2Xcs4B0XbrarNBe
- nLtsRQQxkDGB2osghFSBI96QzkSiaF4i4WuV/xam2XqGTS16VquUDJGqsHSiPSPaRgsqt5yvs
- MHtazI8qyaIeBbEVHhONGbxhw0QWwGzzxpmnqx0Ts1L3xte4o5O2Zo9Y+fK4CyTcUHsYMRm7M
- sIy5l0HDF61IMOM5BAA9D9CccMYCQXstV/c5cjZSL0/DtgG2r8BKJcsm6JmmJ91PYau3zHUGD
- YTFDfs4crTQK408nH5N5AZ0OHJTvD2dFfSyELCbJuH6VpLXqBxdh+3kX9AMb16ZBCIkGrCHDj
- CSR9u0yyFFggJf7IJhV/49wHKmEg3wL8IuTG4xrXQyE6I0W17a6fwqsIsxl58J2xzzhlu1sMo
- vOIbPaJWKA5OCxNqk/0pKtgAcZ1pQcmhxyXM1B62v/l4QhQ5ngjM+JZDLX45ntLvpGhWhhHJ7
- 86Amngk0Z8wBfgi5P12cpVpWNWxUfF+QORMlQr2BLFocSgocYQa+RvrAhmnqYS2XM2hlvF5X5
- rJb0HfgcsHFCLv8C8mxwppPYYg6yVzPPVYkOFgACjy6tEvuPHUStEikS1IvEjMn9MJNE8kIU2
- kCqWJZ5hUzvjT8BnBkHFS3VKIFDI5YTUbtTvYK9kf8v6R73IbZ3ufUHeTe2zE9XTlVqnEFZm6
- sxXBXJBsfNxAGXobiqw1pT5gGIAo8Tp3A5WYIIyDuDsIYFG3Ov/fJ0yzeuL1q6sxueB+RCYnl
- MklglqcDAnlab5Mo8PBPa2E00EcMVFYnNRbEbhPvT3frKOzTnQyNuEHle6JPj77ZpiLABcLEp
- TiL0Bk0Puyc7qX1s7BgmFUn6MtFHmXMC2+qADAVYlgR6o1gUlNc2kVSDxyiTR8qNT7dOMUz1a
- Wad2y4Y3zWorNEzUif1BA5E4BtjtRVyIAfyuk7Xw2Vp0sJNsOkQ6bUmW+lcvu5eVfyyrH/iTe
- nhsV1aVG+ucM1hJC1knYgCTrmC2Lz/9YfzeqOYEdZMS4bMtbQtgNhAm7Pd3vmho9DUKX98WKh
- ncZPT91KBRf5NzoFwduW9kMd5t51M9lv9XNVg2BAeVhJtebNYh2QXQiRfr1fqHiopyLakKY4b
- fIerCWvbMxIoXSdI770EzBvDmFXu/Bk4OrrWK33QJPoGZq4LxfmSKz5PQFhd2jedwCqf5AH29
- 7BFMgLudrgjltNogo0cvpmOb3Sts3zy58egOPdtRi7B49Yj61kc2Ll0ElbB4eka4lBObu5j5x
- ND0cP0APuh9BPi3xU
+References: <20200602050626.GA2174820@kroah.com> <CAA93t1puWzFx=1h0xkZEkpzPJJbBAF7ONL_wicSGxHjq7KL+WA@mail.gmail.com>
+ <20200603060751.GA465970@kroah.com> <CACK8Z6EXDf2vUuJbKm18R6HovwUZia4y_qUrTW8ZW+8LA2+RgA@mail.gmail.com>
+ <20200603121613.GA1488883@kroah.com> <CACK8Z6EOGduHX1m7eyhFgsGV7CYiVN0en4U0cM4BEWJwk2bmoA@mail.gmail.com>
+ <20200605080229.GC2209311@kroah.com> <CACK8Z6GR7-wseug=TtVyRarVZX_ao2geoLDNBwjtB+5Y7VWNEQ@mail.gmail.com>
+ <20200607113632.GA49147@kroah.com> <CAJmaN=m5cGc8019LocvHTo-1U6beA9-h=T-YZtQEYEb_ry=b+Q@mail.gmail.com>
+ <20200608175015.GA457685@kroah.com> <CAJmaN=mvnrLLkJC=6ddO_Rj+1FpRHoQzWFo9W3AZmsW_qS5CYQ@mail.gmail.com>
+In-Reply-To: <CAJmaN=mvnrLLkJC=6ddO_Rj+1FpRHoQzWFo9W3AZmsW_qS5CYQ@mail.gmail.com>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Mon, 8 Jun 2020 11:41:19 -0700
+Message-ID: <CACK8Z6GZprVZMM=JQ-9zjosYQ6OLpifp_g8RmSTa3HwWWTB8Lw@mail.gmail.com>
+Subject: Re: [RFC] Restrict the untrusted devices, to bind to only a set of
+ "whitelisted" drivers
+To:     Jesse Barnes <jsbarnes@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Prashant Malani <pmalani@google.com>,
+        Benson Leung <bleung@google.com>,
+        Todd Broch <tbroch@google.com>,
+        Alex Levin <levinale@google.com>,
+        Mattias Nissler <mnissler@google.com>,
+        Zubin Mithra <zsm@google.com>,
+        Bernie Keany <bernie.keany@intel.com>,
+        Aaron Durbin <adurbin@google.com>,
+        Diego Rivas <diegorivas@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Furquan Shaikh <furquan@google.com>,
+        Christian Kellner <christian@kellner.me>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Don't match original implementations.
+Hi Jesse and Greg,
 
-I find such a change description insufficient.
+On Mon, Jun 8, 2020 at 11:30 AM Jesse Barnes <jsbarnes@google.com> wrote:
+>
+> > > I think your suggestion to disable driver binding once the initial
+> > > bus/slot devices have been bound will probably work for this
+> > > situation.  I just wanted to be clear that without some auditing,
+> > > fuzzing, and additional testing, we simply have to assume that drivers
+> > > are *not* secure and avoid using them on untrusted devices until we're
+> > > fairly confident they can handle them (whether just misbehaving or
+> > > malicious), in combination with other approaches like IOMMUs of
+> > > course.  And this isn't because we don't trust driver authors or
+> > > kernel developers to dtrt, it's just that for many devices (maybe USB
+> > > is an exception) I think driver authors haven't had to consider this
+> > > case much, and so I think it's prudent to expect bugs in this area
+> > > that we need to find & fix.
+> >
+> > For USB, yes, we have now had to deal with "untrusted devices" lieing
+> > about their ids and sending us horrible data.  That's all due to the
+> > fuzzing tools that have been written over the past few years, and now we
+> > have some of those in the kernel tree itself to help with that testing.
 
-Regards,
-Markus
+This is great to hear! I tried to look up but didn't find anything
+else in-kernel, except the kcov support to export coverage info for
+userspace fuzzers. Can you please give us some pointers for in-kernel
+fuzzing tools?
+
+> >
+> > For PCI, heh, good luck, those assumptions about "devices sending valid
+> > data" are everywhere, if our experience with USB is any indication.
+> >
+> > But, to take USB as an example, this is exactly what the USB
+> > "authorized" flag is there for, it's a "trust" setting that userspace
+> > has control over.  This came from the wireless USB spec, where it was
+> > determined that you could not trust devices.  So just use that same
+> > model here, move it to the driver core for all busses to use and you
+> > should be fine.
+> >
+> > If that doesn't meet your needs, please let me know the specifics of
+> > why, with patches :)
+>
+> Yeah will do for sure.  I don't want to carry a big infra for this on our own!
+>
+> > Now, as to you all getting some sort of "Hardware flag" to determine
+> > "inside" vs. "outside" devices, hah, good luck!  It took us a long time
+> > to get that for USB, and even then, BIOSes lie and get it wrong all the
+> > time.  So you will have to also deal with that in some way, for your
+> > userspace policy.
+>
+> I think that's inherently platform specific to some extent.  We can do
+> it with our coreboot based firmware, but there's no guarantee other
+> vendors will adopt the same approach.  But I think at least for the
+> ChromeOS ecosystem we can come up with something that'll work, and
+> allow us to dtrt in userspace wrt driver binding.
+
+Agree, we can work with our firmware teams to get that right, and then
+expose it from kernel to userspace to help it implement the policy we
+want.
+
+Thanks & Best Regards,
+
+Rajat
+
+>
+> Thanks,
+> Jesse
