@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798BD1F245A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FBF1F235E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731010AbgFHXUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:20:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37990 "EHLO mail.kernel.org"
+        id S1729690AbgFHXOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:14:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730272AbgFHXQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:16:35 -0400
+        id S1728931AbgFHXLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:11:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2EEF2083E;
-        Mon,  8 Jun 2020 23:16:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 402C72100A;
+        Mon,  8 Jun 2020 23:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658195;
-        bh=BllGiQowdWfc/9MF8P9IN9Fo7/HBXLoDGNo0wcpxFiM=;
+        s=default; t=1591657897;
+        bh=khwqOgzIKy4HdyDJxlADdur1zwDQ2QxqGZxNDiHr2Sg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kITkeSXzbT/SR1/4ROeE1LcZa3Q56hRcR3fJKRgaaIwHmodptzdxO4RSLpkMQ3Zb5
-         kS393C6d9Zz/o328O2p4+phWUOF7tU++0MPvsaC2NPuibdSK439lk0GMAuHD48X23o
-         oSSXtLqedCmwZvCFKcx6pl2uVjkAHEx5xuAk/3Lo=
+        b=WZ7SEphqmAl7WwvXWSQVgN8OxL88Wm7Kutp7nfFP+ItfW4uZEtiQeYUcuUTc3U62h
+         nXU2EUFsg71kgoKCbxpAyL2h/KXpyymvrX/I1Bl7Z+S2YquT3ihZ74V5o8kSH1ZVHF
+         2mhfy61x7YgvcbVf6yTpXAfUvnBF/PPigqL16FRI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vadim Fedorenko <vfedorenko@novek.ru>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 216/606] net: ipip: fix wrong address family in init error path
-Date:   Mon,  8 Jun 2020 19:05:41 -0400
-Message-Id: <20200608231211.3363633-216-sashal@kernel.org>
+Cc:     Jacob Keller <jacob.e.keller@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 251/274] ice: fix potential double free in probe unrolling
+Date:   Mon,  8 Jun 2020 19:05:44 -0400
+Message-Id: <20200608230607.3361041-251-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,34 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Fedorenko <vfedorenko@novek.ru>
+From: Jacob Keller <jacob.e.keller@intel.com>
 
-[ Upstream commit 57ebc8f08504f176eb0f25b3e0fde517dec61a4f ]
+[ Upstream commit bc3a024101ca497bea4c69be4054c32a5c349f1d ]
 
-In case of error with MPLS support the code is misusing AF_INET
-instead of AF_MPLS.
+If ice_init_interrupt_scheme fails, ice_probe will jump to clearing up
+the interrupts. This can lead to some static analysis tools such as the
+compiler sanitizers complaining about double free problems.
 
-Fixes: 1b69e7e6c4da ("ipip: support MPLS over IPv4")
-Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Since ice_init_interrupt_scheme already unrolls internally on failure,
+there is no need to call ice_clear_interrupt_scheme when it fails. Add
+a new unroll label and use that instead.
+
+Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
+Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/ipip.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ice/ice_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv4/ipip.c b/net/ipv4/ipip.c
-index 2f01cf6fa0de..678575adaf3b 100644
---- a/net/ipv4/ipip.c
-+++ b/net/ipv4/ipip.c
-@@ -698,7 +698,7 @@ static int __init ipip_init(void)
+diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+index 545817dbff67..69e50331e08e 100644
+--- a/drivers/net/ethernet/intel/ice/ice_main.c
++++ b/drivers/net/ethernet/intel/ice/ice_main.c
+@@ -3298,7 +3298,7 @@ ice_probe(struct pci_dev *pdev, const struct pci_device_id __always_unused *ent)
+ 	if (err) {
+ 		dev_err(dev, "ice_init_interrupt_scheme failed: %d\n", err);
+ 		err = -EIO;
+-		goto err_init_interrupt_unroll;
++		goto err_init_vsi_unroll;
+ 	}
  
- rtnl_link_failed:
- #if IS_ENABLED(CONFIG_MPLS)
--	xfrm4_tunnel_deregister(&mplsip_handler, AF_INET);
-+	xfrm4_tunnel_deregister(&mplsip_handler, AF_MPLS);
- xfrm_tunnel_mplsip_failed:
- 
- #endif
+ 	/* Driver is mostly up */
+@@ -3387,6 +3387,7 @@ ice_probe(struct pci_dev *pdev, const struct pci_device_id __always_unused *ent)
+ 	ice_free_irq_msix_misc(pf);
+ err_init_interrupt_unroll:
+ 	ice_clear_interrupt_scheme(pf);
++err_init_vsi_unroll:
+ 	devm_kfree(dev, pf->vsi);
+ err_init_pf_unroll:
+ 	ice_deinit_pf(pf);
 -- 
 2.25.1
 
