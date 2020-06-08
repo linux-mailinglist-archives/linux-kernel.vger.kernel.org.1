@@ -2,110 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF751F2A68
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377431F29C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387941AbgFIAH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:07:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44526 "EHLO mail.kernel.org"
+        id S1729935AbgFIAER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:04:17 -0400
+Received: from mga11.intel.com ([192.55.52.93]:45463 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731026AbgFHXUo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:20:44 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9227320872;
-        Mon,  8 Jun 2020 23:20:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658444;
-        bh=shKfPmny0Xk+z6QTEuZIiryuf3ktSCpn4+P8VnIPKmM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wQoHjjZiLfRzmS39nArOlBk+VEpx2XsK092BFKrc9tvFiJovQsT3IwjrXBjNu9IGG
-         jg9SAXiqYvU/imu5nFz1NX04S4yQJ2Qv8bmMp7j8FFTFuo2mxFMeM5tMQl6ulx/iJM
-         4LL3KSYuLHi6jcLG+OmM0C5LPJ8f2jdJNJ8kA8XM=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.4 086/175] lib/mpi: Fix 64-bit MIPS build with Clang
-Date:   Mon,  8 Jun 2020 19:17:19 -0400
-Message-Id: <20200608231848.3366970-86-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
-References: <20200608231848.3366970-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1731203AbgFHXVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:21:42 -0400
+IronPort-SDR: wFi2Bku30C94HDgkwmxS3cfCG+mYEBxo9MifhoIRGv9TPDc6BbinmwwuN16SzJhaYx+RO6+DJx
+ AdJs6vT8ZYyA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2020 16:21:42 -0700
+IronPort-SDR: kx5nDcyS4aVdfRMtlstMyxBs9HPdSJuM7/Oo8XujZR2FD9UogzBuzmXUJkcT2fjil7QUwiqSed
+ 2HZWec3fVlVw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,489,1583222400"; 
+   d="scan'208";a="295641909"
+Received: from allen-box.sh.intel.com ([10.239.159.139])
+  by fmsmga004.fm.intel.com with ESMTP; 08 Jun 2020 16:21:40 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Lalithambika Krishnakumar <lalithambika.krishnakumar@intel.com>
+Subject: [PATCH 1/1] iommu/vt-d: Enable PCI ACS for platform opt in hint
+Date:   Tue,  9 Jun 2020 07:17:20 +0800
+Message-Id: <20200608231720.27740-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+PCI ACS is disabled if Intel IOMMU is off by default or intel_iommu=off
+is used in command line. Unfortunately, Intel IOMMU will be forced on if
+there're devices sitting on an external facing PCI port that is marked
+as untrusted (for example, thunderbolt peripherals). That means, PCI ACS
+is disabled while Intel IOMMU is forced on to isolate those devices. As
+the result, the devices of an MFD will be grouped by a single group even
+the ACS is supported on device.
 
-[ Upstream commit 18f1ca46858eac22437819937ae44aa9a8f9f2fa ]
+[    0.691263] pci 0000:00:07.1: Adding to iommu group 3
+[    0.691277] pci 0000:00:07.2: Adding to iommu group 3
+[    0.691292] pci 0000:00:07.3: Adding to iommu group 3
 
-When building 64r6_defconfig with CONFIG_MIPS32_O32 disabled and
-CONFIG_CRYPTO_RSA enabled:
+Fix it by requesting PCI ACS when Intel IOMMU is detected with platform
+opt in hint.
 
-lib/mpi/generic_mpih-mul1.c:37:24: error: invalid use of a cast in a
-inline asm context requiring an l-value: remove the cast
-or build with -fheinous-gnu-extensions
-                umul_ppmm(prod_high, prod_low, s1_ptr[j], s2_limb);
-                ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-lib/mpi/longlong.h:664:22: note: expanded from macro 'umul_ppmm'
-                 : "=d" ((UDItype)(w0))
-                         ~~~~~~~~~~^~~
-lib/mpi/generic_mpih-mul1.c:37:13: error: invalid use of a cast in a
-inline asm context requiring an l-value: remove the cast
-or build with -fheinous-gnu-extensions
-                umul_ppmm(prod_high, prod_low, s1_ptr[j], s2_limb);
-                ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-lib/mpi/longlong.h:668:22: note: expanded from macro 'umul_ppmm'
-                 : "=d" ((UDItype)(w1))
-                         ~~~~~~~~~~^~~
-2 errors generated.
-
-This special case for umul_ppmm for MIPS64r6 was added in
-commit bbc25bee37d2b ("lib/mpi: Fix umul_ppmm() for MIPS64r6"), due to
-GCC being inefficient and emitting a __multi3 intrinsic.
-
-There is no such issue with clang; with this patch applied, I can build
-this configuration without any problems and there are no link errors
-like mentioned in the commit above (which I can still reproduce with
-GCC 9.3.0 when that commit is reverted). Only use this definition when
-GCC is being used.
-
-This really should have been caught by commit b0c091ae04f67 ("lib/mpi:
-Eliminate unused umul_ppmm definitions for MIPS") when I was messing
-around in this area but I was not testing 64-bit MIPS at the time.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/885
-Reported-by: Dmitry Golovin <dima@golovin.in>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 89a6079df791a ("iommu/vt-d: Force IOMMU on for platform opt in hint")
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Ashok Raj <ashok.raj@intel.com>
+Co-developed-by: Lalithambika Krishnakumar <lalithambika.krishnakumar@intel.com>
+Signed-off-by: Lalithambika Krishnakumar <lalithambika.krishnakumar@intel.com>
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- lib/mpi/longlong.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iommu/dmar.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/lib/mpi/longlong.h b/lib/mpi/longlong.h
-index 891e1c3549c4..afbd99987cf8 100644
---- a/lib/mpi/longlong.h
-+++ b/lib/mpi/longlong.h
-@@ -653,7 +653,7 @@ do {						\
- 	**************  MIPS/64  **************
- 	***************************************/
- #if (defined(__mips) && __mips >= 3) && W_TYPE_SIZE == 64
--#if defined(__mips_isa_rev) && __mips_isa_rev >= 6
-+#if defined(__mips_isa_rev) && __mips_isa_rev >= 6 && defined(CONFIG_CC_IS_GCC)
- /*
-  * GCC ends up emitting a __multi3 intrinsic call for MIPS64r6 with the plain C
-  * code below, so we special case MIPS64r6 until the compiler can do better.
+diff --git a/drivers/iommu/dmar.c b/drivers/iommu/dmar.c
+index 60a2970c37ff..9e3e9067a71d 100644
+--- a/drivers/iommu/dmar.c
++++ b/drivers/iommu/dmar.c
+@@ -898,7 +898,8 @@ int __init detect_intel_iommu(void)
+ 	if (!ret)
+ 		ret = dmar_walk_dmar_table((struct acpi_table_dmar *)dmar_tbl,
+ 					   &validate_drhd_cb);
+-	if (!ret && !no_iommu && !iommu_detected && !dmar_disabled) {
++	if (!ret && !no_iommu && !iommu_detected &&
++	    (!dmar_disabled || dmar_platform_optin())) {
+ 		iommu_detected = 1;
+ 		/* Make sure ACS will be enabled */
+ 		pci_request_acs();
 -- 
-2.25.1
+2.17.1
 
