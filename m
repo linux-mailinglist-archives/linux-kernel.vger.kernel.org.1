@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFB51F304C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222C51F3048
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgFIA6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:58:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54314 "EHLO mail.kernel.org"
+        id S1728506AbgFIA5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:57:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728254AbgFHXIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:08:47 -0400
+        id S1728256AbgFHXIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:08:49 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E31642085B;
-        Mon,  8 Jun 2020 23:08:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E2A5E20890;
+        Mon,  8 Jun 2020 23:08:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657727;
-        bh=1nqs4DqbgeZgMHpBxJQRypqiP9gwPyGbe6RIQZ4mk84=;
+        s=default; t=1591657728;
+        bh=PUyU3U9isDmaYsYKg2rpQuCuvr/2DQIyf+WB6GzmRyQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0BRn2WIjjQ03Ek9hdYmcEyS6PMaWSSzEayPDWM9pRaoeLG1ss2o4h9DQiXH+1f4fh
-         8Jz7gMlr6EDJD/dzVgyePWHA0qQ9nplP9cB1bjd9LVmLiigFgV6etgbqwbDURjgkmr
-         IxcPAAvo2SwBl8vfnNiPSKJ+NpA4weWL77JxbLFY=
+        b=oCDWNenV3khRsXaTAPT50HJksh3vDUleuUpZFjq3ZTRvU/fKbDps/Pp5kuTr41S9E
+         nMXTeeZi6/LMatBmpceTfaxp4DG+JRxlnKaawoAG2rJ7/he/Eulynp8uVOJQZQlDhp
+         Uw6ERkJ3JyzYPvGxi/SnGVQ8O2njKxiR7rYGRf9Q=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-efi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 119/274] efi/libstub/random: Align allocate size to EFI_ALLOC_ALIGN
-Date:   Mon,  8 Jun 2020 19:03:32 -0400
-Message-Id: <20200608230607.3361041-119-sashal@kernel.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 120/274] dpaa2-eth: fix return codes used in ndo_setup_tc
+Date:   Mon,  8 Jun 2020 19:03:33 -0400
+Message-Id: <20200608230607.3361041-120-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -42,54 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Jesper Dangaard Brouer <brouer@redhat.com>
 
-[ Upstream commit e1df73e2d18b3b7d66f2ec38d81d9566b3a7fb21 ]
+[ Upstream commit b89c1e6bdc73f5775e118eb2ab778e75b262b30c ]
 
-The EFI stub uses a per-architecture #define for the minimum base
-and size alignment of page allocations, which is set to 4 KB for
-all architecures except arm64, which uses 64 KB, to ensure that
-allocations can always be (un)mapped efficiently, regardless of
-the page size used by the kernel proper, which could be a kexec'ee
+Drivers ndo_setup_tc call should return -EOPNOTSUPP, when it cannot
+support the qdisc type. Other return values will result in failing the
+qdisc setup.  This lead to qdisc noop getting assigned, which will
+drop all TX packets on the interface.
 
-The API wrappers around page based allocations assume that this
-alignment is always taken into account, and so efi_free() will
-also round up its size argument to EFI_ALLOC_ALIGN.
-
-Currently, efi_random_alloc() does not honour this alignment for
-the allocated size, and so freeing such an allocation may result
-in unrelated memory to be freed, potentially leading to issues
-after boot. So let's round up size in efi_random_alloc() as well.
-
-Fixes: 2ddbfc81eac84a29 ("efi: stub: add implementation of efi_random_alloc()")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Fixes: ab1e6de2bd49 ("dpaa2-eth: Add mqprio support")
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Tested-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/libstub/randomalloc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/firmware/efi/libstub/randomalloc.c b/drivers/firmware/efi/libstub/randomalloc.c
-index 4578f59e160c..6200dfa650f5 100644
---- a/drivers/firmware/efi/libstub/randomalloc.c
-+++ b/drivers/firmware/efi/libstub/randomalloc.c
-@@ -74,6 +74,8 @@ efi_status_t efi_random_alloc(unsigned long size,
- 	if (align < EFI_ALLOC_ALIGN)
- 		align = EFI_ALLOC_ALIGN;
+diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+index d97c320a2dc0..569e06d2bab2 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
++++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+@@ -2018,7 +2018,7 @@ static int dpaa2_eth_setup_tc(struct net_device *net_dev,
+ 	int i;
  
-+	size = round_up(size, EFI_ALLOC_ALIGN);
-+
- 	/* count the suitable slots in each memory map entry */
- 	for (map_offset = 0; map_offset < map_size; map_offset += desc_size) {
- 		efi_memory_desc_t *md = (void *)memory_map + map_offset;
-@@ -109,7 +111,7 @@ efi_status_t efi_random_alloc(unsigned long size,
- 		}
+ 	if (type != TC_SETUP_QDISC_MQPRIO)
+-		return -EINVAL;
++		return -EOPNOTSUPP;
  
- 		target = round_up(md->phys_addr, align) + target_slot * align;
--		pages = round_up(size, EFI_PAGE_SIZE) / EFI_PAGE_SIZE;
-+		pages = size / EFI_PAGE_SIZE;
+ 	mqprio->hw = TC_MQPRIO_HW_OFFLOAD_TCS;
+ 	num_queues = dpaa2_eth_queue_count(priv);
+@@ -2030,7 +2030,7 @@ static int dpaa2_eth_setup_tc(struct net_device *net_dev,
+ 	if (num_tc  > dpaa2_eth_tc_count(priv)) {
+ 		netdev_err(net_dev, "Max %d traffic classes supported\n",
+ 			   dpaa2_eth_tc_count(priv));
+-		return -EINVAL;
++		return -EOPNOTSUPP;
+ 	}
  
- 		status = efi_bs_call(allocate_pages, EFI_ALLOCATE_ADDRESS,
- 				     EFI_LOADER_DATA, pages, &target);
+ 	if (!num_tc) {
 -- 
 2.25.1
 
