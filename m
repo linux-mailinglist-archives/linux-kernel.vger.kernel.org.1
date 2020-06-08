@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A5E1F2517
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3B51F251B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731760AbgFHXZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:25:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43326 "EHLO mail.kernel.org"
+        id S1730310AbgFHXZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:25:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728524AbgFHXUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:20:03 -0400
+        id S1730921AbgFHXUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:20:14 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 426CD2083E;
-        Mon,  8 Jun 2020 23:20:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C1202074B;
+        Mon,  8 Jun 2020 23:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658403;
-        bh=0zVJ/Ihx2f+pOTg2iHIGJB0ULCfxHT62X11wq5VVDKI=;
+        s=default; t=1591658413;
+        bh=UgH8czb3Zqf99cuf6/cq5xSM1xd308oDJ5vXdkILL9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H/CrQ68ziPGUem7vaad+A24pSBe7zw3sTeB/Qy9nvmqhZbxJzNoO5B6jCYdFXLawu
-         qvJ+WK8ORWTd+moWyVJ0noweDaYGbH9VpK8PN6P35xlB1pXApNpBuWrhL2pI8cpkgP
-         DgMBSVS7x2UIGTkYzmY1mCPzL6QXHUyGGA+0DYJM=
+        b=XsyHY1Z1IZeI/ZC6xck34lVfuBKFswhRcAgyhwfNgOvVlcJghvBYzhZ/v7KL0ruFa
+         vg0Gcdrm4KIB43pghf71fcj/v+rU5c8YPk3J67c0/KWhzOGTtA8P2LXSi41nVM72TF
+         93sobBbPk6BX+1YRhxI1b2yN8U6KoX6iOGuQeJXY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jia-Ju Bai <baijiaju1990@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 058/175] net: vmxnet3: fix possible buffer overflow caused by bad DMA value in vmxnet3_get_rss()
-Date:   Mon,  8 Jun 2020 19:16:51 -0400
-Message-Id: <20200608231848.3366970-58-sashal@kernel.org>
+Cc:     Venkateswara Naralasetty <vnaralas@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 062/175] ath10k: fix kernel null pointer dereference
+Date:   Mon,  8 Jun 2020 19:16:55 -0400
+Message-Id: <20200608231848.3366970-62-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -43,38 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
 
-[ Upstream commit 3e1c6846b9e108740ef8a37be80314053f5dd52a ]
+[ Upstream commit acb31476adc9ff271140cdd4d3c707ff0c97f5a4 ]
 
-The value adapter->rss_conf is stored in DMA memory, and it is assigned
-to rssConf, so rssConf->indTableSize can be modified at anytime by
-malicious hardware. Because rssConf->indTableSize is assigned to n,
-buffer overflow may occur when the code "rssConf->indTable[n]" is
-executed.
+Currently sta airtime is updated without any lock in case of
+host based airtime calculation. Which may result in accessing the
+invalid sta pointer in case of continuous station connect/disconnect.
 
-To fix this possible bug, n is checked after being used.
+This patch fix the kernel null pointer dereference by updating the
+station airtime with proper RCU lock in case of host based airtime
+calculation.
 
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Proceeding with the analysis of "ARM Kernel Panic".
+The APSS crash happened due to OOPS on CPU 0.
+Crash Signature : Unable to handle kernel NULL pointer dereference
+at virtual address 00000300
+During the crash,
+PC points to "ieee80211_sta_register_airtime+0x1c/0x448 [mac80211]"
+LR points to "ath10k_txrx_tx_unref+0x17c/0x364 [ath10k_core]".
+The Backtrace obtained is as follows:
+[<bf880238>] (ieee80211_sta_register_airtime [mac80211]) from
+[<bf945a38>] (ath10k_txrx_tx_unref+0x17c/0x364 [ath10k_core])
+[<bf945a38>] (ath10k_txrx_tx_unref [ath10k_core]) from
+[<bf9428e4>] (ath10k_htt_txrx_compl_task+0xa50/0xfc0 [ath10k_core])
+[<bf9428e4>] (ath10k_htt_txrx_compl_task [ath10k_core]) from
+[<bf9b9bc8>] (ath10k_pci_napi_poll+0x50/0xf8 [ath10k_pci])
+[<bf9b9bc8>] (ath10k_pci_napi_poll [ath10k_pci]) from
+[<c059e3b0>] (net_rx_action+0xac/0x160)
+[<c059e3b0>] (net_rx_action) from [<c02329a4>] (__do_softirq+0x104/0x294)
+[<c02329a4>] (__do_softirq) from [<c0232b64>] (run_ksoftirqd+0x30/0x90)
+[<c0232b64>] (run_ksoftirqd) from [<c024e358>] (smpboot_thread_fn+0x25c/0x274)
+[<c024e358>] (smpboot_thread_fn) from [<c02482fc>] (kthread+0xd8/0xec)
+
+Tested HW: QCA9888
+Tested FW: 10.4-3.10-00047
+
+Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1585736290-17661-1-git-send-email-vnaralas@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/vmxnet3/vmxnet3_ethtool.c | 2 ++
+ drivers/net/wireless/ath/ath10k/txrx.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/vmxnet3/vmxnet3_ethtool.c b/drivers/net/vmxnet3/vmxnet3_ethtool.c
-index 0a38c76688ab..5e2571d23ab9 100644
---- a/drivers/net/vmxnet3/vmxnet3_ethtool.c
-+++ b/drivers/net/vmxnet3/vmxnet3_ethtool.c
-@@ -702,6 +702,8 @@ vmxnet3_get_rss(struct net_device *netdev, u32 *p, u8 *key, u8 *hfunc)
- 		*hfunc = ETH_RSS_HASH_TOP;
- 	if (!p)
- 		return 0;
-+	if (n > UPT1_RSS_MAX_IND_TABLE_SIZE)
-+		return 0;
- 	while (n--)
- 		p[n] = rssConf->indTable[n];
- 	return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 39abf8b12903..f46b9083bbf1 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -84,9 +84,11 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 		wake_up(&htt->empty_tx_wq);
+ 	spin_unlock_bh(&htt->tx_lock);
+ 
++	rcu_read_lock();
+ 	if (txq && txq->sta && skb_cb->airtime_est)
+ 		ieee80211_sta_register_airtime(txq->sta, txq->tid,
+ 					       skb_cb->airtime_est, 0);
++	rcu_read_unlock();
+ 
+ 	if (ar->bus_param.dev_type != ATH10K_DEV_TYPE_HL)
+ 		dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
 -- 
 2.25.1
 
