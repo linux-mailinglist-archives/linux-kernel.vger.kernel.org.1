@@ -2,95 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB691F1918
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F6E1F1925
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729030AbgFHMvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 08:51:25 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:28471 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728007AbgFHMvX (ORCPT
+        id S1729201AbgFHMv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 08:51:57 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:46914 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729041AbgFHMvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 08:51:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591620681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NVMeqLaZj5lyXYDnWx/hOG/1m/ddxwQgh2GukSpwT7M=;
-        b=EBZG0FZnhii4SzWsAn7JuZPxiddtEkA1kagbpkd8f1vvUULIdwCkzYug4dPhrp9w/7Dqqa
-        QfYdrezc5n2Zms4W4FFt9ainiVlDpZlCNfCGyH9NXGXVUvYcSegqKSnXYOgJJCcg4sU34i
-        G9Crda2O3sgTTqujcYejoG8pnOmAL4g=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-6do5kTHKP92CdjjlpjiwCQ-1; Mon, 08 Jun 2020 08:51:20 -0400
-X-MC-Unique: 6do5kTHKP92CdjjlpjiwCQ-1
-Received: by mail-ej1-f71.google.com with SMTP id m22so6060233ejn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 05:51:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=NVMeqLaZj5lyXYDnWx/hOG/1m/ddxwQgh2GukSpwT7M=;
-        b=WGTYIEWqPSc5YczSg8SbkJdX/dIIBveT/6q7s3kjZrEmL5X6FU4BtwMkEkNqWChW2c
-         O8loglfaQ5bNgleLTscAK2AWXiq8P7s60vFWqryTUMOFxbxbBHXqWPVDCw+9I5cb9/DZ
-         Ju9HclwWzLKXtBdllk/iHGvGX1ifXDhWp1SfmMnbLceFe3p8IwXs/ry7V4N1DcLngHAX
-         q4RkctzbyxkhY1vhShDBB6VFOHWkNj5aFPt3Xf0NdiaQfPLkP9padjLYZLOVHG+gYHJO
-         q8ynvsBT64w/W3UPt1aV7LVnCvovK7XCOIPxXpmQD2PGMzVCVFHASXAK8/leqFJOdYJD
-         4c8Q==
-X-Gm-Message-State: AOAM531Ev3Lq/Bw0183QHUqJNG7NakV7y0f5m9Wht0XlMwXUNcWnNL7J
-        slVwdekwbLxQD4klLntxRE7i9yxcuTOkWxa3AYqeEtx6XsDuu8bImgxWI8zAT/dvO76WWWZ6IZo
-        rsZRPzqrQZ1w7B3lBsmeER2RH
-X-Received: by 2002:a17:906:5c0a:: with SMTP id e10mr6274850ejq.389.1591620678814;
-        Mon, 08 Jun 2020 05:51:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwwznb3Q7pGSNhjg8K3PzgwiJgh47LL1CoCkfvLhLC73i7kpFcsGfbIbjtXZtfhoqoraDN5Qg==
-X-Received: by 2002:a17:906:5c0a:: with SMTP id e10mr6274841ejq.389.1591620678637;
-        Mon, 08 Jun 2020 05:51:18 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id ok21sm9905881ejb.82.2020.06.08.05.51.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 05:51:18 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Qian Cai <cai@lca.pw>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: SVM: fix calls to is_intercept
-In-Reply-To: <20200608121428.9214-1-pbonzini@redhat.com>
-References: <20200608121428.9214-1-pbonzini@redhat.com>
-Date:   Mon, 08 Jun 2020 14:51:17 +0200
-Message-ID: <87wo4hbu0q.fsf@vitty.brq.redhat.com>
+        Mon, 8 Jun 2020 08:51:55 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 058CktmJ031202;
+        Mon, 8 Jun 2020 12:51:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=JDcagXN5IWgnkWEj/jglT9oGKYFcCwv8Ecb8T8hrDIM=;
+ b=nwOoyph2HIYkEkWJ47UFPHLPrmmZGFrF7oO8k0qKJrcMrbN7KDjj5f1RPICGeSa2AyfN
+ gIcLtqGpPhSszIMurJjPuG+tTJOk3zkypo3YWe9yGfXbH9k9uOGZTcNsjVcJWd5/Kw+b
+ jEgnfd352G2nzwEUe0KJGPkGeMkfoTezrsWC6zSRIuGOgZL3YlOIPhcJJClewe5MgLCk
+ oBZiw/EbTZ+m+dS2ewtVUg54gTeZE+x8X1gcvtdBnP2wxIHUmNTCdHXqCJPxg6KWo6e1
+ AK7NsQ6Bh9IfDehcEeLGciHyqdbn5cO5Fc2DhZQ/7GCfmp88d+CKmWbUZioWTjpJWcFe Vw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 31g33kxpuc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 08 Jun 2020 12:51:39 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 058CmKgC002344;
+        Mon, 8 Jun 2020 12:51:38 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 31gmwpw71j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 08 Jun 2020 12:51:38 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 058CpaHM028413;
+        Mon, 8 Jun 2020 12:51:36 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 08 Jun 2020 05:51:35 -0700
+Date:   Mon, 8 Jun 2020 15:51:27 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     kbuild@lists.01.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-imx@nxp.com, lkp@intel.com,
+        Dan Carpenter <error27@gmail.com>, kbuild-all@lists.01.org,
+        Dietmar.Eggemann@arm.com, cw00.choi@samsung.com
+Subject: Re: [PATCH v8 4/8] PM / EM: add support for other devices than CPUs
+ in Energy Model
+Message-ID: <20200608125127.GN22511@kadam>
+References: <20200608115155.GY30374@kadam>
+ <b347fb60-46d3-e59c-59fa-a2b10932fc49@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b347fb60-46d3-e59c-59fa-a2b10932fc49@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9645 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 adultscore=0
+ mlxscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006080095
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9645 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
+ cotscore=-2147483648 malwarescore=0 phishscore=0 mlxscore=0 clxscore=1015
+ lowpriorityscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006080095
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
+On Mon, Jun 08, 2020 at 01:34:37PM +0100, Lukasz Luba wrote:
+> Hi Dan,
+> 
+> Thank you for your analyzes.
+> 
+> On 6/8/20 12:51 PM, Dan Carpenter wrote:
+> > Hi Lukasz,
+> > 
+> > I love your patch! Perhaps something to improve:
+> > 
+> > url:    https://github.com/0day-ci/linux/commits/Lukasz-Luba/Add-support-for-devices-in-the-Energy-Model/20200527-180614
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+> > 
+> > config: i386-randconfig-m021-20200605 (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > 
+> > smatch warnings:
+> > kernel/power/energy_model.c:316 em_dev_register_perf_domain() error: we previously assumed 'dev->em_pd' could be null (see line 277)
+> > 
+> > # https://github.com/0day-ci/linux/commit/110d050cb7ba1c96e63ada498979d1fd99529be2
+> > git remote add linux-review https://github.com/0day-ci/linux
+> > git remote update linux-review
+> > git checkout 110d050cb7ba1c96e63ada498979d1fd99529be2
+> > vim +316 kernel/power/energy_model.c
+> > 
+> > 0e294e607adaf3 Lukasz Luba     2020-05-27  262  int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  263  				struct em_data_callback *cb, cpumask_t *cpus)
+> > 27871f7a8a341e Quentin Perret  2018-12-03  264  {
+> > 27871f7a8a341e Quentin Perret  2018-12-03  265  	unsigned long cap, prev_cap = 0;
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  266  	int cpu, ret;
+> > 27871f7a8a341e Quentin Perret  2018-12-03  267
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  268  	if (!dev || !nr_states || !cb)
+> > 27871f7a8a341e Quentin Perret  2018-12-03  269  		return -EINVAL;
+> > 27871f7a8a341e Quentin Perret  2018-12-03  270
+> > 27871f7a8a341e Quentin Perret  2018-12-03  271  	/*
+> > 27871f7a8a341e Quentin Perret  2018-12-03  272  	 * Use a mutex to serialize the registration of performance domains and
+> > 27871f7a8a341e Quentin Perret  2018-12-03  273  	 * let the driver-defined callback functions sleep.
+> > 27871f7a8a341e Quentin Perret  2018-12-03  274  	 */
+> > 27871f7a8a341e Quentin Perret  2018-12-03  275  	mutex_lock(&em_pd_mutex);
+> > 27871f7a8a341e Quentin Perret  2018-12-03  276
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27 @277  	if (dev->em_pd) {
+> >                                                              ^^^^^^^^^^
+> > Check for NULL.
+> > 
+> > 27871f7a8a341e Quentin Perret  2018-12-03  278  		ret = -EEXIST;
+> > 27871f7a8a341e Quentin Perret  2018-12-03  279  		goto unlock;
+> > 27871f7a8a341e Quentin Perret  2018-12-03  280  	}
+> > 27871f7a8a341e Quentin Perret  2018-12-03  281
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  282  	if (_is_cpu_device(dev)) {
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  283  		if (!cpus) {
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  284  			dev_err(dev, "EM: invalid CPU mask\n");
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  285  			ret = -EINVAL;
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  286  			goto unlock;
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  287  		}
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  288
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  289  		for_each_cpu(cpu, cpus) {
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  290  			if (em_cpu_get(cpu)) {
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  291  				dev_err(dev, "EM: exists for CPU%d\n", cpu);
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  292  				ret = -EEXIST;
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  293  				goto unlock;
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  294  			}
+> > 27871f7a8a341e Quentin Perret  2018-12-03  295  			/*
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  296  			 * All CPUs of a domain must have the same
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  297  			 * micro-architecture since they all share the same
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  298  			 * table.
+> > 27871f7a8a341e Quentin Perret  2018-12-03  299  			 */
+> > 8ec59c0f5f4966 Vincent Guittot 2019-06-17  300  			cap = arch_scale_cpu_capacity(cpu);
+> > 27871f7a8a341e Quentin Perret  2018-12-03  301  			if (prev_cap && prev_cap != cap) {
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  302  				dev_err(dev, "EM: CPUs of %*pbl must have the same capacity\n",
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  303  					cpumask_pr_args(cpus));
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  304
+> > 27871f7a8a341e Quentin Perret  2018-12-03  305  				ret = -EINVAL;
+> > 27871f7a8a341e Quentin Perret  2018-12-03  306  				goto unlock;
+> > 27871f7a8a341e Quentin Perret  2018-12-03  307  			}
+> > 27871f7a8a341e Quentin Perret  2018-12-03  308  			prev_cap = cap;
+> > 27871f7a8a341e Quentin Perret  2018-12-03  309  		}
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  310  	}
+> > 27871f7a8a341e Quentin Perret  2018-12-03  311
+> > 110d050cb7ba1c Lukasz Luba     2020-05-27  312  	ret = em_create_pd(dev, nr_states, cb, cpus);
+> > 
+> > 
+> > If it's a _is_cpu_device() then it iterates through a bunch of devices
+> > and sets up cpu_dev->em_pd for each.  Presumably one of the devices is
+> > "dev" or this would crash pretty early on in testing?
+> 
+> Yes, all of the devices taken from 'cpus' mask will get the em_pd set
+> including the suspected @dev.
+> To calm down this static analyzer I can remove the 'else'
+> in line 204 to make 'dev->em_pd = pd' set always.
+> 199         if (_is_cpu_device(dev))
+> 200                 for_each_cpu(cpu, cpus) {
+> 201                         cpu_dev = get_cpu_device(cpu);
+> 202                         cpu_dev->em_pd = pd;
+> 203                 }
+> 204         else
+> 205                 dev->em_pd = pd;
+> 
+> 
+> Do you think it's a good solution and will work for this tool?
 
-> is_intercept takes an INTERCEPT_* constant, not SVM_EXIT_*; because
-> of this, the compiler was removing the body of the conditionals,
-> as if is_intercept returned 0.
->
-> This unveils a latent bug: when clearing the VINTR intercept,
-> int_ctl must also be changed in the L1 VMCB (svm->nested.hsave),
-> just like the intercept itself is also changed in the L1 VMCB.
-> Otherwise V_IRQ remains set and, due to the VINTR intercept being clear,
-> we get a spurious injection of a vector 0 interrupt on the next
-> L2->L1 vmexit.
->
-> Reported-by: Qian Cai <cai@lca.pw>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
-> 	Vitaly, can you give this a shot with Hyper-V?  I have already
-> 	placed it on kvm/queue, it passes both svm.flat and KVM-on-KVM
-> 	smoke tests.
+It's not about the tool...  Ignore the tool when it's wrong.  But I do
+think the code is slightly more clear without the else statement.
 
-Quickly smoke-tested this with WS2016/2019 BIOS/UEFI and the patch
-doesn't seem to break anything. I'm having issues trying to launch a
-Gen2 (UEFI) VM in Hyper-V (Gen1 works OK) but the behavior looks exactly
-the same pre- and post-patch.
+Arguments could be made either way.  Removing the else statement means
+we set dev->em_pd twice...  But I *personally* lean vaguely towards
+removing the else statement.  :P
 
--- 
-Vitaly
+That would make the warning go away as well.
+
+regards,
+dan carpenter
 
