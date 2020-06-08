@@ -2,88 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC4A1F19EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 15:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1B11F19B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 15:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729858AbgFHNXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 09:23:52 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:41958 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729783AbgFHNXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 09:23:36 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6B72E1A0120;
-        Mon,  8 Jun 2020 15:23:34 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7D74B1A1031;
-        Mon,  8 Jun 2020 15:23:24 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 132BC4031F;
-        Mon,  8 Jun 2020 21:23:09 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, mturquette@baylibre.com,
-        sboyd@kernel.org, oleksandr.suvorov@toradex.com,
-        stefan.agner@toradex.com, arnd@arndb.de, abel.vesa@nxp.com,
-        peng.fan@nxp.com, aisheng.dong@nxp.com, tglx@linutronix.de,
-        allison@lohutok.net, gregkh@linuxfoundation.org, info@metux.net,
-        leonard.crestez@nxp.com, fugang.duan@nxp.com,
-        daniel.baluta@nxp.com, yuehaibing@huawei.com, sfr@canb.auug.org.au,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 9/9] clk: imx8qxp: Support module build
-Date:   Mon,  8 Jun 2020 21:12:16 +0800
-Message-Id: <1591621936-11886-10-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591621936-11886-1-git-send-email-Anson.Huang@nxp.com>
-References: <1591621936-11886-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1729326AbgFHNNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 09:13:25 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44557 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729130AbgFHNNV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 09:13:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591621999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aE4uxEFzisXgU373/MFQA+2UMs2/qJwN6z64o4N5Dt4=;
+        b=WWZRVtYpu9ySuOKBqXCV/LROPoHRC8m6l4DyYCK2fmx+5w0HeE0J4CjbdJz/ZDPT+V6GLW
+        fQ0hmdp9BLq9NbOF1zxRm8ilw/jbxMcuHAXu/8VKT9SwggcX0LlsHpl5JbMAQieXnciRyO
+        A9qJO3iw39Q/R4UZi440JNXfZfd72bI=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-435-4bvbmqNUMOGyBy3NnguoGQ-1; Mon, 08 Jun 2020 09:13:13 -0400
+X-MC-Unique: 4bvbmqNUMOGyBy3NnguoGQ-1
+Received: by mail-wr1-f71.google.com with SMTP id j16so7087294wre.22
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 06:13:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aE4uxEFzisXgU373/MFQA+2UMs2/qJwN6z64o4N5Dt4=;
+        b=Kqf94LswCZSyVN2hpf0ZuTzuVqTov2TlA9jccL/KgbRNVbxr6NiW2Z+b0brhy/BOXk
+         pL2+zqZ6yLogMihD7hYwFur7YF9dAoVpk26YIhcv0su5YrDmTA8pGsy5b09j9MRSrZa3
+         kWyNQP/+Q8LhqMP62+m3ZmI3uuGYtGz04/iRPsuBynFiAms0l+f9rdoanBQixJjcSU1g
+         7zGHD6kT6i3V0dIBS2fvJpP60c0ZSj0qu+6U7uxnbMbjk5/nOr14YHFB/mIMOZZcZJ0z
+         pHKatTr5bn6ZpHjLTQZCJhntc4jhryNYllq3XybxdUG/CyW8YCBHnsZghZW7xYvdNnH7
+         0AAQ==
+X-Gm-Message-State: AOAM532ygyenaNdb6Ud0y9w46NXcq9ectD5YtBPvXwXuvY/e7hvuERzO
+        f8WS4qJFKRHYOzkJAZahnCY/Euz0Sq7c+4Oi9Y0k8daxoWA+km76gCI6R6NNq03leiSmMUzDDWW
+        nJH0boz4ZlwCVPmfCg+ZTKB+l
+X-Received: by 2002:adf:9163:: with SMTP id j90mr23117170wrj.65.1591621992172;
+        Mon, 08 Jun 2020 06:13:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyFKKUfkK+tx2dyjLJychJAOnf6ou8lGUS/UM9N0R8J5nM/pSwyG9zl28UmZ6GGRGsYFCgLVg==
+X-Received: by 2002:adf:9163:: with SMTP id j90mr23117143wrj.65.1591621991883;
+        Mon, 08 Jun 2020 06:13:11 -0700 (PDT)
+Received: from [192.168.178.58] ([151.30.87.23])
+        by smtp.gmail.com with ESMTPSA id u4sm23511562wmb.48.2020.06.08.06.13.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jun 2020 06:13:11 -0700 (PDT)
+Subject: Re: [RFC PATCH] KVM: x86: Fix APIC page invalidation race
+To:     Eiichi Tsukata <eiichi.tsukata@nutanix.com>,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     felipe.franciosi@nutanix.com, rkrcmar@redhat.com,
+        Andrea Arcangeli <aarcange@redhat.com>
+References: <20200606042627.61070-1-eiichi.tsukata@nutanix.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <0d9b3313-5d4c-9ef3-63e4-ba08ddbbe7a1@redhat.com>
+Date:   Mon, 8 Jun 2020 15:13:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200606042627.61070-1-eiichi.tsukata@nutanix.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support building i.MX8QXP clock driver as module.
+On 06/06/20 06:26, Eiichi Tsukata wrote:
+> Commit b1394e745b94 ("KVM: x86: fix APIC page invalidation") tried to
+> fix inappropriate APIC page invalidation by re-introducing arch specific
+> kvm_arch_mmu_notifier_invalidate_range() and calling it from
+> kvm_mmu_notifier_invalidate_range_start. But threre could be the
+> following race because VMCS APIC address cache can be updated
+> *before* it is unmapped.
+> 
+> Race:
+>   (Invalidator) kvm_mmu_notifier_invalidate_range_start()
+>   (Invalidator) kvm_make_all_cpus_request(kvm, KVM_REQ_APIC_PAGE_RELOAD)
+>   (KVM VCPU) vcpu_enter_guest()
+>   (KVM VCPU) kvm_vcpu_reload_apic_access_page()
+>   (Invalidator) actually unmap page
+> 
+> Symptom:
+>   The above race can make Guest OS see already freed page and Guest OS
+> will see broken APIC register values.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- drivers/clk/imx/Kconfig            | 2 +-
- drivers/clk/imx/clk-imx8qxp-lpcg.c | 1 +
- drivers/clk/imx/clk-imx8qxp.c      | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
+This is not exactly the issue.  The values in the APIC-access page do
+not really matter, the problem is that the host physical address values
+won't match between the page tables and the APIC-access page address.
+Then the processor will not trap APIC accesses, and will instead show
+the raw contents of the APIC-access page (zeroes), and cause the crash
+as you mention below.
 
-diff --git a/drivers/clk/imx/Kconfig b/drivers/clk/imx/Kconfig
-index a1201ce..ffb8cf9 100644
---- a/drivers/clk/imx/Kconfig
-+++ b/drivers/clk/imx/Kconfig
-@@ -37,7 +37,7 @@ config CLK_IMX8MQ
- 	    Build the driver for i.MX8MQ CCM Clock Driver
- 
- config CLK_IMX8QXP
--	bool "IMX8QXP SCU Clock"
-+	tristate "IMX8QXP SCU Clock"
- 	depends on ARCH_MXC && IMX_SCU && ARM64
- 	select MXC_CLK_SCU
- 	help
-diff --git a/drivers/clk/imx/clk-imx8qxp-lpcg.c b/drivers/clk/imx/clk-imx8qxp-lpcg.c
-index 04c8ee3..8afaefc 100644
---- a/drivers/clk/imx/clk-imx8qxp-lpcg.c
-+++ b/drivers/clk/imx/clk-imx8qxp-lpcg.c
-@@ -232,3 +232,4 @@ static struct platform_driver imx8qxp_lpcg_clk_driver = {
- };
- 
- builtin_platform_driver(imx8qxp_lpcg_clk_driver);
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/clk/imx/clk-imx8qxp.c b/drivers/clk/imx/clk-imx8qxp.c
-index 5e2903e..a34c7c5 100644
---- a/drivers/clk/imx/clk-imx8qxp.c
-+++ b/drivers/clk/imx/clk-imx8qxp.c
-@@ -152,3 +152,4 @@ static struct platform_driver imx8qxp_clk_driver = {
- 	.probe = imx8qxp_clk_probe,
- };
- builtin_platform_driver(imx8qxp_clk_driver);
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
+Still, the race explains the symptoms and the patch matches this text in
+include/linux/mmu_notifier.h:
+
+	 * If the subsystem
+         * can't guarantee that no additional references are taken to
+         * the pages in the range, it has to implement the
+         * invalidate_range() notifier to remove any references taken
+         * after invalidate_range_start().
+
+where the "additional reference" is in the VMCS: because we have to
+account for kvm_vcpu_reload_apic_access_page running between
+invalidate_range_start() and invalidate_range_end(), we need to
+implement invalidate_range().
+
+The patch seems good, but I'd like Andrea Arcangeli to take a look as
+well so I've CCed him.
+
+Thank you very much!
+
+Paolo
+
+> Especially, Windows OS checks
+> LAPIC modification so it can cause BSOD crash with BugCheck
+> CRITICAL_STRUCTURE_CORRUPTION (109). These symptoms are the same as we
+> previously saw in https://bugzilla.kernel.org/show_bug.cgi?id=197951 and
+> we are currently seeing in
+> https://bugzilla.redhat.com/show_bug.cgi?id=1751017.
+> 
+> To prevent Guest OS from accessing already freed page, this patch calls
+> kvm_arch_mmu_notifier_invalidate_range() from
+> kvm_mmu_notifier_invalidate_range() instead of ..._range_start().
 
