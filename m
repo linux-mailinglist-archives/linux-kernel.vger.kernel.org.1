@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2051F230F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3171F2434
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729053AbgFHXMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:12:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56570 "EHLO mail.kernel.org"
+        id S1730135AbgFHXTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:19:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726973AbgFHXK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:10:26 -0400
+        id S1728414AbgFHXPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:15:32 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9D43208A9;
-        Mon,  8 Jun 2020 23:10:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D48762076C;
+        Mon,  8 Jun 2020 23:15:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657825;
-        bh=GgNbKupob62BqUCj27AYN8DGZuT/nucfLviwTiGLsBs=;
+        s=default; t=1591658132;
+        bh=qhGBPMBKT8RTQQbdhq46yT8ycHE+O/Ie6Cv56w2lojE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wbHDfA+96pe6Nco1zWoUDuGBpT0FGmgNziFO/3nJOJL+YKSOUB0MmuKB0fb+hxdyx
-         9Uqn5zU5rFItUqIKJOibbXC14MlgbT22a5TGhwpDOKj7rulvRNRPHOiP5LXztaCk/5
-         jv27mj6wLrwaoFTp4i5JxCVmltA/RLpIzqHMUCg4=
+        b=GdV1GwiVYiF5320uGISqfGNzeSPt7rD5D5Kgl66AnoQVViG4E+tYU5lShzaGevbcM
+         oZBq6nQZKY1isUxq0ou4uJzPbIXShae3VB0LGKxfmgWdV5tP7BqVVIe6E9sCjwugKk
+         QEpw8DwesWqQUyUNTPbOF1mmr8TgSjhiyhmbQOW4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 197/274] selftests/bpf: Install generated test progs
-Date:   Mon,  8 Jun 2020 19:04:50 -0400
-Message-Id: <20200608230607.3361041-197-sashal@kernel.org>
+Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 167/606] tools/bootconfig: Fix apply_xbc() to return zero on success
+Date:   Mon,  8 Jun 2020 19:04:52 -0400
+Message-Id: <20200608231211.3363633-167-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -46,39 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-[ Upstream commit 309b81f0fdc4209d998bc63f0da52c2e96340d4e ]
+[ Upstream commit 9d82ccda2bc5c148060543d249d54f8703741bb4 ]
 
-Before commit 74b5a5968fe8 ("selftests/bpf: Replace test_progs and
-test_maps w/ general rule") selftests/bpf used generic install
-target from selftests/lib.mk to install generated bpf test progs
-by mentioning them in TEST_GEN_FILES variable.
+The return of apply_xbc() returns the result of the last write() call, which
+is not what is expected. It should only return zero on success.
 
-Take that functionality back.
+Link: https://lore.kernel.org/r/20200508093059.GF9365@kadam
 
-Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and test_maps w/ general rule")
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200513021722.7787-1-yauheni.kaliuta@redhat.com
+Fixes: 8842604446d1 ("tools/bootconfig: Fix resource leak in apply_xbc()")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/Makefile | 1 +
+ tools/bootconfig/main.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 01c95f8278c7..af139d0e2e0c 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -264,6 +264,7 @@ TRUNNER_BPF_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o, $$(TRUNNER_BPF_SRCS)
- TRUNNER_BPF_SKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.skel.h,	\
- 				 $$(filter-out $(SKEL_BLACKLIST),	\
- 					       $$(TRUNNER_BPF_SRCS)))
-+TEST_GEN_FILES += $$(TRUNNER_BPF_OBJS)
- 
- # Evaluate rules now with extra TRUNNER_XXX variables above already defined
- $$(eval $$(call DEFINE_TEST_RUNNER_RULES,$1,$2))
+diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
+index 5dbe893cf00c..37fb2e85de12 100644
+--- a/tools/bootconfig/main.c
++++ b/tools/bootconfig/main.c
+@@ -310,6 +310,7 @@ int apply_xbc(const char *path, const char *xbc_path)
+ 		pr_err("Failed to apply a boot config magic: %d\n", ret);
+ 		goto out;
+ 	}
++	ret = 0;
+ out:
+ 	close(fd);
+ 	free(data);
 -- 
 2.25.1
 
