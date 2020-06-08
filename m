@@ -2,50 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14A31F206D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 22:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159531F206E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 22:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgFHUF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 16:05:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60290 "EHLO mail.kernel.org"
+        id S1726761AbgFHUFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 16:05:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726714AbgFHUFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 16:05:24 -0400
-Subject: Re: [GIT PULL] Ceph updates for 5.8-rc1
+        id S1726743AbgFHUFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 16:05:25 -0400
+Subject: Re: [GIT PULL] rpmsg updates for v5.8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591646724;
-        bh=jnK08mAfkMWGL456sL7IcuTGBY0+8FtULzjMebbboYQ=;
+        s=default; t=1591646725;
+        bh=qNznkMvTDeK9huF7Jpwu0P4DSnqTVtGEO2Gct3OTSUw=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=e9Mfu/Bj3SXPXezp7h5IUcZDwy6fB+tMh46zY0g9Pqj07qI/slefiXm6hfhdks1gT
-         eKnz/fmkHsgANagf9ra93KAnW68YfP3jmBBC5Mwcse96DxMzobZA8Bg3c2lI2Zab1+
-         YaVctQqB4l8KE1f4NhlMgFamiUBgPdBiUcixVdpo=
+        b=qeu9pqCqmmWZn3e9UMovBndbh9CWFFi1bqgMo1k0t/w1guXOb1TDVSdj+pS1TRBWb
+         Kw8AiMNtGaKA7b3MRmmguU5ru06YgqBubfsZdZxkfyBRp3gpCBS1TLAJtvM+MxUw+6
+         D151YnnzHSl6WSiELYGaVxTSFPh3g0GhkpSTFUn8=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200608163626.7339-1-idryomov@gmail.com>
-References: <20200608163626.7339-1-idryomov@gmail.com>
+In-Reply-To: <20200608182856.2302518-1-bjorn.andersson@linaro.org>
+References: <20200608182856.2302518-1-bjorn.andersson@linaro.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200608163626.7339-1-idryomov@gmail.com>
-X-PR-Tracked-Remote: https://github.com/ceph/ceph-client.git
- tags/ceph-for-5.8-rc1
-X-PR-Tracked-Commit-Id: dc1dad8e1a612650b1e786e992cb0c6e101e226a
+X-PR-Tracked-Message-Id: <20200608182856.2302518-1-bjorn.andersson@linaro.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git
+ tags/rpmsg-v5.8
+X-PR-Tracked-Commit-Id: 4f05fc33bebdc7d69259c412dd21d09751827dbd
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 95288a9b3beee8dd69d73b7691e36f2f231b7903
-Message-Id: <159164672399.26583.16571782263097298968.pr-tracker-bot@kernel.org>
-Date:   Mon, 08 Jun 2020 20:05:23 +0000
-To:     Ilya Dryomov <idryomov@gmail.com>
+X-PR-Merge-Commit-Id: d26a42a9614083413e778832a6efbdf0038c3bff
+Message-Id: <159164672511.26583.12607767880488664875.pr-tracker-bot@kernel.org>
+Date:   Mon, 08 Jun 2020 20:05:25 +0000
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Wang Wenhu <wenhu.wang@vivo.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon,  8 Jun 2020 18:36:26 +0200:
+The pull request you sent on Mon,  8 Jun 2020 11:28:56 -0700:
 
-> https://github.com/ceph/ceph-client.git tags/ceph-for-5.8-rc1
+> https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rpmsg-v5.8
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/95288a9b3beee8dd69d73b7691e36f2f231b7903
+https://git.kernel.org/torvalds/c/d26a42a9614083413e778832a6efbdf0038c3bff
 
 Thank you!
 
