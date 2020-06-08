@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933441F28A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5197F1F28A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387909AbgFHXzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:55:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50110 "EHLO mail.kernel.org"
+        id S2387881AbgFHXyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:54:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731582AbgFHXYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:24:06 -0400
+        id S1728395AbgFHXYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:24:10 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FDB1208B3;
-        Mon,  8 Jun 2020 23:24:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C805C208B8;
+        Mon,  8 Jun 2020 23:24:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658647;
-        bh=49zfERSjk9j/+MtSTyS6zjJNybRRJ7SHS9cxP6Yyjng=;
+        s=default; t=1591658649;
+        bh=CarzX7jrFj2dLReUZB4e6YJK8BhpEudbGb6UOINdud4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TbHc/ynsYruc435t/sf93g0SrHmA36WnsPZkRqMBdD748jlOitWSxkkioo9McD5EA
-         x5FeLv9Dg614/hJXffOMPIyn5XG9IJZUtoKoRSUp3sdTheYgVtz+rzINxpT67OS6Q0
-         6WN+bmJh95YSp2ypO3qcIV3/jP0tTkqitySy2f/4=
+        b=Q+5u8ZQwS9KVrYiPOHdPlUdipcFzyvdxwqN4wTFXqbTinoqUBnK2dwfD5vZ0lDoUP
+         VpHf2CENNqz9dRXSQED1WNfcUjtv3zi1yREnhO2GuLsLE9oJWT4eyDKQXSXgaSAoix
+         3uO6mP9rQygM3E05RAF3nyYST3NerT/UrnuZJO9M=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>, linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 067/106] nvme: refine the Qemu Identify CNS quirk
-Date:   Mon,  8 Jun 2020 19:21:59 -0400
-Message-Id: <20200608232238.3368589-67-sashal@kernel.org>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 069/106] wcn36xx: Fix error handling path in 'wcn36xx_probe()'
+Date:   Mon,  8 Jun 2020 19:22:01 -0400
+Message-Id: <20200608232238.3368589-69-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608232238.3368589-1-sashal@kernel.org>
 References: <20200608232238.3368589-1-sashal@kernel.org>
@@ -43,57 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit b9a5c3d4c34d8bd9fd75f7f28d18a57cb68da237 ]
+[ Upstream commit a86308fc534edeceaf64670c691e17485436a4f4 ]
 
-Add a helper to check if we can use Identify CNS values > 1, and refine
-the Qemu quirk to not apply to reported versions larger than 1.1, as the
-Qemu implementation had been fixed by then.
+In case of error, 'qcom_wcnss_open_channel()' must be undone by a call to
+'rpmsg_destroy_ept()', as already done in the remove function.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 5052de8deff5 ("soc: qcom: smd: Transition client drivers from smd to rpmsg")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200507043619.200051-1-christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/wcn36xx/main.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index d5359c7c811a..0d60f2f8f3ee 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -926,6 +926,19 @@ void nvme_stop_keep_alive(struct nvme_ctrl *ctrl)
- }
- EXPORT_SYMBOL_GPL(nvme_stop_keep_alive);
+diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
+index 79998a3ddb7a..ad051f34e65b 100644
+--- a/drivers/net/wireless/ath/wcn36xx/main.c
++++ b/drivers/net/wireless/ath/wcn36xx/main.c
+@@ -1341,7 +1341,7 @@ static int wcn36xx_probe(struct platform_device *pdev)
+ 	if (addr && ret != ETH_ALEN) {
+ 		wcn36xx_err("invalid local-mac-address\n");
+ 		ret = -EINVAL;
+-		goto out_wq;
++		goto out_destroy_ept;
+ 	} else if (addr) {
+ 		wcn36xx_info("mac address: %pM\n", addr);
+ 		SET_IEEE80211_PERM_ADDR(wcn->hw, addr);
+@@ -1349,7 +1349,7 @@ static int wcn36xx_probe(struct platform_device *pdev)
  
-+/*
-+ * In NVMe 1.0 the CNS field was just a binary controller or namespace
-+ * flag, thus sending any new CNS opcodes has a big chance of not working.
-+ * Qemu unfortunately had that bug after reporting a 1.1 version compliance
-+ * (but not for any later version).
-+ */
-+static bool nvme_ctrl_limited_cns(struct nvme_ctrl *ctrl)
-+{
-+	if (ctrl->quirks & NVME_QUIRK_IDENTIFY_CNS)
-+		return ctrl->vs < NVME_VS(1, 2, 0);
-+	return ctrl->vs < NVME_VS(1, 1, 0);
-+}
-+
- static int nvme_identify_ctrl(struct nvme_ctrl *dev, struct nvme_id_ctrl **id)
- {
- 	struct nvme_command c = { };
-@@ -3368,8 +3381,7 @@ static void nvme_scan_work(struct work_struct *work)
+ 	ret = wcn36xx_platform_get_resources(wcn, pdev);
+ 	if (ret)
+-		goto out_wq;
++		goto out_destroy_ept;
  
- 	mutex_lock(&ctrl->scan_lock);
- 	nn = le32_to_cpu(id->nn);
--	if (ctrl->vs >= NVME_VS(1, 1, 0) &&
--	    !(ctrl->quirks & NVME_QUIRK_IDENTIFY_CNS)) {
-+	if (!nvme_ctrl_limited_cns(ctrl)) {
- 		if (!nvme_scan_ns_list(ctrl, nn))
- 			goto out_free_id;
- 	}
+ 	wcn36xx_init_ieee80211(wcn);
+ 	ret = ieee80211_register_hw(wcn->hw);
+@@ -1361,6 +1361,8 @@ static int wcn36xx_probe(struct platform_device *pdev)
+ out_unmap:
+ 	iounmap(wcn->ccu_base);
+ 	iounmap(wcn->dxe_base);
++out_destroy_ept:
++	rpmsg_destroy_ept(wcn->smd_channel);
+ out_wq:
+ 	ieee80211_free_hw(hw);
+ out_err:
 -- 
 2.25.1
 
