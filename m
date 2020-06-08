@@ -2,73 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B4D1F1DD1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 18:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE571F1DDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 18:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730668AbgFHQwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 12:52:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:36300 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730637AbgFHQwR (ORCPT
+        id S2387499AbgFHQxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 12:53:05 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:24705 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387482AbgFHQxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 12:52:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591635136;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CPoX45gxmjOqLoIv20XcIEcYRq/YssF2EgI5KSAc3xY=;
-        b=S+9xfNqN5EnFMcA5DYY9SpPWlHudUByG/QWwg+oGIaNbTmDWAPJCRTZHxJlKeHrHXG7WHY
-        h5STjA26XJSzXKCoLYnP8XxszSVjn7dMqiViS0d/IY5XxspQJADJ7tv7tjA1fRIGKcoOX+
-        k6vpEmWChOo2qKgi805jQAkIEz4z8/A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-svhNfv0uPqysAzmo1_b8Nw-1; Mon, 08 Jun 2020 12:52:10 -0400
-X-MC-Unique: svhNfv0uPqysAzmo1_b8Nw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F4EB8014D4;
-        Mon,  8 Jun 2020 16:52:08 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-114-66.rdu2.redhat.com [10.10.114.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 11E88648DB;
-        Mon,  8 Jun 2020 16:52:06 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <87ftb6x7em.fsf@intel.com>
-References: <87ftb6x7em.fsf@intel.com> <2136072.1591491984@warthog.procyon.org.uk> <87o8puxak1.fsf@intel.com> <4ff2445aff8d44c5961a6d194a8f4663@intel.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     dhowells@redhat.com, "Saarinen\, Jani" <jani.saarinen@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "Vivi\, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gfx\@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dri-devel\@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "airlied\@redhat.com" <airlied@redhat.com>
-Subject: Re: [Intel-gfx] A panic and a hang in the i915 drm driver
+        Mon, 8 Jun 2020 12:53:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1591635184; x=1623171184;
+  h=date:from:to:cc:message-id:references:mime-version:
+   in-reply-to:subject;
+  bh=rnDp5I6x3A3PSGWGNTcHDsvC0Hxz7VaObBC0sQPmk2o=;
+  b=hWkRf1jiNufrHRtHOPHM8Z4RjXzMYch3DR9iuKPDz94gSEizJcnboqpG
+   mljUyLK6S9IviIEF9t1R9zFQMCtW+u8bi3XbrZacppHProR/KO/jNJTE7
+   TcW8NW3WGSAAqs9a9by5U3zHTJ/wBH75/R61KYM91zK11WjuGE1mPAUUV
+   w=;
+IronPort-SDR: MSGLE2U6Ywvdm0/7LZ2EFFZLSYATNkPwGtPzXiLLT7V5bdnlx5eTqZ85cjdTzmiDTvSDMabs5n
+ CF2KXs+xJ+3A==
+X-IronPort-AV: E=Sophos;i="5.73,487,1583193600"; 
+   d="scan'208";a="50682291"
+Subject: Re: [PATCH 03/12] x86/xen: Introduce new function to map
+ HYPERVISOR_shared_info on Resume
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-22cc717f.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 08 Jun 2020 16:53:01 +0000
+Received: from EX13MTAUEB002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2a-22cc717f.us-west-2.amazon.com (Postfix) with ESMTPS id B726EA221B;
+        Mon,  8 Jun 2020 16:52:58 +0000 (UTC)
+Received: from EX13D08UEB003.ant.amazon.com (10.43.60.11) by
+ EX13MTAUEB002.ant.amazon.com (10.43.60.12) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 8 Jun 2020 16:52:36 +0000
+Received: from EX13MTAUEB002.ant.amazon.com (10.43.60.12) by
+ EX13D08UEB003.ant.amazon.com (10.43.60.11) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 8 Jun 2020 16:52:36 +0000
+Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
+ (172.22.96.68) by mail-relay.amazon.com (10.43.60.234) with Microsoft SMTP
+ Server id 15.0.1497.2 via Frontend Transport; Mon, 8 Jun 2020 16:52:36 +0000
+Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
+        id C641640832; Mon,  8 Jun 2020 16:52:35 +0000 (UTC)
+Date:   Mon, 8 Jun 2020 16:52:35 +0000
+From:   Anchal Agarwal <anchalag@amazon.com>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <hpa@zytor.com>, <x86@kernel.org>, <jgross@suse.com>,
+        <linux-pm@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kamatam@amazon.com>, <sstabellini@kernel.org>,
+        <konrad.wilk@oracle.com>, <roger.pau@citrix.com>,
+        <axboe@kernel.dk>, <davem@davemloft.net>, <rjw@rjwysocki.net>,
+        <len.brown@intel.com>, <pavel@ucw.cz>, <peterz@infradead.org>,
+        <eduval@amazon.com>, <sblbir@amazon.com>,
+        <xen-devel@lists.xenproject.org>, <vkuznets@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dwmw@amazon.co.uk>, <benh@kernel.crashing.org>
+Message-ID: <20200608165235.GA1330@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+References: <cover.1589926004.git.anchalag@amazon.com>
+ <529f544a64bb93b920bf86b1d3f86d93b0a4219b.1589926004.git.anchalag@amazon.com>
+ <72989b50-0c13-7a2b-19e2-de4a3646c83f@oracle.com>
+ <20200604230307.GB25251@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <9644a5f1-e1f8-5fe1-3135-cc6b4baf893b@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2715544.1591635126.1@warthog.procyon.org.uk>
-Date:   Mon, 08 Jun 2020 17:52:06 +0100
-Message-ID: <2715545.1591635126@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Disposition: inline
+In-Reply-To: <9644a5f1-e1f8-5fe1-3135-cc6b4baf893b@oracle.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jani Nikula <jani.nikula@linux.intel.com> wrote:
+On Fri, Jun 05, 2020 at 05:39:54PM -0400, Boris Ostrovsky wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> 
+> 
+> 
+> On 6/4/20 7:03 PM, Anchal Agarwal wrote:
+> > On Sat, May 30, 2020 at 07:02:01PM -0400, Boris Ostrovsky wrote:
+> >> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> >>
+> >>
+> >>
+> >> On 5/19/20 7:25 PM, Anchal Agarwal wrote:
+> >>> Introduce a small function which re-uses shared page's PA allocated
+> >>> during guest initialization time in reserve_shared_info() and not
+> >>> allocate new page during resume flow.
+> >>> It also  does the mapping of shared_info_page by calling
+> >>> xen_hvm_init_shared_info() to use the function.
+> >>>
+> >>> Signed-off-by: Anchal Agarwal <anchalag@amazon.com>
+> >>> ---
+> >>>  arch/x86/xen/enlighten_hvm.c | 7 +++++++
+> >>>  arch/x86/xen/xen-ops.h       | 1 +
+> >>>  2 files changed, 8 insertions(+)
+> >>>
+> >>> diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
+> >>> index e138f7de52d2..75b1ec7a0fcd 100644
+> >>> --- a/arch/x86/xen/enlighten_hvm.c
+> >>> +++ b/arch/x86/xen/enlighten_hvm.c
+> >>> @@ -27,6 +27,13 @@
+> >>>
+> >>>  static unsigned long shared_info_pfn;
+> >>>
+> >>> +void xen_hvm_map_shared_info(void)
+> >>> +{
+> >>> +     xen_hvm_init_shared_info();
+> >>> +     if (shared_info_pfn)
+> >>> +             HYPERVISOR_shared_info = __va(PFN_PHYS(shared_info_pfn));
+> >>> +}
+> >>> +
+> >>
+> >> AFAICT it is only called once so I don't see a need for new routine.
+> >>
+> >>
+> > HYPERVISOR_shared_info can only be mapped in this scope without refactoring
+> > much of the code.
+> 
+> 
+> Refactoring what? All am suggesting is
+>
+shared_info_pfn does not seem to be in scope here, it's scope is limited
+to enlighten_hvm.c. That's the reason I introduced a new function there.
 
-> David, please try [1].
-
-Assuming you mean this:
-
-    https://patchwork.freedesktop.org/patch/366958/?series=77635&rev=1
-
-yes, that works.
-
-Tested-by: David Howells <dhowells@redhat.com>
-
+> --- a/arch/x86/xen/suspend.c
+> +++ b/arch/x86/xen/suspend.c
+> @@ -124,7 +124,9 @@ static void xen_syscore_resume(void)
+>                 return;
+> 
+>         /* No need to setup vcpu_info as it's already moved off */
+> -       xen_hvm_map_shared_info();
+> +       xen_hvm_init_shared_info();
+> +       if (shared_info_pfn)
+> +               HYPERVISOR_shared_info = __va(PFN_PHYS(shared_info_pfn));
+> 
+>         pvclock_resume();
+> 
+> >> And is it possible for shared_info_pfn to be NULL in resume path (which
+> >> is where this is called)?
+> >>
+> >>
+> > I don't think it should be, still a sanity check but I don't think its needed there
+> > because hibernation will fail in any case if thats the case.
+> 
+> 
+> If shared_info_pfn is NULL you'd have problems long before hibernation
+> started. We set it in xen_hvm_guest_init() and never touch again.
+> 
+> 
+> In fact, I'd argue that it should be __ro_after_init.
+> 
+> 
+I agree, and I should have mentioned that I will remove that check and its not
+necessary as this gets mapped way early in the boot process.
+> > However, HYPERVISOR_shared_info does needs to be re-mapped on resume as its been
+> > marked to dummy address on suspend. Its also safe in case va changes.
+> > Does the answer your question?
+> 
+> 
+> I wasn't arguing whether HYPERVISOR_shared_info needs to be set, I was
+> only saying that shared_info_pfn doesn't need to be tested.
+> 
+Got it. :)
+> 
+> -boris
+> 
+Thanks,
+Anchal
+> 
