@@ -2,102 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D121F1E83
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 19:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5614A1F1E8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 19:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730226AbgFHRtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 13:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730166AbgFHRtA (ORCPT
+        id S1730418AbgFHRuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 13:50:09 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:60936 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730379AbgFHRuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 13:49:00 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F8AC08C5C3
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 10:49:00 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id n2so6923945pld.13
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 10:49:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YIwI7n7N4VQPufeFuOMvSL/7+RKCUZGC7cYkecAGvXw=;
-        b=ZL/xMo+emwIGJJDYKlUTWBSUaZLy53IDoh4ECTHldAYzsEhYULXTfHE17Ihg5yS9s/
-         GknxH8a1g7MMdbLIncWs0UnD5Gyu0da/rncun2hoJCW3QuwBCypNjBMBCWjKXEjxQnKY
-         1Ua9dWh3ALilAaZBwqBXOw+Ql0STZFO8QKaB0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YIwI7n7N4VQPufeFuOMvSL/7+RKCUZGC7cYkecAGvXw=;
-        b=J2ed5RFfZWlvmx5S1D0WDGEtIdD7ZA57YnMek8wnc5lWYySneC7qRvJsRFgVEbYryT
-         g+QxdlPKJHGKgvLjs0aaEcRZwJc6CDXdkvDodLiYZhGHzAKVy8Y1Byd3n9trCtHRyjlA
-         Xx3eikisue606JSiauCauLFf34V3Om4FpDdI+D/6oad0GaUsNHgZhLpL0vMLNNOFvaBj
-         HAbNSlTrVsumE2UUpZoO4QeUasfgr2hMoKywzPBFmQ/eN0r5Hi5AuYkwI4rpKvwgSMAH
-         JYfXxoEpkZZ4h9J9EFH2iFSD3/X89PMRam9ZBLA2RserT9JtfwZ1cirgQdW0WrSAsoyT
-         pCxw==
-X-Gm-Message-State: AOAM530Ynib2pedDXtCwaj53XMskjXapo+iPD1TsiTkgDkFIO13jQ0Tr
-        3OGCzA9mFCLOB+LGfYVcjrBv5A==
-X-Google-Smtp-Source: ABdhPJzg/YUFjJB0n58ZSRa8E0eiVaoklc/4+kOj1C57x3OTuyE0OCpKhKcw+Hm/Y+pNC49YSXIRyw==
-X-Received: by 2002:a17:90a:9f81:: with SMTP id o1mr431427pjp.139.1591638539924;
-        Mon, 08 Jun 2020 10:48:59 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id n7sm162682pjq.22.2020.06.08.10.48.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 10:48:59 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     a.hajda@samsung.com, narmstrong@baylibre.com, sam@ravnborg.org
-Cc:     robdclark@chromium.org, bjorn.andersson@linaro.org,
-        swboyd@chromium.org, spanda@codeaurora.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        Mon, 8 Jun 2020 13:50:08 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 058HkRqb105840;
+        Mon, 8 Jun 2020 17:49:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=ncmODzgoWtkudobrbPyNbaCQiNZTBtUZcMm2aBJK4rY=;
+ b=UuEoKDxNP+ztqskyqBSLAZeRHX/MII4zJX50QQxw3OyFF98b2mzRdMAAggZoRfdhkbIG
+ 60xQ2pzWRJGwmq87x+AKYqJ5froms2rt9AWRDvsx373OhEpOzjEERAqZJWnxrO6Ypnty
+ 9xUgiGaE0XO+IeV9dA8cD/BTCfuG57i+kJpDihEriQhiMGhB70xrMvBZm2xqBWDoSa31
+ w0/E5DCFhCJRq+RmZG/yE8MHACizqquEyAOy+at+nJfi/x4/WZ/eRVwGL7eoFh1N/XLK
+ 5VegiooZX6qTk8h5AZkpjWJmBdasjFcTO8VyA6A9ptmQpjTb1M+Hg3oSDoI6Ac2dRRJR sg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 31g3smr3t6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 08 Jun 2020 17:49:59 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 058HmJeL135601;
+        Mon, 8 Jun 2020 17:49:59 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 31gn23fgd4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 08 Jun 2020 17:49:59 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 058HnqxD022415;
+        Mon, 8 Jun 2020 17:49:53 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 08 Jun 2020 10:49:51 -0700
+Date:   Mon, 8 Jun 2020 20:49:43 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] drm/bridge: ti-sn65dsi86: Check the regmap return value when setting a GPIO
-Date:   Mon,  8 Jun 2020 10:48:35 -0700
-Message-Id: <20200608104832.4.Ia4376fd88cdc6e8f8b43c65548458305f82f1d61@changeid>
-X-Mailer: git-send-email 2.27.0.278.ge193c7cf3a9-goog
-In-Reply-To: <20200608104832.1.Ibe95d8f3daef01e5c57d4c8c398f04d6a839492c@changeid>
-References: <20200608104832.1.Ibe95d8f3daef01e5c57d4c8c398f04d6a839492c@changeid>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] drm/amd/display: Fix indenting in
+ dcn30_set_output_transfer_func()
+Message-ID: <20200608174943.GU22511@kadam>
+References: <20200608141657.GB1912173@mwanda>
+ <dcce7f702c674999c31fd358c3970d5fee1a6725.camel@perches.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dcce7f702c674999c31fd358c3970d5fee1a6725.camel@perches.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9646 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006080126
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9646 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=0
+ spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006080126
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ti_sn_bridge_gpio_set() got the return value of
-regmap_update_bits() but didn't check it.  The function can't return
-an error value, but we should at least print a warning if it didn't
-work.
+On Mon, Jun 08, 2020 at 10:16:27AM -0700, Joe Perches wrote:
+> On Mon, 2020-06-08 at 17:16 +0300, Dan Carpenter wrote:
+> > These lines are a part of the if statement and they are supposed to
+> > be indented one more tab.
+> > 
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > ---
+> >  drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
+> > index ab20320ebc994..37c310dbb3665 100644
+> > --- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
+> > +++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
+> > @@ -203,9 +203,9 @@ bool dcn30_set_output_transfer_func(struct dc *dc,
+> >  					stream->out_transfer_func,
+> >  					&mpc->blender_params, false))
+> >  				params = &mpc->blender_params;
+> > -		 /* there are no ROM LUTs in OUTGAM */
+> > -		if (stream->out_transfer_func->type == TF_TYPE_PREDEFINED)
+> > -			BREAK_TO_DEBUGGER();
+> > +			 /* there are no ROM LUTs in OUTGAM */
+> > +			if (stream->out_transfer_func->type == TF_TYPE_PREDEFINED)
+> > +				BREAK_TO_DEBUGGER();
+> >  		}
+> >  	}
+> >  
+> 
+> Maybe the if is at the right indentation but the
+> close brace below the if is misplaced instead?
+> 
 
-This fixes a compiler warning about setting "ret" but not using it.
+Yeah.  I considered that, but the code is correct, it's just the
+indenting is wrong.  I normally leave drm/amd/ code alone but this
+indenting was so confusing that I though it was worth fixing.
 
-Fixes: 27ed2b3f22ed ("drm/bridge: ti-sn65dsi86: Export bridge GPIOs to Linux")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+There are lots of ugly stuff which is not confusing like this:  (The
+line numbers are from next-20200605).
 
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 3 +++
- 1 file changed, 3 insertions(+)
+drivers/gpu/drm/amd/amdgpu/../powerplay/amd_powerplay.c:1530 pp_asic_reset_mode_2() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:3387 bw_calcs() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_dwb.c:104 dwb2_enable() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_dpp_cm.c:450 dpp20_get_blndgam_current() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_dpp_cm.c:543 dpp20_get_shaper_current() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_mpc.c:306 mpc20_get_ogam_current() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c:1519 dc_link_dp_perform_link_training() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link.c:3137 core_link_enable_stream() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_hwseq.c:207 dcn30_set_output_transfer_func() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_dpp.c:650 dpp3_get_blndgam_current() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_dpp.c:747 dpp3_get_shaper_current() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_dpp_cm.c:67 dpp30_get_gamcor_current() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_mpc.c:116 mpc3_get_ogam_current() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_mpc.c:432 mpc3_get_shaper_current() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_resource.c:2351 dcn30_update_bw_bounding_box() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_optc.c:178 optc3_set_dsc_config() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn20/display_mode_vba_20.c:2704 dml20_DISPCLKDPPCLKDCFCLKDeepSleepPrefetchParametersWatermarksAndPerformanceCalculation() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn20/display_mode_vba_20v2.c:2777 dml20v2_DISPCLKDPPCLKDCFCLKDeepSleepPrefetchParametersWatermarksAndPerformanceCalculation() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn21/display_mode_vba_21.c:2633 DISPCLKDPPCLKDCFCLKDeepSleepPrefetchParametersWatermarksAndPerformanceCalculation() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn21/display_mode_vba_21.c:5031 dml21_ModeSupportAndSystemConfigurationFull() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn21/display_mode_vba_21.c:5036 dml21_ModeSupportAndSystemConfigurationFull() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn21/display_mode_vba_21.c:5056 dml21_ModeSupportAndSystemConfigurationFull() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/../display/modules/power/power_helpers.c:731 dmcu_load_iram() warn: inconsistent indenting
+drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c:5062 gfx_v8_0_pre_soft_reset() warn: inconsistent indenting
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 1080e4f9df96..526add27dc03 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -999,6 +999,9 @@ static void ti_sn_bridge_gpio_set(struct gpio_chip *chip, unsigned int offset,
- 	ret = regmap_update_bits(pdata->regmap, SN_GPIO_IO_REG,
- 				 BIT(SN_GPIO_OUTPUT_SHIFT + offset),
- 				 val << (SN_GPIO_OUTPUT_SHIFT + offset));
-+	if (ret)
-+		dev_warn(pdata->dev,
-+			 "Failed to set bridge GPIO %d: %d\n", offset, ret);
- }
- 
- static int ti_sn_bridge_gpio_direction_input(struct gpio_chip *chip,
--- 
-2.27.0.278.ge193c7cf3a9-goog
-
+regards,
+dan carpenter 
