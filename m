@@ -2,106 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCCB1F1948
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E2A1F195A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729816AbgFHMyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 08:54:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:52406 "EHLO foss.arm.com"
+        id S1729861AbgFHMyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 08:54:37 -0400
+Received: from mga11.intel.com ([192.55.52.93]:47795 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729721AbgFHMxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 08:53:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D97DF31B;
-        Mon,  8 Jun 2020 05:53:21 -0700 (PDT)
-Received: from [10.57.9.113] (unknown [10.57.9.113])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C02BA3F52E;
-        Mon,  8 Jun 2020 05:53:20 -0700 (PDT)
-Subject: Re: [PATCH] dma-pool: Fix too large DMA pools on medium systems
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <20200608085231.8924-1-geert@linux-m68k.org>
- <92b53a24-2f1f-2add-6bea-eeda7317520f@arm.com>
- <CAMuHMdXxT5ZgcK5r0MWOk7vWVj63gmr6k3zgACe2Lew7Q4KC9w@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <aef59070-6e16-1503-b7a0-0e089369b72b@arm.com>
-Date:   Mon, 8 Jun 2020 13:53:17 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729844AbgFHMyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 08:54:35 -0400
+IronPort-SDR: 4zCeo/Gu/l11k6LvMtnkJ9eYHSdx6u2gYck4Bxrv75QiLPh8rR4yY4bqyuFrNefAzASTu3q46U
+ V2j0Pok1NPUA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2020 05:54:34 -0700
+IronPort-SDR: x66KGXaPNNEaV3zpLIrWlHsD7kGIHT9bFjM06CXGMcX4rRaMM90o9OXGsj7bxVwD0UlZcnZ4As
+ SSQlJhb+ro7w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,487,1583222400"; 
+   d="scan'208";a="379410653"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 08 Jun 2020 05:54:31 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id 9E9251BC; Mon,  8 Jun 2020 15:54:30 +0300 (EEST)
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCHv2 0/2] x86: Fix boot with some memory above MAXMEM
+Date:   Mon,  8 Jun 2020 15:54:22 +0300
+Message-Id: <20200608125424.70198-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.27.0.rc2
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdXxT5ZgcK5r0MWOk7vWVj63gmr6k3zgACe2Lew7Q4KC9w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-08 13:25, Geert Uytterhoeven wrote:
-> Hi Robin,
-> 
-> On Mon, Jun 8, 2020 at 2:04 PM Robin Murphy <robin.murphy@arm.com> wrote:
->> On 2020-06-08 09:52, Geert Uytterhoeven wrote:
->>> On systems with at least 32 MiB, but less than 32 GiB of RAM, the DMA
->>> memory pools are much larger than intended (e.g. 2 MiB instead of 128
->>> KiB on a 256 MiB system).
->>>
->>> Fix this by correcting the calculation of the number of GiBs of RAM in
->>> the system.
->>>
->>> Fixes: 1d659236fb43c4d2 ("dma-pool: scale the default DMA coherent pool size with memory capacity")
->>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
->>> --- a/kernel/dma/pool.c
->>> +++ b/kernel/dma/pool.c
->>> @@ -175,8 +175,8 @@ static int __init dma_atomic_pool_init(void)
->>>         * sizes to 128KB per 1GB of memory, min 128KB, max MAX_ORDER-1.
->>>         */
->>>        if (!atomic_pool_size) {
->>> -             atomic_pool_size = max(totalram_pages() >> PAGE_SHIFT, 1UL) *
->>> -                                     SZ_128K;
->>> +             unsigned long gigs = totalram_pages() >> (30 - PAGE_SHIFT);
->>> +             atomic_pool_size = max(gigs, 1UL) * SZ_128K;
->>>                atomic_pool_size = min_t(size_t, atomic_pool_size,
->>>                                         1 << (PAGE_SHIFT + MAX_ORDER-1));
->>>        }
->>
->> Nit: although this probably is right, it seems even less readable than
-> 
-> ">> (x - PAGE_SHIFT)" is a commonly used construct in the kernel.
+A 5-level paging capable machine can have memory above 46-bit in the
+physical address space. This memory is only addressable in the 5-level
+paging mode: we don't have enough virtual address space to create direct
+mapping for such memory in the 4-level paging mode.
 
-Sure, but when "x" is a magic number there's still extra cognitive load 
-in determining whether it's the *right* magic number ;)
+Tested with a hacked QEMU: https://gist.github.com/kiryl/d45eb54110944ff95e544972d8bdac1d
 
-Mostly, though, it was just the fact that an expression involving 5 
-different units (bytes, pages, "gigs", bits, and whatever MAX_ORDER is) 
-is inherently more challenging to follow than the equivalent thing 
-framed in fewer, especially when it can be reasonably done in just two 
-(bytes and pages).
+v2:
+ - Fix boot with KASLR enabled on such machines;
+ - Better error message;
 
-Robin.
+Kirill A. Shutemov (2):
+  x86/mm: Fix boot with some memory above MAXMEM
+  x86/boot/KASLR: Fix boot with some memory above MAXMEM
 
->> the broken version (where at least some at-a-glance 'dimensional
->> analysis' flags up "(number of pages) >> PAGE_SHIFT" as rather
->> suspicious). How about a something a little more self-explanatory, e.g.:
->>
->>          unsigned long pages = totalram_pages() * SZ_128K / SZ_1GB;
-> 
-> That multiplication will overflow on 32-bit systems (perhaps even on
-> large 64-bit systems; any 47-bit addressing?).
-> 
->          unsigned long pages = totalram_pages() / (SZ_1GB / SZ_128K);
-> 
->>          atomic_pool_size = min(pages, MAX_ORDER_NR_PAGES) << PAGE_SHIFT;
->>          atomic_pool_size = max_t(size_t, atomic_pool_size, SZ_128K);
-> 
-> I agree this part is an improvement.
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
+ arch/x86/boot/compressed/kaslr.c | 11 +++++++++++
+ arch/x86/kernel/e820.c           | 24 ++++++++++++++++++++++--
+ 2 files changed, 33 insertions(+), 2 deletions(-)
+
+-- 
+2.26.2
+
