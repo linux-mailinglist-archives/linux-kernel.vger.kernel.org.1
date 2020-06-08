@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF3E1F1B93
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 17:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB171F1B95
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 17:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730192AbgFHPBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 11:01:24 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:42159 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730161AbgFHPBU (ORCPT
+        id S1730211AbgFHPB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 11:01:29 -0400
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:40567 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730181AbgFHPBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 11:01:20 -0400
-Received: by mail-lf1-f67.google.com with SMTP id x27so10399819lfg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 08:01:19 -0700 (PDT)
+        Mon, 8 Jun 2020 11:01:24 -0400
+Received: by mail-lj1-f173.google.com with SMTP id n23so20896949ljh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 08:01:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=i3uqReldNyB0HkYkJlYcEfBw/J6TVeoQE4OBnMgY2IY=;
-        b=pNLp5tQylCo58kUKazHE4J9sIJuhKaHjHh4r60BsioXGMA7Lh5Uz3F3FeBAM+Eg92N
-         hMz1cP8JX2u6YNdxuIF8rX9ABvkSN5nugZ04Ei9Zcc14IRd9B6QsAd69b1ZBsJsmEdBF
-         zTfCQK+ElHhZA44cnK6GkF7i44B190nbaTDSlJc55zwqC/1TTxkMXVK+vOlJwu2C3GD5
-         3s1fhuAXhmA8BZoBdJK5eMVQOE0aoE3uxMt+m4LA1/c/AVNbcX2bmO0C+4q5iPl0qYey
-         HBSmcwOqDtUAGDufUjTfg8bHVkte2RhoN/w59eZjr3IsqYfJT6p3+BzKkbTq+qOjNOou
-         azaw==
-X-Gm-Message-State: AOAM530VrV565CFOh92/ggQz5bOnW9CK306BS3psZaQ3hFKKfGINfl84
-        pIu5BmxZ66pjM87Qz3O/hN4=
-X-Google-Smtp-Source: ABdhPJyWHCy8/wE7hsGBSEHPGpnmsLlvNzzsjxBBdtrx0lMViIRDO2Nho7AT/kAF5ExIu70kR018cQ==
-X-Received: by 2002:a19:cb05:: with SMTP id b5mr12963374lfg.108.1591628478293;
-        Mon, 08 Jun 2020 08:01:18 -0700 (PDT)
+        bh=gS/VQWLqdTR1WnMRT1E0dWszp6HUI8fnasX0aZv1mo8=;
+        b=sTdfHVsZfmK5p92kMsz8lkx2oghi58+GhaSV7HLjHAJSSCAJdAlFqQVpF6iDf6zRzR
+         QiLgVlaluy/2lVdAFWe8s+u8t3Wr9869HVuhGNWRalaVGr5nLcizoefz5OeG3MhDSRIq
+         2u5BEm9Tk7vYw9gxLP84FHyzOLV0Bxi/DRTxbKDelRCPjkW4jB57OpXCsI1sOJk9swOS
+         PsufIpYtCcp5Ls6EH/Fsw2twHTIYAuqYY12utVLvLDnrqSjHLJM1ngEdYzSJNAoWiFog
+         EtqB77HK8Z5ZnMiTUo83Qx3byra2SDlyDBy5Xl4WCpGAXMNk8uBHJ8Toan9UK3bGow39
+         x73A==
+X-Gm-Message-State: AOAM532bvUtUYZXxci97UlZp0XOotEzl+RqX4hkV/Xvlen94nr2fsHIS
+        XYJTvIt6bTCE15kIXZUV8eBvRcb5qLI=
+X-Google-Smtp-Source: ABdhPJzLKQbTG+B2awlUCbuilSYITMINPGNFWm2gSFfpcpQ8UoH6L5e6cbQTFICgqgLzZ6kTX9ZppQ==
+X-Received: by 2002:a2e:9081:: with SMTP id l1mr12154029ljg.81.1591628482141;
+        Mon, 08 Jun 2020 08:01:22 -0700 (PDT)
 Received: from localhost.localdomain ([213.87.137.116])
-        by smtp.googlemail.com with ESMTPSA id r16sm279228ljn.106.2020.06.08.08.01.16
+        by smtp.googlemail.com with ESMTPSA id r16sm279228ljn.106.2020.06.08.08.01.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 08:01:17 -0700 (PDT)
+        Mon, 08 Jun 2020 08:01:21 -0700 (PDT)
 From:   Denis Efremov <efremov@linux.com>
 To:     Julia Lawall <Julia.Lawall@lip6.fr>
 Cc:     Denis Efremov <efremov@linux.com>, linux-kernel@vger.kernel.org,
         cocci@systeme.lip6.fr
-Subject: [PATCH v2 2/4] coccinelle: api: extend memdup_user rule with vmemdup_user()
-Date:   Mon,  8 Jun 2020 18:00:36 +0300
-Message-Id: <20200608150038.223747-3-efremov@linux.com>
+Subject: [PATCH v2 3/4] coccinelle: api: filter out memdup_user definitions
+Date:   Mon,  8 Jun 2020 18:00:37 +0300
+Message-Id: <20200608150038.223747-4-efremov@linux.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200608150038.223747-1-efremov@linux.com>
 References: <20200608150038.223747-1-efremov@linux.com>
@@ -51,82 +51,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vmemdup_user() transformations to the memdup_user.cocci rule.
-Commit 50fd2f298bef ("new primitive: vmemdup_user()") introduced
-vmemdup_user(). The function uses kvmalloc with GPF_USER flag.
+Don't match original implementations.
 
 Signed-off-by: Denis Efremov <efremov@linux.com>
 ---
- scripts/coccinelle/api/memdup_user.cocci | 45 ++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ scripts/coccinelle/api/memdup_user.cocci | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
 diff --git a/scripts/coccinelle/api/memdup_user.cocci b/scripts/coccinelle/api/memdup_user.cocci
-index cadcc2e87881..d15c061a34ab 100644
+index d15c061a34ab..8621bd98be1e 100644
 --- a/scripts/coccinelle/api/memdup_user.cocci
 +++ b/scripts/coccinelle/api/memdup_user.cocci
-@@ -39,6 +39,28 @@ identifier l1,l2;
- -    ...+>
- -  }
+@@ -15,12 +15,20 @@ virtual context
+ virtual org
+ virtual report
  
-+@depends on patch@
-+expression from,to,size;
-+identifier l1,l2;
++@initialize:python@
 +@@
++filter = frozenset(['memdup_user', 'vmemdup_user'])
 +
-+-  to = \(kvmalloc\|kvzalloc\)(size,\(GFP_KERNEL\|GFP_USER\));
-++  to = vmemdup_user(from,size);
-+   if (
-+-      to==NULL
-++      IS_ERR(to)
-+                 || ...) {
-+   <+... when != goto l1;
-+-  -ENOMEM
-++  PTR_ERR(to)
-+   ...+>
-+   }
-+-  if (copy_from_user(to, from, size) != 0) {
-+-    <+... when != goto l2;
-+-    -EFAULT
-+-    ...+>
-+-  }
++def relevant(p):
++    return not (filter & {el.current_element for el in p})
 +
+ @depends on patch@
+ expression from,to,size;
+ identifier l1,l2;
++position p : script:python() { relevant(p) };
+ @@
+ 
+--  to = \(kmalloc\|kzalloc\)
++-  to = \(kmalloc@p\|kzalloc@p\)
+ 		(size,\(GFP_KERNEL\|GFP_USER\|
+ 		      \(GFP_KERNEL\|GFP_USER\)|__GFP_NOWARN\));
+ +  to = memdup_user(from,size);
+@@ -42,9 +50,10 @@ identifier l1,l2;
+ @depends on patch@
+ expression from,to,size;
+ identifier l1,l2;
++position p : script:python() { relevant(p) };
+ @@
+ 
+--  to = \(kvmalloc\|kvzalloc\)(size,\(GFP_KERNEL\|GFP_USER\));
++-  to = \(kvmalloc@p\|kvzalloc@p\)(size,\(GFP_KERNEL\|GFP_USER\));
+ +  to = vmemdup_user(from,size);
+    if (
+ -      to==NULL
+@@ -63,7 +72,7 @@ identifier l1,l2;
+ 
  @r depends on !patch@
  expression from,to,size;
- position p;
-@@ -52,6 +74,17 @@ statement S1,S2;
-    if (copy_from_user(to, from, size) != 0)
-    S2
- 
-+@rv depends on !patch@
-+expression from,to,size;
-+position p;
-+statement S1,S2;
-+@@
-+
-+*  to = \(kvmalloc@p\|kvzalloc@p\)(size,\(GFP_KERNEL\|GFP_USER\));
-+   if (to==NULL || ...) S1
-+   if (copy_from_user(to, from, size) != 0)
-+   S2
-+
- @script:python depends on org@
- p << r.p;
- @@
-@@ -63,3 +96,15 @@ p << r.p;
+-position p;
++position p : script:python() { relevant(p) };
+ statement S1,S2;
  @@
  
- coccilib.report.print_report(p[0], "WARNING opportunity for memdup_user")
-+
-+@script:python depends on org@
-+p << rv.p;
-+@@
-+
-+coccilib.org.print_todo(p[0], "WARNING opportunity for vmemdup_user")
-+
-+@script:python depends on report@
-+p << rv.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING opportunity for vmemdup_user")
+@@ -76,7 +85,7 @@ statement S1,S2;
+ 
+ @rv depends on !patch@
+ expression from,to,size;
+-position p;
++position p : script:python() { relevant(p) };
+ statement S1,S2;
+ @@
+ 
 -- 
 2.26.2
 
