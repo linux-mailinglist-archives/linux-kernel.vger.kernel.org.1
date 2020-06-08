@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A221F234B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770B41F234D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729532AbgFHXNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:13:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58250 "EHLO mail.kernel.org"
+        id S1727956AbgFHXNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:13:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728902AbgFHXLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:11:25 -0400
+        id S1727784AbgFHXL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:11:27 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 538F020B80;
-        Mon,  8 Jun 2020 23:11:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EBA921582;
+        Mon,  8 Jun 2020 23:11:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657885;
-        bh=cxtuvjAdp9f4Te01/+BlbAfNdOyNnBZ251CMnNbZcN4=;
+        s=default; t=1591657886;
+        bh=IKeJO4anH+f6xSXX137YIg6taQZzj+2PD4lf0HuC7o8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UXZE9uecEFG/RGV1hTcN/ZpNH6INmOv/mvA2v97cy0oMqxE0AfL/WcerD2RGhHLKU
-         oybdXOHZJq6ZbWnOPOsjBhm6LzU7D+27vHd0dfY7RnbrpxwcgGHMDbJlmioMpQV7qs
-         Na+Kew31n3rbNPZDP/M/oYCXI4zoIiynRzZN+iyE=
+        b=EDDTLx5ucLuLGOUYONbmXmHJ9Z6unldVW60wiZeiIoJIXXuWuDyYV4y/ZnDWuHkex
+         RhknDdpKavFK2LeFZie/wLLgxcuDBMqKeCr+QvYAJT2wBUgGy0qkWhcWYCDfF+74Q+
+         XqVA36Z8NNI+PnAyjse1sTf4rGsVozFL5kZrcFKU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Coly Li <colyli@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>, linux-bcache@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 241/274] bcache: fix refcount underflow in bcache_device_free()
-Date:   Mon,  8 Jun 2020 19:05:34 -0400
-Message-Id: <20200608230607.3361041-241-sashal@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-xfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 242/274] xfs: gut error handling in xfs_trans_unreserve_and_mod_sb()
+Date:   Mon,  8 Jun 2020 19:05:35 -0400
+Message-Id: <20200608230607.3361041-242-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -42,90 +45,236 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coly Li <colyli@suse.de>
+From: Dave Chinner <david@fromorbit.com>
 
-[ Upstream commit 86da9f736740eba602389908574dfbb0f517baa5 ]
+[ Upstream commit dc3ffbb14060c943469d5e12900db3a60bc3fa64 ]
 
-The problematic code piece in bcache_device_free() is,
+xfs: gut error handling in xfs_trans_unreserve_and_mod_sb()
 
- 785 static void bcache_device_free(struct bcache_device *d)
- 786 {
- 787     struct gendisk *disk = d->disk;
- [snipped]
- 799     if (disk) {
- 800             if (disk->flags & GENHD_FL_UP)
- 801                     del_gendisk(disk);
- 802
- 803             if (disk->queue)
- 804                     blk_cleanup_queue(disk->queue);
- 805
- 806             ida_simple_remove(&bcache_device_idx,
- 807                               first_minor_to_idx(disk->first_minor));
- 808             put_disk(disk);
- 809         }
- [snipped]
- 816 }
+From: Dave Chinner <dchinner@redhat.com>
 
-At line 808, put_disk(disk) may encounter kobject refcount of 'disk'
-being underflow.
+The error handling in xfs_trans_unreserve_and_mod_sb() is largely
+incorrect - rolling back the changes in the transaction if only one
+counter underruns makes all the other counters incorrect. We still
+allow the change to proceed and committing the transaction, except
+now we have multiple incorrect counters instead of a single
+underflow.
 
-Here is how to reproduce the issue,
-- Attche the backing device to a cache device and do random write to
-  make the cache being dirty.
-- Stop the bcache device while the cache device has dirty data of the
-  backing device.
-- Only register the backing device back, NOT register cache device.
-- The bcache device node /dev/bcache0 won't show up, because backing
-  device waits for the cache device shows up for the missing dirty
-  data.
-- Now echo 1 into /sys/fs/bcache/pendings_cleanup, to stop the pending
-  backing device.
-- After the pending backing device stopped, use 'dmesg' to check kernel
-  message, a use-after-free warning from KASA reported the refcount of
-  kobject linked to the 'disk' is underflow.
+Further, we don't actually report the error to the caller, so this
+is completely silent except on debug kernels that will assert on
+failure before we even get to the rollback code.  Hence this error
+handling is broken, untested, and largely unnecessary complexity.
 
-The dropping refcount at line 808 in the above code piece is added by
-add_disk(d->disk) in bch_cached_dev_run(). But in the above condition
-the cache device is not registered, bch_cached_dev_run() has no chance
-to be called and the refcount is not added. The put_disk() for a non-
-added refcount of gendisk kobject triggers a underflow warning.
+Just remove it.
 
-This patch checks whether GENHD_FL_UP is set in disk->flags, if it is
-not set then the bcache device was not added, don't call put_disk()
-and the the underflow issue can be avoided.
-
-Signed-off-by: Coly Li <colyli@suse.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Dave Chinner <dchinner@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/bcache/super.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ fs/xfs/xfs_trans.c | 163 ++++++---------------------------------------
+ 1 file changed, 20 insertions(+), 143 deletions(-)
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index d98354fa28e3..4d8bf731b118 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -797,7 +797,9 @@ static void bcache_device_free(struct bcache_device *d)
- 		bcache_device_detach(d);
+diff --git a/fs/xfs/xfs_trans.c b/fs/xfs/xfs_trans.c
+index 28b983ff8b11..e4e29135ad1b 100644
+--- a/fs/xfs/xfs_trans.c
++++ b/fs/xfs/xfs_trans.c
+@@ -534,57 +534,9 @@ xfs_trans_apply_sb_deltas(
+ 				  sizeof(sbp->sb_frextents) - 1);
+ }
  
- 	if (disk) {
--		if (disk->flags & GENHD_FL_UP)
-+		bool disk_added = (disk->flags & GENHD_FL_UP) != 0;
-+
-+		if (disk_added)
- 			del_gendisk(disk);
- 
- 		if (disk->queue)
-@@ -805,7 +807,8 @@ static void bcache_device_free(struct bcache_device *d)
- 
- 		ida_simple_remove(&bcache_device_idx,
- 				  first_minor_to_idx(disk->first_minor));
--		put_disk(disk);
-+		if (disk_added)
-+			put_disk(disk);
+-STATIC int
+-xfs_sb_mod8(
+-	uint8_t			*field,
+-	int8_t			delta)
+-{
+-	int8_t			counter = *field;
+-
+-	counter += delta;
+-	if (counter < 0) {
+-		ASSERT(0);
+-		return -EINVAL;
+-	}
+-	*field = counter;
+-	return 0;
+-}
+-
+-STATIC int
+-xfs_sb_mod32(
+-	uint32_t		*field,
+-	int32_t			delta)
+-{
+-	int32_t			counter = *field;
+-
+-	counter += delta;
+-	if (counter < 0) {
+-		ASSERT(0);
+-		return -EINVAL;
+-	}
+-	*field = counter;
+-	return 0;
+-}
+-
+-STATIC int
+-xfs_sb_mod64(
+-	uint64_t		*field,
+-	int64_t			delta)
+-{
+-	int64_t			counter = *field;
+-
+-	counter += delta;
+-	if (counter < 0) {
+-		ASSERT(0);
+-		return -EINVAL;
+-	}
+-	*field = counter;
+-	return 0;
+-}
+-
+ /*
+- * xfs_trans_unreserve_and_mod_sb() is called to release unused reservations
+- * and apply superblock counter changes to the in-core superblock.  The
++ * xfs_trans_unreserve_and_mod_sb() is called to release unused reservations and
++ * apply superblock counter changes to the in-core superblock.  The
+  * t_res_fdblocks_delta and t_res_frextents_delta fields are explicitly NOT
+  * applied to the in-core superblock.  The idea is that that has already been
+  * done.
+@@ -629,20 +581,17 @@ xfs_trans_unreserve_and_mod_sb(
+ 	/* apply the per-cpu counters */
+ 	if (blkdelta) {
+ 		error = xfs_mod_fdblocks(mp, blkdelta, rsvd);
+-		if (error)
+-			goto out;
++		ASSERT(!error);
  	}
  
- 	bioset_exit(&d->bio_split);
+ 	if (idelta) {
+ 		error = xfs_mod_icount(mp, idelta);
+-		if (error)
+-			goto out_undo_fdblocks;
++		ASSERT(!error);
+ 	}
+ 
+ 	if (ifreedelta) {
+ 		error = xfs_mod_ifree(mp, ifreedelta);
+-		if (error)
+-			goto out_undo_icount;
++		ASSERT(!error);
+ 	}
+ 
+ 	if (rtxdelta == 0 && !(tp->t_flags & XFS_TRANS_SB_DIRTY))
+@@ -650,95 +599,23 @@ xfs_trans_unreserve_and_mod_sb(
+ 
+ 	/* apply remaining deltas */
+ 	spin_lock(&mp->m_sb_lock);
+-	if (rtxdelta) {
+-		error = xfs_sb_mod64(&mp->m_sb.sb_frextents, rtxdelta);
+-		if (error)
+-			goto out_undo_ifree;
+-	}
+-
+-	if (tp->t_dblocks_delta != 0) {
+-		error = xfs_sb_mod64(&mp->m_sb.sb_dblocks, tp->t_dblocks_delta);
+-		if (error)
+-			goto out_undo_frextents;
+-	}
+-	if (tp->t_agcount_delta != 0) {
+-		error = xfs_sb_mod32(&mp->m_sb.sb_agcount, tp->t_agcount_delta);
+-		if (error)
+-			goto out_undo_dblocks;
+-	}
+-	if (tp->t_imaxpct_delta != 0) {
+-		error = xfs_sb_mod8(&mp->m_sb.sb_imax_pct, tp->t_imaxpct_delta);
+-		if (error)
+-			goto out_undo_agcount;
+-	}
+-	if (tp->t_rextsize_delta != 0) {
+-		error = xfs_sb_mod32(&mp->m_sb.sb_rextsize,
+-				     tp->t_rextsize_delta);
+-		if (error)
+-			goto out_undo_imaxpct;
+-	}
+-	if (tp->t_rbmblocks_delta != 0) {
+-		error = xfs_sb_mod32(&mp->m_sb.sb_rbmblocks,
+-				     tp->t_rbmblocks_delta);
+-		if (error)
+-			goto out_undo_rextsize;
+-	}
+-	if (tp->t_rblocks_delta != 0) {
+-		error = xfs_sb_mod64(&mp->m_sb.sb_rblocks, tp->t_rblocks_delta);
+-		if (error)
+-			goto out_undo_rbmblocks;
+-	}
+-	if (tp->t_rextents_delta != 0) {
+-		error = xfs_sb_mod64(&mp->m_sb.sb_rextents,
+-				     tp->t_rextents_delta);
+-		if (error)
+-			goto out_undo_rblocks;
+-	}
+-	if (tp->t_rextslog_delta != 0) {
+-		error = xfs_sb_mod8(&mp->m_sb.sb_rextslog,
+-				     tp->t_rextslog_delta);
+-		if (error)
+-			goto out_undo_rextents;
+-	}
++	mp->m_sb.sb_frextents += rtxdelta;
++	mp->m_sb.sb_dblocks += tp->t_dblocks_delta;
++	mp->m_sb.sb_agcount += tp->t_agcount_delta;
++	mp->m_sb.sb_imax_pct += tp->t_imaxpct_delta;
++	mp->m_sb.sb_rextsize += tp->t_rextsize_delta;
++	mp->m_sb.sb_rbmblocks += tp->t_rbmblocks_delta;
++	mp->m_sb.sb_rblocks += tp->t_rblocks_delta;
++	mp->m_sb.sb_rextents += tp->t_rextents_delta;
++	mp->m_sb.sb_rextslog += tp->t_rextslog_delta;
+ 	spin_unlock(&mp->m_sb_lock);
+-	return;
+ 
+-out_undo_rextents:
+-	if (tp->t_rextents_delta)
+-		xfs_sb_mod64(&mp->m_sb.sb_rextents, -tp->t_rextents_delta);
+-out_undo_rblocks:
+-	if (tp->t_rblocks_delta)
+-		xfs_sb_mod64(&mp->m_sb.sb_rblocks, -tp->t_rblocks_delta);
+-out_undo_rbmblocks:
+-	if (tp->t_rbmblocks_delta)
+-		xfs_sb_mod32(&mp->m_sb.sb_rbmblocks, -tp->t_rbmblocks_delta);
+-out_undo_rextsize:
+-	if (tp->t_rextsize_delta)
+-		xfs_sb_mod32(&mp->m_sb.sb_rextsize, -tp->t_rextsize_delta);
+-out_undo_imaxpct:
+-	if (tp->t_rextsize_delta)
+-		xfs_sb_mod8(&mp->m_sb.sb_imax_pct, -tp->t_imaxpct_delta);
+-out_undo_agcount:
+-	if (tp->t_agcount_delta)
+-		xfs_sb_mod32(&mp->m_sb.sb_agcount, -tp->t_agcount_delta);
+-out_undo_dblocks:
+-	if (tp->t_dblocks_delta)
+-		xfs_sb_mod64(&mp->m_sb.sb_dblocks, -tp->t_dblocks_delta);
+-out_undo_frextents:
+-	if (rtxdelta)
+-		xfs_sb_mod64(&mp->m_sb.sb_frextents, -rtxdelta);
+-out_undo_ifree:
+-	spin_unlock(&mp->m_sb_lock);
+-	if (ifreedelta)
+-		xfs_mod_ifree(mp, -ifreedelta);
+-out_undo_icount:
+-	if (idelta)
+-		xfs_mod_icount(mp, -idelta);
+-out_undo_fdblocks:
+-	if (blkdelta)
+-		xfs_mod_fdblocks(mp, -blkdelta, rsvd);
+-out:
+-	ASSERT(error == 0);
++	/*
++	 * Debug checks outside of the spinlock so they don't lock up the
++	 * machine if they fail.
++	 */
++	ASSERT(mp->m_sb.sb_imax_pct >= 0);
++	ASSERT(mp->m_sb.sb_rextslog >= 0);
+ 	return;
+ }
+ 
 -- 
 2.25.1
 
