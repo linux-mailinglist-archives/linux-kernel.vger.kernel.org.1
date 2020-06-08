@@ -2,75 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD1F1F13F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 09:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60331F13FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 09:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729182AbgFHHuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 03:50:46 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:53931 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729014AbgFHHum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 03:50:42 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 49gQR427lLz2d;
-        Mon,  8 Jun 2020 09:50:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1591602640; bh=1E5TLFv0Qix6OuC8g563KyHdAer+hGy3zGxRZ3URGDs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lu9kB5ghtQ+L+JZed3mX4EQCmuQ1enh5MasGPi2Xm9/SRiSVO9GJtM/hhVdqmGbRQ
-         y4orwsM+PhC1jpt5YQxyTpe2zH+FTKYZTd9gBi9Ph3lgWcvJwtazj1GY0oFRgDApbr
-         rtqEasRwT0tGXXsP9GguvquX9/yHU4O/nRUJX+NwC1ox/TPsq+rRF9k+VFBVRHVI4d
-         MNW3LwUgYs7mWSwiOkNpeLwTMPkmpj3xeuOLQojm7sup22PE6KyARhn6XQx77azo+X
-         ot+kl5M/01i/6D8xDo5FjokwKazFSSja9k+YDGXSqa+i4H8dINzKHMylei7vy2Jdjq
-         aa8mMQ0y9a35A==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Mon, 8 Jun 2020 09:50:39 +0200
-From:   Michal Miroslaw <mirq-linux@rere.qmqm.pl>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2][RFC v2] PM-runtime: change the tracepoints to cover
- all usage_count
-Message-ID: <20200608075038.GB1124@qmqm.qmqm.pl>
-References: <cover.1591600914.git.yu.c.chen@intel.com>
- <0a3ae7be4c467912327005995b1defb4fefd8101.1591600914.git.yu.c.chen@intel.com>
+        id S1729033AbgFHHwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 03:52:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727966AbgFHHwh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 03:52:37 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8837C08C5C3
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 00:52:37 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id z2so15816590ilq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 00:52:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WV7BGV6+mEZwraMDjdp2nR5SYEH9cq5Koj6bSPDzdFg=;
+        b=iiDQkzO51Ud8doQx/Fvh2frErrXLmcQWVjwu4YrZ9CdsCem3uJBtlf0qS6ZgGxg6il
+         hpclaZv49UZ7Pmh1g/QoVFpBj1RwKms62u9Jam9CCMfYI4Ioo4T1qjzFYaTzuVuR3Kq3
+         2YQglGzdTR1gFim4n2GLGNuhF30EPKuTm7dD76Ner6RGMNYPfv0PaMhm6X0tN88Cn8RN
+         O1E8Jts4ICVCMSq86MRU942h2PwipxwDNA6tAwGs5y0243Z6YfSpavFKT/jOmeerlrEZ
+         DoxzTu25LqTY6rSjPuB66MA3GM5MdbaaMkK8xcUta4aBv89kNNnUgvugET8DbmzsImT0
+         QHBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WV7BGV6+mEZwraMDjdp2nR5SYEH9cq5Koj6bSPDzdFg=;
+        b=srQ86pJR+yKmeAuVFbubkDRDw+5CZ+64G5KVD9sHZTtEbAy8WtLlHe3OuXy+qhHYaL
+         rd0PJV2JECZckXJWe2YpE/aUzBDn3jUYub2f2YSk566lpcdzJzqTHX32YZG1kqXshbAI
+         VFTYw9Xkv/Bn2ozxfifBjp1vxsALOkyzvE6qQPfq0AyD8B39o4LOQYGoNGMm+1t1QILN
+         WE7ydvIILHTg3nNCXRC+Wn+NW29jtvEgQb7/wApTHltuPgAZW1zROk/7Acmg8zJurFb3
+         l1dvYHP9E57Evt0jn0VQ5Y5RTYaN+u1484O+Gw5QO2Irdfm/XcC7BgGaqiDWWgEy0ay+
+         1s/Q==
+X-Gm-Message-State: AOAM531xvo8i1B/kTW+9q+6CORWoC29KkWweZEtjgprk4D3nAlKGZoDz
+        oQmwW+jg3kLjmvO4fvglLKeW7OC5u1fDRlCrNHI=
+X-Google-Smtp-Source: ABdhPJz6HjW2AjMShnUHb5sUGouse+q5w4H3QF05k31/UU5NL88h0qkyrEVgMXxUvTa1t/7MDpYLI7cZU0Ra8tqVWrs=
+X-Received: by 2002:a92:af44:: with SMTP id n65mr19226418ili.61.1591602757110;
+ Mon, 08 Jun 2020 00:52:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0a3ae7be4c467912327005995b1defb4fefd8101.1591600914.git.yu.c.chen@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAOkhzLUrNYk6JKTbTQuFkfuGKxGvW9XVq6+p9igsBgX1-e9Cxg@mail.gmail.com>
+ <CAKb7Uvg0W_1qUjf3G4JrCb2oJgkwz4G5T6PwkyeL-rZEp4UnTw@mail.gmail.com>
+ <CAOkhzLV+suVNAoyiaHKOkbwP-KKgTLEa7S8kp8+GSTLm_-wWFw@mail.gmail.com>
+ <CAKb7UvgWMsLSHCayzdY7UYMVTjN3OHbH2WhKd-BP46K=r4Ra8A@mail.gmail.com>
+ <CAOkhzLXZVNdpgwV=iiO0TEvLp3Hx28Zk8iYzwy5BvJ1pWi4QxQ@mail.gmail.com> <CAKb7UviB22HxSJ6j4ts=fU=J24Hh69NCBw4uHC5vsi902Pp6bA@mail.gmail.com>
+In-Reply-To: <CAKb7UviB22HxSJ6j4ts=fU=J24Hh69NCBw4uHC5vsi902Pp6bA@mail.gmail.com>
+From:   Zeno Davatz <zdavatz@gmail.com>
+Date:   Mon, 8 Jun 2020 09:52:25 +0200
+Message-ID: <CAOkhzLUQXAB1-=2VasSeJC9-LDgsd0Sk-pJY2LBbHaLqpcBeLg@mail.gmail.com>
+Subject: xrandr: Failed to get size of gamma for output default
+To:     Ilia Mirkin <imirkin@alum.mit.edu>
+Cc:     nouveau <nouveau@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 03:42:15PM +0800, Chen Yu wrote:
-> Commit d229290689ae ("PM-runtime: add tracepoints for usage_count changes")
-> has added some tracepoints to monitor the change of runtime usage, and
-> there is something to improve:
-> 1. There are some places that adjust the usage count have not
->    been traced yet. For example, pm_runtime_get_noresume() and
->    pm_runtime_put_noidle()
-> 2. The change of the usage count will not be tracked if decreased
->    from 1 to 0.
-> 
-> This patch intends to adjust the logic to be consistent with the
-> change of usage_counter, that is to say, only after the counter has
-> been possibly modified, we record it. Besides, all usage changes will
-> be shown using rpm_usage even if included by other trace points.
-> And these changes has helped track down the e1000e runtime issue.
-> 
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> ---
-> v2: According to Michal's suggestion, adjust the commit log
->     to better describe the meaning of this patch.
-> --
->  drivers/base/power/runtime.c | 38 +++++++++++++++++++++++-------------
->  1 file changed, 24 insertions(+), 14 deletions(-)
-[...]
+Dear Ilia
 
-Reviewed-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
+On Thu, Jun 4, 2020 at 6:13 PM Ilia Mirkin <imirkin@alum.mit.edu> wrote:
+
+> Not sure why you bother asking questions when you're just going to
+> dump nouveau anyways. This is the second time I've answered your
+> questions on this very topic, I think it'll be the last too.
+
+I tried again and removed the Nvidia-Drivers with
+
+sudo emerge -C x11-drivers/nvidia-drivers
+
+and installed
+
+sudo emerge x11-drivers/xf86-video-nouveau
+
+this works with Kernel 5.7.0!
+
+~> inxi -G
+Graphics:  Device-1: NVIDIA GP107 driver: N/A
+           Display: server: X.Org 1.20.5 driver: nouveau,vesa
+unloaded: modesetting resolution: 1680x1050~N/A
+           OpenGL: renderer: Rasterizer v: 2.1 Mesa 19.1.4
+
+but now xrandr no longer works.
+
+~> xrandr -q
+
+Screen 0: minimum 1680 x 1050, current 1680 x 1050, maximum 1680 x 1050
+default connected 1680x1050+0+0 0mm x 0mm
+   1680x1050      0.00*
+
+Best
+Zeno
