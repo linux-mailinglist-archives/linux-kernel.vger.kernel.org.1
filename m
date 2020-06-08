@@ -2,89 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70541F1127
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 03:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5B81F112D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 03:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728655AbgFHBso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 21:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728106AbgFHBsk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 21:48:40 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5B8C08C5C4
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 18:48:39 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id c12so15802084qkk.13
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 18:48:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WzFA+2ljHjJmjK+4s4N9XcJU7tBcFMQdcDUBF1suXBc=;
-        b=LuHuT8biBmZ3iG5FzOfEwqe89ixDAa3ljS4YoyKsTSpfaKs7Nz1iZskUGIgk8ZZBRL
-         eVf6UDo3ve8EyMR3rmCdre2xJjS9aXK02W8QKXjaDEVtmgQrhD06QiD56ip8R1kSdK6V
-         ppdpqC0yTX39fq0Kn/Gyra1DxagaM7AyGJkucCLanO0nEccZPx6MHgWQNBm5P6DT6KEm
-         w2dqhx0G851WILBvZ7WakMmeye0MmtwPyezjKzx2gLdcrmbFw26f7cZyuWWXnb63ohYM
-         GHsb75UxcWiVk2uA2kjKehDqxZPQITk1q647OBALoFp7LOapY//aJ0N9vpvJZfuo98t2
-         WGHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WzFA+2ljHjJmjK+4s4N9XcJU7tBcFMQdcDUBF1suXBc=;
-        b=iPdMFQa/GNEN/7rDHNylYukDAmBJnyvA0ZnWNxwQszo37B5Fmrf5utrMtLSWApSrAt
-         5FFUJ5Yu8raDJbDlJSxy8Yx8E/nyyrVe6wl7mnDeIVQD/Oi6l7zBT0kTRqZR8eUS6G6x
-         ZMGoYfvuV1cauLLRG/TRd6a3abpWGbyZwBU+gqiPzoOcZnOKkAzVIY0VrcwSzMnD2AZA
-         wNIrJOyv6aS8gFDc3qCqlcwMRm2II/MxVNBQHNgCiB02M0sraapW7r7UaBjp9XK726wA
-         OIY7tee2DKyvzfZO06LySRfQyPYq8WanxAX05u8CHGU3I+DoNHZhv3gMsiW4+VThU5ct
-         2kAA==
-X-Gm-Message-State: AOAM533iki8vU3Ppq7NqQ8VEtdl+czdw/NRBjw0klqaG0Xh9XDNr26/h
-        8lL9qdXPzfvI+VpF+gWaJTBVxK5+gkaI
-X-Google-Smtp-Source: ABdhPJx3hdua/aa7TR/ZJnRnAKntQFqVcj3eRPEZ4Ipe7HXaYik0Y5uDxWRLslnLSHdmngCE6J2YFA==
-X-Received: by 2002:a37:9e10:: with SMTP id h16mr20497425qke.381.1591580918315;
-        Sun, 07 Jun 2020 18:48:38 -0700 (PDT)
-Received: from localhost.localdomain ([142.119.96.191])
-        by smtp.googlemail.com with ESMTPSA id r77sm6160032qke.6.2020.06.07.18.48.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jun 2020 18:48:37 -0700 (PDT)
-From:   Keyur Patel <iamkeyur96@gmail.com>
-To:     mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Cc:     iamkeyur96@gmail.com
-Subject: [PATCH v3] fs: ocfs2: fix spelling mistake and grammar
-Date:   Sun,  7 Jun 2020 21:48:18 -0400
-Message-Id: <20200608014818.102358-1-iamkeyur96@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200607212115.99278-1-iamkeyur96@gmail.com>
-References: <20200607212115.99278-1-iamkeyur96@gmail.com>
+        id S1728763AbgFHBuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 21:50:20 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:55584 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728106AbgFHBuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 21:50:18 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 9167966CFE953DFC9BB7;
+        Mon,  8 Jun 2020 09:50:13 +0800 (CST)
+Received: from huawei.com (10.67.174.156) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Mon, 8 Jun 2020
+ 09:50:02 +0800
+From:   Chen Tao <chentao107@huawei.com>
+To:     <sean@poorly.run>, <airlied@linux.ie>, <daniel@ffwll.ch>
+CC:     <ddavenport@chromium.org>, <zhengbin13@huawei.com>,
+        <sam@ravnborg.org>, <kalyan_t@codeaurora.org>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <chentao107@huawei.com>
+Subject: [PATCH] drm/msm/dpu: fix error return code in dpu_encoder_init
+Date:   Mon, 8 Jun 2020 09:48:59 +0800
+Message-ID: <20200608014859.120021-1-chentao107@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.156]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-./ocfs2/mmap.c:65: bebongs ==> belonging
+Fix to return negative error code -ENOMEM with the use of
+ERR_PTR from dpu_encoder_init.
 
-Signed-off-by: Keyur Patel <iamkeyur96@gmail.com>
+Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
+Signed-off-by: Chen Tao <chentao107@huawei.com>
 ---
- fs/ocfs2/mmap.c | 2 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ocfs2/mmap.c b/fs/ocfs2/mmap.c
-index 3a44e461828a..39a77e903fdf 100644
---- a/fs/ocfs2/mmap.c
-+++ b/fs/ocfs2/mmap.c
-@@ -62,7 +62,7 @@ static vm_fault_t __ocfs2_page_mkwrite(struct file *file,
- 	last_index = (size - 1) >> PAGE_SHIFT;
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index a1b79ee2bd9d..a2f6b688a976 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -2173,7 +2173,7 @@ struct drm_encoder *dpu_encoder_init(struct drm_device *dev,
  
- 	/*
--	 * There are cases that lead to the page no longer bebongs to the
-+	 * There are cases that lead to the page no longer belonging to the
- 	 * mapping.
- 	 * 1) pagecache truncates locally due to memory pressure.
- 	 * 2) pagecache truncates when another is taking EX lock against 
+ 	dpu_enc = devm_kzalloc(dev->dev, sizeof(*dpu_enc), GFP_KERNEL);
+ 	if (!dpu_enc)
+-		return ERR_PTR(ENOMEM);
++		return ERR_PTR(-ENOMEM);
+ 
+ 	rc = drm_encoder_init(dev, &dpu_enc->base, &dpu_encoder_funcs,
+ 			drm_enc_mode, NULL);
 -- 
-2.26.2
+2.22.0
 
