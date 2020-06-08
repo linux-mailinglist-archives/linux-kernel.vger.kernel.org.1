@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E311F28FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782771F2C3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731250AbgFHXWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:22:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39232 "EHLO mail.kernel.org"
+        id S1731865AbgFIAWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:22:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730476AbgFHXRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:17:33 -0400
+        id S1729812AbgFHXRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:17:35 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A130214F1;
-        Mon,  8 Jun 2020 23:17:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E936920884;
+        Mon,  8 Jun 2020 23:17:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658253;
-        bh=oqZ+NsD3VxSpXbZh521LmVgD1/qZripK/UNHLLtpTDY=;
+        s=default; t=1591658255;
+        bh=7bdL3LfbgQTpB6p9+mW/YgtWkBdHWnz5N5/nrRUeYB0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SS1DYvK7I5MAgJ/mX3WuRQERJ3AjhAvSGoTFrvw0zxudmzJZ27T6mGlXppD03Ntt/
-         ukX6KrL3n4NtOlDk5nrcQVGlfL8fwkqcNf6yCWEZlqno5rnpwe+IgJHHBioPAJRgtb
-         LmiQ0aXDktdQ7IyTgzui/GY7CeAR7iqWngQQhSzA=
+        b=Ah3zpBFn7+Wy7moVnddJCgKY5jWI96oduPPOEeyepoWWwnmRixfB0V5EGBC5HB33q
+         wT7TIMw40YNrv6/oBw74MoyRiqcP+8LRzalaI07w2PVYtA9cdEOc5c9BpDNYrStkUF
+         UWLmiJaeHx0l0yKOgwMqeons2JtX6pqZUq8Y0MTE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Laura Abbott <labbott@redhat.com>,
-        "Andrew F. Davis" <afd@ti.com>, linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.6 262/606] kselftests: dmabuf-heaps: Fix confused return value on expected error testing
-Date:   Mon,  8 Jun 2020 19:06:27 -0400
-Message-Id: <20200608231211.3363633-262-sashal@kernel.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
+Subject: [PATCH AUTOSEL 5.6 264/606] gfs2: Grab glock reference sooner in gfs2_add_revoke
+Date:   Mon,  8 Jun 2020 19:06:29 -0400
+Message-Id: <20200608231211.3363633-264-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -49,42 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Stultz <john.stultz@linaro.org>
+From: Andreas Gruenbacher <agruenba@redhat.com>
 
-[ Upstream commit 4bb9d46d47b105a774f9dca642f5271375bca4b2 ]
+[ Upstream commit f4e2f5e1a527ce58fc9f85145b03704779a3123e ]
 
-When I added the expected error testing, I forgot I need to set
-the return to zero when we successfully see an error.
+This patch rearranges gfs2_add_revoke so that the extra glock
+reference is added earlier on in the function to avoid races in which
+the glock is freed before the new reference is taken.
 
-Without this change we only end up testing a single heap
-before the test quits.
-
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-Cc: Brian Starkey <brian.starkey@arm.com>
-Cc: Laura Abbott <labbott@redhat.com>
-Cc: "Andrew F. Davis" <afd@ti.com>
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/gfs2/log.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
-index cd5e1f602ac9..909da9cdda97 100644
---- a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
-+++ b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
-@@ -351,6 +351,7 @@ static int test_alloc_errors(char *heap_name)
- 	}
+diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
+index 60d911e293e6..2674feda1d7a 100644
+--- a/fs/gfs2/log.c
++++ b/fs/gfs2/log.c
+@@ -603,13 +603,13 @@ void gfs2_add_revoke(struct gfs2_sbd *sdp, struct gfs2_bufdata *bd)
+ 	struct buffer_head *bh = bd->bd_bh;
+ 	struct gfs2_glock *gl = bd->bd_gl;
  
- 	printf("Expected error checking passed\n");
-+	ret = 0;
- out:
- 	if (dmabuf_fd >= 0)
- 		close(dmabuf_fd);
++	sdp->sd_log_num_revoke++;
++	if (atomic_inc_return(&gl->gl_revokes) == 1)
++		gfs2_glock_hold(gl);
+ 	bh->b_private = NULL;
+ 	bd->bd_blkno = bh->b_blocknr;
+ 	gfs2_remove_from_ail(bd); /* drops ref on bh */
+ 	bd->bd_bh = NULL;
+-	sdp->sd_log_num_revoke++;
+-	if (atomic_inc_return(&gl->gl_revokes) == 1)
+-		gfs2_glock_hold(gl);
+ 	set_bit(GLF_LFLUSH, &gl->gl_flags);
+ 	list_add(&bd->bd_list, &sdp->sd_log_revokes);
+ }
 -- 
 2.25.1
 
