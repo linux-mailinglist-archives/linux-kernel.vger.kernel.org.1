@@ -2,166 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDF91F1EAF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 20:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7EB1F1EB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 20:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730242AbgFHSEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 14:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
+        id S1725872AbgFHSJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 14:09:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729979AbgFHSEY (ORCPT
+        with ESMTP id S1725280AbgFHSJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 14:04:24 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09D1C08C5C2;
-        Mon,  8 Jun 2020 11:04:23 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id a127so8857720pfa.12;
-        Mon, 08 Jun 2020 11:04:23 -0700 (PDT)
+        Mon, 8 Jun 2020 14:09:51 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0A6C08C5C2;
+        Mon,  8 Jun 2020 11:09:50 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id k8so14206569edq.4;
+        Mon, 08 Jun 2020 11:09:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=vy3WmLcTN1C9TwpCZlVK/k2jmSpqqmElcRpgtxdIswQ=;
-        b=tU9QNdGOX7EhRI4izEZnPMk+dIet667Sn1H49wXjBsahqedcLrR2Ed9Was0NtItz+Q
-         OhHZ1HOon0qszB+DS3pVonGWlCDyobR3+iECtEpUJk5ZatPVX3iGI8Mki8CjkwmfHODf
-         xYqDGnmJrEAqKjbOY/ADn1YcTT5qZAwrm/JBiY8Z8jZ0MTBM6FaCvdfh/vdoZwAUDLjY
-         aBN46WtCVW27QpkV0HgeQThk37WSKoWsxNBKUdWj2kSt4rVH12iVTChoCpoUDLuKAnix
-         m+yUngrG8K4fHjLs+MPCa+EbDd/tvEwMHpFCAVHAtQ6mCMDVD5V5KCmkE7Es4E/tk2Tc
-         353Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kIWEJW4Q8C9XcuWgJjB2jwWYwZN4pyQAGdOTG1h96zg=;
+        b=qzTeSUpWoR4bybO84TI367AMQsEGeJ3vy3E/knlZxDU1zMYJsbww86WRTcuI0k66Tl
+         uQrmV3LELsb4STm7O9YAeZbZPzHfDkZB6sQecsP8jOsG7O/4s6FXikcD/D0Zw3gJX5I5
+         kZvlKYgzTz8Bju9SB/IBsXAJPTdTOEWLPiul6Dk8wm29WHxFT1UozC4KyGi4+Y80Anjl
+         RrQs8tBS3NV9ZXiYozGyNdLqfI4fXwYjDr13M5HoxdfkFjSU4U8er2yEw041hl6DoCVK
+         y5jZ+hl6q3iezz58ODV+zGrIErRrbUOfNTCVMJDFsApLKiNe2wxAjXADn1Flu1nNkRza
+         K8GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:user-agent;
-        bh=vy3WmLcTN1C9TwpCZlVK/k2jmSpqqmElcRpgtxdIswQ=;
-        b=ZTPHlXiY7bnWin53cH+PyIFi9O5P+jzyLnW0o4m/08BS/F/4CKeNIveyuFl5UQK26y
-         32QDqCss6nHiyAkSmC5eZP4stagLhmW/cNrfQdQJyKDe4D3FnUMm+2JL97wEslEZiQXU
-         D7+UBe+7hXwL+AowPRAWuEENKFsNP6YntYLIQ0dJV0cXGuKSR7kQRQZ9ZaZN6MZQACFj
-         0W89Aipf0N9yz9ywiSrmMCDTTofUPrEzMGIDgn3rW5lMQ5bn17Mp/hjteq76DA+xEZxE
-         Yd4gJmaNmbGw4v7Vo9YDjuIcUzB+O6MZLE/5k4IptniAe1A/wB9cu3z5SxPHYNz/7Ibb
-         HiZw==
-X-Gm-Message-State: AOAM531YyRSNTv+seNb7p5DKs94d2jrurBxxZmgSUUUBNFkGVu+jh0LO
-        OnkHrfHyIIhDigAf8cnIFb0=
-X-Google-Smtp-Source: ABdhPJwSZFtCX0X/ChGUh2y2uaj7qYI5ZishucIyaSmU2a8St4wozy1oqywQxQ/Wmi+91DEp4j/RsA==
-X-Received: by 2002:a62:a510:: with SMTP id v16mr4640795pfm.154.1591639463137;
-        Mon, 08 Jun 2020 11:04:23 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a27sm6615481pgn.62.2020.06.08.11.04.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 08 Jun 2020 11:04:22 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 11:04:21 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     X86 ML <x86@kernel.org>, Huang Rui <ray.huang@amd.com>,
-        linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/msr: Lift AMD family 0x15 power-specific MSRs
-Message-ID: <20200608180421.GA32167@roeck-us.net>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kIWEJW4Q8C9XcuWgJjB2jwWYwZN4pyQAGdOTG1h96zg=;
+        b=FHQyTOfbR+eKa+qbTylBB8nlPz8qXjgvvQA+svlrlhTSkdiISFJzgclXcQG/x1Y/xJ
+         RayEUrs5MYep3yspJLbRLbDr5sQ274wZUakoK/2fraC9zChfp6JJlfub2IQbd4mMDbfR
+         MCWSK6qWuIYlJktyyE5qamXaVOj5ZLDWul9zlAxqecO/IvvjisjdllTp8ak3saeb5jjw
+         nW0qK01Kv1s74l2Q+MNLoIzj5LIf3DkEEU2UpYEet5UZ9DirXoSVfzBALBgnaFIjzrtR
+         KK6+DYZVHtMJgmAlp7fBA5tJmrlk3tKfUSbJ4l7n/aryUySdpQgf6nmD7gUmEGMp2SPB
+         yorg==
+X-Gm-Message-State: AOAM531NwvTOuVXJovhLyjXwu215O+PlkQx/T5JJN5uh84N4nXyxzloa
+        /ZTltuxhMQbDalJtObL3k0vML3NI
+X-Google-Smtp-Source: ABdhPJzbDMdixD3UszhSEqM57ExPKwbhvKqvK/S4fRpxW4hSkOV3GC9Dz5qnN5KnfaLe2+4i5iIGEg==
+X-Received: by 2002:aa7:c2c7:: with SMTP id m7mr22903144edp.148.1591639788205;
+        Mon, 08 Jun 2020 11:09:48 -0700 (PDT)
+Received: from localhost.localdomain ([5.100.193.151])
+        by smtp.gmail.com with ESMTPSA id ok21sm10515029ejb.82.2020.06.08.11.09.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jun 2020 11:09:47 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, xiaoguang.wang@linux.alibaba.com
+Subject: [PATCH 0/4] remove work.func
+Date:   Mon,  8 Jun 2020 21:08:16 +0300
+Message-Id: <cover.1591637070.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 06:48:47PM +0200, Borislav Petkov wrote:
-> From: Borislav Petkov <bp@suse.de>
-> 
-> ... into the global msr-index.h header because they're used in multiple
-> compilation units. Sort the MSR list a bit. Update the msr-index.h copy
-> in tools.
-> 
-> No functional changes.
-> 
-> Signed-off-by: Borislav Petkov <bp@suse.de>
+As discussed, removing ->func from io_wq_work and moving
+it into io-wq.
 
-Acked-by: Guenter Roeck <linux@roeck-us.net>
+Pavel Begunkov (4):
+  io_uring: don't derive close state from ->func
+  io_uring: remove custom ->func handlers
+  io_uring: don't arm a timeout through work.func
+  io_wq: add per-wq work handler instead of per work
 
-> ---
->  arch/x86/events/amd/power.c            | 4 ----
->  arch/x86/include/asm/msr-index.h       | 5 ++++-
->  drivers/hwmon/fam15h_power.c           | 4 ----
->  tools/arch/x86/include/asm/msr-index.h | 5 ++++-
->  4 files changed, 8 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/x86/events/amd/power.c b/arch/x86/events/amd/power.c
-> index 43b09e9c93a2..16a2369c586e 100644
-> --- a/arch/x86/events/amd/power.c
-> +++ b/arch/x86/events/amd/power.c
-> @@ -13,10 +13,6 @@
->  #include <asm/cpu_device_id.h>
->  #include "../perf_event.h"
->  
-> -#define MSR_F15H_CU_PWR_ACCUMULATOR     0xc001007a
-> -#define MSR_F15H_CU_MAX_PWR_ACCUMULATOR 0xc001007b
-> -#define MSR_F15H_PTSC			0xc0010280
-> -
->  /* Event code: LSB 8 bits, passed in attr->config any other bit is reserved. */
->  #define AMD_POWER_EVENT_MASK		0xFFULL
->  
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-> index ef452b817f44..7dfd45bb6cdb 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -414,15 +414,18 @@
->  #define MSR_AMD64_PATCH_LEVEL		0x0000008b
->  #define MSR_AMD64_TSC_RATIO		0xc0000104
->  #define MSR_AMD64_NB_CFG		0xc001001f
-> -#define MSR_AMD64_CPUID_FN_1		0xc0011004
->  #define MSR_AMD64_PATCH_LOADER		0xc0010020
->  #define MSR_AMD_PERF_CTL		0xc0010062
->  #define MSR_AMD_PERF_STATUS		0xc0010063
->  #define MSR_AMD_PSTATE_DEF_BASE		0xc0010064
-> +#define MSR_F15H_CU_PWR_ACCUMULATOR     0xc001007a
-> +#define MSR_F15H_CU_MAX_PWR_ACCUMULATOR 0xc001007b
->  #define MSR_AMD64_OSVW_ID_LENGTH	0xc0010140
->  #define MSR_AMD64_OSVW_STATUS		0xc0010141
-> +#define MSR_F15H_PTSC			0xc0010280
->  #define MSR_AMD_PPIN_CTL		0xc00102f0
->  #define MSR_AMD_PPIN			0xc00102f1
-> +#define MSR_AMD64_CPUID_FN_1		0xc0011004
->  #define MSR_AMD64_LS_CFG		0xc0011020
->  #define MSR_AMD64_DC_CFG		0xc0011022
->  #define MSR_AMD64_BU_CFG2		0xc001102a
-> diff --git a/drivers/hwmon/fam15h_power.c b/drivers/hwmon/fam15h_power.c
-> index 267eac00a3fb..29f5fed28c2a 100644
-> --- a/drivers/hwmon/fam15h_power.c
-> +++ b/drivers/hwmon/fam15h_power.c
-> @@ -41,10 +41,6 @@ MODULE_LICENSE("GPL");
->  /* set maximum interval as 1 second */
->  #define MAX_INTERVAL			1000
->  
-> -#define MSR_F15H_CU_PWR_ACCUMULATOR	0xc001007a
-> -#define MSR_F15H_CU_MAX_PWR_ACCUMULATOR	0xc001007b
-> -#define MSR_F15H_PTSC			0xc0010280
-> -
->  #define PCI_DEVICE_ID_AMD_15H_M70H_NB_F4 0x15b4
->  
->  struct fam15h_power_data {
-> diff --git a/tools/arch/x86/include/asm/msr-index.h b/tools/arch/x86/include/asm/msr-index.h
-> index ef452b817f44..7dfd45bb6cdb 100644
-> --- a/tools/arch/x86/include/asm/msr-index.h
-> +++ b/tools/arch/x86/include/asm/msr-index.h
-> @@ -414,15 +414,18 @@
->  #define MSR_AMD64_PATCH_LEVEL		0x0000008b
->  #define MSR_AMD64_TSC_RATIO		0xc0000104
->  #define MSR_AMD64_NB_CFG		0xc001001f
-> -#define MSR_AMD64_CPUID_FN_1		0xc0011004
->  #define MSR_AMD64_PATCH_LOADER		0xc0010020
->  #define MSR_AMD_PERF_CTL		0xc0010062
->  #define MSR_AMD_PERF_STATUS		0xc0010063
->  #define MSR_AMD_PSTATE_DEF_BASE		0xc0010064
-> +#define MSR_F15H_CU_PWR_ACCUMULATOR     0xc001007a
-> +#define MSR_F15H_CU_MAX_PWR_ACCUMULATOR 0xc001007b
->  #define MSR_AMD64_OSVW_ID_LENGTH	0xc0010140
->  #define MSR_AMD64_OSVW_STATUS		0xc0010141
-> +#define MSR_F15H_PTSC			0xc0010280
->  #define MSR_AMD_PPIN_CTL		0xc00102f0
->  #define MSR_AMD_PPIN			0xc00102f1
-> +#define MSR_AMD64_CPUID_FN_1		0xc0011004
->  #define MSR_AMD64_LS_CFG		0xc0011020
->  #define MSR_AMD64_DC_CFG		0xc0011022
->  #define MSR_AMD64_BU_CFG2		0xc001102a
-> -- 
-> 2.21.0
-> 
+ fs/io-wq.c    |  10 ++-
+ fs/io-wq.h    |   7 +-
+ fs/io_uring.c | 221 +++++++++++++++-----------------------------------
+ 3 files changed, 74 insertions(+), 164 deletions(-)
+
+-- 
+2.24.0
+
