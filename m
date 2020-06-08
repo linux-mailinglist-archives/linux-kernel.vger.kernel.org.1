@@ -2,97 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AC91F17A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141B71F17C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729673AbgFHLXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 07:23:07 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:46400 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729640AbgFHLWu (ORCPT
+        id S1729710AbgFHLYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 07:24:01 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:33903 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729576AbgFHLYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 07:22:50 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 058BMRGD111939;
-        Mon, 8 Jun 2020 11:22:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=g/SBqla2Qz8YmgXWV5dNE6NiesBkgSREBkriy+DQb8o=;
- b=T2VIpFyRZdRUANYlq3EtlHGqp8itK8+N7iO7owb3UkNmIQnmlkjUZjHNsC4JQ8Z5yCZD
- SGoJ1XLBMMT7lUSQyg5PNdF/yyMUhwIp6fzvzsVKWFnt8iihZ5XHGtYeGM69Vw9eW5t+
- Mgj0WcDHHJ0+k6k4aSg4gVNSpSwB9JphTvMU9Mn1Th4IfAK1DxC2w4DULZBiAH3Y/oBu
- izQAKPWW+xk6JzJtIepE5jnm6IkKsG+49UHcvd6EVyEz15hMyoewGo1ODtK4fne/Vq0e
- 5o1aQ/XlxyDzNbdLzzIPhTR1TzAlHUxQxxNYAsLNv5VPbAM0cJ/FAJcezXRZJFYwyznQ pw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 31g3smp5y8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 08 Jun 2020 11:22:39 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 058BHmnK020506;
-        Mon, 8 Jun 2020 11:22:38 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 31gmqm38yx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Jun 2020 11:22:38 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 058BMaa1010818;
-        Mon, 8 Jun 2020 11:22:37 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 08 Jun 2020 04:22:36 -0700
-Date:   Mon, 8 Jun 2020 14:22:28 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        rjw@rjwysocki.net, pavel@ucw.cz, len.brown@intel.com,
-        Dan Carpenter <error27@gmail.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] kernel: power: swap: mark a function as __init to save
- some memory
-Message-ID: <20200608112228.GW30374@kadam>
-References: <20200531210059.647066-1-christophe.jaillet@wanadoo.fr>
- <effe3cde7b1f188427c42c476f5a96251d837416.camel@perches.com>
+        Mon, 8 Jun 2020 07:24:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591615439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zpkcgamnoQZWwxd6fU5WrGz2mHKzjvnnrxEBUwMVz5w=;
+        b=aGd3ubY7Ag39eRW0mFbwYGa7rxYcODMHssippt/bp5fJ7DCsScwItsuTP8rmiqGlKohQpU
+        O960DIRs9cVPYof5P+3w0o8ZNN/YxIkAAERAPbKcaUFgA8E+4tm+A5MXNKMynxDRT1YhaI
+        tieRQw2FFEThM5+5RDbIh9i7+7pVrrM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-474-3wVxRvGdORmKEV7ifNC61Q-1; Mon, 08 Jun 2020 07:23:58 -0400
+X-MC-Unique: 3wVxRvGdORmKEV7ifNC61Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CFE56107ACF2;
+        Mon,  8 Jun 2020 11:23:56 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DF5335D9E4;
+        Mon,  8 Jun 2020 11:23:47 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Marcelo Bandeira Condotta <mcondotta@redhat.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] KVM: selftests: Add x86_64/debug_regs to .gitignore
+Date:   Mon,  8 Jun 2020 13:23:45 +0200
+Message-Id: <20200608112346.593513-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <effe3cde7b1f188427c42c476f5a96251d837416.camel@perches.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9645 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
- mlxlogscore=936 adultscore=0 spamscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006080086
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9645 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=0
- spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- mlxlogscore=963 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006080086
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 31, 2020 at 03:11:27PM -0700, Joe Perches wrote:
-> (adding Dan Carpenter)
-> 
-> On Sun, 2020-05-31 at 23:00 +0200, Christophe JAILLET wrote:
-> > 'swsusp_header_init()' is only called via 'core_initcall'.
-> > It can be marked as __init to save a few bytes of memory.
-> 
-> Hey Dan
-> 
-> smatch has a full function calling tree right?
-> 
-> Can smatch find unmarked functions called only by __init
-> functions so those unmarked functions can be appropriately
-> marked with __init like the below?
-> 
+Add x86_64/debug_regs to .gitignore.
 
-It turns out it's complicated to do this in Smatch because Sparse
-ignores the section attribute.  :/
+Reported-by: Marcelo Bandeira Condotta <mcondotta@redhat.com>
+Fixes: 449aa906e67e ("KVM: selftests: Add KVM_SET_GUEST_DEBUG test")
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ tools/testing/selftests/kvm/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 
-regards,
-dan carpenter
+diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
+index f159718f90c0..452787152748 100644
+--- a/tools/testing/selftests/kvm/.gitignore
++++ b/tools/testing/selftests/kvm/.gitignore
+@@ -3,6 +3,7 @@
+ /s390x/resets
+ /s390x/sync_regs_test
+ /x86_64/cr4_cpuid_sync_test
++/x86_64/debug_regs
+ /x86_64/evmcs_test
+ /x86_64/hyperv_cpuid
+ /x86_64/mmio_warning_test
+-- 
+2.25.4
 
