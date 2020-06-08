@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824DE1F2D49
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698841F2F9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733121AbgFIAcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:32:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36188 "EHLO mail.kernel.org"
+        id S1730614AbgFIAvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:51:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728834AbgFHXPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:15:19 -0400
+        id S1728612AbgFHXKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:10:17 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF36B2076C;
-        Mon,  8 Jun 2020 23:15:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71B1D20E65;
+        Mon,  8 Jun 2020 23:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658118;
-        bh=QkkKrfXIqBTewevv8yU5ylGQpIpEznDfIwmX3poadq8=;
+        s=default; t=1591657817;
+        bh=+6kXrgQ4NVOvyd8KUFY2r+iOtJb5sRwbTKszCOGlshU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cUJsubXgLnxli/j2JGKMhkNVdw5Jltwh4jQHWGf7awAruTrtAfbaM5xoUAOuSyYQA
-         cfdfKL6MmHW/Y4+OiNawgAxAa/NNnr9oml1USzj7HlwfFZXdhsY/iW1Lvk70uk6wUg
-         0m1cZfgn5VSz7Fmv8Sz1RY7hVnUml+gCLk3HN5kw=
+        b=jwBSWwlHHwT1eOdvbDAzMiAS1zda14eYEEjhXFzOUnZIORcjTIHzvJz89PaBHtkab
+         hrF3YbjaR7v8uk6duvBlLrHAO/3tP2M3hPDKudu8v8EMFAUwXoNE88qQvGNAxRW2Zt
+         PUr69nkY0Sm3GgfOOF04c/QiN8Q497lYLP7iiU5Y=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 156/606] dmaengine: tegra210-adma: Fix an error handling path in 'tegra_adma_probe()'
-Date:   Mon,  8 Jun 2020 19:04:41 -0400
-Message-Id: <20200608231211.3363633-156-sashal@kernel.org>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 191/274] mt76: mt7615: do not always reset the dfs state setting the channel
+Date:   Mon,  8 Jun 2020 19:04:44 -0400
+Message-Id: <20200608230607.3361041-191-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -46,42 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-commit 3a5fd0dbd87853f8bd2ea275a5b3b41d6686e761 upstream.
+[ Upstream commit fdb786cce0ef3615dcbb30d8baf06a1d4cb7a344 ]
 
-Commit b53611fb1ce9 ("dmaengine: tegra210-adma: Fix crash during probe")
-has moved some code in the probe function and reordered the error handling
-path accordingly.
-However, a goto has been missed.
+mac80211/hostapd runs mt7615_set_channel with the same channel
+parameters sending multiple rdd commands overwriting the previous ones.
+This behaviour is causing tpt issues on dfs channels.
+Fix the issue checking new channel freq/width with the running one.
 
-Fix it and goto the right label if 'dma_async_device_register()' fails, so
-that all resources are released.
-
-Fixes: b53611fb1ce9 ("dmaengine: tegra210-adma: Fix crash during probe")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
-Link: https://lore.kernel.org/r/20200516214205.276266-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 5dabdf71e94e ("mt76: mt7615: add multiple wiphy support to the dfs support code")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/tegra210-adma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../net/wireless/mediatek/mt76/mt7615/main.c  | 21 ++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma/tegra210-adma.c b/drivers/dma/tegra210-adma.c
-index 6e1268552f74..914901a680c8 100644
---- a/drivers/dma/tegra210-adma.c
-+++ b/drivers/dma/tegra210-adma.c
-@@ -900,7 +900,7 @@ static int tegra_adma_probe(struct platform_device *pdev)
- 	ret = dma_async_device_register(&tdma->dma_dev);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "ADMA registration failed: %d\n", ret);
--		goto irq_dispose;
-+		goto rpm_put;
- 	}
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/main.c b/drivers/net/wireless/mediatek/mt76/mt7615/main.c
+index 6586176c29af..f92ac9a916fc 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/main.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/main.c
+@@ -218,6 +218,25 @@ static void mt7615_remove_interface(struct ieee80211_hw *hw,
+ 	spin_unlock_bh(&dev->sta_poll_lock);
+ }
  
- 	ret = of_dma_controller_register(pdev->dev.of_node,
++static void mt7615_init_dfs_state(struct mt7615_phy *phy)
++{
++	struct mt76_phy *mphy = phy->mt76;
++	struct ieee80211_hw *hw = mphy->hw;
++	struct cfg80211_chan_def *chandef = &hw->conf.chandef;
++
++	if (hw->conf.flags & IEEE80211_CONF_OFFCHANNEL)
++		return;
++
++	if (!(chandef->chan->flags & IEEE80211_CHAN_RADAR))
++		return;
++
++	if (mphy->chandef.chan->center_freq == chandef->chan->center_freq &&
++	    mphy->chandef.width == chandef->width)
++		return;
++
++	phy->dfs_state = -1;
++}
++
+ static int mt7615_set_channel(struct mt7615_phy *phy)
+ {
+ 	struct mt7615_dev *dev = phy->dev;
+@@ -229,7 +248,7 @@ static int mt7615_set_channel(struct mt7615_phy *phy)
+ 	mutex_lock(&dev->mt76.mutex);
+ 	set_bit(MT76_RESET, &phy->mt76->state);
+ 
+-	phy->dfs_state = -1;
++	mt7615_init_dfs_state(phy);
+ 	mt76_set_channel(phy->mt76);
+ 
+ 	ret = mt7615_mcu_set_chan_info(phy, MCU_EXT_CMD_CHANNEL_SWITCH);
 -- 
 2.25.1
 
