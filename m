@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2F21F1898
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9F31F18AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729747AbgFHMPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 08:15:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729665AbgFHMPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 08:15:23 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 238B7206C3;
-        Mon,  8 Jun 2020 12:15:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591618522;
-        bh=xt2dfXDYvKQ+mK/taWv4/T9nWcs8mHsbCaH3tuw/rKw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p4/dAPrFBtt8TlGtfodkTeGQBFlrU4Gf9SF51xlpAwYPrfj9ZbmDbeHu1bP8KuHJP
-         O0veAt7/Zab0n2v/lPigwOQ/07Kd+NaI1X6M+R7DgoUprXRYKqhMWu4bLXrfmgs0mt
-         fNXXaDBLMdfvXYSBztqqKmPkCxjVvNiITLpF7+Mk=
-Date:   Mon, 8 Jun 2020 14:15:19 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Matthias Brugger <mbrugger@suse.com>
-Cc:     matthias.bgg@kernel.org, rafael@kernel.org,
-        linux-kernel@vger.kernel.org, gene.chen.richtek@gmail.com,
-        lee.jones@linaro.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 1/2] drivers: base: Warn if driver name is not present
-Message-ID: <20200608121519.GA306451@kroah.com>
-References: <20200608095217.21162-1-matthias.bgg@kernel.org>
- <20200608105756.GB295073@kroah.com>
- <b8affc8c-3f38-3488-76dd-1b02fcdda329@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b8affc8c-3f38-3488-76dd-1b02fcdda329@suse.com>
+        id S1729728AbgFHMWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 08:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729628AbgFHMWC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 08:22:02 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E27C08C5C2;
+        Mon,  8 Jun 2020 05:22:01 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 10so2604717pfx.8;
+        Mon, 08 Jun 2020 05:22:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=HDxho5qgH/ZNs1hwouSLFAzSS6Ya6IXAFD99ObdyT2U=;
+        b=SW8D7gsAlHDtxyd8A/lLyC0s9kXr1vPCLo4wGsWfQOgnAw2y0SomQpam6DVE20cx4G
+         pGClR37CIUCmo0HVoo1Aupipewj1E4JYe7uPjhf3wf6fgT9ugod8M3qShjyNg665Aqxl
+         xbwTktjbLIN5qbaoyRF4G5HfXrfDfVa19TZWErDO2pWWY8CY4AyUBlfePgjUH0HYOpji
+         hzcxlbSeQsmcZjRZ86qZAqeowtgrZYtWX8nHpl7AiN34tIeYpWfCFOu5tWbqWMGASZhK
+         dBPuJoDmiANdj2K/F4d4Rk/x4Scw5qBUEm9MyRdXwiLQnZejrRv80JPIjlZuslxF1k5o
+         AVWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HDxho5qgH/ZNs1hwouSLFAzSS6Ya6IXAFD99ObdyT2U=;
+        b=U3DGD5XKqkBXWPEawHTkrMnCDPLs4+mGvJVjYeQ4LXBu0rVWbzL5xa+E3oIiACIq28
+         fPdbaSlBAZJjNmIXrjUZ9IotjbS0XBfacm3Hoi1rAWSXg29zR/TNJBICMQCQWf5yGVk8
+         23ZKEbyiwpQ/Dbq0WqEk8GCoMORFgMuUK3V6mZ5mHDHeZ0pV0CkNlOSilIr1k/dwOgkJ
+         tvkCtd+Fb9+R11UbRwusQRbrt1fbX6p+PXFQyg2qD6f2JMM8kYmPMUWXF/AT+M4+W/tI
+         52sCErAdVXejTr8w/ZxaL2AWCDV4CoKDxTsq2vfhG0H559qA6LSH4FwEmWeqPn3ZMUVy
+         PUCw==
+X-Gm-Message-State: AOAM5300tPL9dJvt99mQxHC2ZcJmK+k0L6TpIcgDasrznkZS3z/mPPKn
+        BPCuYRSrF+tSP7PcRgxrQBoKWNrg
+X-Google-Smtp-Source: ABdhPJwMhWCzEK/UeGQzspWpga1Pqrnmfx1UaWD/aQi3RYJ9+jsb3BBeRs5aBHPb3r/reQoTC/L+5Q==
+X-Received: by 2002:a62:36c5:: with SMTP id d188mr3677066pfa.120.1591618920957;
+        Mon, 08 Jun 2020 05:22:00 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.34])
+        by smtp.gmail.com with ESMTPSA id g29sm6975584pfr.47.2020.06.08.05.21.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jun 2020 05:22:00 -0700 (PDT)
+From:   Baolin Wang <baolin.wang7@gmail.com>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org
+Cc:     baolin.wang7@gmail.com, baohua@kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] hwspinlock: sirf: Remove the redundant 'of_match_ptr'
+Date:   Mon,  8 Jun 2020 20:20:28 +0800
+Message-Id: <250d35cb489c3c4c066f7ce256d27f36712a1979.1591618255.git.baolin.wang7@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 01:48:28PM +0200, Matthias Brugger wrote:
-> 
-> 
-> On 08/06/2020 12:57, Greg KH wrote:
-> > On Mon, Jun 08, 2020 at 11:52:16AM +0200, matthias.bgg@kernel.org wrote:
-> >> From: Matthias Brugger <mbrugger@suse.com>
-> >>
-> >> If we pass a driver without a name, we end up in a NULL pointer
-> >> derefernce.
-> > 
-> > That's a very good reason not to have a driver without a name :)
-> > 
-> > What in-kernel driver does this?
-> > 
-> >> Check for the name before trying to register the driver.
-> >> As we don't have a driver name to point to in the error message, we dump
-> >> the call stack to make it easier to detect the buggy driver.
-> >>
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-> >> ---
-> >>  drivers/base/driver.c | 6 ++++++
-> >>  1 file changed, 6 insertions(+)
-> >>
-> >> diff --git a/drivers/base/driver.c b/drivers/base/driver.c
-> >> index 57c68769e157..40fba959c140 100644
-> >> --- a/drivers/base/driver.c
-> >> +++ b/drivers/base/driver.c
-> >> @@ -149,6 +149,12 @@ int driver_register(struct device_driver *drv)
-> >>  	int ret;
-> >>  	struct device_driver *other;
-> >>  
-> >> +	if (!drv->name) {
-> >> +		pr_err("Driver has no name.\n");
-> >> +		dump_stack();
-> >> +		return -EINVAL;
-> > 
-> > Ick, no, an oops-traceback for doing something dumb like this should be
-> > all that we need, right?
-> > 
-> > How "hardened" do we need to make internal apis anyway?  What's the odds
-> > that if this does trigger, the driver author would even notice it?
-> > 
-> 
-> We just had the case that a driver got accepted in a maintainer repository
-> without a name. Which got later found by the kernel test robot.
+Remove the the redundant 'of_match_ptr' macro to fix below warning
+when the CONFIG_OF is not selected.
 
-That driver had obviously never actually been run before :(
+All warnings:
+drivers/hwspinlock/sirf_hwspinlock.c:87:34: warning: unused variable
+'sirf_hwpinlock_ids' [-Wunused-const-variable]
 
-> I agree with you that it probably doesn't make much sense to check for this kind
-> of bugs, as it should be discoverable if you test your code, before you submit.
-> 
-> I propose to ignore this patch.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+---
+ drivers/hwspinlock/sirf_hwspinlock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks, now dropped!
+diff --git a/drivers/hwspinlock/sirf_hwspinlock.c b/drivers/hwspinlock/sirf_hwspinlock.c
+index 823d3c4f621e..a3f77120bad7 100644
+--- a/drivers/hwspinlock/sirf_hwspinlock.c
++++ b/drivers/hwspinlock/sirf_hwspinlock.c
+@@ -94,7 +94,7 @@ static struct platform_driver sirf_hwspinlock_driver = {
+ 	.probe = sirf_hwspinlock_probe,
+ 	.driver = {
+ 		.name = "atlas7_hwspinlock",
+-		.of_match_table = of_match_ptr(sirf_hwpinlock_ids),
++		.of_match_table = sirf_hwpinlock_ids,
+ 	},
+ };
+ 
+-- 
+2.17.1
 
-greg k-h
