@@ -2,151 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935BC1F1E44
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 19:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8962D1F1E51
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 19:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387566AbgFHRUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 13:20:52 -0400
-Received: from mout.web.de ([212.227.17.12]:60721 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730490AbgFHRUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 13:20:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1591636841;
-        bh=1SLpcfHSohglzT12sbos71QamX4xs51AXro0SmferIU=;
-        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
-        b=WAEBKH9jHxyElPSRN0bQHviw/Hw6nEZ+D+ppMq0v5f3QkKngv+k2LdZoSGSNygabT
-         dB5c5Q/ibAG/Z//orx8S0zjeucrkaP6iIT1iRMz9Zi0ICpQ16pBSVBrOanh7RlJgZy
-         WJVzvhqhLjuEG8ZVuBo1T3sIHiwwqLhAEQmdATjc=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.116.236]) by smtp.web.de (mrweb101
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0MF3nL-1jkDvG0WBH-00GFJR; Mon, 08
- Jun 2020 19:20:41 +0200
-Cc:     kernel-janitors@vger.kernel.org,
-        Coccinelle <cocci@systeme.lip6.fr>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] coccinelle: api: extend memdup_user transformation
- with GFP_USER
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-To:     Denis Efremov <efremov@linux.com>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Julia Lawall <Julia.Lawall@lip6.fr>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>
-Message-ID: <c3464cad-e567-9ef5-b4e3-a01e3b11120b@web.de>
-Date:   Mon, 8 Jun 2020 19:20:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S2387538AbgFHR3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 13:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730728AbgFHR3M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 13:29:12 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61144C08C5C3
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 10:29:12 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id y9so8729851qvs.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 10:29:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=pVi02/1lSeutlFv8vPsavfs6kZD+K668tKO9td/zctd0JVkvceAdDN7y1P5yT2oU22
+         LALwYXrZ91X7dBp8yYWkEcs9c68YiLd5wvq+/vXFtuid7jb8ZqwxOsj8rm8B+hg58YpM
+         2rGDi43naEm4afX+jL08TetTQT96qbTLwuoZIphKG1NYBRM2IbH2O0t63R/PMMFMW6hz
+         Atpj/bmDaQl2dZDY6jQKr5470UEMrYlg1yZwF5K0UMTiueNWD4dxVk3Y8qdByY+/NnCQ
+         PPfJNjQRxwioTMr8fugzq4HDBxPzJYPZTPuVxD9c9i8m2tCCNDSTyUwS8EgLjbXquFJ3
+         xE6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=OY2JCHQXnVoF9ugLLquZ/fzPrgc4cdtkKR3Xp0MXPiYKUpXbekwMDKi0tx1719+EdY
+         rOMoknvRN2F7ZaEkWUP908bnva8LwNnIBDy+gEw5+wYLYypRV9Ac22dfdeyP+OgCJ1b3
+         7ZyCuyOtWqE7y2z16qojb24/LxL73fkIUsOBMOROxUFMVODLwI5THGeX4wDhOrLbZGgw
+         sPokLOohWUSv3CLaLoZ0jyNedyls48FD3D+7jRFFteqfJWi2qH4jE4TG6Gd2JwrGoCg5
+         V4h5GTjEGgL7wa2Ba+l3lmTDbBhnpshE+X92yjgI5O1+WFovxzmTXRWiFGHi0RuH6uHp
+         J/2w==
+X-Gm-Message-State: AOAM532qysKhU8rdy8SBpE5xEjeAM3exTcmb5V2j1qgfyFeHqi03wCnU
+        3hfUMXETo8FXuYEGu5PvuXoTtdjwsi9z4OuuV9w=
+X-Google-Smtp-Source: ABdhPJx2SGlrMJPeei7WDVMpMHRUBxTpgYW7RBoU3rtutX7XVWdYLRqSo6eKKDQwL2GaEC5aFM5k+F4Nsn+xZ6V+YV0=
+X-Received: by 2002:ad4:46af:: with SMTP id br15mr10211701qvb.178.1591637351458;
+ Mon, 08 Jun 2020 10:29:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UldXh0j08r/ErXzgTvNm9OjZBsR+FMBLzN8+O3xRWbiECM5/xob
- uNFUc24EAM42nRupriF2EB0xtKdkfbwNorbrgXIn31pmMKysVHVgCz/irQ7dMMtMLEooNDq
- avJh93y+3672B9NeL/W/SaAGugPrzXsc7JiGgK2uHuquq3vzgpqv+isJAXCen90ZfkLSbpt
- CBtuCkw+P8HoJMahsCHIQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:t4icpK8lx6Y=:HFV/Pomkru1XCwzktWyK3M
- 0V2/FociJuuORaGfCjBtzm0oC8n1PxcmFdcoQ3eWaG+G9ru+muEhYX5HWH6FGQ4004A5/xy5Z
- enQoIArBrh9GlLG1qqqgMNNgLMkXhb7jTuSqs6607BGo3YdlpRswulehiE5ONUy50+hx4SlZ7
- c61D5nlSz7LhGOunm9uiT7BJTi3YvWjVeVVTZ9ZIV4Fwqyc2Wr79O+BOf7ZI8ocUlKAtnkSYg
- dQL8ZhOccUH0eKx/KQbzZ1xBI7+5RU/5BnVwBPp5e6oGOo05A2D1o0x5QJGe3/kUzUwrD14Vx
- ONKs6ennmKHPVQ/XqaUU2DF/pJi9ZeMJyF39DAPoy9PuzcHCcEpMPF8qwjYVA1QemBSYH1sfK
- 9FkdD66GZuQSU+owjgU+443ZQeFwq5JpIjuP3riZn2aaAso+ztO0ubuYdSLVWq8PXcZa4HCRI
- N/EfnZJI4f0u69cowQ54Mp+yDliaHfnxITPT3pgHwby/5/NnaWWt6yu9UrmO6NyVOuc58ufS/
- 4d2a0No1ACBXMuoDhPZjCn16dbzT0/o+RJ/u1EhQlJnaH5mSOOHF12HPrfSzB7q/FtDjyna23
- v9aXKmjsPtFUlcyMZAXkZc2XWC1djmmAObaNQvHkEbRfbENYL/9CBnJh9dTc/FJnnRo7jBTrb
- NiNj6bmL8g1c63pJAD+djinyHMhDWgWUDCNZQo22gZ4P1IzM/79X0rpTf8gNniaTPZ9Vpbxzi
- s8sG5d5HyfBwFRglhfz7VqT/UlwCJmQFiVr8kKcmoSBXE7pd1fXflZZDxs8yxoNMzERUhAiQo
- V72A0L2oRDVKVNJXhftioHOiBSOwW/OVYM5QvWewl2zI9uIHwBPQX+IMdKR4XtqyZFTXjFsBy
- KjCLyPeZNpg44nlAeVjCYk8q9MchyNTHRIzt7YGITVVHOoglo+HFwskdl+US9ZlNngO/OZ3iE
- 1KSrJgozxGJoom67vvDFmfoNG1eU/UGpL+DQNwfpmNTAV3rSPBnWKlC8i5G+p8pBbj+Glb/v+
- WSwKHCt19jLpNhnioW5o2pRBHfz6tQJh8S8B7Epw5GqkJonHlZRuz5y9E+lkDr/cvpcXQHdv3
- AeCFBA0BBv0wfJ29g6F7RwX+jR5NJD5IEEF8sN7zftlc2fiBlcPF6u4IFRK4vfgT/XfMp2Z4d
- oKM00m5QSRuhm5jjS5vSJMV4RUIKpiOoLTKfYgXxBUVgpGSrhZ1Zba3zH+/iJryCholU4cWfp
- eyilCJKcQLcmHqF6k
+Received: by 2002:a05:6214:1926:0:0:0:0 with HTTP; Mon, 8 Jun 2020 10:29:11
+ -0700 (PDT)
+Reply-To: annie30luvly@outlook.com
+From:   Annie <brainmorgan048@gmail.com>
+Date:   Mon, 8 Jun 2020 17:29:11 +0000
+Message-ID: <CAG-WmJEL2pQR1eK8oEmEJq6Eb-jUZmvMJ8LZcWMQ-1Kfhqb4iA@mail.gmail.com>
+Subject: =?UTF-8?Q?P=C3=ABrsh=C3=ABndetje_e_dashur_ju_lutem_m=C3=AB_kontaktoni_tani?=
+        =?UTF-8?Q?_kam_di=C3=A7ka_shum=C3=AB_t=C3=AB_r=C3=ABnd=C3=ABsishme_p=C3=ABr_t=C3=AB_diskutuar_me_j?=
+        =?UTF-8?Q?u_Annie?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Match GFP_USER and optional __GFP_NOWARN allocations with
-> memdup_user.cocci rule.
 
-You suggest another interesting software extension.
-
-
-=E2=80=A6
-> +++ b/scripts/coccinelle/api/memdup_user.cocci
-> @@ -20,7 +20,9 @@ expression from,to,size;
->  identifier l1,l2;
-> @@
->
-> --  to =3D \(kmalloc\|kzalloc\)(size,GFP_KERNEL);
-> +-  to =3D \(kmalloc\|kzalloc\)
-> +		(size,\(GFP_KERNEL\|GFP_USER\|
-> +		      \(GFP_KERNEL\|GFP_USER\)|__GFP_NOWARN\));
->  +  to =3D memdup_user(from,size);
-
-But I find the proposed change for such SmPL code inappropriate.
-
-It was specified by the means of the semantic patch language
-to replace an assignment statement for which a function call provides a va=
-lue.
-I would interpret your adjustment in the way that an expression list
-should be preserved.
-Were two minus characters forgotten for the first SmPL rule?
-
-Further concerns should be taken into account for the SmPL rule =E2=80=9Cr=
-=E2=80=9D.
-
-I would appreciate if the clarification will be continued also for
-the topic =E2=80=9CSafer source code analysis by "memdup_user.cocci"=E2=80=
-=9D?
-https://github.com/coccinelle/coccinelle/issues/78
-
-Regards,
-Markus
