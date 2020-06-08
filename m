@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654541F2928
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390731F2BF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731452AbgFHXXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:23:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
+        id S1732613AbgFIATU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:19:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730600AbgFHXSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:18:18 -0400
+        id S1730601AbgFHXST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:18:19 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76E742086A;
-        Mon,  8 Jun 2020 23:18:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8520720814;
+        Mon,  8 Jun 2020 23:18:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658298;
-        bh=fI0DzAU9GLVa8esFFM30UHEYhA2aD0DBiWdQTB/DY1k=;
+        s=default; t=1591658299;
+        bh=AWFsAvNlKIn/ZedZ0Pog+zp8GiCTc+cGaZND5IMT7g0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bdUbg6DPwMvqup/0HEuqO35tQm/T1365Tx+5wCGKCIsKdQBLNC9ZNq6Zs/syRrerH
-         qsMWcDa0ooHcN8qLta5gQlTau/eZy8QlZzWM5o81lIHiUiP2oRnU8xlf9FNO8e0byl
-         JvhFwUYHpfIBgCzQLOsFTRmqBzT8qkkAjcgl3na0=
+        b=zqMtlIqFiFQMSNJ/LtnH5OYt0Yl0NYmsppZA2GTlwGX7/DRyGXQhnJw3Fq3686xUH
+         GC8Kz2sHWgNn3VbVWZU/j8PTuohi4SquY5cB2KvWIMdAsPsOiJnHlPFWusHeLM/G+3
+         O6/deCf2762OxMB+FtONveW82DHt0lGL7heuqeh0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>, linux-gpio@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 301/606] gpio: exar: Fix bad handling for ida_simple_get error path
-Date:   Mon,  8 Jun 2020 19:07:06 -0400
-Message-Id: <20200608231211.3363633-301-sashal@kernel.org>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.6 302/606] arm64: dts: mt8173: fix vcodec-enc clock
+Date:   Mon,  8 Jun 2020 19:07:07 -0400
+Message-Id: <20200608231211.3363633-302-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -43,53 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
 
-[ Upstream commit 333830aa149a87cabeb5d30fbcf12eecc8040d2c ]
+[ Upstream commit 3b1f6c5e4dfaf767f6f2f120cd93b347b5a9f1aa ]
 
-The commit 7ecced0934e5 ("gpio: exar: add a check for the return value
-of ida_simple_get fails") added a goto jump to the common error
-handler for ida_simple_get() error, but this is wrong in two ways:
-it doesn't set the proper return code and, more badly, it invokes
-ida_simple_remove() with a negative index that shall lead to a kernel
-panic via BUG_ON().
+Fix the assigned-clock-parents to higher frequency clock to avoid h264
+encode timeout:
 
-This patch addresses those two issues.
+[  134.763465] mtk_vpu 10020000.vpu: vpu ipi 4 ack time out !
+[  134.769008] [MTK_VCODEC][ERROR][18]: vpu_enc_send_msg() vpu_ipi_send msg_id c002 len 32 fail -5
+[  134.777707] [MTK_VCODEC][ERROR][18]: vpu_enc_encode() AP_IPIMSG_ENC_ENCODE 0 fail
 
-Fixes: 7ecced0934e5 ("gpio: exar: add a check for the return value of ida_simple_get fails")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+venc_sel is the clock used by h264 encoder, and venclt_sel is the clock
+used by vp8 encoder. Assign venc_sel to vcodecpll_ck and venclt_sel to
+vcodecpll_370p5.
+
+    vcodecpll                         1482000000
+       vcodecpll_ck                    494000000
+          venc_sel                     494000000
+...
+       vcodecpll_370p5                 370500000
+          venclt_sel                   370500000
+
+Fixes: fbbad0287cec ("arm64: dts: Using standard CCF interface to set vcodec clk")
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Link: https://lore.kernel.org/r/20200504124442.208004-1-hsinyi@chromium.org
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-exar.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpio/gpio-exar.c b/drivers/gpio/gpio-exar.c
-index da1ef0b1c291..b1accfba017d 100644
---- a/drivers/gpio/gpio-exar.c
-+++ b/drivers/gpio/gpio-exar.c
-@@ -148,8 +148,10 @@ static int gpio_exar_probe(struct platform_device *pdev)
- 	mutex_init(&exar_gpio->lock);
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+index 8b4e806d5119..125c78321ab4 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+@@ -1401,8 +1401,8 @@ vcodec_enc: vcodec@18002000 {
+ 				      "venc_lt_sel";
+ 			assigned-clocks = <&topckgen CLK_TOP_VENC_SEL>,
+ 					  <&topckgen CLK_TOP_VENC_LT_SEL>;
+-			assigned-clock-parents = <&topckgen CLK_TOP_VENCPLL_D2>,
+-						 <&topckgen CLK_TOP_UNIVPLL1_D2>;
++			assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL>,
++						 <&topckgen CLK_TOP_VCODECPLL_370P5>;
+ 		};
  
- 	index = ida_simple_get(&ida_index, 0, 0, GFP_KERNEL);
--	if (index < 0)
--		goto err_destroy;
-+	if (index < 0) {
-+		ret = index;
-+		goto err_mutex_destroy;
-+	}
- 
- 	sprintf(exar_gpio->name, "exar_gpio%d", index);
- 	exar_gpio->gpio_chip.label = exar_gpio->name;
-@@ -176,6 +178,7 @@ static int gpio_exar_probe(struct platform_device *pdev)
- 
- err_destroy:
- 	ida_simple_remove(&ida_index, index);
-+err_mutex_destroy:
- 	mutex_destroy(&exar_gpio->lock);
- 	return ret;
- }
+ 		jpegdec: jpegdec@18004000 {
 -- 
 2.25.1
 
