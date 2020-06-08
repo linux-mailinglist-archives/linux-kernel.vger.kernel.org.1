@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA641F242F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655E61F22F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729649AbgFHXSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:18:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35732 "EHLO mail.kernel.org"
+        id S1728178AbgFHXL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:11:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729954AbgFHXPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:15:02 -0400
+        id S1727865AbgFHXJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:09:58 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCAF621531;
-        Mon,  8 Jun 2020 23:15:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 661CB20897;
+        Mon,  8 Jun 2020 23:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658102;
-        bh=q+/YNJFG0GRlIcTN8/G1ReOa5iQS1CReUKZzJgxNyxE=;
+        s=default; t=1591657798;
+        bh=3ojo2VBVuawBc4HDxLn8sIbL+mr/RC4gim2D8Fr8+Hs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qQJ90JEU4iRiJ+em6F+/ImFFSr293/GElhc8WCUPN+ZSbXQpNiABHCntFUjsbKtzh
-         vMonIVwh/GDcokTYqNdDpF9Li+KnroJ1CNlkawHr9i3nTzxeFkIsSMs0g8x4R4r5WK
-         lorJtJ0QAGPNJFQJ/iHzJMRLG7EkHUVrOoAk9Jig=
+        b=tY22pXf9UTv5KXGUzRcd0zZY72CmCxzSjqKrE7L9qbMLS9A2CE90HUrF4nr74Eypo
+         HGXiRTg+U13s2OifWYRlEaNE8c5+LulAjFjzm21VFNmzU/k/GJ7pqevUsbR3s6TyIr
+         YhQG4EYEQTAiVeHIEcKOExFA9ubHLrS0XhtV9vW8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 142/606] bpf: Add bpf_probe_read_{user, kernel}_str() to do_refine_retval_range
-Date:   Mon,  8 Jun 2020 19:04:27 -0400
-Message-Id: <20200608231211.3363633-142-sashal@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 176/274] platform/x86: intel-vbtn: Split keymap into buttons and switches parts
+Date:   Mon,  8 Jun 2020 19:04:29 -0400
+Message-Id: <20200608230607.3361041-176-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -46,41 +44,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 47cc0ed574abcbbde0cf143ddb21a0baed1aa2df upstream.
+[ Upstream commit f6ba524970c4b73b234bf41ecd6628f5803b1559 ]
 
-Given bpf_probe_read{,str}() BPF helpers are now only available under
-CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE, we need to add the drop-in
-replacements of bpf_probe_read_{kernel,user}_str() to do_refine_retval_range()
-as well to avoid hitting the same issue as in 849fa50662fbc ("bpf/verifier:
-refine retval R0 state for bpf_get_stack helper").
+Split the sparse keymap into 2 separate keymaps, a buttons and a switches
+keymap and combine the 2 to a single map again in intel_vbtn_input_setup().
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20200515101118.6508-3-daniel@iogearbox.net
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This is a preparation patch for not telling userspace that we have switches
+when we do not have them (and for doing the same for the buttons).
+
+Fixes: de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode switch on 2-in-1's")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/platform/x86/intel-vbtn.c | 28 +++++++++++++++++++++++++---
+ 1 file changed, 25 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c1bb5be530e9..775fca737909 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4113,7 +4113,9 @@ static int do_refine_retval_range(struct bpf_verifier_env *env,
+diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
+index 191894d648bb..634096cef21a 100644
+--- a/drivers/platform/x86/intel-vbtn.c
++++ b/drivers/platform/x86/intel-vbtn.c
+@@ -40,14 +40,20 @@ static const struct key_entry intel_vbtn_keymap[] = {
+ 	{ KE_IGNORE, 0xC7, { KEY_VOLUMEDOWN } },	/* volume-down key release */
+ 	{ KE_KEY,    0xC8, { KEY_ROTATE_LOCK_TOGGLE } },	/* rotate-lock key press */
+ 	{ KE_KEY,    0xC9, { KEY_ROTATE_LOCK_TOGGLE } },	/* rotate-lock key release */
++};
++
++static const struct key_entry intel_vbtn_switchmap[] = {
+ 	{ KE_SW,     0xCA, { .sw = { SW_DOCK, 1 } } },		/* Docked */
+ 	{ KE_SW,     0xCB, { .sw = { SW_DOCK, 0 } } },		/* Undocked */
+ 	{ KE_SW,     0xCC, { .sw = { SW_TABLET_MODE, 1 } } },	/* Tablet */
+ 	{ KE_SW,     0xCD, { .sw = { SW_TABLET_MODE, 0 } } },	/* Laptop */
+-	{ KE_END },
+ };
  
- 	if (ret_type != RET_INTEGER ||
- 	    (func_id != BPF_FUNC_get_stack &&
--	     func_id != BPF_FUNC_probe_read_str))
-+	     func_id != BPF_FUNC_probe_read_str &&
-+	     func_id != BPF_FUNC_probe_read_kernel_str &&
-+	     func_id != BPF_FUNC_probe_read_user_str))
- 		return 0;
++#define KEYMAP_LEN \
++	(ARRAY_SIZE(intel_vbtn_keymap) + ARRAY_SIZE(intel_vbtn_switchmap) + 1)
++
+ struct intel_vbtn_priv {
++	struct key_entry keymap[KEYMAP_LEN];
+ 	struct input_dev *input_dev;
+ 	bool wakeup_mode;
+ };
+@@ -55,13 +61,29 @@ struct intel_vbtn_priv {
+ static int intel_vbtn_input_setup(struct platform_device *device)
+ {
+ 	struct intel_vbtn_priv *priv = dev_get_drvdata(&device->dev);
+-	int ret;
++	int ret, keymap_len = 0;
++
++	if (true) {
++		memcpy(&priv->keymap[keymap_len], intel_vbtn_keymap,
++		       ARRAY_SIZE(intel_vbtn_keymap) *
++		       sizeof(struct key_entry));
++		keymap_len += ARRAY_SIZE(intel_vbtn_keymap);
++	}
++
++	if (true) {
++		memcpy(&priv->keymap[keymap_len], intel_vbtn_switchmap,
++		       ARRAY_SIZE(intel_vbtn_switchmap) *
++		       sizeof(struct key_entry));
++		keymap_len += ARRAY_SIZE(intel_vbtn_switchmap);
++	}
++
++	priv->keymap[keymap_len].type = KE_END;
  
- 	/* Error case where ret is in interval [S32MIN, -1]. */
+ 	priv->input_dev = devm_input_allocate_device(&device->dev);
+ 	if (!priv->input_dev)
+ 		return -ENOMEM;
+ 
+-	ret = sparse_keymap_setup(priv->input_dev, intel_vbtn_keymap, NULL);
++	ret = sparse_keymap_setup(priv->input_dev, priv->keymap, NULL);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
 2.25.1
 
