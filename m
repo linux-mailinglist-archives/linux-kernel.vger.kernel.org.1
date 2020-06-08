@@ -2,135 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BC81F3081
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A381F3188
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730629AbgFIA7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:59:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728184AbgFHXIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:08:30 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 874EE208B6;
-        Mon,  8 Jun 2020 23:08:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657710;
-        bh=jMmbglSJ9HsqY9/TfgPULYPabzVlojJgWVf48BoOzOY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zh3ynFLVfdi2Yz2Ro4cFdlxoiEYJQq+mtVP0POsrA798y1K2U0eKXnqfBUIinPHUQ
-         0SuEaU/gGEHSGzyDsIG/WwrjhKgIemHkB2tw0sOcGSn6FaU5UnvvZItpI+ypBd+WSI
-         cPWNUZwXQeTCMlaVLdppK52OEgUTsETUtkdNEsGw=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jitao Shi <jitao.shi@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.7 106/274] drm/mediatek: set dpi pin mode to gpio low to avoid leakage current
-Date:   Mon,  8 Jun 2020 19:03:19 -0400
-Message-Id: <20200608230607.3361041-106-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+        id S2387417AbgFIBKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 21:10:07 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:46893 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726896AbgFHXGQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:06:16 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 13AAB88D;
+        Mon,  8 Jun 2020 19:06:15 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 08 Jun 2020 19:06:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paritcher.com;
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=NY39phx6m9tvz
+        RpZvc6G/x6My2ajZYgVoDhFetwnDNw=; b=3y961/Qs87Bf+KYKX4YxIgCvnfLuA
+        gWQq4q78O9mnFR0fs3FP636ZKlyPgKBcqpQxnTu3vcHWI2O0RQX42vZayYse+s3M
+        mpdf6YsyPnfutTOgwEyA8yJsh/k+kvFPp+cDMFLQFfUh123Q5YyLB9gKB1zi54g5
+        hRHjHqn2mzyhcX9kUBCJw7aB/IQ4I1dbZnAQ74sAqQvb9+V2JTaeALjA/46P+UCK
+        5SylFXuXZ7tjRYRdmK8PICBnzX1TF4bzoUcSFshkqjU77oFATefXqyAqLQ96zyWG
+        v8fxTCwRa0FvZ3pkr+SlUJO3Ni3zZMV/2g8dcKvYqFRvu3aAWfBCPUFgA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=NY39phx6m9tvzRpZvc6G/x6My2ajZYgVoDhFetwnDNw=; b=rgRjV6WM
+        GiY3XgB6uQZ46DxNkZN8MlwksEf+9ajYuek1mFXCOjMttSn4kjogOYhKStestv1c
+        8LShT9kuedPTUazCVOejJtVsuwfqeXTchY6TwaIYgrySnhOM1+Lt4OwVgFYzUBx2
+        KZpCRhQxyGQDCGfFIPulucQxVOWOkakj52okFwZCfKKh3pyzy0upZAPrnDrug/m4
+        oGID/jHMx7hP9rTdqz81ZHUk8tyazj0PjUc8ah5k67nqcBD6XI1RRq1+TL+akE2X
+        /CZpM+77PQi934KroHNvbVwiLX3sPoRl+EYDh78NVZvm2qz0NP8fDrgdK1DMfO9Z
+        nQCIVRufK1lQTw==
+X-ME-Sender: <xms:ZcTeXoSENO1o_R4MAfcUrDXn3vCIhkf-ChQdEuW8mku_cgOzRtPb2g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehfedgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    hmihhsshhinhhgucfvqfcufhhivghlugculdeftddmnecujfgurhephffvufffkffojghf
+    ggfgsedtkeertdertddtnecuhfhrohhmpegjucfrrghrihhttghhvghruceohidrlhhinh
+    hugiesphgrrhhithgthhgvrhdrtghomheqnecuggftrfgrthhtvghrnhepjeegfeetleeu
+    leevteejteetieffgffgfedvffffvddtvddvveevhffhtdehudeknecukfhppeeijedrke
+    egrdduleegrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhephidrlhhinhhugiesphgrrhhithgthhgvrhdrtghomh
+X-ME-Proxy: <xmx:ZsTeXlwgERgB0y0DVejWGDRLlOBpquJAapvLicZ5PKw5pW5y_TwKuA>
+    <xmx:ZsTeXl3HjTb3bzw-yxQToKQ4IkaarUByft0p1dF2NH7-T3BiA3vdOA>
+    <xmx:ZsTeXsDcGlCawsHL-52KwG9yxIMc-X4AT_uh25DK2AqsV1nPVxyN-A>
+    <xmx:ZsTeXhbAqEUhkjlXGa2q7bvSXfAXjdWDsEHM0cZCA6btDBHin60bdQ>
+Received: from localhost.localdomain (ool-4354c2af.dyn.optonline.net [67.84.194.175])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B9F2A3280066;
+        Mon,  8 Jun 2020 19:06:13 -0400 (EDT)
+From:   Y Paritcher <y.linux@paritcher.com>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Mario.Limonciello@dell.com
+Subject: [PATCH v2 0/3] platform/x86: dell-wmi: new keys
+Date:   Mon,  8 Jun 2020 19:05:27 -0400
+Message-Id: <cover.1591656154.git.y.linux@paritcher.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1591584631.git.y.linux@paritcher.com>
+References: <cover.1591584631.git.y.linux@paritcher.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jitao Shi <jitao.shi@mediatek.com>
+As per discussion backlight events are passed on as they are
+filtered by acpi-video.
 
-[ Upstream commit 6bd4763fd532cff43f9b15704f324c45a9806f53 ]
+Events of type 0x0012 have extended data in the rest of the
+buffer, this data is currently ignored.
 
-Config dpi pins mode to output and pull low when dpi is disabled.
-Aovid leakage current from some dpi pins (Hsync Vsync DE ... ).
+The Fn lock key currently is ignored. If userspace has a way
+to deal with this a function to pass on the extended data
+can be added.
 
-Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/mediatek/mtk_dpi.c | 31 ++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+messages of type:
+ 
+    firmware scancode 0xXX maps to unrecognized keycode 0xXXXX
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index 4f0ce4cd5b8c..2994c63ea279 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -10,7 +10,9 @@
- #include <linux/kernel.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <linux/of_gpio.h>
- #include <linux/of_graph.h>
-+#include <linux/pinctrl/consumer.h>
- #include <linux/platform_device.h>
- #include <linux/types.h>
- 
-@@ -74,6 +76,9 @@ struct mtk_dpi {
- 	enum mtk_dpi_out_yc_map yc_map;
- 	enum mtk_dpi_out_bit_num bit_num;
- 	enum mtk_dpi_out_channel_swap channel_swap;
-+	struct pinctrl *pinctrl;
-+	struct pinctrl_state *pins_gpio;
-+	struct pinctrl_state *pins_dpi;
- 	int refcount;
- };
- 
-@@ -379,6 +384,9 @@ static void mtk_dpi_power_off(struct mtk_dpi *dpi)
- 	if (--dpi->refcount != 0)
- 		return;
- 
-+	if (dpi->pinctrl && dpi->pins_gpio)
-+		pinctrl_select_state(dpi->pinctrl, dpi->pins_gpio);
-+
- 	mtk_dpi_disable(dpi);
- 	clk_disable_unprepare(dpi->pixel_clk);
- 	clk_disable_unprepare(dpi->engine_clk);
-@@ -403,6 +411,9 @@ static int mtk_dpi_power_on(struct mtk_dpi *dpi)
- 		goto err_pixel;
- 	}
- 
-+	if (dpi->pinctrl && dpi->pins_dpi)
-+		pinctrl_select_state(dpi->pinctrl, dpi->pins_dpi);
-+
- 	mtk_dpi_enable(dpi);
- 	return 0;
- 
-@@ -705,6 +716,26 @@ static int mtk_dpi_probe(struct platform_device *pdev)
- 	dpi->dev = dev;
- 	dpi->conf = (struct mtk_dpi_conf *)of_device_get_match_data(dev);
- 
-+	dpi->pinctrl = devm_pinctrl_get(&pdev->dev);
-+	if (IS_ERR(dpi->pinctrl)) {
-+		dpi->pinctrl = NULL;
-+		dev_dbg(&pdev->dev, "Cannot find pinctrl!\n");
-+	}
-+	if (dpi->pinctrl) {
-+		dpi->pins_gpio = pinctrl_lookup_state(dpi->pinctrl, "sleep");
-+		if (IS_ERR(dpi->pins_gpio)) {
-+			dpi->pins_gpio = NULL;
-+			dev_dbg(&pdev->dev, "Cannot find pinctrl idle!\n");
-+		}
-+		if (dpi->pins_gpio)
-+			pinctrl_select_state(dpi->pinctrl, dpi->pins_gpio);
-+
-+		dpi->pins_dpi = pinctrl_lookup_state(dpi->pinctrl, "default");
-+		if (IS_ERR(dpi->pins_dpi)) {
-+			dpi->pins_dpi = NULL;
-+			dev_dbg(&pdev->dev, "Cannot find pinctrl active!\n");
-+		}
-+	}
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	dpi->regs = devm_ioremap_resource(dev, mem);
- 	if (IS_ERR(dpi->regs)) {
+are from unknown keycodes in the DMI table and should be added
+to bios_to_linux_keycode to allow them to be processed.
+
+Y Paritcher (3):
+  platform/x86: dell-wmi: add new backlight events
+  platform/x86: dell-wmi: add new keymap type 0x0012
+  platform/x86: dell-wmi: add new dmi keys to bios_to_linux_keycode
+
+ drivers/platform/x86/dell-wmi.c | 32 ++++++++++++++++++++++++++------
+ 1 file changed, 26 insertions(+), 6 deletions(-)
+
 -- 
-2.25.1
+2.27.0
 
