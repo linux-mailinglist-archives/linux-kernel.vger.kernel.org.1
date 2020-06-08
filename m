@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71C91F2465
+	by mail.lfdr.de (Postfix) with ESMTP id 5421D1F2464
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731080AbgFHXU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:20:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38286 "EHLO mail.kernel.org"
+        id S1730690AbgFHXUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:20:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728996AbgFHXQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:16:51 -0400
+        id S1730348AbgFHXQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:16:52 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A37B20870;
-        Mon,  8 Jun 2020 23:16:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AAC5E2083E;
+        Mon,  8 Jun 2020 23:16:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658209;
-        bh=QwrwwuW4pJqXTclhbCaGstVkf8ihm2HXr3FHk8dwLn0=;
+        s=default; t=1591658212;
+        bh=lPvZX0Wp2EfZQC/gJBV02gxIl1d/7MDhp2Ch2tlx7JE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HnXYUCb075yCKH6R0/qNNqC5oB4CwFSUOYUTueJ5KuLVg1Ni7uEOsKOO/m/67fbb4
-         l891lPgYc8KbAiAt3YDXi/nyMm8F/+srCXJrHZRyO4OHG2QRXnfVzfbCl4QTEMXNPO
-         s9QzPlWg63b901hx4qlDUJ/neHYdrbiJTY0hKONA=
+        b=lCbQmY839ZShz7ppcefFc0xltfYriiuYC+XVVvOExCG7Tp1ZXSJR6GUGPI4yFx6c+
+         gf3ubzs18AEbmFpuE2o23YP+BE6yiJjg6lq4k98Qjau+oPf4BtSvCMsPsozUkfhYaM
+         w7v5CmQAocfhiXwjW6WYZGdqN9Y9hotKNwGFLQjg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Jere=20Lepp=C3=A4nen?= <jere.leppanen@nokia.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
+Cc:     Tariq Toukan <tariqt@mellanox.com>,
+        Boris Pismenny <borisp@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-sctp@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 227/606] sctp: Start shutdown on association restart if in SHUTDOWN-SENT state and socket is closed
-Date:   Mon,  8 Jun 2020 19:05:52 -0400
-Message-Id: <20200608231211.3363633-227-sashal@kernel.org>
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 229/606] net/mlx5e: kTLS, Destroy key object after destroying the TIS
+Date:   Mon,  8 Jun 2020 19:05:54 -0400
+Message-Id: <20200608231211.3363633-229-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -46,72 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jere Leppänen <jere.leppanen@nokia.com>
+From: Tariq Toukan <tariqt@mellanox.com>
 
-[ Upstream commit d3e8e4c11870413789f029a71e72ae6e971fe678 ]
+[ Upstream commit 16736e11f43b80a38f98f6add54fab3b8c297df3 ]
 
-Commit bdf6fa52f01b ("sctp: handle association restarts when the
-socket is closed.") starts shutdown when an association is restarted,
-if in SHUTDOWN-PENDING state and the socket is closed. However, the
-rationale stated in that commit applies also when in SHUTDOWN-SENT
-state - we don't want to move an association to ESTABLISHED state when
-the socket has been closed, because that results in an association
-that is unreachable from user space.
+The TLS TIS object contains the dek/key ID.
+By destroying the key first, the TIS would contain an invalid
+non-existing key ID.
+Reverse the destroy order, this also acheives the desired assymetry
+between the destroy and the create flows.
 
-The problem scenario:
-
-1.  Client crashes and/or restarts.
-
-2.  Server (using one-to-one socket) calls close(). SHUTDOWN is lost.
-
-3.  Client reconnects using the same addresses and ports.
-
-4.  Server's association is restarted. The association and the socket
-    move to ESTABLISHED state, even though the server process has
-    closed its descriptor.
-
-Also, after step 4 when the server process exits, some resources are
-leaked in an attempt to release the underlying inet sock structure in
-ESTABLISHED state:
-
-    IPv4: Attempt to release TCP socket in state 1 00000000377288c7
-
-Fix by acting the same way as in SHUTDOWN-PENDING state. That is, if
-an association is restarted in SHUTDOWN-SENT state and the socket is
-closed, then start shutdown and don't move the association or the
-socket to ESTABLISHED state.
-
-Fixes: bdf6fa52f01b ("sctp: handle association restarts when the socket is closed.")
-Signed-off-by: Jere Leppänen <jere.leppanen@nokia.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: d2ead1f360e8 ("net/mlx5e: Add kTLS TX HW offload support")
+Signed-off-by: Tariq Toukan <tariqt@mellanox.com>
+Reviewed-by: Boris Pismenny <borisp@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/sm_statefuns.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
-index 26788f4a3b9e..e86620fbd90f 100644
---- a/net/sctp/sm_statefuns.c
-+++ b/net/sctp/sm_statefuns.c
-@@ -1856,12 +1856,13 @@ static enum sctp_disposition sctp_sf_do_dupcook_a(
- 	/* Update the content of current association. */
- 	sctp_add_cmd_sf(commands, SCTP_CMD_UPDATE_ASSOC, SCTP_ASOC(new_asoc));
- 	sctp_add_cmd_sf(commands, SCTP_CMD_EVENT_ULP, SCTP_ULPEVENT(ev));
--	if (sctp_state(asoc, SHUTDOWN_PENDING) &&
-+	if ((sctp_state(asoc, SHUTDOWN_PENDING) ||
-+	     sctp_state(asoc, SHUTDOWN_SENT)) &&
- 	    (sctp_sstate(asoc->base.sk, CLOSING) ||
- 	     sock_flag(asoc->base.sk, SOCK_DEAD))) {
--		/* if were currently in SHUTDOWN_PENDING, but the socket
--		 * has been closed by user, don't transition to ESTABLISHED.
--		 * Instead trigger SHUTDOWN bundled with COOKIE_ACK.
-+		/* If the socket has been closed by user, don't
-+		 * transition to ESTABLISHED. Instead trigger SHUTDOWN
-+		 * bundled with COOKIE_ACK.
- 		 */
- 		sctp_add_cmd_sf(commands, SCTP_CMD_REPLY, SCTP_CHUNK(repl));
- 		return sctp_sf_do_9_2_start_shutdown(net, ep, asoc,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls.c
+index 46725cd743a3..7d1985fa0d4f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls.c
+@@ -69,8 +69,8 @@ static void mlx5e_ktls_del(struct net_device *netdev,
+ 	struct mlx5e_ktls_offload_context_tx *tx_priv =
+ 		mlx5e_get_ktls_tx_priv_ctx(tls_ctx);
+ 
+-	mlx5_ktls_destroy_key(priv->mdev, tx_priv->key_id);
+ 	mlx5e_destroy_tis(priv->mdev, tx_priv->tisn);
++	mlx5_ktls_destroy_key(priv->mdev, tx_priv->key_id);
+ 	kvfree(tx_priv);
+ }
+ 
 -- 
 2.25.1
 
