@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871A31F2ECC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245381F2EC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730217AbgFIApA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:45:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58994 "EHLO mail.kernel.org"
+        id S1729012AbgFIAow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:44:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729008AbgFHXLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:11:54 -0400
+        id S1728244AbgFHXL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:11:57 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79EE820C56;
-        Mon,  8 Jun 2020 23:11:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22139208C3;
+        Mon,  8 Jun 2020 23:11:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657914;
-        bh=NxAJsTGELpCsWIQyrpwGz1O0iqdSozOGgaX3qe3alLg=;
+        s=default; t=1591657917;
+        bh=fy02eLuhzPt5qrxj0NR1EGOO8siKTXnQaq5uk9noZPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jy1vcd0Eo6Lc4swo5/oWRIvdhu98ZjZbANPilov7WG8NEyRhL4u1YtWTe8BsnhkvQ
-         1fgNx9jdTNfJwLygc0CgQCL2nyhCSL56PhNqynmsAiO8mIvdWyuRZDOzq0haWociCx
-         a3eBn/I6zOzV6hhm5u+sqksuM2PE92VK3pMo/Lfw=
+        b=p/5sZVUPGvkfzOFh1brwrJKtQIy99vsCT6feJZdBh2aPrLs5182Myyai3NE5i8Rdj
+         gqYO9rpDmDctjewDLjcRpI1d3tCl+Jjzw9esSa4oqSn5cxj0iLHYwvlAVBGJpjyCOG
+         UprvZJclqpMUgbiNKa2bDUJ5oISfA4fgwJa346Yg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eelco Chaudron <echaudro@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
+Cc:     John Fastabend <john.fastabend@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 265/274] libbpf: Fix perf_buffer__free() API for sparse allocs
-Date:   Mon,  8 Jun 2020 19:05:58 -0400
-Message-Id: <20200608230607.3361041-265-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 267/274] bpf: Refactor sockmap redirect code so its easy to reuse
+Date:   Mon,  8 Jun 2020 19:06:00 -0400
+Message-Id: <20200608230607.3361041-267-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -46,42 +46,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eelco Chaudron <echaudro@redhat.com>
+From: John Fastabend <john.fastabend@gmail.com>
 
-[ Upstream commit 601b05ca6edb0422bf6ce313fbfd55ec7bbbc0fd ]
+[ Upstream commit ca2f5f21dbbd5e3a00cd3e97f728aa2ca0b2e011 ]
 
-In case the cpu_bufs are sparsely allocated they are not all
-free'ed. These changes will fix this.
+We will need this block of code called from tls context shortly
+lets refactor the redirect logic so its easy to use. This also
+cleans up the switch stmt so we have fewer fallthrough cases.
 
-Fixes: fb84b8224655 ("libbpf: add perf buffer API")
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/159056888305.330763.9684536967379110349.stgit@ebuild
+No logic changes are intended.
+
+Fixes: d829e9c4112b5 ("tls: convert to generic sk_msg interface")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+Link: https://lore.kernel.org/bpf/159079360110.5745.7024009076049029819.stgit@john-Precision-5820-Tower
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ net/core/skmsg.c | 55 ++++++++++++++++++++++++++++++------------------
+ 1 file changed, 34 insertions(+), 21 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index cd53204d33f0..0c5b4fb553fb 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -7809,9 +7809,12 @@ void perf_buffer__free(struct perf_buffer *pb)
- 	if (!pb)
- 		return;
- 	if (pb->cpu_bufs) {
--		for (i = 0; i < pb->cpu_cnt && pb->cpu_bufs[i]; i++) {
-+		for (i = 0; i < pb->cpu_cnt; i++) {
- 			struct perf_cpu_buf *cpu_buf = pb->cpu_bufs[i];
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index c479372f2cd2..9d72f71e9b47 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -682,13 +682,43 @@ static struct sk_psock *sk_psock_from_strp(struct strparser *strp)
+ 	return container_of(parser, struct sk_psock, parser);
+ }
  
-+			if (!cpu_buf)
-+				continue;
+-static void sk_psock_verdict_apply(struct sk_psock *psock,
+-				   struct sk_buff *skb, int verdict)
++static void sk_psock_skb_redirect(struct sk_psock *psock, struct sk_buff *skb)
+ {
+ 	struct sk_psock *psock_other;
+ 	struct sock *sk_other;
+ 	bool ingress;
+ 
++	sk_other = tcp_skb_bpf_redirect_fetch(skb);
++	if (unlikely(!sk_other)) {
++		kfree_skb(skb);
++		return;
++	}
++	psock_other = sk_psock(sk_other);
++	if (!psock_other || sock_flag(sk_other, SOCK_DEAD) ||
++	    !sk_psock_test_state(psock_other, SK_PSOCK_TX_ENABLED)) {
++		kfree_skb(skb);
++		return;
++	}
 +
- 			bpf_map_delete_elem(pb->map_fd, &cpu_buf->map_key);
- 			perf_buffer__free_cpu_buf(pb, cpu_buf);
++	ingress = tcp_skb_bpf_ingress(skb);
++	if ((!ingress && sock_writeable(sk_other)) ||
++	    (ingress &&
++	     atomic_read(&sk_other->sk_rmem_alloc) <=
++	     sk_other->sk_rcvbuf)) {
++		if (!ingress)
++			skb_set_owner_w(skb, sk_other);
++		skb_queue_tail(&psock_other->ingress_skb, skb);
++		schedule_work(&psock_other->work);
++	} else {
++		kfree_skb(skb);
++	}
++}
++
++static void sk_psock_verdict_apply(struct sk_psock *psock,
++				   struct sk_buff *skb, int verdict)
++{
++	struct sock *sk_other;
++
+ 	switch (verdict) {
+ 	case __SK_PASS:
+ 		sk_other = psock->sk;
+@@ -707,25 +737,8 @@ static void sk_psock_verdict_apply(struct sk_psock *psock,
  		}
+ 		goto out_free;
+ 	case __SK_REDIRECT:
+-		sk_other = tcp_skb_bpf_redirect_fetch(skb);
+-		if (unlikely(!sk_other))
+-			goto out_free;
+-		psock_other = sk_psock(sk_other);
+-		if (!psock_other || sock_flag(sk_other, SOCK_DEAD) ||
+-		    !sk_psock_test_state(psock_other, SK_PSOCK_TX_ENABLED))
+-			goto out_free;
+-		ingress = tcp_skb_bpf_ingress(skb);
+-		if ((!ingress && sock_writeable(sk_other)) ||
+-		    (ingress &&
+-		     atomic_read(&sk_other->sk_rmem_alloc) <=
+-		     sk_other->sk_rcvbuf)) {
+-			if (!ingress)
+-				skb_set_owner_w(skb, sk_other);
+-			skb_queue_tail(&psock_other->ingress_skb, skb);
+-			schedule_work(&psock_other->work);
+-			break;
+-		}
+-		/* fall-through */
++		sk_psock_skb_redirect(psock, skb);
++		break;
+ 	case __SK_DROP:
+ 		/* fall-through */
+ 	default:
 -- 
 2.25.1
 
