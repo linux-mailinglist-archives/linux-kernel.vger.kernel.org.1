@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA501F2469
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A96F1F2371
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731096AbgFHXVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:21:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38364 "EHLO mail.kernel.org"
+        id S1729832AbgFHXOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:14:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730377AbgFHXQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:16:57 -0400
+        id S1729013AbgFHXL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:11:56 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC5D02083E;
-        Mon,  8 Jun 2020 23:16:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF45A2145D;
+        Mon,  8 Jun 2020 23:11:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658217;
-        bh=MjL6Vdhzate10lRynbI9YZLl5Beep4bbfnO2HAisn9o=;
+        s=default; t=1591657915;
+        bh=U+JU3pulcrPnDSUFMUHuppeZgdml6VTYsuEf4BfNm28=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WH1QCj4QbeWxRtDTRKCVlpcFcoWzcGjxG+uy5tRvha7YP9dtg+ZJj5Da1p4brvMG3
-         gY75yxvJ/bh/gIjv9ij/s2OKXJCnMDzucELr+d27w0Ib/4lQBalyWDI+wPjMDrK9mD
-         S4LSm8w8xg76vVhNhcZYN203FM3TtJujcQcXHXbk=
+        b=X0ltNQV0ghGRev4g5tC1lTwAVT+9MUdObSE7WIZnMHBqM4s+P6iOnezrhsGHM6MMX
+         2LIzPLXswrryB6FL3U2cRhf8l4W3eviauEXh+dtxsxNwSu06oi122K/aigQoG7unlq
+         JZCUG7XR4gFBpuIC8qZuOIBaakQ3nZLtXEtQdH1U=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shay Drory <shayd@mellanox.com>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 233/606] net/mlx5: Fix error flow in case of function_setup failure
-Date:   Mon,  8 Jun 2020 19:05:58 -0400
-Message-Id: <20200608231211.3363633-233-sashal@kernel.org>
+Cc:     Anton Protopopov <a.s.protopopov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 266/274] bpf: Fix map permissions check
+Date:   Mon,  8 Jun 2020 19:05:59 -0400
+Message-Id: <20200608230607.3361041-266-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,44 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shay Drory <shayd@mellanox.com>
+From: Anton Protopopov <a.s.protopopov@gmail.com>
 
-[ Upstream commit 4f7400d5cbaef676e00cdffb0565bf731c6bb09e ]
+[ Upstream commit 1ea0f9120c8ce105ca181b070561df5cbd6bc049 ]
 
-Currently, if an error occurred during mlx5_function_setup(), we
-keep dev->state as DEVICE_STATE_UP.
-Fixing it by adding a goto label.
+The map_lookup_and_delete_elem() function should check for both FMODE_CAN_WRITE
+and FMODE_CAN_READ permissions because it returns a map element to user space.
 
-Fixes: e161105e58da ("net/mlx5: Function setup/teardown procedures")
-Signed-off-by: Shay Drory <shayd@mellanox.com>
-Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: bd513cd08f10 ("bpf: add MAP_LOOKUP_AND_DELETE_ELEM syscall")
+Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20200527185700.14658-5-a.s.protopopov@gmail.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/main.c | 3 ++-
+ kernel/bpf/syscall.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index f554cfddcf4e..7d67268ff686 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1179,7 +1179,7 @@ int mlx5_load_one(struct mlx5_core_dev *dev, bool boot)
- 
- 	err = mlx5_function_setup(dev, boot);
- 	if (err)
--		goto out;
-+		goto err_function;
- 
- 	if (boot) {
- 		err = mlx5_init_once(dev);
-@@ -1225,6 +1225,7 @@ int mlx5_load_one(struct mlx5_core_dev *dev, bool boot)
- 		mlx5_cleanup_once(dev);
- function_teardown:
- 	mlx5_function_teardown(dev, boot);
-+err_function:
- 	dev->state = MLX5_DEVICE_STATE_INTERNAL_ERROR;
- 	mutex_unlock(&dev->intf_state_mutex);
- 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 4e6dee19a668..5e52765161f9 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1468,7 +1468,8 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+ 	map = __bpf_map_get(f);
+ 	if (IS_ERR(map))
+ 		return PTR_ERR(map);
+-	if (!(map_get_sys_perms(map, f) & FMODE_CAN_WRITE)) {
++	if (!(map_get_sys_perms(map, f) & FMODE_CAN_READ) ||
++	    !(map_get_sys_perms(map, f) & FMODE_CAN_WRITE)) {
+ 		err = -EPERM;
+ 		goto err_put;
+ 	}
 -- 
 2.25.1
 
