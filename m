@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CB21F2237
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17001F223A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgFHXGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:06:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49682 "EHLO mail.kernel.org"
+        id S1727780AbgFHXHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:07:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727004AbgFHXGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:06:31 -0400
+        id S1727036AbgFHXGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:06:38 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC83D20774;
-        Mon,  8 Jun 2020 23:06:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6349120774;
+        Mon,  8 Jun 2020 23:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657590;
-        bh=zJyy96p/S5Lp67gqr1bh7mhGEJc1LIXF5relYqsc5RM=;
+        s=default; t=1591657598;
+        bh=h6qgXN4fgHCA3UiZlx2CBU9FEsMck4TG+MvMhPBdHmg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SWuAW5ks9URcrPAuqgZb08nUkOdo+EE+XPtSAzshPhJXKNbwntu1Ho+tltJAo/wyT
-         Zq5Vqp2wEt392zhL20zb0UdqZR2b2Iam1TLVYcvSYPu/g+sZHugHLIMvKAzvpbCc7l
-         PDn2I+0/9pqeRF8ULlyV/QlMjkDqg0s6l6Sifw68=
+        b=To50O7H1PqWbNIUyxLRobz+R59ApnaJDF2hwj2LgWMkrUj+QaYcfaK9XEa/SUIPtV
+         BTDnW1b7+JcKAqmCiJjNFr2G78qEmIFu9Otgt8X9pgcRNJyXBkalmNCSVxn6o/HWtd
+         mt3+hy4tyDLXZh5NFdVyTgeQtgnmANoO4Vn9vz5A=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 018/274] spi: spi-mem: Fix Dual/Quad modes on Octal-capable devices
-Date:   Mon,  8 Jun 2020 19:01:51 -0400
-Message-Id: <20200608230607.3361041-18-sashal@kernel.org>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alston Tang <alston64@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 024/274] libbpf: Fix memory leak and possible double-free in hashmap__clear
+Date:   Mon,  8 Jun 2020 19:01:57 -0400
+Message-Id: <20200608230607.3361041-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -43,49 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit 80300a7d5f2d7178335652f41d2e55ba898b4ec1 ]
+[ Upstream commit 229bf8bf4d910510bc1a2fd0b89bd467cd71050d ]
 
-Currently buswidths 2 and 4 are rejected for a device that advertises
-Octal capabilities.  Allow these buswidths, just like is done for
-buswidth 2 and Quad-capable devices.
+Fix memory leak in hashmap_clear() not freeing hashmap_entry structs for each
+of the remaining entries. Also NULL-out bucket list to prevent possible
+double-free between hashmap__clear() and hashmap__free().
 
-Fixes: b12a084c8729ef42 ("spi: spi-mem: add support for octal mode I/O data transfer")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20200416101418.14379-1-geert+renesas@glider.be
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Running test_progs-asan flavor clearly showed this problem.
+
+Reported-by: Alston Tang <alston64@fb.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20200429012111.277390-5-andriin@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-mem.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ tools/lib/bpf/hashmap.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index adaa0c49f966..9a86cc27fcc0 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -108,15 +108,17 @@ static int spi_check_buswidth_req(struct spi_mem *mem, u8 buswidth, bool tx)
- 		return 0;
+diff --git a/tools/lib/bpf/hashmap.c b/tools/lib/bpf/hashmap.c
+index 54c30c802070..cffb96202e0d 100644
+--- a/tools/lib/bpf/hashmap.c
++++ b/tools/lib/bpf/hashmap.c
+@@ -59,7 +59,14 @@ struct hashmap *hashmap__new(hashmap_hash_fn hash_fn,
  
- 	case 2:
--		if ((tx && (mode & (SPI_TX_DUAL | SPI_TX_QUAD))) ||
--		    (!tx && (mode & (SPI_RX_DUAL | SPI_RX_QUAD))))
-+		if ((tx &&
-+		     (mode & (SPI_TX_DUAL | SPI_TX_QUAD | SPI_TX_OCTAL))) ||
-+		    (!tx &&
-+		     (mode & (SPI_RX_DUAL | SPI_RX_QUAD | SPI_RX_OCTAL))))
- 			return 0;
+ void hashmap__clear(struct hashmap *map)
+ {
++	struct hashmap_entry *cur, *tmp;
++	int bkt;
++
++	hashmap__for_each_entry_safe(map, cur, tmp, bkt) {
++		free(cur);
++	}
+ 	free(map->buckets);
++	map->buckets = NULL;
+ 	map->cap = map->cap_bits = map->sz = 0;
+ }
  
- 		break;
- 
- 	case 4:
--		if ((tx && (mode & SPI_TX_QUAD)) ||
--		    (!tx && (mode & SPI_RX_QUAD)))
-+		if ((tx && (mode & (SPI_TX_QUAD | SPI_TX_OCTAL))) ||
-+		    (!tx && (mode & (SPI_RX_QUAD | SPI_RX_OCTAL))))
- 			return 0;
- 
- 		break;
 -- 
 2.25.1
 
