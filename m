@@ -2,200 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCFB1F2182
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 23:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B541F2194
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 23:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgFHVcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 17:32:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726612AbgFHVcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 17:32:02 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6C91206D5;
-        Mon,  8 Jun 2020 21:32:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591651921;
-        bh=iGJ/S85SGw3PjfMmtAFIqmA+qqnezwwkvYQUyMOy1Sw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=1AnJXR2EkjQSi8iIsA5aD0FJDk7uxo3n2xHI5pkz2MWUT8buGdP02LiZv/+1csY3q
-         4oqdq6NhOiCiRzM8qBg2jzbG7KRDPmZYjCrgT3SemeqUSuqleF3IU+wUitrEvnQVPc
-         ljMS7xhdGhK912rvW8x/vDpXWGWY8O9DZIVBEC/M=
-Date:   Mon, 8 Jun 2020 16:37:11 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>, Kees Cook <keescook@chromium.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH v3] docs: deprecated.rst: Add zero-length and one-element
- arrays
-Message-ID: <20200608213711.GA22271@embeddedor>
+        id S1726828AbgFHVpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 17:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726803AbgFHVpT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 17:45:19 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B07C08C5C2
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 14:45:17 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id mb16so20050254ejb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 14:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Igh1IwPinYOHclngfiWXcdsSPSUfVMy900DjvDtZXdE=;
+        b=LOXuySGWu6oAFpGSLwRnURotT4T7GHHSY8T9C0/cwfQxalBA7tF1N8cu7f0k4Vd7je
+         2No1nZdIXfZBnRgD9v81wSb36UQ5bjRNEbUXERvVtplQxTrxs8dvo4A6Mtj+6t6MuDzi
+         ZPhVp9z/CE+pLdK4Zo5eEp5VKji/83r2UQmLRNH/pOJxDdHWL1lEtlYwDBnmwE22ei2e
+         VQq4KTiFCLaSadosS5Zvc+cH8vt4rjRvXGRHit6il9pQWF2iKmhaynrEo6pO8pp/HJ+s
+         B/pvew9eTKduP1472XSQBRUT6f8V9ztWio0h6GyyWcS+SWRPCE8iWR/zDxiCEZPGa39s
+         A/RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Igh1IwPinYOHclngfiWXcdsSPSUfVMy900DjvDtZXdE=;
+        b=kbph+TCKL/75lGXbk0t66VfNLoEBpJKIKQhntmp21awzxlqj/q5+AaiDsH6EtclBhl
+         hxFZo0EpCUcKm1X7ax4Ya2kjjLH1o4Qbqrq7hFgPR3a7MxtBat7wpR8i71QNB7HHLloL
+         /aB0Z2M7DfvK8xth4QfaqpOhBcPi5Dydcwfioi3VwCScPbIdKDpNxgvOw5biCemNgABJ
+         YFQHtbT20Errx7eDxNaftcjn5kCoCdCvto6jgJbV+sb2JVkZhhnPuz5e5N3VkKJs9aUR
+         se7trHyMtV+fS0JgNTjruX7ueeqDXt4v+YJEhfmxXaBkNVN/e9GG7UoHlmZwgMPtLC2b
+         HcIA==
+X-Gm-Message-State: AOAM530V4w6gDodEfdV2/F5CuxoiZ9+PGVYDts+TIkYe9jtTGrBiWoBK
+        g84rH7tODm7S5g/uNI0As9kNAh8EcVjEt9Tq/WVG
+X-Google-Smtp-Source: ABdhPJzM1blhuSfAtHWQKHod1napq/wyiCDkQzMZK14COSUGFvoq3xTJ7+bH9cmWhMvSg5A2bYc3wf0KPT0tdU0HpE0=
+X-Received: by 2002:a17:906:2b81:: with SMTP id m1mr21816983ejg.488.1591652716065;
+ Mon, 08 Jun 2020 14:45:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200607221449.2837-1-nramas@linux.microsoft.com> <1591617171.4638.33.camel@linux.ibm.com>
+In-Reply-To: <1591617171.4638.33.camel@linux.ibm.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 8 Jun 2020 17:45:05 -0400
+Message-ID: <CAHC9VhQpK+Shy2b2tv+vrTS+a8+zZbsrRG=pjzoMK0LApJg1Sg@mail.gmail.com>
+Subject: Re: [PATCH v2] IMA: Add audit log for failure conditions
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        linux-integrity@vger.kernel.org, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add zero-length and one-element arrays to the list.
+On Mon, Jun 8, 2020 at 7:52 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> Hi Lakshmi,
+>
+> On Sun, 2020-06-07 at 15:14 -0700, Lakshmi Ramasubramanian wrote:
+> > The final log statement in process_buffer_measurement() for failure
+> > condition is at debug level. This does not log the message unless
+> > the system log level is raised which would significantly increase
+> > the messages in the system log. Change this log message to an audit
+> > message for better triaging failures in the function.
+> >
+> > ima_alloc_key_entry() does not log a message for failure condition.
+> > Add an audit message for failure condition in this function.
+> >
+> > Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>
+> Audit messages should be at a higher level.  For example,
+> "hashing_error", "collect_data", "invalid_pcr".  In the "invalid_pcr"
+> case, the audit log contains the reason - "ToMToU" or "open_writers" -
+> as to why the measurement list doesn't match the PCR.
+>
+> Here you would want "measuring_keys", "measuring_boot_cmdline" with
+> the reason it failed, not the function name
+> "process_buffer_measurement".
+>
+> Userspace needs to be aware of the new audit messages.  Maybe include
+> samples of them in the cover letter.
 
-While I continue replacing zero-length and one-element arrays with
-flexible-array members, I need a reference to point people to, so
-they don't introduce more instances of such arrays. And while here,
-add a note to the "open-coded arithmetic in allocator arguments"
-section, on the use of struct_size() and the arrays-to-deprecate
-mentioned here.
+Yes, examples of the audit record in the commit description (the cover
+letter isn't recorded in the git log), are encouraged.
 
-Co-developed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v3:
- - Add changes written by Kees.
- - Add Co-developed-by tag to include Kees in the changelog text.
-
-Changes in v2:
- - Adjust some markup links for readability.
-
- Documentation/process/deprecated.rst | 118 +++++++++++++++++++++++++++
- 1 file changed, 118 insertions(+)
-
-diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
-index 652e2aa02a66c..bd4c92244de31 100644
---- a/Documentation/process/deprecated.rst
-+++ b/Documentation/process/deprecated.rst
-@@ -85,6 +85,11 @@ Instead, use the helper::
- 
- 	header = kzalloc(struct_size(header, item, count), GFP_KERNEL);
- 
-+.. note:: If you are using struct_size() on a structure containing a zero-length
-+        or a one-element array as a trailing array member, please refactor such
-+        array usage and switch to a `flexible array member
-+        <#zero-length-and-one-element-arrays>`_ instead.
-+
- See array_size(), array3_size(), and struct_size(),
- for more details as well as the related check_add_overflow() and
- check_mul_overflow() family of functions.
-@@ -200,3 +205,116 @@ All switch/case blocks must end in one of:
- * continue;
- * goto <label>;
- * return [expression];
-+
-+Zero-length and one-element arrays
-+----------------------------------
-+There is a regular need in the kernel to provide a way to declare having
-+a dynamically sized set of trailing elements in a structure. Kernel code
-+should always use `"flexible array members" <https://en.wikipedia.org/wiki/Flexible_array_member>`_
-+for these cases. The older style of one-element or zero-length arrays should
-+no longer be used.
-+
-+In older C code, dynamically sized trailing elements were done by specifying
-+a one-element array at the end of a structure::
-+
-+        struct something {
-+                size_t count;
-+                struct foo items[1];
-+        };
-+
-+This led to fragile size calculations via sizeof() (which would need to
-+remove the size of the single trailing element to get a correct size of
-+the "header"). A `GNU C extension <https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_
-+was introduced to allow for zero-length arrays, to avoid these kinds of
-+size problems::
-+
-+        struct something {
-+                size_t count;
-+                struct foo items[0];
-+        };
-+
-+But this led to other problems, and didn't solve some problems shared by
-+both styles, like not being able to detect when such an array is accidentally
-+being used _not_ at the end of a structure (which could happen directly, or
-+when such a struct was in unions, structs of structs, etc).
-+
-+C99 introduced "flexible array members", which lacks a numeric size for
-+the array declaration entirely::
-+
-+        struct something {
-+                size_t count;
-+                struct foo items[];
-+        };
-+
-+This is the way the kernel expects dynamically sized trailing elements
-+to be declared. It allows the compiler to generate errors when the
-+flexible array does not occur last in the structure, which helps to prevent
-+some kind of `undefined behavior
-+<https://git.kernel.org/linus/76497732932f15e7323dc805e8ea8dc11bb587cf>`_
-+bugs from being inadvertently introduced to the codebase. It also allows
-+the compiler to correctly analyze array sizes (via sizeof(),
-+`CONFIG_FORTIFY_SOURCE`, and `CONFIG_UBSAN_BOUNDS`). For instance,
-+there is no mechanism that warns us that the following application of the
-+sizeof() operator to a zero-length array always results in zero::
-+
-+        struct something {
-+                size_t count;
-+                struct foo items[0];
-+        };
-+
-+        struct something *instance;
-+
-+        instance = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
-+        instance->count = count;
-+
-+        size = sizeof(instance->items) * instance->count;
-+        memcpy(instance->items, source, size);
-+
-+At the last line of code above, ``size`` turns out to be ``zero``, when one might
-+have thought it represents the total size in bytes of the dynamic memory recently
-+allocated for the trailing array ``items``. Here are a couple examples of this
-+issue: `link 1
-+<https://git.kernel.org/linus/f2cd32a443da694ac4e28fbf4ac6f9d5cc63a539>`_,
-+`link 2
-+<https://git.kernel.org/linus/ab91c2a89f86be2898cee208d492816ec238b2cf>`_.
-+Instead, `flexible array members have incomplete type, and so the sizeof()
-+operator may not be applied <https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_,
-+so any misuse of such operators will be immediately noticed at build time.
-+
-+With respect to one-element arrays, one has to be acutely aware that `such arrays
-+occupy at least as much space as a single object of the type
-+<https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_,
-+hence they contribute to the size of the enclosing structure. This is prone
-+to error every time people want to calculate the total size of dynamic memory
-+to allocate for a structure containing an array of this kind as a member::
-+
-+        struct something {
-+                size_t count;
-+                struct foo items[1];
-+        };
-+
-+        struct something *instance;
-+
-+        instance = kmalloc(struct_size(instance, items, count - 1), GFP_KERNEL);
-+        instance->count = count;
-+
-+        size = sizeof(instance->items) * instance->count;
-+        memcpy(instance->items, source, size);
-+
-+In the example above, we had to remember to calculate ``count - 1`` when using
-+the struct_size() helper, otherwise we would have --unintentionally-- allocated
-+memory for one too many ``items`` objects. The cleanest and least error-prone way
-+to implement this is through the use of a `flexible array member`::
-+
-+        struct something {
-+                size_t count;
-+                struct foo items[];
-+        };
-+
-+        struct something *instance;
-+
-+        instance = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
-+        instance->count = count;
-+
-+        size = sizeof(instance->items[0]) * instance->count;
-+        memcpy(instance->items, source, size);
 -- 
-2.27.0
-
+paul moore
+www.paul-moore.com
