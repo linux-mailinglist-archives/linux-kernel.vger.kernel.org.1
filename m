@@ -2,93 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5479F1F264E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1070E1F2647
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731265AbgFHXhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:37:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58562 "EHLO mail.kernel.org"
+        id S2387811AbgFHXfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:35:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732254AbgFHX2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:28:42 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1732531AbgFHXdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:33:06 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86537208A7;
-        Mon,  8 Jun 2020 23:28:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D7A4520775;
+        Mon,  8 Jun 2020 23:33:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658922;
-        bh=/YM9Qim2UEDqZy57Oom9XviW8SgEHAn+SAnkAOLb4D8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tqLIC3G0y8tomj3AsuaAbfurjL+jMcLhOAVTj56NG4mO+kNfEVRTIXLocwKmhDexf
-         nxlMRVHcIJJ+yhTD6QFhbxbwF1KkGdq4an+xNdUzNx1SHSEhTRYgkc+PNL7y8/47gX
-         PDGeM+Mx9U0Iiz5iq3kZ/dNBxbm+gKP0YT6okN6k=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ido Schimmel <idosch@mellanox.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 37/37] vxlan: Avoid infinite loop when suppressing NS messages with invalid options
-Date:   Mon,  8 Jun 2020 19:27:49 -0400
-Message-Id: <20200608232750.3370747-37-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608232750.3370747-1-sashal@kernel.org>
-References: <20200608232750.3370747-1-sashal@kernel.org>
+        s=default; t=1591659185;
+        bh=Nc5stfIq+5Ul/qSW+NDkOVlTjnYsPCUFGkbd6YbkUNU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B4BMUo/bVaKtHjl2PToR1B5kt8/Rr+jEEnQpMXggmdOa5BpBPO34i9fSA6J3AUIL6
+         XwIIXK7khGexVLw/l5JPhukVCx6nKBpRFKKg4A0z8GQwWQIuHket9JMmHd8QWrMuqv
+         ZCiVC9F5kSbMbQpcMCyPJcLnPuC5j36LhNHj2aZQ=
+Received: by pali.im (Postfix)
+        id 225E1263E; Tue,  9 Jun 2020 01:33:03 +0200 (CEST)
+Date:   Tue, 9 Jun 2020 01:33:03 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Y Paritcher <y.linux@paritcher.com>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mario.Limonciello@dell.com
+Subject: Re: [PATCH v2 2/3] platform/x86: dell-wmi: add new keymap type 0x0012
+Message-ID: <20200608233303.57ubv4rxo4tnaaxa@pali>
+References: <cover.1591584631.git.y.linux@paritcher.com>
+ <cover.1591656154.git.y.linux@paritcher.com>
+ <74fdb288757cf5970a558f920f531b3bd1c51b47.1591656154.git.y.linux@paritcher.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <74fdb288757cf5970a558f920f531b3bd1c51b47.1591656154.git.y.linux@paritcher.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@mellanox.com>
+On Monday 08 June 2020 19:05:29 Y Paritcher wrote:
+> These are events with extended data. The extended data is
+> currently ignored as userspace does not have a way to deal
+> it.
+> 
+> Ignore event with a type of 0x0012 and a code of 0xe035, as
+> the keyboard controller takes care of Fn lock events by itself.
 
-[ Upstream commit 8066e6b449e050675df48e7c4b16c29f00507ff0 ]
+Nice! This is information which is really important and need to have it
+documented.
 
-When proxy mode is enabled the vxlan device might reply to Neighbor
-Solicitation (NS) messages on behalf of remote hosts.
+> This silences the following messages being logged when
+> pressing the Fn-lock key on a Dell Inspiron 5593:
+> 
+> dell_wmi: Unknown WMI event type 0x12
+> dell_wmi: Unknown key with type 0x0012 and code 0xe035 pressed
+> 
+> This is consistent with the behavior for the Fn-lock key
+> elsewhere in this file.
+> 
+> Signed-off-by: Y Paritcher <y.linux@paritcher.com>
 
-In case the NS message includes the "Source link-layer address" option
-[1], the vxlan device will use the specified address as the link-layer
-destination address in its reply.
+I'm fine with this patch now.
 
-To avoid an infinite loop, break out of the options parsing loop when
-encountering an option with length zero and disregard the NS message.
+Reviewed-by: Pali Rohár <pali@kernel.org>
 
-This is consistent with the IPv6 ndisc code and RFC 4886 which states
-that "Nodes MUST silently discard an ND packet that contains an option
-with length zero" [2].
+> ---
+>  drivers/platform/x86/dell-wmi.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/x86/dell-wmi.c b/drivers/platform/x86/dell-wmi.c
+> index 0b2edfe2767d..6b510f8431a3 100644
+> --- a/drivers/platform/x86/dell-wmi.c
+> +++ b/drivers/platform/x86/dell-wmi.c
+> @@ -334,6 +334,15 @@ static const struct key_entry dell_wmi_keymap_type_0011[] = {
+>  	{ KE_IGNORE, KBD_LED_AUTO_100_TOKEN, { KEY_RESERVED } },
+>  };
+>  
+> +/*
+> + * Keymap for WMI events of type 0x0012
+> + * They are events with extended data
+> + */
+> +static const struct key_entry dell_wmi_keymap_type_0012[] = {
+> +	/* Fn-lock button pressed */
+> +	{ KE_IGNORE, 0xe035, { KEY_RESERVED } },
+> +};
+> +
+>  static void dell_wmi_process_key(struct wmi_device *wdev, int type, int code)
+>  {
+>  	struct dell_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
+> @@ -418,10 +427,11 @@ static void dell_wmi_notify(struct wmi_device *wdev,
+>  
+>  		switch (buffer_entry[1]) {
+>  		case 0x0000: /* One key pressed or event occurred */
+> +		case 0x0012: /* Event with extended data occurred */
 
-[1] https://tools.ietf.org/html/rfc4861#section-4.3
-[2] https://tools.ietf.org/html/rfc4861#section-4.6
+Mario, are you able to get some official documentation for these 0x0012
+event types? I think it could be really useful for community so they can
+understand and add easily new type of code and events. Because currently
+we are just guessing what it could be. (It is sequence? Or single event?
+Or single event with extended data? It is generic event? Or it is real
+keypress? etc...)
 
-Fixes: 4b29dba9c085 ("vxlan: fix nonfunctional neigh_reduce()")
-Signed-off-by: Ido Schimmel <idosch@mellanox.com>
-Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/vxlan.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
-index d6ae6d3c98ed..c12f2984d7ef 100644
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -1476,6 +1476,10 @@ static struct sk_buff *vxlan_na_create(struct sk_buff *request,
- 	daddr = eth_hdr(request)->h_source;
- 	ns_olen = request->len - skb_transport_offset(request) - sizeof(*ns);
- 	for (i = 0; i < ns_olen-1; i += (ns->opt[i+1]<<3)) {
-+		if (!ns->opt[i + 1]) {
-+			kfree_skb(reply);
-+			return NULL;
-+		}
- 		if (ns->opt[i] == ND_OPT_SOURCE_LL_ADDR) {
- 			daddr = ns->opt + i + sizeof(struct nd_opt_hdr);
- 			break;
--- 
-2.25.1
-
+>  			if (len > 2)
+>  				dell_wmi_process_key(wdev, 0x0000,
+>  						     buffer_entry[2]);
+> -			/* Other entries could contain additional information */
+> +			/* Extended data is currently ignored */
+>  			break;
+>  		case 0x0010: /* Sequence of keys pressed */
+>  		case 0x0011: /* Sequence of events occurred */
+> @@ -556,6 +566,7 @@ static int dell_wmi_input_setup(struct wmi_device *wdev)
+>  			 ARRAY_SIZE(dell_wmi_keymap_type_0000) +
+>  			 ARRAY_SIZE(dell_wmi_keymap_type_0010) +
+>  			 ARRAY_SIZE(dell_wmi_keymap_type_0011) +
+> +			 ARRAY_SIZE(dell_wmi_keymap_type_0012) +
+>  			 1,
+>  			 sizeof(struct key_entry), GFP_KERNEL);
+>  	if (!keymap) {
+> @@ -600,6 +611,13 @@ static int dell_wmi_input_setup(struct wmi_device *wdev)
+>  		pos++;
+>  	}
+>  
+> +	/* Append table with events of type 0x0012 */
+> +	for (i = 0; i < ARRAY_SIZE(dell_wmi_keymap_type_0012); i++) {
+> +		keymap[pos] = dell_wmi_keymap_type_0012[i];
+> +		keymap[pos].code |= (0x0012 << 16);
+> +		pos++;
+> +	}
+> +
+>  	/*
+>  	 * Now append also table with "legacy" events of type 0x0000. Some of
+>  	 * them are reported also on laptops which have scancodes in DMI.
+> -- 
+> 2.27.0
+> 
