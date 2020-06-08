@@ -2,452 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF071F1E7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 19:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B1F1F1E86
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 19:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730091AbgFHRs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 13:48:28 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22834 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726097AbgFHRs2 (ORCPT
+        id S1730301AbgFHRtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 13:49:13 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:25909 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730247AbgFHRtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 13:48:28 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 058HilPd110622;
-        Mon, 8 Jun 2020 13:47:46 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31g59rmccj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Jun 2020 13:47:46 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 058HikbA110537;
-        Mon, 8 Jun 2020 13:47:45 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31g59rmcbv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Jun 2020 13:47:45 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 058HfM6T001927;
-        Mon, 8 Jun 2020 17:47:44 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma01fra.de.ibm.com with ESMTP id 31g2s7st5s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Jun 2020 17:47:43 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 058HlfZI49938666
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 8 Jun 2020 17:47:41 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3B6E6A4067;
-        Mon,  8 Jun 2020 17:47:41 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4F256A4062;
-        Mon,  8 Jun 2020 17:47:37 +0000 (GMT)
-Received: from vajain21-in-ibm-com (unknown [9.85.74.153])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon,  8 Jun 2020 17:47:36 +0000 (GMT)
-Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Mon, 08 Jun 2020 23:17:35 +0530
-From:   Vaibhav Jain <vaibhav@linux.ibm.com>
-To:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v11 3/6] powerpc/papr_scm: Fetch nvdimm health information from PHYP
-In-Reply-To: <20200607131339.476036-4-vaibhav@linux.ibm.com>
-References: <20200607131339.476036-1-vaibhav@linux.ibm.com> <20200607131339.476036-4-vaibhav@linux.ibm.com>
-Date:   Mon, 08 Jun 2020 23:17:35 +0530
-Message-ID: <87wo4hwitk.fsf@linux.ibm.com>
+        Mon, 8 Jun 2020 13:49:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1591638551; x=1623174551;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=RrQlW9u3yz1uG+aS3Pnccyw7nqI12EiiyIfTXmHO7oM=;
+  b=nTm3P/4ps504evNoB8DVZZKQOTp2hRzMiPCpJO2dvcu9psop9Ie6wJZz
+   wC5eYjt1TNTdGOlEAUCnDPS0SyD/LBVXJVrEJXRsZlFN5UaRIMmoyN2jE
+   xTdPPqZ5XgVIzJhQUIE+sshMbp25D/XVbYCjTVp2qeQDvueSSon+LaVlv
+   Y=;
+IronPort-SDR: lk/06JDJfipnDKz23035oixRv1+ial6X9Qc7qbzrgzY6P+DMOZ19qBQ0XQsROk46d6svcb8e3l
+ 0oqR1Y1oBd5w==
+X-IronPort-AV: E=Sophos;i="5.73,487,1583193600"; 
+   d="scan'208";a="42447105"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 08 Jun 2020 17:48:58 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id 7F18FA18D2;
+        Mon,  8 Jun 2020 17:48:55 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 8 Jun 2020 17:48:55 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.65) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 8 Jun 2020 17:48:37 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     David Hildenbrand <david@redhat.com>,
+        SeongJae Park <sjpark@amazon.com>, <akpm@linux-foundation.org>,
+        SeongJae Park <sjpark@amazon.de>,
+        <Jonathan.Cameron@huawei.com>, <aarcange@redhat.com>,
+        <acme@kernel.org>, <alexander.shishkin@linux.intel.com>,
+        <amit@kernel.org>, <benh@kernel.crashing.org>,
+        <brendan.d.gregg@gmail.com>, <brendanhiggins@google.com>,
+        <cai@lca.pw>, <colin.king@canonical.com>, <corbet@lwn.net>,
+        <dwmw@amazon.com>, <foersleo@amazon.de>, <irogers@google.com>,
+        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
+        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
+        <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <sblbir@amazon.com>, <shakeelb@google.com>,
+        <shuah@kernel.org>, <sj38.park@gmail.com>, <snu@amazon.de>,
+        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: Re: [PATCH v15 01/14] mm/page_ext: Export lookup_page_ext() to GPL modules
+Date:   Mon, 8 Jun 2020 19:48:16 +0200
+Message-ID: <20200608174816.19222-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200608154917.GA8408@infradead.org> (raw)
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-08_17:2020-06-08,2020-06-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- impostorscore=0 clxscore=1015 adultscore=0 spamscore=0 phishscore=0
- malwarescore=0 mlxlogscore=999 cotscore=-2147483648 bulkscore=0
- suspectscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006080121
+X-Originating-IP: [10.43.160.65]
+X-ClientProxiedBy: EX13D31UWC001.ant.amazon.com (10.43.162.152) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ira,
+On Mon, 8 Jun 2020 08:49:17 -0700 Christoph Hellwig <hch@infradead.org> wrote:
 
-During v9 you had provided your ack to this patch [1] and also had made a
-review comment in a later patch regarding an avoidable 'goto'
-statement. I have since updated the patch addressing that review
-comment. Can you please provide your ack to this patch too.
+> On Mon, Jun 08, 2020 at 01:53:23PM +0200, David Hildenbrand wrote:
+> > > @@ -131,6 +131,7 @@ struct page_ext *lookup_page_ext(const struct page *page)
+> > >  					MAX_ORDER_NR_PAGES);
+> > >  	return get_entry(base, index);
+> > >  }
+> > > +EXPORT_SYMBOL_GPL(lookup_page_ext);
+> > >  
+> > >  static int __init alloc_node_page_ext(int nid)
+> > >  {
+> > > 
+> > 
+> > I've been told to always smuggle new EXPORTs into the patch that
+> > actually needs it (and cc relevant people on that patch instead).
+> 
+> A separate patch for anything remotely controversial really helps it
+> to stick out, so I think keeping it separate is a very good practice.
 
-[1]
-https://lore.kernel.org/linux-nvdimm/20200603231814.GK1505637@iweiny-DESK2.sc.intel.com/T/#m668d7b35a2394104f11afdae5951e420a8ccffe6
-[2] "I missed this...  probably did not need the goto in the first patch?"
-https://lore.kernel.org/linux-nvdimm/20200603231814.GK1505637@iweiny-DESK2.sc.intel.com/T/#m1ebdd309ac0cb6f47d3b574b8d05374b21ff75df
+I have no strong preference here.  So if no further comments are given, in the
+next spin, I will keep this separate, but will mention exactly what future
+commit needs this change, so that it can be easily squashed later, if
+necessary.
 
 
 Thanks,
-~ Vaibhav
-
-
-Vaibhav Jain <vaibhav@linux.ibm.com> writes:
-
-> Implement support for fetching nvdimm health information via
-> H_SCM_HEALTH hcall as documented in Ref[1]. The hcall returns a pair
-> of 64-bit bitmap, bitwise-and of which is then stored in
-> 'struct papr_scm_priv' and subsequently partially exposed to
-> user-space via newly introduced dimm specific attribute
-> 'papr/flags'. Since the hcall is costly, the health information is
-> cached and only re-queried, 60s after the previous successful hcall.
->
-> The patch also adds a  documentation text describing flags reported by
-> the the new sysfs attribute 'papr/flags' is also introduced at
-> Documentation/ABI/testing/sysfs-bus-papr-pmem.
->
-> [1] commit 58b278f568f0 ("powerpc: Provide initial documentation for
-> PAPR hcalls")
->
-> Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
-> ---
-> Changelog:
->
-> v10..v11:
-> * None
->
-> v9..v10:
-> * Removed an avoidable 'goto' in __drc_pmem_query_health. [ Ira ].
->
-> Resend:
-> * Added ack from Aneesh.
->
-> v8..v9:
-> * Rename some variables and defines to reduce usage of term SCM
->   replacing it with PMEM [Dan Williams, Aneesh]
-> * s/PAPR_SCM_DIMM/PAPR_PMEM/g
-> * s/papr_scm_nd_attributes/papr_nd_attributes/g
-> * s/papr_scm_nd_attribute_group/papr_nd_attribute_group/g
-> * s/papr_scm_dimm_attr_groups/papr_nd_attribute_groups/g
-> * Renamed file sysfs-bus-papr-scm to sysfs-bus-papr-pmem
->
-> v7..v8:
-> * Update type of variable 'rc' in __drc_pmem_query_health() and
->   drc_pmem_query_health() to long and int respectively. [ Ira ]
-> * Updated the patch description to s/64 bit Big Endian Number/64-bit
->   bitmap/ [ Ira, Aneesh ].
->
-> Resend:
-> * None
->
-> v6..v7 :
-> * Used the exported buf_seq_printf() function to generate content for
->   'papr/flags'
-> * Moved the PAPR_SCM_DIMM_* bit-flags macro definitions to papr_scm.c
->   and removed the papr_scm.h file [Mpe]
-> * Some minor consistency issued in sysfs-bus-papr-scm
->   documentation. [Mpe]
-> * s/dimm_mutex/health_mutex/g [Mpe]
-> * Split drc_pmem_query_health() into two function one of which takes
->   care of caching and locking. [Mpe]
-> * Fixed a local copy creation of dimm health information using
->   READ_ONCE(). [Mpe]
->
-> v5..v6 :
-> * Change the flags sysfs attribute from 'papr_flags' to 'papr/flags'
->   [Dan Williams]
-> * Include documentation for 'papr/flags' attr [Dan Williams]
-> * Change flag 'save_fail' to 'flush_fail' [Dan Williams]
-> * Caching of health bitmap to reduce expensive hcalls [Dan Williams]
-> * Removed usage of PPC_BIT from 'papr-scm.h' header [Mpe]
-> * Replaced two __be64 integers from papr_scm_priv to a single u64
->   integer [Mpe]
-> * Updated patch description to reflect the changes made in this
->   version.
-> * Removed avoidable usage of 'papr_scm_priv.dimm_mutex' from
->   flags_show() [Dan Williams]
->
-> v4..v5 :
-> * None
->
-> v3..v4 :
-> * None
->
-> v2..v3 :
-> * Removed PAPR_SCM_DIMM_HEALTH_NON_CRITICAL as a condition for
->        	 NVDIMM unarmed [Aneesh]
->
-> v1..v2 :
-> * New patch in the series.
-> ---
->  Documentation/ABI/testing/sysfs-bus-papr-pmem |  27 +++
->  arch/powerpc/platforms/pseries/papr_scm.c     | 168 +++++++++++++++++-
->  2 files changed, 193 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-papr-pmem
->
-> diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-> new file mode 100644
-> index 000000000000..5b10d036a8d4
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-> @@ -0,0 +1,27 @@
-> +What:		/sys/bus/nd/devices/nmemX/papr/flags
-> +Date:		Apr, 2020
-> +KernelVersion:	v5.8
-> +Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
-> +Description:
-> +		(RO) Report flags indicating various states of a
-> +		papr-pmem NVDIMM device. Each flag maps to a one or
-> +		more bits set in the dimm-health-bitmap retrieved in
-> +		response to H_SCM_HEALTH hcall. The details of the bit
-> +		flags returned in response to this hcall is available
-> +		at 'Documentation/powerpc/papr_hcalls.rst' . Below are
-> +		the flags reported in this sysfs file:
-> +
-> +		* "not_armed"	: Indicates that NVDIMM contents will not
-> +				  survive a power cycle.
-> +		* "flush_fail"	: Indicates that NVDIMM contents
-> +				  couldn't be flushed during last
-> +				  shut-down event.
-> +		* "restore_fail": Indicates that NVDIMM contents
-> +				  couldn't be restored during NVDIMM
-> +				  initialization.
-> +		* "encrypted"	: NVDIMM contents are encrypted.
-> +		* "smart_notify": There is health event for the NVDIMM.
-> +		* "scrubbed"	: Indicating that contents of the
-> +				  NVDIMM have been scrubbed.
-> +		* "locked"	: Indicating that NVDIMM contents cant
-> +				  be modified until next power cycle.
-> diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-> index f35592423380..0c091622b15e 100644
-> --- a/arch/powerpc/platforms/pseries/papr_scm.c
-> +++ b/arch/powerpc/platforms/pseries/papr_scm.c
-> @@ -12,6 +12,7 @@
->  #include <linux/libnvdimm.h>
->  #include <linux/platform_device.h>
->  #include <linux/delay.h>
-> +#include <linux/seq_buf.h>
->  
->  #include <asm/plpar_wrappers.h>
->  
-> @@ -22,6 +23,44 @@
->  	 (1ul << ND_CMD_GET_CONFIG_DATA) | \
->  	 (1ul << ND_CMD_SET_CONFIG_DATA))
->  
-> +/* DIMM health bitmap bitmap indicators */
-> +/* SCM device is unable to persist memory contents */
-> +#define PAPR_PMEM_UNARMED                   (1ULL << (63 - 0))
-> +/* SCM device failed to persist memory contents */
-> +#define PAPR_PMEM_SHUTDOWN_DIRTY            (1ULL << (63 - 1))
-> +/* SCM device contents are persisted from previous IPL */
-> +#define PAPR_PMEM_SHUTDOWN_CLEAN            (1ULL << (63 - 2))
-> +/* SCM device contents are not persisted from previous IPL */
-> +#define PAPR_PMEM_EMPTY                     (1ULL << (63 - 3))
-> +/* SCM device memory life remaining is critically low */
-> +#define PAPR_PMEM_HEALTH_CRITICAL           (1ULL << (63 - 4))
-> +/* SCM device will be garded off next IPL due to failure */
-> +#define PAPR_PMEM_HEALTH_FATAL              (1ULL << (63 - 5))
-> +/* SCM contents cannot persist due to current platform health status */
-> +#define PAPR_PMEM_HEALTH_UNHEALTHY          (1ULL << (63 - 6))
-> +/* SCM device is unable to persist memory contents in certain conditions */
-> +#define PAPR_PMEM_HEALTH_NON_CRITICAL       (1ULL << (63 - 7))
-> +/* SCM device is encrypted */
-> +#define PAPR_PMEM_ENCRYPTED                 (1ULL << (63 - 8))
-> +/* SCM device has been scrubbed and locked */
-> +#define PAPR_PMEM_SCRUBBED_AND_LOCKED       (1ULL << (63 - 9))
-> +
-> +/* Bits status indicators for health bitmap indicating unarmed dimm */
-> +#define PAPR_PMEM_UNARMED_MASK (PAPR_PMEM_UNARMED |		\
-> +				PAPR_PMEM_HEALTH_UNHEALTHY)
-> +
-> +/* Bits status indicators for health bitmap indicating unflushed dimm */
-> +#define PAPR_PMEM_BAD_SHUTDOWN_MASK (PAPR_PMEM_SHUTDOWN_DIRTY)
-> +
-> +/* Bits status indicators for health bitmap indicating unrestored dimm */
-> +#define PAPR_PMEM_BAD_RESTORE_MASK  (PAPR_PMEM_EMPTY)
-> +
-> +/* Bit status indicators for smart event notification */
-> +#define PAPR_PMEM_SMART_EVENT_MASK (PAPR_PMEM_HEALTH_CRITICAL | \
-> +				    PAPR_PMEM_HEALTH_FATAL |	\
-> +				    PAPR_PMEM_HEALTH_UNHEALTHY)
-> +
-> +/* private struct associated with each region */
->  struct papr_scm_priv {
->  	struct platform_device *pdev;
->  	struct device_node *dn;
-> @@ -39,6 +78,15 @@ struct papr_scm_priv {
->  	struct resource res;
->  	struct nd_region *region;
->  	struct nd_interleave_set nd_set;
-> +
-> +	/* Protect dimm health data from concurrent read/writes */
-> +	struct mutex health_mutex;
-> +
-> +	/* Last time the health information of the dimm was updated */
-> +	unsigned long lasthealth_jiffies;
-> +
-> +	/* Health information for the dimm */
-> +	u64 health_bitmap;
->  };
->  
->  static int drc_pmem_bind(struct papr_scm_priv *p)
-> @@ -144,6 +192,61 @@ static int drc_pmem_query_n_bind(struct papr_scm_priv *p)
->  	return drc_pmem_bind(p);
->  }
->  
-> +/*
-> + * Issue hcall to retrieve dimm health info and populate papr_scm_priv with the
-> + * health information.
-> + */
-> +static int __drc_pmem_query_health(struct papr_scm_priv *p)
-> +{
-> +	unsigned long ret[PLPAR_HCALL_BUFSIZE];
-> +	long rc;
-> +
-> +	/* issue the hcall */
-> +	rc = plpar_hcall(H_SCM_HEALTH, ret, p->drc_index);
-> +	if (rc != H_SUCCESS) {
-> +		dev_err(&p->pdev->dev,
-> +			"Failed to query health information, Err:%ld\n", rc);
-> +		return -ENXIO;
-> +	}
-> +
-> +	p->lasthealth_jiffies = jiffies;
-> +	p->health_bitmap = ret[0] & ret[1];
-> +
-> +	dev_dbg(&p->pdev->dev,
-> +		"Queried dimm health info. Bitmap:0x%016lx Mask:0x%016lx\n",
-> +		ret[0], ret[1]);
-> +
-> +	return 0;
-> +}
-> +
-> +/* Min interval in seconds for assuming stable dimm health */
-> +#define MIN_HEALTH_QUERY_INTERVAL 60
-> +
-> +/* Query cached health info and if needed call drc_pmem_query_health */
-> +static int drc_pmem_query_health(struct papr_scm_priv *p)
-> +{
-> +	unsigned long cache_timeout;
-> +	int rc;
-> +
-> +	/* Protect concurrent modifications to papr_scm_priv */
-> +	rc = mutex_lock_interruptible(&p->health_mutex);
-> +	if (rc)
-> +		return rc;
-> +
-> +	/* Jiffies offset for which the health data is assumed to be same */
-> +	cache_timeout = p->lasthealth_jiffies +
-> +		msecs_to_jiffies(MIN_HEALTH_QUERY_INTERVAL * 1000);
-> +
-> +	/* Fetch new health info is its older than MIN_HEALTH_QUERY_INTERVAL */
-> +	if (time_after(jiffies, cache_timeout))
-> +		rc = __drc_pmem_query_health(p);
-> +	else
-> +		/* Assume cached health data is valid */
-> +		rc = 0;
-> +
-> +	mutex_unlock(&p->health_mutex);
-> +	return rc;
-> +}
->  
->  static int papr_scm_meta_get(struct papr_scm_priv *p,
->  			     struct nd_cmd_get_config_data_hdr *hdr)
-> @@ -286,6 +389,64 @@ static int papr_scm_ndctl(struct nvdimm_bus_descriptor *nd_desc,
->  	return 0;
->  }
->  
-> +static ssize_t flags_show(struct device *dev,
-> +			  struct device_attribute *attr, char *buf)
-> +{
-> +	struct nvdimm *dimm = to_nvdimm(dev);
-> +	struct papr_scm_priv *p = nvdimm_provider_data(dimm);
-> +	struct seq_buf s;
-> +	u64 health;
-> +	int rc;
-> +
-> +	rc = drc_pmem_query_health(p);
-> +	if (rc)
-> +		return rc;
-> +
-> +	/* Copy health_bitmap locally, check masks & update out buffer */
-> +	health = READ_ONCE(p->health_bitmap);
-> +
-> +	seq_buf_init(&s, buf, PAGE_SIZE);
-> +	if (health & PAPR_PMEM_UNARMED_MASK)
-> +		seq_buf_printf(&s, "not_armed ");
-> +
-> +	if (health & PAPR_PMEM_BAD_SHUTDOWN_MASK)
-> +		seq_buf_printf(&s, "flush_fail ");
-> +
-> +	if (health & PAPR_PMEM_BAD_RESTORE_MASK)
-> +		seq_buf_printf(&s, "restore_fail ");
-> +
-> +	if (health & PAPR_PMEM_ENCRYPTED)
-> +		seq_buf_printf(&s, "encrypted ");
-> +
-> +	if (health & PAPR_PMEM_SMART_EVENT_MASK)
-> +		seq_buf_printf(&s, "smart_notify ");
-> +
-> +	if (health & PAPR_PMEM_SCRUBBED_AND_LOCKED)
-> +		seq_buf_printf(&s, "scrubbed locked ");
-> +
-> +	if (seq_buf_used(&s))
-> +		seq_buf_printf(&s, "\n");
-> +
-> +	return seq_buf_used(&s);
-> +}
-> +DEVICE_ATTR_RO(flags);
-> +
-> +/* papr_scm specific dimm attributes */
-> +static struct attribute *papr_nd_attributes[] = {
-> +	&dev_attr_flags.attr,
-> +	NULL,
-> +};
-> +
-> +static struct attribute_group papr_nd_attribute_group = {
-> +	.name = "papr",
-> +	.attrs = papr_nd_attributes,
-> +};
-> +
-> +static const struct attribute_group *papr_nd_attr_groups[] = {
-> +	&papr_nd_attribute_group,
-> +	NULL,
-> +};
-> +
->  static int papr_scm_nvdimm_init(struct papr_scm_priv *p)
->  {
->  	struct device *dev = &p->pdev->dev;
-> @@ -312,8 +473,8 @@ static int papr_scm_nvdimm_init(struct papr_scm_priv *p)
->  	dimm_flags = 0;
->  	set_bit(NDD_LABELING, &dimm_flags);
->  
-> -	p->nvdimm = nvdimm_create(p->bus, p, NULL, dimm_flags,
-> -				  PAPR_SCM_DIMM_CMD_MASK, 0, NULL);
-> +	p->nvdimm = nvdimm_create(p->bus, p, papr_nd_attr_groups,
-> +				  dimm_flags, PAPR_SCM_DIMM_CMD_MASK, 0, NULL);
->  	if (!p->nvdimm) {
->  		dev_err(dev, "Error creating DIMM object for %pOF\n", p->dn);
->  		goto err;
-> @@ -399,6 +560,9 @@ static int papr_scm_probe(struct platform_device *pdev)
->  	if (!p)
->  		return -ENOMEM;
->  
-> +	/* Initialize the dimm mutex */
-> +	mutex_init(&p->health_mutex);
-> +
->  	/* optional DT properties */
->  	of_property_read_u32(dn, "ibm,metadata-size", &metadata_size);
->  
-> -- 
-> 2.26.2
->
-
--- 
-Cheers
-~ Vaibhav
+SeongJae Park
