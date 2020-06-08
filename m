@@ -2,106 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2461F184A
+	by mail.lfdr.de (Postfix) with ESMTP id 890D71F184B
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729720AbgFHLzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 07:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729568AbgFHLz3 (ORCPT
+        id S1729730AbgFHLzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 07:55:40 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:35074 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729568AbgFHLzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 07:55:29 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7F7C08C5C2
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 04:55:28 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id x27so10006758lfg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 04:55:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=5mSqmXOzjDhWVi9ac6qJDpYRiKhmA/3B9Ie+LL65UlA=;
-        b=FcT9oWy7oyZ7jAu32kyAjqYeJ1Nm7LuUMYJggA0hHcGyNdJeo7DxtouSR3k9hmx318
-         8/aD713gZBGdozpc2UNo8MGsTgIVVBaRjj499H5PqqmeEQXLq70rH/vdLWqD2+ou+Xcv
-         45z7fU4L8qQtOdjA44+WYs8xZoMOT5nzQVFgsCXpacNuqWcfqBhddaVCHwPzNJN/kd70
-         UqY0JgMAZIRcn+80Dn7gA6zRJq0eGGG1EhqnmutQigmWMVXsZ1pmVEKMH+nGoGTLFabL
-         1LWpNzcUgxtuPPmRdq2JVnpJ/3MlFwWlmVIiMpmxhkryl253f/kl3/uJrXQ9G7vzf7dI
-         oztQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=5mSqmXOzjDhWVi9ac6qJDpYRiKhmA/3B9Ie+LL65UlA=;
-        b=WVloMRa8PJQnbHw8hyX8uSxLZLyFjme+G7FwsxS9ani+pKsv+Dnbhw/RRxhZuMgcnR
-         +UaV0Z+uevQe/5HQhvoDexOx0QwV1I7oPfe2tjCNQysyDr740VAYKvfFwMqLcnAP2WU2
-         3RRjPFQmuWSwzgnI0+6HkyUF3RyFtdzc64Yjt0sGJmsrwwMqJYBsjZJUIZgLIHN/9stx
-         IqcvFZaV84TguDViDhgwk7u07pWSYAr5THGm7crMZ03S+85Tf5yxZqGkh0HHmex9bW/V
-         PsIyAUk+9UeJ5elV10xHAdcYcT0oqjLqGZqwPRITYn8RLnfD8SUiNYGzt9Subhz8tP7s
-         Sa8Q==
-X-Gm-Message-State: AOAM533ciV2K2Q2SLMBvZc9q3OHYkB3YEaFZ3nlkg/jZJ2Q8K6h9eL+I
-        H8lpAtMYAC+pDS3Dcko7TjYE9Ugh7BAEIu2eSSU=
-X-Google-Smtp-Source: ABdhPJwg4OXWqJpgNEJf1zfsJgpmK6KXkq+mcQsIAwm636JysWLhhQdTUEwPGmuYnZCNWcxIX/8ur0LQLPclMf6wXLE=
-X-Received: by 2002:a19:c3c5:: with SMTP id t188mr12506371lff.149.1591617326847;
- Mon, 08 Jun 2020 04:55:26 -0700 (PDT)
+        Mon, 8 Jun 2020 07:55:38 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tomeu)
+        with ESMTPSA id 7573F2A164C
+Subject: Re: [PATCH 08/15] drm/panfrost: move devfreq_init()/fini() in device
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Steven Price <steven.price@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200510165538.19720-1-peron.clem@gmail.com>
+ <20200510165538.19720-9-peron.clem@gmail.com>
+ <3ca4dd51-d868-0d6a-d4ca-37af572190bd@arm.com>
+ <CAJiuCceH-wOHc7wEEtmd+CC==QgqK1nOG6YB389Gs=+0t8i=wg@mail.gmail.com>
+From:   Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Message-ID: <8cdb1fdc-fc40-7880-8fd1-bed2bfdb16a6@collabora.com>
+Date:   Mon, 8 Jun 2020 13:55:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Received: by 2002:a2e:585b:0:0:0:0:0 with HTTP; Mon, 8 Jun 2020 04:55:26 -0700 (PDT)
-Reply-To: mrs.vernitha.maynard@mail.bg
-From:   Vernitha Maynard <sousah.fatou@gmail.com>
-Date:   Mon, 8 Jun 2020 11:55:26 +0000
-Message-ID: <CAJ7hs0403h4fXA6aAu6MJfM5U5PU895gUgndE=4a8Zi1oqB8ow@mail.gmail.com>
-Subject: Greeting,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAJiuCceH-wOHc7wEEtmd+CC==QgqK1nOG6YB389Gs=+0t8i=wg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dear,
+On 5/29/20 2:38 PM, Clément Péron wrote:
+> Hi Steven
+> 
+> On Thu, 28 May 2020 at 15:22, Steven Price <steven.price@arm.com> wrote:
+>>
+>> On 10/05/2020 17:55, Clément Péron wrote:
+>>> Later we will introduce devfreq probing regulator if they
+>>> are present. As regulator should be probe only one time we
+>>> need to get this logic in the device_init().
+>>>
+>>> panfrost_device is already taking care of devfreq_resume()
+>>> and devfreq_suspend(), so it's not totally illogic to move
+>>> the devfreq_init() and devfreq_fini() here.
+>>>
+>>> Signed-off-by: Clément Péron <peron.clem@gmail.com>
+>>> ---
+>>>    drivers/gpu/drm/panfrost/panfrost_device.c | 37 ++++++++++++++--------
+>>>    drivers/gpu/drm/panfrost/panfrost_drv.c    | 15 ++-------
+>>>    2 files changed, 25 insertions(+), 27 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+>>> index 8136babd3ba9..f480127205d6 100644
+>>> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+>>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+>>> @@ -212,59 +212,67 @@ int panfrost_device_init(struct panfrost_device *pfdev)
+>>>                return err;
+>>>        }
+>>>
+>>> +     err = panfrost_devfreq_init(pfdev);
+>>> +     if (err) {
+>>> +             dev_err(pfdev->dev, "devfreq init failed %d\n", err);
+>>> +             goto err_out0;
+>>> +     }
+>>> +
+>>>        err = panfrost_regulator_init(pfdev);
+>>>        if (err) {
+>>>                dev_err(pfdev->dev, "regulator init failed %d\n", err);
+>>> -             goto err_out0;
+>>> +             goto err_out1;
+>>
+>> NIT: Rather than just renumbering these can we give them sensible names
+>> so we don't have this sort of refactoring in future?
+> 
+> Agree, I will change that in v2
 
-With warm heart I offer my friendship, and my greetings to you in the
-name of our lord, and I hope this letter meets you in good time, I
-Propose with my free mind and as a person of integrity from God, I
-know that this message will appear as a surprise to you that we barely
-Know but the grace of God directed me to you and I wish you read this
-message and be blessed in name of the Lord.
+FWIW, there's a sensible approach described in 
+Documentation/process/coding-style.rst ("7) Centralized exiting of 
+functions").
 
-I have a brain tumor; I suffer terribly at the moment. My doctor just
-informed me that my days are numbered because of my health therefore
-condemned to certain death. Currently, I have exhausted all my savings
-for my medical care.
+Regards,
 
-But I do have some funds for my charity project; these funds are
-deposited with one of the Banks here In Cote D'Ivoire West Africa.
-Purposed for charitable foundation, my marital status is such that I'm
-single because I lost my Husband over 9 years now and unfortunately we
-have not had a child together, which I am no one to leave my legacy
-for. Therefore, to release my funds I would like to make a donation so
-that there is no stiff tax on my money.
+Tomeu
 
-To this I would be so graceful and in order to help the poor to give
-what amounts to said legacy worth four Million Euros (=E2=82=AC4,000,000.00
-Million Euros) to enable you establish a charitable foundation in my
-memory so that the grace of God be with me until my last home so I can
-receive an honorable place with the Lord our father.
-
-I have no fear because before contacted you, I have several nights
-prayed for the Lord to give me the contact of a trusted person of whom
-I can entrust this matter and I believe my contacts to you is divine.
-
-Know that you can keep 30% of the money for yourself and the rest will
-be used to create a charitable foundation in my memory and a
-federation in the fight against cancer and also build orphanages.
-
-I count on your goodwill and especially on the proper use of these
-funds have something I do not doubt because I have great confidence in
-you that God may guide me toward you.  My email
-mrs.vernitha.maynard@mail.bg
-
-
-Awaiting your prompt reply, receive my cordial and fraternal greetings.
-
-Yours Sincerely,
-Mrs Vernitha Maynard
+> 
+>>
+>>>        }
+>>>
+>>>        err = panfrost_reset_init(pfdev);
+>>>        if (err) {
+>>>                dev_err(pfdev->dev, "reset init failed %d\n", err);
+>>> -             goto err_out1;
+>>> +             goto err_out2;
+>>>        }
+>>>
+>>>        err = panfrost_pm_domain_init(pfdev);
+>>>        if (err)
+>>> -             goto err_out2;
+>>> +             goto err_out3;
+>>>
+>>>        res = platform_get_resource(pfdev->pdev, IORESOURCE_MEM, 0);
+>>>        pfdev->iomem = devm_ioremap_resource(pfdev->dev, res);
+>>>        if (IS_ERR(pfdev->iomem)) {
+>>>                dev_err(pfdev->dev, "failed to ioremap iomem\n");
+>>>                err = PTR_ERR(pfdev->iomem);
+>>> -             goto err_out3;
+>>> +             goto err_out4;
+>>>        }
+>>>
+>>>        err = panfrost_gpu_init(pfdev);
+>>>        if (err)
+>>> -             goto err_out3;
+>>> +             goto err_out4;
+>>>
+>>>        err = panfrost_mmu_init(pfdev);
+>>>        if (err)
+>>> -             goto err_out4;
+>>> +             goto err_out5;
+>>>
+>>>        err = panfrost_job_init(pfdev);
+>>>        if (err)
+>>> -             goto err_out5;
+>>> +             goto err_out6;
+>>>
+>>>        err = panfrost_perfcnt_init(pfdev);
+>>>        if (err)
+>>> -             goto err_out6;
+>>> +             goto err_out7;
+>>>
+>>>        return 0;
+>>> -err_out6:
+>>> +err_out7:
+>>>        panfrost_job_fini(pfdev);
+>>> -err_out5:
+>>> +err_out6:
+>>>        panfrost_mmu_fini(pfdev);
+>>> -err_out4:
+>>> +err_out5:
+>>>        panfrost_gpu_fini(pfdev);
+>>> -err_out3:
+>>> +err_out4:
+>>>        panfrost_pm_domain_fini(pfdev);
+>>> -err_out2:
+>>> +err_out3:
+>>>        panfrost_reset_fini(pfdev);
+>>> -err_out1:
+>>> +err_out2:
+>>>        panfrost_regulator_fini(pfdev);
+>>> +err_out1:
+>>> +     panfrost_devfreq_fini(pfdev);
+>>>    err_out0:
+>>>        panfrost_clk_fini(pfdev);
+>>>        return err;
+>>> @@ -278,6 +286,7 @@ void panfrost_device_fini(struct panfrost_device *pfdev)
+>>>        panfrost_gpu_fini(pfdev);
+>>>        panfrost_pm_domain_fini(pfdev);
+>>>        panfrost_reset_fini(pfdev);
+>>> +     panfrost_devfreq_fini(pfdev);
+>>>        panfrost_regulator_fini(pfdev);
+>>>        panfrost_clk_fini(pfdev);
+>>>    }
+>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>>> index 882fecc33fdb..4dda68689015 100644
+>>> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+>>> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>>> @@ -14,7 +14,6 @@
+>>>    #include <drm/drm_utils.h>
+>>>
+>>>    #include "panfrost_device.h"
+>>> -#include "panfrost_devfreq.h"
+>>>    #include "panfrost_gem.h"
+>>>    #include "panfrost_mmu.h"
+>>>    #include "panfrost_job.h"
+>>> @@ -606,13 +605,6 @@ static int panfrost_probe(struct platform_device *pdev)
+>>>                goto err_out0;
+>>>        }
+>>>
+>>> -     err = panfrost_devfreq_init(pfdev);
+>>> -     if (err) {
+>>> -             if (err != -EPROBE_DEFER)
+>>> -                     dev_err(&pdev->dev, "Fatal error during devfreq init\n");
+>>
+>> You seem to have lost the check for EPROBE_DEFER during the move.
+> 
+> Correct, sorry for that, I will fix it in v2.
+> 
+> Thanks for your review,
+> Clement
+> 
+>>
+>>> -             goto err_out1;
+>>> -     }
+>>> -
+>>>        pm_runtime_set_active(pfdev->dev);
+>>>        pm_runtime_mark_last_busy(pfdev->dev);
+>>>        pm_runtime_enable(pfdev->dev);
+>>> @@ -625,16 +617,14 @@ static int panfrost_probe(struct platform_device *pdev)
+>>>         */
+>>>        err = drm_dev_register(ddev, 0);
+>>>        if (err < 0)
+>>> -             goto err_out2;
+>>> +             goto err_out1;
+>>>
+>>>        panfrost_gem_shrinker_init(ddev);
+>>>
+>>>        return 0;
+>>>
+>>> -err_out2:
+>>> -     pm_runtime_disable(pfdev->dev);
+>>> -     panfrost_devfreq_fini(pfdev);
+>>>    err_out1:
+>>> +     pm_runtime_disable(pfdev->dev);
+>>>        panfrost_device_fini(pfdev);
+>>>    err_out0:
+>>>        drm_dev_put(ddev);
+>>> @@ -650,7 +640,6 @@ static int panfrost_remove(struct platform_device *pdev)
+>>>        panfrost_gem_shrinker_cleanup(ddev);
+>>>
+>>>        pm_runtime_get_sync(pfdev->dev);
+>>> -     panfrost_devfreq_fini(pfdev);
+>>>        panfrost_device_fini(pfdev);
+>>>        pm_runtime_put_sync_suspend(pfdev->dev);
+>>>        pm_runtime_disable(pfdev->dev);
+>>>
+>>
