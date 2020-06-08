@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8097F1F2358
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798BD1F245A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729646AbgFHXN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:13:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58468 "EHLO mail.kernel.org"
+        id S1731010AbgFHXUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:20:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728916AbgFHXLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:11:32 -0400
+        id S1730272AbgFHXQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:16:35 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CA7520B80;
-        Mon,  8 Jun 2020 23:11:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2EEF2083E;
+        Mon,  8 Jun 2020 23:16:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657892;
-        bh=iN4uu/SZtCI23lgelTAMXjz+AGc7s2h6+bTtogWffiQ=;
+        s=default; t=1591658195;
+        bh=BllGiQowdWfc/9MF8P9IN9Fo7/HBXLoDGNo0wcpxFiM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jWWYwh4UuThnu1ZfiBHM4XKxI4kOzGsbl1UmdZ9Yc5TvwB8h9zE9Ah1lVTs0DTPmU
-         iZqCeKnYq7l5qNBGFGI5LxnqcmZxESzY0kMXpda1SXzyaQniJmNUTWSs/Qt5+esSKO
-         35tDIsE5MBlFmOH4rsIkmQzfzdqUy1gsV08unFB4=
+        b=kITkeSXzbT/SR1/4ROeE1LcZa3Q56hRcR3fJKRgaaIwHmodptzdxO4RSLpkMQ3Zb5
+         kS393C6d9Zz/o328O2p4+phWUOF7tU++0MPvsaC2NPuibdSK439lk0GMAuHD48X23o
+         oSSXtLqedCmwZvCFKcx6pl2uVjkAHEx5xuAk/3Lo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+Cc:     Vadim Fedorenko <vfedorenko@novek.ru>,
+        "David S . Miller" <davem@davemloft.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, Sasha Levin <sashal@kernel.org>,
-        devel@driverdev.osuosl.org
-Subject: [PATCH AUTOSEL 5.7 247/274] staging: greybus: sdio: Respect the cmd->busy_timeout from the mmc core
-Date:   Mon,  8 Jun 2020 19:05:40 -0400
-Message-Id: <20200608230607.3361041-247-sashal@kernel.org>
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 216/606] net: ipip: fix wrong address family in init error path
+Date:   Mon,  8 Jun 2020 19:05:41 -0400
+Message-Id: <20200608231211.3363633-216-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -46,64 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ulf Hansson <ulf.hansson@linaro.org>
+From: Vadim Fedorenko <vfedorenko@novek.ru>
 
-[ Upstream commit a389087ee9f195fcf2f31cd771e9ec5f02c16650 ]
+[ Upstream commit 57ebc8f08504f176eb0f25b3e0fde517dec61a4f ]
 
-Using a fixed 1s timeout for all commands is a bit problematic.
+In case of error with MPLS support the code is misusing AF_INET
+instead of AF_MPLS.
 
-For some commands it means waiting longer than needed for the timeout to
-expire, which may not a big issue, but still. For other commands, like for
-an erase (CMD38) that uses a R1B response, may require longer timeouts than
-1s. In these cases, we may end up treating the command as it failed, while
-it just needed some more time to complete successfully.
-
-Fix the problem by respecting the cmd->busy_timeout, which is provided by
-the mmc core.
-
-Cc: Rui Miguel Silva <rmfrfs@gmail.com>
-Cc: Johan Hovold <johan@kernel.org>
-Cc: Alex Elder <elder@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: greybus-dev@lists.linaro.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20200414161413.3036-20-ulf.hansson@linaro.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1b69e7e6c4da ("ipip: support MPLS over IPv4")
+Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/greybus/sdio.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ net/ipv4/ipip.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/greybus/sdio.c b/drivers/staging/greybus/sdio.c
-index 68c5718be827..c4b16bb5c1a4 100644
---- a/drivers/staging/greybus/sdio.c
-+++ b/drivers/staging/greybus/sdio.c
-@@ -411,6 +411,7 @@ static int gb_sdio_command(struct gb_sdio_host *host, struct mmc_command *cmd)
- 	struct gb_sdio_command_request request = {0};
- 	struct gb_sdio_command_response response;
- 	struct mmc_data *data = host->mrq->data;
-+	unsigned int timeout_ms;
- 	u8 cmd_flags;
- 	u8 cmd_type;
- 	int i;
-@@ -469,9 +470,12 @@ static int gb_sdio_command(struct gb_sdio_host *host, struct mmc_command *cmd)
- 		request.data_blksz = cpu_to_le16(data->blksz);
- 	}
+diff --git a/net/ipv4/ipip.c b/net/ipv4/ipip.c
+index 2f01cf6fa0de..678575adaf3b 100644
+--- a/net/ipv4/ipip.c
++++ b/net/ipv4/ipip.c
+@@ -698,7 +698,7 @@ static int __init ipip_init(void)
  
--	ret = gb_operation_sync(host->connection, GB_SDIO_TYPE_COMMAND,
--				&request, sizeof(request), &response,
--				sizeof(response));
-+	timeout_ms = cmd->busy_timeout ? cmd->busy_timeout :
-+		GB_OPERATION_TIMEOUT_DEFAULT;
-+
-+	ret = gb_operation_sync_timeout(host->connection, GB_SDIO_TYPE_COMMAND,
-+					&request, sizeof(request), &response,
-+					sizeof(response), timeout_ms);
- 	if (ret < 0)
- 		goto out;
+ rtnl_link_failed:
+ #if IS_ENABLED(CONFIG_MPLS)
+-	xfrm4_tunnel_deregister(&mplsip_handler, AF_INET);
++	xfrm4_tunnel_deregister(&mplsip_handler, AF_MPLS);
+ xfrm_tunnel_mplsip_failed:
  
+ #endif
 -- 
 2.25.1
 
