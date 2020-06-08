@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA1F1F2930
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A4D1F2BF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730400AbgFHXXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:23:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40674 "EHLO mail.kernel.org"
+        id S1731300AbgFIATB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:19:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730635AbgFHXS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:18:27 -0400
+        id S1730640AbgFHXS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:18:28 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0238020842;
-        Mon,  8 Jun 2020 23:18:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 676572086A;
+        Mon,  8 Jun 2020 23:18:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658307;
-        bh=8b9zH6eVMXjgPhVYw/rObHNDZocC7Ajg5i92YTFjfuc=;
+        s=default; t=1591658308;
+        bh=okD1iWcvVRutgLkmEi7NcL3CvfPnnYTU37AVSJTaVb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CcylEYTRcdWeiuL7S8ML0+RwNKH96IcGZZLMoOKnXmFPJ0cO3knduSE2E8dnBpG10
-         WYI5S6DZOy0ol02zQvGCB2qOrZRaoSfTv1IW3z0LBuXWp9qXHl5WMHkye4/Xl1BFLw
-         ij57yVH4Oqd4qqRj9w7iGcS0jrPu3uNKQYCvxBvg=
+        b=OEcSzFogckrrXJmNUvky0+PMykCww0RVnL9QoSq6TZKQ8i1hQZzRCPqMhU67KHXPf
+         IdoZ3EfZGyE425ZKgasG/WJfhOmUFJwzsiNRPYbD3uv97ax1Trc3SzH+mVnKboMHe/
+         xJwBqFvhSY3f1VaYojAqASehuxqN3TektlEKfa6k=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
+Cc:     Hamish Martin <hamish.martin@alliedtelesis.co.nz>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.6 308/606] ARM: dts: bcm2835-rpi-zero-w: Fix led polarity
-Date:   Mon,  8 Jun 2020 19:07:13 -0400
-Message-Id: <20200608231211.3363633-308-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 309/606] ARM: dts: bcm: HR2: Fix PPI interrupt types
+Date:   Mon,  8 Jun 2020 19:07:14 -0400
+Message-Id: <20200608231211.3363633-309-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -48,40 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Stehlé <vincent.stehle@laposte.net>
+From: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
 
-[ Upstream commit 58bb90ab415562eededb932455046924e65df342 ]
+[ Upstream commit be0ec060b54f0481fb95d59086c1484a949c903c ]
 
-The status "ACT" led on the Raspberry Pi Zero W is on when GPIO 47 is low.
+These error messages are output when booting on a BCM HR2 system:
+    GIC: PPI11 is secure or misconfigured
+    GIC: PPI13 is secure or misconfigured
 
-This has been verified on a board and somewhat confirmed by both the GPIO
-name ("STATUS_LED_N") and the reduced schematics [1].
+Per ARM documentation these interrupts are triggered on a rising edge.
+See ARM Cortex A-9 MPCore Technical Reference Manual, Revision r4p1,
+Section 3.3.8 Interrupt Configuration Registers.
 
-[1]: https://www.raspberrypi.org/documentation/hardware/raspberrypi/schematics/rpi_SCH_ZeroW_1p1_reduced.pdf
+The same issue was resolved for NSP systems in commit 5f1aa51c7a1e
+("ARM: dts: NSP: Fix PPI interrupt types").
 
-Fixes: 2c7c040c73e9 ("ARM: dts: bcm2835: Add Raspberry Pi Zero W")
-Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
-Cc: Stefan Wahren <stefan.wahren@i2se.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+Fixes: b9099ec754b5 ("ARM: dts: Add Broadcom Hurricane 2 DTS include file")
+Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/bcm2835-rpi-zero-w.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/bcm-hr2.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts b/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts
-index 4c3f606e5b8d..f65448c01e31 100644
---- a/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts
-+++ b/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts
-@@ -24,7 +24,7 @@ chosen {
- 
- 	leds {
- 		act {
--			gpios = <&gpio 47 GPIO_ACTIVE_HIGH>;
-+			gpios = <&gpio 47 GPIO_ACTIVE_LOW>;
+diff --git a/arch/arm/boot/dts/bcm-hr2.dtsi b/arch/arm/boot/dts/bcm-hr2.dtsi
+index 6142c672811e..5e5f5ca3c86f 100644
+--- a/arch/arm/boot/dts/bcm-hr2.dtsi
++++ b/arch/arm/boot/dts/bcm-hr2.dtsi
+@@ -75,7 +75,7 @@ a9pll: arm_clk@0 {
+ 		timer@20200 {
+ 			compatible = "arm,cortex-a9-global-timer";
+ 			reg = <0x20200 0x100>;
+-			interrupts = <GIC_PPI 11 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts = <GIC_PPI 11 IRQ_TYPE_EDGE_RISING>;
+ 			clocks = <&periph_clk>;
  		};
- 	};
+ 
+@@ -83,7 +83,7 @@ twd-timer@20600 {
+ 			compatible = "arm,cortex-a9-twd-timer";
+ 			reg = <0x20600 0x20>;
+ 			interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(1) |
+-						  IRQ_TYPE_LEVEL_HIGH)>;
++						  IRQ_TYPE_EDGE_RISING)>;
+ 			clocks = <&periph_clk>;
+ 		};
+ 
+@@ -91,7 +91,7 @@ twd-watchdog@20620 {
+ 			compatible = "arm,cortex-a9-twd-wdt";
+ 			reg = <0x20620 0x20>;
+ 			interrupts = <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(1) |
+-						  IRQ_TYPE_LEVEL_HIGH)>;
++						  IRQ_TYPE_EDGE_RISING)>;
+ 			clocks = <&periph_clk>;
+ 		};
  
 -- 
 2.25.1
