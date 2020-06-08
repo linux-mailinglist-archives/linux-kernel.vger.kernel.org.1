@@ -2,175 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D291F1C8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 17:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFFB1F1CEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 18:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730402AbgFHP7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 11:59:45 -0400
-Received: from mail-eopbgr70058.outbound.protection.outlook.com ([40.107.7.58]:6228
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730231AbgFHP7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 11:59:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DgiVubfLuwyePKy8lbkcchHrrCnMOAmKuF6ZVUvxk+BH13iU05bNeux7i1wDtTTZDp0bpg4xeC1Udx9oJSRbV3U0bXRhKrjf8LItieRaA5YkRVdBM1iBIumvhjVumpoyA+TtGTYcjRJafHqTzy243Vw5nDI99jfiJrWQ1oG3P8tHDvSBk5ttCuAhrqgAf3gJ4YKWjVpEdi9AVCenPgjqIPWCLncLyToOpggKQMQnKbsBixYcZOjGMjvGnWQiy0Qnt9Qtj3B9vc/JWDFJZ5v/xUkjnIYjyloMldJYx15U4ytgEw73EcXwL23bQPiQhbYgPmpZK2ow3+n0gYZzPstc9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cQeVuWMrxJv9rWbmIQYRQOMNIbLCkE1hW8H3vyg8e+c=;
- b=N67HaBbecM30DXkImqr+lhZIROr4Oor5pbxZkUjp/JDQECOMH9mN9OjicX/E6AO4QTuXd86/RazdRuna3wTfp67Ec7l4hBuux+9SAEMVcp87jprYphyx5PyaqscbuYsxHHHGSrCvcCV+JwEVna4PFpNtjp6MYUH+YwtkzewRJrzTcEhQEADx8HmMAd1NYjp7S8zOkuYkk8ktMTmX8lgyfomnHotZdg820ng0y+aF7zA6Ike/X7zjrC0NaC4kMpbjst3weV2YQ0aBHZxUTHytErvBK9cValSMdLusdJlDHeEJ47ujjTF684q2O02/YQoJ3VTdvJXYCkxuq/DDt9YUPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cQeVuWMrxJv9rWbmIQYRQOMNIbLCkE1hW8H3vyg8e+c=;
- b=k1kRHG1C15kC/gsA5zmWsdv6JVQ7gI6g+TcbIXPLzLu5x055G97kntDbmy0jmOsnx6kTKlT87R0rbmNwzFteksBgkDXPqNRSqP5nb0db7thFNUlX5aRd9PrG102EpA9YfXcDlH7ONP2d83qcDuLM8yFx1mIOzj3zPFSmGqonHcA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=mellanox.com;
-Received: from AM0PR0502MB3826.eurprd05.prod.outlook.com
- (2603:10a6:208:1b::25) by AM0PR0502MB3971.eurprd05.prod.outlook.com
- (2603:10a6:208:11::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.20; Mon, 8 Jun
- 2020 15:59:37 +0000
-Received: from AM0PR0502MB3826.eurprd05.prod.outlook.com
- ([fe80::2dae:c2a2:c26a:f5b]) by AM0PR0502MB3826.eurprd05.prod.outlook.com
- ([fe80::2dae:c2a2:c26a:f5b%7]) with mapi id 15.20.3066.023; Mon, 8 Jun 2020
- 15:59:37 +0000
-Subject: Re: [RFC PATCH net-next 05/10] Documentation: networking:
- ethtool-netlink: Add link extended state
-To:     Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
-        jiri@mellanox.com, idosch@mellanox.com, shuah@kernel.org,
-        mkubecek@suse.cz, gustavo@embeddedor.com,
-        cforno12@linux.vnet.ibm.com, andrew@lunn.ch,
-        linux@rempel-privat.de, alexandru.ardelean@analog.com,
-        ayal@mellanox.com, petrm@mellanox.com, mlxsw@mellanox.com,
-        liuhangbin@gmail.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20200607145945.30559-1-amitc@mellanox.com>
- <20200607145945.30559-6-amitc@mellanox.com>
- <de5a37cd-df07-4912-6928-f1c3effba01b@gmail.com>
-From:   Amit Cohen <amitc@mellanox.com>
-Message-ID: <8096f9ba-4fa9-bbad-7501-6c8e3d4dd1ac@mellanox.com>
-Date:   Mon, 8 Jun 2020 18:59:17 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-In-Reply-To: <de5a37cd-df07-4912-6928-f1c3effba01b@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR04CA0041.eurprd04.prod.outlook.com
- (2603:10a6:208:1::18) To AM0PR0502MB3826.eurprd05.prod.outlook.com
- (2603:10a6:208:1b::25)
+        id S1730478AbgFHQHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 12:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730357AbgFHQHg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 12:07:36 -0400
+X-Greylist: delayed 1843 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 08 Jun 2020 09:07:36 PDT
+Received: from tartarus.angband.pl (tartarus.angband.pl [IPv6:2001:41d0:602:dbe::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2428C08C5C2;
+        Mon,  8 Jun 2020 09:07:36 -0700 (PDT)
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.92)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1jiJpO-0006ZH-VV; Mon, 08 Jun 2020 17:36:46 +0200
+Date:   Mon, 8 Jun 2020 17:36:46 +0200
+From:   Adam Borowski <kilobyte@angband.pl>
+To:     Denis Efremov <efremov@linux.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH] kbuild: fix broken builds because of GZIP,BZIP2,LZOP
+ variables
+Message-ID: <20200608153646.GA25087@angband.pl>
+References: <CAK7LNASQamajjeV+VMq5G8fECfB6f9uKvZ32zGic72O0qp8Mtw@mail.gmail.com>
+ <20200608095944.140779-1-efremov@linux.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.7] (87.68.150.248) by AM0PR04CA0041.eurprd04.prod.outlook.com (2603:10a6:208:1::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18 via Frontend Transport; Mon, 8 Jun 2020 15:59:35 +0000
-X-Originating-IP: [87.68.150.248]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: a538ecbd-fa05-45d9-9b64-08d80bc4f1f8
-X-MS-TrafficTypeDiagnostic: AM0PR0502MB3971:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR0502MB397159DDBE7D4F3F325AAC93D7850@AM0PR0502MB3971.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-Forefront-PRVS: 042857DBB5
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /HaknT/j6xMnTkjAbES4WVmkXP9ZaOWKdNph4ofH0oH5R7y0yVkCy5Je3XSOivkbXY2WAuahSuvkTeKwb8BpY9BR+YPrWkREQVY2eohXi3oQjFx2oRKv+NJPRfP7Jd3KBIKDB/ykjXHi5dsbi2G0oGLPwDP01GMVUzUAn1esl0rCgpQKoeoMCMwnSmE1WiIc7HiyJwRW8eofESHHvrffE5xBuiPsuzoMdcsNrlAjPfaF6pHTQ4Ypiint8SJGshg8Wh9cYubxwFBPus+jopVoXzTkwMHxGXt//9VA1Y8mxTkK1Vsba/Avl9mEAikLpjfl3dw2Gz2NmnlNCDdghSLVNlREaDQh1Rg+EIDTty4iZe+NiWdjvo5ZCOIyAhRBoLrp
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR0502MB3826.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(366004)(376002)(39860400002)(346002)(16576012)(316002)(5660300002)(66556008)(6666004)(31696002)(66946007)(2616005)(956004)(53546011)(2906002)(36756003)(6486002)(66476007)(52116002)(8936002)(7416002)(8676002)(4326008)(186003)(26005)(16526019)(478600001)(83380400001)(86362001)(31686004)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Mv7r3ut4qEn+WMnlppE57VWNZxXlo/baRItxIkZnZrzPhpjgxt2X5JcfeDpfYO0aRCPSzISZ1Mw3q0vgXvcLH7jjQqNNwMimk5LXYJPIQbBO58pPyw/9G7saoWwg1KN3ncN0VfRcGN14wEkzjvg/i9gUXdRK+QrsMAiunVvMpQMycto+5UIFTZWDB0IDeoZMYUVWflc3upGBZsgW3kG1BAOKCilGuOMYIwKS/4y+YS0L4hSumLpIVbr6NSR59xvGZuUofwHSGGz4TKoKYOfipAY2D12abZ1ENjLsNbfrx+eM41gmRQi1SHp0EP3QCphq/AHyVyZEsrkyuG9HSheK3Arxzz7jx94jRgomxSk+SoA8S/Laq6yCQQHjRSJ21tIXn7PbEe1i4hRhUnM7oXACvK01vilRh9+fFSeROrBZrx4NTUzWfS17m5DnTIhcFmjb+uQDuFp2yON+fbAe9r6laYRixlMc4+FL+7C0eyHp06I=
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a538ecbd-fa05-45d9-9b64-08d80bc4f1f8
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2020 15:59:37.7680
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6YcSiqs4GwZ9CJUNr8eTPxrm95RUxd4s91+m+h/ERtZzPxhdktEz2jzLDBbE0hpU6nqtn721mWuxSQ5HcMEOFw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0502MB3971
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200608095944.140779-1-efremov@linux.com>
+X-Junkbait: aaron@angband.pl, zzyx@angband.pl
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-Jun-20 22:11, Florian Fainelli wrote:
+On Mon, Jun 08, 2020 at 12:59:44PM +0300, Denis Efremov wrote:
+> Redefine GZIP, BZIP2, LZOP variables as KGZIP, KBZIP2, KLZOP resp.
+> GZIP, BZIP2, LZOP env variables are reserved by the tools. The original
+> attempt to redefine them internally doesn't work in makefiles/scripts
+> intercall scenarios, e.g., "make GZIP=gzip bindeb-pkg" and results in
+> broken builds. There can be other broken build commands because of this,
+> so the universal solution is to use non-reserved env variables for the
+> compression tools.
 > 
-> 
-> On 6/7/2020 7:59 AM, Amit Cohen wrote:
->> Add link extended state attributes.
->>
->> Signed-off-by: Amit Cohen <amitc@mellanox.com>
->> Reviewed-by: Petr Machata <petrm@mellanox.com>
->> Reviewed-by: Jiri Pirko <jiri@mellanox.com>
-> 
-> If you need to resubmit, I would swap the order of patches #4 and #5
-> such that the documentation comes first.
-> 
-> [snip]
+> Fixes: 8dfb61dcbace ("kbuild: add variables for compression tools")
 
-ok
+Same said my bisect before I noticed your fix. :)
 
-> 
->>  
->> +Link extended states:
->> +
->> +  ============================    =============================================
->> +  ``Autoneg failure``             Failure during auto negotiation mechanism
->> +
->> +  ``Link training failure``       Failure during link training
->> +
->> +  ``Link logical mismatch``       Logical mismatch in physical coding sublayer
->> +                                  or forward error correction sublayer
->> +
->> +  ``Bad signal integrity``        Signal integrity issues
->> +
->> +  ``No cable``                    No cable connected
->> +
->> +  ``Cable issue``                 Failure is related to cable,
->> +                                  e.g., unsupported cable
->> +
->> +  ``EEPROM issue``                Failure is related to EEPROM, e.g., failure
->> +                                  during reading or parsing the data
->> +
->> +  ``Calibration failure``         Failure during calibration algorithm
->> +
->> +  ``Power budget exceeded``       The hardware is not able to provide the
->> +                                  power required from cable or module
->> +
->> +  ``Overheat``                    The module is overheated
->> +  ============================    =============================================
->> +
->> +Many of the substates are obvious, or terms that someone working in the
->> +particular area will be familiar with. The following table summarizes some
->> +that are not:
-> 
-> Not sure this comment is helping that much, how about documenting each
-> of the sub-states currently defined, even if this is just paraphrasing
-> their own name? Being able to quickly go to the documentation rather
-> than looking at the header is appreciable.
-> 
-> Thank you!
+> Signed-off-by: Denis Efremov <efremov@linux.com>
 
-np, I'll add.
+However, I run just basic "make bindeb-pkg" without forcing any variables,
+thus the commit message is wrong.
+
+Yet, your patch fixes the functionality.  Thanks!
+
+> ---
+>  Makefile                          | 24 +++++-------------------
+>  arch/arm/boot/deflate_xip_data.sh |  2 +-
+>  arch/ia64/Makefile                |  2 +-
+>  arch/m68k/Makefile                |  8 ++++----
+>  arch/parisc/Makefile              |  2 +-
+>  scripts/Makefile.lib              |  6 +++---
+>  scripts/Makefile.package          |  6 +++---
+>  scripts/package/buildtar          |  4 ++--
+>  8 files changed, 20 insertions(+), 34 deletions(-)
 > 
->> +
->> +Link extended substates:
->> +
->> +  ============================    =============================================
->> +  ``Unsupported rate``            The system attempted to operate the cable at
->> +                                  a rate that is not formally supported, which
->> +                                  led to signal integrity issues
+> diff --git a/Makefile b/Makefile
+> index 839f9fee22cb..e43d193bb3b2 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -458,27 +458,13 @@ PYTHON		= python
+>  PYTHON3		= python3
+>  CHECK		= sparse
+>  BASH		= bash
+> -GZIP		= gzip
+> -BZIP2		= bzip2
+> -LZOP		= lzop
+> +KGZIP		= gzip
+> +KBZIP2		= bzip2
+> +KLZOP		= lzop
+>  LZMA		= lzma
+>  LZ4		= lz4c
+>  XZ		= xz
+>  
+> -# GZIP, BZIP2, LZOP env vars are used by the tools. Support them as the command
+> -# line interface, but use _GZIP, _BZIP2, _LZOP internally.
+> -_GZIP          := $(GZIP)
+> -_BZIP2         := $(BZIP2)
+> -_LZOP          := $(LZOP)
+> -
+> -# Reset GZIP, BZIP2, LZOP in this Makefile
+> -override GZIP=
+> -override BZIP2=
+> -override LZOP=
+> -
+> -# Reset GZIP, BZIP2, LZOP in recursive invocations
+> -MAKEOVERRIDES += GZIP= BZIP2= LZOP=
+> -
+>  CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
+>  		  -Wbitwise -Wno-return-void -Wno-unknown-attribute $(CF)
+>  NOSTDINC_FLAGS :=
+> @@ -526,7 +512,7 @@ CLANG_FLAGS :=
+>  export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS CROSS_COMPILE LD CC
+>  export CPP AR NM STRIP OBJCOPY OBJDUMP OBJSIZE READELF PAHOLE LEX YACC AWK INSTALLKERNEL
+>  export PERL PYTHON PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
+> -export _GZIP _BZIP2 _LZOP LZMA LZ4 XZ
+> +export KGZIP KBZIP2 KLZOP LZMA LZ4 XZ
+>  export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
+>  
+>  export KBUILD_CPPFLAGS NOSTDINC_FLAGS LINUXINCLUDE OBJCOPYFLAGS KBUILD_LDFLAGS
+> @@ -1047,7 +1033,7 @@ export mod_strip_cmd
+>  mod_compress_cmd = true
+>  ifdef CONFIG_MODULE_COMPRESS
+>    ifdef CONFIG_MODULE_COMPRESS_GZIP
+> -    mod_compress_cmd = $(_GZIP) -n -f
+> +    mod_compress_cmd = $(KGZIP) -n -f
+>    endif # CONFIG_MODULE_COMPRESS_GZIP
+>    ifdef CONFIG_MODULE_COMPRESS_XZ
+>      mod_compress_cmd = $(XZ) -f
+> diff --git a/arch/arm/boot/deflate_xip_data.sh b/arch/arm/boot/deflate_xip_data.sh
+> index 739f0464321e..304495c3c2c5 100755
+> --- a/arch/arm/boot/deflate_xip_data.sh
+> +++ b/arch/arm/boot/deflate_xip_data.sh
+> @@ -56,7 +56,7 @@ trap 'rm -f "$XIPIMAGE.tmp"; exit 1' 1 2 3
+>  # substitute the data section by a compressed version
+>  $DD if="$XIPIMAGE" count=$data_start iflag=count_bytes of="$XIPIMAGE.tmp"
+>  $DD if="$XIPIMAGE"  skip=$data_start iflag=skip_bytes |
+> -$_GZIP -9 >> "$XIPIMAGE.tmp"
+> +$KGZIP -9 >> "$XIPIMAGE.tmp"
+>  
+>  # replace kernel binary
+>  mv -f "$XIPIMAGE.tmp" "$XIPIMAGE"
+> diff --git a/arch/ia64/Makefile b/arch/ia64/Makefile
+> index f817f3d5e758..2876a7df1b0a 100644
+> --- a/arch/ia64/Makefile
+> +++ b/arch/ia64/Makefile
+> @@ -40,7 +40,7 @@ $(error Sorry, you need a newer version of the assember, one that is built from
+>  endif
+>  
+>  quiet_cmd_gzip = GZIP    $@
+> -cmd_gzip = cat $(real-prereqs) | $(_GZIP) -n -f -9 > $@
+> +cmd_gzip = cat $(real-prereqs) | $(KGZIP) -n -f -9 > $@
+>  
+>  quiet_cmd_objcopy = OBJCOPY $@
+>  cmd_objcopy = $(OBJCOPY) $(OBJCOPYFLAGS) $(OBJCOPYFLAGS_$(@F)) $< $@
+> diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
+> index ce6db5e5a5a3..0415d28dbe4f 100644
+> --- a/arch/m68k/Makefile
+> +++ b/arch/m68k/Makefile
+> @@ -135,10 +135,10 @@ vmlinux.gz: vmlinux
+>  ifndef CONFIG_KGDB
+>  	cp vmlinux vmlinux.tmp
+>  	$(STRIP) vmlinux.tmp
+> -	$(_GZIP) -9c vmlinux.tmp >vmlinux.gz
+> +	$(KGZIP) -9c vmlinux.tmp >vmlinux.gz
+>  	rm vmlinux.tmp
+>  else
+> -	$(_GZIP) -9c vmlinux >vmlinux.gz
+> +	$(KGZIP) -9c vmlinux >vmlinux.gz
+>  endif
+>  
+>  bzImage: vmlinux.bz2
+> @@ -148,10 +148,10 @@ vmlinux.bz2: vmlinux
+>  ifndef CONFIG_KGDB
+>  	cp vmlinux vmlinux.tmp
+>  	$(STRIP) vmlinux.tmp
+> -	$(_BZIP2) -1c vmlinux.tmp >vmlinux.bz2
+> +	$(KBZIP2) -1c vmlinux.tmp >vmlinux.bz2
+>  	rm vmlinux.tmp
+>  else
+> -	$(_BZIP2) -1c vmlinux >vmlinux.bz2
+> +	$(KBZIP2) -1c vmlinux >vmlinux.bz2
+>  endif
+>  
+>  archclean:
+> diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+> index 182a5bca3e2c..5140c602207f 100644
+> --- a/arch/parisc/Makefile
+> +++ b/arch/parisc/Makefile
+> @@ -162,7 +162,7 @@ vmlinuz: bzImage
+>  	$(OBJCOPY) $(boot)/bzImage $@
+>  else
+>  vmlinuz: vmlinux
+> -	@$(_GZIP) -cf -9 $< > $@
+> +	@$(KGZIP) -cf -9 $< > $@
+>  endif
+>  
+>  install:
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 127f2a7e3ced..94eeddb2e599 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -244,7 +244,7 @@ cmd_objcopy = $(OBJCOPY) $(OBJCOPYFLAGS) $(OBJCOPYFLAGS_$(@F)) $< $@
+>  # ---------------------------------------------------------------------------
+>  
+>  quiet_cmd_gzip = GZIP    $@
+> -      cmd_gzip = cat $(real-prereqs) | $(_GZIP) -n -f -9 > $@
+> +      cmd_gzip = cat $(real-prereqs) | $(KGZIP) -n -f -9 > $@
+>  
+>  # DTC
+>  # ---------------------------------------------------------------------------
+> @@ -337,7 +337,7 @@ printf "%08x\n" $$dec_size |						\
+>  )
+>  
+>  quiet_cmd_bzip2 = BZIP2   $@
+> -      cmd_bzip2 = { cat $(real-prereqs) | $(_BZIP2) -9; $(size_append); } > $@
+> +      cmd_bzip2 = { cat $(real-prereqs) | $(KBZIP2) -9; $(size_append); } > $@
+>  
+>  # Lzma
+>  # ---------------------------------------------------------------------------
+> @@ -346,7 +346,7 @@ quiet_cmd_lzma = LZMA    $@
+>        cmd_lzma = { cat $(real-prereqs) | $(LZMA) -9; $(size_append); } > $@
+>  
+>  quiet_cmd_lzo = LZO     $@
+> -      cmd_lzo = { cat $(real-prereqs) | $(_LZOP) -9; $(size_append); } > $@
+> +      cmd_lzo = { cat $(real-prereqs) | $(KLZOP) -9; $(size_append); } > $@
+>  
+>  quiet_cmd_lz4 = LZ4     $@
+>        cmd_lz4 = { cat $(real-prereqs) | $(LZ4) -l -c1 stdin stdout; \
+> diff --git a/scripts/Makefile.package b/scripts/Makefile.package
+> index b2b6153af63a..f952fb64789d 100644
+> --- a/scripts/Makefile.package
+> +++ b/scripts/Makefile.package
+> @@ -45,7 +45,7 @@ if test "$(objtree)" != "$(srctree)"; then \
+>  	false; \
+>  fi ; \
+>  $(srctree)/scripts/setlocalversion --save-scmversion; \
+> -tar -I $(_GZIP) -c $(RCS_TAR_IGNORE) -f $(2).tar.gz \
+> +tar -I $(KGZIP) -c $(RCS_TAR_IGNORE) -f $(2).tar.gz \
+>  	--transform 's:^:$(2)/:S' $(TAR_CONTENT) $(3); \
+>  rm -f $(objtree)/.scmversion
+>  
+> @@ -127,8 +127,8 @@ util/PERF-VERSION-GEN $(CURDIR)/$(perf-tar)/);              \
+>  tar rf $(perf-tar).tar $(perf-tar)/HEAD $(perf-tar)/PERF-VERSION-FILE; \
+>  rm -r $(perf-tar);                                                  \
+>  $(if $(findstring tar-src,$@),,                                     \
+> -$(if $(findstring bz2,$@),$(_BZIP2),                                 \
+> -$(if $(findstring gz,$@),$(_GZIP),                                  \
+> +$(if $(findstring bz2,$@),$(KBZIP2),                                 \
+> +$(if $(findstring gz,$@),$(KGZIP),                                  \
+>  $(if $(findstring xz,$@),$(XZ),                                     \
+>  $(error unknown target $@))))                                       \
+>  	-f -9 $(perf-tar).tar)
+> diff --git a/scripts/package/buildtar b/scripts/package/buildtar
+> index ad62c6879622..fb1578e72ab9 100755
+> --- a/scripts/package/buildtar
+> +++ b/scripts/package/buildtar
+> @@ -28,11 +28,11 @@ case "${1}" in
+>  		opts=
+>  		;;
+>  	targz-pkg)
+> -		opts="-I ${_GZIP}"
+> +		opts="-I ${KGZIP}"
+>  		tarball=${tarball}.gz
+>  		;;
+>  	tarbz2-pkg)
+> -		opts="-I ${_BZIP2}"
+> +		opts="-I ${KBZIP2}"
+>  		tarball=${tarball}.bz2
+>  		;;
+>  	tarxz-pkg)
+> -- 
+> 2.26.2
 > 
-> Do you have examples? Would you consider a 4-pair copper cable for
-> Gigabit that has a damaged pair and would downshift somehow fall in that
-> category?
 > 
 
-For example, this statement might appear when an 100G OPTICs (not copper) which is used in 40G rate and sees high BER (when using Parallel Detect).
-In this situation we recommend to  see the other end configuration and understand why it is configured to lower speed.
-
-Regarding your example, if it stays on the same speed and have high BER you should expect a different BAD SI statement.
-
+-- 
+⢀⣴⠾⠻⢶⣦⠀
+⣾⠁⢠⠒⠀⣿⡁ in the beginning was the boot and root floppies and they were good.
+⢿⡄⠘⠷⠚⠋⠀                                       -- <willmore> on #linux-sunxi
+⠈⠳⣄⠀⠀⠀⠀
