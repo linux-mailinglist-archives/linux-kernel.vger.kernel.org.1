@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15611F22B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF7B1F23EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbgFHXKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:10:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54818 "EHLO mail.kernel.org"
+        id S1730534AbgFHXRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:17:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728345AbgFHXJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:09:09 -0400
+        id S1729776AbgFHXOT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:14:19 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FC9220890;
-        Mon,  8 Jun 2020 23:09:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4C5F20C09;
+        Mon,  8 Jun 2020 23:14:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657749;
-        bh=Hun363eN4I4GDgnv/6/COhdFYcOMePNwa8J/7LCfEME=;
+        s=default; t=1591658059;
+        bh=O0RPL3irJhWBZ5F2H3BdlvfzT93fhcXBDbqTToK9uYg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k5doac0DPx8c74LExRa5qpRlKU05BT6ObGaJj21u4ciFh563GEHaIiVQiIjtccs0B
-         VomK2h8dlcpr8RUHu4X1HrcnvNXXrceHn1AM+puhu5xGdbClfMPF+8nlXVA4BgAWlp
-         UGCSWIy9AqsdYgTJktw6AF/PPFkFWZsQ6DHeX2PQ=
+        b=kh/y/7P/GNdAo7Rziw3hWOXwLo4yINK+faVce32mUpDN+fXbaogvNE9PBlQKC9FHC
+         sDXJVvw0EdLbSNho0KKJj7TqgfS89m6ZAc387hH2QsxD0KbKOyHpzPzfvMG+EDZ/TG
+         IJECNOhX4vVB5mtPKwWPht7wX1v2gkxvOBmuElQ8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sean Young <sean@mess.org>,
-        coverity-bot <keescook+coverity-bot@chromium.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 136/274] media: m88ds3103: error in set_frontend is swallowed and not reported
-Date:   Mon,  8 Jun 2020 19:03:49 -0400
-Message-Id: <20200608230607.3361041-136-sashal@kernel.org>
+Cc:     Artem Borisov <dedsa2002@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
+        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 106/606] HID: alps: Add AUI1657 device ID
+Date:   Mon,  8 Jun 2020 19:03:51 -0400
+Message-Id: <20200608231211.3363633-106-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,36 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Artem Borisov <dedsa2002@gmail.com>
 
-[ Upstream commit c4ed27cfed45c16c2dd16c9fa3b883e306177e40 ]
+[ Upstream commit 640e403b1fd24e7f31ac6f29f0b6a21d285ed729 ]
 
-Bail out if registers can not be updated.
+This device is used on Lenovo V130-15IKB variants and uses
+the same registers as U1.
 
-Addresses-Coverity-ID: 1461655 ("Code maintainability issues")
-
-Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
-Fixes: e6089feca460 ("media: m88ds3103: Add support for ds3103b demod")
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Artem Borisov <dedsa2002@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-frontends/m88ds3103.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hid/hid-alps.c | 1 +
+ drivers/hid/hid-ids.h  | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/dvb-frontends/m88ds3103.c b/drivers/media/dvb-frontends/m88ds3103.c
-index d2c28dcf6b42..abddab02db9e 100644
---- a/drivers/media/dvb-frontends/m88ds3103.c
-+++ b/drivers/media/dvb-frontends/m88ds3103.c
-@@ -980,6 +980,8 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
- 			goto err;
+diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
+index fa704153cb00..c2a2bd528890 100644
+--- a/drivers/hid/hid-alps.c
++++ b/drivers/hid/hid-alps.c
+@@ -802,6 +802,7 @@ static int alps_probe(struct hid_device *hdev, const struct hid_device_id *id)
+ 		break;
+ 	case HID_DEVICE_ID_ALPS_U1_DUAL:
+ 	case HID_DEVICE_ID_ALPS_U1:
++	case HID_DEVICE_ID_ALPS_1657:
+ 		data->dev_type = U1;
+ 		break;
+ 	default:
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 40697af0ca35..7d769ca864a7 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -81,7 +81,7 @@
+ #define HID_DEVICE_ID_ALPS_U1		0x1215
+ #define HID_DEVICE_ID_ALPS_T4_BTNLESS	0x120C
+ #define HID_DEVICE_ID_ALPS_1222		0x1222
+-
++#define HID_DEVICE_ID_ALPS_1657         0x121E
  
- 		ret = m88ds3103_update_bits(dev, 0xc9, 0x08, 0x08);
-+		if (ret)
-+			goto err;
- 	}
- 
- 	dev_dbg(&client->dev, "carrier offset=%d\n",
+ #define USB_VENDOR_ID_AMI		0x046b
+ #define USB_DEVICE_ID_AMI_VIRT_KEYBOARD_AND_MOUSE	0xff10
 -- 
 2.25.1
 
