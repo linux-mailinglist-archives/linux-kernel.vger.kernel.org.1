@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0A71F1B1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 16:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A7E1F1B20
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 16:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730009AbgFHOgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 10:36:31 -0400
-Received: from sonic309-13.consmr.mail.bf2.yahoo.com ([74.6.129.123]:45933
-        "EHLO sonic309-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725975AbgFHOgb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 10:36:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591626989; bh=NajTNMrfMLb6UXcjRhYpYerQX8PtVBLz0oFgaMINSWY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=tlR4+Dw4tFgnZIwjt4M2S6ckmHZhOcnS5TFfkMVbd568AGFm6uKV7ytPz4d34ll2Q/82/VhesvpxTKydFH2GS0mFNBHI8fWW+aAqPiC3MxHJjdbuzLaRIdvBWE3qMBvS+enYyfoFjhgDGev73xEHqXB2WdFZ6sPaSuIJBj5vbBwb/xxurUL55ZarWuTQhDTUFZrU8M2nZezr/z2KZwnE8z2lz0vP4oxB31hxp5GaZkhgONzlHQX4IiF0IE+dJwfSJZHY/Eq4G76Hh+mkL8u0JvTDx3xq9uu/IQYCFZjfyYO09q6webYGYpBqldPp8C7ESZMri0H1smeYqWJSn47bOg==
-X-YMail-OSG: EFRGx7MVM1mfiZfVcBjjlDFqcc6031V_2pBPE96mPsL.zt6pqJWBCFMijV8hMpc
- Lbrfb1yA6Ovr52GFBCqYh61zzoBSzWXlmo_ZeujZsxHIqmUbKdxUcNVWyvxa9li8G08YEpcX87Bn
- jqOW.hS2M05yasTjxlZqBUWHoVB20YNsnQG6bgnp6kKZppQd8QGI6dTx8gheHb8mVnEvsJ_HLAkW
- DBFILqWQz5g4S5uJ3PTuBCsYG6hsN8FKraqRuIEkVlugqozbeUTeJx4wBxRmz1hTJlEFLx0dl2Hx
- 6PAiN6cnIBPMazaQZbhVZPEwXAG6WoTZHDh5xr1r2_ZxeOk_ReenKQk91Mkuf16lOy47dcqAlGjS
- h2RR22z.o0mnU95UD8CaCu4ysprOGtcXLzOh1ZpS.F1dulNHd_owMnjuWraTffAeKFQuNqcjKy9X
- YsBp90vxZaKjsr18gyIO2IPbLwTzPr0TswZPycT9i2wTLn0.AaBtMEb9GIdfBmCPjhttRpSgd9c4
- FHbm0ZQ39gCEHMjO5yS2up5S64x.bDFHJl7TTDK0Kzvs1FUXQ6ZnExsBs3j_.MMhOICx2yxgbzWB
- Dcv9clJnkHakoW9UiGEVN.F5D9WcJ1QQLo1UaMjUFL.PSaAWYrV2dW7_Mv5YmSfeTcqPM7czxEzr
- Va.vc_NO0rMTJxZ756up.ihinajJO.XFAtcT40_AulWneuHWLtmHS3NdgPxMzx.N7u8rFL0zpFmE
- tmV0batmt4JBfsFDbcsrW4TAEr5TIcxOKNJuXFXyrDH1FdHkn3boPQ1VAaLqpfpZ_7aWmk0yUiF2
- Qtopv8x.VoVeJzDF9QIz5OW3cOiWBzwxtaB7Jq_84CDoGDw0toh5BBt9RH39v3gw_drJzbLSgTig
- 4ohKSJBBlXiFYtyDcqplZhrIMjfzzprQfLLip2bezhh0jWM2It3ku4jFfNVL_Xad4uC066ZZn4ri
- _wCa49OfEJNriDI14pmi7pu6.ALJp.Dg7eyT4WtjKvmZvmIeyzLefxSTwDq3SwtOnv1w_YymANXi
- t89hDUpGa.zotJvZV04HhxiYo02MOvzgtOMmF4ewZqDRUaOKc87Pd8JankhzMTn_v9S18t04il5U
- J7AS8XrEvxJstN4L3Q9mGiDRwSVT5kfJo0ojke2MCeYz3l3IlFK_Ks2mZA33V7fa3yWEPMHFcSYI
- wHKd5JKXHz0.r9JUU_9ClG45krQRHRPPruLGDIhRcjVJMnC8E71Zdqn54y4ufpKIldXsDFnndkcL
- S_pKx1sLoL66BoeKSrFPK9SY6zQtQ3w8TloGhYgPvDj051O6FvJjUrn9kZKbJ6J2TG28iYwTw1Ig
- C
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.bf2.yahoo.com with HTTP; Mon, 8 Jun 2020 14:36:29 +0000
-Date:   Mon, 8 Jun 2020 14:36:27 +0000 (UTC)
-From:   Ms Lisa Hugh <lisa.hugh111@gmail.com>
-Reply-To: ms.lisahugh000@gmail.com
-Message-ID: <2045371408.652350.1591626987516@mail.yahoo.com>
-Subject: BUSINESS FROM(Ms Lisa hugh).
+        id S1730026AbgFHOhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 10:37:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725948AbgFHOhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 10:37:11 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B9C22053B;
+        Mon,  8 Jun 2020 14:37:10 +0000 (UTC)
+Date:   Mon, 8 Jun 2020 10:37:09 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Divya Indi <divya.indi@oracle.com>, <linux-kernel@vger.kernel.org>,
+        Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
+Subject: Re: [PATCH] sample-trace-array: Fix sleeping function called from
+ invalid context
+Message-ID: <20200608103709.39afa15f@gandalf.local.home>
+In-Reply-To: <20200608075437.1760242-1-wangkefeng.wang@huawei.com>
+References: <20200608075437.1760242-1-wangkefeng.wang@huawei.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-References: <2045371408.652350.1591626987516.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16072 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 8 Jun 2020 07:54:37 +0000
+Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
 
+>  BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
+>  in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 0, name: swapper/5
+>  1 lock held by swapper/5/0:
+>   #0: ffff80001002bd90 (samples/ftrace/sample-trace-array.c:38){+.-.}-{0:0}, at: call_timer_fn+0x8/0x3e0
+>  CPU: 5 PID: 0 Comm: swapper/5 Not tainted 5.7.0+ #8
+>  Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+>  Call trace:
+>   dump_backtrace+0x0/0x1a0
+>   show_stack+0x20/0x30
+>   dump_stack+0xe4/0x150
+>   ___might_sleep+0x160/0x200
+>   __might_sleep+0x58/0x90
+>   __mutex_lock+0x64/0x948
+>   mutex_lock_nested+0x3c/0x58
+>   __ftrace_set_clr_event+0x44/0x88
+>   trace_array_set_clr_event+0x24/0x38
+>   mytimer_handler+0x34/0x40 [sample_trace_array]
+> 
+> mutex_lock() will be called in interrupt context, using workqueueu to fix it.
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> 
 
-Dear Friend,
+Divya,
 
-I am Ms Lisa hugh, work with the department of Audit and accounting manager here in the Bank(B.O.A).
+Can you give a Reviewed-by for this?
 
-Please i need your assistance for the transferring of thIs fund to your bank account for both of us benefit for life time investment, amount (US$4.5M DOLLARS).
-
-I have every inquiry details to make the bank believe you and release the fund in within 5 banking working days with your full co-operation with me for success.
-
-Note/ 50% for you why 50% for me after success of the transfer to your bank account.
-
-Below information is what i need from you so will can be reaching each other
-
-1)Full name ...
-2)Private telephone number...
-3)Age...
-4)Nationality...
-5)Occupation ...
-
-
-Thanks.
-
-Ms Lisa hugh.
+-- Steve
