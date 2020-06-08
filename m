@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06CF1F2E81
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7471F2D16
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733022AbgFIAm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:42:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60062 "EHLO mail.kernel.org"
+        id S1728778AbgFHXPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:15:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729123AbgFHXMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:12:30 -0400
+        id S1729131AbgFHXMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:12:31 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EEDD20B80;
-        Mon,  8 Jun 2020 23:12:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8035220897;
+        Mon,  8 Jun 2020 23:12:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657950;
-        bh=J0Cr1ClTzawFS2xo1kfwDnsGciGqVo6rmgk9gsoD7eU=;
+        s=default; t=1591657951;
+        bh=7LvtuBEfEARJ4C3bAoCTpWgj4kiNyoFDh4ndTV3l0RA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cRNY/rGbOGBaK6xiMpny1S5Y4j8Vx08/IA+B5GRMB6wXBED/b0nAvHbnYSeJmmvzB
-         XJdv9tv+UXng2CVZJJvcmtrveaQfmFIHGZVrcwIbHJycaIWdQU9UlMt97ymdUcBrue
-         ylWCy4VNB80nyslWoDRDITEaCwvR5zcpe1rc8fo0=
+        b=y2ncPrcJyYFmbitGDaC1Z9hSqsiTdmhXiBMyvriO+XKcdR+PoQL8/Ib8sfjfTpsBz
+         anuoUhbIAqFFqUgyMkxxWPBCVdH0X9MEXomtku7knBt+/m5dkH3CCTnJwx/lOb1X/d
+         eXcyh4AwCeVQYmGN0tJORTc5G1GZwDjUSWe6vqxM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 015/606] gcc-10 warnings: fix low-hanging fruit
-Date:   Mon,  8 Jun 2020 19:02:20 -0400
-Message-Id: <20200608231211.3363633-15-sashal@kernel.org>
+        linux-efi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 016/606] gcc-10: mark more functions __init to avoid section mismatch warnings
+Date:   Mon,  8 Jun 2020 19:02:21 -0400
+Message-Id: <20200608231211.3363633-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -45,66 +45,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 9d82973e032e246ff5663c9805fbb5407ae932e3 upstream.
+commit e99332e7b4cda6e60f5b5916cf9943a79dbef902 upstream.
 
-Due to a bug-report that was compiler-dependent, I updated one of my
-machines to gcc-10.  That shows a lot of new warnings.  Happily they
-seem to be mostly the valid kind, but it's going to cause a round of
-churn for getting rid of them..
+It seems that for whatever reason, gcc-10 ends up not inlining a couple
+of functions that used to be inlined before.  Even if they only have one
+single callsite - it looks like gcc may have decided that the code was
+unlikely, and not worth inlining.
 
-This is the really low-hanging fruit of removing a couple of zero-sized
-arrays in some core code.  We have had a round of these patches before,
-and we'll have many more coming, and there is nothing special about
-these except that they were particularly trivial, and triggered more
-warnings than most.
+The code generation difference is harmless, but caused a few new section
+mismatch errors, since the (now no longer inlined) function wasn't in
+the __init section, but called other init functions:
+
+   Section mismatch in reference from the function kexec_free_initrd() to the function .init.text:free_initrd_mem()
+   Section mismatch in reference from the function tpm2_calc_event_log_size() to the function .init.text:early_memremap()
+   Section mismatch in reference from the function tpm2_calc_event_log_size() to the function .init.text:early_memunmap()
+
+So add the appropriate __init annotation to make modpost not complain.
+In both cases there were trivially just a single callsite from another
+__init function.
 
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/fs.h  | 2 +-
- include/linux/tty.h | 2 +-
- scripts/kallsyms.c  | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/firmware/efi/tpm.c | 2 +-
+ init/initramfs.c           | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index abedbffe2c9e..872ee2131589 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -978,7 +978,7 @@ struct file_handle {
- 	__u32 handle_bytes;
- 	int handle_type;
- 	/* file identifier */
--	unsigned char f_handle[0];
-+	unsigned char f_handle[];
- };
+diff --git a/drivers/firmware/efi/tpm.c b/drivers/firmware/efi/tpm.c
+index 31f9f0e369b9..55b031d2c989 100644
+--- a/drivers/firmware/efi/tpm.c
++++ b/drivers/firmware/efi/tpm.c
+@@ -16,7 +16,7 @@
+ int efi_tpm_final_log_size;
+ EXPORT_SYMBOL(efi_tpm_final_log_size);
  
- static inline struct file *get_file(struct file *f)
-diff --git a/include/linux/tty.h b/include/linux/tty.h
-index bd5fe0e907e8..a99e9b8e4e31 100644
---- a/include/linux/tty.h
-+++ b/include/linux/tty.h
-@@ -66,7 +66,7 @@ struct tty_buffer {
- 	int read;
- 	int flags;
- 	/* Data points here */
--	unsigned long data[0];
-+	unsigned long data[];
- };
+-static int tpm2_calc_event_log_size(void *data, int count, void *size_info)
++static int __init tpm2_calc_event_log_size(void *data, int count, void *size_info)
+ {
+ 	struct tcg_pcr_event2_head *header;
+ 	int event_size, size = 0;
+diff --git a/init/initramfs.c b/init/initramfs.c
+index 8ec1be4d7d51..7a38012e1af7 100644
+--- a/init/initramfs.c
++++ b/init/initramfs.c
+@@ -542,7 +542,7 @@ void __weak free_initrd_mem(unsigned long start, unsigned long end)
+ }
  
- /* Values for .flags field of tty_buffer */
-diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-index 3e8dea6e0a95..6dc3078649fa 100644
---- a/scripts/kallsyms.c
-+++ b/scripts/kallsyms.c
-@@ -34,7 +34,7 @@ struct sym_entry {
- 	unsigned int len;
- 	unsigned int start_pos;
- 	unsigned int percpu_absolute;
--	unsigned char sym[0];
-+	unsigned char sym[];
- };
- 
- struct addr_range {
+ #ifdef CONFIG_KEXEC_CORE
+-static bool kexec_free_initrd(void)
++static bool __init kexec_free_initrd(void)
+ {
+ 	unsigned long crashk_start = (unsigned long)__va(crashk_res.start);
+ 	unsigned long crashk_end   = (unsigned long)__va(crashk_res.end);
 -- 
 2.25.1
 
