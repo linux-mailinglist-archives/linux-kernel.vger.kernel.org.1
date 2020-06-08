@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812241F1659
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 12:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE081F1667
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 12:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgFHKHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 06:07:54 -0400
-Received: from mga04.intel.com ([192.55.52.120]:57304 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729264AbgFHKHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 06:07:54 -0400
-IronPort-SDR: 3nxrl/gQ0tS6XoX6ZlslvSj68Zx01CKmMaiqpfRbvem7zRZZRPe6sax0+FP8d3+yMhfegxXokV
- 5+e33prtmzZA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2020 03:07:54 -0700
-IronPort-SDR: 5+7mES5COj9KJp8BgF2WCLGOmjUk53k4O90NWFP63bw+uIJk21msuAnnqH1epYgov0wl8MA8je
- QnkXj4F0mPHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,487,1583222400"; 
-   d="scan'208";a="274169342"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006.jf.intel.com with ESMTP; 08 Jun 2020 03:07:51 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1jiEh8-00BeJO-TK; Mon, 08 Jun 2020 13:07:54 +0300
-Date:   Mon, 8 Jun 2020 13:07:54 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
-Cc:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        adrian.hunter@intel.com
-Subject: Re: [PATCH v3 2/2] phy: intel: Add Keem Bay eMMC PHY support
-Message-ID: <20200608100754.GD2428291@smile.fi.intel.com>
-References: <20200608081501.29558-1-wan.ahmad.zainie.wan.mohamad@intel.com>
- <20200608081501.29558-3-wan.ahmad.zainie.wan.mohamad@intel.com>
+        id S1729391AbgFHKIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 06:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729378AbgFHKI3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 06:08:29 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFC2C08C5C4
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 03:08:28 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id l27so17634237ejc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 03:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dxkh4Kxm2qSluY2udt9pCB1rYALSYeqASDMTt8TKeJI=;
+        b=P2GKu52WItZEgtpoUj18LxtU7AgqM5FVRJdGi3TUv/5Lg5xZFomT3eHPBzOMyvALk/
+         7GBsEJETXvfGLn1q9PletcojWdFGb/np1KH7hyORWeAS3kHqADvoXOqPq95AqxdRlUJA
+         GaFPC0TkTjGiwkE6mp/dO9Rsmt7YCy68d6pG8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dxkh4Kxm2qSluY2udt9pCB1rYALSYeqASDMTt8TKeJI=;
+        b=rZvNPqTgdUbguInu8ynoizpOlspTo6h8P/jtRFYD3h5mGFXNC1Pu30/8sN78id7GAu
+         kxXPbj8FmT3YWav8rpgI5cPfXbLqv1Ou2B2zrHtEXG9w/+341+EhhfbpbuW3WdGgC0UP
+         LOskS7p3lgi0x2sdhE2vDEXGp8JVEaaXrv0Vvo103ybdqipSatLXI0shz+ryq3+ugWk+
+         rDWpw8EGlfP/iYWBIDBog4fehd5xAxFkDHnvkTetJYbLclWWwwBdooogEVd8XtFJRm75
+         Sh9XLPtq3N2O2fJLCoL5ydB9AKbD5i0/7gK/Y7GpG3ArW6cl5LK2R7OfUyF4D3g+npmr
+         oB6Q==
+X-Gm-Message-State: AOAM532LGcMWK5Y9ULGtOJI1lTaCdWItbXJ4QkxbUKT8FE0z3794UEmS
+        6ONy5E5AlVOa3gGIngeR9ALp5ZgGrq0=
+X-Google-Smtp-Source: ABdhPJxAg8FdGBWitx0l/Pw7yBtDmw4KoAgFhWNXk8/GC/u/FjggasbaZA/r5dcLa09kW4fP8S4wiA==
+X-Received: by 2002:a17:906:945:: with SMTP id j5mr10235625ejd.52.1591610907139;
+        Mon, 08 Jun 2020 03:08:27 -0700 (PDT)
+Received: from [192.168.1.149] (ip-5-186-116-45.cgn.fibianet.dk. [5.186.116.45])
+        by smtp.gmail.com with ESMTPSA id d6sm12581189edn.75.2020.06.08.03.08.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jun 2020 03:08:26 -0700 (PDT)
+Subject: Re: [PATCH resend] fs/namei.c: micro-optimize acl_permission_check
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200605142300.14591-1-linux@rasmusvillemoes.dk>
+ <CAHk-=wgz68f2u7bFPZCWgbsbEJw+2HWTJFXSg_TguY+xJ8WrNw@mail.gmail.com>
+ <dcd7516b-0a1f-320d-018d-f3990e771f37@rasmusvillemoes.dk>
+ <CAHk-=wixdSUWFf6BoT7rJUVRmjUv+Lir_Rnh81xx7e2wnzgKbg@mail.gmail.com>
+ <CAHk-=widT2tV+sVPzNQWijtUz4JA=CS=EaJRfC3_9ymuQXQS8Q@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <934d7665-3358-576e-8434-82b16e3a1bf1@rasmusvillemoes.dk>
+Date:   Mon, 8 Jun 2020 12:08:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200608081501.29558-3-wan.ahmad.zainie.wan.mohamad@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAHk-=widT2tV+sVPzNQWijtUz4JA=CS=EaJRfC3_9ymuQXQS8Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 04:15:01PM +0800, Wan Ahmad Zainie wrote:
-> Add support for eMMC PHY on Intel Keem Bay SoC.
+On 07/06/2020 21.48, Linus Torvalds wrote:
+> On Sun, Jun 7, 2020 at 9:37 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>>> That will kinda work, except you do that mask &= MAY_RWX before
+>>> check_acl(), which cares about MAY_NOT_BLOCK and who knows what other bits.
+>>
+>> Good catch.
+> 
+> With the change to not clear the non-rwx bits in general, the owner
+> case now wants to do the masking, and then the "shift left by 6"
+> modification makes no sense since it only makes for a bigger constant
+> (the only reason to do the shift-right was so that the bitwise not of
+> the i_mode could be done in parallel with the shift, but with the
+> masking that instruction scheduling optimization becomes kind of
+> immaterial too). So I modified that patch to not bother, and add a
+> comment about MAY_NOT_BLOCK.
+> 
+> And since I was looking at the MAY_NOT_BLOCK logic, it was not only
+> not mentioned in comments, it also had some really confusing code
+> around it.
+> 
+> The posix_acl_permission() looked like it tried to conserve that bit,
+> which is completely wrong. It wasn't a bug only for the simple reason
+> that the only two call-sites had either explicitly cleared the bit
+> when calling, or had tested that the bit wasn't set in the first
+> place.
+> 
+> So as a result, I wrote a second patch to clear that confusion up.
+> 
+> Rasmus, say the word and I'll mark you for authorship on the first one.
 
-I think I commented on something already.
+It might be a bit confusing with me mentioned in the third person and
+then also author, and it's really mostly your patch, so reported-by is
+fine with me. But it's up to you.
 
-...
+> Comments? Can you find something else wrong here, or some other fixup to do?
 
-> +	if (ret) {
-> +		dev_err(&phy->dev, "dllrdy failed, ret=%d\n", ret);
+No, I think it's ok. I took a look at the disassembly and it looks fine.
+There's an extra push/pop of %r14 [that's where gcc computes mode>>3,
+then CSE allows it to do cmovne %r14d,%ebx after in_group_p), so the
+owner case gets slightly penalized. I think/hope the savings from
+avoiding the in_group_p should compensate for that - any absolute path
+open() by non-root saves at least two in_group_p. YMMV.
 
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-
-return ret;
-
-...
-
-> +	if (IS_ERR(priv->emmcclk)) {
-> +		dev_err(&phy->dev, "ERROR: getting emmcclk\n");
-
-> +		return PTR_ERR(priv->emmcclk);
-> +	}
-> +
-> +	return 0;
-
-return PTR_ERR_OR_ZERO(...);
-
-...
-
-> +	priv->syscfg = devm_regmap_init_mmio(dev, base,
-> +					     &keembay_regmap_config);
-
-One line.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Rasmus
