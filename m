@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64D11F20FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 22:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18E61F20EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 22:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgFHUpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 16:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43910 "EHLO
+        id S1726926AbgFHUpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 16:45:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726833AbgFHUoM (ORCPT
+        with ESMTP id S1726841AbgFHUoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 16:44:12 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B8BC08C5C2
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 13:44:12 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id k22so15859060qtm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 13:44:12 -0700 (PDT)
+        Mon, 8 Jun 2020 16:44:15 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089B0C08C5C4
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 13:44:14 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id v79so18670491qkb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 13:44:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u1ZoKjAu6rUCzvrD/I1LBfsHlqmIe5OQoQGQY8Je51A=;
-        b=I8PjRrlyoZU3BAI3OzVNM91CimCbn5sysy/JXuJpUgNi+rH3UxEGFMWT+P9SkEyNQA
-         0B961pHl7NbCPMPzFzaKK5EeKforKgWTezUP3mPPA0qrSArnRnRKJi6KqYpulKbZEfK7
-         CKQmlYbwGBi74uxkm+ciYUQucEHhCNFN/rBNGhvPmO+cs/WJZ/D8ogMciUABKD19TrJv
-         IEunkHo3srBabcdqelRt9vfhwlBLjbEo4k6ROv+FVd/dM1g2SJ4839WPGzkQbE9qm+8w
-         Gi3wkCf1OhbND2TCM8qYgzlDzluKpHXTvUXpd5q2BttitRnJrV0KV0A618kDRpvxIHIB
-         7D0w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qvr9NfP23GG58EcPnVqv8kY5eMqO/csy7v+VjkFmFa8=;
+        b=Sgn9TuqZIjfhLOZy23ytoH3J7BhvoT31XK9/G9VMHs6nkOQ+zTHub7Au0KgS7zmPMZ
+         KLMLWIACvee3eD/5yN8gD3jWXkb1wAgfxvqQHKoU2vEBSwQBb2Vo6I3fS8fnze54tqJT
+         LnyE61cHBJYjJctCX4HUGo87UUs2OUUn82Tp1p4q6Y/tj+dT/u6CgMP+0bXTn7MMlkBk
+         agQwpuIBeEprg7HV3zR7/yUVp1py7fcH3zldZP0zCjThKkf2VM6nbhrK7Qy/J4BSvyJv
+         sbqQ55cxprjY9h947Z5WmYn7lI/oQl73rmn9JGEJZAGqSFe1F1RSvVDOmw2hgMoKJqk/
+         YwWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u1ZoKjAu6rUCzvrD/I1LBfsHlqmIe5OQoQGQY8Je51A=;
-        b=A22pllSqd3+mXPK6vgfm8myLs9Yakst4le8VAItlRfNskMffm2Ie9WYKJImS6NGGq7
-         pH1UkXszha4qFOXIY8f3tGd7UUdtsrngmTLnPdVb5zc2iodqFsujAENW4E2Ey6WoI6QH
-         x74WM4oEELEpFGvdqTg6VAqNf9AV3tWI/YHb6KrO449IkScbquAxIJ/NMIQSxG61Pf2B
-         pPhbEuRxUg4nNSIJC3YPG9Xv3wJ7SSR+NQF4jxlselDwrFL/SZ73dj7hq8wFzes8HvXQ
-         zwkZiZWqajlKW1v4Lt8M1KqzZ7wZUS4UkwAYcGIVNYW3Sa1Wc9l1xrSU+d1Rws8DonUk
-         VnbA==
-X-Gm-Message-State: AOAM533XOSEPR4aIpj/P8NIGUAYwUCh71Qk6W02yv9e1jjb61ff0/bsH
-        tom0EtygftewUKZbN+9hOEryHft3dMk=
-X-Google-Smtp-Source: ABdhPJyNYZJ+80B0y31zjI9NpS6Sg0GULAYhl5LK6Q4WWLR0yFF5m1TPzUr/hk07+TKS0nHNjworXg==
-X-Received: by 2002:ac8:1719:: with SMTP id w25mr26091041qtj.375.1591649051131;
-        Mon, 08 Jun 2020 13:44:11 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qvr9NfP23GG58EcPnVqv8kY5eMqO/csy7v+VjkFmFa8=;
+        b=WvMVQvnISMxaOJXZ9nGYtnHxm2raY4X0u0lfHJVqsEYxyToMUXkoYJh73fO8or5lDA
+         icS8IrQXaHt21oLf8FGmi+ow5Glqxa25tA8lul/xGtFOv9tozx59yAS/1J2eKHPzelrR
+         +g09NXRcgOzq+TdH4LXnIArWEeHVjfYgIc9CQuos2ZXWlez8vEvHB5ooamnv0tZKid4U
+         68z3VTHCCH8Oo3yEdB63UG14XqOENKgJQz6uTJ0/OSignEHDUaxhVp8Jp1iYS5HvbfPR
+         pY01G8klFW+1D9k/cmzL5u+hKndAN7nDW12ocTQDrpbuOcg+JH7e8KMpOXdht6bs683g
+         XRaA==
+X-Gm-Message-State: AOAM532jF/XKt45AAmk8J3TGYRudigW+KH/cOZTTjZgTO+DRWITch2nL
+        1wdLIOeSp9Tb1QMEIvaQQzQo32Gy3Nk=
+X-Google-Smtp-Source: ABdhPJwRnBMq8uQ6SZnA5t3+W1dY5KfhW+rUvHoY0ZFqRAUpsRl3443LXWlNkfL4jbqrfnKEqxi2qw==
+X-Received: by 2002:a37:be43:: with SMTP id o64mr23549112qkf.322.1591649052223;
+        Mon, 08 Jun 2020 13:44:12 -0700 (PDT)
 Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id y16sm8895565qty.1.2020.06.08.13.44.09
+        by smtp.gmail.com with ESMTPSA id y16sm8895565qty.1.2020.06.08.13.44.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 13:44:10 -0700 (PDT)
+        Mon, 08 Jun 2020 13:44:11 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     alsa-devel@alsa-project.org
 Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
-        linux-kernel@vger.kernel.org (open list),
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
         Sanyog Kale <sanyog.r.kale@intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 0/5] soundwire: qcom: add mmio support
-Date:   Mon,  8 Jun 2020 16:43:41 -0400
-Message-Id: <20200608204347.19685-1-jonathan@marek.ca>
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/5] soundwire: qcom: fix abh/ahb typo
+Date:   Mon,  8 Jun 2020 16:43:42 -0400
+Message-Id: <20200608204347.19685-2-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200608204347.19685-1-jonathan@marek.ca>
+References: <20200608204347.19685-1-jonathan@marek.ca>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -68,21 +70,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds initial support for soundwire device on sm8250.
+The function name qcom_swrm_abh_reg_read should say ahb, fix that.
 
-Tested with the "wsa" sdw device, which is simpler than the others.
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ drivers/soundwire/qcom.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Jonathan Marek (5):
-  soundwire: qcom: fix abh/ahb typo
-  soundwire: qcom: add support for mmio soundwire devices
-  soundwire: qcom: add v1.5.1 compatible
-  soundwire: qcom: avoid dependency on CONFIG_SLIMBUS
-  soundwire: qcom: enable CPU interrupts for mmio devices
-
- drivers/soundwire/Kconfig |  1 -
- drivers/soundwire/qcom.c  | 42 +++++++++++++++++++++++++++++++++++----
- 2 files changed, 38 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index a1c2a44a3b4d..f38d1fd3679f 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -114,7 +114,7 @@ struct qcom_swrm_ctrl {
+ 
+ #define to_qcom_sdw(b)	container_of(b, struct qcom_swrm_ctrl, bus)
+ 
+-static int qcom_swrm_abh_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
++static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
+ 				  u32 *val)
+ {
+ 	struct regmap *wcd_regmap = ctrl->regmap;
+@@ -754,7 +754,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	if (dev->parent->bus == &slimbus_bus) {
+-		ctrl->reg_read = qcom_swrm_abh_reg_read;
++		ctrl->reg_read = qcom_swrm_ahb_reg_read;
+ 		ctrl->reg_write = qcom_swrm_ahb_reg_write;
+ 		ctrl->regmap = dev_get_regmap(dev->parent, NULL);
+ 		if (!ctrl->regmap)
 -- 
 2.26.1
 
