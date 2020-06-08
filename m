@@ -2,128 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4841F110C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 03:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CAD1F1110
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 03:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728501AbgFHBaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 21:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
+        id S1728624AbgFHBdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 21:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728094AbgFHBaP (ORCPT
+        with ESMTP id S1727972AbgFHBdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 21:30:15 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3F0C08C5C3;
-        Sun,  7 Jun 2020 18:30:15 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 64so948103pfv.11;
-        Sun, 07 Jun 2020 18:30:15 -0700 (PDT)
+        Sun, 7 Jun 2020 21:33:21 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67988C08C5C3
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 18:33:21 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id e16so13531241qtg.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 18:33:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YqMDTip8O2bB4WduPS64zt7/d0YFYXeSrLo1mf+ncN0=;
-        b=NFphu1AN7oiLsCDH5WWR5hY/miiUfbOF6SfYL30tAAu8bjOatIm73sr/PvepUS3NtA
-         5TKujwcccW1RqglAR7kvAsQ1GqMgmqhRCsF3gio/xccvw6A7/3TgbNjJvo7WnupuZTN3
-         6htsksRwu6K4SX4nhKtD+W07jeiHQM0C9prrpnfRxPoaFx+RsxPBX9O//iXl6i9y/yuK
-         Bddtqq1UVsATiLP4J8UIJULT3BFAyRnhNV09KxamDOn8KmRa3X8q+wMzJCu/8FrZjXBK
-         iYScm4R6Gjt1sy1lNlsPJrQyadX9l2uH/H03CbE8j7cnvUu8rX+KbJzvTzn/Fc3L0A15
-         lYkA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lWjZ0ATSaEye0Bi2OFiSChYlU/sVI6QI0KBmWOw2/ME=;
+        b=B5UxJNKy+Gku93rPNEm+OScpi1AgEe9k+fedHSTZjhSZKs+0NOi77JqT3RVE7UJQHz
+         gX8Nd82uP8BI34gepu9gQsaTgthEVw1ScOJ+vV5HRSOIMVZUEBJtHAvRnz4u5RbNWpYq
+         TASQxquIYZ+4NleP6+w1br6oU0gJcj07/F7gg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YqMDTip8O2bB4WduPS64zt7/d0YFYXeSrLo1mf+ncN0=;
-        b=OhT+lthaTVN+Q8AJwj+HAW9KSb5G/ykcRQQl83EatOFqR8/E0GZtJzML+eUyj7K+ji
-         q9ul+O9NUzQ/wypsQMiaxc+srgcIXyURFdBLD7CGm7UwlKTQHSYshbx1zxS3TJuBn0m0
-         sX0dGFKpyVYQrSHi54fVrdNnDic6txoUp88WYn/jCeX6RQP+MZ0aVeP9cmW5J/hp//Bc
-         uO25H2n7chSnmErUSne7jL9rsSyVEYJRt4y4/DA5z1vQwhyL/W2jeJ2vfd29QZhaSNlI
-         Xb7p/PwjNMLMMdxXP8eHxpz3zwaD+oodeu1uPwMG8joEhwLGrxrqkCks7PLgDrajk+vk
-         rWlw==
-X-Gm-Message-State: AOAM533mfVCf8vVQQrtnNq6iVQAUIj26fJc0xwkN3tnoU+O30Liiv8C+
-        CQ7f9zmsaWMDbDkA5X8oLYk=
-X-Google-Smtp-Source: ABdhPJyx2ve+M3tSV5vKFdvWJ2Nhj/XpAT9Ii2mlLbJGU2Ce1+N807x6MWnE8FaJG1zXrfYLH8Fbcg==
-X-Received: by 2002:a62:7c09:: with SMTP id x9mr20026171pfc.287.1591579814794;
-        Sun, 07 Jun 2020 18:30:14 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v129sm5365189pfv.18.2020.06.07.18.30.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 07 Jun 2020 18:30:14 -0700 (PDT)
-Date:   Sun, 7 Jun 2020 18:30:12 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Denis Efremov <efremov@linux.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] kbuild: add variables for compression tools
-Message-ID: <20200608013012.GA216607@roeck-us.net>
-References: <20200514131234.380097-1-efremov@linux.com>
- <20200605073955.6384-1-efremov@linux.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lWjZ0ATSaEye0Bi2OFiSChYlU/sVI6QI0KBmWOw2/ME=;
+        b=lu0diHPkrXNMfJj7rdM7tcXkZDeb9f1SCIT17Qk8SE2zXUO0WpiprJgyR+G5kwlSbC
+         wP1kN+T5+33Oil/D/yMsd5NqKU/xN72FiyYIuY3wqaOLJm5KphtzASsLVClu+OZrF3B7
+         kH0ArgPH2ZkEeaC1ZKzaxV8eA0kZa5b/5CAqILIPOymzL1pewDxqYddjJLJniFeafpZz
+         +nxI4dTxVk3yudwFgtmGIrDgfLTp5LWvv5jxcTsAiot6L7S7QvWEDJOhHLom1ZDA6il1
+         G9L75fOH6c2qU9D/DvCbczwM46ldAZ0PLaX58zbAlymFdij635ckm5Vzzm51XknpO4uU
+         y2mA==
+X-Gm-Message-State: AOAM5308E7EgOpZ6/gcOiDnw1UaHok8OWCPGbY765xHhxZI4Zt3Ph7qv
+        qmM18x/te1jVz0+5Qt7WR3jYs8Qp5O//wTrkmU48dA==
+X-Google-Smtp-Source: ABdhPJw4OhRhvJvUEtwywNu0NEGhO7Zgx4/6suiIs89J/Z3riECqRRbSUeDB2bVSSaqL0ISmU4q4EcJtUtS32ixDf8U=
+X-Received: by 2002:aed:21a4:: with SMTP id l33mr17978554qtc.72.1591580000574;
+ Sun, 07 Jun 2020 18:33:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200605073955.6384-1-efremov@linux.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200526105811.30784-1-stevensd@chromium.org> <20200526105811.30784-2-stevensd@chromium.org>
+ <20200604145620-mutt-send-email-mst@kernel.org> <CAD=HUj74mKs5AfcViD3CBva86E0Hvg_pmYChAJe3ny8jtnZ8Tw@mail.gmail.com>
+ <20200606160155-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20200606160155-mutt-send-email-mst@kernel.org>
+From:   David Stevens <stevensd@chromium.org>
+Date:   Mon, 8 Jun 2020 10:33:09 +0900
+Message-ID: <CAD=HUj5Jn+grQVfxmPSSnERdGwnu8RceDsdpWpoxXH+WL4k+qw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] virtio: add dma-buf support for exported objects
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO GPU DRIVER" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, virtio-dev@lists.oasis-open.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, Jun 7, 2020 at 5:04 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Fri, Jun 05, 2020 at 10:28:42AM +0900, David Stevens wrote:
+> > On Fri, Jun 5, 2020 at 4:05 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > >
+> > > On Tue, May 26, 2020 at 07:58:09PM +0900, David Stevens wrote:
+> > > > This change adds a new flavor of dma-bufs that can be used by virtio
+> > > > drivers to share exported objects. A virtio dma-buf can be queried by
+> > > > virtio drivers to obtain the UUID which identifies the underlying
+> > > > exported object.
+> > > >
+> > > > Signed-off-by: David Stevens <stevensd@chromium.org>
+> > >
+> > > Is this just for graphics? If yes I'd rather we put it in the graphics
+> > > driver. We can always move it later ...
+> >
+> > As stated in the cover letter, this will be used by virtio-video.
+> >
+> > The proposed virtio-video patches: https://markmail.org/thread/p5d3k566srtdtute
+> > The patch which imports these dma-bufs (slightly out of data, uses v3
+> > of this patch set): https://markmail.org/thread/j4xlqaaim266qpks
+> >
+> > > > ---
+> > > >  drivers/virtio/Makefile         |  2 +-
+> > > >  drivers/virtio/virtio.c         |  6 +++
+> > > >  drivers/virtio/virtio_dma_buf.c | 89 +++++++++++++++++++++++++++++++++
+> > > >  include/linux/virtio.h          |  1 +
+> > > >  include/linux/virtio_dma_buf.h  | 58 +++++++++++++++++++++
+> > > >  5 files changed, 155 insertions(+), 1 deletion(-)
+> > > >  create mode 100644 drivers/virtio/virtio_dma_buf.c
+> > > >  create mode 100644 include/linux/virtio_dma_buf.h
+> > > >
+> > > > diff --git a/drivers/virtio/Makefile b/drivers/virtio/Makefile
+> > > > index 29a1386ecc03..ecdae5b596de 100644
+> > > > --- a/drivers/virtio/Makefile
+> > > > +++ b/drivers/virtio/Makefile
+> > > > @@ -1,5 +1,5 @@
+> > > >  # SPDX-License-Identifier: GPL-2.0
+> > > > -obj-$(CONFIG_VIRTIO) += virtio.o virtio_ring.o
+> > > > +obj-$(CONFIG_VIRTIO) += virtio.o virtio_ring.o virtio_dma_buf.o
+> > > >  obj-$(CONFIG_VIRTIO_MMIO) += virtio_mmio.o
+> > > >  obj-$(CONFIG_VIRTIO_PCI) += virtio_pci.o
+> > > >  virtio_pci-y := virtio_pci_modern.o virtio_pci_common.o
+> > > > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> > > > index a977e32a88f2..5d46f0ded92d 100644
+> > > > --- a/drivers/virtio/virtio.c
+> > > > +++ b/drivers/virtio/virtio.c
+> > > > @@ -357,6 +357,12 @@ int register_virtio_device(struct virtio_device *dev)
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(register_virtio_device);
+> > > >
+> > > > +bool is_virtio_device(struct device *dev)
+> > > > +{
+> > > > +     return dev->bus == &virtio_bus;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(is_virtio_device);
+> > > > +
+> > > >  void unregister_virtio_device(struct virtio_device *dev)
+> > > >  {
+> > > >       int index = dev->index; /* save for after device release */
+> > > > diff --git a/drivers/virtio/virtio_dma_buf.c b/drivers/virtio/virtio_dma_buf.c
+> > > > new file mode 100644
+> > > > index 000000000000..23e3399b11ed
+> > > > --- /dev/null
+> > > > +++ b/drivers/virtio/virtio_dma_buf.c
+> > > > @@ -0,0 +1,89 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > > > +/*
+> > > > + * dma-bufs for virtio exported objects
+> > > > + *
+> > > > + * Copyright (C) 2020 Google, Inc.
+> > > > + */
+> > > > +
+> > > > +#include <linux/virtio_dma_buf.h>
+> > > > +
+> > > > +/**
+> > > > + * virtio_dma_buf_export - Creates a new dma-buf for a virtio exported object
+> > > > + *
+> > > > + * This wraps dma_buf_export() to allow virtio drivers to create a dma-buf
+> > > > + * for an virtio exported object that can be queried by other virtio drivers
+> > > > + * for the object's UUID.
+> > > > + */
+> > > > +struct dma_buf *virtio_dma_buf_export(
+> > > > +             const struct virtio_dma_buf_export_info *virtio_exp_info)
+> > > > +{
+> > > > +     struct dma_buf_export_info exp_info;
+> > > > +
+> > > > +     if (!virtio_exp_info->ops
+> > > > +             || virtio_exp_info->ops->ops.attach != &virtio_dma_buf_attach
+> > > > +             || !virtio_exp_info->ops->get_uuid) {
+> > > > +             return ERR_PTR(-EINVAL);
+> > > > +     }
+> > > > +
+> > > > +     exp_info.exp_name = virtio_exp_info->exp_name;
+> > > > +     exp_info.owner = virtio_exp_info->owner;
+> > > > +     exp_info.ops = &virtio_exp_info->ops->ops;
+> > > > +     exp_info.size = virtio_exp_info->size;
+> > > > +     exp_info.flags = virtio_exp_info->flags;
+> > > > +     exp_info.resv = virtio_exp_info->resv;
+> > > > +     exp_info.priv = virtio_exp_info->priv;
+> > > > +     BUILD_BUG_ON(sizeof(struct virtio_dma_buf_export_info)
+> > > > +                  != sizeof(struct dma_buf_export_info));
+> > >
+> > > This is the only part that gives me pause. Why do we need this hack?
+> > > What's wrong with just using dma_buf_export_info directly,
+> > > and if you want the virtio ops, just using container_off?
+> >
+> > This approach provides a more explicit type signature and a little
+> > more type safety, I think. If others don't think it's a worthwhile
+> > tradeoff, I can remove it.
+> >
+> > -David
+>
+> The cost is that if dma_buf_export_info changes even slightly, we get
+> weird crashes.
 
-On Fri, Jun 05, 2020 at 10:39:55AM +0300, Denis Efremov wrote:
-> Allow user to use alternative implementations of compression tools,
-> such as pigz, pbzip2, pxz. For example, multi-threaded tools to
-> speed up the build:
-> $ make GZIP=pigz BZIP2=pbzip2
-> 
-> Variables _GZIP, _BZIP2, _LZOP are used internally because original env
-> vars are reserved by the tools. The use of GZIP in gzip tool is obsolete
-> since 2015. However, alternative implementations (e.g., pigz) still rely
-> on it. BZIP2, BZIP, LZOP vars are not obsolescent.
-> 
+I'm not sure I understand what types of changes you're referring to.
+As this is written, virtio-dma-buf is just another client of the
+dma-buf API. If this were rewritten to use dma-buf directly, then
+whatever code calls virtio_dma_buf_export would become a client of the
+dma-buf API. If the semantics of existing fields in the dma-buf API
+were changed and virtio-dma-buf wasn't updated, then yes, you could
+get weird crashes from virtio-dma-buf. However, the same problem would
+exist if virtio_dma_buf_export used dma-buf directly - changes to
+dma-buf's semantics could cause weird crashes if the caller of
+virtio_dma_buf_export wasn't updated properly. The only potential
+source of problems I see is if virtio_dma_buf_export_info wasn't
+updated properly, but virtio_dma_buf_export_info is dead simple, so I
+don't know if that's really a problem.
 
-When building mips:defconfig, this patch results in:
-
-Building mips:defconfig ... failed
---------------
-Error log:
-/bin/sh: -n: command not found
-make[3]: *** [kernel/config_data.gz] Error 127
-make[3]: *** Deleting file 'kernel/config_data.gz'
-make[3]: *** Waiting for unfinished jobs....
-make[2]: *** [kernel] Error 2
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [autoksyms_recursive] Error 2
-make: *** [__sub-make] Error 2
-
-Reverting this patch fixes the problem. Bisect log is attached.
-
-Guenter
-
----
-# bad: [cf0c97f148e9e50aa5a7ddd1984a604dd2bde4af] Merge tag 'pinctrl-v5.8-1' of git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl
-# good: [aaa2faab4ed8e5fe0111e04d6e168c028fe2987f] Merge tag 'for-linus-5.8-ofs1' of git://git.kernel.org/pub/scm/linux/kernel/git/hubcap/linux
-git bisect start 'HEAD' 'aaa2faab4ed8'
-# good: [77f55d1305c11fb729b88f2c3f7881ba0831fa6f] staging: rtl8723bs: Use common packet header constants
-git bisect good 77f55d1305c11fb729b88f2c3f7881ba0831fa6f
-# bad: [e611c0fe318c6d6827ee2bba660fbc23cf73f7dc] Merge tag 'usb-5.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
-git bisect bad e611c0fe318c6d6827ee2bba660fbc23cf73f7dc
-# bad: [cff11abeca78aa782378401ca2800bd2194aa14e] Merge tag 'kbuild-v5.8' of git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild
-git bisect bad cff11abeca78aa782378401ca2800bd2194aa14e
-# good: [2bd81cd04a3f5eb873cc81fa16c469377be3b092] Merge branch 'remotes/lorenzo/pci/vmd'
-git bisect good 2bd81cd04a3f5eb873cc81fa16c469377be3b092
-# good: [269a535ca931b754a40dda3ab60514e68773c759] modpost: generate vmlinux.symvers and reuse it for the second modpost
-git bisect good 269a535ca931b754a40dda3ab60514e68773c759
-# good: [e542e0dc3ee3eafc46dd8e3073388079d69cace0] Merge branch 'dmi-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging
-git bisect good e542e0dc3ee3eafc46dd8e3073388079d69cace0
-# good: [4de7b62936122570408357417f21072e78292926] modpost: remove is_vmlinux() helper
-git bisect good 4de7b62936122570408357417f21072e78292926
-# good: [1ee18de92927f37e6948d5a6fc73cbf89f806905] Merge tag 'dma-mapping-5.8' of git://git.infradead.org/users/hch/dma-mapping
-git bisect good 1ee18de92927f37e6948d5a6fc73cbf89f806905
-# bad: [8dfb61dcbaceb19a5ded5e9c9dcf8d05acc32294] kbuild: add variables for compression tools
-git bisect bad 8dfb61dcbaceb19a5ded5e9c9dcf8d05acc32294
-# good: [c0901577e1dcc8d1c0fd1a11c8d571f650df845f] kbuild: doc: rename LDFLAGS to KBUILD_LDFLAGS
-git bisect good c0901577e1dcc8d1c0fd1a11c8d571f650df845f
-# good: [e0b250b57dcf403529081e5898a9de717f96b76b] Makefile: install modules.builtin even if CONFIG_MODULES=n
-git bisect good e0b250b57dcf403529081e5898a9de717f96b76b
-# first bad commit: [8dfb61dcbaceb19a5ded5e9c9dcf8d05acc32294] kbuild: add variables for compression tools
+-David
