@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A491F1768
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7281F176E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729544AbgFHLRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 07:17:45 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:35705 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729529AbgFHLRo (ORCPT
+        id S1729571AbgFHLSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 07:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729487AbgFHLSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 07:17:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591615064; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=A2l8ZtjPyjr/T5aVcdRp4TQUyoApQ642+Fc1l7Et+tQ=; b=Hri9TX2cSI6RfBBtAS2EBSCRM1FS6uNhyQxOq/mrWcP1xhnWrPSlE+nFVj54hvbe7QtrPT+l
- kmv2TJlCauzbnr2YP0pUTa5Mf0fQ2hZD/M+J9lo6lQPEnX/qbU/IJItozmqZAkXygUhUFcnb
- wgM8U0NkEap/DnZbPVqwXWoD7Rk=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5ede1e52d26ace6bd5dabe74 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Jun 2020 11:17:38
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 82632C433CB; Mon,  8 Jun 2020 11:17:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 00956C433C6;
-        Mon,  8 Jun 2020 11:17:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 00956C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        Govind Singh <govinds@codeaurora.org>,
-        Rakesh Pillai <pillair@qti.qualcomm.com>,
-        Brian Norris <briannorris@chromium.org>,
-        ath10k@lists.infradead.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Niklas Cassel <niklas.cassel@linaro.org>
-Subject: Re: [PATCH] wireless: ath10k: Return early in ath10k_qmi_event_server_exit() to avoid hard crash on reboot
-References: <20200602052533.15048-1-john.stultz@linaro.org>
-Date:   Mon, 08 Jun 2020 14:17:31 +0300
-In-Reply-To: <20200602052533.15048-1-john.stultz@linaro.org> (John Stultz's
-        message of "Tue, 2 Jun 2020 05:25:33 +0000")
-Message-ID: <877dwhkdro.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Mon, 8 Jun 2020 07:18:38 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64437C08C5C2
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 04:18:38 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id b16so8386647pfi.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 04:18:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bLGHAPpBMCAk0XEijfEImk2BbxF7rnJc2dl2Taiz1TQ=;
+        b=TaSeTrlVy0Eb/aruMNajP24/DLeWRd9UFdtv6Dj3gjkKh/9LLrMOB2uP/JbEbb9+a0
+         /eecysEbxfYfxZaAI4VpkTG/+hIJpU2+HYkSU7YWBauOPir/dzTWnUU76V1HHw+Mc3La
+         JKb9NDNzINJjPg6Ji9GUO5U0GUd+RYQ6kbkmaXOBc5xsXNIa3VgPPmxTzCFvibeFrNYr
+         kxukMwwf7TpfibkoNfeTHbv1jWbpAk8Gw5IX+F8x1wfdJ7kB3WwKckYPQDZ6ESVJQMzG
+         yy4dpGQIfkVMzththSiR2XHutN/3S8l/tws+7BDwAESu37w3DayBWbC28jRVaGR8Psb+
+         Jyuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bLGHAPpBMCAk0XEijfEImk2BbxF7rnJc2dl2Taiz1TQ=;
+        b=K/E9JOXTG5NogKmyza4rT6L+ZZqmMOqMJz+vCp3A1Lk0OhtycYg1m4B7oQWPvKWRvJ
+         d/yJV2b1AzeL9bwCXtRSrI+3gbPQOXJ8oeRiToMjOnam32yWnyJ7jh5mYhsKYISvESHo
+         SpSw+BpyhjwZhWeeaZ3rulC7mN9BFfAvmJePQwsstqVuofS37cLlUezM2Hj/y2leTbJU
+         g/+IWwiTYPfHpKq3po4RbiL4ITQhNEm2fK7kxTrf60Y8L/V2aYjdhNdhzDgSYOs3NOSS
+         z7/jZy/O1+mHGY8MUxw66dy87efg1RAflokJ4xyheUPC6czZl/Npx6MtHuitxQuwd1sQ
+         84GA==
+X-Gm-Message-State: AOAM533jAuN0dr/bQQ5fAvgfofmMLK/OPAhZ284TTJbPy4ipyoXnrOng
+        968IyssUY1qxZcixTfnsFUI=
+X-Google-Smtp-Source: ABdhPJxWAsknwr6X6weG46CCyPiDJ6zxhw57RFAOpXcc9g4MLuJgL2JQ5nD2XZVJyYDryEQq8k1y9g==
+X-Received: by 2002:a63:5d62:: with SMTP id o34mr19595022pgm.420.1591615117630;
+        Mon, 08 Jun 2020 04:18:37 -0700 (PDT)
+Received: from localhost ([49.207.55.212])
+        by smtp.gmail.com with ESMTPSA id d4sm15396959pjm.55.2020.06.08.04.18.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 08 Jun 2020 04:18:36 -0700 (PDT)
+Date:   Mon, 8 Jun 2020 16:48:34 +0530
+From:   afzal mohammed <afzal.mohd.ma@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: ARM: vmsplit 4g/4g
+Message-ID: <20200608111834.GB5736@afzalpc>
+References: <20200512104758.GA12980@afzalpc>
+ <CAK8P3a1DQWG1+ab2+vQ2XCAKYxPUjJk5g3W3094j-adDXSQfzQ@mail.gmail.com>
+ <20200514111755.GA4997@afzalpc>
+ <CAK8P3a2PNZY-9L9+SFDLtrp731ZGo6Nbs-7jY6E2PwWXa0kfKw@mail.gmail.com>
+ <20200514133545.GA5020@afzalpc>
+ <CAK8P3a1PVwkAi8ycUAB-7EMk4nQ_qOu0rC5vJAQk_q9j5xvOJw@mail.gmail.com>
+ <20200516060624.GA6371@afzalpc>
+ <CAK8P3a01FYoWY9sZKU1q=UQ3ut4srwXXUeGRzW6APi+GpoKo1w@mail.gmail.com>
+ <20200607125932.GA4576@afzalpc>
+ <CAK8P3a2=o6RkONUoHTaR-2jpXg-wa-YnCYi0a4gAknYmvu8X7Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2=o6RkONUoHTaR-2jpXg-wa-YnCYi0a4gAknYmvu8X7Q@mail.gmail.com>
+User-Agent: Mutt/1.9.3 (2018-01-21)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John Stultz <john.stultz@linaro.org> writes:
+Hi,
 
-> Ever since 5.7-rc1, if we call
-> ath10k_qmi_remove_msa_permission(), the db845c hard crashes on
-> reboot, resulting in the device getting stuck in the usb crash
-> debug mode and not coming back up wihthout a hard power off.
->
-> This hack avoids the issue by returning early in
-> ath10k_qmi_event_server_exit().
->
-> A better solution is very much desired!
->
-> Feedback and suggestions welcome!
->
-> Cc: Rakesh Pillai <pillair@qti.qualcomm.com>
-> Cc: Govind Singh <govinds@codeaurora.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Niklas Cassel <niklas.cassel@linaro.org>
-> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Cc: Amit Pundir <amit.pundir@linaro.org>
-> Cc: Brian Norris <briannorris@chromium.org>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: ath10k@lists.infradead.org
-> Reported-by: Amit Pundir <amit.pundir@linaro.org>
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
+On Sun, Jun 07, 2020 at 09:26:26PM +0200, Arnd Bergmann wrote:
 
-Just so you know: as you didn't CC linux-wireless it's not on patchwork
-and hence not on my radar. But hopefully we find a better solution to
-fix this.
+> I think you have to use get_user_pages() though instead of
+> get_user_pages_fast(),
+> in order to be able to check the permission bits to prevent doing a
+> copy_to_user()
+> into read-only mappings.
 
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+i was not aware of this, is it documented somewhere ?, afaiu,
+difference b/n get_user_pages_fast() & get_user_pages() is that fast
+version will try to pin pages w/o acquiring mmap_sem if possible.
+
+> Do you want me to review the uaccess patch to look for any missing
+> corner cases, or do you want to do the whole set of user access helpers
+> first?
+
+i will cleanup and probably post RFC initially for the changes
+handling copy_{from,to}_user() to get feedback.
+
+Regards
+afzal
