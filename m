@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EB01F2691
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556C81F2699
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732066AbgFHX0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:26:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45824 "EHLO mail.kernel.org"
+        id S1731738AbgFHX1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:27:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729163AbgFHXVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:21:34 -0400
+        id S1730854AbgFHXV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:21:57 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 785F120B80;
-        Mon,  8 Jun 2020 23:21:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4C9520872;
+        Mon,  8 Jun 2020 23:21:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658494;
-        bh=2ved1gwBbFnsvB8In8AxS051g4Ygu+m7vTx5SAx02eg=;
+        s=default; t=1591658516;
+        bh=eJYsUxMVZMlCzNovHosZ1/Ch8LyEdLb+TE+MJxS0lv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VE5zVnWUAwZ9H6CP2lZjdqNb/Q9iqlj059LGaT/kbfYgHg/42xpOqJ3LNPGbm7Cxa
-         WmdaUlkG6NSSpapP/TC1BixY2q+xVv9JpM/v+/rpiQ6zHss6ZrEII/ZahPxmtqx3bm
-         x1rPwhpjizl/vgcZYxd5UBvx6ABF0fJmq8SpsanM=
+        b=jxzUOwSeruoNo3q+byQBD+Yv/+fYWlQNDF0vMjMkC7Q+r1N0Y24mJeHMW3o4BFliP
+         KWc3cmCefjnnXSV1hxl2wL/x6vOc2vsJfeSThWuLZN69j6zd5HO3kYlqeY+bzNqQsB
+         KxB5436JAx3c+cXKPIzmwrByHyCxPp50k14ksrxE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Erez Shitrit <erezsh@mellanox.com>,
-        Alex Vesker <valex@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 127/175] net/mlx5e: IPoIB, Drop multicast packets that this interface sent
-Date:   Mon,  8 Jun 2020 19:18:00 -0400
-Message-Id: <20200608231848.3366970-127-sashal@kernel.org>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        Stan Johnson <userm57@yahoo.com>,
+        Joshua Thompson <funaho@jurai.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH AUTOSEL 5.4 143/175] m68k: mac: Don't call via_flush_cache() on Mac IIfx
+Date:   Mon,  8 Jun 2020 19:18:16 -0400
+Message-Id: <20200608231848.3366970-143-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -45,71 +46,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Erez Shitrit <erezsh@mellanox.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit 8b46d424a743ddfef8056d5167f13ee7ebd1dcad ]
+[ Upstream commit bcc44f6b74106b31f0b0408b70305a40360d63b7 ]
 
-After enabled loopback packets for IPoIB, we need to drop these packets
-that this HCA has replicated and came back to the same interface that
-sent them.
+There is no VIA2 chip on the Mac IIfx, so don't call via_flush_cache().
+This avoids a boot crash which appeared in v5.4.
 
-Fixes: 4c6c615e3f30 ("net/mlx5e: IPoIB, Add PKEY child interface nic profile")
-Signed-off-by: Erez Shitrit <erezsh@mellanox.com>
-Reviewed-by: Alex Vesker <valex@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+printk: console [ttyS0] enabled
+printk: bootconsole [debug0] disabled
+printk: bootconsole [debug0] disabled
+Calibrating delay loop... 9.61 BogoMIPS (lpj=48064)
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+devtmpfs: initialized
+random: get_random_u32 called from bucket_table_alloc.isra.27+0x68/0x194 with crng_init=0
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+futex hash table entries: 256 (order: -1, 3072 bytes, linear)
+NET: Registered protocol family 16
+Data read fault at 0x00000000 in Super Data (pc=0x8a6a)
+BAD KERNEL BUSERR
+Oops: 00000000
+Modules linked in:
+PC: [<00008a6a>] via_flush_cache+0x12/0x2c
+SR: 2700  SP: 01c1fe3c  a2: 01c24000
+d0: 00001119    d1: 0000000c    d2: 00012000    d3: 0000000f
+d4: 01c06840    d5: 00033b92    a0: 00000000    a1: 00000000
+Process swapper (pid: 1, task=01c24000)
+Frame format=B ssw=0755 isc=0200 isb=fff7 daddr=00000000 dobuf=01c1fed0
+baddr=00008a6e dibuf=0000004e ver=f
+Stack from 01c1fec4:
+        01c1fed0 00007d7e 00010080 01c1fedc 0000792e 00000001 01c1fef4 00006b40
+        01c80000 00040000 00000006 00000003 01c1ff1c 004a545e 004ff200 00040000
+        00000000 00000003 01c06840 00033b92 004a5410 004b6c88 01c1ff84 000021e2
+        00000073 00000003 01c06840 00033b92 0038507a 004bb094 004b6ca8 004b6c88
+        004b6ca4 004b6c88 000021ae 00020002 00000000 01c0685d 00000000 01c1ffb4
+        0049f938 00409c85 01c06840 0045bd40 00000073 00000002 00000002 00000000
+Call Trace: [<00007d7e>] mac_cache_card_flush+0x12/0x1c
+ [<00010080>] fix_dnrm+0x2/0x18
+ [<0000792e>] cache_push+0x46/0x5a
+ [<00006b40>] arch_dma_prep_coherent+0x60/0x6e
+ [<00040000>] switched_to_dl+0x76/0xd0
+ [<004a545e>] dma_atomic_pool_init+0x4e/0x188
+ [<00040000>] switched_to_dl+0x76/0xd0
+ [<00033b92>] parse_args+0x0/0x370
+ [<004a5410>] dma_atomic_pool_init+0x0/0x188
+ [<000021e2>] do_one_initcall+0x34/0x1be
+ [<00033b92>] parse_args+0x0/0x370
+ [<0038507a>] strcpy+0x0/0x1e
+ [<000021ae>] do_one_initcall+0x0/0x1be
+ [<00020002>] do_proc_dointvec_conv+0x54/0x74
+ [<0049f938>] kernel_init_freeable+0x126/0x190
+ [<0049f94c>] kernel_init_freeable+0x13a/0x190
+ [<004a5410>] dma_atomic_pool_init+0x0/0x188
+ [<00041798>] complete+0x0/0x3c
+ [<000b9b0c>] kfree+0x0/0x20a
+ [<0038df98>] schedule+0x0/0xd0
+ [<0038d604>] kernel_init+0x0/0xda
+ [<0038d610>] kernel_init+0xc/0xda
+ [<0038d604>] kernel_init+0x0/0xda
+ [<00002d38>] ret_from_kernel_thread+0xc/0x14
+Code: 0000 2079 0048 10da 2279 0048 10c8 d3c8 <1011> 0200 fff7 1280 d1f9 0048 10c8 1010 0000 0008 1080 4e5e 4e75 4e56 0000 2039
+Disabling lock debugging due to kernel taint
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+
+Thanks to Stan Johnson for capturing the console log and running git
+bisect.
+
+Git bisect said commit 8e3a68fb55e0 ("dma-mapping: make
+dma_atomic_pool_init self-contained") is the first "bad" commit. I don't
+know why. Perhaps mach_l2_flush first became reachable with that commit.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Cc: Joshua Thompson <funaho@jurai.org>
+Link: https://lore.kernel.org/r/b8bbeef197d6b3898e82ed0d231ad08f575a4b34.1589949122.git.fthain@telegraphics.com.au
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ arch/m68k/include/asm/mac_via.h |  1 +
+ arch/m68k/mac/config.c          | 21 ++-------------------
+ arch/m68k/mac/via.c             |  6 +++++-
+ 3 files changed, 8 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index c4eed5bbcd45..066bada4ccd1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1428,6 +1428,7 @@ int mlx5e_poll_rx_cq(struct mlx5e_cq *cq, int budget)
+diff --git a/arch/m68k/include/asm/mac_via.h b/arch/m68k/include/asm/mac_via.h
+index de1470c4d829..1149251ea58d 100644
+--- a/arch/m68k/include/asm/mac_via.h
++++ b/arch/m68k/include/asm/mac_via.h
+@@ -257,6 +257,7 @@ extern int rbv_present,via_alt_mapping;
  
- #ifdef CONFIG_MLX5_CORE_IPOIB
+ struct irq_desc;
  
-+#define MLX5_IB_GRH_SGID_OFFSET 8
- #define MLX5_IB_GRH_DGID_OFFSET 24
- #define MLX5_GID_SIZE           16
++extern void via_l2_flush(int writeback);
+ extern void via_register_interrupts(void);
+ extern void via_irq_enable(int);
+ extern void via_irq_disable(int);
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 611f73bfc87c..d0126ab01360 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -59,7 +59,6 @@ extern void iop_preinit(void);
+ extern void iop_init(void);
+ extern void via_init(void);
+ extern void via_init_clock(irq_handler_t func);
+-extern void via_flush_cache(void);
+ extern void oss_init(void);
+ extern void psc_init(void);
+ extern void baboon_init(void);
+@@ -130,21 +129,6 @@ int __init mac_parse_bootinfo(const struct bi_record *record)
+ 	return unknown;
+ }
  
-@@ -1441,6 +1442,7 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
- 	struct net_device *netdev;
- 	struct mlx5e_priv *priv;
- 	char *pseudo_header;
-+	u32 flags_rqpn;
- 	u32 qpn;
- 	u8 *dgid;
- 	u8 g;
-@@ -1462,7 +1464,8 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
- 	tstamp = &priv->tstamp;
- 	stats = &priv->channel_stats[rq->ix].rq;
- 
--	g = (be32_to_cpu(cqe->flags_rqpn) >> 28) & 3;
-+	flags_rqpn = be32_to_cpu(cqe->flags_rqpn);
-+	g = (flags_rqpn >> 28) & 3;
- 	dgid = skb->data + MLX5_IB_GRH_DGID_OFFSET;
- 	if ((!g) || dgid[0] != 0xff)
- 		skb->pkt_type = PACKET_HOST;
-@@ -1471,9 +1474,15 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
- 	else
- 		skb->pkt_type = PACKET_MULTICAST;
- 
--	/* TODO: IB/ipoib: Allow mcast packets from other VFs
--	 * 68996a6e760e5c74654723eeb57bf65628ae87f4
-+	/* Drop packets that this interface sent, ie multicast packets
-+	 * that the HCA has replicated.
+-/*
+- * Flip into 24bit mode for an instant - flushes the L2 cache card. We
+- * have to disable interrupts for this. Our IRQ handlers will crap
+- * themselves if they take an IRQ in 24bit mode!
+- */
+-
+-static void mac_cache_card_flush(int writeback)
+-{
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
+-	via_flush_cache();
+-	local_irq_restore(flags);
+-}
+-
+ void __init config_mac(void)
+ {
+ 	if (!MACH_IS_MAC)
+@@ -175,9 +159,8 @@ void __init config_mac(void)
+ 	 * not.
  	 */
-+	if (g && (qpn == (flags_rqpn & 0xffffff)) &&
-+	    (memcmp(netdev->dev_addr + 4, skb->data + MLX5_IB_GRH_SGID_OFFSET,
-+		    MLX5_GID_SIZE) == 0)) {
-+		skb->dev = NULL;
-+		return;
-+	}
  
- 	skb_pull(skb, MLX5_IB_GRH_BYTES);
+-	if (macintosh_config->ident == MAC_MODEL_IICI
+-	    || macintosh_config->ident == MAC_MODEL_IIFX)
+-		mach_l2_flush = mac_cache_card_flush;
++	if (macintosh_config->ident == MAC_MODEL_IICI)
++		mach_l2_flush = via_l2_flush;
+ }
  
+ 
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index 3c2cfcb74982..1f0fad2a98a0 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -294,10 +294,14 @@ void via_debug_dump(void)
+  * the system into 24-bit mode for an instant.
+  */
+ 
+-void via_flush_cache(void)
++void via_l2_flush(int writeback)
+ {
++	unsigned long flags;
++
++	local_irq_save(flags);
+ 	via2[gBufB] &= ~VIA2B_vMode32;
+ 	via2[gBufB] |= VIA2B_vMode32;
++	local_irq_restore(flags);
+ }
+ 
+ /*
 -- 
 2.25.1
 
