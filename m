@@ -2,53 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB671F1179
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 04:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2C01F1180
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 04:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728840AbgFHCr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 22:47:28 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:38626 "EHLO huawei.com"
+        id S1728906AbgFHCtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 22:49:43 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:41322 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728409AbgFHCr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 22:47:28 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 48C06372CBBA9DB0582E;
-        Mon,  8 Jun 2020 10:47:26 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 8 Jun 2020
- 10:47:22 +0800
-Subject: Re: [f2fs-dev] [PATCH 1/2] f2fs: use kfree() to free super in
- read_raw_super_block()
-To:     Denis Efremov <efremov@linux.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, "Chao Yu" <chao@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20200605181533.73113-1-efremov@linux.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <aec30a6c-ce45-18b7-7d6c-2a156c595f45@huawei.com>
-Date:   Mon, 8 Jun 2020 10:47:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1728065AbgFHCtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 22:49:42 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id BF2978E29D725983B698;
+        Mon,  8 Jun 2020 10:49:40 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Mon, 8 Jun 2020
+ 10:49:31 +0800
+From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
+CC:     <huawei.libin@huawei.com>, <cj.chengjian@huawei.com>,
+        <xiexiuqi@huawei.com>, <mark.rutland@arm.com>, <hch@infradead.org>,
+        <wcohen@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <mtk.manpages@gmail.com>, <wezhang@redhat.com>,
+        <gregkh@linuxfoundation.org>, <catalin.marinas@arm.com>,
+        <bobo.shaobowang@huawei.com>
+Subject: [RESEND PATCH] sys_personality: Add optional arch hook arch_check_personality
+Date:   Mon, 8 Jun 2020 10:49:25 +0800
+Message-ID: <20200608024925.42510-1-bobo.shaobowang@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20200605181533.73113-1-efremov@linux.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
 X-CFilter-Loop: Reflected
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/6/6 2:15, Denis Efremov wrote:
-> Use kfree() instead of kvfree() to free super in
-> read_raw_super_block() because the memory is allocated with
-> kzalloc() in the function.
-> 
-> Fixes: 5222595d093e ("f2fs: use kvmalloc, if kmalloc is failed")
-> Signed-off-by: Denis Efremov <efremov@linux.com>
+Currently arm64 personality syscall uses wrapper __arm64_sys_personality
+to redirect to __arm64_sys_arm64_personality, it's easily confused,
+Whereas using an normal hook arch_check_personality() can reject
+additional settings like this for special case of different architectures.
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+This makes code clean and easier for subsequent modification.
 
-Thanks,
+Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+Reviewed-by: Dominik Brodowski <linux@dominikbrodowski.net>
+---
+ arch/arm64/kernel/sys.c  |  7 +++----
+ include/linux/syscalls.h | 10 ----------
+ kernel/exec_domain.c     | 14 +++++++++++++-
+ 3 files changed, 16 insertions(+), 15 deletions(-)
+
+diff --git a/arch/arm64/kernel/sys.c b/arch/arm64/kernel/sys.c
+index d5ffaaab31a7..5c01816d7a77 100644
+--- a/arch/arm64/kernel/sys.c
++++ b/arch/arm64/kernel/sys.c
+@@ -28,12 +28,13 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
+ 	return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
+ }
+ 
+-SYSCALL_DEFINE1(arm64_personality, unsigned int, personality)
++int arch_check_personality(unsigned int personality)
+ {
+ 	if (personality(personality) == PER_LINUX32 &&
+ 		!system_supports_32bit_el0())
+ 		return -EINVAL;
+-	return ksys_personality(personality);
++
++	return 0;
+ }
+ 
+ asmlinkage long sys_ni_syscall(void);
+@@ -46,8 +47,6 @@ asmlinkage long __arm64_sys_ni_syscall(const struct pt_regs *__unused)
+ /*
+  * Wrappers to pass the pt_regs argument.
+  */
+-#define __arm64_sys_personality		__arm64_sys_arm64_personality
+-
+ #undef __SYSCALL
+ #define __SYSCALL(nr, sym)	asmlinkage long __arm64_##sym(const struct pt_regs *);
+ #include <asm/unistd.h>
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 1815065d52f3..3dbbad498027 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -1393,16 +1393,6 @@ static inline long ksys_truncate(const char __user *pathname, loff_t length)
+ 	return do_sys_truncate(pathname, length);
+ }
+ 
+-static inline unsigned int ksys_personality(unsigned int personality)
+-{
+-	unsigned int old = current->personality;
+-
+-	if (personality != 0xffffffff)
+-		set_personality(personality);
+-
+-	return old;
+-}
+-
+ /* for __ARCH_WANT_SYS_IPC */
+ long ksys_semtimedop(int semid, struct sembuf __user *tsops,
+ 		     unsigned int nsops,
+diff --git a/kernel/exec_domain.c b/kernel/exec_domain.c
+index 33f07c5f2515..f3682f4bf205 100644
+--- a/kernel/exec_domain.c
++++ b/kernel/exec_domain.c
+@@ -35,9 +35,21 @@ static int __init proc_execdomains_init(void)
+ module_init(proc_execdomains_init);
+ #endif
+ 
++int __weak arch_check_personality(unsigned int personality)
++{
++	return 0;
++}
++
+ SYSCALL_DEFINE1(personality, unsigned int, personality)
+ {
+-	unsigned int old = current->personality;
++	int err;
++	unsigned int old;
++
++	err = arch_check_personality(personality);
++	if (err)
++		return err;
++
++	old = current->personality;
+ 
+ 	if (personality != 0xffffffff)
+ 		set_personality(personality);
+-- 
+2.17.1
+
