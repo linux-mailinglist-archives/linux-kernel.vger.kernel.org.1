@@ -2,40 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A581F2319
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDDE1F2445
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729160AbgFHXMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:12:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56988 "EHLO mail.kernel.org"
+        id S1730857AbgFHXTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:19:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728792AbgFHXK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:10:57 -0400
+        id S1730136AbgFHXP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:15:58 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9D7C208C3;
-        Mon,  8 Jun 2020 23:10:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B42C120760;
+        Mon,  8 Jun 2020 23:15:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657856;
-        bh=YnT7AuoKvhjR1CyujW91C6E7uatjm8YJ/uf+9+UXUxA=;
+        s=default; t=1591658158;
+        bh=8oY5NOb43ECW2UuHijbZc/Fbrh+sjRf3T0dHqJZ28CQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mH1Sa5CY5ci70w889QBr061dnedKx02/ejvuX9rBzHRpCoQubRcW1wiJzrEwOrto+
-         +71wC90R362hKxL++tjtDdwNz+WXH1lm2IwjzvGXrK7FhilAXyEU9O8gnlmvh9zfYf
-         HQ3CeW+RUCjT2QdjVP8BUQBcvl/54FT149DUjmLE=
+        b=jKMP9b2KNY0f7qAij0PKq6hIUuXj7vrfuB2kGJw7e1sUuHjjQWxV5/6aqFBRdUyej
+         IEl4orlb0DzhOa04nSw2m5bnJ9peOWKnpLvvAqs1C96xMEC8aRCIuRf0gNKk3/9seL
+         6YDb1x0f8o8gZd6Bl2cPUvY+KzSdtCFOPkVflBYY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nicolas Toromanoff <nicolas.toromanoff@st.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.7 220/274] crypto: stm32/crc32 - fix ext4 chksum BUG_ON()
+Cc:     Marco Elver <elver@google.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Qian Cai <cai@lca.pw>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org
+Subject: [PATCH AUTOSEL 5.6 188/606] kasan: disable branch tracing for core runtime
 Date:   Mon,  8 Jun 2020 19:05:13 -0400
-Message-Id: <20200608230607.3361041-220-sashal@kernel.org>
+Message-Id: <20200608231211.3363633-188-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,181 +51,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Toromanoff <nicolas.toromanoff@st.com>
+From: Marco Elver <elver@google.com>
 
-[ Upstream commit 49c2c082e00e0bc4f5cbb7c21c7f0f873b35ab09 ]
+commit 33cd65e73abd693c00c4156cf23677c453b41b3b upstream.
 
-Allow use of crc_update without prior call to crc_init.
-And change (and fix) driver to use CRC device even on unaligned buffers.
+During early boot, while KASAN is not yet initialized, it is possible to
+enter reporting code-path and end up in kasan_report().
 
-Fixes: b51dbe90912a ("crypto: stm32 - Support for STM32 CRC32 crypto module")
+While uninitialized, the branch there prevents generating any reports,
+however, under certain circumstances when branches are being traced
+(TRACE_BRANCH_PROFILING), we may recurse deep enough to cause kernel
+reboots without warning.
 
-Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+To prevent similar issues in future, we should disable branch tracing
+for the core runtime.
+
+[elver@google.com: remove duplicate DISABLE_BRANCH_PROFILING, per Qian Cai]
+  Link: https://lore.kernel.org/lkml/20200517011732.GE24705@shao2-debian/
+  Link: http://lkml.kernel.org/r/20200522075207.157349-1-elver@google.com
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Qian Cai <cai@lca.pw>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r//20200517011732.GE24705@shao2-debian/
+Link: http://lkml.kernel.org/r/20200519182459.87166-1-elver@google.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/crypto/stm32/stm32-crc32.c | 98 +++++++++++++++---------------
- 1 file changed, 48 insertions(+), 50 deletions(-)
+ mm/kasan/Makefile  | 8 ++++----
+ mm/kasan/generic.c | 1 -
+ mm/kasan/tags.c    | 1 -
+ 3 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
-index 8e92e4ac79f1..c6156bf6c603 100644
---- a/drivers/crypto/stm32/stm32-crc32.c
-+++ b/drivers/crypto/stm32/stm32-crc32.c
-@@ -28,8 +28,10 @@
+diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
+index 08b43de2383b..f36ffc090f5f 100644
+--- a/mm/kasan/Makefile
++++ b/mm/kasan/Makefile
+@@ -14,10 +14,10 @@ CFLAGS_REMOVE_tags.o = $(CC_FLAGS_FTRACE)
+ # Function splitter causes unnecessary splits in __asan_load1/__asan_store1
+ # see: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63533
  
- /* Registers values */
- #define CRC_CR_RESET            BIT(0)
--#define CRC_CR_REVERSE          (BIT(7) | BIT(6) | BIT(5))
- #define CRC_INIT_DEFAULT        0xFFFFFFFF
-+#define CRC_CR_REV_IN_WORD      (BIT(6) | BIT(5))
-+#define CRC_CR_REV_IN_BYTE      BIT(5)
-+#define CRC_CR_REV_OUT          BIT(7)
+-CFLAGS_common.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+-CFLAGS_generic.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+-CFLAGS_generic_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+-CFLAGS_tags.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
++CFLAGS_common.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
++CFLAGS_generic.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
++CFLAGS_generic_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
++CFLAGS_tags.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
  
- #define CRC_AUTOSUSPEND_DELAY	50
+ obj-$(CONFIG_KASAN) := common.o init.o report.o
+ obj-$(CONFIG_KASAN_GENERIC) += generic.o generic_report.o quarantine.o
+diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+index 616f9dd82d12..76a80033e0b7 100644
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -15,7 +15,6 @@
+  */
  
-@@ -38,8 +40,6 @@ struct stm32_crc {
- 	struct device    *dev;
- 	void __iomem     *regs;
- 	struct clk       *clk;
--	u8               pending_data[sizeof(u32)];
--	size_t           nb_pending_bytes;
- };
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+-#define DISABLE_BRANCH_PROFILING
  
- struct stm32_crc_list {
-@@ -59,7 +59,6 @@ struct stm32_crc_ctx {
+ #include <linux/export.h>
+ #include <linux/interrupt.h>
+diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
+index 0e987c9ca052..caf4efd9888c 100644
+--- a/mm/kasan/tags.c
++++ b/mm/kasan/tags.c
+@@ -12,7 +12,6 @@
+  */
  
- struct stm32_crc_desc_ctx {
- 	u32    partial; /* crc32c: partial in first 4 bytes of that struct */
--	struct stm32_crc *crc;
- };
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+-#define DISABLE_BRANCH_PROFILING
  
- static int stm32_crc32_cra_init(struct crypto_tfm *tfm)
-@@ -99,25 +98,22 @@ static int stm32_crc_init(struct shash_desc *desc)
- 	struct stm32_crc *crc;
- 
- 	spin_lock_bh(&crc_list.lock);
--	list_for_each_entry(crc, &crc_list.dev_list, list) {
--		ctx->crc = crc;
--		break;
--	}
-+	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
- 	spin_unlock_bh(&crc_list.lock);
- 
--	pm_runtime_get_sync(ctx->crc->dev);
-+	pm_runtime_get_sync(crc->dev);
- 
- 	/* Reset, set key, poly and configure in bit reverse mode */
--	writel_relaxed(bitrev32(mctx->key), ctx->crc->regs + CRC_INIT);
--	writel_relaxed(bitrev32(mctx->poly), ctx->crc->regs + CRC_POL);
--	writel_relaxed(CRC_CR_RESET | CRC_CR_REVERSE, ctx->crc->regs + CRC_CR);
-+	writel_relaxed(bitrev32(mctx->key), crc->regs + CRC_INIT);
-+	writel_relaxed(bitrev32(mctx->poly), crc->regs + CRC_POL);
-+	writel_relaxed(CRC_CR_RESET | CRC_CR_REV_IN_WORD | CRC_CR_REV_OUT,
-+		       crc->regs + CRC_CR);
- 
- 	/* Store partial result */
--	ctx->partial = readl_relaxed(ctx->crc->regs + CRC_DR);
--	ctx->crc->nb_pending_bytes = 0;
-+	ctx->partial = readl_relaxed(crc->regs + CRC_DR);
- 
--	pm_runtime_mark_last_busy(ctx->crc->dev);
--	pm_runtime_put_autosuspend(ctx->crc->dev);
-+	pm_runtime_mark_last_busy(crc->dev);
-+	pm_runtime_put_autosuspend(crc->dev);
- 
- 	return 0;
- }
-@@ -126,31 +122,49 @@ static int stm32_crc_update(struct shash_desc *desc, const u8 *d8,
- 			    unsigned int length)
- {
- 	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
--	struct stm32_crc *crc = ctx->crc;
--	u32 *d32;
--	unsigned int i;
-+	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
-+	struct stm32_crc *crc;
-+
-+	spin_lock_bh(&crc_list.lock);
-+	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
-+	spin_unlock_bh(&crc_list.lock);
- 
- 	pm_runtime_get_sync(crc->dev);
- 
--	if (unlikely(crc->nb_pending_bytes)) {
--		while (crc->nb_pending_bytes != sizeof(u32) && length) {
--			/* Fill in pending data */
--			crc->pending_data[crc->nb_pending_bytes++] = *(d8++);
-+	/*
-+	 * Restore previously calculated CRC for this context as init value
-+	 * Restore polynomial configuration
-+	 * Configure in register for word input data,
-+	 * Configure out register in reversed bit mode data.
-+	 */
-+	writel_relaxed(bitrev32(ctx->partial), crc->regs + CRC_INIT);
-+	writel_relaxed(bitrev32(mctx->poly), crc->regs + CRC_POL);
-+	writel_relaxed(CRC_CR_RESET | CRC_CR_REV_IN_WORD | CRC_CR_REV_OUT,
-+		       crc->regs + CRC_CR);
-+
-+	if (d8 != PTR_ALIGN(d8, sizeof(u32))) {
-+		/* Configure for byte data */
-+		writel_relaxed(CRC_CR_REV_IN_BYTE | CRC_CR_REV_OUT,
-+			       crc->regs + CRC_CR);
-+		while (d8 != PTR_ALIGN(d8, sizeof(u32)) && length) {
-+			writeb_relaxed(*d8++, crc->regs + CRC_DR);
- 			length--;
- 		}
--
--		if (crc->nb_pending_bytes == sizeof(u32)) {
--			/* Process completed pending data */
--			writel_relaxed(*(u32 *)crc->pending_data,
--				       crc->regs + CRC_DR);
--			crc->nb_pending_bytes = 0;
--		}
-+		/* Configure for word data */
-+		writel_relaxed(CRC_CR_REV_IN_WORD | CRC_CR_REV_OUT,
-+			       crc->regs + CRC_CR);
- 	}
- 
--	d32 = (u32 *)d8;
--	for (i = 0; i < length >> 2; i++)
--		/* Process 32 bits data */
--		writel_relaxed(*(d32++), crc->regs + CRC_DR);
-+	for (; length >= sizeof(u32); d8 += sizeof(u32), length -= sizeof(u32))
-+		writel_relaxed(*((u32 *)d8), crc->regs + CRC_DR);
-+
-+	if (length) {
-+		/* Configure for byte data */
-+		writel_relaxed(CRC_CR_REV_IN_BYTE | CRC_CR_REV_OUT,
-+			       crc->regs + CRC_CR);
-+		while (length--)
-+			writeb_relaxed(*d8++, crc->regs + CRC_DR);
-+	}
- 
- 	/* Store partial result */
- 	ctx->partial = readl_relaxed(crc->regs + CRC_DR);
-@@ -158,22 +172,6 @@ static int stm32_crc_update(struct shash_desc *desc, const u8 *d8,
- 	pm_runtime_mark_last_busy(crc->dev);
- 	pm_runtime_put_autosuspend(crc->dev);
- 
--	/* Check for pending data (non 32 bits) */
--	length &= 3;
--	if (likely(!length))
--		return 0;
--
--	if ((crc->nb_pending_bytes + length) >= sizeof(u32)) {
--		/* Shall not happen */
--		dev_err(crc->dev, "Pending data overflow\n");
--		return -EINVAL;
--	}
--
--	d8 = (const u8 *)d32;
--	for (i = 0; i < length; i++)
--		/* Store pending data */
--		crc->pending_data[crc->nb_pending_bytes++] = *(d8++);
--
- 	return 0;
- }
- 
+ #include <linux/export.h>
+ #include <linux/interrupt.h>
 -- 
 2.25.1
 
