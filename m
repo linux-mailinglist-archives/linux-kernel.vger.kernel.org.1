@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1913F1F1C09
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 17:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4421F1C0E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 17:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730258AbgFHP2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 11:28:07 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58148 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729902AbgFHP2C (ORCPT
+        id S1730273AbgFHP2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 11:28:16 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:60906 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730228AbgFHP2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 11:28:02 -0400
+        Mon, 8 Jun 2020 11:28:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591630081;
+        s=mimecast20190719; t=1591630084;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TZeVBYC4bUKUHMH3+mjXO799G61EdyUgn/CvhGPsWA8=;
-        b=ZiArzDaJ6u/FgE+u554C0NsPYazMyU47RmGRFKzpgFn83L/yC62TP3UTvmkkrjRba+R2e4
-        LP/JIgy4NMu2Atj8h1vkNprbdTrAF9nD9LOhkDp0vVJGJxcA62qDvYkN9+RV7TZ8RJ+Gq9
-        Jl+YEKGbmVTVBYkIRh0Xlgaq1hgvYLQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-fuZrwyuDMrqDGwmPrVOQwA-1; Mon, 08 Jun 2020 11:28:00 -0400
-X-MC-Unique: fuZrwyuDMrqDGwmPrVOQwA-1
-Received: by mail-wr1-f71.google.com with SMTP id o1so7258674wrm.17
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 08:27:59 -0700 (PDT)
+        bh=8XmB9dtJu++KVpOBk6iZgjeuWMZ0//aiEGYwXB9eRqM=;
+        b=DRpx0Tma3OuSunO8JInFI79X1r7aGhIkeWujA4oadjLShaxV5qfeaC3F+P04T5MhYyPWlX
+        yQlH4kT8Prd0yfTYhT4Hqucyb1SLpzv9Su03YJ5uvoa3l3V1lfkBcnZG3i6dfDREq2aI5g
+        ZTlEXv+GU5NJ9tEAfSCHi2xhSyvEMqI=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-463-zvAoXYcENVKXKqogWTDuBQ-1; Mon, 08 Jun 2020 11:28:00 -0400
+X-MC-Unique: zvAoXYcENVKXKqogWTDuBQ-1
+Received: by mail-wr1-f70.google.com with SMTP id t5so7286181wro.20
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 08:28:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TZeVBYC4bUKUHMH3+mjXO799G61EdyUgn/CvhGPsWA8=;
-        b=WqvJOAr3YQOzmV1tJmkduPfASac+ukvddRGGrvDV2DNQhqOkQmJ1ZZNMnmuczHxxwi
-         dhAjdtgvwgo9/fdnuYhBFJbyPFNFI3Oa9aPNYMqX4O8vArFgtD2/8lwXNZUUDDWSzVOt
-         O1D7eTXMvE77oQR/TDIj6J7oSF6Idor5fG60YIeGyRHXFjR5NBzKbDFAAs1PxGaj7F1J
-         TvHN72hZ8gLLnAnIEPxLzuxD2VfkpwV/YT1pRCD+CTPqRvBosPabWaewxKRvVkmFVzEY
-         l16KaHdYuIh700ShB0jGGcTSF+4j9xdV2MQJhLwRVWkm+elUnhsl8mbSl23J68lSTOS9
-         3LTQ==
-X-Gm-Message-State: AOAM531CIEFMGFoNrvemK7gJwj5a+cKPNvwwtptOgqBFEcZktTHGB4mB
-        dcvw9hTOgFiyMwhhDjlPPH82BghBK9xUVd0QINwpdI5F3gojGADoyJwzNmHLt2+CQIP5hryb3p8
-        tVVOXU4jP1Rng5Xgn2+5wxFse
-X-Received: by 2002:a7b:c1d4:: with SMTP id a20mr16597700wmj.153.1591630078419;
-        Mon, 08 Jun 2020 08:27:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyeEWF+JP+9p5+BHLgFvYmnviO0uLEtGaRlpt0JQKcZGSL3bQfO+4Ku9FaMkDZAML4HHxeRSQ==
-X-Received: by 2002:a7b:c1d4:: with SMTP id a20mr16597680wmj.153.1591630078195;
-        Mon, 08 Jun 2020 08:27:58 -0700 (PDT)
+        bh=8XmB9dtJu++KVpOBk6iZgjeuWMZ0//aiEGYwXB9eRqM=;
+        b=jSV1ha/KcGhTowarffNn9kF0QfgyTHraXqykbJUW183x8wRrKJYT6XKJHpTWopgVDZ
+         oEneLvcBUHmeVyexK61hy2XcBRe9XaGM5AtUA2E2V+k8hkGVVnfJQz2VyqxvenoIrOJI
+         4Dxu7kdjfHDKddqIbSDMSpoIiupxFz6Wc56nZZJf2GflRpclflsoU7mRV58ysypr/pJY
+         zjo7l5Ayamh/WlMVpLJTdvYncvaDnPPwVoFEXrbIARFwaPQ0+en6OHZ7BuDvYBvFkcF8
+         lObbplP3bAogHBofmAkYW+LK2ICyKwY/UzbjwY7OnTbXVATBJ84viqxdiUVMynaEnwx0
+         HdeA==
+X-Gm-Message-State: AOAM532pyo3oHeG7O4jCJDUNeWpogAHtRErrABsTXI8W3pxWcEsXuYCr
+        9c5WUcKQNHIaUPmWl1y8PxqV9tuIoiKXu50wlGcCUwU1TMqYaGdFc2cS46rOs6P+lu04oevlzN2
+        vWX90Ee/9kNICm6AVU/QpjYSA
+X-Received: by 2002:a1c:998c:: with SMTP id b134mr17814682wme.78.1591630079537;
+        Mon, 08 Jun 2020 08:27:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzHXNzORKTd0v3kaj8su5+gmOSW20lAFHTxkmsHP3RKhTFVsUnh1rD56J/NEFRcPZA6kSdrbA==
+X-Received: by 2002:a1c:998c:: with SMTP id b134mr17814670wme.78.1591630079357;
+        Mon, 08 Jun 2020 08:27:59 -0700 (PDT)
 Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id u130sm23981707wmg.32.2020.06.08.08.27.57
+        by smtp.gmail.com with ESMTPSA id u130sm23981707wmg.32.2020.06.08.08.27.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 08:27:57 -0700 (PDT)
+        Mon, 08 Jun 2020 08:27:58 -0700 (PDT)
 From:   Julien Thierry <jthierry@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
         raphael.gault@arm.com, Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH 1/7] objtool: Group headers to check in a single list
-Date:   Mon,  8 Jun 2020 16:27:48 +0100
-Message-Id: <20200608152754.2483-2-jthierry@redhat.com>
+Subject: [PATCH 2/7] objtool: Make sync-check consider the target architecture
+Date:   Mon,  8 Jun 2020 16:27:49 +0100
+Message-Id: <20200608152754.2483-3-jthierry@redhat.com>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200608152754.2483-1-jthierry@redhat.com>
 References: <20200608152754.2483-1-jthierry@redhat.com>
@@ -68,57 +68,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to support multiple architectures and potentially different
-sets of header to compare against their kernel equivalent, it is simpler
-to have all headers to check in a single list.
+Do not take into account outdated headers unrelated to the build of the
+current architecture.
 
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
 ---
- tools/objtool/sync-check.sh | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+ tools/objtool/Makefile      | 2 +-
+ tools/objtool/sync-check.sh | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
+diff --git a/tools/objtool/Makefile b/tools/objtool/Makefile
+index 7770edcda3a0..614b87278260 100644
+--- a/tools/objtool/Makefile
++++ b/tools/objtool/Makefile
+@@ -60,7 +60,7 @@ export srctree OUTPUT CFLAGS SRCARCH AWK
+ include $(srctree)/tools/build/Makefile.include
+ 
+ $(OBJTOOL_IN): fixdep FORCE
+-	@$(CONFIG_SHELL) ./sync-check.sh
++	@$(CONFIG_SHELL) ./sync-check.sh $(SRCARCH)
+ 	@$(MAKE) $(build)=objtool
+ 
+ $(OBJTOOL): $(LIBSUBCMD) $(OBJTOOL_IN)
 diff --git a/tools/objtool/sync-check.sh b/tools/objtool/sync-check.sh
-index 2a1261bfbb62..13e4fca28015 100755
+index 13e4fca28015..f01b5a4d12ac 100755
 --- a/tools/objtool/sync-check.sh
 +++ b/tools/objtool/sync-check.sh
-@@ -1,13 +1,17 @@
+@@ -1,6 +1,9 @@
  #!/bin/sh
  # SPDX-License-Identifier: GPL-2.0
  
--FILES='
-+FILES="
++TARGET_ARCH=$1
++
++if [ "$TARGET_ARCH" == "x86" ]; then
+ FILES="
  arch/x86/include/asm/inat_types.h
  arch/x86/include/asm/orc_types.h
- arch/x86/include/asm/emulate_prefix.h
- arch/x86/lib/x86-opcode-map.txt
- arch/x86/tools/gen-insn-attr-x86.awk
--'
-+arch/x86/include/asm/inat.h     -I '^#include [\"<]\(asm/\)*inat_types.h[\">]'
-+arch/x86/include/asm/insn.h     -I '^#include [\"<]\(asm/\)*inat.h[\">]'
-+arch/x86/lib/inat.c             -I '^#include [\"<]\(../include/\)*asm/insn.h[\">]'
-+arch/x86/lib/insn.c             -I '^#include [\"<]\(../include/\)*asm/in\(at\|sn\).h[\">]' -I '^#include [\"<]\(../include/\)*asm/emulate_prefix.h[\">]'
-+"
+@@ -12,6 +15,7 @@ arch/x86/include/asm/insn.h     -I '^#include [\"<]\(asm/\)*inat.h[\">]'
+ arch/x86/lib/inat.c             -I '^#include [\"<]\(../include/\)*asm/insn.h[\">]'
+ arch/x86/lib/insn.c             -I '^#include [\"<]\(../include/\)*asm/in\(at\|sn\).h[\">]' -I '^#include [\"<]\(../include/\)*asm/emulate_prefix.h[\">]'
+ "
++fi
  
  check_2 () {
    file1=$1
-@@ -40,11 +44,10 @@ fi
- 
- cd ../..
- 
--for i in $FILES; do
--  check $i
--done
-+while read -r file_entry; do
-+    if [ -z "$file_entry" ]; then
-+	continue
-+    fi
- 
--check arch/x86/include/asm/inat.h     '-I "^#include [\"<]\(asm/\)*inat_types.h[\">]"'
--check arch/x86/include/asm/insn.h     '-I "^#include [\"<]\(asm/\)*inat.h[\">]"'
--check arch/x86/lib/inat.c             '-I "^#include [\"<]\(../include/\)*asm/insn.h[\">]"'
--check arch/x86/lib/insn.c             '-I "^#include [\"<]\(../include/\)*asm/in\(at\|sn\).h[\">]" -I "^#include [\"<]\(../include/\)*asm/emulate_prefix.h[\">]"'
-+    check $file_entry
-+done <<< $FILES
 -- 
 2.21.1
 
