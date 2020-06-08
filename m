@@ -2,122 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E761F17F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F561F17FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729639AbgFHLjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 07:39:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729565AbgFHLi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 07:38:58 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCCFF2074B;
-        Mon,  8 Jun 2020 11:38:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591616338;
-        bh=Zl/yqsOe6XvPuDsdXn5eL/LxofYRwuiRdfSA1r83qmE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eja//h3ITTR540LH3moJdaVVujXmeh4Q0guFKDFy/IV3zPH44iN2VTcSvufIwlglH
-         RWrj2MGV07SXcgnxO95beb1v/pFzWIVdQ4vkcw6Mh/Vu3In/2iWdhqSnk6kXL4qzIX
-         WK8pjllHjuh7g1MW6lSUGPMukmJNBI2bVPQfhWLs=
-Date:   Mon, 8 Jun 2020 12:38:53 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [RFC PATCH] iommu/arm-smmu: Remove shutdown callback
-Message-ID: <20200608113852.GA3108@willie-the-truck>
-References: <20200607110918.1733-1-saiprakash.ranjan@codeaurora.org>
- <20200608081846.GA1542@willie-the-truck>
- <08c293eefc20bc2c67f2d2639b93f0a5@codeaurora.org>
+        id S1729619AbgFHLld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 07:41:33 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:6285 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729310AbgFHLlc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 07:41:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1591616491; x=1623152491;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=D0oj0TI0mLoVDxU1l5BfyjJJYqEqkyD5a1cPAbtOhIQ=;
+  b=SzI8oGywuhUYqfwAAzoM3Vfajz6cFysNOT0aQe6j17kgePGN/JMeTwKr
+   Vd2j94VfCrRDjwZWkUrzE5x/0+OEEpXka808a0L/wAgOoyZQYOv9oEU/q
+   oAsD3Y2HruP5pTimEjhW7pIMKcCEBT+OQHnvebOYdsG2LF8OyvpJ6bPL9
+   s=;
+IronPort-SDR: ZuoCO8IsngtTZj1+uguqyb8oeZsEU7lJkh7hh+elLKVklI86siPhIOwYAnauDcjCz4LgqYiEtz
+ /iZp4MNE80VA==
+X-IronPort-AV: E=Sophos;i="5.73,487,1583193600"; 
+   d="scan'208";a="49245313"
+Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-2a-22cc717f.us-west-2.amazon.com) ([10.47.23.34])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 08 Jun 2020 11:41:27 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2a-22cc717f.us-west-2.amazon.com (Postfix) with ESMTPS id B721FA2751;
+        Mon,  8 Jun 2020 11:41:25 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 8 Jun 2020 11:41:25 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.53) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 8 Jun 2020 11:41:07 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
+        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
+        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
+        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
+        <peterz@infradead.org>, <rdunlap@infradead.org>,
+        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
+        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
+        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
+        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
+        <ying.huang@intel.com>, <david@redhat.com>,
+        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v15 00/14] Introduce Data Access MONitor (DAMON)
+Date:   Mon, 8 Jun 2020 13:40:33 +0200
+Message-ID: <20200608114047.26589-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08c293eefc20bc2c67f2d2639b93f0a5@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.53]
+X-ClientProxiedBy: EX13D46UWB004.ant.amazon.com (10.43.161.204) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 02:43:03PM +0530, Sai Prakash Ranjan wrote:
-> On 2020-06-08 13:48, Will Deacon wrote:
-> > On Sun, Jun 07, 2020 at 04:39:18PM +0530, Sai Prakash Ranjan wrote:
-> > > Remove SMMU shutdown callback since it seems to cause more
-> > > problems than benefits. With this callback, we need to make
-> > > sure that all clients/consumers of SMMU do not perform any
-> > > DMA activity once the SMMU is shutdown and translation is
-> > > disabled. In other words we need to add shutdown callbacks
-> > > for all those clients to make sure they do not perform any
-> > > DMA or else we see all kinds of weird crashes during reboot
-> > > or shutdown. This is clearly not scalable as the number of
-> > > clients of SMMU would vary across SoCs and we would need to
-> > > add shutdown callbacks to almost all drivers eventually.
-> > > This callback was added for kexec usecase where it was known
-> > > to cause memory corruptions when SMMU was not shutdown but
-> > > that does not directly relate to SMMU because the memory
-> > > corruption could be because of the client of SMMU which is
-> > > not shutdown properly before booting into new kernel. So in
-> > > that case, we need to identify the client of SMMU causing
-> > > the memory corruption and add appropriate shutdown callback
-> > > to the client rather than to the SMMU.
-> > > 
-> > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> > > ---
-> > >  drivers/iommu/arm-smmu-v3.c | 6 ------
-> > >  drivers/iommu/arm-smmu.c    | 6 ------
-> > >  2 files changed, 12 deletions(-)
-> > 
-> > This feels like a giant bodge to me and I think that any driver which
-> > continues to perform DMA after its ->shutdown() function has been
-> > invoked
-> > is buggy. Wouldn't that cause problems with kexec(), for example?
-> > 
-> 
-> Yes it is definitely a bug in the client driver if DMA is performed
-> after shutdown callback of that respective driver is invoked and it must
-> be fixed in that driver. But here the problem I was describing is not that,
-> most of the drivers do not have a shutdown callback to begin with and adding
-> it just because of shutdown dependency on SMMU doesn't seem so well because
-> we can have many more such clients in the future and then we have to just go
-> on adding the shutdown callbacks everywhere.
+From: SeongJae Park <sjpark@amazon.de>
 
-I'm not sure why you're trying to treat these cases differently. It's also
-not "just because of SMMU", is it? Like I said, kexec() would be broken
-regardless.
+Introduction
+============
 
-The bottom line is that after running ->shutdown() (or skipping it if it's
-not implemented) for a driver, then the device must no longer perform DMA.
+DAMON is a data access monitoring framework subsystem for the Linux kernel.
+The core mechanisms of DAMON called 'region based sampling' and 'adaptive
+regions adjustment' (refer to 'mechanisms.rst' in the 11th patch of this
+patchset for the detail) make it
 
-> > There's a clear shutdown dependency ordering, where the clients of the
-> > SMMU need to shutdown before the SMMU itself, but that's not really
-> > the SMMU driver's problem to solve.
-> > 
-> 
-> The problem with kexec may not be directly related to SMMU as you said
-> above if DMA is performed after the client shutdown callback, then its a
-> bug in the client driver, so that needs to be fixed in the client driver,
-> not the SMMU. So is there any point in having the SMMU shutdown callback?
+ - accurate (The monitored information is useful for DRAM level memory
+   management. It might not appropriate for Cache-level accuracy, though.),
+ - light-weight (The monitoring overhead is low enough to be applied online
+   while making no impact on the performance of the target workloads.), and
+ - scalable (the upper-bound of the instrumentation overhead is controllable
+   regardless of the size of target workloads.).
 
-Given that the SMMU mediates DMA transactions for all upstream masters
-based on in-memory data (e.g. page tables), then I think it's a /very/
-good idea to tear that down as part of the shutdown callback before
-the memory is effectively free()d.
+Using this framework, therefore, the kernel's core memory management mechanisms
+such as reclamation and THP can be optimized for better memory management.  The
+experimental memory management optimization works that incurring high
+instrumentation overhead will be able to have another try.  In user space,
+meanwhile, users who have some special workloads will be able to write
+personalized tools or applications for deeper understanding and specialized
+optimizations of their systems.
 
-One thing I would be in favour of is changing the ->shutdown() code to
-honour disable_bypass=1 so that we put the SMMU in an aborting state
-instead of passthrough. Would that help at all? It would at least
-avoid the memory corruption on missing shutdown callback.
+Evaluations
+===========
 
-> As you see, with this SMMU shutdown callback, we need to add shutdown
-> callbacks in all the client drivers.
+We evaluated DAMON's overhead, monitoring quality and usefulness using 25
+realistic workloads on my QEMU/KVM based virtual machine running a kernel that
+v13 DAMON patchset is applied.
 
-I don't see the problem with that. Why is it a problem?
+DAMON is lightweight.  It increases system memory usage by only -0.39% and
+consumes less than 1% CPU time in most case.  It slows target workloads down by
+only 0.63%.
 
-Will
+DAMON is accurate and useful for memory management optimizations.  An
+experimental DAMON-based operation scheme for THP, 'ethp', removes 69.43% of
+THP memory overheads while preserving 37.11% of THP speedup.  Another
+experimental DAMON-based 'proactive reclamation' implementation, 'prcl',
+reduces 89.30% of residential sets and 22.40% of system memory footprint while
+incurring only 1.98% runtime overhead in the best case (parsec3/freqmine).
+
+NOTE that the experimentail THP optimization and proactive reclamation are not
+for production, just only for proof of concepts.
+
+Please refer to the official document[1] or "Documentation/admin-guide/mm: Add
+a document for DAMON" patch in this patchset for detailed evaluation setup and
+results.
+
+[1] https://damonitor.github.io/doc/html/latest-damon
+
+More Information
+================
+
+We prepared a showcase web site[1] that you can get more information.  There
+are
+
+- the official documentations[2],
+- the heatmap format dynamic access pattern of various realistic workloads for
+  heap area[3], mmap()-ed area[4], and stack[5] area,
+- the dynamic working set size distribution[6] and chronological working set
+  size changes[7], and
+- the latest performance test results[8].
+
+[1] https://damonitor.github.io/_index
+[2] https://damonitor.github.io/doc/html/latest-damon
+[3] https://damonitor.github.io/test/result/visual/latest/heatmap.0.html
+[4] https://damonitor.github.io/test/result/visual/latest/heatmap.1.html
+[5] https://damonitor.github.io/test/result/visual/latest/heatmap.2.html
+[6] https://damonitor.github.io/test/result/visual/latest/wss_sz.html
+[7] https://damonitor.github.io/test/result/visual/latest/wss_time.html
+[8] https://damonitor.github.io/test/result/perf/latest/html/index.html
+
+Baseline and Complete Git Trees
+===============================
+
+The patches are based on the v5.7.  You can also clone the complete git
+tree:
+
+    $ git clone git://github.com/sjp38/linux -b damon/patches/v15
+
+The web is also available:
+https://github.com/sjp38/linux/releases/tag/damon/patches/v15
+
+There are a couple of trees for entire DAMON patchset series.  It includes
+future features.  The first one[1] contains the changes for latest release,
+while the other one[2] contains the changes for next release.
+
+[1] https://github.com/sjp38/linux/tree/damon/master
+[2] https://github.com/sjp38/linux/tree/damon/next
+
+Sequence Of Patches
+===================
+
+The 1st patch exports 'lookup_page_ext()' to GPL modules so that it can be used
+by DAMON even though it is built as a loadable module.
+
+Next four patches implement the core of DAMON and it's programming interface.
+The 2nd patch introduces DAMON module, it's data structures, and data structure
+related common functions.  Following three patches (3rd to 5th) implements the
+core mechanisms of DAMON, namely regions based sampling (patch 3), adaptive
+regions adjustment (patch 4), and dynamic memory mapping chage adoption
+(patch 5).
+
+Following four patches are for low level users of DAMON.  The 6th patch
+implements callbacks for each of monitoring steps so that users can do whatever
+they want with the access patterns.  The 7th one implements recording of access
+patterns in DAMON for better convenience and efficiency.  Each of next two
+patches (8th and 9th) respectively adds a debugfs interface for privileged
+people and/or programs in user space, and a tracepoint for other tracepoints
+supporting tracers such as perf.
+
+Two patches for high level users of DAMON follows.  To provide a minimal
+reference to the debugfs interface and for high level use/tests of the DAMON,
+the next patch (10th) implements an user space tool.  The 11th patch adds a
+document for administrators of DAMON.
+
+Next two patches are for tests.  The 12th patch provides unit tests (based on
+the kunit) while the 13th patch adds user space tests (based on the kselftest).
+
+Finally, the last patch (14th) updates the MAINTAINERS file.
+
+Patch History
+=============
+
+Changes from v14
+(https://lore.kernel.org/linux-mm/20200602130125.20467-1-sjpark@amazon.com/)
+ - Directly pass region and task to tracepoint (Steven Rostedt)
+ - Refine comments for better read
+ - Add more 'Reviewed-by's (Leonard Foerster, Brendan Higgins)
+
+Changes from v13
+(https://lore.kernel.org/linux-mm/20200525091512.30391-1-sjpark@amazon.com/)
+ - Fix a typo (Leonard Foerster)
+ - Fix wring condition of three sub ranges split (Leonard Foerster)
+ - Rebase on v5.7
+
+Changes from v12
+(https://lore.kernel.org/linux-mm/20200518100018.2293-1-sjpark@amazon.com/)
+ - Avoid races between debugfs readers and writers
+ - Add kernel-doc comments in damon.h
+
+Changes from v11
+(https://lore.kernel.org/linux-mm/20200511123302.12520-1-sjpark@amazon.com/)
+ - Rewrite the document (Stefan Nuernberger)
+ - Make 'damon_for_each_*' argument order consistent (Leonard Foerster)
+ - Fix wrong comment in 'kdamond_merge_regions()' (Leonard Foerster)
+
+Changes from v10
+(https://lore.kernel.org/linux-mm/20200505110815.10532-1-sjpark@amazon.com/)
+ - Reduce aggressive split overhead by doing it only if required
+
+Changes from v9
+(https://lore.kernel.org/linux-mm/20200427120442.24179-1-sjpark@amazon.com/)
+ - Split each region into 4 subregions if possible (Jonathan Cameraon)
+ - Update kunit test for the split code change
+
+Changes from v8
+(https://lore.kernel.org/linux-mm/20200406130938.14066-1-sjpark@amazon.com/)
+ - Make regions always aligned by minimal region size that can be changed
+   (Stefan Nuernberger)
+ - Store binary format version in the recording file (Stefan Nuernberger)
+ - Use 'int' for pid instead of 'unsigned long' (Stefan Nuernberger)
+ - Fix a race condition in damon thread termination (Stefan Nuernberger)
+ - Optimize random value generation and recording (Stefan Nuernberger)
+ - Clean up commit messages and comments (Stefan Nuernberger)
+ - Clean up code (Stefan Nuernberger)
+ - Use explicit signalling and 'do_exit()' for damon thread termination 
+ - Add more typos to spelling.txt
+ - Update the performance evaluation results
+ - Describe future plans in the cover letter
+
+Please refer to the v8 patchset to get older history.
+
+SeongJae Park (14):
+  mm/page_ext: Export lookup_page_ext() to GPL modules
+  mm: Introduce Data Access MONitor (DAMON)
+  mm/damon: Implement region based sampling
+  mm/damon: Adaptively adjust regions
+  mm/damon: Apply dynamic memory mapping changes
+  mm/damon: Implement callbacks
+  mm/damon: Implement access pattern recording
+  mm/damon: Add debugfs interface
+  mm/damon: Add tracepoints
+  tools: Add a minimal user-space tool for DAMON
+  Documentation/admin-guide/mm: Add a document for DAMON
+  mm/damon: Add kunit tests
+  mm/damon: Add user space selftests
+  MAINTAINERS: Update for DAMON
+
+ Documentation/admin-guide/mm/damon/api.rst    |   20 +
+ .../admin-guide/mm/damon/damon_heatmap.png    |  Bin 0 -> 8366 bytes
+ .../admin-guide/mm/damon/damon_wss_change.png |  Bin 0 -> 7211 bytes
+ .../admin-guide/mm/damon/damon_wss_dist.png   |  Bin 0 -> 6173 bytes
+ Documentation/admin-guide/mm/damon/eval.rst   |  215 +++
+ Documentation/admin-guide/mm/damon/faq.rst    |   46 +
+ .../admin-guide/mm/damon/freqmine_heatmap.png |  Bin 0 -> 8687 bytes
+ .../admin-guide/mm/damon/freqmine_wss_sz.png  |  Bin 0 -> 4986 bytes
+ .../mm/damon/freqmine_wss_time.png            |  Bin 0 -> 6283 bytes
+ Documentation/admin-guide/mm/damon/guide.rst  |  196 +++
+ Documentation/admin-guide/mm/damon/index.rst  |   36 +
+ .../admin-guide/mm/damon/mechanisms.rst       |  111 ++
+ Documentation/admin-guide/mm/damon/plans.rst  |   49 +
+ Documentation/admin-guide/mm/damon/start.rst  |  119 ++
+ .../mm/damon/streamcluster_heatmap.png        |  Bin 0 -> 37916 bytes
+ .../mm/damon/streamcluster_wss_sz.png         |  Bin 0 -> 5522 bytes
+ .../mm/damon/streamcluster_wss_time.png       |  Bin 0 -> 6322 bytes
+ Documentation/admin-guide/mm/damon/usage.rst  |  305 ++++
+ Documentation/admin-guide/mm/index.rst        |    1 +
+ MAINTAINERS                                   |   12 +
+ include/linux/damon.h                         |  136 ++
+ include/trace/events/damon.h                  |   43 +
+ mm/Kconfig                                    |   23 +
+ mm/Makefile                                   |    1 +
+ mm/damon-test.h                               |  635 +++++++
+ mm/damon.c                                    | 1554 +++++++++++++++++
+ mm/page_ext.c                                 |    1 +
+ tools/damon/.gitignore                        |    1 +
+ tools/damon/_dist.py                          |   36 +
+ tools/damon/_recfile.py                       |   23 +
+ tools/damon/bin2txt.py                        |   67 +
+ tools/damon/damo                              |   37 +
+ tools/damon/heats.py                          |  362 ++++
+ tools/damon/nr_regions.py                     |   91 +
+ tools/damon/record.py                         |  217 +++
+ tools/damon/report.py                         |   45 +
+ tools/damon/wss.py                            |   97 +
+ tools/testing/selftests/damon/Makefile        |    7 +
+ .../selftests/damon/_chk_dependency.sh        |   28 +
+ tools/testing/selftests/damon/_chk_record.py  |  108 ++
+ .../testing/selftests/damon/debugfs_attrs.sh  |  139 ++
+ .../testing/selftests/damon/debugfs_record.sh |   50 +
+ 42 files changed, 4811 insertions(+)
+ create mode 100644 Documentation/admin-guide/mm/damon/api.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/damon_heatmap.png
+ create mode 100644 Documentation/admin-guide/mm/damon/damon_wss_change.png
+ create mode 100644 Documentation/admin-guide/mm/damon/damon_wss_dist.png
+ create mode 100644 Documentation/admin-guide/mm/damon/eval.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/faq.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/freqmine_heatmap.png
+ create mode 100644 Documentation/admin-guide/mm/damon/freqmine_wss_sz.png
+ create mode 100644 Documentation/admin-guide/mm/damon/freqmine_wss_time.png
+ create mode 100644 Documentation/admin-guide/mm/damon/guide.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/index.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/mechanisms.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/plans.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/start.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/streamcluster_heatmap.png
+ create mode 100644 Documentation/admin-guide/mm/damon/streamcluster_wss_sz.png
+ create mode 100644 Documentation/admin-guide/mm/damon/streamcluster_wss_time.png
+ create mode 100644 Documentation/admin-guide/mm/damon/usage.rst
+ create mode 100644 include/linux/damon.h
+ create mode 100644 include/trace/events/damon.h
+ create mode 100644 mm/damon-test.h
+ create mode 100644 mm/damon.c
+ create mode 100644 tools/damon/.gitignore
+ create mode 100644 tools/damon/_dist.py
+ create mode 100644 tools/damon/_recfile.py
+ create mode 100644 tools/damon/bin2txt.py
+ create mode 100755 tools/damon/damo
+ create mode 100644 tools/damon/heats.py
+ create mode 100644 tools/damon/nr_regions.py
+ create mode 100644 tools/damon/record.py
+ create mode 100644 tools/damon/report.py
+ create mode 100644 tools/damon/wss.py
+ create mode 100644 tools/testing/selftests/damon/Makefile
+ create mode 100644 tools/testing/selftests/damon/_chk_dependency.sh
+ create mode 100644 tools/testing/selftests/damon/_chk_record.py
+ create mode 100755 tools/testing/selftests/damon/debugfs_attrs.sh
+ create mode 100755 tools/testing/selftests/damon/debugfs_record.sh
+
+-- 
+2.17.1
+
