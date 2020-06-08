@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A591F2307
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC061F2433
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729011AbgFHXLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:11:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56412 "EHLO mail.kernel.org"
+        id S1729847AbgFHXTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:19:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728599AbgFHXKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:10:16 -0400
+        id S1730029AbgFHXPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:15:24 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 243D4208A9;
-        Mon,  8 Jun 2020 23:10:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A04C20659;
+        Mon,  8 Jun 2020 23:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657816;
-        bh=5itkUDluYpaS3Zxz7oL2dZm1OCRzVTnguZY9d4Ovqcg=;
+        s=default; t=1591658124;
+        bh=meH1urRNxIvrEhm08nL3kZUqKtla9O7xrsmFXvwZvN0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CZ7plkCrPkDrRgea6NdYDVaUTu/XP1wglSFD+VvXneIOnMABxu4hKk3uJOcFLRP8i
-         ea9XDisjhl/Tgdf8wAFtlKnTZ5ep3K+wv4z+zr3oAMeF+qd6NEA826f1wJnHqCviEA
-         gVRyCgNyI3DjEOsbAZs0IfPFSjkZ6I8hWqGOIpT8=
+        b=R/7ty+WwjzT7St9xDDYG1+KP5LirOgMHsI+fKIytY6JitFJmCvml7nEOCBt7FbqGC
+         izvqLUXgdH/U4m9znTJl0ctDEIWScy53JOnZlOwyGxD+I1sl3mfPPYVecVimFW6c8S
+         BgD7x2Xm18YM6XuEPb/yt2UwrG0mABBvp5i5sDFk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.7 190/274] mt76: mt7663: fix mt7615_mac_cca_stats_reset routine
-Date:   Mon,  8 Jun 2020 19:04:43 -0400
-Message-Id: <20200608230607.3361041-190-sashal@kernel.org>
+Cc:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.6 160/606] dmaengine: owl: Use correct lock in owl_dma_get_pchan()
+Date:   Mon,  8 Jun 2020 19:04:45 -0400
+Message-Id: <20200608231211.3363633-160-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,54 +47,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-[ Upstream commit 886a862d3677ac0d3b57d19ffcf5b2d48b9c5267 ]
+commit f8f482deb078389b42768b2193e050a81aae137d upstream.
 
-Fix PHYMUX_5 register definition for mt7663 in
-mt7615_mac_cca_stats_reset routine
+When the kernel is built with lockdep support and the owl-dma driver is
+used, the following message is shown:
 
-Fixes: f40ac0f3d3c0 ("mt76: mt7615: introduce mt7663e support")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+[    2.496939] INFO: trying to register non-static key.
+[    2.501889] the code is fine but needs lockdep annotation.
+[    2.507357] turning off the locking correctness validator.
+[    2.512834] CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.6.3+ #15
+[    2.519084] Hardware name: Generic DT based system
+[    2.523878] Workqueue: events_freezable mmc_rescan
+[    2.528681] [<801127f0>] (unwind_backtrace) from [<8010da58>] (show_stack+0x10/0x14)
+[    2.536420] [<8010da58>] (show_stack) from [<8080fbe8>] (dump_stack+0xb4/0xe0)
+[    2.543645] [<8080fbe8>] (dump_stack) from [<8017efa4>] (register_lock_class+0x6f0/0x718)
+[    2.551816] [<8017efa4>] (register_lock_class) from [<8017b7d0>] (__lock_acquire+0x78/0x25f0)
+[    2.560330] [<8017b7d0>] (__lock_acquire) from [<8017e5e4>] (lock_acquire+0xd8/0x1f4)
+[    2.568159] [<8017e5e4>] (lock_acquire) from [<80831fb0>] (_raw_spin_lock_irqsave+0x3c/0x50)
+[    2.576589] [<80831fb0>] (_raw_spin_lock_irqsave) from [<8051b5fc>] (owl_dma_issue_pending+0xbc/0x120)
+[    2.585884] [<8051b5fc>] (owl_dma_issue_pending) from [<80668cbc>] (owl_mmc_request+0x1b0/0x390)
+[    2.594655] [<80668cbc>] (owl_mmc_request) from [<80650ce0>] (mmc_start_request+0x94/0xbc)
+[    2.602906] [<80650ce0>] (mmc_start_request) from [<80650ec0>] (mmc_wait_for_req+0x64/0xd0)
+[    2.611245] [<80650ec0>] (mmc_wait_for_req) from [<8065aa10>] (mmc_app_send_scr+0x10c/0x144)
+[    2.619669] [<8065aa10>] (mmc_app_send_scr) from [<80659b3c>] (mmc_sd_setup_card+0x4c/0x318)
+[    2.628092] [<80659b3c>] (mmc_sd_setup_card) from [<80659f0c>] (mmc_sd_init_card+0x104/0x430)
+[    2.636601] [<80659f0c>] (mmc_sd_init_card) from [<8065a3e0>] (mmc_attach_sd+0xcc/0x16c)
+[    2.644678] [<8065a3e0>] (mmc_attach_sd) from [<8065301c>] (mmc_rescan+0x3ac/0x40c)
+[    2.652332] [<8065301c>] (mmc_rescan) from [<80143244>] (process_one_work+0x2d8/0x780)
+[    2.660239] [<80143244>] (process_one_work) from [<80143730>] (worker_thread+0x44/0x598)
+[    2.668323] [<80143730>] (worker_thread) from [<8014b5f8>] (kthread+0x148/0x150)
+[    2.675708] [<8014b5f8>] (kthread) from [<801010b4>] (ret_from_fork+0x14/0x20)
+[    2.682912] Exception stack(0xee8fdfb0 to 0xee8fdff8)
+[    2.687954] dfa0:                                     00000000 00000000 00000000 00000000
+[    2.696118] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[    2.704277] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+
+The obvious fix would be to use 'spin_lock_init()' on 'pchan->lock'
+before attempting to call 'spin_lock_irqsave()' in 'owl_dma_get_pchan()'.
+
+However, according to Manivannan Sadhasivam, 'pchan->lock' was supposed
+to only protect 'pchan->vchan' while 'od->lock' does a similar job in
+'owl_dma_terminate_pchan()'.
+
+Therefore, this patch substitutes 'pchan->lock' with 'od->lock' and
+removes the 'lock' attribute in 'owl_dma_pchan' struct.
+
+Fixes: 47e20577c24d ("dmaengine: Add Actions Semi Owl family S900 DMA driver")
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Acked-by: Andreas Färber <afaerber@suse.de>
+Link: https://lore.kernel.org/r/c6e6cdaca252b5364bd294093673951036488cf0.1588439073.git.cristian.ciocaltea@gmail.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7615/mac.c  | 8 +++++++-
- drivers/net/wireless/mediatek/mt76/mt7615/regs.h | 1 +
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/dma/owl-dma.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
-index a27a6d164009..656231786d55 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
-@@ -1574,8 +1574,14 @@ void mt7615_mac_cca_stats_reset(struct mt7615_phy *phy)
- {
- 	struct mt7615_dev *dev = phy->dev;
- 	bool ext_phy = phy != &dev->phy;
--	u32 reg = MT_WF_PHY_R0_PHYMUX_5(ext_phy);
-+	u32 reg;
+diff --git a/drivers/dma/owl-dma.c b/drivers/dma/owl-dma.c
+index c683051257fd..66ef70b00ec0 100644
+--- a/drivers/dma/owl-dma.c
++++ b/drivers/dma/owl-dma.c
+@@ -175,13 +175,11 @@ struct owl_dma_txd {
+  * @id: physical index to this channel
+  * @base: virtual memory base for the dma channel
+  * @vchan: the virtual channel currently being served by this physical channel
+- * @lock: a lock to use when altering an instance of this struct
+  */
+ struct owl_dma_pchan {
+ 	u32			id;
+ 	void __iomem		*base;
+ 	struct owl_dma_vchan	*vchan;
+-	spinlock_t		lock;
+ };
  
-+	if (is_mt7663(&dev->mt76))
-+		reg = MT7663_WF_PHY_R0_PHYMUX_5;
-+	else
-+		reg = MT_WF_PHY_R0_PHYMUX_5(ext_phy);
-+
-+	/* reset PD and MDRDY counters */
- 	mt76_clear(dev, reg, GENMASK(22, 20));
- 	mt76_set(dev, reg, BIT(22) | BIT(20));
- }
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/regs.h b/drivers/net/wireless/mediatek/mt76/mt7615/regs.h
-index 1e0d95b917e1..f7c2a633841c 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/regs.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/regs.h
-@@ -151,6 +151,7 @@ enum mt7615_reg_base {
- #define MT_WF_PHY_WF2_RFCTRL0_LPBCN_EN	BIT(9)
+ /**
+@@ -437,14 +435,14 @@ static struct owl_dma_pchan *owl_dma_get_pchan(struct owl_dma *od,
+ 	for (i = 0; i < od->nr_pchans; i++) {
+ 		pchan = &od->pchans[i];
  
- #define MT_WF_PHY_R0_PHYMUX_5(_phy)	MT_WF_PHY(0x0614 + ((_phy) << 9))
-+#define MT7663_WF_PHY_R0_PHYMUX_5	MT_WF_PHY(0x0414)
+-		spin_lock_irqsave(&pchan->lock, flags);
++		spin_lock_irqsave(&od->lock, flags);
+ 		if (!pchan->vchan) {
+ 			pchan->vchan = vchan;
+-			spin_unlock_irqrestore(&pchan->lock, flags);
++			spin_unlock_irqrestore(&od->lock, flags);
+ 			break;
+ 		}
  
- #define MT_WF_PHY_R0_PHYCTRL_STS0(_phy)	MT_WF_PHY(0x020c + ((_phy) << 9))
- #define MT_WF_PHYCTRL_STAT_PD_OFDM	GENMASK(31, 16)
+-		spin_unlock_irqrestore(&pchan->lock, flags);
++		spin_unlock_irqrestore(&od->lock, flags);
+ 	}
+ 
+ 	return pchan;
 -- 
 2.25.1
 
