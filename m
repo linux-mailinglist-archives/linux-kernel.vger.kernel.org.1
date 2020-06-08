@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549031F2446
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF911F231D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730862AbgFHXTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:19:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37204 "EHLO mail.kernel.org"
+        id S1728278AbgFHXMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:12:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730142AbgFHXQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:16:00 -0400
+        id S1728798AbgFHXK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:10:59 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74F742068D;
-        Mon,  8 Jun 2020 23:15:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7260F20E65;
+        Mon,  8 Jun 2020 23:10:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658159;
-        bh=SGCaoOMYYcm8aE6If3PJMgTqwZ7DYL1Rsw+HKEuNXM0=;
+        s=default; t=1591657859;
+        bh=7McYIa9P3Rh28JO6FRRv8eTfuuEGvhSv6QQoypGjkZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Ng9fo0pcWdT8ksumAzqmILuA5Rj2r/P3x2FeyFNJAbANEHZ5BpnkUt76Z0FSwZI2
-         JGBKO9u+5m4ugCY/ppoD0A/KfNn8VBSsCp7jvmjp1DBinXmTEefuFX3m2uVRM3wBCb
-         0UrsWK+l6v48lpX78swFeKxgQGCPcT/BbKbuDavE=
+        b=h5g3+OahlaK5paaudlsHuxazMgq2TiVbGAYLOZQhDW2PCsYSgfcECIY3WGPdfQKXc
+         0cFswUmyNjZNUm9PKleh0Au9atEKhaXffcdeuvtIX/rfmlAaRsZmpTktuakqt97cFO
+         Zun57MrGo6auY9G/yRRbEWtHoSVwCuIFosxUzwiY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-sh@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 189/606] sh: include linux/time_types.h for sockios
-Date:   Mon,  8 Jun 2020 19:05:14 -0400
-Message-Id: <20200608231211.3363633-189-sashal@kernel.org>
+Cc:     Nicolas Toromanoff <nicolas.toromanoff@st.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 222/274] crypto: stm32/crc32 - fix multi-instance
+Date:   Mon,  8 Jun 2020 19:05:15 -0400
+Message-Id: <20200608230607.3361041-222-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -49,48 +45,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Nicolas Toromanoff <nicolas.toromanoff@st.com>
 
-commit fc94cf2092c7c1267fa2deb8388d624f50eba808 upstream.
+[ Upstream commit 10b89c43a64eb0d236903b79a3bc9d8f6cbfd9c7 ]
 
-Using the socket ioctls on arch/sh (and only there) causes build time
-problems when __kernel_old_timeval/__kernel_old_timespec are not already
-visible to the compiler.
+Ensure CRC algorithm is registered only once in crypto framework when
+there are several instances of CRC devices.
 
-Add an explict include line for the header that defines these
-structures.
+Update the CRC device list management to avoid that only the first CRC
+instance is used.
 
-Fixes: 8c709f9a0693 ("y2038: sh: remove timeval/timespec usage from headers")
-Fixes: 0768e17073dc ("net: socket: implement 64-bit timestamps")
-Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200519131327.1836482-1-arnd@arndb.de
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b51dbe90912a ("crypto: stm32 - Support for STM32 CRC32 crypto module")
+
+Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sh/include/uapi/asm/sockios.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/crypto/stm32/stm32-crc32.c | 48 ++++++++++++++++++++++--------
+ 1 file changed, 36 insertions(+), 12 deletions(-)
 
-diff --git a/arch/sh/include/uapi/asm/sockios.h b/arch/sh/include/uapi/asm/sockios.h
-index 3da561453260..ef01ced9e169 100644
---- a/arch/sh/include/uapi/asm/sockios.h
-+++ b/arch/sh/include/uapi/asm/sockios.h
-@@ -2,6 +2,8 @@
- #ifndef __ASM_SH_SOCKIOS_H
- #define __ASM_SH_SOCKIOS_H
+diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
+index 1c3e411b7acb..10304511f9b4 100644
+--- a/drivers/crypto/stm32/stm32-crc32.c
++++ b/drivers/crypto/stm32/stm32-crc32.c
+@@ -91,16 +91,29 @@ static int stm32_crc_setkey(struct crypto_shash *tfm, const u8 *key,
+ 	return 0;
+ }
  
-+#include <linux/time_types.h>
+-static int stm32_crc_init(struct shash_desc *desc)
++static struct stm32_crc *stm32_crc_get_next_crc(void)
+ {
+-	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
+-	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
+ 	struct stm32_crc *crc;
+ 
+ 	spin_lock_bh(&crc_list.lock);
+ 	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
++	if (crc)
++		list_move_tail(&crc->list, &crc_list.dev_list);
+ 	spin_unlock_bh(&crc_list.lock);
+ 
++	return crc;
++}
 +
- /* Socket-level I/O control calls. */
- #define FIOGETOWN	_IOR('f', 123, int)
- #define FIOSETOWN 	_IOW('f', 124, int)
++static int stm32_crc_init(struct shash_desc *desc)
++{
++	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
++	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
++	struct stm32_crc *crc;
++
++	crc = stm32_crc_get_next_crc();
++	if (!crc)
++		return -ENODEV;
++
+ 	pm_runtime_get_sync(crc->dev);
+ 
+ 	/* Reset, set key, poly and configure in bit reverse mode */
+@@ -125,9 +138,9 @@ static int stm32_crc_update(struct shash_desc *desc, const u8 *d8,
+ 	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
+ 	struct stm32_crc *crc;
+ 
+-	spin_lock_bh(&crc_list.lock);
+-	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
+-	spin_unlock_bh(&crc_list.lock);
++	crc = stm32_crc_get_next_crc();
++	if (!crc)
++		return -ENODEV;
+ 
+ 	pm_runtime_get_sync(crc->dev);
+ 
+@@ -200,6 +213,8 @@ static int stm32_crc_digest(struct shash_desc *desc, const u8 *data,
+ 	return stm32_crc_init(desc) ?: stm32_crc_finup(desc, data, length, out);
+ }
+ 
++static unsigned int refcnt;
++static DEFINE_MUTEX(refcnt_lock);
+ static struct shash_alg algs[] = {
+ 	/* CRC-32 */
+ 	{
+@@ -290,12 +305,18 @@ static int stm32_crc_probe(struct platform_device *pdev)
+ 	list_add(&crc->list, &crc_list.dev_list);
+ 	spin_unlock(&crc_list.lock);
+ 
+-	ret = crypto_register_shashes(algs, ARRAY_SIZE(algs));
+-	if (ret) {
+-		dev_err(dev, "Failed to register\n");
+-		clk_disable_unprepare(crc->clk);
+-		return ret;
++	mutex_lock(&refcnt_lock);
++	if (!refcnt) {
++		ret = crypto_register_shashes(algs, ARRAY_SIZE(algs));
++		if (ret) {
++			mutex_unlock(&refcnt_lock);
++			dev_err(dev, "Failed to register\n");
++			clk_disable_unprepare(crc->clk);
++			return ret;
++		}
+ 	}
++	refcnt++;
++	mutex_unlock(&refcnt_lock);
+ 
+ 	dev_info(dev, "Initialized\n");
+ 
+@@ -316,7 +337,10 @@ static int stm32_crc_remove(struct platform_device *pdev)
+ 	list_del(&crc->list);
+ 	spin_unlock(&crc_list.lock);
+ 
+-	crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
++	mutex_lock(&refcnt_lock);
++	if (!--refcnt)
++		crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
++	mutex_unlock(&refcnt_lock);
+ 
+ 	pm_runtime_disable(crc->dev);
+ 	pm_runtime_put_noidle(crc->dev);
 -- 
 2.25.1
 
