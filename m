@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A032C1F2D0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A085E1F2E55
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731246AbgFIAab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:30:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36860 "EHLO mail.kernel.org"
+        id S1729145AbgFHXMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:12:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730093AbgFHXPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:15:46 -0400
+        id S1728747AbgFHXKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:10:45 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AA3120760;
-        Mon,  8 Jun 2020 23:15:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C651920897;
+        Mon,  8 Jun 2020 23:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658145;
-        bh=TyJAmAg2IxYVcbNEVfhBJ2zxbSBuEzLHuikDs16VLFI=;
+        s=default; t=1591657844;
+        bh=IAEmTo8r0QTBrTT1aCXKT7SMUHR0JX6FwVOf55EPqtY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PWezgcUWadk1gGcMiMIVs7Wl95tRVgVXHJGNliVWTIpyPDBnstsCSeWNsgTAZpTg+
-         M2KTkEKZQdik9AOjG7xus61XgdZm/6+bjdcDUT8HvlTYIQNhvWzxobIpn6IiHhW67M
-         jBtB3cZ/+N64UlF8u4qkgsG49I58NR4kMss+nOz8=
+        b=0VmBMrZaLfk8vkFANAePFo0o2uoc8rwD+6Xppr4HetC9OmAkJBHlPuts4LNJ3UoUH
+         OCE2yEG3W7oFksGtmY8eZN5JZbr8Ez8lPZ5e/E3CdsOfKEjVkYzkcUvFQprak+7QUQ
+         zRa7bPlmUFskKnqOsCSj3kpOovAtfr5wLPZm/PK8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH AUTOSEL 5.6 178/606] driver core: Fix SYNC_STATE_ONLY device link implementation
-Date:   Mon,  8 Jun 2020 19:05:03 -0400
-Message-Id: <20200608231211.3363633-178-sashal@kernel.org>
+Cc:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 211/274] mwifiex: Fix memory corruption in dump_station
+Date:   Mon,  8 Jun 2020 19:05:04 -0400
+Message-Id: <20200608230607.3361041-211-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -43,187 +46,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saravana Kannan <saravanak@google.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit 21c27f06587d2c18150d27ca2382a509ec55c482 upstream.
+[ Upstream commit 3aa42bae9c4d1641aeb36f1a8585cd1d506cf471 ]
 
-When SYNC_STATE_ONLY support was added in commit 05ef983e0d65 ("driver
-core: Add device link support for SYNC_STATE_ONLY flag"),
-device_link_add() incorrectly skipped adding the new SYNC_STATE_ONLY
-device link to the supplier's and consumer's "device link" list.
+The mwifiex_cfg80211_dump_station() uses static variable for iterating
+over a linked list of all associated stations (when the driver is in UAP
+role). This has a race condition if .dump_station is called in parallel
+for multiple interfaces. This corruption can be triggered by registering
+multiple SSIDs and calling, in parallel for multiple interfaces
+    iw dev <iface> station dump
 
-This causes multiple issues:
-- The device link is lost forever from driver core if the caller
-  didn't keep track of it (caller typically isn't expected to). This is
-  a memory leak.
-- The device link is also never visible to any other code path after
-  device_link_add() returns.
+[16750.719775] Unable to handle kernel paging request at virtual address dead000000000110
+...
+[16750.899173] Call trace:
+[16750.901696]  mwifiex_cfg80211_dump_station+0x94/0x100 [mwifiex]
+[16750.907824]  nl80211_dump_station+0xbc/0x278 [cfg80211]
+[16750.913160]  netlink_dump+0xe8/0x320
+[16750.916827]  netlink_recvmsg+0x1b4/0x338
+[16750.920861]  ____sys_recvmsg+0x7c/0x2b0
+[16750.924801]  ___sys_recvmsg+0x70/0x98
+[16750.928564]  __sys_recvmsg+0x58/0xa0
+[16750.932238]  __arm64_sys_recvmsg+0x28/0x30
+[16750.936453]  el0_svc_common.constprop.3+0x90/0x158
+[16750.941378]  do_el0_svc+0x74/0x90
+[16750.944784]  el0_sync_handler+0x12c/0x1a8
+[16750.948903]  el0_sync+0x114/0x140
+[16750.952312] Code: f9400003 f907f423 eb02007f 54fffd60 (b9401060)
+[16750.958583] ---[ end trace c8ad181c2f4b8576 ]---
 
-If we fix the "device link" list handling, that exposes a bunch of
-issues.
+This patch drops the use of the static iterator, and instead every time
+the function is called iterates to the idx-th position of the
+linked-list.
 
-1. The device link "status" state management code rightfully doesn't
-handle the case where a DL_FLAG_MANAGED device link exists between a
-supplier and consumer, but the consumer manages to probe successfully
-before the supplier. The addition of DL_FLAG_SYNC_STATE_ONLY links break
-this assumption. This causes device_links_driver_bound() to throw a
-warning when this happens.
+It would be better to convert the code not to use linked list for
+associated stations storage (since the chip has a limited number of
+associated stations anyway - it could just be an array). Such a change
+may be proposed in the future. In the meantime this patch can backported
+into stable kernels in this simple form.
 
-Since DL_FLAG_SYNC_STATE_ONLY device links are mainly used for creating
-proxy device links for child device dependencies and aren't useful once
-the consumer device probes successfully, this patch just deletes
-DL_FLAG_SYNC_STATE_ONLY device links once its consumer device probes.
-This way, we avoid the warning, free up some memory and avoid
-complicating the device links "status" state management code.
-
-2. Creating a DL_FLAG_STATELESS device link between two devices that
-already have a DL_FLAG_SYNC_STATE_ONLY device link will result in the
-DL_FLAG_STATELESS flag not getting set correctly. This patch also fixes
-this.
-
-Lastly, this patch also fixes minor whitespace issues.
-
-Cc: stable@vger.kernel.org
-Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
-Signed-off-by: Saravana Kannan <saravanak@google.com>
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Link: https://lore.kernel.org/r/20200519063000.128819-1-saravanak@google.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 8baca1a34d4c ("mwifiex: dump station support in uap mode")
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200515075924.13841-1-pali@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/core.c | 61 +++++++++++++++++++++++++++++----------------
- 1 file changed, 39 insertions(+), 22 deletions(-)
+ drivers/net/wireless/marvell/mwifiex/cfg80211.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index d32a3aefff32..7fb7ffdeb015 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -360,13 +360,12 @@ struct device_link *device_link_add(struct device *consumer,
- 
- 		if (flags & DL_FLAG_STATELESS) {
- 			kref_get(&link->kref);
-+			link->flags |= DL_FLAG_STATELESS;
- 			if (link->flags & DL_FLAG_SYNC_STATE_ONLY &&
--			    !(link->flags & DL_FLAG_STATELESS)) {
--				link->flags |= DL_FLAG_STATELESS;
-+			    !(link->flags & DL_FLAG_STATELESS))
- 				goto reorder;
--			} else {
-+			else
- 				goto out;
--			}
- 		}
- 
- 		/*
-@@ -433,12 +432,16 @@ struct device_link *device_link_add(struct device *consumer,
- 	    flags & DL_FLAG_PM_RUNTIME)
- 		pm_runtime_resume(supplier);
- 
-+	list_add_tail_rcu(&link->s_node, &supplier->links.consumers);
-+	list_add_tail_rcu(&link->c_node, &consumer->links.suppliers);
-+
- 	if (flags & DL_FLAG_SYNC_STATE_ONLY) {
- 		dev_dbg(consumer,
- 			"Linked as a sync state only consumer to %s\n",
- 			dev_name(supplier));
- 		goto out;
- 	}
-+
- reorder:
- 	/*
- 	 * Move the consumer and all of the devices depending on it to the end
-@@ -449,12 +452,9 @@ struct device_link *device_link_add(struct device *consumer,
- 	 */
- 	device_reorder_to_tail(consumer, NULL);
- 
--	list_add_tail_rcu(&link->s_node, &supplier->links.consumers);
--	list_add_tail_rcu(&link->c_node, &consumer->links.suppliers);
--
- 	dev_dbg(consumer, "Linked as a consumer to %s\n", dev_name(supplier));
- 
-- out:
-+out:
- 	device_pm_unlock();
- 	device_links_write_unlock();
- 
-@@ -829,6 +829,13 @@ static void __device_links_supplier_defer_sync(struct device *sup)
- 		list_add_tail(&sup->links.defer_sync, &deferred_sync);
- }
- 
-+static void device_link_drop_managed(struct device_link *link)
-+{
-+	link->flags &= ~DL_FLAG_MANAGED;
-+	WRITE_ONCE(link->status, DL_STATE_NONE);
-+	kref_put(&link->kref, __device_link_del);
-+}
-+
- /**
-  * device_links_driver_bound - Update device links after probing its driver.
-  * @dev: Device to update the links for.
-@@ -842,7 +849,7 @@ static void __device_links_supplier_defer_sync(struct device *sup)
-  */
- void device_links_driver_bound(struct device *dev)
+diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+index 1566d2197906..12bfd653a405 100644
+--- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
++++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+@@ -1496,7 +1496,8 @@ mwifiex_cfg80211_dump_station(struct wiphy *wiphy, struct net_device *dev,
+ 			      int idx, u8 *mac, struct station_info *sinfo)
  {
--	struct device_link *link;
-+	struct device_link *link, *ln;
- 	LIST_HEAD(sync_list);
+ 	struct mwifiex_private *priv = mwifiex_netdev_get_priv(dev);
+-	static struct mwifiex_sta_node *node;
++	struct mwifiex_sta_node *node;
++	int i;
  
- 	/*
-@@ -882,18 +889,35 @@ void device_links_driver_bound(struct device *dev)
- 	else
- 		__device_links_queue_sync_state(dev, &sync_list);
+ 	if ((GET_BSS_ROLE(priv) == MWIFIEX_BSS_ROLE_STA) &&
+ 	    priv->media_connected && idx == 0) {
+@@ -1506,13 +1507,10 @@ mwifiex_cfg80211_dump_station(struct wiphy *wiphy, struct net_device *dev,
+ 		mwifiex_send_cmd(priv, HOST_CMD_APCMD_STA_LIST,
+ 				 HostCmd_ACT_GEN_GET, 0, NULL, true);
  
--	list_for_each_entry(link, &dev->links.suppliers, c_node) {
-+	list_for_each_entry_safe(link, ln, &dev->links.suppliers, c_node) {
-+		struct device *supplier;
-+
- 		if (!(link->flags & DL_FLAG_MANAGED))
- 			continue;
- 
--		WARN_ON(link->status != DL_STATE_CONSUMER_PROBE);
--		WRITE_ONCE(link->status, DL_STATE_ACTIVE);
-+		supplier = link->supplier;
-+		if (link->flags & DL_FLAG_SYNC_STATE_ONLY) {
-+			/*
-+			 * When DL_FLAG_SYNC_STATE_ONLY is set, it means no
-+			 * other DL_MANAGED_LINK_FLAGS have been set. So, it's
-+			 * save to drop the managed link completely.
-+			 */
-+			device_link_drop_managed(link);
-+		} else {
-+			WARN_ON(link->status != DL_STATE_CONSUMER_PROBE);
-+			WRITE_ONCE(link->status, DL_STATE_ACTIVE);
-+		}
- 
-+		/*
-+		 * This needs to be done even for the deleted
-+		 * DL_FLAG_SYNC_STATE_ONLY device link in case it was the last
-+		 * device link that was preventing the supplier from getting a
-+		 * sync_state() call.
-+		 */
- 		if (defer_sync_state_count)
--			__device_links_supplier_defer_sync(link->supplier);
-+			__device_links_supplier_defer_sync(supplier);
- 		else
--			__device_links_queue_sync_state(link->supplier,
--							&sync_list);
-+			__device_links_queue_sync_state(supplier, &sync_list);
- 	}
- 
- 	dev->links.status = DL_DEV_DRIVER_BOUND;
-@@ -903,13 +927,6 @@ void device_links_driver_bound(struct device *dev)
- 	device_links_flush_sync_list(&sync_list, dev);
- }
- 
--static void device_link_drop_managed(struct device_link *link)
--{
--	link->flags &= ~DL_FLAG_MANAGED;
--	WRITE_ONCE(link->status, DL_STATE_NONE);
--	kref_put(&link->kref, __device_link_del);
--}
+-		if (node && (&node->list == &priv->sta_list)) {
+-			node = NULL;
+-			return -ENOENT;
+-		}
 -
- /**
-  * __device_links_no_driver - Update links of a device without a driver.
-  * @dev: Device without a drvier.
+-		node = list_prepare_entry(node, &priv->sta_list, list);
+-		list_for_each_entry_continue(node, &priv->sta_list, list) {
++		i = 0;
++		list_for_each_entry(node, &priv->sta_list, list) {
++			if (i++ != idx)
++				continue;
+ 			ether_addr_copy(mac, node->mac_addr);
+ 			return mwifiex_dump_station_info(priv, node, sinfo);
+ 		}
 -- 
 2.25.1
 
