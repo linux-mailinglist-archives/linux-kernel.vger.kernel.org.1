@@ -2,84 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F5E1F25F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2761F2791
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387751AbgFHXap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:30:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50898 "EHLO mail.kernel.org"
+        id S2387962AbgFHXrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:47:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731655AbgFHXYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:24:43 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1731948AbgFHX0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:26:11 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D06F2208A9;
-        Mon,  8 Jun 2020 23:24:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 584C920775;
+        Mon,  8 Jun 2020 23:26:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658683;
-        bh=4kZSus6Sp1gMeKhcgP8+VZ03/LLAoT9JPsTdmVO+bag=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Si2oLuBzf22ZCtuQ/7ujy1Gsrnw7uAhdsofc8wTvlN5ux/Qe1UzJV3ejO+gdmuyqh
-         SsXc5n/B4AXNj0ON3HARHcBv0+weApetNfcUcTqh6wB9apGb1MnJxBsv53rEK1PxbN
-         mC2So5KaiR/J2h/WoEedcoZssGEaocdAGCVJEXZQ=
-Received: by pali.im (Postfix)
-        id A9332263E; Tue,  9 Jun 2020 01:24:40 +0200 (CEST)
-Date:   Tue, 9 Jun 2020 01:24:40 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Y Paritcher <y.linux@paritcher.com>
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mario.Limonciello@dell.com
-Subject: Re: [PATCH v2 1/3] platform/x86: dell-wmi: add new backlight events
-Message-ID: <20200608232440.a5tpxvf4mami563m@pali>
-References: <cover.1591584631.git.y.linux@paritcher.com>
- <cover.1591656154.git.y.linux@paritcher.com>
- <1ddd0496403199130532923e4ccb30481ff167b6.1591656154.git.y.linux@paritcher.com>
+        s=default; t=1591658771;
+        bh=Hf2alprBNfiUHQqF8h/J6O23B9wGzLZKgGZYPXTiCo0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hLDZg/fC3K9xgC2dobu5135bX4afCWZn+jnyHfZ9SLPFfTASEhq156t5DJX3bO+24
+         /6Pr3QL/8RkLot6iKgBZG9jaBBfE4TiOzMH+r49iV84biOq0/+tuHUnI8enduj87Di
+         qyS6SG76IBMXPwfr749GW76sXY765S8X3XwpUb4U=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 52/72] rtlwifi: Fix a double free in _rtl_usb_tx_urb_setup()
+Date:   Mon,  8 Jun 2020 19:24:40 -0400
+Message-Id: <20200608232500.3369581-52-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200608232500.3369581-1-sashal@kernel.org>
+References: <20200608232500.3369581-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1ddd0496403199130532923e4ccb30481ff167b6.1591656154.git.y.linux@paritcher.com>
-User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 08 June 2020 19:05:28 Y Paritcher wrote:
-> Add events with a type of 0x0010 and a code of 0x57 / 0x58,
-> this silences the following messages being logged on a
-> Dell Inspiron 5593:
-> 
-> dell_wmi: Unknown key with type 0x0010 and code 0x0057 pressed
-> dell_wmi: Unknown key with type 0x0010 and code 0x0058 pressed
-> 
-> These are brightness events and will be handled by acpi-video
-> 
-> Signed-off-by: Y Paritcher <y.linux@paritcher.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-Reviewed-by: Pali Rohár <pali@kernel.org>
+[ Upstream commit beb12813bc75d4a23de43b85ad1c7cb28d27631e ]
 
-> ---
->  drivers/platform/x86/dell-wmi.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/dell-wmi.c b/drivers/platform/x86/dell-wmi.c
-> index c25a4286d766..0b2edfe2767d 100644
-> --- a/drivers/platform/x86/dell-wmi.c
-> +++ b/drivers/platform/x86/dell-wmi.c
-> @@ -255,6 +255,10 @@ static const struct key_entry dell_wmi_keymap_type_0010[] = {
->  	/* Keyboard backlight change notification */
->  	{ KE_IGNORE, 0x3f, { KEY_RESERVED } },
->  
-> +	/* Backlight brightness level */
-> +	{ KE_KEY,    0x57, { KEY_BRIGHTNESSDOWN } },
-> +	{ KE_KEY,    0x58, { KEY_BRIGHTNESSUP } },
-> +
->  	/* Mic mute */
->  	{ KE_KEY, 0x150, { KEY_MICMUTE } },
->  
-> -- 
-> 2.27.0
-> 
+Seven years ago we tried to fix a leak but actually introduced a double
+free instead.  It was an understandable mistake because the code was a
+bit confusing and the free was done in the wrong place.  The "skb"
+pointer is freed in both _rtl_usb_tx_urb_setup() and _rtl_usb_transmit().
+The free belongs _rtl_usb_transmit() instead of _rtl_usb_tx_urb_setup()
+and I've cleaned the code up a bit to hopefully make it more clear.
+
+Fixes: 36ef0b473fbf ("rtlwifi: usb: add missing freeing of skbuff")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200513093951.GD347693@mwanda
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/realtek/rtlwifi/usb.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtlwifi/usb.c b/drivers/net/wireless/realtek/rtlwifi/usb.c
+index 93eda23f0123..7a050a75bdcb 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/usb.c
++++ b/drivers/net/wireless/realtek/rtlwifi/usb.c
+@@ -910,10 +910,8 @@ static struct urb *_rtl_usb_tx_urb_setup(struct ieee80211_hw *hw,
+ 
+ 	WARN_ON(NULL == skb);
+ 	_urb = usb_alloc_urb(0, GFP_ATOMIC);
+-	if (!_urb) {
+-		kfree_skb(skb);
++	if (!_urb)
+ 		return NULL;
+-	}
+ 	_rtl_install_trx_info(rtlusb, skb, ep_num);
+ 	usb_fill_bulk_urb(_urb, rtlusb->udev, usb_sndbulkpipe(rtlusb->udev,
+ 			  ep_num), skb->data, skb->len, _rtl_tx_complete, skb);
+@@ -927,7 +925,6 @@ static void _rtl_usb_transmit(struct ieee80211_hw *hw, struct sk_buff *skb,
+ 	struct rtl_usb *rtlusb = rtl_usbdev(rtl_usbpriv(hw));
+ 	u32 ep_num;
+ 	struct urb *_urb = NULL;
+-	struct sk_buff *_skb = NULL;
+ 
+ 	WARN_ON(NULL == rtlusb->usb_tx_aggregate_hdl);
+ 	if (unlikely(IS_USB_STOP(rtlusb))) {
+@@ -936,8 +933,7 @@ static void _rtl_usb_transmit(struct ieee80211_hw *hw, struct sk_buff *skb,
+ 		return;
+ 	}
+ 	ep_num = rtlusb->ep_map.ep_mapping[qnum];
+-	_skb = skb;
+-	_urb = _rtl_usb_tx_urb_setup(hw, _skb, ep_num);
++	_urb = _rtl_usb_tx_urb_setup(hw, skb, ep_num);
+ 	if (unlikely(!_urb)) {
+ 		pr_err("Can't allocate urb. Drop skb!\n");
+ 		kfree_skb(skb);
+-- 
+2.25.1
+
