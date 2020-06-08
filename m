@@ -2,154 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18111F112A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 03:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15AC1F1131
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 03:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgFHBtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 21:49:11 -0400
-Received: from mail-eopbgr1310098.outbound.protection.outlook.com ([40.107.131.98]:2117
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728106AbgFHBtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 21:49:09 -0400
+        id S1728618AbgFHBxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 21:53:50 -0400
+Received: from mga05.intel.com ([192.55.52.43]:47061 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727871AbgFHBxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 21:53:50 -0400
+IronPort-SDR: BU3VBX24oyMiErs/tTOubysRSi6sy5FBeEvW2U4AikIvz6FJHxEnprIAi4iwpi4BicwMm6gIfi
+ jNMDPjrxD50w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2020 18:53:49 -0700
+IronPort-SDR: 9UuqNA6iexNkBgKaXTVlKlbqdHcGO4iRb0L+qUAVTaDMMCNm4V5dUtiZpp7cnVcWkZpk0IFJS5
+ kBB5yC15Budg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,486,1583222400"; 
+   d="scan'208";a="259688931"
+Received: from orsmsx105.amr.corp.intel.com ([10.22.225.132])
+  by fmsmga008.fm.intel.com with ESMTP; 07 Jun 2020 18:53:49 -0700
+Received: from orsmsx116.amr.corp.intel.com (10.22.240.14) by
+ ORSMSX105.amr.corp.intel.com (10.22.225.132) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Sun, 7 Jun 2020 18:53:48 -0700
+Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
+ ORSMSX116.amr.corp.intel.com (10.22.240.14) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Sun, 7 Jun 2020 18:53:48 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Sun, 7 Jun 2020 18:53:48 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ObHdg+ERru0vw/uy3WZg+6d9Yx2mYd9w58GdjvE4jcCwJMKNrt5iuQrpUJz396aOisDZPTd3nqTxXPNQn82/wp4hkgY6ETwXMQucOaXrUFPafV7gP/IDKyTWyFIcoZ1XuZA7jFobey7rJvYBERJ15IGf3hAnXuaRqxmtDet57jnW3cei9FZ0bw+eSXhX1G7sgauV9pOpFb0A3Aw46TfT5puZ98OryGsru4Ef4PIPyYydj1J9q7NPWgxfqVQEyYvnCj05fuIiljnRs4DX3TDa5mvAYaibJVu9DB7fzM2BEPJdfkRX/C3BAZ+y1zeogbcbsZ8VlEg630ol8PB3qQ3wyw==
+ b=hbVM26YXcZbDNSKy0nU4kaot5o0GAatop2ryMa5DGCbS0AaAhCsdHbZnWW14iX8DU8VCww4yoHUpOyauKUTXMsosZyRY8xvVuVHB6diGvFClU+fYGrIq2hSIz5MTej96G1lrAZiQdZSSqqGzoC8auK6umN6hAGYhjBt7BbPf0Xk2Ga2at82zHrNFPcRJhwH/v7bSzfuD0PcWh4b50YKsobg193/4gRJwMqCMFPky5xp96lErGPyzl05iepmyI6shylmdxOMEgFBY3H+1abtDKhTgbzh718qbcXwybOEsW0/9cT5IFeq1KKgvLJBVegpJ1AHtKF/7/2VF0XZKPVpQ9w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1XaGzB4IfuEA47m+wIkfxPqgtDStoBtC8hqFWlrsge0=;
- b=Br08GEKbBB4HTpU4d9Lnprkg4G8evuaEyhMi3inhw35ghVFfqpKDyKy/nfw0/R+xDcw4jxU3PNh5nRjaQV1nWbG5txW6lALiH4q7lZHAKayjoTOsMMZ8t5wfnY3AAxKLtWQQYSvapDKCINb9fWiM+SYqZOAY79t2dhwQi1hz0bfV1To0SBZWh49id0ZhYEjji5Vgb13FZIcoFrP7dxcfE4OQj/hiT9IIuA5mIFSB5rhEEf9XG7o08sULaFjrFIBiU1t4WNixK4Z2bg3tokOLPG2nZaMstHzpTDlzaIutToqLVBjppKEaAliMDcYRXXpmmTP9fmKiuPRAH1br/AFaaA==
+ bh=nwYqQQYVckJZm3gEjAPBwHZ6eP13HLxnK0jxl/QApgQ=;
+ b=mSq4yF2fcmTAhCA4xTY+bb5xfIA4uPLxzcNNgYoNAXXNJpP606k3rsTUQaZmaMIYYA8NtLP2svhv8DRYUpybOmfcxpuOyh1CaWGa4PxY3e/iD418zaFVWcIx9cVd2li6B0GPoZSkBWTjPTHyRaxRj+09+x3zp5Rg9SlnzZqJ0HO4Hr88detpPxu6ElegqOK8bD6J8WEgy7pgaZ28e3YtdTE3lQlZzb5QGRkVwqEYUgvfZcbiLo8z/K6IB2C+yFLSxl8UcJjiPzPAhRiM9Sl5iJVe642c2XquSLAh314fgusYOmisiZALz5p9OM1ARFTpvtPmt7gGH9B1xdIJdOvKXQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1XaGzB4IfuEA47m+wIkfxPqgtDStoBtC8hqFWlrsge0=;
- b=ar+tXOUHX4pV/KW4yLbSEEuXOfTp5FsS91nYZE1zj2+RdiryJdD4s1iSVFLgg8P+v/2XJNY54sQGNOMV6T9Y9TWSmL0mNDfKIivA7SizG35plIn4ku1/NstvbBU6V+Tk1yohYiPrF2sUtTAbVO/k6UxxiYUp3MfSZF28utAQHd4=
-Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
- by TY2PR01MB2890.jpnprd01.prod.outlook.com (2603:1096:404:7a::19) with
+ bh=nwYqQQYVckJZm3gEjAPBwHZ6eP13HLxnK0jxl/QApgQ=;
+ b=SytAYB/oO1/t64dhRX1w9MZ30o7eAF0M8EmzRUJS64eF34yVW0IlBqyfUixuds6lroEssmZoI5jQQIYfjlX2DMSMkM6vWqliopdom2fFYqEg7C4GsfoFowTeFIElzjrABFqvrZDGpd2E2YvEKsB85vJugoaJhdUfONr7Hq8IHKg=
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
+ by DM6PR11MB2588.namprd11.prod.outlook.com (2603:10b6:5:c6::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.23; Mon, 8 Jun
- 2020 01:49:04 +0000
-Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
- ([fe80::2da1:bdb7:9089:7f43]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
- ([fe80::2da1:bdb7:9089:7f43%3]) with mapi id 15.20.3066.023; Mon, 8 Jun 2020
- 01:49:04 +0000
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, "kjlu@umn.edu" <kjlu@umn.edu>
-CC:     Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
+ 2020 01:53:47 +0000
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::98a:bb06:5551:e5a3]) by DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::98a:bb06:5551:e5a3%3]) with mapi id 15.20.3066.023; Mon, 8 Jun 2020
+ 01:53:46 +0000
+From:   "Wu, Hao" <hao.wu@intel.com>
+To:     "trix@redhat.com" <trix@redhat.com>,
+        "mdf@kernel.org" <mdf@kernel.org>
+CC:     "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] [v2] PCI: rcar: Fix runtime PM imbalance on error
-Thread-Topic: [PATCH] [v2] PCI: rcar: Fix runtime PM imbalance on error
-Thread-Index: AQHWPK55A5hD61SJZES1zQODpY1sK6jN8Qxw
-Date:   Mon, 8 Jun 2020 01:49:04 +0000
-Message-ID: <TY2PR01MB36925A93AA081BF478CA8DB8D8850@TY2PR01MB3692.jpnprd01.prod.outlook.com>
-References: <20200607093134.6393-1-dinghao.liu@zju.edu.cn>
-In-Reply-To: <20200607093134.6393-1-dinghao.liu@zju.edu.cn>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
+Subject: RE: [PATCH 1/1] fpga: dfl: Fix dead store
+Thread-Topic: [PATCH 1/1] fpga: dfl: Fix dead store
+Thread-Index: AQHWPEXmHXqTdFbUNkCGTs942gNbhKjN8/YA
+Date:   Mon, 8 Jun 2020 01:53:46 +0000
+Message-ID: <DM6PR11MB3819CCD054BC0A764AB4A57885850@DM6PR11MB3819.namprd11.prod.outlook.com>
+References: <20200606210241.7459-1-trix@redhat.com>
+ <20200606210241.7459-2-trix@redhat.com>
+In-Reply-To: <20200606210241.7459-2-trix@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: zju.edu.cn; dkim=none (message not signed)
- header.d=none;zju.edu.cn; dmarc=none action=none header.from=renesas.com;
-x-originating-ip: [124.210.22.195]
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.55.52.221]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 230b62a2-aea0-4105-ec5e-08d80b4e1fe7
-x-ms-traffictypediagnostic: TY2PR01MB2890:
-x-microsoft-antispam-prvs: <TY2PR01MB28907402AE1CB312F2BC66B6D8850@TY2PR01MB2890.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1169;
+x-ms-office365-filtering-correlation-id: 72db9c8f-3148-4404-e392-08d80b4ec84f
+x-ms-traffictypediagnostic: DM6PR11MB2588:
+x-microsoft-antispam-prvs: <DM6PR11MB25884F3F7CD184176A83A1F185850@DM6PR11MB2588.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
 x-forefront-prvs: 042857DBB5
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hN8yQa8fTqZoZPXhIKJMiI6X/p2OVeVpQftq3Eh2ndMhgqla0z45/EDOlQstxAhD2oF7zTB9WW0VtVfThN/3n5UUU03GleSinI3t57AKUYWD7xablkbGw9WeibxNHNF/2c1bK/SHBdh636jSp1lPPVRZA6jNtk9+BsRkPxFdrLzg3rA96LE/oTeQgqUuRNMWjzeXIi0LMlaQ2RUl3ZWc/Sea8kgcQSPjtRA+kQYiCdhqyxFzYJihFz/x9TKl0ENNcHg2QPugXuVQ58bfAcr4nrErBhQUHnYMaxnANfI56aZV9rR9mViDN3aIMEwifeqBNaDvXCHW3O2t2wokdOBPoA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(136003)(346002)(376002)(396003)(55016002)(8676002)(9686003)(478600001)(86362001)(2906002)(8936002)(7696005)(110136005)(54906003)(76116006)(316002)(64756008)(71200400001)(66446008)(66556008)(4326008)(66946007)(66476007)(26005)(6506007)(55236004)(52536014)(186003)(33656002)(5660300002)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: Zb4fCDlCE1W/l2E9Ys6ryqL+dTuOPKvnpe6Zu3BtZZw3pkfcJ4ak7gdtvcUNeZNlU8g6kwiKF4qkKeSj8uHVnsJVB8Il5UP1Pcvjht8bliTdWk1CgIP3bLofMbHkBBwZ92bzWrCV7m4DA+X4DM4HfYJQikFMohyzgK9A9gGb7mZK6xxHK5wEFCqIdD7LtJ26qItx/flwJAPnyFg8l1WoPwt+B7eDL5SlmIIU7+6rvJaDS2dQ4ZKoM/qqMcf6bnoPeqTmFbdy4EPiVpqEFsjscgaqwYAF+Oh8gwUYdyYCmFfJBSQmlX1dy/+5O9/b3ZL9spUXKii4o/ZojRqk4WnhLrQf00/Iq1mxcwqAQatRsInZ8q5C6kzBQ2sJMFGF/gESTqYpzb1hlK81kx46H5bj/cWW9LYE4zVNGMe5RtyoW2q8nXpO88U+0zGJPlL9oCilhh4uReSzHOhyx9wKwnH8i2p0EZb30o++KJ3Zu4nB0UdMt0rzulFWoeTae6eLTKAr
+x-microsoft-antispam-message-info: BOa6BCcPRUufMBkQs7itt44lfKF638XDP77wrsUNMh91ewkMgRWuppEFuXfTdBM5VzMLdV83VW6sBPDDQWpYFctEjEHI8IqGWYNngwO+MXWsoU7d/HiayKFSDvzngm3X8bEAxOGFd7dQCKcoh+n+8j3sOIY3jKEQ41z/Z95sTln45oTvAei8iSvufec3VvEFvBGMiUiymb2UTFjHL/VAJPsBCOWbAfSeu27NaFcKEjy+AOJZlp0WjWGlSnhluSKoXMEMtrx9lxeloIpLcJecvbrMwrdNReXbx75xT+YYdOzsjF3GZ9M/6W0qpyOlHDbdyEPIUNYmic9VYk1DBPubnYI8tdOPGXaCY6cj/UKZzPJJgzBXvoWfyYkJdD7z8UxN
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(396003)(39860400002)(366004)(136003)(8676002)(4326008)(83380400001)(2906002)(7696005)(8936002)(33656002)(66476007)(186003)(26005)(55016002)(71200400001)(316002)(66946007)(76116006)(53546011)(6506007)(86362001)(5660300002)(66556008)(66446008)(9686003)(110136005)(54906003)(52536014)(64756008)(478600001)(21314003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: rBb2m9rKplrE+0BGVb6eWgsGdkvUBDkQT1n1mKcM2f/1D8BZtuidEICZh95Tu7Xwfl4cHUnhJmnHfT9ZEyA5AIftITumqENwvC+DFrDU5iNls4taHImSqCt+UbgLjqbHWr2cANilbneqJPKfy/dTFYTiNW8vhm4i9WksdP0XqrR1fB7nsZ0v8jNSjd+wBHQvn6Gq0LLDUsDYW1xE1jiT7czVYr3WX0Q7iNLSQ7/sliIMl1v/QHrUV3GQe+hnU33Jtdl+2gqWqy+8SHrEc89bH4YP8Xh8SD5oufqvxhwPEJVvzhTyBot5azu8UIU6nzHtgISRbl55rKDJHpCpHoUXULNrVwQWG+a52MWhUp8LYG1SqlDp5+Jlt5NfbdsBarufu8b62oLELg1piKHyjXLKQloHC8TLaOaDuLT9hGktdGmvHPILmQZQO9wzRY48CZGj8+lTOfsIjyuDvqBcNko3ghsUh7Qa8VRS1KKb1+6zsCc=
 x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 230b62a2-aea0-4105-ec5e-08d80b4e1fe7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2020 01:49:04.2213
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72db9c8f-3148-4404-e392-08d80b4ec84f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2020 01:53:46.7809
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: t9wKaMo0zDUJ+LUox5ur1AkNa9trQRVxx2/nGmg9h2AOwgtz6IpXlxF8858E0JbHiDZ0tXBu+zYsFo50jk9Z2G+sSw0azbM0NtCT2x8pJxD5j/avPvVzWFisQ0qoteWl
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB2890
+X-MS-Exchange-CrossTenant-userprincipalname: W0sjOaaqxp3WgfyX6Vm34J3o9Q6peSSeGAQbdxdt7bUQEnBWoFat6Psh2uaFo6NYACcilaur1fKnswB/RLN1sQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2588
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dinghao,
-
-> From: Dinghao Liu, Sent: Sunday, June 7, 2020 6:32 PM
+> -----Original Message-----
+> From: linux-fpga-owner@vger.kernel.org <linux-fpga-owner@vger.kernel.org>
+> On Behalf Of trix@redhat.com
+> Sent: Sunday, June 7, 2020 5:03 AM
+> To: mdf@kernel.org
+> Cc: linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org; Tom Rix
+> <trix@redhat.com>
+> Subject: [PATCH 1/1] fpga: dfl: Fix dead store
 >=20
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> the call returns an error code. Thus a corresponding decrement is
-> needed on the error handling path to keep the counter balanced.
+
+Thanks for this patch, looks good to me, but this patch is not related to
+dfl, so please remove dfl from the title to avoid confusion. : )
+or maybe it can be split into two patches:
+fpga: mgr: xxx
+fpga: bridge: xxx
+
+Thanks
+Hao
+
+> From: Tom Rix <trix@redhat.com>
 >=20
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-
-Thank you for your patch! I think we can add Fixes tag like below.
-
-Fixes: 0df6150e7ceb ("PCI: rcar: Use runtime PM to control controller clock=
-")
-
-And, I reviewed this patch. So,
-
-Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-
-Best regards,
-Yoshihiro Shimoda
-
+> Using clang's scan-build/view this issue was flagged in fpga-mgr.c
+>=20
+>   drivers/fpga/fpga-mgr.c:585:3: warning: Value stored to 'ret' is never =
+read
+> [deadcode.DeadStores]
+>                   ret =3D id;
+>=20
+> A similar issue was flagged in fpga-bridge.
+>=20
+> So remove the unused stores.
+>=20
+> Signed-off-by: Tom Rix <trix@redhat.com>
 > ---
+>  drivers/fpga/fpga-bridge.c | 6 ++----
+>  drivers/fpga/fpga-mgr.c    | 4 +---
+>  2 files changed, 3 insertions(+), 7 deletions(-)
 >=20
-> Changelog:
+> diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
+> index 4bab9028940a..2deccacc3aa7 100644
+> --- a/drivers/fpga/fpga-bridge.c
+> +++ b/drivers/fpga/fpga-bridge.c
+> @@ -328,7 +328,7 @@ struct fpga_bridge *fpga_bridge_create(struct device
+> *dev, const char *name,
+>  				       void *priv)
+>  {
+>  	struct fpga_bridge *bridge;
+> -	int id, ret =3D 0;
+> +	int id, ret;
 >=20
-> v2: - Remove unnecessary 'err_pm_put' label.
->       Refine commit message.
-> ---
->  drivers/pci/controller/pcie-rcar.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+>  	if (!name || !strlen(name)) {
+>  		dev_err(dev, "Attempt to register with no name!\n");
+> @@ -340,10 +340,8 @@ struct fpga_bridge *fpga_bridge_create(struct
+> device *dev, const char *name,
+>  		return NULL;
 >=20
-> diff --git a/drivers/pci/controller/pcie-rcar.c b/drivers/pci/controller/=
-pcie-rcar.c
-> index 759c6542c5c8..f9595ab54bc4 100644
-> --- a/drivers/pci/controller/pcie-rcar.c
-> +++ b/drivers/pci/controller/pcie-rcar.c
-> @@ -1143,7 +1143,7 @@ static int rcar_pcie_probe(struct platform_device *=
-pdev)
->  	err =3D rcar_pcie_get_resources(pcie);
->  	if (err < 0) {
->  		dev_err(dev, "failed to request resources: %d\n", err);
-> -		goto err_pm_put;
-> +		goto err_pm_disable;
->  	}
+>  	id =3D ida_simple_get(&fpga_bridge_ida, 0, 0, GFP_KERNEL);
+> -	if (id < 0) {
+> -		ret =3D id;
+> +	if (id < 0)
+>  		goto error_kfree;
+> -	}
 >=20
->  	err =3D clk_prepare_enable(pcie->bus_clk);
-> @@ -1206,10 +1206,8 @@ static int rcar_pcie_probe(struct platform_device =
-*pdev)
->  	irq_dispose_mapping(pcie->msi.irq2);
->  	irq_dispose_mapping(pcie->msi.irq1);
+>  	mutex_init(&bridge->mutex);
+>  	INIT_LIST_HEAD(&bridge->node);
+> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
+> index e05104f5e40c..f38bab01432e 100644
+> --- a/drivers/fpga/fpga-mgr.c
+> +++ b/drivers/fpga/fpga-mgr.c
+> @@ -581,10 +581,8 @@ struct fpga_manager *fpga_mgr_create(struct
+> device *dev, const char *name,
+>  		return NULL;
 >=20
-> -err_pm_put:
-> -	pm_runtime_put(dev);
-> -
->  err_pm_disable:
-> +	pm_runtime_put(dev);
->  	pm_runtime_disable(dev);
->  	pci_free_resource_list(&pcie->resources);
+>  	id =3D ida_simple_get(&fpga_mgr_ida, 0, 0, GFP_KERNEL);
+> -	if (id < 0) {
+> -		ret =3D id;
+> +	if (id < 0)
+>  		goto error_kfree;
+> -	}
+>=20
+>  	mutex_init(&mgr->ref_mutex);
 >=20
 > --
-> 2.17.1
+> 2.26.0
 
