@@ -2,41 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18FC1F2F36
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED9B1F2D04
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733309AbgFIAsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:48:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56910 "EHLO mail.kernel.org"
+        id S1729699AbgFIAaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:30:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728781AbgFHXKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:10:54 -0400
+        id S1730119AbgFHXPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:15:55 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AE4520890;
-        Mon,  8 Jun 2020 23:10:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACE242076A;
+        Mon,  8 Jun 2020 23:15:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657852;
-        bh=HeE/HJwWUMBmoDka4WbFolryeFAQ61D7D/Kmtai3kmM=;
+        s=default; t=1591658154;
+        bh=RyU8bCmCzVxSV2P47dF/Ddb+fy18hma9gz8vKz6FU4k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1DKeL21O6lceXBAw4EJv2ne46NvKRPe9DCtkfU0aM/o22nCH2+GmMDJjc8OpJvT1O
-         XnSgY+IIeWaTlLpqErL0yuDSeU0S6MdnZN9SJy6qIEDMKv7rUKC40OyU+giziVSbFn
-         O/yXHc0jhO13w5tRnt9KFW6FCkvMMcZAvdYYhq4M=
+        b=i9/1dbXIPdp39E9OwOyyPDCNsWx1RMQtvSu4w8JY168NaNjgKA7aGG3jocoAtfWyI
+         BI12xEQxIl+fdlB13lw2LzoNUV9qwQRDMcRINzhHaD9iW31bse4zkdzp5eD9jnvDES
+         ax7s4S5MTgb3aJWWj4BtGdTquH+0RtmvgX7BYP5s=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 217/274] ice: cleanup vf_id signedness
-Date:   Mon,  8 Jun 2020 19:05:10 -0400
-Message-Id: <20200608230607.3361041-217-sashal@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-nvdimm@lists.01.org
+Subject: [PATCH AUTOSEL 5.6 186/606] device-dax: don't leak kernel memory to user space after unloading kmem
+Date:   Mon,  8 Jun 2020 19:05:11 -0400
+Message-Id: <20200608231211.3363633-186-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,125 +50,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesse Brandeburg <jesse.brandeburg@intel.com>
+From: David Hildenbrand <david@redhat.com>
 
-[ Upstream commit 53bb66983f34d4ff0af179fe228e2c55e1e45921 ]
+commit 60858c00e5f018eda711a3aa84cf62214ef62d61 upstream.
 
-The vf_id variable is dealt with in the code in inconsistent
-ways of sign usage, preventing compilation with -Werror=sign-compare.
-Fix this problem in the code by always treating vf_id as unsigned, since
-there are no valid values of vf_id that are negative.
+Assume we have kmem configured and loaded:
 
-Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  [root@localhost ~]# cat /proc/iomem
+  ...
+  140000000-33fffffff : Persistent Memory$
+    140000000-1481fffff : namespace0.0
+    150000000-33fffffff : dax0.0
+      150000000-33fffffff : System RAM
+
+Assume we try to unload kmem. This force-unloading will work, even if
+memory cannot get removed from the system.
+
+  [root@localhost ~]# rmmod kmem
+  [   86.380228] removing memory fails, because memory [0x0000000150000000-0x0000000157ffffff] is onlined
+  ...
+  [   86.431225] kmem dax0.0: DAX region [mem 0x150000000-0x33fffffff] cannot be hotremoved until the next reboot
+
+Now, we can reconfigure the namespace:
+
+  [root@localhost ~]# ndctl create-namespace --force --reconfig=namespace0.0 --mode=devdax
+  [  131.409351] nd_pmem namespace0.0: could not reserve region [mem 0x140000000-0x33fffffff]dax
+  [  131.410147] nd_pmem: probe of namespace0.0 failed with error -16namespace0.0 --mode=devdax
+  ...
+
+This fails as expected due to the busy memory resource, and the memory
+cannot be used.  However, the dax0.0 device is removed, and along its
+name.
+
+The name of the memory resource now points at freed memory (name of the
+device):
+
+  [root@localhost ~]# cat /proc/iomem
+  ...
+  140000000-33fffffff : Persistent Memory
+    140000000-1481fffff : namespace0.0
+    150000000-33fffffff : �_�^7_��/_��wR��WQ���^��� ...
+    150000000-33fffffff : System RAM
+
+We have to make sure to duplicate the string.  While at it, remove the
+superfluous setting of the name and fixup a stale comment.
+
+Fixes: 9f960da72b25 ("device-dax: "Hotremove" persistent memory that is used like normal RAM")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: <stable@vger.kernel.org>	[5.3]
+Link: http://lkml.kernel.org/r/20200508084217.9160-2-david@redhat.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ice/ice.h            |  2 +-
- .../net/ethernet/intel/ice/ice_virtchnl_pf.c    | 17 +++++++++--------
- .../net/ethernet/intel/ice/ice_virtchnl_pf.h    |  2 +-
- 3 files changed, 11 insertions(+), 10 deletions(-)
+ drivers/dax/kmem.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index 5c11448bfbb3..020ee167f73a 100644
---- a/drivers/net/ethernet/intel/ice/ice.h
-+++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -366,7 +366,7 @@ struct ice_pf {
- 	struct ice_sw *first_sw;	/* first switch created by firmware */
- 	/* Virtchnl/SR-IOV config info */
- 	struct ice_vf *vf;
--	int num_alloc_vfs;		/* actual number of VFs allocated */
-+	u16 num_alloc_vfs;		/* actual number of VFs allocated */
- 	u16 num_vfs_supported;		/* num VFs supported for this PF */
- 	u16 num_qps_per_vf;
- 	u16 num_msix_per_vf;
-diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-index 15191a325918..c9c281167873 100644
---- a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-@@ -10,10 +10,11 @@
-  * @pf: pointer to the PF structure
-  * @vf_id: the ID of the VF to check
-  */
--static int ice_validate_vf_id(struct ice_pf *pf, int vf_id)
-+static int ice_validate_vf_id(struct ice_pf *pf, u16 vf_id)
- {
-+	/* vf_id range is only valid for 0-255, and should always be unsigned */
- 	if (vf_id >= pf->num_alloc_vfs) {
--		dev_err(ice_pf_to_dev(pf), "Invalid VF ID: %d\n", vf_id);
-+		dev_err(ice_pf_to_dev(pf), "Invalid VF ID: %u\n", vf_id);
- 		return -EINVAL;
- 	}
- 	return 0;
-@@ -27,7 +28,7 @@ static int ice_validate_vf_id(struct ice_pf *pf, int vf_id)
- static int ice_check_vf_init(struct ice_pf *pf, struct ice_vf *vf)
- {
- 	if (!test_bit(ICE_VF_STATE_INIT, vf->vf_states)) {
--		dev_err(ice_pf_to_dev(pf), "VF ID: %d in reset. Try again.\n",
-+		dev_err(ice_pf_to_dev(pf), "VF ID: %u in reset. Try again.\n",
- 			vf->vf_id);
+diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
+index 3d0a7e702c94..1e678bdf5aed 100644
+--- a/drivers/dax/kmem.c
++++ b/drivers/dax/kmem.c
+@@ -22,6 +22,7 @@ int dev_dax_kmem_probe(struct device *dev)
+ 	resource_size_t kmem_size;
+ 	resource_size_t kmem_end;
+ 	struct resource *new_res;
++	const char *new_res_name;
+ 	int numa_node;
+ 	int rc;
+ 
+@@ -48,11 +49,16 @@ int dev_dax_kmem_probe(struct device *dev)
+ 	kmem_size &= ~(memory_block_size_bytes() - 1);
+ 	kmem_end = kmem_start + kmem_size;
+ 
+-	/* Region is permanently reserved.  Hot-remove not yet implemented. */
+-	new_res = request_mem_region(kmem_start, kmem_size, dev_name(dev));
++	new_res_name = kstrdup(dev_name(dev), GFP_KERNEL);
++	if (!new_res_name)
++		return -ENOMEM;
++
++	/* Region is permanently reserved if hotremove fails. */
++	new_res = request_mem_region(kmem_start, kmem_size, new_res_name);
+ 	if (!new_res) {
+ 		dev_warn(dev, "could not reserve region [%pa-%pa]\n",
+ 			 &kmem_start, &kmem_end);
++		kfree(new_res_name);
  		return -EBUSY;
  	}
-@@ -337,7 +338,7 @@ void ice_free_vfs(struct ice_pf *pf)
- 	 * before this function ever gets called.
+ 
+@@ -63,12 +69,12 @@ int dev_dax_kmem_probe(struct device *dev)
+ 	 * unknown to us that will break add_memory() below.
  	 */
- 	if (!pci_vfs_assigned(pf->pdev)) {
--		int vf_id;
-+		unsigned int vf_id;
+ 	new_res->flags = IORESOURCE_SYSTEM_RAM;
+-	new_res->name = dev_name(dev);
  
- 		/* Acknowledge VFLR for all VFs. Without this, VFs will fail to
- 		 * work correctly when SR-IOV gets re-enabled.
-@@ -368,9 +369,9 @@ static void ice_trigger_vf_reset(struct ice_vf *vf, bool is_vflr, bool is_pfr)
- {
- 	struct ice_pf *pf = vf->pf;
- 	u32 reg, reg_idx, bit_idx;
-+	unsigned int vf_abs_id, i;
- 	struct device *dev;
- 	struct ice_hw *hw;
--	int vf_abs_id, i;
- 
- 	dev = ice_pf_to_dev(pf);
- 	hw = &pf->hw;
-@@ -418,7 +419,7 @@ static void ice_trigger_vf_reset(struct ice_vf *vf, bool is_vflr, bool is_pfr)
- 		if ((reg & VF_TRANS_PENDING_M) == 0)
- 			break;
- 
--		dev_err(dev, "VF %d PCI transactions stuck\n", vf->vf_id);
-+		dev_err(dev, "VF %u PCI transactions stuck\n", vf->vf_id);
- 		udelay(ICE_PCI_CIAD_WAIT_DELAY_US);
+ 	rc = add_memory(numa_node, new_res->start, resource_size(new_res));
+ 	if (rc) {
+ 		release_resource(new_res);
+ 		kfree(new_res);
++		kfree(new_res_name);
+ 		return rc;
  	}
- }
-@@ -1483,7 +1484,7 @@ int ice_sriov_configure(struct pci_dev *pdev, int num_vfs)
- void ice_process_vflr_event(struct ice_pf *pf)
- {
- 	struct ice_hw *hw = &pf->hw;
--	int vf_id;
-+	unsigned int vf_id;
- 	u32 reg;
+ 	dev_dax->dax_kmem_res = new_res;
+@@ -83,6 +89,7 @@ static int dev_dax_kmem_remove(struct device *dev)
+ 	struct resource *res = dev_dax->dax_kmem_res;
+ 	resource_size_t kmem_start = res->start;
+ 	resource_size_t kmem_size = resource_size(res);
++	const char *res_name = res->name;
+ 	int rc;
  
- 	if (!test_and_clear_bit(__ICE_VFLR_EVENT_PENDING, pf->state) ||
-@@ -1524,7 +1525,7 @@ static void ice_vc_reset_vf(struct ice_vf *vf)
-  */
- static struct ice_vf *ice_get_vf_from_pfq(struct ice_pf *pf, u16 pfq)
- {
--	int vf_id;
-+	unsigned int vf_id;
+ 	/*
+@@ -102,6 +109,7 @@ static int dev_dax_kmem_remove(struct device *dev)
+ 	/* Release and free dax resources */
+ 	release_resource(res);
+ 	kfree(res);
++	kfree(res_name);
+ 	dev_dax->dax_kmem_res = NULL;
  
- 	ice_for_each_vf(pf, vf_id) {
- 		struct ice_vf *vf = &pf->vf[vf_id];
-diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.h b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.h
-index 3f9464269bd2..62875704cecf 100644
---- a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.h
-+++ b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.h
-@@ -64,7 +64,7 @@ struct ice_mdd_vf_events {
- struct ice_vf {
- 	struct ice_pf *pf;
- 
--	s16 vf_id;			/* VF ID in the PF space */
-+	u16 vf_id;			/* VF ID in the PF space */
- 	u16 lan_vsi_idx;		/* index into PF struct */
- 	/* first vector index of this VF in the PF space */
- 	int first_vector_idx;
+ 	return 0;
 -- 
 2.25.1
 
