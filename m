@@ -2,190 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECAC61F1779
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3371F177C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729542AbgFHLV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 07:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41542 "EHLO
+        id S1729587AbgFHLW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 07:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729437AbgFHLV4 (ORCPT
+        with ESMTP id S1729437AbgFHLWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 07:21:56 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7105AC08C5C2
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 04:21:54 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x13so16972429wrv.4
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 04:21:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7JmnrVrM4jkbvqvmDrON3ernI9z2Q/Y9U63X+bmDAOc=;
-        b=CRqLZ1MuGY1z2cGvlwtskR4dOsxSsAi20t5GbQzQ0udQ+qbKVQkCJIyS1gJrq3sS7b
-         LKgq0PLbbuJvp8P56G5pUBv/PcCEBmziZiwAqEiRRSBWmfRowixyqjKblYQfkZb1gbmg
-         iWhuZ/s/e5AUiqOMXBKVF/2JFAKGaHZ1+ykkXYo5B2IUNcNRV13ip9nXISHCPw9vr+xm
-         g9PrAspMRyM6KU+XcEzam6SEhZRlFRMwVZHHr+DqohLelGHFQ00fmw0yXDpHD5izupoh
-         eFoE7VUvm5VSpmNPil+lOrgv2J/5eLs3Xzw75UywDdPxdmusdBVYzGAXMBah+DuuhtU9
-         3LeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7JmnrVrM4jkbvqvmDrON3ernI9z2Q/Y9U63X+bmDAOc=;
-        b=FYYToChSJ4gw5gu9KeKm/M30vZNlw9e5MwSbR8Qs90BeIX54yjTI+iisNHsaFkoGZk
-         dOzBZvffaxehYSF6BeZb7oPOfarS0VgocElmEuy7xQVQADvZmRRqdCmjktMqbWDGmdtx
-         9QJGYiu6DWZIGmOtGXHXYw4Y+FWTESmZgftJkzjPtf68S42hPfCLfTHlO3Jvg3acmHnM
-         1yXYAi70tzcGfzCBB+4QU9A9zDzvLBNcRZNceORlV9Ta4rCpNT/cMNu1QqWQSMvjWeEc
-         ver7hyEOWRLpvlMQ/muVb9iO2dQquzDdYH9VEMk3lLV0lKkyy3HPEMgDsCB07rGXqaIn
-         1WSA==
-X-Gm-Message-State: AOAM531XVKwTq18ERXL88ONMBIrv+bXM886WL5VmqDs44ptpR9G2w+mj
-        BvunYUaRRCdLg+gMKgF7SesuIWJGC+0=
-X-Google-Smtp-Source: ABdhPJy4vr6BsQajdSAzDMV3idbn19bJt8HGtRYVkfzgDxowIPBiwVFrBubghoPsSC4idFsaDnxhGA==
-X-Received: by 2002:adf:a34d:: with SMTP id d13mr22107475wrb.270.1591615313014;
-        Mon, 08 Jun 2020 04:21:53 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id f185sm12437862wmf.43.2020.06.08.04.21.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 04:21:52 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 12:21:50 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Jim Cromie <jim.cromie@gmail.com>
-Cc:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
-        akpm@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux@rasmusvillemoes.dk
-Subject: Re: [PATCH 03/16] dyndbg: refine debug verbosity; 1 is basic, 2 more
- chatty
-Message-ID: <20200608112150.7ohrax6pzpi7ss2l@holly.lan>
-References: <20200605162645.289174-1-jim.cromie@gmail.com>
- <20200605162645.289174-4-jim.cromie@gmail.com>
+        Mon, 8 Jun 2020 07:22:24 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413CBC08C5C2;
+        Mon,  8 Jun 2020 04:22:24 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id EEEA02A35BA
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+To:     linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-tegra@vger.kernel.org, patches@opensource.cirrus.com,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Sylvain Lemieux <slemieux.tyco@gmail.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Barry Song <baohua@kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Nick Dyer <nick@shmanahar.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ferruh Yigit <fery@cypress.com>,
+        Sangwon Jee <jeesw@melfas.com>,
+        Peter Hutterer <peter.hutterer@redhat.com>,
+        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH v4 0/7] Support inhibiting input devices
+Date:   Mon,  8 Jun 2020 13:22:04 +0200
+Message-Id: <20200608112211.12125-1-andrzej.p@collabora.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <2336e15d-ff4b-bbb6-c701-dbf3aa110fcd@redhat.com>
+References: <2336e15d-ff4b-bbb6-c701-dbf3aa110fcd@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200605162645.289174-4-jim.cromie@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 10:26:32AM -0600, Jim Cromie wrote:
-> The verbose/debug logging done for `cat $MNT/dynamic_debug/control` is
-> voluminous (2 per control file entry + 2 per PAGE).  Moreover, it just
-> prints pointer and sequence, which is not useful to a dyndbg user.
-> So just drop them.
+This is a quick respin of v3, with just two small changes, please see
+the changelog below.
 
-I'd assumed these messages where to help the dyndbg implementer rather
-than the dyndbg user. If the verbose messages really are useful to help
-users who (mis)configure .../control then should the enable/disable
-control be shadowed in debugfs to make it easy to find?
+Userspace might want to implement a policy to temporarily disregard input
+from certain devices.
+
+An example use case is a convertible laptop, whose keyboard can be folded
+under the screen to create tablet-like experience. The user then must hold
+the laptop in such a way that it is difficult to avoid pressing the keyboard
+keys. It is therefore desirable to temporarily disregard input from the
+keyboard, until it is folded back. This obviously is a policy which should
+be kept out of the kernel, but the kernel must provide suitable means to
+implement such a policy.
+
+Due to interactions with suspend/resume, a helper has been added for drivers
+to decide if the device is being used or not (PATCH 1/7) and it has been
+applied to relevant drivers (PATCH 2,4,5,6/7).
+
+PATCH 7/7 adds support for inhibiting input devices.
+
+This work is inspired by:
+
+https://chromium.googlesource.com/chromiumos/third_party/kernel/+/45c2d7bb398f74adfae0017e20b224152fde3822
+
+and
+
+https://chromium.googlesource.com/chromiumos/third_party/kernel/+/4ce0e8a3697edb8fd071110b3af65014512061c7
+
+In this respin the elan_i2c patch is dropped and converting it will be
+addressed later.
+
+v3..v4:
+- updated the comment in input_open_device() (Hans)
+- used more straightforward locking pattern in adc/exynos (Michał)
+
+v2..v3:
+- ignored autorepeat events in input_get_disposition() if a key is not
+pressed (Hans)
+- dropped inhibit()/uninhibit() driver callbacks (Hans)
+- split ACPI button patch into taking the lock and using the helper (Rafael)
+- dropped the elan_i2c conversion
+- fixed typos in exynos adc
+
+v1..v2:
+- added input_device_enabled() helper and used it in drivers (Dmitry)
+- the fact of open() and close() being called in inhibit/uninhibit paths has
+been emphasized in the commit message of PATCH 6/7 (Dmitry)
+
+Andrzej Pietrasiewicz (6):
+  Input: add input_device_enabled()
+  Input: use input_device_enabled()
+  ACPI: button: Access input device's users under appropriate mutex
+  ACPI: button: Use input_device_enabled() helper
+  iio: adc: exynos: Use input_device_enabled()
+  platform/x86: thinkpad_acpi: Use input_device_enabled()
+
+Patrik Fimml (1):
+  Input: Add "inhibited" property
+
+ drivers/acpi/button.c                       |   7 +-
+ drivers/iio/adc/exynos_adc.c                |   6 +-
+ drivers/input/input.c                       | 125 ++++++++++++++++++--
+ drivers/input/joystick/xpad.c               |   4 +-
+ drivers/input/keyboard/ep93xx_keypad.c      |   2 +-
+ drivers/input/keyboard/gpio_keys.c          |   4 +-
+ drivers/input/keyboard/imx_keypad.c         |   4 +-
+ drivers/input/keyboard/ipaq-micro-keys.c    |   2 +-
+ drivers/input/keyboard/lpc32xx-keys.c       |   4 +-
+ drivers/input/keyboard/pmic8xxx-keypad.c    |   4 +-
+ drivers/input/keyboard/pxa27x_keypad.c      |   2 +-
+ drivers/input/keyboard/samsung-keypad.c     |   4 +-
+ drivers/input/keyboard/spear-keyboard.c     |   8 +-
+ drivers/input/keyboard/st-keyscan.c         |   4 +-
+ drivers/input/keyboard/tegra-kbc.c          |   4 +-
+ drivers/input/misc/drv260x.c                |   4 +-
+ drivers/input/misc/drv2665.c                |   4 +-
+ drivers/input/misc/drv2667.c                |   4 +-
+ drivers/input/misc/gp2ap002a00f.c           |   4 +-
+ drivers/input/misc/kxtj9.c                  |   4 +-
+ drivers/input/misc/sirfsoc-onkey.c          |   2 +-
+ drivers/input/mouse/navpoint.c              |   4 +-
+ drivers/input/touchscreen/ad7879.c          |   6 +-
+ drivers/input/touchscreen/atmel_mxt_ts.c    |   4 +-
+ drivers/input/touchscreen/auo-pixcir-ts.c   |   8 +-
+ drivers/input/touchscreen/bu21029_ts.c      |   4 +-
+ drivers/input/touchscreen/chipone_icn8318.c |   4 +-
+ drivers/input/touchscreen/cyttsp_core.c     |   4 +-
+ drivers/input/touchscreen/eeti_ts.c         |   4 +-
+ drivers/input/touchscreen/ektf2127.c        |   4 +-
+ drivers/input/touchscreen/imx6ul_tsc.c      |   4 +-
+ drivers/input/touchscreen/ipaq-micro-ts.c   |   2 +-
+ drivers/input/touchscreen/iqs5xx.c          |   4 +-
+ drivers/input/touchscreen/lpc32xx_ts.c      |   4 +-
+ drivers/input/touchscreen/melfas_mip4.c     |   4 +-
+ drivers/input/touchscreen/mms114.c          |   6 +-
+ drivers/input/touchscreen/pixcir_i2c_ts.c   |   8 +-
+ drivers/input/touchscreen/ucb1400_ts.c      |   4 +-
+ drivers/input/touchscreen/wm97xx-core.c     |  14 ++-
+ drivers/input/touchscreen/zforce_ts.c       |   8 +-
+ drivers/platform/x86/thinkpad_acpi.c        |   4 +-
+ include/linux/input.h                       |  14 ++-
+ 42 files changed, 228 insertions(+), 96 deletions(-)
 
 
-Daniel.
+base-commit: 3d77e6a8804abcc0504c904bd6e5cdf3a5cf8162
+-- 
+2.17.1
 
-> 
-> Also require verbose>=2 for several other debug printks that are a bit
-> too chatty for typical needs;
-> 
-> ddebug_change() prints changes, once per modified callsite.  Since
-> queries like "+p" will enable ~2300 callsites in a typical laptop, a
-> user probably doesnt need to see them often.  ddebug_exec_queries()
-> still summarizes with verbose=1.
-> 
-> ddebug_(add|remove)_module() also print 1 line per action on a module,
-> not needed by typical modprobe user.
-> 
-> This leaves verbose=1 better focussed on the >control parsing process.
-> 
-> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> ---
->  lib/dynamic_debug.c | 21 ++++++++-------------
->  1 file changed, 8 insertions(+), 13 deletions(-)
-> 
-> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-> index b877774dba96..5900c043e979 100644
-> --- a/lib/dynamic_debug.c
-> +++ b/lib/dynamic_debug.c
-> @@ -105,12 +105,15 @@ static char *ddebug_describe_flags(struct _ddebug *dp, char *buf,
->  	return buf;
->  }
->  
-> -#define vpr_info(fmt, ...)					\
-> +#define vnpr_info(lvl, fmt, ...)				\
->  do {								\
-> -	if (verbose)						\
-> +	if (verbose >= lvl)					\
->  		pr_info(fmt, ##__VA_ARGS__);			\
->  } while (0)
->  
-> +#define vpr_info(fmt, ...)	vnpr_info(1, fmt, ##__VA_ARGS__)
-> +#define v2pr_info(fmt, ...)	vnpr_info(2, fmt, ##__VA_ARGS__)
-> +
->  static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
->  {
->  	/* trim any trailing newlines */
-> @@ -198,7 +201,7 @@ static int ddebug_change(const struct ddebug_query *query,
->  				static_branch_enable(&dp->key.dd_key_true);
->  #endif
->  			dp->flags = newflags;
-> -			vpr_info("changed %s:%d [%s]%s =%s\n",
-> +			v2pr_info("changed %s:%d [%s]%s =%s\n",
->  				 trim_prefix(dp->filename), dp->lineno,
->  				 dt->mod_name, dp->function,
->  				 ddebug_describe_flags(dp, flagbuf,
-> @@ -771,8 +774,6 @@ static void *ddebug_proc_start(struct seq_file *m, loff_t *pos)
->  	struct _ddebug *dp;
->  	int n = *pos;
->  
-> -	vpr_info("called m=%p *pos=%lld\n", m, (unsigned long long)*pos);
-> -
->  	mutex_lock(&ddebug_lock);
->  
->  	if (!n)
-> @@ -795,9 +796,6 @@ static void *ddebug_proc_next(struct seq_file *m, void *p, loff_t *pos)
->  	struct ddebug_iter *iter = m->private;
->  	struct _ddebug *dp;
->  
-> -	vpr_info("called m=%p p=%p *pos=%lld\n",
-> -		 m, p, (unsigned long long)*pos);
-> -
->  	if (p == SEQ_START_TOKEN)
->  		dp = ddebug_iter_first(iter);
->  	else
-> @@ -818,8 +816,6 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
->  	struct _ddebug *dp = p;
->  	char flagsbuf[10];
->  
-> -	vpr_info("called m=%p p=%p\n", m, p);
-> -
->  	if (p == SEQ_START_TOKEN) {
->  		seq_puts(m,
->  			 "# filename:lineno [module]function flags format\n");
-> @@ -842,7 +838,6 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
->   */
->  static void ddebug_proc_stop(struct seq_file *m, void *p)
->  {
-> -	vpr_info("called m=%p p=%p\n", m, p);
->  	mutex_unlock(&ddebug_lock);
->  }
->  
-> @@ -905,7 +900,7 @@ int ddebug_add_module(struct _ddebug *tab, unsigned int n,
->  	list_add_tail(&dt->link, &ddebug_tables);
->  	mutex_unlock(&ddebug_lock);
->  
-> -	vpr_info("%u debug prints in module %s\n", n, dt->mod_name);
-> +	v2pr_info("%u debug prints in module %s\n", n, dt->mod_name);
->  	return 0;
->  }
->  
-> @@ -964,7 +959,7 @@ int ddebug_remove_module(const char *mod_name)
->  	struct ddebug_table *dt, *nextdt;
->  	int ret = -ENOENT;
->  
-> -	vpr_info("removing module \"%s\"\n", mod_name);
-> +	v2pr_info("removing module \"%s\"\n", mod_name);
->  
->  	mutex_lock(&ddebug_lock);
->  	list_for_each_entry_safe(dt, nextdt, &ddebug_tables, link) {
-> -- 
-> 2.26.2
-> 
