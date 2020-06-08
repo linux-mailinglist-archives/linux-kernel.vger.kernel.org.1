@@ -2,120 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B9E1F2188
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 23:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCFB1F2182
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 23:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgFHVes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 17:34:48 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:63499 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbgFHVer (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 17:34:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1591652086; x=1623188086;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=+qQYbtRrDqBSlEKJqfZ3XJq64r6Dre27swE46ZRd9Qs=;
-  b=UGqgqs1iZwMYwpAFoVZu40u5z10x46aMdHP9erSgk7eYOOwrxn1WIl3p
-   3b661hk9rXTpMjTMUOElHM3YyhIVVFyW1HPMG9ccmjIGP4k00M+D7hYXc
-   CD5ACP1El22ktVtbso7OQYOQv9NYMAx5nRPB/lj+X4yxKSCtBsqyF9aRh
-   T9Awhd2N653z4iQCvAvsWddzc/5+L0Fl/o78kA3mYyBAIQ+IJerpB9eMz
-   XxyUNLQV4ngDxBHVG5/Awd7pn+dkZeKCcknnf8ZkumbWN++ydDJJPL/nR
-   TZVoyPCOLSdwsBNAx7EiN84LjscpMTB+ITgiFUXzJh0lLYxj4XzFUUS0K
-   w==;
-IronPort-SDR: IZgnMQ2IYp+3CH8obAPcfIVXD5/6GPYRokN9hdaLl3qIKpljU0piCRJJZzBT72ma4zgrKW8X5W
- OjSW3xFwUNjjlxHLzn6UPYtgmfC84V3DuirDVjn0JT7jwkLVLsn0pjSZGpcEttKp/EVKnTpb1/
- ZrKaJlpO97dafnL7EBnF2zeOpvApTRk1UbYjUZnxIJRGY800Bb7LvChJcc9CyeVE+Fsj3Uatal
- 2i+vsqZZU5x/artazjB4BiGCkDsWYf9r1xpV3rCO3+D6OakwQBt0OOPvFSVvItAdQnVcEIlJZ2
- jmE=
-X-IronPort-AV: E=Sophos;i="5.73,489,1583164800"; 
-   d="scan'208";a="139481171"
-Received: from mail-dm6nam10lp2101.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.101])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Jun 2020 05:34:31 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MbTZrceq2kOSoUFbzFHsUA5ssC5ciZT7+IfVzOurXq/idYtj3wclomRZ+ExZ0FofJ7M/J3Xd7Bh6RI1gGo1P+9MtYSCO//3JDSAmPKSP+Xx36KYxRRy1gxw5+bMdUJFI00X+2YsKEIrRvRF3nsrowMO8uM7SE/MP1AMBBOG9iGWxYIiWI+hErIo9Zo9n93w0tdpWlMz1O8A8Q5P7El0WA6FszkzvpUMkpfs1VUdb1fRE6vIoEi6IQykuayx0U4th7spLeQ6WO86tS/BLYXfDz7/jsaYGSYdmtEcIC2vlxLcydVZZuIr1xfATV4bCgHEq3ikdNvAsjl2BFjAeVdPUKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+qQYbtRrDqBSlEKJqfZ3XJq64r6Dre27swE46ZRd9Qs=;
- b=KVtW3xH7kwcicFFpy5Ezi/NUNMbm2xVfErdSvcSVzkt7Eg+95LkazdyU8B0kWYBjpQSCEnXT5eO00ziSX1bfM0DwFAlwTtz4QGEsJzXcjZ/8PqLJQrwop5uSijGI4sJMppjBm/AVacXZ+t+Te1+5dF6AM+p4KDa9sl6naUG2MTnI4SpGJDyF6Ct/cObD0VotPK2KZJ5Un9avXHsrjLBAAMYG2/Qcr19/44lLzD05sm6TKHmO1Pml4kkdF9B7vwdBTfn2YCPzMk2io/CBKJZCF4twQR7EwKtKx7IXHnO3UawW/PO2bPnUp/GN8+tB1ZYhccOeKjdCVQ5a65WpJFlEtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+qQYbtRrDqBSlEKJqfZ3XJq64r6Dre27swE46ZRd9Qs=;
- b=v74dQNXukTmwcz1U9mUQobaOy3T1ySXABOIz9bRkeOao/glAm1yzdPDbZ9pE+5B+iT4rCBHFXQBflynFSeRVT4zcadqP3wiKZN+uqnPT5cpaTXuJn+U5PHyoUwiYXy1mnFIPU9bg03pN5tUHNZxzVXWKmh1syvQJpzZmB2HRtZ4=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by BYAPR04MB4229.namprd04.prod.outlook.com (2603:10b6:a02:f5::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.23; Mon, 8 Jun
- 2020 21:34:30 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::4d72:27c:c075:c5e6]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::4d72:27c:c075:c5e6%7]) with mapi id 15.20.3066.023; Mon, 8 Jun 2020
- 21:34:30 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Dongli Zhang <dongli.zhang@oracle.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
-CC:     "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "axboe@fb.com" <axboe@fb.com>,
-        "kbusch@kernel.org" <kbusch@kernel.org>, "hch@lst.de" <hch@lst.de>
-Subject: Re: [PATCH 2/2] nvme-pci: remove empty line following
- nvme_should_reset()
-Thread-Topic: [PATCH 2/2] nvme-pci: remove empty line following
- nvme_should_reset()
-Thread-Index: AQHWPbH5/ATd/SjbNECi8NphYMc+hQ==
-Date:   Mon, 8 Jun 2020 21:34:30 +0000
-Message-ID: <BYAPR04MB496577AD9293E325D3414C6786850@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <20200608162002.17017-1-dongli.zhang@oracle.com>
- <20200608162002.17017-3-dongli.zhang@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.45.62]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 95c6a44b-91e7-4362-6d9c-08d80bf3ba6a
-x-ms-traffictypediagnostic: BYAPR04MB4229:
-x-microsoft-antispam-prvs: <BYAPR04MB4229412AD5F5DD93833BEF3086850@BYAPR04MB4229.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:287;
-x-forefront-prvs: 042857DBB5
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QFp3HtjbtNpBmmjm4xuDTHjRKpm+qPmS9vbr3elthbsthKM9cioxOkWD5mFrVDMLRGNVLkdDBAd+iuNKBiznbdHGsHM43oXOpg79lDYU3Hpmu0MlQvtGvahi36BiCpa7cMDw7gJkbyTr3iQz/47ZErrBbPVlbLP9kOqB+YRVMHxp8tOuQoHQFKnjCLOQafXLwUufdm3EveELmkA/o7N1vQm2vUNdSgTmv1R4rpT7+Lh95How8Bjva/htMYqlBYIpVVEgdSQE4g14vupcFdm2m40qYrRtcAapI6I6xfNs3M3atM/jBQ5i5ugG1oJEiNCRpyV5qiRbGEBKzbLbSmqXxg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(39860400002)(396003)(346002)(376002)(136003)(478600001)(110136005)(66446008)(9686003)(66556008)(66946007)(66476007)(64756008)(7696005)(316002)(55016002)(76116006)(6506007)(52536014)(8676002)(26005)(186003)(71200400001)(86362001)(558084003)(5660300002)(4326008)(33656002)(8936002)(53546011)(2906002)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: TfHnJ8urAzQo1crg5l6l5JzoLDnWAusMdz+g6UFYkhJQhCoLxBo3+nyJMQ9bxNeMvji4mx+Fy5SVsgVapCY2aFDtWHpxxv3AAwgtl2T5tdSiifWvjv4/VWT87biCysJBUJkhRhic9EmEOOLTY7XBvbIsKdcBpapkBgH48QMUBkvHugK4QR7F3JKNucSM1GgKs/WPCGBA5ox4smCnnxSyaJPa1up7uBbgfzptQBh+3nd7yIJwwOZYDaZShmYuiOrddO8Rt4iplDPktuFMDTkszHSHf3wMC98MGArvvDTO2mkvReJ5qEHpKjO+M98QkTy1NesvmMMngr9jRR/VF2DROEHWT8lbNDtSiBk/5bs3P1joIFGwwjcLkfYCuvg2JQC0l7mrKaDKtJw2AN6uQlC+uW8UWXiQkS4Dg12YX0q+HeHkzlodJu0lBpt7ASZk5lmR6zLgT4iNL/Ujf9DT2DbjLO7sce1lH/KbmjMeAfiEARk66R6zm9VDfZFfg4wuZy4z
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726815AbgFHVcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 17:32:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726612AbgFHVcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 17:32:02 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6C91206D5;
+        Mon,  8 Jun 2020 21:32:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591651921;
+        bh=iGJ/S85SGw3PjfMmtAFIqmA+qqnezwwkvYQUyMOy1Sw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=1AnJXR2EkjQSi8iIsA5aD0FJDk7uxo3n2xHI5pkz2MWUT8buGdP02LiZv/+1csY3q
+         4oqdq6NhOiCiRzM8qBg2jzbG7KRDPmZYjCrgT3SemeqUSuqleF3IU+wUitrEvnQVPc
+         ljMS7xhdGhK912rvW8x/vDpXWGWY8O9DZIVBEC/M=
+Date:   Mon, 8 Jun 2020 16:37:11 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>, Kees Cook <keescook@chromium.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH v3] docs: deprecated.rst: Add zero-length and one-element
+ arrays
+Message-ID: <20200608213711.GA22271@embeddedor>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95c6a44b-91e7-4362-6d9c-08d80bf3ba6a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2020 21:34:30.4031
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eTtTTXXR/gCjod5t9ojM8YAq+GFAUaSS7OZzuscebU1tOgvWLsV/woQbbv8bI8I5aVlSxO34do6YvSz0s63155yLJ1K8xAEInRzIb/G9wuk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4229
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/20 9:29 AM, Dongli Zhang wrote:=0A=
-> Just cleanup by removing the empty line.=0A=
-> =0A=
-> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>=0A=
-> ---=0A=
-=0A=
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
+Add zero-length and one-element arrays to the list.
+
+While I continue replacing zero-length and one-element arrays with
+flexible-array members, I need a reference to point people to, so
+they don't introduce more instances of such arrays. And while here,
+add a note to the "open-coded arithmetic in allocator arguments"
+section, on the use of struct_size() and the arrays-to-deprecate
+mentioned here.
+
+Co-developed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v3:
+ - Add changes written by Kees.
+ - Add Co-developed-by tag to include Kees in the changelog text.
+
+Changes in v2:
+ - Adjust some markup links for readability.
+
+ Documentation/process/deprecated.rst | 118 +++++++++++++++++++++++++++
+ 1 file changed, 118 insertions(+)
+
+diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
+index 652e2aa02a66c..bd4c92244de31 100644
+--- a/Documentation/process/deprecated.rst
++++ b/Documentation/process/deprecated.rst
+@@ -85,6 +85,11 @@ Instead, use the helper::
+ 
+ 	header = kzalloc(struct_size(header, item, count), GFP_KERNEL);
+ 
++.. note:: If you are using struct_size() on a structure containing a zero-length
++        or a one-element array as a trailing array member, please refactor such
++        array usage and switch to a `flexible array member
++        <#zero-length-and-one-element-arrays>`_ instead.
++
+ See array_size(), array3_size(), and struct_size(),
+ for more details as well as the related check_add_overflow() and
+ check_mul_overflow() family of functions.
+@@ -200,3 +205,116 @@ All switch/case blocks must end in one of:
+ * continue;
+ * goto <label>;
+ * return [expression];
++
++Zero-length and one-element arrays
++----------------------------------
++There is a regular need in the kernel to provide a way to declare having
++a dynamically sized set of trailing elements in a structure. Kernel code
++should always use `"flexible array members" <https://en.wikipedia.org/wiki/Flexible_array_member>`_
++for these cases. The older style of one-element or zero-length arrays should
++no longer be used.
++
++In older C code, dynamically sized trailing elements were done by specifying
++a one-element array at the end of a structure::
++
++        struct something {
++                size_t count;
++                struct foo items[1];
++        };
++
++This led to fragile size calculations via sizeof() (which would need to
++remove the size of the single trailing element to get a correct size of
++the "header"). A `GNU C extension <https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_
++was introduced to allow for zero-length arrays, to avoid these kinds of
++size problems::
++
++        struct something {
++                size_t count;
++                struct foo items[0];
++        };
++
++But this led to other problems, and didn't solve some problems shared by
++both styles, like not being able to detect when such an array is accidentally
++being used _not_ at the end of a structure (which could happen directly, or
++when such a struct was in unions, structs of structs, etc).
++
++C99 introduced "flexible array members", which lacks a numeric size for
++the array declaration entirely::
++
++        struct something {
++                size_t count;
++                struct foo items[];
++        };
++
++This is the way the kernel expects dynamically sized trailing elements
++to be declared. It allows the compiler to generate errors when the
++flexible array does not occur last in the structure, which helps to prevent
++some kind of `undefined behavior
++<https://git.kernel.org/linus/76497732932f15e7323dc805e8ea8dc11bb587cf>`_
++bugs from being inadvertently introduced to the codebase. It also allows
++the compiler to correctly analyze array sizes (via sizeof(),
++`CONFIG_FORTIFY_SOURCE`, and `CONFIG_UBSAN_BOUNDS`). For instance,
++there is no mechanism that warns us that the following application of the
++sizeof() operator to a zero-length array always results in zero::
++
++        struct something {
++                size_t count;
++                struct foo items[0];
++        };
++
++        struct something *instance;
++
++        instance = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
++        instance->count = count;
++
++        size = sizeof(instance->items) * instance->count;
++        memcpy(instance->items, source, size);
++
++At the last line of code above, ``size`` turns out to be ``zero``, when one might
++have thought it represents the total size in bytes of the dynamic memory recently
++allocated for the trailing array ``items``. Here are a couple examples of this
++issue: `link 1
++<https://git.kernel.org/linus/f2cd32a443da694ac4e28fbf4ac6f9d5cc63a539>`_,
++`link 2
++<https://git.kernel.org/linus/ab91c2a89f86be2898cee208d492816ec238b2cf>`_.
++Instead, `flexible array members have incomplete type, and so the sizeof()
++operator may not be applied <https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_,
++so any misuse of such operators will be immediately noticed at build time.
++
++With respect to one-element arrays, one has to be acutely aware that `such arrays
++occupy at least as much space as a single object of the type
++<https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_,
++hence they contribute to the size of the enclosing structure. This is prone
++to error every time people want to calculate the total size of dynamic memory
++to allocate for a structure containing an array of this kind as a member::
++
++        struct something {
++                size_t count;
++                struct foo items[1];
++        };
++
++        struct something *instance;
++
++        instance = kmalloc(struct_size(instance, items, count - 1), GFP_KERNEL);
++        instance->count = count;
++
++        size = sizeof(instance->items) * instance->count;
++        memcpy(instance->items, source, size);
++
++In the example above, we had to remember to calculate ``count - 1`` when using
++the struct_size() helper, otherwise we would have --unintentionally-- allocated
++memory for one too many ``items`` objects. The cleanest and least error-prone way
++to implement this is through the use of a `flexible array member`::
++
++        struct something {
++                size_t count;
++                struct foo items[];
++        };
++
++        struct something *instance;
++
++        instance = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
++        instance->count = count;
++
++        size = sizeof(instance->items[0]) * instance->count;
++        memcpy(instance->items, source, size);
+-- 
+2.27.0
+
