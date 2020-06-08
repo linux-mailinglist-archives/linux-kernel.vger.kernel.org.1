@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90801F2450
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49B01F2454
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730928AbgFHXUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:20:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37758 "EHLO mail.kernel.org"
+        id S1730951AbgFHXUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:20:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730212AbgFHXQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:16:25 -0400
+        id S1730218AbgFHXQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:16:27 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2ED220774;
-        Mon,  8 Jun 2020 23:16:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47CF020775;
+        Mon,  8 Jun 2020 23:16:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658184;
-        bh=ELK744J/8qKjfSZZ7rJvMXPHFOvT+Jq9rLbg63EOrh0=;
+        s=default; t=1591658187;
+        bh=U0mGWfLnsVmloTJ83K1kKc/LB2uPVbUSQIKW8pBlkuM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WuulyLi5frMwDGoh7bhnwR86621qQ28qkW4juvOnp6BRKDL1NtLvorC5Tg/Ce85fX
-         z2HiCkMdoDrNMttTkkvAreN++YJ3hkzRxQjW105csj4qtHulelp4Oc5TM5/RfF2Bty
-         5FhDjo5tKLpFdIoS0y02c8VrZXXlB0uQ6Agf/KMI=
+        b=Ipih5X8B6VFwOS2PDe1WQ5hRJTc73YRUzcqlYKSyuXabHaRetSMxUj6swL7dnlGrZ
+         TMi5UiidDrTb/jDw+N5ATMUHuCRgXrSkGISyU4LegiPqiS0ZS2GXX6yH6gtB/28rgf
+         X9O5M+FV319EMC3eL8ZKfPrEYqV6kqWV3RHmmZQ0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
+Cc:     Michal Kubecek <mkubecek@suse.cz>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
         "David S . Miller" <davem@davemloft.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-hams@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 207/606] ax25: fix setsockopt(SO_BINDTODEVICE)
-Date:   Mon,  8 Jun 2020 19:05:32 -0400
-Message-Id: <20200608231211.3363633-207-sashal@kernel.org>
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 209/606] ethtool: count header size in reply size estimate
+Date:   Mon,  8 Jun 2020 19:05:34 -0400
+Message-Id: <20200608231211.3363633-209-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -45,75 +45,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Michal Kubecek <mkubecek@suse.cz>
 
-[ Upstream commit 687775cec056b38a4c8f3291e0dd7a9145f7b667 ]
+[ Upstream commit 7c87e32d2e380228ada79d20ac5b7674718ef097 ]
 
-syzbot was able to trigger this trace [1], probably by using
-a zero optlen.
+As ethnl_request_ops::reply_size handlers do not include common header
+size into calculated/estimated reply size, it needs to be added in
+ethnl_default_doit() and ethnl_default_notify() before allocating the
+message. On the other hand, strset_reply_size() should not add common
+header size.
 
-While we are at it, cap optlen to IFNAMSIZ - 1 instead of IFNAMSIZ.
-
-[1]
-BUG: KMSAN: uninit-value in strnlen+0xf9/0x170 lib/string.c:569
-CPU: 0 PID: 8807 Comm: syz-executor483 Not tainted 5.7.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1c9/0x220 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- strnlen+0xf9/0x170 lib/string.c:569
- dev_name_hash net/core/dev.c:207 [inline]
- netdev_name_node_lookup net/core/dev.c:277 [inline]
- __dev_get_by_name+0x75/0x2b0 net/core/dev.c:778
- ax25_setsockopt+0xfa3/0x1170 net/ax25/af_ax25.c:654
- __compat_sys_setsockopt+0x4ed/0x910 net/compat.c:403
- __do_compat_sys_setsockopt net/compat.c:413 [inline]
- __se_compat_sys_setsockopt+0xdd/0x100 net/compat.c:410
- __ia32_compat_sys_setsockopt+0x62/0x80 net/compat.c:410
- do_syscall_32_irqs_on arch/x86/entry/common.c:339 [inline]
- do_fast_syscall_32+0x3bf/0x6d0 arch/x86/entry/common.c:398
- entry_SYSENTER_compat+0x68/0x77 arch/x86/entry/entry_64_compat.S:139
-RIP: 0023:0xf7f57dd9
-Code: 90 e8 0b 00 00 00 f3 90 0f ae e8 eb f9 8d 74 26 00 89 3c 24 c3 90 90 90 90 90 90 90 90 90 90 90 90 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000ffae8c1c EFLAGS: 00000217 ORIG_RAX: 000000000000016e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000000101
-RDX: 0000000000000019 RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 0000000000000012 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Local variable ----devname@ax25_setsockopt created at:
- ax25_setsockopt+0xe6/0x1170 net/ax25/af_ax25.c:536
- ax25_setsockopt+0xe6/0x1170 net/ax25/af_ax25.c:536
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
+Fixes: 728480f12442 ("ethtool: default handlers for GET requests")
+Reported-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ax25/af_ax25.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/ethtool/netlink.c | 4 ++--
+ net/ethtool/strset.c  | 1 -
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/net/ax25/af_ax25.c b/net/ax25/af_ax25.c
-index ff57ea89c27e..fd91cd34f25e 100644
---- a/net/ax25/af_ax25.c
-+++ b/net/ax25/af_ax25.c
-@@ -635,8 +635,10 @@ static int ax25_setsockopt(struct socket *sock, int level, int optname,
- 		break;
+diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
+index fc9e0b806889..d863dffbe53c 100644
+--- a/net/ethtool/netlink.c
++++ b/net/ethtool/netlink.c
+@@ -334,7 +334,7 @@ static int ethnl_default_doit(struct sk_buff *skb, struct genl_info *info)
+ 	ret = ops->reply_size(req_info, reply_data);
+ 	if (ret < 0)
+ 		goto err_cleanup;
+-	reply_len = ret;
++	reply_len = ret + ethnl_reply_header_size();
+ 	ret = -ENOMEM;
+ 	rskb = ethnl_reply_init(reply_len, req_info->dev, ops->reply_cmd,
+ 				ops->hdr_attr, info, &reply_payload);
+@@ -573,7 +573,7 @@ static void ethnl_default_notify(struct net_device *dev, unsigned int cmd,
+ 	ret = ops->reply_size(req_info, reply_data);
+ 	if (ret < 0)
+ 		goto err_cleanup;
+-	reply_len = ret;
++	reply_len = ret + ethnl_reply_header_size();
+ 	ret = -ENOMEM;
+ 	skb = genlmsg_new(reply_len, GFP_KERNEL);
+ 	if (!skb)
+diff --git a/net/ethtool/strset.c b/net/ethtool/strset.c
+index 8e5911887b4c..fb7b3585458d 100644
+--- a/net/ethtool/strset.c
++++ b/net/ethtool/strset.c
+@@ -309,7 +309,6 @@ static int strset_reply_size(const struct ethnl_req_info *req_base,
+ 	int len = 0;
+ 	int ret;
  
- 	case SO_BINDTODEVICE:
--		if (optlen > IFNAMSIZ)
--			optlen = IFNAMSIZ;
-+		if (optlen > IFNAMSIZ - 1)
-+			optlen = IFNAMSIZ - 1;
-+
-+		memset(devname, 0, sizeof(devname));
+-	len += ethnl_reply_header_size();
+ 	for (i = 0; i < ETH_SS_COUNT; i++) {
+ 		const struct strset_info *set_info = &data->sets[i];
  
- 		if (copy_from_user(devname, optval, optlen)) {
- 			res = -EFAULT;
 -- 
 2.25.1
 
