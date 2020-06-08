@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930981F3018
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE22D1F2DB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731083AbgFIA4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:56:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54774 "EHLO mail.kernel.org"
+        id S1730090AbgFIAgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:36:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728342AbgFHXJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:09:08 -0400
+        id S1726874AbgFHXOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:14:17 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D81F208C9;
-        Mon,  8 Jun 2020 23:09:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DE1921534;
+        Mon,  8 Jun 2020 23:14:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657748;
-        bh=7qRrtypSSmzWLdDkp9783c/owwEwmGd/9SP07NiOk2s=;
+        s=default; t=1591658057;
+        bh=JaCI0EjPvxTb7zB7hY+YRwycZ6E2oVyJSR+v7NnznEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RPOGdBSXEHTJ9BjQyX7JAFlmdStNtE5CcFM/TDR0O77+gY9WGx6XW2W5FUIZMc+1Q
-         H8SG7qjhA0L8Wnp3gQMk5YPjGbJfC9XX7VsBqKo7/2x7FWwPY3/G8Md/g8Ygi5hT8F
-         o8IloG+sZrYZ1sXXNAt1yf8YYXeaL7kzynH/QAHU=
+        b=kD4ppKztSoC8fXKSDsdvAc3hBXuCKArs1vwNLmF7U5j60xUsbXI6BRqpEyov0ymxk
+         gC9HF+xnhjKKeDjdSNsFH1DFoS3URseDSnL7pMjdwyXEfyz6IJNOT6bPyYq9CMrUqD
+         zFYJptrNExqH6T1tpzL2oNDdyL8xIZblkHhP1sIQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 135/274] selftests/bpf: Add runqslower binary to .gitignore
-Date:   Mon,  8 Jun 2020 19:03:48 -0400
-Message-Id: <20200608230607.3361041-135-sashal@kernel.org>
+Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 104/606] HID: multitouch: add eGalaxTouch P80H84 support
+Date:   Mon,  8 Jun 2020 19:03:49 -0400
+Message-Id: <20200608231211.3363633-104-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -46,33 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andriin@fb.com>
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-[ Upstream commit e4e8f4d047fdcf7ac7d944e266e85d8041f16cd6 ]
+[ Upstream commit f9e82295eec141a0569649d400d249333d74aa91 ]
 
-With recent changes, runqslower is being copied into selftests/bpf root
-directory. So add it into .gitignore.
+Add support for P80H84 touchscreen from eGalaxy:
 
-Fixes: b26d1e2b6028 ("selftests/bpf: Copy runqslower to OUTPUT directory")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Cc: Veronika Kabatova <vkabatov@redhat.com>
-Link: https://lore.kernel.org/bpf/20200429012111.277390-12-andriin@fb.com
+  idVendor           0x0eef D-WAV Scientific Co., Ltd
+  idProduct          0xc002
+  iManufacturer           1 eGalax Inc.
+  iProduct                2 eGalaxTouch P80H84 2019 vDIVA_1204_T01 k4.02.146
+
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/.gitignore | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/hid-ids.h        | 1 +
+ drivers/hid/hid-multitouch.c | 3 +++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index c30079c86998..35a577ca0226 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -39,4 +39,4 @@ test_cpp
- /no_alu32
- /bpf_gcc
- /tools
--
-+/runqslower
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 9f2213426556..309510a72c5e 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -385,6 +385,7 @@
+ #define USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_7349	0x7349
+ #define USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_73F7	0x73f7
+ #define USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_A001	0xa001
++#define USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_C002	0xc002
+ 
+ #define USB_VENDOR_ID_ELAN		0x04f3
+ #define USB_DEVICE_ID_TOSHIBA_CLICK_L9W	0x0401
+diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+index 362805ddf377..03c720b47306 100644
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -1922,6 +1922,9 @@ static const struct hid_device_id mt_devices[] = {
+ 	{ .driver_data = MT_CLS_EGALAX_SERIAL,
+ 		MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
+ 			USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_A001) },
++	{ .driver_data = MT_CLS_EGALAX,
++		MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
++			USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_C002) },
+ 
+ 	/* Elitegroup panel */
+ 	{ .driver_data = MT_CLS_SERIAL,
 -- 
 2.25.1
 
