@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8AB1F305F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664B51F304D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733282AbgFIA65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:58:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54182 "EHLO mail.kernel.org"
+        id S1731792AbgFIA6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:58:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728235AbgFHXIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:08:43 -0400
+        id S1728248AbgFHXIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:08:47 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7FD920890;
-        Mon,  8 Jun 2020 23:08:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 901FB208A7;
+        Mon,  8 Jun 2020 23:08:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657723;
-        bh=7IiQDXdq9Z5dE9WWdDCDCvrJ4FHOUElT9vMdc58iVhs=;
+        s=default; t=1591657726;
+        bh=QUtRJ3Y0Rx9RwRzwhCcyvIfmN4BCTK68Ylczwl/VO/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f4Lj95ghCpXTJQqlfuuZHf7dryN6Fo+aQ3BoWQTVM5Dv+ueDnAckKCN1EMlR2uG8l
-         ulVrJsFgu0Y8+gbMSc6EpvyVRuK9wPJ0prj3LJuWjl47SedX5yKLQxaRTyzBg0naWU
-         ZN/wFuOgq+YxXqA+5pd5RskMRDXnb86qP5eAxNto=
+        b=ix3RRS7OgMD2gIKWruc1fzjR2Ionie4NHNz+0NQRYzWO43g9EQxKsHwaQTO07XWYt
+         dhUCRrMXCJcFkPPoJzDyqUZvSIFask1nw1t318CWNHZXs62PnuCuU7bz4zrFXNtovr
+         k2pIluOlt8DKr+WssDCUvOymwp2oSoUNtIEMB85I=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dale Zhao <dale.zhao@amd.com>, Sung Lee <sung.lee@amd.com>,
-        Yongqiang Sun <yongqiang.sun@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.7 116/274] drm/amd/display: Correct updating logic of dcn21's pipe VM flags
-Date:   Mon,  8 Jun 2020 19:03:29 -0400
-Message-Id: <20200608230607.3361041-116-sashal@kernel.org>
+Cc:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-hyperv@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 118/274] Drivers: hv: vmbus: Always handle the VMBus messages on CPU0
+Date:   Mon,  8 Jun 2020 19:03:31 -0400
+Message-Id: <20200608230607.3361041-118-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -46,46 +46,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dale Zhao <dale.zhao@amd.com>
+From: "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
 
-[ Upstream commit 2a28fe92220a116735ef45939b7edcfee83cc6b0 ]
+[ Upstream commit 8a857c55420f29da4fc131adc22b12d474c48f4c ]
 
-[Why]:
-Renoir's pipe VM flags are not correctly updated if pipe strategy has
-changed during some scenarios. It will result in watermarks mistakenly
-calculation, thus underflow and garbage appear.
+A Linux guest have to pick a "connect CPU" to communicate with the
+Hyper-V host.  This CPU can not be taken offline because Hyper-V does
+not provide a way to change that CPU assignment.
 
-[How]:
-Correctly update pipe VM flags to pipes which have been populated.
+Current code sets the connect CPU to whatever CPU ends up running the
+function vmbus_negotiate_version(), and this will generate problems if
+that CPU is taken offine.
 
-Signed-off-by: Dale Zhao <dale.zhao@amd.com>
-Signed-off-by: Sung Lee <sung.lee@amd.com>
-Reviewed-by: Yongqiang Sun <yongqiang.sun@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Establish CPU0 as the connect CPU, and add logics to prevents the
+connect CPU from being taken offline.   We could pick some other CPU,
+and we could pick that "other CPU" dynamically if there was a reason to
+do so at some point in the future.  But for now, #defining the connect
+CPU to 0 is the most straightforward and least complex solution.
+
+While on this, add inline comments explaining "why" offer and rescind
+messages should not be handled by a same serialized work queue.
+
+Suggested-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Link: https://lore.kernel.org/r/20200406001514.19876-2-parri.andrea@gmail.com
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/hv/connection.c   | 20 +-------------------
+ drivers/hv/hv.c           |  7 +++++++
+ drivers/hv/hyperv_vmbus.h | 11 ++++++-----
+ drivers/hv/vmbus_drv.c    | 20 +++++++++++++++++---
+ 4 files changed, 31 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-index a721bb401ef0..6d1736cf5c12 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-@@ -1694,12 +1694,8 @@ static int dcn21_populate_dml_pipes_from_context(
+diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
+index 74e77de89b4f..f4bd306d2cef 100644
+--- a/drivers/hv/connection.c
++++ b/drivers/hv/connection.c
+@@ -69,7 +69,6 @@ MODULE_PARM_DESC(max_version,
+ int vmbus_negotiate_version(struct vmbus_channel_msginfo *msginfo, u32 version)
  {
- 	uint32_t pipe_cnt = dcn20_populate_dml_pipes_from_context(dc, context, pipes);
- 	int i;
--	struct resource_context *res_ctx = &context->res_ctx;
+ 	int ret = 0;
+-	unsigned int cur_cpu;
+ 	struct vmbus_channel_initiate_contact *msg;
+ 	unsigned long flags;
  
--	for (i = 0; i < dc->res_pool->pipe_count; i++) {
--
--		if (!res_ctx->pipe_ctx[i].stream)
--			continue;
-+	for (i = 0; i < pipe_cnt; i++) {
+@@ -102,24 +101,7 @@ int vmbus_negotiate_version(struct vmbus_channel_msginfo *msginfo, u32 version)
  
- 		pipes[i].pipe.src.hostvm = 1;
- 		pipes[i].pipe.src.gpuvm = 1;
+ 	msg->monitor_page1 = virt_to_phys(vmbus_connection.monitor_pages[0]);
+ 	msg->monitor_page2 = virt_to_phys(vmbus_connection.monitor_pages[1]);
+-	/*
+-	 * We want all channel messages to be delivered on CPU 0.
+-	 * This has been the behavior pre-win8. This is not
+-	 * perf issue and having all channel messages delivered on CPU 0
+-	 * would be ok.
+-	 * For post win8 hosts, we support receiving channel messagges on
+-	 * all the CPUs. This is needed for kexec to work correctly where
+-	 * the CPU attempting to connect may not be CPU 0.
+-	 */
+-	if (version >= VERSION_WIN8_1) {
+-		cur_cpu = get_cpu();
+-		msg->target_vcpu = hv_cpu_number_to_vp_number(cur_cpu);
+-		vmbus_connection.connect_cpu = cur_cpu;
+-		put_cpu();
+-	} else {
+-		msg->target_vcpu = 0;
+-		vmbus_connection.connect_cpu = 0;
+-	}
++	msg->target_vcpu = hv_cpu_number_to_vp_number(VMBUS_CONNECT_CPU);
+ 
+ 	/*
+ 	 * Add to list before we send the request since we may
+diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
+index 533c8b82b344..3a5648aa5599 100644
+--- a/drivers/hv/hv.c
++++ b/drivers/hv/hv.c
+@@ -245,6 +245,13 @@ int hv_synic_cleanup(unsigned int cpu)
+ 	bool channel_found = false;
+ 	unsigned long flags;
+ 
++	/*
++	 * Hyper-V does not provide a way to change the connect CPU once
++	 * it is set; we must prevent the connect CPU from going offline.
++	 */
++	if (cpu == VMBUS_CONNECT_CPU)
++		return -EBUSY;
++
+ 	/*
+ 	 * Search for channels which are bound to the CPU we're about to
+ 	 * cleanup. In case we find one and vmbus is still connected we need to
+diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
+index 70b30e223a57..67fb1edcbf52 100644
+--- a/drivers/hv/hyperv_vmbus.h
++++ b/drivers/hv/hyperv_vmbus.h
+@@ -212,12 +212,13 @@ enum vmbus_connect_state {
+ 
+ #define MAX_SIZE_CHANNEL_MESSAGE	HV_MESSAGE_PAYLOAD_BYTE_COUNT
+ 
+-struct vmbus_connection {
+-	/*
+-	 * CPU on which the initial host contact was made.
+-	 */
+-	int connect_cpu;
++/*
++ * The CPU that Hyper-V will interrupt for VMBUS messages, such as
++ * CHANNELMSG_OFFERCHANNEL and CHANNELMSG_RESCIND_CHANNELOFFER.
++ */
++#define VMBUS_CONNECT_CPU	0
+ 
++struct vmbus_connection {
+ 	u32 msg_conn_id;
+ 
+ 	atomic_t offer_in_progress;
+diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+index e06c6b9555cf..ec173da45b42 100644
+--- a/drivers/hv/vmbus_drv.c
++++ b/drivers/hv/vmbus_drv.c
+@@ -1098,14 +1098,28 @@ void vmbus_on_msg_dpc(unsigned long data)
+ 			/*
+ 			 * If we are handling the rescind message;
+ 			 * schedule the work on the global work queue.
++			 *
++			 * The OFFER message and the RESCIND message should
++			 * not be handled by the same serialized work queue,
++			 * because the OFFER handler may call vmbus_open(),
++			 * which tries to open the channel by sending an
++			 * OPEN_CHANNEL message to the host and waits for
++			 * the host's response; however, if the host has
++			 * rescinded the channel before it receives the
++			 * OPEN_CHANNEL message, the host just silently
++			 * ignores the OPEN_CHANNEL message; as a result,
++			 * the guest's OFFER handler hangs for ever, if we
++			 * handle the RESCIND message in the same serialized
++			 * work queue: the RESCIND handler can not start to
++			 * run before the OFFER handler finishes.
+ 			 */
+-			schedule_work_on(vmbus_connection.connect_cpu,
++			schedule_work_on(VMBUS_CONNECT_CPU,
+ 					 &ctx->work);
+ 			break;
+ 
+ 		case CHANNELMSG_OFFERCHANNEL:
+ 			atomic_inc(&vmbus_connection.offer_in_progress);
+-			queue_work_on(vmbus_connection.connect_cpu,
++			queue_work_on(VMBUS_CONNECT_CPU,
+ 				      vmbus_connection.work_queue,
+ 				      &ctx->work);
+ 			break;
+@@ -1152,7 +1166,7 @@ static void vmbus_force_channel_rescinded(struct vmbus_channel *channel)
+ 
+ 	INIT_WORK(&ctx->work, vmbus_onmessage_work);
+ 
+-	queue_work_on(vmbus_connection.connect_cpu,
++	queue_work_on(VMBUS_CONNECT_CPU,
+ 		      vmbus_connection.work_queue,
+ 		      &ctx->work);
+ }
 -- 
 2.25.1
 
