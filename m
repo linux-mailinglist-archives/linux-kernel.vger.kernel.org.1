@@ -2,561 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CF21F1F1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 20:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4011F1F24
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 20:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725955AbgFHSkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 14:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725280AbgFHSkF (ORCPT
+        id S1726053AbgFHSk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 14:40:58 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57806 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725280AbgFHSk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 14:40:05 -0400
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9CFC08C5C2;
-        Mon,  8 Jun 2020 11:40:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
-        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=bJTlH/hOKVgJhuAh3/c2AMzeHLc6tJ7LPTIL+3j18jI=; b=soepZDSrZGxKBS7ax7SkT42dM/
-        OdTNdJ4qn/mxPDevNx7BWqyiQt5mlsVn9WYkHLeiLyVa2mdzy6IVBc8EQqzDYdLQDmtmuri9ZGr3m
-        2o4pEIrF0N4WJX9KIi586WqNH/Oknipyesr3cX6LO2Q/9LKeTXCIY13pMYICHUk2OjJrR8XhBWNUG
-        oBCIelukCYIjqo3/WEmjwAStjNWD9STAC5HJE1l/ZDKJPUaDBQrZDgXkpryTKJ4dQj7StbE59su8i
-        UAZ5bzz+Oun3JA3BkAcuOdyEha43rmT07+Gxm5xzODRTEhdkNrr1Fr8qo0xL4MG6YwXJXWfI75hYR
-        6sUpX7vA==;
-Received: from noodles by the.earth.li with local (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1jiMgb-0004OM-RA; Mon, 08 Jun 2020 19:39:53 +0100
-Date:   Mon, 8 Jun 2020 19:39:53 +0100
-From:   Jonathan McDowell <noodles@earth.li>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2] net: dsa: qca8k: Improve SGMII interface handling
-Message-ID: <20200608183953.GR311@earth.li>
-References: <cover.1591380105.git.noodles@earth.li>
- <8ddd76e484e1bedd12c87ea0810826b60e004a65.1591380105.git.noodles@earth.li>
- <20200605183843.GB1006885@lunn.ch>
- <20200606074916.GM311@earth.li>
- <20200606083741.GK1551@shell.armlinux.org.uk>
- <20200606105909.GN311@earth.li>
+        Mon, 8 Jun 2020 14:40:57 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 058IYgtj146571;
+        Mon, 8 Jun 2020 14:40:18 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31grrhajj8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Jun 2020 14:40:17 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 058IXaKs136528;
+        Mon, 8 Jun 2020 14:40:17 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31grrhajhp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Jun 2020 14:40:17 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 058IZKI6003684;
+        Mon, 8 Jun 2020 18:40:15 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma02fra.de.ibm.com with ESMTP id 31g2s81u8p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Jun 2020 18:40:15 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 058IeDV162783608
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Jun 2020 18:40:13 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B5865204F;
+        Mon,  8 Jun 2020 18:40:13 +0000 (GMT)
+Received: from vajain21-in-ibm-com (unknown [9.85.74.153])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id A957B52050;
+        Mon,  8 Jun 2020 18:40:09 +0000 (GMT)
+Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Tue, 09 Jun 2020 00:10:08 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v11 6/6] powerpc/papr_scm: Implement support for PAPR_PDSM_HEALTH
+In-Reply-To: <20200608164452.GC2936401@iweiny-DESK2.sc.intel.com>
+References: <20200607131339.476036-1-vaibhav@linux.ibm.com> <20200607131339.476036-7-vaibhav@linux.ibm.com> <20200608164452.GC2936401@iweiny-DESK2.sc.intel.com>
+Date:   Tue, 09 Jun 2020 00:10:08 +0530
+Message-ID: <87o8ptwgdz.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200606105909.GN311@earth.li>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-08_17:2020-06-08,2020-06-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1
+ lowpriorityscore=0 phishscore=0 impostorscore=0 priorityscore=1501
+ cotscore=-2147483648 malwarescore=0 mlxlogscore=999 bulkscore=0
+ spamscore=0 mlxscore=0 adultscore=0 clxscore=1015 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006080132
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 06, 2020 at 11:59:09AM +0100, Jonathan McDowell wrote:
-> I'll go away and roll a v2 moving qca8k over to phylink and then using
-> that to auto select the appropriate SGMII mode. Thanks for the feedback.
+Thanks Ira,
 
-Ok, take 2. I've switched the driver over to phylink which has let me
-drop the need for any device tree configuration; if we're a CPU port
-then we're in SGMII-PHY mode, otherwise we choose between SGMII-MAC +
-Base-X on what phylink tells us.
+Ira Weiny <ira.weiny@intel.com> writes:
 
-----
+> On Sun, Jun 07, 2020 at 06:43:39PM +0530, Vaibhav Jain wrote:
+>> This patch implements support for PDSM request 'PAPR_PDSM_HEALTH'
+>> that returns a newly introduced 'struct nd_papr_pdsm_health' instance
+>> containing dimm health information back to user space in response to
+>> ND_CMD_CALL. This functionality is implemented in newly introduced
+>> papr_pdsm_health() that queries the nvdimm health information and
+>> then copies this information to the package payload whose layout is
+>> defined by 'struct nd_papr_pdsm_health'.
+>> 
+>> Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: Ira Weiny <ira.weiny@intel.com>
+>> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+>> ---
+>> Changelog:
+>> 
+>> v10..v11:
+>> * Changed the definition of 'struct nd_papr_pdsm_health' to a maximal
+>>   struct 184 bytes in size [ Dan Williams ]
+>> * Added new field 'extension_flags' to 'struct nd_papr_pdsm_health'
+>>   [ Dan Williams ]
+>> * Updated papr_pdsm_health() to set field 'extension_flags' to 0.
+>> * Introduced a define ND_PDSM_PAYLOAD_MAX_SIZE that indicates the
+>>   maximum size of a payload.
+>> * Fixed a suspicious conversion from u64 to u8 in papr_pdsm_health
+>>   that was preventing correct initialization of 'struct
+>>   nd_papr_pdsm_health'. [ Ira ]
+>> 
+>> v9..v10:
+>> * Removed code in papr_pdsm_health that performed validation on pdsm
+>>   payload version and corrosponding struct and defines used for
+>>   validation of payload version.
+>> * Dropped usage of struct papr_pdsm_health in 'struct
+>>   papr_scm_priv'. Instead papr_psdm_health() now uses
+>>   'papr_scm_priv.health_bitmap' to populate the pdsm payload.
+>> * Above change also fixes the problem where this patch was removing
+>>   the code that was previously introduced in this patch-series.
+>>   [ Ira ]
+>> * Introduced a new def ND_PDSM_ENVELOPE_HDR_SIZE that indicates the
+>>   space allocated to 'struct nd_pdsm_cmd_pkg' fields except 'struct
+>>   nd_cmd_pkg'. This def is useful in validating payload sizes.
+>> * Reworked papr_pdsm_health() to enforce a specific payload size for
+>>   'PAPR_PDSM_HEALTH' pdsm request.
+>> 
+>> Resend:
+>> * Added ack from Aneesh.
+>> 
+>> v8..v9:
+>> * s/PAPR_SCM_PDSM_HEALTH/PAPR_PDSM_HEALTH/g  [ Dan , Aneesh ]
+>> * s/PAPR_SCM_PSDM_DIMM_*/PAPR_PDSM_DIMM_*/g
+>> * Renamed papr_scm_get_health() to papr_psdm_health()
+>> * Updated patch description to replace papr-scm dimm with nvdimm.
+>> 
+>> v7..v8:
+>> * None
+>> 
+>> Resend:
+>> * None
+>> 
+>> v6..v7:
+>> * Updated flags_show() to use seq_buf_printf(). [Mpe]
+>> * Updated papr_scm_get_health() to use newly introduced
+>>   __drc_pmem_query_health() bypassing the cache [Mpe].
+>> 
+>> v5..v6:
+>> * Added attribute '__packed' to 'struct nd_papr_pdsm_health_v1' to
+>>   gaurd against possibility of different compilers adding different
+>>   paddings to the struct [ Dan Williams ]
+>> 
+>> * Updated 'struct nd_papr_pdsm_health_v1' to use __u8 instead of
+>>   'bool' and also updated drc_pmem_query_health() to take this into
+>>   account. [ Dan Williams ]
+>> 
+>> v4..v5:
+>> * None
+>> 
+>> v3..v4:
+>> * Call the DSM_PAPR_SCM_HEALTH service function from
+>>   papr_scm_service_dsm() instead of papr_scm_ndctl(). [Aneesh]
+>> 
+>> v2..v3:
+>> * Updated struct nd_papr_scm_dimm_health_stat_v1 to use '__xx' types
+>>   as its exported to the userspace [Aneesh]
+>> * Changed the constants DSM_PAPR_SCM_DIMM_XX indicating dimm health
+>>   from enum to #defines [Aneesh]
+>> 
+>> v1..v2:
+>> * New patch in the series
+>> ---
+>>  arch/powerpc/include/uapi/asm/papr_pdsm.h | 43 ++++++++++++++
+>>  arch/powerpc/platforms/pseries/papr_scm.c | 71 +++++++++++++++++++++++
+>>  2 files changed, 114 insertions(+)
+>> 
+>> diff --git a/arch/powerpc/include/uapi/asm/papr_pdsm.h b/arch/powerpc/include/uapi/asm/papr_pdsm.h
+>> index df2447455cfe..12c7aa5ee8bf 100644
+>> --- a/arch/powerpc/include/uapi/asm/papr_pdsm.h
+>> +++ b/arch/powerpc/include/uapi/asm/papr_pdsm.h
+>> @@ -72,13 +72,56 @@ struct nd_pdsm_cmd_pkg {
+>>  	__u8 payload[];		/* In/Out: Sub-cmd data buffer */
+>>  } __packed;
+>>  
+>> +/* Calculate size used by the pdsm header fields minus 'struct nd_cmd_pkg' */
+>> +#define ND_PDSM_HDR_SIZE \
+>> +	(sizeof(struct nd_pdsm_cmd_pkg) - sizeof(struct nd_cmd_pkg))
+>> +
+>> +/* Max payload size that we can handle */
+>> +#define ND_PDSM_PAYLOAD_MAX_SIZE 184
+>> +
+>>  /*
+>>   * Methods to be embedded in ND_CMD_CALL request. These are sent to the kernel
+>>   * via 'nd_pdsm_cmd_pkg.hdr.nd_command' member of the ioctl struct
+>>   */
+>>  enum papr_pdsm {
+>>  	PAPR_PDSM_MIN = 0x0,
+>> +	PAPR_PDSM_HEALTH,
+>>  	PAPR_PDSM_MAX,
+>>  };
+>>  
+>> +/* Various nvdimm health indicators */
+>> +#define PAPR_PDSM_DIMM_HEALTHY       0
+>> +#define PAPR_PDSM_DIMM_UNHEALTHY     1
+>> +#define PAPR_PDSM_DIMM_CRITICAL      2
+>> +#define PAPR_PDSM_DIMM_FATAL         3
+>> +
+>> +/*
+>> + * Struct exchanged between kernel & ndctl in for PAPR_PDSM_HEALTH
+>> + * Various flags indicate the health status of the dimm.
+>> + *
+>> + * extension_flags	: Any extension fields present in the struct.
+>> + * dimm_unarmed		: Dimm not armed. So contents wont persist.
+>> + * dimm_bad_shutdown	: Previous shutdown did not persist contents.
+>> + * dimm_bad_restore	: Contents from previous shutdown werent restored.
+>> + * dimm_scrubbed	: Contents of the dimm have been scrubbed.
+>> + * dimm_locked		: Contents of the dimm cant be modified until CEC reboot
+>> + * dimm_encrypted	: Contents of dimm are encrypted.
+>> + * dimm_health		: Dimm health indicator. One of PAPR_PDSM_DIMM_XXXX
+>> + */
+>> +struct nd_papr_pdsm_health {
+>> +	union {
+>> +		struct {
+>> +			__u32 extension_flags;
+>> +			__u8 dimm_unarmed;
+>> +			__u8 dimm_bad_shutdown;
+>> +			__u8 dimm_bad_restore;
+>> +			__u8 dimm_scrubbed;
+>> +			__u8 dimm_locked;
+>> +			__u8 dimm_encrypted;
+>> +			__u16 dimm_health;
+>> +		};
+>> +		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
+>> +	};
+>> +} __packed;
+>> +
+>>  #endif /* _UAPI_ASM_POWERPC_PAPR_PDSM_H_ */
+>> diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
+>> index 167fcf0e249d..047ca6bd26a9 100644
+>> --- a/arch/powerpc/platforms/pseries/papr_scm.c
+>> +++ b/arch/powerpc/platforms/pseries/papr_scm.c
+>> @@ -436,6 +436,73 @@ static int is_cmd_valid(struct nvdimm *nvdimm, unsigned int cmd, void *buf,
+>>  	return 0;
+>>  }
+>>  
+>> +/* Fetch the DIMM health info and populate it in provided package. */
+>> +static int papr_pdsm_health(struct papr_scm_priv *p,
+>> +			    struct nd_pdsm_cmd_pkg *pkg)
+>> +{
+>> +	int rc;
+>> +	struct nd_papr_pdsm_health health = { 0 };
+>> +	u16 copysize = sizeof(struct nd_papr_pdsm_health);
+>> +	u16 payload_size = pkg->hdr.nd_size_out - ND_PDSM_HDR_SIZE;
+>> +
+>> +	/* Ensure correct payload size that can hold struct nd_papr_pdsm_health */
+>> +	if (payload_size != copysize) {
+>> +		dev_dbg(&p->pdev->dev,
+>> +			"Unexpected payload-size (%u). Expected (%u)",
+>> +			pkg->hdr.nd_size_out, copysize);
+>> +		rc = -ENOSPC;
+>> +		goto out;
+>> +	}
+>> +
+>> +	/* Ensure dimm health mutex is taken preventing concurrent access */
+>> +	rc = mutex_lock_interruptible(&p->health_mutex);
+>> +	if (rc)
+>> +		goto out;
+>> +
+>> +	/* Always fetch upto date dimm health data ignoring cached values */
+>> +	rc = __drc_pmem_query_health(p);
+>> +	if (rc) {
+>> +		mutex_unlock(&p->health_mutex);
+>> +		goto out;
+>> +	}
+[.]
+>> +
+>> +	/* update health struct with various flags derived from health bitmap */
+>> +	health = (struct nd_papr_pdsm_health) {
+>> +		.extension_flags = 0,
+>> +		.dimm_unarmed = !!(p->health_bitmap & PAPR_PMEM_UNARMED_MASK),
+>> +		.dimm_bad_shutdown = !!(p->health_bitmap & PAPR_PMEM_BAD_SHUTDOWN_MASK),
+>> +		.dimm_bad_restore = !!(p->health_bitmap & PAPR_PMEM_BAD_RESTORE_MASK),
+>> +		.dimm_encrypted = !!(p->health_bitmap & PAPR_PMEM_ENCRYPTED),
+>
+> NIT: odd that these are out of order WRT the struct definition.  Just made it
+> slightly harder to check them.
+Thanks for pointing this out. 2 fields were out of order. I have fixed
+them in v12.
 
-This patch improves the handling of the SGMII interface on the QCA8K
-devices. Previously the driver did no configuration of the port, even if
-it was selected. We now configure it up in the appropriate
-PHY/MAC/Base-X mode depending on what phylink tells us we are connected
-to and ensure it is enabled.
+>
+>> +		.dimm_locked = !!(p->health_bitmap & PAPR_PMEM_SCRUBBED_AND_LOCKED),
+>> +		.dimm_scrubbed = !!(p->health_bitmap & PAPR_PMEM_SCRUBBED_AND_LOCKED),
+>> +		.dimm_health = PAPR_PDSM_DIMM_HEALTHY,
+>> +	};
+>> +
+>> +	/* Update field dimm_health based on health_bitmap flags */
+>> +	if (p->health_bitmap & PAPR_PMEM_HEALTH_FATAL)
+>> +		health.dimm_health = PAPR_PDSM_DIMM_FATAL;
+>> +	else if (p->health_bitmap & PAPR_PMEM_HEALTH_CRITICAL)
+>> +		health.dimm_health = PAPR_PDSM_DIMM_CRITICAL;
+>> +	else if (p->health_bitmap & PAPR_PMEM_HEALTH_UNHEALTHY)
+>> +		health.dimm_health = PAPR_PDSM_DIMM_UNHEALTHY;
+>> +
+>> +	/* struct populated hence can release the mutex now */
+>> +	mutex_unlock(&p->health_mutex);
+>> +
+>> +	dev_dbg(&p->pdev->dev, "Copying payload size=%u\n", copysize);
+>
+> NIT: Now that you have defined the payload size to be fixed at
+> ND_PDSM_PAYLOAD_MAX_SIZE do you really need copysize as a variable?
+>
+Right, but this methods is going to serve as a template for other the
+pdsm implementations which may/may-not use a maximal struct like 'struct
+nd_papr_pdsm_health' hence want to keep the 'copysize' variable.
 
-Tested with a device where the CPU connection is RGMII (i.e. the common
-current use case) + one where the CPU connection is SGMII. I don't have
-any devices where the SGMII interface is brought out to something other
-than the CPU.
 
-v2:
-- Switch to phylink
-- Avoid need for device tree configuration options
+> But looks ok otherwise:
+>
+> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+Thanks Again. I will addresses your earlier review comment regarding
+order of field initialization for 'struct nd_papr_pdsm_health' in v12
+and retain this ack.
 
-Signed-off-by: Jonathan McDowell <noodles@earth.li>
+~ Vaibhav
 
-diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-index d2b5ab403e06..62f609ea0e49 100644
---- a/drivers/net/dsa/qca8k.c
-+++ b/drivers/net/dsa/qca8k.c
-@@ -14,6 +14,7 @@
- #include <linux/of_platform.h>
- #include <linux/if_bridge.h>
- #include <linux/mdio.h>
-+#include <linux/phylink.h>
- #include <linux/gpio/consumer.h>
- #include <linux/etherdevice.h>
- 
-@@ -418,55 +419,6 @@ qca8k_mib_init(struct qca8k_priv *priv)
- 	mutex_unlock(&priv->reg_mutex);
- }
- 
--static int
--qca8k_set_pad_ctrl(struct qca8k_priv *priv, int port, int mode)
--{
--	u32 reg, val;
--
--	switch (port) {
--	case 0:
--		reg = QCA8K_REG_PORT0_PAD_CTRL;
--		break;
--	case 6:
--		reg = QCA8K_REG_PORT6_PAD_CTRL;
--		break;
--	default:
--		pr_err("Can't set PAD_CTRL on port %d\n", port);
--		return -EINVAL;
--	}
--
--	/* Configure a port to be directly connected to an external
--	 * PHY or MAC.
--	 */
--	switch (mode) {
--	case PHY_INTERFACE_MODE_RGMII:
--		/* RGMII mode means no delay so don't enable the delay */
--		val = QCA8K_PORT_PAD_RGMII_EN;
--		qca8k_write(priv, reg, val);
--		break;
--	case PHY_INTERFACE_MODE_RGMII_ID:
--		/* RGMII_ID needs internal delay. This is enabled through
--		 * PORT5_PAD_CTRL for all ports, rather than individual port
--		 * registers
--		 */
--		qca8k_write(priv, reg,
--			    QCA8K_PORT_PAD_RGMII_EN |
--			    QCA8K_PORT_PAD_RGMII_TX_DELAY(QCA8K_MAX_DELAY) |
--			    QCA8K_PORT_PAD_RGMII_RX_DELAY(QCA8K_MAX_DELAY));
--		qca8k_write(priv, QCA8K_REG_PORT5_PAD_CTRL,
--			    QCA8K_PORT_PAD_RGMII_RX_DELAY_EN);
--		break;
--	case PHY_INTERFACE_MODE_SGMII:
--		qca8k_write(priv, reg, QCA8K_PORT_PAD_SGMII_EN);
--		break;
--	default:
--		pr_err("xMII mode %d not supported\n", mode);
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
- static void
- qca8k_port_set_status(struct qca8k_priv *priv, int port, int enable)
- {
-@@ -639,9 +591,7 @@ static int
- qca8k_setup(struct dsa_switch *ds)
- {
- 	struct qca8k_priv *priv = (struct qca8k_priv *)ds->priv;
--	phy_interface_t phy_mode = PHY_INTERFACE_MODE_NA;
- 	int ret, i;
--	u32 mask;
- 
- 	/* Make sure that port 0 is the cpu port */
- 	if (!dsa_is_cpu_port(ds, 0)) {
-@@ -661,24 +611,9 @@ qca8k_setup(struct dsa_switch *ds)
- 	if (ret)
- 		return ret;
- 
--	/* Initialize CPU port pad mode (xMII type, delays...) */
--	ret = of_get_phy_mode(dsa_to_port(ds, QCA8K_CPU_PORT)->dn, &phy_mode);
--	if (ret) {
--		pr_err("Can't find phy-mode for master device\n");
--		return ret;
--	}
--	ret = qca8k_set_pad_ctrl(priv, QCA8K_CPU_PORT, phy_mode);
--	if (ret < 0)
--		return ret;
--
--	/* Enable CPU Port, force it to maximum bandwidth and full-duplex */
--	mask = QCA8K_PORT_STATUS_SPEED_1000 | QCA8K_PORT_STATUS_TXFLOW |
--	       QCA8K_PORT_STATUS_RXFLOW | QCA8K_PORT_STATUS_DUPLEX;
--	qca8k_write(priv, QCA8K_REG_PORT_STATUS(QCA8K_CPU_PORT), mask);
-+	/* Enable CPU Port */
- 	qca8k_reg_set(priv, QCA8K_REG_GLOBAL_FW_CTRL0,
- 		      QCA8K_GLOBAL_FW_CTRL0_CPU_PORT_EN);
--	qca8k_port_set_status(priv, QCA8K_CPU_PORT, 1);
--	priv->port_sts[QCA8K_CPU_PORT].enabled = 1;
- 
- 	/* Enable MIB counters */
- 	qca8k_mib_init(priv);
-@@ -693,10 +628,9 @@ qca8k_setup(struct dsa_switch *ds)
- 		qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(i),
- 			  QCA8K_PORT_LOOKUP_MEMBER, 0);
- 
--	/* Disable MAC by default on all user ports */
-+	/* Disable MAC by default on all ports */
- 	for (i = 1; i < QCA8K_NUM_PORTS; i++)
--		if (dsa_is_user_port(ds, i))
--			qca8k_port_set_status(priv, i, 0);
-+		qca8k_port_set_status(priv, i, 0);
- 
- 	/* Forward all unknown frames to CPU port for Linux processing */
- 	qca8k_write(priv, QCA8K_REG_GLOBAL_FW_CTRL1,
-@@ -713,7 +647,7 @@ qca8k_setup(struct dsa_switch *ds)
- 				  QCA8K_PORT_LOOKUP_MEMBER, dsa_user_ports(ds));
- 		}
- 
--		/* Invividual user ports get connected to CPU port only */
-+		/* Individual user ports get connected to CPU port only */
- 		if (dsa_is_user_port(ds, i)) {
- 			int shift = 16 * (i % 2);
- 
-@@ -743,44 +677,252 @@ qca8k_setup(struct dsa_switch *ds)
- }
- 
- static void
--qca8k_adjust_link(struct dsa_switch *ds, int port, struct phy_device *phy)
-+qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
-+			 const struct phylink_link_state *state)
- {
- 	struct qca8k_priv *priv = ds->priv;
--	u32 reg;
-+	u32 reg, val;
- 
--	/* Force fixed-link setting for CPU port, skip others. */
--	if (!phy_is_pseudo_fixed_link(phy))
-+	switch (port) {
-+	case 0: /* 1st CPU port */
-+		if (state->interface != PHY_INTERFACE_MODE_RGMII &&
-+		    state->interface != PHY_INTERFACE_MODE_RGMII_ID &&
-+		    state->interface != PHY_INTERFACE_MODE_SGMII)
-+			return;
-+
-+		reg = QCA8K_REG_PORT0_PAD_CTRL;
-+		break;
-+	case 1:
-+	case 2:
-+	case 3:
-+	case 4:
-+	case 5:
-+		/* Internal PHY, nothing to do */
- 		return;
-+	case 6: /* 2nd CPU port / external PHY */
-+		if (state->interface != PHY_INTERFACE_MODE_RGMII &&
-+		    state->interface != PHY_INTERFACE_MODE_RGMII_ID &&
-+		    state->interface != PHY_INTERFACE_MODE_SGMII &&
-+		    state->interface != PHY_INTERFACE_MODE_1000BASEX)
-+			return;
- 
--	/* Set port speed */
--	switch (phy->speed) {
--	case 10:
--		reg = QCA8K_PORT_STATUS_SPEED_10;
-+		reg = QCA8K_REG_PORT6_PAD_CTRL;
- 		break;
--	case 100:
--		reg = QCA8K_PORT_STATUS_SPEED_100;
-+	default:
-+		dev_err(ds->dev, "%s: unsupported port: %i\n", __func__, port);
-+		return;
-+	}
-+
-+	if (port != 6 && phylink_autoneg_inband(mode)) {
-+		dev_err(ds->dev, "%s: in-band negotiation unsupported\n",
-+			__func__);
-+		return;
-+	}
-+
-+	switch (state->interface) {
-+	case PHY_INTERFACE_MODE_RGMII:
-+		/* RGMII mode means no delay so don't enable the delay */
-+		val = QCA8K_PORT_PAD_RGMII_EN;
-+		qca8k_write(priv, reg, val);
- 		break;
--	case 1000:
--		reg = QCA8K_PORT_STATUS_SPEED_1000;
-+	case PHY_INTERFACE_MODE_RGMII_ID:
-+		/* RGMII_ID needs internal delay. This is enabled through
-+		 * PORT5_PAD_CTRL for all ports, rather than individual port
-+		 * registers
-+		 */
-+		qca8k_write(priv, reg,
-+			    QCA8K_PORT_PAD_RGMII_EN |
-+			    QCA8K_PORT_PAD_RGMII_TX_DELAY(QCA8K_MAX_DELAY) |
-+			    QCA8K_PORT_PAD_RGMII_RX_DELAY(QCA8K_MAX_DELAY));
-+		qca8k_write(priv, QCA8K_REG_PORT5_PAD_CTRL,
-+			    QCA8K_PORT_PAD_RGMII_RX_DELAY_EN);
-+		break;
-+	case PHY_INTERFACE_MODE_SGMII:
-+	case PHY_INTERFACE_MODE_1000BASEX:
-+		/* Enable SGMII on the port */
-+		qca8k_write(priv, reg, QCA8K_PORT_PAD_SGMII_EN);
-+
-+		/* Enable/disable SerDes auto-negotiation as necessary */
-+		val = qca8k_read(priv, QCA8K_REG_PWS);
-+		if (phylink_autoneg_inband(mode))
-+			val &= ~QCA8K_PWS_SERDES_AEN_DIS;
-+		else
-+			val |= QCA8K_PWS_SERDES_AEN_DIS;
-+		qca8k_write(priv, QCA8K_REG_PWS, val);
-+
-+		/* Configure the SGMII parameters */
-+		val = qca8k_read(priv, QCA8K_REG_SGMII_CTRL);
-+
-+		val |= QCA8K_SGMII_EN_PLL | QCA8K_SGMII_EN_RX |
-+			QCA8K_SGMII_EN_TX | QCA8K_SGMII_EN_SD;
-+
-+		val &= ~QCA8K_SGMII_MODE_CTRL_MASK;
-+		if (dsa_is_cpu_port(ds, port)) {
-+			/* CPU port, we're talking to the CPU MAC, be a PHY */
-+			val |= QCA8K_SGMII_MODE_CTRL_PHY;
-+		} else if (state->interface == PHY_INTERFACE_MODE_SGMII) {
-+			val |= QCA8K_SGMII_MODE_CTRL_MAC;
-+		} else {
-+			val |= QCA8K_SGMII_MODE_CTRL_BASEX;
-+		}
-+
-+		qca8k_write(priv, QCA8K_REG_SGMII_CTRL, val);
- 		break;
- 	default:
--		dev_dbg(priv->dev, "port%d link speed %dMbps not supported.\n",
--			port, phy->speed);
-+		dev_err(ds->dev, "xMII mode %s not supported for port %d\n",
-+			phy_modes(state->interface), port);
- 		return;
- 	}
-+}
-+
-+static void
-+qca8k_phylink_validate(struct dsa_switch *ds, int port,
-+		       unsigned long *supported,
-+		       struct phylink_link_state *state)
-+{
-+	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
-+
-+	switch (port) {
-+	case 0: /* 1st CPU port */
-+		if (state->interface != PHY_INTERFACE_MODE_NA &&
-+		    state->interface != PHY_INTERFACE_MODE_RGMII &&
-+		    state->interface != PHY_INTERFACE_MODE_RGMII_ID &&
-+		    state->interface != PHY_INTERFACE_MODE_SGMII)
-+			goto unsupported;
-+		break;
-+	case 1:
-+	case 2:
-+	case 3:
-+	case 4:
-+	case 5:
-+		/* Internal PHY */
-+		if (state->interface != PHY_INTERFACE_MODE_NA &&
-+		    state->interface != PHY_INTERFACE_MODE_GMII)
-+			goto unsupported;
-+		break;
-+	case 6: /* 2nd CPU port / external PHY */
-+		if (state->interface != PHY_INTERFACE_MODE_NA &&
-+		    state->interface != PHY_INTERFACE_MODE_RGMII &&
-+		    state->interface != PHY_INTERFACE_MODE_RGMII_ID &&
-+		    state->interface != PHY_INTERFACE_MODE_SGMII &&
-+		    state->interface != PHY_INTERFACE_MODE_1000BASEX)
-+			goto unsupported;
-+		break;
-+	default:
-+		dev_err(ds->dev, "%s: unsupported port: %i\n", __func__, port);
-+unsupported:
-+		linkmode_zero(supported);
-+		return;
-+	}
-+
-+	phylink_set_port_modes(mask);
-+	phylink_set(mask, Autoneg);
-+
-+	phylink_set(mask, 1000baseT_Full);
-+	phylink_set(mask, 10baseT_Half);
-+	phylink_set(mask, 10baseT_Full);
-+	phylink_set(mask, 100baseT_Half);
-+	phylink_set(mask, 100baseT_Full);
-+
-+	if (state->interface == PHY_INTERFACE_MODE_1000BASEX)
-+		phylink_set(mask, 1000baseX_Full);
-+
-+	phylink_set(mask, Pause);
-+	phylink_set(mask, Asym_Pause);
-+
-+	linkmode_and(supported, supported, mask);
-+	linkmode_and(state->advertising, state->advertising, mask);
-+}
-+
-+static int
-+qca8k_phylink_mac_link_state(struct dsa_switch *ds, int port,
-+			     struct phylink_link_state *state)
-+{
-+	struct qca8k_priv *priv = ds->priv;
-+	u32 reg;
-+
-+	reg = qca8k_read(priv, QCA8K_REG_PORT_STATUS(port));
-+
-+	state->link = (reg & QCA8K_PORT_STATUS_LINK_UP);
-+	state->an_complete = state->link;
-+	state->an_enabled = (reg & QCA8K_PORT_STATUS_LINK_AUTO);
-+	state->duplex = (reg & QCA8K_PORT_STATUS_DUPLEX) ? DUPLEX_FULL :
-+							   DUPLEX_HALF;
-+
-+	switch (reg & QCA8K_PORT_STATUS_SPEED) {
-+	case QCA8K_PORT_STATUS_SPEED_10:
-+		state->speed = SPEED_10;
-+		break;
-+	case QCA8K_PORT_STATUS_SPEED_100:
-+		state->speed = SPEED_100;
-+		break;
-+	case QCA8K_PORT_STATUS_SPEED_1000:
-+		state->speed = SPEED_1000;
-+		break;
-+	default:
-+		state->speed = SPEED_UNKNOWN;
-+		break;
-+	}
- 
--	/* Set duplex mode */
--	if (phy->duplex == DUPLEX_FULL)
--		reg |= QCA8K_PORT_STATUS_DUPLEX;
-+	state->pause = MLO_PAUSE_NONE;
-+	if (reg & QCA8K_PORT_STATUS_RXFLOW)
-+		state->pause |= MLO_PAUSE_RX;
-+	if (reg & QCA8K_PORT_STATUS_TXFLOW)
-+		state->pause |= MLO_PAUSE_TX;
-+	if (reg & QCA8K_PORT_STATUS_FLOW_AUTO)
-+		state->pause |= MLO_PAUSE_AN;
- 
--	/* Force flow control */
--	if (dsa_is_cpu_port(ds, port))
--		reg |= QCA8K_PORT_STATUS_RXFLOW | QCA8K_PORT_STATUS_TXFLOW;
-+	return 1;
-+}
-+
-+static void
-+qca8k_phylink_mac_link_down(struct dsa_switch *ds, int port, unsigned int mode,
-+			    phy_interface_t interface)
-+{
-+	struct qca8k_priv *priv = ds->priv;
- 
--	/* Force link down before changing MAC options */
- 	qca8k_port_set_status(priv, port, 0);
-+}
-+
-+static void
-+qca8k_phylink_mac_link_up(struct dsa_switch *ds, int port, unsigned int mode,
-+			  phy_interface_t interface, struct phy_device *phydev,
-+			  int speed, int duplex, bool tx_pause, bool rx_pause)
-+{
-+	struct qca8k_priv *priv = ds->priv;
-+	u32 reg;
-+
-+	if (phylink_autoneg_inband(mode)) {
-+		reg = QCA8K_PORT_STATUS_LINK_AUTO;
-+	} else {
-+		switch (speed) {
-+		case SPEED_10:
-+			reg = QCA8K_PORT_STATUS_SPEED_10;
-+			break;
-+		case SPEED_100:
-+			reg = QCA8K_PORT_STATUS_SPEED_100;
-+			break;
-+		case SPEED_1000:
-+			reg = QCA8K_PORT_STATUS_SPEED_1000;
-+			break;
-+		default:
-+			reg = QCA8K_PORT_STATUS_LINK_AUTO;
-+			break;
-+		}
-+
-+		if (duplex == DUPLEX_FULL)
-+			reg |= QCA8K_PORT_STATUS_DUPLEX;
-+
-+		if (rx_pause | dsa_is_cpu_port(ds, port))
-+			reg |= QCA8K_PORT_STATUS_RXFLOW;
-+
-+		if (tx_pause | dsa_is_cpu_port(ds, port))
-+			reg |= QCA8K_PORT_STATUS_TXFLOW;
-+	}
-+
-+	reg |= QCA8K_PORT_STATUS_TXMAC | QCA8K_PORT_STATUS_RXMAC;
-+
- 	qca8k_write(priv, QCA8K_REG_PORT_STATUS(port), reg);
--	qca8k_port_set_status(priv, port, 1);
- }
- 
- static void
-@@ -937,13 +1079,11 @@ qca8k_port_enable(struct dsa_switch *ds, int port,
- {
- 	struct qca8k_priv *priv = (struct qca8k_priv *)ds->priv;
- 
--	if (!dsa_is_user_port(ds, port))
--		return 0;
--
- 	qca8k_port_set_status(priv, port, 1);
- 	priv->port_sts[port].enabled = 1;
- 
--	phy_support_asym_pause(phy);
-+	if (dsa_is_user_port(ds, port))
-+		phy_support_asym_pause(phy);
- 
- 	return 0;
- }
-@@ -1026,7 +1166,6 @@ qca8k_get_tag_protocol(struct dsa_switch *ds, int port,
- static const struct dsa_switch_ops qca8k_switch_ops = {
- 	.get_tag_protocol	= qca8k_get_tag_protocol,
- 	.setup			= qca8k_setup,
--	.adjust_link            = qca8k_adjust_link,
- 	.get_strings		= qca8k_get_strings,
- 	.get_ethtool_stats	= qca8k_get_ethtool_stats,
- 	.get_sset_count		= qca8k_get_sset_count,
-@@ -1040,6 +1179,11 @@ static const struct dsa_switch_ops qca8k_switch_ops = {
- 	.port_fdb_add		= qca8k_port_fdb_add,
- 	.port_fdb_del		= qca8k_port_fdb_del,
- 	.port_fdb_dump		= qca8k_port_fdb_dump,
-+	.phylink_validate	= qca8k_phylink_validate,
-+	.phylink_mac_link_state	= qca8k_phylink_mac_link_state,
-+	.phylink_mac_config	= qca8k_phylink_mac_config,
-+	.phylink_mac_link_down	= qca8k_phylink_mac_link_down,
-+	.phylink_mac_link_up	= qca8k_phylink_mac_link_up,
- };
- 
- static int
-diff --git a/drivers/net/dsa/qca8k.h b/drivers/net/dsa/qca8k.h
-index 42d6ea24eb14..10ef2bca2cde 100644
---- a/drivers/net/dsa/qca8k.h
-+++ b/drivers/net/dsa/qca8k.h
-@@ -36,6 +36,8 @@
- #define   QCA8K_MAX_DELAY				3
- #define   QCA8K_PORT_PAD_RGMII_RX_DELAY_EN		BIT(24)
- #define   QCA8K_PORT_PAD_SGMII_EN			BIT(7)
-+#define QCA8K_REG_PWS					0x010
-+#define   QCA8K_PWS_SERDES_AEN_DIS			BIT(7)
- #define QCA8K_REG_MODULE_EN				0x030
- #define   QCA8K_MODULE_EN_MIB				BIT(0)
- #define QCA8K_REG_MIB					0x034
-@@ -69,6 +71,7 @@
- #define   QCA8K_PORT_STATUS_LINK_UP			BIT(8)
- #define   QCA8K_PORT_STATUS_LINK_AUTO			BIT(9)
- #define   QCA8K_PORT_STATUS_LINK_PAUSE			BIT(10)
-+#define   QCA8K_PORT_STATUS_FLOW_AUTO			BIT(12)
- #define QCA8K_REG_PORT_HDR_CTRL(_i)			(0x9c + (_i * 4))
- #define   QCA8K_PORT_HDR_CTRL_RX_MASK			GENMASK(3, 2)
- #define   QCA8K_PORT_HDR_CTRL_RX_S			2
-@@ -77,6 +80,16 @@
- #define   QCA8K_PORT_HDR_CTRL_ALL			2
- #define   QCA8K_PORT_HDR_CTRL_MGMT			1
- #define   QCA8K_PORT_HDR_CTRL_NONE			0
-+#define QCA8K_REG_SGMII_CTRL				0x0e0
-+#define   QCA8K_SGMII_EN_PLL				BIT(1)
-+#define   QCA8K_SGMII_EN_RX				BIT(2)
-+#define   QCA8K_SGMII_EN_TX				BIT(3)
-+#define   QCA8K_SGMII_EN_SD				BIT(4)
-+#define   QCA8K_SGMII_CLK125M_DELAY			BIT(7)
-+#define   QCA8K_SGMII_MODE_CTRL_MASK			(BIT(22) | BIT(23))
-+#define   QCA8K_SGMII_MODE_CTRL_BASEX			(0 << 22)
-+#define   QCA8K_SGMII_MODE_CTRL_PHY			(1 << 22)
-+#define   QCA8K_SGMII_MODE_CTRL_MAC			(2 << 22)
- 
- /* EEE control registers */
- #define QCA8K_REG_EEE_CTRL				0x100
+>
+>> +
+>> +	/* Copy the health struct to the payload */
+>> +	memcpy(pdsm_cmd_to_payload(pkg), &health, copysize);
+>> +
+>> +	/* Update fw size including size of struct nd_pdsm_cmd_pkg fields */
+>> +	pkg->hdr.nd_fw_size = copysize + ND_PDSM_HDR_SIZE;
+>> +
+>> +out:
+>> +	dev_dbg(&p->pdev->dev, "completion code = %d\n", rc);
+>> +
+>> +	return rc;
+>> +}
+>> +
+>>  /*
+>>   * For a given pdsm request call an appropriate service function.
+>>   * Returns errors if any while handling the pdsm command package.
+>> @@ -449,6 +516,10 @@ static int papr_scm_service_pdsm(struct papr_scm_priv *p,
+>>  
+>>  	/* Call pdsm service function */
+>>  	switch (pdsm) {
+>> +	case PAPR_PDSM_HEALTH:
+>> +		pkg->cmd_status = papr_pdsm_health(p, pkg);
+>> +		break;
+>> +
+>>  	default:
+>>  		dev_dbg(&p->pdev->dev, "PDSM[0x%x]: Unsupported PDSM request\n",
+>>  			pdsm);
+>> -- 
+>> 2.26.2
+>> 
+
+-- 
+Cheers
+~ Vaibhav
