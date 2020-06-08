@@ -2,59 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B973D1F1336
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 09:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFCD1F133E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 09:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbgFHHJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 03:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
+        id S1729029AbgFHHJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 03:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727966AbgFHHJg (ORCPT
+        with ESMTP id S1727966AbgFHHJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 03:09:36 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADBFC08C5C3
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 00:09:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=riTlVvjTBVFVzOBQ14vr3osfjEjXKYJJb4irFAZraug=; b=mrrf00JD+nWPYE2DUp6aInWaGN
-        a0TxqMgzuk/LZrKik9Im/aZcH6eN6HqEQ6SXpJb1qToyKWPK/mAAx6+qceEklRjCStr6sT9NR15iC
-        G7zApsVtqHeNiJLCkNz/l/f3NxMiEJWdWykEdvN17+3WrJmZ37+O4628h8PIkyaTbI6dyc4WpeS7w
-        /CvBKq3CoXFkMGqT8kq6RGDfyyGSqG9B735Rq17SHasqFOmkkWHaOJJgPzhNxGk2HMBsdqDvWOL8X
-        KixbEX6rwCAMRY9fmWt8XRMo5f6s2AsghXmBgqFVATH/dejo6gIXS5Uuonc7MSsGYPgNwsGeoeC2q
-        1wRSFvkQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jiBuY-0003VP-6I; Mon, 08 Jun 2020 07:09:34 +0000
-Date:   Mon, 8 Jun 2020 00:09:34 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Stefano Stabellini <sstabellini@kernel.org>
-Cc:     jgross@suse.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, tamas@tklengyel.com,
-        roman@zededa.com,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>
-Subject: Re: [PATCH v2 09/11] swiotlb-xen: rename xen_phys_to_bus to
- xen_phys_to_dma and xen_bus_to_phys to xen_dma_to_phys
-Message-ID: <20200608070934.GE15742@infradead.org>
-References: <alpine.DEB.2.21.2006031506590.6774@sstabellini-ThinkPad-T480s>
- <20200603222247.11681-9-sstabellini@kernel.org>
+        Mon, 8 Jun 2020 03:09:53 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AD3C08C5C3;
+        Mon,  8 Jun 2020 00:09:52 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id a13so15740078ilh.3;
+        Mon, 08 Jun 2020 00:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=nf9dHqg6+XQwKpI8ou9xSgbseHLRO6vjwPKJ056sGMw=;
+        b=VS2lrjRYg1vBSVU3Lym8CjazMJrZEuwL3D8SPYJNftC0tECW7uS4NmwyHmJjskGcme
+         W2iSbSaI5Icy9RRBVFAbtvAguBG3LSJTWQsMZw9DSilcCgjumwYXEtMi3rfm4GvfAJ7l
+         Lg9kfOqGlbDMqBJHUxWLiKIerNSfmHjQe5NQ9EJkXLHHGSuTE0h0CC77RNEjHhJO3qgM
+         fDVv6mEYZfvlV13g0f/c+sBMPAjdJ5Jo7z8LMo1OxFNzabbd4Zr0geiR9y40ryRQ+cw5
+         Ks+tsPaRQopanhM5Zkg0dRy19oR+fuM4WyFlniLnQ39Dh0nbDZjfvnTxXSLbqGOh9QfB
+         JUrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=nf9dHqg6+XQwKpI8ou9xSgbseHLRO6vjwPKJ056sGMw=;
+        b=Dn4dfcgRap3NqOrRVvBZb9SNWhSGckFy+KyaUR96VIJS5b6eTgDuMKmFlNyMZZQJlz
+         Xk1MhAKMuCoM9nvgukhGtvLAco4XDvETNd8gBabP+6NDZl6MriRUAGbeVu4xCDcnV3Hn
+         r5i5avVijhwBkCHwDWeQ+2E+EB8BUWVqGpN78bULXS0bugEtPg/QCk0vtxjzBzsFsZVN
+         GnnOju32StYFdrwjhL5cSMdVgmZ2WoHWXC2hR8SLfK9HQin3M89wravZZo7ZZVyYi1S2
+         sqYv9jd0nHy3ZYhX4FR0RsWjvU/14OW/GUtEs0cpkhag6WcLn1ltGz0NxKr9oWXg5qbV
+         R4ZA==
+X-Gm-Message-State: AOAM532MTow0BVXE86PrsMmIeWEqHdoyd14QQUM6ztsbZMh34iNhp4wu
+        18nQLOKgHVu7iEuVHBGNbvbK1gGT5n6uPSIk4lg=
+X-Google-Smtp-Source: ABdhPJwi5Bw+CdttQXg1msL1Y4l1HLgGn2IsguTqKPOLJfTGo37VbE9laPCTQYH5xzzCfqY1Cfwy242nwDJ549M6nDU=
+X-Received: by 2002:a92:7311:: with SMTP id o17mr21691800ilc.176.1591600192183;
+ Mon, 08 Jun 2020 00:09:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200603222247.11681-9-sstabellini@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200608020557.31668-1-yanaijie@huawei.com> <20200608061502.GB17366@lst.de>
+ <CA+icZUUks4oJGJLhiRLTJTzyNxfsT_TZQ12MMvBVLXSaR8t0zA@mail.gmail.com> <CA+icZUXg2H7a4BVLpPXiw2D5Xzpy=Nxj8OJyw96giDvjNuBt+w@mail.gmail.com>
+In-Reply-To: <CA+icZUXg2H7a4BVLpPXiw2D5Xzpy=Nxj8OJyw96giDvjNuBt+w@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 8 Jun 2020 09:09:40 +0200
+Message-ID: <CA+icZUWYJ70W9E=Y-Cx92Ywd=pVgj9RAf2KsdapiVsXQwLDAnw@mail.gmail.com>
+Subject: Re: [PATCH v4] block: Fix use-after-free in blkdev_get()
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jason Yan <yanaijie@huawei.com>, viro@zeniv.linux.org.uk,
+        axboe@kernel.dk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Ming Lei <ming.lei@redhat.com>, Jan Kara <jack@suse.cz>,
+        Hulk Robot <hulkci@huawei.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 03:22:45PM -0700, Stefano Stabellini wrote:
-> so that their names can better describe their behavior.
-> 
-> No functional changes.
+On Mon, Jun 8, 2020 at 8:52 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Mon, Jun 8, 2020 at 8:47 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > On Mon, Jun 8, 2020 at 8:18 AM Christoph Hellwig <hch@lst.de> wrote:
+> > >
+> > > Looks good,
+> > >
+> > > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > >
+> > > Can you dig into the history for a proper fixes tag?
+> >
+> > [ CC Dan ]
+> >
+> > Dan gave the hint for the Fixes: tag in reply to the first patch:
+> >
+> > > The Fixes tag is a good idea though:
+> > >
+> > > Fixes: 89e524c04fa9 ("loop: Fix mount(2) failure due to race with LOOP_SET_FD")
+> >
+> > > It broke last July.  Before that, we used to check if __blkdev_get()
+> > > failed before dereferencing "bdev".
+> >
+>
+> Here is the Link.
+>
+> https://www.spinics.net/lists/linux-block/msg54825.html
+>
 
-I think this should go with the actual change, and adding the
-parameters.  Touching this function piecemail in three patches for
-what really is a single logical change is rather strange.
+Really CC Dan in 3rd attempt.
+
+OMG, I need a coffee - urgently.
+
+- Sedat -
