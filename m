@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF5A1F2DC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2571F3024
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733106AbgFIAgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:36:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34222 "EHLO mail.kernel.org"
+        id S2388043AbgFIA4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:56:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729722AbgFHXOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:14:09 -0400
+        id S1728311AbgFHXJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:09:00 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 451492158C;
-        Mon,  8 Jun 2020 23:14:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EBAB208C3;
+        Mon,  8 Jun 2020 23:08:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658048;
-        bh=Pw2Vbi4OSwCTDDtI1X6+6VAi+zxZ98OQuJyY5qQLVK4=;
+        s=default; t=1591657740;
+        bh=WKJng0jJUUQ4uEiNq23wqnHnxSWZqDkR0bpKIrh4DBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=snpK2LffGJhJJ5lGy1V0vE7uMiD4Wr3OwKTojraSBIhS16bgQGiLaq9zJInjX1Y0f
-         CGQA/0fMAQW8MKMqFv9qJ55V53yLx5a++Cb1Xrc3pljQ2aOQVkhBiqBkEVcDN2mYV1
-         D2KUOvE0WDAiINy8xSyoL4T4UL5BibAsWc6wRegY=
+        b=1PdaeVUasUdu8sql2wZyOacsg/RHRkRxYLyeO8jvzcRKlkTxKcpvQBxluw+elr4FP
+         GlKJpQgSzItDJLoN5/sOPT5gyo5EiXNu6EuLZRwKicvgc2RPPmldCOMgeiYMK/Lu49
+         N+eIU5Ll3gjvqELFGnyeivdrao0RwWHOvLqKGSB0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Richard Weinberger <richard@nod.at>,
-        Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.6 097/606] ubi: Fix seq_file usage in detailed_erase_block_info debugfs file
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 129/274] selftests/bpf: Ensure test flavors use correct skeletons
 Date:   Mon,  8 Jun 2020 19:03:42 -0400
-Message-Id: <20200608231211.3363633-97-sashal@kernel.org>
+Message-Id: <20200608230607.3361041-129-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -42,58 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Weinberger <richard@nod.at>
+From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit 0e7572cffe442290c347e779bf8bd4306bb0aa7c ]
+[ Upstream commit 76148faa161e7cfb2d7719f35b37d7db4f3f8596 ]
 
-3bfa7e141b0b ("fs/seq_file.c: seq_read(): add info message about buggy .next functions")
-showed that we don't use seq_file correctly.
-So make sure that our ->next function always updates the position.
+Ensure that test runner flavors include their own skeletons from <flavor>/
+directory. Previously, skeletons generated for no-flavor test_progs were used.
+Apart from fixing correctness, this also makes it possible to compile only
+flavors individually:
 
-Fixes: 7bccd12d27b7 ("ubi: Add debugfs file for tracking PEB state")
-Signed-off-by: Richard Weinberger <richard@nod.at>
+  $ make clean && make test_progs-no_alu32
+  ... now succeeds ...
+
+Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and test_maps w/ general rule")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20200429012111.277390-2-andriin@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/ubi/debug.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ tools/testing/selftests/bpf/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 54646c2c2744..ac2bdba8bb1a 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -393,9 +393,6 @@ static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
- {
- 	struct ubi_device *ubi = s->private;
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 4e654d41c7af..01c95f8278c7 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -324,7 +324,7 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:			\
+ 		      $(TRUNNER_BPF_SKELS)				\
+ 		      $$(BPFOBJ) | $(TRUNNER_OUTPUT)
+ 	$$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
+-	cd $$(@D) && $$(CC) $$(CFLAGS) -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
++	cd $$(@D) && $$(CC) -I. $$(CFLAGS) -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
  
--	if (*pos == 0)
--		return SEQ_START_TOKEN;
--
- 	if (*pos < ubi->peb_count)
- 		return pos;
- 
-@@ -409,8 +406,6 @@ static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
- {
- 	struct ubi_device *ubi = s->private;
- 
--	if (v == SEQ_START_TOKEN)
--		return pos;
- 	(*pos)++;
- 
- 	if (*pos < ubi->peb_count)
-@@ -432,11 +427,8 @@ static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
- 	int err;
- 
- 	/* If this is the start, print a header */
--	if (iter == SEQ_START_TOKEN) {
--		seq_puts(s,
--			 "physical_block_number\terase_count\tblock_status\tread_status\n");
--		return 0;
--	}
-+	if (*block_number == 0)
-+		seq_puts(s, "physical_block_number\terase_count\n");
- 
- 	err = ubi_io_is_bad(ubi, *block_number);
- 	if (err)
+ $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
+ 		       %.c						\
 -- 
 2.25.1
 
