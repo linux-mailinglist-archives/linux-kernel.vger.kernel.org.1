@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4C41F28DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AD01F28DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731856AbgFHX5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:57:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49066 "EHLO mail.kernel.org"
+        id S2387981AbgFHX4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:56:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731170AbgFHXXf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:23:35 -0400
+        id S1731162AbgFHXXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:23:39 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0F4A20872;
-        Mon,  8 Jun 2020 23:23:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 671F720872;
+        Mon,  8 Jun 2020 23:23:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658615;
-        bh=4p3kFaNwbjzRd7XMk2dV+c7fRUlfKlHkAbQyxboRuws=;
+        s=default; t=1591658619;
+        bh=uZ84vTGYlo4IboKjY879TBGBz6Hhr7Vq0yu0/6vxmZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bMr9AhyIspDlK2o0MbcRPmEnVCvsrfcLOb4VS+bp+JBod4MDUYrGIlKB39t++5MBV
-         z1FgPGiRXg4yzIlkfG6MbiD0ZDIyqtu8cxtZUrgT51e/F+U3ATZCw4CYYxr59jHdGZ
-         OjEZvjTkCuitiBkKVTeXGHWhfPlNuy4NIgTAnvIA=
+        b=a7YPaHmpKvtJX4DuhJ/p1eoxlA2l9V3G7Kdl2I6sJGwDNLg1ShRMcPty662Gin8A8
+         AVnCOEBgQ8XCOfMgxxJH4vessh0wlOhLQY6TYziY9Q3n6P70J78l9PjpQmaW2inq2Q
+         gl/Pd9ygyHoT/Ke6njhNFcNI+P8jK3EI5ApSqxwQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>,
-        linux-bluetooth@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 041/106] Bluetooth: btbcm: Add 2 missing models to subver tables
-Date:   Mon,  8 Jun 2020 19:21:33 -0400
-Message-Id: <20200608232238.3368589-41-sashal@kernel.org>
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 044/106] selftests/bpf: Fix memory leak in extract_build_id()
+Date:   Mon,  8 Jun 2020 19:21:36 -0400
+Message-Id: <20200608232238.3368589-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608232238.3368589-1-sashal@kernel.org>
 References: <20200608232238.3368589-1-sashal@kernel.org>
@@ -44,52 +46,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit c03ee9af4e07112bd3fc688daca9e654f41eca93 ]
+[ Upstream commit 9f56bb531a809ecaa7f0ddca61d2cf3adc1cb81a ]
 
-Currently the bcm_uart_subver_ and bcm_usb_subver_table-s lack entries
-for the BCM4324B5 and BCM20703A1 chipsets. This makes the code use just
-"BCM" as prefix for the filename to pass to request-firmware, making it
-harder for users to figure out which firmware they need. This especially
-is problematic with the UART attached BCM4324B5 where this leads to the
-filename being just "BCM.hcd".
+getline() allocates string, which has to be freed.
 
-Add the 2 missing devices to subver tables. This has been tested on:
-
-1. A Dell XPS15 9550 where this makes btbcm.c try to load
-"BCM20703A1-0a5c-6410.hcd" before it tries to load "BCM-0a5c-6410.hcd".
-
-2. A Thinkpad 8 where this makes btbcm.c try to load
-"BCM4324B5.hcd" before it tries to load "BCM.hcd"
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 81f77fd0deeb ("bpf: add selftest for stackmap with BPF_F_STACK_BUILD_ID")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Cc: Song Liu <songliubraving@fb.com>
+Link: https://lore.kernel.org/bpf/20200429012111.277390-7-andriin@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btbcm.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/testing/selftests/bpf/test_progs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/bluetooth/btbcm.c b/drivers/bluetooth/btbcm.c
-index e3e4d929e74f..ff6203c331ff 100644
---- a/drivers/bluetooth/btbcm.c
-+++ b/drivers/bluetooth/btbcm.c
-@@ -324,6 +324,7 @@ static const struct bcm_subver_table bcm_uart_subver_table[] = {
- 	{ 0x4103, "BCM4330B1"	},	/* 002.001.003 */
- 	{ 0x410e, "BCM43341B0"	},	/* 002.001.014 */
- 	{ 0x4406, "BCM4324B3"	},	/* 002.004.006 */
-+	{ 0x4606, "BCM4324B5"	},	/* 002.006.006 */
- 	{ 0x6109, "BCM4335C0"	},	/* 003.001.009 */
- 	{ 0x610c, "BCM4354"	},	/* 003.001.012 */
- 	{ 0x2122, "BCM4343A0"	},	/* 001.001.034 */
-@@ -334,6 +335,7 @@ static const struct bcm_subver_table bcm_uart_subver_table[] = {
- };
- 
- static const struct bcm_subver_table bcm_usb_subver_table[] = {
-+	{ 0x2105, "BCM20703A1"	},	/* 001.001.005 */
- 	{ 0x210b, "BCM43142A0"	},	/* 001.001.011 */
- 	{ 0x2112, "BCM4314A0"	},	/* 001.001.018 */
- 	{ 0x2118, "BCM20702A0"	},	/* 001.001.024 */
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index 89f8b0dae7ef..bad3505d66e0 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -1118,6 +1118,7 @@ static int extract_build_id(char *build_id, size_t size)
+ 		len = size;
+ 	memcpy(build_id, line, len);
+ 	build_id[len] = '\0';
++	free(line);
+ 	return 0;
+ err:
+ 	fclose(fp);
 -- 
 2.25.1
 
