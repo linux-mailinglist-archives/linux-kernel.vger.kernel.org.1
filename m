@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B941F1844
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2461F184A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729714AbgFHLzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 07:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
+        id S1729720AbgFHLzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 07:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729615AbgFHLzU (ORCPT
+        with ESMTP id S1729568AbgFHLz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 07:55:20 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F27BC08C5C2;
-        Mon,  8 Jun 2020 04:55:20 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2D0552C9;
-        Mon,  8 Jun 2020 13:55:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1591617316;
-        bh=1lj9FjuIipvGhcLtMC0uXaiiiMBYwOb9zRyCfR/27uw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HVQV+piKImt3IAI21N+NZKvdaNsADGQJ+OggKy6Jw8hF7GqRPeVVf0qvY+xkmGyVk
-         FKKKJOmGaL1i8VAo+4W9PwJAresMPWF+jlCS9aV6Yr6gYpmton4jniCarYAPsZ7RqG
-         +WfvBKQBuBT5CYAt4oYcM3LgCLTobKLnkjW6TO38=
-Date:   Mon, 8 Jun 2020 14:54:57 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     dinghao.liu@zju.edu.cn, Kangjie Lu <kjlu@umn.edu>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [PATCH] media: vsp1: Fix runtime PM imbalance in vsp1_probe
-Message-ID: <20200608115457.GA5896@pendragon.ideasonboard.com>
-References: <20200523115426.19285-1-dinghao.liu@zju.edu.cn>
- <20200608015456.GJ22208@pendragon.ideasonboard.com>
- <20200608015753.GK22208@pendragon.ideasonboard.com>
- <7b79863f.f636d.17291e1ff94.Coremail.dinghao.liu@zju.edu.cn>
- <CAMuHMdUDcpCxmgdJtMRX7K9NvDxj+tDu33ebax0TOMBNZaygDw@mail.gmail.com>
+        Mon, 8 Jun 2020 07:55:29 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7F7C08C5C2
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 04:55:28 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id x27so10006758lfg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 04:55:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=5mSqmXOzjDhWVi9ac6qJDpYRiKhmA/3B9Ie+LL65UlA=;
+        b=FcT9oWy7oyZ7jAu32kyAjqYeJ1Nm7LuUMYJggA0hHcGyNdJeo7DxtouSR3k9hmx318
+         8/aD713gZBGdozpc2UNo8MGsTgIVVBaRjj499H5PqqmeEQXLq70rH/vdLWqD2+ou+Xcv
+         45z7fU4L8qQtOdjA44+WYs8xZoMOT5nzQVFgsCXpacNuqWcfqBhddaVCHwPzNJN/kd70
+         UqY0JgMAZIRcn+80Dn7gA6zRJq0eGGG1EhqnmutQigmWMVXsZ1pmVEKMH+nGoGTLFabL
+         1LWpNzcUgxtuPPmRdq2JVnpJ/3MlFwWlmVIiMpmxhkryl253f/kl3/uJrXQ9G7vzf7dI
+         oztQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=5mSqmXOzjDhWVi9ac6qJDpYRiKhmA/3B9Ie+LL65UlA=;
+        b=WVloMRa8PJQnbHw8hyX8uSxLZLyFjme+G7FwsxS9ani+pKsv+Dnbhw/RRxhZuMgcnR
+         +UaV0Z+uevQe/5HQhvoDexOx0QwV1I7oPfe2tjCNQysyDr740VAYKvfFwMqLcnAP2WU2
+         3RRjPFQmuWSwzgnI0+6HkyUF3RyFtdzc64Yjt0sGJmsrwwMqJYBsjZJUIZgLIHN/9stx
+         IqcvFZaV84TguDViDhgwk7u07pWSYAr5THGm7crMZ03S+85Tf5yxZqGkh0HHmex9bW/V
+         PsIyAUk+9UeJ5elV10xHAdcYcT0oqjLqGZqwPRITYn8RLnfD8SUiNYGzt9Subhz8tP7s
+         Sa8Q==
+X-Gm-Message-State: AOAM533ciV2K2Q2SLMBvZc9q3OHYkB3YEaFZ3nlkg/jZJ2Q8K6h9eL+I
+        H8lpAtMYAC+pDS3Dcko7TjYE9Ugh7BAEIu2eSSU=
+X-Google-Smtp-Source: ABdhPJwg4OXWqJpgNEJf1zfsJgpmK6KXkq+mcQsIAwm636JysWLhhQdTUEwPGmuYnZCNWcxIX/8ur0LQLPclMf6wXLE=
+X-Received: by 2002:a19:c3c5:: with SMTP id t188mr12506371lff.149.1591617326847;
+ Mon, 08 Jun 2020 04:55:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUDcpCxmgdJtMRX7K9NvDxj+tDu33ebax0TOMBNZaygDw@mail.gmail.com>
+Received: by 2002:a2e:585b:0:0:0:0:0 with HTTP; Mon, 8 Jun 2020 04:55:26 -0700 (PDT)
+Reply-To: mrs.vernitha.maynard@mail.bg
+From:   Vernitha Maynard <sousah.fatou@gmail.com>
+Date:   Mon, 8 Jun 2020 11:55:26 +0000
+Message-ID: <CAJ7hs0403h4fXA6aAu6MJfM5U5PU895gUgndE=4a8Zi1oqB8ow@mail.gmail.com>
+Subject: Greeting,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+My Dear,
 
-On Mon, Jun 08, 2020 at 09:39:51AM +0200, Geert Uytterhoeven wrote:
-> Hi Dinghao,
-> 
-> On Mon, Jun 8, 2020 at 5:03 AM <dinghao.liu@zju.edu.cn> wrote:
-> > > > I wonder how many bugs we have today, and how many bugs will keep
-> > > > appearing in the future, due to this historical design mistake :-(
-> >
-> > Good question. It's hard to say if this is a design mistake (some use
-> > of this API does not check its return value and expects it always to
-> > increment the usage counter). But it does make developers misuse it easier.
-> 
-> On Renesas SoCs, I believe these can only fail if there's something
-> seriously wrong, which means the system could never have gotten this far
-> in the boot sequence anyway.  That's why I tend not to check the result
-> of pm_runtime_get_sync() at all (on drivers for Renesas SoCs).
+With warm heart I offer my friendship, and my greetings to you in the
+name of our lord, and I hope this letter meets you in good time, I
+Propose with my free mind and as a person of integrity from God, I
+know that this message will appear as a surprise to you that we barely
+Know but the grace of God directed me to you and I wish you read this
+message and be blessed in name of the Lord.
 
-There are lots of return paths from rpm_resume() that return an error,
-more than just rpm_callback(). Do you consider that none of them are
-valid errors that drivers need to handle ?
+I have a brain tumor; I suffer terribly at the moment. My doctor just
+informed me that my days are numbered because of my health therefore
+condemned to certain death. Currently, I have exhausted all my savings
+for my medical care.
 
--- 
-Regards,
+But I do have some funds for my charity project; these funds are
+deposited with one of the Banks here In Cote D'Ivoire West Africa.
+Purposed for charitable foundation, my marital status is such that I'm
+single because I lost my Husband over 9 years now and unfortunately we
+have not had a child together, which I am no one to leave my legacy
+for. Therefore, to release my funds I would like to make a donation so
+that there is no stiff tax on my money.
 
-Laurent Pinchart
+To this I would be so graceful and in order to help the poor to give
+what amounts to said legacy worth four Million Euros (=E2=82=AC4,000,000.00
+Million Euros) to enable you establish a charitable foundation in my
+memory so that the grace of God be with me until my last home so I can
+receive an honorable place with the Lord our father.
+
+I have no fear because before contacted you, I have several nights
+prayed for the Lord to give me the contact of a trusted person of whom
+I can entrust this matter and I believe my contacts to you is divine.
+
+Know that you can keep 30% of the money for yourself and the rest will
+be used to create a charitable foundation in my memory and a
+federation in the fight against cancer and also build orphanages.
+
+I count on your goodwill and especially on the proper use of these
+funds have something I do not doubt because I have great confidence in
+you that God may guide me toward you.  My email
+mrs.vernitha.maynard@mail.bg
+
+
+Awaiting your prompt reply, receive my cordial and fraternal greetings.
+
+Yours Sincerely,
+Mrs Vernitha Maynard
