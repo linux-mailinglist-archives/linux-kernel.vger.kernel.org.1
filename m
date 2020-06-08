@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1F21F22FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457261F2431
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728922AbgFHXLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:11:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56042 "EHLO mail.kernel.org"
+        id S1730700AbgFHXSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:18:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728553AbgFHXKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:10:02 -0400
+        id S1728719AbgFHXPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:15:10 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0777A20897;
-        Mon,  8 Jun 2020 23:10:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 921F121501;
+        Mon,  8 Jun 2020 23:15:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657801;
-        bh=MjLl3ug6sbtCBvmLTLKqCIvNlrMQAeBsiE98mZv6j0Q=;
+        s=default; t=1591658110;
+        bh=jAO10dhZ0/bvgXRJ5ALw6c+WQy6MKBhxPTMd0JqViQU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RvtaMzB1/ddk2imoD0x1yP83AsidVKhg/A8ciG/VqRP7UB37oxa2vBi3ciy021LOp
-         8NaTSxCMylGC5N/klF1yTBYtWYw9JsByIPsb4B1orAbZa3ZKTCDsIkKFurWZk1jV2A
-         T87Z6yVl941iATkJflfIYlRpZg9FjafueQmx6+E4=
+        b=Yp0wg583cF/EJPOSbFpdN9IqDseS+8SjiNe+I6RNd5lKW+bWA7Sg7dxHXYpvHm0oJ
+         Gfa7aIoiLnNdXok2JCtEkj8WOuCcRik8BW7c5JwB/bgqLCUFXFyBE7/2mT9cDNm7nC
+         lai9bI4IGeA7KA8S0NjsuY0CxyU/sYX4FnL+EWak=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mordechay Goodstein <mordechay.goodstein@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 179/274] iwlwifi: avoid debug max amsdu config overwriting itself
-Date:   Mon,  8 Jun 2020 19:04:32 -0400
-Message-Id: <20200608230607.3361041-179-sashal@kernel.org>
+Cc:     Keno Fischer <keno@juliacomputing.com>,
+        Will Deacon <will@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, Bin Lu <Bin.Lu@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.6 149/606] arm64: Fix PTRACE_SYSEMU semantics
+Date:   Mon,  8 Jun 2020 19:04:34 -0400
+Message-Id: <20200608231211.3363633-149-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,94 +46,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mordechay Goodstein <mordechay.goodstein@intel.com>
+From: Keno Fischer <keno@juliacomputing.com>
 
-[ Upstream commit a65a5824298b06049dbaceb8a9bd19709dc9507c ]
+commit 1cf6022bd9161081215028203919c33fcfa6debb upstream.
 
-If we set amsdu_len one after another the second one overwrites
-the orig_amsdu_len so allow only moving from debug to non debug state.
+Quoth the man page:
+```
+       If the tracee was restarted by PTRACE_SYSCALL or PTRACE_SYSEMU, the
+       tracee enters syscall-enter-stop just prior to entering any system
+       call (which will not be executed if the restart was using
+       PTRACE_SYSEMU, regardless of any change made to registers at this
+       point or how the tracee is restarted after this stop).
+```
 
-Also the TLC update check was wrong: it was checking that also the orig
-is smaller then the new updated size, which is not the case in debug
-amsdu mode.
+The parenthetical comment is currently true on x86 and powerpc,
+but not currently true on arm64. arm64 re-checks the _TIF_SYSCALL_EMU
+flag after the syscall entry ptrace stop. However, at this point,
+it reflects which method was used to re-start the syscall
+at the entry stop, rather than the method that was used to reach it.
+Fix that by recording the original flag before performing the ptrace
+stop, bringing the behavior in line with documentation and x86/powerpc.
 
-Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
-Fixes: af2984e9e625 ("iwlwifi: mvm: add a debugfs entry to set a fixed size AMSDU for all TX packets")
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20200424182644.e565446a4fce.I9729d8c520d8b8bb4de9a5cdc62e01eb85168aac@changeid
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: f086f67485c5 ("arm64: ptrace: add support for syscall emulation")
+Cc: <stable@vger.kernel.org> # 5.3.x-
+Signed-off-by: Keno Fischer <keno@juliacomputing.com>
+Acked-by: Will Deacon <will@kernel.org>
+Tested-by: Sudeep Holla <sudeep.holla@arm.com>
+Tested-by: Bin Lu <Bin.Lu@arm.com>
+[catalin.marinas@arm.com: moved 'flags' bit masking]
+[catalin.marinas@arm.com: changed 'flags' type to unsigned long]
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c | 11 +++++++----
- drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c   | 15 ++++++++-------
- 2 files changed, 15 insertions(+), 11 deletions(-)
+ arch/arm64/kernel/ptrace.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c b/drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c
-index 3beef8d077b8..8fae7e707374 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c
-@@ -5,10 +5,9 @@
-  *
-  * GPL LICENSE SUMMARY
-  *
-- * Copyright(c) 2012 - 2014 Intel Corporation. All rights reserved.
-  * Copyright(c) 2013 - 2015 Intel Mobile Communications GmbH
-  * Copyright(c) 2016 - 2017 Intel Deutschland GmbH
-- * Copyright(c) 2018 - 2019 Intel Corporation
-+ * Copyright(c) 2012 - 2014, 2018 - 2020 Intel Corporation
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of version 2 of the GNU General Public License as
-@@ -28,10 +27,9 @@
-  *
-  * BSD LICENSE
-  *
-- * Copyright(c) 2012 - 2014 Intel Corporation. All rights reserved.
-  * Copyright(c) 2013 - 2015 Intel Mobile Communications GmbH
-  * Copyright(c) 2016 - 2017 Intel Deutschland GmbH
-- * Copyright(c) 2018 - 2019 Intel Corporation
-+ * Copyright(c) 2012 - 2014, 2018 - 2020 Intel Corporation
-  * All rights reserved.
-  *
-  * Redistribution and use in source and binary forms, with or without
-@@ -481,6 +479,11 @@ static ssize_t iwl_dbgfs_amsdu_len_write(struct ieee80211_sta *sta,
- 	if (kstrtou16(buf, 0, &amsdu_len))
- 		return -EINVAL;
+diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+index cd6e5fa48b9c..c30f77bd875f 100644
+--- a/arch/arm64/kernel/ptrace.c
++++ b/arch/arm64/kernel/ptrace.c
+@@ -1829,10 +1829,11 @@ static void tracehook_report_syscall(struct pt_regs *regs,
  
-+	/* only change from debug set <-> debug unset */
-+	if ((amsdu_len && mvmsta->orig_amsdu_len) ||
-+	    (!!amsdu_len && mvmsta->orig_amsdu_len))
-+		return -EBUSY;
+ int syscall_trace_enter(struct pt_regs *regs)
+ {
+-	if (test_thread_flag(TIF_SYSCALL_TRACE) ||
+-		test_thread_flag(TIF_SYSCALL_EMU)) {
++	unsigned long flags = READ_ONCE(current_thread_info()->flags);
 +
- 	if (amsdu_len) {
- 		mvmsta->orig_amsdu_len = sta->max_amsdu_len;
- 		sta->max_amsdu_len = amsdu_len;
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c b/drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c
-index 15d11fb72aca..6f4d241d47e9 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c
-@@ -369,14 +369,15 @@ void iwl_mvm_tlc_update_notif(struct iwl_mvm *mvm,
- 		u16 size = le32_to_cpu(notif->amsdu_size);
- 		int i;
++	if (flags & (_TIF_SYSCALL_EMU | _TIF_SYSCALL_TRACE)) {
+ 		tracehook_report_syscall(regs, PTRACE_SYSCALL_ENTER);
+-		if (!in_syscall(regs) || test_thread_flag(TIF_SYSCALL_EMU))
++		if (!in_syscall(regs) || (flags & _TIF_SYSCALL_EMU))
+ 			return -1;
+ 	}
  
--		/*
--		 * In debug sta->max_amsdu_len < size
--		 * so also check with orig_amsdu_len which holds the original
--		 * data before debugfs changed the value
--		 */
--		if (WARN_ON(sta->max_amsdu_len < size &&
--			    mvmsta->orig_amsdu_len < size))
-+		if (sta->max_amsdu_len < size) {
-+			/*
-+			 * In debug sta->max_amsdu_len < size
-+			 * so also check with orig_amsdu_len which holds the
-+			 * original data before debugfs changed the value
-+			 */
-+			WARN_ON(mvmsta->orig_amsdu_len < size);
- 			goto out;
-+		}
- 
- 		mvmsta->amsdu_enabled = le32_to_cpu(notif->amsdu_enabled);
- 		mvmsta->max_amsdu_len = size;
 -- 
 2.25.1
 
