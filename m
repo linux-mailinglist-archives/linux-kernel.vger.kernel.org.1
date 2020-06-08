@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510491F2BBA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF061F2BB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732587AbgFIAS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:18:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40948 "EHLO mail.kernel.org"
+        id S1732154AbgFIAST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:18:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730660AbgFHXSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:18:37 -0400
+        id S1730672AbgFHXSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:18:41 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69FD620814;
-        Mon,  8 Jun 2020 23:18:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E6FD2085B;
+        Mon,  8 Jun 2020 23:18:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658317;
-        bh=74mmgenOw4MmKp1UIPKTZunpiAwuag71URypgKevze8=;
+        s=default; t=1591658321;
+        bh=Yn3ATB0DMOTHJ/cc/Ku3BysKcjUHDwZ0Jtkt8knF+ZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pnY/RZ2WIfZCpi/pGnF1he024wuY7odGsZbVcgIfxHE2fz2J8PY4YP915SBjQaMcu
-         YqXaWo3QdY1y/Qfd7nNO/lIwiNsox9+w0WjAeHcQLZt+CwUTRyXgmh+Q9+kLG0aFFb
-         Aw36ESfwkc4bHPuBA6rA0RmgJK1AxjexY1DOnUok=
+        b=AbuI8FThWZbs8AdoWSbhYfSZQ3x75Lr+f7zXe5eXFyTeoChwtddO6HrSpwN0JAkMe
+         /YcLOvv3lQWfgKj5Tna//KVpHd2ef9mOeFHtUsmMWn2ZJKnUb02z1oGjWKL57D/9o/
+         nMCi9dx0FFHP2S7CR2l8TaUxs0+GiY7p9lLYWPZI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qiushi Wu <wu000273@umn.edu>, Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 317/606] RDMA/pvrdma: Fix missing pci disable in pvrdma_pci_probe()
-Date:   Mon,  8 Jun 2020 19:07:22 -0400
-Message-Id: <20200608231211.3363633-317-sashal@kernel.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 321/606] exec: Always set cap_ambient in cap_bprm_set_creds
+Date:   Mon,  8 Jun 2020 19:07:26 -0400
+Message-Id: <20200608231211.3363633-321-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -43,36 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: "Eric W. Biederman" <ebiederm@xmission.com>
 
-[ Upstream commit db857e6ae548f0f4f4a0f63fffeeedf3cca21f9d ]
+[ Upstream commit a4ae32c71fe90794127b32d26d7ad795813b502e ]
 
-In function pvrdma_pci_probe(), pdev was not disabled in one error
-path. Thus replace the jump target “err_free_device” by
-"err_disable_pdev".
+An invariant of cap_bprm_set_creds is that every field in the new cred
+structure that cap_bprm_set_creds might set, needs to be set every
+time to ensure the fields does not get a stale value.
 
-Fixes: 29c8d9eba550 ("IB: Add vmw_pvrdma driver")
-Link: https://lore.kernel.org/r/20200523030457.16160-1-wu000273@umn.edu
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+The field cap_ambient is not set every time cap_bprm_set_creds is
+called, which means that if there is a suid or sgid script with an
+interpreter that has neither the suid nor the sgid bits set the
+interpreter should be able to accept ambient credentials.
+Unfortuantely because cap_ambient is not reset to it's original value
+the interpreter can not accept ambient credentials.
+
+Given that the ambient capability set is expected to be controlled by
+the caller, I don't think this is particularly serious.  But it is
+definitely worth fixing so the code works correctly.
+
+I have tested to verify my reading of the code is correct and the
+interpreter of a sgid can receive ambient capabilities with this
+change and cannot receive ambient capabilities without this change.
+
+Cc: stable@vger.kernel.org
+Cc: Andy Lutomirski <luto@kernel.org>
+Fixes: 58319057b784 ("capabilities: ambient capabilities")
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/commoncap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-index e580ae9cc55a..780fd2dfc07e 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-@@ -829,7 +829,7 @@ static int pvrdma_pci_probe(struct pci_dev *pdev,
- 	    !(pci_resource_flags(pdev, 1) & IORESOURCE_MEM)) {
- 		dev_err(&pdev->dev, "PCI BAR region not MMIO\n");
- 		ret = -ENOMEM;
--		goto err_free_device;
-+		goto err_disable_pdev;
- 	}
+diff --git a/security/commoncap.c b/security/commoncap.c
+index f4ee0ae106b2..0ca31c8bc0b1 100644
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -812,6 +812,7 @@ int cap_bprm_set_creds(struct linux_binprm *bprm)
+ 	int ret;
+ 	kuid_t root_uid;
  
- 	ret = pci_request_regions(pdev, DRV_NAME);
++	new->cap_ambient = old->cap_ambient;
+ 	if (WARN_ON(!cap_ambient_invariant_ok(old)))
+ 		return -EPERM;
+ 
 -- 
 2.25.1
 
