@@ -2,95 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBB41F1205
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 06:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68E11F1210
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 06:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgFHERi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 00:17:38 -0400
-Received: from mail.hallyn.com ([178.63.66.53]:35396 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725945AbgFHERg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 00:17:36 -0400
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id 56612E4C; Sun,  7 Jun 2020 23:17:34 -0500 (CDT)
-Date:   Sun, 7 Jun 2020 23:17:34 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Amol Grover <frextrite@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH RESEND] device_cgroup: Fix RCU list debugging warning
-Message-ID: <20200608041734.GA10911@mail.hallyn.com>
-References: <20200406105950.GA2285@workstation-kernel-dev>
- <20200607062340.7be7e8d5@canb.auug.org.au>
- <20200607190840.GG4455@paulmck-ThinkPad-P72>
+        id S1728702AbgFHEWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 00:22:55 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:39149 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726869AbgFHEWn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 00:22:43 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 0513F5C00C3;
+        Mon,  8 Jun 2020 00:22:42 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 08 Jun 2020 00:22:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paritcher.com;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=IWsOiUbZwkTY4DBGI6yY4sXXU3
+        nmL/23BRuCy+XeQik=; b=H9Z3mysFvsIQx+W9ICd54hNVdHXn6bVs2cPWdZ/PxP
+        rlyMrnqD3wxMldCzzYC2cEjJPUs1RjMsK1RG5GnlqfV153ZIZjm8k/fzt5Uwa/rA
+        cwNvr5ot+A6VzM3adHxWXld7MDiZgWbNBwyb/Ke/u1y59G/XbPbvZyGVaE2AZUWy
+        xqthLz4mklOE7sLJ5WsPCSHqMdwKygSz+BFlJ60Rap6z4DzTdJt8TiKaCN4gOp5H
+        uB0cU9CjgH3sK14yLduBl8hWeR3o7Ibm5f+pemJUHxJMBjlsKHaLsv5/J4QAIuu0
+        7hLZyUkn+ActPvQYrPbymhdX9G2yKkqar45kUcmTCQVw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=IWsOiUbZwkTY4DBGI
+        6yY4sXXU3nmL/23BRuCy+XeQik=; b=b5OEvGRWLJ/27sqj7wW+hUtlyVukCka+u
+        7Aj0acSJRcnijTSIKBmQ1jMowt+IcLcG8I7cMEVNgwR24RHJWvz3FqoK9fpBiAnn
+        U9BgK/qWRpPywb6CWmhLYSQJZmsnJg4xV6BoBZdsA7xrM6o+Av/Lf3OmBG9qHsyO
+        LZ3/gRPHXQTTRhBuo4/BErW8mTo61qyCDLRbkdR321ou9B3+zdZeaUDGtlJvZFWQ
+        KMoISy594M6RoxiK48IEF18vojaMla1y3vrfforA48YoXQA6mHxOXbcp77PcT4yc
+        nt5ltwUTEM6xkfQyZbGMziAd31Rg6BKliBTz9RMcslOq1ac+0xh9g==
+X-ME-Sender: <xms:Eb3dXs4n8HvSqTRs8OWd2RfY7qzHIElJ2Kscaz11O14HGC7U_uXhUg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehtddgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    hmihhsshhinhhgucfvqfcufhhivghlugculdeftddmnecujfgurhephffvufffkffoggfg
+    sedtkeertdertddtnecuhfhrohhmpegjucfrrghrihhttghhvghruceohidrlhhinhhugi
+    esphgrrhhithgthhgvrhdrtghomheqnecuggftrfgrthhtvghrnhepfedvgeeggeejkedt
+    lefhfeeklefhhfekvdetudehteegudejgeekjedvueegteeinecukfhppeeijedrkeegrd
+    duleegrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomhephidrlhhinhhugiesphgrrhhithgthhgvrhdrtghomh
+X-ME-Proxy: <xmx:Eb3dXt4i4iYYBwZ38SjX_Ug8aLxnBxTwN0g7NC7lCLrwd6cG8b2fHA>
+    <xmx:Eb3dXrekpFkQhWfbbA5g3qGa7dcmQIISDOpMAUs8XTBcpCW1VDlE8w>
+    <xmx:Eb3dXhL4reb1O-b9i4owcemRfx6yML15OMqpWQ-O2TWaIYyyzxOmsA>
+    <xmx:Er3dXqwBR3DZbAOawW9ec98iBBCEV5Nl9rJ-OaVGn61WlNmZ25ijpA>
+Received: from localhost.localdomain (ool-4354c2af.dyn.optonline.net [67.84.194.175])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3DFF03280059;
+        Mon,  8 Jun 2020 00:22:41 -0400 (EDT)
+From:   Y Paritcher <y.linux@paritcher.com>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 0/3] platform/x86: dell-wmi: new keys
+Date:   Mon,  8 Jun 2020 00:22:23 -0400
+Message-Id: <cover.1591584631.git.y.linux@paritcher.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200607190840.GG4455@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 07, 2020 at 12:08:40PM -0700, Paul E. McKenney wrote:
-> On Sun, Jun 07, 2020 at 06:23:40AM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > On Mon, 6 Apr 2020 16:29:50 +0530 Amol Grover <frextrite@gmail.com> wrote:
-> > >
-> > > exceptions may be traversed using list_for_each_entry_rcu()
-> > > outside of an RCU read side critical section BUT under the
-> > > protection of decgroup_mutex. Hence add the corresponding
-> > > lockdep expression to fix the following false-positive
-> > > warning:
-> > > 
-> > > [    2.304417] =============================
-> > > [    2.304418] WARNING: suspicious RCU usage
-> > > [    2.304420] 5.5.4-stable #17 Tainted: G            E
-> > > [    2.304422] -----------------------------
-> > > [    2.304424] security/device_cgroup.c:355 RCU-list traversed in non-reader section!!
-> > > 
-> > > Signed-off-by: Amol Grover <frextrite@gmail.com>
-> > > ---
-> > >  security/device_cgroup.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/security/device_cgroup.c b/security/device_cgroup.c
-> > > index 7d0f8f7431ff..b7da9e0970d9 100644
-> > > --- a/security/device_cgroup.c
-> > > +++ b/security/device_cgroup.c
-> > > @@ -352,7 +352,8 @@ static bool match_exception_partial(struct list_head *exceptions, short type,
-> > >  {
-> > >  	struct dev_exception_item *ex;
-> > >  
-> > > -	list_for_each_entry_rcu(ex, exceptions, list) {
-> > > +	list_for_each_entry_rcu(ex, exceptions, list,
-> > > +				lockdep_is_held(&devcgroup_mutex)) {
-> > >  		if ((type & DEVCG_DEV_BLOCK) && !(ex->type & DEVCG_DEV_BLOCK))
-> > >  			continue;
-> > >  		if ((type & DEVCG_DEV_CHAR) && !(ex->type & DEVCG_DEV_CHAR))
-> > > -- 
-> > > 2.24.1
-> > > 
-> > 
-> > I have been carrying the above patch in linux-next for some time now.
-> > I have been carrying it because it fixes problems for syzbot (see the
-> > third warning in
-> > https://lore.kernel.org/linux-next/CACT4Y+YnjK+kq0pfb5fe-q1bqe2T1jq_mvKHf--Z80Z3wkyK1Q@mail.gmail.com/).
-> > Is there some reason it has not been applied to some tree?
-> 
-> The RCU changes on which this patch depends have long since made it to
-> mainline, so it can go up any tree.  I can take it if no one else will,
-> but it might be better going in via the security tree.
-> 
-> 							Thanx, Paul
+add new backlight events with a type of 0x0010 and a code of 0x57 / 0x58,
+add a new keymap type table 0x0012 for keycode of 0xe035 from the Fn-lock
+key
+extend bios_to_linux_keycode to 2 bytes to allow for a new keycode 0xffff
 
-James, do you mind pulling it in?
+Y Paritcher (3):
+  platform/x86: dell-wmi: add new backlight events
+  platform/x86: dell-wmi: add new keymap type 0x0012
+  platform/x86: dell-wmi: add new dmi keys to bios_to_linux_keycode
+
+ drivers/platform/x86/dell-wmi.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
+
+-- 
+2.27.0
+
