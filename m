@@ -2,58 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFA41F128A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 07:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988721F128F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 07:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728648AbgFHFq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 01:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727836AbgFHFq0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 01:46:26 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00AE5C08C5C3;
-        Sun,  7 Jun 2020 22:46:25 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1jiAbu-00529k-5Y; Mon, 08 Jun 2020 05:46:14 +0000
-Date:   Mon, 8 Jun 2020 06:46:14 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Rodolfo C. Villordo" <rodolfovillordo@gmail.com>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Forest Bond <forest@alittletooquiet.net>,Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>,devel@driverdev.osuosl.org,linux-kernel@vger.kernel.org
-Message-ID: <20200608054614.GO23230@ZenIV.linux.org.uk>
-References: <20200607224156.GA24090@ip-172-31-24-31.ec2.internal>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200607224156.GA24090@ip-172-31-24-31.ec2.internal>
+        id S1728667AbgFHFvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 01:51:35 -0400
+Received: from mga12.intel.com ([192.55.52.136]:44750 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727905AbgFHFve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 01:51:34 -0400
+IronPort-SDR: SDO3rOjTuiyzjY1kYVFo3Gqhw7N4kLyKLPkIWYwiJwSgLSICQfWatp+JHUce1bm5vX0gLRmNgi
+ 7k8h1B4ShXjQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2020 22:51:31 -0700
+IronPort-SDR: q4UWM5gpo1bj1xHZQ8lGy+US97E6M8gea2VCmgVsGo2PCmkzNCR2S0qAPPP4nFFyEQKlSWRzqu
+ aJQ7XDZCfsbA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,487,1583222400"; 
+   d="scan'208";a="313784734"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by FMSMGA003.fm.intel.com with ESMTP; 07 Jun 2020 22:51:29 -0700
+From:   Dilip Kota <eswara.kota@linux.intel.com>
+To:     wim@linux-watchdog.org, linux@roeck-us.net,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        robbh@kernel.org
+Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        yixin.zhu@intel.com, Dilip Kota <eswara.kota@linux.intel.com>
+Subject: [PATCH 0/2] Driver for watchdog timer on Intel Lightning Mountain SoC 
+Date:   Mon,  8 Jun 2020 13:49:38 +0800
+Message-Id: <cover.1591584255.git.eswara.kota@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 07, 2020 at 10:41:56PM +0000, Rodolfo C. Villordo wrote:
-> Multiple line over 80 characters fixes by splitting in multiple lines.
-> Warning found by checkpatch.pl
+This patch series adds watchdog timer driver and respective yaml schemas
+for watchdog timer on Intel Lightning Mountain SoC.
 
-I doubt that checkpatch.pl can catch the real problems there:
+This patch series is rebased and tested on mainline linux kernel 5.7:
+base-commit: 3d77e6a8804a ("Linux 5.7")
+tags: v5.7
 
-* Hungarian Notation Sucks.  Really.
-* so does CamelCase, especially for wonders like s_uGetRTSCTSRsvTime
-* local variables are useful
-* if a long expression keeps cropping up all over the place, you
-probably are missing an inline helper.
+Dilip Kota (2):
+  dt-bindings: watchdog: intel: Add YAML Schemas for Watchdog timer
+  watchdog: intel: Watchdog timer support on Lightning Mountain
 
-PS: this
-> -			buf->time_stamp_off_a = vnt_time_stamp_off(pDevice, wCurrentRate);
-> -			buf->time_stamp_off_b = vnt_time_stamp_off(pDevice, pDevice->byTopCCKBasicRate);
-> +			buf->time_stamp_off_a =
-> +				vnt_time_stamp_off(pDevice, wCurrentRate);
-> +			buf->time_stamp_off_b =
-> +				vnt_time_stamp_off(pDevice,
-> +						   pDevice->byTopCCKBasicRate);
-is no improvement.
+ .../bindings/watchdog/intel,lgm-gptc-wdt.yaml      |  75 ++++
+ drivers/watchdog/Kconfig                           |  13 +
+ drivers/watchdog/Makefile                          |   1 +
+ drivers/watchdog/intel_lgm_gptc_wdt.c              | 420 +++++++++++++++++++++
+ 4 files changed, 509 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/watchdog/intel,lgm-gptc-wdt.yaml
+ create mode 100644 drivers/watchdog/intel_lgm_gptc_wdt.c
+
+-- 
+2.11.0
+
