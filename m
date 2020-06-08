@@ -2,67 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A7E1F1B20
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 16:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67ED1F1B4A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 16:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730026AbgFHOhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 10:37:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48986 "EHLO mail.kernel.org"
+        id S1730099AbgFHOsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 10:48:22 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:46438 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgFHOhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 10:37:11 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B9C22053B;
-        Mon,  8 Jun 2020 14:37:10 +0000 (UTC)
-Date:   Mon, 8 Jun 2020 10:37:09 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Divya Indi <divya.indi@oracle.com>, <linux-kernel@vger.kernel.org>,
-        Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-Subject: Re: [PATCH] sample-trace-array: Fix sleeping function called from
- invalid context
-Message-ID: <20200608103709.39afa15f@gandalf.local.home>
-In-Reply-To: <20200608075437.1760242-1-wangkefeng.wang@huawei.com>
-References: <20200608075437.1760242-1-wangkefeng.wang@huawei.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729958AbgFHOsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 10:48:21 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C6CAA1A1074;
+        Mon,  8 Jun 2020 16:48:19 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 480001A1063;
+        Mon,  8 Jun 2020 16:48:15 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5C6BE40297;
+        Mon,  8 Jun 2020 22:48:09 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     aisheng.dong@nxp.com, festevam@gmail.com, shawnguo@kernel.org,
+        stefan@agner.ch, kernel@pengutronix.de, linus.walleij@linaro.org,
+        s.hauer@pengutronix.de, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2 0/9] Support i.MX8 SoCs pinctrl drivers built as module
+Date:   Mon,  8 Jun 2020 22:37:27 +0800
+Message-Id: <1591627056-19022-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Jun 2020 07:54:37 +0000
-Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+There are more and mroe requirements that SoC specific modules should be built
+as module in order to support generic kernel image, such as Android GKI concept.
 
->  BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
->  in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 0, name: swapper/5
->  1 lock held by swapper/5/0:
->   #0: ffff80001002bd90 (samples/ftrace/sample-trace-array.c:38){+.-.}-{0:0}, at: call_timer_fn+0x8/0x3e0
->  CPU: 5 PID: 0 Comm: swapper/5 Not tainted 5.7.0+ #8
->  Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
->  Call trace:
->   dump_backtrace+0x0/0x1a0
->   show_stack+0x20/0x30
->   dump_stack+0xe4/0x150
->   ___might_sleep+0x160/0x200
->   __might_sleep+0x58/0x90
->   __mutex_lock+0x64/0x948
->   mutex_lock_nested+0x3c/0x58
->   __ftrace_set_clr_event+0x44/0x88
->   trace_array_set_clr_event+0x24/0x38
->   mytimer_handler+0x34/0x40 [sample_trace_array]
-> 
-> mutex_lock() will be called in interrupt context, using workqueueu to fix it.
-> 
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> 
+This patch series supports i.MX8 SoCs pinctrl drivers to be built as module,
+including i.MX8MQ/MM/MN/MP/QXP/QM/DXL SoCs, and it also supports building i.MX
+common pinctrl driver and i.MX SCU common pinctrl driver as module.
 
-Divya,
+Compared to V1, the changes are as below:
+	- Separate the i.MX and i.MX SCU common pinctrl driver to 2 patches;
+	- Support building i.MX and i.MX SCU common pinctrl driver as module too.
 
-Can you give a Reviewed-by for this?
+Anson Huang (9):
+  pinctrl: imx: Support building SCU pinctrl driver as module
+  pinctrl: imx: Support building i.MX pinctrl driver as module
+  pinctrl: imx8mm: Support building as module
+  pinctrl: imx8mn: Support building as module
+  pinctrl: imx8mq: Support building as module
+  pinctrl: imx8mp: Support building as module
+  pinctrl: imx8qxp: Support building as module
+  pinctrl: imx8qm: Support building as module
+  pinctrl: imx8dxl: Support building as module
 
--- Steve
+ drivers/pinctrl/freescale/Kconfig           | 18 +++++++++---------
+ drivers/pinctrl/freescale/pinctrl-imx.c     |  4 ++++
+ drivers/pinctrl/freescale/pinctrl-imx.h     |  2 +-
+ drivers/pinctrl/freescale/pinctrl-imx8dxl.c |  9 +++------
+ drivers/pinctrl/freescale/pinctrl-imx8mm.c  | 10 ++++------
+ drivers/pinctrl/freescale/pinctrl-imx8mn.c  | 10 ++++------
+ drivers/pinctrl/freescale/pinctrl-imx8mp.c  | 10 ++++------
+ drivers/pinctrl/freescale/pinctrl-imx8mq.c  |  9 ++++-----
+ drivers/pinctrl/freescale/pinctrl-imx8qm.c  |  9 +++------
+ drivers/pinctrl/freescale/pinctrl-imx8qxp.c |  9 +++------
+ drivers/pinctrl/freescale/pinctrl-scu.c     |  6 ++++++
+ 11 files changed, 45 insertions(+), 51 deletions(-)
+
+-- 
+2.7.4
+
