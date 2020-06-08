@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0D51F2F74
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA7F1F2D31
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387906AbgFIAuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:50:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56670 "EHLO mail.kernel.org"
+        id S1730069AbgFIAbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:31:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728688AbgFHXKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:10:32 -0400
+        id S1729027AbgFHXPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:15:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7208F20890;
-        Mon,  8 Jun 2020 23:10:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A589D20760;
+        Mon,  8 Jun 2020 23:15:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657832;
-        bh=YI/7tjuFBmB0rVIIsPJ7JnNmguqrLJZDN6HRzg1aR3c=;
+        s=default; t=1591658137;
+        bh=TnVwBeuK4cQDhwre8ahAERAf9OOiuSf0+MDxIJSwpWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D6lqGC2oXWHI1yllfZlbMDyWVn/7QoTXFwEtKP13qMGJhUJZzFvG35S6qsc7QRmR0
-         cXdzaa7K70vmVOB+fdh9zCG2mW8ZWO7wrRqR1fdjDN9z25M8vDggKpjhEXmwoqGhOJ
-         Wr0Jjqp/n8O+dnwhT9PMkIGpA/AqT/vgRzS39WwQ=
+        b=bt5cfKZKiBuu4uFTdpQNO3dzmx2VvLbc/3YMr6qowrle8xeROMmGEQ9eWuT94uHyA
+         H+7G4wKq/XfrT/3c8R28GGp6phhHzODPu1TVARnwkfjBxLrrXpaTLgW3121+/LYc5e
+         2tCoSkKY2Ac9WATZW9muh9hJsrVj1fT1Duks2PJg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tejun Heo <tj@kernel.org>, Andy Newell <newella@fb.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 202/274] iocost: don't let vrate run wild while there's no saturation signal
-Date:   Mon,  8 Jun 2020 19:04:55 -0400
-Message-Id: <20200608230607.3361041-202-sashal@kernel.org>
+Cc:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org
+Subject: [PATCH AUTOSEL 5.6 171/606] staging: kpc2000: fix error return code in kp2000_pcie_probe()
+Date:   Mon,  8 Jun 2020 19:04:56 -0400
+Message-Id: <20200608231211.3363633-171-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,99 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tejun Heo <tj@kernel.org>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-[ Upstream commit 81ca627a933063fa63a6d4c66425de822a2ab7f5 ]
+commit b17884ccf29e127b16bba6aea1438c851c9f5af1 upstream.
 
-When the QoS targets are met and nothing is being throttled, there's
-no way to tell how saturated the underlying device is - it could be
-almost entirely idle, at the cusp of saturation or anywhere inbetween.
-Given that there's no information, it's best to keep vrate as-is in
-this state.  Before 7cd806a9a953 ("iocost: improve nr_lagging
-handling"), this was the case - if the device isn't missing QoS
-targets and nothing is being throttled, busy_level was reset to zero.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function. Also
+removed var 'rv' since we can use 'err' instead.
 
-While fixing nr_lagging handling, 7cd806a9a953 ("iocost: improve
-nr_lagging handling") broke this.  Now, while the device is hitting
-QoS targets and nothing is being throttled, vrate keeps getting
-adjusted according to the existing busy_level.
-
-This led to vrate keeping climing till it hits max when there's an IO
-issuer with limited request concurrency if the vrate started low.
-vrate starts getting adjusted upwards until the issuer can issue IOs
-w/o being throttled.  From then on, QoS targets keeps getting met and
-nothing on the system needs throttling and vrate keeps getting
-increased due to the existing busy_level.
-
-This patch makes the following changes to the busy_level logic.
-
-* Reset busy_level if nr_shortages is zero to avoid the above
-  scenario.
-
-* Make non-zero nr_lagging block lowering nr_level but still clear
-  positive busy_level if there's clear non-saturation signal - QoS
-  targets are met and nr_shortages is non-zero.  nr_lagging's role is
-  preventing adjusting vrate upwards while there are long-running
-  commands and it shouldn't keep busy_level positive while there's
-  clear non-saturation signal.
-
-* Restructure code for clarity and add comments.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Andy Newell <newella@fb.com>
-Fixes: 7cd806a9a953 ("iocost: improve nr_lagging handling")
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 7dc7967fc39a ("staging: kpc2000: add initial set of Daktronics drivers")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: stable <stable@vger.kernel.org>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20200506134735.102041-1-weiyongjun1@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-iocost.c | 28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+ drivers/staging/kpc2000/kpc2000/core.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 7c1fe605d0d6..ef193389fffe 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -1543,19 +1543,39 @@ static void ioc_timer_fn(struct timer_list *timer)
- 	if (rq_wait_pct > RQ_WAIT_BUSY_PCT ||
- 	    missed_ppm[READ] > ppm_rthr ||
- 	    missed_ppm[WRITE] > ppm_wthr) {
-+		/* clearly missing QoS targets, slow down vrate */
- 		ioc->busy_level = max(ioc->busy_level, 0);
- 		ioc->busy_level++;
- 	} else if (rq_wait_pct <= RQ_WAIT_BUSY_PCT * UNBUSY_THR_PCT / 100 &&
- 		   missed_ppm[READ] <= ppm_rthr * UNBUSY_THR_PCT / 100 &&
- 		   missed_ppm[WRITE] <= ppm_wthr * UNBUSY_THR_PCT / 100) {
--		/* take action iff there is contention */
--		if (nr_shortages && !nr_lagging) {
-+		/* QoS targets are being met with >25% margin */
-+		if (nr_shortages) {
-+			/*
-+			 * We're throttling while the device has spare
-+			 * capacity.  If vrate was being slowed down, stop.
-+			 */
- 			ioc->busy_level = min(ioc->busy_level, 0);
--			/* redistribute surpluses first */
--			if (!nr_surpluses)
-+
-+			/*
-+			 * If there are IOs spanning multiple periods, wait
-+			 * them out before pushing the device harder.  If
-+			 * there are surpluses, let redistribution work it
-+			 * out first.
-+			 */
-+			if (!nr_lagging && !nr_surpluses)
- 				ioc->busy_level--;
-+		} else {
-+			/*
-+			 * Nobody is being throttled and the users aren't
-+			 * issuing enough IOs to saturate the device.  We
-+			 * simply don't know how close the device is to
-+			 * saturation.  Coast.
-+			 */
-+			ioc->busy_level = 0;
- 		}
- 	} else {
-+		/* inside the hysterisis margin, we're good */
- 		ioc->busy_level = 0;
+diff --git a/drivers/staging/kpc2000/kpc2000/core.c b/drivers/staging/kpc2000/kpc2000/core.c
+index 7b00d7069e21..358d7b2f4ad1 100644
+--- a/drivers/staging/kpc2000/kpc2000/core.c
++++ b/drivers/staging/kpc2000/kpc2000/core.c
+@@ -298,7 +298,6 @@ static int kp2000_pcie_probe(struct pci_dev *pdev,
+ {
+ 	int err = 0;
+ 	struct kp2000_device *pcard;
+-	int rv;
+ 	unsigned long reg_bar_phys_addr;
+ 	unsigned long reg_bar_phys_len;
+ 	unsigned long dma_bar_phys_addr;
+@@ -445,11 +444,11 @@ static int kp2000_pcie_probe(struct pci_dev *pdev,
+ 	if (err < 0)
+ 		goto err_release_dma;
+ 
+-	rv = request_irq(pcard->pdev->irq, kp2000_irq_handler, IRQF_SHARED,
+-			 pcard->name, pcard);
+-	if (rv) {
++	err = request_irq(pcard->pdev->irq, kp2000_irq_handler, IRQF_SHARED,
++			  pcard->name, pcard);
++	if (err) {
+ 		dev_err(&pcard->pdev->dev,
+-			"%s: failed to request_irq: %d\n", __func__, rv);
++			"%s: failed to request_irq: %d\n", __func__, err);
+ 		goto err_disable_msi;
  	}
  
 -- 
