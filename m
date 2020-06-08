@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3296E1F147D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 10:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2311F1481
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 10:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729093AbgFHIao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 04:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        id S1729118AbgFHIau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 04:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728951AbgFHIan (ORCPT
+        with ESMTP id S1728951AbgFHIas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 04:30:43 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AFDC08C5C3;
-        Mon,  8 Jun 2020 01:30:43 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id m2so5698847pjv.2;
-        Mon, 08 Jun 2020 01:30:43 -0700 (PDT)
+        Mon, 8 Jun 2020 04:30:48 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6F1C08C5C3;
+        Mon,  8 Jun 2020 01:30:47 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id a45so4753047pje.1;
+        Mon, 08 Jun 2020 01:30:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=G7NT+IIMlEpev8mMIld6zg2khxnR9LKx4QWnMSa761g=;
-        b=YmELALbkitxP2ggbooUEURujMSINXmryqerQhxXRvVK6hlFggjqe6vjydN5E/hscIs
-         ew1S4hSJF0H5QNibJbvP5ZZQVzfbxfT6ZWE2VGHUwUZ/5r2MjtsMn4Wi9gD0v5zWBYjX
-         /BRG23DsNHZGYdn4ji4uba2IFP66yOE+UuP5whqQn3I5qHMBV5AUdtWXtQsXfBUl+DYw
-         myfg/t3rN2flP3HLisi5oI0ljM/WBOisQVl5L7VqbL8HJIEnnwrRlll0TC4R+avIrDOL
-         cP7JQa3ERxtbpid31OYGSdlRGxXXvm6sjzsquzBA1ywHqLWwcE4V8rPbMKBPITJ1gVN3
-         o6bw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=8feILcDA0tIlewM1KO106AZP1TsRZlV0wrLhrdTJ7fk=;
+        b=B+4fToX21iv9QoVjppr44/lc3ZFWBQL5JO6a0275yptTgsD+TOR9A/boCycuYUAFMr
+         s3DV8OTQT7upBbdc7HXwhLR5Saea1NCSTfOwGRbbDHejss7/uan7AnGazjgLMmJBZKtd
+         H9uVZkwQ+qRvuc34NfGPopkwptiy6DJMlnfp/xcPWG3SZh/1+6H70UHL3CJhpeQU23hU
+         PObJzAwBoqFTlWdZu8gwUOEVslw0Qy6zIFLfStKtCys1sJOhgVm8KSVcz1ClmdKGpCf6
+         WK+OGFNGbBvZuSnIKm/10x51jWms8hcCaxCsZvq9+Mk0vZjbVSskn57LFKSJWZDFzqSO
+         BhrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=G7NT+IIMlEpev8mMIld6zg2khxnR9LKx4QWnMSa761g=;
-        b=gmb7a9J5jhbbGvOadTdv9zQWAu+RInSHZvOBaWxBhpnKObpkJNTP+Jh0Ebwa7+ej68
-         aNeM3TnspqOwVNQTbbr2gGB8JR2C5FBrKSsfR23+NxnhYtVpCf1MimmoVUYuCksEk/NP
-         NLTMMV5F/DiTY+LIxMxFKt3C0mfkcgDIqRODscnlGFEWVRQ4UO4sxVycabxDSfdoCllI
-         C504Fs7xGZXjMqxiUFtjdke8um2HLW3fn7/gRtcL654dYnPEwYD+b7T1P4HuQO3jQK3k
-         HpFVljWUAX/fI0CRz3TUAa05BH4SXnL1HyWW2Xl9aCfcSz75ocVsDUK7e3TerhdFBdNa
-         7mWg==
-X-Gm-Message-State: AOAM530RALdgHp0+KTrilrwAFQknFxQsfYKXKitfws4gjWCJIelQfIyv
-        TsXzXpuAFsEuEaeMualKm0w=
-X-Google-Smtp-Source: ABdhPJxObPDhvUNU2fgGSyXqPnus/jX1jjU6Fcb/mjYz/7uwefMtlM+VUAjOyTj6a7++QyGKeDXCqQ==
-X-Received: by 2002:a17:90a:886:: with SMTP id v6mr15165288pjc.161.1591605043466;
-        Mon, 08 Jun 2020 01:30:43 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=8feILcDA0tIlewM1KO106AZP1TsRZlV0wrLhrdTJ7fk=;
+        b=aQ27mT3WkH28r0X67ML9jfVhOj0ftSk0YNIEoDLn8z/ChzNQ+HD3Lg2aETbpeeQhW4
+         PoOlt3tK+q+iymtW6NelxMnHnqiA2R7ZB84VGdqA7VNBg620KaOxZ2adWPXWHWTv1kqg
+         Jm55PzIcVGiYi5rkvj57Klb+vge/GDvXRsjgGhCCdqzS6rcbR/p240RbH5t1dM9otq1+
+         PiejicQUgkDcpgHeNRs8l35orff6rwVzhsinlbTFVMMeV2Y1gtV2sssDil/i8NGJFQE+
+         pyWsePineE1gOiJ+QuxoHBExrwWPHpAzUnXwvZop+SAM7exgPmH5MKyi4OZUD+KAofpI
+         zfxA==
+X-Gm-Message-State: AOAM5313cw4ibrfBimLOhwgstbAsZeSB8hQQyuL7fvNCGiNGarfUTHjd
+        HHTi0WsGJFzasMMjaSe7mRyecMvPNiw=
+X-Google-Smtp-Source: ABdhPJyeHWrRZ7QzXxletY3kLJIxJWIs+gLBJ56sWRWJ2KQLKn7J5lIcB99++scBN53d1bkhC2luYg==
+X-Received: by 2002:a17:902:b601:: with SMTP id b1mr20489872pls.39.1591605047030;
+        Mon, 08 Jun 2020 01:30:47 -0700 (PDT)
 Received: from fmin-OptiPlex-7060.nreal.work ([103.206.191.42])
-        by smtp.gmail.com with ESMTPSA id 27sm1210829pjg.19.2020.06.08.01.30.40
+        by smtp.gmail.com with ESMTPSA id 27sm1210829pjg.19.2020.06.08.01.30.43
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Jun 2020 01:30:43 -0700 (PDT)
+        Mon, 08 Jun 2020 01:30:46 -0700 (PDT)
 From:   dillon.minfei@gmail.com
 To:     robh+dt@kernel.org, mcoquelin.stm32@gmail.com,
         alexandre.torgue@st.com, linux@armlinux.org.uk,
@@ -55,10 +56,12 @@ Cc:     devicetree@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH 0/2] Use 'arm_nommu_dma_ops' to handle dma memroy if device offer consistent dma memory region
-Date:   Mon,  8 Jun 2020 16:30:36 +0800
-Message-Id: <1591605038-8682-1-git-send-email-dillon.minfei@gmail.com>
+Subject: [PATCH 1/2] ARM: dts: stm32: Setup 4M bytes reserved memory for mmap
+Date:   Mon,  8 Jun 2020 16:30:37 +0800
+Message-Id: <1591605038-8682-2-git-send-email-dillon.minfei@gmail.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1591605038-8682-1-git-send-email-dillon.minfei@gmail.com>
+References: <1591605038-8682-1-git-send-email-dillon.minfei@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -66,26 +69,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: dillon min <dillon.minfei@gmail.com>
 
-when do mmap on /dev/fb0, we will get -6 error on cortex-m3/m4 or armv7m
-platform without cache support, this is caused by following reason:
+To mmap a framebuffer or v4l2 buffer from kernel to userspace on
+no-mmu platform, we need rely on 'arm_nommu_dma_ops' from
+arch/arm/mm/dma-mapping-nommu.c , so setup 4M bytes memory
+reserved for this purpose.
 
-on armv7m platform, if no cache support, we will use dma direct mapping,
-but, this is not support on !MMU hardware, just return '-ENXIO' error
-
-so, add use_reserved_mem() for these armv7m hardware but no-cache support.
-eg, stm32f429/stm32f469.
-
-verified on stm32f469-disco board, mmap frambuffer to userspace.
-
-dillon min (2):
-  ARM: dts: stm32: Setup 4M bytes reserved memory for mmap
-  arm-nommu: Add use_reserved_mem() to check if device support reserved
-    memory
-
+Signed-off-by: dillon min <dillon.minfei@gmail.com>
+---
  arch/arm/boot/dts/stm32f469-disco.dts | 14 ++++++++++++++
- arch/arm/mm/dma-mapping-nommu.c       | 28 +++++++++++++++++++++++++++-
- 2 files changed, 41 insertions(+), 1 deletion(-)
+ 1 file changed, 14 insertions(+)
 
+diff --git a/arch/arm/boot/dts/stm32f469-disco.dts b/arch/arm/boot/dts/stm32f469-disco.dts
+index 9397db0c43de..082b24ee81f7 100644
+--- a/arch/arm/boot/dts/stm32f469-disco.dts
++++ b/arch/arm/boot/dts/stm32f469-disco.dts
+@@ -65,6 +65,20 @@
+ 		reg = <0x00000000 0x1000000>;
+ 	};
+ 
++	reserved-memory {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
++
++		linux,dma {
++			compatible = "shared-dma-pool";
++			size = <0x400000>;
++			no-map;
++			linux,dma-default;
++		};
++
++	};
++
+ 	aliases {
+ 		serial0 = &usart3;
+ 	};
 -- 
 2.7.4
 
