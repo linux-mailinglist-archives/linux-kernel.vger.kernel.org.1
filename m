@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B643C1F2DD1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69BA1F2DD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729598AbgFHXNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:13:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58418 "EHLO mail.kernel.org"
+        id S1726782AbgFHXOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:14:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728908AbgFHXL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:11:29 -0400
+        id S1728162AbgFHXLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:11:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02E8220897;
-        Mon,  8 Jun 2020 23:11:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9DBD20897;
+        Mon,  8 Jun 2020 23:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657889;
-        bh=8ytuBy4b62zsfobpy3ImeP8JbnWVrWV3o5vABkvCtmw=;
+        s=default; t=1591657893;
+        bh=J2LPRJU66y4X8KcWE0g+592NbySdoJsVXoYtZI00P5I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q9ok72UT3eWh5tiCYk/2OMepss5v+ki2yWhrgP3HCrYb3LFDpU2Evyqx3d5dRUrV1
-         maugMZN1MAMgQ2U35/RKJNhxyuu6FmnxQM3DXuRr//NiGx1jl8FBTuHk+wBIn8uv2z
-         So0+FI10zfIiOMWT1Y7GVBUpvXnpRPqLxMplvCkQ=
+        b=ROP1rxkHmSif6KNnYX1KxXVihi18D7znAeCVKrM4JfqmcpMAO2N5DGoWqSkR+DckI
+         9bG3th7dla5RoL0AlyciPDYvYRlw+AqeKhvBN1HOydba8dt8EPmEJ1Ce/4CEhdQaSA
+         +FZmqdizTHwRR7Bh7T/2UgUoC5LNoVvtimsm9Kl8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Marek Vasut <marex@denx.de>, Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 245/274] mmc: mmci: Switch to mmc_regulator_set_vqmmc()
-Date:   Mon,  8 Jun 2020 19:05:38 -0400
-Message-Id: <20200608230607.3361041-245-sashal@kernel.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 248/274] mmc: owl-mmc: Respect the cmd->busy_timeout from the mmc core
+Date:   Mon,  8 Jun 2020 19:05:41 -0400
+Message-Id: <20200608230607.3361041-248-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -42,73 +44,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Ulf Hansson <ulf.hansson@linaro.org>
 
-[ Upstream commit 3e09a81e166c0a5544832459be17561a6b231ac7 ]
+[ Upstream commit f37ac1ae3ca93d0995553ad9604a25eadfe9406d ]
 
-Instead of reimplementing the logic in mmc_regulator_set_vqmmc(), use the
-mmc code function directly.
+For commands that doesn't involve to prepare a data transfer, owl-mmc is
+using a fixed 30s response timeout. This is a bit problematic.
 
-This also allows us to fix a related issue on STM32MP1, when a voltage
-switch of 1.8V is done for the eMMC, but the current level is already set
-to 1.8V. More precisely, in this scenario the call to the
-->post_sig_volt_switch() hangs, indefinitely waiting for the voltage switch
-to complete. Fix this problem by checking if mmc_regulator_set_vqmmc()
-returned 1 and then skip invoking the callback.
+For some commands it means waiting longer than needed for the completion to
+expire, which may not a big issue, but still. For other commands, like for
+an erase (CMD38) that uses a R1B response, may require longer timeouts than
+30s. In these cases, we may end up treating the command as it failed, while
+it just needed some more time to complete successfully.
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Link: https://lore.kernel.org/r/20200416163649.336967-3-marex@denx.de
-[Ulf: Updated the commit message]
+Fix the problem by respecting the cmd->busy_timeout, which is provided by
+the mmc core.
+
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Link: https://lore.kernel.org/r/20200414161413.3036-8-ulf.hansson@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/mmci.c | 30 ++++++++----------------------
- 1 file changed, 8 insertions(+), 22 deletions(-)
+ drivers/mmc/host/owl-mmc.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
-index 647567def612..a69d6a0c2e15 100644
---- a/drivers/mmc/host/mmci.c
-+++ b/drivers/mmc/host/mmci.c
-@@ -1861,31 +1861,17 @@ static int mmci_get_cd(struct mmc_host *mmc)
- static int mmci_sig_volt_switch(struct mmc_host *mmc, struct mmc_ios *ios)
+diff --git a/drivers/mmc/host/owl-mmc.c b/drivers/mmc/host/owl-mmc.c
+index 01ffe51f413d..5e20c099fe03 100644
+--- a/drivers/mmc/host/owl-mmc.c
++++ b/drivers/mmc/host/owl-mmc.c
+@@ -92,6 +92,8 @@
+ #define OWL_SD_STATE_RC16ER		BIT(1)
+ #define OWL_SD_STATE_CRC7ER		BIT(0)
+ 
++#define OWL_CMD_TIMEOUT_MS		30000
++
+ struct owl_mmc_host {
+ 	struct device *dev;
+ 	struct reset_control *reset;
+@@ -172,6 +174,7 @@ static void owl_mmc_send_cmd(struct owl_mmc_host *owl_host,
+ 			     struct mmc_command *cmd,
+ 			     struct mmc_data *data)
  {
- 	struct mmci_host *host = mmc_priv(mmc);
--	int ret = 0;
--
--	if (!IS_ERR(mmc->supply.vqmmc)) {
-+	int ret;
++	unsigned long timeout;
+ 	u32 mode, state, resp[2];
+ 	u32 cmd_rsp_mask = 0;
  
--		switch (ios->signal_voltage) {
--		case MMC_SIGNAL_VOLTAGE_330:
--			ret = regulator_set_voltage(mmc->supply.vqmmc,
--						2700000, 3600000);
--			break;
--		case MMC_SIGNAL_VOLTAGE_180:
--			ret = regulator_set_voltage(mmc->supply.vqmmc,
--						1700000, 1950000);
--			break;
--		case MMC_SIGNAL_VOLTAGE_120:
--			ret = regulator_set_voltage(mmc->supply.vqmmc,
--						1100000, 1300000);
--			break;
--		}
-+	ret = mmc_regulator_set_vqmmc(mmc, ios);
+@@ -239,7 +242,10 @@ static void owl_mmc_send_cmd(struct owl_mmc_host *owl_host,
+ 	if (data)
+ 		return;
  
--		if (!ret && host->ops && host->ops->post_sig_volt_switch)
--			ret = host->ops->post_sig_volt_switch(host, ios);
-+	if (!ret && host->ops && host->ops->post_sig_volt_switch)
-+		ret = host->ops->post_sig_volt_switch(host, ios);
-+	else if (ret)
-+		ret = 0;
- 
--		if (ret)
--			dev_warn(mmc_dev(mmc), "Voltage switch failed\n");
--	}
-+	if (ret < 0)
-+		dev_warn(mmc_dev(mmc), "Voltage switch failed\n");
- 
- 	return ret;
- }
+-	if (!wait_for_completion_timeout(&owl_host->sdc_complete, 30 * HZ)) {
++	timeout = msecs_to_jiffies(cmd->busy_timeout ? cmd->busy_timeout :
++		OWL_CMD_TIMEOUT_MS);
++
++	if (!wait_for_completion_timeout(&owl_host->sdc_complete, timeout)) {
+ 		dev_err(owl_host->dev, "CMD interrupt timeout\n");
+ 		cmd->error = -ETIMEDOUT;
+ 		return;
 -- 
 2.25.1
 
