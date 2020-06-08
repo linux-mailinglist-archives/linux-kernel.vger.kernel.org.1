@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770B41F234D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8FD1F2455
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgFHXNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:13:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58326 "EHLO mail.kernel.org"
+        id S1730961AbgFHXUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:20:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727784AbgFHXL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:11:27 -0400
+        id S1730227AbgFHXQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:16:29 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EBA921582;
-        Mon,  8 Jun 2020 23:11:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 832E320820;
+        Mon,  8 Jun 2020 23:16:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657886;
-        bh=IKeJO4anH+f6xSXX137YIg6taQZzj+2PD4lf0HuC7o8=;
+        s=default; t=1591658188;
+        bh=Kz+SS6KZCYkKidBEtxWzTa9KnaNhfNGzMIsbwEJ6B4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EDDTLx5ucLuLGOUYONbmXmHJ9Z6unldVW60wiZeiIoJIXXuWuDyYV4y/ZnDWuHkex
-         RhknDdpKavFK2LeFZie/wLLgxcuDBMqKeCr+QvYAJT2wBUgGy0qkWhcWYCDfF+74Q+
-         XqVA36Z8NNI+PnAyjse1sTf4rGsVozFL5kZrcFKU=
+        b=PX7qheSBumtJ3N3uuJyF3KckWXBbkaQz/ETRWrIZlOshp738azKceLoSYftPlYsYW
+         Q+Yle+DBehFT2CExGqJ2nSNhlw/rbTwSE4liPq7vfV9B+RtlXgaKN6Wx5VrAd38D6q
+         z9TRqBx+03hNJhPAVIzwYGGqBGIefAqvTMAMc6xU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-xfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 242/274] xfs: gut error handling in xfs_trans_unreserve_and_mod_sb()
+Cc:     Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 210/606] felix: Fix initialization of ioremap resources
 Date:   Mon,  8 Jun 2020 19:05:35 -0400
-Message-Id: <20200608230607.3361041-242-sashal@kernel.org>
+Message-Id: <20200608231211.3363633-210-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,236 +45,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Chinner <david@fromorbit.com>
+From: Claudiu Manoil <claudiu.manoil@nxp.com>
 
-[ Upstream commit dc3ffbb14060c943469d5e12900db3a60bc3fa64 ]
+[ Upstream commit b4024c9e5c57902155d3b5e7de482e245f492bff ]
 
-xfs: gut error handling in xfs_trans_unreserve_and_mod_sb()
+The caller of devm_ioremap_resource(), either accidentally
+or by wrong assumption, is writing back derived resource data
+to global static resource initialization tables that should
+have been constant.  Meaning that after it computes the final
+physical start address it saves the address for no reason
+in the static tables.  This doesn't affect the first driver
+probing after reboot, but it breaks consecutive driver reloads
+(i.e. driver unbind & bind) because the initialization tables
+no longer have the correct initial values.  So the next probe()
+will map the device registers to wrong physical addresses,
+causing ARM SError async exceptions.
+This patch fixes all of the above.
 
-From: Dave Chinner <dchinner@redhat.com>
-
-The error handling in xfs_trans_unreserve_and_mod_sb() is largely
-incorrect - rolling back the changes in the transaction if only one
-counter underruns makes all the other counters incorrect. We still
-allow the change to proceed and committing the transaction, except
-now we have multiple incorrect counters instead of a single
-underflow.
-
-Further, we don't actually report the error to the caller, so this
-is completely silent except on debug kernels that will assert on
-failure before we even get to the rollback code.  Hence this error
-handling is broken, untested, and largely unnecessary complexity.
-
-Just remove it.
-
-Signed-off-by: Dave Chinner <dchinner@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 56051948773e ("net: dsa: ocelot: add driver for Felix switch family")
+Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/xfs/xfs_trans.c | 163 ++++++---------------------------------------
- 1 file changed, 20 insertions(+), 143 deletions(-)
+ drivers/net/dsa/ocelot/felix.c         | 23 +++++++++++------------
+ drivers/net/dsa/ocelot/felix.h         |  6 +++---
+ drivers/net/dsa/ocelot/felix_vsc9959.c | 22 ++++++++++------------
+ 3 files changed, 24 insertions(+), 27 deletions(-)
 
-diff --git a/fs/xfs/xfs_trans.c b/fs/xfs/xfs_trans.c
-index 28b983ff8b11..e4e29135ad1b 100644
---- a/fs/xfs/xfs_trans.c
-+++ b/fs/xfs/xfs_trans.c
-@@ -534,57 +534,9 @@ xfs_trans_apply_sb_deltas(
- 				  sizeof(sbp->sb_frextents) - 1);
- }
+diff --git a/drivers/net/dsa/ocelot/felix.c b/drivers/net/dsa/ocelot/felix.c
+index a7780c06fa65..b74580e87be8 100644
+--- a/drivers/net/dsa/ocelot/felix.c
++++ b/drivers/net/dsa/ocelot/felix.c
+@@ -385,6 +385,7 @@ static int felix_init_structs(struct felix *felix, int num_phys_ports)
+ 	struct ocelot *ocelot = &felix->ocelot;
+ 	phy_interface_t *port_phy_modes;
+ 	resource_size_t switch_base;
++	struct resource res;
+ 	int port, i, err;
  
--STATIC int
--xfs_sb_mod8(
--	uint8_t			*field,
--	int8_t			delta)
--{
--	int8_t			counter = *field;
--
--	counter += delta;
--	if (counter < 0) {
--		ASSERT(0);
--		return -EINVAL;
--	}
--	*field = counter;
--	return 0;
--}
--
--STATIC int
--xfs_sb_mod32(
--	uint32_t		*field,
--	int32_t			delta)
--{
--	int32_t			counter = *field;
--
--	counter += delta;
--	if (counter < 0) {
--		ASSERT(0);
--		return -EINVAL;
--	}
--	*field = counter;
--	return 0;
--}
--
--STATIC int
--xfs_sb_mod64(
--	uint64_t		*field,
--	int64_t			delta)
--{
--	int64_t			counter = *field;
--
--	counter += delta;
--	if (counter < 0) {
--		ASSERT(0);
--		return -EINVAL;
--	}
--	*field = counter;
--	return 0;
--}
--
- /*
-- * xfs_trans_unreserve_and_mod_sb() is called to release unused reservations
-- * and apply superblock counter changes to the in-core superblock.  The
-+ * xfs_trans_unreserve_and_mod_sb() is called to release unused reservations and
-+ * apply superblock counter changes to the in-core superblock.  The
-  * t_res_fdblocks_delta and t_res_frextents_delta fields are explicitly NOT
-  * applied to the in-core superblock.  The idea is that that has already been
-  * done.
-@@ -629,20 +581,17 @@ xfs_trans_unreserve_and_mod_sb(
- 	/* apply the per-cpu counters */
- 	if (blkdelta) {
- 		error = xfs_mod_fdblocks(mp, blkdelta, rsvd);
--		if (error)
--			goto out;
-+		ASSERT(!error);
- 	}
+ 	ocelot->num_phys_ports = num_phys_ports;
+@@ -416,17 +417,16 @@ static int felix_init_structs(struct felix *felix, int num_phys_ports)
  
- 	if (idelta) {
- 		error = xfs_mod_icount(mp, idelta);
--		if (error)
--			goto out_undo_fdblocks;
-+		ASSERT(!error);
- 	}
+ 	for (i = 0; i < TARGET_MAX; i++) {
+ 		struct regmap *target;
+-		struct resource *res;
  
- 	if (ifreedelta) {
- 		error = xfs_mod_ifree(mp, ifreedelta);
--		if (error)
--			goto out_undo_icount;
-+		ASSERT(!error);
- 	}
+ 		if (!felix->info->target_io_res[i].name)
+ 			continue;
  
- 	if (rtxdelta == 0 && !(tp->t_flags & XFS_TRANS_SB_DIRTY))
-@@ -650,95 +599,23 @@ xfs_trans_unreserve_and_mod_sb(
+-		res = &felix->info->target_io_res[i];
+-		res->flags = IORESOURCE_MEM;
+-		res->start += switch_base;
+-		res->end += switch_base;
++		memcpy(&res, &felix->info->target_io_res[i], sizeof(res));
++		res.flags = IORESOURCE_MEM;
++		res.start += switch_base;
++		res.end += switch_base;
  
- 	/* apply remaining deltas */
- 	spin_lock(&mp->m_sb_lock);
--	if (rtxdelta) {
--		error = xfs_sb_mod64(&mp->m_sb.sb_frextents, rtxdelta);
--		if (error)
--			goto out_undo_ifree;
--	}
--
--	if (tp->t_dblocks_delta != 0) {
--		error = xfs_sb_mod64(&mp->m_sb.sb_dblocks, tp->t_dblocks_delta);
--		if (error)
--			goto out_undo_frextents;
--	}
--	if (tp->t_agcount_delta != 0) {
--		error = xfs_sb_mod32(&mp->m_sb.sb_agcount, tp->t_agcount_delta);
--		if (error)
--			goto out_undo_dblocks;
--	}
--	if (tp->t_imaxpct_delta != 0) {
--		error = xfs_sb_mod8(&mp->m_sb.sb_imax_pct, tp->t_imaxpct_delta);
--		if (error)
--			goto out_undo_agcount;
--	}
--	if (tp->t_rextsize_delta != 0) {
--		error = xfs_sb_mod32(&mp->m_sb.sb_rextsize,
--				     tp->t_rextsize_delta);
--		if (error)
--			goto out_undo_imaxpct;
--	}
--	if (tp->t_rbmblocks_delta != 0) {
--		error = xfs_sb_mod32(&mp->m_sb.sb_rbmblocks,
--				     tp->t_rbmblocks_delta);
--		if (error)
--			goto out_undo_rextsize;
--	}
--	if (tp->t_rblocks_delta != 0) {
--		error = xfs_sb_mod64(&mp->m_sb.sb_rblocks, tp->t_rblocks_delta);
--		if (error)
--			goto out_undo_rbmblocks;
--	}
--	if (tp->t_rextents_delta != 0) {
--		error = xfs_sb_mod64(&mp->m_sb.sb_rextents,
--				     tp->t_rextents_delta);
--		if (error)
--			goto out_undo_rblocks;
--	}
--	if (tp->t_rextslog_delta != 0) {
--		error = xfs_sb_mod8(&mp->m_sb.sb_rextslog,
--				     tp->t_rextslog_delta);
--		if (error)
--			goto out_undo_rextents;
--	}
-+	mp->m_sb.sb_frextents += rtxdelta;
-+	mp->m_sb.sb_dblocks += tp->t_dblocks_delta;
-+	mp->m_sb.sb_agcount += tp->t_agcount_delta;
-+	mp->m_sb.sb_imax_pct += tp->t_imaxpct_delta;
-+	mp->m_sb.sb_rextsize += tp->t_rextsize_delta;
-+	mp->m_sb.sb_rbmblocks += tp->t_rbmblocks_delta;
-+	mp->m_sb.sb_rblocks += tp->t_rblocks_delta;
-+	mp->m_sb.sb_rextents += tp->t_rextents_delta;
-+	mp->m_sb.sb_rextslog += tp->t_rextslog_delta;
- 	spin_unlock(&mp->m_sb_lock);
--	return;
+-		target = ocelot_regmap_init(ocelot, res);
++		target = ocelot_regmap_init(ocelot, &res);
+ 		if (IS_ERR(target)) {
+ 			dev_err(ocelot->dev,
+ 				"Failed to map device memory space\n");
+@@ -447,7 +447,6 @@ static int felix_init_structs(struct felix *felix, int num_phys_ports)
+ 	for (port = 0; port < num_phys_ports; port++) {
+ 		struct ocelot_port *ocelot_port;
+ 		void __iomem *port_regs;
+-		struct resource *res;
  
--out_undo_rextents:
--	if (tp->t_rextents_delta)
--		xfs_sb_mod64(&mp->m_sb.sb_rextents, -tp->t_rextents_delta);
--out_undo_rblocks:
--	if (tp->t_rblocks_delta)
--		xfs_sb_mod64(&mp->m_sb.sb_rblocks, -tp->t_rblocks_delta);
--out_undo_rbmblocks:
--	if (tp->t_rbmblocks_delta)
--		xfs_sb_mod32(&mp->m_sb.sb_rbmblocks, -tp->t_rbmblocks_delta);
--out_undo_rextsize:
--	if (tp->t_rextsize_delta)
--		xfs_sb_mod32(&mp->m_sb.sb_rextsize, -tp->t_rextsize_delta);
--out_undo_imaxpct:
--	if (tp->t_rextsize_delta)
--		xfs_sb_mod8(&mp->m_sb.sb_imax_pct, -tp->t_imaxpct_delta);
--out_undo_agcount:
--	if (tp->t_agcount_delta)
--		xfs_sb_mod32(&mp->m_sb.sb_agcount, -tp->t_agcount_delta);
--out_undo_dblocks:
--	if (tp->t_dblocks_delta)
--		xfs_sb_mod64(&mp->m_sb.sb_dblocks, -tp->t_dblocks_delta);
--out_undo_frextents:
--	if (rtxdelta)
--		xfs_sb_mod64(&mp->m_sb.sb_frextents, -rtxdelta);
--out_undo_ifree:
--	spin_unlock(&mp->m_sb_lock);
--	if (ifreedelta)
--		xfs_mod_ifree(mp, -ifreedelta);
--out_undo_icount:
--	if (idelta)
--		xfs_mod_icount(mp, -idelta);
--out_undo_fdblocks:
--	if (blkdelta)
--		xfs_mod_fdblocks(mp, -blkdelta, rsvd);
--out:
--	ASSERT(error == 0);
-+	/*
-+	 * Debug checks outside of the spinlock so they don't lock up the
-+	 * machine if they fail.
-+	 */
-+	ASSERT(mp->m_sb.sb_imax_pct >= 0);
-+	ASSERT(mp->m_sb.sb_rextslog >= 0);
- 	return;
- }
+ 		ocelot_port = devm_kzalloc(ocelot->dev,
+ 					   sizeof(struct ocelot_port),
+@@ -459,12 +458,12 @@ static int felix_init_structs(struct felix *felix, int num_phys_ports)
+ 			return -ENOMEM;
+ 		}
  
+-		res = &felix->info->port_io_res[port];
+-		res->flags = IORESOURCE_MEM;
+-		res->start += switch_base;
+-		res->end += switch_base;
++		memcpy(&res, &felix->info->port_io_res[port], sizeof(res));
++		res.flags = IORESOURCE_MEM;
++		res.start += switch_base;
++		res.end += switch_base;
+ 
+-		port_regs = devm_ioremap_resource(ocelot->dev, res);
++		port_regs = devm_ioremap_resource(ocelot->dev, &res);
+ 		if (IS_ERR(port_regs)) {
+ 			dev_err(ocelot->dev,
+ 				"failed to map registers for port %d\n", port);
+diff --git a/drivers/net/dsa/ocelot/felix.h b/drivers/net/dsa/ocelot/felix.h
+index 8771d40324f1..2c024cc901d4 100644
+--- a/drivers/net/dsa/ocelot/felix.h
++++ b/drivers/net/dsa/ocelot/felix.h
+@@ -8,9 +8,9 @@
+ 
+ /* Platform-specific information */
+ struct felix_info {
+-	struct resource			*target_io_res;
+-	struct resource			*port_io_res;
+-	struct resource			*imdio_res;
++	const struct resource		*target_io_res;
++	const struct resource		*port_io_res;
++	const struct resource		*imdio_res;
+ 	const struct reg_field		*regfields;
+ 	const u32 *const		*map;
+ 	const struct ocelot_ops		*ops;
+diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
+index edc1a67c002b..50074da3a1a0 100644
+--- a/drivers/net/dsa/ocelot/felix_vsc9959.c
++++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
+@@ -328,10 +328,8 @@ static const u32 *vsc9959_regmap[] = {
+ 	[GCB]	= vsc9959_gcb_regmap,
+ };
+ 
+-/* Addresses are relative to the PCI device's base address and
+- * will be fixed up at ioremap time.
+- */
+-static struct resource vsc9959_target_io_res[] = {
++/* Addresses are relative to the PCI device's base address */
++static const struct resource vsc9959_target_io_res[] = {
+ 	[ANA] = {
+ 		.start	= 0x0280000,
+ 		.end	= 0x028ffff,
+@@ -374,7 +372,7 @@ static struct resource vsc9959_target_io_res[] = {
+ 	},
+ };
+ 
+-static struct resource vsc9959_port_io_res[] = {
++static const struct resource vsc9959_port_io_res[] = {
+ 	{
+ 		.start	= 0x0100000,
+ 		.end	= 0x010ffff,
+@@ -410,7 +408,7 @@ static struct resource vsc9959_port_io_res[] = {
+ /* Port MAC 0 Internal MDIO bus through which the SerDes acting as an
+  * SGMII/QSGMII MAC PCS can be found.
+  */
+-static struct resource vsc9959_imdio_res = {
++static const struct resource vsc9959_imdio_res = {
+ 	.start		= 0x8030,
+ 	.end		= 0x8040,
+ 	.name		= "imdio",
+@@ -984,7 +982,7 @@ static int vsc9959_mdio_bus_alloc(struct ocelot *ocelot)
+ 	struct device *dev = ocelot->dev;
+ 	resource_size_t imdio_base;
+ 	void __iomem *imdio_regs;
+-	struct resource *res;
++	struct resource res;
+ 	struct enetc_hw *hw;
+ 	struct mii_bus *bus;
+ 	int port;
+@@ -1001,12 +999,12 @@ static int vsc9959_mdio_bus_alloc(struct ocelot *ocelot)
+ 	imdio_base = pci_resource_start(felix->pdev,
+ 					felix->info->imdio_pci_bar);
+ 
+-	res = felix->info->imdio_res;
+-	res->flags = IORESOURCE_MEM;
+-	res->start += imdio_base;
+-	res->end += imdio_base;
++	memcpy(&res, felix->info->imdio_res, sizeof(res));
++	res.flags = IORESOURCE_MEM;
++	res.start += imdio_base;
++	res.end += imdio_base;
+ 
+-	imdio_regs = devm_ioremap_resource(dev, res);
++	imdio_regs = devm_ioremap_resource(dev, &res);
+ 	if (IS_ERR(imdio_regs)) {
+ 		dev_err(dev, "failed to map internal MDIO registers\n");
+ 		return PTR_ERR(imdio_regs);
 -- 
 2.25.1
 
