@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD62C1F30EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577521F3137
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgFHXHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:07:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50642 "EHLO mail.kernel.org"
+        id S1728950AbgFIBHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 21:07:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727769AbgFHXHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:07:01 -0400
+        id S1727773AbgFHXHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:07:02 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8944F20870;
-        Mon,  8 Jun 2020 23:07:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACE4B20820;
+        Mon,  8 Jun 2020 23:07:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657621;
-        bh=SqyLi8d8xiFLHBec76SFFQfbGYQNGQ0Jb1+ic5vnbfo=;
+        s=default; t=1591657622;
+        bh=Ye++hxdlWa+ti5cA5JE7quOuxtmeHQDjYv35mFH/6fs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zFBtBeALLjJRo7gSES7ARlHs5hFDZU+QyPJrBOm5BINKc6bWVxgZMPdvwXUdABQgg
-         q8ClG4FkT0y36DiVP930UWMsQPaIlloz1M4Xy9/CHZS1MW3PHceFvw2SSLH4amXiav
-         tAFNJ0mc5HJbPnfo9MPJ5f/LILBvmde3k7z/MQjU=
+        b=vJcM0gWsbh/IilrRp8zLxTn1fhb8G6TK8fv18c/cI38d7I0SaZGIPaXfRJY/NtYpc
+         w4QG9+YgnOzvbQJWsQVpWK7To0iyNjGi7pvRbwUtu2jJff6mQqHD2lsf3O5YftX3c4
+         cxD7hjC2A5gKhOm4e7LSamjThk/tH8e4LKM23n/8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Prarit Bhargava <prarit@redhat.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        andriy.shevchenko@linux.intel.com,
-        platform-driver-x86@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.7 042/274] tools/power/x86/intel-speed-select: Fix CLX-N package information output
-Date:   Mon,  8 Jun 2020 19:02:15 -0400
-Message-Id: <20200608230607.3361041-42-sashal@kernel.org>
+Cc:     Mattia Dongili <malattia@linux.it>,
+        Dominik Mierzejewski <dominik@greysector.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 043/274] platform/x86: sony-laptop: Make resuming thermal profile safer
+Date:   Mon,  8 Jun 2020 19:02:16 -0400
+Message-Id: <20200608230607.3361041-43-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -45,39 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prarit Bhargava <prarit@redhat.com>
+From: Mattia Dongili <malattia@linux.it>
 
-[ Upstream commit 28c59ae6965ca0626e3150e2f2863e0f0c810ed7 ]
+[ Upstream commit 476d60b1b4c8a2b14a53ef9b772058f35e604661 ]
 
-On CLX-N the perf-profile output is missing the package, die, and cpu
-output.  On CLX-N the pkg_dev struct will never be evaluated by the core
-code so pkg_dev.processed is always 0 and the package, die, and cpu
-information is never output.
+The thermal handle object may fail initialization when the module is
+loaded in the first place. Avoid attempting to use it on resume then.
 
-Set the pkg_dev.processed flag to 1 for CLX-N processors.
-
-Signed-off-by: Prarit Bhargava <prarit@redhat.com>
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: andriy.shevchenko@linux.intel.com
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: platform-driver-x86@vger.kernel.org
+Fixes: 6d232b29cfce ("ACPICA: Dispatcher: always generate buffer objects for ASL create_field() operator")
+Reported-by: Dominik Mierzejewski <dominik@greysector.net>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207491
+Signed-off-by: Mattia Dongili <malattia@linux.it>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/intel-speed-select/isst-config.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/platform/x86/sony-laptop.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/power/x86/intel-speed-select/isst-config.c b/tools/power/x86/intel-speed-select/isst-config.c
-index b73763489410..3688f1101ec4 100644
---- a/tools/power/x86/intel-speed-select/isst-config.c
-+++ b/tools/power/x86/intel-speed-select/isst-config.c
-@@ -1169,6 +1169,7 @@ static void dump_clx_n_config_for_cpu(int cpu, void *arg1, void *arg2,
+diff --git a/drivers/platform/x86/sony-laptop.c b/drivers/platform/x86/sony-laptop.c
+index 51309f7ceede..e4ef3dc3bc2f 100644
+--- a/drivers/platform/x86/sony-laptop.c
++++ b/drivers/platform/x86/sony-laptop.c
+@@ -2295,7 +2295,12 @@ static void sony_nc_thermal_cleanup(struct platform_device *pd)
+ #ifdef CONFIG_PM_SLEEP
+ static void sony_nc_thermal_resume(void)
+ {
+-	unsigned int status = sony_nc_thermal_mode_get();
++	int status;
++
++	if (!th_handle)
++		return;
++
++	status = sony_nc_thermal_mode_get();
  
- 		ctdp_level = &clx_n_pkg_dev.ctdp_level[0];
- 		pbf_info = &ctdp_level->pbf_info;
-+		clx_n_pkg_dev.processed = 1;
- 		isst_ctdp_display_information(cpu, outf, tdp_level, &clx_n_pkg_dev);
- 		free_cpu_set(ctdp_level->core_cpumask);
- 		free_cpu_set(pbf_info->core_cpumask);
+ 	if (status != th_handle->mode)
+ 		sony_nc_thermal_mode_set(th_handle->mode);
 -- 
 2.25.1
 
