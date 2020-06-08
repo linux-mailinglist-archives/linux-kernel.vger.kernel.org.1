@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825331F2B5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8691F2B59
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731341AbgFIAO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:14:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41742 "EHLO mail.kernel.org"
+        id S1732578AbgFIAOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:14:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730739AbgFHXTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:19:06 -0400
+        id S1728767AbgFHXTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:19:08 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 656472083E;
-        Mon,  8 Jun 2020 23:19:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D326920823;
+        Mon,  8 Jun 2020 23:19:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658346;
-        bh=qnsVTrLCxPqpngpuR5EA72ryLCgJ1hxZMzU5jpMT6iI=;
+        s=default; t=1591658348;
+        bh=JhpQfRsModk5sQ9aL2T3NULoav7X7hkWKs2gzjta+OE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P3xdTaWK1IvSVN6zB0j0v5nUhwi24VQegobA5K/629zXBtC1FupETwL91KTq69Cvu
-         I59bbFWQDCQrDSe3i4huARz2VeHHl3Vg04zXr9uoj/h011sgTYLqenePT9NYVIWvuV
-         4suuMiRr0wIkowKRbiHMSpvlci4aLbFUizt/PqcU=
+        b=rpFbyzgNNmH4LspWHtunhToYT4EegV9c64u/IgjnBBcozllYp17ZHKoUEPd0BeDC8
+         Cg1toVKMQFAvDL1NZ1UAgtmjtbcyPdrdlHMiv19JOnJuzrnFciIrd08G27Ql5SOVim
+         x6N5BQy/9daRoLFkT2OzMc+qyj88eozW8iovi4Lg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     limingyu <limingyu@uniontech.com>,
-        zhoubinbin <zhoubinbin@uniontech.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.4 014/175] drm/amdgpu: Init data to avoid oops while reading pp_num_states.
-Date:   Mon,  8 Jun 2020 19:16:07 -0400
-Message-Id: <20200608231848.3366970-14-sashal@kernel.org>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alston Tang <alston64@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 016/175] libbpf: Fix memory leak and possible double-free in hashmap__clear
+Date:   Mon,  8 Jun 2020 19:16:09 -0400
+Message-Id: <20200608231848.3366970-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -45,51 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: limingyu <limingyu@uniontech.com>
+From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit 6f81b2d047c59eb77cd04795a44245d6a52cdaec ]
+[ Upstream commit 229bf8bf4d910510bc1a2fd0b89bd467cd71050d ]
 
-For chip like CHIP_OLAND with si enabled(amdgpu.si_support=1),
-the amdgpu will expose pp_num_states to the /sys directory.
-In this moment, read the pp_num_states file will excute the
-amdgpu_get_pp_num_states func. In our case, the data hasn't
-been initialized, so the kernel will access some ilegal
-address, trigger the segmentfault and system will reboot soon:
+Fix memory leak in hashmap_clear() not freeing hashmap_entry structs for each
+of the remaining entries. Also NULL-out bucket list to prevent possible
+double-free between hashmap__clear() and hashmap__free().
 
-    uos@uos-PC:~$ cat /sys/devices/pci0000\:00/0000\:00\:00.0/0000\:01\:00
-    .0/pp_num_states
+Running test_progs-asan flavor clearly showed this problem.
 
-    Message from syslogd@uos-PC at Apr 22 09:26:20 ...
-     kernel:[   82.154129] Internal error: Oops: 96000004 [#1] SMP
-
-This patch aims to fix this problem, avoid that reading file
-triggers the kernel sementfault.
-
-Signed-off-by: limingyu <limingyu@uniontech.com>
-Signed-off-by: zhoubinbin <zhoubinbin@uniontech.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Reported-by: Alston Tang <alston64@fb.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20200429012111.277390-5-andriin@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/lib/bpf/hashmap.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
-index 51263b8d94b1..c8008b956363 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
-@@ -416,8 +416,11 @@ static ssize_t amdgpu_get_pp_num_states(struct device *dev,
- 		ret = smu_get_power_num_states(&adev->smu, &data);
- 		if (ret)
- 			return ret;
--	} else if (adev->powerplay.pp_funcs->get_pp_num_states)
-+	} else if (adev->powerplay.pp_funcs->get_pp_num_states) {
- 		amdgpu_dpm_get_pp_num_states(adev, &data);
-+	} else {
-+		memset(&data, 0, sizeof(data));
-+	}
+diff --git a/tools/lib/bpf/hashmap.c b/tools/lib/bpf/hashmap.c
+index 6122272943e6..9ef9f6201d8b 100644
+--- a/tools/lib/bpf/hashmap.c
++++ b/tools/lib/bpf/hashmap.c
+@@ -56,7 +56,14 @@ struct hashmap *hashmap__new(hashmap_hash_fn hash_fn,
  
- 	buf_len = snprintf(buf, PAGE_SIZE, "states: %d\n", data.nums);
- 	for (i = 0; i < data.nums; i++)
+ void hashmap__clear(struct hashmap *map)
+ {
++	struct hashmap_entry *cur, *tmp;
++	int bkt;
++
++	hashmap__for_each_entry_safe(map, cur, tmp, bkt) {
++		free(cur);
++	}
+ 	free(map->buckets);
++	map->buckets = NULL;
+ 	map->cap = map->cap_bits = map->sz = 0;
+ }
+ 
 -- 
 2.25.1
 
