@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD581F2298
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E3A1F23B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728365AbgFHXJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:09:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53082 "EHLO mail.kernel.org"
+        id S1730130AbgFHXP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:15:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728096AbgFHXIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:08:06 -0400
+        id S1729271AbgFHXNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:13:19 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10F2D2085B;
-        Mon,  8 Jun 2020 23:08:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 187A720C09;
+        Mon,  8 Jun 2020 23:13:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657686;
-        bh=1nuTO3/C9PLdayS+YAYuAtfHYtA++BUHbRE+Z0bXpyw=;
+        s=default; t=1591657998;
+        bh=BNvDn/c37fRzH+yDqVcvmJifUx/6tklM+D/+BV8N+oI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TUhikeQflvAJ4Kv3CTONiPHy11fM/FeFSahA0BPnkewMN6GP0LWprWE3nHF5kW//W
-         afpsHT8pc3abywmCIEx+aVa7OVZEveEnSk8B5Ycb/jekr4ejHZwRZckFVUtAnHbqiA
-         GTeOS4WADwO7mQrpLutvIdIHS6/wJkDWKLZvzTMo=
+        b=GBGF+ET8TEmr78EQWOvzLpVDFATDWpxx5Pfu9lg/TsZCVckbH+eYEq39mL2Og/Zzp
+         5OZnj7xI7kyL8LmU9K48KlRi+epLTw3AcxPIociRoYMP5Buzz63RX+82Jss+YA4VNd
+         IYaayO5viUf+dFGQP3bnP4M+0pRS8TVOj62DBeZY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.7 088/274] ubsan: entirely disable alignment checks under UBSAN_TRAP
+Cc:     Marc Zyngier <maz@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-clk@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 056/606] clk: Unlink clock if failed to prepare or enable
 Date:   Mon,  8 Jun 2020 19:03:01 -0400
-Message-Id: <20200608230607.3361041-88-sashal@kernel.org>
+Message-Id: <20200608231211.3363633-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -48,46 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit 9380ce246a052a1e00121cd480028b6907aeae38 ]
+commit 018d4671b9bbd4a5c55cf6eab3e1dbc70a50b66e upstream.
 
-Commit 8d58f222e85f ("ubsan: disable UBSAN_ALIGNMENT under
-COMPILE_TEST") tried to fix the pathological results of UBSAN_ALIGNMENT
-with UBSAN_TRAP (which objtool would rightly scream about), but it made
-an assumption about how COMPILE_TEST gets set (it is not set for
-randconfig).  As a result, we need a bigger hammer here: just don't
-allow the alignment checks with the trap mode.
+On failing to prepare or enable a clock, remove the core structure
+from the list it has been inserted as it is about to be freed.
 
-Fixes: 8d58f222e85f ("ubsan: disable UBSAN_ALIGNMENT under COMPILE_TEST")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Elena Petrova <lenaptr@google.com>
-Link: http://lkml.kernel.org/r/202005291236.000FCB6@keescook
-Link: https://lore.kernel.org/lkml/742521db-1e8c-0d7a-1ed4-a908894fb497@infradead.org/
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This otherwise leads to random crashes when subsequent clocks get
+registered, during which parsing of the clock tree becomes adventurous.
+
+Observed with QEMU's RPi-3 emulation.
+
+Fixes: 12ead77432f2 ("clk: Don't try to enable critical clocks if prepare failed")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Michael Turquette <mturquette@baylibre.com>
+Link: https://lkml.kernel.org/r/20200505140953.409430-1-maz@kernel.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/Kconfig.ubsan | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/clk.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
-index 929211039bac..27bcc2568c95 100644
---- a/lib/Kconfig.ubsan
-+++ b/lib/Kconfig.ubsan
-@@ -63,7 +63,7 @@ config UBSAN_SANITIZE_ALL
- config UBSAN_ALIGNMENT
- 	bool "Enable checks for pointers alignment"
- 	default !HAVE_EFFICIENT_UNALIGNED_ACCESS
--	depends on !X86 || !COMPILE_TEST
-+	depends on !UBSAN_TRAP
- 	help
- 	  This option enables the check of unaligned memory accesses.
- 	  Enabling this option on architectures that support unaligned
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 305544b68b8a..f22b7aed6e64 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -3512,6 +3512,9 @@ static int __clk_core_init(struct clk_core *core)
+ out:
+ 	clk_pm_runtime_put(core);
+ unlock:
++	if (ret)
++		hlist_del_init(&core->child_node);
++
+ 	clk_prepare_unlock();
+ 
+ 	if (!ret)
 -- 
 2.25.1
 
