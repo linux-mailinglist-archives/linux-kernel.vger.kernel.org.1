@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB261F25BE
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1411F25BF
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731556AbgFHXaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:30:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50170 "EHLO mail.kernel.org"
+        id S1732344AbgFHXaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:30:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387481AbgFHXYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:24:08 -0400
+        id S2387494AbgFHXYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:24:13 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A1CE20B80;
-        Mon,  8 Jun 2020 23:24:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA99820C09;
+        Mon,  8 Jun 2020 23:24:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658648;
-        bh=kG9t7AnTnL9Y93YN+7mvClU3moEy9xDxPacmFdvK0/w=;
+        s=default; t=1591658652;
+        bh=IqCUM9sZg594VtkheaSNPK3OdjQSTv3twTQ/DtdW8k8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rKbS3RFuzSJjzPaVpZBiSAxvixZj7Tc825KXZ3aeIJYXYtTu/W87XmdCDV4fGgdQt
-         hQArhcm9Xkv0SIriiojJVx8bkVZia/r8Bb5hQ+qnsPGX/+ITrwCSUOVn7146PwBQPi
-         e0Rby6vssq50+VgOWlH9VVyYGNwrcxU6jIB95YDI=
+        b=Eqs4ko/ZwLhdCeE2CTzK/RymRNakwWD5+OkYkSD20NLAq5c9UeXn12gXOh4nMA4Kq
+         gO9jzBNFVYuY422qcCpqlGmm58iF4TRBCn3eRqQOcoyxtNiiww0uUrtP9GOIFXeay8
+         1fBfOAfLtr068UN0xeKCVNyUzMRhszv5Gms93kRo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Rakesh Pillai <pillair@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 068/106] ath10k: Remove msdu from idr when management pkt send fails
-Date:   Mon,  8 Jun 2020 19:22:00 -0400
-Message-Id: <20200608232238.3368589-68-sashal@kernel.org>
+Cc:     Ryder Lee <ryder.lee@mediatek.com>,
+        Chih-Min Chen <chih-min.chen@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.19 071/106] mt76: avoid rx reorder buffer overflow
+Date:   Mon,  8 Jun 2020 19:22:03 -0400
+Message-Id: <20200608232238.3368589-71-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608232238.3368589-1-sashal@kernel.org>
 References: <20200608232238.3368589-1-sashal@kernel.org>
@@ -44,120 +46,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rakesh Pillai <pillair@codeaurora.org>
+From: Ryder Lee <ryder.lee@mediatek.com>
 
-[ Upstream commit c730c477176ad4af86d9aae4d360a7ad840b073a ]
+[ Upstream commit 7c4f744d6703757be959f521a7a441bf34745d99 ]
 
-Currently when the sending of any management pkt
-via wmi command fails, the packet is being unmapped
-freed in the error handling. But the idr entry added,
-which is used to track these packet is not getting removed.
+Enlarge slot to support 11ax 256 BA (256 MPDUs in an AMPDU)
 
-Hence, during unload, in wmi cleanup, all the entries
-in IDR are removed and the corresponding buffer is
-attempted to be freed. This can cause a situation where
-one packet is attempted to be freed twice.
-
-Fix this error by rmeoving the msdu from the idr
-list when the sending of a management packet over
-wmi fails.
-
-Tested HW: WCN3990
-Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-
-Fixes: 1807da49733e ("ath10k: wmi: add management tx by reference support over wmi")
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1588667015-25490-1-git-send-email-pillair@codeaurora.org
+Signed-off-by: Chih-Min Chen <chih-min.chen@mediatek.com>
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c     |  3 +++
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 10 ++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 15 +++++++++++++++
- 3 files changed, 28 insertions(+)
+ drivers/net/wireless/mediatek/mt76/agg-rx.c | 8 ++++----
+ drivers/net/wireless/mediatek/mt76/mt76.h   | 6 +++---
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a09d7a07e90a..81af403c19c2 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3852,6 +3852,9 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
- 			if (ret) {
- 				ath10k_warn(ar, "failed to transmit management frame by ref via WMI: %d\n",
- 					    ret);
-+				/* remove this msdu from idr tracking */
-+				ath10k_wmi_cleanup_mgmt_tx_send(ar, skb);
-+
- 				dma_unmap_single(ar->dev, paddr, skb->len,
- 						 DMA_TO_DEVICE);
- 				ieee80211_free_txskb(ar->hw, skb);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 7fd63bbf8e24..b6cd33fa79f8 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -139,6 +139,7 @@ struct wmi_ops {
- 	struct sk_buff *(*gen_mgmt_tx_send)(struct ath10k *ar,
- 					    struct sk_buff *skb,
- 					    dma_addr_t paddr);
-+	int (*cleanup_mgmt_tx_send)(struct ath10k *ar, struct sk_buff *msdu);
- 	struct sk_buff *(*gen_dbglog_cfg)(struct ath10k *ar, u64 module_enable,
- 					  u32 log_level);
- 	struct sk_buff *(*gen_pktlog_enable)(struct ath10k *ar, u32 filter);
-@@ -431,6 +432,15 @@ ath10k_wmi_get_txbf_conf_scheme(struct ath10k *ar)
- 	return ar->wmi.ops->get_txbf_conf_scheme(ar);
+diff --git a/drivers/net/wireless/mediatek/mt76/agg-rx.c b/drivers/net/wireless/mediatek/mt76/agg-rx.c
+index 73c8b2805c97..d44d57e6eb27 100644
+--- a/drivers/net/wireless/mediatek/mt76/agg-rx.c
++++ b/drivers/net/wireless/mediatek/mt76/agg-rx.c
+@@ -154,8 +154,8 @@ void mt76_rx_aggr_reorder(struct sk_buff *skb, struct sk_buff_head *frames)
+ 	struct ieee80211_sta *sta;
+ 	struct mt76_rx_tid *tid;
+ 	bool sn_less;
+-	u16 seqno, head, size;
+-	u8 ackp, idx;
++	u16 seqno, head, size, idx;
++	u8 ackp;
+ 
+ 	__skb_queue_tail(frames, skb);
+ 
+@@ -240,7 +240,7 @@ void mt76_rx_aggr_reorder(struct sk_buff *skb, struct sk_buff_head *frames)
  }
  
-+static inline int
-+ath10k_wmi_cleanup_mgmt_tx_send(struct ath10k *ar, struct sk_buff *msdu)
-+{
-+	if (!ar->wmi.ops->cleanup_mgmt_tx_send)
-+		return -EOPNOTSUPP;
-+
-+	return ar->wmi.ops->cleanup_mgmt_tx_send(ar, msdu);
-+}
-+
- static inline int
- ath10k_wmi_mgmt_tx_send(struct ath10k *ar, struct sk_buff *msdu,
- 			dma_addr_t paddr)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 248decb494c2..7f435fa29f75 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2638,6 +2638,18 @@ ath10k_wmi_tlv_op_gen_request_stats(struct ath10k *ar, u32 stats_mask)
- 	return skb;
- }
+ int mt76_rx_aggr_start(struct mt76_dev *dev, struct mt76_wcid *wcid, u8 tidno,
+-		       u16 ssn, u8 size)
++		       u16 ssn, u16 size)
+ {
+ 	struct mt76_rx_tid *tid;
  
-+static int
-+ath10k_wmi_tlv_op_cleanup_mgmt_tx_send(struct ath10k *ar,
-+				       struct sk_buff *msdu)
-+{
-+	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(msdu);
-+	struct ath10k_wmi *wmi = &ar->wmi;
-+
-+	idr_remove(&wmi->mgmt_pending_tx, cb->msdu_id);
-+
-+	return 0;
-+}
-+
- static int
- ath10k_wmi_mgmt_tx_alloc_msdu_id(struct ath10k *ar, struct sk_buff *skb,
- 				 dma_addr_t paddr)
-@@ -2710,6 +2722,8 @@ ath10k_wmi_tlv_op_gen_mgmt_tx_send(struct ath10k *ar, struct sk_buff *msdu,
- 	if (desc_id < 0)
- 		goto err_free_skb;
+@@ -264,7 +264,7 @@ EXPORT_SYMBOL_GPL(mt76_rx_aggr_start);
  
-+	cb->msdu_id = desc_id;
-+
- 	ptr = (void *)skb->data;
- 	tlv = ptr;
- 	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_MGMT_TX_CMD);
-@@ -3949,6 +3963,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.gen_force_fw_hang = ath10k_wmi_tlv_op_gen_force_fw_hang,
- 	/* .gen_mgmt_tx = not implemented; HTT is used */
- 	.gen_mgmt_tx_send = ath10k_wmi_tlv_op_gen_mgmt_tx_send,
-+	.cleanup_mgmt_tx_send = ath10k_wmi_tlv_op_cleanup_mgmt_tx_send,
- 	.gen_dbglog_cfg = ath10k_wmi_tlv_op_gen_dbglog_cfg,
- 	.gen_pktlog_enable = ath10k_wmi_tlv_op_gen_pktlog_enable,
- 	.gen_pktlog_disable = ath10k_wmi_tlv_op_gen_pktlog_disable,
+ static void mt76_rx_aggr_shutdown(struct mt76_dev *dev, struct mt76_rx_tid *tid)
+ {
+-	u8 size = tid->size;
++	u16 size = tid->size;
+ 	int i;
+ 
+ 	cancel_delayed_work(&tid->reorder_work);
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76.h b/drivers/net/wireless/mediatek/mt76/mt76.h
+index 2eab35879163..7b1667ec619e 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76.h
++++ b/drivers/net/wireless/mediatek/mt76/mt76.h
+@@ -193,8 +193,8 @@ struct mt76_rx_tid {
+ 	struct delayed_work reorder_work;
+ 
+ 	u16 head;
+-	u8 size;
+-	u8 nframes;
++	u16 size;
++	u16 nframes;
+ 
+ 	u8 started:1, stopped:1, timer_pending:1;
+ 
+@@ -537,7 +537,7 @@ int mt76_get_survey(struct ieee80211_hw *hw, int idx,
+ void mt76_set_stream_caps(struct mt76_dev *dev, bool vht);
+ 
+ int mt76_rx_aggr_start(struct mt76_dev *dev, struct mt76_wcid *wcid, u8 tid,
+-		       u16 ssn, u8 size);
++		       u16 ssn, u16 size);
+ void mt76_rx_aggr_stop(struct mt76_dev *dev, struct mt76_wcid *wcid, u8 tid);
+ 
+ void mt76_wcid_key_setup(struct mt76_dev *dev, struct mt76_wcid *wcid,
 -- 
 2.25.1
 
