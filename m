@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1930B1F25BC
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3E11F25BD
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732167AbgFHX3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:29:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49932 "EHLO mail.kernel.org"
+        id S1732320AbgFHX37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:29:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731561AbgFHXYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:24:01 -0400
+        id S1731565AbgFHXYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:24:02 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7688B20899;
-        Mon,  8 Jun 2020 23:24:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC1A920C09;
+        Mon,  8 Jun 2020 23:24:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658641;
-        bh=nPdV4t7L8LJ5km4yZ5iFxKLzj/Qptp1g8r/Ljh9YXK4=;
+        s=default; t=1591658642;
+        bh=twAD9/480OimOKhD5kT8bjO05961osbe1gNSuQvw97U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mI3uLrNCNjhI5VmDL/YzRe4pbikQVQIF3xblUEacY/W7sWW3NDkNxx9aIETk8Gdbr
-         Xz62ZQ+evBdR7t2SqmhFVPRZVUCF4N0C7wxKIqJRwFHm28O9vlYrGP9X0ztUmzpf3n
-         OwMnMquqFOry5B+5T5dCOze/fMQvfNsNRLTB+ZEU=
+        b=d/AvoqCnJdkce224/0MJSTdpy8PsAwGVImF548Wo7HOx+hrnUHk6xoB+E47Km2Tjf
+         2uiLGyOlqbwlcfAT+uHy+tok/ibmmRbNqqD6ZJihf7H6s3TJgI1niVaXzMkgDnXdPG
+         Z02BmnZW2uHnclyNj923xzPdx5MKSjhe89fzCFbI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Brian Foster <bfoster@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Allison Collins <allison.henderson@oracle.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-xfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 062/106] xfs: fix duplicate verification from xfs_qm_dqflush()
-Date:   Mon,  8 Jun 2020 19:21:54 -0400
-Message-Id: <20200608232238.3368589-62-sashal@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 063/106] platform/x86: intel-vbtn: Use acpi_evaluate_integer()
+Date:   Mon,  8 Jun 2020 19:21:55 -0400
+Message-Id: <20200608232238.3368589-63-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608232238.3368589-1-sashal@kernel.org>
 References: <20200608232238.3368589-1-sashal@kernel.org>
@@ -46,48 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian Foster <bfoster@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 629dcb38dc351947ed6a26a997d4b587f3bd5c7e ]
+[ Upstream commit 18937875a231d831c309716d6d8fc358f8381881 ]
 
-The pre-flush dquot verification in xfs_qm_dqflush() duplicates the
-read verifier by checking the dquot in the on-disk buffer. Instead,
-verify the in-core variant before it is flushed to the buffer.
+Use acpi_evaluate_integer() instead of open-coding it.
 
-Fixes: 7224fa482a6d ("xfs: add full xfs_dqblk verifier")
-Signed-off-by: Brian Foster <bfoster@redhat.com>
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Allison Collins <allison.henderson@oracle.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+This is a preparation patch for adding a intel_vbtn_has_switches()
+helper function.
+
+Fixes: de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode switch on 2-in-1's")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_dquot.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/platform/x86/intel-vbtn.c | 19 ++++++-------------
+ 1 file changed, 6 insertions(+), 13 deletions(-)
 
-diff --git a/fs/xfs/xfs_dquot.c b/fs/xfs/xfs_dquot.c
-index a1af984e4913..59b2b29542f4 100644
---- a/fs/xfs/xfs_dquot.c
-+++ b/fs/xfs/xfs_dquot.c
-@@ -1120,13 +1120,12 @@ xfs_qm_dqflush(
- 	dqb = bp->b_addr + dqp->q_bufoffset;
- 	ddqp = &dqb->dd_diskdq;
+diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
+index a0d0cecff55f..0bcfa20dd614 100644
+--- a/drivers/platform/x86/intel-vbtn.c
++++ b/drivers/platform/x86/intel-vbtn.c
+@@ -118,28 +118,21 @@ static void detect_tablet_mode(struct platform_device *device)
+ 	const char *chassis_type = dmi_get_system_info(DMI_CHASSIS_TYPE);
+ 	struct intel_vbtn_priv *priv = dev_get_drvdata(&device->dev);
+ 	acpi_handle handle = ACPI_HANDLE(&device->dev);
+-	struct acpi_buffer vgbs_output = { ACPI_ALLOCATE_BUFFER, NULL };
+-	union acpi_object *obj;
++	unsigned long long vgbs;
+ 	acpi_status status;
+ 	int m;
  
--	/*
--	 * A simple sanity check in case we got a corrupted dquot.
--	 */
--	fa = xfs_dqblk_verify(mp, dqb, be32_to_cpu(ddqp->d_id), 0);
-+	/* sanity check the in-core structure before we flush */
-+	fa = xfs_dquot_verify(mp, &dqp->q_core, be32_to_cpu(dqp->q_core.d_id),
-+			      0);
- 	if (fa) {
- 		xfs_alert(mp, "corrupt dquot ID 0x%x in memory at %pS",
--				be32_to_cpu(ddqp->d_id), fa);
-+				be32_to_cpu(dqp->q_core.d_id), fa);
- 		xfs_buf_relse(bp);
- 		xfs_dqfunlock(dqp);
- 		xfs_force_shutdown(mp, SHUTDOWN_CORRUPT_INCORE);
+ 	if (!(chassis_type && strcmp(chassis_type, "31") == 0))
+-		goto out;
++		return;
+ 
+-	status = acpi_evaluate_object(handle, "VGBS", NULL, &vgbs_output);
++	status = acpi_evaluate_integer(handle, "VGBS", NULL, &vgbs);
+ 	if (ACPI_FAILURE(status))
+-		goto out;
+-
+-	obj = vgbs_output.pointer;
+-	if (!(obj && obj->type == ACPI_TYPE_INTEGER))
+-		goto out;
++		return;
+ 
+-	m = !(obj->integer.value & TABLET_MODE_FLAG);
++	m = !(vgbs & TABLET_MODE_FLAG);
+ 	input_report_switch(priv->input_dev, SW_TABLET_MODE, m);
+-	m = (obj->integer.value & DOCK_MODE_FLAG) ? 1 : 0;
++	m = (vgbs & DOCK_MODE_FLAG) ? 1 : 0;
+ 	input_report_switch(priv->input_dev, SW_DOCK, m);
+-out:
+-	kfree(vgbs_output.pointer);
+ }
+ 
+ static int intel_vbtn_probe(struct platform_device *device)
 -- 
 2.25.1
 
