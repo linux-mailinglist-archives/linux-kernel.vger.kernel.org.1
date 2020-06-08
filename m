@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 794AD1F26BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6858F1F264C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732215AbgFHX2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:28:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47452 "EHLO mail.kernel.org"
+        id S1732262AbgFHX2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:28:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731367AbgFHXWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:22:46 -0400
+        id S1731394AbgFHXWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:22:53 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5117F208C9;
-        Mon,  8 Jun 2020 23:22:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC5402074B;
+        Mon,  8 Jun 2020 23:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658566;
-        bh=/YEJX4/4794rBMCNqysDhVlcMXdUFlMmWWEnYdEx+MU=;
+        s=default; t=1591658573;
+        bh=T3peY554NwlALNIfveCqi8a67Cv2Pt7s4h5T++96M/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=njm8I+dWskswb00cEIw24FSCt/fc5eA2x9ifVFziprDA4XjHx8OdIzXOofuKeDVsR
-         Rygl6d1ruo1No39IJ7ZCAPWDXhqlNkxvhmYCNQkiUrVersYxAe+rNV4ev58gotd+E0
-         Loslh6+KXqhGbuVGbZxsML/1RT+mTMZhCMPpaP3w=
+        b=y50rsLBoCR7id0tkvyCBpSUY8oQ6HgVjnVL2ACzLx1vaudjOyEy2RtBtVI0VdKu4F
+         aLjmgNYNEwOersE+4xShDuCboKkXsydivqhXQZfFc60WOR47KnEotmVHSbaX9yKScC
+         aVujHBx8B7Fkn8dJ+ysj4CVCSYfLC5cNh2g+ft+w=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Julien Thierry <jthierry@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 006/106] objtool: Ignore empty alternatives
-Date:   Mon,  8 Jun 2020 19:20:58 -0400
-Message-Id: <20200608232238.3368589-6-sashal@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 012/106] spi: dw: Zero DMA Tx and Rx configurations on stack
+Date:   Mon,  8 Jun 2020 19:21:04 -0400
+Message-Id: <20200608232238.3368589-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608232238.3368589-1-sashal@kernel.org>
 References: <20200608232238.3368589-1-sashal@kernel.org>
@@ -45,43 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Thierry <jthierry@redhat.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 7170cf47d16f1ba29eca07fd818870b7af0a93a5 ]
+[ Upstream commit 3cb97e223d277f84171cc4ccecab31e08b2ee7b5 ]
 
-The .alternatives section can contain entries with no original
-instructions. Objtool will currently crash when handling such an entry.
+Some DMA controller drivers do not tolerate non-zero values in
+the DMA configuration structures. Zero them to avoid issues with
+such DMA controller drivers. Even despite above this is a good
+practice per se.
 
-Just skip that entry, but still give a warning to discourage useless
-entries.
-
-Signed-off-by: Julien Thierry <jthierry@redhat.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Fixes: 7063c0d942a1 ("spi/dw_spi: add DMA support")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Feng Tang <feng.tang@intel.com>
+Cc: Feng Tang <feng.tang@intel.com>
+Link: https://lore.kernel.org/r/20200506153025.21441-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/objtool/check.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/spi/spi-dw-mid.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 4d509734b695..fd3071d83dea 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -801,6 +801,12 @@ static int add_special_section_alts(struct objtool_file *file)
- 		}
+diff --git a/drivers/spi/spi-dw-mid.c b/drivers/spi/spi-dw-mid.c
+index 3db905f5f345..f7ec8b98e6db 100644
+--- a/drivers/spi/spi-dw-mid.c
++++ b/drivers/spi/spi-dw-mid.c
+@@ -155,6 +155,7 @@ static struct dma_async_tx_descriptor *dw_spi_dma_prepare_tx(struct dw_spi *dws,
+ 	if (!xfer->tx_buf)
+ 		return NULL;
  
- 		if (special_alt->group) {
-+			if (!special_alt->orig_len) {
-+				WARN_FUNC("empty alternative entry",
-+					  orig_insn->sec, orig_insn->offset);
-+				continue;
-+			}
-+
- 			ret = handle_group_alt(file, special_alt, orig_insn,
- 					       &new_insn);
- 			if (ret)
++	memset(&txconf, 0, sizeof(txconf));
+ 	txconf.direction = DMA_MEM_TO_DEV;
+ 	txconf.dst_addr = dws->dma_addr;
+ 	txconf.dst_maxburst = 16;
+@@ -201,6 +202,7 @@ static struct dma_async_tx_descriptor *dw_spi_dma_prepare_rx(struct dw_spi *dws,
+ 	if (!xfer->rx_buf)
+ 		return NULL;
+ 
++	memset(&rxconf, 0, sizeof(rxconf));
+ 	rxconf.direction = DMA_DEV_TO_MEM;
+ 	rxconf.src_addr = dws->dma_addr;
+ 	rxconf.src_maxburst = 16;
 -- 
 2.25.1
 
