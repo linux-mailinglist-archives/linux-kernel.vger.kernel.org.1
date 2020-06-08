@@ -2,73 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27F81F1587
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 11:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1AC1F1596
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 11:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729258AbgFHJhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 05:37:39 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:37165 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729167AbgFHJhg (ORCPT
+        id S1729204AbgFHJiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 05:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729111AbgFHJiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 05:37:36 -0400
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 08 Jun 2020 02:37:33 -0700
-Received: from sivaprak-linux.qualcomm.com ([10.201.3.202])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 08 Jun 2020 02:37:31 -0700
-Received: by sivaprak-linux.qualcomm.com (Postfix, from userid 459349)
-        id B47E921812; Mon,  8 Jun 2020 15:07:29 +0530 (IST)
-From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        jassisinghbrar@gmail.com, sivaprak@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3 4/4] mailbox: qcom: Add ipq6018 apcs compatible
-Date:   Mon,  8 Jun 2020 15:07:27 +0530
-Message-Id: <1591609047-29995-5-git-send-email-sivaprak@codeaurora.org>
+        Mon, 8 Jun 2020 05:38:54 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E4BC08C5C3
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 02:38:54 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 10so2431389pfx.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 02:38:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=8nFZFr9b1fII+6D0rKTzWsSJAU76ASsrlWrZljZL5Jk=;
+        b=UXKeks0pXHxRBTysC/Dt0BNmLfmM0klkVdz12QpU0BFeAKumvbD71rgnaTd4tuoz7l
+         Mrwz9oSPeQvdDqY2l2O4dnubnH/EJpYUaE9ZXglhOwOzcOIL+/gQvq2ZzjKntDGy8TLp
+         Zir9ueSk4XHrtIHm5ALzLQJMYVuMRg4Ofo2tSo1NGrOVMugSB+1PdI+zZ5wvbCj0KrYT
+         WS2KTs+JOusH1Q9nHP2Tpf/mjJ6Tn0pykUpuiqcQeosoK9HKVFvk/7XvMlKcm5ODPujo
+         6e+KbK+RGT6gfHgYvtA2aHtMBpt239ZmMQvp1ue7ugYh0sRyyJ4dzc4sNxKaLivakaFu
+         Bn4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8nFZFr9b1fII+6D0rKTzWsSJAU76ASsrlWrZljZL5Jk=;
+        b=rhAAXbnNDDozX53Mgr5tGEorXH2Qpcz1piJDgPEfuVKNgN/H8lmrQ127CHWQcIgkgK
+         FFRDhLNfy1B6DI5H+PYvjCVkbMvaViVtwM57ZBsEK2gnngAnNnx4dofD/xpS6tMiuHHl
+         Gp3qpS1vzgfHwywZn4h64RW8HgA0DVSuBk+nY5aTiERnXpkLRrfCE/VRa0fnHiY1HfNH
+         MIdKgIVH99+Ya+81j8LeFZpY2to3L9eVgvXoel+RgCSmVWL5DiAeywObwZ/YAo7BvkdA
+         cdn88Bgv7vMbZnvgvvrYGPIyBCCi2T/lnloDlH17NcvmFPu9xjVc2IqrFdTWj3FcXtBW
+         Xkog==
+X-Gm-Message-State: AOAM533fJvTZOEZb2JxIJOtsstcsiW2c5f4rCOEG31dtybtuPzMvmWR1
+        o3yOlJRaOq34RwjsmJ3V124=
+X-Google-Smtp-Source: ABdhPJwbUtaqyDj7BTPatpRYTufbUH1GbiGng6XdEOmxI8JEukNzBV+RjIAaS5544ZUrmOPqjBijzQ==
+X-Received: by 2002:a63:b904:: with SMTP id z4mr20109401pge.25.1591609133685;
+        Mon, 08 Jun 2020 02:38:53 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:4dc:9812:acc3:6aae:21fa:62f8])
+        by smtp.gmail.com with ESMTPSA id 3sm6608971pfe.85.2020.06.08.02.38.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Jun 2020 02:38:53 -0700 (PDT)
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+To:     lee.jones@linaro.org, matthias.bgg@gmail.com
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com
+Subject: [PATCH] mfd: mt6360: Fix register driver NULL pointer by add driver name
+Date:   Mon,  8 Jun 2020 17:38:45 +0800
+Message-Id: <1591609125-3761-1-git-send-email-gene.chen.richtek@gmail.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591609047-29995-1-git-send-email-sivaprak@codeaurora.org>
-References: <1591609047-29995-1-git-send-email-sivaprak@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Qualcomm ipq6018 has apcs block, add compatible for the same. Also,
-the ipq6018 apcs provides a clock functionality similar to msm8916 but
-the clock driver is different.
+From: Gene Chen <gene_chen@richtek.com>
 
-Create a child device based on the apcs compatible for the clock
-controller functionality.
+accidentally remove driver name when
+replace probe by probe_new in add mt6360 mfd driver patch v4
 
-Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+[  121.243012] EAX: c2a8bc64 EBX: 00000000 ECX: 00000000 EDX: 00000000
+[  121.243012] ESI: c2a8bc79 EDI: 00000000 EBP: e54bdea8 ESP: e54bdea0
+[  121.243012] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010286
+[  121.243012] CR0: 80050033 CR2: 00000000 CR3: 02ec3000 CR4: 000006b0
+[  121.243012] Call Trace:
+[  121.243012]  kset_find_obj+0x3d/0xc0
+[  121.243012]  driver_find+0x16/0x40
+[  121.243012]  driver_register+0x49/0x100
+[  121.243012]  ? i2c_for_each_dev+0x39/0x50
+[  121.243012]  ? __process_new_adapter+0x20/0x20
+[  121.243012]  ? cht_wc_driver_init+0x11/0x11
+[  121.243012]  i2c_register_driver+0x30/0x80
+[  121.243012]  ? intel_lpss_pci_driver_init+0x16/0x16
+[  121.243012]  mt6360_pmu_driver_init+0xf/0x11
+[  121.243012]  do_one_initcall+0x33/0x1a0
+[  121.243012]  ? parse_args+0x1eb/0x3d0
+[  121.243012]  ? __might_sleep+0x31/0x90
+[  121.243012]  ? kernel_init_freeable+0x10a/0x17f
+[  121.243012]  kernel_init_freeable+0x12c/0x17f
+[  121.243012]  ? rest_init+0x110/0x110
+[  121.243012]  kernel_init+0xb/0x100
+[  121.243012]  ? schedule_tail_wrapper+0x9/0xc
+[  121.243012]  ret_from_fork+0x19/0x24
+[  121.243012] Modules linked in:
+[  121.243012] CR2: 0000000000000000
+[  121.243012] random: get_random_bytes called from init_oops_id+0x3a/0x40 with crng_init=0
+[  121.243012] ---[ end trace 38a803400f1a2bee ]---
+[  121.243012] EIP: strcmp+0x11/0x30
+
+Signed-off-by: Gene Chen <gene_chen@richtek.com>
 ---
- drivers/mailbox/qcom-apcs-ipc-mailbox.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mfd/mt6360-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-index 49eebb5..cec34f0 100644
---- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-+++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-@@ -29,6 +29,10 @@ struct qcom_apcs_ipc_data {
- 	char *clk_name;
- };
+diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+index db8cdf5..e9cacc2 100644
+--- a/drivers/mfd/mt6360-core.c
++++ b/drivers/mfd/mt6360-core.c
+@@ -412,6 +412,7 @@ MODULE_DEVICE_TABLE(of, mt6360_pmu_of_id);
  
-+static const struct qcom_apcs_ipc_data ipq6018_apcs_data = {
-+	.offset = 8, .clk_name = "qcom,apss-ipq6018-clk"
-+};
-+
- static const struct qcom_apcs_ipc_data ipq8074_apcs_data = {
- 	.offset = 8, .clk_name = NULL
- };
-@@ -139,6 +143,7 @@ static int qcom_apcs_ipc_remove(struct platform_device *pdev)
- 
- /* .data is the offset of the ipc register within the global block */
- static const struct of_device_id qcom_apcs_ipc_of_match[] = {
-+	{ .compatible = "qcom,ipq6018-apcs-apps-global", .data = &ipq6018_apcs_data },
- 	{ .compatible = "qcom,ipq8074-apcs-apps-global", .data = &ipq8074_apcs_data },
- 	{ .compatible = "qcom,msm8916-apcs-kpss-global", .data = &msm8916_apcs_data },
- 	{ .compatible = "qcom,msm8996-apcs-hmss-global", .data = &msm8996_apcs_data },
+ static struct i2c_driver mt6360_pmu_driver = {
+ 	.driver = {
++		.name = "mt6360_pmu",
+ 		.pm = &mt6360_pmu_pm_ops,
+ 		.of_match_table = of_match_ptr(mt6360_pmu_of_id),
+ 	},
 -- 
 2.7.4
 
