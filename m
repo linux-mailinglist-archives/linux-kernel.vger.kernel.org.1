@@ -2,37 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D1E1F2645
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26DD1F264F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387856AbgFHXfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:35:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58400 "EHLO mail.kernel.org"
+        id S1731197AbgFHXhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:37:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732237AbgFHX2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:28:39 -0400
+        id S1732241AbgFHX2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:28:41 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C58420897;
-        Mon,  8 Jun 2020 23:28:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 846982089D;
+        Mon,  8 Jun 2020 23:28:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658918;
-        bh=eqFjqFU3qXiE3XO3dLPjq9Xs//ztRq5SoN7u/f5nz7w=;
+        s=default; t=1591658920;
+        bh=Ec9E1Z1Kggiu9aSgVolMP5zrSre0Y3RZiZbp6pW4Gz0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BjfRFuqj3ELI4wLucLnj8Fp310sVKBwFY59REBg1HKlyyqKMIv3rYBsztOJvPgzjN
-         +0dQeTDRw27QKfI6L4FL9utJy8FCZNtnmQI34Hy8371AQfIYIYOQRLwCAD+vNTkumy
-         GeYfb/TIungKJPde9B/tOi2q1GgVwC76KXwGg3Ds=
+        b=M/ia1UA8nibxF6/m26MtEGkXNeVugPk79K0Thgh9drICPU9FybzNnKXqL+hNt9C67
+         0DmmNujX04x0WfbRE1TBXxwNZIZaANPGsqm9M8jVhOTQ2KE8vNd3iYesOS3Red9urY
+         7xkCzppnkk26TpFCqyNyCglQsvEwQKgfRH6Bjwj0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xie XiuQi <xiexiuqi@huawei.com>, Hulk Robot <hulkci@huawei.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 34/37] ixgbe: fix signed-integer-overflow warning
-Date:   Mon,  8 Jun 2020 19:27:46 -0400
-Message-Id: <20200608232750.3370747-34-sashal@kernel.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 35/37] spi: dw: Return any value retrieved from the dma_transfer callback
+Date:   Mon,  8 Jun 2020 19:27:47 -0400
+Message-Id: <20200608232750.3370747-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608232750.3370747-1-sashal@kernel.org>
 References: <20200608232750.3370747-1-sashal@kernel.org>
@@ -45,54 +51,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie XiuQi <xiexiuqi@huawei.com>
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-[ Upstream commit 3b70683fc4d68f5d915d9dc7e5ba72c732c7315c ]
+[ Upstream commit f0410bbf7d0fb80149e3b17d11d31f5b5197873e ]
 
-ubsan report this warning, fix it by adding a unsigned suffix.
+DW APB SSI DMA-part of the driver may need to perform the requested
+SPI-transfer synchronously. In that case the dma_transfer() callback
+will return 0 as a marker of the SPI transfer being finished so the
+SPI core doesn't need to wait and may proceed with the SPI message
+trasnfers pumping procedure. This will be needed to fix the problem
+when DMA transactions are finished, but there is still data left in
+the SPI Tx/Rx FIFOs being sent/received. But for now make dma_transfer
+to return 1 as the normal dw_spi_transfer_one() method.
 
-UBSAN: signed-integer-overflow in
-drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:2246:26
-65535 * 65537 cannot be represented in type 'int'
-CPU: 21 PID: 7 Comm: kworker/u256:0 Not tainted 5.7.0-rc3-debug+ #39
-Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 2280-V2 03/27/2020
-Workqueue: ixgbe ixgbe_service_task [ixgbe]
-Call trace:
- dump_backtrace+0x0/0x3f0
- show_stack+0x28/0x38
- dump_stack+0x154/0x1e4
- ubsan_epilogue+0x18/0x60
- handle_overflow+0xf8/0x148
- __ubsan_handle_mul_overflow+0x34/0x48
- ixgbe_fc_enable_generic+0x4d0/0x590 [ixgbe]
- ixgbe_service_task+0xc20/0x1f78 [ixgbe]
- process_one_work+0x8f0/0xf18
- worker_thread+0x430/0x6d0
- kthread+0x218/0x238
- ret_from_fork+0x10/0x18
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Xie XiuQi <xiexiuqi@huawei.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Link: https://lore.kernel.org/r/20200529131205.31838-3-Sergey.Semin@baikalelectronics.ru
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-dw-mid.c | 2 +-
+ drivers/spi/spi-dw.c     | 7 ++-----
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-index cd2afe92f1da..e10808b3d118 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-@@ -2185,7 +2185,7 @@ s32 ixgbe_fc_enable_generic(struct ixgbe_hw *hw)
+diff --git a/drivers/spi/spi-dw-mid.c b/drivers/spi/spi-dw-mid.c
+index bd116f117b02..14902efae621 100644
+--- a/drivers/spi/spi-dw-mid.c
++++ b/drivers/spi/spi-dw-mid.c
+@@ -274,7 +274,7 @@ static int mid_spi_dma_transfer(struct dw_spi *dws, struct spi_transfer *xfer)
+ 		dma_async_issue_pending(dws->txchan);
  	}
  
- 	/* Configure pause time (2 TCs per register) */
--	reg = hw->fc.pause_time * 0x00010001;
-+	reg = hw->fc.pause_time * 0x00010001U;
- 	for (i = 0; i < (MAX_TRAFFIC_CLASS / 2); i++)
- 		IXGBE_WRITE_REG(hw, IXGBE_FCTTV(i), reg);
+-	return 0;
++	return 1;
+ }
  
+ static void mid_spi_dma_stop(struct dw_spi *dws)
+diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
+index 4edd38d03b93..3667f8860aaf 100644
+--- a/drivers/spi/spi-dw.c
++++ b/drivers/spi/spi-dw.c
+@@ -382,11 +382,8 @@ static int dw_spi_transfer_one(struct spi_master *master,
+ 
+ 	spi_enable_chip(dws, 1);
+ 
+-	if (dws->dma_mapped) {
+-		ret = dws->dma_ops->dma_transfer(dws, transfer);
+-		if (ret < 0)
+-			return ret;
+-	}
++	if (dws->dma_mapped)
++		return dws->dma_ops->dma_transfer(dws, transfer);
+ 
+ 	if (chip->poll_mode)
+ 		return poll_transfer(dws);
 -- 
 2.25.1
 
