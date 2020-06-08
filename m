@@ -2,161 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9158E1F169B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 12:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF771F16A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 12:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729325AbgFHKYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 06:24:23 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2220 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726660AbgFHKYW (ORCPT
+        id S1729347AbgFHK1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 06:27:19 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:46118 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726202AbgFHK1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 06:24:22 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 058A2qJS184709;
-        Mon, 8 Jun 2020 06:24:00 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31g7n7rhbm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Jun 2020 06:23:59 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 058A3F09187332;
-        Mon, 8 Jun 2020 06:23:59 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31g7n7rhas-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Jun 2020 06:23:59 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 058AK6eM006411;
-        Mon, 8 Jun 2020 10:23:56 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma05fra.de.ibm.com with ESMTP id 31g2s7sgv3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Jun 2020 10:23:56 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 058ANsgV57213166
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 8 Jun 2020 10:23:54 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 12942A4060;
-        Mon,  8 Jun 2020 10:23:54 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1E92FA405B;
-        Mon,  8 Jun 2020 10:23:53 +0000 (GMT)
-Received: from oc3871087118.ibm.com (unknown [9.145.56.93])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  8 Jun 2020 10:23:53 +0000 (GMT)
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        stable@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Amritha Nambiar <amritha.nambiar@intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
+        Mon, 8 Jun 2020 06:27:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591612034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w+c1C658Gra3tBGi4uA5u9GLmyX+PqWKbAoT/9hWlFg=;
+        b=aHUeX5oLreaUxcGwLYfecFSmvoFe702Zhg2PhHadZRmx/kRWHmoD7lDSaNuq8m/vsy0uVk
+        hat5Dnzca8Gg2ZtS7/VnIukzLJC0DrQhXN50mE19zvNBvF9ZrtOAsh9VaCaz542rrXjYFW
+        6jhcyWp+Qwlu8/T909oOkDlDSduol+o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-236-EMW1EwiiPbG2i18i_iC5iw-1; Mon, 08 Jun 2020 06:27:10 -0400
+X-MC-Unique: EMW1EwiiPbG2i18i_iC5iw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 17449EC1A1;
+        Mon,  8 Jun 2020 10:27:09 +0000 (UTC)
+Received: from localhost (unknown [10.36.110.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4487F5C1BD;
+        Mon,  8 Jun 2020 10:27:07 +0000 (UTC)
+Date:   Mon, 8 Jun 2020 12:27:02 +0200
+From:   Stefano Brivio <sbrivio@redhat.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yury Norov <yury.norov@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        "Tobin C . Harding" <tobin@kernel.org>,
-        Vineet Gupta <vineet.gupta1@synopsys.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Willem de Bruijn <willemb@google.com>
-Subject: [PATCH RESEND2] lib: fix bitmap_parse() on 64-bit big endian archs
-Date:   Mon,  8 Jun 2020 12:23:49 +0200
-Message-Id: <1591611829-23071-1-git-send-email-agordeev@linux.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-08_07:2020-06-08,2020-06-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- priorityscore=1501 clxscore=1015 adultscore=0 lowpriorityscore=0
- mlxscore=0 malwarescore=0 impostorscore=0 phishscore=0 mlxlogscore=999
- suspectscore=1 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006080073
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] lib: Add test for bitmap_cut()
+Message-ID: <20200608122702.034c8c80@redhat.com>
+In-Reply-To: <20200608101214.GE2428291@smile.fi.intel.com>
+References: <cover.1591606281.git.sbrivio@redhat.com>
+        <3e3ab7a4756df2ecf8fb012f16c375d4cd714552.1591606281.git.sbrivio@redhat.com>
+        <20200608101214.GE2428291@smile.fi.intel.com>
+Organization: Red Hat
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 2d6261583be0 ("lib: rework bitmap_parse()") does not
-take into account order of halfwords on 64-bit big endian
-architectures. As result (at least) Receive Packet Steering,
-IRQ affinity masks and runtime kernel test "test_bitmap" get
-broken on s390.
+On Mon, 8 Jun 2020 13:12:14 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-Fixes: 2d6261583be0 ("lib: rework bitmap_parse()")
-Cc: stable@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Yury Norov <yury.norov@gmail.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Amritha Nambiar <amritha.nambiar@intel.com>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: "Tobin C . Harding" <tobin@kernel.org>
-Cc: Vineet Gupta <vineet.gupta1@synopsys.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
----
- lib/bitmap.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+> On Mon, Jun 08, 2020 at 11:13:29AM +0200, Stefano Brivio wrote:
+> > Based on an original patch by Yury Norov: introduce a test for
+> > bitmap_cut() that also makes sure functionality is as described for
+> > partially overlapping src and dst.  
+> 
+> > Co-authored-by: Yury Norov <yury.norov@gmail.com>  
+> 
+> Co-developed-by (and it requires Yury's SoB as well).
 
-diff --git a/lib/bitmap.c b/lib/bitmap.c
-index 89260aa342d6..a725e4612984 100644
---- a/lib/bitmap.c
-+++ b/lib/bitmap.c
-@@ -717,6 +717,19 @@ static const char *bitmap_get_x32_reverse(const char *start,
- 	return end;
- }
- 
-+#if defined(__BIG_ENDIAN) && defined(CONFIG_64BIT)
-+static void save_x32_chunk(unsigned long *maskp, u32 chunk, int chunk_idx)
-+{
-+	maskp += (chunk_idx / 2);
-+	((u32 *)maskp)[(chunk_idx & 1) ^ 1] = chunk;
-+}
-+#else
-+static void save_x32_chunk(unsigned long *maskp, u32 chunk, int chunk_idx)
-+{
-+	((u32 *)maskp)[chunk_idx] = chunk;
-+}
-+#endif
-+
- /**
-  * bitmap_parse - convert an ASCII hex string into a bitmap.
-  * @start: pointer to buffer containing string.
-@@ -738,7 +751,8 @@ int bitmap_parse(const char *start, unsigned int buflen,
- {
- 	const char *end = strnchrnul(start, buflen, '\n') - 1;
- 	int chunks = BITS_TO_U32(nmaskbits);
--	u32 *bitmap = (u32 *)maskp;
-+	int chunk_idx = 0;
-+	u32 chunk;
- 	int unset_bit;
- 
- 	while (1) {
-@@ -749,9 +763,11 @@ int bitmap_parse(const char *start, unsigned int buflen,
- 		if (!chunks--)
- 			return -EOVERFLOW;
- 
--		end = bitmap_get_x32_reverse(start, end, bitmap++);
-+		end = bitmap_get_x32_reverse(start, end, &chunk);
- 		if (IS_ERR(end))
- 			return PTR_ERR(end);
-+
-+		save_x32_chunk(maskp, chunk, chunk_idx++);
- 	}
- 
- 	unset_bit = (BITS_TO_U32(nmaskbits) - chunks) * 32;
+Oops, sorry, I didn't remember this part from submitting-patches.rst
+correctly. Thanks for pointing this out.
+
+Yury, let me know if I should re-post with both Co-authored-by: and
+Signed-off-by: you -- otherwise I'll repost without both.
+
+> > Signed-off-by: Stefano Brivio <sbrivio@redhat.com>  
+> 
+> ...
+> 
+> > +static struct test_bitmap_cut test_cut[] = {
+> > +	{  0,  0,  8, { 0x0000000aUL, }, { 0x0000000aUL, }, },
+> > +	{  0,  0, 32, { 0xdadadeadUL, }, { 0xdadadeadUL, }, },
+> > +	{  0,  3,  8, { 0x000000aaUL, }, { 0x00000015UL, }, },
+> > +	{  3,  3,  8, { 0x000000aaUL, }, { 0x00000012UL, }, },
+> > +	{  0,  1, 32, { 0xa5a5a5a5UL, }, { 0x52d2d2d2UL, }, },
+> > +	{  0,  8, 32, { 0xdeadc0deUL, }, { 0x00deadc0UL, }, },
+> > +	{  1,  1, 32, { 0x5a5a5a5aUL, }, { 0x2d2d2d2cUL, }, },
+> > +	{  0, 15, 32, { 0xa5a5a5a5UL, }, { 0x00014b4bUL, }, },
+> > +	{  0, 16, 32, { 0xa5a5a5a5UL, }, { 0x0000a5a5UL, }, },
+> > +	{ 15, 15, 32, { 0xa5a5a5a5UL, }, { 0x000125a5UL, }, },
+> > +	{ 15, 16, 32, { 0xa5a5a5a5UL, }, { 0x0000a5a5UL, }, },
+> > +	{ 16, 15, 32, { 0xa5a5a5a5UL, }, { 0x0001a5a5UL, }, },
+> > +
+> > +	{ BITS_PER_LONG, BITS_PER_LONG, BITS_PER_LONG,
+> > +		{ 0xa5a5a5a5UL, 0xa5a5a5a5UL, },
+> > +		{ 0xa5a5a5a5UL, 0xa5a5a5a5UL, },
+> > +	},
+> > +	{ 1, BITS_PER_LONG - 1, BITS_PER_LONG,
+> > +		{ 0xa5a5a5a5UL, 0xa5a5a5a5UL, },
+> > +		{ 0x00000001UL, 0x00000001UL, },
+> > +	},
+> > +
+> > +	{ 0, BITS_PER_LONG * 2, BITS_PER_LONG * 2 + 1,
+> > +		{ 0xa5a5a5a5UL, 0x00000001UL, 0x00000001UL, 0x00000001UL },  
+> 
+> Perhaps leave comma as well?
+
+I have a full explicit initialiser for this one, hence the "missing"
+comma, I find it clearer. Any specific reason why I should add it?
+
+> 
+> > +		{ 0x00000001UL, },
+> > +	},
+> > +	{ 16, BITS_PER_LONG * 2 + 1, BITS_PER_LONG * 2 + 1 + 16,  
+> 
+> > +		{ 0x0000ffffUL, 0x5a5a5a5aUL, 0x5a5a5a5aUL, 0x5a5a5a5aUL },  
+> 
+> Ditto.
+> 
+> > +		{ 0x2d2dffffUL, },
+> > +	},
+> > +};
+> > +
+> > +static void __init test_bitmap_cut(void)
+> > +{
+> > +	unsigned long b[4], *in = &b[1], *out = &b[0];	/* Partial overlap */
+> > +	int i;
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(test_cut); i++) {
+> > +		struct test_bitmap_cut *t = &test_cut[i];
+> > +
+> > +		memcpy(in, t->in, sizeof(t->in));
+> > +
+> > +		bitmap_cut(out, in, t->first, t->cut, t->nbits);  
+> 
+> > +		if (!bitmap_equal(out, t->expected, t->nbits)) {
+> > +			pr_err("bitmap_cut failed: expected %*pb, got %*pb\n",
+> > +			       t->nbits, t->expected, t->nbits, out);
+> > +		}  
+> 
+> Perhaps
+> 
+> 	if (bitmap_equal(...))
+> 		continue;
+> 
+> 	...
+> 
+> ?
+
+That's five lines instead of four (I can't get pr_err() on one line
+anyway) and it looks less straightforward: "if it doesn't match we have
+an error" vs. "if it matches go to next case. We have an error". Any
+specific reason I'm missing?
+
 -- 
-2.23.0
+Stefano
 
