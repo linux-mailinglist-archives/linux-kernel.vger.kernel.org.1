@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9F31F18AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6181F18B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729728AbgFHMWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 08:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729628AbgFHMWC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 08:22:02 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E27C08C5C2;
-        Mon,  8 Jun 2020 05:22:01 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 10so2604717pfx.8;
-        Mon, 08 Jun 2020 05:22:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=HDxho5qgH/ZNs1hwouSLFAzSS6Ya6IXAFD99ObdyT2U=;
-        b=SW8D7gsAlHDtxyd8A/lLyC0s9kXr1vPCLo4wGsWfQOgnAw2y0SomQpam6DVE20cx4G
-         pGClR37CIUCmo0HVoo1Aupipewj1E4JYe7uPjhf3wf6fgT9ugod8M3qShjyNg665Aqxl
-         xbwTktjbLIN5qbaoyRF4G5HfXrfDfVa19TZWErDO2pWWY8CY4AyUBlfePgjUH0HYOpji
-         hzcxlbSeQsmcZjRZ86qZAqeowtgrZYtWX8nHpl7AiN34tIeYpWfCFOu5tWbqWMGASZhK
-         dBPuJoDmiANdj2K/F4d4Rk/x4Scw5qBUEm9MyRdXwiLQnZejrRv80JPIjlZuslxF1k5o
-         AVWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=HDxho5qgH/ZNs1hwouSLFAzSS6Ya6IXAFD99ObdyT2U=;
-        b=U3DGD5XKqkBXWPEawHTkrMnCDPLs4+mGvJVjYeQ4LXBu0rVWbzL5xa+E3oIiACIq28
-         fPdbaSlBAZJjNmIXrjUZ9IotjbS0XBfacm3Hoi1rAWSXg29zR/TNJBICMQCQWf5yGVk8
-         23ZKEbyiwpQ/Dbq0WqEk8GCoMORFgMuUK3V6mZ5mHDHeZ0pV0CkNlOSilIr1k/dwOgkJ
-         tvkCtd+Fb9+R11UbRwusQRbrt1fbX6p+PXFQyg2qD6f2JMM8kYmPMUWXF/AT+M4+W/tI
-         52sCErAdVXejTr8w/ZxaL2AWCDV4CoKDxTsq2vfhG0H559qA6LSH4FwEmWeqPn3ZMUVy
-         PUCw==
-X-Gm-Message-State: AOAM5300tPL9dJvt99mQxHC2ZcJmK+k0L6TpIcgDasrznkZS3z/mPPKn
-        BPCuYRSrF+tSP7PcRgxrQBoKWNrg
-X-Google-Smtp-Source: ABdhPJwMhWCzEK/UeGQzspWpga1Pqrnmfx1UaWD/aQi3RYJ9+jsb3BBeRs5aBHPb3r/reQoTC/L+5Q==
-X-Received: by 2002:a62:36c5:: with SMTP id d188mr3677066pfa.120.1591618920957;
-        Mon, 08 Jun 2020 05:22:00 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.34])
-        by smtp.gmail.com with ESMTPSA id g29sm6975584pfr.47.2020.06.08.05.21.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 05:22:00 -0700 (PDT)
-From:   Baolin Wang <baolin.wang7@gmail.com>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org
-Cc:     baolin.wang7@gmail.com, baohua@kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hwspinlock: sirf: Remove the redundant 'of_match_ptr'
-Date:   Mon,  8 Jun 2020 20:20:28 +0800
-Message-Id: <250d35cb489c3c4c066f7ce256d27f36712a1979.1591618255.git.baolin.wang7@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729738AbgFHM02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 08:26:28 -0400
+Received: from first.geanix.com ([116.203.34.67]:42096 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729628AbgFHM01 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 08:26:27 -0400
+X-Greylist: delayed 344 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Jun 2020 08:26:27 EDT
+Received: from [192.168.100.99] (xb90f4a16.cust.hiper.dk [185.15.74.22])
+        by first.geanix.com (Postfix) with ESMTPSA id 86B4E2120CEC;
+        Mon,  8 Jun 2020 12:20:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1591618841; bh=S8/KI5ud2rD65ga8Au68tEG5mzA/HPuBa3OzB2H8zZ0=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To;
+        b=CAk2jgRbSzNueIJDRxZo+vmx3Cz3H8owkfzw61gZtiLjVd8PGRR6f4Fe7VKFnXR/f
+         kWtYqP8xKG7avuHIFBOZ/FThhEooonm1z5/XDnUmJ7Z1o+54KRXCASdsA6sStdKDZN
+         ktaXp8bNg+5aFZN02D/yZHGPB1hQSF2UL1LSuEwhaVa3mpgVmnNZqGNaGL0vonYg0l
+         cQ8rJ+qVt7P2PtrW+jygOjyco5BmLXYgDd2hjMMq4dx2KUbTe7SKUQJO7uutaAoC80
+         L9Qm7Lr1yuCUK79gZKibpPDDRIIn4zFbkn6ijkRPgX839OibQkSkxGWtUcaJ42s1bb
+         lGg3c9YZfUAqQ==
+Subject: Re: IIO timestamp get skewed when suspending (st_lsm6dsx)
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     linux-iio <linux-iio@vger.kernel.org>
+References: <20200603080619.GA544784@lore-desk.lan>
+ <91165f5d-8cba-3ea2-67dc-99d65bce3d19@geanix.com>
+ <20200603102841.GC544784@lore-desk.lan>
+ <d3288925-0891-8c72-b0e7-2b71ff50e1d3@geanix.com>
+ <20200603105105.GD544784@lore-desk.lan>
+ <a6716a15-abf9-3218-00b8-fb7f257e5649@geanix.com>
+ <20200603121227.GE544784@lore-desk.lan>
+ <55fb09cf-76ab-0c42-7283-0836838f2deb@geanix.com>
+ <20200603125630.GF544784@lore-desk.lan>
+ <2d60c115-a634-c25f-b50b-38f13cac6229@geanix.com>
+ <20200603134033.GG544784@lore-desk.lan>
+ <2d8b2b9b-5e63-1254-04d9-8b9be0d91877@geanix.com>
+Message-ID: <fbef0ac8-e313-c20c-9300-9dee00588102@geanix.com>
+Date:   Mon, 8 Jun 2020 14:20:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <2d8b2b9b-5e63-1254-04d9-8b9be0d91877@geanix.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on fdf6823a942a
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the the redundant 'of_match_ptr' macro to fix below warning
-when the CONFIG_OF is not selected.
+Hi Thomas,
 
-All warnings:
-drivers/hwspinlock/sirf_hwspinlock.c:87:34: warning: unused variable
-'sirf_hwpinlock_ids' [-Wunused-const-variable]
+I have a question regarding CLOCK_REALTIME and CLOCK_BOOTTIME when 
+resuming from suspend.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
----
- drivers/hwspinlock/sirf_hwspinlock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We have run into problems with 
+drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c + the first patch from 
+Lorenzo Bianconi in this thread.
+The accelerometer have an internal FIFO that includes a timestamp. When 
+we resume from suspend,
+the driver resets the fifo ts counter and sets an internal reference to 
+that time.
+But to me it looks like both CLOCK_REALTIME and CLOCK_BOOTIME aren't 
+ready when st_lsm6dsx_resume() is called.
 
-diff --git a/drivers/hwspinlock/sirf_hwspinlock.c b/drivers/hwspinlock/sirf_hwspinlock.c
-index 823d3c4f621e..a3f77120bad7 100644
---- a/drivers/hwspinlock/sirf_hwspinlock.c
-+++ b/drivers/hwspinlock/sirf_hwspinlock.c
-@@ -94,7 +94,7 @@ static struct platform_driver sirf_hwspinlock_driver = {
- 	.probe = sirf_hwspinlock_probe,
- 	.driver = {
- 		.name = "atlas7_hwspinlock",
--		.of_match_table = of_match_ptr(sirf_hwpinlock_ids),
-+		.of_match_table = sirf_hwpinlock_ids,
- 	},
- };
- 
--- 
-2.17.1
+If this is a limitation, can you point to other drivers that have been 
+able to workaround it?
+Or can we wait for a flag or similar?
+
+Best regards,
+Sean Nyekjaer
 
