@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BC81F184F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0908D1F1853
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729740AbgFHL4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 07:56:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51664 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726597AbgFHL4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 07:56:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 9CACCAB8F;
-        Mon,  8 Jun 2020 11:56:33 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id EF84260490; Mon,  8 Jun 2020 13:56:28 +0200 (CEST)
-Date:   Mon, 8 Jun 2020 13:56:28 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, bpf@vger.kernel.org,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 04/16] net: bpfilter: use 'userprogs' syntax to build
- bpfilter_umh
-Message-ID: <20200608115628.osizkpo76cgn2ci7@lion.mk-sys.cz>
-References: <20200423073929.127521-1-masahiroy@kernel.org>
- <20200423073929.127521-5-masahiroy@kernel.org>
+        id S1729759AbgFHL5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 07:57:22 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:42055 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729694AbgFHL5U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 07:57:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1591617439; x=1623153439;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=mBD4MaDFTceVZuqlL0CnW8gUjB4N3aqvEq6ol/w0Jn0=;
+  b=TqmdI0hNOSAePCnNrB3ecJOy+CXz/rAXqlevSnFu9CuWq6mCBc6OXlJ3
+   p7dgtVNruz3H1zNMojk0GLkT39fUyjfr3kg5mRj4PHxuB1FtTufsRsu9M
+   0K35imttfsAh3XNABj54LZ+i5BV22Utm1vda3kEii3vWBmWl9of+uw/1/
+   g=;
+IronPort-SDR: A3XJASAFNQDFfveEQirqPbP6OECZKDI7BAlYdK20yPhT7gVJf2f01dlJM9Gh1+LWubHDgU5YcZ
+ x1dEsF5lPsTA==
+X-IronPort-AV: E=Sophos;i="5.73,487,1583193600"; 
+   d="scan'208";a="36358411"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-2c665b5d.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 08 Jun 2020 11:57:19 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-2c665b5d.us-east-1.amazon.com (Postfix) with ESMTPS id D635FA1E21;
+        Mon,  8 Jun 2020 11:57:07 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 8 Jun 2020 11:57:07 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.26) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 8 Jun 2020 11:56:51 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     David Hildenbrand <david@redhat.com>
+CC:     SeongJae Park <sjpark@amazon.com>, <akpm@linux-foundation.org>,
+        "SeongJae Park" <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
+        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
+        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
+        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
+        <peterz@infradead.org>, <rdunlap@infradead.org>,
+        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
+        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
+        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
+        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
+        <ying.huang@intel.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: Re: [PATCH v15 01/14] mm/page_ext: Export lookup_page_ext() to GPL modules
+Date:   Mon, 8 Jun 2020 13:56:34 +0200
+Message-ID: <20200608115634.30778-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cf508f7e-925c-790c-7477-9a1d8150336d@redhat.com> (raw)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200423073929.127521-5-masahiroy@kernel.org>
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.26]
+X-ClientProxiedBy: EX13D43UWC001.ant.amazon.com (10.43.162.69) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 04:39:17PM +0900, Masahiro Yamada wrote:
-> The user mode helper should be compiled for the same architecture as
-> the kernel.
-> 
-> This Makefile reuses the 'hostprogs' syntax by overriding HOSTCC with CC.
-> 
-> Now that Kbuild provides the syntax 'userprogs', use it to fix the
-> Makefile mess.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> Reported-by: kbuild test robot <lkp@intel.com>
-> ---
-> 
->  net/bpfilter/Makefile | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
-> 
-> diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
-> index 36580301da70..6ee650c6badb 100644
-> --- a/net/bpfilter/Makefile
-> +++ b/net/bpfilter/Makefile
-> @@ -3,17 +3,14 @@
->  # Makefile for the Linux BPFILTER layer.
->  #
->  
-> -hostprogs := bpfilter_umh
-> +userprogs := bpfilter_umh
->  bpfilter_umh-objs := main.o
-> -KBUILD_HOSTCFLAGS += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
-> -HOSTCC := $(CC)
-> +user-ccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
->  
-> -ifeq ($(CONFIG_BPFILTER_UMH), y)
-> -# builtin bpfilter_umh should be compiled with -static
-> +# builtin bpfilter_umh should be linked with -static
->  # since rootfs isn't mounted at the time of __init
->  # function is called and do_execv won't find elf interpreter
-> -KBUILD_HOSTLDFLAGS += -static
-> -endif
-> +bpfilter_umh-ldflags += -static
->  
->  $(obj)/bpfilter_umh_blob.o: $(obj)/bpfilter_umh
+On Mon, 8 Jun 2020 13:53:23 +0200 David Hildenbrand <david@redhat.com> wrote:
 
-Hello,
+> On 08.06.20 13:40, SeongJae Park wrote:
+> > From: SeongJae Park <sjpark@amazon.de>
+> > 
+> > This commit exports 'lookup_page_ext()' to GPL modules.  This will be
+> > used by DAMON.
+> > 
+> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > Reviewed-by: Leonard Foerster <foersleo@amazon.de>
+> > ---
+> >  mm/page_ext.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/mm/page_ext.c b/mm/page_ext.c
+> > index a3616f7a0e9e..9d802d01fcb5 100644
+> > --- a/mm/page_ext.c
+> > +++ b/mm/page_ext.c
+> > @@ -131,6 +131,7 @@ struct page_ext *lookup_page_ext(const struct page *page)
+> >  					MAX_ORDER_NR_PAGES);
+> >  	return get_entry(base, index);
+> >  }
+> > +EXPORT_SYMBOL_GPL(lookup_page_ext);
+> >  
+> >  static int __init alloc_node_page_ext(int nid)
+> >  {
+> > 
+> 
+> I've been told to always smuggle new EXPORTs into the patch that
+> actually needs it (and cc relevant people on that patch instead).
 
-I just noticed that this patch (now in mainline as commit 8a2cc0505cc4)
-drops the test if CONFIG_BPFILTER_UMH is "y" so that -static is now
-passed to the linker even if bpfilter_umh is built as a module which
-wasn't the case in v5.7.
+Sorry for didn't noticing that.  I will do so in the next spin.
 
-This is not mentioned in the commit message and the comment still says
-"*builtin* bpfilter_umh should be linked with -static" so this change
-doesn't seem to be intentional. Did I miss something?
 
-Michal Kubecek
+Thanks,
+SeongJae Park
+
+> 
+> -- 
+> Thanks,
+> 
+> David / dhildenb
