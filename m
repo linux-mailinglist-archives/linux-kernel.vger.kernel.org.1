@@ -2,119 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D2F1F172B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D2D1F1725
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729552AbgFHLBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 07:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38434 "EHLO
+        id S1729500AbgFHLBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 07:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729425AbgFHLBp (ORCPT
+        with ESMTP id S1729398AbgFHLBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 07:01:45 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FE7C08C5C2;
-        Mon,  8 Jun 2020 04:01:45 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id o8so8580939pgm.7;
-        Mon, 08 Jun 2020 04:01:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=l1OyezJKsfAVEn8ZVy6btGksNrrO6qZZSqmY/a2YBUc=;
-        b=sHYjPvNZ05Y/2voOPYUDydKiKVm3AEujp2Am7yigeXijOCK3nHmkUB9ETSi50Frpze
-         /1NIcSkfY4GZn01Aj1nlxUBBiGS4yaAaR8VcYZXt90tqadFm7EfQV294OlKIBjNfKwNY
-         PAncwq0xfIcsWUJh2PaFx6Jzcgk9SI8DHFg9gltk/Qg2hHQ1Db8uRlbc95AVyFK6APst
-         ZXWrfeW3F3QqZE0/kN0Wqu4wwTDcaGe4pYbQ9EidQ2J6H6NEfxZmbUH5DZKhZ6lDl0oa
-         wH7xpxM2LE/lDFILbY600U9PCCjyfNb4ZOPDSltM2sEify+sLdNG18pZxLxBvJ7Bm6Rv
-         CClQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=l1OyezJKsfAVEn8ZVy6btGksNrrO6qZZSqmY/a2YBUc=;
-        b=C0yg4oeiuN8qa1yHOCnDTZJoo8zG13CKqmnewrcL6LJNbihyBJUJmeCqBCFbfnOTCp
-         tBH/8o145DC0pULINVkz+zokywcgEF2fT57gTBKYpUiZLc4t6yX05bZXb4OxyRr0K4RQ
-         uKA1NDHPoPFqInWVmQsynuirhjbC0DXMNvABR6KAJsQiPUlce6oBTGYxcuO026DUKuAm
-         ZteswtVI9jSFNm6FRGYspYClCUjwUBfkAOuuPT/6xAZlQ6DO/yXnx2PSWNhCB12njKmi
-         caFOl5qP8MppHm+9l1htr0RgDgsf0wz4TXKpLdN7v5n/gg+VRdhTalS7p6A0MIq4sBep
-         lsVw==
-X-Gm-Message-State: AOAM533dzhJZXRnsAi0Dpj6shZHSyUaSqUrmGyvcfZKa4N5TFDHvUbse
-        uQLCzd95JxktxeU9cQ3ePgE=
-X-Google-Smtp-Source: ABdhPJxCYt/AwRjjLIaHsFCJMLRDxuD9W2rADpDuuZ96/9B4/FmnLmax2ISPRgxvEnwAR0LixiqoCw==
-X-Received: by 2002:a63:1312:: with SMTP id i18mr20063902pgl.142.1591614104413;
-        Mon, 08 Jun 2020 04:01:44 -0700 (PDT)
-Received: from localhost ([43.224.245.180])
-        by smtp.gmail.com with ESMTPSA id m9sm6957125pfo.200.2020.06.08.04.01.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Jun 2020 04:01:43 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 18:59:29 +0800
-From:   Geliang Tang <geliangtang@gmail.com>
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>
-Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Peter Krystad <peter.krystad@linux.intel.com>,
-        netdev@vger.kernel.org, mptcp@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mptcp: bugfix for RM_ADDR option parsing
-Message-ID: <20200608105929.GA24487@OptiPlex>
-References: <904e4ae90b94d679d9877d3c48bd277cb9b39f5f.1591601587.git.geliangtang@gmail.com>
- <41246875-febc-e88d-304b-2a6692f590ac@tessares.net>
+        Mon, 8 Jun 2020 07:01:30 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20C8C08C5C2
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 04:01:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=K/s5mZYe0D3JGCoeAasezBJ22Tds6PXDtFml58Tk67I=; b=NV5cY9XIrtGE8IEwqFs+sXr9sT
+        vFEjzVsCyTj2I0GfXcvg8uYL6kLuxZKx7yLrjBjHIbK6C4lPqZtgBJz9nmcSfD++hSaTq7H9jGMc5
+        ob3OrF/ELz5wGyeSjaJ8u0xxSOSe0vs1UsypYjLsO1w+9zu2SL5bQPvmCqxwX3moMXIZ3FZbVEDaO
+        gTUKbvEgLys6K+3LpF8Q8jLNXqNT/ZUryK3ndSycV3mwju6roSwzaeQYm8eVXOvxfzdoNQfqD04VK
+        vbQ8423NHttN8zTU+kkeBY4H/VTcNSV66pnArqssCAGI7G9uKdboFSW4TtdyJgdFCcqRerGEADkxt
+        PFBhEQkA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jiFWh-0002iJ-Of; Mon, 08 Jun 2020 11:01:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 13313301A7A;
+        Mon,  8 Jun 2020 13:01:08 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DB50A21A7523D; Mon,  8 Jun 2020 13:01:08 +0200 (CEST)
+Date:   Mon, 8 Jun 2020 13:01:08 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH -tip v3 1/2] kcov: Make runtime functions
+ noinstr-compatible
+Message-ID: <20200608110108.GB2497@hirez.programming.kicks-ass.net>
+References: <20200605082839.226418-1-elver@google.com>
+ <CACT4Y+ZqdZD0YsPHf8UFJT94yq5KGgbDOXSiJYS0+pjgYDsx+A@mail.gmail.com>
+ <20200605120352.GJ3976@hirez.programming.kicks-ass.net>
+ <CAAeHK+zErjaB64bTRqjH3qHyo9QstDSHWiMxqvmNYwfPDWSuXQ@mail.gmail.com>
+ <CACT4Y+Zwm47qs8yco0nNoD_hFzHccoGyPznLHkBjAeg9REZ3gA@mail.gmail.com>
+ <CANpmjNPNa2f=kAF6c199oYVJ0iSyirQRGxeOBLxa9PmakSXRbA@mail.gmail.com>
+ <CACT4Y+Z+FFHFGSgEJGkd+zCBgUOck_odOf9_=5YQLNJQVMGNdw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <41246875-febc-e88d-304b-2a6692f590ac@tessares.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CACT4Y+Z+FFHFGSgEJGkd+zCBgUOck_odOf9_=5YQLNJQVMGNdw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 12:10:23PM +0200, Matthieu Baerts wrote:
-> Hi Geliang,
-> 
-> On 08/06/2020 09:48, Geliang Tang wrote:
-> > In MPTCPOPT_RM_ADDR option parsing, the pointer "ptr" pointed to the
-> > "Subtype" octet, the pointer "ptr+1" pointed to the "Address ID" octet:
-> > 
-> >    +-------+-------+---------------+
-> >    |Subtype|(resvd)|   Address ID  |
-> >    +-------+-------+---------------+
-> >    |               |
-> >   ptr            ptr+1
-> > 
-> > We should set mp_opt->rm_id to the value of "ptr+1", not "ptr". This patch
-> > will fix this bug.
-> 
-> Thank you for the patch, good catch!
-> Indeed "ptr" should be incremented.
-> 
-> Because this is a bug-fix for net, may you clearly indicate that in the
-> subject to help -net maintainers please? [PATCH net v2]
-> 
-> Also, may you add a "Fixes" tag as well as it is for -net ? I guess it
-> should be:
-> 
->     Fixes: 3df523ab582c ("mptcp: Add ADD_ADDR handling")
-> 
-> The rest is good!
-> 
-> Cheers,
-> Matt
-> -- 
-> Matthieu Baerts | R&D Engineer
-> matthieu.baerts@tessares.net
-> Tessares SA | Hybrid Access Solutions
-> www.tessares.net
-> 1 Avenue Jean Monnet, 1348 Louvain-la-Neuve, Belgium
+On Mon, Jun 08, 2020 at 09:57:39AM +0200, Dmitry Vyukov wrote:
 
-Hi Matt,
+> As a crazy idea: is it possible to employ objtool (linker script?) to
+> rewrite all coverage calls to nops in the noinstr section? Or relocate
+> to nop function?
+> What we are trying to do is very static, it _should_ have been done
+> during build. We don't have means in existing _compilers_ to do this,
+> but maybe we could do it elsewhere during build?...
 
-Thanks for your reply.
-
-I have already resend patch v2 to you.
-
--Geliang
+Let me try and figure out how to make objtool actually rewrite code.
