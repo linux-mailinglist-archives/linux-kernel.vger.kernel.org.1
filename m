@@ -2,140 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DB91F214D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 23:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C461F2155
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 23:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgFHVJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 17:09:15 -0400
-Received: from mga07.intel.com ([134.134.136.100]:4792 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726725AbgFHVJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 17:09:08 -0400
-IronPort-SDR: pigDRql+fRd4Ju4Ts1fHZYMlOjqX2kTALj9tB0Vv3lW+s6Pp+dzF1gU3t2k18bsOjvKAUOi6+4
- uV1HK8LWkp+A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2020 14:09:06 -0700
-IronPort-SDR: frmd7NyexTaQPNjw1Wq1AJSAV6dMLQE7KIOqLtiiSTgWfM1QMpgYdkgCZm7nHZaMI3r22Vvpob
- O5elf8Oxn2/A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,489,1583222400"; 
-   d="scan'208";a="288603314"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga002.jf.intel.com with ESMTP; 08 Jun 2020 14:09:06 -0700
-Date:   Mon, 8 Jun 2020 14:09:06 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH] virtio_net: Unregister and re-register xdp_rxq across
- freeze/restore
-Message-ID: <20200608210906.GG8223@linux.intel.com>
-References: <20200605214624.21430-1-sean.j.christopherson@intel.com>
- <20200607091542-mutt-send-email-mst@kernel.org>
+        id S1726776AbgFHVMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 17:12:18 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49136 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726566AbgFHVMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 17:12:17 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 058L1uW8132355;
+        Mon, 8 Jun 2020 17:11:41 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31gg8168cr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Jun 2020 17:11:41 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 058L2Dpm133298;
+        Mon, 8 Jun 2020 17:11:38 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31gg8168b9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Jun 2020 17:11:37 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 058LB8at031517;
+        Mon, 8 Jun 2020 21:11:34 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 31g2s7swfc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Jun 2020 21:11:33 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 058LBVh360686590
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Jun 2020 21:11:31 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E9A62A405B;
+        Mon,  8 Jun 2020 21:11:30 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 12444A405C;
+        Mon,  8 Jun 2020 21:11:26 +0000 (GMT)
+Received: from vajain21-in-ibm-com (unknown [9.85.74.153])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon,  8 Jun 2020 21:11:25 +0000 (GMT)
+Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Tue, 09 Jun 2020 02:41:24 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Cc:     Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: [PATCH v12 0/6] powerpc/papr_scm: Add support for reporting nvdimm health
+Date:   Tue,  9 Jun 2020 02:40:20 +0530
+Message-Id: <20200608211026.67573-1-vaibhav@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200607091542-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-08_18:2020-06-08,2020-06-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 impostorscore=0 clxscore=1015 bulkscore=0
+ mlxlogscore=999 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006080144
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 07, 2020 at 09:23:03AM -0400, Michael S. Tsirkin wrote:
-> On Fri, Jun 05, 2020 at 02:46:24PM -0700, Sean Christopherson wrote:
-> > @@ -1480,17 +1495,10 @@ static int virtnet_open(struct net_device *dev)
-> >  			if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
-> >  				schedule_delayed_work(&vi->refill, 0);
-> >  
-> > -		err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i);
-> > +		err = virtnet_reg_xdp(&vi->rq[i].xdp_rxq, dev, i);
-> >  		if (err < 0)
-> >  			return err;
-> >  
-> > -		err = xdp_rxq_info_reg_mem_model(&vi->rq[i].xdp_rxq,
-> > -						 MEM_TYPE_PAGE_SHARED, NULL);
-> > -		if (err < 0) {
-> > -			xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
-> > -			return err;
-> > -		}
-> > -
-> >  		virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
-> >  		virtnet_napi_tx_enable(vi, vi->sq[i].vq, &vi->sq[i].napi);
-> >  	}
-> > @@ -2306,6 +2314,7 @@ static void virtnet_freeze_down(struct virtio_device *vdev)
-> >  
-> >  	if (netif_running(vi->dev)) {
-> >  		for (i = 0; i < vi->max_queue_pairs; i++) {
-> > +			xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
-> >  			napi_disable(&vi->rq[i].napi);
-> >  			virtnet_napi_tx_disable(&vi->sq[i].napi);
-> 
-> I suspect the right thing to do is to first disable all NAPI,
-> then play with XDP. Generally cleanup in the reverse order
-> of init is a good idea.
+Changes since v11 [1]:
+* Minor update to 'papr_pdsm.h' fixing a misleading comment about
+  'possible' padding being added by GCC which doesn't apply in case
+  structs are marked as __packed.
+* Fix the order of initialization of 'struct nd_papr_pdsm_health' in
+  papr_pdsm_health().
+* Added acks from Ira for various patches.
 
-Hmm, I was simply following virtnet_close().  Actually, the entire loop
-could be factored out into a separate helper.  Perhaps do that as part of
-the fix, and then invert the ordering in a separate patch?
+[1] https://lore.kernel.org/linux-nvdimm/20200607131339.476036-1-vaibhav@linux.ibm.com
+---
 
-> >  		}
-> > @@ -2313,6 +2322,8 @@ static void virtnet_freeze_down(struct virtio_device *vdev)
-> >  }
-> >  
-> >  static int init_vqs(struct virtnet_info *vi);
-> > +static void virtnet_del_vqs(struct virtnet_info *vi);
-> > +static void free_receive_page_frags(struct virtnet_info *vi);
-> 
-> I'd really rather we reordered code so forward decls are not necessary.
+The PAPR standard[2][4] provides mechanisms to query the health and
+performance stats of an NVDIMM via various hcalls as described in
+Ref[3].  Until now these stats were never available nor exposed to the
+user-space tools like 'ndctl'. This is partly due to PAPR platform not
+having support for ACPI and NFIT. Hence 'ndctl' is unable to query and
+report the dimm health status and a user had no way to determine the
+current health status of a NDVIMM.
 
-Yeah, no argument from me.  Would you prefer the reordering in a separate
-patch on top, e.g. to simplify potential backporting?
+To overcome this limitation, this patch-set updates papr_scm kernel
+module to query and fetch NVDIMM health stats using hcalls described
+in Ref[3].  This health and performance stats are then exposed to
+userspace via sysfs and PAPR-NVDIMM-Specific-Methods(PDSM) issued by
+libndctl.
 
-> >  static int virtnet_restore_up(struct virtio_device *vdev)
-> >  {
-> > @@ -2331,6 +2342,10 @@ static int virtnet_restore_up(struct virtio_device *vdev)
-> >  				schedule_delayed_work(&vi->refill, 0);
-> >  
-> >  		for (i = 0; i < vi->max_queue_pairs; i++) {
-> > +			err = virtnet_reg_xdp(&vi->rq[i].xdp_rxq, vi->dev, i);
-> > +			if (err)
-> > +				goto free_vqs;
-> > +
-> >  			virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
-> >  			virtnet_napi_tx_enable(vi, vi->sq[i].vq,
-> >  					       &vi->sq[i].napi);
-> > @@ -2340,6 +2355,12 @@ static int virtnet_restore_up(struct virtio_device *vdev)
-> >  	netif_tx_lock_bh(vi->dev);
-> >  	netif_device_attach(vi->dev);
-> >  	netif_tx_unlock_bh(vi->dev);
-> > +	return 0;
-> > +
-> > +free_vqs:
-> > +	cancel_delayed_work_sync(&vi->refill);
-> > +	free_receive_page_frags(vi);
-> > +	virtnet_del_vqs(vi);
-> 
-> 
-> I am not sure this is safe to do after device-ready.
-> 
-> Can reg xdp happen before device ready?
+These changes coupled with proposed ndtcl changes located at Ref[5]
+should provide a way for the user to retrieve NVDIMM health status
+using ndtcl.
 
-From a code perspective, I don't see anything that will explode, but I have
-no idea if that's correct/sane behavior.
+Below is a sample output using proposed kernel + ndctl for PAPR NVDIMM
+in a emulation environment:
 
-FWIW, the xdp error handling in virtnet_open() also looks bizarre to me,
-e.g. bails in the middle of a loop without doing any cleanup.  I assume
-virtnet_close() wouldn't called if open failed?  But I can't determine
-whether or not that holds true based on code inspection, there are too many
-call sites that lead to open and close.
+ # ndctl list -DH
+[
+  {
+    "dev":"nmem0",
+    "health":{
+      "health_state":"fatal",
+      "shutdown_state":"dirty"
+    }
+  }
+]
+
+Dimm health report output on a pseries guest lpar with vPMEM or HMS
+based NVDIMMs that are in perfectly healthy conditions:
+
+ # ndctl list -d nmem0 -H
+[
+  {
+    "dev":"nmem0",
+    "health":{
+      "health_state":"ok",
+      "shutdown_state":"clean"
+    }
+  }
+]
+
+PAPR NVDIMM-Specific-Methods(PDSM)
+==================================
+
+PDSM requests are issued by vendor specific code in libndctl to
+execute certain operations or fetch information from NVDIMMS. PDSMs
+requests can be sent to papr_scm module via libndctl(userspace) and
+libnvdimm (kernel) using the ND_CMD_CALL ioctl command which can be
+handled in the dimm control function papr_scm_ndctl(). Current
+patchset proposes a single PDSM to retrieve NVDIMM health, defined in
+the newly introduced uapi header named 'papr_pdsm.h'. Support for
+more PDSMs will be added in future.
+
+Structure of the patch-set
+==========================
+
+The patch-set starts with a doc patch documenting details of hcall
+H_SCM_HEALTH. Second patch exports kernel symbol seq_buf_printf()
+thats used in subsequent patches to generate sysfs attribute content.
+
+Third patch implements support for fetching NVDIMM health information
+from PHYP and partially exposing it to user-space via a NVDIMM sysfs
+flag.
+
+Fourth patch updates papr_scm_ndctl() to handle a possible error case
+and also improve debug logging.
+
+Fifth patch deals with implementing support for servicing PDSM
+commands in papr_scm module.
+
+Finally the last patch implements support for servicing PDSM
+'PAPR_PDSM_HEALTH' that returns the NVDIMM health information to
+libndctl.
+
+References:
+[2] "Power Architecture Platform Reference"
+      https://en.wikipedia.org/wiki/Power_Architecture_Platform_Reference
+[3] commit 58b278f568f0
+     ("powerpc: Provide initial documentation for PAPR hcalls")
+[4] "Linux on Power Architecture Platform Reference"
+     https://members.openpowerfoundation.org/document/dl/469
+[5] https://github.com/vaibhav92/ndctl/tree/papr_scm_health_v12
+
+---
+
+Vaibhav Jain (6):
+  powerpc: Document details on H_SCM_HEALTH hcall
+  seq_buf: Export seq_buf_printf
+  powerpc/papr_scm: Fetch nvdimm health information from PHYP
+  powerpc/papr_scm: Improve error logging and handling papr_scm_ndctl()
+  ndctl/papr_scm,uapi: Add support for PAPR nvdimm specific methods
+  powerpc/papr_scm: Implement support for PAPR_PDSM_HEALTH
+
+ Documentation/ABI/testing/sysfs-bus-papr-pmem |  27 ++
+ Documentation/powerpc/papr_hcalls.rst         |  46 ++-
+ arch/powerpc/include/uapi/asm/papr_pdsm.h     | 125 ++++++
+ arch/powerpc/platforms/pseries/papr_scm.c     | 373 +++++++++++++++++-
+ include/uapi/linux/ndctl.h                    |   1 +
+ lib/seq_buf.c                                 |   1 +
+ 6 files changed, 562 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-papr-pmem
+ create mode 100644 arch/powerpc/include/uapi/asm/papr_pdsm.h
+
+-- 
+2.26.2
+
