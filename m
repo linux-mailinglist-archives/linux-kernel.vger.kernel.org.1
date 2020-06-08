@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F8C1F17F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70981F1802
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 13:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729610AbgFHLkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 07:40:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729310AbgFHLkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 07:40:53 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1729660AbgFHLlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 07:41:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729648AbgFHLlw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 07:41:52 -0400
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [IPv6:2a01:4f8:150:2161:1:b009:f23e:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75210C08C5C2;
+        Mon,  8 Jun 2020 04:41:51 -0700 (PDT)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57A152074B;
-        Mon,  8 Jun 2020 11:40:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591616452;
-        bh=x4taCFMl1JSd2Q5eNsTgPag9K1UCnAlZgI2Ug8F0LTc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rIRuyu7HoF2N+aUEjIce4hAevgRqJwI+BsLOC3XtBOVLmgs9MWQKZAT5QGmDr5GKf
-         fu7pg5IOce3RteJB6v7iXvzw0IRjCT8RWz4XrueqXh2wC5nzznCETcsHW8GeosgrBS
-         MxsLKGoQ6TbwarH19XC95Pu9353pbL+po/cfNqx0=
-Date:   Mon, 8 Jun 2020 12:40:50 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     jbrunet@baylibre.com, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com, khilman@baylibre.com, alsa-devel@alsa-project.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        trivial@kernel.org
-Subject: Re: [PATCH] soc/meson: add missing free_irq() in error path
-Message-ID: <20200608114050.GD4593@sirena.org.uk>
-References: <20200606153103.GA17905@amd>
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 04F81100A8787;
+        Mon,  8 Jun 2020 13:41:49 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 99FFD43A8E1; Mon,  8 Jun 2020 13:41:48 +0200 (CEST)
+Date:   Mon, 8 Jun 2020 13:41:48 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Scott Branden <sbranden@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>, linux-kernel@vger.kernel.org,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Martin Sperl <kernel@martin.sperl.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: Re: [PATCH v2] spi: bcm2835: Enable shared interrupt support
+Message-ID: <20200608114148.4bau4mdcvwgf25ut@wunner.de>
+References: <20200604212819.715-1-f.fainelli@gmail.com>
+ <142d48ae-2725-1368-3e11-658449662371@arm.com>
+ <20200605132037.GF5413@sirena.org.uk>
+ <2e371a32-fb52-03a2-82e4-5733d9f139cc@arm.com>
+ <06342e88-e130-ad7a-9f97-94f09156f868@arm.com>
+ <d3fe8b56-83ef-8ef0-bb05-11c7cb2419f8@gmail.com>
+ <a6f158e3-af51-01d9-331c-4bc8b6847abb@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="g7w8+K/95kPelPD2"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200606153103.GA17905@amd>
-X-Cookie: I'm rated PG-34!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <a6f158e3-af51-01d9-331c-4bc8b6847abb@arm.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 08, 2020 at 12:11:11PM +0100, Robin Murphy wrote:
+> And all in code that has at least one obvious inefficiency left on
+> the table either way.
 
---g7w8+K/95kPelPD2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Care to submit a patch to overcome that inefficiency?
 
-On Sat, Jun 06, 2020 at 05:31:03PM +0200, Pavel Machek wrote:
-> free_irq() is missing in case of error, fix that.
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+> This thread truly epitomises Knuth's "premature optimisation" quote... ;)
 
---g7w8+K/95kPelPD2
-Content-Type: application/pgp-signature; name="signature.asc"
+The thread came about because it can be determined at compile time
+whether the interrupt is going to be shared:
 
------BEGIN PGP SIGNATURE-----
+On the BCM2835 (Raspberry Pi 1), CONFIG_ARCH_MULTI_V6 is set and this
+SoC doesn't have multiple bcm2835-spi instances, so no shared interrupt.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7eI8EACgkQJNaLcl1U
-h9D2oAf+L+75A6sm74wpOyUZsv7DPH8rJApbMWamWaaL7Zq0ZrwKsFecGUq4jP37
-FvyBa8xpKWuEbPQuvtG8XwFUMjy/VBn0FgKhjbetB7+sUrQg+erx4XzY81Nq5VcG
-Ov+61cWUPIKpY8Ysnj+xH1W+b5nY5EOsBfFvjNNsE3g1JadihgZrcAGdOBK3cy/7
-aS/RStZcQedRmxpIIQvKhwr4j0Am1X8D2lPjFqs7hVl+g9I3t1bvKYdW/Y679FBz
-HgwoXfEOkrODZtQsuMLGAqYRbyGjYKzAesmp892xPWqM07MchsB5JaMl4I81bwkO
-WndnmsoTH4bOw+HPhgwcIRVT/FOqtQ==
-=yNKv
------END PGP SIGNATURE-----
+The question is how to discern BCM2836/BCM2837 (Raspberry Pi 2/3), which
+do not have multiple instances, and BCM2711 (Raspberry Pi 4) which does.
 
---g7w8+K/95kPelPD2--
+The Raspberry Pi Foundation compiles BCM2711 kernels with CONFIG_ARM_LPAE=y,
+but Florian considered that kludgy as a discriminator and opted for
+runtime-detection via the compatible string instead.  If you've got
+a better idea please come forward.
+
+Is "optimize shared IRQ support away if IS_ENABLED(CONFIG_ARCH_MULTI_V6),
+else leave it in" the best we can do?
+
+Thanks,
+
+Lukas
