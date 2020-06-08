@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542301F2CCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CE21F2CD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730146AbgFHXQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:16:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32990 "EHLO mail.kernel.org"
+        id S1728747AbgFHXQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:16:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728574AbgFHXNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:13:18 -0400
+        id S1729531AbgFHXNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:13:40 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B999D20897;
-        Mon,  8 Jun 2020 23:13:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4116B212CC;
+        Mon,  8 Jun 2020 23:13:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657997;
-        bh=4mLUq8oF0+XPpJ0iLZPuz7kue4ub17LRH+eWo4UMPF0=;
+        s=default; t=1591658019;
+        bh=PAF7TTob2i+fDQUy2vnO8iUW+qZWiXx2tOJs+soBO68=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nKL/EiZUPH8/ebEd7MGVPP97hGF/Q0wzpJfMQT6bWNIxbyLy/4qcz3YhmkSEX/fxG
-         Vq8Yvv+Kg1n+Wa39vgBgHdC3CJ2W8kkBXIoViIU8Fu4QJXeNybJsVC3BBW2qIboZwH
-         Cpp1aosWhg+YNw2AEn86ZhgVaA1hMJeOVFND1G3o=
+        b=VV3Qyerf7dWJEdNT3HShUwCKFvIbcbP5CiszGVj80m7eXz3NJpsbCfpBgBLqLbPIA
+         5bjEYJhypEOGp+OVE7efveAjbPzw++qmhYWg7cGuZw7GtyLnlvRmJ1Y4gNPNrVZGJW
+         /VPXtpYqSy/MtUBcyLJhykXRTsepjCUIMKeaCmVY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tero Kristo <t-kristo@ti.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-omap@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 055/606] clk: ti: clkctrl: Fix Bad of_node_put within clkctrl_get_name
-Date:   Mon,  8 Jun 2020 19:03:00 -0400
-Message-Id: <20200608231211.3363633-55-sashal@kernel.org>
+        linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.6 073/606] riscv: perf: RISCV_BASE_PMU should be independent
+Date:   Mon,  8 Jun 2020 19:03:18 -0400
+Message-Id: <20200608231211.3363633-73-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -46,41 +44,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tero Kristo <t-kristo@ti.com>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-commit e1f9e0d28ff025564dfdb1001a7839b4af5db2e2 upstream.
+commit 48084c3595cb7429f6ba734cfea1313573b9a7fa upstream.
 
-clkctrl_get_name incorrectly calls of_node_put when it is not really
-doing of_node_get. This causes a boot time warning later on:
+Selecting PERF_EVENTS without selecting RISCV_BASE_PMU results in a build
+error.
 
-[    0.000000] OF: ERROR: Bad of_node_put() on /ocp/interconnect@4a000000/segmen
-t@0/target-module@5000/cm_core_aon@0/ipu-cm@500/ipu1-clkctrl@20
-
-Fix by dropping the of_node_put from the function.
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Fixes: 6c3090520554 ("clk: ti: clkctrl: Fix hidden dependency to node name")
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
-Link: https://lkml.kernel.org/r/20200424124725.9895-1-t-kristo@ti.com
-Acked-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+[Palmer: commit text]
+Fixes: 178e9fc47aae("perf: riscv: preliminary RISC-V support")
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/clk/ti/clkctrl.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/riscv/include/asm/perf_event.h | 8 ++------
+ arch/riscv/kernel/Makefile          | 2 +-
+ 2 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/clk/ti/clkctrl.c b/drivers/clk/ti/clkctrl.c
-index 062266034d84..9019624e37bc 100644
---- a/drivers/clk/ti/clkctrl.c
-+++ b/drivers/clk/ti/clkctrl.c
-@@ -461,7 +461,6 @@ static char * __init clkctrl_get_name(struct device_node *np)
- 			return name;
- 		}
- 	}
--	of_node_put(np);
+diff --git a/arch/riscv/include/asm/perf_event.h b/arch/riscv/include/asm/perf_event.h
+index 0234048b12bc..062efd3a1d5d 100644
+--- a/arch/riscv/include/asm/perf_event.h
++++ b/arch/riscv/include/asm/perf_event.h
+@@ -12,19 +12,14 @@
+ #include <linux/ptrace.h>
+ #include <linux/interrupt.h>
  
- 	return NULL;
- }
++#ifdef CONFIG_RISCV_BASE_PMU
+ #define RISCV_BASE_COUNTERS	2
+ 
+ /*
+  * The RISCV_MAX_COUNTERS parameter should be specified.
+  */
+ 
+-#ifdef CONFIG_RISCV_BASE_PMU
+ #define RISCV_MAX_COUNTERS	2
+-#endif
+-
+-#ifndef RISCV_MAX_COUNTERS
+-#error "Please provide a valid RISCV_MAX_COUNTERS for the PMU."
+-#endif
+ 
+ /*
+  * These are the indexes of bits in counteren register *minus* 1,
+@@ -82,6 +77,7 @@ struct riscv_pmu {
+ 	int		irq;
+ };
+ 
++#endif
+ #ifdef CONFIG_PERF_EVENTS
+ #define perf_arch_bpf_user_pt_regs(regs) (struct user_regs_struct *)regs
+ #endif
+diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+index f40205cb9a22..1dcc095dc23c 100644
+--- a/arch/riscv/kernel/Makefile
++++ b/arch/riscv/kernel/Makefile
+@@ -38,7 +38,7 @@ obj-$(CONFIG_MODULE_SECTIONS)	+= module-sections.o
+ obj-$(CONFIG_FUNCTION_TRACER)	+= mcount.o ftrace.o
+ obj-$(CONFIG_DYNAMIC_FTRACE)	+= mcount-dyn.o
+ 
+-obj-$(CONFIG_PERF_EVENTS)	+= perf_event.o
++obj-$(CONFIG_RISCV_BASE_PMU)	+= perf_event.o
+ obj-$(CONFIG_PERF_EVENTS)	+= perf_callchain.o
+ obj-$(CONFIG_HAVE_PERF_REGS)	+= perf_regs.o
+ obj-$(CONFIG_RISCV_SBI)		+= sbi.o
 -- 
 2.25.1
 
