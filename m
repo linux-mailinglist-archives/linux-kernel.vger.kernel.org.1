@@ -2,109 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FBA1F2799
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF2F1F2822
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387989AbgFHXrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:47:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387930AbgFHXrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:47:15 -0400
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE15420842;
-        Mon,  8 Jun 2020 23:47:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591660034;
-        bh=JfeR1OvUTiZ0lO8gFO9nXXNApbqP7Edk3LbRreh8u6o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ywVQtU9EpMa3kP7TzlTaYd3MC12ox9PdByU6JDD/+1ap9wTefo28zwbDbtquuTTXs
-         q4SPNj+fsG+okq4AuKRockpnZdiBNJVW/msRnFgduqIe/mcn6dRp+arC+1RK8sGZ2j
-         E8yZNl7fH+hOZqypdm+lPKFtCbiHHwk4e9Hqv1bw=
-Received: by mail-oo1-f52.google.com with SMTP id 7so3818488oof.8;
-        Mon, 08 Jun 2020 16:47:14 -0700 (PDT)
-X-Gm-Message-State: AOAM5313IxO3b+ngWsMl/aLyQSIZnHRLKeHaf9QodYpbmaeNnmAwenuE
-        kj6SZgiGXeLD4dwgSmnYnoLu2PmH0tC5LWQn5g==
-X-Google-Smtp-Source: ABdhPJz3gIjlkhZ2RmMRXkIMPB6UylOzQLyhAs6ndsfed5PFu+br/5Z+8Z79xY7reJQ2jrwzMbD3741AqHxlS9Wo3LE=
-X-Received: by 2002:a4a:345b:: with SMTP id n27mr19140154oof.25.1591660034065;
- Mon, 08 Jun 2020 16:47:14 -0700 (PDT)
+        id S1732581AbgFHXs6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Jun 2020 19:48:58 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:47130 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732556AbgFHXsz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:48:55 -0400
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1jiRVK-0004Cq-Ha; Mon, 08 Jun 2020 23:48:35 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id D01E35FED0; Mon,  8 Jun 2020 16:48:32 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id C840F9FB38;
+        Mon,  8 Jun 2020 16:48:32 -0700 (PDT)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jarod Wilson <jarod@redhat.com>
+cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH net-next 3/4] bonding: support hardware encryption offload to slaves
+In-reply-to: <20200608210058.37352-4-jarod@redhat.com>
+References: <20200608210058.37352-1-jarod@redhat.com> <20200608210058.37352-4-jarod@redhat.com>
+Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
+   message dated "Mon, 08 Jun 2020 17:00:57 -0400."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-References: <20200527153046.6172-1-Sergey.Semin@baikalelectronics.ru>
- <20200527153046.6172-3-Sergey.Semin@baikalelectronics.ru> <20200527153351.rmzguymz7lm6gvsx@mobilestation>
- <20200529181338.GA2676189@bogus> <20200529182256.3bp4uvvrvz3ddlrq@mobilestation>
- <20200529184201.GX1634618@smile.fi.intel.com> <20200529184534.wyyv5i7hcto5y3d3@mobilestation>
- <20200529185824.o2vcpxe4f63aw465@mobilestation>
-In-Reply-To: <20200529185824.o2vcpxe4f63aw465@mobilestation>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 8 Jun 2020 17:46:59 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKZjYF2Jrvcd8BAHsMfm5-S1J11NVoc6o2q5zE5ekmRTw@mail.gmail.com>
-Message-ID: <CAL_JsqKZjYF2Jrvcd8BAHsMfm5-S1J11NVoc6o2q5zE5ekmRTw@mail.gmail.com>
-Subject: Re: [PATCH v5 02/11] dt-bindings: i2c: Discard i2c-slave flag from
- the DW I2C example
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <20716.1591660112.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Mon, 08 Jun 2020 16:48:32 -0700
+Message-ID: <20717.1591660112@famine>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 12:58 PM Serge Semin <fancer.lancer@gmail.com> wrote:
->
-> On Fri, May 29, 2020 at 09:45:37PM +0300, Serge Semin wrote:
-> > On Fri, May 29, 2020 at 09:42:01PM +0300, Andy Shevchenko wrote:
-> > > On Fri, May 29, 2020 at 09:22:56PM +0300, Serge Semin wrote:
-> > > > On Fri, May 29, 2020 at 12:13:38PM -0600, Rob Herring wrote:
-> > > > > On Wed, May 27, 2020 at 06:33:51PM +0300, Serge Semin wrote:
-> > >
-> > > > > you're sending
-> > > > > new versions too fast. Give people time to review.
-> > > >
-> > > > Yeah, you did. Sorry for sending the new versions very fast. Normally I prefer
-> > > > to keep up with comments so to past a particular maintainer review as fast as
-> > > > possible without long delays. In my experience the longer you wait, the lesser
-> > > > maintainers remember about your patchset, the harder for one to continue the
-> > > > next versions review.
-> > >
-> >
->
-> > > Documentation/process/submitting-patches.rst:
-> > >
-> > > "Wait for a minimum of one week before resubmitting or pinging reviewers -
-> > > possibly longer during busy times like merge windows."
-> >
-> > Good to know what I already know.) How much do you personally wait before
-> > resubmitting? In my experience reviewing your DW APB GPIO patches, no longer
-> > than a few hours.
->
-> Moreover the statement you cited is about the patches, which doesn't get any
-> attention from the maintainers/reviewers for quite some time. In this case I
-> normally resubmit the patches no sooner than a week. I was talking about the
-> situation when you get the review comments, which need to be addressed.
+Jarod Wilson <jarod@redhat.com> wrote:
 
-There's not going to be any rule that always works. It takes
-judgement. I'd say the greater the rework from review comments, the
-sooner you can resend. But then if it's multiple
-subsystems/maintainers, you need to give all of them time.
+>Currently, this support is limited to active-backup mode, as I'm not sure
+>about the feasilibity of mapping an xfrm_state's offload handle to
+>multiple hardware devices simultaneously, and we rely on being able to
+>pass some hints to both the xfrm and NIC driver about whether or not
+>they're operating on a slave device.
+>
+>I've tested this atop an Intel x520 device (ixgbe) using libreswan in
+>transport mode, succesfully achieving ~4.3Gbps throughput with netperf
+>(more or less identical to throughput on a bare NIC in this system),
+>as well as successful failover and recovery mid-netperf.
+>
+>v2: rebase on latest net-next and wrap with #ifdef CONFIG_XFRM_OFFLOAD
+>v3: add new CONFIG_BOND_XFRM_OFFLOAD option and fix shutdown path
+>
+>CC: Jay Vosburgh <j.vosburgh@gmail.com>
+>CC: Veaceslav Falico <vfalico@gmail.com>
+>CC: Andy Gospodarek <andy@greyhouse.net>
+>CC: "David S. Miller" <davem@davemloft.net>
+>CC: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+>CC: Jakub Kicinski <kuba@kernel.org>
+>CC: Steffen Klassert <steffen.klassert@secunet.com>
+>CC: Herbert Xu <herbert@gondor.apana.org.au>
+>CC: netdev@vger.kernel.org
+>CC: intel-wired-lan@lists.osuosl.org
+>Signed-off-by: Jarod Wilson <jarod@redhat.com>
+>
+>Signed-off-by: Jarod Wilson <jarod@redhat.com>
+>---
+> drivers/net/Kconfig             |  11 ++++
+> drivers/net/bonding/bond_main.c | 111 +++++++++++++++++++++++++++++++-
+> include/net/bonding.h           |   3 +
+> 3 files changed, 122 insertions(+), 3 deletions(-)
+>
+>diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+>index c7d310ef1c83..938c4dd9bfb9 100644
+>--- a/drivers/net/Kconfig
+>+++ b/drivers/net/Kconfig
+>@@ -56,6 +56,17 @@ config BONDING
+> 	  To compile this driver as a module, choose M here: the module
+> 	  will be called bonding.
+> 
+>+config BONDING_XFRM_OFFLOAD
+>+	bool "Bonding driver IPSec XFRM cryptography-offload pass-through support"
+>+	depends on BONDING
+>+	depends on XFRM_OFFLOAD
+>+	default y
+>+	select XFRM_ALGO
+>+	---help---
+>+	  Enable support for IPSec offload pass-through in the bonding driver.
+>+	  Currently limited to active-backup mode only, and requires slave
+>+	  devices that support hardware crypto offload.
+>+
 
-I go in date order mostly. You send a new version, then you go to the
-back of the queue. So if you want it reviewed the soonest, send it 2
-weeks ago. ;) There's also the strategy of reviewing other patches in
-front of yours. Sometimes I go by version numbers, but send version 50
-and I might be suspicious. And that's rewarding folks who are sloppy
-or keep sending broken stuff. The real solution is I just need more
-help reviewing things.
+	Why is this a separate Kconfig option?  Is it reasonable to
+expect users to enable XFRM_OFFLOAD but not BONDING_XFRM_OFFLOAD?
 
-Rob
+> config DUMMY
+> 	tristate "Dummy net driver support"
+> 	---help---
+>diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+>index a25c65d4af71..01b80cef492a 100644
+>--- a/drivers/net/bonding/bond_main.c
+>+++ b/drivers/net/bonding/bond_main.c
+>@@ -79,6 +79,7 @@
+> #include <net/pkt_sched.h>
+> #include <linux/rculist.h>
+> #include <net/flow_dissector.h>
+>+#include <net/xfrm.h>
+> #include <net/bonding.h>
+> #include <net/bond_3ad.h>
+> #include <net/bond_alb.h>
+>@@ -278,8 +279,6 @@ const char *bond_mode_name(int mode)
+> 	return names[mode];
+> }
+> 
+>-/*---------------------------------- VLAN -----------------------------------*/
+>-
+> /**
+>  * bond_dev_queue_xmit - Prepare skb for xmit.
+>  *
+>@@ -302,6 +301,8 @@ netdev_tx_t bond_dev_queue_xmit(struct bonding *bond, struct sk_buff *skb,
+> 	return dev_queue_xmit(skb);
+> }
+> 
+>+/*---------------------------------- VLAN -----------------------------------*/
+>+
+> /* In the following 2 functions, bond_vlan_rx_add_vid and bond_vlan_rx_kill_vid,
+>  * We don't protect the slave list iteration with a lock because:
+>  * a. This operation is performed in IOCTL context,
+>@@ -372,6 +373,84 @@ static int bond_vlan_rx_kill_vid(struct net_device *bond_dev,
+> 	return 0;
+> }
+> 
+>+/*---------------------------------- XFRM -----------------------------------*/
+>+
+>+#ifdef CONFIG_BONDING_XFRM_OFFLOAD
+>+/**
+>+ * bond_ipsec_add_sa - program device with a security association
+>+ * @xs: pointer to transformer state struct
+>+ **/
+>+static int bond_ipsec_add_sa(struct xfrm_state *xs)
+>+{
+>+	struct net_device *bond_dev = xs->xso.dev;
+>+	struct bonding *bond = netdev_priv(bond_dev);
+>+	struct slave *slave = rtnl_dereference(bond->curr_active_slave);
+>+
+>+	xs->xso.slave_dev = slave->dev;
+>+	bond->xs = xs;
+>+
+>+	if (!(slave->dev->xfrmdev_ops
+>+	      && slave->dev->xfrmdev_ops->xdo_dev_state_add)) {
+>+		slave_warn(bond_dev, slave->dev, "Slave does not support ipsec offload\n");
+>+		return -EINVAL;
+>+	}
+>+
+>+	return slave->dev->xfrmdev_ops->xdo_dev_state_add(xs);
+>+}
+>+
+>+/**
+>+ * bond_ipsec_del_sa - clear out this specific SA
+>+ * @xs: pointer to transformer state struct
+>+ **/
+>+static void bond_ipsec_del_sa(struct xfrm_state *xs)
+>+{
+>+	struct net_device *bond_dev = xs->xso.dev;
+>+	struct bonding *bond = netdev_priv(bond_dev);
+>+	struct slave *slave = rtnl_dereference(bond->curr_active_slave);
+>+
+>+	if (!slave)
+>+		return;
+>+
+>+	xs->xso.slave_dev = slave->dev;
+>+
+>+	if (!(slave->dev->xfrmdev_ops
+>+	      && slave->dev->xfrmdev_ops->xdo_dev_state_delete)) {
+>+		slave_warn(bond_dev, slave->dev, "%s: no slave xdo_dev_state_delete\n", __func__);
+>+		return;
+>+	}
+>+
+>+	slave->dev->xfrmdev_ops->xdo_dev_state_delete(xs);
+>+}
+>+
+>+/**
+>+ * bond_ipsec_offload_ok - can this packet use the xfrm hw offload
+>+ * @skb: current data packet
+>+ * @xs: pointer to transformer state struct
+>+ **/
+>+static bool bond_ipsec_offload_ok(struct sk_buff *skb, struct xfrm_state *xs)
+>+{
+>+	struct net_device *bond_dev = xs->xso.dev;
+>+	struct bonding *bond = netdev_priv(bond_dev);
+>+	struct slave *curr_active = rtnl_dereference(bond->curr_active_slave);
+>+	struct net_device *slave_dev = curr_active->dev;
+>+
+>+	if (!(slave_dev->xfrmdev_ops
+>+	      && slave_dev->xfrmdev_ops->xdo_dev_offload_ok)) {
+>+		slave_warn(bond_dev, slave_dev, "%s: no slave xdo_dev_offload_ok\n", __func__);
+>+		return false;
+>+	}
+>+
+>+	xs->xso.slave_dev = slave_dev;
+>+	return slave_dev->xfrmdev_ops->xdo_dev_offload_ok(skb, xs);
+>+}
+>+
+>+static const struct xfrmdev_ops bond_xfrmdev_ops = {
+>+	.xdo_dev_state_add = bond_ipsec_add_sa,
+>+	.xdo_dev_state_delete = bond_ipsec_del_sa,
+>+	.xdo_dev_offload_ok = bond_ipsec_offload_ok,
+>+};
+>+#endif /* CONFIG_BONDING_XFRM_OFFLOAD */
+>+
+> /*------------------------------- Link status -------------------------------*/
+> 
+> /* Set the carrier state for the master according to the state of its
+>@@ -879,6 +958,11 @@ void bond_change_active_slave(struct bonding *bond, struct slave *new_active)
+> 		return;
+> 
+> 	if (new_active) {
+>+#ifdef CONFIG_BONDING_XFRM_OFFLOAD
+>+		if ((BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP) && bond->xs)
+>+			bond_ipsec_del_sa(bond->xs);
+>+#endif /* CONFIG_BONDING_XFRM_OFFLOAD */
+>+
+> 		new_active->last_link_up = jiffies;
+> 
+> 		if (new_active->link == BOND_LINK_BACK) {
+>@@ -941,6 +1025,13 @@ void bond_change_active_slave(struct bonding *bond, struct slave *new_active)
+> 					bond_should_notify_peers(bond);
+> 			}
+> 
+>+#ifdef CONFIG_BONDING_XFRM_OFFLOAD
+>+			if (old_active && bond->xs) {
+>+				xfrm_dev_state_flush(dev_net(bond->dev), bond->dev, true);
+>+				bond_ipsec_add_sa(bond->xs);
+>+			}
+>+#endif /* CONFIG_BONDING_XFRM_OFFLOAD */
+>+
+> 			call_netdevice_notifiers(NETDEV_BONDING_FAILOVER, bond->dev);
+> 			if (should_notify_peers) {
+> 				bond->send_peer_notif--;
+>@@ -1125,7 +1216,9 @@ static netdev_features_t bond_fix_features(struct net_device *dev,
+> 				 NETIF_F_HIGHDMA | NETIF_F_LRO)
+> 
+> #define BOND_ENC_FEATURES	(NETIF_F_HW_CSUM | NETIF_F_SG | \
+>-				 NETIF_F_RXCSUM | NETIF_F_ALL_TSO)
+>+				 NETIF_F_RXCSUM | NETIF_F_ALL_TSO | \
+>+				 NETIF_F_HW_ESP | NETIF_F_HW_ESP_TX_CSUM | \
+>+				 NETIF_F_GSO_ESP)
+> 
+> #define BOND_MPLS_FEATURES	(NETIF_F_HW_CSUM | NETIF_F_SG | \
+> 				 NETIF_F_ALL_TSO)
+>@@ -1464,6 +1557,9 @@ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
+> 		slave_dbg(bond_dev, slave_dev, "is !NETIF_F_VLAN_CHALLENGED\n");
+> 	}
+> 
+>+	if (slave_dev->features & NETIF_F_HW_ESP)
+>+		slave_dbg(bond_dev, slave_dev, "is esp-hw-offload capable\n");
+>+
+> 	/* Old ifenslave binaries are no longer supported.  These can
+> 	 * be identified with moderate accuracy by the state of the slave:
+> 	 * the current ifenslave will set the interface down prior to
+>@@ -4542,6 +4638,13 @@ void bond_setup(struct net_device *bond_dev)
+> 	bond_dev->priv_flags |= IFF_BONDING | IFF_UNICAST_FLT | IFF_NO_QUEUE;
+> 	bond_dev->priv_flags &= ~(IFF_XMIT_DST_RELEASE | IFF_TX_SKB_SHARING);
+> 
+>+#ifdef CONFIG_BONDING_XFRM_OFFLOAD
+>+	/* set up xfrm device ops (only supported in active-backup right now) */
+>+	if ((BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP))
+>+		bond_dev->xfrmdev_ops = &bond_xfrmdev_ops;
+>+	bond->xs = NULL;
+>+#endif /* CONFIG_BONDING_XFRM_OFFLOAD */
+>+
+> 	/* don't acquire bond device's netif_tx_lock when transmitting */
+> 	bond_dev->features |= NETIF_F_LLTX;
+> 
+>@@ -4560,6 +4663,8 @@ void bond_setup(struct net_device *bond_dev)
+> 				NETIF_F_HW_VLAN_CTAG_FILTER;
+> 
+> 	bond_dev->hw_features |= NETIF_F_GSO_ENCAP_ALL | NETIF_F_GSO_UDP_L4;
+>+	if ((BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP))
+>+		bond_dev->hw_features |= BOND_ENC_FEATURES;
+
+	Why is adding the ESP features to hw_features (here, and added
+to BOND_ENC_FEATURES, above) not behind CONFIG_BONDING_XFRM_OFFLOAD?
+
+	If adding these features makes sense regardless of the
+XFRM_OFFLOAD configuration, then shouldn't this change to feature
+handling be a separate patch?  The feature handling is complex, and is
+worth its own patch so it stands out in the log.
+
+	-J
+
+> 	bond_dev->features |= bond_dev->hw_features;
+> 	bond_dev->features |= NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_STAG_TX;
+> }
+>diff --git a/include/net/bonding.h b/include/net/bonding.h
+>index aa854a9c01e2..29a25098e2a6 100644
+>--- a/include/net/bonding.h
+>+++ b/include/net/bonding.h
+>@@ -238,6 +238,9 @@ struct bonding {
+> 	struct	 dentry *debug_dir;
+> #endif /* CONFIG_DEBUG_FS */
+> 	struct rtnl_link_stats64 bond_stats;
+>+#ifdef CONFIG_BONDING_XFRM_OFFLOAD
+>+	struct xfrm_state *xs;
+>+#endif /* CONFIG_BONDING_XFRM_OFFLOAD */
+> };
+> 
+> #define bond_slave_get_rcu(dev) \
+>-- 
+>2.20.1
+>
+
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
