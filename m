@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196FA1F1C14
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 17:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D601F1C13
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 17:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730317AbgFHP2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 11:28:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:30920 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730260AbgFHP2I (ORCPT
+        id S1730302AbgFHP2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 11:28:25 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:59927 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730264AbgFHP2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 11:28:08 -0400
+        Mon, 8 Jun 2020 11:28:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591630087;
+        s=mimecast20190719; t=1591630089;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aLL/LvbCg6sI+PUQYZsWWFiOJR+42LVNu4qeLgPuoyY=;
-        b=UgB1kbDr0XcBZ24B9x7cSUYX39lNVmj78f4o0zn46tINvPIeV6bUUVLR6Tgz0pO5+ghcm7
-        FlA1pOgUhcWzcHlaE1wODLFpI4UzRmvuxPxPIOXLezLR5B4AiyGnM15YVx2Lavv8275dEx
-        48NuYsTqJVEPvNEEmXcXLgfX4/arGkI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-mizYC_81OTqf9D8SmJtkdA-1; Mon, 08 Jun 2020 11:28:05 -0400
-X-MC-Unique: mizYC_81OTqf9D8SmJtkdA-1
-Received: by mail-wr1-f69.google.com with SMTP id p9so7322104wrx.10
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 08:28:05 -0700 (PDT)
+        bh=tTjjCWgOVP+JiV1x/LwPic4IjLbWywge1pJeAGsyXV4=;
+        b=FbXhDDUMefDdkJoqPnAMSRKUIJ2Pl99pzf5grr8/6G0Yl/Au8UI5ha6H5A9vjOFFSs6987
+        X3tX/0C0gObJ2OjkamsU+rR8qLyMwc4c8wCkBFiqakS9Tw/vUWmb0tipWoYKWNb2yPiLiw
+        Q+ioeicB7TwQbJ0zGdYL8Rzc6LUb2IU=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-104-y-8yvkF6NPWjt_t5_qR6Vg-1; Mon, 08 Jun 2020 11:28:07 -0400
+X-MC-Unique: y-8yvkF6NPWjt_t5_qR6Vg-1
+Received: by mail-wm1-f71.google.com with SMTP id g84so5379684wmf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 08:28:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aLL/LvbCg6sI+PUQYZsWWFiOJR+42LVNu4qeLgPuoyY=;
-        b=SMswHD4LdPQyjoN+moVzwwzOmw+yN57Wvb5/NU8hiuDvjyKsKHwAqSQls8logBTuBf
-         drJfEEUETHID0GBTHnXfrzYIeWhPXG/Qjq95F4Yjq7eEW0OguDh++LJhpo5io1vYxULQ
-         xpzMEX3USdgRJdKZg8guJdROzO9EamOD5c+6vo2ZZrqqqg3qrm6VsUBxBLE7Yhh7cMOj
-         Z6A9f/w0LQf2ivlbUsRdyiKdOaqsrtIpVPUNY221WFAZLvzYtbe0v+RUlxOgdg/fUjpE
-         uJVa4fyqb/ay3n4wHHnRHm0lTFdQjF3T4rwWaUGqYRvvOpuXL60C6WG4l3R6XwjfVeNA
-         6L2g==
-X-Gm-Message-State: AOAM533H6Pc6MTbzdf1MdVbVC0hvyWWylY+gTbFHUH49Y5TMUcsFrIfS
-        agNj/H76thjJDZiRNAqQY9KeB/1f8lxisNDG0VAzsCPVJwPTqrB66DFKSrpYTdznzvfFIyRwQRm
-        B4bbBGSC/WPDxOSXBJktITVcP
-X-Received: by 2002:a5d:5092:: with SMTP id a18mr23879988wrt.42.1591630084172;
-        Mon, 08 Jun 2020 08:28:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzcL1gn6l+1u8L4LBir3PyP8/4phnh5toKKhPtuk9g8DDxHP9Fhmiz1k/4gM6RRGKhXfNWJyw==
-X-Received: by 2002:a5d:5092:: with SMTP id a18mr23879963wrt.42.1591630083806;
-        Mon, 08 Jun 2020 08:28:03 -0700 (PDT)
+        bh=tTjjCWgOVP+JiV1x/LwPic4IjLbWywge1pJeAGsyXV4=;
+        b=k5wxAZxFNAn9otQsPrf8Iw+4ERuZHzvrIVpvrWszE0cSFW3lwOx1jCNW7Y3u+gVYbq
+         MYvaD8vimqIlUAAkQ5LN+rOi+uetzrULrEGobfb3sQGlZYZVSw9MHwdWxiMBbqIScIYN
+         0GnPjDa2ZikYwut9qtuImGbl3H1MGAKhqlU6Y6vdh39qQaqpqRTxpIo0ISteZoXJuYw9
+         9G0EiV4amu2YTnMkykp1gzg2roAJ4f2sgRbwa2KtRTtojYrMMty2Mkb5NdhFt95rT0y5
+         jZbtpsp9bvHWOIZqNjuDWAXWyx8INyQOeC3VZP5EkLWj13prcU5xXwRB1O820c5JJz8J
+         Obkg==
+X-Gm-Message-State: AOAM530VU7YhwFLKdS8gIFcjWX7gZY4Z+//lpUlIuTD+Oh2C7ZmsgyOV
+        a1ZkO9LRILaZPystgt9eaKF17O0r7tgbKmwHJifahcvQVDlvNS+tTDVh4XZte3+3gtJZLPvnLtZ
+        ChO2hsNVZRRpCTjoB+Ip+/6tD
+X-Received: by 2002:a1c:19c1:: with SMTP id 184mr16125713wmz.29.1591630085838;
+        Mon, 08 Jun 2020 08:28:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw73a7sprqqBtfJKSIjtAX+R9kDjYTR6x2GiDV+NUVBmXJrtripywXJGtCP0xxi8QkVaQ/6UQ==
+X-Received: by 2002:a1c:19c1:: with SMTP id 184mr16125685wmz.29.1591630085228;
+        Mon, 08 Jun 2020 08:28:05 -0700 (PDT)
 Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id u130sm23981707wmg.32.2020.06.08.08.28.02
+        by smtp.gmail.com with ESMTPSA id u130sm23981707wmg.32.2020.06.08.08.28.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 08:28:03 -0700 (PDT)
+        Mon, 08 Jun 2020 08:28:04 -0700 (PDT)
 From:   Julien Thierry <jthierry@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
         raphael.gault@arm.com, Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH 6/7] objtool: Refactor switch-tables code to support other architectures
-Date:   Mon,  8 Jun 2020 16:27:53 +0100
-Message-Id: <20200608152754.2483-7-jthierry@redhat.com>
+Subject: [RFC PATCH 7/7] objtool: Make unwind_hints available for all architectures
+Date:   Mon,  8 Jun 2020 16:27:54 +0100
+Message-Id: <20200608152754.2483-8-jthierry@redhat.com>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200608152754.2483-1-jthierry@redhat.com>
 References: <20200608152754.2483-1-jthierry@redhat.com>
@@ -68,289 +68,655 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raphael Gault <raphael.gault@arm.com>
+Unwind hints are useful to give some information about the call frame
+or stack states in non-standard code.
 
-The way to identify switch-tables and retrieves all the data necessary
-to handle the different execution branches is not the same on all
-architecture. In order to be able to add other architecture support,
-define an arch-dependent function to process jump-tables.
+Despite unwind hints being used in arch-independent code, the
+unwind_hint structure type itself is define in x86 kernel headers.
 
-Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-[J.T.: Move arm64 bits out of this patch,
-       Have only one function to find the start of the jump table,
-       for now assume that the jump table format will be the same as
-       x86]
+This is because what an unwind hint will describe is very architecture
+specific, both regarding the state and the affected registers.
+
+To get to share this concept, expose the unwind_hint structure across
+architecutres. However, the hint types remain defined by the
+architecture code. Objtool then needs it's arch specific code to
+"decode" the unwind hint into a cfi_state.
+
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
 ---
- tools/objtool/arch/x86/arch_special.c | 95 +++++++++++++++++++++++++++
- tools/objtool/check.c                 | 88 +------------------------
- tools/objtool/check.h                 |  1 -
- tools/objtool/special.h               |  4 ++
- 4 files changed, 102 insertions(+), 86 deletions(-)
+ arch/x86/include/asm/orc_types.h       |  13 ---
+ arch/x86/include/asm/unwind_hints.h    |  44 ++--------
+ include/linux/frame.h                  |  83 +++++++++++++++++-
+ tools/arch/x86/include/asm/orc_types.h |  13 ---
+ tools/include/linux/frame.h            | 114 +++++++++++++++++++++++++
+ tools/objtool/arch.h                   |   5 +-
+ tools/objtool/arch/x86/decode.c        |  54 ++++++++++++
+ tools/objtool/cfi.h                    |   3 +-
+ tools/objtool/check.c                  |  59 +++----------
+ tools/objtool/orc_gen.c                |   4 +-
+ tools/objtool/sync-check.sh            |   4 +-
+ 11 files changed, 275 insertions(+), 121 deletions(-)
+ create mode 100644 tools/include/linux/frame.h
 
-diff --git a/tools/objtool/arch/x86/arch_special.c b/tools/objtool/arch/x86/arch_special.c
-index 4931ad1a0ab5..fa4571c8ae5d 100644
---- a/tools/objtool/arch/x86/arch_special.c
-+++ b/tools/objtool/arch/x86/arch_special.c
-@@ -1,4 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
-+#include <string.h>
+diff --git a/arch/x86/include/asm/orc_types.h b/arch/x86/include/asm/orc_types.h
+index d25534940bde..00408d30b13e 100644
+--- a/arch/x86/include/asm/orc_types.h
++++ b/arch/x86/include/asm/orc_types.h
+@@ -78,19 +78,6 @@ struct orc_entry {
+ 	unsigned	end:1;
+ } __packed;
+
+-/*
+- * This struct is used by asm and inline asm code to manually annotate the
+- * location of registers on the stack for the ORC unwinder.
+- *
+- * Type can be either ORC_TYPE_* or UNWIND_HINT_TYPE_*.
+- */
+-struct unwind_hint {
+-	u32		ip;
+-	s16		sp_offset;
+-	u8		sp_reg;
+-	u8		type;
+-	u8		end;
+-};
+ #endif /* __ASSEMBLY__ */
+
+ #endif /* _ORC_TYPES_H */
+diff --git a/arch/x86/include/asm/unwind_hints.h b/arch/x86/include/asm/unwind_hints.h
+index 7d903fdb3f43..e81a18bb114f 100644
+--- a/arch/x86/include/asm/unwind_hints.h
++++ b/arch/x86/include/asm/unwind_hints.h
+@@ -1,48 +1,14 @@
+ #ifndef _ASM_X86_UNWIND_HINTS_H
+ #define _ASM_X86_UNWIND_HINTS_H
+
++#include <linux/frame.h>
 +
- #include "../../special.h"
- #include "../../builtin.h"
- 
-@@ -48,3 +50,96 @@ bool arch_support_alt_relocation(struct special_alt *special_alt,
- 	return insn->offset == special_alt->new_off &&
- 	       (insn->type == INSN_CALL || is_static_jump(insn));
- }
+ #include "orc_types.h"
+
+ #ifdef __ASSEMBLY__
+
+-/*
+- * In asm, there are two kinds of code: normal C-type callable functions and
+- * the rest.  The normal callable functions can be called by other code, and
+- * don't do anything unusual with the stack.  Such normal callable functions
+- * are annotated with the ENTRY/ENDPROC macros.  Most asm code falls in this
+- * category.  In this case, no special debugging annotations are needed because
+- * objtool can automatically generate the ORC data for the ORC unwinder to read
+- * at runtime.
+- *
+- * Anything which doesn't fall into the above category, such as syscall and
+- * interrupt handlers, tends to not be called directly by other functions, and
+- * often does unusual non-C-function-type things with the stack pointer.  Such
+- * code needs to be annotated such that objtool can understand it.  The
+- * following CFI hint macros are for this type of code.
+- *
+- * These macros provide hints to objtool about the state of the stack at each
+- * instruction.  Objtool starts from the hints and follows the code flow,
+- * making automatic CFI adjustments when it sees pushes and pops, filling out
+- * the debuginfo as necessary.  It will also warn if it sees any
+- * inconsistencies.
+- */
+-.macro UNWIND_HINT sp_reg=ORC_REG_SP sp_offset=0 type=ORC_TYPE_CALL end=0
+-#ifdef CONFIG_STACK_VALIDATION
+-.Lunwind_hint_ip_\@:
+-	.pushsection .discard.unwind_hints
+-		/* struct unwind_hint */
+-		.long .Lunwind_hint_ip_\@ - .
+-		.short \sp_offset
+-		.byte \sp_reg
+-		.byte \type
+-		.byte \end
+-		.balign 4
+-	.popsection
+-#endif
+-.endm
+-
+ .macro UNWIND_HINT_EMPTY
+-	UNWIND_HINT sp_reg=ORC_REG_UNDEFINED end=1
++	UNWIND_HINT sp_reg=ORC_REG_UNDEFINED type=ORC_TYPE_CALL end=1
+ .endm
+
+ .macro UNWIND_HINT_REGS base=%rsp offset=0 indirect=0 extra=1 iret=0
+@@ -83,7 +49,7 @@
+ .endm
+
+ .macro UNWIND_HINT_FUNC sp_offset=8
+-	UNWIND_HINT sp_offset=\sp_offset
++	UNWIND_HINT sp_reg=ORC_REG_SP sp_offset=\sp_offset type=ORC_TYPE_CALL
+ .endm
+
+ /*
+@@ -92,7 +58,7 @@
+  * initial_func_cfi.
+  */
+ .macro UNWIND_HINT_RET_OFFSET sp_offset=8
+-	UNWIND_HINT type=UNWIND_HINT_TYPE_RET_OFFSET sp_offset=\sp_offset
++	UNWIND_HINT sp_reg=ORC_REG_SP type=UNWIND_HINT_TYPE_RET_OFFSET sp_offset=\sp_offset
+ .endm
+
+ #endif /* __ASSEMBLY__ */
+diff --git a/include/linux/frame.h b/include/linux/frame.h
+index 303cda600e56..9a41292453eb 100644
+--- a/include/linux/frame.h
++++ b/include/linux/frame.h
+@@ -2,7 +2,36 @@
+ #ifndef _LINUX_FRAME_H
+ #define _LINUX_FRAME_H
+
++#ifndef __ASSEMBLY__
++
++#include <linux/types.h>
 +
 +/*
-+ * There are 3 basic jump table patterns:
-+ *
-+ * 1. jmpq *[rodata addr](,%reg,8)
-+ *
-+ *    This is the most common case by far.  It jumps to an address in a simple
-+ *    jump table which is stored in .rodata.
-+ *
-+ * 2. jmpq *[rodata addr](%rip)
-+ *
-+ *    This is caused by a rare GCC quirk, currently only seen in three driver
-+ *    functions in the kernel, only with certain obscure non-distro configs.
-+ *
-+ *    As part of an optimization, GCC makes a copy of an existing switch jump
-+ *    table, modifies it, and then hard-codes the jump (albeit with an indirect
-+ *    jump) to use a single entry in the table.  The rest of the jump table and
-+ *    some of its jump targets remain as dead code.
-+ *
-+ *    In such a case we can just crudely ignore all unreachable instruction
-+ *    warnings for the entire object file.  Ideally we would just ignore them
-+ *    for the function, but that would require redesigning the code quite a
-+ *    bit.  And honestly that's just not worth doing: unreachable instruction
-+ *    warnings are of questionable value anyway, and this is such a rare issue.
-+ *
-+ * 3. mov [rodata addr],%reg1
-+ *    ... some instructions ...
-+ *    jmpq *(%reg1,%reg2,8)
-+ *
-+ *    This is a fairly uncommon pattern which is new for GCC 6.  As of this
-+ *    writing, there are 11 occurrences of it in the allmodconfig kernel.
-+ *
-+ *    As of GCC 7 there are quite a few more of these and the 'in between' code
-+ *    is significant. Esp. with KASAN enabled some of the code between the mov
-+ *    and jmpq uses .rodata itself, which can confuse things.
-+ *
-+ *    TODO: Once we have DWARF CFI and smarter instruction decoding logic,
-+ *    ensure the same register is used in the mov and jump instructions.
-+ *
-+ *    NOTE: RETPOLINE made it harder still to decode dynamic jumps.
++ * This struct is used by asm and inline asm code to manually annotate the
++ * location of registers on the stack.
 + */
-+struct rela *arch_find_switch_table(struct objtool_file *file,
-+				    struct instruction *insn)
++struct unwind_hint {
++	u32		ip;
++	s16		sp_offset;
++	u8		sp_reg;
++	u8		type;
++	u8		end;
++};
++
+ #ifdef CONFIG_STACK_VALIDATION
++
++#define UNWIND_HINT(sp_reg, sp_offset, type, end)		\
++	"987: \n\t"						\
++	".pushsection .discard.unwind_hints\n\t"		\
++	/* struct unwind_hint */				\
++	".long 987b - .\n\t"					\
++	".short " __stringify(sp_offset) "\n\t"			\
++	".byte " __stringify(sp_reg) "\n\t"			\
++	".byte " __stringify(type) "\n\t"			\
++	".byte " __stringify(end) "\n\t"			\
++	".balign 4 \n\t"					\
++	".popsection\n\t"
++
+ /*
+  * This macro marks the given function's stack frame as "non-standard", which
+  * tells objtool to ignore the function when doing stack metadata validation.
+@@ -15,6 +44,18 @@
+ 	static void __used __section(.discard.func_stack_frame_non_standard) \
+ 		*__func_stack_frame_non_standard_##func = func
+
++#else /* !CONFIG_STACK_VALIDATION */
++
++#define UNWIND_HINT(sp_reg, sp_offset, type, end)	\
++	"\n\t"
++
++#define STACK_FRAME_NON_STANDARD(func)
++
++#endif /* CONFIG_STACK_VALIDATION */
++
++#else /* __ASSEMBLY__ */
++
++#ifdef CONFIG_STACK_VALIDATION
+ /*
+  * This macro indicates that the following intra-function call is valid.
+  * Any non-annotated intra-function call will cause objtool to issue a warning.
+@@ -25,11 +66,49 @@
+ 	.long 999b;						\
+ 	.popsection;
+
++/*
++ * In asm, there are two kinds of code: normal C-type callable functions and
++ * the rest.  The normal callable functions can be called by other code, and
++ * don't do anything unusual with the stack.  Such normal callable functions
++ * are annotated with the ENTRY/ENDPROC macros.  Most asm code falls in this
++ * category.  In this case, no special debugging annotations are needed because
++ * objtool can automatically generate the ORC data for the ORC unwinder to read
++ * at runtime.
++ *
++ * Anything which doesn't fall into the above category, such as syscall and
++ * interrupt handlers, tends to not be called directly by other functions, and
++ * often does unusual non-C-function-type things with the stack pointer.  Such
++ * code needs to be annotated such that objtool can understand it.  The
++ * following CFI hint macros are for this type of code.
++ *
++ * These macros provide hints to objtool about the state of the stack at each
++ * instruction.  Objtool starts from the hints and follows the code flow,
++ * making automatic CFI adjustments when it sees pushes and pops, filling out
++ * the debuginfo as necessary.  It will also warn if it sees any
++ * inconsistencies.
++ */
++.macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
++.Lunwind_hint_ip_\@:
++	.pushsection .discard.unwind_hints
++		/* struct unwind_hint */
++		.long .Lunwind_hint_ip_\@ - .
++		.short \sp_offset
++		.byte \sp_reg
++		.byte \type
++		.byte \end
++		.balign 4
++	.popsection
++.endm
++
+ #else /* !CONFIG_STACK_VALIDATION */
+
+-#define STACK_FRAME_NON_STANDARD(func)
+ #define ANNOTATE_INTRA_FUNCTION_CALL
+
+-#endif /* CONFIG_STACK_VALIDATION */
++.macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
++.endm
++
++#endif
++
++#endif /* __ASSEMBLY__ */
+
+ #endif /* _LINUX_FRAME_H */
+diff --git a/tools/arch/x86/include/asm/orc_types.h b/tools/arch/x86/include/asm/orc_types.h
+index d25534940bde..00408d30b13e 100644
+--- a/tools/arch/x86/include/asm/orc_types.h
++++ b/tools/arch/x86/include/asm/orc_types.h
+@@ -78,19 +78,6 @@ struct orc_entry {
+ 	unsigned	end:1;
+ } __packed;
+
+-/*
+- * This struct is used by asm and inline asm code to manually annotate the
+- * location of registers on the stack for the ORC unwinder.
+- *
+- * Type can be either ORC_TYPE_* or UNWIND_HINT_TYPE_*.
+- */
+-struct unwind_hint {
+-	u32		ip;
+-	s16		sp_offset;
+-	u8		sp_reg;
+-	u8		type;
+-	u8		end;
+-};
+ #endif /* __ASSEMBLY__ */
+
+ #endif /* _ORC_TYPES_H */
+diff --git a/tools/include/linux/frame.h b/tools/include/linux/frame.h
+new file mode 100644
+index 000000000000..9a41292453eb
+--- /dev/null
++++ b/tools/include/linux/frame.h
+@@ -0,0 +1,114 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_FRAME_H
++#define _LINUX_FRAME_H
++
++#ifndef __ASSEMBLY__
++
++#include <linux/types.h>
++
++/*
++ * This struct is used by asm and inline asm code to manually annotate the
++ * location of registers on the stack.
++ */
++struct unwind_hint {
++	u32		ip;
++	s16		sp_offset;
++	u8		sp_reg;
++	u8		type;
++	u8		end;
++};
++
++#ifdef CONFIG_STACK_VALIDATION
++
++#define UNWIND_HINT(sp_reg, sp_offset, type, end)		\
++	"987: \n\t"						\
++	".pushsection .discard.unwind_hints\n\t"		\
++	/* struct unwind_hint */				\
++	".long 987b - .\n\t"					\
++	".short " __stringify(sp_offset) "\n\t"			\
++	".byte " __stringify(sp_reg) "\n\t"			\
++	".byte " __stringify(type) "\n\t"			\
++	".byte " __stringify(end) "\n\t"			\
++	".balign 4 \n\t"					\
++	".popsection\n\t"
++
++/*
++ * This macro marks the given function's stack frame as "non-standard", which
++ * tells objtool to ignore the function when doing stack metadata validation.
++ * It should only be used in special cases where you're 100% sure it won't
++ * affect the reliability of frame pointers and kernel stack traces.
++ *
++ * For more information, see tools/objtool/Documentation/stack-validation.txt.
++ */
++#define STACK_FRAME_NON_STANDARD(func) \
++	static void __used __section(.discard.func_stack_frame_non_standard) \
++		*__func_stack_frame_non_standard_##func = func
++
++#else /* !CONFIG_STACK_VALIDATION */
++
++#define UNWIND_HINT(sp_reg, sp_offset, type, end)	\
++	"\n\t"
++
++#define STACK_FRAME_NON_STANDARD(func)
++
++#endif /* CONFIG_STACK_VALIDATION */
++
++#else /* __ASSEMBLY__ */
++
++#ifdef CONFIG_STACK_VALIDATION
++/*
++ * This macro indicates that the following intra-function call is valid.
++ * Any non-annotated intra-function call will cause objtool to issue a warning.
++ */
++#define ANNOTATE_INTRA_FUNCTION_CALL				\
++	999:							\
++	.pushsection .discard.intra_function_calls;		\
++	.long 999b;						\
++	.popsection;
++
++/*
++ * In asm, there are two kinds of code: normal C-type callable functions and
++ * the rest.  The normal callable functions can be called by other code, and
++ * don't do anything unusual with the stack.  Such normal callable functions
++ * are annotated with the ENTRY/ENDPROC macros.  Most asm code falls in this
++ * category.  In this case, no special debugging annotations are needed because
++ * objtool can automatically generate the ORC data for the ORC unwinder to read
++ * at runtime.
++ *
++ * Anything which doesn't fall into the above category, such as syscall and
++ * interrupt handlers, tends to not be called directly by other functions, and
++ * often does unusual non-C-function-type things with the stack pointer.  Such
++ * code needs to be annotated such that objtool can understand it.  The
++ * following CFI hint macros are for this type of code.
++ *
++ * These macros provide hints to objtool about the state of the stack at each
++ * instruction.  Objtool starts from the hints and follows the code flow,
++ * making automatic CFI adjustments when it sees pushes and pops, filling out
++ * the debuginfo as necessary.  It will also warn if it sees any
++ * inconsistencies.
++ */
++.macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
++.Lunwind_hint_ip_\@:
++	.pushsection .discard.unwind_hints
++		/* struct unwind_hint */
++		.long .Lunwind_hint_ip_\@ - .
++		.short \sp_offset
++		.byte \sp_reg
++		.byte \type
++		.byte \end
++		.balign 4
++	.popsection
++.endm
++
++#else /* !CONFIG_STACK_VALIDATION */
++
++#define ANNOTATE_INTRA_FUNCTION_CALL
++
++.macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
++.endm
++
++#endif
++
++#endif /* __ASSEMBLY__ */
++
++#endif /* _LINUX_FRAME_H */
+diff --git a/tools/objtool/arch.h b/tools/objtool/arch.h
+index eda15a5a285e..b7b8081a8117 100644
+--- a/tools/objtool/arch.h
++++ b/tools/objtool/arch.h
+@@ -7,12 +7,11 @@
+ #define _ARCH_H
+
+ #include <stdbool.h>
++#include <linux/frame.h>
+ #include <linux/list.h>
+ #include "objtool.h"
+ #include "cfi.h"
+
+-#include <asm/orc_types.h>
+-
+ enum insn_type {
+ 	INSN_JUMP_CONDITIONAL,
+ 	INSN_JUMP_UNCONDITIONAL,
+@@ -84,4 +83,6 @@ unsigned long arch_jump_destination(struct instruction *insn);
+
+ unsigned long arch_dest_rela_offset(int addend);
+
++int arch_decode_insn_hint(struct instruction *insn, struct unwind_hint *hint);
++
+ #endif /* _ARCH_H */
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index 4b504fc90bbb..bf1fb2354423 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -6,6 +6,8 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+
++#include <linux/frame.h>
++
+ #define unlikely(cond) (cond)
+ #include <asm/insn.h>
+ #include "../../../arch/x86/lib/inat.c"
+@@ -15,6 +17,7 @@
+ #include "../../elf.h"
+ #include "../../arch.h"
+ #include "../../warn.h"
++#include <asm/orc_types.h>
+
+ static unsigned char op_to_cfi_reg[][2] = {
+ 	{CFI_AX, CFI_R8},
+@@ -565,3 +568,54 @@ void arch_initial_func_cfi_state(struct cfi_init_state *state)
+ 	state->regs[16].base = CFI_CFA;
+ 	state->regs[16].offset = -8;
+ }
++
++int arch_decode_insn_hint(struct instruction *insn, struct unwind_hint *hint)
 +{
-+	struct rela *text_rela, *rodata_rela;
-+	struct section *table_sec;
-+	unsigned long table_offset;
++	struct cfi_reg *cfa = &insn->cfi.cfa;
 +
-+	/* look for a relocation which references .rodata */
-+	text_rela = find_rela_by_dest_range(file->elf, insn->sec,
-+					    insn->offset, insn->len);
-+	if (!text_rela || text_rela->sym->type != STT_SECTION ||
-+	    !text_rela->sym->sec->rodata)
-+		return NULL;
++	if (hint->type == UNWIND_HINT_TYPE_RET_OFFSET) {
++		insn->ret_offset = hint->sp_offset;
++		return 0;
++	}
 +
-+	table_offset = text_rela->addend;
-+	table_sec = text_rela->sym->sec;
++	insn->hint = true;
 +
-+	if (text_rela->type == R_X86_64_PC32)
-+		table_offset += 4;
++	switch (hint->sp_reg) {
++	case ORC_REG_UNDEFINED:
++		cfa->base = CFI_UNDEFINED;
++		break;
++	case ORC_REG_SP:
++		cfa->base = CFI_SP;
++		break;
++	case ORC_REG_BP:
++		cfa->base = CFI_BP;
++		break;
++	case ORC_REG_SP_INDIRECT:
++		cfa->base = CFI_SP_INDIRECT;
++		break;
++	case ORC_REG_R10:
++		cfa->base = CFI_R10;
++		break;
++	case ORC_REG_R13:
++		cfa->base = CFI_R13;
++		break;
++	case ORC_REG_DI:
++		cfa->base = CFI_DI;
++		break;
++	case ORC_REG_DX:
++		cfa->base = CFI_DX;
++		break;
++	default:
++		WARN_FUNC("unsupported unwind_hint sp base reg %d",
++			  insn->sec, insn->offset, hint->sp_reg);
++		return -1;
++	}
 +
-+	/*
-+	 * Make sure the .rodata address isn't associated with a
-+	 * symbol.  GCC jump tables are anonymous data.
-+	 *
-+	 * Also support C jump tables which are in the same format as
-+	 * switch jump tables.  For objtool to recognize them, they
-+	 * need to be placed in the C_JUMP_TABLE_SECTION section.  They
-+	 * have symbols associated with them.
-+	 */
-+	if (find_symbol_containing(table_sec, table_offset) &&
-+	    strcmp(table_sec->name, C_JUMP_TABLE_SECTION))
-+		return NULL;
++	cfa->offset = hint->sp_offset;
++	insn->cfi.hint_type = hint->type;
++	insn->cfi.end = hint->end;
 +
-+	/*
-+	 * Each table entry has a rela associated with it.  The rela
-+	 * should reference text in the same function as the original
-+	 * instruction.
-+	 */
-+	rodata_rela = find_rela_by_dest(file->elf, table_sec, table_offset);
-+	if (!rodata_rela)
-+		return NULL;
++	insn->cfi.sp_only = hint->type == ORC_TYPE_REGS || hint->type == ORC_TYPE_REGS_IRET;
 +
-+	/*
-+	 * Use of RIP-relative switch jumps is quite rare, and
-+	 * indicates a rare GCC quirk/bug which can leave dead
-+	 * code behind.
-+	 */
-+	if (text_rela->type == R_X86_64_PC32)
-+		file->ignore_unreachables = true;
-+
-+	return rodata_rela;
++	return 0;
 +}
+diff --git a/tools/objtool/cfi.h b/tools/objtool/cfi.h
+index c7c59c6a44ee..f5aeca023133 100644
+--- a/tools/objtool/cfi.h
++++ b/tools/objtool/cfi.h
+@@ -29,10 +29,11 @@ struct cfi_state {
+ 	struct cfi_reg cfa;
+ 	int stack_size;
+ 	int drap_reg, drap_offset;
+-	unsigned char type;
++	unsigned char hint_type;
+ 	bool bp_scratch;
+ 	bool drap;
+ 	bool end;
++	bool sp_only;
+ };
+
+ #endif /* _OBJTOOL_CFI_H */
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 738bfd458595..444688264c39 100644
+index 444688264c39..1de4224a7fe2 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -18,8 +18,6 @@
- 
- #define FAKE_JUMP_OFFSET -1
- 
--#define C_JUMP_TABLE_SECTION ".rodata..c_jump_table"
+@@ -13,6 +13,7 @@
+ #include "special.h"
+ #include "warn.h"
+
++#include <linux/frame.h>
+ #include <linux/hashtable.h>
+ #include <linux/kernel.h>
+
+@@ -1175,7 +1176,6 @@ static int read_unwind_hints(struct objtool_file *file)
+ 	struct rela *rela;
+ 	struct unwind_hint *hint;
+ 	struct instruction *insn;
+-	struct cfi_reg *cfa;
+ 	int i;
+
+ 	sec = find_section_by_name(file->elf, ".discard.unwind_hints");
+@@ -1210,49 +1210,10 @@ static int read_unwind_hints(struct objtool_file *file)
+ 			return -1;
+ 		}
+
+-		cfa = &insn->cfi.cfa;
 -
- struct alternative {
+-		if (hint->type == UNWIND_HINT_TYPE_RET_OFFSET) {
+-			insn->ret_offset = hint->sp_offset;
+-			continue;
+-		}
+-
+-		insn->hint = true;
+-
+-		switch (hint->sp_reg) {
+-		case ORC_REG_UNDEFINED:
+-			cfa->base = CFI_UNDEFINED;
+-			break;
+-		case ORC_REG_SP:
+-			cfa->base = CFI_SP;
+-			break;
+-		case ORC_REG_BP:
+-			cfa->base = CFI_BP;
+-			break;
+-		case ORC_REG_SP_INDIRECT:
+-			cfa->base = CFI_SP_INDIRECT;
+-			break;
+-		case ORC_REG_R10:
+-			cfa->base = CFI_R10;
+-			break;
+-		case ORC_REG_R13:
+-			cfa->base = CFI_R13;
+-			break;
+-		case ORC_REG_DI:
+-			cfa->base = CFI_DI;
+-			break;
+-		case ORC_REG_DX:
+-			cfa->base = CFI_DX;
+-			break;
+-		default:
+-			WARN_FUNC("unsupported unwind_hint sp base reg %d",
+-				  insn->sec, insn->offset, hint->sp_reg);
++		if (arch_decode_insn_hint(insn, hint)) {
++			WARN_FUNC("Bad unwind hint", insn->sec, insn->offset);
+ 			return -1;
+ 		}
+-
+-		cfa->offset = hint->sp_offset;
+-		insn->cfi.type = hint->type;
+-		insn->cfi.end = hint->end;
+ 	}
+
+ 	return 0;
+@@ -1529,9 +1490,9 @@ static bool has_valid_stack_frame(struct insn_state *state)
+ 	return false;
+ }
+
+-static int update_cfi_state_regs(struct instruction *insn,
+-				  struct cfi_state *cfi,
+-				  struct stack_op *op)
++static int update_sp_only_cfi_state(struct instruction *insn,
++				    struct cfi_state *cfi,
++				    struct stack_op *op)
+ {
+ 	struct cfi_reg *cfa = &cfi->cfa;
+
+@@ -1637,8 +1598,8 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
+ 		return 0;
+ 	}
+
+-	if (cfi->type == ORC_TYPE_REGS || cfi->type == ORC_TYPE_REGS_IRET)
+-		return update_cfi_state_regs(insn, cfi, op);
++	if (cfi->sp_only)
++		return update_sp_only_cfi_state(insn, cfi, op);
+
+ 	switch (op->dest.type) {
+
+@@ -2042,10 +2003,10 @@ static bool insn_cfi_match(struct instruction *insn, struct cfi_state *cfi2)
+ 			break;
+ 		}
+
+-	} else if (cfi1->type != cfi2->type) {
++	} else if (cfi1->hint_type != cfi2->hint_type) {
+
+ 		WARN_FUNC("stack state mismatch: type1=%d type2=%d",
+-			  insn->sec, insn->offset, cfi1->type, cfi2->type);
++			  insn->sec, insn->offset, cfi1->hint_type, cfi2->hint_type);
+
+ 	} else if (cfi1->drap != cfi2->drap ||
+ 		   (cfi1->drap && cfi1->drap_reg != cfi2->drap_reg) ||
+diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
+index 2c4e1974bbb5..515f93e841d5 100644
+--- a/tools/objtool/orc_gen.c
++++ b/tools/objtool/orc_gen.c
+@@ -9,6 +9,8 @@
+ #include "check.h"
+ #include "warn.h"
+
++#include <asm/orc_types.h>
++
+ struct orc_data {
  	struct list_head list;
  	struct instruction *insn;
-@@ -1044,55 +1042,14 @@ static int add_jump_table(struct objtool_file *file, struct instruction *insn,
- 
- /*
-  * find_jump_table() - Given a dynamic jump, find the switch jump table in
-- * .rodata associated with it.
-- *
-- * There are 3 basic patterns:
-- *
-- * 1. jmpq *[rodata addr](,%reg,8)
-- *
-- *    This is the most common case by far.  It jumps to an address in a simple
-- *    jump table which is stored in .rodata.
-- *
-- * 2. jmpq *[rodata addr](%rip)
-- *
-- *    This is caused by a rare GCC quirk, currently only seen in three driver
-- *    functions in the kernel, only with certain obscure non-distro configs.
-- *
-- *    As part of an optimization, GCC makes a copy of an existing switch jump
-- *    table, modifies it, and then hard-codes the jump (albeit with an indirect
-- *    jump) to use a single entry in the table.  The rest of the jump table and
-- *    some of its jump targets remain as dead code.
-- *
-- *    In such a case we can just crudely ignore all unreachable instruction
-- *    warnings for the entire object file.  Ideally we would just ignore them
-- *    for the function, but that would require redesigning the code quite a
-- *    bit.  And honestly that's just not worth doing: unreachable instruction
-- *    warnings are of questionable value anyway, and this is such a rare issue.
-- *
-- * 3. mov [rodata addr],%reg1
-- *    ... some instructions ...
-- *    jmpq *(%reg1,%reg2,8)
-- *
-- *    This is a fairly uncommon pattern which is new for GCC 6.  As of this
-- *    writing, there are 11 occurrences of it in the allmodconfig kernel.
-- *
-- *    As of GCC 7 there are quite a few more of these and the 'in between' code
-- *    is significant. Esp. with KASAN enabled some of the code between the mov
-- *    and jmpq uses .rodata itself, which can confuse things.
-- *
-- *    TODO: Once we have DWARF CFI and smarter instruction decoding logic,
-- *    ensure the same register is used in the mov and jump instructions.
-- *
-- *    NOTE: RETPOLINE made it harder still to decode dynamic jumps.
-+ * associated with it.
-  */
- static struct rela *find_jump_table(struct objtool_file *file,
- 				      struct symbol *func,
- 				      struct instruction *insn)
- {
--	struct rela *text_rela, *table_rela;
-+	struct rela *table_rela;
- 	struct instruction *dest_insn, *orig_insn = insn;
--	struct section *table_sec;
--	unsigned long table_offset;
- 
- 	/*
- 	 * Backward search using the @first_jump_src links, these help avoid
-@@ -1113,52 +1070,13 @@ static struct rela *find_jump_table(struct objtool_file *file,
- 		     insn->jump_dest->offset > orig_insn->offset))
- 		    break;
- 
--		/* look for a relocation which references .rodata */
--		text_rela = find_rela_by_dest_range(file->elf, insn->sec,
--						    insn->offset, insn->len);
--		if (!text_rela || text_rela->sym->type != STT_SECTION ||
--		    !text_rela->sym->sec->rodata)
--			continue;
--
--		table_offset = text_rela->addend;
--		table_sec = text_rela->sym->sec;
--
--		if (text_rela->type == R_X86_64_PC32)
--			table_offset += 4;
--
--		/*
--		 * Make sure the .rodata address isn't associated with a
--		 * symbol.  GCC jump tables are anonymous data.
--		 *
--		 * Also support C jump tables which are in the same format as
--		 * switch jump tables.  For objtool to recognize them, they
--		 * need to be placed in the C_JUMP_TABLE_SECTION section.  They
--		 * have symbols associated with them.
--		 */
--		if (find_symbol_containing(table_sec, table_offset) &&
--		    strcmp(table_sec->name, C_JUMP_TABLE_SECTION))
--			continue;
--
--		/*
--		 * Each table entry has a rela associated with it.  The rela
--		 * should reference text in the same function as the original
--		 * instruction.
--		 */
--		table_rela = find_rela_by_dest(file->elf, table_sec, table_offset);
-+		table_rela = arch_find_switch_table(file, insn);
- 		if (!table_rela)
- 			continue;
- 		dest_insn = find_insn(file, table_rela->sym->sec, table_rela->addend);
- 		if (!dest_insn || !dest_insn->func || dest_insn->func->pfunc != func)
- 			continue;
- 
--		/*
--		 * Use of RIP-relative switch jumps is quite rare, and
--		 * indicates a rare GCC quirk/bug which can leave dead code
--		 * behind.
--		 */
--		if (text_rela->type == R_X86_64_PC32)
--			file->ignore_unreachables = true;
--
- 		return table_rela;
+@@ -92,7 +94,7 @@ int create_orc(struct objtool_file *file)
+
+ 		orc->sp_offset = cfa->offset;
+ 		orc->bp_offset = bp->offset;
+-		orc->type = insn->cfi.type;
++		orc->type = insn->cfi.hint_type;
  	}
- 
-diff --git a/tools/objtool/check.h b/tools/objtool/check.h
-index 785388cf3872..1ecf8f9125a6 100644
---- a/tools/objtool/check.h
-+++ b/tools/objtool/check.h
-@@ -62,5 +62,4 @@ struct instruction *find_insn(struct objtool_file *file,
- 			insn->sec == sec;				\
- 	     insn = list_next_entry(insn, list))
- 
--
- #endif /* _CHECK_H */
-diff --git a/tools/objtool/special.h b/tools/objtool/special.h
-index e15d52d3595d..0f35a67c93b8 100644
---- a/tools/objtool/special.h
-+++ b/tools/objtool/special.h
-@@ -10,6 +10,8 @@
- #include "check.h"
- #include "elf.h"
- 
-+#define C_JUMP_TABLE_SECTION ".rodata..c_jump_table"
+
+ 	return 0;
+diff --git a/tools/objtool/sync-check.sh b/tools/objtool/sync-check.sh
+index f01b5a4d12ac..dc14ade100aa 100755
+--- a/tools/objtool/sync-check.sh
++++ b/tools/objtool/sync-check.sh
+@@ -3,8 +3,10 @@
+
+ TARGET_ARCH=$1
+
++FILES="include/linux/frame.h"
 +
- struct special_alt {
- 	struct list_head list;
- 
-@@ -34,4 +36,6 @@ void arch_handle_alternative(unsigned short feature, struct special_alt *alt);
- bool arch_support_alt_relocation(struct special_alt *special_alt,
- 				 struct instruction *insn,
- 				 struct rela *rela);
-+struct rela *arch_find_switch_table(struct objtool_file *file,
-+				    struct instruction *insn);
- #endif /* _SPECIAL_H */
--- 
+ if [ "$TARGET_ARCH" == "x86" ]; then
+-FILES="
++FILES="$FILES
+ arch/x86/include/asm/inat_types.h
+ arch/x86/include/asm/orc_types.h
+ arch/x86/include/asm/emulate_prefix.h
+--
 2.21.1
 
