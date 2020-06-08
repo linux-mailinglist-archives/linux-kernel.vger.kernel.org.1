@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A650B1F2DF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DF31F2DF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729996AbgFIAhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:37:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33482 "EHLO mail.kernel.org"
+        id S1726874AbgFIAhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:37:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727829AbgFHXNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:13:38 -0400
+        id S1728729AbgFHXNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:13:46 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8E2C20B80;
-        Mon,  8 Jun 2020 23:13:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56C8321531;
+        Mon,  8 Jun 2020 23:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658017;
-        bh=dJ1hCS/0idj37Jg+kplr64FvDLejwmC8xrXgcbyyO7E=;
+        s=default; t=1591658025;
+        bh=8LKkSmb+vl2Qod9UjEFoRnxV0NQLj0PnYzV7F1Rt0VE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mq5w/Nzre5XkqQxl12nVgav4v+WlfgXAmgTWFb1N13JFQlUI/kDgQb0XATrPhwI/E
-         76PT9G7Rre+oCweJ46oV/vsTjJt++uEKcTG/78K3oFUWjiC30iyoKnQom6ScXzL/eX
-         n+cARVNm9tlW3x/vkQgXLhqM9KvaeB4HG2U/kGHs=
+        b=Mp2ki8QheQA4RVefEe177A8fH1b8ZRNKxUDRQiIWp+ryAJDmg6lyvML1Ed8K+DVRS
+         kNMIBqClYjYRVxHXsYl/kRLGjXKt3chydNckxLX659Lehejg3qH/IR0BS88/DA5XBd
+         gZOBp/McGKG89tWJTTeaQBwg9M8VAhwlV3XHDqA4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 071/606] RDMA/uverbs: Do not discard the IB_EVENT_DEVICE_FATAL event
-Date:   Mon,  8 Jun 2020 19:03:16 -0400
-Message-Id: <20200608231211.3363633-71-sashal@kernel.org>
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 077/606] bpf: Restrict bpf_trace_printk()'s %s usage and add %pks, %pus specifier
+Date:   Mon,  8 Jun 2020 19:03:22 -0400
+Message-Id: <20200608231211.3363633-77-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -45,114 +49,232 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit c485b19d52c4ba269dfd027945dee81755fdd530 upstream.
+commit b2a5212fb634561bb734c6356904e37f6665b955 upstream.
 
-The commit below moved all of the destruction to the disassociate step and
-cleaned up the event channel during destroy_uobj.
+Usage of plain %s conversion specifier in bpf_trace_printk() suffers from the
+very same issue as bpf_probe_read{,str}() helpers, that is, it is broken on
+archs with overlapping address ranges.
 
-However, when ib_uverbs_free_hw_resources() pushes IB_EVENT_DEVICE_FATAL
-and then immediately goes to destroy all uobjects this causes
-ib_uverbs_free_event_queue() to discard the queued event if userspace
-hasn't already read() it.
+While the helpers have been addressed through work in 6ae08ae3dea2 ("bpf: Add
+probe_read_{user, kernel} and probe_read_{user, kernel}_str helpers"), we need
+an option for bpf_trace_printk() as well to fix it.
 
-Unlike all other event queues async FD needs to defer the
-ib_uverbs_free_event_queue() until FD release. This still unregisters the
-handler from the IB device during disassociation.
+Similarly as with the helpers, force users to make an explicit choice by adding
+%pks and %pus specifier to bpf_trace_printk() which will then pick the corresponding
+strncpy_from_unsafe*() variant to perform the access under KERNEL_DS or USER_DS.
+The %pk* (kernel specifier) and %pu* (user specifier) can later also be extended
+for other objects aside strings that are probed and printed under tracing, and
+reused out of other facilities like bpf_seq_printf() or BTF based type printing.
 
-Fixes: 3e032c0e92aa ("RDMA/core: Make ib_uverbs_async_event_file into a uobject")
-Link: https://lore.kernel.org/r/20200507063348.98713-2-leon@kernel.org
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Existing behavior of %s for current users is still kept working for archs where it
+is not broken and therefore gated through CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
+For archs not having this property we fall-back to pick probing under KERNEL_DS as
+a sensible default.
+
+Fixes: 8d3b7dce8622 ("bpf: add support for %s specifier to bpf_trace_printk()")
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Brendan Gregg <brendan.d.gregg@gmail.com>
+Link: https://lore.kernel.org/bpf/20200515101118.6508-4-daniel@iogearbox.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/core/rdma_core.c           |  3 ++-
- drivers/infiniband/core/uverbs.h              |  1 +
- drivers/infiniband/core/uverbs_main.c         |  2 +-
- .../core/uverbs_std_types_async_fd.c          | 26 ++++++++++++++++++-
- 4 files changed, 29 insertions(+), 3 deletions(-)
+ Documentation/core-api/printk-formats.rst | 14 ++++
+ kernel/trace/bpf_trace.c                  | 94 +++++++++++++++--------
+ lib/vsprintf.c                            | 12 +++
+ 3 files changed, 88 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-index 177333d8bcda..bf8e149d3191 100644
---- a/drivers/infiniband/core/rdma_core.c
-+++ b/drivers/infiniband/core/rdma_core.c
-@@ -459,7 +459,8 @@ alloc_begin_fd_uobject(const struct uverbs_api_object *obj,
- 	struct ib_uobject *uobj;
- 	struct file *filp;
+diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
+index 8ebe46b1af39..5dfcc4592b23 100644
+--- a/Documentation/core-api/printk-formats.rst
++++ b/Documentation/core-api/printk-formats.rst
+@@ -112,6 +112,20 @@ used when printing stack backtraces. The specifier takes into
+ consideration the effect of compiler optimisations which may occur
+ when tail-calls are used and marked with the noreturn GCC attribute.
  
--	if (WARN_ON(fd_type->fops->release != &uverbs_uobject_fd_release))
-+	if (WARN_ON(fd_type->fops->release != &uverbs_uobject_fd_release &&
-+		    fd_type->fops->release != &uverbs_async_event_release))
- 		return ERR_PTR(-EINVAL);
- 
- 	new_fd = get_unused_fd_flags(O_CLOEXEC);
-diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
-index 7df71983212d..2673cb1cd655 100644
---- a/drivers/infiniband/core/uverbs.h
-+++ b/drivers/infiniband/core/uverbs.h
-@@ -219,6 +219,7 @@ void ib_uverbs_init_event_queue(struct ib_uverbs_event_queue *ev_queue);
- void ib_uverbs_init_async_event_file(struct ib_uverbs_async_event_file *ev_file);
- void ib_uverbs_free_event_queue(struct ib_uverbs_event_queue *event_queue);
- void ib_uverbs_flow_resources_free(struct ib_uflow_resources *uflow_res);
-+int uverbs_async_event_release(struct inode *inode, struct file *filp);
- 
- int ib_alloc_ucontext(struct uverbs_attr_bundle *attrs);
- int ib_init_ucontext(struct uverbs_attr_bundle *attrs);
-diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index 17fc25db0311..cb5b59123d8f 100644
---- a/drivers/infiniband/core/uverbs_main.c
-+++ b/drivers/infiniband/core/uverbs_main.c
-@@ -346,7 +346,7 @@ const struct file_operations uverbs_async_event_fops = {
- 	.owner	 = THIS_MODULE,
- 	.read	 = ib_uverbs_async_event_read,
- 	.poll    = ib_uverbs_async_event_poll,
--	.release = uverbs_uobject_fd_release,
-+	.release = uverbs_async_event_release,
- 	.fasync  = ib_uverbs_async_event_fasync,
- 	.llseek	 = no_llseek,
- };
-diff --git a/drivers/infiniband/core/uverbs_std_types_async_fd.c b/drivers/infiniband/core/uverbs_std_types_async_fd.c
-index 82ec0806b34b..462deb506b16 100644
---- a/drivers/infiniband/core/uverbs_std_types_async_fd.c
-+++ b/drivers/infiniband/core/uverbs_std_types_async_fd.c
-@@ -26,10 +26,34 @@ static int uverbs_async_event_destroy_uobj(struct ib_uobject *uobj,
- 		container_of(uobj, struct ib_uverbs_async_event_file, uobj);
- 
- 	ib_unregister_event_handler(&event_file->event_handler);
--	ib_uverbs_free_event_queue(&event_file->ev_queue);
- 	return 0;
- }
- 
-+int uverbs_async_event_release(struct inode *inode, struct file *filp)
-+{
-+	struct ib_uverbs_async_event_file *event_file;
-+	struct ib_uobject *uobj = filp->private_data;
-+	int ret;
++Probed Pointers from BPF / tracing
++----------------------------------
 +
-+	if (!uobj)
-+		return uverbs_uobject_fd_release(inode, filp);
++::
 +
-+	event_file =
-+		container_of(uobj, struct ib_uverbs_async_event_file, uobj);
++	%pks	kernel string
++	%pus	user string
 +
-+	/*
-+	 * The async event FD has to deliver IB_EVENT_DEVICE_FATAL even after
-+	 * disassociation, so cleaning the event list must only happen after
-+	 * release. The user knows it has reached the end of the event stream
-+	 * when it sees IB_EVENT_DEVICE_FATAL.
-+	 */
-+	uverbs_uobject_get(uobj);
-+	ret = uverbs_uobject_fd_release(inode, filp);
-+	ib_uverbs_free_event_queue(&event_file->ev_queue);
-+	uverbs_uobject_put(uobj);
-+	return ret;
-+}
++The ``k`` and ``u`` specifiers are used for printing prior probed memory from
++either kernel memory (k) or user memory (u). The subsequent ``s`` specifier
++results in printing a string. For direct use in regular vsnprintf() the (k)
++and (u) annotation is ignored, however, when used out of BPF's bpf_trace_printk(),
++for example, it reads the memory it is pointing to without faulting.
 +
- DECLARE_UVERBS_NAMED_METHOD(
- 	UVERBS_METHOD_ASYNC_EVENT_ALLOC,
- 	UVERBS_ATTR_FD(UVERBS_ATTR_ASYNC_EVENT_ALLOC_FD_HANDLE,
+ Kernel Pointers
+ ---------------
+ 
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 68250d433bd7..b899a2d7e900 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -325,17 +325,15 @@ static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
+ 
+ /*
+  * Only limited trace_printk() conversion specifiers allowed:
+- * %d %i %u %x %ld %li %lu %lx %lld %lli %llu %llx %p %s
++ * %d %i %u %x %ld %li %lu %lx %lld %lli %llu %llx %p %pks %pus %s
+  */
+ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
+ 	   u64, arg2, u64, arg3)
+ {
++	int i, mod[3] = {}, fmt_cnt = 0;
++	char buf[64], fmt_ptype;
++	void *unsafe_ptr = NULL;
+ 	bool str_seen = false;
+-	int mod[3] = {};
+-	int fmt_cnt = 0;
+-	u64 unsafe_addr;
+-	char buf[64];
+-	int i;
+ 
+ 	/*
+ 	 * bpf_check()->check_func_arg()->check_stack_boundary()
+@@ -361,40 +359,71 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
+ 		if (fmt[i] == 'l') {
+ 			mod[fmt_cnt]++;
+ 			i++;
+-		} else if (fmt[i] == 'p' || fmt[i] == 's') {
++		} else if (fmt[i] == 'p') {
+ 			mod[fmt_cnt]++;
++			if ((fmt[i + 1] == 'k' ||
++			     fmt[i + 1] == 'u') &&
++			    fmt[i + 2] == 's') {
++				fmt_ptype = fmt[i + 1];
++				i += 2;
++				goto fmt_str;
++			}
++
+ 			/* disallow any further format extensions */
+ 			if (fmt[i + 1] != 0 &&
+ 			    !isspace(fmt[i + 1]) &&
+ 			    !ispunct(fmt[i + 1]))
+ 				return -EINVAL;
+-			fmt_cnt++;
+-			if (fmt[i] == 's') {
+-				if (str_seen)
+-					/* allow only one '%s' per fmt string */
+-					return -EINVAL;
+-				str_seen = true;
+-
+-				switch (fmt_cnt) {
+-				case 1:
+-					unsafe_addr = arg1;
+-					arg1 = (long) buf;
+-					break;
+-				case 2:
+-					unsafe_addr = arg2;
+-					arg2 = (long) buf;
+-					break;
+-				case 3:
+-					unsafe_addr = arg3;
+-					arg3 = (long) buf;
+-					break;
+-				}
+-				buf[0] = 0;
+-				strncpy_from_unsafe(buf,
+-						    (void *) (long) unsafe_addr,
++
++			goto fmt_next;
++		} else if (fmt[i] == 's') {
++			mod[fmt_cnt]++;
++			fmt_ptype = fmt[i];
++fmt_str:
++			if (str_seen)
++				/* allow only one '%s' per fmt string */
++				return -EINVAL;
++			str_seen = true;
++
++			if (fmt[i + 1] != 0 &&
++			    !isspace(fmt[i + 1]) &&
++			    !ispunct(fmt[i + 1]))
++				return -EINVAL;
++
++			switch (fmt_cnt) {
++			case 0:
++				unsafe_ptr = (void *)(long)arg1;
++				arg1 = (long)buf;
++				break;
++			case 1:
++				unsafe_ptr = (void *)(long)arg2;
++				arg2 = (long)buf;
++				break;
++			case 2:
++				unsafe_ptr = (void *)(long)arg3;
++				arg3 = (long)buf;
++				break;
++			}
++
++			buf[0] = 0;
++			switch (fmt_ptype) {
++			case 's':
++#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
++				strncpy_from_unsafe(buf, unsafe_ptr,
+ 						    sizeof(buf));
++				break;
++#endif
++			case 'k':
++				strncpy_from_unsafe_strict(buf, unsafe_ptr,
++							   sizeof(buf));
++				break;
++			case 'u':
++				strncpy_from_unsafe_user(buf,
++					(__force void __user *)unsafe_ptr,
++							 sizeof(buf));
++				break;
+ 			}
+-			continue;
++			goto fmt_next;
+ 		}
+ 
+ 		if (fmt[i] == 'l') {
+@@ -405,6 +434,7 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
+ 		if (fmt[i] != 'i' && fmt[i] != 'd' &&
+ 		    fmt[i] != 'u' && fmt[i] != 'x')
+ 			return -EINVAL;
++fmt_next:
+ 		fmt_cnt++;
+ 	}
+ 
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 7c488a1ce318..532b6606a18a 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -2168,6 +2168,10 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+  *		f full name
+  *		P node name, including a possible unit address
+  * - 'x' For printing the address. Equivalent to "%lx".
++ * - '[ku]s' For a BPF/tracing related format specifier, e.g. used out of
++ *           bpf_trace_printk() where [ku] prefix specifies either kernel (k)
++ *           or user (u) memory to probe, and:
++ *              s a string, equivalent to "%s" on direct vsnprintf() use
+  *
+  * ** When making changes please also update:
+  *	Documentation/core-api/printk-formats.rst
+@@ -2251,6 +2255,14 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
+ 		if (!IS_ERR(ptr))
+ 			break;
+ 		return err_ptr(buf, end, ptr, spec);
++	case 'u':
++	case 'k':
++		switch (fmt[1]) {
++		case 's':
++			return string(buf, end, ptr, spec);
++		default:
++			return error_string(buf, end, "(einval)", spec);
++		}
+ 	}
+ 
+ 	/* default is to _not_ leak addresses, hash before printing */
 -- 
 2.25.1
 
