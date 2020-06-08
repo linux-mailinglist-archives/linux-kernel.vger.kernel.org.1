@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B881F1865
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CF71F186A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729723AbgFHMDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 08:03:33 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:35994 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726202AbgFHMDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 08:03:32 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id CA372969A77F174BC765;
-        Mon,  8 Jun 2020 20:03:29 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 8 Jun 2020 20:03:20 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH 2/2] f2fs: remove unused parameter of f2fs_put_rpages_mapping()
-Date:   Mon, 8 Jun 2020 20:03:17 +0800
-Message-ID: <20200608120317.6716-2-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.18.0.rc1
-In-Reply-To: <20200608120317.6716-1-yuchao0@huawei.com>
-References: <20200608120317.6716-1-yuchao0@huawei.com>
+        id S1729742AbgFHMEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 08:04:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:51946 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729665AbgFHMEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 08:04:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9697B1FB;
+        Mon,  8 Jun 2020 05:04:00 -0700 (PDT)
+Received: from [10.57.9.113] (unknown [10.57.9.113])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 84C973F52E;
+        Mon,  8 Jun 2020 05:03:59 -0700 (PDT)
+Subject: Re: [PATCH] dma-pool: Fix too large DMA pools on medium systems
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        David Rientjes <rientjes@google.com>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20200608085231.8924-1-geert@linux-m68k.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <92b53a24-2f1f-2add-6bea-eeda7317520f@arm.com>
+Date:   Mon, 8 Jun 2020 13:03:54 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200608085231.8924-1-geert@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just cleanup, no logic change.
+On 2020-06-08 09:52, Geert Uytterhoeven wrote:
+> On systems with at least 32 MiB, but less than 32 GiB of RAM, the DMA
+> memory pools are much larger than intended (e.g. 2 MiB instead of 128
+> KiB on a 256 MiB system).
+> 
+> Fix this by correcting the calculation of the number of GiBs of RAM in
+> the system.
+> 
+> Fixes: 1d659236fb43c4d2 ("dma-pool: scale the default DMA coherent pool size with memory capacity")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>   kernel/dma/pool.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
+> index 35bb51c31fff370f..1c7eab2cc0498003 100644
+> --- a/kernel/dma/pool.c
+> +++ b/kernel/dma/pool.c
+> @@ -175,8 +175,8 @@ static int __init dma_atomic_pool_init(void)
+>   	 * sizes to 128KB per 1GB of memory, min 128KB, max MAX_ORDER-1.
+>   	 */
+>   	if (!atomic_pool_size) {
+> -		atomic_pool_size = max(totalram_pages() >> PAGE_SHIFT, 1UL) *
+> -					SZ_128K;
+> +		unsigned long gigs = totalram_pages() >> (30 - PAGE_SHIFT);
+> +		atomic_pool_size = max(gigs, 1UL) * SZ_128K;
+>   		atomic_pool_size = min_t(size_t, atomic_pool_size,
+>   					 1 << (PAGE_SHIFT + MAX_ORDER-1));
+>   	}
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/compress.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Nit: although this probably is right, it seems even less readable than 
+the broken version (where at least some at-a-glance 'dimensional 
+analysis' flags up "(number of pages) >> PAGE_SHIFT" as rather 
+suspicious). How about a something a little more self-explanatory, e.g.:
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index a53578a89211..1e02a8c106b0 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -89,8 +89,7 @@ static void f2fs_unlock_rpages(struct compress_ctx *cc, int len)
- 	f2fs_drop_rpages(cc, len, true);
- }
- 
--static void f2fs_put_rpages_mapping(struct compress_ctx *cc,
--				struct address_space *mapping,
-+static void f2fs_put_rpages_mapping(struct address_space *mapping,
- 				pgoff_t start, int len)
- {
- 	int i;
-@@ -942,7 +941,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
- 
- 		if (!PageUptodate(page)) {
- 			f2fs_unlock_rpages(cc, i + 1);
--			f2fs_put_rpages_mapping(cc, mapping, start_idx,
-+			f2fs_put_rpages_mapping(mapping, start_idx,
- 					cc->cluster_size);
- 			f2fs_destroy_compress_ctx(cc);
- 			goto retry;
-@@ -977,7 +976,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
- unlock_pages:
- 	f2fs_unlock_rpages(cc, i);
- release_pages:
--	f2fs_put_rpages_mapping(cc, mapping, start_idx, i);
-+	f2fs_put_rpages_mapping(mapping, start_idx, i);
- 	f2fs_destroy_compress_ctx(cc);
- 	return ret;
- }
--- 
-2.18.0.rc1
+	unsigned long pages = totalram_pages() * SZ_128K / SZ_1GB;
+	atomic_pool_size = min(pages, MAX_ORDER_NR_PAGES) << PAGE_SHIFT;
+	atomic_pool_size = max_t(size_t, atomic_pool_size, SZ_128K);
 
+?
+
+Robin.
