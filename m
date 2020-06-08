@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA101F229F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 750441F22A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728486AbgFHXJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:09:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54010 "EHLO mail.kernel.org"
+        id S1728518AbgFHXJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:09:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728197AbgFHXIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:08:36 -0400
+        id S1726992AbgFHXIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:08:45 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBD0920890;
-        Mon,  8 Jun 2020 23:08:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13A8C2085B;
+        Mon,  8 Jun 2020 23:08:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657715;
-        bh=lpX2+wur1t1gEsxx2uAp+EdCAOVN3IOjp4QxKK+GMt4=;
+        s=default; t=1591657725;
+        bh=TT+8tMvqgygFxoAAc7BZuKJHREEz6edhkE6V6E4qA9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cMFxXh4XMeVV2ADCYMblsHnOVD8Tt3lmB7/dOPaAEoubIf5/QAG8P7TH4gBlAuOVR
-         ImrkkZGr3V6b35EcXo2MhJFigkhfeiuK9OTV/aE0ds89JaFxJmWkgQj4cgRSiA/Ywh
-         yW93W5prYv0rYMiDVEJuFAaQK80MR9APcY6q8IHQ=
+        b=af7CblJ72Q4b5/8AjOe6ptfhTA2uhYvi5uJb841LlN4IvzfOkiIRs2LgTOWYYxAhX
+         QJW4lms//2dBFCVDEw3ktK1hCYaAGc2pjYIghk9LlbXqp1a+gbWU+e+aimRkmWGL3I
+         Fl2yHb0NU0HSPJvJXxZlwJgcRTkVsYCMyN4oNYkY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.7 110/274] media: imx: utils: fix media bus format enumeration
-Date:   Mon,  8 Jun 2020 19:03:23 -0400
-Message-Id: <20200608230607.3361041-110-sashal@kernel.org>
+Cc:     Paul Hsieh <paul.hsieh@amd.com>, Eric Yang <eric.yang2@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.7 117/274] drm/amd/display: dmcu wait loop calculation is incorrect in RV
+Date:   Mon,  8 Jun 2020 19:03:30 -0400
+Message-Id: <20200608230607.3361041-117-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -46,125 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Zabel <p.zabel@pengutronix.de>
+From: Paul Hsieh <paul.hsieh@amd.com>
 
-[ Upstream commit 1df2148fdfc036c9350d41ae81b09b3f8897c9b6 ]
+[ Upstream commit 7fc5c319efceaed1a23b7ef35c333553ce39fecf ]
 
-Iterate over all media bus formats, not just over the first format in
-each imx_media_pixfmt entry.
+[Why]
+Driver already get display clock from SMU base on MHz, but driver read
+again and mutiple 1000 cause wait loop value is overflow.
 
-Before:
+[How]
+remove coding error
 
-  $ v4l2-ctl -d $(media-ctl -e ipu1_csi0) --list-subdev-mbus-codes 0
-  ioctl: VIDIOC_SUBDEV_ENUM_MBUS_CODE (pad=0)
-	0x2006: MEDIA_BUS_FMT_UYVY8_2X8
-	0x2008: MEDIA_BUS_FMT_YUYV8_2X8
-	0x1008: MEDIA_BUS_FMT_RGB565_2X8_LE
-	0x100a: MEDIA_BUS_FMT_RGB888_1X24
-	0x100d: MEDIA_BUS_FMT_ARGB8888_1X32
-	0x3001: MEDIA_BUS_FMT_SBGGR8_1X8
-	0x3013: MEDIA_BUS_FMT_SGBRG8_1X8
-	0x3002: MEDIA_BUS_FMT_SGRBG8_1X8
-	0x3014: MEDIA_BUS_FMT_SRGGB8_1X8
-	0x3007: MEDIA_BUS_FMT_SBGGR10_1X10
-	0x300e: MEDIA_BUS_FMT_SGBRG10_1X10
-	0x300a: MEDIA_BUS_FMT_SGRBG10_1X10
-	0x300f: MEDIA_BUS_FMT_SRGGB10_1X10
-	0x2001: MEDIA_BUS_FMT_Y8_1X8
-	0x200a: MEDIA_BUS_FMT_Y10_1X10
-
-After:
-
-  $ v4l2-ctl -d $(media-ctl -e ipu1_csi0) --list-subdev-mbus-codes 0
-  ioctl: VIDIOC_SUBDEV_ENUM_MBUS_CODE (pad=0)
-	0x2006: MEDIA_BUS_FMT_UYVY8_2X8
-	0x200f: MEDIA_BUS_FMT_UYVY8_1X16
-	0x2008: MEDIA_BUS_FMT_YUYV8_2X8
-	0x2011: MEDIA_BUS_FMT_YUYV8_1X16
-	0x1008: MEDIA_BUS_FMT_RGB565_2X8_LE
-	0x100a: MEDIA_BUS_FMT_RGB888_1X24
-	0x100c: MEDIA_BUS_FMT_RGB888_2X12_LE
-	0x100d: MEDIA_BUS_FMT_ARGB8888_1X32
-	0x3001: MEDIA_BUS_FMT_SBGGR8_1X8
-	0x3013: MEDIA_BUS_FMT_SGBRG8_1X8
-	0x3002: MEDIA_BUS_FMT_SGRBG8_1X8
-	0x3014: MEDIA_BUS_FMT_SRGGB8_1X8
-	0x3007: MEDIA_BUS_FMT_SBGGR10_1X10
-	0x3008: MEDIA_BUS_FMT_SBGGR12_1X12
-	0x3019: MEDIA_BUS_FMT_SBGGR14_1X14
-	0x301d: MEDIA_BUS_FMT_SBGGR16_1X16
-	0x300e: MEDIA_BUS_FMT_SGBRG10_1X10
-	0x3010: MEDIA_BUS_FMT_SGBRG12_1X12
-	0x301a: MEDIA_BUS_FMT_SGBRG14_1X14
-	0x301e: MEDIA_BUS_FMT_SGBRG16_1X16
-	0x300a: MEDIA_BUS_FMT_SGRBG10_1X10
-	0x3011: MEDIA_BUS_FMT_SGRBG12_1X12
-	0x301b: MEDIA_BUS_FMT_SGRBG14_1X14
-	0x301f: MEDIA_BUS_FMT_SGRBG16_1X16
-	0x300f: MEDIA_BUS_FMT_SRGGB10_1X10
-	0x3012: MEDIA_BUS_FMT_SRGGB12_1X12
-	0x301c: MEDIA_BUS_FMT_SRGGB14_1X14
-	0x3020: MEDIA_BUS_FMT_SRGGB16_1X16
-	0x2001: MEDIA_BUS_FMT_Y8_1X8
-	0x200a: MEDIA_BUS_FMT_Y10_1X10
-	0x2013: MEDIA_BUS_FMT_Y12_1X12
-
-[laurent.pinchart@ideasonboard.com: Decrement index to replace loop counter k]
-[laurent.pinchart@ideasonboard.com: Return directly from within the loops]
-
-Fixes: e130291212df5 ("[media] media: Add i.MX media core driver")
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Paul Hsieh <paul.hsieh@amd.com>
+Reviewed-by: Eric Yang <eric.yang2@amd.com>
+Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/imx/imx-media-utils.c | 22 +++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ .../drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c   | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/staging/media/imx/imx-media-utils.c b/drivers/staging/media/imx/imx-media-utils.c
-index 39469031e510..00a71f01786c 100644
---- a/drivers/staging/media/imx/imx-media-utils.c
-+++ b/drivers/staging/media/imx/imx-media-utils.c
-@@ -269,6 +269,7 @@ static int enum_format(u32 *fourcc, u32 *code, u32 index,
- 	for (i = 0; i < ARRAY_SIZE(pixel_formats); i++) {
- 		const struct imx_media_pixfmt *fmt = &pixel_formats[i];
- 		enum codespace_sel fmt_cs_sel;
-+		unsigned int j;
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c
+index 97b7f32294fd..c320b7af7d34 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c
+@@ -97,9 +97,6 @@ int rv1_vbios_smu_set_dispclk(struct clk_mgr_internal *clk_mgr, int requested_di
+ 			VBIOSSMC_MSG_SetDispclkFreq,
+ 			requested_dispclk_khz / 1000);
  
- 		fmt_cs_sel = (fmt->cs == IPUV3_COLORSPACE_YUV) ?
- 			CS_SEL_YUV : CS_SEL_RGB;
-@@ -278,15 +279,24 @@ static int enum_format(u32 *fourcc, u32 *code, u32 index,
- 		    (!allow_bayer && fmt->bayer))
- 			continue;
- 
--		if (index == 0) {
--			if (fourcc)
--				*fourcc = fmt->fourcc;
--			if (code)
--				*code = fmt->codes[0];
-+		if (fourcc && index == 0) {
-+			*fourcc = fmt->fourcc;
- 			return 0;
- 		}
- 
--		index--;
-+		if (!code) {
-+			index--;
-+			continue;
-+		}
-+
-+		for (j = 0; j < ARRAY_SIZE(fmt->codes) && fmt->codes[j]; j++) {
-+			if (index == 0) {
-+				*code = fmt->codes[j];
-+				return 0;
-+			}
-+
-+			index--;
-+		}
- 	}
- 
- 	return -EINVAL;
+-	/* Actual dispclk set is returned in the parameter register */
+-	actual_dispclk_set_mhz = REG_READ(MP1_SMN_C2PMSG_83) * 1000;
+-
+ 	if (!IS_FPGA_MAXIMUS_DC(dc->ctx->dce_environment)) {
+ 		if (dmcu && dmcu->funcs->is_dmcu_initialized(dmcu)) {
+ 			if (clk_mgr->dfs_bypass_disp_clk != actual_dispclk_set_mhz)
 -- 
 2.25.1
 
