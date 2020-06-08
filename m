@@ -2,158 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB9F1F1AED
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 16:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 264631F1B01
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 16:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729973AbgFHOYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 10:24:32 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:56502 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729940AbgFHOY2 (ORCPT
+        id S1730013AbgFHO2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 10:28:36 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18964 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726074AbgFHO2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 10:24:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591626267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RvqpRgRgvNRWBq4GX41/PVrRgf4iheRb8T7cXZ3C5KA=;
-        b=PcdNDAnjjZTXUbVoSbAznyjlkeRjIZQi7FBXQEbBIjhvcOT/3clzSA5ty3NdxEI/7amfy7
-        Un+5+vUuRpxEXemBMVvY1pjG1hNkJrpER7JsIDD1gtPI8Tj2HxIwDZuTwubi6LSTX/azXU
-        5Yz1O9hTuj5SEwWiudS8k6HSzDQHV7I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-185-35K7qlVcMs6UGdUd9djO3Q-1; Mon, 08 Jun 2020 10:24:23 -0400
-X-MC-Unique: 35K7qlVcMs6UGdUd9djO3Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 018EF8018A7;
-        Mon,  8 Jun 2020 14:24:21 +0000 (UTC)
-Received: from starship-rhel (unknown [10.35.206.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EE2538926C;
-        Mon,  8 Jun 2020 14:24:15 +0000 (UTC)
-Message-ID: <48581807ab540690d970d499c8c311f1735b3222.camel@redhat.com>
-Subject: Re: [PATCH] x86/cpu: Reinitialize IA32_FEAT_CTL MSR on BSP during
- wakeup
-From:   mlevitsk <mlevitsk@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Brad Campbell <lists2009@fnarfbargle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Date:   Mon, 08 Jun 2020 17:24:14 +0300
-In-Reply-To: <20200605200728.10145-1-sean.j.christopherson@intel.com>
-References: <20200605200728.10145-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Mon, 8 Jun 2020 10:28:36 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 058EM3Dr028140;
+        Mon, 8 Jun 2020 10:26:26 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31g41dvbs7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Jun 2020 10:26:23 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 058EPDg2017538;
+        Mon, 8 Jun 2020 14:26:01 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 31g2s7v50c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Jun 2020 14:26:01 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 058EPwXY23855244
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Jun 2020 14:25:58 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C889F4C05A;
+        Mon,  8 Jun 2020 14:25:57 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8DE9E4C059;
+        Mon,  8 Jun 2020 14:25:57 +0000 (GMT)
+Received: from osiris (unknown [9.171.20.146])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon,  8 Jun 2020 14:25:57 +0000 (GMT)
+Date:   Mon, 8 Jun 2020 16:25:56 +0200
+From:   Heiko Carstens <heiko.carstens@de.ibm.com>
+To:     Chen Zhou <chenzhou10@huawei.com>
+Cc:     gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-s390@vger.kernel.or, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next 0/3] s390: use scnprintf() in show() methods
+Message-ID: <20200608142556.GA7478@osiris>
+References: <20200509085608.41061-1-chenzhou10@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200509085608.41061-1-chenzhou10@huawei.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-08_13:2020-06-08,2020-06-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ adultscore=0 malwarescore=0 impostorscore=0 clxscore=1011 mlxlogscore=839
+ bulkscore=0 suspectscore=1 cotscore=-2147483648 priorityscore=1501
+ spamscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006080104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-06-05 at 13:07 -0700, Sean Christopherson wrote:
-> Reinitialize IA32_FEAT_CTL on the BSP during wakeup to handle the
-> case
-> where firmware doesn't initialize or save/restore across S3.  This
-> fixes
-> a bug where IA32_FEAT_CTL is left uninitialized and results in VMXON
-> taking a #GP due to VMX not being fully enabled, i.e. breaks KVM.
+On Sat, May 09, 2020 at 04:56:05PM +0800, Chen Zhou wrote:
+> snprintf() returns the number of bytes that would be written,
+> which may be greater than the the actual length to be written.
+> 	    
+> show() methods should return the number of bytes printed into the
+> buffer. This is the return value of scnprintf().
 > 
-> Use init_ia32_feat_ctl() to "restore" IA32_FEAT_CTL as it already
-> deals
-> with the case where the MSR is locked, and because APs already redo
-> init_ia32_feat_ctl() during suspend by virtue of the SMP boot flow
-> being
-> used to reinitialize APs upon wakeup.  Do the call in the early
-> wakeup
-> flow to avoid dependencies in the syscore_ops chain, e.g. simply
-> adding
-> a resume hook is not guaranteed to work, as KVM does VMXON in its own
-> resume hook, kvm_resume(), when KVM has active guests.
+> Chen Zhou (3):
+>   s390/crypto: use scnprintf() instead of snprintf()
+>   s390: use scnprintf() in sys_##_prefix##_##_name##_show
+>   s390/protvirt: use scnprintf() instead of snprintf()
 > 
-> Reported-by: Brad Campbell <lists2009@fnarfbargle.com>
-> Cc: Maxim Levitsky <mlevitsk@redhat.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: kvm@vger.kernel.org
-> Fixes: 21bd3467a58e ("KVM: VMX: Drop initialization of IA32_FEAT_CTL
-> MSR")
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->  arch/x86/include/asm/cpu.h | 5 +++++
->  arch/x86/kernel/cpu/cpu.h  | 4 ----
->  arch/x86/power/cpu.c       | 6 ++++++
->  3 files changed, 11 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
-> index dd17c2da1af5..da78ccbd493b 100644
-> --- a/arch/x86/include/asm/cpu.h
-> +++ b/arch/x86/include/asm/cpu.h
-> @@ -58,4 +58,9 @@ static inline bool handle_guest_split_lock(unsigned
-> long ip)
->  	return false;
->  }
->  #endif
-> +#ifdef CONFIG_IA32_FEAT_CTL
-> +void init_ia32_feat_ctl(struct cpuinfo_x86 *c);
-> +#else
-> +static inline void init_ia32_feat_ctl(struct cpuinfo_x86 *c) {}
-> +#endif
->  #endif /* _ASM_X86_CPU_H */
-> diff --git a/arch/x86/kernel/cpu/cpu.h b/arch/x86/kernel/cpu/cpu.h
-> index 37fdefd14f28..38ab6e115eac 100644
-> --- a/arch/x86/kernel/cpu/cpu.h
-> +++ b/arch/x86/kernel/cpu/cpu.h
-> @@ -80,8 +80,4 @@ extern void x86_spec_ctrl_setup_ap(void);
->  
->  extern u64 x86_read_arch_cap_msr(void);
->  
-> -#ifdef CONFIG_IA32_FEAT_CTL
-> -void init_ia32_feat_ctl(struct cpuinfo_x86 *c);
-> -#endif
-> -
->  #endif /* ARCH_X86_CPU_H */
-> diff --git a/arch/x86/power/cpu.c b/arch/x86/power/cpu.c
-> index aaff9ed7ff45..b0d3c5ca6d80 100644
-> --- a/arch/x86/power/cpu.c
-> +++ b/arch/x86/power/cpu.c
-> @@ -193,6 +193,8 @@ static void fix_processor_context(void)
->   */
->  static void notrace __restore_processor_state(struct saved_context
-> *ctxt)
->  {
-> +	struct cpuinfo_x86 *c;
-> +
->  	if (ctxt->misc_enable_saved)
->  		wrmsrl(MSR_IA32_MISC_ENABLE, ctxt->misc_enable);
->  	/*
-> @@ -263,6 +265,10 @@ static void notrace
-> __restore_processor_state(struct saved_context *ctxt)
->  	mtrr_bp_restore();
->  	perf_restore_debug_store();
->  	msr_restore_context(ctxt);
-> +
-> +	c = &cpu_data(smp_processor_id());
-> +	if (cpu_has(c, X86_FEATURE_MSR_IA32_FEAT_CTL))
-> +		init_ia32_feat_ctl(c);
->  }
->  
->  /* Needed by apm.c */
+>  arch/s390/crypto/prng.c | 14 +++++++-------
+>  arch/s390/kernel/ipl.c  |  2 +-
+>  arch/s390/kernel/uv.c   |  8 ++++----
+>  3 files changed, 12 insertions(+), 12 deletions(-)
 
-
-I don't have currently an active VMX system to test this on,
-but from the code and from my knowelege of this area this looks all
-right.
-
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-
-Best regards,
-	Maxim Levitsky
-
+All applied, even though the buffer has a size of 4k in all cases.
+So this doesn't fix anything; but it doesn't hurt as well.
