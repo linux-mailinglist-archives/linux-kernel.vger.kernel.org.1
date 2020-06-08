@@ -2,199 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C76B1F1EB8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 20:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B321F1EB2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 20:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725999AbgFHSKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 14:10:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48156 "EHLO
+        id S1730055AbgFHSIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 14:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgFHSJz (ORCPT
+        with ESMTP id S1729827AbgFHSIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 14:09:55 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5904DC08C5C4;
-        Mon,  8 Jun 2020 11:09:55 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id k8so14206759edq.4;
-        Mon, 08 Jun 2020 11:09:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=egrr6PTch3v8cncSJtFi2bP6BgWEfZPz43Zfda3r4QU=;
-        b=GULwThv8DfdRtDiNhdL0oVaHQ1+uKVuxReQpzOUfVNn7vVUpwHXNbsK6i+6GirfEx2
-         NIPfiyx+mB96CsanfD8RJYNH/6aGh//KmHwtiKE25lxpS/SRTzEx0fDjY1Co4/fryFgA
-         ylrnFN0iFgrxw262ZSd0xJ6eMfgjf4Jd0qlE4zfrfq8HPrukq4j3kMZrvb6HblwhFUxu
-         W57lvTSLxLixxOTDmwxrmePcwy2sbtj5eErx46XBijGsxnK5CHHP66EM8rJHmG7Ssf2z
-         2JijqRoaInnhSsgspOjysSyM/k5/zvvR7m7QtjdTsGh1ETA2WLzPn3MqBHM6dyqeuLJp
-         9weg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=egrr6PTch3v8cncSJtFi2bP6BgWEfZPz43Zfda3r4QU=;
-        b=kqyryZ0xGJDK5i74xUnURc4/WOYYOc9fCBv0/LoH6kcPOyRA0bFL9MHmZ32+iM1mff
-         d0l7VwBDxHbtt5BPoDkuE9keB0aH0nx/pvy7itT0R7yAMgrhqfJK0VtMezN2tMHh/Bzz
-         ffO71VdWy9HAsm8Sipu8J2uogwpGLcX1N/0fCIFC6Bgfv5oYT/80u2AaZ5fM+3D3Bbef
-         gK20uaiHTFnRe12LL3aF5D+3T6TmspJU5wwZmsGTt04NXJQTzWiyomAV+n4ZWELzM33b
-         cmzWUTpohjRqKSgnDGvFaMpUPgHb/6fDmO94U+5pSoPo/U+q9uWbgBQ/J2d8h0hMTJ+5
-         co5w==
-X-Gm-Message-State: AOAM533YxeSWw1iSFaoo3IG+MOd/QECI9Bho1C/PJFOJD8ueb8kLU1rH
-        N+x8reNI/g6C1x7FpCpPcKzk1Vmm
-X-Google-Smtp-Source: ABdhPJxbStuRrWCjwifwUx/Z4Ul0ylCP0F0WnYotPea51KbavH8Rhu2X63Xv4OFa+H7iqTFS6MTPyA==
-X-Received: by 2002:a50:a0e5:: with SMTP id 92mr23641540edo.313.1591639793688;
-        Mon, 08 Jun 2020 11:09:53 -0700 (PDT)
-Received: from localhost.localdomain ([5.100.193.151])
-        by smtp.gmail.com with ESMTPSA id ok21sm10515029ejb.82.2020.06.08.11.09.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 11:09:53 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>, xiaoguang.wang@linux.alibaba.com
-Subject: [PATCH 4/4] io_wq: add per-wq work handler instead of per work
-Date:   Mon,  8 Jun 2020 21:08:20 +0300
-Message-Id: <531ae5365ab0093d7b599027e0a5536bc52d35f8.1591637070.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <cover.1591637070.git.asml.silence@gmail.com>
-References: <cover.1591637070.git.asml.silence@gmail.com>
+        Mon, 8 Jun 2020 14:08:41 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42668C08C5C2;
+        Mon,  8 Jun 2020 11:08:40 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 67A5CFD92B;
+        Mon,  8 Jun 2020 18:08:33 +0000 (UTC)
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones:
+ Documentation/translations/zh_CN
+To:     Harry Wei <harryxiyou@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Miller <davem@davemloft.net>,
+        Jacob Huisman <jacobhuisman@kernelthusiast.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Srivatsa S. Bhat (VMware)" <srivatsa@csail.mit.edu>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200525202119.23948-1-grandmaster@al2klimov.de>
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Message-ID: <e8f5c5e3-5517-39c1-c681-65e467b4585b@al2klimov.de>
+Date:   Mon, 8 Jun 2020 20:08:32 +0200
 MIME-Version: 1.0
+In-Reply-To: <20200525202119.23948-1-grandmaster@al2klimov.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +
+X-Spam-Level: *
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-io_uring is the only user of io-wq, and now it uses only io-wq callback
-for all its requests, namely io_wq_submit_work(). Instead of storing
-work->runner callback in each instance of io_wq_work, keep it in io-wq
-itself.
 
-pros:
-- reduces io_wq_work size
-- more robust -- ->func won't be invalidated with mem{cpy,set}(req)
-- helps other work
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- fs/io-wq.c    | 10 ++++++----
- fs/io-wq.h    |  7 ++++---
- fs/io_uring.c |  3 ++-
- 3 files changed, 12 insertions(+), 8 deletions(-)
+Am 25.05.20 um 22:21 schrieb Alexander A. Klimov:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+> 
+> Deterministic algorithm:
+> For each file:
+>    For each line:
+>      If doesn't contain `\bxmlns\b`:
+>        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>          If both the HTTP and HTTPS versions
+>          return 200 OK and serve the same content:
+>            Replace HTTP with HTTPS.
+> ---
+Forget this one. I forgot -s in git commit.
 
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index 2bfa9117bc28..a44ad3b98886 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -112,6 +112,7 @@ struct io_wq {
- 	unsigned long state;
- 
- 	free_work_fn *free_work;
-+	io_wq_work_fn *do_work;
- 
- 	struct task_struct *manager;
- 	struct user_struct *user;
-@@ -528,7 +529,7 @@ static void io_worker_handle_work(struct io_worker *worker)
- 
- 			hash = io_get_work_hash(work);
- 			linked = old_work = work;
--			linked->func(&linked);
-+			wq->do_work(&linked);
- 			linked = (old_work == linked) ? NULL : linked;
- 
- 			work = next_hashed;
-@@ -785,7 +786,7 @@ static void io_run_cancel(struct io_wq_work *work, struct io_wqe *wqe)
- 		struct io_wq_work *old_work = work;
- 
- 		work->flags |= IO_WQ_WORK_CANCEL;
--		work->func(&work);
-+		wq->do_work(&work);
- 		work = (work == old_work) ? NULL : work;
- 		wq->free_work(old_work);
- 	} while (work);
-@@ -1027,7 +1028,7 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
- 	int ret = -ENOMEM, node;
- 	struct io_wq *wq;
- 
--	if (WARN_ON_ONCE(!data->free_work))
-+	if (WARN_ON_ONCE(!data->free_work || !data->do_work))
- 		return ERR_PTR(-EINVAL);
- 
- 	wq = kzalloc(sizeof(*wq), GFP_KERNEL);
-@@ -1041,6 +1042,7 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
- 	}
- 
- 	wq->free_work = data->free_work;
-+	wq->do_work = data->do_work;
- 
- 	/* caller must already hold a reference to this */
- 	wq->user = data->user;
-@@ -1097,7 +1099,7 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
- 
- bool io_wq_get(struct io_wq *wq, struct io_wq_data *data)
- {
--	if (data->free_work != wq->free_work)
-+	if (data->free_work != wq->free_work || data->do_work != wq->do_work)
- 		return false;
- 
- 	return refcount_inc_not_zero(&wq->use_refs);
-diff --git a/fs/io-wq.h b/fs/io-wq.h
-index df8a4cd3236d..f3bb596f5a3f 100644
---- a/fs/io-wq.h
-+++ b/fs/io-wq.h
-@@ -85,7 +85,6 @@ static inline void wq_list_del(struct io_wq_work_list *list,
- 
- struct io_wq_work {
- 	struct io_wq_work_node list;
--	void (*func)(struct io_wq_work **);
- 	struct files_struct *files;
- 	struct mm_struct *mm;
- 	const struct cred *creds;
-@@ -94,9 +93,9 @@ struct io_wq_work {
- 	pid_t task_pid;
- };
- 
--#define INIT_IO_WORK(work, _func)				\
-+#define INIT_IO_WORK(work)					\
- 	do {							\
--		*(work) = (struct io_wq_work){ .func = _func };	\
-+		*(work) = (struct io_wq_work){};		\
- 	} while (0)						\
- 
- static inline struct io_wq_work *wq_next_work(struct io_wq_work *work)
-@@ -108,10 +107,12 @@ static inline struct io_wq_work *wq_next_work(struct io_wq_work *work)
- }
- 
- typedef void (free_work_fn)(struct io_wq_work *);
-+typedef void (io_wq_work_fn)(struct io_wq_work **);
- 
- struct io_wq_data {
- 	struct user_struct *user;
- 
-+	io_wq_work_fn *do_work;
- 	free_work_fn *free_work;
- };
- 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index adf18ff9fdb9..b4ca6026269c 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -5880,7 +5880,7 @@ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
- 	refcount_set(&req->refs, 2);
- 	req->task = NULL;
- 	req->result = 0;
--	INIT_IO_WORK(&req->work, io_wq_submit_work);
-+	INIT_IO_WORK(&req->work);
- 
- 	if (unlikely(req->opcode >= IORING_OP_LAST))
- 		return -EINVAL;
-@@ -6896,6 +6896,7 @@ static int io_init_wq_offload(struct io_ring_ctx *ctx,
- 
- 	data.user = ctx->user;
- 	data.free_work = io_free_work;
-+	data.do_work = io_wq_submit_work;
- 
- 	if (!(p->flags & IORING_SETUP_ATTACH_WQ)) {
- 		/* Do QD, or 4 * CPUS, whatever is smallest */
--- 
-2.24.0
-
+>   .../translations/zh_CN/process/2.Process.rst   |  8 ++++----
+>   .../translations/zh_CN/process/4.Coding.rst    |  2 +-
+>   .../zh_CN/process/7.AdvancedTopics.rst         |  6 +++---
+>   .../zh_CN/process/8.Conclusion.rst             | 10 +++++-----
+>   .../zh_CN/process/coding-style.rst             |  2 +-
+>   .../translations/zh_CN/process/howto.rst       | 12 ++++++------
+>   .../zh_CN/process/submitting-drivers.rst       | 18 +++++++++---------
+>   .../zh_CN/process/submitting-patches.rst       |  4 ++--
+>   .../process/volatile-considered-harmful.rst    |  4 ++--
+>   9 files changed, 33 insertions(+), 33 deletions(-)
+> 
+> diff --git a/Documentation/translations/zh_CN/process/2.Process.rst b/Documentation/translations/zh_CN/process/2.Process.rst
+> index ceb733bb0294..ebe2e0254b3e 100644
+> --- a/Documentation/translations/zh_CN/process/2.Process.rst
+> +++ b/Documentation/translations/zh_CN/process/2.Process.rst
+> @@ -212,7 +212,7 @@ Next 树
+>   
+>   当前-mm 补丁可在“mmotm”（-mm of the moment）目录中找到，地址：
+>   
+> -        http://www.ozlabs.org/~akpm/mmotm/
+> +        https://www.ozlabs.org/~akpm/mmotm/
+>   
+>   然而，使用mmotm树可能是一种令人沮丧的体验；它甚至可能无法编译。
+>   
+> @@ -220,7 +220,7 @@ Next 树
+>   linux-next 是下一个合并窗口关闭后主线的快照。linux-next树在Linux-kernel 和
+>   Linux-next 邮件列表中发布，可从以下位置下载：
+>   
+> -        http://www.kernel.org/pub/linux/kernel/next/
+> +        https://www.kernel.org/pub/linux/kernel/next/
+>   
+>   Linux-next 已经成为内核开发过程中不可或缺的一部分；在一个给定的合并窗口中合并
+>   的所有补丁都应该在合并窗口打开之前的一段时间内找到进入Linux-next 的方法。
+> @@ -260,7 +260,7 @@ staging驱动程序。因此，在成为一名合适的主线驱动的路上，s
+>   
+>   现在几乎所有的Linux发行版都打包了Git。主页位于：
+>   
+> -        http://git-scm.com/
+> +        https://git-scm.com/
+>   
+>   那个页面有指向文档和教程的指针。
+>   
+> @@ -272,7 +272,7 @@ Mercurial与Git共享许多特性，但它提供了一个界面，许多人觉
+>   
+>   另一个值得了解的工具是quilt:
+>   
+> -        http://savannah.nongnu.org/projects/quilt
+> +        https://savannah.nongnu.org/projects/quilt
+>   
+>   Quilt 是一个补丁管理系统，而不是源代码管理系统。它不会随着时间的推移跟踪历史；
+>   相反，它面向根据不断发展的代码库跟踪一组特定的更改。一些主要的子系统维护人员
+> diff --git a/Documentation/translations/zh_CN/process/4.Coding.rst b/Documentation/translations/zh_CN/process/4.Coding.rst
+> index b82b1dde3122..959a06ba025c 100644
+> --- a/Documentation/translations/zh_CN/process/4.Coding.rst
+> +++ b/Documentation/translations/zh_CN/process/4.Coding.rst
+> @@ -224,7 +224,7 @@ scripts/coccinelle目录下已经打包了相当多的内核“语义补丁”
+>   或Blackfin开发板，您仍然可以执行编译步骤。可以在以下位置找到一组用于x86系统的
+>   大型交叉编译器：
+>   
+> -        http://www.kernel.org/pub/tools/crosstool/
+> +        https://www.kernel.org/pub/tools/crosstool/
+>   
+>   花一些时间安装和使用这些编译器将有助于避免以后的尴尬。
+>   
+> diff --git a/Documentation/translations/zh_CN/process/7.AdvancedTopics.rst b/Documentation/translations/zh_CN/process/7.AdvancedTopics.rst
+> index 956815edbd18..2f0ef750746f 100644
+> --- a/Documentation/translations/zh_CN/process/7.AdvancedTopics.rst
+> +++ b/Documentation/translations/zh_CN/process/7.AdvancedTopics.rst
+> @@ -25,9 +25,9 @@
+>   将是Git如何特别适合内核开发过程。想要加快Git的开发人员可以在以下网站上找到
+>   更多信息：
+>   
+> -	http://git-scm.com/
+> +	https://git-scm.com/
+>   
+> -	http://www.kernel.org/pub/software/scm/git/docs/user-manual.html
+> +	https://www.kernel.org/pub/software/scm/git/docs/user-manual.html
+>   
+>   在尝试使用它使补丁可供其他人使用之前，第一要务是阅读上述站点，对Git的工作
+>   方式有一个扎实的了解。使用Git的开发人员应该能够获得主线存储库的副本，探索
+> @@ -42,7 +42,7 @@
+>   如果您有一个可以访问Internet的系统，那么使用git守护进程设置这样的服务器相
+>   对简单。否则，免费的公共托管网站（例如github）开始出现在网络上。成熟的开发
+>   人员可以在kernel.org上获得一个帐户，但这些帐户并不容易找到；有关更多信息，
+> -请参阅 http://kernel.org/faq/
+> +请参阅 https://kernel.org/faq/
+>   
+>   正常的Git工作流程涉及到许多分支的使用。每一条开发线都可以分为单独的“主题
+>   分支”，并独立维护。Git的分支机构很便宜，没有理由不免费使用它们。而且，在
+> diff --git a/Documentation/translations/zh_CN/process/8.Conclusion.rst b/Documentation/translations/zh_CN/process/8.Conclusion.rst
+> index 2bbd76161e10..90cec3de6106 100644
+> --- a/Documentation/translations/zh_CN/process/8.Conclusion.rst
+> +++ b/Documentation/translations/zh_CN/process/8.Conclusion.rst
+> @@ -17,16 +17,16 @@
+>   记录的；“make htmldocs”或“make pdfdocs”可用于以HTML或PDF格式生成这些文档（
+>   尽管某些发行版提供的tex版本会遇到内部限制，无法正确处理文档）。
+>   
+> -不同的网站在各个细节层次上讨论内核开发。您的作者想谦虚地建议用 http://lwn.net/
+> +不同的网站在各个细节层次上讨论内核开发。您的作者想谦虚地建议用 https://lwn.net/
+>   作为来源；有关许多特定内核主题的信息可以通过以下网址的lwn内核索引找到：
+>   
+>           http://lwn.net/kernel/index/
+>   
+>   除此之外，内核开发人员的一个宝贵资源是：
+>   
+> -        http://kernelnewbies.org/
+> +        https://kernelnewbies.org/
+>   
+> -当然，我们不应该忘记 http://kernel.org/ 这是内核发布信息的最终位置。
+> +当然，我们不应该忘记 https://kernel.org/ 这是内核发布信息的最终位置。
+>   
+>   关于内核开发有很多书：
+>   
+> @@ -42,9 +42,9 @@
+>   
+>   有关git的文档，请访问：
+>   
+> -        http://www.kernel.org/pub/software/scm/git/docs/
+> +        https://www.kernel.org/pub/software/scm/git/docs/
+>   
+> -        http://www.kernel.org/pub/software/scm/git/docs/user-manual.html
+> +        https://www.kernel.org/pub/software/scm/git/docs/user-manual.html
+>   
+>   结论
+>   ====
+> diff --git a/Documentation/translations/zh_CN/process/coding-style.rst b/Documentation/translations/zh_CN/process/coding-style.rst
+> index eae10bc7f86f..406d43a02c02 100644
+> --- a/Documentation/translations/zh_CN/process/coding-style.rst
+> +++ b/Documentation/translations/zh_CN/process/coding-style.rst
+> @@ -946,7 +946,7 @@ Addison-Wesley, Inc., 1999.
+>   ISBN 0-201-61586-X.
+>   
+>   GNU 手册 - 遵循 K&R 标准和此文本 - cpp, gcc, gcc internals and indent,
+> -都可以从 http://www.gnu.org/manual/ 找到
+> +都可以从 https://www.gnu.org/manual/ 找到
+>   
+>   WG14 是 C 语言的国际标准化工作组，URL: http://www.open-std.org/JTC1/SC22/WG14/
+>   
+> diff --git a/Documentation/translations/zh_CN/process/howto.rst b/Documentation/translations/zh_CN/process/howto.rst
+> index a8e6ab818983..ee3dee476d57 100644
+> --- a/Documentation/translations/zh_CN/process/howto.rst
+> +++ b/Documentation/translations/zh_CN/process/howto.rst
+> @@ -69,7 +69,7 @@ Linux内核源代码都是在GPL（通用公共许可证）的保护下发布的
+>   邮件组里的人并不是律师，不要期望他们的话有法律效力。
+>   
+>   对于GPL的常见问题和解答，请访问以下链接：
+> -	http://www.gnu.org/licenses/gpl-faq.html
+> +	https://www.gnu.org/licenses/gpl-faq.html
+>   
+>   
+>   文档
+> @@ -109,7 +109,7 @@ Linux内核代码中包含有大量的文档。这些文档对于学习如何与
+>       其他关于如何正确地生成补丁的优秀文档包括：
+>       "The Perfect Patch"
+>   
+> -        http://www.ozlabs.org/~akpm/stuff/tpp.txt
+> +        https://www.ozlabs.org/~akpm/stuff/tpp.txt
+>   
+>       "Linux kernel patch submission format"
+>   
+> @@ -163,7 +163,7 @@ ReST格式的文档会生成在 Documentation/output. 目录中。
+>   ------------------
+>   如果你对Linux内核开发一无所知，你应该访问“Linux内核新手”计划：
+>   
+> -	http://kernelnewbies.org
+> +	https://kernelnewbies.org
+>   
+>   它拥有一个可以问各种最基本的内核开发问题的邮件列表（在提问之前一定要记得
+>   查找已往的邮件，确认是否有人已经回答过相同的问题）。它还拥有一个可以获得
+> @@ -176,7 +176,7 @@ ReST格式的文档会生成在 Documentation/output. 目录中。
+>   如果你想加入内核开发社区并协助完成一些任务，却找不到从哪里开始，可以访问
+>   “Linux内核房管员”计划：
+>   
+> -	http://kernelnewbies.org/KernelJanitors
+> +	https://kernelnewbies.org/KernelJanitors
+>   
+>   这是极佳的起点。它提供一个相对简单的任务列表，列出内核代码中需要被重新
+>   整理或者改正的地方。通过和负责这个计划的开发者们一同工作，你会学到将补丁
+> @@ -212,7 +212,7 @@ ReST格式的文档会生成在 Documentation/output. 目录中。
+>     - 每当一个新版本的内核被发布，为期两周的集成窗口将被打开。在这段时间里
+>       维护者可以向Linus提交大段的修改，通常这些修改已经被放到-mm内核中几个
+>       星期了。提交大量修改的首选方式是使用git工具（内核的代码版本管理工具
+> -    ，更多的信息可以在 http://git-scm.com/ 获取），不过使用普通补丁也是
+> +    ，更多的信息可以在 https://git-scm.com/ 获取），不过使用普通补丁也是
+>       可以的。
+>     - 两个星期以后-rc1版本内核发布。之后只有不包含可能影响整个内核稳定性的
+>       新功能的补丁才可能被接受。请注意一个全新的驱动程序（或者文件系统）有
+> @@ -472,7 +472,7 @@ Linux内核社区并不喜欢一下接收大段的代码。修改需要被恰当
+>   
+>   想了解它具体应该看起来像什么，请查阅以下文档中的“ChangeLog”章节：
+>     “The Perfect Patch”
+> -  	 http://www.ozlabs.org/~akpm/stuff/tpp.txt
+> +  	 https://www.ozlabs.org/~akpm/stuff/tpp.txt
+>   
+>   
+>   这些事情有时候做起来很难。要在任何方面都做到完美可能需要好几年时间。这是
+> diff --git a/Documentation/translations/zh_CN/process/submitting-drivers.rst b/Documentation/translations/zh_CN/process/submitting-drivers.rst
+> index d99885c27aed..98341e7cd812 100644
+> --- a/Documentation/translations/zh_CN/process/submitting-drivers.rst
+> +++ b/Documentation/translations/zh_CN/process/submitting-drivers.rst
+> @@ -19,8 +19,8 @@
+>   =============================
+>   
+>   这篇文档将会解释如何向不同的内核源码树提交设备驱动程序。请注意，如果你感
+> -兴趣的是显卡驱动程序，你也许应该访问 XFree86 项目(http://www.xfree86.org/)
+> -和／或 X.org 项目 (http://x.org)。
+> +兴趣的是显卡驱动程序，你也许应该访问 XFree86 项目(https://www.xfree86.org/)
+> +和／或 X.org 项目 (https://x.org)。
+>   
+>   另请参阅 Documentation/translations/zh_CN/process/submitting-patches.rst 文档。
+>   
+> @@ -29,7 +29,7 @@
+>   ----------
+>   
+>   块设备和字符设备的主设备号与从设备号是由 Linux 命名编号分配权威 LANANA（
+> -现在是 Torben Mathiasen）负责分配。申请的网址是 http://www.lanana.org/。
+> +现在是 Torben Mathiasen）负责分配。申请的网址是 https://www.lanana.org/。
+>   即使不准备提交到主流内核的设备驱动也需要在这里分配设备号。有关详细信息，
+>   请参阅 Documentation/admin-guide/devices.rst。
+>   
+> @@ -133,22 +133,22 @@ Linux 内核邮件列表：
+>   	[可通过向majordomo@vger.kernel.org发邮件来订阅]
+>   
+>   Linux 设备驱动程序，第三版（探讨 2.6.10 版内核）：
+> -	http://lwn.net/Kernel/LDD3/ （免费版）
+> +	https://lwn.net/Kernel/LDD3/ （免费版）
+>   
+>   LWN.net:
+> -	每周内核开发活动摘要 - http://lwn.net/
+> +	每周内核开发活动摘要 - https://lwn.net/
+>   
+>   	2.6 版中 API 的变更：
+>   
+> -		http://lwn.net/Articles/2.6-kernel-api/
+> +		https://lwn.net/Articles/2.6-kernel-api/
+>   
+>   	将旧版内核的驱动程序移植到 2.6 版：
+>   
+> -		http://lwn.net/Articles/driver-porting/
+> +		https://lwn.net/Articles/driver-porting/
+>   
+>   内核新手(KernelNewbies):
+>   	为新的内核开发者提供文档和帮助
+> -	http://kernelnewbies.org/
+> +	https://kernelnewbies.org/
+>   
+>   Linux USB项目：
+>   	http://www.linux-usb.org/
+> @@ -157,4 +157,4 @@ Linux USB项目：
+>   	http://www.fenrus.org/how-to-not-write-a-device-driver-paper.pdf
+>   
+>   内核清洁工 (Kernel Janitor):
+> -	http://kernelnewbies.org/KernelJanitors
+> +	https://kernelnewbies.org/KernelJanitors
+> diff --git a/Documentation/translations/zh_CN/process/submitting-patches.rst b/Documentation/translations/zh_CN/process/submitting-patches.rst
+> index 1bb4271ab420..2e7dbaad4028 100644
+> --- a/Documentation/translations/zh_CN/process/submitting-patches.rst
+> +++ b/Documentation/translations/zh_CN/process/submitting-patches.rst
+> @@ -91,7 +91,7 @@
+>   :ref:`cn_split_changes`
+>   
+>   如果你用 ``git`` , ``git rebase -i`` 可以帮助你这一点。如果你不用 ``git``,
+> -``quilt`` <http://savannah.nongnu.org/projects/quilt> 另外一个流行的选择。
+> +``quilt`` <https://savannah.nongnu.org/projects/quilt> 另外一个流行的选择。
+>   
+>   .. _cn_describe_changes:
+>   
+> @@ -649,7 +649,7 @@ pull 请求还应该包含一条整体消息，说明请求中将包含什么，
+>   --------
+>   
+>   Andrew Morton, "The perfect patch" (tpp).
+> -  <http://www.ozlabs.org/~akpm/stuff/tpp.txt>
+> +  <https://www.ozlabs.org/~akpm/stuff/tpp.txt>
+>   
+>   Jeff Garzik, "Linux kernel patch submission format".
+>     <https://web.archive.org/web/20180829112450/http://linux.yyz.us/patch-format.html>
+> diff --git a/Documentation/translations/zh_CN/process/volatile-considered-harmful.rst b/Documentation/translations/zh_CN/process/volatile-considered-harmful.rst
+> index 48b32ce58ef1..ded3b5d0c9a8 100644
+> --- a/Documentation/translations/zh_CN/process/volatile-considered-harmful.rst
+> +++ b/Documentation/translations/zh_CN/process/volatile-considered-harmful.rst
+> @@ -94,8 +94,8 @@ bug并且需要对这样的代码额外仔细检查。那些试图使用volatile
+>   注释
+>   ----
+>   
+> -[1] http://lwn.net/Articles/233481/
+> -[2] http://lwn.net/Articles/233482/
+> +[1] https://lwn.net/Articles/233481/
+> +[2] https://lwn.net/Articles/233482/
+>   
+>   致谢
+>   ----
+> 
