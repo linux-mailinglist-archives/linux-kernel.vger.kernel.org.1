@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101B61F23EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0631F22B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730549AbgFHXRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:17:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34564 "EHLO mail.kernel.org"
+        id S1728626AbgFHXKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:10:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729782AbgFHXOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:14:20 -0400
+        id S1728371AbgFHXJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:09:13 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD33821501;
-        Mon,  8 Jun 2020 23:14:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FF1A20E65;
+        Mon,  8 Jun 2020 23:09:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658060;
-        bh=Py3+27fq+KilaCdz5w6bUQlZKu+dOEQXm4a/GCeSecM=;
+        s=default; t=1591657753;
+        bh=sI8qGZ67vRCEu32jaQy/usE2cJJy7oZBz5RPrSs/cAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=apYM7flILDF3V3vBTVKV19qNemJuZDxZImEDO+GYsh/GyxPi2WPVfCi4hrYVqLIW0
-         dxFBR/zBCD30ziQemqG2CkzRqvn7R0DwFda4QJ/p8rYhv7xvSG9v5OCm9DJlccG/ca
-         vT1j/N9SAE7DkDI40HJqmWzNoCHoNlzFhAel7EXs=
+        b=2MRGUJyfMnV47DfEwgVcDd6yQCn+s+eZ6hFMRT4kU31qW2UaCBboCy9wd2Y0xaPj3
+         lTA5JMkhLb2Hybhsqr/QxV+jbviyJn2WpEHWghZhVzlDh34quij4RA2z2RigaZn9Fv
+         pq3HmAKy+TtmSN/s4Dbu2DDan3kXH/0/IzCwx3lk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Xiaojian Cao <xiaojian.cao@cn.alps.com>,
-        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 107/606] HID: alps: ALPS_1657 is too specific; use U1_UNICORN_LEGACY instead
+Cc:     Doug Berger <opendmb@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 139/274] net: bcmgenet: set Rx mode before starting netif
 Date:   Mon,  8 Jun 2020 19:03:52 -0400
-Message-Id: <20200608231211.3363633-107-sashal@kernel.org>
+Message-Id: <20200608230607.3361041-139-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,53 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Kosina <jkosina@suse.cz>
+From: Doug Berger <opendmb@gmail.com>
 
-[ Upstream commit 185af3e775b693f773d9a4b5a8c3cda69fc8ca0f ]
+[ Upstream commit 72f96347628e73dbb61b307f18dd19293cc6792a ]
 
-HID_DEVICE_ID_ALPS_1657 PID is too specific, as there are many other
-ALPS hardware IDs using this particular touchpad.
+This commit explicitly calls the bcmgenet_set_rx_mode() function when
+the network interface is started. This function is normally called by
+ndo_set_rx_mode when the flags are changed, but apparently not when
+the driver is suspended and resumed.
 
-Rename the identifier to HID_DEVICE_ID_ALPS_U1_UNICORN_LEGACY in order
-to describe reality better.
+This change ensures that address filtering or promiscuous mode are
+properly restored by the driver after the MAC may have been reset.
 
-Fixes: 640e403b1fd24 ("HID: alps: Add AUI1657 device ID")
-Reported-by: Xiaojian Cao <xiaojian.cao@cn.alps.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: b6e978e50444 ("net: bcmgenet: add suspend/resume callbacks")
+Signed-off-by: Doug Berger <opendmb@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-alps.c | 2 +-
- drivers/hid/hid-ids.h  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
-index c2a2bd528890..b2ad319a74b9 100644
---- a/drivers/hid/hid-alps.c
-+++ b/drivers/hid/hid-alps.c
-@@ -802,7 +802,7 @@ static int alps_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 		break;
- 	case HID_DEVICE_ID_ALPS_U1_DUAL:
- 	case HID_DEVICE_ID_ALPS_U1:
--	case HID_DEVICE_ID_ALPS_1657:
-+	case HID_DEVICE_ID_ALPS_U1_UNICORN_LEGACY:
- 		data->dev_type = U1;
- 		break;
- 	default:
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 7d769ca864a7..b3cc26ca375f 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -79,9 +79,9 @@
- #define HID_DEVICE_ID_ALPS_U1_DUAL_PTP	0x121F
- #define HID_DEVICE_ID_ALPS_U1_DUAL_3BTN_PTP	0x1220
- #define HID_DEVICE_ID_ALPS_U1		0x1215
-+#define HID_DEVICE_ID_ALPS_U1_UNICORN_LEGACY         0x121E
- #define HID_DEVICE_ID_ALPS_T4_BTNLESS	0x120C
- #define HID_DEVICE_ID_ALPS_1222		0x1222
--#define HID_DEVICE_ID_ALPS_1657         0x121E
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index 79636c78127c..38bdfd4b46f0 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -70,6 +70,9 @@
+ #define GENET_RDMA_REG_OFF	(priv->hw_params->rdma_offset + \
+ 				TOTAL_DESC * DMA_DESC_SIZE)
  
- #define USB_VENDOR_ID_AMI		0x046b
- #define USB_DEVICE_ID_AMI_VIRT_KEYBOARD_AND_MOUSE	0xff10
++/* Forward declarations */
++static void bcmgenet_set_rx_mode(struct net_device *dev);
++
+ static inline void bcmgenet_writel(u32 value, void __iomem *offset)
+ {
+ 	/* MIPS chips strapped for BE will automagically configure the
+@@ -2803,6 +2806,7 @@ static void bcmgenet_netif_start(struct net_device *dev)
+ 	struct bcmgenet_priv *priv = netdev_priv(dev);
+ 
+ 	/* Start the network engine */
++	bcmgenet_set_rx_mode(dev);
+ 	bcmgenet_enable_rx_napi(priv);
+ 
+ 	umac_enable_set(priv, CMD_TX_EN | CMD_RX_EN, true);
 -- 
 2.25.1
 
