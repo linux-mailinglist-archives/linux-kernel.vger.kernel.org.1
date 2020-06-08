@@ -2,76 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C7B1F24D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E1F1F2240
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731405AbgFHXWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:22:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40174 "EHLO mail.kernel.org"
+        id S1727908AbgFHXH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:07:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729310AbgFHXSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:18:04 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727119AbgFHXG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:06:59 -0400
+Received: from localhost (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0046E2089D;
-        Mon,  8 Jun 2020 23:18:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C48520820;
+        Mon,  8 Jun 2020 23:06:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658284;
-        bh=PWB2t7f58OTgQdOQWXKpGzdge1XV4v+1OvpmDWYEvUA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N4fmsvgenQuY2IoUcE/sRJdhBQSSdd3l3VCjLGuYM7X2dga0Ima3QD+AEiLz6K0av
-         ILzZG4u6YYnuP03eaFc2MwPHRgnXHfuCUpNOyTclZnvYQT4r8xAZ1x+XMoWPwS0m+i
-         Aw9UAoeF/nNlZtpqITG/AyY3s0LTcFLHqb/KySN8=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     James Hilliard <james.hilliard1@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 289/606] Input: usbtouchscreen - add support for BonXeon TP
-Date:   Mon,  8 Jun 2020 19:06:54 -0400
-Message-Id: <20200608231211.3363633-289-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+        s=default; t=1591657618;
+        bh=9kgiWfc80bQ1pFTP10CoDvlD9i3E2sMoZB2p3Vvgd/g=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=IAKP9+uyhx+Mw+/ttmtWvmUV5DWr7Hx4rynsr/VlhWY7naVEcoN2oD/N3/5SjrSVB
+         EmHPS5CiBaqDmNLIqVqDyRmUgYL0/hy7nAFMhxlSh1iB+5l18sVCmDe/ECVJA17l06
+         HJUi2skFlwTFsob6tOCCspquwIIueUlnqfhHl8Bo=
+Date:   Mon, 8 Jun 2020 16:06:57 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Christoph Hellwig <hch@infradead.org>
+cc:     Stefano Stabellini <sstabellini@kernel.org>, jgross@suse.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        tamas@tklengyel.com, roman@zededa.com,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>
+Subject: Re: [PATCH v2 08/11] swiotlb-xen: introduce phys_to_dma/dma_to_phys
+ translations
+In-Reply-To: <20200608070850.GD15742@infradead.org>
+Message-ID: <alpine.DEB.2.21.2006081558400.2815@sstabellini-ThinkPad-T480s>
+References: <alpine.DEB.2.21.2006031506590.6774@sstabellini-ThinkPad-T480s> <20200603222247.11681-8-sstabellini@kernel.org> <20200608070850.GD15742@infradead.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Hilliard <james.hilliard1@gmail.com>
+On Mon, 8 Jun 2020, Christoph Hellwig wrote:
+> On Wed, Jun 03, 2020 at 03:22:44PM -0700, Stefano Stabellini wrote:
+> > From: Stefano Stabellini <stefano.stabellini@xilinx.com>
+> > 
+> > With some devices physical addresses are different than dma addresses.
+> > To be able to deal with these cases, we need to call phys_to_dma on
+> > physical addresses (including machine addresses in Xen terminology)
+> > before returning them from xen_swiotlb_alloc_coherent and
+> > xen_swiotlb_map_page.
+> > 
+> > We also need to convert dma addresses back to physical addresses using
+> > dma_to_phys in xen_swiotlb_free_coherent and xen_swiotlb_unmap_page if
+> > we want to do any operations on them.
+> > 
+> > Call dma_to_phys in is_xen_swiotlb_buffer.
+> > Call phys_to_dma in xen_phys_to_bus.
+> > Call dma_to_phys in xen_bus_to_phys.
+> > 
+> > Everything is taken care of by these changes except for
+> > xen_swiotlb_alloc_coherent and xen_swiotlb_free_coherent, which need a
+> > few explicit phys_to_dma/dma_to_phys calls.
+> > 
+> > Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+> > Tested-by: Corey Minyard <cminyard@mvista.com>
+> > Tested-by: Roman Shaposhnik <roman@zededa.com>
+> > ---
+> > Changes in v2:
+> > - improve commit message
+> > ---
+> >  drivers/xen/swiotlb-xen.c | 22 ++++++++++++----------
+> >  1 file changed, 12 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+> > index 0a6cb67f0fc4..60ef07440905 100644
+> > --- a/drivers/xen/swiotlb-xen.c
+> > +++ b/drivers/xen/swiotlb-xen.c
+> > @@ -64,16 +64,16 @@ static inline dma_addr_t xen_phys_to_bus(struct device *dev, phys_addr_t paddr)
+> >  
+> >  	dma |= paddr & ~XEN_PAGE_MASK;
+> >  
+> > -	return dma;
+> > +	return phys_to_dma(dev, dma);
+> 
+> So looking at this function:
+> 
+> The dma name for something passed to phys_to_dma is really
+> weird.
 
-[ Upstream commit e3b4f94ef52ae1592cbe199bd38dbdc0d58b2217 ]
+Yeah, that is true, I am not sure why I chose that confusing name. I'll
+rename it.
 
-Based on available information this uses the singletouch irtouch
-protocol. This is tested and confirmed to be fully functional on
-the BonXeon TP hardware I have.
 
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-Link: https://lore.kernel.org/r/20200413184217.55700-1-james.hilliard1@gmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/input/touchscreen/usbtouchscreen.c | 1 +
- 1 file changed, 1 insertion(+)
+> The fact that the comments says don't use XEN_PFN_PHYS
+> beause of the type mismatch while nothing but swiotlb-xen is the only
+> user of XEN_PFN_PHYS is also weird.  I think XEN_PFN_PHYS needs to move
+> to swiotlb-xen first, then use a hardcoded u64 for the size, and the
+> split the function into a phys_to_xen_phys (or so) function where
+> the result gets passed to phys_to_dma.
 
-diff --git a/drivers/input/touchscreen/usbtouchscreen.c b/drivers/input/touchscreen/usbtouchscreen.c
-index 16d70201de4a..397cb1d3f481 100644
---- a/drivers/input/touchscreen/usbtouchscreen.c
-+++ b/drivers/input/touchscreen/usbtouchscreen.c
-@@ -182,6 +182,7 @@ static const struct usb_device_id usbtouch_devices[] = {
- #endif
- 
- #ifdef CONFIG_TOUCHSCREEN_USB_IRTOUCH
-+	{USB_DEVICE(0x255e, 0x0001), .driver_info = DEVTYPE_IRTOUCH},
- 	{USB_DEVICE(0x595a, 0x0001), .driver_info = DEVTYPE_IRTOUCH},
- 	{USB_DEVICE(0x6615, 0x0001), .driver_info = DEVTYPE_IRTOUCH},
- 	{USB_DEVICE(0x6615, 0x0012), .driver_info = DEVTYPE_IRTOUCH_HIRES},
--- 
-2.25.1
+I understand what you are suggesting about having something like:
 
+    xen_phys_to_dma(...)
+    {
+        phys_addr_t phys = xen_phys_to_bus(dev, paddr)
+        return phys_to_dma(phys);
+    }
+
+I thought about it myself. I'll do it.
+
+But I don't think I understood the comment about XEN_PFN_PHYS.
+
+
+> Similar for the reverse direction.
+
+OK
