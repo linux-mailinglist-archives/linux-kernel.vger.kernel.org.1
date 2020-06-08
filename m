@@ -2,138 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8C81F1ED1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 20:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707A61F1ECD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 20:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbgFHSPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 14:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726117AbgFHSPX (ORCPT
+        id S1725979AbgFHSPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 14:15:11 -0400
+Received: from mail.codeweavers.com ([50.203.203.244]:36646 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgFHSPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 14:15:23 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF744C08C5C2;
-        Mon,  8 Jun 2020 11:15:22 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id t18so18465547wru.6;
-        Mon, 08 Jun 2020 11:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WUHwJX2N9pIy9QeRXyEGGmeeCpsJdb22/OGUgYWDaZs=;
-        b=fk4/Bs3DeNtMcKi5ch5N3gpQpdWFBxPVM5RpcJ9t3FMxoEzjHxmaaepAJ2zymcHdJh
-         yXspphw1FR6n2VP/gjGRziTn3+pDXuYrsdHOlip2Wnc5BCa8y+pugec77hOnp2Rvj7hS
-         mqD387luzCWwASTbyj8Tf5GSUZgR1ehDBUW75Pcvk7UErUGFeXnJvbZuy3VdX0h3XA6U
-         3tpfwxzfzdyysGaEKNBcP/V9egoxB022Jy2HJ0fvM1BMr3MySiYa749JJJ52B79MhP0w
-         GbzyVtlx+pjyYwab+AEKZtZrl7zmdG1Xblue0/O7FFw7i2qOi1GAc3/n0d77+npoTtrr
-         37tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=WUHwJX2N9pIy9QeRXyEGGmeeCpsJdb22/OGUgYWDaZs=;
-        b=FrCMqjM/nWdpjCgTfkbbWRxNb0ni6F7zgjB8tfjudbPbB6B8Mh1p+lwPe2lgeqXm6W
-         ab0MwTlH/uGpIHhHSwUG2rtGCEWZhA5p/Ed5hYbbKc6/lbsIcT7TMizDisgoP/3Ga1Zu
-         uFJdUMirzzn9hnLN2bcFZVAihqCt61chK1JlT3JU22g9N3MRws3qTL02lzk8Cx3cDxhU
-         JQvglvSDKcUqHJHSAfNllhBbhPb1fK2WUr5S6ergrFHmUxL2W6Y6MBzHKWu+XOiTVWPy
-         9CbtK/iHeC+xHX+iuKeSCPskPMor71IQ4JLscE1WeRRFrkR+b1Ingsy4R/cX9ZMvFKGk
-         IAwg==
-X-Gm-Message-State: AOAM531F0FVktxF2frduNIMju9EYDThliYCjOWBO1GuQV5M9V6KBmpab
-        EFgLUS+pba77t27KXovJSFpbR/6M
-X-Google-Smtp-Source: ABdhPJw1Y9Cnn6+Gh+ZM06NjCC6ogM3zVdBvUQGmts4uKhxrr8q5BZlddYmxosKY33dC7K1RoL4sgQ==
-X-Received: by 2002:adf:b198:: with SMTP id q24mr85376wra.368.1591640121560;
-        Mon, 08 Jun 2020 11:15:21 -0700 (PDT)
-Received: from [192.168.43.208] ([5.100.193.151])
-        by smtp.gmail.com with ESMTPSA id w17sm463831wra.71.2020.06.08.11.15.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Jun 2020 11:15:21 -0700 (PDT)
-Subject: Re: [PATCH 0/4] remove work.func
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Cc:     Jens Axboe <axboe@kernel.dk>
-References: <cover.1591637070.git.asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <18e05c85-a626-82a9-b60e-d24d1c40682e@gmail.com>
-Date:   Mon, 8 Jun 2020 21:14:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        Mon, 8 Jun 2020 14:15:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=AtJTdkGcem0MKnYBuQj5wimwQb7HemSYIZc6Qs/sz9M=; b=PZ4/HvdNcrXomQXlNjDnLLTMX2
+        HBjaJwIZQR+PnDcl0yzvjbLVA06OV6eVEsqQ1cPsP+eRpO6KwRDy2UoGq0wazcWt8dPLtFrc/AZE+
+        3iDouVc0OXi71NheLG3CdywARXlAUBmMbI5rlogVlZtqoM13FmRl8bpIZkCCsvgV7/Zc=;
+Received: from cpe-107-184-2-226.socal.res.rr.com ([107.184.2.226] helo=zen.bslabs.net)
+        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <bshanks@codeweavers.com>)
+        id 1jiMId-0008GB-2z; Mon, 08 Jun 2020 13:15:09 -0500
+From:   Brendan Shanks <bshanks@codeweavers.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ricardo.neri-calderon@linux.intel.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        ebiederm@xmission.com, andi@notmuch.email, Babu.Moger@amd.com,
+        Brendan Shanks <bshanks@codeweavers.com>
+Subject: [PATCH v2] x86/umip: Add emulation/spoofing for SLDT and STR instructions
+Date:   Mon,  8 Jun 2020 11:14:54 -0700
+Message-Id: <20200608181454.14210-1-bshanks@codeweavers.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <cover.1591637070.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -25.8
+X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  Add emulation/spoofing of SLDT and STR for both 32- and 64-bit
+    processes. Wine users have found a small number of Windows apps using SLDT
+    that were crashing when run on UMIP-enabled systems. Reported-by: Andreas
+    Rammhold <andi@notmuch.email> Originally-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+    Signed-off-by: Brendan Shanks <bshanks@codeweavers.com> --- 
+ Content analysis details:   (-25.8 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+  -20 USER_IN_WHITELIST      From: address is in the user's white-list
+ -6.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+ -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
+                             [score: 0.0000]
+  0.7 AWL                    AWL: Adjusted score from AWL reputation of From: address
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/06/2020 21:08, Pavel Begunkov wrote:
-> As discussed, removing ->func from io_wq_work and moving
-> it into io-wq.
+Add emulation/spoofing of SLDT and STR for both 32- and 64-bit
+processes.
 
-Xiaoguang Wang, until Jens goes back and picks this up, I'll
-also keep the patchset in my github [1]. Just in case you'd
-want to play with it.
+Wine users have found a small number of Windows apps using SLDT that
+were crashing when run on UMIP-enabled systems.
 
-https://github.com/isilence/linux/commits/rem_work_func
+Reported-by: Andreas Rammhold <andi@notmuch.email>
+Originally-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Signed-off-by: Brendan Shanks <bshanks@codeweavers.com>
+---
 
-> 
-> Pavel Begunkov (4):
->   io_uring: don't derive close state from ->func
->   io_uring: remove custom ->func handlers
->   io_uring: don't arm a timeout through work.func
->   io_wq: add per-wq work handler instead of per work
-> 
->  fs/io-wq.c    |  10 ++-
->  fs/io-wq.h    |   7 +-
->  fs/io_uring.c | 221 +++++++++++++++-----------------------------------
->  3 files changed, 74 insertions(+), 164 deletions(-)
-> 
+v2: Return (GDT_ENTRY_LDT * 8) for SLDT when an LDT is set.
 
+ arch/x86/kernel/umip.c | 34 +++++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
+
+diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
+index 8d5cbe1bbb3b..a85f0b0ec2b9 100644
+--- a/arch/x86/kernel/umip.c
++++ b/arch/x86/kernel/umip.c
+@@ -64,6 +64,8 @@
+ #define UMIP_DUMMY_GDT_BASE 0xfffffffffffe0000ULL
+ #define UMIP_DUMMY_IDT_BASE 0xffffffffffff0000ULL
+ 
++#define UMIP_DUMMY_TASK_REGISTER_SELECTOR 0x40
++
+ /*
+  * The SGDT and SIDT instructions store the contents of the global descriptor
+  * table and interrupt table registers, respectively. The destination is a
+@@ -244,16 +246,35 @@ static int emulate_umip_insn(struct insn *insn, int umip_inst,
+ 		*data_size += UMIP_GDT_IDT_LIMIT_SIZE;
+ 		memcpy(data, &dummy_limit, UMIP_GDT_IDT_LIMIT_SIZE);
+ 
+-	} else if (umip_inst == UMIP_INST_SMSW) {
+-		unsigned long dummy_value = CR0_STATE;
++	} else if (umip_inst == UMIP_INST_SMSW || umip_inst == UMIP_INST_SLDT ||
++		   umip_inst == UMIP_INST_STR) {
++		unsigned long dummy_value;
++
++		if (umip_inst == UMIP_INST_SMSW)
++			dummy_value = CR0_STATE;
++		else if (umip_inst == UMIP_INST_STR)
++			dummy_value = UMIP_DUMMY_TASK_REGISTER_SELECTOR;
++		else if (umip_inst == UMIP_INST_SLDT)
++		{
++#ifdef CONFIG_MODIFY_LDT_SYSCALL
++			down_read(&current->mm->context.ldt_usr_sem);
++			if (current->mm->context.ldt)
++				dummy_value = GDT_ENTRY_LDT * 8;
++			else
++				dummy_value = 0;
++			up_read(&current->mm->context.ldt_usr_sem);
++#else
++			dummy_value = 0;
++#endif
++		}
+ 
+ 		/*
+-		 * Even though the CR0 register has 4 bytes, the number
++		 * For these 3 instructions, the number
+ 		 * of bytes to be copied in the result buffer is determined
+ 		 * by whether the operand is a register or a memory location.
+ 		 * If operand is a register, return as many bytes as the operand
+ 		 * size. If operand is memory, return only the two least
+-		 * siginificant bytes of CR0.
++		 * siginificant bytes.
+ 		 */
+ 		if (X86_MODRM_MOD(insn->modrm.value) == 3)
+ 			*data_size = insn->opnd_bytes;
+@@ -261,7 +282,6 @@ static int emulate_umip_insn(struct insn *insn, int umip_inst,
+ 			*data_size = 2;
+ 
+ 		memcpy(data, &dummy_value, *data_size);
+-	/* STR and SLDT  are not emulated */
+ 	} else {
+ 		return -EINVAL;
+ 	}
+@@ -383,10 +403,6 @@ bool fixup_umip_exception(struct pt_regs *regs)
+ 	umip_pr_warn(regs, "%s instruction cannot be used by applications.\n",
+ 			umip_insns[umip_inst]);
+ 
+-	/* Do not emulate (spoof) SLDT or STR. */
+-	if (umip_inst == UMIP_INST_STR || umip_inst == UMIP_INST_SLDT)
+-		return false;
+-
+ 	umip_pr_warn(regs, "For now, expensive software emulation returns the result.\n");
+ 
+ 	if (emulate_umip_insn(&insn, umip_inst, dummy_data, &dummy_data_size,
 -- 
-Pavel Begunkov
+2.26.2
+
