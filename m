@@ -2,68 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2D01F31E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48DF1F319C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727897AbgFIBTu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Jun 2020 21:19:50 -0400
-Received: from perfectfix.com ([194.84.146.90]:62007 "EHLO mrdoors.com"
+        id S2388254AbgFIBKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 21:10:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726860AbgFIBTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 21:19:49 -0400
-X-Greylist: delayed 478 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Jun 2020 21:19:48 EDT
-X-MDAV-Processed: mrdoors.com, Tue, 09 Jun 2020 04:11:29 +0300
-Received: from mrdoors.com by mrdoors.com (MDaemon PRO v12.5.7)
-        with ESMTP id md50000444703.msg
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 04:11:14 +0300
-X-Spam-Processed: mrdoors.com, Tue, 09 Jun 2020 04:11:14 +0300
-        (not processed: message from trusted or authenticated source)
-X-MDPtrLookup-Result: hardfail ip=197.234.221.253 (no PTR records found) (mrdoors.com)
-X-MDHeloLookup-Result: hardfail smtp.helo=mrdoors.com (does not match 197.234.221.253) (mrdoors.com)
-X-Authenticated-Sender: vacation@mrdoors.com
-X-MDRemoteIP: 197.234.221.253
-X-Return-Path: vacation@mrdoors.com
-X-Envelope-From: vacation@mrdoors.com
-X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
-Reply-To: tolarokanse12@gmail.com
-From:   Mr TOLAR OKANSE <vacation@mrdoors.com>
-To:     linux-kernel@vger.kernel.org
-Subject: Mes Salutations
-Date:   09 Jun 2020 00:52:40 +0800
-Message-ID: <20200609005239.A88D21A6D4AC38E4@mrdoors.com>
+        id S1726877AbgFHXGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:06:13 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5112A20801;
+        Mon,  8 Jun 2020 23:06:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591657572;
+        bh=JrvphMfoqQIUMDepOvQOrRqazbu+04kxc3ja68COgyM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=yXakXsZ10iXu622Mg1bWNHDxKQ0gCvF7WpcpB1zyyWHfUi2uSjeHgFO+W67/ouvgj
+         E/GLA8RE4L6vVgenuXDj4C9mtKCWl12uW6iKiDaEj1AZktPjA9zZW1U3+UFEz5OcNg
+         iQktpl1T1T76zwYfMceBsSJXpbPdgJGX6fQ+3P5w=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Qiujun Huang <hqjagain@gmail.com>,
+        syzbot+d403396d4df67ad0bd5f@syzkaller.appspotmail.com,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 003/274] ath9x: Fix stack-out-of-bounds Write in ath9k_hif_usb_rx_cb
+Date:   Mon,  8 Jun 2020 19:01:36 -0400
+Message-Id: <20200608230607.3361041-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mes Salutations
+From: Qiujun Huang <hqjagain@gmail.com>
 
-Je suis Mr Tolar Okanse,  conseiller financier, des biens et de 
-patrimoines privés. J'ai trouvé votre contact suite à une 
-recherche via l'Internet et je vous prie de m'excuser pour cette 
-intrusion inattendue de ma part et l'effet surpris que cela peut 
-causer vu tout ce qui se passe actuellement sur l'Internet.
+[ Upstream commit 19d6c375d671ce9949a864fb9a03e19f5487b4d3 ]
 
-Par ce message, je viens vous solliciter pour une collaboration 
-sérieuse et fructueuse. Dans le cas où vous serez intéressés par 
-mon offre, une rencontre physique est nécessaire, voir 
-indispensable  afin de discuter tête à tête des axes et 
-paramètres  pour la bonne réalisation de cette collaboration.
+Add barrier to accessing the stack array skb_pool.
 
-En effet, je suis en contact avec un client (ressortissent 
-libyen) qui souhaiterait faire des placements et investissement 
-dans tous les domaines rentable. Ce dernier est à la recherche 
-d'un manager sérieux à qui il va tout confier pour la réalisation 
-de ce projet.
+The case reported by syzbot:
+https://lore.kernel.org/linux-usb/0000000000003d7c1505a2168418@google.com
+BUG: KASAN: stack-out-of-bounds in ath9k_hif_usb_rx_stream
+drivers/net/wireless/ath/ath9k/hif_usb.c:626 [inline]
+BUG: KASAN: stack-out-of-bounds in ath9k_hif_usb_rx_cb+0xdf6/0xf70
+drivers/net/wireless/ath/ath9k/hif_usb.c:666
+Write of size 8 at addr ffff8881db309a28 by task swapper/1/0
 
+Call Trace:
+ath9k_hif_usb_rx_stream drivers/net/wireless/ath/ath9k/hif_usb.c:626
+[inline]
+ath9k_hif_usb_rx_cb+0xdf6/0xf70
+drivers/net/wireless/ath/ath9k/hif_usb.c:666
+__usb_hcd_giveback_urb+0x1f2/0x470 drivers/usb/core/hcd.c:1648
+usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1713
+dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
+call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
+expire_timers kernel/time/timer.c:1449 [inline]
+__run_timers kernel/time/timer.c:1773 [inline]
+__run_timers kernel/time/timer.c:1740 [inline]
+run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
 
-Contact direct: tolarokense12@gmail.com
+Reported-and-tested-by: syzbot+d403396d4df67ad0bd5f@syzkaller.appspotmail.com
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200404041838.10426-5-hqjagain@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath9k/hif_usb.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-
-Cordialement...
-Mr T. Okanse
+diff --git a/drivers/net/wireless/ath/ath9k/hif_usb.c b/drivers/net/wireless/ath/ath9k/hif_usb.c
+index dd0c32379375..c4a2b7201ce3 100644
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.c
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
+@@ -612,6 +612,11 @@ static void ath9k_hif_usb_rx_stream(struct hif_device_usb *hif_dev,
+ 			hif_dev->remain_skb = nskb;
+ 			spin_unlock(&hif_dev->rx_lock);
+ 		} else {
++			if (pool_index == MAX_PKT_NUM_IN_TRANSFER) {
++				dev_err(&hif_dev->udev->dev,
++					"ath9k_htc: over RX MAX_PKT_NUM\n");
++				goto err;
++			}
+ 			nskb = __dev_alloc_skb(pkt_len + 32, GFP_ATOMIC);
+ 			if (!nskb) {
+ 				dev_err(&hif_dev->udev->dev,
+-- 
+2.25.1
 
