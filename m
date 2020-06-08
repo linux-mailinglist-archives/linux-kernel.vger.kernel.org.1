@@ -2,103 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C457A1F1AFB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 16:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509EC1F1AFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 16:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729957AbgFHO1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 10:27:44 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:45769 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728472AbgFHO1n (ORCPT
+        id S1730008AbgFHO2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 10:28:06 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47952 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbgFHO2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 10:27:43 -0400
-Received: by mail-ot1-f66.google.com with SMTP id m2so13756726otr.12;
-        Mon, 08 Jun 2020 07:27:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UXkSZNHi/WgIFB2sRa6DAx0hWylWs93z0GvndY1AAZs=;
-        b=rvlE251EcZtMNJsFOuM3VOfmXPvbgMbN6ZI906LhX4VQTWlcEs1Ew8fQ7nPNzu2qjr
-         j7actgTCI3/eJYd1j6zkpIqQ69INraX2p8dgth9L7n19mESEi2ZuUvpe0s9e51znz9QT
-         MnPToWl1sw/FT+8WbR/n1/EUu4HtICPM5GjBGhTM7S7wdeLVJBMoJ42eoYTZq6RvJhV1
-         QKgX+kigY0PiAMLlc0+UIbixPnueNAdxwWpr8GG3Gz/Wgezqnl2cXYrwFdaO8TQLt6Bp
-         dc05ebg+2Z3Bpj7wWKGOP+dseKdTWXRinvK+NkIaHuTfX+lc/wrRvuq/3S9+DTZ+0WIH
-         YbKQ==
-X-Gm-Message-State: AOAM533KUCT+O7ZEJA2oUmA6BTZDa80patA50dVIGnc5n+jhMKS1dDdu
-        sRqqRysUusJw/XdkSEfoir1X+4jsAYjZSyGhyPw=
-X-Google-Smtp-Source: ABdhPJxNgjxje+XshY61E4Thz/w6k4S3aOlbBBI4Xqo+OMNuRMsgD44RP+i7RwXHJABQLDAYJVkZB3AufOf/JKhLqYI=
-X-Received: by 2002:a05:6830:141a:: with SMTP id v26mr17972661otp.250.1591626461597;
- Mon, 08 Jun 2020 07:27:41 -0700 (PDT)
+        Mon, 8 Jun 2020 10:28:05 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 058ERrIT017802;
+        Mon, 8 Jun 2020 09:27:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591626473;
+        bh=n+zne9QKzwemtxYh0/9VvDSOvejbuyJsP12nNN1zU1E=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=QjUIRsYGB8DUlHu8T9JuZT87fmocvHzbrJfiIv+e1lTh44XrjpmNVrVynJbZ4issO
+         1PTyabe3TuPTi6iaYpKvZkZ3jPA0M6cmz/D2ydX+MGi/5fDkhJVArfj4+l3oNyaw89
+         DMk3CUg4XSIuQKRrVqKjrEOhEvJXQ+4ZqwWNULcE=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 058ERr5s078294
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 8 Jun 2020 09:27:53 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 8 Jun
+ 2020 09:27:52 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 8 Jun 2020 09:27:52 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 058ERqtI037595;
+        Mon, 8 Jun 2020 09:27:52 -0500
+Subject: Re: [PATCH] can: m_can_platform: fix m_can_runtime_suspend()
+To:     Richard Genoud <richard.genoud@gmail.com>,
+        Sriram Dash <sriram.dash@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Faiz Abbas <faiz_abbas@ti.com>
+CC:     <linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200608094348.12650-1-richard.genoud@gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <b9510aa6-d865-7c4f-6730-dcd207bdb753@ti.com>
+Date:   Mon, 8 Jun 2020 09:27:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <1591555267-21822-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1591555267-21822-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1591555267-21822-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 8 Jun 2020 16:27:30 +0200
-Message-ID: <CAMuHMdU35fvy2TM+u=Zu3-4aVnzOC1Sxophu8WaExS7unVH1fg@mail.gmail.com>
-Subject: Re: [PATCH 03/11] arm64: dts: renesas: hihope-common: Separate out
- Rev.2.0 specific into hihope-common-rev2.dtsi file
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200608094348.12650-1-richard.genoud@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+Richard
 
-Thanks for your patch!
-
-On Sun, Jun 7, 2020 at 8:41 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Separate out Rev.2.0 specific hardware changes into
-> hihope-common-rev2.dtsi file so that hihope-common.dtsi can be used
-> by all the variants for RZ/G2M[N] boards.
+On 6/8/20 4:43 AM, Richard Genoud wrote:
+> Since commit f524f829b75a ("can: m_can: Create a m_can platform
+> framework"), the can peripheral on STM32MP1 wasn't working anymore.
 >
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> The reason was a bad copy/paste maneuver that added a call to
+> m_can_class_suspend() in m_can_runtime_suspend().
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Are you sure it was a copy paste error?
 
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/renesas/hihope-common-rev2.dtsi
-> @@ -0,0 +1,101 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Device Tree Source for the HiHope RZ/G2[MN] main board Rev.2.0 common
-> + * parts
-> + *
-> + * Copyright (C) 2020 Renesas Electronics Corp.
-> + */
-> +
-> +#include <dt-bindings/gpio/gpio.h>
+Probably don't want to have an unfounded cause unless you know for 
+certain it was this.
 
-What about adding
+Dan
 
-    #include "hihope-common.dtsi"
 
-here?
-Then the *rev2.dts files have to include only "hihope-common-rev2.dtsi",
-and get "hihope-common.dtsi" for free?
-
-The same is true for the rev4.dtsi and the rev4.dts files.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
