@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3801F2CF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DD51F2E15
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732303AbgFIA3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:29:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
+        id S1729323AbgFHXNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:13:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730188AbgFHXQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:16:12 -0400
+        id S1728863AbgFHXLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:11:14 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 081222076C;
-        Mon,  8 Jun 2020 23:16:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95E15208C3;
+        Mon,  8 Jun 2020 23:11:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658171;
-        bh=GYCIRJadqCjtngCxpF39DU3VLAgOV9p5ZuU8EFPmBRQ=;
+        s=default; t=1591657873;
+        bh=eJYsUxMVZMlCzNovHosZ1/Ch8LyEdLb+TE+MJxS0lv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f+6EALdU7eNA1mZXNXw3+u3DH0+tJl9DOMsWtGMxBx5EmWhgZmoAfeCB2glw4+vbq
-         aJO2U8a1RPl/a3yF0hr8Ab1lmUzhJNoF5kF2pFo5ttE2r/2pCoCa6Xs54PpEDeVkLP
-         yD+38i2PwbGv9Lst42OrRXiv09IBXopQQzuU1psY=
+        b=CVFaYyxa1VmTMOn2DMomla4OMSiXwyN2EtEhE6ANaVLlgjYSrqaVln/aazBT/xMzn
+         ujt4dhjch2GVz5N5Q5ihtKlxHvna/fZquYibskzuPcJFLrySzSsF1ny2GW2sVbQyc0
+         WCf0rObJn6oZgm1cOh3gps2b6+LL2mLo8EnBt2lA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 198/606] flow_dissector: Drop BPF flow dissector prog ref on netns cleanup
-Date:   Mon,  8 Jun 2020 19:05:23 -0400
-Message-Id: <20200608231211.3363633-198-sashal@kernel.org>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        Stan Johnson <userm57@yahoo.com>,
+        Joshua Thompson <funaho@jurai.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH AUTOSEL 5.7 231/274] m68k: mac: Don't call via_flush_cache() on Mac IIfx
+Date:   Mon,  8 Jun 2020 19:05:24 -0400
+Message-Id: <20200608230607.3361041-231-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,95 +46,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Sitnicki <jakub@cloudflare.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-commit 5cf65922bb15279402e1e19b5ee8c51d618fa51f upstream.
+[ Upstream commit bcc44f6b74106b31f0b0408b70305a40360d63b7 ]
 
-When attaching a flow dissector program to a network namespace with
-bpf(BPF_PROG_ATTACH, ...) we grab a reference to bpf_prog.
+There is no VIA2 chip on the Mac IIfx, so don't call via_flush_cache().
+This avoids a boot crash which appeared in v5.4.
 
-If netns gets destroyed while a flow dissector is still attached, and there
-are no other references to the prog, we leak the reference and the program
-remains loaded.
+printk: console [ttyS0] enabled
+printk: bootconsole [debug0] disabled
+printk: bootconsole [debug0] disabled
+Calibrating delay loop... 9.61 BogoMIPS (lpj=48064)
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+devtmpfs: initialized
+random: get_random_u32 called from bucket_table_alloc.isra.27+0x68/0x194 with crng_init=0
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+futex hash table entries: 256 (order: -1, 3072 bytes, linear)
+NET: Registered protocol family 16
+Data read fault at 0x00000000 in Super Data (pc=0x8a6a)
+BAD KERNEL BUSERR
+Oops: 00000000
+Modules linked in:
+PC: [<00008a6a>] via_flush_cache+0x12/0x2c
+SR: 2700  SP: 01c1fe3c  a2: 01c24000
+d0: 00001119    d1: 0000000c    d2: 00012000    d3: 0000000f
+d4: 01c06840    d5: 00033b92    a0: 00000000    a1: 00000000
+Process swapper (pid: 1, task=01c24000)
+Frame format=B ssw=0755 isc=0200 isb=fff7 daddr=00000000 dobuf=01c1fed0
+baddr=00008a6e dibuf=0000004e ver=f
+Stack from 01c1fec4:
+        01c1fed0 00007d7e 00010080 01c1fedc 0000792e 00000001 01c1fef4 00006b40
+        01c80000 00040000 00000006 00000003 01c1ff1c 004a545e 004ff200 00040000
+        00000000 00000003 01c06840 00033b92 004a5410 004b6c88 01c1ff84 000021e2
+        00000073 00000003 01c06840 00033b92 0038507a 004bb094 004b6ca8 004b6c88
+        004b6ca4 004b6c88 000021ae 00020002 00000000 01c0685d 00000000 01c1ffb4
+        0049f938 00409c85 01c06840 0045bd40 00000073 00000002 00000002 00000000
+Call Trace: [<00007d7e>] mac_cache_card_flush+0x12/0x1c
+ [<00010080>] fix_dnrm+0x2/0x18
+ [<0000792e>] cache_push+0x46/0x5a
+ [<00006b40>] arch_dma_prep_coherent+0x60/0x6e
+ [<00040000>] switched_to_dl+0x76/0xd0
+ [<004a545e>] dma_atomic_pool_init+0x4e/0x188
+ [<00040000>] switched_to_dl+0x76/0xd0
+ [<00033b92>] parse_args+0x0/0x370
+ [<004a5410>] dma_atomic_pool_init+0x0/0x188
+ [<000021e2>] do_one_initcall+0x34/0x1be
+ [<00033b92>] parse_args+0x0/0x370
+ [<0038507a>] strcpy+0x0/0x1e
+ [<000021ae>] do_one_initcall+0x0/0x1be
+ [<00020002>] do_proc_dointvec_conv+0x54/0x74
+ [<0049f938>] kernel_init_freeable+0x126/0x190
+ [<0049f94c>] kernel_init_freeable+0x13a/0x190
+ [<004a5410>] dma_atomic_pool_init+0x0/0x188
+ [<00041798>] complete+0x0/0x3c
+ [<000b9b0c>] kfree+0x0/0x20a
+ [<0038df98>] schedule+0x0/0xd0
+ [<0038d604>] kernel_init+0x0/0xda
+ [<0038d610>] kernel_init+0xc/0xda
+ [<0038d604>] kernel_init+0x0/0xda
+ [<00002d38>] ret_from_kernel_thread+0xc/0x14
+Code: 0000 2079 0048 10da 2279 0048 10c8 d3c8 <1011> 0200 fff7 1280 d1f9 0048 10c8 1010 0000 0008 1080 4e5e 4e75 4e56 0000 2039
+Disabling lock debugging due to kernel taint
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
 
-Leak can be reproduced by running flow dissector tests from selftests/bpf:
+Thanks to Stan Johnson for capturing the console log and running git
+bisect.
 
-  # bpftool prog list
-  # ./test_flow_dissector.sh
-  ...
-  selftests: test_flow_dissector [PASS]
-  # bpftool prog list
-  4: flow_dissector  name _dissect  tag e314084d332a5338  gpl
-          loaded_at 2020-05-20T18:50:53+0200  uid 0
-          xlated 552B  jited 355B  memlock 4096B  map_ids 3,4
-          btf_id 4
-  #
+Git bisect said commit 8e3a68fb55e0 ("dma-mapping: make
+dma_atomic_pool_init self-contained") is the first "bad" commit. I don't
+know why. Perhaps mach_l2_flush first became reachable with that commit.
 
-Fix it by detaching the flow dissector program when netns is going away.
-
-Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-Link: https://lore.kernel.org/bpf/20200521083435.560256-1-jakub@cloudflare.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Cc: Joshua Thompson <funaho@jurai.org>
+Link: https://lore.kernel.org/r/b8bbeef197d6b3898e82ed0d231ad08f575a4b34.1589949122.git.fthain@telegraphics.com.au
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/flow_dissector.c | 26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
+ arch/m68k/include/asm/mac_via.h |  1 +
+ arch/m68k/mac/config.c          | 21 ++-------------------
+ arch/m68k/mac/via.c             |  6 +++++-
+ 3 files changed, 8 insertions(+), 20 deletions(-)
 
-diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-index a1670dff0629..0e5012d7b7b5 100644
---- a/net/core/flow_dissector.c
-+++ b/net/core/flow_dissector.c
-@@ -160,12 +160,10 @@ int skb_flow_dissector_bpf_prog_attach(const union bpf_attr *attr,
- 	return ret;
+diff --git a/arch/m68k/include/asm/mac_via.h b/arch/m68k/include/asm/mac_via.h
+index de1470c4d829..1149251ea58d 100644
+--- a/arch/m68k/include/asm/mac_via.h
++++ b/arch/m68k/include/asm/mac_via.h
+@@ -257,6 +257,7 @@ extern int rbv_present,via_alt_mapping;
+ 
+ struct irq_desc;
+ 
++extern void via_l2_flush(int writeback);
+ extern void via_register_interrupts(void);
+ extern void via_irq_enable(int);
+ extern void via_irq_disable(int);
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 611f73bfc87c..d0126ab01360 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -59,7 +59,6 @@ extern void iop_preinit(void);
+ extern void iop_init(void);
+ extern void via_init(void);
+ extern void via_init_clock(irq_handler_t func);
+-extern void via_flush_cache(void);
+ extern void oss_init(void);
+ extern void psc_init(void);
+ extern void baboon_init(void);
+@@ -130,21 +129,6 @@ int __init mac_parse_bootinfo(const struct bi_record *record)
+ 	return unknown;
  }
  
--int skb_flow_dissector_bpf_prog_detach(const union bpf_attr *attr)
-+static int flow_dissector_bpf_prog_detach(struct net *net)
- {
- 	struct bpf_prog *attached;
--	struct net *net;
- 
--	net = current->nsproxy->net_ns;
- 	mutex_lock(&flow_dissector_mutex);
- 	attached = rcu_dereference_protected(net->flow_dissector_prog,
- 					     lockdep_is_held(&flow_dissector_mutex));
-@@ -179,6 +177,24 @@ int skb_flow_dissector_bpf_prog_detach(const union bpf_attr *attr)
- 	return 0;
- }
- 
-+int skb_flow_dissector_bpf_prog_detach(const union bpf_attr *attr)
-+{
-+	return flow_dissector_bpf_prog_detach(current->nsproxy->net_ns);
-+}
-+
-+static void __net_exit flow_dissector_pernet_pre_exit(struct net *net)
-+{
-+	/* We're not racing with attach/detach because there are no
-+	 * references to netns left when pre_exit gets called.
-+	 */
-+	if (rcu_access_pointer(net->flow_dissector_prog))
-+		flow_dissector_bpf_prog_detach(net);
-+}
-+
-+static struct pernet_operations flow_dissector_pernet_ops __net_initdata = {
-+	.pre_exit = flow_dissector_pernet_pre_exit,
-+};
-+
- /**
-  * __skb_flow_get_ports - extract the upper layer ports and return them
-  * @skb: sk_buff to extract the ports from
-@@ -1838,7 +1854,7 @@ static int __init init_default_flow_dissectors(void)
- 	skb_flow_dissector_init(&flow_keys_basic_dissector,
- 				flow_keys_basic_dissector_keys,
- 				ARRAY_SIZE(flow_keys_basic_dissector_keys));
--	return 0;
+-/*
+- * Flip into 24bit mode for an instant - flushes the L2 cache card. We
+- * have to disable interrupts for this. Our IRQ handlers will crap
+- * themselves if they take an IRQ in 24bit mode!
+- */
+-
+-static void mac_cache_card_flush(int writeback)
+-{
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
+-	via_flush_cache();
+-	local_irq_restore(flags);
 -}
+-
+ void __init config_mac(void)
+ {
+ 	if (!MACH_IS_MAC)
+@@ -175,9 +159,8 @@ void __init config_mac(void)
+ 	 * not.
+ 	 */
  
-+	return register_pernet_subsys(&flow_dissector_pernet_ops);
-+}
- core_initcall(init_default_flow_dissectors);
+-	if (macintosh_config->ident == MAC_MODEL_IICI
+-	    || macintosh_config->ident == MAC_MODEL_IIFX)
+-		mach_l2_flush = mac_cache_card_flush;
++	if (macintosh_config->ident == MAC_MODEL_IICI)
++		mach_l2_flush = via_l2_flush;
+ }
+ 
+ 
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index 3c2cfcb74982..1f0fad2a98a0 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -294,10 +294,14 @@ void via_debug_dump(void)
+  * the system into 24-bit mode for an instant.
+  */
+ 
+-void via_flush_cache(void)
++void via_l2_flush(int writeback)
+ {
++	unsigned long flags;
++
++	local_irq_save(flags);
+ 	via2[gBufB] &= ~VIA2B_vMode32;
+ 	via2[gBufB] |= VIA2B_vMode32;
++	local_irq_restore(flags);
+ }
+ 
+ /*
 -- 
 2.25.1
 
