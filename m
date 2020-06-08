@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377431F29C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13AE21F2A66
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729935AbgFIAER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:04:17 -0400
-Received: from mga11.intel.com ([192.55.52.93]:45463 "EHLO mga11.intel.com"
+        id S1732670AbgFIAHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:07:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731203AbgFHXVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:21:42 -0400
-IronPort-SDR: wFi2Bku30C94HDgkwmxS3cfCG+mYEBxo9MifhoIRGv9TPDc6BbinmwwuN16SzJhaYx+RO6+DJx
- AdJs6vT8ZYyA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2020 16:21:42 -0700
-IronPort-SDR: kx5nDcyS4aVdfRMtlstMyxBs9HPdSJuM7/Oo8XujZR2FD9UogzBuzmXUJkcT2fjil7QUwiqSed
- 2HZWec3fVlVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,489,1583222400"; 
-   d="scan'208";a="295641909"
-Received: from allen-box.sh.intel.com ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 08 Jun 2020 16:21:40 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Lalithambika Krishnakumar <lalithambika.krishnakumar@intel.com>
-Subject: [PATCH 1/1] iommu/vt-d: Enable PCI ACS for platform opt in hint
-Date:   Tue,  9 Jun 2020 07:17:20 +0800
-Message-Id: <20200608231720.27740-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727887AbgFHXUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:20:45 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4E8020814;
+        Mon,  8 Jun 2020 23:20:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591658445;
+        bh=0gFlLO/NhXevynsuDqV81mOPb6QAcXpFbYaEGDBA/+o=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BsseO4LfkmYNq+IyphKawSCmrFLrTejerABbCUuj8gcOF485aoE31LNPzB2RFSAw7
+         9NHis2beI9vv8edp42uFROqu3gs+68FVeMJS7yaM0Kf6bnRdsGznGMsn5E3r0Z03N2
+         II5AMC6KTrYcIQ+VqP/Tnrj1Lsntyt7Ceynftlfk=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Barret Rhoden <brho@google.com>,
+        syzbot+bb4935a5c09b5ff79940@syzkaller.appspotmail.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 087/175] perf: Add cond_resched() to task_function_call()
+Date:   Mon,  8 Jun 2020 19:17:20 -0400
+Message-Id: <20200608231848.3366970-87-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
+References: <20200608231848.3366970-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCI ACS is disabled if Intel IOMMU is off by default or intel_iommu=off
-is used in command line. Unfortunately, Intel IOMMU will be forced on if
-there're devices sitting on an external facing PCI port that is marked
-as untrusted (for example, thunderbolt peripherals). That means, PCI ACS
-is disabled while Intel IOMMU is forced on to isolate those devices. As
-the result, the devices of an MFD will be grouped by a single group even
-the ACS is supported on device.
+From: Barret Rhoden <brho@google.com>
 
-[    0.691263] pci 0000:00:07.1: Adding to iommu group 3
-[    0.691277] pci 0000:00:07.2: Adding to iommu group 3
-[    0.691292] pci 0000:00:07.3: Adding to iommu group 3
+[ Upstream commit 2ed6edd33a214bca02bd2b45e3fc3038a059436b ]
 
-Fix it by requesting PCI ACS when Intel IOMMU is detected with platform
-opt in hint.
+Under rare circumstances, task_function_call() can repeatedly fail and
+cause a soft lockup.
 
-Fixes: 89a6079df791a ("iommu/vt-d: Force IOMMU on for platform opt in hint")
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Ashok Raj <ashok.raj@intel.com>
-Co-developed-by: Lalithambika Krishnakumar <lalithambika.krishnakumar@intel.com>
-Signed-off-by: Lalithambika Krishnakumar <lalithambika.krishnakumar@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+There is a slight race where the process is no longer running on the cpu
+we targeted by the time remote_function() runs.  The code will simply
+try again.  If we are very unlucky, this will continue to fail, until a
+watchdog fires.  This can happen in a heavily loaded, multi-core virtual
+machine.
+
+Reported-by: syzbot+bb4935a5c09b5ff79940@syzkaller.appspotmail.com
+Signed-off-by: Barret Rhoden <brho@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200414222920.121401-1-brho@google.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/dmar.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/events/core.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/iommu/dmar.c b/drivers/iommu/dmar.c
-index 60a2970c37ff..9e3e9067a71d 100644
---- a/drivers/iommu/dmar.c
-+++ b/drivers/iommu/dmar.c
-@@ -898,7 +898,8 @@ int __init detect_intel_iommu(void)
- 	if (!ret)
- 		ret = dmar_walk_dmar_table((struct acpi_table_dmar *)dmar_tbl,
- 					   &validate_drhd_cb);
--	if (!ret && !no_iommu && !iommu_detected && !dmar_disabled) {
-+	if (!ret && !no_iommu && !iommu_detected &&
-+	    (!dmar_disabled || dmar_platform_optin())) {
- 		iommu_detected = 1;
- 		/* Make sure ACS will be enabled */
- 		pci_request_acs();
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 7382fc95d41e..aaaf50b25cc9 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -93,11 +93,11 @@ static void remote_function(void *data)
+  * @info:	the function call argument
+  *
+  * Calls the function @func when the task is currently running. This might
+- * be on the current CPU, which just calls the function directly
++ * be on the current CPU, which just calls the function directly.  This will
++ * retry due to any failures in smp_call_function_single(), such as if the
++ * task_cpu() goes offline concurrently.
+  *
+- * returns: @func return value, or
+- *	    -ESRCH  - when the process isn't running
+- *	    -EAGAIN - when the process moved away
++ * returns @func return value or -ESRCH when the process isn't running
+  */
+ static int
+ task_function_call(struct task_struct *p, remote_function_f func, void *info)
+@@ -110,11 +110,16 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
+ 	};
+ 	int ret;
+ 
+-	do {
+-		ret = smp_call_function_single(task_cpu(p), remote_function, &data, 1);
+-		if (!ret)
+-			ret = data.ret;
+-	} while (ret == -EAGAIN);
++	for (;;) {
++		ret = smp_call_function_single(task_cpu(p), remote_function,
++					       &data, 1);
++		ret = !ret ? data.ret : -EAGAIN;
++
++		if (ret != -EAGAIN)
++			break;
++
++		cond_resched();
++	}
+ 
+ 	return ret;
+ }
 -- 
-2.17.1
+2.25.1
 
