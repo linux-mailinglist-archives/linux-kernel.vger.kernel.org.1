@@ -2,93 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED571F2639
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1A71F2724
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732625AbgFHXeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:34:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732171AbgFHX1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:27:50 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E0FA20801;
-        Mon,  8 Jun 2020 23:27:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658869;
-        bh=YOvx+5mj0Dgp9Ng7is8QTXRd5/0609AkYbrMTO5lq0o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xQA6drIu2iTxyDeoHXgbVusq3oa+ht7aoknx7PHPIB22VYvXnw5ahbW1zogQjDVuU
-         iiUWbCbJiNrPHNQoBQWoSHOBCkxmvB/uhTDqe4w2DPyANyzqv31mFKR/W5UhIBbCom
-         PM3f+/IzHkJwPVXUbz+u3jUMM7hQNnFo754UXrfQ=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ido Schimmel <idosch@mellanox.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 50/50] vxlan: Avoid infinite loop when suppressing NS messages with invalid options
-Date:   Mon,  8 Jun 2020 19:26:40 -0400
-Message-Id: <20200608232640.3370262-50-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608232640.3370262-1-sashal@kernel.org>
-References: <20200608232640.3370262-1-sashal@kernel.org>
+        id S1731101AbgFHXmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732123AbgFHX1W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:27:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14266C08C5C2;
+        Mon,  8 Jun 2020 16:27:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=xyZktwFw/PfsepqoistGI2Zu+WjsJE4jBtC4bLVR/g8=; b=Fii8ZR3Zn1fZFppUKCqm/mn0Dq
+        UBpNtB5T+cpC0wr3Jrs+s3i2idqfUkLdYq3lL1Hpk4JwBtRwFfaQAfSxvrpA+d48EU7sEc5DRYe6i
+        grcj1T87C4EgzRG2XZOSpnd5ggrc6vqRoM2NSrS4v9EIxFPRPaPdYbry4SBd0XNPbQx0ioKUUDJbK
+        B9l4Ib84cCkXQ5zeUEjxX0bugeeii4iwsxTAuswXTW4DTJL7Vf0Q9ZCAEcLESx9GqbxV001Dguhz1
+        XafVgjFI/Uqab7m9UfW4kOIDyf2tJnQh9ATHNZf4X789rri0PyEipT/zjeWrXvQ8GSMIOPOsF5bLb
+        3rXV9wNw==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jiRAe-000826-92; Mon, 08 Jun 2020 23:27:12 +0000
+Subject: Re: [PATCH v2 3/3] platform/x86: dell-wmi: add new dmi keys to
+ bios_to_linux_keycode
+To:     Y Paritcher <y.linux@paritcher.com>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Mario.Limonciello@dell.com
+References: <cover.1591584631.git.y.linux@paritcher.com>
+ <cover.1591656154.git.y.linux@paritcher.com>
+ <d585d2a0f01a6b9480352530b571dec2d1afd79f.1591656154.git.y.linux@paritcher.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8053252a-83ad-bcaa-2830-ccfbca1b4152@infradead.org>
+Date:   Mon, 8 Jun 2020 16:27:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <d585d2a0f01a6b9480352530b571dec2d1afd79f.1591656154.git.y.linux@paritcher.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@mellanox.com>
+Hi--
 
-[ Upstream commit 8066e6b449e050675df48e7c4b16c29f00507ff0 ]
+On 6/8/20 4:05 PM, Y Paritcher wrote:
+> Increase length of bios_to_linux_keycode to 2 bytes (the true size of a
+> keycode) to allow for a new keycode 0xffff, this silences the following
+> messages being logged at startup on a Dell Inspiron 5593:
+> 
+>     dell_wmi: firmware scancode 0x48 maps to unrecognized keycode 0xffff
+>     dell_wmi: firmware scancode 0x50 maps to unrecognized keycode 0xffff
+> 
+> as per this code comment:
+> 
+>    Log if we find an entry in the DMI table that we don't
+>    understand.  If this happens, we should figure out what
+>    the entry means and add it to bios_to_linux_keycode.
+> 
+> These are keycodes included in the 0xB2 DMI table, for which the
+> corosponding keys are not known.
 
-When proxy mode is enabled the vxlan device might reply to Neighbor
-Solicitation (NS) messages on behalf of remote hosts.
+  corresponding
 
-In case the NS message includes the "Source link-layer address" option
-[1], the vxlan device will use the specified address as the link-layer
-destination address in its reply.
+> 
+> Now when a user will encounter this key, a proper message wil be printed:
+> 
+>     dell_wmi: Unknown key with type 0xXXXX and code 0xXXXX pressed
+> 
+> This will then allow the key to be identified properly.
+> 
+> Signed-off-by: Y Paritcher <y.linux@paritcher.com>
+> ---
+>  drivers/platform/x86/dell-wmi.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/dell-wmi.c b/drivers/platform/x86/dell-wmi.c
+> index 6b510f8431a3..dae1db96b5a0 100644
+> --- a/drivers/platform/x86/dell-wmi.c
+> +++ b/drivers/platform/x86/dell-wmi.c
+> @@ -196,7 +196,7 @@ struct dell_dmi_results {
+>  };
+>  
+>  /* Uninitialized entries here are KEY_RESERVED == 0. */
+> -static const u16 bios_to_linux_keycode[256] = {
+> +static const u16 bios_to_linux_keycode[65536] = {
 
-To avoid an infinite loop, break out of the options parsing loop when
-encountering an option with length zero and disregard the NS message.
+It surely seems odd to me to expand an array from 512 bytes to 128 Kbytes
+just to handle one special case.  Can't it be handled in code as a
+special case?
 
-This is consistent with the IPv6 ndisc code and RFC 4886 which states
-that "Nodes MUST silently discard an ND packet that contains an option
-with length zero" [2].
+>  	[0]	= KEY_MEDIA,
+>  	[1]	= KEY_NEXTSONG,
+>  	[2]	= KEY_PLAYPAUSE,
+> @@ -237,6 +237,7 @@ static const u16 bios_to_linux_keycode[256] = {
+>  	[37]	= KEY_UNKNOWN,
+>  	[38]	= KEY_MICMUTE,
+>  	[255]	= KEY_PROG3,
+> +	[65535]	= KEY_UNKNOWN,
+>  };
+>  
+>  /*
+> @@ -503,10 +504,7 @@ static void handle_dmi_entry(const struct dmi_header *dm, void *opaque)
+>  					&table->keymap[i];
+>  
+>  		/* Uninitialized entries are 0 aka KEY_RESERVED. */
+> -		u16 keycode = (bios_entry->keycode <
+> -			       ARRAY_SIZE(bios_to_linux_keycode)) ?
+> -			bios_to_linux_keycode[bios_entry->keycode] :
+> -			KEY_RESERVED;
+> +		u16 keycode = bios_to_linux_keycode[bios_entry->keycode];
+>  
+>  		/*
+>  		 * Log if we find an entry in the DMI table that we don't
+> 
 
-[1] https://tools.ietf.org/html/rfc4861#section-4.3
-[2] https://tools.ietf.org/html/rfc4861#section-4.6
+Something like:
 
-Fixes: 4b29dba9c085 ("vxlan: fix nonfunctional neigh_reduce()")
-Signed-off-by: Ido Schimmel <idosch@mellanox.com>
-Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/vxlan.c | 4 ++++
- 1 file changed, 4 insertions(+)
+		u16 keycode;
 
-diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
-index 58ddb6c90418..b1470d30d079 100644
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -1521,6 +1521,10 @@ static struct sk_buff *vxlan_na_create(struct sk_buff *request,
- 	daddr = eth_hdr(request)->h_source;
- 	ns_olen = request->len - skb_transport_offset(request) - sizeof(*ns);
- 	for (i = 0; i < ns_olen-1; i += (ns->opt[i+1]<<3)) {
-+		if (!ns->opt[i + 1]) {
-+			kfree_skb(reply);
-+			return NULL;
-+		}
- 		if (ns->opt[i] == ND_OPT_SOURCE_LL_ADDR) {
- 			daddr = ns->opt + i + sizeof(struct nd_opt_hdr);
- 			break;
+		keycode = bios_entry->keycode == 0xffff ? KEY_UNKNOWN :
+			(bios_entry->keycode <
+			       ARRAY_SIZE(bios_to_linux_keycode)) ?
+			bios_to_linux_keycode[bios_entry->keycode] :
+			KEY_RESERVED;
+
+
+
+Also please fix this:
+(no To-header on input) <>
+
 -- 
-2.25.1
+~Randy
 
