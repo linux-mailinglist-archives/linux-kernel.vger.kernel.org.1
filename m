@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 444C11F238B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEE31F238A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730045AbgFHXPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:15:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60726 "EHLO mail.kernel.org"
+        id S1730037AbgFHXP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:15:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728627AbgFHXM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:12:56 -0400
+        id S1728231AbgFHXM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:12:57 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E05D4214F1;
-        Mon,  8 Jun 2020 23:12:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1697D208C7;
+        Mon,  8 Jun 2020 23:12:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657976;
-        bh=CwE1cZJHVaxT5PiruDHHWkhSXCAJv5i2dJ9hewlQBwc=;
+        s=default; t=1591657977;
+        bh=jpDTO98NTAQXW0vDddw9K2FDKrrPkVG//C7RQILuNx0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EPxpIre9sRhBPyiA1Ugq/kmZuvrfxPNG1JqZof9zh+ShQMZWYpV+L4NfhdKSaePwq
-         d5k+xB/llBLCVLVjUlPO1qYfslca8hie+Pm07nvlKXpS6pM+MFVXDXMvCxUhXKP7tL
-         5mgb8IwcqXFxXEjasSCv3Hkaafys/JG1bWJkTM+s=
+        b=rvDz3DiQklk9Udj2lX9/vBUrPmBdNgkGuZdmJY2RxtssrOVhZiKMj/VK3K+YbAXzk
+         e5yGNyd4VyMF0MdlnlSbNpmazDq1O3KIqFBBP9GJRaXrzkOb0amGfPgRccjP4/TqH4
+         eYSV+FteXGxjvxTOex5wU23qJkn5jAjCKP36rlOQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Aurelien Jarno <aurelien@aurel32.net>,
+Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.6 038/606] powerpc/vdso32: Fallback on getres syscall when clock is unknown
-Date:   Mon,  8 Jun 2020 19:02:43 -0400
-Message-Id: <20200608231211.3363633-38-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 039/606] powerpc/32s: Fix build failure with CONFIG_PPC_KUAP_DEBUG
+Date:   Mon,  8 Jun 2020 19:02:44 -0400
+Message-Id: <20200608231211.3363633-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -45,46 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
 
-commit e963b7a28b2bf2416304e1a15df967fcf662aff5 upstream.
+commit 4833ce06e6855d526234618b746ffb71d6612c9a upstream.
 
-There are other clocks than the standard ones, for instance
-per process clocks. Therefore, being above the last standard clock
-doesn't mean it is a bad clock. So, fallback to syscall instead
-of returning -EINVAL inconditionaly.
+gpr2 is not a parametre of kuap_check(), it doesn't exist.
 
-Fixes: e33ffc956b08 ("powerpc/vdso32: implement clock_getres entirely")
-Cc: stable@vger.kernel.org # v5.6+
-Reported-by: Aurelien Jarno <aurelien@aurel32.net>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Use gpr instead.
+
+Fixes: a68c31fc01ef ("powerpc/32s: Implement Kernel Userspace Access Protection")
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Tested-by: Aurelien Jarno <aurelien@aurel32.net>
-Link: https://lore.kernel.org/r/7316a9e2c0c2517923eb4b0411c4a08d15e675a4.1589017281.git.christophe.leroy@csgroup.eu
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/ea599546f2a7771bde551393889e44e6b2632332.1587368807.git.christophe.leroy@c-s.fr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/vdso32/gettimeofday.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/powerpc/include/asm/book3s/32/kup.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/vdso32/gettimeofday.S b/arch/powerpc/kernel/vdso32/gettimeofday.S
-index a3951567118a..e7f8f9f1b3f4 100644
---- a/arch/powerpc/kernel/vdso32/gettimeofday.S
-+++ b/arch/powerpc/kernel/vdso32/gettimeofday.S
-@@ -218,11 +218,11 @@ V_FUNCTION_BEGIN(__kernel_clock_getres)
- 	blr
+diff --git a/arch/powerpc/include/asm/book3s/32/kup.h b/arch/powerpc/include/asm/book3s/32/kup.h
+index 3c0ba22dc360..db0a1c281587 100644
+--- a/arch/powerpc/include/asm/book3s/32/kup.h
++++ b/arch/powerpc/include/asm/book3s/32/kup.h
+@@ -75,7 +75,7 @@
  
- 	/*
--	 * invalid clock
-+	 * syscall fallback
- 	 */
- 99:
--	li	r3, EINVAL
--	crset	so
-+	li	r0,__NR_clock_getres
-+	sc
- 	blr
-   .cfi_endproc
- V_FUNCTION_END(__kernel_clock_getres)
+ .macro kuap_check	current, gpr
+ #ifdef CONFIG_PPC_KUAP_DEBUG
+-	lwz	\gpr2, KUAP(thread)
++	lwz	\gpr, KUAP(thread)
+ 999:	twnei	\gpr, 0
+ 	EMIT_BUG_ENTRY 999b, __FILE__, __LINE__, (BUGFLAG_WARNING | BUGFLAG_ONCE)
+ #endif
 -- 
 2.25.1
 
