@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E0D1F29DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43CA1F29CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732463AbgFIAE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:04:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45760 "EHLO mail.kernel.org"
+        id S1732819AbgFIAEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:04:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731169AbgFHXVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:21:30 -0400
+        id S1731178AbgFHXVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:21:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D066720897;
-        Mon,  8 Jun 2020 23:21:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB4B120842;
+        Mon,  8 Jun 2020 23:21:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658490;
-        bh=qqEFLn5pGN9vcJ9ZgV8blx1BICeewC5tq02PzU36f6k=;
+        s=default; t=1591658496;
+        bh=Wvt/DzjT+C/T54IBvndjaPL4BV1+nOgQr/M22IgSEMM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rEZWgUpLlfcW875nOMGE2lPa6hWcxNmCJTm0ghiyet9Alg1/uRkHLIiMh0yb5BxpK
-         ldPvkn3voh9EPGWvOgebmLrKTJVFSCgWbWUNmKl7WmDygOrIoR1z5nyDJLSbYBMVwn
-         /lE5EWTyjhWM/QM7MXu/hwpkUEdEjFkneoKSwEVw=
+        b=DxnSRkX7TKbHiv9zvOm/HZSf2ZoA8u56ymiY6BlktXwAJodycmCsbwMF0E+HHaHWp
+         zEaGno6iLMoQA+f+jpWfMlHMmgqwvlPIoOmYuE7PQ43Pgc63WK/KdHhYjZcI9h/ln8
+         LGkaMbjv5Ucud2Qa0CNL76NZ2o5hWZPqtnmlWWVU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tejun Heo <tj@kernel.org>, Andy Newell <newella@fb.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 124/175] iocost: don't let vrate run wild while there's no saturation signal
-Date:   Mon,  8 Jun 2020 19:17:57 -0400
-Message-Id: <20200608231848.3366970-124-sashal@kernel.org>
+Cc:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 129/175] mwifiex: Fix memory corruption in dump_station
+Date:   Mon,  8 Jun 2020 19:18:02 -0400
+Message-Id: <20200608231848.3366970-129-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -43,101 +46,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tejun Heo <tj@kernel.org>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 81ca627a933063fa63a6d4c66425de822a2ab7f5 ]
+[ Upstream commit 3aa42bae9c4d1641aeb36f1a8585cd1d506cf471 ]
 
-When the QoS targets are met and nothing is being throttled, there's
-no way to tell how saturated the underlying device is - it could be
-almost entirely idle, at the cusp of saturation or anywhere inbetween.
-Given that there's no information, it's best to keep vrate as-is in
-this state.  Before 7cd806a9a953 ("iocost: improve nr_lagging
-handling"), this was the case - if the device isn't missing QoS
-targets and nothing is being throttled, busy_level was reset to zero.
+The mwifiex_cfg80211_dump_station() uses static variable for iterating
+over a linked list of all associated stations (when the driver is in UAP
+role). This has a race condition if .dump_station is called in parallel
+for multiple interfaces. This corruption can be triggered by registering
+multiple SSIDs and calling, in parallel for multiple interfaces
+    iw dev <iface> station dump
 
-While fixing nr_lagging handling, 7cd806a9a953 ("iocost: improve
-nr_lagging handling") broke this.  Now, while the device is hitting
-QoS targets and nothing is being throttled, vrate keeps getting
-adjusted according to the existing busy_level.
+[16750.719775] Unable to handle kernel paging request at virtual address dead000000000110
+...
+[16750.899173] Call trace:
+[16750.901696]  mwifiex_cfg80211_dump_station+0x94/0x100 [mwifiex]
+[16750.907824]  nl80211_dump_station+0xbc/0x278 [cfg80211]
+[16750.913160]  netlink_dump+0xe8/0x320
+[16750.916827]  netlink_recvmsg+0x1b4/0x338
+[16750.920861]  ____sys_recvmsg+0x7c/0x2b0
+[16750.924801]  ___sys_recvmsg+0x70/0x98
+[16750.928564]  __sys_recvmsg+0x58/0xa0
+[16750.932238]  __arm64_sys_recvmsg+0x28/0x30
+[16750.936453]  el0_svc_common.constprop.3+0x90/0x158
+[16750.941378]  do_el0_svc+0x74/0x90
+[16750.944784]  el0_sync_handler+0x12c/0x1a8
+[16750.948903]  el0_sync+0x114/0x140
+[16750.952312] Code: f9400003 f907f423 eb02007f 54fffd60 (b9401060)
+[16750.958583] ---[ end trace c8ad181c2f4b8576 ]---
 
-This led to vrate keeping climing till it hits max when there's an IO
-issuer with limited request concurrency if the vrate started low.
-vrate starts getting adjusted upwards until the issuer can issue IOs
-w/o being throttled.  From then on, QoS targets keeps getting met and
-nothing on the system needs throttling and vrate keeps getting
-increased due to the existing busy_level.
+This patch drops the use of the static iterator, and instead every time
+the function is called iterates to the idx-th position of the
+linked-list.
 
-This patch makes the following changes to the busy_level logic.
+It would be better to convert the code not to use linked list for
+associated stations storage (since the chip has a limited number of
+associated stations anyway - it could just be an array). Such a change
+may be proposed in the future. In the meantime this patch can backported
+into stable kernels in this simple form.
 
-* Reset busy_level if nr_shortages is zero to avoid the above
-  scenario.
-
-* Make non-zero nr_lagging block lowering nr_level but still clear
-  positive busy_level if there's clear non-saturation signal - QoS
-  targets are met and nr_shortages is non-zero.  nr_lagging's role is
-  preventing adjusting vrate upwards while there are long-running
-  commands and it shouldn't keep busy_level positive while there's
-  clear non-saturation signal.
-
-* Restructure code for clarity and add comments.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Andy Newell <newella@fb.com>
-Fixes: 7cd806a9a953 ("iocost: improve nr_lagging handling")
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 8baca1a34d4c ("mwifiex: dump station support in uap mode")
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200515075924.13841-1-pali@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-iocost.c | 28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+ drivers/net/wireless/marvell/mwifiex/cfg80211.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index d083f7704082..4d2bda812d9b 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -1546,19 +1546,39 @@ static void ioc_timer_fn(struct timer_list *timer)
- 	if (rq_wait_pct > RQ_WAIT_BUSY_PCT ||
- 	    missed_ppm[READ] > ppm_rthr ||
- 	    missed_ppm[WRITE] > ppm_wthr) {
-+		/* clearly missing QoS targets, slow down vrate */
- 		ioc->busy_level = max(ioc->busy_level, 0);
- 		ioc->busy_level++;
- 	} else if (rq_wait_pct <= RQ_WAIT_BUSY_PCT * UNBUSY_THR_PCT / 100 &&
- 		   missed_ppm[READ] <= ppm_rthr * UNBUSY_THR_PCT / 100 &&
- 		   missed_ppm[WRITE] <= ppm_wthr * UNBUSY_THR_PCT / 100) {
--		/* take action iff there is contention */
--		if (nr_shortages && !nr_lagging) {
-+		/* QoS targets are being met with >25% margin */
-+		if (nr_shortages) {
-+			/*
-+			 * We're throttling while the device has spare
-+			 * capacity.  If vrate was being slowed down, stop.
-+			 */
- 			ioc->busy_level = min(ioc->busy_level, 0);
--			/* redistribute surpluses first */
--			if (!nr_surpluses)
-+
-+			/*
-+			 * If there are IOs spanning multiple periods, wait
-+			 * them out before pushing the device harder.  If
-+			 * there are surpluses, let redistribution work it
-+			 * out first.
-+			 */
-+			if (!nr_lagging && !nr_surpluses)
- 				ioc->busy_level--;
-+		} else {
-+			/*
-+			 * Nobody is being throttled and the users aren't
-+			 * issuing enough IOs to saturate the device.  We
-+			 * simply don't know how close the device is to
-+			 * saturation.  Coast.
-+			 */
-+			ioc->busy_level = 0;
- 		}
- 	} else {
-+		/* inside the hysterisis margin, we're good */
- 		ioc->busy_level = 0;
- 	}
+diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+index d89684168500..9e6dc289ec3e 100644
+--- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
++++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+@@ -1496,7 +1496,8 @@ mwifiex_cfg80211_dump_station(struct wiphy *wiphy, struct net_device *dev,
+ 			      int idx, u8 *mac, struct station_info *sinfo)
+ {
+ 	struct mwifiex_private *priv = mwifiex_netdev_get_priv(dev);
+-	static struct mwifiex_sta_node *node;
++	struct mwifiex_sta_node *node;
++	int i;
  
+ 	if ((GET_BSS_ROLE(priv) == MWIFIEX_BSS_ROLE_STA) &&
+ 	    priv->media_connected && idx == 0) {
+@@ -1506,13 +1507,10 @@ mwifiex_cfg80211_dump_station(struct wiphy *wiphy, struct net_device *dev,
+ 		mwifiex_send_cmd(priv, HOST_CMD_APCMD_STA_LIST,
+ 				 HostCmd_ACT_GEN_GET, 0, NULL, true);
+ 
+-		if (node && (&node->list == &priv->sta_list)) {
+-			node = NULL;
+-			return -ENOENT;
+-		}
+-
+-		node = list_prepare_entry(node, &priv->sta_list, list);
+-		list_for_each_entry_continue(node, &priv->sta_list, list) {
++		i = 0;
++		list_for_each_entry(node, &priv->sta_list, list) {
++			if (i++ != idx)
++				continue;
+ 			ether_addr_copy(mac, node->mac_addr);
+ 			return mwifiex_dump_station_info(priv, node, sinfo);
+ 		}
 -- 
 2.25.1
 
