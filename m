@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7131F2648
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0D61F264B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387874AbgFHXfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:35:20 -0400
-Received: from smtprelay0186.hostedemail.com ([216.40.44.186]:42428 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732537AbgFHXdK (ORCPT
+        id S1731129AbgFHXgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728175AbgFHXge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:33:10 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 3E124485F;
-        Mon,  8 Jun 2020 23:33:09 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2828:2895:3138:3139:3140:3141:3142:3355:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:5007:7875:7903:7904:8957:10004:10400:10450:10455:10471:10848:11232:11473:11658:11914:12043:12109:12114:12297:12663:12740:12760:12895:13132:13161:13229:13231:13255:13439:14181:14659:14721:19904:19999:21080:21451:21627:21740:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: women05_3c11e0026dbd
-X-Filterd-Recvd-Size: 3588
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Mon,  8 Jun 2020 23:33:07 +0000 (UTC)
-Message-ID: <c25f5af83658ab9ef4ae8ef3825ea6540fe4e094.camel@perches.com>
-Subject: Re: Forest Bond <forest@alittletooquiet.net>,Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>,devel@driverdev.osuosl.org,linux-kernel@vger.kernel.org
-From:   Joe Perches <joe@perches.com>
-To:     Rodolfo C Villordo <rodolfovillordo@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Mon, 08 Jun 2020 16:33:06 -0700
-In-Reply-To: <20200608225838.GA26559@ip-172-31-24-31.ec2.internal>
-References: <20200607224156.GA24090@ip-172-31-24-31.ec2.internal>
-         <20200608054614.GO23230@ZenIV.linux.org.uk>
-         <alpine.DEB.2.21.2006080758510.2430@hadrien>
-         <e3d7cc965eccec881bc35ae18d63f4bc23c33dfc.camel@perches.com>
-         <20200608225838.GA26559@ip-172-31-24-31.ec2.internal>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Mon, 8 Jun 2020 19:36:34 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1CBC08C5C2
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 16:36:34 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jiRJY-0002nN-Ul; Tue, 09 Jun 2020 01:36:25 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 65786101181; Tue,  9 Jun 2020 01:36:24 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "maz\@kernel.org" <maz@kernel.org>,
+        "Saidi\, Ali" <alisaidi@amazon.com>
+Cc:     "jason\@lakedaemon.net" <jason@lakedaemon.net>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel\@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Woodhouse\, David" <dwmw@amazon.co.uk>,
+        "Zilberman\, Zeev" <zeev@amazon.com>,
+        "Machulsky\, Zorik" <zorik@amazon.com>
+Subject: Re: [PATCH] irqchip/gic-v3-its: Don't try to move a disabled irq
+In-Reply-To: <0940571f9daa9829f70616b3036a2b3b3f25953c.camel@kernel.crashing.org>
+References: <AE04B507-C5E2-44D2-9190-41E9BE720F9D@amazon.com> <622fb6be108e894ee365d6b213535c8b@kernel.org> <f9e9d8c37eb92e4b9576bfcb4386ff6ef00eddce.camel@amazon.com> <87mu5dacs7.fsf@nanos.tec.linutronix.de> <0940571f9daa9829f70616b3036a2b3b3f25953c.camel@kernel.crashing.org>
+Date:   Tue, 09 Jun 2020 01:36:24 +0200
+Message-ID: <873675870n.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-06-08 at 22:58 +0000, Rodolfo C Villordo wrote:
-> On Mon, Jun 08, 2020 at 01:41:11AM -0700, Joe Perches wrote:
-> > On Mon, 2020-06-08 at 07:59 +0200, Julia Lawall wrote:
-> > > On Mon, 8 Jun 2020, Al Viro wrote:
-> > > 
-> > > > On Sun, Jun 07, 2020 at 10:41:56PM +0000, Rodolfo C. Villordo wrote:
-> > > > > Multiple line over 80 characters fixes by splitting in multiple lines.
-> > > > > Warning found by checkpatch.pl
-> > > > 
-> > > > I doubt that checkpatch.pl can catch the real problems there:
-> > > > 
-> > > > * Hungarian Notation Sucks.  Really.
-> > > > * so does CamelCase, especially for wonders like s_uGetRTSCTSRsvTime
-> 
-> Yes, I agree with that.
-> 
-> > > Rodolfo,
-> > > 
-> > > If you work hard with Coccinelle and python scripting, it can help with
-> > > the first two problems.
-> > 
-> > These VIA vt6655/vt6656 drivers have been in staging for more than
-> > a decade.  There are relatively few checkpatch coding style
-> > cleanups to do but there are many overall style issues to resolve.
-> > 
-> 
-> Yes, vt6655/rxtx.c needs lots of work. I was avoiding submit bigger changes
-> because this is my second patch submission.
-> 
-> Thank you all for the comments. I'm really sorry for the odd subject. 
-> 
-> How should I move forward with this?
-> 
-> 1 - Update this patch with the changes pointed by Dan Carpenter? 
+Ben,
 
-Keep your changes small until you really know how this
-style of linux kernel staging changes is done.
+Benjamin Herrenschmidt <benh@kernel.crashing.org> writes:
+> On Mon, 2020-06-08 at 15:48 +0200, Thomas Gleixner wrote:
+>> > 	if (cpu != its_dev->event_map.col_map[id]) {
+>> > 		target_col = &its_dev->its->collections[cpu];
+>> > -		its_send_movi(its_dev, target_col, id);
+>> > +
+>> > +		/* If the IRQ is disabled a discard was sent so don't move */
+>> > +		if (!irqd_irq_disabled(d))
+>> 
+>> That check needs to be !irqd_is_activated() because enable_irq() does
+>> not touch anything affinity related.
+>
+> Right. Note: other  drivers  (like arch/powerpc/sysdev/xive/common.c
+> use irqd_is_started() ... this gets confusing :)
 
-> 2 - Do a more elaborated and bigger change, like suggested by Al Viro
-> and Joe Perches?
+Blast from the past ...
 
-A patch series is much preferred to a single large change.
-
-If you decide to refactor various functions, please do that
-in separate, discrete patches.
-
-Adding a #define and doing a sed like:
-
-$ sed -i 's/(BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW/AL2230_RLEN_CTL/' drivers/staging/vt6655/*.[ch]
-
-should be a single patch.
-
-And if you do that, another should be done for AL7230
-
-$ sed -i 's/(BY_AL7230_REG_LEN << 3) + IFREGCTL_REGW/AL7230_RLEN_CTL/' drivers/staging/vt6655/*.[ch]
-
-etc...
-
-Maybe the #define BY_AL2230_REG_LEN should be 0x17 so that
-the << 3 is more obviously constrained to the low byte
-
-Maybe the + uses in the macros should be bitwise |.
-
-Go wild after you figure out the process, just keep your
-patches to obvious, small and verifiable changes.
+arch/powerpc does not use hierarchical irq domains, so the activated
+state does not matter there.
 
 
+>> > +			its_send_movi(its_dev, target_col, id);
+>> > +
+>> > 		its_dev->event_map.col_map[id] = cpu;
+>> > 		irq_data_update_effective_affinity(d, cpumask_of(cpu));
+>> 
+>> And then these associtations are disconnected from reality in any case.
+>
+> Not sure what you mean here, that said...
+
+You skip the setup and then you set that state to look like it really
+happened. How is that NOT disconnected from reality and a proper source
+for undecodable failure later on beause something else subtly depends on
+that state?
+
+>> Something like the completely untested patch below should work.
+>
+> Ok. One possible issue though is before, the driver always had the
+> opportunity to "vet" the affinity mask for whatever platform
+> constraints may be there and change it before applying it. This is no
+> longer the case on a deactivated interrupt with your patch as far as I
+> can tell. I don't know if that is a problem and if drivers that do that
+> have what it takes to "fixup" the affinity at startup time, the ones I
+> wrote don't need that feature, but...
+
+The driver still has the opportunity to do so when the interrupt is
+acticated. And if you look at the conditions of that patch it carefully
+applies this only to architectures which actually use hiearachical irq
+domains. Everything else including good old PPC won't notice at all.
+
+>> Thanks,
+>> 
+>>         tglx
+
+<SNIP 60+ lines of useless information ....>
+
+Can you please trim your replies?
+
+Thanks,
+
+        tglx
