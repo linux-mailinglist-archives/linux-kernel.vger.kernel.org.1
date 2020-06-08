@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA351F1A1B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 15:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D24E1F1A22
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 15:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729835AbgFHNcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 09:32:01 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:55515 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729179AbgFHNcA (ORCPT
+        id S1729872AbgFHNcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 09:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729179AbgFHNcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 09:32:00 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id iHsWjRRwwCKzeiHsajmTai; Mon, 08 Jun 2020 15:31:58 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1591623118; bh=hpssZSUA5d2m6FhPSGizkhqbO91xmOa36DTTnuhiAmM=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=bW6BOi/nlihoCKb/tDIpF4M/e/Tmp7K+4H8fvihHNiMTwf+jMVc4TrECALgUbXgFj
-         IwpsX1ypTd1cs50Nvq+cdbdec/W3S8eEodwLvek2MTgFU98pNinVda/kpgGlaNIpLq
-         I7dDf2Z5aYs/wCAfCI6AVICJfwf+Fv/dkcW8mmh2HcOP5z3xak77ehvXqyaC+AW7KF
-         lq8eRGEBK63+f7s53mH0tZEYOWIpaudNjXvxZTtFwmPvKp9U9qP4e44H2EkgxtqQKV
-         kE6NTl1mHGdPGacT5vItxdDZctemxdU07lLndgdAZufsoh5emECUxabV39xESfOq6t
-         5tm+XVGsE8PVg==
-Subject: Re: [PATCH] media: platform: sti: hva: Fix runtime PM imbalance on
- error
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
-Cc:     Jean-Christophe Trotin <jean-christophe.trotin@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200521100503.13454-1-dinghao.liu@zju.edu.cn>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <6d640a38-fc51-6a20-371c-336b246669a3@xs4all.nl>
-Date:   Mon, 8 Jun 2020 15:31:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Mon, 8 Jun 2020 09:32:53 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF981C08C5C2;
+        Mon,  8 Jun 2020 06:32:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=ObZ22oOgYNGbVd4Cp8pB6DVUyibIVTQNw5PapcI68nk=; b=a5taWeGUX4HtnKc/RAOz5WhgUz
+        q6JBnbH3JTiA0cXFU9kiCQWCXW/ILe82YRWyyJCFX/BccSHPnnjG1RJ6fzG56MfIi0KikIvn0P9nf
+        mSUvR/7yJhmJEjL6YHLbAviatSAnH4qTUW0bZBTaepq+d1h02hdnqQwrHGin2OYMxi/uH2q6I2CFE
+        Bmf2dgwgtuy4ue+pK94M55DxD5NmhDOJiqDCKv4agDJrK2TlRU50paxHDYtrUgdGEJVwJptb7wL36
+        BMBtG7PyeI/lJRa1zCDx0cj4FHW1VWU83+4CkoMg/YVIb/7CHlo624nM17uJ2flQPUeEY+5R/1ZIc
+        7xPFI5/w==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jiHtR-0001E9-NY; Mon, 08 Jun 2020 13:32:49 +0000
+Date:   Mon, 8 Jun 2020 06:32:49 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Scott Branden <scott.branden@broadcom.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        David Brown <david.brown@linaro.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Olof Johansson <olof@lixom.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v7 1/8] fs: introduce kernel_pread_file* support
+Message-ID: <20200608133249.GW19604@bombadil.infradead.org>
+References: <20200606050458.17281-1-scott.branden@broadcom.com>
+ <20200606050458.17281-2-scott.branden@broadcom.com>
+ <20200606155216.GP19604@bombadil.infradead.org>
+ <1591621401.4638.59.camel@linux.ibm.com>
+ <20200608131630.GV19604@bombadil.infradead.org>
+ <1591622526.4638.71.camel@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200521100503.13454-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfBUbpNcTLkj0DKFuv5gfPbHkUNH+du+C5pXmuTbe/icR1ZrKUn8YMkf5x7njs9KK0epSq39tQxOuaOKtNmQxC/4TWV4S2a8OIHgdLewCmAbOs3bMPTLi
- dnywhzV0TYe3FAjYyARU2usd1kSaWBEh5rlfhjNgcko2aafaqvqZSzJ7KjW6wRev6v4gjeM8uZijZ9VFoOmrbrbfUVkWEt8RCz/oYmFFjjUUtV8ZLMWtN4sK
- U5ODOFmiv5z0eisPVs1g/l2lfAPHpHG0zoTqnHykx0J26HgTPWGKNHDMTncD/i2OS8sbchO2aN5dChZabbFpZJh/5wgAmnkAzfRsXrXT9gcRYvw9M0Ej1Xkj
- mDUlod49
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1591622526.4638.71.camel@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/2020 12:05, Dinghao Liu wrote:
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> when it returns an error code. Thus a pairing decrement is needed on
-> the error handling path to keep the counter balanced.
+On Mon, Jun 08, 2020 at 09:22:06AM -0400, Mimi Zohar wrote:
+> On Mon, 2020-06-08 at 06:16 -0700, Matthew Wilcox wrote:
+> > On Mon, Jun 08, 2020 at 09:03:21AM -0400, Mimi Zohar wrote:
+> > > With this new design of not using a private vmalloc, will the file
+> > > data be accessible prior to the post security hooks?  From an IMA
+> > > perspective, the hooks are used for measuring and/or verifying the
+> > > integrity of the file.
+> > 
+> > File data is already accessible prior to the post security hooks.
+> > Look how kernel_read_file works:
+> > 
+> >         ret = deny_write_access(file);
+> >         ret = security_kernel_read_file(file, id);
+> >                 *buf = vmalloc(i_size);
+> >                 bytes = kernel_read(file, *buf + pos, i_size - pos, &pos);
+> >         ret = security_kernel_post_read_file(file, *buf, i_size, id);
+> > 
+> > kernel_read() will read the data into the page cache and then copy it
+> > into the vmalloc'd buffer.  There's nothing here to prevent read accesses
+> > to the file.
 > 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  drivers/media/platform/sti/hva/hva-hw.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
-> index 401aaafa1710..8533d3bc6d5c 100644
-> --- a/drivers/media/platform/sti/hva/hva-hw.c
-> +++ b/drivers/media/platform/sti/hva/hva-hw.c
-> @@ -388,7 +388,7 @@ int hva_hw_probe(struct platform_device *pdev, struct hva_dev *hva)
->  	ret = pm_runtime_get_sync(dev);
->  	if (ret < 0) {
->  		dev_err(dev, "%s     failed to set PM\n", HVA_PREFIX);
-> -		goto err_clk;
-> +		goto err_pm;
->  	}
->  
->  	/* check IP hardware version */
-> 
+> The post security hook needs to access to the file data in order to
+> calculate the file hash.  The question is whether prior to returning
+> from kernel_read_file() the caller can access the file data.
 
-err_pm:
-        pm_runtime_put(dev);
-
-Shouldn't that be pm_runtime_put_sync()?
-
-I'm not pm expert, but it does look odd.
-
-Regards,
-
-	Hans
+Whether you copy the data (as today) or map it (as I'm proposing),
+the data goes into the page cache.  It's up to the security system to
+block access to the page cache until it's been verified.
