@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8451F2260
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6731F2268
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728016AbgFHXHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:07:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50864 "EHLO mail.kernel.org"
+        id S1728080AbgFHXIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:08:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727809AbgFHXHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:07:08 -0400
+        id S1727836AbgFHXHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:07:15 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E230E20820;
-        Mon,  8 Jun 2020 23:07:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A7592087E;
+        Mon,  8 Jun 2020 23:07:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657627;
-        bh=xww3ha3RV/sRMp/8nxc5RDnUU7jjFcQdrVOpE9QJWXg=;
+        s=default; t=1591657635;
+        bh=3YAXEK4s/GPg8WqzWmTln3TcNkCmuYxwrw8nQ+1yss8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EvyKP7PP36r1tHKLVdgkpW/otyMeNLX0oplZZ6vPn4TqeM11xoB7AgVjJr2RuSKET
-         P7eanSnH6ZyD/cP2tVWJ2TzcdoKnV0H+ucJ5Atqxczoh+qMnKZ4WxQEZeCUpXgB22t
-         pHrvBQMPqyMemO7lGtD67gT0W1diaiS77g8Opft4=
+        b=0M7iczwC3xP1ohFOKS+sb3j8fD4sIcxZe3gd9Y0jx0Xa/0+azREVde1sB8M/mlA5z
+         /p5x8Fx26+my98Oqq4qyXLMJd5Esr9UaN7jJ9/ewkted4U/0+ADDFULD6vnZBXxfM5
+         Fa+IjrL/49VPuJND3+ksyeXiGTV4WkQl6oX+b4OE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jeremy Cline <jcline@redhat.com>,
-        "Frank Ch . Eigler" <fche@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 047/274] lockdown: Allow unprivileged users to see lockdown status
-Date:   Mon,  8 Jun 2020 19:02:20 -0400
-Message-Id: <20200608230607.3361041-47-sashal@kernel.org>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 053/274] media: i2c: imx219: Fix a bug in imx219_enum_frame_size
+Date:   Mon,  8 Jun 2020 19:02:26 -0400
+Message-Id: <20200608230607.3361041-53-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -45,38 +47,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Cline <jcline@redhat.com>
+From: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
 
-[ Upstream commit 60cf7c5ed5f7087c4de87a7676b8c82d96fd166c ]
+[ Upstream commit b2bbf1aac61186ef904fd28079e847d3feadb89e ]
 
-A number of userspace tools, such as systemtap, need a way to see the
-current lockdown state so they can gracefully deal with the kernel being
-locked down. The state is already exposed in
-/sys/kernel/security/lockdown, but is only readable by root. Adjust the
-permissions so unprivileged users can read the state.
+When enumerating the frame sizes, the value sent to
+imx219_get_format_code should be fse->code
+(the code from the ioctl) and not imx219->fmt.code
+which is the code set currently in the driver.
 
-Fixes: 000d388ed3bb ("security: Add a static lockdown policy LSM")
-Cc: Frank Ch. Eigler <fche@redhat.com>
-Signed-off-by: Jeremy Cline <jcline@redhat.com>
-Signed-off-by: James Morris <jmorris@namei.org>
+Fixes: 22da1d56e982 ("media: i2c: imx219: Add support for RAW8 bit bayer format")
+Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Reviewed-by: Helen Koike <helen.koike@collabora.com>
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/lockdown/lockdown.c | 2 +-
+ drivers/media/i2c/imx219.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/security/lockdown/lockdown.c b/security/lockdown/lockdown.c
-index 5a952617a0eb..87cbdc64d272 100644
---- a/security/lockdown/lockdown.c
-+++ b/security/lockdown/lockdown.c
-@@ -150,7 +150,7 @@ static int __init lockdown_secfs_init(void)
- {
- 	struct dentry *dentry;
+diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
+index cb03bdec1f9c..86e0564bfb4f 100644
+--- a/drivers/media/i2c/imx219.c
++++ b/drivers/media/i2c/imx219.c
+@@ -781,7 +781,7 @@ static int imx219_enum_frame_size(struct v4l2_subdev *sd,
+ 	if (fse->index >= ARRAY_SIZE(supported_modes))
+ 		return -EINVAL;
  
--	dentry = securityfs_create_file("lockdown", 0600, NULL, NULL,
-+	dentry = securityfs_create_file("lockdown", 0644, NULL, NULL,
- 					&lockdown_ops);
- 	return PTR_ERR_OR_ZERO(dentry);
- }
+-	if (fse->code != imx219_get_format_code(imx219, imx219->fmt.code))
++	if (fse->code != imx219_get_format_code(imx219, fse->code))
+ 		return -EINVAL;
+ 
+ 	fse->min_width = supported_modes[fse->index].width;
 -- 
 2.25.1
 
