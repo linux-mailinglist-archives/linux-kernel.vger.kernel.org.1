@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FCC1F2C3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E311F28FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730167AbgFIAW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:22:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39156 "EHLO mail.kernel.org"
+        id S1731250AbgFHXWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:22:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728931AbgFHXRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:17:32 -0400
+        id S1730476AbgFHXRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:17:33 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 412FC20853;
-        Mon,  8 Jun 2020 23:17:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A130214F1;
+        Mon,  8 Jun 2020 23:17:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658251;
-        bh=JOvf7Z0unFZPa0R3IIQFYG1Wc1kvGB+pDnGn35Q+6iY=;
+        s=default; t=1591658253;
+        bh=oqZ+NsD3VxSpXbZh521LmVgD1/qZripK/UNHLLtpTDY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jpMlPrhhsOTiB99fAleMHvofvKOoS4WIxbtg7WdH6+yyj0Lb5HZmdltvzi3/9B2s8
-         dKRBeFQqf3CBOLClEzF3fSq8n/eKvyqgQVI9woqUAbCzZtbtlzIxWHBgqQS2tzkJxH
-         9nA1XbU52q/b6NpTsQiU0fzIsksydYC/NJvsM59w=
+        b=SS1DYvK7I5MAgJ/mX3WuRQERJ3AjhAvSGoTFrvw0zxudmzJZ27T6mGlXppD03Ntt/
+         ukX6KrL3n4NtOlDk5nrcQVGlfL8fwkqcNf6yCWEZlqno5rnpwe+IgJHHBioPAJRgtb
+         LmiQ0aXDktdQ7IyTgzui/GY7CeAR7iqWngQQhSzA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chuhong Yuan <hslester96@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 261/606] net: microchip: encx24j600: add missed kthread_stop
-Date:   Mon,  8 Jun 2020 19:06:26 -0400
-Message-Id: <20200608231211.3363633-261-sashal@kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Brian Starkey <brian.starkey@arm.com>,
+        Laura Abbott <labbott@redhat.com>,
+        "Andrew F. Davis" <afd@ti.com>, linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 262/606] kselftests: dmabuf-heaps: Fix confused return value on expected error testing
+Date:   Mon,  8 Jun 2020 19:06:27 -0400
+Message-Id: <20200608231211.3363633-262-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -43,51 +49,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: John Stultz <john.stultz@linaro.org>
 
-[ Upstream commit ff8ce319e9c25e920d994cc35236f0bb32dfc8f3 ]
+[ Upstream commit 4bb9d46d47b105a774f9dca642f5271375bca4b2 ]
 
-This driver calls kthread_run() in probe, but forgets to call
-kthread_stop() in probe failure and remove.
-Add the missed kthread_stop() to fix it.
+When I added the expected error testing, I forgot I need to set
+the return to zero when we successfully see an error.
 
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Without this change we only end up testing a single heap
+before the test quits.
+
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Cc: Brian Starkey <brian.starkey@arm.com>
+Cc: Laura Abbott <labbott@redhat.com>
+Cc: "Andrew F. Davis" <afd@ti.com>
+Cc: linux-kselftest@vger.kernel.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/microchip/encx24j600.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/microchip/encx24j600.c b/drivers/net/ethernet/microchip/encx24j600.c
-index 39925e4bf2ec..b25a13da900a 100644
---- a/drivers/net/ethernet/microchip/encx24j600.c
-+++ b/drivers/net/ethernet/microchip/encx24j600.c
-@@ -1070,7 +1070,7 @@ static int encx24j600_spi_probe(struct spi_device *spi)
- 	if (unlikely(ret)) {
- 		netif_err(priv, probe, ndev, "Error %d initializing card encx24j600 card\n",
- 			  ret);
--		goto out_free;
-+		goto out_stop;
+diff --git a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
+index cd5e1f602ac9..909da9cdda97 100644
+--- a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
++++ b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
+@@ -351,6 +351,7 @@ static int test_alloc_errors(char *heap_name)
  	}
  
- 	eidled = encx24j600_read_reg(priv, EIDLED);
-@@ -1088,6 +1088,8 @@ static int encx24j600_spi_probe(struct spi_device *spi)
- 
- out_unregister:
- 	unregister_netdev(priv->ndev);
-+out_stop:
-+	kthread_stop(priv->kworker_task);
- out_free:
- 	free_netdev(ndev);
- 
-@@ -1100,6 +1102,7 @@ static int encx24j600_spi_remove(struct spi_device *spi)
- 	struct encx24j600_priv *priv = dev_get_drvdata(&spi->dev);
- 
- 	unregister_netdev(priv->ndev);
-+	kthread_stop(priv->kworker_task);
- 
- 	free_netdev(priv->ndev);
- 
+ 	printf("Expected error checking passed\n");
++	ret = 0;
+ out:
+ 	if (dmabuf_fd >= 0)
+ 		close(dmabuf_fd);
 -- 
 2.25.1
 
