@@ -2,106 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34DA1F10E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 02:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7441F10F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 03:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729052AbgFHA66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 20:58:58 -0400
-Received: from mout.gmx.net ([212.227.15.19]:58795 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729019AbgFHA6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 20:58:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1591577918;
-        bh=MuS8uek9XC84kDSjvlmb2pFbspDYI7yaLOzH753AIqA=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=HkcNyvwbQer0H6h7SltND/pSmq7S1BwbMhMK3C+vUXGxf6wwg6WhzVNngU/HCgrLq
-         mOq4NqDn54/KCBfY06k93aIfkitG46eCJel3ZRwfogB+kUqzwN2lotz6ge1lmUDdUc
-         znCd69wUWicC7SAGIVAdr57M5UAT52elfPNUyAJU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from LT02.fritz.box ([88.152.145.75]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N33Il-1iwThb0ggP-013M9f; Mon, 08
- Jun 2020 02:58:38 +0200
-From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
-To:     Vishal Kulkarni <vishal@chelsio.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>
-Subject: [PATCH 1/1] cxgb4: fix cxgb4_uld_in_use() not used error
-Date:   Mon,  8 Jun 2020 02:58:23 +0200
-Message-Id: <20200608005823.911290-1-xypron.glpk@gmx.de>
-X-Mailer: git-send-email 2.26.2
+        id S1728366AbgFHBCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 21:02:48 -0400
+Received: from smtprelay0113.hostedemail.com ([216.40.44.113]:33036 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727999AbgFHBCs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 21:02:48 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 1784B1808E84C;
+        Mon,  8 Jun 2020 01:02:47 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1978:1981:2194:2199:2393:2559:2562:2692:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:8957:10004:10400:10848:11232:11658:11914:12114:12295:12296:12297:12438:12555:12740:12760:12895:12986:13069:13311:13357:13439:14096:14097:14180:14659:14721:21060:21080:21212:21451:21627:21660:30012:30041:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: love83_601194f26db5
+X-Filterd-Recvd-Size: 2236
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Mon,  8 Jun 2020 01:02:45 +0000 (UTC)
+Message-ID: <3bf931c6ea0cae3e23f3485801986859851b4f04.camel@perches.com>
+Subject: Re: [PATCH] lib/lz4: smatch warning in LZ4_decompress_generic()
+From:   Joe Perches <joe@perches.com>
+To:     Yann Collet <cyan@fb.com>, Vasily Averin <vvs@virtuozzo.com>,
+        Gao Xiang <hsiangkao@aol.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Gao Xiang <xiang@kernel.org>
+Date:   Sun, 07 Jun 2020 18:02:44 -0700
+In-Reply-To: <D4762145-BBC5-4574-BF68-8C1A3AF41D98@fb.com>
+References: <20200606143646.GB10839.ref@hsiangkao-HP-ZHAN-66-Pro-G1>
+         <20200606143646.GB10839@hsiangkao-HP-ZHAN-66-Pro-G1>
+         <330eccf1-6d4b-07dd-4e55-ffe3a179e4b8@virtuozzo.com>
+         <D4762145-BBC5-4574-BF68-8C1A3AF41D98@fb.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:AKk9fwKJB810n5qOHCpvFi7CA2srjaobrfmnlcdouwAnjFU+Ykf
- xiKvZh9ul573o9cl+RcQT3Cv0e7t52bF+yOzYdY3waIKtZWYRK7RAnG+57tH9BdFAdvSygP
- 1YlGm+msycsLJtHUn4I/K/5MdngWzchmIrk6ROmRl+QkqD4YfIYzoU35wkAAqkWi18F+mfY
- Rics72LoeBimza0VzSuAA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fIA9CwzOi6Y=:L8t+SXJSj1BYp5AnGanTQj
- Px6207eUhyDjeODrHVcVkdViutWuk+c2nTfPaFbQXmbdais2jyjTPCGEeSJ9mZbPOXcxKhQ5U
- FPt3yEwKXyUTeUvE77Q5F7ossvHbeRnPj+OS58lYjAE6GNV4rZrmwgbznyk5qAwDcNOnggDQS
- nCJaccSf6UTBR5jYGTUnh25RtE8Vmz3exOytdNJ7HGrCRFF9cH66qBWeXoOYB1WdWPkwzyP7I
- UPBmcEbZ9bHEUvwm+M6Y5tGIdK41ugVbOgpo6yZRq6v6A6n679uaL1VPU9gSiHaRKzTMiFZuI
- bpFrHEt+AF4MEpwaOtbG7R8LWGLZT74QlkMPJlqKqPBI09KpK4va8M9pfSQWv+rTiQUy/h7yz
- zpGx6hMlO3yeSSAWtxLbKtxRd6u4zRyfebQRfeey42rfvyp+pwIMdzNLpZeRIHQLQ/dtHc33z
- btA0b6yUQW1AdNBfDNKvA/1SVBmW6Cnx5Bp+DeuFymJ7ocT+vxQ2QAdPoqXG38hw9+ZqLcJ9d
- i2tIbmcDAX2a/yMmYtc/b4y2KtgyKR2fEovMigREL7y6Gbub2Alwl6cSHutvfwE+nIGXBQG0L
- qi5fl92lXx782X9C3Jv4MzAGl0MyumreZcVDvIW7EQCpjJ1VJ5r+vbxzVgleOyWsP9bKMb7+1
- nprOg8kbfAROJy55fYMSIWTQ3lRw9GwEGXPd7LXCsxgTbo5gn1jxK+1gf3ujAwzvf2zLToRug
- ya9K3yDngyAJqvkAe7+HRGDI9Yk2QIiS6co4e3uTXChlvHsWOnXWB/jtBledrpQb3igG+uoDc
- xMllzVe2DGpT1eZSe4VSsR+O+1KrwJ7mixGX9aLNDqZ2+P4z4knl8cp0x15Uuyna9uVgNur8e
- JkONAQEdQjFG8cRpRdqEHBRfApFMyQy+lFfl2/eYsNlOtm/3PwoQy/JfLWPL+kRcnoZk0ZSuG
- r4uD9AhTQLkjOiNw8eXGL9lVyhW9fO/edhjHU6S8kfVfGnknBc0/U1KP5zMZCH1kJqFIIQPeV
- /iDcgWqg5uPsMAPA3cKMzNRkDD8kfMiJFeijXKrv1cMBFBBdIi9b/dFo+QcJ3RvRdSPPC9gWs
- UQvnFhRZKBc41uoJorpeZcRhrpBeneUXFGOu+HnoivCy577HECNaIDr0dpJcovh3i6VtNHXO5
- Uyr5ABi7cBGEIxMlQ7thxA4iRb9HI5OYMkFizpFx3qWbsUZ60nI4u8HkbEsRtVbFV/Esbx16q
- RMICc17mFpqrda+mA
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building without CONFIG_CHELSIO_TLS_DEVICE a build error occurs:
+On Mon, 2020-06-08 at 00:40 +0000, Yann Collet wrote:
+> Hi Vasily
+> 
+> 
+> If I do understand the discussion, the question is about usage of `&` instead of `&&`,
+> and the speculation that it might be an error.
+> 
+> It's not an error. Unfortunately, explaining the reasoning behind this decision is a bit long.
 
-drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c:666:13: error:
-=E2=80=98cxgb4_uld_in_use=E2=80=99 defined but not used [-Werror=3Dunused-=
-function]
-  666 | static bool cxgb4_uld_in_use(struct adapter *adap)
-      |             ^~~~~~~~~~~~~~~~
+Likely better to add a comment around the use so that
+another patch like this doesn't get submitted again.
 
-Guard cxgb4_uld_in_use() with #ifdef CONFIG_CHELSIO_TLS_DEVICE.
+Perhaps something like:
+---
+ lib/lz4/lz4_decompress.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-=2D--
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+diff --git a/lib/lz4/lz4_decompress.c b/lib/lz4/lz4_decompress.c
+index 0c9d3ad17e0f..5371dab6b481 100644
+--- a/lib/lz4/lz4_decompress.c
++++ b/lib/lz4/lz4_decompress.c
+@@ -141,6 +141,9 @@ static FORCE_INLINE int LZ4_decompress_generic(
+ 		 * space in the output for those 18 bytes earlier, upon
+ 		 * entering the shortcut (in other words, there is a
+ 		 * combined check for both stages).
++		 *
++		 * The & in the likely() below is intentionally not && so that
++		 * some compilers can produce better parallelized runtime code
+ 		 */
+ 		if ((endOnInput ? length != RUN_MASK : length <= 8)
+ 		   /*
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c b/drivers/net/=
-ethernet/chelsio/cxgb4/cxgb4_uld.c
-index 0307e9c69a47..f08f860b4983 100644
-=2D-- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c
-@@ -663,6 +663,8 @@ static int uld_attach(struct adapter *adap, unsigned i=
-nt uld)
- 	return 0;
- }
-
-+#ifdef CONFIG_CHELSIO_TLS_DEVICE
-+
- static bool cxgb4_uld_in_use(struct adapter *adap)
- {
- 	const struct tid_info *t =3D &adap->tids;
-@@ -670,7 +672,6 @@ static bool cxgb4_uld_in_use(struct adapter *adap)
- 	return (atomic_read(&t->conns_in_use) || t->stids_in_use);
- }
-
--#ifdef CONFIG_CHELSIO_TLS_DEVICE
- /* cxgb4_set_ktls_feature: request FW to enable/disable ktls settings.
-  * @adap: adapter info
-  * @enable: 1 to enable / 0 to disable ktls settings.
-=2D-
-2.26.2
 
