@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2370B1F2AC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521DF1F2ABD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387476AbgFIAL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:11:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43020 "EHLO mail.kernel.org"
+        id S1732007AbgFIALp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:11:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730080AbgFHXTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:19:50 -0400
+        id S1730864AbgFHXTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:19:53 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C902E20899;
-        Mon,  8 Jun 2020 23:19:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05D122088E;
+        Mon,  8 Jun 2020 23:19:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658390;
-        bh=MkhQdYmlwhdXAwRMV4INdW/RGVcDVH26f6kH/J+KPUo=;
+        s=default; t=1591658392;
+        bh=asa8ONHvLvSLrkUv5RGqx9vJCcv05F7tTMtmQgGoEZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iJ07D4TKpueQZ21+OYPz0Ek4jNOaUup5ox8YW0k+BJZs3nmcQs6rVH9nnUGctb/Dk
-         sUyoWT/r/h6KpIGnbUuiv8mUzSzwGjT8oQ1KNb2/CH9n7LwXQyQ90trB3Jl5gxBey+
-         Lkd+U21AeZiabDNpuIwD5qZDm3iOrIGGDWeUqODQ=
+        b=fbiKSj3EBiqR5lGUeIAKqSQahNPsXjjuFXA0a7TB3bfIRwSHRp2dADQ/tpmnr/RG4
+         dnaL2GUhtDTzGskkxqxqkbCJ6kvgdaelacjUHbIh8psxzwYUmGl9miMgHa97ZifkiO
+         RGxsFjv21gEJg7Tkotgz0ObzgCkEHf8EGQ5ECj+s=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 048/175] btrfs: account for trans_block_rsv in may_commit_transaction
-Date:   Mon,  8 Jun 2020 19:16:41 -0400
-Message-Id: <20200608231848.3366970-48-sashal@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 050/175] ARM: 8978/1: mm: make act_mm() respect THREAD_SIZE
+Date:   Mon,  8 Jun 2020 19:16:43 -0400
+Message-Id: <20200608231848.3366970-50-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -44,53 +46,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit bb4f58a747f0421b10645fbf75a6acc88da0de50 ]
+[ Upstream commit e1de94380af588bdf6ad6f0cc1f75004c35bc096 ]
 
-On ppc64le with 64k page size (respectively 64k block size) generic/320
-was failing and debug output showed we were getting a premature ENOSPC
-with a bunch of space in btrfs_fs_info::trans_block_rsv.
+Recent work with KASan exposed the folling hard-coded bitmask
+in arch/arm/mm/proc-macros.S:
 
-This meant there were still open transaction handles holding space, yet
-the flusher didn't commit the transaction because it deemed the freed
-space won't be enough to satisfy the current reserve ticket. Fix this
-by accounting for space in trans_block_rsv when deciding whether the
-current transaction should be committed or not.
+  bic     rd, sp, #8128
+  bic     rd, rd, #63
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Tested-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+This forms the bitmask 0x1FFF that is coinciding with
+(PAGE_SIZE << THREAD_SIZE_ORDER) - 1, this code was assuming
+that THREAD_SIZE is always 8K (8192).
+
+As KASan was increasing THREAD_SIZE_ORDER to 2, I ran into
+this bug.
+
+Fix it by this little oneline suggested by Ard:
+
+  bic     rd, sp, #(THREAD_SIZE - 1) & ~63
+
+Where THREAD_SIZE is defined using THREAD_SIZE_ORDER.
+
+We have to also include <linux/const.h> since the THREAD_SIZE
+expands to use the _AC() macro.
+
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/space-info.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm/mm/proc-macros.S | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index e8a4b0ebe97f..5b47e3c44c8f 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -462,6 +462,7 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
- 	struct reserve_ticket *ticket = NULL;
- 	struct btrfs_block_rsv *delayed_rsv = &fs_info->delayed_block_rsv;
- 	struct btrfs_block_rsv *delayed_refs_rsv = &fs_info->delayed_refs_rsv;
-+	struct btrfs_block_rsv *trans_rsv = &fs_info->trans_block_rsv;
- 	struct btrfs_trans_handle *trans;
- 	u64 bytes_needed;
- 	u64 reclaim_bytes = 0;
-@@ -524,6 +525,11 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
- 	spin_lock(&delayed_refs_rsv->lock);
- 	reclaim_bytes += delayed_refs_rsv->reserved;
- 	spin_unlock(&delayed_refs_rsv->lock);
-+
-+	spin_lock(&trans_rsv->lock);
-+	reclaim_bytes += trans_rsv->reserved;
-+	spin_unlock(&trans_rsv->lock);
-+
- 	if (reclaim_bytes >= bytes_needed)
- 		goto commit;
- 	bytes_needed -= reclaim_bytes;
+diff --git a/arch/arm/mm/proc-macros.S b/arch/arm/mm/proc-macros.S
+index 5461d589a1e2..60ac7c5999a9 100644
+--- a/arch/arm/mm/proc-macros.S
++++ b/arch/arm/mm/proc-macros.S
+@@ -5,6 +5,7 @@
+  *  VMA_VM_FLAGS
+  *  VM_EXEC
+  */
++#include <linux/const.h>
+ #include <asm/asm-offsets.h>
+ #include <asm/thread_info.h>
+ 
+@@ -30,7 +31,7 @@
+  * act_mm - get current->active_mm
+  */
+ 	.macro	act_mm, rd
+-	bic	\rd, sp, #8128
++	bic	\rd, sp, #(THREAD_SIZE - 1) & ~63
+ 	bic	\rd, \rd, #63
+ 	ldr	\rd, [\rd, #TI_TASK]
+ 	.if (TSK_ACTIVE_MM > IMM12_MASK)
 -- 
 2.25.1
 
