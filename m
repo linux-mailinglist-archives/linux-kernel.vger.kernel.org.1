@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE8B1F2991
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F90E1F298E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732321AbgFIAB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:01:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46718 "EHLO mail.kernel.org"
+        id S1731906AbgFIABo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730032AbgFHXWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:22:14 -0400
+        id S1731296AbgFHXWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:22:20 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAED120842;
-        Mon,  8 Jun 2020 23:22:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FBB620842;
+        Mon,  8 Jun 2020 23:22:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658534;
-        bh=87ai8exqIO0/5aKSt3LHjxMtckrsMxd+6M0b2LS5y40=;
+        s=default; t=1591658540;
+        bh=AwDgvlPuxMjSektF2op7uOYUaYC5N3ZYlM32Knp8Xwo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QPiw9j2AhTxKWPkUwvE95TbTtI6WKkZRNa7YcXWlD5I7jGgR2lh4z5d4CROGHxT+X
-         e8GjNGPRPDinDVN/+x19PNo/KNf4DwjXILKcE3LIRVhmVMK/2JIlJmeniz4aZwn17o
-         wviZZ7sCkH6w4yE+gqrsSyIaYnTwGv2BBKlsXT0Q=
+        b=Beujnk1Q60OtaxG1zkd4bA6GwM5iagDNqbY20KnCwqL4QL2vjP9JgMcae2eOdfE5A
+         47eYZNaMAUQEh2rt6GOUQDa5S6UaGg8P8HG6o8lYBo1VQCJCV3K5dAR1GGEbmD9oly
+         SQGem6mclrpts8SdkQdjbQ5KZF9tPwijctDSTfN4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xie XiuQi <xiexiuqi@huawei.com>, Hulk Robot <hulkci@huawei.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 158/175] ixgbe: fix signed-integer-overflow warning
-Date:   Mon,  8 Jun 2020 19:18:31 -0400
-Message-Id: <20200608231848.3366970-158-sashal@kernel.org>
+Cc:     Qiushi Wu <wu000273@umn.edu>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 162/175] cpuidle: Fix three reference count leaks
+Date:   Mon,  8 Jun 2020 19:18:35 -0400
+Message-Id: <20200608231848.3366970-162-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -45,53 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie XiuQi <xiexiuqi@huawei.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit 3b70683fc4d68f5d915d9dc7e5ba72c732c7315c ]
+[ Upstream commit c343bf1ba5efcbf2266a1fe3baefec9cc82f867f ]
 
-ubsan report this warning, fix it by adding a unsigned suffix.
+kobject_init_and_add() takes reference even when it fails.
+If this function returns an error, kobject_put() must be called to
+properly clean up the memory associated with the object.
 
-UBSAN: signed-integer-overflow in
-drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:2246:26
-65535 * 65537 cannot be represented in type 'int'
-CPU: 21 PID: 7 Comm: kworker/u256:0 Not tainted 5.7.0-rc3-debug+ #39
-Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 2280-V2 03/27/2020
-Workqueue: ixgbe ixgbe_service_task [ixgbe]
-Call trace:
- dump_backtrace+0x0/0x3f0
- show_stack+0x28/0x38
- dump_stack+0x154/0x1e4
- ubsan_epilogue+0x18/0x60
- handle_overflow+0xf8/0x148
- __ubsan_handle_mul_overflow+0x34/0x48
- ixgbe_fc_enable_generic+0x4d0/0x590 [ixgbe]
- ixgbe_service_task+0xc20/0x1f78 [ixgbe]
- process_one_work+0x8f0/0xf18
- worker_thread+0x430/0x6d0
- kthread+0x218/0x238
- ret_from_fork+0x10/0x18
+Previous commit "b8eb718348b8" fixed a similar problem.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Xie XiuQi <xiexiuqi@huawei.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+[ rjw: Subject ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/cpuidle/sysfs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-index 0bd1294ba517..39c5e6fdb72c 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-@@ -2243,7 +2243,7 @@ s32 ixgbe_fc_enable_generic(struct ixgbe_hw *hw)
+diff --git a/drivers/cpuidle/sysfs.c b/drivers/cpuidle/sysfs.c
+index 2bb2683b493c..f8747322b3c7 100644
+--- a/drivers/cpuidle/sysfs.c
++++ b/drivers/cpuidle/sysfs.c
+@@ -480,7 +480,7 @@ static int cpuidle_add_state_sysfs(struct cpuidle_device *device)
+ 		ret = kobject_init_and_add(&kobj->kobj, &ktype_state_cpuidle,
+ 					   &kdev->kobj, "state%d", i);
+ 		if (ret) {
+-			kfree(kobj);
++			kobject_put(&kobj->kobj);
+ 			goto error_state;
+ 		}
+ 		cpuidle_add_s2idle_attr_group(kobj);
+@@ -611,7 +611,7 @@ static int cpuidle_add_driver_sysfs(struct cpuidle_device *dev)
+ 	ret = kobject_init_and_add(&kdrv->kobj, &ktype_driver_cpuidle,
+ 				   &kdev->kobj, "driver");
+ 	if (ret) {
+-		kfree(kdrv);
++		kobject_put(&kdrv->kobj);
+ 		return ret;
  	}
  
- 	/* Configure pause time (2 TCs per register) */
--	reg = hw->fc.pause_time * 0x00010001;
-+	reg = hw->fc.pause_time * 0x00010001U;
- 	for (i = 0; i < (MAX_TRAFFIC_CLASS / 2); i++)
- 		IXGBE_WRITE_REG(hw, IXGBE_FCTTV(i), reg);
+@@ -705,7 +705,7 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
+ 	error = kobject_init_and_add(&kdev->kobj, &ktype_cpuidle, &cpu_dev->kobj,
+ 				   "cpuidle");
+ 	if (error) {
+-		kfree(kdev);
++		kobject_put(&kdev->kobj);
+ 		return error;
+ 	}
  
 -- 
 2.25.1
