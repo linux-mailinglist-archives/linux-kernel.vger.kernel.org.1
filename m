@@ -2,62 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89471F16A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 12:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7621F16A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 12:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729334AbgFHK1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 06:27:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50124 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726202AbgFHK1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 06:27:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id DADCDB181;
-        Mon,  8 Jun 2020 10:27:07 +0000 (UTC)
-Date:   Mon, 8 Jun 2020 12:27:03 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Yannick Cote <ycote@redhat.com>, live-patching@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, joe.lawrence@redhat.com,
-        linux-kernel@vger.kernel.org, kamalesh@linux.vnet.ibm.com
-Subject: Re: [PATCH v2 1/4] selftests/livepatch: simplify test-klp-callbacks
- busy target tests
-Message-ID: <20200608102703.GA3728@linux-b0ei>
-References: <20200603182058.109470-1-ycote@redhat.com>
- <20200603182058.109470-2-ycote@redhat.com>
- <alpine.LSU.2.21.2006051505230.23532@pobox.suse.cz>
+        id S1729370AbgFHK2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 06:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbgFHK2C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 06:28:02 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D63CC08C5C3
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 03:28:01 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id n9so6505225plk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 03:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=39m+2LLbv6DmBKnk5P51Aj/s0CDKaXKRY6RVZpmO47k=;
+        b=WAGe9EfgYRXcs6oNuDgg+A5B5DLZKzh4sjoqPNRbHSPYUsD654Ef1u0NL1YTyBQJbH
+         3AAQHDRAFqZYQHcRUlc7swh6QESQXgVdWti12n2MKx0W1qMmCYiJOf3wVNg3llo5qVzU
+         jeLX7I4WOEoskkTxzZilOnuhERrqKx2CArW9Ay9eBSsErMEDyjfiinrbF1tbnOIfRVKT
+         zYqOwFTR6JxFVjVfjYdV1Ozd+PV88T94fYPeucXCSGHFqpmfTc6v3FhZUeqIRJwyqwLC
+         6pGwNOxhVFiddns9nUl45WEcBbvoHqPVAC2h8E95E+7t447c4eMegnPjx9xnAmolpzvJ
+         4j4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=39m+2LLbv6DmBKnk5P51Aj/s0CDKaXKRY6RVZpmO47k=;
+        b=JPorqSVQatEAA4eBf4TTj9Rayxp59ctHgfOiLwZFzUxHCp5eJoU+FZ8eHPljz0ErPV
+         BdhkngMWontKtljvokVlFhjV/n4myoerHlIKu5OTHowrcZNaU6VgntF9ukvUHNp5ex6f
+         9gTLE9S+rCYYchhVE4MhbkQqtKZblxbvgdyPV8c4UfLOPYrGCs6ccNmcu8KCnBzAFPmx
+         +0L1iYV0pG4yVUaVQvQ1sspgFPPXjwnDHFn0izEQGGf8lDnOetjqrR1q5ZO9z+bBnL2k
+         UwVF5MXhvTHBEKbtzU9b+Y1BJqHb0aVphuGoe6ofkj8J+EHFZS7JquIGwrQp2J+Ioz/b
+         2zkA==
+X-Gm-Message-State: AOAM531JJmqf5aCMahoSZ8WwKHEVjN9GoHQj021ZUJXFj1OxGVLgIdLI
+        b2JHuVQcmzzp8JW8yHijmVVeAw==
+X-Google-Smtp-Source: ABdhPJy7tUDmw7E2+N2dP4+jFgxDi565u5EZbJy/npJ1/aTQhfV9kSuAXl9CPg0tBQD4hXT6yfe9gg==
+X-Received: by 2002:a17:902:6bc8:: with SMTP id m8mr20467004plt.138.1591612080996;
+        Mon, 08 Jun 2020 03:28:00 -0700 (PDT)
+Received: from localhost ([122.172.62.209])
+        by smtp.gmail.com with ESMTPSA id n24sm14806270pjt.47.2020.06.08.03.27.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Jun 2020 03:28:00 -0700 (PDT)
+Date:   Mon, 8 Jun 2020 15:57:58 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     sboyd@kernel.org, georgi.djakov@linaro.org, saravanak@google.com,
+        mka@chromium.org, nm@ti.com, bjorn.andersson@linaro.org,
+        agross@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dianders@chromium.org,
+        vincent.guittot@linaro.org, amit.kucheria@linaro.org,
+        lukasz.luba@arm.com, sudeep.holla@arm.com, smasetty@codeaurora.org
+Subject: Re: [PATCH v6 0/5] DDR/L3 Scaling support on SDM845 and SC7180 SoCs
+Message-ID: <20200608102758.54vdswjievx3cc7l@vireshk-i7>
+References: <20200605213332.609-1-sibis@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2006051505230.23532@pobox.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200605213332.609-1-sibis@codeaurora.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-06-05 15:05:55, Miroslav Benes wrote:
-> On Wed, 3 Jun 2020, Yannick Cote wrote:
+On 06-06-20, 03:03, Sibi Sankar wrote:
+> This patch series aims to extend cpu based scaling support to L3/DDR on
+> SDM845 and SC7180 SoCs.
 > 
-> > From: Joe Lawrence <joe.lawrence@redhat.com>
-> > 
-> > The test-klp-callbacks script includes a few tests which rely on kernel
-> > task timings that may not always execute as expected under system load.
-> > These may generate out of sequence kernel log messages that result in
-> > test failure.
-> > 
-> > Instead of using sleep timing windows to orchestrate these tests, add a
-> > block_transition module parameter to communicate the test purpose and
-> > utilize flush_queue() to serialize the test module's task output.
-> > 
-> > Suggested-by: Petr Mladek <pmladek@suse.com>
-> > Signed-off-by: Joe Lawrence <joe.lawrence@redhat.com>
+> Patches [1-2] - Blacklist SDM845 and SC7180 in cpufreq-dt-platdev
+> Patches [3-5] - Update bw levels based on cpu frequency change
 > 
-> Acked-by: Miroslav Benes <mbenes@suse.cz>
+> Based on Viresh's opp-next:
+> https://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git/log/?h=opp/linux-next
+> 
+> V6:
+>  * Add global flag to distinguish between voltage update and opp add.
+>    Use the same flag before trying to scale ddr/l3 bw [Viresh]
+>  * Use dev_pm_opp_find_freq_ceil to grab all opps [Viresh] 
+>  * Move dev_pm_opp_of_find_icc_paths into probe [Viresh]
 
-JFYI, this patchset is committed in livepatching.git, branch
-for-5.9/selftests-cleanup.
+Picked for 5.9, will push to my branch after rc1 is out.
 
-Best Regards,
-Petr
+-- 
+viresh
