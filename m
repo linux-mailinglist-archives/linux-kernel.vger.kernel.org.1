@@ -2,60 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98261F1A5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 15:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF331F1A67
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 15:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729929AbgFHNuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 09:50:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:53158 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729051AbgFHNuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 09:50:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E896831B;
-        Mon,  8 Jun 2020 06:49:59 -0700 (PDT)
-Received: from [10.37.12.95] (unknown [10.37.12.95])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A53A3F52E;
-        Mon,  8 Jun 2020 06:49:56 -0700 (PDT)
-Subject: Re: [PATCH v8 4/8] PM / EM: add support for other devices than CPUs
- in Energy Model
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kbuild@lists.01.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-imx@nxp.com, lkp@intel.com,
-        Dan Carpenter <error27@gmail.com>, kbuild-all@lists.01.org,
-        Dietmar.Eggemann@arm.com, cw00.choi@samsung.com
-References: <20200608115155.GY30374@kadam>
- <b347fb60-46d3-e59c-59fa-a2b10932fc49@arm.com> <20200608125127.GN22511@kadam>
- <da0debe1-73da-33f1-c24e-154c2123c522@arm.com> <20200608132507.GP22511@kadam>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <f52c83d1-8968-25a2-2d6f-f3eeceae15cb@arm.com>
-Date:   Mon, 8 Jun 2020 14:49:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729947AbgFHNu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 09:50:26 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:45804 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729674AbgFHNuV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 09:50:21 -0400
+Received: by mail-oi1-f194.google.com with SMTP id p70so15293947oic.12;
+        Mon, 08 Jun 2020 06:50:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LoBXZChFhFBHCAkIAQbE9ACXjpMIB+fC8bSF51f2aWc=;
+        b=Oi1JV+iOrC6Fz0vZtz9BnXQLvULm/VK9Zn12fvWo1ZfOLbKHXFz651IV7Se0j60b6b
+         e3oA2859K9ksf52g2x9v+FCvGbWNa4pFFwieXf8Mfjd5Lw2Qz7n4bzs0b3rGDHsKVEE3
+         +M+pdruzQIPjFNvP1FGn8mkpVzU13EKTxbTNdblvWWMFvKoS9F3GDrwaqIwbhXMYhqQd
+         2JGCHqDlFGNHJeQNHWKtQjnmIM9YDaAOsLxuhMlGqW7mgupIcxrZ7PMwNWK3wt73V6oo
+         vijEfM+B0cRCqXXu+gYv5cNW7NBN6ObZ+2lxp8GOqxxleqUqOM4KjbSXrUFUVD0fWmD3
+         6dLA==
+X-Gm-Message-State: AOAM5312+E3y7k+dEM5/6aD85V1km5Lm6HtG3Fim23+EAYRW6mQ7jO3w
+        UZ1sqwY2zTS+tnkNJHZlHjJdAGeTogDb16w/1f4=
+X-Google-Smtp-Source: ABdhPJxu+xASA+2ZNb44ekDJEVwU5qFhT7U9QCnbCegaQTenwVkQmEVG4N8NU8yCgqlmPa3KP9HE51+OyaTr6GMiSHs=
+X-Received: by 2002:a54:4006:: with SMTP id x6mr3364279oie.148.1591624221004;
+ Mon, 08 Jun 2020 06:50:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200608132507.GP22511@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1591555267-21822-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1591555267-21822-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1591555267-21822-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Jun 2020 15:50:09 +0200
+Message-ID: <CAMuHMdVjHdwpm62mephmGPtDrYOeQyP38PaQD2=SOYD6Xj5ZaQ@mail.gmail.com>
+Subject: Re: [PATCH 02/11] arm64: dts: renesas: r8a774b1-hihope-rzg2n[-ex]:
+ Rename HiHope RZ/G2N boards
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jun 7, 2020 at 8:41 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> The existing DTS files for HiHope RZ/G2N boards are for Rev.2.0 version
+> so reflect the same for the DTS file names so that the existing naming
+> convention can be used for Rev.3.0/4.0 boards.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-On 6/8/20 2:25 PM, Dan Carpenter wrote:
-> It's not really a proper bug report so it doesn't deserve a reported-by.
-> 
-> Thanks, though!
-> 
-> regards,
-> dan carpenter
-> 
+Gr{oetje,eeting}s,
 
-Thank you Dan for your work. This is very much appreciated!
+                        Geert
 
-Lukasz
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
