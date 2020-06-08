@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4C81F10E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 02:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9661C1F10EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 02:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729063AbgFHA7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 20:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
+        id S1729077AbgFHA7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 20:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728969AbgFHA6z (ORCPT
+        with ESMTP id S1729042AbgFHA66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 20:58:55 -0400
+        Sun, 7 Jun 2020 20:58:58 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA91C08C5C3;
-        Sun,  7 Jun 2020 17:58:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C826AC08C5C3;
+        Sun,  7 Jun 2020 17:58:57 -0700 (PDT)
 Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de.)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA1:256)
         (Exim 4.80)
         (envelope-from <a.darwish@linutronix.de>)
-        id 1ji67g-0000y6-9U; Mon, 08 Jun 2020 02:58:44 +0200
+        id 1ji67l-0000zt-5s; Mon, 08 Jun 2020 02:58:49 +0200
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
@@ -29,12 +29,11 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
         "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org
-Subject: [PATCH v2 15/18] NFSv4: Use sequence counter with associated spinlock
-Date:   Mon,  8 Jun 2020 02:57:26 +0200
-Message-Id: <20200608005729.1874024-16-a.darwish@linutronix.de>
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v2 16/18] userfaultfd: Use sequence counter with associated spinlock
+Date:   Mon,  8 Jun 2020 02:57:27 +0200
+Message-Id: <20200608005729.1874024-17-a.darwish@linutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200608005729.1874024-1-a.darwish@linutronix.de>
 References: <20200519214547.352050-1-a.darwish@linutronix.de>
@@ -64,36 +63,31 @@ neither storage size nor runtime overhead.
 
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 ---
- fs/nfs/nfs4_fs.h   | 2 +-
- fs/nfs/nfs4state.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ fs/userfaultfd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/nfs/nfs4_fs.h b/fs/nfs/nfs4_fs.h
-index 2b7f6dcd2eb8..210e590e1f71 100644
---- a/fs/nfs/nfs4_fs.h
-+++ b/fs/nfs/nfs4_fs.h
-@@ -117,7 +117,7 @@ struct nfs4_state_owner {
- 	unsigned long	     so_flags;
- 	struct list_head     so_states;
- 	struct nfs_seqid_counter so_seqid;
--	seqcount_t	     so_reclaim_seqcount;
-+	seqcount_spinlock_t  so_reclaim_seqcount;
- 	struct mutex	     so_delegreturn_mutex;
- };
- 
-diff --git a/fs/nfs/nfs4state.c b/fs/nfs/nfs4state.c
-index a8dc25ce48bb..b1dba24918f8 100644
---- a/fs/nfs/nfs4state.c
-+++ b/fs/nfs/nfs4state.c
-@@ -509,7 +509,7 @@ nfs4_alloc_state_owner(struct nfs_server *server,
- 	nfs4_init_seqid_counter(&sp->so_seqid);
- 	atomic_set(&sp->so_count, 1);
- 	INIT_LIST_HEAD(&sp->so_lru);
--	seqcount_init(&sp->so_reclaim_seqcount);
-+	seqcount_spinlock_init(&sp->so_reclaim_seqcount, &sp->so_lock);
- 	mutex_init(&sp->so_delegreturn_mutex);
- 	return sp;
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index e39fdec8a0b0..dd3aab31c50f 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -61,7 +61,7 @@ struct userfaultfd_ctx {
+ 	/* waitqueue head for events */
+ 	wait_queue_head_t event_wqh;
+ 	/* a refile sequence protected by fault_pending_wqh lock */
+-	struct seqcount refile_seq;
++	seqcount_spinlock_t refile_seq;
+ 	/* pseudo fd refcounting */
+ 	refcount_t refcount;
+ 	/* userfaultfd syscall flags */
+@@ -1998,7 +1998,7 @@ static void init_once_userfaultfd_ctx(void *mem)
+ 	init_waitqueue_head(&ctx->fault_wqh);
+ 	init_waitqueue_head(&ctx->event_wqh);
+ 	init_waitqueue_head(&ctx->fd_wqh);
+-	seqcount_init(&ctx->refile_seq);
++	seqcount_spinlock_init(&ctx->refile_seq, &ctx->fault_pending_wqh.lock);
  }
+ 
+ SYSCALL_DEFINE1(userfaultfd, int, flags)
 -- 
 2.20.1
 
