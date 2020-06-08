@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3487F1F2E27
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2FB1F2E21
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730991AbgFIAjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:39:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33128 "EHLO mail.kernel.org"
+        id S1733185AbgFIAjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:39:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729332AbgFHXNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:13:23 -0400
+        id S1729364AbgFHXN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:13:26 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9BAD214D8;
-        Mon,  8 Jun 2020 23:13:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5ED420B80;
+        Mon,  8 Jun 2020 23:13:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658002;
-        bh=mnT9exT/fvQwG63m42+9Iftl9jERWCZuns3xk0LrKSM=;
+        s=default; t=1591658006;
+        bh=z/VmohNmkdvkGAeptphUD4iQVkdn9sw5EBbjAsBiMks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xOln4T7m5U/ly0SZ0D/VZCwGunRBH0nC6QoTmU2Xgb2dHSeNdYAG79bcYdNacSgZO
-         8XPLKDUt1SCTeVMAfFUctneNGAh7fPvmh7P3vHvJjShkHLZYceRs0TcdGXAAfCMEau
-         /loJG2eHc9C+qclLN4zsEFgH+JzQlPISmMnsC9C0=
+        b=pg7v13Z/fSFemXm5XNFAVdYPRKeC4gb4dg0rY9ty034yRejEgJQ3QAufiFqv4d72r
+         dvoCz6/PHe00BZtEWogzOYpW5xFhB+Sz32jgPz5kMoPqIin1aEjl52kCotbeKQ2AXo
+         06DZaLCI84EggVADPmwgzorxLdBJr12MMj/Ereeo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+Cc:     Adam Ford <aford173@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.6 059/606] arm64: dts: meson-g12-common: fix dwc2 clock names
-Date:   Mon,  8 Jun 2020 19:03:04 -0400
-Message-Id: <20200608231211.3363633-59-sashal@kernel.org>
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.6 062/606] arm64: dts: imx8mn: Change SDMA1 ahb clock for imx8mn
+Date:   Mon,  8 Jun 2020 19:03:07 -0400
+Message-Id: <20200608231211.3363633-62-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -46,35 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neil Armstrong <narmstrong@baylibre.com>
+From: Adam Ford <aford173@gmail.com>
 
-commit e4f634d812634067b0c661af2e3cecfd629c89b8 upstream.
+commit 15ddc3e17aec0de4c69d595b873e184432b9791d upstream.
 
-Use the correct dwc2 clock name.
+Using SDMA1 with UART1 is causing a "Timeout waiting for CH0" error.
+This patch changes to ahb clock from SDMA1_ROOT to AHB which fixes the
+timeout error.
 
-Fixes: 9baf7d6be730 ("arm64: dts: meson: g12a: Add G12A USB nodes")
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Link: https://lore.kernel.org/r/20200326160857.11929-3-narmstrong@baylibre.com
+Fixes: 6c3debcbae47 ("arm64: dts: freescale: Add i.MX8MN dtsi support")
+
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-index abe04f4ad7d8..eeaa95baaa10 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-@@ -2204,7 +2204,7 @@ dwc2: usb@ff400000 {
- 				reg = <0x0 0xff400000 0x0 0x40000>;
- 				interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clkc CLKID_USB1_DDR_BRIDGE>;
--				clock-names = "ddr";
-+				clock-names = "otg";
- 				phys = <&usb2_phy1>;
- 				phy-names = "usb2-phy";
- 				dr_mode = "peripheral";
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index a44b5438e842..882e913436ca 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -661,7 +661,7 @@ sdma1: dma-controller@30bd0000 {
+ 				reg = <0x30bd0000 0x10000>;
+ 				interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&clk IMX8MN_CLK_SDMA1_ROOT>,
+-					 <&clk IMX8MN_CLK_SDMA1_ROOT>;
++					 <&clk IMX8MN_CLK_AHB>;
+ 				clock-names = "ipg", "ahb";
+ 				#dma-cells = <3>;
+ 				fsl,sdma-ram-script-name = "imx/sdma/sdma-imx7d.bin";
 -- 
 2.25.1
 
