@@ -2,89 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F4F1F1D4B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 18:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7F71F1D2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 18:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730522AbgFHQ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 12:29:18 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:47912 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730454AbgFHQ3S (ORCPT
+        id S1730497AbgFHQXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 12:23:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730484AbgFHQW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 12:29:18 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 058G8Un1065789;
-        Mon, 8 Jun 2020 16:29:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=1CnvvLK92zk5dgs6SDTf+XweULl4QvBCd3wi5q7qwqM=;
- b=nDeDRBRhGxh3J664cgi4uJyQ9w0Cmxlk+OQ3A3IXAu4tSZwEOa0GaCM4ofLqRmahqdS6
- jnu8kB9Y9MIqoWhPlDZn7cHTzOfn6I2+Vk8nxjbc9FP5TT1InlApOIFPo6Z8LoJSEJdz
- Kc9X+290HvY/e7yc3zwF88Zgt+IuPcHBXky0zpjjg7PKrrHRdVUAfxz4mvhINMK3xjXS
- Asy7xLB1YKo+bI7G/UZanTaogXJCAx6WOgU91Gmw6iJMDHfSavB4k/gCeNtIdL80dHFJ
- 6MJ9FM34QAwWLcdSEIaU9xj7+p2/P/tW3SbUp5YVL4Ek7aN+Q5mbl3CgFXxk4pCC0rMW VA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 31g2jqyu6w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 08 Jun 2020 16:29:03 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 058GE5mb178581;
-        Mon, 8 Jun 2020 16:29:02 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 31gmqmetya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Jun 2020 16:29:02 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 058GT0YB011186;
-        Mon, 8 Jun 2020 16:29:00 GMT
-Received: from localhost.localdomain (/10.211.9.80)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 08 Jun 2020 09:28:59 -0700
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, hch@lst.de, sagi@grimberg.me,
-        chaitanya.kulkarni@wdc.com, kbusch@kernel.org, axboe@fb.com
-Subject: [PATCH 2/2] nvme-pci: remove empty line following nvme_should_reset()
-Date:   Mon,  8 Jun 2020 09:20:02 -0700
-Message-Id: <20200608162002.17017-3-dongli.zhang@oracle.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200608162002.17017-1-dongli.zhang@oracle.com>
-References: <20200608162002.17017-1-dongli.zhang@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9646 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 spamscore=0 suspectscore=1 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006080116
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9646 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- cotscore=-2147483648 priorityscore=1501 spamscore=0 suspectscore=1
- lowpriorityscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0
- phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006080116
+        Mon, 8 Jun 2020 12:22:58 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA854C08C5C5
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 09:22:56 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x6so18021963wrm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 09:22:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hs1EELNtgkaMondyRtgQ/6Z9mw2fYYd1xiptMHkTtFA=;
+        b=ndOHGLTaByr9ofdCBK5UVRXpqyxBmcTEBUOqz/laTHtMlkelV5nMDGwIxHLn+n7LAx
+         6AG+1gPjhoqT0/eGqnxXkMs+4kwhXHbdLD51zfWNha64FIlC5WiZ3l/VfS2224OY1pP5
+         oqOnyaC2rND5M+dX4Nqp3MLtFrp1wWjZnDDbw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hs1EELNtgkaMondyRtgQ/6Z9mw2fYYd1xiptMHkTtFA=;
+        b=lcpB7lpByqmaUPhbMO5R7qwAdJGDE+vL2UZ2XUjVR1kd5oDYqNOWh+8uFAw75Gwz/f
+         Juiaf60zlPZARBELTGaeEXuUX4JO2UAyho22cWkGMrYJ8fbirzg6PsjjnjtUCE3ZFGkh
+         MBxWLxVvPtGNtk1ko3D3jtXmXl1LB9zt7ak8yRTjkBtiHBx3/H/FTpvsMG5gZfXH1XcR
+         dBtbboEqkuQFYHnIAZ/NTUReie1jUZwKOH/XIdbW28PBcl5rznxrxHr0gBxGfytE2auy
+         4qrtXb2au+7Tws/VJ/NL+uxLRRm8TQbhde3xFAPMHqnCbi6cEbf1OOLY2pkCyLt2pOr3
+         GHXQ==
+X-Gm-Message-State: AOAM533tsBq5lB6G91jfwl/G4UN3lnceMotMu6I9j9QCzB1XDxCrgrDx
+        +ZpAjELW4dOcwJNIUf7lL0cnDzwxxu9TmQ==
+X-Google-Smtp-Source: ABdhPJzP+Yico773WoQLz8PnS8XimH0eOsVTKoFbV8W6LsSuKSkEQnAXSFPDmG0XSmY2ceDAtZiaaA==
+X-Received: by 2002:adf:9c12:: with SMTP id f18mr26206857wrc.105.1591633375425;
+        Mon, 08 Jun 2020 09:22:55 -0700 (PDT)
+Received: from antares.lan (f.7.9.4.f.9.a.d.f.4.a.3.6.5.1.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:156:3a4f:da9f:497f])
+        by smtp.gmail.com with ESMTPSA id w3sm50929wmg.44.2020.06.08.09.22.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jun 2020 09:22:54 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Roman Gushchin <guro@fb.com>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf] bpf: cgroup: allow multi-attach program to replace itself
+Date:   Mon,  8 Jun 2020 17:22:01 +0100
+Message-Id: <20200608162202.94002-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just cleanup by removing the empty line.
+When using BPF_PROG_ATTACH to attach a program to a cgroup in
+BPF_F_ALLOW_MULTI mode, it is not possible to replace a program
+with itself. This is because the check for duplicate programs
+doesn't take the replacement program into account.
 
-Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+Replacing a program with itself might seem weird, but it has
+some uses: first, it allows resetting the associated cgroup storage.
+Second, it makes the API consistent with the non-ALLOW_MULTI usage,
+where it is possible to replace a program with itself. Third, it
+aligns BPF_PROG_ATTACH with bpf_link, where replacing itself is
+also supported.
+
+Sice this code has been refactored a few times this change will
+only apply to v5.7 and later. Adjustments could be made to
+commit 1020c1f24a94 ("bpf: Simplify __cgroup_bpf_attach") and
+commit d7bf2c10af05 ("bpf: allocate cgroup storage entries on attaching bpf programs")
+as well as commit 324bda9e6c5a ("bpf: multi program support for cgroup+bpf")
+
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program attachment")
 ---
- drivers/nvme/host/pci.c | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/bpf/cgroup.c                                        | 2 +-
+ .../testing/selftests/bpf/prog_tests/cgroup_attach_multi.c | 7 +++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index d690d5593a80..4471e9910906 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -1153,7 +1153,6 @@ static void abort_endio(struct request *req, blk_status_t error)
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index fdf7836750a3..4d76f16524cc 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -378,7 +378,7 @@ static struct bpf_prog_list *find_attach_entry(struct list_head *progs,
+ 	}
  
- static bool nvme_should_reset(struct nvme_dev *dev, u32 csts)
- {
--
- 	/* If true, indicates loss of adapter communication, possibly by a
- 	 * NVMe Subsystem reset.
- 	 */
+ 	list_for_each_entry(pl, progs, node) {
+-		if (prog && pl->prog == prog)
++		if (prog && pl->prog == prog && prog != replace_prog)
+ 			/* disallow attaching the same prog twice */
+ 			return ERR_PTR(-EINVAL);
+ 		if (link && pl->link == link)
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
+index 139f8e82c7c6..b549fcfacc0b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
+@@ -230,6 +230,13 @@ void test_cgroup_attach_multi(void)
+ 		  "prog_replace", "errno=%d\n", errno))
+ 		goto err;
+ 
++	/* replace program with itself */
++	attach_opts.replace_prog_fd = allow_prog[6];
++	if (CHECK(bpf_prog_attach_xattr(allow_prog[6], cg1,
++					BPF_CGROUP_INET_EGRESS, &attach_opts),
++		  "prog_replace", "errno=%d\n", errno))
++		goto err;
++
+ 	value = 0;
+ 	CHECK_FAIL(bpf_map_update_elem(map_fd, &key, &value, 0));
+ 	CHECK_FAIL(system(PING_CMD));
 -- 
-2.17.1
+2.25.1
 
