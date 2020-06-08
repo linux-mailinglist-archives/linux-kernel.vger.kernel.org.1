@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F811F2432
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6741B1F2301
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgFHXSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:18:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35956 "EHLO mail.kernel.org"
+        id S1728320AbgFHXLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:11:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730004AbgFHXPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:15:11 -0400
+        id S1728575AbgFHXKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:10:07 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7DBB21527;
-        Mon,  8 Jun 2020 23:15:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 085FD21475;
+        Mon,  8 Jun 2020 23:10:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658111;
-        bh=wF1HNEupuWtrXwQN1wgfUpV+1kvAETiHj3R/MgHdlxI=;
+        s=default; t=1591657806;
+        bh=jBjbkxP1iiBAvE6/2yxT7Dz+8SrZGpJOC8QuAynfkJg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=grTUcXeMwBXo0E5KnM0hjnAc1P6ONQ9VS56DxOdysbubs/lyMxdV8Wo16lWvxuyz3
-         OhvFaaFpTdCj6szIGyV0wskGE14BY7hRH29k//aamracbqEnTYLPD1+5lsX6kmMf/C
-         X5O+Z28pYP55u7NaxMSl4E2Myn3J+4aehCVnf8qs=
+        b=iJlh3yd5WIbE+DTy8OIJfwMVrSYJl8biQCYJWZyD20KTjGH2NXiBjc9rZ4EYBC9cQ
+         lQB/UKzKyZB1ieVanEytud1jIow5c258sIFYgfcVHG/aV8h5h0Fz2Dyppoh1kzxsyM
+         jZsYVdALjx97LIW3Ix9hw8o4I5WXGuoeQSI/UvxY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.6 150/606] powerpc/64s: Disable STRICT_KERNEL_RWX
-Date:   Mon,  8 Jun 2020 19:04:35 -0400
-Message-Id: <20200608231211.3363633-150-sashal@kernel.org>
+Cc:     Sagi Grimberg <sagi@grimberg.me>, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 183/274] nvme-tcp: use bh_lock in data_ready
+Date:   Mon,  8 Jun 2020 19:04:36 -0400
+Message-Id: <20200608230607.3361041-183-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,48 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-commit 8659a0e0efdd975c73355dbc033f79ba3b31e82c upstream.
+[ Upstream commit 386e5e6e1aa90b479fcf0467935922df8524393d ]
 
-Several strange crashes have been eventually traced back to
-STRICT_KERNEL_RWX and its interaction with code patching.
+data_ready may be invoked from send context or from
+softirq, so need bh locking for that.
 
-Various paths in our ftrace, kprobes and other patching code need to
-be hardened against patching failures, otherwise we can end up running
-with partially/incorrectly patched ftrace paths, kprobes or jump
-labels, which can then cause strange crashes.
-
-Although fixes for those are in development, they're not -rc material.
-
-There also seem to be problems with the underlying strict RWX logic,
-which needs further debugging.
-
-So for now disable STRICT_KERNEL_RWX on 64-bit to prevent people from
-enabling the option and tripping over the bugs.
-
-Fixes: 1e0fc9d1eb2b ("powerpc/Kconfig: Enable STRICT_KERNEL_RWX for some configs")
-Cc: stable@vger.kernel.org # v4.13+
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200520133605.972649-1-mpe@ellerman.id.au
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 3f2304f8c6d6 ("nvme-tcp: add NVMe over TCP host driver")
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/host/tcp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 497b7d0b2d7e..b0fb42b0bf4b 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -129,7 +129,7 @@ config PPC
- 	select ARCH_HAS_PTE_SPECIAL
- 	select ARCH_HAS_MEMBARRIER_CALLBACKS
- 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
--	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
-+	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC32 && !HIBERNATION)
- 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HAS_UACCESS_FLUSHCACHE
- 	select ARCH_HAS_UACCESS_MCSAFE		if PPC64
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index c15a92163c1f..4862fa962011 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -794,11 +794,11 @@ static void nvme_tcp_data_ready(struct sock *sk)
+ {
+ 	struct nvme_tcp_queue *queue;
+ 
+-	read_lock(&sk->sk_callback_lock);
++	read_lock_bh(&sk->sk_callback_lock);
+ 	queue = sk->sk_user_data;
+ 	if (likely(queue && queue->rd_enabled))
+ 		queue_work_on(queue->io_cpu, nvme_tcp_wq, &queue->io_work);
+-	read_unlock(&sk->sk_callback_lock);
++	read_unlock_bh(&sk->sk_callback_lock);
+ }
+ 
+ static void nvme_tcp_write_space(struct sock *sk)
 -- 
 2.25.1
 
