@@ -2,100 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D24E1F1A22
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 15:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC6C1F1A2D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 15:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729872AbgFHNcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 09:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729179AbgFHNcx (ORCPT
+        id S1729895AbgFHNeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 09:34:00 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:62913 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729875AbgFHNdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 09:32:53 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF981C08C5C2;
-        Mon,  8 Jun 2020 06:32:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
-        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=ObZ22oOgYNGbVd4Cp8pB6DVUyibIVTQNw5PapcI68nk=; b=a5taWeGUX4HtnKc/RAOz5WhgUz
-        q6JBnbH3JTiA0cXFU9kiCQWCXW/ILe82YRWyyJCFX/BccSHPnnjG1RJ6fzG56MfIi0KikIvn0P9nf
-        mSUvR/7yJhmJEjL6YHLbAviatSAnH4qTUW0bZBTaepq+d1h02hdnqQwrHGin2OYMxi/uH2q6I2CFE
-        Bmf2dgwgtuy4ue+pK94M55DxD5NmhDOJiqDCKv4agDJrK2TlRU50paxHDYtrUgdGEJVwJptb7wL36
-        BMBtG7PyeI/lJRa1zCDx0cj4FHW1VWU83+4CkoMg/YVIb/7CHlo624nM17uJ2flQPUeEY+5R/1ZIc
-        7xPFI5/w==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jiHtR-0001E9-NY; Mon, 08 Jun 2020 13:32:49 +0000
-Date:   Mon, 8 Jun 2020 06:32:49 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v7 1/8] fs: introduce kernel_pread_file* support
-Message-ID: <20200608133249.GW19604@bombadil.infradead.org>
-References: <20200606050458.17281-1-scott.branden@broadcom.com>
- <20200606050458.17281-2-scott.branden@broadcom.com>
- <20200606155216.GP19604@bombadil.infradead.org>
- <1591621401.4638.59.camel@linux.ibm.com>
- <20200608131630.GV19604@bombadil.infradead.org>
- <1591622526.4638.71.camel@linux.ibm.com>
+        Mon, 8 Jun 2020 09:33:54 -0400
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 058DXVKM023535;
+        Mon, 8 Jun 2020 22:33:32 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 058DXVKM023535
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1591623212;
+        bh=b+o3Hm4QtvCz1v/3Sh/JT6aGk4myx3VOofcrTavBqrk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CMJmkSl2WOimRx+lm6tfZz98ISZpMBRK0DbB5JCpCVvU6x7EGNBAK1BchsuKfx8eT
+         smP18vaF0LLUaOLJWxy8PgD84wFJAeAuA6gRY5Xyrp6d9kZaXk5aFoiu2+9U+tjMFc
+         gB4p9g751gJnRy3a2uMKdbZo0C5JbCb8mko8oObEUQQtWrg68xZjKQFZP9UXm/h75J
+         zjjcUYdkWc5Tf9L9SVQpPL4JhbYTF7+il7fKYIjML4ZkHGKaeCPI0FqQ8bqHElBinZ
+         hJR8KbojN5pNJxMzxmRBGMPyku/g/jDYEgyRcM2ENCGx4kOVBPdrUK8dUjMEG4N8qJ
+         IykKAoNeJEqqQ==
+X-Nifty-SrcIP: [209.85.217.54]
+Received: by mail-vs1-f54.google.com with SMTP id k13so9773510vsm.13;
+        Mon, 08 Jun 2020 06:33:32 -0700 (PDT)
+X-Gm-Message-State: AOAM530nV0EcxYr2hWUDiPQvoMJ00z92eeC4LnCxOx3Cpk5RVOI9wB5N
+        Z7wjvFHlgx810FBhKENF/x7pML8lNdby5qSXpzE=
+X-Google-Smtp-Source: ABdhPJyfBMyc0+YCkYixUd2p+AN/T03Qhj7+s3JZLuqn4kS0/Z0lvBdDfypzJhoi2h2pGnaS8dEXskpx9ISJNDks+sQ=
+X-Received: by 2002:a67:2d42:: with SMTP id t63mr15019160vst.181.1591623211449;
+ Mon, 08 Jun 2020 06:33:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1591622526.4638.71.camel@linux.ibm.com>
+References: <20200423073929.127521-1-masahiroy@kernel.org> <20200423073929.127521-5-masahiroy@kernel.org>
+ <20200608115628.osizkpo76cgn2ci7@lion.mk-sys.cz>
+In-Reply-To: <20200608115628.osizkpo76cgn2ci7@lion.mk-sys.cz>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 8 Jun 2020 22:32:54 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQkVA05G9f68PTyyChno2OEOq_gsmjGwML7PerZvwOuSA@mail.gmail.com>
+Message-ID: <CAK7LNAQkVA05G9f68PTyyChno2OEOq_gsmjGwML7PerZvwOuSA@mail.gmail.com>
+Subject: Re: [PATCH 04/16] net: bpfilter: use 'userprogs' syntax to build bpfilter_umh
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 09:22:06AM -0400, Mimi Zohar wrote:
-> On Mon, 2020-06-08 at 06:16 -0700, Matthew Wilcox wrote:
-> > On Mon, Jun 08, 2020 at 09:03:21AM -0400, Mimi Zohar wrote:
-> > > With this new design of not using a private vmalloc, will the file
-> > > data be accessible prior to the post security hooks?  From an IMA
-> > > perspective, the hooks are used for measuring and/or verifying the
-> > > integrity of the file.
-> > 
-> > File data is already accessible prior to the post security hooks.
-> > Look how kernel_read_file works:
-> > 
-> >         ret = deny_write_access(file);
-> >         ret = security_kernel_read_file(file, id);
-> >                 *buf = vmalloc(i_size);
-> >                 bytes = kernel_read(file, *buf + pos, i_size - pos, &pos);
-> >         ret = security_kernel_post_read_file(file, *buf, i_size, id);
-> > 
-> > kernel_read() will read the data into the page cache and then copy it
-> > into the vmalloc'd buffer.  There's nothing here to prevent read accesses
-> > to the file.
-> 
-> The post security hook needs to access to the file data in order to
-> calculate the file hash.  The question is whether prior to returning
-> from kernel_read_file() the caller can access the file data.
+On Mon, Jun 8, 2020 at 8:56 PM Michal Kubecek <mkubecek@suse.cz> wrote:
+>
+> On Thu, Apr 23, 2020 at 04:39:17PM +0900, Masahiro Yamada wrote:
+> > The user mode helper should be compiled for the same architecture as
+> > the kernel.
+> >
+> > This Makefile reuses the 'hostprogs' syntax by overriding HOSTCC with CC.
+> >
+> > Now that Kbuild provides the syntax 'userprogs', use it to fix the
+> > Makefile mess.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > Reported-by: kbuild test robot <lkp@intel.com>
+> > ---
+> >
+> >  net/bpfilter/Makefile | 11 ++++-------
+> >  1 file changed, 4 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
+> > index 36580301da70..6ee650c6badb 100644
+> > --- a/net/bpfilter/Makefile
+> > +++ b/net/bpfilter/Makefile
+> > @@ -3,17 +3,14 @@
+> >  # Makefile for the Linux BPFILTER layer.
+> >  #
+> >
+> > -hostprogs := bpfilter_umh
+> > +userprogs := bpfilter_umh
+> >  bpfilter_umh-objs := main.o
+> > -KBUILD_HOSTCFLAGS += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
+> > -HOSTCC := $(CC)
+> > +user-ccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
+> >
+> > -ifeq ($(CONFIG_BPFILTER_UMH), y)
+> > -# builtin bpfilter_umh should be compiled with -static
+> > +# builtin bpfilter_umh should be linked with -static
+> >  # since rootfs isn't mounted at the time of __init
+> >  # function is called and do_execv won't find elf interpreter
+> > -KBUILD_HOSTLDFLAGS += -static
+> > -endif
+> > +bpfilter_umh-ldflags += -static
+> >
+> >  $(obj)/bpfilter_umh_blob.o: $(obj)/bpfilter_umh
+>
+> Hello,
+>
+> I just noticed that this patch (now in mainline as commit 8a2cc0505cc4)
+> drops the test if CONFIG_BPFILTER_UMH is "y" so that -static is now
+> passed to the linker even if bpfilter_umh is built as a module which
+> wasn't the case in v5.7.
+>
+> This is not mentioned in the commit message and the comment still says
+> "*builtin* bpfilter_umh should be linked with -static" so this change
+> doesn't seem to be intentional. Did I miss something?
+>
+> Michal Kubecek
 
-Whether you copy the data (as today) or map it (as I'm proposing),
-the data goes into the page cache.  It's up to the security system to
-block access to the page cache until it's been verified.
+
+Sorry. ifeq was accidentally dropped.
+I will restore it.
+
+-- 
+Best Regards
+Masahiro Yamada
