@@ -2,58 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D8C1F1F4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 20:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0C11F1F5A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 20:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgFHSu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 14:50:28 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:58774 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726105AbgFHSu0 (ORCPT
+        id S1726228AbgFHS5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 14:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbgFHS44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 14:50:26 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Mon, 8 Jun 2020 11:50:24 -0700
-Received: from localhost (unknown [10.188.145.109])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 6B38A4051D;
-        Mon,  8 Jun 2020 11:50:25 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 11:50:24 -0700
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     Julien Thierry <jthierry@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <jpoimboe@redhat.com>,
-        <peterz@infradead.org>, <mbenes@suse.cz>
-Subject: Re: [PATCH v2 2/4] objtool: Move orc outside of check
-Message-ID: <20200608185024.GB1284251@rlwimi.vmware.com>
-Mail-Followup-To: Matt Helsley <mhelsley@vmware.com>,
-        Julien Thierry <jthierry@redhat.com>, linux-kernel@vger.kernel.org,
-        jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz
-References: <20200608071203.4055-1-jthierry@redhat.com>
- <20200608071203.4055-3-jthierry@redhat.com>
+        Mon, 8 Jun 2020 14:56:56 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651AEC08C5C7
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 11:56:55 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id g10so543630wmh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 11:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=bbezwn5gwDlTS6iFB4r9mviI0BHif4uVVFtQV600W10=;
+        b=bYuLeFsFLMkDx3qZeqjTwTuymeICsPggctKvZNcicEBsCT6pD6pMA7MDedxcCgxxxv
+         DaXRWn69Tos6NjXf9n4UhHrwGd5gC47tLeiiskVQVlVn7tUdf+gKVD++b2pSx6mjt0Wt
+         /GROQLIkv8ERRIXfaTl+IBNn5ySBixDUBCavUZXD4GOr2RPx8jv98AlcXxuFAvV8TSzH
+         uUzKSnqPFAIyr30pkKt7Dm8kolIvPkY4GfLVcdkgaBEz6LXVbdJwTjtf+/4f8Isg7P1S
+         KORdnXpCjh3OH33CQNPDcXraPiI3zvS0de9sedU66a7jPu3xIf4o9mtqTrhWJsUZrxQa
+         4t6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=bbezwn5gwDlTS6iFB4r9mviI0BHif4uVVFtQV600W10=;
+        b=KBW5YM7vqdGfRHUXrPoaHR/Ze/eeElJgtdbl2cvMHrNtfp/lVlMvk7EsWVaretNivI
+         OziX9ji/xv7mD0bpCWUGqZlYA9OGHnnIxSqclh+SnUONu0xEaixoV8gt71i/ZPmebnxV
+         detm6uDUr5kH2kvy9sNKaMxWxD/I9ZO0zOFMfK8s9T6lZ/yIuXdYnjj9ql+j+2TQURJ7
+         H/L/ipZY2FFcwa17dlIfepNyaJ3Lkbwsv7F44IvKWXoFmbyv+XreuUlwV4ehqtOTz1OZ
+         1uG7Y2O+LQAuj6VntVCRJEqG7D/HcUU9+jJAuW0hVxhiDHOZKGczgZYvjHmUlMwd9Ruq
+         pMaA==
+X-Gm-Message-State: AOAM531g3BU4sGg160B9fWMEJUz/1kS6ydrd/5vyttAAcJ3hk/g+RqLA
+        jYn5FWz1BUVm/EP8OIzGFnAJZA==
+X-Google-Smtp-Source: ABdhPJyiWUVMEiOfAXAeFrqmYgqJgRJgWv1aBrPn0d5IckEE0fOBQCHvZfLUDwPo686MnqwrE6u1gg==
+X-Received: by 2002:a1c:80d4:: with SMTP id b203mr135522wmd.138.1591642613825;
+        Mon, 08 Jun 2020 11:56:53 -0700 (PDT)
+Received: from dell ([95.147.198.92])
+        by smtp.gmail.com with ESMTPSA id l17sm431519wmi.16.2020.06.08.11.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jun 2020 11:56:53 -0700 (PDT)
+Date:   Mon, 8 Jun 2020 19:56:51 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        david.m.ertman@intel.com, shiraz.saleem@intel.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v4 02/11] mfd: Add support for Kontron sl28cpld
+ management controller
+Message-ID: <20200608185651.GD4106@dell>
+References: <20200604211039.12689-1-michael@walle.cc>
+ <20200604211039.12689-3-michael@walle.cc>
+ <20200605065709.GD3714@dell>
+ <20200605105026.GC5413@sirena.org.uk>
+ <c5632bfab3956265e90fc2fb6c0b3cae@walle.cc>
+ <20200606114645.GB2055@sirena.org.uk>
+ <dc052a5c77171014ecc465b1da8b7ef8@walle.cc>
+ <20200608082827.GB3567@dell>
+ <CAHp75VdiH=J-ovCdh1RFJDW_bJM8=pbXRaHmB691GLb-5oBmYQ@mail.gmail.com>
+ <7d7feb374cbf5a587dc1ce65fc3ad672@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200608071203.4055-3-jthierry@redhat.com>
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7d7feb374cbf5a587dc1ce65fc3ad672@walle.cc>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 08:12:01AM +0100, Julien Thierry wrote:
-> Now that the objtool_file can be obtained outside of the check function,
-> orc generation builtin no longer requires check to explicitly call its
-> orc related functions.
+On Mon, 08 Jun 2020, Michael Walle wrote:
+
+> Am 2020-06-08 12:02, schrieb Andy Shevchenko:
+> > +Cc: some Intel people WRT our internal discussion about similar
+> > problem and solutions.
+> > 
+> > On Mon, Jun 8, 2020 at 11:30 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > > On Sat, 06 Jun 2020, Michael Walle wrote:
+> > > > Am 2020-06-06 13:46, schrieb Mark Brown:
+> > > > > On Fri, Jun 05, 2020 at 10:07:36PM +0200, Michael Walle wrote:
+> > > > > > Am 2020-06-05 12:50, schrieb Mark Brown:
+> > 
+> > ...
+> > 
+> > > Right.  I'm suggesting a means to extrapolate complex shared and
+> > > sometimes intertwined batches of register sets to be consumed by
+> > > multiple (sub-)devices spanning different subsystems.
+> > > 
+> > > Actually scrap that.  The most common case I see is a single Regmap
+> > > covering all child-devices.
+> > 
+> > Yes, because often we need a synchronization across the entire address
+> > space of the (parent) device in question.
+> > 
+> > >  It would be great if there was a way in
+> > > which we could make an assumption that the entire register address
+> > > space for a 'tagged' (MFD) device is to be shared (via Regmap) between
+> > > each of the devices described by its child-nodes.  Probably by picking
+> > > up on the 'simple-mfd' compatible string in the first instance.
+> > > 
+> > > Rob, is the above something you would contemplate?
+> > > 
+> > > Michael, do your register addresses overlap i.e. are they intermingled
+> > > with one another?  Do multiple child devices need access to the same
+> > > registers i.e. are they shared?
 > 
-> Signed-off-by: Julien Thierry <jthierry@redhat.com>
+> No they don't overlap, expect for maybe the version register, which is
+> just there once and not per function block.
 
-Reviewed-by: Matt Helsley <mhelsley@vmware.com>
+Then what's stopping you having each device Regmap their own space?
 
-> ---
->  tools/objtool/builtin-check.c |  2 +-
->  tools/objtool/builtin-orc.c   | 18 +++++++++++++++++-
->  tools/objtool/check.c         | 16 +---------------
->  tools/objtool/objtool.h       |  2 +-
->  tools/objtool/weak.c          |  2 +-
->  5 files changed, 21 insertions(+), 19 deletions(-)
+The issues I wish to resolve using 'simple-mfd' are when sub-devices
+register maps overlap and intertwine.
+
+> > > > > > But, there is more in my driver:
+> > > > > >  (1) there is a version check
+> > > 
+> > > If we can rid the Regmap dependency, then creating an entire driver to
+> > > conduct a version check is unjustifiable.  This could become an inline
+> > > function which is called by each of the sub-devices instead, for
+> > > example.
+> 
+> sounds good to me. (although there would then be a probe fail per sub-device
+> if the version is not supported)
+
+I don't see an issue with that.  I would put that check inside a
+shared call though, complete with support for locking.
+
+> > > > > >  (2) there is another function for which there is no suitable linux
+> > > > > >      subsystem I'm aware of and thus which I'd like to us sysfs
+> > > > > >      attributes for: This controller supports 16 non-volatile
+> > > > > >      configuration bits. (this is still TBD)
+> > > 
+> > > There is a place for everything in Linux.
+> > > 
+> > > What do these bits configure?
+> 
+> - hardware strappings which have to be there before the board powers up,
+>   like clocking mode for different SerDes settings
+> - "keep-in-reset" bits for onboard peripherals if you want to save power
+> - disable watchdog bits (there is a watchdog which is active right from
+>   the start and supervises the bootloader start and switches to failsafe
+>   mode if it wasn't successfully started)
+> - special boot modes, like eMMC, etc.
+> 
+> Think of it as a 16bit configuration word.
+
+And you wish for users to be able to view these at run-time?
+
+Can they adapt any of them on-the-fly or will the be RO?
+
+> > > > > TBH I'd also say that the enumeration of the subdevices for this
+> > > > > device should be in the device rather than the DT, they don't
+> > > > > seem to be things that exist outside of this one device.
+> > > >
+> > > > We're going circles here, formerly they were enumerated in the MFD.
+> > > > Yes, they are devices which aren't likely be used outside a
+> > > > "sl28cpld", but there might there might be other versions of the
+> > > > sl28cpld with other components on different base addresses. I
+> > > > don't care if they are enumerated in DT or MFD, actually, I'd
+> > > > prefer the latter. _But_ I would like to have the device tree
+> > > > properties for its subdevices, e.g. the ones for the watchdog or
+> > > > whatever components there might be in the future.
+> > > 
+> > > [...]
+> > > 
+> > > > MFD core can
+> > > > match a device tree node today; but only one per unique compatible
+> > > > string. So what should I use to differentiate the different
+> > > > subdevices?
+> > > 
+> > > Right.  I have been aware of this issue.  The only suitable solution
+> > > to this would be to match on 'reg'.
+> 
+> see below (1)
+> 
+> > > 
+> > > FYI: I plan to fix this.
+> > > 
+> > > If your register map needs to change, then I suggest that this is
+> > > either a new device or at least a different version of the device and
+> > > would also have to be represented as different (sub-)mfd_cell.
+> > > 
+> > > > Rob suggested the internal offset, which I did here.
+> > > 
+> > > FWIW, I don't like this idea.  DTs should not have to be modified
+> > > (either in the first instance or subsequently) or specifically
+> > > designed to patch inadequacies in any given OS.
+> 
+> How does (1) play together with this? What do you propose the "reg"
+> property should contain?
+
+Whatever is in the 'reg' property contained in the Device Tree node.
+Either the full address or an offset would be suitable.
+
+Caveat: All this thinking has been done on-the-fly.  I would need to
+look at some examples of existing devices and start coding before I
+could really think the solution through.
+
+Happy to discuss and/or take recommendations though.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
