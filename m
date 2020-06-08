@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6767C1F2D06
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8741F2E2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729290AbgFHXPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:15:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32954 "EHLO mail.kernel.org"
+        id S1732866AbgFIAje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:39:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728549AbgFHXNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:13:16 -0400
+        id S1729286AbgFHXNU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:13:20 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9EB120B80;
-        Mon,  8 Jun 2020 23:13:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 559BD21532;
+        Mon,  8 Jun 2020 23:13:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657996;
-        bh=qlHFhiF+yd/ECgPkPqNQR8a1vcazpWtXpQJzzcBVVrM=;
+        s=default; t=1591658000;
+        bh=iyzJrfIKvVs3kATF4wFc59OozNGRsscsxjNvpz3D/PQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KZ+HQY7IIYqj1Bey5NkId3fJim4XCcIKr6ktITAkCc+Z22O6MDOuz5ttVfE9BVBPb
-         Md91OJ+lefwxRlC8FWpIu60lAGBOugkzbCM3tQx+EZkS2KlZ+EHGx0cNYkyMb7E5wI
-         gSup3v82wAZ5UF9d/Bc69DbITjVYO1q66yjrNX+4=
+        b=ifLpUV/BVtBhEIVpwWWxdX06rfnjPrWtv0Ae4kDdOtQ3hcRkGZYgw/akl4LcvfpI7
+         Fv+I451y1R9fZxBNZdu+M9t0PkWxfiVuo6VjUeomu2klnTElqlqPCl4uswZJdguoU/
+         5aEPKusiHQwAraeb69h7jk6GmEC2qpmpO5szFO98=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>,
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.6 054/606] Revert "ALSA: hda/realtek: Fix pop noise on ALC225"
-Date:   Mon,  8 Jun 2020 19:02:59 -0400
-Message-Id: <20200608231211.3363633-54-sashal@kernel.org>
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.6 057/606] arm64: dts: meson-g12b-khadas-vim3: add missing frddr_a status property
+Date:   Mon,  8 Jun 2020 19:03:02 -0400
+Message-Id: <20200608231211.3363633-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -44,38 +47,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Neil Armstrong <narmstrong@baylibre.com>
 
-commit f41224efcf8aafe80ea47ac870c5e32f3209ffc8 upstream.
+commit 5ac0869fb39b1c1ba84d4d75c550f82e0bf44c96 upstream.
 
-This reverts commit 3b36b13d5e69d6f51ff1c55d1b404a74646c9757.
+In the process of moving the VIM3 audio nodes to a G12B specific dtsi
+for enabling the SM1 based VIM3L, the frddr_a status = "okay" property
+got dropped.
+This re-enables the frddr_a node to fix audio support.
 
-Enable power save node breaks some systems with ACL225. Revert the patch
-and use a platform specific quirk for the original issue isntead.
-
-Fixes: 3b36b13d5e69 ("ALSA: hda/realtek: Fix pop noise on ALC225")
-BugLink: https://bugs.launchpad.net/bugs/1875916
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Link: https://lore.kernel.org/r/20200503152449.22761-1-kai.heng.feng@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 4f26cc1c96c9 ("arm64: dts: khadas-vim3: move common nodes into meson-khadas-vim3.dtsi")
+Reported-by: Christian Hewitt <christianshewitt@gmail.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+Tested-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20191018140216.4257-1-narmstrong@baylibre.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c | 2 --
- 1 file changed, 2 deletions(-)
+ arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d6bc39dce4cf..d73c814358bf 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8121,8 +8121,6 @@ static int patch_alc269(struct hda_codec *codec)
- 		spec->gen.mixer_nid = 0;
- 		break;
- 	case 0x10ec0225:
--		codec->power_save_node = 1;
--		/* fall through */
- 	case 0x10ec0295:
- 	case 0x10ec0299:
- 		spec->codec_variant = ALC269_TYPE_ALC225;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
+index 554863429aa6..e2094575f528 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
+@@ -152,6 +152,10 @@ &cpu103 {
+ 	clock-latency = <50000>;
+ };
+ 
++&frddr_a {
++	status = "okay";
++};
++
+ &frddr_b {
+ 	status = "okay";
+ };
 -- 
 2.25.1
 
