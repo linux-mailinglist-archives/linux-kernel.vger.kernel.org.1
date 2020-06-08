@@ -2,69 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8951F11EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 05:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C16C1F11F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 05:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728991AbgFHD6F convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Jun 2020 23:58:05 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37845 "EHLO
+        id S1729048AbgFHD6q convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Jun 2020 23:58:46 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37851 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728855AbgFHD6E (ORCPT
+        with ESMTP id S1728943AbgFHD6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 23:58:04 -0400
-Received: from mail-pl1-f197.google.com ([209.85.214.197])
+        Sun, 7 Jun 2020 23:58:46 -0400
+Received: from mail-pg1-f197.google.com ([209.85.215.197])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <kai.heng.feng@canonical.com>)
-        id 1ji8vC-00026m-OU
-        for linux-kernel@vger.kernel.org; Mon, 08 Jun 2020 03:58:02 +0000
-Received: by mail-pl1-f197.google.com with SMTP id y10so11429191pll.16
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 20:58:02 -0700 (PDT)
+        id 1ji8vr-0002AL-Gj
+        for linux-kernel@vger.kernel.org; Mon, 08 Jun 2020 03:58:43 +0000
+Received: by mail-pg1-f197.google.com with SMTP id r2so12191050pgd.23
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 20:58:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
          :content-transfer-encoding:message-id:references:to;
-        bh=kiKeONk+XKAoJnjoYfDC/7s0+/Uf2k9m+TjoRzs9nGY=;
-        b=cZS0AoAF1Zo6WuZ7NyxtrFAtGPLP5LpSkbFOoER8XSRp8XMC3ZZ5/u9PfceJSAsvCR
-         sHEYtW78Dnrzz05xsQdUb9oKxiXxU9LAn1xF5Lctk/1ItD0LWmccRHtehcTZIssaZFHt
-         ByG83GF9fMYp+LKtBCkXYukM0Q7pJWebHJJostiejcYSWctfaZQ/noA1oS06Dm3g4Nio
-         DKVXq9pTco150JJ4xXVLoakCqcfB69Ujsp0v7NUL9fazBfnBTV9ONuQvqRa/eLQx/acX
-         r9p+KMA4EaaZIiCkcPaaB2DiXQPRi9w109U0rwmHo48eBxl4+e0C04E5eSBdZsNtnagO
-         l8oA==
-X-Gm-Message-State: AOAM531c9z+pEKInGkK5BwGcofKH9sl3kEN1QpXfckeOMqAvV9+c+ZGs
-        jl+vwHZHc6q8v9bLSuNskyJ1k/CUwRjGqQwJthyXAIunj5Otg3ZsC3Ov1GGq0fosXGnfHLMlNWE
-        w8z075qHpgfv7FE7kvysHNFn/T+pXntjoN2dvxZ0WZw==
-X-Received: by 2002:a63:1323:: with SMTP id i35mr19099545pgl.311.1591588681054;
-        Sun, 07 Jun 2020 20:58:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxYLhjxqcqk7bf6M5WtwXiaQKO3W3BBSLZ6hH23cBvCmm/hUgJ5I2jXj6lYXtQ8XakOK2Cgag==
-X-Received: by 2002:a63:1323:: with SMTP id i35mr19099534pgl.311.1591588680674;
-        Sun, 07 Jun 2020 20:58:00 -0700 (PDT)
+        bh=Tj+9pNE+Q2v5clApLNj9Rlp1lFSTcFwVdQZwuoFq8p4=;
+        b=K2pfOMuysd4Z4WBR5kB7S065SKuMbEvSOTRHVUkuW3vzE5e/3TxSyMiB1oLVGa/H/Z
+         ha5cAcyTSLrscXvQ9v5avBDScVWYDWKCIJtk83IhF5LQZcMEL/tlry/ws1LMuZuD5vjU
+         0IcYKzrQAW/6zS1Nz6E1gGkP8zUPMO2/ze8l5bN7t+DBr++DlX+CvLI3iE+cqMNAkPvP
+         MldodwlxA7IvklVUPHf5V8xm2PTVy2+aF7LBN1YtmSf50SS189GPZx3rcfiogZ39QS5j
+         F/Ag2NjykJxpsU1L8zJekzOZpF40Yt8TmyGdAPuP/u02av09qK41kasxWKKCxfXYXUDs
+         S4RQ==
+X-Gm-Message-State: AOAM532NwjVKDDr4NYHRhoccb3iLtUiDfU+WgroMdqRIe/QgB6pCGzBt
+        tURVCGLWU+TUfCt6owxDQWPxFW+1nyCIX9t19nEptBv3sZ4+6QskAUMgaTfD4dkweBTO3Bw8/tu
+        PKQQPd2XhimkmBjZnx8yfrHxP4p7rINw9kJlwe1INLg==
+X-Received: by 2002:a05:6a00:1511:: with SMTP id q17mr19946030pfu.16.1591588722147;
+        Sun, 07 Jun 2020 20:58:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxt04qdGld5AF7zj0Jzq+hkvSNU6ssr7Qw+vLqRRg4hfD9qrQnlvnpRCvY36cXJq1TuN4pSvw==
+X-Received: by 2002:a05:6a00:1511:: with SMTP id q17mr19946019pfu.16.1591588721720;
+        Sun, 07 Jun 2020 20:58:41 -0700 (PDT)
 Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id mw5sm15018161pjb.27.2020.06.07.20.57.58
+        by smtp.gmail.com with ESMTPSA id mw5sm15018161pjb.27.2020.06.07.20.58.40
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 07 Jun 2020 20:58:00 -0700 (PDT)
+        Sun, 07 Jun 2020 20:58:41 -0700 (PDT)
 Content-Type: text/plain;
         charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] xhci: Make debug message consistent with bus and port
- number
+Subject: Re: [PATCH 2/2] xhci: Poll for U0 after disabling USB2 LPM
 From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <938b0ce5-cb56-a356-dec8-3a6adc502752@linux.intel.com>
-Date:   Mon, 8 Jun 2020 11:57:57 +0800
+In-Reply-To: <20200520101811.2623-2-kai.heng.feng@canonical.com>
+Date:   Mon, 8 Jun 2020 11:58:40 +0800
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        mathias.nyman@intel.com,
         "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>
 Content-Transfer-Encoding: 8BIT
-Message-Id: <E6AD21DC-A086-44B9-98F5-7FB320E9B457@canonical.com>
-References: <20200507061755.13280-1-kai.heng.feng@canonical.com>
- <20200507064510.GA787064@kroah.com>
- <C4A734C8-D1C6-45BC-9C0A-92364EAEE3C0@canonical.com>
- <20200507073119.GA876666@kroah.com>
- <90D5B23E-B037-49D2-BD44-7F9B0B2FC155@canonical.com>
- <20200507082149.GE1024567@kroah.com>
- <938b0ce5-cb56-a356-dec8-3a6adc502752@linux.intel.com>
-To:     Mathias Nyman <mathias.nyman@linux.intel.com>
+Message-Id: <EF6B47D0-973E-46B7-9194-C58389FFAB35@canonical.com>
+References: <20200520101811.2623-1-kai.heng.feng@canonical.com>
+ <20200520101811.2623-2-kai.heng.feng@canonical.com>
+To:     mathias.nyman@intel.com
 X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -73,79 +66,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On May 7, 2020, at 18:35, Mathias Nyman <mathias.nyman@linux.intel.com> wrote:
+> On May 20, 2020, at 18:18, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
 > 
-> On 7.5.2020 11.21, Greg Kroah-Hartman wrote:
->> On Thu, May 07, 2020 at 03:58:36PM +0800, Kai-Heng Feng wrote:
->>> 
->>> 
->>>> On May 7, 2020, at 15:31, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
->>>> 
->>>> On Thu, May 07, 2020 at 03:15:01PM +0800, Kai-Heng Feng wrote:
->>>>> 
->>>>> 
->>>>>> On May 7, 2020, at 14:45, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
->>>>>> 
->>>>>> On Thu, May 07, 2020 at 02:17:55PM +0800, Kai-Heng Feng wrote:
->>>>>>> Current xhci debug message doesn't always output bus number, so it's
->>>>>>> hard to figure out it's from USB2 or USB3 root hub.
->>>>>>> 
->>>>>>> In addition to that, some port numbers are offset to 0 and others are
->>>>>>> offset to 1. Use the latter to match the USB core.
->>>>>>> 
->>>>>>> So use "bus number - port index + 1" to make debug message consistent.
->>>>>>> 
->>>>>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>>>>>> ---
->>>>>>> drivers/usb/host/xhci-hub.c | 41 +++++++++++++++++++++----------------
->>>>>>> 1 file changed, 23 insertions(+), 18 deletions(-)
->>>>>>> 
->>>>>>> diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
->>>>>>> index f37316d2c8fa..83088c262cc4 100644
->>>>>>> --- a/drivers/usb/host/xhci-hub.c
->>>>>>> +++ b/drivers/usb/host/xhci-hub.c
->>>>>>> @@ -1241,7 +1241,8 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
->>>>>>> 			temp = readl(ports[wIndex]->addr);
->>>>>>> 			/* Disable port */
->>>>>>> 			if (link_state == USB_SS_PORT_LS_SS_DISABLED) {
->>>>>>> -				xhci_dbg(xhci, "Disable port %d\n", wIndex);
->>>>>>> +				xhci_dbg(xhci, "Disable port %d-%d\n",
->>>>>>> +					 hcd->self.busnum, wIndex + 1);
->>>>>> 
->>>>>> Shouldn't xhci_dbg() show the bus number already?  
->>>>> 
->>>>> It's the PCI bus number, different to USB2/USB3 root hub bus number...
->>>> 
->>>> But if this is using dev_dbg(), and it is, then you know how to look
->>>> that up by seeing where that device is in sysfs at that point in time.
->>>> 
->>>> So why add this again?
->>> 
->>> xHCI has two HCD, one for USB2 and one for USB3.
->>> If both of their port with same number are in use, for instance, port 1, then they are port 1-1 and port 2-1.
->>> Right now the debug message only show "Port 1", we still can't find the corresponding port via sysfs with insufficient info.
->> 
->> Look at the full kernel log line, the xhci hcd device should be showing
->> you unique information.  If not, something else is wrong.
->> 
+> USB2 devices with LPM enabled may interrupt the system suspend:
+> [  932.510475] usb 1-7: usb suspend, wakeup 0
+> [  932.510549] hub 1-0:1.0: hub_suspend
+> [  932.510581] usb usb1: bus suspend, wakeup 0
+> [  932.510590] xhci_hcd 0000:00:14.0: port 9 not suspended
+> [  932.510593] xhci_hcd 0000:00:14.0: port 8 not suspended
+> ..
+> [  932.520323] xhci_hcd 0000:00:14.0: Port change event, 1-7, id 7, portsc: 0x400e03
+> ..
+> [  932.591405] PM: pci_pm_suspend(): hcd_pci_suspend+0x0/0x30 returns -16
+> [  932.591414] PM: dpm_run_callback(): pci_pm_suspend+0x0/0x160 returns -16
+> [  932.591418] PM: Device 0000:00:14.0 failed to suspend async: error -16
 > 
-> What Kai-Heng suggest here makes sense, and is useful.
-> We use similar style debugging in other places, and it is helpful as it matches
-> usb core debugging style.
+> During system suspend, USB core will let HC suspends the device if it
+> doesn't have remote wakeup enabled and doesn't have any children.
+> However, from the log above we can see that the usb 1-7 doesn't get bus
+> suspended due to not in U0. After a while the port finished U2 -> U0
+> transition, interrupts the suspend process.
 > 
-> This might seem odd but reason is that the xHC controller is one device which
-> doesn't really separate USB2 and USB3.
-> All ports are for example in one long array.
+> The observation is that after disabling LPM, port doesn't transit to U0
+> immediately and can linger in U2. xHCI spec 4.23.5.2 states that the
+> maximum exit latency for USB2 LPM should be BESL + 10us. The BESL for
+> the affected device is advertised as 400us, which is still not enough
+> based on my testing result.
 > 
-> On the xhci driver side things look very different. We register two HCD's,
-> one for usb 2 and one for USB 3. In many cases the debugging is not tied to a HCD
-> in any way,  (starting, stopping controller, command completion interrupts etc),
-> other cases the debugging is very much tied to a specific hcd,
-> for example when we are handling a port requsts for the roothub.
+> So let's use the maximum permitted latency, 10000, to poll for U0
+> status to solve the issue.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
 A gentle ping...
 
+> ---
+> drivers/usb/host/xhci.c | 3 +++
+> 1 file changed, 3 insertions(+)
 > 
-> Thanks
-> -Mathias
+> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> index 14181a7ea375..1058f604975b 100644
+> --- a/drivers/usb/host/xhci.c
+> +++ b/drivers/usb/host/xhci.c
+> @@ -4474,6 +4474,9 @@ static int xhci_set_usb2_hardware_lpm(struct usb_hcd *hcd,
+> 			mutex_lock(hcd->bandwidth_mutex);
+> 			xhci_change_max_exit_latency(xhci, udev, 0);
+> 			mutex_unlock(hcd->bandwidth_mutex);
+> +			readl_poll_timeout(ports[port_num]->addr, pm_val,
+> +					   (pm_val & PORT_PLS_MASK) == XDEV_U0,
+> +					   100, 10000);
+> 			return 0;
+> 		}
+> 	}
+> -- 
+> 2.17.1
+> 
 
