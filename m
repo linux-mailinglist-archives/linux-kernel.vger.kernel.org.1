@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE351F2BE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197141F2BE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729579AbgFHXSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:18:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34864 "EHLO mail.kernel.org"
+        id S1730613AbgFHXSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:18:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729852AbgFHXOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:14:38 -0400
+        id S1729884AbgFHXOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:14:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0068121548;
-        Mon,  8 Jun 2020 23:14:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E97B21534;
+        Mon,  8 Jun 2020 23:14:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658078;
-        bh=92v9pIWhiD1Q5RVPpKInmy4f4dVFrBCW0it7NySzVpU=;
+        s=default; t=1591658082;
+        bh=sFwt3TDTfuCsjbihcQY/VzD3/H/dUMAmRatkpzDNB74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yeBkZ2gSGi/3RHmSG1GlUu4EpG406eSmkdcyepumgOwVgUM6Frw7hFfUsTmp4DkA9
-         ef4meuLIH7SHKzqbT2hAegmBg84ifDJSuUSdSOcyrMwO93gpmZKBGCj4e4AuJgjNjO
-         RamUOjZ8wNyijLz5GZPPi9PjDWOpYkc89MzoaOb0=
+        b=BXlI7t0z5Ywez48vdonCGyKCV+rNJSF0D8XxbWwSusE17Ye0/kOcc0Dsl66fMEqFy
+         Ppk5NGAqPm0E3hvAr9EoiCI08qzqizHLrMxsrcWlsDuyZSFRcEGb9QbC0JxlyTXQJQ
+         v+AaPGG3CRZWV6E5sTY5yQQTzFRU2s73UaS9PvlA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wu Bo <wubo40@huawei.com>, "Yan, Zheng" <zyan@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, ceph-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 123/606] ceph: fix double unlock in handle_cap_export()
-Date:   Mon,  8 Jun 2020 19:04:08 -0400
-Message-Id: <20200608231211.3363633-123-sashal@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        acpi4asus-user@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 126/606] platform/x86: asus-nb-wmi: Do not load on Asus T100TA and T200TA
+Date:   Mon,  8 Jun 2020 19:04:11 -0400
+Message-Id: <20200608231211.3363633-126-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -43,34 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo40@huawei.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 4d8e28ff3106b093d98bfd2eceb9b430c70a8758 ]
+[ Upstream commit 3bd12da7f50b8bc191fcb3bab1f55c582234df59 ]
 
-If the ceph_mdsc_open_export_target_session() return fails, it will
-do a "goto retry", but the session mutex has already been unlocked.
-Re-lock the mutex in that case to ensure that we don't unlock it
-twice.
+asus-nb-wmi does not add any extra functionality on these Asus
+Transformer books. They have detachable keyboards, so the hotkeys are
+send through a HID device (and handled by the hid-asus driver) and also
+the rfkill functionality is not used on these devices.
 
-Signed-off-by: Wu Bo <wubo40@huawei.com>
-Reviewed-by: "Yan, Zheng" <zyan@redhat.com>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Besides not adding any extra functionality, initializing the WMI interface
+on these devices actually has a negative side-effect. For some reason
+the \_SB.ATKD.INIT() function which asus_wmi_platform_init() calls drives
+GPO2 (INT33FC:02) pin 8, which is connected to the front facing webcam LED,
+high and there is no (WMI or other) interface to drive this low again
+causing the LED to be permanently on, even during suspend.
+
+This commit adds a blacklist of DMI system_ids on which not to load the
+asus-nb-wmi and adds these Transformer books to this list. This fixes
+the webcam LED being permanently on under Linux.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/caps.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/platform/x86/asus-nb-wmi.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-index d050acc1fd5d..f50204380a65 100644
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -3707,6 +3707,7 @@ static void handle_cap_export(struct inode *inode, struct ceph_mds_caps *ex,
- 		WARN_ON(1);
- 		tsession = NULL;
- 		target = -1;
-+		mutex_lock(&session->s_mutex);
- 	}
- 	goto retry;
+diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
+index 6f12747a359a..c4404d9c1de4 100644
+--- a/drivers/platform/x86/asus-nb-wmi.c
++++ b/drivers/platform/x86/asus-nb-wmi.c
+@@ -515,9 +515,33 @@ static struct asus_wmi_driver asus_nb_wmi_driver = {
+ 	.detect_quirks = asus_nb_wmi_quirks,
+ };
+ 
++static const struct dmi_system_id asus_nb_wmi_blacklist[] __initconst = {
++	{
++		/*
++		 * asus-nb-wm adds no functionality. The T100TA has a detachable
++		 * USB kbd, so no hotkeys and it has no WMI rfkill; and loading
++		 * asus-nb-wm causes the camera LED to turn and _stay_ on.
++		 */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TA"),
++		},
++	},
++	{
++		/* The Asus T200TA has the same issue as the T100TA */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T200TA"),
++		},
++	},
++	{} /* Terminating entry */
++};
+ 
+ static int __init asus_nb_wmi_init(void)
+ {
++	if (dmi_check_system(asus_nb_wmi_blacklist))
++		return -ENODEV;
++
+ 	return asus_wmi_register_driver(&asus_nb_wmi_driver);
+ }
  
 -- 
 2.25.1
