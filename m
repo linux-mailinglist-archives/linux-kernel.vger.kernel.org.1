@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9EE1F246F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3601F24B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731140AbgFHXVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:21:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38480 "EHLO mail.kernel.org"
+        id S1729033AbgFHXVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:21:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728533AbgFHXRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:17:11 -0400
+        id S1729680AbgFHXR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:17:29 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FE702085B;
-        Mon,  8 Jun 2020 23:17:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E79BA20899;
+        Mon,  8 Jun 2020 23:17:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658230;
-        bh=SIl+6gDDlAgE5/oHLwCHDU0dl1CfSAmHwDjMoN+E624=;
+        s=default; t=1591658248;
+        bh=kl7MXkBZJGC6s8thZUM2YDAIP7k2Z9xNDyBuU/WLlk8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yLthxuXYvCYJ7MI8sg9feveoDnJzzFyhGAh7aPcuA0SRknYTkEimPV3bmB5DkvjLu
-         17Xd7yUTDyBttw0TAB21CVrWFfixwf/Z+nEdxTaBo+BtRFahxRCoRVp254D9zR7Ap6
-         axi4IpzbCSr8FPvBqqGZUSsqcHy0I/pZI2DxOBJE=
+        b=r+74YaG3d5z4l1KyordyVQV1GB/b2YN5LUnOTWdMsqDIIvMEu0fq5Ps4uZZueXdWP
+         3hC1k+jxroysNojiwtiZhhfTRMQXNjbfaT6k7QQQTeq5nHusc7Qi2+nUk7gfjVfJSo
+         Knalf2RQ3/cl/8/rjQwsXFj7XcIBegx3+Z3+WokA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vadim Fedorenko <vfedorenko@novek.ru>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 243/606] net/tls: fix encryption error checking
-Date:   Mon,  8 Jun 2020 19:06:08 -0400
-Message-Id: <20200608231211.3363633-243-sashal@kernel.org>
+Cc:     Andrew Oakley <andrew@adoakley.name>, Takashi Iwai <tiwai@suse.de>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.6 258/606] ALSA: usb-audio: add mapping for ASRock TRX40 Creator
+Date:   Mon,  8 Jun 2020 19:06:23 -0400
+Message-Id: <20200608231211.3363633-258-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -44,74 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Fedorenko <vfedorenko@novek.ru>
+From: Andrew Oakley <andrew@adoakley.name>
 
-commit a7bff11f6f9afa87c25711db8050c9b5324db0e2 upstream.
+[ Upstream commit da7a8f1a8fc3e14c6dcc52b4098bddb8f20390be ]
 
-bpf_exec_tx_verdict() can return negative value for copied
-variable. In that case this value will be pushed back to caller
-and the real error code will be lost. Fix it using signed type and
-checking for positive value.
+This is another TRX40 based motherboard with ALC1220-VB USB-audio
+that requires a static mapping table.
 
-Fixes: d10523d0b3d7 ("net/tls: free the record on encryption error")
-Fixes: d3b18ad31f93 ("tls: add bpf support to sk_msg handling")
-Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This motherboard also has a PCI device which advertises no codecs.  The
+PCI ID is 1022:1487 and PCI SSID is 1022:d102.  As this is using the AMD
+vendor ID, don't blacklist for now in case other boards have a working
+audio device with the same ssid.
+
+alsa-info.sh report for this board:
+http://alsa-project.org/db/?f=0a742f89066527497b77ce16bca486daccf8a70c
+
+Signed-off-by: Andrew Oakley <andrew@adoakley.name>
+Link: https://lore.kernel.org/r/20200503141639.35519-1-andrew@adoakley.name
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tls/tls_sw.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/usb/mixer_maps.c   | 5 +++++
+ sound/usb/quirks-table.h | 1 +
+ 2 files changed, 6 insertions(+)
 
-diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-index ffa3cbc5449d..34684b98c792 100644
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -784,7 +784,7 @@ static int tls_push_record(struct sock *sk, int flags,
+diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+index 0260c750e156..bfdc6ad52785 100644
+--- a/sound/usb/mixer_maps.c
++++ b/sound/usb/mixer_maps.c
+@@ -549,6 +549,11 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
+ 		.map = trx40_mobo_map,
+ 		.connector_map = trx40_mobo_connector_map,
+ 	},
++	{	/* Asrock TRX40 Creator */
++		.id = USB_ID(0x26ce, 0x0a01),
++		.map = trx40_mobo_map,
++		.connector_map = trx40_mobo_connector_map,
++	},
+ 	{ 0 } /* terminator */
+ };
  
- static int bpf_exec_tx_verdict(struct sk_msg *msg, struct sock *sk,
- 			       bool full_record, u8 record_type,
--			       size_t *copied, int flags)
-+			       ssize_t *copied, int flags)
- {
- 	struct tls_context *tls_ctx = tls_get_ctx(sk);
- 	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
-@@ -920,7 +920,8 @@ int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
- 	unsigned char record_type = TLS_RECORD_TYPE_DATA;
- 	bool is_kvec = iov_iter_is_kvec(&msg->msg_iter);
- 	bool eor = !(msg->msg_flags & MSG_MORE);
--	size_t try_to_copy, copied = 0;
-+	size_t try_to_copy;
-+	ssize_t copied = 0;
- 	struct sk_msg *msg_pl, *msg_en;
- 	struct tls_rec *rec;
- 	int required_size;
-@@ -1129,7 +1130,7 @@ int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 8c2f5c23e1b4..aa4c16ce0e57 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3647,6 +3647,7 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ ALC1220_VB_DESKTOP(0x0414, 0xa002), /* Gigabyte TRX40 Aorus Pro WiFi */
+ ALC1220_VB_DESKTOP(0x0db0, 0x0d64), /* MSI TRX40 Creator */
+ ALC1220_VB_DESKTOP(0x0db0, 0x543d), /* MSI TRX40 */
++ALC1220_VB_DESKTOP(0x26ce, 0x0a01), /* Asrock TRX40 Creator */
+ #undef ALC1220_VB_DESKTOP
  
- 	release_sock(sk);
- 	mutex_unlock(&tls_ctx->tx_lock);
--	return copied ? copied : ret;
-+	return copied > 0 ? copied : ret;
- }
- 
- static int tls_sw_do_sendpage(struct sock *sk, struct page *page,
-@@ -1143,7 +1144,7 @@ static int tls_sw_do_sendpage(struct sock *sk, struct page *page,
- 	struct sk_msg *msg_pl;
- 	struct tls_rec *rec;
- 	int num_async = 0;
--	size_t copied = 0;
-+	ssize_t copied = 0;
- 	bool full_record;
- 	int record_room;
- 	int ret = 0;
-@@ -1245,7 +1246,7 @@ static int tls_sw_do_sendpage(struct sock *sk, struct page *page,
- 	}
- sendpage_end:
- 	ret = sk_stream_error(sk, flags, ret);
--	return copied ? copied : ret;
-+	return copied > 0 ? copied : ret;
- }
- 
- int tls_sw_sendpage_locked(struct sock *sk, struct page *page,
+ #undef USB_DEVICE_VENDOR_SPEC
 -- 
 2.25.1
 
