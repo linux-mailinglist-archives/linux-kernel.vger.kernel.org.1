@@ -2,51 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347FC1F1909
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220511F190B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbgFHMqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 08:46:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53978 "EHLO mail.kernel.org"
+        id S1729305AbgFHMqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 08:46:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728173AbgFHMqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 08:46:14 -0400
+        id S1728973AbgFHMqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 08:46:17 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 213622072F;
-        Mon,  8 Jun 2020 12:46:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FE0F2076A;
+        Mon,  8 Jun 2020 12:46:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591620371;
-        bh=FCAvqfmKFayKCxPdwRtAqVx7sG8HLE4jjh4Q6F84pqk=;
+        s=default; t=1591620376;
+        bh=Wq/+Uk6aoGGFVXLgFp6Ufm0w+dLdqZNzS0VJAWWMN3Y=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=pvoyh0Wmbo79Pc12rA2pIrsB8hDaGNNVxeCDJUrDxMXEg53yWzsj/jpoCMVRQ/D+k
-         iS4q0ZxJQwdYgnH5S5bPje7+IJARN2szNwFq7POidTzoZLNpDR/H7bW51LWAzgk6YT
-         GT/iYSpw5umoi75sI57tbGb1OzSZk8hx6Qd8TspE=
-Date:   Mon, 08 Jun 2020 13:46:09 +0100
+        b=WCW74dpurI56Y4x3OmKY7vQ1f3D2C8gnCUyKS/OTbs60t0+NSFYD4cQatOH+NKeBq
+         im94IQRdb2unFosKEp64Fz+drKc/tttF5ukguidxXG9UFyqV5RexGgsiaMRjnhugtE
+         yylDilt/pkIflLMdPPZVQG40Axi7ZLV8TaES3flg=
+Date:   Mon, 08 Jun 2020 13:46:14 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Colin King <colin.king@canonical.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-In-Reply-To: <20200604171216.60043-1-colin.king@canonical.com>
-References: <20200604171216.60043-1-colin.king@canonical.com>
-Subject: Re: [PATCH] ASoC: meson: fix memory leak of links if allocation of ldata fails
-Message-Id: <159162036934.23368.2440967052610831030.b4-ty@kernel.org>
+To:     lgirdwood@gmail.com, tiwai@suse.com, Dan Murphy <dmurphy@ti.com>,
+        perex@perex.cz
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        robh@kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20200602193524.30309-1-dmurphy@ti.com>
+References: <20200602193524.30309-1-dmurphy@ti.com>
+Subject: Re: [PATCH 1/2] dt-bindings: ASoc: Fix tdm-slot documentation spelling error
+Message-Id: <159162036934.23368.11280508141452953751.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Jun 2020 18:12:16 +0100, Colin King wrote:
-> Currently if the allocation of ldata fails the error return path
-> does not kfree the allocated links object.  Fix this by adding
-> an error exit return path that performs the necessary kfree'ing.
+On Tue, 2 Jun 2020 14:35:23 -0500, Dan Murphy wrote:
+> Fix the spelling of 'specified'.  Also fix grammarical issue with the
+> use of 'a' over 'an'
 
 Applied to
 
@@ -54,8 +48,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: meson: fix memory leak of links if allocation of ldata fails
-      commit: 6e801dc411329aff592fbd48fb116183d0acdb00
+[1/1] dt-bindings: ASoc: Fix tdm-slot documentation spelling error
+      commit: 8a9144c1cf523221b37dd3393827253c91fcbf54
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
