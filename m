@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846551F120C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 06:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3F51F123D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 06:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728286AbgFHEWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 00:22:49 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:49369 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726925AbgFHEWn (ORCPT
+        id S1727796AbgFHEaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 00:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725945AbgFHEaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 00:22:43 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0F86F5C00C7;
-        Mon,  8 Jun 2020 00:22:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 08 Jun 2020 00:22:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paritcher.com;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=Jm7oie8tshtIW
-        I2PTX1JoPPNOW2IXpp24a+IngzjS3M=; b=Gs9PR26VlflbL3gvDXfu9+rfj71QY
-        JDu5Qq7Q7r+29byhP+yzLWGP+Ni05LEPjmkgGI41/eccrDzoLvnuJ4KkKXj7QoJm
-        PAXamito1K574dJOk96kekSMga2dRTE3jtemNCDPbPoNC/xoy0fx92BNIiNLOByE
-        tYmnJ3/GczquOrGPWOSq5lUY9xhAzz/aDElrzsTrOtG9cX0M5QEtGXpwWRzxHlG1
-        DC97PvST8WFJ7jf/RaAyvoEfrRsYXg860P3WZh8GKBDUUOumy+3+DqXzzNWty2xZ
-        LZAeJXuwWHV5Jq8E8a10p17/BLVeoRucS/WWpKnVL5BBlZr+dtjm2WP3Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=Jm7oie8tshtIWI2PTX1JoPPNOW2IXpp24a+IngzjS3M=; b=ILdOhKpM
-        1tEuMxh/8kuw/9qbQqMIvScR+Z3dXiODEihmwG3GwuP9qLFMeOeo7FJSSDnb6Yah
-        Tq2jQAeb0xS1A4dU7L5PP8eJLmcxBSJBGlsrwKkR06+RabKe5WFoS41cnf/Rlfql
-        46cW6gcfQARZEEr+SPpa6g57hNSSsEOs8QeS5LbnDciU65IXDx/sbGmKXTmFngYr
-        QyN1qGji4pbLV1LSmX6JKd5RgOaySPTd0dwSi+2mOFFZKMo7p957DCLnAAngys8K
-        mV2B82Q1n1lWmFQva5xTjR2ymrhWoJg+VbEU3pheRGL6f5OA7ChwS06DO3zqRZMp
-        kOdbQgCPd51KgQ==
-X-ME-Sender: <xms:Eb3dXtY7bI--zmeBFYj4WTH_LF2v9Hew9Ct9CgXljEKx7qHvCIbpMQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehtddgkeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    hmihhsshhinhhgucfvqfcufhhivghlugculdeftddmnecujfgurhephffvufffkffojghf
-    ggfgsedtkeertdertddtnecuhfhrohhmpegjucfrrghrihhttghhvghruceohidrlhhinh
-    hugiesphgrrhhithgthhgvrhdrtghomheqnecuggftrfgrthhtvghrnhepjeegfeetleeu
-    leevteejteetieffgffgfedvffffvddtvddvveevhffhtdehudeknecukfhppeeijedrke
-    egrdduleegrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
-    lhhfrhhomhephidrlhhinhhugiesphgrrhhithgthhgvrhdrtghomh
-X-ME-Proxy: <xmx:Eb3dXkbaFVRPCjWIb8VXc1Z0F_Ccsaeg1Q4Baq_S5hOx2c_wrYekbg>
-    <xmx:Eb3dXv8rUVO6wefQeu7dli_6ChtiNQgCWcbmsWgSo8g6HH0VK8oq3w>
-    <xmx:Eb3dXrpBDl0ZUThLMZ8gd-8PMSV4ABessWt7wCt8dpcyKNZC_fa7LA>
-    <xmx:Er3dXvQp8gyBK-fMpf46m10hJ8l7Z7k5qgpCx7T8peKJXMP72XbF_w>
-Received: from localhost.localdomain (ool-4354c2af.dyn.optonline.net [67.84.194.175])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B85583280064;
-        Mon,  8 Jun 2020 00:22:41 -0400 (EDT)
-From:   Y Paritcher <y.linux@paritcher.com>
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 3/3] platform/x86: dell-wmi: add keys to bios_to_linux_keycode
-Date:   Mon,  8 Jun 2020 00:22:26 -0400
-Message-Id: <13951508596a3f654c6d47f5380ddb4f38e2f6b5.1591584631.git.y.linux@paritcher.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1591584631.git.y.linux@paritcher.com>
-References: <cover.1591584631.git.y.linux@paritcher.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        Mon, 8 Jun 2020 00:30:19 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257F8C08C5C4
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Jun 2020 21:30:19 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id j32so13664583qte.10
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jun 2020 21:30:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=bZmtb3aLVU5KBGiqZAaqclMmQhVOzE13zZD4uF6ANrY=;
+        b=gaLhUKP8dFKwFLkiRjCjiuudl522MbjPdmUimfzDCN3xnE1XdHEG6E0esOcvPDeQ9W
+         Do49PqQzw0fpkjLZtP3c84sxg7kHFlVatQT5APvfHMJ/VS/jKh7khzHCcUqjjaEf5QyK
+         /ASt7MgK0qf4GaCCsRWS1ge6qGcCncJuVDZvfD/xUdaESyjFAWj5umOGjBW/spz+TVFy
+         UkIGyTDnnEJjGLRu/cdmVbxYcKSgR/HU3gKvvtwoURh00dxiyFSlOOXJwrgxcFOPPoJj
+         evNkW/2eiAPgLD+z64pWm8y3enKoeBiR+Cm9B8kg9uNAf38m12IPO8IMRO46Yv6eqYzN
+         upGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=bZmtb3aLVU5KBGiqZAaqclMmQhVOzE13zZD4uF6ANrY=;
+        b=KyHCMs3++TjA3mn+tyaugZ+zDVgAvmCPImc9sqvVmwRqMlkL23wLmcF97Z0PfqZgWe
+         UHhPsaMlq9UxsrHHyhJ+hMlZ86JAqmRTLexOVAiqlJkyL7c5vAj5kwQyJcCagpTdrsPC
+         y3WGPMo7ysvjBTJnRJOE/GWUuDhOZX+7GYvyLKkia28e7hsz8/0BfZe/rOangiP7Ua7Z
+         tRwgq2Oky1BRWu/HBrdBpidvW3xDr8SLz7fL1nXn3VKqfI/q79bHZYqXMgtNVP0fZNsW
+         AQNECn3WXMMQn83ady/xskClnaIinOl9lvhwZi5AZIrkkskAOLQN4Q6ty/evwYNHJ1kl
+         56vQ==
+X-Gm-Message-State: AOAM533MwI5YeGVU2/9PQC9glQ3sloBjcaqmXgBTkK7GG8g7OTP+7X8W
+        jUtIP8ArYLBaFwsYgfRqCOtdvQ==
+X-Google-Smtp-Source: ABdhPJxRJE6Dl9jcPCtME9UeFyPzJdE0BYbCiwXVxxXS+YuRUIFTS2CzbpJT/kxkF6tJMislX6p2iQ==
+X-Received: by 2002:ac8:688a:: with SMTP id m10mr14265007qtq.254.1591590618119;
+        Sun, 07 Jun 2020 21:30:18 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id u7sm6256233qkb.7.2020.06.07.21.30.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Jun 2020 21:30:17 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2] drm/rcar-du: DRM_RCAR_WRITEBACK depends on DRM
+Date:   Mon, 8 Jun 2020 00:30:16 -0400
+Message-Id: <1DA4E5B7-BB3A-476B-B09A-24EC89583C3D@lca.pw>
+References: <20200608031622.GQ22208@pendragon.ideasonboard.com>
+Cc:     kieran.bingham+renesas@ideasonboard.com, airlied@linux.ie,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20200608031622.GQ22208@pendragon.ideasonboard.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+X-Mailer: iPhone Mail (17F80)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Increase length of bios_to_linux_keycode to 2 bytes to allow for a new
-keycode 0xffff, this silences the following messages being logged at
-startup on a Dell Inspiron 5593
 
-dell_wmi: firmware scancode 0x48 maps to unrecognized keycode 0xffff
-dell_wmi: firmware scancode 0x50 maps to unrecognized keycode 0xffff
 
-Signed-off-by: Y Paritcher <y.linux@paritcher.com>
----
- drivers/platform/x86/dell-wmi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> On Jun 7, 2020, at 11:16 PM, Laurent Pinchart <laurent.pinchart@ideasonboa=
+rd.com> wrote:
+>=20
+> I forgot to mention, I think the subject line should be
+>=20
+> drm/rcar-du: Make DRM_RCAR_WRITEBACK depend on DRM_RCAR_DU
+>=20
+> Could you please let me know if you're OK with these two small changes ?
 
-diff --git a/drivers/platform/x86/dell-wmi.c b/drivers/platform/x86/dell-wmi.c
-index f37e7e9093c2..5ef716e3034f 100644
---- a/drivers/platform/x86/dell-wmi.c
-+++ b/drivers/platform/x86/dell-wmi.c
-@@ -196,7 +196,7 @@ struct dell_dmi_results {
- };
- 
- /* Uninitialized entries here are KEY_RESERVED == 0. */
--static const u16 bios_to_linux_keycode[256] = {
-+static const u16 bios_to_linux_keycode[65536] = {
- 	[0]	= KEY_MEDIA,
- 	[1]	= KEY_NEXTSONG,
- 	[2]	= KEY_PLAYPAUSE,
-@@ -237,6 +237,7 @@ static const u16 bios_to_linux_keycode[256] = {
- 	[37]	= KEY_UNKNOWN,
- 	[38]	= KEY_MICMUTE,
- 	[255]	= KEY_PROG3,
-+	[65535]	= KEY_UNKNOWN,
- };
- 
- /*
--- 
-2.27.0
-
+Yes, I am fine with those.=
