@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B97D1F3166
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4031F3139
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgFHXGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:06:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49576 "EHLO mail.kernel.org"
+        id S1727107AbgFHXG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:06:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726993AbgFHXG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:06:28 -0400
+        id S1727008AbgFHXGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:06:32 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 166602078C;
-        Mon,  8 Jun 2020 23:06:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 151D920820;
+        Mon,  8 Jun 2020 23:06:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657588;
-        bh=UCFZxBdhCTtSOkMISHI4v+UNZnsH2SbHB6zuHhVW3k0=;
+        s=default; t=1591657591;
+        bh=x7XNxG+6Ey9iNd/8UiXWD76fUZIbSvQFJ+JJaQo5fqk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mtAsqnwwW8w0PJZJ/QPy3ydNyMHWR1vbtLSzpCWvTPMBbM6HBKCBxN1rzRJYONT29
-         uGirI0Op+8T0D7FmcXXRpm7lWiF4Kt++dWwROywi1XhxwdMxMERe+6CwYWc4IKeCdz
-         ogNNw9aTGkaoY+StqgtprTwNJ+CAN09Hp326017k=
+        b=YP8pPkKbQFz25zt4gifp3yg/NIvpC8zOuz4CaJURDjLKfy56qMgPKgZORxfFg2ouC
+         ZRHLoMuDvl1pJBaoBwjT+tJw9TTt1sImXbXbl2fr+rqhKGGEP2lqe6e7NPZrdNa4jV
+         dAFWQVXNfkiio/j1THRY7vtg9uyQ/rIjo0gUxj3k=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Joshua Aberback <joshua.aberback@amd.com>,
-        Jun Lei <Jun.Lei@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+Cc:     limingyu <limingyu@uniontech.com>,
+        zhoubinbin <zhoubinbin@uniontech.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.7 016/274] drm/amd/display: Force watermark value propagation
-Date:   Mon,  8 Jun 2020 19:01:49 -0400
-Message-Id: <20200608230607.3361041-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 019/274] drm/amdgpu: Init data to avoid oops while reading pp_num_states.
+Date:   Mon,  8 Jun 2020 19:01:52 -0400
+Message-Id: <20200608230607.3361041-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -46,61 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joshua Aberback <joshua.aberback@amd.com>
+From: limingyu <limingyu@uniontech.com>
 
-[ Upstream commit 868149c9a072cbdc22a73ce25a487f9fbfa171ef ]
+[ Upstream commit 6f81b2d047c59eb77cd04795a44245d6a52cdaec ]
 
-[Why]
-The HUBBUB watermark registers are in an area that cannot be power
-gated, but the HUBP copies of the watermark values are in areas that can
-be power gated. When we power on a pipe, it will not automatically take
-the HUBBUB values, we need to force propagation by writing to a
-watermark register.
+For chip like CHIP_OLAND with si enabled(amdgpu.si_support=1),
+the amdgpu will expose pp_num_states to the /sys directory.
+In this moment, read the pp_num_states file will excute the
+amdgpu_get_pp_num_states func. In our case, the data hasn't
+been initialized, so the kernel will access some ilegal
+address, trigger the segmentfault and system will reboot soon:
 
-[How]
- - new HUBBUB function to re-write current value in a WM register
- - touch WM register after enabling the plane in program_pipe
+    uos@uos-PC:~$ cat /sys/devices/pci0000\:00/0000\:00\:00.0/0000\:01\:00
+    .0/pp_num_states
 
-Signed-off-by: Joshua Aberback <joshua.aberback@amd.com>
-Reviewed-by: Jun Lei <Jun.Lei@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+    Message from syslogd@uos-PC at Apr 22 09:26:20 ...
+     kernel:[   82.154129] Internal error: Oops: 96000004 [#1] SMP
+
+This patch aims to fix this problem, avoid that reading file
+triggers the kernel sementfault.
+
+Signed-off-by: limingyu <limingyu@uniontech.com>
+Signed-off-by: zhoubinbin <zhoubinbin@uniontech.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c | 5 ++++-
- drivers/gpu/drm/amd/display/dc/inc/hw/dchubbub.h   | 2 ++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-index a023a4d59f41..c4fa13e4eaf9 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-@@ -1478,8 +1478,11 @@ static void dcn20_program_pipe(
- 	if (pipe_ctx->update_flags.bits.odm)
- 		hws->funcs.update_odm(dc, context, pipe_ctx);
- 
--	if (pipe_ctx->update_flags.bits.enable)
-+	if (pipe_ctx->update_flags.bits.enable) {
- 		dcn20_enable_plane(dc, pipe_ctx, context);
-+		if (dc->res_pool->hubbub->funcs->force_wm_propagate_to_pipes)
-+			dc->res_pool->hubbub->funcs->force_wm_propagate_to_pipes(dc->res_pool->hubbub);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+index abe94a55ecad..49e2e43f2e4a 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+@@ -444,8 +444,11 @@ static ssize_t amdgpu_get_pp_num_states(struct device *dev,
+ 		ret = smu_get_power_num_states(&adev->smu, &data);
+ 		if (ret)
+ 			return ret;
+-	} else if (adev->powerplay.pp_funcs->get_pp_num_states)
++	} else if (adev->powerplay.pp_funcs->get_pp_num_states) {
+ 		amdgpu_dpm_get_pp_num_states(adev, &data);
++	} else {
++		memset(&data, 0, sizeof(data));
 +	}
  
- 	if (pipe_ctx->update_flags.raw || pipe_ctx->plane_state->update_flags.raw || pipe_ctx->stream->update_flags.raw)
- 		dcn20_update_dchubp_dpp(dc, pipe_ctx, context);
-diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/dchubbub.h b/drivers/gpu/drm/amd/display/dc/inc/hw/dchubbub.h
-index f5dd0cc73c63..47a566d82d6e 100644
---- a/drivers/gpu/drm/amd/display/dc/inc/hw/dchubbub.h
-+++ b/drivers/gpu/drm/amd/display/dc/inc/hw/dchubbub.h
-@@ -144,6 +144,8 @@ struct hubbub_funcs {
- 	void (*allow_self_refresh_control)(struct hubbub *hubbub, bool allow);
- 
- 	void (*apply_DEDCN21_147_wa)(struct hubbub *hubbub);
-+
-+	void (*force_wm_propagate_to_pipes)(struct hubbub *hubbub);
- };
- 
- struct hubbub {
+ 	pm_runtime_mark_last_busy(ddev->dev);
+ 	pm_runtime_put_autosuspend(ddev->dev);
 -- 
 2.25.1
 
