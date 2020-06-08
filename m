@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8900E1F2B4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75CA1F2B49
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731268AbgFIAOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:14:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42006 "EHLO mail.kernel.org"
+        id S1732668AbgFIAOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:14:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730401AbgFHXTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:19:16 -0400
+        id S1730421AbgFHXTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:19:18 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAE8620884;
-        Mon,  8 Jun 2020 23:19:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B52C920842;
+        Mon,  8 Jun 2020 23:19:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658355;
-        bh=+OpGqXvzZxY/hYzOBySZEbXhrLd9AA+Z4+FvPhEA0zg=;
+        s=default; t=1591658358;
+        bh=q2rVo/aR3JTRBRIML0kZmbB8f0+fBsJ6fAx8XSXDfSQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zoj8hBIc3MlTBqPBQDekw8hbA2KvImm9eY6rYrxZtzNd3NO8p+w5T7Q/OhrPTkW9/
-         xlkHkBR/PPdfo9sFxhMwI2LN9dSZ6aVkkI9aieTNKBcwuYTZf8i8XFEPgZBCpXYAFN
-         9/8IoW/drF595Tju7r/4pOAU1x2y2/u4G9FAnMaQ=
+        b=aa5n72AiMtnCQmsm8//nZX5NDE1rEY+xWIPfflU4XI+iKjlUoVk+HHL11solShQHx
+         c8f9VoLyljD5+7gKiVbc0w1y2l6kfXqshbUe8I8lO5NpBrUO+Bp3FiR22wcmnHI6c9
+         SSHR6wOtvy1W23NVE4iTnxoEZlI1shB50Wc4YYGY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Fangrui Song <maskray@google.com>,
-        Sasha Levin <sashal@kernel.org>, linux-efi@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.4 022/175] efi/libstub/x86: Work around LLVM ELF quirk build regression
-Date:   Mon,  8 Jun 2020 19:16:15 -0400
-Message-Id: <20200608231848.3366970-22-sashal@kernel.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 024/175] arm64: cacheflush: Fix KGDB trap detection
+Date:   Mon,  8 Jun 2020 19:16:17 -0400
+Message-Id: <20200608231848.3366970-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -48,49 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Daniel Thompson <daniel.thompson@linaro.org>
 
-[ Upstream commit f77767ed5f4d398b29119563155e4ece2dfeee13 ]
+[ Upstream commit ab8ad279ceac4fc78ae4dcf1a26326e05695e537 ]
 
-When building the x86 EFI stub with Clang, the libstub Makefile rules
-that manipulate the ELF object files may throw an error like:
+flush_icache_range() contains a bodge to avoid issuing IPIs when the kgdb
+trap handler is running because issuing IPIs is unsafe (and not needed)
+in this execution context. However the current test, based on
+kgdb_connected is flawed: it both over-matches and under-matches.
 
-    STUBCPY drivers/firmware/efi/libstub/efi-stub-helper.stub.o
-  strip: drivers/firmware/efi/libstub/efi-stub-helper.stub.o: Failed to find link section for section 10
-  objcopy: drivers/firmware/efi/libstub/efi-stub-helper.stub.o: Failed to find link section for section 10
+The over match occurs because kgdb_connected is set when gdb attaches
+to the stub and remains set during normal running. This is relatively
+harmelss because in almost all cases irq_disabled() will be false.
 
-This is the result of a LLVM feature [0] where symbol references are
-stored in a LLVM specific .llvm_addrsig section in a non-transparent way,
-causing generic ELF tools such as strip or objcopy to choke on them.
+The under match is more serious. When kdb is used instead of kgdb to access
+the debugger then kgdb_connected is not set in all the places that the
+debug core updates sw breakpoints (and hence flushes the icache). This
+can lead to deadlock.
 
-So force the compiler not to emit these sections, by passing the
-appropriate command line option.
+Fix by replacing the ad-hoc check with the proper kgdb macro. This also
+allows us to drop the #ifdef wrapper.
 
-[0] https://sourceware.org/bugzilla/show_bug.cgi?id=23817
-
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Peter Collingbourne <pcc@google.com>
-Cc: Sami Tolvanen <samitolvanen@google.com>
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Suggested-by: Fangrui Song <maskray@google.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Fixes: 3b8c9f1cdfc5 ("arm64: IPI each CPU after invalidating the I-cache for kernel mappings")
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Link: https://lore.kernel.org/r/20200504170518.2959478-1-daniel.thompson@linaro.org
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/libstub/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/include/asm/cacheflush.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-index ee0661ddb25b..8c5b5529dbc0 100644
---- a/drivers/firmware/efi/libstub/Makefile
-+++ b/drivers/firmware/efi/libstub/Makefile
-@@ -28,6 +28,7 @@ KBUILD_CFLAGS			:= $(cflags-y) -DDISABLE_BRANCH_PROFILING \
- 				   -D__NO_FORTIFY \
- 				   $(call cc-option,-ffreestanding) \
- 				   $(call cc-option,-fno-stack-protector) \
-+				   $(call cc-option,-fno-addrsig) \
- 				   -D__DISABLE_EXPORTS
+diff --git a/arch/arm64/include/asm/cacheflush.h b/arch/arm64/include/asm/cacheflush.h
+index 665c78e0665a..3e7dda6f1ab1 100644
+--- a/arch/arm64/include/asm/cacheflush.h
++++ b/arch/arm64/include/asm/cacheflush.h
+@@ -79,7 +79,7 @@ static inline void flush_icache_range(unsigned long start, unsigned long end)
+ 	 * IPI all online CPUs so that they undergo a context synchronization
+ 	 * event and are forced to refetch the new instructions.
+ 	 */
+-#ifdef CONFIG_KGDB
++
+ 	/*
+ 	 * KGDB performs cache maintenance with interrupts disabled, so we
+ 	 * will deadlock trying to IPI the secondary CPUs. In theory, we can
+@@ -89,9 +89,9 @@ static inline void flush_icache_range(unsigned long start, unsigned long end)
+ 	 * the patching operation, so we don't need extra IPIs here anyway.
+ 	 * In which case, add a KGDB-specific bodge and return early.
+ 	 */
+-	if (kgdb_connected && irqs_disabled())
++	if (in_dbg_master())
+ 		return;
+-#endif
++
+ 	kick_all_cpus_sync();
+ }
  
- GCOV_PROFILE			:= n
 -- 
 2.25.1
 
