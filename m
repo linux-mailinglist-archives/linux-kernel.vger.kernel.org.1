@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DF71F229D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA101F229F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728448AbgFHXJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:09:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53702 "EHLO mail.kernel.org"
+        id S1728486AbgFHXJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:09:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728186AbgFHXIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:08:32 -0400
+        id S1728197AbgFHXIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:08:36 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F041E20890;
-        Mon,  8 Jun 2020 23:08:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBD0920890;
+        Mon,  8 Jun 2020 23:08:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657712;
-        bh=hX12khJAdZqJIox8b1e42ktmh3BYm/+28o1Cp2ygp9Y=;
+        s=default; t=1591657715;
+        bh=lpX2+wur1t1gEsxx2uAp+EdCAOVN3IOjp4QxKK+GMt4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ojWFZjvhPABLZzzWyx0ApvbRDOYPBWYVIqn+q/k15H4l83B+foHy0/33im2D42i9o
-         0F9Frsi8O1n9aahmt/0GgwpHmEE2ZppfSA6kCXJ1SPHGed8SHPZzDPn4d/fDKMbYkP
-         HYdEwEX5Gc+mNgyq5jDV6ExGtX1G1qBF6R0oqY0Q=
+        b=cMFxXh4XMeVV2ADCYMblsHnOVD8Tt3lmB7/dOPaAEoubIf5/QAG8P7TH4gBlAuOVR
+         ImrkkZGr3V6b35EcXo2MhJFigkhfeiuK9OTV/aE0ds89JaFxJmWkgQj4cgRSiA/Ywh
+         yW93W5prYv0rYMiDVEJuFAaQK80MR9APcY6q8IHQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        Sean Young <sean@mess.org>,
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 108/274] media: dvb: return -EREMOTEIO on i2c transfer failure.
-Date:   Mon,  8 Jun 2020 19:03:21 -0400
-Message-Id: <20200608230607.3361041-108-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 110/274] media: imx: utils: fix media bus format enumeration
+Date:   Mon,  8 Jun 2020 19:03:23 -0400
+Message-Id: <20200608230607.3361041-110-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -44,41 +46,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
 
-[ Upstream commit 96f3a9392799dd0f6472648a7366622ffd0989f3 ]
+[ Upstream commit 1df2148fdfc036c9350d41ae81b09b3f8897c9b6 ]
 
-Currently when i2c transfers fail the error return -EREMOTEIO
-is assigned to err but then later overwritten when the tuner
-attach call is made.  Fix this by returning early with the
-error return code -EREMOTEIO on i2c transfer failure errors.
+Iterate over all media bus formats, not just over the first format in
+each imx_media_pixfmt entry.
 
-If the transfer fails, an uninitialized value will be read from b2.
+Before:
 
-Addresses-Coverity: ("Unused value")
+  $ v4l2-ctl -d $(media-ctl -e ipu1_csi0) --list-subdev-mbus-codes 0
+  ioctl: VIDIOC_SUBDEV_ENUM_MBUS_CODE (pad=0)
+	0x2006: MEDIA_BUS_FMT_UYVY8_2X8
+	0x2008: MEDIA_BUS_FMT_YUYV8_2X8
+	0x1008: MEDIA_BUS_FMT_RGB565_2X8_LE
+	0x100a: MEDIA_BUS_FMT_RGB888_1X24
+	0x100d: MEDIA_BUS_FMT_ARGB8888_1X32
+	0x3001: MEDIA_BUS_FMT_SBGGR8_1X8
+	0x3013: MEDIA_BUS_FMT_SGBRG8_1X8
+	0x3002: MEDIA_BUS_FMT_SGRBG8_1X8
+	0x3014: MEDIA_BUS_FMT_SRGGB8_1X8
+	0x3007: MEDIA_BUS_FMT_SBGGR10_1X10
+	0x300e: MEDIA_BUS_FMT_SGBRG10_1X10
+	0x300a: MEDIA_BUS_FMT_SGRBG10_1X10
+	0x300f: MEDIA_BUS_FMT_SRGGB10_1X10
+	0x2001: MEDIA_BUS_FMT_Y8_1X8
+	0x200a: MEDIA_BUS_FMT_Y10_1X10
 
-Fixes: fbfee8684ff2 ("V4L/DVB (5651): Dibusb-mb: convert pll handling to properly use dvb-pll")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Sean Young <sean@mess.org>
+After:
+
+  $ v4l2-ctl -d $(media-ctl -e ipu1_csi0) --list-subdev-mbus-codes 0
+  ioctl: VIDIOC_SUBDEV_ENUM_MBUS_CODE (pad=0)
+	0x2006: MEDIA_BUS_FMT_UYVY8_2X8
+	0x200f: MEDIA_BUS_FMT_UYVY8_1X16
+	0x2008: MEDIA_BUS_FMT_YUYV8_2X8
+	0x2011: MEDIA_BUS_FMT_YUYV8_1X16
+	0x1008: MEDIA_BUS_FMT_RGB565_2X8_LE
+	0x100a: MEDIA_BUS_FMT_RGB888_1X24
+	0x100c: MEDIA_BUS_FMT_RGB888_2X12_LE
+	0x100d: MEDIA_BUS_FMT_ARGB8888_1X32
+	0x3001: MEDIA_BUS_FMT_SBGGR8_1X8
+	0x3013: MEDIA_BUS_FMT_SGBRG8_1X8
+	0x3002: MEDIA_BUS_FMT_SGRBG8_1X8
+	0x3014: MEDIA_BUS_FMT_SRGGB8_1X8
+	0x3007: MEDIA_BUS_FMT_SBGGR10_1X10
+	0x3008: MEDIA_BUS_FMT_SBGGR12_1X12
+	0x3019: MEDIA_BUS_FMT_SBGGR14_1X14
+	0x301d: MEDIA_BUS_FMT_SBGGR16_1X16
+	0x300e: MEDIA_BUS_FMT_SGBRG10_1X10
+	0x3010: MEDIA_BUS_FMT_SGBRG12_1X12
+	0x301a: MEDIA_BUS_FMT_SGBRG14_1X14
+	0x301e: MEDIA_BUS_FMT_SGBRG16_1X16
+	0x300a: MEDIA_BUS_FMT_SGRBG10_1X10
+	0x3011: MEDIA_BUS_FMT_SGRBG12_1X12
+	0x301b: MEDIA_BUS_FMT_SGRBG14_1X14
+	0x301f: MEDIA_BUS_FMT_SGRBG16_1X16
+	0x300f: MEDIA_BUS_FMT_SRGGB10_1X10
+	0x3012: MEDIA_BUS_FMT_SRGGB12_1X12
+	0x301c: MEDIA_BUS_FMT_SRGGB14_1X14
+	0x3020: MEDIA_BUS_FMT_SRGGB16_1X16
+	0x2001: MEDIA_BUS_FMT_Y8_1X8
+	0x200a: MEDIA_BUS_FMT_Y10_1X10
+	0x2013: MEDIA_BUS_FMT_Y12_1X12
+
+[laurent.pinchart@ideasonboard.com: Decrement index to replace loop counter k]
+[laurent.pinchart@ideasonboard.com: Return directly from within the loops]
+
+Fixes: e130291212df5 ("[media] media: Add i.MX media core driver")
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/dibusb-mb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/media/imx/imx-media-utils.c | 22 +++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/dibusb-mb.c b/drivers/media/usb/dvb-usb/dibusb-mb.c
-index d4ea72bf09c5..5131c8d4c632 100644
---- a/drivers/media/usb/dvb-usb/dibusb-mb.c
-+++ b/drivers/media/usb/dvb-usb/dibusb-mb.c
-@@ -81,7 +81,7 @@ static int dibusb_tuner_probe_and_attach(struct dvb_usb_adapter *adap)
+diff --git a/drivers/staging/media/imx/imx-media-utils.c b/drivers/staging/media/imx/imx-media-utils.c
+index 39469031e510..00a71f01786c 100644
+--- a/drivers/staging/media/imx/imx-media-utils.c
++++ b/drivers/staging/media/imx/imx-media-utils.c
+@@ -269,6 +269,7 @@ static int enum_format(u32 *fourcc, u32 *code, u32 index,
+ 	for (i = 0; i < ARRAY_SIZE(pixel_formats); i++) {
+ 		const struct imx_media_pixfmt *fmt = &pixel_formats[i];
+ 		enum codespace_sel fmt_cs_sel;
++		unsigned int j;
  
- 	if (i2c_transfer(&adap->dev->i2c_adap, msg, 2) != 2) {
- 		err("tuner i2c write failed.");
--		ret = -EREMOTEIO;
-+		return -EREMOTEIO;
+ 		fmt_cs_sel = (fmt->cs == IPUV3_COLORSPACE_YUV) ?
+ 			CS_SEL_YUV : CS_SEL_RGB;
+@@ -278,15 +279,24 @@ static int enum_format(u32 *fourcc, u32 *code, u32 index,
+ 		    (!allow_bayer && fmt->bayer))
+ 			continue;
+ 
+-		if (index == 0) {
+-			if (fourcc)
+-				*fourcc = fmt->fourcc;
+-			if (code)
+-				*code = fmt->codes[0];
++		if (fourcc && index == 0) {
++			*fourcc = fmt->fourcc;
+ 			return 0;
+ 		}
+ 
+-		index--;
++		if (!code) {
++			index--;
++			continue;
++		}
++
++		for (j = 0; j < ARRAY_SIZE(fmt->codes) && fmt->codes[j]; j++) {
++			if (index == 0) {
++				*code = fmt->codes[j];
++				return 0;
++			}
++
++			index--;
++		}
  	}
  
- 	if (adap->fe_adap[0].fe->ops.i2c_gate_ctrl)
+ 	return -EINVAL;
 -- 
 2.25.1
 
