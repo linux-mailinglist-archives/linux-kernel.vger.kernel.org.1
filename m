@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6741B1F2301
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD42F1F2306
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728320AbgFHXLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:11:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56160 "EHLO mail.kernel.org"
+        id S1728997AbgFHXLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:11:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728575AbgFHXKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:10:07 -0400
+        id S1728580AbgFHXKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:10:12 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 085FD21475;
-        Mon,  8 Jun 2020 23:10:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E832214D8;
+        Mon,  8 Jun 2020 23:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657806;
-        bh=jBjbkxP1iiBAvE6/2yxT7Dz+8SrZGpJOC8QuAynfkJg=;
+        s=default; t=1591657812;
+        bh=TG/+imYiM+9gXTHKmURbQBfHS3wFWY7Af9lIh/lBkt4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iJlh3yd5WIbE+DTy8OIJfwMVrSYJl8biQCYJWZyD20KTjGH2NXiBjc9rZ4EYBC9cQ
-         lQB/UKzKyZB1ieVanEytud1jIow5c258sIFYgfcVHG/aV8h5h0Fz2Dyppoh1kzxsyM
-         jZsYVdALjx97LIW3Ix9hw8o4I5WXGuoeQSI/UvxY=
+        b=Wv23lxQ09SzC3bEvez3Zl44mlzASkI82VDtAObO9gB1zqGmbgAn3G3+g+p5+8hX2p
+         oS/x/C8hAclWTPrXxP5X2XDvfTF+0n0aoAwU2zuDwzGQkAyNWCyqE11QHiGu28SkVU
+         0mEBeq+5Z+MotmW2kvLJZdzmsedWveGgGbERPDMo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sagi Grimberg <sagi@grimberg.me>, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.7 183/274] nvme-tcp: use bh_lock in data_ready
-Date:   Mon,  8 Jun 2020 19:04:36 -0400
-Message-Id: <20200608230607.3361041-183-sashal@kernel.org>
+Cc:     Bhupesh Sharma <bhsharma@redhat.com>, kexec@lists.infradead.org,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com,
+        Manish Chopra <manishc@marvell.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 187/274] net: qed*: Reduce RX and TX default ring count when running inside kdump kernel
+Date:   Mon,  8 Jun 2020 19:04:40 -0400
+Message-Id: <20200608230607.3361041-187-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -43,40 +46,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Bhupesh Sharma <bhsharma@redhat.com>
 
-[ Upstream commit 386e5e6e1aa90b479fcf0467935922df8524393d ]
+[ Upstream commit 73e030977f7884dbe1be0018bab517e8d02760f8 ]
 
-data_ready may be invoked from send context or from
-softirq, so need bh locking for that.
+Normally kdump kernel(s) run under severe memory constraint with the
+basic idea being to save the crashdump vmcore reliably when the primary
+kernel panics/hangs.
 
-Fixes: 3f2304f8c6d6 ("nvme-tcp: add NVMe over TCP host driver")
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Currently the qed* ethernet driver ends up consuming a lot of memory in
+the kdump kernel, leading to kdump kernel panic when one tries to save
+the vmcore via ssh/nfs (thus utilizing the services of the underlying
+qed* network interfaces).
+
+An example OOM message log seen in the kdump kernel can be seen here
+[1], with crashkernel size reservation of 512M.
+
+Using tools like memstrack (see [2]), we can track the modules taking up
+the bulk of memory in the kdump kernel and organize the memory usage
+output as per 'highest allocator first'. An example log for the OOM case
+indicates that the qed* modules end up allocating approximately 216M
+memory, which is a large part of the total crashkernel size:
+
+ dracut-pre-pivot[676]: ======== Report format module_summary: ========
+ dracut-pre-pivot[676]: Module qed using 149.6MB (2394 pages), peak allocation 149.6MB (2394 pages)
+ dracut-pre-pivot[676]: Module qede using 65.3MB (1045 pages), peak allocation 65.3MB (1045 pages)
+
+This patch reduces the default RX and TX ring count from 1024 to 64
+when running inside kdump kernel, which leads to a significant memory
+saving.
+
+An example log with the patch applied shows the reduced memory
+allocation in the kdump kernel:
+ dracut-pre-pivot[674]: ======== Report format module_summary: ========
+ dracut-pre-pivot[674]: Module qed using 141.8MB (2268 pages), peak allocation 141.8MB (2268 pages)
+ <..snip..>
+[dracut-pre-pivot[674]: Module qede using 4.8MB (76 pages), peak allocation 4.9MB (78 pages)
+
+Tested crashdump vmcore save via ssh/nfs protocol using underlying qed*
+network interface after applying this patch.
+
+[1] OOM log:
+------------
+
+ kworker/0:6: page allocation failure: order:6,
+ mode:0x60c0c0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), nodemask=(null)
+ kworker/0:6 cpuset=/ mems_allowed=0
+ CPU: 0 PID: 145 Comm: kworker/0:6 Not tainted 4.18.0-109.el8.aarch64 #1
+ Hardware name: To be filled by O.E.M. Saber/Saber, BIOS 0ACKL025
+ 01/18/2019
+ Workqueue: events work_for_cpu_fn
+ Call trace:
+  dump_backtrace+0x0/0x188
+  show_stack+0x24/0x30
+  dump_stack+0x90/0xb4
+  warn_alloc+0xf4/0x178
+  __alloc_pages_nodemask+0xcac/0xd58
+  alloc_pages_current+0x8c/0xf8
+  kmalloc_order_trace+0x38/0x108
+  qed_iov_alloc+0x40/0x248 [qed]
+  qed_resc_alloc+0x224/0x518 [qed]
+  qed_slowpath_start+0x254/0x928 [qed]
+   __qede_probe+0xf8/0x5e0 [qede]
+  qede_probe+0x68/0xd8 [qede]
+  local_pci_probe+0x44/0xa8
+  work_for_cpu_fn+0x20/0x30
+  process_one_work+0x1ac/0x3e8
+  worker_thread+0x44/0x448
+  kthread+0x130/0x138
+  ret_from_fork+0x10/0x18
+  Cannot start slowpath
+  qede: probe of 0000:05:00.1 failed with error -12
+
+[2]. Memstrack tool: https://github.com/ryncsn/memstrack
+
+Cc: kexec@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Ariel Elior <aelior@marvell.com>
+Cc: GR-everest-linux-l2@marvell.com
+Cc: Manish Chopra <manishc@marvell.com>
+Cc: David S. Miller <davem@davemloft.net>
+Signed-off-by: Bhupesh Sharma <bhsharma@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/tcp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/qlogic/qede/qede.h      |  2 ++
+ drivers/net/ethernet/qlogic/qede/qede_main.c | 11 +++++++++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index c15a92163c1f..4862fa962011 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -794,11 +794,11 @@ static void nvme_tcp_data_ready(struct sock *sk)
- {
- 	struct nvme_tcp_queue *queue;
+diff --git a/drivers/net/ethernet/qlogic/qede/qede.h b/drivers/net/ethernet/qlogic/qede/qede.h
+index 234c6f30effb..234c7e35ee1e 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede.h
++++ b/drivers/net/ethernet/qlogic/qede/qede.h
+@@ -574,12 +574,14 @@ int qede_add_tc_flower_fltr(struct qede_dev *edev, __be16 proto,
+ #define RX_RING_SIZE		((u16)BIT(RX_RING_SIZE_POW))
+ #define NUM_RX_BDS_MAX		(RX_RING_SIZE - 1)
+ #define NUM_RX_BDS_MIN		128
++#define NUM_RX_BDS_KDUMP_MIN	63
+ #define NUM_RX_BDS_DEF		((u16)BIT(10) - 1)
  
--	read_lock(&sk->sk_callback_lock);
-+	read_lock_bh(&sk->sk_callback_lock);
- 	queue = sk->sk_user_data;
- 	if (likely(queue && queue->rd_enabled))
- 		queue_work_on(queue->io_cpu, nvme_tcp_wq, &queue->io_work);
--	read_unlock(&sk->sk_callback_lock);
-+	read_unlock_bh(&sk->sk_callback_lock);
- }
+ #define TX_RING_SIZE_POW	13
+ #define TX_RING_SIZE		((u16)BIT(TX_RING_SIZE_POW))
+ #define NUM_TX_BDS_MAX		(TX_RING_SIZE - 1)
+ #define NUM_TX_BDS_MIN		128
++#define NUM_TX_BDS_KDUMP_MIN	63
+ #define NUM_TX_BDS_DEF		NUM_TX_BDS_MAX
  
- static void nvme_tcp_write_space(struct sock *sk)
+ #define QEDE_MIN_PKT_LEN		64
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
+index 34fa3917eb33..1a83d1fd8ccd 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_main.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
+@@ -29,6 +29,7 @@
+  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  * SOFTWARE.
+  */
++#include <linux/crash_dump.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
+ #include <linux/version.h>
+@@ -707,8 +708,14 @@ static struct qede_dev *qede_alloc_etherdev(struct qed_dev *cdev,
+ 	edev->dp_module = dp_module;
+ 	edev->dp_level = dp_level;
+ 	edev->ops = qed_ops;
+-	edev->q_num_rx_buffers = NUM_RX_BDS_DEF;
+-	edev->q_num_tx_buffers = NUM_TX_BDS_DEF;
++
++	if (is_kdump_kernel()) {
++		edev->q_num_rx_buffers = NUM_RX_BDS_KDUMP_MIN;
++		edev->q_num_tx_buffers = NUM_TX_BDS_KDUMP_MIN;
++	} else {
++		edev->q_num_rx_buffers = NUM_RX_BDS_DEF;
++		edev->q_num_tx_buffers = NUM_TX_BDS_DEF;
++	}
+ 
+ 	DP_INFO(edev, "Allocated netdev with %d tx queues and %d rx queues\n",
+ 		info->num_queues, info->num_queues);
 -- 
 2.25.1
 
