@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0D61F264B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753831F274D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731129AbgFHXgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
+        id S1732317AbgFHXol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728175AbgFHXge (ORCPT
+        with ESMTP id S1730540AbgFHXoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:36:34 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1CBC08C5C2
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 16:36:34 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jiRJY-0002nN-Ul; Tue, 09 Jun 2020 01:36:25 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 65786101181; Tue,  9 Jun 2020 01:36:24 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "maz\@kernel.org" <maz@kernel.org>,
-        "Saidi\, Ali" <alisaidi@amazon.com>
-Cc:     "jason\@lakedaemon.net" <jason@lakedaemon.net>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel\@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Woodhouse\, David" <dwmw@amazon.co.uk>,
-        "Zilberman\, Zeev" <zeev@amazon.com>,
-        "Machulsky\, Zorik" <zorik@amazon.com>
-Subject: Re: [PATCH] irqchip/gic-v3-its: Don't try to move a disabled irq
-In-Reply-To: <0940571f9daa9829f70616b3036a2b3b3f25953c.camel@kernel.crashing.org>
-References: <AE04B507-C5E2-44D2-9190-41E9BE720F9D@amazon.com> <622fb6be108e894ee365d6b213535c8b@kernel.org> <f9e9d8c37eb92e4b9576bfcb4386ff6ef00eddce.camel@amazon.com> <87mu5dacs7.fsf@nanos.tec.linutronix.de> <0940571f9daa9829f70616b3036a2b3b3f25953c.camel@kernel.crashing.org>
-Date:   Tue, 09 Jun 2020 01:36:24 +0200
-Message-ID: <873675870n.fsf@nanos.tec.linutronix.de>
+        Mon, 8 Jun 2020 19:44:38 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915CAC08C5C2
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 16:44:38 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id w1so19166202qkw.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 16:44:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gs6xQWOcGcanVIymuBusEerQJN8/eccvFb5JF12HOsY=;
+        b=T6g4FgP/EG+S8J0dp+tNKaVDqGkjGRk6p41N/PfIs/f4GlpNxo3c9SbowX+umQuBRN
+         eu6h/vMBvNAdoMEJdssQkFJyyPHmHtnBUe9aGjD9uPeTr5tHrpCk6MxLcFFKfRAh/tjM
+         PMM5spbgykS+j6ImdKEhx3Lz+Cid2DPS39kVmu9uF3Z6dq6jskzPRztOgbVGzj5NoasH
+         tZk5dVSV6iaMAjzy7vrknO5zYs5CuxJZpBVroZyo+egR77R11MzeWPxPYlkIpR3uT4Xg
+         mwfc0Gk13EYGK2lh5nOEQLInindjaVSKhUh2uXVK8q8hk+sX/JdeAuPUd4jgSdiQxRLc
+         McBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gs6xQWOcGcanVIymuBusEerQJN8/eccvFb5JF12HOsY=;
+        b=RJll+z2wd0Wc3YEnjnNMxX5MzjjxZOYctdNKxiAIhm4oFypewJQ7pOGANRWqSXLQbJ
+         JMRVRoi9ZxrK/GelkzEVetQ40xb4FrakkAM1qrNwR2j4jAmh4cDeS7qVnTPR7sU9KeAb
+         ry+aqraD9nQiKl9mwGvcsJcFVyrnTllnuFieBIf8a7Hu5amAnrFzb1Hn9RdZaIqiVypc
+         im4ugiL4eRzsxAF0a7/gz5tWd8V2CklaCHVX59hvsQv7nVuLu2eMrhzM8BlC2M7n8swI
+         W5Vmp8vDQBcGiI8Hbf6kIduHPAQ51alXzxploR42YY9OPsLdFLxwmKt+DoQnSSmA6rMk
+         RyQw==
+X-Gm-Message-State: AOAM533cEx5FwQWpr/DAmZpYo8kYdzNteTat0vHwjmG8vig6JAy82z8X
+        zrBaEC7pDpxMO/PCOSL85/GWuvrsnlMUSjR3dP8OVQ==
+X-Google-Smtp-Source: ABdhPJxKTLQNJam9JoiPaSDgXVfBJ+DOjhT5E0yiLmJEI1zwOdTGg0siAWIYukyho5a8+cEQtzNUeMwoj2dKza1o4zg=
+X-Received: by 2002:a37:ec4:: with SMTP id 187mr23555902qko.124.1591659877470;
+ Mon, 08 Jun 2020 16:44:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <20200410225208.109717-3-joshdon@google.com> <158835733205.8414.9136130857443620621.tip-bot2@tip-bot2>
+ <BL0PR14MB3779C02BB87DC4426C4761639A840@BL0PR14MB3779.namprd14.prod.outlook.com>
+ <20200608145304.GA24379@lorien.usersys.redhat.com> <BL0PR14MB3779AD967619031948957C549A850@BL0PR14MB3779.namprd14.prod.outlook.com>
+In-Reply-To: <BL0PR14MB3779AD967619031948957C549A850@BL0PR14MB3779.namprd14.prod.outlook.com>
+From:   Josh Don <joshdon@google.com>
+Date:   Mon, 8 Jun 2020 16:44:26 -0700
+Message-ID: <CABk29Ns_tziZ_vLzWhq3YDA=LtmCmcacDv+hEUbBVdFVV1w13Q@mail.gmail.com>
+Subject: Re: [tip: sched/core] sched/fair: Remove distribute_running from CFS bandwidth
+To:     Tao Zhou <ouwen210@hotmail.com>
+Cc:     Phil Auld <pauld@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ben,
+Hi Tao,
 
-Benjamin Herrenschmidt <benh@kernel.crashing.org> writes:
-> On Mon, 2020-06-08 at 15:48 +0200, Thomas Gleixner wrote:
->> > 	if (cpu != its_dev->event_map.col_map[id]) {
->> > 		target_col = &its_dev->its->collections[cpu];
->> > -		its_send_movi(its_dev, target_col, id);
->> > +
->> > +		/* If the IRQ is disabled a discard was sent so don't move */
->> > +		if (!irqd_irq_disabled(d))
->> 
->> That check needs to be !irqd_is_activated() because enable_irq() does
->> not touch anything affinity related.
+On Mon, Jun 8, 2020 at 4:01 PM Tao Zhou <ouwen210@hotmail.com> wrote:
+> After commit ab93a4bc955b, cfs_b->distribute_running is not used and
+> removed. The lock/unlock protecting it are not removed and remain in
+> the code. One benefit of removing them is that it can elimite the code
+> size a little.
 >
-> Right. Note: other  drivers  (like arch/powerpc/sysdev/xive/common.c
-> use irqd_is_started() ... this gets confusing :)
-
-Blast from the past ...
-
-arch/powerpc does not use hierarchical irq domains, so the activated
-state does not matter there.
-
-
->> > +			its_send_movi(its_dev, target_col, id);
->> > +
->> > 		its_dev->event_map.col_map[id] = cpu;
->> > 		irq_data_update_effective_affinity(d, cpumask_of(cpu));
->> 
->> And then these associtations are disconnected from reality in any case.
+> Fixes: ab93a4bc955b ("sched/fair: Remove distribute_running from CFS bandwidth")
+> ---
+>  kernel/sched/fair.c | 3 ---
+>  1 file changed, 3 deletions(-)
 >
-> Not sure what you mean here, that said...
-
-You skip the setup and then you set that state to look like it really
-happened. How is that NOT disconnected from reality and a proper source
-for undecodable failure later on beause something else subtly depends on
-that state?
-
->> Something like the completely untested patch below should work.
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 35f4cc024dcf..cc2e1e839e03 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5089,9 +5089,6 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
+>                 return;
 >
-> Ok. One possible issue though is before, the driver always had the
-> opportunity to "vet" the affinity mask for whatever platform
-> constraints may be there and change it before applying it. This is no
-> longer the case on a deactivated interrupt with your patch as far as I
-> can tell. I don't know if that is a problem and if drivers that do that
-> have what it takes to "fixup" the affinity at startup time, the ones I
-> wrote don't need that feature, but...
+>         distribute_cfs_runtime(cfs_b);
+> -
+> -       raw_spin_lock_irqsave(&cfs_b->lock, flags);
+> -       raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
+>  }
 
-The driver still has the opportunity to do so when the interrupt is
-acticated. And if you look at the conditions of that patch it carefully
-applies this only to architectures which actually use hiearachical irq
-domains. Everything else including good old PPC won't notice at all.
+Thanks, I missed the now-useless lock acquire in my revert.
 
->> Thanks,
->> 
->>         tglx
+s/elimite/eliminate
 
-<SNIP 60+ lines of useless information ....>
+Reviewed-by: Josh Don <joshdon@google.com>
 
-Can you please trim your replies?
-
-Thanks,
-
-        tglx
+Best,
+Josh
