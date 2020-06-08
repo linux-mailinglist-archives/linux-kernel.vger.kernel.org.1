@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663451F2995
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE8B1F2991
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731002AbgFIACL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:02:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46660 "EHLO mail.kernel.org"
+        id S1732321AbgFIAB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:01:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728414AbgFHXWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:22:12 -0400
+        id S1730032AbgFHXWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:22:14 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E0F620814;
-        Mon,  8 Jun 2020 23:22:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EAED120842;
+        Mon,  8 Jun 2020 23:22:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658532;
-        bh=M+tyrRCR/fbrbhIGQkHftEMicDK86NTkiH6WntT4Quk=;
+        s=default; t=1591658534;
+        bh=87ai8exqIO0/5aKSt3LHjxMtckrsMxd+6M0b2LS5y40=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uyJ28bwhCHaVAnvX44qE4M/d8bSNLdra0yworOztbsNlXD92kQp5mJeUQWAshegMe
-         No1uNlRTLAR1xhCCNTdM4dxxK3Oo8WKZGOkEO3zwkZDL6qXH3itQSvhBMehbBpBAeA
-         raPRRtbBKHl3zGJHX1JbR9W8f7jf/qW6nIpt8A9M=
+        b=QPiw9j2AhTxKWPkUwvE95TbTtI6WKkZRNa7YcXWlD5I7jGgR2lh4z5d4CROGHxT+X
+         e8GjNGPRPDinDVN/+x19PNo/KNf4DwjXILKcE3LIRVhmVMK/2JIlJmeniz4aZwn17o
+         wviZZ7sCkH6w4yE+gqrsSyIaYnTwGv2BBKlsXT0Q=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Bruce Chang <brucechang@via.com.tw>,
-        Harald Welte <HaraldWelte@viatech.com>,
-        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 156/175] mmc: via-sdmmc: Respect the cmd->busy_timeout from the mmc core
-Date:   Mon,  8 Jun 2020 19:18:29 -0400
-Message-Id: <20200608231848.3366970-156-sashal@kernel.org>
+Cc:     Xie XiuQi <xiexiuqi@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 158/175] ixgbe: fix signed-integer-overflow warning
+Date:   Mon,  8 Jun 2020 19:18:31 -0400
+Message-Id: <20200608231848.3366970-158-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -44,62 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ulf Hansson <ulf.hansson@linaro.org>
+From: Xie XiuQi <xiexiuqi@huawei.com>
 
-[ Upstream commit 966244ccd2919e28f25555a77f204cd1c109cad8 ]
+[ Upstream commit 3b70683fc4d68f5d915d9dc7e5ba72c732c7315c ]
 
-Using a fixed 1s timeout for all commands (and data transfers) is a bit
-problematic.
+ubsan report this warning, fix it by adding a unsigned suffix.
 
-For some commands it means waiting longer than needed for the timer to
-expire, which may not a big issue, but still. For other commands, like for
-an erase (CMD38) that uses a R1B response, may require longer timeouts than
-1s. In these cases, we may end up treating the command as it failed, while
-it just needed some more time to complete successfully.
+UBSAN: signed-integer-overflow in
+drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:2246:26
+65535 * 65537 cannot be represented in type 'int'
+CPU: 21 PID: 7 Comm: kworker/u256:0 Not tainted 5.7.0-rc3-debug+ #39
+Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 2280-V2 03/27/2020
+Workqueue: ixgbe ixgbe_service_task [ixgbe]
+Call trace:
+ dump_backtrace+0x0/0x3f0
+ show_stack+0x28/0x38
+ dump_stack+0x154/0x1e4
+ ubsan_epilogue+0x18/0x60
+ handle_overflow+0xf8/0x148
+ __ubsan_handle_mul_overflow+0x34/0x48
+ ixgbe_fc_enable_generic+0x4d0/0x590 [ixgbe]
+ ixgbe_service_task+0xc20/0x1f78 [ixgbe]
+ process_one_work+0x8f0/0xf18
+ worker_thread+0x430/0x6d0
+ kthread+0x218/0x238
+ ret_from_fork+0x10/0x18
 
-Fix the problem by respecting the cmd->busy_timeout, which is provided by
-the mmc core.
-
-Cc: Bruce Chang <brucechang@via.com.tw>
-Cc: Harald Welte <HaraldWelte@viatech.com>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Link: https://lore.kernel.org/r/20200414161413.3036-17-ulf.hansson@linaro.org
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Xie XiuQi <xiexiuqi@huawei.com>
+Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/via-sdmmc.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
-index f4ac064ff471..8d96ecba1b55 100644
---- a/drivers/mmc/host/via-sdmmc.c
-+++ b/drivers/mmc/host/via-sdmmc.c
-@@ -319,6 +319,8 @@ struct via_crdr_mmc_host {
- /* some devices need a very long delay for power to stabilize */
- #define VIA_CRDR_QUIRK_300MS_PWRDELAY	0x0001
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+index 0bd1294ba517..39c5e6fdb72c 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+@@ -2243,7 +2243,7 @@ s32 ixgbe_fc_enable_generic(struct ixgbe_hw *hw)
+ 	}
  
-+#define VIA_CMD_TIMEOUT_MS		1000
-+
- static const struct pci_device_id via_ids[] = {
- 	{PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_9530,
- 	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0,},
-@@ -551,14 +553,17 @@ static void via_sdc_send_command(struct via_crdr_mmc_host *host,
- {
- 	void __iomem *addrbase;
- 	struct mmc_data *data;
-+	unsigned int timeout_ms;
- 	u32 cmdctrl = 0;
- 
- 	WARN_ON(host->cmd);
- 
- 	data = cmd->data;
--	mod_timer(&host->timer, jiffies + HZ);
- 	host->cmd = cmd;
- 
-+	timeout_ms = cmd->busy_timeout ? cmd->busy_timeout : VIA_CMD_TIMEOUT_MS;
-+	mod_timer(&host->timer, jiffies + msecs_to_jiffies(timeout_ms));
-+
- 	/*Command index*/
- 	cmdctrl = cmd->opcode << 8;
+ 	/* Configure pause time (2 TCs per register) */
+-	reg = hw->fc.pause_time * 0x00010001;
++	reg = hw->fc.pause_time * 0x00010001U;
+ 	for (i = 0; i < (MAX_TRAFFIC_CLASS / 2); i++)
+ 		IXGBE_WRITE_REG(hw, IXGBE_FCTTV(i), reg);
  
 -- 
 2.25.1
