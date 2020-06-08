@@ -2,166 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DCA1F1183
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 04:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398421F118A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 04:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728918AbgFHCv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 22:51:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728065AbgFHCv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 22:51:27 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7067E2075A;
-        Mon,  8 Jun 2020 02:51:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591584686;
-        bh=aj/roIt7ILETlasumkcLsDLIyP/E4ZfrsyKhGIt46nQ=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=FcciYpdzrNEmWJLzvTQB//kGOWst28RMVfb1VYedjE/zlyqyUjDhzwALGAUDRgcbu
-         hxfWcktywsG/RNcw09R4CqLN61b58BNzM76jWzKRoartKB5w2JkHSbLEOpC/nfzTyX
-         Xi4Uu04a5L9uEksQT6GXZ40GGi2rNRuTgzyOfwHE=
-Date:   Sun, 7 Jun 2020 19:51:25 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Subject: Re: [PATCH 2/2 v2] f2fs: attach IO flags to the missing cases
-Message-ID: <20200608025125.GA127000@google.com>
-References: <20200604235023.1954-1-jaegeuk@kernel.org>
- <20200604235023.1954-2-jaegeuk@kernel.org>
+        id S1728952AbgFHCx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 22:53:28 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42790 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728065AbgFHCx1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 22:53:27 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0582qxNA090132;
+        Sun, 7 Jun 2020 21:52:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591584779;
+        bh=dhAMeBt4kcAcqu7sDNT2ZR+MCN19NDKXPCvR8Kg/PyM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=HuziIkI3O+Uc/IRLX7VYCKHDJ1K5N5kJ1HYi8g8DLTM4j+xhrc8vSQ9O2P5z+4znC
+         Mi3z2C/W+5Tnz2ljlejhJmrf8J1TmOiFVsJrbJbeYmAvdHzwyogClErINglpnph1JT
+         2l3e67rBetMBW7H2o9qaZyHwV5m0zeAoKN70hHa4=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0582qxhx112430
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 7 Jun 2020 21:52:59 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 7 Jun
+ 2020 21:52:59 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sun, 7 Jun 2020 21:52:59 -0500
+Received: from [10.250.233.85] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0582qs9R005834;
+        Sun, 7 Jun 2020 21:52:55 -0500
+Subject: Re: [PATCH v10 00/10] exynos-ufs: Add support for UFS HCI
+To:     Alim Akhtar <alim.akhtar@samsung.com>,
+        "'Martin K. Petersen'" <martin.petersen@oracle.com>,
+        <robh@kernel.org>
+CC:     <krzk@kernel.org>, <linux-samsung-soc@vger.kernel.org>,
+        <avri.altman@wdc.com>, <stanley.chu@mediatek.com>,
+        <linux-scsi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <cang@codeaurora.org>,
+        <devicetree@vger.kernel.org>, <kwmad.kim@samsung.com>,
+        <linux-kernel@vger.kernel.org>, "'Vinod Koul'" <vkoul@kernel.org>
+References: <CGME20200528013223epcas5p2be85fa8803326b49a905fb7225992cad@epcas5p2.samsung.com>
+ <20200528011658.71590-1-alim.akhtar@samsung.com>
+ <159114947915.26776.12485309894552696104.b4-ty@oracle.com>
+ <013a01d63d3e$ecf404d0$c6dc0e70$@samsung.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <89b96bd0-a9a3-cdd8-dc67-1f9f49eef264@ti.com>
+Date:   Mon, 8 Jun 2020 08:22:54 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200604235023.1954-2-jaegeuk@kernel.org>
+In-Reply-To: <013a01d63d3e$ecf404d0$c6dc0e70$@samsung.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds another way to attach bio flags to node writes.
+Hi Alim,
 
-Description:   Give a way to attach REQ_META|FUA to node writes
-               given temperature-based bits. Now the bits indicate:
-               *      REQ_META     |      REQ_FUA      |
-               *    5 |    4 |   3 |    2 |    1 |   0 |
-               * Cold | Warm | Hot | Cold | Warm | Hot |
+On 6/8/2020 8:15 AM, Alim Akhtar wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Martin K. Petersen <martin.petersen@oracle.com>
+>> Sent: 03 June 2020 08:02
+>> To: robh@kernel.org; Alim Akhtar <alim.akhtar@samsung.com>
+>> Cc: Martin K . Petersen <martin.petersen@oracle.com>; krzk@kernel.org;
+> linux-
+>> samsung-soc@vger.kernel.org; avri.altman@wdc.com;
+>> stanley.chu@mediatek.com; linux-scsi@vger.kernel.org; linux-arm-
+>> kernel@lists.infradead.org; cang@codeaurora.org;
+> devicetree@vger.kernel.org;
+>> kwmad.kim@samsung.com; linux-kernel@vger.kernel.org
+>> Subject: Re: [PATCH v10 00/10] exynos-ufs: Add support for UFS HCI
+>>
+>> On Thu, 28 May 2020 06:46:48 +0530, Alim Akhtar wrote:
+>>
+>>> This patch-set introduces UFS (Universal Flash Storage) host
+>>> controller support for Samsung family SoC. Mostly, it consists of UFS
+>>> PHY and host specific driver.
+>>> [...]
+>>
+>> Applied [1,2,3,4,5,9] to 5.9/scsi-queue. The series won't show up in my
+> public
+>> tree until shortly after -rc1 is released.
+>>
+> Thanks Martin,
+> Hi Rob and Kishon/Vinod
+> Can you please pickup dt-bindings and PHY driver respectively?
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
+You might have CC'ed me only for the PHY patch. I don't have the dt-bindings in
+my inbox. Care to re-send what's missing again? This will be merged after -rc1
+is tagged.
 
-v2 log:
- - remove redundant code
+Thanks
+Kishon
 
- Documentation/ABI/testing/sysfs-fs-f2fs |  9 +++++++++
- fs/f2fs/data.c                          | 24 +++++++++++++++---------
- fs/f2fs/f2fs.h                          |  1 +
- fs/f2fs/sysfs.c                         |  2 ++
- 4 files changed, 27 insertions(+), 9 deletions(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 427f5b45c67f1..4bb93a06d8abc 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -333,6 +333,15 @@ Description:	Give a way to attach REQ_META|FUA to data writes
- 		*    5 |    4 |   3 |    2 |    1 |   0 |
- 		* Cold | Warm | Hot | Cold | Warm | Hot |
- 
-+What:		/sys/fs/f2fs/<disk>/node_io_flag
-+Date:		June 2020
-+Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
-+Description:	Give a way to attach REQ_META|FUA to node writes
-+		given temperature-based bits. Now the bits indicate:
-+		*      REQ_META     |      REQ_FUA      |
-+		*    5 |    4 |   3 |    2 |    1 |   0 |
-+		* Cold | Warm | Hot | Cold | Warm | Hot |
-+
- What:		/sys/fs/f2fs/<disk>/iostat_period_ms
- Date:		April 2020
- Contact:	"Daeho Jeong" <daehojeong@google.com>
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 703fcb2433269..267b5e76a02b5 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -514,22 +514,28 @@ void f2fs_submit_bio(struct f2fs_sb_info *sbi,
- 	__submit_bio(sbi, bio, type);
- }
- 
--static void __attach_data_io_flag(struct f2fs_io_info *fio)
-+static void __attach_io_flag(struct f2fs_io_info *fio)
- {
- 	struct f2fs_sb_info *sbi = fio->sbi;
- 	unsigned int temp_mask = (1 << NR_TEMP_TYPE) - 1;
--	unsigned int fua_flag = sbi->data_io_flag & temp_mask;
--	unsigned int meta_flag = (sbi->data_io_flag >> NR_TEMP_TYPE) &
--								temp_mask;
-+	unsigned int io_flag, fua_flag, meta_flag;
-+
-+	if (fio->type == DATA)
-+		io_flag = sbi->data_io_flag;
-+	else if (fio->type == NODE)
-+		io_flag = sbi->node_io_flag;
-+	else
-+		return;
-+
-+	fua_flag = io_flag & temp_mask;
-+	meta_flag = (io_flag >> NR_TEMP_TYPE) & temp_mask;
-+
- 	/*
--	 * data io flag bits per temp:
-+	 * data/node io flag bits per temp:
- 	 *      REQ_META     |      REQ_FUA      |
- 	 *    5 |    4 |   3 |    2 |    1 |   0 |
- 	 * Cold | Warm | Hot | Cold | Warm | Hot |
- 	 */
--	if (fio->type != DATA)
--		return;
--
- 	if ((1 << fio->temp) & meta_flag)
- 		fio->op_flags |= REQ_META;
- 	if ((1 << fio->temp) & fua_flag)
-@@ -543,7 +549,7 @@ static void __submit_merged_bio(struct f2fs_bio_info *io)
- 	if (!io->bio)
- 		return;
- 
--	__attach_data_io_flag(fio);
-+	__attach_io_flag(fio);
- 	bio_set_op_attrs(io->bio, fio->op, fio->op_flags);
- 
- 	if (is_read_io(fio->op))
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 7794e2f0d6e8a..c812fb8e2d9c7 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1568,6 +1568,7 @@ struct f2fs_sb_info {
- 
- 	/* to attach REQ_META|REQ_FUA flags */
- 	unsigned int data_io_flag;
-+	unsigned int node_io_flag;
- 
- 	/* For sysfs suppport */
- 	struct kobject s_kobj;
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index a117ae1f9d5f1..fc4a46b689040 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -554,6 +554,7 @@ F2FS_RW_ATTR(FAULT_INFO_RATE, f2fs_fault_info, inject_rate, inject_rate);
- F2FS_RW_ATTR(FAULT_INFO_TYPE, f2fs_fault_info, inject_type, inject_type);
- #endif
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, data_io_flag, data_io_flag);
-+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, node_io_flag, node_io_flag);
- F2FS_GENERAL_RO_ATTR(dirty_segments);
- F2FS_GENERAL_RO_ATTR(free_segments);
- F2FS_GENERAL_RO_ATTR(lifetime_write_kbytes);
-@@ -635,6 +636,7 @@ static struct attribute *f2fs_attrs[] = {
- 	ATTR_LIST(inject_type),
- #endif
- 	ATTR_LIST(data_io_flag),
-+	ATTR_LIST(node_io_flag),
- 	ATTR_LIST(dirty_segments),
- 	ATTR_LIST(free_segments),
- 	ATTR_LIST(unusable),
--- 
-2.27.0.278.ge193c7cf3a9-goog
-
+> 
+>> Thanks!
+>>
+>> --
+>> Martin K. Petersen	Oracle Linux Engineering
+> 
