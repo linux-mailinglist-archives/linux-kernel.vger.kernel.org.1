@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C1C1F10F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 03:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6E61F1100
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 03:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728646AbgFHBDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 21:03:08 -0400
-Received: from mga18.intel.com ([134.134.136.126]:16737 "EHLO mga18.intel.com"
+        id S1728199AbgFHBYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 21:24:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728201AbgFHBDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 21:03:08 -0400
-IronPort-SDR: HcNfMVTOebycw0s019Z+58zzLHXiT8KyNhN7UELxsI86X19bSoc6f8ZnYVWldOmVJyM8l2aTTl
- lPFZ3YScJuqA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2020 18:03:07 -0700
-IronPort-SDR: eMTeIwwYNjJ8V4Higex8aVbxDSVYxFYlfD6Rr12pxhhoZHpEPkyr3ZE/QwTPDJIz/BkxGVIxRp
- 1YYmTNgcZbGQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,486,1583222400"; 
-   d="scan'208";a="305664436"
-Received: from lkp-server01.sh.intel.com (HELO 3b764b36c89c) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Jun 2020 18:03:06 -0700
-Received: from kbuild by 3b764b36c89c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ji6Bt-0000Wj-DE; Mon, 08 Jun 2020 01:03:05 +0000
-Date:   Mon, 8 Jun 2020 09:02:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org
-Subject: [PATCH] pinctrl: mcp23s08: Split to three parts: fix ptr_ret.cocci
- warnings
-Message-ID: <20200608010253.GA79576@44f7ab9e8d59>
-References: <202006080944.vTmpp64f%lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202006080944.vTmpp64f%lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727972AbgFHBYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Jun 2020 21:24:30 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5CA022075A;
+        Mon,  8 Jun 2020 01:24:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591579469;
+        bh=gn50bNobrmHJlHOnCq+jCJlXEsdpnCZrGX2MUr/Mdas=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UOnCer4oPdEUY8quGPSMuoFl9pM8KxPTniA1r64IHO9ltJ2OCMiD6P01e+x5Pql4V
+         /lWjSY20BpUiXtNJh5qd6FYRrr4tT4ZAO3OU+2hSz2sbCzp+8lciTj+ZhqTbC4WgUX
+         HltYx06/Z+VckUpiSgWyZLnGCMXyoKPkuyWnpXDM=
+Date:   Sun, 7 Jun 2020 18:24:28 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Yann Collet <cyan@fb.com>, Vasily Averin <vvs@virtuozzo.com>,
+        Gao Xiang <hsiangkao@aol.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Gao Xiang <xiang@kernel.org>
+Subject: Re: [PATCH] lib/lz4: smatch warning in LZ4_decompress_generic()
+Message-Id: <20200607182428.0d9ce5139b9ab4f36eefca1b@linux-foundation.org>
+In-Reply-To: <3bf931c6ea0cae3e23f3485801986859851b4f04.camel@perches.com>
+References: <20200606143646.GB10839.ref@hsiangkao-HP-ZHAN-66-Pro-G1>
+        <20200606143646.GB10839@hsiangkao-HP-ZHAN-66-Pro-G1>
+        <330eccf1-6d4b-07dd-4e55-ffe3a179e4b8@virtuozzo.com>
+        <D4762145-BBC5-4574-BF68-8C1A3AF41D98@fb.com>
+        <3bf931c6ea0cae3e23f3485801986859851b4f04.camel@perches.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Sun, 07 Jun 2020 18:02:44 -0700 Joe Perches <joe@perches.com> wrote:
 
-drivers/pinctrl/pinctrl-mcp23s08_spi.c:129:1-3: WARNING: PTR_ERR_OR_ZERO can be used
+> On Mon, 2020-06-08 at 00:40 +0000, Yann Collet wrote:
+> > Hi Vasily
+> > 
+> > 
+> > If I do understand the discussion, the question is about usage of `&` instead of `&&`,
+> > and the speculation that it might be an error.
+> > 
+> > It's not an error. Unfortunately, explaining the reasoning behind this decision is a bit long.
+> 
+> Likely better to add a comment around the use so that
+> another patch like this doesn't get submitted again.
+> 
+> Perhaps something like:
+
+Yup.
 
 
- Use PTR_ERR_OR_ZERO rather than if(IS_ERR(...)) + PTR_ERR
+From: Joe Perches <joe@perches.com>
+Subject: lib/lz4/lz4_decompress.c: document deliberate use of `&'
 
-Generated by: scripts/coccinelle/api/ptr_ret.cocci
+This operation was intentional, but tools such as smatch will warn that it
+might not have been.
 
-Fixes: 0f04a81784fe ("pinctrl: mcp23s08: Split to three parts: core, I²C, SPI")
-CC: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
+Link: http://lkml.kernel.org/r/3bf931c6ea0cae3e23f3485801986859851b4f04.camel@perches.com
+Cc: Yann Collet <cyan@fb.com>
+Cc: Vasily Averin <vvs@virtuozzo.com>
+Cc: Gao Xiang <hsiangkao@aol.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   cf0c97f148e9e50aa5a7ddd1984a604dd2bde4af
-commit: 0f04a81784fe3ddc00cae74c517265b3ddb8825c pinctrl: mcp23s08: Split to three parts: core, I²C, SPI
+ lib/lz4/lz4_decompress.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
- pinctrl-mcp23s08_spi.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+--- a/lib/lz4/lz4_decompress.c~lib-lz4-smatch-warning-in-lz4_decompress_generic
++++ a/lib/lz4/lz4_decompress.c
+@@ -141,6 +141,9 @@ static FORCE_INLINE int LZ4_decompress_g
+ 		 * space in the output for those 18 bytes earlier, upon
+ 		 * entering the shortcut (in other words, there is a
+ 		 * combined check for both stages).
++		 *
++		 * The & in the likely() below is intentionally not && so that
++		 * some compilers can produce better parallelized runtime code
+ 		 */
+ 		if ((endOnInput ? length != RUN_MASK : length <= 8)
+ 		   /*
+_
 
---- a/drivers/pinctrl/pinctrl-mcp23s08_spi.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08_spi.c
-@@ -126,10 +126,7 @@ static int mcp23s08_spi_regmap_init(stru
- 	copy->name = name;
- 
- 	mcp->regmap = devm_regmap_init(dev, &mcp23sxx_spi_regmap, mcp, copy);
--	if (IS_ERR(mcp->regmap))
--		return PTR_ERR(mcp->regmap);
--
--	return 0;
-+	return PTR_ERR_OR_ZERO(mcp->regmap);
- }
- 
- static int mcp23s08_probe(struct spi_device *spi)
