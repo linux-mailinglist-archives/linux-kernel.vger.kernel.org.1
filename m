@@ -2,30 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD901F1866
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B881F1865
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729734AbgFHMDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 08:03:36 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:35988 "EHLO huawei.com"
+        id S1729723AbgFHMDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 08:03:33 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:35994 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729708AbgFHMDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 08:03:34 -0400
+        id S1726202AbgFHMDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 08:03:32 -0400
 Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C52F1D00F0C2F91A7409;
+        by Forcepoint Email with ESMTP id CA372969A77F174BC765;
         Mon,  8 Jun 2020 20:03:29 +0800 (CST)
 Received: from szvp000203569.huawei.com (10.120.216.130) by
  DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 8 Jun 2020 20:03:19 +0800
+ 14.3.487.0; Mon, 8 Jun 2020 20:03:20 +0800
 From:   Chao Yu <yuchao0@huawei.com>
 To:     <jaegeuk@kernel.org>
 CC:     <linux-f2fs-devel@lists.sourceforge.net>,
         <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
         Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH 1/2] f2fs: handle readonly filesystem in f2fs_ioc_shutdown()
-Date:   Mon, 8 Jun 2020 20:03:16 +0800
-Message-ID: <20200608120317.6716-1-yuchao0@huawei.com>
+Subject: [PATCH 2/2] f2fs: remove unused parameter of f2fs_put_rpages_mapping()
+Date:   Mon, 8 Jun 2020 20:03:17 +0800
+Message-ID: <20200608120317.6716-2-yuchao0@huawei.com>
 X-Mailer: git-send-email 2.18.0.rc1
+In-Reply-To: <20200608120317.6716-1-yuchao0@huawei.com>
+References: <20200608120317.6716-1-yuchao0@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.120.216.130]
@@ -35,36 +37,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If mountpoint is readonly, we should allow shutdowning filesystem
-successfully, this fixes issue found by generic/599 testcase of
-xfstest.
+Just cleanup, no logic change.
 
 Signed-off-by: Chao Yu <yuchao0@huawei.com>
 ---
- fs/f2fs/file.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ fs/f2fs/compress.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index bcca22752ebe..dbf4a342c02b 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -2232,8 +2232,15 @@ static int f2fs_ioc_shutdown(struct file *filp, unsigned long arg)
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index a53578a89211..1e02a8c106b0 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -89,8 +89,7 @@ static void f2fs_unlock_rpages(struct compress_ctx *cc, int len)
+ 	f2fs_drop_rpages(cc, len, true);
+ }
  
- 	if (in != F2FS_GOING_DOWN_FULLSYNC) {
- 		ret = mnt_want_write_file(filp);
--		if (ret)
-+		if (ret) {
-+			if (ret == -EROFS) {
-+				ret = 0;
-+				f2fs_stop_checkpoint(sbi, false);
-+				set_sbi_flag(sbi, SBI_IS_SHUTDOWN);
-+				trace_f2fs_shutdown(sbi, in, ret);
-+			}
- 			return ret;
-+		}
- 	}
+-static void f2fs_put_rpages_mapping(struct compress_ctx *cc,
+-				struct address_space *mapping,
++static void f2fs_put_rpages_mapping(struct address_space *mapping,
+ 				pgoff_t start, int len)
+ {
+ 	int i;
+@@ -942,7 +941,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
  
- 	switch (in) {
+ 		if (!PageUptodate(page)) {
+ 			f2fs_unlock_rpages(cc, i + 1);
+-			f2fs_put_rpages_mapping(cc, mapping, start_idx,
++			f2fs_put_rpages_mapping(mapping, start_idx,
+ 					cc->cluster_size);
+ 			f2fs_destroy_compress_ctx(cc);
+ 			goto retry;
+@@ -977,7 +976,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
+ unlock_pages:
+ 	f2fs_unlock_rpages(cc, i);
+ release_pages:
+-	f2fs_put_rpages_mapping(cc, mapping, start_idx, i);
++	f2fs_put_rpages_mapping(mapping, start_idx, i);
+ 	f2fs_destroy_compress_ctx(cc);
+ 	return ret;
+ }
 -- 
 2.18.0.rc1
 
