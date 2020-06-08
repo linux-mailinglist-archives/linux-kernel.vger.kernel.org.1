@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B374E1F27DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85111F27E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731646AbgFHXYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:24:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42158 "EHLO mail.kernel.org"
+        id S1731700AbgFHXY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:24:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728826AbgFHXTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:19:22 -0400
+        id S1730807AbgFHXTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:19:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B519F2085B;
-        Mon,  8 Jun 2020 23:19:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2ACE821556;
+        Mon,  8 Jun 2020 23:19:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658362;
-        bh=FQzGguG+hmcl7cfXxLr3IInpG6jYeF8Ns+/5r+ngYpM=;
+        s=default; t=1591658374;
+        bh=Aay7g+6QoqcAa867zA6NxerJV2IzWmFYYUuikQsOEp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uj2b/JqXuRZ09KycM+QbvX/M8Y7grECCLmmnU7D4rRoY6pwr3LUCoxdNUou4KInPa
-         I9HTWsWFoD6Iz7/qfot6V4Bg7MzJvFEudZ8cBnk4HNujgahITGdCNzcQhoqQFcWO/J
-         BuJOsUo7oR0CEYBmE6bGlE/WNk75VqhRdKDWdKRo=
+        b=UitV0NYQIiE2TkALyDzAj3bVuMrEoWi1WOmpMHKcVE8iBlpiYkOq9oVtRYioP5FnE
+         xbYBr35bOUfTIyHK7vMSu2F0JFfm7OG8ryeEJKvY1n4+WkVn6pWPYE5fgay4SipCw4
+         mSB94S3H25yKLbZ6gU3m4OlLJoTB+fgWFaqFpELo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 027/175] spi: dw: Zero DMA Tx and Rx configurations on stack
-Date:   Mon,  8 Jun 2020 19:16:20 -0400
-Message-Id: <20200608231848.3366970-27-sashal@kernel.org>
+Cc:     Koba Ko <koba.ko@canonical.com>,
+        Mario Limonciello <Mario.limonciello@dell.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 036/175] platform/x86: dell-laptop: don't register micmute LED if there is no token
+Date:   Mon,  8 Jun 2020 19:16:29 -0400
+Message-Id: <20200608231848.3366970-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,46 +47,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Koba Ko <koba.ko@canonical.com>
 
-[ Upstream commit 3cb97e223d277f84171cc4ccecab31e08b2ee7b5 ]
+[ Upstream commit 257e03a334ccb96e657bf5f6ab3b5693a22c2aa4 ]
 
-Some DMA controller drivers do not tolerate non-zero values in
-the DMA configuration structures. Zero them to avoid issues with
-such DMA controller drivers. Even despite above this is a good
-practice per se.
+On Dell G3-3590, error message is issued during boot up,
+"platform::micmute: Setting an LED's brightness failed (-19)",
+but there's no micmute led on the machine.
 
-Fixes: 7063c0d942a1 ("spi/dw_spi: add DMA support")
+Get the related tokens of SMBIOS, GLOBAL_MIC_MUTE_DISABLE/ENABLE.
+If one of two tokens doesn't exist,
+don't call led_classdev_register() for platform::micmute.
+After that, you wouldn't see the platform::micmute in /sys/class/leds/,
+and the error message wouldn't see in dmesg.
+
+Fixes: d00fa46e0a2c6 ("platform/x86: dell-laptop: Add micmute LED trigger support")
+Signed-off-by: Koba Ko <koba.ko@canonical.com>
+Reviewed-by: Mario Limonciello <Mario.limonciello@dell.com>
+Reviewed-by: Pali Rohár <pali@kernel.org>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Feng Tang <feng.tang@intel.com>
-Cc: Feng Tang <feng.tang@intel.com>
-Link: https://lore.kernel.org/r/20200506153025.21441-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-dw-mid.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/platform/x86/dell-laptop.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/spi/spi-dw-mid.c b/drivers/spi/spi-dw-mid.c
-index 2663bb12d9ce..242ac2768518 100644
---- a/drivers/spi/spi-dw-mid.c
-+++ b/drivers/spi/spi-dw-mid.c
-@@ -147,6 +147,7 @@ static struct dma_async_tx_descriptor *dw_spi_dma_prepare_tx(struct dw_spi *dws,
- 	if (!xfer->tx_buf)
- 		return NULL;
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index 74e988f839e8..4c1dd1d4e60b 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -2204,10 +2204,13 @@ static int __init dell_init(void)
  
-+	memset(&txconf, 0, sizeof(txconf));
- 	txconf.direction = DMA_MEM_TO_DEV;
- 	txconf.dst_addr = dws->dma_addr;
- 	txconf.dst_maxburst = 16;
-@@ -193,6 +194,7 @@ static struct dma_async_tx_descriptor *dw_spi_dma_prepare_rx(struct dw_spi *dws,
- 	if (!xfer->rx_buf)
- 		return NULL;
+ 	dell_laptop_register_notifier(&dell_laptop_notifier);
  
-+	memset(&rxconf, 0, sizeof(rxconf));
- 	rxconf.direction = DMA_DEV_TO_MEM;
- 	rxconf.src_addr = dws->dma_addr;
- 	rxconf.src_maxburst = 16;
+-	micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
+-	ret = led_classdev_register(&platform_device->dev, &micmute_led_cdev);
+-	if (ret < 0)
+-		goto fail_led;
++	if (dell_smbios_find_token(GLOBAL_MIC_MUTE_DISABLE) &&
++	    dell_smbios_find_token(GLOBAL_MIC_MUTE_ENABLE)) {
++		micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
++		ret = led_classdev_register(&platform_device->dev, &micmute_led_cdev);
++		if (ret < 0)
++			goto fail_led;
++	}
+ 
+ 	if (acpi_video_get_backlight_type() != acpi_backlight_vendor)
+ 		return 0;
 -- 
 2.25.1
 
