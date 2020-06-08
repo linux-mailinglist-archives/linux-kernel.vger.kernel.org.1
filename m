@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9851B1F23D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F101F23D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730366AbgFHXQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:16:56 -0400
+        id S1730387AbgFHXRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:17:00 -0400
 Received: from mail.kernel.org ([198.145.29.99]:33906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728813AbgFHXN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:13:57 -0400
+        id S1728249AbgFHXN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:13:58 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AB6C21527;
-        Mon,  8 Jun 2020 23:13:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4C91208C3;
+        Mon,  8 Jun 2020 23:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658036;
-        bh=AOqm3Fgp/+ECFDkKYPL67fC7r9lGY6j3IklwCRudwTk=;
+        s=default; t=1591658038;
+        bh=5dYKczIvQ+iFI127IXOGGHsWU0/YsZaZeXftt1nV9sg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gJ6pKdvVbrVwu8aiArkJ8OjSufGr4VyO5H+DAOhN3XZCIoZQvu5xXh7qMoa43xIzq
-         chdA/Q7iUmEWHhOYNcenhFgEzkhf+9HeVqhk+sUhZehSTH60kNGf1O/IgFnkF4sV+U
-         R6/52VlN9rc0bUb+4xZpO8fCAp6z1pK0XHIbsGWM=
+        b=NkRzZo2QJ8th5SxXeyPHztf26SBMrdfWnbMdXzfhtnjIYdoltg2m6VyEYAED40S6n
+         Xzg9WiOa0GoQE0FHoMMlA/6ShUBXbQQR1f2Ok9wHWxLkiI1bg2pKh/V9i3F7gufOfk
+         FRi9Mt81q0+N8GalzXaO2XumN1R51Z3eZFLY1V6o=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eric Biggers <ebiggers@google.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
         Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.6 086/606] ubifs: fix wrong use of crypto_shash_descsize()
-Date:   Mon,  8 Jun 2020 19:03:31 -0400
-Message-Id: <20200608231211.3363633-86-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 088/606] mtd: spinand: Propagate ECC information to the MTD structure
+Date:   Mon,  8 Jun 2020 19:03:33 -0400
+Message-Id: <20200608231211.3363633-88-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -44,109 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-[ Upstream commit 3c3c32f85b6cc05e5db78693457deff03ac0f434 ]
+[ Upstream commit 3507273d5a4d3c2e46f9d3f9ed9449805f5dff07 ]
 
-crypto_shash_descsize() returns the size of the shash_desc context
-needed to compute the hash, not the size of the hash itself.
+This is done by default in the raw NAND core (nand_base.c) but was
+missing in the SPI-NAND core. Without these two lines the ecc_strength
+and ecc_step_size values are not exported to the user through sysfs.
 
-crypto_shash_digestsize() would be correct, or alternatively using
-c->hash_len and c->hmac_desc_len which already store the correct values.
-But actually it's simpler to just use stack arrays, so do that instead.
-
-Fixes: 49525e5eecca ("ubifs: Add helper functions for authentication support")
-Fixes: da8ef65f9573 ("ubifs: Authenticate replayed journal")
-Cc: <stable@vger.kernel.org> # v4.20+
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ubifs/auth.c   | 17 ++++-------------
- fs/ubifs/replay.c | 13 ++-----------
- 2 files changed, 6 insertions(+), 24 deletions(-)
+ drivers/mtd/nand/spi/core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
-index 8cdbd53d780c..f985a3fbbb36 100644
---- a/fs/ubifs/auth.c
-+++ b/fs/ubifs/auth.c
-@@ -79,13 +79,9 @@ int ubifs_prepare_auth_node(struct ubifs_info *c, void *node,
- 			     struct shash_desc *inhash)
- {
- 	struct ubifs_auth_node *auth = node;
--	u8 *hash;
-+	u8 hash[UBIFS_HASH_ARR_SZ];
- 	int err;
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 8dda51bbdd11..0d21c68bfe24 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -1049,6 +1049,10 @@ static int spinand_init(struct spinand_device *spinand)
  
--	hash = kmalloc(crypto_shash_descsize(c->hash_tfm), GFP_NOFS);
--	if (!hash)
--		return -ENOMEM;
--
- 	{
- 		SHASH_DESC_ON_STACK(hash_desc, c->hash_tfm);
+ 	mtd->oobavail = ret;
  
-@@ -94,21 +90,16 @@ int ubifs_prepare_auth_node(struct ubifs_info *c, void *node,
++	/* Propagate ECC information to mtd_info */
++	mtd->ecc_strength = nand->eccreq.strength;
++	mtd->ecc_step_size = nand->eccreq.step_size;
++
+ 	return 0;
  
- 		err = crypto_shash_final(hash_desc, hash);
- 		if (err)
--			goto out;
-+			return err;
- 	}
- 
- 	err = ubifs_hash_calc_hmac(c, hash, auth->hmac);
- 	if (err)
--		goto out;
-+		return err;
- 
- 	auth->ch.node_type = UBIFS_AUTH_NODE;
- 	ubifs_prepare_node(c, auth, ubifs_auth_node_sz(c), 0);
--
--	err = 0;
--out:
--	kfree(hash);
--
--	return err;
-+	return 0;
- }
- 
- static struct shash_desc *ubifs_get_desc(const struct ubifs_info *c,
-diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index b28ac4dfb407..01fcf7975047 100644
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -601,18 +601,12 @@ static int authenticate_sleb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 	struct ubifs_scan_node *snod;
- 	int n_nodes = 0;
- 	int err;
--	u8 *hash, *hmac;
-+	u8 hash[UBIFS_HASH_ARR_SZ];
-+	u8 hmac[UBIFS_HMAC_ARR_SZ];
- 
- 	if (!ubifs_authenticated(c))
- 		return sleb->nodes_cnt;
- 
--	hash = kmalloc(crypto_shash_descsize(c->hash_tfm), GFP_NOFS);
--	hmac = kmalloc(c->hmac_desc_len, GFP_NOFS);
--	if (!hash || !hmac) {
--		err = -ENOMEM;
--		goto out;
--	}
--
- 	list_for_each_entry(snod, &sleb->nodes, list) {
- 
- 		n_nodes++;
-@@ -662,9 +656,6 @@ static int authenticate_sleb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 		err = 0;
- 	}
- out:
--	kfree(hash);
--	kfree(hmac);
--
- 	return err ? err : n_nodes - n_not_auth;
- }
- 
+ err_cleanup_nanddev:
 -- 
 2.25.1
 
