@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753301F2441
+	by mail.lfdr.de (Postfix) with ESMTP id E6B181F2442
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728731AbgFHXTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:19:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36968 "EHLO mail.kernel.org"
+        id S1730842AbgFHXTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:19:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730103AbgFHXPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:15:51 -0400
+        id S1729259AbgFHXPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:15:53 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1767220760;
-        Mon,  8 Jun 2020 23:15:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 844A120760;
+        Mon,  8 Jun 2020 23:15:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658149;
-        bh=T91HkriA4AVveN5p0X9Tth1A4tfYSz0CPkwXMfu++hQ=;
+        s=default; t=1591658153;
+        bh=LfOx7hZICOMMpNKBAODLweZ8DDtcz6noxEHhmIyjwqI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i5gly1zXRiK8L3Dx9iKRSudRrr5sELbF7AYVwWuhI732n5GAsrvYW/PLyh6IXX5TX
-         6Q1omBG3q5K15Xjs+/Ht8f7Aw+NDXCkgI4OLvCUGtd3KnQdZJAKOHt1OFjcx9r/teK
-         9DQlhh0cXZ64NpbR7srWM4RWNMtZgh1fqwTKMVCw=
+        b=LsZc8GiZ2mi2B9afjLLJEM4MNiHjNP5qTEsj+uDvsQj7ZDafy7dbrtPPgKTN3XCDL
+         m2vHTlid0/tIju00z87CW4D4eHKXZ71XMWLSfIqfXmZoUiQXlGgXNYX1pr3c0GOpq/
+         ivw1f+cZ3m3gtz0NUM7sMSYZ1udYYqrtUF4v1OIs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        =?UTF-8?q?=E4=BA=BF=E4=B8=80?= <teroincn@gmail.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH AUTOSEL 5.6 182/606] mei: release me_cl object reference
-Date:   Mon,  8 Jun 2020 19:05:07 -0400
-Message-Id: <20200608231211.3363633-182-sashal@kernel.org>
+Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Philipp Rudo <prudo@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 185/606] s390/kaslr: add support for R_390_JMP_SLOT relocation type
+Date:   Mon,  8 Jun 2020 19:05:10 -0400
+Message-Id: <20200608231211.3363633-185-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,44 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Usyskin <alexander.usyskin@intel.com>
+From: Gerald Schaefer <gerald.schaefer@de.ibm.com>
 
-commit fc9c03ce30f79b71807961bfcb42be191af79873 upstream.
+commit 4c1cbcbd6c56c79de2c07159be4f55386bb0bef2 upstream.
 
-Allow me_cl object to be freed by releasing the reference
-that was acquired  by one of the search functions:
-__mei_me_cl_by_uuid_id() or __mei_me_cl_by_uuid()
+With certain kernel configurations, the R_390_JMP_SLOT relocation type
+might be generated, which is not expected by the KASLR relocation code,
+and the kernel stops with the message "Unknown relocation type".
 
-Cc: <stable@vger.kernel.org>
-Reported-by: 亿一 <teroincn@gmail.com>
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Link: https://lore.kernel.org/r/20200512223140.32186-1-tomas.winkler@intel.com
+This was found with a zfcpdump kernel config, where CONFIG_MODULES=n
+and CONFIG_VFIO=n. In that case, symbol_get() is used on undefined
+__weak symbols in virt/kvm/vfio.c, which results in the generation
+of R_390_JMP_SLOT relocation types.
+
+Fix this by handling R_390_JMP_SLOT similar to R_390_GLOB_DAT.
+
+Fixes: 805bc0bc238f ("s390/kernel: build a relocatable kernel")
+Cc: <stable@vger.kernel.org> # v5.2+
+Signed-off-by: Gerald Schaefer <gerald.schaefer@de.ibm.com>
+Reviewed-by: Philipp Rudo <prudo@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/mei/client.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/s390/kernel/machine_kexec_reloc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/misc/mei/client.c b/drivers/misc/mei/client.c
-index 1e3edbbacb1e..c6b163060c76 100644
---- a/drivers/misc/mei/client.c
-+++ b/drivers/misc/mei/client.c
-@@ -266,6 +266,7 @@ void mei_me_cl_rm_by_uuid(struct mei_device *dev, const uuid_le *uuid)
- 	down_write(&dev->me_clients_rwsem);
- 	me_cl = __mei_me_cl_by_uuid(dev, uuid);
- 	__mei_me_cl_del(dev, me_cl);
-+	mei_me_cl_put(me_cl);
- 	up_write(&dev->me_clients_rwsem);
- }
- 
-@@ -287,6 +288,7 @@ void mei_me_cl_rm_by_uuid_id(struct mei_device *dev, const uuid_le *uuid, u8 id)
- 	down_write(&dev->me_clients_rwsem);
- 	me_cl = __mei_me_cl_by_uuid_id(dev, uuid, id);
- 	__mei_me_cl_del(dev, me_cl);
-+	mei_me_cl_put(me_cl);
- 	up_write(&dev->me_clients_rwsem);
- }
- 
+diff --git a/arch/s390/kernel/machine_kexec_reloc.c b/arch/s390/kernel/machine_kexec_reloc.c
+index d5035de9020e..b7182cec48dc 100644
+--- a/arch/s390/kernel/machine_kexec_reloc.c
++++ b/arch/s390/kernel/machine_kexec_reloc.c
+@@ -28,6 +28,7 @@ int arch_kexec_do_relocs(int r_type, void *loc, unsigned long val,
+ 		break;
+ 	case R_390_64:		/* Direct 64 bit.  */
+ 	case R_390_GLOB_DAT:
++	case R_390_JMP_SLOT:
+ 		*(u64 *)loc = val;
+ 		break;
+ 	case R_390_PC16:	/* PC relative 16 bit.	*/
 -- 
 2.25.1
 
