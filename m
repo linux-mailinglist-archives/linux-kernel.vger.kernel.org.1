@@ -2,138 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AEA1F15A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 11:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7754C1F15AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 11:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729228AbgFHJlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 05:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729184AbgFHJlA (ORCPT
+        id S1729283AbgFHJl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 05:41:56 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25610 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729181AbgFHJlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 05:41:00 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EE1C08C5C3;
-        Mon,  8 Jun 2020 02:41:00 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x6so16564053wrm.13;
-        Mon, 08 Jun 2020 02:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iutKVuNQT00nZYTrm/7dqkO57UE+CiDX2Zw0XM5T/bs=;
-        b=FH9R6PgLpY/xfk9Y1umYU9fO4KCushpyvjjDhM6GJ3nbePEUfx9CV9RGHkeRSKEsHj
-         zCXHp+4Ck8VAOggyeM3SPuTEOA6yYqQlAiHqlJeK+Tw08h17No6y1uCKK92+EdzuRSD9
-         iYmyshNqAE33+CC7ezVX90kkXloMBdNxYKKkXuvntSmd4Vfv9P53HbLszP3pvtFAQ4u+
-         WY/fTwy4fFDibyaS6xNI8Dh5SvXgvY6twrbNPfSRkwQk/SmbbnRdzcxIy5mfqVenF3jH
-         ioqEmx/A1cA7WMxoRwDOzRHXszwdyy3dYKEVTAZDtqV0lOVXw93sqf2pulgQUzOnACOx
-         1j3w==
+        Mon, 8 Jun 2020 05:41:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591609314;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eH4Nj/mEDxjXnJZydIL7THbb14TLlM743flISB4xVNo=;
+        b=GiD4htHERYI/NaEO5+aSa3ilgO38YjEf6O5XNDQNt4uwrcSVyF4TF+jMTLpHCJxFCVsQPG
+        Kb6F/9LOiPg8EeB3Y3NTXo+m8F3NF9WYw/QDvx9fgyrDEnyIANZ3mm4bz9IYuZ37rpuLwi
+        vUTnmQvhXuhJoCuAp34gOURH8TVmIWA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-4uRmv8fyOdykV-NTT0j6kw-1; Mon, 08 Jun 2020 05:41:51 -0400
+X-MC-Unique: 4uRmv8fyOdykV-NTT0j6kw-1
+Received: by mail-wm1-f72.google.com with SMTP id k185so3730658wme.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 02:41:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iutKVuNQT00nZYTrm/7dqkO57UE+CiDX2Zw0XM5T/bs=;
-        b=WVCFs6AIrCDoO0flfJrf+ZMgXrUEEvIHP4UKrNwIXr2cR6CgU2h0YlknJYlq8DpsW8
-         Om50o2EpikJpoyWAHbNDqCh7FuaVmx2LnX9ih4Wt81aAABgehRXW9G+4oapLHBEOcdSR
-         h9RYFvNyHbol6X7kq5IeShpbxbzi0/g1weWKZtDjctCNGCqptwG9aDrCcNp2GnQdTy6T
-         WwZBNG2WTBjaMwbTC0armR3Uj+4exSc4y5VY23ZKjF0Fx4M1AewHtpzL5Yon+BAR6YCp
-         /cTetWQ/bKz+rApDzHp7bQ0I0vCpZZqyky5IMFUPoCXfSZQkvuHRhmzTNHa0VyRtD9Dl
-         LUwg==
-X-Gm-Message-State: AOAM533WHvLLGarpoABpbAwwlQnRfVwlW6hAlVn+rYaa3VjLxrwZ1XMN
-        fpQ5SFBHi9Vhp576ofKtPww=
-X-Google-Smtp-Source: ABdhPJxGkVz4sfW8YmjuDWuFHym9WXb7hrNJ4E1wx771qRgJ70vSanVuzdsFBsv1+hLGrALaJ6L1Rw==
-X-Received: by 2002:adf:a283:: with SMTP id s3mr21368789wra.147.1591609258686;
-        Mon, 08 Jun 2020 02:40:58 -0700 (PDT)
-Received: from skynet.lan (28.red-83-49-61.dynamicip.rima-tde.net. [83.49.61.28])
-        by smtp.gmail.com with ESMTPSA id a3sm22096479wrp.91.2020.06.08.02.40.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eH4Nj/mEDxjXnJZydIL7THbb14TLlM743flISB4xVNo=;
+        b=YMF84i1CMQ62U4hJZpSOXojvQrpHdH1yrw3Tml87gfbg+2KC6qoZ/MYBSSP8sEWYgG
+         0G7QM2abzIXvE2vqCq41Am4jBR1XEUK4AKXy72Va2hvnipbDcaQY/Rp3YY3oYJyYxbp8
+         t2PPr3jfm4PiUxOvukBIew60Pe//v8tkle/xk4HD6NVIfpTYMudsQxFPOVgOo2euuVbt
+         lm3676ViKbo5yvHmVL117LEEZOY81bDv34w32ORQKp1G/w4fI/x9pPdtNFq+xJ7nKt/X
+         DdFXSaVJKPx3/3iQJkoeUwtw7Z724y7JLAHO+w73pPjecF1aR16uF0YzhfNS21BNXDbG
+         vgPA==
+X-Gm-Message-State: AOAM533wbq3ES/lODgq8exXScuah0seO/E52cuo3yVAJ66JnXhrOY2Wh
+        nLHUVNBbPfThCoew9+ImiAn9lFOlO+0z4mSnRZOgIGo6tK4PG+cLq1n7LlzJiZKckjpoUik8l7p
+        9vFipwDpTlTTB0NphJECUSQV6
+X-Received: by 2002:a5d:6550:: with SMTP id z16mr24245126wrv.392.1591609310076;
+        Mon, 08 Jun 2020 02:41:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzYIMMXmu8GESaNXodyPnwn38PxVgpU501X6dYPU1Y3LfCjdYX5cV5ZynextIUdAL24kIrlKg==
+X-Received: by 2002:a5d:6550:: with SMTP id z16mr24245102wrv.392.1591609309872;
+        Mon, 08 Jun 2020 02:41:49 -0700 (PDT)
+Received: from redhat.com (bzq-109-64-41-91.red.bezeqint.net. [109.64.41.91])
+        by smtp.gmail.com with ESMTPSA id w17sm23341647wra.71.2020.06.08.02.41.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 02:40:58 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, jonas.gorski@gmail.com,
-        linus.walleij@linaro.org, linux-mips@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH 2/2] mtd: parsers: bcm63xx: simplify CFE detection
-Date:   Mon,  8 Jun 2020 11:40:53 +0200
-Message-Id: <20200608094053.3381512-3-noltari@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200608094053.3381512-1-noltari@gmail.com>
-References: <20200608094053.3381512-1-noltari@gmail.com>
+        Mon, 08 Jun 2020 02:41:48 -0700 (PDT)
+Date:   Mon, 8 Jun 2020 05:41:46 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        virtualization@lists.linux-foundation.org,
+        teawater <teawaterz@linux.alibaba.com>
+Subject: Re: [PATCH] virtio_mem: prevent overflow with subblock size
+Message-ID: <20200608053807-mutt-send-email-mst@kernel.org>
+References: <20200608061406.709211-1-mst@redhat.com>
+ <0930c9d0-0708-c079-29bd-b80d4e3ce446@redhat.com>
+ <20200608030423-mutt-send-email-mst@kernel.org>
+ <d10e9515-8408-037c-385a-d69259ce70ee@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d10e9515-8408-037c-385a-d69259ce70ee@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of trying to parse CFE version string, which is customized by some
-vendors, let's just check that "CFE1" was passed on argument 3.
+On Mon, Jun 08, 2020 at 09:17:45AM +0200, David Hildenbrand wrote:
+> On 08.06.20 09:08, Michael S. Tsirkin wrote:
+> > On Mon, Jun 08, 2020 at 08:58:31AM +0200, David Hildenbrand wrote:
+> >> On 08.06.20 08:14, Michael S. Tsirkin wrote:
+> >>> If subblock size is large (e.g. 1G) 32 bit math involving it
+> >>> can overflow. Rather than try to catch all instances of that,
+> >>> let's tweak block size to 64 bit.
+> >>
+> >> I fail to see where we could actually trigger an overflow. The reported
+> >> warning looked like a false positive to me.
+> > 
+> > 
+> > So
+> > 
+> >     const uint64_t size = count * vm->subblock_size;
+> > 
+> > is it unreasonable for count to be 4K with subblock_size being 1M?
+> 
+> virtio_mem_mb_plug_sb() and friends are only called on subblocks
+> residing within a single Linux memory block. (currently, 128MB .. 2G on
+> x86-64). A subblock on x86-64 is currently at least 4MB.
+> 
+> So "count * vm->subblock_size" can currently not exceed the Linux memory
+> block size (in practice, it is max 128MB).
+> 
+> > 
+> >>>
+> >>> It ripples through UAPI which is an ABI change, but it's not too late to
+> >>> make it, and it will allow supporting >4Gbyte blocks while might
+> >>> become necessary down the road.
+> >>>
+> >>
+> >> This might break cloud-hypervisor, who's already implementing this
+> >> protocol upstream (ccing Hui).
+> >> https://github.com/cloud-hypervisor/cloud-hypervisor/blob/master/vm-virtio/src/mem.rs
+> >>
+> >> (blocks in the gigabyte range were never the original intention of
+> >> virtio-mem, but I am not completely opposed to that)
+> > 
+> > 
+> > So in that case, can you code up validation in the probe function?
+> 
+> If we would currently have a "block_size" > Linux memory block size, we
+> bail out.
+> 
+> virtio_mem_init():
+> 
+> if (vm->device_block_size > memory_block_size_bytes()) {
+> 	dev_err(&vm->vdev->dev,
+> 		"The block size is not supported (too big).\n");
+> 	return -EINVAL;
+> }
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
----
- drivers/mtd/parsers/bcm63xxpart.c | 28 +++-------------------------
- 1 file changed, 3 insertions(+), 25 deletions(-)
+Sounds good.
 
-diff --git a/drivers/mtd/parsers/bcm63xxpart.c b/drivers/mtd/parsers/bcm63xxpart.c
-index 78f90c6c18fd..06b69e905a42 100644
---- a/drivers/mtd/parsers/bcm63xxpart.c
-+++ b/drivers/mtd/parsers/bcm63xxpart.c
-@@ -22,6 +22,8 @@
- #include <linux/mtd/partitions.h>
- #include <linux/of.h>
- 
-+#include <asm/mach-bcm63xx/bcm63xx_board.h>
-+
- #define BCM963XX_CFE_BLOCK_SIZE		SZ_64K	/* always at least 64KiB */
- 
- #define BCM963XX_CFE_MAGIC_OFFSET	0x4e0
-@@ -32,30 +34,6 @@
- #define STR_NULL_TERMINATE(x) \
- 	do { char *_str = (x); _str[sizeof(x) - 1] = 0; } while (0)
- 
--static int bcm63xx_detect_cfe(struct mtd_info *master)
--{
--	char buf[9];
--	int ret;
--	size_t retlen;
--
--	ret = mtd_read(master, BCM963XX_CFE_VERSION_OFFSET, 5, &retlen,
--		       (void *)buf);
--	buf[retlen] = 0;
--
--	if (ret)
--		return ret;
--
--	if (strncmp("cfe-v", buf, 5) == 0)
--		return 0;
--
--	/* very old CFE's do not have the cfe-v string, so check for magic */
--	ret = mtd_read(master, BCM963XX_CFE_MAGIC_OFFSET, 8, &retlen,
--		       (void *)buf);
--	buf[retlen] = 0;
--
--	return strncmp("CFE1CFE1", buf, 8);
--}
--
- static int bcm63xx_read_nvram(struct mtd_info *master,
- 	struct bcm963xx_nvram *nvram)
- {
-@@ -138,7 +116,7 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
- 	struct bcm963xx_nvram *nvram = NULL;
- 	int ret;
- 
--	if (bcm63xx_detect_cfe(master))
-+	if (!bcm63xx_is_cfe_present())
- 		return -EINVAL;
- 
- 	nvram = vzalloc(sizeof(*nvram));
--- 
-2.26.2
+> So what's reported can currently not happen. Having that said, changing
+> "subblock_size" to be an uint64_t is a good cleanup, especially for the
+> future.
+
+OK, no need to argue about it then. I tweaked the subject as you
+suggested and queued it then.
+
+> 
+> 
+> 
+> -- 
+> Thanks,
+> 
+> David / dhildenb
 
