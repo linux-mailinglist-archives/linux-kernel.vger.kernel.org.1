@@ -2,121 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E1F1F2240
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB471F24D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727908AbgFHXH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:07:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50536 "EHLO mail.kernel.org"
+        id S1731415AbgFHXW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:22:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727119AbgFHXG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:06:59 -0400
-Received: from localhost (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730583AbgFHXSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:18:09 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C48520820;
-        Mon,  8 Jun 2020 23:06:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B39A20885;
+        Mon,  8 Jun 2020 23:18:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657618;
-        bh=9kgiWfc80bQ1pFTP10CoDvlD9i3E2sMoZB2p3Vvgd/g=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=IAKP9+uyhx+Mw+/ttmtWvmUV5DWr7Hx4rynsr/VlhWY7naVEcoN2oD/N3/5SjrSVB
-         EmHPS5CiBaqDmNLIqVqDyRmUgYL0/hy7nAFMhxlSh1iB+5l18sVCmDe/ECVJA17l06
-         HJUi2skFlwTFsob6tOCCspquwIIueUlnqfhHl8Bo=
-Date:   Mon, 8 Jun 2020 16:06:57 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Christoph Hellwig <hch@infradead.org>
-cc:     Stefano Stabellini <sstabellini@kernel.org>, jgross@suse.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        tamas@tklengyel.com, roman@zededa.com,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>
-Subject: Re: [PATCH v2 08/11] swiotlb-xen: introduce phys_to_dma/dma_to_phys
- translations
-In-Reply-To: <20200608070850.GD15742@infradead.org>
-Message-ID: <alpine.DEB.2.21.2006081558400.2815@sstabellini-ThinkPad-T480s>
-References: <alpine.DEB.2.21.2006031506590.6774@sstabellini-ThinkPad-T480s> <20200603222247.11681-8-sstabellini@kernel.org> <20200608070850.GD15742@infradead.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        s=default; t=1591658289;
+        bh=wtn7EdCa698or5TkAj8+NLx0LcLzplalDi2MP5Q8pLI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=qnI78AOL2TsgopTvdxpGcOn7fWM9IrOk0Bp0JT4uQ/nhWEY8tAFv2iOPub777xUy7
+         S00klizWhOgwXkkIQFAlD28KiC1QavC3j5TTgRr0A9gWPXmr7OSbemZeZH/HEUvB8j
+         J9n3RcLoVw8BpY7on7ye5MGVlqtKgRbAZ1xUgKnM=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pwm@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 293/606] gpio: mvebu: Fix probing for chips without PWM
+Date:   Mon,  8 Jun 2020 19:06:58 -0400
+Message-Id: <20200608231211.3363633-293-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Jun 2020, Christoph Hellwig wrote:
-> On Wed, Jun 03, 2020 at 03:22:44PM -0700, Stefano Stabellini wrote:
-> > From: Stefano Stabellini <stefano.stabellini@xilinx.com>
-> > 
-> > With some devices physical addresses are different than dma addresses.
-> > To be able to deal with these cases, we need to call phys_to_dma on
-> > physical addresses (including machine addresses in Xen terminology)
-> > before returning them from xen_swiotlb_alloc_coherent and
-> > xen_swiotlb_map_page.
-> > 
-> > We also need to convert dma addresses back to physical addresses using
-> > dma_to_phys in xen_swiotlb_free_coherent and xen_swiotlb_unmap_page if
-> > we want to do any operations on them.
-> > 
-> > Call dma_to_phys in is_xen_swiotlb_buffer.
-> > Call phys_to_dma in xen_phys_to_bus.
-> > Call dma_to_phys in xen_bus_to_phys.
-> > 
-> > Everything is taken care of by these changes except for
-> > xen_swiotlb_alloc_coherent and xen_swiotlb_free_coherent, which need a
-> > few explicit phys_to_dma/dma_to_phys calls.
-> > 
-> > Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
-> > Tested-by: Corey Minyard <cminyard@mvista.com>
-> > Tested-by: Roman Shaposhnik <roman@zededa.com>
-> > ---
-> > Changes in v2:
-> > - improve commit message
-> > ---
-> >  drivers/xen/swiotlb-xen.c | 22 ++++++++++++----------
-> >  1 file changed, 12 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-> > index 0a6cb67f0fc4..60ef07440905 100644
-> > --- a/drivers/xen/swiotlb-xen.c
-> > +++ b/drivers/xen/swiotlb-xen.c
-> > @@ -64,16 +64,16 @@ static inline dma_addr_t xen_phys_to_bus(struct device *dev, phys_addr_t paddr)
-> >  
-> >  	dma |= paddr & ~XEN_PAGE_MASK;
-> >  
-> > -	return dma;
-> > +	return phys_to_dma(dev, dma);
-> 
-> So looking at this function:
-> 
-> The dma name for something passed to phys_to_dma is really
-> weird.
+From: Sascha Hauer <s.hauer@pengutronix.de>
 
-Yeah, that is true, I am not sure why I chose that confusing name. I'll
-rename it.
+[ Upstream commit 19c26d90ff4ca08ef2a2fef23cc9c13cfbfd891e ]
 
+The PWM iomem resource is optional and its presence indicates whether
+the GPIO chip has a PWM or not, which is why mvebu_pwm_probe() returned
+successfully when the PWM resource was not present. With f51b18d92b66
+the driver switched to devm_platform_ioremap_resource_byname() and
+its error return is propagated to the caller, so now a missing PWM resource
+leads to a probe error in the driver.
 
-> The fact that the comments says don't use XEN_PFN_PHYS
-> beause of the type mismatch while nothing but swiotlb-xen is the only
-> user of XEN_PFN_PHYS is also weird.  I think XEN_PFN_PHYS needs to move
-> to swiotlb-xen first, then use a hardcoded u64 for the size, and the
-> split the function into a phys_to_xen_phys (or so) function where
-> the result gets passed to phys_to_dma.
+To fix this explicitly test for the presence of the PWM resource and
+return successfully when it's not there. Do this check before the check
+for the clock is done (which GPIO chips without a PWM do not have). Also
+move the existing comment why the PWM resource is optional up to the
+actual check.
 
-I understand what you are suggesting about having something like:
+Fixes: f51b18d92b66 ("gpio: mvebu: use devm_platform_ioremap_resource_byname()")
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpio/gpio-mvebu.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-    xen_phys_to_dma(...)
-    {
-        phys_addr_t phys = xen_phys_to_bus(dev, paddr)
-        return phys_to_dma(phys);
-    }
+diff --git a/drivers/gpio/gpio-mvebu.c b/drivers/gpio/gpio-mvebu.c
+index d2b999c7987f..f0c5433a327f 100644
+--- a/drivers/gpio/gpio-mvebu.c
++++ b/drivers/gpio/gpio-mvebu.c
+@@ -782,6 +782,15 @@ static int mvebu_pwm_probe(struct platform_device *pdev,
+ 				     "marvell,armada-370-gpio"))
+ 		return 0;
+ 
++	/*
++	 * There are only two sets of PWM configuration registers for
++	 * all the GPIO lines on those SoCs which this driver reserves
++	 * for the first two GPIO chips. So if the resource is missing
++	 * we can't treat it as an error.
++	 */
++	if (!platform_get_resource_byname(pdev, IORESOURCE_MEM, "pwm"))
++		return 0;
++
+ 	if (IS_ERR(mvchip->clk))
+ 		return PTR_ERR(mvchip->clk);
+ 
+@@ -804,12 +813,6 @@ static int mvebu_pwm_probe(struct platform_device *pdev,
+ 	mvchip->mvpwm = mvpwm;
+ 	mvpwm->mvchip = mvchip;
+ 
+-	/*
+-	 * There are only two sets of PWM configuration registers for
+-	 * all the GPIO lines on those SoCs which this driver reserves
+-	 * for the first two GPIO chips. So if the resource is missing
+-	 * we can't treat it as an error.
+-	 */
+ 	mvpwm->membase = devm_platform_ioremap_resource_byname(pdev, "pwm");
+ 	if (IS_ERR(mvpwm->membase))
+ 		return PTR_ERR(mvpwm->membase);
+-- 
+2.25.1
 
-I thought about it myself. I'll do it.
-
-But I don't think I understood the comment about XEN_PFN_PHYS.
-
-
-> Similar for the reverse direction.
-
-OK
