@@ -2,65 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2985C1F1132
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 03:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995EA1F1138
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 03:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728719AbgFHBxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Jun 2020 21:53:55 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:37930 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727871AbgFHBxy (ORCPT
+        id S1728834AbgFHBzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Jun 2020 21:55:19 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:48562 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727871AbgFHBzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Jun 2020 21:53:54 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U-reyhA_1591581229;
-Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0U-reyhA_1591581229)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 08 Jun 2020 09:53:50 +0800
-Subject: Re: [PATCH v3] fs: ocfs2: fix spelling mistake and grammar
-To:     Keyur Patel <iamkeyur96@gmail.com>, mark@fasheh.com,
-        jlbec@evilplan.org, ocfs2-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200607212115.99278-1-iamkeyur96@gmail.com>
- <20200608014818.102358-1-iamkeyur96@gmail.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <84cbc852-740b-7f8f-051e-b8c532ab70a4@linux.alibaba.com>
-Date:   Mon, 8 Jun 2020 09:53:49 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+        Sun, 7 Jun 2020 21:55:18 -0400
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C25B024F;
+        Mon,  8 Jun 2020 03:55:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1591581316;
+        bh=CthNpIqftGchRHdnCTWbVdTQG6Z9SbHT2rIpOWme35Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NPCCtVM9aMDQy37szWgmy93G2oQZoDzXt/F+u94gKh9NLoxp/WmJEHRJm4uhvvj4N
+         oLbIYFQ4qn34ZFbvwJJr9X8z3fv1aF+ByGknhxh8jTBv9yo6BfrVywpmWixvrG6JJb
+         lTpC3fFDr7YydWN+Pkef67H5fijOZ3YliO9UKVB8=
+Date:   Mon, 8 Jun 2020 04:54:56 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: vsp1: Fix runtime PM imbalance in vsp1_probe
+Message-ID: <20200608015456.GJ22208@pendragon.ideasonboard.com>
+References: <20200523115426.19285-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
-In-Reply-To: <20200608014818.102358-1-iamkeyur96@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200523115426.19285-1-dinghao.liu@zju.edu.cn>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Dinghao,
 
+Thank you for the patch.
 
-On 2020/6/8 09:48, Keyur Patel wrote:
-> ./ocfs2/mmap.c:65: bebongs ==> belonging
-> 
-> Signed-off-by: Keyur Patel <iamkeyur96@gmail.com>
+On Sat, May 23, 2020 at 07:54:26PM +0800, Dinghao Liu wrote:
+> pm_runtime_get_sync() increments the runtime PM usage counter even
+> when it returns an error code. Thus a pairing decrement is needed on
+> the error handling path to keep the counter balanced.
 
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+I wonder how many bugs we have today, and how many bugs will keep
+appearing in the future, due to this historical design mistake :-( 
+
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 > ---
->  fs/ocfs2/mmap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/media/platform/vsp1/vsp1_drv.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/ocfs2/mmap.c b/fs/ocfs2/mmap.c
-> index 3a44e461828a..39a77e903fdf 100644
-> --- a/fs/ocfs2/mmap.c
-> +++ b/fs/ocfs2/mmap.c
-> @@ -62,7 +62,7 @@ static vm_fault_t __ocfs2_page_mkwrite(struct file *file,
->  	last_index = (size - 1) >> PAGE_SHIFT;
+> diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
+> index c650e45bb0ad..017a54f2fdd8 100644
+> --- a/drivers/media/platform/vsp1/vsp1_drv.c
+> +++ b/drivers/media/platform/vsp1/vsp1_drv.c
+> @@ -846,8 +846,10 @@ static int vsp1_probe(struct platform_device *pdev)
+>  	pm_runtime_enable(&pdev->dev);
 >  
->  	/*
-> -	 * There are cases that lead to the page no longer bebongs to the
-> +	 * There are cases that lead to the page no longer belonging to the
->  	 * mapping.
->  	 * 1) pagecache truncates locally due to memory pressure.
->  	 * 2) pagecache truncates when another is taking EX lock against 
-> 
+>  	ret = pm_runtime_get_sync(&pdev->dev);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		pm_runtime_put_sync(&pdev->dev);
+>  		goto done;
+> +	}
+
+This change looks good to me, but we also need a similar change in the
+vsp1_device_get() function if I'm not mistaken. Could you combine both
+in the same patch ?
+
+>  
+>  	vsp1->version = vsp1_read(vsp1, VI6_IP_VERSION);
+>  	pm_runtime_put_sync(&pdev->dev);
+
+-- 
+Regards,
+
+Laurent Pinchart
