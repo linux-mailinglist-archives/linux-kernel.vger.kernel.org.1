@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD42F1F2306
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C261F230A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 01:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728997AbgFHXLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:11:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56278 "EHLO mail.kernel.org"
+        id S1729022AbgFHXL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 19:11:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728580AbgFHXKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:10:12 -0400
+        id S1728593AbgFHXKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:10:14 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E832214D8;
-        Mon,  8 Jun 2020 23:10:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8C17214F1;
+        Mon,  8 Jun 2020 23:10:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657812;
-        bh=TG/+imYiM+9gXTHKmURbQBfHS3wFWY7Af9lIh/lBkt4=;
+        s=default; t=1591657814;
+        bh=aAJYvm9d6p5eO8dZlrOnhcqUZPhDSrpeh5Xn8NraI1g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wv23lxQ09SzC3bEvez3Zl44mlzASkI82VDtAObO9gB1zqGmbgAn3G3+g+p5+8hX2p
-         oS/x/C8hAclWTPrXxP5X2XDvfTF+0n0aoAwU2zuDwzGQkAyNWCyqE11QHiGu28SkVU
-         0mEBeq+5Z+MotmW2kvLJZdzmsedWveGgGbERPDMo=
+        b=i4EiJ4Aa9art/OcN1e+Ro7TpC7JKLxd+oHj64pUT1Yb7SlaUw3C9jJo+jWfEPXukh
+         bVuXWnFuuulSl2uyDuf872AhFx77ToIn+SbLPWSD4T/7Z2Qmff1lBpjja2wnxXT3Nm
+         oUW8W2Zjgg7JDyz+jxvkHlXBUAr/mUoO4WhQwOgs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bhupesh Sharma <bhsharma@redhat.com>, kexec@lists.infradead.org,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        Manish Chopra <manishc@marvell.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 187/274] net: qed*: Reduce RX and TX default ring count when running inside kdump kernel
-Date:   Mon,  8 Jun 2020 19:04:40 -0400
-Message-Id: <20200608230607.3361041-187-sashal@kernel.org>
+Cc:     Mattia Dongili <malattia@linux.it>,
+        Dominik Mierzejewski <dominik@greysector.net>,
+        William Bader <williambader@hotmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 189/274] platform/x86: sony-laptop: SNC calls should handle BUFFER types
+Date:   Mon,  8 Jun 2020 19:04:42 -0400
+Message-Id: <20200608230607.3361041-189-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -46,142 +46,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bhupesh Sharma <bhsharma@redhat.com>
+From: Mattia Dongili <malattia@linux.it>
 
-[ Upstream commit 73e030977f7884dbe1be0018bab517e8d02760f8 ]
+[ Upstream commit 47828d22539f76c8c9dcf2a55f18ea3a8039d8ef ]
 
-Normally kdump kernel(s) run under severe memory constraint with the
-basic idea being to save the crashdump vmcore reliably when the primary
-kernel panics/hangs.
+After commit 6d232b29cfce ("ACPICA: Dispatcher: always generate buffer
+objects for ASL create_field() operator") ACPICA creates buffers even
+when new fields are small enough to fit into an integer.
+Many SNC calls counted on the old behaviour.
+Since sony-laptop already handles the INTEGER/BUFFER case in
+sony_nc_buffer_call, switch sony_nc_int_call to use its more generic
+function instead.
 
-Currently the qed* ethernet driver ends up consuming a lot of memory in
-the kdump kernel, leading to kdump kernel panic when one tries to save
-the vmcore via ssh/nfs (thus utilizing the services of the underlying
-qed* network interfaces).
-
-An example OOM message log seen in the kdump kernel can be seen here
-[1], with crashkernel size reservation of 512M.
-
-Using tools like memstrack (see [2]), we can track the modules taking up
-the bulk of memory in the kdump kernel and organize the memory usage
-output as per 'highest allocator first'. An example log for the OOM case
-indicates that the qed* modules end up allocating approximately 216M
-memory, which is a large part of the total crashkernel size:
-
- dracut-pre-pivot[676]: ======== Report format module_summary: ========
- dracut-pre-pivot[676]: Module qed using 149.6MB (2394 pages), peak allocation 149.6MB (2394 pages)
- dracut-pre-pivot[676]: Module qede using 65.3MB (1045 pages), peak allocation 65.3MB (1045 pages)
-
-This patch reduces the default RX and TX ring count from 1024 to 64
-when running inside kdump kernel, which leads to a significant memory
-saving.
-
-An example log with the patch applied shows the reduced memory
-allocation in the kdump kernel:
- dracut-pre-pivot[674]: ======== Report format module_summary: ========
- dracut-pre-pivot[674]: Module qed using 141.8MB (2268 pages), peak allocation 141.8MB (2268 pages)
- <..snip..>
-[dracut-pre-pivot[674]: Module qede using 4.8MB (76 pages), peak allocation 4.9MB (78 pages)
-
-Tested crashdump vmcore save via ssh/nfs protocol using underlying qed*
-network interface after applying this patch.
-
-[1] OOM log:
-------------
-
- kworker/0:6: page allocation failure: order:6,
- mode:0x60c0c0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), nodemask=(null)
- kworker/0:6 cpuset=/ mems_allowed=0
- CPU: 0 PID: 145 Comm: kworker/0:6 Not tainted 4.18.0-109.el8.aarch64 #1
- Hardware name: To be filled by O.E.M. Saber/Saber, BIOS 0ACKL025
- 01/18/2019
- Workqueue: events work_for_cpu_fn
- Call trace:
-  dump_backtrace+0x0/0x188
-  show_stack+0x24/0x30
-  dump_stack+0x90/0xb4
-  warn_alloc+0xf4/0x178
-  __alloc_pages_nodemask+0xcac/0xd58
-  alloc_pages_current+0x8c/0xf8
-  kmalloc_order_trace+0x38/0x108
-  qed_iov_alloc+0x40/0x248 [qed]
-  qed_resc_alloc+0x224/0x518 [qed]
-  qed_slowpath_start+0x254/0x928 [qed]
-   __qede_probe+0xf8/0x5e0 [qede]
-  qede_probe+0x68/0xd8 [qede]
-  local_pci_probe+0x44/0xa8
-  work_for_cpu_fn+0x20/0x30
-  process_one_work+0x1ac/0x3e8
-  worker_thread+0x44/0x448
-  kthread+0x130/0x138
-  ret_from_fork+0x10/0x18
-  Cannot start slowpath
-  qede: probe of 0000:05:00.1 failed with error -12
-
-[2]. Memstrack tool: https://github.com/ryncsn/memstrack
-
-Cc: kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Ariel Elior <aelior@marvell.com>
-Cc: GR-everest-linux-l2@marvell.com
-Cc: Manish Chopra <manishc@marvell.com>
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Bhupesh Sharma <bhsharma@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 6d232b29cfce ("ACPICA: Dispatcher: always generate buffer objects for ASL create_field() operator")
+Reported-by: Dominik Mierzejewski <dominik@greysector.net>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207491
+Reported-by: William Bader <williambader@hotmail.com>
+Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1830150
+Signed-off-by: Mattia Dongili <malattia@linux.it>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qede/qede.h      |  2 ++
- drivers/net/ethernet/qlogic/qede/qede_main.c | 11 +++++++++--
- 2 files changed, 11 insertions(+), 2 deletions(-)
+ drivers/platform/x86/sony-laptop.c | 53 +++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/net/ethernet/qlogic/qede/qede.h b/drivers/net/ethernet/qlogic/qede/qede.h
-index 234c6f30effb..234c7e35ee1e 100644
---- a/drivers/net/ethernet/qlogic/qede/qede.h
-+++ b/drivers/net/ethernet/qlogic/qede/qede.h
-@@ -574,12 +574,14 @@ int qede_add_tc_flower_fltr(struct qede_dev *edev, __be16 proto,
- #define RX_RING_SIZE		((u16)BIT(RX_RING_SIZE_POW))
- #define NUM_RX_BDS_MAX		(RX_RING_SIZE - 1)
- #define NUM_RX_BDS_MIN		128
-+#define NUM_RX_BDS_KDUMP_MIN	63
- #define NUM_RX_BDS_DEF		((u16)BIT(10) - 1)
+diff --git a/drivers/platform/x86/sony-laptop.c b/drivers/platform/x86/sony-laptop.c
+index e4ef3dc3bc2f..e5a1b5533408 100644
+--- a/drivers/platform/x86/sony-laptop.c
++++ b/drivers/platform/x86/sony-laptop.c
+@@ -757,33 +757,6 @@ static union acpi_object *__call_snc_method(acpi_handle handle, char *method,
+ 	return result;
+ }
  
- #define TX_RING_SIZE_POW	13
- #define TX_RING_SIZE		((u16)BIT(TX_RING_SIZE_POW))
- #define NUM_TX_BDS_MAX		(TX_RING_SIZE - 1)
- #define NUM_TX_BDS_MIN		128
-+#define NUM_TX_BDS_KDUMP_MIN	63
- #define NUM_TX_BDS_DEF		NUM_TX_BDS_MAX
+-static int sony_nc_int_call(acpi_handle handle, char *name, int *value,
+-		int *result)
+-{
+-	union acpi_object *object = NULL;
+-	if (value) {
+-		u64 v = *value;
+-		object = __call_snc_method(handle, name, &v);
+-	} else
+-		object = __call_snc_method(handle, name, NULL);
+-
+-	if (!object)
+-		return -EINVAL;
+-
+-	if (object->type != ACPI_TYPE_INTEGER) {
+-		pr_warn("Invalid acpi_object: expected 0x%x got 0x%x\n",
+-				ACPI_TYPE_INTEGER, object->type);
+-		kfree(object);
+-		return -EINVAL;
+-	}
+-
+-	if (result)
+-		*result = object->integer.value;
+-
+-	kfree(object);
+-	return 0;
+-}
+-
+ #define MIN(a, b)	(a > b ? b : a)
+ static int sony_nc_buffer_call(acpi_handle handle, char *name, u64 *value,
+ 		void *buffer, size_t buflen)
+@@ -795,17 +768,20 @@ static int sony_nc_buffer_call(acpi_handle handle, char *name, u64 *value,
+ 	if (!object)
+ 		return -EINVAL;
  
- #define QEDE_MIN_PKT_LEN		64
-diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
-index 34fa3917eb33..1a83d1fd8ccd 100644
---- a/drivers/net/ethernet/qlogic/qede/qede_main.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
-@@ -29,6 +29,7 @@
-  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  * SOFTWARE.
-  */
-+#include <linux/crash_dump.h>
- #include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/version.h>
-@@ -707,8 +708,14 @@ static struct qede_dev *qede_alloc_etherdev(struct qed_dev *cdev,
- 	edev->dp_module = dp_module;
- 	edev->dp_level = dp_level;
- 	edev->ops = qed_ops;
--	edev->q_num_rx_buffers = NUM_RX_BDS_DEF;
--	edev->q_num_tx_buffers = NUM_TX_BDS_DEF;
+-	if (object->type == ACPI_TYPE_BUFFER) {
++	if (!buffer) {
++		/* do nothing */
++	} else if (object->type == ACPI_TYPE_BUFFER) {
+ 		len = MIN(buflen, object->buffer.length);
++		memset(buffer, 0, buflen);
+ 		memcpy(buffer, object->buffer.pointer, len);
+ 
+ 	} else if (object->type == ACPI_TYPE_INTEGER) {
+ 		len = MIN(buflen, sizeof(object->integer.value));
++		memset(buffer, 0, buflen);
+ 		memcpy(buffer, &object->integer.value, len);
+ 
+ 	} else {
+-		pr_warn("Invalid acpi_object: expected 0x%x got 0x%x\n",
+-				ACPI_TYPE_BUFFER, object->type);
++		pr_warn("Unexpected acpi_object: 0x%x\n", object->type);
+ 		ret = -EINVAL;
+ 	}
+ 
+@@ -813,6 +789,23 @@ static int sony_nc_buffer_call(acpi_handle handle, char *name, u64 *value,
+ 	return ret;
+ }
+ 
++static int sony_nc_int_call(acpi_handle handle, char *name, int *value, int
++		*result)
++{
++	int ret;
 +
-+	if (is_kdump_kernel()) {
-+		edev->q_num_rx_buffers = NUM_RX_BDS_KDUMP_MIN;
-+		edev->q_num_tx_buffers = NUM_TX_BDS_KDUMP_MIN;
++	if (value) {
++		u64 v = *value;
++
++		ret = sony_nc_buffer_call(handle, name, &v, result,
++				sizeof(*result));
 +	} else {
-+		edev->q_num_rx_buffers = NUM_RX_BDS_DEF;
-+		edev->q_num_tx_buffers = NUM_TX_BDS_DEF;
++		ret =  sony_nc_buffer_call(handle, name, NULL, result,
++				sizeof(*result));
 +	}
- 
- 	DP_INFO(edev, "Allocated netdev with %d tx queues and %d rx queues\n",
- 		info->num_queues, info->num_queues);
++	return ret;
++}
++
+ struct sony_nc_handles {
+ 	u16 cap[0x10];
+ 	struct device_attribute devattr;
 -- 
 2.25.1
 
