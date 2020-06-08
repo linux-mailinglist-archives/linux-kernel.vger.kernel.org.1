@@ -2,139 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B6C1F18E9
+	by mail.lfdr.de (Postfix) with ESMTP id 33A9C1F18E8
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jun 2020 14:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729037AbgFHMlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 08:41:01 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26729 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728973AbgFHMk4 (ORCPT
+        id S1728964AbgFHMkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 08:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727905AbgFHMkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 08:40:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591620054;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B0sVcMM99LpfRV7ttxnn+jnkFBBzRSlg/gHypsc5uAg=;
-        b=YD3JeeTcZxZrg6648Kv0H1l7f8Wj5HKNiTu1bHh3WA4z+ldD9uK16KytBpG9cSEFXM4FJe
-        kC/Dh28VVVB8wMlas1r8Xs2MB+c8PdJ8iXeEithFnnWrRD45Qo2prNWUwDjTYBk4mjoF1r
-        929HCtXEpj+jSm/RWr34qTJxoK5G9Sk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-228-52T3fHVrP7ugA86gvdhbMw-1; Mon, 08 Jun 2020 08:40:52 -0400
-X-MC-Unique: 52T3fHVrP7ugA86gvdhbMw-1
-Received: by mail-wm1-f69.google.com with SMTP id c4so1365556wmd.0
+        Mon, 8 Jun 2020 08:40:53 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941B4C08C5C2
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 05:40:52 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id 25so14189055oiy.13
         for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 05:40:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=vi/c/LMCdUfy+NHnzaxesrqpKupfHgwjijntSTNgu4c=;
+        b=V222EZP0KTn5QiP8xVPEEUNz8pikWfG3hBgJTPyQwxtKjRodkAvD3nRlcJmExhaDBW
+         U66yVewsOBz/3CHd+qxfdVf4HU2MNaqKhmtgXIxPmd58447X0Mvn4pbMU5bww9eWMKUm
+         jjNgDLI6yrvYiH/4YW6PaPnsB537mj/ef5LqiCkNL99oN2nu/NF5R0T8N8nC5h7lUFRj
+         98mJSNDBrXWkWtRkA9Iot09bkonO8qcNL7a/aYdcv2bAEp7hH7xmH9C+gDALtHSqVtFF
+         Xl1+5q+chTbMC2DspJ+OaOgMMW1gDIwXDVlncLkyNk1LnDdM0w2J2v+ncC1mgX1Ckdiz
+         TlSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=B0sVcMM99LpfRV7ttxnn+jnkFBBzRSlg/gHypsc5uAg=;
-        b=I3pgmky/ljdRJRV3KfayQhYtUpgr2LUkKAS+CsiceTOjG6gNVsmVWCIntDLe3AjTY7
-         8k2AYchafLSWwIBY/WSeOX64WfJc5FSS3a5UxrzptBKXkpUtIGECpH8dYdCcnj5BXLnr
-         EtGMwYWTj2pWilUOA3FW3RQQCY43QUd5gnQ7D+Nr5USbv+zrkIlfBSaAtYJtuCUUljnl
-         gJWG2Y1imVtgr9uhHmEyRa5Jwm7LLomcGI2EeSGdDv/pgpfyTisy1PkFbXei8RdXdivc
-         gBEZZG66V+QRqc/WWo4szaHdbF3efnr/QuCHCd7+7vXxQz12CzL3p7gHMzANUQlUmAEo
-         Uhiw==
-X-Gm-Message-State: AOAM533HqOQJzwXmHXxUjGGc9YcIIAqE4S1rZys2E53DFuwrx8aq+TbR
-        DyzBxF4iMVjS6MGhFTur/RCUXNLACo8im2jrVxhD+mrBoGRWo2pDohfWm3U0Q/A6kKiC9CbsrO2
-        IAyGGwyADFVxQgLai25IkdiF8
-X-Received: by 2002:a5d:6305:: with SMTP id i5mr22829725wru.268.1591620051749;
-        Mon, 08 Jun 2020 05:40:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwAnmKWJBBEGl3LVgjqRZIiFj7LTTEcbtcVe2jhQZRFhFcZIR5dJUfI4tzfArvnjChj0xSCFQ==
-X-Received: by 2002:a5d:6305:: with SMTP id i5mr22829696wru.268.1591620051462;
-        Mon, 08 Jun 2020 05:40:51 -0700 (PDT)
-Received: from [192.168.178.58] ([151.30.87.23])
-        by smtp.gmail.com with ESMTPSA id s132sm23360931wmf.12.2020.06.08.05.40.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Jun 2020 05:40:50 -0700 (PDT)
-Subject: Re: [PATCH kvm-unit-tests 1/2] svm: Add ability to execute test via
- test_run on a vcpu other than vcpu 0
-To:     Cathy Avery <cavery@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20200608122800.6315-1-cavery@redhat.com>
- <20200608122800.6315-2-cavery@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <eb1c2a81-cdd2-3f11-2be9-173bdb4eacc1@redhat.com>
-Date:   Mon, 8 Jun 2020 14:40:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=vi/c/LMCdUfy+NHnzaxesrqpKupfHgwjijntSTNgu4c=;
+        b=AI1Xz0hn3hNMEQvR/0d9ZwspZ0LtMjcwYNyKbd4LLflWVI9EvEY2wuIMAkoSN17MyD
+         KyyG7xHTMfqECDy1g3O5iuVphxW3PfXsz+tQfP2VHEoIvMFLfc4Gh0S5yrFk5AatLs4k
+         toxeBkXRhFh5jdoFytzrxQtN4h9QHCAAlQt0Fs+7eUuVO18iBxswbhGV7cX5AsgTAmRU
+         4MumKtKEnHqEr0FEkZ4anZWA19IXb/wZ9NVcfH4Tti5ldcBhjg5yv3r3/KVl9JlOyY3g
+         pHEsIIolxEhXzcuAUWfEyB3RHg+pMsGcJFpAJUmqCUgjG9MH6jq+3XLnxYeZ1T5yhGCE
+         e2/w==
+X-Gm-Message-State: AOAM5307Pnbpbn807c1TFiek/LZjAjGAhl8gc+jDpZxf/qAU63aCJSPT
+        ZcPpNFomPejRjOB34gNBytyk1DRZoE6jAN2GDEg=
+X-Google-Smtp-Source: ABdhPJx9lblnoLBl4IqY5LF1knNDPF7k0F6AakiGNZBhR6xdEhZ7PGB/E+2v33scMzpNv3vrI+sFCvGZ607r6dJ+CoM=
+X-Received: by 2002:aca:c789:: with SMTP id x131mr10854610oif.1.1591620052111;
+ Mon, 08 Jun 2020 05:40:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200608122800.6315-2-cavery@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a4a:5242:0:0:0:0:0 with HTTP; Mon, 8 Jun 2020 05:40:51 -0700 (PDT)
+Reply-To: gh727530@gmail.com
+From:   george howard <fiacregnansa@gmail.com>
+Date:   Mon, 8 Jun 2020 14:40:51 +0200
+Message-ID: <CANUG11-Ec2OW3HMqhnKxTTQKtR9hhg1uySano-sM=pes=GYUug@mail.gmail.com>
+Subject: hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/06/20 14:27, Cathy Avery wrote:
-> When running tests that can result in a vcpu being left in an
-> indeterminate state it is useful to be able to run the test on
-> a vcpu other than 0. This patch allows test_run to be executed
-> on any vcpu indicated by the on_vcpu member of the svm_test struct.
-> The initialized state of the vcpu0 registers used to populate the
-> vmcb is carried forward to the other vcpus.
-> 
-> Signed-off-by: Cathy Avery <cavery@redhat.com>
-> ---
->  x86/svm.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++++-
->  x86/svm.h | 13 +++++++++++++
->  2 files changed, 61 insertions(+), 1 deletion(-)
-> 
-> diff --git a/x86/svm.c b/x86/svm.c
-> index 41685bf..9f7ae7e 100644
-> --- a/x86/svm.c
-> +++ b/x86/svm.c
-> @@ -367,6 +367,45 @@ test_wanted(const char *name, char *filters[], int filter_count)
->          }
->  }
->  
-> +static void set_additional_vpcu_regs(struct extra_vcpu_info *info)
-> +{
-> +    wrmsr(MSR_VM_HSAVE_PA, info->hsave);
-> +    wrmsr(MSR_EFER, rdmsr(MSR_EFER) | EFER_SVME);
-> +    wrmsr(MSR_EFER, rdmsr(MSR_EFER) | EFER_NX);
-> +    write_cr3(info->cr3);
-> +    write_cr4(info->cr4);
-> +    write_cr0(info->cr0);
-> +    write_dr6(info->dr6);
-> +    write_dr7(info->dr7);
-> +    write_cr2(info->cr2);
-> +    wrmsr(MSR_IA32_CR_PAT, info->g_pat);
-> +    wrmsr(MSR_IA32_DEBUGCTLMSR, info->dbgctl);
-> +}
-> +
-> +static void get_additional_vcpu_regs(struct extra_vcpu_info *info)
-> +{
-> +    info->hsave = rdmsr(MSR_VM_HSAVE_PA);
-> +    info->cr3 = read_cr3();
-> +    info->cr4 = read_cr4();
-> +    info->cr0 = read_cr0();
-> +    info->dr7 = read_dr7();
-> +    info->dr6 = read_dr6();
-> +    info->cr2 = read_cr2();
-> +    info->g_pat = rdmsr(MSR_IA32_CR_PAT);
-> +    info->dbgctl = rdmsr(MSR_IA32_DEBUGCTLMSR);
-> +}
+Hallo
 
-Some tweaks are needed here:
+Mein Name ist George Howard. Ich bin von Beruf Rechtsanwalt. Ich
+m=C3=B6chte Ihnen anbieten
+der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
+Millionen US-Dollar)
+Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
 
-- DR6/DR7/CR2/DEBUGCTL should not be needed, are they?  Same for PAT
-since it's not modified by the tests and defaults to the "right" value
-(0x0007040600070406ULL) rather than zero.
+Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
+einem Autounfall ums Leben gekommen ist
+und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, 50% darauf
+sein f=C3=BCr dich.
+Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
+Informationen: gh727530@gmail.com
 
-- HSAVE should be set to a different page for each vCPU
-
-- The on_cpu to set EFER should be in setup_svm, rather than a separate
-function
-
-- The on_cpu to set cr0/cr3/cr4 should be in setup_vm.
-
-Paolo
-
+Vielen Dank im Voraus,
+Mr. George Howard,
