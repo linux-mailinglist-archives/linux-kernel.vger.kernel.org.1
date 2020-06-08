@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D6B1F2924
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5AA1F2C03
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731437AbgFHXXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 19:23:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
+        id S1731925AbgFIATu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:19:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729070AbgFHXSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:18:11 -0400
+        id S1730594AbgFHXSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:18:13 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB5052083E;
-        Mon,  8 Jun 2020 23:18:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30CE12086A;
+        Mon,  8 Jun 2020 23:18:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658291;
-        bh=9/zpqtvcvi/aDsfbxPRxBceob0fFvjcGLgPlCn/Du6Y=;
+        s=default; t=1591658293;
+        bh=QxLNTLoFkVAQRZFL6FP0AaYyx28XvLeBWZ3LvlBhJ8E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ksueB7PYm8KRNguIr9Q/tkdu0AOoxKY6JLEv3vNoOJbMQ3t226RBmsVNR97BvIMJn
-         lZxzOomoVWQfQYMiJzQ4YXK8x78tE4BGyRP/HPglS5nx/eGx96T6As0WX/z5bMvkZJ
-         KhYXMaQGGCCSOvDTBfWmgaVr8bEPIc506OgSg7ww=
+        b=CVQxpcZXnkpB7zmBcH2XkpHeUfuUVaQCwvw6MyoIZ18Pf7H3JSYzta9d/F5waAduO
+         DjookbKN+nVbiZ+TnN77DH9XXQ9QaCuXaZNo6IpQhRnN0MIaWZAMFDnKZaUi8EPtI2
+         tzumfTXm8NUykWbRGxdbdpQSTx5C88lygfHt1e2E=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Evan Green <evgreen@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 295/606] Input: synaptics-rmi4 - really fix attn_data use-after-free
-Date:   Mon,  8 Jun 2020 19:07:00 -0400
-Message-Id: <20200608231211.3363633-295-sashal@kernel.org>
+Cc:     =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.6 297/606] ARM: 8970/1: decompressor: increase tag size
+Date:   Mon,  8 Jun 2020 19:07:02 -0400
+Message-Id: <20200608231211.3363633-297-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -43,47 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Green <evgreen@chromium.org>
+From: Łukasz Stelmach <l.stelmach@samsung.com>
 
-[ Upstream commit d5a5e5b5fa7b86c05bf073acc0ba98fa280174ec ]
+[ Upstream commit 2c962369d72f286659e6446919f88d69b943cb4d ]
 
-Fix a use-after-free noticed by running with KASAN enabled. If
-rmi_irq_fn() is run twice in a row, then rmi_f11_attention() (among
-others) will end up reading from drvdata->attn_data.data, which was
-freed and left dangling in rmi_irq_fn().
+The size field of the tag header structure is supposed to be set to the
+size of a tag structure including the header.
 
-Commit 55edde9fff1a ("Input: synaptics-rmi4 - prevent UAF reported by
-KASAN") correctly identified and analyzed this bug. However the attempted
-fix only NULLed out a local variable, missing the fact that
-drvdata->attn_data is a struct, not a pointer.
-
-NULL out the correct pointer in the driver data to prevent the attention
-functions from copying from it.
-
-Fixes: 55edde9fff1a ("Input: synaptics-rmi4 - prevent UAF reported by KASAN")
-Fixes: b908d3cd812a ("Input: synaptics-rmi4 - allow to add attention data")
-Signed-off-by: Evan Green <evgreen@chromium.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200427145537.1.Ic8f898e0147beeee2c005ee7b20f1aebdef1e7eb@changeid
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: c772568788b5f0 ("ARM: add additional table to compressed kernel")
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/rmi4/rmi_driver.c | 2 +-
+ arch/arm/boot/compressed/vmlinux.lds.S | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
-index 190b9974526b..c18e1a25bca6 100644
---- a/drivers/input/rmi4/rmi_driver.c
-+++ b/drivers/input/rmi4/rmi_driver.c
-@@ -205,7 +205,7 @@ static irqreturn_t rmi_irq_fn(int irq, void *dev_id)
- 
- 	if (count) {
- 		kfree(attn_data.data);
--		attn_data.data = NULL;
-+		drvdata->attn_data.data = NULL;
- 	}
- 
- 	if (!kfifo_is_empty(&drvdata->attn_fifo))
+diff --git a/arch/arm/boot/compressed/vmlinux.lds.S b/arch/arm/boot/compressed/vmlinux.lds.S
+index fc7ed03d8b93..51b078604978 100644
+--- a/arch/arm/boot/compressed/vmlinux.lds.S
++++ b/arch/arm/boot/compressed/vmlinux.lds.S
+@@ -43,7 +43,7 @@ SECTIONS
+   }
+   .table : ALIGN(4) {
+     _table_start = .;
+-    LONG(ZIMAGE_MAGIC(2))
++    LONG(ZIMAGE_MAGIC(4))
+     LONG(ZIMAGE_MAGIC(0x5a534c4b))
+     LONG(ZIMAGE_MAGIC(__piggy_size_addr - _start))
+     LONG(ZIMAGE_MAGIC(_kernel_bss_size))
 -- 
 2.25.1
 
