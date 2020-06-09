@@ -2,41 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772BE1F42B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D361F42D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732039AbgFIRq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:46:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57144 "EHLO mail.kernel.org"
+        id S1732208AbgFIRsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:48:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732000AbgFIRql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:46:41 -0400
+        id S1732173AbgFIRrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:47:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B5E620801;
-        Tue,  9 Jun 2020 17:46:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8218020812;
+        Tue,  9 Jun 2020 17:47:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724800;
-        bh=EGII+EOc2OxzLUY548F/GopzdJkgH9hBCrso/YjSWbU=;
+        s=default; t=1591724872;
+        bh=uSmy0MUZExD4KLwvodL3hKiqYAcr+JzEVorki8ODvb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WJGywp08Pk/WH7eHCvTm6s7A8/Ks6Y6/qH8ig7bOf3n73GLI4jY3DP+kaiDdPJgoG
-         Mrp47Knx+3bIJADtLOYmavRQHU0aeJvzMxvRPI5q7rxnSsay9qQnHYnfKoKhrj4glx
-         I/9GVrgneZDr2McHeJ7zyEm4pTmAW+vN0E1YTgYg=
+        b=1EgZ3u9qvt2kkqOyyl7/4rNv26P5iSfS9f8kOgfrJ4+lpMB4Rk0s7reB6M2wyjjxr
+         Ql1TA+ELoNnCcv2TcQgveYW1KJjV7dCzUllKa+iyz+P6TBaWV4Rco2/TqqnDMBAYY2
+         1TqLi/j3veOTiKOpk5Yzyq1jvcUACNc8Y57QnkVk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        James Chapman <jchapman@katalix.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 22/36] l2tp: add sk_family checks to l2tp_validate_socket
+        stable@vger.kernel.org,
+        syzbot+1e925b4b836afe85a1c6@syzkaller-ppc64.appspotmail.com,
+        syzbot+587b2421926808309d21@syzkaller-ppc64.appspotmail.com,
+        syzbot+58320b7171734bf79d26@syzkaller.appspotmail.com,
+        syzbot+d6074fb08bdb2e010520@syzkaller.appspotmail.com,
+        Daniel Axtens <dja@axtens.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Akash Goel <akash.goel@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Salvatore Bonaccorso <carnil@debian.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 16/42] kernel/relay.c: handle alloc_percpu returning NULL in relay_open
 Date:   Tue,  9 Jun 2020 19:44:22 +0200
-Message-Id: <20200609173934.620737243@linuxfoundation.org>
+Message-Id: <20200609174017.236710601@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
-References: <20200609173933.288044334@linuxfoundation.org>
+In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
+References: <20200609174015.379493548@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,138 +55,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Daniel Axtens <dja@axtens.net>
 
-[ Upstream commit d9a81a225277686eb629938986d97629ea102633 ]
+commit 54e200ab40fc14c863bcc80a51e20b7906608fce upstream.
 
-syzbot was able to trigger a crash after using an ISDN socket
-and fool l2tp.
+alloc_percpu() may return NULL, which means chan->buf may be set to NULL.
+In that case, when we do *per_cpu_ptr(chan->buf, ...), we dereference an
+invalid pointer:
 
-Fix this by making sure the UDP socket is of the proper family.
+  BUG: Unable to handle kernel data access at 0x7dae0000
+  Faulting instruction address: 0xc0000000003f3fec
+  ...
+  NIP relay_open+0x29c/0x600
+  LR relay_open+0x270/0x600
+  Call Trace:
+     relay_open+0x264/0x600 (unreliable)
+     __blk_trace_setup+0x254/0x600
+     blk_trace_setup+0x68/0xa0
+     sg_ioctl+0x7bc/0x2e80
+     do_vfs_ioctl+0x13c/0x1300
+     ksys_ioctl+0x94/0x130
+     sys_ioctl+0x48/0xb0
+     system_call+0x5c/0x68
 
-BUG: KASAN: slab-out-of-bounds in setup_udp_tunnel_sock+0x465/0x540 net/ipv4/udp_tunnel.c:78
-Write of size 1 at addr ffff88808ed0c590 by task syz-executor.5/3018
+Check if alloc_percpu returns NULL.
 
-CPU: 0 PID: 3018 Comm: syz-executor.5 Not tainted 5.7.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xd3/0x413 mm/kasan/report.c:382
- __kasan_report.cold+0x20/0x38 mm/kasan/report.c:511
- kasan_report+0x33/0x50 mm/kasan/common.c:625
- setup_udp_tunnel_sock+0x465/0x540 net/ipv4/udp_tunnel.c:78
- l2tp_tunnel_register+0xb15/0xdd0 net/l2tp/l2tp_core.c:1523
- l2tp_nl_cmd_tunnel_create+0x4b2/0xa60 net/l2tp/l2tp_netlink.c:249
- genl_family_rcv_msg_doit net/netlink/genetlink.c:673 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:718 [inline]
- genl_rcv_msg+0x627/0xdf0 net/netlink/genetlink.c:735
- netlink_rcv_skb+0x15a/0x410 net/netlink/af_netlink.c:2469
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:746
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x537/0x740 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x882/0xe10 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e6/0x810 net/socket.c:2352
- ___sys_sendmsg+0x100/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45ca29
-Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007effe76edc78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004fe1c0 RCX: 000000000045ca29
-RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000005
-RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 000000000000094e R14: 00000000004d5d00 R15: 00007effe76ee6d4
+This was found by syzkaller both on x86 and powerpc, and the reproducer
+it found on powerpc is capable of hitting the issue as an unprivileged
+user.
 
-Allocated by task 3018:
- save_stack+0x1b/0x40 mm/kasan/common.c:49
- set_track mm/kasan/common.c:57 [inline]
- __kasan_kmalloc mm/kasan/common.c:495 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:468
- __do_kmalloc mm/slab.c:3656 [inline]
- __kmalloc+0x161/0x7a0 mm/slab.c:3665
- kmalloc include/linux/slab.h:560 [inline]
- sk_prot_alloc+0x223/0x2f0 net/core/sock.c:1612
- sk_alloc+0x36/0x1100 net/core/sock.c:1666
- data_sock_create drivers/isdn/mISDN/socket.c:600 [inline]
- mISDN_sock_create+0x272/0x400 drivers/isdn/mISDN/socket.c:796
- __sock_create+0x3cb/0x730 net/socket.c:1428
- sock_create net/socket.c:1479 [inline]
- __sys_socket+0xef/0x200 net/socket.c:1521
- __do_sys_socket net/socket.c:1530 [inline]
- __se_sys_socket net/socket.c:1528 [inline]
- __x64_sys_socket+0x6f/0xb0 net/socket.c:1528
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-Freed by task 2484:
- save_stack+0x1b/0x40 mm/kasan/common.c:49
- set_track mm/kasan/common.c:57 [inline]
- kasan_set_free_info mm/kasan/common.c:317 [inline]
- __kasan_slab_free+0xf7/0x140 mm/kasan/common.c:456
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x109/0x2b0 mm/slab.c:3757
- kvfree+0x42/0x50 mm/util.c:603
- __free_fdtable+0x2d/0x70 fs/file.c:31
- put_files_struct fs/file.c:420 [inline]
- put_files_struct+0x248/0x2e0 fs/file.c:413
- exit_files+0x7e/0xa0 fs/file.c:445
- do_exit+0xb04/0x2dd0 kernel/exit.c:791
- do_group_exit+0x125/0x340 kernel/exit.c:894
- get_signal+0x47b/0x24e0 kernel/signal.c:2739
- do_signal+0x81/0x2240 arch/x86/kernel/signal.c:784
- exit_to_usermode_loop+0x26c/0x360 arch/x86/entry/common.c:161
- prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
- syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
- do_syscall_64+0x6b1/0x7d0 arch/x86/entry/common.c:305
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-The buggy address belongs to the object at ffff88808ed0c000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 1424 bytes inside of
- 2048-byte region [ffff88808ed0c000, ffff88808ed0c800)
-The buggy address belongs to the page:
-page:ffffea00023b4300 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0002838208 ffffea00015ba288 ffff8880aa000e00
-raw: 0000000000000000 ffff88808ed0c000 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88808ed0c480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88808ed0c500: 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88808ed0c580: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                         ^
- ffff88808ed0c600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88808ed0c680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-
-Fixes: 6b9f34239b00 ("l2tp: fix races in tunnel creation")
-Fixes: fd558d186df2 ("l2tp: Split pppol2tp patch into separate l2tp and ppp parts")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: James Chapman <jchapman@katalix.com>
-Cc: Guillaume Nault <gnault@redhat.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Acked-by: Guillaume Nault <gnault@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 017c59c042d0 ("relay: Use per CPU constructs for the relay channel buffer pointers")
+Reported-by: syzbot+1e925b4b836afe85a1c6@syzkaller-ppc64.appspotmail.com
+Reported-by: syzbot+587b2421926808309d21@syzkaller-ppc64.appspotmail.com
+Reported-by: syzbot+58320b7171734bf79d26@syzkaller.appspotmail.com
+Reported-by: syzbot+d6074fb08bdb2e010520@syzkaller.appspotmail.com
+Signed-off-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Michael Ellerman <mpe@ellerman.id.au>
+Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Cc: Akash Goel <akash.goel@intel.com>
+Cc: Andrew Donnellan <ajd@linux.ibm.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Salvatore Bonaccorso <carnil@debian.org>
+Cc: <stable@vger.kernel.org>	[4.10+]
+Link: http://lkml.kernel.org/r/20191219121256.26480-1-dja@axtens.net
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/l2tp/l2tp_core.c |    2 ++
- 1 file changed, 2 insertions(+)
 
---- a/net/l2tp/l2tp_core.c
-+++ b/net/l2tp/l2tp_core.c
-@@ -1573,6 +1573,8 @@ int l2tp_tunnel_create(struct net *net,
- 			 tunnel_id, fd);
- 		goto err;
- 	}
-+	if (sk->sk_family != PF_INET && sk->sk_family != PF_INET6)
-+		goto err;
- 	switch (encap) {
- 	case L2TP_ENCAPTYPE_UDP:
- 		if (sk->sk_protocol != IPPROTO_UDP) {
+---
+ kernel/relay.c |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- a/kernel/relay.c
++++ b/kernel/relay.c
+@@ -578,6 +578,11 @@ struct rchan *relay_open(const char *bas
+ 		return NULL;
+ 
+ 	chan->buf = alloc_percpu(struct rchan_buf *);
++	if (!chan->buf) {
++		kfree(chan);
++		return NULL;
++	}
++
+ 	chan->version = RELAYFS_CHANNEL_VERSION;
+ 	chan->n_subbufs = n_subbufs;
+ 	chan->subbuf_size = subbuf_size;
 
 
