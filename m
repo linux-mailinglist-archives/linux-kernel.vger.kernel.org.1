@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505BB1F4385
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24711F43C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733055AbgFIRyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:54:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43186 "EHLO mail.kernel.org"
+        id S1731771AbgFIRzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:55:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731611AbgFIRwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:52:43 -0400
+        id S1731621AbgFIRxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:53:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7FCF20801;
-        Tue,  9 Jun 2020 17:52:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED8CE20774;
+        Tue,  9 Jun 2020 17:53:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725163;
-        bh=hOmNoff9bwoQAs+mY1OICGkI+7xRGt2c2lk5BdXv4rc=;
+        s=default; t=1591725230;
+        bh=cVDViZWwgHNsufUmT2I+Hp2X1qg/QoZVvKpHAG/7+i8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LUyKuR3vOL4olONq1+4a7k3Bw/FXRuDntlYlXNCNbLwnaLVsVp9jesbEsd/PKqRn3
-         8ei9h3XiKEryZZGjz0qh15Hx9vk+XNrA5/lz5kOmlNA++B74+9iNJq/nc+96GOAuVA
-         WlWvGMqmu+eB4KUh4tfm9Qt2cCuxjjhKul55LkLM=
+        b=hAPwyxAOw1F+WwuWJE6MeFPzxtMg2tT0OqhMoH26skMcDrhCCjoy/T80R99pLkKZl
+         3kTf9s7RRLfShGRN9SmHyhBXD1bLhzN9hftq6cEmzzNrNWsH/QR2aIGwliZPOeyIfg
+         l9l9PsGqMr/lOABNESYK858+CPUoNkimHn+GITE0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.4 27/34] x86/speculation/spectre_v2: Exclude Zhaoxin CPUs from SPECTRE_V2
-Date:   Tue,  9 Jun 2020 19:45:23 +0200
-Message-Id: <20200609174056.885099252@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Hanselmann <public@hansmi.ch>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.6 22/41] USB: serial: ch341: fix lockup of devices with limited prescaler
+Date:   Tue,  9 Jun 2020 19:45:24 +0200
+Message-Id: <20200609174114.240869918@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174052.628006868@linuxfoundation.org>
-References: <20200609174052.628006868@linuxfoundation.org>
+In-Reply-To: <20200609174112.129412236@linuxfoundation.org>
+References: <20200609174112.129412236@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +43,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 1e41a766c98b481400ab8c5a7aa8ea63a1bb03de upstream.
+commit c432df155919582a3cefa35a8f86256c830fa9a4 upstream.
 
-New Zhaoxin family 7 CPUs are not affected by SPECTRE_V2. So define a
-separate cpu_vuln_whitelist bit NO_SPECTRE_V2 and add these CPUs to the cpu
-vulnerability whitelist.
+Michael Hanselmann reports that
 
-Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/1579227872-26972-2-git-send-email-TonyWWang-oc@zhaoxin.com
+	[a] subset of all CH341 devices stop responding to bulk
+	transfers, usually after the third byte, when the highest
+	prescaler bit (0b100) is set. There is one exception, namely a
+	prescaler of exactly 0b111 (fact=1, ps=3).
+
+Fix this by forcing a lower base clock (fact = 0) whenever needed.
+
+This specifically makes the standard rates 110, 134 and 200 bps work
+again with these devices.
+
+Fixes: 35714565089e ("USB: serial: ch341: reimplement line-speed handling")
+Cc: stable <stable@vger.kernel.org>	# 5.5
+Reported-by: Michael Hanselmann <public@hansmi.ch>
+Link: https://lore.kernel.org/r/20200514141743.GE25962@localhost
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/x86/kernel/cpu/common.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1024,6 +1024,7 @@ static void identify_cpu_without_cpuid(s
- #define MSBDS_ONLY		BIT(5)
- #define NO_SWAPGS		BIT(6)
- #define NO_ITLB_MULTIHIT	BIT(7)
-+#define NO_SPECTRE_V2		BIT(8)
+---
+ drivers/usb/serial/ch341.c |   15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+--- a/drivers/usb/serial/ch341.c
++++ b/drivers/usb/serial/ch341.c
+@@ -73,6 +73,8 @@
+ #define CH341_LCR_CS6          0x01
+ #define CH341_LCR_CS5          0x00
  
- #define VULNWL(_vendor, _family, _model, _whitelist)	\
- 	{ X86_VENDOR_##_vendor, _family, _model, X86_FEATURE_ANY, _whitelist }
-@@ -1085,6 +1086,10 @@ static const __initconst struct x86_cpu_
- 	/* FAMILY_ANY must be last, otherwise 0x0f - 0x12 matches won't work */
- 	VULNWL_AMD(X86_FAMILY_ANY,	NO_MELTDOWN | NO_L1TF | NO_MDS | NO_SWAPGS | NO_ITLB_MULTIHIT),
- 	VULNWL_HYGON(X86_FAMILY_ANY,	NO_MELTDOWN | NO_L1TF | NO_MDS | NO_SWAPGS | NO_ITLB_MULTIHIT),
++#define CH341_QUIRK_LIMITED_PRESCALER	BIT(0)
 +
-+	/* Zhaoxin Family 7 */
-+	VULNWL(CENTAUR,	7, X86_MODEL_ANY,	NO_SPECTRE_V2),
-+	VULNWL(ZHAOXIN,	7, X86_MODEL_ANY,	NO_SPECTRE_V2),
- 	{}
- };
+ static const struct usb_device_id id_table[] = {
+ 	{ USB_DEVICE(0x4348, 0x5523) },
+ 	{ USB_DEVICE(0x1a86, 0x7523) },
+@@ -160,9 +162,11 @@ static const speed_t ch341_min_rates[] =
+  *		2 <= div <= 256 if fact = 0, or
+  *		9 <= div <= 256 if fact = 1
+  */
+-static int ch341_get_divisor(speed_t speed)
++static int ch341_get_divisor(struct ch341_private *priv)
+ {
+ 	unsigned int fact, div, clk_div;
++	speed_t speed = priv->baud_rate;
++	bool force_fact0 = false;
+ 	int ps;
  
-@@ -1117,7 +1122,9 @@ static void __init cpu_set_bug_bits(stru
- 		return;
+ 	/*
+@@ -188,8 +192,12 @@ static int ch341_get_divisor(speed_t spe
+ 	clk_div = CH341_CLK_DIV(ps, fact);
+ 	div = CH341_CLKRATE / (clk_div * speed);
  
- 	setup_force_cpu_bug(X86_BUG_SPECTRE_V1);
--	setup_force_cpu_bug(X86_BUG_SPECTRE_V2);
++	/* Some devices require a lower base clock if ps < 3. */
++	if (ps < 3 && (priv->quirks & CH341_QUIRK_LIMITED_PRESCALER))
++		force_fact0 = true;
 +
-+	if (!cpu_matches(NO_SPECTRE_V2))
-+		setup_force_cpu_bug(X86_BUG_SPECTRE_V2);
+ 	/* Halve base clock (fact = 0) if required. */
+-	if (div < 9 || div > 255) {
++	if (div < 9 || div > 255 || force_fact0) {
+ 		div /= 2;
+ 		clk_div *= 2;
+ 		fact = 0;
+@@ -228,7 +236,7 @@ static int ch341_set_baudrate_lcr(struct
+ 	if (!priv->baud_rate)
+ 		return -EINVAL;
  
- 	if (!cpu_matches(NO_SSB) && !(ia32_cap & ARCH_CAP_SSB_NO) &&
- 	   !cpu_has(c, X86_FEATURE_AMD_SSB_NO))
+-	val = ch341_get_divisor(priv->baud_rate);
++	val = ch341_get_divisor(priv);
+ 	if (val < 0)
+ 		return -EINVAL;
+ 
+@@ -333,6 +341,7 @@ static int ch341_detect_quirks(struct us
+ 			    CH341_REG_BREAK, 0, buffer, size, DEFAULT_TIMEOUT);
+ 	if (r == -EPIPE) {
+ 		dev_dbg(&port->dev, "break control not supported\n");
++		quirks = CH341_QUIRK_LIMITED_PRESCALER;
+ 		r = 0;
+ 		goto out;
+ 	}
 
 
