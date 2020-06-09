@@ -2,95 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0CE1F4717
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 21:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9CB1F479E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 21:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389223AbgFIT36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 15:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56860 "EHLO
+        id S1732302AbgFIT4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 15:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728443AbgFIT35 (ORCPT
+        with ESMTP id S1729754AbgFIT4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 15:29:57 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE72C05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 12:29:57 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id b16so10486937pfi.13
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 12:29:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lrNZt0MHOnjftD+toCJiTQv+PMA1xMJhh4w8++pUPGM=;
-        b=gbtZcQEDLCUU9CqWf+7FbEgPhzVhA9ZDHdZzwBqQC+hOj8SA68uFyMiv0ElgZZWjtK
-         V5TqAf9eBnpuGEAzu03YHBDyI4V1WauNT+QAnXUwF0y8KFKAYEtYpNvXpg8v+QYhwio5
-         en6xulro9ueMLbkq3Vlyck9Gza7Bs8r5E3fNQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lrNZt0MHOnjftD+toCJiTQv+PMA1xMJhh4w8++pUPGM=;
-        b=gZlO9znmMsL8JddVcCiRdAB90Bdxl9pVkfPoA5nqCTcAvO1/z988bHXTEncfZ6Cvfm
-         3hS0ycH1cu2vt44SlWGLMuyUeYHtVZ30aiZbHYmMN6Za0iDmU6xlvQiIAebfctiV8aQ4
-         2TfJAvmGEj9O1SkIytvOmC76F29Qcm2pt7Y/eNRvMliR08MeqcfJEU3yIpgsGADO6FN0
-         +OVcALVMCXzYgY9x3yLh3VhneTXi4VPrTtCejDCTasKFHE07/4PYPvZdP7DbCgQVlzQu
-         cVBVGGOiuE+mqmeECWxOZurZdjbqmd41lt/32/z20UWN+uXxKiwRoUs1KG0ELbSEyrvR
-         IKSA==
-X-Gm-Message-State: AOAM531PjA7tvIrICUJ4e9KLUz0yF3HAz+/buS6/Z1Yw6Eyczzm2C5py
-        WuZhjc8Etaum10ACvjaIctkpqA==
-X-Google-Smtp-Source: ABdhPJw3u9YjiwkoOUaSfzuKhTCx4daVvmPUXp8gu4QHLoH55ck5aMiWVypH2wi+kNplt0PhZUmWLQ==
-X-Received: by 2002:aa7:9558:: with SMTP id w24mr26619306pfq.241.1591730997079;
-        Tue, 09 Jun 2020 12:29:57 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o96sm3319015pjo.13.2020.06.09.12.29.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 12:29:56 -0700 (PDT)
-Date:   Tue, 9 Jun 2020 12:29:54 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     David Miller <davem@davemloft.net>
-Cc:     stephen@networkplumber.org, o.rempel@pengutronix.de,
-        andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        kuba@kernel.org, corbet@lwn.net, mkubecek@suse.cz,
-        linville@tuxdriver.com, david@protonic.nl, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux@armlinux.org.uk, mkl@pengutronix.de, marex@denx.de,
-        christian.herber@nxp.com, amitc@mellanox.com, petrm@mellanox.com
-Subject: Re: [PATCH ethtool v1] netlink: add master/slave configuration
- support
-Message-ID: <202006091222.CB97F743AD@keescook>
-References: <20200607153019.3c8d6650@hermes.lan>
- <20200607.164532.964293508393444353.davem@davemloft.net>
- <20200609101935.5716b3bd@hermes.lan>
- <20200609.113633.1866761141966326637.davem@davemloft.net>
+        Tue, 9 Jun 2020 15:56:37 -0400
+X-Greylist: delayed 3489 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 09 Jun 2020 12:56:37 PDT
+Received: from vps60015.public.cloudvps.com (vps60015.public.cloudvps.com [IPv6:2a02:348:a2:be57::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14313C05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 12:56:36 -0700 (PDT)
+Received: from [182.160.123.148] (helo=newratio.com)
+        by vps60015.public.cloudvps.com with esmtpa (Exim 4.84)
+        (envelope-from <dieter@newratio.com>)
+        id 1jijS0-0005ld-Ry; Tue, 09 Jun 2020 20:58:21 +0200
+To:     "miteshgami86" <miteshgami86@yahoo.co.uk>,
+        "shilpa shet" <shilpa_shet@yahoo.com>,
+        "karmachari5" <karmachari5@yahoo.com>,
+        "pradhan" <pradhan@comcast.net>,
+        "meena sathe" <meena_sathe@yahoo.com>,
+        "unitedhindufront" <unitedhindufront@gmail.com>,
+        "linux kernel" <linux-kernel@vger.kernel.org>,
+        "eci sec jec nct delhi v k harit" <electionjec@gmail.com>,
+        "eci ex KJ RAO" <kjrao27@hotmail.com>,
+        "eci cec dr s y quraishi" <syq2@rediffmail.com>
+From:   zamzam318 <dieter@newratio.com>
+Subject: =?UTF-8?Q?Re=3A__=5B_Aandacht!=5D_Hey?=
+Message-ID: <0df6633e-327a-4427-b431-33a278d94c86@newratio.com>
+Date:   Tue, 9 Jun 2020 14:06:55 -0500
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200609.113633.1866761141966326637.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 11:36:33AM -0700, David Miller wrote:
-> From: Stephen Hemminger <stephen@networkplumber.org>
-> Date: Tue, 9 Jun 2020 10:19:35 -0700
-> 
-> > Yes, words do matter and convey a lot of implied connotation and
-> > meaning.
-> 
-> What is your long term plan?  Will you change all of the UAPI for
-> bonding for example?
-> 
-> Or will we have a partial solution to the problem?
+[ Dringend!] https://bit.ly/2XJZMSA
 
-As a first step, let's stop _adding_ this language.
 
-Given what I've seen from other communities and what I know of the kernel
-community, I don't think we're going to get consensus on some massive
-global search/replace any time soon. However, I think we can get started
-on making this change with just stopping further introductions. (I view
-this like any other treewide change: stop new badness from getting
-added, and chip away as old ones as we can until it's all gone.)
 
--- 
-Kees Cook
+
+
+
+ Met alle goede wensen,zamzam318@yahoo.com
