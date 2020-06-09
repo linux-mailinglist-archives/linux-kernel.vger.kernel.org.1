@@ -2,140 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B51C1F3151
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339F31F31AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728818AbgFIBIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 21:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388206AbgFIBHt (ORCPT
+        id S1727003AbgFIBOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 21:14:52 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:53198 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726765AbgFIBOt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 21:07:49 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DCBC03E969
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 18:07:48 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jiSjw-00087I-Pc; Tue, 09 Jun 2020 03:07:45 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 99B75101181; Tue,  9 Jun 2020 03:07:43 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [GIT pull - RFC] locking/kcsan for v5.8
-In-Reply-To: <CAHk-=whyF0uSwVVvJ8hjVdP=s1m8hXPUzqtbWaNRqz+B52DU5g@mail.gmail.com>
-References: <159110310259.14558.3096683243532489290.tglx@nanos.tec.linutronix.de> <CAHk-=whyF0uSwVVvJ8hjVdP=s1m8hXPUzqtbWaNRqz+B52DU5g@mail.gmail.com>
-Date:   Tue, 09 Jun 2020 03:07:43 +0200
-Message-ID: <87lfkx6o80.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+        Mon, 8 Jun 2020 21:14:49 -0400
+Received: from localhost (unknown [192.168.167.32])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 335D5AD6BE;
+        Tue,  9 Jun 2020 09:14:42 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P3328T139696397076224S1591665277471272_;
+        Tue, 09 Jun 2020 09:14:39 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <9366da969142352c044371455015e4cb>
+X-RL-SENDER: sugar.zhang@rock-chips.com
+X-SENDER: zxg@rock-chips.com
+X-LOGIN-NAME: sugar.zhang@rock-chips.com
+X-FST-TO: vkoul@kernel.org
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Sugar Zhang <sugar.zhang@rock-chips.com>
+To:     Vinod Koul <vkoul@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Cc:     linux-rockchip@lists.infradead.org,
+        Sugar Zhang <sugar.zhang@rock-chips.com>,
+        devicetree@vger.kernel.org, Andy Yan <andy.yan@rock-chips.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        "Leonidas P. Papadakos" <papadakospan@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Johan Jonker <jbx6244@gmail.com>, linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Carlos de Paula <me@carlosedp.com>,
+        dmaengine@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH v2 0/13] Patches to improve transfer efficiency for Rockchip SoCs.
+Date:   Tue,  9 Jun 2020 09:14:14 +0800
+Message-Id: <1591665267-37713-1-git-send-email-sugar.zhang@rock-chips.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
-> On Tue, Jun 2, 2020 at 6:07 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->>
->> please consider to pull the latest locking/kcsan branch from:
->
-> Gaah. So I left this until I had cleared out my queues, and now that I
-> start looking at it, I find myself more annoyed by the messy history
-> than by the kcsan code.
 
-I'm surely not proud of it and neither is anyone else involved in that.
+Changes in v2:
+- fix FATAL ERROR: Unable to parse input tree
 
-> For example, it generates conflicts with the sparc tree, because the
-> sparc page table changes weren't done as a shared branch, but
-> duplicated as commits (and the subsequent changes cause some
-> conflicts).
+Sugar Zhang (13):
+  dmaengine: pl330: Remove the burst limit for quirk 'NO-FLUSHP'
+  dmaengine: pl330: Add quirk 'arm,pl330-periph-burst'
+  dt-bindings: dma: pl330: Document the quirk 'arm,pl330-periph-burst'
+  ARM: dts: rk3036: Add 'arm,pl330-periph-burst' for dmac
+  ARM: dts: rk322x: Add 'arm,pl330-periph-burst' for dmac
+  ARM: dts: rk3288: Add 'arm,pl330-periph-burst' for dmac
+  ARM: dts: rk3xxx: Add 'arm,pl330-periph-burst' for dmac
+  ARM: dts: rv1108: Add 'arm,pl330-periph-burst' for dmac
+  arm64: dts: px30: Add 'arm,pl330-periph-burst' for dmac
+  arm64: dts: rk3308: Add 'arm,pl330-periph-burst' for dmac
+  arm64: dts: rk3328: Add 'arm,pl330-periph-burst' for dmac
+  arm64: dts: rk3368: Add 'arm,pl330-periph-burst' for dmac
+  arm64: dts: rk3399: Add 'arm,pl330-periph-burst' for dmac
 
-Sorry, I was not aware of that.
+ .../devicetree/bindings/dma/arm-pl330.txt          |  1 +
+ arch/arm/boot/dts/rk3036.dtsi                      |  1 +
+ arch/arm/boot/dts/rk322x.dtsi                      |  1 +
+ arch/arm/boot/dts/rk3288.dtsi                      |  3 ++
+ arch/arm/boot/dts/rk3xxx.dtsi                      |  3 ++
+ arch/arm/boot/dts/rv1108.dtsi                      |  1 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi             |  1 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi           |  2 +
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi           |  1 +
+ arch/arm64/boot/dts/rockchip/rk3368.dtsi           |  2 +
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi           |  2 +
+ drivers/dma/pl330.c                                | 44 +++++++++++++++-------
+ 12 files changed, 49 insertions(+), 13 deletions(-)
 
-> And the read-once/write-once changes that I was aware of and approve
-> of, are similarly mixed in here randomly, rather than being as a
-> branch of their own. I see that Will then made his own branch, but
-> then we'd have the same issue as with the sparc changes.
+-- 
+2.7.4
 
-We tried hard to keep all that separate, but at some point the resulting
-conflicts became interesting.
 
- 1) There was interest to keep the KCSAN history intact because Paul had
-    stuff depending on it already
 
- 2) Will's changes conflicted heavily and we had to make a decision what
-    has to based on what
-
- 3) Peter's an my efforts to get the whole entry maze sorted out
-    introduced another massive change in the same area.
-
-After discussing things back and forth we came to the conclusion that
-KCSAN is ready to go and we base all that other stuff on top. In
-hindsight maybe not the most brightest idea.
-
-> The things I was _expecting_ to find annoying (various random changes
-> to random code due to kcsan reports), I don't actually see.
-
-They got shipped independently because they were legit bugs and the
-fixes independent of KCSAN.
-
-> Instead I see odd small completely unrelated things like the
-> x86/purgatory changes that were merged in for odd reasons.
->
-> How painful would it be to sort this out properly? I'll happily take
-> the read-once changes as a separate branch, for example. There's
-> nothing really controversial there., even if the gcc version bump
-> might annoy some (I personally think we could bump it further up to
-> 4.9, and require _Generic, for example - I suspect we have a number of
-> places that could use _Generic instead of nasty sizeof games).
->
-> I'd even make an exception and say "ok, just rebase the kcsan stuff on
-> top" to clean up the messy history, because this is the kind of new
-> feature that shouldn't affect a normal build, and I'd hate to have
-> other changes that _can_ affect a normal build - like those atomic
-> changes - mixed up in the middle of the kcsan stuff.
->
-> So my first reaction from looking at this is that I'd rather get the
-> infrastructure separately (like I already got the sparc32 page table
-> changes), so that once I _do_ get the kcsan bits, they really would be
-> "this introduces no semantic changes what-so-ever when not enabled".
->
-> IOW, I'd be inclined to instead pull Will's branch, and then whatever
-> x86 entry branches, and then kcsan last with _just_ kcsan stuff.
->
-> Will that make everybody else cry tears of frustration?
-
-TBH, yes. We played a reasonable amount of patch testris to avoid this
-kind of interdependenies already and yes I have to admit that at some
-point I gave up with the KCSAN/Will/Peterz conflicts.
-
-I spent quite some time over the past weekend to rebase everything which
-still depends on that (tip: x86/entry and ras/core ] onto a Will ->
-Peterz scheme and make KCSAN a separate entity, but I'm still facing a
-few subtle bugs which I have not decoded yet.
-
-That said, I would appreciate if you bite the bullet and take the mess
-as is, but I'm perfectly willing to bite the bullet and get all of this
-restructured in the hope to get it done in time.
-
-What really would cause massive frustration would be to sacrifice the
-entry rework for this.
-
-Anyway, I hope I gave you enough context and as I'm not going to touch
-any of this before tomorrow morning, please take your time and let me
-know.
-
-Thanks,
-
-        Thomas
