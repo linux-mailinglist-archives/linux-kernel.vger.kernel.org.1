@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 348121F447C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEEA1F4464
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388053AbgFISFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:05:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41708 "EHLO mail.kernel.org"
+        id S2387987AbgFISET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:04:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731641AbgFIRv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:51:56 -0400
+        id S1732806AbgFIRwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:52:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81967207C3;
-        Tue,  9 Jun 2020 17:51:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 795B720734;
+        Tue,  9 Jun 2020 17:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725116;
-        bh=Faj6ySPN4NhaH1lHmRfYbHVD4GDrDtfBMnqzZGepr5g=;
+        s=default; t=1591725142;
+        bh=ViZa30ypR7/xokQKb3odmSsdv+h/Zb0AyqQm1aaQY/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0i3OhJ/E7vvifledqUk5USzuZD2WjTzNuyL9DDzqs20vnWHOe+B7BbYJ4lSXXw6j7
-         0ypYxQuTJ/CA0/CnbLLF0T8won9tsrV/zyZ7o8POrGwkuTPE4T050+mjM+eGjaVlXK
-         RjXg4UXO20yXXYMShX/qO4Jy/0Y8nLqgWlPtxwQQ=
+        b=CfFdMtha45sqsXjdbwbRYNq8oaMSZNi9nwhZsTRX6x5/95sCRdHayghvqUlMAzBL3
+         sst/o2X2MqlBLbj2xX2kxxJeioJuwYeJsgqou6O8LA8pBWWAhvGTkBWzCbbEvg7NAP
+         YwjwsqADLsVuzO1e8Ub73qKeYnh/V3LI4gqYul2Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 10/25] USB: serial: option: add Telit LE910C1-EUX compositions
-Date:   Tue,  9 Jun 2020 19:45:00 +0200
-Message-Id: <20200609174049.812421359@linuxfoundation.org>
+        stable@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 05/34] net: stmmac: enable timestamp snapshot for required PTP packets in dwmac v5.10a
+Date:   Tue,  9 Jun 2020 19:45:01 +0200
+Message-Id: <20200609174053.303180274@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174048.576094775@linuxfoundation.org>
-References: <20200609174048.576094775@linuxfoundation.org>
+In-Reply-To: <20200609174052.628006868@linuxfoundation.org>
+References: <20200609174052.628006868@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Fugang Duan <fugang.duan@nxp.com>
 
-commit 399ad9477c523f721f8e51d4f824bdf7267f120c upstream.
+[ Upstream commit f2fb6b6275eba9d312957ca44c487bd780da6169 ]
 
-Add Telit LE910C1-EUX compositions:
+For rx filter 'HWTSTAMP_FILTER_PTP_V2_EVENT', it should be
+PTP v2/802.AS1, any layer, any kind of event packet, but HW only
+take timestamp snapshot for below PTP message: sync, Pdelay_req,
+Pdelay_resp.
 
-	0x1031: tty, tty, tty, rmnet
-	0x1033: tty, tty, tty, ecm
+Then it causes below issue when test E2E case:
+ptp4l[2479.534]: port 1: received DELAY_REQ without timestamp
+ptp4l[2481.423]: port 1: received DELAY_REQ without timestamp
+ptp4l[2481.758]: port 1: received DELAY_REQ without timestamp
+ptp4l[2483.524]: port 1: received DELAY_REQ without timestamp
+ptp4l[2484.233]: port 1: received DELAY_REQ without timestamp
+ptp4l[2485.750]: port 1: received DELAY_REQ without timestamp
+ptp4l[2486.888]: port 1: received DELAY_REQ without timestamp
+ptp4l[2487.265]: port 1: received DELAY_REQ without timestamp
+ptp4l[2487.316]: port 1: received DELAY_REQ without timestamp
 
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
-Link: https://lore.kernel.org/r/20200525211106.27338-1-dnlplm@gmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Timestamp snapshot dependency on register bits in received path:
+SNAPTYPSEL TSMSTRENA TSEVNTENA 	PTP_Messages
+01         x         0          SYNC, Follow_Up, Delay_Req,
+                                Delay_Resp, Pdelay_Req, Pdelay_Resp,
+                                Pdelay_Resp_Follow_Up
+01         0         1          SYNC, Pdelay_Req, Pdelay_Resp
+
+For dwmac v5.10a, enabling all events by setting register
+DWC_EQOS_TIME_STAMPING[SNAPTYPSEL] to 2’b01, clearing bit [TSEVNTENA]
+to 0’b0, which can support all required events.
+
+Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/serial/option.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1157,6 +1157,10 @@ static const struct usb_device_id option
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_CC864_SINGLE) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_DE910_DUAL) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_UE910_V2) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1031, 0xff),	/* Telit LE910C1-EUX */
-+	 .driver_info = NCTRL(0) | RSVD(3) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1033, 0xff),	/* Telit LE910C1-EUX (ECM) */
-+	 .driver_info = NCTRL(0) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE922_USBCFG0),
- 	  .driver_info = RSVD(0) | RSVD(1) | NCTRL(2) | RSVD(3) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE922_USBCFG1),
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -630,7 +630,8 @@ static int stmmac_hwtstamp_set(struct ne
+ 			config.rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;
+ 			ptp_v2 = PTP_TCR_TSVER2ENA;
+ 			snap_type_sel = PTP_TCR_SNAPTYPSEL_1;
+-			ts_event_en = PTP_TCR_TSEVNTENA;
++			if (priv->synopsys_id != DWMAC_CORE_5_10)
++				ts_event_en = PTP_TCR_TSEVNTENA;
+ 			ptp_over_ipv4_udp = PTP_TCR_TSIPV4ENA;
+ 			ptp_over_ipv6_udp = PTP_TCR_TSIPV6ENA;
+ 			ptp_over_ethernet = PTP_TCR_TSIPENA;
 
 
