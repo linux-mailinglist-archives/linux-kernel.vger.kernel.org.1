@@ -2,60 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E7F1F32BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 05:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE3E1F32CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 05:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbgFIDru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 23:47:50 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:13531 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727088AbgFIDrs (ORCPT
+        id S1727793AbgFIDxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 23:53:22 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:43531 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726803AbgFIDxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 23:47:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591674468; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=3fyLmJWgyuHePBB9PWztW0yGk7/yQPe+YAgIt6MuaOI=; b=wCsclBB1EHk+rdb21sQArSk3kX9R5Ve/+hIo5TAr/ZE1djkpAGNY0NiIG9LJ6wvH0fpUnpM5
- 3sGrY5/+eJ76LAnSkxWxrxC1YcET+7ZZ64xLlxdLunxfn/X2TMWaU9e0RwUv18u49DTgOH+R
- aYxRGE6lhY3UFPcHfEOpKadwSEY=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n11.prod.us-west-2.postgun.com with SMTP id
- 5edf0662cea6afef5fce27c9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Jun 2020 03:47:46
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 60F4BC43391; Tue,  9 Jun 2020 03:47:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from tanmshah-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tanmay)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E0E46C433CA;
-        Tue,  9 Jun 2020 03:47:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E0E46C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tanmay@codeaurora.org
-From:   Tanmay Shah <tanmay@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     swboyd@chromium.org, sam@ravnborg.org, seanpaul@chromium.org,
-        freedreno@lists.freedesktop.org, chandanu@codeaurora.org,
-        robdclark@gmail.com, abhinavk@codeaurora.org,
-        nganji@codeaurora.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>
-Subject: [PATCH v6 5/5] drm/msm/dpu: add display port support in DPU
-Date:   Mon,  8 Jun 2020 20:47:09 -0700
-Message-Id: <20200609034709.10938-1-tanmay@codeaurora.org>
-X-Mailer: git-send-email 2.26.2
+        Mon, 8 Jun 2020 23:53:12 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 17A1A71C;
+        Mon,  8 Jun 2020 23:53:11 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 08 Jun 2020 23:53:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paritcher.com;
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=Fpv8Vs6NNHO5E
+        BYLXuiJl8+my6EirXEyqYHHw/KlxY4=; b=0VPg6Od+M5jz1wrqSPuRoUlEMJDZ1
+        61T4AiAHN3SaHxyx73dV5mF03qk/2ze51mUiZu5/9wrII+5dBBfZAFRC8ZVyAW6h
+        yca2sI7hLvDZdo9KD1kmc2Q5lEPUCXIvG8dgxD2izBom8zR7wF9M4HKa5d+Alo6f
+        nu3DncMEF034FexdFS1tjFH4leuzGdTsHf4WBj4aBOaSq+5Qij0YJ9gwxuNjVvN1
+        iCnoF6peAI/qDhzGUHnVOg/l+TNJHCS8MRdj9zEC8VH5rl59vw9JT6NjioD58w5c
+        WdZwoFwhiXzFMfBKmYYA+rMIAuCmpkG7GlomBMj3BWP7rIZuPscKsqyBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=Fpv8Vs6NNHO5EBYLXuiJl8+my6EirXEyqYHHw/KlxY4=; b=gQZkj8LU
+        S5FHu70jHC1xUuhmO4ULktC7DRO5AyuNrUunCNaFFCGEU/m3OXrzNPiuKsQOcvsw
+        CP0ZupS8PtpLNlkgw+KdZIGhsQiM/5SlD0Y1WAIrLDCmzIuDx8uD5QYyUa08hHRQ
+        l/cbRQhnsDpPz/uQC9xdKytDzBs0T9HSjEdhZdW1TXA6d4dITPvb68HK72BSVRQH
+        qlcLoub3uXUgz+CuvOyREc/05lEPLnRzXU++gGj/cN9zrlRspE1nn7vdQzYYzJxk
+        +SiWprFTMmyeh0TPpowwNfk4a/Sl0Asn5PpELikT1oLl2tMIGjsh4QNSWsm5tW5E
+        iaE1/yE4+ThguA==
+X-ME-Sender: <xms:pgffXm_H6ER9CwCgNeYIje9mwTU9MBdQeXdIJS0ADLnx8qF0qdkJqQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehfedgjeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpegjucfrrghr
+    ihhttghhvghruceohidrlhhinhhugiesphgrrhhithgthhgvrhdrtghomheqnecuggftrf
+    grthhtvghrnhepjeegfeetleeuleevteejteetieffgffgfedvffffvddtvddvveevhffh
+    tdehudeknecukfhppeeijedrkeegrdduleegrddujeehnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhephidrlhhinhhugiesphgrrhhithgthhgv
+    rhdrtghomh
+X-ME-Proxy: <xmx:pgffXmvAlN6qJRBYGlQUM-50SvSWGtNSG_mrylJXSEUs9keW2VpZTg>
+    <xmx:pgffXsBnOo5jRMf95IAnKBUwCXGKf2bWPwakY9vAFn8iB6TdTMA2LA>
+    <xmx:pgffXucY-HEDKHvE_xMQgzMHVPi1lrGqlJNhYaDLkg3jnlPkjAK2xA>
+    <xmx:pgffXh26LPaphTMY2Fh8Z9LmpCmvEuo-pSAG0-i6IXOpZeM2UspzeA>
+Received: from localhost.localdomain (ool-4354c2af.dyn.optonline.net [67.84.194.175])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E325F328005A;
+        Mon,  8 Jun 2020 23:53:09 -0400 (EDT)
+From:   Y Paritcher <y.linux@paritcher.com>
+To:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mario.Limonciello@dell.com
+Subject: [PATCH v3 0/3] platform/x86: dell-wmi: new keys
+Date:   Mon,  8 Jun 2020 23:52:51 -0400
+Message-Id: <cover.1591673143.git.y.linux@paritcher.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1591584631.git.y.linux@paritcher.com>
+References: <cover.1591584631.git.y.linux@paritcher.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -63,158 +72,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeykumar Sankaran <jsanka@codeaurora.org>
+Extended data and events like Fn lock are currently ignored.
+This is consistent with what was done until now.
+Changing this is out of scope of this patch and would require
+rethinking how events are processed, as on some devices the status
+is sent as it own event, and on some devices via extended data.
+That is also dependent on better docs from the team at Dell.
 
-Add display port support in DPU by creating hooks
-for DP encoder enumeration and encoder mode
-initialization.
+The keycode 0xffff look to be a special case and was added as an
+exception code (Thanks Randy for the implementation).
+It was not found for any key on my device, it is only located in
+the DMI table parsed at boot into the keymap.
 
-This change is based on the Snapdragon Display port
-driver changes[1].
+Overall I am trying to get useless data (to me) out of my syslog
+by documenting the correct scancode/keycode mappings
 
-changes in v2:
-	- rebase on [2] (Sean Paul)
-	- remove unwanted error checks and
-	  switch cases (Jordan Crouse)
+Y Paritcher (3):
+  platform/x86: dell-wmi: add new backlight events
+  platform/x86: dell-wmi: add new keymap type 0x0012
+  platform/x86: dell-wmi: add new dmi mapping for keycode 0xffff
 
-[1] https://lwn.net/Articles/768265/
-[2] https://lkml.org/lkml/2018/11/17/87
+ drivers/platform/x86/dell-wmi.c | 28 +++++++++++++++++++++++++---
+ 1 file changed, 25 insertions(+), 3 deletions(-)
 
-changes in V3:
--- Moved this change as part of the DP driver changes.
--- Addressed compilation issues on the latest code base.
-
-Changes in v6:
--- Fix checkpatch.pl warning
-
-Signed-off-by: Jeykumar Sankaran <jsanka@codeaurora.org>
-Signed-off-by: Chandan Uddaraju <chandanu@codeaurora.org>
-Signed-off-by: Vara Reddy <varar@codeaurora.org>
-Signed-off-by: Tanmay Shah <tanmay@codeaurora.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c |  8 ++--
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c     | 65 ++++++++++++++++++++++++-----
- 2 files changed, 58 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-index d796710..745d5ce 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-@@ -2017,7 +2017,7 @@ static int dpu_encoder_setup_display(struct dpu_encoder_virt *dpu_enc,
- {
- 	int ret = 0;
- 	int i = 0;
--	enum dpu_intf_type intf_type;
-+	enum dpu_intf_type intf_type = INTF_NONE;
- 	struct dpu_enc_phys_init_params phys_params;
- 
- 	if (!dpu_enc) {
-@@ -2039,9 +2039,9 @@ static int dpu_encoder_setup_display(struct dpu_encoder_virt *dpu_enc,
- 	case DRM_MODE_ENCODER_DSI:
- 		intf_type = INTF_DSI;
- 		break;
--	default:
--		DPU_ERROR_ENC(dpu_enc, "unsupported display interface type\n");
--		return -EINVAL;
-+	case DRM_MODE_ENCODER_TMDS:
-+		intf_type = INTF_DP;
-+		break;
- 	}
- 
- 	WARN_ON(disp_info->num_of_h_tiles < 1);
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index b8615d4..f6c219f 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@ -492,6 +492,33 @@ static int _dpu_kms_initialize_dsi(struct drm_device *dev,
- 	return rc;
- }
- 
-+static int _dpu_kms_initialize_displayport(struct drm_device *dev,
-+					    struct msm_drm_private *priv,
-+					    struct dpu_kms *dpu_kms)
-+{
-+	struct drm_encoder *encoder = NULL;
-+	int rc = 0;
-+
-+	if (!priv->dp)
-+		return rc;
-+
-+	encoder = dpu_encoder_init(dev, DRM_MODE_ENCODER_TMDS);
-+	if (IS_ERR(encoder)) {
-+		DPU_ERROR("encoder init failed for dsi display\n");
-+		return PTR_ERR(encoder);
-+	}
-+
-+	rc = msm_dp_modeset_init(priv->dp, dev, encoder);
-+	if (rc) {
-+		DPU_ERROR("modeset_init failed for DP, rc = %d\n", rc);
-+		drm_encoder_cleanup(encoder);
-+		return rc;
-+	}
-+
-+	priv->encoders[priv->num_encoders++] = encoder;
-+	return rc;
-+}
-+
- /**
-  * _dpu_kms_setup_displays - create encoders, bridges and connectors
-  *                           for underlying displays
-@@ -504,12 +531,21 @@ static int _dpu_kms_setup_displays(struct drm_device *dev,
- 				    struct msm_drm_private *priv,
- 				    struct dpu_kms *dpu_kms)
- {
--	/**
--	 * Extend this function to initialize other
--	 * types of displays
--	 */
-+	int rc = 0;
-+
-+	rc = _dpu_kms_initialize_dsi(dev, priv, dpu_kms);
-+	if (rc) {
-+		DPU_ERROR("initialize_dsi failed, rc = %d\n", rc);
-+		return rc;
-+	}
- 
--	return _dpu_kms_initialize_dsi(dev, priv, dpu_kms);
-+	rc = _dpu_kms_initialize_displayport(dev, priv, dpu_kms);
-+	if (rc) {
-+		DPU_ERROR("initialize_DP failed, rc = %d\n", rc);
-+		return rc;
-+	}
-+
-+	return rc;
- }
- 
- static void _dpu_kms_drm_obj_destroy(struct dpu_kms *dpu_kms)
-@@ -694,13 +730,20 @@ static void _dpu_kms_set_encoder_mode(struct msm_kms *kms,
- 	info.capabilities = cmd_mode ? MSM_DISPLAY_CAP_CMD_MODE :
- 			MSM_DISPLAY_CAP_VID_MODE;
- 
--	/* TODO: No support for DSI swap */
--	for (i = 0; i < ARRAY_SIZE(priv->dsi); i++) {
--		if (priv->dsi[i]) {
--			info.h_tile_instance[info.num_of_h_tiles] = i;
--			info.num_of_h_tiles++;
-+	switch (info.intf_type) {
-+	case DRM_MODE_ENCODER_DSI:
-+		/* TODO: No support for DSI swap */
-+		for (i = 0; i < ARRAY_SIZE(priv->dsi); i++) {
-+			if (priv->dsi[i]) {
-+				info.h_tile_instance[info.num_of_h_tiles] = i;
-+				info.num_of_h_tiles++;
-+			}
- 		}
--	}
-+		break;
-+	case DRM_MODE_ENCODER_TMDS:
-+		info.num_of_h_tiles = 1;
-+		break;
-+	};
- 
- 	rc = dpu_encoder_setup(encoder->dev, encoder, &info);
- 	if (rc)
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.27.0
 
