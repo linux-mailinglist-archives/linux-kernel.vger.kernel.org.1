@@ -2,136 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CCA1F3F10
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 17:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A18D21F3F21
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 17:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730765AbgFIPTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 11:19:51 -0400
-Received: from muru.com ([72.249.23.125]:57370 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729665AbgFIPTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 11:19:49 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 4AAD38088;
-        Tue,  9 Jun 2020 15:20:37 +0000 (UTC)
-Date:   Tue, 9 Jun 2020 08:19:43 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc:     linux-omap@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
-        Tero Kristo <t-kristo@ti.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH 1/5] drm/omap: Fix suspend resume regression after
- platform data removal
-Message-ID: <20200609151943.GL37466@atomide.com>
-References: <20200531193941.13179-1-tony@atomide.com>
- <20200531193941.13179-2-tony@atomide.com>
- <16ba1808-5c7f-573d-8dd0-c80cac2f476e@ti.com>
- <20200603140639.GG37466@atomide.com>
- <47e286dd-f87a-4440-5bde-1f7b53e8b672@ti.com>
+        id S1730784AbgFIPVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 11:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729085AbgFIPV2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 11:21:28 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21BAC03E97C
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 08:21:27 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o6so10465899pgh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 08:21:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uwvFGjyGkvShem51AX2k8l39E+uinZbFtzIiRAp08Pk=;
+        b=Tqsz7mN0ZQ/Ebtwuuhlz2Aj5Nxp7ZH2E32VDTotEwsEFHfoCIcICryte8znwPwr/ML
+         rJGLk5Don0hvRBsPIb38oIrdDDbG5L4Ob6CtN/+bzblcvgk0eAlGkyw9/JzYg5JF7rpH
+         AXZ4YKev82m2zvwOymfK78TMabY5wSKQSzWgk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uwvFGjyGkvShem51AX2k8l39E+uinZbFtzIiRAp08Pk=;
+        b=BQM0vWevHtcOJiL9ejyUQuBUTNUQ6Qnw2nYFY8a4dpobLqOuJXO777eFmmPKsLOKl2
+         il9KdmiXGGpTylPDIqsLRLUdblNgahPJFzUwZAA0vC3maUWIi6BeOHjugNRO7nGxi9Ji
+         avMZiThtLZrU9Ie32Oj7yLk5mow9JDvTfsB8U5Nsc0LWhkYKLu2KJwgvbFq3nBe0BGLn
+         7FoRpdNmXWsgVifK2DUQ55RpnfPA+NOjtWwsYO2PQS6aX88P7ejLu2bpac+XdJBNiCBK
+         z8R+RUDGzykIKBxWCqIqyaISE5U9SjlWtApvCksqYv2A0wmtu3m0ecpSoQmYnrQHwjDY
+         esJA==
+X-Gm-Message-State: AOAM530//o73A9jAuDFeMg9axIK7GC+LhvarY1fpjbf7U3xdSGY8qJ7G
+        1Gg6N+VAN83nrRayFwqArtwxb17wEVsZXA==
+X-Google-Smtp-Source: ABdhPJxfhZlV3Xjw60pqAdeCuYbdjB53klCTzNpy+pv6huQHBaXZLmLMb8qM09KF80pvp6RVg0iY4g==
+X-Received: by 2002:a62:b402:: with SMTP id h2mr27157063pfn.221.1591716087205;
+        Tue, 09 Jun 2020 08:21:27 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id c2sm10383572pfi.71.2020.06.09.08.21.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 08:21:26 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     kvalo@codeaurora.org
+Cc:     kuabhs@google.com, pillair@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath10k@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH] ath10k: Wait until copy complete is actually done before completing
+Date:   Tue,  9 Jun 2020 08:20:58 -0700
+Message-Id: <20200609082015.1.Ife398994e5a0a6830e4d4a16306ef36e0144e7ba@changeid>
+X-Mailer: git-send-email 2.27.0.278.ge193c7cf3a9-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47e286dd-f87a-4440-5bde-1f7b53e8b672@ti.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Tomi Valkeinen <tomi.valkeinen@ti.com> [200609 07:05]:
-> On 03/06/2020 17:06, Tony Lindgren wrote:
-> > * Tomi Valkeinen <tomi.valkeinen@ti.com> [200603 12:34]:
-> > > Hi Tony,
-> > > 
-> > > On 31/05/2020 22:39, Tony Lindgren wrote:
-> > > > When booting without legacy platform data, we no longer have omap_device
-> > > > calling PM runtime suspend for us on suspend. This causes the driver
-> > > > context not be saved as we have no suspend and resume functions defined.
-> > > > 
-> > > > Let's fix the issue by switching over to use UNIVERSAL_DEV_PM_OPS as it
-> > > > will call the existing PM runtime suspend functions on suspend.
-> > > 
-> > > I don't think we can use UNIVERSAL_DEV_PM_OPS, as we can't disable DSS
-> > > modules in any order, but things have to be shut down in orderly manner.
-> > 
-> > OK. I presume you talk about the order of dss child devices here.
-> 
-> Yes, but not only that.
-> 
-> E.g. the dispc driver hasn't been designed to be suspended while active. The
-> only way to properly suspend the dispc HW is to first disable the outputs,
-> wait until they've finished with their current frame, and only then can
-> things be shut down.
+On wcn3990 we have "per_ce_irq = true".  That makes the
+ath10k_ce_interrupt_summary() function always return 0xfff. The
+ath10k_ce_per_engine_service_any() function will see this and think
+that _all_ copy engines have an interrupt.  Without checking, the
+ath10k_ce_per_engine_service() assumes that if it's called that the
+"copy complete" (cc) interrupt fired.  This combination seems bad.
 
-OK
+Let's add a check to make sure that the "copy complete" interrupt
+actually fired in ath10k_ce_per_engine_service().
 
-> The suspend machinery doesn't handle all that (and it couldn't anyway, due
-> to the dependencies to other DSS devices in the pipeline).
+This might fix a hard-to-reproduce failure where it appears that the
+copy complete handlers run before the copy is really complete.
+Specifically a symptom was that we were seeing this on a Qualcomm
+sc7180 board:
+  arm-smmu 15000000.iommu: Unhandled context fault:
+  fsr=0x402, iova=0x7fdd45780, fsynr=0x30003, cbfrsynra=0xc1, cb=10
 
-OK I replied to your patch with some untested comments that might simplify
-it potentially.
+Even on platforms that don't have wcn3990 this still seems like it
+would be a sane thing to do.  Specifically the current IRQ handler
+comments indicate that there might be other misc interrupt sources
+firing that need to be cleared.  If one of those sources was the one
+that caused the IRQ handler to be called it would also be important to
+double-check that the interrupt we cared about actually fired.
 
-> > > omapdrm hasn't relied on omap_device calling runtime suspend for us (I
-> > > didn't know it does that). We have system suspend hooks in omap_drv.c:
-> > 
-> > We had omap_device sort of brute forcing things to idle on suspend
-> > which only really works for interconnect target modules with one
-> > device in them.
-> > 
-> > > SIMPLE_DEV_PM_OPS(omapdrm_pm_ops, omap_drm_suspend, omap_drm_resume)
-> > > 
-> > > omap_drm_suspend() is supposed to turn off the displays, which then cause
-> > > dispc_runtime_put (and other runtime_puts) to be called, which result in
-> > > dispc_runtime_suspend (and other runtime PM suspends).
-> > 
-> > OK thanks for explaining, I missed that part.
-> > 
-> > > So... For some reason that's no longer happening? I need to try to find a
-> > > board with which suspend/resume works (without DSS)...
-> > 
-> > Yes it seems something has changed. When diffing the dmesg debug output
-> > on suspend and resume, context save and restore functions are no longer
-> > called as the PM runtime suspend and resume functions are no longer
-> > called on suspend and resume.
-> 
-> I now tested with AM4 SK, and I still can't get system suspend/resume work
-> (without DSS). I have no clue about how to fix that. But if I use pm_test to
-> prevent total suspend, I can reproduce this (or at least looks the same).
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-OK
+ drivers/net/wireless/ath/ath10k/ce.c | 30 +++++++++++++++++++---------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
 
-> And now that I look at this, I have a recollection that I've seen this
-> before. What happens is that the system suspend hook (omap_drm_suspend) gets
-> called fine, and it turns off the displays, which leads to
-> dispc_runtime_puts etc. All goes fine.
-> 
-> But there's an extra runtime PM reference (dev.power.usage_count) that seems
-> to come out of nowhere. So when omap_drm_suspend is finished, there's still
-> usage_count of 1, and dispc never suspends fully.
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 294fbc1e89ab..ffdd4b995f33 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -481,6 +481,15 @@ static inline void ath10k_ce_engine_int_status_clear(struct ath10k *ar,
+ 	ath10k_ce_write32(ar, ce_ctrl_addr + wm_regs->addr, mask);
+ }
+ 
++static inline bool ath10k_ce_engine_int_status_check(struct ath10k *ar,
++						     u32 ce_ctrl_addr,
++						     unsigned int mask)
++{
++	struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs->wm_regs;
++
++	return ath10k_ce_read32(ar, ce_ctrl_addr + wm_regs->addr) & mask;
++}
++
+ /*
+  * Guts of ath10k_ce_send.
+  * The caller takes responsibility for any needed locking.
+@@ -1301,19 +1310,22 @@ void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id)
+ 
+ 	spin_lock_bh(&ce->ce_lock);
+ 
+-	/* Clear the copy-complete interrupts that will be handled here. */
+-	ath10k_ce_engine_int_status_clear(ar, ctrl_addr,
+-					  wm_regs->cc_mask);
++	if (ath10k_ce_engine_int_status_check(ar, ctrl_addr,
++					      wm_regs->cc_mask)) {
++		/* Clear before handling */
++		ath10k_ce_engine_int_status_clear(ar, ctrl_addr,
++						  wm_regs->cc_mask);
+ 
+-	spin_unlock_bh(&ce->ce_lock);
++		spin_unlock_bh(&ce->ce_lock);
+ 
+-	if (ce_state->recv_cb)
+-		ce_state->recv_cb(ce_state);
++		if (ce_state->recv_cb)
++			ce_state->recv_cb(ce_state);
+ 
+-	if (ce_state->send_cb)
+-		ce_state->send_cb(ce_state);
++		if (ce_state->send_cb)
++			ce_state->send_cb(ce_state);
+ 
+-	spin_lock_bh(&ce->ce_lock);
++		spin_lock_bh(&ce->ce_lock);
++	}
+ 
+ 	/*
+ 	 * Misc CE interrupts are not being handled, but still need
+-- 
+2.27.0.278.ge193c7cf3a9-goog
 
-Hmm no idea about that. My guess is that there might be an issue that was
-masked earlier with omap_device calling the child runtime_suspend.
-
-Currently I'm only able to rmmod -f omapdrm, not sure if these issues might
-be related.
-
-As we now have the interconnect target module as the parent so usage counts
-might be different but should balance out the same way as earlier.
-
-> I think the PM framework does this when starting system suspend process.
-> Maybe this was also happening earlier, but omap_device used to do the final
-> suspend (so omapdrm depended on that functionality, after all...).
-
-Yes the different handling seems to be the main part of the issue.
-
-Regards,
-
-Tony
