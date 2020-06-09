@@ -2,169 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E06C1F37CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 12:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134731F37C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 12:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbgFIKSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 06:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728730AbgFIKSZ (ORCPT
+        id S1728711AbgFIKSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 06:18:15 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:51197 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728673AbgFIKRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 06:18:25 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96D8C03E97C;
-        Tue,  9 Jun 2020 03:18:23 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id h185so9880826pfg.2;
-        Tue, 09 Jun 2020 03:18:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=/0d16ZSjZXDVB9XnoF7g8/C8LhZpWELESeA2tbYD7eQ=;
-        b=AG/UsiXYoOJYlHtPerABlcHwszE5UoF6nbuNIqAJuXbLtI546Ko7bh9KoLmTyGYjSr
-         tUWIgn1RMafwryN11ejY/TV7c8AX2NUCKaxRRjc57gcUjWf9bBi1WmE0vurTemfnsPas
-         RZcBLC8PDd+sYXmjfuJ/0l/X4tsmNI/3f1U6jst0F/rUg+1dYxaHwem9J1Ik8tTi7CI6
-         fKMrt5lmS7hEVGIdEBwT4i27WGg5sBKfey9EeYkOy4HsMjolaZ+eKmtFFMkYy4E9Ffoc
-         DThy8oQFum0fYYwxYy4WIaqdo20RLLLE2hl3OUyhFYWlL81LTO0YfRq0+v0bvylmIaSi
-         DrVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=/0d16ZSjZXDVB9XnoF7g8/C8LhZpWELESeA2tbYD7eQ=;
-        b=WHB3rl8eYUED5Zf5fSJf8kpOcuTA1sjTYtg7R1asY3Coq92QEPzSDRdWfpHvw5NvZJ
-         huxGdAFSVh2H3Zde3/xkY0NHDwg8YTHrxDfWQ8bLzKUSbKknddSzl+yrb+g0kzKAX4yt
-         gK41xMNmAlSR3XwRIrKT9pSS2pwd+bE1705m39Z4590aLYYc+MPUM+8V8pGbKNN8HFuG
-         zeoJmf3aRA7LcM7pxKMmw0dDBNc1Qc59FPodkHFOmZVNvBvXku07P7JMBb1FkksAnTiV
-         WivFVGY3N0XNgzXI++9Ra4QJS9hX71PWcrOeNCeoJLV0vIKQ3/ywVPANspAfYmLzIQJO
-         buww==
-X-Gm-Message-State: AOAM531vtROp1hPmE3aF83ZTXyifAe8PLr+iLY42BDB6UMjjzpyi4xXt
-        ztgFpGiGPMtPSEf+eEUW6BQ=
-X-Google-Smtp-Source: ABdhPJxXx5Nq3IGHo7wWKQw5zUcrDvnpBG2qlLfjMRL4bSyiW6rcHZW18FEGdq1l+goPWwa1qW1StA==
-X-Received: by 2002:a63:af02:: with SMTP id w2mr23067058pge.116.1591697903285;
-        Tue, 09 Jun 2020 03:18:23 -0700 (PDT)
-Received: from localhost.localdomain ([223.190.87.90])
-        by smtp.gmail.com with ESMTPSA id d189sm9637253pfc.51.2020.06.09.03.18.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Jun 2020 03:18:22 -0700 (PDT)
-From:   Amit Singh Tomar <amittomer25@gmail.com>
-To:     andre.przywara@arm.com, afaerber@suse.de,
-        manivannan.sadhasivam@linaro.org, robh+dt@kernel.org
-Cc:     cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH v4 10/10] arm64: dts: actions: Add uSD support for Cubieboard7
-Date:   Tue,  9 Jun 2020 15:47:10 +0530
-Message-Id: <1591697830-16311-11-git-send-email-amittomer25@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591697830-16311-1-git-send-email-amittomer25@gmail.com>
-References: <1591697830-16311-1-git-send-email-amittomer25@gmail.com>
+        Tue, 9 Jun 2020 06:17:51 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200609101749euoutp017c27d5e0d2cfe9bbfb4942d0bf4b2336~W2MdiJj0G1996919969euoutp01e
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 10:17:49 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200609101749euoutp017c27d5e0d2cfe9bbfb4942d0bf4b2336~W2MdiJj0G1996919969euoutp01e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591697869;
+        bh=WmGn6y0fRrmt7+Tgt0t9pFWpnQ3kIEMTyzUcYcT/gCs=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=JPikHyez0pOnTQDO4x6z7HPrJ3Ndvot6+AuYEawGv8RU/B1ioV3ID8/PWcLO0mKZu
+         eLfvFZ+WeeN7smAVjGq9dFeDCUuA+LbResQsIPbarzIPkdrKAbV5gs7wg07F+XN13X
+         55ntVWr0ATtwdw7p7hunmk4fZdIh64D7VfKiHXPk=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200609101748eucas1p26af961353281c038c9d97a893f615a63~W2MdJUDWg1384513845eucas1p2N;
+        Tue,  9 Jun 2020 10:17:48 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 19.15.61286.CC16FDE5; Tue,  9
+        Jun 2020 11:17:48 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200609101748eucas1p25e3c30e33e0552a3a49078cedca1f5d0~W2Mc45PGy1384613846eucas1p2e;
+        Tue,  9 Jun 2020 10:17:48 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200609101748eusmtrp2221a37df5aa1da0891362a42566200b2~W2Mc4NolX1385213852eusmtrp2E;
+        Tue,  9 Jun 2020 10:17:48 +0000 (GMT)
+X-AuditID: cbfec7f2-f0bff7000001ef66-3a-5edf61cc1591
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id FF.C3.07950.CC16FDE5; Tue,  9
+        Jun 2020 11:17:48 +0100 (BST)
+Received: from [106.120.51.71] (unknown [106.120.51.71]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200609101747eusmtip2296ab910e5c56e376834ebf75f1c3331~W2McUDHkq2983929839eusmtip2U;
+        Tue,  9 Jun 2020 10:17:47 +0000 (GMT)
+Subject: Re: [PATCH v2] fbdev: geode: Add the missed pci_disable_device() in
+ gx1fb_map_video_memory()
+To:     Chuhong Yuan <hslester96@gmail.com>
+Cc:     Andres Salomon <dilinger@queued.net>, Adrian Bunk <bunk@stusta.de>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        James Simmons <jsimmons@infradead.org>,
+        David Vrabel <dvrabel@arcom.com>,
+        Andrew Morton <akpm@osdl.org>, linux-geode@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Message-ID: <a2bc1184-df7d-b921-c699-731591b2cd56@samsung.com>
+Date:   Tue, 9 Jun 2020 12:17:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200605161458.2513177-1-hslester96@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrCKsWRmVeSWpSXmKPExsWy7djPc7pnEu/HGbR+0rbYuaKH3aJn0QZ2
+        i3+rfrFbXPn6ns3i8vGLrBazD71ktljc/IjJ4kTfB1aL/nOnWSwu75rDZvF/1nNWB26PW/8F
+        PHbOusvusXmFlsf97uNMHpuX1HtcO/+V0eN/0wt2j57n85g8Pm+S87j9bBtLAFcUl01Kak5m
+        WWqRvl0CV8ayI5eYC45JVxxZL9TAOEOsi5GDQ0LARKLlb0AXIxeHkMAKRonny/eyQDhfGCUe
+        HpjICuF8ZpT49nQTYxcjJ1jH88PNUInljBKHnrcyQzhvGSWWb9sGViUskC7x6uExNhBbREBd
+        4vOunewgRcwC95gkZt18wwqSYBOwkpjYvgqsgVfATmLS8XOsIEexCKhI7L1rARIWFYiQ+PTg
+        MCtEiaDEyZlPWEBsTgEbiasXe8DizALiEreezGeCsOUltr+dA3aQhMBXdonjPbOgznaROLi2
+        lQXCFpZ4dXwLO4QtI/F/J0gzSMM6Rom/HS+gurcDvTP5HxtElbXEnXO/2ECuYxbQlFi/Sx8i
+        7Chx4ecmNkhI8knceCsIcQSfxKRt05khwrwSHW1CENVqEhuWbWCDWdu1cyXzBEalWUhem4Xk
+        nVlI3pmFsHcBI8sqRvHU0uLc9NRiw7zUcr3ixNzi0rx0veT83E2MwLR2+t/xTzsYv15KOsQo
+        wMGoxMN7Q/xenBBrYllxZe4hRgkOZiURXqezp+OEeFMSK6tSi/Lji0pzUosPMUpzsCiJ8xov
+        ehkrJJCeWJKanZpakFoEk2Xi4JRqYDS6dDhC44XN/h1GG2Z0ibS//+towGbacny20RKdtU0B
+        0m9ddJwMFhcyLK2tWXtrZ9O+aPeZymFWG1T+TS7cpS0QLaU6QYPbti9JUVfEZo7Isx2GK1iy
+        E6bsiDraN+XhHX7fd3MEWe7WlSjV8vDfz9m2rP76upetmau/T16hbK/Xnfx4vo7WFCWW4oxE
+        Qy3mouJEAFTFDiNnAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGIsWRmVeSWpSXmKPExsVy+t/xe7pnEu/HGby5Lm2xc0UPu0XPog3s
+        Fv9W/WK3uPL1PZvF5eMXWS1mH3rJbLG4+RGTxYm+D6wW/edOs1hc3jWHzeL/rOesDtwet/4L
+        eOycdZfdY/MKLY/73ceZPDYvqfe4dv4ro8f/phfsHj3P5zF5fN4k53H72TaWAK4oPZui/NKS
+        VIWM/OISW6VoQwsjPUNLCz0jE0s9Q2PzWCsjUyV9O5uU1JzMstQifbsEvYxlRy4xFxyTrjiy
+        XqiBcYZYFyMnh4SAicTzw82sXYxcHEICSxklulZOAHI4gBIyEsfXl0HUCEv8udbFBlHzmlFi
+        +qt2VpCEsEC6xKuHx9hAbBEBdYnPu3aygxQxC9xjkpg5YR07REc/o8SZ3htMIFVsAlYSE9tX
+        MYLYvAJ2EpOOnwPbxiKgIrH3rgVIWFQgQuLwjllQJYISJ2c+YQGxOQVsJK5e7AFbzAy07M+8
+        S8wQtrjErSfzmSBseYntb+cwT2AUmoWkfRaSlllIWmYhaVnAyLKKUSS1tDg3PbfYSK84Mbe4
+        NC9dLzk/dxMjMI63Hfu5ZQdj17vgQ4wCHIxKPLw3xO/FCbEmlhVX5h5ilOBgVhLhdTp7Ok6I
+        NyWxsiq1KD++qDQntfgQoynQbxOZpUST84EpJq8k3tDU0NzC0tDc2NzYzEJJnLdD4GCMkEB6
+        YklqdmpqQWoRTB8TB6dUA6PHi2y2tomzzFv619Wq86y+/Mo986zZgw0PDOeXzHwevzRSLVbj
+        +DE5oTVyt/qmhk7WCfZPWJofdHIC1zLJlxnHt+6S3+/7mPNr4mpPKZuQ5rcd2+//+V54bGnL
+        TG0Zce3u77Oz+zZElpxe/NJAxHSadKW6mVT79Mh7ZwzXxLqt9QnzrklS/arEUpyRaKjFXFSc
+        CACKao54+QIAAA==
+X-CMS-MailID: 20200609101748eucas1p25e3c30e33e0552a3a49078cedca1f5d0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200605161558eucas1p1388b824ffc9c65e05a30a71ffff8333a
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200605161558eucas1p1388b824ffc9c65e05a30a71ffff8333a
+References: <CGME20200605161558eucas1p1388b824ffc9c65e05a30a71ffff8333a@eucas1p1.samsung.com>
+        <20200605161458.2513177-1-hslester96@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds uSD support for Cubieboard7 board based on Actions Semi
-S700 SoC. SD0 is connected to uSD slot. Since there is no PMIC support
-added yet, fixed regulator has been used as a regulator node.
 
-Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
----
-Changes since v3:
-	* No change.
-Changes since v2:
-        * No change.
-Changes since v1:
-        * No change.
-Changes since RFC:
-        * No change.
----
- arch/arm64/boot/dts/actions/s700-cubieboard7.dts | 41 ++++++++++++++++++++++++
- arch/arm64/boot/dts/actions/s700.dtsi            |  1 +
- 2 files changed, 42 insertions(+)
+Hi,
 
-diff --git a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
-index 63e375cd9eb4..ec117eb12f3a 100644
---- a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
-+++ b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
-@@ -13,6 +13,7 @@
- 
- 	aliases {
- 		serial3 = &uart3;
-+		mmc0 = &mmc0;
- 	};
- 
- 	chosen {
-@@ -28,6 +29,23 @@
- 		device_type = "memory";
- 		reg = <0x1 0xe0000000 0x0 0x0>;
- 	};
-+
-+	/* Fixed regulator used in the absence of PMIC */
-+	vcc_3v1: vcc-3v1 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "fixed-3.1V";
-+		regulator-min-microvolt = <3100000>;
-+		regulator-max-microvolt = <3100000>;
-+	};
-+
-+	/* Fixed regulator used in the absence of PMIC */
-+	sd_vcc: sd-vcc {
-+		compatible = "regulator-fixed";
-+		regulator-name = "fixed-3.1V";
-+		regulator-min-microvolt = <3100000>;
-+		regulator-max-microvolt = <3100000>;
-+		regulator-always-on;
-+	};
- };
- 
- &i2c0 {
-@@ -81,6 +99,14 @@
- 			bias-pull-up;
- 		};
- 	};
-+
-+	mmc0_default: mmc0_default {
-+		pinmux {
-+			groups = "sd0_d0_mfp", "sd0_d1_mfp", "sd0_d2_d3_mfp",
-+				 "sd0_cmd_mfp", "sd0_clk_mfp";
-+			function = "sd0";
-+		};
-+	};
- };
- 
- &timer {
-@@ -90,3 +116,18 @@
- &uart3 {
- 	status = "okay";
- };
-+
-+/* uSD */
-+&mmc0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mmc0_default>;
-+	cd-gpios = <&pinctrl 120 GPIO_ACTIVE_LOW>;
-+	no-sdio;
-+	no-mmc;
-+	no-1-8-v;
-+	bus-width = <4>;
-+	vmmc-supply = <&sd_vcc>;
-+	vqmmc-supply = <&sd_vcc>;
-+};
-+
-diff --git a/arch/arm64/boot/dts/actions/s700.dtsi b/arch/arm64/boot/dts/actions/s700.dtsi
-index 9ed88aafc2da..ba498cf9217d 100644
---- a/arch/arm64/boot/dts/actions/s700.dtsi
-+++ b/arch/arm64/boot/dts/actions/s700.dtsi
-@@ -4,6 +4,7 @@
-  */
- 
- #include <dt-bindings/clock/actions,s700-cmu.h>
-+#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/power/owl-s700-powergate.h>
- #include <dt-bindings/reset/actions,s700-reset.h>
--- 
-2.7.4
+On 6/5/20 6:14 PM, Chuhong Yuan wrote:
+> Although gx1fb_probe() has handled the failure of gx1fb_map_video_memory()
+> partly, it does not call pci_disable_device() as gx1fb_map_video_memory()
+> calls pci_enable_device().
+> Add the missed function call to fix the bug.
+> 
+> Fixes: 53eed4ec8bcd ("[PATCH] fbdev: geode updates]")
+
+This doesn't seem to be a matching commit.
+
+The proper commit seems to be:
+
+commit a06630f3e7fb29f2524e1d7b009eb8b5a278ba23
+Author: Antonino A. Daplas <adaplas@gmail.com>
+Date:   Mon Jun 26 00:27:04 2006 -0700
+
+    [PATCH] Detaching fbcon: remove calls to pci_disable_device()
+    
+    Detaching fbcon allows individual drivers to be unloaded.  However several
+    drivers call pci_disable_device() upon exit.  This function will disable the
+    BAR's which will kill VGA text mode and/or affect X/DRM.
+    
+    To prevent this, remove calls to pci_disable_device() from several drivers.
+...    
+
+which removed pci_disable_device() calls from:
+
+ drivers/video/aty/radeon_base.c
+ drivers/video/cirrusfb.c
+ drivers/video/geode/gx1fb_core.c
+ drivers/video/geode/gxfb_core.c
+ drivers/video/i810/i810_main.c
+ drivers/video/nvidia/nvidia.c
+ drivers/video/riva/fbdev.c
+
+In order to bring back pci_disable_device() calls to gx1fb
+driver (and other affected ones) you should verify that
+the issue described in the above commit is no longer present
+(preferably with testing modified driver on a real hardware). 
+
+Best regards,
+--
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
+
+> Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+> ---
+> Changes in v2:
+>   - Fix the typo in the subject.
+>   - Modify the label of error handler.
+>   - Refactor the code.
+>  
+>  drivers/video/fbdev/geode/gx1fb_core.c | 24 +++++++++++++++++-------
+>  1 file changed, 17 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/geode/gx1fb_core.c b/drivers/video/fbdev/geode/gx1fb_core.c
+> index 5d34d89fb665..15645244e4d0 100644
+> --- a/drivers/video/fbdev/geode/gx1fb_core.c
+> +++ b/drivers/video/fbdev/geode/gx1fb_core.c
+> @@ -208,29 +208,39 @@ static int gx1fb_map_video_memory(struct fb_info *info, struct pci_dev *dev)
+>  
+>  	ret = pci_request_region(dev, 0, "gx1fb (video)");
+>  	if (ret < 0)
+> -		return ret;
+> +		goto err_disable_device;
+>  	par->vid_regs = pci_ioremap_bar(dev, 0);
+>  	if (!par->vid_regs)
+> -		return -ENOMEM;
+> +		goto err_nomem;
+>  
+> -	if (!request_mem_region(gx_base + 0x8300, 0x100, "gx1fb (display controller)"))
+> -		return -EBUSY;
+> +	if (!request_mem_region(gx_base + 0x8300, 0x100,
+> +				"gx1fb (display controller)")) {
+> +		ret = -EBUSY;
+> +		goto err_disable_device;
+> +	}
+>  	par->dc_regs = ioremap(gx_base + 0x8300, 0x100);
+>  	if (!par->dc_regs)
+> -		return -ENOMEM;
+> +		goto err_nomem;
+>  
+>  	if ((fb_len = gx1_frame_buffer_size()) < 0)
+> -		return -ENOMEM;
+> +		goto err_nomem;
+> +
+>  	info->fix.smem_start = gx_base + 0x800000;
+>  	info->fix.smem_len = fb_len;
+>  	info->screen_base = ioremap(info->fix.smem_start, info->fix.smem_len);
+>  	if (!info->screen_base)
+> -		return -ENOMEM;
+> +		goto err_nomem;
+>  
+>  	dev_info(&dev->dev, "%d Kibyte of video memory at 0x%lx\n",
+>  		 info->fix.smem_len / 1024, info->fix.smem_start);
+>  
+>  	return 0;
+> +
+> +err_nomem:
+> +	ret = -ENOMEM;
+> +err_disable_device:
+> +	pci_disable_device(dev);
+> +	return ret;
+>  }
+>  
+>  static int parse_panel_option(struct fb_info *info)
+> 
 
