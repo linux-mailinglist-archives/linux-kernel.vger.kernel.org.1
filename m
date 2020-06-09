@@ -2,194 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E721F344D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 08:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0E31F3456
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 08:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgFIGro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 02:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727831AbgFIGrl (ORCPT
+        id S1727944AbgFIGsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 02:48:53 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:10666 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726935AbgFIGsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 02:47:41 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD52C08C5C2
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 23:47:40 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id u26so1546030wmn.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 23:47:40 -0700 (PDT)
+        Tue, 9 Jun 2020 02:48:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1591685330; x=1623221330;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=LCs9de9PirTW/i9pCH2wjvcA8DKruW1YMWfpQUa1P9Q=;
+  b=BTeBOB/G2ZK91FlY+Gs6D0cU1eLiI74o2rdFPiklK0PQcfSZBvF8uxrM
+   r4ALlPvZZVmi3dr6zjVmhLYCjbrufUVOL0BIdFpsRS/M81uw6KA/OKVZz
+   1X2jh6t7GFK+VAt5yY9JSkqej2gJzHR1gYoXCa6/kvQq1J2TTNUxGXEFH
+   MeM+8xepT29v8KfzZtEz+s+eIXu1NYStiLE4zJQrOaN/kHpQaM2XhAJxz
+   Fmlev4+7J7dCY8z35sEPDPUPNlDU06xH9BErOF1QT+MIVMhdFZn64s9R7
+   q+IQPtzDpJQBhIYJQULkocN5TcH+5+PklDcSetarpN7aEJnA1rtxZGh6h
+   w==;
+IronPort-SDR: Ie+Y+uQwEy0CKqxMXQgotagQ0L+JMSwLD1SiM4Ue9zrn4KAqdkPOm/mdy1JfizYGTu7qNzyA3I
+ jkGHGKqJ7/Y/G5OyKe98DHxEW3cuxtZYDkKS6ePKWGAhuyaIpXUozKS/f6OpO7Bzdos3szmUp1
+ 3fC2a+SamLTbSTO2OaLptZXsrnto7FRto+IQfudljn2j9hHMMRMguHpDIy9FITSKSc5wPfpg+w
+ 2QOHT9757uADwqaf02oD2wsrHlaY9Ebc350Ff5f5kJTVEIb1bJadoziMw7PuJsHTUyLMl8grrd
+ 0B4=
+X-IronPort-AV: E=Sophos;i="5.73,490,1583164800"; 
+   d="scan'208";a="140934927"
+Received: from mail-bn8nam11lp2177.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.177])
+  by ob1.hgst.iphmx.com with ESMTP; 09 Jun 2020 14:48:48 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SB+n7fRBdDo+z0/WZkGObekLE9PXoaqB45cBb6LjLPKGapQ/jL+GFIkPoTR9GuQEjgpXvDHx2jL3oPLi+sBx3G9btioaB8KMQDOEi+kk7+pIxvLx95E/JCX7GhklUBjHf10APki3Ocw6RABXOn0tQQgiVpNRUr4IqfkNnm7rSfP6rFziM2YmhuPAwJIIjCgmsyI6nW+9WRyOCmF4OA/NGtuaJxNzC5T76ITOmsYpxqu7nHZqtdpW705QuzSc7H88Zhfl2PUNJXmEWNnXutbYDZZ1hB0/eG00++sjKmuv3QnqJO016tAYGAqpskMhaXRQ211r9QrtD8Wgu6//CH7irg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LCs9de9PirTW/i9pCH2wjvcA8DKruW1YMWfpQUa1P9Q=;
+ b=b21jWc6ZU2JDB1izWJD9nRnj4t/hFVHBBmdJY9jUOGyHRFvpdu4C3hOzzrsTlijLJi8HP3IJAqZSrTZOZyarDmYxYYO5ePjH9Y+ge3RyvtnSufwDFQG5DpOpZDuAej3F1zQ5rnCGPD+H0Yd6IagZLBfR10yQ0Opf+cPmJp/pTVhUrSDWNQC1Sf7BaRFKENR3nI9SR8PFYqW3zj16QzJaX6wrRGrsuEzBxkcokW+KbEejZ+fH6ATXZ/WQs+TIMqPGTOYiz+K28tXUPf3J5JJ1qlG5hfMdmgwquVAAmksJfsE4ttjl0AOu8FNQFFDAo+Az8kO695zRZ+nhNWQnNHmc/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=AwtDdz17DFDmRBPEGuRAOpx0vtQ2m9UoLoRBSQqsyp0=;
-        b=f0FgM4Vro6vfvlNeSVfc1iBcrhCl+E0gwx58KhDVXNN908yZbqUz+mMshmPtCEnlmR
-         VwW2GNhT56ZYbGOa1IoMFhQ73ta0IpXBTP+UnYFqFIqeYSD8Q+KmHWAe9EUQkVP/Ti54
-         2XsWxtT9M+slp4+imVCL4xcL/NqM/6mxNI8M3B+BWoOxSuhJuafxLu/sZkpSqDM/DOJ/
-         rGB3oVrbVqO7RWvp+yWo1R+iT3pmyikiZZmMzq6MGzQC6rPJSiovGWM2xWLq4hKl1H0Z
-         /bougyij11X7OPIzVjdnCIsdwnbNAwC3aiABpVHKE4o5DP2Fj70XHrncpk+OoU1zAf64
-         asXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=AwtDdz17DFDmRBPEGuRAOpx0vtQ2m9UoLoRBSQqsyp0=;
-        b=YXmDgzOkyE+DpIwjmhQzN9m+1+gd52tPKthNSh20vjU8WuuQnfhgFQm4o5rmsTOnnt
-         VnjRa3/b2FhUj10LOwzAIISGk2SibE7YH9jLav24xnP5YRS+7y9JzW0XRjw64HqRr8Ua
-         Y6A1jSRhpERV+909Htt211e2NL5/sbKzKycgZQZsYmJOspmYG1wUO3x05yeWSO8iXg6H
-         +Sg1AC40oxK1ylSpaRCAhfLaRxyF05ityrmlprQWMRjh3ZdSd6iA+pJXT/RlBlodaCTq
-         O1DD/OH8CvWX04diIToRTHPwMhGjGslbeHJuCwZMuzEYIsTJ0AE04y5xcBa6K63LdXbN
-         aPBg==
-X-Gm-Message-State: AOAM530XFcBjQsncmNCWt0wtPJPif1qpi1CtpdgGDiGEwea1HROycoFb
-        WLENFsJOf6P1Ug2Fgm3791YAuw==
-X-Google-Smtp-Source: ABdhPJyLJRU7T7hP/+Yp6Xb+G+8dn3OI3DNS03pAkr/nWuDA1Spa9xboardProc7fDE8512XGawIOA==
-X-Received: by 2002:a7b:c7d8:: with SMTP id z24mr2371607wmk.28.1591685258604;
-        Mon, 08 Jun 2020 23:47:38 -0700 (PDT)
-Received: from dell ([2.27.167.101])
-        by smtp.gmail.com with ESMTPSA id x205sm1818570wmx.21.2020.06.08.23.47.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 23:47:37 -0700 (PDT)
-Date:   Tue, 9 Jun 2020 07:47:35 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        david.m.ertman@intel.com, shiraz.saleem@intel.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v4 02/11] mfd: Add support for Kontron sl28cpld
- management controller
-Message-ID: <20200609064735.GH4106@dell>
-References: <20200605065709.GD3714@dell>
- <20200605105026.GC5413@sirena.org.uk>
- <c5632bfab3956265e90fc2fb6c0b3cae@walle.cc>
- <20200606114645.GB2055@sirena.org.uk>
- <dc052a5c77171014ecc465b1da8b7ef8@walle.cc>
- <20200608082827.GB3567@dell>
- <CAHp75VdiH=J-ovCdh1RFJDW_bJM8=pbXRaHmB691GLb-5oBmYQ@mail.gmail.com>
- <7d7feb374cbf5a587dc1ce65fc3ad672@walle.cc>
- <20200608185651.GD4106@dell>
- <32231f26f7028d62aeda8fdb3364faf1@walle.cc>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LCs9de9PirTW/i9pCH2wjvcA8DKruW1YMWfpQUa1P9Q=;
+ b=cEjyZGmb3rReXU9obvPx8aeQOl34F1IVgr4HLKcvH56ZQTa9fdurjFb0NoBTTqtv3eL1ayEtzIIT8xunWI/G7LHTXb+FZa1U6eKQzCTGWRTxxLZ2qpHLDkTpueMGdx3fyDGqz4ow+QJP9NwEA9u090LSGZz4aX57pUZJuzM80K8=
+Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
+ by SN6PR04MB4782.namprd04.prod.outlook.com (2603:10b6:805:af::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18; Tue, 9 Jun
+ 2020 06:48:46 +0000
+Received: from SN6PR04MB4640.namprd04.prod.outlook.com
+ ([fe80::9cbe:995f:c25f:d288]) by SN6PR04MB4640.namprd04.prod.outlook.com
+ ([fe80::9cbe:995f:c25f:d288%6]) with mapi id 15.20.3066.023; Tue, 9 Jun 2020
+ 06:48:46 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Subject: RE: [RFC PATCH 4/5] scsi: ufs: L2P map management for HPB read
+Thread-Topic: [RFC PATCH 4/5] scsi: ufs: L2P map management for HPB read
+Thread-Index: AQHWOt5z/DbVMmIRNkq+06TbmiHC8KjLsIjggAPKWwCAAGFjwA==
+Date:   Tue, 9 Jun 2020 06:48:46 +0000
+Message-ID: <SN6PR04MB464062D306BA6D635F274CD4FC820@SN6PR04MB4640.namprd04.prod.outlook.com>
+References: <SN6PR04MB46409E16CCF95A0AA9FFE944FC870@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <231786897.01591322101492.JavaMail.epsvc@epcpadp1>
+        <336371513.41591320902369.JavaMail.epsvc@epcpadp1>
+        <963815509.21591320301642.JavaMail.epsvc@epcpadp1>
+        <231786897.01591320001492.JavaMail.epsvc@epcpadp1>
+        <963815509.21591323002276.JavaMail.epsvc@epcpadp1>
+        <CGME20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882@epcms2p4>
+ <1776409896.101591664283293.JavaMail.epsvc@epcpadp2>
+In-Reply-To: <1776409896.101591664283293.JavaMail.epsvc@epcpadp2>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: defa6f76-644c-4663-4266-08d80c412875
+x-ms-traffictypediagnostic: SN6PR04MB4782:
+x-microsoft-antispam-prvs: <SN6PR04MB47826F29877C3476CED42326FC820@SN6PR04MB4782.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 042957ACD7
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: iupXbVoDK4c8fPjGwD/F8pOBqz8ONV7KQ0RI+bimn9aZbSDchQ4wwVVpwQsP8lSltoto5AcS3T8iPzDSfwh4fjqdvkPGnOHInJM0qi+lAztBYAndXjwkV4ZJwfeKDkigz7nyGTieUroj8upJQcIp4F5o0MorJJ8wQOyIL0V8BgBSeXqKK26rq/6ltR1e8uQu4cLcUNwoK2lZq/brX51UeCkWl8GlH/7KUiNLhN7BS2Gf3lbhwQN8MljVyhLAFfXalJkr+Lp2AwY7qzAbU79GGi+K+d9bk4XYpdDQW0bga7pW4qmqxXDbFdSMIK5pdfb9xm0NHo/U/xAs6lO1mtxTUprCufFkhRVbmeVxThbTtmv3dPSklhVpDpTM2Qow5enk
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(376002)(366004)(39860400002)(346002)(33656002)(5660300002)(83380400001)(54906003)(52536014)(110136005)(86362001)(8936002)(8676002)(64756008)(66476007)(55016002)(2906002)(26005)(316002)(66556008)(7696005)(478600001)(6506007)(76116006)(71200400001)(4744005)(66946007)(9686003)(186003)(66446008)(4326008)(7416002)(921003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: clgJLdEpM8QzZoGrAMepXHnVvJ2y8UvSr28et1/ndkdCT7KwQWB4ZCON+JEk+WTebqMOUnwAuYSThK4ycYRK8tA35zKo15VEN5b4FolskFKslbDQnzdaoAENl2gCMSyNtjzTgMVcsjIKyHJtIA/1AyRZVCNvgN6VNJblBSOXY3XlVZH8BidigxBhR+YHbjoMh0RzrPZtoHtjan01NoUR4uPikvcbuWppUFHQ3mrvioRA/c4it92UfuIqGRpBrgd2hk4KttnY3gZSGwbCh/dOt1nJA+YbWeQ+Veco7SpmeFKk9wpInrvPfk3UF57atCgx2aU4uDWq86ArgKMjWyr355sNG+Kd9J2uq9spV9e7vbwkjhARNrSxGoCsepV4jDaCJw0G4vOEKn8itWacMTu4CehVCg09lCd6NtBt4M89xIgt3KtpKZmztkAoI8/EJxk+P6OS7Xi4IX7LTBHiP5smUVMIfcP82R9MDpqtyEo/0hE=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <32231f26f7028d62aeda8fdb3364faf1@walle.cc>
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: defa6f76-644c-4663-4266-08d80c412875
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jun 2020 06:48:46.2806
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: u72aqGgI+INS8nLq1QOLieef0w4lIHYxM2av9W89GL0oxZfFwu56TSyg/B70EP41pOfaZdrbY4ukT4S86n4obA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4782
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Jun 2020, Michael Walle wrote:
-
-> Am 2020-06-08 20:56, schrieb Lee Jones:
-> > On Mon, 08 Jun 2020, Michael Walle wrote:
-> > 
-> > > Am 2020-06-08 12:02, schrieb Andy Shevchenko:
-> > > > +Cc: some Intel people WRT our internal discussion about similar
-> > > > problem and solutions.
-> > > >
-> > > > On Mon, Jun 8, 2020 at 11:30 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > > > > On Sat, 06 Jun 2020, Michael Walle wrote:
-> > > > > > Am 2020-06-06 13:46, schrieb Mark Brown:
-> > > > > > > On Fri, Jun 05, 2020 at 10:07:36PM +0200, Michael Walle wrote:
-> > > > > > > > Am 2020-06-05 12:50, schrieb Mark Brown:
-> > > >
-> > > > ...
-> > > >
-> > > > > Right.  I'm suggesting a means to extrapolate complex shared and
-> > > > > sometimes intertwined batches of register sets to be consumed by
-> > > > > multiple (sub-)devices spanning different subsystems.
-> > > > >
-> > > > > Actually scrap that.  The most common case I see is a single Regmap
-> > > > > covering all child-devices.
-> > > >
-> > > > Yes, because often we need a synchronization across the entire address
-> > > > space of the (parent) device in question.
-> > > >
-> > > > >  It would be great if there was a way in
-> > > > > which we could make an assumption that the entire register address
-> > > > > space for a 'tagged' (MFD) device is to be shared (via Regmap) between
-> > > > > each of the devices described by its child-nodes.  Probably by picking
-> > > > > up on the 'simple-mfd' compatible string in the first instance.
-> > > > >
-> > > > > Rob, is the above something you would contemplate?
-> > > > >
-> > > > > Michael, do your register addresses overlap i.e. are they intermingled
-> > > > > with one another?  Do multiple child devices need access to the same
-> > > > > registers i.e. are they shared?
-> > > 
-> > > No they don't overlap, expect for maybe the version register, which is
-> > > just there once and not per function block.
-> > 
-> > Then what's stopping you having each device Regmap their own space?
-> 
-> Because its just one I2C device, AFAIK thats not possible, right?
-
-Not sure what (if any) the restrictions are.
-
-I can't think of any reasons why not, off the top of my head.
-
-Does Regmap only deal with shared accesses from multiple devices
-accessing a single register map, or can it also handle multiple
-devices communicating over a single I2C channel?
-
-One for Mark perhaps.
-
-> > The issues I wish to resolve using 'simple-mfd' are when sub-devices
-> > register maps overlap and intertwine.
-
-[...]
-
-> > > > > What do these bits configure?
-> > > 
-> > > - hardware strappings which have to be there before the board powers
-> > > up,
-> > >   like clocking mode for different SerDes settings
-> > > - "keep-in-reset" bits for onboard peripherals if you want to save
-> > > power
-> > > - disable watchdog bits (there is a watchdog which is active right
-> > > from
-> > >   the start and supervises the bootloader start and switches to
-> > > failsafe
-> > >   mode if it wasn't successfully started)
-> > > - special boot modes, like eMMC, etc.
-> > > 
-> > > Think of it as a 16bit configuration word.
-> > 
-> > And you wish for users to be able to view these at run-time?
-> 
-> And esp. change them.
-> 
-> > Can they adapt any of them on-the-fly or will the be RO?
-> 
-> They are R/W but only will only affect the board behavior after a reset.
-
-I see.  Makes sense.  This is board controller territory.  Perhaps
-suitable for inclusion into drivers/soc or drivers/platform.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+PiA+ID4gICAgICAgICAgICAgICAgIGRldl9pbmZvKCZocGItPmhwYl9sdV9kZXYsICJ1ZnNocGIg
+cmVzdW1lIik7DQo+ID4gPiAgICAgICAgICAgICAgICAgdWZzaHBiX3NldF9zdGF0ZShocGIsIEhQ
+Ql9QUkVTRU5UKTsNCj4gPiA+ICsgICAgICAgICAgICAgICBpZiAoIXVmc2hwYl9pc19lbXB0eV9y
+c3BfbGlzdHMoaHBiKSkNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHF1ZXVlX3dvcmso
+dWZzaHBiX2Rydi51ZnNocGJfd3EsICZocGItPm1hcF93b3JrKTsNCj4gPiBBaGhhIC0gc28geW91
+IGFyZSB1c2luZyB0aGUgdWZzIGRyaXZlciBwbSBmbG93cyB0byBwb2xsIHlvdXIgd29yayBxdWV1
+ZS4NCj4gPiBXaHkgZGV2aWNlIHJlY29tbWVuZGF0aW9ucyBpc24ndCBlbm91Z2g/DQo+IEkgZG9u
+J3QgdW5kZXJzdGFuZCB0aGlzIGNvbW1lbnQuIFRoZSBjb2RlIHJlc3VtZXMgbWFwX3dvcmsgdGhh
+dCB3YXMNCj4gc3RvcHBlZCBieSBQTSBkdXJpbmcgdGhlIG1hcCByZXF1ZXN0Lg0KPiBQbGVhc2Ug
+ZXhwbGFpbiB5b3VyIGNvbmNlcm5zLg0KVGhpcyBpcyBub3QgYSBjb25jZXJuLCBqdXN0IGEgcXVl
+c3Rpb24uDQpJZiBhIG1hcCByZXF1ZXN0IHN0YXJ0ZWQgd2hpbGUgcnVudGltZS9zeXN0ZW0gc3Vz
+cGVuZCwgY2FuIHlvdSBzaGFyZSBpdHMgZmxvdz8NCg0K
