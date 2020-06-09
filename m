@@ -2,123 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF68D1F44C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90051F44D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388381AbgFISHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388365AbgFISHr (ORCPT
+        id S2388433AbgFISIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:08:40 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40314 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732878AbgFISIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 14:07:47 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304EFC05BD1E;
-        Tue,  9 Jun 2020 11:07:47 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t7so8350253plr.0;
-        Tue, 09 Jun 2020 11:07:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=leBIztLZS+gycW5tDPBUooZkb1WMMdh915dWRfvmIIw=;
-        b=Udt/fSiioTBFCo+SzRpdK9Rp4MHzgaXKP91jdrViNRrlf3IhivsOFcUPaKMGiH9qjc
-         fN2N0NcPwTucK5KypB17fl/nvm9CzspLJBO6als1XmamXHhSN9cnHCAsoZSvdpSWUKjN
-         l825sZT/YT998dqltM51cESrg12VV98CQw+82l9Sx9501dWw8E0kGfdx+uAbRJX5s3Rl
-         Z8XQaXJs3RnCd8h2jO9x5crfltFaO8epHxFzBjU/w4j25gpsNmWdSUSPAIdqP3DkhfZV
-         D8a9nzX7BcUNAGspW4kLUgZ+6E0TLKXVDqo+Z7bMwmIWZKGtnMp53TPDDzVbfCJ/1Lm/
-         sh/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=leBIztLZS+gycW5tDPBUooZkb1WMMdh915dWRfvmIIw=;
-        b=ov2MTJ0azpv25KBz7YRK/ggZv2Uw6heqt7FTrYs6AEeGP1zgoRrdzqnfZkae8PInMM
-         wZ3podEvpd1ARD2H2jcUdvqPhEouE+svgvC0izmXZus21wLQHabmZ1v1RpiM0rjzQPhN
-         es7kRV0Pa+18IiwsC7AqpP5/oKFTrVAhtvbaWLihIxpZCuKcxAonEJtgAbGiJF7X2k93
-         W+LhZbs7FsHloEZrPyMSeEY+V3e8czukkvG2huAuAdUSx1PP8XNDOHDPgMglmv3N8zG1
-         eoNxIO575eSWCg3K2reeMTiW2M4LCRJ0JMT/tfaq74HqFBrbk+u782PERX8s9pe6y3nr
-         S6oQ==
-X-Gm-Message-State: AOAM533Q5gw6FKQ3ycMh8gOL4ar5me4Cv87jKOrUNgyvlYnz79rOpAJk
-        SgJ0szz4GWF17jtnaaxuJGmzFixn
-X-Google-Smtp-Source: ABdhPJw4by/dyQj/70rTpHEZGgpHl+ORIEEB5sxvU9/qLdJKKjKPZvj7a58YrGkamO5R6/SKn4HDQw==
-X-Received: by 2002:a17:902:ab81:: with SMTP id f1mr742977plr.321.1591726063862;
-        Tue, 09 Jun 2020 11:07:43 -0700 (PDT)
-Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o18sm11683012pfu.138.2020.06.09.11.07.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jun 2020 11:07:43 -0700 (PDT)
-Subject: Re: [PATCH v2 1/9] dt-bindings: reset: Add a binding for the RPi
- Firmware reset controller
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        gregkh@linuxfoundation.org, wahrenst@gmx.net,
-        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Eric Anholt <eric@anholt.net>
-Cc:     linux-usb@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, tim.gover@raspberrypi.org,
-        linux-pci@vger.kernel.org, helgaas@kernel.org,
-        andy.shevchenko@gmail.com, mathias.nyman@linux.intel.com,
-        lorenzo.pieralisi@arm.com, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org
-References: <20200609175003.19793-1-nsaenzjulienne@suse.de>
- <20200609175003.19793-2-nsaenzjulienne@suse.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <c3dc9b7e-4440-7e8a-3da8-b147c48c4c40@gmail.com>
-Date:   Tue, 9 Jun 2020 11:07:41 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.9.0
+        Tue, 9 Jun 2020 14:08:36 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 059I7reh053985;
+        Tue, 9 Jun 2020 13:07:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591726073;
+        bh=cm2RuIQ71UrmMw+X34myMwl7z6ENm3bU422kS2bPHGA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=f5XnrPJs4w2Wo3RbXRbUSSWUchDqz65sZXYm8RgxcPxtSRoPugfzAsuRu1O3bXhb7
+         naz1VTXM5GrtUAGtnVS6BcLUtTcSNlTQ2ItxFZwU0VG9rLz1yC262gDzxYArDGbNXn
+         VZ1Y5gvtf/DrguwAwzXcBNO1YuSzLUkB7BAEQ1UY=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 059I7rHB096669
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Jun 2020 13:07:53 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Jun
+ 2020 13:07:52 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 9 Jun 2020 13:07:52 -0500
+Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 059I7pnU088442;
+        Tue, 9 Jun 2020 13:07:51 -0500
+Subject: Re: [RFC PATCH 0/2] TAS2563 DSP Firmware Loader
+To:     Mark Brown <broonie@kernel.org>
+CC:     <lgirdwood@gmail.com>, <perex@perex.cz>, <tiwai@suse.com>,
+        <robh@kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20200609172841.22541-1-dmurphy@ti.com>
+ <20200609175203.GP4583@sirena.org.uk>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <6d6aaed3-dac8-e1ec-436c-9b04273df2b3@ti.com>
+Date:   Tue, 9 Jun 2020 13:07:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200609175003.19793-2-nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20200609175203.GP4583@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Mark
 
+On 6/9/20 12:52 PM, Mark Brown wrote:
+> On Tue, Jun 09, 2020 at 12:28:39PM -0500, Dan Murphy wrote:
+>
+>> These programs and configurations are selectable via files under the I2C dev
+>> node.  There may be a better way to select this through ALSA controls but I was
+>> unable to find a good example of this.  This is why this is an RFC patchset.
+> I think you can just use enums for most of this - what you want to do I
+> think is parse the firmware, build templates for the controls and then
+> add them with snd_soc_add_component_controls().  Userspace *should* cope
+> with controls being hotplugged.
 
-On 6/9/2020 10:49 AM, Nicolas Saenz Julienne wrote:
-> The firmware running on the RPi VideoCore can be used to reset and
-> initialize HW controlled by the firmware.
-> 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> 
-> ---
-> 
-> Changes since v1:
->  - Correct cells binding as per Florian's comment
->  - Change compatible string to be more generic
-> 
->  .../arm/bcm/raspberrypi,bcm2835-firmware.yaml | 21 +++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
-> index b48ed875eb8e..23a885af3a28 100644
-> --- a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
-> +++ b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
-> @@ -39,6 +39,22 @@ properties:
->        - compatible
->        - "#clock-cells"
->  
-> +  reset:
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        const: raspberrypi,firmware-reset
-> +
-> +      "#reset-cells":
-> +        const: 1
-> +        description: >
+Yes this was my concern if userspace could cope with dynamic controls.
 
-Is this a stray '>' character? If so, with that fixed:
+Dan
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
