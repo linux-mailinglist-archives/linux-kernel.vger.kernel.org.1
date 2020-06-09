@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161361F45B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FF41F45B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388876AbgFISTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:19:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35500 "EHLO mail.kernel.org"
+        id S2388872AbgFISTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:19:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732511AbgFIRt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:49:29 -0400
+        id S1732521AbgFIRtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:49:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C063920823;
-        Tue,  9 Jun 2020 17:49:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13FA320825;
+        Tue,  9 Jun 2020 17:49:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724969;
-        bh=poBukSSzD7wFHESTRR5ANphHtD5xnl5TZWv1Mq6dpi4=;
+        s=default; t=1591724971;
+        bh=SY18GA+tIARb2YcCuYXnUlMY8ORXBTCf1RfbNoTV/5g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YFRgWazgEgAqzKfJJy/jCqVESAhpcakKWngm25Fz+7iE0JoKTjZ9iwFcgiQnuzHP8
-         dYhBLLUuwWYTqQDKCWVgF066VHKR9S2bq5QOfNCylheyu0i8wBWkg7gwX5rCrhqWsi
-         83Zp7Yl0KTFX1ygnfmlD6hp193/4k8pA2Qm/aMIY=
+        b=0EEVdbA5XtZf+u1K1ilcVksiHy3r9xnhndS73XgikRuxJn8iddoknyqH+OxfOOJ0S
+         xl1H6BdqcPao/U43gC2hfa2sfhDhq3KiihkT+R5lB0QUpZcetNHObbH0D43cY3zXVv
+         4rxH39J30Hda4yoweyIQknWyYa2kn3nkZBifnFJ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fan Yang <Fan_Yang@sjtu.edu.cn>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 15/46] mm: Fix mremap not considering huge pmd devmap
-Date:   Tue,  9 Jun 2020 19:44:31 +0200
-Message-Id: <20200609174024.331867792@linuxfoundation.org>
+        stable@vger.kernel.org, Scott Shumate <scott.shumate@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 4.14 16/46] HID: sony: Fix for broken buttons on DS3 USB dongles
+Date:   Tue,  9 Jun 2020 19:44:32 +0200
+Message-Id: <20200609174024.450732239@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
 References: <20200609174022.938987501@linuxfoundation.org>
@@ -45,56 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fan Yang <Fan_Yang@sjtu.edu.cn>
+From: Scott Shumate <scott.shumate@gmail.com>
 
-commit 5bfea2d9b17f1034a68147a8b03b9789af5700f9 upstream.
+commit e72455b898ac678667c5674668186b4670d87d11 upstream.
 
-The original code in mm/mremap.c checks huge pmd by:
+Fix for non-working buttons on knock-off USB dongles for Sony
+controllers. These USB dongles are used to connect older Sony DA/DS1/DS2
+controllers via USB and are common on Amazon, AliExpress, etc.  Without
+the patch, the square, X, and circle buttons do not function.  These
+dongles used to work prior to kernel 4.10 but removing the global DS3
+report fixup in commit e19a267b9987 ("HID: sony: DS3 comply to Linux gamepad
+spec") exposed the problem.
 
-		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd)) {
+Many people reported the problem on the Ubuntu forums and are working
+around the problem by falling back to the 4.9 hid-sony driver.
 
-However, a DAX mapped nvdimm is mapped as huge page (by default) but it
-is not transparent huge page (_PAGE_PSE | PAGE_DEVMAP).  This commit
-changes the condition to include the case.
+The problem stems from these dongles incorrectly reporting their button
+count as 13 instead of 16.  This patch fixes up the report descriptor by
+changing the button report count to 16 and removing 3 padding bits.
 
-This addresses CVE-2020-10757.
-
-Fixes: 5c7fb56e5e3f ("mm, dax: dax-pmd vs thp-pmd vs hugetlbfs-pmd")
-Cc: <stable@vger.kernel.org>
-Reported-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
-Signed-off-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
-Tested-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
-Tested-by: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: stable@vger.kernel.org
+Fixes: e19a267b9987 ("HID: sony: DS3 comply to Linux gamepad spec")
+Signed-off-by: Scott Shumate <scott.shumate@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/include/asm/pgtable.h |    1 +
- mm/mremap.c                    |    2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/hid/hid-sony.c |   17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -234,6 +234,7 @@ static inline int pmd_large(pmd_t pte)
+--- a/drivers/hid/hid-sony.c
++++ b/drivers/hid/hid-sony.c
+@@ -837,6 +837,23 @@ static u8 *sony_report_fixup(struct hid_
+ 	if (sc->quirks & PS3REMOTE)
+ 		return ps3remote_fixup(hdev, rdesc, rsize);
+ 
++	/*
++	 * Some knock-off USB dongles incorrectly report their button count
++	 * as 13 instead of 16 causing three non-functional buttons.
++	 */
++	if ((sc->quirks & SIXAXIS_CONTROLLER_USB) && *rsize >= 45 &&
++		/* Report Count (13) */
++		rdesc[23] == 0x95 && rdesc[24] == 0x0D &&
++		/* Usage Maximum (13) */
++		rdesc[37] == 0x29 && rdesc[38] == 0x0D &&
++		/* Report Count (3) */
++		rdesc[43] == 0x95 && rdesc[44] == 0x03) {
++		hid_info(hdev, "Fixing up USB dongle report descriptor\n");
++		rdesc[24] = 0x10;
++		rdesc[38] = 0x10;
++		rdesc[44] = 0x00;
++	}
++
+ 	return rdesc;
  }
  
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+/* NOTE: when predicate huge page, consider also pmd_devmap, or use pmd_large */
- static inline int pmd_trans_huge(pmd_t pmd)
- {
- 	return (pmd_val(pmd) & (_PAGE_PSE|_PAGE_DEVMAP)) == _PAGE_PSE;
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -223,7 +223,7 @@ unsigned long move_page_tables(struct vm
- 		new_pmd = alloc_new_pmd(vma->vm_mm, vma, new_addr);
- 		if (!new_pmd)
- 			break;
--		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd)) {
-+		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd) || pmd_devmap(*old_pmd)) {
- 			if (extent == HPAGE_PMD_SIZE) {
- 				bool moved;
- 				/* See comment in move_ptes() */
 
 
