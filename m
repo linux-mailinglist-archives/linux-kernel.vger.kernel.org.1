@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804A41F42C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62641F42EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730589AbgFIRrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:47:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58864 "EHLO mail.kernel.org"
+        id S1732354AbgFIRsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:48:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732032AbgFIRre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:47:34 -0400
+        id S1732285AbgFIRs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:48:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7207B207F9;
-        Tue,  9 Jun 2020 17:47:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE0F720835;
+        Tue,  9 Jun 2020 17:48:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724853;
-        bh=S4KM5I5mlZ7ee/9OlhpsT18kVRzb28Dx0RM1xpD9ayk=;
+        s=default; t=1591724906;
+        bh=PeS/4GIPSGbQf2eV5Sw0OOAjraoC0SV0L+r5iD4XQ/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ay/h++D+UeiVahDRs2S85k5XlLm3r/jTp60akUresC9Rj405F5nG5j/qV31E94CsM
-         9nPv9f8FH+h3JD2ryQXhuO50WT5T3Wow03p/LWMmSv43ZHWcAc5fjGnmfYMZIaY5je
-         jlq4d7WxPD6PqKeQdjp8sxQnul9kNT3+kuRrp3GM=
+        b=BwfoBygzVr5Tk0p4qIsG9lYDbZGyTv7T/HnNGC328m9jS//befCYeeAIf+x7+V1hs
+         T3t439V5sWuihyOS6WgnVaLOEyPCPas+cTZik4ame49bYmik29w/TL2SJLiYelmqfZ
+         Pstn4kKOAlqHW2YUDfEpgoplOrjLwX1rgNYKsrtw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Borislav Petkov <bp@suse.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 10/36] x86/mmiotrace: Use cpumask_available() for cpumask_var_t variables
-Date:   Tue,  9 Jun 2020 19:44:10 +0200
-Message-Id: <20200609173933.873623905@linuxfoundation.org>
+Subject: [PATCH 4.9 05/42] s390/ftrace: save traced function caller
+Date:   Tue,  9 Jun 2020 19:44:11 +0200
+Message-Id: <20200609174016.016075931@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
-References: <20200609173933.288044334@linuxfoundation.org>
+In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
+References: <20200609174015.379493548@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,65 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Vasily Gorbik <gor@linux.ibm.com>
 
-[ Upstream commit d7110a26e5905ec2fe3fc88bc6a538901accb72b ]
+[ Upstream commit b4adfe55915d8363e244e42386d69567db1719b9 ]
 
-When building with Clang + -Wtautological-compare and
-CONFIG_CPUMASK_OFFSTACK unset:
+A typical backtrace acquired from ftraced function currently looks like
+the following (e.g. for "path_openat"):
 
-  arch/x86/mm/mmio-mod.c:375:6: warning: comparison of array 'downed_cpus'
-  equal to a null pointer is always false [-Wtautological-pointer-compare]
-          if (downed_cpus == NULL &&
-              ^~~~~~~~~~~    ~~~~
-  arch/x86/mm/mmio-mod.c:405:6: warning: comparison of array 'downed_cpus'
-  equal to a null pointer is always false [-Wtautological-pointer-compare]
-          if (downed_cpus == NULL || cpumask_weight(downed_cpus) == 0)
-              ^~~~~~~~~~~    ~~~~
-  2 warnings generated.
+arch_stack_walk+0x15c/0x2d8
+stack_trace_save+0x50/0x68
+stack_trace_call+0x15a/0x3b8
+ftrace_graph_caller+0x0/0x1c
+0x3e0007e3c98 <- ftraced function caller (should be do_filp_open+0x7c/0xe8)
+do_open_execat+0x70/0x1b8
+__do_execve_file.isra.0+0x7d8/0x860
+__s390x_sys_execve+0x56/0x68
+system_call+0xdc/0x2d8
 
-Commit
+Note random "0x3e0007e3c98" stack value as ftraced function caller. This
+value causes either imprecise unwinder result or unwinding failure.
+That "0x3e0007e3c98" comes from r14 of ftraced function stack frame, which
+it haven't had a chance to initialize since the very first instruction
+calls ftrace code ("ftrace_caller"). (ftraced function might never
+save r14 as well). Nevertheless according to s390 ABI any function
+is called with stack frame allocated for it and r14 contains return
+address. "ftrace_caller" itself is called with "brasl %r0,ftrace_caller".
+So, to fix this issue simply always save traced function caller onto
+ftraced function stack frame.
 
-  f7e30f01a9e2 ("cpumask: Add helper cpumask_available()")
-
-added cpumask_available() to fix warnings of this nature. Use that here
-so that clang does not warn regardless of CONFIG_CPUMASK_OFFSTACK's
-value.
-
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Link: https://github.com/ClangBuiltLinux/linux/issues/982
-Link: https://lkml.kernel.org/r/20200408205323.44490-1-natechancellor@gmail.com
+Reported-by: Sven Schnelle <svens@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/mm/mmio-mod.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/s390/kernel/mcount.S | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/mm/mmio-mod.c b/arch/x86/mm/mmio-mod.c
-index 0057a7accfb1..5448ad4d0703 100644
---- a/arch/x86/mm/mmio-mod.c
-+++ b/arch/x86/mm/mmio-mod.c
-@@ -385,7 +385,7 @@ static void enter_uniprocessor(void)
- 	int cpu;
- 	int err;
- 
--	if (downed_cpus == NULL &&
-+	if (!cpumask_available(downed_cpus) &&
- 	    !alloc_cpumask_var(&downed_cpus, GFP_KERNEL)) {
- 		pr_notice("Failed to allocate mask\n");
- 		goto out;
-@@ -415,7 +415,7 @@ static void leave_uniprocessor(void)
- 	int cpu;
- 	int err;
- 
--	if (downed_cpus == NULL || cpumask_weight(downed_cpus) == 0)
-+	if (!cpumask_available(downed_cpus) || cpumask_weight(downed_cpus) == 0)
- 		return;
- 	pr_notice("Re-enabling CPUs...\n");
- 	for_each_cpu(cpu, downed_cpus) {
+diff --git a/arch/s390/kernel/mcount.S b/arch/s390/kernel/mcount.S
+index 802a4ded9a62..e9df35249f9f 100644
+--- a/arch/s390/kernel/mcount.S
++++ b/arch/s390/kernel/mcount.S
+@@ -39,6 +39,7 @@ EXPORT_SYMBOL(_mcount)
+ ENTRY(ftrace_caller)
+ 	.globl	ftrace_regs_caller
+ 	.set	ftrace_regs_caller,ftrace_caller
++	stg	%r14,(__SF_GPRS+8*8)(%r15)	# save traced function caller
+ 	lgr	%r1,%r15
+ #ifndef CC_USING_HOTPATCH
+ 	aghi	%r0,MCOUNT_RETURN_FIXUP
 -- 
 2.25.1
 
