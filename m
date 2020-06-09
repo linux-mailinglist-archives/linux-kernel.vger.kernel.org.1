@@ -2,236 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354391F3E05
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726881F3E11
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730559AbgFIOY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 10:24:27 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:28625 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728601AbgFIOY0 (ORCPT
+        id S1730577AbgFIOZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:25:20 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:49346 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728889AbgFIOZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:24:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591712663;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=RpR4db2BYUdmK1j0ocnwY36/XEkGSRK7q+SwrEA+exk=;
-        b=BckdTNi0bDdAQBu31/0MltqyZ0kQeTVs18KRHlDsAM0+RjpURrPfYk0Oqzn6fxKI/J1gG3
-        8hIpXJWg1Zyx5XpMhcYRcluXHwasKnmVdAB9Wl6U9e/jAZPRrqJvZ6KdkMfhwidkXaa+vX
-        jGSXsG+o+Xi6RVXBLiycKZqtisV1m4w=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-469-uXLG1sMLM4yasnAXztD_5w-1; Tue, 09 Jun 2020 10:24:11 -0400
-X-MC-Unique: uXLG1sMLM4yasnAXztD_5w-1
-Received: by mail-wr1-f71.google.com with SMTP id s7so8701770wrm.16
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 07:24:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=RpR4db2BYUdmK1j0ocnwY36/XEkGSRK7q+SwrEA+exk=;
-        b=takGA2eHr4BA+hAVsfMXYG7twCoqjg84O5SkkoZXUAXXHsepqGF5Z6eRszV91zpDHc
-         o6YVpp599E2+CVHminj/WAtx7GTHwfsRwRwh1EwxxhUmFSVDhZOam7pEI9YDEjaRvcFb
-         PsoXSzPk7UHBLecWkRLhGOuCKieQFRUsGMDACcHlyxk3JaZNTebGOmSdIew5/OHOv+Rv
-         XMhmhPNhUmqiKAl/c14Gd5jXjs6frEQnGaaMnDn2DOd8ZAvNOdyQdzFWtZzNCoZ9ZGPl
-         kaxrmGjyLCZ7Jnpy5LY1mFjmzjy82MMI9NVdxPK1AvQB1Ym860FbsIJbgmizUV0Tv+El
-         JHuQ==
-X-Gm-Message-State: AOAM531CPI+WOrvcnz/qnl6WxEKqsXEtFZsYUaB6OE8LztFg4Yfrw9Li
-        O8lckXkKHyaGe/+ESm8w1x0RKXJwlEoCMhjzyghlftfbmgZhr87Ev4mdz7k0q30dhJpOOxtvS6/
-        lPEI5efcIyghmJhcgk4wjgFR2
-X-Received: by 2002:adf:ed87:: with SMTP id c7mr4789073wro.108.1591712650531;
-        Tue, 09 Jun 2020 07:24:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7k0clUUUuo0NQ83yaXJdGTvNwA1q+8Od/NT0+Gd4O+ygFtZPfo/lB99jWrl5o+uVeAv0zqQ==
-X-Received: by 2002:adf:ed87:: with SMTP id c7mr4789051wro.108.1591712650206;
-        Tue, 09 Jun 2020 07:24:10 -0700 (PDT)
-Received: from steredhat (host-79-49-207-108.retail.telecomitalia.it. [79.49.207.108])
-        by smtp.gmail.com with ESMTPSA id e12sm3613514wro.52.2020.06.09.07.24.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 07:24:09 -0700 (PDT)
-Date:   Tue, 9 Jun 2020 16:24:06 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Jeff Moyer <jmoyer@redhat.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC] io_uring: add restrictions to support untrusted applications
- and guests
-Message-ID: <20200609142406.upuwpfmgqjeji4lc@steredhat>
+        Tue, 9 Jun 2020 10:25:14 -0400
+Received: from mailhost.synopsys.com (badc-mailhost3.synopsys.com [10.192.0.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id B490540346;
+        Tue,  9 Jun 2020 14:25:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1591712712; bh=Y6TGekkXu8cCpq0b7ufEKTf/sDsJ1NVBV0bNvnvOpnY=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=MM+v+0AE/MTn5ZKpuM95sg+ysUN7iMglhpazJRA3WqZ8t/z8ErVK4lEjT0yQUTl4r
+         pN00sgCGDnKqrkExIuw/ZQ1VJW+Y2H1BOFK3pu2MKTiowjcz4U1KGldlgshJLttMhu
+         cz7jT8qxVOg8nCGnRPsQSFV5DUSYKZrQWxnasVTeDR5kb9pZfRPECavIjg0MIZ1ybl
+         Ab0yRnDY/BwDi6IhCCqKiuw/umuWvGYThYwSfC7j7v2zFy1YoIhDGV5i2a3g03uZOC
+         TivUVyOwgHUvTg4pNeU8/lV0XqfiV1uKb+RsG3gMpqs3USH2WmQ86ifCHLhwDG1Kui
+         QQ07x3rdi88WA==
+Received: from o365relay-in.synopsys.com (us03-o365relay1.synopsys.com [10.4.161.137])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 7931AA0255;
+        Tue,  9 Jun 2020 14:25:02 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; spf=pass (mailfrom) smtp.mailfrom=synopsys.com (client-ip=104.47.58.171; helo=nam11-bn8-obe.outbound.protection.outlook.com; envelope-from=joabreu@synopsys.com; receiver=<UNKNOWN>)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="COW5fHOA";
+        dkim-atps=neutral
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2171.outbound.protection.outlook.com [104.47.58.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 4603E8000B;
+        Tue,  9 Jun 2020 14:24:59 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MnDNq39Iu0Eq0swsKpn89tR3y9mid+29XXh2zYL1/f6Jp3w0VtiM1YP6U3fD5j6gPy7DZTjxtw829U847n/aa060OymF8O+fxScZ70AjpR5pJR00PlticsIgS3XwF/NkI6ggGSSSMchd3eN0eYk6r6rFMxEhHMuZzA1gFKwTwnOpvscCWpTxRiUpkIYF3jbriEiyd+D+utwTlCfSffL/7C76N3RLL2QmSAj5mHrkTecBVzPNzy90BtoHKVSNrrKv8XXa3NGBwy98JXUAXhBRs9/5BF89d+s/Wm9NUGqD8Twg4ce/pzMr5zu6+iyA758VnzQen4n9XMRkx6Q/bkYd8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y6TGekkXu8cCpq0b7ufEKTf/sDsJ1NVBV0bNvnvOpnY=;
+ b=KUDdXv4F7EDVWbAw+Z68Oq1zMhcX3SQUKUscZm1qFnolWy06MnSHn3DhLcBXaLYQ0ra/Lf7KX08evqQ1LmJzZfqXYFFfINRYGpCGWskibc+iiAWXOl6r2oM6Rxs5tAurKmXTzmmLUFbZagNqzFXt0l8JFcXJaZSAtI91e8afmcA6W3HTd8SbLuznyBg5Ka1hBbEQmnRop2+9xsRwNg4z0NemI2Ig5i1RUTlV0Q+4tPm/0oAHroZRUTTcYMhhK2wNtD+QUnVup5XH10e5nOzPhf9OXLfMgNAYPcLJgXKQfbXn9ocdqi1OXaakTaAC0pbu8h744vLst2bEYBfhBn9KnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y6TGekkXu8cCpq0b7ufEKTf/sDsJ1NVBV0bNvnvOpnY=;
+ b=COW5fHOAwGgpXmtjX8zbI8XAxX5wkjKJla8hKaxjftDDIQex5tSKFwZ+aERR4WAE1jr5QscBuYc5QxDU/wvs0oT7SIc90+kYhFHnUSb73Vz1r4f0Ouhq3iv7eAh5Tb+yAkwbHEJm0cO9XBqxpuXYAN+mXS2N/Ah/55/gzt+4ZSU=
+Received: from BN6PR12MB1779.namprd12.prod.outlook.com (2603:10b6:404:108::21)
+ by BN6PR12MB1315.namprd12.prod.outlook.com (2603:10b6:404:1f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.18; Tue, 9 Jun
+ 2020 14:24:57 +0000
+Received: from BN6PR12MB1779.namprd12.prod.outlook.com
+ ([fe80::f0ab:1cc3:95dc:caa4]) by BN6PR12MB1779.namprd12.prod.outlook.com
+ ([fe80::f0ab:1cc3:95dc:caa4%8]) with mapi id 15.20.3088.018; Tue, 9 Jun 2020
+ 14:24:57 +0000
+X-SNPS-Relay: synopsys.com
+From:   Jose Abreu <Jose.Abreu@synopsys.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Joao Pinto <Joao.Pinto@synopsys.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: RE: [PATCH net-next 7/8] net: phy: Add Synopsys DesignWare XPCS MDIO
+ module
+Thread-Topic: [PATCH net-next 7/8] net: phy: Add Synopsys DesignWare XPCS MDIO
+ module
+Thread-Index: AQHV9e38Uev4r206Bkmtkv7N/VawxajKzJYAgAYapjA=
+Date:   Tue, 9 Jun 2020 14:24:57 +0000
+Message-ID: <BN6PR12MB1779621FA2CDC208E38196FDD3820@BN6PR12MB1779.namprd12.prod.outlook.com>
+References: <cover.1583742615.git.Jose.Abreu@synopsys.com>
+ <7d9880643585e4347027538df2a722dde54156cf.1583742616.git.Jose.Abreu@synopsys.com>
+ <20200605171034.GF1605@shell.armlinux.org.uk>
+In-Reply-To: <20200605171034.GF1605@shell.armlinux.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcam9hYnJldVxh?=
+ =?us-ascii?Q?cHBkYXRhXHJvYW1pbmdcMDlkODQ5YjYtMzJkMy00YTQwLTg1ZWUtNmI4NGJh?=
+ =?us-ascii?Q?MjllMzViXG1zZ3NcbXNnLWZkMTM5YTllLWFhNWMtMTFlYS1iNjRkLWY0ZDEw?=
+ =?us-ascii?Q?OGU2NmE0NFxhbWUtdGVzdFxmZDEzOWFhMC1hYTVjLTExZWEtYjY0ZC1mNGQx?=
+ =?us-ascii?Q?MDhlNjZhNDRib2R5LnR4dCIgc3o9Ijk2MyIgdD0iMTMyMzYxODYyOTU4MDEx?=
+ =?us-ascii?Q?MTc2IiBoPSJEY3NzaU1FWlhxWnFiRGwvTkVpdjd5VU1SVTQ9IiBpZD0iIiBi?=
+ =?us-ascii?Q?bD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFCUUpBQUFv?=
+ =?us-ascii?Q?MDJ1L2FUN1dBUWtEMXZCL1hvNElDUVBXOEg5ZWpnZ09BQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBSEFBQUFDa0NBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?RUFBUUFCQUFBQW9aN0NDQUFBQUFBQUFBQUFBQUFBQUo0QUFBQm1BR2tBYmdC?=
+ =?us-ascii?Q?aEFHNEFZd0JsQUY4QWNBQnNBR0VBYmdCdUFHa0FiZ0JuQUY4QWR3QmhBSFFB?=
+ =?us-ascii?Q?WlFCeUFHMEFZUUJ5QUdzQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdZQWJ3QjFBRzRBWkFCeUFIa0FYd0J3?=
+ =?us-ascii?Q?QUdFQWNnQjBBRzRBWlFCeUFITUFYd0JuQUdZQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFB?=
+ =?us-ascii?Q?QUFDZUFBQUFaZ0J2QUhVQWJnQmtBSElBZVFCZkFIQUFZUUJ5QUhRQWJnQmxB?=
+ =?us-ascii?Q?SElBY3dCZkFITUFZUUJ0QUhNQWRRQnVBR2NBWHdCakFHOEFiZ0JtQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCbUFHOEFk?=
+ =?us-ascii?Q?UUJ1QUdRQWNnQjVBRjhBY0FCaEFISUFkQUJ1QUdVQWNnQnpBRjhBY3dCaEFH?=
+ =?us-ascii?Q?MEFjd0IxQUc0QVp3QmZBSElBWlFCekFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR1lBYndCMUFHNEFaQUJ5QUhrQVh3?=
+ =?us-ascii?Q?QndBR0VBY2dCMEFHNEFaUUJ5QUhNQVh3QnpBRzBBYVFCakFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
+ =?us-ascii?Q?QUFBQUNlQUFBQVpnQnZBSFVBYmdCa0FISUFlUUJmQUhBQVlRQnlBSFFBYmdC?=
+ =?us-ascii?Q?bEFISUFjd0JmQUhNQWRBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJtQUc4?=
+ =?us-ascii?Q?QWRRQnVBR1FBY2dCNUFGOEFjQUJoQUhJQWRBQnVBR1VBY2dCekFGOEFkQUJ6?=
+ =?us-ascii?Q?QUcwQVl3QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHWUFid0IxQUc0QVpBQnlBSGtB?=
+ =?us-ascii?Q?WHdCd0FHRUFjZ0IwQUc0QVpRQnlBSE1BWHdCMUFHMEFZd0FBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFD?=
+ =?us-ascii?Q?QUFBQUFBQ2VBQUFBWndCMEFITUFYd0J3QUhJQWJ3QmtBSFVBWXdCMEFGOEFk?=
+ =?us-ascii?Q?QUJ5QUdFQWFRQnVBR2tBYmdCbkFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQnpB?=
+ =?us-ascii?Q?R0VBYkFCbEFITUFYd0JoQUdNQVl3QnZBSFVBYmdCMEFGOEFjQUJzQUdFQWJn?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUhNQVlRQnNBR1VBY3dCZkFI?=
+ =?us-ascii?Q?RUFkUUJ2QUhRQVpRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFB?=
+ =?us-ascii?Q?QUNBQUFBQUFDZUFBQUFjd0J1QUhBQWN3QmZBR3dBYVFCakFHVUFiZ0J6QUdV?=
+ =?us-ascii?Q?QVh3QjBBR1VBY2dCdEFGOEFNUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFC?=
+ =?us-ascii?Q?ekFHNEFjQUJ6QUY4QWJBQnBBR01BWlFCdUFITUFaUUJmQUhRQVpRQnlBRzBB?=
+ =?us-ascii?Q?WHdCekFIUUFkUUJrQUdVQWJnQjBBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBSFlBWndCZkFHc0FaUUI1?=
+ =?us-ascii?Q?QUhjQWJ3QnlBR1FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFB?=
+ =?us-ascii?Q?QUFBQ0FBQUFBQUE9Ii8+PC9tZXRhPg=3D=3D?=
+authentication-results: armlinux.org.uk; dkim=none (message not signed)
+ header.d=none;armlinux.org.uk; dmarc=none action=none
+ header.from=synopsys.com;
+x-originating-ip: [198.182.37.200]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9934821f-e58e-4caa-fd41-08d80c80e31e
+x-ms-traffictypediagnostic: BN6PR12MB1315:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BN6PR12MB131534A7A92AAAAD6BDABC76D3820@BN6PR12MB1315.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 042957ACD7
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vKfg7k0og2LqegueEMqpEpPoPs2ezkurkhTc/q0XFZ/U4oGwZIrOpmoe1Au+92sipJaK+jWoSW8B/PKm2oNyB+pA4GLzH/bNo2YI7UfTpumBz7Xlbu+baUbffohzR3goKS4wI2FxPV+GzB8ZwcqPLiVJbLbbgdCUVpChzeKfKAlSgkAIr/yCXYWX2DJzkHe8mGxDCmPMK6Uq3ufHeb3y0azF+wkcOMNby/mnU7wBFh6AAXZNmHj5hwk5NxhoIv2lFWTNObxjd5uX8VnNBDziRTQAjhYmITBjPXa5RTCWJ6b7zqgjZMAUBlZItl4TRYHK8QRhLMb77DNE2BaHX2h5aQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR12MB1779.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(136003)(39860400002)(366004)(396003)(7696005)(86362001)(5660300002)(6506007)(26005)(66476007)(66556008)(83380400001)(76116006)(64756008)(66446008)(66946007)(52536014)(4744005)(33656002)(71200400001)(478600001)(316002)(55016002)(8676002)(8936002)(2906002)(6916009)(54906003)(4326008)(107886003)(9686003)(186003)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: NMYgvB/JJCLcs0jOj0cOMJzvhUMV4bPSGlktejtuL4F1T3kEjOqEAlny3EJyyQNZQ1g7gEmf4vkuOq2NFAYTjctleBciKeGhSq+a2QX447WvexNSivLD4EsFMlTGZhqMGTdnzr4VEZZltCMQ9IFlhqPJLw/miuxLUAEFT4crEjOfe6pAFFas3XoG3qGGVUuJ7cwB7H6gpPnoU4qiAKQoZGShWR/S8KaG3sdKvAxWlMWs0GF+DtSifExF5HBXtF5IeMyh3dROBZZVwgX+lVadSAwo/r4mDEJY0xlSRmqD3zhA9COBePIYdLyQJsi6utv6QordcdyYbtgQX5DaOmv9G0ruXCrCuk2dWMDbhdfTNAecHldJ7AEhtDtaHtSChoric/4TM9LqUig8fIi9zeb2BaLQUQitKeOgcWucnYz9jsX5paB6QyBH/a0bK2co/Cg6SkJ5fFgIrorANH0MFnh77Ux3EigPhu6nWsPHrUoexqntU+MnWEx0Ckj0lHTpxnzE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9934821f-e58e-4caa-fd41-08d80c80e31e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jun 2020 14:24:57.7711
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BJaWNDFXJfZ8ExKg7udrXUp6lwApQjxA1Nd9wEm4qzoX6argd4UAxgUEMuqp5J+66RRE2FHXFcfQ2it1rhR10Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1315
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
-Stefan and I have a proposal to share with io_uring community.
-Before implementing it we would like to discuss it to receive feedbacks and
-to see if it could be accepted:
+From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Date: Jun/05/2020, 18:10:34 (UTC+00:00)
 
-Adding restrictions to io_uring
-=====================================
-The io_uring API provides submission and completion queues for performing
-asynchronous I/O operations. The queues are located in memory that is
-accessible to both the host userspace application and the kernel, making it
-possible to monitor for activity through polling instead of system calls. This
-design offers good performance and this makes exposing io_uring to guests an
-attractive idea for improving I/O performance in virtualization.
+> This is incorrect - you should not mask the link partner's advertisement
+> with our advertisement like this; consider the table in 802.3 for
+> resolving the pause modes, where simply doing a bitwise-and operation
+> between the two advertisements would severely restrict the resulting
+> resolution to either symmetric pause or nothing at all.
+>=20
+> You want to do this when you resolve the speed, but only _temporarily_
+> in order to resolve the speed - you do not want to write back the
+> result to state->lp_advertising.
 
-PoC and preliminary benchmarks
----------------------------
-We realized a PoC, using QEMU and virtio-blk device, to share io_uring
-CQ and SQ rings with the guest.
-QEMU initializes io_uring, registers the device (NVMe) fd through
-io_uring_register(2), and maps the rings in the guest memory.
-The virtio-blk driver uses these rings to send requests instead of using
-the standard virtqueues.
+Thanks for bringing this up. Indeed I believe I did this in order to=20
+resolve the speed, as you said.
+=20
+> You may wish to fix that.
 
-The PoC implements a pure polling solution where the application is polling
-(IOPOLL enabled) in the guest and the sqpoll_kthread is polling in the host
-(SQPOLL and IOPOLL enabled).
+Added to the list of my pending fixes. Thanks!
 
-These are the encouraging results we obtained from this preliminary work;
-we used fio (rw=randread bs=4k) to measure the kIOPS on a NVMe device:
-
-- bare-metal
-                                                       iodepth
-  | fio ioengine                              |  1  |  8  |  16 |  32 |
-  |-------------------------------------------|----:|----:|----:|----:|
-  | io_uring (SQPOLL + IOPOLL)                | 119 | 550 | 581 | 585 |
-  | io_uring (IOPOLL)                         | 122 | 502 | 519 | 538 |
-
-- QEMU/KVM guest (aio=io_uring)
-                                                       iodepth
-  | virtio-blk            | fio ioengine      |  1  |  8  |  16 |  32 |
-  |-----------------------|-------------------|----:|----:|----:|----:|
-  | virtqueues            | io_uring (IOPOLL) |  27 | 144 | 209 | 266 |
-  | virtqueues + iothread | io_uring (IOPOLL) |  73 | 264 | 306 | 312 |
-  | io_uring passthrough  | io_uring (IOPOLL) | 104 | 532 | 577 | 585 |
-
-  All guest experiments are using the QEMU io_uring backend with SQPOLL and
-  IOPOLL enabled. The virtio-blk driver is modified to support blovk io_poll
-  on both virtqueues and io_uring passthrough.
-
-Before developing this proof-of-concept further we would like to discuss
-io_uring changes required to restrict rings since this mechanism is a
-prerequisite for real-world use cases where guests are untrusted.
-
-Restrictions
-------------
-This document proposes io_uring API changes that safely allow untrusted
-applications or guests to use io_uring. io_uring's existing security model is
-that of kernel system call handler code. It is designed to reject invalid
-inputs from host userspace applications. Supporting guests as io_uring API
-clients adds a new trust domain with access to even fewer resources than host
-userspace applications.
-
-Guests do not have direct access to host userspace application file descriptors
-or memory. The host userspace application, a Virtual Machine Monitor (VMM) such
-as QEMU, grants access to a subset of its file descriptors and memory. The
-allowed file descriptors are typically the disk image files belonging to the
-guest. The memory is typically the virtual machine's RAM that the VMM has
-allocated on behalf of the guest.
-
-The following extensions to the io_uring API allow the host application to
-grant access to some of its file descriptors.
-
-These extensions are designed to be applicable to other use cases besides
-untrusted guests and are not virtualization-specific. For example, the
-restrictions can be used to allow only a subset of sqe operations available to
-an application similar to seccomp syscall whitelisting.
-
-An address translation and memory restriction mechanism would also be
-necessary, but we can discuss this later.
-
-The IOURING_REGISTER_RESTRICTIONS opcode
-----------------------------------------
-The new io_uring_register(2) IOURING_REGISTER_RESTRICTIONS opcode permanently
-installs a feature whitelist on an io_ring_ctx. The io_ring_ctx can then be
-passed to untrusted code with the knowledge that only operations present in the
-whitelist can be executed.
-
-The whitelist approach ensures that new features added to io_uring do not
-accidentally become available when an existing application is launched on a
-newer kernel version.
-
-The IORING_REGISTER_RESTRICTIONS opcode takes an array of struct
-io_uring_restriction elements that describe whitelisted features:
-
-  #define IORING_REGISTER_RESTRICTIONS 11
-
-  /* struct io_uring_restriction::opcode values */
-  enum {
-      /* Allow an io_uring_register(2) opcode */
-      IORING_RESTRICTION_REGISTER_OP,
-
-      /* Allow an sqe opcode */
-      IORING_RESTRICTION_SQE_OP,
-
-      /* Only allow fixed files */
-      IORING_RESTRICTION_FIXED_FILES_ONLY,
-
-      /* Only allow registered addresses and translate them */
-      IORING_RESTRICTION_BUFFER_CHECK
-  };
-
-  struct io_uring_restriction {
-      __u16 opcode;
-      union {
-          __u8 register_op; /* IORING_RESTRICTION_REGISTER_OP */
-          __u8 sqe_op;      /* IORING_RESTRICTION_SQE_OP */
-      };
-      __u8 resv;
-      __u32 resv2[3];
-  };
-
-This call can only be made once. Afterwards it is not possible to change
-restrictions anymore. This prevents untrusted code from removing restrictions.
-
-Limiting access to io_uring operations
---------------------------------------
-The following example shows how to whitelist IORING_OP_READV, IORING_OP_WRITEV,
-and IORING_OP_FSYNC:
-
-  struct io_uring_restriction restrictions[] = {
-      {
-          .opcode = IORING_RESTRICTION_SQE_OP,
-          .sqe_op = IORING_OP_READV,
-      },
-      {
-          .opcode = IORING_RESTRICTION_SQE_OP,
-          .sqe_op = IORING_OP_WRITEV,
-      },
-      {
-          .opcode = IORING_RESTRICTION_SQE_OP,
-          .sqe_op = IORING_OP_FSYNC,
-      },
-      ...
-  };
-
-  io_uring_register(ringfd, IORING_REGISTER_RESTRICTIONS,
-                    restrictions, ARRAY_SIZE(restrictions));
-
-Limiting access to file descriptors
------------------------------------
-The fixed files mechanism can be used to limit access to a set of file
-descriptors:
-
-  struct io_uring_restriction restrictions[] = {
-      {
-          .opcode = IORING_RESTRICTION_FIXED_FILES_ONLY,
-      },
-      ...
-  };
-
-  io_uring_register(ringfd, IORING_REGISTER_RESTRICTIONS,
-                    restrictions, ARRAY_SIZE(restrictions));
-
-Only requests with the sqe->flags IOSQE_FIXED_FILE bit set will be allowed.
-
-
-Thanks for your feedback,
-Stefano
-
+---
+Thanks,
+Jose Miguel Abreu
