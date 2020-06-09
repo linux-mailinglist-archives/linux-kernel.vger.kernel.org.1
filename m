@@ -2,119 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F961F38A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 12:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809E11F38AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 12:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgFIKuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 06:50:13 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:47935 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728300AbgFIKri (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 06:47:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1591699658; x=1623235658;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=d8gMaNNmximhyQzG6Kal58H6sh8+EGIvUeK+r0l4uhw=;
-  b=DspMUEnik5GLo3FFXW6z58Xu7H/Ti6PHGmmdE+iglBYgA/94VkqNy4TY
-   b0G6HUrA7Lc8L8ushOdtpKwS25GZ1Lhw98BajI/2zx/VffKMH/CqHB6VX
-   2NDbomAhDBDkdjG+ZQNj8KiE1NkaZ/kUl6izCxbIJlMLI4xOdcLR4FO0c
-   o=;
-IronPort-SDR: kq+seaYbxzGfg3eMe4BizMCjWNXOpeOl06/slLYLaSvA8UKmf7nG/PXJctyulywzbmoVFVMmXp
- E0eg/OFLSBWw==
-X-IronPort-AV: E=Sophos;i="5.73,491,1583193600"; 
-   d="scan'208";a="36584521"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-17c49630.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 09 Jun 2020 10:47:36 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-17c49630.us-east-1.amazon.com (Postfix) with ESMTPS id 2BDAFA23B0;
-        Tue,  9 Jun 2020 10:47:34 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 9 Jun 2020 10:47:34 +0000
-Received: from 38f9d3867b82.ant.amazon.com (10.43.162.208) by
- EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 9 Jun 2020 10:47:29 +0000
-Subject: Re: [PATCH v3 07/18] nitro_enclaves: Init misc device providing the
- ioctl interface
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-CC:     Andra Paraschiv <andraprs@amazon.com>,
-        <linux-kernel@vger.kernel.org>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        "Martin Pohlack" <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>
-References: <20200525221334.62966-1-andraprs@amazon.com>
- <20200525221334.62966-8-andraprs@amazon.com>
- <20200526065133.GD2580530@kroah.com>
- <72647fa4-79d9-7754-9843-a254487703ea@amazon.de>
- <20200526123300.GA2798@kroah.com>
- <59007eb9-fad3-9655-a856-f5989fa9fdb3@amazon.de>
- <20200526131708.GA9296@kroah.com>
- <29ebdc29-2930-51af-8a54-279c1e449a48@amazon.de>
- <20200526222402.GC179549@kroah.com>
- <b4f17cbd-7471-fe61-6e7e-1399bd96e24e@amazon.de>
- <20200528131259.GA3345766@kroah.com>
- <a37b0156c076d3875f906e970071cb230e526df1.camel@kernel.crashing.org>
-From:   Alexander Graf <graf@amazon.de>
-Message-ID: <f83838cf-8a20-8c9c-be87-4c6625563bd6@amazon.de>
-Date:   Tue, 9 Jun 2020 12:47:27 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+        id S1728341AbgFIKvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 06:51:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726886AbgFIKvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 06:51:18 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 670DC2078D;
+        Tue,  9 Jun 2020 10:51:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591699877;
+        bh=X/5WlMyTJqJDM8436JxxBvG2u6EdHHqalJEO6mDoWrg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qyJRjuwpr+jXEkHDrK0i+lfGu13VfSK80nO256pl5FQ6btPjoCCPaE0h4wEvmfEEw
+         NNlpKzWgPnF2Ca+FkCC50rvrthYzcdDCPk4NNuQDGuOy3Tfzuh/hNBGUxStTAkXj0z
+         0ooE06AvAnQxWfBhN46p99WSewWZIwl0AcQHs7wI=
+Date:   Tue, 9 Jun 2020 11:51:15 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH v2 2/2] regulator: Add support for sync_state() callbacks
+Message-ID: <20200609105115.GA4583@sirena.org.uk>
+References: <20200528190610.179984-1-saravanak@google.com>
+ <20200528190610.179984-3-saravanak@google.com>
+ <20200529130012.GJ4610@sirena.org.uk>
+ <CAGETcx9Y8VoPCjrVFdDwU=+m3_0OTZQgj9b5eSHSTgSqeCZrUQ@mail.gmail.com>
+ <20200601172323.GE45647@sirena.org.uk>
+ <CAGETcx-T=NstJDV2S8gKmqpOv1r2-fTRs1pwOtSQ6rJumhVGBg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <a37b0156c076d3875f906e970071cb230e526df1.camel@kernel.crashing.org>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.208]
-X-ClientProxiedBy: EX13D30UWC003.ant.amazon.com (10.43.162.122) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ew6BAiZeqk4r7MaW"
+Content-Disposition: inline
+In-Reply-To: <CAGETcx-T=NstJDV2S8gKmqpOv1r2-fTRs1pwOtSQ6rJumhVGBg@mail.gmail.com>
+X-Cookie: Be careful!  Is it classified?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwMS4wNi4yMCAwNTowNCwgQmVuamFtaW4gSGVycmVuc2NobWlkdCB3cm90ZToKPiAKPiAK
-PiBPbiBUaHUsIDIwMjAtMDUtMjggYXQgMTU6MTIgKzAyMDAsIEdyZWcgS0ggd3JvdGU6Cj4+IFNv
-IGF0IHJ1bnRpbWUsIGFmdGVyIGFsbCBpcyBib290ZWQgYW5kIHVwIGFuZCBnb2luZywgeW91IGp1
-c3QgcmlwcGVkCj4+IGNvcmVzIG91dCBmcm9tIHVuZGVyIHNvbWVvbmUncyBmZWV0PyAgOikKPj4K
-Pj4gQW5kIHRoZSBjb2RlIHJlYWxseSBoYW5kbGVzIHdyaXRpbmcgdG8gdGhhdCB2YWx1ZSB3aGls
-ZSB0aGUgbW9kdWxlIGlzCj4+IGFscmVhZHkgbG9hZGVkIGFuZCB1cCBhbmQgcnVubmluZz8gIEF0
-IGEgcXVpY2sgZ2xhbmNlLCBpdCBkaWRuJ3Qgc2VlbQo+PiBsaWtlIGl0IHdvdWxkIGhhbmRsZSB0
-aGF0IHZlcnkgd2VsbCBhcyBpdCBvbmx5IGlzIGNoZWNrZWQgYXQgbmVfaW5pdCgpCj4+IHRpbWUu
-Cj4+Cj4+IE9yIGFtIEkgbWlzc2luZyBzb21ldGhpbmc/Cj4+Cj4+IEFueXdheSwgeWVzLCBpZiB5
-b3UgY2FuIGR5bmFtaWNhbGx5IGRvIHRoaXMgYXQgcnVudGltZSwgdGhhdCdzIGdyZWF0LAo+PiBi
-dXQgaXQgZmVlbHMgYWNrd2FyZCB0byBtZSB0byByZWx5IG9uIG9uZSBjb25maWd1cmF0aW9uIHRo
-aW5nIGFzIGEKPj4gbW9kdWxlIHBhcmFtZXRlciwgYW5kIGV2ZXJ5dGhpbmcgZWxzZSB0aHJvdWdo
-IHRoZSBpb2N0bCBpbnRlcmZhY2UuCj4+IFVuaWZpY2F0aW9uIHdvdWxkIHNlZW0gdG8gYmUgYSBn
-b29kIHRoaW5nLCByaWdodD8KPiAKPiBJIHBlcnNvbmFsbHkgc3RpbGwgcHJlZmVyIGEgc3lzZnMg
-ZmlsZSA6KSBJIHJlYWxseSBkb24ndCBsaWtlIG1vZHVsZQo+IHBhcmFtZXRlcnMgYXMgYSB3YXkg
-dG8gZG8gc3VjaCB0aGluZ3MuCgpJIHRoaW5rIHdlJ3JlIGdvaW5nIGluIGNpcmNsZXMgOikuCgpB
-IG1vZHVsZSBwYXJhbWV0ZXIgaW5pdGlhbGl6ZWQgd2l0aCBtb2R1bGVfcGFyYW1fY2IgZ2l2ZXMg
-dXMgYSBzeXNmcyAKZmlsZSB0aGF0IGNhbiBhbHNvIGhhdmUgYSBkZWZhdWx0IHBhcmFtZXRlciBz
-ZXQgdGhyb3VnaCBlYXNpbHkgYXZhaWxhYmxlIAp0b29saW5nLgoKVGhlIGlvY3RsIGhhcyB0d28g
-ZG93bnNpZGVzOgoKICAgMSkgSXQgcmVsaWVzIG9uIGFuIGV4dGVybmFsIGFwcGxpY2F0aW9uCiAg
-IDIpIFRoZSBwZXJtaXNzaW9uIGNoZWNrIHdvdWxkIGJlIHN0cmljdGx5IGxpbWl0ZWQgdG8gQ0FQ
-X0FETUlOLCBzeXNmcyAKZmlsZXMgY2FuIGhhdmUgZGlmZmVyZW50IHBlcm1pc3Npb25zCgpTbyBJ
-IGZhaWwgdG8gc2VlIGhvdyBhIG1vZHVsZSBwYXJhbWV0ZXIgaXMgKm5vdCogZ2l2aW5nIGJvdGgg
-b2YgeW91IGFuZCAKbWUgd2hhdCB3ZSB3YW50PyBPZiBjb3Vyc2Ugb25seSBpZiBpdCBpbXBsZW1l
-bnRzIHRoZSBjYWxsYmFjay4gSXQgd2FzIAptaXNzaW5nIHRoYXQgYW5kIGFwb2xvZ2l6ZSBmb3Ig
-dGhhdCBvdmVyc2lnaHQuCgoKQWxleAoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1h
-bnkgR21iSApLcmF1c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBD
-aHJpc3RpYW4gU2NobGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2Vy
-aWNodCBDaGFybG90dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1J
-RDogREUgMjg5IDIzNyA4NzkKCgo=
 
+--ew6BAiZeqk4r7MaW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 08, 2020 at 08:16:44PM -0700, Saravana Kannan wrote:
+> On Mon, Jun 1, 2020 at 10:23 AM Mark Brown <broonie@kernel.org> wrote:
+
+> > This is I think the first time anyone has suggested that this is likely
+> > to be an issue - the previous concerns have all been about screens
+> > glitching.
+
+> Looks like we got at least one concrete example now in [1].
+
+That's the Exynos VDD_INT/CPU issue.  I'm not clear that this is
+entirely covered TBH, AIUI it needs a coupler all the time so it's not
+just a case of waiting for the consumers.
+
+Please include human readable descriptions of things like commits and
+issues being discussed in e-mail in your mails, this makes them much
+easier for humans to read especially when they have no internet access.
+I do frequently catch up on my mail on flights or while otherwise
+travelling so this is even more pressing for me than just being about
+making things a bit easier to read.
+
+> But it doesn't really ignore consumer requests though. In response to
+> all your comments above, I haven't done a good job of explaining the
+> issues and the solution. I'll try to redo that part again when I send
+> v3 and hopefully I can do better.
+
+Yes, I think a lot of this is about clarity of explanation.
+
+> > My concern is that introducing extra delays is likely to make things
+> > more fragile and complex.  As far as I can see this is just making
+> > things even worse by adding spurious dependencies and delaying things
+> > further.
+
+> I wouldn't call it delaying any requests. This is just an additional
+> constraint like any other consumer. This definitely makes things more
+> stable in cases where all the devices probe and even in cases where
+> some of those devices might never probe (example I gave in [2]).
+
+Since your current implementation restricts things until essentially the
+entire system is running this is going to affect consumers that don't
+share their regulator.  Part of the reason I am so against that idea is
+that when it is very important that a driver be able to change the
+voltage and have that actually take effect usually the hardware will be
+built such that that regulator isn't shared so shareability issues don't
+apply, we have regulator_get_exclusive() for such situations though
+it's wound up not as widely used as it could be for a bunch of reasons.
+Things like MMC where we have to conform to a hardware spec that
+includes lowering as well as raising voltages will have issues with
+this.
+
+> > At best this is working around a problem that has been
+> > introduced by the decision to do everything at far too broad a level,
+> > it feels like it's defeating the point of trying to track dependencies
+> > at all.  The whole performance seems completely redundant if we're
+> > trying to aggregate things so aggressively, we end up needing pretty
+> > much every device in the system to come up before we can do anything.
+
+> This is definitely not true on real Android phones. Keep in mind all
+> of this only applies to resources actually left on by the bootloader.
+> So, that drastically cuts down what all devices are affected by this.
+> So, if a PMIC has 5 regulators and only 1 is left on by the
+> bootloader, then this patch series would be a NOP for the 4
+> regulators.
+
+This is your systems - it is not that unusual for systems to come up
+with most if not all of the regulators up in order to keep things
+simpler, it's generally easier during bringup and people don't always
+see any particular reason to modify the bootloader to change things (and
+may not be easily able to customize what the PMIC does itself even if
+they wanted to do things at that level).  Such systems will be very much
+impacted by this change.
+
+--ew6BAiZeqk4r7MaW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7faZ8ACgkQJNaLcl1U
+h9BxNwgAg3x7XQGv2ociQ1jeYU1jrXGyijnlJ3Sl/MbZ9FQCYL4OHa77qJ8SLmDL
+Csbf15VD9V88v6komLLUM8aPlN3vhiTxwRIIk34SbNJaxfJs6Peox6v4o/tC0qPd
+8YxOGKANBr3B6+0enZJ28AgBg4Fjw7nKvB45slo3M8N6JnKLJsvK6vv3fG4gT+BU
+cnYa2pInMcdZXg9HZFyhKn9AUkNfUKL1zELCln+1DEV0S/wMTkkwh5A287FHobDd
+6FMGgNkYWf9yU8k2llVBFWzk2YxnjxkMDfRpKi1RcP0dtnQ8Zwkv6V4E5gwCv3oy
+6G/CjQv5DGIzbqZ69bUChcaeW3qmAQ==
+=hN8y
+-----END PGP SIGNATURE-----
+
+--ew6BAiZeqk4r7MaW--
