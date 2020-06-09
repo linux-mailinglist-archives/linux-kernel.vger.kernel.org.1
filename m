@@ -2,88 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A861F3A3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 13:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 488481F3A4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 14:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729174AbgFIL7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 07:59:11 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:39476 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726395AbgFIL6r (ORCPT
+        id S1729210AbgFIMA1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Jun 2020 08:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727903AbgFIMAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 07:58:47 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 059Bqvon011403;
-        Tue, 9 Jun 2020 13:58:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=UV2eXHMfLb4/QtK9KJPbsnZv2k9uIAuEYmQYk8262qk=;
- b=u1OyNj4wmzH1WqEapVeXG4DIXGN+mCrBe0N901xIQxKR9VXxYP+4ymbwgFnsMH7Hk48+
- NmRP1j2FDl0KNyG88neEcWsP+ZfYZSDUxarwExqv+fbwrYr/W52tmN7NZrBFBVZ3WMKJ
- tErkQjmm+aBVijF0llzKzhjK7pMboE2i0ApVA8uwWQoDpUe4O0QvODlQorcXxIoLAUpl
- gTI7SzFFn16RWnGJqTktIQyBebMUYG3o2ydubbxE2PK5jHRRXaVeQiIBQbgaW3Sdb3hn
- JvnJHC/3ZKdKjKVnx9FPlyqOT2uZtN5atU0iJiOrn0fQaXquX4CDflPpY4p+B2qFMpXL pQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31g21fy1rx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Jun 2020 13:58:32 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1072E10002A;
-        Tue,  9 Jun 2020 13:58:32 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 04DF52ACA01;
-        Tue,  9 Jun 2020 13:58:32 +0200 (CEST)
-Received: from localhost (10.75.127.51) by SFHDAG3NODE3.st.com (10.75.127.9)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 9 Jun 2020 13:58:31
- +0200
-From:   Benjamin Gaignard <benjamin.gaignard@st.com>
-To:     <hugues.fruchet@st.com>, <mchehab@kernel.org>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
-CC:     <linux-media@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <vincent.guittot@linaro.org>,
-        <valentin.schneider@arm.com>, <rjw@rjwysocki.net>,
-        Benjamin Gaignard <benjamin.gaignard@st.com>
-Subject: [PATCH v5 3/3] ARM: dts: stm32: Set DCMI frequency requirement for stm32mp15x
-Date:   Tue, 9 Jun 2020 13:58:25 +0200
-Message-ID: <20200609115825.10748-4-benjamin.gaignard@st.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <20200609115825.10748-1-benjamin.gaignard@st.com>
-References: <20200609115825.10748-1-benjamin.gaignard@st.com>
+        Tue, 9 Jun 2020 08:00:22 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A502C05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 05:00:22 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1jicvD-0006J2-Ev; Tue, 09 Jun 2020 14:00:03 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1jicv9-00033i-Mm; Tue, 09 Jun 2020 13:59:59 +0200
+Message-ID: <73fdeca7b651252f7907635e97f9f9b31e702868.camel@pengutronix.de>
+Subject: Re: [PATCH 5/9] usb: xhci-pci: Add support for reset controllers
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        gregkh@linuxfoundation.org, wahrenst@gmx.net, robh@kernel.org,
+        mathias.nyman@linux.intel.com, Eric Anholt <eric@anholt.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-usb@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>
+Cc:     lorenzo.pieralisi@arm.com, tim.gover@raspberrypi.org,
+        helgaas@kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 09 Jun 2020 13:59:59 +0200
+In-Reply-To: <382b81937757de570a83ba4ff9276221c0bba547.camel@suse.de>
+References: <20200608192701.18355-1-nsaenzjulienne@suse.de>
+         <20200608192701.18355-6-nsaenzjulienne@suse.de>
+         <5d3200cc-17cc-026f-1dfe-c10ec949f9ad@gmail.com>
+         <382b81937757de570a83ba4ff9276221c0bba547.camel@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG6NODE1.st.com (10.75.127.16) To SFHDAG3NODE3.st.com
- (10.75.127.9)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-09_03:2020-06-09,2020-06-09 signatures=0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure that CPUs will at least run at 650Mhz when streaming
-sensor frames.
+Hi Nicolas,
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
----
- arch/arm/boot/dts/stm32mp151.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+On Tue, 2020-06-09 at 13:18 +0200, Nicolas Saenz Julienne wrote:
+> Hi Florian, thanks for the reviews!
+> 
+> On Mon, 2020-06-08 at 12:43 -0700, Florian Fainelli wrote:
+> > On 6/8/2020 12:26 PM, Nicolas Saenz Julienne wrote:
+> > > Some atypical users of xhci-pci might need to manually reset their xHCI
+> > > controller before starting the HCD setup. Check if a reset controller
+> > > device is available to the PCI bus and trigger a reset.
+> > > 
+> > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > > ---
+> > >  drivers/usb/host/xhci-pci.c | 9 +++++++++
+> > >  1 file changed, 9 insertions(+)
+> > > 
+> > > diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+> > > index ef513c2fb843..45f70facdfcd 100644
+> > > --- a/drivers/usb/host/xhci-pci.c
+> > > +++ b/drivers/usb/host/xhci-pci.c
+[...]
+> > > @@ -347,6 +349,13 @@ static int xhci_pci_probe(struct pci_dev *dev, const
+> > > struct pci_device_id *id)
+> > >  			return retval;
+> > >  	}
+> > >  
+> > > +	reset = devm_reset_control_get(&dev->bus->dev, NULL);
+> > 
+> > Should not this be devm_reset_control_get_optional()?
+> 
+> Yes, you're right.
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 3ea05ba48215..f6d7bf4f8231 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1091,6 +1091,7 @@
- 			clock-names = "mclk";
- 			dmas = <&dmamux1 75 0x400 0x0d>;
- 			dma-names = "tx";
-+			st,stm32-dcmi-min-frequency = <650000>;
- 			status = "disabled";
- 		};
- 
--- 
-2.15.0
+Please use devm_reset_control_get_optional_exclusive() while you're at
+it.
 
+regards
+Philipp
