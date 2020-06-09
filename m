@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6A51F4380
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A148E1F439F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733044AbgFIRxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:53:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42882 "EHLO mail.kernel.org"
+        id S1733220AbgFIRzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:55:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732904AbgFIRwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:52:32 -0400
+        id S1730044AbgFIRx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:53:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7241A20734;
-        Tue,  9 Jun 2020 17:52:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A9172074B;
+        Tue,  9 Jun 2020 17:53:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725151;
-        bh=5hEyJv+i8lgPkzKGzA2JKa81T8owg04PWOjhCN+qqAY=;
+        s=default; t=1591725207;
+        bh=2wq8q15ub0uB0vMe8hgGxS46CrFW/myQrAZmv2wOkoE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AowsPmHtZqw6mQ+q6hsOb9kQ/RdfJEzCrqpiMVtwxdzuCl3UBoFd4t5dbiXdRtWJf
-         xNLe7z67cO5wuEnthYvvNGQ4cMzqDX/7LvBVU8BeGjczIaGfm8V/g0WKnUt8CMtrh+
-         Dl1QzBdneV2Oxk6xiJN3Mq14VSp5I562jXfPk21k=
+        b=vdK05X/wjwaeOItAE6xBBgHBreDcR0Sx5Ti0h9gBylSB5EY1mg+BkRu/OAV3VhK26
+         yL3vEP1si+B/JQ0AZh/ThE0RNOyHcD6AgwoQbz4r3GoTHulRJlCZLuUiR2ctDihOWn
+         Uk61LOEKivyeyX5ak1URUyDF1pvrIoFz7hdL8RxQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
+        stable@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
+        Willem de Bruijn <willemb@google.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 09/34] vsock: fix timeout in vsock_accept()
-Date:   Tue,  9 Jun 2020 19:45:05 +0200
-Message-Id: <20200609174053.793966089@linuxfoundation.org>
+Subject: [PATCH 5.6 04/41] net: check untrusted gso_size at kernel entry
+Date:   Tue,  9 Jun 2020 19:45:06 +0200
+Message-Id: <20200609174112.535027419@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174052.628006868@linuxfoundation.org>
-References: <20200609174052.628006868@linuxfoundation.org>
+In-Reply-To: <20200609174112.129412236@linuxfoundation.org>
+References: <20200609174112.129412236@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +44,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Garzarella <sgarzare@redhat.com>
+From: Willem de Bruijn <willemb@google.com>
 
-[ Upstream commit 7e0afbdfd13d1e708fe96e31c46c4897101a6a43 ]
+[ Upstream commit 6dd912f82680761d8fb6b1bb274a69d4c7010988 ]
 
-The accept(2) is an "input" socket interface, so we should use
-SO_RCVTIMEO instead of SO_SNDTIMEO to set the timeout.
+Syzkaller again found a path to a kernel crash through bad gso input:
+a packet with gso size exceeding len.
 
-So this patch replace sock_sndtimeo() with sock_rcvtimeo() to
-use the right timeout in the vsock_accept().
+These packets are dropped in tcp_gso_segment and udp[46]_ufo_fragment.
+But they may affect gso size calculations earlier in the path.
 
-Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Reviewed-by: Jorgen Hansen <jhansen@vmware.com>
+Now that we have thlen as of commit 9274124f023b ("net: stricter
+validation of untrusted gso packets"), check gso_size at entry too.
+
+Fixes: bfd5f4a3d605 ("packet: Add GSO/csum offload support.")
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: Willem de Bruijn <willemb@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/vmw_vsock/af_vsock.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/virtio_net.h |   14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -1275,7 +1275,7 @@ static int vsock_accept(struct socket *s
- 	/* Wait for children sockets to appear; these are the new sockets
- 	 * created upon connection establishment.
- 	 */
--	timeout = sock_sndtimeo(listener, flags & O_NONBLOCK);
-+	timeout = sock_rcvtimeo(listener, flags & O_NONBLOCK);
- 	prepare_to_wait(sk_sleep(listener), &wait, TASK_INTERRUPTIBLE);
+--- a/include/linux/virtio_net.h
++++ b/include/linux/virtio_net.h
+@@ -31,6 +31,7 @@ static inline int virtio_net_hdr_to_skb(
+ {
+ 	unsigned int gso_type = 0;
+ 	unsigned int thlen = 0;
++	unsigned int p_off = 0;
+ 	unsigned int ip_proto;
  
- 	while ((connected = vsock_dequeue_accept(listener)) == NULL &&
+ 	if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
+@@ -68,7 +69,8 @@ static inline int virtio_net_hdr_to_skb(
+ 		if (!skb_partial_csum_set(skb, start, off))
+ 			return -EINVAL;
+ 
+-		if (skb_transport_offset(skb) + thlen > skb_headlen(skb))
++		p_off = skb_transport_offset(skb) + thlen;
++		if (p_off > skb_headlen(skb))
+ 			return -EINVAL;
+ 	} else {
+ 		/* gso packets without NEEDS_CSUM do not set transport_offset.
+@@ -92,17 +94,25 @@ retry:
+ 				return -EINVAL;
+ 			}
+ 
+-			if (keys.control.thoff + thlen > skb_headlen(skb) ||
++			p_off = keys.control.thoff + thlen;
++			if (p_off > skb_headlen(skb) ||
+ 			    keys.basic.ip_proto != ip_proto)
+ 				return -EINVAL;
+ 
+ 			skb_set_transport_header(skb, keys.control.thoff);
++		} else if (gso_type) {
++			p_off = thlen;
++			if (p_off > skb_headlen(skb))
++				return -EINVAL;
+ 		}
+ 	}
+ 
+ 	if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
+ 		u16 gso_size = __virtio16_to_cpu(little_endian, hdr->gso_size);
+ 
++		if (skb->len - p_off <= gso_size)
++			return -EINVAL;
++
+ 		skb_shinfo(skb)->gso_size = gso_size;
+ 		skb_shinfo(skb)->gso_type = gso_type;
+ 
 
 
