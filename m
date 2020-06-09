@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D5A1F42BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669B71F4300
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732080AbgFIRrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:47:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58216 "EHLO mail.kernel.org"
+        id S1732450AbgFIRtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:49:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732061AbgFIRrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:47:11 -0400
+        id S1732362AbgFIRsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:48:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0681720801;
-        Tue,  9 Jun 2020 17:47:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3ACF207ED;
+        Tue,  9 Jun 2020 17:48:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724830;
-        bh=L7YJy0y9nLm8blOqjElc3xEZMQQ5twDSw/fGhd5AN1s=;
+        s=default; t=1591724920;
+        bh=wn3XWVZZ2akmsZZ8dExHmnbVJm8QGK5HCGpsdbydC6c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VTw2C3I2H4iUFSGHNTZEjwoCBwRhTyuEiyG/4WyAGw2n6URUD06uPy0qOu5AUvsc3
-         Ub2gFa4H7S3yo2t3IVScFO+0GWmBrG3kzoJKfqY63hlZpYkdaMEH9nxc6W/BVLqlAl
-         lag1iWpD17NHGrfFAx2bCKcriWlyYw8LNTMLXcaU=
+        b=xYbpMRthdrr320EmezrU0b2hbZdUZapDwsBMq+LSz4Auubkp1yiObdcYoRs/1FZaf
+         2lwIFej4938dY/mHRrtEcWb0bL79EomsaZYLsnQS436+ou+KirLVPklHF0j1HFhAms
+         VW235uwBdghC8jkDCSmB3fbUd139uEDlRV/SGCnI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.4 34/36] x86/speculation: Add Ivy Bridge to affected list
-Date:   Tue,  9 Jun 2020 19:44:34 +0200
-Message-Id: <20200609173935.740168010@linuxfoundation.org>
+        stable@vger.kernel.org, Bin Liu <b-liu@ti.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 29/42] USB: serial: usb_wwan: do not resubmit rx urb on fatal errors
+Date:   Tue,  9 Jun 2020 19:44:35 +0200
+Message-Id: <20200609174018.648291117@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
-References: <20200609173933.288044334@linuxfoundation.org>
+In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
+References: <20200609174015.379493548@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Bin Liu <b-liu@ti.com>
 
-commit 3798cc4d106e91382bfe016caa2edada27c2bb3f upstream
+commit 986c1748c84d7727defeaeca74a73b37f7d5cce1 upstream.
 
-Make the docs match the code.
+usb_wwan_indat_callback() shouldn't resubmit rx urb if the previous urb
+status is a fatal error. Or the usb controller would keep processing the
+new urbs then run into interrupt storm, and has no chance to recover.
 
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Fixes: 6c1ee66a0b2b ("USB-Serial: Fix error handling of usb_wwan")
+Cc: stable@vger.kernel.org
+Signed-off-by: Bin Liu <b-liu@ti.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- Documentation/hw-vuln/special-register-buffer-data-sampling.rst |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/Documentation/hw-vuln/special-register-buffer-data-sampling.rst
-+++ b/Documentation/hw-vuln/special-register-buffer-data-sampling.rst
-@@ -27,6 +27,8 @@ by software using TSX_CTRL_MSR otherwise
-   =============  ============  ========
-   common name    Family_Model  Stepping
-   =============  ============  ========
-+  IvyBridge      06_3AH        All
+---
+ drivers/usb/serial/usb_wwan.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/drivers/usb/serial/usb_wwan.c
++++ b/drivers/usb/serial/usb_wwan.c
+@@ -305,6 +305,10 @@ static void usb_wwan_indat_callback(stru
+ 	if (status) {
+ 		dev_dbg(dev, "%s: nonzero status: %d on endpoint %02x.\n",
+ 			__func__, status, endpoint);
 +
-   Haswell        06_3CH        All
-   Haswell_L      06_45H        All
-   Haswell_G      06_46H        All
-@@ -37,9 +39,8 @@ by software using TSX_CTRL_MSR otherwise
-   Skylake_L      06_4EH        All
-   Skylake        06_5EH        All
- 
--  Kabylake_L     06_8EH        <=0xC
--
--  Kabylake       06_9EH        <=0xD
-+  Kabylake_L     06_8EH        <= 0xC
-+  Kabylake       06_9EH        <= 0xD
-   =============  ============  ========
- 
- Related CVEs
++		/* don't resubmit on fatal errors */
++		if (status == -ESHUTDOWN || status == -ENOENT)
++			return;
+ 	} else {
+ 		if (urb->actual_length) {
+ 			tty_insert_flip_string(&port->port, data,
 
 
