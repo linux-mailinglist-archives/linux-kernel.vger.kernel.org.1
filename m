@@ -2,129 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB4D1F3888
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 12:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28C91F38AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 12:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728894AbgFIKs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 06:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728916AbgFIKsK (ORCPT
+        id S1728951AbgFIKuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 06:50:15 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:55604 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728153AbgFIKri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 06:48:10 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E67C0085C6
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 03:47:49 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id p20so1831991ejd.13
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 03:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Oemz0y6Halgxd9K+njjbf/y07mF1lR81JfjGGt4j8Io=;
-        b=iITZQzepYu0FYulcuAhfuDWi/16M56AofW8Jkk4EXje7LbpCfGgXUXt4mVAD9S9GAw
-         P+KF91qsLae1yBZk64Eg+7MySqXAxm70J5T+GDaXmvB6yqpm1YwWgnx0eILvxCZQa4MO
-         X2ZWDcSlKGJFb11dXXX6js7YuCRCGcjtoaxJFWBRsMondULfk44oem6UjT7ztiVd3pyU
-         szY/KiRL3JZp7Io/US70tlqqcMRIAEfqU8yow87c1sn10HkU9ATAn19ec8IL4Jx1OUil
-         GB2SP9aX8K7qOmh+/5PsYzLi1cxu80fu6P2jMFuHf47QqwLcm+UOIaNkIVo62p22r1QP
-         dvVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Oemz0y6Halgxd9K+njjbf/y07mF1lR81JfjGGt4j8Io=;
-        b=IlLZ2F+vg3m7xc4qjUxEixq+rF8sKO8ZVLpRZ+xAsyHKo9SFJNU+Z7XSkLCS54GP9h
-         17y14p3auaaprtyBpnUFpIVhJcX2yFnZpjh4urroJKtChhcOnMhegK5wIVjhRhXFtqlC
-         aU73d34vf74IVoTmxyCCH09iGjdZMK9eRE0IRGcb+Vr8LkcFjoD0AOa+a/X5cDsO67WZ
-         y5BxpeWyyDAawXy55rJB5eHiOQH2fNevcKHcuV5aFI6It9m4qgSSUthFwflo1KTt6lsE
-         hVtaKzPM0M3ZIkXWTFunoxVNJUUHrh9spKB1YK2GaqxFCLGprhWhu8FpcL2CgybfgD0f
-         IJtQ==
-X-Gm-Message-State: AOAM5311zxfaaGqjr0mbW3S/xR5fWxt4gtvI1xfjcIPoP0g8dgWLT6up
-        5NpgtZ7Kp7gML5VaaHT/go0hrg==
-X-Google-Smtp-Source: ABdhPJwmQrjonfoCvhtTfzguHCYRItN0w74Xgjx0CUyTWFohneAUdPJcTlC7X6PECCEadzOmV1lOkw==
-X-Received: by 2002:a17:906:b097:: with SMTP id x23mr24627789ejy.227.1591699667897;
-        Tue, 09 Jun 2020 03:47:47 -0700 (PDT)
-Received: from localhost.localdomain (hst-221-69.medicom.bg. [84.238.221.69])
-        by smtp.gmail.com with ESMTPSA id qt19sm12267763ejb.14.2020.06.09.03.47.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 03:47:47 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Joe Perches <joe@perches.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v3 7/7] venus: Add a debugfs file for SSR trigger
-Date:   Tue,  9 Jun 2020 13:46:04 +0300
-Message-Id: <20200609104604.1594-8-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
-References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+        Tue, 9 Jun 2020 06:47:38 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 059AgrtS159525;
+        Tue, 9 Jun 2020 10:47:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=V634sIqAzEcugfWlVFpBbVizQNUZkstFdXIm73939oE=;
+ b=Ymcn/bTu1ubls2ghrSKcDPt2xvvKAj/VCSbEfvToWmDK5LfNbq2cuaJphbU6y042Jhh5
+ wjBNr20XgEQh2GHi/kklkRDlC9On5iY0gEyJQolo2NuGYHCq+CqbLLMpqTeAmkXTKdaK
+ +PScmSYF2OlD7M3Bh/b9nQU7zfpbyUp1RYzq06iutl4xigB9etRkQWHe3gdtY/lcONuM
+ SAJvW/zD8PwXahMWXrZACMamzXaTU3k+fl930qHkpxw9Ed9Nl7zxDxQsaKklJ7GjWt6T
+ Z9xrXh+zllg89oMnw/lexh22U0X/+/H9Kw5O1ecDoEjvPfGClLHYd7Ceeg2g3fj3P4hV Og== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 31g33m4041-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 09 Jun 2020 10:47:05 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 059AiNk0079158;
+        Tue, 9 Jun 2020 10:47:04 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 31gmwr77ut-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 09 Jun 2020 10:47:04 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 059AksNo000927;
+        Tue, 9 Jun 2020 10:46:55 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 09 Jun 2020 03:46:54 -0700
+Date:   Tue, 9 Jun 2020 13:46:42 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Aisheng Dong <aisheng.dong@nxp.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tuowen Zhao <ztuowen@gmail.com>,
+        Denis Efremov <efremov@linux.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        BOUGH CHEN <haibo.chen@nxp.com>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "stefan@agner.ch" <stefan@agner.ch>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+Subject: [PATCH] lib: devres: add a comment about the devm_of_iomap() function
+Message-ID: <20200609104642.GA43074@mwanda>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM6PR04MB496691DDA4447CD5624EE6E680850@AM6PR04MB4966.eurprd04.prod.outlook.com>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9646 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 adultscore=0
+ mlxscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006090082
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9646 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
+ cotscore=-2147483648 malwarescore=0 phishscore=0 mlxscore=0 clxscore=1011
+ lowpriorityscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006090082
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SSR (SubSystem Restart) is used to simulate an error on FW
-side of Venus. We support following type of triggers - fatal error,
-div by zero and watchdog IRQ.
+We recently introduced a bug when we tried to convert of_iomap() to
+devm_of_iomap().  The problem was that there were two drivers mapping
+the same io region.  The first driver was using of_iomap() and the
+second driver was using devm_of_iomap() and the kernel booted fine.
+When we converted the first drive to use devm_of_iomap() then the second
+driver failed with -EBUSY and the kernel couldn't boot.
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Let's add a comment to prevent this sort of mistake in the future.
+
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- drivers/media/platform/qcom/venus/dbgfs.c | 31 +++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ lib/devres.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/media/platform/qcom/venus/dbgfs.c b/drivers/media/platform/qcom/venus/dbgfs.c
-index a2465fe8e20b..59d52e5af64a 100644
---- a/drivers/media/platform/qcom/venus/dbgfs.c
-+++ b/drivers/media/platform/qcom/venus/dbgfs.c
-@@ -9,6 +9,35 @@
- 
- extern int venus_fw_debug;
- 
-+static int trigger_ssr_open(struct inode *inode, struct file *file)
-+{
-+	file->private_data = inode->i_private;
-+	return 0;
-+}
-+
-+static ssize_t trigger_ssr_write(struct file *filp, const char __user *buf,
-+				 size_t count, loff_t *ppos)
-+{
-+	struct venus_core *core = filp->private_data;
-+	u32 ssr_type;
-+	int ret;
-+
-+	ret = kstrtou32_from_user(buf, count, 4, &ssr_type);
-+	if (ret)
-+		return ret;
-+
-+	ret = hfi_core_trigger_ssr(core, ssr_type);
-+	if (ret < 0)
-+		return ret;
-+
-+	return count;
-+}
-+
-+static const struct file_operations ssr_fops = {
-+	.open = trigger_ssr_open,
-+	.write = trigger_ssr_write,
-+};
-+
- int venus_dbgfs_init(struct venus_core *core)
- {
- 	core->root = debugfs_create_dir("venus", NULL);
-@@ -17,6 +46,8 @@ int venus_dbgfs_init(struct venus_core *core)
- 
- 	debugfs_create_x32("fw_level", 0644, core->root, &venus_fw_debug);
- 
-+	debugfs_create_file("trigger_ssr", 0200, core->root, core, &ssr_fops);
-+
- 	return 0;
- }
- 
+diff --git a/lib/devres.c b/lib/devres.c
+index 6ef51f159c54b..0abe7c1cc4681 100644
+--- a/lib/devres.c
++++ b/lib/devres.c
+@@ -204,6 +204,12 @@ void __iomem *devm_ioremap_resource_wc(struct device *dev,
+  *	base = devm_of_iomap(&pdev->dev, node, 0, NULL);
+  *	if (IS_ERR(base))
+  *		return PTR_ERR(base);
++ *
++ * Please Note: This is not a one-to-one replacement for of_iomap() because the
++ * of_iomap() function does not track whether the region is already mapped.  If
++ * two drivers try to map the same memory, the of_iomap() function will succeed
++ * but the the devm_of_iomap() function will return -EBUSY.
++ *
+  */
+ void __iomem *devm_of_iomap(struct device *dev, struct device_node *node, int index,
+ 			    resource_size_t *size)
 -- 
-2.17.1
+2.26.2
 
