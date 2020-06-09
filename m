@@ -2,21 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AB31F3372
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 07:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE2B1F3373
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 07:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbgFIF3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 01:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727792AbgFIF3e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 01:29:34 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D88BC03E969
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 22:29:34 -0700 (PDT)
+        id S1728008AbgFIF3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 01:29:43 -0400
+Received: from ozlabs.org ([203.11.71.1]:51867 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727824AbgFIF33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 01:29:29 -0400
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 49gzFf057Gz9sTl; Tue,  9 Jun 2020 15:29:22 +1000 (AEST)
+        id 49gzFg2B7xz9sTH; Tue,  9 Jun 2020 15:29:26 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
 To:     Nathan Chancellor <natechancellor@gmail.com>,
         Michael Ellerman <mpe@ellerman.id.au>
@@ -24,34 +20,29 @@ Cc:     clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
         Paul Mackerras <paulus@samba.org>,
         kbuild test robot <lkp@intel.com>,
         linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <20200518181043.3363953-1-natechancellor@gmail.com>
-References: <87a7254bxd.fsf@mpe.ellerman.id.au> <20200518181043.3363953-1-natechancellor@gmail.com>
-Subject: Re: [PATCH] input: i8042: Remove special PowerPC handling
-Message-Id: <159168032784.1381411.6982899186952383628.b4-ty@ellerman.id.au>
-Date:   Tue,  9 Jun 2020 15:29:22 +1000 (AEST)
+In-Reply-To: <20200413190644.16757-1-natechancellor@gmail.com>
+References: <20200413190644.16757-1-natechancellor@gmail.com>
+Subject: Re: [PATCH] powerpc/wii: Fix declaration made after definition
+Message-Id: <159168031335.1381411.13854674311774532181.b4-ty@ellerman.id.au>
+Date:   Tue,  9 Jun 2020 15:29:23 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 May 2020 11:10:43 -0700, Nathan Chancellor wrote:
-> This causes a build error with CONFIG_WALNUT because kb_cs and kb_data
-> were removed in commit 917f0af9e5a9 ("powerpc: Remove arch/ppc and
-> include/asm-ppc").
+On Mon, 13 Apr 2020 12:06:45 -0700, Nathan Chancellor wrote:
+> A 0day randconfig uncovered an error with clang, trimmed for brevity:
 > 
-> ld.lld: error: undefined symbol: kb_cs
-> > referenced by i8042-ppcio.h:28 (drivers/input/serio/i8042-ppcio.h:28)
-> > input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
-> > referenced by i8042-ppcio.h:28 (drivers/input/serio/i8042-ppcio.h:28)
-> > input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
-> > referenced by i8042-ppcio.h:28 (drivers/input/serio/i8042-ppcio.h:28)
-> > input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
+> arch/powerpc/platforms/embedded6xx/wii.c:195:7: error: attribute
+> declaration must precede definition [-Werror,-Wignored-attributes]
+>         if (!machine_is(wii))
+>              ^
 > 
 > [...]
 
 Applied to powerpc/next.
 
-[1/1] input: i8042 - Remove special PowerPC handling
-      https://git.kernel.org/powerpc/c/e4f4ffa8a98c24a4ab482669b1e2b4cfce3f52f4
+[1/1] powerpc/wii: Fix declaration made after definition
+      https://git.kernel.org/powerpc/c/91ffeaa7e5dd62753e23a1204dc7ecd11f26eadc
 
 cheers
