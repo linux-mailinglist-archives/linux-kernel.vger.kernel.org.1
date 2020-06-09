@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328B41F4576
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090671F4480
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388782AbgFISQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:16:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37822 "EHLO mail.kernel.org"
+        id S2388071AbgFISFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:05:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732650AbgFIRuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:50:24 -0400
+        id S1732714AbgFIRvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:51:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D8AD2074B;
-        Tue,  9 Jun 2020 17:50:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3702C20774;
+        Tue,  9 Jun 2020 17:51:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725024;
-        bh=kcyUeXcnckAw1S9JTu+FGshxg9h3RZJNhUTDrPla1uY=;
+        s=default; t=1591725104;
+        bh=YUQ3zE6gHknWLZQ8cWA+ZL/A4ox6L2Wm10Hf9XSjg5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0LZR61jIW0vcGmzWCGFvHbDDFhogcRGCqlu6QiHQ1GG5miOmvjCZz0kAlvhuBudq3
-         k8sArOWmMtg7CEEacY7XgT01EPsLA+wIgSW2WqdMpnsrOjvUwfAxmdaNnoiPTlWooP
-         fT2rOca/1NncwJAC15LahEJnFy0v2y8OE1SvHraw=
+        b=zuG3f/WgEjhhwoSvFLWEFenvf3xEE4H9UfUOJdxihMb6CULYzHGSyJpZfCOgvQb5C
+         B2RHn60sXC3gkMbupcbDBp7ZdVndEy4BQg1hZXGu6eaHKJvO20tcU76QwszO0n4OBN
+         BkdkmZI010O08pfryRlsn+chthxDlST9QU+hVoLM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
-        Jean Rene Dawin <jdawin@math.uni-bielefeld.de>
-Subject: [PATCH 4.14 38/46] CDC-ACM: heed quirk also in error handling
-Date:   Tue,  9 Jun 2020 19:44:54 +0200
-Message-Id: <20200609174030.192334563@linuxfoundation.org>
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 05/25] NFC: st21nfca: add missed kfree_skb() in an error path
+Date:   Tue,  9 Jun 2020 19:44:55 +0200
+Message-Id: <20200609174049.232877910@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
-References: <20200609174022.938987501@linuxfoundation.org>
+In-Reply-To: <20200609174048.576094775@linuxfoundation.org>
+References: <20200609174048.576094775@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-commit 97fe809934dd2b0b37dfef3a2fc70417f485d7af upstream.
+[ Upstream commit 3decabdc714ca56c944f4669b4cdec5c2c1cea23 ]
 
-If buffers are iterated over in the error case, the lower limits
-for quirky devices must be heeded.
+st21nfca_tm_send_atr_res() misses to call kfree_skb() in an error path.
+Add the missed function call to fix it.
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Reported-by: Jean Rene Dawin <jdawin@math.uni-bielefeld.de>
-Fixes: a4e7279cd1d19 ("cdc-acm: introduce a cool down")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200526124420.22160-1-oneukum@suse.com
+Fixes: 1892bf844ea0 ("NFC: st21nfca: Adding P2P support to st21nfca in Initiator & Target mode")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/class/cdc-acm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nfc/st21nfca/dep.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -602,7 +602,7 @@ static void acm_softint(struct work_stru
+--- a/drivers/nfc/st21nfca/dep.c
++++ b/drivers/nfc/st21nfca/dep.c
+@@ -184,8 +184,10 @@ static int st21nfca_tm_send_atr_res(stru
+ 		memcpy(atr_res->gbi, atr_req->gbi, gb_len);
+ 		r = nfc_set_remote_general_bytes(hdev->ndev, atr_res->gbi,
+ 						  gb_len);
+-		if (r < 0)
++		if (r < 0) {
++			kfree_skb(skb);
+ 			return r;
++		}
  	}
  
- 	if (test_and_clear_bit(ACM_ERROR_DELAY, &acm->flags)) {
--		for (i = 0; i < ACM_NR; i++)
-+		for (i = 0; i < acm->rx_buflimit; i++)
- 			if (test_and_clear_bit(i, &acm->urbs_in_error_delay))
- 					acm_submit_read_urb(acm, i, GFP_NOIO);
- 	}
+ 	info->dep_info.curr_nfc_dep_pni = 0;
 
 
