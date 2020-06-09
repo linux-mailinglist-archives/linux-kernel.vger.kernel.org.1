@@ -2,113 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9AE1F41D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220EF1F41DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731593AbgFIRKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:10:53 -0400
-Received: from muru.com ([72.249.23.125]:57424 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728343AbgFIRKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:10:47 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id AC9D28088;
-        Tue,  9 Jun 2020 17:11:37 +0000 (UTC)
-Date:   Tue, 9 Jun 2020 10:10:43 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc:     linux-omap@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
-        Tero Kristo <t-kristo@ti.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH 1/5] drm/omap: Fix suspend resume regression after
- platform data removal
-Message-ID: <20200609171043.GN37466@atomide.com>
-References: <20200531193941.13179-1-tony@atomide.com>
- <20200531193941.13179-2-tony@atomide.com>
- <16ba1808-5c7f-573d-8dd0-c80cac2f476e@ti.com>
- <20200603140639.GG37466@atomide.com>
- <47e286dd-f87a-4440-5bde-1f7b53e8b672@ti.com>
- <20200609151943.GL37466@atomide.com>
- <9ed70121-2a53-d2b3-051a-88eb83e6c53f@ti.com>
- <20200609165234.GM37466@atomide.com>
+        id S1731607AbgFIRLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:11:22 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56036 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727880AbgFIRLV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:11:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591722680;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=wTWjkLuR1CQrC45Qa4cmUqgN0ps5OP9L9ilxG5fSrto=;
+        b=Kt4MMDbGQZcTVyHsgbwTSIWRHvDoDe9sHCd3GBqexskXjLn081aMvLAzNysDtlIsfqF+6Y
+        iBfwjELHWmAlynUXJCPKVfO5MkQDIGF0ICzSG4w4MCV/HE8usk7LvYs7c6tm93tC9xhjgL
+        I0uxj/ZYPyCIB5XHkRZulbuNzZnuZmI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-36-wKA04OWwPM-jg9xuYEm2Ww-1; Tue, 09 Jun 2020 13:11:18 -0400
+X-MC-Unique: wKA04OWwPM-jg9xuYEm2Ww-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29157107B7E5;
+        Tue,  9 Jun 2020 17:11:17 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4D6B25F9DC;
+        Tue,  9 Jun 2020 17:11:07 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 059HB6Tw031653;
+        Tue, 9 Jun 2020 13:11:06 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 059HB6RA031649;
+        Tue, 9 Jun 2020 13:11:06 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Tue, 9 Jun 2020 13:11:05 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+cc:     linux-crypto@vger.kernel.org, Mike Snitzer <msnitzer@redhat.com>,
+        Milan Broz <mbroz@redhat.com>, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: crypto API and GFP_ATOMIC
+Message-ID: <alpine.LRH.2.02.2006091259250.30590@file01.intranet.prod.int.rdu2.redhat.com>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200609165234.GM37466@atomide.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Tony Lindgren <tony@atomide.com> [200609 16:53]:
-> * Tomi Valkeinen <tomi.valkeinen@ti.com> [200609 15:27]:
-> > On 09/06/2020 18:19, Tony Lindgren wrote:
-> > > Currently I'm only able to rmmod -f omapdrm, not sure if these issues might
-> > > be related.
-> > 
-> > Hmm, I always use modules, and can unload omapdrm and drm fine. But there's
-> > a sequence that must be followed. However, the sequence starts with
-> > unloading omapdrm... What behavior you see with rmmod?
-> 
-> Hmm maybe it's output specific somehow?
-> 
-> I just tried again with the following with v5.7. I see the omapdrm
-> usage count issue happen at least on duovero, but don't seem to
-> currently get /dev/fb0 initialized on x15 with these:
-> 
-> modprobe omapdrm
-> #modprobe connector_hdmi	# up to v5.6
-> modprobe display-connector	# starting with v5.7-rc1
-> modprobe ti-tpd12s015		# beagle-x15
-> modprobe omapdss
-> 
-> # rmmod omapdrm
-> rmmod: ERROR: Module omapdrm is in use
-> 
-> # lsmod | grep omapdrm
-> omapdrm                65536  1
-> omapdss_base           16384  2 omapdrm,omapdss
-> drm_kms_helper        155648  3 omapdss_base,omapdrm,omapdss
-> drm                   372736  7 ti_tpd12s015,omapdss_base,display_connector,omapdrm,omapdss,drm_kms_helper
+Hi
 
-I'm also seeing the rmmod omapdrm issue on am437x-sk-evm:
+I've found out that a lot of hardware crypto drivers use GFP_ATOMIC. Some 
+of them switch between GFP_ATOMIC and GFP_KERNEL based on the flag 
+CRYPTO_TFM_REQ_MAY_SLEEP.
 
-modprobe pwm-omap-dmtimer
-modprobe pwm-tiecap
-modprobe pwm_bl
-modprobe omapdrm
-modprobe panel-simple
-modprobe display-connector      # starting with v5.7-rc1
-modprobe omapdss
+dm-crypt and dm-integrity don't use CRYPTO_TFM_REQ_MAY_SLEEP (because 
+GFP_KERNEL allocation requests can recurse back to the block device 
+drivers and cause deadlocks).
 
-# rmmod omapdrm
-rmmod: ERROR: Module omapdrm is in use
+So, basically, the crypto requests submitted by dm-crypt and dm-integrity 
+can fail anytime. I'd like to ask, how to handle these random -ENOMEM 
+return codes. If we pass -ENOMEM back to the block device stack, it could 
+cause random I/O errors and data corruption.
 
-> On beagle-x15 I see these errors after modprobe:
-> 
-> DSS: OMAP DSS rev 6.1
-> omapdss_dss 58000000.dss: bound 58001000.dispc (ops dispc_component_ops [omapdss])
-> omapdss_dss 58000000.dss: bound 58040000.encoder (ops hdmi5_component_ops [omapdss])
-> [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
-> omapdrm omapdrm.0: [drm] Cannot find any crtc or sizes
-> [drm] Initialized omapdrm 1.0.0 20110917 for omapdrm.0 on minor 0
-> omapdrm omapdrm.0: [drm] Cannot find any crtc or sizes
-> aic_dvdd_fixed: disabling
-> ldousb: disabling
-> 
-> Maybe I'm missing some related module on x15?
+The question is - if the crypto request returns -ENOMEM, could we sleep 
+and retry it? I thought about it - the problem could be, if the crypto 
+requests proceeds hafway through and then returns -ENOMEM, and if we 
+retried it, it would cause data corruption, because part of the data would 
+be decrypted twice.
 
-Still did not figure what I might be missing on x15 :)
+Is it safe to assume that when we get -ENOMEM, the crypto driver didn't 
+modify anything?
 
-Regards,
+Do you have another idea how to solve this problem?
 
-Tony
+Mikulas
+
