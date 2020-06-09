@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0C01F43D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463D81F43F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387645AbgFIR5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:57:13 -0400
-Received: from smtprelay0171.hostedemail.com ([216.40.44.171]:39502 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387532AbgFIR4g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:56:36 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id D3A118019465;
-        Tue,  9 Jun 2020 17:56:33 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1461:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2110:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6691:7903:8526:10004:10400:10450:10455:10462:10464:10466:11026:11232:11473:11658:11914:12043:12296:12297:12740:12760:12895:13095:13161:13229:13255:13439:14096:14097:14659:14721:19904:19999:21080:21433:21451:21627:21740:21789:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: cover14_010615726dc4
-X-Filterd-Recvd-Size: 4084
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  9 Jun 2020 17:56:31 +0000 (UTC)
-Message-ID: <2b291c34e10b3b3d9d6e01f8201ec0942e39575f.camel@perches.com>
-Subject: Re: [PATCH v3 1/7] Documentation: dynamic-debug: Add description of
- level bitmask
-From:   Joe Perches <joe@perches.com>
-To:     Edward Cree <ecree@solarflare.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
-        netdev@vger.kernel.org, Jason Baron <jbaron@akamai.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Cromie <jim.cromie@gmail.com>
-Date:   Tue, 09 Jun 2020 10:56:19 -0700
-In-Reply-To: <727b31a0-543b-3dc5-aa91-0d78dc77df9c@solarflare.com>
-References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
-         <20200609104604.1594-2-stanimir.varbanov@linaro.org>
-         <20200609111615.GD780233@kroah.com>
-         <ba32bfa93ac2e147c2e0d3a4724815a7bbf41c59.camel@perches.com>
-         <727b31a0-543b-3dc5-aa91-0d78dc77df9c@solarflare.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        id S1731661AbgFIR7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:59:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731651AbgFIR6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:58:55 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 777A720801;
+        Tue,  9 Jun 2020 17:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591725535;
+        bh=J8tlTkffI9vT+ZtetPjpRh4/bBL9Hh7emd0zTozTyXI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qF1dpbq4r6LixfMDbilCvEkZ/h6ZYJ1hJewkW/W1R/P4ihpjzb1aQ6Vqyu57/RnlE
+         1SXfvJeSswwlhZftcwITa7SGOlKrsZaPDX+PAwZ0JDQDw7COQCJH0tNaPuFmyJDIZ2
+         y1et7/fTJBDLN5J5sfQf0qMqwE6qExDOFqlvAYFs=
+Date:   Tue, 9 Jun 2020 18:58:52 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        robh@kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] dt-bindings: tas2562: Add firmware support for
+ tas2563
+Message-ID: <20200609175852.GQ4583@sirena.org.uk>
+References: <20200609172841.22541-1-dmurphy@ti.com>
+ <20200609172841.22541-2-dmurphy@ti.com>
+ <20200609173143.GN4583@sirena.org.uk>
+ <bb7cff87-f814-1b37-c9eb-e68919e3c077@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="JaBjgNvtdKe5H086"
+Content-Disposition: inline
+In-Reply-To: <bb7cff87-f814-1b37-c9eb-e68919e3c077@ti.com>
+X-Cookie: Be careful!  Is it classified?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-06-09 at 18:42 +0100, Edward Cree wrote:
-> On 09/06/2020 17:58, Joe Perches wrote:
-> > On Tue, 2020-06-09 at 13:16 +0200, Greg Kroah-Hartman wrote:
-> > > What is wrong with the existing control of dynamic
-> > > debug messages that you want to add another type of arbitrary grouping
-> > > to it? 
-> > There is no existing grouping mechanism.
-> > 
-> > Many drivers and some subsystems used an internal one
-> > before dynamic debug.
-> > 
-> > $ git grep "MODULE_PARM.*\bdebug\b"|wc -l
-> > 501
-> > 
-> > This is an attempt to unify those homebrew mechanisms.
-> In network drivers, this is probablyusing the existing groupings
->  defined by netif_level() - see NETIF_MSG_DRV and friends.  Note
->  that those groups are orthogonal to the level, i.e. they control
->  netif_err() etc. as well, not just debug messages.
 
-These are _not_ netif_<level> control flags.  Some are though.
+--JaBjgNvtdKe5H086
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For instance:
+On Tue, Jun 09, 2020 at 12:35:50PM -0500, Dan Murphy wrote:
+> On 6/9/20 12:31 PM, Mark Brown wrote:
 
-$ git grep "MODULE_PARM.*\bdebug\b" drivers/net | head -10
-drivers/net/ethernet/3com/3c509.c:MODULE_PARM_DESC(debug, "debug level (0-6)");
-drivers/net/ethernet/3com/3c515.c:MODULE_PARM_DESC(debug, "3c515 debug level (0-6)");
-drivers/net/ethernet/3com/3c59x.c:MODULE_PARM_DESC(debug, "3c59x debug level (0-6)");
-drivers/net/ethernet/adaptec/starfire.c:MODULE_PARM_DESC(debug, "Debug level (0-6)");
-drivers/net/ethernet/allwinner/sun4i-emac.c:MODULE_PARM_DESC(debug, "debug message flags");
-drivers/net/ethernet/altera/altera_tse_main.c:MODULE_PARM_DESC(debug, "Message Level (-1: default, 0: no output, 16: all)");
-drivers/net/ethernet/amazon/ena/ena_netdev.c:MODULE_PARM_DESC(debug, "Debug level (0=none,...,16=all)");
-drivers/net/ethernet/amd/atarilance.c:MODULE_PARM_DESC(lance_debug, "atarilance debug level (0-3)");
-drivers/net/ethernet/amd/lance.c:MODULE_PARM_DESC(lance_debug, "LANCE/PCnet debug level (0-7)");
-drivers/net/ethernet/amd/pcnet32.c:MODULE_PARM_DESC(debug, DRV_NAME " debug level");
+> > Why not just use a standard name for the firmware?  If the firmwares
+> > vary per-board then building it using the machine compatible (or DMI
+> > info) could handle that, with a fallback to a standard name for a
+> > default setup.
 
-These are all level/class output controls.
+> The number of firmwares can vary per IC on the board itself.=A0 So you may
+> have X number of firmware files all with different names all targets for
+> different TAS2563 ICs.
 
-> Certainly in the case of sfc, and I'd imagine for many other net
->  drivers too, the 'debug' modparam is setting the default for
->  net_dev->msg_enable, which can be changed after probe with
->  ethtool.
+> Also TI will not be providing the individual binaries to the customer.=A0
+> There is a customer tool that the user uses to create the binaries.
 
-True.
+> So the output names are arbitrary.
 
-> It doesn't look like the proposed mechanism subsumes that (we have
->  rather more than 5 groups, and it's not clear how you'd connect
->  it to the existing msg_enable (which uapi must be maintained); if
->  you don't have a way to do this, better exclude drivers/net/ from
->  your grep|wc because you won't be unifying those - in my tree
->  that's 119 hits.
+> I was going to mention this in the cover letter but did not think mention=
+ing
+> the user tool had any value
 
-Likely not.
+That's all fairly standard for this sort of device.  You could still
+cope with this by including the I2C address in the default name
+requested - do something like tas2562/myboard-addr.fw or whatever.  The
+concern here is that someone shouldn't have to replace their DT if they
+decide they want to start using the DSP, and someone making a distro
+shouldn't be stuck dealing with what happens if multiple vendors decide
+to just reuse the same name (eg, just calling everything tas2562
+regardless of plastics).
 
-I agree it'd be useful to attach the modparam control flag
-to the dynamic debug use somehow.
+--JaBjgNvtdKe5H086
+Content-Type: application/pgp-signature; name="signature.asc"
 
-cheers, Joe
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7fzdsACgkQJNaLcl1U
+h9BKVQgAhwdvHDREJ2LZnjNuwAcY2lCGKrqH/sZ5zCuez+GTC3OioTnr1/2fRJP3
+oeO4H/IRo6/PsE6dhcl48e+/CVM8p9IBC4J7eLYtvwC3iOd5qZGUXq1HqoYQaYYp
+cJ22lWuYmG6EXPtcTM7eflfBIEdgbluyeksxIc1WSTccPFpEOkc8tElhlNN4eowI
+34B18qXdsfvX3eOghVWTAD/IoyTPmyvWLzOkrRSpk+oPKsiqJnx0g7wEAg95sBKg
+luhCZTAe1gaTpMC44kBIMN1ZVd22wZIGCJqXKY434H4xiVImRvv2/uqxbm0GsQQy
+4Wqt+BFO7MwvkNsDYTTFA/Uj8xQ++A==
+=re6H
+-----END PGP SIGNATURE-----
+
+--JaBjgNvtdKe5H086--
