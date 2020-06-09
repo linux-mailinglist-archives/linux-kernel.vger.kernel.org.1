@@ -2,115 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44B61F2FE0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 105BB1F304A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731769AbgFIAy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:54:27 -0400
-Received: from mga02.intel.com ([134.134.136.20]:5268 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726904AbgFIAyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 20:54:21 -0400
-IronPort-SDR: 2iT1VAJ7QKJIg62srJZF90Jzt/+4IHLpwDnoRzMblwnpF1b6F6+olekk7pQFRzOQc/XVhMuiTs
- WBXQH23jBnrQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2020 17:54:19 -0700
-IronPort-SDR: IE0OzXBrF8K8Gg9X7tlQNcvpRZbS8aIPXNwXPzZRhn9ehVNaJ/+ItkfaFNGQRCNtKhnEsQ+XR6
- pvP+RHfqp/kw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,490,1583222400"; 
-   d="scan'208";a="259970287"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmsmga008.fm.intel.com with ESMTP; 08 Jun 2020 17:54:19 -0700
-Date:   Mon, 8 Jun 2020 17:54:34 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Brendan Shanks <bshanks@codeweavers.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, x86@kernel.org, ebiederm@xmission.com,
-        andi@notmuch.email, Babu.Moger@amd.com
-Subject: Re: [PATCH v3] x86/umip: Add emulation/spoofing for SLDT and STR
- instructions
-Message-ID: <20200609005434.GA26427@ranerica-svr.sc.intel.com>
-References: <20200608224424.7259-1-bshanks@codeweavers.com>
- <20200609003812.GA26268@ranerica-svr.sc.intel.com>
+        id S2388076AbgFIA5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:57:46 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:35437 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388072AbgFIA5l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 20:57:41 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id EE72D2F2;
+        Mon,  8 Jun 2020 20:57:39 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 08 Jun 2020 20:57:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paritcher.com;
+         h=subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=3
+        uB/AS8OlyUmZfxPmXBWQ1X5t4/4QgNSUJVNp3R/cNM=; b=hXheiBW4CxclW4DSz
+        /vaNhCa+3KR6XdpeXpReFJ/IsoANuQnKseZP/g1Vsg3al8/pwu2ovduCu2NM4Z44
+        pFMTgoWGWyDvSMEbueElYhaoofG66i+yyrRTlUGSR2g89JFLCLkni8ZV0Sbi+ZIb
+        tO03lE18nneSBfj0cuTie34URelsMIifqda8VIGDmh+pBgRyHCB1TiCz9H6w+DxD
+        tgmEMG7tJRWPGV+Ejpj1aRLtWcrLQyj7ZrN6qJNKaCvCa64PB1UbnDElh5cfSxDI
+        vhHdpnNR1y//Xebekcl5nVb0nMzfJ6aUo83Tx/YKB2p5vLYuSq2xaSF/0zBX+CpK
+        bB/cA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=3uB/AS8OlyUmZfxPmXBWQ1X5t4/4QgNSUJVNp3R/c
+        NM=; b=KA0rqrHJ7pSiEwdU9STX/E9KMjQEGG/zQ5ctBTVthMqd7mIA32yQNAB0V
+        YcnlRJf7rNi1S6cjT3w0Q3xJ9SM54ACsH/oNreSc/s5TmHXcz0LCSsj015mKAQ64
+        l+cX1S5Pg1oe18HVgPDXg/AvBkCheg3NufXSVyRZI96Gi9os23FO+eVnKYxQoJrr
+        cvEAjDtnXf85iOLVZHPzW4Uyg+QQpkKkwrVWrXIB6K1GHqPnzl66wDf4HoI/PnXg
+        +2GCfQzXJjA5L746vCqMg96YKVd76RjyPxPEi4dWMHRFtJsqpLUnejLscnyinfMl
+        H8zt5PgsYJLu4QXe7cokiAXwHfz3A==
+X-ME-Sender: <xms:g97eXikICCQgSYdrSqxyPAD71M0rxJqywSElI2bQNAW-R-QbMi7nYw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehfedggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefuvfhfhffkffgfgggjtgfgsehtke
+    ertddtfeejnecuhfhrohhmpegjucfrrghrihhttghhvghruceohidrlhhinhhugiesphgr
+    rhhithgthhgvrhdrtghomheqnecuggftrfgrthhtvghrnhepudelteehtdduieekhfekie
+    eileefkeekvdfhvdffjeejkeejhfdukeehjedvgfelnecukfhppeeijedrkeegrdduleeg
+    rddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    ephidrlhhinhhugiesphgrrhhithgthhgvrhdrtghomh
+X-ME-Proxy: <xmx:g97eXp1rgur5dfy-AD7W2ezoVdQUJ5RkKX3sZJNg4kt-WxD6lyl6Iw>
+    <xmx:g97eXgo4U1jFpmLPuVCg_ikPXu5gCEbZbwcraCbwM61Ph2cviggMog>
+    <xmx:g97eXmlE4_ljHsQT_JaLxQSQYsJoCOyE7BMGDEcdK-4Vav01xThFHQ>
+    <xmx:g97eXt8TTZO0-W-dDBQR1lRHPX_9iF9f0HIEuXFyahu9rsyGnyC6FQ>
+Received: from [192.168.0.106] (ool-4354c2af.dyn.optonline.net [67.84.194.175])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 22F353060FE7;
+        Mon,  8 Jun 2020 20:57:39 -0400 (EDT)
+Subject: Re: [PATCH v2 2/3] platform/x86: dell-wmi: add new keymap type 0x0012
+To:     Mario.Limonciello@dell.com, pali@kernel.org
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        mjg59@srcf.ucam.org
+References: <cover.1591584631.git.y.linux@paritcher.com>
+ <cover.1591656154.git.y.linux@paritcher.com>
+ <74fdb288757cf5970a558f920f531b3bd1c51b47.1591656154.git.y.linux@paritcher.com>
+ <20200608233303.57ubv4rxo4tnaaxa@pali>
+ <295ad85ecc464a57bffd5b783d4170a1@AUSX13MPC105.AMER.DELL.COM>
+From:   Y Paritcher <y.linux@paritcher.com>
+Message-ID: <2d4b308d-ce03-b13b-0140-4bbe669878c4@paritcher.com>
+Date:   Mon, 8 Jun 2020 20:57:38 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200609003812.GA26268@ranerica-svr.sc.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <295ad85ecc464a57bffd5b783d4170a1@AUSX13MPC105.AMER.DELL.COM>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 05:38:12PM -0700, Ricardo Neri wrote:
-> On Mon, Jun 08, 2020 at 03:44:24PM -0700, Brendan Shanks wrote:
-> > Add emulation/spoofing of SLDT and STR for both 32- and 64-bit
-> > processes.
-> > 
-> > Wine users have found a small number of Windows apps using SLDT that
-> > were crashing when run on UMIP-enabled systems.
-> > 
-> > Reported-by: Andreas Rammhold <andi@notmuch.email>
-> > Originally-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> > Signed-off-by: Brendan Shanks <bshanks@codeweavers.com>
-> > ---
-> > 
-> > v3: Use (GDT_ENTRY_TSS * 8) for task register selector instead of
-> > harcoding 0x40.
-> > 
-> >  arch/x86/kernel/umip.c | 32 +++++++++++++++++++++++---------
-> >  1 file changed, 23 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
-> > index 8d5cbe1bbb3b..166c579b0273 100644
-> > --- a/arch/x86/kernel/umip.c
-> > +++ b/arch/x86/kernel/umip.c
-> > @@ -244,16 +244,35 @@ static int emulate_umip_insn(struct insn *insn, int umip_inst,
-> >  		*data_size += UMIP_GDT_IDT_LIMIT_SIZE;
-> >  		memcpy(data, &dummy_limit, UMIP_GDT_IDT_LIMIT_SIZE);
-> >  
-> > -	} else if (umip_inst == UMIP_INST_SMSW) {
-> > -		unsigned long dummy_value = CR0_STATE;
-> > +	} else if (umip_inst == UMIP_INST_SMSW || umip_inst == UMIP_INST_SLDT ||
-> > +		   umip_inst == UMIP_INST_STR) {
-> > +		unsigned long dummy_value;
-> > +
-> > +		if (umip_inst == UMIP_INST_SMSW)
-> > +			dummy_value = CR0_STATE;
-> > +		else if (umip_inst == UMIP_INST_STR)
-> > +			dummy_value = GDT_ENTRY_TSS * 8;
-> > +		else if (umip_inst == UMIP_INST_SLDT)
-> > +		{
+On 6/8/20 8:26 PM, Mario.Limonciello@dell.com wrote:
+>> -----Original Message-----
+>> From: Pali Rohár <pali@kernel.org>
+>> Sent: Monday, June 8, 2020 6:33 PM
+>> To: Y Paritcher
+>> Cc: linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org;
+>> Matthew Garrett; Limonciello, Mario
+>> Subject: Re: [PATCH v2 2/3] platform/x86: dell-wmi: add new keymap type
+>> 0x0012
+>>
+>>
+>> [EXTERNAL EMAIL]
+>>
+>> On Monday 08 June 2020 19:05:29 Y Paritcher wrote:
+>>> These are events with extended data. The extended data is
+>>> currently ignored as userspace does not have a way to deal
+>>> it.
+>>>
+>>> Ignore event with a type of 0x0012 and a code of 0xe035, as
+>>> the keyboard controller takes care of Fn lock events by itself.
+>>
+>> Nice! This is information which is really important and need to have it
+>> documented.
+>>
+>>> This silences the following messages being logged when
+>>> pressing the Fn-lock key on a Dell Inspiron 5593:
+>>>
+>>> dell_wmi: Unknown WMI event type 0x12
+>>> dell_wmi: Unknown key with type 0x0012 and code 0xe035 pressed
+>>>
+>>> This is consistent with the behavior for the Fn-lock key
+>>> elsewhere in this file.
+>>>
+>>> Signed-off-by: Y Paritcher <y.linux@paritcher.com>
+>>
+>> I'm fine with this patch now.
+>>
+>> Reviewed-by: Pali Rohár <pali@kernel.org>
+>>
+>>> ---
+>>>  drivers/platform/x86/dell-wmi.c | 20 +++++++++++++++++++-
+>>>  1 file changed, 19 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/platform/x86/dell-wmi.c b/drivers/platform/x86/dell-
+>> wmi.c
+>>> index 0b2edfe2767d..6b510f8431a3 100644
+>>> --- a/drivers/platform/x86/dell-wmi.c
+>>> +++ b/drivers/platform/x86/dell-wmi.c
+>>> @@ -334,6 +334,15 @@ static const struct key_entry
+>> dell_wmi_keymap_type_0011[] = {
+>>>  	{ KE_IGNORE, KBD_LED_AUTO_100_TOKEN, { KEY_RESERVED } },
+>>>  };
+>>>
+>>> +/*
+>>> + * Keymap for WMI events of type 0x0012
+>>> + * They are events with extended data
+>>> + */
+>>> +static const struct key_entry dell_wmi_keymap_type_0012[] = {
+>>> +	/* Fn-lock button pressed */
+>>> +	{ KE_IGNORE, 0xe035, { KEY_RESERVED } },
+>>> +};
+>>> +
+>>>  static void dell_wmi_process_key(struct wmi_device *wdev, int type, int
+>> code)
+>>>  {
+>>>  	struct dell_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
+>>> @@ -418,10 +427,11 @@ static void dell_wmi_notify(struct wmi_device
+>> *wdev,
+>>>
+>>>  		switch (buffer_entry[1]) {
+>>>  		case 0x0000: /* One key pressed or event occurred */
+>>> +		case 0x0012: /* Event with extended data occurred */
 > 
-> This brace should go in the previous line. Also, if you use braces in
-> the last part of the conditional you should probably use them in the
-> previous ones. I guess in this case it woudln't improve readability.
-> Instead, you can probably have a switch instead of the three ifs. That
-> probably does improve readability and solves the dilemma of needing to
-> put braces in all the one-line conditionals.
+> I don't really like this being handled as a key as it's just discarding all
+> that extended data.
 > 
-> BTW, you should also delete the comment at the top of the file saying
-> that str and sldt will not be emulated:
+>>
+>> Mario, are you able to get some official documentation for these 0x0012
+>> event types? I think it could be really useful for community so they can
+>> understand and add easily new type of code and events. Because currently
+>> we are just guessing what it could be. (It is sequence? Or single event?
+>> Or single event with extended data? It is generic event? Or it is real
+>> keypress? etc...)
 > 
-> diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
-> index 166c579b0273..0984a55eb8c0 100644
-> --- a/arch/x86/kernel/umip.c
-> +++ b/arch/x86/kernel/umip.c
-> @@ -45,9 +45,6 @@
->   * value that, lies close to the top of the kernel memory. The limit for the GDT
->   * and the IDT are set to zero.
->   *
-> - * Given that SLDT and STR are not commonly used in programs that run on WineHQ
-> - * or DOSEMU2, they are not emulated.
-> - *
->   * The instruction smsw is emulated to return the value that the register CR0
->   * has at boot time as set in the head_32.
+> It's a single event with more data in the subsequent words.  It is definitely
+> not a real keypress.  It's supposed to be data that a user application would show.
+> 
+> Remember the way WMI works on Linux and Windows is different.  On Windows
+> userland applications get the events directly.  On Linux kernel drivers get the
+> events and either use it internally, pass to another kernel driver or pass to
+> userland in the form of a translated event.
+> 
+> So on Windows the whole buffer gets looked at directly by the application and the
+> application will decode it to show a translated string.
+> 
+> I can certainly discuss internally about our team releasing a patch to export
+> all these other events.  I would like to know what interface to recommend it pass
+> to userspace though, because as I said this is more than just a keycode that
+> comes through in the event.  It's not useful to just do dev_info, it really should
+> be something that userspace can act on and show a translated message.
+> I don't think we want to add another 15 Dell specific keycodes to the kernel for the
+> various events and add another 4 more when a laptop introduces another set of keys.
+> 
 
-... And also explain that the emulated values for str and sldt are the
-simply the values that Linux assigns programatically.
+We can treat this as a key for now. This gets rid of the unnecessary log messages.
 
-Thanks and BR,
-Ricardo
+When adecision is made about how to handle extended events it will be very easy
+just to make this its own case statement and handle with it separately.
+
+However if you want to pass Fn lock event to userspace there are keys from older
+models of type 0010:
+    /* Fn-lock switched to function keys */
+    { KE_IGNORE, 0x0, { KEY_RESERVED } },
+
+    /* Fn-lock switched to multimedia keys */
+    { KE_IGNORE, 0x1, { KEY_RESERVED } },
+
+They should also be changed to be passed to userspace and they don't signify status
+with extended data rather by which event is called.
+
+This means that passing these types of events to userspace is a separate task, that
+might require rethinking the entire design of how all event types are treated.
+
+The current patch will be necessary regardless of what is decided in regards to
+passing the events on, and continues the status quo.
+>>
+>>>  			if (len > 2)
+>>>  				dell_wmi_process_key(wdev, 0x0000,
+>>>  						     buffer_entry[2]);
+>>> -			/* Other entries could contain additional information */
+>>> +			/* Extended data is currently ignored */
+>>>  			break;
+>>>  		case 0x0010: /* Sequence of keys pressed */
+>>>  		case 0x0011: /* Sequence of events occurred */
+>>> @@ -556,6 +566,7 @@ static int dell_wmi_input_setup(struct wmi_device
+>> *wdev)
+>>>  			 ARRAY_SIZE(dell_wmi_keymap_type_0000) +
+>>>  			 ARRAY_SIZE(dell_wmi_keymap_type_0010) +
+>>>  			 ARRAY_SIZE(dell_wmi_keymap_type_0011) +
+>>> +			 ARRAY_SIZE(dell_wmi_keymap_type_0012) +
+>>>  			 1,
+>>>  			 sizeof(struct key_entry), GFP_KERNEL);
+>>>  	if (!keymap) {
+>>> @@ -600,6 +611,13 @@ static int dell_wmi_input_setup(struct wmi_device
+>> *wdev)
+>>>  		pos++;
+>>>  	}
+>>>
+>>> +	/* Append table with events of type 0x0012 */
+>>> +	for (i = 0; i < ARRAY_SIZE(dell_wmi_keymap_type_0012); i++) {
+>>> +		keymap[pos] = dell_wmi_keymap_type_0012[i];
+>>> +		keymap[pos].code |= (0x0012 << 16);
+>>> +		pos++;
+>>> +	}
+>>> +
+>>>  	/*
+>>>  	 * Now append also table with "legacy" events of type 0x0000. Some of
+>>>  	 * them are reported also on laptops which have scancodes in DMI.
+>>> --
+>>> 2.27.0
+>>>
