@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D221F4316
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772471F42C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732589AbgFIRty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:49:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35832 "EHLO mail.kernel.org"
+        id S1732160AbgFIRrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:47:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730925AbgFIRtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:49:36 -0400
+        id S1732146AbgFIRrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:47:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AAC0B2081A;
-        Tue,  9 Jun 2020 17:49:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97BC820820;
+        Tue,  9 Jun 2020 17:47:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724976;
-        bh=et9YtkaNWCi90vne3IgotzdPWzrupwfZhlFMkeqow5o=;
+        s=default; t=1591724863;
+        bh=ztWBibTLyxtPC1/akqCXHZhfQhHK7+uZLcSbCXNi+kE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WlrXtT38WxwU8GtocmYUUTododx/JW2+wN/q4vvCrn6gSFX2j7U46a8xis5yFy8nD
-         iHhO7ojic/9u0PNVxdXhv4nQq+Id9kyK+I1ka9WpsGgQnWUooH5YIhcul5cHUZqkoH
-         GS87bEMHMGhejZ7UoxpwEIneOyyYuL+pfBixsw2o=
+        b=ZF3kUYPzDqP+mhhBDbYul29ow8c71P5591i4pNe44VhSctAj1XsXjLfyVmr74RZ2e
+         eBxF2opo6lC6LaOHYfx3W1RZSmEpsmLQlGea1y+RX9HoGClnGU9bcFp3ZrFkOhjZ6W
+         glC0oqKdeB5XDz7WV0KZaBR2W9X0HVVikbmC0How=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: =?UTF-8?q?=5BPATCH=204=2E14=2002/46=5D=20libnvdimm=3A=20Fix=20endian=20conversion=20issues=C2=A0?=
+        stable@vger.kernel.org,
+        =?UTF-8?q?David=20Bala=C5=BEic?= <xerces9@gmail.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 12/42] pppoe: only process PADT targeted at local interfaces
 Date:   Tue,  9 Jun 2020 19:44:18 +0200
-Message-Id: <20200609174023.128836157@linuxfoundation.org>
+Message-Id: <20200609174016.816264928@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
-References: <20200609174022.938987501@linuxfoundation.org>
+In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
+References: <20200609174015.379493548@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,75 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+From: Guillaume Nault <gnault@redhat.com>
 
-commit 86aa66687442ef45909ff9814b82b4d2bb892294 upstream.
+We don't want to disconnect a session because of a stray PADT arriving
+while the interface is in promiscuous mode.
+Furthermore, multicast and broadcast packets make no sense here, so
+only PACKET_HOST is accepted.
 
-nd_label->dpa issue was observed when trying to enable the namespace created
-with little-endian kernel on a big-endian kernel. That made me run
-`sparse` on the rest of the code and other changes are the result of that.
-
-Fixes: d9b83c756953 ("libnvdimm, btt: rework error clearing")
-Fixes: 9dedc73a4658 ("libnvdimm/btt: Fix LBA masking during 'free list' population")
-Reviewed-by: Vishal Verma <vishal.l.verma@intel.com>
-Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Link: https://lore.kernel.org/r/20190809074726.27815-1-aneesh.kumar@linux.ibm.com
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: David Balažic <xerces9@gmail.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Guillaume Nault <gnault@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 ---
- drivers/nvdimm/btt.c            |    8 ++++----
- drivers/nvdimm/namespace_devs.c |    7 ++++---
- 2 files changed, 8 insertions(+), 7 deletions(-)
+ drivers/net/ppp/pppoe.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/nvdimm/btt.c
-+++ b/drivers/nvdimm/btt.c
-@@ -399,9 +399,9 @@ static int btt_flog_write(struct arena_i
- 	arena->freelist[lane].sub = 1 - arena->freelist[lane].sub;
- 	if (++(arena->freelist[lane].seq) == 4)
- 		arena->freelist[lane].seq = 1;
--	if (ent_e_flag(ent->old_map))
-+	if (ent_e_flag(le32_to_cpu(ent->old_map)))
- 		arena->freelist[lane].has_err = 1;
--	arena->freelist[lane].block = le32_to_cpu(ent_lba(ent->old_map));
-+	arena->freelist[lane].block = ent_lba(le32_to_cpu(ent->old_map));
+diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
+index fa8f7c40a384..804c52c35f07 100644
+--- a/drivers/net/ppp/pppoe.c
++++ b/drivers/net/ppp/pppoe.c
+@@ -494,6 +494,9 @@ static int pppoe_disc_rcv(struct sk_buff *skb, struct net_device *dev,
+ 	if (!skb)
+ 		goto out;
  
- 	return ret;
- }
-@@ -567,8 +567,8 @@ static int btt_freelist_init(struct aren
- 		 * FIXME: if error clearing fails during init, we want to make
- 		 * the BTT read-only
- 		 */
--		if (ent_e_flag(log_new.old_map) &&
--				!ent_normal(log_new.old_map)) {
-+		if (ent_e_flag(le32_to_cpu(log_new.old_map)) &&
-+		    !ent_normal(le32_to_cpu(log_new.old_map))) {
- 			arena->freelist[i].has_err = 1;
- 			ret = arena_clear_freelist_error(arena, i);
- 			if (ret)
---- a/drivers/nvdimm/namespace_devs.c
-+++ b/drivers/nvdimm/namespace_devs.c
-@@ -1978,7 +1978,7 @@ struct device *create_namespace_pmem(str
- 		nd_mapping = &nd_region->mapping[i];
- 		label_ent = list_first_entry_or_null(&nd_mapping->labels,
- 				typeof(*label_ent), list);
--		label0 = label_ent ? label_ent->label : 0;
-+		label0 = label_ent ? label_ent->label : NULL;
++	if (skb->pkt_type != PACKET_HOST)
++		goto abort;
++
+ 	if (!pskb_may_pull(skb, sizeof(struct pppoe_hdr)))
+ 		goto abort;
  
- 		if (!label0) {
- 			WARN_ON(1);
-@@ -2315,8 +2315,9 @@ static struct device **scan_labels(struc
- 			continue;
- 
- 		/* skip labels that describe extents outside of the region */
--		if (nd_label->dpa < nd_mapping->start || nd_label->dpa > map_end)
--			continue;
-+		if (__le64_to_cpu(nd_label->dpa) < nd_mapping->start ||
-+		    __le64_to_cpu(nd_label->dpa) > map_end)
-+				continue;
- 
- 		i = add_namespace_resource(nd_region, nd_label, devs, count);
- 		if (i < 0)
+-- 
+2.25.1
+
 
 
