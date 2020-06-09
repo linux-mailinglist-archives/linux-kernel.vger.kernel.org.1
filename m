@@ -2,87 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067B11F427A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999081F4270
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731875AbgFIRgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:36:33 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:47602 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728848AbgFIRgc (ORCPT
+        id S1731849AbgFIRf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:35:58 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:39682 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729986AbgFIRf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:36:32 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 059HZot6046157;
-        Tue, 9 Jun 2020 12:35:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1591724150;
-        bh=ulNJut/tfEzVpGlFxRW9r3khnz5f2N4uIk9e8tk29mw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=WD1/Wl8ITIn7CjclZy8e17qbQLxWjWCaCvCqb65B93zj5us74qrqpR8T1MnTxMYlY
-         5v0sKw9NGKDOVQ0MTB6pQKAnYkoDUV7U5nNvb3gy+f6wFygEErcdbDyCfIGRlRUC4n
-         i98wZPpburooNob5kL+A/PK4RpcG6WiFOhCnKaoc=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 059HZom8051593
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Jun 2020 12:35:50 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Jun
- 2020 12:35:50 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 9 Jun 2020 12:35:50 -0500
-Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 059HZo2k032887;
-        Tue, 9 Jun 2020 12:35:50 -0500
-Subject: Re: [RFC PATCH 1/2] dt-bindings: tas2562: Add firmware support for
- tas2563
-To:     Mark Brown <broonie@kernel.org>
-CC:     <lgirdwood@gmail.com>, <perex@perex.cz>, <tiwai@suse.com>,
-        <robh@kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20200609172841.22541-1-dmurphy@ti.com>
- <20200609172841.22541-2-dmurphy@ti.com> <20200609173143.GN4583@sirena.org.uk>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <bb7cff87-f814-1b37-c9eb-e68919e3c077@ti.com>
-Date:   Tue, 9 Jun 2020 12:35:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 9 Jun 2020 13:35:57 -0400
+Received: by mail-io1-f66.google.com with SMTP id c8so23740036iob.6;
+        Tue, 09 Jun 2020 10:35:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UemfyzL4CDaIbSMWhLIN31hIuc2Yr7jCv1si14uauIA=;
+        b=tmGfN4p1CL8o5qxW8yh+rwztXiV1NjYc9c26Re9MhaiitcRki6mbS1A1HLZqRV1hxv
+         t0t7C3BcrKdbHgYbAFAmeA3crFl6UpE7d7fuGLl2NLxj9JrhHEJh30CUK8jOh2yNKMeG
+         GGd0e4oC/FU5n0rBO+O0XFk0CdScGpR+tgjecVF9ppnf0fIlJ5UaoZNN/GdgY1917x8Q
+         ihKt+utSbm12vcSsyYTvOpYxswFES2Af+Vz/Lk3ab3JJNw5+a+XySKqWR4jUqvri9xJa
+         eA6f9k5UwL1ZNuNSYgT2z1upmTTvfKBmVviSSYY5c113blyeeZAcJ2F4FKVVgnaC46vy
+         zapQ==
+X-Gm-Message-State: AOAM530PO431tyvvHaZn8bv3g4bNFsLr+33ebsx4FzK4diMlmcDqUm80
+        4UCCmRn3XJdLKhKH/01RYA==
+X-Google-Smtp-Source: ABdhPJyHA9bqkWZOLvk/hYOQV0AQki68RB2uY7Ob2Db2LSH4HMdre46KjSCiZoV+zVZ26b+BnZ/s9A==
+X-Received: by 2002:a6b:1745:: with SMTP id 66mr12153914iox.151.1591724156628;
+        Tue, 09 Jun 2020 10:35:56 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id z4sm7599577iot.24.2020.06.09.10.35.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 10:35:56 -0700 (PDT)
+Received: (nullmailer pid 1125416 invoked by uid 1000);
+        Tue, 09 Jun 2020 17:35:54 -0000
+Date:   Tue, 9 Jun 2020 11:35:54 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Roger Lu <roger.lu@mediatek.com>
+Cc:     Kevin Hilman <khilman@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Fan Chen <fan.chen@mediatek.com>,
+        HenryC Chen <HenryC.Chen@mediatek.com>,
+        YT Lee <yt.lee@mediatek.com>,
+        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
+        Charles Yang <Charles.Yang@mediatek.com>,
+        Angus Lin <Angus.Lin@mediatek.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nishanth Menon <nm@ti.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v9 1/4] dt-bindings: power: avs: add mtk svs dt-bindings
+Message-ID: <20200609173554.GA1119852@bogus>
+References: <20200609104534.29314-1-roger.lu@mediatek.com>
+ <20200609104534.29314-2-roger.lu@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20200609173143.GN4583@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200609104534.29314-2-roger.lu@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark
+On Tue, Jun 09, 2020 at 06:45:31PM +0800, Roger Lu wrote:
+> Document the binding for enabling mtk svs on MediaTek SoC.
+> 
+> Signed-off-by: Roger Lu <roger.lu@mediatek.com>
+> ---
+>  .../bindings/power/avs/mtk_svs.yaml           | 141 ++++++++++++++++++
+>  1 file changed, 141 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/power/avs/mtk_svs.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/power/avs/mtk_svs.yaml b/Documentation/devicetree/bindings/power/avs/mtk_svs.yaml
+> new file mode 100644
+> index 000000000000..f16f4eb56ee3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/power/avs/mtk_svs.yaml
+> @@ -0,0 +1,141 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/power/avs/mtk_svs.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Introduce SVS engine
+> +
+> +maintainers:
+> +  - Kevin Hilman <khilman@kernel.org>
+> +  - Nishanth Menon <nm@ti.com>
+> +
+> +description: |+
+> +  The Smart Voltage Scaling(SVS) engine is a piece of hardware
+> +  which has several controllers(banks) for calculating suitable
+> +  voltage to different power domains(CPU/GPU/CCI) according to
+> +  chip process corner, temperatures and other factors. Then DVFS
+> +  driver could apply SVS bank voltage to PMIC/Buck.
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt8183-svs
+> +
+> +  reg:
+> +    description: Address range of the MTK SVS controller.
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: IRQ for the MTK SVS controller.
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description: Main clock for svs controller to work.
+> +
+> +  clock-names:
+> +    const: main
+> +
+> +  nvmem-cells:
+> +    maxItems: 2
+> +    description:
+> +      Phandle to the calibration data provided by a nvmem device.
+> +
+> +  nvmem-cell-names:
+> +    items:
+> +      - const: svs-calibration-data
+> +      - const: calibration-data
+> +
+> +patternProperties:
+> +  "^svs-(cpu-little|cpu-big|cci|gpu)$":
+> +    type: object
+> +    description:
+> +      Each subnode represents one SVS bank.
+> +        - svs-cpu-little (SVS bank device node of little CPU)
+> +        - svs-cpu-big (SVS bank device node of big CPU)
+> +        - svs-cci (SVS bank device node of CCI)
+> +        - svs-gpu (SVS bank device node of GPU)
 
-On 6/9/20 12:31 PM, Mark Brown wrote:
-> On Tue, Jun 09, 2020 at 12:28:40PM -0500, Dan Murphy wrote:
->> Add a property called firmware-name that will be the name of the
->> firmware that will reside in the file system or built into the kernel.
-> Why not just use a standard name for the firmware?  If the firmwares
-> vary per-board then building it using the machine compatible (or DMI
-> info) could handle that, with a fallback to a standard name for a
-> default setup.
+As I've said before, I don't think these child nodes make sense. All 
+this data should already be available elsewhere in the DT.
 
-The number of firmwares can vary per IC on the board itself.  So you may 
-have X number of firmware files all with different names all targets for 
-different TAS2563 ICs.
-
-Also TI will not be providing the individual binaries to the customer.  
-There is a customer tool that the user uses to create the binaries.
-
-So the output names are arbitrary.
-
-I was going to mention this in the cover letter but did not think 
-mentioning the user tool had any value
-
-Dan
-
+Rob
