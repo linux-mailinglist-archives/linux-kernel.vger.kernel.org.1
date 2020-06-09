@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514881F34D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 09:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8411F352B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 09:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgFIHah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 03:30:37 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48002 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725993AbgFIHag (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 03:30:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591687835;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=owPW4Yyn+vRG/I3e4tfWyQnRyiSow4wVMNxxjaVp++o=;
-        b=fns7Jorz3uDnBL1cuAfLpaBW9XYbsJfalLvCL6nV2/fDRIeyDLzGSNGpHY1ECGq+P7lgFb
-        1Kp4Gjm8yJBmRkxewmHrHvs+LoanRm9fV6XdwsEDON5W+bWuKSoKv4KsReJP9dGwNmSNVI
-        MMKyyIvfwmQH/7nRebxosYPdxCOiP58=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-OiftQ25pPvOPb7nkMQP-Fg-1; Tue, 09 Jun 2020 03:30:33 -0400
-X-MC-Unique: OiftQ25pPvOPb7nkMQP-Fg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 708E6EC1AA;
-        Tue,  9 Jun 2020 07:30:32 +0000 (UTC)
-Received: from starship-rhel (unknown [10.35.206.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E26D5C1BD;
-        Tue,  9 Jun 2020 07:30:29 +0000 (UTC)
-Message-ID: <500129791dd00349acb5919d75fa9de7e0c112d1.camel@redhat.com>
-Subject: Re: [PATCH] KVM: SVM: fix calls to is_intercept
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Qian Cai <cai@lca.pw>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Date:   Tue, 09 Jun 2020 10:30:28 +0300
-In-Reply-To: <87wo4hbu0q.fsf@vitty.brq.redhat.com>
-References: <20200608121428.9214-1-pbonzini@redhat.com>
-         <87wo4hbu0q.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        id S1727082AbgFIHnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 03:43:18 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:48366 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726404AbgFIHnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 03:43:14 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C2D97200189;
+        Tue,  9 Jun 2020 09:43:11 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B65A1201036;
+        Tue,  9 Jun 2020 09:43:01 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 660AF402F3;
+        Tue,  9 Jun 2020 15:42:49 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, mturquette@baylibre.com,
+        sboyd@kernel.org, oleksandr.suvorov@toradex.com,
+        stefan.agner@toradex.com, arnd@arndb.de, abel.vesa@nxp.com,
+        peng.fan@nxp.com, aisheng.dong@nxp.com, tglx@linutronix.de,
+        allison@lohutok.net, gregkh@linuxfoundation.org, info@metux.net,
+        leonard.crestez@nxp.com, fugang.duan@nxp.com,
+        daniel.baluta@nxp.com, yuehaibing@huawei.com, sfr@canb.auug.org.au,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2 0/9] Support building i.MX8 SoCs clock driver as module
+Date:   Tue,  9 Jun 2020 15:32:04 +0800
+Message-Id: <1591687933-19495-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-06-08 at 14:51 +0200, Vitaly Kuznetsov wrote:
-> Paolo Bonzini <pbonzini@redhat.com> writes:
-> 
-> > is_intercept takes an INTERCEPT_* constant, not SVM_EXIT_*; because
-> > of this, the compiler was removing the body of the conditionals,
-> > as if is_intercept returned 0.
-> > 
-> > This unveils a latent bug: when clearing the VINTR intercept,
-> > int_ctl must also be changed in the L1 VMCB (svm->nested.hsave),
-> > just like the intercept itself is also changed in the L1 VMCB.
-> > Otherwise V_IRQ remains set and, due to the VINTR intercept being
-> > clear,
-> > we get a spurious injection of a vector 0 interrupt on the next
-> > L2->L1 vmexit.
-> > 
-> > Reported-by: Qian Cai <cai@lca.pw>
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > ---
-> > 	Vitaly, can you give this a shot with Hyper-V?  I have already
-> > 	placed it on kvm/queue, it passes both svm.flat and KVM-on-KVM
-> > 	smoke tests.
-> 
-> Quickly smoke-tested this with WS2016/2019 BIOS/UEFI and the patch
-> doesn't seem to break anything. I'm having issues trying to launch a
-> Gen2 (UEFI) VM in Hyper-V (Gen1 works OK) but the behavior looks
-> exactly
-> the same pre- and post-patch.
-> 
+Nowdays, there are more and more requirements of building SoC specific drivers
+as modules, such as Android GKI (generic kernel image), this patch set supports
+building i.MX8 SoCs clock drivers as modules, including i.MX8MQ/MM/MN/MP/QXP,
+the common clock modules are: mxc-clk.ko for i.MX8MQ/MM/MN/MP, mxc-clk-scu.ko
+for i.MX8QXP and later SoCs with SCU inside, normally, each platform can ONLY
+insmod 1 common i.MX clock driver and its own SoC clock driver.
 
-And if I understand correctly that bug didn't affect anything I tested
-because your recent patches started to avoid the usage of the interrupt
-window unless L1 clears the usage of the interrupt intercept which is
-rare.
+Since i.MX common clk driver will support module build and no longer selected
+by default, so for i.MX ARMv7 platforms, need to manually select it to make build pass.
 
-Looks correct to me, and I guess this could have being avoided have C
-enforced the enumeration types.
+Changes since V1:
+	- Fix build error for x86_64-allyesconfig by adding dependency for MXC_CLK_SCU;
+	- Move lpcg clock driver change to SCU patch, this is incorrect in V1.
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+Anson Huang (9):
+  clk: composite: Export clk_hw_register_composite()
+  ARM: imx: Select MXC_CLK for ARCH_MXC
+  clk: imx: Support building SCU clock driver as module
+  clk: imx: Support building i.MX common clock driver as module
+  clk: imx8mm: Support module build
+  clk: imx8mn: Support module build
+  clk: imx8mp: Support module build
+  clk: imx8mq: Support module build
+  clk: imx8qxp: Support module build
 
-Best regards,
-	Maxim Levitsky
+ arch/arm/mach-imx/Kconfig          |  1 +
+ drivers/clk/clk-composite.c        |  1 +
+ drivers/clk/imx/Kconfig            | 22 +++++++++++++---------
+ drivers/clk/imx/Makefile           | 30 +++++++-----------------------
+ drivers/clk/imx/clk-composite-8m.c |  1 +
+ drivers/clk/imx/clk-cpu.c          |  1 +
+ drivers/clk/imx/clk-frac-pll.c     |  1 +
+ drivers/clk/imx/clk-gate2.c        |  1 +
+ drivers/clk/imx/clk-imx8mm.c       |  1 +
+ drivers/clk/imx/clk-imx8mn.c       |  1 +
+ drivers/clk/imx/clk-imx8mp.c       |  1 +
+ drivers/clk/imx/clk-imx8mq.c       |  1 +
+ drivers/clk/imx/clk-imx8qxp-lpcg.c |  1 +
+ drivers/clk/imx/clk-imx8qxp.c      |  1 +
+ drivers/clk/imx/clk-lpcg-scu.c     |  1 +
+ drivers/clk/imx/clk-pll14xx.c      |  4 ++++
+ drivers/clk/imx/clk-scu.c          |  5 +++++
+ drivers/clk/imx/clk-sscg-pll.c     |  1 +
+ drivers/clk/imx/clk.c              | 28 ++++++++++++++++++++++------
+ 19 files changed, 65 insertions(+), 38 deletions(-)
 
-
+-- 
+2.7.4
 
