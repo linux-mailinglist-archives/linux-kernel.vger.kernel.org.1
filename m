@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E701F4973
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 00:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A46F1F4978
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 00:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728542AbgFIWiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 18:38:22 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:36471 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728108AbgFIWiV (ORCPT
+        id S1728581AbgFIWkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 18:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728108AbgFIWkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 18:38:21 -0400
-Received: by mail-il1-f196.google.com with SMTP id a13so73834ilh.3;
-        Tue, 09 Jun 2020 15:38:20 -0700 (PDT)
+        Tue, 9 Jun 2020 18:40:17 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D31C05BD1E;
+        Tue,  9 Jun 2020 15:40:17 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id q8so225373qkm.12;
+        Tue, 09 Jun 2020 15:40:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MAUXZKtBQZj6B5Rk9FG9z3WffsCtrNY4aCuD4cUBdPc=;
+        b=YJflalIkp0KvIL27dtyF6mJD8QQVEqO9eeK32hEzzrhc8R4XGR8zDIgNYhe8VBAFr1
+         QTqZwF7AiUHee1tIkA6rcCjrc/Cw3JH/k8s6KsW86D49fqhCf7pIklHfgVRMZcUVSUc3
+         qkXh807NBKX98Yq8Heqr8dhKk8fgwIMHXsWnzuLxHkdlMqtPtSYINZ+xopFGu08R+ABJ
+         OajJ0AXZkA7g38Iu8m7ucC4WQWI90dbbo8jCBvjRA4JSHt+wYIIqO6N2bSIBlMZxkyR4
+         CgIthjnT7BmDw+GBQ5z5VTJqF7eKW6VC6YpSxf+Rm+joTYNILEnSSOs8BaFF/4tbY9Py
+         +0Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=we/QVLPljh+VvvW0TyDCBs0GVOvUPbhlxjdGb+22AwU=;
-        b=lPH3skqnbNzXbkmD0AtcbGO2iDzFQs4Ff+GH8qs8I5wNCF+8HsM8W7yX96g6ZURTYx
-         cyenjuVJ8XbA9cnrJZFqmmOvzZBVfXrnItE7kreBd7sgZDZxaXpO3UYyqUGJrJjfDSeY
-         njsc9SoGnAh05FOY3LB3JBS/iXprSZ16k7XfiHmYGnX/3YYdniudpmuBkTmOQlvZ6uxY
-         VZLQdGD0+WWLHOICo6BCYbCJsU9Vo9rzgg1eDnQSkVUwZ2NhePMnwtvP4Si8iNcUydXO
-         D+OMdeH94J3/NGXI8WJ0s8WFHFqMNVjAfUoYsVwX+ADg1sQ+7yF7OH241nfk0uq1F9Bu
-         PV7w==
-X-Gm-Message-State: AOAM532ItB/SqxTDB+gje9GxYWl7Z1fJ9n5ZVxtrkNjS6JAgBzl+RdnI
-        YRgyVZMt4jdgl9xRbHoHMA==
-X-Google-Smtp-Source: ABdhPJz4GX4BnpQD1QFEzALE9UZw4o3rV4NJACs3ZOZEhF5IUEXncgLcDuIDjhxVyYTfB+mgSFz/LA==
-X-Received: by 2002:a92:c5c5:: with SMTP id s5mr242862ilt.85.1591742300408;
-        Tue, 09 Jun 2020 15:38:20 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id t9sm9864098ilg.74.2020.06.09.15.38.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MAUXZKtBQZj6B5Rk9FG9z3WffsCtrNY4aCuD4cUBdPc=;
+        b=HUFvKaokN03vg2vJqR5OA2q7xif9Ld8CEgPEpwXj/b6zw5MtjXp6h9CT4iUpetjcwS
+         fXAVnvNeRplHx0jLZzCyzCFWRL1sR9feJL6Bh5NyOayHO9ikTEQQunlzgipFjbfTbC89
+         pWuiKZTIrCpfBl+sDTndgtYUfAWLnU7IDmbGxlEFIWsl655EZsY+1WsvQYvHJ8qlDTtw
+         SZtkZ+B6JtNjEanLQ/3kWRAUznJpT4Z7C7ow9Vy/s/lsnb35eBrjqxO5vmvDJyeEY9kR
+         38sRwwghvKPrIoVXT8MO8IJj6dPqpL2V9BfQUv1eJoKdoreTNYl1fEWP8ldexLbS8Lag
+         vDTg==
+X-Gm-Message-State: AOAM532H+MbH6x/VTzKdmv+H+mo5k6VPNVS4oEPTAPWLk9uTJQAGkkev
+        UdcyI9F5kWQW/f0eF8/1/Q==
+X-Google-Smtp-Source: ABdhPJxLUvoEA0NFM0tB152OFCyhMpvWeKW4QTmDwJliy056wjYh0HVDJ8Hp7CgxnkyaKyjsPUhtVg==
+X-Received: by 2002:a05:620a:4e5:: with SMTP id b5mr168395qkh.341.1591742416350;
+        Tue, 09 Jun 2020 15:40:16 -0700 (PDT)
+Received: from localhost.localdomain ([142.119.96.191])
+        by smtp.googlemail.com with ESMTPSA id l69sm11282893qke.112.2020.06.09.15.40.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 15:38:19 -0700 (PDT)
-Received: (nullmailer pid 1629822 invoked by uid 1000);
-        Tue, 09 Jun 2020 22:38:18 -0000
-Date:   Tue, 9 Jun 2020 16:38:18 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Parthiban Nallathambi <parthiban@linumiz.com>
-Cc:     m.felsch@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: fsl: Add MYiR Tech boards
-Message-ID: <20200609223818.GA1626212@bogus>
-References: <20200601145857.5658-1-parthiban@linumiz.com>
+        Tue, 09 Jun 2020 15:40:15 -0700 (PDT)
+From:   Keyur Patel <iamkeyur96@gmail.com>
+Cc:     Keyur Patel <iamkeyur96@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Fabien Lahoudere <fabien.lahoudere@collabora.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: cros_ec: fix spelling mistake
+Date:   Tue,  9 Jun 2020 18:39:52 -0400
+Message-Id: <20200609223955.107506-1-iamkeyur96@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200601145857.5658-1-parthiban@linumiz.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 04:58:56PM +0200, Parthiban Nallathambi wrote:
-> Add entries for MYiR Tech imx6ULL eval boards.
-> 
-> Signed-off-by: Parthiban Nallathambi <parthiban@linumiz.com>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index cd3fbe7e3948..592d73187da4 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -264,6 +264,8 @@ properties:
->                - armadeus,imx6ull-opos6uldev # OPOS6UL (i.MX6ULL) SoM on OPOS6ULDev board
->                - fsl,imx6ull-14x14-evk     # i.MX6 UltraLiteLite 14x14 EVK Board
->                - kontron,imx6ull-n6411-som # Kontron N6411 SOM
-> +              - myir,imx6ull-mys-6ulx # MYiR Tech iMX6ULL Evaluation Board
-> +              - myir,imx6ull-mys-6ulx-nand # MYiR Tech iMX6ULL Evaluation Board with NAND
+Fix typo: "tigger" --> "trigger"
 
-Can't you tell there is nand by the presence of a nand nodes?
+Signed-off-by: Keyur Patel <iamkeyur96@gmail.com>
+---
+ drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->                - toradex,colibri-imx6ull-eval            # Colibri iMX6ULL Module on Colibri Evaluation Board
->                - toradex,colibri-imx6ull-wifi-eval       # Colibri iMX6ULL Wi-Fi / Bluetooth Module on Colibri Evaluation Board
->            - const: fsl,imx6ull
-> -- 
-> 2.26.2
-> 
+diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+index c831915ca7e5..4888fb23d801 100644
+--- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
++++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+@@ -352,7 +352,7 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
+ 		} else {
+ 			/*
+ 			 * The only way to get samples in buffer is to set a
+-			 * software tigger (systrig, hrtimer).
++			 * software trigger (systrig, hrtimer).
+ 			 */
+ 			ret = devm_iio_triggered_buffer_setup(
+ 					dev, indio_dev, NULL, trigger_capture,
+-- 
+2.26.2
+
