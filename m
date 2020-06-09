@@ -2,147 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB2A1F3DC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5566A1F3DD3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730143AbgFIOSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 10:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36924 "EHLO
+        id S1730386AbgFIOTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726967AbgFIOSs (ORCPT
+        with ESMTP id S1726967AbgFIOTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:18:48 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051FDC05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 07:18:47 -0700 (PDT)
-Received: from localhost ([127.0.0.1] helo=vostro)
-        by Galois.linutronix.de with esmtps (TLS1.2:RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.80)
-        (envelope-from <john.ogness@linutronix.de>)
-        id 1jif5N-0002Lk-Jo; Tue, 09 Jun 2020 16:18:41 +0200
-From:   John Ogness <john.ogness@linutronix.de>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Paul McKenney <paulmck@kernel.org>
-Subject: Re: blk->id read race: was: [PATCH v2 2/3] printk: add lockless buffer
-References: <20200501094010.17694-1-john.ogness@linutronix.de>
-        <20200501094010.17694-3-john.ogness@linutronix.de>
-        <20200609071030.GA23752@linux-b0ei>
-Date:   Tue, 09 Jun 2020 16:18:35 +0200
-In-Reply-To: <20200609071030.GA23752@linux-b0ei> (Petr Mladek's message of
-        "Tue, 9 Jun 2020 09:10:30 +0200")
-Message-ID: <87tuzkuxtw.fsf@vostro.fn.ogness.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 9 Jun 2020 10:19:42 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE65C05BD1E;
+        Tue,  9 Jun 2020 07:19:42 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id p21so10337726pgm.13;
+        Tue, 09 Jun 2020 07:19:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TBM8UzUFQRAFXnadODNP4SC5I3SYQdfsI182+mdN99I=;
+        b=robkr4JeDjRuxira1Rr1HMwmepK/jy5iMNR4VO2+sugmN2Qfs9w/G4u6YHgpnsUuKx
+         0xrsGSyercM6BnkS802AGU4qBDrHJ9OLVViubfUx1QX8eUZiLXWod5C9gLXDtugSCRIi
+         50cOjHrJ9PyMN+kCjAT+QSovuPV8AiLQRPXTKq761mFEa6q5/EqJdDeF/SEYEJSE1BNE
+         J3gPdDMZtMIrLLmlZaKzHC6fO5ywUCMDQ+3wqBNvXq3HpkovNmuMHp3u7/NqmQysnh9k
+         UXoFFtjAk3dwxlC9bqbLHGz6D8a161Ju2xuxJFblfyv22KZckKiMqRjBPc7ScQg4V1E2
+         9wwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TBM8UzUFQRAFXnadODNP4SC5I3SYQdfsI182+mdN99I=;
+        b=qaTn0j9RZ55cZyYzOhX4bbxXoDAae2DZy0GMWlBwbIXa2+7Kw/g4vlQByazqS4e040
+         Cm2qdbscce8fv4OMdhfD8JmgTZNktJhKrQtbkA/CWPhL/vmpc1fBr9ynSs2zmbVvB1y+
+         EoglhFEhPGqiNo2YrmvFI9wdCbVfnYu5r1oHfiffhScYZaJm8vBfVAb24uVPAbaGZxEr
+         Hj9ncdS0cVLo9UlAB32ARghHem/Evw3zXo6DZEWQ5oyeigc7OW6B3LJNZaFBltoTIQZN
+         6qJtsePyoawCuJVcyqtyiSqAiuKMyiXFvBk1grYmvnpqlD+YxPYrCvUzVbdpvMP/qOHT
+         vI2A==
+X-Gm-Message-State: AOAM533WIBkpdUyX9KzXqvlf+udMbonXWAhOwF1BxL9Gl4YsbpJxnLxf
+        QXSQXeIpBKdmqdgo3bt8XpuP5FJsN4C+1p0Vtn8=
+X-Google-Smtp-Source: ABdhPJxStCJ8sGascE2rC3EJCjWx/Wwyx7yNwiY+l2i+Fbip9MDjYWBd+z97hidMXyAQuBXbm4qYdEPklBp+cUjoXkk=
+X-Received: by 2002:a62:3103:: with SMTP id x3mr9005809pfx.130.1591712381739;
+ Tue, 09 Jun 2020 07:19:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200609110136.GJ4106@dell>
+In-Reply-To: <20200609110136.GJ4106@dell>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 9 Jun 2020 17:19:30 +0300
+Message-ID: <CAHp75Vfy2siUikK7bN3iM=pj3B8XYWzszkKAFgBt0SFh26s+Sw@mail.gmail.com>
+Subject: Re: [RFC] MFD's relationship with Device Tree (OF)
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Michael Walle <michael@walle.cc>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        GregKroah-Hartmangregkh@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-09, Petr Mladek <pmladek@suse.com> wrote:
->> --- /dev/null
->> +++ b/kernel/printk/printk_ringbuffer.c
->> +/*
->> + * Given a data ring (text or dict), put the associated descriptor of each
->> + * data block from @lpos_begin until @lpos_end into the reusable state.
->> + *
->> + * If there is any problem making the associated descriptor reusable, either
->> + * the descriptor has not yet been committed or another writer task has
->> + * already pushed the tail lpos past the problematic data block. Regardless,
->> + * on error the caller can re-load the tail lpos to determine the situation.
->> + */
->> +static bool data_make_reusable(struct printk_ringbuffer *rb,
->> +			       struct prb_data_ring *data_ring,
->> +			       unsigned long lpos_begin,
->> +			       unsigned long lpos_end,
->> +			       unsigned long *lpos_out)
->> +{
->> +	struct prb_desc_ring *desc_ring = &rb->desc_ring;
->> +	struct prb_data_blk_lpos *blk_lpos;
->> +	struct prb_data_block *blk;
->> +	unsigned long tail_lpos;
->> +	enum desc_state d_state;
->> +	struct prb_desc desc;
->> +	unsigned long id;
->> +
->> +	/*
->> +	 * Using the provided @data_ring, point @blk_lpos to the correct
->> +	 * blk_lpos within the local copy of the descriptor.
->> +	 */
->> +	if (data_ring == &rb->text_data_ring)
->> +		blk_lpos = &desc.text_blk_lpos;
->> +	else
->> +		blk_lpos = &desc.dict_blk_lpos;
->> +
->> +	/* Loop until @lpos_begin has advanced to or beyond @lpos_end. */
->> +	while ((lpos_end - lpos_begin) - 1 < DATA_SIZE(data_ring)) {
->> +		blk = to_block(data_ring, lpos_begin);
->> +		id = READ_ONCE(blk->id); /* LMM(data_make_reusable:A) */
+On Tue, Jun 9, 2020 at 2:01 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> This would deserve some comment:
+> Good morning,
 >
-> 1. Compiler could not optimize out the read because there is a data
->    dependency on lpos_begin.
+> After a number of reports/queries surrounding a known long-term issue
+> in the MFD core, including the submission of a couple of attempted
+> solutions, I've decided to finally tackle this one myself.
 >
-> 2. Compiler could not postpone the read because it is followed by
->    smp_rmb().
+> Currently, when a child platform device (sometimes referred to as a
+> sub-device) is registered via the Multi-Functional Device (MFD) API,
+> the framework attempts to match the newly registered platform device
+> with its associated Device Tree (OF) node.  Until now, the device has
+> been allocated the first node found with an identical OF compatible
+> string.  Unfortunately, if there are, say for example '3' devices
+> which are to be handled by the same driver and therefore have the same
+> compatible string, each of them will be allocated a pointer to the
+> *first* node.
 >
-> So, is READ_ONCE() realy needed?
+> Let me give you an example.
+>
+> I have knocked up an example 'parent' and 'child' device driver.  The
+> parent utilises the MFD API to register 3 identical children, each
+> controlled by the same driver.  This happens a lot.  Fortunately, in
+> the majority of cases, the OF nodes are also totally identical, but
+> what if you wish to configure one of the child devices with different
+> attributes or resources supplied via Device Tree, like a clock?  This
+> is currently impossible.
+>
+> Here is the Device Tree representation for the 1 parent and the 3
+> child (sub) devices described above:
+>
+>         parent {
+>                 compatible = "mfd,of-test-parent";
+>
+>                 child@0 {
+>                         compatible = "mfd,of-test-child";
+>                         clocks = <&clock 0>;
+>                 };
+>
+>                 child@1 {
+>                         compatible = "mfd,of-test-child";
+>                         clocks = <&clock 1>;
+>                 };
+>
+>                 child@2 {
+>                         compatible = "mfd,of-test-child";
+>                         clocks = <&clock 2>;
+>                 };
+>         };
+>
+> This is how we register those devices from MFD:
+>
+> static const struct mfd_cell mfd_of_test_cell[] = {
+>         OF_MFD_CELL("mfd_of_test_child", NULL, NULL, 0, 0, "mfd,of-test-child"),
+>         OF_MFD_CELL("mfd_of_test_child", NULL, NULL, 0, 1, "mfd,of-test-child"),
+>         OF_MFD_CELL("mfd_of_test_child", NULL, NULL, 0, 2, "mfd,of-test-child")
+> };
+>
+> ... which we pass into mfd_add_devices() for processing.
+>
+> In an ideal world.  The devices with the platform_id; 0, 1 and 2 would
+> be matched up to Device Tree nodes; child@0, child@1 and child@2
+> respectively.  Instead all 3 devices will be allocated a pointer to
+> child@0's OF node, which is obviously not correct.
+>
+> This is how it looks when each of the child devices are probed:
+>
+>  [0.708287] mfd-of-test-parent mfd_of_test: Registering 3 devices
+>  [...]
+>  [0.712511] mfd-of-test-child mfd_of_test_child.0: Probing platform device: 0
+>  [0.712710] mfd-of-test-child mfd_of_test_child.0: Using OF node: child@0
+>  [0.713033] mfd-of-test-child mfd_of_test_child.1: Probing platform device: 1
+>  [0.713381] mfd-of-test-child mfd_of_test_child.1: Using OF node: child@0
+>  [0.713691] mfd-of-test-child mfd_of_test_child.2: Probing platform device: 2
+>  [0.713889] mfd-of-test-child mfd_of_test_child.2: Using OF node: child@0
+>
+> "Why is it when I change child 2's clock rate, it also changes 0's?"
+>
+> Whoops!
+>
+> So in order to fix this, we need to make MFD more-cleverer!
+>
+> However, this is not so simple.  There are some rules we should abide
+> by (I use "should" intentionally here, as something might just have to
+> give):
+>
+>  a) Since Device Tree is designed to describe hardware, inserting
+>     arbitrary properties into DT is forbidden.  This precludes things
+>     we would ordinarily be able to match on, like 'id' or 'name'.
+>  b) As an extension to a) DTs should also be OS agnostic, so
+>     properties like 'mfd-device', 'mfd-order' etc are also not
+>     not suitable for inclusion.
+>  c) The final solution should ideally be capable of supporting both
+>     newly defined and current trees (without retroactive edits)
+>     alike.
+>  d) Existing properties could be used, but not abused.  For example,
+>     one of my suggestions (see below) is to use the 'reg' property.
+>     This is fine in principle but loading 'reg' with arbitrary values
+>     (such as; 0, 1, 2 ... x) which 1) clearly do not have anything to
+>     do with registers and 2) would be meaningless in other OSes/
+>     implementations, just to serve our purpose, is to be interpreted
+>     as an abuse.
+>
+> Proposal 1:
+>
+> As mentioned above, my initial thoughts were to use the 'reg' property
+> to match an MFD cell entry with the correct DT node.  However, not
+> all Device Tree nodes have 'reg' properties.  Particularly true in the
+> case of MFD, where memory resources are usually shared with the parent
+> via Regmap, or (as in the case of the ab8500) the MFD handles all
+> register transactions via its own API.
+>
+> Proposal 2:
+>
+> If we can't guarantee that all DT nodes will have at least one
+> property in common to be used for matching and we're prevented from
+> supplying additional, potentially bespoke properties, then we must
+> seek an alternative procedure.
+>
+> It should be possible to match based on order.  However, the developer
+> would have to guarantee that the order in which the child devices are
+> presented to the MFD API are in exactly the same order as they are
+> represented in the Device Tree.  The obvious draw-back to this
+> strategy is that it's potentially very fragile.
+>
+> Current Proposal:
+>
+> How about a collection of Proposal 1 and Proposal 2?  First we could
+> attempt a match on the 'reg' property.  Then, if that fails, we would
+> use the fragile-but-its-all-we-have Proposal 2 as the fall-back.
+>
+> Thoughts?
 
-I agree that it is not needed. Both the READ_ONCE() and its countering
-WRITE_ONCE() (data_alloc:B) only document the lockless shared access. I
-will remove both for the next version.
+Just a side note, have you considered software nodes on the picture?
+You can add properties or additional references to the existing
+(firmware) nodes.
 
-Do we still need a comment? Is it not obvious that there is a data
-dependency on @lpos_begin?
-
-        blk = to_block(data_ring, lpos_begin);
-        id = blk->id;
-
-> Well, blk->id clearly can be modified in parallel so we need to be
-> careful. There is smp_rmb() right below. Do we needed smp_rmb() also
-> before?
->
-> What about the following scenario?:
->
->
-> CPU0						CPU1
->
-> 						data_alloc()
-> 						  data_push_tail()
->
-> 						blk = to_block(data_ring, begin_lpos)
-> 						WRITE_ONCE(blk->id, id); /* LMM(data_alloc:B) */
->
-> desc_push_tail()
->   data_push_tail()
->
->     tail_lpos = data_ring->tail_lpos;
->     // see data_ring->tail_lpos already updated by CPU1
->
->     data_make_reusable()
->
->       // lpos_begin = tail_lpos via parameter
->       blk = to_block(data_ring, lpos_begin);
->       id = blk->id
->
-> Now: CPU0 might see outdated blk->id before CPU1 wrote new value
->      because there is no read barrier betwen reading tail_lpos
->      and blk->id here.
-
-In your example, CPU1 is pushing the tail and then setting the block ID
-for the _newly_ allocated block, that is located is _before_ the new
-tail. If CPU0 sees the new tail already, it is still reading a valid
-block ID, which is _not_ from the block that CPU1 is in the process of
-writing.
-
-John Ogness
+-- 
+With Best Regards,
+Andy Shevchenko
