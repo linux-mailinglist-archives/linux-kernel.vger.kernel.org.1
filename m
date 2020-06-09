@@ -2,77 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A32B1F3BD9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80EB1F3C00
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729987AbgFINRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 09:17:00 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:33654 "EHLO mail1.perex.cz"
+        id S1730096AbgFINRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 09:17:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729968AbgFINQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 09:16:55 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id B823CA003F;
-        Tue,  9 Jun 2020 15:16:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz B823CA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1591708612; bh=Q6pAyvWAA5MDPmhkXsBCOnRP+oa87wANg1kmgbc1Kpc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=WvAeGGBAMKiFOFjTPXv8K3w5I1fxEZVOhQaZiXlSH1MVoJCMwtDLsMxaOSFHber3c
-         L1N+Ix+80HnPbrBixJ0V62C0B7d0XedIZzq/bLDST90WHVbtdXfgzYan8OfYvWB76T
-         tZVa+PvCOJTQmgNlwOSN0GHaj8vF3zuHqiiSmrAI=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729585AbgFINRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 09:17:42 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Tue,  9 Jun 2020 15:16:38 +0200 (CEST)
-Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
-To:     Christoph Hellwig <hch@lst.de>, Takashi Iwai <tiwai@suse.de>
-Cc:     David Rientjes <rientjes@google.com>,
-        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
-        alsa-devel@alsa-project.org, bp@alien8.de, hch@infradead.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        Pavel Machek <pavel@ucw.cz>, tglx@linutronix.de,
-        tiwai@suse.com, x86@kernel.org
-References: <20200609054306.GA9606@lst.de> <s5hsgf4irzt.wl-tiwai@suse.de>
- <20200609084305.GA21671@lst.de> <s5hlfkwip1h.wl-tiwai@suse.de>
- <20200609091727.GA23814@lst.de> <s5hh7vkio0n.wl-tiwai@suse.de>
- <20200609113123.GA547@lst.de> <s5h3674ii49.wl-tiwai@suse.de>
- <20200609114059.GA1228@lst.de> <s5hzh9ch38h.wl-tiwai@suse.de>
- <20200609114955.GA2027@lst.de>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <a20ab909-bb60-8d47-0da3-122a724aecbe@perex.cz>
-Date:   Tue, 9 Jun 2020 15:16:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        by mail.kernel.org (Postfix) with ESMTPSA id D633F20737;
+        Tue,  9 Jun 2020 13:17:41 +0000 (UTC)
+Date:   Tue, 9 Jun 2020 09:17:40 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] tracing: Updates for 5.8
+Message-ID: <20200609091740.303dda01@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200609114955.GA2027@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 09. 06. 20 v 13:49 Christoph Hellwig napsal(a):
-> On Tue, Jun 09, 2020 at 01:45:34PM +0200, Takashi Iwai wrote:
->> Yes, for the sound stuff, something below should make things working.
->> But it means that we'll lose the SG-buffer allocation and the
->> allocation of large buffers might fail on some machines.
-> 
-> We crossed lines there.  In general due to better memory compaction and
-> CMA we have better chances to get larger contiguous allocations these
-> days, so this might not be too much of an issue in practice.
-> 
 
-But turning off the SG DMA scheme seems like a step back. Would be possible to 
-fix this kind of memory mapping?
+Linus,
 
-					Jaroslav
+Tracing updates for 5.8:
+
+No new features this release. Mostly clean ups, restructuring and
+documentation.
+
+ - Have ftrace_bug() show ftrace errors before the WARN, as the WARN will
+   reboot the box before the error messages are printed if panic_on_warn
+   is set.
+
+ - Have traceoff_on_warn disable tracing sooner (before prints)
+
+ - Write a message to the trace buffer that its being disabled when
+   disable_trace_on_warning() is set.
+
+ - Separate out synthetic events from histogram code to let it be used by
+   other parts of the kernel.
+
+ - More documentation on histogram design.
+
+ - Other small fixes and clean ups.
 
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Please pull the latest trace-v5.8 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.8
+
+Tag SHA1: a9317885fb7c4418fea2588e3fbaeaafd773b106
+Head SHA1: 388d8bdb87e01bcea6d0b2bf797b5f6d7b2401fb
+
+
+Cheng Jian (1):
+      ftrace: show debugging information when panic_on_warn set
+
+Julia Lawall (1):
+      tracing/probe: reverse arguments to list_add
+
+Masami Hiramatsu (1):
+      tools/bootconfig: Add a summary of test cases and return error
+
+Mel Gorman (1):
+      tracing: Remove obsolete PREEMPTIRQ_EVENTS kconfig option
+
+Peter Zijlstra (1):
+      ftrace,bug: Improve traceoff_on_warn
+
+Steven Rostedt (VMware) (2):
+      tracing/doc: Fix typos in histogram-design.rst
+      tracing: Add a trace print when traceoff_on_warning is triggered
+
+Tom Zanussi (7):
+      tracing: Check state.disabled in synth event trace functions
+      tracing: Add histogram-design document
+      tracing: Add hist_debug trace event files for histogram debugging
+      tracing: Fix events.rst section numbering
+      tracing: Move synthetic events to a separate file
+      selftests/ftrace: Distinguish between hist and synthetic event checks
+      tracing/doc: Fix ascii-art in histogram-design.rst
+
+----
+ Documentation/trace/events.rst                     |   28 +-
+ Documentation/trace/histogram-design.rst           | 2115 +++++++++++++++++++
+ kernel/trace/Kconfig                               |   52 +-
+ kernel/trace/Makefile                              |    1 +
+ kernel/trace/ftrace.c                              |    8 +-
+ kernel/trace/trace.c                               |    5 +-
+ kernel/trace/trace.h                               |    1 +
+ kernel/trace/trace_events.c                        |    4 +
+ kernel/trace/trace_events_hist.c                   | 2193 +++-----------------
+ kernel/trace/trace_events_synth.c                  | 1789 ++++++++++++++++
+ kernel/trace/trace_probe.c                         |    2 +-
+ kernel/trace/trace_synth.h                         |   36 +
+ lib/bug.c                                          |    3 +
+ tools/bootconfig/test-bootconfig.sh                |    7 +
+ .../inter-event/trigger-field-variable-support.tc  |    5 +
+ .../trigger-inter-event-combined-hist.tc           |    5 +
+ .../inter-event/trigger-multi-actions-accept.tc    |    5 +
+ .../inter-event/trigger-onmatch-action-hist.tc     |    5 +
+ .../trigger-onmatch-onmax-action-hist.tc           |    5 +
+ .../inter-event/trigger-onmax-action-hist.tc       |    5 +
+ .../inter-event/trigger-snapshot-action-hist.tc    |    5 +
+ .../inter-event/trigger-trace-action-hist.tc       |    5 +
+ 22 files changed, 4396 insertions(+), 1888 deletions(-)
+ create mode 100644 Documentation/trace/histogram-design.rst
+ create mode 100644 kernel/trace/trace_events_synth.c
+ create mode 100644 kernel/trace/trace_synth.h
+---------------------------
