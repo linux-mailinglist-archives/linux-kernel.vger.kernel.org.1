@@ -2,108 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6401F429E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BDA1F42A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731352AbgFIRnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:43:16 -0400
-Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.52]:47500 "EHLO
-        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728472AbgFIRnM (ORCPT
+        id S1731902AbgFIRng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:43:36 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56073 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728472AbgFIRng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:43:12 -0400
-Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.64])
-        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id C5D4B600C6;
-        Tue,  9 Jun 2020 17:43:11 +0000 (UTC)
-Received: from us4-mdac16-67.ut7.mdlocal (unknown [10.7.64.34])
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id C33202009B;
-        Tue,  9 Jun 2020 17:43:11 +0000 (UTC)
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from mx1-us1.ppe-hosted.com (unknown [10.7.66.38])
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 0020B22005B;
-        Tue,  9 Jun 2020 17:43:11 +0000 (UTC)
-Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 74DD380005C;
-        Tue,  9 Jun 2020 17:43:10 +0000 (UTC)
-Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
- (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Jun 2020
- 18:43:02 +0100
-Subject: Re: [PATCH v3 1/7] Documentation: dynamic-debug: Add description of
- level bitmask
-To:     Joe Perches <joe@perches.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-btrfs@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <netdev@vger.kernel.org>, Jason Baron <jbaron@akamai.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Cromie <jim.cromie@gmail.com>
-References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
- <20200609104604.1594-2-stanimir.varbanov@linaro.org>
- <20200609111615.GD780233@kroah.com>
- <ba32bfa93ac2e147c2e0d3a4724815a7bbf41c59.camel@perches.com>
-From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <727b31a0-543b-3dc5-aa91-0d78dc77df9c@solarflare.com>
-Date:   Tue, 9 Jun 2020 18:42:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Tue, 9 Jun 2020 13:43:36 -0400
+Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <cascardo@canonical.com>)
+        id 1jiiHe-0004lb-1P; Tue, 09 Jun 2020 17:43:34 +0000
+From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Gross <mgross@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Steve Beattie <sbeattie@ubuntu.com>
+Subject: [PATCH] x86/speculation/srbds: do not try to turn mitigation off when not supported
+Date:   Tue,  9 Jun 2020 14:43:13 -0300
+Message-Id: <20200609174313.2600320-1-cascardo@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <ba32bfa93ac2e147c2e0d3a4724815a7bbf41c59.camel@perches.com>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Originating-IP: [10.17.20.203]
-X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
- ukex01.SolarFlarecom.com (10.17.10.4)
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1020-25470.003
-X-TM-AS-Result: No-8.552100-8.000000-10
-X-TMASE-MatchedRID: UuaOI1zLN1jsYbGmK/WYxvZvT2zYoYOwC/ExpXrHizxPvOpmjDN2khRf
-        A1I3OlqqMsOCsLooWnhTMzwIlbNqigkGWAZ8v6Jzt0cS/uxH87AHgh3sKJBzPznKJvFx9/+yWXj
-        F9NKzdCmSmxTZw6MyobzX7h2+UuZkJT6mV4xCSZYJteOxcC2tigoXSOLC5a441y0aXF5eX+hqOm
-        kOtBFAiBs1sRoz9CTzVNP1aViTJ07BHFyXUjp8G8zSKGx9g8xhHkWa9nMURC4mKtDuZhlzmAoeR
-        RhCZWIBtI3VVXMQt001b89uV6eclF3ESD6IRpXqyhPaAPXFzs3naaW2UTafyKZwleT7xjO5HHuq
-        L5OlwoiMMQ2VRcJiy7Lhf59ApN2Zlrk4492pNLWeAiCmPx4NwHJnzNw42kCxxEHRux+uk8h+ICq
-        uNi0WJIXcrebLszrlx48ugytnjOhRjFfjgwIAhWWZsP6IwhvxftwZ3X11IV0=
-X-TM-AS-User-Approved-Sender: Yes
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--8.552100-8.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1020-25470.003
-X-MDID: 1591724591-lLDe95U7OXgC
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06/2020 17:58, Joe Perches wrote:
-> On Tue, 2020-06-09 at 13:16 +0200, Greg Kroah-Hartman wrote:
->> What is wrong with the existing control of dynamic
->> debug messages that you want to add another type of arbitrary grouping
->> to it? 
-> There is no existing grouping mechanism.
->
-> Many drivers and some subsystems used an internal one
-> before dynamic debug.
->
-> $ git grep "MODULE_PARM.*\bdebug\b"|wc -l
-> 501
->
-> This is an attempt to unify those homebrew mechanisms.
-In network drivers, this is probablyusing the existing groupings
- defined by netif_level() - see NETIF_MSG_DRV and friends.  Note
- that those groups are orthogonal to the level, i.e. they control
- netif_err() etc. as well, not just debug messages.
-Certainly in the case of sfc, and I'd imagine for many other net
- drivers too, the 'debug' modparam is setting the default for
- net_dev->msg_enable, which can be changed after probe with
- ethtool.
-It doesn't look like the proposed mechanism subsumes that (we have
- rather more than 5 groups, and it's not clear how you'd connect
- it to the existing msg_enable (which uapi must be maintained); if
- you don't have a way to do this, better exclude drivers/net/ from
- your grep|wc because you won't be unifying those - in my tree
- that's 119 hits.
+When SRBDS is mitigated by TSX OFF, update_srbds_msr will still read and
+write to MSR_IA32_MCU_OPT_CTRL even when that is not supported by the
+microcode.
 
--ed
+Checking for X86_FEATURE_SRBDS_CTRL as a CPU feature available makes more
+sense than checking for SRBDS_MITIGATION_UCODE_NEEDED as the found
+"mitigation".
+
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Acked-by: John Johansen <john.johansen@canonical.com>
+Acked-by: Steve Beattie <sbeattie@ubuntu.com>
+Cc: stable@vger.kernel.org
+---
+ arch/x86/kernel/cpu/bugs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index b6f887be440c..ee5bdca7fd30 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -432,7 +432,7 @@ void update_srbds_msr(void)
+ 	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
+ 		return;
+ 
+-	if (srbds_mitigation == SRBDS_MITIGATION_UCODE_NEEDED)
++	if (!boot_cpu_has(X86_FEATURE_SRBDS_CTRL))
+ 		return;
+ 
+ 	rdmsrl(MSR_IA32_MCU_OPT_CTRL, mcu_ctrl);
+-- 
+2.25.1
+
