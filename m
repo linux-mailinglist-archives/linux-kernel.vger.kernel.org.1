@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9901F43A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505BB1F4385
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733262AbgFIRze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:55:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45002 "EHLO mail.kernel.org"
+        id S1733055AbgFIRyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:54:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731587AbgFIRxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:53:46 -0400
+        id S1731611AbgFIRwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:52:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7437D20734;
-        Tue,  9 Jun 2020 17:53:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7FCF20801;
+        Tue,  9 Jun 2020 17:52:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725225;
-        bh=Faj6ySPN4NhaH1lHmRfYbHVD4GDrDtfBMnqzZGepr5g=;
+        s=default; t=1591725163;
+        bh=hOmNoff9bwoQAs+mY1OICGkI+7xRGt2c2lk5BdXv4rc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EUKg0+dsEOotLyvBZ9nr+9B51XXOIkqklQqKWUGdO75TR2nCuMctRKkJqyyMAGhZB
-         Q2j5PAUmob5ApTrOA0a9mPqJqt+0sUqUE2hkpQ71JR+NsjsbQNDIg6uqCg4dnExVeD
-         oAeDjeVa1jQBAxinRNPG8nzk8P1fuCNJKlDhHp5g=
+        b=LUyKuR3vOL4olONq1+4a7k3Bw/FXRuDntlYlXNCNbLwnaLVsVp9jesbEsd/PKqRn3
+         8ei9h3XiKEryZZGjz0qh15Hx9vk+XNrA5/lz5kOmlNA++B74+9iNJq/nc+96GOAuVA
+         WlWvGMqmu+eB4KUh4tfm9Qt2cCuxjjhKul55LkLM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.6 20/41] USB: serial: option: add Telit LE910C1-EUX compositions
-Date:   Tue,  9 Jun 2020 19:45:22 +0200
-Message-Id: <20200609174114.065212758@linuxfoundation.org>
+        stable@vger.kernel.org, Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.4 27/34] x86/speculation/spectre_v2: Exclude Zhaoxin CPUs from SPECTRE_V2
+Date:   Tue,  9 Jun 2020 19:45:23 +0200
+Message-Id: <20200609174056.885099252@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174112.129412236@linuxfoundation.org>
-References: <20200609174112.129412236@linuxfoundation.org>
+In-Reply-To: <20200609174052.628006868@linuxfoundation.org>
+References: <20200609174052.628006868@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
 
-commit 399ad9477c523f721f8e51d4f824bdf7267f120c upstream.
+commit 1e41a766c98b481400ab8c5a7aa8ea63a1bb03de upstream.
 
-Add Telit LE910C1-EUX compositions:
+New Zhaoxin family 7 CPUs are not affected by SPECTRE_V2. So define a
+separate cpu_vuln_whitelist bit NO_SPECTRE_V2 and add these CPUs to the cpu
+vulnerability whitelist.
 
-	0x1031: tty, tty, tty, rmnet
-	0x1033: tty, tty, tty, ecm
-
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
-Link: https://lore.kernel.org/r/20200525211106.27338-1-dnlplm@gmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/1579227872-26972-2-git-send-email-TonyWWang-oc@zhaoxin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/serial/option.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/kernel/cpu/common.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1157,6 +1157,10 @@ static const struct usb_device_id option
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_CC864_SINGLE) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_DE910_DUAL) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_UE910_V2) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1031, 0xff),	/* Telit LE910C1-EUX */
-+	 .driver_info = NCTRL(0) | RSVD(3) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1033, 0xff),	/* Telit LE910C1-EUX (ECM) */
-+	 .driver_info = NCTRL(0) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE922_USBCFG0),
- 	  .driver_info = RSVD(0) | RSVD(1) | NCTRL(2) | RSVD(3) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE922_USBCFG1),
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1024,6 +1024,7 @@ static void identify_cpu_without_cpuid(s
+ #define MSBDS_ONLY		BIT(5)
+ #define NO_SWAPGS		BIT(6)
+ #define NO_ITLB_MULTIHIT	BIT(7)
++#define NO_SPECTRE_V2		BIT(8)
+ 
+ #define VULNWL(_vendor, _family, _model, _whitelist)	\
+ 	{ X86_VENDOR_##_vendor, _family, _model, X86_FEATURE_ANY, _whitelist }
+@@ -1085,6 +1086,10 @@ static const __initconst struct x86_cpu_
+ 	/* FAMILY_ANY must be last, otherwise 0x0f - 0x12 matches won't work */
+ 	VULNWL_AMD(X86_FAMILY_ANY,	NO_MELTDOWN | NO_L1TF | NO_MDS | NO_SWAPGS | NO_ITLB_MULTIHIT),
+ 	VULNWL_HYGON(X86_FAMILY_ANY,	NO_MELTDOWN | NO_L1TF | NO_MDS | NO_SWAPGS | NO_ITLB_MULTIHIT),
++
++	/* Zhaoxin Family 7 */
++	VULNWL(CENTAUR,	7, X86_MODEL_ANY,	NO_SPECTRE_V2),
++	VULNWL(ZHAOXIN,	7, X86_MODEL_ANY,	NO_SPECTRE_V2),
+ 	{}
+ };
+ 
+@@ -1117,7 +1122,9 @@ static void __init cpu_set_bug_bits(stru
+ 		return;
+ 
+ 	setup_force_cpu_bug(X86_BUG_SPECTRE_V1);
+-	setup_force_cpu_bug(X86_BUG_SPECTRE_V2);
++
++	if (!cpu_matches(NO_SPECTRE_V2))
++		setup_force_cpu_bug(X86_BUG_SPECTRE_V2);
+ 
+ 	if (!cpu_matches(NO_SSB) && !(ia32_cap & ARCH_CAP_SSB_NO) &&
+ 	   !cpu_has(c, X86_FEATURE_AMD_SSB_NO))
 
 
