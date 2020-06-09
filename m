@@ -2,156 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2BD1F371F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 11:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033F11F374D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 11:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728503AbgFIJg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 05:36:26 -0400
-Received: from mout.web.de ([212.227.17.11]:58071 "EHLO mout.web.de"
+        id S1728582AbgFIJxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 05:53:14 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:46862 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727086AbgFIJgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 05:36:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1591695371;
-        bh=NpSwO6xMFBw8TDKDNbh3ZtFdFhrLZFzYnTF7UJssoFM=;
-        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
-        b=lK+45rqX6Fc7flnJKFO5plwbq8zR42zPEvB1icZgGK8LGOiihxFaI4k2QgdW8as1y
-         lj2p5hngN7Su+mAsfnImFtZKqWBcbvfftpINCzbJsH17R1x9nyzQFpE29BvHoajETp
-         bGft9SFOQXQyw6wpS/J5z+FP5LB3d//qWec3/91w=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([77.6.55.3]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1N0Icn-1ilWsW2Q6B-00xFxk; Tue, 09
- Jun 2020 11:36:11 +0200
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] coccinelle: api: add selfcheck for memdup_user
- rule
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-To:     Denis Efremov <efremov@linux.com>,
-        Coccinelle <cocci@systeme.lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Julia Lawall <Julia.Lawall@lip6.fr>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>
-Message-ID: <675f3bc3-99f4-1780-af04-cf7de2e9059a@web.de>
-Date:   Tue, 9 Jun 2020 11:36:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7CeUvxCUQ6EJKnHmYxZyFtswKqKjx7kdOjE/wFEB1/nj6KWdiqf
- YJDX0kicge1A54j8VpqHqMvaDp8W2HUMuCwWCbn8B8pi3lnKAn6Icv57v8lMAjgHr6A4cq/
- 2jXmpjt/UDRG6HLQDMT1xqzgBUSgrI3hbDfJCUuccwnHzDzi95nPZ7g6bP5amsW2cDV61v5
- ZynDy7TTK8bDk1MinJq+Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:AfBzq1DY0VU=:BQZxKX84v1cpxQsKIW4lG4
- 7f+1ZVpSMBb4+leC47n/K+2TYUVg8JDLZiaXiX3D1rKbFN/6Noz/ozif+b5AGlRF5RUCGYpiS
- SbrTMWLTpMXNuXa9YuiW/gWtAnNccJicT8jtm6RqUCrr9C6RFOYZTH6CxSvng7m8mXEPVPJZE
- JJQKl8h86fVjkn/wZymV3oQQBiuBYq1K9ohKtxTkvl+QsoYjO/uSkGadibOHlj3K5PXBw4zDD
- gH8LnUwgSNbmP9I4uGYCN4kItJDENB+AA2EYrKtu8jcclsk7nhxKIM0waD3y8vaOPueRlYsJd
- FZjztEn5sO7vor6cF/jI0BrXFZk4s8AITttPXk4O39/Mqi+xeyALq9MPEeHUQMQjqko4uty6U
- kMnK81a+i09U8MsmxBhuZRcrO69uks/lCjukWMXm5RfM9XnkjwtYGF3/JzmrUPqC2jY9rPc7d
- YpSnHYjHN8M6CwdtGMh1A1605JxHtfzAp5X4h2Hwl6Ru5kiqnLXQ0+HiyUH47f67QD+VHYcIz
- Hkq7SrgDE3HBbBWvJXXzF8I99z4Uq2LQvGaiJF3+51MnBN7I1qIZAsTdue6OXLN+Pd0r7gV7y
- U2GNlwMca35pZrxdUQyINm2AM18DyJ/RHKZzHTkWxM9fJB2WsmoKTkaKtg0jN7GNS1zLXeqYW
- h2DB+xM9haoAgNkw2AfcGTCBU70ZGpnH9QJz3GrvrHh9aj+jtrb3bEZL6cFqesAg2VYBuvhDk
- 4AmFNMjc5nN9x1tU2Ez0sFcMXaffGPOE9uPQb40JDBGIWFjxClk3cN7cE2w5AttNlksrmnMwI
- hAKGg/H/1odZ9Y+GVEQ4D8GjU1LDNRhslSrg/YPUozeWdyiM1NWQB+1AKHiGXNnWajlkhOQaT
- 8ZCS1tD/shfqNBn7U44IUK2j2sGjvLdM/+jtbYwyZHmnLa2e2AFscYjnvnMySHIFGxZI5CrYR
- cVZ1t0U3DmTKNqBbq7wVqV63F7lgmPa3irVrOa2tVzmZlxQB0Ij/4cflU7IvrBANvIY1DVBvF
- 9Utt+4zQmd0Yrexh8a2YkqaDh68AN3xmRgeY4VMqEJVbuZlR7UMTMM/SV5TH3DeM2gi987xZy
- RjMDlW7Ok6FE8XCmEx9ba+QCn4r4Va82DW1a0Vl4EG770ejnRFJsAMbEtdIvHNntduAcVJ7Ev
- 2YafDIB26xITvu+zQJgfTR13o59ZtbBNsh8j76bBqHHG952TH/nn7RmyVRZ/XNhI0tckOmlA4
- OE22034hzyDRSev2X
+        id S1728553AbgFIJxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 05:53:10 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DA0811A01E7;
+        Tue,  9 Jun 2020 11:53:08 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 0218D1A01F7;
+        Tue,  9 Jun 2020 11:53:04 +0200 (CEST)
+Received: from titan.ap.freescale.net (titan.ap.freescale.net [10.192.208.233])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 95A234029F;
+        Tue,  9 Jun 2020 17:52:57 +0800 (SGT)
+From:   Hui Song <hui.song_1@nxp.com>
+To:     linux-devel@linux.nxdi.nxp.com, Shawn Guo <shawnguo@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Song Hui <hui.song_1@nxp.com>
+Subject: [PATCH] gpio: mpc8xxx: change the gpio interrupt flags.
+Date:   Tue,  9 Jun 2020 17:37:41 +0800
+Message-Id: <20200609093741.44050-1-hui.song_1@nxp.com>
+X-Mailer: git-send-email 2.9.5
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=E2=80=A6
-> +++ b/scripts/coccinelle/api/memdup_user.cocci
-> @@ -14,13 +14,24 @@ virtual patch
->  virtual context
->  virtual org
->  virtual report
-> +virtual selfcheck
+From: Song Hui <hui.song_1@nxp.com>
 
-Would you like to avoid the repetition of a SmPL key word here?
+delete the interrupt IRQF_NO_THREAD flags.
 
-+virtual patch, context, org, report, selfcheck
+Signed-off-by: Song Hui <hui.song_1@nxp.com>
+---
+ drivers/gpio/gpio-mpc8xxx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
+index 604dfec..1e86652 100644
+--- a/drivers/gpio/gpio-mpc8xxx.c
++++ b/drivers/gpio/gpio-mpc8xxx.c
+@@ -417,7 +417,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+ 
+ 	ret = devm_request_irq(&pdev->dev, mpc8xxx_gc->irqn,
+ 			       mpc8xxx_gpio_irq_cascade,
+-			       IRQF_NO_THREAD | IRQF_SHARED, "gpio-cascade",
++			       IRQF_SHARED, "gpio-cascade",
+ 			       mpc8xxx_gc);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "%s: failed to devm_request_irq(%d), ret = %d\n",
+-- 
+2.9.5
 
-> @@ -117,3 +128,34 @@ p << rv.p;
->  @@
->
->  coccilib.report.print_report(p[0], "WARNING opportunity for vmemdup_use=
-r")
-> +
-> +@script:python depends on selfcheck@
-> +@@
-> +coccinelle.checked_files |=3D set(definitions.values()) & set(cocci.fil=
-es())
-
-I suggest to reconsider the usage of the function =E2=80=9Ccocci.files()=
-=E2=80=9D.
-Can such a script rule determine for which file it should perform data pro=
-cessing?
-
-
-> +            print('SELF-CHECK: the pattern no longer matches ' \
-> +		  'definitions {} in file {}'.format(not_found, efile))
-
-Can the following code variant be a bit nicer?
-
-+            sys.stdout.write('SELF-CHECK: The pattern does not match defi=
-nitions {} in file {} any more.\n' \
-+                             .format(not_found, efile))
-
-
-Regards,
-Markus
