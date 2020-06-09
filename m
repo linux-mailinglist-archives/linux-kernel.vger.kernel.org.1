@@ -2,213 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03F21F3659
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 10:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492891F361D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 10:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728331AbgFIItQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 04:49:16 -0400
-Received: from mga12.intel.com ([192.55.52.136]:44005 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728254AbgFIItN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 04:49:13 -0400
-IronPort-SDR: q3nUWVIyUpAUA+j5eI/6TYAENX+97wO4BZVme6C5LKOfWUqJtZBNzOTMPyASBaJEvSzE+0/yf2
- pMqM3JNyFS8A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 01:49:09 -0700
-IronPort-SDR: TAuzf9FAVa0ej0iNgEXXXcNry8h+SH7RMisvAZTx+xjJ4/c4PGSguy8jvmorGan/6Rud/BLsYp
- 3eyVDKqDhaxg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,491,1583222400"; 
-   d="scan'208";a="473001950"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by fmsmga005.fm.intel.com with ESMTP; 09 Jun 2020 01:49:04 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        slawomir.blauciak@intel.com, mengdong.lin@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH 4/4] soundwire: bus: initialize bus clock base and scale registers
-Date:   Tue,  9 Jun 2020 04:54:36 +0800
-Message-Id: <20200608205436.2402-5-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200608205436.2402-1-yung-chuan.liao@linux.intel.com>
-References: <20200608205436.2402-1-yung-chuan.liao@linux.intel.com>
+        id S1728139AbgFIIam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 04:30:42 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:15829 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728126AbgFIIam (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 04:30:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591691441; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=VohXKRDS9Puk813cVYWgC6ku1tCISrnzQ9+U/f81FYA=;
+ b=Bdny4aO1Ew/DQCOiRQT51QU7XpeTgbD6BRIqmQ4p/cKcT4Zrr+z0FOv5xYslHVb5YYnhZHaG
+ qQPYIjh5qhyYo6Q6UacB+kuLqy8UH21PBIZMkMc5iN0fxWw5++RNStu/JX3HCwtr4kT/nOqW
+ t/BsEgPL2rbDzgBuBBugHN9+NXI=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5edf4898badb0d4bcf0b63ea (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Jun 2020 08:30:16
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 01B40C4339C; Tue,  9 Jun 2020 08:30:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: ppvk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 38F70C433CA;
+        Tue,  9 Jun 2020 08:30:14 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 09 Jun 2020 14:00:14 +0530
+From:   ppvk@codeaurora.org
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, adrian.hunter@intel.com,
+        robh+dt@kernel.org, ulf.hansson@linaro.org,
+        vbadigan@codeaurora.org, sboyd@kernel.org,
+        georgi.djakov@linaro.org, mka@chromium.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mmc-owner@vger.kernel.org, rnayak@codeaurora.org,
+        matthias@chromium.org, linux-arm-msm-owner@vger.kernel.org
+Subject: =?UTF-8?Q?Re=3A_=5BPATCH=C2=A0V3_1/2=5D_mmc=3A_sdhci-msm=3A_Add_?=
+ =?UTF-8?Q?interconnect_bandwidth_scaling_support?=
+In-Reply-To: <8b2808215a09871bfccccb72cfa01e60@codeaurora.org>
+References: <1591269283-24084-1-git-send-email-ppvk@codeaurora.org>
+ <1591349427-27004-1-git-send-email-ppvk@codeaurora.org>
+ <1591349427-27004-2-git-send-email-ppvk@codeaurora.org>
+ <8b2808215a09871bfccccb72cfa01e60@codeaurora.org>
+Message-ID: <f23dc598cbdbd59df22f29c2b77bd14c@codeaurora.org>
+X-Sender: ppvk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Hi Sibi,
 
-The SoundWire 1.2 specification adds new registers to allow for
-seamless clock changes while audio transfers are on-going. Program
-them following the specification.
+Thanks for the review.
 
-Note that dynamic clock changes are not supported for now, this only
-adds the register initialization.
+On 2020-06-05 17:10, Sibi Sankar wrote:
+> Hey Pradeep,
+> Thanks for the patch.
+> 
+> On 2020-06-05 15:00, Pradeep P V K wrote:
+>> Interconnect bandwidth scaling support is now added as a
+>> part of OPP [1]. So, make sure interconnect driver is ready
+> 
+> can you please replace driver with paths
+> instead?
+> 
+ok. I will address this in my next patch set.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/bus.c                 | 107 ++++++++++++++++++++++++
- include/linux/soundwire/sdw_registers.h |  10 +++
- 2 files changed, 117 insertions(+)
+>> before handling interconnect scaling.
+>> 
+>> This change is based on
+>> [1] [Patch v8] Introduce OPP bandwidth bindings
+>> (https://lkml.org/lkml/2020/5/12/493)
+>> 
+>> [2] [Patch v3] mmc: sdhci-msm: Fix error handling
+>> for dev_pm_opp_of_add_table()
+>> (https://lkml.org/lkml/2020/5/5/491)
+> 
+> sry didn't notice ^^ earlier
+> you might want to place these
+> comments and dependencies similar
+> to the following patch.
+> https://patchwork.kernel.org/patch/11573903/
+> 
+ok. will modify in my next patch.
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 24ba77226376..83f9d7e0de80 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1059,12 +1059,119 @@ int sdw_configure_dpn_intr(struct sdw_slave *slave,
- 	return ret;
- }
- 
-+static int sdw_slave_set_frequency(struct sdw_slave *slave)
-+{
-+	u32 mclk_freq = slave->bus->prop.mclk_freq;
-+	u32 curr_freq = slave->bus->params.curr_dr_freq >> 1;
-+	unsigned int scale;
-+	u8 scale_index;
-+	u8 base;
-+	int ret;
-+
-+	/*
-+	 * frequency base and scale registers are required for SDCA
-+	 * devices. They may also be used for 1.2+/non-SDCA devices,
-+	 * but we will need a DisCo property to cover this case
-+	 */
-+	if (!slave->id.class_id)
-+		return 0;
-+
-+	if (!mclk_freq) {
-+		dev_err(&slave->dev,
-+			"no bus MCLK, cannot set SDW_SCP_BUS_CLOCK_BASE\n");
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * map base frequency using Table 89 of SoundWire 1.2 spec.
-+	 * The order of the tests just follows the specification, this
-+	 * is not a selection between possible values or a search for
-+	 * the best value but just a mapping.  Only one case per platform
-+	 * is relevant.
-+	 * Some BIOS have inconsistent values for mclk_freq but a
-+	 * correct root so we force the mclk_freq to avoid variations.
-+	 */
-+	if (!(19200000 % mclk_freq)) {
-+		mclk_freq = 19200000;
-+		base = SDW_SCP_BASE_CLOCK_19200000_HZ;
-+	} else if (!(24000000 % mclk_freq)) {
-+		mclk_freq = 24000000;
-+		base = SDW_SCP_BASE_CLOCK_24000000_HZ;
-+	} else if (!(24576000 % mclk_freq)) {
-+		mclk_freq = 24576000;
-+		base = SDW_SCP_BASE_CLOCK_24576000_HZ;
-+	} else if (!(22579200 % mclk_freq)) {
-+		mclk_freq = 22579200;
-+		base = SDW_SCP_BASE_CLOCK_22579200_HZ;
-+	} else if (!(32000000 % mclk_freq)) {
-+		mclk_freq = 32000000;
-+		base = SDW_SCP_BASE_CLOCK_32000000_HZ;
-+	} else {
-+		dev_err(&slave->dev,
-+			"Unsupported clock base, mclk %d\n",
-+			mclk_freq);
-+		return -EINVAL;
-+	}
-+
-+	if (mclk_freq % curr_freq) {
-+		dev_err(&slave->dev,
-+			"mclk %d is not multiple of bus curr_freq %d\n",
-+			mclk_freq, curr_freq);
-+		return -EINVAL;
-+	}
-+
-+	scale = mclk_freq / curr_freq;
-+
-+	/*
-+	 * map scale to Table 90 of SoundWire 1.2 spec - and check
-+	 * that the scale is a power of two and maximum 64
-+	 */
-+	scale_index = ilog2(scale);
-+
-+	if (BIT(scale_index) != scale || scale_index > 6) {
-+		dev_err(&slave->dev,
-+			"No match found for scale %d, bus mclk %d curr_freq %d\n",
-+			scale, mclk_freq, curr_freq);
-+		return -EINVAL;
-+	}
-+	scale_index++;
-+
-+	ret = sdw_write(slave, SDW_SCP_BUS_CLOCK_BASE, base);
-+	if (ret < 0) {
-+		dev_err(&slave->dev,
-+			"SDW_SCP_BUS_CLOCK_BASE write failed:%d\n", ret);
-+		return ret;
-+	}
-+
-+	/* initialize scale for both banks */
-+	ret = sdw_write(slave, SDW_SCP_BUSCLOCK_SCALE_B0, scale_index);
-+	if (ret < 0) {
-+		dev_err(&slave->dev,
-+			"SDW_SCP_BUSCLOCK_SCALE_B0 write failed:%d\n", ret);
-+		return ret;
-+	}
-+	ret = sdw_write(slave, SDW_SCP_BUSCLOCK_SCALE_B1, scale_index);
-+	if (ret < 0)
-+		dev_err(&slave->dev,
-+			"SDW_SCP_BUSCLOCK_SCALE_B1 write failed:%d\n", ret);
-+
-+	dev_dbg(&slave->dev,
-+		"Configured bus base %d, scale %d, mclk %d, curr_freq %d\n",
-+		base, scale_index, mclk_freq, curr_freq);
-+
-+	return ret;
-+}
-+
- static int sdw_initialize_slave(struct sdw_slave *slave)
- {
- 	struct sdw_slave_prop *prop = &slave->prop;
- 	int ret;
- 	u8 val;
- 
-+	ret = sdw_slave_set_frequency(slave);
-+	if (ret < 0)
-+		return ret;
-+
- 	/*
- 	 * Set bus clash, parity and SCP implementation
- 	 * defined interrupt mask
-diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
-index 12f9ffc3eb3b..5d3c271af7d1 100644
---- a/include/linux/soundwire/sdw_registers.h
-+++ b/include/linux/soundwire/sdw_registers.h
-@@ -109,8 +109,18 @@
- #define SDW_SCP_KEEPEREN			0x4A
- #define SDW_SCP_BANKDELAY			0x4B
- #define SDW_SCP_COMMIT				0x4C
-+
- #define SDW_SCP_BUS_CLOCK_BASE			0x4D
- #define SDW_SCP_BASE_CLOCK_FREQ			GENMASK(2, 0)
-+#define SDW_SCP_BASE_CLOCK_UNKNOWN		0x0
-+#define SDW_SCP_BASE_CLOCK_19200000_HZ		0x1
-+#define SDW_SCP_BASE_CLOCK_24000000_HZ		0x2
-+#define SDW_SCP_BASE_CLOCK_24576000_HZ		0x3
-+#define SDW_SCP_BASE_CLOCK_22579200_HZ		0x4
-+#define SDW_SCP_BASE_CLOCK_32000000_HZ		0x5
-+#define SDW_SCP_BASE_CLOCK_RESERVED		0x6
-+#define SDW_SCP_BASE_CLOCK_IMP_DEF		0x7
-+
- /* 0x4E is not allocated in SoundWire specification 1.2 */
- #define SDW_SCP_TESTMODE			0x4F
- #define SDW_SCP_DEVID_0				0x50
--- 
-2.17.1
+>> 
+>> Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
+>> ---
+>>  drivers/mmc/host/sdhci-msm.c | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>> 
+>> diff --git a/drivers/mmc/host/sdhci-msm.c 
+>> b/drivers/mmc/host/sdhci-msm.c
+>> index b277dd7..a945e84 100644
+>> --- a/drivers/mmc/host/sdhci-msm.c
+>> +++ b/drivers/mmc/host/sdhci-msm.c
+>> @@ -14,6 +14,7 @@
+>>  #include <linux/slab.h>
+>>  #include <linux/iopoll.h>
+>>  #include <linux/regulator/consumer.h>
+>> +#include <linux/interconnect.h>
+>> 
+>>  #include "sdhci-pltfm.h"
+>>  #include "cqhci.h"
+>> @@ -2070,6 +2071,13 @@ static int sdhci_msm_probe(struct 
+>> platform_device *pdev)
+>>  	}
+>>  	msm_host->bulk_clks[0].clk = clk;
+>> 
+>> +	/* Make sure that ICC driver is ready for interconnect bandwdith
+> 
+> typo /s/bandwdith/bandwidth
+> 
+>> +	 * scaling before registering the device for OPP.
+>> +	 */
+> 
+> /* Check for optional interconnect paths */
+> Maybe using ^^ would suffice since
+> that's what we are actually doing
+> 
+sure. i will re-modify the comments as suggested ^^ in my next patch.
 
+> Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
+> 
+>> +	ret = dev_pm_opp_of_find_icc_paths(&pdev->dev, NULL);
+>> +	if (ret)
+>> +		goto bus_clk_disable;
+>> +
+>>  	msm_host->opp_table = dev_pm_opp_set_clkname(&pdev->dev, "core");
+>>  	if (IS_ERR(msm_host->opp_table)) {
+>>  		ret = PTR_ERR(msm_host->opp_table);
