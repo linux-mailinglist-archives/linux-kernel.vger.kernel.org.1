@@ -2,93 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 137EA1F3903
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 13:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A4D1F3915
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 13:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728351AbgFILJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 07:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727906AbgFILJD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 07:09:03 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29400C05BD1E;
-        Tue,  9 Jun 2020 04:09:03 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c3so20786370wru.12;
-        Tue, 09 Jun 2020 04:09:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h2QWlVvw4wMKxc+Ci1vOHG2QgW2mAuzBv8Io5LaqvsY=;
-        b=J8W9VqQY47yQ3goeW3AiZJ5iJ+v+clrOD3aA3OeD9dUgQmmjMW66bxrsz8bxNHf01G
-         JZOmIh1wEQw8cJ3S47Dxnrak4Agc+skqReoktOthEI42eh10c+gJuhbuY++z1IPY40Sw
-         XgCWC+KjyJ8rn0A+E+UmJxoJVe2uRfInHNh+EPGMUvjBUhHg0sjDboEs2olUjRprD6Ve
-         MgPPkT2nL57j43LAytSt3oZ7HD3ceOHYfDCRheMjnloTjPgwgxRMuJmtkpt9fZ+1fhNF
-         2luElT0L3weZLr1z9SWccJurfTCptjXNFprbS2ugIlYNeqAnutnzy+k0ayt75WM9cmAo
-         mgoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h2QWlVvw4wMKxc+Ci1vOHG2QgW2mAuzBv8Io5LaqvsY=;
-        b=lz/iyIUB44bgxUMDt8ZjEuZz/pEww0eKAl6elceAbTjihfa6H+sOBhH/ZjHFr7GMn6
-         fivchpyxojy/Cq6L01o+bXHNzXVYuxYcjVZA6d+gB9w5DSE/MIYicsfL/zUtUTedpPDl
-         NETXN0akYyH8dGY5oMkms6Ljdg4Sj1ms605tNwANn3OlWm/EBmLZcxE81sBaNMtSScCr
-         pCdUopAVmHYZE0z8NRYebT6qkK9O+Fp8P1COtnA4KAlO1YK3oyUPVqbRtXQst1jawRJ7
-         Dobz5SJS83A/8UN6cTG224bcYIORqheZFo2739BYcsRSFOAO5cTThzew3g86tCBH2cPa
-         /yDQ==
-X-Gm-Message-State: AOAM5336xrSpWjhCjV1zcyCa6eKp263F75N2VV/s2bQgKrIKkPSFciiQ
-        5Tj/8ioPM9ZGi3CaZcMzT2E=
-X-Google-Smtp-Source: ABdhPJy6NSqRlaJHFiqgB5y5VcHEXb+bOeM3VNkWU8A02NM2pDVyEvDQDt+uk8yfwIGYHEbZQP5r/A==
-X-Received: by 2002:adf:a449:: with SMTP id e9mr3814645wra.294.1591700941883;
-        Tue, 09 Jun 2020 04:09:01 -0700 (PDT)
-Received: from skynet.lan (28.red-83-49-61.dynamicip.rima-tde.net. [83.49.61.28])
-        by smtp.gmail.com with ESMTPSA id u3sm2988203wrw.89.2020.06.09.04.09.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 04:09:01 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, lkp@intel.com,
-        jonas.gorski@gmail.com, f4bug@amsat.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH] clk: bcm63xx-gate: fix last clock availability
-Date:   Tue,  9 Jun 2020 13:08:46 +0200
-Message-Id: <20200609110846.4029620-1-noltari@gmail.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1728565AbgFILKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 07:10:30 -0400
+Received: from mga17.intel.com ([192.55.52.151]:39536 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726083AbgFILK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 07:10:28 -0400
+IronPort-SDR: HZEpOpW3Sa3I0c5eXYCVsQF2z6S0GhpC9hoQL8lIF+GAgEMlRkjL0WUdLUTJlyt/zqATqFcSUx
+ UOKcLIZ+PA4Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 04:10:28 -0700
+IronPort-SDR: AEwrycebfpER+iAA9i20J217dU73zmxVPR+O4cMVHtQjNBhd9Jq//NPONiPpK4DllGf1CIwuVR
+ wBJx9oiFp5wQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,491,1583222400"; 
+   d="scan'208";a="349485957"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga001.jf.intel.com with ESMTP; 09 Jun 2020 04:10:24 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, balbi@kernel.org
+Cc:     gregkh@linuxfoundation.org, robh@kernel.org,
+        devicetree@vger.kernel.org, p.zabel@pengutronix.de,
+        linux-usb@vger.kernel.org, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, yin1.li@intel.com,
+        andriy.shevchenko@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v1 0/2] usb : phy: Add USB PHY support on Intel LGM SoC
+Date:   Tue,  9 Jun 2020 19:08:48 +0800
+Message-Id: <20200609110850.43469-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to make the last clock available, maxbit has to be set to the
-highest bit value plus 1.
+The USB PHY provides the optimized for low power dissipation while active, idle, or on standby.
+Requires minimal external components, a single resistor, for best operation.
+Supports 10/5-Gbps high-speed data transmission rates through 3-m USB 3.x cable
 
-Fixes: 1c099779c1e2 ("clk: add BCM63XX gated clock controller driver")
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- drivers/clk/bcm/clk-bcm63xx-gate.c | 1 +
- 1 file changed, 1 insertion(+)
+Ramuthevar Vadivel Murugan (2):
+  dt-bindings: usb: Add USB PHY support for Intel LGM SoC
+  usb: phy: Add USB3 PHY support for Intel LGM SoC
 
-diff --git a/drivers/clk/bcm/clk-bcm63xx-gate.c b/drivers/clk/bcm/clk-bcm63xx-gate.c
-index 98e884957db8..911a29bd744e 100644
---- a/drivers/clk/bcm/clk-bcm63xx-gate.c
-+++ b/drivers/clk/bcm/clk-bcm63xx-gate.c
-@@ -155,6 +155,7 @@ static int clk_bcm63xx_probe(struct platform_device *pdev)
- 
- 	for (entry = table; entry->name; entry++)
- 		maxbit = max_t(u8, maxbit, entry->bit);
-+	maxbit++;
- 
- 	hw = devm_kzalloc(&pdev->dev, struct_size(hw, data.hws, maxbit),
- 			  GFP_KERNEL);
+ .../devicetree/bindings/usb/intel,lgm-usb-phy.yaml |  53 ++++
+ drivers/usb/phy/Kconfig                            |  11 +
+ drivers/usb/phy/Makefile                           |   1 +
+ drivers/usb/phy/phy-lgm-usb.c                      | 269 +++++++++++++++++++++
+ 4 files changed, 334 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/intel,lgm-usb-phy.yaml
+ create mode 100644 drivers/usb/phy/phy-lgm-usb.c
+
 -- 
-2.26.2
+2.11.0
 
