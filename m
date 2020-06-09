@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197081F4189
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 18:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFE21F418E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 18:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731314AbgFIQ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 12:57:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731061AbgFIQ5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 12:57:34 -0400
-Received: from tzanussi-mobl (c-73-211-240-131.hsd1.il.comcast.net [73.211.240.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F06442074B;
-        Tue,  9 Jun 2020 16:57:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591721853;
-        bh=BCQkCPQdV/9S0+gXkp9kiGnJ44MEqMOWe0MH2Te+LdY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=CcFOpY+IXYCcGiBOIMnFuU7gudPqxo5AZUGfnJgxcB3mVPBZyR+GHM4gAQllvQZ73
-         NPeUrGxxnGgLQjA2cbAslP5TKPYQPj8AggdN7SgEOVcA4j+k5tJuDwLS6cODaQt0b4
-         waTgCYGdHIgjEXEkyqTBufQjEWygpklKYZXiP9NQ=
-Message-ID: <4ccbc655514eb338a88bea28584ab5611e9a2b88.camel@kernel.org>
-Subject: Re: [PATCH RT 1/2] tasklet: Address a race resulting in
- double-enqueue
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Ramon Fried <rfried.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
-        Clark Williams <williams@redhat.com>,
-        Zhang Xiao <xiao.zhang@windriver.com>
-Date:   Tue, 09 Jun 2020 11:57:31 -0500
-In-Reply-To: <20200609163446.efp76qbjzkbtl7nk@linutronix.de>
-References: <cover.1587675252.git.zanussi@kernel.org>
-         <6d4c92b28c54d8ca687c29043562de943a373547.1587675252.git.zanussi@kernel.org>
-         <CAGi-RUKn6k98H5v9kw7je1MChb4+Uq8EGhKO0nuXNMBy9M1_qw@mail.gmail.com>
-         <b5026121af44601e4318479194357fdb956982f6.camel@kernel.org>
-         <20200609154741.5kesuvl7txz4s3yu@linutronix.de>
-         <e288ef193f743782df48667b6b03122bd025119f.camel@kernel.org>
-         <20200609163446.efp76qbjzkbtl7nk@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+        id S1731333AbgFIQ6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 12:58:18 -0400
+Received: from smtprelay0097.hostedemail.com ([216.40.44.97]:60760 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731061AbgFIQ6M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 12:58:12 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 48FFD100462CE;
+        Tue,  9 Jun 2020 16:58:10 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3872:3873:3874:4321:5007:6119:10004:10400:10848:11232:11658:11914:12050:12297:12740:12760:12895:13069:13161:13229:13255:13311:13357:13439:14659:14721:21080:21433:21627:21810:30041:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: paper32_280912f26dc4
+X-Filterd-Recvd-Size: 2234
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  9 Jun 2020 16:58:08 +0000 (UTC)
+Message-ID: <ba32bfa93ac2e147c2e0d3a4724815a7bbf41c59.camel@perches.com>
+Subject: Re: [PATCH v3 1/7] Documentation: dynamic-debug: Add description of
+ level bitmask
+From:   Joe Perches <joe@perches.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
+        netdev@vger.kernel.org, Jason Baron <jbaron@akamai.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Cromie <jim.cromie@gmail.com>
+Date:   Tue, 09 Jun 2020 09:58:07 -0700
+In-Reply-To: <20200609111615.GD780233@kroah.com>
+References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+         <20200609104604.1594-2-stanimir.varbanov@linaro.org>
+         <20200609111615.GD780233@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
+On Tue, 2020-06-09 at 13:16 +0200, Greg Kroah-Hartman wrote:
+> What is wrong with the existing control of dynamic
+> debug messages that you want to add another type of arbitrary grouping
+> to it? 
 
-On Tue, 2020-06-09 at 18:34 +0200, Sebastian Andrzej Siewior wrote:
-> On 2020-06-09 11:17:53 [-0500], Tom Zanussi wrote:
-> > Hi Sebastian,
-> 
-> Hi Tom,
-> 
-> > I did find a problem with the patch when configured as !SMP since
-> > in
-> > that case the RUN flag is never set (will send a patch for that
-> > shortly), but that wouldn't be the case here.
-> 
-> How?
-> 
+There is no existing grouping mechanism.
 
-My test machine with !SMP and !RT doesn't boot, and in that case we
-have:
+Many drivers and some subsystems used an internal one
+before dynamic debug.
 
-#define tasklet_trylock(t) 1
-#define tasklet_tryunlock(t)    1
+$ git grep "MODULE_PARM.*\bdebug\b"|wc -l
+501
 
-instead of setting/clearing the RUN flag.
+This is an attempt to unify those homebrew mechanisms.
 
-So the cmpxchg with RUN+CHAIN can never work and we hit the loop.
+Stanimir attempted to add one for his driver via a
+driver specific standardized format substring for level.
 
-> > #if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT_RT_FULL)
-> > static inline int tasklet_trylock(struct tasklet_struct *t)
-> > {
-> >         return !test_and_set_bit(TASKLET_STATE_RUN, &(t)->state);
-> > }
-> 
-> I can't tell from the backtrace if he runs with RT or without but I
-> assumed RT. But yes, for !SMP && !RT it would explain it.
-> 
+> And who defines that grouping?
 
-Yeah, for me !SMP and RT works, but !SMP and !RT doesn't.
+Individual driver authors
 
-I had assumed he was talking about the samely configured kernel, but
-apparently it's not.
+> Will it be driver/subsystem/arch/author specific?  Or kernel-wide?
 
-Tom
+driver specific
 
-> > It would help to be able to reproduce it, but I haven't been able
-> > to
-> > yet.
-> > 
-> > Tom
-> > 
-> 
-> Sebastian
+> This feels like it could easily get out of hand really quickly.
+
+Likely not.  A question might be how useful all these
+old debugging printks are today and if it's reasonable
+to just delete them.
+
+> Why not just use tracepoints if you really want to be fine-grained?
+
+Weight and lack of class/group capability
+
 
