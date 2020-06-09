@@ -2,84 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84911F3C47
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D091F3BC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729052AbgFIN0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 09:26:41 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:47858 "EHLO inva021.nxp.com"
+        id S1729520AbgFINQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 09:16:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727945AbgFIN0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 09:26:37 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 080982000DD;
-        Tue,  9 Jun 2020 15:26:36 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 65A11201213;
-        Tue,  9 Jun 2020 15:26:31 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7B7474029F;
-        Tue,  9 Jun 2020 21:26:25 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, leonard.crestez@nxp.com, abel.vesa@nxp.com,
-        l.stach@pengutronix.de, peng.fan@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] soc: imx8m: Correct i.MX8MP UID fuse offset
-Date:   Tue,  9 Jun 2020 21:15:50 +0800
-Message-Id: <1591708550-14058-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1729787AbgFINQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 09:16:03 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E788520737;
+        Tue,  9 Jun 2020 13:16:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591708562;
+        bh=fn5/yXr+s+Db1jJwZ/m79lFUBemiDJfuNnzHg1lYHVg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pxwzHiXulXcoI9AP55wyvnUrJtLD4+i3+COYPzt2f/GwI7kdH0zz4YBaYDQ6VaPf8
+         FJ2dTwvOVj+Sb89FgB21g0H+FeIyrOMUo40gTC11xrTCvFt10WyodxdM6fcHbcgM8M
+         gtZWH7SRS1IEnIK1PvET7VXz08RRftT/3FY8pFMU=
+Date:   Tue, 9 Jun 2020 14:16:00 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Marco Felsch <m.felsch@pengutronix.de>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Grant Likely <grant.likely@arm.com>,
+        Saravana Kannan <saravanak@google.com>,
+        artem.bityutskiy@linux.intel.com, balbi@kernel.org,
+        fntoth@gmail.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        peter.ujfalusi@ti.com, rafael@kernel.org, kernel-team@android.com,
+        nd <nd@arm.com>, kernel@pengutronix.de
+Subject: Re: [PATCH v3] driver core: Break infinite loop when deferred probe
+ can't be satisfied
+Message-ID: <20200609131600.GE4583@sirena.org.uk>
+References: <20200325032901.29551-1-saravanak@google.com>
+ <20200325125120.GX1922688@smile.fi.intel.com>
+ <295d25de-f01e-26de-02d6-1ac0c149d828@arm.com>
+ <20200326163110.GD1922688@smile.fi.intel.com>
+ <CGME20200608091722eucas1p2fa8a4ac15c70e5a6e03c4babdf9f96b7@eucas1p2.samsung.com>
+ <20200608091712.GA28093@pengutronix.de>
+ <437de51b-37e9-d8d1-19c7-137a9265bf45@samsung.com>
+ <20200609064511.7nek2rhk6ebfjaia@pengutronix.de>
+ <b413d39f-71c4-d291-276d-1087baf07080@samsung.com>
+ <20200609121029.nfhgilpu5meoygoa@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6e7ZaeXHKrTJCxdu"
+Content-Disposition: inline
+In-Reply-To: <20200609121029.nfhgilpu5meoygoa@pengutronix.de>
+X-Cookie: Be careful!  Is it classified?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct i.MX8MP UID fuse offset according to fuse map:
 
-UID_LOW: 0x420
-UID_HIGH: 0x430
+--6e7ZaeXHKrTJCxdu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- drivers/soc/imx/soc-imx8m.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+On Tue, Jun 09, 2020 at 02:10:29PM +0200, Marco Felsch wrote:
+> On 20-06-09 11:27, Andrzej Hajda wrote:
+> > On 09.06.2020 08:45, Marco Felsch wrote:
+> > > On 20-06-08 13:11, Andrzej Hajda wrote:
+> > >> On 08.06.2020 11:17, Marco Felsch wrote:
+> > >>> On 20-03-26 18:31, Andy Shevchenko wrote:
+> > >>>> On Thu, Mar 26, 2020 at 03:01:22PM +0000, Grant Likely wrote:
+> > >>>>> On 25/03/2020 12:51, Andy Shevchenko wrote:
+> > >>>>>> On Tue, Mar 24, 2020 at 08:29:01PM -0700, Saravana Kannan wrote:
+> > >>>>>>> On Tue, Mar 24, 2020 at 5:38 AM Andy Shevchenko <andriy.shevche=
+nko@linux.intel.com> wrote:
 
-diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
-index 7b0759a..0bc8314 100644
---- a/drivers/soc/imx/soc-imx8m.c
-+++ b/drivers/soc/imx/soc-imx8m.c
-@@ -22,6 +22,8 @@
- #define OCOTP_UID_LOW			0x410
- #define OCOTP_UID_HIGH			0x420
- 
-+#define IMX8MP_OCOTP_UID_OFFSET		0x10
-+
- /* Same as ANADIG_DIGPROG_IMX7D */
- #define ANADIG_DIGPROG_IMX8MM	0x800
- 
-@@ -87,6 +89,8 @@ static void __init imx8mm_soc_uid(void)
- {
- 	void __iomem *ocotp_base;
- 	struct device_node *np;
-+	u32 offset = of_machine_is_compatible("fsl,imx8mp") ?
-+		     IMX8MP_OCOTP_UID_OFFSET : 0;
- 
- 	np = of_find_compatible_node(NULL, NULL, "fsl,imx8mm-ocotp");
- 	if (!np)
-@@ -95,9 +99,9 @@ static void __init imx8mm_soc_uid(void)
- 	ocotp_base = of_iomap(np, 0);
- 	WARN_ON(!ocotp_base);
- 
--	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH);
-+	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH + offset);
- 	soc_uid <<= 32;
--	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW);
-+	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW + offset);
- 
- 	iounmap(ocotp_base);
- 	of_node_put(np);
--- 
-2.7.4
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
 
+> > I think rule of=20
+> > thumb should be "do not expose yourself, until you are ready", which in=
+=20
+> > this case means "do not call component_add, until resources are=20
+> > acquired" - ie resource acquisition should be performed in probe.
+
+> Hm.. there are is no documentation which forbid this use-case. I thought
+> that the component framework bind() equals the driver probe() function..
+
+It does, the issue is perhaps more clearly expressed as saying that a
+driver should acquire whatever resources it needs before starting to
+make resources available to others, this includes but isn't limited to
+registering new device nodes.  This ensures that the users don't then
+start trying to use resources and have them torn down underneath them.
+
+> > I use=20
+> > this approach mainly to avoid multiple deferred re-probes, but it shoul=
+d=20
+> > solve also this issue, so even if there will be solution to "deferred=
+=20
+> > probe issues" in core it would be good to fix imx drivers.
+
+> Pls, see my above comments. It is not only the imx driver. Also we
+> shouldn't expect that driver-developers will follow a rule which is
+> not written somewhere.
+
+If you've got an idea where this should be documented patches welcome!
+I can't think of anywhere sensibly discoverable to put something off the
+top of my head.
+
+--6e7ZaeXHKrTJCxdu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7fi48ACgkQJNaLcl1U
+h9BAnwf+IQAg6nhT7tQENlmhPWx3FZ4yhQkrwDmGU9T40E0yCtHmLUNcLGsh9kyn
+DBlX8hGB51Btbnu0B/0A1HZ5WbI3jRLlZKcweyc2lYeBB+EYCE6QcX8Q/PZPcZc3
+HkGMw18pACXYKlOxyFg6HF8Jkx+FyU4ArPyIYTCq9ONdKx/QjJHXrYPoAV/M8WX2
+/hlGcoLfh2Zo8R/P/9oCbAqsZ0O4O3JZKKxOoUtLynwCymjgDd88rDsBX/FmmUwN
+k7z3zuvZTHwwv9jwDsqHczyv2IwilmWHT2tYFHOz5wmdiJsngQb5+juzyDdf+B8Z
+z3yiOvVVzkenkzPDl2y7/qCDurQOxw==
+=ln+W
+-----END PGP SIGNATURE-----
+
+--6e7ZaeXHKrTJCxdu--
