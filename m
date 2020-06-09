@@ -2,119 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EA81F4126
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 18:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143611F412A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 18:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731180AbgFIQkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 12:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731074AbgFIQkK (ORCPT
+        id S1731225AbgFIQkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 12:40:35 -0400
+Received: from smtprelay0150.hostedemail.com ([216.40.44.150]:44916 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731073AbgFIQkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 12:40:10 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FD3C05BD1E;
-        Tue,  9 Jun 2020 09:40:08 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id u26so2720514wmn.1;
-        Tue, 09 Jun 2020 09:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:from:message-id;
-        bh=7Y2ExY85BoPcedn5x6S+ytoOXLcWpABh59ie+XkypSE=;
-        b=nFSMz8N49ggw5MrKrz8g8uHEyHih78bK1Js/RnT8JimC+Fk4PuQqv96QldQ19q9ADH
-         hzKLxDLVb1viYVoYf25mzUkb+XYvBuw8yTlyj6p5au5dLXMxNcDJCvqp4Jj3Jikn8xgv
-         VvH7O7WZtSKg31WbucAhzlYkkUYxZ+fx1QCJK7+SPW5enr0R4FLaypU3fmTQR3UTzeLB
-         fAN4PcVpqfrXGBswNRJvW4cBCOOsz4fhGW8Tm11KpqejoBgju5JH/yqRJmBYzmuVBs57
-         W4ROQ63G6KgPUthUSwzRKZj6TUcbc7176ko9eCjaR3CMtGkKRmkeptehWxvFPCdb5Nw0
-         rdJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=7Y2ExY85BoPcedn5x6S+ytoOXLcWpABh59ie+XkypSE=;
-        b=QsVoj/nbDx8HjA40YoiwWsprm1EKA78sXrqOeHORHFov05fZ7kRgSWqFsy7ENsPfXG
-         c9JkE6e2Ku9Gub+Vp6zu8x9jhlpYJegQ6wDkY5lqW4wvSe2nBClEdv/bdEg/O9tjiTki
-         4M55feRlTkoIUAeZxTreJP1oUKgHS2a228KJtMxB62OsUgTuG5IeE9ezjgaNm9e0DyVT
-         Uc9aEYvtZMBTXAHrYvG4XURKda2hYUK6MEFIuMopGeJGKdi8Qj+hdrxCFHfhg3I10g1F
-         M6MFNotJ4mRQKYjU5KoqiQBB+ntYO6WWefoK2e+WdfJeaO4ziI0CJDesCWAQPYjEYr5V
-         YDtQ==
-X-Gm-Message-State: AOAM533weyCtKeWXhlRziKHsDpF4jJAEl1gVvYMbN9rjQ7i/ZPSP+ySN
-        kYqDAfv0VsirCo4LuC8w2xY=
-X-Google-Smtp-Source: ABdhPJx66+0aIpQmFRhtjz67aBZc3TeSJXFEsU0xG2C4YryZonJ99z543J+Oj+VxfkEl4HJFaceMLg==
-X-Received: by 2002:a1c:bd86:: with SMTP id n128mr5209884wmf.5.1591720807292;
-        Tue, 09 Jun 2020 09:40:07 -0700 (PDT)
-Received: from [192.168.68.104] ([89.237.74.3])
-        by smtp.gmail.com with ESMTPSA id z2sm3872754wrs.87.2020.06.09.09.40.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jun 2020 09:40:06 -0700 (PDT)
-Date:   Tue, 09 Jun 2020 19:40:03 +0300
-User-Agent: K-9 Mail for Android
-In-Reply-To: <D6892A4E-18F7-4EB7-BA09-BD4DF9079BDE@gmail.com>
-References: <cover.1587675252.git.zanussi@kernel.org> <6d4c92b28c54d8ca687c29043562de943a373547.1587675252.git.zanussi@kernel.org> <CAGi-RUKn6k98H5v9kw7je1MChb4+Uq8EGhKO0nuXNMBy9M1_qw@mail.gmail.com> <b5026121af44601e4318479194357fdb956982f6.camel@kernel.org> <20200609154741.5kesuvl7txz4s3yu@linutronix.de> <e288ef193f743782df48667b6b03122bd025119f.camel@kernel.org> <20200609163446.efp76qbjzkbtl7nk@linutronix.de> <D6892A4E-18F7-4EB7-BA09-BD4DF9079BDE@gmail.com>
+        Tue, 9 Jun 2020 12:40:31 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 2F7D4183B25B7;
+        Tue,  9 Jun 2020 16:40:29 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:1981:2194:2199:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4361:5007:6691:7807:7875:7903:7974:9025:10004:10400:10848:11026:11232:11658:11914:12043:12048:12296:12297:12740:12760:12895:13069:13311:13357:13439:14180:14181:14659:14721:21080:21451:21627:21740:21788:21810:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: paste04_0b0768b26dc4
+X-Filterd-Recvd-Size: 1978
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  9 Jun 2020 16:40:27 +0000 (UTC)
+Message-ID: <2bf362d58b320b3081703d75ea419274fb889e9a.camel@perches.com>
+Subject: Re: [PATCH v3 0/7] Venus dynamic debug
+From:   Joe Perches <joe@perches.com>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Baron <jbaron@akamai.com>
+Date:   Tue, 09 Jun 2020 09:40:26 -0700
+In-Reply-To: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH RT 1/2] tasklet: Address a race resulting in double-enqueue
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Zanussi <zanussi@kernel.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
-        Clark Williams <williams@redhat.com>,
-        Zhang Xiao <xiao.zhang@windriver.com>
-From:   Ramon Fried <rfried.dev@gmail.com>
-Message-ID: <34E6C220-A85B-4296-AB8E-62DE6D9DC561@gmail.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2020-06-09 at 13:45 +0300, Stanimir Varbanov wrote:
+> Hello,
+> 
+> Here is the third version of dynamic debug improvements in Venus
+> driver.  As has been suggested on previous version by Joe [1] I've
+> made the relevant changes in dynamic debug core to handle leveling
+> as more generic way and not open-code/workaround it in the driver.
+> 
+> About changes:
+>  - added change in the dynamic_debug and in documentation
+>  - added respective pr_debug_level and dev_dbg_level
+> 
+> regards,
+> Stan
+> 
+> [1] https://lkml.org/lkml/2020/5/21/668
+
+This capability is already clumsily used by many
+drivers that use a module level "debug" flag.
+
+$ git grep -P "MODULE_PARM.*\bdebug\b"|wc -l
+501
+
+That's a _lot_ of homebrewed mechanisms.
+
+Making dynamic debug have this as a feature would
+help consolidate and standardize the capability.
+
+ftrace is definitely useful, but not quite as
+lightweight and doesn't have the typical uses.
 
 
-On June 9, 2020 7:37:31 PM GMT+03:00, Ramon Fried <rfried=2Edev@gmail=2Eco=
-m> wrote:
->
->
->On June 9, 2020 7:34:46 PM GMT+03:00, Sebastian Andrzej Siewior
-><bigeasy@linutronix=2Ede> wrote:
->>On 2020-06-09 11:17:53 [-0500], Tom Zanussi wrote:
->>> Hi Sebastian,
->>Hi Tom,
->>
->>> I did find a problem with the patch when configured as !SMP since in
->>> that case the RUN flag is never set (will send a patch for that
->>> shortly), but that wouldn't be the case here=2E
->>
->>How?
->>
->>| #if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT_RT_FULL)
->>| static inline int tasklet_trylock(struct tasklet_struct *t)
->>| {
->>|         return !test_and_set_bit(TASKLET_STATE_RUN, &(t)->state);
->>| }
->>
->>I can't tell from the backtrace if he runs with RT or without but I
->>assumed RT=2E But yes, for !SMP && !RT it would explain it=2E
->PREEMT_FULL is enabled=2E=20
->I'm working on getting symbols for this trace, this is a crash kernel
->so everything is stripped naked=2E=20
->Thanks, Ramon
-
-Correction=2E normal kernel is running with RT enabled, crash kernel witho=
-ut=2E=20
->>
->>> It would help to be able to reproduce it, but I haven't been able to
->>> yet=2E
->>>=20
->>> Tom
->>>=20
->>Sebastian
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
