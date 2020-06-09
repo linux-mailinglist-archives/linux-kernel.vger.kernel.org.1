@@ -2,92 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78111F49F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 01:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B031F49FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 01:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbgFIXGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 19:06:39 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:41999 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728522AbgFIXGi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 19:06:38 -0400
-Received: by mail-il1-f194.google.com with SMTP id 18so100917iln.9;
-        Tue, 09 Jun 2020 16:06:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lowGDgqik15FywyulT8g8hjG3BqBie9BHX3NbVdEAb8=;
-        b=NaLAM6GZjNQpV5ukpBJ+mvNTXIDOSxjAVf79+0PLPNhh7pWvPZ7X6Pe6WESubAPJMJ
-         ckbCbP3+ZzaZuLE7+y8yR+t8GTs9MypKKKz981kyh3LDLh/mYfQM9wW9NCs0LjVRObHW
-         D/V4wu7HtzRK/UFcs2W0Q3TTbLKJq+H8G1ilA7J8N7C2TDgrq3VGiYyNkmEcqQLySvC8
-         aDoW9O9kbGuGX3p1cAiTjCKqc8aX7kPGYkC84AoqKUt7n9iUxIQ7TO2L9+vrWrq/mCap
-         /DrfKrs8WYy2Elq+Z55EKBDNAQVUaOAz0hYOUa6xy37W4mgF0/W2V8cBsDziJZHIdKqK
-         WzZw==
-X-Gm-Message-State: AOAM5302IIE0pvG8Bl4t8YEaHqPc1N03EoJBdd/ixKuMXfyFsIt3zRBv
-        OL33Y6QHkyAOXJLzYzlARw==
-X-Google-Smtp-Source: ABdhPJzA471O+zLyrUVgcaJtMiMWHipLZjGeKrxG0e9HUEXXPzjEfeCsCCzLurZKeeKMdsHSRLkaRw==
-X-Received: by 2002:a92:5e59:: with SMTP id s86mr369637ilb.104.1591743996208;
-        Tue, 09 Jun 2020 16:06:36 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id b29sm7856241ioc.32.2020.06.09.16.06.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 16:06:35 -0700 (PDT)
-Received: (nullmailer pid 1677087 invoked by uid 1000);
-        Tue, 09 Jun 2020 23:06:34 -0000
-Date:   Tue, 9 Jun 2020 17:06:34 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Roger Quadros <rogerq@ti.com>
-Cc:     kishon@ti.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCHv2 2/3] dt-binding: phy: ti,omap-usb2: Add quirk to
- disable charger detection
-Message-ID: <20200609230634.GA1674560@bogus>
-References: <20200602114606.32045-1-rogerq@ti.com>
- <20200602114606.32045-3-rogerq@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200602114606.32045-3-rogerq@ti.com>
+        id S1728484AbgFIXKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 19:10:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726404AbgFIXKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 19:10:04 -0400
+Subject: Re: [GIT PULL] afs: Misc small fixes
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591744203;
+        bh=PWL47kqkwUUVGbUhRreca/H463T7rLQ4+w8MVdM3OVw=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=PjSkZzlPvVuUis6st1gRwV0CzxRYmdpsOtJsda1zzd76l4nbTr6AXmoSP1oxrk7tZ
+         gfz49wb6CHwgzX8YPRcdS3GGYdhjm2nurSQX0cgbL+vXqzppzXu+s8ySRV0NmTU/dE
+         zJL3m51V/Qll7mHeOffIEXYDZcavA7bxTXSnQzM8=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <3071963.1591734633@warthog.procyon.org.uk>
+References: <3071963.1591734633@warthog.procyon.org.uk>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <3071963.1591734633@warthog.procyon.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
+ tags/afs-fixes-20200609
+X-PR-Tracked-Commit-Id: c68421bbad755a280851afff0fb236dd4e53e684
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4964dd29140a44e26474dbdca559b7393aba6c39
+Message-Id: <159174420387.2962.13061146341675614064.pr-tracker-bot@kernel.org>
+Date:   Tue, 09 Jun 2020 23:10:03 +0000
+To:     David Howells <dhowells@redhat.com>
+Cc:     torvalds@linux-foundation.org, dhowells@redhat.com,
+        keescook@chromium.org, chengzhihao1@huawei.com,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 02:46:05PM +0300, Roger Quadros wrote:
-> Add "ti,dis-chg-det-quirk" property to disable the USB2_PHY Charger Detect
-> logic.
-> 
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
-> ---
->  Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml b/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
-> index 2bbea8d2bcb1..5e8c7a98de1e 100644
-> --- a/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
-> +++ b/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
-> @@ -50,6 +50,11 @@ properties:
->        (deprecated) phandle of the control module used by PHY driver
->        to power on the PHY. Use syscon-phy-power instead.
->  
-> +  ti,dis-chg-det-quirk:
+The pull request you sent on Tue, 09 Jun 2020 21:30:33 +0100:
 
-Bikeshed:
+> git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/afs-fixes-20200609
 
-ti,disable-charge-det
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4964dd29140a44e26474dbdca559b7393aba6c39
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thank you!
 
-> +    description:
-> +      if present, driver will disable charger detection logic.
-> +    type: boolean
-> +
->  required:
->    - compatible
->    - reg
-> -- 
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-> 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
