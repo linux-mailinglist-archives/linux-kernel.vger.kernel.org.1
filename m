@@ -2,109 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671261F4570
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12CE1F4545
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388710AbgFISPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:15:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36870 "EHLO mx2.suse.de"
+        id S1730909AbgFIRup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:50:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732652AbgFIRuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:50:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A147BB14A;
-        Tue,  9 Jun 2020 17:50:27 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     f.fainelli@gmail.com, gregkh@linuxfoundation.org, wahrenst@gmx.net,
-        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@intel.com>
-Cc:     linux-usb@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, tim.gover@raspberrypi.org,
-        linux-pci@vger.kernel.org, helgaas@kernel.org,
-        andy.shevchenko@gmail.com, mathias.nyman@linux.intel.com,
-        lorenzo.pieralisi@arm.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH v2 6/9] Revert "USB: pci-quirks: Add Raspberry Pi 4 quirk"
-Date:   Tue,  9 Jun 2020 19:49:59 +0200
-Message-Id: <20200609175003.19793-7-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200609175003.19793-1-nsaenzjulienne@suse.de>
-References: <20200609175003.19793-1-nsaenzjulienne@suse.de>
+        id S1732604AbgFIRuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:50:03 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1500320801;
+        Tue,  9 Jun 2020 17:50:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591725002;
+        bh=GmOf7ufLopIQ4dm5tWeT9BTmDlXoHbRAmXYulRxbARg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qBlCD7TE7EFTt9PmZafc3XGZkCUYr70hyzrVUttbz0QUrhGE+ZKD3ilnm5gavV5aN
+         NShzrd92zAMR12KJn5yRqWK6hNb+kNIOu8EonT++JAT1G7MwZYQUkMalwtLgErwqPA
+         cfTOtJX7xuvIUUh1lI8qFVC5AfvWBZt9lRQe3g0g=
+Date:   Tue, 9 Jun 2020 18:50:00 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        robh@kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] ASoc: tas2563: DSP Firmware loading support
+Message-ID: <20200609175000.GO4583@sirena.org.uk>
+References: <20200609172841.22541-1-dmurphy@ti.com>
+ <20200609172841.22541-3-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vEfizQhTV1P/vojJ"
+Content-Disposition: inline
+In-Reply-To: <20200609172841.22541-3-dmurphy@ti.com>
+X-Cookie: Be careful!  Is it classified?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit c65822fef4adc0ba40c37a47337376ce75f7a7bc.
 
-The initialization of Raspberry Pi 4's USB chip is now handled through a
-reset controller. No need to directly call the firmware routine trough a
-pci quirk.
+--vEfizQhTV1P/vojJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
----
- drivers/firmware/Kconfig      |  3 +--
- drivers/usb/host/pci-quirks.c | 16 ----------------
- 2 files changed, 1 insertion(+), 18 deletions(-)
+On Tue, Jun 09, 2020 at 12:28:41PM -0500, Dan Murphy wrote:
 
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index fbd785dd0513..4843e94713a4 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -178,9 +178,8 @@ config ISCSI_IBFT
- 	  Otherwise, say N.
- 
- config RASPBERRYPI_FIRMWARE
--	bool "Raspberry Pi Firmware Driver"
-+	tristate "Raspberry Pi Firmware Driver"
- 	depends on BCM2835_MBOX
--	default USB_PCI
- 	help
- 	  This option enables support for communicating with the firmware on the
- 	  Raspberry Pi.
-diff --git a/drivers/usb/host/pci-quirks.c b/drivers/usb/host/pci-quirks.c
-index 0b949acfa258..92150ecdb036 100644
---- a/drivers/usb/host/pci-quirks.c
-+++ b/drivers/usb/host/pci-quirks.c
-@@ -16,9 +16,6 @@
- #include <linux/export.h>
- #include <linux/acpi.h>
- #include <linux/dmi.h>
--
--#include <soc/bcm2835/raspberrypi-firmware.h>
--
- #include "pci-quirks.h"
- #include "xhci-ext-caps.h"
- 
-@@ -1246,24 +1243,11 @@ static void quirk_usb_handoff_xhci(struct pci_dev *pdev)
- 
- static void quirk_usb_early_handoff(struct pci_dev *pdev)
- {
--	int ret;
--
- 	/* Skip Netlogic mips SoC's internal PCI USB controller.
- 	 * This device does not need/support EHCI/OHCI handoff
- 	 */
- 	if (pdev->vendor == 0x184e)	/* vendor Netlogic */
- 		return;
--
--	if (pdev->vendor == PCI_VENDOR_ID_VIA && pdev->device == 0x3483) {
--		ret = rpi_firmware_init_vl805(pdev);
--		if (ret) {
--			/* Firmware might be outdated, or something failed */
--			dev_warn(&pdev->dev,
--				 "Failed to load VL805's firmware: %d. Will continue to attempt to work, but bad things might happen. You should fix this...\n",
--				 ret);
--		}
--	}
--
- 	if (pdev->class != PCI_CLASS_SERIAL_USB_UHCI &&
- 			pdev->class != PCI_CLASS_SERIAL_USB_OHCI &&
- 			pdev->class != PCI_CLASS_SERIAL_USB_EHCI &&
--- 
-2.26.2
+>  	.val_bits =3D 8,
+> =20
+> -	.max_register =3D 5 * 128,
+> +	.max_register =3D 255 * 128,
+>  	.cache_type =3D REGCACHE_RBTREE,
+>  	.reg_defaults =3D tas2562_reg_defaults,
+>  	.num_reg_defaults =3D ARRAY_SIZE(tas2562_reg_defaults),
 
+Should some or all of the DSP memory be marked as volatile?  I guess if
+we only write program to it then on reload after power off it should be
+fine to just blast everything in again and ignore the fact that some
+will have changed, but it might be helpful for debugging to be able to
+read the live values back and do something more clever for restore.
+
+>  #define TAS2562_PAGE_CTRL      0x00
+> +#define TAS2562_BOOK_CTRL      0x7f
+
+*sigh*  Of course the two levels of paging register are not located
+anywhere near each other so we can't easily pretend they're one double
+width page address.  :/
+
+> +static int tas25xx_process_fw_single(struct tas2562_data *tas2562,
+> +				     struct tas25xx_cmd_data *cmd_data,
+> +				     u8 *fw_out)
+> +{
+> +	int num_writes =3D cpu_to_be16(cmd_data->length);
+> +	int i;
+> +	int ret;
+> +	int offset =3D 4;
+> +	int reg_data, write_reg;
+> +
+> +	for (i =3D 0; i < num_writes; i++) {
+> +		/* Reset Page to 0 */
+> +		ret =3D regmap_write(tas2562->regmap, TAS2562_PAGE_CTRL, 0);
+> +		if (ret)
+> +			return ret;
+
+Why?
+
+> +
+> +		cmd_data->book =3D fw_out[offset];
+> +		cmd_data->page =3D fw_out[offset + 1];
+> +		cmd_data->offset =3D fw_out[offset + 2];
+> +		reg_data =3D fw_out[offset + 3];
+> +		offset +=3D 4;
+> +
+> +		ret =3D regmap_write(tas2562->regmap, TAS2562_BOOK_CTRL,
+> +				   cmd_data->book);
+> +		if (ret)
+> +			return ret;
+
+This manual paging doesn't fill me with with joy especially with regard
+to caching and doing the books behind the back of regmap.  I didn't spot
+anything disabling cache or anything in the code.  I think you should
+either bypass the cache while doing this or teach regmap about the
+books (which may require core updates, I can't remember if the range
+code copes with nested levels of paging - I remember thinking about it).
+
+> +static ssize_t write_config_store(struct device *dev,
+> +				struct device_attribute *tas25xx_attr,
+> +				const char *buf, size_t size)
+> +{
+
+This looks like it could just be an enum (it looks like there's names we
+could use) or just a simple numbered control?  Same for all the other
+controls, they're just small integers so don't look hard to handle.  But
+perhaps I'm missing something?
+
+> +	tas2562->fw_data->fw_hdr =3D devm_kzalloc(tas2562->dev, hdr_size,
+> +						GFP_KERNEL);
+> +	if (!tas2562->fw_data->fw_hdr)
+> +		return -ENOMEM;
+> +
+> +	memcpy(tas2562->fw_data->fw_hdr, &fw->data[0], hdr_size);
+
+Should validate that the firmware is actually at least hdr_size big, and
+similarly for all the other lengths we get from the header we should
+check that there's actually enough data in the file.  ATM we just
+blindly copy.
+
+It'd also be good to double check that the number of configs and
+programs is within bounds.
+
+--vEfizQhTV1P/vojJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7fy8cACgkQJNaLcl1U
+h9DyjAf/U3fDLekpB9MZStpSggO6T3wCfTbWFhFNd8RAcNjhjzxnoumprzpXP7vS
+0udC8M7ISpLr6EIdhF6WScsoEWCM/1quzrZ8T3TSAz5pfAiuepmWMYgZiLr532vv
+jGtuTYBno7H+Kx4CKOc5+mnd7cFWaSQkxWui3/uwDrWrdQRQRva9oZRW5NdYLFGY
+5H2uzDpRDnRetbs4xJztGJ7d4FcgSutaJFsfhe6xMEaN8Hgk73m5UBAK1Epv2LTz
+kswZnjp6SO8jdJCLyiblXnliDIRn/ftQz5hTY2ZLUmZ1ylwpbtuoTdGwpp4NoYfU
+2Qo3ZYiD2Gd7QnI6Jqb6H6LM/8IMNw==
+=c5qv
+-----END PGP SIGNATURE-----
+
+--vEfizQhTV1P/vojJ--
