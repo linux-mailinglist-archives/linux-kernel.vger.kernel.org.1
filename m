@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC331F3403
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 08:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5EA41F340B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 08:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727829AbgFIGUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 02:20:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49554 "EHLO mail.kernel.org"
+        id S1727806AbgFIGXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 02:23:40 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:48010 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726886AbgFIGUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 02:20:14 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1726887AbgFIGXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 02:23:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591683818; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=4+aCPVmw8jrDJQlSPv04BpPt31w8OcaqeOyj/nVXCVU=;
+ b=FRHRoixSKeYKS7HJcB+ZXe4ccNlsdS+GT9H61QOdmpQsbHSvwXGcRAWp8RktW6Qn1xisH3c8
+ Q+EW+rG1thbmoYyOfv4KzRxXKmzNqvcJlo13TUkkoTLqLMC0MpADM9UyaougN74QmFKYBrhM
+ tRHFBTuQmkYa6dZqA/NEea6LbT0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
+ 5edf2ae98bec50776860c72b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Jun 2020 06:23:37
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 46ABEC433C6; Tue,  9 Jun 2020 06:23:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15C0220760;
-        Tue,  9 Jun 2020 06:20:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591683614;
-        bh=exUDV2J9JxWIk54v1sf9Jxd5EhusLTjEp6+l+MK3hf0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hfXiNDu+MHItIX1POBiMTgAXiCJsANVm44QN6el+qusXnvzP8Ldc5d+6SN+xbLkJR
-         g+t/wiNisdoKFTM58QaOhTGMMNs/2J8Ij2FWWKux9aLGzeL4ZCD3f6vSbQAPavpWVE
-         g2PGUSzNp/Mu/V8piMlMDRnVJZG+O9x1ix07vyvM=
-Date:   Tue, 9 Jun 2020 08:20:12 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kbuild: make module name conflict fatal error
-Message-ID: <20200609062012.GA499862@kroah.com>
-References: <20200511042149.1712876-1-masahiroy@kernel.org>
- <20200608020256.GA256950@roeck-us.net>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31652C433C6;
+        Tue,  9 Jun 2020 06:23:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 31652C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200608020256.GA256950@roeck-us.net>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath10k: Acquire tx_lock in tx error paths
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200604105901.1.I5b8b0c7ee0d3e51a73248975a9da61401b8f3900@changeid>
+References: <20200604105901.1.I5b8b0c7ee0d3e51a73248975a9da61401b8f3900@changeid>
+To:     Evan Green <evgreen@chromium.org>
+Cc:     kuabhs@google.com.org, sujitka@chromium.org,
+        Evan Green <evgreen@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Govind Singh <govinds@qti.qualcomm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michal Kazior <michal.kazior@tieto.com>,
+        ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200609062336.46ABEC433C6@smtp.codeaurora.org>
+Date:   Tue,  9 Jun 2020 06:23:36 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 07, 2020 at 07:02:56PM -0700, Guenter Roeck wrote:
-> Hi,
-> 
-> On Mon, May 11, 2020 at 01:21:49PM +0900, Masahiro Yamada wrote:
-> > I think all the warnings have been fixed by now. Make it a fatal error.
-> > 
-> 
-> Not entirely. With this patch in the tree, I get:
-> 
-> Building sparc64:allmodconfig ... failed
-> --------------
-> Error log:
-> error: the following would cause module name conflict:
->   drivers/char/adi.ko
->   drivers/input/joystick/adi.ko
-> make[1]: *** [modules_check] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [__sub-make] Error 2
-> 
-> Reverting this patch fixes the problem.
+Evan Green <evgreen@chromium.org> wrote:
 
-As it doesn't look like either of these drivers can be "auto-loaded"
-based on hardware detection, I don't know what to suggest as for
-renaming either of them.
+> ath10k_htt_tx_free_msdu_id() has a lockdep assertion that htt->tx_lock
+> is held. Acquire the lock in a couple of error paths when calling that
+> function to ensure this condition is met.
+> 
+> Fixes: 6421969f248fd ("ath10k: refactor tx pending management")
+> Fixes: e62ee5c381c59 ("ath10k: Add support for htt_data_tx_desc_64 descriptor")
+> Signed-off-by: Evan Green <evgreen@chromium.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Any ideas?
+Patch applied to ath-next branch of ath.git, thanks.
 
-thanks,
+a738e766e3ed ath10k: Acquire tx_lock in tx error paths
 
-greg k-h
+-- 
+https://patchwork.kernel.org/patch/11588229/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
