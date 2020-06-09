@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB5D1F4396
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12DEF1F43AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728862AbgFIRyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:54:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43860 "EHLO mail.kernel.org"
+        id S1732005AbgFIR4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:56:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732997AbgFIRxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:53:06 -0400
+        id S1732970AbgFIRyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:54:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07F7A20801;
-        Tue,  9 Jun 2020 17:53:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CF4F20774;
+        Tue,  9 Jun 2020 17:54:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725185;
-        bh=JBF1QBhhLgT43+0O28fNaRCb8qfuY9Ah9BnHcGY+DlA=;
+        s=default; t=1591725277;
+        bh=R/2+iH0ntOAXXcyfdHjyJIeGtR8m6nlM7VYdO+xk6Gs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GK6FugCHj1FpDkI3S6xxPPUjLOhYPLKI128/tL+zyEIktfbCwSmhFQa2O1yDaGHry
-         xTM+48+nT7r6VWpWwKLO3lQeF5fCWhWU6klL9KP4E/p2Cm1qQwfzo+71LvVVSSkOnF
-         AYTIaTfWmZEJHec4Y7h8uGZBME1P+StPaCMQrBXA=
+        b=nWI/ZHvDVuBt3fhPUnKKFe6R+Dg7gVhJzf5U60NVtP96I3ICIX3aYxawDA7rpE6dD
+         uHETDWS7bKb9yD9HtUnsrH4VLoA5VRnewfcEW6UXpy7gNNG+W9QAZgTP8c43B5UUW0
+         CpKWWmy0SUaxMN+J3Vr7Xny3hK3/oVjMZtcVSzfs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 19/34] iio: adc: stm32-adc: fix a wrong error message when probing interrupts
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 13/41] net: be more gentle about silly gso requests coming from user
 Date:   Tue,  9 Jun 2020 19:45:15 +0200
-Message-Id: <20200609174055.029698781@linuxfoundation.org>
+Message-Id: <20200609174113.413018047@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174052.628006868@linuxfoundation.org>
-References: <20200609174052.628006868@linuxfoundation.org>
+In-Reply-To: <20200609174112.129412236@linuxfoundation.org>
+References: <20200609174112.129412236@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,124 +44,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabrice Gasnier <fabrice.gasnier@st.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 10134ec3f8cefa6a40fe84987f1795e9e0da9715 upstream.
+[ Upstream commit 7c6d2ecbda83150b2036a2b36b21381ad4667762 ]
 
-A wrong error message is printed out currently, like on STM32MP15:
-- stm32-adc-core 48003000.adc: IRQ index 2 not found.
+Recent change in virtio_net_hdr_to_skb() broke some packetdrill tests.
 
-This is seen since commit 7723f4c5ecdb ("driver core: platform: Add an
-error message to platform_get_irq*()").
-The STM32 ADC core driver wrongly requests up to 3 interrupt lines. It
-should request only the necessary IRQs, based on the compatible:
-- stm32f4/h7 ADCs share a common interrupt
-- stm32mp1, has one interrupt line per ADC.
-So add the number of required interrupts to the compatible data.
+When --mss=XXX option is set, packetdrill always provide gso_type & gso_size
+for its inbound packets, regardless of packet size.
 
-Fixes: d58c67d1d851 ("iio: adc: stm32-adc: add support for STM32MP1")
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+	if (packet->tcp && packet->mss) {
+		if (packet->ipv4)
+			gso.gso_type = VIRTIO_NET_HDR_GSO_TCPV4;
+		else
+			gso.gso_type = VIRTIO_NET_HDR_GSO_TCPV6;
+		gso.gso_size = packet->mss;
+	}
+
+Since many other programs could do the same, relax virtio_net_hdr_to_skb()
+to no longer return an error, but instead ignore gso settings.
+
+This keeps Willem intent to make sure no malicious packet could
+reach gso stack.
+
+Note that TCP stack has a special logic in tcp_set_skb_tso_segs()
+to clear gso_size for small packets.
+
+Fixes: 6dd912f82680 ("net: check untrusted gso_size at kernel entry")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/iio/adc/stm32-adc-core.c |   34 ++++++++++++++--------------------
- 1 file changed, 14 insertions(+), 20 deletions(-)
+ include/linux/virtio_net.h |   17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
---- a/drivers/iio/adc/stm32-adc-core.c
-+++ b/drivers/iio/adc/stm32-adc-core.c
-@@ -65,12 +65,14 @@ struct stm32_adc_priv;
-  * @clk_sel:	clock selection routine
-  * @max_clk_rate_hz: maximum analog clock rate (Hz, from datasheet)
-  * @has_syscfg: SYSCFG capability flags
-+ * @num_irqs:	number of interrupt lines
-  */
- struct stm32_adc_priv_cfg {
- 	const struct stm32_adc_common_regs *regs;
- 	int (*clk_sel)(struct platform_device *, struct stm32_adc_priv *);
- 	u32 max_clk_rate_hz;
- 	unsigned int has_syscfg;
-+	unsigned int num_irqs;
- };
+--- a/include/linux/virtio_net.h
++++ b/include/linux/virtio_net.h
+@@ -109,16 +109,17 @@ retry:
  
- /**
-@@ -372,21 +374,15 @@ static int stm32_adc_irq_probe(struct pl
- 	struct device_node *np = pdev->dev.of_node;
- 	unsigned int i;
+ 	if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
+ 		u16 gso_size = __virtio16_to_cpu(little_endian, hdr->gso_size);
++		struct skb_shared_info *shinfo = skb_shinfo(skb);
  
--	for (i = 0; i < STM32_ADC_MAX_ADCS; i++) {
-+	/*
-+	 * Interrupt(s) must be provided, depending on the compatible:
-+	 * - stm32f4/h7 shares a common interrupt line.
-+	 * - stm32mp1, has one line per ADC
-+	 */
-+	for (i = 0; i < priv->cfg->num_irqs; i++) {
- 		priv->irq[i] = platform_get_irq(pdev, i);
--		if (priv->irq[i] < 0) {
--			/*
--			 * At least one interrupt must be provided, make others
--			 * optional:
--			 * - stm32f4/h7 shares a common interrupt.
--			 * - stm32mp1, has one line per ADC (either for ADC1,
--			 *   ADC2 or both).
--			 */
--			if (i && priv->irq[i] == -ENXIO)
--				continue;
+-		if (skb->len - p_off <= gso_size)
+-			return -EINVAL;
++		/* Too small packets are not really GSO ones. */
++		if (skb->len - p_off > gso_size) {
++			shinfo->gso_size = gso_size;
++			shinfo->gso_type = gso_type;
+ 
+-		skb_shinfo(skb)->gso_size = gso_size;
+-		skb_shinfo(skb)->gso_type = gso_type;
 -
-+		if (priv->irq[i] < 0)
- 			return priv->irq[i];
--		}
+-		/* Header must be checked, and gso_segs computed. */
+-		skb_shinfo(skb)->gso_type |= SKB_GSO_DODGY;
+-		skb_shinfo(skb)->gso_segs = 0;
++			/* Header must be checked, and gso_segs computed. */
++			shinfo->gso_type |= SKB_GSO_DODGY;
++			shinfo->gso_segs = 0;
++		}
  	}
  
- 	priv->domain = irq_domain_add_simple(np, STM32_ADC_MAX_ADCS, 0,
-@@ -397,9 +393,7 @@ static int stm32_adc_irq_probe(struct pl
- 		return -ENOMEM;
- 	}
- 
--	for (i = 0; i < STM32_ADC_MAX_ADCS; i++) {
--		if (priv->irq[i] < 0)
--			continue;
-+	for (i = 0; i < priv->cfg->num_irqs; i++) {
- 		irq_set_chained_handler(priv->irq[i], stm32_adc_irq_handler);
- 		irq_set_handler_data(priv->irq[i], priv);
- 	}
-@@ -417,11 +411,8 @@ static void stm32_adc_irq_remove(struct
- 		irq_dispose_mapping(irq_find_mapping(priv->domain, hwirq));
- 	irq_domain_remove(priv->domain);
- 
--	for (i = 0; i < STM32_ADC_MAX_ADCS; i++) {
--		if (priv->irq[i] < 0)
--			continue;
-+	for (i = 0; i < priv->cfg->num_irqs; i++)
- 		irq_set_chained_handler(priv->irq[i], NULL);
--	}
- }
- 
- static int stm32_adc_core_switches_supply_en(struct stm32_adc_priv *priv,
-@@ -803,6 +794,7 @@ static const struct stm32_adc_priv_cfg s
- 	.regs = &stm32f4_adc_common_regs,
- 	.clk_sel = stm32f4_adc_clk_sel,
- 	.max_clk_rate_hz = 36000000,
-+	.num_irqs = 1,
- };
- 
- static const struct stm32_adc_priv_cfg stm32h7_adc_priv_cfg = {
-@@ -810,6 +802,7 @@ static const struct stm32_adc_priv_cfg s
- 	.clk_sel = stm32h7_adc_clk_sel,
- 	.max_clk_rate_hz = 36000000,
- 	.has_syscfg = HAS_VBOOSTER,
-+	.num_irqs = 1,
- };
- 
- static const struct stm32_adc_priv_cfg stm32mp1_adc_priv_cfg = {
-@@ -817,6 +810,7 @@ static const struct stm32_adc_priv_cfg s
- 	.clk_sel = stm32h7_adc_clk_sel,
- 	.max_clk_rate_hz = 40000000,
- 	.has_syscfg = HAS_VBOOSTER | HAS_ANASWVDD,
-+	.num_irqs = 2,
- };
- 
- static const struct of_device_id stm32_adc_of_match[] = {
+ 	return 0;
 
 
