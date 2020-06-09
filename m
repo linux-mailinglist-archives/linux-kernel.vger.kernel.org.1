@@ -2,95 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199231F487C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 22:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD211F4886
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 22:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgFIU7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 16:59:19 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:63030 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728059AbgFIU7L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 16:59:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591736350; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=w98NvCRSqsgrCEWuhZkp5a80F1qEDmyKmBRdGBNIFfs=; b=qh85qsk3Lbxfae/qAjQ+4ezDqvEU3ccibqNZ9ZwGBtW5nHbtpUzWJXJ1+SlshdCxcEVOKROI
- HrpAXtIPMNyG6NViOcd7O2pR0JtYVj+2UdRTYhYDZnbvcQD+YSmuvGy0UG0Fx7+xmL4QqQyr
- x+t0xWcek5Xnb3T3EbfY3eRrJRY=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5edff8146bebe35deb64f5c7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Jun 2020 20:59:00
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 66A01C433CB; Tue,  9 Jun 2020 20:59:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 23808C433C6;
-        Tue,  9 Jun 2020 20:58:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 23808C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
-        mark.rutland@arm.com, robh+dt@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        jackp@codeaurora.org, bryan.odonoghue@linaro.org,
-        Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH 3/3] arm64: boot: dts: qcom: pm8150b: Add node for USB type C block
-Date:   Tue,  9 Jun 2020 13:58:51 -0700
-Message-Id: <20200609205851.30113-4-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609205851.30113-1-wcheng@codeaurora.org>
-References: <20200609205851.30113-1-wcheng@codeaurora.org>
+        id S1728130AbgFIU7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 16:59:30 -0400
+Received: from mga07.intel.com ([134.134.136.100]:62079 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727904AbgFIU72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 16:59:28 -0400
+IronPort-SDR: 5lDixr/p/vdxV4ZZj5a+19kyLXJID/gFnj438kBPkXHByo3Q8w5ok1TXJFuTIyPFeYrspL0Fg+
+ B+XgYjjxk5gw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 13:59:27 -0700
+IronPort-SDR: 0vHmxfcitgPq5aKmNiGaVNQijFphGRlPrPDnuFjSkrhPPNB25B1St8GMgMcxR6MjfyxsAjnbVY
+ zDskt/CGzVyw==
+X-IronPort-AV: E=Sophos;i="5.73,493,1583222400"; 
+   d="scan'208";a="314305536"
+Received: from kcaccard-mobl.amr.corp.intel.com (HELO kcaccard-mobl1.jf.intel.com) ([10.209.86.25])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 13:59:26 -0700
+Message-ID: <fe529a4479b90d609937c10efb27394feda384a4.camel@linux.intel.com>
+Subject: Re: [PATCH v2 9/9] module: Reorder functions
+From:   Kristen Carlson Accardi <kristen@linux.intel.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jessica Yu <jeyu@kernel.org>,
+        arjan@linux.intel.com, linux-kernel@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, rick.p.edgecombe@intel.com,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Tony Luck <tony.luck@intel.com>
+Date:   Tue, 09 Jun 2020 13:59:23 -0700
+In-Reply-To: <202006091331.A94BB0DA@keescook>
+References: <20200521165641.15940-1-kristen@linux.intel.com>
+         <20200521165641.15940-10-kristen@linux.intel.com>
+         <202005211415.5A1ECC638@keescook>
+         <9fdea0bc0008eccd6dfcad496b37930cf5bd364a.camel@linux.intel.com>
+         <202006091331.A94BB0DA@keescook>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PM8150B has a dedicated USB type C block, which can be used for type C
-orientation and role detection.  Create the reference node to this type C
-block for further use.
+On Tue, 2020-06-09 at 13:42 -0700, Kees Cook wrote:
+> On Tue, Jun 09, 2020 at 01:14:04PM -0700, Kristen Carlson Accardi
+> wrote:
+> > On Thu, 2020-05-21 at 14:33 -0700, Kees Cook wrote:
+> > > Oh! And I am reminded suddenly about CONFIG_FG_KASLR needing to
+> > > interact
+> > > correctly with CONFIG_LD_DEAD_CODE_DATA_ELIMINATION in that we do
+> > > NOT
+> > > want the sections to be collapsed at link time:
+> > 
+> > sorry - I'm a little confused and was wondering if you could
+> > clarify
+> > something. Does this mean you expect CONFIG_FG_KASLR=y and
+> > CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y to be a valid config? I am
+> > not
+> 
+> Yes, I don't see a reason they can't be used together.
+> 
+> > familiar with the option, but it seems like you are saying that it
+> > requires sections to be collapsed, in which case both of these
+> > options
+> > as yes would not be allowed? Should I actively prevent this in the
+> > Kconfig?
+> 
+> No, I'm saying that CONFIG_LD_DEAD_CODE_DATA_ELIMINATION does _not_
+> actually require that the sections be collapsed, but the Makefile
+> currently does this just to keep the resulting ELF "tidy". We want
+> that disabled (for the .text parts) in the case of CONFIG_FG_KASLR.
+> The
+> dead code elimination step, is, IIUC, done at link time before the
+> output sections are written.
+> 
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/pm8150b.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+Ah ok, that makes sense. Thanks.
 
-diff --git a/arch/arm64/boot/dts/qcom/pm8150b.dtsi b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-index 40b5d75..7364d6b 100644
---- a/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-@@ -22,6 +22,13 @@
- 			status = "disabled";
- 		};
- 
-+		qcom,typec@1500 {
-+			compatible = "qcom,pm8150b-usb-typec";
-+			reg = <0x1500>;
-+			interrupts =
-+				<0x2 0x15 0x5 IRQ_TYPE_EDGE_RISING>;
-+		};
-+
- 		adc@3100 {
- 			compatible = "qcom,spmi-adc5";
- 			reg = <0x3100>;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
 
