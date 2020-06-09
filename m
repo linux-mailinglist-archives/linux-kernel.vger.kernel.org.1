@@ -2,94 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD701F4680
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD401F4686
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731912AbgFISoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
+        id S1732361AbgFISpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728410AbgFISoL (ORCPT
+        with ESMTP id S1728400AbgFISpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 14:44:11 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB008C05BD1E;
-        Tue,  9 Jun 2020 11:44:09 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t16so8375542plo.7;
-        Tue, 09 Jun 2020 11:44:09 -0700 (PDT)
+        Tue, 9 Jun 2020 14:45:23 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD89C05BD1E;
+        Tue,  9 Jun 2020 11:45:22 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id h188so13111684lfd.7;
+        Tue, 09 Jun 2020 11:45:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uU2WSCc5fTUsgnysxzRNJxs8r/CkSU3tfyTjN091RxU=;
-        b=p9vwKPysRmyJpJidWcr/XZ5LPsj43gV5ylOJjIZy175anrIA0q0aXevn1w6L/tHw/2
-         CilRpz/A8s2Xgv66x+c5mJz9vnhs1M0AgkR2ZcF8llNB8ODgtv7yARYe8yqWxe67VcSl
-         eIXVmSioCEdDx/33i6p7MvUfrvtYy0/HDQhyuhDHJ58n7e+r5VBzSLiCXZSxfQG0tRcR
-         HhEnSrEO2ZuW9ibsFl4klHuJQsc7z0gSzT+Z3WRuhOoCOCAzEQ5MKiVF31zRcd6kdTFq
-         FfHFfprwiRoFz7vM50w46S4UN0PGMn6qorzg0xzKNinpDPZFMCCj1pEYjInhfYtc+Hwn
-         77PQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=i3slKnz68qRTQYqlqu1994FSzIGGWBTVPZGv8yJs3pw=;
+        b=ML6YQ4jJb/QFpD8tlkzOor4THQ5URMHQc6txTTzmLBappVOFu3Fa+OdWQIb/8j24Rk
+         dI13GLibsKN+E0P0rVKG37ENqC7EFwukfVYOAkYobmZtX5BvEUvtigeaVCvGPWTPbylf
+         pmppShPfaWtATx966MBrtIwEvz31pPz1XcqRVmQ0QUhpu+o0ihS3hasQHBlh+uK/dAa9
+         8EQ7ofGTbOt4AsKvqPnTfRo/5Pu5c+3E81abKRJUYIUV3zdy1E5v7WJMU4P1UUwFxpIW
+         YbJcBB+Gr11tkLp9eBIlJU0C/q3SObxrTJHxh+hKT5zwa/svQNplBwfQSsAAewTxgWIZ
+         Ktvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uU2WSCc5fTUsgnysxzRNJxs8r/CkSU3tfyTjN091RxU=;
-        b=dkMXabmKuCPIb5VuIkPE1uZtBPiMOxP210rDM8F8s8hLxvUZbOk62Sa83CztWrRRkZ
-         8Hk4HBs+e2a+KcjzfM+7iugzHmr2ZpXPNhQ4UDwNKCKZWkfwgOLICnFx6GBmR3ZFWP0H
-         8hyB+/j8ubJMRGnsnwClMb2dSPlwjU0KC9xsJhbNVMI9SZVEVP+ZtlxXZu6Kj71FaHWB
-         YCrkaTZPyd77J4XU7sx+sT8Lny0TW4duJTDYL0+A1MQejJRxp8F+UvymUhqRYz9fsay7
-         tObUhi0Lk1ewnzz8MgRMhCkTMt+ivLJHmdAIaO/rtc5gjGFmwhLSgh/DPhsyBsP3lv3K
-         6KwA==
-X-Gm-Message-State: AOAM532dEr6b2R3vs9OQWko320/Mr8cQ7j3lEJDMFTZHrKwKHhBfqG/F
-        3Iudu+X/8eqRnnyAGAMEemN0GMx7bAJxsxr8NVs=
-X-Google-Smtp-Source: ABdhPJx0RiX4lxJ3jtBScoX+hSRo7BJa7PbBAuUa09WsYVDwWWg5oyAqW2t/Zz4dsplunUK1BR4yGxVPksOs9RAEVnw=
-X-Received: by 2002:a17:90a:b30d:: with SMTP id d13mr6162606pjr.181.1591728249457;
- Tue, 09 Jun 2020 11:44:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=i3slKnz68qRTQYqlqu1994FSzIGGWBTVPZGv8yJs3pw=;
+        b=GYBQW5Sk1kGeIrIT/rbX1JtuTvDpHDas9qjhPxPO/B55QNBQ87t/EUM1mBCq1MHKP1
+         mlM9yU3kgGEs9CMxjnPDcITmapVQAsXj0UquLsSL9e0O2dgyXF/qZumX0xM6/GzICjiJ
+         0RQ1NkVAASw2JKA3wtY1ob4+iPr2FovPybHtOfC3893i+6+rokOtxl3MuqZLjRo56/n2
+         IrA47jpvHRt5u/HJlBSxpqfSgsb/3U5WKY5H7rfSLnPbQAPPJ1InTMooE3Y2uuCCBdVk
+         8KzFfvBiFtq3MVv89OHor3q0R/C4V6uE36WRZrsBB0434NXdCPClyPFeZc8cCroBPV3y
+         Fizg==
+X-Gm-Message-State: AOAM530s2ee1eQ3jcvOGH9w8PynctwKv2XSrOx+dkYoA6vk2HWVFGHrE
+        oALI725PW67YnL8bMDUARXA=
+X-Google-Smtp-Source: ABdhPJxwxkFABLiTt2KrTIcLwoOaAGbHv5L38QkoF51ACI0G15m/iNvaVa1oDM+8DJv+0XS/jcaWoQ==
+X-Received: by 2002:a19:6c4:: with SMTP id 187mr16117916lfg.1.1591728320923;
+        Tue, 09 Jun 2020 11:45:20 -0700 (PDT)
+Received: from grain.localdomain ([5.18.103.226])
+        by smtp.gmail.com with ESMTPSA id x23sm5189028lfe.32.2020.06.09.11.45.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 11:45:18 -0700 (PDT)
+Received: by grain.localdomain (Postfix, from userid 1000)
+        id 10BCB1A1EC1; Tue,  9 Jun 2020 21:45:17 +0300 (MSK)
+Date:   Tue, 9 Jun 2020 21:45:17 +0300
+From:   Cyrill Gorcunov <gorcunov@gmail.com>
+To:     Adrian Reber <areber@redhat.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        Dirk Petersen <dipeit@gmail.com>,
+        Christine Flood <chf@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Radostin Stoyanov <rstoyanov1@gmail.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
+        Eric Paris <eparis@parisplace.org>,
+        Jann Horn <jannh@google.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] capabilities: Introduce CAP_CHECKPOINT_RESTORE
+Message-ID: <20200609184517.GL134822@grain>
+References: <20200603162328.854164-1-areber@redhat.com>
+ <20200603162328.854164-2-areber@redhat.com>
 MIME-Version: 1.0
-References: <20200609175003.19793-1-nsaenzjulienne@suse.de> <20200609175003.19793-8-nsaenzjulienne@suse.de>
-In-Reply-To: <20200609175003.19793-8-nsaenzjulienne@suse.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 9 Jun 2020 21:43:57 +0300
-Message-ID: <CAHp75VcxjpMYgQV+Mv2_A6gT+qkG_Kihe4Ke+avJ6e6UNdZCnA@mail.gmail.com>
-Subject: Re: [PATCH v2 7/9] usb: host: pci-quirks: Bypass xHCI quirks for
- Raspberry Pi 4
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        USB <linux-usb@vger.kernel.org>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        tim.gover@raspberrypi.org, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200603162328.854164-2-areber@redhat.com>
+User-Agent: Mutt/1.14.0 (2020-05-02)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 9, 2020 at 8:50 PM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> The board doesn't need the quirks to be run, and takes care of its own
-> initialization trough a reset controller device. So let's bypass them.
-
-through
-
+On Wed, Jun 03, 2020 at 06:23:26PM +0200, Adrian Reber wrote:
+> This patch introduces CAP_CHECKPOINT_RESTORE, a new capability facilitating
+> checkpoint/restore for non-root users.
+> 
+> Over the last years, The CRIU (Checkpoint/Restore In Userspace) team has been
+> asked numerous times if it is possible to checkpoint/restore a process as
+> non-root. The answer usually was: 'almost'.
+> 
+> The main blocker to restore a process as non-root was to control the PID of the
+> restored process. This feature available via the clone3 system call, or via
+> /proc/sys/kernel/ns_last_pid is unfortunately guarded by CAP_SYS_ADMIN.
 ...
+> 
+> diff --git a/fs/proc/base.c b/fs/proc/base.c
+> index d86c0afc8a85..ce02f3a4b2d7 100644
+> --- a/fs/proc/base.c
+> +++ b/fs/proc/base.c
+> @@ -2189,16 +2189,16 @@ struct map_files_info {
+>  };
+>  
+>  /*
+> - * Only allow CAP_SYS_ADMIN to follow the links, due to concerns about how the
+> - * symlinks may be used to bypass permissions on ancestor directories in the
+> - * path to the file in question.
+> + * Only allow CAP_SYS_ADMIN and CAP_CHECKPOINT_RESTORE to follow the links, due
+> + * to concerns about how the symlinks may be used to bypass permissions on
+> + * ancestor directories in the path to the file in question.
+>   */
+>  static const char *
+>  proc_map_files_get_link(struct dentry *dentry,
+>  			struct inode *inode,
+>  		        struct delayed_call *done)
+>  {
+> -	if (!capable(CAP_SYS_ADMIN))
+> +	if (!(capable(CAP_SYS_ADMIN) || capable(CAP_CHECKPOINT_RESTORE)))
+>  		return ERR_PTR(-EPERM);
 
-> +       if (pdev->vendor == PCI_VENDOR_ID_VIA && pdev->device == 0x3483 &&
-> +           of_device_is_compatible(of_get_parent(pdev->bus->dev.of_node),
-> +                                   "brcm,bcm2711-pcie"))
-> +               return;
-
-No put?
-
--- 
-With Best Regards,
-Andy Shevchenko
+First of all -- sorry for late reply. You know, looking into this code more
+I think this CAP_SYS_ADMIN is simply wrong: for example I can't even fetch
+links for /proc/self/map_files. Still /proc/$pid/maps (which as well points
+to the files opened) test for ptrace-read permission. I think we need
+ptrace-may-attach test here instead of these capabilities (if I can attach
+to a process I can read any data needed, including the content of the
+mapped files, if only I'm not missing something obvious).
