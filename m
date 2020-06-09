@@ -2,319 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3F01F39D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 13:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDC21F39DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 13:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729048AbgFILfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 07:35:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:40878 "EHLO foss.arm.com"
+        id S1729054AbgFILh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 07:37:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44070 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728051AbgFILfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 07:35:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3CEA1FB;
-        Tue,  9 Jun 2020 04:35:50 -0700 (PDT)
-Received: from [10.163.79.104] (unknown [10.163.79.104])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D865C3F66F;
-        Tue,  9 Jun 2020 04:35:47 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH V2] mm/vmstat: Add events for THP migration without split
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        hughd@google.com, daniel.m.jordan@oracle.com,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-References: <1591243245-23052-1-git-send-email-anshuman.khandual@arm.com>
- <20200604113421.GU19604@bombadil.infradead.org>
- <CBF71911-6BB7-4AA7-AC0F-95AADBB45569@nvidia.com>
- <20200604163657.GV19604@bombadil.infradead.org>
- <2735DD7E-0DBF-428B-AAD8-FC6DAAA9CB1E@nvidia.com>
- <9e4acb98-c9fd-a998-03b3-38947cf61bd9@arm.com>
- <890AA27D-29BA-45A9-B868-5533645D73D5@nvidia.com>
-Message-ID: <6401ee03-e6b3-c8f5-58b5-4f615c1b7bfc@arm.com>
-Date:   Tue, 9 Jun 2020 17:05:45 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726915AbgFILhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 07:37:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id EFE53AAC6;
+        Tue,  9 Jun 2020 11:37:55 +0000 (UTC)
+Date:   Tue, 9 Jun 2020 13:37:51 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Barrier before pushing desc_ring tail: was [PATCH v2 2/3] printk:
+ add lockless buffer
+Message-ID: <20200609113751.GD23752@linux-b0ei>
+References: <20200501094010.17694-1-john.ogness@linutronix.de>
+ <20200501094010.17694-3-john.ogness@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <890AA27D-29BA-45A9-B868-5533645D73D5@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200501094010.17694-3-john.ogness@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/05/2020 07:54 PM, Zi Yan wrote:
-> On 4 Jun 2020, at 23:35, Anshuman Khandual wrote:
+On Fri 2020-05-01 11:46:09, John Ogness wrote:
+> Introduce a multi-reader multi-writer lockless ringbuffer for storing
+> the kernel log messages. Readers and writers may use their API from
+> any context (including scheduler and NMI). This ringbuffer will make
+> it possible to decouple printk() callers from any context, locking,
+> or console constraints. It also makes it possible for readers to have
+> full access to the ringbuffer contents at any time and context (for
+> example from any panic situation).
 > 
->> On 06/04/2020 10:19 PM, Zi Yan wrote:
->>> On 4 Jun 2020, at 12:36, Matthew Wilcox wrote:
->>>
->>>> On Thu, Jun 04, 2020 at 09:51:10AM -0400, Zi Yan wrote:
->>>>> On 4 Jun 2020, at 7:34, Matthew Wilcox wrote:
->>>>>> On Thu, Jun 04, 2020 at 09:30:45AM +0530, Anshuman Khandual wrote:
->>>>>>> +Quantifying Migration
->>>>>>> +=====================
->>>>>>> +Following events can be used to quantify page migration.
->>>>>>> +
->>>>>>> +- PGMIGRATE_SUCCESS
->>>>>>> +- PGMIGRATE_FAIL
->>>>>>> +- THP_MIGRATION_SUCCESS
->>>>>>> +- THP_MIGRATION_FAILURE
->>>>>>> +
->>>>>>> +THP_MIGRATION_FAILURE in particular represents an event when a THP could not be
->>>>>>> +migrated as a single entity following an allocation failure and ended up getting
->>>>>>> +split into constituent normal pages before being retried. This event, along with
->>>>>>> +PGMIGRATE_SUCCESS and PGMIGRATE_FAIL will help in quantifying and analyzing THP
->>>>>>> +migration events including both success and failure cases.
->>>>>>
->>>>>> First, I'd suggest running this paragraph through 'fmt'.  That way you
->>>>>> don't have to care about line lengths.
->>>>>>
->>>>>> Second, this paragraph doesn't really explain what I need to know to
->>>>>> understand the meaning of these numbers.  When Linux attempts to migrate
->>>>>> a THP, one of three things can happen:
->>>>>>>>>>>>  - It is migrated as a single THP
->>>>>>  - It is migrated, but had to be split
->>>>>>  - Migration fails
->>>>>>
->>>>>> How do I turn these four numbers into an understanding of how often each
->>>>>> of those three situations happen?  And why do we need four numbers to
->>>>>> report three situations?
->>>>>>
->>>>>> Or is there something else that can happen?  If so, I'd like that explained
->>>>>> here too ;-)
->>>>>
->>>>> PGMIGRATE_SUCCESS and PGMIGRATE_FAIL record a combination of different events,
->>>>> so it is not easy to interpret them. Let me try to explain them.
->>>>
->>>> Thanks!  Very helpful explanation.
->>>>
->>>>> 1. migrating only base pages: PGMIGRATE_SUCCESS and PGMIGRATE_FAIL just mean
->>>>> these base pages are migrated and fail to migrate respectively.
->>>>> THP_MIGRATION_SUCCESS and THP_MIGRATION_FAILURE should be 0 in this case.
->>>>> Simple.
->>>>>
->>>>> 2. migrating only THPs:
->>>>> 	- PGMIGRATE_SUCCESS means THPs that are migrated and base pages
->>>>> 	(from the split of THPs) that are migrated,
->>>>>
->>>>> 	- PGMIGRATE_FAIL means THPs that fail to migrate and base pages that fail to migrated.
->>>>>
->>>>> 	- THP_MIGRATION_SUCCESS means THPs that are migrated.
->>>>>
->>>>> 	- THP_MIGRATION_FAILURE means THPs that are split.
->>>>>
->>>>> So PGMIGRATE_SUCCESS - THP_MIGRATION_SUCCESS means the number of migrated base pages,
->>>>> which are from the split of THPs.
->>>>
->>>> Are you sure about that?  If I split a THP and each of those subpages
->>>> migrates, won't I then see PGMIGRATE_SUCCESS increase by 512?
->>>
->>> That is what I mean. I guess my words did not work. I should have used subpages.
->>>
->>>>
->>>>> When it comes to analyze failed migration, PGMIGRATE_FAIL - THP_MIGRATION_FAILURE
->>>>> means the number of pages that are failed to migrate, but we cannot tell how many
->>>>> are base pages and how many are THPs.
->>>>>
->>>>> 3. migrating base pages and THP:
->>>>>
->>>>> The math should be very similar to the second case, except that
->>>>> a) from PGMIGRATE_SUCCESS - THP_MIGRATION_SUCCESS, we cannot tell how many are pages begin
->>>>> as base pages and how many are pages begin as THPs but become base pages after split;
->>>>> b) from PGMIGRATE_FAIL - THP_MIGRATION_FAILURE, an additional case,
->>>>> base pages that begin as base pages fail to migrate, is mixed into the number and we
->>>>> cannot tell three cases apart.
->>>>
->>>> So why don't we just expose PGMIGRATE_SPLIT?  That would be defined as
->>>> the number of times we succeeded in migrating a THP but had to split it
->>>> to succeed.
->>>
->>> It might need extra code to get that number. Currently, the subpages from split
->>> THPs are appended to the end of the original page list, so we might need a separate
->>> page list for these subpages to count PGMIGRATE_SPLIT. Also what if some of the
->>> subpages fail to migrate? Do we increase PGMIGRATE_SPLIT or not?
->>
->> Thanks Zi, for such a detailed explanation. Ideally, we should separate THP
->> migration from base page migration in terms of statistics. PGMIGRATE_SUCCESS
->> and PGMIGRATE_FAIL should continue to track statistics when migration starts
->> with base pages. But for THP, we should track the following events.
-> 
-> You mean PGMIGRATE_SUCCESS and PGMIGRATE_FAIL will not track the number of migrated subpages
-> from split THPs? Will it cause userspace issues since their semantics are changed?
+> --- /dev/null
+> +++ b/kernel/printk/printk_ringbuffer.c
+> +/*
+> + * Advance the desc ring tail. This function advances the tail by one
+> + * descriptor, thus invalidating the oldest descriptor. Before advancing
+> + * the tail, the tail descriptor is made reusable and all data blocks up to
+> + * and including the descriptor's data block are invalidated (i.e. the data
+> + * ring tail is pushed past the data block of the descriptor being made
+> + * reusable).
+> + */
+> +static bool desc_push_tail(struct printk_ringbuffer *rb,
+> +			   unsigned long tail_id)
+> +{
+> +	struct prb_desc_ring *desc_ring = &rb->desc_ring;
+> +	enum desc_state d_state;
+> +	struct prb_desc desc;
+> +
+> +	d_state = desc_read(desc_ring, tail_id, &desc);
+> +
+> +	switch (d_state) {
+> +	case desc_miss:
+> +		/*
+> +		 * If the ID is exactly 1 wrap behind the expected, it is
+> +		 * in the process of being reserved by another writer and
+> +		 * must be considered reserved.
+> +		 */
+> +		if (DESC_ID(atomic_long_read(&desc.state_var)) ==
+> +		    DESC_ID_PREV_WRAP(desc_ring, tail_id)) {
+> +			return false;
+> +		}
+> +
+> +		/*
+> +		 * The ID has changed. Another writer must have pushed the
+> +		 * tail and recycled the descriptor already. Success is
+> +		 * returned because the caller is only interested in the
+> +		 * specified tail being pushed, which it was.
+> +		 */
+> +		return true;
+> +	case desc_reserved:
+> +		return false;
+> +	case desc_committed:
+> +		desc_make_reusable(desc_ring, tail_id);
+> +		break;
+> +	case desc_reusable:
+> +		break;
+> +	}
+> +
+> +	/*
+> +	 * Data blocks must be invalidated before their associated
+> +	 * descriptor can be made available for recycling. Invalidating
+> +	 * them later is not possible because there is no way to trust
+> +	 * data blocks once their associated descriptor is gone.
+> +	 */
+> +
+> +	if (!data_push_tail(rb, &rb->text_data_ring, desc.text_blk_lpos.next))
+> +		return false;
+> +	if (!data_push_tail(rb, &rb->dict_data_ring, desc.dict_blk_lpos.next))
+> +		return false;
+> +
+> +	/*
+> +	 * Check the next descriptor after @tail_id before pushing the tail
+> +	 * to it because the tail must always be in a committed or reusable
+> +	 * state. The implementation of prb_first_seq() relies on this.
+> +	 *
+> +	 * A successful read implies that the next descriptor is less than or
+> +	 * equal to @head_id so there is no risk of pushing the tail past the
+> +	 * head.
+> +	 */
+> +	d_state = desc_read(desc_ring, DESC_ID(tail_id + 1),
+> +			    &desc); /* LMM(desc_push_tail:A) */
+> +	if (d_state == desc_committed || d_state == desc_reusable) {
+> +		/*
+> +		 * Any CPU that loads the new tail ID, must see that the
+> +		 * descriptor at @tail_id is in the reusable state. See the
+> +		 * read memory barrier part of desc_reserve:D for details.
+> +		 */
 
-Yeah, basic idea is to carve out all THP migration related statistics from
-the normal page migration. Not sure if that might cause any issue for user
-space as you have mentioned. Does /proc/vmstat indicate some sort of an ABI
-whose semantics can not really change ? Some more opinions here from others
-would be helpful.
+I was quite confused by the above comment. Does it mean that we need
+a barrier here? Or does it explain why the cmpxchg has its own
+LMM marker?
 
-The current situation is definitely bit problematic where PGMIGRATE_SUCCESS
-increments (+1) both for normal and successful THP migration. Same situation
-for PGMIGRATE_FAILURE as well. Hence, there are two clear choices available.
+I think that we actually need a full barrier here to make sure that
+all CPUs see the changes made by data_push_tail() before we
+allow to rewrite the descriptor. The changes in data_push_tail() might
+be done on different CPUs.
 
-1. THP and normal page migration stats are separate and mutually exclusive
+It is similar like the full barrier in data_push_tail() before changing
+data_ring->tail_lpos.
 
-OR
+Best Regards,
+Petr
 
-2. THP migration has specific counters but normal page migration counters
-   still account for everything in THP migration in terms of normal pages
-
-But IIUC, either way the current PGMIGRATE_SUCCESS or PGMIGRATE_FAIL stats
-will change for the user as visible from /proc/vmstat.
-
-> 
->>
->> 1. THP_MIGRATION_SUCCESS 	- THP migration is successful, without split
->> 2. THP_MIGRATION_FAILURE 	- THP could neither be migrated, nor be split
-> 
-> They make sense to me.> 
->> 3. THP_MIGRATION_SPLIT_SUCCESS  - THP got split and all sub pages migrated
->> 4. THP_MIGRATION_SPLIT_FAILURE  - THP got split but all sub pages could not be migrated
->>
->> THP_MIGRATION_SPLIT_FAILURE could either increment once for a single THP or
->> number of subpages that did not get migrated after split. As you mentioned,
->> this will need some extra code in the core migration. Nonetheless, if these
->> new events look good, will be happy to make required changes.
-> 
-> Maybe THP_MIGRATION_SPLIT would be simpler? My concern is that whether we need such
-
-Also, it will not require a new migration queue tracking the split THP sub pages.
-
-> detailed information or not. Maybe trace points would be good enough for 3 and 4.
-
-But without a separate queue for split THP subpages, will it be possible to track
-(3) and (4) through trace events ? Just wondering, where are the intercept points.
-
-> But if you think it is useful to you, feel free to implement them.
-
-Original idea was that, all stats here should give high level view but new upcoming
-trace events should help in details like which particular subpages could not be
-migrated resulting in a THP_MIGRATION_SPLIT_FAILURE increment etc.
-
-> 
-> BTW, in terms of stats tracking, what do you think of my patch below? I am trying to
-> aggregate all stats counting in one place. Feel free to use it if you think it works
-> for you.
-
-Assume that, I could take the liberty to add your 'Signed-off-by' in case end up
-using this code chunk below. This seems to be going with option (2) as mentioned
-before.
-
-> 
-> 
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 7bfd0962149e..0f3c60470489 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1429,9 +1429,14 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
->                 enum migrate_mode mode, int reason)
->  {
->         int retry = 1;
-> +       int thp_retry = 1;
->         int nr_failed = 0;
-> +       int nr_thp_failed = 0;
-> +       int nr_thp_split = 0;
->         int nr_succeeded = 0;
-> +       int nr_thp_succeeded = 0;
->         int pass = 0;
-> +       bool is_thp = false;
->         struct page *page;
->         struct page *page2;
->         int swapwrite = current->flags & PF_SWAPWRITE;
-> @@ -1440,11 +1445,13 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
->         if (!swapwrite)
->                 current->flags |= PF_SWAPWRITE;
-> 
-> -       for(pass = 0; pass < 10 && retry; pass++) {
-> +       for(pass = 0; pass < 10 && (retry || thp_retry); pass++) {
-
-'thp_retry' check might not be necessary here as 'retry' already
-contains 'thp_retry'.
-
->                 retry = 0;
-> +               thp_retry = 0;
-> 
->                 list_for_each_entry_safe(page, page2, from, lru) {
->  retry:
-> +                       is_thp = PageTransHuge(page);
->                         cond_resched();
-> 
->                         if (PageHuge(page))
-> @@ -1475,15 +1482,20 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
->                                         unlock_page(page);
->                                         if (!rc) {
->                                                 list_safe_reset_next(page, page2, lru);
-> +                                               nr_thp_split++;
->                                                 goto retry;
->                                         }
->                                 }
-
-Check 'if_thp' and increment 'nr_thp_failed' like 'default' case and
-also increment nr_failed by (1 << order) for the THP being migrated.
-
-
->                                 nr_failed++;
->                                 goto out;
->                         case -EAGAIN:
-> +                               if (is_thp)
-> +                                       thp_retry++;
->                                 retry++;
->                                 break;
->                         case MIGRATEPAGE_SUCCESS:
-> +                               if (is_thp)
-> +                                       nr_thp_succeeded++;
-
-Increment nr_succeeded by (1 << order) for the THP being migrated.
-
->                                 nr_succeeded++;
->                                 break;
->                         default:
-> @@ -1493,18 +1505,27 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
->                                  * removed from migration page list and not
->                                  * retried in the next outer loop.
->                                  */
-> +                               if (is_thp)
-> +                                       nr_thp_failed++;
-
-Increment nr_failed by (1 << order) for the THP being migrated.
-
->                                 nr_failed++;
->                                 break;
->                         }
->                 }
->         }
->         nr_failed += retry;
-> +       nr_thp_failed += thp_retry;
->         rc = nr_failed;
-
-Right, nr_failed already contains nr_thp_failed. Hence need not change.
-
->         if (nr_succeeded)
->                 count_vm_events(PGMIGRATE_SUCCESS, nr_succeeded);
->         if (nr_failed)
->                 count_vm_events(PGMIGRATE_FAIL, nr_failed);
-> +       if (nr_thp_succeeded)
-> +               count_vm_events(THP_MIGRATION_SUCCESS, nr_thp_succeeded);
-> +       if (nr_thp_failed)
-> +               count_vm_events(THP_MIGRATION_FAIL, nr_thp_failed);
-> +       if (nr_thp_split)
-> +               count_vm_events(THP_MIGRATION_SPLIT, nr_thp_split);
->         trace_mm_migrate_pages(nr_succeeded, nr_failed, mode, reason);
-
-This existing trace event should add stats for THP migration as well.
-
-> 
->         if (!swapwrite)
-> 
-
-Regardless, this change set (may be with some more modifications), makes sense if
-we decide to go with option (2), where existing normal page migration stats will
-cover THP related stats as well. But it will be really great, if we get some more
-opinions on this. Meanwhile, will continue looking into it further.
-
-- Anshuman
+> +		atomic_long_cmpxchg_relaxed(&desc_ring->tail_id, tail_id,
+> +			DESC_ID(tail_id + 1)); /* LMM(desc_push_tail:B) */
+> +	} else {
+> +		/*
+> +		 * Guarantee the last state load from desc_read() is before
+> +		 * reloading @tail_id in order to see a new tail ID in the
+> +		 * case that the descriptor has been recycled. This pairs
+> +		 * with desc_reserve:D.
+> +		 *
+> +		 * Memory barrier involvement:
+> +		 *
+> +		 * If desc_push_tail:A reads from desc_reserve:G, then
+> +		 * desc_push_tail:D reads from desc_push_tail:B.
+> +		 *
+> +		 * Relies on:
+> +		 *
+> +		 * MB from desc_push_tail:B to desc_reserve:G
+> +		 *    matching
+> +		 * RMB from desc_push_tail:A to desc_push_tail:D
+> +		 *
+> +		 * Note: desc_push_tail:B and desc_reserve:G can be different
+> +		 *       CPUs. However, the desc_reserve:G CPU (which performs
+> +		 *       the full memory barrier) must have previously seen
+> +		 *       desc_push_tail:B.
+> +		 */
+> +		smp_rmb(); /* LMM(desc_push_tail:C) */
+> +
+> +		/*
+> +		 * Re-check the tail ID. The descriptor following @tail_id is
+> +		 * not in an allowed tail state. But if the tail has since
+> +		 * been moved by another task, then it does not matter.
+> +		 */
+> +		if (atomic_long_read(&desc_ring->tail_id) ==
+> +					tail_id) { /* LMM(desc_push_tail:D) */
+> +			return false;
+> +		}
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +/* Reserve a new descriptor, invalidating the oldest if necessary. */
+> +static bool desc_reserve(struct printk_ringbuffer *rb, unsigned long *id_out)
+> +{
+> +	struct prb_desc_ring *desc_ring = &rb->desc_ring;
+> +	unsigned long prev_state_val;
+> +	unsigned long id_prev_wrap;
+> +	struct prb_desc *desc;
+> +	unsigned long head_id;
+> +	unsigned long id;
+> +
+> +	head_id = atomic_long_read(&desc_ring->head_id
+> +						); /* LMM(desc_reserve:A) */
+> +
+> +	do {
+> +		desc = to_desc(desc_ring, head_id);
+> +
+> +		id = DESC_ID(head_id + 1);
+> +		id_prev_wrap = DESC_ID_PREV_WRAP(desc_ring, id);
+> +
+> +		/*
+> +		 * Guarantee the head ID is read before reading the tail ID.
+> +		 * Since the tail ID is updated before the head ID, this
+> +		 * guarantees that @id_prev_wrap is never ahead of the tail
+> +		 * ID. This pairs with desc_reserve:D.
+> +		 *
+> +		 * Memory barrier involvement:
+> +		 *
+> +		 * If desc_reserve:A reads from desc_reserve:E, then
+> +		 * desc_reserve:C reads from desc_push_tail:B.
+> +		 *
+> +		 * Relies on:
+> +		 *
+> +		 * MB from desc_push_tail:B to desc_reserve:E
+> +		 *    matching
+> +		 * RMB from desc_reserve:A to desc_reserve:C
+> +		 *
+> +		 * Note: desc_push_tail:B and desc_reserve:E can be different
+> +		 *       CPUs. However, the desc_reserve:E CPU (which performs
+> +		 *       the full memory barrier) must have previously seen
+> +		 *       desc_push_tail:B.
+> +		 */
+> +		smp_rmb(); /* LMM(desc_reserve:B) */
+> +
+> +		if (id_prev_wrap == atomic_long_read(&desc_ring->tail_id
+> +						)) { /* LMM(desc_reserve:C) */
+> +			/*
+> +			 * Make space for the new descriptor by
+> +			 * advancing the tail.
+> +			 */
+> +			if (!desc_push_tail(rb, id_prev_wrap))
+> +				return false;
+> +		}
+> +
+> +		/*
+> +		 * Guarantee the tail ID is read before validating the
+> +		 * recycled descriptor state. A read memory barrier is
+> +		 * sufficient for this. This pairs with data_push_tail:C.
+> +		 *
+> +		 * Memory barrier involvement:
+> +		 *
+> +		 * If desc_reserve:C reads from desc_push_tail:B, then
+> +		 * desc_reserve:F reads from desc_make_reusable:A.
+> +		 *
+> +		 * Relies on:
+> +		 *
+> +		 * MB from desc_make_reusable:A to desc_push_tail:B
+> +		 *    matching
+> +		 * RMB from desc_reserve:C to desc_reserve:F
+> +		 *
+> +		 * Note: desc_make_reusable:A, desc_push_tail:B, and
+> +		 *       data_push_tail:C can all be different CPUs. However,
+> +		 *       the desc_push_tail:B CPU must have previously seen
+> +		 *       data_push_tail:D and the data_push_tail:D CPU (which
+> +		 *       performs the full memory barrier) must have
+> +		 *       previously seen desc_make_reusable:A.
+> +		 *
+> +		 * Guarantee any data ring tail changes are stored before
+> +		 * recycling the descriptor. Data ring tail changes can happen
+> +		 * via desc_push_tail()->data_push_tail(). A full memory
+> +		 * barrier is needed since another task may have pushed the
+> +		 * data ring tails. This pairs with data_push_tail:A.
+> +		 *
+> +		 * Guarantee a new tail ID is stored before recycling the
+> +		 * descriptor. A full memory barrier is needed since another
+> +		 * task may have pushed the tail ID. This pairs with
+> +		 * desc_push_tail:C and prb_first_seq:C.
+> +		 *
+> +		 * Guarantee the tail ID is stored before storing the head ID.
+> +		 * This pairs with desc_reserve:B.
+> +		 */
+> +		smp_mb(); /* LMM(desc_reserve:D) */
+> +
+> +	} while (!atomic_long_try_cmpxchg_relaxed(&desc_ring->head_id,
+> +				&head_id, id)); /* LMM(desc_reserve:E) */
+> +
+> +	desc = to_desc(desc_ring, id);
+> +
+> +	/*
+> +	 * If the descriptor has been recycled, verify the old state val.
+> +	 * See "ABA Issues" about why this verification is performed.
+> +	 */
+> +	prev_state_val = atomic_long_read(&desc->state_var
+> +						); /* LMM(desc_reserve:F) */
+> +	if (prev_state_val && prev_state_val != (id_prev_wrap |
+> +						 DESC_COMMITTED_MASK |
+> +						 DESC_REUSE_MASK)) {
+> +		WARN_ON_ONCE(1);
+> +		return false;
+> +	}
+> +
+> +	/*
+> +	 * Assign the descriptor a new ID and set its state to reserved.
+> +	 * See "ABA Issues" about why cmpxchg() instead of set() is used.
+> +	 */
+> +	if (!atomic_long_try_cmpxchg_relaxed(&desc->state_var,
+> +			&prev_state_val, id | 0)) { /* LMM(desc_reserve:G) */
+> +		WARN_ON_ONCE(1);
+> +		return false;
+> +	}
+> +
+> +	/*
+> +	 * Guarantee the new descriptor ID and state is stored before making
+> +	 * any other changes. This pairs with desc_read:D.
+> +	 */
+> +	smp_wmb(); /* LMM(desc_reserve:H) */
+> +
+> +	/* Now data in @desc can be modified: LMM(desc_reserve:I) */
+> +
+> +	*id_out = id;
+> +	return true;
+> +}
