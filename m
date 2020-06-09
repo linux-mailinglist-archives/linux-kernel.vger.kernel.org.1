@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AE41F459D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F8C1F4603
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732616AbgFIRuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:50:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36192 "EHLO mail.kernel.org"
+        id S2389053AbgFISW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:22:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732559AbgFIRtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:49:45 -0400
+        id S1732184AbgFIRry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:47:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD7CA20814;
-        Tue,  9 Jun 2020 17:49:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB786207ED;
+        Tue,  9 Jun 2020 17:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724985;
-        bh=FqvRd8mOZagwPH3YzoQJ04VsMlcPF40sFUnUv+c4Hg4=;
+        s=default; t=1591724874;
+        bh=HYg/oK6dZ3KBNE/5RfEG/bWIhWx8JyDZPz/txNutwuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fzPsVaswd8gr7RW1a0Td864t+ga+N8vS2IwQh3Pf2rQFYx8Kn9ZrBvtaUPsEJAwZv
-         CVZPcJOaFAa/68SGgncDrb+RGJ3IJMlmN0Jurq6GiAjPqevblKXll7cPbFzCyco9e3
-         OPnXAuEXhC2C9HHwKcuSlk3REAJ8hrcngTNqSV1c=
+        b=VNjCMRQgYVcSra34dQZNwXi9vB7ni5dUiAHPb8eJ2wYmfn5HX4Bj8JyRdGZxXGz9Q
+         5YjN7zgpkkUHFzhn1aK7ryL0Fgdy2xqqLdSKyKHjDFlyUZTADmSd+3/8UpNN7kJz/C
+         8TiTgziv3sEUfM/UPVuLivB/3HBZx715daAJFZ34=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?David=20Bala=C5=BEic?= <xerces9@gmail.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 06/46] pppoe: only process PADT targeted at local interfaces
-Date:   Tue,  9 Jun 2020 19:44:22 +0200
-Message-Id: <20200609174023.446194633@linuxfoundation.org>
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>, Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.9 17/42] mmc: fix compilation of user API
+Date:   Tue,  9 Jun 2020 19:44:23 +0200
+Message-Id: <20200609174017.345870933@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
-References: <20200609174022.938987501@linuxfoundation.org>
+In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
+References: <20200609174015.379493548@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guillaume Nault <gnault@redhat.com>
+From: Jérôme Pouiller <jerome.pouiller@silabs.com>
 
-We don't want to disconnect a session because of a stray PADT arriving
-while the interface is in promiscuous mode.
-Furthermore, multicast and broadcast packets make no sense here, so
-only PACKET_HOST is accepted.
+commit 83fc5dd57f86c3ec7d6d22565a6ff6c948853b64 upstream.
 
-Reported-by: David Balažic <xerces9@gmail.com>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Guillaume Nault <gnault@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The definitions of MMC_IOC_CMD  and of MMC_IOC_MULTI_CMD rely on
+MMC_BLOCK_MAJOR:
+
+    #define MMC_IOC_CMD       _IOWR(MMC_BLOCK_MAJOR, 0, struct mmc_ioc_cmd)
+    #define MMC_IOC_MULTI_CMD _IOWR(MMC_BLOCK_MAJOR, 1, struct mmc_ioc_multi_cmd)
+
+However, MMC_BLOCK_MAJOR is defined in linux/major.h and
+linux/mmc/ioctl.h did not include it.
+
+Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200511161902.191405-1-Jerome.Pouiller@silabs.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ppp/pppoe.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/uapi/linux/mmc/ioctl.h |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
-index fa7121dcab67..202a0f415e1e 100644
---- a/drivers/net/ppp/pppoe.c
-+++ b/drivers/net/ppp/pppoe.c
-@@ -497,6 +497,9 @@ static int pppoe_disc_rcv(struct sk_buff *skb, struct net_device *dev,
- 	if (!skb)
- 		goto out;
+--- a/include/uapi/linux/mmc/ioctl.h
++++ b/include/uapi/linux/mmc/ioctl.h
+@@ -2,6 +2,7 @@
+ #define LINUX_MMC_IOCTL_H
  
-+	if (skb->pkt_type != PACKET_HOST)
-+		goto abort;
-+
- 	if (!pskb_may_pull(skb, sizeof(struct pppoe_hdr)))
- 		goto abort;
+ #include <linux/types.h>
++#include <linux/major.h>
  
--- 
-2.25.1
-
+ struct mmc_ioc_cmd {
+ 	/* Implies direction of data.  true = write, false = read */
 
 
