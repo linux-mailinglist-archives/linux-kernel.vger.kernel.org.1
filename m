@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41021F461E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8C91F45F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389122AbgFISYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:24:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57916 "EHLO mail.kernel.org"
+        id S1732276AbgFIRsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732000AbgFIRrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:47:02 -0400
+        id S1732231AbgFIRsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:48:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEF5820801;
-        Tue,  9 Jun 2020 17:47:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42F22207F9;
+        Tue,  9 Jun 2020 17:48:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724821;
-        bh=ikB4s8noR1CxF9dx3pGgDKnk55QCMNe+k4/d1n8xh8U=;
+        s=default; t=1591724892;
+        bh=x19lvSIY3MsUHlq2q1XnZbGMzr214Q+5YpQTNA0yQvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gEVxAzsqhbi2yjvqAgk0ADCeeDPTx6KecPuyf7wjCG6QXURUS9jB/FhhwyEYTKZpL
-         O6zF5ndhi3YNibzLXSKpbZVWn+AGV6Malfm8jmyNj/k7tsHaK0ijNHiwOLzLsVfNjr
-         Mihq1N6uyXtdNld4kGx6hhpSO/+TyMlEMq795r+k=
+        b=ndMGd7yexUlPOC+5HfbnRcYnLivXeipV0rOkGGUqlYrbu6DNviKQBNaOHU4P/+/dg
+         hqm7xAj0q9c4oGtCdgUaU/D7RYT99KbBplh2dSRTpO4I2IvIvjgGnjje8RrvC2Jzl1
+         DKQ2M0R7YPW1DLypmvGLYDE8GNIII5nn9jjJbX/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Gross <mgross@linux.intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH 4.4 30/36] x86/cpu: Add a steppings field to struct x86_cpu_id
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 24/42] net: usb: qmi_wwan: add Telit LE910C1-EUX composition
 Date:   Tue,  9 Jun 2020 19:44:30 +0200
-Message-Id: <20200609173935.338970788@linuxfoundation.org>
+Message-Id: <20200609174018.116319808@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
-References: <20200609173933.288044334@linuxfoundation.org>
+In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
+References: <20200609174015.379493548@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,118 +44,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Gross <mgross@linux.intel.com>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-commit e9d7144597b10ff13ff2264c059f7d4a7fbc89ac upstream
+[ Upstream commit 591612aa578cd7148b7b9d74869ef40118978389 ]
 
-Intel uses the same family/model for several CPUs. Sometimes the
-stepping must be checked to tell them apart.
+Add support for Telit LE910C1-EUX composition
 
-On x86 there can be at most 16 steppings. Add a steppings bitmask to
-x86_cpu_id and a X86_MATCH_VENDOR_FAMILY_MODEL_STEPPING_FEATURE macro
-and support for matching against family/model/stepping.
-
- [ bp: Massage.
-   tglx: Lightweight variant for backporting ]
-
-Signed-off-by: Mark Gross <mgross@linux.intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Josh Poimboeuf <jpoimboe@redhat.com>
+0x1031: tty, tty, tty, rmnet
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Acked-by: Bjørn Mork <bjorn@mork.no>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/cpu_device_id.h |   27 +++++++++++++++++++++++++++
- arch/x86/kernel/cpu/match.c          |    7 ++++++-
- include/linux/mod_devicetable.h      |    6 ++++++
- 3 files changed, 39 insertions(+), 1 deletion(-)
+ drivers/net/usb/qmi_wwan.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/include/asm/cpu_device_id.h
-+++ b/arch/x86/include/asm/cpu_device_id.h
-@@ -8,6 +8,33 @@
- 
- #include <linux/mod_devicetable.h>
- 
-+#define X86_STEPPINGS(mins, maxs)    GENMASK(maxs, mins)
-+
-+/**
-+ * X86_MATCH_VENDOR_FAM_MODEL_STEPPINGS_FEATURE - Base macro for CPU matching
-+ * @_vendor:	The vendor name, e.g. INTEL, AMD, HYGON, ..., ANY
-+ *		The name is expanded to X86_VENDOR_@_vendor
-+ * @_family:	The family number or X86_FAMILY_ANY
-+ * @_model:	The model number, model constant or X86_MODEL_ANY
-+ * @_steppings:	Bitmask for steppings, stepping constant or X86_STEPPING_ANY
-+ * @_feature:	A X86_FEATURE bit or X86_FEATURE_ANY
-+ * @_data:	Driver specific data or NULL. The internal storage
-+ *		format is unsigned long. The supplied value, pointer
-+ *		etc. is casted to unsigned long internally.
-+ *
-+ * Backport version to keep the SRBDS pile consistant. No shorter variants
-+ * required for this.
-+ */
-+#define X86_MATCH_VENDOR_FAM_MODEL_STEPPINGS_FEATURE(_vendor, _family, _model, \
-+						    _steppings, _feature, _data) { \
-+	.vendor		= X86_VENDOR_##_vendor,				\
-+	.family		= _family,					\
-+	.model		= _model,					\
-+	.steppings	= _steppings,					\
-+	.feature	= _feature,					\
-+	.driver_data	= (unsigned long) _data				\
-+}
-+
- extern const struct x86_cpu_id *x86_match_cpu(const struct x86_cpu_id *match);
- 
- #endif
---- a/arch/x86/kernel/cpu/match.c
-+++ b/arch/x86/kernel/cpu/match.c
-@@ -33,13 +33,18 @@ const struct x86_cpu_id *x86_match_cpu(c
- 	const struct x86_cpu_id *m;
- 	struct cpuinfo_x86 *c = &boot_cpu_data;
- 
--	for (m = match; m->vendor | m->family | m->model | m->feature; m++) {
-+	for (m = match;
-+	     m->vendor | m->family | m->model | m->steppings | m->feature;
-+	     m++) {
- 		if (m->vendor != X86_VENDOR_ANY && c->x86_vendor != m->vendor)
- 			continue;
- 		if (m->family != X86_FAMILY_ANY && c->x86 != m->family)
- 			continue;
- 		if (m->model != X86_MODEL_ANY && c->x86_model != m->model)
- 			continue;
-+		if (m->steppings != X86_STEPPING_ANY &&
-+		    !(BIT(c->x86_stepping) & m->steppings))
-+			continue;
- 		if (m->feature != X86_FEATURE_ANY && !cpu_has(c, m->feature))
- 			continue;
- 		return m;
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -572,6 +572,10 @@ struct mips_cdmm_device_id {
- /*
-  * MODULE_DEVICE_TABLE expects this struct to be called x86cpu_device_id.
-  * Although gcc seems to ignore this error, clang fails without this define.
-+ *
-+ * Note: The ordering of the struct is different from upstream because the
-+ * static initializers in kernels < 5.7 still use C89 style while upstream
-+ * has been converted to proper C99 initializers.
-  */
- #define x86cpu_device_id x86_cpu_id
- struct x86_cpu_id {
-@@ -580,6 +584,7 @@ struct x86_cpu_id {
- 	__u16 model;
- 	__u16 feature;	/* bit index */
- 	kernel_ulong_t driver_data;
-+	__u16 steppings;
- };
- 
- #define X86_FEATURE_MATCH(x) \
-@@ -588,6 +593,7 @@ struct x86_cpu_id {
- #define X86_VENDOR_ANY 0xffff
- #define X86_FAMILY_ANY 0
- #define X86_MODEL_ANY  0
-+#define X86_STEPPING_ANY 0
- #define X86_FEATURE_ANY 0	/* Same as FPU, you can't test for that */
- 
- /*
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -921,6 +921,7 @@ static const struct usb_device_id produc
+ 	{QMI_FIXED_INTF(0x1bbb, 0x0203, 2)},	/* Alcatel L800MA */
+ 	{QMI_FIXED_INTF(0x2357, 0x0201, 4)},	/* TP-LINK HSUPA Modem MA180 */
+ 	{QMI_FIXED_INTF(0x2357, 0x9000, 4)},	/* TP-LINK MA260 */
++	{QMI_QUIRK_SET_DTR(0x1bc7, 0x1031, 3)}, /* Telit LE910C1-EUX */
+ 	{QMI_QUIRK_SET_DTR(0x1bc7, 0x1040, 2)},	/* Telit LE922A */
+ 	{QMI_FIXED_INTF(0x1bc7, 0x1100, 3)},	/* Telit ME910 */
+ 	{QMI_FIXED_INTF(0x1bc7, 0x1101, 3)},	/* Telit ME910 dual modem */
 
 
