@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549241F4755
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 21:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A1D1F4750
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 21:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389407AbgFITmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 15:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
+        id S2389373AbgFITmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 15:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgFITkh (ORCPT
+        with ESMTP id S1728328AbgFITki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 15:40:37 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18587C03E97C
+        Tue, 9 Jun 2020 15:40:38 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF08AC08C5C6
         for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 12:40:37 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b27so22021105qka.4
+Received: by mail-qk1-x744.google.com with SMTP id w3so22042887qkb.6
         for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 12:40:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0BqclPegqJok0tr1lg07n1QfpjQ6ftwveg7CVu5MR2U=;
-        b=EJ5I7b0p5sm6fG2LVDGmZFIoyUoEMOuv8dVuO+rWpAYZVg5NR9bq0wHB8aFLqtXbzX
-         /kFMTgm/V/5WvrVz2M2EsfKNKxHNUIvuVjvZQQQDkpY/UQkKY/ra/6hAunI0v+uMZh6D
-         0KyD/4Dhe9OBRkY/jQJgLgoVpLI87OZ0IGfTFEWHdL7PLOyC44ojCz/6e56gNWKMbygt
-         P/VR1yGt2c8lH2OKGfLR+JiNAgrHj3fP6Ta+Nf74YWvAjaQr9cjHFme5RcIbHePSjo7u
-         pR7FioGemlKZlrSNpD1MePBLmBhnAR+uUWkMJq5msxpz/0yE240PEL6jgGrlNq8pbix5
-         eC2A==
+        bh=Y/sac6ctBvw3WfcduAEIFRDP2awvJiB1QH+ESuGkwsM=;
+        b=gx5cb55v+/w5yIn64UAhEjcONp8eemLuU1dmTA+jQpuIQVRpYGE7LR0U2pzXzYupyH
+         epV7DOsQj22Tm68Ycau+OqfaeAu67cuGmbEHs9oWVP4JD/pGitbjhEybuZpX/qlKG8fC
+         XW87hO+lfFuYeps1qy3Lle2hW9uXLw3+pbgETPBG0HdiqVqdIya+SmPz40bL7shijEy4
+         dgqMknktlCm7+4FQXiK9gi0qvJ86JGiwlCHEZ8qmq7GncpnoCWilprXUZ4Iuouhez0xe
+         apXykXSV6EnjDnul8OrVDiggGR+6K8YT6Jo9KxJbVgiu6W5195LRK4D1uWT1l33h/4UJ
+         gPag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0BqclPegqJok0tr1lg07n1QfpjQ6ftwveg7CVu5MR2U=;
-        b=NdA0gNC5ujAEK5Jeu4YOL94LQYeg0YXvE+uVtEyiglScjxAMm7B8QTbpLQ6jK6LQdI
-         SFjG7xri7aB3oYp+lvaIVfdKh4bjYDBTcT07zeLjNcD2oJ4B1ikip2ffsv02LVWD5CwX
-         SFuzmsqQjiEv82dfyqBF+VIE1PgT0O14aXIv8f92u9vreAO3VWi+4TR2ZC78tfzV4b5K
-         NZm+bH2Ys92R9ExAC64fmT7qXJ0sCfSONuD6hSNblGCFuyufAnHWF3sbsBmvt1dzV9VN
-         Gc+Chr+uZY8hBfwkmRxAB7O8Xv8/6R82nDu9bvLiJCvB3y9izE06Rdxq2IaePg6id1Gn
-         zKRw==
-X-Gm-Message-State: AOAM532LdJxuLUYBfSyfDx6SEr9ZWcNaRMh3LChahQdPWbbHwkR4ysdw
-        BOYw1n2CramEu2T3BxvMtwd9rQ==
-X-Google-Smtp-Source: ABdhPJyz/M9ZpkYSVQxPXiFgNuTI0QUGQCMuSuyLv9c8jT0hNZNxRz1VGjqEgkrwXdXTkx7A3ZM78w==
-X-Received: by 2002:a37:6c2:: with SMTP id 185mr28950911qkg.95.1591731635916;
-        Tue, 09 Jun 2020 12:40:35 -0700 (PDT)
+        bh=Y/sac6ctBvw3WfcduAEIFRDP2awvJiB1QH+ESuGkwsM=;
+        b=mY+unGa4L0YN1b3TW4mikytbaVLgUrMHsT7FjiACcZjpoN5kw3CnbaiyeIv1Rwwt8P
+         kdw5kWyGsDe6ubDJZIEh5Cjbv2WVGzytQbSMbW0In0hqSK7VnqXFcTj3s1h3RARpCyqv
+         2PrQnjWaJHDy6HP7+L55yH+rda9cK4DzUFd8pk2Jn2EBxt8N4crfQ/1e/6GlKBBpL4DV
+         /nhDsOVy8dFWpzQCOC9Zp9It7DgoCv70NMVNBKNUBiSG1kVfEV+2EcAWNKWxKbSI+SmZ
+         13+q88Pp9RXAGLo7zMB67iuQyQQftvdy7ySHfAJvvYx4J3lmnkt0KQs6DrnwBWk3VYLe
+         OueA==
+X-Gm-Message-State: AOAM533lIaZeyEHWm+umlDvzWTBsZ8uFT0XGw6OHPGauyBNzg6qxVn2s
+        OEanvRBz/xAhyQFscEpR5hdbyg==
+X-Google-Smtp-Source: ABdhPJwxQNtPcYFkhmiQ71J4CYqd8qvzOaOoy8RPyNhzZ9S8EIkd8R1RkX79SAHqiii+kGVoMsfpRQ==
+X-Received: by 2002:a37:4c6:: with SMTP id 189mr27651576qke.301.1591731637056;
+        Tue, 09 Jun 2020 12:40:37 -0700 (PDT)
 Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id v8sm10513181qto.21.2020.06.09.12.40.35
+        by smtp.gmail.com with ESMTPSA id v8sm10513181qto.21.2020.06.09.12.40.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 12:40:35 -0700 (PDT)
+        Tue, 09 Jun 2020 12:40:36 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     linux-arm-msm@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM SMMU DRIVERS),
-        iommu@lists.linux-foundation.org (open list:IOMMU DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 2/8] iommu: arm-smmu-impl: Use qcom impl for sm8150 and sm8250 compatibles
-Date:   Tue,  9 Jun 2020 15:40:20 -0400
-Message-Id: <20200609194030.17756-3-jonathan@marek.ca>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 3/8] arm64: dts: qcom: sm8150: add apps_smmu node
+Date:   Tue,  9 Jun 2020 15:40:21 -0400
+Message-Id: <20200609194030.17756-4-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200609194030.17756-1-jonathan@marek.ca>
 References: <20200609194030.17756-1-jonathan@marek.ca>
@@ -68,28 +69,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the qcom implementation for IOMMU hardware on sm8150 and sm8250 SoCs.
+Add the apps_smmu node for sm8150.
+
+For UFS, now that the kernel initializes the iommu, the stream mappings
+set by the bootloader are cleared. Adding the iommus property is required
+so that new mappings are created for UFS.
 
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 ---
- drivers/iommu/arm-smmu-impl.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 91 ++++++++++++++++++++++++++++
+ 1 file changed, 91 insertions(+)
 
-diff --git a/drivers/iommu/arm-smmu-impl.c b/drivers/iommu/arm-smmu-impl.c
-index c75b9d957b70..f5f6cab626be 100644
---- a/drivers/iommu/arm-smmu-impl.c
-+++ b/drivers/iommu/arm-smmu-impl.c
-@@ -172,7 +172,9 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
- 		smmu->impl = &calxeda_impl;
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+index a36512d1f6a1..5b48dbaee2d8 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -442,6 +442,8 @@ ufs_mem_hc: ufshc@1d84000 {
+ 			resets = <&gcc GCC_UFS_PHY_BCR>;
+ 			reset-names = "rst";
  
- 	if (of_device_is_compatible(np, "qcom,sdm845-smmu-500") ||
--	    of_device_is_compatible(np, "qcom,sc7180-smmu-500"))
-+	    of_device_is_compatible(np, "qcom,sc7180-smmu-500") ||
-+	    of_device_is_compatible(np, "qcom,sm8150-smmu-500") ||
-+	    of_device_is_compatible(np, "qcom,sm8250-smmu-500"))
- 		return qcom_smmu_impl_init(smmu);
++			iommus = <&apps_smmu 0x300 0>;
++
+ 			clock-names =
+ 				"core_clk",
+ 				"bus_aggr_clk",
+@@ -706,6 +708,7 @@ usb_1_dwc3: dwc3@a600000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0 0x0a600000 0 0xcd00>;
+ 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
++				iommus = <&apps_smmu 0x140 0>;
+ 				snps,dis_u2_susphy_quirk;
+ 				snps,dis_enblslpm_quirk;
+ 				phys = <&usb_1_hsphy>, <&usb_1_ssphy>;
+@@ -742,6 +745,94 @@ spmi_bus: spmi@c440000 {
+ 			cell-index = <0>;
+ 		};
  
- 	return smmu;
++		apps_smmu: iommu@15000000 {
++			compatible = "qcom,sm8150-smmu-500", "arm,mmu-500";
++			reg = <0 0x15000000 0 0x100000>;
++			#iommu-cells = <2>;
++			#global-interrupts = <1>;
++			interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 181 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 182 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 185 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 189 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 190 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 315 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 316 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 317 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 318 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 319 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 320 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 321 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 322 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 323 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 324 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 325 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 326 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 327 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 328 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 329 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 330 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 331 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 332 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 333 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 334 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 335 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 336 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 337 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 338 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 339 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 340 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 341 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 342 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 343 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 344 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 395 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 396 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 397 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 398 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 399 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 400 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 401 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 402 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 403 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 404 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 405 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 406 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 407 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 408 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 409 IRQ_TYPE_LEVEL_HIGH>;
++		};
++
+ 		remoteproc_adsp: remoteproc@17300000 {
+ 			compatible = "qcom,sm8150-adsp-pas";
+ 			reg = <0x0 0x17300000 0x0 0x4040>;
 -- 
 2.26.1
 
