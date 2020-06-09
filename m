@@ -2,118 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C22E1F3401
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 08:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342131F3404
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 08:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbgFIGTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 02:19:38 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59192 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726886AbgFIGTh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 02:19:37 -0400
-Received: from mail-wr1-f69.google.com ([209.85.221.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1jiXbi-0008Bn-Rl
-        for linux-kernel@vger.kernel.org; Tue, 09 Jun 2020 06:19:34 +0000
-Received: by mail-wr1-f69.google.com with SMTP id o1so8111066wrm.17
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 23:19:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qjb8qEBmbuxNu1rg1xJE74o0cBFJkDEp4RqvXUvcj7g=;
-        b=S/9SLjWLHRV/ddT+xOwWdA9ovM1awHVF7CZQvj5qeY7knBX008wIM/xTICixElSFT0
-         dRQ3ybqWr5RvgdMlCdmbom+uYpo16XhhPIBQOpz24ZtRGMj7PSer334DPhqvRCWRaSem
-         mFAt10tGBUIOqVX1+JuAe8UtNspnlEIztUY9L9CZngyjXUXByUMbA7Id3M6Of5KTRSnv
-         JAW6asDnz2QFhYfzuZQCeIgeAyR9GEUn1Twjip/2TNCwZZSGF0+XYiU6dUydchnlTVmJ
-         JpwLzxLw+4ceEMBEmC1gesWP6NNCFO9fw6ic/f2N9hbk31Dno0B0TmRMX4jv2U2McPHW
-         wQzw==
-X-Gm-Message-State: AOAM533KZDiTISYQ+UoQcXBnPgmUdAaDZMi1hd9H/HIFd/tJYSrRbAdc
-        rkonBSQA5eCjrhAO/QWApxqhlneJCFWFutlIckB6k6/1hpH7iEMgXGPwDnBV//kAotpHv5hkXi3
-        17EUxVL5Cpbx6/PWj70s/OoNXdlMzWBUP7lQbDTQQsw==
-X-Received: by 2002:adf:f611:: with SMTP id t17mr2488213wrp.69.1591683574301;
-        Mon, 08 Jun 2020 23:19:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyHarr5VZT6oF9G6VEGI1D72bnLATgetDEJahbmVGkSpxTPq0pDEZ9cDRwC9XjCiXG/RArUkw==
-X-Received: by 2002:adf:f611:: with SMTP id t17mr2488180wrp.69.1591683573984;
-        Mon, 08 Jun 2020 23:19:33 -0700 (PDT)
-Received: from localhost (host-79-43-135-105.retail.telecomitalia.it. [79.43.135.105])
-        by smtp.gmail.com with ESMTPSA id s7sm2062721wrr.60.2020.06.08.23.19.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 23:19:33 -0700 (PDT)
-Date:   Tue, 9 Jun 2020 08:19:31 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Luigi Semenzato <semenzato@google.com>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [RFC PATCH 2/2] PM: hibernate: introduce opportunistic memory
- reclaim
-Message-ID: <20200609061931.GH8413@xps-13>
-References: <CAA25o9QUtut3+nEs0H8H5qa2H7tQokq+_UoOrAaVGhmYvMTz0Q@mail.gmail.com>
+        id S1727855AbgFIGUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 02:20:22 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:54024 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726886AbgFIGUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 02:20:20 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 60BDBDA984993C9E617F;
+        Tue,  9 Jun 2020 14:20:17 +0800 (CST)
+Received: from use12-sp2.huawei.com (10.67.189.174) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 9 Jun 2020 14:20:08 +0800
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+To:     <ebiederm@xmission.com>, <keescook@chromium.org>,
+        <ak@linux.intel.com>
+CC:     <nixiaoming@huawei.com>, <alex.huangjianhui@huawei.com>,
+        <linzichang@huawei.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] sysctl: Delete the code of sys_sysctl
+Date:   Tue, 9 Jun 2020 14:20:05 +0800
+Message-ID: <1591683605-8585-1-git-send-email-nixiaoming@huawei.com>
+X-Mailer: git-send-email 1.8.5.6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA25o9QUtut3+nEs0H8H5qa2H7tQokq+_UoOrAaVGhmYvMTz0Q@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.67.189.174]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 03:23:22PM -0700, Luigi Semenzato wrote:
-> Hi Andrea,
-> 
-> 1. This mechanism is quite general.  It is possible that, although
-> hibernation may be an important use, there will be other uses for it.
-> I suggest leaving the hibernation example and performance analysis,
-> but not mentioning PM or hibernation in the patch subject.
+Since the commit 61a47c1ad3a4dc ("sysctl: Remove the sysctl system call"),
+sys_sysctl has lost its actual role: any input can only return an error.
 
-I was actually thinking to make this feature even more generic, since
-there might be other potential users of this forced "memory reclaim"
-feature outside hibernation. So, instead of adding the new sysfs files
-under /sys/power/mm_reclaim/, maybe move them to /sys/kernel/mm/ (since
-it's more like a mm feature, rather than a PM/hibernation feature).
+Delete the code and return -ENOSYS directly at the function entry
 
-> 
-> 2. It may be useful to have run_show() return the number of pages
-> reclaimed in the last attempt.  (I had suggested something similar in
-> https://lore.kernel.org/linux-mm/CAA25o9SxajRaa+ZyhvTYdaKdXokcrNYXgEUimax4sUJGCmRYLA@mail.gmail.com/).
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+---
+ kernel/sysctl_binary.c | 146 +------------------------------------------------
+ 1 file changed, 2 insertions(+), 144 deletions(-)
 
-I like this idea, I'll add that in the next version.
+diff --git a/kernel/sysctl_binary.c b/kernel/sysctl_binary.c
+index 7d550cc..41a88f8 100644
+--- a/kernel/sysctl_binary.c
++++ b/kernel/sysctl_binary.c
+@@ -1,126 +1,11 @@
+ // SPDX-License-Identifier: GPL-2.0
+-#include <linux/stat.h>
+ #include <linux/sysctl.h>
+-#include "../fs/xfs/xfs_sysctl.h"
+-#include <linux/sunrpc/debug.h>
+-#include <linux/string.h>
+ #include <linux/syscalls.h>
+-#include <linux/namei.h>
+-#include <linux/mount.h>
+-#include <linux/fs.h>
+-#include <linux/nsproxy.h>
+-#include <linux/pid_namespace.h>
+-#include <linux/file.h>
+-#include <linux/ctype.h>
+-#include <linux/netdevice.h>
+-#include <linux/kernel.h>
+-#include <linux/uuid.h>
+-#include <linux/slab.h>
+ #include <linux/compat.h>
+ 
+-static ssize_t binary_sysctl(const int *name, int nlen,
+-	void __user *oldval, size_t oldlen, void __user *newval, size_t newlen)
+-{
+-	return -ENOSYS;
+-}
+-
+-static void deprecated_sysctl_warning(const int *name, int nlen)
+-{
+-	int i;
+-
+-	/*
+-	 * CTL_KERN/KERN_VERSION is used by older glibc and cannot
+-	 * ever go away.
+-	 */
+-	if (nlen >= 2 && name[0] == CTL_KERN && name[1] == KERN_VERSION)
+-		return;
+-
+-	if (printk_ratelimit()) {
+-		printk(KERN_INFO
+-			"warning: process `%s' used the deprecated sysctl "
+-			"system call with ", current->comm);
+-		for (i = 0; i < nlen; i++)
+-			printk(KERN_CONT "%d.", name[i]);
+-		printk(KERN_CONT "\n");
+-	}
+-	return;
+-}
+-
+-#define WARN_ONCE_HASH_BITS 8
+-#define WARN_ONCE_HASH_SIZE (1<<WARN_ONCE_HASH_BITS)
+-
+-static DECLARE_BITMAP(warn_once_bitmap, WARN_ONCE_HASH_SIZE);
+-
+-#define FNV32_OFFSET 2166136261U
+-#define FNV32_PRIME 0x01000193
+-
+-/*
+- * Print each legacy sysctl (approximately) only once.
+- * To avoid making the tables non-const use a external
+- * hash-table instead.
+- * Worst case hash collision: 6, but very rarely.
+- * NOTE! We don't use the SMP-safe bit tests. We simply
+- * don't care enough.
+- */
+-static void warn_on_bintable(const int *name, int nlen)
+-{
+-	int i;
+-	u32 hash = FNV32_OFFSET;
+-
+-	for (i = 0; i < nlen; i++)
+-		hash = (hash ^ name[i]) * FNV32_PRIME;
+-	hash %= WARN_ONCE_HASH_SIZE;
+-	if (__test_and_set_bit(hash, warn_once_bitmap))
+-		return;
+-	deprecated_sysctl_warning(name, nlen);
+-}
+-
+-static ssize_t do_sysctl(int __user *args_name, int nlen,
+-	void __user *oldval, size_t oldlen, void __user *newval, size_t newlen)
+-{
+-	int name[CTL_MAXNAME];
+-	int i;
+-
+-	/* Check args->nlen. */
+-	if (nlen < 0 || nlen > CTL_MAXNAME)
+-		return -ENOTDIR;
+-	/* Read in the sysctl name for simplicity */
+-	for (i = 0; i < nlen; i++)
+-		if (get_user(name[i], args_name + i))
+-			return -EFAULT;
+-
+-	warn_on_bintable(name, nlen);
+-
+-	return binary_sysctl(name, nlen, oldval, oldlen, newval, newlen);
+-}
+-
+ SYSCALL_DEFINE1(sysctl, struct __sysctl_args __user *, args)
+ {
+-	struct __sysctl_args tmp;
+-	size_t oldlen = 0;
+-	ssize_t result;
+-
+-	if (copy_from_user(&tmp, args, sizeof(tmp)))
+-		return -EFAULT;
+-
+-	if (tmp.oldval && !tmp.oldlenp)
+-		return -EFAULT;
+-
+-	if (tmp.oldlenp && get_user(oldlen, tmp.oldlenp))
+-		return -EFAULT;
+-
+-	result = do_sysctl(tmp.name, tmp.nlen, tmp.oldval, oldlen,
+-			   tmp.newval, tmp.newlen);
+-
+-	if (result >= 0) {
+-		oldlen = result;
+-		result = 0;
+-	}
+-
+-	if (tmp.oldlenp && put_user(oldlen, tmp.oldlenp))
+-		return -EFAULT;
+-
+-	return result;
++	return -ENOSYS;
+ }
+ 
+ 
+@@ -138,34 +23,7 @@ struct compat_sysctl_args {
+ 
+ COMPAT_SYSCALL_DEFINE1(sysctl, struct compat_sysctl_args __user *, args)
+ {
+-	struct compat_sysctl_args tmp;
+-	compat_size_t __user *compat_oldlenp;
+-	size_t oldlen = 0;
+-	ssize_t result;
+-
+-	if (copy_from_user(&tmp, args, sizeof(tmp)))
+-		return -EFAULT;
+-
+-	if (tmp.oldval && !tmp.oldlenp)
+-		return -EFAULT;
+-
+-	compat_oldlenp = compat_ptr(tmp.oldlenp);
+-	if (compat_oldlenp && get_user(oldlen, compat_oldlenp))
+-		return -EFAULT;
+-
+-	result = do_sysctl(compat_ptr(tmp.name), tmp.nlen,
+-			   compat_ptr(tmp.oldval), oldlen,
+-			   compat_ptr(tmp.newval), tmp.newlen);
+-
+-	if (result >= 0) {
+-		oldlen = result;
+-		result = 0;
+-	}
+-
+-	if (compat_oldlenp && put_user(oldlen, compat_oldlenp))
+-		return -EFAULT;
+-
+-	return result;
++	return -ENOSYS;
+ }
+ 
+ #endif /* CONFIG_COMPAT */
+-- 
+1.8.5.6
 
-> 
-> 3. It is not clear how much mm_reclaim/release is going to help.  If
-> the preloading of the swapped-out pages uses some kind of LIFO order,
-> and can batch multiple pages, then it might help.  Otherwise demand
-> paging is likely to be more effective.  If the preloading does indeed
-> help, it may be useful to explain why in the commit message.
-
-Swap readahead helps a lot in terms of performance if we preload all at
-once. But I agree that for the majority of cases on-demand paging just
-works fine.
-
-My specific use-case for mm_reclaim/release is to make sure a VM
-that is just resumed is immediately "fast" by preloading the swapped-out
-pages back to memory all at once.
-
-Without mm_reclaim/release I've been using the trick of running swapoff
-followed by a swapon to force all the pages back to memory, but it's
-kinda ugly and I was looking for a better way to do this. I've been
-trying also the ptrace() + reading all the VMAs via /proc/pid/mem, it
-works, but it's not as fast as swapoff+swapon or mm_reclaim/release.
-
-I'll report performance numbers of mm_reclaim/release vs ptrace() +
-/proc/pid/mem in the next version of this patch.
-
-> 
-> Thanks!
-
-Thanks for your review!
-
--Andrea
