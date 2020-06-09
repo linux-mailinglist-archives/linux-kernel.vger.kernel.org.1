@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463D81F43F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A041F4648
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731661AbgFIR7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:59:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51384 "EHLO mail.kernel.org"
+        id S2389036AbgFISZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:25:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731651AbgFIR6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:58:55 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1731916AbgFIRqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:46:20 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 777A720801;
-        Tue,  9 Jun 2020 17:58:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B042C20823;
+        Tue,  9 Jun 2020 17:46:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725535;
-        bh=J8tlTkffI9vT+ZtetPjpRh4/bBL9Hh7emd0zTozTyXI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qF1dpbq4r6LixfMDbilCvEkZ/h6ZYJ1hJewkW/W1R/P4ihpjzb1aQ6Vqyu57/RnlE
-         1SXfvJeSswwlhZftcwITa7SGOlKrsZaPDX+PAwZ0JDQDw7COQCJH0tNaPuFmyJDIZ2
-         y1et7/fTJBDLN5J5sfQf0qMqwE6qExDOFqlvAYFs=
-Date:   Tue, 9 Jun 2020 18:58:52 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        robh@kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] dt-bindings: tas2562: Add firmware support for
- tas2563
-Message-ID: <20200609175852.GQ4583@sirena.org.uk>
-References: <20200609172841.22541-1-dmurphy@ti.com>
- <20200609172841.22541-2-dmurphy@ti.com>
- <20200609173143.GN4583@sirena.org.uk>
- <bb7cff87-f814-1b37-c9eb-e68919e3c077@ti.com>
+        s=default; t=1591724780;
+        bh=ebFJS0H4UA3YbY9afzAkHwLOVKFy+tp8IZKLeR6Z8UA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=iVtOBABiMB0CjjsriMv724hMvZtwJ0HIAz5KA+XKpAP1Srzzw2xJ3h3ffBivDvfOC
+         k599L7uPBRkhC//Yf8il7qWX9r87hQJ+bUMuztsjRzQ9uwFle6o29Np5OamEaSGhXM
+         jKuRpEgv8q7w7zN+/ddgIRZqiENru6oSxY4rr+u4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.4 05/36] IB/mlx4: Fix an error handling path in mlx4_ib_rereg_user_mr()
+Date:   Tue,  9 Jun 2020 19:44:05 +0200
+Message-Id: <20200609173933.596507899@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
+References: <20200609173933.288044334@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JaBjgNvtdKe5H086"
-Content-Disposition: inline
-In-Reply-To: <bb7cff87-f814-1b37-c9eb-e68919e3c077@ti.com>
-X-Cookie: Be careful!  Is it classified?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Christophe Jaillet <christophe.jaillet@wanadoo.fr>
 
---JaBjgNvtdKe5H086
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+commit 3dc7c7badb7502ec3e3aa817a8bdd9e53aa54c52 upstream.
 
-On Tue, Jun 09, 2020 at 12:35:50PM -0500, Dan Murphy wrote:
-> On 6/9/20 12:31 PM, Mark Brown wrote:
+Before returning -EPERM we should release some resources, as already done
+in the other error handling path of the function.
 
-> > Why not just use a standard name for the firmware?  If the firmwares
-> > vary per-board then building it using the machine compatible (or DMI
-> > info) could handle that, with a fallback to a standard name for a
-> > default setup.
+Fixes: d8f9cc328c88 ("IB/mlx4: Mark user MR as writable if actual virtual memory is writable")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-> The number of firmwares can vary per IC on the board itself.=A0 So you may
-> have X number of firmware files all with different names all targets for
-> different TAS2563 ICs.
+---
+ drivers/infiniband/hw/mlx4/mr.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-> Also TI will not be providing the individual binaries to the customer.=A0
-> There is a customer tool that the user uses to create the binaries.
+--- a/drivers/infiniband/hw/mlx4/mr.c
++++ b/drivers/infiniband/hw/mlx4/mr.c
+@@ -246,8 +246,11 @@ int mlx4_ib_rereg_user_mr(struct ib_mr *
+ 	}
+ 
+ 	if (flags & IB_MR_REREG_ACCESS) {
+-		if (ib_access_writable(mr_access_flags) && !mmr->umem->writable)
+-			return -EPERM;
++		if (ib_access_writable(mr_access_flags) &&
++		    !mmr->umem->writable) {
++			err = -EPERM;
++			goto release_mpt_entry;
++		}
+ 
+ 		err = mlx4_mr_hw_change_access(dev->dev, *pmpt_entry,
+ 					       convert_access(mr_access_flags));
 
-> So the output names are arbitrary.
 
-> I was going to mention this in the cover letter but did not think mention=
-ing
-> the user tool had any value
-
-That's all fairly standard for this sort of device.  You could still
-cope with this by including the I2C address in the default name
-requested - do something like tas2562/myboard-addr.fw or whatever.  The
-concern here is that someone shouldn't have to replace their DT if they
-decide they want to start using the DSP, and someone making a distro
-shouldn't be stuck dealing with what happens if multiple vendors decide
-to just reuse the same name (eg, just calling everything tas2562
-regardless of plastics).
-
---JaBjgNvtdKe5H086
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7fzdsACgkQJNaLcl1U
-h9BKVQgAhwdvHDREJ2LZnjNuwAcY2lCGKrqH/sZ5zCuez+GTC3OioTnr1/2fRJP3
-oeO4H/IRo6/PsE6dhcl48e+/CVM8p9IBC4J7eLYtvwC3iOd5qZGUXq1HqoYQaYYp
-cJ22lWuYmG6EXPtcTM7eflfBIEdgbluyeksxIc1WSTccPFpEOkc8tElhlNN4eowI
-34B18qXdsfvX3eOghVWTAD/IoyTPmyvWLzOkrRSpk+oPKsiqJnx0g7wEAg95sBKg
-luhCZTAe1gaTpMC44kBIMN1ZVd22wZIGCJqXKY434H4xiVImRvv2/uqxbm0GsQQy
-4Wqt+BFO7MwvkNsDYTTFA/Uj8xQ++A==
-=re6H
------END PGP SIGNATURE-----
-
---JaBjgNvtdKe5H086--
