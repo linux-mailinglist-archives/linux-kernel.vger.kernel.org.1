@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562701F45B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDF91F4605
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388866AbgFISTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:19:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36004 "EHLO mail.kernel.org"
+        id S1732459AbgFISXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:23:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732544AbgFIRtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:49:41 -0400
+        id S1732146AbgFIRru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:47:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C2FE20812;
-        Tue,  9 Jun 2020 17:49:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D46320825;
+        Tue,  9 Jun 2020 17:47:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724980;
-        bh=mVl9YgrtiKcOe6VHrWSY6aDgR5QeahVoj7ufwEgl4dc=;
+        s=default; t=1591724869;
+        bh=sDGANuZ7FD1nVMA1tNWPzxIt/Uk/CzGd5Gz40qhIhgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eoc7WEJsKPYfJ9bXd/KhhCwt/DzXPurbyHNWKvsIDHj/Z8OjaunU/BNBgLoZAjtCm
-         vV4Itxi15HHobzqSb3jN8MIXR3REadk0V40NPmRxfVOARfkf2UnQELvGvsK6m2Ik48
-         Ha6Mg/7MdEK7tLHeGLjsitKGjZ9Dhh8O0+lyhPJQ=
+        b=gerFKBfyOdKrgKQqg7t+/gmCNwuxgX8bAVSnOn/Y+wvKQ63YNULRyjb93aVuId1hB
+         juLVS2s0FyIRvcuWsXnxlVosSJAWD0nCFr3CHjIoM6r5hT5jXCW4/PT8NGHnjZVDPJ
+         6ZFnR+FIbQq5hFAn9ojlnO5iu+S7ZWO69HInVhRs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, fengsheng <fengsheng5@huawei.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 04/46] spi: dw: use "smp_mb()" to avoid sending spi data error
-Date:   Tue,  9 Jun 2020 19:44:20 +0200
-Message-Id: <20200609174023.282147985@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Giuseppe Marco Randazzo <gmrandazzo@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Christian Lamparter <chunkeey@gmail.com>
+Subject: [PATCH 4.9 15/42] p54usb: add AirVasT USB stick device-id
+Date:   Tue,  9 Jun 2020 19:44:21 +0200
+Message-Id: <20200609174017.128858518@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
-References: <20200609174022.938987501@linuxfoundation.org>
+In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
+References: <20200609174015.379493548@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,48 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xinwei Kong <kong.kongxinwei@hisilicon.com>
+From: Giuseppe Marco Randazzo <gmrandazzo@gmail.com>
 
-[ Upstream commit bfda044533b213985bc62bd7ca96f2b984d21b80 ]
+commit 63e49a9fdac1b4e97ac26cb3fe953f210d83bc53 upstream.
 
-Because of out-of-order execution about some CPU architecture,
-In this debug stage we find Completing spi interrupt enable ->
-prodrucing TXEI interrupt -> running "interrupt_transfer" function
-will prior to set "dw->rx and dws->rx_end" data, so this patch add
-memory barrier to enable dw->rx and dw->rx_end to be visible and
-solve to send SPI data error.
-eg:
-it will fix to this following low possibility error in testing environment
-which using SPI control to connect TPM Modules
+This patch adds the AirVasT USB wireless devices 124a:4026
+to the list of supported devices. It's using the ISL3886
+usb firmware. Without this modification, the wiki adapter
+is not recognized.
 
-kernel: tpm tpm0: Operation Timed out
-kernel: tpm tpm0: tpm_relinquish_locality: : error -1
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Giuseppe Marco Randazzo <gmrandazzo@gmail.com>
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com> [formatted, reworded]
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200405220659.45621-1-chunkeey@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: fengsheng <fengsheng5@huawei.com>
-Signed-off-by: Xinwei Kong <kong.kongxinwei@hisilicon.com>
-Link: https://lore.kernel.org/r/1578019930-55858-1-git-send-email-kong.kongxinwei@hisilicon.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-dw.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/wireless/intersil/p54/p54usb.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
-index b461200871f8..cbdad3c4930f 100644
---- a/drivers/spi/spi-dw.c
-+++ b/drivers/spi/spi-dw.c
-@@ -305,6 +305,9 @@ static int dw_spi_transfer_one(struct spi_master *master,
- 	dws->len = transfer->len;
- 	spin_unlock_irqrestore(&dws->buf_lock, flags);
- 
-+	/* Ensure dw->rx and dw->rx_end are visible */
-+	smp_mb();
-+
- 	spi_enable_chip(dws, 0);
- 
- 	/* Handle per transfer options for bpw and speed */
--- 
-2.25.1
-
+--- a/drivers/net/wireless/intersil/p54/p54usb.c
++++ b/drivers/net/wireless/intersil/p54/p54usb.c
+@@ -64,6 +64,7 @@ static struct usb_device_id p54u_table[]
+ 	{USB_DEVICE(0x0db0, 0x6826)},	/* MSI UB54G (MS-6826) */
+ 	{USB_DEVICE(0x107b, 0x55f2)},	/* Gateway WGU-210 (Gemtek) */
+ 	{USB_DEVICE(0x124a, 0x4023)},	/* Shuttle PN15, Airvast WM168g, IOGear GWU513 */
++	{USB_DEVICE(0x124a, 0x4026)},	/* AirVasT USB wireless device */
+ 	{USB_DEVICE(0x1435, 0x0210)},	/* Inventel UR054G */
+ 	{USB_DEVICE(0x15a9, 0x0002)},	/* Gemtek WUBI-100GW 802.11g */
+ 	{USB_DEVICE(0x1630, 0x0005)},	/* 2Wire 802.11g USB (v1) / Z-Com */
 
 
