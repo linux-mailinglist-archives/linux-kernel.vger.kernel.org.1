@@ -2,66 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A2A1F3D45
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030861F3D4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730392AbgFINvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 09:51:35 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:42766 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728388AbgFINvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 09:51:35 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id BCC10FDE7730327D72A8;
-        Tue,  9 Jun 2020 21:51:32 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 9 Jun 2020 21:51:24 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Divya Indi <divya.indi@oracle.com>, <linux-kernel@vger.kernel.org>
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        Aruna Ramakrishna <aruna.ramakrishna@oracle.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH] sample-trace-array: Remove trace_array 'sample-instance'
-Date:   Tue, 9 Jun 2020 13:52:00 +0000
-Message-ID: <20200609135200.2206726-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.27.0
+        id S1730312AbgFINwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 09:52:39 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:59423 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728388AbgFINwi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 09:52:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591710757;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1QZxzGJLd7MwraWpl9HYsPVgjFSkkdnN13rxpeDTWvE=;
+        b=OhA5zW5AHLip1oQX1HeiEU1/k0ILC5TYFCZWUY7HkNS5gBH3pzaiZZOT28X5/dIMS+ISOm
+        wjfk55JrS4cZ2fP9iqfiROoHYuZbu0xMP+ttnE6FC57IcdgNQnYMYS/6sBZ5Z3Du62+5uM
+        McCNjNNWy+6PMfXTwS36fCY/+N/eE+0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-374-SKVCis5-OQWdNQGNLlklxw-1; Tue, 09 Jun 2020 09:52:35 -0400
+X-MC-Unique: SKVCis5-OQWdNQGNLlklxw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ABB2A18A8235;
+        Tue,  9 Jun 2020 13:52:33 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-113-78.ams2.redhat.com [10.36.113.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 708335C1BD;
+        Tue,  9 Jun 2020 13:52:19 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Palmer Dabbelt <palmer@sifive.com>
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, rth@twiddle.net,
+        ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        tony.luck@intel.com, fenghua.yu@intel.com, geert@linux-m68k.org,
+        monstr@monstr.eu, ralf@linux-mips.org, paul.burton@mips.com,
+        jhogan@kernel.org, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, benh@kernel.crashing.org, paulus@samba.org,
+        mpe@ellerman.id.au, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, ysato@users.sourceforge.jp,
+        dalias@libc.org, davem@davemloft.net, luto@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        x86@kernel.org, peterz@infradead.org, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, dhowells@redhat.com, firoz.khan@linaro.org,
+        stefan@agner.ch, schwidefsky@de.ibm.com, axboe@kernel.dk,
+        christian@brauner.io, hare@suse.com, deepa.kernel@gmail.com,
+        tycho@tycho.ws, kim.phillips@arm.com, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: Add a new fchmodat4() syscall, v2
+References: <20190717012719.5524-1-palmer@sifive.com>
+Date:   Tue, 09 Jun 2020 15:52:17 +0200
+In-Reply-To: <20190717012719.5524-1-palmer@sifive.com> (Palmer Dabbelt's
+        message of "Tue, 16 Jul 2019 18:27:15 -0700")
+Message-ID: <87o8pscpny.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove trace_array 'sample-instance' if kthread_run fails
-in sample_trace_array_init().
+* Palmer Dabbelt:
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- samples/ftrace/sample-trace-array.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+> This patch set adds fchmodat4(), a new syscall. The actual
+> implementation is super simple: essentially it's just the same as
+> fchmodat(), but LOOKUP_FOLLOW is conditionally set based on the flags.
+> I've attempted to make this match "man 2 fchmodat" as closely as
+> possible, which says EINVAL is returned for invalid flags (as opposed to
+> ENOTSUPP, which is currently returned by glibc for AT_SYMLINK_NOFOLLOW).
+> I have a sketch of a glibc patch that I haven't even compiled yet, but
+> seems fairly straight-forward:
 
-diff --git a/samples/ftrace/sample-trace-array.c b/samples/ftrace/sample-trace-array.c
-index 9e437f930280..6aba02a31c96 100644
---- a/samples/ftrace/sample-trace-array.c
-+++ b/samples/ftrace/sample-trace-array.c
-@@ -115,8 +115,12 @@ static int __init sample_trace_array_init(void)
- 	trace_printk_init_buffers();
- 
- 	simple_tsk = kthread_run(simple_thread, NULL, "sample-instance");
--	if (IS_ERR(simple_tsk))
-+	if (IS_ERR(simple_tsk)) {
-+		trace_array_put(tr);
-+		trace_array_destroy(tr);
- 		return -1;
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.27.0
+What's the status here?  We'd really like to see this system call in the
+kernel because our emulation in glibc has its problems (especially if
+/proc is not mounted).
+
+Thanks,
+Florian
 
