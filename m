@@ -2,80 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73321F2E20
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F151F2E00
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731907AbgFIAjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:39:00 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:43625 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731026AbgFIAip (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 20:38:45 -0400
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 0590bt3n014953;
-        Tue, 9 Jun 2020 09:37:55 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 0590bt3n014953
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1591663076;
-        bh=es92rbvBvwsGCQZx+NtzHSCTWeSTG28c6gpO7Y/gfDo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=wuqnzO70qMLXDauU1Xpg6OXmPp2rtl0BfVr1rKTSmG+VSveRsXm5+QQc3R5iyIxeH
-         gnnNDlFrATKNVd7wbX3dLxR9XgOUb2PIZVj2eVQBpo8C/9HIWx9+C95NFssfeyRRCc
-         GxLky0c3f2m+7TrrD6vpWYkff2ZlqePr/nult3EzmrTIzJBVPPs+/u/HGI/xIQt3La
-         LYBvQz86a+qTtVfvKxEFV933RlsDBebPRCHzIxlr0GgaYaEfddx5kIDOj4bx/9G8u0
-         FEEoc1cQ1gjYRVhsTlXfZ/MmBM6m3URO/QV2IyGyYhCefaejYb2NOslhr5wJQL9ZCY
-         3LHENzgJKJ/zQ==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kbuild: make module name conflict a warning again
-Date:   Tue,  9 Jun 2020 09:37:52 +0900
-Message-Id: <20200609003752.428817-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1731013AbgFIAic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:38:32 -0400
+Received: from mga12.intel.com ([192.55.52.136]:64028 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729217AbgFIAh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 20:37:58 -0400
+IronPort-SDR: H1Hmc7MDwOZ2/hkuXqqvRN5Wmqh1tPw+Flcx/7GrdEUrXToCau0M1eWgGkx7VEyRZzal71oLfD
+ xE4MtXMIUg6g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2020 17:37:58 -0700
+IronPort-SDR: p2oalkKzEMvdouJNti5J7BEPx5+c7jbkBE4nwQ9ipUiDR01a+CT8w1l0g7rz8F2ZaJhyJUfyMs
+ 55AqaSuuyXzA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,489,1583222400"; 
+   d="scan'208";a="472894832"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmsmga005.fm.intel.com with ESMTP; 08 Jun 2020 17:37:58 -0700
+Date:   Mon, 8 Jun 2020 17:38:12 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Brendan Shanks <bshanks@codeweavers.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, x86@kernel.org, ebiederm@xmission.com,
+        andi@notmuch.email, Babu.Moger@amd.com
+Subject: Re: [PATCH v3] x86/umip: Add emulation/spoofing for SLDT and STR
+ instructions
+Message-ID: <20200609003812.GA26268@ranerica-svr.sc.intel.com>
+References: <20200608224424.7259-1-bshanks@codeweavers.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200608224424.7259-1-bshanks@codeweavers.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The module name conflict is still remaining.
+On Mon, Jun 08, 2020 at 03:44:24PM -0700, Brendan Shanks wrote:
+> Add emulation/spoofing of SLDT and STR for both 32- and 64-bit
+> processes.
+> 
+> Wine users have found a small number of Windows apps using SLDT that
+> were crashing when run on UMIP-enabled systems.
+> 
+> Reported-by: Andreas Rammhold <andi@notmuch.email>
+> Originally-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> Signed-off-by: Brendan Shanks <bshanks@codeweavers.com>
+> ---
+> 
+> v3: Use (GDT_ENTRY_TSS * 8) for task register selector instead of
+> harcoding 0x40.
+> 
+>  arch/x86/kernel/umip.c | 32 +++++++++++++++++++++++---------
+>  1 file changed, 23 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
+> index 8d5cbe1bbb3b..166c579b0273 100644
+> --- a/arch/x86/kernel/umip.c
+> +++ b/arch/x86/kernel/umip.c
+> @@ -244,16 +244,35 @@ static int emulate_umip_insn(struct insn *insn, int umip_inst,
+>  		*data_size += UMIP_GDT_IDT_LIMIT_SIZE;
+>  		memcpy(data, &dummy_limit, UMIP_GDT_IDT_LIMIT_SIZE);
+>  
+> -	} else if (umip_inst == UMIP_INST_SMSW) {
+> -		unsigned long dummy_value = CR0_STATE;
+> +	} else if (umip_inst == UMIP_INST_SMSW || umip_inst == UMIP_INST_SLDT ||
+> +		   umip_inst == UMIP_INST_STR) {
+> +		unsigned long dummy_value;
+> +
+> +		if (umip_inst == UMIP_INST_SMSW)
+> +			dummy_value = CR0_STATE;
+> +		else if (umip_inst == UMIP_INST_STR)
+> +			dummy_value = GDT_ENTRY_TSS * 8;
+> +		else if (umip_inst == UMIP_INST_SLDT)
+> +		{
 
-  error: the following would cause module name conflict:
-    drivers/char/adi.ko
-    drivers/input/joystick/adi.ko
+This brace should go in the previous line. Also, if you use braces in
+the last part of the conditional you should probably use them in the
+previous ones. I guess in this case it woudln't improve readability.
+Instead, you can probably have a switch instead of the three ifs. That
+probably does improve readability and solves the dilemma of needing to
+put braces in all the one-line conditionals.
 
-Make it a warning again to build sparc64 allmodconfig successfully.
+BTW, you should also delete the comment at the top of the file saying
+that str and sldt will not be emulated:
 
-Fixes: 8451791d1ff0 ("kbuild: make module name conflict fatal error")
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
+index 166c579b0273..0984a55eb8c0 100644
+--- a/arch/x86/kernel/umip.c
++++ b/arch/x86/kernel/umip.c
+@@ -45,9 +45,6 @@
+  * value that, lies close to the top of the kernel memory. The limit for the GDT
+  * and the IDT are set to zero.
+  *
+- * Given that SLDT and STR are not commonly used in programs that run on WineHQ
+- * or DOSEMU2, they are not emulated.
+- *
+  * The instruction smsw is emulated to return the value that the register CR0
+  * has at boot time as set in the head_32.
+  *
 
- scripts/modules-check.sh | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/modules-check.sh b/scripts/modules-check.sh
-index 43de226071ae..8b1785863c64 100755
---- a/scripts/modules-check.sh
-+++ b/scripts/modules-check.sh
-@@ -15,9 +15,10 @@ check_same_name_modules()
- {
- 	for m in $(sed 's:.*/::' $1 | sort | uniq -d)
- 	do
--		echo "error: the following would cause module name conflict:" >&2
-+		echo "warning: the following would cause module name conflict:" >&2
- 		sed -n "/\/$m/s:^:  :p" modules.order >&2
--		exit_code=1
-+		# TODO: turn this into an error after fixing all warnings
-+		#exit_code=1
- 	done
- }
- 
--- 
-2.25.1
-
+Thanks and BR,
+Ricardo
