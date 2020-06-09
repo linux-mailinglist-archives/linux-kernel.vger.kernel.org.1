@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9560D1F43C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B001F438F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733281AbgFIRzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:55:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45242 "EHLO mail.kernel.org"
+        id S1731765AbgFIRy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:54:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731306AbgFIRxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:53:55 -0400
+        id S1731797AbgFIRw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:52:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70D7F2074B;
-        Tue,  9 Jun 2020 17:53:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F95820734;
+        Tue,  9 Jun 2020 17:52:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725234;
-        bh=ZMv3ezj23sl3iB5uhJe069xw5SiAAJNn15tfc3mWTyg=;
+        s=default; t=1591725176;
+        bh=mQlyIZpsFwSxbxKyryxpvl6ccsVmLfLXK1O83SaWYIw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Re/cS1NMSuOfcxE2WTauEywNcQOIYE3V6+U4zaZcy1JYizfYGYXocRnCJ4KZfMJ75
-         xmxbDpfVOiCD8XNYVlCPStJGa6GZlD3L0nOlzV1GhbRqxozQoDU48b4+F/ZlUZHPM3
-         93cXzEM/0lOdxb9qMRsN6KwYrdvlMgoPSCDqhQf0=
+        b=k+r0OGQ8lwrbGNgwJFr94rU2PkmJuJZYvP0m3wKRH791fBXeaw7Xp+essK/gtXkPl
+         JEJuUwi9WDMxsMBeOxaBqNVtaPgevfcyf2NPU13br2tFNaS4/7GgWTKxHwBNjG+l+7
+         7+2S+P/niIMMVUgNrgiK6CJ1uo6nrmQGnFloIuHY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mathieu Othacehe <m.othacehe@gmail.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.6 24/41] iio: vcnl4000: Fix i2c swapped word reading.
-Date:   Tue,  9 Jun 2020 19:45:26 +0200
-Message-Id: <20200609174114.436397956@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH 5.4 33/34] uprobes: ensure that uprobe->offset and ->ref_ctr_offset are properly aligned
+Date:   Tue,  9 Jun 2020 19:45:29 +0200
+Message-Id: <20200609174058.227799592@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174112.129412236@linuxfoundation.org>
-References: <20200609174112.129412236@linuxfoundation.org>
+In-Reply-To: <20200609174052.628006868@linuxfoundation.org>
+References: <20200609174052.628006868@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +48,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathieu Othacehe <m.othacehe@gmail.com>
+From: Oleg Nesterov <oleg@redhat.com>
 
-commit 18dfb5326370991c81a6d1ed6d1aeee055cb8c05 upstream.
+commit 013b2deba9a6b80ca02f4fafd7dedf875e9b4450 upstream.
 
-The bytes returned by the i2c reading need to be swapped
-unconditionally. Otherwise, on be16 platforms, an incorrect value will be
-returned.
+uprobe_write_opcode() must not cross page boundary; prepare_uprobe()
+relies on arch_uprobe_analyze_insn() which should validate "vaddr" but
+some architectures (csky, s390, and sparc) don't do this.
 
-Taking the slow path via next merge window as its been around a while
-and we have a patch set dependent on this which would be held up.
+We can remove the BUG_ON() check in prepare_uprobe() and validate the
+offset early in __uprobe_register(). The new IS_ALIGNED() check matches
+the alignment check in arch_prepare_kprobe() on supported architectures,
+so I think that all insns must be aligned to UPROBE_SWBP_INSN_SIZE.
 
-Fixes: 62a1efb9f868 ("iio: add vcnl4000 combined ALS and proximity sensor")
-Signed-off-by: Mathieu Othacehe <m.othacehe@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Another problem is __update_ref_ctr() which was wrong from the very
+beginning, it can read/write outside of kmap'ed page unless "vaddr" is
+aligned to sizeof(short), __uprobe_register() should check this too.
+
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Tested-by: Sven Schnelle <svens@linux.ibm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/light/vcnl4000.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ kernel/events/uprobes.c |   16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
---- a/drivers/iio/light/vcnl4000.c
-+++ b/drivers/iio/light/vcnl4000.c
-@@ -193,7 +193,6 @@ static int vcnl4000_measure(struct vcnl4
- 				u8 rdy_mask, u8 data_reg, int *val)
- {
- 	int tries = 20;
--	__be16 buf;
- 	int ret;
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -867,10 +867,6 @@ static int prepare_uprobe(struct uprobe
+ 	if (ret)
+ 		goto out;
  
- 	mutex_lock(&data->vcnl4000_lock);
-@@ -220,13 +219,12 @@ static int vcnl4000_measure(struct vcnl4
- 		goto fail;
- 	}
+-	/* uprobe_write_opcode() assumes we don't cross page boundary */
+-	BUG_ON((uprobe->offset & ~PAGE_MASK) +
+-			UPROBE_SWBP_INSN_SIZE > PAGE_SIZE);
+-
+ 	smp_wmb(); /* pairs with the smp_rmb() in handle_swbp() */
+ 	set_bit(UPROBE_COPY_INSN, &uprobe->flags);
  
--	ret = i2c_smbus_read_i2c_block_data(data->client,
--		data_reg, sizeof(buf), (u8 *) &buf);
-+	ret = i2c_smbus_read_word_swapped(data->client, data_reg);
- 	if (ret < 0)
- 		goto fail;
+@@ -1166,6 +1162,15 @@ static int __uprobe_register(struct inod
+ 	if (offset > i_size_read(inode))
+ 		return -EINVAL;
  
- 	mutex_unlock(&data->vcnl4000_lock);
--	*val = be16_to_cpu(buf);
-+	*val = ret;
++	/*
++	 * This ensures that copy_from_page(), copy_to_page() and
++	 * __update_ref_ctr() can't cross page boundary.
++	 */
++	if (!IS_ALIGNED(offset, UPROBE_SWBP_INSN_SIZE))
++		return -EINVAL;
++	if (!IS_ALIGNED(ref_ctr_offset, sizeof(short)))
++		return -EINVAL;
++
+  retry:
+ 	uprobe = alloc_uprobe(inode, offset, ref_ctr_offset);
+ 	if (!uprobe)
+@@ -2014,6 +2019,9 @@ static int is_trap_at_addr(struct mm_str
+ 	uprobe_opcode_t opcode;
+ 	int result;
  
- 	return 0;
- 
++	if (WARN_ON_ONCE(!IS_ALIGNED(vaddr, UPROBE_SWBP_INSN_SIZE)))
++		return -EINVAL;
++
+ 	pagefault_disable();
+ 	result = __get_user(opcode, (uprobe_opcode_t __user *)vaddr);
+ 	pagefault_enable();
 
 
