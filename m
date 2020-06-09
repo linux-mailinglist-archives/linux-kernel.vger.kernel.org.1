@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947401F4711
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 21:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0CE1F4717
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 21:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389205AbgFITZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 15:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
+        id S2389223AbgFIT36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 15:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730673AbgFITZh (ORCPT
+        with ESMTP id S1728443AbgFIT35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 15:25:37 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8AEC05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 12:25:37 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id e18so692388pgn.7
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 12:25:37 -0700 (PDT)
+        Tue, 9 Jun 2020 15:29:57 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE72C05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 12:29:57 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b16so10486937pfi.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 12:29:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kFFH4rN6KjxMJmlzDoLxm8Mltw2hQsIo+kpRF7qr7R0=;
-        b=WhEEqpsffIxSTyIwECrsIuUNt8DhKRax0O18nD8kxqBcEeWnYuCLuX21nciaW6ImnS
-         uWjX+8o0+Qi9x+5dxeyD7iyw0vxQo0iE0rdaqg9bfFyTsKmL0sQjxfb6Q8TJQCwV+7Dg
-         9kJW/FQtO9ixxD7ec4yUOvVSzDMGQuvAV6DeUgvtgvJmQwaKahKPBvUIxGABr39xfSTX
-         adt8xos57naxWdvyWkeSCgcgWDMthybYzOOcbHFA2j8PqYpeiL0W2vcNlnf7INtBrHWi
-         ypIQ9cHVrOxLUCRBlthpkC4LVtZQ1bM+0fvce7ExIMhVwnmSb1NwlIfC1wC+ZdO3ouWe
-         ioqg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lrNZt0MHOnjftD+toCJiTQv+PMA1xMJhh4w8++pUPGM=;
+        b=gbtZcQEDLCUU9CqWf+7FbEgPhzVhA9ZDHdZzwBqQC+hOj8SA68uFyMiv0ElgZZWjtK
+         V5TqAf9eBnpuGEAzu03YHBDyI4V1WauNT+QAnXUwF0y8KFKAYEtYpNvXpg8v+QYhwio5
+         en6xulro9ueMLbkq3Vlyck9Gza7Bs8r5E3fNQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kFFH4rN6KjxMJmlzDoLxm8Mltw2hQsIo+kpRF7qr7R0=;
-        b=IC5UX5bJmrk7u/p94zGLK45zCGg4EQvtMYtmwjyP9ab2DcSjMD1A3/UY7fZDtigEX9
-         q7kNzGX/SobC4WVMs8G5FDin2sJqbdj5h0ddpSw27zfrnWfaXEqWtaqPxHPTX1JAuxm3
-         EtEAmHXRTpLYgOHDSVKs1Mk/nYnLWK3TJd85Z9Mgft+FnLUT7/zkZlC3qHBVy+swI7fI
-         2T7fwDsxNeeHq81DCgtdHcBOsb6RPxkWBJLgDffDap0CopxsExNsa2M/hUpawj3F81I7
-         3w0RO7LtGxmH+u2dLAICKwMVteji141dt/T7y3zA1uH0SyMVCE/8fDPUIN6qKUaYlhWg
-         6TJg==
-X-Gm-Message-State: AOAM530RKiWYmleHF0jYvOmqctlgQtC9tXEudDhOaZiQ1KY9wcf/ChEp
-        uL0fq9lpqcaIEjLTWsS5B+LF9kzSEROzohh3SHq2AA==
-X-Google-Smtp-Source: ABdhPJxbbAeQHTukROqUecTz68J69iFM6/OzTYcDpD65Sxr8qt+HL2WuQjbTc01I/fKhxYN2fvRpYXWiuWIcBAjtVws=
-X-Received: by 2002:a62:6583:: with SMTP id z125mr26502301pfb.106.1591730736382;
- Tue, 09 Jun 2020 12:25:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lrNZt0MHOnjftD+toCJiTQv+PMA1xMJhh4w8++pUPGM=;
+        b=gZlO9znmMsL8JddVcCiRdAB90Bdxl9pVkfPoA5nqCTcAvO1/z988bHXTEncfZ6Cvfm
+         3hS0ycH1cu2vt44SlWGLMuyUeYHtVZ30aiZbHYmMN6Za0iDmU6xlvQiIAebfctiV8aQ4
+         2TfJAvmGEj9O1SkIytvOmC76F29Qcm2pt7Y/eNRvMliR08MeqcfJEU3yIpgsGADO6FN0
+         +OVcALVMCXzYgY9x3yLh3VhneTXi4VPrTtCejDCTasKFHE07/4PYPvZdP7DbCgQVlzQu
+         cVBVGGOiuE+mqmeECWxOZurZdjbqmd41lt/32/z20UWN+uXxKiwRoUs1KG0ELbSEyrvR
+         IKSA==
+X-Gm-Message-State: AOAM531PjA7tvIrICUJ4e9KLUz0yF3HAz+/buS6/Z1Yw6Eyczzm2C5py
+        WuZhjc8Etaum10ACvjaIctkpqA==
+X-Google-Smtp-Source: ABdhPJw3u9YjiwkoOUaSfzuKhTCx4daVvmPUXp8gu4QHLoH55ck5aMiWVypH2wi+kNplt0PhZUmWLQ==
+X-Received: by 2002:aa7:9558:: with SMTP id w24mr26619306pfq.241.1591730997079;
+        Tue, 09 Jun 2020 12:29:57 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o96sm3319015pjo.13.2020.06.09.12.29.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 12:29:56 -0700 (PDT)
+Date:   Tue, 9 Jun 2020 12:29:54 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     David Miller <davem@davemloft.net>
+Cc:     stephen@networkplumber.org, o.rempel@pengutronix.de,
+        andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
+        kuba@kernel.org, corbet@lwn.net, mkubecek@suse.cz,
+        linville@tuxdriver.com, david@protonic.nl, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux@armlinux.org.uk, mkl@pengutronix.de, marex@denx.de,
+        christian.herber@nxp.com, amitc@mellanox.com, petrm@mellanox.com
+Subject: Re: [PATCH ethtool v1] netlink: add master/slave configuration
+ support
+Message-ID: <202006091222.CB97F743AD@keescook>
+References: <20200607153019.3c8d6650@hermes.lan>
+ <20200607.164532.964293508393444353.davem@davemloft.net>
+ <20200609101935.5716b3bd@hermes.lan>
+ <20200609.113633.1866761141966326637.davem@davemloft.net>
 MIME-Version: 1.0
-References: <20200606040349.246780-1-davidgow@google.com> <20200606040349.246780-5-davidgow@google.com>
-In-Reply-To: <20200606040349.246780-5-davidgow@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Tue, 9 Jun 2020 12:25:25 -0700
-Message-ID: <CAFd5g46Zn6DuDVB+2SLFd=ofc3J9DXEZ1cn9eTva5-EHueRONw@mail.gmail.com>
-Subject: Re: [PATCH v8 4/5] KASAN: Testing Documentation
-To:     David Gow <davidgow@google.com>
-Cc:     Patricia Alfonso <trishalfonso@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        andreyknvl@google.com, shuah <shuah@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200609.113633.1866761141966326637.davem@davemloft.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 9:04 PM David Gow <davidgow@google.com> wrote:
->
-> From: Patricia Alfonso <trishalfonso@google.com>
->
-> Include documentation on how to test KASAN using CONFIG_TEST_KASAN_KUNIT
-> and CONFIG_TEST_KASAN_MODULE.
->
-> Signed-off-by: Patricia Alfonso <trishalfonso@google.com>
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-> Signed-off-by: David Gow <davidgow@google.com>
-> Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+On Tue, Jun 09, 2020 at 11:36:33AM -0700, David Miller wrote:
+> From: Stephen Hemminger <stephen@networkplumber.org>
+> Date: Tue, 9 Jun 2020 10:19:35 -0700
+> 
+> > Yes, words do matter and convey a lot of implied connotation and
+> > meaning.
+> 
+> What is your long term plan?  Will you change all of the UAPI for
+> bonding for example?
+> 
+> Or will we have a partial solution to the problem?
 
-Acked-by: Brendan Higgins <brendanhiggins@google.com>
+As a first step, let's stop _adding_ this language.
+
+Given what I've seen from other communities and what I know of the kernel
+community, I don't think we're going to get consensus on some massive
+global search/replace any time soon. However, I think we can get started
+on making this change with just stopping further introductions. (I view
+this like any other treewide change: stop new badness from getting
+added, and chip away as old ones as we can until it's all gone.)
+
+-- 
+Kees Cook
