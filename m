@@ -2,130 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D091F3BC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A32B1F3BD9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729520AbgFINQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 09:16:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33190 "EHLO mail.kernel.org"
+        id S1729987AbgFINRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 09:17:00 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:33654 "EHLO mail1.perex.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729787AbgFINQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 09:16:03 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729968AbgFINQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 09:16:55 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id B823CA003F;
+        Tue,  9 Jun 2020 15:16:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz B823CA003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1591708612; bh=Q6pAyvWAA5MDPmhkXsBCOnRP+oa87wANg1kmgbc1Kpc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=WvAeGGBAMKiFOFjTPXv8K3w5I1fxEZVOhQaZiXlSH1MVoJCMwtDLsMxaOSFHber3c
+         L1N+Ix+80HnPbrBixJ0V62C0B7d0XedIZzq/bLDST90WHVbtdXfgzYan8OfYvWB76T
+         tZVa+PvCOJTQmgNlwOSN0GHaj8vF3zuHqiiSmrAI=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E788520737;
-        Tue,  9 Jun 2020 13:16:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591708562;
-        bh=fn5/yXr+s+Db1jJwZ/m79lFUBemiDJfuNnzHg1lYHVg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pxwzHiXulXcoI9AP55wyvnUrJtLD4+i3+COYPzt2f/GwI7kdH0zz4YBaYDQ6VaPf8
-         FJ2dTwvOVj+Sb89FgB21g0H+FeIyrOMUo40gTC11xrTCvFt10WyodxdM6fcHbcgM8M
-         gtZWH7SRS1IEnIK1PvET7VXz08RRftT/3FY8pFMU=
-Date:   Tue, 9 Jun 2020 14:16:00 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Grant Likely <grant.likely@arm.com>,
-        Saravana Kannan <saravanak@google.com>,
-        artem.bityutskiy@linux.intel.com, balbi@kernel.org,
-        fntoth@gmail.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        peter.ujfalusi@ti.com, rafael@kernel.org, kernel-team@android.com,
-        nd <nd@arm.com>, kernel@pengutronix.de
-Subject: Re: [PATCH v3] driver core: Break infinite loop when deferred probe
- can't be satisfied
-Message-ID: <20200609131600.GE4583@sirena.org.uk>
-References: <20200325032901.29551-1-saravanak@google.com>
- <20200325125120.GX1922688@smile.fi.intel.com>
- <295d25de-f01e-26de-02d6-1ac0c149d828@arm.com>
- <20200326163110.GD1922688@smile.fi.intel.com>
- <CGME20200608091722eucas1p2fa8a4ac15c70e5a6e03c4babdf9f96b7@eucas1p2.samsung.com>
- <20200608091712.GA28093@pengutronix.de>
- <437de51b-37e9-d8d1-19c7-137a9265bf45@samsung.com>
- <20200609064511.7nek2rhk6ebfjaia@pengutronix.de>
- <b413d39f-71c4-d291-276d-1087baf07080@samsung.com>
- <20200609121029.nfhgilpu5meoygoa@pengutronix.de>
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Tue,  9 Jun 2020 15:16:38 +0200 (CEST)
+Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
+To:     Christoph Hellwig <hch@lst.de>, Takashi Iwai <tiwai@suse.de>
+Cc:     David Rientjes <rientjes@google.com>,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
+        alsa-devel@alsa-project.org, bp@alien8.de, hch@infradead.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        Pavel Machek <pavel@ucw.cz>, tglx@linutronix.de,
+        tiwai@suse.com, x86@kernel.org
+References: <20200609054306.GA9606@lst.de> <s5hsgf4irzt.wl-tiwai@suse.de>
+ <20200609084305.GA21671@lst.de> <s5hlfkwip1h.wl-tiwai@suse.de>
+ <20200609091727.GA23814@lst.de> <s5hh7vkio0n.wl-tiwai@suse.de>
+ <20200609113123.GA547@lst.de> <s5h3674ii49.wl-tiwai@suse.de>
+ <20200609114059.GA1228@lst.de> <s5hzh9ch38h.wl-tiwai@suse.de>
+ <20200609114955.GA2027@lst.de>
+From:   Jaroslav Kysela <perex@perex.cz>
+Message-ID: <a20ab909-bb60-8d47-0da3-122a724aecbe@perex.cz>
+Date:   Tue, 9 Jun 2020 15:16:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6e7ZaeXHKrTJCxdu"
-Content-Disposition: inline
-In-Reply-To: <20200609121029.nfhgilpu5meoygoa@pengutronix.de>
-X-Cookie: Be careful!  Is it classified?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200609114955.GA2027@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dne 09. 06. 20 v 13:49 Christoph Hellwig napsal(a):
+> On Tue, Jun 09, 2020 at 01:45:34PM +0200, Takashi Iwai wrote:
+>> Yes, for the sound stuff, something below should make things working.
+>> But it means that we'll lose the SG-buffer allocation and the
+>> allocation of large buffers might fail on some machines.
+> 
+> We crossed lines there.  In general due to better memory compaction and
+> CMA we have better chances to get larger contiguous allocations these
+> days, so this might not be too much of an issue in practice.
+> 
 
---6e7ZaeXHKrTJCxdu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+But turning off the SG DMA scheme seems like a step back. Would be possible to 
+fix this kind of memory mapping?
 
-On Tue, Jun 09, 2020 at 02:10:29PM +0200, Marco Felsch wrote:
-> On 20-06-09 11:27, Andrzej Hajda wrote:
-> > On 09.06.2020 08:45, Marco Felsch wrote:
-> > > On 20-06-08 13:11, Andrzej Hajda wrote:
-> > >> On 08.06.2020 11:17, Marco Felsch wrote:
-> > >>> On 20-03-26 18:31, Andy Shevchenko wrote:
-> > >>>> On Thu, Mar 26, 2020 at 03:01:22PM +0000, Grant Likely wrote:
-> > >>>>> On 25/03/2020 12:51, Andy Shevchenko wrote:
-> > >>>>>> On Tue, Mar 24, 2020 at 08:29:01PM -0700, Saravana Kannan wrote:
-> > >>>>>>> On Tue, Mar 24, 2020 at 5:38 AM Andy Shevchenko <andriy.shevche=
-nko@linux.intel.com> wrote:
+					Jaroslav
 
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
 
-> > I think rule of=20
-> > thumb should be "do not expose yourself, until you are ready", which in=
-=20
-> > this case means "do not call component_add, until resources are=20
-> > acquired" - ie resource acquisition should be performed in probe.
-
-> Hm.. there are is no documentation which forbid this use-case. I thought
-> that the component framework bind() equals the driver probe() function..
-
-It does, the issue is perhaps more clearly expressed as saying that a
-driver should acquire whatever resources it needs before starting to
-make resources available to others, this includes but isn't limited to
-registering new device nodes.  This ensures that the users don't then
-start trying to use resources and have them torn down underneath them.
-
-> > I use=20
-> > this approach mainly to avoid multiple deferred re-probes, but it shoul=
-d=20
-> > solve also this issue, so even if there will be solution to "deferred=
-=20
-> > probe issues" in core it would be good to fix imx drivers.
-
-> Pls, see my above comments. It is not only the imx driver. Also we
-> shouldn't expect that driver-developers will follow a rule which is
-> not written somewhere.
-
-If you've got an idea where this should be documented patches welcome!
-I can't think of anywhere sensibly discoverable to put something off the
-top of my head.
-
---6e7ZaeXHKrTJCxdu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7fi48ACgkQJNaLcl1U
-h9BAnwf+IQAg6nhT7tQENlmhPWx3FZ4yhQkrwDmGU9T40E0yCtHmLUNcLGsh9kyn
-DBlX8hGB51Btbnu0B/0A1HZ5WbI3jRLlZKcweyc2lYeBB+EYCE6QcX8Q/PZPcZc3
-HkGMw18pACXYKlOxyFg6HF8Jkx+FyU4ArPyIYTCq9ONdKx/QjJHXrYPoAV/M8WX2
-/hlGcoLfh2Zo8R/P/9oCbAqsZ0O4O3JZKKxOoUtLynwCymjgDd88rDsBX/FmmUwN
-k7z3zuvZTHwwv9jwDsqHczyv2IwilmWHT2tYFHOz5wmdiJsngQb5+juzyDdf+B8Z
-z3yiOvVVzkenkzPDl2y7/qCDurQOxw==
-=ln+W
------END PGP SIGNATURE-----
-
---6e7ZaeXHKrTJCxdu--
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
