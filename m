@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAD41F3CBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253391F3CC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729167AbgFINgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 09:36:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728400AbgFINga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 09:36:30 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1729827AbgFINjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 09:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728400AbgFINjA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 09:39:00 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AB6C05BD1E;
+        Tue,  9 Jun 2020 06:39:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HWh6P44BdWZmQIF8VcmUSbalmmaslEENnThQdSj8D00=; b=brayCqXKtixRb5UN8h2w5jf3wG
+        uy+WsOhWc3fl25hRI27mz1KhFK1K2u17Lol59T9g9m/Ph5Em7TZXq76biFFI2WfKE+JpV4mH/nYYr
+        rZFs9WaVesO0W8jpMY9X+urO0hWU6qd6L0vMv3+3b7r+mWgnhyQbYT/zH7iLf3mVu4coL/MSbRlm3
+        N7zWHM8+8x8gZXQrGnarcnwdlnNO7VycK1B/1hPkQU44jguvTwUUxpaLgYVJmrjNDyWVMPBIOeJl/
+        VwtJ9ejnv81zq64x2SJ5jKGRSU5O/IcfvuygoWFKYNaxbR9BOsEGs7FvRnWs4FLJEMg5zBmNHOjP5
+        Bfc/275w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jieSf-0006sf-7R; Tue, 09 Jun 2020 13:38:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 302F220760;
-        Tue,  9 Jun 2020 13:36:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591709789;
-        bh=Li2Zv/6mZ+A+7R/O4fGGBVAxKZqiekxdMlcIJEyMsuw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wvyrDCX2Kyt8XdCcriT/loGbIqItmnhi6dxs74zoVk3ao9QrbLlBuUdzAO7csHcG8
-         8J9cfDv4FK0Oazwhr1o1bqrJ4gQgjb60Rw+jFyneV0En2dSvoJSxNOc/LXZ2e7b8hU
-         pyoTKOiQHj5Q/qf8HCS3CKeh3ZntT4ycRcBMu3ww=
-Date:   Tue, 9 Jun 2020 14:36:27 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Robin Gong <yibin.gong@nxp.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "matthias.schiffer@ew.tq-group.com" 
-        <matthias.schiffer@ew.tq-group.com>,
-        "martin.fuzzey@flowbird.group" <martin.fuzzey@flowbird.group>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "will.deacon@arm.com" <will.deacon@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v9 RESEND 01/13] spi: imx: add dma_sync_sg_for_device
- after fallback from dma
-Message-ID: <20200609133627.GG4583@sirena.org.uk>
-References: <1591485677-20533-1-git-send-email-yibin.gong@nxp.com>
- <1591485677-20533-2-git-send-email-yibin.gong@nxp.com>
- <20200608143458.GH4593@sirena.org.uk>
- <VE1PR04MB66388F89015F774EE3FFF69D89850@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <20200608153139.GI4593@sirena.org.uk>
- <59ce3620-00b9-bac1-30e1-011a29583642@arm.com>
- <VE1PR04MB6638B1EC49D295C64292B7BD89820@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <bcfc3637-65af-577a-ddbd-890b6c83a6e6@arm.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D01273019CE;
+        Tue,  9 Jun 2020 15:38:37 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B5A87213D3A8E; Tue,  9 Jun 2020 15:38:37 +0200 (CEST)
+Date:   Tue, 9 Jun 2020 15:38:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, frederic@kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: blk-softirq vs smp_call_function_single_async()
+Message-ID: <20200609133837.GA2514@hirez.programming.kicks-ass.net>
+References: <20200608115800.GA2531@hirez.programming.kicks-ass.net>
+ <20200608154557.GA26611@infradead.org>
+ <20200608155833.GC2531@hirez.programming.kicks-ass.net>
+ <20200608163342.GA5155@infradead.org>
+ <20200608164009.GD2531@hirez.programming.kicks-ass.net>
+ <20200608164254.GA2431@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9/eUdp+dLtKXvemk"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bcfc3637-65af-577a-ddbd-890b6c83a6e6@arm.com>
-X-Cookie: Be careful!  Is it classified?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200608164254.GA2431@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 08, 2020 at 09:42:54AM -0700, Christoph Hellwig wrote:
+> On Mon, Jun 08, 2020 at 06:40:09PM +0200, Peter Zijlstra wrote:
+> > There isn't one, it was meant to be used with static allocations.
+> > 
+> > Frederic proposed changing all these to irq_work, and I think I'll go do
+> > that. First dinner though.
 
---9/eUdp+dLtKXvemk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+OK, after having looked at this more, I think my initial analysis is
+actually wrong and this code should work as-is.
 
-On Tue, Jun 09, 2020 at 11:00:33AM +0100, Robin Murphy wrote:
+The thing that I missed yesterday is that we only add the request to the
+blk_cpu_done list in the IPI, this means that the race I described
+earlier is not in fact possible.
 
-> Ah, I think I understand what's going on now. That's... really ugly :(
+The IPI must happen for progress to be made.
 
-> Looking at the SPI core code, I think a better way to handle this would be
-> to have your fallback path call spi_unmap_buf() directly (or perform the
-> same actions, if exporting that to drivers is unacceptable), then make su=
-re
-> ->can_dma() returns false after that such that spi_unmap_msg() won't try =
-to
-> unmap it again. That's a lot more reasonable than trying to fake up a
-> DMA_TO_DEVICE transfer in the middle of a DMA_FROM_DEVICE operation on the
-> same buffer.
+And the same is true for blk_mq_force_complete_rq(), which also uses
+this csd.
 
-Ideally the driver would be checking in can_dma() if the DMA controller
-is able to perform transactions rather than letting things run as far as=20
-trying to actually do the transfer, that's a whole lot cleaner and more
-manageable than running into an error doing the transfer.  I'm surprised
-that there's no DMA API way to figure this out TBH.
+> The irq_work API looks reasonable.  What are the tradeoffs for
+> smp_call_single_async vs irq_work?
 
-We'll also need some handling for this changing at runtime, we're not
-expecting this to be dynamic at all - we're expecting it to be a static
-property of the controller/transfer combination, we didn't contemplate
-this varying randomly at runtime.  Instead of rechecking can_dma() we
-ought to have a flag saying if we did the mapping (which the bodge Robin
-suggests above could clear).
+To still answer your question; irq_work_queue*() has an atomic op extra
+that allows for more convenient semantics -- but is in your case
+strictly superfluous.
 
---9/eUdp+dLtKXvemk
-Content-Type: application/pgp-signature; name="signature.asc"
+Still, Jens' point about irq_work being smaller stands, and I think more
+users could benefit from something intermediate. Let me continue with
+the cleanups / audit and see what comes out at the end.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7fkFoACgkQJNaLcl1U
-h9DtGQgAg3cybc1xp7BBF/QRvws6J4hPoAwnctYQTcfaBVM70lGt4MoQdY+j0ymD
-YB6menlav/89t8bYFq7D5gtHajROU0WHsoMpV0MqojMtTOJG+Bo7uALWKblPRuTH
-kFOBCkPPZXT/yJGw47VaNlQuvjI/Zh8SlLBzjqMAmkDF9OjNN8ZAp8c2KBihDg8O
-YeQZEPlcgtdR/rJlia6YucfA52ZDivjbKaCQIg6hQhiuFU86nxRFqaohBUqxRb5a
-SacvLkra2J+oUkr6z/P76+DkFlZ6cQ3hWGuKWIyr89Ie1/4cvuKvahvYfrpgR2ph
-rY445Tv19HnK2Aaz0RUu6zumFOa3pA==
-=2yHW
------END PGP SIGNATURE-----
-
---9/eUdp+dLtKXvemk--
+Thanks!
