@@ -2,194 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26291F3D95
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E6F1F3D9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730270AbgFIOH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 10:07:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57418 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728829AbgFIOH1 (ORCPT
+        id S1730347AbgFIOHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728338AbgFIOHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:07:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591711645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=PDlzQQ5oKYRRaYWAL/HDT5cz+wykF9SEdeyaLVMApFA=;
-        b=UsujlYtH6kDYIUCl3G3ouHs1ZGc9W+7VW9wTqJDy0Mwqk7pnvY+vtLdyv6HcWQdTEC1uH2
-        BNf5HQyGnncyhnGqqn9mDpFb0F4pOqIPcJSoRUAjXDvg7s7VFlXnDq6fVtIV/uRKH58H9I
-        NfNFiq4ckI9oEg3lUUxuPbVO7vDqTl4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-47-0ocdvd3tP_eQPi4z7Gd6dQ-1; Tue, 09 Jun 2020 10:07:22 -0400
-X-MC-Unique: 0ocdvd3tP_eQPi4z7Gd6dQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C386457096;
-        Tue,  9 Jun 2020 14:07:13 +0000 (UTC)
-Received: from [10.36.114.103] (ovpn-114-103.ams2.redhat.com [10.36.114.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C140C10013C1;
-        Tue,  9 Jun 2020 14:07:01 +0000 (UTC)
-Subject: Re: [RFC v11 3/8] mm/damon: Implement data access monitoring-based
- operation schemes
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
-        Jonathan.Cameron@Huawei.com, aarcange@redhat.com, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, amit@kernel.org,
-        benh@kernel.crashing.org, brendan.d.gregg@gmail.com,
-        brendanhiggins@google.com, cai@lca.pw, colin.king@canonical.com,
-        corbet@lwn.net, dwmw@amazon.com, foersleo@amazon.de,
-        irogers@google.com, jolsa@redhat.com, kirill@shutemov.name,
-        mark.rutland@arm.com, mgorman@suse.de, minchan@kernel.org,
-        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
-        rdunlap@infradead.org, riel@surriel.com, rientjes@google.com,
-        rostedt@goodmis.org, sblbir@amazon.com, shakeelb@google.com,
-        shuah@kernel.org, sj38.park@gmail.com, snu@amazon.de,
-        vbabka@suse.cz, vdavydov.dev@gmail.com, yang.shi@linux.alibaba.com,
-        ying.huang@intel.com, linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200609091725.15859-1-sjpark@amazon.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABtCREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT6JAlgEEwEIAEICGwMFCQlmAYAGCwkIBwMCBhUI
- AgkKCwQWAgMBAh4BAheAFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl3pImkCGQEACgkQTd4Q
- 9wD/g1o+VA//SFvIHUAvul05u6wKv/pIR6aICPdpF9EIgEU448g+7FfDgQwcEny1pbEzAmiw
- zAXIQ9H0NZh96lcq+yDLtONnXk/bEYWHHUA014A1wqcYNRY8RvY1+eVHb0uu0KYQoXkzvu+s
- Dncuguk470XPnscL27hs8PgOP6QjG4jt75K2LfZ0eAqTOUCZTJxA8A7E9+XTYuU0hs7QVrWJ
- jQdFxQbRMrYz7uP8KmTK9/Cnvqehgl4EzyRaZppshruKMeyheBgvgJd5On1wWq4ZUV5PFM4x
- II3QbD3EJfWbaJMR55jI9dMFa+vK7MFz3rhWOkEx/QR959lfdRSTXdxs8V3zDvChcmRVGN8U
- Vo93d1YNtWnA9w6oCW1dnDZ4kgQZZSBIjp6iHcA08apzh7DPi08jL7M9UQByeYGr8KuR4i6e
- RZI6xhlZerUScVzn35ONwOC91VdYiQgjemiVLq1WDDZ3B7DIzUZ4RQTOaIWdtXBWb8zWakt/
- ztGhsx0e39Gvt3391O1PgcA7ilhvqrBPemJrlb9xSPPRbaNAW39P8ws/UJnzSJqnHMVxbRZC
- Am4add/SM+OCP0w3xYss1jy9T+XdZa0lhUvJfLy7tNcjVG/sxkBXOaSC24MFPuwnoC9WvCVQ
- ZBxouph3kqc4Dt5X1EeXVLeba+466P1fe1rC8MbcwDkoUo65Ag0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAGJAiUEGAECAA8FAlXLn5ECGwwFCQlmAYAACgkQTd4Q
- 9wD/g1qA6w/+M+ggFv+JdVsz5+ZIc6MSyGUozASX+bmIuPeIecc9UsFRatc91LuJCKMkD9Uv
- GOcWSeFpLrSGRQ1Z7EMzFVU//qVs6uzhsNk0RYMyS0B6oloW3FpyQ+zOVylFWQCzoyyf227y
- GW8HnXunJSC+4PtlL2AY4yZjAVAPLK2l6mhgClVXTQ/S7cBoTQKP+jvVJOoYkpnFxWE9pn4t
- H5QIFk7Ip8TKr5k3fXVWk4lnUi9MTF/5L/mWqdyIO1s7cjharQCstfWCzWrVeVctpVoDfJWp
- 4LwTuQ5yEM2KcPeElLg5fR7WB2zH97oI6/Ko2DlovmfQqXh9xWozQt0iGy5tWzh6I0JrlcxJ
- ileZWLccC4XKD1037Hy2FLAjzfoWgwBLA6ULu0exOOdIa58H4PsXtkFPrUF980EEibUp0zFz
- GotRVekFAceUaRvAj7dh76cToeZkfsjAvBVb4COXuhgX6N4pofgNkW2AtgYu1nUsPAo+NftU
- CxrhjHtLn4QEBpkbErnXQyMjHpIatlYGutVMS91XTQXYydCh5crMPs7hYVsvnmGHIaB9ZMfB
- njnuI31KBiLUks+paRkHQlFcgS2N3gkRBzH7xSZ+t7Re3jvXdXEzKBbQ+dC3lpJB0wPnyMcX
- FOTT3aZT7IgePkt5iC/BKBk3hqKteTnJFeVIT7EC+a6YUFg=
-Organization: Red Hat GmbH
-Message-ID: <1f2ce1c6-2a09-667d-2bee-40215b421989@redhat.com>
-Date:   Tue, 9 Jun 2020 16:07:00 +0200
+        Tue, 9 Jun 2020 10:07:48 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E424C05BD1E;
+        Tue,  9 Jun 2020 07:07:47 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id x22so12588666lfd.4;
+        Tue, 09 Jun 2020 07:07:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wxlUC47mBiAj2KazrQRk0ZOPTudYA0Zuw2dUBmXJP/M=;
+        b=d2hgC+ptjckByl9lFqMKN7zMtiofOgxz+Q/1e+mD94QxBUXrcRJuxxLpP0VBmiC1or
+         +uDYUvuvNrq5cT0Hoxhzfaw4YplDk3kGfhT9/OyogPZCrFWYkNAYMOZbdCGD2moHX0Nx
+         BBxHFeTIoMu73vIGvLoe73VRujwvLzuz7x5w9R0n4+1Gt+lm7mxM2IdU/D9BLEuV/2TP
+         MfdvKA6W4CPZjDRlS7DuViUEsjtaNWeEPHp/IwZ/jaJ6Vc71Ds/9fj5Kx7Rl2iOLj8h4
+         WhzjI9296qk1xxynyBWmq+RqxF/TSazN3PdO4q4KLq7guQVLvL/7TTiLfJux32wazpic
+         5mrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wxlUC47mBiAj2KazrQRk0ZOPTudYA0Zuw2dUBmXJP/M=;
+        b=McCZEih2Uf9MQ6I1KetVVddtXq6UIoVtMrpiU4vqWpmvsr03H1XJR3AxHfP5tMN7BS
+         yc+IJ4Mgn1XOuTUe92FxT/XWmqNQfiKSEOf2JjqjocwlG7Cz/gaoNOXoSlEXMab+LCL5
+         FnvqqD03kCzCPqQl9mGdF/hAbq6aRbLvHXXTRb1gFXStI+FguAecw1uxL48z6YDJEH+4
+         /WQ2oTOysvuxxWGM2gWPH2L/XSZFkbs3TfKjaDHH7TURmuTiQGLAv9a0QDISXA4o5QuG
+         Sc15EoRIARRy6zblhndJYlbC4770mrIPv50zYigoJnEzSvhcqYXmNneNeS9GPBwNZUFm
+         3KDA==
+X-Gm-Message-State: AOAM533xMIdMdk/+wDtBKdw7VTX60XPUpADkJXKagTIesnoE0Sz7sjyR
+        Hn8TUAY2FLaAts6zbaovPMw=
+X-Google-Smtp-Source: ABdhPJxY0/wPtyTxxKKV2kIBQt6lh/b2z8i0MpsPSuGj75pIEKAe7xDzg2Ey3heRmK9/oignDZvfIw==
+X-Received: by 2002:ac2:4567:: with SMTP id k7mr15515623lfm.122.1591711665891;
+        Tue, 09 Jun 2020 07:07:45 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
+        by smtp.googlemail.com with ESMTPSA id y17sm5078623lfa.77.2020.06.09.07.07.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jun 2020 07:07:43 -0700 (PDT)
+Subject: Re: [PATCH v3] soc: samsung: Add simple voltage coupler for
+ Exynos5800
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>, peron.clem@gmail.com,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        linux-samsung-soc@vger.kernel.org,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Saravana Kannan <saravanak@google.com>
+References: <CGME20200609104230eucas1p2efc14b59c4ccdcb839b54a62fbd8a31c@eucas1p2.samsung.com>
+ <20200609104221.21243-1-m.szyprowski@samsung.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <682662fa-d848-f51b-fad7-cb56af9f1a1c@gmail.com>
+Date:   Tue, 9 Jun 2020 17:07:42 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200609091725.15859-1-sjpark@amazon.com>
+In-Reply-To: <20200609104221.21243-1-m.szyprowski@samsung.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.06.20 11:17, SeongJae Park wrote:
-> On Tue, 9 Jun 2020 10:47:45 +0200 David Hildenbrand <david@redhat.com> wrote:
+09.06.2020 13:42, Marek Szyprowski пишет:
+> Add a simple custom voltage regulator coupler for Exynos5800 SoCs, which
+> require coupling between "vdd_arm" and "vdd_int" regulators. This coupler
+> ensures that the voltage values don't go below the bootloader-selected
+> operation point during the boot process until a the clients sets their
+> constraints. It is achieved by assuming minimal voltage value equal to
+> the current value if no constraints are set. This also ensures proper
+> voltage balancing if any of the client driver is missing.
 > 
->> On 09.06.20 08:53, SeongJae Park wrote:
->>> From: SeongJae Park <sjpark@amazon.de>
->>>
->>> In many cases, users might use DAMON for simple data access aware
->>> memory management optimizations such as applying an operation scheme to
->>> a memory region of a specific size having a specific access frequency
->>> for a specific time.  For example, "page out a memory region larger than
->>> 100 MiB but having a low access frequency more than 10 minutes", or "Use
->>> THP for a memory region larger than 2 MiB having a high access frequency
->>> for more than 2 seconds".
->>>
->>> To minimize users from spending their time for implementation of such
->>> simple data access monitoring-based operation schemes, this commit makes
->>> DAMON to handle such schemes directly.  With this commit, users can
->>> simply specify their desired schemes to DAMON.
->>
->> What would be the alternative? How would a solution where these policies
->> are handled by user space (or inside an application?) look like?
+> The balancing code comes from regulator core.c with the 
 > 
-> Most simple form of the altermative solution would be doing offline data access
-> pattern profiling using DAMON and modifying the application source code or
-> system configuration based on the profiling results.
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+> This patch is yet another attempt to fix the regulator coupling on
+> Exynos5800/5422 SoCs. Here are links to the previous attempts and
+> discussions:
 > 
-> More automated alternative solution would be a daemon constructed with two
-> modules:
+> https://lore.kernel.org/linux-samsung-soc/20191008101709.qVNy8eijBi0LynOteWFMnTg4GUwKG599n6OyYoX1Abs@z/
+> https://lore.kernel.org/lkml/20191017102758.8104-1-m.szyprowski@samsung.com/
+> https://lore.kernel.org/linux-pm/cover.1589528491.git.viresh.kumar@linaro.org/
+> https://lore.kernel.org/linux-pm/20200528131130.17984-1-m.szyprowski@samsung.com/
+> https://lore.kernel.org/linux-samsung-soc/57cf3a15-5d9b-7636-4c69-60742e8cfae6@samsung.com/
+> https://lore.kernel.org/lkml/20200605063724.9030-1-m.szyprowski@samsung.com/
 > 
->  - monitor: monitors the data access pattern of the workload via the DAMON
->    debugfs interface
->  - memory manager: based on the monitoring result, make appropriate memory
->    management changes via mlock(), madvise(), sysctl, etc.
+> The problem is with "vdd_int" regulator coupled with "vdd_arm" on Odroid
+> XU3/XU4 boards family. "vdd_arm" is handled by CPUfreq. "vdd_int" is
+> handled by devfreq. CPUfreq initialized quite early during boot and it
+> starts changing OPPs and "vdd_arm" value. Sometimes CPU activity during
+> boot goes down and some low-frequency OPPs are selected, what in turn
+> causes lowering "vdd_arm". This happens before devfreq applies its
+> requirements on "vdd_int". Regulator balancing code reduces "vdd_arm"
+> voltage value, what in turn causes lowering "vdd_int" value to the lowest
+> possible value. This is much below the operation point of the wcore bus,
+> which still runs at the highest frequency.
 > 
-> The daemon would be able to run inside the application process as a thread, or
-> outside as a standalone process.  If the daemon could not run inside the
-> application process, the memory management changes it could make would be
-> further limited, though, as mlock() and madvise() would not be available.  The
-> madvise_process(), which is already merged in the next tree, would be helpful
-> in this case.
+> The issue was hard to notice because in the most cases the board managed
+> to boot properly, even when the regulator was set to lowest value allowed
+> by the regulator constraints. However, it caused some random issues,
+> which can be observed as "Unhandled prefetch abort" or low USB stability.
 > 
->>>
->>> Each of the schemes is composed with conditions for filtering of the
->>> target memory regions and desired memory management action for the
->>> target.  Specifically, the format is::
->>>
->>>     <min/max size> <min/max access frequency> <min/max age> <action>
->>>
->>> The filtering conditions are size of memory region, number of accesses
->>> to the region monitored by DAMON, and the age of the region.  The age of
->>> region is incremented periodically but reset when its addresses or
->>> access frequency has significantly changed or the action of a scheme was
->>> applied.  For the action, current implementation supports only a few of
->>> madvise() hints, ``MADV_WILLNEED``, ``MADV_COLD``, ``MADV_PAGEOUT``,
->>> ``MADV_HUGEPAGE``, and ``MADV_NOHUGEPAGE``.
->>
->> I am missing some important information. Is this specified for *all*
->> user space processes? Or how is this configured? What are examples?
->>
->> E.g., messing with ``MADV_HUGEPAGE`` vs. ``MADV_NOHUGEPAGE`` of random
->> applications can change the behavior/break these applications. (e.g., if
->> userfaultfd is getting used and the applciation explicitly sets
->> MADV_NOHUGEPAGE).
+> Handling this case in the generic code has been rejected, so the only way
+> to ensure the desired behavior on Exynos5800-based SoCs is to make a
+> custom regulator coupler driver. I've tried hard to extract some common
+> code to simplify the exynos-regulator-coupler driver as much as possible,
+> but the difference between it and the generic code is so deep that this
+> approach failed, so indead I simply copied and modified the balancing
+> code.
 > 
-> Only monitoring target processes will be applied.  The monitoring target
-> processes can be specified by writing the process ids to 'pids' debugfs file or
-> constructing the 'struct damon_ctx' via the programming interface.
+> Best regards
+> Marek Szyprowski
+> ---
+>  arch/arm/mach-exynos/Kconfig                  |   1 +
+>  drivers/soc/samsung/Kconfig                   |   3 +
+>  drivers/soc/samsung/Makefile                  |   1 +
+>  .../soc/samsung/exynos-regulator-coupler.c    | 221 ++++++++++++++++++
+>  4 files changed, 226 insertions(+)
+>  create mode 100644 drivers/soc/samsung/exynos-regulator-coupler.c
 > 
-> I will refine the commit message to make the points clearer, in the next spin.
+> diff --git a/arch/arm/mach-exynos/Kconfig b/arch/arm/mach-exynos/Kconfig
+> index 76838255b5fa..f185cd3d4c62 100644
+> --- a/arch/arm/mach-exynos/Kconfig
+> +++ b/arch/arm/mach-exynos/Kconfig
+> @@ -118,6 +118,7 @@ config SOC_EXYNOS5800
+>  	bool "Samsung EXYNOS5800"
+>  	default y
+>  	depends on SOC_EXYNOS5420
+> +	select EXYNOS_REGULATOR_COUPLER
+>  
+>  config EXYNOS_MCPM
+>  	bool
+> diff --git a/drivers/soc/samsung/Kconfig b/drivers/soc/samsung/Kconfig
+> index 19c4d3f1437b..5d7819b52eed 100644
+> --- a/drivers/soc/samsung/Kconfig
+> +++ b/drivers/soc/samsung/Kconfig
+> @@ -43,4 +43,7 @@ config EXYNOS_PM_DOMAINS
+>  	bool "Exynos PM domains" if COMPILE_TEST
+>  	depends on PM_GENERIC_DOMAINS || COMPILE_TEST
+>  
+> +config EXYNOS_REGULATOR_COUPLER
+> +	bool "Exynos SoC Regulator Coupler" if COMPILE_TEST
+> +	depends on ARCH_EXYNOS || COMPILE_TEST
+>  endif
+> diff --git a/drivers/soc/samsung/Makefile b/drivers/soc/samsung/Makefile
+> index 31db65cb7aa3..93285faec416 100644
+> --- a/drivers/soc/samsung/Makefile
+> +++ b/drivers/soc/samsung/Makefile
+> @@ -10,3 +10,4 @@ obj-$(CONFIG_EXYNOS_PMU_ARM_DRIVERS)	+= exynos3250-pmu.o exynos4-pmu.o \
+>  					exynos5250-pmu.o exynos5420-pmu.o
+>  obj-$(CONFIG_EXYNOS_PMU_ARM64_DRIVERS)	+= exynos-pm.o exynos5433-pmu.o
+>  obj-$(CONFIG_EXYNOS_PM_DOMAINS) += pm_domains.o
+> +obj-$(CONFIG_EXYNOS_REGULATOR_COUPLER) += exynos-regulator-coupler.o
+> diff --git a/drivers/soc/samsung/exynos-regulator-coupler.c b/drivers/soc/samsung/exynos-regulator-coupler.c
+> new file mode 100644
+> index 000000000000..3cafc1738eb6
+> --- /dev/null
+> +++ b/drivers/soc/samsung/exynos-regulator-coupler.c
+> @@ -0,0 +1,221 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2020 Samsung Electronics Co., Ltd.
+> + *	      http://www.samsung.com/
+> + * Author: Marek Szyprowski <m.szyprowski@samsung.com>
+> + *
+> + * Simplified generic volatage coupler from regulator core.c
 
-Understood, so a process configures damon to only modify its mappings.
-thanks for clarifying! This makes exposing the do_madvise() look less
-dangerous.
+typo voltage -------------^
 
+> + * The main difference is that it keeps current regulator voltage
+> + * if consumers didn't apply their contraints yet.
 
--- 
-Thanks,
+typo conStraints ------------------------^
 
-David / dhildenb
+> + */
+> +
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/of.h>
+> +#include <linux/regulator/coupler.h>
+> +#include <linux/regulator/driver.h>
+> +#include <linux/regulator/machine.h>
+> +
+> +static int regulator_get_optimal_voltage(struct regulator_dev *rdev,
+> +					 int *current_uV,
+> +					 int *min_uV, int *max_uV,
+> +					 suspend_state_t state)
+> +{
+> +	struct coupling_desc *c_desc = &rdev->coupling_desc;
+> +	struct regulator_dev **c_rdevs = c_desc->coupled_rdevs;
+> +	struct regulation_constraints *constraints = rdev->constraints;
+> +	int desired_min_uV = 0, desired_max_uV = INT_MAX;
+> +	int max_current_uV = 0, min_current_uV = INT_MAX;
+> +	int highest_min_uV = 0, target_uV, possible_uV;
+> +	int i, ret, max_spread, n_coupled = c_desc->n_coupled;
+> +	bool done;
+> +
+> +	*current_uV = -1;
+> +
+> +	/* Find highest min desired voltage */
+> +	for (i = 0; i < n_coupled; i++) {
+> +		int tmp_min = 0;
+> +		int tmp_max = INT_MAX;
+> +
+> +		lockdep_assert_held_once(&c_rdevs[i]->mutex.base);
+> +
+> +		ret = regulator_check_consumers(c_rdevs[i],
+> +						&tmp_min,
+> +						&tmp_max, state);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		if (tmp_min == 0) {
+> +			ret = regulator_get_voltage_rdev(c_rdevs[i]);
+> +			if (ret < 0)
+> +				return ret;
+> +			tmp_min = ret;
+> +		}
+> +
+> +		/* apply constraints */
+> +		ret = regulator_check_voltage(c_rdevs[i], &tmp_min, &tmp_max);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		highest_min_uV = max(highest_min_uV, tmp_min);
+> +
+> +		if (i == 0) {
+> +			desired_min_uV = tmp_min;
+> +			desired_max_uV = tmp_max;
+> +		}
+> +	}
+> +
+> +	max_spread = constraints->max_spread[0];
+> +
+> +	/*
+> +	 * Let target_uV be equal to the desired one if possible.
+> +	 * If not, set it to minimum voltage, allowed by other coupled
+> +	 * regulators.
+> +	 */
+> +	target_uV = max(desired_min_uV, highest_min_uV - max_spread);
+> +
+> +	/*
+> +	 * Find min and max voltages, which currently aren't violating
+> +	 * max_spread.
+> +	 */
+> +	for (i = 1; i < n_coupled; i++) {
+> +		int tmp_act;
+> +
+> +		tmp_act = regulator_get_voltage_rdev(c_rdevs[i]);
+> +		if (tmp_act < 0)
+> +			return tmp_act;
+> +
+> +		min_current_uV = min(tmp_act, min_current_uV);
+> +		max_current_uV = max(tmp_act, max_current_uV);
+> +	}
+> +
+> +	/*
+> +	 * Correct target voltage, so as it currently isn't
+> +	 * violating max_spread
+> +	 */
+> +	possible_uV = max(target_uV, max_current_uV - max_spread);
+> +	possible_uV = min(possible_uV, min_current_uV + max_spread);
+> +
+> +	if (possible_uV > desired_max_uV)
+> +		return -EINVAL;
+> +
+> +	done = (possible_uV == target_uV);
+> +	desired_min_uV = possible_uV;
+> +
+> +	/* Set current_uV if wasn't done earlier in the code and if necessary */
+> +	if (*current_uV == -1) {
+> +		ret = regulator_get_voltage_rdev(rdev);
+> +		if (ret < 0)
+> +			return ret;
+> +		*current_uV = ret;
+> +	}
+> +
+> +	*min_uV = desired_min_uV;
+> +	*max_uV = desired_max_uV;
+> +
+> +	return done;
+> +}
+> +
+> +static int exynos_coupler_balance_voltage(struct regulator_coupler *coupler,
+> +					  struct regulator_dev *rdev,
+> +					  suspend_state_t state)
+> +{
+> +	struct regulator_dev **c_rdevs;
+> +	struct regulator_dev *best_rdev;
+> +	struct coupling_desc *c_desc = &rdev->coupling_desc;
+> +	int i, ret, n_coupled, best_min_uV, best_max_uV, best_c_rdev;
+> +	unsigned int delta, best_delta;
+> +	unsigned long c_rdev_done = 0;
+> +	bool best_c_rdev_done;
+> +
+> +	c_rdevs = c_desc->coupled_rdevs;
+> +	n_coupled = c_desc->n_coupled;
+> +
+> +	/*
+> +	 * Find the best possible voltage change on each loop. Leave the loop
+> +	 * if there isn't any possible change.
+> +	 */
+> +	do {
+> +		best_c_rdev_done = false;
+> +		best_delta = 0;
+> +		best_min_uV = 0;
+> +		best_max_uV = 0;
+> +		best_c_rdev = 0;
+> +		best_rdev = NULL;
+> +
+> +		/*
+> +		 * Find highest difference between optimal voltage
+> +		 * and current voltage.
+> +		 */
+> +		for (i = 0; i < n_coupled; i++) {
+> +			/*
+> +			 * optimal_uV is the best voltage that can be set for
+> +			 * i-th regulator at the moment without violating
+> +			 * max_spread constraint in order to balance
+> +			 * the coupled voltages.
+> +			 */
+> +			int optimal_uV = 0, optimal_max_uV = 0, current_uV = 0;
+> +
+> +			if (test_bit(i, &c_rdev_done))
+> +				continue;
+> +
+> +			ret = regulator_get_optimal_voltage(c_rdevs[i],
+> +							    &current_uV,
+> +							    &optimal_uV,
+> +							    &optimal_max_uV,
+> +							    state);
+> +			if (ret < 0)
+> +				goto out;
+> +
+> +			delta = abs(optimal_uV - current_uV);
+> +
+> +			if (delta && best_delta <= delta) {
+> +				best_c_rdev_done = ret;
+> +				best_delta = delta;
+> +				best_rdev = c_rdevs[i];
+> +				best_min_uV = optimal_uV;
+> +				best_max_uV = optimal_max_uV;
+> +				best_c_rdev = i;
+> +			}
+> +		}
+> +
+> +		/* Nothing to change, return successfully */
+> +		if (!best_rdev) {
+> +			ret = 0;
+> +			goto out;
+> +		}
+> +
+> +		ret = regulator_set_voltage_rdev(best_rdev, best_min_uV,
+> +						 best_max_uV, state);
+> +
+> +		if (ret < 0)
+> +			goto out;
+> +
+> +		if (best_c_rdev_done)
+> +			set_bit(best_c_rdev, &c_rdev_done);
+> +
+> +	} while (n_coupled > 1);
+> +
+> +out:
+> +	return ret;
+> +}
+> +
+> +static int exynos_coupler_attach(struct regulator_coupler *coupler,
+> +				 struct regulator_dev *rdev)
+> +{
+> +	return 0;
+> +}
+> +
+> +static struct regulator_coupler exynos_coupler = {
+> +	.attach_regulator = exynos_coupler_attach,
+> +	.balance_voltage  = exynos_coupler_balance_voltage,
+> +};
+> +
+> +static int __init exynos_coupler_init(void)
+> +{
+> +	if (!of_machine_is_compatible("samsung,exynos5800"))
+> +		return 0;
+> +
+> +	return regulator_coupler_register(&exynos_coupler);
+> +}
+> +arch_initcall(exynos_coupler_init);
+> 
 
+The code looks good to me.
+
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
