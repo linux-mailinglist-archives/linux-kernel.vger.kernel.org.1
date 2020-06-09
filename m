@@ -2,117 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792631F2F04
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6ED1F2E92
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732911AbgFIAq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729018AbgFIAqy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 20:46:54 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BAEC03E969
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 17:46:54 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id l1so14932944ede.11
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 17:46:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6zCH4n2iYndxCImQUVO1t9gw8KAnucClc8TKaXcz6VE=;
-        b=Fq2WqHVeE81Nk6/Y0DGUX0PV2/hDVPJDGUYPIo3pxtCcQjIa6R//iPZadETarfnAzT
-         tlwhSjrEN/2Mjan9gz24mXSQu9dOYhzwWdqc2Q0xT715EekdH3eg0fxIvFgM3eRLWgLN
-         78TZPoqHOfMK62A9ZJhEzlwmtqtbesyOCnOYd4H/O4Ti5pd09CcSkCIUY1/sj0tPY8Xc
-         3Wc13HH5AEC14rFecdON9Rt3tBXKBzr9b6or5LhepX6BXw5CLcEfmLZAwLOtuGpiRW//
-         YK+q6h65xUPqiwCvAKne4a3em0MZjfum74LdoxdMkfCZkPYVK/UwQyfbfpME0PiWBIdQ
-         h2ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6zCH4n2iYndxCImQUVO1t9gw8KAnucClc8TKaXcz6VE=;
-        b=Nc85V2GA8Fr67aF1XZnwRGbUJPk1RFV0Ot22oFfxzlnO/cBvLVofGMlkbv/G+JugwS
-         B5PK5O9s3yOQCKHiU1PrKSqNAf0JNK10h/jJRzwgOcHE7FYka/dqKS7RaHh4JWgOFreF
-         DQ091TictiqqE8SRnDNHbgbcg2IEZ+wvBKuy4cGgPubu9lzeGVE+CJuxC1Jpbtzs9EG+
-         lIv36El8TVl7xRJTkWXJdX8YrBe3nek1OFjGZDPb5dwWUF7KWdvfOjPcKbAUuxYwMr86
-         GJkjNzMZa4CGVFKMeijbm8KdAbKhl0yaQtqxn8xm/dn2C1ZM4rJRAm55fDo+V2NRIssp
-         Bx/w==
-X-Gm-Message-State: AOAM5318h1/WIlnzx0z6A9sHxLZUrNaKUTx240+RmcQPFF/jlc5W2IzB
-        0Kg+0OY7GCy13oTjTahfRODEt8Ry5DOoK505KDS7vA==
-X-Google-Smtp-Source: ABdhPJyPiL73dzr0k16R7WSQX3Z3pfrFMXEsfHYxl183PZK4kpvT14ODaxWMSzzuq7exBiIPN3x17ifOOa1H+rWsmBY=
-X-Received: by 2002:a50:eb0c:: with SMTP id y12mr23805262edp.165.1591663613143;
- Mon, 08 Jun 2020 17:46:53 -0700 (PDT)
+        id S1730491AbgFIAmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:42:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728552AbgFIAmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 20:42:46 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2502D20737;
+        Tue,  9 Jun 2020 00:42:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591663365;
+        bh=V7sPRt5t1bPdgkFLTtlp3s+mAuZDhKkTlH4OAYkopVU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NkQ6oQQy24UsfoH9EPwlmMoqOD65lnqnabQ6xuLoQSsTcCn01weXzK9IRCvy8mknt
+         mriLOEa+8G6FBI5ZgdT3iq8H8zFIXXDyBFzLf6Rj0N3RzruZiZ0OZKXX+5N3s8tIGA
+         ILRxZuIxO2SHLbrTmEQWPbDGXQwSPsTVcxm8ZQo8=
+Date:   Mon, 8 Jun 2020 19:47:56 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH] overflow.h: Add flex_array_size() helper
+Message-ID: <20200609004756.GH10051@embeddedor>
+References: <20200608221723.GA23644@embeddedor>
+ <05ab102b936ce922c4fae67bf5dd3e323aff0b93.camel@perches.com>
 MIME-Version: 1.0
-References: <20200607131339.476036-6-vaibhav@linux.ibm.com> <202006090059.o4CE5D9b%lkp@intel.com>
-In-Reply-To: <202006090059.o4CE5D9b%lkp@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 8 Jun 2020 17:46:42 -0700
-Message-ID: <CAPcyv4iQo_xgRGPx_j+RPzgWGZaigGRbc_kRzKEFePfVHenx5g@mail.gmail.com>
-Subject: Re: [PATCH v11 5/6] ndctl/papr_scm,uapi: Add support for PAPR nvdimm
- specific methods
-To:     kernel test robot <lkp@intel.com>
-Cc:     Vaibhav Jain <vaibhav@linux.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05ab102b936ce922c4fae67bf5dd3e323aff0b93.camel@perches.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 8, 2020 at 5:16 PM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Vaibhav,
->
-> Thank you for the patch! Perhaps something to improve:
->
-> [auto build test WARNING on powerpc/next]
-> [also build test WARNING on linus/master v5.7 next-20200605]
-> [cannot apply to linux-nvdimm/libnvdimm-for-next scottwood/next]
-> [if your patch is applied to the wrong git tree, please drop us a note to help
-> improve the system. BTW, we also suggest to use '--base' option to specify the
-> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
->
-> url:    https://github.com/0day-ci/linux/commits/Vaibhav-Jain/powerpc-papr_scm-Add-support-for-reporting-nvdimm-health/20200607-211653
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
-> config: powerpc-randconfig-r016-20200607 (attached as .config)
-> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project e429cffd4f228f70c1d9df0e5d77c08590dd9766)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install powerpc cross compiling tool for clang build
->         # apt-get install binutils-powerpc-linux-gnu
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>, old ones prefixed by <<):
->
-> In file included from <built-in>:1:
-> >> ./usr/include/asm/papr_pdsm.h:69:20: warning: field 'hdr' with variable sized type 'struct nd_cmd_pkg' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-> struct nd_cmd_pkg hdr;  /* Package header containing sub-cmd */
+On Mon, Jun 08, 2020 at 03:34:52PM -0700, Joe Perches wrote:
+> On Mon, 2020-06-08 at 17:17 -0500, Gustavo A. R. Silva wrote:
+> > Add flex_array_size() helper for the calculation of the size, in bytes,
+> > of a flexible array member contained within an enclosing structure.
+> > 
+> > Example of usage:
+> > foo
+> > struct something {
+> > 	size_t count;
+> > 	struct foo items[];
+> > };
+> > 
+> > struct something *instance;
+> []
+> > diff --git a/include/linux/overflow.h b/include/linux/overflow.h
+> []
+> > +/**
+> > + * flex_array_size() - Calculate size of a flexible array member within
+> > + * an enclosing structure.
+> 
+> These comment descriptions do not match
+> 
+> > + * Calculates size of memory needed for flexible array @member of @count
+> > + * elements within structure @p.
+> 
+> The first comment shows the size of an array member.
+> The second shows the size of an array member * count
+> 
+> Also the struct_size and flex_array_size definitions
+> are using two different forms:
+> 
+> 		sizeof(*(p)->member) + __must_be_array((p)->member),\
+> and
+> 		sizeof((p)->member[0]) + __must_be_array((p)->member))
+> 
 
-Hi Vaibhav,
+Good catch.
 
-This looks like it's going to need another round to get this fixed. I
-don't think 'struct nd_pdsm_cmd_pkg' should embed a definition of
-'struct nd_cmd_pkg'. An instance of 'struct nd_cmd_pkg' carries a
-payload that is the 'pdsm' specifics. As the code has it now it's
-defined as a superset of 'struct nd_cmd_pkg' and the compiler warning
-is pointing out a real 'struct' organization problem.
-
-Given the soak time needed in -next after the code is finalized this
-there's no time to do another round of updates and still make the v5.8
-merge window.
+Thanks
+--
+Gustavo
