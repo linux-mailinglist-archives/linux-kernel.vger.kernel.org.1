@@ -2,65 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181A21F401E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 18:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1841F402D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 18:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731146AbgFIQDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 12:03:12 -0400
-Received: from smtp.asem.it ([151.1.184.197]:51096 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731111AbgFIQDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 12:03:00 -0400
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000307063.MSG 
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 18:02:57 +0200S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Jun
- 2020 18:02:55 +0200
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 9 Jun 2020 18:02:55 +0200
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>
-CC:     <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH 1/1] tty: fix spelling mistake
-Date:   Tue, 9 Jun 2020 18:02:49 +0200
-Message-ID: <20200609160249.31329-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.17.1
+        id S1731224AbgFIQDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 12:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731060AbgFIQDo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 12:03:44 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB3FC05BD1E;
+        Tue,  9 Jun 2020 09:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=EbgramDsClABbRh6SAXFCh3bxBrc0kj7IkVo3KuqmtM=; b=cO3c2Jp4wSWBSIYCVjEGfETKzB
+        4MHEl3u1W+06LuzU/RiQYyNfWUdfKzFf+nCoV7IeleFAke6LnGCTwuJTCXkaXvbmtz3YJs6YjjkNb
+        +CENmEnwphZ/uA3zSIpXHyhbSlOE4t2OK9oaLPsXeetUZPBXY1FqbofhwGy3ZEJi2lc7+X9oF1S9t
+        u1A3Xc1S3aATO+IvvejggzFh1mhDM3IL1b3MgxgQNcevdtGZVJcg8ZyTqr7O1kwAg9zkGGB7S8irq
+        xq++b5wewuMW2HpxmZ3e0CMJOt8qzDnyA2IZQaUtBigSEV7HiEldcvXSPDWqlxAd7zy2HxXG/vpSt
+        wCdAlmPg==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jigiz-0001ZX-OG; Tue, 09 Jun 2020 16:03:41 +0000
+Subject: Re: [PATCH v3 0/7] Venus dynamic debug
+To:     Matthew Wilcox <willy@infradead.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
+        netdev@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Baron <jbaron@akamai.com>
+References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+ <20200609111323.GA19604@bombadil.infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c239d5df-e069-2091-589e-30f341c2cbd3@infradead.org>
+Date:   Tue, 9 Jun 2020 09:03:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A09020A.5EDFB2B0.0004,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+In-Reply-To: <20200609111323.GA19604@bombadil.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typo: "tigger" --> "trigger"
+On 6/9/20 4:13 AM, Matthew Wilcox wrote:
+> On Tue, Jun 09, 2020 at 01:45:57PM +0300, Stanimir Varbanov wrote:
+>> Here is the third version of dynamic debug improvements in Venus
+>> driver.  As has been suggested on previous version by Joe [1] I've
+>> made the relevant changes in dynamic debug core to handle leveling
+>> as more generic way and not open-code/workaround it in the driver.
+>>
+>> About changes:
+>>  - added change in the dynamic_debug and in documentation
+>>  - added respective pr_debug_level and dev_dbg_level
+> 
+> Honestly, this seems like you want to use tracepoints, not dynamic debug.
+> 
 
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
----
- drivers/tty/moxa.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Also see this patch series:
+https://lore.kernel.org/lkml/20200605162645.289174-1-jim.cromie@gmail.com/
+[PATCH 00/16] dynamic_debug: cleanups, 2 features
 
-diff --git a/drivers/tty/moxa.h b/drivers/tty/moxa.h
-index 563d2dce80b3..f0a4381b6861 100644
---- a/drivers/tty/moxa.h
-+++ b/drivers/tty/moxa.h
-@@ -138,7 +138,7 @@
- #define IntrQuit	0x40	/* received QUIT code             */
- #define IntrEOF 	0x80	/* received EOF code              */
- 
--#define IntrRxTrigger 	0x100	/* rx data count reach tigger value */
-+#define IntrRxTrigger 	0x100	/* rx data count reach trigger value */
- #define IntrTxTrigger 	0x200	/* tx data count below trigger value */
- 
- #define Magic_no	(Config_base + 0)
+It adds/expands dynamic debug flags quite a bit.
+
 -- 
-2.17.1
+~Randy
 
