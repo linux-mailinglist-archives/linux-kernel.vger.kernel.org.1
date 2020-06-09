@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B760E1F4634
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 789C41F4601
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389147AbgFISYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:24:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57486 "EHLO mail.kernel.org"
+        id S2389048AbgFISWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:22:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731989AbgFIRqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:46:47 -0400
+        id S1732212AbgFIRsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:48:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0102C207ED;
-        Tue,  9 Jun 2020 17:46:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21D5F207F9;
+        Tue,  9 Jun 2020 17:48:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724807;
-        bh=wn3XWVZZ2akmsZZ8dExHmnbVJm8QGK5HCGpsdbydC6c=;
+        s=default; t=1591724883;
+        bh=L99taIM+omKw6xpLci/GzbwOu6gRvGvUPFTqXy6EsDM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gAywkIT+2b5ciSIb9KN4x4NW5DrOFqhmcNk+ONBxY7y4xNa3tNWKMJB0Gf0TR8uth
-         EExwW2htWC8vScC3RE9wjd8L4sOoPc1C7GDn1FpyhXYaGziicezErZCY1BoYQMAzg4
-         5aEq24o8X+w+wX6Znao8gPcWDi9wpl2b/AjgoOVk=
+        b=09hjy3maDUW6fBMjwjHJLi0y+SfOjlsDmm8SvCAUkAmoNtB5dd7lqABoX84vCc/51
+         vw0CIJKTfvZXG+tzOL8vxLgaNU+WjdwQsR/JYVYb1eABr7qm6x46j9OCeTnzamLWsS
+         tiWpfN8Jg/SAbafr5RQ77QImqLBpf2xZlrLFf56U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bin Liu <b-liu@ti.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 25/36] USB: serial: usb_wwan: do not resubmit rx urb on fatal errors
-Date:   Tue,  9 Jun 2020 19:44:25 +0200
-Message-Id: <20200609173934.866798832@linuxfoundation.org>
+        stable@vger.kernel.org, Bean Huo <beanhuo@micron.com>,
+        Can Guo <cang@codeaurora.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 4.9 20/42] scsi: ufs: Release clock if DMA map fails
+Date:   Tue,  9 Jun 2020 19:44:26 +0200
+Message-Id: <20200609174017.670122929@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
-References: <20200609173933.288044334@linuxfoundation.org>
+In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
+References: <20200609174015.379493548@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bin Liu <b-liu@ti.com>
+From: Can Guo <cang@codeaurora.org>
 
-commit 986c1748c84d7727defeaeca74a73b37f7d5cce1 upstream.
+commit 17c7d35f141ef6158076adf3338f115f64fcf760 upstream.
 
-usb_wwan_indat_callback() shouldn't resubmit rx urb if the previous urb
-status is a fatal error. Or the usb controller would keep processing the
-new urbs then run into interrupt storm, and has no chance to recover.
+In queuecommand path, if DMA map fails, it bails out with clock held.  In
+this case, release the clock to keep its usage paired.
 
-Fixes: 6c1ee66a0b2b ("USB-Serial: Fix error handling of usb_wwan")
-Cc: stable@vger.kernel.org
-Signed-off-by: Bin Liu <b-liu@ti.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+[mkp: applied by hand]
+
+Link: https://lore.kernel.org/r/0101016ed3d66395-1b7e7fce-b74d-42ca-a88a-4db78b795d3b-000000@us-west-2.amazonses.com
+Reviewed-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+[EB: resolved cherry-pick conflict caused by newer kernels not having
+ the clear_bit_unlock() line]
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/serial/usb_wwan.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/scsi/ufs/ufshcd.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/usb_wwan.c
-+++ b/drivers/usb/serial/usb_wwan.c
-@@ -305,6 +305,10 @@ static void usb_wwan_indat_callback(stru
- 	if (status) {
- 		dev_dbg(dev, "%s: nonzero status: %d on endpoint %02x.\n",
- 			__func__, status, endpoint);
-+
-+		/* don't resubmit on fatal errors */
-+		if (status == -ESHUTDOWN || status == -ENOENT)
-+			return;
- 	} else {
- 		if (urb->actual_length) {
- 			tty_insert_flip_string(&port->port, data,
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1512,6 +1512,7 @@ static int ufshcd_queuecommand(struct Sc
+ 
+ 	err = ufshcd_map_sg(hba, lrbp);
+ 	if (err) {
++		ufshcd_release(hba);
+ 		lrbp->cmd = NULL;
+ 		clear_bit_unlock(tag, &hba->lrb_in_use);
+ 		goto out;
 
 
