@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAFD51F3E29
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6561F3E58
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730615AbgFIOca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 10:32:30 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:49326 "EHLO inva020.nxp.com"
+        id S1730006AbgFIOg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:36:59 -0400
+Received: from ns.iliad.fr ([212.27.33.1]:43864 "EHLO ns.iliad.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730544AbgFIOcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:32:24 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 233021A13E5;
-        Tue,  9 Jun 2020 16:32:22 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 97E891A13CA;
-        Tue,  9 Jun 2020 16:32:17 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 1EA90402FF;
-        Tue,  9 Jun 2020 22:32:12 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     aisheng.dong@nxp.com, festevam@gmail.com, shawnguo@kernel.org,
-        stefan@agner.ch, kernel@pengutronix.de, linus.walleij@linaro.org,
-        s.hauer@pengutronix.de, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V3 9/9] pinctrl: imx8dxl: Support building as module
-Date:   Tue,  9 Jun 2020 22:21:25 +0800
-Message-Id: <1591712485-20609-10-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591712485-20609-1-git-send-email-Anson.Huang@nxp.com>
-References: <1591712485-20609-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726395AbgFIOg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 10:36:59 -0400
+X-Greylist: delayed 326 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Jun 2020 10:36:58 EDT
+Received: from ns.iliad.fr (localhost [127.0.0.1])
+        by ns.iliad.fr (Postfix) with ESMTP id D3AA3201AA;
+        Tue,  9 Jun 2020 16:31:29 +0200 (CEST)
+Received: from [192.168.108.51] (freebox.vlq16.iliad.fr [213.36.7.13])
+        by ns.iliad.fr (Postfix) with ESMTP id BBCDE200C3;
+        Tue,  9 Jun 2020 16:31:29 +0200 (CEST)
+Subject: Re: Scanning for TV channels over DVB-T and DVB-T2
+From:   Marc Gonzalez <marc.w.gonzalez@free.fr>
+To:     linux-media <linux-media@vger.kernel.org>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jan Pieter van Woerkom <jp@jpvw.nl>,
+        Brad Love <brad@nextdimension.cc>,
+        Antti Palosaari <crope@iki.fi>
+References: <11fbc112-c410-8c67-9bcb-9450924d12ef@free.fr>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Message-ID: <4904d37d-1cd4-b8f3-9c3c-82eb4569bca7@free.fr>
+Date:   Tue, 9 Jun 2020 16:31:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <11fbc112-c410-8c67-9bcb-9450924d12ef@free.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: ClamAV using ClamSMTP ; ns.iliad.fr ; Tue Jun  9 16:31:29 2020 +0200 (CEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support building i.MX8DXL pinctrl driver as module.
+On 08/06/2020 17:30, Marc Gonzalez wrote:
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-No change.
----
- drivers/pinctrl/freescale/Kconfig           | 2 +-
- drivers/pinctrl/freescale/pinctrl-imx8dxl.c | 9 +++------
- 2 files changed, 4 insertions(+), 7 deletions(-)
+> Suppose we know that several channels are transmitted on a given frequency
+> by terrestrial antenna. However, we don't know if the signal is "encoded"
+> (not sure this is the right term) in DVB-T or DVB-T2 modulation.
+> 
+> Do we have to scan the frequency /twice/
+> first with DTV_DELIVERY_SYSTEM = SYS_DVBT
+>  then with DTV_DELIVERY_SYSTEM = SYS_DVBT2 ?
+> 
+> Or is there some optimization where both modulations are handled
+> in a single step?
+> 
+> Or maybe it depends on the tuner driver?
 
-diff --git a/drivers/pinctrl/freescale/Kconfig b/drivers/pinctrl/freescale/Kconfig
-index 4a9c19b..286bbbd 100644
---- a/drivers/pinctrl/freescale/Kconfig
-+++ b/drivers/pinctrl/freescale/Kconfig
-@@ -167,7 +167,7 @@ config PINCTRL_IMX8QXP
- 	  Say Y here to enable the imx8qxp pinctrl driver
- 
- config PINCTRL_IMX8DXL
--	bool "IMX8DXL pinctrl driver"
-+	tristate "IMX8DXL pinctrl driver"
- 	depends on IMX_SCU && ARCH_MXC && ARM64
- 	select PINCTRL_IMX
- 	help
-diff --git a/drivers/pinctrl/freescale/pinctrl-imx8dxl.c b/drivers/pinctrl/freescale/pinctrl-imx8dxl.c
-index 7f32e57..c11fcfb 100644
---- a/drivers/pinctrl/freescale/pinctrl-imx8dxl.c
-+++ b/drivers/pinctrl/freescale/pinctrl-imx8dxl.c
-@@ -165,6 +165,7 @@ static const struct of_device_id imx8dxl_pinctrl_of_match[] = {
- 	{ .compatible = "fsl,imx8dxl-iomuxc", },
- 	{ /* sentinel */ }
- };
-+MODULE_DEVICE_TABLE(of, imx8dxl_pinctrl_of_match);
- 
- static int imx8dxl_pinctrl_probe(struct platform_device *pdev)
- {
-@@ -185,9 +186,5 @@ static struct platform_driver imx8dxl_pinctrl_driver = {
- 	},
- 	.probe = imx8dxl_pinctrl_probe,
- };
--
--static int __init imx8dxl_pinctrl_init(void)
--{
--	return platform_driver_register(&imx8dxl_pinctrl_driver);
--}
--arch_initcall(imx8dxl_pinctrl_init);
-+module_platform_driver(imx8dxl_pinctrl_driver);
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
+Digging a bit deeper...
 
+My system sports a Silicon Labs Si2168 DVB-T2/T/C demodulator
+
+The data sheet states:
+
+"For DVB-T2 and T2-Lite:
+	DVB-T2 versus DVB-T automatic detection"
+
+"In DVB-T and DVB-T2 reception, parameters necessary for device synchronization
+are broadcast in the transmission parameters (respectively TPS and P1 symbol).
+When these transmission parameters are found and decoded, the demodulator is
+automatically and accordingly configured to achieve full synchronization."
+
+
+This HW is supported upstream by drivers/media/dvb-frontends/si2168.c
+https://elixir.bootlin.com/linux/latest/source/drivers/media/dvb-frontends/si2168.c
+
+I have a nagging feeling because si2168_set_frontend() appears to
+behave differently for SYS_DVBT and for SYS_DVBT2...
+
+https://elixir.bootlin.com/linux/latest/source/drivers/media/dvb-frontends/si2168.c#L250
+https://elixir.bootlin.com/linux/latest/source/drivers/media/dvb-frontends/si2168.c#L297
+https://elixir.bootlin.com/linux/latest/source/drivers/media/dvb-frontends/si2168.c#L345
+
+Maybe setting SYS_DVBT2 would also work for DVB-T transmissions?
+(TODO: test that)
+
+Any insight would be greatly appreciated.
+
+Regards.
