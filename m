@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021B21F44BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D981F4483
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388361AbgFISHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:07:43 -0400
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:41552 "EHLO
-        shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388197AbgFISF7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 14:05:59 -0400
-Received: from [192.168.4.242] (helo=deadeye)
-        by shadbolt.decadent.org.uk with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1jiidH-0001qH-Sv; Tue, 09 Jun 2020 19:05:55 +0100
-Received: from ben by deadeye with local (Exim 4.94)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1jiidG-006VyS-Gv; Tue, 09 Jun 2020 19:05:54 +0100
-Content-Type: text/plain; charset="UTF-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
-From:   Ben Hutchings <ben@decadent.org.uk>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-CC:     akpm@linux-foundation.org, Denis Kirjanov <kda@linux-powerpc.org>,
-        "Al Viro" <viro@zeniv.linux.org.uk>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>,
-        "Alexey Dobriyan" <adobriyan@gmail.com>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Alexander Potapenko" <glider@google.com>,
-        "sam" <sunhaoyl@outlook.com>
-Date:   Tue, 09 Jun 2020 19:04:52 +0100
-Message-ID: <lsq.1591725832.570281262@decadent.org.uk>
-X-Mailer: LinuxStableQueue (scripts by bwh)
-X-Patchwork-Hint: ignore
-Subject: [PATCH 3.16 61/61] fs/binfmt_elf.c: allocate initialized memory
- in fill_thread_core_info()
-In-Reply-To: <lsq.1591725831.850867383@decadent.org.uk>
-X-SA-Exim-Connect-IP: 192.168.4.242
-X-SA-Exim-Mail-From: ben@decadent.org.uk
-X-SA-Exim-Scanned: No (on shadbolt.decadent.org.uk); SAEximRunCond expanded to false
+        id S2388108AbgFISFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:05:35 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61579 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388072AbgFISF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 14:05:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591725926; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=x01+HksEUfPnnuAjrfKal7kG0NEwAm/phbFVlSCT2kQ=; b=KtMFLCgBGJ7hGWyrlL8xG6fj+MUI7CYIW963Cv/7M9iFNUSf6J6L1VxcbfLDDEcQIM+1UwQM
+ R5rv5Ljobacz+oPt0wrFbIdDz00Ozhog32UbsQDhqAq1dZ7aAxepSieU7ichlKodxqsFyRTL
+ ePI87vXvKdamtFMPnV+9jONKJ/M=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5edfcf61c4bb4f886d289709 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Jun 2020 18:05:21
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EF512C4339C; Tue,  9 Jun 2020 18:05:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1AD1EC43387;
+        Tue,  9 Jun 2020 18:05:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1AD1EC43387
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Patrick Daly <pdaly@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iommu/arm-smmu: Don't bypass pinned stream mappings
+Date:   Tue,  9 Jun 2020 12:05:16 -0600
+Message-Id: <20200609180516.14362-1-jcrouse@codeaurora.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-3.16.85-rc1 review patch.  If anyone has any objections, please let me know.
+Commit 0e764a01015d ("iommu/arm-smmu: Allow client devices to select
+direct mapping") sets the initial domain type to SMMU_DOMAIN_IDENTITY
+for devices that select direct mapping. This ends up setting the domain
+as ARM_SMMU_DOMAIN_BYPASS which causes the stream ID mappings
+for the device to be programmed to S2CR_TYPE_BYPASS.
 
-------------------
+This causes a problem for stream mappings that are inherited from
+the bootloader since rewriting the stream to BYPASS will disrupt the
+display controller access to DDR.
 
-From: Alexander Potapenko <glider@google.com>
+This is an extension to ("iommu/arm-smmu: Allow inheriting stream mapping
+from bootloader") [1] that identifies streams that are already configured
+ and marked them as pinned. This patch extends that to not re-write pinned
+stream mappings for ARM_SMMU_DOMAIN_BYPASS domains.
 
-commit 1d605416fb7175e1adf094251466caa52093b413 upstream.
+[1] https://lore.kernel.org/r/20191226221709.3844244-4-bjorn.andersson@linaro.org
 
-KMSAN reported uninitialized data being written to disk when dumping
-core.  As a result, several kilobytes of kmalloc memory may be written
-to the core file and then read by a non-privileged user.
-
-Reported-by: sam <sunhaoyl@outlook.com>
-Signed-off-by: Alexander Potapenko <glider@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Kees Cook <keescook@chromium.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Link: http://lkml.kernel.org/r/20200419100848.63472-1-glider@google.com
-Link: https://github.com/google/kmsan/issues/76
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-[bwh: Backported to 3.16: adjust context]
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
 ---
- fs/binfmt_elf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1575,7 +1575,7 @@ static int fill_thread_core_info(struct
- 		    (!regset->active || regset->active(t->task, regset) > 0)) {
- 			int ret;
- 			size_t size = regset->n * regset->size;
--			void *data = kmalloc(size, GFP_KERNEL);
-+			void *data = kzalloc(size, GFP_KERNEL);
- 			if (unlikely(!data))
- 				return 0;
- 			ret = regset->get(t->task, regset,
+ drivers/iommu/arm-smmu.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+index c7add09f11c1..9c1e5ba948a7 100644
+--- a/drivers/iommu/arm-smmu.c
++++ b/drivers/iommu/arm-smmu.c
+@@ -1143,6 +1143,10 @@ static int arm_smmu_domain_add_master(struct arm_smmu_domain *smmu_domain,
+ 		if (type == s2cr[idx].type && cbndx == s2cr[idx].cbndx)
+ 			continue;
+ 
++		/* Don't bypasss pinned streams; leave them as they are */
++		if (type == S2CR_TYPE_BYPASS && s2cr[idx].pinned)
++			continue;
++
+ 		s2cr[idx].type = type;
+ 		s2cr[idx].privcfg = S2CR_PRIVCFG_DEFAULT;
+ 		s2cr[idx].cbndx = cbndx;
+-- 
+2.17.1
 
