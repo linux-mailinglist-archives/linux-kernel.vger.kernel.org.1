@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8897B1F49E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 01:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2131F49EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 01:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728861AbgFIXCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 19:02:20 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:45345 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728108AbgFIXCT (ORCPT
+        id S1728962AbgFIXCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 19:02:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728108AbgFIXCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 19:02:19 -0400
-Received: by mail-io1-f65.google.com with SMTP id y5so27438iob.12;
-        Tue, 09 Jun 2020 16:02:18 -0700 (PDT)
+        Tue, 9 Jun 2020 19:02:50 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD22C05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 16:02:44 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id g1so23343edv.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 16:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4TDkIk2ODziXmKt8htHNeZJCGvaya39PyKoQ7mO+wOk=;
+        b=AQH8iye3E5UIrmfSlfoG1uM6KQrByz7Nm4bW/IjPJ5xKycld9tFBmQoFO0N6p+lNHr
+         hc2+UWANAY0GiHVTXtivOlIUNnA00aZZKWpoFwD5tx/6qxnz+kgfnypHSdUrmFiAgyGT
+         QJf3aZEnU3VemyKoKO9FdpYqutmWTN6Ze4Vn1kf+BRIRSWmsDzI1zJh//AldfmAbvfuC
+         QvzSoy98Ee7MdAiBp/0PZ/2NfgE0EDMOsVflzrqFoKXBd8GsW6Yg5QzU9oKFXCrqi9iH
+         D3fwU+DDIQ8SZK/sTVMoZq1qWVYt1dwsHi04zrP7HItIrKNArN4P3TngrjQ22J2Mlosk
+         xKVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9UAjDcGkiv4VYRf/6C6V6G9cxQr/lplrc3OR9Y4YnTY=;
-        b=gLh5b/Mzx82dvgT9FDtczaQdpF0KgOSUHi1oup2Oa0mYMxOSTwgSy0/vzr0pBoQpB7
-         ciGTjXnjxoBXTEPCmZSmljkiqmYHor9SYubXvECIVZBSzmoDFOiM8X5A4/EBR2KPCrV6
-         X9Bpv5q2v/iyndwOt+ZyF6rEt6nN2jH3P/yMVF/sb9xozlJfTnR8OXYs6ZQLM8YOcOIZ
-         MC7pKOWBZHZWHie3nSSsvEca1I5+GZLk7tvx7zU9tPspSCe+gtsxIJdiUymsznANOpFH
-         Aa3HNA74JgpzrvBNuFMufcTEN6QWMfi5EgX/kM19ACGIhHJ/CTjE2uYgOokScAomBLFC
-         7Lmg==
-X-Gm-Message-State: AOAM531FWlCScH9s/fatIeF9jBJh4njLQFBtjsqh8mYSDjRiy0mLaGKz
-        UDW7f/QMkAvXICLKjheJyA==
-X-Google-Smtp-Source: ABdhPJw3B/5yrBt/y3dpRloQGYK8NgxRmXYSpins8OjJRCa8Nz5fGw8lZcOgcw38BCyDDNJuKrHPCA==
-X-Received: by 2002:a02:a46:: with SMTP id 67mr481777jaw.144.1591743738577;
-        Tue, 09 Jun 2020 16:02:18 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id r19sm8035022ioj.12.2020.06.09.16.02.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 16:02:17 -0700 (PDT)
-Received: (nullmailer pid 1670237 invoked by uid 1000);
-        Tue, 09 Jun 2020 23:02:16 -0000
-Date:   Tue, 9 Jun 2020 17:02:16 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        bjorn.andersson@linaro.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, broonie@kernel.org
-Subject: Re: [PATCH V3 1/3] dt-bindings: mmc: Supply max load for mmc supplies
-Message-ID: <20200609230216.GA1655591@bogus>
-References: <1589541535-8523-1-git-send-email-vbadigan@codeaurora.org>
- <1591094883-11674-1-git-send-email-vbadigan@codeaurora.org>
- <1591094883-11674-2-git-send-email-vbadigan@codeaurora.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4TDkIk2ODziXmKt8htHNeZJCGvaya39PyKoQ7mO+wOk=;
+        b=Ld8TVaaJIIyuhqlHNE/TuGM5NdWpgaA+pFV3sUcqSOWEhKwGM3fcuvDEsWSEPDATv7
+         xfT32h1FoyA7ejyN7Dfbkoh5QdDPRhORPty/ox6oAubXjVDahWpGbUh8O7NkIht4MQY2
+         tOvyedJtbB7wwLbDuXzwMgnif2YNxtG3A9vmT8a3zioxtdcZfslcBJJmv6UVHtEC+doi
+         JWdLfbR3SmlpPcQNQeHiUxgdla1sjSZn9ickjUlsK3U2sgL0OSwL8q83MDHWkJJZa3uy
+         Npu5u9/pLVfnvtDWBBaePlkAyCyoy+quzpbG5BdXROu+TUjVxp3ryjeWglNzK/2Y4yKw
+         DTJQ==
+X-Gm-Message-State: AOAM532GJ/JHOJZD/Tiwm3sRY9fOZWbHcdsFr45WxcsalIYEzZ77etFP
+        Q2XerZuC9zIdEk7r8ebjulN5LX28
+X-Google-Smtp-Source: ABdhPJxqbY8AeJXu4V3rRd+i1psI52voUadjVzVZsBsYSnBzcxUxfT4Q0gQU+vpXhZ86hy/2GcgtOg==
+X-Received: by 2002:a50:d556:: with SMTP id f22mr33823edj.307.1591743762634;
+        Tue, 09 Jun 2020 16:02:42 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id kt10sm13927078ejb.54.2020.06.09.16.02.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 09 Jun 2020 16:02:41 -0700 (PDT)
+Date:   Tue, 9 Jun 2020 23:02:41 +0000
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Wei Yang <richard.weiyang@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [Patch v2] lib: test get_count_order/long in test_bitops.c
+Message-ID: <20200609230241.gdqebrspmucnru5k@master>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
+References: <20200602223728.32722-1-richard.weiyang@gmail.com>
+ <CAMuHMdUfnmm4bXVRvFOmG5DFYR+LtcZ1UviDszr9bByiN=DO+Q@mail.gmail.com>
+ <20200604122805.d2ndjmkmti6wl3nz@master>
+ <CAMuHMdXnLUS8F4nWJBqDjoKhBmF2_ihfwe4jTGxuZ1e_WKRNPQ@mail.gmail.com>
+ <20200605230610.bizp2j23ivyma5rn@master>
+ <20200605171629.d931068c1a4d720d8faa2704@linux-foundation.org>
+ <20200608223112.ftncszh7hfnmqj3m@master>
+ <20200609091649.GX2428291@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1591094883-11674-2-git-send-email-vbadigan@codeaurora.org>
+In-Reply-To: <20200609091649.GX2428291@smile.fi.intel.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Mark B
+On Tue, Jun 09, 2020 at 12:16:49PM +0300, Andy Shevchenko wrote:
+>On Mon, Jun 08, 2020 at 10:31:12PM +0000, Wei Yang wrote:
+>> On Fri, Jun 05, 2020 at 05:16:29PM -0700, Andrew Morton wrote:
+>
+>...
+>
+>> The test on 64bit machine pass. Since I don't have a 32bit machine by hand, 
+>
+>Out of curiosity what that machine is?
+>
 
-On Tue, Jun 02, 2020 at 04:17:54PM +0530, Veerabhadrarao Badiganti wrote:
-> Supply the max load needed for driving the mmc supplies.
-> 
-> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/mmc/mmc-controller.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mmc/mmc-controller.yaml b/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
-> index acc9f10871d4..d95219721fa1 100644
-> --- a/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
-> @@ -290,6 +290,12 @@ properties:
->      description:
->        Supply for the bus IO line power
->  
-> +  vmmc-supply-max-microamp:
-> +    description: Maximum load for the card power.
-> +
-> +  vqmmc-supply-max-microamp:
-> +    description: Maximum load for the bus IO line power.
+It is a Intel Xeon Gold CPU.
 
-By a 'common regulator property' I meant documented with regulator 
-binding like *-supply, not common to MMC. How is MMC special?
+>> Geert, would you mind have a try on 32bit machine? 
+>
+>-- 
+>With Best Regards,
+>Andy Shevchenko
+>
 
-Thinking about this some more, what's wrong with the max current in the 
-regulator nodes? I suppose you could have more than one load and need to 
-define the loads separately?
-
-Rob
+-- 
+Wei Yang
+Help you, Help me
