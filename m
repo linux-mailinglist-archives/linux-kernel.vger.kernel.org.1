@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531291F3D66
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259F81F3D73
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730288AbgFINzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 09:55:20 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:37954 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726967AbgFINzT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 09:55:19 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2B30D1C0C0C; Tue,  9 Jun 2020 15:55:18 +0200 (CEST)
-Date:   Tue, 9 Jun 2020 15:55:17 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Daniel Axtens <dja@axtens.net>, Sasha Levin <sashal@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Gow <davidgow@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH AUTOSEL 4.14 72/72] string.h: fix incompatibility between
- FORTIFY_SOURCE and KASAN
-Message-ID: <20200609135517.GA4806@amd>
-References: <20200608232500.3369581-1-sashal@kernel.org>
- <20200608232500.3369581-72-sashal@kernel.org>
- <87ftb5t933.fsf@dja-thinkpad.axtens.net>
- <20200609112025.GA2523@amd>
- <20200609115407.GA819153@kroah.com>
+        id S1730116AbgFIOAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:00:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:42866 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728196AbgFIOAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 10:00:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A541A1FB;
+        Tue,  9 Jun 2020 07:00:13 -0700 (PDT)
+Received: from [10.37.12.95] (unknown [10.37.12.95])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E48C13F66F;
+        Tue,  9 Jun 2020 07:00:08 -0700 (PDT)
+Subject: Re: [PATCH] firmware: arm_scmi: Use signed integer to report transfer
+ status
+To:     Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Jim Quinlan <james.quinlan@broadcom.com>
+References: <20200609134503.55860-1-sudeep.holla@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <d2aaadd1-d988-2978-f5e8-06b131c61b94@arm.com>
+Date:   Tue, 9 Jun 2020 15:00:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
-Content-Disposition: inline
-In-Reply-To: <20200609115407.GA819153@kroah.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200609134503.55860-1-sudeep.holla@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---2fHTh5uZTiUOsy+g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue 2020-06-09 13:54:07, Greg KH wrote:
-> On Tue, Jun 09, 2020 at 01:20:25PM +0200, Pavel Machek wrote:
-> > On Tue 2020-06-09 09:46:08, Daniel Axtens wrote:
-> > > Hi Sasha,
-> > >=20
-> > > There's nothing inherently wrong with these patches being backported,
-> > > but they fix a bug that doesn't cause a crash and only affects debug
-> > > kernels compiled with KASAN and FORTIFY_SOURCE. Personally I wouldn't
-> > > change a core header file in a stable kernel for that. Perhaps I'm too
-> > > risk-averse.
-> >=20
-> > You are in agreement with existing documentation -- stable is only for
-> > serious bugs.
->=20
-> No, lots of people run KASAN on those kernels when they are testing
-> their devices, this patch is fine.
+On 6/9/20 2:45 PM, Sudeep Holla wrote:
+> Currently the trace event 'scmi_xfer_end' reports the status of the
+> transfer using the unsigned status field read from the firmware. This
+> may not be easy to interpret and also may miss to present any timeouts
+> that happen in the driver.
+> 
+> Let us use signed integer so that error values are emitted out after
+> they are mapped from firmware errors to standard linux error codes.
+> While at this, let us also include any timeouts in the driver itself.
+> 
+> Cc: Jim Quinlan <james.quinlan@broadcom.com>
+> Cc: Lukasz Luba <lukasz.luba@arm.com>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>   drivers/firmware/arm_scmi/driver.c | 3 +--
+>   include/trace/events/scmi.h        | 6 +++---
+>   2 files changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> index 7483cacf63f9..136acbe2f4a1 100644
+> --- a/drivers/firmware/arm_scmi/driver.c
+> +++ b/drivers/firmware/arm_scmi/driver.c
+> @@ -392,8 +392,7 @@ int scmi_do_xfer(const struct scmi_handle *handle, struct scmi_xfer *xfer)
+>   		info->desc->ops->mark_txdone(cinfo, ret);
+>   
+>   	trace_scmi_xfer_end(xfer->transfer_id, xfer->hdr.id,
+> -			    xfer->hdr.protocol_id, xfer->hdr.seq,
+> -			    xfer->hdr.status);
+> +			    xfer->hdr.protocol_id, xfer->hdr.seq, ret);
+>   
+>   	return ret;
+>   }
+> diff --git a/include/trace/events/scmi.h b/include/trace/events/scmi.h
+> index f076c430d243..f3a4b4d60714 100644
+> --- a/include/trace/events/scmi.h
+> +++ b/include/trace/events/scmi.h
+> @@ -35,7 +35,7 @@ TRACE_EVENT(scmi_xfer_begin,
+>   
+>   TRACE_EVENT(scmi_xfer_end,
+>   	TP_PROTO(int transfer_id, u8 msg_id, u8 protocol_id, u16 seq,
+> -		 u32 status),
+> +		 int status),
+>   	TP_ARGS(transfer_id, msg_id, protocol_id, seq, status),
+>   
+>   	TP_STRUCT__entry(
+> @@ -43,7 +43,7 @@ TRACE_EVENT(scmi_xfer_end,
+>   		__field(u8, msg_id)
+>   		__field(u8, protocol_id)
+>   		__field(u16, seq)
+> -		__field(u32, status)
+> +		__field(int, status)
+>   	),
+>   
+>   	TP_fast_assign(
+> @@ -54,7 +54,7 @@ TRACE_EVENT(scmi_xfer_end,
+>   		__entry->status = status;
+>   	),
+>   
+> -	TP_printk("transfer_id=%d msg_id=%u protocol_id=%u seq=%u status=%u",
+> +	TP_printk("transfer_id=%d msg_id=%u protocol_id=%u seq=%u status=%d",
+>   		__entry->transfer_id, __entry->msg_id, __entry->protocol_id,
+>   		__entry->seq, __entry->status)
+>   );
+> 
 
-Documentation currently says:
+Indeed looks better with the Linux like ret status
 
- - It must fix a problem that causes a build error (but not for things
-    marked CONFIG_BROKEN), an oops, a hang, data corruption, a real
-    security issue, or some "oh, that's not good" issue.  In short,
-    something critical.
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
-=2E..but we also get various warning fixes (sometimes for external
-tools), changes to make printk()s less verbose, changes to make
-debugging easier, etc...
-
-Could the documentation be updated to match current use?
-
-Thanks,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---2fHTh5uZTiUOsy+g
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl7flMUACgkQMOfwapXb+vK3pACglGW9799N3OTLxgOM/OIQZpKv
-P6gAoJr5V9ho8ygRxTBFRQuFKDpQConC
-=MJK1
------END PGP SIGNATURE-----
-
---2fHTh5uZTiUOsy+g--
+Regards,
+Lukasz
