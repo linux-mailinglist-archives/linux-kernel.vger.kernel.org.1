@@ -2,88 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9030B1F48E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 23:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559FF1F4910
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 23:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgFIVek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 17:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727001AbgFIVeg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 17:34:36 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91D3C05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 14:34:36 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id k2so1943897pjs.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 14:34:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HJ2FmoydfaL6CDGwbH52Ge0Wrl30zawrfmow1nUj2c0=;
-        b=O9m+8l7H1EoW8OdCL5uN79CKNtr5vtgiar0rElEwg0GXCXRMa/HpByf5nP6I02kE1x
-         HRTZ/aWeF8EkuhsLaUqsZcXBOm0zRzWopDAZ3aMKTgI+Zpu7E5yRdMi891ViTEtGIk+e
-         vXgBDm+gEq1gyMFT1zuuVTMpRGm4guxKp1L6Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HJ2FmoydfaL6CDGwbH52Ge0Wrl30zawrfmow1nUj2c0=;
-        b=AdAf5gMdmGMc0f+jzg/6XN6Mdb3AUdPsbY2gXrzWaGmVJmAkEqrOhE5amxhw2TJMdi
-         UPr4X3QVRqTnlKHRHupN9pRwDvK8XrDMNU/bicDjNizToEmilExKUbqZPXj4ykmjtCWu
-         mvGOF/Zrdg8/3fXYbb/Bw7DQKBD3gxrrNR+TY7llGm9KcuO+TXjHHOaV7Kl169zhYpW5
-         lH+O8zzTTiO3UcZ72N+6eFiEAmrSXy93r+V6k1nWywLN7wWuVlQsJ4vGl17ydLtSOWv1
-         keeQBl87MrO2R6aeKUe0MaFi1/cwBFkzhi4f1wkByDWOA5s7b2kjYrQAKRAH4q6uE4nl
-         HJgg==
-X-Gm-Message-State: AOAM530fXA+ubblxXr36G+YtQ4pNpIJ5uD44fbowKMogJLtO59eaU7gB
-        vUOd+v1hIVwPYJGxe0pGqy2PHQ==
-X-Google-Smtp-Source: ABdhPJzVdGugeSY+f/v7H2CcczWDHeTj5Wba8lDwrArZhrGFec0z3F0kB6ZTvyimrS+fuO4LK33e/A==
-X-Received: by 2002:a17:90a:e2c4:: with SMTP id fr4mr6901141pjb.32.1591738476398;
-        Tue, 09 Jun 2020 14:34:36 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z20sm9280968pgv.52.2020.06.09.14.34.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 14:34:34 -0700 (PDT)
-Date:   Tue, 9 Jun 2020 14:34:33 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     netdev@vger.kernel.org, David Miller <davem@davemloft.net>,
-        stephen@networkplumber.org, o.rempel@pengutronix.de,
-        andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        kuba@kernel.org, corbet@lwn.net, linville@tuxdriver.com,
-        david@protonic.nl, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        mkl@pengutronix.de, marex@denx.de, christian.herber@nxp.com,
-        amitc@mellanox.com, petrm@mellanox.com
-Subject: Re: [PATCH ethtool v1] netlink: add master/slave configuration
- support
-Message-ID: <202006091358.6FD35CF@keescook>
-References: <202006091222.CB97F743AD@keescook>
- <20200609.123437.1057990370119930723.davem@davemloft.net>
- <202006091244.C8B5F9525@keescook>
- <20200609.130517.1373472507830142138.davem@davemloft.net>
- <202006091312.F91BB4E0CE@keescook>
- <20200609205303.z3kfoptj7w2jpnts@lion.mk-sys.cz>
+        id S1728261AbgFIVpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 17:45:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728061AbgFIVpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 17:45:14 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D33820734;
+        Tue,  9 Jun 2020 21:38:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591738711;
+        bh=ZY4Cx5/3wFFlzCvlf1GcovX/L6l91uTsdeclxs8GR5U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dtrhGd0UWqgzVpTJrefK5wMOmp/2rIXyO7xI7RLrrO65jeGQt9kjPllDHHB/C6pWC
+         NPvviiFafe8YZCmN49IMEtVPDWivkGI9BW372NAOwIYAjsOOjs5KO1G2paPDx+33h2
+         OPZGFtiyTM6anBAKfoqA8swyWS1pYZ/eZcYOEaTU=
+Date:   Tue, 9 Jun 2020 14:38:29 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        frederic@kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        cai@lca.pw, mgorman@techsingularity.net
+Subject: Re: [RFC][PATCH 7/7] sched: Replace rq::wake_list
+Message-ID: <20200609213829.GA789@sol.localdomain>
+References: <20200526161057.531933155@infradead.org>
+ <20200526161908.129371594@infradead.org>
+ <20200604141837.GA179816@roeck-us.net>
+ <20200605002433.GA148196@sol.localdomain>
+ <20200605074154.GB2750@hirez.programming.kicks-ass.net>
+ <20200605161532.GD1373@sol.localdomain>
+ <53318971-561c-b445-0408-530b3d3ba44e@roeck-us.net>
+ <20200609202134.GA1105@sol.localdomain>
+ <20200609212509.GA239889@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200609205303.z3kfoptj7w2jpnts@lion.mk-sys.cz>
+In-Reply-To: <20200609212509.GA239889@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 10:53:03PM +0200, Michal Kubecek wrote:
-> The same IMHO holds for your example with register states or names:
-> I believe it is highly beneficial to make them consistent with technical
-> documentation. There are even cases where we violate kernel coding style
-> (e.g. by using camelcase) to match the names from specification.
+On Tue, Jun 09, 2020 at 02:25:09PM -0700, Guenter Roeck wrote:
+> > 
+> > Still occurring on Linus' tree.  This needs to be fixed.  (And not by removing
+> > support for randstruct; that's not a "fix"...)
+> > 
+> 
+> How about the hack below ?
+> 
+> Guenter
+> 
+> ---
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index c5d96e3e7fff..df1cbb04f9b3 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -629,6 +629,15 @@ struct wake_q_node {
+>  	struct wake_q_node *next;
+>  };
+>  
+> +/*
+> + * Hack around assumption that wake_entry_type follows wake_entry even with
+> + * CONFIG_GCC_PLUGIN_RANDSTRUCT=y.
+> + */
+> +struct _wake_entry {
+> +	struct llist_node	wake_entry;
+> +	unsigned int		wake_entry_type;
+> +};
+> +
+>  struct task_struct {
+>  #ifdef CONFIG_THREAD_INFO_IN_TASK
+>  	/*
+> @@ -653,8 +662,9 @@ struct task_struct {
+>  	unsigned int			ptrace;
+>  
+>  #ifdef CONFIG_SMP
+> -	struct llist_node		wake_entry;
+> -	unsigned int			wake_entry_type;
+> +	struct _wake_entry		_we;
+> +#define wake_entry		_we.wake_entry
+> +#define wake_entry_type		_we.wake_entry_type
+>  	int				on_cpu;
+>  #ifdef CONFIG_THREAD_INFO_IN_TASK
+>  	/* Current CPU: */
 
-Yup, when I saw the original patch it wasn't clear this was matching a
-spec. I haven't been arguing for the $subject patch since Dave pointed
-that out, and am now trying to shape what the general guidance should
-be.
+Does the struct actually have to be named?  How about:
 
--- 
-Kees Cook
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index c5d96e3e7fff42..14ca25cda19150 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -653,8 +653,14 @@ struct task_struct {
+ 	unsigned int			ptrace;
+ 
+ #ifdef CONFIG_SMP
+-	struct llist_node		wake_entry;
+-	unsigned int			wake_entry_type;
++	/*
++	 * wake_entry_type must follow wake_entry, even when
++	 * CONFIG_GCC_PLUGIN_RANDSTRUCT=y.
++	 */
++	struct {
++		struct llist_node	wake_entry;
++		unsigned int		wake_entry_type;
++	};
+ 	int				on_cpu;
+ #ifdef CONFIG_THREAD_INFO_IN_TASK
+ 	/* Current CPU: */
+
+
+However, it would be preferable to not rely on different structs sharing the
+same field order, but rather write proper C code that uses the same struct
+everywhere to encapsulate these 2 fields...
+
+- Eric
