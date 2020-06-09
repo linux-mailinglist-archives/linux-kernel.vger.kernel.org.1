@@ -2,130 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8157A1F3E72
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D231F3E7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730554AbgFIOka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 10:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726803AbgFIOk3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:40:29 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DE3C03E97C;
-        Tue,  9 Jun 2020 07:40:28 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jifQO-0002o7-Q2; Tue, 09 Jun 2020 16:40:24 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 566CA1C0475;
-        Tue,  9 Jun 2020 16:40:24 +0200 (CEST)
-Date:   Tue, 09 Jun 2020 14:40:24 -0000
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] lib/vdso: Provide sanity check for cycles (again)
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        id S1730403AbgFIOmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:42:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728601AbgFIOmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 10:42:04 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1442D2072F;
+        Tue,  9 Jun 2020 14:42:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591713723;
+        bh=DBeZHLEQGulEBu3IQlBvivbxuD7CpCjdJ39fxG4UDBw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Khl7WXZjz0yf6NrpGSUGwKvt+9K9Oxrk2SI7klUKYjRZn787104XzLQeBOo1pQ6XD
+         8P3ZXbXVKjAzZIirxNhWJodow3QE8tArvfWVwI7OmyATVf1vglnnzFlbQgsUhrX9os
+         sLU/nPY7O2QDkwwpcjPSl5w/ov2O5k6TSsc7WPf0=
+Date:   Tue, 9 Jun 2020 15:42:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        david.m.ertman@intel.com, shiraz.saleem@intel.com,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Miklos Szeredi <mszeredi@redhat.com>, stable@vger.kernel.org,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200606221531.963970768@linutronix.de>
-References: <20200606221531.963970768@linutronix.de>
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v4 02/11] mfd: Add support for Kontron sl28cpld
+ management controller
+Message-ID: <20200609144201.GK4583@sirena.org.uk>
+References: <c5632bfab3956265e90fc2fb6c0b3cae@walle.cc>
+ <20200606114645.GB2055@sirena.org.uk>
+ <dc052a5c77171014ecc465b1da8b7ef8@walle.cc>
+ <20200608082827.GB3567@dell>
+ <CAHp75VdiH=J-ovCdh1RFJDW_bJM8=pbXRaHmB691GLb-5oBmYQ@mail.gmail.com>
+ <7d7feb374cbf5a587dc1ce65fc3ad672@walle.cc>
+ <20200608185651.GD4106@dell>
+ <32231f26f7028d62aeda8fdb3364faf1@walle.cc>
+ <20200609064735.GH4106@dell>
+ <32287ac0488f7cbd5a7d1259c284e554@walle.cc>
 MIME-Version: 1.0
-Message-ID: <159171362421.17951.3918218703556245648.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="0FM4RQAc0jwHekq5"
+Content-Disposition: inline
+In-Reply-To: <32287ac0488f7cbd5a7d1259c284e554@walle.cc>
+X-Cookie: Be careful!  Is it classified?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     72ce778007e57e8996b4bebdec738fc5e1145fd2
-Gitweb:        https://git.kernel.org/tip/72ce778007e57e8996b4bebdec738fc5e1145fd2
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sat, 06 Jun 2020 23:51:16 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 09 Jun 2020 16:36:48 +02:00
+--0FM4RQAc0jwHekq5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-lib/vdso: Provide sanity check for cycles (again)
+On Tue, Jun 09, 2020 at 04:38:31PM +0200, Michael Walle wrote:
 
-The original x86 VDSO implementation checked for the validity of the clock
-source read by testing whether the returned signed cycles value is less
-than zero. This check was also used by the vdso read function to signal
-that the current selected clocksource is not VDSO capable.
+>   mfd-device@10 {
+>     compatible =3D "simple-regmap", "simple-mfd";
+>     reg =3D <10>;
+>     regmap,reg-bits =3D <8>;
+>     regmap,val-bits =3D <8>;
+>     sub-device@0 {
+>       compatible =3D "vendor,sub-device0";
+>       reg =3D <0>;
+>     };
 
-During the rework of the VDSO code the check was removed and replaced with
-a check for the clocksource mode being != NONE.
+A DT binding like this is not a good idea, encoding the details of the
+register map into the DT binding makes it an ABI which is begging for
+trouble.  I'd also suggest that any device using a generic driver like
+this should have a specific compatible string for the device so we can
+go back and add quirks later if we need them.
 
-This turned out to be a mistake because the check is necessary for paravirt
-and hyperv clock sources. The reason is that these clock sources have their
-own internal sequence counter to validate the clocksource at the point of
-reading it. This is necessary because the hypervisor can invalidate the
-clocksource asynchronously so a check during the VDSO data update is not
-sufficient. Having a separate indicator for the validity is slower than
-just validating the cycles value. The check for it being negative turned
-out to be the fastest implementation and safe as it would require an uptime
-of ~73 years with a 4GHz counter frequency to result in a false positive.
+>     ...
+> };
+>=20
+> Or if you just want the regmap:
+>=20
+> &soc {
+>   regmap: regmap@fff0000 {
+>     compatible =3D "simple-regmap";
+>     reg =3D <0xfff0000>;
+>     regmap,reg-bits =3D <16>;
+>     regmap,val-bits =3D <32>;
+>   };
+>=20
+>   enet-which-needs-syscon-too@1000000 {
+>     vendor,ctrl-regmap =3D <&regmap>;
+>   };
+> };
+>=20
+> Similar to the current syscon (which is MMIO only..).
+>=20
+> -michael
+>=20
+> >=20
+> > I can't think of any reasons why not, off the top of my head.
+> >=20
+> > Does Regmap only deal with shared accesses from multiple devices
+> > accessing a single register map, or can it also handle multiple
+> > devices communicating over a single I2C channel?
+> >=20
+> > One for Mark perhaps.
+> >=20
+> > > > The issues I wish to resolve using 'simple-mfd' are when sub-devices
+> > > > register maps overlap and intertwine.
+> >=20
+> > [...]
+> >=20
+> > > > > > > What do these bits configure?
+> > > > >
+> > > > > - hardware strappings which have to be there before the board pow=
+ers
+> > > > > up,
+> > > > >   like clocking mode for different SerDes settings
+> > > > > - "keep-in-reset" bits for onboard peripherals if you want to save
+> > > > > power
+> > > > > - disable watchdog bits (there is a watchdog which is active right
+> > > > > from
+> > > > >   the start and supervises the bootloader start and switches to
+> > > > > failsafe
+> > > > >   mode if it wasn't successfully started)
+> > > > > - special boot modes, like eMMC, etc.
+> > > > >
+> > > > > Think of it as a 16bit configuration word.
+> > > >
+> > > > And you wish for users to be able to view these at run-time?
+> > >=20
+> > > And esp. change them.
+> > >=20
+> > > > Can they adapt any of them on-the-fly or will the be RO?
+> > >=20
+> > > They are R/W but only will only affect the board behavior after a
+> > > reset.
+> >=20
+> > I see.  Makes sense.  This is board controller territory.  Perhaps
+> > suitable for inclusion into drivers/soc or drivers/platform.
 
-Add an optional function to validate the cycles with a default
-implementation which allows the compiler to optimize it out for
-architectures which do not require it.
+--0FM4RQAc0jwHekq5
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Fixes: 5d51bee725cc ("clocksource: Add common vdso clock mode storage")
-Reported-by: Miklos Szeredi <miklos@szeredi.hu>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20200606221531.963970768@linutronix.de
+-----BEGIN PGP SIGNATURE-----
 
----
- lib/vdso/gettimeofday.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7fn7gACgkQJNaLcl1U
+h9AhrQf/dpQW8gsPG9Ua7FU/Ae75V1zwG5NKx2ioZcYzal7CqZg3Q0+ciOedLwFs
+WELrgzSE7WB9V18aaNAg8CpMIKlBhqU+2I4JxSAZQWfuaFQgrP550jA5iij1L69d
+RIxP1xrQClXSvmJa33MBpD95uFdGEPWxMOiSB72lLy4E7jr65KwJ55P6tcOlXo7L
+Ma/qDeZ0tjrcZOtH5h3dPsJhEojskfrxWJq6CJ1UjXifZxvy+O/khY6E7TTetw3+
+0b8ttqNSXE4Yk9Z7TKhYlonnqWphaX3XdoDvTlbgxmBldVUrr63UJCTbiCm5pKJ1
+HYxxN5ha9XcJcvRtIDLWzkq7wpRCQg==
+=rwO1
+-----END PGP SIGNATURE-----
 
-diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
-index a2909af..3bb82a6 100644
---- a/lib/vdso/gettimeofday.c
-+++ b/lib/vdso/gettimeofday.c
-@@ -38,6 +38,13 @@ static inline bool vdso_clocksource_ok(const struct vdso_data *vd)
- }
- #endif
- 
-+#ifndef vdso_cycles_ok
-+static inline bool vdso_cycles_ok(u64 cycles)
-+{
-+	return true;
-+}
-+#endif
-+
- #ifdef CONFIG_TIME_NS
- static int do_hres_timens(const struct vdso_data *vdns, clockid_t clk,
- 			  struct __kernel_timespec *ts)
-@@ -62,6 +69,8 @@ static int do_hres_timens(const struct vdso_data *vdns, clockid_t clk,
- 			return -1;
- 
- 		cycles = __arch_get_hw_counter(vd->clock_mode);
-+		if (unlikely(!vdso_cycles_ok(cycles)))
-+			return -1;
- 		ns = vdso_ts->nsec;
- 		last = vd->cycle_last;
- 		ns += vdso_calc_delta(cycles, last, vd->mask, vd->mult);
-@@ -130,6 +139,8 @@ static __always_inline int do_hres(const struct vdso_data *vd, clockid_t clk,
- 			return -1;
- 
- 		cycles = __arch_get_hw_counter(vd->clock_mode);
-+		if (unlikely(!vdso_cycles_ok(cycles)))
-+			return -1;
- 		ns = vdso_ts->nsec;
- 		last = vd->cycle_last;
- 		ns += vdso_calc_delta(cycles, last, vd->mask, vd->mult);
+--0FM4RQAc0jwHekq5--
