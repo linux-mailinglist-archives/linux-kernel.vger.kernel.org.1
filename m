@@ -2,157 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CF21F37CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 12:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B708E1F37E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 12:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728776AbgFIKS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 06:18:58 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:31457 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728743AbgFIKSf (ORCPT
+        id S1728842AbgFIKUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 06:20:39 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:36372 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726937AbgFIKUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 06:18:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591697914;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3sdqb6g4ihbLhkBEfIP/iQpvtsvP33bVeevH+3u62Oc=;
-        b=Z6eqwoj0COLg1FcufXkHswB9CBPmL5puxLkRbLcBMdh0V3FVsq9JKHV6SkQmyUx4BDFm0l
-        NO6jgyFFqkSOmSCWm9LbgJuuJTRbHNITJUkddx7y+es/EvLhrPVaO/4B53LC2su8qCAER1
-        VmSNCPJhAlSVwYjswuJbDZUOPhJHreo=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-xVWACGCuN1qlO0EXLlEtWw-1; Tue, 09 Jun 2020 06:18:32 -0400
-X-MC-Unique: xVWACGCuN1qlO0EXLlEtWw-1
-Received: by mail-wr1-f69.google.com with SMTP id c14so8369631wrw.11
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 03:18:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3sdqb6g4ihbLhkBEfIP/iQpvtsvP33bVeevH+3u62Oc=;
-        b=jYncyfXcih7i3jp75wmv30FA3Gkd5qXaHTQdIfeiW8tuw4zVT8AkEe0g4SBhFCKDGt
-         VqPEYo17efq9aps5ETs15OW6T2SwHlAWZaRgfVvKDIIHS/zHGdLHrlbYxZTPAfgC/saO
-         cTdBqnqD3Tx7WbMvbLdk7qeUkaHP48jqdrvUj9gFNz+nu7JJIiYNhXyarfUdgSPSwqV7
-         yx4PJbHepUivhR+xBMADLfDIrYG86M+kHHy7bleB8V/pdKlN+Q6mRPAEazPOB5sS+7aJ
-         yWaM/mSwohcARMzrNk38qQz+0BhaTXji4/AkKAZ3PdLjXbsl0u50adrt7j7TKP0mF2fZ
-         oSwA==
-X-Gm-Message-State: AOAM531R5jdI/5dFJ/8u/zbh/F2s112ZQz8wjpgoNshGdc59GP/78J7K
-        mcHezVo76Kw05AK2iZI7a5qakNNIBdSKPqRgyRwE+s1shsYtMGPsh4wefSYSbVAV4D48HvbvVKl
-        ObAL2ncZY+pNMFkVU2ch5DS8y
-X-Received: by 2002:a1c:a74f:: with SMTP id q76mr3438091wme.65.1591697910892;
-        Tue, 09 Jun 2020 03:18:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyfIL2Q+jM3CRYMhgS5kqzHuXFhLEuV0UP3eNIF2scHlFcuKXLYyS3L1Q5Mu5PD1R+s2YSGxA==
-X-Received: by 2002:a1c:a74f:: with SMTP id q76mr3438060wme.65.1591697910629;
-        Tue, 09 Jun 2020 03:18:30 -0700 (PDT)
-Received: from [192.168.178.58] ([151.21.172.168])
-        by smtp.gmail.com with ESMTPSA id g82sm2452249wmf.1.2020.06.09.03.18.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jun 2020 03:18:30 -0700 (PDT)
-Subject: Re: [PATCH v2] KVM: nVMX: Consult only the "basic" exit reason when
- routing nested exit
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Oliver Upton <oupton@google.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>
-References: <20200608191857.30319-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <6153e63a-b68e-3537-8fab-d92163c329f0@redhat.com>
-Date:   Tue, 9 Jun 2020 12:18:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Tue, 9 Jun 2020 06:20:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1591698036; x=1623234036;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Jog8U1hg1Jb0yOPntlrXCpHzhFdDi4nx+A8hEzkfpIc=;
+  b=s+wfFT6T4QWxS5bq8yxTT0Co2z5aDLAunK4vm3qRizlZQ4rqyafhZboy
+   cwa+yQ/lu1ZlnEKSlcAR7JYxejO1Q8NlvD6mxABrwjesJnIdwXFfBSM2+
+   IZNX6c0zI7M3ikx3UGLQAWQUIY59PjmlSkPX/f6/dUi86b4D+vebxXjWc
+   CZa6Z+34+AnT9vQGWA8katR00yWcP7TXgYEHLa2keMHF2XLfQikaNYF9f
+   l1g0wab5Kugc2S1TUBKlRAD/ZA0P7sEgEJsBRvxfz4v+ynt8VewMTh9yA
+   r2UmAsgYVcR45HvKw8cejm0VVY88yj2fxs80Uj917Q1S+S9UU147kxgcD
+   Q==;
+IronPort-SDR: GsUomaDlsyMFGql6N5vKCKqggAS8YTeM8rMEysweN7jreEtYgmsUT9SR7LCgT5iWJHn6yq+KBr
+ JcYdSIakI6+vBex31IJhOeiKfHKihHDKm5ZCOwUH9fhXnWy/KxRxYbqgxwXcGeAWeTj3Y+odJK
+ WRJUbXsCdmC398dPnffw8iYmYxC69HKWzjaaP1porxdM6EcDPHCYk+l9UA4wNtGvaF0mszvqg1
+ LF4sySzldi0r2v3DJPvEH+Uwo+SxpKpKRZ/BwGM8uILdf+uSuYToyvvj9qTX+bn1nswG3MFKYk
+ 6/g=
+X-IronPort-AV: E=Sophos;i="5.73,491,1583218800"; 
+   d="scan'208";a="78723000"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Jun 2020 03:20:35 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Tue, 9 Jun 2020 03:20:34 -0700
+Received: from soft-dev15.microsemi.net (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1847.3 via Frontend Transport; Tue, 9 Jun 2020 03:20:32 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/3] mmc: Adding support for Microchip Sparx5 SoC
+Date:   Tue, 9 Jun 2020 12:20:05 +0200
+Message-ID: <20200609102008.10530-1-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200608191857.30319-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/06/20 21:18, Sean Christopherson wrote:
-> Consult only the basic exit reason, i.e. bits 15:0 of vmcs.EXIT_REASON,
-> when determining whether a nested VM-Exit should be reflected into L1 or
-> handled by KVM in L0.
-> 
-> For better or worse, the switch statements nested_vmx_l0_wants_exit()
-> and nested_vmx_l1_wants_exit() default to reflecting the VM-Exit into L1
-> for any nested VM-Exit without dedicated logic.  Because the case
-> statements only contain the basic exit reason, any VM-Exit with modifier
-> bits set will be reflected to L1, even if KVM intended to handle it in
-> L0.
-> 
-> Practically speaking, this only affects EXIT_REASON_MCE_DURING_VMENTRY,
-> i.e. a #MC that occurs on nested VM-Enter would be incorrectly routed to
-> L1, as "failed VM-Entry" is the only modifier that KVM can currently
-> encounter.  The SMM modifiers will never be generated as KVM doesn't
-> support/employ a SMI Transfer Monitor.  Ditto for "exit from enclave",
-> as KVM doesn't yet support virtualizing SGX, i.e. it's impossible to
-> enter an enclave in a KVM guest (L1 or L2).
-> 
-> Note, the original version of this fix[*] is functionally equivalent and
-> far more suited to backporting as the affected code was refactored since
-> the original patch was posted.
-> 
-> [*] https://lkml.kernel.org/r/20200227174430.26371-1-sean.j.christopherson@intel.com
-> 
-> Fixes: 644d711aa0e1 ("KVM: nVMX: Deciding if L0 or L1 should handle an L2 exit")
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Xiaoyao Li <xiaoyao.li@intel.com>
-> Cc: stable@vger.kernel.org
-> Cc: Oliver Upton <oupton@google.com>
-> Cc: Krish Sadhukhan <krish.sadhukhan@oracle.com>
-> Cc: Miaohe Lin <linmiaohe@huawei.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
-> 
-> Another wounded soldier. 
-> 
-> Oliver, Krish, and Miaohe all provided reviews for v1, but I didn't feel
-> comfortable adding the tags to v2 because this is far from a straight
-> rebase.
-> 
-> v2: Rebased to kvm/queue, commit fb7333dfd812 ("KVM: SVM: fix calls ...").
-> 
->  arch/x86/kvm/vmx/nested.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index bcb50724be38..adb11b504d5c 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -5672,7 +5672,7 @@ static bool nested_vmx_l0_wants_exit(struct kvm_vcpu *vcpu, u32 exit_reason)
->  {
->  	u32 intr_info;
->  
-> -	switch (exit_reason) {
-> +	switch ((u16)exit_reason) {
->  	case EXIT_REASON_EXCEPTION_NMI:
->  		intr_info = vmx_get_intr_info(vcpu);
->  		if (is_nmi(intr_info))
-> @@ -5733,7 +5733,7 @@ static bool nested_vmx_l1_wants_exit(struct kvm_vcpu *vcpu, u32 exit_reason)
->  	struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
->  	u32 intr_info;
->  
-> -	switch (exit_reason) {
-> +	switch ((u16)exit_reason) {
->  	case EXIT_REASON_EXCEPTION_NMI:
->  		intr_info = vmx_get_intr_info(vcpu);
->  		if (is_nmi(intr_info))
-> 
+This is an add-on series to the main SoC Sparx5 series
+(Message-ID: <20200608123024.5330-1-lars.povlsen@microchip.com>)
 
-Thanks, queued with git magic (committed v1 based on v5.7, merged into
-kvm/queue, added the delta to v2 in the merge commit) so that stable
-branches can cherry-pick cleanly.
+It adds eMMC support for Sparx5, by adding a driver for the SoC SDHCI
+controller, DT configuration and DT binding documentation.
 
-Paolo
+Changes in v2:
+- Changes in driver as per review comments
+ - Drop debug code
+ - Drop sysfs code
+ - Minor cosmetics
 
+Lars Povlsen (3):
+  dt-bindings: mmc: Add Sparx5 SDHCI controller bindings
+  sdhci: sparx5: Add Sparx5 SoC eMMC driver
+  arm64: dts: sparx5: Add Sparx5 eMMC support
+
+ .../mmc/microchip,dw-sparx5-sdhci.yaml        |  57 ++++
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |  24 ++
+ .../boot/dts/microchip/sparx5_pcb125.dts      |  23 ++
+ .../boot/dts/microchip/sparx5_pcb134_emmc.dts |  23 ++
+ .../boot/dts/microchip/sparx5_pcb135_emmc.dts |  23 ++
+ drivers/mmc/host/Kconfig                      |  13 +
+ drivers/mmc/host/Makefile                     |   1 +
+ drivers/mmc/host/sdhci-of-sparx5.c            | 274 ++++++++++++++++++
+ 8 files changed, 438 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
+ create mode 100644 drivers/mmc/host/sdhci-of-sparx5.c
+
+--
+Cc: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+Cc: linux-mmc@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
