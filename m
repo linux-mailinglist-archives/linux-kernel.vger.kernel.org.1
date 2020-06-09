@@ -2,116 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8397E1F461D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D2C1F45E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389115AbgFISYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:24:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:45998 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730588AbgFIRrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:47:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 45AD51F1;
-        Tue,  9 Jun 2020 10:47:02 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A21CA3F73D;
-        Tue,  9 Jun 2020 10:47:00 -0700 (PDT)
-Date:   Tue, 9 Jun 2020 18:46:54 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Enrico Weigelt <info@metux.net>,
-        Allison Randal <allison@lohutok.net>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: acpi: fix UBSAN warning
-Message-ID: <20200609174654.GA2994@e121166-lin.cambridge.arm.com>
-References: <CAKwvOdnBhHnhUZ9MHgqEQ4nEyzHWUH+DPV-J0KoYyWNEnsDHbg@mail.gmail.com>
- <20200608203818.189423-1-ndesaulniers@google.com>
+        id S1732960AbgFISVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732325AbgFIRsd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:48:33 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6611C05BD1E;
+        Tue,  9 Jun 2020 10:48:33 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 132B52A3B67
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Philippe CORNU <philippe.cornu@st.com>,
+        Yannick FERTRE <yannick.fertre@st.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Jonas Karlman <jonas@kwiboo.se>, linux-imx@nxp.com,
+        kernel@collabora.com, linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH v9 00/11] Genericize DW MIPI DSI bridge and add i.MX 6 driver
+Date:   Tue,  9 Jun 2020 20:49:48 +0300
+Message-Id: <20200609174959.955926-1-adrian.ratiu@collabora.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200608203818.189423-1-ndesaulniers@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 01:38:17PM -0700, Nick Desaulniers wrote:
-> Will reported a UBSAN warning:
-> 
-> UBSAN: null-ptr-deref in arch/arm64/kernel/smp.c:596:6
-> member access within null pointer of type 'struct acpi_madt_generic_interrupt'
-> CPU: 0 PID: 0 Comm: swapper Not tainted 5.7.0-rc6-00124-g96bc42ff0a82 #1
-> Call trace:
->  dump_backtrace+0x0/0x384
->  show_stack+0x28/0x38
->  dump_stack+0xec/0x174
->  handle_null_ptr_deref+0x134/0x174
->  __ubsan_handle_type_mismatch_v1+0x84/0xa4
->  acpi_parse_gic_cpu_interface+0x60/0xe8
->  acpi_parse_entries_array+0x288/0x498
->  acpi_table_parse_entries_array+0x178/0x1b4
->  acpi_table_parse_madt+0xa4/0x110
->  acpi_parse_and_init_cpus+0x38/0x100
->  smp_init_cpus+0x74/0x258
->  setup_arch+0x350/0x3ec
->  start_kernel+0x98/0x6f4
-> 
-> This is from the use of the ACPI_OFFSET in
-> arch/arm64/include/asm/acpi.h. Replace its use with offsetof from
-> include/linux/stddef.h which should implement the same logic using
-> __builtin_offsetof, so that UBSAN wont warn.
-> 
-> Link: https://lore.kernel.org/lkml/20200521100952.GA5360@willie-the-truck/
-> Cc: stable@vger.kernel.org
-> Reported-by: Will Deacon <will@kernel.org>
-> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> Changes V1 -> V2:
-> * Just fix one of the two warnings, specific to arm64.
-> * Put warning in commit message.
-> 
->  arch/arm64/include/asm/acpi.h | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+[Re-submitting to cc dri-devel, sorry about the noise]
 
-Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Hello all,
 
-> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-> index b263e239cb59..a45366c3909b 100644
-> --- a/arch/arm64/include/asm/acpi.h
-> +++ b/arch/arm64/include/asm/acpi.h
-> @@ -12,6 +12,7 @@
->  #include <linux/efi.h>
->  #include <linux/memblock.h>
->  #include <linux/psci.h>
-> +#include <linux/stddef.h>
->  
->  #include <asm/cputype.h>
->  #include <asm/io.h>
-> @@ -31,14 +32,14 @@
->   * is therefore used to delimit the MADT GICC structure minimum length
->   * appropriately.
->   */
-> -#define ACPI_MADT_GICC_MIN_LENGTH   ACPI_OFFSET(  \
-> +#define ACPI_MADT_GICC_MIN_LENGTH   offsetof(  \
->  	struct acpi_madt_generic_interrupt, efficiency_class)
->  
->  #define BAD_MADT_GICC_ENTRY(entry, end)					\
->  	(!(entry) || (entry)->header.length < ACPI_MADT_GICC_MIN_LENGTH || \
->  	(unsigned long)(entry) + (entry)->header.length > (end))
->  
-> -#define ACPI_MADT_GICC_SPE  (ACPI_OFFSET(struct acpi_madt_generic_interrupt, \
-> +#define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
->  	spe_interrupt) + sizeof(u16))
->  
->  /* Basic configuration for ACPI */
-> -- 
-> 2.27.0.278.ge193c7cf3a9-goog
-> 
+v9 cleanly applies on top of latest next-20200609 tree.
+
+v9 does not depend on other patches as the last binding doc has been merged.
+
+All feedback up to this point has been addressed. Specific details in
+individual patch changelogs.
+
+The biggest changes are the deprecation of the Synopsys DW bridge bind()
+API in favor of of_drm_find_bridge() and .attach callbacks, the addition
+of a TODO entry which outlines future planned bridge driver refactorings
+and a reordering of some i.MX 6 patches to appease checkpatch.
+
+The idea behind the TODO is to get this regmap and i.MX 6 driver merged
+and then do the rest of refactorings in-tree because it's easier and the
+refactorings themselves are out-of-scope of this series which is adding
+i.MX 6 support and is quite big already, so please, if there are more
+refactoring ideas, let's add them to the TODO doc. :) I intend to tackle
+those after this series is merged to avoid two complex inter-dependent
+simultaneous series.
+
+As always more testing is welcome especially on Rockchip and STM SoCs.
+
+Big thank you to everyone who has contributed to this up to now,
+Adrian
+
+Adrian Ratiu (11):
+  drm: bridge: dw_mipi_dsi: add initial regmap infrastructure
+  drm: bridge: dw_mipi_dsi: abstract register access using reg_fields
+  drm: bridge: dw_mipi_dsi: add dsi v1.01 support
+  drm: bridge: dw_mipi_dsi: remove bind/unbind API
+  dt-bindings: display: add i.MX6 MIPI DSI host controller doc
+  ARM: dts: imx6qdl: add missing mipi dsi properties
+  drm: imx: Add i.MX 6 MIPI DSI host platform driver
+  drm: stm: dw-mipi-dsi: let the bridge handle the HW version check
+  drm: bridge: dw-mipi-dsi: split low power cfg register into fields
+  drm: bridge: dw-mipi-dsi: fix bad register field offsets
+  Documentation: gpu: todo: Add dw-mipi-dsi consolidation plan
+
+ .../display/imx/fsl,mipi-dsi-imx6.yaml        | 112 +++
+ Documentation/gpu/todo.rst                    |  25 +
+ arch/arm/boot/dts/imx6qdl.dtsi                |   8 +
+ drivers/gpu/drm/bridge/synopsys/Kconfig       |   1 +
+ drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 713 ++++++++++++------
+ drivers/gpu/drm/imx/Kconfig                   |   8 +
+ drivers/gpu/drm/imx/Makefile                  |   1 +
+ drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c        | 399 ++++++++++
+ .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   |   7 +-
+ drivers/gpu/drm/stm/dw_mipi_dsi-stm.c         |  16 +-
+ 10 files changed, 1059 insertions(+), 231 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml
+ create mode 100644 drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c
+
+-- 
+2.27.0
+
