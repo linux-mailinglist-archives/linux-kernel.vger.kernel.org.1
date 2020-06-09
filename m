@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3064A1F45F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17A21F4608
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388832AbgFISWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:22:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32832 "EHLO mail.kernel.org"
+        id S1732110AbgFIRrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:47:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732318AbgFIRsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:48:33 -0400
+        id S1732061AbgFIRrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:47:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C098B20812;
-        Tue,  9 Jun 2020 17:48:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E0D6207F9;
+        Tue,  9 Jun 2020 17:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724913;
-        bh=0l8c9k+8yFocyzIgv8IfzIQTVYUyVs5GizGv3/sGW/A=;
+        s=default; t=1591724840;
+        bh=uxgkLmEM+qRpdRQoAjDFTn3eJyZ9H2fvH5ojL6T9T60=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uG4sTfXTAxSIY0PuiBYVMdZue1VgnI/wi23U0HmpPDBwrFJ08Xn/a3MoHVzERmLpM
-         YeSQosTEl1mEi4NlsxUdySmsvsSdzDo9+usNQqfVtQyQqRXPVqoWyvGaKwBmNF/Di1
-         xPiRHqa2GrfQ5QH5uo55jkc52WbDL3rD8iu4seEE=
+        b=CMesLuVscIlxMrGCM4cUiH3H70+KmQIqJ6g019syGzvn+MkygQ5FxRQJa7tuQxb3O
+         SFqs0Z9hbAT0p8tQTtVSX2DN5FcVfLtn/VIFMPLNKzbA1a7bRqWiRP9vxa5zRnLAqI
+         vwwjDHIoH8b5MjIlyB4MsyHMl/8BC7RR4JlSXaN4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeremy Kerr <jk@ozlabs.org>,
-        Stan Johnson <userm57@yahoo.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 08/42] net: bmac: Fix read of MAC address from ROM
+        stable@vger.kernel.org,
+        =?UTF-8?q?David=20Bala=C5=BEic?= <xerces9@gmail.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 14/36] pppoe: only process PADT targeted at local interfaces
 Date:   Tue,  9 Jun 2020 19:44:14 +0200
-Message-Id: <20200609174016.347094176@linuxfoundation.org>
+Message-Id: <20200609173934.094297589@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
-References: <20200609174015.379493548@linuxfoundation.org>
+In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
+References: <20200609173933.288044334@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,43 +45,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Kerr <jk@ozlabs.org>
+From: Guillaume Nault <gnault@redhat.com>
 
-[ Upstream commit ef01cee2ee1b369c57a936166483d40942bcc3e3 ]
+We don't want to disconnect a session because of a stray PADT arriving
+while the interface is in promiscuous mode.
+Furthermore, multicast and broadcast packets make no sense here, so
+only PACKET_HOST is accepted.
 
-In bmac_get_station_address, We're reading two bytes at a time from ROM,
-but we do that six times, resulting in 12 bytes of read & writes. This
-means we will write off the end of the six-byte destination buffer.
-
-This change fixes the for-loop to only read/write six bytes.
-
-Based on a proposed fix from Finn Thain <fthain@telegraphics.com.au>.
-
-Signed-off-by: Jeremy Kerr <jk@ozlabs.org>
-Reported-by: Stan Johnson <userm57@yahoo.com>
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Reported-by: Finn Thain <fthain@telegraphics.com.au>
+Reported-by: David Balažic <xerces9@gmail.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Guillaume Nault <gnault@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/apple/bmac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ppp/pppoe.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/apple/bmac.c b/drivers/net/ethernet/apple/bmac.c
-index a65d7a60f116..ffa7e7e6d18d 100644
---- a/drivers/net/ethernet/apple/bmac.c
-+++ b/drivers/net/ethernet/apple/bmac.c
-@@ -1187,7 +1187,7 @@ bmac_get_station_address(struct net_device *dev, unsigned char *ea)
- 	int i;
- 	unsigned short data;
+--- a/drivers/net/ppp/pppoe.c
++++ b/drivers/net/ppp/pppoe.c
+@@ -494,6 +494,9 @@ static int pppoe_disc_rcv(struct sk_buff
+ 	if (!skb)
+ 		goto out;
  
--	for (i = 0; i < 6; i++)
-+	for (i = 0; i < 3; i++)
- 		{
- 			reset_and_select_srom(dev);
- 			data = read_srom(dev, i + EnetAddressOffset/2, SROMAddressBits);
--- 
-2.25.1
-
++	if (skb->pkt_type != PACKET_HOST)
++		goto abort;
++
+ 	if (!pskb_may_pull(skb, sizeof(struct pppoe_hdr)))
+ 		goto abort;
+ 
 
 
