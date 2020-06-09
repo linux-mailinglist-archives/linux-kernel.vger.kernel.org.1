@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C763E1F4412
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C82C1F4406
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733153AbgFISAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:00:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46690 "EHLO mail.kernel.org"
+        id S1731526AbgFIRy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:54:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731910AbgFIRyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:54:45 -0400
+        id S1733007AbgFIRxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:53:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A589207C3;
-        Tue,  9 Jun 2020 17:54:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E94EF20734;
+        Tue,  9 Jun 2020 17:53:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725284;
-        bh=55xVFPoFEr5iTuis4xbFShwfW/HkegS1sk4Cc6Lcbs0=;
+        s=default; t=1591725194;
+        bh=7H0o9iPkpfeRrO+kK8fHciPXul+ErU2mXc1tBvSlrxs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C9O7BrC2fIvjP/DxqB3qxS097imSmGkn7ts+ygyC00UtA5IzQoCBihyTb/rG6R4uv
-         XfFcfzA5AysugOBxLdL7XgG7+XIeazjLqYQdNTUzWu90MvXfgLJw4MAmtTj4+boVx+
-         tBpOrJusXT/4CLfJZg9Sdv8d8kwXnrKIQAOrzRY8=
+        b=ozqkY8M1b7dv8cxh8S/oiIXPOWreofyGvUsvAId5Uhe947HSC7nyK3dMUxGpu2gkb
+         mWKbPIC9nI5uCTeWdqs5E+LVHa1Z2gFZF5VSNr9ddCL0MMhwVg2ENfiZMuYY1qZipZ
+         VvedbNZmsdflKdq5l4PIP7RXVht0+NGiAzTCVrrg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ivan Vecera <ivecera@redhat.com>,
-        Davide Caratti <dcaratti@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 16/41] net/sched: fix infinite loop in sch_fq_pie
-Date:   Tue,  9 Jun 2020 19:45:18 +0200
-Message-Id: <20200609174113.683589069@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        Raghavendra <rananta@codeaurora.org>
+Subject: [PATCH 5.4 23/34] tty: hvc_console, fix crashes on parallel open/close
+Date:   Tue,  9 Jun 2020 19:45:19 +0200
+Message-Id: <20200609174055.648854409@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174112.129412236@linuxfoundation.org>
-References: <20200609174112.129412236@linuxfoundation.org>
+In-Reply-To: <20200609174052.628006868@linuxfoundation.org>
+References: <20200609174052.628006868@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,96 +43,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Davide Caratti <dcaratti@redhat.com>
+From: Jiri Slaby <jslaby@suse.cz>
 
-[ Upstream commit bb2f930d6dd708469a587dc9ed1efe1ef969c0bf ]
+commit 24eb2377f977fe06d84fca558f891f95bc28a449 upstream.
 
-this command hangs forever:
+hvc_open sets tty->driver_data to NULL when open fails at some point.
+Typically, the failure happens in hp->ops->notifier_add(). If there is
+a racing process which tries to open such mangled tty, which was not
+closed yet, the process will crash in hvc_open as tty->driver_data is
+NULL.
 
- # tc qdisc add dev eth0 root fq_pie flows 65536
+All this happens because close wants to know whether open failed or not.
+But ->open should not NULL this and other tty fields for ->close to be
+happy. ->open should call tty_port_set_initialized(true) and close
+should check by tty_port_initialized() instead. So do this properly in
+this driver.
 
- watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [tc:1028]
- [...]
- CPU: 1 PID: 1028 Comm: tc Not tainted 5.7.0-rc6+ #167
- RIP: 0010:fq_pie_init+0x60e/0x8b7 [sch_fq_pie]
- Code: 4c 89 65 50 48 89 f8 48 c1 e8 03 42 80 3c 30 00 0f 85 2a 02 00 00 48 8d 7d 10 4c 89 65 58 48 89 f8 48 c1 e8 03 42 80 3c 30 00 <0f> 85 a7 01 00 00 48 8d 7d 18 48 c7 45 10 46 c3 23 00 48 89 f8 48
- RSP: 0018:ffff888138d67468 EFLAGS: 00000246 ORIG_RAX: ffffffffffffff13
- RAX: 1ffff9200018d2b2 RBX: ffff888139c1c400 RCX: ffffffffffffffff
- RDX: 000000000000c5e8 RSI: ffffc900000e5000 RDI: ffffc90000c69590
- RBP: ffffc90000c69580 R08: fffffbfff79a9699 R09: fffffbfff79a9699
- R10: 0000000000000700 R11: fffffbfff79a9698 R12: ffffc90000c695d0
- R13: 0000000000000000 R14: dffffc0000000000 R15: 000000002347c5e8
- FS:  00007f01e1850e40(0000) GS:ffff88814c880000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 000000000067c340 CR3: 000000013864c000 CR4: 0000000000340ee0
- Call Trace:
-  qdisc_create+0x3fd/0xeb0
-  tc_modify_qdisc+0x3be/0x14a0
-  rtnetlink_rcv_msg+0x5f3/0x920
-  netlink_rcv_skb+0x121/0x350
-  netlink_unicast+0x439/0x630
-  netlink_sendmsg+0x714/0xbf0
-  sock_sendmsg+0xe2/0x110
-  ____sys_sendmsg+0x5b4/0x890
-  ___sys_sendmsg+0xe9/0x160
-  __sys_sendmsg+0xd3/0x170
-  do_syscall_64+0x9a/0x370
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+So this patch removes these from ->open:
+* tty_port_tty_set(&hp->port, NULL). This happens on last close.
+* tty->driver_data = NULL. Dtto.
+* tty_port_put(&hp->port). This happens in shutdown and until now, this
+  must have been causing a reference underflow, if I am not missing
+  something.
 
-we can't accept 65536 as a valid number for 'nflows', because the loop on
-'idx' in fq_pie_init() will never end. The extack message is correct, but
-it doesn't say that 0 is not a valid number for 'flows': while at it, fix
-this also. Add a tdc selftest to check correct validation of 'flows'.
-
-CC: Ivan Vecera <ivecera@redhat.com>
-Fixes: ec97ecf1ebe4 ("net: sched: add Flow Queue PIE packet scheduler")
-Signed-off-by: Davide Caratti <dcaratti@redhat.com>
-Reviewed-by: Ivan Vecera <ivecera@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: stable <stable@vger.kernel.org>
+Reported-and-tested-by: Raghavendra <rananta@codeaurora.org>
+Link: https://lore.kernel.org/r/20200526145632.13879-1-jslaby@suse.cz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/sched/sch_fq_pie.c                                         |    4 -
- tools/testing/selftests/tc-testing/tc-tests/qdiscs/fq_pie.json |   21 ++++++++++
- 2 files changed, 23 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/tc-testing/tc-tests/qdiscs/fq_pie.json
 
---- a/net/sched/sch_fq_pie.c
-+++ b/net/sched/sch_fq_pie.c
-@@ -298,9 +298,9 @@ static int fq_pie_change(struct Qdisc *s
- 			goto flow_error;
- 		}
- 		q->flows_cnt = nla_get_u32(tb[TCA_FQ_PIE_FLOWS]);
--		if (!q->flows_cnt || q->flows_cnt > 65536) {
-+		if (!q->flows_cnt || q->flows_cnt >= 65536) {
- 			NL_SET_ERR_MSG_MOD(extack,
--					   "Number of flows must be < 65536");
-+					   "Number of flows must range in [1..65535]");
- 			goto flow_error;
- 		}
- 	}
---- /dev/null
-+++ b/tools/testing/selftests/tc-testing/tc-tests/qdiscs/fq_pie.json
-@@ -0,0 +1,21 @@
-+[
-+    {
-+        "id": "83be",
-+        "name": "Create FQ-PIE with invalid number of flows",
-+        "category": [
-+            "qdisc",
-+            "fq_pie"
-+        ],
-+        "setup": [
-+            "$IP link add dev $DUMMY type dummy || /bin/true"
-+        ],
-+        "cmdUnderTest": "$TC qdisc add dev $DUMMY root fq_pie flows 65536",
-+        "expExitCode": "2",
-+        "verifyCmd": "$TC qdisc show dev $DUMMY",
-+        "matchPattern": "qdisc",
-+        "matchCount": "0",
-+        "teardown": [
-+            "$IP link del dev $DUMMY"
-+        ]
-+    }
-+]
+---
+ drivers/tty/hvc/hvc_console.c |   23 ++++++++---------------
+ 1 file changed, 8 insertions(+), 15 deletions(-)
+
+--- a/drivers/tty/hvc/hvc_console.c
++++ b/drivers/tty/hvc/hvc_console.c
+@@ -371,15 +371,14 @@ static int hvc_open(struct tty_struct *t
+ 	 * tty fields and return the kref reference.
+ 	 */
+ 	if (rc) {
+-		tty_port_tty_set(&hp->port, NULL);
+-		tty->driver_data = NULL;
+-		tty_port_put(&hp->port);
+ 		printk(KERN_ERR "hvc_open: request_irq failed with rc %d.\n", rc);
+-	} else
++	} else {
+ 		/* We are ready... raise DTR/RTS */
+ 		if (C_BAUD(tty))
+ 			if (hp->ops->dtr_rts)
+ 				hp->ops->dtr_rts(hp, 1);
++		tty_port_set_initialized(&hp->port, true);
++	}
+ 
+ 	/* Force wakeup of the polling thread */
+ 	hvc_kick();
+@@ -389,22 +388,12 @@ static int hvc_open(struct tty_struct *t
+ 
+ static void hvc_close(struct tty_struct *tty, struct file * filp)
+ {
+-	struct hvc_struct *hp;
++	struct hvc_struct *hp = tty->driver_data;
+ 	unsigned long flags;
+ 
+ 	if (tty_hung_up_p(filp))
+ 		return;
+ 
+-	/*
+-	 * No driver_data means that this close was issued after a failed
+-	 * hvc_open by the tty layer's release_dev() function and we can just
+-	 * exit cleanly because the kref reference wasn't made.
+-	 */
+-	if (!tty->driver_data)
+-		return;
+-
+-	hp = tty->driver_data;
+-
+ 	spin_lock_irqsave(&hp->port.lock, flags);
+ 
+ 	if (--hp->port.count == 0) {
+@@ -412,6 +401,9 @@ static void hvc_close(struct tty_struct
+ 		/* We are done with the tty pointer now. */
+ 		tty_port_tty_set(&hp->port, NULL);
+ 
++		if (!tty_port_initialized(&hp->port))
++			return;
++
+ 		if (C_HUPCL(tty))
+ 			if (hp->ops->dtr_rts)
+ 				hp->ops->dtr_rts(hp, 0);
+@@ -428,6 +420,7 @@ static void hvc_close(struct tty_struct
+ 		 * waking periodically to check chars_in_buffer().
+ 		 */
+ 		tty_wait_until_sent(tty, HVC_CLOSE_WAIT);
++		tty_port_set_initialized(&hp->port, false);
+ 	} else {
+ 		if (hp->port.count < 0)
+ 			printk(KERN_ERR "hvc_close %X: oops, count is %d\n",
 
 
