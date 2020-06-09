@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 411FE1F430E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D5A1F42BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730756AbgFIRte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34868 "EHLO mail.kernel.org"
+        id S1732080AbgFIRrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:47:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732477AbgFIRtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:49:13 -0400
+        id S1732061AbgFIRrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:47:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FC95207F9;
-        Tue,  9 Jun 2020 17:49:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0681720801;
+        Tue,  9 Jun 2020 17:47:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724952;
-        bh=JWfUK1UurEc1IJd4vKsIl1wbDbG8V745DfuhATHNP6g=;
+        s=default; t=1591724830;
+        bh=L7YJy0y9nLm8blOqjElc3xEZMQQ5twDSw/fGhd5AN1s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QzfqydS8X0dYYZ37fABPLfc6aC8Q01t3yoOod/uLw4Sdi4qDH8KH9/26F06fRrN5n
-         mTroJHHaRpRX96SGpFDkecdOqavmIr6aoe9hmfmU5hznLppqzJ8hC8yHDfgKkljLGj
-         D85DjB1K+4RqRa9tGRrIUnwHFn5l8TF0Cvx1k/cA=
+        b=VTw2C3I2H4iUFSGHNTZEjwoCBwRhTyuEiyG/4WyAGw2n6URUD06uPy0qOu5AUvsc3
+         Ub2gFa4H7S3yo2t3IVScFO+0GWmBrG3kzoJKfqY63hlZpYkdaMEH9nxc6W/BVLqlAl
+         lag1iWpD17NHGrfFAx2bCKcriWlyYw8LNTMLXcaU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matt Jolly <Kangie@footclan.ninja>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 28/42] USB: serial: qcserial: add DW5816e QDL support
+        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 4.4 34/36] x86/speculation: Add Ivy Bridge to affected list
 Date:   Tue,  9 Jun 2020 19:44:34 +0200
-Message-Id: <20200609174018.537831820@linuxfoundation.org>
+Message-Id: <20200609173935.740168010@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
-References: <20200609174015.379493548@linuxfoundation.org>
+In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
+References: <20200609173933.288044334@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Jolly <Kangie@footclan.ninja>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-commit 3429444abdd9dbd5faebd9bee552ec6162b17ad6 upstream.
+commit 3798cc4d106e91382bfe016caa2edada27c2bb3f upstream
 
-Add support for Dell Wireless 5816e Download Mode (AKA boot & hold mode /
-QDL download mode) to drivers/usb/serial/qcserial.c
+Make the docs match the code.
 
-This is required to update device firmware.
-
-Signed-off-by: Matt Jolly <Kangie@footclan.ninja>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/serial/qcserial.c |    1 +
- 1 file changed, 1 insertion(+)
+ Documentation/hw-vuln/special-register-buffer-data-sampling.rst |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/serial/qcserial.c
-+++ b/drivers/usb/serial/qcserial.c
-@@ -177,6 +177,7 @@ static const struct usb_device_id id_tab
- 	{DEVICE_SWI(0x413c, 0x81b3)},	/* Dell Wireless 5809e Gobi(TM) 4G LTE Mobile Broadband Card (rev3) */
- 	{DEVICE_SWI(0x413c, 0x81b5)},	/* Dell Wireless 5811e QDL */
- 	{DEVICE_SWI(0x413c, 0x81b6)},	/* Dell Wireless 5811e QDL */
-+	{DEVICE_SWI(0x413c, 0x81cb)},	/* Dell Wireless 5816e QDL */
- 	{DEVICE_SWI(0x413c, 0x81cc)},	/* Dell Wireless 5816e */
- 	{DEVICE_SWI(0x413c, 0x81cf)},   /* Dell Wireless 5819 */
- 	{DEVICE_SWI(0x413c, 0x81d0)},   /* Dell Wireless 5819 */
+--- a/Documentation/hw-vuln/special-register-buffer-data-sampling.rst
++++ b/Documentation/hw-vuln/special-register-buffer-data-sampling.rst
+@@ -27,6 +27,8 @@ by software using TSX_CTRL_MSR otherwise
+   =============  ============  ========
+   common name    Family_Model  Stepping
+   =============  ============  ========
++  IvyBridge      06_3AH        All
++
+   Haswell        06_3CH        All
+   Haswell_L      06_45H        All
+   Haswell_G      06_46H        All
+@@ -37,9 +39,8 @@ by software using TSX_CTRL_MSR otherwise
+   Skylake_L      06_4EH        All
+   Skylake        06_5EH        All
+ 
+-  Kabylake_L     06_8EH        <=0xC
+-
+-  Kabylake       06_9EH        <=0xD
++  Kabylake_L     06_8EH        <= 0xC
++  Kabylake       06_9EH        <= 0xD
+   =============  ============  ========
+ 
+ Related CVEs
 
 
