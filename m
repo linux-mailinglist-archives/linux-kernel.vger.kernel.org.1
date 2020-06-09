@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A4D1F3915
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 13:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FBF1F391C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 13:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728565AbgFILKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 07:10:30 -0400
-Received: from mga17.intel.com ([192.55.52.151]:39536 "EHLO mga17.intel.com"
+        id S1728864AbgFILKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 07:10:48 -0400
+Received: from mga11.intel.com ([192.55.52.93]:44274 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726083AbgFILK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 07:10:28 -0400
-IronPort-SDR: HZEpOpW3Sa3I0c5eXYCVsQF2z6S0GhpC9hoQL8lIF+GAgEMlRkjL0WUdLUTJlyt/zqATqFcSUx
- UOKcLIZ+PA4Q==
+        id S1726083AbgFILKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 07:10:44 -0400
+IronPort-SDR: UaNy+SqA4nnoshHFJFo7B0ss21eUA5gZKfrS6DQ8UFnh1ImlNrKC1QNmDHC1n2KZHH/Xemm3T+
+ 7NYQtUWEEcbw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 04:10:28 -0700
-IronPort-SDR: AEwrycebfpER+iAA9i20J217dU73zmxVPR+O4cMVHtQjNBhd9Jq//NPONiPpK4DllGf1CIwuVR
- wBJx9oiFp5wQ==
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 04:10:32 -0700
+IronPort-SDR: BvdolLA2BS53bFjvL6VJ7sqBdI5/1dyPApx0bp0MY3+aEkARfJBVcKRccxnrOrHpx/YuM6zy+T
+ 7n+Wccjl4gfw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,491,1583222400"; 
-   d="scan'208";a="349485957"
+   d="scan'208";a="270856935"
 Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga001.jf.intel.com with ESMTP; 09 Jun 2020 04:10:24 -0700
+  by orsmga003.jf.intel.com with ESMTP; 09 Jun 2020 04:10:28 -0700
 From:   "Ramuthevar,Vadivel MuruganX" 
         <vadivel.muruganx.ramuthevar@linux.intel.com>
 To:     linux-kernel@vger.kernel.org, balbi@kernel.org
@@ -32,33 +32,88 @@ Cc:     gregkh@linuxfoundation.org, robh@kernel.org,
         linux-usb@vger.kernel.org, cheol.yong.kim@intel.com,
         qi-ming.wu@intel.com, yin1.li@intel.com,
         andriy.shevchenko@intel.com,
-        "Ramuthevar,Vadivel MuruganX" 
+        Ramuthevar Vadivel Murugan 
         <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v1 0/2] usb : phy: Add USB PHY support on Intel LGM SoC
-Date:   Tue,  9 Jun 2020 19:08:48 +0800
-Message-Id: <20200609110850.43469-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v1 1/2] dt-bindings: usb: Add USB PHY support for Intel LGM SoC
+Date:   Tue,  9 Jun 2020 19:08:49 +0800
+Message-Id: <20200609110850.43469-2-vadivel.muruganx.ramuthevar@linux.intel.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200609110850.43469-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+References: <20200609110850.43469-1-vadivel.muruganx.ramuthevar@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The USB PHY provides the optimized for low power dissipation while active, idle, or on standby.
-Requires minimal external components, a single resistor, for best operation.
-Supports 10/5-Gbps high-speed data transmission rates through 3-m USB 3.x cable
+From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 
-Ramuthevar Vadivel Murugan (2):
-  dt-bindings: usb: Add USB PHY support for Intel LGM SoC
-  usb: phy: Add USB3 PHY support for Intel LGM SoC
+Add the dt-schema to support USB PHY on Intel LGM SoC
 
- .../devicetree/bindings/usb/intel,lgm-usb-phy.yaml |  53 ++++
- drivers/usb/phy/Kconfig                            |  11 +
- drivers/usb/phy/Makefile                           |   1 +
- drivers/usb/phy/phy-lgm-usb.c                      | 269 +++++++++++++++++++++
- 4 files changed, 334 insertions(+)
+Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+---
+ .../devicetree/bindings/usb/intel,lgm-usb-phy.yaml | 53 ++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/usb/intel,lgm-usb-phy.yaml
- create mode 100644 drivers/usb/phy/phy-lgm-usb.c
 
+diff --git a/Documentation/devicetree/bindings/usb/intel,lgm-usb-phy.yaml b/Documentation/devicetree/bindings/usb/intel,lgm-usb-phy.yaml
+new file mode 100644
+index 000000000000..0fc76cd23774
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/intel,lgm-usb-phy.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/intel,lgm-usb-phy.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Intel LGM USB PHY Device Tree Bindings
++
++maintainers:
++  - Vadivel Murugan Ramuthevar <vadivel.muruganx.ramuthevar@linux.intel.com>
++
++properties:
++  compatible:
++    const: intel,lgm-usb-phy
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  resets:
++    items:
++      - description: USB PHY and Host controller reset
++      - description: APB BUS reset
++      - description: General Hardware reset
++
++  reset-names:
++    items:
++      - const: phy
++      - const: apb
++      - const: phy31
++
++required:
++  - compatible
++  - clocks
++  - reg
++  - resets
++  - reset-names
++
++additionalProperties: false
++
++examples:
++  - |
++    usb_phy: usb_phy@e7e00000 {
++        compatible = "intel,lgm-usb-phy";
++        reg = <0xe7e00000 0x10000>;
++        clocks = <&cgu0 153>;
++        resets = <&rcu 0x70 0x24>,
++                 <&rcu 0x70 0x26>,
++                 <&rcu 0x70 0x28>;
++        reset-names = "phy", "apb", "phy31";
++    };
 -- 
 2.11.0
 
