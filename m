@@ -2,77 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E16F1F4366
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E90EF1F4382
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732993AbgFIRxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:53:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42106 "EHLO mail.kernel.org"
+        id S1729833AbgFIRx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:53:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732760AbgFIRwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:52:05 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1732920AbgFIRwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:52:37 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3D05207C3;
-        Tue,  9 Jun 2020 17:52:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725125;
-        bh=TgO873VK1uWIKP3ppDJ9nGZ4WoqU168LVpBfn9JCTYE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=flY6tw4scXwcHAh5ndeODhVjKU39UiDaLUXkNgJF/VeacAKgTqHUSgyi7yWttmL2C
-         dM9+M9jBx7AUtHP71uzwM8FS45GEfL+rpx7XhyaPu/XscJ137rzdA/NcQT7giIjpj6
-         csJPNwgawxwvmK6IpC14ubbfssZ6sBrSNQmrMXks=
-Date:   Tue, 9 Jun 2020 18:52:03 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        robh@kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] TAS2563 DSP Firmware Loader
-Message-ID: <20200609175203.GP4583@sirena.org.uk>
-References: <20200609172841.22541-1-dmurphy@ti.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 68E8F207ED;
+        Tue,  9 Jun 2020 17:52:36 +0000 (UTC)
+Date:   Tue, 9 Jun 2020 13:52:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] tools: testing: ftrace: trigger: fix spelling
+ mistake
+Message-ID: <20200609135235.608cdbf6@oasis.local.home>
+In-Reply-To: <20200609163853.1602-1-f.suligoi@asem.it>
+References: <20200609163853.1602-1-f.suligoi@asem.it>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uQ3BaAlxDi9XKvis"
-Content-Disposition: inline
-In-Reply-To: <20200609172841.22541-1-dmurphy@ti.com>
-X-Cookie: Be careful!  Is it classified?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 9 Jun 2020 18:38:53 +0200
+Flavio Suligoi <f.suligoi@asem.it> wrote:
 
---uQ3BaAlxDi9XKvis
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Fix typo: "tigger" --> "trigger"
 
-On Tue, Jun 09, 2020 at 12:28:39PM -0500, Dan Murphy wrote:
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-> These programs and configurations are selectable via files under the I2C dev
-> node.  There may be a better way to select this through ALSA controls but I was
-> unable to find a good example of this.  This is why this is an RFC patchset.
+Shuah, want to take this patch?
 
-I think you can just use enums for most of this - what you want to do I
-think is parse the firmware, build templates for the controls and then
-add them with snd_soc_add_component_controls().  Userspace *should* cope
-with controls being hotplugged.
+-- Steve
 
---uQ3BaAlxDi9XKvis
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> ---
+>  tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc   | 2 +-
+>  .../selftests/ftrace/test.d/trigger/trigger-stacktrace.tc       | 2 +-
+>  .../ftrace/test.d/trigger/trigger-trace-marker-hist.tc          | 2 +-
+>  .../ftrace/test.d/trigger/trigger-trace-marker-snapshot.tc      | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
+> index 177e8d4c4744..bf6374e1f6ae 100644
+> --- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
+> @@ -23,7 +23,7 @@ if [ ! -f events/sched/sched_process_fork/hist ]; then
+>      exit_unsupported
+>  fi
+>  
+> -echo "Test histogram basic tigger"
+> +echo "Test histogram basic trigger"
+>  
+>  echo 'hist:keys=parent_pid:vals=child_pid' > events/sched/sched_process_fork/trigger
+>  for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
+> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-stacktrace.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-stacktrace.tc
+> index 398c05c4d2a7..6248e6b40704 100644
+> --- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-stacktrace.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-stacktrace.tc
+> @@ -23,7 +23,7 @@ if [ -z "$FEATURE" ]; then
+>      exit_unsupported
+>  fi
+>  
+> -echo "Test stacktrace tigger"
+> +echo "Test stacktrace trigger"
+>  echo 0 > trace
+>  echo 0 > options/stacktrace
+>  echo 'stacktrace' > events/sched/sched_process_fork/trigger
+> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-hist.tc
+> index ab6bedb25736..01fdfd50b4be 100644
+> --- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-hist.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-hist.tc
+> @@ -28,7 +28,7 @@ if [ ! -f events/ftrace/print/hist ]; then
+>      exit_unsupported
+>  fi
+>  
+> -echo "Test histogram trace_marker tigger"
+> +echo "Test histogram trace_marker trigger"
+>  
+>  echo 'hist:keys=common_pid' > events/ftrace/print/trigger
+>  for i in `seq 1 10` ; do echo "hello" > trace_marker; done
+> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-snapshot.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-snapshot.tc
+> index df246e505af7..a7fef298e476 100644
+> --- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-snapshot.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-snapshot.tc
+> @@ -46,7 +46,7 @@ test_trace() {
+>      done
+>  }
+>  
+> -echo "Test snapshot trace_marker tigger"
+> +echo "Test snapshot trace_marker trigger"
+>  
+>  echo 'snapshot' > events/ftrace/print/trigger
+>  
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7fzEIACgkQJNaLcl1U
-h9Bd3Qf+M45/dHXuPejpoJQrP/PmR/7OYTmNoSJSL7fxpGkoxNV4A5VdPFEM7ZmP
-rfspDqlxdJ9jDVZhCyTaRzlFP9VaklY/9EFupR5qc6ms6ZKdjYrcjWc98Cqlk+d1
-RAN0Y4oxlqfxAZZKlw6ZHFLCMBHdV/vkOBGNZdiiaBqAFprXUVnqlevuGW8Lv7s3
-yDf1Te02bvervNfinPb53nj6QtFoBwixBR8E8zdKINv1ZP8q31YF7c8j/0tvyMkQ
-LZ6OhieBzZeb4YFR7/sieJVpr60qnUKefrtUaPWaJLrFtPb8vuuPmVK+jO4AQ4gF
-5WqFDT0NEUZuTrTzITUHxyZZkRbq9Q==
-=8iWz
------END PGP SIGNATURE-----
-
---uQ3BaAlxDi9XKvis--
