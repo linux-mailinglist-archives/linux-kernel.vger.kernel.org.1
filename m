@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48D61F4312
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981451F42D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732552AbgFIRtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:49:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35324 "EHLO mail.kernel.org"
+        id S1732089AbgFIRs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:48:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732506AbgFIRtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:49:25 -0400
+        id S1732244AbgFIRsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:48:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23D0D2081A;
-        Tue,  9 Jun 2020 17:49:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75A4B20812;
+        Tue,  9 Jun 2020 17:48:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724964;
-        bh=hTuX6Gj/Z///hx0xMNbk6em5czwcq15xu7qUuc2sooU=;
+        s=default; t=1591724894;
+        bh=YUQ3zE6gHknWLZQ8cWA+ZL/A4ox6L2Wm10Hf9XSjg5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eENykR2GyjDUhH3ho0X8ykwVgaZkYpsWDVPy1q02W8jOZ3m9gvUKqIDiC/E1L1k9b
-         QJOSeBX4Q1KovLXaq/CbLC4WgUvMxQI/s2kzhJ5Lh6AmWAzRut7165aFxSv532hTw/
-         RXT9MOjfBf8ZG3gcwRR/u8M9E6vdQXKsFTFQ95sc=
+        b=bNxUHBkIGRNvBqKRc2p2B/Bo+g7jas+Ay0jTIBJtPLxww/O123NhqUbWDH6A8/RMn
+         cAw0eWTS9TEuodPHkvfDcdNVntp0XMiVYfpvKlMP3idHq1L6c34yLEb46RVgMPh3D9
+         43fpIbX2tKy6Tdg3owaZLVgEsObjWZ3JwfKq8D2k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan McDowell <noodles@earth.li>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 13/46] net: ethernet: stmmac: Enable interface clocks on probe for IPQ806x
-Date:   Tue,  9 Jun 2020 19:44:29 +0200
-Message-Id: <20200609174024.110413848@linuxfoundation.org>
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 25/42] NFC: st21nfca: add missed kfree_skb() in an error path
+Date:   Tue,  9 Jun 2020 19:44:31 +0200
+Message-Id: <20200609174018.230484510@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
-References: <20200609174022.938987501@linuxfoundation.org>
+In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
+References: <20200609174015.379493548@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan McDowell <noodles@earth.li>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit a96ac8a0045e3cbe3e5af6d1b3c78c6c2065dec5 ]
+[ Upstream commit 3decabdc714ca56c944f4669b4cdec5c2c1cea23 ]
 
-The ipq806x_gmac_probe() function enables the PTP clock but not the
-appropriate interface clocks. This means that if the bootloader hasn't
-done so attempting to bring up the interface will fail with an error
-like:
+st21nfca_tm_send_atr_res() misses to call kfree_skb() in an error path.
+Add the missed function call to fix it.
 
-[   59.028131] ipq806x-gmac-dwmac 37600000.ethernet: Failed to reset the dma
-[   59.028196] ipq806x-gmac-dwmac 37600000.ethernet eth1: stmmac_hw_setup: DMA engine initialization failed
-[   59.034056] ipq806x-gmac-dwmac 37600000.ethernet eth1: stmmac_open: Hw setup failed
-
-This patch, a slightly cleaned up version of one posted by Sergey
-Sergeev in:
-
-https://forum.openwrt.org/t/support-for-mikrotik-rb3011uias-rm/4064/257
-
-correctly enables the clock; we have already configured the source just
-before this.
-
-Tested on a MikroTik RB3011.
-
-Signed-off-by: Jonathan McDowell <noodles@earth.li>
+Fixes: 1892bf844ea0 ("NFC: st21nfca: Adding P2P support to st21nfca in Initiator & Target mode")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/nfc/st21nfca/dep.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-index 11a4a81b0397..bcc5d1e16ce2 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-@@ -330,6 +330,19 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 	/* Enable PTP clock */
- 	regmap_read(gmac->nss_common, NSS_COMMON_CLK_GATE, &val);
- 	val |= NSS_COMMON_CLK_GATE_PTP_EN(gmac->id);
-+	switch (gmac->phy_mode) {
-+	case PHY_INTERFACE_MODE_RGMII:
-+		val |= NSS_COMMON_CLK_GATE_RGMII_RX_EN(gmac->id) |
-+			NSS_COMMON_CLK_GATE_RGMII_TX_EN(gmac->id);
-+		break;
-+	case PHY_INTERFACE_MODE_SGMII:
-+		val |= NSS_COMMON_CLK_GATE_GMII_RX_EN(gmac->id) |
-+				NSS_COMMON_CLK_GATE_GMII_TX_EN(gmac->id);
-+		break;
-+	default:
-+		/* We don't get here; the switch above will have errored out */
-+		unreachable();
-+	}
- 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_GATE, val);
+--- a/drivers/nfc/st21nfca/dep.c
++++ b/drivers/nfc/st21nfca/dep.c
+@@ -184,8 +184,10 @@ static int st21nfca_tm_send_atr_res(stru
+ 		memcpy(atr_res->gbi, atr_req->gbi, gb_len);
+ 		r = nfc_set_remote_general_bytes(hdev->ndev, atr_res->gbi,
+ 						  gb_len);
+-		if (r < 0)
++		if (r < 0) {
++			kfree_skb(skb);
+ 			return r;
++		}
+ 	}
  
- 	if (gmac->phy_mode == PHY_INTERFACE_MODE_SGMII) {
--- 
-2.25.1
-
+ 	info->dep_info.curr_nfc_dep_pni = 0;
 
 
