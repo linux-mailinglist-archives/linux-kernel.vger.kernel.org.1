@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970651F443B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166B81F443C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726813AbgFIRwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:52:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41448 "EHLO mail.kernel.org"
+        id S1732952AbgFIRw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:52:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732877AbgFIRvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:51:49 -0400
+        id S1732879AbgFIRvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:51:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE0D1207ED;
-        Tue,  9 Jun 2020 17:51:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03CE020774;
+        Tue,  9 Jun 2020 17:51:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725109;
-        bh=2wq8q15ub0uB0vMe8hgGxS46CrFW/myQrAZmv2wOkoE=;
+        s=default; t=1591725111;
+        bh=Es5pHFAq7C4C4t/s9Cs/BOCCeaIGYNiWTOPz+6neDk4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wrfOIVqGUldUVb82vmo5as5T1A8ITA9rNNm+1coUb+MQtyrnfzHaIwU39gDmHil/M
-         zK/5K45JlfsZJhpgzCJdwKuoWqPZbGyJNbnDurTenMczM6eI1XT0ktBESC198GXK7U
-         S8+iil764pKLjAvkLUqrnPNvLVvgkpT7Js7zxHNM=
+        b=JD1mH8PnNqr9mE2UKZN+REblI+SlKSs6lbt7mwGarMmBzvbpiKL8pFODjUApAjbgd
+         ZXniTwY75IW8g7vpCgGeJBMnxmZMquOBFT/Vh4LuOV+1/Y+2k53jClaq8Wt8QJuK0+
+         GPeoxoleGgtsx1Susf6cysNBV2FmsGikivq+qzeM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 07/25] net: check untrusted gso_size at kernel entry
-Date:   Tue,  9 Jun 2020 19:44:57 +0200
-Message-Id: <20200609174049.478235209@linuxfoundation.org>
+        stable@vger.kernel.org, Matt Jolly <Kangie@footclan.ninja>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 08/25] USB: serial: qcserial: add DW5816e QDL support
+Date:   Tue,  9 Jun 2020 19:44:58 +0200
+Message-Id: <20200609174049.597530333@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200609174048.576094775@linuxfoundation.org>
 References: <20200609174048.576094775@linuxfoundation.org>
@@ -44,74 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willem de Bruijn <willemb@google.com>
+From: Matt Jolly <Kangie@footclan.ninja>
 
-[ Upstream commit 6dd912f82680761d8fb6b1bb274a69d4c7010988 ]
+commit 3429444abdd9dbd5faebd9bee552ec6162b17ad6 upstream.
 
-Syzkaller again found a path to a kernel crash through bad gso input:
-a packet with gso size exceeding len.
+Add support for Dell Wireless 5816e Download Mode (AKA boot & hold mode /
+QDL download mode) to drivers/usb/serial/qcserial.c
 
-These packets are dropped in tcp_gso_segment and udp[46]_ufo_fragment.
-But they may affect gso size calculations earlier in the path.
+This is required to update device firmware.
 
-Now that we have thlen as of commit 9274124f023b ("net: stricter
-validation of untrusted gso packets"), check gso_size at entry too.
-
-Fixes: bfd5f4a3d605 ("packet: Add GSO/csum offload support.")
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Matt Jolly <Kangie@footclan.ninja>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/linux/virtio_net.h |   14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
 
---- a/include/linux/virtio_net.h
-+++ b/include/linux/virtio_net.h
-@@ -31,6 +31,7 @@ static inline int virtio_net_hdr_to_skb(
- {
- 	unsigned int gso_type = 0;
- 	unsigned int thlen = 0;
-+	unsigned int p_off = 0;
- 	unsigned int ip_proto;
- 
- 	if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
-@@ -68,7 +69,8 @@ static inline int virtio_net_hdr_to_skb(
- 		if (!skb_partial_csum_set(skb, start, off))
- 			return -EINVAL;
- 
--		if (skb_transport_offset(skb) + thlen > skb_headlen(skb))
-+		p_off = skb_transport_offset(skb) + thlen;
-+		if (p_off > skb_headlen(skb))
- 			return -EINVAL;
- 	} else {
- 		/* gso packets without NEEDS_CSUM do not set transport_offset.
-@@ -92,17 +94,25 @@ retry:
- 				return -EINVAL;
- 			}
- 
--			if (keys.control.thoff + thlen > skb_headlen(skb) ||
-+			p_off = keys.control.thoff + thlen;
-+			if (p_off > skb_headlen(skb) ||
- 			    keys.basic.ip_proto != ip_proto)
- 				return -EINVAL;
- 
- 			skb_set_transport_header(skb, keys.control.thoff);
-+		} else if (gso_type) {
-+			p_off = thlen;
-+			if (p_off > skb_headlen(skb))
-+				return -EINVAL;
- 		}
- 	}
- 
- 	if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
- 		u16 gso_size = __virtio16_to_cpu(little_endian, hdr->gso_size);
- 
-+		if (skb->len - p_off <= gso_size)
-+			return -EINVAL;
-+
- 		skb_shinfo(skb)->gso_size = gso_size;
- 		skb_shinfo(skb)->gso_type = gso_type;
- 
+---
+ drivers/usb/serial/qcserial.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/usb/serial/qcserial.c
++++ b/drivers/usb/serial/qcserial.c
+@@ -173,6 +173,7 @@ static const struct usb_device_id id_tab
+ 	{DEVICE_SWI(0x413c, 0x81b3)},	/* Dell Wireless 5809e Gobi(TM) 4G LTE Mobile Broadband Card (rev3) */
+ 	{DEVICE_SWI(0x413c, 0x81b5)},	/* Dell Wireless 5811e QDL */
+ 	{DEVICE_SWI(0x413c, 0x81b6)},	/* Dell Wireless 5811e QDL */
++	{DEVICE_SWI(0x413c, 0x81cb)},	/* Dell Wireless 5816e QDL */
+ 	{DEVICE_SWI(0x413c, 0x81cc)},	/* Dell Wireless 5816e */
+ 	{DEVICE_SWI(0x413c, 0x81cf)},   /* Dell Wireless 5819 */
+ 	{DEVICE_SWI(0x413c, 0x81d0)},   /* Dell Wireless 5819 */
 
 
