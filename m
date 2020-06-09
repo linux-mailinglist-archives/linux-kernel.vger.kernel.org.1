@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F368C1F4305
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B811F4346
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730794AbgFIRtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:49:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34168 "EHLO mail.kernel.org"
+        id S1730781AbgFIRvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:51:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732418AbgFIRs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:48:59 -0400
+        id S1732722AbgFIRus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:50:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85BB0207F9;
-        Tue,  9 Jun 2020 17:48:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F503207ED;
+        Tue,  9 Jun 2020 17:50:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724939;
-        bh=RoSDSTtQUCnEe2phWFPiokBPc4v4Ur1EpGDFGCdtQMc=;
+        s=default; t=1591725047;
+        bh=I/C5wTw0k+vOVdGvsWnZiMB/R9OHvicC4Y/1i2mXlxo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KG+bnEFHGL+MljWWSF8CUQMNspup0MGDmxMvNAamEyiuuX7NIHHpycA8588hHD568
-         RgvZI2EtAWf3K/4eAA2jeJJz7aDaDcY7UMPifIIo5+DRCPaCxDfWFW/RvNFKK60AIO
-         uhLxyXH+M+ojJ1Hx7mxzLer5uXetw6709v5mJVCg=
+        b=eAuj9UdgxUMJkcEH7Yot58uKnVRr9YNzNMc+YFZVV7bYvQtdwmqx2r76ZpWFkbI5t
+         6iV6kFs1/OPLXEZkUfPcS4HRQHvcKrutZn6dAlmtEK+dvnEdVP1SgqV/Dig+jqWpAc
+         2fJOLuEo1qpM2HoSzBfgbX2Q6H7cnBuVH+5anDUo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kyungtae Kim <kt0755@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.9 32/42] vt: keyboard: avoid signed integer overflow in k_ascii
+        stable@vger.kernel.org, Hu Jiahui <kirin.say@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.14 22/46] airo: Fix read overflows sending packets
 Date:   Tue,  9 Jun 2020 19:44:38 +0200
-Message-Id: <20200609174018.995100339@linuxfoundation.org>
+Message-Id: <20200609174026.228819624@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
-References: <20200609174015.379493548@linuxfoundation.org>
+In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
+References: <20200609174022.938987501@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,101 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit b86dab054059b970111b5516ae548efaae5b3aae upstream.
+commit 11e7a91994c29da96d847f676be023da6a2c1359 upstream.
 
-When k_ascii is invoked several times in a row there is a potential for
-signed integer overflow:
+The problem is that we always copy a minimum of ETH_ZLEN (60) bytes from
+skb->data even when skb->len is less than ETH_ZLEN so it leads to a read
+overflow.
 
-UBSAN: Undefined behaviour in drivers/tty/vt/keyboard.c:888:19 signed integer overflow:
-10 * 1111111111 cannot be represented in type 'int'
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.6.11 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xce/0x128 lib/dump_stack.c:118
- ubsan_epilogue+0xe/0x30 lib/ubsan.c:154
- handle_overflow+0xdc/0xf0 lib/ubsan.c:184
- __ubsan_handle_mul_overflow+0x2a/0x40 lib/ubsan.c:205
- k_ascii+0xbf/0xd0 drivers/tty/vt/keyboard.c:888
- kbd_keycode drivers/tty/vt/keyboard.c:1477 [inline]
- kbd_event+0x888/0x3be0 drivers/tty/vt/keyboard.c:1495
+The fix is to pad skb->data to at least ETH_ZLEN bytes.
 
-While it can be worked around by using check_mul_overflow()/
-check_add_overflow(), it is better to introduce a separate flag to
-signal that number pad is being used to compose a symbol, and
-change type of the accumulator from signed to unsigned, thus
-avoiding undefined behavior when it overflows.
-
-Reported-by: Kyungtae Kim <kt0755@gmail.com>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200525232740.GA262061@dtor-ws
+Cc: <stable@vger.kernel.org>
+Reported-by: Hu Jiahui <kirin.say@gmail.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200527184830.GA1164846@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/vt/keyboard.c |   26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+ drivers/net/wireless/cisco/airo.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -125,7 +125,11 @@ static DEFINE_SPINLOCK(func_buf_lock); /
- static unsigned long key_down[BITS_TO_LONGS(KEY_CNT)];	/* keyboard key bitmap */
- static unsigned char shift_down[NR_SHIFT];		/* shift state counters.. */
- static bool dead_key_next;
--static int npadch = -1;					/* -1 or number assembled on pad */
-+
-+/* Handles a number being assembled on the number pad */
-+static bool npadch_active;
-+static unsigned int npadch_value;
-+
- static unsigned int diacr;
- static char rep;					/* flag telling character repeat */
- 
-@@ -815,12 +819,12 @@ static void k_shift(struct vc_data *vc,
- 		shift_state &= ~(1 << value);
- 
- 	/* kludge */
--	if (up_flag && shift_state != old_state && npadch != -1) {
-+	if (up_flag && shift_state != old_state && npadch_active) {
- 		if (kbd->kbdmode == VC_UNICODE)
--			to_utf8(vc, npadch);
-+			to_utf8(vc, npadch_value);
- 		else
--			put_queue(vc, npadch & 0xff);
--		npadch = -1;
-+			put_queue(vc, npadch_value & 0xff);
-+		npadch_active = false;
+--- a/drivers/net/wireless/cisco/airo.c
++++ b/drivers/net/wireless/cisco/airo.c
+@@ -1928,6 +1928,10 @@ static netdev_tx_t mpi_start_xmit(struct
+ 		airo_print_err(dev->name, "%s: skb == NULL!",__func__);
+ 		return NETDEV_TX_OK;
  	}
- }
- 
-@@ -838,7 +842,7 @@ static void k_meta(struct vc_data *vc, u
- 
- static void k_ascii(struct vc_data *vc, unsigned char value, char up_flag)
- {
--	int base;
-+	unsigned int base;
- 
- 	if (up_flag)
- 		return;
-@@ -852,10 +856,12 @@ static void k_ascii(struct vc_data *vc,
- 		base = 16;
- 	}
- 
--	if (npadch == -1)
--		npadch = value;
--	else
--		npadch = npadch * base + value;
-+	if (!npadch_active) {
-+		npadch_value = 0;
-+		npadch_active = true;
++	if (skb_padto(skb, ETH_ZLEN)) {
++		dev->stats.tx_dropped++;
++		return NETDEV_TX_OK;
 +	}
-+
-+	npadch_value = npadch_value * base + value;
- }
+ 	npacks = skb_queue_len (&ai->txq);
  
- static void k_lock(struct vc_data *vc, unsigned char value, char up_flag)
+ 	if (npacks >= MAXTXQ - 1) {
+@@ -2130,6 +2134,10 @@ static netdev_tx_t airo_start_xmit(struc
+ 		airo_print_err(dev->name, "%s: skb == NULL!", __func__);
+ 		return NETDEV_TX_OK;
+ 	}
++	if (skb_padto(skb, ETH_ZLEN)) {
++		dev->stats.tx_dropped++;
++		return NETDEV_TX_OK;
++	}
+ 
+ 	/* Find a vacant FID */
+ 	for( i = 0; i < MAX_FIDS / 2 && (fids[i] & 0xffff0000); i++ );
+@@ -2204,6 +2212,10 @@ static netdev_tx_t airo_start_xmit11(str
+ 		airo_print_err(dev->name, "%s: skb == NULL!", __func__);
+ 		return NETDEV_TX_OK;
+ 	}
++	if (skb_padto(skb, ETH_ZLEN)) {
++		dev->stats.tx_dropped++;
++		return NETDEV_TX_OK;
++	}
+ 
+ 	/* Find a vacant FID */
+ 	for( i = MAX_FIDS / 2; i < MAX_FIDS && (fids[i] & 0xffff0000); i++ );
 
 
