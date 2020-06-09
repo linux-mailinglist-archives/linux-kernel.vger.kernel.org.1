@@ -2,82 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346871F3A51
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 14:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C2B1F3A54
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 14:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729164AbgFIMDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 08:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbgFIMDB (ORCPT
+        id S1729206AbgFIMDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 08:03:35 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:36362 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729084AbgFIMDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 08:03:01 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60879C05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 05:03:00 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id i25so7770891iog.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 05:03:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=nFQAZ17rW5dEK0S1Q3shZ62tcOLwgxbbt4Gs2MOss7s=;
-        b=ZDaN3/WNC7hGH5VvF2xYPOUMtwbaeaWTs24f2Y5HGKhUByMcIMG+GCNN3o4qheLN2h
-         dGi3L52naZcxraF5yoi95jdMLxO+fTbhph6ElXm719gIkDK2LyRdNQC+MJK9gHHaiBKh
-         LKhuIZzMi9oVBMD1g+pisSxUCXYujB19gifJmHNOlmGJglbPb0i2yC9ixzBxVdKWvdT5
-         XcxQ7Hgx3ympw2935vbBeezUd6mcOgX9Gf+D8MRXU/oAZJ/x2F/96g6lMEsKePARov7X
-         KEDlteENtqlM1uK4m4VM6a04qf+slQh4v8lTJi0YndepTh9FUaOKaygDcdMshlId0Jhm
-         NCkw==
+        Tue, 9 Jun 2020 08:03:33 -0400
+Received: by mail-ej1-f67.google.com with SMTP id dr13so2866997ejc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 05:03:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=nFQAZ17rW5dEK0S1Q3shZ62tcOLwgxbbt4Gs2MOss7s=;
-        b=komp3bigsG4/JP3VLJ5Ke4r47Q8tNV8+ChDNwQC9qic8lt36Q7Iw56QUgTVwZP6xu8
-         jxNbbQVRW8B8ikhkmz78mZJ7RCf0TDhWxqHzT3dcVVYXdTe+kTpbgLd4qyJhwEFnyYWn
-         xIBaLgSknjoj8iE3gpKolxBN96FEfyxo+AlypDufSg3REa8T2ctgYpvrbXh9tBiaiFjz
-         prWN+yYzFQF8lbXm3Z5LUuMytEoLN+07FZ9N3mUNq1bPZCfqgDMrjgJglo1wGRPjk5xL
-         +Y7Q5ndqKYExvP93StCDV6Fst1lqj2HMp2EwUeps0l6Q37X3u2Ix1v/c1ONkBeDVGslX
-         BaRA==
-X-Gm-Message-State: AOAM532pXwu/pGmLf1Q+9BW99kcHTJtJ3+CG9K9bHQb3Jb9ylFTYvdYZ
-        sy0NPsOB+4IPfqvuQrj7nrADY9u1AMizm3qasJU=
-X-Google-Smtp-Source: ABdhPJz6Yvu2l6NoOV2MpsablghcrmrSllbhaa6rRC+jeRcrjN1wEkCDdX5euvtmGNNPSr6MbUY1OiJXTlhgJovBmUE=
-X-Received: by 2002:a02:4e42:: with SMTP id r63mr13656124jaa.46.1591704179803;
- Tue, 09 Jun 2020 05:02:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+o3Kw7ohvoYTBR2Cc3NZXYoBJAf9G4BYqcUbSQGVHaU=;
+        b=s2AAUV3gE6Cj7UqDrkiC9cJneUnezRdoDDwjT39LlWDyOMxBS90zXFr515mFP7AQYU
+         G4pavcIqb8xasJ7jS7csvlvdIodTkp9QeCq9ugIyQU5H4vR92PE+0bF7HhjxOaQfkPDH
+         QaHa8w0a8pHgxr+2b1tHSXR1J7myn7o+Q/eJwA5lAwN2co37a3LE714FqXcQEeYyIPZi
+         sIM5GLG39xpFyqHqyAiQC0Lxz+KJCQyI/2zOYLExZHR6/MwvKcXFlzqYgWfy06UgnaA/
+         ex0vZXAlx+Zyq/zbxNThbmqS0Tp3E++Xb9qnGJUN5GQcc21O76qpSXoEbc9Fj2HSyREL
+         wfbw==
+X-Gm-Message-State: AOAM531C047eBvCGo72ccjEQIK9dvnhEOAwNo9bNyQjCtmVc+O7XiLmB
+        Dcv921glrEm9UlEuuTDwO2pKmch+
+X-Google-Smtp-Source: ABdhPJwS3q0o/7jYbGc660OIM9x94rWyHO98ZvPKLSqoXpPLHlI82UExrccENBznqIvXlrguvZ36/w==
+X-Received: by 2002:a17:906:5e07:: with SMTP id n7mr2496670eju.48.1591704211892;
+        Tue, 09 Jun 2020 05:03:31 -0700 (PDT)
+Received: from localhost (ip-37-188-174-195.eurotel.cz. [37.188.174.195])
+        by smtp.gmail.com with ESMTPSA id w13sm13442356eju.124.2020.06.09.05.03.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 05:03:30 -0700 (PDT)
+Date:   Tue, 9 Jun 2020 14:03:28 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Michel Lespinasse <walken@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Liam Howlett <Liam.Howlett@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        David Rientjes <rientjes@google.com>,
+        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH v6 00/12] Add a new mmap locking API wrapping mmap_sem
+ calls
+Message-ID: <20200609120328.GB22623@dhcp22.suse.cz>
+References: <20200520052908.204642-1-walken@google.com>
 MIME-Version: 1.0
-Received: by 2002:a02:a38a:0:0:0:0:0 with HTTP; Tue, 9 Jun 2020 05:02:58 -0700 (PDT)
-Reply-To: ahmedghazi720@yahoo.com
-From:   "Mr.Ghazi Ahmed" <ghazia500@gmail.com>
-Date:   Tue, 9 Jun 2020 05:02:58 -0700
-Message-ID: <CAOo=X5_CyS_APThdee97o6otOvcD0S-q+NVUHWT8FWT3N_85qg@mail.gmail.com>
-Subject: YOUR URGENT RESPONSE IS NEEDED
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520052908.204642-1-walken@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have a business proposal in the tune of $10.2m USD for you to handle
-with me. I have opportunity to transfer this abandon fund to your bank
-account in your country which belongs to our client.
+Hi,
 
-I am inviting you in this transaction where this money can be shared
-between us at ratio of 50/50% and help the needy around us don=E2=80=99t be
-afraid of anything I am with you I will instruct you what you will do
-to maintain this fund.
+On Tue 19-05-20 22:28:56, Michel Lespinasse wrote:
+> Reposting this patch series on top of v5.7-rc6. I think this is ready
+> for inclusion into the -mm tree; however there were some minor points
+> of feedback to address and also it was easier to regenerate a full
+> version after the v5.5 (only updating patches 09/10 and 10/10) caused
+> some confusion.
+> 
+> 
+> This patch series adds a new mmap locking API replacing the existing
+> mmap_sem lock and unlocks. Initially the API is just implemente in terms
+> of inlined rwsem calls, so it doesn't provide any new functionality.
+> 
+> There are two justifications for the new API:
+> 
+> - At first, it provides an easy hooking point to instrument mmap_sem
+>   locking latencies independently of any other rwsems.
+> 
+> - In the future, it may be a starting point for replacing the rwsem
+>   implementation with a different one, such as range locks. This is
+>   something that is being explored, even though there is no wide concensus
+>   about this possible direction yet.
+>   (see https://patchwork.kernel.org/cover/11401483/)
 
-Please kindly contact me with your information's if you are interested
-in this tranasction for more details(ahmedghazi720@yahoo.com)
+Sorry that I am jumping late to the game.
 
-1. Your Full Name.....................
-2. Your Address......................
-3. Your Country of Origin.............
-4. What do you do for living ...............
-5. Your Age..........................
-6. Gender.........................
-7. Your ID card copy and telephone number for easy communication...........=
-....
+Even though I hoped that the new API would somehow start using a
+concept of address ranges, because I believe this is a fundamental lock
+granularity for this mmap_sem, this is definitely a step in the right
+direction. Getting rid of all direct usage of mmap_sem is an
+improvement in itself.
 
-Mr.Ghazi Ahmed
+Feel free to add
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
