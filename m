@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC431F42A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48D61F4312
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731207AbgFIRoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:44:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54754 "EHLO mail.kernel.org"
+        id S1732552AbgFIRtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:49:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728472AbgFIRo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:44:29 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        id S1732506AbgFIRtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:49:25 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F6EB207ED;
-        Tue,  9 Jun 2020 17:44:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23D0D2081A;
+        Tue,  9 Jun 2020 17:49:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724669;
-        bh=+yJJrS6f/w3XIG46YQKL+jlhy1JoGG/F40tY3Dp8vZ0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lDYH8mccyWzxHN9DFp1dhy7lbUDZoGrar7241LUfL5HMYo7IIW76NuGsHn3e9P5cA
-         rqaPh4jUNLq8mMz181kFj0BhhMa0AfSPpexGQky0f/QHZXTHVJjg9icPeLIewyZqsw
-         m0MjxOeQM3XC6q1BA1wl6KT5p4Wd2ndiAAnQZN6Q=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 083BA35229D0; Tue,  9 Jun 2020 10:44:29 -0700 (PDT)
-Date:   Tue, 9 Jun 2020 10:44:29 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [rcu:dev.2020.06.05a 85/92] powerpc-linux-ld: kernel/smp.c:128:
- undefined reference to `__udivdi3'
-Message-ID: <20200609174428.GQ4455@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <202006090518.ePllEE1U%lkp@intel.com>
+        s=default; t=1591724964;
+        bh=hTuX6Gj/Z///hx0xMNbk6em5czwcq15xu7qUuc2sooU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=eENykR2GyjDUhH3ho0X8ykwVgaZkYpsWDVPy1q02W8jOZ3m9gvUKqIDiC/E1L1k9b
+         QJOSeBX4Q1KovLXaq/CbLC4WgUvMxQI/s2kzhJ5Lh6AmWAzRut7165aFxSv532hTw/
+         RXT9MOjfBf8ZG3gcwRR/u8M9E6vdQXKsFTFQ95sc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Jonathan McDowell <noodles@earth.li>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 13/46] net: ethernet: stmmac: Enable interface clocks on probe for IPQ806x
+Date:   Tue,  9 Jun 2020 19:44:29 +0200
+Message-Id: <20200609174024.110413848@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
+References: <20200609174022.938987501@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202006090518.ePllEE1U%lkp@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 05:39:21AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2020.06.05a
-> head:   c5432e18c8bfe9283bf5e0bc5e2460ae8f39a7ee
-> commit: 3f8c62d29ead7c3213a4af7c433ec6fbf8457f37 [85/92] EXP kernel/smp: Provide CSD lock timeout diagnostics
-> config: powerpc64-randconfig-c024-20200607 (attached as .config)
-> compiler: powerpc-linux-gcc (GCC) 9.3.0
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+From: Jonathan McDowell <noodles@earth.li>
 
-Alleged fixes squashed into original with attribution, thank you!
+[ Upstream commit a96ac8a0045e3cbe3e5af6d1b3c78c6c2065dec5 ]
 
-						Thanx, Paul
+The ipq806x_gmac_probe() function enables the PTP clock but not the
+appropriate interface clocks. This means that if the bootloader hasn't
+done so attempting to bring up the interface will fail with an error
+like:
 
-> All errors (new ones prefixed by >>, old ones prefixed by <<):
-> 
-> powerpc-linux-ld: kernel/smp.o: in function `csd_lock_wait':
-> kernel/smp.c:122: undefined reference to `__udivdi3'
-> >> powerpc-linux-ld: kernel/smp.c:128: undefined reference to `__udivdi3'
-> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__umoddi3'
-> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__udivdi3'
-> powerpc-linux-ld: kernel/smp.c:122: undefined reference to `__udivdi3'
-> >> powerpc-linux-ld: kernel/smp.c:128: undefined reference to `__udivdi3'
-> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__umoddi3'
-> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__udivdi3'
-> powerpc-linux-ld: kernel/smp.c:122: undefined reference to `__udivdi3'
-> >> powerpc-linux-ld: kernel/smp.c:128: undefined reference to `__udivdi3'
-> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__umoddi3'
-> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__udivdi3'
-> powerpc-linux-ld: kernel/smp.c:122: undefined reference to `__udivdi3'
-> >> powerpc-linux-ld: kernel/smp.c:128: undefined reference to `__udivdi3'
-> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__umoddi3'
-> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__udivdi3'
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+[   59.028131] ipq806x-gmac-dwmac 37600000.ethernet: Failed to reset the dma
+[   59.028196] ipq806x-gmac-dwmac 37600000.ethernet eth1: stmmac_hw_setup: DMA engine initialization failed
+[   59.034056] ipq806x-gmac-dwmac 37600000.ethernet eth1: stmmac_open: Hw setup failed
+
+This patch, a slightly cleaned up version of one posted by Sergey
+Sergeev in:
+
+https://forum.openwrt.org/t/support-for-mikrotik-rb3011uias-rm/4064/257
+
+correctly enables the clock; we have already configured the source just
+before this.
+
+Tested on a MikroTik RB3011.
+
+Signed-off-by: Jonathan McDowell <noodles@earth.li>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+index 11a4a81b0397..bcc5d1e16ce2 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+@@ -330,6 +330,19 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 	/* Enable PTP clock */
+ 	regmap_read(gmac->nss_common, NSS_COMMON_CLK_GATE, &val);
+ 	val |= NSS_COMMON_CLK_GATE_PTP_EN(gmac->id);
++	switch (gmac->phy_mode) {
++	case PHY_INTERFACE_MODE_RGMII:
++		val |= NSS_COMMON_CLK_GATE_RGMII_RX_EN(gmac->id) |
++			NSS_COMMON_CLK_GATE_RGMII_TX_EN(gmac->id);
++		break;
++	case PHY_INTERFACE_MODE_SGMII:
++		val |= NSS_COMMON_CLK_GATE_GMII_RX_EN(gmac->id) |
++				NSS_COMMON_CLK_GATE_GMII_TX_EN(gmac->id);
++		break;
++	default:
++		/* We don't get here; the switch above will have errored out */
++		unreachable();
++	}
+ 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_GATE, val);
+ 
+ 	if (gmac->phy_mode == PHY_INTERFACE_MODE_SGMII) {
+-- 
+2.25.1
+
 
 
