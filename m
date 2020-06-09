@@ -2,277 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B5A1F3DFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28B61F3DD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730553AbgFIOX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 10:23:56 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:8246 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726967AbgFIOXz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:23:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1591712633; x=1623248633;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=lkv2Bo/3IctZrTSbBNlygdbTcIm2Ki8g0wDs1n3f3dA=;
-  b=fVr48oYRUR9adz9nOhqEvhHSKXL6RhxTM0EkXMSK/WwSz5Qv2FIJmSWF
-   EgJ2Fm3OrfB5B+cOvdIWOvrsd5Luabls41QhJZsmN9cIFZkxZoj59HPKv
-   SSId8p3YvqZIgk2Dctk7ZspX1YjYxdSYH7yts3iUBaQJ1AzKP257TBJDD
-   M=;
-IronPort-SDR: IB/F3te4GXNvy+j70MRkn080NGUmhRMc/djYPyReE4xxnzLFX3xRgopWCk5dRynwpdPzUePJjg
- tsJlLYjU0ivg==
-X-IronPort-AV: E=Sophos;i="5.73,492,1583193600"; 
-   d="scan'208";a="35297925"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-98acfc19.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 09 Jun 2020 14:23:52 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-98acfc19.us-east-1.amazon.com (Postfix) with ESMTPS id 3CCF6A07FF;
-        Tue,  9 Jun 2020 14:23:40 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 9 Jun 2020 14:23:40 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.109) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 9 Jun 2020 14:23:24 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
-        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
-        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
-        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
-        <ying.huang@intel.com>, <david@redhat.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC v3 10/10] Docs/damon: Document physical memory monitoring support
-Date:   Tue, 9 Jun 2020 16:19:41 +0200
-Message-ID: <20200609141941.19184-11-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200609141941.19184-1-sjpark@amazon.com>
-References: <20200609141941.19184-1-sjpark@amazon.com>
+        id S1730399AbgFIOUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:20:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726967AbgFIOUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 10:20:11 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8F06206D5;
+        Tue,  9 Jun 2020 14:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591712410;
+        bh=HSeYCyX+M5Ng843ltjN3GLINElmDCvwhn5Vr6o3fIT8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wdXbpbWx22o8lCA7X1XcT7vQoXpeaf2/vOSfaqAWsXP7dyLmRqIhZiKROfpUdbo3V
+         nfWkaugoydI1dDmg3/33jkTnmzd/EtXBY5gApnqyBdNGj4IPqwuc0EouWhHKmirepg
+         3i+kJ22BA7LArD97agEzeq2oxxc8KhF+484ZUET8=
+Date:   Tue, 9 Jun 2020 16:20:07 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     trix@redhat.com
+Cc:     stable <stable@vger.kernel.org>, linux-fpga@vger.kernel.org,
+        shuah@kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 1/1] selftests: fpga: dfl: A test for afu interrupt
+ support
+Message-ID: <20200609142007.GA831428@kroah.com>
+References: <20200609130208.27390-1-trix@redhat.com>
+ <20200609130208.27390-2-trix@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.109]
-X-ClientProxiedBy: EX13D30UWC004.ant.amazon.com (10.43.162.4) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200609130208.27390-2-trix@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Tue, Jun 09, 2020 at 06:02:08AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> Check that the ioctl DFL_FPGA_PORT_ERR_GET_IRQ_NUM returns
+> an expected result.
+> 
+> Tested on vf device 0xbcc1
+> 
+> Sample run with
+> $ sudo make -C tools/testing/selftests TARGETS=drivers/fpga run_tests
+> ...
+> ok 1 selftests: drivers/fpga: afu_intr
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  tools/testing/selftests/Makefile              |  1 +
+>  tools/testing/selftests/drivers/fpga/Makefile |  9 +++++
+>  .../testing/selftests/drivers/fpga/afu_intr.c | 38 +++++++++++++++++++
+>  tools/testing/selftests/drivers/fpga/config   |  1 +
+>  4 files changed, 49 insertions(+)
+>  create mode 100644 tools/testing/selftests/drivers/fpga/Makefile
+>  create mode 100644 tools/testing/selftests/drivers/fpga/afu_intr.c
+>  create mode 100644 tools/testing/selftests/drivers/fpga/config
+> 
+> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+> index 1195bd85af38..4c6eda659125 100644
+> --- a/tools/testing/selftests/Makefile
+> +++ b/tools/testing/selftests/Makefile
+> @@ -9,6 +9,7 @@ TARGETS += clone3
+>  TARGETS += cpufreq
+>  TARGETS += cpu-hotplug
+>  TARGETS += drivers/dma-buf
+> +TARGETS += drivers/fpga
+>  TARGETS += efivarfs
+>  TARGETS += exec
+>  TARGETS += filesystems
+> diff --git a/tools/testing/selftests/drivers/fpga/Makefile b/tools/testing/selftests/drivers/fpga/Makefile
+> new file mode 100644
+> index 000000000000..0a472e8c67c5
+> --- /dev/null
+> +++ b/tools/testing/selftests/drivers/fpga/Makefile
+> @@ -0,0 +1,9 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +CFLAGS += -I../../../../../usr/include/
+> +CFLAGS += -I../../../../../include/uapi/
+> +
+> +TEST_GEN_PROGS := afu_intr
+> +
+> +top_srcdir ?=../../../../..
+> +
+> +include ../../lib.mk
+> diff --git a/tools/testing/selftests/drivers/fpga/afu_intr.c b/tools/testing/selftests/drivers/fpga/afu_intr.c
+> new file mode 100644
+> index 000000000000..aa1efba94605
+> --- /dev/null
+> +++ b/tools/testing/selftests/drivers/fpga/afu_intr.c
+> @@ -0,0 +1,38 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <stdint.h>
+> +#include <string.h>
+> +#include <linux/fcntl.h>
+> +#include <linux/fpga-dfl.h>
+> +
+> +#define TEST_PREFIX	"drivers/fpga/afu_intr"
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int devfd, status;
+> +	struct dfl_fpga_port_info port_info;
+> +	uint32_t irq_num;
+> +
+> +	devfd = open("/dev/dfl-port.0", O_RDONLY);
+> +	if (devfd < 0) {
+> +		printf("%s: [skip,no-ufpgaintr]\n", TEST_PREFIX);
+> +		exit(77);
+> +	}
+> +
+> +	/*
+> +	 * From fpga-dl.h :
+> +	 * Currently hardware supports up to 1 irq.
+> +	 * Return: 0 on success, -errno on failure.
+> +	 */
+> +	irq_num = -1;
+> +	status = ioctl(devfd, DFL_FPGA_PORT_ERR_GET_IRQ_NUM, &irq_num);
+> +	if (status != 0 || irq_num > 255) {
+> +		printf("%s: [FAIL,err-get-irq-num]\n", TEST_PREFIX);
+> +		close(devfd);
+> +		exit(1);
+> +	}
+> +
+> +	close(devfd);
+> +	return 0;
+> +}
 
-This commit adds description for the physical memory monitoring usage in
-the DAMON document.
+Why not use the ksft_* functions and frameworks to properly print out
+the test status and results so that tools can correctly parse it?
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- Documentation/admin-guide/mm/damon/faq.rst    | 16 +++--
- Documentation/admin-guide/mm/damon/index.rst  |  1 -
- .../admin-guide/mm/damon/mechanisms.rst       |  4 +-
- Documentation/admin-guide/mm/damon/plans.rst  | 29 ---------
- Documentation/admin-guide/mm/damon/usage.rst  | 59 ++++++++++++++-----
- 5 files changed, 54 insertions(+), 55 deletions(-)
- delete mode 100644 Documentation/admin-guide/mm/damon/plans.rst
+It's generally bad-form to make up your own format.
 
-diff --git a/Documentation/admin-guide/mm/damon/faq.rst b/Documentation/admin-guide/mm/damon/faq.rst
-index 02f7581b05f6..e9b69d1bf975 100644
---- a/Documentation/admin-guide/mm/damon/faq.rst
-+++ b/Documentation/admin-guide/mm/damon/faq.rst
-@@ -38,9 +38,13 @@ separate document, :doc:`guide`.  Please refer to that.
- Does DAMON support virtual memory only?
- ========================================
- 
--For now, yes.  But, DAMON will be able to support various address spaces
--including physical memory in near future.  An RFC patchset [1]_ for this
--extension is already available.  Please refer :doc:`plans` for detailed plan
--for this.
--
--.. [1] https://lore.kernel.org/linux-mm/20200409094232.29680-1-sjpark@amazon.com/
-+No.  DAMON supports the virtual memory address spaces and the physical memory
-+address space for now.  However, it can be extended to support any address
-+space, because the core logic of the DAMON can be configured with the low level
-+primitives for each address space.
-+
-+In other words, DAMON provides the reference implementations of the low level
-+primitives for the virtual memory address spaces and the physical memory
-+address spaces.  The programming interface users can further implement their
-+own low level primitives for their special use cases and configure those in
-+DAMON if they need.
-diff --git a/Documentation/admin-guide/mm/damon/index.rst b/Documentation/admin-guide/mm/damon/index.rst
-index 4d128e4fd9c8..7b2939d50408 100644
---- a/Documentation/admin-guide/mm/damon/index.rst
-+++ b/Documentation/admin-guide/mm/damon/index.rst
-@@ -33,4 +33,3 @@ optimizations of their systems.
-    faq
-    mechanisms
-    eval
--   plans
-diff --git a/Documentation/admin-guide/mm/damon/mechanisms.rst b/Documentation/admin-guide/mm/damon/mechanisms.rst
-index f0bc52c698a6..8a93a945cacf 100644
---- a/Documentation/admin-guide/mm/damon/mechanisms.rst
-+++ b/Documentation/admin-guide/mm/damon/mechanisms.rst
-@@ -76,9 +76,7 @@ keeping the bounds users set for their trade-off.
- Handling Virtual Memory Mappings
- ================================
- 
--This is for monitoring of virtual memory address space only.  It is the only
--one address space that supported by DAMON as of now, but other address spaces
--will be supported in the future.
-+This is for monitoring of virtual memory address space only.
- 
- Only small parts in the super-huge virtual address space of the processes are
- mapped to physical memory and accessed.  Thus, tracking the unmapped address
-diff --git a/Documentation/admin-guide/mm/damon/plans.rst b/Documentation/admin-guide/mm/damon/plans.rst
-deleted file mode 100644
-index 8eba8a1dcb98..000000000000
---- a/Documentation/admin-guide/mm/damon/plans.rst
-+++ /dev/null
-@@ -1,29 +0,0 @@
--.. SPDX-License-Identifier: GPL-2.0
--
--============
--Future Plans
--============
--
--DAMON is still on its early stage.  Below plans are still under development.
--
--
--Support Various Address Spaces
--==============================
--
--Currently, DAMON supports only virtual memory address spaces because it
--utilizes PTE Accessed bits as its low-level access check primitive and ``struct
--vma`` as a way to address the monitoring target regions.  However, the core
--idea of DAMON is in a separate higher layer.  Therefore, DAMON can support
--other various address spaces by changing the two low primitives to others for
--the address spaces.
--
--In the future, DAMON will make the lower level primitives configurable so that
--it can support various address spaces including physical memory.  The
--configuration will be highly flexible so that users can even implement the
--primitives by themselves for their special use cases.  Monitoring of
--clean/dirty/entire page cache, NUMA nodes, specific files, or block devices
--would be examples of such use cases.
--
--An RFC patchset for this plan is available [1]_.
--
--.. [1] https://lore.kernel.org/linux-mm/20200409094232.29680-1-sjpark@amazon.com/
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index f600366cdd4e..8942d09bfd49 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -58,9 +58,11 @@ Recording Data Access Pattern
- -----------------------------
- 
- The ``record`` subcommand records the data access pattern of target processes
--in a file (``./damon.data`` by default).  You can specify the target as either
--pid of running target or a command for execution of the process.  Below example
--shows a command target usage::
-+in a file (``./damon.data`` by default).  You can specify the target with 1)
-+the command for execution of the monitoring target process, 2) pid of running
-+target process, or 3) the special keyword, 'paddr', if you want to monitor the
-+system's physical memory address space.  Below example shows a command target
-+usage::
- 
-     # cd <kernel>/tools/damon/
-     # damo record "sleep 5"
-@@ -71,6 +73,15 @@ of the process.  Below example shows a pid target usage::
-     # sleep 5 &
-     # damo record `pidof sleep`
- 
-+Finally, below example shows the use of the special keyword, 'paddr'::
-+
-+    # damo record paddr
-+
-+In this case, the monitoring target regions defaults to the largetst 'System
-+RAM' region specified in '/proc/iomem' file.  Note that the initial monitoring
-+target region is maintained rather than dynamically updated like the virtual
-+memory address spaces monitoring mode.
-+
- You can tune this by setting the monitoring attributes and path to the record
- file using optional arguments to the subcommand.  To know about the monitoring
- attributes in detail, please refer to :doc:`mechanisms`.
-@@ -314,27 +325,42 @@ check it again::
- Target PIDs
- -----------
- 
--Users can get and set the pids of monitoring target processes by reading from
--and writing to the ``pids`` file.  For example, below commands set processes
--having pids 42 and 4242 as the processes to be monitored and check it again::
-+To monitor the virtual memory address spaces of specific processes, users can
-+get and set the pids of monitoring target processes by reading from and writing
-+to the ``pids`` file.  For example, below commands set processes having pids 42
-+and 4242 as the processes to be monitored and check it again::
- 
-     # cd <debugfs>/damon
-     # echo 42 4242 > pids
-     # cat pids
-     42 4242
- 
-+Users can also monitor the physical memory address space of the system by
-+writing a special keyword, "``paddr\n``" to the file.  In this case, reading the
-+file will show ``-1``, as below::
-+
-+    # cd <debugfs>/damon
-+    # echo paddr > pids
-+    # cat pids
-+    -1
-+
- Note that setting the pids doesn't start the monitoring.
- 
- 
- Initial Monitoring Target Regions
- ---------------------------------
- 
--DAMON automatically sets and updates the monitoring target regions so that
--entire memory mappings of target processes can be covered.  However, users
--might want to limit the monitoring region to specific address ranges, such as
--the heap, the stack, or specific file-mapped area.  Or, some users might know
--the initial access pattern of their workloads and therefore want to set optimal
--initial regions for the 'adaptive regions adjustment'.
-+In case of the virtual memory monitoring, DAMON automatically sets and updates
-+the monitoring target regions so that entire memory mappings of target
-+processes can be covered.  However, users might want to limit the monitoring
-+region to specific address ranges, such as the heap, the stack, or specific
-+file-mapped area.  Or, some users might know the initial access pattern of
-+their workloads and therefore want to set optimal initial regions for the
-+'adaptive regions adjustment'.
-+
-+In contrast, DAMON do not automatically sets and updates the monitoring target
-+regions in case of physical memory monitoring.  Therefore, users should set the
-+monitoring target regions by themselves.
- 
- In such cases, users can explicitly set the initial monitoring target regions
- as they want, by writing proper values to the ``init_regions`` file.  Each line
-@@ -354,10 +380,11 @@ region of process 42, and another couple of address ranges, ``20-40`` and
-             4242 20      40
-             4242 50      100" > init_regions
- 
--Note that this sets the initial monitoring target regions only.  DAMON will
--automatically updates the boundary of the regions after one ``regions update
--interval``.  Therefore, users should set the ``regions update interval`` large
--enough.
-+Note that this sets the initial monitoring target regions only.  In case of
-+virtual memory monitoring, DAMON will automatically updates the boundary of the
-+regions after one ``regions update interval``.  Therefore, users should set the
-+``regions update interval`` large enough in this case, if they don't want the
-+update.
- 
- 
- Record
--- 
-2.17.1
+thanks,
 
+gre gk-h
