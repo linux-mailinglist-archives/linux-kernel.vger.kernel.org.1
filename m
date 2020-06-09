@@ -2,167 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4BD1F48A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 23:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9911F4890
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 23:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727788AbgFIVIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 17:08:01 -0400
-Received: from vmicros1.altlinux.org ([194.107.17.57]:35212 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbgFIVIA (ORCPT
+        id S1726942AbgFIVB7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Jun 2020 17:01:59 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:44168 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgFIVBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 17:08:00 -0400
-X-Greylist: delayed 559 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Jun 2020 17:07:57 EDT
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 67E6E72CCED;
-        Tue,  9 Jun 2020 23:58:37 +0300 (MSK)
-Received: from altlinux.org (sole.flsd.net [185.75.180.6])
-        by imap.altlinux.org (Postfix) with ESMTPSA id 3E0A24A4A16;
-        Tue,  9 Jun 2020 23:58:37 +0300 (MSK)
-Date:   Tue, 9 Jun 2020 23:58:37 +0300
-From:   Vitaly Chikunov <vt@altlinux.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        dhowells@redhat.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, jmorris@namei.org, serge@hallyn.com,
-        nramas@linux.microsoft.com, tusharsu@linux.microsoft.com,
-        zohar@linux.ibm.com, gilad@benyossef.com, pvanleeuwen@rambus.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-security-module@vger.kernel.org, zhang.jia@linux.alibaba.com
-Subject: Re: [PATCH v3 0/8] crpyto: introduce OSCCA certificate and SM2
- asymmetric algorithm
-Message-ID: <20200609205837.osganry2tyzwvanz@altlinux.org>
-Mail-Followup-To: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        dhowells@redhat.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, jmorris@namei.org, serge@hallyn.com,
-        nramas@linux.microsoft.com, tusharsu@linux.microsoft.com,
-        zohar@linux.ibm.com, gilad@benyossef.com, pvanleeuwen@rambus.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-security-module@vger.kernel.org, zhang.jia@linux.alibaba.com
-References: <20200609134855.21431-1-tianjia.zhang@linux.alibaba.com>
+        Tue, 9 Jun 2020 17:01:54 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 81B1F607400D;
+        Tue,  9 Jun 2020 23:01:51 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id SM50kajbXWN9; Tue,  9 Jun 2020 23:01:51 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 25BB36074010;
+        Tue,  9 Jun 2020 23:01:51 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id OZ7bmjqrn-kD; Tue,  9 Jun 2020 23:01:51 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id EA2E4607400D;
+        Tue,  9 Jun 2020 23:01:50 +0200 (CEST)
+Date:   Tue, 9 Jun 2020 23:01:50 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>
+Message-ID: <1858220125.350.1591736510906.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UML changes for v5.8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <20200609134855.21431-1-tianjia.zhang@linux.alibaba.com>
-User-Agent: NeoMutt/20171215-106-ac61c7
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
+Thread-Index: eBoFZpqVB3Ctbf548VMEVBglzkcn8A==
+Thread-Topic: UML changes for v5.8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tianjia,
+Linus,
 
-On Tue, Jun 09, 2020 at 09:48:47PM +0800, Tianjia Zhang wrote:
-> Hello all,
-> 
-> This new module implement the OSCCA certificate and SM2 public key
-> algorithm. It was published by State Encryption Management Bureau, China.
-> List of specifications for OSCCA certificate and SM2 elliptic curve
-> public key cryptography:
-> 
-> * GM/T 0003.1-2012
-> * GM/T 0003.2-2012
-> * GM/T 0003.3-2012
-> * GM/T 0003.4-2012
-> * GM/T 0003.5-2012
-> * GM/T 0015-2012
-> * GM/T 0009-2012 
-> 
-> IETF: https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
-> oscca: http://www.oscca.gov.cn/sca/xxgk/2010-12/17/content_1002386.shtml
-> scctc: http://www.gmbz.org.cn/main/bzlb.html
-> 
-> These patchs add the OID object identifier defined by OSCCA. The
-> x509 certificate supports sm2-with-sm3 type certificate parsing
-> and verification.
-> 
-> The sm2 algorithm is based on libgcrypt's mpi implementation, and has
-> made some additions to the kernel's original mpi library, and added the
-> implementation of ec to better support elliptic curve-like algorithms.
-> 
-> sm2 has good support in both openssl and gnupg projects, and sm3 and sm4
-> of the OSCCA algorithm family have also been implemented in the kernel.
-> 
-> Among them, sm3 and sm4 have been well implemented in the kernel.
-> This group of patches has newly introduced sm2. In order to implement
-> sm2 more perfectly, I expanded the mpi library and introduced the
-> ec implementation of the mpi library as the basic algorithm. Compared
-> to the kernel's crypto/ecc.c, the implementation of mpi/ec.c is more
-> complete and elegant, sm2 is implemented based on these algorithms.
+The following changes since commit 3d77e6a8804abcc0504c904bd6e5cdf3a5cf8162:
 
-Does it use constant-time algorithms?
+  Linux 5.7 (2020-05-31 16:49:15 -0700)
 
-Thanks,
+are available in the Git repository at:
 
-> 
-> ---
-> v3 changes:
->   1. integrity asymmetric digsig support sm2-with-sm3 algorithm.
->   2. remove unused sm2_set_priv_key().
->   3. rebase on mainline.
-> 
-> v2 changes:
->   1. simplify the sm2 algorithm and only retain the verify function.
->   2. extract the sm2 certificate code into a separate file.
-> 
-> Tianjia Zhang (8):
->   crypto: sm3 - export crypto_sm3_final function
->   lib/mpi: Extend the MPI library
->   lib/mpi: Introduce ec implementation to MPI library
->   crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm
->   crypto: testmgr - support test with different ciphertext per
->     encryption
->   X.509: support OSCCA certificate parse
->   X.509: support OSCCA sm2-with-sm3 certificate verification
->   integrity: Asymmetric digsig supports SM2-with-SM3 algorithm
-> 
->  crypto/Kconfig                            |   17 +
->  crypto/Makefile                           |    8 +
->  crypto/asymmetric_keys/Makefile           |    1 +
->  crypto/asymmetric_keys/public_key.c       |    6 +
->  crypto/asymmetric_keys/public_key_sm2.c   |   59 +
->  crypto/asymmetric_keys/x509_cert_parser.c |   14 +-
->  crypto/asymmetric_keys/x509_public_key.c  |    2 +
->  crypto/sm2.c                              |  473 +++++++
->  crypto/sm2signature.asn1                  |    4 +
->  crypto/sm3_generic.c                      |    7 +-
->  crypto/testmgr.c                          |    7 +-
->  include/crypto/public_key.h               |   14 +
->  include/crypto/sm2.h                      |   25 +
->  include/crypto/sm3.h                      |    2 +
->  include/linux/mpi.h                       |  193 +++
->  include/linux/oid_registry.h              |    6 +
->  lib/mpi/Makefile                          |    6 +
->  lib/mpi/ec.c                              | 1538 +++++++++++++++++++++
->  lib/mpi/mpi-add.c                         |  207 +++
->  lib/mpi/mpi-bit.c                         |  251 ++++
->  lib/mpi/mpi-cmp.c                         |   46 +-
->  lib/mpi/mpi-div.c                         |  259 ++++
->  lib/mpi/mpi-internal.h                    |   53 +
->  lib/mpi/mpi-inv.c                         |  143 ++
->  lib/mpi/mpi-mod.c                         |  155 +++
->  lib/mpi/mpi-mul.c                         |  166 +++
->  lib/mpi/mpicoder.c                        |  336 +++++
->  lib/mpi/mpih-div.c                        |  294 ++++
->  lib/mpi/mpih-mul.c                        |   25 +
->  lib/mpi/mpiutil.c                         |  204 +++
->  security/integrity/digsig_asymmetric.c    |   14 +-
->  31 files changed, 4517 insertions(+), 18 deletions(-)
->  create mode 100644 crypto/asymmetric_keys/public_key_sm2.c
->  create mode 100644 crypto/sm2.c
->  create mode 100644 crypto/sm2signature.asn1
->  create mode 100644 include/crypto/sm2.h
->  create mode 100644 lib/mpi/ec.c
->  create mode 100644 lib/mpi/mpi-add.c
->  create mode 100644 lib/mpi/mpi-div.c
->  create mode 100644 lib/mpi/mpi-inv.c
->  create mode 100644 lib/mpi/mpi-mod.c
->  create mode 100644 lib/mpi/mpi-mul.c
-> 
-> -- 
-> 2.17.1
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.8-rc1
+
+for you to fetch changes up to f6e8c474390be2e6f5bd0b8966e19958214609ff:
+
+  um: virtio: Replace zero-length array with flexible-array (2020-06-02 22:38:00 +0200)
+
+----------------------------------------------------------------
+This pull request contains the following changes for UML:
+
+- Use fdatasync() in ubd
+- Add a generic "fd" vector transport
+- Minor cleanups and fixes
+
+----------------------------------------------------------------
+Anton Ivanov (1):
+      um: Use fdatasync() when mapping the UBD FSYNC command
+
+Gustavo A. R. Silva (1):
+      um: virtio: Replace zero-length array with flexible-array
+
+Joe Perches (1):
+      um: Neaten vu_err macro definition
+
+Marc-André Lureau (1):
+      um: Add a generic "fd" vector transport
+
+Masahiro Yamada (1):
+      um: Do not evaluate compiler's library path when cleaning
+
+Zach van Rijn (1):
+      um: Add include: memset() and memcpy() are in <string.h>
+
+ arch/um/drivers/Makefile      |  4 +--
+ arch/um/drivers/vector_kern.h |  2 +-
+ arch/um/drivers/vector_user.c | 59 +++++++++++++++++++++++++++++++++++++++++++
+ arch/um/drivers/vhost_user.h  |  2 +-
+ arch/um/drivers/virtio_uml.c  |  2 +-
+ arch/um/os-Linux/file.c       |  3 ++-
+ 6 files changed, 66 insertions(+), 6 deletions(-)
