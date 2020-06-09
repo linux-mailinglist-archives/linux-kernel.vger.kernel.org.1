@@ -2,120 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0B31F345F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 08:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B00C1F346E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 08:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgFIGud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 02:50:33 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:34354 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726896AbgFIGud (ORCPT
+        id S1727104AbgFIGyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 02:54:09 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:8734 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727837AbgFIGyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 02:50:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591685432;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RMwcUIFPWAyOd8cKk46GmiqaJ7VH8w0Cpy4nyi0OjGc=;
-        b=Q2XX1BIcRvHh/Ffa/vOneVFLtSHNBU2WgyajTxzp9XVTiIr2U9z8txAdg4ZP1G9JfjKCr/
-        Xja7yaitye6uLhpV3ist3ib/FeOBnl9coc+NrcmYh2BBa1VPt3EJW/os/1bnWLn7sHxVMW
-        spaLPGcqbI+O9Xf8XKVKURsCMUZPvA8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-391-pfs1qKM-NFKoNWHgrO6dWA-1; Tue, 09 Jun 2020 02:50:28 -0400
-X-MC-Unique: pfs1qKM-NFKoNWHgrO6dWA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E95FC18FF661;
-        Tue,  9 Jun 2020 06:50:25 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5700F768C1;
-        Tue,  9 Jun 2020 06:50:18 +0000 (UTC)
-Date:   Tue, 9 Jun 2020 08:50:17 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     gaurav singh <gaurav1086@gmail.com>
-Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, kpsingh@chromium.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpf: alloc_record_per_cpu Add null check after malloc
-Message-ID: <20200609085017.0d285568@carbon>
-In-Reply-To: <CAFAFadDVe1Au2eJ8ho_cK1riwf9FDaGck3o+VEcKpqRgO5qXdA@mail.gmail.com>
-References: <CAFAFadDVe1Au2eJ8ho_cK1riwf9FDaGck3o+VEcKpqRgO5qXdA@mail.gmail.com>
+        Tue, 9 Jun 2020 02:54:09 -0400
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Mon, 8 Jun 2020 23:51:15 -0700
+Received: from vikash-ubuntu-virtual-machine.eng.vmware.com (unknown [10.197.103.194])
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 2882CB2774;
+        Tue,  9 Jun 2020 02:51:16 -0400 (EDT)
+From:   Vikash Bansal <bvikas@vmware.com>
+To:     <gregkh@linuxfoundation.org>
+CC:     <stable@vger.kernel.org>, <srivatsab@vmware.com>,
+        <srivatsa@csail.mit.edu>, <amakhalov@vmware.com>,
+        <srinidhir@vmware.com>, <bvikas@vmware.com>, <anishs@vmware.com>,
+        <vsirnapalli@vmware.com>, <akaher@vmware.com>, <clm@fb.com>,
+        <josef@toxicpanda.com>, <dsterba@suse.com>,
+        <anand.jain@oracle.com>, <linux-btrfs@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4.19.y 1/2] btrfs: merge btrfs_find_device and find_device
+Date:   Tue, 9 Jun 2020 12:20:17 +0530
+Message-ID: <20200609065018.26378-2-bvikas@vmware.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200609065018.26378-1-bvikas@vmware.com>
+References: <20200609065018.26378-1-bvikas@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: bvikas@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 6 Jun 2020 19:59:48 -0400
-gaurav singh <gaurav1086@gmail.com> wrote:
+From: Anand Jain <anand.jain@oracle.com>
 
-> Hi,
-> 
-> The memset call is made right after malloc call. To fix this, add the null
-> check right after malloc and then do memset.
-> 
-> Please find the patch below.
+commit 09ba3bc9dd150457c506e4661380a6183af651c1 upstream
 
-The fix in your patch seem correct (although there are more places),
-but the way you send/submit the patch is wrong.  The patch itself also
-mangle whitespaces.
+Both btrfs_find_device() and find_device() does the same thing except
+that the latter does not take the seed device onto account in the device
+scanning context. We can merge them.
 
-You can read the guide:
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+[4.19.y backport notes:
+Vikash : - To apply this patch, a portion of commit e4319cd9cace
+           was used to change the first argument of function
+           "btrfs_find_device" from "struct btrfs_fs_info" to
+           "struct btrfs_fs_devices".
+Signed-off-by: Vikash Bansal <bvikas@vmware.com>
+---
+ fs/btrfs/dev-replace.c |  8 ++--
+ fs/btrfs/ioctl.c       |  5 ++-
+ fs/btrfs/scrub.c       |  4 +-
+ fs/btrfs/volumes.c     | 84 +++++++++++++++++++++---------------------
+ fs/btrfs/volumes.h     |  4 +-
+ 5 files changed, 53 insertions(+), 52 deletions(-)
 
- https://www.kernel.org/doc/html/latest/process/submitting-patches.html
- https://www.kernel.org/doc/html/latest/process/index.html
-
---Jesper
-
-
-> Thanks and regards,
-> Gaurav.
-> 
-> 
-> From 552b7df0e12572737929c60478b5dca2a40f4ad9 Mon Sep 17 00:00:00 2001
-> From: Gaurav Singh <gaurav1086@gmail.com>
-> Date: Sat, 6 Jun 2020 19:57:48 -0400
-> Subject: [PATCH] bpf: alloc_record_per_cpu Add null check after malloc
-> 
-> Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
-> ---
->  samples/bpf/xdp_rxq_info_user.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/samples/bpf/xdp_rxq_info_user.c
-> b/samples/bpf/xdp_rxq_info_user.c
-> index 4fe47502ebed..490b07b7df78 100644
-> --- a/samples/bpf/xdp_rxq_info_user.c
-> +++ b/samples/bpf/xdp_rxq_info_user.c
-> @@ -202,11 +202,11 @@ static struct datarec *alloc_record_per_cpu(void)
-> 
->   size = sizeof(struct datarec) * nr_cpus;
->   array = malloc(size);
-> - memset(array, 0, size);
->   if (!array) {
->   fprintf(stderr, "Mem alloc error (nr_cpus:%u)\n", nr_cpus);
->   exit(EXIT_FAIL_MEM);
->   }
-> + memset(array, 0, size);
->   return array;
->  }
-> 
-
-
-
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index 96763805787e..1b9c8ffb038f 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -112,11 +112,11 @@ int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info)
+ 		break;
+ 	case BTRFS_IOCTL_DEV_REPLACE_STATE_STARTED:
+ 	case BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED:
+-		dev_replace->srcdev = btrfs_find_device(fs_info, src_devid,
+-							NULL, NULL);
+-		dev_replace->tgtdev = btrfs_find_device(fs_info,
++		dev_replace->srcdev = btrfs_find_device(fs_info->fs_devices,
++						src_devid, NULL, NULL, true);
++		dev_replace->tgtdev = btrfs_find_device(fs_info->fs_devices,
+ 							BTRFS_DEV_REPLACE_DEVID,
+-							NULL, NULL);
++							NULL, NULL, true);
+ 		/*
+ 		 * allow 'btrfs dev replace_cancel' if src/tgt device is
+ 		 * missing
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 199c70b8f7d8..a5ae02bf3652 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1642,7 +1642,7 @@ static noinline int btrfs_ioctl_resize(struct file *file,
+ 		btrfs_info(fs_info, "resizing devid %llu", devid);
+ 	}
+ 
+-	device = btrfs_find_device(fs_info, devid, NULL, NULL);
++	device = btrfs_find_device(fs_info->fs_devices, devid, NULL, NULL, true);
+ 	if (!device) {
+ 		btrfs_info(fs_info, "resizer unable to find device %llu",
+ 			   devid);
+@@ -3178,7 +3178,8 @@ static long btrfs_ioctl_dev_info(struct btrfs_fs_info *fs_info,
+ 		s_uuid = di_args->uuid;
+ 
+ 	rcu_read_lock();
+-	dev = btrfs_find_device(fs_info, di_args->devid, s_uuid, NULL);
++	dev = btrfs_find_device(fs_info->fs_devices, di_args->devid, s_uuid,
++				NULL, true);
+ 
+ 	if (!dev) {
+ 		ret = -ENODEV;
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 6b6008db3e03..fee8995c9a0c 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3835,7 +3835,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+ 		return PTR_ERR(sctx);
+ 
+ 	mutex_lock(&fs_info->fs_devices->device_list_mutex);
+-	dev = btrfs_find_device(fs_info, devid, NULL, NULL);
++	dev = btrfs_find_device(fs_info->fs_devices, devid, NULL, NULL, true);
+ 	if (!dev || (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) &&
+ 		     !is_dev_replace)) {
+ 		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+@@ -4019,7 +4019,7 @@ int btrfs_scrub_progress(struct btrfs_fs_info *fs_info, u64 devid,
+ 	struct scrub_ctx *sctx = NULL;
+ 
+ 	mutex_lock(&fs_info->fs_devices->device_list_mutex);
+-	dev = btrfs_find_device(fs_info, devid, NULL, NULL);
++	dev = btrfs_find_device(fs_info->fs_devices, devid, NULL, NULL, true);
+ 	if (dev)
+ 		sctx = dev->scrub_ctx;
+ 	if (sctx)
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 9c3b394b99fa..5b0d00c63fbb 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -347,27 +347,6 @@ static struct btrfs_device *__alloc_device(void)
+ 	return dev;
+ }
+ 
+-/*
+- * Find a device specified by @devid or @uuid in the list of @fs_devices, or
+- * return NULL.
+- *
+- * If devid and uuid are both specified, the match must be exact, otherwise
+- * only devid is used.
+- */
+-static struct btrfs_device *find_device(struct btrfs_fs_devices *fs_devices,
+-		u64 devid, const u8 *uuid)
+-{
+-	struct btrfs_device *dev;
+-
+-	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
+-		if (dev->devid == devid &&
+-		    (!uuid || !memcmp(dev->uuid, uuid, BTRFS_UUID_SIZE))) {
+-			return dev;
+-		}
+-	}
+-	return NULL;
+-}
+-
+ static noinline struct btrfs_fs_devices *find_fsid(u8 *fsid)
+ {
+ 	struct btrfs_fs_devices *fs_devices;
+@@ -772,8 +751,8 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+ 		device = NULL;
+ 	} else {
+ 		mutex_lock(&fs_devices->device_list_mutex);
+-		device = find_device(fs_devices, devid,
+-				disk_super->dev_item.uuid);
++		device = btrfs_find_device(fs_devices, devid,
++				disk_super->dev_item.uuid, NULL, false);
+ 	}
+ 
+ 	if (!device) {
+@@ -2144,7 +2123,8 @@ static int btrfs_find_device_by_path(struct btrfs_fs_info *fs_info,
+ 	disk_super = (struct btrfs_super_block *)bh->b_data;
+ 	devid = btrfs_stack_device_id(&disk_super->dev_item);
+ 	dev_uuid = disk_super->dev_item.uuid;
+-	*device = btrfs_find_device(fs_info, devid, dev_uuid, disk_super->fsid);
++	*device = btrfs_find_device(fs_info->fs_devices, devid, dev_uuid,
++				    disk_super->fsid, true);
+ 	brelse(bh);
+ 	if (!*device)
+ 		ret = -ENOENT;
+@@ -2190,7 +2170,8 @@ int btrfs_find_device_by_devspec(struct btrfs_fs_info *fs_info, u64 devid,
+ 
+ 	if (devid) {
+ 		ret = 0;
+-		*device = btrfs_find_device(fs_info, devid, NULL, NULL);
++		*device = btrfs_find_device(fs_info->fs_devices, devid,
++					    NULL, NULL, true);
+ 		if (!*device)
+ 			ret = -ENOENT;
+ 	} else {
+@@ -2322,7 +2303,8 @@ static int btrfs_finish_sprout(struct btrfs_trans_handle *trans,
+ 				   BTRFS_UUID_SIZE);
+ 		read_extent_buffer(leaf, fs_uuid, btrfs_device_fsid(dev_item),
+ 				   BTRFS_FSID_SIZE);
+-		device = btrfs_find_device(fs_info, devid, dev_uuid, fs_uuid);
++		device = btrfs_find_device(fs_info->fs_devices, devid, dev_uuid,
++					   fs_uuid, true);
+ 		BUG_ON(!device); /* Logic error */
+ 
+ 		if (device->fs_devices->seeding) {
+@@ -6254,21 +6236,36 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+ 	return BLK_STS_OK;
+ }
+ 
+-struct btrfs_device *btrfs_find_device(struct btrfs_fs_info *fs_info, u64 devid,
+-				       u8 *uuid, u8 *fsid)
++/*
++ * Find a device specified by @devid or @uuid in the list of @fs_devices, or
++ * return NULL.
++ *
++ * If devid and uuid are both specified, the match must be exact, otherwise
++ * only devid is used.
++ *
++ * If @seed is true, traverse through the seed devices.
++ */
++struct btrfs_device *btrfs_find_device(struct btrfs_fs_devices *fs_devices,
++					u64 devid, u8 *uuid, u8 *fsid,
++					bool seed)
+ {
+ 	struct btrfs_device *device;
+-	struct btrfs_fs_devices *cur_devices;
+ 
+-	cur_devices = fs_info->fs_devices;
+-	while (cur_devices) {
++	while (fs_devices) {
+ 		if (!fsid ||
+-		    !memcmp(cur_devices->fsid, fsid, BTRFS_FSID_SIZE)) {
+-			device = find_device(cur_devices, devid, uuid);
+-			if (device)
+-				return device;
++		    !memcmp(fs_devices->fsid, fsid, BTRFS_FSID_SIZE)) {
++			list_for_each_entry(device, &fs_devices->devices,
++					    dev_list) {
++				if (device->devid == devid &&
++				    (!uuid || memcmp(device->uuid, uuid,
++						     BTRFS_UUID_SIZE) == 0))
++					return device;
++			}
+ 		}
+-		cur_devices = cur_devices->seed;
++		if (seed)
++			fs_devices = fs_devices->seed;
++		else
++			return NULL;
+ 	}
+ 	return NULL;
+ }
+@@ -6513,8 +6510,8 @@ static int read_one_chunk(struct btrfs_fs_info *fs_info, struct btrfs_key *key,
+ 		read_extent_buffer(leaf, uuid, (unsigned long)
+ 				   btrfs_stripe_dev_uuid_nr(chunk, i),
+ 				   BTRFS_UUID_SIZE);
+-		map->stripes[i].dev = btrfs_find_device(fs_info, devid,
+-							uuid, NULL);
++		map->stripes[i].dev = btrfs_find_device(fs_info->fs_devices,
++						devid, uuid, NULL, true);
+ 		if (!map->stripes[i].dev &&
+ 		    !btrfs_test_opt(fs_info, DEGRADED)) {
+ 			free_extent_map(em);
+@@ -6653,7 +6650,8 @@ static int read_one_dev(struct btrfs_fs_info *fs_info,
+ 			return PTR_ERR(fs_devices);
+ 	}
+ 
+-	device = btrfs_find_device(fs_info, devid, dev_uuid, fs_uuid);
++	device = btrfs_find_device(fs_info->fs_devices, devid, dev_uuid,
++				   fs_uuid, true);
+ 	if (!device) {
+ 		if (!btrfs_test_opt(fs_info, DEGRADED)) {
+ 			btrfs_report_missing_device(fs_info, devid,
+@@ -7243,7 +7241,8 @@ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
+ 	int i;
+ 
+ 	mutex_lock(&fs_devices->device_list_mutex);
+-	dev = btrfs_find_device(fs_info, stats->devid, NULL, NULL);
++	dev = btrfs_find_device(fs_info->fs_devices, stats->devid,
++				NULL, NULL, true);
+ 	mutex_unlock(&fs_devices->device_list_mutex);
+ 
+ 	if (!dev) {
+@@ -7460,7 +7459,7 @@ static int verify_one_dev_extent(struct btrfs_fs_info *fs_info,
+ 	}
+ 
+ 	/* Make sure no dev extent is beyond device bondary */
+-	dev = btrfs_find_device(fs_info, devid, NULL, NULL);
++	dev = btrfs_find_device(fs_info->fs_devices, devid, NULL, NULL, true);
+ 	if (!dev) {
+ 		btrfs_err(fs_info, "failed to find devid %llu", devid);
+ 		ret = -EUCLEAN;
+@@ -7469,7 +7468,8 @@ static int verify_one_dev_extent(struct btrfs_fs_info *fs_info,
+ 
+ 	/* It's possible this device is a dummy for seed device */
+ 	if (dev->disk_total_bytes == 0) {
+-		dev = find_device(fs_info->fs_devices->seed, devid, NULL);
++		dev = btrfs_find_device(fs_info->fs_devices->seed, devid,
++					NULL, NULL, false);
+ 		if (!dev) {
+ 			btrfs_err(fs_info, "failed to find seed devid %llu",
+ 				  devid);
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index ac703b15d679..ddd30c162f98 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -430,8 +430,8 @@ void __exit btrfs_cleanup_fs_uuids(void);
+ int btrfs_num_copies(struct btrfs_fs_info *fs_info, u64 logical, u64 len);
+ int btrfs_grow_device(struct btrfs_trans_handle *trans,
+ 		      struct btrfs_device *device, u64 new_size);
+-struct btrfs_device *btrfs_find_device(struct btrfs_fs_info *fs_info, u64 devid,
+-				       u8 *uuid, u8 *fsid);
++struct btrfs_device *btrfs_find_device(struct btrfs_fs_devices *fs_devices,
++				       u64 devid, u8 *uuid, u8 *fsid, bool seed);
+ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size);
+ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *path);
+ int btrfs_balance(struct btrfs_fs_info *fs_info,
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.23.1
 
