@@ -2,69 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873C51F4992
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 00:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF8B1F4999
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 00:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728623AbgFIWup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 18:50:45 -0400
-Received: from smtprelay0178.hostedemail.com ([216.40.44.178]:51698 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728108AbgFIWup (ORCPT
+        id S1728719AbgFIWwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 18:52:41 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:35853 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728108AbgFIWwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 18:50:45 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 6627218029138;
-        Tue,  9 Jun 2020 22:50:44 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:965:966:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3866:3867:3868:3870:4385:4390:4395:5007:6119:10004:10400:10848:11026:11658:11914:12296:12297:12679:12760:13069:13161:13229:13311:13357:13439:14659:14721:21080:21433:21451:21627:21990:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: front10_2d174eb26dc6
-X-Filterd-Recvd-Size: 1181
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  9 Jun 2020 22:50:43 +0000 (UTC)
-Message-ID: <573b3fbd5927c643920e1364230c296b23e7584d.camel@perches.com>
-Subject: RFC: Allow kfree to free all types of allocations ?
-From:   Joe Perches <joe@perches.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Tue, 09 Jun 2020 15:50:42 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Tue, 9 Jun 2020 18:52:40 -0400
+Received: by mail-io1-f68.google.com with SMTP id r77so49137ior.3;
+        Tue, 09 Jun 2020 15:52:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VtUNO0RmXUCA0lM/iTrqVIo0l7phzdy2MwUWXH663v4=;
+        b=aWwtPXBuCRCv1YWHuOeGu2xJCXjCZBtDNiicPUv+Y22oRRcsWjZTsnC0dXmmCcWBfc
+         ovywz7EJ5uw1fBgZnq2WcVDw2JH/D7Jsm3iMEPwSaJQn5U4JInlHH4EouOfCBJm/KgAb
+         rMFbuB7rIhmx9pPtzFBJhxoVrNmd4FRGw3AOZeZvtawZ6xao5gAo3HaF/F1jDHGoh/5i
+         WGx4w/Az9iX+pd+k+Tm6CnLQbWyw/9+aJu+rwurusu0vDYbXWu7LsJr4nJ0hQ8oQkijj
+         7CdkUugoV0TnLQeRtaF8Br2BHvkyKed7OfFuUfz53zDFC3swpXviwdYhkX/MeKbezLcr
+         xU/Q==
+X-Gm-Message-State: AOAM532ckY1e8nWANi6xlxRXk38qq0i7MUsNyPZYrcTi8DKvJD/sq/q5
+        YeEGDgn+0UbAQDQBEyz1fQ==
+X-Google-Smtp-Source: ABdhPJzAotuZigWCyKFS6KAx6Vd4f0JyrR9Qil5qXs28rQHD2OfKl7pATvicvO/4G8BEE8Bm7aqXkA==
+X-Received: by 2002:a05:6602:228c:: with SMTP id d12mr388575iod.43.1591743159407;
+        Tue, 09 Jun 2020 15:52:39 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id v16sm9833676ilo.47.2020.06.09.15.52.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 15:52:38 -0700 (PDT)
+Received: (nullmailer pid 1655191 invoked by uid 1000);
+        Tue, 09 Jun 2020 22:52:37 -0000
+Date:   Tue, 9 Jun 2020 16:52:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, nishakumari@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        rnayak@codeaurora.org
+Subject: Re: [PATCH v4 2/5] dt-bindings: regulator: Add labibb regulator
+Message-ID: <20200609225237.GA1647191@bogus>
+References: <20200602100924.26256-1-sumit.semwal@linaro.org>
+ <20200602100924.26256-3-sumit.semwal@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200602100924.26256-3-sumit.semwal@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a lot of patches trying to match
-various [kv].alloc allocations to specific frees.
+On Tue, Jun 02, 2020 at 03:39:21PM +0530, Sumit Semwal wrote:
+> From: Nisha Kumari <nishakumari@codeaurora.org>
+> 
+> Adding the devicetree binding for labibb regulator.
+> 
+> Signed-off-by: Nisha Kumari <nishakumari@codeaurora.org>
+> Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
+>  [sumits: cleanup as per review comments and update to yaml]
+> --
+> v2: updated for better compatible string and names.
+> v3: moved to yaml
+> v4: fixed dt_binding_check issues
+> ---
+>  .../regulator/qcom-labibb-regulator.yaml      | 79 +++++++++++++++++++
+>  1 file changed, 79 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+> new file mode 100644
+> index 000000000000..178820ec04c7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+> @@ -0,0 +1,79 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
 
-But are there frees in a fast path?
+Dual license new bindings:
 
-Why not convert kfree to add a few extra tests
-and add #defines for existing uses
+(GPL-2.0-only OR BSD-2-Clause)
 
-Something like:
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/regulator/qcom-labibb-regulator.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm's LAB(LCD AMOLED Boost)/IBB(Inverting Buck Boost) Regulator
+> +
+> +maintainers:
+> +  - Sumit Semwal <sumit.semwal@linaro.org>
+> +
+> +description:
+> +  LAB can be used as a positive boost power supply and IBB can be used as a
+> +  negative boost power supply for display panels. Currently implemented for
+> +  pmi8998.
+> +
+> +allOf:
+> +  - $ref: "regulator.yaml#"
 
-void kfree(const void *addr)
-{
-	if (is_kernel_rodata((unsigned long)addr))
-		return;
+I think you want this under each child as this schema applies to each 
+regulator. But you aren't using any of the regulator properties, so not 
+even needed? Or the example is not complete?
 
-	if (is_vmalloc_addr(addr))
-		_vfree(addr);
-	else
-		_kfree(addr);
-}
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,pmi8998-lab-ibb
+> +
+> +  lab:
+> +    type: object
+> +
+> +    properties:
+> +
+> +      interrupts:
+> +        maxItems: 1
+> +        description:
+> +          Short-circuit interrupt for lab.
+> +
+> +      interrupt-names:
+> +        const: sc-err
 
-And add defines like:
+You don't really need a name if there's only 1.
 
-#define kvfree		kfree
-#define vfree		kfree
-#define kfree_const	kfree
+> +
+> +    required:
+> +    - interrupts
+> +    - interrupt-names
+> +
+> +  ibb:
+> +    type: object
+> +
+> +    properties:
+> +
+> +      interrupts:
+> +        maxItems: 1
+> +        description:
+> +          Short-circuit interrupt for lab.
+> +
+> +      interrupt-names:
+> +        const: sc-err
+> +
+> +    required:
+> +    - interrupts
+> +    - interrupt-names
+> +
+> +required:
+> +  - compatible
 
-Does 4 extra tests really matter?
+unevaluatedProperties: false
 
-
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    labibb {
+> +      compatible = "qcom,pmi8998-lab-ibb";
+> +
+> +      lab {
+> +        interrupts = <0x3 0x0 IRQ_TYPE_EDGE_RISING>;
+> +        interrupt-names = "sc-err";
+> +      };
+> +
+> +      ibb {
+> +        interrupts = <0x3 0x2 IRQ_TYPE_EDGE_RISING>;
+> +        interrupt-names = "sc-err";
+> +      };
+> +    };
+> +
+> +...
+> -- 
+> 2.26.2
+> 
