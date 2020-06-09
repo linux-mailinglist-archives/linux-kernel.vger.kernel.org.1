@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BDA1F42A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2D41F429F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731902AbgFIRng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:43:36 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56073 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728472AbgFIRng (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:43:36 -0400
-Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=localhost.localdomain)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <cascardo@canonical.com>)
-        id 1jiiHe-0004lb-1P; Tue, 09 Jun 2020 17:43:34 +0000
-From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mark Gross <mgross@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Steve Beattie <sbeattie@ubuntu.com>
-Subject: [PATCH] x86/speculation/srbds: do not try to turn mitigation off when not supported
-Date:   Tue,  9 Jun 2020 14:43:13 -0300
-Message-Id: <20200609174313.2600320-1-cascardo@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        id S1731864AbgFIRnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:43:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728472AbgFIRnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:43:17 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1683F2074B;
+        Tue,  9 Jun 2020 17:43:16 +0000 (UTC)
+Date:   Tue, 9 Jun 2020 13:43:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Guo Ren <guoren@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        Security Officers <security@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Ananth N Mavinakayanahalli <ananth@in.ibm.com>,
+        Naveen Rao <naveen.n.rao@linux.vnet.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] uprobes: ensure that uprobe->offset and
+ ->ref_ctr_offset are properly aligned
+Message-ID: <20200609134314.1e07d494@gandalf.local.home>
+In-Reply-To: <CAHk-=wgOkWaEwCNunc4_WXF_SLJZSeNEnstvHha9n82iLYpyCA@mail.gmail.com>
+References: <CAHk-=whQt69ApMkZF8b2Q2idMDgPpPETZeeOuZg59CrOO4025w@mail.gmail.com>
+        <20200428091149.GB19958@linux.vnet.ibm.com>
+        <20200428123914.GA27920@redhat.com>
+        <20200504164724.GA28697@redhat.com>
+        <20200609153020.GB17951@redhat.com>
+        <CAHk-=wgOkWaEwCNunc4_WXF_SLJZSeNEnstvHha9n82iLYpyCA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When SRBDS is mitigated by TSX OFF, update_srbds_msr will still read and
-write to MSR_IA32_MCU_OPT_CTRL even when that is not supported by the
-microcode.
+On Tue, 9 Jun 2020 09:48:45 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Checking for X86_FEATURE_SRBDS_CTRL as a CPU feature available makes more
-sense than checking for SRBDS_MITIGATION_UCODE_NEEDED as the found
-"mitigation".
+> On Tue, Jun 9, 2020 at 8:30 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> >
+> > Looks like this patch was forgotten...
+> >
+> > Should I resend it?  
+> 
+> I guess I'll just take it directly, since it was triggered by me
+> complaining anyway.
+> 
+> I had hoped it would go through the usual channels.
 
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Acked-by: John Johansen <john.johansen@canonical.com>
-Acked-by: Steve Beattie <sbeattie@ubuntu.com>
-Cc: stable@vger.kernel.org
----
- arch/x86/kernel/cpu/bugs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Perhaps there was confusion about which tree it was suppose to go
+through :-/
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index b6f887be440c..ee5bdca7fd30 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -432,7 +432,7 @@ void update_srbds_msr(void)
- 	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
- 		return;
- 
--	if (srbds_mitigation == SRBDS_MITIGATION_UCODE_NEEDED)
-+	if (!boot_cpu_has(X86_FEATURE_SRBDS_CTRL))
- 		return;
- 
- 	rdmsrl(MSR_IA32_MCU_OPT_CTRL, mcu_ctrl);
--- 
-2.25.1
+-- Steve
 
