@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 848871F42C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FD11F42CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732144AbgFIRrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:47:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58982 "EHLO mail.kernel.org"
+        id S1732198AbgFIRr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:47:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732133AbgFIRrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:47:39 -0400
+        id S1732134AbgFIRrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:47:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1122C20823;
-        Tue,  9 Jun 2020 17:47:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D5E420825;
+        Tue,  9 Jun 2020 17:47:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724858;
-        bh=hTuX6Gj/Z///hx0xMNbk6em5czwcq15xu7qUuc2sooU=;
+        s=default; t=1591724860;
+        bh=COC5NdZRXHs8ujGC9l4QIvWlelg5pUxAoKMI83NTNzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qTH6nwMx44ZfMLS4AoPa6VcNqpQT/+yzWwNQMUK6Dovgzunz2M9rRQZqVgwY6Jqza
-         mCTOAT4Pqf7vdhEkq2lyO3MhW3faQjax+1WfNKp4dr8cDXostQCY6k/LYSUAIHGaxR
-         cV/T5KrJmYIiqcC8vOA6MjZs5sQPRddtA0AQKNfI=
+        b=TB9ToZ4Chh3xQ2HqQ05kbKNyvzDuU5wjDEuf9X25BCge8TFphGpBBCYjXvM5Vpl4b
+         99+Nbfk7aAnH4Z5HSEs+Y3Tkr/IfDGjfmiSr9bYLa3lyPwjQD/TVMlq07UuSZE853+
+         p7yqyTXsGKAN7h2/7nzl7STY2px9RfMXfO61C9j0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan McDowell <noodles@earth.li>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 10/42] net: ethernet: stmmac: Enable interface clocks on probe for IPQ806x
-Date:   Tue,  9 Jun 2020 19:44:16 +0200
-Message-Id: <20200609174016.550278310@linuxfoundation.org>
+Subject: [PATCH 4.9 11/42] net: smsc911x: Fix runtime PM imbalance on error
+Date:   Tue,  9 Jun 2020 19:44:17 +0200
+Message-Id: <20200609174016.676966234@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
 References: <20200609174015.379493548@linuxfoundation.org>
@@ -44,60 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan McDowell <noodles@earth.li>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit a96ac8a0045e3cbe3e5af6d1b3c78c6c2065dec5 ]
+[ Upstream commit 539d39ad0c61b35f69565a037d7586deaf6d6166 ]
 
-The ipq806x_gmac_probe() function enables the PTP clock but not the
-appropriate interface clocks. This means that if the bootloader hasn't
-done so attempting to bring up the interface will fail with an error
-like:
+Remove runtime PM usage counter decrement when the
+increment function has not been called to keep the
+counter balanced.
 
-[   59.028131] ipq806x-gmac-dwmac 37600000.ethernet: Failed to reset the dma
-[   59.028196] ipq806x-gmac-dwmac 37600000.ethernet eth1: stmmac_hw_setup: DMA engine initialization failed
-[   59.034056] ipq806x-gmac-dwmac 37600000.ethernet eth1: stmmac_open: Hw setup failed
-
-This patch, a slightly cleaned up version of one posted by Sergey
-Sergeev in:
-
-https://forum.openwrt.org/t/support-for-mikrotik-rb3011uias-rm/4064/257
-
-correctly enables the clock; we have already configured the source just
-before this.
-
-Tested on a MikroTik RB3011.
-
-Signed-off-by: Jonathan McDowell <noodles@earth.li>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/net/ethernet/smsc/smsc911x.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-index 11a4a81b0397..bcc5d1e16ce2 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-@@ -330,6 +330,19 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 	/* Enable PTP clock */
- 	regmap_read(gmac->nss_common, NSS_COMMON_CLK_GATE, &val);
- 	val |= NSS_COMMON_CLK_GATE_PTP_EN(gmac->id);
-+	switch (gmac->phy_mode) {
-+	case PHY_INTERFACE_MODE_RGMII:
-+		val |= NSS_COMMON_CLK_GATE_RGMII_RX_EN(gmac->id) |
-+			NSS_COMMON_CLK_GATE_RGMII_TX_EN(gmac->id);
-+		break;
-+	case PHY_INTERFACE_MODE_SGMII:
-+		val |= NSS_COMMON_CLK_GATE_GMII_RX_EN(gmac->id) |
-+				NSS_COMMON_CLK_GATE_GMII_TX_EN(gmac->id);
-+		break;
-+	default:
-+		/* We don't get here; the switch above will have errored out */
-+		unreachable();
-+	}
- 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_GATE, val);
+diff --git a/drivers/net/ethernet/smsc/smsc911x.c b/drivers/net/ethernet/smsc/smsc911x.c
+index 4143659615e1..264136dba674 100644
+--- a/drivers/net/ethernet/smsc/smsc911x.c
++++ b/drivers/net/ethernet/smsc/smsc911x.c
+@@ -2506,20 +2506,20 @@ static int smsc911x_drv_probe(struct platform_device *pdev)
  
- 	if (gmac->phy_mode == PHY_INTERFACE_MODE_SGMII) {
+ 	retval = smsc911x_init(dev);
+ 	if (retval < 0)
+-		goto out_disable_resources;
++		goto out_init_fail;
+ 
+ 	netif_carrier_off(dev);
+ 
+ 	retval = smsc911x_mii_init(pdev, dev);
+ 	if (retval) {
+ 		SMSC_WARN(pdata, probe, "Error %i initialising mii", retval);
+-		goto out_disable_resources;
++		goto out_init_fail;
+ 	}
+ 
+ 	retval = register_netdev(dev);
+ 	if (retval) {
+ 		SMSC_WARN(pdata, probe, "Error %i registering device", retval);
+-		goto out_disable_resources;
++		goto out_init_fail;
+ 	} else {
+ 		SMSC_TRACE(pdata, probe,
+ 			   "Network interface: \"%s\"", dev->name);
+@@ -2560,9 +2560,10 @@ static int smsc911x_drv_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ 
+-out_disable_resources:
++out_init_fail:
+ 	pm_runtime_put(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
++out_disable_resources:
+ 	(void)smsc911x_disable_resources(pdev);
+ out_enable_resources_fail:
+ 	smsc911x_free_resources(pdev);
 -- 
 2.25.1
 
