@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D451F43B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1181F4399
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387490AbgFIR4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:56:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46582 "EHLO mail.kernel.org"
+        id S1731748AbgFIRyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:54:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733131AbgFIRym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:54:42 -0400
+        id S1731271AbgFIRxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:53:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3662207F9;
-        Tue,  9 Jun 2020 17:54:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE9E5207ED;
+        Tue,  9 Jun 2020 17:53:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725282;
-        bh=jM0oMkokSpwwffYJacSP7JNj/zACzPww+HO/X0xDT+Y=;
+        s=default; t=1591725192;
+        bh=Nchi5rPksxeSgTW7vOly43VUU3E5jE2NOk7Oj9wAaIA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0dsKjld7Hhv/k/FsYIDnP6LyWaRrNizMQ7Xf9AulK+gYc3jY1pzwkT4kK0W/1eIXt
-         +wasvdKbE7MnhWM6Mj8rDoML3aXA25OEkbS37JbHwHzSY4ZKRL5IfLHpXVkvcR993G
-         gGbqkZzbEnxX0tcQcxr5GyrLQV2iYGJ4iAsu0Pl0=
+        b=Pi6HYUGHaJUre7dDHSRlzSHwHeCO1ZmPAOECnq8ZJwvLN7KnX2PJN6WHCNCV62wGm
+         xn2FvaL6Lhx1+gL/rWpbxzFuFvc2iIfj33q9ce3zeQq8nARTFcLB10tqH8I4HP9kcm
+         +u3hrJOGjmWYeMgiVaEOIL1KTII1Y9KXeJdXFOsg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 15/41] mptcp: fix unblocking connect()
-Date:   Tue,  9 Jun 2020 19:45:17 +0200
-Message-Id: <20200609174113.589926014@linuxfoundation.org>
+        stable@vger.kernel.org, Kyungtae Kim <kt0755@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 5.4 22/34] vt: keyboard: avoid signed integer overflow in k_ascii
+Date:   Tue,  9 Jun 2020 19:45:18 +0200
+Message-Id: <20200609174055.402355346@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174112.129412236@linuxfoundation.org>
-References: <20200609174112.129412236@linuxfoundation.org>
+In-Reply-To: <20200609174052.628006868@linuxfoundation.org>
+References: <20200609174052.628006868@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,66 +43,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit 41be81a8d3d09acb9033799938306349328861f9 ]
+commit b86dab054059b970111b5516ae548efaae5b3aae upstream.
 
-Currently unblocking connect() on MPTCP sockets fails frequently.
-If mptcp_stream_connect() is invoked to complete a previously
-attempted unblocking connection, it will still try to create
-the first subflow via __mptcp_socket_create(). If the 3whs is
-completed and the 'can_ack' flag is already set, the latter
-will fail with -EINVAL.
+When k_ascii is invoked several times in a row there is a potential for
+signed integer overflow:
 
-This change addresses the issue checking for pending connect and
-delegating the completion to the first subflow. Additionally
-do msk addresses and sk_state changes only when needed.
+UBSAN: Undefined behaviour in drivers/tty/vt/keyboard.c:888:19 signed integer overflow:
+10 * 1111111111 cannot be represented in type 'int'
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.6.11 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xce/0x128 lib/dump_stack.c:118
+ ubsan_epilogue+0xe/0x30 lib/ubsan.c:154
+ handle_overflow+0xdc/0xf0 lib/ubsan.c:184
+ __ubsan_handle_mul_overflow+0x2a/0x40 lib/ubsan.c:205
+ k_ascii+0xbf/0xd0 drivers/tty/vt/keyboard.c:888
+ kbd_keycode drivers/tty/vt/keyboard.c:1477 [inline]
+ kbd_event+0x888/0x3be0 drivers/tty/vt/keyboard.c:1495
 
-Fixes: 2303f994b3e1 ("mptcp: Associate MPTCP context with TCP socket")
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Reviewed-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+While it can be worked around by using check_mul_overflow()/
+check_add_overflow(), it is better to introduce a separate flag to
+signal that number pad is being used to compose a symbol, and
+change type of the accumulator from signed to unsigned, thus
+avoiding undefined behavior when it overflows.
+
+Reported-by: Kyungtae Kim <kt0755@gmail.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200525232740.GA262061@dtor-ws
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/mptcp/protocol.c |   20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
 
---- a/net/mptcp/protocol.c
-+++ b/net/mptcp/protocol.c
-@@ -920,6 +920,14 @@ static int mptcp_stream_connect(struct s
- 	int err;
+---
+ drivers/tty/vt/keyboard.c |   26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
+
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -127,7 +127,11 @@ static DEFINE_SPINLOCK(func_buf_lock); /
+ static unsigned long key_down[BITS_TO_LONGS(KEY_CNT)];	/* keyboard key bitmap */
+ static unsigned char shift_down[NR_SHIFT];		/* shift state counters.. */
+ static bool dead_key_next;
+-static int npadch = -1;					/* -1 or number assembled on pad */
++
++/* Handles a number being assembled on the number pad */
++static bool npadch_active;
++static unsigned int npadch_value;
++
+ static unsigned int diacr;
+ static char rep;					/* flag telling character repeat */
  
- 	lock_sock(sock->sk);
-+	if (sock->state != SS_UNCONNECTED && msk->subflow) {
-+		/* pending connection or invalid state, let existing subflow
-+		 * cope with that
-+		 */
-+		ssock = msk->subflow;
-+		goto do_connect;
+@@ -845,12 +849,12 @@ static void k_shift(struct vc_data *vc,
+ 		shift_state &= ~(1 << value);
+ 
+ 	/* kludge */
+-	if (up_flag && shift_state != old_state && npadch != -1) {
++	if (up_flag && shift_state != old_state && npadch_active) {
+ 		if (kbd->kbdmode == VC_UNICODE)
+-			to_utf8(vc, npadch);
++			to_utf8(vc, npadch_value);
+ 		else
+-			put_queue(vc, npadch & 0xff);
+-		npadch = -1;
++			put_queue(vc, npadch_value & 0xff);
++		npadch_active = false;
+ 	}
+ }
+ 
+@@ -868,7 +872,7 @@ static void k_meta(struct vc_data *vc, u
+ 
+ static void k_ascii(struct vc_data *vc, unsigned char value, char up_flag)
+ {
+-	int base;
++	unsigned int base;
+ 
+ 	if (up_flag)
+ 		return;
+@@ -882,10 +886,12 @@ static void k_ascii(struct vc_data *vc,
+ 		base = 16;
+ 	}
+ 
+-	if (npadch == -1)
+-		npadch = value;
+-	else
+-		npadch = npadch * base + value;
++	if (!npadch_active) {
++		npadch_value = 0;
++		npadch_active = true;
 +	}
 +
- 	ssock = __mptcp_socket_create(msk, TCP_SYN_SENT);
- 	if (IS_ERR(ssock)) {
- 		err = PTR_ERR(ssock);
-@@ -934,9 +942,17 @@ static int mptcp_stream_connect(struct s
- 		mptcp_subflow_ctx(ssock->sk)->request_mptcp = 0;
- #endif
++	npadch_value = npadch_value * base + value;
+ }
  
-+do_connect:
- 	err = ssock->ops->connect(ssock, uaddr, addr_len, flags);
--	inet_sk_state_store(sock->sk, inet_sk_state_load(ssock->sk));
--	mptcp_copy_inaddrs(sock->sk, ssock->sk);
-+	sock->state = ssock->state;
-+
-+	/* on successful connect, the msk state will be moved to established by
-+	 * subflow_finish_connect()
-+	 */
-+	if (!err || err == EINPROGRESS)
-+		mptcp_copy_inaddrs(sock->sk, ssock->sk);
-+	else
-+		inet_sk_state_store(sock->sk, inet_sk_state_load(ssock->sk));
- 
- unlock:
- 	release_sock(sock->sk);
+ static void k_lock(struct vc_data *vc, unsigned char value, char up_flag)
 
 
