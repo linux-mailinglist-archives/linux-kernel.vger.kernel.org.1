@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7D11F458F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B760E1F4634
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730902AbgFIRuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:50:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36548 "EHLO mail.kernel.org"
+        id S2389147AbgFISYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:24:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730956AbgFIRtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:49:53 -0400
+        id S1731989AbgFIRqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:46:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA212208B6;
-        Tue,  9 Jun 2020 17:49:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0102C207ED;
+        Tue,  9 Jun 2020 17:46:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724992;
-        bh=8su1/yDtzEiYTbiR3qLGi+y6W6cRci67Qbj9Nl2n2BQ=;
+        s=default; t=1591724807;
+        bh=wn3XWVZZ2akmsZZ8dExHmnbVJm8QGK5HCGpsdbydC6c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C775qNLb4y3lR9pr3ja8SfxNqmBqjnBHuFIWdjDCo+JcCEeV2mi6MhiIbGFDlsrzk
-         d1FaWvuO7uAlqTfDy5hSVTBTAN+5WdEp/OP4UHm942Ixm+ks/eOicfIIHVOdBYAeKR
-         XwJ4s+k81kilb8zihS6HRR7c+YrW6m9ZqVxQ3OBo=
+        b=gAywkIT+2b5ciSIb9KN4x4NW5DrOFqhmcNk+ONBxY7y4xNa3tNWKMJB0Gf0TR8uth
+         EExwW2htWC8vScC3RE9wjd8L4sOoPc1C7GDn1FpyhXYaGziicezErZCY1BoYQMAzg4
+         5aEq24o8X+w+wX6Znao8gPcWDi9wpl2b/AjgoOVk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Atsushi Nemoto <atsushi.nemoto@sord.co.jp>,
-        Thor Thayer <thor.thayer@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 09/46] i2c: altera: Fix race between xfer_msg and isr thread
+        stable@vger.kernel.org, Bin Liu <b-liu@ti.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 25/36] USB: serial: usb_wwan: do not resubmit rx urb on fatal errors
 Date:   Tue,  9 Jun 2020 19:44:25 +0200
-Message-Id: <20200609174023.715903677@linuxfoundation.org>
+Message-Id: <20200609173934.866798832@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
-References: <20200609174022.938987501@linuxfoundation.org>
+In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
+References: <20200609173933.288044334@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,93 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atsushi Nemoto <atsushi.nemoto@sord.co.jp>
+From: Bin Liu <b-liu@ti.com>
 
-[ Upstream commit 5d4c7977499a736f3f80826bdc9744344ad55589 ]
+commit 986c1748c84d7727defeaeca74a73b37f7d5cce1 upstream.
 
-Use a mutex to protect access to idev->msg_len, idev->buf, etc. which
-are modified by both altr_i2c_xfer_msg() and altr_i2c_isr().
+usb_wwan_indat_callback() shouldn't resubmit rx urb if the previous urb
+status is a fatal error. Or the usb controller would keep processing the
+new urbs then run into interrupt storm, and has no chance to recover.
 
-This is the minimal fix for easy backporting. A cleanup to remove the
-spinlock will be added later.
+Fixes: 6c1ee66a0b2b ("USB-Serial: Fix error handling of usb_wwan")
+Cc: stable@vger.kernel.org
+Signed-off-by: Bin Liu <b-liu@ti.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Atsushi Nemoto <atsushi.nemoto@sord.co.jp>
-Acked-by: Thor Thayer <thor.thayer@linux.intel.com>
-[wsa: updated commit message]
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-altera.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/usb/serial/usb_wwan.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/i2c/busses/i2c-altera.c b/drivers/i2c/busses/i2c-altera.c
-index 8915ee30a5b4..1d59eede537b 100644
---- a/drivers/i2c/busses/i2c-altera.c
-+++ b/drivers/i2c/busses/i2c-altera.c
-@@ -81,6 +81,7 @@
-  * @isr_mask: cached copy of local ISR enables.
-  * @isr_status: cached copy of local ISR status.
-  * @lock: spinlock for IRQ synchronization.
-+ * @isr_mutex: mutex for IRQ thread.
-  */
- struct altr_i2c_dev {
- 	void __iomem *base;
-@@ -97,6 +98,7 @@ struct altr_i2c_dev {
- 	u32 isr_mask;
- 	u32 isr_status;
- 	spinlock_t lock;	/* IRQ synchronization */
-+	struct mutex isr_mutex;
- };
- 
- static void
-@@ -256,10 +258,11 @@ static irqreturn_t altr_i2c_isr(int irq, void *_dev)
- 	struct altr_i2c_dev *idev = _dev;
- 	u32 status = idev->isr_status;
- 
-+	mutex_lock(&idev->isr_mutex);
- 	if (!idev->msg) {
- 		dev_warn(idev->dev, "unexpected interrupt\n");
- 		altr_i2c_int_clear(idev, ALTR_I2C_ALL_IRQ);
--		return IRQ_HANDLED;
-+		goto out;
- 	}
- 	read = (idev->msg->flags & I2C_M_RD) != 0;
- 
-@@ -312,6 +315,8 @@ static irqreturn_t altr_i2c_isr(int irq, void *_dev)
- 		complete(&idev->msg_complete);
- 		dev_dbg(idev->dev, "Message Complete\n");
- 	}
-+out:
-+	mutex_unlock(&idev->isr_mutex);
- 
- 	return IRQ_HANDLED;
- }
-@@ -323,6 +328,7 @@ static int altr_i2c_xfer_msg(struct altr_i2c_dev *idev, struct i2c_msg *msg)
- 	u32 value;
- 	u8 addr = i2c_8bit_addr_from_msg(msg);
- 
-+	mutex_lock(&idev->isr_mutex);
- 	idev->msg = msg;
- 	idev->msg_len = msg->len;
- 	idev->buf = msg->buf;
-@@ -347,6 +353,7 @@ static int altr_i2c_xfer_msg(struct altr_i2c_dev *idev, struct i2c_msg *msg)
- 		altr_i2c_int_enable(idev, imask, true);
- 		altr_i2c_fill_tx_fifo(idev);
- 	}
-+	mutex_unlock(&idev->isr_mutex);
- 
- 	time_left = wait_for_completion_timeout(&idev->msg_complete,
- 						ALTR_I2C_XFER_TIMEOUT);
-@@ -420,6 +427,7 @@ static int altr_i2c_probe(struct platform_device *pdev)
- 	idev->dev = &pdev->dev;
- 	init_completion(&idev->msg_complete);
- 	spin_lock_init(&idev->lock);
-+	mutex_init(&idev->isr_mutex);
- 
- 	ret = device_property_read_u32(idev->dev, "fifo-size",
- 				       &idev->fifo_size);
--- 
-2.25.1
-
+--- a/drivers/usb/serial/usb_wwan.c
++++ b/drivers/usb/serial/usb_wwan.c
+@@ -305,6 +305,10 @@ static void usb_wwan_indat_callback(stru
+ 	if (status) {
+ 		dev_dbg(dev, "%s: nonzero status: %d on endpoint %02x.\n",
+ 			__func__, status, endpoint);
++
++		/* don't resubmit on fatal errors */
++		if (status == -ESHUTDOWN || status == -ENOENT)
++			return;
+ 	} else {
+ 		if (urb->actual_length) {
+ 			tty_insert_flip_string(&port->port, data,
 
 
