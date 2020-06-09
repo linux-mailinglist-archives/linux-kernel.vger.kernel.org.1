@@ -2,113 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A6B1F43AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBAF1F43B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733294AbgFIRzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:55:46 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:53469 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728829AbgFIRyD (ORCPT
+        id S2387507AbgFIR4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733147AbgFIRyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:54:03 -0400
-Received: by mail-pj1-f67.google.com with SMTP id i12so1709348pju.3;
-        Tue, 09 Jun 2020 10:54:01 -0700 (PDT)
+        Tue, 9 Jun 2020 13:54:47 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0DCC05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 10:54:47 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id 18so21181469iln.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 10:54:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=05NTV0Dt6UYVXxwfdhrIdCqnO3jxBBJw4IueZ8RD+7w=;
+        b=QagLW0xhYVivrf+fT0GpfqIhULa+0BoIReJgWQ4UG4ZnoG+XMKy/w7HGYpVd67BdQA
+         yBrBxfFd4gZ3bKvEvkij5lW0bvtA7HABVCtLvz5nYmO7FoyKuoA4UALm77fOcp0DgJDh
+         GT6D558y+9Vyh6JMT9pBNlGYzU3aqGEI8wrJRJiE/+SxPSLUca6UPuX/0UMUwAHd2RF0
+         eiL1BdCGSiys15bIZBBJ3qWfhlZ9NkzUYzkHXtQgrTgpHUCs66vTlQHZbcxYaoR41Za/
+         7rekPAtwrixokrF9yg29B6rsKatExgDUZTIHjdBFYAHPrW4Ssarnogl/b7ib3LkjMlG/
+         Pu1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=l535t0gtEMhwRmJuEGpot34AcMJTeoyuOmb6/SPxdIo=;
-        b=B5DgajjKiI9YxNKx3abMttvo0hbyCx/XRBLHlugEJpi/G2A/cO0I3u5Zr2SnmTxHjE
-         g072HopjEFjGy03WlGK9aPdmASfcPh1podyiYdgqXTDoPWVQgNVV8ERPtibQQfQrafNg
-         AJb5BSEYLfsi7hdZQdrjFXYbRukuh0zuUmfFcYGa4pVBmhds4rw7WoMek0R0FrPeIJX1
-         WEPkJkirttW0EU7/l2Quh9j4xVNfeidQY4w2zNksYG+tXq4rVrGpRjc3JylJQiBsv6na
-         3YGcNQsJ2HbDhv/hUX0+GHVG22CAvON2xvB9KJYaZshONiroRieWKJKA4VR1tkwBA3Oo
-         Uz+A==
-X-Gm-Message-State: AOAM5329nLo6KWzv2i2WgScI5WdIwpGHz5jz/3QEmaHp/Hz5Z9PGpZVB
-        JTUM+XwFKdJb+0x+il05znU=
-X-Google-Smtp-Source: ABdhPJy/NmjQ3jEGM1rDQ6v1rJGJ2kfZGaht+oE0SOlu7pxqvuGtyZmIoYsQQ37mHn9Ym+N88QSF5w==
-X-Received: by 2002:a17:902:ee93:: with SMTP id a19mr4432067pld.144.1591725241302;
-        Tue, 09 Jun 2020 10:54:01 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id x77sm10745875pfc.4.2020.06.09.10.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 10:54:00 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id A13B6403AB; Tue,  9 Jun 2020 17:53:59 +0000 (UTC)
-Date:   Tue, 9 Jun 2020 17:53:59 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, axboe@kernel.dk, viro@zeniv.linux.org.uk,
-        bvanassche@acm.org, gregkh@linuxfoundation.org,
-        rostedt@goodmis.org, mingo@redhat.com, ming.lei@redhat.com,
-        nstange@suse.de, akpm@linux-foundation.org, mhocko@suse.com,
-        yukuai3@huawei.com, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
-Subject: Re: [PATCH v6 6/6] blktrace: fix debugfs use after free
-Message-ID: <20200609175359.GR11244@42.do-not-panic.com>
-References: <20200608170127.20419-1-mcgrof@kernel.org>
- <20200608170127.20419-7-mcgrof@kernel.org>
- <20200609150602.GA7111@infradead.org>
- <20200609172922.GP11244@42.do-not-panic.com>
- <20200609173218.GA7968@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=05NTV0Dt6UYVXxwfdhrIdCqnO3jxBBJw4IueZ8RD+7w=;
+        b=XusHkVDj8XpJraULFEyWu9WMoyv0L0kjXufGYa9r3aNzLzMX/O/octFq9B+uJXoiXI
+         2Qoe0z/JZuMzabRN42J/MR6bjFpoJzEXkn4tnJikC4COhhyLKPHMnPxU/oB5MNS5Hfyc
+         30jHlYb76uumZwO4htkWJHkoiVj0mfN8rz+C8q3xRIShbv3rPKUzQ0rNXDwaIKeAXyqT
+         vkePZqz/uYPgCkZMiXcjp6nLiWXHBz7qwyq7+Enwnex1LBqghQysSaCENlAHrUonb/kz
+         OVGXykeZwYNPTddJHJ2BHGJSQO12o5dhHIpI/htkNEFQwMHb7aFwQttZ4TrhBSmKcPYi
+         gSiQ==
+X-Gm-Message-State: AOAM5322zN+wBlrgeAW907Rq1VDYqBDJ4q0Vumq1vMHrJXLPxZJPtPeK
+        a3XoY+3jQohGfmWZKtV54+rAZkj0SfwuAX6NJlrUGQ==
+X-Google-Smtp-Source: ABdhPJwuLfNie5HIlzjHaWphh6RtDbAg/FDCzpuDHUKyY1vJHWGYnA2ygsohkISwy6QnC524BI5sknCPNIg+7WLksdE=
+X-Received: by 2002:a05:6e02:1208:: with SMTP id a8mr27882705ilq.118.1591725286609;
+ Tue, 09 Jun 2020 10:54:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200609173218.GA7968@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200609015607.6994-1-sean.j.christopherson@intel.com>
+In-Reply-To: <20200609015607.6994-1-sean.j.christopherson@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 9 Jun 2020 10:54:34 -0700
+Message-ID: <CALMp9eQNF0b8q3naibxtKxo=pym554hRoMJ5ro5febzOUBU-=A@mail.gmail.com>
+Subject: Re: [PATCH] KVM: nVMX: Wrap VM-Fail valid path in generic VM-Fail helper
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 10:32:18AM -0700, Christoph Hellwig wrote:
-> On Tue, Jun 09, 2020 at 05:29:22PM +0000, Luis Chamberlain wrote:
-> > Is scsi-generic is the only unwanted ugly child blktrace has to deal
-> > with? For some reason I thought drivers/md/md.c was one but it seems
-> > like it is not. Do we have an easy way to search for these? I think
-> > this would just affect how we express the comment only.
-> 
-> grep for blk_trace_setup.  For all blk devices that setup comes in
-> through the block device ioctl path, and that relies on having a
-> struct block_device and queue.  sg on the other hand calls
-> blk_trace_setup directly with a NULL bdev argument.
-
-Alright, then we should be good.
-
-> > >  		 */
-> > > -		dir = q->sg_debugfs_dir;
-> > > +		dir = debugfs_create_dir(buts->name, blk_debugfs_root);
-> > > +		bt->dir = dir;
-> > 
-> > The other chicken and egg problem to consider at least in the comments
-> > is that the debugfs directory for these types of devices *have* an
-> > exposed path, but the data structure is rather opaque to the device and
-> > even blktrace.  Fortunately given the recent set of changes around the
-> > q->blk_trace and clarifications around its use we have made it clear now
-> > that so long as hold the q->blk_trace_mutex *and* check q->blk_trace we
-> > *should* not race against two separate creations of debugfs directories,
-> > so I think this is safe, so long as these indpendent drivers don't end
-> > up re-using the same path for some other things later in the future, and
-> > since we have control over what goes under debugfsroot block / I think
-> > we should be good.
-> > 
-> > But I think that the concern for race on names may still be worth
-> > explaining a bit here.
-> 
-> Feel free to add more comments, but please try to keep them short
-> and crisp.  At the some point long comments really distract from what
-> is going on.
-
-Sure.
-
-Come to think of it, given the above, I think we can also do way with
-the the partition stuff too, and rely on the buts->name too. I'll try
-this out, and test it.
-
-  Luis
+On Mon, Jun 8, 2020 at 6:56 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> Add nested_vmx_fail() to wrap VM-Fail paths that _may_ result in VM-Fail
+> Valid to make it clear at the call sites that the Valid flavor isn't
+> guaranteed.
+>
+> Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
