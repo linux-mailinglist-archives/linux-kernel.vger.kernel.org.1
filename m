@@ -2,85 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555371F34D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 09:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2DA21F34DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 09:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgFIH2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 03:28:47 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:17269 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgFIH2r (ORCPT
+        id S1726986AbgFIHar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 03:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726099AbgFIHal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 03:28:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1591687726; x=1623223726;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=EdagFqo0zl2QoL9GYL8uhvzMwrGF3eoykcCf0BeB49E=;
-  b=wsrUTjbeJRvqdDEJVTMAiw+O7n9iko8o9zgJInx05SOW030vfEFLmix9
-   nSjQlLZ528iaLwmASHKYhrDx3YUvHyjBhtQnkb6TyIXZ0l1ZxqgZ0Ap6/
-   aw20D3CKE3VqpWmmsdPO5et1E3uZliCLnMbzxu1m9eV9h533sMremas8k
-   VIslCj5r0FxYdwyQn3xGBdPJiHimBPM+53iumZy/jxMbNUwyTP7riV9Wp
-   qG6TPQ9MEGJ5UPk2dlaEoZWXe7qsSyA8+8vJRMNwuJ9vlAWoWEgBAqPAy
-   cl+yIwxmnjDtJ1jhO2wuSz5QUngS6C07oVqwMn8y2T1mnqTDOpuME5A7O
-   Q==;
-IronPort-SDR: QTtMOPx1vuvYZFnLAVvFCMW2enGb9SAeWHRhv5MRLsaXsORetfBEAhhYxQLKXYFkieDoYMYirW
- Amz3wK85+sXhOCAZXaTeWjqzKcDB8Pqcuj3dFlqE9fuvEyMaT3MsW2+6EIY1vRcRCSD3ncVRP/
- ReMmXoqKMzJs5qaiwvpbIly0kc8v+VT2nNnU9vQsFQLQJAdSr0AWBeMPWtWg3HiNBzXKzC/OEt
- 6oi0IyP+9b9L4IlkFTzSS28BQJFeqM7MxQeXyr0Jy5GB6a1yrjtx7awqK8L3I84erhvD73fav1
- Puo=
-X-IronPort-AV: E=Sophos;i="5.73,490,1583218800"; 
-   d="scan'208";a="75941395"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Jun 2020 00:28:46 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 9 Jun 2020 00:28:45 -0700
-Received: from soft-dev15.microsemi.net (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1847.3 via Frontend Transport; Tue, 9 Jun 2020 00:28:43 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH v2 0/3] hwmon: Adding support for Microchip Sparx5 SoC
-Date:   Tue, 9 Jun 2020 09:28:25 +0200
-Message-ID: <20200609072828.9088-1-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 9 Jun 2020 03:30:41 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1ECC03E97C
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 00:30:41 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 97so4473614otg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 00:30:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gLy6eUAtGnvNRuBVPLvPPB4x/ePRcKM+zvqM1T2LZ1g=;
+        b=G9DZqTNsJ9rRPo1qFjn0ejXsJ/PEaeRaEI3op7x6r3leM1lkET9P1YKIouZkm78mNU
+         IF4AfftHN6zFAGasCVGrKTwwFFlMHYabdg01TMhJKsONUZPZSOZuAu2vuLAcsBzJg65Q
+         SW0nqO3ImY/DSaRUDo7g+Et3OjamaO6pPleDy/2S/+nde/jU327BhOTor2wa7nJ71D/N
+         1HKpLYOzQLE5/4rtINe2uez0Hw3hMBetrNlqX/wcJLLLzHVD+3DN3KoKTgAHImXaVZ88
+         FN+A/8Jn20aTRw0gFqIPuOO5DT1pvAFe5xQJSqcEXYGrf0vMCZ3Fh+mHF1t/WXN9HcEN
+         kM6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gLy6eUAtGnvNRuBVPLvPPB4x/ePRcKM+zvqM1T2LZ1g=;
+        b=FQcepRFQoxaTpBFwO4zdqfukkZ/XfjYF6TPdLpCrO/Lo0QX7jgJYR9de3khlYx4HnK
+         uln3pB8wVjpcrlCNPLyVPK+4ybQoa9SP+MDYXM23YqWMH3cj7FcAejNasNCp+osZQigS
+         PGraYwRJ2neXrUSoeuGtmwOFGv5yXChenkkGS+4dzMeD9pgbZTcoOF6bywcjrBzM8J1q
+         2Fn+I+Jb9+xgWRSBkeG1tsIR02udKB5ypqOGU82O2QfZe8Zpnwe2CYgrlSkx3uOOdw1A
+         59DKEX8TSbwq3E2QL+gZjM4ny6yfDQgVJ/actWNaOSV9Mwgto32c32lEvf0UnxNlUBe2
+         +gVw==
+X-Gm-Message-State: AOAM53305aTfk+GHIJVB6qqNiKcaqYqXbXHDECK4gEbAs4LFkscP61Ro
+        19Ie6wboC3qXPX9vlm/KO3pyj8LO7UHpe7OYt7yqgg==
+X-Google-Smtp-Source: ABdhPJxNel+xLmjescDVgnDxwc3G58F00Eh5cXcECAB3ybXX8qsMRqhkBZB7YK/1aDeKtxe22HFH2wiKnNnXB2J/llA=
+X-Received: by 2002:a9d:6048:: with SMTP id v8mr15461661otj.231.1591687840358;
+ Tue, 09 Jun 2020 00:30:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20200324175719.62496-1-andriy.shevchenko@linux.intel.com>
+ <20200325032901.29551-1-saravanak@google.com> <20200325125120.GX1922688@smile.fi.intel.com>
+ <295d25de-f01e-26de-02d6-1ac0c149d828@arm.com> <20200326163110.GD1922688@smile.fi.intel.com>
+ <CGME20200608091722eucas1p2fa8a4ac15c70e5a6e03c4babdf9f96b7@eucas1p2.samsung.com>
+ <20200608091712.GA28093@pengutronix.de> <437de51b-37e9-d8d1-19c7-137a9265bf45@samsung.com>
+ <20200609064511.7nek2rhk6ebfjaia@pengutronix.de>
+In-Reply-To: <20200609064511.7nek2rhk6ebfjaia@pengutronix.de>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 9 Jun 2020 00:30:04 -0700
+Message-ID: <CAGETcx_aSnVfdng5U7s7KNABxNwQQTuZXMWwUi7SPDNMJDh1bw@mail.gmail.com>
+Subject: Re: [PATCH v3] driver core: Break infinite loop when deferred probe
+ can't be satisfied
+To:     Marco Felsch <m.felsch@pengutronix.de>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Grant Likely <grant.likely@arm.com>,
+        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Mark Brown <broonie@kernel.org>, Ferry Toth <fntoth@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        nd <nd@arm.com>, kernel@pengutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an add-on series to the main SoC Sparx5 series
-(Message-ID: <20200608123024.5330-1-lars.povlsen@microchip.com>)
+On Mon, Jun 8, 2020 at 11:45 PM Marco Felsch <m.felsch@pengutronix.de> wrote:
+>
+> On 20-06-08 13:11, Andrzej Hajda wrote:
+> >
+> > On 08.06.2020 11:17, Marco Felsch wrote:
+> > > On 20-03-26 18:31, Andy Shevchenko wrote:
+> > >> On Thu, Mar 26, 2020 at 03:01:22PM +0000, Grant Likely wrote:
+> > >>> On 25/03/2020 12:51, Andy Shevchenko wrote:
+> > >>>> On Tue, Mar 24, 2020 at 08:29:01PM -0700, Saravana Kannan wrote:
+> > >>>>> On Tue, Mar 24, 2020 at 5:38 AM Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > >>>>>> Consider the following scenario.
+> > >>>>>>
+> > >>>>>> The main driver of USB OTG controller (dwc3-pci), which has the following
+> > >>>>>> functional dependencies on certain platform:
+> > >>>>>> - ULPI (tusb1210)
+> > >>>>>> - extcon (tested with extcon-intel-mrfld)
+> > >>>>>>
+> > >>>>>> Note, that first driver, tusb1210, is available at the moment of
+> > >>>>>> dwc3-pci probing, while extcon-intel-mrfld is built as a module and
+> > >>>>>> won't appear till user space does something about it.
+> > >>>>>>
+> > >>>>>> This is depicted by kernel configuration excerpt:
+> > >>>>>>
+> > >>>>>>        CONFIG_PHY_TUSB1210=y
+> > >>>>>>        CONFIG_USB_DWC3=y
+> > >>>>>>        CONFIG_USB_DWC3_ULPI=y
+> > >>>>>>        CONFIG_USB_DWC3_DUAL_ROLE=y
+> > >>>>>>        CONFIG_USB_DWC3_PCI=y
+> > >>>>>>        CONFIG_EXTCON_INTEL_MRFLD=m
+> > >>>>>>
+> > >>>>>> In the Buildroot environment the modules are probed by alphabetical ordering
+> > >>>>>> of their modaliases. The latter comes to the case when USB OTG driver will be
+> > >>>>>> probed first followed by extcon one.
+> > >>>>>>
+> > >>>>>> So, if the platform anticipates extcon device to be appeared, in the above case
+> > >>>>>> we will get deferred probe of USB OTG, because of ordering.
+> > >>>>>>
+> > >>>>>> Since current implementation, done by the commit 58b116bce136 ("drivercore:
+> > >>>>>> deferral race condition fix") counts the amount of triggered deferred probe,
+> > >>>>>> we never advance the situation -- the change makes it to be an infinite loop.
+> > >>>>> Hi Andy,
+> > >>>>>
+> > >>>>> I'm trying to understand this sequence of steps. Sorry if the questions
+> > >>>>> are stupid -- I'm not very familiar with USB/PCI stuff.
+> > >>>> Thank you for looking into this. My answer below.
+> > >>>>
+> > >>>> As a first thing I would like to tell that there is another example of bad
+> > >>>> behaviour of deferred probe with no relation to USB. The proposed change also
+> > >>>> fixes that one (however, less possible to find in real life).
+> > >>>>
+> > >>>>>> ---8<---8<---
+> > >>>>>>
+> > >>>>>> [   22.187127] driver_deferred_probe_trigger <<< 1
+> > >>>>>>
+> > >>>>>> ...here is the late initcall triggers deferred probe...
+> > >>>>>>
+> > >>>>>> [   22.191725] platform dwc3.0.auto: deferred_probe_work_func in deferred list
+> > >>>>>>
+> > >>>>>> ...dwc3.0.auto is the only device in the deferred list...
+> > >>>>> Ok, dwc3.0.auto is the only unprobed device at this point?
+> > >>>> Correct.
+> > >>>>
+> > >>>>>> [   22.198727] platform dwc3.0.auto: deferred_probe_work_func 1 <<< counter 1
+> > >>>>>>
+> > >>>>>> ...the counter before mutex is unlocked is kept the same...
+> > >>>>>>
+> > >>>>>> [   22.205663] platform dwc3.0.auto: Retrying from deferred list
+> > >>>>>>
+> > >>>>>> ...mutes has been unlocked, we try to re-probe the driver...
+> > >>>>>>
+> > >>>>>> [   22.211487] bus: 'platform': driver_probe_device: matched device dwc3.0.auto with driver dwc3
+> > >>>>>> [   22.220060] bus: 'platform': really_probe: probing driver dwc3 with device dwc3.0.auto
+> > >>>>>> [   22.238735] bus: 'ulpi': driver_probe_device: matched device dwc3.0.auto.ulpi with driver tusb1210
+> > >>>>>> [   22.247743] bus: 'ulpi': really_probe: probing driver tusb1210 with device dwc3.0.auto.ulpi
+> > >>>>>> [   22.256292] driver: 'tusb1210': driver_bound: bound to device 'dwc3.0.auto.ulpi'
+> > >>>>>> [   22.263723] driver_deferred_probe_trigger <<< 2
+> > >>>>>>
+> > >>>>>> ...the dwc3.0.auto probes ULPI, we got successful bound and bumped counter...
+> > >>>>>>
+> > >>>>>> [   22.268304] bus: 'ulpi': really_probe: bound device dwc3.0.auto.ulpi to driver tusb1210
+> > >>>>> So where did this dwc3.0.auto.ulpi come from?
+> > >>>>> Looks like the device is created by dwc3_probe() through this call flow:
+> > >>>>> dwc3_probe() -> dwc3_core_init() -> dwc3_core_ulpi_init() ->
+> > >>>>> dwc3_ulpi_init() -> ulpi_register_interface() -> ulpi_register()
+> > >>>> Correct.
+> > >>>>
+> > >>>>>> [   22.276697] platform dwc3.0.auto: Driver dwc3 requests probe deferral
+> > >>>>> Can you please point me to which code patch actually caused the probe
+> > >>>>> deferral?
+> > >>>> Sure, it's in drd.c.
+> > >>>>
+> > >>>> if (device_property_read_string(dev, "linux,extcon-name", &name) == 0) {
+> > >>>>     edev = extcon_get_extcon_dev(name);
+> > >>>>     if (!edev)
+> > >>>>       return ERR_PTR(-EPROBE_DEFER);
+> > >>>>     return edev;
+> > >>>> }
+> > >>>>
+> > >>>>>> ...but extcon driver is still missing...
+> > >>>>>>
+> > >>>>>> [   22.283174] platform dwc3.0.auto: Added to deferred list
+> > >>>>>> [   22.288513] platform dwc3.0.auto: driver_deferred_probe_add_trigger local counter: 1 new counter 2
+> > >>>>> I'm not fully aware of all the USB implications, but if extcon is
+> > >>>>> needed, why can't that check be done before we add and probe the ulpi
+> > >>>>> device? That'll avoid this whole "fake" probing and avoid the counter
+> > >>>>> increase. And avoid the need for this patch that's touching the code
+> > >>>>> code that's already a bit delicate.
+> > >>>>> Also, with my limited experience with all the possible drivers in the
+> > >>>>> kernel, it's weird that the ulpi device is added and probed before we
+> > >>>>> make sure the parent device (dwc3.0.auto) can actually probe
+> > >>>>> successfully.
+> > >>>> As I said above the deferred probe trigger has flaw on its own.
+> > >>>> Even if we fix for USB case, there is (and probably will be) others.
+> > >>> Right here is the driver design bug. A driver's probe() hook should *not*
+> > >>> return -EPROBE_DEFER after already creating child devices which may have
+> > >>> already been probed.
+> > >> Any documentation statement for this requirement?
+> > >>
+> > >> By the way, I may imagine other mechanisms that probe the driver on other CPU
+> > >> at the same time (let's consider parallel modprobes). The current code has a
+> > >> flaw with that.
+> > > Hi,
+> > >
+> > > sorry for picking this up again but I stumbled above the same issue
+> > > within the driver imx/drm driver which is using the component framework.
+> > > I end up in a infinity boot loop if I enabled the HDMI (which is the
+> > > DesignWare bridge device) and the LVDS support and the LVDS bind return
+> > > with EPROBE_DEFER. There are no words within the component framework docs
+> > > which says that this is forbidden. Of course we can work-around the
+> > > driver-core framework but IMHO this shouldn't be the way to go. I do not
+> > > say that we should revert the commit introducing the regression but we
+> > > should address this not only by extending the docs since the most
+> > > drm-drivers are using the component framework and can end up in the same
+> > > situation.
+> >
+> > I am not sure why do you think this is similar issue.
+>
+> Because I see trying to bind the device over and over..
+>
+> > Please describe the issue in more detail. Which drivers defers probe and
+> > why, and why do you have infinite loop.
+>
+> As said I'm currently on the imx-drm driver. The iMX6 devices are
+> using the synopsis HDMI IP core and so they are using this bridge device
+> driver (drivers/gpu/drm/bridge/synopsys/). The imx-drm driver can be
+> build module wise. As example I enabled the LDB and the HDMI support.
+> The HDMI driver is composed as platform driver with different
+> (sub-)drivers and devices. Those devices are populated by the HDMI core
+> driver _probe() function and triggers a driver_deferred_probe_trigger()
+> after the driver successfully probed. The LDB driver bind() returns
+> -EPROBE_DEFER because the panel we are looking for depends on a defered
+> regulator device. Now the defered probe code tries to probe the defered
+> devices again because the local-trigger count was changed by the HDMI
+> driver and we are in the never ending loop.
+>
+> > In general deferring probe from bind is not forbidden, but it should be
+> > used carefully (as everything in kernel :) ). Fixing deferring probe
+> > issues in many cases it is a matter of figuring out 'dependency loops'
+> > and breaking them by splitting device initialization into more than one
+> > phase.
+>
+> We are on the way of splitting the imx-drm driver but there are many
+> other DRM drivers using the component framework. As far as I can see the
+> sunxi8 driver is component based and uses the same HDMI driver. I'm with
+> Andy that we should fix that on the common/core place.
 
-Changes in v2:
-- Changes in driver as per review comments
+I'm not opposed to fixing this at the common/core level if that's
+possible, but Andy's patch still has a bug where it might never probe
+a device. I still haven't seen an answer to this.
+https://lore.kernel.org/lkml/CAGETcx_3+YH_LmNUCAAk1OaXk6noHEXxcE+ckkoBqKJJhtpDjQ@mail.gmail.com/
 
-Lars Povlsen (3):
-  dt-bindings: hwmon: Add Sparx5 temperature sensor
-  arm64: dts: sparx5: Add hwmon temperature sensor
-  hwmon: sparx5: Add Sparx5 SoC temperature driver
-
- .../bindings/hwmon/microchip,sparx5-temp.yaml |  39 +++++
- arch/arm64/boot/dts/microchip/sparx5.dtsi     |   6 +
- drivers/hwmon/Kconfig                         |  10 ++
- drivers/hwmon/Makefile                        |   2 +-
- drivers/hwmon/sparx5-temp.c                   | 152 ++++++++++++++++++
- 5 files changed, 208 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/hwmon/microchip,sparx5-temp.yaml
- create mode 100644 drivers/hwmon/sparx5-temp.c
-
---
-2.27.0
+-Saravana
