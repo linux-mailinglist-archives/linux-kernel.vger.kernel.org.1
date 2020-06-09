@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E6D1F439D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D23E1F43BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733199AbgFIRzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:55:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44354 "EHLO mail.kernel.org"
+        id S1731260AbgFIRzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:55:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731767AbgFIRxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:53:24 -0400
+        id S1733034AbgFIRx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:53:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 027F32074B;
-        Tue,  9 Jun 2020 17:53:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C22A20734;
+        Tue,  9 Jun 2020 17:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725203;
-        bh=JQyg/s0HqtLyCxBcXD9gCIAN9Lzl40U+aQE4K9CJ/nY=;
+        s=default; t=1591725205;
+        bh=iW4xh7bGZp/d8/suFv0SpWiX+a9CMAonku3f8lqcqMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=scI12Ix1HEavWMSueLGI8w99CajOKYPyiNJGyaED+S0nhfHQuFw3LTBW0TJYX2rQm
-         OjDkT3x7ohrboEZ0UciLgul4tHZI2Nr9LGeK1sVO/dUe+R7B5P1FcekJr9Y5kgPG8B
-         6sjeuBBQ2311yoLGHBrc1eCzFJAzHz8a6XUsxoWg=
+        b=JAklY4snzr1Kx7DX6g+bvlosj/YmOmZweXQbN8ZsR2CbRPnosrQyxV5PTriAZGGJz
+         Mg536RMbzoHU8ZKE3yH8U3NzVZrBlmKI1+FmWuhskYItUBtWscnkqw6r0SIIMrC6Wp
+         E5cYjX52Rs7rRp1TpFB8OLwHBntp+9nfpzvV77zE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
         James Chapman <jchapman@katalix.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 02/41] l2tp: add sk_family checks to l2tp_validate_socket
-Date:   Tue,  9 Jun 2020 19:45:04 +0200
-Message-Id: <20200609174112.344246631@linuxfoundation.org>
+        Andrii Nakryiko <andriin@fb.com>,
+        syzbot+3610d489778b57cc8031@syzkaller.appspotmail.com
+Subject: [PATCH 5.6 03/41] l2tp: do not use inet_hash()/inet_unhash()
+Date:   Tue,  9 Jun 2020 19:45:05 +0200
+Message-Id: <20200609174112.437935352@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200609174112.129412236@linuxfoundation.org>
 References: <20200609174112.129412236@linuxfoundation.org>
@@ -48,63 +47,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit d9a81a225277686eb629938986d97629ea102633 ]
+[ Upstream commit 02c71b144c811bcdd865e0a1226d0407d11357e8 ]
 
-syzbot was able to trigger a crash after using an ISDN socket
-and fool l2tp.
+syzbot recently found a way to crash the kernel [1]
 
-Fix this by making sure the UDP socket is of the proper family.
+Issue here is that inet_hash() & inet_unhash() are currently
+only meant to be used by TCP & DCCP, since only these protocols
+provide the needed hashinfo pointer.
 
-BUG: KASAN: slab-out-of-bounds in setup_udp_tunnel_sock+0x465/0x540 net/ipv4/udp_tunnel.c:78
-Write of size 1 at addr ffff88808ed0c590 by task syz-executor.5/3018
+L2TP uses a single list (instead of a hash table)
 
-CPU: 0 PID: 3018 Comm: syz-executor.5 Not tainted 5.7.0-rc6-syzkaller #0
+This old bug became an issue after commit 610236587600
+("bpf: Add new cgroup attach type to enable sock modifications")
+since after this commit, sk_common_release() can be called
+while the L2TP socket is still considered 'hashed'.
+
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 0 PID: 7063 Comm: syz-executor654 Not tainted 5.7.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:inet_unhash+0x11f/0x770 net/ipv4/inet_hashtables.c:600
+Code: 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e dd 04 00 00 48 8d 7d 08 44 8b 73 08 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 55 05 00 00 48 8d 7d 14 4c 8b 6d 08 48 b8 00 00
+RSP: 0018:ffffc90001777d30 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff88809a6df940 RCX: ffffffff8697c242
+RDX: 0000000000000001 RSI: ffffffff8697c251 RDI: 0000000000000008
+RBP: 0000000000000000 R08: ffff88809f3ae1c0 R09: fffffbfff1514cc1
+R10: ffffffff8a8a6607 R11: fffffbfff1514cc0 R12: ffff88809a6df9b0
+R13: 0000000000000007 R14: 0000000000000000 R15: ffffffff873a4d00
+FS:  0000000001d2b880(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000006cd090 CR3: 000000009403a000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xd3/0x413 mm/kasan/report.c:382
- __kasan_report.cold+0x20/0x38 mm/kasan/report.c:511
- kasan_report+0x33/0x50 mm/kasan/common.c:625
- setup_udp_tunnel_sock+0x465/0x540 net/ipv4/udp_tunnel.c:78
- l2tp_tunnel_register+0xb15/0xdd0 net/l2tp/l2tp_core.c:1523
- l2tp_nl_cmd_tunnel_create+0x4b2/0xa60 net/l2tp/l2tp_netlink.c:249
- genl_family_rcv_msg_doit net/netlink/genetlink.c:673 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:718 [inline]
- genl_rcv_msg+0x627/0xdf0 net/netlink/genetlink.c:735
- netlink_rcv_skb+0x15a/0x410 net/netlink/af_netlink.c:2469
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:746
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x537/0x740 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x882/0xe10 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e6/0x810 net/socket.c:2352
- ___sys_sendmsg+0x100/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45ca29
-Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007effe76edc78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004fe1c0 RCX: 000000000045ca29
-RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000005
-RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 000000000000094e R14: 00000000004d5d00 R15: 00007effe76ee6d4
-
-Allocated by task 3018:
- save_stack+0x1b/0x40 mm/kasan/common.c:49
- set_track mm/kasan/common.c:57 [inline]
- __kasan_kmalloc mm/kasan/common.c:495 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:468
- __do_kmalloc mm/slab.c:3656 [inline]
- __kmalloc+0x161/0x7a0 mm/slab.c:3665
- kmalloc include/linux/slab.h:560 [inline]
- sk_prot_alloc+0x223/0x2f0 net/core/sock.c:1612
- sk_alloc+0x36/0x1100 net/core/sock.c:1666
- data_sock_create drivers/isdn/mISDN/socket.c:600 [inline]
- mISDN_sock_create+0x272/0x400 drivers/isdn/mISDN/socket.c:796
+ sk_common_release+0xba/0x370 net/core/sock.c:3210
+ inet_create net/ipv4/af_inet.c:390 [inline]
+ inet_create+0x966/0xe00 net/ipv4/af_inet.c:248
  __sock_create+0x3cb/0x730 net/socket.c:1428
  sock_create net/socket.c:1479 [inline]
  __sys_socket+0xef/0x200 net/socket.c:1521
@@ -113,72 +91,155 @@ Allocated by task 3018:
  __x64_sys_socket+0x6f/0xb0 net/socket.c:1528
  do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
  entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x441e29
+Code: e8 fc b3 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 eb 08 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffdce184148 EFLAGS: 00000246 ORIG_RAX: 0000000000000029
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000441e29
+RDX: 0000000000000073 RSI: 0000000000000002 RDI: 0000000000000002
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000402c30 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 23b6578228ce553e ]---
+RIP: 0010:inet_unhash+0x11f/0x770 net/ipv4/inet_hashtables.c:600
+Code: 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e dd 04 00 00 48 8d 7d 08 44 8b 73 08 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 55 05 00 00 48 8d 7d 14 4c 8b 6d 08 48 b8 00 00
+RSP: 0018:ffffc90001777d30 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff88809a6df940 RCX: ffffffff8697c242
+RDX: 0000000000000001 RSI: ffffffff8697c251 RDI: 0000000000000008
+RBP: 0000000000000000 R08: ffff88809f3ae1c0 R09: fffffbfff1514cc1
+R10: ffffffff8a8a6607 R11: fffffbfff1514cc0 R12: ffff88809a6df9b0
+R13: 0000000000000007 R14: 0000000000000000 R15: ffffffff873a4d00
+FS:  0000000001d2b880(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000006cd090 CR3: 000000009403a000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-Freed by task 2484:
- save_stack+0x1b/0x40 mm/kasan/common.c:49
- set_track mm/kasan/common.c:57 [inline]
- kasan_set_free_info mm/kasan/common.c:317 [inline]
- __kasan_slab_free+0xf7/0x140 mm/kasan/common.c:456
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x109/0x2b0 mm/slab.c:3757
- kvfree+0x42/0x50 mm/util.c:603
- __free_fdtable+0x2d/0x70 fs/file.c:31
- put_files_struct fs/file.c:420 [inline]
- put_files_struct+0x248/0x2e0 fs/file.c:413
- exit_files+0x7e/0xa0 fs/file.c:445
- do_exit+0xb04/0x2dd0 kernel/exit.c:791
- do_group_exit+0x125/0x340 kernel/exit.c:894
- get_signal+0x47b/0x24e0 kernel/signal.c:2739
- do_signal+0x81/0x2240 arch/x86/kernel/signal.c:784
- exit_to_usermode_loop+0x26c/0x360 arch/x86/entry/common.c:161
- prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
- syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
- do_syscall_64+0x6b1/0x7d0 arch/x86/entry/common.c:305
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-The buggy address belongs to the object at ffff88808ed0c000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 1424 bytes inside of
- 2048-byte region [ffff88808ed0c000, ffff88808ed0c800)
-The buggy address belongs to the page:
-page:ffffea00023b4300 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0002838208 ffffea00015ba288 ffff8880aa000e00
-raw: 0000000000000000 ffff88808ed0c000 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88808ed0c480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88808ed0c500: 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88808ed0c580: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                         ^
- ffff88808ed0c600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88808ed0c680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-
-Fixes: 6b9f34239b00 ("l2tp: fix races in tunnel creation")
-Fixes: fd558d186df2 ("l2tp: Split pppol2tp patch into separate l2tp and ppp parts")
+Fixes: 0d76751fad77 ("l2tp: Add L2TPv3 IP encapsulation (no UDP) support")
 Signed-off-by: Eric Dumazet <edumazet@google.com>
 Cc: James Chapman <jchapman@katalix.com>
-Cc: Guillaume Nault <gnault@redhat.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Acked-by: Guillaume Nault <gnault@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Reported-by: syzbot+3610d489778b57cc8031@syzkaller.appspotmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/l2tp/l2tp_core.c |    3 +++
- 1 file changed, 3 insertions(+)
+ net/l2tp/l2tp_ip.c  |   29 ++++++++++++++++++++++-------
+ net/l2tp/l2tp_ip6.c |   30 ++++++++++++++++++++++--------
+ 2 files changed, 44 insertions(+), 15 deletions(-)
 
---- a/net/l2tp/l2tp_core.c
-+++ b/net/l2tp/l2tp_core.c
-@@ -1458,6 +1458,9 @@ static int l2tp_validate_socket(const st
- 	if (sk->sk_type != SOCK_DGRAM)
- 		return -EPROTONOSUPPORT;
+--- a/net/l2tp/l2tp_ip.c
++++ b/net/l2tp/l2tp_ip.c
+@@ -20,7 +20,6 @@
+ #include <net/icmp.h>
+ #include <net/udp.h>
+ #include <net/inet_common.h>
+-#include <net/inet_hashtables.h>
+ #include <net/tcp_states.h>
+ #include <net/protocol.h>
+ #include <net/xfrm.h>
+@@ -209,15 +208,31 @@ discard:
+ 	return 0;
+ }
  
-+	if (sk->sk_family != PF_INET && sk->sk_family != PF_INET6)
-+		return -EPROTONOSUPPORT;
+-static int l2tp_ip_open(struct sock *sk)
++static int l2tp_ip_hash(struct sock *sk)
+ {
+-	/* Prevent autobind. We don't have ports. */
+-	inet_sk(sk)->inet_num = IPPROTO_L2TP;
++	if (sk_unhashed(sk)) {
++		write_lock_bh(&l2tp_ip_lock);
++		sk_add_node(sk, &l2tp_ip_table);
++		write_unlock_bh(&l2tp_ip_lock);
++	}
++	return 0;
++}
+ 
++static void l2tp_ip_unhash(struct sock *sk)
++{
++	if (sk_unhashed(sk))
++		return;
+ 	write_lock_bh(&l2tp_ip_lock);
+-	sk_add_node(sk, &l2tp_ip_table);
++	sk_del_node_init(sk);
+ 	write_unlock_bh(&l2tp_ip_lock);
++}
 +
- 	if ((encap == L2TP_ENCAPTYPE_UDP && sk->sk_protocol != IPPROTO_UDP) ||
- 	    (encap == L2TP_ENCAPTYPE_IP && sk->sk_protocol != IPPROTO_L2TP))
- 		return -EPROTONOSUPPORT;
++static int l2tp_ip_open(struct sock *sk)
++{
++	/* Prevent autobind. We don't have ports. */
++	inet_sk(sk)->inet_num = IPPROTO_L2TP;
+ 
++	l2tp_ip_hash(sk);
+ 	return 0;
+ }
+ 
+@@ -594,8 +609,8 @@ static struct proto l2tp_ip_prot = {
+ 	.sendmsg	   = l2tp_ip_sendmsg,
+ 	.recvmsg	   = l2tp_ip_recvmsg,
+ 	.backlog_rcv	   = l2tp_ip_backlog_recv,
+-	.hash		   = inet_hash,
+-	.unhash		   = inet_unhash,
++	.hash		   = l2tp_ip_hash,
++	.unhash		   = l2tp_ip_unhash,
+ 	.obj_size	   = sizeof(struct l2tp_ip_sock),
+ #ifdef CONFIG_COMPAT
+ 	.compat_setsockopt = compat_ip_setsockopt,
+--- a/net/l2tp/l2tp_ip6.c
++++ b/net/l2tp/l2tp_ip6.c
+@@ -20,8 +20,6 @@
+ #include <net/icmp.h>
+ #include <net/udp.h>
+ #include <net/inet_common.h>
+-#include <net/inet_hashtables.h>
+-#include <net/inet6_hashtables.h>
+ #include <net/tcp_states.h>
+ #include <net/protocol.h>
+ #include <net/xfrm.h>
+@@ -222,15 +220,31 @@ discard:
+ 	return 0;
+ }
+ 
+-static int l2tp_ip6_open(struct sock *sk)
++static int l2tp_ip6_hash(struct sock *sk)
+ {
+-	/* Prevent autobind. We don't have ports. */
+-	inet_sk(sk)->inet_num = IPPROTO_L2TP;
++	if (sk_unhashed(sk)) {
++		write_lock_bh(&l2tp_ip6_lock);
++		sk_add_node(sk, &l2tp_ip6_table);
++		write_unlock_bh(&l2tp_ip6_lock);
++	}
++	return 0;
++}
+ 
++static void l2tp_ip6_unhash(struct sock *sk)
++{
++	if (sk_unhashed(sk))
++		return;
+ 	write_lock_bh(&l2tp_ip6_lock);
+-	sk_add_node(sk, &l2tp_ip6_table);
++	sk_del_node_init(sk);
+ 	write_unlock_bh(&l2tp_ip6_lock);
++}
++
++static int l2tp_ip6_open(struct sock *sk)
++{
++	/* Prevent autobind. We don't have ports. */
++	inet_sk(sk)->inet_num = IPPROTO_L2TP;
+ 
++	l2tp_ip6_hash(sk);
+ 	return 0;
+ }
+ 
+@@ -728,8 +742,8 @@ static struct proto l2tp_ip6_prot = {
+ 	.sendmsg	   = l2tp_ip6_sendmsg,
+ 	.recvmsg	   = l2tp_ip6_recvmsg,
+ 	.backlog_rcv	   = l2tp_ip6_backlog_recv,
+-	.hash		   = inet6_hash,
+-	.unhash		   = inet_unhash,
++	.hash		   = l2tp_ip6_hash,
++	.unhash		   = l2tp_ip6_unhash,
+ 	.obj_size	   = sizeof(struct l2tp_ip6_sock),
+ #ifdef CONFIG_COMPAT
+ 	.compat_setsockopt = compat_ipv6_setsockopt,
 
 
