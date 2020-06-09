@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3E51F3F33
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 17:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AABD51F3F38
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 17:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730773AbgFIPZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 11:25:12 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12170 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726395AbgFIPZL (ORCPT
+        id S1730388AbgFIP0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 11:26:44 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:33380 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgFIP0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 11:25:11 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 059F4I5i079404;
-        Tue, 9 Jun 2020 11:24:47 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31jb0md19u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Jun 2020 11:24:47 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 059FGGNL020904;
-        Tue, 9 Jun 2020 15:24:44 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 31g2s7tgsc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Jun 2020 15:24:44 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 059FOgOe47775890
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 9 Jun 2020 15:24:42 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6430CA4055;
-        Tue,  9 Jun 2020 15:24:42 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9BF91A4040;
-        Tue,  9 Jun 2020 15:24:41 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.148.202.223])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  9 Jun 2020 15:24:41 +0000 (GMT)
-Date:   Tue, 9 Jun 2020 18:24:39 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm/vmalloc: track which page-table levels were modified
-Message-ID: <20200609152439.GG1149842@linux.ibm.com>
-References: <20200603232311.GA205619@roeck-us.net>
- <20200604083512.GN6857@suse.de>
- <CAHk-=wj2_YdxPaRFqBUUDZvtZKKG5To2KJhciJmDbchW2NFLnw@mail.gmail.com>
- <20200604140617.e340dd507ee68b0a05bd21cb@linux-foundation.org>
- <CAHk-=wjm+RrcTjB7KYCCsOouE2EyzRcwWUE9TVq6OCYYAt9Zyw@mail.gmail.com>
- <20200605081644.GS6857@suse.de>
- <20200605100059.GB7524@linux.ibm.com>
- <20200609121056.GB3871@suse.de>
+        Tue, 9 Jun 2020 11:26:41 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 059FQVk8025874;
+        Tue, 9 Jun 2020 10:26:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591716391;
+        bh=b2y0Z9lHjVbTdDJI+gowNTOtYPhQ4/O11hsyYQYGYbw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=NM/Q1KIVU9p5v8dRAq0vTOu/+MLVqokNfJBx6vwOykd4tvFA89FhrVzPt+yCWeQyg
+         CpZwyl2+kAGmy0br/XsUocQ/bIUPGGUtWIVM58hwIq+uotM7cZGd6973A+ybtcNadU
+         wo/kcgJYYh8xbH604xU4auA6DtPDEi5YLI/PBa54=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 059FQVvA056533
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Jun 2020 10:26:31 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Jun
+ 2020 10:26:30 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 9 Jun 2020 10:26:30 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 059FQQVY052033;
+        Tue, 9 Jun 2020 10:26:27 -0500
+Subject: Re: [PATCH 1/5] drm/omap: Fix suspend resume regression after
+ platform data removal
+To:     Tony Lindgren <tony@atomide.com>
+CC:     <linux-omap@vger.kernel.org>, "Andrew F . Davis" <afd@ti.com>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <dri-devel@lists.freedesktop.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20200531193941.13179-1-tony@atomide.com>
+ <20200531193941.13179-2-tony@atomide.com>
+ <16ba1808-5c7f-573d-8dd0-c80cac2f476e@ti.com>
+ <20200603140639.GG37466@atomide.com>
+ <47e286dd-f87a-4440-5bde-1f7b53e8b672@ti.com>
+ <20200609151943.GL37466@atomide.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <9ed70121-2a53-d2b3-051a-88eb83e6c53f@ti.com>
+Date:   Tue, 9 Jun 2020 18:26:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200609121056.GB3871@suse.de>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-09_09:2020-06-09,2020-06-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0
- cotscore=-2147483648 malwarescore=0 spamscore=0 phishscore=0
- impostorscore=0 suspectscore=1 priorityscore=1501 bulkscore=0 adultscore=0
- mlxlogscore=864 lowpriorityscore=0 clxscore=1015 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006090111
+In-Reply-To: <20200609151943.GL37466@atomide.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
+On 09/06/2020 18:19, Tony Lindgren wrote:
 
-On Tue, Jun 09, 2020 at 02:10:56PM +0200, Joerg Roedel wrote:
-> Hi Mike,
+>> But there's an extra runtime PM reference (dev.power.usage_count) that seems
+>> to come out of nowhere. So when omap_drm_suspend is finished, there's still
+>> usage_count of 1, and dispc never suspends fully.
 > 
-> On Fri, Jun 05, 2020 at 01:00:59PM +0300, Mike Rapoport wrote:
-> > We already have include/asm-generic/pgalloc.h, so maybe something like
-> > that patch below would fork. This is not even compile tested.
-> > 
-> > diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
-> 
-> I experimented a bit with your diff, but it turned out that moving the
-> page-table allocation functions/macros to asm-generic/pgalloc.h does not
-> work on all architectures.
-> 
-> The reason is that some archs don't use that header at all (e.g. ARC)
-> and have their own version of the functions defined there. That could
-> all be made working, but I decided to no open this can of worms for now.
-> 
-> So I sent out a patch which moves the p?d_alloc_track() functions/macros
-> to a separate header and include it only in mm/vmalloc.c and
-> lib/ioremap.c. 
+> Hmm no idea about that. My guess is that there might be an issue that was
+> masked earlier with omap_device calling the child runtime_suspend.
 
-I'm planning to open this can of worms eventually, but having
-p?d_alloc_track() in a separate header wouldn't be the biggest of my
-problems :)
+Yes. It's how PM works. It calls pm_runtime_get_noresume() before starting the suspend of a device. 
+So I guess omapdrm's suspend has been broken all the time, but it was "fixed" by omap_device.
 
-> That compiles on all architectures where current Linus'
-> master also builds (it does not for Alpha, CSky, Mips and Mips64), and
-> as usual Hexagon and Unicore32 are not tested because I have no working
-> compiler for those.
-> 
-> Regards,
-> 
-> 	Joerg
+> Currently I'm only able to rmmod -f omapdrm, not sure if these issues might
+> be related.
+
+Hmm, I always use modules, and can unload omapdrm and drm fine. But there's a sequence that must be 
+followed. However, the sequence starts with unloading omapdrm... What behavior you see with rmmod?
+
+  Tomi
 
 -- 
-Sincerely yours,
-Mike.
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
