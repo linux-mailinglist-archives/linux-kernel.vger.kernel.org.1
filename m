@@ -2,43 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3ED1F45D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671261F4570
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388959AbgFISVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730905AbgFIRso (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:48:44 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E12C03E97C;
-        Tue,  9 Jun 2020 10:48:43 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id B100A2A3B92
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Philippe CORNU <philippe.cornu@st.com>,
-        Yannick FERTRE <yannick.fertre@st.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-imx@nxp.com,
-        kernel@collabora.com, linux-stm32@st-md-mailman.stormreply.com,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH v9 11/11] Documentation: gpu: todo: Add dw-mipi-dsi consolidation plan
-Date:   Tue,  9 Jun 2020 20:49:59 +0300
-Message-Id: <20200609174959.955926-12-adrian.ratiu@collabora.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174959.955926-1-adrian.ratiu@collabora.com>
-References: <20200609174959.955926-1-adrian.ratiu@collabora.com>
+        id S2388710AbgFISPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:15:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36870 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732652AbgFIRuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:50:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A147BB14A;
+        Tue,  9 Jun 2020 17:50:27 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     f.fainelli@gmail.com, gregkh@linuxfoundation.org, wahrenst@gmx.net,
+        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>
+Cc:     linux-usb@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com, tim.gover@raspberrypi.org,
+        linux-pci@vger.kernel.org, helgaas@kernel.org,
+        andy.shevchenko@gmail.com, mathias.nyman@linux.intel.com,
+        lorenzo.pieralisi@arm.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: [PATCH v2 6/9] Revert "USB: pci-quirks: Add Raspberry Pi 4 quirk"
+Date:   Tue,  9 Jun 2020 19:49:59 +0200
+Message-Id: <20200609175003.19793-7-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200609175003.19793-1-nsaenzjulienne@suse.de>
+References: <20200609175003.19793-1-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -46,57 +39,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This documents the longer-term plan to cleanup the dw-mipi-dsi bridge
-based drivers after the regmap refactor and i.MX6 driver have landed.
+This reverts commit c65822fef4adc0ba40c37a47337376ce75f7a7bc.
 
-The goal is to get the entire bridge logic in one place and continue
-the refactorings under the drm/bridge tree.
+The initialization of Raspberry Pi 4's USB chip is now handled through a
+reset controller. No need to directly call the firmware routine trough a
+pci quirk.
 
-Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
- Documentation/gpu/todo.rst | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ drivers/firmware/Kconfig      |  3 +--
+ drivers/usb/host/pci-quirks.c | 16 ----------------
+ 2 files changed, 1 insertion(+), 18 deletions(-)
 
-diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
-index 658b52f7ffc6c..2b142980a4b16 100644
---- a/Documentation/gpu/todo.rst
-+++ b/Documentation/gpu/todo.rst
-@@ -548,6 +548,31 @@ See drivers/gpu/drm/amd/display/TODO for tasks.
+diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+index fbd785dd0513..4843e94713a4 100644
+--- a/drivers/firmware/Kconfig
++++ b/drivers/firmware/Kconfig
+@@ -178,9 +178,8 @@ config ISCSI_IBFT
+ 	  Otherwise, say N.
  
- Contact: Harry Wentland, Alex Deucher
+ config RASPBERRYPI_FIRMWARE
+-	bool "Raspberry Pi Firmware Driver"
++	tristate "Raspberry Pi Firmware Driver"
+ 	depends on BCM2835_MBOX
+-	default USB_PCI
+ 	help
+ 	  This option enables support for communicating with the firmware on the
+ 	  Raspberry Pi.
+diff --git a/drivers/usb/host/pci-quirks.c b/drivers/usb/host/pci-quirks.c
+index 0b949acfa258..92150ecdb036 100644
+--- a/drivers/usb/host/pci-quirks.c
++++ b/drivers/usb/host/pci-quirks.c
+@@ -16,9 +16,6 @@
+ #include <linux/export.h>
+ #include <linux/acpi.h>
+ #include <linux/dmi.h>
+-
+-#include <soc/bcm2835/raspberrypi-firmware.h>
+-
+ #include "pci-quirks.h"
+ #include "xhci-ext-caps.h"
  
-+Reorganize dw-mipi-dsi bridge-based host-controller drivers
-+-----------------------------------------------------------
-+
-+The Synopsys DW MIPI DSI bridge is used by a number of SoC platform drivers
-+(STM, Rockchip, i.MX) which don't cleanly encapsulate their bridge logic which
-+gets split between the Synopsys bridge (drm/bridge/synopsys/dw-mipi-dsi.c) and
-+platform drivers like drm/imx/dw_mipi_dsi-imx6.c by passing around the bridge
-+configuration regmap, creating new bridges / daisy chaining in platform drivers,
-+duplicating encoder creation, having too much encoder logic instead of using the
-+simple encoder interface and so on.
-+
-+The goal of this rework is to make the dw-mipi-dsi driver a better encapsulated
-+bridge by moving all bridge-related logic under drm/bridge, including the SoC
-+bindings which chain to the core Synopsys code under drm/bridge/dw-mipi-dsi/
-+from which they can be further consolidated and cleaned up.
-+
-+If this goal proves to be impossible then drm_bridge might not be the correct
-+abstraction for these host controllers and unifying their logic into a helper
-+library encapsulating a drm_encoder might be more desirable, in other words to
-+move away from drm_bridge entirely.
-+
-+Contact: Adrian Ratiu, Daniel Vetter, Laurent Pinchart
-+
-+Level: Intermediate
-+
- Bootsplash
- ==========
+@@ -1246,24 +1243,11 @@ static void quirk_usb_handoff_xhci(struct pci_dev *pdev)
  
+ static void quirk_usb_early_handoff(struct pci_dev *pdev)
+ {
+-	int ret;
+-
+ 	/* Skip Netlogic mips SoC's internal PCI USB controller.
+ 	 * This device does not need/support EHCI/OHCI handoff
+ 	 */
+ 	if (pdev->vendor == 0x184e)	/* vendor Netlogic */
+ 		return;
+-
+-	if (pdev->vendor == PCI_VENDOR_ID_VIA && pdev->device == 0x3483) {
+-		ret = rpi_firmware_init_vl805(pdev);
+-		if (ret) {
+-			/* Firmware might be outdated, or something failed */
+-			dev_warn(&pdev->dev,
+-				 "Failed to load VL805's firmware: %d. Will continue to attempt to work, but bad things might happen. You should fix this...\n",
+-				 ret);
+-		}
+-	}
+-
+ 	if (pdev->class != PCI_CLASS_SERIAL_USB_UHCI &&
+ 			pdev->class != PCI_CLASS_SERIAL_USB_OHCI &&
+ 			pdev->class != PCI_CLASS_SERIAL_USB_EHCI &&
 -- 
-2.27.0
+2.26.2
 
