@@ -2,91 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EED1F464F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304111F4685
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389078AbgFIS0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731916AbgFIS0w (ORCPT
+        id S1732175AbgFISo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:44:57 -0400
+Received: from mail.cybernetics.com ([173.71.130.66]:42822 "EHLO
+        mail.cybernetics.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728400AbgFISo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 14:26:52 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF464C05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 11:26:51 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id k8so17156612edq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 11:26:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=ygqvsD0x+BbV1wuNC2xCZ5dHDCQ7gpdLfW+BMG8uWyI=;
-        b=gMJRP2ExsJ50SFbC9ybxykye/BOmpO0Mmk5xjtQXAFd+RDLthcueyJef3K6tveVy7c
-         aetriQfEKsh+SXOFQEa3VE7ejZ9PlNXv6K3VZn4Z5u2qzJ4UKn0OTV+TFlzfvWnrHXCI
-         vg4WbFh0pcCBwayx445MqT7dVJiY3hklyjXOA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=ygqvsD0x+BbV1wuNC2xCZ5dHDCQ7gpdLfW+BMG8uWyI=;
-        b=Y0EykXFhK6B54ZsLVTnCmtrGc8U7abXT6hpaRstOMn2w0BH1hfnDjmylElW01LWSdQ
-         y7tr+LuxniOnPm/phFDf3wPgUZjWYJ00By5Xn/NVNTHRWFxJz7ShGcrq8/jJe44Kw413
-         i0hBCoH1XRYla1Jqbx+5yP0S0P2Mm1V80CmwXAB+Znn3TSm12dOzTOiOSmGuu4LlWtP8
-         27sueyCIaOZYvmi7QVJXUZqPlxbpnRHMv16M6hZLOeiSbmDn6NNv3ii9HOrS/WDU0taD
-         l4hFAQ+QM3LbFJra3btz9ogp/kEX149x6L/NdK5rE4fc4Ku95qfl4a6SObXXpKL/3a6I
-         2xIA==
-X-Gm-Message-State: AOAM533Ymb6AhzxE/HReB3Asvl/e2Zper0IsYlFkKpCJ7Ohd3PNcD8YQ
-        01nSjerDAWDJAumiQ0TP9xo9HWjYtEH35GQR9f39+apiV2s=
-X-Google-Smtp-Source: ABdhPJwNvYT9kZwhYb2THprAReSfSna7/wbiV65MZjhc8iQ1NpqjhjP5P+5xWG4F0cGxS+pnggLKOr9rp3axT3iKbb4=
-X-Received: by 2002:aa7:cb53:: with SMTP id w19mr26953081edt.328.1591727210443;
- Tue, 09 Jun 2020 11:26:50 -0700 (PDT)
+        Tue, 9 Jun 2020 14:44:56 -0400
+X-ASG-Debug-ID: 1591727320-0fb3b01c5812e320002-xx1T2L
+Received: from cybernetics.com ([10.10.4.126]) by mail.cybernetics.com with ESMTP id NtCZY1jYz1zdanMg; Tue, 09 Jun 2020 14:28:41 -0400 (EDT)
+X-Barracuda-Envelope-From: tonyb@cybernetics.com
+X-ASG-Whitelist: Client
+Received: from [10.157.1.18] (account tonyb HELO [192.168.200.1])
+  by cybernetics.com (CommuniGate Pro SMTP 5.1.14)
+  with ESMTPSA id 10019933; Tue, 09 Jun 2020 14:28:40 -0400
+Subject: Re: [PATCH 3.16 42/61] scsi: sg: don't return bogus Sg_requests
+To:     Ben Hutchings <ben@decadent.org.uk>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+X-ASG-Orig-Subj: Re: [PATCH 3.16 42/61] scsi: sg: don't return bogus Sg_requests
+Cc:     akpm@linux-foundation.org, Denis Kirjanov <kda@linux-powerpc.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Doug Gilbert <dgilbert@interlog.com>
+References: <lsq.1591725832.563793501@decadent.org.uk>
+From:   Tony Battersby <tonyb@cybernetics.com>
+Message-ID: <746e3939-9e5e-8610-5878-07330b2de87e@cybernetics.com>
+Date:   Tue, 9 Jun 2020 14:28:40 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-From:   Micah Morton <mortonm@chromium.org>
-Date:   Tue, 9 Jun 2020 11:26:39 -0700
-Message-ID: <CAJ-EccOy4qDpbfrP5=KH40LSOx1F4-ciY2=hFv_c+goUHLJ6PQ@mail.gmail.com>
-Subject: [GIT PULL] SafeSetID LSM changes for v5.8
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <lsq.1591725832.563793501@decadent.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Barracuda-Connect: UNKNOWN[10.10.4.126]
+X-Barracuda-Start-Time: 1591727321
+X-Barracuda-URL: https://10.10.4.122:443/cgi-mod/mark.cgi
+X-Barracuda-BRTS-Status: 1
+X-Virus-Scanned: by bsmtpd at cybernetics.com
+X-Barracuda-Scan-Msg-Size: 2809
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3d77e6a8804abcc0504c904bd6e5cdf3a5cf8162:
+On 6/9/20 2:04 PM, Ben Hutchings wrote:
+> 3.16.85-rc1 review patch.  If anyone has any objections, please let me know.
+>
+> ------------------
+>
+> From: Johannes Thumshirn <jthumshirn@suse.de>
+>
+> commit 48ae8484e9fc324b4968d33c585e54bc98e44d61 upstream.
+>
+> If the list search in sg_get_rq_mark() fails to find a valid request, we
+> return a bogus element. This then can later lead to a GPF in
+> sg_remove_scat().
+>
+> So don't return bogus Sg_requests in sg_get_rq_mark() but NULL in case
+> the list search doesn't find a valid request.
+>
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> Reported-by: Andrey Konovalov <andreyknvl@google.com>
+> Cc: Hannes Reinecke <hare@suse.de>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Doug Gilbert <dgilbert@interlog.com>
+> Reviewed-by: Hannes Reinecke <hare@suse.de>
+> Acked-by: Doug Gilbert <dgilbert@interlog.com>
+> Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+> Cc: Tony Battersby <tonyb@cybernetics.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+> ---
+>  drivers/scsi/sg.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> --- a/drivers/scsi/sg.c
+> +++ b/drivers/scsi/sg.c
+> @@ -2085,11 +2085,12 @@ sg_get_rq_mark(Sg_fd * sfp, int pack_id)
+>  		if ((1 == resp->done) && (!resp->sg_io_owned) &&
+>  		    ((-1 == pack_id) || (resp->header.pack_id == pack_id))) {
+>  			resp->done = 2;	/* guard against other readers */
+> -			break;
+> +			write_unlock_irqrestore(&sfp->rq_list_lock, iflags);
+> +			return resp;
+>  		}
+>  	}
+>  	write_unlock_irqrestore(&sfp->rq_list_lock, iflags);
+> -	return resp;
+> +	return NULL;
+>  }
+>  
+>  /* always adds to end of list */
+>
+The following "cleanup" commit to the sg driver introduced a number of bugs:
 
-  Linux 5.7 (2020-05-31 16:49:15 -0700)
+109bade9c625 ("scsi: sg: use standard lists for sg_requests") (v4.12-rc1)
 
-are available in the Git repository at:
+This one bad commit requires all of the following fixes:
 
-  https://github.com/micah-morton/linux.git tags/LSM-add-setgid-hook-5.8
+48ae8484e9fc ("scsi: sg: don't return bogus Sg_requests") (v4.12-rc1)
+bd46fc406b30 ("scsi: sg: off by one in sg_ioctl()") (v4.13-rc7)
+4759df905a47 ("scsi: sg: factor out sg_fill_request_table()") (v4.14-rc1)
+3e0097499839 ("scsi: sg: fixup infoleak when using SG_GET_REQUEST_TABLE") (v4.14-rc1)
+587c3c9f286c ("scsi: sg: Re-fix off by one in sg_fill_request_table()") (v4.14-rc6)
 
-for you to fetch changes up to 04d244bcf92f525011e3df34b21fc39b0591ba93:
+AFAIK, there is no reason to backport any of these changes to -stable,
+but if for some reason you do need to backport any one of these patches,
+then make sure you get all of them.
 
-  security: Add LSM hooks to set*gid syscalls (2020-06-09 10:22:13 -0700)
+My guess is that the initial buggy patch was backported to other -stable
+trees because the fixes for it looked important, and of course the fixes
+depended on the patch that introduced all of the problems to begin with.
 
-----------------------------------------------------------------
-Add additional LSM hooks for SafeSetID
-
-SafeSetID is capable of making allow/deny decisions for set*uid calls
-on a system, and we want to add similar functionality for set*gid
-calls. The work to do that is not yet complete, so probably won't make
-it in for v5.8, but we are looking to get this simple patch in for
-v5.8 since we have it ready. We are planning on the rest of the work
-for extending the SafeSetID LSM being merged during the v5.9 merge
-window.
-
-This patch was sent to the security mailing list and there were no objections.
-
-Signed-off-by: Micah Morton <mortonm@chromium.org>
-
-----------------------------------------------------------------
-Micah Morton (1):
-      security: Add LSM hooks to set*gid syscalls
-
- include/linux/lsm_hook_defs.h |  2 ++
- include/linux/lsm_hooks.h     |  9 +++++++++
- include/linux/security.h      |  9 +++++++++
- kernel/sys.c                  | 15 ++++++++++++++-
- security/security.c           |  6 ++++++
- 5 files changed, 40 insertions(+), 1 deletion(-)
+Tony Battersby
+Cybernetics
