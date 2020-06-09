@@ -2,100 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A6B1F3B8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21861F3BA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728876AbgFINO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 09:14:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55172 "EHLO
+        id S1729467AbgFINPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 09:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727920AbgFINOS (ORCPT
+        with ESMTP id S1729403AbgFINPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 09:14:18 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BFAC08C5C9
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 06:14:13 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1jie4q-0006Ap-DQ; Tue, 09 Jun 2020 15:14:04 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1jie4p-0000V1-1j; Tue, 09 Jun 2020 15:14:03 +0200
-Date:   Tue, 9 Jun 2020 15:14:03 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
-        devicetree@vger.kernel.org, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] net: ethernet: mvneta: add support for 2.5G DRSGMII mode
-Message-ID: <20200609131402.GL11869@pengutronix.de>
-References: <20200608074716.9975-1-s.hauer@pengutronix.de>
- <20200608145737.GG1006885@lunn.ch>
- <20200609125535.GK11869@pengutronix.de>
- <20200609131216.GJ1022955@lunn.ch>
+        Tue, 9 Jun 2020 09:15:12 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DCAC08C5C6;
+        Tue,  9 Jun 2020 06:15:11 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y11so23351536ljm.9;
+        Tue, 09 Jun 2020 06:15:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+LVvE0OiYzwk9TxoGPobpgcZWVTviUfu3oOilcfUerI=;
+        b=LQRbsZc/lMaqJwhwYqlJ++21C0noO4DH8w52LHMyg8AOXQmpf0wPewjYgk7+pfqCWq
+         cxnZj8BMQKkjOHEnugfej595EKqcLsZ28RfOVIvXPbQ4Saj/Ai4RSS+y7S0R1xS+aTcR
+         xtItdWXFNK0hHg6Xzwyo4PPVn88ATldn3Q2uFMNiS2YBEivJL49NPoV5k3izFaj4mfCz
+         2uiwV9OSWKov1f+FR6LhyuiI+O3cNGQVM+NCLUu6a1AUngdci8kE4CXYRT41vR0L3IjS
+         drItWhVYX/T0TC4NqSs8L5S08neBvMw2UY2moJ4wdcCIyS1H/Q3eCu1BjKcM6fMzrXfI
+         P0jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+LVvE0OiYzwk9TxoGPobpgcZWVTviUfu3oOilcfUerI=;
+        b=LwmFfrH8iFVRBhS+bXMdNUZJJXX+RCAW4W/LzvLRdLFwXQ4Zm1ydA6uUiH/CksVIj8
+         CCh1JzGraUqmPz7TwTyrsusbWnGC7DfM2jWajaPEcAW6vmBlTh0i8biDo+x+c07jvdeA
+         3GYl9WNFckp2+0YMG7ufJKHs9jZYF2Ew5EA3HCaSq72ICX1kriNKmNLqPKoTlq+TFLzw
+         zk69b+zDhQpEPTPhbJuXOGKgBz04YGevfTrHsqXXTDOgHL4uNjAjvynk5S0pcl5Rj6lK
+         hNG6CFMHkZYmyFWTA1AWJfAxGhhbCp90aGa6QCl3d2gUKyRsIsBbqsMI0j1kGmOYJ2DS
+         RU2A==
+X-Gm-Message-State: AOAM532tc/GQ9LSdn/FA7vZSvW+mAKAppqoD2rkvvmMYQNZpnBWI9ZxZ
+        nKOzpjZd9rIyy+1n930D5iQ=
+X-Google-Smtp-Source: ABdhPJzK5eWenm7x+U+CQZqleiYsThYNTHWO2Zr34XmtKFRmw3ulwHvfXBQ2k+ypw43VkEhfEYQ8gA==
+X-Received: by 2002:a2e:7011:: with SMTP id l17mr14743726ljc.424.1591708510439;
+        Tue, 09 Jun 2020 06:15:10 -0700 (PDT)
+Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
+        by smtp.gmail.com with ESMTPSA id l22sm4323522lji.120.2020.06.09.06.15.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 06:15:09 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>
+Cc:     =?UTF-8?q?Artur=20=C5=9Awigo=C5=84?= <a.swigon@samsung.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v4 37/37] drm/tegra: dc: Extend debug stats with total number of events
+Date:   Tue,  9 Jun 2020 16:14:04 +0300
+Message-Id: <20200609131404.17523-38-digetx@gmail.com>
+X-Mailer: git-send-email 2.26.0
+In-Reply-To: <20200609131404.17523-1-digetx@gmail.com>
+References: <20200609131404.17523-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200609131216.GJ1022955@lunn.ch>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 15:13:06 up 110 days, 20:43, 124 users,  load average: 0.03, 0.14,
- 0.18
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+It's useful to know the total number of underflow events and currently
+the debug stats are getting reset each time CRTC is being disabled. Let's
+account the overall number of events that doesn't get reset.
 
-On Tue, Jun 09, 2020 at 03:12:16PM +0200, Andrew Lunn wrote:
-> On Tue, Jun 09, 2020 at 02:55:35PM +0200, Sascha Hauer wrote:
-> > On Mon, Jun 08, 2020 at 04:57:37PM +0200, Andrew Lunn wrote:
-> > > On Mon, Jun 08, 2020 at 09:47:16AM +0200, Sascha Hauer wrote:
-> > > > The Marvell MVNETA Ethernet controller supports a 2.5 Gbps SGMII mode
-> > > > called DRSGMII.
-> > > > 
-> > > > This patch adds a corresponding phy-mode string 'drsgmii' and parses it
-> > > > from DT. The MVNETA then configures the SERDES protocol value
-> > > > accordingly.
-> > > > 
-> > > > It was successfully tested on a MV78460 connected to a FPGA.
-> > > 
-> > > Hi Sascha
-> > > 
-> > > Is this really overclocked SGMII, or 2500BaseX? How does it differ
-> > > from 2500BaseX, which mvneta already supports?
-> > 
-> > I think it is overclocked SGMII or 2500BaseX depending on the Port MAC
-> > Control Register0 PortType setting bit.
-> > As said to Russell we have a fixed link so nobody really cares if it's
-> > SGMII or 2500BaseX. This boils down the patch to fixing the Serdes
-> > configuration setting for 2500BaseX.
-> 
-> Hi Sascha
-> 
-> Does 2500BaseX work for your use case? Since this drsmgii mode is not
-> well defined, i would prefer to not add it, unless it is really
-> needed.
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/gpu/drm/tegra/dc.c | 10 ++++++++++
+ drivers/gpu/drm/tegra/dc.h |  5 +++++
+ 2 files changed, 15 insertions(+)
 
-Yes, it does, see updated patch I just sent.
-
-Sascha
-
+diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
+index 48dad375b470..6a5a017e37d5 100644
+--- a/drivers/gpu/drm/tegra/dc.c
++++ b/drivers/gpu/drm/tegra/dc.c
+@@ -1616,6 +1616,11 @@ static int tegra_dc_show_stats(struct seq_file *s, void *data)
+ 	seq_printf(s, "underflow: %lu\n", dc->stats.underflow);
+ 	seq_printf(s, "overflow: %lu\n", dc->stats.overflow);
+ 
++	seq_printf(s, "frames total: %lu\n", dc->stats.frames_total);
++	seq_printf(s, "vblank total: %lu\n", dc->stats.vblank_total);
++	seq_printf(s, "underflow total: %lu\n", dc->stats.underflow_total);
++	seq_printf(s, "overflow total: %lu\n", dc->stats.overflow_total);
++
+ 	return 0;
+ }
+ 
+@@ -2178,6 +2183,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
+ 		/*
+ 		dev_dbg(dc->dev, "%s(): frame end\n", __func__);
+ 		*/
++		dc->stats.frames_total++;
+ 		dc->stats.frames++;
+ 	}
+ 
+@@ -2186,6 +2192,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
+ 		dev_dbg(dc->dev, "%s(): vertical blank\n", __func__);
+ 		*/
+ 		drm_crtc_handle_vblank(&dc->base);
++		dc->stats.vblank_total++;
+ 		dc->stats.vblank++;
+ 	}
+ 
+@@ -2193,6 +2200,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
+ 		/*
+ 		dev_dbg(dc->dev, "%s(): underflow\n", __func__);
+ 		*/
++		dc->stats.underflow_total++;
+ 		dc->stats.underflow++;
+ 	}
+ 
+@@ -2200,11 +2208,13 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
+ 		/*
+ 		dev_dbg(dc->dev, "%s(): overflow\n", __func__);
+ 		*/
++		dc->stats.overflow_total++;
+ 		dc->stats.overflow++;
+ 	}
+ 
+ 	if (status & HEAD_UF_INT) {
+ 		dev_dbg_ratelimited(dc->dev, "%s(): head underflow\n", __func__);
++		dc->stats.underflow_total++;
+ 		dc->stats.underflow++;
+ 	}
+ 
+diff --git a/drivers/gpu/drm/tegra/dc.h b/drivers/gpu/drm/tegra/dc.h
+index 3a0ff57c5169..3eb4eddc2288 100644
+--- a/drivers/gpu/drm/tegra/dc.h
++++ b/drivers/gpu/drm/tegra/dc.h
+@@ -41,6 +41,11 @@ struct tegra_dc_stats {
+ 	unsigned long vblank;
+ 	unsigned long underflow;
+ 	unsigned long overflow;
++
++	unsigned long frames_total;
++	unsigned long vblank_total;
++	unsigned long underflow_total;
++	unsigned long overflow_total;
+ };
+ 
+ struct tegra_windowgroup_soc {
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.26.0
+
