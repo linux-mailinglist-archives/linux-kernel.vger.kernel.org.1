@@ -2,139 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB011F2EF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792631F2F04
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733292AbgFIAqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52824 "EHLO
+        id S1732911AbgFIAq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729559AbgFIAqC (ORCPT
+        with ESMTP id S1729018AbgFIAqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 20:46:02 -0400
-Received: from mail-ot1-x363.google.com (mail-ot1-x363.google.com [IPv6:2607:f8b0:4864:20::363])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2FDC03E969
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 17:46:01 -0700 (PDT)
-Received: by mail-ot1-x363.google.com with SMTP id n6so5913920otl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 17:46:01 -0700 (PDT)
+        Mon, 8 Jun 2020 20:46:54 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BAEC03E969
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 17:46:54 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id l1so14932944ede.11
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 17:46:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6zCH4n2iYndxCImQUVO1t9gw8KAnucClc8TKaXcz6VE=;
+        b=Fq2WqHVeE81Nk6/Y0DGUX0PV2/hDVPJDGUYPIo3pxtCcQjIa6R//iPZadETarfnAzT
+         tlwhSjrEN/2Mjan9gz24mXSQu9dOYhzwWdqc2Q0xT715EekdH3eg0fxIvFgM3eRLWgLN
+         78TZPoqHOfMK62A9ZJhEzlwmtqtbesyOCnOYd4H/O4Ti5pd09CcSkCIUY1/sj0tPY8Xc
+         3Wc13HH5AEC14rFecdON9Rt3tBXKBzr9b6or5LhepX6BXw5CLcEfmLZAwLOtuGpiRW//
+         YK+q6h65xUPqiwCvAKne4a3em0MZjfum74LdoxdMkfCZkPYVK/UwQyfbfpME0PiWBIdQ
+         h2ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:dkim-signature:from:to:cc:subject:date
-         :message-id:in-reply-to:references:content-transfer-encoding;
-        bh=NKSJp0rZrw1+cKT/x08zXjzbpHqLU8j+v1TneyTidX4=;
-        b=kfvgcVAnS1CeClTtPwQakmiXugkL1wHk0BbPkua+4k8ke2Vp/hOqUmBfaKkp06w+8j
-         xNijS9wcOW9/wwE5rYZDE+q5A+sUTZJRw6lZsGEhf8JjLhtFdD4NbRRm1FaAI9ECaoCw
-         HYyuDzRQG4+xDD8M96ixQz4mWxS80wTk0YrOtL3AmPvrPu7ymmYyXtP+YBXnswZ5/EmQ
-         3xi3mT77U20pw8rNi/jmHLf8FXMfDrlR7nFWglX/aWS7Z9uu5oy0Hl0OXRbc+DKZPmTM
-         AC1HAN25HBhdjJ849Cp6wsUya6g4hByS5tl4MIkMcEAQl1J4xllyW1V7TIG2k9ppo7VK
-         6IJA==
-X-Gm-Message-State: AOAM530PwSy0qmQxkdjQE9BzkqCSaUW+YRoLHhNAdfa7tOC03BYsGaoB
-        L0LdR7D+y0Vgy/lZyhG6/yengDxnVgSBLmKoyxdjwQINv12/
-X-Google-Smtp-Source: ABdhPJw0RrINSi0Nk5/hDpaHJzNHQDZThqaFZ+50TnYmqReJYNYn8O6jMQwcW0TY8GgrGAM5wURE2fGA9QNP
-X-Received: by 2002:a05:6830:1490:: with SMTP id s16mr20388013otq.74.1591663560501;
-        Mon, 08 Jun 2020 17:46:00 -0700 (PDT)
-Received: from smtp.aristanetworks.com (smtp.aristanetworks.com. [52.0.43.43])
-        by smtp-relay.gmail.com with ESMTPS id m4sm1417083oop.4.2020.06.08.17.46.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Jun 2020 17:46:00 -0700 (PDT)
-X-Relaying-Domain: arista.com
-Received: from chmeee (unknown [10.95.85.208])
-        by smtp.aristanetworks.com (Postfix) with ESMTP id 8E36A3002D17;
-        Mon,  8 Jun 2020 17:45:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
-        s=Arista-A; t=1591663559;
-        bh=NKSJp0rZrw1+cKT/x08zXjzbpHqLU8j+v1TneyTidX4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=3J5kaZr1W/Tba7a0Donvx5VHiNzWXfoDjbRVOW8UkDKZAPDwMOtADpSJzSi+R+s68
-         lpOhcvisCPLrW8OQxQNRcoS8XWbH7JgjGudfIcsmnUFUnZE/5XWvCI/ZoBZNop544N
-         rwTrAIAwUd240TkN20zajDQZZNshyXFD4fxP31Hs/s2bBnVz3EknFpVb0FECfsYp3x
-         5atcP2O5L5U7jWtGEdpHCCUGgG1f/CV31ysx15Zh9J8lV/E2wJp5Stpr/sYbi47HHa
-         WQNIWZrO47A40Ar9bEi8Jmwm1govO7xUqxKPYeS6OAa0/aoUjo8K/ZMkZbCG1AnvPy
-         HSpVEyyt9gEyw==
-Received: from kevmitch by chmeee with local (Exim 4.93)
-        (envelope-from <kevmitch@chmeee>)
-        id 1jiSOr-005RRq-FD; Mon, 08 Jun 2020 17:45:57 -0700
-From:   Kevin Mitchell <kevmitch@arista.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     HATAYAMA Daisuke <d.hatayama@jp.fujitsu.com>,
-        Kevin Mitchell <kevmitch@arista.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Dou Liyang <douly.fnst@cn.fujitsu.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] x86/apic: remove boot_cpu_physical_apicid hacks
-Date:   Mon,  8 Jun 2020 17:44:49 -0700
-Message-Id: <20200609004451.1296880-2-kevmitch@arista.com>
-In-Reply-To: <20200609004451.1296880-1-kevmitch@arista.com>
-References: <20200609004451.1296880-1-kevmitch@arista.com>
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6zCH4n2iYndxCImQUVO1t9gw8KAnucClc8TKaXcz6VE=;
+        b=Nc85V2GA8Fr67aF1XZnwRGbUJPk1RFV0Ot22oFfxzlnO/cBvLVofGMlkbv/G+JugwS
+         B5PK5O9s3yOQCKHiU1PrKSqNAf0JNK10h/jJRzwgOcHE7FYka/dqKS7RaHh4JWgOFreF
+         DQ091TictiqqE8SRnDNHbgbcg2IEZ+wvBKuy4cGgPubu9lzeGVE+CJuxC1Jpbtzs9EG+
+         lIv36El8TVl7xRJTkWXJdX8YrBe3nek1OFjGZDPb5dwWUF7KWdvfOjPcKbAUuxYwMr86
+         GJkjNzMZa4CGVFKMeijbm8KdAbKhl0yaQtqxn8xm/dn2C1ZM4rJRAm55fDo+V2NRIssp
+         Bx/w==
+X-Gm-Message-State: AOAM5318h1/WIlnzx0z6A9sHxLZUrNaKUTx240+RmcQPFF/jlc5W2IzB
+        0Kg+0OY7GCy13oTjTahfRODEt8Ry5DOoK505KDS7vA==
+X-Google-Smtp-Source: ABdhPJyPiL73dzr0k16R7WSQX3Z3pfrFMXEsfHYxl183PZK4kpvT14ODaxWMSzzuq7exBiIPN3x17ifOOa1H+rWsmBY=
+X-Received: by 2002:a50:eb0c:: with SMTP id y12mr23805262edp.165.1591663613143;
+ Mon, 08 Jun 2020 17:46:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200607131339.476036-6-vaibhav@linux.ibm.com> <202006090059.o4CE5D9b%lkp@intel.com>
+In-Reply-To: <202006090059.o4CE5D9b%lkp@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 8 Jun 2020 17:46:42 -0700
+Message-ID: <CAPcyv4iQo_xgRGPx_j+RPzgWGZaigGRbc_kRzKEFePfVHenx5g@mail.gmail.com>
+Subject: Re: [PATCH v11 5/6] ndctl/papr_scm,uapi: Add support for PAPR nvdimm
+ specific methods
+To:     kernel test robot <lkp@intel.com>
+Cc:     Vaibhav Jain <vaibhav@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that mpparse can be relied upon to not sabotage
-boot_cpu_physical_apicid with nonsense, the hacks that tried to work
-around that nonsense can be removed.
+On Mon, Jun 8, 2020 at 5:16 PM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Vaibhav,
+>
+> Thank you for the patch! Perhaps something to improve:
+>
+> [auto build test WARNING on powerpc/next]
+> [also build test WARNING on linus/master v5.7 next-20200605]
+> [cannot apply to linux-nvdimm/libnvdimm-for-next scottwood/next]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+>
+> url:    https://github.com/0day-ci/linux/commits/Vaibhav-Jain/powerpc-papr_scm-Add-support-for-reporting-nvdimm-health/20200607-211653
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
+> config: powerpc-randconfig-r016-20200607 (attached as .config)
+> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project e429cffd4f228f70c1d9df0e5d77c08590dd9766)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install powerpc cross compiling tool for clang build
+>         # apt-get install binutils-powerpc-linux-gnu
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>, old ones prefixed by <<):
+>
+> In file included from <built-in>:1:
+> >> ./usr/include/asm/papr_pdsm.h:69:20: warning: field 'hdr' with variable sized type 'struct nd_cmd_pkg' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+> struct nd_cmd_pkg hdr;  /* Package header containing sub-cmd */
 
-Signed-off-by: Kevin Mitchell <kevmitch@arista.com>
----
- arch/x86/kernel/apic/apic.c | 30 +-----------------------------
- 1 file changed, 1 insertion(+), 29 deletions(-)
+Hi Vaibhav,
 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 4b1d31be50b4..c1722a71aca5 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2361,27 +2361,8 @@ int generic_processor_info(int apicid, int version)
- 	bool boot_cpu_detected = physid_isset(boot_cpu_physical_apicid,
- 				phys_cpu_present_map);
- 
--	/*
--	 * boot_cpu_physical_apicid is designed to have the apicid
--	 * returned by read_apic_id(), i.e, the apicid of the
--	 * currently booting-up processor. However, on some platforms,
--	 * it is temporarily modified by the apicid reported as BSP
--	 * through MP table. Concretely:
--	 *
--	 * - arch/x86/kernel/mpparse.c: MP_processor_info()
--	 * - arch/x86/mm/amdtopology.c: amd_numa_init()
--	 *
--	 * This function is executed with the modified
--	 * boot_cpu_physical_apicid. So, disabled_cpu_apicid kernel
--	 * parameter doesn't work to disable APs on kdump 2nd kernel.
--	 *
--	 * Since fixing handling of boot_cpu_physical_apicid requires
--	 * another discussion and tests on each platform, we leave it
--	 * for now and here we use read_apic_id() directly in this
--	 * function, generic_processor_info().
--	 */
- 	if (disabled_cpu_apicid != BAD_APICID &&
--	    disabled_cpu_apicid != read_apic_id() &&
-+	    disabled_cpu_apicid != boot_cpu_physical_apicid &&
- 	    disabled_cpu_apicid == apicid) {
- 		int thiscpu = num_processors + disabled_cpus;
- 
-@@ -2498,15 +2479,6 @@ static void __init apic_bsp_up_setup(void)
- {
- #ifdef CONFIG_X86_64
- 	apic_write(APIC_ID, apic->set_apic_id(boot_cpu_physical_apicid));
--#else
--	/*
--	 * Hack: In case of kdump, after a crash, kernel might be booting
--	 * on a cpu with non-zero lapic id. But boot_cpu_physical_apicid
--	 * might be zero if read from MP tables. Get it from LAPIC.
--	 */
--# ifdef CONFIG_CRASH_DUMP
--	boot_cpu_physical_apicid = read_apic_id();
--# endif
- #endif
- 	physid_set_mask_of_physid(boot_cpu_physical_apicid, &phys_cpu_present_map);
- }
--- 
-2.26.2
+This looks like it's going to need another round to get this fixed. I
+don't think 'struct nd_pdsm_cmd_pkg' should embed a definition of
+'struct nd_cmd_pkg'. An instance of 'struct nd_cmd_pkg' carries a
+payload that is the 'pdsm' specifics. As the code has it now it's
+defined as a superset of 'struct nd_cmd_pkg' and the compiler warning
+is pointing out a real 'struct' organization problem.
 
+Given the soak time needed in -next after the code is finalized this
+there's no time to do another round of updates and still make the v5.8
+merge window.
