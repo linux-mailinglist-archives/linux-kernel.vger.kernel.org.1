@@ -2,115 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F5D1F3A95
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 14:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8FF1F3AA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 14:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729306AbgFIMZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 08:25:59 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29696 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726903AbgFIMZ7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 08:25:59 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 059C29aL119645;
-        Tue, 9 Jun 2020 08:25:54 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31huuq1b3r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Jun 2020 08:25:54 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 059CLPoq031105;
-        Tue, 9 Jun 2020 12:25:52 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 31g2s7wx1c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Jun 2020 12:25:52 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 059CPooV63832154
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 9 Jun 2020 12:25:50 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1E44C42049;
-        Tue,  9 Jun 2020 12:25:50 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B3E6842047;
-        Tue,  9 Jun 2020 12:25:49 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.53.106])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  9 Jun 2020 12:25:49 +0000 (GMT)
-Subject: Re: [PATCH] powerpc/pseries/svm: Remove unwanted check for
- shared_lppaca_size
-To:     Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-References: <20200609105731.14032-1-sathnaga@linux.vnet.ibm.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <183e9acb-4562-af7c-a50b-52cee5954d9e@linux.ibm.com>
-Date:   Tue, 9 Jun 2020 14:25:49 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+        id S1729386AbgFIM2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 08:28:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51012 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726903AbgFIM2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 08:28:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 851C3AAC6;
+        Tue,  9 Jun 2020 12:28:00 +0000 (UTC)
+Date:   Tue, 9 Jun 2020 14:27:55 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
+        netdev@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Baron <jbaron@akamai.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v3 2/7] dynamic_debug: Group debug messages by level
+ bitmask
+Message-ID: <20200609122755.GE23752@linux-b0ei>
+References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+ <20200609104604.1594-3-stanimir.varbanov@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200609105731.14032-1-sathnaga@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-09_03:2020-06-09,2020-06-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 cotscore=-2147483648 suspectscore=0 mlxscore=0 bulkscore=0
- impostorscore=0 mlxlogscore=999 phishscore=0 clxscore=1015 spamscore=0
- priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006090088
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200609104604.1594-3-stanimir.varbanov@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 09/06/2020 à 12:57, Satheesh Rajendran a écrit :
-> Early secure guest boot hits the below crash while booting with
-> vcpus numbers aligned with page boundary for PAGE size of 64k
-> and LPPACA size of 1k i.e 64, 128 etc, due to the BUG_ON assert
-> for shared_lppaca_total_size equal to shared_lppaca_size,
+On Tue 2020-06-09 13:45:59, Stanimir Varbanov wrote:
+> This will allow dynamic debug users and driver writers to group
+> debug messages by level bitmask.  The level bitmask should be a
+> hex number.
 > 
->   [    0.000000] Partition configured for 64 cpus.
->   [    0.000000] CPU maps initialized for 1 thread per core
->   [    0.000000] ------------[ cut here ]------------
->   [    0.000000] kernel BUG at arch/powerpc/kernel/paca.c:89!
->   [    0.000000] Oops: Exception in kernel mode, sig: 5 [#1]
->   [    0.000000] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA pSeries
-> 
-> which is not necessary, let's remove it.
-> 
+> Done this functionality by extending dynamic debug metadata with
+> new level member and propagate it over all the users.  Also
+> introduce new dynamic_pr_debug_level and dynamic_dev_dbg_level
+> macros to be used by the drivers.
 
-Reviewed-by: Laurent Dufour <ldufour@linux.ibm.com>
+Could you please provide more details?
 
-> Cc: linux-kernel@vger.kernel.org
-> Cc: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-> Cc: Ram Pai <linuxram@us.ibm.com>
-> Cc: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-> Cc: Laurent Dufour <ldufour@linux.ibm.com>
-> Signed-off-by: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-> ---
->   arch/powerpc/kernel/paca.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/powerpc/kernel/paca.c b/arch/powerpc/kernel/paca.c
-> index 949eceb25..10b7c54a7 100644
-> --- a/arch/powerpc/kernel/paca.c
-> +++ b/arch/powerpc/kernel/paca.c
-> @@ -86,7 +86,7 @@ static void *__init alloc_shared_lppaca(unsigned long size, unsigned long align,
->   	 * This is very early in boot, so no harm done if the kernel crashes at
->   	 * this point.
->   	 */
-> -	BUG_ON(shared_lppaca_size >= shared_lppaca_total_size);
-> +	BUG_ON(shared_lppaca_size > shared_lppaca_total_size);
->   
->   	return ptr;
->   }
-> 
+What is the use case?
+What is the exact meaning of the level value?
+How the levels will get defined?
 
+Dynamic debug is used for messages with KERN_DEBUG log level.
+Is this another dimension of the message leveling?
+
+Given that the filter is defined by bits, it is rather grouping
+by context or so.
+
+
+> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> index 8f199f403ab5..5d28d388f6dd 100644
+> --- a/lib/dynamic_debug.c
+> +++ b/lib/dynamic_debug.c
+> @@ -55,6 +55,7 @@ struct ddebug_query {
+>  	const char *function;
+>  	const char *format;
+>  	unsigned int first_lineno, last_lineno;
+> +	unsigned int level;
+>  };
+>  
+>  struct ddebug_iter {
+> @@ -187,6 +188,18 @@ static int ddebug_change(const struct ddebug_query *query,
+>  
+>  			nfound++;
+>  
+> +#ifdef CONFIG_JUMP_LABEL
+> +			if (query->level && query->level & dp->level) {
+> +				if (flags & _DPRINTK_FLAGS_PRINT)
+> +					static_branch_enable(&dp->key.dd_key_true);
+> +				else
+> +					static_branch_disable(&dp->key.dd_key_true);
+> +			} else if (query->level &&
+> +				   flags & _DPRINTK_FLAGS_PRINT) {
+> +				static_branch_disable(&dp->key.dd_key_true);
+> +				continue;
+> +			}
+> +#endif
+
+This looks like a hack in the existing code:
+
+  + It is suspicious that "continue" is only in one branch. It means
+    that static_branch_enable/disable() might get called 2nd time
+    by the code below. Or newflags are not stored when there is a change.
+
+  + It changes the behavior and the below vpr_info("changed ...")
+    is not called.
+
+Or do I miss anything?
+
+>			newflags = (dp->flags & mask) | flags;
+>  			if (newflags == dp->flags)
+>  				continue;
+
+Best Regards,
+Petr
