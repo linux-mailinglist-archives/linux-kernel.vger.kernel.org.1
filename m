@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9541F3C77
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AADA1F3C80
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729953AbgFIN3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 09:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57526 "EHLO
+        id S1730015AbgFIN3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 09:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729097AbgFIN3R (ORCPT
+        with ESMTP id S1728601AbgFIN3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 09:29:17 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C947C08C5C3;
-        Tue,  9 Jun 2020 06:29:16 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id e4so25073126ljn.4;
-        Tue, 09 Jun 2020 06:29:16 -0700 (PDT)
+        Tue, 9 Jun 2020 09:29:19 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEADC03E97C;
+        Tue,  9 Jun 2020 06:29:17 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id a9so21494271ljn.6;
+        Tue, 09 Jun 2020 06:29:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=a5nZg8KheWIS8ObVaNA2RcCFchGpMXgRR/HHGM1BHBw=;
-        b=LO/pDAfKccIgaQ5fHav45do3zAAxpH6cYqZNL4Ks0Nag6rg1TiV7PRLQAgrrwRvF/7
-         ScozvkvW1whNFhyUWdR5rNDDj0TMJcW9DozxyD2mAZKSw0dslNBejKUlpygRVq8eb2yZ
-         gvOlIiKxx8Ck7sBXuuSzXyv+0mm72EIsTGXx3pzq/G/B9vlEpE39saQ6vIJ2VTuXL7O4
-         FQYq0UZhKaCDjFGvsRqM3mr4rHqRjCSbvg54skBzGP99lk4IBy3/YM8eReqrrIMjPP9G
-         Gwa3/UIiX80qJh6bQhVwRK8pTuZGTAyED7wGghph6GljlLGezKNPFhP6acSS+G5/P2Gu
-         In4A==
+        bh=bfaJuFdXozXDPR9zng+hgfPKlX3mT8FyISD1FTQ25bo=;
+        b=B49t0nxwad7JuaDtw6XwwGP7olO4EUYZJRXtmgrvPkREm2Ppd7/QceX0WDCPyE0Gza
+         g0G037SyTdG/CA6TLDbhNbMpBx4jZv8bARBAVbdLQD+96bEx4L6BLoJRbS+BEvJXYo6M
+         +WuiqA/4Ec6gc/uaVLhtHwgRoFLgmuY2YoIfvL7HHhOqnBCpNCJC+HzqlyiEYwj3djgW
+         hJyy/+4mowI8Oj8rnMciNF6fgDjXDcnnwXM55bO0BVTTrw7xSPwIYT0JnWRrhpeI3daO
+         Pu5cMcvRR5afaFCVl6FBt+Ih5DImvS9wujXso75sKP6UVM9yaN9lNDkJGgUpvo1zcvqC
+         3EEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=a5nZg8KheWIS8ObVaNA2RcCFchGpMXgRR/HHGM1BHBw=;
-        b=G6pP/mFwb/OIl+7kojUHVM99gUBPgUVzlAM8bvJf+uE/lkgJgKD9FgXsa5XwZmybDS
-         MsJOmM5aRged1DNJkljE0pxhjOaqAO7cI3FZn0E+SjXednb0IezjWEGHhD6ofyeILnkF
-         AOTD/DBSo9eEx0CDjd4m9DrEodj0ESCUpbpugV7l2Y0Opk0WK1BxIjIAwHPPZk8xjtbZ
-         f8TnEJtsAJAPvuy3d1EyHGKbZDlB6WQb/3AiR9ZptxBPRLKOPbweooRQaM26nYULLais
-         P9qv8fzVeE93KipZk4XIr28ne3rgZAVulQC5IsBcMlGEsRCqcQdkhhMeHw12D39Mxn7D
-         Lrmg==
-X-Gm-Message-State: AOAM533VteOkDMig96Sh2xCmlI/Ult0KWW2dnK/vFz38pH4g66pKxwWy
-        2Co9qC+Dmr5BBYU6u/fAAFI=
-X-Google-Smtp-Source: ABdhPJzz2QrldO4fIrKUkRTl1Oo3K4hLblhuGYsUcIPU2pKjUY2pOSrmJezS/COh7b4iOpC4OH5OZw==
-X-Received: by 2002:a2e:974e:: with SMTP id f14mr13305849ljj.102.1591709354999;
-        Tue, 09 Jun 2020 06:29:14 -0700 (PDT)
+        bh=bfaJuFdXozXDPR9zng+hgfPKlX3mT8FyISD1FTQ25bo=;
+        b=qBM4oGdQ3uZIBvO2cgvHaqJnjY7lA2M9q/nXTNMuCP1exHcs5se4RJRvsD8dRQ/C/4
+         5zZWEratG9Jk+1BjNve9xrpfwc2wgy4mTYe2/lY2wGMdP/RUKF3J0tZuKh7EX6ynKHI9
+         zFWGoTbehf0Cap6AOXytfIs0mzva2mkww4ZmaD3yd0K/RHLOtFrD7pMz6oo6LHBNP4cK
+         8vFpw38dDa0X9J9ltEJuRCBzpMBNx8mbeMrcfBsOh5M329GZtO9ov+h6oZav4TFwxUPg
+         UTTJHDZx+c7r9rF0E9zEKS65++oy9VeuqIhuhqva3rW2Wdz4sCPArn/o1xC1O1oVzfjw
+         fTOQ==
+X-Gm-Message-State: AOAM533DIqUZD/XEJjg1/2MeEkATQAMJzsTSdCGR7RKxZcOfhi1lTp7l
+        7TUirX9A2qtdz+n27Kb0tNI=
+X-Google-Smtp-Source: ABdhPJyAWXTNCfEi8RFikv95/5IpuMDduRELo2UqM80wfXS3VGGWUgEySJcI0zefr2Z/3wNmmCONDQ==
+X-Received: by 2002:a2e:2a42:: with SMTP id q63mr1127043ljq.265.1591709356142;
+        Tue, 09 Jun 2020 06:29:16 -0700 (PDT)
 Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id s8sm5069821lfc.83.2020.06.09.06.29.13
+        by smtp.gmail.com with ESMTPSA id s8sm5069821lfc.83.2020.06.09.06.29.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 06:29:14 -0700 (PDT)
+        Tue, 09 Jun 2020 06:29:15 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Sam Ravnborg <sam@ravnborg.org>,
@@ -56,9 +56,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Frank Rowand <frowand.list@gmail.com>
 Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 4/6] drm/tegra: output: Support DRM bridges
-Date:   Tue,  9 Jun 2020 16:28:53 +0300
-Message-Id: <20200609132855.20975-5-digetx@gmail.com>
+Subject: [PATCH v6 5/6] drm/tegra: output: rgb: Support LVDS encoder bridge
+Date:   Tue,  9 Jun 2020 16:28:54 +0300
+Message-Id: <20200609132855.20975-6-digetx@gmail.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200609132855.20975-1-digetx@gmail.com>
 References: <20200609132855.20975-1-digetx@gmail.com>
@@ -69,69 +69,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Newer Tegra device-trees will specify a video output graph which involves
-a bridge. This patch adds initial support for the DRM bridges to the Tegra
-DRM output.
+Newer Tegra device-trees will specify a video output graph, which involves
+LVDS encoder bridge. This patch adds support for the LVDS encoder bridge
+to the RGB output, allowing us to model the display hardware properly.
 
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Acked-by: Sam Ravnborg <sam@ravnborg.org>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/gpu/drm/tegra/drm.h    |  2 ++
- drivers/gpu/drm/tegra/output.c | 12 ++++++++++++
- 2 files changed, 14 insertions(+)
+ drivers/gpu/drm/tegra/rgb.c | 58 +++++++++++++++++++++++++++++++------
+ 1 file changed, 49 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/tegra/drm.h b/drivers/gpu/drm/tegra/drm.h
-index b25443255be6..f38de08e0c95 100644
---- a/drivers/gpu/drm/tegra/drm.h
-+++ b/drivers/gpu/drm/tegra/drm.h
-@@ -12,6 +12,7 @@
- #include <linux/gpio/consumer.h>
- 
- #include <drm/drm_atomic.h>
-+#include <drm/drm_bridge.h>
- #include <drm/drm_edid.h>
- #include <drm/drm_encoder.h>
- #include <drm/drm_fb_helper.h>
-@@ -116,6 +117,7 @@ struct tegra_output {
- 	struct device_node *of_node;
- 	struct device *dev;
- 
-+	struct drm_bridge *bridge;
- 	struct drm_panel *panel;
- 	struct i2c_adapter *ddc;
- 	const struct edid *edid;
-diff --git a/drivers/gpu/drm/tegra/output.c b/drivers/gpu/drm/tegra/output.c
-index a6a711d54e88..ccd1421f1b24 100644
---- a/drivers/gpu/drm/tegra/output.c
-+++ b/drivers/gpu/drm/tegra/output.c
-@@ -5,6 +5,7 @@
-  */
+diff --git a/drivers/gpu/drm/tegra/rgb.c b/drivers/gpu/drm/tegra/rgb.c
+index 0562a7eb793f..9a7024ec96bc 100644
+--- a/drivers/gpu/drm/tegra/rgb.c
++++ b/drivers/gpu/drm/tegra/rgb.c
+@@ -7,6 +7,7 @@
+ #include <linux/clk.h>
  
  #include <drm/drm_atomic_helper.h>
-+#include <drm/drm_of.h>
++#include <drm/drm_bridge_connector.h>
  #include <drm/drm_panel.h>
  #include <drm/drm_simple_kms_helper.h>
  
-@@ -99,8 +100,19 @@ int tegra_output_probe(struct tegra_output *output)
- 	if (!output->of_node)
- 		output->of_node = output->dev->of_node;
+@@ -267,24 +268,63 @@ int tegra_dc_rgb_remove(struct tegra_dc *dc)
+ int tegra_dc_rgb_init(struct drm_device *drm, struct tegra_dc *dc)
+ {
+ 	struct tegra_output *output = dc->rgb;
++	struct drm_connector *connector;
+ 	int err;
  
-+	err = drm_of_find_panel_or_bridge(output->of_node, -1, -1,
-+					  &output->panel, &output->bridge);
-+	if (err && err != -ENODEV)
-+		return err;
-+
- 	panel = of_parse_phandle(output->of_node, "nvidia,panel", 0);
- 	if (panel) {
-+		/*
-+		 * Don't mix nvidia,panel phandle with the graph in a
-+		 * device-tree.
-+		 */
-+		WARN_ON(output->panel || output->bridge);
-+
- 		output->panel = of_drm_find_panel(panel);
- 		of_node_put(panel);
+ 	if (!dc->rgb)
+ 		return -ENODEV;
  
+-	drm_connector_init(drm, &output->connector, &tegra_rgb_connector_funcs,
+-			   DRM_MODE_CONNECTOR_LVDS);
+-	drm_connector_helper_add(&output->connector,
+-				 &tegra_rgb_connector_helper_funcs);
+-	output->connector.dpms = DRM_MODE_DPMS_OFF;
+-
+ 	drm_simple_encoder_init(drm, &output->encoder, DRM_MODE_ENCODER_LVDS);
+ 	drm_encoder_helper_add(&output->encoder,
+ 			       &tegra_rgb_encoder_helper_funcs);
+ 
+-	drm_connector_attach_encoder(&output->connector,
+-					  &output->encoder);
+-	drm_connector_register(&output->connector);
++	/*
++	 * Tegra devices that have LVDS panel utilize LVDS encoder bridge
++	 * for converting up to 28 LCD LVTTL lanes into 5/4 LVDS lanes that
++	 * go to display panel's receiver.
++	 *
++	 * Encoder usually have a power-down control which needs to be enabled
++	 * in order to transmit data to the panel.  Historically devices that
++	 * use an older device-tree version didn't model the bridge, assuming
++	 * that encoder is turned ON by default, while today's DRM allows us
++	 * to model LVDS encoder properly.
++	 *
++	 * Newer device-trees utilize LVDS encoder bridge, which provides
++	 * us with a connector and handles the display panel.
++	 *
++	 * For older device-trees we fall back to our own connector and use
++	 * nvidia,panel phandle.
++	 */
++	if (output->bridge) {
++		err = drm_bridge_attach(&output->encoder, output->bridge,
++					NULL, DRM_BRIDGE_ATTACH_NO_CONNECTOR);
++		if (err) {
++			dev_err(output->dev, "failed to attach bridge: %d\n",
++				err);
++			return err;
++		}
++
++		connector = drm_bridge_connector_init(drm, &output->encoder);
++		if (IS_ERR(connector)) {
++			dev_err(output->dev,
++				"failed to initialize bridge connector: %pe\n",
++				connector);
++			return PTR_ERR(connector);
++		}
++
++		drm_connector_attach_encoder(connector, &output->encoder);
++	} else {
++		drm_connector_init(drm, &output->connector,
++				   &tegra_rgb_connector_funcs,
++				   DRM_MODE_CONNECTOR_LVDS);
++		drm_connector_helper_add(&output->connector,
++					 &tegra_rgb_connector_helper_funcs);
++		output->connector.dpms = DRM_MODE_DPMS_OFF;
++
++		drm_connector_attach_encoder(&output->connector,
++					     &output->encoder);
++		drm_connector_register(&output->connector);
++	}
+ 
+ 	err = tegra_output_init(drm, output);
+ 	if (err < 0) {
 -- 
 2.26.0
 
