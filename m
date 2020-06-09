@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE3E1F32CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 05:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B271F32C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 05:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbgFIDxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 23:53:22 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:43531 "EHLO
+        id S1727064AbgFIDxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 23:53:13 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:44329 "EHLO
         wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726803AbgFIDxM (ORCPT
+        by vger.kernel.org with ESMTP id S1726917AbgFIDxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Jun 2020 23:53:12 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 17A1A71C;
+        by mailout.west.internal (Postfix) with ESMTP id 1793B6D1;
         Mon,  8 Jun 2020 23:53:11 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
   by compute4.internal (MEProxy); Mon, 08 Jun 2020 23:53:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paritcher.com;
          h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=Fpv8Vs6NNHO5E
-        BYLXuiJl8+my6EirXEyqYHHw/KlxY4=; b=0VPg6Od+M5jz1wrqSPuRoUlEMJDZ1
-        61T4AiAHN3SaHxyx73dV5mF03qk/2ze51mUiZu5/9wrII+5dBBfZAFRC8ZVyAW6h
-        yca2sI7hLvDZdo9KD1kmc2Q5lEPUCXIvG8dgxD2izBom8zR7wF9M4HKa5d+Alo6f
-        nu3DncMEF034FexdFS1tjFH4leuzGdTsHf4WBj4aBOaSq+5Qij0YJ9gwxuNjVvN1
-        iCnoF6peAI/qDhzGUHnVOg/l+TNJHCS8MRdj9zEC8VH5rl59vw9JT6NjioD58w5c
-        WdZwoFwhiXzFMfBKmYYA+rMIAuCmpkG7GlomBMj3BWP7rIZuPscKsqyBg==
+        :mime-version:content-transfer-encoding; s=fm2; bh=SNYfQnNJHBNL+
+        mznkaHt3WrMBC/udR8ETUg333Vw1Nc=; b=KfCY5EogqLIcRw2MKdcVD4Ht7CBYF
+        31qf8HRZ4gp1KfJPqN4mY5j8cZm5uRhzUcy5rcPNLV6AgRjk+ZBasamIZS4xiMXw
+        BvvHWosiggxBYNBlV7ypUIlDKVcfn54ojAOTphc162aHagSioL5aYgrxpqLbkXBt
+        o7V9ydt6QPKEkvn4+gbENw5oy/92s5N/Q0YghjP9Dnl3VdEuSur4x89AdmiNZYAQ
+        G0drILjFp74wvK+XFTo8FtfTt1G+rOHKVvmoVd2GM9DAEXheheabzEHFPeWt5Lmb
+        SWg3YcnMSsiXmQBvmIbjiFILrWt3YH5fbGuEZJdOJea4ELFnC7RhDj4zg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=Fpv8Vs6NNHO5EBYLXuiJl8+my6EirXEyqYHHw/KlxY4=; b=gQZkj8LU
-        S5FHu70jHC1xUuhmO4ULktC7DRO5AyuNrUunCNaFFCGEU/m3OXrzNPiuKsQOcvsw
-        CP0ZupS8PtpLNlkgw+KdZIGhsQiM/5SlD0Y1WAIrLDCmzIuDx8uD5QYyUa08hHRQ
-        l/cbRQhnsDpPz/uQC9xdKytDzBs0T9HSjEdhZdW1TXA6d4dITPvb68HK72BSVRQH
-        qlcLoub3uXUgz+CuvOyREc/05lEPLnRzXU++gGj/cN9zrlRspE1nn7vdQzYYzJxk
-        +SiWprFTMmyeh0TPpowwNfk4a/Sl0Asn5PpELikT1oLl2tMIGjsh4QNSWsm5tW5E
-        iaE1/yE4+ThguA==
-X-ME-Sender: <xms:pgffXm_H6ER9CwCgNeYIje9mwTU9MBdQeXdIJS0ADLnx8qF0qdkJqQ>
+        fm3; bh=SNYfQnNJHBNL+mznkaHt3WrMBC/udR8ETUg333Vw1Nc=; b=icGueE+u
+        ZmCEvOCrYnbOrP3/grmkj0k+IJda2R+iAs4CG08CfAnDhXbFsAkpalraF4jxaX3C
+        5DaDCmTdd3EZvi67lOTuspqEbDgcTr/iQvEltGRfvbqAECNRezmZ2g+mQ/EvDDIs
+        FLOVIyvkaJH4Ntk0NJgtAw+xzS3C6rNGjqtbDv8wXycFrMHLA4euFndM1/w7c20U
+        jSKXXOC0Qyyc52ZfMzQCots167efzQKQ99reaVdjFo15tZW49DjUHlV6LLBNLCxs
+        cWr5ToQnlbSmzt3gprUE4ELo8KA1+G5n5t1kqqjnD0eJtA9rsyPAodjwKZFeS/sn
+        G2umqrsRb/rxeg==
+X-ME-Sender: <xms:pgffXncA_8HDE71Qipojp_X2hKfhTSPU4Ll-JzFvdj0WO_Hl4aUYEA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehfedgjeejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -47,24 +47,24 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehfedgjeejucetufdoteggod
     tdehudeknecukfhppeeijedrkeegrdduleegrddujeehnecuvehluhhsthgvrhfuihiivg
     eptdenucfrrghrrghmpehmrghilhhfrhhomhephidrlhhinhhugiesphgrrhhithgthhgv
     rhdrtghomh
-X-ME-Proxy: <xmx:pgffXmvAlN6qJRBYGlQUM-50SvSWGtNSG_mrylJXSEUs9keW2VpZTg>
-    <xmx:pgffXsBnOo5jRMf95IAnKBUwCXGKf2bWPwakY9vAFn8iB6TdTMA2LA>
-    <xmx:pgffXucY-HEDKHvE_xMQgzMHVPi1lrGqlJNhYaDLkg3jnlPkjAK2xA>
-    <xmx:pgffXh26LPaphTMY2Fh8Z9LmpCmvEuo-pSAG0-i6IXOpZeM2UspzeA>
+X-ME-Proxy: <xmx:pgffXtM4qJsLNkkT0Gqojtts9hLHRP_-2E6H4ZGuZQc5TgMuPpQfXg>
+    <xmx:pgffXggckr14cUBBGENrIPEvMn42EcgKLZcPRIpaQNrzCOeQvrsY4A>
+    <xmx:pgffXo-LqAhJMAyZJPIwtrbNfE3G-wsEcQTNrHpXqy8zXcYjZyVStg>
+    <xmx:pgffXsXZaeQdkIlUcX4PME00Ivo51_L98haIAm2I6HcCyukf77N8Ng>
 Received: from localhost.localdomain (ool-4354c2af.dyn.optonline.net [67.84.194.175])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E325F328005A;
-        Mon,  8 Jun 2020 23:53:09 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3BFA93280060;
+        Mon,  8 Jun 2020 23:53:10 -0400 (EDT)
 From:   Y Paritcher <y.linux@paritcher.com>
 To:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
         Matthew Garrett <mjg59@srcf.ucam.org>,
         Mario.Limonciello@dell.com
-Subject: [PATCH v3 0/3] platform/x86: dell-wmi: new keys
-Date:   Mon,  8 Jun 2020 23:52:51 -0400
-Message-Id: <cover.1591673143.git.y.linux@paritcher.com>
+Subject: [PATCH v3 1/3] platform/x86: dell-wmi: add new backlight events
+Date:   Mon,  8 Jun 2020 23:52:52 -0400
+Message-Id: <50885a0c51c6fb31d20ddeb7434572448f1453be.1591673143.git.y.linux@paritcher.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1591584631.git.y.linux@paritcher.com>
-References: <cover.1591584631.git.y.linux@paritcher.com>
+In-Reply-To: <cover.1591673143.git.y.linux@paritcher.com>
+References: <cover.1591584631.git.y.linux@paritcher.com> <cover.1591673143.git.y.linux@paritcher.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -72,29 +72,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extended data and events like Fn lock are currently ignored.
-This is consistent with what was done until now.
-Changing this is out of scope of this patch and would require
-rethinking how events are processed, as on some devices the status
-is sent as it own event, and on some devices via extended data.
-That is also dependent on better docs from the team at Dell.
+Add events with a type of 0x0010 and a code of 0x57 / 0x58,
+this silences the following messages being logged on a
+Dell Inspiron 5593:
 
-The keycode 0xffff look to be a special case and was added as an
-exception code (Thanks Randy for the implementation).
-It was not found for any key on my device, it is only located in
-the DMI table parsed at boot into the keymap.
+dell_wmi: Unknown key with type 0x0010 and code 0x0057 pressed
+dell_wmi: Unknown key with type 0x0010 and code 0x0058 pressed
 
-Overall I am trying to get useless data (to me) out of my syslog
-by documenting the correct scancode/keycode mappings
+These are brightness events and will be handled by acpi-video
 
-Y Paritcher (3):
-  platform/x86: dell-wmi: add new backlight events
-  platform/x86: dell-wmi: add new keymap type 0x0012
-  platform/x86: dell-wmi: add new dmi mapping for keycode 0xffff
+Signed-off-by: Y Paritcher <y.linux@paritcher.com>
+---
+ drivers/platform/x86/dell-wmi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- drivers/platform/x86/dell-wmi.c | 28 +++++++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
-
+diff --git a/drivers/platform/x86/dell-wmi.c b/drivers/platform/x86/dell-wmi.c
+index c25a4286d766..0b2edfe2767d 100644
+--- a/drivers/platform/x86/dell-wmi.c
++++ b/drivers/platform/x86/dell-wmi.c
+@@ -255,6 +255,10 @@ static const struct key_entry dell_wmi_keymap_type_0010[] = {
+ 	/* Keyboard backlight change notification */
+ 	{ KE_IGNORE, 0x3f, { KEY_RESERVED } },
+ 
++	/* Backlight brightness level */
++	{ KE_KEY,    0x57, { KEY_BRIGHTNESSDOWN } },
++	{ KE_KEY,    0x58, { KEY_BRIGHTNESSUP } },
++
+ 	/* Mic mute */
+ 	{ KE_KEY, 0x150, { KEY_MICMUTE } },
+ 
 -- 
 2.27.0
 
