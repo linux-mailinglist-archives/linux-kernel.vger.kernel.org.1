@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE881F4310
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0291F42B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732536AbgFIRth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:49:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35030 "EHLO mail.kernel.org"
+        id S1732049AbgFIRrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:47:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730631AbgFIRtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:49:18 -0400
+        id S1732021AbgFIRqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:46:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CA3E20814;
-        Tue,  9 Jun 2020 17:49:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C8F7207F9;
+        Tue,  9 Jun 2020 17:46:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724957;
-        bh=oneoTHrWpzNqI69GqpPe4DfpOYXgyNGWsMPEeL0cg/Y=;
+        s=default; t=1591724812;
+        bh=RoSDSTtQUCnEe2phWFPiokBPc4v4Ur1EpGDFGCdtQMc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KHitHh/TCcxeJv0kzsjokHYK4jF2tKxEg8MM9+3EOL6uk/KinpM4f9zdCY7mCF45W
-         Zh2pVsZhpMMt8742hWW4I2MBAG9HxkuHVWAkEHjO2sjvkj5Q2DyUEK688OJ8bvkVjQ
-         Zl8E5dckq4LXn3VKj0y6qGnF0SaTQkd8GHn/mTNs=
+        b=EEHj/C1SefjDkzRiUIBUKWIEvSoVVRj3piHnjlE2rA3+bJGhPzHmNgneXUmC+NqiT
+         b1qArE0YPHLrHP+7vKf8vEDYNKWRlQGOBCMbtV4sFfar9URHfDopLTPgROcjE1ZLD1
+         fEN0eE/d1yUSBCXWkuVDf69zIwzpPj3fXFtL/blw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Borislav Petkov <bp@suse.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 10/46] x86/mmiotrace: Use cpumask_available() for cpumask_var_t variables
-Date:   Tue,  9 Jun 2020 19:44:26 +0200
-Message-Id: <20200609174023.806117500@linuxfoundation.org>
+        stable@vger.kernel.org, Kyungtae Kim <kt0755@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.4 27/36] vt: keyboard: avoid signed integer overflow in k_ascii
+Date:   Tue,  9 Jun 2020 19:44:27 +0200
+Message-Id: <20200609173935.042884554@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
-References: <20200609174022.938987501@linuxfoundation.org>
+In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
+References: <20200609173933.288044334@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,67 +43,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit d7110a26e5905ec2fe3fc88bc6a538901accb72b ]
+commit b86dab054059b970111b5516ae548efaae5b3aae upstream.
 
-When building with Clang + -Wtautological-compare and
-CONFIG_CPUMASK_OFFSTACK unset:
+When k_ascii is invoked several times in a row there is a potential for
+signed integer overflow:
 
-  arch/x86/mm/mmio-mod.c:375:6: warning: comparison of array 'downed_cpus'
-  equal to a null pointer is always false [-Wtautological-pointer-compare]
-          if (downed_cpus == NULL &&
-              ^~~~~~~~~~~    ~~~~
-  arch/x86/mm/mmio-mod.c:405:6: warning: comparison of array 'downed_cpus'
-  equal to a null pointer is always false [-Wtautological-pointer-compare]
-          if (downed_cpus == NULL || cpumask_weight(downed_cpus) == 0)
-              ^~~~~~~~~~~    ~~~~
-  2 warnings generated.
+UBSAN: Undefined behaviour in drivers/tty/vt/keyboard.c:888:19 signed integer overflow:
+10 * 1111111111 cannot be represented in type 'int'
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.6.11 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xce/0x128 lib/dump_stack.c:118
+ ubsan_epilogue+0xe/0x30 lib/ubsan.c:154
+ handle_overflow+0xdc/0xf0 lib/ubsan.c:184
+ __ubsan_handle_mul_overflow+0x2a/0x40 lib/ubsan.c:205
+ k_ascii+0xbf/0xd0 drivers/tty/vt/keyboard.c:888
+ kbd_keycode drivers/tty/vt/keyboard.c:1477 [inline]
+ kbd_event+0x888/0x3be0 drivers/tty/vt/keyboard.c:1495
 
-Commit
+While it can be worked around by using check_mul_overflow()/
+check_add_overflow(), it is better to introduce a separate flag to
+signal that number pad is being used to compose a symbol, and
+change type of the accumulator from signed to unsigned, thus
+avoiding undefined behavior when it overflows.
 
-  f7e30f01a9e2 ("cpumask: Add helper cpumask_available()")
+Reported-by: Kyungtae Kim <kt0755@gmail.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200525232740.GA262061@dtor-ws
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-added cpumask_available() to fix warnings of this nature. Use that here
-so that clang does not warn regardless of CONFIG_CPUMASK_OFFSTACK's
-value.
-
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Link: https://github.com/ClangBuiltLinux/linux/issues/982
-Link: https://lkml.kernel.org/r/20200408205323.44490-1-natechancellor@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/mm/mmio-mod.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/vt/keyboard.c |   26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/mm/mmio-mod.c b/arch/x86/mm/mmio-mod.c
-index 4d434ddb75db..f140b2d39319 100644
---- a/arch/x86/mm/mmio-mod.c
-+++ b/arch/x86/mm/mmio-mod.c
-@@ -385,7 +385,7 @@ static void enter_uniprocessor(void)
- 	int cpu;
- 	int err;
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -125,7 +125,11 @@ static DEFINE_SPINLOCK(func_buf_lock); /
+ static unsigned long key_down[BITS_TO_LONGS(KEY_CNT)];	/* keyboard key bitmap */
+ static unsigned char shift_down[NR_SHIFT];		/* shift state counters.. */
+ static bool dead_key_next;
+-static int npadch = -1;					/* -1 or number assembled on pad */
++
++/* Handles a number being assembled on the number pad */
++static bool npadch_active;
++static unsigned int npadch_value;
++
+ static unsigned int diacr;
+ static char rep;					/* flag telling character repeat */
  
--	if (downed_cpus == NULL &&
-+	if (!cpumask_available(downed_cpus) &&
- 	    !alloc_cpumask_var(&downed_cpus, GFP_KERNEL)) {
- 		pr_notice("Failed to allocate mask\n");
- 		goto out;
-@@ -415,7 +415,7 @@ static void leave_uniprocessor(void)
- 	int cpu;
- 	int err;
+@@ -815,12 +819,12 @@ static void k_shift(struct vc_data *vc,
+ 		shift_state &= ~(1 << value);
  
--	if (downed_cpus == NULL || cpumask_weight(downed_cpus) == 0)
-+	if (!cpumask_available(downed_cpus) || cpumask_weight(downed_cpus) == 0)
+ 	/* kludge */
+-	if (up_flag && shift_state != old_state && npadch != -1) {
++	if (up_flag && shift_state != old_state && npadch_active) {
+ 		if (kbd->kbdmode == VC_UNICODE)
+-			to_utf8(vc, npadch);
++			to_utf8(vc, npadch_value);
+ 		else
+-			put_queue(vc, npadch & 0xff);
+-		npadch = -1;
++			put_queue(vc, npadch_value & 0xff);
++		npadch_active = false;
+ 	}
+ }
+ 
+@@ -838,7 +842,7 @@ static void k_meta(struct vc_data *vc, u
+ 
+ static void k_ascii(struct vc_data *vc, unsigned char value, char up_flag)
+ {
+-	int base;
++	unsigned int base;
+ 
+ 	if (up_flag)
  		return;
- 	pr_notice("Re-enabling CPUs...\n");
- 	for_each_cpu(cpu, downed_cpus) {
--- 
-2.25.1
-
+@@ -852,10 +856,12 @@ static void k_ascii(struct vc_data *vc,
+ 		base = 16;
+ 	}
+ 
+-	if (npadch == -1)
+-		npadch = value;
+-	else
+-		npadch = npadch * base + value;
++	if (!npadch_active) {
++		npadch_value = 0;
++		npadch_active = true;
++	}
++
++	npadch_value = npadch_value * base + value;
+ }
+ 
+ static void k_lock(struct vc_data *vc, unsigned char value, char up_flag)
 
 
