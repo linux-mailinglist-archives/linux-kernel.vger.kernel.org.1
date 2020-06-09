@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401841F4633
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577071F45F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389001AbgFISYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:24:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57572 "EHLO mail.kernel.org"
+        id S1732253AbgFIRsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:48:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732018AbgFIRqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:46:50 -0400
+        id S1732216AbgFIRsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:48:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44F4F20801;
-        Tue,  9 Jun 2020 17:46:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C9AA20814;
+        Tue,  9 Jun 2020 17:48:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724809;
-        bh=mvN444EYeBC8fFHTPY2yR4t38No63yDfTSFm+X7LJlo=;
+        s=default; t=1591724885;
+        bh=I/C5wTw0k+vOVdGvsWnZiMB/R9OHvicC4Y/1i2mXlxo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dI3XWeqAQumcRqidexR9BFpGHseIgF93b1fSKXhRNBL08c23EimXMUBoczacf6N7y
-         OTufZU3/1S94XGz858/mxhQdDbL01rMWn64RJ9p4dLaJhZWnhCRaNPsFGUcfK4NjA/
-         rKm/dkTmNCu6jQr1D4pSxT3ojEWlB+WrWVLOd/mk=
+        b=M3waLlpvJpRt+SOuLMIrBciDiRGnf6W+0snLeF/cN0XONymjtFS3OvpHvPt6DW9ie
+         cf9VfG4usnWVFCottqXlBrkYj4+mumefDrr/SaVvStd8VCthOyL2A4xlCuv5OLl/xa
+         uprOj8bczj2RG92YcwNJ+gC0PQvBg566oAXLyM6Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 26/36] USB: serial: option: add Telit LE910C1-EUX compositions
-Date:   Tue,  9 Jun 2020 19:44:26 +0200
-Message-Id: <20200609173934.951285925@linuxfoundation.org>
+        stable@vger.kernel.org, Hu Jiahui <kirin.say@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.9 21/42] airo: Fix read overflows sending packets
+Date:   Tue,  9 Jun 2020 19:44:27 +0200
+Message-Id: <20200609174017.780861051@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
-References: <20200609173933.288044334@linuxfoundation.org>
+In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
+References: <20200609174015.379493548@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 399ad9477c523f721f8e51d4f824bdf7267f120c upstream.
+commit 11e7a91994c29da96d847f676be023da6a2c1359 upstream.
 
-Add Telit LE910C1-EUX compositions:
+The problem is that we always copy a minimum of ETH_ZLEN (60) bytes from
+skb->data even when skb->len is less than ETH_ZLEN so it leads to a read
+overflow.
 
-	0x1031: tty, tty, tty, rmnet
-	0x1033: tty, tty, tty, ecm
+The fix is to pad skb->data to at least ETH_ZLEN bytes.
 
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
-Link: https://lore.kernel.org/r/20200525211106.27338-1-dnlplm@gmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Cc: <stable@vger.kernel.org>
+Reported-by: Hu Jiahui <kirin.say@gmail.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200527184830.GA1164846@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/option.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/cisco/airo.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1146,6 +1146,10 @@ static const struct usb_device_id option
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_CC864_SINGLE) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_DE910_DUAL) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_UE910_V2) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1031, 0xff),	/* Telit LE910C1-EUX */
-+	 .driver_info = NCTRL(0) | RSVD(3) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1033, 0xff),	/* Telit LE910C1-EUX (ECM) */
-+	 .driver_info = NCTRL(0) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE922_USBCFG0),
- 	  .driver_info = RSVD(0) | RSVD(1) | NCTRL(2) | RSVD(3) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE922_USBCFG1),
+--- a/drivers/net/wireless/cisco/airo.c
++++ b/drivers/net/wireless/cisco/airo.c
+@@ -1928,6 +1928,10 @@ static netdev_tx_t mpi_start_xmit(struct
+ 		airo_print_err(dev->name, "%s: skb == NULL!",__func__);
+ 		return NETDEV_TX_OK;
+ 	}
++	if (skb_padto(skb, ETH_ZLEN)) {
++		dev->stats.tx_dropped++;
++		return NETDEV_TX_OK;
++	}
+ 	npacks = skb_queue_len (&ai->txq);
+ 
+ 	if (npacks >= MAXTXQ - 1) {
+@@ -2130,6 +2134,10 @@ static netdev_tx_t airo_start_xmit(struc
+ 		airo_print_err(dev->name, "%s: skb == NULL!", __func__);
+ 		return NETDEV_TX_OK;
+ 	}
++	if (skb_padto(skb, ETH_ZLEN)) {
++		dev->stats.tx_dropped++;
++		return NETDEV_TX_OK;
++	}
+ 
+ 	/* Find a vacant FID */
+ 	for( i = 0; i < MAX_FIDS / 2 && (fids[i] & 0xffff0000); i++ );
+@@ -2204,6 +2212,10 @@ static netdev_tx_t airo_start_xmit11(str
+ 		airo_print_err(dev->name, "%s: skb == NULL!", __func__);
+ 		return NETDEV_TX_OK;
+ 	}
++	if (skb_padto(skb, ETH_ZLEN)) {
++		dev->stats.tx_dropped++;
++		return NETDEV_TX_OK;
++	}
+ 
+ 	/* Find a vacant FID */
+ 	for( i = MAX_FIDS / 2; i < MAX_FIDS && (fids[i] & 0xffff0000); i++ );
 
 
