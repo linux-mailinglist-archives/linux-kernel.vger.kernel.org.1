@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E679C1F336B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 07:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92AB31F3372
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 07:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbgFIF3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 01:29:19 -0400
-Received: from ozlabs.org ([203.11.71.1]:38845 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727842AbgFIF3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 01:29:10 -0400
+        id S1727998AbgFIF3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 01:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727792AbgFIF3e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 01:29:34 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D88BC03E969
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 22:29:34 -0700 (PDT)
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 49gzFF26KKz9sTl; Tue,  9 Jun 2020 15:29:03 +1000 (AEST)
+        id 49gzFf057Gz9sTl; Tue,  9 Jun 2020 15:29:22 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leonardo Bras <leonardo@linux.ibm.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Allison Randal <allison@lohutok.net>,
-        Claudio Carvalho <cclaudio@linux.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
         Paul Mackerras <paulus@samba.org>,
-        Nathan Fontenot <nfont@linux.vnet.ibm.com>,
-        Bharata B Rao <bharata@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20200402195156.626430-1-leonardo@linux.ibm.com>
-References: <20200402195156.626430-1-leonardo@linux.ibm.com>
-Subject: Re: [PATCH v3 1/1] powerpc/kernel: Enables memory hot-remove after reboot on pseries guests
-Message-Id: <159168034470.1381411.12073746896730178123.b4-ty@ellerman.id.au>
-Date:   Tue,  9 Jun 2020 15:29:03 +1000 (AEST)
+        kbuild test robot <lkp@intel.com>,
+        linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <20200518181043.3363953-1-natechancellor@gmail.com>
+References: <87a7254bxd.fsf@mpe.ellerman.id.au> <20200518181043.3363953-1-natechancellor@gmail.com>
+Subject: Re: [PATCH] input: i8042: Remove special PowerPC handling
+Message-Id: <159168032784.1381411.6982899186952383628.b4-ty@ellerman.id.au>
+Date:   Tue,  9 Jun 2020 15:29:22 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Apr 2020 16:51:57 -0300, Leonardo Bras wrote:
-> While providing guests, it's desirable to resize it's memory on demand.
+On Mon, 18 May 2020 11:10:43 -0700, Nathan Chancellor wrote:
+> This causes a build error with CONFIG_WALNUT because kb_cs and kb_data
+> were removed in commit 917f0af9e5a9 ("powerpc: Remove arch/ppc and
+> include/asm-ppc").
 > 
-> By now, it's possible to do so by creating a guest with a small base
-> memory, hot-plugging all the rest, and using 'movable_node' kernel
-> command-line parameter, which puts all hot-plugged memory in
-> ZONE_MOVABLE, allowing it to be removed whenever needed.
+> ld.lld: error: undefined symbol: kb_cs
+> > referenced by i8042-ppcio.h:28 (drivers/input/serio/i8042-ppcio.h:28)
+> > input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
+> > referenced by i8042-ppcio.h:28 (drivers/input/serio/i8042-ppcio.h:28)
+> > input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
+> > referenced by i8042-ppcio.h:28 (drivers/input/serio/i8042-ppcio.h:28)
+> > input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
 > 
 > [...]
 
 Applied to powerpc/next.
 
-[1/1] powerpc/kernel: Enables memory hot-remove after reboot on pseries guests
-      https://git.kernel.org/powerpc/c/b6eca183e23e7a6625a0d2cdb806b7cd1abcd2d2
+[1/1] input: i8042 - Remove special PowerPC handling
+      https://git.kernel.org/powerpc/c/e4f4ffa8a98c24a4ab482669b1e2b4cfce3f52f4
 
 cheers
