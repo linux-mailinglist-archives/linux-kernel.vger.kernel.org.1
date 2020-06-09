@@ -2,39 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC541F4647
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC601F4606
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388924AbgFISZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:25:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56364 "EHLO mail.kernel.org"
+        id S2389065AbgFISXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:23:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731924AbgFIRqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:46:22 -0400
+        id S1732119AbgFIRrg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:47:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F359820820;
-        Tue,  9 Jun 2020 17:46:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5EE520801;
+        Tue,  9 Jun 2020 17:47:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724782;
-        bh=ZBFtnAmeQ8t9fKMcpKVMVgX3tj65vhesANvORxze0G8=;
+        s=default; t=1591724856;
+        bh=gz4yzpENGTwtO6BvLL61gS3WMm5cksSG2EmPaENhZtw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IbJ5WofGfrPyWQ7SeGwQoWwGK3wN+63vec3770o6miyO9RBcReKgimPVTe0Hcln7R
-         NxtI1Z/IANRN3RFP7VEpfDbR09fJPqafSuPjcDyQQCuTGHMmxhDl+Iwxf9Dgg7YQrF
-         RDR9LrYBPMB2Ajdajfdtv6S5HkGIL0e8urRUZPn8=
+        b=XoINWjCIWFHmRqoBdb55MjPhIUdGRPRwMm8BFlSk7XUQAzDNdOku9iH1NJw/76FRc
+         q1ZnJeQwJjVwIQLhXYpwDVgoF433aaKLulR2dVH6goZiu0Fux/dmRh7fCAVG3OyzNV
+         6cGjyD43pGXM0OqSG0RNR2Ty9AFlCJubS+3ll69k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Bart Van Assche <bart.vanassche@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 06/36] ALSA: hda - No loopback on ALC299 codec
-Date:   Tue,  9 Jun 2020 19:44:06 +0200
-Message-Id: <20200609173933.652838647@linuxfoundation.org>
+Subject: [PATCH 4.9 01/42] scsi: scsi_devinfo: fixup string compare
+Date:   Tue,  9 Jun 2020 19:44:07 +0200
+Message-Id: <20200609174015.533553608@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
-References: <20200609173933.288044334@linuxfoundation.org>
+In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
+References: <20200609174015.379493548@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,38 +49,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Hannes Reinecke <hare@suse.de>
 
-commit fa16b69f1299004b60b625f181143500a246e5cb upstream.
+commit b8018b973c7cefa5eb386540130fa47315b8e337 upstream.
 
-ALC299 has no loopback mixer, but the driver still tries to add a beep
-control over the mixer NID which leads to the error at accessing it.
-This patch fixes it by properly declaring mixer_nid=0 for this codec.
+When checking the model and vendor string we need to use the minimum
+value of either string, otherwise we'll miss out on wildcard matches.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=195775
-Fixes: 28f1f9b26cee ("ALSA: hda/realtek - Add new codec ID ALC299")
-Cc: stable@vger.kernel.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+And we should take care when matching with zero size strings; results
+might be unpredictable.  With this patch the rules for matching devinfo
+strings are as follows:
+
+- Vendor strings must match exactly
+- Empty Model strings will only match if the devinfo model
+  is also empty
+- Model strings shorter than the devinfo model string will
+  not match
+
+Fixes: 5e7ff2c ("SCSI: fix new bug in scsi_dev_info_list string matching")
+Signed-off-by: Hannes Reinecke <hare@suse.com>
+Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
+Reviewed-by: Bart Van Assche <bart.vanassche@wdc.com>
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/scsi/scsi_devinfo.c |   23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6342,8 +6342,11 @@ static int patch_alc269(struct hda_codec
- 		break;
- 	case 0x10ec0225:
- 	case 0x10ec0295:
-+		spec->codec_variant = ALC269_TYPE_ALC225;
-+		break;
- 	case 0x10ec0299:
- 		spec->codec_variant = ALC269_TYPE_ALC225;
-+		spec->gen.mixer_nid = 0; /* no loopback on ALC299 */
- 		break;
- 	case 0x10ec0234:
- 	case 0x10ec0274:
+--- a/drivers/scsi/scsi_devinfo.c
++++ b/drivers/scsi/scsi_devinfo.c
+@@ -394,8 +394,8 @@ EXPORT_SYMBOL(scsi_dev_info_list_add_key
+ 
+ /**
+  * scsi_dev_info_list_find - find a matching dev_info list entry.
+- * @vendor:	vendor string
+- * @model:	model (product) string
++ * @vendor:	full vendor string
++ * @model:	full model (product) string
+  * @key:	specify list to use
+  *
+  * Description:
+@@ -410,7 +410,7 @@ static struct scsi_dev_info_list *scsi_d
+ 	struct scsi_dev_info_list *devinfo;
+ 	struct scsi_dev_info_list_table *devinfo_table =
+ 		scsi_devinfo_lookup_by_key(key);
+-	size_t vmax, mmax;
++	size_t vmax, mmax, mlen;
+ 	const char *vskip, *mskip;
+ 
+ 	if (IS_ERR(devinfo_table))
+@@ -449,15 +449,18 @@ static struct scsi_dev_info_list *scsi_d
+ 			    dev_info_list) {
+ 		if (devinfo->compatible) {
+ 			/*
+-			 * Behave like the older version of get_device_flags.
++			 * vendor strings must be an exact match
+ 			 */
+-			if (memcmp(devinfo->vendor, vskip, vmax) ||
+-					(vmax < sizeof(devinfo->vendor) &&
+-						devinfo->vendor[vmax]))
++			if (vmax != strlen(devinfo->vendor) ||
++			    memcmp(devinfo->vendor, vskip, vmax))
+ 				continue;
+-			if (memcmp(devinfo->model, mskip, mmax) ||
+-					(mmax < sizeof(devinfo->model) &&
+-						devinfo->model[mmax]))
++
++			/*
++			 * @model specifies the full string, and
++			 * must be larger or equal to devinfo->model
++			 */
++			mlen = strlen(devinfo->model);
++			if (mmax < mlen || memcmp(devinfo->model, mskip, mlen))
+ 				continue;
+ 			return devinfo;
+ 		} else {
 
 
