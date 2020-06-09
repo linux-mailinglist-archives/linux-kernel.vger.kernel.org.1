@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FB51F3DC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D981F3DCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730198AbgFIOQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 10:16:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34674 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728338AbgFIOQz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:16:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591712214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YVbTooBt4UUkS5UYs7zdbnUxyfMbXNuMElqnNvrjHoA=;
-        b=LdBf5J1Sxe4DKl63+fNvwNimaGGlh5NmNB8xkPzwK4bABrtD93iDLyKBoJ7Nf/giIauACg
-        mmcWQlLdx0NYiq5enPOpjaIS1xYjWbd8HYeV95hRb/LAw43Rm2qJMBmxk+DdQyeS+Uj6mt
-        G/5qYAzMpi2VrP6zWb5jpBNrIvg3MrQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-ZhSurra8O_2w3QnNQbqLZQ-1; Tue, 09 Jun 2020 10:16:51 -0400
-X-MC-Unique: ZhSurra8O_2w3QnNQbqLZQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF2BA464;
-        Tue,  9 Jun 2020 14:16:50 +0000 (UTC)
-Received: from sandy.ghostprotocols.net (unknown [10.3.128.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 690AF8202B;
-        Tue,  9 Jun 2020 14:16:50 +0000 (UTC)
-Received: by sandy.ghostprotocols.net (Postfix, from userid 1000)
-        id 378671D1; Tue,  9 Jun 2020 11:16:47 -0300 (BRT)
-Date:   Tue, 9 Jun 2020 11:16:47 -0300
-From:   Arnaldo Carvalho de Melo <acme@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, mingo@elte.hu
-Subject: Re: [PATCH] perf headers: fix processing of pmu_mappings
-Message-ID: <20200609141647.GA10172@redhat.com>
-References: <20200608161805.65841-1-eranian@google.com>
- <CAP-5=fXmrbBqDj6udGJCLHF5ePERr1S5qTKGZZAUBC1EmA-8LQ@mail.gmail.com>
+        id S1730332AbgFIOS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:18:59 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:42004 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726967AbgFIOS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 10:18:57 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id E58AA6A53D90B98A796E;
+        Tue,  9 Jun 2020 22:18:51 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Tue, 9 Jun 2020
+ 22:18:44 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <gerrit@erg.abdn.ac.uk>,
+        <posk@google.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dccp@vger.kernel.org>, <wanghai38@huawei.com>
+Subject: [PATCH] dccp: Fix possible memleak in dccp_init and dccp_fini
+Date:   Tue, 9 Jun 2020 22:18:16 +0800
+Message-ID: <20200609141816.33467-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fXmrbBqDj6udGJCLHF5ePERr1S5qTKGZZAUBC1EmA-8LQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.5.20 (2009-12-10)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Jun 08, 2020 at 09:52:43AM -0700, Ian Rogers escreveu:
-> On Mon, Jun 8, 2020 at 9:18 AM Stephane Eranian <eranian@google.com> wrote:
-> > This patch fixes a bug in process_pmu_mappings() where the code
-> > would not produce an env->pmu_mappings string that was easily parsable.
-> > The function parses the PMU_MAPPING header information into a string
-> > consisting of value:name pairs where value is the PMU type identifier
-> > and name is the PMU name, e.g., 10:ibs_fetch. As it was, the code
-> > was producing a truncated string with only the first pair showing
-> > even though the rest was there but after the \0.
-> > This patch fixes the problem byt adding a proper white space between
-> > pairs and moving the \0 termination to the end. With this patch applied,
-> > all pairs appear and are easily parsed.
+There are some memory leaks in dccp_init() and dccp_fini().
 
-> > Before:
-> > 14:amd_iommu_1
+In dccp_fini() and the error handling path in dccp_init(), free lhash2
+is missing. Add inet_hashinfo2_free_mod() to do it.
 
-> > After:
-> > 14:amd_iommu_1 7:uprobe 5:breakpoint 10:amd_l3 19:amd_iommu_6 8:power 4:cpu 17:amd_iommu_4 15:amd_iommu_2 1:software 6:kprobe 13:amd_iommu_0 9:amd_df 20:amd_iommu_7 18:amd_iommu_5 2:tracepoint 21:msr 12:ibs_op 16:amd_iommu_3 11:ibs_fetch
+If inet_hashinfo2_init_mod() failed in dccp_init(),
+percpu_counter_destroy() should be called to destroy dccp_orphan_count.
+It need to goto out_free_percpu when inet_hashinfo2_init_mod() failed.
 
-Please check print_pmu_mappings() in tools/perf/util/header.c
+Fixes: c92c81df93df ("net: dccp: fix kernel crash on module load")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ include/net/inet_hashtables.h | 6 ++++++
+ net/dccp/proto.c              | 7 +++++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
-Before your patch:
-
-  [root@five ~]# perf report --header-only | grep "pmu mappings"
-  # pmu mappings: amd_df = 8, software = 1, ibs_op = 11, ibs_fetch = 10, uprobe = 7, cpu = 4, amd_iommu_0 = 12, breakpoint = 5, amd_l3 = 9, tracepoint = 2, kprobe = 6, msr = 13
-  [root@five ~]#
-
-After your patch:
-
-  [root@five ~]# perf report --header-only | grep "pmu mappings"
-  # pmu mappings: amd_df 1:software 11:ibs_op 10:ibs_fetch 7:uprobe 4:cpu 12:amd_iommu_0 5:breakpoint 9:amd_l3 2:tracepoint 6:kprobe 13:msr = 8# pmu mappings: unable to read
-  [root@five ~]# 
-
-I think having it space separated, as you propose, is best, but haven't
-checked if there are other cases that process ff->ph->env.pmu_mappings
-and expect it to be \0 separated, like print_pmu_mappings().
-
-Regards,
-
-- Arnaldo
+diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
+index ad64ba6..9256097 100644
+--- a/include/net/inet_hashtables.h
++++ b/include/net/inet_hashtables.h
+@@ -185,6 +185,12 @@ static inline spinlock_t *inet_ehash_lockp(
+ 
+ int inet_ehash_locks_alloc(struct inet_hashinfo *hashinfo);
+ 
++static inline void inet_hashinfo2_free_mod(struct inet_hashinfo *h)
++{
++	kfree(h->lhash2);
++	h->lhash2 = NULL;
++}
++
+ static inline void inet_ehash_locks_free(struct inet_hashinfo *hashinfo)
+ {
+ 	kvfree(hashinfo->ehash_locks);
+diff --git a/net/dccp/proto.c b/net/dccp/proto.c
+index 4af8a98..c13b660 100644
+--- a/net/dccp/proto.c
++++ b/net/dccp/proto.c
+@@ -1139,14 +1139,14 @@ static int __init dccp_init(void)
+ 	inet_hashinfo_init(&dccp_hashinfo);
+ 	rc = inet_hashinfo2_init_mod(&dccp_hashinfo);
+ 	if (rc)
+-		goto out_fail;
++		goto out_free_percpu;
+ 	rc = -ENOBUFS;
+ 	dccp_hashinfo.bind_bucket_cachep =
+ 		kmem_cache_create("dccp_bind_bucket",
+ 				  sizeof(struct inet_bind_bucket), 0,
+ 				  SLAB_HWCACHE_ALIGN, NULL);
+ 	if (!dccp_hashinfo.bind_bucket_cachep)
+-		goto out_free_percpu;
++		goto out_free_hashinfo2;
+ 
+ 	/*
+ 	 * Size and allocate the main established and bind bucket
+@@ -1242,6 +1242,8 @@ static int __init dccp_init(void)
+ 	free_pages((unsigned long)dccp_hashinfo.ehash, ehash_order);
+ out_free_bind_bucket_cachep:
+ 	kmem_cache_destroy(dccp_hashinfo.bind_bucket_cachep);
++out_free_hashinfo2:
++	inet_hashinfo2_free_mod(&dccp_hashinfo);
+ out_free_percpu:
+ 	percpu_counter_destroy(&dccp_orphan_count);
+ out_fail:
+@@ -1265,6 +1267,7 @@ static void __exit dccp_fini(void)
+ 	kmem_cache_destroy(dccp_hashinfo.bind_bucket_cachep);
+ 	dccp_ackvec_exit();
+ 	dccp_sysctl_exit();
++	inet_hashinfo2_free_mod(&dccp_hashinfo);
+ 	percpu_counter_destroy(&dccp_orphan_count);
+ }
+ 
+-- 
+1.8.3.1
 
