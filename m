@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC701F36C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 11:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4E41F36CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 11:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgFIJQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 05:16:49 -0400
-Received: from mga07.intel.com ([134.134.136.100]:65193 "EHLO mga07.intel.com"
+        id S1728383AbgFIJRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 05:17:18 -0400
+Received: from mga09.intel.com ([134.134.136.24]:23588 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727975AbgFIJQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 05:16:48 -0400
-IronPort-SDR: ReFmBkqDpzgMDluIiWAMUWcAAN9i12uFTzk1Zlw+5Oy7ZWevKW1dX3QZADjtSarVqOIPhIoWNj
- TU/tJvVO7IXg==
+        id S1727941AbgFIJRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 05:17:16 -0400
+IronPort-SDR: LAP8rWwxODkyBVO1UwgnqQALfAmrg8NIop5MpltPduc56x4qCAtgNcQhCricP0Cp5CVZQ4/ntG
+ 44hWOPLEkbXQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 02:16:47 -0700
-IronPort-SDR: DHCLJdYjcY8ckOKfzURIh3dxYBRhuAhHF4Uv53Aj7tCcARUyI4WitszBXQtMWFx6GXm92lJvGO
- 14Mc9AVmNAQA==
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 02:17:16 -0700
+IronPort-SDR: 7cluu1AJqmlLsVdBgUdaomWUS4wfBrnR/7XQqSWOrWqQqGI3r3Sp5GIcqS7x7Ojdke7kdoxDtD
+ hE5DknQ8/NaQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,491,1583222400"; 
-   d="scan'208";a="258947635"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007.fm.intel.com with ESMTP; 09 Jun 2020 02:16:46 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jiaNF-00BrC1-E9; Tue, 09 Jun 2020 12:16:49 +0300
-Date:   Tue, 9 Jun 2020 12:16:49 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Wei Yang <richard.weiyang@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [Patch v2] lib: test get_count_order/long in test_bitops.c
-Message-ID: <20200609091649.GX2428291@smile.fi.intel.com>
-References: <20200602223728.32722-1-richard.weiyang@gmail.com>
- <CAMuHMdUfnmm4bXVRvFOmG5DFYR+LtcZ1UviDszr9bByiN=DO+Q@mail.gmail.com>
- <20200604122805.d2ndjmkmti6wl3nz@master>
- <CAMuHMdXnLUS8F4nWJBqDjoKhBmF2_ihfwe4jTGxuZ1e_WKRNPQ@mail.gmail.com>
- <20200605230610.bizp2j23ivyma5rn@master>
- <20200605171629.d931068c1a4d720d8faa2704@linux-foundation.org>
- <20200608223112.ftncszh7hfnmqj3m@master>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200608223112.ftncszh7hfnmqj3m@master>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+   d="scan'208";a="306123608"
+Received: from gklab-125-110.igk.intel.com ([10.91.125.110])
+  by fmsmga002.fm.intel.com with ESMTP; 09 Jun 2020 02:17:13 -0700
+From:   Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Cc:     Piotr Stankiewicz <piotr.stankiewicz@intel.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Prabhakar Kushwaha <pkushwaha@marvell.com>,
+        Hanna Hawa <hhhawa@amazon.com>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 04/15] ahci: Use PCI_IRQ_MSI_TYPES where appropriate
+Date:   Tue,  9 Jun 2020 11:17:09 +0200
+Message-Id: <20200609091711.892-1-piotr.stankiewicz@intel.com>
+X-Mailer: git-send-email 2.17.2
+In-Reply-To: <20200609091148.32749-1-piotr.stankiewicz@intel.com>
+References: <20200609091148.32749-1-piotr.stankiewicz@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 10:31:12PM +0000, Wei Yang wrote:
-> On Fri, Jun 05, 2020 at 05:16:29PM -0700, Andrew Morton wrote:
+Seeing as there is shorthand available to use when asking for any type
+of interrupt, or any type of message signalled interrupt, leverage it.
 
-...
+Signed-off-by: Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+---
+ drivers/ata/ahci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> The test on 64bit machine pass. Since I don't have a 32bit machine by hand, 
-
-Out of curiosity what that machine is?
-
-> Geert, would you mind have a try on 32bit machine? 
-
+diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+index 0c0a736eb861..ca1bf4ef0f17 100644
+--- a/drivers/ata/ahci.c
++++ b/drivers/ata/ahci.c
+@@ -1556,7 +1556,7 @@ static int ahci_init_msi(struct pci_dev *pdev, unsigned int n_ports,
+ 	 */
+ 	if (n_ports > 1) {
+ 		nvec = pci_alloc_irq_vectors(pdev, n_ports, INT_MAX,
+-				PCI_IRQ_MSIX | PCI_IRQ_MSI);
++				PCI_IRQ_MSI_TYPES);
+ 		if (nvec > 0) {
+ 			if (!(readl(hpriv->mmio + HOST_CTL) & HOST_MRSM)) {
+ 				hpriv->get_irq_vector = ahci_get_irq_vector;
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.2
 
