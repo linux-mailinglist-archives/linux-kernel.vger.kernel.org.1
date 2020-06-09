@@ -2,347 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4F01F3D07
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A44FE1F3D24
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730052AbgFINqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 09:46:52 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:51428 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726803AbgFINqv (ORCPT
+        id S1730260AbgFINtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 09:49:13 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:41404 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729779AbgFINtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 09:46:51 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 059DkcNx024577;
-        Tue, 9 Jun 2020 08:46:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1591710398;
-        bh=CRDrwcybVT9N4+Rd1TgbkKxzZEB1yAs9hUhxticrpIY=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=neUnJu+mO8NHT+A4pwdDZdXv50a43/WeXz/kI8Il9FmHC80yKySP12nAfZBNIhTKi
-         hztEM11yYm1pR4rM7RUwRqKTBb6xhumzbA8AbyWiv0NL1m/yNeVMB91VrBSj8mmADl
-         yVLOQkcUE2Lnb9sGdaF8lTXSkhOvBPbjXI2ijDzc=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 059Dkc2R056437;
-        Tue, 9 Jun 2020 08:46:38 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Jun
- 2020 08:46:37 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 9 Jun 2020 08:46:37 -0500
-Received: from [10.250.233.85] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 059DkZi5124176;
-        Tue, 9 Jun 2020 08:46:35 -0500
-Subject: Re: [PATCH v4] PCI: cadence: Use "dma-ranges" instead of
- "cdns,no-bar-match-nbits" property
-To:     Rob Herring <robh@kernel.org>
-CC:     Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200521080153.5902-1-kishon@ti.com>
- <CAL_Jsq+ZScKn1BJ9YWcs1uNEmLq5+XOdWfFNfF-S7cAqkYB1KA@mail.gmail.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <8b30d785-7f21-92e4-47e9-c8bfe76cc6cc@ti.com>
-Date:   Tue, 9 Jun 2020 19:16:34 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+ZScKn1BJ9YWcs1uNEmLq5+XOdWfFNfF-S7cAqkYB1KA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Tue, 9 Jun 2020 09:49:05 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01419;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0U.6GXtb_1591710536;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U.6GXtb_1591710536)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 09 Jun 2020 21:48:56 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        dhowells@redhat.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, jmorris@namei.org, serge@hallyn.com,
+        nramas@linux.microsoft.com, tusharsu@linux.microsoft.com,
+        zohar@linux.ibm.com, gilad@benyossef.com, pvanleeuwen@rambus.com
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-security-module@vger.kernel.org, zhang.jia@linux.alibaba.com,
+        tianjia.zhang@linux.alibaba.com
+Subject: [PATCH v3 0/8] crpyto: introduce OSCCA certificate and SM2 asymmetric algorithm 
+Date:   Tue,  9 Jun 2020 21:48:47 +0800
+Message-Id: <20200609134855.21431-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hello all,
 
-On 5/27/2020 3:29 AM, Rob Herring wrote:
-> On Thu, May 21, 2020 at 2:02 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
->>
->> Cadence PCIe core driver (host mode) uses "cdns,no-bar-match-nbits"
->> property to configure the number of bits passed through from PCIe
->> address to internal address in Inbound Address Translation register.
->> This only used the NO MATCH BAR.
->>
->> However standard PCI dt-binding already defines "dma-ranges" to
->> describe the address ranges accessible by PCIe controller. Add support
->> in Cadence PCIe host driver to parse dma-ranges and configure the
->> inbound regions for BAR0, BAR1 and NO MATCH BAR. Cadence IP specifies
->> maximum size for BAR0 as 256GB, maximum size for BAR1 as 2 GB.
->>
->> This adds support to take the next biggest region in "dma-ranges" and
->> find the smallest BAR that each of the regions fit in and if there is
->> no BAR big enough to hold the region, split the region to see if it can
->> be fitted using multiple BARs.
->>
->> "dma-ranges" of J721E will be
->> dma-ranges = <0x02000000 0x0 0x0 0x0 0x0 0x10000 0x0>;
->> Since there is no BAR which can hold 2^48 size, NO_MATCH_BAR will be
->> used here.
->>
->> Legacy device tree binding compatibility is maintained by retaining
->> support for "cdns,no-bar-match-nbits".
->>
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->> ---
->> The previous version of the patch can be found @
->> https://lore.kernel.org/linux-arm-kernel/20200508130646.23939-5-kishon@ti.com/
->>
->> Changes from v3:
->> *) The whole logic of how we select a BAR to fit a region from
->> dma-ranges has been changed.
->>   1) First select the biggest region in "dma-ranges" (after combining
->>      adjacent regions)
->>   2) Try to fit this region in a smallest available BAR whose size is
->>      greater than the region size
->>   3) If no such BAR is available try to find biggest availalbe BAR
->>      whose size is lesser than the region size and only fit part of the
->>      region in that BAR.
->>   4) Repeat steps 3 and 4, to fit the remaining region size.
->>  .../controller/cadence/pcie-cadence-host.c    | 254 +++++++++++++++++-
->>  drivers/pci/controller/cadence/pcie-cadence.h |  28 +-
->>  2 files changed, 265 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
->> index 6ecebb79057a..cf8b34b71b8f 100644
->> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
->> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
->> @@ -11,6 +11,12 @@
->>
->>  #include "pcie-cadence.h"
->>
->> +static u64 bar_max_size[] = {
->> +       [RP_BAR0] = _ULL(128 * SZ_2G),
->> +       [RP_BAR1] = SZ_2G,
->> +       [RP_NO_BAR] = _BITULL(63),
->> +};
->> +
->>  void __iomem *cdns_pci_map_bus(struct pci_bus *bus, unsigned int devfn,
->>                                int where)
->>  {
->> @@ -106,6 +112,226 @@ static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
->>         return 0;
->>  }
->>
->> +static int cdns_pcie_host_bar_ib_config(struct cdns_pcie_rc *rc,
->> +                                       enum cdns_pcie_rp_bar bar,
->> +                                       u64 cpu_addr, u64 size,
->> +                                       unsigned long flags)
->> +{
->> +       struct cdns_pcie *pcie = &rc->pcie;
->> +       u32 addr0, addr1, aperture, value;
->> +
->> +       if (!rc->avail_ib_bar[bar])
->> +               return -EBUSY;
->> +
->> +       rc->avail_ib_bar[bar] = false;
->> +
->> +       aperture = ilog2(size);
->> +       addr0 = CDNS_PCIE_AT_IB_RP_BAR_ADDR0_NBITS(aperture) |
->> +               (lower_32_bits(cpu_addr) & GENMASK(31, 8));
->> +       addr1 = upper_32_bits(cpu_addr);
->> +       cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_RP_BAR_ADDR0(bar), addr0);
->> +       cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_RP_BAR_ADDR1(bar), addr1);
->> +
->> +       if (bar == RP_NO_BAR)
->> +               return 0;
->> +
->> +       value = cdns_pcie_readl(pcie, CDNS_PCIE_LM_RC_BAR_CFG);
-> 
-> Why do you need to read this first? If you do, don't you need to clear
-> out any fields you're potentially writing?
+This new module implement the OSCCA certificate and SM2 public key
+algorithm. It was published by State Encryption Management Bureau, China.
+List of specifications for OSCCA certificate and SM2 elliptic curve
+public key cryptography:
 
-Part of the initialization is done in cdns_pcie_host_init_root_port() and part
-here. I'll add code to clear out the fields.
-> 
->> +       if (size + cpu_addr >= SZ_4G) {
->> +               if (!(flags & IORESOURCE_PREFETCH))
->> +                       value |= LM_RC_BAR_CFG_CTRL_MEM_64BITS(bar);
->> +               value |= LM_RC_BAR_CFG_CTRL_PREF_MEM_64BITS(bar);
->> +       } else {
->> +               if (!(flags & IORESOURCE_PREFETCH))
->> +                       value |= LM_RC_BAR_CFG_CTRL_MEM_32BITS(bar);
->> +               value |= LM_RC_BAR_CFG_CTRL_PREF_MEM_32BITS(bar);
->> +       }
->> +
->> +       value |= LM_RC_BAR_CFG_APERTURE(bar, aperture);
->> +       cdns_pcie_writel(pcie, CDNS_PCIE_LM_RC_BAR_CFG, value);
->> +
->> +       return 0;
->> +}
->> +
->> +static enum cdns_pcie_rp_bar
->> +cdns_pcie_host_find_min_bar(struct cdns_pcie_rc *rc, u64 size)
->> +{
->> +       enum cdns_pcie_rp_bar bar, sel_bar;
->> +
->> +       sel_bar = RP_BAR_UNDEFINED;
->> +       for (bar = RP_BAR0; bar <= RP_NO_BAR; bar++) {
->> +               if (!rc->avail_ib_bar[bar])
->> +                       continue;
->> +
->> +               if (size <= bar_max_size[bar]) {
->> +                       if (sel_bar == RP_BAR_UNDEFINED) {
->> +                               sel_bar = bar;
->> +                               continue;
->> +                       }
->> +
->> +                       if (bar_max_size[bar] < bar_max_size[sel_bar])
->> +                               sel_bar = bar;
->> +               }
->> +       }
->> +
->> +       return sel_bar;
->> +}
->> +
->> +static enum cdns_pcie_rp_bar
->> +cdns_pcie_host_find_max_bar(struct cdns_pcie_rc *rc, u64 size)
->> +{
->> +       enum cdns_pcie_rp_bar bar, sel_bar;
->> +
->> +       sel_bar = RP_BAR_UNDEFINED;
->> +       for (bar = RP_BAR0; bar <= RP_NO_BAR; bar++) {
->> +               if (!rc->avail_ib_bar[bar])
->> +                       continue;
->> +
->> +               if (size >= bar_max_size[bar]) {
->> +                       if (sel_bar == RP_BAR_UNDEFINED) {
->> +                               sel_bar = bar;
->> +                               continue;
->> +                       }
->> +
->> +                       if (bar_max_size[bar] > bar_max_size[sel_bar])
->> +                               sel_bar = bar;
->> +               }
->> +       }
->> +
->> +       return sel_bar;
->> +}
->> +
->> +static int cdns_pcie_host_bar_config(struct cdns_pcie_rc *rc,
->> +                                    struct resource_entry *entry)
->> +{
->> +       u64 cpu_addr, pci_addr, size, winsize;
->> +       struct cdns_pcie *pcie = &rc->pcie;
->> +       struct device *dev = pcie->dev;
->> +       enum cdns_pcie_rp_bar bar;
->> +       unsigned long flags;
->> +       int ret;
->> +
->> +       cpu_addr = entry->res->start;
->> +       pci_addr = entry->res->start - entry->offset;
->> +       flags = entry->res->flags;
->> +       size = resource_size(entry->res);
->> +
->> +       if (entry->offset) {
->> +               dev_err(dev, "PCI addr: %llx must be equal to CPU addr: %llx\n",
->> +                       pci_addr, cpu_addr);
->> +               return -EINVAL;
->> +       }
->> +
->> +       while (size > 0) {
->> +               /*
->> +                * Try to find a minimum BAR whose size is greater than
->> +                * or equal to the remaining resource_entry size. This will
->> +                * fail if the size of each of the available BARs is less than
->> +                * the remaining resource_entry size.
->> +                * If a minimum BAR is found, IB ATU will be configured and
->> +                * exited.
->> +                */
->> +               bar = cdns_pcie_host_find_min_bar(rc, size);
->> +               if (bar != RP_BAR_UNDEFINED) {
->> +                       ret = cdns_pcie_host_bar_ib_config(rc, bar, cpu_addr,
->> +                                                          size, flags);
->> +                       if (ret)
->> +                               dev_err(dev, "IB BAR: %d config failed\n", bar);
->> +                       return ret;
->> +               }
->> +
->> +               /*
->> +                * If the control reaches here, it would mean the remaining
->> +                * resource_entry size cannot be fitted in a single BAR. So we
->> +                * find a maximum BAR whose size is less than or equal to the
->> +                * remaining resource_entry size and split the resource entry
->> +                * so that part of resource entry is fitted inside the maximum
->> +                * BAR. The remaining size would be fitted during the next
->> +                * iteration of the loop.
->> +                * If a maximum BAR is not found, there is no way we can fit
->> +                * this resource_entry, so we error out.
->> +                */
->> +               bar = cdns_pcie_host_find_max_bar(rc, size);
->> +               if (bar == RP_BAR_UNDEFINED) {
->> +                       dev_err(dev, "No free BAR to map cpu_addr %llx\n",
->> +                               cpu_addr);
->> +                       return -EINVAL;
->> +               }
->> +
->> +               winsize = bar_max_size[bar];
->> +               ret = cdns_pcie_host_bar_ib_config(rc, bar, cpu_addr, winsize,
->> +                                                  flags);
->> +               if (ret) {
->> +                       dev_err(dev, "IB BAR: %d config failed\n", bar);
->> +                       return ret;
->> +               }
->> +
->> +               size -= winsize;
->> +               cpu_addr += winsize;
->> +       }
->> +
->> +       return 0;
->> +}
->> +
->> +static int cdns_pcie_host_map_dma_ranges(struct cdns_pcie_rc *rc)
->> +{
->> +       struct resource_entry *entry, *ib_range[CDNS_PCIE_RP_MAX_IB];
->> +       struct cdns_pcie *pcie = &rc->pcie;
->> +       struct device *dev = pcie->dev;
->> +       struct device_node *np = dev->of_node;
->> +       struct pci_host_bridge *bridge;
->> +       u32 no_bar_nbits = 32;
->> +       int i = 0, j = 0, err;
->> +       u64 size;
->> +
->> +       bridge = pci_host_bridge_from_priv(rc);
->> +       if (!bridge)
->> +               return -ENOMEM;
->> +
->> +       if (list_empty(&bridge->dma_ranges)) {
->> +               of_property_read_u32(np, "cdns,no-bar-match-nbits",
->> +                                    &no_bar_nbits);
->> +               err = cdns_pcie_host_bar_ib_config(rc, RP_NO_BAR, 0x0,
->> +                                                  (u64)1 << no_bar_nbits, 0);
->> +               if (err)
->> +                       dev_err(dev, "IB BAR: %d config failed\n", RP_NO_BAR);
->> +               return err;
->> +       }
->> +
->> +       memset(ib_range, 0x00, sizeof(ib_range));
->> +       /* Sort the resource entries in descending order by resource size */
-> 
-> Use list_sort()
+* GM/T 0003.1-2012
+* GM/T 0003.2-2012
+* GM/T 0003.3-2012
+* GM/T 0003.4-2012
+* GM/T 0003.5-2012
+* GM/T 0015-2012
+* GM/T 0009-2012 
 
-Not sure why it's needed but it's explicitly been sorted in ascending order
-here in devm_of_pci_get_host_bridge_resources()
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/of.c#n377
+IETF: https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
+oscca: http://www.oscca.gov.cn/sca/xxgk/2010-12/17/content_1002386.shtml
+scctc: http://www.gmbz.org.cn/main/bzlb.html
 
-Using list_sort() will disturb that.
-> 
->> +       resource_list_for_each_entry(entry, &bridge->dma_ranges) {
->> +               if (i > CDNS_PCIE_RP_MAX_IB - 1) {
->> +                       dev_err(dev, "Ranges exceed maximum supported %d\n",
-> 
-> s/Ranges/dma-ranges entries/
+These patchs add the OID object identifier defined by OSCCA. The
+x509 certificate supports sm2-with-sm3 type certificate parsing
+and verification.
 
-Sure, will fix this.
+The sm2 algorithm is based on libgcrypt's mpi implementation, and has
+made some additions to the kernel's original mpi library, and added the
+implementation of ec to better support elliptic curve-like algorithms.
 
-Thanks
-Kishon
+sm2 has good support in both openssl and gnupg projects, and sm3 and sm4
+of the OSCCA algorithm family have also been implemented in the kernel.
+
+Among them, sm3 and sm4 have been well implemented in the kernel.
+This group of patches has newly introduced sm2. In order to implement
+sm2 more perfectly, I expanded the mpi library and introduced the
+ec implementation of the mpi library as the basic algorithm. Compared
+to the kernel's crypto/ecc.c, the implementation of mpi/ec.c is more
+complete and elegant, sm2 is implemented based on these algorithms.
+
+---
+v3 changes:
+  1. integrity asymmetric digsig support sm2-with-sm3 algorithm.
+  2. remove unused sm2_set_priv_key().
+  3. rebase on mainline.
+
+v2 changes:
+  1. simplify the sm2 algorithm and only retain the verify function.
+  2. extract the sm2 certificate code into a separate file.
+
+Tianjia Zhang (8):
+  crypto: sm3 - export crypto_sm3_final function
+  lib/mpi: Extend the MPI library
+  lib/mpi: Introduce ec implementation to MPI library
+  crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm
+  crypto: testmgr - support test with different ciphertext per
+    encryption
+  X.509: support OSCCA certificate parse
+  X.509: support OSCCA sm2-with-sm3 certificate verification
+  integrity: Asymmetric digsig supports SM2-with-SM3 algorithm
+
+ crypto/Kconfig                            |   17 +
+ crypto/Makefile                           |    8 +
+ crypto/asymmetric_keys/Makefile           |    1 +
+ crypto/asymmetric_keys/public_key.c       |    6 +
+ crypto/asymmetric_keys/public_key_sm2.c   |   59 +
+ crypto/asymmetric_keys/x509_cert_parser.c |   14 +-
+ crypto/asymmetric_keys/x509_public_key.c  |    2 +
+ crypto/sm2.c                              |  473 +++++++
+ crypto/sm2signature.asn1                  |    4 +
+ crypto/sm3_generic.c                      |    7 +-
+ crypto/testmgr.c                          |    7 +-
+ include/crypto/public_key.h               |   14 +
+ include/crypto/sm2.h                      |   25 +
+ include/crypto/sm3.h                      |    2 +
+ include/linux/mpi.h                       |  193 +++
+ include/linux/oid_registry.h              |    6 +
+ lib/mpi/Makefile                          |    6 +
+ lib/mpi/ec.c                              | 1538 +++++++++++++++++++++
+ lib/mpi/mpi-add.c                         |  207 +++
+ lib/mpi/mpi-bit.c                         |  251 ++++
+ lib/mpi/mpi-cmp.c                         |   46 +-
+ lib/mpi/mpi-div.c                         |  259 ++++
+ lib/mpi/mpi-internal.h                    |   53 +
+ lib/mpi/mpi-inv.c                         |  143 ++
+ lib/mpi/mpi-mod.c                         |  155 +++
+ lib/mpi/mpi-mul.c                         |  166 +++
+ lib/mpi/mpicoder.c                        |  336 +++++
+ lib/mpi/mpih-div.c                        |  294 ++++
+ lib/mpi/mpih-mul.c                        |   25 +
+ lib/mpi/mpiutil.c                         |  204 +++
+ security/integrity/digsig_asymmetric.c    |   14 +-
+ 31 files changed, 4517 insertions(+), 18 deletions(-)
+ create mode 100644 crypto/asymmetric_keys/public_key_sm2.c
+ create mode 100644 crypto/sm2.c
+ create mode 100644 crypto/sm2signature.asn1
+ create mode 100644 include/crypto/sm2.h
+ create mode 100644 lib/mpi/ec.c
+ create mode 100644 lib/mpi/mpi-add.c
+ create mode 100644 lib/mpi/mpi-div.c
+ create mode 100644 lib/mpi/mpi-inv.c
+ create mode 100644 lib/mpi/mpi-mod.c
+ create mode 100644 lib/mpi/mpi-mul.c
+
+-- 
+2.17.1
+
