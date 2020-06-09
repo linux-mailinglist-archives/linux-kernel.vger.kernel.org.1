@@ -2,170 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDD11F2B5D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF76D1F2C66
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732766AbgFIAPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:15:07 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:33908 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732210AbgFIAOo (ORCPT
+        id S1731557AbgFIAYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730513AbgFIAXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 20:14:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591661683;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HD882eS9OH3S3VV1WViNWe8Js+sPqHEy08aEq1E9ORs=;
-        b=cILibC/tR+Zug++FyqFvwBFTMnfQGI/ABuXrtLSDeRWMZkE2M4660uLi2VIgRQAO9JIhAB
-        wzGtPS1vX+xvU/WGUUpRaXkjilZ5ResLkpb2NFPUrb1udEiaC2sEZvVBPKNG95dvTCNO0E
-        DKWuBzx5ce7PJwAlajKVr85sl2crhg8=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-284-o0XpGo98MleYTTQawf2d5A-1; Mon, 08 Jun 2020 20:14:39 -0400
-X-MC-Unique: o0XpGo98MleYTTQawf2d5A-1
-Received: by mail-io1-f69.google.com with SMTP id p8so11945230ios.19
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 17:14:39 -0700 (PDT)
+        Mon, 8 Jun 2020 20:23:54 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E064C03E969;
+        Mon,  8 Jun 2020 17:23:54 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ga6so577905pjb.1;
+        Mon, 08 Jun 2020 17:23:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ul3C2ynzc7BlycjIPw2bQXJZLzMcXQ8t1H1WnEcp/Pg=;
+        b=pQeXUNELeG0+AqLfVUjksVW1sEmwS1UMA65+DHHb171Qq8I41wV6g7S91Z2e9POuht
+         DsjlmMCPitArkD3j4FBVX5Dbpq3QuJYPfUw7csuTgj/9KxcKrBO6t2tCohPtpW6l4u4E
+         y/8AdNTHnnOJF2tyaa5qj4aytcthjdbFs+f8wu5jVuposaRfji9j0dvLHYoDN8kWwRj8
+         m0U9RWIEBKd3R+sjBOoGUPsY9Sp48ihNUYEiI4XMkoUvnNaU0C3OhN2V4D87WTQCDm9s
+         EvhJ3yCJSk98zYrmyIOQwUGI6CfZk4pOy3C31PylYUtxPD+p3mfJZL4SY50dsyoKyV3R
+         /1xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HD882eS9OH3S3VV1WViNWe8Js+sPqHEy08aEq1E9ORs=;
-        b=mYXxZRE4uey5JrrccxGyKr6ff5YBIW5Z/4peEen53FBEtwjaldKh5l43CEsaXFfUkL
-         rrK8//JEHoLWyxkFv6PXvc9BU9jeXTGzG/LPdeXH/O9q6klKvUDTbbHprkm6aX7KZdFf
-         jHvEK0/YmWTjWhUe1TXluM+8aeZHA9M9bYEjZDxo2kwDQvFifRPX3eqBq6y03mhVOo2M
-         hf0l+/C++T68jWoEC6PCG9OlDazNy9mJbTPL2XGOAenbvZFddmmqPzbMInyjbcB7/c5Y
-         pgXLWJ+afa5bejj8/2SLk4GLxAvhc9N2Sq1SWTpw3OpUMEke76gYNpVaFo1xQreLRBKs
-         TADA==
-X-Gm-Message-State: AOAM530CMDiJBVfTzKzo9j1OjVwkDCabGZeNSSsdihAUUYd5CDeDPN/I
-        p6qOUtYC8bx5puSJgAD9mj8J/Q4ioy2b+F273ERMCCP+GsN0zcx9hKYvYsgYw91g1AG8lY7Ph5V
-        F8V8sJ7VK+dCblUjyBOI/hZDHfEd9CCURYD69xAxa
-X-Received: by 2002:a92:4899:: with SMTP id j25mr25560332ilg.168.1591661679101;
-        Mon, 08 Jun 2020 17:14:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzELESE+K/wYsirvszqaNXPPRRvDprGl6QEl149kIe4qX3GOTtJp+ATld3JvWRLCQNPe8wmFXSgJgJDrnUrPSE=
-X-Received: by 2002:a92:4899:: with SMTP id j25mr25560307ilg.168.1591661678726;
- Mon, 08 Jun 2020 17:14:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ul3C2ynzc7BlycjIPw2bQXJZLzMcXQ8t1H1WnEcp/Pg=;
+        b=ZhP5tsS0XfdzAKUhNuMdhH6NnmlzQnmdsw8cypatg/pnDGGpaLLRgZBluFVgiI0V8T
+         Z0iAGtFH2ZlyNlCN7nJwWAxeNT03aSxe2YfbmPjF2AsKrbnr8iePuPHRmRMj+k3bdJRJ
+         7PNylm9a5ttUZZ9l6AL/4k6gDT5RuFdSyum2+PBt1RybFJc2xbrEev6JFa02jOWjEHyV
+         P7n6v4LJjAWiWT6tUD23P2yZ9QfwDzu8xiJU0UwFcZ/22InUObnKy6HfFmhxty+OBZCy
+         Nx1jJS3yGj+z7Btv7+ZGdOjlC0MZOTlJdrWtdwv7z+Ux+r1ee5XMDhYKLPmobiZt5Ww0
+         TJYg==
+X-Gm-Message-State: AOAM531noxESkxAM6eXG4a/Pn5ok1OjIq+QFQarhUd/kr81fXX7F+Dv2
+        uPbcy4CE/tsmF1VfHdkV5qc=
+X-Google-Smtp-Source: ABdhPJyonqW97chkteloFa/9u16s5FjdS9VoYBohMHfpQBVjEYM2aGCu1mVou8Ix0APuCp1PRVWKMQ==
+X-Received: by 2002:a17:902:bd0a:: with SMTP id p10mr1081713pls.102.1591662233656;
+        Mon, 08 Jun 2020 17:23:53 -0700 (PDT)
+Received: from sol (220-235-66-207.dyn.iinet.net.au. [220.235.66.207])
+        by smtp.gmail.com with ESMTPSA id x190sm6948164pgb.79.2020.06.08.17.23.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 08 Jun 2020 17:23:52 -0700 (PDT)
+Date:   Tue, 9 Jun 2020 08:23:46 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v4 12/13] gpiolib: add new ioctl() for monitoring changes
+ in line info
+Message-ID: <20200609002346.GA6042@sol>
+References: <20191224120709.18247-1-brgl@bgdev.pl>
+ <20191224120709.18247-13-brgl@bgdev.pl>
 MIME-Version: 1.0
-References: <20200608210058.37352-1-jarod@redhat.com> <20200608210058.37352-4-jarod@redhat.com>
- <20717.1591660112@famine>
-In-Reply-To: <20717.1591660112@famine>
-From:   Jarod Wilson <jarod@redhat.com>
-Date:   Mon, 8 Jun 2020 20:14:28 -0400
-Message-ID: <CAKfmpSfkgC20w3Bp1PCfNJaADU7Hhkk5u9+2cMH+6--b_9cn4Q@mail.gmail.com>
-Subject: Re: [PATCH net-next 3/4] bonding: support hardware encryption offload
- to slaves
-To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Netdev <netdev@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191224120709.18247-13-brgl@bgdev.pl>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 8, 2020 at 7:48 PM Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
->
-> Jarod Wilson <jarod@redhat.com> wrote:
->
-> >Currently, this support is limited to active-backup mode, as I'm not sure
-> >about the feasilibity of mapping an xfrm_state's offload handle to
-> >multiple hardware devices simultaneously, and we rely on being able to
-> >pass some hints to both the xfrm and NIC driver about whether or not
-> >they're operating on a slave device.
-> >
-> >I've tested this atop an Intel x520 device (ixgbe) using libreswan in
-> >transport mode, succesfully achieving ~4.3Gbps throughput with netperf
-> >(more or less identical to throughput on a bare NIC in this system),
-> >as well as successful failover and recovery mid-netperf.
-> >
-> >v2: rebase on latest net-next and wrap with #ifdef CONFIG_XFRM_OFFLOAD
-> >v3: add new CONFIG_BOND_XFRM_OFFLOAD option and fix shutdown path
-> >
-> >CC: Jay Vosburgh <j.vosburgh@gmail.com>
-> >CC: Veaceslav Falico <vfalico@gmail.com>
-> >CC: Andy Gospodarek <andy@greyhouse.net>
-> >CC: "David S. Miller" <davem@davemloft.net>
-> >CC: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-> >CC: Jakub Kicinski <kuba@kernel.org>
-> >CC: Steffen Klassert <steffen.klassert@secunet.com>
-> >CC: Herbert Xu <herbert@gondor.apana.org.au>
-> >CC: netdev@vger.kernel.org
-> >CC: intel-wired-lan@lists.osuosl.org
-> >Signed-off-by: Jarod Wilson <jarod@redhat.com>
-> >
-> >Signed-off-by: Jarod Wilson <jarod@redhat.com>
-> >---
-> > drivers/net/Kconfig             |  11 ++++
-> > drivers/net/bonding/bond_main.c | 111 +++++++++++++++++++++++++++++++-
-> > include/net/bonding.h           |   3 +
-> > 3 files changed, 122 insertions(+), 3 deletions(-)
-> >
-> >diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
-> >index c7d310ef1c83..938c4dd9bfb9 100644
-> >--- a/drivers/net/Kconfig
-> >+++ b/drivers/net/Kconfig
-> >@@ -56,6 +56,17 @@ config BONDING
-> >         To compile this driver as a module, choose M here: the module
-> >         will be called bonding.
-> >
-> >+config BONDING_XFRM_OFFLOAD
-> >+      bool "Bonding driver IPSec XFRM cryptography-offload pass-through support"
-> >+      depends on BONDING
-> >+      depends on XFRM_OFFLOAD
-> >+      default y
-> >+      select XFRM_ALGO
-> >+      ---help---
-> >+        Enable support for IPSec offload pass-through in the bonding driver.
-> >+        Currently limited to active-backup mode only, and requires slave
-> >+        devices that support hardware crypto offload.
-> >+
->
->         Why is this a separate Kconfig option?  Is it reasonable to
-> expect users to enable XFRM_OFFLOAD but not BONDING_XFRM_OFFLOAD?
+On Tue, Dec 24, 2019 at 01:07:08PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
 
-I'd originally just wrapped it with XFRM_OFFLOAD, but in an
-overabundance of caution, thought maybe gating it behind its own flag
-was better. I didn't get any feedback on the initial posting, so I've
-been sort of winging it. :)
+[snip!]
 
-> >diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> >index a25c65d4af71..01b80cef492a 100644
-> >--- a/drivers/net/bonding/bond_main.c
-> >+++ b/drivers/net/bonding/bond_main.c
-...
-> >@@ -4560,6 +4663,8 @@ void bond_setup(struct net_device *bond_dev)
-> >                               NETIF_F_HW_VLAN_CTAG_FILTER;
-> >
-> >       bond_dev->hw_features |= NETIF_F_GSO_ENCAP_ALL | NETIF_F_GSO_UDP_L4;
-> >+      if ((BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP))
-> >+              bond_dev->hw_features |= BOND_ENC_FEATURES;
->
->         Why is adding the ESP features to hw_features (here, and added
-> to BOND_ENC_FEATURES, above) not behind CONFIG_BONDING_XFRM_OFFLOAD?
->
->         If adding these features makes sense regardless of the
-> XFRM_OFFLOAD configuration, then shouldn't this change to feature
-> handling be a separate patch?  The feature handling is complex, and is
-> worth its own patch so it stands out in the log.
+> +static int lineinfo_changed_notify(struct notifier_block *nb,
+> +				   unsigned long action, void *data)
+> +{
+> +	struct gpio_chardev_data *priv = to_gpio_chardev_data(nb);
+> +	struct gpioline_info_changed chg;
+> +	struct gpio_desc *desc = data;
+> +	int ret;
+> +
+> +	if (!test_bit(desc_to_gpio(desc), priv->watched_lines))
+> +		return NOTIFY_DONE;
+> +
+> +	memset(&chg, 0, sizeof(chg));
+> +	chg.info.line_offset = gpio_chip_hwgpio(desc);
+> +	chg.event_type = action;
+> +	chg.timestamp = ktime_get_real_ns();
+> +	gpio_desc_to_lineinfo(desc, &chg.info);
+> +
 
-No, that would be an oversight by me. The build bot yelled at me on v1
-about builds with XFRM_OFFLOAD not enabled, and I neglected to wrap
-that bit too.
+Is this call legal?  It can sleep - in fact you recently changed that
+very function to move a mutex call outside of a spinlock protected section.
+Here it is being called within an RCU lock, as lineinfo_changed_notify
+is at the end of an atomic_notifier_call_chain.
 
-I'll do that in the next revision. I'm also fine with dropping the
-extra kconfig and just using XFRM_OFFLOAD for all of it, if that's
-sufficient.
+I was looking at adding a chg.seqno here and considering what level of
+locking would be appropriate for the source counter when I noticed that
+call. Hopefully I'm missing something.
 
--- 
-Jarod Wilson
-jarod@redhat.com
+Cheers,
+Kent.
 
