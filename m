@@ -2,136 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E94C1F47D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 22:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCD61F47E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 22:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389438AbgFIUOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 16:14:09 -0400
-Received: from mga02.intel.com ([134.134.136.20]:46624 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732949AbgFIUOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 16:14:08 -0400
-IronPort-SDR: pJjQmQ7rYVIqJHZ7M3dROX4oRMjFbvAqWtbNTBufvcA/TptP61OB3x5KUahfBAybOLUAUUcOFW
- dFiQetWm5oPA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 13:14:08 -0700
-IronPort-SDR: uPlyW+8nDixVNiEUxdlfEfyekV6D7tF/zCK1DQBiWjoZFvVDLqrUlA2S24HrpGgJM10qZS9E/t
- /u1+3pILi+tw==
-X-IronPort-AV: E=Sophos;i="5.73,493,1583222400"; 
-   d="scan'208";a="349628061"
-Received: from kcaccard-mobl.amr.corp.intel.com (HELO kcaccard-mobl1.jf.intel.com) ([10.209.86.25])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 13:14:06 -0700
-Message-ID: <9fdea0bc0008eccd6dfcad496b37930cf5bd364a.camel@linux.intel.com>
-Subject: Re: [PATCH v2 9/9] module: Reorder functions
-From:   Kristen Carlson Accardi <kristen@linux.intel.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jessica Yu <jeyu@kernel.org>,
-        arjan@linux.intel.com, linux-kernel@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, rick.p.edgecombe@intel.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Tony Luck <tony.luck@intel.com>
-Date:   Tue, 09 Jun 2020 13:14:04 -0700
-In-Reply-To: <202005211415.5A1ECC638@keescook>
-References: <20200521165641.15940-1-kristen@linux.intel.com>
-         <20200521165641.15940-10-kristen@linux.intel.com>
-         <202005211415.5A1ECC638@keescook>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+        id S2389465AbgFIUQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 16:16:04 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28526 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732949AbgFIUQD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 16:16:03 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 059K3NHb067144;
+        Tue, 9 Jun 2020 16:15:58 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31j6sewq99-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 16:15:58 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 059K40BD074241;
+        Tue, 9 Jun 2020 16:15:58 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31j6sewq90-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 16:15:58 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 059KEYpt024258;
+        Tue, 9 Jun 2020 20:15:57 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma02dal.us.ibm.com with ESMTP id 31g2sa17fj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 20:15:57 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 059KFuNd50856404
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Jun 2020 20:15:56 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A4429AE062;
+        Tue,  9 Jun 2020 20:15:56 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D2237AE05F;
+        Tue,  9 Jun 2020 20:15:55 +0000 (GMT)
+Received: from ghost4.ibm.com (unknown [9.211.141.69])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  9 Jun 2020 20:15:55 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-i2c@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, andy.shevchenko@gmail.com,
+        wsa@kernel.org, joel@jms.id.au, eajames@linux.ibm.com
+Subject: [PATCH v2 0/2] i2c: fsi: Fixes for systems with more ports
+Date:   Tue,  9 Jun 2020 15:15:53 -0500
+Message-Id: <20200609201555.11401-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-09_14:2020-06-09,2020-06-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ adultscore=0 mlxscore=0 cotscore=-2147483648 mlxlogscore=692
+ suspectscore=1 phishscore=0 spamscore=0 malwarescore=0 priorityscore=1501
+ bulkscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006090152
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-05-21 at 14:33 -0700, Kees Cook wrote:
-> Oh! And I am reminded suddenly about CONFIG_FG_KASLR needing to
-> interact
-> correctly with CONFIG_LD_DEAD_CODE_DATA_ELIMINATION in that we do NOT
-> want the sections to be collapsed at link time:
+This series fixes a register definition for the FSI-attached I2C master to
+allow all the available ports. In addition, the code to add an adapter for
+each port is modified to require a device-tree entry for the bus. This is so
+that systems with lots of busses that have no devices on them don't add lots
+of unecessary devices.
 
-sorry - I'm a little confused and was wondering if you could clarify
-something. Does this mean you expect CONFIG_FG_KASLR=y and
-CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y to be a valid config? I am not
-familiar with the option, but it seems like you are saying that it
-requires sections to be collapsed, in which case both of these options
-as yes would not be allowed? Should I actively prevent this in the
-Kconfig?
+Changes since v1:
+ - Remove the check for null device node since that is checked in
+   of_device_is_available
 
-Thanks.
+Eddie James (2):
+  i2c: fsi: Fix the port number field in status register
+  i2c: fsi: Prevent adding adapters for ports without dts nodes
 
-Kristen
+ drivers/i2c/busses/i2c-fsi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-> #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
-> 
-> (I think I had fixed this in some earlier version?)
-> 
-> I think you want this (untested):
-> 
-> 
-> diff --git a/Makefile b/Makefile
-> index 04f5662ae61a..a0d9acd3b900 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -853,8 +853,11 @@ ifdef CONFIG_DEBUG_SECTION_MISMATCH
->  KBUILD_CFLAGS += $(call cc-option, -fno-inline-functions-called-
-> once)
->  endif
->  
-> +ifneq ($(CONFIG_LD_DEAD_CODE_DATA_ELIMINATION)$(CONFIG_FG_KASLR),)
-> +KBUILD_CFLAGS_KERNEL += -ffunction-sections
-> +endif
->  ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-> -KBUILD_CFLAGS_KERNEL += -ffunction-sections -fdata-sections
-> +KBUILD_CFLAGS_KERNEL += -fdata-sections
->  LDFLAGS_vmlinux += --gc-sections
->  endif
->  
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-
-> generic/vmlinux.lds.h
-> index 71e387a5fe90..5f5c692751dd 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -93,20 +93,31 @@
->   * sections to be brought in with rodata.
->   */
->  #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-> -#define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
->  #define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..LPBX*
->  #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
->  #define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]*
->  #define BSS_MAIN .bss .bss.[0-9a-zA-Z_]*
->  #define SBSS_MAIN .sbss .sbss.[0-9a-zA-Z_]*
->  #else
-> -#define TEXT_MAIN .text
->  #define DATA_MAIN .data
->  #define SDATA_MAIN .sdata
->  #define RODATA_MAIN .rodata
->  #define BSS_MAIN .bss
->  #define SBSS_MAIN .sbss
->  #endif
-> +/*
-> + * Both LD_DEAD_CODE_DATA_ELIMINATION and CONFIG_FG_KASLR options
-> enable
-> + * -ffunction-sections, which produces separately named .text
-> sections. In
-> + * the case of CONFIG_FG_KASLR, they need to stay distinct so they
-> can be
-> + * separately randomized. Without CONFIG_FG_KASLR, the separate
-> .text
-> + * sections can be collected back into a common section, which makes
-> the
-> + * resulting image slightly smaller.
-> + */
-> +#if defined(CONFIG_LD_DEAD_CODE_DATA_ELIMINATION) &&
-> !defined(CONFIG_FG_KASLR)
-> +#define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
-> +#else
-> +#define TEXT_MAIN .text
-> +#endif
+-- 
+2.24.0
 
