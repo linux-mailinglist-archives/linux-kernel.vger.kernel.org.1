@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6A81F3EB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFE51F3EB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730693AbgFIO5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 10:57:34 -0400
-Received: from lists.gateworks.com ([108.161.130.12]:54523 "EHLO
-        lists.gateworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730110AbgFIO53 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:57:29 -0400
-Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
-        by lists.gateworks.com with esmtp (Exim 4.82)
-        (envelope-from <tharvey@gateworks.com>)
-        id 1jifjx-0002Dv-Ge; Tue, 09 Jun 2020 15:00:37 +0000
-From:   Tim Harvey <tharvey@gateworks.com>
-To:     Rob Herring <robh+dt@kernel.org>, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Robert Jones <rjones@gateworks.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH 2/2] hwmon: (gsc): add 16bit pre-scaled voltage mode
-Date:   Tue,  9 Jun 2020 07:57:20 -0700
-Message-Id: <1591714640-10332-3-git-send-email-tharvey@gateworks.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591714640-10332-1-git-send-email-tharvey@gateworks.com>
-References: <1591714640-10332-1-git-send-email-tharvey@gateworks.com>
+        id S1730697AbgFIO6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:58:20 -0400
+Received: from mga09.intel.com ([134.134.136.24]:54057 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726903AbgFIO6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 10:58:20 -0400
+IronPort-SDR: G63DDs6OgpbkV7WJuUu7Z1+a274vXCw76G8h2uI3Qf/XUZMJ3TvcEFT7lMsv5ZfAl9HsdDZBUt
+ C8eDWEsePDnw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 07:58:09 -0700
+IronPort-SDR: tMSN7Nuone8GvvVNmU8W6rqQ5cg9e7QBFaHz1xtf3c0cIhx/GpbXcOVAif3LeSrMB9PI4/7t/W
+ dIIUVVJDTIrQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,492,1583222400"; 
+   d="scan'208";a="314219612"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by FMSMGA003.fm.intel.com with SMTP; 09 Jun 2020 07:58:06 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 09 Jun 2020 17:57:45 +0300
+Date:   Tue, 9 Jun 2020 17:57:45 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Cyrus Lien <cyrus.lien@canonical.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/edid: add support for min horizontal rate equal to
+ max horizontal rate
+Message-ID: <20200609145745.GO6112@intel.com>
+References: <20200608195704.29841-1-cyrus.lien@canonical.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200608195704.29841-1-cyrus.lien@canonical.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add a 16-bit pre-scaled voltage mode to adc and clarify that existing
-pre-scaled mode is 24bit.
+On Tue, Jun 09, 2020 at 03:57:04AM +0800, Cyrus Lien wrote:
+> According to EDID spec, table 3.26, byte #6 and #8, which said "Minimum
+> rate value shall be less than or equal to maximum rate value". The minimum
+> horizontal/vertical rate value is able to be equal to maximum horizontal/
+> veritcal rate value.
 
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
----
- drivers/hwmon/gsc-hwmon.c               | 8 +++++---
- include/linux/platform_data/gsc_hwmon.h | 3 ++-
- 2 files changed, 7 insertions(+), 4 deletions(-)
+How does that justifiy ignoring the min value?
 
-diff --git a/drivers/hwmon/gsc-hwmon.c b/drivers/hwmon/gsc-hwmon.c
-index 2137bc6..3dfe2ca 100644
---- a/drivers/hwmon/gsc-hwmon.c
-+++ b/drivers/hwmon/gsc-hwmon.c
-@@ -159,7 +159,7 @@ gsc_hwmon_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
- 		return -EOPNOTSUPP;
- 	}
- 
--	sz = (ch->mode == mode_voltage) ? 3 : 2;
-+	sz = (ch->mode == mode_voltage_24bit) ? 3 : 2;
- 	ret = regmap_bulk_read(hwmon->regmap, ch->reg, buf, sz);
- 	if (ret)
- 		return ret;
-@@ -186,7 +186,8 @@ gsc_hwmon_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
- 		/* adjust by uV offset */
- 		tmp += ch->mvoffset;
- 		break;
--	case mode_voltage:
-+	case mode_voltage_24bit:
-+	case mode_voltage_16bit:
- 		/* no adjustment needed */
- 		break;
- 	}
-@@ -336,7 +337,8 @@ static int gsc_hwmon_probe(struct platform_device *pdev)
- 						     HWMON_T_LABEL;
- 			i_temp++;
- 			break;
--		case mode_voltage:
-+		case mode_voltage_24bit:
-+		case mode_voltage_16bit:
- 		case mode_voltage_raw:
- 			if (i_in == GSC_HWMON_MAX_IN_CH) {
- 				dev_err(gsc->dev, "too many input channels\n");
-diff --git a/include/linux/platform_data/gsc_hwmon.h b/include/linux/platform_data/gsc_hwmon.h
-index ec1611a..37a8f554d 100644
---- a/include/linux/platform_data/gsc_hwmon.h
-+++ b/include/linux/platform_data/gsc_hwmon.h
-@@ -4,8 +4,9 @@
- 
- enum gsc_hwmon_mode {
- 	mode_temperature,
--	mode_voltage,
-+	mode_voltage_24bit,
- 	mode_voltage_raw,
-+	mode_voltage_16bit,
- 	mode_max,
- };
- 
+> 
+> This change check if h/v-sync excess maximum horizontal/vertical rate if
+> hmin equal to hmax or vmin equal to vmax.
+> 
+> Signed-off-by: Cyrus Lien <cyrus.lien@canonical.com>
+> ---
+>  drivers/gpu/drm/drm_edid.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index fed653f13c26..23878320eabd 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -2674,6 +2674,9 @@ mode_in_hsync_range(const struct drm_display_mode *mode,
+>  	    hmax += ((t[4] & 0x08) ? 255 : 0);
+>  	hsync = drm_mode_hsync(mode);
+>  
+> +	if (hmax == hmin)
+> +		return (hsync <= hmax);
+> +
+>  	return (hsync <= hmax && hsync >= hmin);
+>  }
+>  
+> @@ -2691,6 +2694,9 @@ mode_in_vsync_range(const struct drm_display_mode *mode,
+>  	    vmax += ((t[4] & 0x02) ? 255 : 0);
+>  	vsync = drm_mode_vrefresh(mode);
+>  
+> +	if (vmax == vmin)
+> +		return (vsync <= vmax);
+> +
+>  	return (vsync <= vmax && vsync >= vmin);
+>  }
+>  
+> -- 
+> 2.25.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
 -- 
-2.7.4
-
+Ville Syrjälä
+Intel
