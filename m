@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995BB1F44E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282931F4499
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388479AbgFISJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:09:27 -0400
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:41414 "EHLO
+        id S2388243AbgFISGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:06:24 -0400
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:42030 "EHLO
         shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388175AbgFISF7 (ORCPT
+        by vger.kernel.org with ESMTP id S2387889AbgFISGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 14:05:59 -0400
+        Tue, 9 Jun 2020 14:06:10 -0400
 Received: from [192.168.4.242] (helo=deadeye)
         by shadbolt.decadent.org.uk with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.89)
         (envelope-from <ben@decadent.org.uk>)
-        id 1jiidG-0001p0-DX; Tue, 09 Jun 2020 19:05:54 +0100
+        id 1jiidG-0001p0-66; Tue, 09 Jun 2020 19:05:54 +0100
 Received: from ben by deadeye with local (Exim 4.94)
         (envelope-from <ben@decadent.org.uk>)
-        id 1jiidF-006VwX-O9; Tue, 09 Jun 2020 19:05:53 +0100
+        id 1jiidF-006Vwa-Pc; Tue, 09 Jun 2020 19:05:53 +0100
 Content-Type: text/plain; charset="UTF-8"
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
@@ -27,19 +27,17 @@ MIME-Version: 1.0
 From:   Ben Hutchings <ben@decadent.org.uk>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 CC:     akpm@linux-foundation.org, Denis Kirjanov <kda@linux-powerpc.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Johannes Thumshirn" <jthumshirn@suse.de>,
-        "Andrey Konovalov" <andreyknvl@google.com>,
-        "Christoph Hellwig" <hch@lst.de>,
-        "Tony Battersby" <tonyb@cybernetics.com>,
-        "Hannes Reinecke" <hare@suse.de>,
         "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Doug Gilbert" <dgilbert@interlog.com>
-Date:   Tue, 09 Jun 2020 19:04:33 +0100
-Message-ID: <lsq.1591725832.563793501@decadent.org.uk>
+        "Bart Van Assche" <bart.vanassche@wdc.com>,
+        "Tony Battersby" <tonyb@cybernetics.com>,
+        "Ewan D. Milne" <emilne@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "" <stable@vger.kernel.org>
+Date:   Tue, 09 Jun 2020 19:04:34 +0100
+Message-ID: <lsq.1591725832.25328194@decadent.org.uk>
 X-Mailer: LinuxStableQueue (scripts by bwh)
 X-Patchwork-Hint: ignore
-Subject: [PATCH 3.16 42/61] scsi: sg: don't return bogus Sg_requests
+Subject: [PATCH 3.16 43/61] scsi: sg: fix minor memory leak in error path
 In-Reply-To: <lsq.1591725831.850867383@decadent.org.uk>
 X-SA-Exim-Connect-IP: 192.168.4.242
 X-SA-Exim-Mail-From: ben@decadent.org.uk
@@ -53,47 +51,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 ------------------
 
-From: Johannes Thumshirn <jthumshirn@suse.de>
+From: Tony Battersby <tonyb@cybernetics.com>
 
-commit 48ae8484e9fc324b4968d33c585e54bc98e44d61 upstream.
+commit c170e5a8d222537e98aa8d4fddb667ff7a2ee114 upstream.
 
-If the list search in sg_get_rq_mark() fails to find a valid request, we
-return a bogus element. This then can later lead to a GPF in
-sg_remove_scat().
+Fix a minor memory leak when there is an error opening a /dev/sg device.
 
-So don't return bogus Sg_requests in sg_get_rq_mark() but NULL in case
-the list search doesn't find a valid request.
-
-Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-Reported-by: Andrey Konovalov <andreyknvl@google.com>
-Cc: Hannes Reinecke <hare@suse.de>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Doug Gilbert <dgilbert@interlog.com>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Acked-by: Doug Gilbert <dgilbert@interlog.com>
+Fixes: cc833acbee9d ("sg: O_EXCL and other lock handling")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Ewan D. Milne <emilne@redhat.com>
+Signed-off-by: Tony Battersby <tonyb@cybernetics.com>
+Reviewed-by: Bart Van Assche <bart.vanassche@wdc.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Cc: Tony Battersby <tonyb@cybernetics.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
 ---
- drivers/scsi/sg.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/scsi/sg.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 --- a/drivers/scsi/sg.c
 +++ b/drivers/scsi/sg.c
-@@ -2085,11 +2085,12 @@ sg_get_rq_mark(Sg_fd * sfp, int pack_id)
- 		if ((1 == resp->done) && (!resp->sg_io_owned) &&
- 		    ((-1 == pack_id) || (resp->header.pack_id == pack_id))) {
- 			resp->done = 2;	/* guard against other readers */
--			break;
-+			write_unlock_irqrestore(&sfp->rq_list_lock, iflags);
-+			return resp;
- 		}
+@@ -2168,6 +2168,7 @@ sg_add_sfp(Sg_device * sdp, int dev)
+ 	write_lock_irqsave(&sdp->sfd_lock, iflags);
+ 	if (atomic_read(&sdp->detaching)) {
+ 		write_unlock_irqrestore(&sdp->sfd_lock, iflags);
++		kfree(sfp);
+ 		return ERR_PTR(-ENODEV);
  	}
- 	write_unlock_irqrestore(&sfp->rq_list_lock, iflags);
--	return resp;
-+	return NULL;
- }
- 
- /* always adds to end of list */
+ 	list_add_tail(&sfp->sfd_siblings, &sdp->sfds);
 
