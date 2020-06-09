@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF341F353D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 09:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0831F3563
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 09:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgFIHnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 03:43:47 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:47338 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727992AbgFIHnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 03:43:33 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A5EA51A129F;
-        Tue,  9 Jun 2020 09:43:31 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 92D001A00E4;
-        Tue,  9 Jun 2020 09:43:21 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 33B0740326;
-        Tue,  9 Jun 2020 15:43:09 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, mturquette@baylibre.com,
-        sboyd@kernel.org, oleksandr.suvorov@toradex.com,
-        stefan.agner@toradex.com, arnd@arndb.de, abel.vesa@nxp.com,
-        peng.fan@nxp.com, aisheng.dong@nxp.com, tglx@linutronix.de,
-        allison@lohutok.net, gregkh@linuxfoundation.org, info@metux.net,
-        leonard.crestez@nxp.com, fugang.duan@nxp.com,
-        daniel.baluta@nxp.com, yuehaibing@huawei.com, sfr@canb.auug.org.au,
+        id S1727856AbgFIHsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 03:48:08 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:50536 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726813AbgFIHsE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 03:48:04 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 094B9AD4DA;
+        Tue,  9 Jun 2020 15:40:30 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from ubuntu18.lan (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P31250T139912844142336S1591688422511107_;
+        Tue, 09 Jun 2020 15:40:28 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <f1bb287535e694da4612b79938bd4beb>
+X-RL-SENDER: yifeng.zhao@rock-chips.com
+X-SENDER: zyf@rock-chips.com
+X-LOGIN-NAME: yifeng.zhao@rock-chips.com
+X-FST-TO: miquel.raynal@bootlin.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Yifeng Zhao <yifeng.zhao@rock-chips.com>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        heiko@sntech.de, linux-rockchip@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V2 9/9] clk: imx8qxp: Support module build
-Date:   Tue,  9 Jun 2020 15:32:13 +0800
-Message-Id: <1591687933-19495-10-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591687933-19495-1-git-send-email-Anson.Huang@nxp.com>
-References: <1591687933-19495-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        Yifeng Zhao <yifeng.zhao@rock-chips.com>
+Subject: [PATCH v6 0/8] Add Rockchip NFC drivers for RK3308 and others
+Date:   Tue,  9 Jun 2020 15:40:17 +0800
+Message-Id: <20200609074020.23860-1-yifeng.zhao@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support building i.MX8QXP clock driver as module.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-No change.
----
- drivers/clk/imx/Kconfig            | 2 +-
- drivers/clk/imx/clk-imx8qxp-lpcg.c | 1 +
- drivers/clk/imx/clk-imx8qxp.c      | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
+Rockchp's NFC(Nand Flash Controller) has four versions: V600, V622, V800 and V900.
+This series patch can support all four versions.
 
-diff --git a/drivers/clk/imx/Kconfig b/drivers/clk/imx/Kconfig
-index 060f9c3..26cedbf 100644
---- a/drivers/clk/imx/Kconfig
-+++ b/drivers/clk/imx/Kconfig
-@@ -37,7 +37,7 @@ config CLK_IMX8MQ
- 	    Build the driver for i.MX8MQ CCM Clock Driver
- 
- config CLK_IMX8QXP
--	bool "IMX8QXP SCU Clock"
-+	tristate "IMX8QXP SCU Clock"
- 	depends on ARCH_MXC && IMX_SCU && ARM64
- 	select MXC_CLK_SCU
- 	help
-diff --git a/drivers/clk/imx/clk-imx8qxp-lpcg.c b/drivers/clk/imx/clk-imx8qxp-lpcg.c
-index 04c8ee3..8afaefc 100644
---- a/drivers/clk/imx/clk-imx8qxp-lpcg.c
-+++ b/drivers/clk/imx/clk-imx8qxp-lpcg.c
-@@ -232,3 +232,4 @@ static struct platform_driver imx8qxp_lpcg_clk_driver = {
- };
- 
- builtin_platform_driver(imx8qxp_lpcg_clk_driver);
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/clk/imx/clk-imx8qxp.c b/drivers/clk/imx/clk-imx8qxp.c
-index 5e2903e..a34c7c5 100644
---- a/drivers/clk/imx/clk-imx8qxp.c
-+++ b/drivers/clk/imx/clk-imx8qxp.c
-@@ -152,3 +152,4 @@ static struct platform_driver imx8qxp_clk_driver = {
- 	.probe = imx8qxp_clk_probe,
- };
- builtin_platform_driver(imx8qxp_clk_driver);
-+MODULE_LICENSE("GPL v2");
+
+Changes in v6:
+- Fix some wrong define
+- Modified the definition of compatible
+- The mtd->name set by NAND label property.
+- Add some comments.
+- Fix compile error.
+
+Changes in v5:
+- Fix some wrong define
+- Add boot-medium define
+- Remove some compatible define
+- Add boot blocks support  with different ecc for bootrom.
+- Rename rockchip-nand.c to rockchip-nand-controller.c.
+- Unification of other variable names.
+- Remove some compatible define.
+
+Changes in v4:
+- The compatible define with rkxx_nfc
+- Add assigned-clocks
+- Fix some wrong define
+- Define platform data structure for the register offsets.
+- The compatible define with rkxx_nfc.
+- Use SET_SYSTEM_SLEEP_PM_OPS to define PM_OPS.
+- Use exec_op instead of legacy hooks.
+
+Changes in v3:
+- Change the title for the dt-bindings
+
+Changes in v2:
+- Fix compile error.
+- Include header files sorted by file name.
+
+Yifeng Zhao (8):
+  dt-bindings: mtd: Describe Rockchip RK3xxx NAND flash controller
+  mtd: rawnand: rockchip: NFC drivers for RK3308, RK2928 and others
+  MAINTAINERS: add maintainers to rockchip nfc
+  arm64: dts: rockchip: Add nfc dts for RK3308 SOC
+  arm64: dts: rockchip: Add nfc dts for PX30 SOC
+  arm: dts: rockchip: Add nfc dts for RV1108 SOC
+  arm: dts: rockchip: Add nfc dts for RK2928 and other SOC
+  arm: dts: rockchip: Add nfc dts for RK3036 SOC
+
+ .../mtd/rockchip,nand-controller.yaml         |  154 ++
+ MAINTAINERS                                   |    4 +-
+ arch/arm/boot/dts/rk3036.dtsi                 |   52 +
+ arch/arm/boot/dts/rk3xxx.dtsi                 |    9 +
+ arch/arm/boot/dts/rv1108.dtsi                 |   11 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   15 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      |   15 +
+ drivers/mtd/nand/raw/Kconfig                  |   21 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ .../mtd/nand/raw/rockchip-nand-controller.c   | 1393 +++++++++++++++++
+ 10 files changed, 1673 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+ create mode 100644 drivers/mtd/nand/raw/rockchip-nand-controller.c
+
 -- 
-2.7.4
+2.17.1
+
+
 
