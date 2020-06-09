@@ -2,117 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69FA1F2F07
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085FE1F2E02
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733299AbgFIArG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728904AbgFHXL1 (ORCPT
+        id S1728817AbgFIAil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:38:41 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:14394 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729806AbgFIAh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:11:27 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B437C08C5C2
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 16:11:26 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id r125so11258184lff.13
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 16:11:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CJSjfmdfr+D+EmPNk3Z1nkRrfh0xejQwx7NnJnA0lQQ=;
-        b=NVKuaGPaceMWcOFgmw1eVTMtvPeIOd7UPz0InJHeUglJC6pO7meWTznIv4HlInxEsP
-         qMQgwleLcz6X507SYBkJQ3i4xKuJHtsDur1ubxtMuiaAj8TxKUQC+5hEXyknSsMAk+cF
-         flW6msFmdj0cxi7sYaPDtJVVjWDmY2xdEwIQw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CJSjfmdfr+D+EmPNk3Z1nkRrfh0xejQwx7NnJnA0lQQ=;
-        b=SMizElHZ9Ec2vRyNzMtKSJISmG1QhSyN2Usb6b+CnITI65dgjapt4oPPavqfNVuSkB
-         aGsssjYbqWJToGVUDPdgtXVw1I5g1r3z4XeGpPEU0veHZvIxC2SVeDHqM1oecyw9DkVI
-         7n2072dv3YD7aBypLrZNoJM6YLXU4fqlKJIMB334VfS7puJiH1h0szNVCj2/BqIbueEu
-         YlzdiDzJus4drcMtYtnw9k5uR9kaoEI5SRHrAYW8sCIJu444WibBe6zHWbPNx2kegoVU
-         8lPcfgiXK3AmfmU/TzlX+kCEnuDwAoWE9UT8XzGL+qDznZySB0EzSb60cObLo2ZCBTXc
-         ZmoA==
-X-Gm-Message-State: AOAM533i9aoEp82EG7YMn4Km2cokUfJ74k+TnO8xMFC+NshLbx1uKix6
-        AjhGlVflUTk9FpvE52q0/pGdDJSc0UI=
-X-Google-Smtp-Source: ABdhPJy+4inaTRspSTk661s3MAAUNOn/5SQYr5rAdETK1FpPRgP8GIyTbF/AGWNn8tp2Pr/NjPBiKQ==
-X-Received: by 2002:a19:f111:: with SMTP id p17mr13568615lfh.91.1591657884752;
-        Mon, 08 Jun 2020 16:11:24 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id o23sm5326434lfg.0.2020.06.08.16.11.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Jun 2020 16:11:23 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id e4so22683300ljn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 16:11:23 -0700 (PDT)
-X-Received: by 2002:a2e:8991:: with SMTP id c17mr10842600lji.421.1591657883003;
- Mon, 08 Jun 2020 16:11:23 -0700 (PDT)
+        Mon, 8 Jun 2020 20:37:56 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200609003750epoutp04de5e08609dc11919585f42c6dfb24dab~WuSE479tu0627606276epoutp04c
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 00:37:50 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200609003750epoutp04de5e08609dc11919585f42c6dfb24dab~WuSE479tu0627606276epoutp04c
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591663070;
+        bh=q10Na41zgCObZAxAJMn9N7qtdNyK7r4tQYvR2kZZd4M=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=F5gn54VAk//Z48by8f0X1qw7NBjCk+0p+SJ6Ys0x34hy/y57sjAVmF2okhPW5okpz
+         yH9nMkvmBy3+UdIqkqoludKuWhr51Pe9EXnegOBoCn7pNCFsG0hGiDpsP+mb7+VkxX
+         WakJsBMc/L2mpt2i2iLE+fmqMhkpkT1ivx0VRU+Y=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20200609003750epcas1p3a17b1b95b0ef23dcd1c1988f6fcb98b8~WuSEgedWT2513525135epcas1p3b;
+        Tue,  9 Jun 2020 00:37:50 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.162]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 49grn92QpvzMqYkX; Tue,  9 Jun
+        2020 00:37:49 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        32.EF.29173.DD9DEDE5; Tue,  9 Jun 2020 09:37:49 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200609003748epcas1p1f034333f92535dc97f26cd9f49560551~WuSDSQ7yK2846528465epcas1p1N;
+        Tue,  9 Jun 2020 00:37:48 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200609003748epsmtrp26ce49200a9880f5e57c12609a201fea4~WuSDRsbRP0964509645epsmtrp2A;
+        Tue,  9 Jun 2020 00:37:48 +0000 (GMT)
+X-AuditID: b6c32a37-9b7ff700000071f5-27-5eded9dd804b
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2B.51.08382.CD9DEDE5; Tue,  9 Jun 2020 09:37:48 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200609003748epsmtip16b4f0313886b6c2080097ae6ffaf5729~WuSDJNifI1188711887epsmtip1W;
+        Tue,  9 Jun 2020 00:37:48 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Dan Carpenter'" <dan.carpenter@oracle.com>
+Cc:     "'Sungjong Seo'" <sj1557.seo@samsung.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>,
+        "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
+In-Reply-To: <20200608141629.GA1912173@mwanda>
+Subject: RE: [PATCH] exfat: Fix pontential use after free in
+ exfat_load_upcase_table()
+Date:   Tue, 9 Jun 2020 09:37:48 +0900
+Message-ID: <00a401d63df6$3370adc0$9a520940$@samsung.com>
 MIME-Version: 1.0
-References: <159110310259.14558.3096683243532489290.tglx@nanos.tec.linutronix.de>
-In-Reply-To: <159110310259.14558.3096683243532489290.tglx@nanos.tec.linutronix.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 8 Jun 2020 16:11:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whyF0uSwVVvJ8hjVdP=s1m8hXPUzqtbWaNRqz+B52DU5g@mail.gmail.com>
-Message-ID: <CAHk-=whyF0uSwVVvJ8hjVdP=s1m8hXPUzqtbWaNRqz+B52DU5g@mail.gmail.com>
-Subject: Re: [GIT pull - RFC] locking/kcsan for v5.8
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHN6CJjsnVWAfliAKZmdf3Bml3OWAGGpuqaqNPltlA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphk+LIzCtJLcpLzFFi42LZdljTQPfuzXtxBtM/81m8/jedxWLrLWmL
+        H3Nvs1js2XuSxeLyrjlsFlv+HWF1YPPYOesuu8fHp7dYPPq2rGL0+LxJLoAlKscmIzUxJbVI
+        ITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJxSdA1y0zB2i3kkJZYk4pUCggsbhY
+        Sd/Opii/tCRVISO/uMRWKbUgJafA0KBArzgxt7g0L10vOT/XytDAwMgUqDIhJ6N99XTmgrNs
+        Fe8/tLA1MM5l7WLk5JAQMJHYu2AXO4gtJLCDUeLaQqkuRi4g+xOjxMz1N9ggnG+MElea3zLB
+        dNx9858JIrGXUWJu5xSo9peMEsfuxoDYbAK6Ev/+7GcDsUUEDCTunXzBAtLALHCYUeJix0yw
+        SZwCehKrbs9lBrGFBSIkvj55zAhiswioSMy9dgOshlfAUuLcj/1QtqDEyZlPWEBsZgF5ie1v
+        5zBDXKQg8fPpMlaIZVYSv8/uZ4WoEZGY3dnGDLJYQqCXQ+LL1p9QT7tITJz5kw3CFpZ4dXwL
+        O4QtJfH53V6gOAeQXS3xcT/U/A5GiRffbSFsY4mb6zewgpQwC2hKrN+lDxFWlNj5ey4jxFo+
+        iXdfe1ghpvBKdLQJQZSoSvRdOgwNQ2mJrvYP7BMYlWYheWwWksdmIXlgFsKyBYwsqxjFUguK
+        c9NTiw0LjJHjehMjOFlqme9gnPb2g94hRiYOxkOMEhzMSiK81Q/uxAnxpiRWVqUW5ccXleak
+        Fh9iNAUG9URmKdHkfGC6ziuJNzQ1MjY2tjAxMzczNVYS5/W1uhAnJJCeWJKanZpakFoE08fE
+        wSnVwFR1zlnrmMbN7T/nPWZmnJE5N+/zKhFf5a+da/bcdn2Xfvjcdp5tfxXj129Ozpd99Cck
+        bPqZAnXxgqerX4od3dzdGBu0+Z7EhuqXy+b/+8TIe/pUnIXOGgOVV6rnCxclb0jmdQqaEMZg
+        0BzgptUvpn/bvDegPnzLn/igT1UTzZ2Xme/zzdCalnVDOGp1jO7bsGNTXn48Y+a417nll0Sd
+        Wznf9Lfc2768/cj+xWWGh7n/tYbbcb8Ymi1m3pp702nm0tgJlyqmySTd5s7I0dHm4GY6pj7j
+        yxXB1kgl06l5T/d42/E/4oirvfevNErkXuDaXuvHzq8WqExY8/zq6TNrNvDVGR493etxUuf0
+        tMYK5UVKLMUZiYZazEXFiQC2EZnSHwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGLMWRmVeSWpSXmKPExsWy7bCSnO6dm/fiDP4uMbN4/W86i8XWW9IW
+        P+beZrHYs/cki8XlXXPYLLb8O8LqwOaxc9Zddo+PT2+xePRtWcXo8XmTXABLFJdNSmpOZllq
+        kb5dAldG++rpzAVn2Sref2hha2Ccy9rFyMkhIWAicffNf6YuRi4OIYHdjBLbuuZAJaQljp04
+        w9zFyAFkC0scPlwMUfOcUeLSkVnMIDVsAroS//7sZwOxRQQMJO6dfMECUsQscJRRovVXD1hC
+        SKBeYvHhKUwgNqeAnsSq23PBmoUFwiTWHbjNCGKzCKhIzL12A6yGV8BS4tyP/VC2oMTJmU9Y
+        QI5gBupt2whWziwgL7H97RxmiDsVJH4+XcYKcYOVxO+z+1khakQkZne2MU9gFJ6FZNIshEmz
+        kEyahaRjASPLKkbJ1ILi3PTcYsMCw7zUcr3ixNzi0rx0veT83E2M4KjR0tzBuH3VB71DjEwc
+        jIcYJTiYlUR4qx/ciRPiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6NwYZyQQHpiSWp2ampBahFM
+        lomDU6qBaX7R669X87r1Q84GPbqaJbl7edv1eCXNqo/XdqrefNtmZX1iqc/aL3eSgnb/DPA/
+        fbuqc+MXry9TDq1uuZBV+jvihL2p5fK7pfu+lIlwK+Waxn6q6XubuWsLt2SkW23Ah7MLsrpd
+        J767Is9TFL6nwvhD14k3bz7tetz5ROpkxl2NIxe+Tv2eZ7jhWVlSOZO5n06l+tl7G/a8vNp5
+        6bS8ve/SuxKsYgryliHVNh7MZ94qLJKxiGI6z2mZsCWYa2HWiV9umTpPVkfOTdxtMv+u/Ham
+        tScNfm7+PbfZO+MTT3DsjbbjNXPDZq+0ki5t23z5UG+/dLT6y1tZlZNWHD6sqXGiPWv+7YcP
+        rjOv1Ghu/qjEUpyRaKjFXFScCADf18VmCQMAAA==
+X-CMS-MailID: 20200609003748epcas1p1f034333f92535dc97f26cd9f49560551
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200608141649epcas1p14558f3552afb0fcd3cd32a8c09afb880
+References: <CGME20200608141649epcas1p14558f3552afb0fcd3cd32a8c09afb880@epcas1p1.samsung.com>
+        <20200608141629.GA1912173@mwanda>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 6:07 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> please consider to pull the latest locking/kcsan branch from:
+> This code calls brelse(bh) and then dereferences "bh" on the next line resulting in a possible use
+> after free.  The brelse() should just be moved down a line.
+> 
+> Fixes: b676fdbcf4c8 ("exfat: standardize checksum calculation")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Applied. Thanks!
+> ---
+>  fs/exfat/nls.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/exfat/nls.c b/fs/exfat/nls.c index c1ec056954974..57b5a7a4d1f7a 100644
+> --- a/fs/exfat/nls.c
+> +++ b/fs/exfat/nls.c
+> @@ -692,8 +692,8 @@ static int exfat_load_upcase_table(struct super_block *sb,
+>  				index++;
+>  			}
+>  		}
+> -		brelse(bh);
+>  		chksum = exfat_calc_chksum32(bh->b_data, i, chksum, CS_DEFAULT);
+> +		brelse(bh);
+>  	}
+> 
+>  	if (index >= 0xFFFF && utbl_checksum == chksum)
+> --
+> 2.26.2
 
-Gaah. So I left this until I had cleared out my queues, and now that I
-start looking at it, I find myself more annoyed by the messy history
-than by the kcsan code.
 
-For example, it generates conflicts with the sparc tree, because the
-sparc page table changes weren't done as a shared branch, but
-duplicated as commits (and the subsequent changes cause some
-conflicts).
-
-And the read-once/write-once changes that I was aware of and approve
-of, are similarly mixed in here randomly, rather than being as a
-branch of their own. I see that Will then made his own branch, but
-then we'd have the same issue as with the sparc changes.
-
-The things I was _expecting_ to find annoying (various random changes
-to random code due to kcsan reports), I don't actually see.
-
-Instead I see odd small completely unrelated things like the
-x86/purgatory changes that were merged in for odd reasons.
-
-How painful would it be to sort this out properly? I'll happily take
-the read-once changes as a separate branch, for example. There's
-nothing really controversial there., even if the gcc version bump
-might annoy some (I personally think we could bump it further up to
-4.9, and require _Generic, for example - I suspect we have a number of
-places that could use _Generic instead of nasty sizeof games).
-
-I'd even make an exception and say "ok, just rebase the kcsan stuff on
-top" to clean up the messy history, because this is the kind of new
-feature that shouldn't affect a normal build, and I'd hate to have
-other changes that _can_ affect a normal build - like those atomic
-changes - mixed up in the middle of the kcsan stuff.
-
-So my first reaction from looking at this is that I'd rather get the
-infrastructure separately (like I already got the sparc32 page table
-changes), so that once I _do_ get the kcsan bits, they really would be
-"this introduces no semantic changes what-so-ever when not enabled".
-
-IOW, I'd be inclined to instead pull Will's branch, and then whatever
-x86 entry branches, and then kcsan last with _just_ kcsan stuff.
-
-Will that make everybody else cry tears of frustration?
-
-               Linus
