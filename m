@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0AE1F42D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC431F42A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732266AbgFIRsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:48:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60190 "EHLO mail.kernel.org"
+        id S1731207AbgFIRoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:44:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732222AbgFIRsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:48:08 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1728472AbgFIRo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:44:29 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2443207F9;
-        Tue,  9 Jun 2020 17:48:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F6EB207ED;
+        Tue,  9 Jun 2020 17:44:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724888;
-        bh=3VhzeYCfyFo9o7fz5Vi6e9lrLzkvJTjzxHdMTZtg2QA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RUif5H1sGUTxvRBpHnUJnTP7z9fNCyyI8eBbkDOWwohC44LqRoxyZ01DfMYQDRgbP
-         Lw0UeDRYkxfX6wvdnV39omWoW6gJF7f9/cVGe6soAAAQvnG4Sq9Y8Kus5HcZwRhdHs
-         p0cr1jIe/tOlctaewY7jyWepJIiyP4sv370FEg0k=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 22/42] devinet: fix memleak in inetdev_init()
-Date:   Tue,  9 Jun 2020 19:44:28 +0200
-Message-Id: <20200609174017.889143099@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
-References: <20200609174015.379493548@linuxfoundation.org>
-User-Agent: quilt/0.66
+        s=default; t=1591724669;
+        bh=+yJJrS6f/w3XIG46YQKL+jlhy1JoGG/F40tY3Dp8vZ0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=lDYH8mccyWzxHN9DFp1dhy7lbUDZoGrar7241LUfL5HMYo7IIW76NuGsHn3e9P5cA
+         rqaPh4jUNLq8mMz181kFj0BhhMa0AfSPpexGQky0f/QHZXTHVJjg9icPeLIewyZqsw
+         m0MjxOeQM3XC6q1BA1wl6KT5p4Wd2ndiAAnQZN6Q=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 083BA35229D0; Tue,  9 Jun 2020 10:44:29 -0700 (PDT)
+Date:   Tue, 9 Jun 2020 10:44:29 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [rcu:dev.2020.06.05a 85/92] powerpc-linux-ld: kernel/smp.c:128:
+ undefined reference to `__udivdi3'
+Message-ID: <20200609174428.GQ4455@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <202006090518.ePllEE1U%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202006090518.ePllEE1U%lkp@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+On Tue, Jun 09, 2020 at 05:39:21AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2020.06.05a
+> head:   c5432e18c8bfe9283bf5e0bc5e2460ae8f39a7ee
+> commit: 3f8c62d29ead7c3213a4af7c433ec6fbf8457f37 [85/92] EXP kernel/smp: Provide CSD lock timeout diagnostics
+> config: powerpc64-randconfig-c024-20200607 (attached as .config)
+> compiler: powerpc-linux-gcc (GCC) 9.3.0
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 
-[ Upstream commit 1b49cd71b52403822731dc9f283185d1da355f97 ]
+Alleged fixes squashed into original with attribution, thank you!
 
-When devinet_sysctl_register() failed, the memory allocated
-in neigh_parms_alloc() should be freed.
+						Thanx, Paul
 
-Fixes: 20e61da7ffcf ("ipv4: fail early when creating netdev named all or default")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Acked-by: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv4/devinet.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/net/ipv4/devinet.c
-+++ b/net/ipv4/devinet.c
-@@ -262,6 +262,7 @@ static struct in_device *inetdev_init(st
- 	err = devinet_sysctl_register(in_dev);
- 	if (err) {
- 		in_dev->dead = 1;
-+		neigh_parms_release(&arp_tbl, in_dev->arp_parms);
- 		in_dev_put(in_dev);
- 		in_dev = NULL;
- 		goto out;
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> powerpc-linux-ld: kernel/smp.o: in function `csd_lock_wait':
+> kernel/smp.c:122: undefined reference to `__udivdi3'
+> >> powerpc-linux-ld: kernel/smp.c:128: undefined reference to `__udivdi3'
+> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__umoddi3'
+> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__udivdi3'
+> powerpc-linux-ld: kernel/smp.c:122: undefined reference to `__udivdi3'
+> >> powerpc-linux-ld: kernel/smp.c:128: undefined reference to `__udivdi3'
+> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__umoddi3'
+> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__udivdi3'
+> powerpc-linux-ld: kernel/smp.c:122: undefined reference to `__udivdi3'
+> >> powerpc-linux-ld: kernel/smp.c:128: undefined reference to `__udivdi3'
+> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__umoddi3'
+> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__udivdi3'
+> powerpc-linux-ld: kernel/smp.c:122: undefined reference to `__udivdi3'
+> >> powerpc-linux-ld: kernel/smp.c:128: undefined reference to `__udivdi3'
+> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__umoddi3'
+> powerpc-linux-ld: kernel/smp.c:136: undefined reference to `__udivdi3'
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 
