@@ -2,116 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42A31F31B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9102C1F31F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726987AbgFIBRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 21:17:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726938AbgFIBRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 21:17:23 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84B422076C;
-        Tue,  9 Jun 2020 01:17:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591665442;
-        bh=LcyC8kXR/tZ9xNdJt1SFm1gMfQldVueWxhQb2Y+X8wk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oYoqgqo1MokxNoYNhfkSCgy1gWVgYdfuN8Fh5lWjb/TvfGVQah4nJwPzllCvgtg5g
-         QBl8qcfiXcYDGyR8fbWWfsedekksNm0RbU8l9NwJiKE+2gh8zmOqh93cQCqc0Qi9d8
-         Tr2koovN4j4NZvVaNsXZZh9SP9r8sunxcEgk28gE=
-Date:   Mon, 8 Jun 2020 20:22:33 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH v2] overflow.h: Add flex_array_size() helper
-Message-ID: <20200609012233.GA3371@embeddedor>
+        id S1727885AbgFIBXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 21:23:19 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:54999 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726977AbgFIBXS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 21:23:18 -0400
+Received: by mail-pj1-f65.google.com with SMTP id u8so630304pje.4;
+        Mon, 08 Jun 2020 18:23:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=thWSsCQrRP7ICtACTQ/R6uy4/jCeiC8AOikVtNmXUgI=;
+        b=UtWCTI/we+U4jGmAyM6VvkrLcW8lForjfZJo5LChohiFqu022wxI+7HZsbq1SxBpjP
+         oSvKXAWyMZjwaRsXHFLotHmyUbm8Du3hdloTTHcKCCalM2sOinQEmo5MvbTvWZ76fEmd
+         90XhTrP1J6FQEO8kJWsuJtLZEuJ1RMvdSmpE2Q4PuLiWPC+zU2KXT/y7+ZFpae7SE1RR
+         HLXovgUokx/p6qfzJ6bYwrXnZ0Uz0GvRbCvJ0gHDZR/cpx5gtlsh0t1sVqI6PKSspznD
+         teY0Jps9xSFMMMpPaHpV/pWbrwIwpFtuBXEjrmOhx8AX4gFi3pzGeDHpndheauFNgx1s
+         yQkQ==
+X-Gm-Message-State: AOAM533KxFHi4w8N5Eo6UsLO5zoejO9+uOCuttax6bSY2rMcLUD6vPR+
+        O7DaBoyBiJU9uTACdTk3sfg=
+X-Google-Smtp-Source: ABdhPJyWJ822ZCm2Sx7HaBxZ6uRLFa4GtR7KKrhsPfdB9liXGS4hwoZGUNxtf5RN60Px7VvEtDcCrw==
+X-Received: by 2002:a17:90a:7c07:: with SMTP id v7mr2037422pjf.38.1591665795589;
+        Mon, 08 Jun 2020 18:23:15 -0700 (PDT)
+Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id i191sm8338180pfe.99.2020.06.08.18.23.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jun 2020 18:23:14 -0700 (PDT)
+Subject: Re: [RFC PATCH 5/5] scsi: ufs: Prepare HPB read for cached sub-region
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+References: <963815509.21591323002276.JavaMail.epsvc@epcpadp1>
+ <231786897.01591322101492.JavaMail.epsvc@epcpadp1>
+ <336371513.41591320902369.JavaMail.epsvc@epcpadp1>
+ <963815509.21591320301642.JavaMail.epsvc@epcpadp1>
+ <231786897.01591320001492.JavaMail.epsvc@epcpadp1>
+ <CGME20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882@epcms2p2>
+ <336371513.41591323603173.JavaMail.epsvc@epcpadp1>
+ <SN6PR04MB4640E4699B88CB43AF62B6DFFC870@SN6PR04MB4640.namprd04.prod.outlook.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <a20fb89f-5a89-3e15-cd06-e250c60ccbd0@acm.org>
+Date:   Mon, 8 Jun 2020 18:23:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <SN6PR04MB4640E4699B88CB43AF62B6DFFC870@SN6PR04MB4640.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add flex_array_size() helper for the calculation of the size, in bytes,
-of a flexible array member contained within an enclosing structure.
+On 2020-06-06 11:38, Avri Altman wrote:
+>> +       for (i = 0; i < bit_len; i++) {
+>> +               if (test_bit(srgn_offset + i, srgn->mctx->ppn_dirty))
+>
+> Maybe use a mask or hweight instead of testing bit by bit?
 
-Example of usage:
+How about using find_next_bit() from include/linux/bitmap.h?
 
-struct something {
-	size_t count;
-	struct foo items[];
-};
+/*
+ *  find_next_bit(addr, nbits, bit) Position next set bit in *addr
+ *                                  >= bit
+ */
 
-struct something *instance;
+Thanks,
 
-instance = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
-instance->count = count;
-
-memcpy(instance->items, source, flex_array_size(instance, items, instance->count));
-
-The helper returns SIZE_MAX on overflow instead of wrapping around.
-
-(Additionally replace parameter n with count in struct_size() for
-unification).
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v2:
- - Add further information to the helper documentation.
- - Use same code style as struct_size() for consistency.
-
- include/linux/overflow.h | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-index 659045046468f..d2329a914304c 100644
---- a/include/linux/overflow.h
-+++ b/include/linux/overflow.h
-@@ -304,16 +304,33 @@ static inline __must_check size_t __ab_c_size(size_t a, size_t b, size_t c)
-  * struct_size() - Calculate size of structure with trailing array.
-  * @p: Pointer to the structure.
-  * @member: Name of the array member.
-- * @n: Number of elements in the array.
-+ * @count: Number of elements in the array.
-  *
-  * Calculates size of memory needed for structure @p followed by an
-- * array of @n @member elements.
-+ * array of @count @member elements.
-  *
-  * Return: number of bytes needed or SIZE_MAX on overflow.
-  */
--#define struct_size(p, member, n)					\
--	__ab_c_size(n,							\
-+#define struct_size(p, member, count)					\
-+	__ab_c_size(count,							\
- 		    sizeof(*(p)->member) + __must_be_array((p)->member),\
- 		    sizeof(*(p)))
- 
-+/**
-+ * flex_array_size() - Calculate size, in bytes, of a flexible array member
-+ * within an enclosing structure. Read on for more details.
-+ *
-+ * @p: Pointer to the structure.
-+ * @member: Name of the flexible array member.
-+ * @count: Number of elements in the array.
-+ *
-+ * Calculates size, in bytes, of a flexible array @member of @count elements
-+ * within structure @p.
-+ *
-+ * Return: number of bytes needed or SIZE_MAX on overflow.
-+ */
-+#define flex_array_size(p, member, count)					\
-+	array_size(count,							\
-+		    sizeof(*(p)->member) + __must_be_array((p)->member))
-+
- #endif /* __LINUX_OVERFLOW_H */
--- 
-2.27.0
-
+Bart.
