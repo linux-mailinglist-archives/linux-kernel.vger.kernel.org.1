@@ -2,202 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CC51F3686
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 10:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E823E1F3664
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 10:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgFIIzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 04:55:11 -0400
-Received: from mout02.posteo.de ([185.67.36.142]:33695 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728056AbgFIIzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 04:55:07 -0400
-X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Jun 2020 04:55:06 EDT
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id ED5F42400FC
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 10:47:54 +0200 (CEST)
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 49h3fd3Wy3z6tmh;
-        Tue,  9 Jun 2020 10:47:53 +0200 (CEST)
-Subject: Re: [PATCH] can: m_can_platform: fix m_can_runtime_suspend()
-To:     Dan Murphy <dmurphy@ti.com>,
-        Richard Genoud <richard.genoud@gmail.com>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Faiz Abbas <faiz_abbas@ti.com>
-Cc:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200608094348.12650-1-richard.genoud@gmail.com>
- <b9510aa6-d865-7c4f-6730-dcd207bdb753@ti.com>
-From:   Richard Genoud <richard.genoud@gmail.com>
-Message-ID: <d7f024a4-f2d0-8045-dfd2-d1f89e4789c8@sorico.fr>
-Date:   Tue, 9 Jun 2020 10:47:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728389AbgFIIt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 04:49:59 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:52714 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728254AbgFIItm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 04:49:42 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200609084939epoutp011f30e67d2ef30f22a81c00e08a57d217~W0-e5h9NC0549705497epoutp01o
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 08:49:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200609084939epoutp011f30e67d2ef30f22a81c00e08a57d217~W0-e5h9NC0549705497epoutp01o
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591692579;
+        bh=r3XjXMonM7LT3sDPjt/O4e28bgDHoiLrfy86US4AFVI=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=NnxFiAlydb9buQn585lvYbXW2Qns14JYH+KSJyAO77LR7c/sAV6cu1SuSGKnFscYC
+         eyZCu3+1TUnCcyDAteNu+NzS1dSiDBG3xugdiSytIWLDZpwlW4hmEn4wEy+Ym94+aa
+         wDImGlsiWELNIhRRiOJTDbwK3xacw1FqPvp01Dlc=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20200609084938epcas1p3d73fd30f35577448e4e88e002160a766~W0-egi0VI0615106151epcas1p3e;
+        Tue,  9 Jun 2020 08:49:38 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.161]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 49h3hd69ByzMqYlv; Tue,  9 Jun
+        2020 08:49:37 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        98.32.28581.12D4FDE5; Tue,  9 Jun 2020 17:49:37 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200609084937epcas1p2631687a70054e59fede5ed773d39f3f1~W0-dNlXA00074900749epcas1p2L;
+        Tue,  9 Jun 2020 08:49:37 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200609084937epsmtrp26d934b330f46a0823c14eba1072fd3e2~W0-dMuYYI0596105961epsmtrp2D;
+        Tue,  9 Jun 2020 08:49:37 +0000 (GMT)
+X-AuditID: b6c32a38-2e3ff70000006fa5-47-5edf4d216f0f
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        0F.EB.08382.12D4FDE5; Tue,  9 Jun 2020 17:49:37 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200609084937epsmtip1b76147622b8d90a2b7f8958040f6f642~W0-dASFnU1016510165epsmtip1F;
+        Tue,  9 Jun 2020 08:49:37 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
+Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
+        <mori.takahiro@ab.mitsubishielectric.co.jp>,
+        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
+        "'Namjae Jeon'" <linkinjeon@kernel.org>,
+        "'Sungjong Seo'" <sj1557.seo@samsung.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200609075329.13313-1-kohada.t2@gmail.com>
+Subject: RE: [PATCH 1/2 v2] exfat: write multiple sectors at once
+Date:   Tue, 9 Jun 2020 17:49:37 +0900
+Message-ID: <001401d63e3a$e7db42e0$b791c8a0$@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <b9510aa6-d865-7c4f-6730-dcd207bdb753@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJANO7rmpsMTRXh4Qe13IRSCPANcgLXVfMjp+VO5fA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGJsWRmVeSWpSXmKPExsWy7bCmga6i7/04gws3dSx+zL3NYvHm5FQW
+        i4nTljJb7Nl7ksXi8q45bBaX/39isVj2ZTKLxZZ/R1gdODy+zDnO7tE2+R+7R/OxlWweO2fd
+        ZffYtKqTzaNvyypGj8+b5ALYo3JsMlITU1KLFFLzkvNTMvPSbZW8g+Od403NDAx1DS0tzJUU
+        8hJzU22VXHwCdN0yc4CuUlIoS8wpBQoFJBYXK+nb2RTll5akKmTkF5fYKqUWpOQUGBoU6BUn
+        5haX5qXrJefnWhkaGBiZAlUm5GT0tM5kKlgqUfFio08D4zXhLkZODgkBE4mLL06zdTFycQgJ
+        7GCUeLn+HTOE84lR4s3pdewgVUIC3xglfh90gel4/fA/C0TRXkaJk/ffsEM4Lxkl1naeZQap
+        YhPQlfj3Zz8biC0ioCdx8uR1sB3MAquYJNZP6mEFSXAKWEocfrGaCcQWFnCUOHPtI1icRUBF
+        YubjlYwgNi9QzbYF01khbEGJkzOfsIDYzALyEtvfzmGGOElB4ufTZawQy6wkHn1qZIKoEZGY
+        3dkG9o+EwFoOibaL95kgGlwk9nQfZISwhSVeHd/CDmFLSXx+txfoUg4gu1ri436o+R2MEi++
+        20LYxhI3129gBSlhFtCUWL9LHyKsKLHz91xGiLV8Eu++9rBCTOGV6GgTgihRlei7dBjqAGmJ
+        rvYP7BMYlWYheWwWksdmIXlgFsKyBYwsqxjFUguKc9NTiw0LTJDjehMjOMFqWexgnPv2g94h
+        RiYOxkOMEhzMSiK81Q/uxAnxpiRWVqUW5ccXleakFh9iNAUG9URmKdHkfGCKzyuJNzQ1MjY2
+        tjAxMzczNVYS5z1pdSFOSCA9sSQ1OzW1ILUIpo+Jg1OqgUkwVH1790TTt88F7hkkCDreDouL
+        Lnw4p9VV98ivZUm7LnkWVDj57GK4kGBpa5Qf532s/kCgenK1TVFh9DS7i24i/7ac+B8UcyDp
+        91NXzQYhhl83z31ZL73Lqu7fd8GMqMvGrCeaNhdMCfllFXV5SpHCwXq9/5VOXr/f8d9Tfb3y
+        +VGVPE9lr1y58kPqHG7OMwuf+HF+apwztV3yS+FmXz1/7pkpq42ij619mVXPyT0/vMf2Ddt8
+        vYstl279aG4Ifsulc2l3/7yTVS0mngcPnHjPtVCY84/55RfcrDtCOe7tyvTb0MR2ZEXRiyMR
+        J9Tsv25RbObm0I5SmNGblzW7JFM3e7/ueVmem/rfK15ZK7EUZyQaajEXFScCAKobB5Q5BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAIsWRmVeSWpSXmKPExsWy7bCSnK6i7/04g6bbohY/5t5msXhzciqL
+        xcRpS5kt9uw9yWJxedccNovL/z+xWCz7MpnFYsu/I6wOHB5f5hxn92ib/I/do/nYSjaPnbPu
+        sntsWtXJ5tG3ZRWjx+dNcgHsUVw2Kak5mWWpRfp2CVwZPa0zmQqWSlS82OjTwHhNuIuRk0NC
+        wETi9cP/LF2MXBxCArsZJT61/2OBSEhLHDtxhrmLkQPIFpY4fLgYouY5o8T/05+ZQWrYBHQl
+        /v3ZzwZiiwjoSZw8eZ0NpIhZYB2TxOSPbVBTuxgldq9+zgRSxSlgKXH4xWowW1jAUeLMtY+s
+        IDaLgIrEzMcrGUFsXqCabQums0LYghInZz5hAbmCGWhD20awEmYBeYntb+cwQxyqIPHz6TJW
+        iCOsJB59amSCqBGRmN3ZxjyBUXgWkkmzECbNQjJpFpKOBYwsqxglUwuKc9Nziw0LDPNSy/WK
+        E3OLS/PS9ZLzczcxgiNNS3MH4/ZVH/QOMTJxMB5ilOBgVhLhrX5wJ06INyWxsiq1KD++qDQn
+        tfgQozQHi5I4743ChXFCAumJJanZqakFqUUwWSYOTqkGpsO7rwgdyNkkVvpv5VodKfWrZtXy
+        P54dyX50Z5/M9ufe+303s/7wfank7i0SeuKngrW0VOHCwtfM+tl/2f4dv/uLbWHkpnjF2/on
+        N8R4eegymB522/lXsX3xSafTUz+8nPjwmPnXmnznpTt+7c2XXBmXcZ6hppZr8d2mPBmOgMKJ
+        /D6RsjNklyb9LsuUPbrKu2eRXCrXK54sW/MDZu5vBbq81u5QnBOnyKOy1IOLi1V24gGhiotb
+        tnesKy7+VlJe4Wy66twKux+28Um1Wubra2sNj4S0x1W4eE5frX7ELNTefH+Oc8lkl4ASmS17
+        9XruOMzVMsi+c+6IArPYBkFj8yK+iTv/L5UoDI9Ye+CTEktxRqKhFnNRcSIAqcfhaiMDAAA=
+X-CMS-MailID: 20200609084937epcas1p2631687a70054e59fede5ed773d39f3f1
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200609075406epcas1p38bc47a52172f47af12d79275a751b4d9
+References: <CGME20200609075406epcas1p38bc47a52172f47af12d79275a751b4d9@epcas1p3.samsung.com>
+        <20200609075329.13313-1-kohada.t2@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
-
-Le 08/06/2020 à 16:27, Dan Murphy a écrit :
-> Richard
+> Write multiple sectors at once when updating dir-entries.
+> Add exfat_update_bhs() for that. It wait for write completion once instead of sector by sector.
+> It's only effective if sync enabled.
 > 
-> On 6/8/20 4:43 AM, Richard Genoud wrote:
->> Since commit f524f829b75a ("can: m_can: Create a m_can platform
->> framework"), the can peripheral on STM32MP1 wasn't working anymore.
->>
->> The reason was a bad copy/paste maneuver that added a call to
->> m_can_class_suspend() in m_can_runtime_suspend().
+> Suggested-by: Namjae Jeon <linkinjeon@kernel.org>
+> Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
+> ---
+> Changes in v2:
+>  - Split into 'write multiple sectors at once'
+>    and 'add error check when updating dir-entries'
 > 
-> Are you sure it was a copy paste error?
+>  fs/exfat/dir.c      | 12 +++++++-----
+>  fs/exfat/exfat_fs.h |  1 +
+>  fs/exfat/misc.c     | 19 +++++++++++++++++++
+>  3 files changed, 27 insertions(+), 5 deletions(-)
 > 
-> Probably don't want to have an unfounded cause unless you know for 
-> certain it was this.
-I understand.
-
-What makes me think it was a copy-paste error is that the primary goal 
-of the patch series "M_CAN Framework" was to introduce the tcan4x5x 
-driver into the kernel.
-For that, the code has to be split into a re-usable code (m_can.c) and a 
-platform code m_can_platform.c
-And finally, tcan4x5x.c can be added.
-(I'm sure you already know that since you write the patch, it's just to 
-be sure that we are on the same page :))
-
-So, when splitting the m_can code into m_can.c and m_can_platform.c, 
-there was no reason to change the behavior, even less reason to change 
-the behavior in m_can_platform.c, since the main target was tcan4x5x.
-(And the behavior changed because the CAN peripheral on the STM32MP1 was 
-working before this patch, and not after).
-
-So I went digging into that and I realized that before this patch, 
-runtime suspend function was in m_can.c:
-static int __maybe_unused m_can_runtime_suspend(struct device *dev)
-{
-	struct net_device *ndev = dev_get_drvdata(dev);
-	struct m_can_priv *priv = netdev_priv(ndev);
-
-	clk_disable_unprepare(priv->cclk);
-	clk_disable_unprepare(priv->hclk);
-
-	return 0;
-}
-
-And after, in m_can_platform.c:
-static int __maybe_unused m_can_runtime_suspend(struct device *dev)
-{
-	struct net_device *ndev = dev_get_drvdata(dev);
-	struct m_can_priv *mcan_class = netdev_priv(ndev);
-
-	m_can_class_suspend(dev);
-
-	clk_disable_unprepare(mcan_class->cclk);
-	clk_disable_unprepare(mcan_class->hclk);
-
-	return 0;
-}
-
-Same for runtime resume,
-Before:
-static int __maybe_unused m_can_runtime_resume(struct device *dev)
-{
-	struct net_device *ndev = dev_get_drvdata(dev);
-	struct m_can_priv *priv = netdev_priv(ndev);
-	int err;
-
-	err = clk_prepare_enable(priv->hclk);
-	if (err)
-		return err;
-
-	err = clk_prepare_enable(priv->cclk);
-	if (err)
-		clk_disable_unprepare(priv->hclk);
-
-	return err;
-}
-
-After:
-static int __maybe_unused m_can_runtime_resume(struct device *dev)
-{
-	struct net_device *ndev = dev_get_drvdata(dev);
-	struct m_can_priv *mcan_class = netdev_priv(ndev);
-	int err;
-
-	err = clk_prepare_enable(mcan_class->hclk);
-	if (err)
-		return err;
-
-	err = clk_prepare_enable(mcan_class->cclk);
-	if (err)
-		clk_disable_unprepare(mcan_class->hclk);
-
-	m_can_class_resume(dev);
-
-	return err;
-}
-
-Now, the m_class_resume() call has been removed by commit 0704c5743694 
-("can: m_can_platform: remove unnecessary m_can_class_resume() call")
-cf https://lkml.org/lkml/2019/11/19/965
-
-Then only the m_can_class_suspend() call is left alone. If I remove it, 
-the stm32mp1 peripheral works as before the patch. (and the code is 
-symmetrical again :))
-
-I read all the iterations I could find about this patch (see note 1), 
-and I didn't found any comment on the addition of 
-m_can_class_{resume,suspend}() calls.
-
-But I found this in v3 cover letter:
-"The m_can platform code will need to be updated as I have not tested 
-this code."
-and in v3 1/4 comments:
-"This patch set is working for the TCAN and at least boots on io-mapped 
-devices."
-
-For me, that means that the code in m_can_platform.c was written with 
-this sentence in mind :
-"I can test everything but this, so let's try not to break things in 
-there, keep the changes at a minimum"
-And that was really the case for all the file, but the 2 calls to 
-m_can_class_{resume,suspend}().
-
-So that's why I have a pretty good confidence in the fact that it was a 
-copy-paste error.
-
-And, moreover, if m_can_class_suspend() is called, the CAN device is 
-stopped, and all interrupts are disabled (in m_can_stop()), so the 
-device can not wake-up by itself (and thus not working anymore).
-
-
-All this make me think that maybe I should send a v2 of this patch with 
-a bigger commit message.
-What do you think ?
-
-
-Thanks !
-
-Richard.
-
-
+> diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c index de43534aa299..495884ccb352 100644
+> --- a/fs/exfat/dir.c
+> +++ b/fs/exfat/dir.c
+> @@ -604,13 +604,15 @@ void exfat_update_dir_chksum_with_entry_set(struct exfat_entry_set_cache *es)
 > 
-> Dan
+>  void exfat_free_dentry_set(struct exfat_entry_set_cache *es, int sync)  {
+> -	int i;
+> +	int i, err = 0;
 > 
+> -	for (i = 0; i < es->num_bh; i++) {
+> -		if (es->modified)
+> -			exfat_update_bh(es->sb, es->bh[i], sync);
+> -		brelse(es->bh[i]);
+> +	if (es->modified) {
+> +		set_bit(EXFAT_SB_DIRTY, &EXFAT_SB(es->sb)->s_state);
+I pointed out that setting EXFAT_SB_DIRTY can be merged into exfat_update_bhs() on previous thread.
+Is it unnecessary?
+> +		err = exfat_update_bhs(es->bh, es->num_bh, sync);
+>  	}
+> +
+> +	for (i = 0; i < es->num_bh; i++)
+> +		err ? bforget(es->bh[i]):brelse(es->bh[i]);
+>  	kfree(es);
+>  }
 > 
+> diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h index 595f3117f492..935954da2e54 100644
+> --- a/fs/exfat/exfat_fs.h
+> +++ b/fs/exfat/exfat_fs.h
+> @@ -515,6 +515,7 @@ void exfat_set_entry_time(struct exfat_sb_info *sbi, struct timespec64 *ts,
+>  u16 exfat_calc_chksum16(void *data, int len, u16 chksum, int type);
+>  u32 exfat_calc_chksum32(void *data, int len, u32 chksum, int type);  void exfat_update_bh(struct
+> super_block *sb, struct buffer_head *bh, int sync);
+> +int exfat_update_bhs(struct buffer_head **bhs, int nr_bhs, int sync);
+>  void exfat_chain_set(struct exfat_chain *ec, unsigned int dir,
+>  		unsigned int size, unsigned char flags);  void exfat_chain_dup(struct exfat_chain *dup,
+> struct exfat_chain *ec); diff --git a/fs/exfat/misc.c b/fs/exfat/misc.c index
+> 17d41f3d3709..dc34968e99d3 100644
+> --- a/fs/exfat/misc.c
+> +++ b/fs/exfat/misc.c
+> @@ -173,6 +173,25 @@ void exfat_update_bh(struct super_block *sb, struct buffer_head *bh, int sync)
+>  		sync_dirty_buffer(bh);
+>  }
+> 
+> +int exfat_update_bhs(struct buffer_head **bhs, int nr_bhs, int sync) {
+> +	int i, err = 0;
+> +
+> +	for (i = 0; i < nr_bhs; i++) {
+> +		set_buffer_uptodate(bhs[i]);
+> +		mark_buffer_dirty(bhs[i]);
+> +		if (sync)
+> +			write_dirty_buffer(bhs[i], 0);
+> +	}
+> +
+> +	for (i = 0; i < nr_bhs && sync; i++) {
+> +		wait_on_buffer(bhs[i]);
+> +		if (!buffer_uptodate(bhs[i]))
+> +			err = -EIO;
+> +	}
+> +	return err;
+> +}
+> +
+>  void exfat_chain_set(struct exfat_chain *ec, unsigned int dir,
+>  		unsigned int size, unsigned char flags)  {
+> --
+> 2.25.1
 
-Note 1: patches v3 to v12 (missing v11)
-https://lwn.net/ml/linux-kernel/20190111173236.14329-1-dmurphy@ti.com/
-https://lore.kernel.org/patchwork/patch/1033094/
-https://lore.kernel.org/patchwork/cover/1042441/
-https://lore.kernel.org/patchwork/patch/1047220/
-https://lore.kernel.org/patchwork/patch/1047980/
-https://lkml.org/lkml/2019/3/12/362
-https://lkml.org/lkml/2019/3/13/512
-https://www.spinics.net/lists/netdev/msg557961.html
-https://lore.kernel.org/patchwork/patch/1071894/
+
