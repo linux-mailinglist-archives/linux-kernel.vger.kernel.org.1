@@ -2,167 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03B31F346A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 08:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7D01F3471
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 08:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgFIGxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 02:53:04 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:35174 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727017AbgFIGxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 02:53:04 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id B3EA53834E9FF4BC3AA4;
-        Tue,  9 Jun 2020 14:53:01 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 9 Jun 2020
- 14:52:56 +0800
-Subject: Re: [PATCH v2] f2fs: allow writeback on error status filesystem
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20200608120107.6336-1-yuchao0@huawei.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <f981a95d-8ec3-4992-478a-1dc1f910f497@huawei.com>
-Date:   Tue, 9 Jun 2020 14:52:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1727905AbgFIGyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 02:54:14 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:15744 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726941AbgFIGyK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 02:54:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1591685648; x=1623221648;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=s+lAt2ovjJo4KeksjaOBsCKoxhOAqoXG5nSOSsxO0FE=;
+  b=lr+cN9BktAIcj+Rx9NhBb9Xq632vapOYvAUGSJIxUvDD9wv0uE0Y/SZV
+   kQmzOzwdoR1fZn1l3jfid6amPTAqGDhG0AyXmgGO2kdxE8AZPHUWNC7/F
+   YuZC1sY8mP15YMMl1lFVuz3OEL+9MCpLirUEzw0yDE2107r50O4GIV7zn
+   8=;
+IronPort-SDR: M324Bj4pr4+IwN65o90dgSjczH3RssoQjlvoeYmd5OEKUawrPo7cZ1vps+tDFaDIcJdYUr9EsP
+ 4YlamzAcOJOw==
+X-IronPort-AV: E=Sophos;i="5.73,490,1583193600"; 
+   d="scan'208";a="35222063"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 09 Jun 2020 06:54:06 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id D8018A18CC;
+        Tue,  9 Jun 2020 06:53:54 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 9 Jun 2020 06:53:53 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.53) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 9 Jun 2020 06:53:38 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
+        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
+        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
+        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
+        <peterz@infradead.org>, <rdunlap@infradead.org>,
+        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
+        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
+        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
+        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
+        <ying.huang@intel.com>, <david@redhat.com>,
+        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [RFC v11 0/8] Implement Data Access Monitoring-based Memory Operation Schemes
+Date:   Tue, 9 Jun 2020 08:53:12 +0200
+Message-ID: <20200609065320.12941-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20200608120107.6336-1-yuchao0@huawei.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.53]
+X-ClientProxiedBy: EX13D31UWA004.ant.amazon.com (10.43.160.217) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jaegeuk,
+From: SeongJae Park <sjpark@amazon.de>
 
-Let's consider this patch in next Linux version.
+DAMON[1] can be used as a primitive for data access awared memory management
+optimizations.  For that, users who want such optimizations should run DAMON,
+read the monitoring results, analyze it, plan a new memory management scheme,
+and apply the new scheme by themselves.  Such efforts will be inevitable for
+some complicated optimizations.
 
-BTW, do you still encounter consistency problem w/o this version?
+However, in many other cases, the users would simply want the system to apply a
+memory management action to a memory region of a specific size having a
+specific access frequency for a specific time.  For example, "page out a memory
+region larger than 100 MiB keeping only rare accesses more than 2 minutes", or
+"Do not use THP for a memory region larger than 2 MiB rarely accessed for more
+than 1 seconds".
 
-On 2020/6/8 20:01, Chao Yu wrote:
->     71.07%     0.01%  kworker/u256:1+  [kernel.kallsyms]  [k] wb_writeback
->             |
->              --71.06%--wb_writeback
->                        |
->                        |--68.96%--__writeback_inodes_wb
->                        |          |
->                        |           --68.95%--writeback_sb_inodes
->                        |                     |
->                        |                     |--65.08%--__writeback_single_inode
->                        |                     |          |
->                        |                     |           --64.35%--do_writepages
->                        |                     |                     |
->                        |                     |                     |--59.83%--f2fs_write_node_pages
->                        |                     |                     |          |
->                        |                     |                     |           --59.74%--f2fs_sync_node_pages
->                        |                     |                     |                     |
->                        |                     |                     |                     |--27.91%--pagevec_lookup_range_tag
->                        |                     |                     |                     |          |
->                        |                     |                     |                     |           --27.90%--find_get_pages_range_tag
-> 
-> If filesystem was injected checkpoint errror, before umount, kworker will
-> always hold one core in order to writeback a large number of node pages,
-> that looks not reasonable, to avoid that, we can allow data/node write in
-> such case, since we can force all data/node writes with OPU mode, and
-> clear recovery flag on node, and checkpoint is not allowed as well, so we
-> don't need to worry about writeback's effect on data/node in previous
-> checkpoint, then with this way, it can decrease memory footprint cost by
-> node/data pages and avoid looping into data/node writeback process.
-> 
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> ---
->  fs/f2fs/checkpoint.c |  7 +++++++
->  fs/f2fs/data.c       | 22 +++++++++++++++-------
->  fs/f2fs/node.c       |  7 +++++--
->  3 files changed, 27 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-> index 236064930251..1bb8278a1c4a 100644
-> --- a/fs/f2fs/checkpoint.c
-> +++ b/fs/f2fs/checkpoint.c
-> @@ -1238,6 +1238,13 @@ static int block_operations(struct f2fs_sb_info *sbi)
->  		goto retry_flush_nodes;
->  	}
->  
-> +	if (unlikely(f2fs_cp_error(sbi))) {
-> +		up_write(&sbi->node_write);
-> +		up_write(&sbi->node_change);
-> +		f2fs_unlock_all(sbi);
-> +		return -EIO;
-> +	}
-> +
->  	/*
->  	 * sbi->node_change is used only for AIO write_begin path which produces
->  	 * dirty node blocks and some checkpoint values by block allocation.
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 267b5e76a02b..808e7734db19 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -2508,6 +2508,8 @@ bool f2fs_should_update_outplace(struct inode *inode, struct f2fs_io_info *fio)
->  {
->  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->  
-> +	if (unlikely(f2fs_cp_error(sbi)))
-> +		return true;
->  	if (f2fs_lfs_mode(sbi))
->  		return true;
->  	if (S_ISDIR(inode->i_mode))
-> @@ -2691,13 +2693,19 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
->  	/* we should bypass data pages to proceed the kworkder jobs */
->  	if (unlikely(f2fs_cp_error(sbi))) {
->  		mapping_set_error(page->mapping, -EIO);
-> -		/*
-> -		 * don't drop any dirty dentry pages for keeping lastest
-> -		 * directory structure.
-> -		 */
-> -		if (S_ISDIR(inode->i_mode))
-> -			goto redirty_out;
-> -		goto out;
-> +
-> +		if (is_sbi_flag_set(sbi, SBI_IS_CLOSE))
-> +			goto out;
-> +
-> +		if (has_not_enough_free_secs(sbi, 0, 0)) {
-> +			/*
-> +			 * don't drop any dirty dentry pages for keeping lastest
-> +			 * directory structure.
-> +			 */
-> +			if (S_ISDIR(inode->i_mode))
-> +				goto redirty_out;
-> +			goto out;
-> +		}
->  	}
->  
->  	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
-> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-> index 03e24df1c84f..372c04efad38 100644
-> --- a/fs/f2fs/node.c
-> +++ b/fs/f2fs/node.c
-> @@ -1527,7 +1527,10 @@ static int __write_node_page(struct page *page, bool atomic, bool *submitted,
->  			unlock_page(page);
->  			return 0;
->  		}
-> -		goto redirty_out;
-> +		if (has_not_enough_free_secs(sbi, 0, 0))
-> +			goto redirty_out;
-> +		set_fsync_mark(page, 0);
-> +		set_dentry_mark(page, 0);
->  	}
->  
->  	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
-> @@ -1568,7 +1571,7 @@ static int __write_node_page(struct page *page, bool atomic, bool *submitted,
->  		goto redirty_out;
->  	}
->  
-> -	if (atomic && !test_opt(sbi, NOBARRIER))
-> +	if (atomic && !test_opt(sbi, NOBARRIER) && !f2fs_cp_error(sbi))
->  		fio.op_flags |= REQ_PREFLUSH | REQ_FUA;
->  
->  	/* should add to global list before clearing PAGECACHE status */
-> 
+This RFC patchset makes DAMON to handle such data access monitoring-based
+operation schemes.  With this change, users can do the data access aware
+optimizations by simply specifying their schemes to DAMON.
+
+[1] https://lore.kernel.org/linux-mm/20200608114047.26589-1-sjpark@amazon.com/
+
+
+Evaluations
+===========
+
+We evaluated DAMON's overhead, monitoring quality and usefulness using 25
+realistic workloads on my QEMU/KVM based virtual machine running a kernel that
+RFC v9 of this patchset is applied.
+
+DAMON is lightweight.  It increases system memory usage by only -0.39% and
+consumes less than 1% CPU time in most case.  It slows target workloads down by
+only 0.63%.
+
+DAMON is accurate and useful for memory management optimizations.  An
+experimental DAMON-based operation scheme for THP, 'ethp', removes 69.43% of
+THP memory overheads while preserving 37.11% of THP speedup.  Another
+experimental DAMON-based 'proactive reclamation' implementation, 'prcl',
+reduces 89.30% of residential sets and 22.40% of system memory footprint while
+incurring only 1.98% runtime overhead in the best case (parsec3/freqmine).
+
+NOTE that the experimentail THP optimization and proactive reclamation are not
+for production, just only for proof of concepts.
+
+Please refer to the official document[1] or "Documentation/admin-guide/mm: Add
+a document for DAMON" patch in the latest DAMON patchset for detailed
+evaluation setup and results.
+
+[1] https://damonitor.github.io/doc/html/latest-damos
+
+
+More Information
+================
+
+We prepared a showcase web site[1] that you can get more information.  There
+are
+
+- the official documentations[2],
+- the heatmap format dynamic access pattern of various realistic workloads for
+  heap area[3], mmap()-ed area[4], and stack[5] area,
+- the dynamic working set size distribution[6] and chronological working set
+  size changes[7], and
+- the latest performance test results[8].
+
+[1] https://damonitor.github.io/_index
+[2] https://damonitor.github.io/doc/html/latest-damos
+[3] https://damonitor.github.io/test/result/visual/latest/heatmap.0.html
+[4] https://damonitor.github.io/test/result/visual/latest/heatmap.1.html
+[5] https://damonitor.github.io/test/result/visual/latest/heatmap.2.html
+[6] https://damonitor.github.io/test/result/visual/latest/wss_sz.html
+[7] https://damonitor.github.io/test/result/visual/latest/wss_time.html
+[8] https://damonitor.github.io/test/result/perf/latest/html/index.html
+
+
+Baseline and Complete Git Tree
+==============================
+
+
+The patches are based on the v5.7 plus v15 DAMON patchset[1] and Minchan's
+``do_madvise()`` patch[2], which retrieved from linux-next/master and slightly
+modified for backporting on v5.7.  You can also clone the complete git tree:
+
+    $ git clone git://github.com/sjp38/linux -b damos/rfc/v11
+
+The web is also available:
+https://github.com/sjp38/linux/releases/tag/damos/rfc/v11
+
+There are a couple of trees for entire DAMON patchset series that future
+features are included.  The first one[3] contains the changes for latest
+release, while the other one[4] contains the changes for next release.
+
+[1] TODO: Add DAMON v15 patchset link
+[2] https://lore.kernel.org/linux-mm/20200302193630.68771-2-minchan@kernel.org/
+[3] https://github.com/sjp38/linux/tree/damon/master
+[4] https://github.com/sjp38/linux/tree/damon/next
+
+
+Sequence Of Patches
+===================
+
+The 1st patch allows DAMON to reuse ``madvise()`` code for the actions.  The
+2nd patch accounts age of each region.  The 3rd patch implements the handling
+of the schemes in DAMON and exports a kernel space programming interface for
+it.  The 4th patch implements a debugfs interface for the privileged people and
+user programs.  The 5th patch implements schemes statistics feature for easier
+tuning of the schemes and runtime access pattern analysis.  The 6th patche adds
+selftests for these changes, and the 7th patch adds human friendly schemes
+support to the user space tool for DAMON.  Finally, the 8th patch documents
+this new feature in the document.
+
+
+Patch History
+=============
+
+Changes from RFC v10
+(https://lore.kernel.org/linux-mm/20200603071138.8152-1-sjpark@amazon.com/)
+ - Fix the wrong error handling for schemes debugfs file
+ - Handle the schemes stats from the user space tool
+ - Remove the schemes implementation plan from the document
+
+Changes from RFC v9
+(https://lore.kernel.org/linux-mm/20200526075702.27339-1-sjpark@amazon.com/)
+ - Rebase on v5.7
+ - Fix wrong comments and documents for schemes apply conditions
+
+Changes from RFC v8
+(https://lore.kernel.org/linux-mm/20200512115343.27699-1-sjpark@amazon.com/)
+ - Rewrite the document (Stefan Nuernberger)
+ - Make 'damon_for_each_*' argument order consistent (Leonard Foerster)
+ - Implement statistics for schemes
+ - Avoid races between debugfs readers and writers
+ - Reset age for only significant access frequency changes
+ - Add kernel-doc comments in damon.h
+
+Changes from RFC v7
+(https://lore.kernel.org/linux-mm/20200429124540.32232-1-sjpark@amazon.com/)
+ - Rebase on DAMON v11 patchset
+ - Add documentation
+
+Changes from RFC v6
+(https://lore.kernel.org/linux-mm/20200407100007.3894-1-sjpark@amazon.com/)
+ - Rebase on DAMON v9 patchset
+ - Cleanup code and fix typos (Stefan Nuernberger)
+
+Changes from RFC v5
+(https://lore.kernel.org/linux-mm/20200330115042.17431-1-sjpark@amazon.com/)
+ - Rebase on DAMON v8 patchset
+ - Update test results
+ - Fix DAMON userspace tool crash on signal handling
+ - Fix checkpatch warnings
+
+Changes from RFC v4
+(https://lore.kernel.org/linux-mm/20200303121406.20954-1-sjpark@amazon.com/)
+ - Handle CONFIG_ADVISE_SYSCALL
+ - Clean up code (Jonathan Cameron)
+ - Update test results
+ - Rebase on v5.6 + DAMON v7
+
+Changes from RFC v3
+(https://lore.kernel.org/linux-mm/20200225102300.23895-1-sjpark@amazon.com/)
+ - Add Reviewed-by from Brendan Higgins
+ - Code cleanup: Modularize madvise() call
+ - Fix a trivial bug in the wrapper python script
+ - Add more stable and detailed evaluation results with updated ETHP scheme
+
+Changes from RFC v2
+(https://lore.kernel.org/linux-mm/20200218085309.18346-1-sjpark@amazon.com/)
+ - Fix aging mechanism for more better 'old region' selection
+ - Add more kunittests and kselftests for this patchset
+ - Support more human friedly description and application of 'schemes'
+
+Changes from RFC v1
+(https://lore.kernel.org/linux-mm/20200210150921.32482-1-sjpark@amazon.com/)
+ - Properly adjust age accounting related properties after splitting, merging,
+   and action applying
+
+SeongJae Park (8):
+  mm/madvise: Export do_madvise() to external GPL modules
+  mm/damon: Account age of target regions
+  mm/damon: Implement data access monitoring-based operation schemes
+  mm/damon/schemes: Implement a debugfs interface
+  mm/damon/schemes: Implement statistics feature
+  mm/damon/selftests: Add 'schemes' debugfs tests
+  damon/tools: Support more human friendly 'schemes' control
+  Documentation/admin-guide/mm: Document DAMON-based operation schemes
+
+ Documentation/admin-guide/mm/damon/guide.rst  |  35 ++
+ Documentation/admin-guide/mm/damon/plans.rst  |  26 +-
+ Documentation/admin-guide/mm/damon/usage.rst  | 127 +++++-
+ include/linux/damon.h                         |  66 ++++
+ mm/damon.c                                    | 363 +++++++++++++++++-
+ mm/madvise.c                                  |   1 +
+ tools/damon/_convert_damos.py                 | 128 ++++++
+ tools/damon/_damon.py                         | 146 +++++++
+ tools/damon/damo                              |   7 +
+ tools/damon/record.py                         | 139 +------
+ tools/damon/schemes.py                        | 109 ++++++
+ .../testing/selftests/damon/debugfs_attrs.sh  |  29 ++
+ 12 files changed, 1008 insertions(+), 168 deletions(-)
+ create mode 100755 tools/damon/_convert_damos.py
+ create mode 100644 tools/damon/_damon.py
+ create mode 100644 tools/damon/schemes.py
+
+-- 
+2.17.1
+
