@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8411F352B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 09:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FDD1F352E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 09:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727082AbgFIHnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 03:43:18 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:48366 "EHLO inva021.nxp.com"
+        id S1727852AbgFIHnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 03:43:24 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:48502 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726404AbgFIHnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 03:43:14 -0400
+        id S1726187AbgFIHnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 03:43:15 -0400
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C2D97200189;
-        Tue,  9 Jun 2020 09:43:11 +0200 (CEST)
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E274F200FCC;
+        Tue,  9 Jun 2020 09:43:13 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B65A1201036;
-        Tue,  9 Jun 2020 09:43:01 +0200 (CEST)
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 09231200FC4;
+        Tue,  9 Jun 2020 09:43:04 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 660AF402F3;
-        Tue,  9 Jun 2020 15:42:49 +0800 (SGT)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 92BA34029F;
+        Tue,  9 Jun 2020 15:42:51 +0800 (SGT)
 From:   Anson Huang <Anson.Huang@nxp.com>
 To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
         kernel@pengutronix.de, festevam@gmail.com, mturquette@baylibre.com,
@@ -32,62 +32,46 @@ To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-clk@vger.kernel.org
 Cc:     Linux-imx@nxp.com
-Subject: [PATCH V2 0/9] Support building i.MX8 SoCs clock driver as module
-Date:   Tue,  9 Jun 2020 15:32:04 +0800
-Message-Id: <1591687933-19495-1-git-send-email-Anson.Huang@nxp.com>
+Subject: [PATCH V2 1/9] clk: composite: Export clk_hw_register_composite()
+Date:   Tue,  9 Jun 2020 15:32:05 +0800
+Message-Id: <1591687933-19495-2-git-send-email-Anson.Huang@nxp.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1591687933-19495-1-git-send-email-Anson.Huang@nxp.com>
+References: <1591687933-19495-1-git-send-email-Anson.Huang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nowdays, there are more and more requirements of building SoC specific drivers
-as modules, such as Android GKI (generic kernel image), this patch set supports
-building i.MX8 SoCs clock drivers as modules, including i.MX8MQ/MM/MN/MP/QXP,
-the common clock modules are: mxc-clk.ko for i.MX8MQ/MM/MN/MP, mxc-clk-scu.ko
-for i.MX8QXP and later SoCs with SCU inside, normally, each platform can ONLY
-insmod 1 common i.MX clock driver and its own SoC clock driver.
+Export clk_hw_register_composite() to support user built as module.
 
-Since i.MX common clk driver will support module build and no longer selected
-by default, so for i.MX ARMv7 platforms, need to manually select it to make build pass.
+ERROR: modpost: "clk_hw_register_composite" [drivers/clk/imx/mxc-clk.ko] undefined!
+scripts/Makefile.modpost:111: recipe for target 'Module.symvers' failed
+make[1]: *** [Module.symvers] Error 1
+make[1]: *** Deleting file 'Module.symvers'
+Makefile:1384: recipe for target 'modules' failed
+make: *** [modules] Error 2
 
-Changes since V1:
-	- Fix build error for x86_64-allyesconfig by adding dependency for MXC_CLK_SCU;
-	- Move lpcg clock driver change to SCU patch, this is incorrect in V1.
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+No change.
+---
+ drivers/clk/clk-composite.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Anson Huang (9):
-  clk: composite: Export clk_hw_register_composite()
-  ARM: imx: Select MXC_CLK for ARCH_MXC
-  clk: imx: Support building SCU clock driver as module
-  clk: imx: Support building i.MX common clock driver as module
-  clk: imx8mm: Support module build
-  clk: imx8mn: Support module build
-  clk: imx8mp: Support module build
-  clk: imx8mq: Support module build
-  clk: imx8qxp: Support module build
-
- arch/arm/mach-imx/Kconfig          |  1 +
- drivers/clk/clk-composite.c        |  1 +
- drivers/clk/imx/Kconfig            | 22 +++++++++++++---------
- drivers/clk/imx/Makefile           | 30 +++++++-----------------------
- drivers/clk/imx/clk-composite-8m.c |  1 +
- drivers/clk/imx/clk-cpu.c          |  1 +
- drivers/clk/imx/clk-frac-pll.c     |  1 +
- drivers/clk/imx/clk-gate2.c        |  1 +
- drivers/clk/imx/clk-imx8mm.c       |  1 +
- drivers/clk/imx/clk-imx8mn.c       |  1 +
- drivers/clk/imx/clk-imx8mp.c       |  1 +
- drivers/clk/imx/clk-imx8mq.c       |  1 +
- drivers/clk/imx/clk-imx8qxp-lpcg.c |  1 +
- drivers/clk/imx/clk-imx8qxp.c      |  1 +
- drivers/clk/imx/clk-lpcg-scu.c     |  1 +
- drivers/clk/imx/clk-pll14xx.c      |  4 ++++
- drivers/clk/imx/clk-scu.c          |  5 +++++
- drivers/clk/imx/clk-sscg-pll.c     |  1 +
- drivers/clk/imx/clk.c              | 28 ++++++++++++++++++++++------
- 19 files changed, 65 insertions(+), 38 deletions(-)
-
+diff --git a/drivers/clk/clk-composite.c b/drivers/clk/clk-composite.c
+index 7376f57..2ddb54f 100644
+--- a/drivers/clk/clk-composite.c
++++ b/drivers/clk/clk-composite.c
+@@ -328,6 +328,7 @@ struct clk_hw *clk_hw_register_composite(struct device *dev, const char *name,
+ 					   rate_hw, rate_ops, gate_hw,
+ 					   gate_ops, flags);
+ }
++EXPORT_SYMBOL_GPL(clk_hw_register_composite);
+ 
+ struct clk_hw *clk_hw_register_composite_pdata(struct device *dev,
+ 			const char *name,
 -- 
 2.7.4
 
