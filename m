@@ -2,109 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90EF1F4382
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A6B1F43AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729833AbgFIRx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:53:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732920AbgFIRwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:52:37 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68E8F207ED;
-        Tue,  9 Jun 2020 17:52:36 +0000 (UTC)
-Date:   Tue, 9 Jun 2020 13:52:35 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] tools: testing: ftrace: trigger: fix spelling
- mistake
-Message-ID: <20200609135235.608cdbf6@oasis.local.home>
-In-Reply-To: <20200609163853.1602-1-f.suligoi@asem.it>
-References: <20200609163853.1602-1-f.suligoi@asem.it>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1733294AbgFIRzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:55:46 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:53469 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728829AbgFIRyD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:54:03 -0400
+Received: by mail-pj1-f67.google.com with SMTP id i12so1709348pju.3;
+        Tue, 09 Jun 2020 10:54:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=l535t0gtEMhwRmJuEGpot34AcMJTeoyuOmb6/SPxdIo=;
+        b=B5DgajjKiI9YxNKx3abMttvo0hbyCx/XRBLHlugEJpi/G2A/cO0I3u5Zr2SnmTxHjE
+         g072HopjEFjGy03WlGK9aPdmASfcPh1podyiYdgqXTDoPWVQgNVV8ERPtibQQfQrafNg
+         AJb5BSEYLfsi7hdZQdrjFXYbRukuh0zuUmfFcYGa4pVBmhds4rw7WoMek0R0FrPeIJX1
+         WEPkJkirttW0EU7/l2Quh9j4xVNfeidQY4w2zNksYG+tXq4rVrGpRjc3JylJQiBsv6na
+         3YGcNQsJ2HbDhv/hUX0+GHVG22CAvON2xvB9KJYaZshONiroRieWKJKA4VR1tkwBA3Oo
+         Uz+A==
+X-Gm-Message-State: AOAM5329nLo6KWzv2i2WgScI5WdIwpGHz5jz/3QEmaHp/Hz5Z9PGpZVB
+        JTUM+XwFKdJb+0x+il05znU=
+X-Google-Smtp-Source: ABdhPJy/NmjQ3jEGM1rDQ6v1rJGJ2kfZGaht+oE0SOlu7pxqvuGtyZmIoYsQQ37mHn9Ym+N88QSF5w==
+X-Received: by 2002:a17:902:ee93:: with SMTP id a19mr4432067pld.144.1591725241302;
+        Tue, 09 Jun 2020 10:54:01 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id x77sm10745875pfc.4.2020.06.09.10.54.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 10:54:00 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id A13B6403AB; Tue,  9 Jun 2020 17:53:59 +0000 (UTC)
+Date:   Tue, 9 Jun 2020 17:53:59 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, axboe@kernel.dk, viro@zeniv.linux.org.uk,
+        bvanassche@acm.org, gregkh@linuxfoundation.org,
+        rostedt@goodmis.org, mingo@redhat.com, ming.lei@redhat.com,
+        nstange@suse.de, akpm@linux-foundation.org, mhocko@suse.com,
+        yukuai3@huawei.com, martin.petersen@oracle.com, jejb@linux.ibm.com,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Omar Sandoval <osandov@fb.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
+Subject: Re: [PATCH v6 6/6] blktrace: fix debugfs use after free
+Message-ID: <20200609175359.GR11244@42.do-not-panic.com>
+References: <20200608170127.20419-1-mcgrof@kernel.org>
+ <20200608170127.20419-7-mcgrof@kernel.org>
+ <20200609150602.GA7111@infradead.org>
+ <20200609172922.GP11244@42.do-not-panic.com>
+ <20200609173218.GA7968@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200609173218.GA7968@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Jun 2020 18:38:53 +0200
-Flavio Suligoi <f.suligoi@asem.it> wrote:
-
-> Fix typo: "tigger" --> "trigger"
-
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-Shuah, want to take this patch?
-
--- Steve
-
+On Tue, Jun 09, 2020 at 10:32:18AM -0700, Christoph Hellwig wrote:
+> On Tue, Jun 09, 2020 at 05:29:22PM +0000, Luis Chamberlain wrote:
+> > Is scsi-generic is the only unwanted ugly child blktrace has to deal
+> > with? For some reason I thought drivers/md/md.c was one but it seems
+> > like it is not. Do we have an easy way to search for these? I think
+> > this would just affect how we express the comment only.
 > 
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> ---
->  tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc   | 2 +-
->  .../selftests/ftrace/test.d/trigger/trigger-stacktrace.tc       | 2 +-
->  .../ftrace/test.d/trigger/trigger-trace-marker-hist.tc          | 2 +-
->  .../ftrace/test.d/trigger/trigger-trace-marker-snapshot.tc      | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
-> index 177e8d4c4744..bf6374e1f6ae 100644
-> --- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
-> @@ -23,7 +23,7 @@ if [ ! -f events/sched/sched_process_fork/hist ]; then
->      exit_unsupported
->  fi
->  
-> -echo "Test histogram basic tigger"
-> +echo "Test histogram basic trigger"
->  
->  echo 'hist:keys=parent_pid:vals=child_pid' > events/sched/sched_process_fork/trigger
->  for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
-> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-stacktrace.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-stacktrace.tc
-> index 398c05c4d2a7..6248e6b40704 100644
-> --- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-stacktrace.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-stacktrace.tc
-> @@ -23,7 +23,7 @@ if [ -z "$FEATURE" ]; then
->      exit_unsupported
->  fi
->  
-> -echo "Test stacktrace tigger"
-> +echo "Test stacktrace trigger"
->  echo 0 > trace
->  echo 0 > options/stacktrace
->  echo 'stacktrace' > events/sched/sched_process_fork/trigger
-> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-hist.tc
-> index ab6bedb25736..01fdfd50b4be 100644
-> --- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-hist.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-hist.tc
-> @@ -28,7 +28,7 @@ if [ ! -f events/ftrace/print/hist ]; then
->      exit_unsupported
->  fi
->  
-> -echo "Test histogram trace_marker tigger"
-> +echo "Test histogram trace_marker trigger"
->  
->  echo 'hist:keys=common_pid' > events/ftrace/print/trigger
->  for i in `seq 1 10` ; do echo "hello" > trace_marker; done
-> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-snapshot.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-snapshot.tc
-> index df246e505af7..a7fef298e476 100644
-> --- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-snapshot.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-snapshot.tc
-> @@ -46,7 +46,7 @@ test_trace() {
->      done
->  }
->  
-> -echo "Test snapshot trace_marker tigger"
-> +echo "Test snapshot trace_marker trigger"
->  
->  echo 'snapshot' > events/ftrace/print/trigger
->  
+> grep for blk_trace_setup.  For all blk devices that setup comes in
+> through the block device ioctl path, and that relies on having a
+> struct block_device and queue.  sg on the other hand calls
+> blk_trace_setup directly with a NULL bdev argument.
 
+Alright, then we should be good.
+
+> > >  		 */
+> > > -		dir = q->sg_debugfs_dir;
+> > > +		dir = debugfs_create_dir(buts->name, blk_debugfs_root);
+> > > +		bt->dir = dir;
+> > 
+> > The other chicken and egg problem to consider at least in the comments
+> > is that the debugfs directory for these types of devices *have* an
+> > exposed path, but the data structure is rather opaque to the device and
+> > even blktrace.  Fortunately given the recent set of changes around the
+> > q->blk_trace and clarifications around its use we have made it clear now
+> > that so long as hold the q->blk_trace_mutex *and* check q->blk_trace we
+> > *should* not race against two separate creations of debugfs directories,
+> > so I think this is safe, so long as these indpendent drivers don't end
+> > up re-using the same path for some other things later in the future, and
+> > since we have control over what goes under debugfsroot block / I think
+> > we should be good.
+> > 
+> > But I think that the concern for race on names may still be worth
+> > explaining a bit here.
+> 
+> Feel free to add more comments, but please try to keep them short
+> and crisp.  At the some point long comments really distract from what
+> is going on.
+
+Sure.
+
+Come to think of it, given the above, I think we can also do way with
+the the partition stuff too, and rely on the buts->name too. I'll try
+this out, and test it.
+
+  Luis
