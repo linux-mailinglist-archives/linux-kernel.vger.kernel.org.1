@@ -2,102 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604631F355E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 09:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1F91F356E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 09:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgFIHry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 03:47:54 -0400
-Received: from lucky1.263xmail.com ([211.157.147.132]:51182 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbgFIHry (ORCPT
+        id S1727892AbgFIHtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 03:49:09 -0400
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:19367 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgFIHtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 03:47:54 -0400
-X-Greylist: delayed 440 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Jun 2020 03:47:53 EDT
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id F2ABADCC95;
-        Tue,  9 Jun 2020 15:47:51 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from ubuntu18.lan (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P31250T139912977241856S1591688866315878_;
-        Tue, 09 Jun 2020 15:47:51 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <ac98c4fc750db21fd964623330b9865c>
-X-RL-SENDER: yifeng.zhao@rock-chips.com
-X-SENDER: zyf@rock-chips.com
-X-LOGIN-NAME: yifeng.zhao@rock-chips.com
-X-FST-TO: miquel.raynal@bootlin.com
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-From:   Yifeng Zhao <yifeng.zhao@rock-chips.com>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        heiko@sntech.de, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Yifeng Zhao <zyf@rock-chips.com>,
-        Yifeng Zhao <yifeng.zhao@rock-chips.com>
-Subject: [PATCH v6 4/8] arm64: dts: rockchip: Add nfc dts for RK3308 SOC
-Date:   Tue,  9 Jun 2020 15:47:44 +0800
-Message-Id: <20200609074744.24016-1-yifeng.zhao@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200609074020.23860-1-yifeng.zhao@rock-chips.com>
-References: <20200609074020.23860-1-yifeng.zhao@rock-chips.com>
+        Tue, 9 Jun 2020 03:49:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1591688947; x=1623224947;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=z9fxhQY3z4ehjLCF3109NrNvK62lTfFTjodG2LyrA/M=;
+  b=Zw7gR6yc9IM3FBGzB+jGHFY/DqFb108rA/toHTVZvV8YRcNMheeBbg81
+   hvjapV83HX0RddGKlJknpdLDylI7Zt7fIVPEw09kRY/yqAmOxsVXZpIyr
+   4dS+nPRoK/+S+spUSEfkEr1AWQ5TPPoGg8ZY3McfMAo6lQjmd4z66lneL
+   F2dOn05tXG4/V+yWe3taJ0kgZBbEIwRfGImAWTMsuuWO8FjKrlpjwuJ4D
+   1Ywpq9lvtNCEzuugsQnnDk9q6E3WE+lFqyY+zwWG5uEAwePuLzVQLW8jC
+   OdaZHz8IAgY6CoDEIPrnmlOMHQRJklEM1SQDoNWkHQtvzLDTe28VMryxr
+   w==;
+IronPort-SDR: TpvI0lSXmxb1sJfVs+cknweLXfAeBY11r03cwlBbUzm2OmL6NKuCWYbAxk5p32STuoT4DuO+Uk
+ i21lDVrdXXdqWM8KQ8jw7My8fchB8Tbda4OPlIJk/BLHx/qyjN4+VJcMYcDzkIi7rEuLQZQqL3
+ u6JEnr+zgelXlloQ0u/EAtr0/UcLHKu8fagNvwabOX8FOdJ87cI2dK/a6L0smKCSTZnTIH1mIi
+ 0zplBDVzwFZ5nlJygP+A+Jpo5WZ979uss4aHAtu9Gko/3aOgTsVi2Ri58w43sMDnyCTJB5vwK9
+ 36o=
+X-IronPort-AV: E=Sophos;i="5.73,490,1583218800"; 
+   d="scan'208";a="75943736"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Jun 2020 00:49:06 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Tue, 9 Jun 2020 00:49:06 -0700
+Received: from soft-dev15.microsemi.net (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1713.5 via Frontend Transport; Tue, 9 Jun 2020 00:49:03 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH v2 1/3] dt-bindings: hwmon: Add Sparx5 temperature sensor
+Date:   Tue, 9 Jun 2020 09:48:59 +0200
+Message-ID: <20200609074859.9385-1-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200609072828.9088-1-lars.povlsen@microchip.com>
+References: <20200609072828.9088-1-lars.povlsen@microchip.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yifeng Zhao <zyf@rock-chips.com>
+This add the DT binding specification for the Sparx5 temperature
+sensor.
 
-Add nfc(nand flash controller) node for RK3308 Soc.
-
-Signed-off-by: Yifeng Zhao <zyf@rock-chips.com>
-Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
 ---
+ .../bindings/hwmon/microchip,sparx5-temp.yaml | 39 +++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/microchip,sparx5-temp.yaml
 
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-
- arch/arm64/boot/dts/rockchip/rk3308.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-index 1a58df6e242b..da056b8dfde5 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-@@ -627,6 +627,21 @@
- 		status = "disabled";
- 	};
- 
-+	nfc: nand-controller@ff4b0000 {
-+		compatible = "rockchip,rk3308-nfc",
-+			     "rockchip,rv1108-nfc";
-+		reg = <0x0 0xff4b0000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru HCLK_NANDC>, <&cru SCLK_NANDC>;
-+		clock-names = "ahb", "nfc";
-+		assigned-clocks = <&cru SCLK_NANDC>;
-+		assigned-clock-rates = <150000000>;
-+		pinctrl-0 = <&flash_ale &flash_bus8 &flash_cle &flash_csn0
-+			     &flash_rdn &flash_rdy &flash_wrn>;
-+		pinctrl-names = "default";
-+		status = "disabled";
-+	};
+diff --git a/Documentation/devicetree/bindings/hwmon/microchip,sparx5-temp.yaml b/Documentation/devicetree/bindings/hwmon/microchip,sparx5-temp.yaml
+new file mode 100644
+index 0000000000000..0df4813fd7b24
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/microchip,sparx5-temp.yaml
+@@ -0,0 +1,39 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/hwmon/microchip,sparx5-temp.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	cru: clock-controller@ff500000 {
- 		compatible = "rockchip,rk3308-cru";
- 		reg = <0x0 0xff500000 0x0 0x1000>;
--- 
-2.17.1
-
-
-
++title: Microchip Sparx5 Temperature Monitor
++
++maintainers:
++  - Lars Povlsen <lars.povlsen@microchip.com>
++
++description: |
++  Microchip Sparx5 embedded temperature monitor
++
++properties:
++  compatible:
++    enum:
++      - microchip,sparx5-temp
++
++  reg:
++    maxItems: 1
++
++  '#thermal-sensor-cells':
++    const: 0
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    tmon0: tmon@610508110 {
++        compatible = "microchip,sparx5-temp";
++        reg = <0x10508110 0xc>;
++        #thermal-sensor-cells = <0>;
++    };
++
+--
+2.27.0
