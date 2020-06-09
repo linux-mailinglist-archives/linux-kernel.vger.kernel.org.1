@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81381F4345
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A301F436D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730436AbgFIRvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:51:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38376 "EHLO mail.kernel.org"
+        id S1733030AbgFIRxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:53:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732714AbgFIRui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:50:38 -0400
+        id S1729795AbgFIRwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:52:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF92E2074B;
-        Tue,  9 Jun 2020 17:50:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4088F2074B;
+        Tue,  9 Jun 2020 17:52:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725038;
-        bh=KBJDsnC/ruZzhFkAosuSNvcMKVC5aIEuK5TDQj8MtJI=;
+        s=default; t=1591725140;
+        bh=QY93wMTMJtChRvyaGZk2P4YKUxEb/t/zQgecsPwdtVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iOA2Ig6hSGa1LbVtfK05wbl6sMs+xS3bCa7n8urh4drnR1OvY9KEbfhyj3TuTXZfu
-         pTmV9yEmM7v0xYgscyxrkwKGRZrFtguWzIiQQaN+LQCbcH2zbpqbo6QEE91C2Fvuly
-         1XD4kGHL7sSLZlqdxDiAkhjK+IrLBWbPmw7tU73w=
+        b=zHYVNCexZ/kBweTH01TDlTOtDRSj3/mYWv2jsfVslW7SQg1D0JyZGFjnq51kpJL6j
+         rhnwhYAaHtlbaiFqCVJ+g2E6KSmGGYCJdQkf7+RiCwebaPM0UUhEXtRQTL0PKmKZR9
+         qhBbns4A9Nm36vh6QgvstoF0AOhpHH4I8KvrSwec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.14 44/46] x86/speculation: Add Ivy Bridge to affected list
+        stable@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+        Mark Bloch <markb@mellanox.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: [PATCH 5.4 04/34] net/mlx5: Fix crash upon suspend/resume
 Date:   Tue,  9 Jun 2020 19:45:00 +0200
-Message-Id: <20200609174030.903153138@linuxfoundation.org>
+Message-Id: <20200609174053.194915880@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
-References: <20200609174022.938987501@linuxfoundation.org>
+In-Reply-To: <20200609174052.628006868@linuxfoundation.org>
+References: <20200609174052.628006868@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +45,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Mark Bloch <markb@mellanox.com>
 
-commit 3798cc4d106e91382bfe016caa2edada27c2bb3f upstream
+[ Upstream commit 8fc3e29be9248048f449793502c15af329f35c6e ]
 
-Make the docs match the code.
+Currently a Linux system with the mlx5 NIC always crashes upon
+hibernation - suspend/resume.
 
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Add basic callbacks so the NIC could be suspended and resumed.
+
+Fixes: 9603b61de1ee ("mlx5: Move pci device handling from mlx5_ib to mlx5_core")
+Tested-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Mark Bloch <markb@mellanox.com>
+Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/main.c |   18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
---- a/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst
-+++ b/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst
-@@ -27,6 +27,8 @@ by software using TSX_CTRL_MSR otherwise
-   =============  ============  ========
-   common name    Family_Model  Stepping
-   =============  ============  ========
-+  IvyBridge      06_3AH        All
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -1554,6 +1554,22 @@ static void shutdown(struct pci_dev *pde
+ 	mlx5_pci_disable_device(dev);
+ }
+ 
++static int mlx5_suspend(struct pci_dev *pdev, pm_message_t state)
++{
++	struct mlx5_core_dev *dev = pci_get_drvdata(pdev);
 +
-   Haswell        06_3CH        All
-   Haswell_L      06_45H        All
-   Haswell_G      06_46H        All
-@@ -37,9 +39,8 @@ by software using TSX_CTRL_MSR otherwise
-   Skylake_L      06_4EH        All
-   Skylake        06_5EH        All
- 
--  Kabylake_L     06_8EH        <=0xC
--
--  Kabylake       06_9EH        <=0xD
-+  Kabylake_L     06_8EH        <= 0xC
-+  Kabylake       06_9EH        <= 0xD
-   =============  ============  ========
- 
- Related CVEs
++	mlx5_unload_one(dev, false);
++
++	return 0;
++}
++
++static int mlx5_resume(struct pci_dev *pdev)
++{
++	struct mlx5_core_dev *dev = pci_get_drvdata(pdev);
++
++	return mlx5_load_one(dev, false);
++}
++
+ static const struct pci_device_id mlx5_core_pci_table[] = {
+ 	{ PCI_VDEVICE(MELLANOX, PCI_DEVICE_ID_MELLANOX_CONNECTIB) },
+ 	{ PCI_VDEVICE(MELLANOX, 0x1012), MLX5_PCI_DEV_IS_VF},	/* Connect-IB VF */
+@@ -1597,6 +1613,8 @@ static struct pci_driver mlx5_core_drive
+ 	.id_table       = mlx5_core_pci_table,
+ 	.probe          = init_one,
+ 	.remove         = remove_one,
++	.suspend        = mlx5_suspend,
++	.resume         = mlx5_resume,
+ 	.shutdown	= shutdown,
+ 	.err_handler	= &mlx5_err_handler,
+ 	.sriov_configure   = mlx5_core_sriov_configure,
 
 
