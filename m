@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7511F4658
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850B21F465C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732474AbgFISbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732042AbgFISa4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 14:30:56 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5316FC05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 11:30:56 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id d128so4159860wmc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 11:30:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kryske-cz.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=AN+lt6L+HMUoUt8DMf8VcMe9yokwhR6uf5HA20ScyCA=;
-        b=yFKFDOR6NwW3CZ2SCVbgCK0ZKRMOS4qWPW66wPeL6QJpPpxw/Lobnq+k12iKWAYI1E
-         nYxxXsaqdBC48zduzQitCOpjBA+QVNEQpfaUypOBEI+RDE9cmyOwWopJvvYiNaJZaxAx
-         sgPmeZeghiMcq+rmE9JOvISe/RtZ8WGtQJlDe/3v1QBtu0mtbvYqkUTgzmmprZTJ/k/v
-         cXYdjhE9mNvLdqbqX+xtBvhsUdsNVirybCHwzgDt42nb5fSF0HDRFo4e2rKvfmz2zBuZ
-         3dvGAOQ0R8XfnWvzLIu8uPIyxzLSGuNEH5Dmv4+XsNMz8GuDI4GjeTHalfZ7fE0oqGaW
-         6soA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=AN+lt6L+HMUoUt8DMf8VcMe9yokwhR6uf5HA20ScyCA=;
-        b=C78nXSeXH1bneYzFTKzVqeW94dggPG/9VIXhCIiS8i/pZHMFJvzL5RmnWPYjQxZUkI
-         NUmOvanllPr2dQ8YEB8wu4r3d5pG/Qh65pqrrbj65zMEGvI6V8YLTJzvWWWnNW3pjP7a
-         bxB4siNIyk2oQzZrz7Oqh7kmzpQ2AtRrDy+BgDb29N3Buueaq5ieLFBFxV+wJuqEHH1L
-         5mOjG2ESJWGJaI+FjhhaU1BUcpV2dpmDfEsKguYQDXTOLKTeXQUNBUh6Tfjo+f94mUVG
-         xJDYg2EwWbZIgFO67rWgjjRorFy2hy+a2IhXumfepDM9gtoOM6/PHZw6YWh6o/7SkKNS
-         VEgQ==
-X-Gm-Message-State: AOAM5318EZhOm88M0zEQZvYyT1phmyuD6Gc1YeTlRv8Rsh6OOTBU8wOf
-        bnu/ERif8xm9ja8Xz2q/UAVXlNxTM6qMIpWtk0St0w1KPWZiqQ==
-X-Google-Smtp-Source: ABdhPJxdhqkHWsUSOp4dXJuP2j2eA7JSvGJvWHCUNLRWthpnfP6Xzq0KtekJ7tqxpSAUTxKYxMP05mDdeK3dzo3jRF0=
-X-Received: by 2002:a1c:9804:: with SMTP id a4mr5276766wme.109.1591727454459;
- Tue, 09 Jun 2020 11:30:54 -0700 (PDT)
-MIME-Version: 1.0
-From:   =?UTF-8?B?THVrw6HFoQ==?= <lukas@kryske.cz>
-Date:   Tue, 9 Jun 2020 18:30:43 +0000
-Message-ID: <CALBYz=3dKHUkWBH5x29KgB094zX47shbfVQjbxVc_WuFtaHePg@mail.gmail.com>
-Subject: 
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1732037AbgFISfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:35:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731397AbgFISfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 14:35:23 -0400
+Subject: Re: [GIT PULL] exfat update for 5.8-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591727722;
+        bh=Zwz9KGFZmKz/9wdCfTBPL7DKiCFvy/yodC3Hsk2nNew=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=Xr3afr/iN9WN1y95nCz5uSP4OQCo2vkoUhXA6FhdGBVCcFhDLhh3t4Loq6NX5Uvhs
+         W0Bkz0JtPtiie1jWTo2Dh5xGtzoCU5HCRgUPM+I9vlvRiZIfK1t2tiOXjZzPZISonr
+         trxiwhKMdIFlbSuX7OinLLhRLOaQXfAaTCUZZCnc=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <001301d63e3a$5bdb43d0$1391cb70$@samsung.com>
+References: <CGME20200609084542epcas1p35b5e76b8b99735e2f48921b5aaf7d4c3@epcas1p3.samsung.com>
+ <001301d63e3a$5bdb43d0$1391cb70$@samsung.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <001301d63e3a$5bdb43d0$1391cb70$@samsung.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat.git
+ tags/exfat-for-5.8-rc1
+X-PR-Tracked-Commit-Id: fc961522ddbdf00254dd03b677627139cc1f68bc
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ad57a1022f9e050a09812d975874b94b4fcb0f46
+Message-Id: <159172772274.12427.869117657315863585.pr-tracker-bot@kernel.org>
+Date:   Tue, 09 Jun 2020 18:35:22 +0000
+To:     Namjae Jeon <namjae.jeon@samsung.com>
+Cc:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        'LKML' <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-auth 569683ef unsubscribe linux-kernel
+The pull request you sent on Tue, 9 Jun 2020 17:45:42 +0900:
+
+> git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat.git tags/exfat-for-5.8-rc1
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ad57a1022f9e050a09812d975874b94b4fcb0f46
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
