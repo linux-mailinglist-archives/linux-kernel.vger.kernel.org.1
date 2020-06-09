@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1841F42CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EA21F431A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730677AbgFIRrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:47:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59228 "EHLO mail.kernel.org"
+        id S1732601AbgFIRuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:50:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732151AbgFIRrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:47:46 -0400
+        id S1732542AbgFIRti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:49:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3E4C2081A;
-        Tue,  9 Jun 2020 17:47:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB18E20801;
+        Tue,  9 Jun 2020 17:49:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724865;
-        bh=o0z1CX9zgBwNi/5coVAOQuBt/Vh7tSaDqWRWGlBBG8k=;
+        s=default; t=1591724978;
+        bh=elzZlFVVbJQP/RVUFulbrxVPPSPHvHGxsKQio13tRac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S4yhKmdiu2tTBRNqsFc/dJshcKPfFIDEzW5mRQnCUadY0I1I+F28XPyA1ojAdMC3U
-         TjQfx/oh/0sFbO+H+Y40KYQL8/2SPefxpN32ThZOMFnfzCJj0nM1LSRNxInIPe/TBo
-         0aBYspFixYMotTRN3jdeXgNUPdlF39vu2d6hu2yo=
+        b=Xe8OSZ9wOtT4/I7D+g3c3pwM4gRVil3SEyXY7a1LnBYchrbCosSEpJpgqe4hYRSps
+         A/Gr+iT7Yj0vgoIRbrWuMOrfu5I5bxoQaFmIyKN0JMJ150wbU3snUue67fFarC66hi
+         HAZ8puuM7MugLK4uv7QwGnI4pBb9NEhi2WKHupJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fan Yang <Fan_Yang@sjtu.edu.cn>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 13/42] mm: Fix mremap not considering huge pmd devmap
+        stable@vger.kernel.org, Xiang Chen <chenxiang66@hisilicon.com>,
+        John Garry <john.garry@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 03/46] scsi: hisi_sas: Check sas_port before using it
 Date:   Tue,  9 Jun 2020 19:44:19 +0200
-Message-Id: <20200609174016.911176319@linuxfoundation.org>
+Message-Id: <20200609174023.206203623@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
-References: <20200609174015.379493548@linuxfoundation.org>
+In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
+References: <20200609174022.938987501@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,56 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fan Yang <Fan_Yang@sjtu.edu.cn>
+From: Xiang Chen <chenxiang66@hisilicon.com>
 
-commit 5bfea2d9b17f1034a68147a8b03b9789af5700f9 upstream.
+[ Upstream commit 8c39673d5474b95374df2104dc1f65205c5278b8 ]
 
-The original code in mm/mremap.c checks huge pmd by:
+Need to check the structure sas_port before using it.
 
-		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd)) {
-
-However, a DAX mapped nvdimm is mapped as huge page (by default) but it
-is not transparent huge page (_PAGE_PSE | PAGE_DEVMAP).  This commit
-changes the condition to include the case.
-
-This addresses CVE-2020-10757.
-
-Fixes: 5c7fb56e5e3f ("mm, dax: dax-pmd vs thp-pmd vs hugetlbfs-pmd")
-Cc: <stable@vger.kernel.org>
-Reported-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
-Signed-off-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
-Tested-by: Fan Yang <Fan_Yang@sjtu.edu.cn>
-Tested-by: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/1573551059-107873-2-git-send-email-john.garry@huawei.com
+Signed-off-by: Xiang Chen <chenxiang66@hisilicon.com>
+Signed-off-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/pgtable.h |    1 +
- mm/mremap.c                    |    2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/hisi_sas/hisi_sas_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -203,6 +203,7 @@ static inline int pmd_large(pmd_t pte)
- }
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
+index b167411580ba..dd918c5d5cb8 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_main.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
+@@ -655,12 +655,13 @@ static void hisi_sas_port_notify_formed(struct asd_sas_phy *sas_phy)
+ 	struct hisi_hba *hisi_hba = sas_ha->lldd_ha;
+ 	struct hisi_sas_phy *phy = sas_phy->lldd_phy;
+ 	struct asd_sas_port *sas_port = sas_phy->port;
+-	struct hisi_sas_port *port = to_hisi_sas_port(sas_port);
++	struct hisi_sas_port *port;
+ 	unsigned long flags;
  
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+/* NOTE: when predicate huge page, consider also pmd_devmap, or use pmd_large */
- static inline int pmd_trans_huge(pmd_t pmd)
- {
- 	return (pmd_val(pmd) & (_PAGE_PSE|_PAGE_DEVMAP)) == _PAGE_PSE;
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -212,7 +212,7 @@ unsigned long move_page_tables(struct vm
- 		new_pmd = alloc_new_pmd(vma->vm_mm, vma, new_addr);
- 		if (!new_pmd)
- 			break;
--		if (pmd_trans_huge(*old_pmd)) {
-+		if (pmd_trans_huge(*old_pmd) || pmd_devmap(*old_pmd)) {
- 			if (extent == HPAGE_PMD_SIZE) {
- 				bool moved;
- 				/* See comment in move_ptes() */
+ 	if (!sas_port)
+ 		return;
+ 
++	port = to_hisi_sas_port(sas_port);
+ 	spin_lock_irqsave(&hisi_hba->lock, flags);
+ 	port->port_attached = 1;
+ 	port->id = phy->port_id;
+-- 
+2.25.1
+
 
 
