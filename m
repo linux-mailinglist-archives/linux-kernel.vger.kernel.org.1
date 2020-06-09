@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DB11F305C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44B61F2FE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730617AbgFIA6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:58:36 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:46323 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728376AbgFIA6H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 20:58:07 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200609005804epoutp01ef6ac74f464d5f9795455ba99c62c593~WujvK9NXb0873508735epoutp01G
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 00:58:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200609005804epoutp01ef6ac74f464d5f9795455ba99c62c593~WujvK9NXb0873508735epoutp01G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591664284;
-        bh=EO/Fm0G63JOSK4LfY2ZRNq1/w1KrmQFpGKU7em5qlVA=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=tKQGVlOsoXtBkyyLu6A1gK6yIoOp3mbVlC6SYXeizJuD23cn5H2iBk2RUJbCx8Kbf
-         QFbvpJ5ogZDLCI6UAhuxHksz1XRegzO+PJYc78DFWG0sKNbUza9KDA+q4uRe9f1VHW
-         l/asICSr0lGWuba0d737f3AzQBX8LJqilT5UjuTw=
-Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p3.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200609005803epcas1p362b3776cefe3f1f54bde1cccdb7081e9~Wujurjld11119911199epcas1p3j;
-        Tue,  9 Jun 2020 00:58:03 +0000 (GMT)
-Mime-Version: 1.0
-Subject: RE: [RFC PATCH 3/5] scsi: ufs: Introduce HPB module
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <BYAPR04MB46297B7D1CDD6CA00E87F640FC840@BYAPR04MB4629.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1932274274.141591664283763.JavaMail.epsvc@epcpadp2>
-Date:   Tue, 09 Jun 2020 09:53:48 +0900
-X-CMS-MailID: 20200609005348epcms2p8daabb4503ed03de4b109c97f3a7641ce
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882
-References: <BYAPR04MB46297B7D1CDD6CA00E87F640FC840@BYAPR04MB4629.namprd04.prod.outlook.com>
-        <336371513.41591320902369.JavaMail.epsvc@epcpadp1>
-        <963815509.21591320301642.JavaMail.epsvc@epcpadp1>
-        <231786897.01591320001492.JavaMail.epsvc@epcpadp1>
-        <231786897.01591322101492.JavaMail.epsvc@epcpadp1>
-        <CGME20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882@epcms2p8>
+        id S1731769AbgFIAy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:54:27 -0400
+Received: from mga02.intel.com ([134.134.136.20]:5268 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726904AbgFIAyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 20:54:21 -0400
+IronPort-SDR: 2iT1VAJ7QKJIg62srJZF90Jzt/+4IHLpwDnoRzMblwnpF1b6F6+olekk7pQFRzOQc/XVhMuiTs
+ WBXQH23jBnrQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2020 17:54:19 -0700
+IronPort-SDR: IE0OzXBrF8K8Gg9X7tlQNcvpRZbS8aIPXNwXPzZRhn9ehVNaJ/+ItkfaFNGQRCNtKhnEsQ+XR6
+ pvP+RHfqp/kw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,490,1583222400"; 
+   d="scan'208";a="259970287"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmsmga008.fm.intel.com with ESMTP; 08 Jun 2020 17:54:19 -0700
+Date:   Mon, 8 Jun 2020 17:54:34 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Brendan Shanks <bshanks@codeweavers.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, x86@kernel.org, ebiederm@xmission.com,
+        andi@notmuch.email, Babu.Moger@amd.com
+Subject: Re: [PATCH v3] x86/umip: Add emulation/spoofing for SLDT and STR
+ instructions
+Message-ID: <20200609005434.GA26427@ranerica-svr.sc.intel.com>
+References: <20200608224424.7259-1-bshanks@codeweavers.com>
+ <20200609003812.GA26268@ranerica-svr.sc.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200609003812.GA26268@ranerica-svr.sc.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +static int ufshpb_get_dev_info(struct ufs_hba *hba,
-> > +                              struct ufshpb_dev_info *hpb_dev_info,
-> > +                              u8 *desc_buf)
-> > +{
-> > +       int ret;
-> How about here, before doing anything, check that the descriptors are in proper size?
-OK, I will add a size check for the descriptor.
+On Mon, Jun 08, 2020 at 05:38:12PM -0700, Ricardo Neri wrote:
+> On Mon, Jun 08, 2020 at 03:44:24PM -0700, Brendan Shanks wrote:
+> > Add emulation/spoofing of SLDT and STR for both 32- and 64-bit
+> > processes.
+> > 
+> > Wine users have found a small number of Windows apps using SLDT that
+> > were crashing when run on UMIP-enabled systems.
+> > 
+> > Reported-by: Andreas Rammhold <andi@notmuch.email>
+> > Originally-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> > Signed-off-by: Brendan Shanks <bshanks@codeweavers.com>
+> > ---
+> > 
+> > v3: Use (GDT_ENTRY_TSS * 8) for task register selector instead of
+> > harcoding 0x40.
+> > 
+> >  arch/x86/kernel/umip.c | 32 +++++++++++++++++++++++---------
+> >  1 file changed, 23 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
+> > index 8d5cbe1bbb3b..166c579b0273 100644
+> > --- a/arch/x86/kernel/umip.c
+> > +++ b/arch/x86/kernel/umip.c
+> > @@ -244,16 +244,35 @@ static int emulate_umip_insn(struct insn *insn, int umip_inst,
+> >  		*data_size += UMIP_GDT_IDT_LIMIT_SIZE;
+> >  		memcpy(data, &dummy_limit, UMIP_GDT_IDT_LIMIT_SIZE);
+> >  
+> > -	} else if (umip_inst == UMIP_INST_SMSW) {
+> > -		unsigned long dummy_value = CR0_STATE;
+> > +	} else if (umip_inst == UMIP_INST_SMSW || umip_inst == UMIP_INST_SLDT ||
+> > +		   umip_inst == UMIP_INST_STR) {
+> > +		unsigned long dummy_value;
+> > +
+> > +		if (umip_inst == UMIP_INST_SMSW)
+> > +			dummy_value = CR0_STATE;
+> > +		else if (umip_inst == UMIP_INST_STR)
+> > +			dummy_value = GDT_ENTRY_TSS * 8;
+> > +		else if (umip_inst == UMIP_INST_SLDT)
+> > +		{
+> 
+> This brace should go in the previous line. Also, if you use braces in
+> the last part of the conditional you should probably use them in the
+> previous ones. I guess in this case it woudln't improve readability.
+> Instead, you can probably have a switch instead of the three ifs. That
+> probably does improve readability and solves the dilemma of needing to
+> put braces in all the one-line conditionals.
+> 
+> BTW, you should also delete the comment at the top of the file saying
+> that str and sldt will not be emulated:
+> 
+> diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
+> index 166c579b0273..0984a55eb8c0 100644
+> --- a/arch/x86/kernel/umip.c
+> +++ b/arch/x86/kernel/umip.c
+> @@ -45,9 +45,6 @@
+>   * value that, lies close to the top of the kernel memory. The limit for the GDT
+>   * and the IDT are set to zero.
+>   *
+> - * Given that SLDT and STR are not commonly used in programs that run on WineHQ
+> - * or DOSEMU2, they are not emulated.
+> - *
+>   * The instruction smsw is emulated to return the value that the register CR0
+>   * has at boot time as set in the head_32.
 
-Thanks,
-Daejun
+... And also explain that the emulated values for str and sldt are the
+simply the values that Linux assigns programatically.
+
+Thanks and BR,
+Ricardo
