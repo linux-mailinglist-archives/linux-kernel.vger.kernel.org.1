@@ -2,142 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9061F3D98
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AC71F3DAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730295AbgFIOHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 10:07:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:42984 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728338AbgFIOHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:07:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E6E31FB;
-        Tue,  9 Jun 2020 07:07:31 -0700 (PDT)
-Received: from [10.57.49.155] (unknown [10.57.49.155])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83BD23F66F;
-        Tue,  9 Jun 2020 07:07:28 -0700 (PDT)
-Subject: Re: [PATCH 2/2] arm-nommu: Add use_reserved_mem() to check if device
- support reserved memory
-To:     dillon.minfei@gmail.com, robh+dt@kernel.org,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        linux@armlinux.org.uk, kstewart@linuxfoundation.org,
-        allison@lohutok.net, info@metux.net, tglx@linutronix.de
-Cc:     devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1591605038-8682-1-git-send-email-dillon.minfei@gmail.com>
- <1591605038-8682-3-git-send-email-dillon.minfei@gmail.com>
-From:   Vladimir Murzin <vladimir.murzin@arm.com>
-Message-ID: <90df5646-e0c4-fcac-d934-4cc922230dd2@arm.com>
-Date:   Tue, 9 Jun 2020 15:08:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1730277AbgFIOLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728601AbgFIOLh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 10:11:37 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B39AC05BD1E;
+        Tue,  9 Jun 2020 07:11:37 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id m2so1466162pjv.2;
+        Tue, 09 Jun 2020 07:11:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nbjkRUfSxpIRE9L5muPwAXEXsssIxPhz/mzHngdljkU=;
+        b=sRpl8CGOWQm3GO7DaHHkPpb/9FpBaD4iVeWbMU4EydSBchwheAOtjl940fZFnh+RYi
+         NDzYwvO9oCwAIROiyKkXSzkOCDrWcifDn4ds6T/3T8s355i+4RGCs790Cc6UcBdj+vRS
+         AmbzjJ9P9RBfiLv2Omhce9haa2cEOi/zGQ5x69bAf/fef5sxQ2Up3NkTnw8CMA6KhfZX
+         wXMCTphw/EwBGAzXHla+rH5idT9EChPwsYNT/LeBp0pCUlxybyc3Nkd/BvUgc37N6OLQ
+         2dN8KWWyuaqJTuSG9fte5JdVsiNnu8usZHSG+UzZynbk21GI0xYrpdRVzYsU9vfmN55a
+         xDog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nbjkRUfSxpIRE9L5muPwAXEXsssIxPhz/mzHngdljkU=;
+        b=noQ1JBqKLCbSOQxDg4d6uIfjRG4jPhnhpZof4YA8bEfoVj3vtjtkhIwZ0Q0aHK3+Nq
+         ikdYmsqUNusWNIXwPl8jGwxOEDFPMIOQ+/2eShYkVjAAchucBrEPfknFcX7iWHbnkiXB
+         8c1h1X7eh1tSn3ouWiQBQlkMPbwEkfrAez3KTJbdKrkobPVs9F9ZMXxguqiGzvNf+tFr
+         asrlZzvHxtXsX78jG+WVmObrOiaPx40Vqh8L9U3kJsJfq/8PvJSvWESE8CgR29qS9OXt
+         80icqrNxa63n86UklOI7WFr1TQvFepZVsoMv4zo8gk78pqfvvdsDRGodAfcJzmTWACvy
+         75YA==
+X-Gm-Message-State: AOAM5333iiL+wZIOhhQYEjdgxjh8+IBxUDDweOV/OFxyi5FrHNU0eXoS
+        zD7lDf6Xc2nhx3zoQ10Jsaq1B2lHR6VHFqEqwNbwHmjX+P0L6A==
+X-Google-Smtp-Source: ABdhPJydk5VqnSyXHiOiGowirvy31UTQ1SVtGHfwpdnmnMK0c1HE6VTY0bKT0gf1ey2haF1RJyvCZgfCn7pYMKIXHOA=
+X-Received: by 2002:a17:90a:220f:: with SMTP id c15mr5287273pje.129.1591711896706;
+ Tue, 09 Jun 2020 07:11:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1591605038-8682-3-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200608184222.GA899@rikard> <20200608221823.35799-1-rikard.falkeborn@gmail.com>
+ <20200608221823.35799-2-rikard.falkeborn@gmail.com>
+In-Reply-To: <20200608221823.35799-2-rikard.falkeborn@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 9 Jun 2020 17:11:24 +0300
+Message-ID: <CAHp75VeMDkZjd1d8nTYRk8duJ4mR0NxqYhqOmuqAjcJk8K2hzg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] bits: Add tests of GENMASK
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kbuild test robot <lkp@intel.com>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/20 9:30 AM, dillon.minfei@gmail.com wrote:
-> From: dillon min <dillon.minfei@gmail.com>
-> 
-> Currently, we use dma direct to request coherent memory for driver on armv7m
-> platform if 'cacheid' is zero, but dma_direct_can_mmap() is return false,
-> dma_direct_mmap() return -ENXIO for CONFIG_MMU undefined platform.
-> 
-> so we have to back to use 'arm_nommu_dma_ops', add use_reserved_mem() to check
-> if device support global or device corherent memory. if yes, then call
-> set_dma_ops()
-> 
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+On Tue, Jun 9, 2020 at 1:18 AM Rikard Falkeborn
+<rikard.falkeborn@gmail.com> wrote:
+>
+> Add tests of GENMASK and GENMASK_ULL.
+>
+> A few test cases that should fail compilation are provided
+> under #ifdef TEST_GENMASK_FAILURES
+>
+
+LGTM, thanks!
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 > ---
->  arch/arm/mm/dma-mapping-nommu.c | 28 +++++++++++++++++++++++++++-
->  1 file changed, 27 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mm/dma-mapping-nommu.c b/arch/arm/mm/dma-mapping-nommu.c
-> index 287ef898a55e..e1c213fec152 100644
-> --- a/arch/arm/mm/dma-mapping-nommu.c
-> +++ b/arch/arm/mm/dma-mapping-nommu.c
-> @@ -14,6 +14,7 @@
->  #include <asm/cacheflush.h>
->  #include <asm/outercache.h>
->  #include <asm/cp15.h>
-> +#include <linux/of.h>
->  
->  #include "dma.h"
->  
-> @@ -188,6 +189,31 @@ const struct dma_map_ops arm_nommu_dma_ops = {
->  };
->  EXPORT_SYMBOL(arm_nommu_dma_ops);
->  
-> +static bool use_reserved_mem(struct device *dev)
+> I did not move it to test_bitops.c, because I think it makes more sense
+> that test_bitops.c tests bitops.h and test_bits.c tests bits.h, but if
+> you disagree, I can move it.
+
+We could do it later and actually other way around, since you are
+using KUnit, while the test_bitops.h doesn't.
+
+>
+> v2-v3
+> Updated commit message and ifdef after suggestion fron Geert. Also fixed
+> a typo in the description of the file.
+>
+> v1-v2
+> New patch.
+>
+>  lib/Kconfig.debug | 11 +++++++
+>  lib/Makefile      |  1 +
+>  lib/test_bits.c   | 73 +++++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 85 insertions(+)
+>  create mode 100644 lib/test_bits.c
+>
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 333e878d8af9..9557cb570fb9 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2182,6 +2182,17 @@ config LINEAR_RANGES_TEST
+>
+>           If unsure, say N.
+>
+> +config BITS_TEST
+> +       tristate "KUnit test for bits.h"
+> +       depends on KUNIT
+> +       help
+> +         This builds the bits unit test.
+> +         Tests the logic of macros defined in bits.h.
+> +         For more information on KUnit and unit tests in general please refer
+> +         to the KUnit documentation in Documentation/dev-tools/kunit/.
+> +
+> +         If unsure, say N.
+> +
+>  config TEST_UDELAY
+>         tristate "udelay test driver"
+>         help
+> diff --git a/lib/Makefile b/lib/Makefile
+> index 315516fa4ef4..2ce9892e3e63 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -314,3 +314,4 @@ obj-$(CONFIG_OBJAGG) += objagg.o
+>  # KUnit tests
+>  obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+>  obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+> +obj-$(CONFIG_BITS_TEST) += test_bits.o
+> diff --git a/lib/test_bits.c b/lib/test_bits.c
+> new file mode 100644
+> index 000000000000..e2fcf24463bf
+> --- /dev/null
+> +++ b/lib/test_bits.c
+> @@ -0,0 +1,73 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Test cases for functions and macros in bits.h
+> + */
+> +
+> +#include <kunit/test.h>
+> +#include <linux/bits.h>
+> +
+> +
+> +void genmask_test(struct kunit *test)
 > +{
-> +	struct device_node *np;
+> +       KUNIT_EXPECT_EQ(test, 1ul, GENMASK(0, 0));
+> +       KUNIT_EXPECT_EQ(test, 3ul, GENMASK(1, 0));
+> +       KUNIT_EXPECT_EQ(test, 6ul, GENMASK(2, 1));
+> +       KUNIT_EXPECT_EQ(test, 0xFFFFFFFFul, GENMASK(31, 0));
 > +
-> +	np = of_find_node_by_path("/reserved-memory/linux,dma");
+> +#ifdef TEST_GENMASK_FAILURES
+> +       /* these should fail compilation */
+> +       GENMASK(0, 1);
+> +       GENMASK(0, 10);
+> +       GENMASK(9, 10);
+> +#endif
 > +
-> +	if (np &&
-> +		of_device_is_compatible(np, "shared-dma-pool") &&
-> +		of_property_read_bool(np, "no-map") &&
-> +		of_property_read_bool(np, "linux,dma-default")) {
-> +		/* has global corherent mem support */
-> +		of_node_put(np);
-> +		return true;
-> +	}
 > +
-> +	np = of_parse_phandle(dev->of_node, "memory-region", 0);
-> +	if (np) {
-> +		/* has dev corherent mem support */
-> +		of_node_put(np);
-> +		return true;
-> +	}
-> +
-> +	return false;
 > +}
 > +
->  void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
->  			const struct iommu_ops *iommu, bool coherent)
->  {
-> @@ -206,6 +232,6 @@ void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
->  		dev->archdata.dma_coherent = (get_cr() & CR_M) ? coherent : true;
->  	}
->  
-> -	if (!dev->archdata.dma_coherent)
-> +	if (!dev->archdata.dma_coherent || use_reserved_mem(dev))
->  		set_dma_ops(dev, &arm_nommu_dma_ops);
->  }
-> 
+> +void genmask_ull_test(struct kunit *test)
+> +{
+> +       KUNIT_EXPECT_EQ(test, 1ull, GENMASK_ULL(0, 0));
+> +       KUNIT_EXPECT_EQ(test, 3ull, GENMASK_ULL(1, 0));
+> +       KUNIT_EXPECT_EQ(test, 0x000000ffffe00000ull, GENMASK_ULL(39, 21));
+> +       KUNIT_EXPECT_EQ(test, 0xffffffffffffffffull, GENMASK_ULL(63, 0));
+> +
+> +#ifdef TEST_GENMASK_FAILURES
+> +       /* these should fail compilation */
+> +       GENMASK_ULL(0, 1);
+> +       GENMASK_ULL(0, 10);
+> +       GENMASK_ULL(9, 10);
+> +#endif
+> +}
+> +
+> +void genmask_input_check_test(struct kunit *test)
+> +{
+> +       unsigned int x, y;
+> +       int z, w;
+> +
+> +       /* Unknown input */
+> +       KUNIT_EXPECT_EQ(test, 0, GENMASK_INPUT_CHECK(x, 0));
+> +       KUNIT_EXPECT_EQ(test, 0, GENMASK_INPUT_CHECK(0, x));
+> +       KUNIT_EXPECT_EQ(test, 0, GENMASK_INPUT_CHECK(x, y));
+> +
+> +       KUNIT_EXPECT_EQ(test, 0, GENMASK_INPUT_CHECK(z, 0));
+> +       KUNIT_EXPECT_EQ(test, 0, GENMASK_INPUT_CHECK(0, z));
+> +       KUNIT_EXPECT_EQ(test, 0, GENMASK_INPUT_CHECK(z, w));
+> +
+> +       /* Valid input */
+> +       KUNIT_EXPECT_EQ(test, 0, GENMASK_INPUT_CHECK(1, 1));
+> +       KUNIT_EXPECT_EQ(test, 0, GENMASK_INPUT_CHECK(39, 21));
+> +}
+> +
+> +
+> +static struct kunit_case bits_test_cases[] = {
+> +       KUNIT_CASE(genmask_test),
+> +       KUNIT_CASE(genmask_ull_test),
+> +       KUNIT_CASE(genmask_input_check_test),
+> +       {}
+> +};
+> +
+> +static struct kunit_suite bits_test_suite = {
+> +       .name = "bits-test",
+> +       .test_cases = bits_test_cases,
+> +};
+> +kunit_test_suite(bits_test_suite);
+> --
+> 2.27.0
+>
 
-Sorry I have to NAK this hack :(
 
-Digging git history reveled 79964a1c2972 ("ARM: 8633/1: nommu: allow mmap when !CONFIG_MMU")
-which make me wonder if diff below does the trick for you
-
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index 8f4bbda..8623b9e 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -456,14 +456,14 @@ int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
- #else /* CONFIG_MMU */
- bool dma_direct_can_mmap(struct device *dev)
- {
--	return false;
-+	return true;
- }
- 
- int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
- 		void *cpu_addr, dma_addr_t dma_addr, size_t size,
- 		unsigned long attrs)
- {
--	return -ENXIO;
-+	return vm_iomap_memory(vma, vma->vm_start, (vma->vm_end - vma->vm_start));;
- }
- #endif /* CONFIG_MMU */
-
-Cheers
-Vladimir
+-- 
+With Best Regards,
+Andy Shevchenko
