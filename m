@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD13D1F3966
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 13:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0125F1F38ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 13:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgFILSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 07:18:17 -0400
-Received: from pg-uni-mx-02.unbc.ca ([142.207.144.241]:54328 "EHLO
-        Pg-uni-mx-02.unbc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727002AbgFILSP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 07:18:15 -0400
-X-Greylist: delayed 930 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Jun 2020 07:18:15 EDT
-X-ASG-Debug-ID: 1591700561-10987e386184cce0002-xx1T2L
-Received: from ehub.unbc.ca (pg-adr-exch-03.adr.unbc.ca [142.207.144.100]) by Pg-uni-mx-02.unbc.ca with ESMTP id HT6WWArai111NYXM (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NO); Tue, 09 Jun 2020 04:02:41 -0700 (PDT)
-X-Barracuda-Envelope-From: millsa@unbc.ca
-X-Barracuda-Effective-Source-IP: pg-adr-exch-03.adr.unbc.ca[142.207.144.100]
-X-Barracuda-Apparent-Source-IP: 142.207.144.100
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha1; d=unbc.ca; s=exch; c=relaxed/relaxed;
-        t=1591700560; h=from:subject:to:date:message-id;
-        bh=HPu6nmTykyK3fujwMLhwHG1V3zw=;
-        b=DDvAUzBQT2O6Lh7P9MxWAD3jw79bllGRQfIu9SqAY5Gq/7/7jnFxKiUqScIsQd3/GH3P5APxXje
-        UrpNCqPf1M1ge1xFreZnH/oap6iUbKBURbq9SlZzY7boPzrKIqSdk3wGGBrniy8j67yrUHWDfZAhm
-        AVKvnErCUTVKX4H1pMzgSBxEpZTt5pJmh4MNw0UtziSOEbbacScThb/H/7qqpdfSK++f2yPoKeEml
-        +YAbh2gpCKcFzeCGSCSlDxvn9n+pfFtv6vE3Th1mPi97EhEJn7ddektXfAuUP/5WzLRB7Y1j4qUq1
-        wt4sRGbxzKhQQsZxsPiLeyF+7Pz4DPXurNZQ==
-Received: from pg-adr-exch-03.adr.unbc.ca (142.207.144.100) by
- pg-adr-exch-03.adr.unbc.ca (142.207.144.100) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 9 Jun 2020 04:02:40 -0700
-Received: from pg-adr-exch-03.adr.unbc.ca ([fe80::dd44:752:4794:bd8c]) by
- pg-adr-exch-03.adr.unbc.ca ([fe80::dd44:752:4794:bd8c%13]) with mapi id
- 15.00.1497.006; Tue, 9 Jun 2020 04:02:40 -0700
-From:   Antonia Mills <millsa@unbc.ca>
-To:     Antonia Mills <millsa@unbc.ca>
-Subject: Re: Benefits
-Thread-Topic: Benefits
-X-ASG-Orig-Subj: Re: Benefits
-Thread-Index: AQHWPkzA5kaSTNSyB0+eAzETXus8Z6jQHjMy
-Date:   Tue, 9 Jun 2020 11:02:39 +0000
-Message-ID: <1591700539575.21069@unbc.ca>
-References: <760ac825979e4282b7baf3931479436c@pg-adr-exch-03.adr.unbc.ca>
-In-Reply-To: <760ac825979e4282b7baf3931479436c@pg-adr-exch-03.adr.unbc.ca>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [142.207.144.17]
-MIME-Version: 1.0
-X-Barracuda-Connect: pg-adr-exch-03.adr.unbc.ca[142.207.144.100]
-X-Barracuda-Start-Time: 1591700561
-X-Barracuda-Encrypted: ECDHE-RSA-AES256-SHA384
-X-Barracuda-URL: https://pg-uni-mx-02.unbc.ca:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at unbc.ca
-X-Barracuda-Scan-Msg-Size: 259
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 0.00
-X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=5.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.82429
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
+        id S1728471AbgFILCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 07:02:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49540 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727002AbgFILCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 07:02:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id B66DFACF2;
+        Tue,  9 Jun 2020 11:02:52 +0000 (UTC)
+Date:   Tue, 09 Jun 2020 13:02:46 +0200
+Message-ID: <s5h8sgwijs9.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     David Rientjes <rientjes@google.com>,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
+        alsa-devel@alsa-project.org, bp@alien8.de, hch@infradead.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        Pavel Machek <pavel@ucw.cz>, perex@perex.cz,
+        tglx@linutronix.de, tiwai@suse.com, x86@kernel.org
+Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
+In-Reply-To: <s5hh7vkio0n.wl-tiwai@suse.de>
+References: <20200520111136.GA3802@amd>
+        <1591545088.74ii116nf2.none@localhost>
+        <20200608061950.GA17476@lst.de>
+        <1591624340.z01ejtod28.none@localhost>
+        <alpine.DEB.2.22.394.2006081928070.148886@chino.kir.corp.google.com>
+        <20200609054306.GA9606@lst.de>
+        <s5hsgf4irzt.wl-tiwai@suse.de>
+        <20200609084305.GA21671@lst.de>
+        <s5hlfkwip1h.wl-tiwai@suse.de>
+        <20200609091727.GA23814@lst.de>
+        <s5hh7vkio0n.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-?
+On Tue, 09 Jun 2020 11:31:20 +0200,
+Takashi Iwai wrote:
+> 
+> On Tue, 09 Jun 2020 11:17:27 +0200,
+> Christoph Hellwig wrote:
+> > 
+> > On Tue, Jun 09, 2020 at 11:09:14AM +0200, Takashi Iwai wrote:
+> > > On Tue, 09 Jun 2020 10:43:05 +0200,
+> > > Christoph Hellwig wrote:
+> > > > 
+> > > > On Tue, Jun 09, 2020 at 10:05:26AM +0200, Takashi Iwai wrote:
+> > > > > > >From the disassembly it seems like a vmalloc allocation is NULL, which
+> > > > > > seems really weird as this patch shouldn't make a difference for them,
+> > > > > > and I also only see a single places that allocates the field, and that
+> > > > > > checks for an allocation failure.  But the sound code is a little
+> > > > > > hard to unwind sometimes.
+> > > > > 
+> > > > > It's not clear which sound device being affected, but if it's
+> > > > > HD-audio on x86, runtime->dma_area points to a vmapped buffer from
+> > > > > SG-pages allocated by dma_alloc_coherent().
+> > > > > 
+> > > > > OTOH, if it's a USB-audio, runtime->dma_area is a buffer by
+> > > > > vmalloc().
+> > > > 
+> > > > Err, you can't just vmap a buffer returned from dma_alloc_coherent,
+> > > > dma_alloc_coherent returns values are opaque and can't be used
+> > > > for virt_to_page.  Whatever that code did has already been broken
+> > > > per the DMA API contract and on many architectures and just happend
+> > > > to work on x86 by accident.
+> > > 
+> > > Hmm, that's bad.
+> > > 
+> > > How would be a proper way to get the virtually mapped SG-buffer pages
+> > > with coherent memory?  (Also allowing user-space mmap, too)
+> > 
+> > dma_mmap_coherent / dma_mmap_attrs for userspace.  We don't really
+> > have a good way for kernel space mappings.
+> 
+> And that's the missing piece right now...  :-<
 
-________________________________
-From: Antonia Mills
-Sent: Tuesday, June 9, 2020 3:57 AM
-To: Antonia Mills
-Subject: Benefits
+BTW, this kind of usage is not specific to sound, but also V4L also
+does vmap() over SG pages from dma_alloc_coherent().  It seems done
+only on selected devices, though.
 
 
-You are a recipient of 2M Dollars grant. Contact: ( lsk19703@naver.com<mail=
-to:lsk19703@naver.com> ) for more details.?
+Takashi
