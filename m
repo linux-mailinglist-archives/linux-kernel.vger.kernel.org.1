@@ -2,60 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744CD1F336A
+	by mail.lfdr.de (Postfix) with ESMTP id E679C1F336B
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 07:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727922AbgFIF3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 01:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727904AbgFIF3L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 01:29:11 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A955AC03E969
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 22:29:10 -0700 (PDT)
+        id S1727948AbgFIF3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 01:29:19 -0400
+Received: from ozlabs.org ([203.11.71.1]:38845 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727842AbgFIF3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 01:29:10 -0400
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 49gzF9729kz9sTb; Tue,  9 Jun 2020 15:29:00 +1000 (AEST)
+        id 49gzFF26KKz9sTl; Tue,  9 Jun 2020 15:29:03 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nadav Amit <namit@vmware.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Leonardo Bras <leobras.c@gmail.com>,
+        Leonardo Bras <leonardo@linux.ibm.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
         Allison Randal <allison@lohutok.net>,
-        Paul Mackerras <paulus@samba.org>,
+        Claudio Carvalho <cclaudio@linux.ibm.com>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>
+        Paul Mackerras <paulus@samba.org>,
+        Nathan Fontenot <nfont@linux.vnet.ibm.com>,
+        Bharata B Rao <bharata@linux.ibm.com>
 Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20200518234245.200672-1-leobras.c@gmail.com>
-References: <20200518234245.200672-1-leobras.c@gmail.com>
-Subject: Re: [PATCH v6 0/2] Implement reentrant rtas call
-Message-Id: <159168034552.1381411.5609887094437090637.b4-ty@ellerman.id.au>
-Date:   Tue,  9 Jun 2020 15:29:00 +1000 (AEST)
+In-Reply-To: <20200402195156.626430-1-leonardo@linux.ibm.com>
+References: <20200402195156.626430-1-leonardo@linux.ibm.com>
+Subject: Re: [PATCH v3 1/1] powerpc/kernel: Enables memory hot-remove after reboot on pseries guests
+Message-Id: <159168034470.1381411.12073746896730178123.b4-ty@ellerman.id.au>
+Date:   Tue,  9 Jun 2020 15:29:03 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 May 2020 20:42:43 -0300, Leonardo Bras wrote:
-> Patch 2 implement rtas_call_reentrant() for reentrant rtas-calls:
-> "ibm,int-on", "ibm,int-off",ibm,get-xive" and  "ibm,set-xive",
-> according to LoPAPR Version 1.1 (March 24, 2016).
+On Thu, 2 Apr 2020 16:51:57 -0300, Leonardo Bras wrote:
+> While providing guests, it's desirable to resize it's memory on demand.
 > 
-> For that, it's necessary that every call uses a different
-> rtas buffer (rtas_args). Paul Mackerras suggested using the PACA
-> structure for creating a per-cpu buffer for these calls.
+> By now, it's possible to do so by creating a guest with a small base
+> memory, hot-plugging all the rest, and using 'movable_node' kernel
+> command-line parameter, which puts all hot-plugged memory in
+> ZONE_MOVABLE, allowing it to be removed whenever needed.
 > 
 > [...]
 
 Applied to powerpc/next.
 
-[1/2] powerpc/rtas: Move type/struct definitions from rtas.h into rtas-types.h
-      https://git.kernel.org/powerpc/c/783a015b747f606e803b798eb8b50c73c548691d
-[2/2] powerpc/rtas: Implement reentrant rtas call
-      https://git.kernel.org/powerpc/c/b664db8e3f976d9233cc9ea5e3f8a8c0bcabeb48
+[1/1] powerpc/kernel: Enables memory hot-remove after reboot on pseries guests
+      https://git.kernel.org/powerpc/c/b6eca183e23e7a6625a0d2cdb806b7cd1abcd2d2
 
 cheers
