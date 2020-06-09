@@ -2,188 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB661F489C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 23:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FD51F48B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 23:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgFIVHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 17:07:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgFIVHP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 17:07:15 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C098DC08C5C2
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 14:07:15 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id b13so110598uav.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 14:07:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f15ThlgRIs3s50AvF0kFQ8PMHdAjHFT357oOtlUx/ug=;
-        b=YQTUSvv3PxEEhj5ujE/dPySButOyH55bK4Xn7FFJQPplWJdwV27lg1hiiGZPMl+Csy
-         utkQv6pOjG6DMuuUAn6OW8rUDsTwDk+L09wjyrOsEHgSM9DO1jG+4DXrAkvtnH7+VocI
-         GJeE84ALY1lEBJxLNfWmnbxI8H4dKWQGgYe6NIzbLwEX92BP0BVccbN5ywjf+ad2hItV
-         hOK3koJ698Vs9caFgU0Oz67/J789jH+4rxh31hXP0eWCQ0G50xlrah8Vhcbhoz+wsVGG
-         RvWp/Z6BsjYqNpoy5p5CsKAw38VlYjZy47xgAAr8XRHehyo5E50oaLRajAfxViZwx+CC
-         YVIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f15ThlgRIs3s50AvF0kFQ8PMHdAjHFT357oOtlUx/ug=;
-        b=pCp8OMkdLZp2lRBhnsDWZ/713YaZsMCL1gfKLkZcNlCnjjGIUFeGO2zIzJ20DjjpgL
-         TJ3eStdUmMRekJQjFB1ANol+a06n6UFFJ1oFr4XVhYWeHoGNgJMp2gmXwY6g99qvCWBD
-         3//1pogSY51XzTeC8s3gEkP1vqRkgVrm4SigkVIbGNaqc1jk6CRvuTw6BvQDSCY3iXQ7
-         qoVT7s8pydJz6MzfKpBz6++Gpnv/cc85rwdJCvrteKS8LQOa0l1zOy3zeVx5HiOtzN4X
-         882P9nq0yxAAueZpc/82J3MSGTSXCDrJpECVvhGcVtFFz3x1TpP6AnnMyHZTSsuNNtl4
-         D+MQ==
-X-Gm-Message-State: AOAM533OQvH3PWGP03ZHoJLBkRAjEgnF+w6rUnuTxrbzTvUuaffM2Mrf
-        Oh3TokK6vmyODXP/qObYLLnvgwvZ1AygmM4qIM/dag==
-X-Google-Smtp-Source: ABdhPJwQ+viuUyt4Xvfz0B/F5q8uWrpKqo6vNNs2uM0NepreAFEA0QuoyJVSJ76WQkzVbDy0sso7BcdwlZvUGeg7c1M=
-X-Received: by 2002:ab0:6012:: with SMTP id j18mr260224ual.69.1591736832385;
- Tue, 09 Jun 2020 14:07:12 -0700 (PDT)
+        id S1726606AbgFIVPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 17:15:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726395AbgFIVPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 17:15:38 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4410206D5;
+        Tue,  9 Jun 2020 21:15:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591737337;
+        bh=SxQV2Ugt3zKyDWzjvtu7SIHBUY5zdgcRwPzOteTbB8I=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=zVbV7IZfMHOC5Q3MDct9SsP4YHZHXvS2i6yQS9lpdNllBBaEqi/NtLf5V83PXjy1u
+         WdbGM+hQ+pwOo/U3rwCTMLbKoty3V84TugkrK9PhV3umD+TB3GkaD3S0rsoaxGhmeg
+         8oPia7m7TbB1ZQCEMWObMBnIXgEBo4bAyIul2RmI=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200605213853.14959-1-sean.j.christopherson@intel.com> <20200605213853.14959-2-sean.j.christopherson@intel.com>
-In-Reply-To: <20200605213853.14959-2-sean.j.christopherson@intel.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 9 Jun 2020 14:07:01 -0700
-Message-ID: <CANgfPd87=eS6h=GX6CxZRwAj=MTET-AtVAjVQn4i1zkwZ4ApXw@mail.gmail.com>
-Subject: Re: [PATCH 01/21] KVM: x86/mmu: Track the associated kmem_cache in
- the MMU caches
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Feiner <pfeiner@google.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Christoffer Dall <christoffer.dall@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200608094714.382149-1-robert.marko@sartura.hr>
+References: <20200608094714.382149-1-robert.marko@sartura.hr>
+Subject: Re: [PATCH] clk: qcom: ipq4019: fix apss cpu overclocking
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Christian Lamparter <chunkeey@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>
+To:     Robert Marko <robert.marko@sartura.hr>, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com
+Date:   Tue, 09 Jun 2020 14:15:36 -0700
+Message-ID: <159173733699.242598.1278531930794428520@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 2:39 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> Track the kmem_cache used for non-page KVM MMU memory caches instead of
-> passing in the associated kmem_cache when filling the cache.  This will
-> allow consolidating code and other cleanups.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Ben Gardon <bgardon@google.com>
+Quoting Robert Marko (2020-06-08 02:47:15)
+> From: Christian Lamparter <chunkeey@gmail.com>
+>=20
+> There's an interaction issue between the clk changes:"
+> clk: qcom: ipq4019: Add the apss cpu pll divider clock node
+> clk: qcom: ipq4019: remove fixed clocks and add pll clocks
+> " and the cpufreq-dt.
+>=20
+> cpufreq-dt is now spamming the kernel-log with the following:
+>=20
+> [ 1099.190658] cpu cpu0: dev_pm_opp_set_rate: failed to find current OPP
+> for freq 761142857 (-34)
+>=20
+> This only happens on certain devices like the Compex WPJ428
+> and AVM FritzBox!4040. However, other devices like the Asus
+> RT-AC58U and Meraki MR33 work just fine.
+>=20
+> The issue stem from the fact that all higher CPU-Clocks
+> are achieved by switching the clock-parent to the P_DDRPLLAPSS
+> (ddrpllapss). Which is set by Qualcomm's proprietary bootcode
+> as part of the DDR calibration.
+>=20
+> For example, the FB4040 uses 256 MiB Nanya NT5CC128M16IP clocked
+> at round 533 MHz (ddrpllsdcc =3D 190285714 Hz).
+>=20
+> whereas the 128 MiB Nanya NT5CC64M16GP-DI in the ASUS RT-AC58U is
+> clocked at a slightly higher 537 MHz ( ddrpllsdcc =3D 192000000 Hz).
+>=20
+> This patch attempts to fix the issue by modifying
+> clk_cpu_div_round_rate(), clk_cpu_div_set_rate(), clk_cpu_div_recalc_rate=
+()
+> to use a new qcom_find_freq_close() function, which returns the closest
+> matching frequency, instead of the next higher. This way, the SoC in
+> the FB4040 (with its max clock speed of 710.4 MHz) will no longer
+> try to overclock to 761 MHz.
+
+Why are the OPP tables not properly indicating the frequencies that
+should be chosen? The rounding policy should presumably be matching the
+frequency exactly vs. relying on some sort of rounding policy to fix it.
+
+>=20
+> Fixes: d83dcacea18 ("clk: qcom: ipq4019: Add the apss cpu pll divider clo=
+ck node")
+> Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+> Signed-off-by: John Crispin <john@phrozen.org>
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
 > ---
->  arch/x86/include/asm/kvm_host.h |  1 +
->  arch/x86/kvm/mmu/mmu.c          | 24 +++++++++++-------------
->  2 files changed, 12 insertions(+), 13 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 1da5858501ca..16347b050754 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -251,6 +251,7 @@ struct kvm_kernel_irq_routing_entry;
->   */
->  struct kvm_mmu_memory_cache {
->         int nobjs;
-> +       struct kmem_cache *kmem_cache;
->         void *objects[KVM_NR_MEM_OBJS];
+> Changes from v1 to v2:
+
+Please update subject of the patch to indicate patch version (i.e.
+PATCHv2 and next time PATCHv3, not just PATCH).
+
+> * Resolve warnings discovered by the kbot
+> * Return the return of regmap_update_bits instead of not using it at all
+>=20
+>  drivers/clk/qcom/gcc-ipq4019.c | 36 ++++++++++++++++++++++++++++++----
+>  1 file changed, 32 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/clk/qcom/gcc-ipq4019.c b/drivers/clk/qcom/gcc-ipq401=
+9.c
+> index ef5137fd50f3..62fa17a4291c 100644
+> --- a/drivers/clk/qcom/gcc-ipq4019.c
+> +++ b/drivers/clk/qcom/gcc-ipq4019.c
+> @@ -1243,6 +1243,29 @@ static const struct clk_fepll_vco gcc_fepll_vco =
+=3D {
+>         .reg =3D 0x2f020,
 >  };
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index fdd05c233308..0830c195c9ed 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -1060,15 +1060,14 @@ static void walk_shadow_page_lockless_end(struct kvm_vcpu *vcpu)
->         local_irq_enable();
->  }
->
-> -static int mmu_topup_memory_cache(struct kvm_mmu_memory_cache *cache,
-> -                                 struct kmem_cache *base_cache, int min)
-> +static int mmu_topup_memory_cache(struct kvm_mmu_memory_cache *cache, int min)
->  {
->         void *obj;
->
->         if (cache->nobjs >= min)
->                 return 0;
->         while (cache->nobjs < ARRAY_SIZE(cache->objects)) {
-> -               obj = kmem_cache_zalloc(base_cache, GFP_KERNEL_ACCOUNT);
-> +               obj = kmem_cache_zalloc(cache->kmem_cache, GFP_KERNEL_ACCOUNT);
->                 if (!obj)
->                         return cache->nobjs >= min ? 0 : -ENOMEM;
->                 cache->objects[cache->nobjs++] = obj;
-> @@ -1081,11 +1080,10 @@ static int mmu_memory_cache_free_objects(struct kvm_mmu_memory_cache *cache)
->         return cache->nobjs;
->  }
->
-> -static void mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc,
-> -                                 struct kmem_cache *cache)
-> +static void mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc)
->  {
->         while (mc->nobjs)
-> -               kmem_cache_free(cache, mc->objects[--mc->nobjs]);
-> +               kmem_cache_free(mc->kmem_cache, mc->objects[--mc->nobjs]);
->  }
->
->  static int mmu_topup_memory_cache_page(struct kvm_mmu_memory_cache *cache,
-> @@ -1115,25 +1113,22 @@ static int mmu_topup_memory_caches(struct kvm_vcpu *vcpu)
->         int r;
->
->         r = mmu_topup_memory_cache(&vcpu->arch.mmu_pte_list_desc_cache,
-> -                                  pte_list_desc_cache, 8 + PTE_PREFETCH_NUM);
-> +                                  8 + PTE_PREFETCH_NUM);
->         if (r)
->                 goto out;
->         r = mmu_topup_memory_cache_page(&vcpu->arch.mmu_page_cache, 8);
->         if (r)
->                 goto out;
-> -       r = mmu_topup_memory_cache(&vcpu->arch.mmu_page_header_cache,
-> -                                  mmu_page_header_cache, 4);
-> +       r = mmu_topup_memory_cache(&vcpu->arch.mmu_page_header_cache, 4);
->  out:
->         return r;
->  }
->
->  static void mmu_free_memory_caches(struct kvm_vcpu *vcpu)
->  {
-> -       mmu_free_memory_cache(&vcpu->arch.mmu_pte_list_desc_cache,
-> -                               pte_list_desc_cache);
-> +       mmu_free_memory_cache(&vcpu->arch.mmu_pte_list_desc_cache);
->         mmu_free_memory_cache_page(&vcpu->arch.mmu_page_cache);
-> -       mmu_free_memory_cache(&vcpu->arch.mmu_page_header_cache,
-> -                               mmu_page_header_cache);
-> +       mmu_free_memory_cache(&vcpu->arch.mmu_page_header_cache);
->  }
->
->  static void *mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc)
-> @@ -5684,6 +5679,9 @@ int kvm_mmu_create(struct kvm_vcpu *vcpu)
->         uint i;
->         int ret;
->
-> +       vcpu->arch.mmu_pte_list_desc_cache.kmem_cache = pte_list_desc_cache;
-> +       vcpu->arch.mmu_page_header_cache.kmem_cache = mmu_page_header_cache;
+> =20
 > +
->         vcpu->arch.mmu = &vcpu->arch.root_mmu;
->         vcpu->arch.walk_mmu = &vcpu->arch.root_mmu;
->
-> --
-> 2.26.0
->
+> +static const struct freq_tbl *qcom_find_freq_close(const struct freq_tbl=
+ *f,
+
+Please call it qcom_find_freq_closest() instead.
+
+> +                                            unsigned long rate)
+> +{
+> +       const struct freq_tbl *last =3D NULL;
+> +
+> +       for ( ; f->freq; f++) {
+> +               if (rate =3D=3D f->freq)
+> +                       return f;
+> +
+> +               if (f->freq > rate) {
+> +                       if (!last ||
+> +                          (f->freq - rate) < (rate - last->freq))
+
+> +                               return f;
+> +                       else
+> +                               return last;
+
+	if (...)
+		return ...;
+	else
+
+should be replaced with
+
+	if (...)
+		return ...;
+
+	...
+
+but I also wonder if it would be clearer with some sort of 'break' and
+then 'return f' type of logic.
+
+> +               }
+> +               last =3D f;
+> +       }
+> +
+> +       return last;
+> +}
+
+Please relocate this to common.c in the qcom directory.
+
+> +
+>  /*
+>   * Round rate function for APSS CPU PLL Clock divider.
+>   * It looks up the frequency table and returns the next higher frequency
