@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3DE1F4430
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F651F4456
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387837AbgFISCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:02:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45064 "EHLO mail.kernel.org"
+        id S2387924AbgFISDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:03:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731696AbgFIRxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:53:48 -0400
+        id S1731803AbgFIRwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:52:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A926C20734;
-        Tue,  9 Jun 2020 17:53:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E26CA207C3;
+        Tue,  9 Jun 2020 17:52:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725228;
-        bh=61wbgqZP6RiTlB2en8fs2oA+5228qjJ/z3HAiGnFn+A=;
+        s=default; t=1591725165;
+        bh=BezFaNOoQeB/h0/SXH8z6R7uWaYaqCX+rDTRwXq5E+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BLpXqw6FgWG9zguQeLFPFMxGiubI9Ekaxza42YwjMI5++wa8JUAlGTkogbuNaURgq
-         ZYWV37MuhKiDcLsT783n0TK6A3yyLM1FmQEEjU5NtxDge/tFCPK7TRNElmJLQbJg5A
-         6K0W++e7muZ7uuPdFuDxgbHJqnB5t9BHsNR52Tp4=
+        b=RB3tA27ThmMxSEd0GpCaX6ROmGashufHwX2p+iHgGY4fsQV5BomBj9XfYzFESXW3u
+         sUAmKanIkjLP9s+zUobT45FSj9XaHbrC41pCdQD4EloxNYCKpwCEM8xSIBg0kFKlai
+         uSkJq261P6Ja5Mp95YVyuKNoVFEX2pgP9vSbZ4zo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Hanselmann <public@hansmi.ch>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.6 21/41] USB: serial: ch341: add basis for quirk detection
-Date:   Tue,  9 Jun 2020 19:45:23 +0200
-Message-Id: <20200609174114.150309933@linuxfoundation.org>
+        stable@vger.kernel.org, Mark Gross <mgross@linux.intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH 5.4 28/34] x86/cpu: Add a steppings field to struct x86_cpu_id
+Date:   Tue,  9 Jun 2020 19:45:24 +0200
+Message-Id: <20200609174056.966002267@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174112.129412236@linuxfoundation.org>
-References: <20200609174112.129412236@linuxfoundation.org>
+In-Reply-To: <20200609174052.628006868@linuxfoundation.org>
+References: <20200609174052.628006868@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,106 +46,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Hanselmann <public@hansmi.ch>
+From: Mark Gross <mgross@linux.intel.com>
 
-commit c404bf4aa9236cb4d1068e499ae42acf48a6ff97 upstream.
+commit e9d7144597b10ff13ff2264c059f7d4a7fbc89ac upstream
 
-A subset of CH341 devices does not support all features, namely the
-prescaler is limited to a reduced precision and there is no support for
-sending a RS232 break condition. This patch adds a detection function
-which will be extended to set quirk flags as they're implemented.
+Intel uses the same family/model for several CPUs. Sometimes the
+stepping must be checked to tell them apart.
 
-The author's affected device has an imprint of "340" on the
-turquoise-colored plug, but not all such devices appear to be affected.
+On x86 there can be at most 16 steppings. Add a steppings bitmask to
+x86_cpu_id and a X86_MATCH_VENDOR_FAMILY_MODEL_STEPPING_FEATURE macro
+and support for matching against family/model/stepping.
 
-Signed-off-by: Michael Hanselmann <public@hansmi.ch>
-Link: https://lore.kernel.org/r/1e1ae0da6082bb528a44ef323d4e1d3733d38858.1585697281.git.public@hansmi.ch
-[ johan: use long type for quirks; rephrase and use port device for
-	 messages; handle short reads; set quirk flags directly in
-	 helper function ]
-Cc: stable <stable@vger.kernel.org>	# 5.5
-Signed-off-by: Johan Hovold <johan@kernel.org>
+ [ bp: Massage.
+   tglx: Lightweight variant for backporting ]
+
+Signed-off-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Reviewed-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/serial/ch341.c |   53 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ arch/x86/include/asm/cpu_device_id.h |   30 ++++++++++++++++++++++++++++++
+ arch/x86/kernel/cpu/match.c          |    7 ++++++-
+ include/linux/mod_devicetable.h      |    6 ++++++
+ 3 files changed, 42 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/ch341.c
-+++ b/drivers/usb/serial/ch341.c
-@@ -87,6 +87,7 @@ struct ch341_private {
- 	u8 mcr;
- 	u8 msr;
- 	u8 lcr;
-+	unsigned long quirks;
- };
+--- a/arch/x86/include/asm/cpu_device_id.h
++++ b/arch/x86/include/asm/cpu_device_id.h
+@@ -9,6 +9,36 @@
  
- static void ch341_set_termios(struct tty_struct *tty,
-@@ -308,6 +309,53 @@ out:	kfree(buffer);
- 	return r;
- }
+ #include <linux/mod_devicetable.h>
  
-+static int ch341_detect_quirks(struct usb_serial_port *port)
-+{
-+	struct ch341_private *priv = usb_get_serial_port_data(port);
-+	struct usb_device *udev = port->serial->dev;
-+	const unsigned int size = 2;
-+	unsigned long quirks = 0;
-+	char *buffer;
-+	int r;
++#define X86_CENTAUR_FAM6_C7_D		0xd
++#define X86_CENTAUR_FAM6_NANO		0xf
 +
-+	buffer = kmalloc(size, GFP_KERNEL);
-+	if (!buffer)
-+		return -ENOMEM;
++#define X86_STEPPINGS(mins, maxs)    GENMASK(maxs, mins)
 +
-+	/*
-+	 * A subset of CH34x devices does not support all features. The
-+	 * prescaler is limited and there is no support for sending a RS232
-+	 * break condition. A read failure when trying to set up the latter is
-+	 * used to detect these devices.
-+	 */
-+	r = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0), CH341_REQ_READ_REG,
-+			    USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
-+			    CH341_REG_BREAK, 0, buffer, size, DEFAULT_TIMEOUT);
-+	if (r == -EPIPE) {
-+		dev_dbg(&port->dev, "break control not supported\n");
-+		r = 0;
-+		goto out;
-+	}
-+
-+	if (r != size) {
-+		if (r >= 0)
-+			r = -EIO;
-+		dev_err(&port->dev, "failed to read break control: %d\n", r);
-+		goto out;
-+	}
-+
-+	r = 0;
-+out:
-+	kfree(buffer);
-+
-+	if (quirks) {
-+		dev_dbg(&port->dev, "enabling quirk flags: 0x%02lx\n", quirks);
-+		priv->quirks |= quirks;
-+	}
-+
-+	return r;
++/**
++ * X86_MATCH_VENDOR_FAM_MODEL_STEPPINGS_FEATURE - Base macro for CPU matching
++ * @_vendor:	The vendor name, e.g. INTEL, AMD, HYGON, ..., ANY
++ *		The name is expanded to X86_VENDOR_@_vendor
++ * @_family:	The family number or X86_FAMILY_ANY
++ * @_model:	The model number, model constant or X86_MODEL_ANY
++ * @_steppings:	Bitmask for steppings, stepping constant or X86_STEPPING_ANY
++ * @_feature:	A X86_FEATURE bit or X86_FEATURE_ANY
++ * @_data:	Driver specific data or NULL. The internal storage
++ *		format is unsigned long. The supplied value, pointer
++ *		etc. is casted to unsigned long internally.
++ *
++ * Backport version to keep the SRBDS pile consistant. No shorter variants
++ * required for this.
++ */
++#define X86_MATCH_VENDOR_FAM_MODEL_STEPPINGS_FEATURE(_vendor, _family, _model, \
++						    _steppings, _feature, _data) { \
++	.vendor		= X86_VENDOR_##_vendor,				\
++	.family		= _family,					\
++	.model		= _model,					\
++	.steppings	= _steppings,					\
++	.feature	= _feature,					\
++	.driver_data	= (unsigned long) _data				\
 +}
 +
- static int ch341_port_probe(struct usb_serial_port *port)
- {
- 	struct ch341_private *priv;
-@@ -330,6 +378,11 @@ static int ch341_port_probe(struct usb_s
- 		goto error;
+ /*
+  * Match specific microcode revisions.
+  *
+--- a/arch/x86/kernel/cpu/match.c
++++ b/arch/x86/kernel/cpu/match.c
+@@ -34,13 +34,18 @@ const struct x86_cpu_id *x86_match_cpu(c
+ 	const struct x86_cpu_id *m;
+ 	struct cpuinfo_x86 *c = &boot_cpu_data;
  
- 	usb_set_serial_port_data(port, priv);
-+
-+	r = ch341_detect_quirks(port);
-+	if (r < 0)
-+		goto error;
-+
- 	return 0;
+-	for (m = match; m->vendor | m->family | m->model | m->feature; m++) {
++	for (m = match;
++	     m->vendor | m->family | m->model | m->steppings | m->feature;
++	     m++) {
+ 		if (m->vendor != X86_VENDOR_ANY && c->x86_vendor != m->vendor)
+ 			continue;
+ 		if (m->family != X86_FAMILY_ANY && c->x86 != m->family)
+ 			continue;
+ 		if (m->model != X86_MODEL_ANY && c->x86_model != m->model)
+ 			continue;
++		if (m->steppings != X86_STEPPING_ANY &&
++		    !(BIT(c->x86_stepping) & m->steppings))
++			continue;
+ 		if (m->feature != X86_FEATURE_ANY && !cpu_has(c, m->feature))
+ 			continue;
+ 		return m;
+--- a/include/linux/mod_devicetable.h
++++ b/include/linux/mod_devicetable.h
+@@ -657,6 +657,10 @@ struct mips_cdmm_device_id {
+ /*
+  * MODULE_DEVICE_TABLE expects this struct to be called x86cpu_device_id.
+  * Although gcc seems to ignore this error, clang fails without this define.
++ *
++ * Note: The ordering of the struct is different from upstream because the
++ * static initializers in kernels < 5.7 still use C89 style while upstream
++ * has been converted to proper C99 initializers.
+  */
+ #define x86cpu_device_id x86_cpu_id
+ struct x86_cpu_id {
+@@ -665,6 +669,7 @@ struct x86_cpu_id {
+ 	__u16 model;
+ 	__u16 feature;	/* bit index */
+ 	kernel_ulong_t driver_data;
++	__u16 steppings;
+ };
  
- error:	kfree(priv);
+ #define X86_FEATURE_MATCH(x) \
+@@ -673,6 +678,7 @@ struct x86_cpu_id {
+ #define X86_VENDOR_ANY 0xffff
+ #define X86_FAMILY_ANY 0
+ #define X86_MODEL_ANY  0
++#define X86_STEPPING_ANY 0
+ #define X86_FEATURE_ANY 0	/* Same as FPU, you can't test for that */
+ 
+ /*
 
 
