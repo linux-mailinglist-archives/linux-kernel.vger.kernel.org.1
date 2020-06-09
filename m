@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263F51F405E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 18:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECBC1F4068
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 18:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731147AbgFIQN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 12:13:26 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:53113 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731113AbgFIQNU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 12:13:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591719199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yeGZmO/JYZG5FQp5dwk/kPkEYWtQgdOsYGZyA4HB6Bo=;
-        b=Y6AEg51SxI7g8MPXro2GxLwL/cWDC2kNLPlvvq58xv+ZHHwbcKmXSj9iGBtDPqjb9yngQ9
-        tcOHqDhDK9tQm+dYrBeGcCvNbJHbFmulsgFw1gYwvLQwNWL6T3tg0xhBywUaajqCC0RcIU
-        TTZ4XjiWTjPUg8asSpZMLFoVCMvhWiw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-459-wP6gp0uBPvuudx7tztxueg-1; Tue, 09 Jun 2020 12:13:15 -0400
-X-MC-Unique: wP6gp0uBPvuudx7tztxueg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C3DA9117F;
-        Tue,  9 Jun 2020 16:13:14 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-114-66.rdu2.redhat.com [10.10.114.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6DCA07A1EB;
-        Tue,  9 Jun 2020 16:13:13 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 1/6] afs: Fix memory leak in afs_put_sysnames()
-From:   David Howells <dhowells@redhat.com>
-To:     linux-afs@lists.infradead.org
-Cc:     Zhihao Cheng <chengzhihao1@huawei.com>, dhowells@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 09 Jun 2020 17:13:12 +0100
-Message-ID: <159171919260.3038039.5675242420072463110.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159171918506.3038039.10915051218779105094.stgit@warthog.procyon.org.uk>
-References: <159171918506.3038039.10915051218779105094.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.22
+        id S1731133AbgFIQNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 12:13:25 -0400
+Received: from smtp.asem.it ([151.1.184.197]:62643 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728888AbgFIQNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 12:13:19 -0400
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000307084.MSG 
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 18:13:16 +0200S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Jun
+ 2020 18:13:14 +0200
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 9 Jun 2020 18:13:14 +0200
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+CC:     <MPT-FusionLinux.pdl@broadcom.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH 1/1] scsi: mpt3sas: fix spelling mistake
+Date:   Tue, 9 Jun 2020 18:13:13 +0200
+Message-ID: <20200609161313.32098-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A090204.5EDFB51B.0067,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+Fix typo: "tigger" --> "trigger"
 
-Fix afs_put_sysnames() to actually free the specified afs_sysnames
-object after its reference count has been decreased to zero and
-its contents have been released.
-
-Fixes: 6f8880d8e681557 ("afs: Implement @sys substitution handling")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 ---
+ drivers/scsi/mpt3sas/mpt3sas_base.h         | 2 +-
+ drivers/scsi/mpt3sas/mpt3sas_trigger_diag.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
- fs/afs/proc.c |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/afs/proc.c b/fs/afs/proc.c
-index 22d00cf1913d..e817fc740ba0 100644
---- a/fs/afs/proc.c
-+++ b/fs/afs/proc.c
-@@ -567,6 +567,7 @@ void afs_put_sysnames(struct afs_sysnames *sysnames)
- 			if (sysnames->subs[i] != afs_init_sysname &&
- 			    sysnames->subs[i] != sysnames->blank)
- 				kfree(sysnames->subs[i]);
-+		kfree(sysnames);
- 	}
- }
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.h b/drivers/scsi/mpt3sas/mpt3sas_base.h
+index 4fca3939c034..4ff876c31272 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_base.h
++++ b/drivers/scsi/mpt3sas/mpt3sas_base.h
+@@ -1770,7 +1770,7 @@ void mpt3sas_send_trigger_data_event(struct MPT3SAS_ADAPTER *ioc,
+ void mpt3sas_process_trigger_data(struct MPT3SAS_ADAPTER *ioc,
+ 	struct SL_WH_TRIGGERS_EVENT_DATA_T *event_data);
+ void mpt3sas_trigger_master(struct MPT3SAS_ADAPTER *ioc,
+-	u32 tigger_bitmask);
++	u32 trigger_bitmask);
+ void mpt3sas_trigger_event(struct MPT3SAS_ADAPTER *ioc, u16 event,
+ 	u16 log_entry_qualifier);
+ void mpt3sas_trigger_scsi(struct MPT3SAS_ADAPTER *ioc, u8 sense_key,
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_trigger_diag.h b/drivers/scsi/mpt3sas/mpt3sas_trigger_diag.h
+index 6586a463bea9..405eada2669d 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_trigger_diag.h
++++ b/drivers/scsi/mpt3sas/mpt3sas_trigger_diag.h
+@@ -69,7 +69,7 @@
+ #define MASTER_TRIGGER_TASK_MANAGMENT   (0x00000004)
+ #define MASTER_TRIGGER_DEVICE_REMOVAL   (0x00000008)
  
-
+-/* fake firmware event for tigger */
++/* fake firmware event for trigger */
+ #define MPI3_EVENT_DIAGNOSTIC_TRIGGER_FIRED	(0x6E)
+ 
+ /**
+-- 
+2.17.1
 
