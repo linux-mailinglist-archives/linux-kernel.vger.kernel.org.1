@@ -2,62 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE141F3DD1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB2A1F3DC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728751AbgFIOTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 10:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36962 "EHLO
+        id S1730143AbgFIOSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:18:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726967AbgFIOTD (ORCPT
+        with ESMTP id S1726967AbgFIOSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:19:03 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0585C05BD1E;
-        Tue,  9 Jun 2020 07:19:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FBLwkRXMTc6vHgytia3rUnElGSA+xmDAjdkBwfrqI+A=; b=HBEISCPLcFCYG6+JfomMD4NZnr
-        2ADrh+/oQuHTMV84JQmnVfvOF6Qw1uEqloRvzK23R40M6iC23fXJl5kOvmMG+tkcFWvJY7ZmV75i5
-        qiYbDa9XfCQEYT5lUdd9jnTqw3xP6Rcf71cGAVKgPh2vaFOknBltrXWwSPPKUzBJPKRRWLydhK4wz
-        YsAuuIpq5hZDPlH5gtCAngRfNFjiThqfURj1e1vy1QkfCavzMzy8H8KdfNT90Di24vSNqd6RueyHE
-        gCmAyS/Ya914HqFqNqcry5CWweb9IMZQCtC5BrR8y2uXg7SD9MZxXr5SOaef/wKShT8ZRs364tKQj
-        a0rLVNSw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jif5E-0004vp-5D; Tue, 09 Jun 2020 14:18:32 +0000
-Date:   Tue, 9 Jun 2020 07:18:32 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
-        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
-        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
-        martin.petersen@oracle.com, jejb@linux.ibm.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 4/6] blktrace: annotate required lock on
- do_blk_trace_setup()
-Message-ID: <20200609141832.GA14176@infradead.org>
-References: <20200608170127.20419-1-mcgrof@kernel.org>
- <20200608170127.20419-5-mcgrof@kernel.org>
+        Tue, 9 Jun 2020 10:18:48 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051FDC05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 07:18:47 -0700 (PDT)
+Received: from localhost ([127.0.0.1] helo=vostro)
+        by Galois.linutronix.de with esmtps (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.80)
+        (envelope-from <john.ogness@linutronix.de>)
+        id 1jif5N-0002Lk-Jo; Tue, 09 Jun 2020 16:18:41 +0200
+From:   John Ogness <john.ogness@linutronix.de>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Paul McKenney <paulmck@kernel.org>
+Subject: Re: blk->id read race: was: [PATCH v2 2/3] printk: add lockless buffer
+References: <20200501094010.17694-1-john.ogness@linutronix.de>
+        <20200501094010.17694-3-john.ogness@linutronix.de>
+        <20200609071030.GA23752@linux-b0ei>
+Date:   Tue, 09 Jun 2020 16:18:35 +0200
+In-Reply-To: <20200609071030.GA23752@linux-b0ei> (Petr Mladek's message of
+        "Tue, 9 Jun 2020 09:10:30 +0200")
+Message-ID: <87tuzkuxtw.fsf@vostro.fn.ogness.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200608170127.20419-5-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 05:01:24PM +0000, Luis Chamberlain wrote:
-> Ensure it is clear which lock is required on do_blk_trace_setup().
-> 
-> Suggested-by: Bart Van Assche <bvanassche@acm.org>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+On 2020-06-09, Petr Mladek <pmladek@suse.com> wrote:
+>> --- /dev/null
+>> +++ b/kernel/printk/printk_ringbuffer.c
+>> +/*
+>> + * Given a data ring (text or dict), put the associated descriptor of each
+>> + * data block from @lpos_begin until @lpos_end into the reusable state.
+>> + *
+>> + * If there is any problem making the associated descriptor reusable, either
+>> + * the descriptor has not yet been committed or another writer task has
+>> + * already pushed the tail lpos past the problematic data block. Regardless,
+>> + * on error the caller can re-load the tail lpos to determine the situation.
+>> + */
+>> +static bool data_make_reusable(struct printk_ringbuffer *rb,
+>> +			       struct prb_data_ring *data_ring,
+>> +			       unsigned long lpos_begin,
+>> +			       unsigned long lpos_end,
+>> +			       unsigned long *lpos_out)
+>> +{
+>> +	struct prb_desc_ring *desc_ring = &rb->desc_ring;
+>> +	struct prb_data_blk_lpos *blk_lpos;
+>> +	struct prb_data_block *blk;
+>> +	unsigned long tail_lpos;
+>> +	enum desc_state d_state;
+>> +	struct prb_desc desc;
+>> +	unsigned long id;
+>> +
+>> +	/*
+>> +	 * Using the provided @data_ring, point @blk_lpos to the correct
+>> +	 * blk_lpos within the local copy of the descriptor.
+>> +	 */
+>> +	if (data_ring == &rb->text_data_ring)
+>> +		blk_lpos = &desc.text_blk_lpos;
+>> +	else
+>> +		blk_lpos = &desc.dict_blk_lpos;
+>> +
+>> +	/* Loop until @lpos_begin has advanced to or beyond @lpos_end. */
+>> +	while ((lpos_end - lpos_begin) - 1 < DATA_SIZE(data_ring)) {
+>> +		blk = to_block(data_ring, lpos_begin);
+>> +		id = READ_ONCE(blk->id); /* LMM(data_make_reusable:A) */
+>
+> This would deserve some comment:
+>
+> 1. Compiler could not optimize out the read because there is a data
+>    dependency on lpos_begin.
+>
+> 2. Compiler could not postpone the read because it is followed by
+>    smp_rmb().
+>
+> So, is READ_ONCE() realy needed?
 
-Looks good,
+I agree that it is not needed. Both the READ_ONCE() and its countering
+WRITE_ONCE() (data_alloc:B) only document the lockless shared access. I
+will remove both for the next version.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Do we still need a comment? Is it not obvious that there is a data
+dependency on @lpos_begin?
+
+        blk = to_block(data_ring, lpos_begin);
+        id = blk->id;
+
+> Well, blk->id clearly can be modified in parallel so we need to be
+> careful. There is smp_rmb() right below. Do we needed smp_rmb() also
+> before?
+>
+> What about the following scenario?:
+>
+>
+> CPU0						CPU1
+>
+> 						data_alloc()
+> 						  data_push_tail()
+>
+> 						blk = to_block(data_ring, begin_lpos)
+> 						WRITE_ONCE(blk->id, id); /* LMM(data_alloc:B) */
+>
+> desc_push_tail()
+>   data_push_tail()
+>
+>     tail_lpos = data_ring->tail_lpos;
+>     // see data_ring->tail_lpos already updated by CPU1
+>
+>     data_make_reusable()
+>
+>       // lpos_begin = tail_lpos via parameter
+>       blk = to_block(data_ring, lpos_begin);
+>       id = blk->id
+>
+> Now: CPU0 might see outdated blk->id before CPU1 wrote new value
+>      because there is no read barrier betwen reading tail_lpos
+>      and blk->id here.
+
+In your example, CPU1 is pushing the tail and then setting the block ID
+for the _newly_ allocated block, that is located is _before_ the new
+tail. If CPU0 sees the new tail already, it is still reading a valid
+block ID, which is _not_ from the block that CPU1 is in the process of
+writing.
+
+John Ogness
