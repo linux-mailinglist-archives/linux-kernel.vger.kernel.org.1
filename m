@@ -2,118 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0FD1F3BB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A6B1F3B8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 15:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729681AbgFINPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 09:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
+        id S1728876AbgFINO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 09:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729384AbgFINPL (ORCPT
+        with ESMTP id S1727920AbgFINOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 09:15:11 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F61C08C5C8;
-        Tue,  9 Jun 2020 06:15:10 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id a25so24980176ljp.3;
-        Tue, 09 Jun 2020 06:15:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CY3FjRZp76KZl7tgz6s6CVjJ18LTSPB3H8v+jn0FVvg=;
-        b=lth0L5t9emj9h7WIYX4C+MyILmvEn5rTTR1t5uicbsTDyqJHzlKcyWeEs+jHZVNJzj
-         l70X/+iii3orOOm+/qRAbf04E/8ratqT+pkIkxA4gUIn0cKy2gvZ/6Jx8SngR5UiS9Mp
-         aee+TaQwprhii8V5NQiFuidrF9Zz6k/1nClU2RMmumlId5X9OxKiuiMyLIgP7UMG/7TQ
-         cQtqtFqoALbccdsQwu9AZRcW7C9cuMOYqICxIjiLtqDdSA5iz73Liq8bbE5qkvPZo8Mm
-         RJsp8K8MmTxkaaf+IBPlzLtUNR/V398oOAZrjD5/9Kv6RwhW+iX7FLwLHU02t7HbOZE5
-         oMEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CY3FjRZp76KZl7tgz6s6CVjJ18LTSPB3H8v+jn0FVvg=;
-        b=Q4QZDoT7ObGDNjHr52BalLVazc5HJEDkobpySDiENG4QGIZYRXFo8BWrnrDGDaPJfJ
-         CB96AKBcBxm7+7ot7Z6I5/XvjvUPIXknd6fnJmhpjgKd8jVmS9bDPIxOBgeTSRKJ6+yV
-         lquEFRaMMzq44RUQttAIDOhQ4bWo6P3j5E3qAqi6XB6QCrLgRlh6jM4juYHeBp+b+e+L
-         3aFI46PIZ1A6G/WUOAYV2Vz2ymg6ldUpkDoMXh/8/crpn78VJqBntyuvifmT/NeD/FM7
-         fsxfSDWqH7H2U+rT2v1KWOG3WHif3z2njNs6KrMQxUFUtvWOeU9Nch8e0j9+sZM8NBXJ
-         RyFw==
-X-Gm-Message-State: AOAM533G6RkZ0VmTFPK6vlEUHBnnhse03rszHcmDi1v8nKege/OhgdDj
-        /BOwMGrzWHgW+6eLzEAjSb8=
-X-Google-Smtp-Source: ABdhPJxMnBTcJsjI4SwfSsZ6hCPM8ucyzc3NT3JIFYxZrzE9tWkzhkObz7tEzvH9QZyudwmh4j7wHQ==
-X-Received: by 2002:a2e:9f57:: with SMTP id v23mr11786526ljk.324.1591708509218;
-        Tue, 09 Jun 2020 06:15:09 -0700 (PDT)
-Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id l22sm4323522lji.120.2020.06.09.06.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 06:15:08 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>
-Cc:     =?UTF-8?q?Artur=20=C5=9Awigo=C5=84?= <a.swigon@samsung.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v4 36/37] drm/tegra: dc: Tune up high priority request controls for Tegra20
-Date:   Tue,  9 Jun 2020 16:14:03 +0300
-Message-Id: <20200609131404.17523-37-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200609131404.17523-1-digetx@gmail.com>
-References: <20200609131404.17523-1-digetx@gmail.com>
+        Tue, 9 Jun 2020 09:14:18 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BFAC08C5C9
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 06:14:13 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1jie4q-0006Ap-DQ; Tue, 09 Jun 2020 15:14:04 +0200
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1jie4p-0000V1-1j; Tue, 09 Jun 2020 15:14:03 +0200
+Date:   Tue, 9 Jun 2020 15:14:03 +0200
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
+        devicetree@vger.kernel.org, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] net: ethernet: mvneta: add support for 2.5G DRSGMII mode
+Message-ID: <20200609131402.GL11869@pengutronix.de>
+References: <20200608074716.9975-1-s.hauer@pengutronix.de>
+ <20200608145737.GG1006885@lunn.ch>
+ <20200609125535.GK11869@pengutronix.de>
+ <20200609131216.GJ1022955@lunn.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200609131216.GJ1022955@lunn.ch>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 15:13:06 up 110 days, 20:43, 124 users,  load average: 0.03, 0.14,
+ 0.18
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tegra20 has a high-priority-request control that allows to configure
-when display's memory client should perform read requests with a higher
-priority (Tegra30+ uses other means like Latency Allowance).
+Hi Andrew,
 
-This patch changes the controls configuration in order to get a more
-aggressive memory prefetching, which allows to reliably avoid FIFO
-underflow when running on a lower memory frequency. This allow us
-safely drop the memory bandwidth requirement by about two times in a
-most popular use-cases (only one display active, video overlay inactive,
-no scaling is done).
+On Tue, Jun 09, 2020 at 03:12:16PM +0200, Andrew Lunn wrote:
+> On Tue, Jun 09, 2020 at 02:55:35PM +0200, Sascha Hauer wrote:
+> > On Mon, Jun 08, 2020 at 04:57:37PM +0200, Andrew Lunn wrote:
+> > > On Mon, Jun 08, 2020 at 09:47:16AM +0200, Sascha Hauer wrote:
+> > > > The Marvell MVNETA Ethernet controller supports a 2.5 Gbps SGMII mode
+> > > > called DRSGMII.
+> > > > 
+> > > > This patch adds a corresponding phy-mode string 'drsgmii' and parses it
+> > > > from DT. The MVNETA then configures the SERDES protocol value
+> > > > accordingly.
+> > > > 
+> > > > It was successfully tested on a MV78460 connected to a FPGA.
+> > > 
+> > > Hi Sascha
+> > > 
+> > > Is this really overclocked SGMII, or 2500BaseX? How does it differ
+> > > from 2500BaseX, which mvneta already supports?
+> > 
+> > I think it is overclocked SGMII or 2500BaseX depending on the Port MAC
+> > Control Register0 PortType setting bit.
+> > As said to Russell we have a fixed link so nobody really cares if it's
+> > SGMII or 2500BaseX. This boils down the patch to fixing the Serdes
+> > configuration setting for 2500BaseX.
+> 
+> Hi Sascha
+> 
+> Does 2500BaseX work for your use case? Since this drsmgii mode is not
+> well defined, i would prefer to not add it, unless it is really
+> needed.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/gpu/drm/tegra/dc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Yes, it does, see updated patch I just sent.
 
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index 12b318bb8475..48dad375b470 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -1971,12 +1971,12 @@ static void tegra_crtc_atomic_enable(struct drm_crtc *crtc,
- 		tegra_dc_writel(dc, value, DC_CMD_INT_POLARITY);
- 
- 		/* initialize timer */
--		value = CURSOR_THRESHOLD(0) | WINDOW_A_THRESHOLD(0x20) |
--			WINDOW_B_THRESHOLD(0x20) | WINDOW_C_THRESHOLD(0x20);
-+		value = CURSOR_THRESHOLD(0) | WINDOW_A_THRESHOLD(0x70) |
-+			WINDOW_B_THRESHOLD(0x30) | WINDOW_C_THRESHOLD(0x70);
- 		tegra_dc_writel(dc, value, DC_DISP_DISP_MEM_HIGH_PRIORITY);
- 
--		value = CURSOR_THRESHOLD(0) | WINDOW_A_THRESHOLD(1) |
--			WINDOW_B_THRESHOLD(1) | WINDOW_C_THRESHOLD(1);
-+		value = CURSOR_THRESHOLD(0) | WINDOW_A_THRESHOLD(0) |
-+			WINDOW_B_THRESHOLD(0) | WINDOW_C_THRESHOLD(0);
- 		tegra_dc_writel(dc, value, DC_DISP_DISP_MEM_HIGH_PRIORITY_TIMER);
- 
- 		value = VBLANK_INT | WIN_A_UF_INT | WIN_B_UF_INT | WIN_C_UF_INT |
+Sascha
+
 -- 
-2.26.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
