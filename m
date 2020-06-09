@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1BC1F45FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41021F461E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389039AbgFISWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:22:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60266 "EHLO mail.kernel.org"
+        id S2389122AbgFISYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:24:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728304AbgFIRsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:48:11 -0400
+        id S1732000AbgFIRrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:47:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAAE120812;
-        Tue,  9 Jun 2020 17:48:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEF5820801;
+        Tue,  9 Jun 2020 17:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724890;
-        bh=U0XBqGCzavHWPGQwfJXyOLflNqJZrPT+pgLleMydE00=;
+        s=default; t=1591724821;
+        bh=ikB4s8noR1CxF9dx3pGgDKnk55QCMNe+k4/d1n8xh8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YgATkWman01PA1malNMesydjDulT7TiUMWMQCQgx0BFcYyAViP9vIeW29ORGphcwK
-         zqfO6WqHdwAnLX6fWiwEAlB67Z8CXHhZWocQm1jSQ42tClq2F5s3vETq2nI51n9i95
-         JJ+6JII/YImqqtFoGJrqkIhF0+3HICoIwjOazZf8=
+        b=gEVxAzsqhbi2yjvqAgk0ADCeeDPTx6KecPuyf7wjCG6QXURUS9jB/FhhwyEYTKZpL
+         O6zF5ndhi3YNibzLXSKpbZVWn+AGV6Malfm8jmyNj/k7tsHaK0ijNHiwOLzLsVfNjr
+         Mihq1N6uyXtdNld4kGx6hhpSO/+TyMlEMq795r+k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        James Chapman <jchapman@katalix.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        syzbot+3610d489778b57cc8031@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 23/42] l2tp: do not use inet_hash()/inet_unhash()
-Date:   Tue,  9 Jun 2020 19:44:29 +0200
-Message-Id: <20200609174018.011607761@linuxfoundation.org>
+        stable@vger.kernel.org, Mark Gross <mgross@linux.intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH 4.4 30/36] x86/cpu: Add a steppings field to struct x86_cpu_id
+Date:   Tue,  9 Jun 2020 19:44:30 +0200
+Message-Id: <20200609173935.338970788@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
-References: <20200609174015.379493548@linuxfoundation.org>
+In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
+References: <20200609173933.288044334@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,201 +46,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Mark Gross <mgross@linux.intel.com>
 
-[ Upstream commit 02c71b144c811bcdd865e0a1226d0407d11357e8 ]
+commit e9d7144597b10ff13ff2264c059f7d4a7fbc89ac upstream
 
-syzbot recently found a way to crash the kernel [1]
+Intel uses the same family/model for several CPUs. Sometimes the
+stepping must be checked to tell them apart.
 
-Issue here is that inet_hash() & inet_unhash() are currently
-only meant to be used by TCP & DCCP, since only these protocols
-provide the needed hashinfo pointer.
+On x86 there can be at most 16 steppings. Add a steppings bitmask to
+x86_cpu_id and a X86_MATCH_VENDOR_FAMILY_MODEL_STEPPING_FEATURE macro
+and support for matching against family/model/stepping.
 
-L2TP uses a single list (instead of a hash table)
+ [ bp: Massage.
+   tglx: Lightweight variant for backporting ]
 
-This old bug became an issue after commit 610236587600
-("bpf: Add new cgroup attach type to enable sock modifications")
-since after this commit, sk_common_release() can be called
-while the L2TP socket is still considered 'hashed'.
-
-general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 0 PID: 7063 Comm: syz-executor654 Not tainted 5.7.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:inet_unhash+0x11f/0x770 net/ipv4/inet_hashtables.c:600
-Code: 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e dd 04 00 00 48 8d 7d 08 44 8b 73 08 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 55 05 00 00 48 8d 7d 14 4c 8b 6d 08 48 b8 00 00
-RSP: 0018:ffffc90001777d30 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff88809a6df940 RCX: ffffffff8697c242
-RDX: 0000000000000001 RSI: ffffffff8697c251 RDI: 0000000000000008
-RBP: 0000000000000000 R08: ffff88809f3ae1c0 R09: fffffbfff1514cc1
-R10: ffffffff8a8a6607 R11: fffffbfff1514cc0 R12: ffff88809a6df9b0
-R13: 0000000000000007 R14: 0000000000000000 R15: ffffffff873a4d00
-FS:  0000000001d2b880(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000006cd090 CR3: 000000009403a000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- sk_common_release+0xba/0x370 net/core/sock.c:3210
- inet_create net/ipv4/af_inet.c:390 [inline]
- inet_create+0x966/0xe00 net/ipv4/af_inet.c:248
- __sock_create+0x3cb/0x730 net/socket.c:1428
- sock_create net/socket.c:1479 [inline]
- __sys_socket+0xef/0x200 net/socket.c:1521
- __do_sys_socket net/socket.c:1530 [inline]
- __se_sys_socket net/socket.c:1528 [inline]
- __x64_sys_socket+0x6f/0xb0 net/socket.c:1528
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x441e29
-Code: e8 fc b3 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 eb 08 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffdce184148 EFLAGS: 00000246 ORIG_RAX: 0000000000000029
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000441e29
-RDX: 0000000000000073 RSI: 0000000000000002 RDI: 0000000000000002
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000402c30 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 23b6578228ce553e ]---
-RIP: 0010:inet_unhash+0x11f/0x770 net/ipv4/inet_hashtables.c:600
-Code: 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e dd 04 00 00 48 8d 7d 08 44 8b 73 08 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 55 05 00 00 48 8d 7d 14 4c 8b 6d 08 48 b8 00 00
-RSP: 0018:ffffc90001777d30 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff88809a6df940 RCX: ffffffff8697c242
-RDX: 0000000000000001 RSI: ffffffff8697c251 RDI: 0000000000000008
-RBP: 0000000000000000 R08: ffff88809f3ae1c0 R09: fffffbfff1514cc1
-R10: ffffffff8a8a6607 R11: fffffbfff1514cc0 R12: ffff88809a6df9b0
-R13: 0000000000000007 R14: 0000000000000000 R15: ffffffff873a4d00
-FS:  0000000001d2b880(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000006cd090 CR3: 000000009403a000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-Fixes: 0d76751fad77 ("l2tp: Add L2TPv3 IP encapsulation (no UDP) support")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: James Chapman <jchapman@katalix.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Reported-by: syzbot+3610d489778b57cc8031@syzkaller.appspotmail.com
+Signed-off-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Reviewed-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/l2tp/l2tp_ip.c  |   29 ++++++++++++++++++++++-------
- net/l2tp/l2tp_ip6.c |   30 ++++++++++++++++++++++--------
- 2 files changed, 44 insertions(+), 15 deletions(-)
+ arch/x86/include/asm/cpu_device_id.h |   27 +++++++++++++++++++++++++++
+ arch/x86/kernel/cpu/match.c          |    7 ++++++-
+ include/linux/mod_devicetable.h      |    6 ++++++
+ 3 files changed, 39 insertions(+), 1 deletion(-)
 
---- a/net/l2tp/l2tp_ip.c
-+++ b/net/l2tp/l2tp_ip.c
-@@ -24,7 +24,6 @@
- #include <net/icmp.h>
- #include <net/udp.h>
- #include <net/inet_common.h>
--#include <net/inet_hashtables.h>
- #include <net/tcp_states.h>
- #include <net/protocol.h>
- #include <net/xfrm.h>
-@@ -208,15 +207,31 @@ discard:
- 	return 0;
- }
+--- a/arch/x86/include/asm/cpu_device_id.h
++++ b/arch/x86/include/asm/cpu_device_id.h
+@@ -8,6 +8,33 @@
  
--static int l2tp_ip_open(struct sock *sk)
-+static int l2tp_ip_hash(struct sock *sk)
- {
--	/* Prevent autobind. We don't have ports. */
--	inet_sk(sk)->inet_num = IPPROTO_L2TP;
-+	if (sk_unhashed(sk)) {
-+		write_lock_bh(&l2tp_ip_lock);
-+		sk_add_node(sk, &l2tp_ip_table);
-+		write_unlock_bh(&l2tp_ip_lock);
-+	}
-+	return 0;
-+}
+ #include <linux/mod_devicetable.h>
  
-+static void l2tp_ip_unhash(struct sock *sk)
-+{
-+	if (sk_unhashed(sk))
-+		return;
- 	write_lock_bh(&l2tp_ip_lock);
--	sk_add_node(sk, &l2tp_ip_table);
-+	sk_del_node_init(sk);
- 	write_unlock_bh(&l2tp_ip_lock);
++#define X86_STEPPINGS(mins, maxs)    GENMASK(maxs, mins)
++
++/**
++ * X86_MATCH_VENDOR_FAM_MODEL_STEPPINGS_FEATURE - Base macro for CPU matching
++ * @_vendor:	The vendor name, e.g. INTEL, AMD, HYGON, ..., ANY
++ *		The name is expanded to X86_VENDOR_@_vendor
++ * @_family:	The family number or X86_FAMILY_ANY
++ * @_model:	The model number, model constant or X86_MODEL_ANY
++ * @_steppings:	Bitmask for steppings, stepping constant or X86_STEPPING_ANY
++ * @_feature:	A X86_FEATURE bit or X86_FEATURE_ANY
++ * @_data:	Driver specific data or NULL. The internal storage
++ *		format is unsigned long. The supplied value, pointer
++ *		etc. is casted to unsigned long internally.
++ *
++ * Backport version to keep the SRBDS pile consistant. No shorter variants
++ * required for this.
++ */
++#define X86_MATCH_VENDOR_FAM_MODEL_STEPPINGS_FEATURE(_vendor, _family, _model, \
++						    _steppings, _feature, _data) { \
++	.vendor		= X86_VENDOR_##_vendor,				\
++	.family		= _family,					\
++	.model		= _model,					\
++	.steppings	= _steppings,					\
++	.feature	= _feature,					\
++	.driver_data	= (unsigned long) _data				\
 +}
 +
-+static int l2tp_ip_open(struct sock *sk)
-+{
-+	/* Prevent autobind. We don't have ports. */
-+	inet_sk(sk)->inet_num = IPPROTO_L2TP;
+ extern const struct x86_cpu_id *x86_match_cpu(const struct x86_cpu_id *match);
  
-+	l2tp_ip_hash(sk);
- 	return 0;
- }
+ #endif
+--- a/arch/x86/kernel/cpu/match.c
++++ b/arch/x86/kernel/cpu/match.c
+@@ -33,13 +33,18 @@ const struct x86_cpu_id *x86_match_cpu(c
+ 	const struct x86_cpu_id *m;
+ 	struct cpuinfo_x86 *c = &boot_cpu_data;
  
-@@ -598,8 +613,8 @@ static struct proto l2tp_ip_prot = {
- 	.sendmsg	   = l2tp_ip_sendmsg,
- 	.recvmsg	   = l2tp_ip_recvmsg,
- 	.backlog_rcv	   = l2tp_ip_backlog_recv,
--	.hash		   = inet_hash,
--	.unhash		   = inet_unhash,
-+	.hash		   = l2tp_ip_hash,
-+	.unhash		   = l2tp_ip_unhash,
- 	.obj_size	   = sizeof(struct l2tp_ip_sock),
- #ifdef CONFIG_COMPAT
- 	.compat_setsockopt = compat_ip_setsockopt,
---- a/net/l2tp/l2tp_ip6.c
-+++ b/net/l2tp/l2tp_ip6.c
-@@ -24,8 +24,6 @@
- #include <net/icmp.h>
- #include <net/udp.h>
- #include <net/inet_common.h>
--#include <net/inet_hashtables.h>
--#include <net/inet6_hashtables.h>
- #include <net/tcp_states.h>
- #include <net/protocol.h>
- #include <net/xfrm.h>
-@@ -221,15 +219,31 @@ discard:
- 	return 0;
- }
+-	for (m = match; m->vendor | m->family | m->model | m->feature; m++) {
++	for (m = match;
++	     m->vendor | m->family | m->model | m->steppings | m->feature;
++	     m++) {
+ 		if (m->vendor != X86_VENDOR_ANY && c->x86_vendor != m->vendor)
+ 			continue;
+ 		if (m->family != X86_FAMILY_ANY && c->x86 != m->family)
+ 			continue;
+ 		if (m->model != X86_MODEL_ANY && c->x86_model != m->model)
+ 			continue;
++		if (m->steppings != X86_STEPPING_ANY &&
++		    !(BIT(c->x86_stepping) & m->steppings))
++			continue;
+ 		if (m->feature != X86_FEATURE_ANY && !cpu_has(c, m->feature))
+ 			continue;
+ 		return m;
+--- a/include/linux/mod_devicetable.h
++++ b/include/linux/mod_devicetable.h
+@@ -572,6 +572,10 @@ struct mips_cdmm_device_id {
+ /*
+  * MODULE_DEVICE_TABLE expects this struct to be called x86cpu_device_id.
+  * Although gcc seems to ignore this error, clang fails without this define.
++ *
++ * Note: The ordering of the struct is different from upstream because the
++ * static initializers in kernels < 5.7 still use C89 style while upstream
++ * has been converted to proper C99 initializers.
+  */
+ #define x86cpu_device_id x86_cpu_id
+ struct x86_cpu_id {
+@@ -580,6 +584,7 @@ struct x86_cpu_id {
+ 	__u16 model;
+ 	__u16 feature;	/* bit index */
+ 	kernel_ulong_t driver_data;
++	__u16 steppings;
+ };
  
--static int l2tp_ip6_open(struct sock *sk)
-+static int l2tp_ip6_hash(struct sock *sk)
- {
--	/* Prevent autobind. We don't have ports. */
--	inet_sk(sk)->inet_num = IPPROTO_L2TP;
-+	if (sk_unhashed(sk)) {
-+		write_lock_bh(&l2tp_ip6_lock);
-+		sk_add_node(sk, &l2tp_ip6_table);
-+		write_unlock_bh(&l2tp_ip6_lock);
-+	}
-+	return 0;
-+}
+ #define X86_FEATURE_MATCH(x) \
+@@ -588,6 +593,7 @@ struct x86_cpu_id {
+ #define X86_VENDOR_ANY 0xffff
+ #define X86_FAMILY_ANY 0
+ #define X86_MODEL_ANY  0
++#define X86_STEPPING_ANY 0
+ #define X86_FEATURE_ANY 0	/* Same as FPU, you can't test for that */
  
-+static void l2tp_ip6_unhash(struct sock *sk)
-+{
-+	if (sk_unhashed(sk))
-+		return;
- 	write_lock_bh(&l2tp_ip6_lock);
--	sk_add_node(sk, &l2tp_ip6_table);
-+	sk_del_node_init(sk);
- 	write_unlock_bh(&l2tp_ip6_lock);
-+}
-+
-+static int l2tp_ip6_open(struct sock *sk)
-+{
-+	/* Prevent autobind. We don't have ports. */
-+	inet_sk(sk)->inet_num = IPPROTO_L2TP;
- 
-+	l2tp_ip6_hash(sk);
- 	return 0;
- }
- 
-@@ -732,8 +746,8 @@ static struct proto l2tp_ip6_prot = {
- 	.sendmsg	   = l2tp_ip6_sendmsg,
- 	.recvmsg	   = l2tp_ip6_recvmsg,
- 	.backlog_rcv	   = l2tp_ip6_backlog_recv,
--	.hash		   = inet6_hash,
--	.unhash		   = inet_unhash,
-+	.hash		   = l2tp_ip6_hash,
-+	.unhash		   = l2tp_ip6_unhash,
- 	.obj_size	   = sizeof(struct l2tp_ip6_sock),
- #ifdef CONFIG_COMPAT
- 	.compat_setsockopt = compat_ipv6_setsockopt,
+ /*
 
 
