@@ -2,525 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92DC1F311B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97E21F309E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 03:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728547AbgFIBFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 21:05:46 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57126 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727834AbgFHXHQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:07:16 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 058N0Zgj022325
-        for <linux-kernel@vger.kernel.org>; Mon, 8 Jun 2020 16:07:15 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=c0UeiR3c3qRtNHNW+AH+kziF1nAKRGkcQBYpmJo/3cI=;
- b=gH3aeJX7QnG+VNkSWf+hNnFZGbAmha91XwUTOwpbh89TLo9efOtoxb/lhMcNwoYP3jhn
- Oiikeznk6zimYMNCccbxWTr+3SqGF/4igRjQ4u3bMq02RNlYHuWYd7L9nEKRFz4+nwzO
- U4t4aV4HnFXN6JoZRmg0lVBgsTrECHRg9LM= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31g8nkt6v6-12
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 16:07:14 -0700
-Received: from intmgw003.06.prn3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 8 Jun 2020 16:07:08 -0700
-Received: by devvm1291.vll0.facebook.com (Postfix, from userid 111017)
-        id 7F4C01D8FE5E; Mon,  8 Jun 2020 16:07:00 -0700 (PDT)
-Smtp-Origin-Hostprefix: devvm
-From:   Roman Gushchin <guro@fb.com>
-Smtp-Origin-Hostname: devvm1291.vll0.facebook.com
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>
-CC:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <kernel-team@fb.com>,
-        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
-Smtp-Origin-Cluster: vll0c01
-Subject: [PATCH v6 18/19] kselftests: cgroup: add kernel memory accounting tests
-Date:   Mon, 8 Jun 2020 16:06:53 -0700
-Message-ID: <20200608230654.828134-19-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200608230654.828134-1-guro@fb.com>
-References: <20200608230654.828134-1-guro@fb.com>
+        id S1730474AbgFIBA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 21:00:59 -0400
+Received: from mail-mw2nam10on2058.outbound.protection.outlook.com ([40.107.94.58]:6096
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727884AbgFIBAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 21:00:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bGVdN7sg0GenyobMj2gNVuJ48zawcZZmPGqETycQdrAHRfLXXCNH3Y4BR5TYiGAybcdOTG4PBVMqF29F/pZwtB4bsGRFy/Hkn9BT1QyLSqXQcr9NqfZ9GBTMY6AP2twXCFf4qQYQRffsBzOArqxDTcAqXLAlWBvgjDX1wDm/LCckdrJTnwsOuC+YkHxZOXVOldQAqsmIx6laDgP1hCZ0JyHf1YlVLIVuvGp6zIUzAqyDFtLlhwrsBTHAJdW6jcHOU+ek8RQYrc0DtomfaeS3RHSMEA7Ra1s4WBcQnBQUn6OtNK0lLG9LjS2/QLMz8PVkMKhDc+4cm8xKtZraD2UzKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W9c5B8+hT9NSRU4nWj6ZWB7+/535KG6Plkzp6oQHtz4=;
+ b=Jjyvc2lYFDws8nXFM/wzE6Lxc65hHAdjEzMcjs8hCBVvGQRt9FFmVmfz2U9kh5tpdJs2VRkoiGQ+jTvh7AJzKHFptWTgwYA40Vb7yYM/BRp/S1kBPltUqbZwXqw/dbjkvGY5ZY4sn8klE+Mu4O1EnapYA+4+sM6CTGutlLQWFRjmA89g27eBeZbNxksLcLq8RYHaumHpZlL1RhcBA9kyrQ+68KF6eWvgl/X2w26hVXDiEULqA3Z+iyHvtNUecVRR55qc8ZMccAipP0I8W9Z7fZwZ6dd4B8srqGVX9hVhH+BcNWCTeot2ACiwi0+bzkPSQEx9b2+nuoPC7uA7x2+1pQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W9c5B8+hT9NSRU4nWj6ZWB7+/535KG6Plkzp6oQHtz4=;
+ b=Oea9ECzaqf9eTUVbHcIdgp6+4QDXWxDwsw2IEBdoxWHPO6x6XKMj7zP02Fjl8SCV98Iz5X4s/4kLuye19qmDjCwCgHDDyxc0a31RlSjKGnY0VsExKWMY8ox7DSQHjUyLOyxWyg3LBvOvAxy7I842GT/bfQSte2xDY8UN8iZKO00=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from DM6PR11MB2747.namprd11.prod.outlook.com (2603:10b6:5:c6::22) by
+ DM6PR11MB3084.namprd11.prod.outlook.com (2603:10b6:5:6c::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3066.22; Tue, 9 Jun 2020 01:00:44 +0000
+Received: from DM6PR11MB2747.namprd11.prod.outlook.com
+ ([fe80::ad7f:84a9:35bd:edf8]) by DM6PR11MB2747.namprd11.prod.outlook.com
+ ([fe80::ad7f:84a9:35bd:edf8%4]) with mapi id 15.20.3066.023; Tue, 9 Jun 2020
+ 01:00:44 +0000
+Subject: Re: [PATCH] dtc: also check <yaml.h> for libyaml
+To:     Rob Herring <robh@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200608084117.4563-1-jiping.ma2@windriver.com>
+ <CAL_JsqKLfSE5tPEPi1=erqBzCF9fceKKDe4qBkywB4O_JhbjGg@mail.gmail.com>
+From:   Jiping Ma <Jiping.Ma2@windriver.com>
+Message-ID: <acfc88fc-2a7e-19fe-3dc4-37a03ddabcf9@windriver.com>
+Date:   Tue, 9 Jun 2020 09:00:37 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.5.0
+In-Reply-To: <CAL_JsqKLfSE5tPEPi1=erqBzCF9fceKKDe4qBkywB4O_JhbjGg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: HKAPR04CA0010.apcprd04.prod.outlook.com
+ (2603:1096:203:d0::20) To DM6PR11MB2747.namprd11.prod.outlook.com
+ (2603:10b6:5:c6::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-08_18:2020-06-08,2020-06-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- phishscore=0 clxscore=1015 mlxscore=0 priorityscore=1501 malwarescore=0
- spamscore=0 mlxlogscore=999 suspectscore=2 cotscore=-2147483648
- lowpriorityscore=0 adultscore=0 bulkscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006080160
-X-FB-Internal: deliver
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.195] (60.247.85.82) by HKAPR04CA0010.apcprd04.prod.outlook.com (2603:1096:203:d0::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.19 via Frontend Transport; Tue, 9 Jun 2020 01:00:42 +0000
+X-Originating-IP: [60.247.85.82]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 21624f09-73b7-41d7-02cc-08d80c10897d
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3084:
+X-Microsoft-Antispam-PRVS: <DM6PR11MB3084A31E2C7B03744D00287AD8820@DM6PR11MB3084.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
+X-Forefront-PRVS: 042957ACD7
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UslHGx2ec5+UDdslXVZaWtddrx67Dt25urGYEQnz9fHCZ3Loo7pLX/CW89fq3Vm1MDmf+t716gWbvLVDEdDn7xQgxmPKZgIbgN+/AWaTOFaivvf/38P+tJRbRF7li4VK57d3L9+DqOrPoaOX8arpw6KMkFsNgocpV2L9DkKP43SsRH9jdMm8B3I6+ZuTRkEGwkcV18Ds49E5PisZi1cxnaaek8uDhgEZDITc2RryXW9rzGH+h0nj7vICy2fmHPUZO3pbfRb4s+N4K0dtgJwMLGFXmuHa8J0VN4WHjWqrmW8FsgzbCZ6RdSRmjltoPVSFPpSNipxMPKe3lFOynmCehZxPkcs1WFLp6cfFo0PCbfFnnVa2rBFuIA7/GuhInrfJ6nxUkkxixGBXMEZ76O5Gtjl6poAEKH5Ng+Ujq9YwTujapiNE2ouI6S3QkUaVU3Gh2ITNuY9mi5YFBQCj1ZmJfd+6EB70GrsC/MNyl6616wu7hN29VphQA5cUy3TISZEJw+fEFxLIyDhNbjWl8GmxHw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2747.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(396003)(376002)(136003)(39850400004)(346002)(86362001)(2906002)(6916009)(956004)(5660300002)(186003)(6706004)(53546011)(966005)(16576012)(52116002)(66946007)(16526019)(36756003)(316002)(2616005)(478600001)(6666004)(31696002)(26005)(4326008)(31686004)(66556008)(8676002)(66476007)(8936002)(6486002)(54906003)(78286006)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: H2rKUpsJc2KSAOc1UcXtjXV3UJQ5KCFCkyc3mKn97cmaxtVKJXQz9c5ijT5TzMno+IEDA16tZxU8yBrzDTbSUMpluveGdyw2E9+ShodcPRHgeDCKKB9xMT4mwGGCDao5PdnjBC0EvNp/HoW7NL3bUnGh7aJbrodPgXYcCY1D6kOnoSQrkazVBVYPmPF4AXGWoU7aMPMxT/WyfoZe+au1iCuMz6xleypTnrI10Adby05u0qFMSj1S+N7Qkmeqktn+/5/PxEh16Kf6Z/ymhinDiB/oYmEMYWYP40vC4/84oRqCmy4i/ag8QTUF+CuAayWwcb8nYTtHz6ywtAvqt6tNPWRI5mKSwxX7YxQ0ODnX8kSS6Pb6YPJxbwYU/J/KysIxP/CG599Nb0TDRIddBhYOFgcnosQfd4HSA9AQZmAoiEvJQsxHLOVpPiZQVbWahVGdKfhtpPjaOPyjTnNTgsvXb55G7FZWdRAlKF9amHjdPTs=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21624f09-73b7-41d7-02cc-08d80c10897d
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2020 01:00:44.5112
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6kHBufCYTMdCtSTvHbNxr3o7d97wqvdM7SH7k5fuvcEbqj+KqnQUN0r2WcgSPv/jVVwTmkx8hdtzyKrigcY3jn902Gmn5BjC903m/ZnDaSU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some tests to cover the kernel memory accounting functionality.
-These are covering some issues (and changes) we had recently.
 
-1) A test which allocates a lot of negative dentries, checks memcg
-slab statistics, creates memory pressure by setting memory.max
-to some low value and checks that some number of slabs was reclaimed.
 
-2) A test which covers side effects of memcg destruction: it creates
-and destroys a large number of sub-cgroups, each containing a
-multi-threaded workload which allocates and releases some kernel
-memory. Then it checks that the charge ans memory.stats do add up
-on the parent level.
+On 06/09/2020 03:09 AM, Rob Herring wrote:
+> On Mon, Jun 8, 2020 at 2:42 AM Jiping Ma <jiping.ma2@windriver.com> wrote:
+>> yamltree.c includes <yaml.h>, If /usr/include/yaml.h does not exist,
+>> it fails to build.
+> Does this patch fix your issue?:
+>
+> https://lore.kernel.org/linux-devicetree/20200505100319.741454-1-masahiroy@kernel.org/
+No, it did not fix the issue.
 
-3) A test which reads /proc/kpagecgroup and implicitly checks that it
-doesn't crash the system.
+$ pkg-config --cflags yaml-0.1
 
-4) A test which spawns a large number of threads and checks that
-the kernel stacks accounting works as expected.
+$ pkg-config yaml-0.1 --libs
+-L/buildarea/jma1/wr-19-0518/19.45/sysroots/aarch64-wrs-linux/usr/lib64 
+-lyaml
 
-5) A test which checks that living charged slab objects are not
-preventing the memory cgroup from being released after being deleted
-by a user.
-
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- tools/testing/selftests/cgroup/.gitignore  |   1 +
- tools/testing/selftests/cgroup/Makefile    |   2 +
- tools/testing/selftests/cgroup/test_kmem.c | 382 +++++++++++++++++++++
- 3 files changed, 385 insertions(+)
- create mode 100644 tools/testing/selftests/cgroup/test_kmem.c
-
-diff --git a/tools/testing/selftests/cgroup/.gitignore b/tools/testing/se=
-lftests/cgroup/.gitignore
-index aa6de65b0838..84cfcabea838 100644
---- a/tools/testing/selftests/cgroup/.gitignore
-+++ b/tools/testing/selftests/cgroup/.gitignore
-@@ -2,3 +2,4 @@
- test_memcontrol
- test_core
- test_freezer
-+test_kmem
-\ No newline at end of file
-diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/self=
-tests/cgroup/Makefile
-index 967f268fde74..f027d933595b 100644
---- a/tools/testing/selftests/cgroup/Makefile
-+++ b/tools/testing/selftests/cgroup/Makefile
-@@ -6,11 +6,13 @@ all:
- TEST_FILES     :=3D with_stress.sh
- TEST_PROGS     :=3D test_stress.sh
- TEST_GEN_PROGS =3D test_memcontrol
-+TEST_GEN_PROGS +=3D test_kmem
- TEST_GEN_PROGS +=3D test_core
- TEST_GEN_PROGS +=3D test_freezer
-=20
- include ../lib.mk
-=20
- $(OUTPUT)/test_memcontrol: cgroup_util.c ../clone3/clone3_selftests.h
-+$(OUTPUT)/test_kmem: cgroup_util.c ../clone3/clone3_selftests.h
- $(OUTPUT)/test_core: cgroup_util.c ../clone3/clone3_selftests.h
- $(OUTPUT)/test_freezer: cgroup_util.c ../clone3/clone3_selftests.h
-diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/s=
-elftests/cgroup/test_kmem.c
-new file mode 100644
-index 000000000000..5224dae216e5
---- /dev/null
-+++ b/tools/testing/selftests/cgroup/test_kmem.c
-@@ -0,0 +1,382 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+
-+#include <linux/limits.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <sys/wait.h>
-+#include <errno.h>
-+#include <sys/sysinfo.h>
-+#include <pthread.h>
-+
-+#include "../kselftest.h"
-+#include "cgroup_util.h"
-+
-+
-+static int alloc_dcache(const char *cgroup, void *arg)
-+{
-+	unsigned long i;
-+	struct stat st;
-+	char buf[128];
-+
-+	for (i =3D 0; i < (unsigned long)arg; i++) {
-+		snprintf(buf, sizeof(buf),
-+			"/something-non-existent-with-a-long-name-%64lu-%d",
-+			 i, getpid());
-+		stat(buf, &st);
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * This test allocates 100000 of negative dentries with long names.
-+ * Then it checks that "slab" in memory.stat is larger than 1M.
-+ * Then it sets memory.high to 1M and checks that at least 1/2
-+ * of slab memory has been reclaimed.
-+ */
-+static int test_kmem_basic(const char *root)
-+{
-+	int ret =3D KSFT_FAIL;
-+	char *cg =3D NULL;
-+	long slab0, slab1, current;
-+
-+	cg =3D cg_name(root, "kmem_basic_test");
-+	if (!cg)
-+		goto cleanup;
-+
-+	if (cg_create(cg))
-+		goto cleanup;
-+
-+	if (cg_run(cg, alloc_dcache, (void *)100000))
-+		goto cleanup;
-+
-+	slab0 =3D cg_read_key_long(cg, "memory.stat", "slab ");
-+	if (slab0 < (1 << 20))
-+		goto cleanup;
-+
-+	cg_write(cg, "memory.high", "1M");
-+	slab1 =3D cg_read_key_long(cg, "memory.stat", "slab ");
-+	if (slab1 <=3D 0)
-+		goto cleanup;
-+
-+	current =3D cg_read_long(cg, "memory.current");
-+	if (current <=3D 0)
-+		goto cleanup;
-+
-+	if (slab1 < slab0 / 2 && current < slab0 / 2)
-+		ret =3D KSFT_PASS;
-+cleanup:
-+	cg_destroy(cg);
-+	free(cg);
-+
-+	return ret;
-+}
-+
-+static void *alloc_kmem_fn(void *arg)
-+{
-+	alloc_dcache(NULL, (void *)100);
-+	return NULL;
-+}
-+
-+static int alloc_kmem_smp(const char *cgroup, void *arg)
-+{
-+	int nr_threads =3D 2 * get_nprocs();
-+	pthread_t *tinfo;
-+	unsigned long i;
-+	int ret =3D -1;
-+
-+	tinfo =3D calloc(nr_threads, sizeof(pthread_t));
-+	if (tinfo =3D=3D NULL)
-+		return -1;
-+
-+	for (i =3D 0; i < nr_threads; i++) {
-+		if (pthread_create(&tinfo[i], NULL, &alloc_kmem_fn,
-+				   (void *)i)) {
-+			free(tinfo);
-+			return -1;
-+		}
-+	}
-+
-+	for (i =3D 0; i < nr_threads; i++) {
-+		ret =3D pthread_join(tinfo[i], NULL);
-+		if (ret)
-+			break;
-+	}
-+
-+	free(tinfo);
-+	return ret;
-+}
-+
-+static int cg_run_in_subcgroups(const char *parent,
-+				int (*fn)(const char *cgroup, void *arg),
-+				void *arg, int times)
-+{
-+	char *child;
-+	int i;
-+
-+	for (i =3D 0; i < times; i++) {
-+		child =3D cg_name_indexed(parent, "child", i);
-+		if (!child)
-+			return -1;
-+
-+		if (cg_create(child)) {
-+			cg_destroy(child);
-+			free(child);
-+			return -1;
-+		}
-+
-+		if (cg_run(child, fn, NULL)) {
-+			cg_destroy(child);
-+			free(child);
-+			return -1;
-+		}
-+
-+		cg_destroy(child);
-+		free(child);
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * The test creates and destroys a large number of cgroups. In each cgro=
-up it
-+ * allocates some slab memory (mostly negative dentries) using 2 * NR_CP=
-US
-+ * threads. Then it checks the sanity of numbers on the parent level:
-+ * the total size of the cgroups should be roughly equal to
-+ * anon + file + slab + kernel_stack.
-+ */
-+static int test_kmem_memcg_deletion(const char *root)
-+{
-+	long current, slab, anon, file, kernel_stack, sum;
-+	int ret =3D KSFT_FAIL;
-+	char *parent;
-+
-+	parent =3D cg_name(root, "kmem_memcg_deletion_test");
-+	if (!parent)
-+		goto cleanup;
-+
-+	if (cg_create(parent))
-+		goto cleanup;
-+
-+	if (cg_write(parent, "cgroup.subtree_control", "+memory"))
-+		goto cleanup;
-+
-+	if (cg_run_in_subcgroups(parent, alloc_kmem_smp, NULL, 100))
-+		goto cleanup;
-+
-+	current =3D cg_read_long(parent, "memory.current");
-+	slab =3D cg_read_key_long(parent, "memory.stat", "slab ");
-+	anon =3D cg_read_key_long(parent, "memory.stat", "anon ");
-+	file =3D cg_read_key_long(parent, "memory.stat", "file ");
-+	kernel_stack =3D cg_read_key_long(parent, "memory.stat", "kernel_stack =
-");
-+	if (current < 0 || slab < 0 || anon < 0 || file < 0 ||
-+	    kernel_stack < 0)
-+		goto cleanup;
-+
-+	sum =3D slab + anon + file + kernel_stack;
-+	if (abs(sum - current) < 4096 * 32 * 2 * get_nprocs()) {
-+		ret =3D KSFT_PASS;
-+	} else {
-+		printf("memory.current =3D %ld\n", current);
-+		printf("slab + anon + file + kernel_stack =3D %ld\n", sum);
-+		printf("slab =3D %ld\n", slab);
-+		printf("anon =3D %ld\n", anon);
-+		printf("file =3D %ld\n", file);
-+		printf("kernel_stack =3D %ld\n", kernel_stack);
-+	}
-+
-+cleanup:
-+	cg_destroy(parent);
-+	free(parent);
-+
-+	return ret;
-+}
-+
-+/*
-+ * The test reads the entire /proc/kpagecgroup. If the operation went
-+ * successfully (and the kernel didn't panic), the test is treated as pa=
-ssed.
-+ */
-+static int test_kmem_proc_kpagecgroup(const char *root)
-+{
-+	unsigned long buf[128];
-+	int ret =3D KSFT_FAIL;
-+	ssize_t len;
-+	int fd;
-+
-+	fd =3D open("/proc/kpagecgroup", O_RDONLY);
-+	if (fd < 0)
-+		return ret;
-+
-+	do {
-+		len =3D read(fd, buf, sizeof(buf));
-+	} while (len > 0);
-+
-+	if (len =3D=3D 0)
-+		ret =3D KSFT_PASS;
-+
-+	close(fd);
-+	return ret;
-+}
-+
-+static void *pthread_wait_fn(void *arg)
-+{
-+	sleep(100);
-+	return NULL;
-+}
-+
-+static int spawn_1000_threads(const char *cgroup, void *arg)
-+{
-+	int nr_threads =3D 1000;
-+	pthread_t *tinfo;
-+	unsigned long i;
-+	long stack;
-+	int ret =3D -1;
-+
-+	tinfo =3D calloc(nr_threads, sizeof(pthread_t));
-+	if (tinfo =3D=3D NULL)
-+		return -1;
-+
-+	for (i =3D 0; i < nr_threads; i++) {
-+		if (pthread_create(&tinfo[i], NULL, &pthread_wait_fn,
-+				   (void *)i)) {
-+			free(tinfo);
-+			return(-1);
-+		}
-+	}
-+
-+	stack =3D cg_read_key_long(cgroup, "memory.stat", "kernel_stack ");
-+	if (stack >=3D 4096 * 1000)
-+		ret =3D 0;
-+
-+	free(tinfo);
-+	return ret;
-+}
-+
-+/*
-+ * The test spawns a process, which spawns 1000 threads. Then it checks
-+ * that memory.stat's kernel_stack is at least 1000 pages large.
-+ */
-+static int test_kmem_kernel_stacks(const char *root)
-+{
-+	int ret =3D KSFT_FAIL;
-+	char *cg =3D NULL;
-+
-+	cg =3D cg_name(root, "kmem_kernel_stacks_test");
-+	if (!cg)
-+		goto cleanup;
-+
-+	if (cg_create(cg))
-+		goto cleanup;
-+
-+	if (cg_run(cg, spawn_1000_threads, NULL))
-+		goto cleanup;
-+
-+	ret =3D KSFT_PASS;
-+cleanup:
-+	cg_destroy(cg);
-+	free(cg);
-+
-+	return ret;
-+}
-+
-+/*
-+ * This test sequentionally creates 30 child cgroups, allocates some
-+ * kernel memory in each of them, and deletes them. Then it checks
-+ * that the number of dying cgroups on the parent level is 0.
-+ */
-+static int test_kmem_dead_cgroups(const char *root)
-+{
-+	int ret =3D KSFT_FAIL;
-+	char *parent;
-+	long dead;
-+	int i;
-+
-+	parent =3D cg_name(root, "kmem_dead_cgroups_test");
-+	if (!parent)
-+		goto cleanup;
-+
-+	if (cg_create(parent))
-+		goto cleanup;
-+
-+	if (cg_write(parent, "cgroup.subtree_control", "+memory"))
-+		goto cleanup;
-+
-+	if (cg_run_in_subcgroups(parent, alloc_dcache, (void *)100, 30))
-+		goto cleanup;
-+
-+	for (i =3D 0; i < 5; i++) {
-+		dead =3D cg_read_key_long(parent, "cgroup.stat",
-+					"nr_dying_descendants ");
-+		if (dead =3D=3D 0) {
-+			ret =3D KSFT_PASS;
-+			break;
-+		}
-+		/*
-+		 * Reclaiming cgroups might take some time,
-+		 * let's wait a bit and repeat.
-+		 */
-+		sleep(1);
-+	}
-+
-+cleanup:
-+	cg_destroy(parent);
-+	free(parent);
-+
-+	return ret;
-+}
-+
-+#define T(x) { x, #x }
-+struct kmem_test {
-+	int (*fn)(const char *root);
-+	const char *name;
-+} tests[] =3D {
-+	T(test_kmem_basic),
-+	T(test_kmem_memcg_deletion),
-+	T(test_kmem_proc_kpagecgroup),
-+	T(test_kmem_kernel_stacks),
-+	T(test_kmem_dead_cgroups),
-+};
-+#undef T
-+
-+int main(int argc, char **argv)
-+{
-+	char root[PATH_MAX];
-+	int i, ret =3D EXIT_SUCCESS;
-+
-+	if (cg_find_unified_root(root, sizeof(root)))
-+		ksft_exit_skip("cgroup v2 isn't mounted\n");
-+
-+	/*
-+	 * Check that memory controller is available:
-+	 * memory is listed in cgroup.controllers
-+	 */
-+	if (cg_read_strstr(root, "cgroup.controllers", "memory"))
-+		ksft_exit_skip("memory controller isn't available\n");
-+
-+	if (cg_read_strstr(root, "cgroup.subtree_control", "memory"))
-+		if (cg_write(root, "cgroup.subtree_control", "+memory"))
-+			ksft_exit_skip("Failed to set memory controller\n");
-+
-+	for (i =3D 0; i < ARRAY_SIZE(tests); i++) {
-+		switch (tests[i].fn(root)) {
-+		case KSFT_PASS:
-+			ksft_test_result_pass("%s\n", tests[i].name);
-+			break;
-+		case KSFT_SKIP:
-+			ksft_test_result_skip("%s\n", tests[i].name);
-+			break;
-+		default:
-+			ret =3D EXIT_FAILURE;
-+			ksft_test_result_fail("%s\n", tests[i].name);
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
---=20
-2.25.4
+>
+>
+>> Signed-off-by: Jiping Ma <jiping.ma2@windriver.com>
+>> ---
+>>   scripts/dtc/Makefile | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/scripts/dtc/Makefile b/scripts/dtc/Makefile
+>> index b5a5b1c..b49dfea 100644
+>> --- a/scripts/dtc/Makefile
+>> +++ b/scripts/dtc/Makefile
+>> @@ -18,9 +18,13 @@ $(error dtc needs libyaml for DT schema validation support. \
+>>   endif
+>>   HOST_EXTRACFLAGS += -DNO_YAML
+>>   else
+>> +ifeq ($(wildcard /usr/include/yaml.h),)
+>> +HOST_EXTRACFLAGS += -DNO_YAML
+>> +else
+>>   dtc-objs       += yamltree.o
+>>   HOSTLDLIBS_dtc := $(shell pkg-config yaml-0.1 --libs)
+>>   endif
+>> +endif
+>>
+>>   # Generated files need one more search path to include headers in source tree
+>>   HOSTCFLAGS_dtc-lexer.lex.o := -I $(srctree)/$(src)
+>> --
+>> 1.9.1
+>>
 
