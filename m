@@ -2,84 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECBC1F4068
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 18:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194F31F4060
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 18:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731133AbgFIQNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 12:13:25 -0400
-Received: from smtp.asem.it ([151.1.184.197]:62643 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728888AbgFIQNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 12:13:19 -0400
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000307084.MSG 
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 18:13:16 +0200S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Jun
- 2020 18:13:14 +0200
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 9 Jun 2020 18:13:14 +0200
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-CC:     <MPT-FusionLinux.pdl@broadcom.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH 1/1] scsi: mpt3sas: fix spelling mistake
-Date:   Tue, 9 Jun 2020 18:13:13 +0200
-Message-ID: <20200609161313.32098-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.17.1
+        id S1731157AbgFIQN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 12:13:28 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:50658 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731093AbgFIQN0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 12:13:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591719205;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SPVVcRFgzz+szQgQMLyZwoek+uHNhgwrukerrAxYQdk=;
+        b=GoK74LkCv7DrzfypbZEYSAwV3kWushThN1Tto0xPH7bklxFoTMxp+K0to6Tn2N4Jzs3OAT
+        ocGjcZVCZqbcLUvVZbpro5l3DxS7dPdAET4tP/HNFYBvGEZqe1e0MC+04gAuuYl59sBDF2
+        WRdnSqTzJ99zhzWjBHUShB1Gi8L4AsE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-256-rbQADSm2NGKGPzs9WeSxVw-1; Tue, 09 Jun 2020 12:13:22 -0400
+X-MC-Unique: rbQADSm2NGKGPzs9WeSxVw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66911835B40;
+        Tue,  9 Jun 2020 16:13:21 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-114-66.rdu2.redhat.com [10.10.114.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 748BA6298C;
+        Tue,  9 Jun 2020 16:13:20 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 2/6] afs: Fix file locking
+From:   David Howells <dhowells@redhat.com>
+To:     linux-afs@lists.infradead.org
+Cc:     Dave Botsch <botsch@cnf.cornell.edu>,
+        Dave Botsch <botsch@cnf.cornell.edu>, dhowells@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 09 Jun 2020 17:13:19 +0100
+Message-ID: <159171919967.3038039.17802563446058952615.stgit@warthog.procyon.org.uk>
+In-Reply-To: <159171918506.3038039.10915051218779105094.stgit@warthog.procyon.org.uk>
+References: <159171918506.3038039.10915051218779105094.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.22
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A090204.5EDFB51B.0067,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typo: "tigger" --> "trigger"
+Fix AFS file locking to use the correct vnode pointer and remove a member
+of the afs_operation struct that is never set, but it is read and followed,
+causing an oops.
 
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+This can be triggered by:
+
+	flock -s /afs/example.com/foo sleep 1
+
+when it calls the kernel to get a file lock.
+
+Fixes: e49c7b2f6de7 ("afs: Build an abstraction around an "operation" concept")
+Reported-by: Dave Botsch <botsch@cnf.cornell.edu>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Tested-by: Dave Botsch <botsch@cnf.cornell.edu>
 ---
- drivers/scsi/mpt3sas/mpt3sas_base.h         | 2 +-
- drivers/scsi/mpt3sas/mpt3sas_trigger_diag.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.h b/drivers/scsi/mpt3sas/mpt3sas_base.h
-index 4fca3939c034..4ff876c31272 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.h
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.h
-@@ -1770,7 +1770,7 @@ void mpt3sas_send_trigger_data_event(struct MPT3SAS_ADAPTER *ioc,
- void mpt3sas_process_trigger_data(struct MPT3SAS_ADAPTER *ioc,
- 	struct SL_WH_TRIGGERS_EVENT_DATA_T *event_data);
- void mpt3sas_trigger_master(struct MPT3SAS_ADAPTER *ioc,
--	u32 tigger_bitmask);
-+	u32 trigger_bitmask);
- void mpt3sas_trigger_event(struct MPT3SAS_ADAPTER *ioc, u16 event,
- 	u16 log_entry_qualifier);
- void mpt3sas_trigger_scsi(struct MPT3SAS_ADAPTER *ioc, u8 sense_key,
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_trigger_diag.h b/drivers/scsi/mpt3sas/mpt3sas_trigger_diag.h
-index 6586a463bea9..405eada2669d 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_trigger_diag.h
-+++ b/drivers/scsi/mpt3sas/mpt3sas_trigger_diag.h
-@@ -69,7 +69,7 @@
- #define MASTER_TRIGGER_TASK_MANAGMENT   (0x00000004)
- #define MASTER_TRIGGER_DEVICE_REMOVAL   (0x00000008)
+ fs/afs/flock.c    |    2 +-
+ fs/afs/internal.h |    1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/fs/afs/flock.c b/fs/afs/flock.c
+index 70e518f7bc19..71eea2a908c7 100644
+--- a/fs/afs/flock.c
++++ b/fs/afs/flock.c
+@@ -71,7 +71,7 @@ static void afs_schedule_lock_extension(struct afs_vnode *vnode)
+ void afs_lock_op_done(struct afs_call *call)
+ {
+ 	struct afs_operation *op = call->op;
+-	struct afs_vnode *vnode = op->lock.lvnode;
++	struct afs_vnode *vnode = op->file[0].vnode;
  
--/* fake firmware event for tigger */
-+/* fake firmware event for trigger */
- #define MPI3_EVENT_DIAGNOSTIC_TRIGGER_FIRED	(0x6E)
- 
- /**
--- 
-2.17.1
+ 	if (call->error == 0) {
+ 		spin_lock(&vnode->lock);
+diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+index e1621b0670cc..519ffb104616 100644
+--- a/fs/afs/internal.h
++++ b/fs/afs/internal.h
+@@ -795,7 +795,6 @@ struct afs_operation {
+ 			struct afs_read *req;
+ 		} fetch;
+ 		struct {
+-			struct afs_vnode *lvnode;	/* vnode being locked */
+ 			afs_lock_type_t type;
+ 		} lock;
+ 		struct {
+
 
