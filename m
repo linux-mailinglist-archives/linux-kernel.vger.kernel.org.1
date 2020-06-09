@@ -2,78 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DADBC1F4979
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 00:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D521F499A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 00:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728596AbgFIWkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 18:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728108AbgFIWkp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 18:40:45 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D83C08C5C2
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 15:40:44 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id x22so288008lfd.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 15:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P1TRNNjJlvLVpkzYtiyuKXMMAtHYz93D6qUBO+R17NY=;
-        b=K1f23i0fqTaybBaIL91PC/uUGVhXSo8qFOrRZ6HkWINEL8dEywUK3T3EhTHBQo1onI
-         W2B23FJguSy+2BibfIkn2DkdpPgkPHbOxwkYkGJwdrS+/ZW6LOzw/y+emhKjQsn4I6lP
-         cbjUZmLILbknLg40OFWdmE+Q2u7LZ3zRFbcGo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P1TRNNjJlvLVpkzYtiyuKXMMAtHYz93D6qUBO+R17NY=;
-        b=oHyJVOMGAghuq1vHrvViU1NbsCN7rD88OBjy9BBIvdobzX8zsu9+zWicXMtfLR+uVv
-         G4VrUDVqQ9UAr+j1mhDYAew2Ef/zY/6jTnIxOTs/XWSTemrxY4tqkYEUGGXEQmUIEpDn
-         z/8zcEl+FTmMtLEmbVhx3wEDaFLRKny2/pgJ7o7/QXynCJriJ97QnOozBMAwYfqixSCl
-         nlz4II6TYH36Lk4OaaFsV9lOiD7fTOKvqyHSblPNWkkeeQxLFRRI0zfRmhlGTeWwrqAR
-         K3cwya6Hjcb/p/2WfHj3iwIba5ThCeWVSSZ79iuz95D0ZEQcFeTq9bAGPuER/g36GPkx
-         HC8Q==
-X-Gm-Message-State: AOAM530u/VybdnFARYtUdcSAcjoWmsDdKmZyo/AHBy7G4iE7TLkv4Fw5
-        /zGWqVjII2XnRhI1tRDpGmX+8sIdTxQ=
-X-Google-Smtp-Source: ABdhPJyeo9ASPr+VwVHSVb8IrezczgVHTkgWpaP4c6HDtRlsU9HVdejupiKwjp09gsQ35bIHtZZuiw==
-X-Received: by 2002:a19:500e:: with SMTP id e14mr73000lfb.88.1591742442633;
-        Tue, 09 Jun 2020 15:40:42 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id 11sm4533623lju.118.2020.06.09.15.40.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jun 2020 15:40:41 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id e125so300988lfd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 15:40:41 -0700 (PDT)
-X-Received: by 2002:a19:ae0f:: with SMTP id f15mr73046lfc.142.1591742441027;
- Tue, 09 Jun 2020 15:40:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <3071963.1591734633@warthog.procyon.org.uk>
-In-Reply-To: <3071963.1591734633@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 9 Jun 2020 15:40:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi4VjVHkMcALg3T4A+Vwfyo0NBWtPoKwvO8pWe_v=NF6Q@mail.gmail.com>
-Message-ID: <CAHk-=wi4VjVHkMcALg3T4A+Vwfyo0NBWtPoKwvO8pWe_v=NF6Q@mail.gmail.com>
-Subject: Re: [GIT PULL] afs: Misc small fixes
-To:     David Howells <dhowells@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>, chengzhihao1@huawei.com,
-        linux-afs@lists.infradead.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728759AbgFIWws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 18:52:48 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:58658 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728527AbgFIWwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 18:52:45 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 39AFA1A0322;
+        Wed, 10 Jun 2020 00:52:43 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AC2AC1A031B;
+        Wed, 10 Jun 2020 00:52:38 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C2B2B402BF;
+        Wed, 10 Jun 2020 06:52:32 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, leonard.crestez@nxp.com, abel.vesa@nxp.com,
+        l.stach@pengutronix.de, peng.fan@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2] soc: imx8m: Correct i.MX8MP UID fuse offset
+Date:   Wed, 10 Jun 2020 06:41:55 +0800
+Message-Id: <1591742515-7108-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 9, 2020 at 1:30 PM David Howells <dhowells@redhat.com> wrote:
->
-> Would you prefer I defer and submit it again after -rc1?
+Correct i.MX8MP UID fuse offset according to fuse map:
 
-No, I'll take fixes at any time, and the better shape rc1 is in, the
-happier everybody will be and the more likely we'll have testers..
+UID_LOW: 0x420
+UID_HIGH: 0x430
 
-             Linus
+Fixes: fc40200ebf82 ("soc: imx: increase build coverage for imx8m soc driver")
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V1:
+	- add fix tag.
+---
+ drivers/soc/imx/soc-imx8m.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
+index 7b0759a..0bc8314 100644
+--- a/drivers/soc/imx/soc-imx8m.c
++++ b/drivers/soc/imx/soc-imx8m.c
+@@ -22,6 +22,8 @@
+ #define OCOTP_UID_LOW			0x410
+ #define OCOTP_UID_HIGH			0x420
+ 
++#define IMX8MP_OCOTP_UID_OFFSET		0x10
++
+ /* Same as ANADIG_DIGPROG_IMX7D */
+ #define ANADIG_DIGPROG_IMX8MM	0x800
+ 
+@@ -87,6 +89,8 @@ static void __init imx8mm_soc_uid(void)
+ {
+ 	void __iomem *ocotp_base;
+ 	struct device_node *np;
++	u32 offset = of_machine_is_compatible("fsl,imx8mp") ?
++		     IMX8MP_OCOTP_UID_OFFSET : 0;
+ 
+ 	np = of_find_compatible_node(NULL, NULL, "fsl,imx8mm-ocotp");
+ 	if (!np)
+@@ -95,9 +99,9 @@ static void __init imx8mm_soc_uid(void)
+ 	ocotp_base = of_iomap(np, 0);
+ 	WARN_ON(!ocotp_base);
+ 
+-	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH);
++	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH + offset);
+ 	soc_uid <<= 32;
+-	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW);
++	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW + offset);
+ 
+ 	iounmap(ocotp_base);
+ 	of_node_put(np);
+-- 
+2.7.4
+
