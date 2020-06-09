@@ -2,97 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1416A1F493C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 00:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9489C1F4944
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 00:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728326AbgFIWMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 18:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726992AbgFIWMn (ORCPT
+        id S1728410AbgFIWPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 18:15:31 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:45485 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728382AbgFIWPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 18:12:43 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE04C05BD1E;
-        Tue,  9 Jun 2020 15:12:42 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id z9so27058266ljh.13;
-        Tue, 09 Jun 2020 15:12:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3C9MNSSLz5k4HgIlBTzG1S99/DUa1Q5oTEHE9/q2XSM=;
-        b=Sa9ddKfVX/pQhio3QNjTFPjLCbmHUnC5fk3Ftrz3tilCnbI3guBN3BDIXX/LxeVTns
-         6biEY98ZL2oqWwfIC8YkUdM7IvXd91VL4CtHs3gZiL1li4sh25fE/sfJSfq7Ba/g8hXu
-         zQtwxCtnzelHvfrBg26ACFr7WDcWAL2r2lKiB/G6brVIx520FaZToBpLhP9hkPbAEop9
-         B4b66sXcSkz4HPu226x56vUdhVKeEpKI6m0+4NlQ7RV+Pt6r0mcjLzXp23Uo0muQY5Ui
-         uwYmrFG/Y1jx+VGj29/zzv8sraI9blE6diNqKs37qhT5FkrVVS0qgzkbSI0rOUH95xgp
-         gToA==
+        Tue, 9 Jun 2020 18:15:31 -0400
+Received: by mail-lf1-f67.google.com with SMTP id d7so235181lfi.12
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 15:15:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3C9MNSSLz5k4HgIlBTzG1S99/DUa1Q5oTEHE9/q2XSM=;
-        b=tuYxM1lINCLfXt7/eU0lEBY1zuqjlplPZy3Rp507a065tfx3hxx9f9LAlImElNtNln
-         IxcT0gYg6xnouX2mOieYFdBTvwYndy95Hjbr+8Bl7bdc/Kijwio14KaM3TfNDuPb0yOU
-         rpK2VJNN/rMVNZEdEgbWoN5C4ar0pnuGyK5fRFZE+++oJcIBksyoLuWd59hIJjuK066p
-         QmCSBfsXHBFG00usSvQk/8kNglCCsdXPaXC9JKxD32s8jM2F18uKcgpyiyiVASf7NM5h
-         o/nMNbZo3JxFajs0iXVHzXVaZg8b1EdZnha9HAJ5gni3y5N2QEZt2GA8Vc31D+6+9D23
-         h1bA==
-X-Gm-Message-State: AOAM533SavKqzSIMl3V4Uojfz3/O+KdDUNqzoIEY59D+e+yLfh/icXmj
-        e8Fd99jIRuj1mW/U4nPDHts=
-X-Google-Smtp-Source: ABdhPJypP95cSn79r40HgE6S7hKvSZl2oE1/rs4o7jDGGcf0d82K+Y5JRA3Cy2G4MWTbIWx5KJpqsg==
-X-Received: by 2002:a2e:98d4:: with SMTP id s20mr196514ljj.83.1591740761017;
-        Tue, 09 Jun 2020 15:12:41 -0700 (PDT)
-Received: from localhost.localdomain (h-82-196-111-136.NA.cust.bahnhof.se. [82.196.111.136])
-        by smtp.gmail.com with ESMTPSA id r197sm5289226lff.5.2020.06.09.15.12.39
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qTrEmgv7RHDZYDuYM0LPp7lzo5g/KSIrjUA4oTLoZNQ=;
+        b=VA5dbhNU9cZSbsZx52DDnUol6vyRadTyGMuhWHnZ7lgfaj/Al8fRfVrI/l9oZXZPSv
+         1iHyDHqy+baFUnw5va4cvI/RB5TlkioFVmUy0C93IZ29/oCxMCphKUVv0R+s+0dclLbb
+         m93R8TpLYTQ4ws+hgTCtT+wSvj95jhuENV3bTreo63fqC9VDrRc7SCFQ/ZcRNRqskdFW
+         HxD5jpa1a2BCZQKrx6/7Vdb2PpZ7GsZPUi1GV4U8m4N5MQWuoSBhef+a7CXVeLZeazKQ
+         /1twZU2rW0dKB1ujK9IsxZNn4SwsJzHJIkV15sKENL/BtxfookWmOZhF1xS35E6N9yZY
+         rYeA==
+X-Gm-Message-State: AOAM531cNUoPskpFJCwob1Br6RVc/jDs0eOwhF4ujlGuWS/b1bp6y/T3
+        CA2xdH7k3qvOITTO0mb3P29cI6u1U54=
+X-Google-Smtp-Source: ABdhPJzb2FBZt+ybfr4zN7HzzmVHi6UAQDQdYo+lqynaVtXgD2iq4meR1/vyhgwUXCfegDjO/PbF9g==
+X-Received: by 2002:a19:8ac3:: with SMTP id m186mr19262lfd.131.1591740928724;
+        Tue, 09 Jun 2020 15:15:28 -0700 (PDT)
+Received: from localhost.localdomain ([213.87.137.116])
+        by smtp.googlemail.com with ESMTPSA id o19sm4531705ljc.23.2020.06.09.15.15.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 15:12:40 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, josephl@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] memory: tegra: Constify struct thermal_cooling_device_ops
-Date:   Wed, 10 Jun 2020 00:12:35 +0200
-Message-Id: <20200609221235.44602-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 09 Jun 2020 15:15:25 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Denis Efremov <efremov@linux.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] f2fs: use kfree() instead of kvfree() to free superblock data
+Date:   Wed, 10 Jun 2020 01:14:46 +0300
+Message-Id: <20200609221446.24537-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200605181533.73113-1-efremov@linux.com>
+References: <20200605181533.73113-1-efremov@linux.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tegra210_emc_cd_ops is never modified and can be made const to allow the
-compiler to put it in read-only memory.
+Use kfree() instead of kvfree() to free super in read_raw_super_block()
+because the memory is allocated with kzalloc() in the function.
+Use kfree() instead of kvfree() to free sbi, raw_super in
+f2fs_fill_super() and f2fs_put_super() because the memory is allocated
+with kzalloc().
 
-Before:
-   text    data     bss     dec     hex filename
-  27936    5600     192   33728    83c0 drivers/memory/tegra/tegra210-emc-core.o
-
-After:
-   text    data     bss     dec     hex filename
-  28040    5504     192   33736    83c8 drivers/memory/tegra/tegra210-emc-core.o
-
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Fixes: 5222595d093e ("f2fs: use kvmalloc, if kmalloc is failed")
+Signed-off-by: Denis Efremov <efremov@linux.com>
 ---
- drivers/memory/tegra/tegra210-emc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2:
+ - Single patch instead of two separate patches
+ - kvfree fixed in f2fs_put_super
+Changes in v3:
+ - raw_super added to the scope, thanks Chao Yu
 
-diff --git a/drivers/memory/tegra/tegra210-emc-core.c b/drivers/memory/tegra/tegra210-emc-core.c
-index cdd663ba4733..2dfcc0e2e15d 100644
---- a/drivers/memory/tegra/tegra210-emc-core.c
-+++ b/drivers/memory/tegra/tegra210-emc-core.c
-@@ -711,7 +711,7 @@ static int tegra210_emc_cd_set_state(struct thermal_cooling_device *cd,
- 	return 0;
+ fs/f2fs/super.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 8a9955902d84..7b458268ea09 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1241,7 +1241,7 @@ static void f2fs_put_super(struct super_block *sb)
+ 	sb->s_fs_info = NULL;
+ 	if (sbi->s_chksum_driver)
+ 		crypto_free_shash(sbi->s_chksum_driver);
+-	kvfree(sbi->raw_super);
++	kfree(sbi->raw_super);
+ 
+ 	destroy_device_list(sbi);
+ 	f2fs_destroy_xattr_caches(sbi);
+@@ -1257,7 +1257,7 @@ static void f2fs_put_super(struct super_block *sb)
+ #ifdef CONFIG_UNICODE
+ 	utf8_unload(sbi->s_encoding);
+ #endif
+-	kvfree(sbi);
++	kfree(sbi);
  }
  
--static struct thermal_cooling_device_ops tegra210_emc_cd_ops = {
-+static const struct thermal_cooling_device_ops tegra210_emc_cd_ops = {
- 	.get_max_state = tegra210_emc_cd_max_state,
- 	.get_cur_state = tegra210_emc_cd_get_state,
- 	.set_cur_state = tegra210_emc_cd_set_state,
+ int f2fs_sync_fs(struct super_block *sb, int sync)
+@@ -3130,7 +3130,7 @@ static int read_raw_super_block(struct f2fs_sb_info *sbi,
+ 
+ 	/* No valid superblock */
+ 	if (!*raw_super)
+-		kvfree(super);
++		kfree(super);
+ 	else
+ 		err = 0;
+ 
+@@ -3808,11 +3808,11 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 	fscrypt_free_dummy_context(&F2FS_OPTION(sbi).dummy_enc_ctx);
+ 	kvfree(options);
+ free_sb_buf:
+-	kvfree(raw_super);
++	kfree(raw_super);
+ free_sbi:
+ 	if (sbi->s_chksum_driver)
+ 		crypto_free_shash(sbi->s_chksum_driver);
+-	kvfree(sbi);
++	kfree(sbi);
+ 
+ 	/* give only one another chance */
+ 	if (retry_cnt > 0 && skip_recovery) {
 -- 
-2.27.0
+2.26.2
 
