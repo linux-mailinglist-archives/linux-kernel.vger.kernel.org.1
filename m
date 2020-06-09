@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62641F42EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F5A1F42BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732354AbgFIRsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:48:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60806 "EHLO mail.kernel.org"
+        id S1732055AbgFIRrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:47:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732285AbgFIRs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:48:26 -0400
+        id S1731163AbgFIRq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:46:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE0F720835;
-        Tue,  9 Jun 2020 17:48:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B37EF207ED;
+        Tue,  9 Jun 2020 17:46:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724906;
-        bh=PeS/4GIPSGbQf2eV5Sw0OOAjraoC0SV0L+r5iD4XQ/M=;
+        s=default; t=1591724819;
+        bh=vQz5uSiKzqmVGiwcla8GBB0B8mU94hU5bML76SFcTO8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BwfoBygzVr5Tk0p4qIsG9lYDbZGyTv7T/HnNGC328m9jS//befCYeeAIf+x7+V1hs
-         T3t439V5sWuihyOS6WgnVaLOEyPCPas+cTZik4ame49bYmik29w/TL2SJLiYelmqfZ
-         Pstn4kKOAlqHW2YUDfEpgoplOrjLwX1rgNYKsrtw=
+        b=NIVXQZFh2sZmPNm7ndpe23mjI1EAhLN2ruTfp/+VmvWpw2zk/2/3Iy5SeUfk6bO1k
+         ugyze1dSm0Jf6rFXBo6uBr8KUlG0LuTfNvrdZBj9vQncX23YqvtvB6cvO9iE0YFIP7
+         SLpA/NDtN8upMjy6n0u+/W/sH766ZGk7PSw01MWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
+        stable@vger.kernel.org, Valentin Longchamp <valentin@longchamp.me>,
+        Matteo Ghidoni <matteo.ghidoni@ch.abb.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 05/42] s390/ftrace: save traced function caller
-Date:   Tue,  9 Jun 2020 19:44:11 +0200
-Message-Id: <20200609174016.016075931@linuxfoundation.org>
+Subject: [PATCH 4.4 12/36] net/ethernet/freescale: rework quiesce/activate for ucc_geth
+Date:   Tue,  9 Jun 2020 19:44:12 +0200
+Message-Id: <20200609173933.983120800@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174015.379493548@linuxfoundation.org>
-References: <20200609174015.379493548@linuxfoundation.org>
+In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
+References: <20200609173933.288044334@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,53 +45,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Gorbik <gor@linux.ibm.com>
+From: Valentin Longchamp <valentin@longchamp.me>
 
-[ Upstream commit b4adfe55915d8363e244e42386d69567db1719b9 ]
+[ Upstream commit 79dde73cf9bcf1dd317a2667f78b758e9fe139ed ]
 
-A typical backtrace acquired from ftraced function currently looks like
-the following (e.g. for "path_openat"):
+ugeth_quiesce/activate are used to halt the controller when there is a
+link change that requires to reconfigure the mac.
 
-arch_stack_walk+0x15c/0x2d8
-stack_trace_save+0x50/0x68
-stack_trace_call+0x15a/0x3b8
-ftrace_graph_caller+0x0/0x1c
-0x3e0007e3c98 <- ftraced function caller (should be do_filp_open+0x7c/0xe8)
-do_open_execat+0x70/0x1b8
-__do_execve_file.isra.0+0x7d8/0x860
-__s390x_sys_execve+0x56/0x68
-system_call+0xdc/0x2d8
+The previous implementation called netif_device_detach(). This however
+causes the initial activation of the netdevice to fail precisely because
+it's detached. For details, see [1].
 
-Note random "0x3e0007e3c98" stack value as ftraced function caller. This
-value causes either imprecise unwinder result or unwinding failure.
-That "0x3e0007e3c98" comes from r14 of ftraced function stack frame, which
-it haven't had a chance to initialize since the very first instruction
-calls ftrace code ("ftrace_caller"). (ftraced function might never
-save r14 as well). Nevertheless according to s390 ABI any function
-is called with stack frame allocated for it and r14 contains return
-address. "ftrace_caller" itself is called with "brasl %r0,ftrace_caller".
-So, to fix this issue simply always save traced function caller onto
-ftraced function stack frame.
+A possible workaround was the revert of commit
+net: linkwatch: add check for netdevice being present to linkwatch_do_dev
+However, the check introduced in the above commit is correct and shall be
+kept.
 
-Reported-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+The netif_device_detach() is thus replaced with
+netif_tx_stop_all_queues() that prevents any tranmission. This allows to
+perform mac config change required by the link change, without detaching
+the corresponding netdevice and thus not preventing its initial
+activation.
+
+[1] https://lists.openwall.net/netdev/2020/01/08/201
+
+Signed-off-by: Valentin Longchamp <valentin@longchamp.me>
+Acked-by: Matteo Ghidoni <matteo.ghidoni@ch.abb.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/mcount.S | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/freescale/ucc_geth.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/arch/s390/kernel/mcount.S b/arch/s390/kernel/mcount.S
-index 802a4ded9a62..e9df35249f9f 100644
---- a/arch/s390/kernel/mcount.S
-+++ b/arch/s390/kernel/mcount.S
-@@ -39,6 +39,7 @@ EXPORT_SYMBOL(_mcount)
- ENTRY(ftrace_caller)
- 	.globl	ftrace_regs_caller
- 	.set	ftrace_regs_caller,ftrace_caller
-+	stg	%r14,(__SF_GPRS+8*8)(%r15)	# save traced function caller
- 	lgr	%r1,%r15
- #ifndef CC_USING_HOTPATCH
- 	aghi	%r0,MCOUNT_RETURN_FIXUP
+diff --git a/drivers/net/ethernet/freescale/ucc_geth.c b/drivers/net/ethernet/freescale/ucc_geth.c
+index 55ac00055977..96a1f62cc148 100644
+--- a/drivers/net/ethernet/freescale/ucc_geth.c
++++ b/drivers/net/ethernet/freescale/ucc_geth.c
+@@ -45,6 +45,7 @@
+ #include <asm/ucc.h>
+ #include <asm/ucc_fast.h>
+ #include <asm/machdep.h>
++#include <net/sch_generic.h>
+ 
+ #include "ucc_geth.h"
+ 
+@@ -1551,11 +1552,8 @@ static int ugeth_disable(struct ucc_geth_private *ugeth, enum comm_dir mode)
+ 
+ static void ugeth_quiesce(struct ucc_geth_private *ugeth)
+ {
+-	/* Prevent any further xmits, plus detach the device. */
+-	netif_device_detach(ugeth->ndev);
+-
+-	/* Wait for any current xmits to finish. */
+-	netif_tx_disable(ugeth->ndev);
++	/* Prevent any further xmits */
++	netif_tx_stop_all_queues(ugeth->ndev);
+ 
+ 	/* Disable the interrupt to avoid NAPI rescheduling. */
+ 	disable_irq(ugeth->ug_info->uf_info.irq);
+@@ -1568,7 +1566,10 @@ static void ugeth_activate(struct ucc_geth_private *ugeth)
+ {
+ 	napi_enable(&ugeth->napi);
+ 	enable_irq(ugeth->ug_info->uf_info.irq);
+-	netif_device_attach(ugeth->ndev);
++
++	/* allow to xmit again  */
++	netif_tx_wake_all_queues(ugeth->ndev);
++	__netdev_watchdog_up(ugeth->ndev);
+ }
+ 
+ /* Called every time the controller might need to be made
 -- 
 2.25.1
 
