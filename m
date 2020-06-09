@@ -2,114 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3711F2ABA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDD11F2B5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 02:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731320AbgFIALh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 20:11:37 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:56434 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730678AbgFIALR (ORCPT
+        id S1732766AbgFIAPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 20:15:07 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:33908 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732210AbgFIAOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 20:11:17 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05903EeO186754;
-        Tue, 9 Jun 2020 00:10:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=dw+QeKm88je8loQ/pnNon1EHawhGvF167U/gt4X3HMA=;
- b=yzHT+wYNTTdWL5nXPLo31S2vFFhYz/0gqN1YyH5BV3sHrzeJMoqGVFLxNJFkjB6Bzr1f
- CNKGAaDgC5G2OseC4oOS3eElo6N9XGNvqFnHkhIaH2RIpJUw3GjKipKHUItCLPcO0o/b
- vtEtdMCw2fJ3R8hYjTrPQMC3APJN3XJXkYi6+vE8Y7fQZT6cooFIgOAVWj5EkdFakemq
- UOCaTTd/K3pfe8yyc6dF3U/kOLK7AYTCr6D1gSuYDD/BGG8S/c0uJrr3yAhSl8Z7lXvu
- eDFZgTRbc/XxopRIz5CqNFfwao+m2G7OY8dSL3SJpn6EyrTdaqwso4FWNRNciCANybKG Qw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 31g33m1qab-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 09 Jun 2020 00:10:45 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05902MDV138588;
-        Tue, 9 Jun 2020 00:10:44 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 31gn2490wf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 09 Jun 2020 00:10:44 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0590AiZm028183;
-        Tue, 9 Jun 2020 00:10:44 GMT
-Received: from dhcp-10-159-150-182.vpn.oracle.com (/10.159.150.182)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 08 Jun 2020 17:10:43 -0700
-Subject: Re: [PATCH] sample-trace-array: Fix sleeping function called from
- invalid context
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-References: <20200608075437.1760242-1-wangkefeng.wang@huawei.com>
- <20200608103709.39afa15f@gandalf.local.home>
-From:   Divya Indi <divya.indi@oracle.com>
-Message-ID: <3a672473-8621-ff7e-42d5-b4d9412267e8@oracle.com>
-Date:   Mon, 8 Jun 2020 17:10:42 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+        Mon, 8 Jun 2020 20:14:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591661683;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HD882eS9OH3S3VV1WViNWe8Js+sPqHEy08aEq1E9ORs=;
+        b=cILibC/tR+Zug++FyqFvwBFTMnfQGI/ABuXrtLSDeRWMZkE2M4660uLi2VIgRQAO9JIhAB
+        wzGtPS1vX+xvU/WGUUpRaXkjilZ5ResLkpb2NFPUrb1udEiaC2sEZvVBPKNG95dvTCNO0E
+        DKWuBzx5ce7PJwAlajKVr85sl2crhg8=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-284-o0XpGo98MleYTTQawf2d5A-1; Mon, 08 Jun 2020 20:14:39 -0400
+X-MC-Unique: o0XpGo98MleYTTQawf2d5A-1
+Received: by mail-io1-f69.google.com with SMTP id p8so11945230ios.19
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 17:14:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HD882eS9OH3S3VV1WViNWe8Js+sPqHEy08aEq1E9ORs=;
+        b=mYXxZRE4uey5JrrccxGyKr6ff5YBIW5Z/4peEen53FBEtwjaldKh5l43CEsaXFfUkL
+         rrK8//JEHoLWyxkFv6PXvc9BU9jeXTGzG/LPdeXH/O9q6klKvUDTbbHprkm6aX7KZdFf
+         jHvEK0/YmWTjWhUe1TXluM+8aeZHA9M9bYEjZDxo2kwDQvFifRPX3eqBq6y03mhVOo2M
+         hf0l+/C++T68jWoEC6PCG9OlDazNy9mJbTPL2XGOAenbvZFddmmqPzbMInyjbcB7/c5Y
+         pgXLWJ+afa5bejj8/2SLk4GLxAvhc9N2Sq1SWTpw3OpUMEke76gYNpVaFo1xQreLRBKs
+         TADA==
+X-Gm-Message-State: AOAM530CMDiJBVfTzKzo9j1OjVwkDCabGZeNSSsdihAUUYd5CDeDPN/I
+        p6qOUtYC8bx5puSJgAD9mj8J/Q4ioy2b+F273ERMCCP+GsN0zcx9hKYvYsgYw91g1AG8lY7Ph5V
+        F8V8sJ7VK+dCblUjyBOI/hZDHfEd9CCURYD69xAxa
+X-Received: by 2002:a92:4899:: with SMTP id j25mr25560332ilg.168.1591661679101;
+        Mon, 08 Jun 2020 17:14:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzELESE+K/wYsirvszqaNXPPRRvDprGl6QEl149kIe4qX3GOTtJp+ATld3JvWRLCQNPe8wmFXSgJgJDrnUrPSE=
+X-Received: by 2002:a92:4899:: with SMTP id j25mr25560307ilg.168.1591661678726;
+ Mon, 08 Jun 2020 17:14:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200608103709.39afa15f@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9646 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=3 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 malwarescore=0 mlxlogscore=781
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006080166
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9646 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 adultscore=0 spamscore=0
- cotscore=-2147483648 malwarescore=0 phishscore=0 mlxscore=0 clxscore=1011
- lowpriorityscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=813
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006080166
+References: <20200608210058.37352-1-jarod@redhat.com> <20200608210058.37352-4-jarod@redhat.com>
+ <20717.1591660112@famine>
+In-Reply-To: <20717.1591660112@famine>
+From:   Jarod Wilson <jarod@redhat.com>
+Date:   Mon, 8 Jun 2020 20:14:28 -0400
+Message-ID: <CAKfmpSfkgC20w3Bp1PCfNJaADU7Hhkk5u9+2cMH+6--b_9cn4Q@mail.gmail.com>
+Subject: Re: [PATCH net-next 3/4] bonding: support hardware encryption offload
+ to slaves
+To:     Jay Vosburgh <jay.vosburgh@canonical.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Netdev <netdev@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
-
-Sure, I am looking into it and reviewing the patch.
-
-Thanks,
-Divya
-
-On 6/8/20 7:37 AM, Steven Rostedt wrote:
-> On Mon, 8 Jun 2020 07:54:37 +0000
-> Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+On Mon, Jun 8, 2020 at 7:48 PM Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
 >
->>  BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
->>  in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 0, name: swapper/5
->>  1 lock held by swapper/5/0:
->>   #0: ffff80001002bd90 (samples/ftrace/sample-trace-array.c:38){+.-.}-{0:0}, at: call_timer_fn+0x8/0x3e0
->>  CPU: 5 PID: 0 Comm: swapper/5 Not tainted 5.7.0+ #8
->>  Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
->>  Call trace:
->>   dump_backtrace+0x0/0x1a0
->>   show_stack+0x20/0x30
->>   dump_stack+0xe4/0x150
->>   ___might_sleep+0x160/0x200
->>   __might_sleep+0x58/0x90
->>   __mutex_lock+0x64/0x948
->>   mutex_lock_nested+0x3c/0x58
->>   __ftrace_set_clr_event+0x44/0x88
->>   trace_array_set_clr_event+0x24/0x38
->>   mytimer_handler+0x34/0x40 [sample_trace_array]
->>
->> mutex_lock() will be called in interrupt context, using workqueueu to fix it.
->>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>
-> Divya,
+> Jarod Wilson <jarod@redhat.com> wrote:
 >
-> Can you give a Reviewed-by for this?
+> >Currently, this support is limited to active-backup mode, as I'm not sure
+> >about the feasilibity of mapping an xfrm_state's offload handle to
+> >multiple hardware devices simultaneously, and we rely on being able to
+> >pass some hints to both the xfrm and NIC driver about whether or not
+> >they're operating on a slave device.
+> >
+> >I've tested this atop an Intel x520 device (ixgbe) using libreswan in
+> >transport mode, succesfully achieving ~4.3Gbps throughput with netperf
+> >(more or less identical to throughput on a bare NIC in this system),
+> >as well as successful failover and recovery mid-netperf.
+> >
+> >v2: rebase on latest net-next and wrap with #ifdef CONFIG_XFRM_OFFLOAD
+> >v3: add new CONFIG_BOND_XFRM_OFFLOAD option and fix shutdown path
+> >
+> >CC: Jay Vosburgh <j.vosburgh@gmail.com>
+> >CC: Veaceslav Falico <vfalico@gmail.com>
+> >CC: Andy Gospodarek <andy@greyhouse.net>
+> >CC: "David S. Miller" <davem@davemloft.net>
+> >CC: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+> >CC: Jakub Kicinski <kuba@kernel.org>
+> >CC: Steffen Klassert <steffen.klassert@secunet.com>
+> >CC: Herbert Xu <herbert@gondor.apana.org.au>
+> >CC: netdev@vger.kernel.org
+> >CC: intel-wired-lan@lists.osuosl.org
+> >Signed-off-by: Jarod Wilson <jarod@redhat.com>
+> >
+> >Signed-off-by: Jarod Wilson <jarod@redhat.com>
+> >---
+> > drivers/net/Kconfig             |  11 ++++
+> > drivers/net/bonding/bond_main.c | 111 +++++++++++++++++++++++++++++++-
+> > include/net/bonding.h           |   3 +
+> > 3 files changed, 122 insertions(+), 3 deletions(-)
+> >
+> >diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+> >index c7d310ef1c83..938c4dd9bfb9 100644
+> >--- a/drivers/net/Kconfig
+> >+++ b/drivers/net/Kconfig
+> >@@ -56,6 +56,17 @@ config BONDING
+> >         To compile this driver as a module, choose M here: the module
+> >         will be called bonding.
+> >
+> >+config BONDING_XFRM_OFFLOAD
+> >+      bool "Bonding driver IPSec XFRM cryptography-offload pass-through support"
+> >+      depends on BONDING
+> >+      depends on XFRM_OFFLOAD
+> >+      default y
+> >+      select XFRM_ALGO
+> >+      ---help---
+> >+        Enable support for IPSec offload pass-through in the bonding driver.
+> >+        Currently limited to active-backup mode only, and requires slave
+> >+        devices that support hardware crypto offload.
+> >+
 >
-> -- Steve
+>         Why is this a separate Kconfig option?  Is it reasonable to
+> expect users to enable XFRM_OFFLOAD but not BONDING_XFRM_OFFLOAD?
+
+I'd originally just wrapped it with XFRM_OFFLOAD, but in an
+overabundance of caution, thought maybe gating it behind its own flag
+was better. I didn't get any feedback on the initial posting, so I've
+been sort of winging it. :)
+
+> >diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> >index a25c65d4af71..01b80cef492a 100644
+> >--- a/drivers/net/bonding/bond_main.c
+> >+++ b/drivers/net/bonding/bond_main.c
+...
+> >@@ -4560,6 +4663,8 @@ void bond_setup(struct net_device *bond_dev)
+> >                               NETIF_F_HW_VLAN_CTAG_FILTER;
+> >
+> >       bond_dev->hw_features |= NETIF_F_GSO_ENCAP_ALL | NETIF_F_GSO_UDP_L4;
+> >+      if ((BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP))
+> >+              bond_dev->hw_features |= BOND_ENC_FEATURES;
+>
+>         Why is adding the ESP features to hw_features (here, and added
+> to BOND_ENC_FEATURES, above) not behind CONFIG_BONDING_XFRM_OFFLOAD?
+>
+>         If adding these features makes sense regardless of the
+> XFRM_OFFLOAD configuration, then shouldn't this change to feature
+> handling be a separate patch?  The feature handling is complex, and is
+> worth its own patch so it stands out in the log.
+
+No, that would be an oversight by me. The build bot yelled at me on v1
+about builds with XFRM_OFFLOAD not enabled, and I neglected to wrap
+that bit too.
+
+I'll do that in the next revision. I'm also fine with dropping the
+extra kconfig and just using XFRM_OFFLOAD for all of it, if that's
+sufficient.
+
+-- 
+Jarod Wilson
+jarod@redhat.com
+
