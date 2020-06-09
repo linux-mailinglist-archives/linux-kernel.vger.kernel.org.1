@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849311F36CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 11:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0124C1F36D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 11:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbgFIJRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 05:17:31 -0400
-Received: from verein.lst.de ([213.95.11.211]:41449 "EHLO verein.lst.de"
+        id S1728412AbgFIJR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 05:17:57 -0400
+Received: from mga17.intel.com ([192.55.52.151]:29544 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728247AbgFIJRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 05:17:31 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 09DBF68AFE; Tue,  9 Jun 2020 11:17:28 +0200 (CEST)
-Date:   Tue, 9 Jun 2020 11:17:27 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        David Rientjes <rientjes@google.com>,
-        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
-        alsa-devel@alsa-project.org, bp@alien8.de, hch@infradead.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        Pavel Machek <pavel@ucw.cz>, perex@perex.cz,
-        tglx@linutronix.de, tiwai@suse.com, x86@kernel.org
-Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
-Message-ID: <20200609091727.GA23814@lst.de>
-References: <20200520111136.GA3802@amd> <1591545088.74ii116nf2.none@localhost> <20200608061950.GA17476@lst.de> <1591624340.z01ejtod28.none@localhost> <alpine.DEB.2.22.394.2006081928070.148886@chino.kir.corp.google.com> <20200609054306.GA9606@lst.de> <s5hsgf4irzt.wl-tiwai@suse.de> <20200609084305.GA21671@lst.de> <s5hlfkwip1h.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hlfkwip1h.wl-tiwai@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1726923AbgFIJR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 05:17:56 -0400
+IronPort-SDR: 3IQZXn/EQhDdVdXMApFMtjiM2Cqc1KPdn4sgi1jJZ8Mkg+sKmesFRPq2eLAyGfcvb/qYSkZ2yA
+ OBdp0DQQJN5A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 02:17:55 -0700
+IronPort-SDR: r4kAbd1yIygKTXh+u0HT9cULu5ZjkqXVYC0+p4eTSP9FDzipXLeT23fNYyP50gDc4Wn70HPRhe
+ NiAtvofwd80Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,491,1583222400"; 
+   d="scan'208";a="447062288"
+Received: from gklab-125-110.igk.intel.com ([10.91.125.110])
+  by orsmga005.jf.intel.com with ESMTP; 09 Jun 2020 02:17:53 -0700
+From:   Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Cc:     Piotr Stankiewicz <piotr.stankiewicz@intel.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 06/15] dmaengine: dw-edma: Use PCI_IRQ_MSI_TYPES  where appropriate
+Date:   Tue,  9 Jun 2020 11:17:47 +0200
+Message-Id: <20200609091751.1065-1-piotr.stankiewicz@intel.com>
+X-Mailer: git-send-email 2.17.2
+In-Reply-To: <20200609091148.32749-1-piotr.stankiewicz@intel.com>
+References: <20200609091148.32749-1-piotr.stankiewicz@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 11:09:14AM +0200, Takashi Iwai wrote:
-> On Tue, 09 Jun 2020 10:43:05 +0200,
-> Christoph Hellwig wrote:
-> > 
-> > On Tue, Jun 09, 2020 at 10:05:26AM +0200, Takashi Iwai wrote:
-> > > > >From the disassembly it seems like a vmalloc allocation is NULL, which
-> > > > seems really weird as this patch shouldn't make a difference for them,
-> > > > and I also only see a single places that allocates the field, and that
-> > > > checks for an allocation failure.  But the sound code is a little
-> > > > hard to unwind sometimes.
-> > > 
-> > > It's not clear which sound device being affected, but if it's
-> > > HD-audio on x86, runtime->dma_area points to a vmapped buffer from
-> > > SG-pages allocated by dma_alloc_coherent().
-> > > 
-> > > OTOH, if it's a USB-audio, runtime->dma_area is a buffer by
-> > > vmalloc().
-> > 
-> > Err, you can't just vmap a buffer returned from dma_alloc_coherent,
-> > dma_alloc_coherent returns values are opaque and can't be used
-> > for virt_to_page.  Whatever that code did has already been broken
-> > per the DMA API contract and on many architectures and just happend
-> > to work on x86 by accident.
-> 
-> Hmm, that's bad.
-> 
-> How would be a proper way to get the virtually mapped SG-buffer pages
-> with coherent memory?  (Also allowing user-space mmap, too)
+Seeing as there is shorthand available to use when asking for any type
+of interrupt, or any type of message signalled interrupt, leverage it.
 
-dma_mmap_coherent / dma_mmap_attrs for userspace.  We don't really
-have a good way for kernel space mappings.
+Signed-off-by: Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+---
+ drivers/dma/dw-edma/dw-edma-pcie.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-edma-pcie.c
+index dc85f55e1bb8..46defe30ac25 100644
+--- a/drivers/dma/dw-edma/dw-edma-pcie.c
++++ b/drivers/dma/dw-edma/dw-edma-pcie.c
+@@ -117,7 +117,7 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
+ 
+ 	/* IRQs allocation */
+ 	nr_irqs = pci_alloc_irq_vectors(pdev, 1, pdata->irqs,
+-					PCI_IRQ_MSI | PCI_IRQ_MSIX);
++					PCI_IRQ_MSI_TYPES);
+ 	if (nr_irqs < 1) {
+ 		pci_err(pdev, "fail to alloc IRQ vector (number of IRQs=%u)\n",
+ 			nr_irqs);
+-- 
+2.17.2
+
