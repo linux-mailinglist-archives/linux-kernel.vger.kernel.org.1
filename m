@@ -2,204 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54AB81F3682
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 10:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BE71F368A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 10:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728324AbgFIIyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 04:54:43 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53264 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728243AbgFIIym (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 04:54:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591692880;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eLblsTqKUjq9s36ScyyJ5e0rwCHkqC/nIIt9NNzbhvM=;
-        b=ZsAh8yRoJ4LaRx0Po/jxsM1MEQPza6eMcybwpqsb1dEBLLTYKB/Wj70VH/lw6DfrH4OaRt
-        6D8ftfx/efE7imdWwV3dRjyy+Aeiinmq159BFF1Q8WLHYzmpVzrCSJH2kTuarNCKl8xcZF
-        IcmO/vzBy+mYNs2WRdgvMyYSPO5dK8c=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-417-sbCYSFYpNIuV7naGCe-jug-1; Tue, 09 Jun 2020 04:54:36 -0400
-X-MC-Unique: sbCYSFYpNIuV7naGCe-jug-1
-Received: by mail-wr1-f72.google.com with SMTP id r5so8340833wrt.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 01:54:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eLblsTqKUjq9s36ScyyJ5e0rwCHkqC/nIIt9NNzbhvM=;
-        b=B+vxad2WBVjMUsuFqZVFUfmEYzbfN5wU2vrKX81Zro/4zz2dD0McT6nMkMUh4Hof22
-         V51xkHfQ88D2w+WllZ+kwrhRTR4V9/UeYq6gIsPrUt3G7RCZCzlb/yUPwjoJhmY8/Ja1
-         zb/xUwBddUMV/MmBXSZc5NsvCjNawbC/vG/a4/hdEE3/oRwhzzhC50MTbYHetPiTXGtu
-         cYnPwro8H5LOfnEUuDaIN0XQQmFoL9ije59ZUMDnW2RF+SZBiv9T4UVqjsemxMoSotPN
-         Dmfpdv3TfvrU1ahdwVePA8umiZFgRensQblKEffCPdK646VZ+R4dVijbdQq7q7U3xCLy
-         lUpg==
-X-Gm-Message-State: AOAM532BaoieHuJGhTHRyzjc19xEEwvBhB2m/rcu1Ua4jDgT74og4xFd
-        I7wbNuZ7IJOaSTXUtw9Y5tsGjY42aTyTeKHvsjIviYOEwETmFM+UtAtI4/NruaXvH6qI03UHXkF
-        1GFmLS/84TnIEsup/6w2AwrLv
-X-Received: by 2002:a1c:a403:: with SMTP id n3mr2869970wme.2.1591692875662;
-        Tue, 09 Jun 2020 01:54:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyk64DUIN2AMFcBfNkspM6xbGkxn8iVwgRRfLpEaDpf6XV5Ei2C8wWXXvmjDinm5JkdkQF20w==
-X-Received: by 2002:a1c:a403:: with SMTP id n3mr2869949wme.2.1591692875327;
-        Tue, 09 Jun 2020 01:54:35 -0700 (PDT)
-Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id o20sm2605541wra.29.2020.06.09.01.54.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jun 2020 01:54:34 -0700 (PDT)
-Subject: Re: [RFC][PATCH v4 01/32] objtool: Prepare to merge recordmcount
-To:     Matt Helsley <mhelsley@vmware.com>, linux-kernel@vger.kernel.org
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-References: <cover.1591125127.git.mhelsley@vmware.com>
- <4a71852d8ca0a245588159a6bbdc064619de91d9.1591125127.git.mhelsley@vmware.com>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <1e2783f2-6b52-d750-ecc5-4e3d6d7dba4f@redhat.com>
-Date:   Tue, 9 Jun 2020 09:54:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1728138AbgFII5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 04:57:46 -0400
+Received: from mga11.intel.com ([192.55.52.93]:32395 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727023AbgFII5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 04:57:45 -0400
+IronPort-SDR: oM/EaYzZwNaNuVI5WUQ6ChzyzQGTJXen0nOGs36QFgmslaKjgUQcY+VycSLOUbksuuWIf8aTVD
+ uZiT9L7jJA0A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 01:57:43 -0700
+IronPort-SDR: GIRaMrOrpXlCj1nB5MRcGlNFFZoOD5ymxT4t0908X5luyn6OQQIuqUi76fvu4DmlM+m0Rum7lN
+ dpgmJ98uBVlw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,491,1583222400"; 
+   d="scan'208";a="306199982"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP; 09 Jun 2020 01:57:43 -0700
+Received: from [10.215.166.141] (ekotax-mobl.gar.corp.intel.com [10.215.166.141])
+        by linux.intel.com (Postfix) with ESMTP id 874C15805B5;
+        Tue,  9 Jun 2020 01:57:40 -0700 (PDT)
+Subject: Re: [PATCH 1/2] dt-bindings: watchdog: intel: Add YAML Schemas for
+ Watchdog timer
+To:     Guenter Roeck <linux@roeck-us.net>, wim@linux-watchdog.org,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        robbh@kernel.org
+Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yixin.zhu@intel.com
+References: <cover.1591584255.git.eswara.kota@linux.intel.com>
+ <ac89e289b79fec0a82d1dd060e17eeca024885d5.1591584255.git.eswara.kota@linux.intel.com>
+ <235d301b-3b25-bb00-bd1b-c4392fa23c63@roeck-us.net>
+From:   Dilip Kota <eswara.kota@linux.intel.com>
+Message-ID: <4a336f1d-68da-3356-a73a-95747ba4af4c@linux.intel.com>
+Date:   Tue, 9 Jun 2020 16:57:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <4a71852d8ca0a245588159a6bbdc064619de91d9.1591125127.git.mhelsley@vmware.com>
+In-Reply-To: <235d301b-3b25-bb00-bd1b-c4392fa23c63@roeck-us.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matt,
 
-On 6/2/20 8:49 PM, Matt Helsley wrote:
-> Move recordmcount into the objtool directory. We keep this step separate
-> so changes which turn recordmcount into a subcommand of objtool don't
-> get obscured.
-> 
-> Signed-off-by: Matt Helsley <mhelsley@vmware.com>
-> ---
->   Documentation/trace/ftrace-design.rst      |  4 ++--
->   Documentation/trace/ftrace.rst             |  2 +-
->   Makefile                                   | 15 +++++++++------
->   scripts/.gitignore                         |  1 -
->   scripts/Makefile                           |  1 -
->   scripts/Makefile.build                     | 11 ++++++-----
->   tools/objtool/.gitignore                   |  1 +
->   tools/objtool/Build                        |  2 ++
->   tools/objtool/Makefile                     | 13 ++++++++++++-
->   {scripts => tools/objtool}/recordmcount.c  |  0
->   {scripts => tools/objtool}/recordmcount.h  |  0
->   {scripts => tools/objtool}/recordmcount.pl |  0
->   12 files changed, 33 insertions(+), 17 deletions(-)
->   rename {scripts => tools/objtool}/recordmcount.c (100%)
->   rename {scripts => tools/objtool}/recordmcount.h (100%)
->   rename {scripts => tools/objtool}/recordmcount.pl (100%)
-> 
-> diff --git a/Documentation/trace/ftrace-design.rst b/Documentation/trace/ftrace-design.rst
-> index a8e22e0db63c..dea8db5e79d0 100644
-> --- a/Documentation/trace/ftrace-design.rst
-> +++ b/Documentation/trace/ftrace-design.rst
-> @@ -261,7 +261,7 @@ You need very few things to get the syscalls tracing in an arch.
->   HAVE_FTRACE_MCOUNT_RECORD
->   -------------------------
->   
-> -See scripts/recordmcount.pl for more info.  Just fill in the arch-specific
-> +See tools/objtool/recordmcount.pl for more info.  Just fill in the arch-specific
->   details for how to locate the addresses of mcount call sites via objdump.
->   This option doesn't make much sense without also implementing dynamic ftrace.
->   
-> @@ -379,7 +379,7 @@ linux/ftrace.h for the functions::
->   	ftrace_make_call()
->   
->   The rec->ip value is the address of the mcount call site that was collected
-> -by the scripts/recordmcount.pl during build time.
-> +by the tools/objtool/recordmcount.pl during build time.
->   
->   The last function is used to do runtime patching of the active tracer.  This
->   will be modifying the assembly code at the location of the ftrace_call symbol
-> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-> index 3b5614b1d1a5..9adefcc3c7a8 100644
-> --- a/Documentation/trace/ftrace.rst
-> +++ b/Documentation/trace/ftrace.rst
-> @@ -2685,7 +2685,7 @@ starts of pointing to a simple return. (Enabling FTRACE will
->   include the -pg switch in the compiling of the kernel.)
->   
->   At compile time every C file object is run through the
-> -recordmcount program (located in the scripts directory). This
-> +recordmcount program (located in the tools/objtool directory). This
->   program will parse the ELF headers in the C object to find all
->   the locations in the .text section that call mcount. Starting
->   with gcc version 4.6, the -mfentry has been added for x86, which
-> diff --git a/Makefile b/Makefile
-> index 04f5662ae61a..d353a0a65a71 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -844,6 +844,7 @@ ifdef CONFIG_DYNAMIC_FTRACE
->   	ifdef CONFIG_HAVE_C_RECORDMCOUNT
->   		BUILD_C_RECORDMCOUNT := y
->   		export BUILD_C_RECORDMCOUNT
-> +		objtool_target := tools/objtool FORCE
->   	endif
->   endif
->   endif
-> @@ -1023,10 +1024,10 @@ endif
->   export mod_sign_cmd
->   
->   HOST_LIBELF_LIBS = $(shell pkg-config libelf --libs 2>/dev/null || echo -lelf)
-> +has_libelf := $(call try-run,\
-> +		echo "int main() {}" | $(HOSTCC) -xc -o /dev/null $(HOST_LIBELF_LIBS) -,1,0)
->   
+On 6/8/2020 9:37 PM, Guenter Roeck wrote:
+> On 6/7/20 10:49 PM, Dilip Kota wrote:
+>> Add YAML schemas for the watchdog timer on Intel Lightning
+>> Mountain SoC.
+>>
+>> Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
+>> ---
+>>   .../bindings/watchdog/intel,lgm-gptc-wdt.yaml      | 75 ++++++++++++++++++++++
+>>   1 file changed, 75 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/watchdog/intel,lgm-gptc-wdt.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/watchdog/intel,lgm-gptc-wdt.yaml b/Documentation/devicetree/bindings/watchdog/intel,lgm-gptc-wdt.yaml
+>> new file mode 100644
+>> index 0000000000000..83dc39a5090c1
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/watchdog/intel,lgm-gptc-wdt.yaml
+>> @@ -0,0 +1,75 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/watchdog/intel,lgm-gptc-wdt.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Intel Lightning Mountain Watchdog timer.
+>> +
+>> +maintainers:
+>> +  - Dilip Kota <eswara.kota@linux.intel.com>
+>> +
+>> +description: |
+>> +  Intel Lightning Mountain SoC has General Purpose Timer Counter(GPTC) which can
+>> +  be configured as Clocksource, real time clock and Watchdog timer.
+>> +  Each General Purpose Timer Counter has three timers. And total four General
+>> +  Purpose Timer Counters are present on Lightning Mountain SoC which sums up
+>> +  to 12 timers.
+>> +  Lightning Mountain has four CPUs and each CPU is configured with one GPTC
+>> +  timer as watchdog timer. Total four timers are configured as watchdog timers
+>> +  on Lightning Mountain SoC.
+>> +
+> Why not just one ? The watchdog subsystem does not monitor individual CPUs,
+> it monitors the system.
 
-Maybe there could be some build dependency, e.g. CONFIG_OBJTOOL_SUBCMDS 
-that sets the "objtool_target" and "has_libelf" when selected.
-
-Then the CONFIG_UNWINDER_ORC, RECORD_MCOUNT and STACK_VALIDATION would 
-just had to select that config option.
-
->   ifdef CONFIG_STACK_VALIDATION
-> -  has_libelf := $(call try-run,\
-> -		echo "int main() {}" | $(HOSTCC) -xc -o /dev/null $(HOST_LIBELF_LIBS) -,1,0)
->     ifeq ($(has_libelf),1)
->       objtool_target := tools/objtool FORCE
->     else
-> @@ -1163,13 +1164,15 @@ uapi-asm-generic:
->   
->   PHONY += prepare-objtool
->   prepare-objtool: $(objtool_target)
-> -ifeq ($(SKIP_STACK_VALIDATION),1)
-> -ifdef CONFIG_UNWINDER_ORC
-> +ifneq ($(has_libelf),1)
-> +  ifdef CONFIG_UNWINDER_ORC
->   	@echo "error: Cannot generate ORC metadata for CONFIG_UNWINDER_ORC=y, please install libelf-dev, libelf-devel or elfutils-libelf-devel" >&2
->   	@false
-> -else
-> +  else
-> +    ifeq ($(SKIP_STACK_VALIDATION),1)
->   	@echo "warning: Cannot use CONFIG_STACK_VALIDATION=y, please install libelf-dev, libelf-devel or elfutils-libelf-devel" >&2
+Intel Atom based Lightning Mountain SoC, system has four CPUs. On 
+Lightning Mountain SoC ,Watchdog subsystem is combination of GPTC timers 
+and reset controller unit. On Lightning Mountain SoC, each CPU is 
+configured with one GPTC timer, so that if any of the CPU hangs or 
+freezes, the watchdog daemon running on respective CPU cannot reset/ping 
+or pet the watchdog timer. This causes the watchdog timeout. On watchdog 
+timeout, reset controller triggers the reset to respective CPU.
 
 
-I think this would be more readable without the else branch:
+____________________
+----------------------------->|                |
+                                                    |         
+------------>| Reset controller unit    |
+|                     |                 |___________________|
+|                     |
+|                     |
+   ______________________|__________|______
+   |                                  GPTC   | |            |
+   | ___________   ________|_       ______|____   |
+   | |      timer 1 |   | timer 2      |    | timer 3      |    |
+   | |_________|   |_________|    |_________|    |
+   |______________________________________|
 
-	ifneq ($(has_libelf),1)
-		ifdef <some objtool command config>
-			<warn about unavailability>
-		endif
-		ifdef <another objtool command config>
-			<warn ...>
-		endif
-		<...>
-	endif
+Regards,
+-Dilip
 
 
-Cheers,
-
--- 
-Julien Thierry
-
+> Guenter
+>
+>
