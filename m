@@ -2,75 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81C81F38CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 12:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C301F38D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 12:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbgFIKzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 06:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727069AbgFIKzk (ORCPT
+        id S1728436AbgFIK5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 06:57:40 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6742 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725996AbgFIK5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 06:55:40 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF30BC05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 03:55:39 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id z9so24407129ljh.13
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 03:55:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=QDZbClBa20TO6ImOnk4AdI5saEke92ipctox8nHw+bIBx1MVvKqd5+hT/RljyJElta
-         lVqt/EHOEHTBzqs+lVWeBz1O1YSHBBSQw7D/TPD5S7/CoqgwukRJxWXXn3pAAxvzlwxb
-         lj/W01rJdDmv7mqBT3ea1aCFOO4VMurQLNz3ZkjnTTF6JVfSSpfFKSw/nfOb03BrsTkj
-         YrlBsgXuabkuk31j2rHh91UtcxNQiLWRXSBTqE2yeXqthhzTJzlv4QS5JByCedDF7egw
-         j1AW5X1O5gDBIbLVHeIG9IebZ37F2B+/4JTNAH2S3cblfH917tdbqXVncs57nBD9DuDI
-         3nWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=bdVQmDs08gl/qtZJQGIk3qIjYXqn56wCUTRijdX/g86QeAVPsQHNfrV7Kr7B8mkLAe
-         J++DhgoXdSsI3rbNM3PTdYgmp/Rnuc3fMjWWMpU2JQRPSWL6b0FCGNsJ/EuOG33FB/h7
-         H9QIiqXmGHL4gS56JKcEuTuFS3ESRf69YfsxfRF1TR18sMiGLNqBtA4o/cxeSHQwcdp0
-         iMD1r/6hB8sy4bbDTvhD31TAKcGgk7+8poTgQ0LbhCi4nu0CLqGyV6q/+REKJsRUcL/r
-         3ZUMYR2B7ERehuQhnvTn+RsjlI6FavkovvLAhhoeOAq730yaKmZti8pabsdT2dtAdavW
-         sr2w==
-X-Gm-Message-State: AOAM531vXlTZ+888wWtCHe6RNOuYc9QpcYr7vLOLVUfWCoRYti/Iowa5
-        rwdJOnAxzOJR22y+lUohuXMJLdtJ3vaV8bAsvqY=
-X-Google-Smtp-Source: ABdhPJxB/qm+GXNwDAEpQN88SHQ0O9g3GtxPCEBPka4Jf6GU/d48zssKEOLD9ymkcgZSmEPJe4y9e4+v3GXCWTdUIzM=
-X-Received: by 2002:a2e:9455:: with SMTP id o21mr13226012ljh.415.1591700137917;
- Tue, 09 Jun 2020 03:55:37 -0700 (PDT)
+        Tue, 9 Jun 2020 06:57:39 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 059AXC6B107616;
+        Tue, 9 Jun 2020 06:57:28 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31j59u82y1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 06:57:27 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 059AfCqs026468;
+        Tue, 9 Jun 2020 10:57:23 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 31g2s7tc3v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 10:57:23 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 059AvLxU23199958
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Jun 2020 10:57:21 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 754F6AE057;
+        Tue,  9 Jun 2020 10:57:21 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 83455AE051;
+        Tue,  9 Jun 2020 10:57:19 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.37.89])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  9 Jun 2020 10:57:19 +0000 (GMT)
+Subject: Re: [PATCHv5 1/1] ext4: mballoc: Use raw_cpu_ptr instead of
+ this_cpu_ptr
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-ext4@vger.kernel.org, tytso@mit.edu
+Cc:     linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.com>,
+        linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca,
+        sfr@canb.auug.org.au, linux-next@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com
+References: <20200602134721.18211-1-riteshh@linux.ibm.com>
+ <CGME20200603102422eucas1p109e0d0140e8fc61dc3e57957f2ccf700@eucas1p1.samsung.com>
+ <ca794804-7d99-9837-2490-366a2eb97a94@samsung.com>
+ <20200603103146.C42D65204F@d06av21.portsmouth.uk.ibm.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Tue, 9 Jun 2020 16:27:18 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Received: by 2002:a2e:804e:0:0:0:0:0 with HTTP; Tue, 9 Jun 2020 03:55:36 -0700 (PDT)
-Reply-To: robertandersonhappy1@gmail.com
-From:   robert <nnadinawafo11@gmail.com>
-Date:   Tue, 9 Jun 2020 03:55:36 -0700
-Message-ID: <CAPhDfr0CF8tL_sfzZ7y5M3sgDr0A8HS8xR8JFd-=quO4BshHSw@mail.gmail.com>
-Subject: =?UTF-8?B?0JTQvtGA0L7Qs9C+0Lkg0LTRgNGD0LMsINCc0LXQvdGPINC30L7QstGD0YIg0JHQsNGA?=
-        =?UTF-8?B?0YDQvtCx0LXRgNGCINCQ0L3QtNC10YDRgdC+0L0uINCvINCw0LTQstC+0LrQsNGCINC4INGH0LDRgdGC?=
-        =?UTF-8?B?0L3Ri9C5INC80LXQvdC10LTQttC10YAg0L/QviDRgNCw0LHQvtGC0LUg0YEg0LrQu9C40LXQvdGC0LA=?=
-        =?UTF-8?B?0LzQuCDQv9C+0LrQvtC50L3QvtC80YMg0LrQu9C40LXQvdGC0YMuINCSIDIwMTUg0LPQvtC00YMg0Lw=?=
-        =?UTF-8?B?0L7QuSDQutC70LjQtdC90YIg0L/QviDQuNC80LXQvdC4INCc0LjRgdGC0LXRgCDQmtCw0YDQu9C+0YEs?=
-        =?UTF-8?B?INGB0LrQvtC90YfQsNC70YHRjywg0L/RgNC40YfQuNC90LAsINC/0L4g0LrQvtGC0L7RgNC+0Lkg0Y8g?=
-        =?UTF-8?B?0YHQstGP0LfQsNC70YHRjyDRgSDQstCw0LzQuCwg0L/QvtGC0L7QvNGDINGH0YLQviDQstGLINC90L4=?=
-        =?UTF-8?B?0YHQuNGC0LUg0YLRgyDQttC1INGE0LDQvNC40LvQuNGOINGBINGD0LzQtdGA0YjQuNC8LCDQuCDRjyA=?=
-        =?UTF-8?B?0LzQvtCz0YMg0L/RgNC10LTRgdGC0LDQstC40YLRjCDQstCw0YEg0LrQsNC6INCx0LXQvdC10YTQuNGG?=
-        =?UTF-8?B?0LjQsNGA0LAg0Lgg0LHQu9C40LbQsNC50YjQuNGFINGA0L7QtNGB0YLQstC10L3QvdC40LrQvtCyINCy?=
-        =?UTF-8?B?INC80L7QuCDRgdGA0LXQtNGB0YLQstCwINC/0L7QutC+0LnQvdC+0LPQviDQutC70LjQtdC90YLQsCwg?=
-        =?UTF-8?B?0YLQviDQstGLINCx0YPQtNC10YLQtSDRgdGC0L7Rj9GC0Ywg0LrQsNC6INC10LPQviDQsdC70LjQttCw?=
-        =?UTF-8?B?0LnRiNC40LUg0YDQvtC00YHRgtCy0LXQvdC90LjQutC4INC4INGC0YDQtdCx0L7QstCw0YLRjCDRgdGA?=
-        =?UTF-8?B?0LXQtNGB0YLQstCwLiDQvtGB0YLQsNCy0LjQsiDQtNC10L3RjNCz0Lgg0L3QsNGB0LvQtdC00YHRgtCy?=
-        =?UTF-8?B?0L4g0YHQtdC80Lgg0LzQuNC70LvQuNC+0L3QvtCyINC/0Y/RgtC40YHQvtGCINGC0YvRgdGP0Ycg0LQ=?=
-        =?UTF-8?B?0L7Qu9C70LDRgNC+0LIg0KHQqNCQINCU0L7Qu9C70LDRgNGLICg3LDUwMCwwMDAsMDAg0LTQvtC70Ls=?=
-        =?UTF-8?B?0LDRgNC+0LIg0KHQqNCQKS4g0JzQvtC5INC/0L7QutC+0LnQvdGL0Lkg0LrQu9C40LXQve+/vQ==?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200603103146.C42D65204F@d06av21.portsmouth.uk.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Message-Id: <20200609105719.83455AE051@d06av26.portsmouth.uk.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-09_03:2020-06-09,2020-06-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 spamscore=0 impostorscore=0 priorityscore=1501
+ malwarescore=0 adultscore=0 mlxscore=0 cotscore=-2147483648 phishscore=0
+ mlxlogscore=678 bulkscore=0 suspectscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006090081
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch is superseded by
 
+https://patchwork.ozlabs.org/project/linux-ext4/patch/534f275016296996f54ecf65168bb3392b6f653d.1591699601.git.riteshh@linux.ibm.com/
