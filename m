@@ -2,42 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C621F42FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA8A1F4330
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 19:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732417AbgFIRs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732355AbgFIRsj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:48:39 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECECC05BD1E;
-        Tue,  9 Jun 2020 10:48:38 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id E4AB62A3B96
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Philippe CORNU <philippe.cornu@st.com>,
-        Yannick FERTRE <yannick.fertre@st.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-imx@nxp.com,
-        kernel@collabora.com, linux-stm32@st-md-mailman.stormreply.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v9 06/11] ARM: dts: imx6qdl: add missing mipi dsi properties
-Date:   Tue,  9 Jun 2020 20:49:54 +0300
-Message-Id: <20200609174959.955926-7-adrian.ratiu@collabora.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200609174959.955926-1-adrian.ratiu@collabora.com>
-References: <20200609174959.955926-1-adrian.ratiu@collabora.com>
+        id S1732776AbgFIRvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:51:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36842 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732649AbgFIRuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:50:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 7807EB15B;
+        Tue,  9 Jun 2020 17:50:26 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     f.fainelli@gmail.com, gregkh@linuxfoundation.org, wahrenst@gmx.net,
+        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>
+Cc:     linux-usb@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com, tim.gover@raspberrypi.org,
+        linux-pci@vger.kernel.org, helgaas@kernel.org,
+        andy.shevchenko@gmail.com, mathias.nyman@linux.intel.com,
+        lorenzo.pieralisi@arm.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: [PATCH v2 5/9] usb: xhci-pci: Add support for reset controllers
+Date:   Tue,  9 Jun 2020 19:49:58 +0200
+Message-Id: <20200609175003.19793-6-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200609175003.19793-1-nsaenzjulienne@suse.de>
+References: <20200609175003.19793-1-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -45,39 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have a proper driver for the imx6 mipi dsi host controller
-we can fill in the missing properties to get it working.
+Some atypical users of xhci-pci might need to manually reset their xHCI
+controller before starting the HCD setup. Check if a reset controller
+device is available to the PCI bus and trigger a reset.
 
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
----
-New in v8.
----
- arch/arm/boot/dts/imx6qdl.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
-diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
-index 7eec1122e5d74..d2f4fdfe4a252 100644
---- a/arch/arm/boot/dts/imx6qdl.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl.dtsi
-@@ -1222,7 +1222,15 @@ mipi_csi: mipi@21dc000 {
- 			};
+---
+
+Changes since v1:
+ - Use proper reset API
+ - Make code simpler
+
+ drivers/usb/host/xhci-pci.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+index ef513c2fb843..6e96affa4ceb 100644
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -12,6 +12,7 @@
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <linux/acpi.h>
++#include <linux/reset.h>
  
- 			mipi_dsi: mipi@21e0000 {
-+				compatible = "fsl,imx6-mipi-dsi", "snps,dw-mipi-dsi";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
- 				reg = <0x021e0000 0x4000>;
-+				interrupts = <0 102 IRQ_TYPE_LEVEL_HIGH>;
-+				fsl,gpr = <&gpr>;
-+				clocks = <&clks IMX6QDL_CLK_MIPI_CORE_CFG>,
-+					 <&clks IMX6QDL_CLK_MIPI_IPG>;
-+				clock-names = "ref", "pclk";
- 				status = "disabled";
+ #include "xhci.h"
+ #include "xhci-trace.h"
+@@ -339,6 +340,7 @@ static int xhci_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 	struct xhci_hcd *xhci;
+ 	struct usb_hcd *hcd;
+ 	struct xhci_driver_data *driver_data;
++	struct reset_control *reset;
  
- 				ports {
+ 	driver_data = (struct xhci_driver_data *)id->driver_data;
+ 	if (driver_data && driver_data->quirks & XHCI_RENESAS_FW_QUIRK) {
+@@ -347,6 +349,11 @@ static int xhci_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 			return retval;
+ 	}
+ 
++	reset = devm_reset_control_get_optional_exclusive(&dev->bus->dev, NULL);
++	if (IS_ERR(reset))
++		return PTR_ERR(reset);
++	reset_control_reset(reset);
++
+ 	/* Prevent runtime suspending between USB-2 and USB-3 initialization */
+ 	pm_runtime_get_noresume(&dev->dev);
+ 
 -- 
-2.27.0
+2.26.2
 
