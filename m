@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1D81F441E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673C91F440D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387754AbgFISAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:00:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45896 "EHLO mail.kernel.org"
+        id S2387722AbgFIR7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:59:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733074AbgFIRyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:54:20 -0400
+        id S1733156AbgFIRyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:54:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AD66207C3;
-        Tue,  9 Jun 2020 17:54:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FF6E20774;
+        Tue,  9 Jun 2020 17:54:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725259;
-        bh=mlChgyTv5SQLeyzNVZm89cxyxj49nT+0TF3uaH4MMaI=;
+        s=default; t=1591725293;
+        bh=KBJDsnC/ruZzhFkAosuSNvcMKVC5aIEuK5TDQj8MtJI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rNZL6LZ0wzYL1ltexgz6kaOe4ef0DqMstMUXx2e7REfsRLPL8FBsY1S/VWr6FLAis
-         IyakcJ3Ie6vrkTOdKq5J6a+tDTqXAWyoBJkDLB28HIOVfLjppzggOjRJrsBmT4YbBs
-         PuLPk5V3fYW0XqpS6c1+rniIoZsatgob628TJXeE=
+        b=rrsFxg9lKy5VRXjh4P6wtSHNs+tCVj2Gmvt8BCvsxUTiF8mS1WBd8wPUfnqW9dukK
+         ByVoI6ttZXIClCdrz5yy0kmdvSUEE8o9jCxwUEo+5Ifuw3kDLFChksIm1IVD0Dr2yI
+         kS8UgKAUGhUGAZuLGAOA5TZPK+VIzLqw24UzdqVI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH 5.6 34/41] nvmem: qfprom: remove incorrect write support
-Date:   Tue,  9 Jun 2020 19:45:36 +0200
-Message-Id: <20200609174115.324191619@linuxfoundation.org>
+        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.6 39/41] x86/speculation: Add Ivy Bridge to affected list
+Date:   Tue,  9 Jun 2020 19:45:41 +0200
+Message-Id: <20200609174115.821419119@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200609174112.129412236@linuxfoundation.org>
 References: <20200609174112.129412236@linuxfoundation.org>
@@ -44,55 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-commit 8d9eb0d6d59a5d7028c80a30831143d3e75515a7 upstream.
+commit 3798cc4d106e91382bfe016caa2edada27c2bb3f upstream
 
-qfprom has different address spaces for read and write. Reads are
-always done from corrected address space, where as writes are done
-on raw address space.
-Writing to corrected address space is invalid and ignored, so it
-does not make sense to have this support in the driver which only
-supports corrected address space regions at the moment.
+Make the docs match the code.
 
-Fixes: 4ab11996b489 ("nvmem: qfprom: Add Qualcomm QFPROM support.")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200522113341.7728-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/nvmem/qfprom.c |   14 --------------
- 1 file changed, 14 deletions(-)
+ Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/nvmem/qfprom.c
-+++ b/drivers/nvmem/qfprom.c
-@@ -27,25 +27,11 @@ static int qfprom_reg_read(void *context
- 	return 0;
- }
+--- a/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst
++++ b/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst
+@@ -27,6 +27,8 @@ by software using TSX_CTRL_MSR otherwise
+   =============  ============  ========
+   common name    Family_Model  Stepping
+   =============  ============  ========
++  IvyBridge      06_3AH        All
++
+   Haswell        06_3CH        All
+   Haswell_L      06_45H        All
+   Haswell_G      06_46H        All
+@@ -37,9 +39,8 @@ by software using TSX_CTRL_MSR otherwise
+   Skylake_L      06_4EH        All
+   Skylake        06_5EH        All
  
--static int qfprom_reg_write(void *context,
--			 unsigned int reg, void *_val, size_t bytes)
--{
--	struct qfprom_priv *priv = context;
--	u8 *val = _val;
--	int i = 0, words = bytes;
+-  Kabylake_L     06_8EH        <=0xC
 -
--	while (words--)
--		writeb(*val++, priv->base + reg + i++);
--
--	return 0;
--}
--
- static struct nvmem_config econfig = {
- 	.name = "qfprom",
- 	.stride = 1,
- 	.word_size = 1,
- 	.reg_read = qfprom_reg_read,
--	.reg_write = qfprom_reg_write,
- };
+-  Kabylake       06_9EH        <=0xD
++  Kabylake_L     06_8EH        <= 0xC
++  Kabylake       06_9EH        <= 0xD
+   =============  ============  ========
  
- static int qfprom_probe(struct platform_device *pdev)
+ Related CVEs
 
 
