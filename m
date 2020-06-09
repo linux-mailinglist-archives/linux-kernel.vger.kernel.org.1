@@ -2,145 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F5A1F3F63
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 17:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255631F3F6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 17:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730843AbgFIPah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 11:30:37 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:49109 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729027AbgFIPae (ORCPT
+        id S1730740AbgFIPdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 11:33:39 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:50822 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728944AbgFIPdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 11:30:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591716633;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wGxRHo37DUWltmqxVTCqF+4Rh476hZizMv40WbrLKUk=;
-        b=EYFXRr95zYucfXj2XDHB3vG6FlgG+lhxbwKOJd/DaIZ3xlAaFbhZVplu0CbwT9xJUzsbuu
-        2nVL/QKBMNbQTbX9i2uNCRcNw+ygrqKoupVbFJORPoy5wNhMBO1dsBzySe716mPRzZnVu2
-        X81yYncgdrBcKPXeMFYddm8wLNuk9gk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-NsbE5nCNPHSLrjQlepNvhA-1; Tue, 09 Jun 2020 11:30:31 -0400
-X-MC-Unique: NsbE5nCNPHSLrjQlepNvhA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82EB51940920;
-        Tue,  9 Jun 2020 15:30:28 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.154])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2BCFE5C1D2;
-        Tue,  9 Jun 2020 15:30:21 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue,  9 Jun 2020 17:30:28 +0200 (CEST)
-Date:   Tue, 9 Jun 2020 17:30:20 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Guo Ren <guoren@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        Security Officers <security@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Ananth N Mavinakayanahalli <ananth@in.ibm.com>,
-        Naveen Rao <naveen.n.rao@linux.vnet.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] uprobes: ensure that uprobe->offset and ->ref_ctr_offset
- are properly aligned
-Message-ID: <20200609153020.GB17951@redhat.com>
-References: <CAHk-=whQt69ApMkZF8b2Q2idMDgPpPETZeeOuZg59CrOO4025w@mail.gmail.com>
- <20200428091149.GB19958@linux.vnet.ibm.com>
- <20200428123914.GA27920@redhat.com>
- <20200504164724.GA28697@redhat.com>
+        Tue, 9 Jun 2020 11:33:39 -0400
+X-UUID: 982edc5ca0a245fe8100f34a5de104ea-20200609
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=bK5ZQDdXKnK3u8bH5NkJFh8Qb4nGzQp7amtH8nUC9XA=;
+        b=M/rd/FAn3gmP3AX8kEOswxjksdOE4l5EPpaGA4+o648neLkwcssifmFAMtSsO1DxgJUq5eRXDK8TC0hDcJLzK11yuYjVFb3/F6xnioDQK7vNkS32PIsUYANy9I3kKROYRFjSegysCn3TMo/rZs0UD8Q/AJGbre8wXeK4h6rHZNY=;
+X-UUID: 982edc5ca0a245fe8100f34a5de104ea-20200609
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 458564585; Tue, 09 Jun 2020 23:33:32 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 9 Jun 2020 23:33:28 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 9 Jun 2020 23:33:28 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <asutoshd@codeaurora.org>
+CC:     <beanhuo@micron.com>, <cang@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v1] scsi: ufs: Fix imprecise time in devfreq window
+Date:   Tue, 9 Jun 2020 23:33:29 +0800
+Message-ID: <20200609153329.1883-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504164724.GA28697@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks like this patch was forgotten...
-
-Should I resend it?
-
-On 05/04, Oleg Nesterov wrote:
->
-> uprobe_write_opcode() must not cross page boundary; prepare_uprobe()
-> relies on arch_uprobe_analyze_insn() which should validate "vaddr" but
-> some architectures (csky, s390, and sparc) don't do this.
-> 
-> We can remove the BUG_ON() check in prepare_uprobe() and validate the
-> offset early in __uprobe_register(). The new IS_ALIGNED() check matches
-> the alignment check in arch_prepare_kprobe() on supported architectures,
-> so I think that all insns must be aligned to UPROBE_SWBP_INSN_SIZE.
-> 
-> Another problem is __update_ref_ctr() which was wrong from the very
-> beginning, it can read/write outside of kmap'ed page unless "vaddr" is
-> aligned to sizeof(short), __uprobe_register() should check this too.
-> 
-> Cc: stable@vger.kernel.org
-> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-> ---
->  kernel/events/uprobes.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index ece7e13f6e4a..cc2095607c74 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -867,10 +867,6 @@ static int prepare_uprobe(struct uprobe *uprobe, struct file *file,
->  	if (ret)
->  		goto out;
->  
-> -	/* uprobe_write_opcode() assumes we don't cross page boundary */
-> -	BUG_ON((uprobe->offset & ~PAGE_MASK) +
-> -			UPROBE_SWBP_INSN_SIZE > PAGE_SIZE);
-> -
->  	smp_wmb(); /* pairs with the smp_rmb() in handle_swbp() */
->  	set_bit(UPROBE_COPY_INSN, &uprobe->flags);
->  
-> @@ -1166,6 +1162,15 @@ static int __uprobe_register(struct inode *inode, loff_t offset,
->  	if (offset > i_size_read(inode))
->  		return -EINVAL;
->  
-> +	/*
-> +	 * This ensures that copy_from_page(), copy_to_page() and
-> +	 * __update_ref_ctr() can't cross page boundary.
-> +	 */
-> +	if (!IS_ALIGNED(offset, UPROBE_SWBP_INSN_SIZE))
-> +		return -EINVAL;
-> +	if (!IS_ALIGNED(ref_ctr_offset, sizeof(short)))
-> +		return -EINVAL;
-> +
->   retry:
->  	uprobe = alloc_uprobe(inode, offset, ref_ctr_offset);
->  	if (!uprobe)
-> @@ -2014,6 +2019,9 @@ static int is_trap_at_addr(struct mm_struct *mm, unsigned long vaddr)
->  	uprobe_opcode_t opcode;
->  	int result;
->  
-> +	if (WARN_ON_ONCE(!IS_ALIGNED(vaddr, UPROBE_SWBP_INSN_SIZE)))
-> +		return -EINVAL;
-> +
->  	pagefault_disable();
->  	result = __get_user(opcode, (uprobe_opcode_t __user *)vaddr);
->  	pagefault_enable();
-> -- 
-> 2.25.1.362.g51ebf55
-> 
+UHJvbWlzZSBwcmVjaXNpb24gb2YgZGV2ZnJlcSB3aW5kb3dzIGJ5DQoNCjEuIEFsaWduIHRpbWUg
+YmFzZSBvZiBib3RoIGRldmZyZXFfZGV2X3N0YXR1cy50b3RhbF90aW1lIGFuZA0KICAgZGV2ZnJl
+cV9kZXZfc3RhdHVzLmJ1c3lfdGltZSB0byBrdGltZS1iYXNlZCB0aW1lLg0KDQoyLiBBbGlnbiBi
+ZWxvdyB0aW1lbGluZXMsDQogICAtIFRoZSBiZWdpbm5pbmcgb2YgZGV2ZnJlcSB3aW5kb3cNCiAg
+IC0gVGhlIGJlZ2lubmluZyBvZiBidXN5IHRpbWUgaW4gbmV3IHdpbmRvdw0KICAgLSBUaGUgZW5k
+IG9mIGJ1c3kgdGltZSBpbiBjdXJyZW50IHdpbmRvdw0KDQpTaWduZWQtb2ZmLWJ5OiBTdGFubGV5
+IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9zY3NpL3Vmcy91
+ZnNoY2QuYyB8IDExICsrKysrKy0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygr
+KSwgNSBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNk
+LmMgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQppbmRleCBhZDRmYzgyOWNiYjIuLjk0MGJk
+NWRlNWFkZSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCisrKyBiL2Ry
+aXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCkBAIC0xMzE0LDYgKzEzMTQsNyBAQCBzdGF0aWMgaW50
+IHVmc2hjZF9kZXZmcmVxX2dldF9kZXZfc3RhdHVzKHN0cnVjdCBkZXZpY2UgKmRldiwNCiAJdW5z
+aWduZWQgbG9uZyBmbGFnczsNCiAJc3RydWN0IGxpc3RfaGVhZCAqY2xrX2xpc3QgPSAmaGJhLT5j
+bGtfbGlzdF9oZWFkOw0KIAlzdHJ1Y3QgdWZzX2Nsa19pbmZvICpjbGtpOw0KKwlrdGltZV90IGN1
+cnJfdDsNCiANCiAJaWYgKCF1ZnNoY2RfaXNfY2xrc2NhbGluZ19zdXBwb3J0ZWQoaGJhKSkNCiAJ
+CXJldHVybiAtRUlOVkFMOw0KQEAgLTEzMjEsNiArMTMyMiw3IEBAIHN0YXRpYyBpbnQgdWZzaGNk
+X2RldmZyZXFfZ2V0X2Rldl9zdGF0dXMoc3RydWN0IGRldmljZSAqZGV2LA0KIAltZW1zZXQoc3Rh
+dCwgMCwgc2l6ZW9mKCpzdGF0KSk7DQogDQogCXNwaW5fbG9ja19pcnFzYXZlKGhiYS0+aG9zdC0+
+aG9zdF9sb2NrLCBmbGFncyk7DQorCWN1cnJfdCA9IGt0aW1lX2dldCgpOw0KIAlpZiAoIXNjYWxp
+bmctPndpbmRvd19zdGFydF90KQ0KIAkJZ290byBzdGFydF93aW5kb3c7DQogDQpAQCAtMTMzMiwx
+OCArMTMzNCwxNyBAQCBzdGF0aWMgaW50IHVmc2hjZF9kZXZmcmVxX2dldF9kZXZfc3RhdHVzKHN0
+cnVjdCBkZXZpY2UgKmRldiwNCiAJICovDQogCXN0YXQtPmN1cnJlbnRfZnJlcXVlbmN5ID0gY2xr
+aS0+Y3Vycl9mcmVxOw0KIAlpZiAoc2NhbGluZy0+aXNfYnVzeV9zdGFydGVkKQ0KLQkJc2NhbGlu
+Zy0+dG90X2J1c3lfdCArPSBrdGltZV90b191cyhrdGltZV9zdWIoa3RpbWVfZ2V0KCksDQorCQlz
+Y2FsaW5nLT50b3RfYnVzeV90ICs9IGt0aW1lX3RvX3VzKGt0aW1lX3N1YihjdXJyX3QsDQogCQkJ
+CQlzY2FsaW5nLT5idXN5X3N0YXJ0X3QpKTsNCiANCi0Jc3RhdC0+dG90YWxfdGltZSA9IGppZmZp
+ZXNfdG9fdXNlY3MoKGxvbmcpamlmZmllcyAtDQotCQkJCShsb25nKXNjYWxpbmctPndpbmRvd19z
+dGFydF90KTsNCisJc3RhdC0+dG90YWxfdGltZSA9IGt0aW1lX3RvX3VzKGN1cnJfdCkgLSBzY2Fs
+aW5nLT53aW5kb3dfc3RhcnRfdDsNCiAJc3RhdC0+YnVzeV90aW1lID0gc2NhbGluZy0+dG90X2J1
+c3lfdDsNCiBzdGFydF93aW5kb3c6DQotCXNjYWxpbmctPndpbmRvd19zdGFydF90ID0gamlmZmll
+czsNCisJc2NhbGluZy0+d2luZG93X3N0YXJ0X3QgPSBjdXJyX3Q7DQogCXNjYWxpbmctPnRvdF9i
+dXN5X3QgPSAwOw0KIA0KIAlpZiAoaGJhLT5vdXRzdGFuZGluZ19yZXFzKSB7DQotCQlzY2FsaW5n
+LT5idXN5X3N0YXJ0X3QgPSBrdGltZV9nZXQoKTsNCisJCXNjYWxpbmctPmJ1c3lfc3RhcnRfdCA9
+IGN1cnJfdDsNCiAJCXNjYWxpbmctPmlzX2J1c3lfc3RhcnRlZCA9IHRydWU7DQogCX0gZWxzZSB7
+DQogCQlzY2FsaW5nLT5idXN5X3N0YXJ0X3QgPSAwOw0KLS0gDQoyLjE4LjANCg==
 
