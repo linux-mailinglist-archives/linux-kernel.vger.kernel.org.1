@@ -2,105 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736121F324A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 04:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AC21F3241
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 04:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726953AbgFICaG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Jun 2020 22:30:06 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:54882 "EHLO huawei.com"
+        id S1726934AbgFICW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Jun 2020 22:22:59 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:54714 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726749AbgFICaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 22:30:05 -0400
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
-        by Forcepoint Email with ESMTP id 391D862EB35D663B2CE9;
-        Tue,  9 Jun 2020 10:30:04 +0800 (CST)
-Received: from dggeme707-chm.china.huawei.com (10.1.199.103) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Tue, 9 Jun 2020 10:30:03 +0800
-Received: from dggema755-chm.china.huawei.com (10.1.198.197) by
- dggeme707-chm.china.huawei.com (10.1.199.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 9 Jun 2020 10:30:03 +0800
-Received: from dggema755-chm.china.huawei.com ([10.1.198.197]) by
- dggema755-chm.china.huawei.com ([10.1.198.197]) with mapi id 15.01.1913.007;
- Tue, 9 Jun 2020 10:30:02 +0800
-From:   "liuchao (CR)" <liuchao173@huawei.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-CC:     "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hushiyuan <hushiyuan@huawei.com>,
-        "hewenliang (C)" <hewenliang4@huawei.com>
-Subject: Re: [RFC] decrease tsk->signal->live before profile_task_exit
-Thread-Topic: [RFC] decrease tsk->signal->live before profile_task_exit
-Thread-Index: AdY+AG0xoFxNBeBNTRuUPpzDg2aFdg==
-Date:   Tue, 9 Jun 2020 02:30:02 +0000
-Message-ID: <36882010b4b642a0b752eeeea697e783@huawei.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.166.215.131]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726749AbgFICW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Jun 2020 22:22:59 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 64ADC966C59515A7AA11;
+        Tue,  9 Jun 2020 10:22:56 +0800 (CST)
+Received: from localhost (10.175.101.6) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Tue, 9 Jun 2020
+ 10:22:51 +0800
+From:   Weilong Chen <chenweilong@huawei.com>
+To:     <christian.brauner@ubuntu.com>, <akpm@linux-foundation.org>,
+        <tglx@linutronix.de>, <lizefan@huawei.com>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH linux-next] kernel/fork.c: annotate data races for copy_process
+Date:   Tue, 9 Jun 2020 11:08:01 +0800
+Message-ID: <20200609030801.272704-1-chenweilong@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric W. Biederman <mailto:ebiederm@xmission.com> writes:
+The check is only there to stop root fork bombs.
 
-> liuchao <liuchao173@huawei.com> writes:
-> 
-> > I want to dermine which thread is the last one to enter do_exit in
-> > profile_task_exit. But when a lot of threads exit, tsk->signal->live
-> > is not correct since it decrease after profile_task_exit.
-> 
-> I don't think that would be wise.
-> 
-> Any additional code before the sanity checks at the start of do_exit seems
-> like a bad idea.
-> 
-> We could probably move the decrement of tsk->signal->live a little earlier,
-> but not that much earlier in the function.
-> 
-> Does profile_task_exit even make sense that early in the code?  If the code
-> is doing much of anything that is a completely inappopriate placement of
-> profile_task_exit.
+BUG: KCSAN: data-race in copy_process / copy_process
 
-I think so too.
+write to 0xffffffff86f87d20 of 4 bytes by task 7121 on cpu 5:
+ copy_process+0x2e1a/0x3af0 kernel/fork.c:2285
+ _do_fork+0xf7/0x790 kernel/fork.c:2430
+ __do_sys_clone+0xf9/0x130 kernel/fork.c:2585
+ __se_sys_clone kernel/fork.c:2566 [inline]
+ __x64_sys_clone+0x6c/0x80 kernel/fork.c:2566
+ do_syscall_64+0xc7/0x3b0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Move the decrement of tsk->signal->live after the sanity checks, then
-profile_task_exit and kcov_task_exit make more sense.
+read to 0xffffffff86f87d20 of 4 bytes by task 7125 on cpu 3:
+ copy_process+0x9eb/0x3af0 kernel/fork.c:1967
+ _do_fork+0xf7/0x790 kernel/fork.c:2430
+ __do_sys_clone+0xf9/0x130 kernel/fork.c:2585
+ __se_sys_clone kernel/fork.c:2566 [inline]
+ __x64_sys_clone+0x6c/0x80 kernel/fork.c:2566
+ do_syscall_64+0xc7/0x3b0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> 
-> Eric
-> 
-> 
-> > Signed-off-by: liuchao <liuchao173@huawei.com>
-> > ---
-> >  kernel/exit.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/exit.c b/kernel/exit.c index
-> > ce2a75bc0ade..1693764bc356 100644
-> > --- a/kernel/exit.c
-> > +++ b/kernel/exit.c
-> > @@ -708,6 +708,7 @@ void __noreturn do_exit(long code)
-> >  	struct task_struct *tsk = current;
-> >  	int group_dead;
-> >
-> > +	group_dead = atomic_dec_and_test(&tsk->signal->live);
-> >  	profile_task_exit(tsk);
-> >  	kcov_task_exit(tsk);
-> >
-> > @@ -755,7 +756,6 @@ void __noreturn do_exit(long code)
-> >  	if (tsk->mm)
-> >  		sync_mm_rss(tsk->mm);
-> >  	acct_update_integrals(tsk);
-> > -	group_dead = atomic_dec_and_test(&tsk->signal->live);
-> >  	if (group_dead) {
-> >  		/*
-> >  		 * If the last thread of global init has exited, panic
+Signed-off-by: Weilong Chen <chenweilong@huawei.com>
+---
+ kernel/fork.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 142b23645d82..efc5493203ae 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1977,7 +1977,7 @@ static __latent_entropy struct task_struct *copy_process(
+ 	 * to stop root fork bombs.
+ 	 */
+ 	retval = -EAGAIN;
+-	if (nr_threads >= max_threads)
++	if (data_race(nr_threads >= max_threads))
+ 		goto bad_fork_cleanup_count;
+ 
+ 	delayacct_tsk_init(p);	/* Must remain after dup_task_struct() */
+-- 
+2.17.1
+
