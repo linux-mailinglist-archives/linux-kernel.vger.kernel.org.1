@@ -2,150 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 593491F3972
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 13:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB671F397A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 13:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728985AbgFILUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 07:20:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60676 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727002AbgFILUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 07:20:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 182F8B160;
-        Tue,  9 Jun 2020 11:20:03 +0000 (UTC)
-Message-ID: <582f63b8140a01e75a79c96ec569c3a68f434c61.camel@suse.de>
-Subject: Re: [PATCH 5/9] usb: xhci-pci: Add support for reset controllers
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "wahrenst@gmx.net" <wahrenst@gmx.net>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "mathias.nyman@linux.intel.com" <mathias.nyman@linux.intel.com>,
-        Eric Anholt <eric@anholt.net>,
-        "bcm-kernel-feedback-list@broadcom.com" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "linux-rpi-kernel@lists.infradead.org" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tim.gover@raspberrypi.org" <tim.gover@raspberrypi.org>,
-        "helgaas@kernel.org" <helgaas@kernel.org>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>
-Date:   Tue, 09 Jun 2020 13:19:57 +0200
-In-Reply-To: <CAHp75VdWq96SSzB1S9pM=H8=3np8-1Cep_9BqGiTCUTtCUt-yw@mail.gmail.com>
-References: <20200608192701.18355-1-nsaenzjulienne@suse.de>
-         <20200608192701.18355-6-nsaenzjulienne@suse.de>
-         <CAHp75VdWq96SSzB1S9pM=H8=3np8-1Cep_9BqGiTCUTtCUt-yw@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-9EBI8hzXNUG3ROBaqpAE"
-User-Agent: Evolution 3.36.2 
+        id S1729029AbgFILU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 07:20:29 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47166 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726083AbgFILU1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 07:20:27 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id DF5761C0C0C; Tue,  9 Jun 2020 13:20:25 +0200 (CEST)
+Date:   Tue, 9 Jun 2020 13:20:25 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Daniel Axtens <dja@axtens.net>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Gow <davidgow@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH AUTOSEL 4.14 72/72] string.h: fix incompatibility between
+ FORTIFY_SOURCE and KASAN
+Message-ID: <20200609112025.GA2523@amd>
+References: <20200608232500.3369581-1-sashal@kernel.org>
+ <20200608232500.3369581-72-sashal@kernel.org>
+ <87ftb5t933.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
+Content-Disposition: inline
+In-Reply-To: <87ftb5t933.fsf@dja-thinkpad.axtens.net>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-9EBI8hzXNUG3ROBaqpAE
-Content-Type: text/plain; charset="UTF-8"
+--2fHTh5uZTiUOsy+g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2020-06-08 at 22:44 +0300, Andy Shevchenko wrote:
+On Tue 2020-06-09 09:46:08, Daniel Axtens wrote:
+> Hi Sasha,
 >=20
->=20
-> On Monday, June 8, 2020, Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> wrote:
-> > Some atypical users of xhci-pci might need to manually reset their xHCI
-> > controller before starting the HCD setup. Check if a reset controller
-> > device is available to the PCI bus and trigger a reset.
-> >=20
-> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > ---
-> >  drivers/usb/host/xhci-pci.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >=20
-> > diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-> > index ef513c2fb843..45f70facdfcd 100644
-> > --- a/drivers/usb/host/xhci-pci.c
-> > +++ b/drivers/usb/host/xhci-pci.c
-> > @@ -12,6 +12,7 @@
-> >  #include <linux/slab.h>
-> >  #include <linux/module.h>
-> >  #include <linux/acpi.h>
-> > +#include <linux/reset.h>
-> >=20
-> >  #include "xhci.h"
-> >  #include "xhci-trace.h"
-> > @@ -339,6 +340,7 @@ static int xhci_pci_probe(struct pci_dev *dev, cons=
-t
-> > struct pci_device_id *id)
-> >         struct xhci_hcd *xhci;
-> >         struct usb_hcd *hcd;
-> >         struct xhci_driver_data *driver_data;
-> > +       struct reset_control *reset;
-> >=20
-> >         driver_data =3D (struct xhci_driver_data *)id->driver_data;
-> >         if (driver_data && driver_data->quirks & XHCI_RENESAS_FW_QUIRK)=
- {
-> > @@ -347,6 +349,13 @@ static int xhci_pci_probe(struct pci_dev *dev, con=
-st
-> > struct pci_device_id *id)
-> >                         return retval;
-> >         }
-> >=20
-> > +       reset =3D devm_reset_control_get(&dev->bus->dev, NULL);
->=20
-> =20
-> > +       if (IS_ERR(reset)) {
-> > +               retval =3D PTR_ERR(reset);
-> > +               return retval;
-> > +       }
->=20
-> These four can be two, we have too many LOCs in the kernel for no reason.
+> There's nothing inherently wrong with these patches being backported,
+> but they fix a bug that doesn't cause a crash and only affects debug
+> kernels compiled with KASAN and FORTIFY_SOURCE. Personally I wouldn't
+> change a core header file in a stable kernel for that. Perhaps I'm too
+> risk-averse.
 
-Noted
+You are in agreement with existing documentation -- stable is only for
+serious bugs.
 
-> =20
-> > +       reset_control_reset(reset);
-> > +
-> >         /* Prevent runtime suspending between USB-2 and USB-3 initializ=
-ation
-> > */
-> >         pm_runtime_get_noresume(&dev->dev);
-> > =20
-> > --=20
-> > 2.26.2
-> >=20
-> >=20
->=20
->=20
+								Pavel
+							=09
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-
---=-9EBI8hzXNUG3ROBaqpAE
+--2fHTh5uZTiUOsy+g
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7fcF0ACgkQlfZmHno8
-x/5HTAgAmhR811lue01X7GYq1cj7N9zCOPoNa2ZH9QWAMqqWbHR+24haBspjEywh
-jqF4feZsoD4jj1ZGrwSy+MKq2rRt+iaXPbDCcTrN/zuL38U9Zt/lZPxhvauQruKI
-NaVoK8R4lJRJ7HVHxMYPGUmT1FOVmZuYi4rp/uZlRjTmedsU/6s/x5xkgsTSAga1
-j9EWMT39vfMLMJeVsjynLw94bwl0nmwUxrWYi+C0W3qlrsIyTx39FOoa6HRdjwT9
-KPyQPzlPsUPEmrTbDdaDztFp39r0ESQYqvDjv3wReVtp3wWBsgbe5ECwiovUcKMu
-sp04DqMNxUJu/iqC8gkJkvc80XiI/Q==
-=H32q
+iEYEARECAAYFAl7fcHkACgkQMOfwapXb+vLcrQCgwqN9j6+yHdjtyMjKkGUCSYtm
+nkAAoMQ5LJ/YoXoLmXAi7ApbNSlbIQEC
+=olTB
 -----END PGP SIGNATURE-----
 
---=-9EBI8hzXNUG3ROBaqpAE--
-
+--2fHTh5uZTiUOsy+g--
