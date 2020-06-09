@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB451F4825
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 22:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D471E1F482D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 22:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387697AbgFIUbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 16:31:35 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:40012 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731078AbgFIUbc (ORCPT
+        id S1728553AbgFIUeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 16:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728012AbgFIUeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 16:31:32 -0400
-Received: by mail-il1-f196.google.com with SMTP id t8so21667435ilm.7;
-        Tue, 09 Jun 2020 13:31:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xpHxwxJyEi+QmAQh0g22EZ0JVBelN+B/lL6QJi2kkls=;
-        b=c3QU7h7TbdpJlD0HWArcBA5XGDfNXaR5qy1/dfxvAcmFejTu0QmEcqhigfOfA3D9MZ
-         2mdzGPdlJIDze4YifP8zY8TUFzO0daf908cVMb9CiLKMhYcNnZr+yAhY97hN3gl6JWc/
-         4v4lxH4ZockqJPDvpCKvBKm7bvZ8Ob1S+RC1QZ6XWxDrr+3pRxPKFdYAXxsr/O1Qpk3w
-         1Gag18AqleXdfFh4tI9ckKJdyviZL1l46VtSluRUSCUYDnef2IoD07mGwqJqZWIxExC5
-         iOulSE4oi4O+oMaUxtGJHTt57/8rJBf2cSLgGcT8mVJ00ipjUn0IXDp3d7ZQvvFv0yYU
-         oz2A==
-X-Gm-Message-State: AOAM533mFeDNZse8STW4MYONqo3KCa/rYqAz8ImEKBI01CmceyLsnFPN
-        RNnLdJUzaokuvktMbvqi9W25B7s=
-X-Google-Smtp-Source: ABdhPJyDdn+hAQ2PPSVGXZ5rLVbU0/5fzDWB5qz782naSnxuAHkG5eN2ZKhBcbafUZj+J+E2dFQVRg==
-X-Received: by 2002:a92:489b:: with SMTP id j27mr28987060ilg.295.1591734690074;
-        Tue, 09 Jun 2020 13:31:30 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id r1sm9823178iln.77.2020.06.09.13.31.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 13:31:29 -0700 (PDT)
-Received: (nullmailer pid 1404522 invoked by uid 1000);
-        Tue, 09 Jun 2020 20:31:28 -0000
-Date:   Tue, 9 Jun 2020 14:31:28 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, kamel.bouhara@bootlin.com,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        devicetree@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: Re: [PATCH v4 1/9] dt-bindings: atmel-tcb: convert bindings to
- json-schema
-Message-ID: <20200609203128.GA1404472@bogus>
-References: <20200529232749.299627-1-alexandre.belloni@bootlin.com>
- <20200529232749.299627-2-alexandre.belloni@bootlin.com>
+        Tue, 9 Jun 2020 16:34:19 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248F1C05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 13:34:19 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jikwK-00014U-HN; Tue, 09 Jun 2020 22:33:44 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id BBE9F10154A; Tue,  9 Jun 2020 22:33:43 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        Alexander Potapenko <glider@google.com>
+Subject: Re: [patch V9 10/39] x86/entry: Provide helpers for execute on irqstack
+In-Reply-To: <20200609023259.GA3579@lca.pw>
+Date:   Tue, 09 Jun 2020 22:33:43 +0200
+Message-ID: <87zh9cnfmg.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529232749.299627-2-alexandre.belloni@bootlin.com>
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 May 2020 01:27:41 +0200, Alexandre Belloni wrote:
-> Convert Atmel Timer Counter Blocks bindings to DT schema format using
-> json-schema.
-> 
-> Also move it out of mfd as it is not and has never been related to mfd.
-> 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> ---
-> Changes in v4:
->  - use oneOf to describe possible clock-names list
-> 
->  .../devicetree/bindings/mfd/atmel-tcb.txt     |  56 --------
->  .../soc/microchip/atmel,at91rm9200-tcb.yaml   | 131 ++++++++++++++++++
->  2 files changed, 131 insertions(+), 56 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mfd/atmel-tcb.txt
->  create mode 100644 Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
-> 
+Qian,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Qian Cai <cai@lca.pw> writes:
+> On Tue, Jun 09, 2020 at 12:20:06AM +0200, Thomas Gleixner wrote:
+>> Note, that I doubled the size of the stack depot so that we get real
+>> numbers and not the cutoff by the size limit. IOW, the warning should
+>> not trigger anymore. If it triggers nevertheless then the numbers will
+>> still tell us an interesting story.
+>
+> Instead of running the whole testsuite, I just picked this single LTP
+> oom02 test which seems usually trigger it within the testsuite. Let me
+> know if this is insufficient (which indeed tell the big difference in
+> "Unique stacks"), and I am happy to run the whole things.
+
+thanks for providing the data.
+
+> BAD: next-20200608
+> GOOD: next-20200528 (which does not include this series)
+>
+> BAD (after boot)
+> # cat /sys/kernel/debug/stackdepot/info
+> Unique stacks: 33547
+> Depot index:   359
+> Depot offset:  6752
+>
+> BAD (after oom02)
+> # cat /sys/kernel/debug/stackdepot/info
+> Unique stacks: 140476
+
+That's indeed odd. I try to reproduce and figure out what really breaks
+here.
+
+Thanks,
+
+        tglx
+
