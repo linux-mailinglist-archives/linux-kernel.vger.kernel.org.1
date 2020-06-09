@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02221F460A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3261F4642
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389071AbgFISXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:23:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58824 "EHLO mail.kernel.org"
+        id S2389172AbgFISZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:25:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732114AbgFIRrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:47:31 -0400
+        id S1731977AbgFIRqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:46:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F06E20801;
-        Tue,  9 Jun 2020 17:47:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A612620801;
+        Tue,  9 Jun 2020 17:46:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724851;
-        bh=3VhzeYCfyFo9o7fz5Vi6e9lrLzkvJTjzxHdMTZtg2QA=;
+        s=default; t=1591724796;
+        bh=YUQ3zE6gHknWLZQ8cWA+ZL/A4ox6L2Wm10Hf9XSjg5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S3GmkNPTd+gnGSqCmuOWuorZ8jdXF2xeiO+G7TM3dOsaJZZZRHF0wyXCKQDC4qbH3
-         XuaNXQckFB1k1MEMeVzQJrJTceJ9qBjIdFfXktZNDNQc0CTqsPQwn5hGgtvhKdV5BN
-         HIMQmvn4j2rslKgnzZ1ekVGSitQIPYORbuF0KmOY=
+        b=X2Sm5jRe18EGnFkl2fAsL3JV2pBTleVXQWDgWDhYtEb6WaCA0n9JeYh4iA3TD8GOu
+         sT5iKfEB9pwWooA7372UWp9UA1o/NUiwTWZXSLzr1MEtziKUBClwQsf1LPjGKLShOW
+         ztgbgQ1Hsknn42XbYRFaTmXLZ/yJbtIJMZRvVg4s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 19/36] devinet: fix memleak in inetdev_init()
-Date:   Tue,  9 Jun 2020 19:44:19 +0200
-Message-Id: <20200609173934.396492898@linuxfoundation.org>
+Subject: [PATCH 4.4 20/36] NFC: st21nfca: add missed kfree_skb() in an error path
+Date:   Tue,  9 Jun 2020 19:44:20 +0200
+Message-Id: <20200609173934.469838229@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200609173933.288044334@linuxfoundation.org>
 References: <20200609173933.288044334@linuxfoundation.org>
@@ -44,31 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit 1b49cd71b52403822731dc9f283185d1da355f97 ]
+[ Upstream commit 3decabdc714ca56c944f4669b4cdec5c2c1cea23 ]
 
-When devinet_sysctl_register() failed, the memory allocated
-in neigh_parms_alloc() should be freed.
+st21nfca_tm_send_atr_res() misses to call kfree_skb() in an error path.
+Add the missed function call to fix it.
 
-Fixes: 20e61da7ffcf ("ipv4: fail early when creating netdev named all or default")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Acked-by: Cong Wang <xiyou.wangcong@gmail.com>
+Fixes: 1892bf844ea0 ("NFC: st21nfca: Adding P2P support to st21nfca in Initiator & Target mode")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/devinet.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/nfc/st21nfca/dep.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/ipv4/devinet.c
-+++ b/net/ipv4/devinet.c
-@@ -262,6 +262,7 @@ static struct in_device *inetdev_init(st
- 	err = devinet_sysctl_register(in_dev);
- 	if (err) {
- 		in_dev->dead = 1;
-+		neigh_parms_release(&arp_tbl, in_dev->arp_parms);
- 		in_dev_put(in_dev);
- 		in_dev = NULL;
- 		goto out;
+--- a/drivers/nfc/st21nfca/dep.c
++++ b/drivers/nfc/st21nfca/dep.c
+@@ -184,8 +184,10 @@ static int st21nfca_tm_send_atr_res(stru
+ 		memcpy(atr_res->gbi, atr_req->gbi, gb_len);
+ 		r = nfc_set_remote_general_bytes(hdev->ndev, atr_res->gbi,
+ 						  gb_len);
+-		if (r < 0)
++		if (r < 0) {
++			kfree_skb(skb);
+ 			return r;
++		}
+ 	}
+ 
+ 	info->dep_info.curr_nfc_dep_pni = 0;
 
 
