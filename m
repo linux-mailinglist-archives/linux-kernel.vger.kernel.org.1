@@ -2,87 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0979B1F3B34
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 14:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCF31F3B3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 14:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728640AbgFIMzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 08:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728423AbgFIMzl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 08:55:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C6BC03E97C
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 05:55:39 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1jidmy-0003t4-Af; Tue, 09 Jun 2020 14:55:36 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1jidmx-0006qd-Il; Tue, 09 Jun 2020 14:55:35 +0200
-Date:   Tue, 9 Jun 2020 14:55:35 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
-        devicetree@vger.kernel.org, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] net: ethernet: mvneta: add support for 2.5G DRSGMII mode
-Message-ID: <20200609125535.GK11869@pengutronix.de>
-References: <20200608074716.9975-1-s.hauer@pengutronix.de>
- <20200608145737.GG1006885@lunn.ch>
+        id S1728802AbgFIM4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 08:56:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728423AbgFIM4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 08:56:11 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B56532064C;
+        Tue,  9 Jun 2020 12:56:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591707370;
+        bh=+VryJQNxBWFkv8bTOekG/WnjLqz8V0x6+guPU02MGxs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sTrAAGOEV2VsmInG5ZAcOt2AoE3vMJVilEDKOnlBcXtUTbS1JERhsgVLJQe4Mu/cT
+         bgSxD3AlMUu//uObVFFOSEC7r/Uydq1+/G0Q426lu4C/1MJJHt0yYI1v4zKmhTmbJZ
+         wcVQhY+rcnsoRqByLAl5KdYeUbW5lapmcimokXdw=
+Date:   Tue, 9 Jun 2020 14:56:07 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     akpm@linux-foundation.org, colin.king@canonical.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        SeongJae Park <sjpark@amazon.de>
+Subject: Re: [PATCH v2] scripts/spelling: Recommend blocklist/allowlist
+ instead of blacklist/whitelist
+Message-ID: <20200609125607.GB827447@kroah.com>
+References: <20200609122549.26304-1-sjpark@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200608145737.GG1006885@lunn.ch>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 14:27:56 up 110 days, 19:58, 124 users,  load average: 0.09, 0.12,
- 0.13
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20200609122549.26304-1-sjpark@amazon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 04:57:37PM +0200, Andrew Lunn wrote:
-> On Mon, Jun 08, 2020 at 09:47:16AM +0200, Sascha Hauer wrote:
-> > The Marvell MVNETA Ethernet controller supports a 2.5 Gbps SGMII mode
-> > called DRSGMII.
-> > 
-> > This patch adds a corresponding phy-mode string 'drsgmii' and parses it
-> > from DT. The MVNETA then configures the SERDES protocol value
-> > accordingly.
-> > 
-> > It was successfully tested on a MV78460 connected to a FPGA.
+On Tue, Jun 09, 2020 at 02:25:49PM +0200, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
 > 
-> Hi Sascha
+> This commit recommends the patches to replace 'blacklist' and
+> 'whitelist' with the 'blocklist' and 'allowlist', because the new
+> suggestions are incontrovertible, doesn't make people hurt, and more
+> self-explanatory.
 > 
-> Is this really overclocked SGMII, or 2500BaseX? How does it differ
-> from 2500BaseX, which mvneta already supports?
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>  scripts/spelling.txt | 2 ++
+>  1 file changed, 2 insertions(+)
 
-I think it is overclocked SGMII or 2500BaseX depending on the Port MAC
-Control Register0 PortType setting bit.
-As said to Russell we have a fixed link so nobody really cares if it's
-SGMII or 2500BaseX. This boils down the patch to fixing the Serdes
-configuration setting for 2500BaseX.
+<formletter>
 
-Sascha
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+</formletter>
