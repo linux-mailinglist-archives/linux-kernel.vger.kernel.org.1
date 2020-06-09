@@ -2,47 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F2F1F4557
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441BC1F458E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732683AbgFIRub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 13:50:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36744 "EHLO mail.kernel.org"
+        id S2388814AbgFISRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:17:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729535AbgFIRt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:49:57 -0400
+        id S1730953AbgFIRuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:50:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 346D7207F9;
-        Tue,  9 Jun 2020 17:49:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA29420734;
+        Tue,  9 Jun 2020 17:50:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591724996;
-        bh=Kz3s+85aToSNZor3lNSzTXgUCRi49bWyg4iRofM0lvo=;
+        s=default; t=1591725022;
+        bh=0Sdw19cZUj8gXdGRxHjvIBv37iyXz0YRfj4NGJbcFrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zFmEIFo+hSYbHCScOYzZDvDii7UhQ2AOwvxCvQyXERc9nXywbTZTikgfuGMft1kfx
-         2LLYKYDdKHYRyqiiA9nDHoJ39MBlzGfe5MXSFpT5oNg6WO85yAQ9Ccgxdg5Xgz7jIT
-         ATS4284aLkjl9+xwhjBl1XsnSVXT94s+vEXqy5sw=
+        b=t+G/b15ucEen/2Mn39v1FiJBcMhvRl40OyyH9s8teck8A5Kun1ik8jXgHCjxJKjq3
+         QFbvXGdw9mNmfZ8HjqJBv8Ujma7LDj51Kz+l9m3Y6NQxd8eDltIeubbLQdNRp+6QnZ
+         PSD0lyVBVjuCVBw+P7y0ct/AwIzhQuOzUzJb3eAs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+1e925b4b836afe85a1c6@syzkaller-ppc64.appspotmail.com,
-        syzbot+587b2421926808309d21@syzkaller-ppc64.appspotmail.com,
-        syzbot+58320b7171734bf79d26@syzkaller.appspotmail.com,
-        syzbot+d6074fb08bdb2e010520@syzkaller.appspotmail.com,
-        Daniel Axtens <dja@axtens.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        David Rientjes <rientjes@google.com>,
-        Akash Goel <akash.goel@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Salvatore Bonaccorso <carnil@debian.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 19/46] kernel/relay.c: handle alloc_percpu returning NULL in relay_open
-Date:   Tue,  9 Jun 2020 19:44:35 +0200
-Message-Id: <20200609174024.806888793@linuxfoundation.org>
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>, Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.14 20/46] mmc: fix compilation of user API
+Date:   Tue,  9 Jun 2020 19:44:36 +0200
+Message-Id: <20200609174025.231350016@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
 References: <20200609174022.938987501@linuxfoundation.org>
@@ -55,71 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Axtens <dja@axtens.net>
+From: Jérôme Pouiller <jerome.pouiller@silabs.com>
 
-commit 54e200ab40fc14c863bcc80a51e20b7906608fce upstream.
+commit 83fc5dd57f86c3ec7d6d22565a6ff6c948853b64 upstream.
 
-alloc_percpu() may return NULL, which means chan->buf may be set to NULL.
-In that case, when we do *per_cpu_ptr(chan->buf, ...), we dereference an
-invalid pointer:
+The definitions of MMC_IOC_CMD  and of MMC_IOC_MULTI_CMD rely on
+MMC_BLOCK_MAJOR:
 
-  BUG: Unable to handle kernel data access at 0x7dae0000
-  Faulting instruction address: 0xc0000000003f3fec
-  ...
-  NIP relay_open+0x29c/0x600
-  LR relay_open+0x270/0x600
-  Call Trace:
-     relay_open+0x264/0x600 (unreliable)
-     __blk_trace_setup+0x254/0x600
-     blk_trace_setup+0x68/0xa0
-     sg_ioctl+0x7bc/0x2e80
-     do_vfs_ioctl+0x13c/0x1300
-     ksys_ioctl+0x94/0x130
-     sys_ioctl+0x48/0xb0
-     system_call+0x5c/0x68
+    #define MMC_IOC_CMD       _IOWR(MMC_BLOCK_MAJOR, 0, struct mmc_ioc_cmd)
+    #define MMC_IOC_MULTI_CMD _IOWR(MMC_BLOCK_MAJOR, 1, struct mmc_ioc_multi_cmd)
 
-Check if alloc_percpu returns NULL.
+However, MMC_BLOCK_MAJOR is defined in linux/major.h and
+linux/mmc/ioctl.h did not include it.
 
-This was found by syzkaller both on x86 and powerpc, and the reproducer
-it found on powerpc is capable of hitting the issue as an unprivileged
-user.
-
-Fixes: 017c59c042d0 ("relay: Use per CPU constructs for the relay channel buffer pointers")
-Reported-by: syzbot+1e925b4b836afe85a1c6@syzkaller-ppc64.appspotmail.com
-Reported-by: syzbot+587b2421926808309d21@syzkaller-ppc64.appspotmail.com
-Reported-by: syzbot+58320b7171734bf79d26@syzkaller.appspotmail.com
-Reported-by: syzbot+d6074fb08bdb2e010520@syzkaller.appspotmail.com
-Signed-off-by: Daniel Axtens <dja@axtens.net>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Michael Ellerman <mpe@ellerman.id.au>
-Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
-Acked-by: David Rientjes <rientjes@google.com>
-Cc: Akash Goel <akash.goel@intel.com>
-Cc: Andrew Donnellan <ajd@linux.ibm.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Salvatore Bonaccorso <carnil@debian.org>
-Cc: <stable@vger.kernel.org>	[4.10+]
-Link: http://lkml.kernel.org/r/20191219121256.26480-1-dja@axtens.net
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200511161902.191405-1-Jerome.Pouiller@silabs.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/relay.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ include/uapi/linux/mmc/ioctl.h |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/relay.c
-+++ b/kernel/relay.c
-@@ -580,6 +580,11 @@ struct rchan *relay_open(const char *bas
- 		return NULL;
+--- a/include/uapi/linux/mmc/ioctl.h
++++ b/include/uapi/linux/mmc/ioctl.h
+@@ -3,6 +3,7 @@
+ #define LINUX_MMC_IOCTL_H
  
- 	chan->buf = alloc_percpu(struct rchan_buf *);
-+	if (!chan->buf) {
-+		kfree(chan);
-+		return NULL;
-+	}
-+
- 	chan->version = RELAYFS_CHANNEL_VERSION;
- 	chan->n_subbufs = n_subbufs;
- 	chan->subbuf_size = subbuf_size;
+ #include <linux/types.h>
++#include <linux/major.h>
+ 
+ struct mmc_ioc_cmd {
+ 	/* Implies direction of data.  true = write, false = read */
 
 
