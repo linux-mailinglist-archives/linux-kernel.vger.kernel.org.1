@@ -2,110 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9EA1F32CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 05:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5890D1F32DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 06:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgFIDxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Jun 2020 23:53:23 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:56809 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726923AbgFIDxM (ORCPT
+        id S1726999AbgFIECM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 00:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbgFIECL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Jun 2020 23:53:12 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 61B2D77D;
-        Mon,  8 Jun 2020 23:53:11 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 08 Jun 2020 23:53:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paritcher.com;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=2OJ7q9XBx4ZlW
-        ZcE1YPyTXVaOzdZWcK7ysnEQ+5usds=; b=xghB3yGY1gpIOZLtLmKQDYW/H++ii
-        k3e3jMXeiwoO36zSNssTAUo4dMGZsBp4+UzWKGT928PE/HASecr7/4HS0VWrp3ni
-        F6viFDzIwZSEoI78+97Gy7gOkNj6kCwfMXNTiNUZmmr3ZVzyekaU6YNNxl1pBSRT
-        hxQ5VbaXNBh0FL2+ktBEi2t1t0N7iEb9zLPaYkHfzlrJtPfauPmPEokybNoDiW1N
-        ZFDUBTG3QLfiRrUX8qaKAW1qF6Sg73EN78U/utioJSZF9HDbhNNzWu6KxmoP2TYF
-        xQMTsagpNJlTVD7AXhx64BN6WWJKtrOiIfeb2dUeNaEsh8JhLxO2RA4yw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=2OJ7q9XBx4ZlWZcE1YPyTXVaOzdZWcK7ysnEQ+5usds=; b=Q8IaE8ak
-        00I8yxl1z7/3Qxukx0LSrvlPNrpJ+EdQJ0w5PByM+PJWzmoRobtTLN7fKTRqawQa
-        1umVoomvA/jCN2zPMiotIHI3bQa0QczgHlMMTngDDHH9/6n6kteWEu4CgjAUk9RN
-        HzPwV/DQDWqPQdwYrNbyuDTaWCL91hnHec4Ua0qM3/h2H+vM7QuZ798Ik9lkdCJs
-        lS2WG6ZjnDNN4AGinbpS59E9U0aWMUobFHRhcRq1U+ZNpRHwQA/xuSKa5o4dLatL
-        LaQjdwUO4wyLSPZ+xWBCfwuXj7ETxInko9dhZgLf6BtC90VFbxhlU2k3cUJwQ7hS
-        ysqrVcpI6ydVCw==
-X-ME-Sender: <xms:pgffXr7E8fOL-IWUQ9wDleawmc0oV5SDZtXkthgQIoK3qw-XO9RJdg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehfedgjeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpegjucfrrghr
-    ihhttghhvghruceohidrlhhinhhugiesphgrrhhithgthhgvrhdrtghomheqnecuggftrf
-    grthhtvghrnhepjeegfeetleeuleevteejteetieffgffgfedvffffvddtvddvveevhffh
-    tdehudeknecukfhppeeijedrkeegrdduleegrddujeehnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhephidrlhhinhhugiesphgrrhhithgthhgv
-    rhdrtghomh
-X-ME-Proxy: <xmx:pgffXg6V0X9JT9AzhjQxsZlaE9gs8l4uMSHbV32fflbN-lH6zbZ9Gw>
-    <xmx:pgffXidjbzyc-HeROn2dEry4ePTGA0W-N0uELocnfb_JD5s5qUB1Xw>
-    <xmx:pgffXsKtWU2VGWWUNWDmaSZz93QXAhHUHibXwU7TlnU1B70x-uub2g>
-    <xmx:pwffXljv22F2C9koR27_sT5Z7nykVa3IS7pOnsYk61VdDczB7mDzjg>
-Received: from localhost.localdomain (ool-4354c2af.dyn.optonline.net [67.84.194.175])
-        by mail.messagingengine.com (Postfix) with ESMTPA id ACBEA3280066;
-        Mon,  8 Jun 2020 23:53:10 -0400 (EDT)
-From:   Y Paritcher <y.linux@paritcher.com>
-To:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mario.Limonciello@dell.com
-Subject: [PATCH v3 3/3] platform/x86: dell-wmi: add new dmi mapping for keycode 0xffff
-Date:   Mon,  8 Jun 2020 23:52:54 -0400
-Message-Id: <e2f6b5ee27a3a6142a2f8806be8dfbce442548da.1591673143.git.y.linux@paritcher.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1591673143.git.y.linux@paritcher.com>
-References: <cover.1591584631.git.y.linux@paritcher.com> <cover.1591673143.git.y.linux@paritcher.com>
+        Tue, 9 Jun 2020 00:02:11 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07EB5C03E969
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Jun 2020 21:02:11 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t16so7499434plo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jun 2020 21:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=HNzwmKC7EPXO6n3v52ZypjHWMqVja532n8n2Tl/XPzU=;
+        b=EOIGmeR3il5DVPJCDg4teJziBsjPIErqvQL1NApVhk0fIsJZDquLbvnv9AzOPFDTyM
+         0Td9tgAsoePC+8tWwHQb/vU9PYB6G/Oyp14FK2hqZEG9usC/15NBI+bjl7shOVkS9PTS
+         doO5YZ3ay6n1fRr9qSicgDl1sKMnJOAKnbUGeudLGxamrgFpyJqMg7/hVpo77ptwayW9
+         gKyrCeWWc3sisMbmchG7OqNyEieqbYZexGGErCFQFvIiSgU0duds+YBbyLJBINOegnCw
+         yZ0gUZKM/VpvoDsNXIFSXtVpSlXS2LMjFDE0fUXYn6WfLpaSP3YHgKbbD3TgUmNi7e1F
+         Z0fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=HNzwmKC7EPXO6n3v52ZypjHWMqVja532n8n2Tl/XPzU=;
+        b=VArFJF8cCKWTrMRdIaQp91DS/szIaLP252OqZip4WXMcoAE6F1VL8VaSVxvj3AevfM
+         WNuhc1yJiMNFPeXLQ/J2l728MHiNKmXJ4Q54glUXmqcD1LemeV5LGLJ2Crhnjl8knmiG
+         ckXGnGumtXL2AVf/62viMvFsmN0zKiEgCxzw7QqGk0bVBp1wfsQwNaPXEGwfd4S/64up
+         tID13380GzmH8wxxDLhz/tNt+M0f+E1w2X1YspZGSV7oSQQIE46i5Csde0Ip0uKavw4W
+         uEFR/0cidpoUmU8gxQ7r5/e1XXBRHO6UB6usjD436cmbXRJUy6v1altdA3EwKrH7eJ6Z
+         GoVw==
+X-Gm-Message-State: AOAM531VttW1CUxoEUG5ycloblujwlh7koj35k3gzvFmZVZbSmP2RCY5
+        0dcyv2EtujnW+aePLNmbW3weWQ==
+X-Google-Smtp-Source: ABdhPJyCOlAhj/JYQL1lnU7VkdOeuU3CmI3RIp+QFxWZE3BRnL4347U0JAtJdOIRBNQs52eLSw55aw==
+X-Received: by 2002:a17:90a:36cf:: with SMTP id t73mr2680766pjb.100.1591675330529;
+        Mon, 08 Jun 2020 21:02:10 -0700 (PDT)
+Received: from [10.175.1.166] ([45.135.186.20])
+        by smtp.gmail.com with ESMTPSA id b24sm8402002pfo.112.2020.06.08.21.02.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jun 2020 21:02:09 -0700 (PDT)
+Subject: Re: [PATCH 0/2] Introduce PCI_FIXUP_IOMMU
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        jean-philippe <jean-philippe@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
+References: <20200608164148.GA1394249@bjorn-Precision-5520>
+From:   Zhangfei Gao <zhangfei.gao@linaro.org>
+Message-ID: <bcf0a327-87b5-01ff-2f9c-ec6a6bd6c738@linaro.org>
+Date:   Tue, 9 Jun 2020 12:01:56 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200608164148.GA1394249@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This looks to be a special value for some sort of custom scancode.
-This code could not be triggered for any keypress and is included
-from the 0xB2 DMI table.
+Hi, Bjorn
 
-This prevents the following messages from being logged at startup on a
-Dell Inspiron 5593:
+On 2020/6/9 上午12:41, Bjorn Helgaas wrote:
+> On Mon, Jun 08, 2020 at 10:54:15AM +0800, Zhangfei Gao wrote:
+>> On 2020/6/6 上午7:19, Bjorn Helgaas wrote:
+>>> On Thu, Jun 04, 2020 at 09:33:07PM +0800, Zhangfei Gao wrote:
+>>>> On 2020/6/2 上午1:41, Bjorn Helgaas wrote:
+>>>>> On Thu, May 28, 2020 at 09:33:44AM +0200, Joerg Roedel wrote:
+>>>>>> On Wed, May 27, 2020 at 01:18:42PM -0500, Bjorn Helgaas wrote:
+>>>>>>> Is this slowdown significant?  We already iterate over every device
+>>>>>>> when applying PCI_FIXUP_FINAL quirks, so if we used the existing
+>>>>>>> PCI_FIXUP_FINAL, we wouldn't be adding a new loop.  We would only be
+>>>>>>> adding two more iterations to the loop in pci_do_fixups() that tries
+>>>>>>> to match quirks against the current device.  I doubt that would be a
+>>>>>>> measurable slowdown.
+>>>>>> I don't know how significant it is, but I remember people complaining
+>>>>>> about adding new PCI quirks because it takes too long for them to run
+>>>>>> them all. That was in the discussion about the quirk disabling ATS on
+>>>>>> AMD Stoney systems.
+>>>>>>
+>>>>>> So it probably depends on how many PCI devices are in the system whether
+>>>>>> it causes any measureable slowdown.
+>>>>> I found this [1] from Paul Menzel, which was a slowdown caused by
+>>>>> quirk_usb_early_handoff().  I think the real problem is individual
+>>>>> quirks that take a long time.
+>>>>>
+>>>>> The PCI_FIXUP_IOMMU things we're talking about should be fast, and of
+>>>>> course, they're only run for matching devices anyway.  So I'd rather
+>>>>> keep them as PCI_FIXUP_FINAL than add a whole new phase.
+>>>>>
+>>>> Thanks Bjorn for taking time for this.
+>>>> If so, it would be much simpler.
+>>>>
+>>>> +++ b/drivers/iommu/iommu.c
+>>>> @@ -2418,6 +2418,10 @@ int iommu_fwspec_init(struct device *dev, struct
+>>>> fwnode_handle *iommu_fwnode,
+>>>>           fwspec->iommu_fwnode = iommu_fwnode;
+>>>>           fwspec->ops = ops;
+>>>>           dev_iommu_fwspec_set(dev, fwspec);
+>>>> +
+>>>> +       if (dev_is_pci(dev))
+>>>> +               pci_fixup_device(pci_fixup_final, to_pci_dev(dev));
+>>>> +
+>>>>
+>>>> Then pci_fixup_final will be called twice, the first in pci_bus_add_device.
+>>>> Here in iommu_fwspec_init is the second time, specifically for iommu_fwspec.
+>>>> Will send this when 5.8-rc1 is open.
+>>> Wait, this whole fixup approach seems wrong to me.  No matter how you
+>>> do the fixup, it's still a fixup, which means it requires ongoing
+>>> maintenance.  Surely we don't want to have to add the Vendor/Device ID
+>>> for every new AMBA device that comes along, do we?
+>>>
+>> Here the fake pci device has standard PCI cfg space, but physical
+>> implementation is base on AMBA
+>> They can provide pasid feature.
+>> However,
+>> 1, does not support tlp since they are not real pci devices.
+>> 2. does not support pri, instead support stall (provided by smmu)
+>> And stall is not a pci feature, so it is not described in struct pci_dev,
+>> but in struct iommu_fwspec.
+>> So we use this fixup to tell pci system that the devices can support stall,
+>> and hereby support pasid.
+> This did not answer my question.  Are you proposing that we update a
+> quirk every time a new AMBA device is released?  I don't think that
+> would be a good model.
+Yes, you are right, but we do not have any better idea yet.
+Currently we have three fake pci devices, which support stall and pasid.
+We have to let pci system know the device can support pasid, because of 
+stall feature, though not support pri.
+Do you have any other ideas?
 
-    dell_wmi: firmware scancode 0x48 maps to unrecognized keycode 0xffff
-    dell_wmi: firmware scancode 0x50 maps to unrecognized keycode 0xffff
-
-as per this code comment:
-
-   Log if we find an entry in the DMI table that we don't
-   understand.  If this happens, we should figure out what
-   the entry means and add it to bios_to_linux_keycode.
-
-Signed-off-by: Y Paritcher <y.linux@paritcher.com>
----
- drivers/platform/x86/dell-wmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/platform/x86/dell-wmi.c b/drivers/platform/x86/dell-wmi.c
-index e3bc2601e631..bbdb3e860892 100644
---- a/drivers/platform/x86/dell-wmi.c
-+++ b/drivers/platform/x86/dell-wmi.c
-@@ -506,7 +506,7 @@ static void handle_dmi_entry(const struct dmi_header *dm, void *opaque)
- 		u16 keycode = (bios_entry->keycode <
- 			       ARRAY_SIZE(bios_to_linux_keycode)) ?
- 			bios_to_linux_keycode[bios_entry->keycode] :
--			KEY_RESERVED;
-+			(bios_entry->keycode == 0xffff ? KEY_UNKNOWN : KEY_RESERVED);
- 
- 		/*
- 		 * Log if we find an entry in the DMI table that we don't
--- 
-2.27.0
-
+Thanks
