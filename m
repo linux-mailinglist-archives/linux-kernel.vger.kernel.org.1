@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1829B1F453E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED2E1F446A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388424AbgFISNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:13:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39216 "EHLO mail.kernel.org"
+        id S1732884AbgFIRwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 13:52:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731220AbgFIRu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:50:57 -0400
+        id S1732760AbgFIRu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:50:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 424852074B;
-        Tue,  9 Jun 2020 17:50:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 906472074B;
+        Tue,  9 Jun 2020 17:50:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591725056;
-        bh=YUQ3zE6gHknWLZQ8cWA+ZL/A4ox6L2Wm10Hf9XSjg5U=;
+        s=default; t=1591725059;
+        bh=dneXgUP1hvA/ZLqtJEfa5ZryFKN8+0iq70e7wX8rxDU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DHdEXvNbNXAEOtDZdIW12oiJgEUA81Zms3FTUBzA4WQferM5NtzVfJBbUN0bdIP3S
-         /2yIwucRVF8/fw9Bh/bwpNcJaolc8q8zHJJxCnQ8IqOr7AZD5pswlqLFf44malJWXB
-         V0YusCjXqhUunn3qGGW2iBcd/e547GZ5TkGurKQ8=
+        b=rZVGqPR+O+8qDt9JtgnohGDCRp8YTdgtmAtGiK+MUEPkfRRoqTWy3gLD4WktF1icA
+         60Uc/Lxv3RBjjGPluvehXGVwp/7RvXG8QmVvIMElMApTqFSa+czZ7GPvGhrA6bdMZB
+         UmDktNyL2Zo94EEMby1DBPJSGaRIWTUs4Dd3JY1c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 26/46] NFC: st21nfca: add missed kfree_skb() in an error path
-Date:   Tue,  9 Jun 2020 19:44:42 +0200
-Message-Id: <20200609174027.260635491@linuxfoundation.org>
+Subject: [PATCH 4.14 27/46] vsock: fix timeout in vsock_accept()
+Date:   Tue,  9 Jun 2020 19:44:43 +0200
+Message-Id: <20200609174027.453089041@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200609174022.938987501@linuxfoundation.org>
 References: <20200609174022.938987501@linuxfoundation.org>
@@ -43,34 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: Stefano Garzarella <sgarzare@redhat.com>
 
-[ Upstream commit 3decabdc714ca56c944f4669b4cdec5c2c1cea23 ]
+[ Upstream commit 7e0afbdfd13d1e708fe96e31c46c4897101a6a43 ]
 
-st21nfca_tm_send_atr_res() misses to call kfree_skb() in an error path.
-Add the missed function call to fix it.
+The accept(2) is an "input" socket interface, so we should use
+SO_RCVTIMEO instead of SO_SNDTIMEO to set the timeout.
 
-Fixes: 1892bf844ea0 ("NFC: st21nfca: Adding P2P support to st21nfca in Initiator & Target mode")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+So this patch replace sock_sndtimeo() with sock_rcvtimeo() to
+use the right timeout in the vsock_accept().
+
+Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Reviewed-by: Jorgen Hansen <jhansen@vmware.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nfc/st21nfca/dep.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/vmw_vsock/af_vsock.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/nfc/st21nfca/dep.c
-+++ b/drivers/nfc/st21nfca/dep.c
-@@ -184,8 +184,10 @@ static int st21nfca_tm_send_atr_res(stru
- 		memcpy(atr_res->gbi, atr_req->gbi, gb_len);
- 		r = nfc_set_remote_general_bytes(hdev->ndev, atr_res->gbi,
- 						  gb_len);
--		if (r < 0)
-+		if (r < 0) {
-+			kfree_skb(skb);
- 			return r;
-+		}
- 	}
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -1290,7 +1290,7 @@ static int vsock_accept(struct socket *s
+ 	/* Wait for children sockets to appear; these are the new sockets
+ 	 * created upon connection establishment.
+ 	 */
+-	timeout = sock_sndtimeo(listener, flags & O_NONBLOCK);
++	timeout = sock_rcvtimeo(listener, flags & O_NONBLOCK);
+ 	prepare_to_wait(sk_sleep(listener), &wait, TASK_INTERRUPTIBLE);
  
- 	info->dep_info.curr_nfc_dep_pni = 0;
+ 	while ((connected = vsock_dequeue_accept(listener)) == NULL &&
 
 
