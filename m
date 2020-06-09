@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FA71F44A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F6A1F44DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 20:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388260AbgFISGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 14:06:40 -0400
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:41792 "EHLO
+        id S2388457AbgFISJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 14:09:12 -0400
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:41450 "EHLO
         shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388202AbgFISGE (ORCPT
+        by vger.kernel.org with ESMTP id S2388181AbgFISF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 14:06:04 -0400
+        Tue, 9 Jun 2020 14:05:59 -0400
 Received: from [192.168.4.242] (helo=deadeye)
         by shadbolt.decadent.org.uk with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.89)
         (envelope-from <ben@decadent.org.uk>)
-        id 1jiidG-0001pW-E2; Tue, 09 Jun 2020 19:05:54 +0100
+        id 1jiidG-0001pY-Km; Tue, 09 Jun 2020 19:05:54 +0100
 Received: from ben by deadeye with local (Exim 4.94)
         (envelope-from <ben@decadent.org.uk>)
-        id 1jiidF-006Vw8-Fb; Tue, 09 Jun 2020 19:05:53 +0100
+        id 1jiidF-006VwC-GR; Tue, 09 Jun 2020 19:05:53 +0100
 Content-Type: text/plain; charset="UTF-8"
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
@@ -27,19 +27,15 @@ MIME-Version: 1.0
 From:   Ben Hutchings <ben@decadent.org.uk>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 CC:     akpm@linux-foundation.org, Denis Kirjanov <kda@linux-powerpc.org>,
-        "Christoph Hellwig" <hch@lst.de>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Ben Hutchings" <ben.hutchings@codethink.co.uk>,
+        "Douglas Gilbert" <dgilbert@interlog.com>,
         "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Hannes Reinecke" <hare@suse.com>,
-        "Hannes Reinecke" <hare@suse.de>,
-        "Bart Van Assche" <bart.vanassche@wdc.com>
-Date:   Tue, 09 Jun 2020 19:04:25 +0100
-Message-ID: <lsq.1591725832.201648349@decadent.org.uk>
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Date:   Tue, 09 Jun 2020 19:04:26 +0100
+Message-ID: <lsq.1591725832.609479650@decadent.org.uk>
 X-Mailer: LinuxStableQueue (scripts by bwh)
 X-Patchwork-Hint: ignore
-Subject: [PATCH 3.16 34/61] scsi: sg: fixup infoleak when using
- SG_GET_REQUEST_TABLE
+Subject: [PATCH 3.16 35/61] scsi: sg: Re-fix off by one in sg_fill_request_table()
 In-Reply-To: <lsq.1591725831.850867383@decadent.org.uk>
 X-SA-Exim-Connect-IP: 192.168.4.242
 X-SA-Exim-Mail-From: ben@decadent.org.uk
@@ -53,45 +49,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 ------------------
 
-From: Hannes Reinecke <hare@suse.de>
+From: Ben Hutchings <ben.hutchings@codethink.co.uk>
 
-commit 3e0097499839e0fe3af380410eababe5a47c4cf9 upstream.
+commit 587c3c9f286cee5c9cac38d28c8ae1875f4ec85b upstream.
 
-When calling SG_GET_REQUEST_TABLE ioctl only a half-filled table is
-returned; the remaining part will then contain stale kernel memory
-information.  This patch zeroes out the entire table to avoid this
-issue.
+Commit 109bade9c625 ("scsi: sg: use standard lists for sg_requests")
+introduced an off-by-one error in sg_ioctl(), which was fixed by commit
+bd46fc406b30 ("scsi: sg: off by one in sg_ioctl()").
 
-Signed-off-by: Hannes Reinecke <hare@suse.com>
-Reviewed-by: Bart Van Assche <bart.vanassche@wdc.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Unfortunately commit 4759df905a47 ("scsi: sg: factor out
+sg_fill_request_table()") moved that code, and reintroduced the
+bug (perhaps due to a botched rebase).  Fix it again.
+
+Fixes: 4759df905a47 ("scsi: sg: factor out sg_fill_request_table()")
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Acked-by: Douglas Gilbert <dgilbert@interlog.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
 ---
- drivers/scsi/sg.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/scsi/sg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/drivers/scsi/sg.c
 +++ b/drivers/scsi/sg.c
-@@ -881,7 +881,6 @@ sg_fill_request_table(Sg_fd *sfp, sg_req
+@@ -879,7 +879,7 @@ sg_fill_request_table(Sg_fd *sfp, sg_req
+ 
+ 	val = 0;
  	list_for_each_entry(srp, &sfp->rq_list, entry) {
- 		if (val > SG_MAX_QUEUE)
+-		if (val > SG_MAX_QUEUE)
++		if (val >= SG_MAX_QUEUE)
  			break;
--		memset(&rinfo[val], 0, SZ_SG_REQ_INFO);
  		rinfo[val].req_state = srp->done + 1;
  		rinfo[val].problem =
- 			srp->header.masked_status &
-@@ -1098,8 +1097,8 @@ sg_ioctl(struct file *filp, unsigned int
- 		else {
- 			sg_req_info_t *rinfo;
- 
--			rinfo = kmalloc(SZ_SG_REQ_INFO * SG_MAX_QUEUE,
--								GFP_KERNEL);
-+			rinfo = kzalloc(SZ_SG_REQ_INFO * SG_MAX_QUEUE,
-+					GFP_KERNEL);
- 			if (!rinfo)
- 				return -ENOMEM;
- 			read_lock_irqsave(&sfp->rq_list_lock, iflags);
 
