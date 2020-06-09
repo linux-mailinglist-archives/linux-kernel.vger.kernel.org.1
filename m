@@ -2,79 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207F81F4976
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 00:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADBC1F4979
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 00:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728557AbgFIWkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 18:40:01 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:37275 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728108AbgFIWkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 18:40:00 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49hQ6k0p9qz9sRR;
-        Wed, 10 Jun 2020 08:39:57 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1591742398;
-        bh=dA0JwROp87FWujpZdHmbCyvHgliivh3cSiE4ws+NCrQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mdxUB6dpjBexhv54tbwS53nAqNjVNTOK4vSRYBZIMSNGOQsJf76JxROA49z+gA0V9
-         eS1vK3yC0dglt/I6ApHI/LL27xtEbLfRedxOPDCN9oC+6vyWhWfoQGT+o8N4mP+3np
-         X2kqsBxflEuXD5eXBSsITgML6ycyjC8vimG9PQH8cwFw/lFbcuZVO+LbOaFeR6tsIA
-         wIAYBtX/LXC7pC/5McAzz3d28JvdUMIiZr4liK1FihV+yHC+dgnCQUt1YIjtxC8Q8v
-         G9FgYBDhD5ne8HZLgwXSA6fEmeajhoArEbof8sF7B/fN/klpNNHRhxxv5H1UdvEtsR
-         5RcUaXFnnCm8w==
-Date:   Wed, 10 Jun 2020 08:39:56 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commits in the omap-fixes
- tree
-Message-ID: <20200610083956.21820d73@canb.auug.org.au>
+        id S1728596AbgFIWkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 18:40:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728108AbgFIWkp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 18:40:45 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D83C08C5C2
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 15:40:44 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id x22so288008lfd.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 15:40:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P1TRNNjJlvLVpkzYtiyuKXMMAtHYz93D6qUBO+R17NY=;
+        b=K1f23i0fqTaybBaIL91PC/uUGVhXSo8qFOrRZ6HkWINEL8dEywUK3T3EhTHBQo1onI
+         W2B23FJguSy+2BibfIkn2DkdpPgkPHbOxwkYkGJwdrS+/ZW6LOzw/y+emhKjQsn4I6lP
+         cbjUZmLILbknLg40OFWdmE+Q2u7LZ3zRFbcGo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P1TRNNjJlvLVpkzYtiyuKXMMAtHYz93D6qUBO+R17NY=;
+        b=oHyJVOMGAghuq1vHrvViU1NbsCN7rD88OBjy9BBIvdobzX8zsu9+zWicXMtfLR+uVv
+         G4VrUDVqQ9UAr+j1mhDYAew2Ef/zY/6jTnIxOTs/XWSTemrxY4tqkYEUGGXEQmUIEpDn
+         z/8zcEl+FTmMtLEmbVhx3wEDaFLRKny2/pgJ7o7/QXynCJriJ97QnOozBMAwYfqixSCl
+         nlz4II6TYH36Lk4OaaFsV9lOiD7fTOKvqyHSblPNWkkeeQxLFRRI0zfRmhlGTeWwrqAR
+         K3cwya6Hjcb/p/2WfHj3iwIba5ThCeWVSSZ79iuz95D0ZEQcFeTq9bAGPuER/g36GPkx
+         HC8Q==
+X-Gm-Message-State: AOAM530u/VybdnFARYtUdcSAcjoWmsDdKmZyo/AHBy7G4iE7TLkv4Fw5
+        /zGWqVjII2XnRhI1tRDpGmX+8sIdTxQ=
+X-Google-Smtp-Source: ABdhPJyeo9ASPr+VwVHSVb8IrezczgVHTkgWpaP4c6HDtRlsU9HVdejupiKwjp09gsQ35bIHtZZuiw==
+X-Received: by 2002:a19:500e:: with SMTP id e14mr73000lfb.88.1591742442633;
+        Tue, 09 Jun 2020 15:40:42 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id 11sm4533623lju.118.2020.06.09.15.40.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jun 2020 15:40:41 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id e125so300988lfd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 15:40:41 -0700 (PDT)
+X-Received: by 2002:a19:ae0f:: with SMTP id f15mr73046lfc.142.1591742441027;
+ Tue, 09 Jun 2020 15:40:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/cE9ciLePVRM+n3cb/CfzlJ_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <3071963.1591734633@warthog.procyon.org.uk>
+In-Reply-To: <3071963.1591734633@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 9 Jun 2020 15:40:25 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi4VjVHkMcALg3T4A+Vwfyo0NBWtPoKwvO8pWe_v=NF6Q@mail.gmail.com>
+Message-ID: <CAHk-=wi4VjVHkMcALg3T4A+Vwfyo0NBWtPoKwvO8pWe_v=NF6Q@mail.gmail.com>
+Subject: Re: [GIT PULL] afs: Misc small fixes
+To:     David Howells <dhowells@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>, chengzhihao1@huawei.com,
+        linux-afs@lists.infradead.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/cE9ciLePVRM+n3cb/CfzlJ_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jun 9, 2020 at 1:30 PM David Howells <dhowells@redhat.com> wrote:
+>
+> Would you prefer I defer and submit it again after -rc1?
 
-Hi all,
+No, I'll take fixes at any time, and the better shape rc1 is in, the
+happier everybody will be and the more likely we'll have testers..
 
-Commits
-
-  e711da8e6306 ("ARM: dts: am437x-epos-evm: remove lcd timings")
-  02d1ba4bdba0 ("ARM: dts: am437x-gp-evm: remove lcd timings")
-  dc7677dbb854 ("ARM: dts: am437x-sk-evm: remove lcd timings")
-
-are missing a Signed-off-by from their committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/cE9ciLePVRM+n3cb/CfzlJ_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7gD7wACgkQAVBC80lX
-0GyZTAf+JpbYiKRBubtX1nNWV0huR5l4lHtVok1Tpw30xZzSilRjiwc/Sw24G17K
-505KuchM7/+uhZ6KVf15e62mBbbkjmnpdJ9qudr+jS9bybP9E9pSwuRUpMaEIdM/
-reV5JYt4CLNG93WNDziGZSqfstvQ8KMAwJBcdfvfrV0RCC23V3GuAy2DjW2kBT2u
-0QCvquPPO6oFEu7koZsxglUMO2waYLKVXpw8Lb8K8Spdz7saHk4ZOv6zMz0sPJTO
-kvqvaepEEUGodY/GOa0g3TxXMYchKAyQYeYLwjNiPc3JT+ITXvcXVzlGIhQx0OWn
-Y4umzBotPYR8UUMfsaMz1252WoTuOQ==
-=DV0T
------END PGP SIGNATURE-----
-
---Sig_/cE9ciLePVRM+n3cb/CfzlJ_--
+             Linus
