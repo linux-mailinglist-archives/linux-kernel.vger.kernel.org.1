@@ -2,209 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5566A1F3DD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F791F3DDD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730386AbgFIOTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 10:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726967AbgFIOTm (ORCPT
+        id S1730428AbgFIOUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:20:36 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:55751 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726967AbgFIOUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:19:42 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE65C05BD1E;
-        Tue,  9 Jun 2020 07:19:42 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id p21so10337726pgm.13;
-        Tue, 09 Jun 2020 07:19:42 -0700 (PDT)
+        Tue, 9 Jun 2020 10:20:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TBM8UzUFQRAFXnadODNP4SC5I3SYQdfsI182+mdN99I=;
-        b=robkr4JeDjRuxira1Rr1HMwmepK/jy5iMNR4VO2+sugmN2Qfs9w/G4u6YHgpnsUuKx
-         0xrsGSyercM6BnkS802AGU4qBDrHJ9OLVViubfUx1QX8eUZiLXWod5C9gLXDtugSCRIi
-         50cOjHrJ9PyMN+kCjAT+QSovuPV8AiLQRPXTKq761mFEa6q5/EqJdDeF/SEYEJSE1BNE
-         J3gPdDMZtMIrLLmlZaKzHC6fO5ywUCMDQ+3wqBNvXq3HpkovNmuMHp3u7/NqmQysnh9k
-         UXoFFtjAk3dwxlC9bqbLHGz6D8a161Ju2xuxJFblfyv22KZckKiMqRjBPc7ScQg4V1E2
-         9wwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TBM8UzUFQRAFXnadODNP4SC5I3SYQdfsI182+mdN99I=;
-        b=qaTn0j9RZ55cZyYzOhX4bbxXoDAae2DZy0GMWlBwbIXa2+7Kw/g4vlQByazqS4e040
-         Cm2qdbscce8fv4OMdhfD8JmgTZNktJhKrQtbkA/CWPhL/vmpc1fBr9ynSs2zmbVvB1y+
-         EoglhFEhPGqiNo2YrmvFI9wdCbVfnYu5r1oHfiffhScYZaJm8vBfVAb24uVPAbaGZxEr
-         Hj9ncdS0cVLo9UlAB32ARghHem/Evw3zXo6DZEWQ5oyeigc7OW6B3LJNZaFBltoTIQZN
-         6qJtsePyoawCuJVcyqtyiSqAiuKMyiXFvBk1grYmvnpqlD+YxPYrCvUzVbdpvMP/qOHT
-         vI2A==
-X-Gm-Message-State: AOAM533WIBkpdUyX9KzXqvlf+udMbonXWAhOwF1BxL9Gl4YsbpJxnLxf
-        QXSQXeIpBKdmqdgo3bt8XpuP5FJsN4C+1p0Vtn8=
-X-Google-Smtp-Source: ABdhPJxStCJ8sGascE2rC3EJCjWx/Wwyx7yNwiY+l2i+Fbip9MDjYWBd+z97hidMXyAQuBXbm4qYdEPklBp+cUjoXkk=
-X-Received: by 2002:a62:3103:: with SMTP id x3mr9005809pfx.130.1591712381739;
- Tue, 09 Jun 2020 07:19:41 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1591712433; x=1623248433;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=zamFGhILMXXgTSQng1759ZxsRtt1vLQ8ujhImLih0+4=;
+  b=gfzRCHQIiS5P0oxzRDkNVBhKeMXcLQFzCtfdQNtsxrE09gGPPVrn9Ga+
+   KCVw2/j9HIiPEo6aq29eoATwcEFB+RgaDAVGe22Tmhei3f+CAXvc/EpqY
+   ldeHuYP7tSxg8rIKZGxHDn+KaTnjQ/fLMCaDd3R8nfMTLasJVsIs2iS5h
+   g=;
+IronPort-SDR: 6YBcpF3s/Glx9uj5aQV4vEWC/puqikLHM1Z2XSU57pA6uYkTzBc3GlGZIfuARpAULM/ViXnljh
+ K4wYTtPlvU4Q==
+X-IronPort-AV: E=Sophos;i="5.73,492,1583193600"; 
+   d="scan'208";a="42677583"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 09 Jun 2020 14:20:28 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id 1AEB2A2091;
+        Tue,  9 Jun 2020 14:20:16 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 9 Jun 2020 14:20:16 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.109) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 9 Jun 2020 14:19:59 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
+        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
+        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
+        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
+        <peterz@infradead.org>, <rdunlap@infradead.org>,
+        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
+        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
+        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
+        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
+        <ying.huang@intel.com>, <david@redhat.com>,
+        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [RFC v3 00/10] DAMON: Support Access Monitoring of Any Address Space Including Physical Memory
+Date:   Tue, 9 Jun 2020 16:19:31 +0200
+Message-ID: <20200609141941.19184-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200609110136.GJ4106@dell>
-In-Reply-To: <20200609110136.GJ4106@dell>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 9 Jun 2020 17:19:30 +0300
-Message-ID: <CAHp75Vfy2siUikK7bN3iM=pj3B8XYWzszkKAFgBt0SFh26s+Sw@mail.gmail.com>
-Subject: Re: [RFC] MFD's relationship with Device Tree (OF)
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Michael Walle <michael@walle.cc>, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        GregKroah-Hartmangregkh@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.109]
+X-ClientProxiedBy: EX13D30UWC004.ant.amazon.com (10.43.162.4) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 9, 2020 at 2:01 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Good morning,
->
-> After a number of reports/queries surrounding a known long-term issue
-> in the MFD core, including the submission of a couple of attempted
-> solutions, I've decided to finally tackle this one myself.
->
-> Currently, when a child platform device (sometimes referred to as a
-> sub-device) is registered via the Multi-Functional Device (MFD) API,
-> the framework attempts to match the newly registered platform device
-> with its associated Device Tree (OF) node.  Until now, the device has
-> been allocated the first node found with an identical OF compatible
-> string.  Unfortunately, if there are, say for example '3' devices
-> which are to be handled by the same driver and therefore have the same
-> compatible string, each of them will be allocated a pointer to the
-> *first* node.
->
-> Let me give you an example.
->
-> I have knocked up an example 'parent' and 'child' device driver.  The
-> parent utilises the MFD API to register 3 identical children, each
-> controlled by the same driver.  This happens a lot.  Fortunately, in
-> the majority of cases, the OF nodes are also totally identical, but
-> what if you wish to configure one of the child devices with different
-> attributes or resources supplied via Device Tree, like a clock?  This
-> is currently impossible.
->
-> Here is the Device Tree representation for the 1 parent and the 3
-> child (sub) devices described above:
->
->         parent {
->                 compatible = "mfd,of-test-parent";
->
->                 child@0 {
->                         compatible = "mfd,of-test-child";
->                         clocks = <&clock 0>;
->                 };
->
->                 child@1 {
->                         compatible = "mfd,of-test-child";
->                         clocks = <&clock 1>;
->                 };
->
->                 child@2 {
->                         compatible = "mfd,of-test-child";
->                         clocks = <&clock 2>;
->                 };
->         };
->
-> This is how we register those devices from MFD:
->
-> static const struct mfd_cell mfd_of_test_cell[] = {
->         OF_MFD_CELL("mfd_of_test_child", NULL, NULL, 0, 0, "mfd,of-test-child"),
->         OF_MFD_CELL("mfd_of_test_child", NULL, NULL, 0, 1, "mfd,of-test-child"),
->         OF_MFD_CELL("mfd_of_test_child", NULL, NULL, 0, 2, "mfd,of-test-child")
-> };
->
-> ... which we pass into mfd_add_devices() for processing.
->
-> In an ideal world.  The devices with the platform_id; 0, 1 and 2 would
-> be matched up to Device Tree nodes; child@0, child@1 and child@2
-> respectively.  Instead all 3 devices will be allocated a pointer to
-> child@0's OF node, which is obviously not correct.
->
-> This is how it looks when each of the child devices are probed:
->
->  [0.708287] mfd-of-test-parent mfd_of_test: Registering 3 devices
->  [...]
->  [0.712511] mfd-of-test-child mfd_of_test_child.0: Probing platform device: 0
->  [0.712710] mfd-of-test-child mfd_of_test_child.0: Using OF node: child@0
->  [0.713033] mfd-of-test-child mfd_of_test_child.1: Probing platform device: 1
->  [0.713381] mfd-of-test-child mfd_of_test_child.1: Using OF node: child@0
->  [0.713691] mfd-of-test-child mfd_of_test_child.2: Probing platform device: 2
->  [0.713889] mfd-of-test-child mfd_of_test_child.2: Using OF node: child@0
->
-> "Why is it when I change child 2's clock rate, it also changes 0's?"
->
-> Whoops!
->
-> So in order to fix this, we need to make MFD more-cleverer!
->
-> However, this is not so simple.  There are some rules we should abide
-> by (I use "should" intentionally here, as something might just have to
-> give):
->
->  a) Since Device Tree is designed to describe hardware, inserting
->     arbitrary properties into DT is forbidden.  This precludes things
->     we would ordinarily be able to match on, like 'id' or 'name'.
->  b) As an extension to a) DTs should also be OS agnostic, so
->     properties like 'mfd-device', 'mfd-order' etc are also not
->     not suitable for inclusion.
->  c) The final solution should ideally be capable of supporting both
->     newly defined and current trees (without retroactive edits)
->     alike.
->  d) Existing properties could be used, but not abused.  For example,
->     one of my suggestions (see below) is to use the 'reg' property.
->     This is fine in principle but loading 'reg' with arbitrary values
->     (such as; 0, 1, 2 ... x) which 1) clearly do not have anything to
->     do with registers and 2) would be meaningless in other OSes/
->     implementations, just to serve our purpose, is to be interpreted
->     as an abuse.
->
-> Proposal 1:
->
-> As mentioned above, my initial thoughts were to use the 'reg' property
-> to match an MFD cell entry with the correct DT node.  However, not
-> all Device Tree nodes have 'reg' properties.  Particularly true in the
-> case of MFD, where memory resources are usually shared with the parent
-> via Regmap, or (as in the case of the ab8500) the MFD handles all
-> register transactions via its own API.
->
-> Proposal 2:
->
-> If we can't guarantee that all DT nodes will have at least one
-> property in common to be used for matching and we're prevented from
-> supplying additional, potentially bespoke properties, then we must
-> seek an alternative procedure.
->
-> It should be possible to match based on order.  However, the developer
-> would have to guarantee that the order in which the child devices are
-> presented to the MFD API are in exactly the same order as they are
-> represented in the Device Tree.  The obvious draw-back to this
-> strategy is that it's potentially very fragile.
->
-> Current Proposal:
->
-> How about a collection of Proposal 1 and Proposal 2?  First we could
-> attempt a match on the 'reg' property.  Then, if that fails, we would
-> use the fragile-but-its-all-we-have Proposal 2 as the fall-back.
->
-> Thoughts?
+From: SeongJae Park <sjpark@amazon.de>
 
-Just a side note, have you considered software nodes on the picture?
-You can add properties or additional references to the existing
-(firmware) nodes.
+Currently, DAMON[1] supports only virtual memory address spaces because it
+utilizes PTE Accessed bits as its low-level access check primitive and ``struct
+vma`` as a way to address the monitoring target regions.  However, the core
+idea of DAMON, which makes it able to provide the accurate, efficient, and
+scalable monitoring, is in a separate higher layer.  Therefore, DAMON can be
+extended for other various address spaces by changing the two low primitives to
+others for the address spaces.
+
+This patchset makes the DAMON's low level primitives configurable and provide
+reference implementation of the primitives for the virtual memory address
+spaces and the physical memory address space.  Therefore, users can monitor
+both of the two address spaces by simply configuring the provided low level
+primitives.  Note that only the user memory is supported, as same to the idle
+page access tracking feature.
+
+After this patchset, the programming interface users can implement the
+primitives by themselves for their special use cases.  Clean/dirty/entire page
+cache, NUMA nodes, specific files, or block devices would be examples of such
+special use cases.
+
+[1] https://lore.kernel.org/linux-mm/20200608114047.26589-1-sjpark@amazon.com/
+
+
+Baseline and Complete Git Trees
+===============================
+
+The patches are based on the v5.7 plus DAMON v15 patchset[1] and DAMOS RFC v11
+patchset[2].  You can also clone the complete git tree:
+
+    $ git clone git://github.com/sjp38/linux -b cdamon/rfc/v3
+
+The web is also available:
+https://github.com/sjp38/linux/releases/tag/cdamon/rfc/v3
+
+[1] https://lore.kernel.org/linux-mm/20200608114047.26589-1-sjpark@amazon.com/
+[2] https://lore.kernel.org/linux-mm/20200609065320.12941-1-sjpark@amazon.com/
+
+
+Sequence of Patches
+===================
+
+The sequence of patches is as follow.  The 1st patch defines the monitoring
+region again based on pure address range abstraction so that no assumption of
+virtual memory is in there.
+
+The 2nd patch allows users to configure the low level pritimives for
+initialization and dynamic update of the target address regions, which were
+previously coupled with the virtual memory.  Then, the 3rd and 4th patches
+allow user space to also be able to set the monitoring target regions via the
+debugfs and the user space tool.  The 5th patch documents this feature.
+
+The 6th patch makes the access check primitives, which were coupled with the
+virtual memory address, freely configurable.  Now any address space can be
+supported.  The 7th patch provides the reference implementations of the
+configurable primitives for the physical memory monitoring.  The 8th and 9th
+patch makes the user space to be able to use the physical memory monitoring via
+debugfs and the user space tool, respectively.  Finally, the 10th patch
+documents the physical memory monitoring support.
+
+
+Patch History
+=============
+
+Changes from RFC v2
+(https://lore.kernel.org/linux-mm/20200603141135.10575-1-sjpark@amazon.com/)
+ - Support the physical memory monitoring with the user space tool
+ - Use 'pfn_to_online_page()' (David Hildenbrand)
+ - Document more detail on random 'pfn' and its safeness (David Hildenbrand)
+
+Changes from RFC v1
+(https://lore.kernel.org/linux-mm/20200409094232.29680-1-sjpark@amazon.com/)
+ - Provide the reference primitive implementations for the physical memory
+ - Connect the extensions with the debugfs interface
+
+SeongJae Park (10):
+  mm/damon: Use vm-independent address range concept
+  mm/damon: Make monitoring target regions init/update configurable
+  mm/damon/debugfs: Allow users to set initial monitoring target regions
+  tools/damon: Implement init target regions feature
+  Docs/damon: Document 'initial_regions' feature
+  mm/damon: Make access check primitive configurable
+  mm/damon: Implement callbacks for physical memory monitoring
+  mm/damon/debugfs: Support physical memory monitoring
+  tools/damon/record: Support physical memory address spce
+  Docs/damon: Document physical memory monitoring support
+
+ Documentation/admin-guide/mm/damon/faq.rst    |  16 +-
+ Documentation/admin-guide/mm/damon/index.rst  |   1 -
+ .../admin-guide/mm/damon/mechanisms.rst       |   4 +-
+ Documentation/admin-guide/mm/damon/plans.rst  |  29 -
+ Documentation/admin-guide/mm/damon/usage.rst  |  73 ++-
+ include/linux/damon.h                         |  47 +-
+ include/trace/events/damon.h                  |   4 +-
+ mm/damon-test.h                               |  78 +--
+ mm/damon.c                                    | 518 +++++++++++++++---
+ tools/damon/_damon.py                         |  41 ++
+ tools/damon/heats.py                          |   2 +-
+ tools/damon/record.py                         |  41 +-
+ tools/damon/schemes.py                        |  12 +-
+ 13 files changed, 690 insertions(+), 176 deletions(-)
+ delete mode 100644 Documentation/admin-guide/mm/damon/plans.rst
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
