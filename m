@@ -2,99 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659C01F3E8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9103B1F3E8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jun 2020 16:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730572AbgFIOpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 10:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
+        id S1730620AbgFIOqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 10:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730525AbgFIOpj (ORCPT
+        with ESMTP id S1730603AbgFIOqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:45:39 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53B4C05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 07:45:37 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id x202so18946299oix.11
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 07:45:37 -0700 (PDT)
+        Tue, 9 Jun 2020 10:46:38 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E389EC05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 07:46:37 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id f18so21040689qkh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 07:46:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9qjLlhlbq20TF9w4Fo/M8ySKfJ7eojkDP5aGVWyOb9E=;
-        b=z+8b5Aw4ReeJD8+ObpGHGXPUhGsTR0gr5SV7FLXc+P6XyTivIvbKYbXn2iGa4306Xy
-         xFY5A1sUjgYUM2qSuzyb6/WrbfEeLEIjrD3WFyGO56S6WTB0CYRWbUfgIPqzPtlV1Dz+
-         6K0+QjFjDhw/1pCCXZpNi42Y7G8cTigM9qpKj2Yp2zkqnbsEN9RGtlB5EP/3KK20AnSb
-         XjZwLcohX2VShXTqRdmqw2AG1mzi1Cfk64FCIP+NRSIspVtr4HWH1ecomZCgqvr8Mu03
-         k2P6oYmAHZ7LwqTUF4Rrow3mFI6CffGN4KUzwiq5pmXZQtKlJllUtaSWEkFBspsb3PD2
-         XYbQ==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=K/z6d17bM6CZ1yRiOWNL2RNldGzd1FsrG0sI3iVgOdY=;
+        b=UicR4JIbN42s8kz0OU+6/Ag9GZZSbq+0yM4FgBbXTtyCBq58aliQiGguIJJDXNrkKS
+         96LEnAh88GMRNcnytADnFry3HoOGQY0ByuYcVHq9xTgM2aQ+uQVa4V2mt2bJS5A9HyPT
+         VdGzC4RdpUtv4WmbAtK1nVmNWKyb8GbBXIXpCUKvND0akz6zL2J03wQKTvvL5ppjGcwI
+         lfUD+Xp624KOABogal8AdKwZhNOH3tTVeMtDtZ2mnhqVSsZSLrs+y6s4gDH4qm8oQiJ5
+         UXhgne+FHZwC71UMSeaUiUYUZ06acXylqoK7As8lUhTs3cI1b7UJzr2jS5uPuwNUgq8o
+         kzCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9qjLlhlbq20TF9w4Fo/M8ySKfJ7eojkDP5aGVWyOb9E=;
-        b=OziMsVNDLOM6N6or8vZzsGFV0EyrcntQ6SA3FMvbZmyqQxWvFC+QcznKA2g3EHBcVY
-         nc+YWsqqD44AkBPeFwY1hRwJJF939F2tjKg2BI4W7NyQejZrYbrd3s3VEjNSfpDw7hFW
-         enx1QciRoGa0xr9VnRLRPCtPsbFrjhQIJmlJi8sGftqOM4nA7hDAwJUUdBL+iAKEUfr4
-         uMi+tX4+HW4WPsjSN8EDOsAlVdieGmfRqkTh4VhA5xVb7eZ6dJ/EoV5B1IhrMa+XOfGd
-         kB7UQNnVIrHW6mKsezpceO3Qwu2sKpmsHItSuCimGZSqU3YZq0yf9M7mVa4NTQSkZNlC
-         sJlQ==
-X-Gm-Message-State: AOAM533tbPQHY/559z8DnMce7M0m1G9JDcq+JoDJD+0mslzXcUaeXVYJ
-        LiRY6WaaNYK3sI02jPuoz1imMj+J9zh/fgQI9YoemA==
-X-Google-Smtp-Source: ABdhPJzQvo0oNgTTh3O9V6qB7+EiOf+sDca48St6UCVl/1HYUyiYmK4ibHrd6RbILNWCIvob0QRF+qZoblwM9pe02js=
-X-Received: by 2002:aca:a8c3:: with SMTP id r186mr3699932oie.173.1591713936880;
- Tue, 09 Jun 2020 07:45:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=K/z6d17bM6CZ1yRiOWNL2RNldGzd1FsrG0sI3iVgOdY=;
+        b=EZmTAt4F/qJ7xb0mjvNIL+i/6a6vaHzo8hrpAi229FcjWCxmu0VuW4W/yD9zxEBgNF
+         mOk8b8nTwexdMG6aLRDVGtMvOTYZBaoDIWLbTe3ccNq79f1KBLsDhJRP+W6Ys2SkRDMK
+         pRDiLb8ll3R/Az0KkireyQn/7DpDrSFEIx0lTm8MMvkgBQJSbdEXkX5AwfZ4OwqZCwyw
+         FCOvlqEo5x26o9x+ieDoKs2pkN3e6jvP9DCkH2TUA5hGEQd4lKk+4fXVWnC6T/3OM1b9
+         8vI819LZe4QDKfCxgmI+N7V1Gc4A++IAcdJMrQNX8k5f2DZoLZdlgYfNLFloFc+lypuS
+         hkXA==
+X-Gm-Message-State: AOAM531YGmWkS2+RHIPDqEOxtfKYUQn10qd2Dq49Z0VzESa/EXW9JI+7
+        wfjBOgXWKxwX8lOAy77rDv4tHg==
+X-Google-Smtp-Source: ABdhPJzUlzfAEXmBIoUGNXohwOf1MQpFCkJG/fDZNnAITRiz9+WNk5lph79IKWPxvKqUzgaRsRxMcw==
+X-Received: by 2002:a37:7c6:: with SMTP id 189mr27091666qkh.24.1591713997119;
+        Tue, 09 Jun 2020 07:46:37 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:b568])
+        by smtp.gmail.com with ESMTPSA id b4sm9087946qka.133.2020.06.09.07.46.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 07:46:35 -0700 (PDT)
+Date:   Tue, 9 Jun 2020 10:45:51 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        iamjoonsoo.kim@lge.com, linux-mm@kvack.org, mhocko@suse.com,
+        minchan@kernel.org, mm-commits@vger.kernel.org, riel@surriel.com,
+        torvalds@linux-foundation.org
+Subject: Re: [patch 113/131] mm: balance LRU lists based on relative thrashing
+Message-ID: <20200609144551.GA452252@cmpxchg.org>
+References: <20200603230303.kSkT62Lb5%akpm@linux-foundation.org>
+ <a60f7866-3b32-7a0e-5d0a-a48d77f845a8@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20200503201823.531757-1-robert.marko@sartura.hr>
- <20200503201823.531757-3-robert.marko@sartura.hr> <20200504073914.GQ1375924@vkoul-mobl>
- <CA+HBbNEiB+o4KxonAu4-ra+P11Yb649v6AFaPjFc8JQDQ8T=CA@mail.gmail.com>
-In-Reply-To: <CA+HBbNEiB+o4KxonAu4-ra+P11Yb649v6AFaPjFc8JQDQ8T=CA@mail.gmail.com>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Tue, 9 Jun 2020 16:45:25 +0200
-Message-ID: <CA+HBbNFsZ-v_2cMhDNGnQXTFaqsjGzB+1rAS3=_CLQhd0N4OKQ@mail.gmail.com>
-Subject: Re: [PATCH v7 3/3] ARM: dts: qcom: ipq4019: add USB devicetree nodes
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        robh+dt@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, John Crispin <john@phrozen.org>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a60f7866-3b32-7a0e-5d0a-a48d77f845a8@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI,
-Vinod can you maybe pick this?
+On Tue, Jun 09, 2020 at 05:15:33PM +0800, Alex Shi wrote:
+> 
+> 
+> 在 2020/6/4 上午7:03, Andrew Morton 写道:
+> >  
+> > +	/* XXX: Move to lru_cache_add() when it supports new vs putback */
+> 
+> Hi Hannes,
+> 
+> Sorry for a bit lost, would you like to explain a bit more of your idea here?
+> 
+> > +	spin_lock_irq(&page_pgdat(page)->lru_lock);
+> > +	lru_note_cost(page);
+> > +	spin_unlock_irq(&page_pgdat(page)->lru_lock);
+> > +
+> 
+> 
+> What could we see here w/o the lru_lock?
 
-It would be great to have nodes in 5.8 along the driver
+It'll just be part of the existing LRU locking in
+pagevec_lru_move_fn(), when the new pages are added to the LRU in
+batch. See this older patch for example:
 
-Thank
-Robert
+https://lore.kernel.org/linux-mm/20160606194836.3624-6-hannes@cmpxchg.org/
 
-On Fri, May 29, 2020 at 11:36 AM Robert Marko <robert.marko@sartura.hr> wrote:
->
-> On Mon, May 4, 2020 at 9:39 AM Vinod Koul <vkoul@kernel.org> wrote:
-> >
-> > On 03-05-20, 22:18, Robert Marko wrote:
-> > > From: John Crispin <john@phrozen.org>
-> > >
-> > > Since we now have driver for the USB PHY, lets add the necessary nodes to DTSI.
-> >
-> > Reviewed-by: Vinod Koul <vkoul@kernel.org>
-> >
-> > Bjorn, I have picked the phy and dt binding, feel free to apply this one
-> >
-> > Thanks
-> > --
-> > ~Vinod
->
-> Any chance of this landing into 5.7?
-> Driver and bindings have been merged, but I don't see DT nodes queued.
->
-> Regards,
-> Robert
+I didn't include it in this series to reduce conflict with Joonsoo's
+WIP series that also operates in this area and does something similar:
+
+https://lkml.org/lkml/2020/4/3/63
