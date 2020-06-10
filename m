@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD981F52BD
+	by mail.lfdr.de (Postfix) with ESMTP id E75DF1F52BF
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 13:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbgFJLAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 07:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
+        id S1728413AbgFJLAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 07:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728264AbgFJLAt (ORCPT
+        with ESMTP id S1728391AbgFJLAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 07:00:49 -0400
+        Wed, 10 Jun 2020 07:00:50 -0400
 Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812CCC03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 04:00:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4462CC03E96B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 04:00:50 -0700 (PDT)
 Received: from zn.tnic (p200300ec2f0c190029f750dc462a5b02.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1900:29f7:50dc:462a:5b02])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0B0AD1EC0317;
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C87C91EC0337;
         Wed, 10 Jun 2020 13:00:48 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
         t=1591786848;
@@ -26,17 +26,17 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
          to:to:cc:cc:mime-version:mime-version:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XBzOABQUd591TyBEU9dsi0//qzbZT6iFLsu3+nMNxcQ=;
-        b=SQtovXi38gLCy5hfVcdADCqEDzVedb2q9TE/Nvzkrdube+faNm9cxIvtzgiG7kwwfWhxwU
-        gMMFSTya0B9xyP0aQ4am2o99oTgWHkqiOin8myn0bChPoiJuzemtXHpKzaD3QEWS0Rd6uw
-        2iuBsi8K2HRnc0/EZadubvGGpsicxYc=
+        bh=8D/Xd4asti5WQ80/nNPSNC21MIxmP2e26aliItYjwlQ=;
+        b=J6cLlSM4lAeA5Zda4NkEZZIoTvZnDv7pdBuFBtw/tpMfkBTrj3wEzGUwD6Cx43nK/GxX3Q
+        pGj5ikcGvPEViMrZRTQ+Kvhpm02ppqzRO5ld2NTy0X7lgTmCKCbtXa7ZSqE6G++QRJzhbc
+        sE6Qhh4r9oNsCFfE5sBIKNqDO5KF9DM=
 From:   Borislav Petkov <bp@alien8.de>
 To:     X86 ML <x86@kernel.org>
 Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
         LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/3] x86/msr: Pass a single MSR value to __rwmsr_on_cpus() too
-Date:   Wed, 10 Jun 2020 13:00:35 +0200
-Message-Id: <20200610110037.11853-2-bp@alien8.de>
+Subject: [PATCH 2/3] x86/msr: Add wrmsrl_val_on_cpus()
+Date:   Wed, 10 Jun 2020 13:00:36 +0200
+Message-Id: <20200610110037.11853-3-bp@alien8.de>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200610110037.11853-1-bp@alien8.de>
 References: <20200610110037.11853-1-bp@alien8.de>
@@ -49,71 +49,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Borislav Petkov <bp@suse.de>
 
-__rwmsr_on_cpus() is the low-level worker function which is called by
-the exported {rd,wr}msr_on_cpus() when an MSR is supposed to be set with
-values for CPUs or an MSR is supposed to be read from CPUs into an array
-of percpu variables in @msrs.
-
-The low-level machinery supports also passing a single MSR value for the
-single CPU {rd,wr}msr_on_cpu() handlers.
-
-Pass that value to __rwmsr_on_cpus() too and enforce a mutually
-exclusive either a single MSR value "XOR" an array of per-CPU MSR
-values.
-
-This is the prerequisite for supporting writing the same MSR value on
-multiple CPUs.
+Add a helper which writes the same MSR value on a set of CPUs.
 
 Signed-off-by: Borislav Petkov <bp@suse.de>
 ---
- arch/x86/lib/msr-smp.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/msr.h |  8 ++++++++
+ arch/x86/lib/msr-smp.c     | 15 +++++++++++++++
+ 2 files changed, 23 insertions(+)
 
+diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
+index 86f20d520a07..71393a4c2104 100644
+--- a/arch/x86/include/asm/msr.h
++++ b/arch/x86/include/asm/msr.h
+@@ -342,6 +342,7 @@ int rdmsrl_on_cpu(unsigned int cpu, u32 msr_no, u64 *q);
+ int wrmsrl_on_cpu(unsigned int cpu, u32 msr_no, u64 q);
+ void rdmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr *msrs);
+ void wrmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr *msrs);
++void wrmsrl_val_on_cpus(const struct cpumask *mask, u32 msr_no, u64 reg_val);
+ int rdmsr_safe_on_cpu(unsigned int cpu, u32 msr_no, u32 *l, u32 *h);
+ int wrmsr_safe_on_cpu(unsigned int cpu, u32 msr_no, u32 l, u32 h);
+ int rdmsrl_safe_on_cpu(unsigned int cpu, u32 msr_no, u64 *q);
+@@ -379,6 +380,13 @@ static inline void wrmsr_on_cpus(const struct cpumask *m, u32 msr_no,
+ {
+ 	wrmsr_on_cpu(0, msr_no, msrs[0].l, msrs[0].h);
+ }
++
++static inline void wrmsrl_val_on_cpus(const struct cpumask *mask, u32 msr_no,
++				      u64 reg_val)
++{
++	wrmsrl(msr_no, reg_val);
++}
++
+ static inline int rdmsr_safe_on_cpu(unsigned int cpu, u32 msr_no,
+ 				    u32 *l, u32 *h)
+ {
 diff --git a/arch/x86/lib/msr-smp.c b/arch/x86/lib/msr-smp.c
-index fee8b9c0520c..15e1157d6b29 100644
+index 15e1157d6b29..f67ee2fdec69 100644
 --- a/arch/x86/lib/msr-smp.c
 +++ b/arch/x86/lib/msr-smp.c
-@@ -97,7 +97,7 @@ int wrmsrl_on_cpu(unsigned int cpu, u32 msr_no, u64 q)
- EXPORT_SYMBOL(wrmsrl_on_cpu);
- 
- static void __rwmsr_on_cpus(const struct cpumask *mask, u32 msr_no,
--			    struct msr *msrs,
-+			    struct msr *msrs, u64 reg_val,
- 			    void (*msr_func) (void *info))
- {
- 	struct msr_info rv;
-@@ -105,8 +105,13 @@ static void __rwmsr_on_cpus(const struct cpumask *mask, u32 msr_no,
- 
- 	memset(&rv, 0, sizeof(rv));
- 
-+	/* Can't have both. */
-+	if (WARN_ON(msrs && reg_val))
-+		return;
-+
- 	rv.msrs	  = msrs;
- 	rv.msr_no = msr_no;
-+	rv.reg.q  = reg_val;
- 
- 	this_cpu = get_cpu();
- 
-@@ -126,7 +131,7 @@ static void __rwmsr_on_cpus(const struct cpumask *mask, u32 msr_no,
-  */
- void rdmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr *msrs)
- {
--	__rwmsr_on_cpus(mask, msr_no, msrs, __rdmsr_on_cpu);
-+	__rwmsr_on_cpus(mask, msr_no, msrs, 0, __rdmsr_on_cpu);
- }
- EXPORT_SYMBOL(rdmsr_on_cpus);
- 
-@@ -140,7 +145,7 @@ EXPORT_SYMBOL(rdmsr_on_cpus);
-  */
- void wrmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr *msrs)
- {
--	__rwmsr_on_cpus(mask, msr_no, msrs, __wrmsr_on_cpu);
-+	__rwmsr_on_cpus(mask, msr_no, msrs, 0, __wrmsr_on_cpu);
+@@ -149,6 +149,21 @@ void wrmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr *msrs)
  }
  EXPORT_SYMBOL(wrmsr_on_cpus);
  
++/*
++ * wrmsr a single MSR value on a bunch of CPUs. To be used for MSRs which are
++ * the same on each core.
++ *
++ * @mask:       which CPUs
++ * @msr_no:     which MSR
++ * @reg_val:	MSR value
++ *
++ */
++void wrmsrl_val_on_cpus(const struct cpumask *mask, u32 msr_no, u64 reg_val)
++{
++	__rwmsr_on_cpus(mask, msr_no, NULL, reg_val, __wrmsr_on_cpu);
++}
++EXPORT_SYMBOL(wrmsrl_val_on_cpus);
++
+ struct msr_info_completion {
+ 	struct msr_info		msr;
+ 	struct completion	done;
 -- 
 2.21.0
 
