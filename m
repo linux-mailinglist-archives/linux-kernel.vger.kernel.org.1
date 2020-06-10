@@ -2,259 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6914A1F5EE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 01:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8DE1F5EEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 01:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgFJXxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 19:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726722AbgFJXxY (ORCPT
+        id S1726939AbgFJXxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 19:53:47 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37235 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726722AbgFJXxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 19:53:24 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C71C03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 16:53:23 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id z9so4687001ljh.13
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 16:53:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=W6SCjDxf22ZPANpZkdg4mqj/y3A2+mTLbWB05CxEliY=;
-        b=IR8s4wI+ZHHWWMK7YYOZWyKUNFQ2sn1ZrHgrWtk2z9s4ucWBarBfet9rt/ChY91Dhb
-         RvzTJA6x6Q0O+SHEkOKIjRn7KcAtkL5gBb6f7iGH6NGGzmIZW8At1Tj1UZ0v5ufe24Uy
-         swpgoYVFQt57qWUvtqBeVcO0gMpkZE+jpRRdD9hTgYEKetwdEhTvhsqyT2ayQyOyK1VP
-         8K3rdYayjtifFTNQbuHQcNnYc8amQKuI4wyzN+MshYjvilRFeMFUnEqWdvwoXq66u34n
-         nQqSEAOIC0eo7My+Hplf55mSo1dJjJzXJlh6qLEikxa6LY3Dz7ulLgKGveRomG9rorr2
-         ptlg==
+        Wed, 10 Jun 2020 19:53:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591833222;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WI0+NbsJ1zacj1DISmUqJe9tzBi7AdJpLzC1uFJh4Cs=;
+        b=H0wzv/v3BWCPA2djtVukAHnf43Pm8dLaD6+Et3jfxbDmP4FuIwbFwCMIEuY9usi+PEpbXC
+        WdhJ3liVgdMjRxLivYm9TZx7lKWlk2KQUcb9qtIwTATOaQJ2TeN1e+Xyzf2KJvpDB6Gebo
+        +1OVm/gTCN4T5FykoBS8irKMgjI5lfs=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-405-j04VmEwoN5CeWZl27wQuYg-1; Wed, 10 Jun 2020 19:53:40 -0400
+X-MC-Unique: j04VmEwoN5CeWZl27wQuYg-1
+Received: by mail-wr1-f69.google.com with SMTP id p10so1753966wrn.19
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 16:53:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=W6SCjDxf22ZPANpZkdg4mqj/y3A2+mTLbWB05CxEliY=;
-        b=WrTk5B3pwwQtQAtOZ6/nuTVf3G+1/flCPBxclVE0J5KRkRcE4uT69IzOeEhl2XZ83k
-         Q24fgqqE1edhonFxM2VYz5W1Hi24pHTCBBRZEYT9PuwyvgxSYiQ68j3Ix11Kw1aBQ5pC
-         zZEZ+0v3mUqRGISBlQkhXwEDGf94jZZUtyKPHqNy/PWBE1ug5PmtarXGmvcL2f01QGgX
-         TqakCJLQJjteFJg35u5bRkWw4kz9vY1IVmCQ46Jj1Dfe7/SqtiaCcCwdTMgf8dscPYJQ
-         bznsxvP7Q98zoz57gO5Vu12TzIWs5VM1/E6pjsGAcLJ0haBdInfOs3wVo2o/DAa1QLAF
-         Pgxw==
-X-Gm-Message-State: AOAM531+XnLVV9lo9pyCafD9+eZf2coCxHveqxif1c+95bQY72d7hgMm
-        +Ovf6IGCB+q3kfF4AlfpxQaIsFTNBgXRNOzHjbTpYTYc+hybWQ==
-X-Google-Smtp-Source: ABdhPJyNieO9Eoiv/VP+K1RxJ+gl5WoUSxEqkpph3Eh+wSGglDI0g+Y84lzQ4vFAbgh4/NOcB7XAeBiTLN5QGTUMWFM=
-X-Received: by 2002:a2e:a0cc:: with SMTP id f12mr2774888ljm.250.1591833202236;
- Wed, 10 Jun 2020 16:53:22 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WI0+NbsJ1zacj1DISmUqJe9tzBi7AdJpLzC1uFJh4Cs=;
+        b=HcDLJ1JEITC9WgPkdxfYyjV+/9NzHS2qOLxOjV2XdinyMhI5+oCKCZbv6kcLcb8Mz1
+         qj6ES554EBIawQLvYcTzjW3lZo6sHQa8yj4x+dknH6c+uHoo0KIe1zIjrfPe4Eak21dE
+         drrsTDqugdDeUPva0Dz/YnTOa5mD7UrUU3AB3p4eFh3VJbEruS7N6kHMt3Spd8AeS7N+
+         m0dWBKXkfSGDlyRR5o21AhdCQ0Sp62EjztKh3BnkuNs8iZXmNQPW24lTtLUEMk1Vgrto
+         4h9AVQBjPqz+XQIZtcqyspEvhxwWAYQt5ob/TyctiHgnD4hG53tyI/tvRBCuQeDQEX3C
+         W09g==
+X-Gm-Message-State: AOAM531mH+fveMTKnDXhNfkHFhDtDfMjkCj17nQ5hJ24/uOK85efqbkZ
+        v46pyQvGb1CuKV+UnFliLaNP5AKOL/8e13/+3lQfMBbY3a3ETtzg008ZPZpkq0swg+MRrDRLejP
+        nORIJSPIzTz8/4YeJ0PZdduOF
+X-Received: by 2002:a5d:6789:: with SMTP id v9mr6785870wru.124.1591833219412;
+        Wed, 10 Jun 2020 16:53:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwGyH+9QSFaUyuUyAYSrKWRjuZk8Y1vF202/B03IwIpUI+dw/51oImN2L3Z89rIzK3JWB8I0g==
+X-Received: by 2002:a5d:6789:: with SMTP id v9mr6785853wru.124.1591833219187;
+        Wed, 10 Jun 2020 16:53:39 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:29ed:810e:962c:aa0d? ([2001:b07:6468:f312:29ed:810e:962c:aa0d])
+        by smtp.gmail.com with ESMTPSA id b132sm1588022wmh.3.2020.06.10.16.53.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jun 2020 16:53:38 -0700 (PDT)
+Subject: Re: [PATCH 2/2] KVM: async_pf: Inject 'page ready' event only if
+ 'page not present' was previously injected
+To:     Vivek Goyal <vgoyal@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+References: <20200610175532.779793-1-vkuznets@redhat.com>
+ <20200610175532.779793-2-vkuznets@redhat.com>
+ <20200610193211.GB243520@redhat.com> <20200610194738.GE18790@linux.intel.com>
+ <20200610195725.GA263462@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <91bf7843-ec23-e89e-a61f-1e36a32af09c@redhat.com>
+Date:   Thu, 11 Jun 2020 01:53:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200609060137.143501-1-daeho43@gmail.com> <20200609165107.GA228564@gmail.com>
- <CACOAw_xEZ+au9yhFerq9amkRO62Dzxj7h71gEc=i16ReYu5xrg@mail.gmail.com>
- <20200610031532.GA6286@sol.localdomain> <CACOAw_wErOPC=Kf3UU8nFGhWRy84ZnCeJbsyPhSCcXv51B_XxQ@mail.gmail.com>
- <CACOAw_zka6d06RxFOUTwEV7B6o8A2-_6FvqWh_A1nJ0+7FU9yQ@mail.gmail.com>
-In-Reply-To: <CACOAw_zka6d06RxFOUTwEV7B6o8A2-_6FvqWh_A1nJ0+7FU9yQ@mail.gmail.com>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Thu, 11 Jun 2020 08:53:10 +0900
-Message-ID: <CACOAw_yc4hxdyxyO+Lb4MArHek1tP4wxCq0tezWOocgqvK+tqg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH] f2fs: add F2FS_IOC_SEC_TRIM_FILE ioctl
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200610195725.GA263462@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > Using FMODE_WRITE is more proper for this case, since we're going t=
-o
-> > > > modify the data. But I think mnt_want_write_file() is still require=
-d
-> > > > to prevent the filesystem from freezing or something else.
-> > >
-> > > Right, the freezing check is actually still necessary.  But getting w=
-rite access
-> > > to the mount is not necessary.  I think you should use file_start_wri=
-te() and
-> > > file_end_write(), like vfs_write() does.
->
-> I've checked this again.
->
-> But I think mnt_want_write_file() looks better than the combination of
-> checking FMODE_WRITE and file_start_write(), because
-> mnt_want_write_file() handles all the things we need.
-> It checks FMODE_WRITER, which is set in do_dentry_open() when
-> FMODE_WRITE is already set, and does the stuff that file_start_write()
-> is doing. This is why the other filesystem system calls use it.
->
-> What do you think?
+On 10/06/20 21:57, Vivek Goyal wrote:
+> I personally find it better that initialization of
+> work->notpresent_injected is very explicit at the site where this 
+> structure has been allocated and being initialized. (Instead of a
+> a callee function silently initializing a filed of this structure).
 
-Hmm, we still need FMODE_WRITE check.
-But mnt_want_write_file() looks better, because it'll call
-mnt_clone_write() internally, if the file is open for write already.
+I agree.
 
-in ext4/ioctl.c
-        case EXT4_IOC_SWAP_BOOT:
-        {
-                int err;
-                if (!(filp->f_mode & FMODE_WRITE))
-                        return -EBADF;
-                err =3D mnt_want_write_file(filp);
-                if (err)
-                        return err;2020=EB=85=84 6=EC=9B=94 11=EC=9D=BC (=
-=EB=AA=A9) =EC=98=A4=EC=A0=84 8:31, Daeho
-Jeong <daeho43@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> > > > > > +
-> > > > > > +     if (f2fs_readonly(sbi->sb))
-> > > > > > +             return -EROFS;
-> > > > >
-> > > > > Isn't this redundant with mnt_want_write_file()?
-> > > > >
-> > > > > Also, shouldn't write access to the file be required, i.e.
-> > > > > (filp->f_mode & FMODE_WRITE)?  Then the f2fs_readonly() and
-> > > > > mnt_want_write_file() checks would be unnecessary.
-> > > > >
-> > > >
-> > > > Using FMODE_WRITE is more proper for this case, since we're going t=
-o
-> > > > modify the data. But I think mnt_want_write_file() is still require=
-d
-> > > > to prevent the filesystem from freezing or something else.
-> > >
-> > > Right, the freezing check is actually still necessary.  But getting w=
-rite access
-> > > to the mount is not necessary.  I think you should use file_start_wri=
-te() and
-> > > file_end_write(), like vfs_write() does.
->
-> I've checked this again.
->
-> But I think mnt_want_write_file() looks better than the combination of
-> checking FMODE_WRITE and file_start_write(), because
-> mnt_want_write_file() handles all the things we need.
-> It checks FMODE_WRITER, which is set in do_dentry_open() when
-> FMODE_WRITE is already set, and does the stuff that file_start_write()
-> is doing. This is why the other filesystem system calls use it.
->
-> What do you think?
->
-> 2020=EB=85=84 6=EC=9B=94 10=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 12:55=
-, Daeho Jeong <daeho43@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
-> >
-> > > >
-> > > > To prevent the file data from garbage collecting, the user needs to
-> > > > use pinfile ioctl and fallocate system call after creating the file=
-.
-> > > > The sequence is like below.
-> > > > 1. create an empty file
-> > > > 2. pinfile
-> > > > 3. fallocate()
-> > >
-> > > Is that persistent?  So the file will never be moved afterwards?
-> > >
-> > > Is there a place where this is (or should be) documented?
-> >
-> > Yes, this is persistent. F2FS_IOC_SET_PIN_FILE ioctl is to prevent
-> > file data from moving and being garbage collected, and further update
-> > to the file will be handled in in-place update manner.
-> > I don't see any document on this, but you can find the below in
-> > Documentation/filesystems/f2fs.rst
-> >
-> > However, once F2FS receives ioctl(fd, F2FS_IOC_SET_PIN_FILE) in prior t=
-o
-> > fallocate(fd, DEFAULT_MODE), it allocates on-disk blocks addresses havi=
-ng
-> > zero or random data, which is useful to the below scenario where:
-> >
-> >  1. create(fd)
-> >  2. ioctl(fd, F2FS_IOC_SET_PIN_FILE)
-> >  3. fallocate(fd, 0, 0, size)
-> >  4. address =3D fibmap(fd, offset)
-> >  5. open(blkdev)
-> >  6. write(blkdev, address)
-> >
-> > > Right, the freezing check is actually still necessary.  But getting w=
-rite access
-> > > to the mount is not necessary.  I think you should use file_start_wri=
-te() and
-> > > file_end_write(), like vfs_write() does.
-> >
-> > Yes, agreed.
-> >
-> > 2020=EB=85=84 6=EC=9B=94 10=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 12:=
-15, Eric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1=
-:
-> > >
-> > > On Wed, Jun 10, 2020 at 11:05:46AM +0900, Daeho Jeong wrote:
-> > > > > > Added a new ioctl to send discard commands or/and zero out
-> > > > > > to whole data area of a regular file for security reason.
-> > > > >
-> > > > > With this ioctl available, what is the exact procedure to write a=
-nd then later
-> > > > > securely erase a file on f2fs?  In particular, how can the user p=
-revent f2fs
-> > > > > from making multiple copies of file data blocks as part of garbag=
-e collection?
-> > > > >
-> > > >
-> > > > To prevent the file data from garbage collecting, the user needs to
-> > > > use pinfile ioctl and fallocate system call after creating the file=
-.
-> > > > The sequence is like below.
-> > > > 1. create an empty file
-> > > > 2. pinfile
-> > > > 3. fallocate()
-> > >
-> > > Is that persistent?  So the file will never be moved afterwards?
-> > >
-> > > Is there a place where this is (or should be) documented?
-> > >
-> > > > > > +
-> > > > > > +     if (f2fs_readonly(sbi->sb))
-> > > > > > +             return -EROFS;
-> > > > >
-> > > > > Isn't this redundant with mnt_want_write_file()?
-> > > > >
-> > > > > Also, shouldn't write access to the file be required, i.e.
-> > > > > (filp->f_mode & FMODE_WRITE)?  Then the f2fs_readonly() and
-> > > > > mnt_want_write_file() checks would be unnecessary.
-> > > > >
-> > > >
-> > > > Using FMODE_WRITE is more proper for this case, since we're going t=
-o
-> > > > modify the data. But I think mnt_want_write_file() is still require=
-d
-> > > > to prevent the filesystem from freezing or something else.
-> > >
-> > > Right, the freezing check is actually still necessary.  But getting w=
-rite access
-> > > to the mount is not necessary.  I think you should use file_start_wri=
-te() and
-> > > file_end_write(), like vfs_write() does.
-> > >
-> > > > >
-> > > > > > +
-> > > > > > +     if (get_user(flags, (u32 __user *)arg))
-> > > > > > +             return -EFAULT;
-> > > > > > +     if (!(flags & F2FS_TRIM_FILE_MASK))
-> > > > > > +             return -EINVAL;
-> > > > >
-> > > > > Need to reject unknown flags:
-> > > > >
-> > > > >         if (flags & ~F2FS_TRIM_FILE_MASK)
-> > > > >                 return -EINVAL;
-> > > >
-> > > > I needed a different thing here. This was to check neither discard =
-nor
-> > > > zeroing out are not here. But we still need to check unknown flags,
-> > > > too.
-> > > > The below might be better.
-> > > > if (!flags || flags & ~F2FS_TRIM_FILE_MASK)
-> > > >        return -EINVAL;
-> > >
-> > > Sure, but please put parentheses around the second clause:
-> > >
-> > >         if (flags =3D=3D 0 || (flags & ~F2FS_TRIM_FILE_MASK))
-> > >                 return -EINVAL;
-> > >
-> > > - Eric
+Paolo
+
