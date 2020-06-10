@@ -2,73 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6529D1F4E15
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 08:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5898E1F4E02
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 08:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgFJGWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 02:22:16 -0400
-Received: from mail.thorsis.com ([92.198.35.195]:58442 "EHLO mail.thorsis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbgFJGWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 02:22:16 -0400
-X-Greylist: delayed 336 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Jun 2020 02:22:15 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id C56A73B8B;
-        Wed, 10 Jun 2020 08:16:38 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id x-KNHOWuj28Y; Wed, 10 Jun 2020 08:16:38 +0200 (CEST)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id 70610F62; Wed, 10 Jun 2020 08:16:37 +0200 (CEST)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.2
-From:   Alexander Dahl <ada@thorsis.com>
-To:     linux-leds@vger.kernel.org
-Cc:     Flavio Suligoi <f.suligoi@asem.it>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] leds: fix spelling mistake
-Date:   Wed, 10 Jun 2020 08:16:31 +0200
-Message-ID: <7016474.BTq5bZ2CBy@ada>
-In-Reply-To: <20200609154929.30248-1-f.suligoi@asem.it>
-References: <20200609154929.30248-1-f.suligoi@asem.it>
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        id S1726283AbgFJGRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 02:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgFJGRp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 02:17:45 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AC7C03E96F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 23:17:44 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id y11so967113ljm.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 23:17:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0hZiLWuye+wxKL58SzimuieV9qECyFNrT6vpBHkRdfo=;
+        b=BgLC2n+1Ax249jZ2gfeFMxALlDrkcvCQZabKsEG+D6DJRmosIYsRieHIq3VHuzoi3B
+         r/LMddGdRz73Uv+t4XUXBKqPM8c00QUBpAoLwprhqSDnmpd+BLeqpzsSf50qnv55I38Y
+         iue6KR5s7oFB008+IJfsysCS75DagQTXwM+YRjypT1jU4ZTeO2FgeC5QPqV7ivTb/1CI
+         CLY9wvjfnlBySMump/MJJL/aMuZbbAgqyjz0+2I42kKjpg8bKH4JB+qDAR1RvqphSMeG
+         cK7mdjVz19wQFIwmnocFegyCTf0uJxe1eLagMjBdkZ3Bp59fzhI70w0QHGdAiGu4qegR
+         NzHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0hZiLWuye+wxKL58SzimuieV9qECyFNrT6vpBHkRdfo=;
+        b=C40zxJdQG1A1v+QTCEINjzdeI+nof8rmZRQQg81/Qo8zbT16AarHT7IRA0PqnBwi9q
+         kpNHDATOS3jaEkOaIqdw5NzqsuNpVuzkx6/lIMw0V78O6NCTil7tbJCRtMJ1GuLYESEi
+         qGbURXTrnNkqZkDaiW8jlFEhjOE+CQLY/rn6MqYkXDZ3tSS/NiRzcDDsL0kv+DuPv2a4
+         FOLbFL/naIDwIbOEdSjfWEgzw1kKZXeYGCcBgppibE8GHEoJZB/osBdtNTjKdokfYQYq
+         DLYwlsHKsFgsr50qoULN2wGF6u1IZNeyHHnh/hQgSUicjYPnquccxc+B+5Zm2Ptkh8xl
+         MQzg==
+X-Gm-Message-State: AOAM533k970/suyL3+qY5MWWppoDqcIVqkUcK5m79JYgA5uT0IdfNPjr
+        kqEqZ/xsdYb7/LkHRQ13CKA6zbJm5H9pAVO1mhBypw==
+X-Google-Smtp-Source: ABdhPJx8f3dW0vVguVq1E86iAg5Y653WpMlRP/3/wGu35t+t5y/R8dH6w96A2FJP9cqKMT2pazLfFKfH3Da2t0EU6Iw=
+X-Received: by 2002:a2e:974e:: with SMTP id f14mr872556ljj.102.1591769861837;
+ Tue, 09 Jun 2020 23:17:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200609174149.255223112@linuxfoundation.org>
+In-Reply-To: <20200609174149.255223112@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 10 Jun 2020 11:47:30 +0530
+Message-ID: <CA+G9fYurJXfpg7QfsxxRPSFhG2cNkU-zA=VM==1b4E8bmjxecg@mail.gmail.com>
+Subject: Re: [PATCH 5.7 00/24] 5.7.2-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-That one made me laugh. :-)
+On Tue, 9 Jun 2020 at 23:25, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.7.2 release.
+> There are 24 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 11 Jun 2020 17:41:38 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.7.2-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.7.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Reviewed-by: Alexander Dahl <ada@thorsis.com>
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Am Dienstag, 9. Juni 2020, 17:49:29 CEST schrieb Flavio Suligoi:
-> Fix typo: "Tigger" --> "Trigger"
-> 
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> ---
->  drivers/leds/led-triggers.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/leds/led-triggers.c b/drivers/leds/led-triggers.c
-> index 79e30d2cb7a5..0836bf7631ea 100644
-> --- a/drivers/leds/led-triggers.c
-> +++ b/drivers/leds/led-triggers.c
-> @@ -358,7 +358,7 @@ int devm_led_trigger_register(struct device *dev,
->  }
->  EXPORT_SYMBOL_GPL(devm_led_trigger_register);
-> 
-> -/* Simple LED Tigger Interface */
-> +/* Simple LED Trigger Interface */
-> 
->  void led_trigger_event(struct led_trigger *trig,
->  			enum led_brightness brightness)
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.7.2-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.7.y
+git commit: 00f7cc67908be43cf52f961c4c880108b00d68e8
+git describe: v5.7.1-25-g00f7cc67908b
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.7-oe/bui=
+ld/v5.7.1-25-g00f7cc67908b
+
+No regressions (compared to build v5.7-15-g676bb83805a9)
+
+No fixes (compared to build v5.7-15-g676bb83805a9)
 
 
+Ran 36794 total tests in the following environments and test suites.
 
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
 
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* kselftest/net
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+* libgpiod
+* ltp-cve-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-open-posix-tests
+* network-basic-tests
+* kvm-unit-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
