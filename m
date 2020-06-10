@@ -2,123 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4AE1F5B05
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 20:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF5D1F5B12
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 20:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728705AbgFJSNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 14:13:15 -0400
-Received: from mout.web.de ([212.227.17.12]:55669 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728505AbgFJSNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 14:13:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1591812768;
-        bh=SIIkYbqg/co3MSWUR1tpZyKgTHzJDpfXxExpHdt0t8w=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ZfMIzqBBWGD03pX4LMW0BTTjyrLE41+Tvl0Jww7kcoF9tnJkBUyWSyQlnWE4vIxz8
-         YPrFxIlv+svwASL1JlhZ0XTGaRkvu5HD8HJGzDM2TOWfFebJ3l71VDN4WwbGKbe/so
-         yhtxV+YWFO4Xje7K/JQPXAn65L1pzBnbYvTGT4G4=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.133.155.16]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MDMvE-1jbtxB3kIg-00AWly; Wed, 10
- Jun 2020 20:12:48 +0200
-Subject: Re: [PATCH v2] exfat: add missing brelse() calls on error paths
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Tetsuhiro Kohada <kohada.t2@gmail.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>
-References: <20200610172213.GA90634@mwanda>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <740ce77a-5404-102b-832f-870cbec82d56@web.de>
-Date:   Wed, 10 Jun 2020 20:12:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1728804AbgFJSVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 14:21:52 -0400
+Received: from smtp74.ord1d.emailsrvr.com ([184.106.54.74]:50356 "EHLO
+        smtp74.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728776AbgFJSVv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 14:21:51 -0400
+X-Greylist: delayed 460 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Jun 2020 14:21:50 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
+        s=20190322-9u7zjiwi; t=1591812850;
+        bh=mh+Kv2YKb+dLXMp7FflSBtwzk5puxQCfhuIontc45EI=;
+        h=From:To:Subject:Date:From;
+        b=rT0AfRzTSNUbHS3zS7Rk3KEo0cexyz7OMDGYuC3vcjU1INxfmArSE+cMqxq8CA6k5
+         cKHzpmwDbCrotKXcs3DxeaMI89StC6IU0CkvWxNzMTdiC+A50xu9pU/eedGr5YbplS
+         u4L+1qqb6g4vVZlQhTuCfilzpsT4B3HJias8cYSU=
+X-Auth-ID: dpreed@deepplum.com
+Received: by smtp2.relay.ord1d.emailsrvr.com (Authenticated sender: dpreed-AT-deepplum.com) with ESMTPSA id DE6A04039B;
+        Wed, 10 Jun 2020 14:14:08 -0400 (EDT)
+X-Sender-Id: dpreed@deepplum.com
+Received: from gyre.localnet ([UNAVAILABLE]. [209.6.10.161])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384)
+        by 0.0.0.0:465 (trex/5.7.12);
+        Wed, 10 Jun 2020 14:14:09 -0400
+From:   "David P. Reed" <dpreed@deepplum.com>
+To:     dpreed@deepplum.com
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Allison Randal <allison@lohutok.net>,
+        Enrico Weigelt <info@metux.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Martin Molnar <martin.molnar.programming@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Fix undefined operation VMXOFF during reboot and crash
+Date:   Wed, 10 Jun 2020 14:12:50 -0400
+Message-Id: <20200610181254.2142-1-dpreed@deepplum.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200610172213.GA90634@mwanda>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-X-Provags-ID: V03:K1:tQXCrRN7QEqaEr1ol2/bC7wS9d+4/upBCYWKmKkgCWKEBNdql4b
- nyN7GqZn76mkiu9jyIPg1Kl1dwrkaeiWB2gmrUYU4ZDnCFR27CwSHx62hnsn5WzWPjgOleg
- ZKdO/3ucbz+M2GoE6zWftPQL85Ks4Lcedbia5g0O0e34VLwAokiGmMqMtrRhFqRUA1dYdw+
- e5d7SztBXQvEGmgDElf0A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Z5/qdkECikU=:KOlwUNzTj31itfKzIpbuxL
- Gv3QVMMpQtKWEpGAnWa88qfYXSlA/jqtu8E9OsS72MNI7CGctHMsbYWyZ+d1/kgo7qqPBOMTG
- 4q8WN7gaM20TvLPrHP8rVlTCvPd6pezw2a3TkBhbsIeg7i4MGOxx14uRjVzthQk411AwLlEFc
- NmiG9239X7U6WxXVgYD9OErhEGCg2ng/x0Q8bDYB1TzEQQacliHtvboQlxUiUaUfmAtzzlrqZ
- XYfw8/4ni8Xu1bJAxAWBobGbnYEISYBVva04pOj4u5HzU8s/4ktWC4Hik3hr5HXyG/xtFUW8R
- 1WnFlglOmhb3kiODs1V+ihEmuMPYiZl4Ntgrvh9Q7H/xBpAE2J7eag2Vw0uWHo0AFZnFe1aSF
- znFxO/mCwymxsiKJuzadvrj3TA7WreDUGFXR9SgEcKjUF2xTGng0prh0eMsi5f6SZkmB0A2+9
- VWDN9pse6wKwZDwfoC7LWdfPfqIYmooa8XsmhmKkbZ8JaWmZ5pRnI1w6sbnxpIWWlk2Rr+LS/
- Qin17FDNWEZDRml1yAy0punUcKv7DRV8b6sC92IRcQrExsa9R1Dw4tsoy/foY9WLNMHYAfNtz
- 14iGQJyz2Ldx8zGhjP/bc8ISSvNzOOtdsXhJ6p9jfMRiFAHL2kQWgj8KAilmR9PVriacb68LV
- 9jG5TKy553T5Un7PC1A25Wl4BglWZaJty9dQcVJRlm/S1mvo7hGL5H3iD5RFblunJ+HsofdCr
- eTrfaz3MLI7SHiz3K3wUV//ZSD5ZE+/QLkVYt6d+O5cVl0y3PLk9hQUspinvSewulG3D/RSuf
- Dd2TEyVnu5e+WoJvLNSfpvvJz3KCp/X+yrQFmHeHnHlgGgGlu+h5R8vnpH3jJT/f8qRaDgJzN
- BWVtD6TXjtcI15605eUiOjatuR3u/vipJkv4LxFuBFe3uVfYRDDFrOrilLDNjS6CmG1978z6X
- oq0ISKd5lvgnUsfvVGChSa2IU+UndT9KadULd0ohzpO1Rjd8OjTvMpoIidkhx6HU6zCiyJ3Sv
- Sc2YerulTW92VON5YVl+r0/62Ew8d67eGO5JLRHQDDDs41hZsOML+WTNlatfSLpj9Q5vTkiX5
- +FCnaOTZeFUHImO7250kLPtGk89omXy534te3IaVZ3jD5jPJbW2/dvuYPdp/quIKObc/oiw9X
- NkxDHiZ0FnRNsyn4mnk8mD/HQ2ejdHdunRpaFpj0HhuUnRJnVNO0w8/Xxl3xp8/UZVppbGCe9
- xL/Gg768RGJmfBh1N
+Content-Transfer-Encoding: 8bit
+X-Classification-ID: 863a6ae4-a1f9-4ba7-93f9-e74dc2bfae29-1-1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> If the second exfat_get_dentry() call fails then we need to release
-> "old_bh" before returning.  There is a similar bug in exfat_move_file().
+If a panic/reboot occurs when CR4 has VMX enabled, a VMXOFF is
+done on all CPUS, to allow the INIT IPI to function, since
+INIT is suppressed when CPUs are in VMX root operation.
+However, VMXOFF causes an undefined operation fault if the CPU is not
+in VMX operation, that is, VMXON has not been executed, or VMXOFF
+has been executed, but VMX is enabled. This fix makes the reboot
+work more reliably by modifying the #UD handler to skip the VMXOFF
+if VMX is enabled on the CPU and the VMXOFF is executed as part
+of cpu_emergency_vmxoff().
+The logic in reboot.c is also corrected, since the point of forcing
+the processor out of VMX root operation is because when VMX root
+operation is enabled, the processor INIT signal is always masked.
+See Intel SDM section on differences between VMX Root operation and normal
+operation. Thus every CPU must be forced out of VMX operation.
+Since the CPU will hang rather than restart, a manual "reset" is the
+only way out of this state (or if there is a BMC, it can issue a RESET
+to the chip).
 
-Would you like to convert any information from this change description
-into an imperative wording?
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=5b14671be58d0084e7e2d1cc9c2c36a94467f6e0#n151
+Signed-off-by: David P. Reed <dpreed@deepplum.com>
+---
+ arch/x86/include/asm/virtext.h | 24 ++++++++++++----
+ arch/x86/kernel/reboot.c       | 13 ++-------
+ arch/x86/kernel/traps.c        | 52 ++++++++++++++++++++++++++++++++--
+ 3 files changed, 71 insertions(+), 18 deletions(-)
 
-Regards,
-Markus
+diff --git a/arch/x86/include/asm/virtext.h b/arch/x86/include/asm/virtext.h
+index 9aad0e0876fb..ea2d67191684 100644
+--- a/arch/x86/include/asm/virtext.h
++++ b/arch/x86/include/asm/virtext.h
+@@ -13,12 +13,16 @@
+ #ifndef _ASM_X86_VIRTEX_H
+ #define _ASM_X86_VIRTEX_H
+ 
++#include <linux/percpu.h>
++
+ #include <asm/processor.h>
+ 
+ #include <asm/vmx.h>
+ #include <asm/svm.h>
+ #include <asm/tlbflush.h>
+ 
++DECLARE_PER_CPU_READ_MOSTLY(int, doing_emergency_vmxoff);
++
+ /*
+  * VMX functions:
+  */
+@@ -33,8 +37,8 @@ static inline int cpu_has_vmx(void)
+ /** Disable VMX on the current CPU
+  *
+  * vmxoff causes a undefined-opcode exception if vmxon was not run
+- * on the CPU previously. Only call this function if you know VMX
+- * is enabled.
++ * on the CPU previously. Only call this function directly if you know VMX
++ * is enabled *and* CPU is in VMX root operation.
+  */
+ static inline void cpu_vmxoff(void)
+ {
+@@ -47,17 +51,25 @@ static inline int cpu_vmx_enabled(void)
+ 	return __read_cr4() & X86_CR4_VMXE;
+ }
+ 
+-/** Disable VMX if it is enabled on the current CPU
++/** Force disable VMX if it is enabled on the current CPU.
++ * Note that if CPU is not in VMX root operation this
++ * VMXOFF will fault an undefined operation fault.
++ * So the 'doing_emergency_vmxoff' percpu flag is set,
++ * the trap handler for just restarts execution after
++ * the VMXOFF instruction.
+  *
+- * You shouldn't call this if cpu_has_vmx() returns 0.
++ * You shouldn't call this directly if cpu_has_vmx() returns 0.
+  */
+ static inline void __cpu_emergency_vmxoff(void)
+ {
+-	if (cpu_vmx_enabled())
++	if (cpu_vmx_enabled()) {
++		this_cpu_write(doing_emergency_vmxoff, 1);
+ 		cpu_vmxoff();
++		this_cpu_write(doing_emergency_vmxoff, 0);
++	}
+ }
+ 
+-/** Disable VMX if it is supported and enabled on the current CPU
++/** Force disable VMX if it is supported and enabled on the current CPU
+  */
+ static inline void cpu_emergency_vmxoff(void)
+ {
+diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+index 3ca43be4f9cf..abc8b51a57c7 100644
+--- a/arch/x86/kernel/reboot.c
++++ b/arch/x86/kernel/reboot.c
+@@ -540,21 +540,14 @@ static void emergency_vmx_disable_all(void)
+ 	 *
+ 	 * For safety, we will avoid running the nmi_shootdown_cpus()
+ 	 * stuff unnecessarily, but we don't have a way to check
+-	 * if other CPUs have VMX enabled. So we will call it only if the
+-	 * CPU we are running on has VMX enabled.
+-	 *
+-	 * We will miss cases where VMX is not enabled on all CPUs. This
+-	 * shouldn't do much harm because KVM always enable VMX on all
+-	 * CPUs anyway. But we can miss it on the small window where KVM
+-	 * is still enabling VMX.
++	 * if other CPUs have VMX enabled.
+ 	 */
+-	if (cpu_has_vmx() && cpu_vmx_enabled()) {
++	if (cpu_has_vmx()) {
+ 		/* Disable VMX on this CPU. */
+-		cpu_vmxoff();
++		cpu_emergency_vmxoff();
+ 
+ 		/* Halt and disable VMX on the other CPUs */
+ 		nmi_shootdown_cpus(vmxoff_nmi);
+-
+ 	}
+ }
+ 
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 4cc541051994..2dcf57ef467e 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -39,6 +39,7 @@
+ #include <linux/io.h>
+ #include <linux/hardirq.h>
+ #include <linux/atomic.h>
++#include <linux/percpu.h>
+ 
+ #include <asm/stacktrace.h>
+ #include <asm/processor.h>
+@@ -59,6 +60,7 @@
+ #include <asm/umip.h>
+ #include <asm/insn.h>
+ #include <asm/insn-eval.h>
++#include <asm/virtext.h>
+ 
+ #ifdef CONFIG_X86_64
+ #include <asm/x86_init.h>
+@@ -70,6 +72,8 @@
+ #include <asm/proto.h>
+ #endif
+ 
++DEFINE_PER_CPU_READ_MOSTLY(int, doing_emergency_vmxoff) = 0;
++
+ DECLARE_BITMAP(system_vectors, NR_VECTORS);
+ 
+ static inline void cond_local_irq_enable(struct pt_regs *regs)
+@@ -115,6 +119,43 @@ int fixup_bug(struct pt_regs *regs, int trapnr)
+ 	return 0;
+ }
+ 
++/*
++ * Fix any unwanted undefined operation fault due to VMXOFF instruction that
++ * is needed to ensure that CPU is not in VMX root operation at time of
++ * a reboot/panic CPU reset. There is no safe and reliable way to know
++ * if a processor is in VMX root operation, other than to skip the
++ * VMXOFF. It is safe to just skip any VMXOFF that might generate this
++ * exception, when VMX operation is enabled in CR4. In the extremely
++ * rare case that a VMXOFF is erroneously executed while VMX is enabled,
++ * but VMXON has not been executed yet, the undefined opcode fault
++ * should not be missed by valid code, though it would be an error.
++ * To detect this, we could somehow restrict the instruction address
++ * to the specific use during reboot/panic.
++ */
++static int fixup_emergency_vmxoff(struct pt_regs *regs, int trapnr)
++{
++	const static u8 insn_vmxoff[3] = { 0x0f, 0x01, 0xc4 };
++	u8 ud[3];
++
++	if (trapnr != X86_TRAP_UD)
++		return 0;
++	if (!cpu_vmx_enabled())
++		return 0;
++	if (!this_cpu_read(doing_emergency_vmxoff))
++		return 0;
++
++	/* undefined instruction must be in kernel and be VMXOFF */
++	if (regs->ip < TASK_SIZE_MAX)
++		return 0;
++	if (probe_kernel_address((u8 *)regs->ip, ud))
++		return 0;
++	if (memcmp(ud, insn_vmxoff, sizeof(insn_vmxoff)))
++		return 0;
++
++	regs->ip += sizeof(insn_vmxoff);
++	return 1;
++}
++
+ static nokprobe_inline int
+ do_trap_no_signal(struct task_struct *tsk, int trapnr, const char *str,
+ 		  struct pt_regs *regs,	long error_code)
+@@ -193,9 +234,16 @@ static void do_error_trap(struct pt_regs *regs, long error_code, char *str,
+ 	/*
+ 	 * WARN*()s end up here; fix them up before we call the
+ 	 * notifier chain.
++	 * Also, VMXOFF causes unwanted fault during reboot
++	 * if VMX is enabled, but not in VMX root operation. Fix
++	 * before calling notifier chain.
+ 	 */
+-	if (!user_mode(regs) && fixup_bug(regs, trapnr))
+-		return;
++	if (!user_mode(regs)) {
++		if (fixup_bug(regs, trapnr))
++			return;
++		if (fixup_emergency_vmxoff(regs, trapnr))
++			return;
++	}
+ 
+ 	if (notify_die(DIE_TRAP, str, regs, error_code, trapnr, signr) !=
+ 			NOTIFY_STOP) {
+-- 
+2.26.2
+
