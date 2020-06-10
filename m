@@ -2,87 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790041F4B21
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36EE11F4B2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgFJCDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 22:03:36 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:42128 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725798AbgFJCDf (ORCPT
+        id S1726112AbgFJCGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 22:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725798AbgFJCF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 22:03:35 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05A22hik102911;
-        Wed, 10 Jun 2020 02:03:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=QveDZg30MOOAbZTP12jlsSCSngLlZQHSsESF1vrXEKU=;
- b=bZi5MJgTajpxsPHRTMAy7G/kwN8l95bxhTx6V25CFB14JRSQwxUKgJyDZpE/6HbMTU3O
- wZbzrj/mlp/zOLN3FDYMoJZ/SCuFVhPZrBgdRRfFpOe3UzvEiAsjrc/TNv5FilLD+QGt
- 2wyfpNHttbkCzHAvcEypaRNBKmnj7VxTzHg4yd+nFBitPguzirQwqYqyxwe5ch7MgFuP
- eMhpkLbWj8AW3yzbKjqjXi9GLHm03oIBaa0VQuQ3pXgZwIKLhJDpbubrIflZ8dRSBazw
- YrO0edk1qfR+ARMP8vMb9zdk5KP3rB60yWXMGMl6yMP31wt8Y6tHy6SvrLFSSm5Cjymk BQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 31g3smyr30-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 10 Jun 2020 02:03:03 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05A1vgRs091385;
-        Wed, 10 Jun 2020 02:03:03 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 31gn2xm4t6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Jun 2020 02:03:03 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05A22tGq003331;
-        Wed, 10 Jun 2020 02:03:00 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 09 Jun 2020 19:02:54 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Bart Van Assche <bvanassche@acm.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Simon Arlott <simon@octiron.net>, Jens Axboe <axboe@kernel.dk>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Merlijn Wajer <merlijn@archive.org>, linux-scsi@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] scsi: sr: Fix sr_probe() missing mutex_destroy
-Date:   Tue,  9 Jun 2020 22:02:47 -0400
-Message-Id: <159175452257.16072.17569880133353520216.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <06e9de38-eeed-1cab-5e08-e889288935b3@0882a8b5-c6c3-11e9-b005-00805fc181fe>
-References: <06e9de38-eeed-1cab-5e08-e889288935b3@0882a8b5-c6c3-11e9-b005-00805fc181fe>
+        Tue, 9 Jun 2020 22:05:59 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2CEC05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 19:05:58 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id y11so469017ljm.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 19:05:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=t8PWvQi3BGIPlVJ0bYu6fPI9oshJcDrfP4gzoKTncV8=;
+        b=q7LmSP9m8DpNTi5/FTp/2s/VJdX2gHdF+45UTFSfWHYBEGm88O9m8XvT1UeGDhITIA
+         XKSOr1dsd0wC5deCN1O0RDGiXlqBiVVNI0hVX4w02UQLsHeI3x2v3CzyyUlFGbdCBL3A
+         7VADczN7/MZVlECBGy3A4Cvb9eKQ956hwmBoszXruCs2tLwHWgliV0Wnoy/JjPFL3IoB
+         oeseTuxCsbDqYQT4o0rCTZySQ6Pt4uAcRo7+p6snXNTufmhLYhBIGv8jZEK+stTSGezg
+         8UK3Hm3nz6MfYn4wmjxmygAvk2Jz95VxA+ZtHg8l+Bwedd4nlvuSoQXEoCOxsknfT8pp
+         roqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=t8PWvQi3BGIPlVJ0bYu6fPI9oshJcDrfP4gzoKTncV8=;
+        b=lYxAkQVMYzss4tUzSaI6KMuuVHn29ksWo7k6pEvshfvuDlqoPbrmXKvptWy8zwlC9Q
+         2iHzqScZr1G/Gt9x/rBgeIXj6DLPKjAgxBKNDmp0xZcH+Cu/4yMLZLoAV5fT1YPqj4hT
+         YP9WwNe4G6GE3LamTxmzDzxTVn8DNtjhwqtOFELVq7hLQb2yRd93QQKuRdvt3pLFIQ7S
+         y8K7ASBhPmv9zO/GAKrBfS5Dpq6//81Szw9pQPDPK5qWpQsqiwwErWbCvljthh48yM2B
+         32eYZPswkA8nl6JNKnRsBxPpp97O0AALdNbzOi9/ADKJHdjrtBURCSVjwQGCQZy/oolA
+         N65A==
+X-Gm-Message-State: AOAM532Llb7wpGAysgnTVvR1Sp9bmleEXuQcdyP/5YqadLUnA/Zjgkws
+        GR5bsVTMz9NUjzS4CkqKOW9ihb7O/8cWH4Yh508=
+X-Google-Smtp-Source: ABdhPJzqNYgc8TtJ3Q5nQVY633iccdl/cpTmYiJlex+3m42kZSZNrPNsoKgjzoow3SYhldiLSXIpDlOvixTdW3ZtAWw=
+X-Received: by 2002:a05:651c:1022:: with SMTP id w2mr566699ljm.262.1591754757022;
+ Tue, 09 Jun 2020 19:05:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
- bulkscore=0 adultscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006100013
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=0
- spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006100013
+References: <20200609060137.143501-1-daeho43@gmail.com> <20200609165107.GA228564@gmail.com>
+In-Reply-To: <20200609165107.GA228564@gmail.com>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Wed, 10 Jun 2020 11:05:46 +0900
+Message-ID: <CACOAw_xEZ+au9yhFerq9amkRO62Dzxj7h71gEc=i16ReYu5xrg@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: add F2FS_IOC_SEC_TRIM_FILE ioctl
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 May 2020 18:58:25 +0100, Simon Arlott wrote:
+> > Added a new ioctl to send discard commands or/and zero out
+> > to whole data area of a regular file for security reason.
+>
+> With this ioctl available, what is the exact procedure to write and then =
+later
+> securely erase a file on f2fs?  In particular, how can the user prevent f=
+2fs
+> from making multiple copies of file data blocks as part of garbage collec=
+tion?
+>
 
-> If the device minor cannot be allocated or the cdrom fails to be
-> registered then the mutex should be destroyed.
+To prevent the file data from garbage collecting, the user needs to
+use pinfile ioctl and fallocate system call after creating the file.
+The sequence is like below.
+1. create an empty file
+2. pinfile
+3. fallocate()
 
-Applied to 5.8/scsi-queue, thanks!
+> > +static int f2fs_secure_erase(struct block_device *bdev, block_t block,
+> > +                                     block_t len, u32 flags)
+> > +{
+> > +     struct request_queue *q =3D bdev_get_queue(bdev);
+> > +     sector_t sector =3D SECTOR_FROM_BLOCK(block);
+> > +     sector_t nr_sects =3D SECTOR_FROM_BLOCK(len);
+> > +     int ret =3D 0;
+> > +
+> > +     if (!q)
+> > +             return -ENXIO;
+>
+> Why can the request_queue be NULL here?
+>
 
-[1/2] scsi: sr: Fix sr_probe() missing mutex_destroy
-      https://git.kernel.org/mkp/scsi/c/a247e07f8dad
-[2/2] scsi: sr: Fix sr_probe() missing deallocate of device minor
-      https://git.kernel.org/mkp/scsi/c/6555781b3fde
+This check is copied from __blkdev_issue_discard(), even if
+bdev_get_queue() says it doesn't return NULL value.
+__blkdev_issue_discard() does the same thing.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+> > +
+> > +     if (flags & F2FS_TRIM_FILE_DISCARD)
+> > +             ret =3D blkdev_issue_discard(bdev, sector, nr_sects, GFP_=
+NOFS,
+> > +                                             blk_queue_secure_erase(q)=
+ ?
+> > +                                             BLKDEV_DISCARD_SECURE : 0=
+);
+> > +
+> > +     if (!ret && flags & F2FS_TRIM_FILE_ZEROOUT)
+> > +             ret =3D blkdev_issue_zeroout(bdev, sector, nr_sects, GFP_=
+NOFS, 0);
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+> > +{
+> > +     struct inode *inode =3D file_inode(filp);
+> > +     struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
+> > +     struct address_space *mapping =3D inode->i_mapping;
+> > +     struct block_device *prev_bdev =3D NULL;
+> > +     loff_t file_size;
+> > +     pgoff_t index, pg_start =3D 0, pg_end;
+> > +     block_t prev_block =3D 0, len =3D 0;
+> > +     u32 flags;
+> > +     int ret =3D 0;
+> > +
+> > +     if (!S_ISREG(inode->i_mode) || f2fs_is_atomic_file(inode) ||
+> > +                     f2fs_compressed_file(inode))
+> > +             return -EINVAL;
+>
+> Is it valid to check f2fs_is_atomic_file() and f2fs_compressed_file() out=
+side of
+> inode_lock()?
+>
+
+Right, it's better to move the check after inode_lock().
+
+> > +
+> > +     if (f2fs_readonly(sbi->sb))
+> > +             return -EROFS;
+>
+> Isn't this redundant with mnt_want_write_file()?
+>
+> Also, shouldn't write access to the file be required, i.e.
+> (filp->f_mode & FMODE_WRITE)?  Then the f2fs_readonly() and
+> mnt_want_write_file() checks would be unnecessary.
+>
+
+Using FMODE_WRITE is more proper for this case, since we're going to
+modify the data. But I think mnt_want_write_file() is still required
+to prevent the filesystem from freezing or something else.
+
+> > +
+> > +     if (f2fs_lfs_mode(sbi))
+> > +             return -EOPNOTSUPP;
+>
+> Doesn't this check have to be serialized with remount?
+
+Need to do that, thanks.
+
+>
+> > +
+> > +     if (get_user(flags, (u32 __user *)arg))
+> > +             return -EFAULT;
+> > +     if (!(flags & F2FS_TRIM_FILE_MASK))
+> > +             return -EINVAL;
+>
+> Need to reject unknown flags:
+>
+>         if (flags & ~F2FS_TRIM_FILE_MASK)
+>                 return -EINVAL;
+
+I needed a different thing here. This was to check neither discard nor
+zeroing out are not here. But we still need to check unknown flags,
+too.
+The below might be better.
+if (!flags || flags & ~F2FS_TRIM_FILE_MASK)
+       return -EINVAL;
+
+>
+> > +
+> > +     if (flags & F2FS_TRIM_FILE_DISCARD && !f2fs_hw_support_discard(sb=
+i))
+> > +             return -EOPNOTSUPP;
+> > +
+> > +     ret =3D mnt_want_write_file(filp);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     inode_lock(inode);
+> > +
+> > +     file_size =3D i_size_read(inode);
+> > +     if (!file_size)
+> > +             goto err;
+>
+> ->i_size is stable while holding inode_lock().  So just use ->i_size inst=
+ead of
+> i_size_read().
+
+Yes.
+
+>
+> > +     pg_end =3D (pgoff_t)round_up(file_size, PAGE_SIZE) >> PAGE_SHIFT;
+>
+> This can be simplified to:
+>
+>         pg_end =3D DIV_ROUND_UP(file_size, PAGE_SIZE);
+
+Cool~ :)
+
+>
+>
+> - Eric
+
+
+
+
+2020=EB=85=84 6=EC=9B=94 10=EC=9D=BC (=EC=88=98) =EC=98=A4=EC=A0=84 1:51, E=
+ric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Tue, Jun 09, 2020 at 03:01:37PM +0900, Daeho Jeong wrote:
+> > From: Daeho Jeong <daehojeong@google.com>
+> >
+> > Added a new ioctl to send discard commands or/and zero out
+> > to whole data area of a regular file for security reason.
+>
+> With this ioctl available, what is the exact procedure to write and then =
+later
+> securely erase a file on f2fs?  In particular, how can the user prevent f=
+2fs
+> from making multiple copies of file data blocks as part of garbage collec=
+tion?
+>
+> > +static int f2fs_secure_erase(struct block_device *bdev, block_t block,
+> > +                                     block_t len, u32 flags)
+> > +{
+> > +     struct request_queue *q =3D bdev_get_queue(bdev);
+> > +     sector_t sector =3D SECTOR_FROM_BLOCK(block);
+> > +     sector_t nr_sects =3D SECTOR_FROM_BLOCK(len);
+> > +     int ret =3D 0;
+> > +
+> > +     if (!q)
+> > +             return -ENXIO;
+>
+> Why can the request_queue be NULL here?
+>
+> > +
+> > +     if (flags & F2FS_TRIM_FILE_DISCARD)
+> > +             ret =3D blkdev_issue_discard(bdev, sector, nr_sects, GFP_=
+NOFS,
+> > +                                             blk_queue_secure_erase(q)=
+ ?
+> > +                                             BLKDEV_DISCARD_SECURE : 0=
+);
+> > +
+> > +     if (!ret && flags & F2FS_TRIM_FILE_ZEROOUT)
+> > +             ret =3D blkdev_issue_zeroout(bdev, sector, nr_sects, GFP_=
+NOFS, 0);
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+> > +{
+> > +     struct inode *inode =3D file_inode(filp);
+> > +     struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
+> > +     struct address_space *mapping =3D inode->i_mapping;
+> > +     struct block_device *prev_bdev =3D NULL;
+> > +     loff_t file_size;
+> > +     pgoff_t index, pg_start =3D 0, pg_end;
+> > +     block_t prev_block =3D 0, len =3D 0;
+> > +     u32 flags;
+> > +     int ret =3D 0;
+> > +
+> > +     if (!S_ISREG(inode->i_mode) || f2fs_is_atomic_file(inode) ||
+> > +                     f2fs_compressed_file(inode))
+> > +             return -EINVAL;
+>
+> Is it valid to check f2fs_is_atomic_file() and f2fs_compressed_file() out=
+side of
+> inode_lock()?
+>
+> > +
+> > +     if (f2fs_readonly(sbi->sb))
+> > +             return -EROFS;
+>
+> Isn't this redundant with mnt_want_write_file()?
+>
+> Also, shouldn't write access to the file be required, i.e.
+> (filp->f_mode & FMODE_WRITE)?  Then the f2fs_readonly() and
+> mnt_want_write_file() checks would be unnecessary.
+>
+> > +
+> > +     if (f2fs_lfs_mode(sbi))
+> > +             return -EOPNOTSUPP;
+>
+> Doesn't this check have to be serialized with remount?
+>
+> > +
+> > +     if (get_user(flags, (u32 __user *)arg))
+> > +             return -EFAULT;
+> > +     if (!(flags & F2FS_TRIM_FILE_MASK))
+> > +             return -EINVAL;
+>
+> Need to reject unknown flags:
+>
+>         if (flags & ~F2FS_TRIM_FILE_MASK)
+>                 return -EINVAL;
+>
+> > +
+> > +     if (flags & F2FS_TRIM_FILE_DISCARD && !f2fs_hw_support_discard(sb=
+i))
+> > +             return -EOPNOTSUPP;
+> > +
+> > +     ret =3D mnt_want_write_file(filp);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     inode_lock(inode);
+> > +
+> > +     file_size =3D i_size_read(inode);
+> > +     if (!file_size)
+> > +             goto err;
+>
+> ->i_size is stable while holding inode_lock().  So just use ->i_size inst=
+ead of
+> i_size_read().
+>
+> > +     pg_end =3D (pgoff_t)round_up(file_size, PAGE_SIZE) >> PAGE_SHIFT;
+>
+> This can be simplified to:
+>
+>         pg_end =3D DIV_ROUND_UP(file_size, PAGE_SIZE);
+>
+>
+> - Eric
