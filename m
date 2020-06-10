@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160931F4C8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 06:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 514A01F4C92
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 06:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726089AbgFJErd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 00:47:33 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:28360 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725908AbgFJEra (ORCPT
+        id S1726181AbgFJEsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 00:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbgFJEsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 00:47:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591764449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NeTlc9sPhZVDG8KcvimBjPS6Un15nH1O93qMq/SgmMI=;
-        b=Y1xNMBnnZKDhdEXyF1wuDHKjyyB73RJjQMlIAmVWLR0pU3uoV/N9rBoTbqB9OUfTHjmWD0
-        0j87xe9aGbzhyQRPhkwEsR6OQwYOyzFbnjyuDWAt23SekO4CIuMuyt04PvcwapxDf3r9J1
-        r+sSGu1/grIOMt6ksv9QP12BWL6OrjQ=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-234-RSrHFrIHMG-U_O2cnggCOQ-1; Wed, 10 Jun 2020 00:47:27 -0400
-X-MC-Unique: RSrHFrIHMG-U_O2cnggCOQ-1
-Received: by mail-wr1-f69.google.com with SMTP id f4so515962wrp.21
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 21:47:27 -0700 (PDT)
+        Wed, 10 Jun 2020 00:48:00 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37476C05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 21:47:59 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id a137so957209oii.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 21:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EGCSz26NoE5P6k5GMe2KqoTYoFuUufwfEDJOt6jeNgY=;
+        b=B/qNLN4Rw/cI3p2TpFOsoO+4rZo7DZL6F4QmvWPzVrUzH3gWEF3mSI9Z5lFcsYWQI2
+         mYrbeQb2GOm1koc/DidSUqx4U2gsK3LFYIbqtkwTH+Is/vj1mPUvXEEsJQe/V9/5WbTH
+         V7xwzWrbeLLUntipqOpNvZ1ouipQqwWtk0mer0hijH+4jXjdkFRoQ64s2aYitQVVqHoK
+         +ezZ6QFTt8HEEZvwzSbnYNvNvimUxT/oJ+KrDC84DYuUwG5bcS6EwsB97bHuEcoGfILa
+         UkhVgrXsP5bcr5Y1OMQkS5EndIMgYa3GfXWs3hmqtoL4lYV3326dRKMpVspmJipX86ip
+         NmeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NeTlc9sPhZVDG8KcvimBjPS6Un15nH1O93qMq/SgmMI=;
-        b=N1jAINW4cPzY8ijIvTI1Xs/WUeePt0BVFQso/gi0p+hmJ2liVYB+c1HtZA2uZNjatL
-         Vq0EQVLjq4uxwOpqzNR+tMzefYJspp77Hu5MQrySAu19ckabwXVY7T8WvGYcIQMG8TdP
-         ssPO3sitjq+j+Ob4TA0X7J2CCt1vgPAgeONX1Ak2IYRdLqovvUeXLaoCgSJR8tLiRFZO
-         JklNXvwol2o5cF9T+fNsGE5jNM0qyRleJ+cqkUxWeFezqQRnNyq2Ik8nn8wUolxLcazd
-         X5Yf1E0MkI3veOzoZrvMXuKlUxGYFpmK7we48f1E5/rfUsM9x3j2SSKPuWoy3vrEdXDB
-         XVjA==
-X-Gm-Message-State: AOAM531LWJjG1meRiV7UgvtTdppbxVEh0HZ60o1TUexGqwy8xk/V4ZEo
-        rno2ozISuQERnR8F0xmBGJ0gXVivjvqZ6Y8I/e/cS3GozISLHfxHw91gkQ3wAz2EHRF30xDyyb/
-        06W+etKvP8ZhqQ7osu2qpZPu2
-X-Received: by 2002:a05:6000:d:: with SMTP id h13mr1336233wrx.17.1591764446761;
-        Tue, 09 Jun 2020 21:47:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzjvknjxW+aJPg3XelEu4wq8+jLzyY8z4CuAMV2ECaX7J8V3IhJFML1oaGO06sxcAfW/4487A==
-X-Received: by 2002:a05:6000:d:: with SMTP id h13mr1336207wrx.17.1591764446562;
-        Tue, 09 Jun 2020 21:47:26 -0700 (PDT)
-Received: from redhat.com (bzq-79-181-55-232.red.bezeqint.net. [79.181.55.232])
-        by smtp.gmail.com with ESMTPSA id a7sm5618888wmh.14.2020.06.09.21.47.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 21:47:26 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 00:47:23 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, rob.miller@broadcom.com,
-        lingshan.zhu@intel.com, eperezma@redhat.com, lulu@redhat.com,
-        shahafs@mellanox.com, hanand@xilinx.com, mhabets@solarflare.com,
-        gdawar@xilinx.com, saugatm@xilinx.com, vmireyno@marvell.com,
-        zhangweining@ruijie.com.cn, eli@mellanox.com
-Subject: Re: [PATCH V2] vdpa: introduce virtio pci driver
-Message-ID: <20200610004641-mutt-send-email-mst@kernel.org>
-References: <20200610035920.12078-1-jasowang@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EGCSz26NoE5P6k5GMe2KqoTYoFuUufwfEDJOt6jeNgY=;
+        b=beCiCeThWqUK7kId7B6kggsu8iOxBIjmbK+n9oDUawkEUvZXRAqYJtVB/DzhbGmRj3
+         mSUZFYOWQSfuzueg4mWI1mItujEAc1kfUxt/JKYB1eUhbTbeZ2wxwrWUseAk6F00BmyO
+         U/KMzNjIXp+pnjkMsFlxWuCIK+1yLoD4YALTsR2lF28Yyj2uLL2R2Yz+tKX2kdBQRluL
+         i0gn+zwmhz6wDXz6L5luBbvA0ph1GNvflGm93MnVFi3Pt7Z1m/AuQdkJQyyVdt99MMKu
+         VlK5OV3K+yQvZWIrU5Uum7+t9KTpZh7v6E0T9lsdIVy76cDepJAg9Mv11gBLHGS5gPwy
+         FkkQ==
+X-Gm-Message-State: AOAM531Y1fQoJsm3s0WLXce9+48u7c2zYbbY1RMIht1EbulX4c1DWPXC
+        XeJO7BRwwI38FgeVQLUoTpaKP+58IjJTDuYq/3ZTfA==
+X-Google-Smtp-Source: ABdhPJzC0c77g+AGDUo2DunUSmAACYUSnLAp5bhVc44ja1V38Gxr6Z/cxgFKZLc+/Ubl1kXga15OBcscl6g6BOjXwFg=
+X-Received: by 2002:aca:48d7:: with SMTP id v206mr1230018oia.97.1591764478602;
+ Tue, 09 Jun 2020 21:47:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200610035920.12078-1-jasowang@redhat.com>
+References: <20200610011934.49795-1-saravanak@google.com>
+In-Reply-To: <20200610011934.49795-1-saravanak@google.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Tue, 9 Jun 2020 21:47:46 -0700
+Message-ID: <CALAqxLVp-0cSed-E+_iXx2_cqYwmE2g51WOTpKTuE6JxF_mzzQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] fw_devlink: Improve cycle detection in DT
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 11:59:20AM +0800, Jason Wang wrote:
-> This patch introduce a vDPA driver for virtio-pci device. It bridges
-> the virtio-pci control command to the vDPA bus. This will be used for
-> developing new features for both software vDPA framework and hardware
-> vDPA feature.
+On Tue, Jun 9, 2020 at 6:19 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> Patch 2/2 explain the series. Just using a cover letter to thread the
+> series and add CC's.
+>
+> -Saravana
+>
+> v1 -> v2:
+> Patch 2/2:
+> - Added more comments
+> - Fixed missing put_device()
+> - Fixed stupid fall through in the error case
+>
+> Saravana Kannan (2):
+>   driver core: Add device_is_dependent() to linux/device.h
+>   of: property: Improve cycle detection when one of the devices is never
+>     added
+>
+>  drivers/base/core.c    |  2 +-
+>  drivers/of/property.c  | 62 ++++++++++++++++++++++++++++++++++++++----
+>  include/linux/device.h |  1 +
+>  3 files changed, 58 insertions(+), 7 deletions(-)
 
-The mail headers are mailformed here:
+With both patches, booting with fw_devlink=on (instead of
+deferred_probe_timeout=30) this allows all modules to properly load on
+the db845c, and without these patches, we fail to get display.
 
-Content-Type: text/plain; charset=a
+Tested-by: John Stultz <john.stultz@linaro.org>
 
-so git am can't parse it:
-
-error: cannot convert from a to UTF-8
-fatal: could not parse patch
-
--- 
-MST
-
+thanks
+-john
