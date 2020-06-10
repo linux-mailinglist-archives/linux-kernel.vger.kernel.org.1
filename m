@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753481F5721
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 16:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63E31F5715
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 16:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgFJO4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 10:56:05 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:38650 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726908AbgFJO4E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 10:56:04 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05AEqMPa046210;
-        Wed, 10 Jun 2020 14:53:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=+MkVzWy7hSx4wdwuzJRJZjRevMWLr+97rQSWPuRETeI=;
- b=Fh5YU57LjGtgILZhyagxCJiKu4+KGIutZ5E9PylZp1Qo5JxWx2sdx1km+teF5HpB/a6Y
- +v/mQIhiwB70zeeL6scNIb2z8RPcYg5Erj51xoP8eYmicfNMe6rRTMFP8AWdwcFHfWEh
- zUKNKLZSX6N17fHLjKr1Nd1gbAE/HEbmt2OtJogrNBJb82X7D/quTe7U5//urcAo3qs5
- 0malmVNVWml0c0tESY9EcRYvcmIGCsKFbMMN0ZrJdWOcD+Zv5Ws+fywrNKaj/F4ubd6G
- eEmoRBXwje+OuAgP6QfwhPM9kHvClr+5A6DodADS3CcKGBw03E/87H91mpCguJbEIIz4 8Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 31g2jravr5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 10 Jun 2020 14:53:37 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05AEi0us135392;
-        Wed, 10 Jun 2020 14:53:37 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 31gmqqdenw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Jun 2020 14:53:36 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05AErZYO021813;
-        Wed, 10 Jun 2020 14:53:36 GMT
-Received: from [10.159.156.250] (/10.159.156.250)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 10 Jun 2020 07:53:34 -0700
-Subject: Re: [PATCH 1/1] nvme-fcloop: verify wwnn and wwpn format
-To:     James Smart <james.smart@broadcom.com>,
-        linux-nvme@lists.infradead.org, hch@lst.de
-Cc:     sagi@grimberg.me, chaitanya.kulkarni@wdc.com,
-        linux-kernel@vger.kernel.org
-References: <20200526042118.17836-1-dongli.zhang@oracle.com>
- <60df6752-3512-f7a9-b0df-1096b93b8eda@broadcom.com>
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-Message-ID: <f93adee4-ebf0-a229-e507-4ef4e4fe812d@oracle.com>
-Date:   Wed, 10 Jun 2020 07:53:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729959AbgFJOxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 10:53:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726943AbgFJOxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 10:53:50 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDBAC2072F;
+        Wed, 10 Jun 2020 14:53:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591800830;
+        bh=TC73ZRDSuoUg0mbgkZG8iBdzAr9faRcRABDM7yMly28=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TFu/AplpxtnCVEq78ohceG29T7SYBjPC5HIAjxG+hxCRxeLrPsNRy6j26NYJwFeJ3
+         QvsLuNdCVS76nhPuHuTAwnK+XQfju0sw8jNByZiGyMECclLQF04DAR+Z4IqXPkEVqP
+         MgQGPcl1Ntz21ulzRCF6E58ON+T9q5eiGmmkIeOE=
+Date:   Wed, 10 Jun 2020 16:53:44 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Tetsuhiro Kohada <kohada.t2@gmail.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>
+Subject: Re: exfat: Improving exception handling in two functions
+Message-ID: <20200610145344.GA2102023@kroah.com>
+References: <9b9272fb-b265-010b-0696-4c0579abd841@web.de>
+ <208cba7b-e535-c8e0-5ac7-f15170117a7f@web.de>
 MIME-Version: 1.0
-In-Reply-To: <60df6752-3512-f7a9-b0df-1096b93b8eda@broadcom.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 spamscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006100112
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- cotscore=-2147483648 priorityscore=1501 spamscore=0 suspectscore=0
- lowpriorityscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0
- phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006100113
+In-Reply-To: <208cba7b-e535-c8e0-5ac7-f15170117a7f@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
-
-Would you mind apply this one with the Reviewed-by from James and Sagi?
-
-https://lore.kernel.org/linux-nvme/60df6752-3512-f7a9-b0df-1096b93b8eda@broadcom.com/
-
-https://lore.kernel.org/linux-nvme/c4ec2d9e-b08c-19b2-16a5-93520ca13c2e@grimberg.me/
-
-Thank you very much!
-
-Dongli Zhang
-
-On 6/4/20 8:20 AM, James Smart wrote:
-> On 5/25/2020 9:21 PM, Dongli Zhang wrote:
->> The nvme host and target verify the wwnn and wwpn format via
->> nvme_fc_parse_traddr(). For instance, it is required that the length of
->> wwnn to be either 21 ("nn-0x") or 19 (nn-).
->>
->> Add this verification to nvme-fcloop so that the input should always be in
->> hex and the length of input should always be 18.
->>
->> Otherwise, the user may use e.g. 0x2 to create fcloop local port, while
->> 0x0000000000000002 is required for nvme host and target. This makes the
->> requirement of format confusing.
->>
->> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
->> ---
->>   drivers/nvme/target/fcloop.c | 29 +++++++++++++++++++++++------
->>   1 file changed, 23 insertions(+), 6 deletions(-)
->>
->>
+On Wed, Jun 10, 2020 at 11:27:58AM +0200, Markus Elfring wrote:
+> Hello,
 > 
-> Reviewed-by: James Smart <james.smart@broadcom.com>
+> I have taken another look at pointer usage after calls of the function “brelse”.
+> My source code analysis approach pointed implementation details
+> like the following out for further software development considerations.
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/fs/exfat/namei.c?id=3d155ae4358baf4831609c2f9cd09396a2b8badf#n1078
 > 
-> Looks good. Sorry for the delay.
+> …
+> 		epold = exfat_get_dentry(sb, p_dir, oldentry + 1, &old_bh,
+> 			&sector_old);
+> 		epnew = exfat_get_dentry(sb, p_dir, newentry + 1, &new_bh,
+> 			&sector_new);
+> 		if (!epold || !epnew)
+> 			return -EIO;
+> …
 > 
-> -- james
+> I suggest to split such an error check.
+> How do you think about to release a buffer head object for the desired
+> exception handling if one of these function calls succeeded?
 > 
+> Would you like to adjust such code in the functions “exfat_rename_file”
+> and “exfat_move_file”?
 > 
+> Regards,
+> Markus
+
+Hi,
+
+This is the semi-friendly patch-bot of Greg Kroah-Hartman.
+
+Markus, you seem to have sent a nonsensical or otherwise pointless
+review comment to a patch submission on a Linux kernel developer mailing
+list.  I strongly suggest that you not do this anymore.  Please do not
+bother developers who are actively working to produce patches and
+features with comments that, in the end, are a waste of time.
+
+Patch submitter, please ignore Markus's suggestion; you do not need to
+follow it at all.  The person/bot/AI that sent it is being ignored by
+almost all Linux kernel maintainers for having a persistent pattern of
+behavior of producing distracting and pointless commentary, and
+inability to adapt to feedback.  Please feel free to also ignore emails
+from them.
+
+thanks,
+
+greg k-h's patch email bot
