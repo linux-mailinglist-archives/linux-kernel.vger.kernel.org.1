@@ -2,104 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B131F50ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 11:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC981F50F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 11:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727811AbgFJJJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 05:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726961AbgFJJJo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 05:09:44 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D841C03E96B;
-        Wed, 10 Jun 2020 02:09:44 -0700 (PDT)
-Received: from [192.168.0.20] (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 46A4029E;
-        Wed, 10 Jun 2020 11:09:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1591780180;
-        bh=x/1WGCYPX9wQegZ9rXJrtiwtlR3b2ASX7G+NGvgVKVA=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=fU6nJzNW910hSS6BxGkwYlQ9H1AN5gcEKblZhCdLSSuaQ0IHG2lJcRpTnvTGS23Tx
-         68COWHb73PGvNoS1OWt5h7SXGRce4a2KHTboa624X4L7+spsbEaUwtfe91Au/99Xh4
-         DaBuaSEzHCPFL+0iuEQwxN5N9iSgLa/m6m8LITo0=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH 17/17] scripts/spelling.txt: Add descriptors correction
-To:     Joe Perches <joe@perches.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Xiong <xndchn@gmail.com>,
-        Chris Paterson <chris.paterson2@renesas.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
- <20200609124610.3445662-18-kieran.bingham+renesas@ideasonboard.com>
- <77778948acc1f475e82ad36d015ba76dc96352ff.camel@perches.com>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <c65821d4-43bf-d6df-d485-9ad4febd6466@ideasonboard.com>
-Date:   Wed, 10 Jun 2020 10:09:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727846AbgFJJKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 05:10:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726981AbgFJJKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 05:10:40 -0400
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2F97206F4;
+        Wed, 10 Jun 2020 09:10:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591780239;
+        bh=eA9b9r/VfrB6XIgnaOoOlI7iRbldULAZTDwgqhhpxns=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ysqkV0trPvjiou3OvlVUwFiMEbfJsJWB2NCYw87pPBFoAmnvtTa2U+oy4Zoic5MY8
+         5Tc+yvPbaHY0s8T9+K35Jr75czQDlTVaR8X/vSY94btpo2Y5Y0c16YQhRnYUeaoeyh
+         exMxp1EYO2b48yb+9aNsvpni/PNS3QOJZjRxK0PA=
+Received: by mail-ot1-f51.google.com with SMTP id k15so1137856otp.8;
+        Wed, 10 Jun 2020 02:10:39 -0700 (PDT)
+X-Gm-Message-State: AOAM5317uMzkx8km+CgKSOQtI+Xe4MrXzEcaA8kH5ho+gH5I003R43e2
+        lhGZSGhhf9vowB1jWRIZDz+1qhP0Hg8zjFI4Sos=
+X-Google-Smtp-Source: ABdhPJyrpM2kAa85IxQlBAnrXXaGFJblaR/dF94rvrYfkdYJt0hYgrbcRlP2X8+uJW1d97ToMjRO5FTwp3KOw5XmtuY=
+X-Received: by 2002:a9d:42e:: with SMTP id 43mr1845458otc.108.1591780238955;
+ Wed, 10 Jun 2020 02:10:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <77778948acc1f475e82ad36d015ba76dc96352ff.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20200610071446.3737-1-zhenzhong.duan@gmail.com> <20200610085932.GA461993@ubuntu-n2-xlarge-x86>
+In-Reply-To: <20200610085932.GA461993@ubuntu-n2-xlarge-x86>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 10 Jun 2020 11:10:27 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHun8-SS4L03ccp=pt1oyPSfpuPezju294NnJoKLtcvcA@mail.gmail.com>
+Message-ID: <CAMj1kXHun8-SS4L03ccp=pt1oyPSfpuPezju294NnJoKLtcvcA@mail.gmail.com>
+Subject: Re: [PATCH] efi/libstub: Fix build error with libstub
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe,
+On Wed, 10 Jun 2020 at 10:59, Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Wed, Jun 10, 2020 at 03:14:46PM +0800, Zhenzhong Duan wrote:
+> > Got below error during build:
+> >
+> >   In file included from drivers/firmware/efi/libstub/efi-stub-helper.c:=
+16:0:
+> >   drivers/firmware/efi/libstub/efi-stub-helper.c: In function =E2=80=98=
+efi_char16_puts=E2=80=99:
+> >   arch/x86/include/asm/efi.h:355:3: sorry, unimplemented: ms_abi attrib=
+ute requires -maccumulate-outgoing-args or subtarget optimization implying =
+it
+> >      : __efi64_thunk_map(inst, func, inst, ##__VA_ARGS__))
+> >      ^
+> >   drivers/firmware/efi/libstub/efi-stub-helper.c:37:2: note: in expansi=
+on of macro =E2=80=98efi_call_proto=E2=80=99
+> >     efi_call_proto(efi_table_attr(efi_system_table, con_out),
+> >     ^
+> >   drivers/firmware/efi/libstub/efi-stub-helper.c:37: confused by earlie=
+r errors, bailing out
+> >
+> > Fix it by adding -maccumulate-outgoing-args for efi libstub build
+> > as suggested by gcc.
+> >
+> > Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+> > ---
+> >  drivers/firmware/efi/libstub/Makefile | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/e=
+fi/libstub/Makefile
+> > index cce4a74..25e5d02 100644
+> > --- a/drivers/firmware/efi/libstub/Makefile
+> > +++ b/drivers/firmware/efi/libstub/Makefile
+> > @@ -6,7 +6,7 @@
+> >  # enabled, even if doing so doesn't break the build.
+> >  #
+> >  cflags-$(CONFIG_X86_32)              :=3D -march=3Di386
+> > -cflags-$(CONFIG_X86_64)              :=3D -mcmodel=3Dsmall
+> > +cflags-$(CONFIG_X86_64)              :=3D -mcmodel=3Dsmall -maccumulat=
+e-outgoing-args
+>
+> This will need a cc-option call if this patch is necessary because clang
+> does not support this flag.
+>
+> clang-11: error: unknown argument: '-maccumulate-outgoing-args'
+>
 
-On 09/06/2020 17:08, Joe Perches wrote:
-> On Tue, 2020-06-09 at 13:46 +0100, Kieran Bingham wrote:
->> After coming across the s/decriptors/descriptors/ spelling error twice,
->> a scan of the tree showed it was a pervasive mistake.
-> []
->> diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-> []
->> @@ -404,6 +404,7 @@ decendants||descendants
->>  decompres||decompress
->>  decsribed||described
->>  decription||description
->> +decriptors||descriptors
-> 
-> spelling.txt does not check singular and plural
-> uses unless each is described separately so please
-> add the singular one too:
-> 
-> decriptor|descriptor
-> 
-> $ git grep -i -w decriptor | wc -l
-> 18
-> $ git grep -i -w decriptors | wc -l
-> 12
+A fix was already sent for this
 
-I believe my conversion was based on the non-pluralised version, so I
-think I changed all occurences, but then foolishly somehow ended up
-using the plural for the commit message, which translated into being the
-entry I put in spelling.txt. Sorry ... :-S
+https://lore.kernel.org/bpf/20200605150638.1011637-1-nivedita@alum.mit.edu/
 
-I'll fix up, and re-validate any missing fixups after the rebase. I
-think I originally did this at about v5.0, and I already picked up a
-couple extra when I did the rebase, and now you've highlighted the
-plural - I bet I missed some non-plural versions too ;-)
+which does the right thing here.
 
-Will re-check and correct.
-
-Thanks.
-
---
-Kieran
-
-
-
+> >  cflags-$(CONFIG_X86)         +=3D -m$(BITS) -D__KERNEL__ \
+> >                                  -fPIC -fno-strict-aliasing -mno-red-zo=
+ne \
+> >                                  -mno-mmx -mno-sse -fshort-wchar \
+> > --
+> > 1.8.3.1
+> >
+>
+> Cheers,
+> Nathan
