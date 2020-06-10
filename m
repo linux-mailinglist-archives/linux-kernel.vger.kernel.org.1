@@ -2,119 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68301F4BEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 05:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72A11F4BF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 05:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgFJDvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 23:51:44 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:43750 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgFJDvn (ORCPT
+        id S1726151AbgFJDzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 23:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbgFJDzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 23:51:43 -0400
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200610035140epoutp024ed1bae660df471e99691f5c828d8cfd~XEkl4n-fI1155711557epoutp02m
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 03:51:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200610035140epoutp024ed1bae660df471e99691f5c828d8cfd~XEkl4n-fI1155711557epoutp02m
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591761100;
-        bh=nt+O43pd0omdjJDq6Rok1zOLjNeYSCdHg3A0AnyLkJk=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=QG+nulfuBX3GtuZWZdDI8wYIhZ/hbIdYSmFZF0WLkQuO6fPWAyCTq7BLgVMn4aiVQ
-         WD6SwnBjLQRiSNIBq3RVjj2jJfrpGOcqNeNENgiAqGbc/Pc2P74qIlhU5ZKDgflz5c
-         vHROLnQQuh7nFbA2flMvOCElzhN4EGbcmuriN/Mo=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20200610035139epcas2p3f5b63403ac0c2c6461803db579107c53~XEklBOnEQ3084530845epcas2p3P;
-        Wed, 10 Jun 2020 03:51:39 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.186]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 49hY2L0XqszMqYlv; Wed, 10 Jun
-        2020 03:51:38 +0000 (GMT)
-X-AuditID: b6c32a47-fafff70000006b31-02-5ee058c9a361
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        01.C7.27441.9C850EE5; Wed, 10 Jun 2020 12:51:37 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: RE: [RFC PATCH 4/5] scsi: ufs: L2P map management for HPB read
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <SN6PR04MB464062D306BA6D635F274CD4FC820@SN6PR04MB4640.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20200610035137epcms2p21380c5851ef675851b5122c3001df4ed@epcms2p2>
-Date:   Wed, 10 Jun 2020 12:51:37 +0900
-X-CMS-MailID: 20200610035137epcms2p21380c5851ef675851b5122c3001df4ed
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrNJsWRmVeSWpSXmKPExsWy7bCmhe6piAdxBoeCLTbefcVq8WDeNjaL
-        vW0n2C1e/rzKZnHwYSeLxeHb79gtpn34yWzxaf0yVouXhzQtVj0It+jt38pmsejGNiaLy7vm
-        sFl0X9/BZrH8+D8miwkvl7BYLN16k9Gic/oaFosPPXUWixbuZnEQ8bh8xdvjcl8vk8fiPS+Z
-        PCYsOsDo0XJyP4vH9/UdbB4fn95i8ejbsorR4/MmOY/2A91MAVxROTYZqYkpqUUKqXnJ+SmZ
-        eem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6bpk5QL8pKZQl5pQChQISi4uV9O1sivJL
-        S1IVMvKLS2yVUgtScgoMDQv0ihNzi0vz0vWS83OtDA0MjEyBKhNyMnqetrMV/GWsOL77ImMD
-        42nGLkZODgkBE4kDu/pZQGwhgR2MEp9XcnQxcnDwCghK/N0hDBIWFvCWaJ6+mRGiREli/cVZ
-        7BBxPYlbD9eAxdkEdCSmn7gPFOfiEBHoYZFYP3k3M4jDLPCNSWLzxSNsEMt4JWa0P2WBsKUl
-        ti/fygiyjFMgVuLBHVmIsIbEj2W9zBC2qMTN1W/ZYez3x+ZD3Swi0XrvLFSNoMSDn7uh4pIS
-        x3Z/YIKw6yW23vnFCHKDhEAPo8ThnbdYIRL6Etc6NoLdwCvgK9F97AbYIBYBVYlF92Yygdwj
-        IeAiMeG5EUiYWUBeYvvbOcwgYWYBTYn1u/QhKpQljtxigXmqYeNvdnQ2swCfRMfhv3DxHfOe
-        QF2mJrHu53qmCYzKsxABPQvJrlkIuxYwMq9iFEstKM5NTy02KjBGjtpNjOBUruW+g3HG2w96
-        hxiZOBgPMUpwMCuJ8FY/uBMnxJuSWFmVWpQfX1Sak1p8iNEU6MmJzFKiyfnAbJJXEm9oamRm
-        ZmBpamFqZmShJM5bbHUhTkggPbEkNTs1tSC1CKaPiYNTqoFpwW9dWU15LkEVhUN/a0X2HRLw
-        LAhh6/ENeTdhixrT26mi93o1XC22iaYFvE+0DD5rrLGFe6Lz40UbBPKizItPnywPuyE2h++3
-        u9OEK3kVWe9O3Ne4YMr/iNuI4z7z4kw7a6NbnjGX72yJ63V1vb6pNqTe56s+XxZfa6iZyIbl
-        /0Qrita13S3/ujNgUxLHt8PpqtU7l06rlV8cuFBoc3byrbWvtA4F93r7BEs7cq2YtC24monb
-        KtspvkxQ13Gv3llhG4YL7FfcrkTc/OjV/ft6gM2PzDtyNc1fbMqviV+W27mSSehh5Iwb6427
-        Avv+xc6dHen9bN2BX7m7u0ouyE4y+31j1tq2/9EL37dxX1ZiKc5INNRiLipOBACNOwgxbgQA
-        AA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882
-References: <SN6PR04MB464062D306BA6D635F274CD4FC820@SN6PR04MB4640.namprd04.prod.outlook.com>
-        <SN6PR04MB46409E16CCF95A0AA9FFE944FC870@SN6PR04MB4640.namprd04.prod.outlook.com>
-        <231786897.01591322101492.JavaMail.epsvc@epcpadp1>
-        <336371513.41591320902369.JavaMail.epsvc@epcpadp1>
-        <963815509.21591320301642.JavaMail.epsvc@epcpadp1>
-        <231786897.01591320001492.JavaMail.epsvc@epcpadp1>
-        <963815509.21591323002276.JavaMail.epsvc@epcpadp1>
-        <1776409896.101591664283293.JavaMail.epsvc@epcpadp2>
-        <CGME20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882@epcms2p2>
+        Tue, 9 Jun 2020 23:55:53 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A75AC05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 20:55:53 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id 82so613810lfh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 20:55:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LyohQNqu19/pcwWiEv/7VNRgqg1PzPVrbL993SF8gqE=;
+        b=IFp/5CtLi2alU8l/K+OHxs5bHP8Agi8nfUucQLBFC8sB6hUz8dT0I9bHkwblGtmykz
+         K4yalvg3vZIre93sHa8v7QUr8UxUJqiBshgM0WQtYVx4RfRzuoAQTlKlwxy352KEY8I8
+         YMavy+SnPdZ3z+weUjY26SRZRgOxOSdgjbpw0NxnBRJpXU3vOTRAijEmDoXorScn47Hx
+         6b9ObMQ7yPIlWEadXWsdw02VeNVfmW3duX7gTgX5xJcphMUCaT+ptbNik/7P38P7tNZL
+         khtoCm91hoPxdcLdyT7yvWRdXVdTmt0F51+q5AU8p26nPqeit/50Zt4QxK1deKcjNyZn
+         DbzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LyohQNqu19/pcwWiEv/7VNRgqg1PzPVrbL993SF8gqE=;
+        b=sd9d4bBJFHkwQ1Ei1xpOWAGei1q76NZUVbzAud++TRW9tp6vNx//cY+05vdMmzV8mp
+         goSGd3iZRusqf64l+XqXWOGzCbNY+82LD2DfXFFxxtbb/7UVGrrEZmpYqZUgQmW9YFp/
+         SqjX7Z8hAgMyF8YhPIw41O0VXo3OzOYUs08Y0btgm8YUCpMIsgAX4C/rzfmNzwt5g7IA
+         q16TTKBs44sCV1FbPeJSZcrP35DeqU+rxe/3U+uEB6sd7no6eIBpGP68hWxR7vTx65rC
+         JZG+IpB6TKLjWsK/JeC6ak53V7Fj/yrneetI2fXWkBqB+Z+nGZEbV5/0r61Y673ZBVib
+         hABQ==
+X-Gm-Message-State: AOAM531qUNTMSOF5s++oBNZlgBGMztqsquemXTI8zSLUYgXqkbiYVq3d
+        E35pcNfcUOxa/0J1AJow4hRwDTqG89b/DB/XrOs=
+X-Google-Smtp-Source: ABdhPJyFvJC6hVhB4rAaWYb88C7PfzMZEw1pcHZPrgnRLlbqgobGbXETdY9gOPq/Ea1Ul5AxRba/0bqAg20Tq41W1LU=
+X-Received: by 2002:a19:fc15:: with SMTP id a21mr550019lfi.121.1591761351353;
+ Tue, 09 Jun 2020 20:55:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200609060137.143501-1-daeho43@gmail.com> <20200609165107.GA228564@gmail.com>
+ <CACOAw_xEZ+au9yhFerq9amkRO62Dzxj7h71gEc=i16ReYu5xrg@mail.gmail.com> <20200610031532.GA6286@sol.localdomain>
+In-Reply-To: <20200610031532.GA6286@sol.localdomain>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Wed, 10 Jun 2020 12:55:40 +0900
+Message-ID: <CACOAw_wErOPC=Kf3UU8nFGhWRy84ZnCeJbsyPhSCcXv51B_XxQ@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: add F2FS_IOC_SEC_TRIM_FILE ioctl
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This is not a concern, just a question.
-> If a map request started while runtime/system suspend, can you share its flow?
-When suspended, the worker is cancled. And it can just 
-process pending active/inactive list after resume.
+> >
+> > To prevent the file data from garbage collecting, the user needs to
+> > use pinfile ioctl and fallocate system call after creating the file.
+> > The sequence is like below.
+> > 1. create an empty file
+> > 2. pinfile
+> > 3. fallocate()
+>
+> Is that persistent?  So the file will never be moved afterwards?
+>
+> Is there a place where this is (or should be) documented?
 
-Thanks,
-Daejun
+Yes, this is persistent. F2FS_IOC_SET_PIN_FILE ioctl is to prevent
+file data from moving and being garbage collected, and further update
+to the file will be handled in in-place update manner.
+I don't see any document on this, but you can find the below in
+Documentation/filesystems/f2fs.rst
+
+However, once F2FS receives ioctl(fd, F2FS_IOC_SET_PIN_FILE) in prior to
+fallocate(fd, DEFAULT_MODE), it allocates on-disk blocks addresses having
+zero or random data, which is useful to the below scenario where:
+
+ 1. create(fd)
+ 2. ioctl(fd, F2FS_IOC_SET_PIN_FILE)
+ 3. fallocate(fd, 0, 0, size)
+ 4. address =3D fibmap(fd, offset)
+ 5. open(blkdev)
+ 6. write(blkdev, address)
+
+> Right, the freezing check is actually still necessary.  But getting write=
+ access
+> to the mount is not necessary.  I think you should use file_start_write()=
+ and
+> file_end_write(), like vfs_write() does.
+
+Yes, agreed.
+
+2020=EB=85=84 6=EC=9B=94 10=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 12:15, =
+Eric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Wed, Jun 10, 2020 at 11:05:46AM +0900, Daeho Jeong wrote:
+> > > > Added a new ioctl to send discard commands or/and zero out
+> > > > to whole data area of a regular file for security reason.
+> > >
+> > > With this ioctl available, what is the exact procedure to write and t=
+hen later
+> > > securely erase a file on f2fs?  In particular, how can the user preve=
+nt f2fs
+> > > from making multiple copies of file data blocks as part of garbage co=
+llection?
+> > >
+> >
+> > To prevent the file data from garbage collecting, the user needs to
+> > use pinfile ioctl and fallocate system call after creating the file.
+> > The sequence is like below.
+> > 1. create an empty file
+> > 2. pinfile
+> > 3. fallocate()
+>
+> Is that persistent?  So the file will never be moved afterwards?
+>
+> Is there a place where this is (or should be) documented?
+>
+> > > > +
+> > > > +     if (f2fs_readonly(sbi->sb))
+> > > > +             return -EROFS;
+> > >
+> > > Isn't this redundant with mnt_want_write_file()?
+> > >
+> > > Also, shouldn't write access to the file be required, i.e.
+> > > (filp->f_mode & FMODE_WRITE)?  Then the f2fs_readonly() and
+> > > mnt_want_write_file() checks would be unnecessary.
+> > >
+> >
+> > Using FMODE_WRITE is more proper for this case, since we're going to
+> > modify the data. But I think mnt_want_write_file() is still required
+> > to prevent the filesystem from freezing or something else.
+>
+> Right, the freezing check is actually still necessary.  But getting write=
+ access
+> to the mount is not necessary.  I think you should use file_start_write()=
+ and
+> file_end_write(), like vfs_write() does.
+>
+> > >
+> > > > +
+> > > > +     if (get_user(flags, (u32 __user *)arg))
+> > > > +             return -EFAULT;
+> > > > +     if (!(flags & F2FS_TRIM_FILE_MASK))
+> > > > +             return -EINVAL;
+> > >
+> > > Need to reject unknown flags:
+> > >
+> > >         if (flags & ~F2FS_TRIM_FILE_MASK)
+> > >                 return -EINVAL;
+> >
+> > I needed a different thing here. This was to check neither discard nor
+> > zeroing out are not here. But we still need to check unknown flags,
+> > too.
+> > The below might be better.
+> > if (!flags || flags & ~F2FS_TRIM_FILE_MASK)
+> >        return -EINVAL;
+>
+> Sure, but please put parentheses around the second clause:
+>
+>         if (flags =3D=3D 0 || (flags & ~F2FS_TRIM_FILE_MASK))
+>                 return -EINVAL;
+>
+> - Eric
