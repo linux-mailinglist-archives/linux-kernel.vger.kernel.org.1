@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F341F4EA9
+	by mail.lfdr.de (Postfix) with ESMTP id EB5F31F4EAA
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 09:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbgFJHNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 03:13:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726274AbgFJHNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 03:13:34 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D76C62081A;
-        Wed, 10 Jun 2020 07:13:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591773213;
-        bh=9/XwdMFddmKG/Fg7fia56TYy7QMv+4JQHM/sDjaOilE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rf0RY8JQZEHZC+ruF/Fmpwo8bggVSbfuKiBGRBd9upWHm1PNCm/oveJSLSO/MD1u4
-         zatapG6vPJVr6SrFN9U4IaU3kBi/U9XqsWNNpqp/vcBczYnY2qrO4t0f75TUjJ/ybr
-         k9cXW6PxpM+jFMNMGX2JjyymnWnbtmdscrI5k1J0=
-Date:   Wed, 10 Jun 2020 09:13:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Zubin Mithra <zsm@google.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] Restrict the untrusted devices, to bind to only a set of
- "whitelisted" drivers
-Message-ID: <20200610071331.GD1923109@kroah.com>
-References: <20200607113632.GA49147@kroah.com>
- <20200609210400.GA1461839@bjorn-Precision-5520>
- <CACK8Z6E0s-Y207sb-AqSHVB7KmhvDgJQFFaz6ijQ_0OS3Qjisw@mail.gmail.com>
+        id S1726432AbgFJHNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 03:13:46 -0400
+Received: from smtprelay0218.hostedemail.com ([216.40.44.218]:46140 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726276AbgFJHNq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 03:13:46 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 76A34181D3762;
+        Wed, 10 Jun 2020 07:13:45 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:2895:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:7576:7807:7875:8957:9010:10004:10400:11026:11232:11658:11914:12043:12297:12438:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21451:21627:30012:30054:30064:30070:30079:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: brain48_4312e6726dc9
+X-Filterd-Recvd-Size: 2457
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 10 Jun 2020 07:13:44 +0000 (UTC)
+Message-ID: <016a2c771e5535a872b9f20d90e4cc5683ea7a55.camel@perches.com>
+Subject: Re: [PATCH v3 1/2] checkpatch: support deprecated terms checking
+From:   Joe Perches <joe@perches.com>
+To:     SeongJae Park <sjpark@amazon.com>, akpm@linux-foundation.org,
+        apw@canonical.com
+Cc:     colin.king@canonical.com, sj38.park@gmail.com,
+        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
+Date:   Wed, 10 Jun 2020 00:13:42 -0700
+In-Reply-To: <20200610065223.29894-2-sjpark@amazon.com>
+References: <20200610065223.29894-1-sjpark@amazon.com>
+         <20200610065223.29894-2-sjpark@amazon.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACK8Z6E0s-Y207sb-AqSHVB7KmhvDgJQFFaz6ijQ_0OS3Qjisw@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 04:23:54PM -0700, Rajat Jain wrote:
-> The one thing that still needs more thought is how about the
-> "pcieport" driver that enumerates the PCI bridges. I'm unsure if it
-> needs to be whitelisted for further enumeration downstream. What do
-> you think?
+On Wed, 2020-06-10 at 08:52 +0200, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> Some terms could be deprecated for various reasons, but it is hard to
+> update the entire old usages.  That said, we could at least encourage
+> new patches to use the suggested replacements.  This commit adds check
+> of deprecated terms in the 'checkpatch.pl' for that.  The script will
+> get deprecated terms and suggested replacements of those from
+> 'scripts/deprecated_terms.txt' file and warn if the deprecated terms are
+> used.  The mechanism and the format of the file are almost the same as
+> that of 'spelling.txt'.
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> +# Load deprecated terms and build regular expression list.
+> +my $deprecated_terms;
+> +my %deprecated_terms_fix;
+> +
+> +if (open(my $deprecates, '<', $deprecated_terms_file)) {
+> +	while (<$deprecates>) {
+> +		my $line = $_;
+> +
+> +		$line =~ s/\s*\n?$//g;
+> +		$line =~ s/^\s*//g;
+> +
+> +		next if ($line =~ m/^\s*#/);
+> +		next if ($line =~ m/^\s*$/);
+> +
+> +		my ($suspect, $fix) = split(/\|\|/, $line);
+> +
+> +		$deprecated_terms_fix{$suspect} = $fix;
+> +	}
+> +	close($deprecates);
+> +} else {
+> +	warn "No deprecated term will be found - file '$deprecated_terms_file': $!\n";
+> +}
+> +
+> +$deprecated_terms = join("|", sort keys %deprecated_terms_fix) if keys %deprecated_terms_fix;
+> +
 
-Why not just do whatever type of "code review" you need to do for that
-one core driver to get that off of your "drivers to worry about" list?
-:)
+This is a direct copy of the spelling dictionary
+loading code, so maybe these could be consolidated.
 
-thanks,
 
-greg k-h
