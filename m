@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351581F504A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 10:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F8E1F5047
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 10:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbgFJIaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 04:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
+        id S1726790AbgFJIaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 04:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgFJIaS (ORCPT
+        with ESMTP id S1726545AbgFJIaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 04:30:18 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46BC5C03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 01:30:17 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id c3so1203346wru.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 01:30:17 -0700 (PDT)
+        Wed, 10 Jun 2020 04:30:19 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E33C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 01:30:18 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id p5so1214657wrw.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 01:30:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7qPvfAK/wIPUWfgqcjzBx41M5rLQsIgGSEZcayEYX00=;
-        b=O3FQn37Fw3dtMfw8SHlpmRruARSNx8N74Lbw/4/ptHL+LNio0fm7wjTBotWaYwVSz3
-         4oy5ByC/54ljbNGuRvxSQNrTfw3cuisPIm0I2GNYTq7axQGCBJ8QwslTPzkl3L4ShVwF
-         Hy18ra+U8NdU8JWLBzIw8eWkcUbSN1xPE7YE/k4O3Ai2zCyhUxV2zWAqrLUXOnUbW3i8
-         injhSJjF2Urlm2O5UWnm/gGdjh2zTYMWNOfWd5XiYFvHzABBqVz6NwxmxM4XizSyWF1e
-         VOJoZzZys/yzUtovAowiySYbNi4lPeC7viiqLivn8zYAY7Yo4WEzGgugorTaD1aqpcoW
-         NuQQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Ig0Wg2PIvyajjV/Y8eTgJWpGeC/XcG4G3xO3aXfG82k=;
+        b=DTECFQ0bjRfKJQiLq6V7fYnNYoGstQHaivOezI/tvE4vNkfVsM5E+kOKCoYZrkWQ8E
+         07GF1OJ5g89l8Y6gsIetG5pftx0NdqTjpqPtKZKz/6k2dNaBn0Z2SZK7FL8znkkPohpW
+         HS4BhLMugMY/q8R5tJQpq/MO5S9ZvJufVJS7ly/CpFL8AcdC+V1rLVnb2QYsa9abzIq/
+         /pkQXuimNoTYoAIT9Am96pH2sY5EGmV8T+apfWzqDUUqtOuPKCoL8mz5V4Bj00tV3YWn
+         euzCn5ZW9BftwIV05sEavFlk+ntT59KS5ZrP/UDs3u+URzOGKPukGgvjcQyNePbfNKO/
+         pM7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7qPvfAK/wIPUWfgqcjzBx41M5rLQsIgGSEZcayEYX00=;
-        b=bhOQwynAwTYS21bCmZiihO6Irav5uDWHFA8hIQkBgxIk08i+hWOZ70aTGygyjAJwLB
-         OtYeUHWlmrW34JTh2iqh+pB+XKAGOi7Z9Nj1ICCZsrgLMRCVsm5cxpQmMXjgjXK+detu
-         QcBc8KjDgWOvcT5AcPZo+8ZMeSigglmb4rL8gXDwhhE0N/RUSusa4lOD/LxDO4VcNAQC
-         F7gDUQ9LCJJUfAojhAsOy6611no3vMBEg6iMwz3/ib6mvO2Yz/4rHS0jMRiEEuW8Docg
-         kOi3HjHl48ls0jQYdoDNwNQY/qNH50Iv4Zk/SWph0Z0okq0DX4R05AYrtCw4phqgmS92
-         Pwpg==
-X-Gm-Message-State: AOAM531txJDdm6kpNRkIt2n8mVPo/nWPkggn8BIUMNIxqA1qvHK52HOf
-        GVI6+96ScTTYIKHaezF93LPnew==
-X-Google-Smtp-Source: ABdhPJxZayRZhbDG1jRiWiM/W4R2KNOE8PzRBwn1FswUR3YH+jLRTZo8j6B+3fmNEqqWXEDnTF+1Rg==
-X-Received: by 2002:adf:93a3:: with SMTP id 32mr2321138wrp.344.1591777815512;
-        Wed, 10 Jun 2020 01:30:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Ig0Wg2PIvyajjV/Y8eTgJWpGeC/XcG4G3xO3aXfG82k=;
+        b=at5Tc5tm5MuLltB+LzIM05ihlhD5GQy3O0ysGRpPxnVG71TvZJWykXe1LvKMzIGsaO
+         21/nLOe8KDw1vFLuGMNutEwjYatxtT4brgWnghprp1b7Aadlojzza82j6FCbpZpM6bQ5
+         2fU261XWEE2nBgJSGNb/ncmgbf2fYR5KMrbPFDQqnvQc0upa1jOvI2jr672Nwy+lXWoW
+         BI5dEX9PXuf05XFI1hEiwUpfgUF7/Vxa0Lqjw9pasLwsY0LDJK3m85iuo+kmLH74aCq2
+         YwoHl+xecZtJhW/9tyujjGsWyilEPH8lIkWofSItd2g4O97QevzzttER4hp39vhIGNHB
+         6fBA==
+X-Gm-Message-State: AOAM532kppHU4f7DJw4/IXdFGrZAOojp56+S70jI/jB/CcK6i1tpl4lw
+        FgrGhcb5imsPAfnkzsXKeHveCg==
+X-Google-Smtp-Source: ABdhPJxEeONnboKWlWlksQ0crqvdegr2mYAnJsEUGnJkTWBViWL1BgmpvfotRC7sgx0kvGovhCXAgA==
+X-Received: by 2002:adf:ea11:: with SMTP id q17mr2261311wrm.75.1591777817239;
+        Wed, 10 Jun 2020 01:30:17 -0700 (PDT)
 Received: from bender.baylibre.local ([2a01:e35:2ec0:82b0:22:5867:d2c6:75f4])
-        by smtp.gmail.com with ESMTPSA id u13sm6958974wrp.53.2020.06.10.01.30.14
+        by smtp.gmail.com with ESMTPSA id u13sm6958974wrp.53.2020.06.10.01.30.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 01:30:14 -0700 (PDT)
+        Wed, 10 Jun 2020 01:30:16 -0700 (PDT)
 From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     jbrunet@baylibre.com
+To:     jbrunet@baylibre.com, devicetree@vger.kernel.org
 Cc:     linux-clk@vger.kernel.org, linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dmitry Shmidt <dimitrysh@google.com>,
         Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 0/2] clk: meson: g12a: Add the NNA source clocks
-Date:   Wed, 10 Jun 2020 10:30:10 +0200
-Message-Id: <20200610083012.5024-1-narmstrong@baylibre.com>
+Subject: [PATCH 1/2] dt-bindings: clk: g12a-clkc: Add NNA CLK Source clock IDs
+Date:   Wed, 10 Jun 2020 10:30:11 +0200
+Message-Id: <20200610083012.5024-2-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20200610083012.5024-1-narmstrong@baylibre.com>
+References: <20200610083012.5024-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -64,18 +67,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset adds the Neural Network Accelerator source clocks present
-on the Amlogic SM1 SoCs family.
+From: Dmitry Shmidt <dimitrysh@google.com>
 
-Dmitry Shmidt (2):
-  dt-bindings: clk: g12a-clkc: Add NNA CLK Source clock IDs
-  clk: meson: g12a: Add support for NNA CLK source clocks
+This adds the Neural Network Accelerator IP source clocks.
 
- drivers/clk/meson/g12a.c              | 119 ++++++++++++++++++++++++++
- drivers/clk/meson/g12a.h              |   7 +-
- include/dt-bindings/clock/g12a-clkc.h |   2 +
- 3 files changed, 127 insertions(+), 1 deletion(-)
+Signed-off-by: Dmitry Shmidt <dimitrysh@google.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ include/dt-bindings/clock/g12a-clkc.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/include/dt-bindings/clock/g12a-clkc.h b/include/dt-bindings/clock/g12a-clkc.h
+index b0d65d73db96..40d49940d8a8 100644
+--- a/include/dt-bindings/clock/g12a-clkc.h
++++ b/include/dt-bindings/clock/g12a-clkc.h
+@@ -145,5 +145,7 @@
+ #define CLKID_CPU3_CLK				255
+ #define CLKID_SPICC0_SCLK			258
+ #define CLKID_SPICC1_SCLK			261
++#define CLKID_NNA_AXI_CLK			264
++#define CLKID_NNA_CORE_CLK			267
+ 
+ #endif /* __G12A_CLKC_H */
 -- 
 2.22.0
 
