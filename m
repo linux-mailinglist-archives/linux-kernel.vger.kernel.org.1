@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B1E1F5C6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 22:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F771F5D06
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 22:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730515AbgFJUFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 16:05:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45112 "EHLO mx2.suse.de"
+        id S1727828AbgFJUVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 16:21:51 -0400
+Received: from mga18.intel.com ([134.134.136.126]:53249 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727877AbgFJUFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 16:05:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A4F24AC5F;
-        Wed, 10 Jun 2020 20:05:41 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 3A54760739; Wed, 10 Jun 2020 22:05:35 +0200 (CEST)
-Date:   Wed, 10 Jun 2020 22:05:35 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "John W. Linville" <linville@tuxdriver.com>,
-        David Jander <david@protonic.nl>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
-        Marek Vasut <marex@denx.de>,
-        Christian Herber <christian.herber@nxp.com>,
-        Amit Cohen <amitc@mellanox.com>,
-        Petr Machata <petrm@mellanox.com>
-Subject: Re: [PATCH v4 0/3] Add support for SQI and master-slave
-Message-ID: <20200610200535.zkozejqc3ssxpeam@lion.mk-sys.cz>
-References: <20200610083744.21322-1-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200610083744.21322-1-o.rempel@pengutronix.de>
+        id S1727045AbgFJUVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 16:21:50 -0400
+IronPort-SDR: 4zDQ23Y+hruCLkPaIg3Eb0FTF0WJhI6e6zUNvN0Yp2BBh1HbE7wlGNPeVHJ4uP1uns5wGvn5NW
+ w9D4hZRu0SZg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 13:21:49 -0700
+IronPort-SDR: r1Zbibk8XXir5xJvUIE1LXJTAFKapEGUABZjG2uK6GbCFlViEbZnc8NAzbMEUYtKiF/DCc6D0q
+ XratW+5cxkrg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,497,1583222400"; 
+   d="scan'208";a="380178474"
+Received: from km-skylake-client-platform.sc.intel.com ([10.3.52.141])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Jun 2020 13:21:49 -0700
+From:   Kyung Min Park <kyung.min.park@intel.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gregkh@linuxfoundation.org, ak@linux.intel.com,
+        dave.hansen@intel.com, tony.luck@intel.com,
+        ravi.v.shankar@intel.com, ricardo.neri@intel.com
+Subject: [RFC PATCH 0/3] Add Documentation for /proc/cpuinfo flags 
+Date:   Wed, 10 Jun 2020 13:06:58 -0700
+Message-Id: <20200610200701.16757-1-kyung.min.park@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 10:37:41AM +0200, Oleksij Rempel wrote:
-> This patch set is extending ethtool to make it more usable on automotive
-> PHYs like NXP TJA11XX.
-> 
-> They make use of new KAPI (currently in net-next, will go probably to the
-> kernel 5.8-rc1):
-> - PHY master-slave role configuration and status informaton. Mostly needed
->   for 100Base-T1 PHYs due the lack of autonegatiation support.
-> - Signal Quality Index to investigate cable related issues.
-> 
-> changes v4:
-> - rebase is against current ethtool master
-> - pull headers from current kernel master
-> - use tabs instead of spaces in the manual
-> 
-> changes v3:
-> - rename "Port mode" to "master-slave"
-> - use [preferred|forced]-[master|slave] for information and
->   configuration
-> 
-> changes v2:
-> - add master-slave information to the "ethtool --help" and man page
-> - move KAPI update changes to the separate patch. 
-> 
-> Oleksij Rempel (3):
->   update UAPI header copies
->   netlink: add master/slave configuration support
->   netlink: add LINKSTATE SQI support
-> 
->  ethtool.8.in                 |  19 +++++
->  ethtool.c                    |   1 +
->  netlink/desc-ethtool.c       |   4 +
->  netlink/settings.c           |  66 +++++++++++++++
->  uapi/linux/ethtool.h         |  16 +++-
->  uapi/linux/ethtool_netlink.h | 153 ++++++++++++++++++++++++++++++++++-
->  uapi/linux/genetlink.h       |   2 +
->  uapi/linux/if_link.h         |   1 +
->  uapi/linux/netlink.h         | 103 +++++++++++++++++++++++
->  uapi/linux/rtnetlink.h       |   6 ++
->  10 files changed, 369 insertions(+), 2 deletions(-)
-> 
-> -- 
-> 2.27.0
-> 
+Currently, there isn't any documentation in the kernel about how
+/proc/cpuinfo flags are generated and what it means when they are
+missing. x86 maintainers have expressed objections on adding flags
+for features without kernel use cases and that part of the reason is
+the lack of documentation on the logic behind such flags.
 
-The series looks good to me, I'll wait for another day or two for other
-comments and apply it there are no objections.
+If users want to know if a feature is available on a given system, they
+try to find the flag in /proc/cpuinfo. If a given flag is present, it
+means that Linux supports it. If such flag represents a hardware feature,
+it also means that the hardware supports it. Therefore, it is not
+sufficient to read CPUID to determine whether a hardware feature is
+available. If the flag is missing in /proc/cpuinfo, users need to find
+out the reason why the flag is missing and how to enable it, which is
+not always easy.
 
-Michal
+/proc/cpuinfo should show all of the hardware features and bugs that any
+application or end user might care about. Some of these flags are derived
+from CPUID, and others are derived from other sources, including some that
+are entirely software-based. Add documentation how features are created,
+naming of the flags and when they are missing, what it means to users.
+
+Include two instances of features for which there are not implemented
+use cases in the kernel.
+
+Patch 1 creates a new documentation for /proc/cpuinfo flags bits.
+Patch 2 adds X86_FEATURE_SERIALIZE.
+Patch 3 adds X86_FEATURE_TSXLDTRK.
+
+This RFC series has been reviewed by Dave Hansen.
+
+Kyung Min Park (2):
+  Documentation/x86: Add documentation for /proc/cpuinfo feature flags
+  x86/cpufeatures: Enumerate TSX suspend load address tracking
+    instructions
+
+Ricardo Neri (1):
+  x86/cpufeatures: Add enumeration for SERIALIZE instruction
+
+ Documentation/x86/cpuinfo.rst      | 152 +++++++++++++++++++++++++++++
+ Documentation/x86/index.rst        |   1 +
+ arch/x86/include/asm/cpufeatures.h |   2 +
+ 3 files changed, 155 insertions(+)
+ create mode 100644 Documentation/x86/cpuinfo.rst
+
+-- 
+2.17.1
+
