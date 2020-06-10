@@ -2,143 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F37D1F4BC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 05:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8191F4BF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 06:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgFJDXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 23:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgFJDXg (ORCPT
+        id S1726123AbgFJEAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 00:00:07 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:12475 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgFJEAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 23:23:36 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F6FC05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 20:23:35 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id i16so697607qtr.7
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 20:23:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=HK9ir5YqLJV5ZUuAryCYskq/ln3yZyDIMSHc1NLebXg=;
-        b=mNgWJODnGAFOJr8jjBzMg/pgjvwUpSTYa8yWWLmwL2RF6xCJyqVM38dwoYwwBXtybT
-         xlexCTs6kvb0Y1mBI3o+EY9N1BIn4kdPIQJ80DAhUO6JYcBvNAwsRKDucMPoiy7V8G6F
-         z+Yb7/i696nor9y1Hfw5V5t1KLoBSvn12Y43vWyNcUnVtO6l7nYkS7z0gtttaEreeEc0
-         nd7b2a7QSsS0TaoYoYtC7Nva+gh52slD5wHVfCweLI72wYh70SPZnWAB6JWtrIrxds9D
-         OZVzhmJ62/BemwfzC5G1J36B7OSWAF0FlbYbjaGrYscQPgwIjQG7TIlJzsAq9VI0SKGB
-         qaDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=HK9ir5YqLJV5ZUuAryCYskq/ln3yZyDIMSHc1NLebXg=;
-        b=gIruLtRK1d3O/H14ETOfUelbADM44Sqi7xnsLb0yfjUWgrcw8XaorkKKE4JDfayzMo
-         83mLffyAEaruJmfQsgNVQ2JzDOz2yMi2rZAIgkdcR1ulQ25eomlqpE3307TNjPQ9DJOP
-         cUkeByVPUghQtYEwKLAeTift7tGNWvG1nx+tR1xKvliVThaLseVfGbQYQoOS6S0w7wgt
-         cGI1SVamIbqj9dW5fHKNBHpG9adwjy7szAIJD2n3fgCTp258bdZoMoqhAayGMxmCgDUz
-         gy2WAQ17LGbVYR+DJLtJ+Kke2+vrM+cl7CcPplbNQXh2zo2FGWgX20RGgMbFC3URLGaV
-         YC6Q==
-X-Gm-Message-State: AOAM532/M7TUX3yCSpPRKDLNbguc19doHwNffb96mRVt9+gak14UBI6C
-        UPlTWpB04Pl9SsKV5FwqCMA=
-X-Google-Smtp-Source: ABdhPJwAj5/Q0jNneQ0SG5B0LH6i0xFDcolUf/4TPeBL7yAavSO18ECr9nvS7d87d3Ga0Cv/mYqUzw==
-X-Received: by 2002:ac8:f47:: with SMTP id l7mr1137460qtk.292.1591759414495;
-        Tue, 09 Jun 2020 20:23:34 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id w3sm11717431qkb.85.2020.06.09.20.23.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 20:23:33 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 9 Jun 2020 23:23:31 -0400
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Rong Chen <rong.a.chen@intel.com>,
-        Fangrui Song <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        kernel test robot <lkp@intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [kbuild-all] Re: gcc-5: error: -gz is not supported in this
- configuration
-Message-ID: <20200610032331.GA1928844@rani.riverdale.lan>
-References: <202006092115.nevT7m8D%lkp@intel.com>
- <CAKwvOd=jjFS7XOWyYMZgLTYJtZ7uc=4dP-S4VhuyjNmT=2EcPw@mail.gmail.com>
- <20200609174954.cckelwl6etwztmhv@google.com>
- <05c88916-7d91-ad1a-1ea6-15167a994a0b@intel.com>
- <20200610005830.s6gus7r3umwgzozk@google.com>
- <c2c2c2db-439f-5c60-068d-e53adbe960c1@intel.com>
- <20200610031225.GA1917869@rani.riverdale.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200610031225.GA1917869@rani.riverdale.lan>
+        Wed, 10 Jun 2020 00:00:06 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200610040003epoutp016c29cabd1ca2c8eee1cda46e5274a991~XEr6obYoR1648716487epoutp01j
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 04:00:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200610040003epoutp016c29cabd1ca2c8eee1cda46e5274a991~XEr6obYoR1648716487epoutp01j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591761603;
+        bh=S1lNTGTwft1rHKlGBBhm/z8ha0dAATf801dKovrWqlQ=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=tkOUYuvCpPnAyCNJ4Kaq8QLciCkJNgQcvfhAmtVypkqTIwpNIlIjHE/m4iwwWVWu6
+         8HwbNF72pzr/fYEJDvjeceoXIBrp4tv0Hm/fQDo6NJFnDFEeQLwO8NM65TMa5gqvoR
+         OPVEBK2jl2Zd4+n1MD3CSV4bDFMdwWK2NconAacY=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p4.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200610040002epcas1p46125676dd84ab042413fbbcb32eb6b7a~XEr54rpCe0290302903epcas1p4V;
+        Wed, 10 Jun 2020 04:00:02 +0000 (GMT)
+Mime-Version: 1.0
+Subject: RE: [RFC PATCH 4/5] scsi: ufs: L2P map management for HPB read
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <SN6PR04MB46407A85C194D2D8F03A01B3FC820@SN6PR04MB4640.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01591761602548.JavaMail.epsvc@epcpadp1>
+Date:   Wed, 10 Jun 2020 11:49:14 +0900
+X-CMS-MailID: 20200610024914epcms2p570190ab8b6cc3188e84c728f01391cba
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882
+References: <SN6PR04MB46407A85C194D2D8F03A01B3FC820@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <SN6PR04MB46409E16CCF95A0AA9FFE944FC870@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <231786897.01591322101492.JavaMail.epsvc@epcpadp1>
+        <336371513.41591320902369.JavaMail.epsvc@epcpadp1>
+        <963815509.21591320301642.JavaMail.epsvc@epcpadp1>
+        <231786897.01591320001492.JavaMail.epsvc@epcpadp1>
+        <963815509.21591323002276.JavaMail.epsvc@epcpadp1>
+        <1776409896.101591664283293.JavaMail.epsvc@epcpadp2>
+        <CGME20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882@epcms2p5>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 11:12:25PM -0400, Arvind Sankar wrote:
-> On Wed, Jun 10, 2020 at 09:49:01AM +0800, Rong Chen wrote:
-> > 
-> > 
-> > On 6/10/20 8:58 AM, Fangrui Song wrote:
-> > > On 2020-06-10, Rong Chen wrote:
-> > >>
-> > >>
-> > >> On 6/10/20 1:49 AM, Fangrui Song wrote:
-> > >>> On 2020-06-09, Nick Desaulniers wrote:
-> > >>>> On Tue, Jun 9, 2020 at 6:12 AM kernel test robot <lkp@intel.com> 
-> > >>>> wrote:
-> > >>>>>
-> > >>>>> tree: 
-> > >>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
-> > >>>>> master
-> > >>>>> head:   abfbb29297c27e3f101f348dc9e467b0fe70f919
-> > >>>>> commit: 10e68b02c861ccf2b3adb59d3f0c10dc6b5e3ace Makefile: support 
-> > >>>>> compressed debug info
-> > >>>>> date:   12 days ago
-> > >>>>> config: x86_64-randconfig-r032-20200609 (attached as .config)
-> > >>>>> compiler: gcc-5 (Ubuntu 5.5.0-12ubuntu1) 5.5.0 20171010
-> > >>>>> reproduce (this is a W=1 build):
-> > >>>>>         git checkout 10e68b02c861ccf2b3adb59d3f0c10dc6b5e3ace
-> > >>>>>         # save the attached .config to linux build tree
-> > >>>>>         make W=1 ARCH=x86_64
-> > >>>>>
-> > >>>>> If you fix the issue, kindly add following tag as appropriate
-> > >>>>> Reported-by: kernel test robot <lkp@intel.com>
-> > >>>>>
-> > >>>>> All errors (new ones prefixed by >>, old ones prefixed by <<):
-> > >>>>>
-> > >>>>>>> gcc-5: error: -gz is not supported in this configuration
-> > >>>>
-> > >>>> Hmm...I wonder if the feature detection is incomplete?  I suspect it's
-> > >>>> possible to not depend on zlib.
-> > >>>>
-> > >>>>> make[2]: *** [scripts/Makefile.build:277: scripts/mod/empty.o] 
-> > >>>>> Error 1
-> > >>>>> make[2]: Target '__build' not remade because of errors.
-> > >>>>> make[1]: *** [Makefile:1169: prepare0] Error 2
-> > >>>>> make[1]: Target 'prepare' not remade because of errors.
-> > >>>>> make: *** [Makefile:185: __sub-make] Error 2
-> > >>>
-> > >>> The output of gcc-5 -v --version on that machine may help. The
-> > >>> convoluted gcc_cv_ld_compress_de logic in gcc/configure.ac may be
-> > >>> related, but I can't find any mistake that our
-> > >>> CONFIG_DEBUG_INFO_COMPRESSED conditions may make.
-> > >>
-> 
-> The output of gcc-5 -dumpspecs may also be useful.
-> 
-> The exact Kconfig check should have been
-> 	gcc-5 -Werror -gz=zlib -S -x c /dev/null -o /dev/null
-> 
-> I can't see how that would succeed if the a.c test didn't but maybe just
-> in case?
+> The spec does not define what the host should do in this case,
+> e.g. when the device informs it that the entire db is no longer valid.
+> What are you planning to do?
+In Jedec spec, there is no decription about what the driver should do.
+So, I will just inform to user about the "HPB reset" happening with kernel message.
 
-Oh wait, -S instead of -c. Which means it runs neither the assembler nor
-the linker, so gcc won't error out. But if that gcc was originally
-_configured_ with a version of binutils that doesn't support -gz=zlib,
-it will give an error on -c regardless of whether the runtime binutils
-would actually support it or not.
+Thanks,
+Daejun
