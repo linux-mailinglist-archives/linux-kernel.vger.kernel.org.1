@@ -2,246 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34EEA1F559D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 15:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80EC51F55B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 15:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729201AbgFJNVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 09:21:42 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44713 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728891AbgFJNVl (ORCPT
+        id S1729273AbgFJNYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 09:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726306AbgFJNYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 09:21:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591795299;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DlplkVPrHKzwqp9XQ8hCr9mQJfW4CL7+sK6OIcyqTu0=;
-        b=OK9UHL2ffAS72Nbj0b8qBJBNeTQ1LcPiXVmkpfMDmuVZdJoyer7s0wQP+NYs+pONmg8jZo
-        NUGzCQRWVYJRc9EkbBDJAuYBsUOh3L+Lq2FkQi6ieV9QrZ/of0Gg3BNGcndQhKX0oEvEzp
-        9pBMksGm5Oe8MGq1j/RS0rnNoYmv5Jo=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-cwfv5uCmMJiYQkbpC1qvcA-1; Wed, 10 Jun 2020 09:21:38 -0400
-X-MC-Unique: cwfv5uCmMJiYQkbpC1qvcA-1
-Received: by mail-ed1-f70.google.com with SMTP id x3so654240eds.14
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 06:21:38 -0700 (PDT)
+        Wed, 10 Jun 2020 09:24:14 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E16C03E96B;
+        Wed, 10 Jun 2020 06:24:14 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id c8so2137361iob.6;
+        Wed, 10 Jun 2020 06:24:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PwlNjYivUWdKHcVIoPXfrF198UvAE89w19myI5A5i7o=;
+        b=l9Wpn+af7SXh6JyAKNVX5t5CbMef7o2fQLQXpQgYy1fUr2Cn9Jyp+0FQy1ekQ/SacO
+         Izu+QX5g7GNVnSfXhGBA/k2dnqHAkFQfwf0VZfUspRHyrRynKnUMrVJdS66UEByB1qkO
+         7kVHecI8y1dhpzRb4jYa517WsS2DmCKE5D/41Vo6e9i8uvnsgSoMcxhxCam2M1CNwBrF
+         g62IHCat6LcDSVy6OyyZmI2fFUWMMSQWn7rNkuSFjx1e6CO/2ASAbjjlfRnBuOflviAW
+         r9eTDldNKgyHrF4VlDpge5ujKmSvnqVwDZzXiCFsjFqnPo1l7aLoTLQg0oVxRDACgO1K
+         dpVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DlplkVPrHKzwqp9XQ8hCr9mQJfW4CL7+sK6OIcyqTu0=;
-        b=Nxiagky6KJPaZP2Qrh3JhQpWtp8iu/eEi2qBSOwmYYuBJ9U5vMyo8muRDAFCiBzX2B
-         jXrwD10KbI4otviTAm0WJzLRD2Xy/Opdee3wP+r2fkkk+7kbvKA18SrYvFhRBjvnLcck
-         pm1JaBqy/S4gV5chAKCid4/vAdnNqRHnIecPD8oS6m/T8HF7X8bJ7IVVSA4NN1VfnJMq
-         46/Ydgc6+a1HZAUTwfkh60kvc5qUVf8TMmmQo154Uh8hOr4Fw60jL7qBeuxkhuV7q+kb
-         3m7Q4YcbnLCCnQGVY9ySv0DmHTvRltFnswaGZ+WTsZB+08oYTJN1MTCY24SbvRiKLDug
-         swWg==
-X-Gm-Message-State: AOAM5328MbV6Yn62jqmmIhFx4F7lOpxxPcUIgXB924DIaL804d5/JDzb
-        DxO4qlKp35gF4BENJSf9+AtuElJHJzAg+sBuqKsBZgezNk01RrVVxH57roDl1gTRZx8qlbA8njT
-        Bq6XMxxS2D6AQ1EjIlR8OXl9T
-X-Received: by 2002:a50:bf0e:: with SMTP id f14mr2520512edk.37.1591795296912;
-        Wed, 10 Jun 2020 06:21:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3Kk79EA+wXpXk6yhNsxocbwWxoup7cqkJV7mK6aQdCYbcNsTWoysAMZWDcdRtd0q1XzbZ6w==
-X-Received: by 2002:a50:bf0e:: with SMTP id f14mr2520475edk.37.1591795296587;
-        Wed, 10 Jun 2020 06:21:36 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id l8sm15626086ejz.52.2020.06.10.06.21.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jun 2020 06:21:35 -0700 (PDT)
-Subject: Re: [PATCH v4 0/7] Support inhibiting input devices
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Samsung SoC <linux-samsung-soc@vger.kernel.org>,
-        linux-input@vger.kernel.org,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        patches@opensource.cirrus.com,
-        ibm-acpi-devel@lists.sourceforge.net,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Sylvain Lemieux <slemieux.tyco@gmail.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Barry Song <baohua@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Nick Dyer <nick@shmanahar.org>,
-        Ferruh Yigit <fery@cypress.com>,
-        Sangwon Jee <jeesw@melfas.com>,
-        Peter Hutterer <peter.hutterer@redhat.com>,
-        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
-        Collabora Kernel ML <kernel@collabora.com>
-References: <2336e15d-ff4b-bbb6-c701-dbf3aa110fcd@redhat.com>
- <20200608112211.12125-1-andrzej.p@collabora.com>
- <964ca07a-3da5-101f-7edf-64bdeec98a4b@redhat.com>
- <CAJZ5v0hB2ra2K=dd9ZjVyy1V2b1PmFHm79uDO2HtHU1D_4YUbw@mail.gmail.com>
- <6136f26c-e090-e025-af55-4c5f3a6aec92@collabora.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <3e61c9c1-b211-da9f-c55b-b44eb6522f2a@redhat.com>
-Date:   Wed, 10 Jun 2020 15:21:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PwlNjYivUWdKHcVIoPXfrF198UvAE89w19myI5A5i7o=;
+        b=L1BE7KWSWnZ9VWESlE+EoyWktOFyl+Nog4jGFlBh0EblXH+fWxLreQpdLvT9ChHzZB
+         PQExrI8wph6Z5CyokF4shYwGTyC4Qf346UahpZRdT7IVdqmLcTcmrumcOfAbXIjIyY85
+         HWwRufI3Mswhj3/VMgqjjQS1qiiqWrn6g2ChfvWiqSJalLUHYFdl4uZv9vQgCngwYcJl
+         AncDGRXiOrp1ngwS3114tFO68HEz67xgSc7K3VArlKlz5AsDr5+PplJy7Wgen2Va4p8y
+         xSknktBd8w/8C4FdY/t2Dprzv1JGHbYsBtMkjLENvlNHmiiKH+9geEih4GR5kZsrAz+t
+         +H2w==
+X-Gm-Message-State: AOAM5338nDAR2DoThE5RTJ4KhjN1yqBAGyC8J+y3xVNESmo/vdcC8//Q
+        nfnHa55HIkCZu25L0UJZf3HEKhtAq+Nch95BGrowZpNY
+X-Google-Smtp-Source: ABdhPJxt2GympD6OjFk5mMgUySZlRz2/c4zqUBYKC4U+pOCDQb3tqjXgVgwb1MoXNUHZYhvHxo2hqgIzqyw672pbwok=
+X-Received: by 2002:a05:6602:5c8:: with SMTP id w8mr3308477iox.64.1591795453388;
+ Wed, 10 Jun 2020 06:24:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6136f26c-e090-e025-af55-4c5f3a6aec92@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200608140557.GG3127@techsingularity.net> <CAOQ4uxhb1p5_rO9VjNb6assCczwQRx3xdAOXZ9S=mOA1g-0JVg@mail.gmail.com>
+ <20200608160614.GH3127@techsingularity.net> <CAOQ4uxh=Z92ppBQbRJyQqC61k944_7qG1mYqZgGC2tU7YAH7Kw@mail.gmail.com>
+ <20200608180130.GJ3127@techsingularity.net> <CAOQ4uxgcUHuqiXFPO5mX=rvDwP-DOoTZrXvpVNphwEMFYHtyCw@mail.gmail.com>
+ <CAOQ4uxhbE46S65-icLhaJqT+jKqz-ZdX=Ypm9hAt9Paeb+huhQ@mail.gmail.com> <20200610125920.GM3127@techsingularity.net>
+In-Reply-To: <20200610125920.GM3127@techsingularity.net>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 10 Jun 2020 16:24:02 +0300
+Message-ID: <CAOQ4uxhcFO4=e-s7uStbEkZU==8kraD1=owZGu4SWx_iR72gTA@mail.gmail.com>
+Subject: Re: [PATCH] fsnotify: Rearrange fast path to minimise overhead when
+ there is no watcher
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Jun 10, 2020 at 3:59 PM Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> On Mon, Jun 08, 2020 at 11:39:26PM +0300, Amir Goldstein wrote:
+> > > Let me add your optimizations on top of my branch with the needed
+> > > adaptations and send you a branch for testing.
+> >
+> > https://github.com/amir73il/linux/commits/fsnotify_name-for-mel
+> >
+>
+> Sorry for the delay getting back. The machine was busy with other tests
+> and it took a while to reach this on the queue. Fairly good news
+>
+> hackbench-process-pipes
+>                               5.7.0                  5.7.0                  5.7.0                  5.7.0
+>                             vanilla      fastfsnotify-v1r1          amir-20200608           amir-for-mel
+> Amean     1       0.4837 (   0.00%)      0.4630 *   4.27%*      0.4967 *  -2.69%*      0.4680 (   3.24%)
+> Amean     3       1.5447 (   0.00%)      1.4557 (   5.76%)      1.6587 *  -7.38%*      1.4807 (   4.14%)
+> Amean     5       2.6037 (   0.00%)      2.4363 (   6.43%)      2.6400 (  -1.40%)      2.4900 (   4.37%)
+> Amean     7       3.5987 (   0.00%)      3.4757 (   3.42%)      3.9040 *  -8.48%*      3.5130 (   2.38%)
+> Amean     12      5.8267 (   0.00%)      5.6983 (   2.20%)      6.2593 (  -7.43%)      5.6967 (   2.23%)
+> Amean     18      8.4400 (   0.00%)      8.1327 (   3.64%)      8.9940 (  -6.56%)      7.7240 *   8.48%*
+> Amean     24     11.0187 (   0.00%)     10.0290 *   8.98%*     11.7247 *  -6.41%*      9.5793 *  13.06%*
+> Amean     30     13.1013 (   0.00%)     12.8510 (   1.91%)     14.0290 *  -7.08%*     12.1630 (   7.16%)
+> Amean     32     13.9190 (   0.00%)     13.2410 (   4.87%)     14.7140 *  -5.71%*     13.2457 *   4.84%*
+>
+> First two sets of results are vanilla kernel and just my patch respectively
+> to have two baselines. amir-20200608 is the first git branch you pointed
+> me to and amir-for-mel is this latest branch. Comparing the optimisation
+> and your series, we get
+>
+> hackbench-process-pipes
+>                               5.7.0                  5.7.0
+>                   fastfsnotify-v1r1           amir-for-mel
+> Amean     1       0.4630 (   0.00%)      0.4680 (  -1.08%)
+> Amean     3       1.4557 (   0.00%)      1.4807 (  -1.72%)
+> Amean     5       2.4363 (   0.00%)      2.4900 (  -2.20%)
+> Amean     7       3.4757 (   0.00%)      3.5130 (  -1.07%)
+> Amean     12      5.6983 (   0.00%)      5.6967 (   0.03%)
+> Amean     18      8.1327 (   0.00%)      7.7240 (   5.03%)
+> Amean     24     10.0290 (   0.00%)      9.5793 (   4.48%)
+> Amean     30     12.8510 (   0.00%)     12.1630 (   5.35%)
+> Amean     32     13.2410 (   0.00%)     13.2457 (  -0.04%)
+>
+> As you can see, your patches with the optimisation layered on top is
+> comparable to just the optimisation on its own. It's not universally
+> better but it would not look like a regression when comparing releases.
+> The differences are mostly within the noise as there is some variability
+> involved for this workload so I would not worry too much about it (caveats
+> are other machines may be different as well as other workloads).
 
-On 6/10/20 3:12 PM, Andrzej Pietrasiewicz wrote:
-> Hi All,
-> 
-> W dniu 10.06.2020 o 12:38, Rafael J. Wysocki pisze:
->> On Wed, Jun 10, 2020 at 11:50 AM Hans de Goede <hdegoede@redhat.com> wrote:
->>>
->>> Hi All,
->>>
->>> On 6/8/20 1:22 PM, Andrzej Pietrasiewicz wrote:
->>>> This is a quick respin of v3, with just two small changes, please see
->>>> the changelog below.
->>>>
->>>> Userspace might want to implement a policy to temporarily disregard input
->>>> from certain devices.
->>>>
->>>> An example use case is a convertible laptop, whose keyboard can be folded
->>>> under the screen to create tablet-like experience. The user then must hold
->>>> the laptop in such a way that it is difficult to avoid pressing the keyboard
->>>> keys. It is therefore desirable to temporarily disregard input from the
->>>> keyboard, until it is folded back. This obviously is a policy which should
->>>> be kept out of the kernel, but the kernel must provide suitable means to
->>>> implement such a policy.
->>>
->>> First of all sorry to start a somewhat new discussion about this
->>> while this patch set is also somewhat far along in the review process,
->>> but I believe what I discuss below needs to be taken into account.
->>>
->>> Yesterday I have been looking into why an Asus T101HA would not stay
->>> suspended when the LID is closed. The cause is that the USB HID multi-touch
->>> touchpad in the base of the device starts sending events when the screen
->>> gets close to the touchpad (so when the LID is fully closed) and these
->>> events are causing a wakeup from suspend. HID multi-touch devices
->>> do have a way to tell them to fully stop sending events, also disabling
->>> the USB remote wakeup the device is doing. The question is when to tell
->>> it to not send events though ...
->>>
->>> So now I've been thinking about how to fix this and I believe that there
->>> is some interaction between this problem and this patch-set.
->>>
->>> The problem I'm seeing on the T101HA is about wakeups, so the question
->>> which I want to discuss is:
->>>
->>> 1. How does inhibiting interact with enabling /
->>> disabling the device as a wakeup source ?
->>>
->>> 2. Since we have now made inhibiting equal open/close how does open/close
->>> interact with a device being a wakeup source ?
->>>
->>> And my own initial (to be discussed) answers to these questions:
->>>
->>> 1. It seems to me that when a device is inhibited it should not be a
->>> wakeup source, so where possible a input-device-driver should disable
->>> a device's wakeup capabilities on suspend if inhibited
->>
->> If "inhibit" means "do not generate any events going forward", then
->> this must also cover wakeup events, so I agree.
-> 
-> I agree, too.
-> 
->>
->>> 2. This one is trickier I don't think we have really clearly specified
->>> any behavior here. The default behavior of most drivers seems to be
->>> using something like this in their suspend callback:
->>>
->>>           if (device_may_wakeup(dev))
->>>                   enable_irq_wake(data->irq);
->>>           else if (input->users)
->>>                   foo_stop_receiving_events(data);
->>>
->>> Since this is what most drivers seem to do I believe we should keep
->>> this as is and that we should just clearly document that if the
->>> input_device has users (has been opened) or not does not matter
->>> for its wakeup behavior.
->>>
->>> Combining these 2 answers leads to this new pseudo code template
->>> for an input-device's suspend method:
->>>
->>>          /*
->>>           * If inhibited we have already disabled events and
->>>           * we do NOT want to setup the device as wake source.
->>>           */
->>>          if (input->inhibited)
->>>                  return 0;
-> 
-> Right, if a device is inhibited it shouldn't become a wakeup source,
-> because that would contradict the purpose of being inhibited.
+Excellent!
+Thanks for verifying.
 
-Ack. Note I do think that we need to document this (and more
-in general the answer to both questions from above) clearly so
-that going forward if there are any questions about how this is
-supposed to work we can just point to the docs.
+TBH, this result is not surprising, because despite all the changes from
+fastfsnotify-v1r1 to amir-for-mel, the code that is executed when there
+are no watches should be quite similar. Without any unexpected compiler
+optimizations that may differ between our versions, fsnotify hooks called
+for directories should execute the exact same code.
 
-Can you do a follow-up patch, or include a patch in your next
-version which documents this (once we agree on what "this"
-exactly is) ?
+fsnotify hooks called for non-directories (your workload) should execute
+almost the same code. I spotted one additional test for access to
+d_inode and one additional test of:
+dentry->d_flags & DCACHE_FSNOTIFY_PARENT_WATCHED
+in the entry to __fsnotify_parent().
 
->>>
->>>           if (device_may_wakeup(dev))
->>>                   enable_irq_wake(data->irq);
-> 
-> What would it mean to become a wakeup source if there are no users,
-> or nobody has ever opened the device? There are no interested
-> input handlers (users) so what's the point of becoming a wakeup
-> source? Why would the system need to wake up?
+> A minor
+> issue is that this is probably a bisection hazard. If a series is merged
+> and LKP points the finger somewhere in the middle of your series then
+> I suggest you ask them to test the optimisation commit ID to see if the
+> regression goes away.
+>
 
-Well this is what we have been doing so far, so arguably we
-need to keep doing it to avoid regressions / breaking our ABI.
+No worries. I wasn't planning on submitted the altered patch.
+I just wanted to let you test the final result.
+I will apply your change before my series and make sure to keep
+optimizations while my changes are applied on top of that.
 
-Lets for example take a laptop, where when suspended the
-power-button is the only valid wakeup-source and this is
-running good old slackware with fvwm2 or windowmaker as
-"desktop environment", then likely no process will have
-the power-button input evdev node open.  Still we should
-wakeup the laptop on the power-button press, otherwise
-it will never wakeup.
-
-Note I agree with you that the way this works is not
-ideal, I just do not think that we can change it.
-
->>>           else if (input->users)
->>>                   foo_stop_receiving_events(data);
->>>
->>> ###
-
-<snip>
-
-Regards,
-
-Hans
-
+Thanks,
+Amir.
