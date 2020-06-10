@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F1D1F590E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 18:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFB51F590B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 18:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730664AbgFJQcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 12:32:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60612 "EHLO mx2.suse.de"
+        id S1730639AbgFJQcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 12:32:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60638 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728980AbgFJQby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 12:31:54 -0400
+        id S1729064AbgFJQbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 12:31:55 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 15E47AF4F;
+        by mx2.suse.de (Postfix) with ESMTP id 19286AF55;
         Wed, 10 Jun 2020 16:31:55 +0000 (UTC)
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     Andrew Morton <akpm@linux-foundation.org>,
@@ -28,9 +28,9 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
         Jann Horn <jannh@google.com>,
         Vijayanand Jitta <vjitta@codeaurora.org>
-Subject: [PATCH 7/9] mm, slub: introduce kmem_cache_debug_flags()
-Date:   Wed, 10 Jun 2020 18:31:33 +0200
-Message-Id: <20200610163135.17364-8-vbabka@suse.cz>
+Subject: [PATCH 8/9] mm, slub: extend checks guarded by slub_debug static key
+Date:   Wed, 10 Jun 2020 18:31:34 +0200
+Message-Id: <20200610163135.17364-9-vbabka@suse.cz>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200610163135.17364-1-vbabka@suse.cz>
 References: <20200610163135.17364-1-vbabka@suse.cz>
@@ -41,63 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are few places that call kmem_cache_debug(s) (which tests if any of debug
-flags are enabled for a cache) immediatelly followed by a test for a specific
-flag. The compiler can probably eliminate the extra check, but we can make the
-code nicer by introducing kmem_cache_debug_flags() that works like
-kmem_cache_debug() (including the static key check) but tests for specifig
-flag(s). The next patches will add more users.
+There are few more places in SLUB that could benefit from reduced overhead of
+the static key introduced by a previous patch:
+
+- setup_object_debug() called on each object in newly allocated slab page
+- setup_page_debug() called on newly allocated slab page
+- __free_slab() called on freed slab page
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ mm/slub.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 24d3e5f832aa..c8e8b4ae2451 100644
+index c8e8b4ae2451..efb08f2e9c66 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -122,18 +122,28 @@ DEFINE_STATIC_KEY_FALSE(slub_debug_enabled);
- #endif
- #endif
- 
--static inline int kmem_cache_debug(struct kmem_cache *s)
-+/*
-+ * Returns true if any of the specified slub_debug flags is enabled for the
-+ * cache. Use only for flags parsed by setup_slub_debug() as it also enables
-+ * the static key.
-+ */
-+static inline int kmem_cache_debug_flags(struct kmem_cache *s, slab_flags_t flags)
+@@ -1130,7 +1130,7 @@ static inline void dec_slabs_node(struct kmem_cache *s, int node, int objects)
+ static void setup_object_debug(struct kmem_cache *s, struct page *page,
+ 								void *object)
  {
- #ifdef CONFIG_SLUB_DEBUG
- 	if (static_branch_unlikely(&slub_debug_enabled))
--		return s->flags & SLAB_DEBUG_FLAGS;
-+		return s->flags & flags;
- #endif
- 	return 0;
- }
+-	if (!(s->flags & (SLAB_STORE_USER|SLAB_RED_ZONE|__OBJECT_POISON)))
++	if (!kmem_cache_debug_flags(s, SLAB_STORE_USER|SLAB_RED_ZONE|__OBJECT_POISON))
+ 		return;
  
-+static inline int kmem_cache_debug(struct kmem_cache *s)
-+{
-+	return kmem_cache_debug_flags(s, SLAB_DEBUG_FLAGS);
-+}
-+
- void *fixup_red_left(struct kmem_cache *s, void *p)
+ 	init_object(s, object, SLUB_RED_INACTIVE);
+@@ -1140,7 +1140,7 @@ static void setup_object_debug(struct kmem_cache *s, struct page *page,
+ static
+ void setup_page_debug(struct kmem_cache *s, struct page *page, void *addr)
  {
--	if (kmem_cache_debug(s) && s->flags & SLAB_RED_ZONE)
-+	if (kmem_cache_debug_flags(s, SLAB_RED_ZONE))
- 		p += s->red_left_pad;
+-	if (!(s->flags & SLAB_POISON))
++	if (!kmem_cache_debug_flags(s, SLAB_POISON))
+ 		return;
  
- 	return p;
-@@ -4076,7 +4086,7 @@ void __check_heap_object(const void *ptr, unsigned long n, struct page *page,
- 	offset = (ptr - page_address(page)) % s->size;
+ 	metadata_access_enable();
+@@ -1857,7 +1857,7 @@ static void __free_slab(struct kmem_cache *s, struct page *page)
+ 	int order = compound_order(page);
+ 	int pages = 1 << order;
  
- 	/* Adjust for redzone and reject if within the redzone. */
--	if (kmem_cache_debug(s) && s->flags & SLAB_RED_ZONE) {
-+	if (kmem_cache_debug_flags(s, SLAB_RED_ZONE)) {
- 		if (offset < s->red_left_pad)
- 			usercopy_abort("SLUB object in left red zone",
- 				       s->name, to_user, offset, n);
+-	if (s->flags & SLAB_CONSISTENCY_CHECKS) {
++	if (kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS)) {
+ 		void *p;
+ 
+ 		slab_pad_check(s, page);
 -- 
 2.26.2
 
