@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D031F5A7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4EC1F5A5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728621AbgFJRaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 13:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35028 "EHLO
+        id S1727866AbgFJR3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 13:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726637AbgFJR3H (ORCPT
+        with ESMTP id S1727004AbgFJR3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 13:29:07 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDB5C03E96F
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 10:29:05 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id j1so1400303pfe.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 10:29:05 -0700 (PDT)
+        Wed, 10 Jun 2020 13:29:16 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2192FC03E96F
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 10:29:16 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id s88so1158251pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 10:29:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HHuDWwcD46GsqYCnpIwOKdwPxiPdPtfeZ6O9l504PHI=;
-        b=NTEeLvTsB773KwO3u1uhA/EelDoidUC0VKkIcpcQrmyOC1w2cR+PIIEC4cgymCPIkB
-         D7ur/mAjSTtCMZ3UB0AE2tienoebk9nml/E03FpD6lYsBQKZTzlGQ9g+BdiwoRMuIonu
-         QFwa59Nm9PBiqllyRfTrHkzVP/8XP4NNrFCHO5ITW06ZQkdN/NkbZLlmgIFVxpEZNqQY
-         r4JLz+eY0WDzRRYsDY5I8QeKDlCnE/MpxuJaxVySqLG14lzlfNJFSO5LSHNThAjDTiCn
-         RAA1LV/LDeOP4b3VFxsMcItY2ijjdh9uCOMQazHSIc9XQRmCswJLZ62R1Bj8LwnJsY8d
-         tEMA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Y6k/7QsHaLDLvfshfaz5BRU4ZY9fb7OyvkPWjkbCUPQ=;
+        b=i8/yyzCM9b20RAxBiypRxbSOUWLB/v8YvSqCyJn/V2O+/ntCgJ8nWUklji3KjTydfo
+         X6krgZqofgBk44Z6cBw1wSQqkibasy6WtaWl4TjSHJuufhOQs9G3EO3qKRNRO8/Pt8pM
+         8o69hFFvQYYzFT2knESwDsYL4Kn9kX6TxdZxOqtJua04JpAoSPjYVppreIYD6xbmXcck
+         wSCS+d68caY8esVchPIs5/UnltJWwvA0I7kMAseyFnXtViPNyur6q5xxXn8lQMMJP/jV
+         gs+/1j3Ha0iLqUTwI42V80GyVsm1zgtmPVbQaR0uf8QxYLkF7HpW7/3KKIa3ohr75hHL
+         dz6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HHuDWwcD46GsqYCnpIwOKdwPxiPdPtfeZ6O9l504PHI=;
-        b=GF4o6krIPogSdwdPfafltub5znvsk5Zip78y2zMLEC0hpi9BZ9kZjpQaZsRlHnEs7A
-         lDU8JlT2F8UklcAxE+sQf3vxuNkPh0oKz3gKY0J7L7xK2D2jUIQTpMVOfa+6WEmsTXVv
-         XPY2+sQNe1tBbmwD7zJpyuujd1dn0C/20X9beV+MEaz1JGm9csTOjdnVoVpgZ2/aZFBQ
-         +2DWxAoPBPYSnJbPAm1S6ghOC6TyB5vtOGPchU2NKCO4y7t9tnCNRlydbF8iF457CyT9
-         FyfDK0k/i6yY7XBQoXRWm/veA6XODAi1j3WKEG0+XbRJRw1lWChf/ax+3BEmxjjgXINg
-         g3hw==
-X-Gm-Message-State: AOAM532av1S5mtvw7T+06ozJWryQ1laDPbaOiW5Gp142xP+u0bqVcGay
-        LzjBaN0O+Satq4lXC0oD7coX98DN52R7+w==
-X-Google-Smtp-Source: ABdhPJxFC3aE1JPqfxE9yyHQOhKXlvby4i0EuVHpuVNTvbzQGF1PAL+ca8iz/SWsLtCNhFD4L8Xpww==
-X-Received: by 2002:a65:6550:: with SMTP id a16mr3411032pgw.183.1591810145159;
-        Wed, 10 Jun 2020 10:29:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Y6k/7QsHaLDLvfshfaz5BRU4ZY9fb7OyvkPWjkbCUPQ=;
+        b=THMy4NFeCUcxHz9WUJ0TOVGrxtRT0fFZV1RAx/vKXeIQuh+fI1Si2TfZ6XnrMcQ7ds
+         UNIGf3+UUmpP1xdNhlY/DXoYarU3dsAZZ65CAO293lZF1y3umOmE+c00+0+eJpqSCfPV
+         e29aIkKCY+5jHcna9yhuH8F/yQGd4xdHxBNOhLqRW/OvmMb2yKBw6Qvj7RyguyjxtXGL
+         1kpVcAOES5hEsG9yGdlH+NTzSo2990cStnBFSYYIOiX0dBbAiKHWCvWHOPr0ZLk5OKj6
+         NE+LL33wvssbNcdiwJ3BdnPU3AWg85tTTrb1c6KeGK2k2SfUbNXpfCLAdLtHlZVvW+Pg
+         AakA==
+X-Gm-Message-State: AOAM533HUVJIyoKOVHopdDu9gS9pqZ7/d+jbVsqi704stpdO4FoX1T3o
+        9R6kjitE/BHDtXCWrlMO4+A=
+X-Google-Smtp-Source: ABdhPJyHSF6BBRt+DRbRAiQl9cvHyZSZn5HFwRHbESmV4SGcQ/a+q3ZlJDKRx4M7S8rCGDXeGQDBXA==
+X-Received: by 2002:a17:90b:252:: with SMTP id fz18mr3757996pjb.96.1591810155527;
+        Wed, 10 Jun 2020 10:29:15 -0700 (PDT)
 Received: from cvds-vagarw7.iind.intel.com ([192.55.54.40])
-        by smtp.googlemail.com with ESMTPSA id l83sm490470pfd.150.2020.06.10.10.28.55
+        by smtp.googlemail.com with ESMTPSA id l83sm490470pfd.150.2020.06.10.10.29.05
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Jun 2020 10:29:04 -0700 (PDT)
+        Wed, 10 Jun 2020 10:29:15 -0700 (PDT)
 From:   Vaibhav Agarwal <vaibhav.sr@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
@@ -60,10 +60,12 @@ Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Vaibhav Agarwal <vaibhav.sr@gmail.com>
-Subject: [PATCH v2 0/6] Enable Greybus Audio codec driver
-Date:   Wed, 10 Jun 2020 22:58:24 +0530
-Message-Id: <cover.1591802243.git.vaibhav.sr@gmail.com>
+Subject: [PATCH v2 1/6] staging: greybus: audio: Update snd_jack FW usage as per new APIs
+Date:   Wed, 10 Jun 2020 22:58:25 +0530
+Message-Id: <48ba07c38dc72d272dda4d4d2c3fe3690ee71eb3.1591802243.git.vaibhav.sr@gmail.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1591802243.git.vaibhav.sr@gmail.com>
+References: <cover.1591802243.git.vaibhav.sr@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -71,55 +73,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing GB Audio codec driver is dependent on MSM8994 Audio driver.
-During the development stage, this dependency was configured due to
-various changes involved in MSM Audio driver to enable addtional codec
-card and some of the changes proposed in mainline ASoC framework.
-However, these are not the real dependencies and some of them can be
-easily removed.
+snd_soc_jack APIs are modified in recent kernel versions. This patch
+updates the codec driver to resolve the compilation errors related to
+jack framework.
 
-The folowing patch series includes the changes to resolve unnecessary
-depedencies and make the codec driver functional with the latest kernel.
+Signed-off-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
+---
+ drivers/staging/greybus/audio_codec.c | 54 +++++++++++++++++++++------
+ 1 file changed, 42 insertions(+), 12 deletions(-)
 
-Patch 1,2: Incudes jack framework related changes.
-Patch 3,4,5: Resolves compilation error observed with the latest kernel and
-also provides helper APIs required to allow dynamic addition/removal of
-modules.
-Patch 6: Finally provides config options and related Makefile changes to
-enable GB Codec driver.
-
-Thanks to Alexandre for raising the headsup [1] and motivating me to provide
-the necessary changes.
-
-[1] https://lore.kernel.org/lkml/20200507212912.599433-1-alexandre.belloni@bootlin.com/
-
-Changes from v1
-- Include the changes for the review comments suggested by Dan
-- Rebase to latest staging-next
-
-Vaibhav Agarwal (6):
-  staging: greybus: audio: Update snd_jack FW usage as per new APIs
-  staging: greybus: audio: Maintain jack list within GB Audio module
-  staging: greybus: audio: Resolve compilation errors for GB codec
-    module
-  staging: greybus: audio: Resolve compilation error in topology parser
-  staging: greybus: audio: Add helper APIs for dynamic audio modules
-  staging: greybus: audio: Enable GB codec, audio module compilation.
-
- drivers/staging/greybus/Kconfig          |  14 +-
- drivers/staging/greybus/Makefile         |   6 +-
- drivers/staging/greybus/audio_codec.c    | 178 +++++++++++---------
- drivers/staging/greybus/audio_codec.h    |  12 +-
- drivers/staging/greybus/audio_helper.c   | 197 +++++++++++++++++++++++
- drivers/staging/greybus/audio_helper.h   |  17 ++
- drivers/staging/greybus/audio_module.c   |  15 +-
- drivers/staging/greybus/audio_topology.c | 128 +++++++--------
- 8 files changed, 412 insertions(+), 155 deletions(-)
- create mode 100644 drivers/staging/greybus/audio_helper.c
- create mode 100644 drivers/staging/greybus/audio_helper.h
-
-
-base-commit: af7b4801030c07637840191c69eb666917e4135d
+diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
+index 08746c85dea6..5d3a5e6a8fe6 100644
+--- a/drivers/staging/greybus/audio_codec.c
++++ b/drivers/staging/greybus/audio_codec.c
+@@ -709,17 +709,26 @@ static struct snd_soc_dai_driver gbaudio_dai[] = {
+ };
+ 
+ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+-			     struct snd_soc_codec *codec)
++			     struct snd_soc_card *card)
+ {
+ 	int ret;
++	struct snd_soc_jack_pin *headset, *button;
+ 
+ 	if (!module->jack_mask)
+ 		return 0;
+ 
+ 	snprintf(module->jack_name, NAME_SIZE, "GB %d Headset Jack",
+ 		 module->dev_id);
+-	ret = snd_soc_jack_new(codec, module->jack_name, module->jack_mask,
+-			       &module->headset_jack);
++
++	headset = devm_kzalloc(module->dev, sizeof(*headset), GFP_KERNEL);
++	if (!headset)
++		return -ENOMEM;
++
++	headset->pin = module->jack_name;
++	headset->mask = module->jack_mask;
++
++	ret = snd_soc_card_jack_new(card, module->jack_name, module->jack_mask,
++				    &module->headset_jack, headset, 1);
+ 	if (ret) {
+ 		dev_err(module->dev, "Failed to create new jack\n");
+ 		return ret;
+@@ -730,11 +739,21 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+ 
+ 	snprintf(module->button_name, NAME_SIZE, "GB %d Button Jack",
+ 		 module->dev_id);
+-	ret = snd_soc_jack_new(codec, module->button_name, module->button_mask,
+-			       &module->button_jack);
++	button = devm_kzalloc(module->dev, sizeof(*button), GFP_KERNEL);
++	if (!button) {
++		ret = -ENOMEM;
++		goto free_headset;
++	}
++
++	button->pin = module->button_name;
++	button->mask = module->button_mask;
++
++	ret = snd_soc_card_jack_new(card, module->button_name,
++				    module->button_mask, &module->button_jack,
++				    button, 1);
+ 	if (ret) {
+ 		dev_err(module->dev, "Failed to create button jack\n");
+-		return ret;
++		goto free_headset;
+ 	}
+ 
+ 	/*
+@@ -750,7 +769,7 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+ 				       KEY_MEDIA);
+ 		if (ret) {
+ 			dev_err(module->dev, "Failed to set BTN_0\n");
+-			return ret;
++			goto free_button;
+ 		}
+ 	}
+ 
+@@ -759,7 +778,7 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+ 				       KEY_VOICECOMMAND);
+ 		if (ret) {
+ 			dev_err(module->dev, "Failed to set BTN_1\n");
+-			return ret;
++			goto free_button;
+ 		}
+ 	}
+ 
+@@ -768,7 +787,7 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+ 				       KEY_VOLUMEUP);
+ 		if (ret) {
+ 			dev_err(module->dev, "Failed to set BTN_2\n");
+-			return ret;
++			goto free_button;
+ 		}
+ 	}
+ 
+@@ -777,7 +796,7 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+ 				       KEY_VOLUMEDOWN);
+ 		if (ret) {
+ 			dev_err(module->dev, "Failed to set BTN_0\n");
+-			return ret;
++			goto free_button;
+ 		}
+ 	}
+ 
+@@ -788,6 +807,16 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+ 	*/
+ 
+ 	return 0;
++
++free_button:
++	snd_device_free(card->snd_card, module->button_jack.jack);
++	list_del(&module->button_jack.list);
++
++free_headset:
++	snd_device_free(card->snd_card, module->headset_jack.jack);
++	list_del(&module->headset_jack.list);
++
++	return ret;
+ }
+ 
+ int gbaudio_register_module(struct gbaudio_module_info *module)
+@@ -815,7 +844,7 @@ int gbaudio_register_module(struct gbaudio_module_info *module)
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = gbaudio_init_jack(module, codec);
++	ret = gbaudio_init_jack(module, component->card);
+ 	if (ret) {
+ 		up_write(&card->controls_rwsem);
+ 		return ret;
+@@ -942,7 +971,8 @@ void gbaudio_unregister_module(struct gbaudio_module_info *module)
+ 
+ #ifdef CONFIG_SND_JACK
+ 	/* free jack devices for this module from codec->jack_list */
+-	list_for_each_entry_safe(jack, next_j, &codec->jack_list, list) {
++	list_for_each_entry_safe(jack, next_j, &component->card->jack_list,
++				 list) {
+ 		if (jack == &module->headset_jack)
+ 			mask = GBCODEC_JACK_MASK;
+ 		else if (jack == &module->button_jack)
 -- 
 2.26.2
 
