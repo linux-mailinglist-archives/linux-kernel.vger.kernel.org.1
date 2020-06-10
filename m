@@ -2,83 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646BE1F5810
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 17:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D8A1F5803
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 17:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730300AbgFJPpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 11:45:04 -0400
-Received: from sym2.noone.org ([178.63.92.236]:38744 "EHLO sym2.noone.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730294AbgFJPpE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 11:45:04 -0400
-X-Greylist: delayed 327 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Jun 2020 11:45:03 EDT
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 49hrlC6wPgzvjc1; Wed, 10 Jun 2020 17:39:35 +0200 (CEST)
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Guo Ren <guoren@kernel.org>, Mao Han <han_mao@c-sky.com>
-Cc:     linux-csky@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] csky: remove unusued thread_saved_pc and *_segments functions/macros
-Date:   Wed, 10 Jun 2020 17:39:35 +0200
-Message-Id: <20200610153935.13794-1-tklauser@distanz.ch>
-X-Mailer: git-send-email 2.11.0
+        id S1730270AbgFJPlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 11:41:45 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:48027 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727910AbgFJPll (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 11:41:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591803699;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hjSM67DtmOsqtTYEGUCI40HSbVxGiINgh5sSqThFUtk=;
+        b=XWzr4ffDBW/X2f8sRxhYmdmSKLFRBwjaCs0CTTU0x4aYA9+2r+aCcFC5nq7SeO2mAygF/3
+        lpQnO8EV2+I6EUroK2h1ocSVNK6UMOhi21CiLkcYQvR0dwsvJ+ZWbwteOgaX5tL2cr9UoS
+        WoKhzXbmBzYMTtWx0WYdMwuoC9e8oKY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-HxNOpix2OHu6zV4Sll2K6w-1; Wed, 10 Jun 2020 11:41:35 -0400
+X-MC-Unique: HxNOpix2OHu6zV4Sll2K6w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3067464;
+        Wed, 10 Jun 2020 15:41:33 +0000 (UTC)
+Received: from krava (unknown [10.40.195.82])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 2ECE460CC0;
+        Wed, 10 Jun 2020 15:41:30 +0000 (UTC)
+Date:   Wed, 10 Jun 2020 17:41:29 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Paul Clarke <pc@us.ibm.com>, Kajol Jain <kjain@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 1/2] perf expr: Add d_ratio operation
+Message-ID: <20200610154129.GA1776102@krava>
+References: <20200610051717.170457-1-irogers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200610051717.170457-1-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are used nowhere in the tree (except for some architectures which
-define them for their own use) and were already removed for other
-architectures in:
+On Tue, Jun 09, 2020 at 10:17:15PM -0700, Ian Rogers wrote:
+> This simplifies computing ratios in json expressions.
 
-commit 6474924e2b5d ("arch: remove unused macro/function thread_saved_pc()")
-commit c17c02040bf0 ("arch: remove unused *_segments() macros/functions")
+please put in the comment some usage example and add
+a test for this to tests/expr.c
 
-Remove them from arch/csky as well.
+same for the '<>' operators in the other patch
 
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
----
- arch/csky/include/asm/processor.h |  6 ------
- arch/csky/kernel/process.c        | 10 ----------
- 2 files changed, 16 deletions(-)
+I'll put documentation on this together with the rest to
+stat man page with my other changes, so no need to document
+this, but at least bit more details in changelog ;-)
 
-diff --git a/arch/csky/include/asm/processor.h b/arch/csky/include/asm/processor.h
-index 24442d8e86f9..4800f6563abb 100644
---- a/arch/csky/include/asm/processor.h
-+++ b/arch/csky/include/asm/processor.h
-@@ -82,12 +82,6 @@ static inline void release_thread(struct task_struct *dead_task)
- 
- extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
- 
--#define copy_segments(tsk, mm)		do { } while (0)
--#define release_segments(mm)		do { } while (0)
--#define forget_segments()		do { } while (0)
--
--extern unsigned long thread_saved_pc(struct task_struct *tsk);
--
- unsigned long get_wchan(struct task_struct *p);
- 
- #define KSTK_EIP(tsk)		(task_pt_regs(tsk)->pc)
-diff --git a/arch/csky/kernel/process.c b/arch/csky/kernel/process.c
-index 8b3fad062ab2..3da63cf0bfde 100644
---- a/arch/csky/kernel/process.c
-+++ b/arch/csky/kernel/process.c
-@@ -30,16 +30,6 @@ asmlinkage void ret_from_kernel_thread(void);
-  */
- void flush_thread(void){}
- 
--/*
-- * Return saved PC from a blocked thread
-- */
--unsigned long thread_saved_pc(struct task_struct *tsk)
--{
--	struct switch_stack *sw = (struct switch_stack *)tsk->thread.sp;
--
--	return sw->r15;
--}
--
- int copy_thread_tls(unsigned long clone_flags,
- 		unsigned long usp,
- 		unsigned long kthread_arg,
--- 
-2.27.0
+thanks,
+jirka
+
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/expr.l |  1 +
+>  tools/perf/util/expr.y | 14 ++++++++++++--
+>  2 files changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/expr.l b/tools/perf/util/expr.l
+> index f397bf8b1a48..298d86660a96 100644
+> --- a/tools/perf/util/expr.l
+> +++ b/tools/perf/util/expr.l
+> @@ -100,6 +100,7 @@ symbol		({spec}|{sym})+
+>  		}
+>  	}
+>  
+> +d_ratio		{ return D_RATIO; }
+>  max		{ return MAX; }
+>  min		{ return MIN; }
+>  if		{ return IF; }
+> diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
+> index bf3e898e3055..fe145344bb39 100644
+> --- a/tools/perf/util/expr.y
+> +++ b/tools/perf/util/expr.y
+> @@ -10,6 +10,14 @@
+>  #include "smt.h"
+>  #include <string.h>
+>  
+> +static double d_ratio(double val0, double val1)
+> +{
+> +	if (val1 == 0) {
+> +		return 0;
+> +	}
+> +	return  val0 / val1;
+> +}
+> +
+>  %}
+>  
+>  %define api.pure full
+> @@ -28,7 +36,7 @@
+>  %token <num> NUMBER
+>  %token <str> ID
+>  %destructor { free ($$); } <str>
+> -%token MIN MAX IF ELSE SMT_ON
+> +%token MIN MAX IF ELSE SMT_ON D_RATIO
+>  %left MIN MAX IF
+>  %left '|'
+>  %left '^'
+> @@ -64,7 +72,8 @@ other: ID
+>  }
+>  |
+>  MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*' | '/' | '%' | '(' | ')' | ','
+> -
+> +|
+> +D_RATIO
+>  
+>  all_expr: if_expr			{ *final_val = $1; }
+>  	;
+> @@ -105,6 +114,7 @@ expr:	  NUMBER
+>  	| MIN '(' expr ',' expr ')' { $$ = $3 < $5 ? $3 : $5; }
+>  	| MAX '(' expr ',' expr ')' { $$ = $3 > $5 ? $3 : $5; }
+>  	| SMT_ON		 { $$ = smt_on() > 0; }
+> +	| D_RATIO '(' expr ',' expr ')' { $$ = d_ratio($3,$5); }
+>  	;
+>  
+>  %%
+> -- 
+> 2.27.0.278.ge193c7cf3a9-goog
+> 
 
