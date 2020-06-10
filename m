@@ -2,104 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DCB1F4FA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 09:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D3F1F4FA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 09:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbgFJHwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 03:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
+        id S1726624AbgFJHxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 03:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgFJHwo (ORCPT
+        with ESMTP id S1726081AbgFJHxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 03:52:44 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8CDC03E96B;
-        Wed, 10 Jun 2020 00:52:43 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 2526C2A3FC4
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-tegra@vger.kernel.org, patches@opensource.cirrus.com,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Sylvain Lemieux <slemieux.tyco@gmail.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Barry Song <baohua@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Nick Dyer <nick@shmanahar.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sangwon Jee <jeesw@melfas.com>,
-        Peter Hutterer <peter.hutterer@redhat.com>,
-        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        kernel@collabora.com
-Subject: [FIXED PATCH v4 5/7] iio: adc: exynos: Use input_device_enabled()
-Date:   Wed, 10 Jun 2020 09:52:30 +0200
-Message-Id: <20200610075230.14172-1-andrzej.p@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200610012801.GA11530@qmqm.qmqm.pl>
-References: <20200610012801.GA11530@qmqm.qmqm.pl>
+        Wed, 10 Jun 2020 03:53:21 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB81C03E96B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 00:53:21 -0700 (PDT)
+Received: from localhost ([127.0.0.1] helo=vostro)
+        by Galois.linutronix.de with esmtps (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.80)
+        (envelope-from <john.ogness@linutronix.de>)
+        id 1jivXx-0007m8-Hv; Wed, 10 Jun 2020 09:53:17 +0200
+From:   John Ogness <john.ogness@linutronix.de>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Paul McKenney <paulmck@kernel.org>
+Subject: Re: data_ring head_lpos and tail_lpos synchronization: was [PATCH v2 2/3] printk: add lockless buffer
+References: <20200501094010.17694-1-john.ogness@linutronix.de>
+        <20200501094010.17694-3-john.ogness@linutronix.de>
+        <20200609143811.GF23752@linux-b0ei>
+Date:   Wed, 10 Jun 2020 09:53:16 +0200
+In-Reply-To: <20200609143811.GF23752@linux-b0ei> (Petr Mladek's message of
+        "Tue, 9 Jun 2020 16:38:11 +0200")
+Message-ID: <87wo4fpdar.fsf@vostro.fn.ogness.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new helper is available, so use it. Inspecting 'users' member of
-input_dev requires taking device's mutex.
+On 2020-06-09, Petr Mladek <pmladek@suse.com> wrote:
+>> --- /dev/null
+>> +++ b/kernel/printk/printk_ringbuffer.c
+>> +/*
+>> + * Advance the data ring tail to at least @lpos. This function puts
+>> + * descriptors into the reusable state if the tail is pushed beyond
+>> + * their associated data block.
+>> + */
+>> +static bool data_push_tail(struct printk_ringbuffer *rb,
+>> +			   struct prb_data_ring *data_ring,
+>> +			   unsigned long lpos)
+>> +{
+>> +	unsigned long tail_lpos;
+>> +	unsigned long next_lpos;
+>> +
+>> +	/* If @lpos is not valid, there is nothing to do. */
+>> +	if (lpos == INVALID_LPOS)
+>> +		return true;
+>> +
+>> +	tail_lpos = atomic_long_read(&data_ring->tail_lpos);
+>
+> Hmm, I wonder whether data_ring->tail_lpos and data_ring->head_lpos
+> are synchronized enough between each other.
+>
+> I feel that there should be read barrier here. But it seems that more
+> barriers are missing. For example, let's have:
+>
+>
+> CPU0				CPU1
+>
+> data_alloc()
+>   begin_lpos = atomic_read(data_ring->head_lpos);
+>
+> 				data_alloc()
+> 				  data_push_tail()
+> 				    cmpxchg(data_ring->tail_lpos);
+> 				    // A: no barrier
+> 				  cmpxchg(data_ring->head_lpos);
+>
+>   data_push_tail()
+>     // B: no barrier
+>     tail_lpos = atomic_read(data_ring->tail_lpos);
+>
+> Problem 1:
+>
+>    CPU0 might see random ordering of data_ring->tail_lpos and
+>    head_lpos values modified by CPU1. There are missing both
+>    write and read barriers.
 
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
----
- drivers/iio/adc/exynos_adc.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+You need to explain why this is a problem. CPU0 saw some head and some
+tail. Both values are at least the current values (i.e. there is no
+danger that it sees a tail that is further than the tail really is).
 
-diff --git a/drivers/iio/adc/exynos_adc.c b/drivers/iio/adc/exynos_adc.c
-index 22131a677445..2761c3aea2c6 100644
---- a/drivers/iio/adc/exynos_adc.c
-+++ b/drivers/iio/adc/exynos_adc.c
-@@ -633,7 +633,9 @@ static irqreturn_t exynos_ts_isr(int irq, void *dev_id)
- 	bool pressed;
- 	int ret;
- 
--	while (info->input->users) {
-+	mutex_lock(&info->input->mutex);
-+	while (input_device_enabled(info->input)) {
-+		mutex_unlock(&info->input->mutex);
- 		ret = exynos_read_s3c64xx_ts(dev, &x, &y);
- 		if (ret == -ETIMEDOUT)
- 			break;
-@@ -651,7 +653,10 @@ static irqreturn_t exynos_ts_isr(int irq, void *dev_id)
- 		input_sync(info->input);
- 
- 		usleep_range(1000, 1100);
-+
-+		mutex_lock(&info->input->mutex);
- 	}
-+	mutex_unlock(&info->input->mutex);
- 
- 	writel(0, ADC_V1_CLRINTPNDNUP(info->regs));
- 
--- 
-2.17.1
+CPU0 then uses the head/tail values to determine how far to advance the
+tail and how far to advance the head. Both of these advances use
+cmpxchg_relaxed(). So there is no danger of random head/tail
+modifications. Upon cmpxchg_relaxed() failure, the new current values
+are loaded and it retries based on the new values.
 
+The only issue is if data_push_tail()/data_make_reusable() are able to
+recognize that a data area is already recycled. And both functions have
+memory barriers in place for that.
+
+> Problem 2:
+>
+>    There might be still a chance because CPU0 does:
+>
+>      if (!data_make_reusable())
+>        smp_rmb()
+>        tail_lpos = atomic_read(data_ring->tail_lpos);
+>
+>    But CPU0 might still see old data_ring->tail because CPU1 did not
+>    do write barrier.
+
+I claim that it does not matter. The smp_rmb() here pairs with the full
+memory barrier LMM(desc_reserve:D). The reasoning:
+
+	 * Guarantee any data ring tail changes are stored before
+	 * recycling the descriptor. Data ring tail changes can happen
+	 * via desc_push_tail()->data_push_tail(). A full memory
+	 * barrier is needed since another task may have pushed the
+	 * data ring tails. This pairs with data_push_tail:A.
+
+So if data_make_reusable() failed due to a descriptor already being
+recycled, we know CPU0 will be able to read an updated tail value (and
+try again with the new value).
+
+John Ogness
