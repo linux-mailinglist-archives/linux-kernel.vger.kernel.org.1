@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677B81F5566
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 15:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09381F55D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 15:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729217AbgFJNKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 09:10:08 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5802 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728844AbgFJNKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 09:10:08 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 183B73717472DD83013D;
-        Wed, 10 Jun 2020 21:10:06 +0800 (CST)
-Received: from huawei.com (10.175.101.78) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 10 Jun 2020
- 21:09:56 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <slava@dubeyko.com>
-CC:     <yangyingliang@huawei.com>
-Subject: [PATCH] hfsplus: fix null-ptr-deref in hfs_find_init()
-Date:   Wed, 10 Jun 2020 21:43:35 +0800
-Message-ID: <1591796615-96336-1-git-send-email-yangyingliang@huawei.com>
-X-Mailer: git-send-email 1.8.3
+        id S1729311AbgFJNcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 09:32:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726453AbgFJNcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 09:32:10 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE61E2067B;
+        Wed, 10 Jun 2020 13:32:08 +0000 (UTC)
+Date:   Wed, 10 Jun 2020 09:32:06 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>
+Subject: Re: [PATCH v3 4/7] selftests/ftrace: Convert required interface
+ checks into requires list
+Message-ID: <20200610093206.5b9fb1b7@oasis.local.home>
+In-Reply-To: <5a658ffa-348a-436d-fb74-e01f56541d6b@linuxfoundation.org>
+References: <159115200085.70027.6141550347953439240.stgit@devnote2>
+        <159115203782.70027.2241223276591824366.stgit@devnote2>
+        <1cf646af-ef25-a7df-9df3-1e6aa8e6a9c8@linuxfoundation.org>
+        <20200610145535.747d2765d60e6e3923441768@kernel.org>
+        <5a658ffa-348a-436d-fb74-e01f56541d6b@linuxfoundation.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.78]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It may lead a null-ptr-deref in hfs_find_init() by
-mounting a crafted hfs filesystem. So We need check
-tree in hfs_find_init().
+On Wed, 10 Jun 2020 06:04:33 -0600
+Shuah Khan <skhan@linuxfoundation.org> wrote:
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- fs/hfsplus/bfind.c | 3 +++
- 1 file changed, 3 insertions(+)
+> > Steve, what would you think?
+> >   
+> 
+> No worries. As far as kselftest tree is concrned, I can apply these
+> after rc1 comes out with Tom's patch.
+> 
+> Or I can give Ack and Steve can take these through tracing tree.
 
-diff --git a/fs/hfsplus/bfind.c b/fs/hfsplus/bfind.c
-index ca2ba8c..85bef3e 100644
---- a/fs/hfsplus/bfind.c
-+++ b/fs/hfsplus/bfind.c
-@@ -16,6 +16,9 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
- {
- 	void *ptr;
- 
-+	if (!tree)
-+		return -EINVAL;
-+
- 	fd->tree = tree;
- 	fd->bnode = NULL;
- 	ptr = kmalloc(tree->max_key_len * 2 + 4, GFP_KERNEL);
--- 
-1.8.3
+All my patches have already made it to Linus's tree. Perhaps
+cherry-pick the commit needed from Linus's tree (it shouldn't break
+anything when Linus pulls it). Just let Linus know what you did, and
+everything should be fine.
 
+-- Steve
