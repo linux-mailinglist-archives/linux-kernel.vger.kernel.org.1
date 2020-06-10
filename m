@@ -2,113 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698441F5D43
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 22:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F431F5D48
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 22:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgFJUgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 16:36:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgFJUgw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 16:36:52 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F39C03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 13:36:50 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 64so1608593pfv.11
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 13:36:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=ySojxU/vlWhxHgsiwOmtzcHxDLuwMINKN+vR5oYu1Rk=;
-        b=eszh8+zkPiNJdM2q5MSvsXhQ0krZSUfW1RxrB5iFj0B8ZKk/vVPVZRAhV2DUIVpWPU
-         qhdQ3Z5S9bnkyhOpuNm9hlsGagwEg67U8nqE1FfhGSBLRH0Sra3G8JCyitgpVvw+CmOX
-         jQCNKCwX6eTvIiyoKbBv5ZOgep8DxAGbZGtldSJuULg2Ya+Z/rVWG3UTY3Fkw7gV0JMn
-         Fc1i0hzETo3MNWly3aBHZFM0Rfoc8ja++RTIPDDsZ+pwXSuE115ZtM5JoXvc/jayfxSj
-         l8VKwG6tz6c2Kg45AxLMo48mdisuoGoy0YnwUm9vj9acONDKzo56HZXiOJV8MKTzLlks
-         NCnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:user-agent;
-        bh=ySojxU/vlWhxHgsiwOmtzcHxDLuwMINKN+vR5oYu1Rk=;
-        b=OjxYWUccdBdv1v88+Td1VB7FzAfZMlncXIYlDC36Se9/IQR4X5xcvYDhPEKTFDQ4zX
-         +4HyilCblkILwiwHYOps9xqjaiAoAEHrrjz/xC219hwWwZLbedtojQs5L3++k5aLSvVH
-         DCRh7tMn/tImi1rAH8KC3xYVJP4uBPbEvx5G0F7GbYT1Y/boByptM1PqPxhzEYIu/TgV
-         E2AGub764GC+QosNQK9PYWutwHiRLYuykVZrfPvUIT+3C+sWkwgpAvKDWvpMwaeZ+y9h
-         LOtoOhG0mWOasyFjy8gAdBQhxPc9mg/7tezviqJJ6pNFqfkabU3vJddlpVj8ZvIw3zNp
-         3u0g==
-X-Gm-Message-State: AOAM532FhSy0iN3MVQd7Xg8xcqmxiIxHVr7xPD66IZxa0SnL4YYqfm99
-        IiUTHswYsnfTZRUcRDrClGmVeqzF
-X-Google-Smtp-Source: ABdhPJxQm66N95jIsQFFN0tqtrqEAV9POxuPZMDUW4KfHrVvo/1P6TLpZisdiJp5TnyTN6fUTK0TLg==
-X-Received: by 2002:a63:1946:: with SMTP id 6mr3901567pgz.287.1591821410373;
-        Wed, 10 Jun 2020 13:36:50 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d2sm778897pfc.7.2020.06.10.13.36.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 10 Jun 2020 13:36:49 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 13:36:49 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] mm: pgtable: add shortcuts for accessing kernel PMD and
- PTE
-Message-ID: <20200610203649.GA259074@roeck-us.net>
+        id S1726462AbgFJUi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 16:38:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726253AbgFJUi5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 16:38:57 -0400
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3EB8D207ED;
+        Wed, 10 Jun 2020 20:38:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591821537;
+        bh=vVDBawfAIxR+XgFV9N0wVIVrEr9RkqoH4OUGfhUX4TE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=obrMb8CFFtynYPduPZU5dw8GK0JLm4lbIpVKlhyxSMP3ZYf9FftY2ArfbXLa5M8HM
+         ZQmMAtKKCVEcnbzT6GwUR5vtSc80RJjZIt7aWZm47gkROA+yI/H8IeNS4B2F/fzdyK
+         BpLZ3iT/zOih+RgES70kk3kYmmDjFCoV6Q7B43sU=
+Received: by mail-oo1-f45.google.com with SMTP id z145so771708ooa.13;
+        Wed, 10 Jun 2020 13:38:57 -0700 (PDT)
+X-Gm-Message-State: AOAM530X4NK86tlYVVemqxSfJKtg10ovYk445zaRZsdrsGAkYZ/1UAFO
+        OOdTBWAjgm4cq6Koy/EEJh9UYzVtCq9/fdwvFg==
+X-Google-Smtp-Source: ABdhPJx2fhOu4m4KNgYLDqdqhDoSmIrYDD7miA7JHI17HFjaaea3za14GBOk8BLETs0s+5g2YjldV90dmMWdq6ZaZzg=
+X-Received: by 2002:a4a:6156:: with SMTP id u22mr3669189ooe.50.1591821536614;
+ Wed, 10 Jun 2020 13:38:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1587749770-15082-1-git-send-email-ben.levinsky@xilinx.com>
+ <1587749770-15082-5-git-send-email-ben.levinsky@xilinx.com>
+ <20200511221755.GA13585@bogus> <BYAPR02MB44077C8B7B7FD23FDE8E31B8B5B00@BYAPR02MB4407.namprd02.prod.outlook.com>
+In-Reply-To: <BYAPR02MB44077C8B7B7FD23FDE8E31B8B5B00@BYAPR02MB4407.namprd02.prod.outlook.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 10 Jun 2020 14:38:45 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLGo380SRYska+xGgJhgF8NCRvY56ewafvSCU6c-LmhZw@mail.gmail.com>
+Message-ID: <CAL_JsqLGo380SRYska+xGgJhgF8NCRvY56ewafvSCU6c-LmhZw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] dt-bindings: remoteproc: Add documentation for
+ ZynqMP R5 rproc bindings
+To:     Ben Levinsky <BLEVINSK@xilinx.com>
+Cc:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        Michal Simek <michals@xilinx.com>,
+        Jolly Shah <JOLLYS@xilinx.com>, Rajan Vaja <RAJANV@xilinx.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stefano Stabellini <stefanos@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 09:33:05PM -0700, Mike Rapoport wrote:
-> The powerpc 32-bit implementation of pgtable has nice shortcuts for
-> accessing kernel PMD and PTE for a given virtual address.  Make these
-> helpers available for all architectures.
-> 
-> [rppt@linux.ibm.com: microblaze: fix page table traversal in setup_rt_frame()]
->   Link: http://lkml.kernel.org/r/20200518191511.GD1118872@kernel.org
-> [akpm@linux-foundation.org: s/pmd_ptr_k/pmd_off_k/ in various powerpc places]
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-[ ... ]
-> Link: http://lkml.kernel.org/r/20200514170327.31389-9-rppt@kernel.org
-> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+On Tue, May 26, 2020 at 11:40 AM Ben Levinsky <BLEVINSK@xilinx.com> wrote:
+>
+> Hi Rob,
+>
+> The Xilinx R5 Remoteproc driver has been around for a long time -- admitt=
+edly we should have upstreamed it long ago. The driver in the current form =
+is using an "classic" remoteproc device tree node as described here.
 
-Building powerpc:tqm8xx_defconfig ... failed
---------------
-Error log:
-arch/powerpc/mm/pgtable.c: In function 'set_huge_pte_at':
-arch/powerpc/mm/pgtable.c:267:15: error: implicit declaration of function 'pmd_ptr'
+I would rather not have 2 possible bindings to maintain. If there's
+been no rush to upstream this til now, then it can wait longer.
 
-bisect log attached.
+>
+> I am working with Stefano to come up with an appropriate System Device Tr=
+ee representation but it is not going to be ready right away. Our preferenc=
+e would be to upstream the remoteproc node and driver in their current form=
+s while system device tree is maturing.
 
-Guenter
+There's obviously going to still need to be some sort of description
+of the interface between cores, but this has parts that obviously
+conflict with what's getting defined for system DT. The TCMs are the
+most obvious. If you can remove (or hardcode in the driver) what
+conflicts, then perhaps this can be upstreamed now.
 
----
-# bad: [5b14671be58d0084e7e2d1cc9c2c36a94467f6e0] Merge tag 'fuse-update-5.8' of git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse
-# good: [abfbb29297c27e3f101f348dc9e467b0fe70f919] Merge tag 'rproc-v5.8' of git://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc
-git bisect start 'HEAD' 'abfbb29297c2'
-# bad: [595a56ac1b0d5f0a16a89589ef55ffd35c1967a2] Merge tag 'linux-kselftest-kunit-5.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest
-git bisect bad 595a56ac1b0d5f0a16a89589ef55ffd35c1967a2
-# bad: [d8ed45c5dcd455fc5848d47f86883a1b872ac0d0] mmap locking API: use coccinelle to convert mmap_sem rwsem call sites
-git bisect bad d8ed45c5dcd455fc5848d47f86883a1b872ac0d0
-# good: [2deebe4d56d638269a4a728086d64de5734b460a] sh: add loglvl to printk_address()
-git bisect good 2deebe4d56d638269a4a728086d64de5734b460a
-# good: [77819daf247aad16beaeb537ae77d1d6d0697ca2] kdb: don't play with console_loglevel
-git bisect good 77819daf247aad16beaeb537ae77d1d6d0697ca2
-# good: [e73240be691e1b081190125da67cd38822b8d5f8] m68k/mm/motorola: move comment about page table allocation funcitons
-git bisect good e73240be691e1b081190125da67cd38822b8d5f8
-# bad: [974b9b2c68f3d35a65e80af9657fe378d2439b60] mm: consolidate pte_index() and pte_offset_*() definitions
-git bisect bad 974b9b2c68f3d35a65e80af9657fe378d2439b60
-# good: [88107d330de4f175705a3ea03147feb0d7e68499] x86/mm: simplify init_trampoline() and surrounding logic
-git bisect good 88107d330de4f175705a3ea03147feb0d7e68499
-# bad: [e05c7b1f2bc4b7b28199b9a7572f73436d97317e] mm: pgtable: add shortcuts for accessing kernel PMD and PTE
-git bisect bad e05c7b1f2bc4b7b28199b9a7572f73436d97317e
-# first bad commit: [e05c7b1f2bc4b7b28199b9a7572f73436d97317e] mm: pgtable: add shortcuts for accessing kernel PMD and PTE
+Rob
