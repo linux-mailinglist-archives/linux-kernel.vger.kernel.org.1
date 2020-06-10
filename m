@@ -2,137 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1C11F5A7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A211F5A50
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728595AbgFJRaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 13:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35212 "EHLO
+        id S1726533AbgFJR3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 13:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728217AbgFJRaJ (ORCPT
+        with ESMTP id S1726441AbgFJR3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 13:30:09 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB25C03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 10:30:09 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id q24so1169725pjd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 10:30:09 -0700 (PDT)
+        Wed, 10 Jun 2020 13:29:03 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C16C03E96B;
+        Wed, 10 Jun 2020 10:29:02 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id l26so2579048wme.3;
+        Wed, 10 Jun 2020 10:29:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YSSqAri9IDFCpU3JjO79asbzoYTG2dNk47iwG0514GI=;
-        b=mDmTN8g77fIQ7mXWZiV3RT0B5wwlZzKx6S+wKTcIRN4H5fwCr50Eu8/ixfWH2h65Oh
-         NZEIVdGKL/Blz2c3a1qIWjVNej6Z6uG7NSEJtjJE1dVBGOkmhphDE6e5bd3R/YARk4CC
-         ViMMVL6aRup/WasNXCSxmwbKgnO28mr4v7jDeGs1YV9t2gzx1Zb/HkiHg6iUtjT6jtgN
-         qb+gcTP76RcJX/RHOuCYS5ZkgXOfFFKhLw+cixP0iezh5gaWRFKAUan7nq88xer4ZQ6B
-         h3V+sxyEZoK82tPtqKsdXhwmQr/CE7zEK0TaCB+1ppdH+8s6t2XSPbGGQHeMaW09pVhu
-         L3/Q==
+        bh=4fr+UL9O2HF9K/lBv8pVMY6XaRGJvWXm1sUH2VFByQY=;
+        b=ICDG62e1fP7sxVuWYjU4w++AldrRE/9kmK61YNF7cdPmqrwYd9/ju2jxHEvWTZdZXx
+         DV6oDoTm1MZmmgD/jDCT0mLjdSdmQTVNEC958giX5T51ZUoE6a7xnMg+jAyjlKOyr9Bm
+         CF6MuB4fXtlLjUZqrhbM3KzmRvNNZ9kpfxzNRorJ+H6tWfBp4pRP2wiEfsWyXlsSETIL
+         jqhM53H0+xW74JdyHhm4mmBwitDr0WuwAzc6csb5M8Fm0V8M/KaWf51UPDfHp2lda8Kp
+         5necvjI1Ncuh4b7P/SbP3qyDkCFdzmYJqrfhQphqjejBXcIQ/8mAI7K4h2EmcoEt8VC6
+         m9WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YSSqAri9IDFCpU3JjO79asbzoYTG2dNk47iwG0514GI=;
-        b=ipIW9Ud2b9pmcl/FDDAVu4KIAJ5cJm/mlpFrbBxDWSFLqCUT50v9y1/6hVLX9CqU2P
-         rn6+fRUbroTbL8L1oHeNa40Ov94mIMvt2JXW2kgGwp8ci3GeShFzETRnS9RqesS+moZy
-         kB+UPI8Mft9Jz9NBDgh7FOkiMVPp2ggkQE3SzE49DJjEZgwCdIwGKX5chpwgn0g7Vtzj
-         gyP2y7KEWB8ZeLr6EcAiVZWA41A515Ft9NPO4NnBNjZXWE61WNzZJmps5yScrtNvXSNI
-         6M9JjFUSgO5e/ik8R0cgJQf9F/atKa9nIEdM80l0DtQUpMWlYceTq1s+VsNhM8BK2w8R
-         +NUQ==
-X-Gm-Message-State: AOAM530LVM4KzJ/zUbe4jYzV8JdnTjRZ2FVI2p/0HDSDM1FLrugELWfD
-        9pks4JKCtDlH9VfcLBJqp/Q=
-X-Google-Smtp-Source: ABdhPJzNlj5nhn4pYpEdkNQnoV/L+9+GNHKM52nJxU7AlwWynfm7U5MIiTie1V5Kla8isU83IdExAQ==
-X-Received: by 2002:a17:902:7b92:: with SMTP id w18mr3704408pll.273.1591810208856;
-        Wed, 10 Jun 2020 10:30:08 -0700 (PDT)
-Received: from cvds-vagarw7.iind.intel.com ([192.55.54.40])
-        by smtp.googlemail.com with ESMTPSA id l83sm490470pfd.150.2020.06.10.10.29.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Jun 2020 10:30:08 -0700 (PDT)
-From:   Vaibhav Agarwal <vaibhav.sr@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Vaibhav Agarwal <vaibhav.sr@gmail.com>
-Subject: [PATCH v2 6/6] staging: greybus: audio: Enable GB codec, audio module compilation.
-Date:   Wed, 10 Jun 2020 22:58:30 +0530
-Message-Id: <54b188a59687a915f43085db7b5cf05476308cbd.1591802243.git.vaibhav.sr@gmail.com>
+        bh=4fr+UL9O2HF9K/lBv8pVMY6XaRGJvWXm1sUH2VFByQY=;
+        b=i6HLattSK17YbWHAKP0eyp6wMXecYLDYTe2o6I9982H1B+KCWLt+nxWU1RPT9wBqZj
+         IcscFcfxamidHlVQcAma7N4gO8na85kTwxBsjTzFFO/HRJ4PGo7RuUhl5dGn88OHteli
+         IrB326ESmLYVQwFVe29O9eGa8v/ahyjR7ImGkx6vS+8ig0vUgPJ6wFeN5Tz84tlkdTNY
+         M25c8/RGPQX095AWbejsJRbU5NiWpBQVXjMg61vPwQrSYkVol3593NltiWwHIEW5IBju
+         S4nsyYcqBfsCqcBTCMbC7lFTwNjY2SxiOchHSJGK2quy0JhWV9muW7gP7JUt3yA9zAS7
+         3JKg==
+X-Gm-Message-State: AOAM532g419S0l+uPbij0fCzRycsnjBcWctgXHVC50wVoffHAL1SNHEd
+        RPF2ig/sDs6kQXrcUVsOHQA=
+X-Google-Smtp-Source: ABdhPJxJAXhHMNsMi0fgj9mX+Pbnob9fP2EQmYvwQkhuo/R5EWo4rp96a+jkyScYU/aT3XEB2VQ93g==
+X-Received: by 2002:a7b:cbce:: with SMTP id n14mr4378632wmi.66.1591810141255;
+        Wed, 10 Jun 2020 10:29:01 -0700 (PDT)
+Received: from skynet.lan (28.red-83-49-61.dynamicip.rima-tde.net. [83.49.61.28])
+        by smtp.gmail.com with ESMTPSA id h188sm568551wmh.2.2020.06.10.10.29.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jun 2020 10:29:00 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
+        tsbogend@alpha.franken.de, f.fainelli@gmail.com,
+        jonas.gorski@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v3 0/9] bmips: add bcm6345 reset controller support
+Date:   Wed, 10 Jun 2020 19:28:50 +0200
+Message-Id: <20200610172859.466334-1-noltari@gmail.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1591802243.git.vaibhav.sr@gmail.com>
-References: <cover.1591802243.git.vaibhav.sr@gmail.com>
+In-Reply-To: <20200609160244.4139366-1-noltari@gmail.com>
+References: <20200609160244.4139366-1-noltari@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently you can't enable the Gey Bus Audio Codec because there is no
-entry for it in the Kconfig file. Originally the config name was going
-to be AUDIO_MSM8994 but that's not correct because other types of
-hardware are supported now. I have chosen the name AUDIO_APB_CODEC
-instead.  Also I had to update the dependencies for GREYBUS_AUDIO to
-make the compile work.
+BCM63xx SoCs have a reset controller for certain components.
 
-Signed-off-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
----
- drivers/staging/greybus/Kconfig  | 14 +++++++++++++-
- drivers/staging/greybus/Makefile |  4 ++--
- 2 files changed, 15 insertions(+), 3 deletions(-)
+v3: using reset-simple isn't possible since sleeping after performing the
+    reset is also needed.
+    Add BCM63268 and BCM6318 support.
+v2: add compatibility to reset-simple instead of adding a new driver.
 
-diff --git a/drivers/staging/greybus/Kconfig b/drivers/staging/greybus/Kconfig
-index d4777f5a8b90..cbcfcbba239b 100644
---- a/drivers/staging/greybus/Kconfig
-+++ b/drivers/staging/greybus/Kconfig
-@@ -3,7 +3,7 @@ if GREYBUS
- 
- config GREYBUS_AUDIO
- 	tristate "Greybus Audio Class driver"
--	depends on SOUND
-+	depends on SOUND && SND_SOC
- 	---help---
- 	  Select this option if you have a device that follows the
- 	  Greybus Audio Class specification.
-@@ -11,6 +11,18 @@ config GREYBUS_AUDIO
- 	  To compile this code as a module, chose M here: the module
- 	  will be called gb-audio.ko
- 
-+config GREYBUS_AUDIO_APB_CODEC
-+	tristate "Greybus APBridge Audio codec driver"
-+	depends on SND_SOC && GREYBUS_AUDIO
-+	help
-+	  Select this option if you have a Toshiba APB device that has I2S
-+          ports and acts as a Greybus "Dummy codec". This device is a
-+          bridge from an APB-I2S port to a Unipro network.
-+
-+	  To compile this code as a module, chose M here: the module
-+	  will be called gb-audio-codec.ko
-+
-+
- config GREYBUS_BOOTROM
- 	tristate "Greybus Bootrom Class driver"
- 	---help---
-diff --git a/drivers/staging/greybus/Makefile b/drivers/staging/greybus/Makefile
-index 3b4b6cabff19..7c5e89622334 100644
---- a/drivers/staging/greybus/Makefile
-+++ b/drivers/staging/greybus/Makefile
-@@ -40,8 +40,8 @@ gb-audio-manager-y	:= audio_manager.o audio_manager_module.o
- #ccflags-y += -DGB_AUDIO_MANAGER_SYSFS
- #endif
- 
--obj-$(CONFIG_GREYBUS_AUDIO_MSM8994)	+= gb-audio-codec.o
--obj-$(CONFIG_GREYBUS_AUDIO_MSM8994)	+= gb-audio-module.o
-+obj-$(CONFIG_GREYBUS_AUDIO_APB_CODEC)  	+= gb-audio-codec.o
-+obj-$(CONFIG_GREYBUS_AUDIO_APB_CODEC)	+= gb-audio-module.o
- obj-$(CONFIG_GREYBUS_AUDIO)		+= gb-audio-gb.o
- obj-$(CONFIG_GREYBUS_AUDIO)		+= gb-audio-apbridgea.o
- obj-$(CONFIG_GREYBUS_AUDIO)		+= gb-audio-manager.o
+Álvaro Fernández Rojas (9):
+  mips: bmips: select ARCH_HAS_RESET_CONTROLLER
+  dt-bindings: reset: add BCM6345 reset controller bindings
+  reset: add BCM6345 reset controller driver
+  mips: bmips: dts: add BCM6328 reset controller support
+  mips: bmips: dts: add BCM6358 reset controller support
+  mips: bmips: dts: add BCM6362 reset controller support
+  mips: bmips: dts: add BCM6368 reset controller support
+  mips: bmips: dts: add BCM63268 reset controller support
+  mips: bmips: add BCM6318 reset controller definitions
+
+ .../bindings/reset/brcm,bcm6345-reset.yaml    |  37 +++++
+ arch/mips/Kconfig                             |   1 +
+ arch/mips/boot/dts/brcm/bcm63268.dtsi         |   6 +
+ arch/mips/boot/dts/brcm/bcm6328.dtsi          |   6 +
+ arch/mips/boot/dts/brcm/bcm6358.dtsi          |   6 +
+ arch/mips/boot/dts/brcm/bcm6362.dtsi          |   6 +
+ arch/mips/boot/dts/brcm/bcm6368.dtsi          |   6 +
+ drivers/reset/Kconfig                         |   7 +
+ drivers/reset/Makefile                        |   1 +
+ drivers/reset/reset-bcm6345.c                 | 135 ++++++++++++++++++
+ include/dt-bindings/reset/bcm6318-reset.h     |  20 +++
+ include/dt-bindings/reset/bcm63268-reset.h    |  26 ++++
+ include/dt-bindings/reset/bcm6328-reset.h     |  18 +++
+ include/dt-bindings/reset/bcm6358-reset.h     |  15 ++
+ include/dt-bindings/reset/bcm6362-reset.h     |  22 +++
+ include/dt-bindings/reset/bcm6368-reset.h     |  16 +++
+ 16 files changed, 328 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/reset/brcm,bcm6345-reset.yaml
+ create mode 100644 drivers/reset/reset-bcm6345.c
+ create mode 100644 include/dt-bindings/reset/bcm6318-reset.h
+ create mode 100644 include/dt-bindings/reset/bcm63268-reset.h
+ create mode 100644 include/dt-bindings/reset/bcm6328-reset.h
+ create mode 100644 include/dt-bindings/reset/bcm6358-reset.h
+ create mode 100644 include/dt-bindings/reset/bcm6362-reset.h
+ create mode 100644 include/dt-bindings/reset/bcm6368-reset.h
+
 -- 
 2.26.2
 
