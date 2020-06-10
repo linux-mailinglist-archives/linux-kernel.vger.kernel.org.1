@@ -2,149 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A61F1F50EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 11:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E711F50C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 11:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgFJJJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 05:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726961AbgFJJJu (ORCPT
+        id S1727000AbgFJJFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 05:05:44 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:10179 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726219AbgFJJFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 05:09:50 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC9BC08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 02:09:50 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id g12so720694pll.10
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 02:09:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8rOPH/PbuLqa2Cv7xwtOA9u/UUbRhuHyuujsYiUr6F0=;
-        b=eBHYdxR1Xa52Fqd6sKtA6Rq9srTsGJmyYGxwbZSYDhJs6eswpgfL+p9qNHFYDV7KsI
-         ea0S7VZZel+/Np8snAXVZxKW3KU7rulyRGs1hilXxkMK4Au7hYZWzXz9YV1FisLONDxq
-         3C5cCG9B7w6VuXyD5NLkLc9pSlNglhlDmqEDk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8rOPH/PbuLqa2Cv7xwtOA9u/UUbRhuHyuujsYiUr6F0=;
-        b=H6rW2Fum+J173pLQmgkIfFA4YB+i8eHuUf4cFDgAtfwHTgZHpdgzEYGkUi2DUyuwOS
-         VrGukUpVykQht9kiGetr2n92tBpDMmKD0BaM5r54NyblQuT+6pBVSJYMkeAjOsl49UWG
-         AR6lRNEYy5JHHbhxDS5GJKwp+k18Kt2/IV+WEVNa4HmRTAYDWVNkjQu9KF7kGfhWY7dY
-         V8hPa6icv9fWIh5lJSHrUFPYzBsq5ALOd1Xup1u5jMRVAfA2HiRYxyvlS4q6xf2BnOfb
-         Xooq8qYZoBu0/JM557M8hSoA9dtQG/xKTHWZfTHwYBecDTjqlE0+7VGpS2vrjhl/ExJ8
-         lt0w==
-X-Gm-Message-State: AOAM530jDhIOsbkgZqnLwMnPcpMQgAn2GxxKuPBz/4PCIc7mYcsR6iCl
-        /TYUFwvgmbr6VmRZ3EQqLzpYYw==
-X-Google-Smtp-Source: ABdhPJww724krgp0BaN7nCeOkrtyuYDvte4q30IE/QoN+f33C/Hjei4IWQ+/yy2VykQxBXRYOfRA7Q==
-X-Received: by 2002:a17:902:968b:: with SMTP id n11mr2104726plp.331.1591780189664;
-        Wed, 10 Jun 2020 02:09:49 -0700 (PDT)
-Received: from shiro.work (p1285116-ipngn200805sizuokaden.shizuoka.ocn.ne.jp. [114.171.61.116])
-        by smtp.googlemail.com with ESMTPSA id nl8sm5191620pjb.13.2020.06.10.02.09.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 02:09:49 -0700 (PDT)
-From:   Daniel Palmer <daniel@0x0f.com>
-Cc:     k@japko.eu, tim.bird@sony.com, daniel@0x0f.com,
-        devicetree@vger.kernel.org, Daniel Palmer <daniel@thingy.jp>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Doug Anderson <armlinux@m.disordat.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Gregory Fong <gregory.0xf0@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nathan Huckleberry <nhuck15@gmail.com>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] ARM: mstar: Add dts for 70mai midrive d08
-Date:   Wed, 10 Jun 2020 18:04:03 +0900
-Message-Id: <20200610090421.3428945-6-daniel@0x0f.com>
-X-Mailer: git-send-email 2.27.0.rc0
-In-Reply-To: <20191014061617.10296-2-daniel@0x0f.com>
-References: <20191014061617.10296-2-daniel@0x0f.com>
+        Wed, 10 Jun 2020 05:05:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1591779944; x=1623315944;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=8TnDDBGvjHsVFDp8wvSJgEncCN5mhl7gO30xVW7TOu8=;
+  b=Tcv0NfsAui0jKW1TpwdgCViUwlcciHF6d/lnY0ovwQ96TV2IVjx1vRhF
+   PScDwuh9JkhDYtJODt/1MEEgELeQP3OR19vtkl58JundLlZLmopwwyGnc
+   0NVtcZBIRq30jrmTcP2OWYJM2pBB7hG1HzVUqMrVLKH3oAhkMchzb44LY
+   mUjCYxE+oOGOnN0hkDbrVoLJjhxvWGuI2MLV4Oh0w7wMJNjYGJn0JQepA
+   Detl+YAn06wPzc4wfi29F5fnDm3wsBJDorRovfl3nq6akrYNKbz/0qv0a
+   SXo10m4N7oQK2TrTpvRnfLs5EMk2WWYewhHN7e5BhwjW9sPy7t/3NcCWW
+   Q==;
+IronPort-SDR: bEQtM5O08WY8XWPZjThcORefaYzLaYHRKlbGPIiYxkkzUQKbY97lKXCIRSplUE5/0eMClhaX+4
+ gebC76JG9zjTxzY6MVCBE+rG6ab9+RSBtXlxmZ2q+rRWTB+hakfTGFaxDPhjr65p6eqAEv2Gtc
+ gB5m/Ee1tbcJahx+vdeetPYiNCfzWHHpK+P6KqtxVINVhSM9PSJ1t4Il0iTEDCVHtZ3V3zNAlw
+ hJkVn8F39xowDl2MV44dPrNschw5929QQSuNFCPLiKrn41E5mWZc4yMObr+4GpLhpXQMPztunf
+ vWQ=
+X-IronPort-AV: E=Sophos;i="5.73,495,1583218800"; 
+   d="scan'208";a="82953209"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Jun 2020 02:05:43 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Wed, 10 Jun 2020 02:05:43 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1847.3 via Frontend Transport; Wed, 10 Jun 2020 02:05:38 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <a.zummo@towertech.it>, <alexandre.belloni@bootlin.com>,
+        <robh+dt@kernel.org>, <nicolas.ferre@microchip.com>,
+        <ludovic.desroches@microchip.com>, <tglx@linutronix.de>,
+        <jason@lakedaemon.net>, <maz@kernel.org>
+CC:     <linux-rtc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v2 0/3] add RTT support for SAM9X60
+Date:   Wed, 10 Jun 2020 12:05:33 +0300
+Message-ID: <1591779936-18577-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds inital support for the 70mai midrive d08 dash camera.
+This series adds RTT support for SAM9X60.
 
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
- arch/arm/boot/dts/Makefile                    |  3 ++-
- .../boot/dts/mercury5-ssc8336n-midrive08.dts  | 25 +++++++++++++++++++
- 2 files changed, 27 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm/boot/dts/mercury5-ssc8336n-midrive08.dts
+Changes in v2:
+- use "atmel,at91sam9260-rtt" as fallback for compatible
+- in patch 1 keep only the addition of sam9x60_aic_irq_fixup
+- get rid of patches 2/5 from v1
+- squash patches 4/5, 5/5 from v1
+- change commit title for patch "rtc: at91sam9: add microchip,sam9x60-rtt"
+  from v1 into "dt-bindings: rtc: add microchip,sam9x60-rtt" and
+  place it before device tree patch
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 4a5f8075a4f6..35c7ecc52c60 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1344,7 +1344,8 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += \
- dtb-$(CONFIG_ARCH_MILBEAUT) += milbeaut-m10v-evb.dtb
- dtb-$(CONFIG_ARCH_MSTARV7) += \
- 	infinity-msc313-breadbee_crust.dtb \
--	infinity3-msc313e-breadbee.dtb
-+	infinity3-msc313e-breadbee.dtb \
-+	mercury5-ssc8336n-midrive08.dtb
- dtb-$(CONFIG_ARCH_ZX) += zx296702-ad1.dtb
- dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-ast2500-evb.dtb \
-diff --git a/arch/arm/boot/dts/mercury5-ssc8336n-midrive08.dts b/arch/arm/boot/dts/mercury5-ssc8336n-midrive08.dts
-new file mode 100644
-index 000000000000..4ee50ecf6ab1
---- /dev/null
-+++ b/arch/arm/boot/dts/mercury5-ssc8336n-midrive08.dts
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2019 thingy.jp.
-+ * Author: Daniel Palmer <daniel@thingy.jp>
-+ */
-+
-+/dts-v1/;
-+#include "mercury5-ssc8336n.dtsi"
-+
-+/ {
-+	model = "midrive d08";
-+	compatible = "70mai,midrived08", "mstar,mercury5";
-+
-+	aliases {
-+		serial0 = &pm_uart;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+};
-+
-+&pm_uart {
-+	status = "okay";
-+};
+Claudiu Beznea (3):
+  irqchip/atmel-aic5: add support for sam9x60 rtt fixup
+  dt-bindings: rtc: add microchip,sam9x60-rtt
+  ARM: dts: sam9x60: add rtt
+
+ Documentation/devicetree/bindings/rtc/atmel,at91sam9-rtc.txt | 4 +++-
+ arch/arm/boot/dts/at91-sam9x60ek.dts                         | 9 +++++++++
+ arch/arm/boot/dts/sam9x60.dtsi                               | 7 +++++++
+ drivers/irqchip/irq-atmel-aic5.c                             | 8 +++++++-
+ 4 files changed, 26 insertions(+), 2 deletions(-)
+
 -- 
-2.27.0.rc0
+2.7.4
 
