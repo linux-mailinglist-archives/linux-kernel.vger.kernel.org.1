@@ -2,60 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4F91F4BC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 05:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8781F4BC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 05:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726129AbgFJDWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 23:22:49 -0400
-Received: from o50314115.outbound-mail.sendgrid.net ([50.31.41.15]:19274 "EHLO
-        o50314115.outbound-mail.sendgrid.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725999AbgFJDWt (ORCPT
+        id S1726105AbgFJDWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 23:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgFJDWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 23:22:49 -0400
-X-Greylist: delayed 333 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Jun 2020 23:22:48 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendgrid.net; 
-        h=content-type:mime-version:content-transfer-encoding:content-description:subject:to:from:reply-to; 
-        s=smtpapi; bh=tZj4lUin86KagKkbtNnmMLl9QmeQ/Fc0Vnx7AVbIYWw=; b=ro
-        lCY/nbhTtLycEAubRbHg3Bb+aOY7i6w712tJv+oSIF3eS8VWy2oR2kIRADhkdvdt
-        7KhGjIgrR2UQctR4YTg12GPno2dq5f5RY80uGTz659r9wrfsmIXDCc4UJP9ToMLk
-        IBbVq3jb4HSCLPHzb1s+28kP1/yNeOWqMdxO1WqF0=
-Received: by filter0712p1iad2.sendgrid.net with SMTP id filter0712p1iad2-23846-5EE050BB-1
-        2020-06-10 03:17:15.037644276 +0000 UTC m=+113467.184913177
-Received: from DESKTOP-D07PHSV.www.huaweimobilewifi.com (unknown)
-        by ismtpd0009p1iad2.sendgrid.net (SG) with ESMTP id oz1roewbTWauP1lPNMQuiw
-        Wed, 10 Jun 2020 03:17:14.883 +0000 (UTC)
-Content-Type: text/plain; charset="iso-8859-1"
+        Tue, 9 Jun 2020 23:22:40 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCC9C05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 20:22:39 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 69so610803otv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 20:22:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=hHH9e/LiOW5H3k9fW9AUTTMwkhJh6YJBdmz/N3uFEuo=;
+        b=XVJhVenJbge0EJlY/D27dtJq6OjTVaxc3kSV5ZZZCuWVDJpXLNUEQ09Zo/uvIh2X/i
+         4JmhwPMUkfBrnVCqR9BsXP0zqduoCC9+kBisKz0cpZSDuOTQQjVGH7C25YVzb9uq1zfk
+         XKftOKeOXeyho8NhPGubvDBR4gDvLo5kPwkZ5K6wPvoxlCuPlv1GmoqrnsFrl3+53FEH
+         o0StwJIYUD9o9Ib2hY/MgLOUGXZ4tZZPOTjL7jt3oYX+OoqoxGlh9wgJMnyduIMCdwQc
+         lH9RGelXuLRj+tHiaCkPH3qD8HA09k3u2LqXxxt8eVFX6kRR0RoQ9ry94ViruOtngRsF
+         ESJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=hHH9e/LiOW5H3k9fW9AUTTMwkhJh6YJBdmz/N3uFEuo=;
+        b=J8CW14+73/mR2E6PvOgAAo+EKUnyG8bzOgoXGaCMWUSVkNEEFn6pjTRxqGA3dBBeDA
+         WzQOnsmHxFrUBVs7aP5oJwP8bIsIXTPtQFAhspLaTvTfLJbPdPGZiM7RZy+4UoxmxYvy
+         LP5DDqsLStX5+4S5R+nws9rC2E/8cIJioQEAzSlmkWQC+4BMIdGKNol0J388F/1RfsGI
+         cP/XBPdr4lIoSHwIHtna4VZVZhbneGNtltS1QzVH/rqETDwWl8xJHZPVCtEQF49pJSbQ
+         LQOQL6KgxTE0MQsmOrU9X5bCvBnlJuW6JJrx/skp/wlGOvwkol0vS1gzg5ryxKwl83ia
+         h0sg==
+X-Gm-Message-State: AOAM533wszWbZybNopmB4xQLdHKqevBryfOCFYe1RAKY52UjR8QBdK64
+        pWedgFUIlzQMhZPeSfyKDb/BEw==
+X-Google-Smtp-Source: ABdhPJx8TFQhzDmzqiHaHJXj5Ts880eSan4PQLvc/01qOh7b7uB2a7s9lFYXfIyLy3HCZo2Jr4jC8g==
+X-Received: by 2002:a9d:220c:: with SMTP id o12mr1128942ota.155.1591759357385;
+        Tue, 09 Jun 2020 20:22:37 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id a64sm3622078oib.43.2020.06.09.20.22.34
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 09 Jun 2020 20:22:36 -0700 (PDT)
+Date:   Tue, 9 Jun 2020 20:22:13 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+cc:     Hugh Dickins <hughd@google.com>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com
+Subject: Re: [PATCH v11 00/16] per memcg lru lock
+In-Reply-To: <31943f08-a8e8-be38-24fb-ab9d25fd96ff@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.11.2006091904530.2779@eggly.anvils>
+References: <1590663658-184131-1-git-send-email-alex.shi@linux.alibaba.com> <alpine.LSU.2.11.2006072100390.2001@eggly.anvils> <31943f08-a8e8-be38-24fb-ab9d25fd96ff@linux.alibaba.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Your response is needed.
-To:     Recipients <em4953.serviceannuelle.org@vger.kernel.org>
-From:   "ANTHONY NUGAN" <em4953.serviceannuelle.org@vger.kernel.org>
-Date:   Wed, 10 Jun 2020 03:17:15 +0000 (UTC)
-Reply-To: nugadvokatur@mail.com
-X-Priority: 1 (High)
-X-Antivirus: AVG (VPS 200609-10, 09/06/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <oz1roewbTWauP1lPNMQuiw@ismtpd0009p1iad2.sendgrid.net>
-X-SG-EID: UsLXQ589HNP4HLBydmD9pgHURQozLYm9XliudupI8YuvfoimfwBMaCyW7b4uZGAVwpjjefPG99/VjP
- HTvrkQ+tg3cUdQIQXBLkXKD1o5A3sxIn02THnChPMmmcNpgag8tzz4ygO+ct2AOKXnDLsih0YqtTOO
- 4geS32Sp0u0JD0OeXGp/HTQ+LgEFm4Phvst6mRVQLzN1rX4tz9IKJIV3Q/gpx3dhSYScL+yTuDEt+C
- sC17kRvoOokQl1KjAB+OTC
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-761195576-1591759355=:2779"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello friend, I hope this email meets you in good health. I am an investmen=
-t counselor, leading a law firm. And I have a business proposal which I wou=
-ld like to discuss with you. If you are interested, please communicate with=
- me immediately. Upon your response, I shall then supply you with more deta=
-ils. I anticipate your reply.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Best regards,
-Anthony Nugan.
+--0-761195576-1591759355=:2779
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
---
-This email has been checked for viruses by AVG.
-https://www.avg.com
+On Mon, 8 Jun 2020, Alex Shi wrote:
+> =E5=9C=A8 2020/6/8 =E4=B8=8B=E5=8D=8812:15, Hugh Dickins =E5=86=99=E9=81=
+=93:
+> >>  24 files changed, 487 insertions(+), 312 deletions(-)
+> > Hi Alex,
+> >=20
+> > I didn't get to try v10 at all, waited until Johannes's preparatory
+> > memcg swap cleanup was in mmotm; but I have spent a while thrashing
+> > this v11, and can happily report that it is much better than v9 etc:
+> > I believe this memcg lru_lock work will soon be ready for v5.9.
+> >=20
+> > I've not yet found any flaw at the swapping end, but fixes are needed
+> > for isolate_migratepages_block() and mem_cgroup_move_account(): I've
+> > got a series of 4 fix patches to send you (I guess two to fold into
+> > existing patches of yours, and two to keep as separate from me).
+> >=20
+> > I haven't yet written the patch descriptions, will return to that
+> > tomorrow.  I expect you will be preparing a v12 rebased on v5.8-rc1
+> > or v5.8-rc2, and will be able to include these fixes in that.
+>=20
+> I am very glad to get your help on this feature!=20
+>=20
+> and looking forward for your fixes tomorrow. :)
+>=20
+> Thanks a lot!
+> Alex
 
+Sorry, Alex, the news is not so good today.
+
+You'll have noticed I sent nothing yesterday. That's because I got
+stuck on my second patch: could not quite convince myself that it
+was safe.
+
+I keep hinting at these patches, and I can't complete their writeups
+until I'm convinced; but to give you a better idea of what they do:
+
+1. Fixes isolate_fail and isolate_abort in isolate_migratepages_block().
+2. Fixes unsafe use of trylock_page() in __isolate_lru_page_prepare().
+3. Reverts 07/16 inversion of lock ordering in split_huge_page_to_list().
+4. Adds lruvec lock protection in mem_cgroup_move_account().
+
+In the second, I was using rcu_read_lock() instead of trylock_page()
+(like in my own patchset), but could not quite be sure of the case when
+PageSwapCache gets set at the wrong moment. Gave up for the night, and
+in the morning abandoned that, instead just shifting the call to
+__isolate_lru_page_prepare() after the get_page_unless_zero(),
+where that trylock_page() becomes safe (no danger of stomping on page
+flags while page is being freed or newly allocated to another owner).
+
+I thought that a very safe change, but best to do some test runs with
+it in before finalizing. And was then unpleasantly surprised to hit a
+VM_BUG_ON_PAGE(lruvec_memcg(lruvec) !=3D page->mem_cgroup) from
+lock_page_lruvec_irqsave < relock_page_lruvec < pagevec_lru_move_fn <
+pagevec_move_tail < lru_add_drain_cpu after 6 hours on one machine.
+Then similar but < rotate_reclaimable_page after 8 hours on another.
+
+Only seen once before: that's what drove me to add patch 4 (with 3 to
+revert the locking before it): somehow, when adding the lruvec locking
+there, I just took it for granted that your patchset would have the
+appropriate locking (or TestClearPageLRU magic) at the other end.
+
+But apparently not. And I'm beginning to think that TestClearPageLRU
+was just to distract the audience from the lack of proper locking.
+
+I have certainly not concluded that yet, but I'm having to think about
+an area of the code which I'd imagined you had under control (and I'm
+puzzled why my testing has found it so very hard to hit). If we're
+lucky, I'll find that pagevec_move_tail is a special case, and
+nothing much else needs changing; but I doubt that will be so.
+
+There's one other unexplained and unfixed bug I've seen several times
+while exercising mem_cgroup_move_account(): refcount_warn_saturate()
+from where __mem_cgroup_clear_mc() calls mem_cgroup_id_get_many().
+I'll be glad if that goes away when the lruvec locking is fixed,
+but don't understand the connection. And it's quite possible that
+this refcounting bug has nothing to do with your changes: I have
+not succeeded in reproducing it on 5.7 nor on 5.7-rc7-mm1,
+but I didn't really try long enough to be sure.
+
+(I should also warn, that I'm surprised by the amount of change
+11/16 makes to mm/mlock.c: I've not been exercising mlock at all.)
+
+Taking a break for the evening,
+Hugh
+--0-761195576-1591759355=:2779--
