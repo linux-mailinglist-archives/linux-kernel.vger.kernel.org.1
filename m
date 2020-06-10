@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973511F50F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 11:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B131F50ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 11:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727841AbgFJJKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 05:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
+        id S1727811AbgFJJJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 05:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726961AbgFJJKG (ORCPT
+        with ESMTP id S1726961AbgFJJJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 05:10:06 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52ECC03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 02:10:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EmvZOX3XKJAnMLDmrNxCkG2SMZZf7Tnqr5HQzs32oxY=; b=GEWMeM91x9p303KqeEjqbnd3s+
-        3U/iW3wsFB5JY6p590i/W+aaw65cZMPUR2DXxWhRp+7VkpAeBthr/loFa81iz9LrWUKXrr/3haZdr
-        W7Wz7siV55N0A6D2uOyluQ0CLOHbwkb8G/CXORaSbUMbMgjLwFyyIilox5BB1cjyqAgC/plGd1hzV
-        iegSkqlz9Wy8tbSGmsrljCwMzCelgAqsOQLc/0VnRDAjErk5J6LJ8IElmxs90ySdGXXQRndUUWjZn
-        DkgcH18OpgM+HaNceKxLKmKjwdvtImH7WYA608AGmo4M9LDMtpq4x3oUX/PjSo3IA9SHT+bxf4lrg
-        02idfCig==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jiwjm-0008Cx-6A; Wed, 10 Jun 2020 09:09:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EEFD430280E;
-        Wed, 10 Jun 2020 11:09:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DB7342041055D; Wed, 10 Jun 2020 11:09:30 +0200 (CEST)
-Date:   Wed, 10 Jun 2020 11:09:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Eric Biggers <ebiggers@kernel.org>, tglx@linutronix.de,
-        frederic@kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        cai@lca.pw, mgorman@techsingularity.net
-Subject: Re: [RFC][PATCH 7/7] sched: Replace rq::wake_list
-Message-ID: <20200610090930.GE2531@hirez.programming.kicks-ass.net>
-References: <20200604141837.GA179816@roeck-us.net>
- <20200605002433.GA148196@sol.localdomain>
- <20200605074154.GB2750@hirez.programming.kicks-ass.net>
- <20200605161532.GD1373@sol.localdomain>
- <53318971-561c-b445-0408-530b3d3ba44e@roeck-us.net>
- <20200609202134.GA1105@sol.localdomain>
- <20200609212509.GA239889@roeck-us.net>
- <20200609213829.GA789@sol.localdomain>
- <20200609220601.GD2514@hirez.programming.kicks-ass.net>
- <e8a57823-3c5a-886a-e114-b5e7b2bb4f01@roeck-us.net>
+        Wed, 10 Jun 2020 05:09:44 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D841C03E96B;
+        Wed, 10 Jun 2020 02:09:44 -0700 (PDT)
+Received: from [192.168.0.20] (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 46A4029E;
+        Wed, 10 Jun 2020 11:09:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1591780180;
+        bh=x/1WGCYPX9wQegZ9rXJrtiwtlR3b2ASX7G+NGvgVKVA=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=fU6nJzNW910hSS6BxGkwYlQ9H1AN5gcEKblZhCdLSSuaQ0IHG2lJcRpTnvTGS23Tx
+         68COWHb73PGvNoS1OWt5h7SXGRce4a2KHTboa624X4L7+spsbEaUwtfe91Au/99Xh4
+         DaBuaSEzHCPFL+0iuEQwxN5N9iSgLa/m6m8LITo0=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH 17/17] scripts/spelling.txt: Add descriptors correction
+To:     Joe Perches <joe@perches.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Xiong <xndchn@gmail.com>,
+        Chris Paterson <chris.paterson2@renesas.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
+ <20200609124610.3445662-18-kieran.bingham+renesas@ideasonboard.com>
+ <77778948acc1f475e82ad36d015ba76dc96352ff.camel@perches.com>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <c65821d4-43bf-d6df-d485-9ad4febd6466@ideasonboard.com>
+Date:   Wed, 10 Jun 2020 10:09:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e8a57823-3c5a-886a-e114-b5e7b2bb4f01@roeck-us.net>
+In-Reply-To: <77778948acc1f475e82ad36d015ba76dc96352ff.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 04:03:19PM -0700, Guenter Roeck wrote:
-> On 6/9/20 3:06 PM, Peter Zijlstra wrote:
-> > On Tue, Jun 09, 2020 at 02:38:29PM -0700, Eric Biggers wrote:
-> >> Does the struct actually have to be named?  How about:
-> >>
-> >> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> >> index c5d96e3e7fff42..14ca25cda19150 100644
-> >> --- a/include/linux/sched.h
-> >> +++ b/include/linux/sched.h
-> >> @@ -653,8 +653,14 @@ struct task_struct {
-> >>  	unsigned int			ptrace;
-> >>  
-> >>  #ifdef CONFIG_SMP
-> >> -	struct llist_node		wake_entry;
-> >> -	unsigned int			wake_entry_type;
-> >> +	/*
-> >> +	 * wake_entry_type must follow wake_entry, even when
-> >> +	 * CONFIG_GCC_PLUGIN_RANDSTRUCT=y.
-> >> +	 */
-> >> +	struct {
-> >> +		struct llist_node	wake_entry;
-> >> +		unsigned int		wake_entry_type;
-> >> +	};
-> >>  	int				on_cpu;
-> >>  #ifdef CONFIG_THREAD_INFO_IN_TASK
-> >>  	/* Current CPU: */
-> >>
-> >>
-> >> However, it would be preferable to not rely on different structs sharing the
-> >> same field order, but rather write proper C code that uses the same struct
-> >> everywhere to encapsulate these 2 fields...
-> > 
-> > https://lkml.kernel.org/r/20200605093704.GB2948@hirez.programming.kicks-ass.net
-> > 
-> > And I have more patches on top to clean up some of the anonymous union
-> > stuff, that that's quite a lot of frobbing.
-> > 
-> 
-> That is why I tried to keep it simple as hackish fixup patch.
+Hi Joe,
 
-Fair enough; I'll try and get the above variant merged to address the
-build fail. Then I can chase down Paul's bug and finisht the cleanup.
+On 09/06/2020 17:08, Joe Perches wrote:
+> On Tue, 2020-06-09 at 13:46 +0100, Kieran Bingham wrote:
+>> After coming across the s/decriptors/descriptors/ spelling error twice,
+>> a scan of the tree showed it was a pervasive mistake.
+> []
+>> diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+> []
+>> @@ -404,6 +404,7 @@ decendants||descendants
+>>  decompres||decompress
+>>  decsribed||described
+>>  decription||description
+>> +decriptors||descriptors
+> 
+> spelling.txt does not check singular and plural
+> uses unless each is described separately so please
+> add the singular one too:
+> 
+> decriptor|descriptor
+> 
+> $ git grep -i -w decriptor | wc -l
+> 18
+> $ git grep -i -w decriptors | wc -l
+> 12
+
+I believe my conversion was based on the non-pluralised version, so I
+think I changed all occurences, but then foolishly somehow ended up
+using the plural for the commit message, which translated into being the
+entry I put in spelling.txt. Sorry ... :-S
+
+I'll fix up, and re-validate any missing fixups after the rebase. I
+think I originally did this at about v5.0, and I already picked up a
+couple extra when I did the rebase, and now you've highlighted the
+plural - I bet I missed some non-plural versions too ;-)
+
+Will re-check and correct.
+
+Thanks.
+
+--
+Kieran
+
+
+
