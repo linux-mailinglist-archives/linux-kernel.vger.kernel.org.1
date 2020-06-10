@@ -2,108 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF291F4BBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 05:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4F91F4BC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 05:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726135AbgFJDPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 23:15:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725999AbgFJDPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 23:15:34 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB39120734;
-        Wed, 10 Jun 2020 03:15:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591758934;
-        bh=SlgmI87PFCqpmWyL9oK6/1jzu0E4iRMFU98Dj5JFzPM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XGn/k6VCSvgI9gagRwQGxde4UvqpAnwNzadx5W5FnLiHaKMibfIa1whJni7Yuukf6
-         Yg89/3q/gjzQjPvbzpKoBTCUnvKdBFtFa9107I73VjK5386bqB5DTtf7iaiBB66f9+
-         lW7mknkH+OpciUhADsGqY0//X/zo7c9gZRBmGLJo=
-Date:   Tue, 9 Jun 2020 20:15:32 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Subject: Re: [f2fs-dev] [PATCH] f2fs: add F2FS_IOC_SEC_TRIM_FILE ioctl
-Message-ID: <20200610031532.GA6286@sol.localdomain>
-References: <20200609060137.143501-1-daeho43@gmail.com>
- <20200609165107.GA228564@gmail.com>
- <CACOAw_xEZ+au9yhFerq9amkRO62Dzxj7h71gEc=i16ReYu5xrg@mail.gmail.com>
+        id S1726129AbgFJDWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 23:22:49 -0400
+Received: from o50314115.outbound-mail.sendgrid.net ([50.31.41.15]:19274 "EHLO
+        o50314115.outbound-mail.sendgrid.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725999AbgFJDWt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 23:22:49 -0400
+X-Greylist: delayed 333 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Jun 2020 23:22:48 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendgrid.net; 
+        h=content-type:mime-version:content-transfer-encoding:content-description:subject:to:from:reply-to; 
+        s=smtpapi; bh=tZj4lUin86KagKkbtNnmMLl9QmeQ/Fc0Vnx7AVbIYWw=; b=ro
+        lCY/nbhTtLycEAubRbHg3Bb+aOY7i6w712tJv+oSIF3eS8VWy2oR2kIRADhkdvdt
+        7KhGjIgrR2UQctR4YTg12GPno2dq5f5RY80uGTz659r9wrfsmIXDCc4UJP9ToMLk
+        IBbVq3jb4HSCLPHzb1s+28kP1/yNeOWqMdxO1WqF0=
+Received: by filter0712p1iad2.sendgrid.net with SMTP id filter0712p1iad2-23846-5EE050BB-1
+        2020-06-10 03:17:15.037644276 +0000 UTC m=+113467.184913177
+Received: from DESKTOP-D07PHSV.www.huaweimobilewifi.com (unknown)
+        by ismtpd0009p1iad2.sendgrid.net (SG) with ESMTP id oz1roewbTWauP1lPNMQuiw
+        Wed, 10 Jun 2020 03:17:14.883 +0000 (UTC)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACOAw_xEZ+au9yhFerq9amkRO62Dzxj7h71gEc=i16ReYu5xrg@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Your response is needed.
+To:     Recipients <em4953.serviceannuelle.org@vger.kernel.org>
+From:   "ANTHONY NUGAN" <em4953.serviceannuelle.org@vger.kernel.org>
+Date:   Wed, 10 Jun 2020 03:17:15 +0000 (UTC)
+Reply-To: nugadvokatur@mail.com
+X-Priority: 1 (High)
+X-Antivirus: AVG (VPS 200609-10, 09/06/2020), Outbound message
+X-Antivirus-Status: Clean
+Message-ID: <oz1roewbTWauP1lPNMQuiw@ismtpd0009p1iad2.sendgrid.net>
+X-SG-EID: UsLXQ589HNP4HLBydmD9pgHURQozLYm9XliudupI8YuvfoimfwBMaCyW7b4uZGAVwpjjefPG99/VjP
+ HTvrkQ+tg3cUdQIQXBLkXKD1o5A3sxIn02THnChPMmmcNpgag8tzz4ygO+ct2AOKXnDLsih0YqtTOO
+ 4geS32Sp0u0JD0OeXGp/HTQ+LgEFm4Phvst6mRVQLzN1rX4tz9IKJIV3Q/gpx3dhSYScL+yTuDEt+C
+ sC17kRvoOokQl1KjAB+OTC
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 11:05:46AM +0900, Daeho Jeong wrote:
-> > > Added a new ioctl to send discard commands or/and zero out
-> > > to whole data area of a regular file for security reason.
-> >
-> > With this ioctl available, what is the exact procedure to write and then later
-> > securely erase a file on f2fs?  In particular, how can the user prevent f2fs
-> > from making multiple copies of file data blocks as part of garbage collection?
-> >
-> 
-> To prevent the file data from garbage collecting, the user needs to
-> use pinfile ioctl and fallocate system call after creating the file.
-> The sequence is like below.
-> 1. create an empty file
-> 2. pinfile
-> 3. fallocate()
+Hello friend, I hope this email meets you in good health. I am an investmen=
+t counselor, leading a law firm. And I have a business proposal which I wou=
+ld like to discuss with you. If you are interested, please communicate with=
+ me immediately. Upon your response, I shall then supply you with more deta=
+ils. I anticipate your reply.
 
-Is that persistent?  So the file will never be moved afterwards?
+Best regards,
+Anthony Nugan.
 
-Is there a place where this is (or should be) documented?
+--
+This email has been checked for viruses by AVG.
+https://www.avg.com
 
-> > > +
-> > > +     if (f2fs_readonly(sbi->sb))
-> > > +             return -EROFS;
-> >
-> > Isn't this redundant with mnt_want_write_file()?
-> >
-> > Also, shouldn't write access to the file be required, i.e.
-> > (filp->f_mode & FMODE_WRITE)?  Then the f2fs_readonly() and
-> > mnt_want_write_file() checks would be unnecessary.
-> >
-> 
-> Using FMODE_WRITE is more proper for this case, since we're going to
-> modify the data. But I think mnt_want_write_file() is still required
-> to prevent the filesystem from freezing or something else.
-
-Right, the freezing check is actually still necessary.  But getting write access
-to the mount is not necessary.  I think you should use file_start_write() and
-file_end_write(), like vfs_write() does.
-
-> >
-> > > +
-> > > +     if (get_user(flags, (u32 __user *)arg))
-> > > +             return -EFAULT;
-> > > +     if (!(flags & F2FS_TRIM_FILE_MASK))
-> > > +             return -EINVAL;
-> >
-> > Need to reject unknown flags:
-> >
-> >         if (flags & ~F2FS_TRIM_FILE_MASK)
-> >                 return -EINVAL;
-> 
-> I needed a different thing here. This was to check neither discard nor
-> zeroing out are not here. But we still need to check unknown flags,
-> too.
-> The below might be better.
-> if (!flags || flags & ~F2FS_TRIM_FILE_MASK)
->        return -EINVAL;
-
-Sure, but please put parentheses around the second clause:
-
-	if (flags == 0 || (flags & ~F2FS_TRIM_FILE_MASK))
-		return -EINVAL;
-
-- Eric
