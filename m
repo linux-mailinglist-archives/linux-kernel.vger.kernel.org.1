@@ -2,51 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3ED1F4ACD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 03:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B778D1F4AD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 03:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726051AbgFJBTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 21:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
+        id S1726130AbgFJBTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 21:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgFJBTm (ORCPT
+        with ESMTP id S1725988AbgFJBTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Jun 2020 21:19:42 -0400
 Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C446C05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 18:19:40 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id 205so696504qkh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 18:19:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B57C08C5C2
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 18:19:41 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id 16so672042qka.15
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 18:19:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=Oio1yvJgCY2gmJTZMFGujeFBCwZ7yES6tEoLpmbLLCk=;
-        b=aUnfDVj2Slo40XkVxjWV51Yp/wlhRXOcjW9lABo3jti8H3BE/ljViSltpDWV71e+ke
-         UWsf34f/T9c0xXIwrO2cWPASNLu+Jhm8j1YTIBTZ6tnfair37d2Nr2w6+0aePl/ZBG2U
-         OSsHx4ScfpJJc+uE6Hxi5du0L61hDntOOHQXiREuqbB1JnMNMPu4GtoShC+Du3l11Egr
-         hbZ8SZtiG/u/95QNpbfm/lqWLjqaTv8sJqmCs9w8XjMJRUtKqEYYiwUYRAOcG9jnD5MS
-         hnUGvoiuezpGZeP1Gjr6SHjjdQdchR9VIbLzwMzTflnZwQv7lnjCbW/tpTUD60wgs2ln
-         lFpw==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=yfWV0PXIV5PpQ5wJBNut7KX55zaCQiiUSrjbwEbMGQE=;
+        b=eNVqmRIUwneb7C0hIKPK8NbWaIdma8E3pFG9OveH/9rjz2NUiFefJCDfGpjedDR/7Y
+         otq92cPnjrLV3I8b1oYQg5UYASq7FNLE/jasv6gwmUICjes1etn5obIxZOxX4psfSLG3
+         7ANc8SckSOm6//UdDhSkLFTdZ59wOC508k1w05BoajtFik9GJvQUP7T+jLG7IYPN3oJl
+         6jSVfbHXGoAReWfJ0+YZPKZImIb901QqJ5VhPf/McBAIQJYpEIj76om28OZJ2fqaEVIC
+         PRT3cY7qmAT+RjXExO5c7+OxN0//N5ZeSMHNI8xfuxkkJhUcBn4jtqKJI3/5/6wWKmKc
+         BAEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=Oio1yvJgCY2gmJTZMFGujeFBCwZ7yES6tEoLpmbLLCk=;
-        b=T0YQ5dXRefXrSfr37A1G8NNnfe4XGDRCotunBjcWpk/hsZ5UBk8Wo99hgoyoiC5K5+
-         Zt/bq8UCfDwv2QXc9KqPmFpXE7hdLPBClNQ15G67s14oX7yJPbvaNfDkNiMFgzuLUNDo
-         F/F6XZ8NsoOQ1a+ylLXHka1GG3C6fb4/fZVSOwl6h3zj5pzRtSTAQUzzsHyvhDteksa8
-         tXqA1MfFFjqRp3EU4u1jHACLXu7MCrj+C1aoP4kCa3jTDbD4wagC5mpCWVH+lH5HXXh9
-         TESB6wNL9tSJStlQZ1diMSJRvsjqlDk6ylMygvArPPnZ3XAU58TWJvN8ghborRyK6HHg
-         pZOw==
-X-Gm-Message-State: AOAM533qrP5WEAcDsLk7L0LwgbrRXt7XyrVhezW9GHokznQOig8cL13v
-        GUKq3BZ9z3cxlJmnrsGFCl8Z6dv6Vk3WoNo=
-X-Google-Smtp-Source: ABdhPJxr/kPdh+a9kmhpcYEAQxrwzHJBchZJTTu3AKa9m+4uzsv9p8VcvHieV368ZosqPw30q6BPKnKgp/TDxDM=
-X-Received: by 2002:a0c:ee41:: with SMTP id m1mr885827qvs.95.1591751978222;
- Tue, 09 Jun 2020 18:19:38 -0700 (PDT)
-Date:   Tue,  9 Jun 2020 18:19:32 -0700
-Message-Id: <20200610011934.49795-1-saravanak@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=yfWV0PXIV5PpQ5wJBNut7KX55zaCQiiUSrjbwEbMGQE=;
+        b=MurYssDhPTxxFMXGnqmWg0LgaavIXgfIgM5ZnRPfzTJ0VI+8SX+wPt63Naw/nTPwHl
+         2Qnhisgpz6HT/KnOa2M2tvOzhAvfcKyrPL/F0/FiupnldEIlardF07yWH4mosGxNtrEv
+         ahbi257tTzgOil+pvjdX534iznf61xWpKvWvXoCPaeKPXoHCz91Et2LxdQpCo+h0Zdop
+         YQfbvovXzPXKk5jjN/9Rg1SVcOSr0BPBdPq6nS3h/59TOsVf8Ta2lBAU1LxZhFR3/2W/
+         5/HMCGRaxfu+ScTIBR0076TI7PwuMl47YTjpok8OuGZDUaR+kcivDrYX2qweywivyz7u
+         dfxw==
+X-Gm-Message-State: AOAM531etBIzn0+tlG7ulfxqagCboxaA/6Oh/vpV/9rEPLKtwW5ds74g
+        +ZxwdYnLuc5ZqK4ol//OQftmBC1Fmvc94fg=
+X-Google-Smtp-Source: ABdhPJxi93+NVDZZ/OsrOpngzLuOz6F85u/dw8RuSapadVdZ0MhksmvrB1L0B0ileeWIo0xXnQsmOhV6vlD0sb0=
+X-Received: by 2002:ad4:438c:: with SMTP id s12mr973574qvr.200.1591751980646;
+ Tue, 09 Jun 2020 18:19:40 -0700 (PDT)
+Date:   Tue,  9 Jun 2020 18:19:33 -0700
+In-Reply-To: <20200610011934.49795-1-saravanak@google.com>
+Message-Id: <20200610011934.49795-2-saravanak@google.com>
 Mime-Version: 1.0
+References: <20200610011934.49795-1-saravanak@google.com>
 X-Mailer: git-send-email 2.27.0.278.ge193c7cf3a9-goog
-Subject: [PATCH v2 0/2] fw_devlink: Improve cycle detection in DT
+Subject: [PATCH v2 1/2] driver core: Add device_is_dependent() to linux/device.h
 From:   Saravana Kannan <saravanak@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
@@ -61,27 +65,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch 2/2 explain the series. Just using a cover letter to thread the
-series and add CC's.
+DT implementation of fw_devlink needs this function to detect cycles. So
+make it available.
 
--Saravana
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/base/core.c    | 2 +-
+ include/linux/device.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-v1 -> v2:
-Patch 2/2:
-- Added more comments
-- Fixed missing put_device()
-- Fixed stupid fall through in the error case
-
-Saravana Kannan (2):
-  driver core: Add device_is_dependent() to linux/device.h
-  of: property: Improve cycle detection when one of the devices is never
-    added
-
- drivers/base/core.c    |  2 +-
- drivers/of/property.c  | 62 ++++++++++++++++++++++++++++++++++++++----
- include/linux/device.h |  1 +
- 3 files changed, 58 insertions(+), 7 deletions(-)
-
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 139cdf7e7327..509b13610b56 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -118,7 +118,7 @@ int device_links_read_lock_held(void)
+  * Check if @target depends on @dev or any device dependent on it (its child or
+  * its consumer etc).  Return 1 if that is the case or 0 otherwise.
+  */
+-static int device_is_dependent(struct device *dev, void *target)
++int device_is_dependent(struct device *dev, void *target)
+ {
+ 	struct device_link *link;
+ 	int ret;
+diff --git a/include/linux/device.h b/include/linux/device.h
+index ac8e37cd716a..5c618effc51e 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -829,6 +829,7 @@ extern int device_change_owner(struct device *dev, kuid_t kuid, kgid_t kgid);
+ extern const char *device_get_devnode(struct device *dev,
+ 				      umode_t *mode, kuid_t *uid, kgid_t *gid,
+ 				      const char **tmp);
++extern int device_is_dependent(struct device *dev, void *target);
+ 
+ static inline bool device_supports_offline(struct device *dev)
+ {
 -- 
 2.27.0.278.ge193c7cf3a9-goog
 
