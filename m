@@ -2,105 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF551F5D7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 23:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D18B1F5D81
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 23:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726304AbgFJVHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 17:07:10 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:42211 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726134AbgFJVHJ (ORCPT
+        id S1726379AbgFJVIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 17:08:25 -0400
+Received: from smtprelay0114.hostedemail.com ([216.40.44.114]:50876 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726353AbgFJVIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 17:07:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591823227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tu2jjGryr0LbbIINiT9lskQiUTJPT9zi4N6MojzSreQ=;
-        b=AfuT5smWTgKLg0AgXZGy3ra/HJB76khe9afG9e1W8PFOmljOa3mKEJPijxIBg+mWmGUMMN
-        ae2y1+nPqvmU+1vk41z/Rgu56Ew5ZIfVnbehHZw0sps0oZMUFZV6YAPPet+RSZhH6y7ihn
-        1JPtrYz9pZVIm/EWEQTdCUjI6fz0YeA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-XMsteDERNHOIiUg-6j6Hmw-1; Wed, 10 Jun 2020 17:07:06 -0400
-X-MC-Unique: XMsteDERNHOIiUg-6j6Hmw-1
-Received: by mail-wr1-f72.google.com with SMTP id z10so1616115wrs.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 14:07:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tu2jjGryr0LbbIINiT9lskQiUTJPT9zi4N6MojzSreQ=;
-        b=YE/j0HdSSxulrIDinghDesh1N7q3WiWssTas4B1bqxcCuOLJqLeywmpCViOsRNggqK
-         iSib2g44t86pXfOCE2f0ADvnieHJQ+NQPJkGCOtD58S1ush8GmZ3K0msagIpEKUYujpj
-         YFfEk6V/NccK6hbZ5okEsfTrGxFggontKYJtoIqH3hUEd6hI8VgqC0twgO4R+oMoql9d
-         WxNY4SvVIHzeF9hqOdOjqcTXaebbpbr9s01IzvdX6EjNOB03t9FDdV1pThFF+9IIFaEv
-         ijP9srXWcPoLCQYFYSnSeX5LC/3AjVEs4tncvogepqtwsTBBM5wsQHJEboebCtJpznl5
-         yg3A==
-X-Gm-Message-State: AOAM531PONUevBo0VZmDubDvrsVL1XygNNkLUOk+YNYbjwlWrE0TdRG7
-        hizaEfRCJ9J/HGZ8Kayv4PPta/Ww6WOs+GqhyjoEppTBZ0kA9RQPdJYTnxPSPrG0jaTE4t083ab
-        R+3lFssOgisPHG1f5waN/X7Lv
-X-Received: by 2002:a1c:7903:: with SMTP id l3mr4812447wme.50.1591823222127;
-        Wed, 10 Jun 2020 14:07:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwB9u5OHRHTxISVcb8apV6jQZ2qzFcqJQzCsm1Vb79yhDGrB86d0X9sNVypofwaxUeYAbWMHw==
-X-Received: by 2002:a1c:7903:: with SMTP id l3mr4812425wme.50.1591823221882;
-        Wed, 10 Jun 2020 14:07:01 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:29ed:810e:962c:aa0d? ([2001:b07:6468:f312:29ed:810e:962c:aa0d])
-        by smtp.gmail.com with ESMTPSA id f11sm1369605wrm.13.2020.06.10.14.07.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jun 2020 14:07:01 -0700 (PDT)
-Subject: Re: [PATCH v2 08/10] KVM: x86: Switch KVM guest to using interrupts
- for page ready APF delivery
-To:     Vivek Goyal <vgoyal@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Wed, 10 Jun 2020 17:08:25 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id DAFF318029137;
+        Wed, 10 Jun 2020 21:08:23 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:7903:8603:10004:10400:10848:11026:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21627:21740:30054:30069:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: smile40_320491826dce
+X-Filterd-Recvd-Size: 1830
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 10 Jun 2020 21:08:22 +0000 (UTC)
+Message-ID: <fe98c147136c5625641d14bf70b13ffbfaeb025a.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: add --max-file-size option
+From:   Joe Perches <joe@perches.com>
+To:     Scott Branden <scott.branden@broadcom.com>,
+        Andy Whitcroft <apw@canonical.com>
+Cc:     BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
         linux-kernel@vger.kernel.org
-References: <20200525144125.143875-1-vkuznets@redhat.com>
- <20200525144125.143875-9-vkuznets@redhat.com>
- <20200610205145.GC243520@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <da087813-7be4-0e3c-d93c-a29d6933b69d@redhat.com>
-Date:   Wed, 10 Jun 2020 23:06:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+Date:   Wed, 10 Jun 2020 14:08:21 -0700
+In-Reply-To: <20200610205616.9965-1-scott.branden@broadcom.com>
+References: <20200610205616.9965-1-scott.branden@broadcom.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20200610205145.GC243520@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06/20 22:51, Vivek Goyal wrote:
->> KVM now supports using interrupt for 'page ready' APF event delivery and
->> legacy mechanism was deprecated. Switch KVM guests to the new one.
-> Hi Vitaly,
-> 
-> I see we have all this code in guest which tries to take care of
-> cases where PAGE_READY can be delivered before PAGE_NOT_PRESENT. In
-> this new schedume of things, can it still happen. We are using
-> an exception to deliver PAGE_NOT_PRESENT while using interrupt to
-> deliver PAGE_READY.
-> 
-> If re-ordeing is not possible, then it will be good to get rid of
-> that extra complexity in guest.
+On Wed, 2020-06-10 at 13:56 -0700, Scott Branden wrote:
+> Add --max-file-size option (default off) to limit size of files
+> that checkpatch processes.  Such an option is useful when checkpatch
+> is run automatically during checkins to a source control system and
+> someone acccidently or purposely attempt to commit massive size files
+> to the system.  If the checkpatch script runs on such files it could take
+> a long time to run and limit the server's ability to perform other
+> operations.
 
-It is perhaps less likely but still possible, because the interrupt
-might be delivered to another CPU and race against the exception.
+Does everything need to be in checkpatch or can this facility
+be run by a separate script that does the file size validation
+before running checkpatch?
 
-Paolo
+Also:
+
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> +	if ($max_file_size > 0) {
+> +		my $filesize = -s$FILE;
+
+Does this work if the input file is from STDIN?
+I'd guess it does not.
+
+I think this might be better using (stat($FILE))[7]
+or at least a space between -s and $file.
+
 
