@@ -2,101 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E742F1F58E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 18:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1531F58EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 18:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728671AbgFJQTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 12:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728174AbgFJQTE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 12:19:04 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15CFC03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 09:19:03 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id f2so607500ooo.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 09:19:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c4BI6qJGyzZVThLkKkzXe+RUQAfRoNQO65AznCnGs0c=;
-        b=ZmEUvhL+feLEo/KIN1LNGrPEkcPqaPC1iYCkLfEY6E30tND56twEYrOrCx6RvkVQLS
-         PZl9Utc3sXdl3MqKaChdt+uaOd/26i1I+Zcz/6TIF/y3s/Sgw6f1/stppapGsxYsyv0s
-         QWNVFG+RjbkzzjzP2CgsL7vFA+2BwToBgP7zY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c4BI6qJGyzZVThLkKkzXe+RUQAfRoNQO65AznCnGs0c=;
-        b=UeRsmmI18NOKkNsXyjMXBr7J76aPw8sY+fY2eo8m177iNrbO3j75WrQXrELYw++kks
-         0iUTBmI7LqwOGhfig7qiYMGb+Id15IkgqktY2adM6kYoKJK0lvaOxfOnLHms+pFPaQ+i
-         8ah3KgrLXVawBdKB3TkN5jmnh7YKmwfAY2QWflRPEGoIDN6E722YbM7Ykosf23CpxE9B
-         MEURRTy/sVuSVoqfiBYwkc7gSAD6nmOW3CF8OVkNdrfZ2+GXxfv+D24RzbB2qX3e/gSK
-         Kge/SeKPWiQXiD3sAm0J12FjKl17fB1Qk4JeKyTERARO7gL3rlIbazr7kMypq0o7u4DL
-         dTpg==
-X-Gm-Message-State: AOAM532ZF1ZbhFkaaoL6BFRYZwUV8wQdFXDvkP0WNKjTRfZIiKSmbMEr
-        PdARWoAuYIWbh29ISxO4u48mfw==
-X-Google-Smtp-Source: ABdhPJzkmrZoP749LWM5495c1Z2ZESXA5/2b9BwQ2lcVb97VBEK2JDC3CVDsKFJOhnrWqW4dExCOGA==
-X-Received: by 2002:a4a:c501:: with SMTP id i1mr3105074ooq.65.1591805943124;
-        Wed, 10 Jun 2020 09:19:03 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id u62sm41305oib.47.2020.06.10.09.19.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jun 2020 09:19:02 -0700 (PDT)
-Subject: Re: [PATCH] kselftest: runner: fix TAP output for skipped tests
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200610154447.15826-1-pbonzini@redhat.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <ac2c1eaa-acd7-7ac6-0666-6e6c0cbd546b@linuxfoundation.org>
-Date:   Wed, 10 Jun 2020 10:19:01 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728606AbgFJQVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 12:21:35 -0400
+Received: from mga12.intel.com ([192.55.52.136]:33566 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728471AbgFJQVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 12:21:34 -0400
+IronPort-SDR: /hWSNAZ1V/Bb3e+3vSbp6HE23KMk2BwXjAzI6juFhwPi7sZgw3j+rsRzveFPj4odl3uMlH3Cew
+ b8kHhisFLk/w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 09:21:33 -0700
+IronPort-SDR: zXc11fw1SDgbKQqg58p2/lhta0NhpdBi0rRZyZQOnfkheJ45W7DNcIACtkPWcrqK5Z7Gx+Hqje
+ EdHx3hDjIiUg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,496,1583222400"; 
+   d="scan'208";a="418796692"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004.jf.intel.com with ESMTP; 10 Jun 2020 09:21:31 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jj3Tq-00CAuX-0e; Wed, 10 Jun 2020 19:21:34 +0300
+Date:   Wed, 10 Jun 2020 19:21:34 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] serial: core: fix up sysrq regressions
+Message-ID: <20200610162134.GL2428291@smile.fi.intel.com>
+References: <20200610152232.16925-1-johan@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200610154447.15826-1-pbonzini@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200610152232.16925-1-johan@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/10/20 9:44 AM, Paolo Bonzini wrote:
-> According to the TAP specification, a skipped test must be marked as "ok"
-> and annotated with the SKIP directive, for example
+On Wed, Jun 10, 2020 at 05:22:29PM +0200, Johan Hovold wrote:
+> This series fixes a few regressions introduced by the recent sysrq
+> rework that went into 5.6.
 > 
->     ok 23 # skip Insufficient flogiston pressure.
->     (https://testanything.org/tap-specification.html)
+> The fix for the unnecessary per-character overhead probably could have
+> been marked for stable but I left that decision to the maintainers as it
+> is a bit intrusive (although mostly shuffling code around).
+
+I see a problem, thanks for pointing out!
+The fix LGTM! FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
 > 
-> Fix the runner script to match this.
+> Johan
 > 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->   tools/testing/selftests/kselftest/runner.sh | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes in v2
+>  - inline uart_unlock_and_check_sysrq() along with the other helpers
+>    (restoring the interrupt state in a helper was never an issue)
 > 
-> diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
-> index 676b3a8b114d..f4815cbcd60f 100644
-> --- a/tools/testing/selftests/kselftest/runner.sh
-> +++ b/tools/testing/selftests/kselftest/runner.sh
-> @@ -77,7 +77,7 @@ run_one()
->   		echo "ok $test_num $TEST_HDR_MSG") ||
->   		(rc=$?;	\
->   		if [ $rc -eq $skip_rc ]; then	\
-> -			echo "not ok $test_num $TEST_HDR_MSG # SKIP"
-> +			echo "ok $test_num $TEST_HDR_MSG # SKIP"
->   		elif [ $rc -eq $timeout_rc ]; then \
->   			echo "#"
->   			echo "not ok $test_num $TEST_HDR_MSG # TIMEOUT"
+> 
+> Johan Hovold (3):
+>   Revert "serial: core: Refactor uart_unlock_and_check_sysrq()"
+>   serial: core: fix sysrq overhead regression
+>   serial: core: drop redundant sysrq checks
+> 
+>  drivers/tty/serial/serial_core.c |  96 +----------------------------
+>  include/linux/serial_core.h      | 102 +++++++++++++++++++++++++++++--
+>  2 files changed, 100 insertions(+), 98 deletions(-)
+> 
+> -- 
+> 2.26.2
 > 
 
-Thanks. I will pull this in for Linux 5.8-rc2
+-- 
+With Best Regards,
+Andy Shevchenko
 
-thanks,
--- Shuah
+
