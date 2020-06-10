@@ -2,88 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7DF1F5489
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 14:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7DE1F5493
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 14:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729035AbgFJMW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 08:22:27 -0400
-Received: from paleale.coelho.fi ([176.9.41.70]:36616 "EHLO
-        farmhouse.coelho.fi" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728544AbgFJMW0 (ORCPT
+        id S1729062AbgFJMXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 08:23:39 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:60752 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728571AbgFJMXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 08:22:26 -0400
-X-Greylist: delayed 673 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Jun 2020 08:22:26 EDT
-Received: from 91-156-6-193.elisa-laajakaista.fi ([91.156.6.193] helo=[127.0.1.1])
-        by farmhouse.coelho.fi with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <luca@coelho.fi>)
-        id 1jizkL-0015Qd-VJ; Wed, 10 Jun 2020 15:22:23 +0300
-Content-Type: text/plain; charset="utf-8"
+        Wed, 10 Jun 2020 08:23:39 -0400
+Received: from 89-64-83-71.dynamic.chello.pl (89.64.83.71) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 085cf89194671cbf; Wed, 10 Jun 2020 14:23:35 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Erik Kaneda <erik.kaneda@intel.com>, rafael.j.wysocki@intel.com,
+        Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Ira Weiny <ira.weiny@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-nvdimm@lists.01.org, Bob Moore <robert.moore@intel.com>
+Subject: [RFT][PATCH 3/3] ACPI: OSL: Define ACPI_OS_MAP_MEMORY_FAST_PATH()
+Date:   Wed, 10 Jun 2020 14:22:50 +0200
+Message-ID: <6458983.dlBdKaB8z0@kreacher>
+In-Reply-To: <318372766.6LKUBsbRXE@kreacher>
+References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com> <318372766.6LKUBsbRXE@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   Luca Coelho <luca@coelho.fi>
-In-Reply-To: <20200507185538.GA14674@embeddedor>
-References: <20200507185538.GA14674@embeddedor>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.8.3
-Message-Id: <E1jizkL-0015Qd-VJ@farmhouse.coelho.fi>
-Date:   Wed, 10 Jun 2020 15:22:22 +0300
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on farmhouse.coelho.fi
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        TVD_RCVD_IP,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.4
-Subject: Re: [PATCH] iwlwifi: Replace zero-length array with flexible-array
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> sizeof(flexible-array-member) triggers a warning because flexible array
-> members have incomplete type[1]. There are some instances of code in
-> which the sizeof operator is being incorrectly/erroneously applied to
-> zero-length arrays and the result is zero. Such instances may be hiding
-> some bugs. So, this work (flexible-array member conversions) will also
-> help to get completely rid of those sorts of issues.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Define the ACPI_OS_MAP_MEMORY_FAST_PATH() macro to allow
+acpi_ex_system_memory_space_handler() to avoid memory unmapping
+overhead by deferring the unmap operations to the point when the
+AML interpreter is exited after removing the operation region
+that held the memory mappings which are not used any more.
 
-Patch applied to iwlwifi-next.git, thanks.
+That macro, when called on a knwon-existing memory mapping,
+causes the reference counter of that mapping in the OS layer to be
+incremented and returns a pointer representing the virtual address
+of the start of the mapped memory area without really mapping it,
+so the first subsequent unmap operation on it will only decrement
+the reference counter.
 
-45c21a0e5ba4 iwlwifi: Replace zero-length array with flexible-array
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/osl.c                | 67 +++++++++++++++++++++++--------
+ include/acpi/platform/aclinuxex.h |  4 ++
+ 2 files changed, 55 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+index 762c5d50b8fe..b75f3a17776f 100644
+--- a/drivers/acpi/osl.c
++++ b/drivers/acpi/osl.c
+@@ -302,21 +302,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+ 		iounmap(vaddr);
+ }
+ 
+-/**
+- * acpi_os_map_iomem - Get a virtual address for a given physical address range.
+- * @phys: Start of the physical address range to map.
+- * @size: Size of the physical address range to map.
+- *
+- * Look up the given physical address range in the list of existing ACPI memory
+- * mappings.  If found, get a reference to it and return a pointer to it (its
+- * virtual address).  If not found, map it, add it to that list and return a
+- * pointer to it.
+- *
+- * During early init (when acpi_permanent_mmap has not been set yet) this
+- * routine simply calls __acpi_map_table() to get the job done.
+- */
+-void __iomem __ref
+-*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
++static void __iomem __ref *__acpi_os_map_iomem(acpi_physical_address phys,
++					       acpi_size size, bool fast_path)
+ {
+ 	struct acpi_ioremap *map;
+ 	void __iomem *virt;
+@@ -328,8 +315,12 @@ void __iomem __ref
+ 		return NULL;
+ 	}
+ 
+-	if (!acpi_permanent_mmap)
++	if (!acpi_permanent_mmap) {
++		if (WARN_ON(fast_path))
++			return NULL;
++
+ 		return __acpi_map_table((unsigned long)phys, size);
++	}
+ 
+ 	mutex_lock(&acpi_ioremap_lock);
+ 	/* Check if there's a suitable mapping already. */
+@@ -339,6 +330,11 @@ void __iomem __ref
+ 		goto out;
+ 	}
+ 
++	if (fast_path) {
++		mutex_unlock(&acpi_ioremap_lock);
++		return NULL;
++	}
++
+ 	map = kzalloc(sizeof(*map), GFP_KERNEL);
+ 	if (!map) {
+ 		mutex_unlock(&acpi_ioremap_lock);
+@@ -366,6 +362,25 @@ void __iomem __ref
+ 	mutex_unlock(&acpi_ioremap_lock);
+ 	return map->virt + (phys - map->phys);
+ }
++
++/**
++ * acpi_os_map_iomem - Get a virtual address for a given physical address range.
++ * @phys: Start of the physical address range to map.
++ * @size: Size of the physical address range to map.
++ *
++ * Look up the given physical address range in the list of existing ACPI memory
++ * mappings.  If found, get a reference to it and return a pointer representing
++ * its virtual address.  If not found, map it, add it to that list and return a
++ * pointer representing its virtual address.
++ *
++ * During early init (when acpi_permanent_mmap has not been set yet) call
++ * __acpi_map_table() to obtain the mapping.
++ */
++void __iomem __ref *acpi_os_map_iomem(acpi_physical_address phys,
++				      acpi_size size)
++{
++	return __acpi_os_map_iomem(phys, size, false);
++}
+ EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
+ 
+ void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
+@@ -374,6 +389,24 @@ void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
+ }
+ EXPORT_SYMBOL_GPL(acpi_os_map_memory);
+ 
++/**
++ * acpi_os_map_memory_fast_path - Fast-path physical-to-virtual address mapping.
++ * @phys: Start of the physical address range to map.
++ * @size: Size of the physical address range to map.
++ *
++ * Look up the given physical address range in the list of existing ACPI memory
++ * mappings.  If found, get a reference to it and return a pointer representing
++ * its virtual address.  If not found, return NULL.
++ *
++ * During early init (when acpi_permanent_mmap has not been set yet) log a
++ * warning and return NULL.
++ */
++void __ref *acpi_os_map_memory_fast_path(acpi_physical_address phys,
++					acpi_size size)
++{
++	return __acpi_os_map_iomem(phys, size, true);
++}
++
+ /* Must be called with mutex_lock(&acpi_ioremap_lock) */
+ static unsigned long acpi_os_drop_map_ref(struct acpi_ioremap *map)
+ {
+@@ -1571,6 +1604,8 @@ acpi_status acpi_release_memory(acpi_handle handle, struct resource *res,
+ 
+ 	return acpi_walk_namespace(ACPI_TYPE_REGION, handle, level,
+ 				   acpi_deactivate_mem_region, NULL, res, NULL);
++
++	acpi_release_unused_memory_mappings();
+ }
+ EXPORT_SYMBOL_GPL(acpi_release_memory);
+ 
+diff --git a/include/acpi/platform/aclinuxex.h b/include/acpi/platform/aclinuxex.h
+index 04f88f2de781..1d8be4ac9ef9 100644
+--- a/include/acpi/platform/aclinuxex.h
++++ b/include/acpi/platform/aclinuxex.h
+@@ -139,6 +139,10 @@ static inline void acpi_os_terminate_debugger(void)
+  * OSL interfaces added by Linux
+  */
+ 
++void *acpi_os_map_memory_fast_path(acpi_physical_address where, acpi_size length);
++
++#define ACPI_OS_MAP_MEMORY_FAST_PATH(a, s)	acpi_os_map_memory_fast_path(a, s)
++
+ #endif				/* __KERNEL__ */
+ 
+ #endif				/* __ACLINUXEX_H__ */
+-- 
+2.26.2
+
+
+
 
