@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1921F5499
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 14:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091A91F5468
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 14:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729085AbgFJMXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 08:23:45 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:64746 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729068AbgFJMXm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 08:23:42 -0400
-Received: from 89-64-83-71.dynamic.chello.pl (89.64.83.71) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id 3bbe034ef495dd51; Wed, 10 Jun 2020 14:23:40 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Cc:     rafael.j.wysocki@intel.com, Len Brown <lenb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, Bob Moore <robert.moore@intel.com>
-Subject: [RFT][PATCH 0/3] ACPI: ACPICA / OSL: Avoid unmapping ACPI memory inside of the AML interpreter
-Date:   Wed, 10 Jun 2020 14:17:04 +0200
-Message-ID: <318372766.6LKUBsbRXE@kreacher>
-In-Reply-To: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        id S1728982AbgFJMTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 08:19:35 -0400
+Received: from mga07.intel.com ([134.134.136.100]:42305 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728540AbgFJMTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 08:19:35 -0400
+IronPort-SDR: 3syKbqmVcKn19g8fhwDnbCBDjWXMLOZF8nQcVFYR9buNqI2TgWtAdmjBBDJ3T6l+dsMpQUFZl4
+ YbWU8ScOLvoQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 05:19:34 -0700
+IronPort-SDR: iQnS+2TeSpXWWy9Frd9LkLSM0b66DreyvmOvysbvmcLDc1I9YpoQAV3Sx6hGwjO1bkt3tENwlH
+ 3LP1GlgHJvUA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,495,1583222400"; 
+   d="scan'208";a="473405887"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by fmsmga005.fm.intel.com with ESMTP; 10 Jun 2020 05:19:31 -0700
+From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+To:     dmaengine@vger.kernel.org, vkoul@kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
+        chuanhua.lei@linux.intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, malliamireddy009@gmail.com,
+        Amireddy Mallikarjuna reddy 
+        <mallikarjunax.reddy@linux.intel.com>
+Subject: [PATCH 0/2] Add Intel LGM soc DMA support
+Date:   Wed, 10 Jun 2020 20:17:54 +0800
+Message-Id: <cover.1591790337.git.mallikarjunax.reddy@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Add DMA controller driver for Lightning Mountain(LGM) family of SoCs.
 
-This series is to address the problem with RCU synchronization occurring,
-possibly relatively often, inside of acpi_ex_system_memory_space_handler(),
-when the namespace and interpreter mutexes are held.
+The main function of the DMA controller is the transfer of data from/to any
+DPlus compliant peripheral to/from the memory. A memory to memory copy
+capability can also be configured.
+This ldma driver is used for configure the device and channnels for data
+and control paths.
 
-The basic idea is to avoid the actual unmapping of memory in
-acpi_ex_system_memory_space_handler() by making it take the advantage of the
-reference counting of memory mappings utilized by the OSL layer in Linux.
+These controllers provide DMA capabilities for a variety of on-chip
+devices such as SSC, HSNAND and GSWIP.
 
-The basic assumption in patch [1/3] is that if the special
-ACPI_OS_MAP_MEMORY_FAST_PATH() macro is present, it can be used to increment
-the reference counter of a known-existing memory mapping in the OS layer
-which then is dropped by the subsequent acpi_os_unmap_memory() without
-unmapping the address range at hand.  That can be utilized by
-acpi_ex_system_memory_space_handler() to prevent the reference counters of
-all mappings used by it from dropping down to 0 (which also prevents the
-address ranges associated with them from being unmapped) so that they can
-be unmapped later (specifically, at the operation region deactivation time).
+-------------
+Future Plans:
+-------------
+LGM SOC also supports Hardware Memory Copy engine.
+The role of the HW Memory copy engine is to offload memory copy operations
+from the CPU.
 
-Patch [2/3] defers the unmapping even further, until the namespace and
-interpreter mutexes are released, to avoid invoking the RCU synchronization
-under theses mutexes.
+Amireddy Mallikarjuna reddy (2):
+  dt-bindings: dma: Add bindings for intel LGM SOC
+  Add Intel LGM soc DMA support.
 
-Finally, patch [3/3] changes the OS layer in Linux to provide the
-ACPI_OS_MAP_MEMORY_FAST_PATH() macro.
+ .../devicetree/bindings/dma/intel,ldma.yaml        |  428 +++++
+ drivers/dma/Kconfig                                |    2 +
+ drivers/dma/Makefile                               |    1 +
+ drivers/dma/lgm/Kconfig                            |    9 +
+ drivers/dma/lgm/Makefile                           |    2 +
+ drivers/dma/lgm/lgm-dma.c                          | 1951 ++++++++++++++++++++
+ 6 files changed, 2393 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
+ create mode 100644 drivers/dma/lgm/Kconfig
+ create mode 100644 drivers/dma/lgm/Makefile
+ create mode 100644 drivers/dma/lgm/lgm-dma.c
 
-Note that if this macro is not defined, the code works the way it used to.
-
-The series is available from the git branch at
-
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpica-osl
-
-for easier testing.
-
-Cheers,
-Rafael
-
-
+-- 
+2.11.0
 
