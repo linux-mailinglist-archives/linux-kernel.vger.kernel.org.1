@@ -2,71 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E368F1F5266
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 12:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4F61F526D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 12:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728311AbgFJKea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 06:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
+        id S1728320AbgFJKgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 06:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728083AbgFJKe3 (ORCPT
+        with ESMTP id S1726754AbgFJKgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 06:34:29 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33164C03E96F
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 03:34:28 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c190058967d889e42c717.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1900:5896:7d88:9e42:c717])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3AA5F1EC0347;
-        Wed, 10 Jun 2020 12:34:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1591785266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=oUqsKM3VGX+allcG7hbfIpXBxBk39Nd9J5AqFmM6K8s=;
-        b=QxTP5VFvFhwFGfG/QYHXDM7gSslE/W6R1WJhaFnz1bVKe+oeRo84Me3nh+MdyOw/VWloeE
-        OznB+C/Y//kxVKnJN/UZ6ud/8aurD2f/dnXT6tBvc48bTJKtlcJT7ZqGC5GcpkDjMC487W
-        NmNpiwaF00QJbhLY2aDpaK9rKcTZbDE=
-Date:   Wed, 10 Jun 2020 12:34:18 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        x86-ml <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] x86/microcode: Do not select FW_LOADER
-Message-ID: <20200610103418.GE14118@zn.tnic>
-References: <20200610042911.GA20058@gondor.apana.org.au>
- <20200610081609.GA14118@zn.tnic>
- <20200610102851.GA22584@gondor.apana.org.au>
+        Wed, 10 Jun 2020 06:36:48 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93513C03E96B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 03:36:47 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id u13so1344603wml.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 03:36:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ct74x8QzTMiVHLIqtse4haJrkCu8RNQLYYWYvUjLwLQ=;
+        b=Hm1CJi+kEcbRVQFtpTOZN8udhh8/3hHFsmWU8cKKb7GgkBWdzplDWxbxca7QPhiQOP
+         yobx7OEX2ZL5XTjutp86nlWL5aIdX0DnOO9baFragUdKi/Pz2r9ThbZjpPT4Qpx4mNHR
+         kq7wGhBzR7XaruQKWlIYVoirXRCylhmMSMntHMX2gZqavRGqOXoIgMVd1oVXlBGYbFin
+         LvvUEDQy+f7Vidlgd8+19JawnPA6bz0cAKJoSvGmnRstw5iPZvs9eXnnkCMSvVtWxPk2
+         p1OJZfmhfCBnzlfMp31/+4epi1DOa/f0jxOAREiEw+mGS4ciRpsah7V5xwPBDpXnu7KB
+         nxmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ct74x8QzTMiVHLIqtse4haJrkCu8RNQLYYWYvUjLwLQ=;
+        b=VFJeoBgKSiJkXdUrf7k4slLeP5bv+Zo5RRejZCTHyWwPoi8qBKHRdh1aV38gPznh+k
+         aqO6HDbZYdrW73pwYfKBGpxf7LXjq618fOrgiR/bHgOCB3cJYisINzgYv96kkFn0+Thx
+         Xahxm0EG5DXvNq8Hpqx2vzih96va1j0bCdq3fXLJpZir36JNciRIe/nhDSaZq8V8HpZa
+         +Dt2noNiLG4U2DrmcP6b9aoyxHeLEzRXGGQ3aSxnRFKtNJgjKsnjNEYbMwrlv+AT6KEc
+         272qY94hDuOf8oPNdOHCNUCysNyFAKhw1vmMnho2E5taZUrGq8/iMCFKjMHFtCciRWW5
+         KwOA==
+X-Gm-Message-State: AOAM531vLZdkITC8Hk4yGFtsNtIcb/3PTRdZ0frPynMDHLbvlMgxisis
+        snuGCDQ9dp91uCz5wYYhzbsVucIcFP4=
+X-Google-Smtp-Source: ABdhPJz7r8bS7kNganx4qUD7P1fKicq2Q1nsivL8aGH8+2HEDFcVBi5XCoyamjLXo6DhqnROBkY57Q==
+X-Received: by 2002:a1c:2506:: with SMTP id l6mr2605714wml.34.1591785405839;
+        Wed, 10 Jun 2020 03:36:45 -0700 (PDT)
+Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.googlemail.com with ESMTPSA id h27sm8781671wrb.18.2020.06.10.03.36.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Jun 2020 03:36:45 -0700 (PDT)
+Subject: Re: [PATCH 4/5] soundwire: qcom: avoid dependency on CONFIG_SLIMBUS
+To:     Jonathan Marek <jonathan@marek.ca>, alsa-devel@alsa-project.org
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>
+References: <20200608204347.19685-1-jonathan@marek.ca>
+ <20200608204347.19685-5-jonathan@marek.ca>
+ <f3eabdb9-da43-9502-352a-1696babc114d@linaro.org>
+ <dc8f59c6-2fa9-f3a3-6d77-2d03a6d2776b@marek.ca>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <29a216a7-a76f-a4de-b62d-3043e7e25c18@linaro.org>
+Date:   Wed, 10 Jun 2020 11:36:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200610102851.GA22584@gondor.apana.org.au>
+In-Reply-To: <dc8f59c6-2fa9-f3a3-6d77-2d03a6d2776b@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 08:28:51PM +1000, Herbert Xu wrote:
-> Because MICROCODE is the only thing on my system that pulls it
-> into the kernel.
 
-That's a very interesting system you have.
 
-> That shouldn't be a problem.  That function can simply move under
-> another (hidden) Kconfig option that gets selected by both MICROCODE
-> and FW_LOADER.
+On 09/06/2020 12:33, Jonathan Marek wrote:
+> On 6/9/20 5:52 AM, Srinivas Kandagatla wrote:
+>>
+>>
+>> On 08/06/2020 21:43, Jonathan Marek wrote:
+>>> The driver may be used without slimbus, so don't depend on slimbus.
+>>>
+>>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>>> ---
+>>>   drivers/soundwire/Kconfig | 1 -
+>>>   drivers/soundwire/qcom.c  | 5 +++++
+>>>   2 files changed, 5 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+>>> index fa2b4ab92ed9..d121cf739090 100644
+>>> --- a/drivers/soundwire/Kconfig
+>>> +++ b/drivers/soundwire/Kconfig
+>>> @@ -33,7 +33,6 @@ config SOUNDWIRE_INTEL
+>>>   config SOUNDWIRE_QCOM
+>>>       tristate "Qualcomm SoundWire Master driver"
+>>> -    depends on SLIMBUS
+>>>       depends on SND_SOC
+>>
+>> Why not move this to imply SLIMBUS this will give more flexibility!
+>>
+>>
+> 
+> If you mean to change it to "select SLIMBUS", I'd prefer not to, because 
+> this would increase code size unnecessarily in my kernel.
 
-Out Kconfig symbols space is a mess and I'd prefer not to add another
-one if there's no good reason for it.
+imply is week select, which means that this driver can be built without 
+SLIMBus selected. So removing reference to slimbus_bus is necessary in 
+this case.
 
--- 
-Regards/Gruss,
-    Boris.
+On the other hand, SLIMBus is going to be used sm8250 for BT audio, so 
+this would not be unnecessary. Also mostly these are build as modules, 
+so not sure why kernel size will increase here!
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Am not 100% sure if SLIMBus will be kept on all SoCs, but keeping 
+depends or imply in place would enforce or spell out some level of 
+dependency on this.
+
+> 
+>>>       help
+>>>         SoundWire Qualcomm Master driver.
+>>> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+>>> index 14334442615f..ac81c64768ea 100644
+>>> --- a/drivers/soundwire/qcom.c
+>>> +++ b/drivers/soundwire/qcom.c
+>>> @@ -769,13 +769,18 @@ static int qcom_swrm_probe(struct 
+>>> platform_device *pdev)
+>>>       if (!ctrl)
+>>>           return -ENOMEM;
+>>> +#ifdef CONFIG_SLIMBUS
+>>>       if (dev->parent->bus == &slimbus_bus) {
+>>> +#else
+>>> +    if (false) {
+>>> +#endif
+>>
+>> May be you can do bit more cleanup here, which could endup like:
+>>
+>>
+>> ctrl->regmap = dev_get_regmap(dev->parent, NULL);
+>> if (!ctrl->regmap) {
+>>      res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>      if (res) {
+>>          ctrl->mmio = devm_ioremap_resource(dev, res);
+>>          if (IS_ERR(ctrl->mmio)) {
+>>              dev_err(dev, "No valid mem resource found\n");
+>>              return PTR_ERR(ctrl->mmio);
+>>          }
+>>
+>>          ctrl->reg_read = qcom_swrm_cpu_reg_read;
+>>          ctrl->reg_write = qcom_swrm_cpu_reg_write;
+>>      } else {
+>>          dev_err(dev, "No valid slim resource found\n");
+>>          return -EINVAL;
+>>      }
+>> } else {
+>>      ctrl->reg_read = qcom_swrm_ahb_reg_read;
+>>      ctrl->reg_write = qcom_swrm_ahb_reg_write;
+>> }
+>>
+>>
+>>
+>> thanks,
+>> srini
+> 
+> I don't think this is better, it feels more obfuscated, and I think its 
+> possible we may end up with the mmio sdw having a parent with a regmap. 
+> (it is not how I did things up in my upstream stack, but in downstream 
+> the sdw nodes are inside the "macro" codec nodes)
+> 
+> I understand the '#ifdef CONFIG_SLIMBUS'/'dev->parent->bus == 
+> &slimbus_bus' is ugly, but at least its clear what's going on. Unless 
+> you have a better suggestion?
+
+Other suggestion I had in my mind was to use compatible strings to get 
+reg_read, reg_write callbacks + some flags like (if_type) populated. 
+This can help looking up resources correctly.
+
+Thanks,
+srini
+
+> 
+>>>           ctrl->reg_read = qcom_swrm_ahb_reg_read;
+>>>           ctrl->reg_write = qcom_swrm_ahb_reg_write;
+>>>           ctrl->regmap = dev_get_regmap(dev->parent, NULL);
+>>>           if (!ctrl->regmap)
+>>>               return -EINVAL;
+>>>       } else {
+>>> +
+>>>           res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>>           ctrl->reg_read = qcom_swrm_cpu_reg_read;
+>>>
