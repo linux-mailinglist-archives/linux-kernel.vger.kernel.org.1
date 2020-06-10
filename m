@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337B31F5411
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 14:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52341F541C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 14:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728805AbgFJMBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 08:01:46 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:50350 "EHLO mx1.tq-group.com"
+        id S1728926AbgFJMCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 08:02:00 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:50363 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728599AbgFJMBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 08:01:42 -0400
-IronPort-SDR: J/gN24/4kJBxEitJluGVskRJnfAnmDih90Y0DwLPqEjxutALrF5SM/q1gaqBGWci1K3Fjkp37t
- OgRl1GZ6RzjkmBdqY1jpJNWKNdSVWOC5O6R4sDtNhzH29DYjqtYzRJHLhV9czrvrpjLjCLRza6
- 7q3F3bd4hD3fd7ZLZUBEtriWB6Vw1+DJCu4gC9EfESuRpsKEV9Jkk6palhEj6cUc1x1XevO8DZ
- GSgaAyMriU9buQ+1MtmE7K+SBonGs7bpT8HHxgFY7fmyOnezlv+gFCFsnRW1XgtCTu9batpOh6
- HZo=
+        id S1728480AbgFJMBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 08:01:44 -0400
+IronPort-SDR: mUmeoboEu3vDQMJ8IwQQcgidPHNARVYQUZAgV0JlBUJSNHbstWTtvef2vX8zH3b9fju8aTr2Lv
+ 4CK2yTS0HrNMXyOx7VNBZtHGKfqU/Yk2lDNe+Fwz7rF9dKMBpMoXSxEwvLdPl+TZsYt29qURX7
+ udHLmuS8umsIduWvPmDV2r8GHo6OAoSPxXkDpjtZGl5aCTYAFkNe2SNm3J9X3HHbbbWL9tpq3t
+ hyWJJuZmnGH3FgHiy6T6l8ZWxlMpotIeTW0gVcWGgJ+5yaF934gPisdZQcSuB9ElYDLFb/jFuP
+ REA=
 X-IronPort-AV: E=Sophos;i="5.73,495,1583190000"; 
-   d="scan'208";a="12636788"
+   d="scan'208";a="12636792"
 Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
   by mx1-pgp.tq-group.com with ESMTP; 10 Jun 2020 14:01:39 +0200
 Received: from mx1.tq-group.com ([192.168.6.7])
@@ -30,25 +30,25 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1591790499; x=1623326499;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=aj/H469Jt70amsuUxn3Zl8xKL2aJcivGiaakRkzzSjg=;
-  b=deoySOevSLvQWgCq5cDHpnvMSK9UBgwrWn3kOLsdQDCTIK92tZuhlC5w
-   kClwRl/JoToHfbpTKOeKYv+lojUiRPFWL2Mta+M52XzzEadMg8eZyjvl0
-   V6NI+Kz2qFjOHLpC1hAAC7NdVsByV2K3GYtHJvzsLVKtO7fNfZfjxgdfA
-   I0aTY1HIZM8aRKNs/pBmxKGJrTejbICsq3N7lSNV3/5YWbvJ1k7xxmfKG
-   1hIoHyK/voAY9C4uur+kwWwL32E8GOhvCzNjVdoVTRV1iRxDmwV14I/e1
-   im5ymosLNL2ni0h0+P6gZdcwWUs7kYCCp+mywB7gwTFZnYmfoZCju61Ki
-   A==;
-IronPort-SDR: JZeBKhHvGM6ayU5TktaAXaP9iBQsvnkagSSTfwd4mbsTJz09lJxwjfW6Zv1F86bJDqfZ98crCh
- fGlgL0lELqCf/7wzXHxDW9p5OQrqTi2sJQUXw3Dm3AZEt+eUb1kuqEiHFdLe18MZYTpiTN2JJi
- klbSj2Krmo+xBqdbuN8nBTfcLGig7uDj6W3ko7CcdYLajOaP9V9fjB4BTVgIL5zv4+l+ZbQCoi
- iZ7sFKYUGiVePUhl9HqmyLXFaGcLA0rZlpKNvv64h/Ln4oGZQ9jXer0/4Upx6jzzHXRMD7iRzS
- 9QY=
+  bh=PDXAYXZawwVFkPqDUx8c9ur4W53kvMuf6DO86ph2FQQ=;
+  b=b91mw2NqybIx8rJT/kmnS3ILhd8IFtRN4JLBTQt+tM4zU8AAp/KamAkm
+   sVmQe0JyaA19/mDbIipFOEsz88oCayI3BpRieuool1fzQvnI8HFnEtkjv
+   rNTPV6iGQYbPQO7V0tlcIIqHz8xYwl/t/1grBoIsH4JmS+EkI3y1o/ldq
+   GyHGeRo+ff7EVE7DApH60n5+/e6fNkJ755cfoDNXRKVzWQIzWlqqLus2m
+   ItnMG3L3nwAloXr/cZSk6SUmXtKU4hmYxrtNVgpGafMkfSGZHJHQOCc1w
+   +Eu8kWBhPR/eABv77xAV+tzBmdJ+LDdqEYrd7SrxeGPfLFd5VYKsjzbsU
+   Q==;
+IronPort-SDR: V9itYVaEPJgwGTGrseKjJ4gDL/y7xrzI0RTw5Ha8K2OfibaiBDH5fW1BraekSWQC+r3qQznDA7
+ cFoPIwDHD38e5YggBHkUthAOvoH5RZO/izMGK9kxnwx7/JGJU8SOmbQGNsAK8ZjOHx9KQaVdfR
+ U0UgZYuhpJ+LJj6k0m7XqFzrsYAk268BqZijMPTo9zJ30f0f3P23cBybUzbMfRuAdH5zyczM61
+ dAQnfMVeB6B8aSJlfjYK21p4hjbBxqKBtQcVuzjvERXrMkfzxiAqkph+d30uqG49F0j7vtLvgW
+ aes=
 X-IronPort-AV: E=Sophos;i="5.73,495,1583190000"; 
-   d="scan'208";a="12636786"
+   d="scan'208";a="12636789"
 Received: from vtuxmail01.tq-net.de ([10.115.0.20])
   by mx1.tq-group.com with ESMTP; 10 Jun 2020 14:01:39 +0200
 Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 65E12280075;
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 996B5280065;
         Wed, 10 Jun 2020 14:01:39 +0200 (CEST)
 From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
@@ -59,9 +59,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
 Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH 1/4] dt-bindings: display: simple: add CDTech S070PWS19HP-FC21 and S070SWV29HG-DC44
-Date:   Wed, 10 Jun 2020 14:01:28 +0200
-Message-Id: <20200610120131.3069-2-matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH 2/4] dt-bindings: display: simple: add Tianma TM070JVHG33
+Date:   Wed, 10 Jun 2020 14:01:29 +0200
+Message-Id: <20200610120131.3069-3-matthias.schiffer@ew.tq-group.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200610120131.3069-1-matthias.schiffer@ew.tq-group.com>
 References: <20200610120131.3069-1-matthias.schiffer@ew.tq-group.com>
@@ -70,29 +70,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the CDTech Electronics displays S070PWS19HP-FC21 (7.0" WSVGA) and
-S070SWV29HG-DC44 (7.0" WVGA) to the panel-simple compatible list.
+Add the Tianma Micro-electronics TM070JVHG33 7.0" WXGA display to the
+panel-simple compatible list.
 
 Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
- .../devicetree/bindings/display/panel/panel-simple.yaml       | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-index d6cca1479633..7749fbd14c6f 100644
+index 7749fbd14c6f..3d5edef2ebad 100644
 --- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
 +++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-@@ -81,6 +81,10 @@ properties:
-       - boe,nv140fhmn49
-         # CDTech(H.K.) Electronics Limited 4.3" 480x272 color TFT-LCD panel
-       - cdtech,s043wq26h-ct7
-+        # CDTech(H.K.) Electronics Limited 7" WSVGA (1024x600) TFT LCD Panel
-+      - cdtech,s070pws19hp-fc21
-+        # CDTech(H.K.) Electronics Limited 7" WVGA (800x480) TFT LCD Panel
-+      - cdtech,s070swv29hg-dc44
-         # CDTech(H.K.) Electronics Limited 7" 800x480 color TFT-LCD panel
-       - cdtech,s070wv95-ct16
-         # Chunghwa Picture Tubes Ltd. 7" WXGA TFT LCD panel
+@@ -249,6 +249,8 @@ properties:
+       - starry,kr122ea0sra
+         # Tianma Micro-electronics TM070JDHG30 7.0" WXGA TFT LCD panel
+       - tianma,tm070jdhg30
++        # Tianma Micro-electronics TM070JVHG33 7.0" WXGA TFT LCD panel
++      - tianma,tm070jvhg33
+         # Tianma Micro-electronics TM070RVHG71 7.0" WXGA TFT LCD panel
+       - tianma,tm070rvhg71
+         # Toshiba 8.9" WXGA (1280x768) TFT LCD panel
 -- 
 2.17.1
 
