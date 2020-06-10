@@ -2,88 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009431F54AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 14:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FDA1F54BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 14:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728956AbgFJMZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 08:25:35 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:57614 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728968AbgFJMZU (ORCPT
+        id S1729159AbgFJM03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 08:26:29 -0400
+Received: from paleale.coelho.fi ([176.9.41.70]:36642 "EHLO
+        farmhouse.coelho.fi" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729140AbgFJM02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 08:25:20 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05ACH95m025174;
-        Wed, 10 Jun 2020 14:25:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=UV2eXHMfLb4/QtK9KJPbsnZv2k9uIAuEYmQYk8262qk=;
- b=b81aXxe/1h22QtO6JB1gHsEGr2qloPdkuLsbMkM0jLziCpcWhDN4V5d34b28QJXvrsCp
- qbOfy/hNPkG6FUARoIj1KdgWuWiomSd9msJoeaRUe2/qZmwkTQsJdKplB8hWJC1jxXjO
- aWoDW+IfvU9alwAB48aTBeFPSpe/zG1LUV+vGBNmObqd9tpS4pIDu1xs8dMxlAM//Pbd
- umBaG+xeMCQ4FpMWuAyHDXf9pC6XiIslvICdXTvbDSvEtX3YQakV+YQfLzgryA5poeI7
- 1LxszQLaBOg4k/0+g+sNwZqn2fsOea0UqFVXWqqwgLGvcXj02Hi3LNxQJg5SF+JvC6o0 IA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31jppntqfj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Jun 2020 14:25:06 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 205C210002A;
-        Wed, 10 Jun 2020 14:25:06 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 136852106EA;
-        Wed, 10 Jun 2020 14:25:06 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG3NODE3.st.com (10.75.127.9)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 10 Jun 2020 14:25:05
- +0200
-From:   Benjamin Gaignard <benjamin.gaignard@st.com>
-To:     <hugues.fruchet@st.com>, <mchehab@kernel.org>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
-CC:     <linux-media@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <vincent.guittot@linaro.org>,
-        <valentin.schneider@arm.com>, <rjw@rjwysocki.net>,
-        Benjamin Gaignard <benjamin.gaignard@st.com>
-Subject: [PATCH v6 3/3] ARM: dts: stm32: Set DCMI frequency requirement for stm32mp15x
-Date:   Wed, 10 Jun 2020 14:25:00 +0200
-Message-ID: <20200610122500.4304-4-benjamin.gaignard@st.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <20200610122500.4304-1-benjamin.gaignard@st.com>
-References: <20200610122500.4304-1-benjamin.gaignard@st.com>
+        Wed, 10 Jun 2020 08:26:28 -0400
+Received: from 91-156-6-193.elisa-laajakaista.fi ([91.156.6.193] helo=[127.0.1.1])
+        by farmhouse.coelho.fi with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <luca@coelho.fi>)
+        id 1jizng-0015Qs-DI; Wed, 10 Jun 2020 15:25:48 +0300
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG6NODE3.st.com (10.75.127.18) To SFHDAG3NODE3.st.com
- (10.75.127.9)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-10_07:2020-06-10,2020-06-10 signatures=0
+Content-Transfer-Encoding: 7bit
+From:   Luca Coelho <luca@coelho.fi>
+In-Reply-To: <20200605154112.16277-7-f.suligoi@asem.it>
+References: <20200605154112.16277-7-f.suligoi@asem.it>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Johan Hovold <johan@kernel.org>,
+        Saurav Girepunje <saurav.girepunje@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        <linux-wireless@vger.kernel.org>, <b43-dev@lists.infradead.org>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        <netdev@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.8.3
+Message-Id: <E1jizng-0015Qs-DI@farmhouse.coelho.fi>
+Date:   Wed, 10 Jun 2020 15:25:48 +0300
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on farmhouse.coelho.fi
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        TVD_RCVD_IP autolearn=ham autolearn_force=no version=3.4.4
+Subject: Re: [PATCH 6/9] net: wireless: intel: fix wiki website url
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure that CPUs will at least run at 650Mhz when streaming
-sensor frames.
+Flavio Suligoi <f.suligoi@asem.it> wrote:
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
----
- arch/arm/boot/dts/stm32mp151.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+> In some Intel files, the wiki url is still the old
+> "wireless.kernel.org" instead of the new
+> "wireless.wiki.kernel.org"
+> 
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 3ea05ba48215..f6d7bf4f8231 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1091,6 +1091,7 @@
- 			clock-names = "mclk";
- 			dmas = <&dmamux1 75 0x400 0x0d>;
- 			dma-names = "tx";
-+			st,stm32-dcmi-min-frequency = <650000>;
- 			status = "disabled";
- 		};
- 
--- 
-2.15.0
+Patch applied to iwlwifi-next.git, thanks.
+
+e00c6d8d491b net: wireless: intel: fix wiki website url
 
