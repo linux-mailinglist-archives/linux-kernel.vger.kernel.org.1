@@ -2,187 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079821F4B1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC381F4B1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgFJCAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 22:00:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725944AbgFJCAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 22:00:44 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 212802072E;
-        Wed, 10 Jun 2020 02:00:43 +0000 (UTC)
-Date:   Tue, 9 Jun 2020 22:00:41 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH] tracing: Make ftrace packed events have align of 1
-Message-ID: <20200609220041.2a3b527f@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726143AbgFJCDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 22:03:14 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:51404 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725798AbgFJCDN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 22:03:13 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05A22rRC028473;
+        Wed, 10 Jun 2020 02:02:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=OyjqTL3RFU3qhRhjl1q+nR+l4wbwyQdM/xh+BDHyC/Q=;
+ b=A890azgFkB3wqpRI89CnZldQ8yTmMpDXaWngJiW8JTxbsqhLe1M8vVoG7Ngl8bxMTt/+
+ 0pD/DFFXcmw1uMnwDqc91EaTouHiO54UexWUGwF3B302GLRFcEG5l0vOUBVc0p9UMDVk
+ hC0V8Zc5nFToM02wRMEqFEOwQtIlwrkGgrHNL/MGAlI4XwDeHfUk5msexZj6equoRBqX
+ BB3aAEfIKXn70IsL01jJFDJZTACI6GZfUpQ+0VIh9ZzqIV77+80Aaiky1uXZaGW7qqdJ
+ VaO7JFUrxja9Uxaa3vnK4OcXKZ+C8mAqaxf0V4zwAORLtTL7v30bpOdRyKVV0i4Scycq Xw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 31jepnsq8u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Jun 2020 02:02:53 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05A1wPNd020921;
+        Wed, 10 Jun 2020 02:02:52 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 31gmwsbn7t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Jun 2020 02:02:52 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05A22pcH004447;
+        Wed, 10 Jun 2020 02:02:51 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 09 Jun 2020 19:02:50 -0700
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     "Matthew R. Ochs" <mrochs@linux.vnet.ibm.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Manoj N. Kumar" <manoj@linux.ibm.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        kernel-janitors@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, Uma Krishnan <ukrishn@linux.ibm.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH] cxlflash: remove an unnecessary NULL check
+Date:   Tue,  9 Jun 2020 22:02:44 -0400
+Message-Id: <159175452258.16072.8552277193377320754.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200605110258.GD978434@mwanda>
+References: <20200605110258.GD978434@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 adultscore=0
+ mlxscore=0 mlxlogscore=941 bulkscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006100013
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1011 phishscore=0 impostorscore=0
+ malwarescore=0 mlxscore=0 cotscore=-2147483648 adultscore=0 spamscore=0
+ mlxlogscore=980 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006100013
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Fri, 5 Jun 2020 14:02:58 +0300, Dan Carpenter wrote:
 
-When using trace-cmd on 5.6-rt for the function graph tracer, the output was
-corrupted. It gave output like this:
+> The "cmd" pointer was already dereferenced a couple lines earlier so
+> this NULL check is too late.  Fortunately, the pointer can never be NULL
+> and the check can be removed.
 
- funcgraph_entry:       func=0xffffffff depth=38982
- funcgraph_entry:       func=0x1ffffffff depth=16044
- funcgraph_exit:        func=0xffffffff overrun=0x92539aaf00000000 calltime=0x92539c9900000072 rettime=0x100000072 depth=11084
- funcgraph_exit:        func=0xffffffff overrun=0x9253946e00000000 calltime=0x92539e2100000072 rettime=0x72 depth=26033702
- funcgraph_entry:       func=0xffffffff depth=85798
- funcgraph_entry:       func=0x1ffffffff depth=12044
+Applied to 5.8/scsi-queue, thanks!
 
-The reason was because the tracefs/events/ftrace/funcgraph_entry/exit format
-file was incorrect. The -rt kernel adds more common fields to the trace
-events. Namely, common_migrate_disable and common_preempt_lazy_count. Each
-is one byte in size. This changes the alignment of the normal payload. Most
-events are aligned normally, but the function and function graph events are
-defined with a "PACKED" macro, that packs their payload. As the offsets
-displayed in the format files are now calculated by an aligned field, the
-aligned field for function and function graph events should be 1, not their
-normal alignment.
+[1/1] scsi: cxlflash: Remove an unnecessary NULL check
+      https://git.kernel.org/mkp/scsi/c/89dd9ce784fb
 
-With aligning of the funcgraph_entry event, the format file has:
-
-        field:unsigned short common_type;       offset:0;       size:2; signed:0;
-        field:unsigned char common_flags;       offset:2;       size:1; signed:0;
-        field:unsigned char common_preempt_count;       offset:3;       size:1; signed:0;
-        field:int common_pid;   offset:4;       size:4; signed:1;
-        field:unsigned char common_migrate_disable;     offset:8;       size:1; signed:0;
-        field:unsigned char common_preempt_lazy_count;  offset:9;       size:1; signed:0;
-
-        field:unsigned long func;       offset:16;      size:8; signed:0;
-        field:int depth;        offset:24;      size:4; signed:1;
-
-But the actual alignment is:
-
-	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-	field:int common_pid;	offset:4;	size:4;	signed:1;
-	field:unsigned char common_migrate_disable;	offset:8;	size:1;	signed:0;
-	field:unsigned char common_preempt_lazy_count;	offset:9;	size:1;	signed:0;
-
-	field:unsigned long func;	offset:12;	size:8;	signed:0;
-	field:int depth;	offset:20;	size:4;	signed:1;
-
-Fixes: 04ae87a52074e ("ftrace: Rework event_create_dir()")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace.h         |  3 +++
- kernel/trace/trace_entries.h | 14 +++++++-------
- kernel/trace/trace_export.c  | 16 ++++++++++++++++
- 3 files changed, 26 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index def769df5bf1..13db4000af3f 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -61,6 +61,9 @@ enum trace_type {
- #undef __field_desc
- #define __field_desc(type, container, item)
- 
-+#undef __field_packed
-+#define __field_packed(type, container, item)
-+
- #undef __array
- #define __array(type, item, size)	type	item[size];
- 
-diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
-index a523da0dae0a..18c4a58aff79 100644
---- a/kernel/trace/trace_entries.h
-+++ b/kernel/trace/trace_entries.h
-@@ -78,8 +78,8 @@ FTRACE_ENTRY_PACKED(funcgraph_entry, ftrace_graph_ent_entry,
- 
- 	F_STRUCT(
- 		__field_struct(	struct ftrace_graph_ent,	graph_ent	)
--		__field_desc(	unsigned long,	graph_ent,	func		)
--		__field_desc(	int,		graph_ent,	depth		)
-+		__field_packed(	unsigned long,	graph_ent,	func		)
-+		__field_packed(	int,		graph_ent,	depth		)
- 	),
- 
- 	F_printk("--> %ps (%d)", (void *)__entry->func, __entry->depth)
-@@ -92,11 +92,11 @@ FTRACE_ENTRY_PACKED(funcgraph_exit, ftrace_graph_ret_entry,
- 
- 	F_STRUCT(
- 		__field_struct(	struct ftrace_graph_ret,	ret	)
--		__field_desc(	unsigned long,	ret,		func	)
--		__field_desc(	unsigned long,	ret,		overrun	)
--		__field_desc(	unsigned long long, ret,	calltime)
--		__field_desc(	unsigned long long, ret,	rettime	)
--		__field_desc(	int,		ret,		depth	)
-+		__field_packed(	unsigned long,	ret,		func	)
-+		__field_packed(	unsigned long,	ret,		overrun	)
-+		__field_packed(	unsigned long long, ret,	calltime)
-+		__field_packed(	unsigned long long, ret,	rettime	)
-+		__field_packed(	int,		ret,		depth	)
- 	),
- 
- 	F_printk("<-- %ps (%d) (start: %llx  end: %llx) over: %d",
-diff --git a/kernel/trace/trace_export.c b/kernel/trace/trace_export.c
-index 77ce5a3b6773..70d3d0a09053 100644
---- a/kernel/trace/trace_export.c
-+++ b/kernel/trace/trace_export.c
-@@ -45,6 +45,9 @@ static int ftrace_event_register(struct trace_event_call *call,
- #undef __field_desc
- #define __field_desc(type, container, item)		type item;
- 
-+#undef __field_packed
-+#define __field_packed(type, container, item)		type item;
-+
- #undef __array
- #define __array(type, item, size)			type item[size];
- 
-@@ -85,6 +88,13 @@ static void __always_unused ____ftrace_check_##name(void)		\
- 	.size = sizeof(_type), .align = __alignof__(_type),		\
- 	is_signed_type(_type), .filter_type = _filter_type },
- 
-+
-+#undef __field_ext_packed
-+#define __field_ext_packed(_type, _item, _filter_type) {	\
-+	.type = #_type, .name = #_item,				\
-+	.size = sizeof(_type), .align = 1,			\
-+	is_signed_type(_type), .filter_type = _filter_type },
-+
- #undef __field
- #define __field(_type, _item) __field_ext(_type, _item, FILTER_OTHER)
- 
-@@ -94,6 +104,9 @@ static void __always_unused ____ftrace_check_##name(void)		\
- #undef __field_desc
- #define __field_desc(_type, _container, _item) __field_ext(_type, _item, FILTER_OTHER)
- 
-+#undef __field_packed
-+#define __field_packed(_type, _container, _item) __field_ext_packed(_type, _item, FILTER_OTHER)
-+
- #undef __array
- #define __array(_type, _item, _len) {					\
- 	.type = #_type"["__stringify(_len)"]", .name = #_item,		\
-@@ -129,6 +142,9 @@ static struct trace_event_fields ftrace_event_fields_##name[] = {	\
- #undef __field_desc
- #define __field_desc(type, container, item)
- 
-+#undef __field_packed
-+#define __field_packed(type, container, item)
-+
- #undef __array
- #define __array(type, item, len)
- 
 -- 
-2.25.4
-
+Martin K. Petersen	Oracle Linux Engineering
