@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EE81F4ED1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 09:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A2B1F4EDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 09:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgFJHY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 03:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54190 "EHLO
+        id S1726501AbgFJH0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 03:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgFJHY5 (ORCPT
+        with ESMTP id S1726081AbgFJH0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 03:24:57 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D5BC03E96B;
-        Wed, 10 Jun 2020 00:24:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6c/vE/ozxTPwS24BUkYxi15LaZy1is3YVzeL7qEF/KU=; b=YFULLve167EFJAUFIFsBXuS464
-        4Jdpz0CHZIZV99sZXhwNfjkc0tbGoC8x5EHEe5oCi0RMjn8Yn48HVzwOTatYxuWFlGVAicqgPCoIr
-        FbDj4HlG7sW61Wcc9mGwBHLqWWsp/DjpHH0mgdWLLZKv0PH1SRnL/gvL7ygJx9RnPNXzFHq0fmm85
-        fGVfLeXUUKn+UU/6hx4L7zrN/HbBNo8I/Y6edXdqCqGJLSyhd7nUyL14kxthvpTgBQ6zSv16a261R
-        QbmU2cU6oUks3aM4x49C3FsnOGUa26mxaTTQuZs5vpOen8MhMhVqVdo6+1LPv/EPMa6la3219xAEy
-        jxC9aLlw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jiv6K-0001gz-CH; Wed, 10 Jun 2020 07:24:44 +0000
-Date:   Wed, 10 Jun 2020 00:24:44 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Vladimir Murzin <vladimir.murzin@arm.com>
-Cc:     dillon.minfei@gmail.com, robh+dt@kernel.org,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        linux@armlinux.org.uk, kstewart@linuxfoundation.org,
-        allison@lohutok.net, info@metux.net, tglx@linutronix.de,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] arm-nommu: Add use_reserved_mem() to check if device
- support reserved memory
-Message-ID: <20200610072444.GA6293@infradead.org>
-References: <1591605038-8682-1-git-send-email-dillon.minfei@gmail.com>
- <1591605038-8682-3-git-send-email-dillon.minfei@gmail.com>
- <90df5646-e0c4-fcac-d934-4cc922230dd2@arm.com>
+        Wed, 10 Jun 2020 03:26:44 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8019FC03E96B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 00:26:44 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id t6so934074otk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 00:26:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netflix.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=icQyLe1x0JtVbH2h0JIR6glxOffDGiETwl2nJBOJkMA=;
+        b=lafpKDCMm3DeuM+OTgu5T8Qf2tkuZ7c6gSdQPGBucRUhmFKAPhdSvHixRj+8KjzjVh
+         2MCDGdz9s2gyNzI/i/dH4crrvq3m86yN6v0HoLO7vO2uFk3xiBAsafLpjo39IJkocDNn
+         OXke9WuiSjA6rE4wgV+JvZudHH+syCPya85k8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=icQyLe1x0JtVbH2h0JIR6glxOffDGiETwl2nJBOJkMA=;
+        b=GWnhfNlv8LiRvJMFYJa2mQPanta+V+eSMNsfXiH5o0PKeKpFCClluHl8nms7bZ6YRr
+         J4jcTpuEm56wUUYL9YX+qlfZrN1gHHKBQ/XT9JYsJViZVzbD+5fQhCJR6nnN8/E5Ijsh
+         OMsXH7fJenC+8XXfBYmagFa13Tmufamehl64z1y4LjZosQKo6c19sz8XLqts7YTeRTWN
+         Z1g/WY/69YGwpT/6rVFJ3zWDtdKjhHSWJD5ZqNqkF5H+4vTS3zKv2DblPhOtyPJEMzvF
+         2QPccK0oWTicRmLwg45ksCtDD0PO4GTf5sILTur9BfEumI4GOYLXG8hZhVOVzD1/bxYP
+         0nWg==
+X-Gm-Message-State: AOAM533+mnAFZCmavc1EtWk+3DQeSNCm3KzeMRqTBPhIf5F4tWbdkXcE
+        rBdC64NtwBafKNzHhv1BJRXtkQ==
+X-Google-Smtp-Source: ABdhPJxsXjBzzM+sQpS1NYnAHvWZyutMSD6PvDWTeaoQuEw0H6Rq4sAmQXqP4w1JR1byoQ8VGS2dFA==
+X-Received: by 2002:a9d:6546:: with SMTP id q6mr1528551otl.365.1591774002683;
+        Wed, 10 Jun 2020 00:26:42 -0700 (PDT)
+Received: from ?IPv6:2600:1700:3ec3:2450:25ca:3996:acb2:84a6? ([2600:1700:3ec3:2450:25ca:3996:acb2:84a6])
+        by smtp.gmail.com with ESMTPSA id 13sm3732094ois.44.2020.06.10.00.26.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jun 2020 00:26:41 -0700 (PDT)
+Subject: Re: [RFC 1/2] Eliminate over- and under-counting of io_ticks
+To:     Hou Tao <houtao1@huawei.com>, Jens Axboe <axboe@kernel.dk>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Josh Snyder <josh@code406.com>, Ming Lei <ming.lei@redhat.com>
+References: <20200609040724.448519-1-joshs@netflix.com>
+ <20200609040724.448519-2-joshs@netflix.com>
+ <0b7e623e-2146-5e44-f486-ba9e1657f2a3@huawei.com>
+From:   Josh Snyder <joshs@netflix.com>
+Message-ID: <a026a60f-e319-de35-8274-fb14ada29eff@netflix.com>
+Date:   Wed, 10 Jun 2020 00:26:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <90df5646-e0c4-fcac-d934-4cc922230dd2@arm.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <0b7e623e-2146-5e44-f486-ba9e1657f2a3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ok, I finally found the original patch from Vladimir.  Comments below:
+Hello!
 
-> +++ b/kernel/dma/direct.c
-> @@ -456,14 +456,14 @@ int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
->  #else /* CONFIG_MMU */
->  bool dma_direct_can_mmap(struct device *dev)
->  {
-> -	return false;
-> +	return true;
->  }
->  
->  int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
->  		void *cpu_addr, dma_addr_t dma_addr, size_t size,
->  		unsigned long attrs)
->  {
-> -	return -ENXIO;
-> +	return vm_iomap_memory(vma, vma->vm_start, (vma->vm_end - vma->vm_start));;
+On 6/9/20 6:41 PM, Hou Tao wrote:
+> Hi,
+> 
+> For the following case, the under-counting is still possible if io2 wins cmpxchg():
+> 
+>   t          0123456
+>   io1        |-----|
+>   io2           |--|
+>   stamp      0     6
+>   io_ticks   0     3
 
-I think we should try to reuse the mmu dma_direct_mmap implementation,
-which does about the same.  This version has been compile tested on
-arm-nommu only, let me know what you think: (btw, a nommu_defconfig of
-some kind for arm would be nice..)
+I hadn't noticed that bug. It looks like it can produce an unbounded quantity of undercount.
 
-diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
-index d006668c0027d2..e0dae570a51530 100644
---- a/kernel/dma/Kconfig
-+++ b/kernel/dma/Kconfig
-@@ -71,6 +71,7 @@ config SWIOTLB
- # in the pagetables
- #
- config DMA_NONCOHERENT_MMAP
-+	default y if !MMU
- 	bool
- 
- config DMA_REMAP
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index 0a4881e59aa7d6..9ec6a5c3fc578c 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -459,7 +459,6 @@ int dma_direct_get_sgtable(struct device *dev, struct sg_table *sgt,
- 	return ret;
- }
- 
--#ifdef CONFIG_MMU
- bool dma_direct_can_mmap(struct device *dev)
- {
- 	return dev_is_dma_coherent(dev) ||
-@@ -485,19 +484,6 @@ int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
- 	return remap_pfn_range(vma, vma->vm_start, pfn + vma->vm_pgoff,
- 			user_count << PAGE_SHIFT, vma->vm_page_prot);
- }
--#else /* CONFIG_MMU */
--bool dma_direct_can_mmap(struct device *dev)
--{
--	return false;
--}
--
--int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
--		void *cpu_addr, dma_addr_t dma_addr, size_t size,
--		unsigned long attrs)
--{
--	return -ENXIO;
--}
--#endif /* CONFIG_MMU */
- 
- int dma_direct_supported(struct device *dev, u64 mask)
- {
+> However considering patch 2 tries to improve sampling rate to 1 us, the problem will gone.
+
+Now that you mention it, the below case is also poorly handled, and will be incorrect
+regardless of sampling frequency. It experiences issues both under this patch (labeled
+io_ticks) and the current implementation (labeled io_ticks~):
+
+   t          0123456
+   io1        |-----|
+   io2           |-|
+   stamp      0    56
+   io_ticks        28
+
+   stamp~     0  3 56
+   io_ticks~     1 34
+
+I am beginning to doubt whether it is even possible to produce an algorithm that is
+simultaneously unbiased and synchronization-lite. At the same time, Ming's comment on
+patch 2 was leading me to wonder about the value of being synchronization-lite in the
+first place. At the proposed sampling rate of 1M/s, it is unlikely that we'd ever exercise
+the synchronization-free code path (and, as your case shows, incorrect). And for every
+block device that I'm aware of (even the ones that return in 10us), the cost of a disk
+access still completely dominates the cost of a locked CPU operation by three orders of
+magnitude.
+
+Josh
