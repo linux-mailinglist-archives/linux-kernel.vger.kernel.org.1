@@ -2,73 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03281F5868
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 17:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E20F1F586C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 17:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728683AbgFJPz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 11:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728431AbgFJPz2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 11:55:28 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0163C03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 08:55:26 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id i27so3086901ljb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 08:55:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SEUPY1uSL4EEx5wS5at/fsramWYDqy3CI3YeN8vkC9s=;
-        b=KwMtaEzFz239gBKZPYXQXMqP5efm9L94Yn8Kyv8BCiint4zdYdVLG5E0Q7hDR7c2VH
-         KERXEOLbs+SIyzkDK4I53QmUViPVAGIXEMj3Ls3DghckPBJQyHR32wCDMLbYbkGZtLzE
-         or53oiqN+D4w4KaYwNWy7F2Ku4EJO26bocAN1wY0I9yPKSEnnvtlzemSIE/mQSn0by+X
-         RqR/CoA7VGtNEFb2bvMt9+JhOVpBSgiQheBgzemzmglovAhOVkLwQr9RN4+EA5luC3Rf
-         rR4MR+s9tbAjDCTgQk08lVpTWUgs2asT7KWVIemKuF7uN4PfZBsM4z/aEhUgBbsQZXz4
-         1LaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SEUPY1uSL4EEx5wS5at/fsramWYDqy3CI3YeN8vkC9s=;
-        b=lNxdNnzdt3yDlGvOh58garXewgqpNs+GHF3wyFD8SWcxSekqVfX2wDmh4E2SKgJwrm
-         IdkMuegIgoG+rQw7SAi8zQTiHJLW8iQv5VGnK/UYTFKn/xz+GKsjRksaxO7XITjiX8wp
-         Zc/oSJiHtHiPxfZgf3qCWEqu2qDVATjcm0wuHAZzsWo2+utPWqa+NxufBVvHXHDys8J2
-         ajd/T6JQqf7bwuKsmZ3XgtULYXeepC26Z9Mh2WZmuUk/2g7rGjj8wJOGK90ZDfBdBJOi
-         zxFjRL1e6LxuLtYjBFoTsLe1L2+nsnK6xxWC8huZP/p6M6vy8NaB1ruaEFnZzztThOlf
-         Tr3w==
-X-Gm-Message-State: AOAM531JmCwP4bwV/HbiifkwaZJOqVvNuPnJ/h0PSK7iDgVfz3Yo1sEF
-        grLnzGZoa0+ytkDEdT3yEQVLB18zMJK1xwpMOHc=
-X-Google-Smtp-Source: ABdhPJzBstYjcC0H7h5ZvFx07Q3wJ2sGxtz/nfjMnDfzycjS34tkDan3rENGrm3GlLFAu3CNEGJMUoWJkeZ9BJnugkc=
-X-Received: by 2002:a2e:1558:: with SMTP id 24mr2120753ljv.202.1591804525341;
- Wed, 10 Jun 2020 08:55:25 -0700 (PDT)
+        id S1728913AbgFJP4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 11:56:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:60402 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728217AbgFJP4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 11:56:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A52401FB;
+        Wed, 10 Jun 2020 08:56:39 -0700 (PDT)
+Received: from bogus (unknown [10.37.12.97])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 448083F6CF;
+        Wed, 10 Jun 2020 08:56:36 -0700 (PDT)
+Date:   Wed, 10 Jun 2020 16:56:29 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>
+Subject: Re: [PATCH] firmware: arm_scmi: fix timeout value for send_message
+Message-ID: <20200610155629.GA7357@bogus>
+References: <20200607193023.52344-1-jassisinghbrar@gmail.com>
+ <20200610082315.GB2689@bogus>
+ <CABb+yY1T03YLwiFvBykxsAHQ9Kpu=r1nRTuaP3Emf5dP=Upm0g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200610125147.2782142-1-christian.brauner@ubuntu.com>
-In-Reply-To: <20200610125147.2782142-1-christian.brauner@ubuntu.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 10 Jun 2020 17:55:14 +0200
-Message-ID: <CANiq72m_p2BRXswCGhUZi-Nta2y0uNXDQLRjPUFydB7YGV-6HQ@mail.gmail.com>
-Subject: Re: [PATCH] .clang-format: update column limit
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABb+yY1T03YLwiFvBykxsAHQ9Kpu=r1nRTuaP3Emf5dP=Upm0g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
-
-On Wed, Jun 10, 2020 at 2:51 PM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
+On Wed, Jun 10, 2020 at 10:21:19AM -0500, Jassi Brar wrote:
+> On Wed, Jun 10, 2020 at 3:23 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> >
+> > On Sun, Jun 07, 2020 at 02:30:23PM -0500, jassisinghbrar@gmail.com wrote:
+> > > From: Jassi Brar <jaswinder.singh@linaro.org>
+> > >
+> > > Currently scmi_do_xfer() submits a message to mailbox api and waits
+> > > for an apparently very short time. This works if there are not many
+> > > messages in the queue already. However, if many clients share a
+> > > channel and/or each client submits many messages in a row, the
+> >
+> > The recommendation in such scenarios is to use multiple channel.
+> >
+> If SCMI is to be accepted as a standard (which I hope), it has to
+> support most kinds of controllers, but currently the implementation is
+> too myopic. It is only a matter of time, when someone sees value in
+> reusing firmware implementation (scmi) but does not have a MHU like
+> controller.
 >
-> The provided clang-format file wraps at 80 chars. If no one minds, I'd like
-> to adjust this limit to 100 similar to what checkpatch (cf. [1]) uses now.
 
-Thanks! Picking this up with a few changes to the commit message.
+It is being used with other transports like smc/hvc and virtio.
+But I agree, this experiment made me realise we need to work with
+single channel disabling certain features like fast_switch. I will
+work on that and push a solution. Thanks for asking for traces
+and having stared at it for sometime, I see some issues but that's
+orthogonal to this one. Fixing that won't solve the issue we are
+discussing though.
 
-Cheers,
-Miguel
+But that said, that is not the solution for Juno/MHU. We can parallelise
+there with multiple requests and we should do so.
+
+> > > timeout value becomes too short and returns error even if the mailbox
+> > > is working fine according to the load. The timeout occurs when the
+> > > message is still in the api/queue awaiting its turn to ride the bus.
+> > >
+> > >  Fix this by increasing the timeout value enough (500ms?) so that it
+> > > fails only if there is an actual problem in the transmission (like a
+> > > lockup or crash).
+> > >
+> > > [If we want to capture a situation when the remote didn't
+> > > respond within expected latency, then the timeout should not
+> > > start here, but from tx_prepare callback ... just before the
+> > > message physically gets on the channel]
+> > >
+> >
+> > The bottle neck may not be in the remote. It may be mailbox serialising
+> > the requests even when it can parallelise.
+> >
+> Your logs show (in your test case), using 1 physical channel shows
+> better transfer (those that complete) rates than virtual channels.
+
+Indeed that is expected. It is like comparing output with 1 vs 2 CPUs
+with some multi-thread load. The remote is now handling 2 requests at
+a time and it clearly puts DVFS at priority and this will show up as
+little higher latency for other requests like sensors.
+
+> The transfers that fail are purely because of this short timeout.
+>
+> > >
+> > >       if (xfer->hdr.poll_completion) {
+> > > -             ktime_t stop = ktime_add_ns(ktime_get(), SCMI_MAX_POLL_TO_NS);
+> > > +             ktime_t stop = ktime_add_ns(ktime_get(), 500 * 1000 * NSEC_PER_USEC);
+> > >
+> >
+> > This is unacceptable delay for schedutil fast_switch. So no for this one.
+> >
+> Increasing timeout does not increase latency.
+
+Agreed, but worst case you may be stuck here for 500ms which is not
+acceptable. That's what I meant, not that the request will take 500ms.
+Sorry if I was not clear earlier on that.
+
+> Also scmi_xfer() can not know if it was reached from the fast_switch path.
+>
+> If a platform has many users over a channel such that it can not
+> guarantee low enough latency, then it must not set the
+> fast_switch_possible flag, which is optional for this reason.
+>
+
+Yes, that's what I am trying to explore and that's what I meant above
+when I mentioned I see some issues. I have hacked and checked that doesn't
+change much, the timeout happens but under bit heavy load and not in simpler
+use-case as I showed in my traces. In short, having multiple channels
+helps. And we have been so fixated on Tx in our discussions. More fun
+with Rx and serialising as it impacts remote firmware too.
+
+>
+> > > @@ -313,7 +313,7 @@ int scmi_do_xfer(const struct scmi_handle *handle, struct scmi_xfer *xfer)
+> > >                       ret = -ETIMEDOUT;
+> > >       } else {
+> > >               /* And we wait for the response. */
+> > > -             timeout = msecs_to_jiffies(info->desc->max_rx_timeout_ms);
+> > > +             timeout = msecs_to_jiffies(500);
+> >
+> > In general, this hides issues in the remote.
+> >
+> If you want to uncover remote issues, start the timeout in
+> tx_prepare() because that is when the message is physically sent to
+> the remote.
+>
+
+In that case we need to set it to 1ms as I mentioned earlier. Current
+timeout of 30ms is for MBOX_MAX_LEN=20 which gives more than 1ms for each
+and that's what we are targeting. I see no point in just changing the
+timeout as you already mentioned above it is not changing the latency
+anyway.
+
+> > We are trying to move towards
+> > tops 1ms for a request and with MBOX_QUEUE at 20, I see 20ms is more that
+> > big enough. We have it set to 30ms now. 500ms is way too large and not
+> > required IMO.
+> >
+> Again, increasing timeout does not slow the system down. It is to
+> support more variety of platform setups.
+>
+
+Agreed and I have acknowledge. 30ms is chosen based on experiments and
+also we are trying to achieve 1ms tops for each message. If some platform
+has serious limitation, desc->max_rx_timeout_ms is configurable. We can
+identify the platform and add specific timings for that. Same is true
+do other parameters like the max_len and max_msg_size. If default is not
+suitable, it can be changed.
+
+--
+Regards,
+Sudeep
