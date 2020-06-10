@@ -2,131 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A111F570E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 16:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394EA1F5716
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 16:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729938AbgFJOxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 10:53:47 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:43483 "EHLO
+        id S1729972AbgFJOx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 10:53:57 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:42683 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726943AbgFJOxq (ORCPT
+        by vger.kernel.org with ESMTP id S1729945AbgFJOxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 10:53:46 -0400
+        Wed, 10 Jun 2020 10:53:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591800824;
+        s=mimecast20190719; t=1591800829;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SEnQxAW9uQsVBSiEtzbPpC8TpA8ftH1ryZnX+gay5Vs=;
-        b=HPcjkcyzbx35eWQpX4w1b6WI3AZDGWFZ7D//ctGuUX1RHUxNa0mVpI1I8p3sy3nCPXXxrA
-        MTddUbxvz/4fcYw3HB86G8OfBxv3vjKB6ZSWmNuo8ABugU7FxkGCM3VWS4PBUSeefFW2t9
-        K1Ss4CpnoNOT2bbS6hN06SIGjtH9EwM=
+        bh=IbTlbvpZrjIt//+klHw+rfy1TKM7Gl7DCLWB4vzgCck=;
+        b=SW9VZ65fSxcqT+4V6nlzi257B2k8CtFJP5wH2Wgl27nwUMzZ/dzte9Vt3dqSU8SSp6Owem
+        chNYU+tLPujGbbjb+LkgO279I8P1PquBVsfW7nijvz1vhCqcsSgUUBIvPN9qJGeLPmIerJ
+        d1jPQ0jMu3Xq2Y1+QvVKEcNjF6F/ZI4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-249-flirENk-PkmWukFoCP548w-1; Wed, 10 Jun 2020 10:53:43 -0400
-X-MC-Unique: flirENk-PkmWukFoCP548w-1
+ us-mta-290-5TsqfYi9M4uGVu0V354nDg-1; Wed, 10 Jun 2020 10:53:43 -0400
+X-MC-Unique: 5TsqfYi9M4uGVu0V354nDg-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 79F9318A4176;
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4264118A4175;
         Wed, 10 Jun 2020 14:53:10 +0000 (UTC)
-Received: from gondolin (ovpn-112-196.ams2.redhat.com [10.36.112.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6CFB75C296;
-        Wed, 10 Jun 2020 14:53:08 +0000 (UTC)
-Date:   Wed, 10 Jun 2020 16:53:05 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Pierre Morel <pmorel@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, mst@redhat.com,
-        jasowang@redhat.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH] s390: protvirt: virtio: Refuse device without IOMMU
-Message-ID: <20200610165305.1a34c548.cohuck@redhat.com>
-In-Reply-To: <54b28498-a6a7-4be2-9d2c-aef46c7fc642@linux.ibm.com>
-References: <1591794711-5915-1-git-send-email-pmorel@linux.ibm.com>
-        <20200610152431.358fded7.cohuck@redhat.com>
-        <54b28498-a6a7-4be2-9d2c-aef46c7fc642@linux.ibm.com>
-Organization: Red Hat GmbH
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.72])
+        by smtp.corp.redhat.com (Postfix) with SMTP id AD26E5C1BD;
+        Wed, 10 Jun 2020 14:53:07 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed, 10 Jun 2020 16:53:09 +0200 (CEST)
+Date:   Wed, 10 Jun 2020 16:53:06 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        lkft-triage@lists.linaro.org
+Subject: Re: [PATCH 4.19 24/25] uprobes: ensure that uprobe->offset and
+ ->ref_ctr_offset are properly aligned
+Message-ID: <20200610145305.GA3254@redhat.com>
+References: <20200609174048.576094775@linuxfoundation.org>
+ <20200609174051.488794266@linuxfoundation.org>
+ <CA+G9fYukN5V1z3g6Qwe9K5xnnXEuFafWdqGfDA1Wj2iVstoxfw@mail.gmail.com>
+ <20200609190321.GA1046130@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200609190321.GA1046130@kroah.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Jun 2020 16:37:55 +0200
-Pierre Morel <pmorel@linux.ibm.com> wrote:
+On 06/09, Greg Kroah-Hartman wrote:
+>
+> On Wed, Jun 10, 2020 at 12:25:56AM +0530, Naresh Kamboju wrote:
+> > > @@ -911,6 +907,15 @@ static int __uprobe_register(struct inod
+> > >         if (offset > i_size_read(inode))
+> > >                 return -EINVAL;
+> > >
+> > > +       /*
+> > > +        * This ensures that copy_from_page(), copy_to_page() and
+> > > +        * __update_ref_ctr() can't cross page boundary.
+> > > +        */
+> > > +       if (!IS_ALIGNED(offset, UPROBE_SWBP_INSN_SIZE))
+> > > +               return -EINVAL;
+> > > +       if (!IS_ALIGNED(ref_ctr_offset, sizeof(short)))
+> >
+> > stable-rc 4.19 build failure for x86_64, i386 and arm.
+> > make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=x86 HOSTCC=gcc
+> > CC="sccache gcc" O=build
+> >
+> > 75 #
+> > 76 In file included from ../kernel/events/uprobes.c:25:
+> > 77 ../kernel/events/uprobes.c: In function ‘__uprobe_register’:
+> > 78 ../kernel/events/uprobes.c:916:18: error: ‘ref_ctr_offset’
+> > undeclared (first use in this function); did you mean
+> > ‘per_cpu_offset’?
+> > 79  916 | if (!IS_ALIGNED(ref_ctr_offset, sizeof(short)))
+> > 80  | ^~~~~~~~~~~~~~
+> > 81 ../include/linux/kernel.h:62:30: note: in definition of macro ‘IS_ALIGNED’
+> > 82  62 | #define IS_ALIGNED(x, a) (((x) & ((typeof(x))(a) - 1)) == 0)
+> > 83  | ^
+> > 84 ../kernel/events/uprobes.c:916:18: note: each undeclared identifier
+> > is reported only once for each function it appears in
+> > 85  916 | if (!IS_ALIGNED(ref_ctr_offset, sizeof(short)))
+> > 86  | ^~~~~~~~~~~~~~
+> > 87 ../include/linux/kernel.h:62:30: note: in definition of macro ‘IS_ALIGNED’
+> > 88  62 | #define IS_ALIGNED(x, a) (((x) & ((typeof(x))(a) - 1)) == 0)
+> > 89  | ^
+> > 90 make[3]: *** [../scripts/Makefile.build:304: kernel/events/uprobes.o] Error 1
+> >
+> > --
+> > Linaro LKFT
+> > https://lkft.linaro.org
+>
+> Good catch, my builders just caught it too :(
+>
+> 4.19, 4.14, 4.9, and 4.4 are all broken, I have a fix will test it and
+> push out -rc2 for all of those with it in a bit, thanks.
 
-> On 2020-06-10 15:24, Cornelia Huck wrote:
-> > On Wed, 10 Jun 2020 15:11:51 +0200
-> > Pierre Morel <pmorel@linux.ibm.com> wrote:
-> >   
-> >> Protected Virtualisation protects the memory of the guest and
-> >> do not allow a the host to access all of its memory.
-> >>
-> >> Let's refuse a VIRTIO device which does not use IOMMU
-> >> protected access.
-> >>
-> >> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
-> >> ---
-> >>   drivers/s390/virtio/virtio_ccw.c | 5 +++++
-> >>   1 file changed, 5 insertions(+)
-> >>
-> >> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-> >> index 5730572b52cd..06ffbc96587a 100644
-> >> --- a/drivers/s390/virtio/virtio_ccw.c
-> >> +++ b/drivers/s390/virtio/virtio_ccw.c
-> >> @@ -986,6 +986,11 @@ static void virtio_ccw_set_status(struct virtio_device *vdev, u8 status)
-> >>   	if (!ccw)
-> >>   		return;
-> >>   
-> >> +	/* Protected Virtualisation guest needs IOMMU */
-> >> +	if (is_prot_virt_guest() &&
-> >> +	    !__virtio_test_bit(vdev, VIRTIO_F_IOMMU_PLATFORM))
-> >> +			status &= ~VIRTIO_CONFIG_S_FEATURES_OK;
-> >> +  
-> > 
-> > set_status seems like an odd place to look at features; shouldn't that
-> > rather be done in finalize_features?  
-> 
-> Right, looks better to me too.
-> What about:
-> 
-> 
-> 
-> diff --git a/drivers/s390/virtio/virtio_ccw.c 
-> b/drivers/s390/virtio/virtio_ccw.c
-> index 06ffbc96587a..227676297ea0 100644
-> --- a/drivers/s390/virtio/virtio_ccw.c
-> +++ b/drivers/s390/virtio/virtio_ccw.c
-> @@ -833,6 +833,11 @@ static int virtio_ccw_finalize_features(struct 
-> virtio_device *vdev)
->                  ret = -ENOMEM;
->                  goto out_free;
->          }
-> +
-> +       if (is_prot_virt_guest() &&
-> +           !__virtio_test_bit(vdev, VIRTIO_F_IOMMU_PLATFORM))
+Yes, SDT markers were added by 1cc33161a83d20b5462b1e93f95d3ce6388079ee in v4.20.
 
-Add a comment, and (maybe) a message?
+See the patch for v4.4 below. It changes uprobe_register(), not __uprobe_register()
+to check IS_ALIGNED(offset, UPROBE_SWBP_INSN_SIZE) only.
 
-Otherwise, I think this is fine, as it should fail the probe, which is
-what we want.
+Greg, please let me know if you want me to send the patches for 4.9/4.14/4.19.
 
-> +               return -EIO;
-> +
->          /* Give virtio_ring a chance to accept features. */
->          vring_transport_features(vdev);
-> 
-> 
-> 
-> Thanks,
-> 
-> Regards,
-> Pierre
-> 
+Oleg.
+
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -601,10 +601,6 @@ static int prepare_uprobe(struct uprobe *uprobe, struct file *file,
+ 	if (ret)
+ 		goto out;
+ 
+-	/* uprobe_write_opcode() assumes we don't cross page boundary */
+-	BUG_ON((uprobe->offset & ~PAGE_MASK) +
+-			UPROBE_SWBP_INSN_SIZE > PAGE_SIZE);
+-
+ 	smp_wmb(); /* pairs with rmb() in find_active_uprobe() */
+ 	set_bit(UPROBE_COPY_INSN, &uprobe->flags);
+ 
+@@ -883,6 +879,13 @@ int uprobe_register(struct inode *inode, loff_t offset, struct uprobe_consumer *
+ 	if (offset > i_size_read(inode))
+ 		return -EINVAL;
+ 
++	/*
++	 * This ensures that copy_from_page() an copy_to_page()
++	 * can't cross page boundary.
++	 */
++	if (!IS_ALIGNED(offset, UPROBE_SWBP_INSN_SIZE))
++		return -EINVAL;
++
+  retry:
+ 	uprobe = alloc_uprobe(inode, offset);
+ 	if (!uprobe)
+@@ -1691,6 +1694,9 @@ static int is_trap_at_addr(struct mm_struct *mm, unsigned long vaddr)
+ 	uprobe_opcode_t opcode;
+ 	int result;
+ 
++	if (WARN_ON_ONCE(!IS_ALIGNED(vaddr, UPROBE_SWBP_INSN_SIZE)))
++		return -EINVAL;
++
+ 	pagefault_disable();
+ 	result = __copy_from_user_inatomic(&opcode, (void __user*)vaddr,
+ 							sizeof(opcode));
 
