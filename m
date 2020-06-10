@@ -2,104 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936E41F5C2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 21:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862751F5C34
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 21:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730317AbgFJTrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 15:47:39 -0400
-Received: from mga02.intel.com ([134.134.136.20]:47507 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727038AbgFJTrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 15:47:39 -0400
-IronPort-SDR: y7yfGGrmlytIE06CqEttsoWJHGAATeU1svuJaDXogwv5D+PPIf6q+JM0xqXHEgxd9agdc6ZU/t
- IIAdZDzV1f1g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 12:47:38 -0700
-IronPort-SDR: zwsDaZkbBTj0lednQXl1zdUaM7MuxdMUT/XCO8fVZzLlLxwpQr2q5ueRRJ7kjHHo1OraSddyEs
- 5JivjUsJxnTg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,497,1583222400"; 
-   d="scan'208";a="306723019"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Jun 2020 12:47:38 -0700
-Date:   Wed, 10 Jun 2020 12:47:38 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] KVM: async_pf: Inject 'page ready' event only if
- 'page not present' was previously injected
-Message-ID: <20200610194738.GE18790@linux.intel.com>
-References: <20200610175532.779793-1-vkuznets@redhat.com>
- <20200610175532.779793-2-vkuznets@redhat.com>
- <20200610193211.GB243520@redhat.com>
+        id S1730343AbgFJTuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 15:50:03 -0400
+Received: from smtprelay0193.hostedemail.com ([216.40.44.193]:34158 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730085AbgFJTuC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 15:50:02 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 700B5180295B8;
+        Wed, 10 Jun 2020 19:50:00 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3351:3622:3865:3866:3867:3868:3872:3874:4321:5007:6119:6691:7903:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13172:13229:13311:13357:13439:14659:14721:21080:21433:21627:21740:30045:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: blade08_160868726dcd
+X-Filterd-Recvd-Size: 1819
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 10 Jun 2020 19:49:58 +0000 (UTC)
+Message-ID: <31e1aa72b41f9ff19094476033511442bb6ccda0.camel@perches.com>
+Subject: Re: [PATCH v3 6/7] venus: Make debug infrastructure more flexible
+From:   Joe Perches <joe@perches.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
+        netdev@vger.kernel.org, Jason Baron <jbaron@akamai.com>
+Date:   Wed, 10 Jun 2020 12:49:57 -0700
+In-Reply-To: <20200610133717.GB1906670@kroah.com>
+References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+         <20200609104604.1594-7-stanimir.varbanov@linaro.org>
+         <20200609111414.GC780233@kroah.com>
+         <dc85bf9e-e3a6-15a1-afaa-0add3e878573@linaro.org>
+         <20200610133717.GB1906670@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200610193211.GB243520@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 03:32:11PM -0400, Vivek Goyal wrote:
-> On Wed, Jun 10, 2020 at 07:55:32PM +0200, Vitaly Kuznetsov wrote:
-> > 'Page not present' event may or may not get injected depending on
-> > guest's state. If the event wasn't injected, there is no need to
-> > inject the corresponding 'page ready' event as the guest may get
-> > confused. E.g. Linux thinks that the corresponding 'page not present'
-> > event wasn't delivered *yet* and allocates a 'dummy entry' for it.
-> > This entry is never freed.
-> > 
-> > Note, 'wakeup all' events have no corresponding 'page not present'
-> > event and always get injected.
-> > 
-> > s390 seems to always be able to inject 'page not present', the
-> > change is effectively a nop.
-> > 
-> > Suggested-by: Vivek Goyal <vgoyal@redhat.com>
-> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > ---
-> >  arch/s390/include/asm/kvm_host.h | 2 +-
-> >  arch/s390/kvm/kvm-s390.c         | 4 +++-
-> >  arch/x86/include/asm/kvm_host.h  | 2 +-
-> >  arch/x86/kvm/x86.c               | 7 +++++--
-> >  include/linux/kvm_host.h         | 1 +
-> >  virt/kvm/async_pf.c              | 2 +-
-> >  6 files changed, 12 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-> > index 3d554887794e..cee3cb6455a2 100644
-> > --- a/arch/s390/include/asm/kvm_host.h
-> > +++ b/arch/s390/include/asm/kvm_host.h
-> > @@ -978,7 +978,7 @@ bool kvm_arch_can_dequeue_async_page_present(struct kvm_vcpu *vcpu);
-> >  void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu,
-> >  			       struct kvm_async_pf *work);
-> >  
-> > -void kvm_arch_async_page_not_present(struct kvm_vcpu *vcpu,
-> > +bool kvm_arch_async_page_not_present(struct kvm_vcpu *vcpu,
-> >  				     struct kvm_async_pf *work);
-> 
-> Hi Vitaly,
-> 
-> A minor nit. Using return code to figure out if exception was injected
-> or not is little odd. How about we pass a pointer instead as parameter
-> and kvm_arch_async_page_not_present() sets it to true if page not
-> present exception was injected. This probably will be easier to
-> read.
-> 
-> If for some reason you don't like above, atleats it warrants a comment
-> explaining what do 0 and 1 mean.
-> 
-> Otherwise both the patches look good to me. I tested and I can confirm
-> that now page ready events are not being delivered to guest if page
-> not present was not injected.
+On Wed, 2020-06-10 at 15:37 +0200, Greg Kroah-Hartman wrote:
+> Please work with the infrastructure we have, we have spent a lot of time
+> and effort to make it uniform to make it easier for users and
+> developers.
 
-Why does kvm_arch_async_page_not_present() need to "return" anything?  It
-has access to @work, e.g. simply replace "return true" with
-"work->notpresent_injected = true".
+Not quite.
+
+This lack of debug grouping by type has been a
+_long_ standing issue with drivers.
+
+> Don't regress and try to make driver-specific ways of doing
+> things, that way lies madness...
+
+It's not driver specific, it allows driver developers to
+better isolate various debug states instead of keeping
+lists of specific debug messages and enabling them
+individually.
+
+
