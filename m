@@ -2,192 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB6E1F4FBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 09:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59BE51F4FC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 09:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgFJH4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 03:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        id S1726676AbgFJH5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 03:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726535AbgFJH4V (ORCPT
+        with ESMTP id S1726525AbgFJH5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 03:56:21 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E183C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 00:56:19 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id d128so888715wmc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 00:56:19 -0700 (PDT)
+        Wed, 10 Jun 2020 03:57:02 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A95C03E96B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 00:57:02 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id b201so772779pfb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 00:57:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Cjs3WhIrv+bZ6tn9UnNffYVU8+Ox2fEIN+JVYQ0tTkQ=;
-        b=hYehp6XskwVDZoGE5ageQYvHlfDRosdHG6iYynruU1WqmbKbXefVWCnOKYS8Uh1fwG
-         Ieijl7uUSji9Zdxkh7TeS/tMfiqEdwSx5IohccvO5W6XGiQLULHFi30N3+oPGSts+oPh
-         PQ/hitEMIo40Zaoi36s0Jfn1ThnSezQMlenC+D9osIYBJ1Van6hfMeZP8OPEV2ietICv
-         oldT+A22CuexgCG9cM3mXYKbrzmtA2Pf2pspXcpOx2j/ZaZzIoT6EpPhx/28u48D2BBX
-         D7y8l6udc4EsrQJcpl6guFRmu3cpVFmH8r0txjOLugD/nif96/2cI3cicci7RAgSLdqW
-         ol7w==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SYzOpPCvvtp+Q0cQ7wQGP7OOdUT4aisr6GdQG5QCZCE=;
+        b=Mf1E8Le+FQipLj4aEDkLrichXdckHasZQ7i4HDCCj+n0x4SfotnnopYGPc2h8YTl22
+         ajvb5jnvcHzHHbPTwD9l9gc9XR5eEEdIYntXdtARy95VDgJCXWSbriqYxw29U53CkPJs
+         WIqnWZ3mADoz8CzEitAR0EmmXl1bXy6cwS7y0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Cjs3WhIrv+bZ6tn9UnNffYVU8+Ox2fEIN+JVYQ0tTkQ=;
-        b=HQiEMgFrV3Yc8uCO28NGs0cPxyyC7XiWXm46TxgZxY7JrAaK7psoD3WOUyI2IdApn6
-         4K7uliVDXBouQG/u4MtookJMEQYlvsX665UeWsC2BPpq46eFHHyvBUvpjiC79fjMuaKu
-         65uRE4yfxU216Kdos9YhHfTXqWPOafOLxcovIKMbAUW+Zj15/d7RDxV2YMbxoqypMaPK
-         G2/eONpm1alVV1jKIhSA+leaHX2QeqV5qqJ6W37WP4NZ18CQNPK1gZLFi15MUnmeiC+2
-         mruU6EyXlZcK+s4fZrtzHJdXvSmUEyGx5kpKBTvKfPgx0POcvLOWbtTKZ91wS1fTMLF3
-         xuQg==
-X-Gm-Message-State: AOAM531w1XrxyQVjmK+puMBu+w/n5UsbxiO4fnwNVs3jUO4Hi+yPWkZs
-        sfNgss7vGtx1cnHNOPTbnpvhMw==
-X-Google-Smtp-Source: ABdhPJylShHmodnuyhsFhzN3mLes6/LNfzgEosdeRQ8I8kMe2B7dQDQ69G3lIdZnvQwR99SfqAy50w==
-X-Received: by 2002:a7b:cc82:: with SMTP id p2mr1841279wma.101.1591775777865;
-        Wed, 10 Jun 2020 00:56:17 -0700 (PDT)
-Received: from dell ([2.27.167.101])
-        by smtp.gmail.com with ESMTPSA id k26sm5924954wmi.27.2020.06.10.00.56.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SYzOpPCvvtp+Q0cQ7wQGP7OOdUT4aisr6GdQG5QCZCE=;
+        b=dJeCQUo0xYaPBtZ5/dF2EE69dBUMaO4CqrSLL03pSCSfbf+dJ0GFTFXuqn7NZZF69X
+         8fPFfQE2v4m4tyifeaJJwec0CkoYZyhI5t7gpYBcYDqD1k1UksR2eXRLOh/6YMNBzabQ
+         ajo0IZOBHu6Hyur79JafSzjsSGnsYY1WF52PI64MR9WfUhEp8/wMf8lTKHOBQmCFO5Jv
+         2ONYbzx9BrKJadxHWvGLwOmnGE/qvkW847uJhyAQWaJnPxmGu06aVuFCnCiNmW98eQy0
+         EidwOz6ChAgBuejeH0jZcn8BPEpwIL1r0xUI4hmFlHiSEFN4DM9AlBe6vok3rJV2cIxz
+         CFYw==
+X-Gm-Message-State: AOAM531BiwiMI+qPoubZEJ5YIP7M2x9LYY6At5O8d7UXrM1gLP/fexmy
+        Cs4g3vjl7IRnQGU8Xrioa4JQig==
+X-Google-Smtp-Source: ABdhPJzovtzuhxEIBGTjpE25exaThmE10VZFXUK/WiQuYPPuCRMrxUqSUmeIuD0lSSk1uLDvw+qfSw==
+X-Received: by 2002:a65:67d0:: with SMTP id b16mr1569880pgs.91.1591775821812;
+        Wed, 10 Jun 2020 00:57:01 -0700 (PDT)
+Received: from pihsun-glaptop.lan (180-176-97-18.dynamic.kbronet.com.tw. [180.176.97.18])
+        by smtp.googlemail.com with ESMTPSA id y26sm12035850pff.26.2020.06.10.00.56.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 00:56:17 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 08:56:15 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        david.m.ertman@intel.com, shiraz.saleem@intel.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v4 02/11] mfd: Add support for Kontron sl28cpld
- management controller
-Message-ID: <20200610075615.GT4106@dell>
-References: <20200608185651.GD4106@dell>
- <32231f26f7028d62aeda8fdb3364faf1@walle.cc>
- <20200609064735.GH4106@dell>
- <32287ac0488f7cbd5a7d1259c284e554@walle.cc>
- <20200609151941.GM4106@dell>
- <95e6ec9bbdf6af7a9ff9c31786f743f2@walle.cc>
- <20200609194505.GQ4106@dell>
- <3a6931248f0efcaf8efbb5425a9bd833@walle.cc>
- <20200610071940.GS4106@dell>
- <f7b2b690750edd022000ab56d2f58154@walle.cc>
+        Wed, 10 Jun 2020 00:57:01 -0700 (PDT)
+From:   Pi-Hsun Shih <pihsun@chromium.org>
+Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabien Lahoudere <fabien.lahoudere@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-kernel@vger.kernel.org (open list),
+        Tzung-Bi Shih <tzungbi@google.com>
+Subject: [PATCH v2 0/2] Add support for voltage regulator on ChromeOS EC.
+Date:   Wed, 10 Jun 2020 15:56:42 +0800
+Message-Id: <20200610075649.209852-1-pihsun@chromium.org>
+X-Mailer: git-send-email 2.27.0.278.ge193c7cf3a9-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f7b2b690750edd022000ab56d2f58154@walle.cc>
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Jun 2020, Michael Walle wrote:
+Add support for controlling voltage regulator that is connected and
+controlled by ChromeOS EC. Kernel controls these regulators through
+newly added EC host commands.
 
-> Am 2020-06-10 09:19, schrieb Lee Jones:
-> > On Wed, 10 Jun 2020, Michael Walle wrote:
-> > > Am 2020-06-09 21:45, schrieb Lee Jones:
-> > > > On Tue, 09 Jun 2020, Michael Walle wrote:
-> > > > > > We do not need a 'simple-regmap' solution for your use-case.
-> > > > > >
-> > > > > > Since your device's registers are segregated, just split up the
-> > > > > > register map and allocate each sub-device with it's own slice.
-> > > > >
-> > > > > I don't get it, could you make a device tree example for my
-> > > > > use-case? (see also above)
-> > > >
-> > > >     &i2cbus {
-> > > >         mfd-device@10 {
-> > > >             compatible = "simple-mfd";
-> > > >             reg = <10>;
-> > > >
-> > > >             sub-device@10 {
-> > > >                 compatible = "vendor,sub-device";
-> > > >                 reg = <10>;
-> > > >             };
-> > > >    };
-> > > >
-> > > > The Regmap config would be present in each of the child devices.
-> > > >
-> > > > Each child device would call devm_regmap_init_i2c() in .probe().
-> > > 
-> > > Ah, I see. If I'm not wrong, this still means to create an i2c
-> > > device driver with the name "simple-mfd".
-> > 
-> > Yes, it does.
-> > 
-> > > Besides that, I don't like this, because:
-> > >  - Rob already expressed its concerns with "simple-mfd" and so on.
-> > 
-> > Where did this take place?  I'd like to read up on this.
-> 
-> In this thread:
-> https://lore.kernel.org/linux-devicetree/20200604211039.12689-1-michael@walle.cc/T/#m16fdba5962069e7cd4aa817582ee358c9fe2ecbf
-> 
-> > 
-> > >  - you need to duplicate the config in each sub device
-> > 
-> > You can have a share a single config.
-> > 
-> > >  - which also means you are restricting the sub devices to be
-> > >    i2c only (unless you implement and duplicate other regmap configs,
-> > >    too). For this driver, SPI and MMIO may be viable options.
-> > 
-> > You could also have a shared implementation to choose between different
-> > busses.
-> 
-> Then what is the difference between to have this shared config in the
-> parent driver only and use the functions which are already there, i.e.
-> dev_get_regmap(parent). But see, below, I'll wait with what you're
-> coming up.
+Changes from v1:
+* Change compatible string to google,regulator-cros-ec.
+* Use reg property in device tree.
+* Change license for dt binding according to checkpatch.pl.
+* Address comments on code styles.
 
-The difference is the omission of an otherwise pointless/superfluous
-driver.  Actually, it's the difference between the omission of 10
-pointless drivers!
+Pi-Hsun Shih (2):
+  dt-bindings: regulator: Add DT binding for cros-ec-regulator
+  regulator: Add driver for cros-ec-regulator
 
-> > > Thus, I'd rather implement a simple-mfd.c which implement a common
-> > > I2C driver for now and populate its children using
-> > > devm_of_platform_populate(). This could be extended to support other
-> > > type of regmaps like SPI in the future.
-> > > 
-> > > Also some MFD drivers could be moved to this, a likely candidate is
-> > > the smsc-ece1099.c. Although I don't really understand its purpose,
-> > > if don't have CONFIG_OF.
-> > > 
-> > > Judging from the existing code, this simple-mfd.c wouldn't just be
-> > > "a list of compatible" strings but also additional quirks and tweaks
-> > > for particular devices in this list.
-> > 
-> > Hold off on the simple-mfd.c idea, as I'm not taken by it yet and
-> > wouldn't want you to waste your time.  I have another idea which would
-> > help.  Give me a few days to put something together.
-> 
-> Sure. I'm just glad there is now a discussion about this issue.
+ .../bindings/regulator/cros-ec-regulator.yaml |  43 +++
+ drivers/regulator/Kconfig                     |   7 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/cros-ec-regulator.c         | 262 ++++++++++++++++++
+ .../linux/platform_data/cros_ec_commands.h    |  82 ++++++
+ 5 files changed, 395 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/cros-ec-regulator.yaml
+ create mode 100644 drivers/regulator/cros-ec-regulator.c
 
-It's very much in my mind.
 
-I've been meaning to do something about it for quite some time.
-
+base-commit: 5b14671be58d0084e7e2d1cc9c2c36a94467f6e0
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.27.0.278.ge193c7cf3a9-goog
+
