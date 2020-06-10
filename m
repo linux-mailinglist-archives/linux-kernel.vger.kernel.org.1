@@ -2,122 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8294F1F57DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 17:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58EFE1F57E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 17:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730219AbgFJPbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 11:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45038 "EHLO
+        id S1730232AbgFJPcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 11:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726988AbgFJPbH (ORCPT
+        with ESMTP id S1730222AbgFJPcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 11:31:07 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B65C03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 08:31:07 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id c35so1705255edf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 08:31:07 -0700 (PDT)
+        Wed, 10 Jun 2020 11:32:15 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EAFC03E96F
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 08:32:14 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x6so2743019wrm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 08:32:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=RPRWMDi9dHl0rDLgLXdVcFXijNB8/Wji5rynt4uz2HE=;
-        b=JT7uXRe2qYhx1okmLD2zOXgyCVnmm0XOMEQcl3Vd9MXGcXTQRVeRs+i3XvyYTBccLk
-         upmBX0GCRT3QRqTCNAMFCIPdTKD2fW7mC3mITOToBsVIq/2CIbCOw8/Hd7lXMlCFzhVX
-         p/aAPqTGARSPOEyi3zZNS2CKsn69pq1sDN0Q+GFa7FFy7dJfcBmjwTVykAEBJECNW3yt
-         kdXWpo62D27vyP33vcBcxfvQ8kf1iQgCcJNhMvWbkAYTt5P92nLi6mzT4UzQEVTnu6A1
-         ZQ7rPt/lCcaYcvMY9uwDvCPeFsQk/f1dRaTMBAn26TD7gq44lLegCw6sPAtqjYENosfe
-         Dvlw==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L/g86dBUZKjl5KTVUeFxtA/4wg+xhUm8BJGegAmb5Js=;
+        b=juAtCCLziMVmylfyjAk8fr0gNLiH3XWI7z40EkMsjyFvbdVai3ORIxsV2BFJijThoJ
+         1g7J023Qy8yQiVLtgS9ojBkn15n0fmjlb4w84EY98IztkprceRsEhhi3/gABkwjyLLAa
+         XkrYRg0eOwmbNcES1JGPnazCavOWfb/35HXsM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=RPRWMDi9dHl0rDLgLXdVcFXijNB8/Wji5rynt4uz2HE=;
-        b=XKkym1xDGnNfp0bKqAnWcsFi2ur6apvGtH6xTg1RLU49ZRJKcxSgMHrL9M3JNySpb2
-         rJ4X7xqij7kR9Qsmt/2EFdrIi7Kk7GVJKkj1fiyDGyKo2L8HjxZfnlCUXMmcx2g9pD+v
-         +y4/9PnE1VcJEPZUaUOQMkE0RVAuvdvbhMSA9Xa8ILVmI5/YB8TPR2HEHRJsTu2qWBSS
-         gOrUpwyvxi+o98mkFdJoOaZpvuqJP1s51fUFwRT+5Mc0HDnkFrw5aciM2LE+K/6xVIXV
-         W29WV3VnCmT1PNguJsxJDFGCt4EMB0TLY1nFbDVmoQzWAueStuv3G72Gqm568dT3h6Rp
-         7ipQ==
-X-Gm-Message-State: AOAM532pLoYGURlOdFjxQR5wtK6Fnm9jd3Ahgho0aha8U+u4SPgiR6f8
-        Vvmn7eumbUMh9LUxR16r8aKabw==
-X-Google-Smtp-Source: ABdhPJy0d8cCKolNg97WfPvyEXB+t5UALbAk6jJPJu41XbDz0BAbjjJMNAeuZWv//X2o7Pmpk4vnKg==
-X-Received: by 2002:a05:6402:690:: with SMTP id f16mr3042853edy.9.1591803066151;
-        Wed, 10 Jun 2020 08:31:06 -0700 (PDT)
-Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
-        by smtp.gmail.com with ESMTPSA id k10sm77009ejs.108.2020.06.10.08.31.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=L/g86dBUZKjl5KTVUeFxtA/4wg+xhUm8BJGegAmb5Js=;
+        b=oiimhkusmaPTWw0hq/xfE0If/EJmorjEcVRXG7lSr9OU5PCHm+Q1aQWtFHtYmy8Kug
+         RnhMU/BteHtT9jau3XdeClihLkzi3bJpWSyGBThfh+kGCnzA/4IgraIXpv9zZ5wfW3wd
+         Y8DLY5kjWkrf4pVwPB6L8J/GtstFcBPtKLkSCcmqtRhOnlVoNyO1QdhbZn6vrSR8WEef
+         KjAlXx2KmwTB4renh3Fsyqdc5tx6nCoA7sRrxas65TN9beuJGEvUY+XVlPpX9VFqmjOl
+         nKrkrKjhagDWmNabC+z73MjvrM6cwa+TxcDs5HJEwycgsiXLWUII7DSZW9OkFkdC/a27
+         QTeg==
+X-Gm-Message-State: AOAM531+wxc/rUNnovmxveTZVi2DqIxKZwQ/DAe0ruRqc3xp0KRl+PXY
+        1YQbjkEkL9DBuC0OkUhQGoLqc29TnCg=
+X-Google-Smtp-Source: ABdhPJyDyoyk9tr3zTqwPfbRN2CNQ0mYPBBQU8gPh438yGWw6/DWZOjH0T/7JDpZdKCb0c9Mz+oYLw==
+X-Received: by 2002:adf:8b0c:: with SMTP id n12mr4705954wra.340.1591803133698;
+        Wed, 10 Jun 2020 08:32:13 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id a1sm101094wmd.28.2020.06.10.08.32.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 08:31:04 -0700 (PDT)
-References: <202005311147.iLK0hQoe%lkp@intel.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     kbuild test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: Re: sound/soc/meson/t9015.c:315:34: warning: unused variable 't9015_ids'
-In-reply-to: <202005311147.iLK0hQoe%lkp@intel.com>
-Date:   Wed, 10 Jun 2020 17:31:03 +0200
-Message-ID: <1jftb32b0o.fsf@starbuckisacylon.baylibre.com>
+        Wed, 10 Jun 2020 08:32:12 -0700 (PDT)
+Date:   Wed, 10 Jun 2020 17:32:10 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        linux-renesas-soc@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jiri Kosina <trivial@kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 08/17] drivers: gpu: drm: Fix trivial spelling
+Message-ID: <20200610153210.GA20149@phenom.ffwll.local>
+Mail-Followup-To: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        linux-renesas-soc@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, Jiri Kosina <trivial@kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
+ <20200609124610.3445662-9-kieran.bingham+renesas@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200609124610.3445662-9-kieran.bingham+renesas@ideasonboard.com>
+X-Operating-System: Linux phenom 5.6.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 09, 2020 at 01:46:01PM +0100, Kieran Bingham wrote:
+> The word 'descriptor' is misspelled throughout the tree.
+> 
+> Fix it up accordingly:
+>     decriptors -> descriptors
+> 
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
-On Sun 31 May 2020 at 05:00, kbuild test robot <lkp@intel.com> wrote:
+Queued for 5.9, thanks for your patch.
+-Daniel
 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   ffeb595d84811dde16a28b33d8a7cf26d51d51b3
-> commit: 33901f5b9b16d212ee58865e9e8e80fc813f12da ASoC: meson: add t9015 internal DAC driver
-> date:   3 months ago
-> config: x86_64-randconfig-r033-20200531 (attached as .config)
-> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project 2388a096e7865c043e83ece4e26654bd3d1a20d5)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install x86_64 cross compiling tool for clang build
->         # apt-get install binutils-x86-64-linux-gnu
->         git checkout 33901f5b9b16d212ee58865e9e8e80fc813f12da
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kbuild test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>, old ones prefixed by <<):
->
->>> sound/soc/meson/t9015.c:315:34: warning: unused variable 't9015_ids' [-Wunused-const-variable]
-> static const struct of_device_id t9015_ids[] = {
-> ^
-> 1 warning generated.
->
-> vim +/t9015_ids +315 sound/soc/meson/t9015.c
->
->    314	
->  > 315	static const struct of_device_id t9015_ids[] = {
->    316		{ .compatible = "amlogic,t9015", },
->    317		{ }
->    318	};
->    319	MODULE_DEVICE_TABLE(of, t9015_ids);
->    320	
-
-Hi,
-
-I'm not sure what to do with this report.
-I tried to reproduce has instructed, the log is full of warnings and the
-compilation eventually fails to link.
-
-It seems that most (if not all) drivers with a MODULE_DEVICE_TABLE() show
-this warning with the provided .config (COMPILE_TEST).
-
-When compiled with gcc, no such warning is shown.
-I can remove COMPILE_TEST for this driver, it will make the warning go
-away but I'm not sure it is appropriate.
-
->
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  drivers/gpu/drm/drm_dp_helper.c | 2 +-
+>  include/drm/drm_dp_helper.h     | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+> index 19c99dddcb99..8f1b329df16d 100644
+> --- a/drivers/gpu/drm/drm_dp_helper.c
+> +++ b/drivers/gpu/drm/drm_dp_helper.c
+> @@ -1365,7 +1365,7 @@ EXPORT_SYMBOL(drm_dp_get_edid_quirks);
+>  /**
+>   * drm_dp_read_desc - read sink/branch descriptor from DPCD
+>   * @aux: DisplayPort AUX channel
+> - * @desc: Device decriptor to fill from DPCD
+> + * @desc: Device descriptor to fill from DPCD
+>   * @is_branch: true for branch devices, false for sink devices
+>   *
+>   * Read DPCD 0x400 (sink) or 0x500 (branch) into @desc. Also debug log the
+> diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
+> index 2035ac44afde..1165ec105638 100644
+> --- a/include/drm/drm_dp_helper.h
+> +++ b/include/drm/drm_dp_helper.h
+> @@ -1701,7 +1701,7 @@ enum drm_dp_quirk {
+>  
+>  /**
+>   * drm_dp_has_quirk() - does the DP device have a specific quirk
+> - * @desc: Device decriptor filled by drm_dp_read_desc()
+> + * @desc: Device descriptor filled by drm_dp_read_desc()
+>   * @edid_quirks: Optional quirk bitmask filled by drm_dp_get_edid_quirks()
+>   * @quirk: Quirk to query for
+>   *
+> -- 
+> 2.25.1
+> 
 
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
