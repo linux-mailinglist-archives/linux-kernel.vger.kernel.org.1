@@ -2,72 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793D81F55AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 15:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 396B01F55B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 15:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729212AbgFJNYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 09:24:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbgFJNYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 09:24:05 -0400
-Received: from localhost (lfbn-ncy-1-1025-94.w92-138.abo.wanadoo.fr [92.138.0.94])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729287AbgFJNYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 09:24:47 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:51917 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726306AbgFJNYq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 09:24:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591795485;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cmumuHmMHhqlAParqxNQ/YNCBmzeBy/qMSsDffXs8Eo=;
+        b=bWM/LprH6h8KE6pk4LMLtE4IVgtoTrSp6L0SM6f09VF2DmBxI00YJLtSJoIBC3f7JtXq84
+        yaqT5m9IvYVuyF14leFDVGHsWb1daW6MuniXhb7ZDKlXMPoDHCw2e9nzqYCvHgXOdBYEGi
+        PAOqzu62hG1zZHGux80y7hL5TF5DzG0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-HMY6qF-2Pqqun-sbMdrMqQ-1; Wed, 10 Jun 2020 09:24:40 -0400
+X-MC-Unique: HMY6qF-2Pqqun-sbMdrMqQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F3912072E;
-        Wed, 10 Jun 2020 13:24:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591795445;
-        bh=PqGKpe3pJAbiB6xHUS1NE9ElT3urY2tQdEw+LXxUfNc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UhBTH+zjq9UjbPZoc6Rwziv2sNqsfdxbyhZgO7j9MGR9KKLpb/vIrlV6nzdJF1qFE
-         dsx9SUb+4F0ZVqFhoAlqBFg7wed3I8Aw8jemANyCEoIyr25FqcH5OmusXv+5l4VkT5
-         JJL+emqZ8baTP2BsGXxw8OWuYRFaPd+XB6aM0AUk=
-Date:   Wed, 10 Jun 2020 15:24:03 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, x86@kernel.org,
-        cai@lca.pw, mgorman@techsingularity.net, sfr@canb.auug.org.au,
-        linux@roeck-us.net
-Subject: Re: [RFC][PATCH 5/7] irq_work, smp: Allow irq_work on
- call_single_queue
-Message-ID: <20200610132402.GB26639@lenoir>
-References: <20200526161057.531933155@infradead.org>
- <20200526161908.011635912@infradead.org>
- <20200528234031.GB551@lenoir>
- <20200529133641.GM706495@hirez.programming.kicks-ass.net>
- <20200605093704.GB2948@hirez.programming.kicks-ass.net>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E45148014D9;
+        Wed, 10 Jun 2020 13:24:38 +0000 (UTC)
+Received: from gondolin (ovpn-112-196.ams2.redhat.com [10.36.112.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F39CE709D7;
+        Wed, 10 Jun 2020 13:24:33 +0000 (UTC)
+Date:   Wed, 10 Jun 2020 15:24:31 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Pierre Morel <pmorel@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, mst@redhat.com,
+        jasowang@redhat.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH] s390: protvirt: virtio: Refuse device without IOMMU
+Message-ID: <20200610152431.358fded7.cohuck@redhat.com>
+In-Reply-To: <1591794711-5915-1-git-send-email-pmorel@linux.ibm.com>
+References: <1591794711-5915-1-git-send-email-pmorel@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200605093704.GB2948@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 11:37:04AM +0200, Peter Zijlstra wrote:
-> On Fri, May 29, 2020 at 03:36:41PM +0200, Peter Zijlstra wrote:
-> > Maybe I can anonymous-union my way around it, dunno. I'll think about
-> > it. I'm certainly not proud of this. But at least the BUILD_BUG_ON()s
-> > should catch the more blatant breakage here.
+On Wed, 10 Jun 2020 15:11:51 +0200
+Pierre Morel <pmorel@linux.ibm.com> wrote:
+
+> Protected Virtualisation protects the memory of the guest and
+> do not allow a the host to access all of its memory.
 > 
-> How's this then? Differently ugly, but at least it compiles with that
-> horrible struct randomization junk enabled.
+> Let's refuse a VIRTIO device which does not use IOMMU
+> protected access.
 > 
+> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
 > ---
->  include/linux/irq_work.h  |   28 ++++++-------------
->  include/linux/sched.h     |    4 +-
->  include/linux/smp.h       |   25 ++++++-----------
->  include/linux/smp_types.h |   66 ++++++++++++++++++++++++++++++++++++++++++++++
->  kernel/sched/core.c       |    6 ++--
->  kernel/smp.c              |   18 ------------
->  6 files changed, 89 insertions(+), 58 deletions(-)
+>  drivers/s390/virtio/virtio_ccw.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+> index 5730572b52cd..06ffbc96587a 100644
+> --- a/drivers/s390/virtio/virtio_ccw.c
+> +++ b/drivers/s390/virtio/virtio_ccw.c
+> @@ -986,6 +986,11 @@ static void virtio_ccw_set_status(struct virtio_device *vdev, u8 status)
+>  	if (!ccw)
+>  		return;
+>  
+> +	/* Protected Virtualisation guest needs IOMMU */
+> +	if (is_prot_virt_guest() &&
+> +	    !__virtio_test_bit(vdev, VIRTIO_F_IOMMU_PLATFORM))
+> +			status &= ~VIRTIO_CONFIG_S_FEATURES_OK;
+> +
 
+set_status seems like an odd place to look at features; shouldn't that
+rather be done in finalize_features?
 
-Looks good. I don't have a better idea.
+>  	/* Write the status to the host. */
+>  	vcdev->dma_area->status = status;
+>  	ccw->cmd_code = CCW_CMD_WRITE_STATUS;
 
-Thanks!
-
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
