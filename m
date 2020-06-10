@@ -2,227 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E511F50BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 11:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9774A1F50D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 11:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgFJJBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 05:01:48 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:59383 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726956AbgFJJBs (ORCPT
+        id S1727035AbgFJJHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 05:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726219AbgFJJHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 05:01:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591779705;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EAxWiuhgv3Kq1AdZkr0poWV1ssDLNyidhVho1ybrTKY=;
-        b=B4y9MqrxDxOz/N/QAk+vUEfbBP+3wSHPW1Qln+qo8yZivzaZlEi7hR3zI66eif1Z3SA/fG
-        dMXp/BXuLnK8IU/GFvGV5rpbIHOT9HE5TKlaD9x3velbGQbGPUWqTdsbLw+JuvmWHWxTkr
-        4UaXihUt32nf02+RitH6zTuBI61/flQ=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-426-QFzxBtSQMV-TpheO9K0x-A-1; Wed, 10 Jun 2020 05:01:44 -0400
-X-MC-Unique: QFzxBtSQMV-TpheO9K0x-A-1
-Received: by mail-ej1-f70.google.com with SMTP id g9so776179ejs.20
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 02:01:44 -0700 (PDT)
+        Wed, 10 Jun 2020 05:07:37 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F15C03E96B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 02:07:36 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id j1so844719pfe.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 02:07:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=tV8bIAKkwRNCkckVOYeoYlebWo0ebt4dV9pe/7DB+wY=;
+        b=d0gmA+SXA5MhEmNQkobfbSzB0bc1wk6GXWffGFVKkkVjlFYV7rTvNNqSeuKazD2eOb
+         qvprZ9QGvxPQNw2aIZzNzycenLIp7znKJ7y+cH7XQ3eyunqrr7LaQLf9eTzIxYcfztvz
+         GsYspG0NeiDtRz/Z93hX7HDkmtn6ePW4RSa08=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=EAxWiuhgv3Kq1AdZkr0poWV1ssDLNyidhVho1ybrTKY=;
-        b=pEdcJp20hPXFNc/7FGg1Oxbl8/gQIB1csAY7BqxX8gXMGlPOq9x183EPmlY0U4Dpwb
-         oesZUTcBsSKXAfH1IfvNsNPUi0iR5RTA2s3rwqrqWYXrP8az+pquwmPUuP+w7w+00Wto
-         3z4FzTeroZHcwYygzsoZu84THkzm3JiYRlB0PWGZuvBgb0KwaeW3dKbcghtZxji0J+pI
-         gMTSBRG/QrieauMA8IyU3jUV4Zo1pbq8AYkRVJucWHnTuoHEKYrLUhDygLW0RkWgtw10
-         cE+s0T5DBiAUZ47o2qr1uFG95xOcd4GgPCzqxBmIPw70zYydGS86YDUztn2uG9ZyqjYV
-         6TXg==
-X-Gm-Message-State: AOAM532U+oSjnL6EMb6mllPGmFecAueDl5gcM67gvZ5GRZP4gGC3+wHa
-        mmmjr7C9ySnAKS8KkhQSIHQde0lZYiG9keYweWdND8EF+3N3PZ7ygMvDC2DslC+NG14HnGHksla
-        zQyOQq7tIz9M2uFop+qMY4NmK
-X-Received: by 2002:a05:6402:b31:: with SMTP id bo17mr1648828edb.152.1591779702582;
-        Wed, 10 Jun 2020 02:01:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz2BNd/gj5HBZQx2TQS5oisvaW33lJypi62ctlaKOpi/H0kMIzHWAdg7PKzXycJntBOJZrLPw==
-X-Received: by 2002:a05:6402:b31:: with SMTP id bo17mr1648777edb.152.1591779701875;
-        Wed, 10 Jun 2020 02:01:41 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id j16sm16817793edp.35.2020.06.10.02.01.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=tV8bIAKkwRNCkckVOYeoYlebWo0ebt4dV9pe/7DB+wY=;
+        b=VLT9Dco3xDtd6NWImnVDAbBh1Q/fYjV5uCSAjIneDu9EjeijUP0Mtpp3xAUegsQGIZ
+         7lrqmF/8hvtk+yE6bTZQDID+t3FVYJ+ttxDoxnOjX6fRU+cDsBiMNmhyc6WOfoH6Togw
+         1PD8Je+FQW+sJHZw46YraY8ReBjH4CgPcn4+CTLHX34R7VTPNl53aQHa/28Mi5aZwnEb
+         NlwxRY8GmK3QXr8C6NbMK88KqRvMMtArP80clm10sIFqL7ES4X1JqAcomV8fxq9Tf8NM
+         94hMnDK40Ih7R7zRREXvJrs9Sdmm/JT4mVYlMUiUzXTuMhH8kHVVlBtHrOBRrxWju7CG
+         My6Q==
+X-Gm-Message-State: AOAM533ax447ZprvM80nhBqp1GT1m9B/7tMlAJFCPBpyt2+pFJfQ3WK9
+        nabajBTgbEr6eWqDa3jBNXeOEw==
+X-Google-Smtp-Source: ABdhPJzGBt+BpcpNsPtkyLtX6Fhe6c/50y9943yUlx9gwDZf978+h///xXi53aR8z+77tF1GSG3Klg==
+X-Received: by 2002:a63:5644:: with SMTP id g4mr1760871pgm.381.1591780055442;
+        Wed, 10 Jun 2020 02:07:35 -0700 (PDT)
+Received: from shiro.work (p1285116-ipngn200805sizuokaden.shizuoka.ocn.ne.jp. [114.171.61.116])
+        by smtp.googlemail.com with ESMTPSA id nl8sm5191620pjb.13.2020.06.10.02.07.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 02:01:41 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 05/10] KVM: x86: interrupt based APF 'page ready' event delivery
-In-Reply-To: <dcdda87c-cf2f-da6f-3166-e2d0bfefce06@redhat.com>
-References: <20200525144125.143875-1-vkuznets@redhat.com> <20200525144125.143875-6-vkuznets@redhat.com> <20200609191035.GA223235@redhat.com> <dcdda87c-cf2f-da6f-3166-e2d0bfefce06@redhat.com>
-Date:   Wed, 10 Jun 2020 11:01:39 +0200
-Message-ID: <873673b8gc.fsf@vitty.brq.redhat.com>
+        Wed, 10 Jun 2020 02:07:34 -0700 (PDT)
+From:   Daniel Palmer <daniel@0x0f.com>
+Cc:     k@japko.eu, tim.bird@sony.com, daniel@0x0f.com,
+        devicetree@vger.kernel.org, Daniel Palmer <daniel@thingy.jp>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Doug Anderson <armlinux@m.disordat.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Gregory Fong <gregory.0xf0@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Nathan Huckleberry <nhuck15@gmail.com>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] Initial MStar/Sigmastar ARMv7 SoC support
+Date:   Wed, 10 Jun 2020 18:03:58 +0900
+Message-Id: <20200610090421.3428945-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.27.0.rc0
+In-Reply-To: <20191014061617.10296-2-daniel@0x0f.com>
+References: <20191014061617.10296-2-daniel@0x0f.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
+This patch set adds initial support for MStar/Sigmastar's
+ARMv7 based SoCs. There is just enough here to get to a shell
+with an initramfs but support for a lot of the hardware is
+in progress and will follow.
 
-> On 09/06/20 21:10, Vivek Goyal wrote:
->> Hi Vitaly,
->> 
->> Have a question about page ready events. 
->> 
->> Now we deliver PAGE_NOT_PRESENT page faults only if guest is not in
->> kernel mode. So say kernel tried to access a page and we halted cpu.
->> When page is available, we will inject page_ready interrupt. At
->> that time we don't seem to check whether page_not_present was injected
->> or not. 
->> 
->> IOW, we seem to deliver page_ready irrespective of the fact whether
->> PAGE_NOT_PRESENT was delivered or not. And that means we will be
->> sending page present tokens to guest. Guest will not have a state
->> associated with that token and think that page_not_present has
->> not been delivered yet and allocate an element in hash table for
->> future page_not_present event. And that will lead to memory leak
->> and token conflict etc.
->
-> Yes, and this is https://bugzilla.kernel.org/show_bug.cgi?id=208081
-> which I was looking at right today.
->
+MStar also shipped chips with MIPS cores and ARM9 etc which
+are incompatible so I've tried to make the distinction in the
+code that this is strictly for the ARMv7 based chips.
 
-The issue isn't related to the interrupt based APF mechanism, right?
-'Page ready' events are always injected (sooner or later). I'll take a
-look.
+Differences from v1:
 
->> While setting up async pf, should we keep track whether associated
->> page_not_present was delivered to guest or not and deliver page_ready
->> accordingly.
->
-> Yes, I think so.
->
+1. v1 only really supported two specific chips that were known
+at the time of submitting that patch series. Since then it's
+become apparent that there are a few families of SoCs based
+on the same ARMv7 core, clk blocks, interrupt controllers etc
+and this v2 attempts to make support more generic so in the future
+more SoCs from this lineage can be added. Support for some other
+chips is already in progress and will follow.
 
-Something like this? (not even compile tested yet):
+2. v1 only added support for the BreadBee boards that I have been
+working on. v2 also adds support for a readily available car dash
+camera.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 8e8fea13b6c7..68178d29d35c 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1661,7 +1661,7 @@ void kvm_make_scan_ioapic_request(struct kvm *kvm);
- void kvm_make_scan_ioapic_request_mask(struct kvm *kvm,
- 				       unsigned long *vcpu_bitmap);
- 
--void kvm_arch_async_page_not_present(struct kvm_vcpu *vcpu,
-+bool kvm_arch_async_page_not_present(struct kvm_vcpu *vcpu,
- 				     struct kvm_async_pf *work);
- void kvm_arch_async_page_present(struct kvm_vcpu *vcpu,
- 				 struct kvm_async_pf *work);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c26dd1363151..e1e840df6b69 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10515,7 +10515,7 @@ bool kvm_can_do_async_pf(struct kvm_vcpu *vcpu)
- 	return kvm_arch_interrupt_allowed(vcpu);
- }
- 
--void kvm_arch_async_page_not_present(struct kvm_vcpu *vcpu,
-+bool kvm_arch_async_page_not_present(struct kvm_vcpu *vcpu,
- 				     struct kvm_async_pf *work)
- {
- 	struct x86_exception fault;
-@@ -10532,17 +10532,19 @@ void kvm_arch_async_page_not_present(struct kvm_vcpu *vcpu,
- 		fault.address = work->arch.token;
- 		fault.async_page_fault = true;
- 		kvm_inject_page_fault(vcpu, &fault);
--	} else {
--		/*
--		 * It is not possible to deliver a paravirtualized asynchronous
--		 * page fault, but putting the guest in an artificial halt state
--		 * can be beneficial nevertheless: if an interrupt arrives, we
--		 * can deliver it timely and perhaps the guest will schedule
--		 * another process.  When the instruction that triggered a page
--		 * fault is retried, hopefully the page will be ready in the host.
--		 */
--		kvm_make_request(KVM_REQ_APF_HALT, vcpu);
-+		return true;
- 	}
-+
-+	/*
-+	 * It is not possible to deliver a paravirtualized asynchronous
-+	 * page fault, but putting the guest in an artificial halt state
-+	 * can be beneficial nevertheless: if an interrupt arrives, we
-+	 * can deliver it timely and perhaps the guest will schedule
-+	 * another process.  When the instruction that triggered a page
-+	 * fault is retried, hopefully the page will be ready in the host.
-+	 */
-+	kvm_make_request(KVM_REQ_APF_HALT, vcpu);
-+	return false;
- }
- 
- void kvm_arch_async_page_present(struct kvm_vcpu *vcpu,
-@@ -10559,7 +10561,8 @@ void kvm_arch_async_page_present(struct kvm_vcpu *vcpu,
- 		kvm_del_async_pf_gfn(vcpu, work->arch.gfn);
- 	trace_kvm_async_pf_ready(work->arch.token, work->cr2_or_gpa);
- 
--	if (kvm_pv_async_pf_enabled(vcpu) &&
-+	if (work->notpresent_injected &&
-+	    kvm_pv_async_pf_enabled(vcpu) &&
- 	    !apf_put_user_ready(vcpu, work->arch.token)) {
- 		vcpu->arch.apf.pageready_pending = true;
- 		kvm_apic_set_irq(vcpu, &irq, NULL);
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 802b9e2306f0..2456dc5338f8 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -206,6 +206,7 @@ struct kvm_async_pf {
- 	unsigned long addr;
- 	struct kvm_arch_async_pf arch;
- 	bool   wakeup_all;
-+	bool notpresent_injected;
- };
- 
- void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu);
-diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
-index f1e07fae84e9..de28413abefd 100644
---- a/virt/kvm/async_pf.c
-+++ b/virt/kvm/async_pf.c
-@@ -189,12 +189,14 @@ int kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
- 		goto retry_sync;
- 
- 	INIT_WORK(&work->work, async_pf_execute);
--	if (!schedule_work(&work->work))
--		goto retry_sync;
- 
- 	list_add_tail(&work->queue, &vcpu->async_pf.queue);
- 	vcpu->async_pf.queued++;
--	kvm_arch_async_page_not_present(vcpu, work);
-+	work->notpresent_injected = kvm_arch_async_page_not_present(vcpu, work);
-+
-+	/* schedule_work() only fails for already queued works */
-+	schedule_work(&work->work);
-+
- 	return 1;
- retry_sync:
- 	kvm_put_kvm(work->vcpu->kvm);
-@@ -216,6 +218,7 @@ int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu)
- 		return -ENOMEM;
- 
- 	work->wakeup_all = true;
-+	work->notpresent_injected = true;
- 	INIT_LIST_HEAD(&work->queue); /* for list_del to work */
- 
- 	spin_lock(&vcpu->async_pf.lock);
+3. Support for the BreadBee board has been split into two top level
+dts to cleanly support if either the msc313 or msc313e is mounted on
+the board. The chips are pin compatible but some of the internal
+hardware is different. The u-boot port for these SoCs can detect
+which chip it is running on and select the right dts so the user
+doesn't have to care which chip is mounted on their board.
+
+
+Daniel Palmer (5):
+  dt-bindings: arm: Initial MStar vendor prefixes and compatible strings
+  ARM: mstar: Add machine for MStar/Sigmastar infinity/mercury family
+    ARMv7 SoCs
+  ARM: mstar: Add infinity/mercury series dtsi
+  ARM: mstar: Add dts for msc313(e) based BreadBee boards
+  ARM: mstar: Add dts for 70mai midrive d08
+
+ .../devicetree/bindings/arm/mstar.yaml        | 30 ++++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |  6 ++
+ MAINTAINERS                                   | 10 +++
+ arch/arm/Kconfig                              |  2 +
+ arch/arm/Makefile                             |  1 +
+ arch/arm/boot/dts/Makefile                    |  4 ++
+ .../dts/infinity-msc313-breadbee_crust.dts    | 25 +++++++
+ arch/arm/boot/dts/infinity-msc313.dtsi        | 14 ++++
+ arch/arm/boot/dts/infinity.dtsi               | 10 +++
+ .../boot/dts/infinity3-msc313e-breadbee.dts   | 25 +++++++
+ arch/arm/boot/dts/infinity3-msc313e.dtsi      | 14 ++++
+ arch/arm/boot/dts/infinity3.dtsi              | 10 +++
+ .../boot/dts/mercury5-ssc8336n-midrive08.dts  | 25 +++++++
+ arch/arm/boot/dts/mercury5-ssc8336n.dtsi      | 14 ++++
+ arch/arm/boot/dts/mercury5.dtsi               | 10 +++
+ arch/arm/boot/dts/mstar-v7.dtsi               | 71 ++++++++++++++++++
+ arch/arm/mach-mstar/Kconfig                   | 26 +++++++
+ arch/arm/mach-mstar/Makefile                  |  1 +
+ arch/arm/mach-mstar/mstarv7.c                 | 72 +++++++++++++++++++
+ 19 files changed, 370 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/mstar.yaml
+ create mode 100644 arch/arm/boot/dts/infinity-msc313-breadbee_crust.dts
+ create mode 100644 arch/arm/boot/dts/infinity-msc313.dtsi
+ create mode 100644 arch/arm/boot/dts/infinity.dtsi
+ create mode 100644 arch/arm/boot/dts/infinity3-msc313e-breadbee.dts
+ create mode 100644 arch/arm/boot/dts/infinity3-msc313e.dtsi
+ create mode 100644 arch/arm/boot/dts/infinity3.dtsi
+ create mode 100644 arch/arm/boot/dts/mercury5-ssc8336n-midrive08.dts
+ create mode 100644 arch/arm/boot/dts/mercury5-ssc8336n.dtsi
+ create mode 100644 arch/arm/boot/dts/mercury5.dtsi
+ create mode 100644 arch/arm/boot/dts/mstar-v7.dtsi
+ create mode 100644 arch/arm/mach-mstar/Kconfig
+ create mode 100644 arch/arm/mach-mstar/Makefile
+ create mode 100644 arch/arm/mach-mstar/mstarv7.c
 
 -- 
-Vitaly
+2.27.0.rc0
 
