@@ -2,144 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25501F59EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6361F1F59CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729704AbgFJRRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 13:17:08 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:60928 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729619AbgFJRRF (ORCPT
+        id S1729286AbgFJRN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 13:13:28 -0400
+Received: from smtprelay0251.hostedemail.com ([216.40.44.251]:51044 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726979AbgFJRN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 13:17:05 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jj4LV-0006fQ-U5; Wed, 10 Jun 2020 11:17:01 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jj4LV-0002OG-1e; Wed, 10 Jun 2020 11:17:01 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexey Gladkov <gladkov.alexey@gmail.com>
-Cc:     syzbot <syzbot+4abac52934a48af5ff19@syzkaller.appspotmail.com>,
-        adobriyan@gmail.com, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <0000000000002d7ca605a7b8b1c5@google.com>
-        <20200610130422.1197386-1-gladkov.alexey@gmail.com>
-Date:   Wed, 10 Jun 2020 12:12:54 -0500
-In-Reply-To: <20200610130422.1197386-1-gladkov.alexey@gmail.com> (Alexey
-        Gladkov's message of "Wed, 10 Jun 2020 15:04:22 +0200")
-Message-ID: <87mu5azvxl.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 10 Jun 2020 13:13:28 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 59FF8180286EF;
+        Wed, 10 Jun 2020 17:13:27 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3871:3872:3873:4321:5007:6691:8957:10004:10400:10848:11232:11658:11914:12043:12297:12438:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21451:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: coat52_230528b26dcc
+X-Filterd-Recvd-Size: 1882
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf12.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 10 Jun 2020 17:13:26 +0000 (UTC)
+Message-ID: <c8851256aa453461481233e8a7fea878f9580c5b.camel@perches.com>
+Subject: Re: [PATCH] .clang-format: update column limit
+From:   Joe Perches <joe@perches.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 10 Jun 2020 10:13:24 -0700
+In-Reply-To: <20200610125147.2782142-1-christian.brauner@ubuntu.com>
+References: <20200610125147.2782142-1-christian.brauner@ubuntu.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jj4LV-0002OG-1e;;;mid=<87mu5azvxl.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18dBXhU4ULnzMCMzQEm7usNsGx80LULPAM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4807]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa08 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Alexey Gladkov <gladkov.alexey@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 516 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 13 (2.6%), b_tie_ro: 11 (2.2%), parse: 0.96
-        (0.2%), extract_message_metadata: 12 (2.4%), get_uri_detail_list: 1.99
-        (0.4%), tests_pri_-1000: 4.5 (0.9%), tests_pri_-950: 1.31 (0.3%),
-        tests_pri_-900: 1.11 (0.2%), tests_pri_-90: 139 (27.0%), check_bayes:
-        136 (26.4%), b_tokenize: 6 (1.2%), b_tok_get_all: 9 (1.7%),
-        b_comp_prob: 2.8 (0.5%), b_tok_touch_all: 113 (22.0%), b_finish: 1.36
-        (0.3%), tests_pri_0: 331 (64.2%), check_dkim_signature: 0.82 (0.2%),
-        check_dkim_adsp: 3.4 (0.6%), poll_dns_idle: 0.93 (0.2%), tests_pri_10:
-        2.1 (0.4%), tests_pri_500: 6 (1.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] proc: s_fs_info may be NULL when proc_kill_sb is called
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Gladkov <gladkov.alexey@gmail.com> writes:
+On Wed, 2020-06-10 at 14:51 +0200, Christian Brauner wrote:
+> The provided clang-format file wraps at 80 chars. If noone minds I'd like
+> to adjust this limit to 100 similar to what checkpatch (cf. [1]) uses now.
+> 
+> [1]: commit bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column warning")
+> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+[]
+> diff --git a/.clang-format b/.clang-format
+[]
+> @@ -52,7 +52,7 @@ BreakConstructorInitializersBeforeComma: false
+>  #BreakConstructorInitializers: BeforeComma # Unknown to clang-format-4.0
+>  BreakAfterJavaFieldAnnotations: false
+>  BreakStringLiterals: false
+> -ColumnLimit: 80
+> +ColumnLimit: 100
 
-> syzbot found that proc_fill_super() fails before filling up sb->s_fs_info,
-> deactivate_locked_super() will be called and sb->s_fs_info will be NULL.
-> The proc_kill_sb() does not expect fs_info to be NULL which is wrong.
+Ii think this is a not a good change.
 
-For the case where s_fs_info is never allocated this looks correct.
-That is because generic_shutdown_super has a special for !sb->s_root.
+If you read the commit log you provided, it ways
+"staying withing 80 columns is certainly still _preferred_"
 
-However for the existing cases I can't convince myself that it is safe
-to change the order we free the pid namespace and free fs_info.
+With this change, clang would _always_ wrap to 100 columns.
 
-There is a lot of code that can run while generic_shutdown_super is
-running and purging all of the inodes.  We have crazy things like
-proc_flush_pid that might care, as well proc_evict_inode.
-
-I haven't found anything that actually references fs_info or actually
-depends on the pid namespace living longer than the proc inode but it
-would be really easy to miss something.
-
-Can you send a v2 version does not change the order things are freed in
-for the case where we do allocate fs_info.  That will make it trivially
-safe to apply.
-
-Otherwise this looks like a very good patch.
-
-Thank you,
-Eric
+clang would not make any reasonable attempt to use 80 when
+it should.
 
 
-> Link: https://lore.kernel.org/lkml/0000000000002d7ca605a7b8b1c5@google.com
-> Reported-by: syzbot+4abac52934a48af5ff19@syzkaller.appspotmail.com
-> Fixes: fa10fed30f25 ("proc: allow to mount many instances of proc in one pid namespace")
-> Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
-> ---
->  fs/proc/root.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
->
-> diff --git a/fs/proc/root.c b/fs/proc/root.c
-> index ffebed1999e5..a715eb9f196a 100644
-> --- a/fs/proc/root.c
-> +++ b/fs/proc/root.c
-> @@ -264,15 +264,18 @@ static void proc_kill_sb(struct super_block *sb)
->  {
->  	struct proc_fs_info *fs_info = proc_sb_info(sb);
->  
-> -	if (fs_info->proc_self)
-> -		dput(fs_info->proc_self);
-> +	if (fs_info) {
-> +		if (fs_info->proc_self)
-> +			dput(fs_info->proc_self);
->  
-> -	if (fs_info->proc_thread_self)
-> -		dput(fs_info->proc_thread_self);
-> +		if (fs_info->proc_thread_self)
-> +			dput(fs_info->proc_thread_self);
-> +
-> +		put_pid_ns(fs_info->pid_ns);
-> +		kfree(fs_info);
-> +	}
->  
->  	kill_anon_super(sb);
-> -	put_pid_ns(fs_info->pid_ns);
-> -	kfree(fs_info);
->  }
->  
->  static struct file_system_type proc_fs_type = {
