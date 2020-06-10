@@ -2,155 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07ABB1F5853
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 17:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AB11F585E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 17:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728460AbgFJPuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 11:50:46 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:37052 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728217AbgFJPup (ORCPT
+        id S1728526AbgFJPxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 11:53:36 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:41320 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728217AbgFJPxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 11:50:45 -0400
-Received: by mail-oi1-f194.google.com with SMTP id a3so2505716oid.4;
-        Wed, 10 Jun 2020 08:50:45 -0700 (PDT)
+        Wed, 10 Jun 2020 11:53:36 -0400
+Received: by mail-lf1-f68.google.com with SMTP id u16so1740964lfl.8;
+        Wed, 10 Jun 2020 08:53:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=y19GN0GAG3z1gPsM787nBUvaywv+HAe0szNPPBNORkc=;
-        b=n6zKwPdEFjvm9k5j0JTd7TzlNDNa8Wgcs6bqwN26bffmd9BSjIENJ5q28vl46ieGL8
-         Fros7mvNXA7vfveIt8PdO9q+uaNHmHPd/9Y5djJs7JNa6VT4PZs2/1NOEpVmxWCJpeN5
-         1T21pbbw6BwLrnVvRzUaP6saP5BZ0GuQAP1kY7SaObQFzoZ0veGPrtbyZModPHMYbvRF
-         mzIp+unB5mtjbAJCbNUgNhykNeyaxCE2FLin+4OX5BUdHnLPbXOnuFhnG832masYVCLp
-         KprnPOhp2WWH7BsWLRA1ezAd6ryCweZdIEUJ/TuRiLRosqzu0V4oGZY78KHd15MXXXtX
-         QUDw==
-X-Gm-Message-State: AOAM531MoYWuMUNm+VnGlmMUN53ZZVBbHT6itewvtDd7rji/Oaeh0GR8
-        Y0HinObYwLiT/OkxfhOyH4LdzLSlHdOErjd/eB24pkfg
-X-Google-Smtp-Source: ABdhPJybcHk7EwREF669+YZ1Dcc1f+JX+fSyyJem9dNgFqreOhYBMmCOYDkGWXcPhfwWYLvlnzEHt2aOmX5xWiRmnE4=
-X-Received: by 2002:aca:ad88:: with SMTP id w130mr3093928oie.103.1591804244479;
- Wed, 10 Jun 2020 08:50:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kHTC5ynMjdYXbR8GWvcYvNg5klsAd9eXqBm+XxUO58o=;
+        b=TmPN7DC1dCNBT1Bx5vRreyA17eIi7H1dvaVlUpiC/9zVv/d6rGjr4PhfOkxQl85oYi
+         CzhDBw/qNqL+PvkC7rEinHOFiCTX64tkR7ef+H/DI/JKkiPKJXRzzKGDUTKYjyedMm6+
+         gemLvezQpZ7GEG0ciTV7glTZPOW6XEUm+YIgCwID0tt4vHRWebfeoDFxaODXQg2513GL
+         LlqrqBrpi6ylbWijF4Qz+buTEjDXiuI+NaJNWQl0UYUm7H50lG2hnQxYuwjDXPQEKkO3
+         hKN6UbUSe+VaE9VOeAi5LswHxBNAHVFPTlV8IzodZqUKk0IiEajVm1ZoTpecBEV0Yr2V
+         cGdQ==
+X-Gm-Message-State: AOAM532VZMA+epqeAocprmptsy9g7CFy4R+kMshDLOSu/Uj8jZNCgT/+
+        SS/oYlvN+qRYaYEcjqi5zWE=
+X-Google-Smtp-Source: ABdhPJyqqx/BcJVIiBXYDw9G8HwixEOGKHpBACr+n1wBRH3ucsEekHe/2Ki7AqirrHY6cGrLrC4OEg==
+X-Received: by 2002:a05:6512:d1:: with SMTP id c17mr2068358lfp.80.1591804413811;
+        Wed, 10 Jun 2020 08:53:33 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id x69sm20823lff.19.2020.06.10.08.53.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jun 2020 08:53:33 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@xi.terra>)
+        id 1jj32f-0003fz-W3; Wed, 10 Jun 2020 17:53:30 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jslaby@suse.com>, Lukas Wunner <lukas@wunner.de>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH] serial: core: drop unnecessary gpio include
+Date:   Wed, 10 Jun 2020 17:51:21 +0200
+Message-Id: <20200610155121.14014-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 10 Jun 2020 17:50:33 +0200
-Message-ID: <CAJZ5v0iEWuYG7-FtYMSk_kJZn-vVgcUimPfud75zSF5MU1Adbw@mail.gmail.com>
-Subject: [GIT PULL] More power management updates for v5.8-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Drop the recently added gpio include from the serial-core header in
+favour of a forward declaration and instead include the gpio header only
+where needed.
 
-Please pull from the tag
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/tty/serial/8250/8250_port.c | 1 +
+ drivers/tty/serial/serial_core.c    | 1 +
+ include/linux/serial_core.h         | 2 +-
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.8-rc1-2
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 1632f7d25acc..d64ca77d9cfa 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -16,6 +16,7 @@
+ #include <linux/ioport.h>
+ #include <linux/init.h>
+ #include <linux/console.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/sysrq.h>
+ #include <linux/delay.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index 3706f31b0c37..cba19f7d9ea3 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -14,6 +14,7 @@
+ #include <linux/sched/signal.h>
+ #include <linux/init.h>
+ #include <linux/console.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/of.h>
+ #include <linux/proc_fs.h>
+ #include <linux/seq_file.h>
+diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+index 791f4844efeb..01fc4d9c9c54 100644
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -10,7 +10,6 @@
+ #include <linux/bitops.h>
+ #include <linux/compiler.h>
+ #include <linux/console.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/interrupt.h>
+ #include <linux/circ_buf.h>
+ #include <linux/spinlock.h>
+@@ -30,6 +29,7 @@
+ struct uart_port;
+ struct serial_struct;
+ struct device;
++struct gpio_desc;
+ 
+ /*
+  * This structure describes all the operations that can be done on the
+-- 
+2.26.2
 
-with top-most commit 50dd154ed7b17a8b3a1983fc32a8e41d4cc4211a
-
- Merge branches 'pm-cpufreq' and 'pm-acpi'
-
-on top of commit 355ba37d756c38962fe9bb616f5f48eb12a7e11e
-
- Merge tag 'pm-5.8-rc1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-
-to receive more power management updates for 5.8-rc1.
-
-These are operating performance points (OPP) framework updates mostly,
-including support for interconnect bandwidth in the OPP core, plus a
-few cpufreq changes, including boost support in the CPPC cpufreq
-driver, an ACPI device power management fix and a hibernation code
-cleanup.
-
-Specifics:
-
- - Add support for interconnect bandwidth to the OPP core (Georgi
-   Djakov, Saravana Kannan, Sibi Sankar, Viresh Kumar).
-
- - Add support for regulator enable/disable to the OPP core (Kamil
-   Konieczny).
-
- - Add boost support to the CPPC cpufreq driver (Xiongfeng Wang).
-
- - Make the tegra186 cpufreq driver set the
-   CPUFREQ_NEED_INITIAL_FREQ_CHECK flag (Mian Yousaf Kaukab).
-
- - Prevent the ACPI power management from using power resources
-   with devices where the list of power resources for power state
-   D0 (full power) is missing (Rafael Wysocki).
-
- - Annotate a hibernation-related function with __init (Christophe
-   JAILLET).
-
-Thanks!
-
-
----------------
-
-Christophe JAILLET (1):
-      PM: hibernate: Add __init annotation to swsusp_header_init()
-
-Georgi Djakov (5):
-      interconnect: Add of_icc_get_by_index() helper function
-      opp: Add support for parsing interconnect bandwidth
-      opp: Add sanity checks in _read_opp_key()
-      opp: Update the bandwidth on OPP frequency changes
-      cpufreq: dt: Add support for interconnect bandwidth scaling
-
-Jordan Crouse (1):
-      interconnect: Remove unused module exit code from core
-
-Kamil Konieczny (1):
-      opp: core: add regulators enable and disable
-
-Mian Yousaf Kaukab (1):
-      cpufreq: tegra186: add CPUFREQ_NEED_INITIAL_FREQ_CHECK flag
-
-Rafael J. Wysocki (1):
-      ACPI: PM: Avoid using power resources if there are none for D0
-
-Saravana Kannan (2):
-      dt-bindings: opp: Introduce opp-peak-kBps and opp-avg-kBps bindings
-      OPP: Add helpers for reading the binding properties
-
-Sibi Sankar (1):
-      opp: Don't parse icc paths unnecessarily
-
-Viresh Kumar (4):
-      interconnect: Disallow interconnect core to be built as a module
-      opp: Expose bandwidth information via debugfs
-      opp: Reorder the code for !target_freq case
-      opp: Remove bandwidth votes when target_freq is zero
-
-Xiongfeng Wang (2):
-      cpufreq: change '.set_boost' to act on one policy
-      cpufreq: CPPC: add SW BOOST support
-
----------------
-
- Documentation/devicetree/bindings/opp/opp.txt      |  17 +-
- .../devicetree/bindings/property-units.txt         |   4 +
- drivers/acpi/device_pm.c                           |   2 +-
- drivers/acpi/scan.c                                |  28 ++-
- drivers/cpufreq/acpi-cpufreq.c                     |  14 +-
- drivers/cpufreq/cppc_cpufreq.c                     |  39 +++-
- drivers/cpufreq/cpufreq-dt.c                       |   4 +
- drivers/cpufreq/cpufreq.c                          |  57 +++---
- drivers/cpufreq/tegra186-cpufreq.c                 |   3 +-
- drivers/interconnect/Kconfig                       |   2 +-
- drivers/interconnect/core.c                        |  97 +++++++---
- drivers/opp/core.c                                 | 119 ++++++++++--
- drivers/opp/debugfs.c                              |  42 +++++
- drivers/opp/of.c                                   | 205 +++++++++++++++++++--
- drivers/opp/opp.h                                  |  10 +
- include/linux/cpufreq.h                            |   2 +-
- include/linux/interconnect.h                       |  12 ++
- include/linux/pm_opp.h                             |  18 ++
- kernel/power/swap.c                                |   2 +-
- 19 files changed, 573 insertions(+), 104 deletions(-)
