@@ -2,44 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFCF1F5EE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 01:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378431F5EEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 01:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgFJXxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 19:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726722AbgFJXxl (ORCPT
+        id S1726979AbgFJXy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 19:54:28 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:56870 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726948AbgFJXy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 19:53:41 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D79C03E96B;
-        Wed, 10 Jun 2020 16:53:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=j8YiZa/HJIdwzCS6Jp2qiCmRSoT0pw8mddCayIKBdcY=; b=uuvoVbJZStV6UP5WAvOqY1rtY5
-        jxxFy8LLHV2PXa97KWOdLEWTS7RDrA+DGfhQi5+YwXe1jSB7RrWVSepChvTR0BkamDiBo7lCw/WVV
-        TYKAUpbyEC50DL/kg9VdQZY/4sviSQ0KHX3A900mOEKecCzUQxmFWFc/dcU4gOv2nVSRGEzEVC9Mm
-        8vwN41FgdZVzmqFSq8zxUYWteH/jl4Z8QRrrJt3WfbQXO8oWdp1v2J50GQUdkX7I4qzPySyyJoC2Z
-        XU55WX9BdhRQIXB3EvzvavQdkbmqDiLNKt5CFS75DG9iAba0EpK0OkC1ltmbnnGZfZBOBRWB+BQDL
-        3C2AfRiQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jjAXK-0000Us-36; Wed, 10 Jun 2020 23:53:38 +0000
-Subject: Re: [PATCH] Documentation: Fix most typos
-To:     Joe Perches <joe@perches.com>, Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <9587fe318ac88299131e751a07bdd1f4b69ae0de.camel@perches.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <81ae0a0a-7df8-516f-7543-f1d944b9b4e2@infradead.org>
-Date:   Wed, 10 Jun 2020 16:53:37 -0700
+        Wed, 10 Jun 2020 19:54:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591833266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SCtwfxayuox1/yPqLw5A7CnfLtpo4UULn1Kziha2I2Q=;
+        b=BKjVazW6AQvJydW8fGRijbH1IGVSOdQ9EmTuC3XViF4mFQkemimrNQxcRTUj7q5SearMn7
+        W734Mi7GMdu13QdHY3pJvGaQ6QVM3vM54KJsn/2word0U3hOpy0RqEyJL6Y6i9EsXAQlr5
+        GAlEkt3GlR9tOlp2SW8rAPj5qW8fkkw=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-338-_x3vyxqgPLy5nwM8OwRC1A-1; Wed, 10 Jun 2020 19:54:24 -0400
+X-MC-Unique: _x3vyxqgPLy5nwM8OwRC1A-1
+Received: by mail-wr1-f71.google.com with SMTP id j16so1738077wre.22
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 16:54:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SCtwfxayuox1/yPqLw5A7CnfLtpo4UULn1Kziha2I2Q=;
+        b=WdRYKJKgh8FvSi6Ia+8dRTWg7mbvKLQmEKLitumCrd3rxuMspKdqEt7NXEnnN4IRau
+         BpQQ9GESiXRrvG4JQ29nBUwnSsE9z1q5KLlKxxODSeGn9rLdeFjASP8O90rM1Vqlhkw/
+         jMxZSeQQeq+/NkkAPPcTY/E9n+y+TWbRSOR6lSpxV50IJT7vFInQ5gbfRQwcUImKjuWA
+         WkzXDAihUEWzkfJwOirDlPgxRbu2q1s2OfwQa62GaAx9wx4um1bbFRqVsOFz3A6OU2qL
+         py/alk2LSygIEMvo/KvGNwwIeQAfxpJlZfeiS5FuCXYXApMzfyK0sI3umZfuda7REU3t
+         IdNg==
+X-Gm-Message-State: AOAM531Wn7+Q3wzWNNj14x7cI81Jsnsw48xhW/Tl/bJ0rjtHU6/x07mF
+        a7XwCNL64hEaMJA+yXvizcofACk3OMmh+fBjsgi9mzM8PJrc4NBSm8+xDS+3uaQdjFJgL3cxRrk
+        UN3TSu91YB1lV39f0/e88U7KP
+X-Received: by 2002:adf:f64c:: with SMTP id x12mr5965176wrp.281.1591833263031;
+        Wed, 10 Jun 2020 16:54:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJysclxi3majveRTpBVh4uGlZRNlhlB/11mmXMMl39Dgc4rltBvvupYmUCE0PccDrtKt6N0wEw==
+X-Received: by 2002:adf:f64c:: with SMTP id x12mr5965158wrp.281.1591833262819;
+        Wed, 10 Jun 2020 16:54:22 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:29ed:810e:962c:aa0d? ([2001:b07:6468:f312:29ed:810e:962c:aa0d])
+        by smtp.gmail.com with ESMTPSA id q1sm1469054wmc.12.2020.06.10.16.54.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jun 2020 16:54:22 -0700 (PDT)
+Subject: Re: [PATCH] KVM: selftests: fix sync_with_host() in smm_test
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Marcelo Bandeira Condotta <mcondotta@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20200610164116.770811-1-vkuznets@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c9a42060-a951-aadc-93db-c22b86a9a0de@redhat.com>
+Date:   Thu, 11 Jun 2020 01:54:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <9587fe318ac88299131e751a07bdd1f4b69ae0de.camel@perches.com>
+In-Reply-To: <20200610164116.770811-1-vkuznets@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,123 +75,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/10/20 4:07 PM, Joe Perches wrote:
-> These are the typos found in scripts/spelling.txt for
-> most of the Documentation/ tree.
+On 10/06/20 18:41, Vitaly Kuznetsov wrote:
+> It was reported that older GCCs compile smm_test in a way that breaks
+> it completely:
 > 
-> Scripted with:
+>   kvm_exit:             reason EXIT_CPUID rip 0x4014db info 0 0
+>   func 7ffffffd idx 830 rax 0 rbx 0 rcx 0 rdx 0, cpuid entry not found
+>   ...
+>   kvm_exit:             reason EXIT_MSR rip 0x40abd9 info 0 0
+>   kvm_msr:              msr_read 487 = 0x0 (#GP)
+>   ...
 > 
-> $ cat scripts/spelling.txt | \
->   grep -v -P "^\s*\#" | \
->   while read line ; do \
->     from=$(echo $line | cut -f1 -d'|'); \
->     to=$(echo $line | cut -f3 -d'|'); \
->     echo "from: $from to: $to" ; \
->     git grep -w --name-only $from | \
->     xargs sed -i "s/\b$from\b/$to/" ; \
->     git checkout scripts/spelling.txt ; \
->   done
+> Note, '7ffffffd' was supposed to be '80000001' as we're checking for
+> SVM. Dropping '-O2' from compiler flags help. Turns out, asm block in
+> sync_with_host() is wrong. We us 'in 0xe, %%al' instruction to sync
+> with the host and in 'AL' register we actually pass the parameter
+> (stage) but after sync 'AL' gets written to but GCC thinks the value
+> is still there and uses it to compute 'EAX' for 'cpuid'.
 > 
-> And some removal of inappropriate conversions
-> in Documentation/translations and a few files
-> where the conversions were incorrect.
+> smm_test can't fully use standard ucall() framework as we need to
+> write a very simple SMI handler there. Fix the immediate issue by
+> making RAX input/output operand. While on it, make sync_with_host()
+> static inline.
 > 
-> Signed-off-by: Joe Perches <joe@perches.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks, Joe.
-
+> Reported-by: Marcelo Bandeira Condotta <mcondotta@redhat.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 > ---
->  Documentation/ABI/testing/debugfs-driver-genwqe        |  2 +-
->  Documentation/ABI/testing/procfs-diskstats             |  2 +-
->  .../ABI/testing/sysfs-bus-event_source-devices-events  |  4 ++--
->  Documentation/ABI/testing/sysfs-bus-umc                |  2 +-
->  Documentation/ABI/testing/sysfs-devices-system-cpu     |  2 +-
->  Documentation/ABI/testing/sysfs-driver-tegra-fuse      |  2 +-
->  Documentation/ABI/testing/sysfs-fs-xfs                 |  2 +-
->  Documentation/RCU/RTFP.txt                             |  8 ++++----
->  Documentation/RCU/UP.rst                               |  4 ++--
->  Documentation/admin-guide/bcache.rst                   |  2 +-
->  Documentation/admin-guide/device-mapper/dm-crypt.rst   |  4 ++--
->  .../admin-guide/device-mapper/dm-integrity.rst         |  2 +-
->  Documentation/admin-guide/device-mapper/dm-raid.rst    |  2 +-
->  Documentation/admin-guide/device-mapper/verity.rst     |  2 +-
->  Documentation/admin-guide/device-mapper/writecache.rst |  4 ++--
->  Documentation/admin-guide/mm/index.rst                 |  2 +-
->  Documentation/admin-guide/sysctl/vm.rst                |  4 ++--
->  Documentation/admin-guide/tainted-kernels.rst          |  2 +-
->  Documentation/arm/interrupts.rst                       |  2 +-
->  Documentation/arm/sunxi/clocks.rst                     |  2 +-
->  Documentation/arm64/booting.rst                        |  2 +-
->  Documentation/arm64/elf_hwcaps.rst                     |  2 +-
->  .../bindings/arm/marvell/cp110-system-controller.txt   |  6 +++---
->  .../devicetree/bindings/clock/sprd,sc9863a-clk.yaml    |  2 +-
->  Documentation/devicetree/bindings/clock/ti/mux.txt     |  2 +-
->  Documentation/devicetree/bindings/display/msm/dpu.txt  |  2 +-
->  Documentation/devicetree/bindings/dma/ingenic,dma.yaml |  2 +-
->  Documentation/devicetree/bindings/fpga/fpga-region.txt |  2 +-
->  .../devicetree/bindings/iio/adc/maxim,max1238.yaml     |  2 +-
->  .../devicetree/bindings/iio/adc/maxim,max1363.yaml     |  2 +-
->  .../bindings/interrupt-controller/arm,gic-v3.yaml      |  2 +-
->  .../interrupt-controller/socionext,synquacer-exiu.txt  |  2 +-
->  Documentation/devicetree/bindings/mfd/qcom-rpm.txt     |  2 +-
->  Documentation/devicetree/bindings/misc/ge-achc.txt     |  2 +-
->  Documentation/devicetree/bindings/mtd/gpmc-nand.txt    |  2 +-
->  .../devicetree/bindings/nvmem/zii,rave-sp-eeprom.txt   |  2 +-
->  .../bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml  |  2 +-
->  .../bindings/pinctrl/qcom,sm8150-pinctrl.txt           |  6 +++---
->  .../bindings/pinctrl/renesas,rza1-pinctrl.txt          |  2 +-
->  .../devicetree/bindings/reset/ti-syscon-reset.txt      |  2 +-
->  Documentation/devicetree/bindings/sound/cs35l35.txt    |  4 ++--
->  .../devicetree/bindings/sound/mt2701-afe-pcm.txt       |  2 +-
->  .../bindings/sound/qcom,msm8916-wcd-analog.txt         |  2 +-
->  Documentation/devicetree/bindings/sound/sprd-pcm.txt   |  2 +-
->  .../devicetree/bindings/sound/tlv320adcx140.yaml       |  2 +-
->  .../devicetree/bindings/timer/lsi,zevio-timer.txt      |  2 +-
->  Documentation/driver-api/gpio/driver.rst               |  2 +-
->  Documentation/driver-api/md/md-cluster.rst             |  2 +-
->  Documentation/driver-api/md/raid5-cache.rst            |  2 +-
->  Documentation/driver-api/nvdimm/nvdimm.rst             |  6 +++---
->  Documentation/driver-api/thermal/intel_powerclamp.rst  |  4 ++--
->  Documentation/driver-api/usb/usb3-debug-port.rst       |  2 +-
->  Documentation/fb/udlfb.rst                             |  2 +-
->  Documentation/filesystems/ext4/super.rst               |  2 +-
->  Documentation/filesystems/fsinfo.rst                   |  2 +-
->  Documentation/filesystems/orangefs.rst                 |  2 +-
->  Documentation/filesystems/proc.rst                     |  2 +-
->  Documentation/filesystems/spufs/spu_create.rst         |  2 +-
->  Documentation/filesystems/spufs/spu_run.rst            |  2 +-
->  Documentation/filesystems/ubifs-authentication.rst     |  2 +-
->  Documentation/firmware-guide/acpi/acpi-lid.rst         |  4 ++--
->  Documentation/firmware-guide/acpi/gpio-properties.rst  |  2 +-
->  Documentation/gpu/todo.rst                             |  2 +-
->  Documentation/hid/hid-transport.rst                    |  8 ++++----
->  Documentation/hwmon/abituguru-datasheet.rst            |  2 +-
->  Documentation/input/devices/elantech.rst               |  2 +-
->  Documentation/isdn/credits.rst                         |  2 +-
->  Documentation/kernel-hacking/hacking.rst               |  2 +-
->  Documentation/locking/lockdep-design.rst               |  2 +-
->  Documentation/networking/ip-sysctl.rst                 |  2 +-
->  Documentation/networking/snmp_counter.rst              |  4 ++--
->  Documentation/openrisc/openrisc_port.rst               |  2 +-
->  Documentation/powerpc/vas-api.rst                      |  2 +-
->  Documentation/process/clang-format.rst                 |  2 +-
->  Documentation/process/embargoed-hardware-issues.rst    |  6 +++---
->  Documentation/process/submitting-patches.rst           |  4 ++--
->  Documentation/security/keys/core.rst                   |  2 +-
->  Documentation/sound/designs/seq-oss.rst                |  2 +-
->  Documentation/sparc/oradax/dax-hv-api.txt              | 18 +++++++++---------
->  Documentation/spi/spidev.rst                           |  2 +-
->  Documentation/trace/hwlat_detector.rst                 |  2 +-
->  Documentation/usb/usbip_protocol.rst                   |  2 +-
->  Documentation/userspace-api/media/v4l/hist-v4l2.rst    |  2 +-
->  Documentation/virt/kvm/api.rst                         |  2 +-
->  Documentation/virt/kvm/halt-polling.rst                |  2 +-
->  Documentation/virt/kvm/running-nested-guests.rst       |  2 +-
->  86 files changed, 118 insertions(+), 118 deletions(-)
+>  tools/testing/selftests/kvm/x86_64/smm_test.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/x86_64/smm_test.c b/tools/testing/selftests/kvm/x86_64/smm_test.c
+> index 36314152943d..ae39a220609f 100644
+> --- a/tools/testing/selftests/kvm/x86_64/smm_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/smm_test.c
+> @@ -47,10 +47,10 @@ uint8_t smi_handler[] = {
+>  	0x0f, 0xaa,           /* rsm */
+>  };
+>  
+> -void sync_with_host(uint64_t phase)
+> +static inline void sync_with_host(uint64_t phase)
+>  {
+>  	asm volatile("in $" XSTR(SYNC_PORT)", %%al \n"
+> -		     : : "a" (phase));
+> +		     : "+a" (phase));
+>  }
+>  
+>  void self_smi(void)
+> 
 
+Queued, thanks.
 
--- 
-~Randy
+Paolo
 
