@@ -2,133 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAEE1F507F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 10:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8651F5089
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 10:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgFJIqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 04:46:01 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38920 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726081AbgFJIqB (ORCPT
+        id S1726909AbgFJIsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 04:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726890AbgFJIsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 04:46:01 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05A8WtvQ124369;
-        Wed, 10 Jun 2020 04:46:00 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31jgsj2d3v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Jun 2020 04:45:59 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05A8fRGt026110;
-        Wed, 10 Jun 2020 08:45:57 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 31g2s7ybpx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Jun 2020 08:45:57 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05A8jtni5505232
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Jun 2020 08:45:55 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0250011C052;
-        Wed, 10 Jun 2020 08:45:55 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C13FB11C05C;
-        Wed, 10 Jun 2020 08:45:54 +0000 (GMT)
-Received: from osiris (unknown [9.171.21.235])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 10 Jun 2020 08:45:54 +0000 (GMT)
-Date:   Wed, 10 Jun 2020 10:45:53 +0200
-From:   Heiko Carstens <heiko.carstens@de.ibm.com>
-To:     Qian Cai <cai@lca.pw>
-Cc:     gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] s390: set NODES_SHIFT=0 when NUMA=n
-Message-ID: <20200610084553.GB4894@osiris>
-References: <20200610014501.4268-1-cai@lca.pw>
+        Wed, 10 Jun 2020 04:48:04 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05717C03E96F
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 01:48:03 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id c21so985087lfb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 01:48:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tv9cLm6NrVEw+od9yE+yuCdvd9rQx1UMp3tOwcdNQ6A=;
+        b=xLtjgtJ8Kq7VuUa8BbXEMYn+JDvsxigXSI5oo/wg1liD77Uvva30qb+Ue4DnxHtjam
+         Elme55spXBwYx5CgDUeaml/cfsQ6LUZao9b16LKSlvxj+G3XM/yuoK3udquOLtevy+Er
+         X3e38FLE+ZpA/4fIR+5OQTAwQDmiPRijmpAsDwGyCr0J2LItdBJDDaL9eH4cO7INk82q
+         u6yPzASpg7nLl0pPg/QrXZEHd2naQGjDOEtaT7FGM09+z5sv5CgiZyW/HS6BA2EFJCjC
+         1pPLZYV1z1UzaBQ6SXSQSAssU+Xs5qrn40m2JbMhlQUjEky8+UyVJs07RaE5BULZHY1c
+         Swrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tv9cLm6NrVEw+od9yE+yuCdvd9rQx1UMp3tOwcdNQ6A=;
+        b=eds42c7DXqTi8wSOS/R7hMYoKfIfXEB/3ox++Cm9AZOa/kkoOMrYETTmGkOWh6b4da
+         U5OXmXHz5Hl5NlpU0SiMGAXnPxUx2I9s0CV2e7ZPBbdKEd93xi/FdZ/BRqErAc7DGBEo
+         A41EbWQ63o+v//okO7MsSxSxlWoeo2QtcvH0jweT703ctZy8CO9OFeYQIW5jxnK5ZKOc
+         cDD+GqnuCzagyiSIBjp27PBmcQTGVy8I0zhgGR7NFwNpJjGb1dmuoj9SpmYJOsKZ9fut
+         eDzpiVo6Ok3cdQNzfqAGF3ZPAvVPxi8cs3vf71YR82Gw1Y40zORvMLBBm5VqGYtgcD6f
+         i/iA==
+X-Gm-Message-State: AOAM531ukh/2GeK0L5QW1LUFs67VJkZxr8CHSCT1OdYGhOf9Rfp3naCj
+        kEQXW6zopmdVnUd7Y2DoGChFKPXem/PQb/Yc9I/EeQ==
+X-Google-Smtp-Source: ABdhPJwB1YdVqyxgQzEn1jME2RfkT9tqX2deD1Fxk7xDGiza8EgLMKE2iE1rVqr0cl5GGteUcAmL6g68Mcu61Hc88ho=
+X-Received: by 2002:ac2:5a07:: with SMTP id q7mr1123126lfn.77.1591778882313;
+ Wed, 10 Jun 2020 01:48:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200610014501.4268-1-cai@lca.pw>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-10_04:2020-06-10,2020-06-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0 lowpriorityscore=0
- phishscore=0 adultscore=0 malwarescore=0 spamscore=0 suspectscore=56
- clxscore=1011 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006100061
+References: <20200604174935.26560-1-vidyas@nvidia.com>
+In-Reply-To: <20200604174935.26560-1-vidyas@nvidia.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 10 Jun 2020 10:47:51 +0200
+Message-ID: <CACRpkdYnwYFr2NEfGmCRYCEr7J0fdT1L5jkuPrkPQGJmudMgJw@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: tegra: Use noirq suspend/resume callbacks
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 09:45:01PM -0400, Qian Cai wrote:
-> When NUMA=n and nr_node_ids=2, in apply_wqattrs_prepare(), it has,
-> 
-> for_each_node(node) {
-> 	if (wq_calc_node_cpumask(...
-> 
-> where it will trigger a booting warning,
-> 
-> WARNING: workqueue cpumask: online intersect > possible intersect
-> 
-> because it found 2 nodes and wq_numa_possible_cpumask[1] is an empty
-> cpumask. NUMA=y has no such problem because node_possible_map will be
-> initialized properly containing only node 0. Fix it by setting
-> NODES_SHIFT=0 when NUMA=n.
-> 
-> Fixes: 701dc81e7412 ("s390/mm: remove fake numa support")
-> Signed-off-by: Qian Cai <cai@lca.pw>
-> ---
->  arch/s390/Kconfig | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+On Thu, Jun 4, 2020 at 7:49 PM Vidya Sagar <vidyas@nvidia.com> wrote:
 
-Thanks! However I committed a different solution. Hope you don't mind:
+> Use noirq suspend/resume callbacks as other drivers which implement
+> noirq suspend/resume callbacks (Ex:- PCIe) depend on pinctrl driver to
+> configure the signals used by their respective devices in the noirq phase.
+>
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
 
-From dd3f1f08f2317768b35b2df3ff8285185df7e195 Mon Sep 17 00:00:00 2001
-From: Heiko Carstens <heiko.carstens@de.ibm.com>
-Date: Wed, 10 Jun 2020 10:36:05 +0200
-Subject: [PATCH] s390/numa: let NODES_SHIFT depend on NEED_MULTIPLE_NODES
+Patch applied for fixes.
 
-Qian Cai reported:
----
-When NUMA=n and nr_node_ids=2, in apply_wqattrs_prepare(), it has,
-
-for_each_node(node) {
-        if (wq_calc_node_cpumask(...
-
-where it will trigger a booting warning,
-
-WARNING: workqueue cpumask: online intersect > possible intersect
-
-because it found 2 nodes and wq_numa_possible_cpumask[1] is an empty
-cpumask.
----
-
-Let NODES_SHIFT depend on NEED_MULTIPLE_NODES like it is done
-on other architectures in order to fix this.
-
-Fixes: 701dc81e7412 ("s390/mm: remove fake numa support")
-Reported-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
----
- arch/s390/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 2167bce993ff..ae01be202204 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -462,6 +462,7 @@ config NUMA
- 
- config NODES_SHIFT
- 	int
-+	depends on NEED_MULTIPLE_NODES
- 	default "1"
- 
- config SCHED_SMT
--- 
-2.17.1
-
+Yours,
+Linus Walleij
