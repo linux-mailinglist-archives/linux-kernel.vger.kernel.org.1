@@ -2,119 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061501F5563
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 15:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BAE1F556B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 15:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729207AbgFJNJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 09:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728844AbgFJNJs (ORCPT
+        id S1729223AbgFJNMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 09:12:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32074 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728826AbgFJNMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 09:09:48 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF209C03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 06:09:46 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id w16so1941959ejj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 06:09:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=hN4wVu7c1HZmNsRAprCKs7uo3bA/4E5kOO/AWz4PAB4=;
-        b=UQYFZcj9mxtPTw97Es6oj/OR2iUlY5qrWDFvHpq+VMTee2QWT4CLG91bil7g+DNOKx
-         l42eEyiPdTPNNWDIoPNk92GG2j+9fXAGij9RGHwrBITksWgbiVYw5wh8YJ0dJXUI6mDQ
-         2bw5QharfQ0PkAald8DvcQLnahJJ5HVACQzJHNqWklEjILxX0+eBMSDfYEAwXl/VlspO
-         Oi9qb8oDP5tdGz0apkqlG2sSxkM4o8YqMPfufdz0MQCFxmpZ448b0L0Y0wwaQx3SiyKa
-         PodYSusNWy31wlSxvBNYKeaQxBDQ/EwKkM3apQgvVYtyBW0GX7c01SpdjNplstjh4tv0
-         xa+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=hN4wVu7c1HZmNsRAprCKs7uo3bA/4E5kOO/AWz4PAB4=;
-        b=KlHevEzbR+8EbY368RHom6lg21QCg+4rAUuVpoRwJxjiVXAGDf1C6cWR8nSvJP67g6
-         AHFF+GM93Wyiv7Ja31Xov2IBvavV/E/J5sQVJuWPrrmOTDNH4g7poCVdPfnQ/0KACJxC
-         7afA6I7xFJ3viQ+objfV7kSCuk2aMtRMx5EebDmumbMINbei4sph5elfcGrkb3ZcVckD
-         V/CnL5tF6WPfyV4DtrDU9r08TWiyv6s75u7NjOysHUMx/iaTucRs2sqd/5IMIT2ezdLS
-         u/a5SQ5yRAkzrH+dfKA+5HKILouoYAMzEgGxAdpZE/3N+RIiGARmC5+M9Kzap28V91iq
-         FY7w==
-X-Gm-Message-State: AOAM531SF+n9aWZAIpO1BQIDKO7c4GPbiPCUevaH5nDDKR7XOMh8n51W
-        dDDl4UTq2H2XZ3/oXGMbh9MMdyHT4sk=
-X-Google-Smtp-Source: ABdhPJwFedDlbzm+dYX6gyNm93Xyr1Jcg5woX1Qp7tJ8WSlNK7uiPvjIAx6Ib7uFiK7cAaMr2dIeUA==
-X-Received: by 2002:a17:906:68c5:: with SMTP id y5mr3246267ejr.436.1591794585380;
-        Wed, 10 Jun 2020 06:09:45 -0700 (PDT)
-Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
-        by smtp.gmail.com with ESMTPSA id ox27sm15373147ejb.101.2020.06.10.06.09.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 06:09:43 -0700 (PDT)
-References: <20200610041329.12948-1-hhk7734@gmail.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     hhk7734@gmail.com, linus.walleij@linaro.org, khilman@baylibre.com
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH] pinctrl: meson: fix drive strength register and bit calculation
-In-reply-to: <20200610041329.12948-1-hhk7734@gmail.com>
-Date:   Wed, 10 Jun 2020 15:09:42 +0200
-Message-ID: <1jo8prnk2x.fsf@starbuckisacylon.baylibre.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Wed, 10 Jun 2020 09:12:00 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05AD3D1S038699;
+        Wed, 10 Jun 2020 09:11:58 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31k02k8aaa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Jun 2020 09:11:58 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05AD4fTd050863;
+        Wed, 10 Jun 2020 09:11:57 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31k02k8a98-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Jun 2020 09:11:57 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05AD0Rpt008390;
+        Wed, 10 Jun 2020 13:11:55 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03fra.de.ibm.com with ESMTP id 31jf1grhpf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Jun 2020 13:11:55 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05ADBrZY29491288
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Jun 2020 13:11:53 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA9584C050;
+        Wed, 10 Jun 2020 13:11:52 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D3544C04E;
+        Wed, 10 Jun 2020 13:11:52 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.158.19])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 10 Jun 2020 13:11:52 +0000 (GMT)
+From:   Pierre Morel <pmorel@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     pasic@linux.ibm.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        mst@redhat.com, jasowang@redhat.com, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH] s390: protvirt: virtio: Refuse device without IOMMU
+Date:   Wed, 10 Jun 2020 15:11:51 +0200
+Message-Id: <1591794711-5915-1-git-send-email-pmorel@linux.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-10_07:2020-06-10,2020-06-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 impostorscore=0 clxscore=1011 cotscore=-2147483648 mlxscore=0
+ malwarescore=0 phishscore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ mlxlogscore=779 suspectscore=1 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006100093
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Protected Virtualisation protects the memory of the guest and
+do not allow a the host to access all of its memory.
 
-On Wed 10 Jun 2020 at 06:13, hhk7734@gmail.com wrote:
+Let's refuse a VIRTIO device which does not use IOMMU
+protected access.
 
-> From: Hyeonki Hong <hhk7734@gmail.com>
->
-> If a GPIO bank has greater than 16 pins, PAD_DS_REG is split into two
-> registers. However, when register and bit were calculated, the first
-> register defined in the bank was used, and the bit was calculated based
-> on the first pin. This causes problems in setting the driving strength.
->
-> Solved the problem by changing the bit using a mask and selecting the
-> next register when the bit exceeds 15.
+Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+---
+ drivers/s390/virtio/virtio_ccw.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-This fixes the case of GPIOX on g12 which goes up to 18 yes but the same
-problem will happen again a if bank ever goes past 31 pins. In such case
-the problem would apply to all reg types.
-
-I would prefer if it was solved in a more generic fashion, like defining
-a "stride" table with the values of each reg type. This table can common
-to all aml SoCs for now but eventually it probably need to be SoC
-specific.
-
-This would allow to :
-A) handle the case you are reporting in a generic (future proof) way
-B) remove the weird "bit = bit << 1;" calc in place in the get/set of
-the drive strengh pinconf
-
->
-> Signed-off-by: Hyeonki Hong <hhk7734@gmail.com>
-> ---
->  drivers/pinctrl/meson/pinctrl-meson.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/pinctrl/meson/pinctrl-meson.c b/drivers/pinctrl/meson/pinctrl-meson.c
-> index bbc919bef2bf..ef66239b7df5 100644
-> --- a/drivers/pinctrl/meson/pinctrl-meson.c
-> +++ b/drivers/pinctrl/meson/pinctrl-meson.c
-> @@ -98,6 +98,13 @@ static void meson_calc_reg_and_bit(struct meson_bank *bank, unsigned int pin,
->
->  	*reg = desc->reg * 4;
->  	*bit = desc->bit + pin - bank->first;
-> +
-> +	if (reg_type == REG_DS) {
-> +		if (*bit > 15) {
-> +			*bit &= 0xf;
-> +			*reg += 4;
-> +		}
-> +	}
->  }
->
->  static int meson_get_groups_count(struct pinctrl_dev *pcdev)
+diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+index 5730572b52cd..06ffbc96587a 100644
+--- a/drivers/s390/virtio/virtio_ccw.c
++++ b/drivers/s390/virtio/virtio_ccw.c
+@@ -986,6 +986,11 @@ static void virtio_ccw_set_status(struct virtio_device *vdev, u8 status)
+ 	if (!ccw)
+ 		return;
+ 
++	/* Protected Virtualisation guest needs IOMMU */
++	if (is_prot_virt_guest() &&
++	    !__virtio_test_bit(vdev, VIRTIO_F_IOMMU_PLATFORM))
++			status &= ~VIRTIO_CONFIG_S_FEATURES_OK;
++
+ 	/* Write the status to the host. */
+ 	vcdev->dma_area->status = status;
+ 	ccw->cmd_code = CCW_CMD_WRITE_STATUS;
+-- 
+2.25.1
 
