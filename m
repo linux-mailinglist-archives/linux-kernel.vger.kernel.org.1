@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C8C1F58D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 18:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DEC1F58E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 18:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728086AbgFJQOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 12:14:44 -0400
-Received: from sonic303-2.consmr.mail.bf2.yahoo.com ([74.6.131.41]:37877 "EHLO
-        sonic303-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727970AbgFJQOn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 12:14:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591805682; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=TNWjcv7C7KEz0MkGAWu6QC+YdnrTRykP4RDIlidGdONRf4iDAqpbUp1tBP5YyZ/YwQS+nrKyV/Z86AfdhuOkoCyKUD1WC4a+NRBo9oi43b7zoYZgUoGVs3CAlg0K8+/BNAMnry7u4a3QaccGLU3s6nq/uOQ9U7DJB3E5tfVjkI1Y/nf8CYpfdY81MlkHDIIXMPNnkSrdcWjj31DXPvw2Q0Lxf9q4WOpQMAp1ewlzNt30xU7Kk/Ljf7orTYgW1wNZwG7arJ7cgUU/FXYgo+hz+z3un7iKr8HZHuwswjnqpYTbaG7LHkGiN/qd9l+NoRnC7APFEpwEOq2Q7ZwCQbur3w==
-X-YMail-OSG: tfIaHOgVM1n5muWHqH.9_jYistyMCWrxnxlnQuGL42SSe0FMETfe3p14bVlqbkU
- uxS5T66zUilzhcUayx23LPfPtY..Sd7q6HLYy0Mjrvyuu9zBMs7BhYn0TWbbzHl3bvmf2X1cXRfi
- zmlrlY49_4QdlROvYb4kbLrHvjQppNkqzHK9m1xSGtdB8zluStHuY2hOCS2rxjjKGHZhszJ5i3Sw
- me9uycqZVl27yJa8hCWnE1gmJRK7b_gscSvXsvLq_YNwhJoCue21KOBG9Dm3T1Rp5nqBFunq4P23
- fpiRRblwusSbekme1q50Uy2jqOU.pWjtf8NIjgmhIr198kUnjmX0pw_R9p0wpTSBRgXrCDdlOesK
- FVPDVIT0ZhQv_ic..3RqfQGmOmZptBF3u.zNoE81O8f7u5oMVM0akLNbCPWUr3j9dPHerrvaQIuU
- QwSiHyubk4Zo7WgwkWZ.pL3fjHxZikgluK2M4RK9Uxg.JXH0wemI_TboJwSRCzcbn5xCEuBxiVwU
- zHUKaa6OI8pWN6Q76mbpX8kNzmEKlvbgcfForQtZ5b7Rjo_8ATnhUebld2XW2td_0OVXHyCXLL7t
- a8IyDcvBxvqhAnfS.mBAGVtB8PVqfTxIlLffm_L6SaChRXv42Jn4t0tC9EAAghCqBrZ9tkzpgsF6
- tDUmbPCI1zw8ItntiSgmxBoAGQzVKU_7Vm1dss_P1nLpQtp0dsP.OXCtvorwWVJ0CffbfvdZpob7
- 2u_a4LtRGMYCJVA0BL0kf9VLG537aJI6OfsSfdvHxuyGCCJpUftV1bjE.frhT.FtZg7Zh2L8s.QK
- 8pe0699Kc3jgPMvUlLlQL20sxP3As9bXIqILrTauk6ncu12odLi3sADa1u32sHVHgShI2lVh8BS8
- LvTDubHUjwTYXvR2Vp1dXMeFpR1DnQdexGL8jAAzjW6bahLs7ehAcuBO2646oqUIM2Z6pk0opGb4
- 3OjUlZ2Ze4iOjNoTX6_1lpQKHIYiEedIN.HsKNeVZLSWzI99eBObWcI111pwEmT3jrzs15Jj.Vji
- TMDEquh93mc70jhjw5P6wWTreBEdhTi59lMjmkDaLnsd2O8hDW6HKLUAqRHZ4tXULwoNAjMQHT95
- ux1wdaElIE_lkrCJfEZm8kwTMSMDHDaanApQ3jjRrP7koo6XmgtwAgH.uRjwbY0jsJ7sNAauJAZn
- vqlT_HNMXlGsAiG_ArWA4yxywNMJtbl6jJpYKv38LL_yA7gLYMAMCG7scZdQql62Wb4UJy3pHr9X
- 9PGPQa.ICiJD1eTR1fuVg_o0GnK1RVsqDx_zkSNWFopQeROJHMMJwEm9vMe8bc_JZ8t60RNSojw-
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.bf2.yahoo.com with HTTP; Wed, 10 Jun 2020 16:14:42 +0000
-Date:   Wed, 10 Jun 2020 16:14:38 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <brunelminaa@gmail.com>
-Reply-To: mrsminaabrunel63@gmail.com
-Message-ID: <1845544144.1573631.1591805678398@mail.yahoo.com>
-Subject: My Dear in the lord
+        id S1730604AbgFJQSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 12:18:09 -0400
+Received: from mga01.intel.com ([192.55.52.88]:10548 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728157AbgFJQSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 12:18:07 -0400
+IronPort-SDR: FYtMEJkip4VfC8YdeUSRBIFM0v8xMgbZxkdwyizMew0etLXYkuyrwxjYmFzXT3HNF+/dCj5Boa
+ fD1GDVmikrNw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 09:18:07 -0700
+IronPort-SDR: NSo4/NBIGqOn+vaxO10VsYFX88Xyvk3JlQuR0gjkJXXrglVtj3MN/tmT/fKDjU/A7ImkazCtde
+ smGLAKnHfg4w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,496,1583222400"; 
+   d="scan'208";a="306637274"
+Received: from sneftin-mobl.ger.corp.intel.com (HELO [10.249.92.147]) ([10.249.92.147])
+  by orsmga008.jf.intel.com with ESMTP; 10 Jun 2020 09:18:03 -0700
+Subject: Re: [Intel-wired-lan] [PATCH] e1000e: Squash an unused function
+ warning
+To:     Palmer Dabbelt <palmer@dabbelt.com>, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        kuba@kernel.org, kernel-team@android.com,
+        "Neftin, Sasha" <sasha.neftin@intel.com>,
+        vitaly.lifshits@intel.com, amir.avivi@intel.com
+References: <20200610014907.148473-1-palmer@dabbelt.com>
+From:   "Neftin, Sasha" <sasha.neftin@intel.com>
+Message-ID: <8b01c6d6-db4d-d05c-d8cd-733cec31094e@intel.com>
+Date:   Wed, 10 Jun 2020 19:18:02 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1845544144.1573631.1591805678398.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16072 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20200610014907.148473-1-palmer@dabbelt.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 6/10/2020 04:49, Palmer Dabbelt wrote:
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
+> 
+> e1000e_check_me is only used under CONFIG_PM_SLEEP but exists
+> unconditionally, which triggers a warning.
+> 
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> ---
+>   drivers/net/ethernet/intel/e1000e/netdev.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> index a279f4fa9962..f7148d1fcba2 100644
+> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+> @@ -134,6 +134,7 @@ static const struct e1000e_me_supported me_supported[] = {
+>   	{0}
+>   };
+>   
+> +#ifdef CONFIG_PM_SLEEP
+Thanks Palmer for catching this warning,
+can we use "__maybe_unused" declaration instead of wrapping? I think it 
+is more convenient and consistent.
+>   static bool e1000e_check_me(u16 device_id)
+>   {
+>   	struct e1000e_me_supported *id;
+> @@ -145,6 +146,7 @@ static bool e1000e_check_me(u16 device_id)
+>   
+>   	return false;
+>   }
+> +#endif
+>   
+>   /**
+>    * __ew32_prepare - prepare to write to MAC CSR register on certain parts
+> 
 
-
-My Dear in the lord
-
-
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
-u the capital city of of Burkina in West Africa. The money was from the sal=
-e of his company and death benefits payment and entitlements of my deceased=
- husband by his company.
-
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
