@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91791F5660
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 16:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5911F56A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 16:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729670AbgFJOAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 10:00:14 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40333 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729650AbgFJOAJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 10:00:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591797608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W4ZJyuHZsqz6Dp/hV/6BFgchUFjowsw3OCjq+UXY+5M=;
-        b=E79NLLxBKerATWN1x46GrAwb+CznmFo9jzX88o4fu24onpU2xcbS3ijOWBOVySyg22lHFP
-        S7Eq2cECdUUhzedjukCfddO6gyUdkuC2dKBCkX+TqsKwZx9hkGnMBl8x7CTV3LzAKLpHE0
-        ojG+iwJaeBt1ZgYWZD+d60OemFcIngA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-303-4gCwFW6hP_mWKpAfPzco5g-1; Wed, 10 Jun 2020 10:00:06 -0400
-X-MC-Unique: 4gCwFW6hP_mWKpAfPzco5g-1
-Received: by mail-wr1-f70.google.com with SMTP id l18so1144313wrm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 07:00:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=W4ZJyuHZsqz6Dp/hV/6BFgchUFjowsw3OCjq+UXY+5M=;
-        b=dc319vyJTKaeL3OxhnzR42HspQ9p5C8uiCSVIO+SD8+vTPQ/a+bmKRM895Ve8uR3GD
-         YvTuimbT/8q66r5BTpwATPCiZi7GREik/CaTA576YKcdf3bAFMuhWGbusk6bIia995iW
-         il408wqdzvDzcDamWOqOcSe9g1i2wpMEwRiwFUhIhxnlCtQW1+cYg/5eJV850BDaaJpQ
-         qGw0y3ZNvP5QqNnH/9Jk+mk7tmvNfhIiebwxQrk5VwvfeiTOs800l0dHuuoW0rSROuDa
-         hyW0h7oJbn/DBORAIByl+yQmCw98pwdxLfc3uIGcxnRTdPamtmAv0pg0bJECqqp5+di0
-         KCVg==
-X-Gm-Message-State: AOAM532VDOKMObox46dGKlrvESvR/3NJOmgEMwhWssle+mYJb9IfeZal
-        wk+w5X55X5YwvjcNb8+YYlPxt2j3400LVbjMi6+EViJBJv5FAMRq3Fn9cKxwDH65RVxOnjpMvtP
-        4YvEWIhvMKkM91SGWB/iL0LIX
-X-Received: by 2002:adf:e588:: with SMTP id l8mr4149038wrm.255.1591797603964;
-        Wed, 10 Jun 2020 07:00:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy4noLc0O45gskMWYhwv5vg8oao1Tu5iY4ApUPR3SsY/4SwqHOBeyf+02xREn7ZL0gTTtiIIg==
-X-Received: by 2002:adf:e588:: with SMTP id l8mr4149007wrm.255.1591797603762;
-        Wed, 10 Jun 2020 07:00:03 -0700 (PDT)
-Received: from eperezma.remote.csb (109.141.78.188.dynamic.jazztel.es. [188.78.141.109])
-        by smtp.gmail.com with ESMTPSA id t129sm7723980wmf.41.2020.06.10.07.00.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 07:00:03 -0700 (PDT)
-Message-ID: <313ad30e073974d71ac4c2fc3bc75db690ec8c72.camel@redhat.com>
-Subject: Re: [PATCH RFC v7 02/14] fixup! vhost: option to fetch descriptors
- through an independent struct
-From:   Eugenio =?ISO-8859-1?Q?P=E9rez?= <eperezma@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>
-Date:   Wed, 10 Jun 2020 16:00:01 +0200
-In-Reply-To: <20200610113515.1497099-3-mst@redhat.com>
-References: <20200610113515.1497099-1-mst@redhat.com>
-         <20200610113515.1497099-3-mst@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-6.el8) 
-Mime-Version: 1.0
+        id S1729759AbgFJOMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 10:12:39 -0400
+Received: from mga14.intel.com ([192.55.52.115]:34281 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727022AbgFJOMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 10:12:39 -0400
+IronPort-SDR: iQw7qB8FZPr5J8lFO0Ye9tmuq5h7XIpChO0/kp/8aLNKVwy4tf7FeKqXLwwoIjrbEktLljO+fy
+ 2ZKwTM6uV5Vw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 07:12:39 -0700
+IronPort-SDR: fKrJXsTqhlPXdaj5uo+Plq6f24Ee0V34xRBDERFPAU1oT+dwqd1TjgEWVneFvEOvOqdcHz0O1c
+ x2BU4QuL/X4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,496,1583222400"; 
+   d="scan'208";a="473350013"
+Received: from opolat-mobl.amr.corp.intel.com (HELO [10.251.2.3]) ([10.251.2.3])
+  by fmsmga006.fm.intel.com with ESMTP; 10 Jun 2020 07:12:38 -0700
+Subject: Re: [RFC PATCH] ALSA: compress: Fix gapless playback state machine
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        vkoul@kernel.org
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        tiwai@suse.com, broonie@kernel.org
+References: <20200610100729.362-1-srinivas.kandagatla@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <694dd437-3453-7328-f544-28106c1c366d@linux.intel.com>
+Date:   Wed, 10 Jun 2020 07:56:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200610100729.362-1-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-06-10 at 07:35 -0400, Michael S. Tsirkin wrote:
-> ---
->  drivers/vhost/vhost.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+
+
+On 6/10/20 5:07 AM, Srinivas Kandagatla wrote:
+> For gapless playback call to snd_compr_drain_notify() after
+> partial drain should put the state to SNDRV_PCM_STATE_RUNNING
+> rather than SNDRV_PCM_STATE_SETUP as the driver is ready to
+> process the buffers for new track.
 > 
-> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-> index 180b7b58c76b..11433d709651 100644
-> --- a/drivers/vhost/vhost.c
-> +++ b/drivers/vhost/vhost.c
-> @@ -2614,7 +2614,7 @@ int vhost_get_vq_desc_batch(struct vhost_virtqueue *vq,
->  err_fetch:
->  	vq->ndescs = 0;
->  
-> -	return ret;
-> +	return ret ? ret : vq->num;
->  }
->  EXPORT_SYMBOL_GPL(vhost_get_vq_desc_batch);
->  
+> With existing code, if we are playing 3 tracks in gapless, after
 
-I'm able to lock the vhost_get_vq_desc running virtio_test with no arguments against this patch. It does not happen if
-it returns vq->num early, appended below.
+The gapless playback only deals with transitions between two tracks of 
+identical format. I am not sure what the reference to 3 tracks means.
 
-Let me know if you prefer your conditional at the end of the function and I will investigate the cause.
+> partial drain finished on previous track 1 the state is set to
+> SNDRV_PCM_STATE_SETUP which is then moved to SNDRV_PCM_STATE_PREPARED
+> after data write. With this state calls to snd_compr_next_track() and
+> few other calls will fail as they expect the state to be in
+> SNDRV_PCM_STATE_RUNNING.
+> 
+> Here is the sequence of events and state transitions:
+> 
+> 1. set_params (Track 1), state =  SNDRV_PCM_STATE_SETUP
+> 2. set_metadata (Track 1), no state change, state = SNDRV_PCM_STATE_SETUP
+> 3. fill and trigger start (Track 1), state = SNDRV_PCM_STATE_RUNNING
+> 4. set_next_track (Track 2), state = SNDRV_PCM_STATE_RUNNING
+> 5. partial_drain (Track 1), state = SNDRV_PCM_STATE_SETUP
+> 6  snd_compr_drain_notify (Track 1), state = SNDRV_PCM_STATE_SETUP
+> 7. fill data (Track 2), state = SNDRV_PCM_STATE_PREPARED
+> 8. set_metadata (Track 3), no state change, state = SNDRV_PCM_STATE_PREPARED
+> 9. set_next_track (Track 3), !! FAILURE as state != SNDRV_PCM_STATE_RUNNING
+> 
+> Fixes: f44f2a5417b2 ("ALSA: compress: fix drain calls blocking other compress functions (v6)")
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+> 
+> I wonder who did gapless work on upstream so far?
 
-Thanks!
+IIRC the only users of gapless playback are Android platforms, where the 
+HAL deals with the transitions. I am not aware of any plain vanilla 
+Linux solution.
 
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 28f324fd77df..4d198994e7be 100644
-@@ -2350,7 +2345,9 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
- 	int ret = fetch_descs(vq);
- 	int i;
- 
--	if (ret <= 0)
-+	if (ret == 0)
-+		return vq->num;
-+	else if (ret < 0)
- 		goto err;
- 
- 	/* Now convert to IOV */
-
+> 
+>   include/sound/compress_driver.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+> index 6ce8effa0b12..eabac33864c2 100644
+> --- a/include/sound/compress_driver.h
+> +++ b/include/sound/compress_driver.h
+> @@ -182,7 +182,7 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
+>   	if (snd_BUG_ON(!stream))
+>   		return;
+>   
+> -	stream->runtime->state = SNDRV_PCM_STATE_SETUP;
+> +	stream->runtime->state = SNDRV_PCM_STATE_RUNNING;
+>   
+>   	wake_up(&stream->runtime->sleep);
+>   }
+> 
