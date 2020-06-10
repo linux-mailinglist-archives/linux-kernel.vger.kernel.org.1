@@ -2,117 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C40E1F5E18
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 00:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6FB1F5E1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 00:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgFJWGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 18:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
+        id S1726717AbgFJWHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 18:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726374AbgFJWGQ (ORCPT
+        with ESMTP id S1726374AbgFJWHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 18:06:16 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B029C03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 15:06:16 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id w16so3769229ejj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 15:06:16 -0700 (PDT)
+        Wed, 10 Jun 2020 18:07:04 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8935C03E96B;
+        Wed, 10 Jun 2020 15:07:02 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id c194so3580403oig.5;
+        Wed, 10 Jun 2020 15:07:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3BpkZYB+elKS0Yw4EnV1AMN0cPOW3ML+jsxiyHjKknk=;
-        b=eRW27njH8oKTgYyM//6JRFb4FJdjzx26Zryt/Mp0MB40jWLxyabVzmPoQNO+bWhJvs
-         zzVpkA2qk6KaS23C54q/DKGCm2ZjrxaCIDiEPXk/N0UXfM/+yh8ppFc6GR93+aDaLJwo
-         Bdg9krohWH/8uOSSq2D99uIvaM4yL1Nn3B5GP7dnIY2efyfFalfKays0puykVZmPzNBO
-         8FnsXl6SoEIuihrrXIar4Z0CzwV2yxFP0wAv8OnsUkLFFtpDFHWrXYaeflF60m5Ehbrx
-         ip7I1/Z3u5ffQvGEBMK+9jic1EngJHyIz7KpT4D1bTySG76cewsYMwUs+r+Z2RIfUY1n
-         ZZJw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bGYLQ72rVrPxc2DQ3sN7sMtcVrZrTtJZv9NCP3xDIqI=;
+        b=lmRyoqoZS7XFqPMHbMA36tr1PwIivP1GxANDWKAtL/fE+lCI9YsNIOKilkwqJC9jMA
+         /qqif1I2BgDVv6Ql6lyENPzOj9I1nwXHdfHCTVgld1ya964zJljfvnk4caZV41LMcKTQ
+         qFtLNILtjwZkN9E05QxRyNOXna5dZHN9NoaJzbAgzcPTuNvmkxGzbDB41vqZqHIRZJiK
+         UIdHivXcWi+mhIXmsKKsJ1ur7nAtxygHHnsdp4vYO6Ekkl/xsKHwYfk8ffI294M6o4m4
+         YdjULcbgUqgxV48Ua+Sb382l0wKIhMWd9veger3OMHauT8JILe6d5jteq5WScbeV/H8i
+         ciLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3BpkZYB+elKS0Yw4EnV1AMN0cPOW3ML+jsxiyHjKknk=;
-        b=mJOAJZazZO4qaZK/6/RJbX+mv8+b7AGbhVfMsBrmjPrlmhv2rA4UmFchNs/vevs0Pb
-         cJ0/N9o5Q43eaZFr3X0iGcq1Am03c9ItKIugRLkPSNl8z1iC9ydPmGDC7tGvg/aGS9Ur
-         /OdDiMyyJxHo7aJlds6PFurY0rRn7QStR9GsD4BvJHloc+iAieeFvkXYs66prRmsTMjZ
-         FtZis7ov2MAnVP/zZ+wlMwP07SRyFHgS/WrzmCbWCDnkFyz3SgPqfEwOA7l4xeCCdft6
-         LJvtJ0LKLn9BPuIRSOmVWk9Txr5+WK5P6NXYmFG+lfYCyOesnD9Tv889JxOzD1hxzBp6
-         ULuA==
-X-Gm-Message-State: AOAM532xUo9xsmCxhY+YyvTwJslxkZ0Z5OIS93NthmBvRI++zWVpProl
-        0GuWYQgJkSDlIgrEpHv0ads=
-X-Google-Smtp-Source: ABdhPJzJJxVGGBvw9XdfKn8DtbuxHxG5ie1As0bQc6SgQutog/ItqOl2CP+JXFe1kelcyrIyIjDuSw==
-X-Received: by 2002:a17:906:1fcd:: with SMTP id e13mr5384581ejt.472.1591826774784;
-        Wed, 10 Jun 2020 15:06:14 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id bg21sm694620ejb.90.2020.06.10.15.06.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 10 Jun 2020 15:06:13 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 22:06:13 +0000
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Wei Yang <richard.weiyang@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [Patch v2] lib: test get_count_order/long in test_bitops.c
-Message-ID: <20200610220613.ets3envsukjstvlu@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-References: <20200602223728.32722-1-richard.weiyang@gmail.com>
- <CAMuHMdUfnmm4bXVRvFOmG5DFYR+LtcZ1UviDszr9bByiN=DO+Q@mail.gmail.com>
- <20200604122805.d2ndjmkmti6wl3nz@master>
- <CAMuHMdXnLUS8F4nWJBqDjoKhBmF2_ihfwe4jTGxuZ1e_WKRNPQ@mail.gmail.com>
- <20200605230610.bizp2j23ivyma5rn@master>
- <20200605171629.d931068c1a4d720d8faa2704@linux-foundation.org>
- <20200608223112.ftncszh7hfnmqj3m@master>
- <20200609091649.GX2428291@smile.fi.intel.com>
- <20200609230241.gdqebrspmucnru5k@master>
- <CAHp75VdVUNqUsfr19jKHjba8CPTQhbSK+WfTKwZFtCfK0JtRCw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bGYLQ72rVrPxc2DQ3sN7sMtcVrZrTtJZv9NCP3xDIqI=;
+        b=IHjkisVwxroW6hQdMvecATHw9ZfUPrGGdK4PVrf8PLwTJFicY6/IkQ06b4xGAS/TCw
+         z7dPeghBbyroLRSVm3iheeO7tNeTitMw9LMW9a9CLiGgcSRDiBbhY7/B6kzX+rXToh7O
+         R4RHnOJqFq/yjDNPSXPJzy8hF+UJuJ98Sgrf155jur2XkupIVh4CKKVDy7SPJrCFzRu3
+         AZz2/lk1iMudz29qVYrSxxl3h1QUnkYELoTRFnuoxKjZr4oObUL3Keg6pU7ZW4I7fYOB
+         0OlPHsOFAry8r583UrR1HX7PmXNtUZAxLEtN1y/uod0jRrX8qMW2EvSkEc7lwGQQCcyD
+         SehA==
+X-Gm-Message-State: AOAM5316jmSLWLcwFtqcxM79WTntkKELpdavv+VMsg9ECDfNtvFUss+P
+        ybHuAVLlKPvafx+rsDrCfxcapwVmSn+rmPgBKb4=
+X-Google-Smtp-Source: ABdhPJze4Mhu/cpfEpf2Md7Ct2MDl1/HKyldmzbxnNg9hUT0hMlQvuUHpLc8IhDTdNo9p9oSi0C4a3weB5uS3vQc+NY=
+X-Received: by 2002:aca:55c1:: with SMTP id j184mr3982909oib.160.1591826821216;
+ Wed, 10 Jun 2020 15:07:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdVUNqUsfr19jKHjba8CPTQhbSK+WfTKwZFtCfK0JtRCw@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+References: <20200610215713.5319-1-trix@redhat.com> <20200610215713.5319-2-trix@redhat.com>
+In-Reply-To: <20200610215713.5319-2-trix@redhat.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Wed, 10 Jun 2020 18:06:50 -0400
+Message-ID: <CAEjxPJ6O3HZ_xdGDvuvYiUNqiPxqvo37V7d5ckLpDM=qF426tw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] selinux: fix double free
+To:     trix@redhat.com
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>, rgb@redhat.com,
+        SElinux list <selinux@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 01:17:28PM +0300, Andy Shevchenko wrote:
->On Wed, Jun 10, 2020 at 2:06 AM Wei Yang <richard.weiyang@gmail.com> wrote:
->> On Tue, Jun 09, 2020 at 12:16:49PM +0300, Andy Shevchenko wrote:
->> >On Mon, Jun 08, 2020 at 10:31:12PM +0000, Wei Yang wrote:
->> >> On Fri, Jun 05, 2020 at 05:16:29PM -0700, Andrew Morton wrote:
->> >
->> >...
->> >
->> >> The test on 64bit machine pass. Since I don't have a 32bit machine by hand,
->> >
->> >Out of curiosity what that machine is?
->> >
->>
->> It is a Intel Xeon Gold CPU.
+On Wed, Jun 10, 2020 at 5:57 PM <trix@redhat.com> wrote:
 >
->I suppose it's x86 (and not ia64).
->In this case you can always build an i386 configuration and test on a
->32-bit "machine".
+> From: Tom Rix <trix@redhat.com>
 >
+> Clang's static analysis tool reports these double free memory errors.
+>
+> security/selinux/ss/services.c:2987:4: warning: Attempt to free released memory [unix.Malloc]
+>                         kfree(bnames[i]);
+>                         ^~~~~~~~~~~~~~~~
+> security/selinux/ss/services.c:2990:2: warning: Attempt to free released memory [unix.Malloc]
+>         kfree(bvalues);
+>         ^~~~~~~~~~~~~~
+>
+> So improve the security_get_bools error handling by freeing these variables
+> and setting their return pointers to NULL and the return len to 0
+>
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Yes, you are right. While last time I tried to run a 32bit guest, it took me a
-lot of time to setup. If my understanding is correct, to run on a 32bit
-machine, we not only need the kernel but a whole 32bit system. This means I
-need to re-install a 32bit system. And I found many distro doesn't support
-32bit system any more.
-
-Do you have a better way to setup the environment?
-
-
->-- 
->With Best Regards,
->Andy Shevchenko
-
--- 
-Wei Yang
-Help you, Help me
+Acked-by: Stephen Smalley <stephen.smalley.work@gmail.com>
