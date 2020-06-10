@@ -2,154 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729FC1F54B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 14:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C49E1F54BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 14:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729067AbgFJM0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 08:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728965AbgFJM0G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 08:26:06 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7348C03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 05:26:04 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id l17so1731692qki.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 05:26:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xNoh9u1q9fbWqVtSlCDwrQ/3B0eRAU+tf8g5idD9RH8=;
-        b=UwTLaOrWR7hV8EsCbkCBzm+aoRnVXQvT3SaWLGbTiHJZLxaHGs/C6EN8wujmxE0ylL
-         0vyEjXlLHwgwt3QdRSmhy+bwyqBa0q8UeWEcM+com0sDMfX+0OVk/D5ZsQ5aOHPUs2Ko
-         OEAjMVTDagknQn+r75YbZSHmgd12Tch0f7xyc1hUfY1P3Bv/rYmXeLIZ2cthH5ckwRib
-         bFEVJzGdhTGoGpc+oN4P9dqpw6flV8M8DKy9vklpOspXXjPTPRFgTc3Suffya+z8fun1
-         q5DfKR0awUCBLUOlkC8lyr29hjcgkhM0FpYfHGE+S5k6J35vuCTL1CblOxltWLeJjjAP
-         by1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xNoh9u1q9fbWqVtSlCDwrQ/3B0eRAU+tf8g5idD9RH8=;
-        b=G6OEwUs3a/ZbJQxALgvJWejNfTld5wHTpQ2klIUdrf29j6s18vntcgRnnGIZwlTiO8
-         vWssEyhgq2zBdToSj347G5RoLO8JEPJ3PuagNPCo6b0Do2mtEM5gfl+AHX0cBFM0npAX
-         Bzc8G5f/ia0XEQaG8FSfgD78VUyrK6afZniF2t95yud9UKRMf9H0TW/hh1sKexCQDLXi
-         SKyW5f7p/uK3UwNysXd6qdTtG3h5xX4yScdo/8VF1bkQrjSyXgAo6819dqyg9Co5t1SZ
-         DJe3c5w3jFpMukfgQmIj0+Tbse1cu96vgHSDLDsKmngnWlt2xL93xFJ6+TcXwQfiYUg/
-         EQLw==
-X-Gm-Message-State: AOAM533+fBOxC4qMvuQKrVl9IwOUHV/S7r2hdV2N82MPNCA/eCOCwDxw
-        fjN8OERjdi1fg9rqVpnHb17wGg==
-X-Google-Smtp-Source: ABdhPJxfCiqGtPTB/F8/CkJXwvO/TBi4Kep/Q9MykJYaeASwyoqY8SlgDYmVpqi7gBmnB+zfpWIusQ==
-X-Received: by 2002:a37:7d45:: with SMTP id y66mr2582137qkc.484.1591791963659;
-        Wed, 10 Jun 2020 05:26:03 -0700 (PDT)
-Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id y54sm13368128qtj.28.2020.06.10.05.26.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 05:26:02 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 08:26:00 -0400
-From:   Qian Cai <cai@lca.pw>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH] mm/page_alloc: silence a KASAN false positive
-Message-ID: <20200610122600.GB954@lca.pw>
-References: <20200610052154.5180-1-cai@lca.pw>
- <CACT4Y+Ze=cddKcU_bYf4L=GaHuJRUjY=AdFFpM7aKy2+aZrmyQ@mail.gmail.com>
+        id S1729177AbgFJM0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 08:26:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729077AbgFJM0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 08:26:48 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8D02206F4;
+        Wed, 10 Jun 2020 12:26:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591792007;
+        bh=PBnbsD1r4hBJSwpcdPlA8plwD/kWkJiD61twepTwXNE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jJpTTwI4BcRIVrN10ZRmWWQHb9uLqvUrrTbyJC1G5ckdCzOCEOBlPdgX2dMouNv0y
+         YAgEbPCewSSW4UUxn4RQtfuCNeuAdQ/VXQBBn5Ha87ZqsZt+1tcxAPrnMH0pHm3w0F
+         EFkHX/7w+geTl3Np545ZBkOWixSYUU12SBQ6Y3Ls=
+Date:   Wed, 10 Jun 2020 14:26:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
+        netdev@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v3 1/7] Documentation: dynamic-debug: Add description of
+ level bitmask
+Message-ID: <20200610122641.GB1900758@kroah.com>
+References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+ <20200609104604.1594-2-stanimir.varbanov@linaro.org>
+ <20200609111615.GD780233@kroah.com>
+ <0830ba57-d416-4788-351a-6d1b2ca5b7d8@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+Ze=cddKcU_bYf4L=GaHuJRUjY=AdFFpM7aKy2+aZrmyQ@mail.gmail.com>
+In-Reply-To: <0830ba57-d416-4788-351a-6d1b2ca5b7d8@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 07:54:50AM +0200, Dmitry Vyukov wrote:
-> On Wed, Jun 10, 2020 at 7:22 AM Qian Cai <cai@lca.pw> wrote:
-> >
-> > kernel_init_free_pages() will use memset() on s390 to clear all pages
-> > from kmalloc_order() which will override KASAN redzones because a
-> > redzone was setup from the end of the allocation size to the end of the
-> > last page. Silence it by not reporting it there. An example of the
-> > report is,
+On Wed, Jun 10, 2020 at 01:29:20PM +0300, Stanimir Varbanov wrote:
+> Hi Greg,
 > 
-> Interesting. The reason why we did not hit it on x86_64 is because
-> clear_page is implemented in asm (arch/x86/lib/clear_page_64.S) and
-> thus is not instrumented. Arm64 probably does the same. However, on
-> s390 clear_page is defined to memset.
-> clear_[high]page are pretty extensively used in the kernel.
-> We can either do this, or make clear_page non instrumented on s390 as
-> well to match the existing implicit assumption. The benefit of the
-> current approach is that we can find some real use-after-free's and
-> maybe out-of-bounds on clear_page. The downside is that we may need
-> more of these annotations. Thoughts?
-
-Since we had already done the same thing in poison_page(), I suppose we
-could do the same here. Also, clear_page() has been used in many places
-on s390, and it is not clear to me if those are all safe like this.
-
-There might be more annotations required, so it probably up to s390
-maintainers (CC'ed) if they prefer not instrumenting clear_page() like
-other arches.
-
+> On 6/9/20 2:16 PM, Greg Kroah-Hartman wrote:
+> > On Tue, Jun 09, 2020 at 01:45:58PM +0300, Stanimir Varbanov wrote:
+> >> This adds description of the level bitmask feature.
+> >>
+> >> Cc: Jonathan Corbet <corbet@lwn.net> (maintainer:DOCUMENTATION)
+> >>
+> >> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> >> ---
+> >>  Documentation/admin-guide/dynamic-debug-howto.rst | 10 ++++++++++
+> >>  1 file changed, 10 insertions(+)
+> >>
+> >> diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+> >> index 0dc2eb8e44e5..c2b751fc8a17 100644
+> >> --- a/Documentation/admin-guide/dynamic-debug-howto.rst
+> >> +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+> >> @@ -208,6 +208,12 @@ line
+> >>  	line -1605          // the 1605 lines from line 1 to line 1605
+> >>  	line 1600-          // all lines from line 1600 to the end of the file
+> >>  
+> >> +level
+> >> +    The given level will be a bitmask ANDed with the level of the each ``pr_debug()``
+> >> +    callsite. This will allow to group debug messages and show only those of the
+> >> +    same level.  The -p flag takes precedence over the given level. Note that we can
+> >> +    have up to five groups of debug messages.
+> > 
+> > As was pointed out, this isn't a "level", it's some arbitrary type of
+> > "grouping".
 > 
-> >  BUG: KASAN: slab-out-of-bounds in __free_pages_ok
-> >  Write of size 4096 at addr 000000014beaa000
-> >  Call Trace:
-> >  show_stack+0x152/0x210
-> >  dump_stack+0x1f8/0x248
-> >  print_address_description.isra.13+0x5e/0x4d0
-> >  kasan_report+0x130/0x178
-> >  check_memory_region+0x190/0x218
-> >  memset+0x34/0x60
-> >  __free_pages_ok+0x894/0x12f0
-> >  kfree+0x4f2/0x5e0
-> >  unpack_to_rootfs+0x60e/0x650
-> >  populate_rootfs+0x56/0x358
-> >  do_one_initcall+0x1f4/0xa20
-> >  kernel_init_freeable+0x758/0x7e8
-> >  kernel_init+0x1c/0x170
-> >  ret_from_fork+0x24/0x28
-> >  Memory state around the buggy address:
-> >  000000014bea9f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> >  000000014bea9f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > >000000014beaa000: 03 fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-> >                     ^
-> >  000000014beaa080: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-> >  000000014beaa100: fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-> >
-> > Fixes: 6471384af2a6 ("mm: security: introduce init_on_alloc=1 and init_on_free=1 boot options")
-> > Signed-off-by: Qian Cai <cai@lca.pw>
-> > ---
-> >  mm/page_alloc.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index 727751219003..9954973f89a3 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -1164,8 +1164,11 @@ static void kernel_init_free_pages(struct page *page, int numpages)
-> >  {
-> >         int i;
-> >
-> > +       /* s390's use of memset() could override KASAN redzones. */
-> > +       kasan_disable_current();
-> >         for (i = 0; i < numpages; i++)
-> >                 clear_highpage(page + i);
-> > +       kasan_enable_current();
-> >  }
-> >
-> >  static __always_inline bool free_pages_prepare(struct page *page,
-> > --
-> > 2.21.0 (Apple Git-122.2)
-> >
+> Yes, it is grouping of KERN_DEBUG level messages by importance (my
+> fault, I put incorrect name).  What is important is driver author
+> decision.  Usually when the driver is huge and has a lot of debug
+> messages it is not practical to enable all of them to chasing a
+> particular bug or issue.  You know that debugging (printk) add delays
+> which could hide or rise additional issue(s) which would complicate
+> debug and waste time.
+
+That is why it is possible to turn on and off debugging messages on a
+function/line basis already.  Why not just use that instead?
+
+> For the Venus driver I have defined three groups of KERN_DEBUG - low,
+> medium and high (again the driver author(s) will decide what the
+> importance is depending on his past experience).
+> 
+> There is another point where the debugging is made by person who is not
+> familiar with the driver code. In that case he/she cannot enable lines
+> or range of lines because he don't know the details. Here the grouping
+> by importance could help.
+
+And they will really know what "low/medium/high" are?
+
+Anyway, that makes a bit more sense, but the documentation could use a
+lot more in order to describe this type of behavior, and what is
+expected by both driver authors, and users of the interface.
+
+thanks,
+
+greg k-h
