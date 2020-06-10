@@ -2,110 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73051F5C42
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 21:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E8B1F5C4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 21:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730449AbgFJTyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 15:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
+        id S1728709AbgFJT5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 15:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730388AbgFJTxy (ORCPT
+        with ESMTP id S1726219AbgFJT5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 15:53:54 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2647DC08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 12:53:54 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id x18so3219914ilp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 12:53:54 -0700 (PDT)
+        Wed, 10 Jun 2020 15:57:13 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B619C03E96B;
+        Wed, 10 Jun 2020 12:57:13 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id r16so1629392qvm.6;
+        Wed, 10 Jun 2020 12:57:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qFk1tcTUGEhxvyWsBEGOYLJYcEuf08mLBBeRJsLstbs=;
-        b=f+qaMkkgTmEpLeYukJk2jIqUGUwMptIghPDgNeMi79EFCqrEzc7UWd8+rmILNyb2lu
-         VpTRXZh7ruwCrvKbtyay4pCk33wMEKqSw7wX2pzq6D8ociuUxJE22S+jvMWTQE8sfwOj
-         Q0CsjZT7NFAXIEjZpo0ofsrIJGVdywbr/R3XPvCMWOAKFxBLJdDA5f0qw2Q3sxPjBFUG
-         ffu6C7l+z2e/H2q9a2AqhHYLFU/joTUqWu1sLoxuTh9FIRtJ8ijhFXtWE4iFykUiMqCx
-         neBMWMXX2tV7RILU8ZdZlAF7zRr1kSe3n9tb6eWJ0TKQBqc65FVw2YexHWWd59hJMKeY
-         fJww==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=e7DTymW0dlvUI6UcJcAeZHCURN97Q9zDso/sHlDXRNA=;
+        b=UlN/C4YYYCXVSwrKjjY3uOG/wP63W4GdE1l5KDxKe8xiggNNm3xqvFGL1N44md5YZ3
+         VDoCVM46iPmYU8mpemi+nbgUZcUkSqcX9UhF613wB5Dc4ooVEWBmxwKh/nY2Nh2LxKTO
+         +RGatdPg5pWR4DsAUaN6NAlJCi1CSFPtQxcvwu/xjAEhsCZQEz9RLeeP2fJxh0EBqhGB
+         +kdiyWBeQoDR/PHlV62/5sW+ECZc29FlXzwA6HZ6zsm052EyOd0M+IxJtSgJGxf6lAmY
+         lvYyXgBsMdZAm5Dirf2hxBmO6X2rkG5BWZ++xB1Ur6VG2KGpfVVmwvQp7bGTgGAqXoYA
+         /hFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qFk1tcTUGEhxvyWsBEGOYLJYcEuf08mLBBeRJsLstbs=;
-        b=cfShL+wDpWFGf64C5X5DJdbI8YBWgfFCE9X42KTKX0dwuP45GGKRlY78N5OAKX6MFo
-         p7PnLOj/QBk2WInjyCzknrB4Lh6nnFL+1GzdCmUVpP4xdZ6pe5VLd7xUysiRbgzRoI66
-         2SaHFULtyI8cULN7mDAa6VZLDW0ODzeGE376fvXvnnafq22xZljJxNtfxj7sTldh4uAd
-         or/J7DPRLZoJ48N+u6Ne5y1EgkmiNmL0nUZ+iwHkzC8bob3KA8aUxKty/aFL8OoZc4tF
-         oPv9EvhUhL2IMLy+RdC2y1v+p4u6n6sXaSYshbpjuIrcISvAO4b8cJunSSdLwNdLoHLE
-         7yrQ==
-X-Gm-Message-State: AOAM533V9mUxS3n9lrVhZP6BLaWUP+DMes1v0DSJeWuIh5EFX3B/oLiZ
-        ZfgoCRWV2HlHqrKncZwefJtZjQ==
-X-Google-Smtp-Source: ABdhPJz9FumHIqWEm3GPeCvyEPipjguCrq4qGyzZrr6nb9N6UQDwWumnMZqJeOecK9Z8k6KIddFbEQ==
-X-Received: by 2002:a05:6e02:104b:: with SMTP id p11mr3524033ilj.26.1591818833544;
-        Wed, 10 Jun 2020 12:53:53 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id r10sm408828ile.36.2020.06.10.12.53.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 12:53:53 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net 5/5] net: ipa: warn if gsi_trans structure is too big
-Date:   Wed, 10 Jun 2020 14:53:32 -0500
-Message-Id: <20200610195332.2612233-6-elder@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200610195332.2612233-1-elder@linaro.org>
-References: <20200610195332.2612233-1-elder@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=e7DTymW0dlvUI6UcJcAeZHCURN97Q9zDso/sHlDXRNA=;
+        b=nq43tVZjOyvOxhQe+9rg++T1R51PCLx0kHXZa4aylhiGvpTtiiAY0/pNpT4BOlPNqp
+         Yz9Ue8NTACSKeD5u2l8wysQOvie9qeavnTNqmnWGt8rZsN+9Jc0cXLxSN+VdkNMewTHK
+         33XZOJPvnSYVORwXWM9MORnwFBZ41nqhyjO7a+8PsquBpyAMHPknkaCmBp5ZvJgR8X8c
+         r1YQWcmKHOop2kazLzcEKQ8bqOc+6HPBpNLjYU39lYsrHzSYZdcMwE7w3Vlf9x/Ttxn0
+         yDuOlxp5iPbAuektjQKo4gpt3x2QV5YW8jJGOP3b4ydiC/c2LxpjBod37hnskja1JQcv
+         KxlQ==
+X-Gm-Message-State: AOAM533KhHC5EpTklGl9TZxcBIIVNSp496gXhSEZeu06KR0a2DjtL80M
+        8I156piwxcf1rMNHR/+b0CEYME8xqP7iDJ3V9WzBd54mdOU=
+X-Google-Smtp-Source: ABdhPJysrd/Lk7ZFl9lvvRPWP6l9wx2xRBJWOVf6T/AKiULdAUcsa+SId5libD1DvTqTsaPkNdCuToAw+q/94pXF54w=
+X-Received: by 2002:ad4:4627:: with SMTP id x7mr3830646qvv.54.1591819032442;
+ Wed, 10 Jun 2020 12:57:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200607113632.GA49147@kroah.com> <20200609210400.GA1461839@bjorn-Precision-5520>
+ <CAOSf1CGMwHGSn18MeKYr2BESfLwq3Q8_0fC6yhiQRrAXeSosqQ@mail.gmail.com>
+In-Reply-To: <CAOSf1CGMwHGSn18MeKYr2BESfLwq3Q8_0fC6yhiQRrAXeSosqQ@mail.gmail.com>
+Reply-To: rajatxjain@gmail.com
+From:   Rajat Jain <rajatxjain@gmail.com>
+Date:   Wed, 10 Jun 2020 12:57:00 -0700
+Message-ID: <CAA93t1r37y-Shr+-oHoBoLSbE1vAguwdE2ak2F6L4Ecm5+3JKQ@mail.gmail.com>
+Subject: Re: [RFC] Restrict the untrusted devices, to bind to only a set of
+ "whitelisted" drivers
+To:     "Oliver O'Halloran" <oohall@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rajat Jain <rajatja@google.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Prashant Malani <pmalani@google.com>,
+        Benson Leung <bleung@google.com>,
+        Todd Broch <tbroch@google.com>,
+        Alex Levin <levinale@google.com>,
+        Mattias Nissler <mnissler@google.com>,
+        Zubin Mithra <zsm@google.com>,
+        Bernie Keany <bernie.keany@intel.com>,
+        Aaron Durbin <adurbin@google.com>,
+        Diego Rivas <diegorivas@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Furquan Shaikh <furquan@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Christian Kellner <christian@kellner.me>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the DEBUG_SPINLOCK and DEBUG_LOCK_ALLOC config options are
-enabled, sizeof(raw_spinlock_t) grows considerably (from 4 bytes
-to 56 bytes currently).  As a consequence the size of the gsi_trans
-structure exceeds 128 bytes, and this triggers a BUILD_BUG_ON()
-error.
+On Tue, Jun 9, 2020 at 6:34 PM Oliver O'Halloran <oohall@gmail.com> wrote:
+>
+> On Wed, Jun 10, 2020 at 7:04 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >
+> > To sketch this out, my understanding of how this would work is:
+> >
+> >   - Expose the PCI pdev->untrusted bit in sysfs.  We don't expose this
+> >     today, but doing so would be trivial.  I think I would prefer a
+> >     sysfs name like "external" so it's more descriptive and less of a
+> >     judgment.
+> >
+> >     This comes from either the DT "external-facing" property or the
+> >     ACPI "ExternalFacingPort" property.
+>
+> I don't think internal / external is the right distinction to be
+> making. We have a similar trust issue with the BMC in servers even
+> though they're internal devices. They're typically network accessible
+> and infrequently updated so treating them as trustworthy isn't a great
+> idea. We have been slowly de-privileging the BMC over the last few
+> years, but the PCIe interface isn't locked down enough for my liking
+> since the SoCs we use do allow software to set the VDID and perform
+> arbitrary DMAs (thankfully limited to 32bit). If we're going to add in
+> infrastructure for handling possibly untrustworthy PCI devices then
+> I'd like to use that for BMCs too.
+>
+> >   - All devices present at boot are enumerated.  Any statically built
+> >     drivers will bind to them before any userspace code runs.
+> >
+> >     If you want to keep statically built drivers from binding, you'd
+> >     need to invent some mechanism so pci_driver_init() could clear
+> >     drivers_autoprobe after registering pci_bus_type.
+> >
+> >   - Early userspace code prevents modular drivers from automatically
+> >     binding to PCI devices:
+> >
+> >       echo 0 > /sys/bus/pci/drivers_autoprobe
+> >
+> >     This prevents modular drivers from binding to all devices, whether
+> >     present at boot or hot-added.
+>
+> I don't see why this is preferable to just disabling autoprobe for
+> untrusted devices. That would dovetail nicely with Rajat's whitelist
+> idea if we want to go down that route and I think we might want to.
+> The BMC usually provides some form of VGA console and we'd like that
+> to continue working out-of-the-box without too much user (or distro)
+> intervention.
 
-These are useful configuration options to enable, so rather than
-causing a build failure, just issue a warning message at run time
-if the structure is larger than we'd prefer.
+I wouldn't mind introducing a kernel parameter to disable auto-probing
+of untrusted devices if there is a wider agreement here.
+The only notch is that in my opinion, if present, that parameter
+should disable auto-probing for "external" devices only (i.e.
+"external-facing" devices should still be auto-probed).
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_main.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Thanks,
 
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 76d5108b8403..94d9aa0e999b 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -669,9 +669,6 @@ static void ipa_validate_build(void)
- 	 */
- 	BUILD_BUG_ON(GSI_TLV_MAX > U8_MAX);
- 
--	/* Exceeding 128 bytes makes the transaction pool *much* larger */
--	BUILD_BUG_ON(sizeof(struct gsi_trans) > 128);
--
- 	/* This is used as a divisor */
- 	BUILD_BUG_ON(!IPA_AGGR_GRANULARITY);
- #endif /* IPA_VALIDATE */
-@@ -715,6 +712,10 @@ static int ipa_probe(struct platform_device *pdev)
- 	int ret;
- 
- 	ipa_validate_build();
-+	/* Exceeding 128 bytes makes the transaction pool *much* larger */
-+	if (sizeof(struct gsi_trans) > 128)
-+		dev_warn(dev, "WARNING: sizeof(struct gsi_trans) = %zu\n",
-+			 sizeof(struct gsi_trans));
- 
- 	/* If we need Trust Zone, make sure it's available */
- 	modem_init = of_property_read_bool(dev->of_node, "modem-init");
--- 
-2.25.1
+Rajat
 
+>
+> Oliver
