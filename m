@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CB11F5203
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 12:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F351F51C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 12:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbgFJKNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 06:13:53 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:48578 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726134AbgFJKNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 06:13:52 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 218E62002EC;
-        Wed, 10 Jun 2020 12:13:51 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 89942200301;
-        Wed, 10 Jun 2020 12:13:46 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A71F14029F;
-        Wed, 10 Jun 2020 18:13:40 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, leonard.crestez@nxp.com, abel.vesa@nxp.com,
-        l.stach@pengutronix.de, peng.fan@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V3] soc: imx8m: Correct i.MX8MP UID fuse offset
-Date:   Wed, 10 Jun 2020 18:03:02 +0800
-Message-Id: <1591783382-27033-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728070AbgFJKDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 06:03:13 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:52774 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726134AbgFJKDM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 06:03:12 -0400
+Received: by mail-il1-f198.google.com with SMTP id v14so1105282ilo.19
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 03:03:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=s9Ndse2lGRmxdIH/Ktmx8GJZm0pgFE0UOBytpQ6Yd5s=;
+        b=lI1kXvxrjgCF3q2Gy8pBsQAx/2wiHdYDNWjNxHoaxQQgcLotN15AAX9HZIvRPR/O+a
+         NmTVQ/pUup4dnGsPJXACC1tqztWNJaOpmI41lYsLBta6XJe94CbbQuGf39dtJGZm3usb
+         AV6P5EwzDU6gqm5yta1ARinrV0PuJlvGUhnZZijA2k4dArjem3COUyxKijautuG7OT1v
+         IaiLPr9VIyEC49KoSeU2dTsVy2PKekUUpqvNpmdu+nqaTbhko25zdRBpEW+WJLWfGI44
+         VZdcsgre/NDquTWqJIBnVfKilQKsro8OdkGsl7CneySh2B0BOVzRUOLXscLE5qHhaZxZ
+         9hyw==
+X-Gm-Message-State: AOAM530R+t5fC7R/gE+X+kKZ6WLjF6vcFh6sL67DZG7hR5ZHguq+yc2y
+        vHoNxeDuX/0oSMt93mG+NlEH6IbUzrZgwP+wnwK1rJLn57iZ
+X-Google-Smtp-Source: ABdhPJyRm3ZJ+GrgzL9055X5DC2K7DQFskv/mtEdmnUqg4xUShMl1IESaXEP6mUzvKyoMXx54kwxBK+0kuWuNo0kE+F08Yvp9BpV
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:dc5:: with SMTP id l5mr2186591ilj.216.1591783391613;
+ Wed, 10 Jun 2020 03:03:11 -0700 (PDT)
+Date:   Wed, 10 Jun 2020 03:03:11 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009dd95205a7b7f3bf@google.com>
+Subject: general protection fault in __switch_to_asm
+From:   syzbot <syzbot+fe6eeea133f070606074@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux@dominikbrodowski.net, mhiramat@kernel.org,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct i.MX8MP UID fuse offset according to fuse map:
+Hello,
 
-UID_LOW: 0x420
-UID_HIGH: 0x430
+syzbot found the following crash on:
 
-Fixes: fc40200ebf82 ("soc: imx: increase build coverage for imx8m soc driver")
-Fixes: 18f662a73862 ("soc: imx: Add i.MX8MP SoC driver support")
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+HEAD commit:    e7b08814 Add linux-next specific files for 20200529
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14a1f451100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e62421a5de6da96
+dashboard link: https://syzkaller.appspot.com/bug?extid=fe6eeea133f070606074
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1524ea96100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17fab432100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+fe6eeea133f070606074@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.7.0-rc7-next-20200529-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__switch_to_asm+0x0/0x40 arch/x86/entry/entry_64.S:228
+Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+RSP: 0018:ffffffff89a07cd8 EFLAGS: 00010046
+RAX: dffffc0000000000 RBX: ffff88809fce2b40 RCX: 1ffffffff1350dc9
+RDX: 1ffff11015cc6fc2 RSI: ffff88809489e280 RDI: ffffffff89a86580
+RBP: ffffffff89a07da8 R08: 0000000000000000 R09: fffffbfff155b432
+R10: ffffffff8aada18f R11: fffffbfff155b431 R12: ffffffff89a86580
+R13: ffff8880ae637e00 R14: ffff88809489e280 R15: ffff8880ae637e18
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000563f12be20f8 CR3: 000000009a876000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ context_switch kernel/sched/core.c:3430 [inline]
+ __schedule+0x8f3/0x1f80 kernel/sched/core.c:4155
+ schedule_idle+0x53/0x90 kernel/sched/core.c:4258
+ do_idle+0x327/0x690 kernel/sched/idle.c:297
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:365
+ start_kernel+0x9be/0x9fb init/main.c:1043
+ secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:243
+Modules linked in:
+---[ end trace 7e4004b4996f54a3 ]---
+RIP: 0010:__switch_to_asm+0x0/0x40 arch/x86/entry/entry_64.S:228
+Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+RSP: 0018:ffffffff89a07cd8 EFLAGS: 00010046
+RAX: dffffc0000000000 RBX: ffff88809fce2b40 RCX: 1ffffffff1350dc9
+RDX: 1ffff11015cc6fc2 RSI: ffff88809489e280 RDI: ffffffff89a86580
+RBP: ffffffff89a07da8 R08: 0000000000000000 R09: fffffbfff155b432
+R10: ffffffff8aada18f R11: fffffbfff155b431 R12: ffffffff89a86580
+R13: ffff8880ae637e00 R14: ffff88809489e280 R15: ffff8880ae637e18
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000563f12be20f8 CR3: 000000009a876000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
-Changes since V2:
-	- add one more fix tag for original patch before file name is changed.
----
- drivers/soc/imx/soc-imx8m.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
-index 7b0759a..0bc8314 100644
---- a/drivers/soc/imx/soc-imx8m.c
-+++ b/drivers/soc/imx/soc-imx8m.c
-@@ -22,6 +22,8 @@
- #define OCOTP_UID_LOW			0x410
- #define OCOTP_UID_HIGH			0x420
- 
-+#define IMX8MP_OCOTP_UID_OFFSET		0x10
-+
- /* Same as ANADIG_DIGPROG_IMX7D */
- #define ANADIG_DIGPROG_IMX8MM	0x800
- 
-@@ -87,6 +89,8 @@ static void __init imx8mm_soc_uid(void)
- {
- 	void __iomem *ocotp_base;
- 	struct device_node *np;
-+	u32 offset = of_machine_is_compatible("fsl,imx8mp") ?
-+		     IMX8MP_OCOTP_UID_OFFSET : 0;
- 
- 	np = of_find_compatible_node(NULL, NULL, "fsl,imx8mm-ocotp");
- 	if (!np)
-@@ -95,9 +99,9 @@ static void __init imx8mm_soc_uid(void)
- 	ocotp_base = of_iomap(np, 0);
- 	WARN_ON(!ocotp_base);
- 
--	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH);
-+	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH + offset);
- 	soc_uid <<= 32;
--	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW);
-+	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW + offset);
- 
- 	iounmap(ocotp_base);
- 	of_node_put(np);
--- 
-2.7.4
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
