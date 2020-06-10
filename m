@@ -2,254 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0AA1F59C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25501F59EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729518AbgFJRMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 13:12:06 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:23239 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729427AbgFJRMF (ORCPT
+        id S1729704AbgFJRRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 13:17:08 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:60928 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729619AbgFJRRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 13:12:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591809124; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Jt8mZoNNfftrfl4eTluurZCUY1cGFSIkcjywI15u/kI=; b=xhb9ODaD44Z+vyBmsN4dn7Oiu66djwc/QbwGuz+MM66cfSSdOmPv9KsyUQ5592g7F4TGy94J
- Cr9J8opiZU5rkxmfJ2mp5LIadJkKtdqsrpYzyGivMhljCedb51rzUOVJRqjQqcFP5qZHRpNd
- ZPV5Q5YOBynSpd/VRRC2wppfAUc=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
- 5ee1145c0206ad41d1e98cd2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Jun 2020 17:11:56
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A1A94C43391; Wed, 10 Jun 2020 17:11:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.104] (unknown [183.82.139.165])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9D298C433CA;
-        Wed, 10 Jun 2020 17:11:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9D298C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tdas@codeaurora.org
-Subject: Re: [PATCH v2 4/4] clk: qcom: lpass: Add support for LPASS clock
- controller for SC7180
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     David Brown <david.brown@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        robh@kernel.org, robh+dt@kernel.org
-References: <1589707344-8871-1-git-send-email-tdas@codeaurora.org>
- <1589707344-8871-5-git-send-email-tdas@codeaurora.org>
- <159054904061.88029.1394425232497625411@swboyd.mtv.corp.google.com>
-From:   Taniya Das <tdas@codeaurora.org>
-Message-ID: <3ac34bd7-bc5b-bc04-99ba-8ba3c5a9a691@codeaurora.org>
-Date:   Wed, 10 Jun 2020 22:41:49 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Wed, 10 Jun 2020 13:17:05 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jj4LV-0006fQ-U5; Wed, 10 Jun 2020 11:17:01 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jj4LV-0002OG-1e; Wed, 10 Jun 2020 11:17:01 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexey Gladkov <gladkov.alexey@gmail.com>
+Cc:     syzbot <syzbot+4abac52934a48af5ff19@syzkaller.appspotmail.com>,
+        adobriyan@gmail.com, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <0000000000002d7ca605a7b8b1c5@google.com>
+        <20200610130422.1197386-1-gladkov.alexey@gmail.com>
+Date:   Wed, 10 Jun 2020 12:12:54 -0500
+In-Reply-To: <20200610130422.1197386-1-gladkov.alexey@gmail.com> (Alexey
+        Gladkov's message of "Wed, 10 Jun 2020 15:04:22 +0200")
+Message-ID: <87mu5azvxl.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <159054904061.88029.1394425232497625411@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1jj4LV-0002OG-1e;;;mid=<87mu5azvxl.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18dBXhU4ULnzMCMzQEm7usNsGx80LULPAM=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4807]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa08 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Alexey Gladkov <gladkov.alexey@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 516 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 13 (2.6%), b_tie_ro: 11 (2.2%), parse: 0.96
+        (0.2%), extract_message_metadata: 12 (2.4%), get_uri_detail_list: 1.99
+        (0.4%), tests_pri_-1000: 4.5 (0.9%), tests_pri_-950: 1.31 (0.3%),
+        tests_pri_-900: 1.11 (0.2%), tests_pri_-90: 139 (27.0%), check_bayes:
+        136 (26.4%), b_tokenize: 6 (1.2%), b_tok_get_all: 9 (1.7%),
+        b_comp_prob: 2.8 (0.5%), b_tok_touch_all: 113 (22.0%), b_finish: 1.36
+        (0.3%), tests_pri_0: 331 (64.2%), check_dkim_signature: 0.82 (0.2%),
+        check_dkim_adsp: 3.4 (0.6%), poll_dns_idle: 0.93 (0.2%), tests_pri_10:
+        2.1 (0.4%), tests_pri_500: 6 (1.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] proc: s_fs_info may be NULL when proc_kill_sb is called
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your review.
+Alexey Gladkov <gladkov.alexey@gmail.com> writes:
 
-On 5/27/2020 8:40 AM, Stephen Boyd wrote:
-> Quoting Taniya Das (2020-05-17 02:22:24)
->> diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
->> new file mode 100644
->> index 0000000..86e3599
->> --- /dev/null
->> +++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
->> @@ -0,0 +1,479 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
->> + */
->> +
->> +#include <linux/clk-provider.h>
->> +#include <linux/err.h>
->> +#include <linux/module.h>
->> +#include <linux/of_device.h>
->> +#include <linux/pm_clock.h>
->> +#include <linux/pm_runtime.h>
->> +#include <linux/of.h>
->> +#include <linux/regmap.h>
->> +
->> +#include <dt-bindings/clock/qcom,lpasscorecc-sc7180.h>
->> +
->> +#include "clk-alpha-pll.h"
->> +#include "clk-branch.h"
->> +#include "clk-rcg.h"
->> +#include "clk-regmap.h"
->> +#include "common.h"
->> +#include "gdsc.h"
->> +
->> +enum {
->> +       P_BI_TCXO,
->> +       P_LPASS_LPAAUDIO_DIG_PLL_OUT_ODD,
->> +       P_SLEEP_CLK,
->> +};
->> +
->> +static struct pll_vco fabia_vco[] = {
->> +       { 249600000, 2000000000, 0 },
->> +};
->> +
->> +static const struct alpha_pll_config lpass_lpaaudio_dig_pll_config = {
->> +       .l = 0x20,
-> [...]
->> +
->> +static struct regmap_config lpass_core_cc_sc7180_regmap_config = {
->> +       .reg_bits = 32,
->> +       .reg_stride = 4,
->> +       .val_bits = 32,
->> +       .fast_io = true,
->> +};
->> +
->> +static const struct qcom_cc_desc lpass_core_hm_sc7180_desc = {
->> +       .config = &lpass_core_cc_sc7180_regmap_config,
->> +       .gdscs = lpass_core_hm_sc7180_gdscs,
->> +       .num_gdscs = ARRAY_SIZE(lpass_core_hm_sc7180_gdscs),
->> +};
->> +
->> +static const struct qcom_cc_desc lpass_core_cc_sc7180_desc = {
->> +       .config = &lpass_core_cc_sc7180_regmap_config,
->> +       .clks = lpass_core_cc_sc7180_clocks,
->> +       .num_clks = ARRAY_SIZE(lpass_core_cc_sc7180_clocks),
->> +};
->> +
->> +static const struct qcom_cc_desc lpass_audio_hm_sc7180_desc = {
->> +       .config = &lpass_core_cc_sc7180_regmap_config,
->> +       .gdscs = lpass_audio_hm_sc7180_gdscs,
->> +       .num_gdscs = ARRAY_SIZE(lpass_audio_hm_sc7180_gdscs),
->> +};
->> +
->> +
-> 
-> Drop double newline please.
-> 
+> syzbot found that proc_fill_super() fails before filling up sb->s_fs_info,
+> deactivate_locked_super() will be called and sb->s_fs_info will be NULL.
+> The proc_kill_sb() does not expect fs_info to be NULL which is wrong.
 
-Done.
+For the case where s_fs_info is never allocated this looks correct.
+That is because generic_shutdown_super has a special for !sb->s_root.
 
->> +static int lpass_core_cc_sc7180_probe(struct platform_device *pdev)
->> +{
->> +       const struct qcom_cc_desc *desc;
->> +       struct regmap *regmap;
->> +       int ret;
->> +
->> +       lpass_core_cc_sc7180_regmap_config.name = "lpass_audio_cc";
->> +       desc = &lpass_audio_hm_sc7180_desc;
->> +       ret = qcom_cc_probe_by_index(pdev, 1, desc);
->> +       if (ret)
->> +               return ret;
->> +
->> +       lpass_core_cc_sc7180_regmap_config.name = "lpass_core_cc";
->> +       regmap = qcom_cc_map(pdev, &lpass_core_cc_sc7180_desc);
->> +       if (IS_ERR(regmap))
->> +               return PTR_ERR(regmap);
->> +
->> +       /*
->> +        * Keep the CLK always-ON
-> 
-> Why? Presumably to make sure we can access the lpass sysnoc path all the
-> time?
-> 
+However for the existing cases I can't convince myself that it is safe
+to change the order we free the pid namespace and free fs_info.
 
-This is an always ON clock from HW, just making sure to keep it enabled.
+There is a lot of code that can run while generic_shutdown_super is
+running and purging all of the inodes.  We have crazy things like
+proc_flush_pid that might care, as well proc_evict_inode.
 
->> +        * LPASS_AUDIO_CORE_SYSNOC_SWAY_CORE_CLK
->> +        */
->> +       regmap_update_bits(regmap, 0x24000, BIT(0), BIT(0));
->> +
->> +       /* PLL settings */
->> +       regmap_write(regmap, 0x1008, 0x20);
->> +       regmap_update_bits(regmap, 0x1014, BIT(0), BIT(0));
->> +
->> +       clk_fabia_pll_configure(&lpass_lpaaudio_dig_pll, regmap,
->> +                               &lpass_lpaaudio_dig_pll_config);
->> +
->> +       return qcom_cc_really_probe(pdev, &lpass_core_cc_sc7180_desc, regmap);
->> +}
->> +
->> +static int lpass_hm_core_probe(struct platform_device *pdev)
->> +{
->> +       const struct qcom_cc_desc *desc;
->> +       int ret;
->> +
->> +       lpass_core_cc_sc7180_regmap_config.name = "lpass_hm_core";
->> +       desc = &lpass_core_hm_sc7180_desc;
->> +
->> +       return qcom_cc_probe_by_index(pdev, 0, desc);
->> +}
->> +
->> +static const struct of_device_id lpass_core_cc_sc7180_match_table[] = {
->> +       {
->> +               .compatible = "qcom,sc7180-lpasshm",
->> +               .data = lpass_hm_core_probe,
->> +       },
->> +       {
->> +               .compatible = "qcom,sc7180-lpasscorecc",
->> +               .data = lpass_core_cc_sc7180_probe,
->> +       },
->> +       { }
->> +};
->> +MODULE_DEVICE_TABLE(of, lpass_core_cc_sc7180_match_table);
->> +
->> +static int lpass_core_sc7180_probe(struct platform_device *pdev)
->> +{
->> +       int (*clk_probe)(struct platform_device *p);
->> +       int ret;
->> +
->> +       pm_runtime_enable(&pdev->dev);
->> +       ret = pm_clk_create(&pdev->dev);
->> +       if (ret)
->> +               return ret;
->> +
->> +       ret = pm_clk_add(&pdev->dev, "gcc_lpass_sway");
->> +       if (ret < 0) {
->> +               dev_err(&pdev->dev, "failed to acquire iface clock\n");
-> 
-> Can the clk name be 'iface' if it's actually the interface clk?
-> "gcc_lpass_sway" looks to be the actual clk name which we shouldn't care
-> about here. It should be whatever clk name we consider it to be, which
-> would mean iface probably.
+I haven't found anything that actually references fs_info or actually
+depends on the pid namespace living longer than the proc inode but it
+would be really easy to miss something.
+
+Can you send a v2 version does not change the order things are freed in
+for the case where we do allocate fs_info.  That will make it trivially
+safe to apply.
+
+Otherwise this looks like a very good patch.
+
+Thank you,
+Eric
+
+
+> Link: https://lore.kernel.org/lkml/0000000000002d7ca605a7b8b1c5@google.com
+> Reported-by: syzbot+4abac52934a48af5ff19@syzkaller.appspotmail.com
+> Fixes: fa10fed30f25 ("proc: allow to mount many instances of proc in one pid namespace")
+> Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
+> ---
+>  fs/proc/root.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
 >
-
-Yes would use "iface".
-
->> +               goto disable_pm_runtime;
->> +       }
->> +
->> +       clk_probe = of_device_get_match_data(&pdev->dev);
->> +       if (!clk_probe)
->> +               return -EINVAL;
->> +
->> +       ret = clk_probe(pdev);
->> +       if (ret)
->> +               goto destroy_pm_clk;
->> +
->> +       return 0;
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
-
---
+> diff --git a/fs/proc/root.c b/fs/proc/root.c
+> index ffebed1999e5..a715eb9f196a 100644
+> --- a/fs/proc/root.c
+> +++ b/fs/proc/root.c
+> @@ -264,15 +264,18 @@ static void proc_kill_sb(struct super_block *sb)
+>  {
+>  	struct proc_fs_info *fs_info = proc_sb_info(sb);
+>  
+> -	if (fs_info->proc_self)
+> -		dput(fs_info->proc_self);
+> +	if (fs_info) {
+> +		if (fs_info->proc_self)
+> +			dput(fs_info->proc_self);
+>  
+> -	if (fs_info->proc_thread_self)
+> -		dput(fs_info->proc_thread_self);
+> +		if (fs_info->proc_thread_self)
+> +			dput(fs_info->proc_thread_self);
+> +
+> +		put_pid_ns(fs_info->pid_ns);
+> +		kfree(fs_info);
+> +	}
+>  
+>  	kill_anon_super(sb);
+> -	put_pid_ns(fs_info->pid_ns);
+> -	kfree(fs_info);
+>  }
+>  
+>  static struct file_system_type proc_fs_type = {
