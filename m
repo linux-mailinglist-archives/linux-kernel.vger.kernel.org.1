@@ -2,55 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5081F4BCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 05:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E24741F4BCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 05:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbgFJDdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 23:33:05 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:59213 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725999AbgFJDdF (ORCPT
+        id S1726157AbgFJDgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 23:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgFJDgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 23:33:05 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U.8gqYO_1591759982;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U.8gqYO_1591759982)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 10 Jun 2020 11:33:02 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH] trace: fix typo in allocate_ftrace_ops()'s comment
-Date:   Wed, 10 Jun 2020 11:32:51 +0800
-Message-Id: <20200610033251.31713-1-richard.weiyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+        Tue, 9 Jun 2020 23:36:37 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7927DC05BD1E;
+        Tue,  9 Jun 2020 20:36:36 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id s192so233476vkh.3;
+        Tue, 09 Jun 2020 20:36:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rtx/ri9gwjpUSoBaV9ZRHZGtBga6dLCRzzoB3qYcsG8=;
+        b=YFfzJMw6CEHy6iYS376b/KrMjw0qQOTW+nCJ4XkQpANdnQc9Ym8WsRlhboJMu9kVMV
+         pe5Jt9hA5VvDDGhTfwtkIB6ueUbW1918gu26533cSKHOmpaxEw/QgIyCiDVwqRQURDGn
+         oWg+OEAlrUYVVBjuK2lBEzN68QwZzGjLbZMyx7Vd7hPewbqk/HYa+2v+hk3nNBQIfmSm
+         PqYVS5xGe2GotvVwmtLo/0juJbNbq71gQ/M+bK8hs28pZA0qOYnnuPFFC6h0qJW8XqMq
+         pRNrlBY4HxtQOvjaZSYtJUUYTVwQHf2HOkrmm9wEwVnrKberVUPobmKkjcybi+a7q6hd
+         uvJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rtx/ri9gwjpUSoBaV9ZRHZGtBga6dLCRzzoB3qYcsG8=;
+        b=NZUCe1SteOWJgGKjkWwN5XXr5QV0Xkl/BjTp1Y1A8tS7zYqCvbccQ3AGbLOeC7qaha
+         PLK+cfS3c5ZRF+mTgVN1gbdsWeADOswha6gKdydhtAUaqDKzb3vlt/e9/+tN82+jHZUt
+         VWQK89bn8EcSvYBLf6xDJz37FbMnQ9gRAPm1DGnaU2piXptfXNeEmfYi3T8eEq6Reiv+
+         A8+Ta0aYU4P70JVkLRpwOOXZEWm7G7cLycaRSDJO2o6QMbIMmwNR1P9ZLyjsGJ2rXo2O
+         dZ1vsxdFsge9J4h5t0uRTgCRgNvL0aqpddZEvI51QDQfjgYP8q4UD2r+YYzd8hffrIiy
+         bnMA==
+X-Gm-Message-State: AOAM531SVqYLTlAXAF2NJ691iMyUQmTnswTCvs2x3OXE2Im8dZhMSGOX
+        Mi1fECJMbXkG/HoydNhfITIcLMWQTGMmHkHXihg=
+X-Google-Smtp-Source: ABdhPJxGHm16dEC5JJMhDXsdFVIDQUW2MIT15A11XgThFQis58lrynuF9GiRAHrOwsEGSqo0JTdqb83g1T7v1yBEhdo=
+X-Received: by 2002:ac5:c94b:: with SMTP id s11mr932901vkm.8.1591760195582;
+ Tue, 09 Jun 2020 20:36:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200604063559.18080-1-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20200604063559.18080-1-manivannan.sadhasivam@linaro.org>
+From:   Alim Akhtar <alim.akhtar@gmail.com>
+Date:   Wed, 10 Jun 2020 09:05:59 +0530
+Message-ID: <CAGOxZ505Zq=VDhG-S2h5yVRSqpUQmzYi=iYGTGgHAqZm0uOqRQ@mail.gmail.com>
+Subject: Re: [PATCH] scsi: ufs: Bump supported UFS HCI version to 3.0
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, amit.kucheria@linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No functional change, just correct the word.
+HI Manivannan
 
-Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
----
- kernel/trace/trace_functions.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Jun 4, 2020 at 12:08 PM Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
+>
+> UFS HCI 3.0 versions are being used in Qcom SM8250 based boards. Hence,
+> adding it to the list of supported versions.
+>
+> I don't have the exact information of the additional registers supported
+> in version 3.0. Hence the change just adds 0x300 to the list of supported
+> versions to remove the below warning:
+>
+> "ufshcd-qcom 1d84000.ufshc: invalid UFS version 0x300"
+>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/scsi/ufs/ufshci.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/scsi/ufs/ufshci.h b/drivers/scsi/ufs/ufshci.h
+> index c2961d37cc1c..f2ee81669b00 100644
+> --- a/drivers/scsi/ufs/ufshci.h
+> +++ b/drivers/scsi/ufs/ufshci.h
+> @@ -104,6 +104,7 @@ enum {
+>         UFSHCI_VERSION_11 = 0x00010100, /* 1.1 */
+>         UFSHCI_VERSION_20 = 0x00000200, /* 2.0 */
+>         UFSHCI_VERSION_21 = 0x00000210, /* 2.1 */
+> +       UFSHCI_VERSION_30 = 0x00000300, /* 3.0 */
 
-diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-index 8a4c8d5c2c98..dd4dff71d89a 100644
---- a/kernel/trace/trace_functions.c
-+++ b/kernel/trace/trace_functions.c
-@@ -42,7 +42,7 @@ static int allocate_ftrace_ops(struct trace_array *tr)
- 	if (!ops)
- 		return -ENOMEM;
- 
--	/* Currently only the non stack verision is supported */
-+	/* Currently only the non stack version is supported */
- 	ops->func = function_trace_call;
- 	ops->flags = FTRACE_OPS_FL_RECURSION_SAFE | FTRACE_OPS_FL_PID;
- 
+See the current discussion on this https://lkml.org/lkml/2020/4/27/192
+
+>  };
+>
+>  /*
+> --
+> 2.17.1
+>
+
+
 -- 
-2.20.1 (Apple Git-117)
-
+Regards,
+Alim
