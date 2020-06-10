@@ -2,117 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C041F4FAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 09:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B8E1F4FB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 09:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726646AbgFJHyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 03:54:16 -0400
-Received: from mga01.intel.com ([192.55.52.88]:21007 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726081AbgFJHyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 03:54:15 -0400
-IronPort-SDR: d5e1sdQbCd/XP/MHwQTfKjIFMat4BfJlDH/Q5Njesgbpspa0LEu5+DpubHJfCl2IXQTq1/PoxV
- E933IgMzqInA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 00:54:14 -0700
-IronPort-SDR: 469ckEW6oq1EUpOvOxSjG+uRSyu78YUaFUohwmFifokapxW+O28HdKzPrWZ8zYJiKRgNqFba/Z
- nHTbGEgibEaw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,495,1583222400"; 
-   d="scan'208";a="260066021"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 10 Jun 2020 00:54:14 -0700
-Received: from [10.249.66.120] (ekotax-MOBL.gar.corp.intel.com [10.249.66.120])
-        by linux.intel.com (Postfix) with ESMTP id 082595805B5;
-        Wed, 10 Jun 2020 00:54:11 -0700 (PDT)
-Subject: Re: [PATCH 1/2] dt-bindings: watchdog: intel: Add YAML Schemas for
- Watchdog timer
-To:     Guenter Roeck <linux@roeck-us.net>, wim@linux-watchdog.org,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        robbh@kernel.org
-Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yixin.zhu@intel.com
-References: <cover.1591584255.git.eswara.kota@linux.intel.com>
- <ac89e289b79fec0a82d1dd060e17eeca024885d5.1591584255.git.eswara.kota@linux.intel.com>
- <235d301b-3b25-bb00-bd1b-c4392fa23c63@roeck-us.net>
- <4a336f1d-68da-3356-a73a-95747ba4af4c@linux.intel.com>
- <83812b78-41e3-299d-36a0-6ce1576e7e78@roeck-us.net>
-From:   Dilip Kota <eswara.kota@linux.intel.com>
-Message-ID: <aabceb6f-265d-fd11-eee1-6bccf2160512@linux.intel.com>
-Date:   Wed, 10 Jun 2020 15:54:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <83812b78-41e3-299d-36a0-6ce1576e7e78@roeck-us.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S1726648AbgFJH4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 03:56:02 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53246 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726484AbgFJH4C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 03:56:02 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1jivaP-0006nK-7L; Wed, 10 Jun 2020 07:55:49 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     jani.nikula@linux.intel.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        Ramalingam C <ramalingam.c@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v6] drm/i915: Init lspcon after HPD in intel_dp_detect()
+Date:   Wed, 10 Jun 2020 15:55:10 +0800
+Message-Id: <20200610075542.12882-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On HP 800 G4 DM, if HDMI cable isn't plugged before boot, the HDMI port
+becomes useless and never responds to cable hotplugging:
+[    3.031904] [drm:lspcon_init [i915]] *ERROR* Failed to probe lspcon
+[    3.031945] [drm:intel_ddi_init [i915]] *ERROR* LSPCON init failed on port D
 
-On 6/9/2020 9:46 PM, Guenter Roeck wrote:
-> On 6/9/20 1:57 AM, Dilip Kota wrote:
->> On 6/8/2020 9:37 PM, Guenter Roeck wrote:
->>> On 6/7/20 10:49 PM, Dilip Kota wrote:
->>>> Add YAML schemas for the watchdog timer on Intel Lightning
->>>> Mountain SoC.
->>>>
->>>> Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
->>>> ---
->>>>    .../bindings/watchdog/intel,lgm-gptc-wdt.yaml      | 75 ++++++++++++++++++++++
->>>>    1 file changed, 75 insertions(+)
->>>>    create mode 100644 Documentation/devicetree/bindings/watchdog/intel,lgm-gptc-wdt.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/watchdog/intel,lgm-gptc-wdt.yaml b/Documentation/devicetree/bindings/watchdog/intel,lgm-gptc-wdt.yaml
->>>> new file mode 100644
->>>> index 0000000000000..83dc39a5090c1
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/watchdog/intel,lgm-gptc-wdt.yaml
->>>> @@ -0,0 +1,75 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/watchdog/intel,lgm-gptc-wdt.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Intel Lightning Mountain Watchdog timer.
->>>> +
->>>> +maintainers:
->>>> +  - Dilip Kota <eswara.kota@linux.intel.com>
->>>> +
->>>> +description: |
->>>> +  Intel Lightning Mountain SoC has General Purpose Timer Counter(GPTC) which can
->>>> +  be configured as Clocksource, real time clock and Watchdog timer.
->>>> +  Each General Purpose Timer Counter has three timers. And total four General
->>>> +  Purpose Timer Counters are present on Lightning Mountain SoC which sums up
->>>> +  to 12 timers.
->>>> +  Lightning Mountain has four CPUs and each CPU is configured with one GPTC
->>>> +  timer as watchdog timer. Total four timers are configured as watchdog timers
->>>> +  on Lightning Mountain SoC.
->>>> +
->>> Why not just one ? The watchdog subsystem does not monitor individual CPUs,
->>> it monitors the system.
->> Intel Atom based Lightning Mountain SoC, system has four CPUs. On Lightning Mountain SoC ,Watchdog subsystem is combination of GPTC timers and reset controller unit. On Lightning Mountain SoC, each CPU is configured with one GPTC timer, so that if any of the CPU hangs or freezes, the watchdog daemon running on respective CPU cannot reset/ping or pet the watchdog timer. This causes the watchdog timeout. On watchdog timeout, reset controller triggers the reset to respective CPU.
->>
-> A system watchdog driver should not duplicate functionality
-> from kernel/watchdog.c, which monitors individual CPUs.
-> If the SoC does nto provide a system watchdog timer (which
-> I think is unlikely), it should stick with that. A watchdog
-> resetting an individual CPU instead of the entire system
-> isn't something I would want to see in the watchdog subsystem.
-My bad here, complete hardware reset happens on watchdog timeout not a 
-single CPU or core.
-Could you please clarify: The complete system means, you mean, "a 
-watchdog susbsystem should monitor all the cores/cpus in the SoC. Not 
-like each core/cpu in SoC having a wdt".
+Seems like the lspcon chip on the system only gets powered after the
+cable is plugged.
 
-Regards,
-Dilip
->
-> Guenter
->
+Consilidate lspcon_init() into lspcon_resume() to dynamically init
+lspcon chip, and make HDMI port work.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v6:
+ - Rebase on latest for-linux-next.
+
+v5:
+ - Consolidate lspcon_resume() with lspcon_init().
+ - Move more logic into lspcon code.
+
+v4:
+ - Trust VBT in intel_infoframe_init().
+ - Init lspcon in intel_dp_detect().
+
+v3:
+ - Make sure it's handled under long HPD case.
+
+v2: 
+ - Move lspcon_init() inside of intel_dp_hpd_pulse().
+
+ drivers/gpu/drm/i915/display/intel_ddi.c    | 19 +------
+ drivers/gpu/drm/i915/display/intel_dp.c     | 10 ++--
+ drivers/gpu/drm/i915/display/intel_hdmi.c   |  3 +-
+ drivers/gpu/drm/i915/display/intel_lspcon.c | 63 ++++++++++++---------
+ drivers/gpu/drm/i915/display/intel_lspcon.h |  3 +-
+ 5 files changed, 43 insertions(+), 55 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
+index aa22465bb56e..af755b1aa24b 100644
+--- a/drivers/gpu/drm/i915/display/intel_ddi.c
++++ b/drivers/gpu/drm/i915/display/intel_ddi.c
+@@ -4805,7 +4805,7 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
+ {
+ 	struct intel_digital_port *intel_dig_port;
+ 	struct intel_encoder *encoder;
+-	bool init_hdmi, init_dp, init_lspcon = false;
++	bool init_hdmi, init_dp;
+ 	enum phy phy = intel_port_to_phy(dev_priv, port);
+ 
+ 	init_hdmi = intel_bios_port_supports_dvi(dev_priv, port) ||
+@@ -4819,7 +4819,6 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
+ 		 * is initialized before lspcon.
+ 		 */
+ 		init_dp = true;
+-		init_lspcon = true;
+ 		init_hdmi = false;
+ 		drm_dbg_kms(&dev_priv->drm, "VBT says port %c has lspcon\n",
+ 			    port_name(port));
+@@ -4904,22 +4903,6 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
+ 			goto err;
+ 	}
+ 
+-	if (init_lspcon) {
+-		if (lspcon_init(intel_dig_port))
+-			/* TODO: handle hdmi info frame part */
+-			drm_dbg_kms(&dev_priv->drm,
+-				    "LSPCON init success on port %c\n",
+-				    port_name(port));
+-		else
+-			/*
+-			 * LSPCON init faied, but DP init was success, so
+-			 * lets try to drive as DP++ port.
+-			 */
+-			drm_err(&dev_priv->drm,
+-				"LSPCON init failed on port %c\n",
+-				port_name(port));
+-	}
+-
+ 	if (INTEL_GEN(dev_priv) >= 11) {
+ 		if (intel_phy_is_tc(dev_priv, phy))
+ 			intel_dig_port->connected = intel_tc_port_connected;
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index ed9e53c373a7..398a104158a8 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -5962,15 +5962,14 @@ static enum drm_connector_status
+ intel_dp_detect_dpcd(struct intel_dp *intel_dp)
+ {
+ 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+-	struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
++	struct intel_digital_port *dig_port = dp_to_dig_port(intel_dp);
+ 	u8 *dpcd = intel_dp->dpcd;
+ 	u8 type;
+ 
+ 	if (WARN_ON(intel_dp_is_edp(intel_dp)))
+ 		return connector_status_connected;
+ 
+-	if (lspcon->active)
+-		lspcon_resume(lspcon);
++	lspcon_resume(dig_port);
+ 
+ 	if (!intel_dp_get_dpcd(intel_dp))
+ 		return connector_status_disconnected;
+@@ -7056,14 +7055,13 @@ void intel_dp_encoder_reset(struct drm_encoder *encoder)
+ {
+ 	struct drm_i915_private *dev_priv = to_i915(encoder->dev);
+ 	struct intel_dp *intel_dp = enc_to_intel_dp(to_intel_encoder(encoder));
+-	struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
++	struct intel_digital_port *dig_port = dp_to_dig_port(intel_dp);
+ 	intel_wakeref_t wakeref;
+ 
+ 	if (!HAS_DDI(dev_priv))
+ 		intel_dp->DP = intel_de_read(dev_priv, intel_dp->output_reg);
+ 
+-	if (lspcon->active)
+-		lspcon_resume(lspcon);
++	lspcon_resume(dig_port);
+ 
+ 	intel_dp->reset_link_params = true;
+ 
+diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+index 010f37240710..643ad2127931 100644
+--- a/drivers/gpu/drm/i915/display/intel_hdmi.c
++++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+@@ -3155,7 +3155,8 @@ void intel_infoframe_init(struct intel_digital_port *intel_dig_port)
+ 		intel_dig_port->set_infoframes = g4x_set_infoframes;
+ 		intel_dig_port->infoframes_enabled = g4x_infoframes_enabled;
+ 	} else if (HAS_DDI(dev_priv)) {
+-		if (intel_dig_port->lspcon.active) {
++		if (intel_bios_is_lspcon_present(dev_priv,
++						 intel_dig_port->base.port)) {
+ 			intel_dig_port->write_infoframe = lspcon_write_infoframe;
+ 			intel_dig_port->read_infoframe = lspcon_read_infoframe;
+ 			intel_dig_port->set_infoframes = lspcon_set_infoframes;
+diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.c b/drivers/gpu/drm/i915/display/intel_lspcon.c
+index 6ff7b226f0a1..e3dde4c25604 100644
+--- a/drivers/gpu/drm/i915/display/intel_lspcon.c
++++ b/drivers/gpu/drm/i915/display/intel_lspcon.c
+@@ -525,44 +525,17 @@ u32 lspcon_infoframes_enabled(struct intel_encoder *encoder,
+ 	return 0;
+ }
+ 
+-void lspcon_resume(struct intel_lspcon *lspcon)
+-{
+-	enum drm_lspcon_mode expected_mode;
+-
+-	if (lspcon_wake_native_aux_ch(lspcon)) {
+-		expected_mode = DRM_LSPCON_MODE_PCON;
+-		lspcon_resume_in_pcon_wa(lspcon);
+-	} else {
+-		expected_mode = DRM_LSPCON_MODE_LS;
+-	}
+-
+-	if (lspcon_wait_mode(lspcon, expected_mode) == DRM_LSPCON_MODE_PCON)
+-		return;
+-
+-	if (lspcon_change_mode(lspcon, DRM_LSPCON_MODE_PCON))
+-		DRM_ERROR("LSPCON resume failed\n");
+-	else
+-		DRM_DEBUG_KMS("LSPCON resume success\n");
+-}
+-
+ void lspcon_wait_pcon_mode(struct intel_lspcon *lspcon)
+ {
+ 	lspcon_wait_mode(lspcon, DRM_LSPCON_MODE_PCON);
+ }
+ 
+-bool lspcon_init(struct intel_digital_port *intel_dig_port)
++static bool lspcon_init(struct intel_digital_port *intel_dig_port)
+ {
+ 	struct intel_dp *dp = &intel_dig_port->dp;
+ 	struct intel_lspcon *lspcon = &intel_dig_port->lspcon;
+-	struct drm_device *dev = intel_dig_port->base.base.dev;
+-	struct drm_i915_private *dev_priv = to_i915(dev);
+ 	struct drm_connector *connector = &dp->attached_connector->base;
+ 
+-	if (!HAS_LSPCON(dev_priv)) {
+-		DRM_ERROR("LSPCON is not supported on this platform\n");
+-		return false;
+-	}
+-
+ 	lspcon->active = false;
+ 	lspcon->mode = DRM_LSPCON_MODE_INVALID;
+ 
+@@ -586,3 +559,37 @@ bool lspcon_init(struct intel_digital_port *intel_dig_port)
+ 	DRM_DEBUG_KMS("Success: LSPCON init\n");
+ 	return true;
+ }
++
++void lspcon_resume(struct intel_digital_port *intel_dig_port)
++{
++	struct intel_lspcon *lspcon = &intel_dig_port->lspcon;
++	struct drm_device *dev = intel_dig_port->base.base.dev;
++	struct drm_i915_private *dev_priv = to_i915(dev);
++	enum drm_lspcon_mode expected_mode;
++
++	if (!intel_bios_is_lspcon_present(dev_priv, intel_dig_port->base.port))
++		return;
++
++	if (!lspcon->active) {
++		if (!lspcon_init(intel_dig_port)) {
++			DRM_ERROR("LSPCON init failed on port %c\n",
++				  port_name(intel_dig_port->base.port));
++			return;
++		}
++	}
++
++	if (lspcon_wake_native_aux_ch(lspcon)) {
++		expected_mode = DRM_LSPCON_MODE_PCON;
++		lspcon_resume_in_pcon_wa(lspcon);
++	} else {
++		expected_mode = DRM_LSPCON_MODE_LS;
++	}
++
++	if (lspcon_wait_mode(lspcon, expected_mode) == DRM_LSPCON_MODE_PCON)
++		return;
++
++	if (lspcon_change_mode(lspcon, DRM_LSPCON_MODE_PCON))
++		DRM_ERROR("LSPCON resume failed\n");
++	else
++		DRM_DEBUG_KMS("LSPCON resume success\n");
++}
+diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.h b/drivers/gpu/drm/i915/display/intel_lspcon.h
+index 37cfddf8a9c5..169db35db13e 100644
+--- a/drivers/gpu/drm/i915/display/intel_lspcon.h
++++ b/drivers/gpu/drm/i915/display/intel_lspcon.h
+@@ -15,8 +15,7 @@ struct intel_digital_port;
+ struct intel_encoder;
+ struct intel_lspcon;
+ 
+-bool lspcon_init(struct intel_digital_port *intel_dig_port);
+-void lspcon_resume(struct intel_lspcon *lspcon);
++void lspcon_resume(struct intel_digital_port *intel_dig_port);
+ void lspcon_wait_pcon_mode(struct intel_lspcon *lspcon);
+ void lspcon_write_infoframe(struct intel_encoder *encoder,
+ 			    const struct intel_crtc_state *crtc_state,
+-- 
+2.17.1
+
