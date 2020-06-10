@@ -2,48 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FC81F56DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 16:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FC61F56E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 16:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726745AbgFJOcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 10:32:22 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:53057 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726512AbgFJOcV (ORCPT
+        id S1729881AbgFJOhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 10:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726560AbgFJOhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 10:32:21 -0400
-Received: (qmail 14093 invoked by uid 1000); 10 Jun 2020 10:32:20 -0400
-Date:   Wed, 10 Jun 2020 10:32:20 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     mathias.nyman@intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] xhci: Suspend ports to U3 directly from U1 or U2
-Message-ID: <20200610143220.GC11727@rowland.harvard.edu>
-References: <20200610064231.9454-1-kai.heng.feng@canonical.com>
+        Wed, 10 Jun 2020 10:37:35 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 573D6C03E96B;
+        Wed, 10 Jun 2020 07:37:34 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id w7so1571519edt.1;
+        Wed, 10 Jun 2020 07:37:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XUf3QskTFwB9PuhQ8mdnsuuTXT9kmTqcpgC1QSf0Lcs=;
+        b=LDlXI6PngjEpCkUin3G8CZ5MuhaUL1XiUQW9Mv5DlIIQLxAflev2N8NgSLBTyX6XJc
+         sKhq9N8Ivi69Rv09E1fQXMv5aJa+GhNzoaEfm8gt9A0qqEkZdVKsQSFj4RieObwbEYQr
+         OWurn6PVJVSRDyJiW2Nr04x4ibg0LmaSgDxAGELFoByNT73eudiTV5GCILDv032XZ/za
+         Ex1gOCV5EFIJbKxeGM1QkSNh2hTaawepCCS72l9dWoBZG1n+bc7UjVar3ikOh/5pxnyX
+         uX0erLBYsGNNwgAOCJm0aAAgv4Cn/zZfQ2aXfLEVU9wLofHUmYdBTYufdMqWCw1gX1oT
+         +uXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XUf3QskTFwB9PuhQ8mdnsuuTXT9kmTqcpgC1QSf0Lcs=;
+        b=FbJaxm+mEbu3Jis0qnMIyDDiOvfGOyXzFEz+5doCyp9oDfMuzgQnM8QgN54kzBFtJZ
+         IkF1sTNwDuSNmnaDpgufbkK7ZmIJRTfnM1KI/MJ8Nmsv9ZevSuUdOILAMzGHCMbIA560
+         AXryqGFfEAQXOFqlEzEaCO9jJJ0FzvGTx+dsWitBOeIHNuQdWlAWnmY9xAnQ/mUyQei4
+         zh0mZngEWdBHhZooASq+rTKWWeDdT72WTPJJGti1hbXfeezuVfrwejJeZFB9n5AFHe60
+         m/dbVlqWuUvKCzD2A/sRztlNdwjIGABEZTpKEu+BCpsHMaM/XUwKPuy6PytCOZ3fUXJx
+         C91g==
+X-Gm-Message-State: AOAM531ByMml8zcn56yCygtubX24l+JlLmt6NlRFL4vJeY086jOjb4Ts
+        l1h8I46s5A6mKPG8pQcaMDxszXzke+5PuQQFSDWK2zqN
+X-Google-Smtp-Source: ABdhPJxgM7QGFsG4CZmajEbZZJopQp/CazjGptpk6H1X/sqFz1RSNP1Z3SX96W2rwOI4N6OetPGDvFraweu4+jwA7/g=
+X-Received: by 2002:aa7:dc50:: with SMTP id g16mr2847889edu.318.1591799853032;
+ Wed, 10 Jun 2020 07:37:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200610064231.9454-1-kai.heng.feng@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <4781d250-9a29-cef3-268d-7d83c98bf16a@gmail.com>
+ <87wo4lekm5.fsf@kurt> <CA+h21hqbKasMAuHL+B-2Gb-YQ3QGF+_pWGCxr8LTcusjvuqFeg@mail.gmail.com>
+ <CA+h21hp+UsW+Uc-xHyQAMrRVLX9CXZu8B2Svq+9npLtxs0_DWw@mail.gmail.com> <87y2ovzcmd.fsf@kurt>
+In-Reply-To: <87y2ovzcmd.fsf@kurt>
+From:   Vladimir Oltean <olteanv@gmail.com>
+Date:   Wed, 10 Jun 2020 17:37:22 +0300
+Message-ID: <CA+h21hp8ANbZw63UAy5cDx389j6pSOHUG7t1mR+rbQcrFLROyw@mail.gmail.com>
+Subject: Re: stress-ng --hrtimers hangs system
+To:     Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>
+Cc:     linux-rt-users@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        Colin King <colin.king@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 02:42:30PM +0800, Kai-Heng Feng wrote:
-> xHCI spec "4.15.1 Port Suspend" states that port can be put to U3 as long
-> as Enabled bit is set and from U0, U1 or U2 state.
-> 
-> Currently only USB_PORT_FEAT_LINK_STATE puts port to U3 directly, let's
-> do the same for USB_PORT_FEAT_SUSPEND and bus suspend case.
-> 
-> This is particularly useful for USB2 devices, which may take a very long
-> time to switch USB2 LPM on and off.
+Hi Kurt,
 
-Have these two patches been tested with a variety of USB-2.0 and USB-2.1 
-devices?
+On Wed, 10 Jun 2020 at 08:58, Kurt Kanzenbach
+<kurt.kanzenbach@linutronix.de> wrote:
+>
+> Hi Vladimir,
+>
+> On Tue Jun 09 2020, Vladimir Oltean wrote:
+> > Just out of curiosity, what and how many CPU cores does your ARM64 box
+> > have, and what frequency are you running them at?
+> > Mine is a dual-core A72 machine running at 1500 MHz.
+>
+> That particular machine has a dual core Cortex A53 running at 1GHz.
+>
+> Thanks,
+> Kurt
 
-Alan Stern
+Ok, I just noticed that you said "v5.6*-rt*".
+So I re-tested that 5.4 downstream kernel again that hanged before,
+just applied the -rt1 patchset on top. And it's actually working fine
+now, no hangs, no RCU stalls, no need to reduce sched_rt_runtime_us.
+So maybe it's something related to the config?
+
+Thanks,
+-Vladimir
