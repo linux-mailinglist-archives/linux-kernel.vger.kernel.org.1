@@ -2,92 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB481F57B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 17:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD1F1F57B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 17:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730164AbgFJPXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 11:23:15 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:33625 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728466AbgFJPXH (ORCPT
+        id S1730182AbgFJPYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 11:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730073AbgFJPYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 11:23:07 -0400
-Received: by mail-lj1-f193.google.com with SMTP id s1so3017627ljo.0;
-        Wed, 10 Jun 2020 08:23:05 -0700 (PDT)
+        Wed, 10 Jun 2020 11:24:15 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096C3C03E96B;
+        Wed, 10 Jun 2020 08:24:14 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id p21so1119300pgm.13;
+        Wed, 10 Jun 2020 08:24:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=o5XQnO02H0fKrctspxTo+pKLyxRvYHKgJy5mnWAg2J8=;
+        b=DnJQPEBGaSs22StiK/XmIEJixwrHcLpFw59LuvDPEuhTrZlIONMfkMnz4lAvBDtCF4
+         wEzvpXzgnPaWsoQj5RPbhUEB2ixk1Kpyzy/3fGeiWiqw/x4NHfuFYEIDJefx/OkBsCvr
+         7MZTF4mm9UfVcqPrylz8nO/3u5pf8QDDcYzDZvpxE981m/GBKFa+VC60p4H3xUbwyhxc
+         upe69uaPxFjhkAhVe10O/6KIuOrw9R0xJJmyp+KUNH1uAuUW234e+8frFJFSMzvgGO8A
+         kD4WMupFrDKSG7EhHr40wHf5mvx8MYCRjp4bFb90rxEz/GkyYy5ePH87jyEFxCPnGR50
+         4mbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sJ5kiBklTycoPKW6IVguv1VO+B8tcW5siLL6Q9kRKKg=;
-        b=dtDPU9+PYDCemgge2fSFqHISEHn3RKBLzMGrWsCxZATlSWi7nQQETsVDHW9fyamT9S
-         ank6kAwqi78jVvdjtlRt4EaN7pWPIa/UIl9MFqMc8rKksxKPfQ3dvoxBbTcfvkqr1Crq
-         Wdih2fY0RN9OrKkjYXrlc6LpWr/5ShlzzGIxaaRaXZnBePu9nBqfpAalw/hvPa4WiigJ
-         b56iKI/BHHLyoBpfReBCKnXePRz0FoO9/ItAaiejZGFwoH0NLrvXTKW8Cl5NUrZQQ7x4
-         Hz+vLjXDGlGaYYPrmdpJbof4hBZKFtmEWjpzRTDr6tGuIx0xkmzZlLCQmToL2bKRMqyf
-         M/OA==
-X-Gm-Message-State: AOAM532fQjbhEpGLcdUHWJeI4h4ReXJNUpIx5aW8ZYwv47H46Yy2ClfQ
-        P2+/e/b8XfE1PXeU3nl+dRE=
-X-Google-Smtp-Source: ABdhPJzCGgC4adyTllMpsAqfg71/Cburvf3+0VESbttBGsAvE3VcGLFwwm94gW9f1SsYdNIeV26Vhw==
-X-Received: by 2002:a2e:8490:: with SMTP id b16mr2124983ljh.325.1591802584284;
-        Wed, 10 Jun 2020 08:23:04 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id n9sm12853ljc.69.2020.06.10.08.23.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 08:23:01 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@xi.terra>)
-        id 1jj2Z8-0004Q2-FY; Wed, 10 Jun 2020 17:22:58 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jslaby@suse.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 3/3] serial: core: drop redundant sysrq checks
-Date:   Wed, 10 Jun 2020 17:22:32 +0200
-Message-Id: <20200610152232.16925-4-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200610152232.16925-1-johan@kernel.org>
-References: <20200610152232.16925-1-johan@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=o5XQnO02H0fKrctspxTo+pKLyxRvYHKgJy5mnWAg2J8=;
+        b=lGhIzzMVVliHE7anddM4EgVJmoneTOJl+E9m0KI5Rrelj5n+9oS1To1gLC+RlzY6Tg
+         If54UlvCUmh/49EyTzcKB6+9YK/CdAsACLlmrobD/GyIUlYqNiJXml4Erd2eojVyMJdB
+         cWi1nuOXOfFKYOG1BM4LkYCrFfFyYXYOCsRDLGZcf38bSgluC/N5F4ShHxBkduJlG6Qq
+         8Mg1DqPg9Q9CsbaRPntINc4mMxobls3PszrCeBvNuzWqaJTlZadgjcMjEha1VYMgr0oh
+         FsJlNy+VIgUkvLGMYaGOZbQGCOWZYd4l6sFYXXYb/GvfLG37iojNCsyqtQIhxLdGbCrF
+         LTgg==
+X-Gm-Message-State: AOAM533USYPZSyLC9UhMffijWqnRb2lf9lPiGFkKY3tHlo9rVUVNMd/u
+        Nl5/GWnCLoesfwpvjxYo4+Y=
+X-Google-Smtp-Source: ABdhPJw1fTlxizPaM70IutkwBiYtRCvKawKfiyPzN0ibNSUxNU8n5tvL+NWKirw4pGk+03aHkek4mA==
+X-Received: by 2002:a62:8811:: with SMTP id l17mr3158370pfd.72.1591802653831;
+        Wed, 10 Jun 2020 08:24:13 -0700 (PDT)
+Received: from [10.230.188.43] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id q18sm196360pgt.74.2020.06.10.08.24.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jun 2020 08:24:12 -0700 (PDT)
+Subject: Re: [PATCH] net: mvneta: Fix Serdes configuration for 2.5Gbps modes
+To:     Sascha Hauer <s.hauer@pengutronix.de>, Andrew Lunn <andrew@lunn.ch>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
+References: <20200609131152.22836-1-s.hauer@pengutronix.de>
+ <20200609132848.GA1076317@lunn.ch> <20200610062606.GM11869@pengutronix.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <9f85b076-dab8-63e4-5d2c-b48575979a02@gmail.com>
+Date:   Wed, 10 Jun 2020 08:24:11 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200610062606.GM11869@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sysrq timestamp will never be set unless port->has_sysrq is set (see
-uart_handle_break()) so drop the redundant checks that were added by
-commit 1997e9dfdc84 ("serial_core: Un-ifdef sysrq SUPPORT_SYSRQ").
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- include/linux/serial_core.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
-index 03fa7b967103..791f4844efeb 100644
---- a/include/linux/serial_core.h
-+++ b/include/linux/serial_core.h
-@@ -469,7 +469,7 @@ bool uart_try_toggle_sysrq(struct uart_port *port, unsigned int ch);
- 
- static inline int uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
- {
--	if (!port->has_sysrq || !port->sysrq)
-+	if (!port->sysrq)
- 		return 0;
- 
- 	if (ch && time_before(jiffies, port->sysrq)) {
-@@ -488,7 +488,7 @@ static inline int uart_handle_sysrq_char(struct uart_port *port, unsigned int ch
- 
- static inline int uart_prepare_sysrq_char(struct uart_port *port, unsigned int ch)
- {
--	if (!port->has_sysrq || !port->sysrq)
-+	if (!port->sysrq)
- 		return 0;
- 
- 	if (ch && time_before(jiffies, port->sysrq)) {
+On 6/9/2020 11:26 PM, Sascha Hauer wrote:
+> Hi Andrew,
+> 
+> +Cc Maxime Chevallier
+> 
+> On Tue, Jun 09, 2020 at 03:28:48PM +0200, Andrew Lunn wrote:
+>> On Tue, Jun 09, 2020 at 03:11:52PM +0200, Sascha Hauer wrote:
+>>> The Marvell MVNETA Ethernet controller supports a 2.5Gbps SGMII mode
+>>> called DRSGMII. Depending on the Port MAC Control Register0 PortType
+>>> setting this seems to be either an overclocked SGMII mode or 2500BaseX.
+>>>
+>>> This patch adds the necessary Serdes Configuration setting for the
+>>> 2.5Gbps modes. There is no phy interface mode define for overclocked
+>>> SGMII, so only 2500BaseX is handled for now.
+>>>
+>>> As phy_interface_mode_is_8023z() returns true for both
+>>> PHY_INTERFACE_MODE_1000BASEX and PHY_INTERFACE_MODE_2500BASEX we
+>>> explicitly test for 1000BaseX instead of using
+>>> phy_interface_mode_is_8023z() to differentiate the different
+>>> possibilities.
+>>
+>> Hi Sascha
+>>
+>> This seems like it should have a Fixes: tag, and be submitted to the
+>> net tree. Please see the Networking FAQ.
+> 
+> This might be a candidate for a Fixes: tag:
+> 
+> | commit da58a931f248f423f917c3a0b3c94303aa30a738
+> | Author: Maxime Chevallier <maxime.chevallier@bootlin.com>
+> | Date:   Tue Sep 25 15:59:39 2018 +0200
+> | 
+> |     net: mvneta: Add support for 2500Mbps SGMII
+> 
+> What do you mean by "submitted to the net tree"? I usually send network
+> driver related patches to netdev@vger.kernel.org and from there David
+> applies them. Is there anything more to it I haven't respected?
+
+Here are relevant bits from the netdev-FAQ:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/networking/netdev-FAQ.rst#n28
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/networking/netdev-FAQ.rst#n78
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/networking/netdev-FAQ.rst#n210
 -- 
-2.26.2
-
+Florian
