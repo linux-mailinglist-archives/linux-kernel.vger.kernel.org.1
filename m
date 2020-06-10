@@ -2,194 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F59F1F4B3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C351F4B38
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726129AbgFJCNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 22:13:24 -0400
-Received: from mga11.intel.com ([192.55.52.93]:2178 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725798AbgFJCNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 22:13:23 -0400
-IronPort-SDR: YL2b84haY4LFndFQeLFBbHcdN/giGriyJWsPZ72oLLx5nP5AMo7jilEgwA8/i3Ja7Tlo+IYM2L
- Ur3vb7+18AcA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 19:13:22 -0700
-IronPort-SDR: SawyiA4Z/FCBmSlc72AT0UUtM3IbxWHu0pB8nRF7JlkxVF3rLQNTGws4fPOQNSG7/2C+aTVhJI
- aFAG1GLCvBAA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,494,1583222400"; 
-   d="scan'208";a="296036010"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Jun 2020 19:13:20 -0700
-Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>, Qian Cai <cai@lca.pw>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v2 2/2] iommu/vt-d: Move Intel IOMMU driver into
- subdirectory
-To:     Joerg Roedel <joro@8bytes.org>
-References: <20200609130303.26974-1-joro@8bytes.org>
- <20200609130303.26974-3-joro@8bytes.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <240f0608-73fd-6a77-8043-3f4a8c145067@linux.intel.com>
-Date:   Wed, 10 Jun 2020 10:09:22 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726100AbgFJCML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 22:12:11 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:46676 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725798AbgFJCMK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 22:12:10 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05A26Q50115746;
+        Wed, 10 Jun 2020 02:11:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=lSt+S6LOEb+jknDxz3wUyTwsinGlkdwtYM/fHYL6/9w=;
+ b=fMNDy0pjbQlIJ71Da2Pwqr46ZgR4WqnMkWbeF7EysBytClj+17t5rH3Cwb4USORgViSU
+ tKJlewJdLniZ0pyK+1v8WVSDMMamH+7AY5FToX+9TM1+UhYWCSKqBmGBTmFXGwKAQSIs
+ SN2gudTvXYUqiYWfFtVxIvTh/K1EofT/a+gqVmFtqB7PxmziaqJBqiL2J8EYrv+c832R
+ 6WN6DDO9v217a0sqBwJPm9bBFywPceVP8rRyeGtUxYgiXDbqzwrdA/s8nXaWEdAuOFNu
+ Z8k2ISApM9VE3lpefq2r2GlvhPk9sX/oCwTJSZzeZNEJ/qYynPbdMJfZ5MlT+SenGFIt Ww== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 31g3smyrpj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Jun 2020 02:11:57 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05A28MbA044822;
+        Wed, 10 Jun 2020 02:11:57 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 31gn27h0x8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Jun 2020 02:11:57 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05A2BiZk021877;
+        Wed, 10 Jun 2020 02:11:44 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 09 Jun 2020 19:11:30 -0700
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     kjlu@umn.edu, Alim Akhtar <alim.akhtar@samsung.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Can Guo <cang@codeaurora.org>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>
+Subject: Re: [PATCH] scsi: ufs-bsg: Fix runtime PM imbalance on error
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1k10fsmaj.fsf@ca-mkp.ca.oracle.com>
+References: <20200522045932.31795-1-dinghao.liu@zju.edu.cn>
+Date:   Tue, 09 Jun 2020 22:11:27 -0400
+In-Reply-To: <20200522045932.31795-1-dinghao.liu@zju.edu.cn> (Dinghao Liu's
+        message of "Fri, 22 May 2020 12:59:29 +0800")
 MIME-Version: 1.0
-In-Reply-To: <20200609130303.26974-3-joro@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=44 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006100014
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=44
+ spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006100014
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
 
-On 6/9/20 9:03 PM, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
-> 
-> Move all files related to the Intel IOMMU driver into its own
-> subdirectory.
-> 
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Avri: Please review!
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-
-Best regards,
-baolu
-
+> When ufs_bsg_alloc_desc_buffer() returns an error code,
+> a pairing runtime PM usage counter decrement is needed
+> to keep the counter balanced.
+>
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 > ---
->   MAINTAINERS                                          |  3 +--
->   drivers/iommu/Makefile                               | 12 ++++++------
->   .../iommu/{intel-iommu-debugfs.c => intel/debugfs.c} |  0
->   drivers/iommu/{ => intel}/dmar.c                     |  2 +-
->   drivers/iommu/{ => intel}/intel-pasid.h              |  0
->   drivers/iommu/{intel-iommu.c => intel/iommu.c}       |  2 +-
->   .../{intel_irq_remapping.c => intel/irq_remapping.c} |  2 +-
->   drivers/iommu/{intel-pasid.c => intel/pasid.c}       |  0
->   drivers/iommu/{intel-svm.c => intel/svm.c}           |  0
->   drivers/iommu/{intel-trace.c => intel/trace.c}       |  0
->   10 files changed, 10 insertions(+), 11 deletions(-)
->   rename drivers/iommu/{intel-iommu-debugfs.c => intel/debugfs.c} (100%)
->   rename drivers/iommu/{ => intel}/dmar.c (99%)
->   rename drivers/iommu/{ => intel}/intel-pasid.h (100%)
->   rename drivers/iommu/{intel-iommu.c => intel/iommu.c} (99%)
->   rename drivers/iommu/{intel_irq_remapping.c => intel/irq_remapping.c} (99%)
->   rename drivers/iommu/{intel-pasid.c => intel/pasid.c} (100%)
->   rename drivers/iommu/{intel-svm.c => intel/svm.c} (100%)
->   rename drivers/iommu/{intel-trace.c => intel/trace.c} (100%)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c2c31d3f8ae4..fa2078dd57d3 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8716,8 +8716,7 @@ M:	Lu Baolu <baolu.lu@linux.intel.com>
->   L:	iommu@lists.linux-foundation.org
->   S:	Supported
->   T:	git git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git
-> -F:	drivers/iommu/dmar.c
-> -F:	drivers/iommu/intel*.[ch]
-> +F:	drivers/iommu/intel/
->   F:	include/linux/intel-iommu.h
->   F:	include/linux/intel-svm.h
->   
-> diff --git a/drivers/iommu/Makefile b/drivers/iommu/Makefile
-> index 3af7e374b0cb..342190196dfb 100644
-> --- a/drivers/iommu/Makefile
-> +++ b/drivers/iommu/Makefile
-> @@ -17,13 +17,13 @@ obj-$(CONFIG_AMD_IOMMU_V2) += amd/iommu_v2.o
->   obj-$(CONFIG_ARM_SMMU) += arm_smmu.o
->   arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-qcom.o
->   obj-$(CONFIG_ARM_SMMU_V3) += arm-smmu-v3.o
-> -obj-$(CONFIG_DMAR_TABLE) += dmar.o
-> -obj-$(CONFIG_INTEL_IOMMU) += intel-iommu.o intel-pasid.o
-> -obj-$(CONFIG_INTEL_IOMMU) += intel-trace.o
-> -obj-$(CONFIG_INTEL_IOMMU_DEBUGFS) += intel-iommu-debugfs.o
-> -obj-$(CONFIG_INTEL_IOMMU_SVM) += intel-svm.o
-> +obj-$(CONFIG_DMAR_TABLE) += intel/dmar.o
-> +obj-$(CONFIG_INTEL_IOMMU) += intel/iommu.o intel/pasid.o
-> +obj-$(CONFIG_INTEL_IOMMU) += intel/trace.o
-> +obj-$(CONFIG_INTEL_IOMMU_DEBUGFS) += intel/debugfs.o
-> +obj-$(CONFIG_INTEL_IOMMU_SVM) += intel/svm.o
->   obj-$(CONFIG_IPMMU_VMSA) += ipmmu-vmsa.o
-> -obj-$(CONFIG_IRQ_REMAP) += intel_irq_remapping.o irq_remapping.o
-> +obj-$(CONFIG_IRQ_REMAP) += intel/irq_remapping.o irq_remapping.o
->   obj-$(CONFIG_MTK_IOMMU) += mtk_iommu.o
->   obj-$(CONFIG_MTK_IOMMU_V1) += mtk_iommu_v1.o
->   obj-$(CONFIG_OMAP_IOMMU) += omap-iommu.o
-> diff --git a/drivers/iommu/intel-iommu-debugfs.c b/drivers/iommu/intel/debugfs.c
-> similarity index 100%
-> rename from drivers/iommu/intel-iommu-debugfs.c
-> rename to drivers/iommu/intel/debugfs.c
-> diff --git a/drivers/iommu/dmar.c b/drivers/iommu/intel/dmar.c
-> similarity index 99%
-> rename from drivers/iommu/dmar.c
-> rename to drivers/iommu/intel/dmar.c
-> index 60a2970c37ff..cc46dff98fa0 100644
-> --- a/drivers/iommu/dmar.c
-> +++ b/drivers/iommu/intel/dmar.c
-> @@ -32,7 +32,7 @@
->   #include <asm/irq_remapping.h>
->   #include <asm/iommu_table.h>
->   
-> -#include "irq_remapping.h"
-> +#include "../irq_remapping.h"
->   
->   typedef int (*dmar_res_handler_t)(struct acpi_dmar_header *, void *);
->   struct dmar_res_callback {
-> diff --git a/drivers/iommu/intel-pasid.h b/drivers/iommu/intel/intel-pasid.h
-> similarity index 100%
-> rename from drivers/iommu/intel-pasid.h
-> rename to drivers/iommu/intel/intel-pasid.h
-> diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel/iommu.c
-> similarity index 99%
-> rename from drivers/iommu/intel-iommu.c
-> rename to drivers/iommu/intel/iommu.c
-> index 648a785e078a..9129663a7406 100644
-> --- a/drivers/iommu/intel-iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -47,7 +47,7 @@
->   #include <asm/iommu.h>
->   #include <trace/events/intel_iommu.h>
->   
-> -#include "irq_remapping.h"
-> +#include "../irq_remapping.h"
->   #include "intel-pasid.h"
->   
->   #define ROOT_SIZE		VTD_PAGE_SIZE
-> diff --git a/drivers/iommu/intel_irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
-> similarity index 99%
-> rename from drivers/iommu/intel_irq_remapping.c
-> rename to drivers/iommu/intel/irq_remapping.c
-> index a042f123b091..7f8769800815 100644
-> --- a/drivers/iommu/intel_irq_remapping.c
-> +++ b/drivers/iommu/intel/irq_remapping.c
-> @@ -21,7 +21,7 @@
->   #include <asm/pci-direct.h>
->   #include <asm/msidef.h>
->   
-> -#include "irq_remapping.h"
-> +#include "../irq_remapping.h"
->   
->   enum irq_mode {
->   	IRQ_REMAPPING,
-> diff --git a/drivers/iommu/intel-pasid.c b/drivers/iommu/intel/pasid.c
-> similarity index 100%
-> rename from drivers/iommu/intel-pasid.c
-> rename to drivers/iommu/intel/pasid.c
-> diff --git a/drivers/iommu/intel-svm.c b/drivers/iommu/intel/svm.c
-> similarity index 100%
-> rename from drivers/iommu/intel-svm.c
-> rename to drivers/iommu/intel/svm.c
-> diff --git a/drivers/iommu/intel-trace.c b/drivers/iommu/intel/trace.c
-> similarity index 100%
-> rename from drivers/iommu/intel-trace.c
-> rename to drivers/iommu/intel/trace.c
-> 
+>  drivers/scsi/ufs/ufs_bsg.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/scsi/ufs/ufs_bsg.c b/drivers/scsi/ufs/ufs_bsg.c
+> index 53dd87628cbe..516a7f573942 100644
+> --- a/drivers/scsi/ufs/ufs_bsg.c
+> +++ b/drivers/scsi/ufs/ufs_bsg.c
+> @@ -106,8 +106,10 @@ static int ufs_bsg_request(struct bsg_job *job)
+>  		desc_op = bsg_request->upiu_req.qr.opcode;
+>  		ret = ufs_bsg_alloc_desc_buffer(hba, job, &desc_buff,
+>  						&desc_len, desc_op);
+> -		if (ret)
+> +		if (ret) {
+> +			pm_runtime_put_sync(hba->dev);
+>  			goto out;
+> +		}
+>  
+>  		/* fall through */
+>  	case UPIU_TRANSACTION_NOP_OUT:
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
