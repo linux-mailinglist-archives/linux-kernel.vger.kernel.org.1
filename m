@@ -2,119 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12CD1F5E70
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 00:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C72A1F5E75
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 00:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgFJWrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 18:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
+        id S1726710AbgFJWrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 18:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726301AbgFJWrI (ORCPT
+        with ESMTP id S1726301AbgFJWrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 18:47:08 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34A7C03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 15:47:06 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id y25so3230720qtb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 15:47:06 -0700 (PDT)
+        Wed, 10 Jun 2020 18:47:25 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F9AC03E96B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 15:47:23 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id 202so2416017lfe.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 15:47:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=H71MExYm/CGiyWc/B8p0G3A3RqB8QbYwFWDgAbb3BjM=;
-        b=H+S9mH+IiwxAwIQTSovuAEu2EFLyte/T9t8Mco9jzx/THTvUBD5wHEtcNNustYp43W
-         DSCiCYS6v4m7JHRJfIZxXH7KN7DLgQDTC7B8xDTZtkXral/lxUJISHBSRb+VwVqwXFlP
-         WrAssSVfB2Vj+KnFewuA4m02kp+KuEhmWThgB5O25FmeLxTOhRmUXi343gSefNH6/VnI
-         lEa9gW/ptqBD336Eh08d2R6P2UzriNj+oHjp3Jvy41xOLoTQVPr6qmarB4wrmH5C1EVw
-         r3J3n8+JBAwu1TVkokVBXsfyrDnii+NpaRCsUDlj2a86BHTmfaDngC0oD/cTLxsOVo6B
-         TqtA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xrXaxNfCCrjy4mZdxIeOmblIqOY4edahBMuJsDPGfgs=;
+        b=tJ0UtuqeXdQYcredVb+QR8Liubj7HhXLCJWTN3xpjCbXIK2y5sa2FoDXAMEPYyCs/x
+         K3tT4a3+7ls1KR15SQZcDk+8KEGhT8WyyNsKftN5JYpg0a9d6Vzgx/6MypQQ5ug3BJ6U
+         rdmM5ge2iqsisUgu51M/eBEo3fM3iBThRk2f3+q824SQYsDz9yjceoU3dsT8Oimofl00
+         6bnR8xRuFElg3OSxs47x6g8ASeEimtPrEOs+OIKyLVh2q9rTMt6upAuqSvC+EdPYM1qA
+         BYjTDAoTMnnmON+ncpEES2VbHkrOeoUGCvRUBIqTAh1ruAMVd9jn6OnIa4eNSHbATWHR
+         h0hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=H71MExYm/CGiyWc/B8p0G3A3RqB8QbYwFWDgAbb3BjM=;
-        b=JEXCZVuJ4pVdb5Toll/v0sPJ1CUyVdUO0qXdQTCxxaPxEKwlZ1mY20fnxwvzk3Yzl6
-         SOiIkPXBFXo9Vz23kHwGTCYTez+7ZCdKj1jS8AUbv75QSCNP9sFi5S3JGXDcSbtEH/9R
-         WqRf7/YDMp6kCJ9mQlvBMRzBYqeyaWBX6wnYnGmyk/rsIwBNo3jjfL6Mw9pBqbXwJf/c
-         /ED0/UoTswUGOjnaRq7U9bKRRzJa0mcDX36SSmnQRwuCwzN3ST4uDlzz+8leT8etG/rO
-         q1nCD3pqhBtAlw5v1KwY9lRIPYC6i6IqoXuJuVIUXZCVssD6MThkOuXzYh9BaOYb/VFQ
-         HX/A==
-X-Gm-Message-State: AOAM532FfGMl0baVYpfp8UDd1rmcrkk5wK6jMjtRk7gB48naIFaBfrJG
-        pyW2Y7rtkPBhmqnI4DL/0RsVyv0SM4Nwv5BX3g==
-X-Google-Smtp-Source: ABdhPJzJYz+fyBLjsOWr76YEXLuzWpBMVdATp7e+yVnxro1rX8w4AIJwNDBOxf4Vh5dVRZUj4+RQR/pgQE2zI5rFog==
-X-Received: by 2002:a05:6214:10cb:: with SMTP id r11mr5342385qvs.203.1591829225669;
- Wed, 10 Jun 2020 15:47:05 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 22:46:49 +0000
-Message-Id: <20200610224652.64336-1-luisalberto@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.27.0.278.ge193c7cf3a9-goog
-Subject: [PATCH] mtd: revert "spi-nor: intel: provide a range for poll_timout"
-From:   Luis Alberto Herrera <luisalberto@google.com>
-To:     tudor.ambarus@microchip.com
-Cc:     Luis Alberto Herrera <luisalberto@google.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xrXaxNfCCrjy4mZdxIeOmblIqOY4edahBMuJsDPGfgs=;
+        b=R3hN445UonKeBkWORTCd3VpgWqkaRMWMCWPWuCzSCflxMpu2/P4+vNE1uUcOatD6jc
+         nhjEfPuDxkrSAnRSFh+TnB9VXrPaOPcyI6lTzKoMkoD7llFSCRDDgnf3pr9OXiHXOHDF
+         vP8mmapT0aw4HQ/x3ojQgC2UBPsfmpuZoRJhdsH3+SGSAlaicaCIH0XEA65XQo+uThye
+         vMHsB8kL4Slq1lOvh8gP1uDrwhwXjpZl25ck/KfsX8uBR2IsFYwaqGR9HKfTXwGvh9T5
+         m9TzbDEuEXhLijq0ANHLLKhdo3mS80/0Nq8Io1qoakUGSQxhCBAT3dSxvl19fAvEGbnk
+         O3vQ==
+X-Gm-Message-State: AOAM532ATmNCDMyR0gm5j4tdxKMiRYtjFwFB05dV5ppbOYigGELKQt5J
+        ZMjCblLmv7CHl3l/mr9ZJErZGUgPT60=
+X-Google-Smtp-Source: ABdhPJyBrKb6lz+jy98KAGZsoFgB4V22k4l4LvTtX/19StyT9Jy4TYEeqegGgyeEzawoR5h3SypEWQ==
+X-Received: by 2002:a19:fc0a:: with SMTP id a10mr2828097lfi.176.1591829241284;
+        Wed, 10 Jun 2020 15:47:21 -0700 (PDT)
+Received: from localhost.localdomain (h-82-196-111-136.NA.cust.bahnhof.se. [82.196.111.136])
+        by smtp.gmail.com with ESMTPSA id s17sm262506ljd.51.2020.06.10.15.47.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jun 2020 15:47:20 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Frank Haverkamp <haver@linux.ibm.com>,
+        Sudeep Dutt <sudeep.dutt@intel.com>,
+        Ashutosh Dixit <ashutosh.dixit@intel.com>
+Subject: [PATCH 0/4] drivers/misc: Constify static structs
+Date:   Thu, 11 Jun 2020 00:47:00 +0200
+Message-Id: <20200610224704.27082-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change reverts aba3a882a178: "mtd: spi-nor: intel: provide a range
-for poll_timout". That change introduces a performance regression when
-reading sequentially from flash. Logging calls to intel_spi_read without
-this change we get:
+Constify some static structs that are not modified to allow the compiler
+to put them in read-only memory. The patches are independent of each
+other.
 
-Start MTD read
-[   20.045527] intel_spi_read(from=1800000, len=400000)
-[   20.045527] intel_spi_read(from=1800000, len=400000)
-[  282.199274] intel_spi_read(from=1c00000, len=400000)
-[  282.199274] intel_spi_read(from=1c00000, len=400000)
-[  544.351528] intel_spi_read(from=2000000, len=400000)
-[  544.351528] intel_spi_read(from=2000000, len=400000)
-End MTD read
+Rikard Falkeborn (4):
+  misc: rtsx_usb: Constify struct usb_device_id
+  misc: genwqe: Constify struct pci_error_handlers
+  mei: hdcp: Constify struct mei_cl_device_id
+  mic: vop: Constify static structs
 
-With this change:
+ drivers/misc/cardreader/rtsx_usb.c | 2 +-
+ drivers/misc/genwqe/card_base.c    | 2 +-
+ drivers/misc/mei/hdcp/mei_hdcp.c   | 2 +-
+ drivers/misc/mic/vop/vop_main.c    | 4 ++--
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-Start MTD read
-[   21.942922] intel_spi_read(from=1c00000, len=400000)
-[   21.942922] intel_spi_read(from=1c00000, len=400000)
-[   23.784058] intel_spi_read(from=2000000, len=400000)
-[   23.784058] intel_spi_read(from=2000000, len=400000)
-[   25.625006] intel_spi_read(from=2400000, len=400000)
-[   25.625006] intel_spi_read(from=2400000, len=400000)
-End MTD read
-
-Signed-off-by: Luis Alberto Herrera <luisalberto@google.com>
----
- drivers/mtd/spi-nor/controllers/intel-spi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-index 61d2a0ad2131..2b89361a0d3a 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-+++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-@@ -292,7 +292,7 @@ static int intel_spi_wait_hw_busy(struct intel_spi *ispi)
- 	u32 val;
- 
- 	return readl_poll_timeout(ispi->base + HSFSTS_CTL, val,
--				  !(val & HSFSTS_CTL_SCIP), 40,
-+				  !(val & HSFSTS_CTL_SCIP), 0,
- 				  INTEL_SPI_TIMEOUT * 1000);
- }
- 
-@@ -301,7 +301,7 @@ static int intel_spi_wait_sw_busy(struct intel_spi *ispi)
- 	u32 val;
- 
- 	return readl_poll_timeout(ispi->sregs + SSFSTS_CTL, val,
--				  !(val & SSFSTS_CTL_SCIP), 40,
-+				  !(val & SSFSTS_CTL_SCIP), 0,
- 				  INTEL_SPI_TIMEOUT * 1000);
- }
- 
 -- 
-2.27.0.278.ge193c7cf3a9-goog
+2.27.0
 
