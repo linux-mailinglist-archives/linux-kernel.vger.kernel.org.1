@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF9E1F4B86
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D7B1F4B99
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgFJCmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 22:42:05 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60846 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725798AbgFJCmD (ORCPT
+        id S1726068AbgFJCs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 22:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725798AbgFJCsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 22:42:03 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05A2aard156161;
-        Wed, 10 Jun 2020 02:41:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=FPiVafim4lK5nnNGYMQvhqTi3L7FWo/K8vEdhh1owm0=;
- b=yHJ7XuU3p62wQ0Vh/EGuugsppsdispGcei/+2hjDBt/te7iQcg/nabb0VPUHkNLEePjc
- ktUxdFA5Cu4ljmtC4ODb+WZFy70jh5fK/eZnK9fnnLq8E3EMYzpDvPzc3Fa9+64hqC3J
- wKIjQsR7dbxd295ZJbN+SrlAbys1zrgwqEs/r09DZCkqCFkO7SylASFixWC6Nm3dW6xO
- ZoG9cv0LiBY4UKQgEQziuEvUP3R2MOUNgUQFwswANqSvGwSMsJqzKViS8M92RbX5W8Hw
- lIbeanxHtqP+aWLEvMp2Bu7xDAbbHMY6z3Hktr7YuEZZpIX67TEk87/a1MCdfC0CnBaV Fw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 31g3smytkr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 10 Jun 2020 02:41:27 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05A2bu9L183400;
-        Wed, 10 Jun 2020 02:41:26 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 31gmqpgp3g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Jun 2020 02:41:26 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05A2fO2c005804;
-        Wed, 10 Jun 2020 02:41:24 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 09 Jun 2020 19:41:24 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     jejb@linux.ibm.com, linux@armlinux.org.uk,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org
-Subject: Re: [PATCH] scsi: powertec: Fix different dev_id between 'request_irq()' and 'free_irq()'
-Date:   Tue,  9 Jun 2020 22:41:21 -0400
-Message-Id: <159175686974.7062.8526082970785072740.b4-ty@oracle.com>
+        Tue, 9 Jun 2020 22:48:55 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB824C05BD1E;
+        Tue,  9 Jun 2020 19:48:53 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id m2so259836pjv.2;
+        Tue, 09 Jun 2020 19:48:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ni+uilwqIRIkx0GVWsdF+2V5OEOG5mSA6hHta0XscrI=;
+        b=WV6GjXmi3xDVr0iooWqxfkFsi2YLlF2jJQ4xaO7pOwUAcWVcagTG7kqzJ2+x/V3XoM
+         cIUBrcTR3uVZeUNpYpHjXX5e9kMMOp4j2FuDpKpMBAEt0PTO/lcouwu1bFWKcllt9d71
+         Js6qAtRGhR3qKem3Vu3Ojzm137CUgbB1GlWJbCvIXKAZJiUoC+FlQ3lVCaUTMEVaFptI
+         rxfhcXghD6mf2dbOMAhTSjmnlBZMjvUPXQjZIi/SSetWPXJMAZoIYmhYaFFng7d4hjMG
+         l1LcDfaG1wUEUCdgy+ttZ5mH5G09UlPw5qkBXoPrpxZcP9OP0RTuLgNSxQsQUvuUvS+9
+         zV7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ni+uilwqIRIkx0GVWsdF+2V5OEOG5mSA6hHta0XscrI=;
+        b=TLJB8AdA+gjOKs7z0Yjbtkk0KfPYbAyZATBjrJNKA4CGlVD3QAskhDIK1EYXeEzKVj
+         6wu9SDia47fPnpAQiJ5M6Uy9HjsOf/d+kn0JUCvmV9Urx2JRi8n+lnmxVg59USOgekmk
+         pULusxH3RhorITVkMw+/wcvggh9Rz9PpJwm8JKcIIrmQF7b6QTnw3GN0WYXlb0vlqPp8
+         h6GkX9G3et452iQRdQEWlPhbIiAzzW4/NXpzcC2OU8yfx8QSrIfZnsFNGkSMUsmUw72M
+         tdVqyW+CzIYktV4PCZ87jV/p41AtzO1xDQiwXQWpNdEq9XgKDl+pY0z1LiDIbY9qUu6r
+         T5Vg==
+X-Gm-Message-State: AOAM533hLy3RIIUBX/GgbUw2Lr5zO/IA57uQzPkot9n3fnqyd5DZoQsX
+        RCCHcDDzEt08GUfeir2s31M=
+X-Google-Smtp-Source: ABdhPJz5nic88Ni981nDzwn6VCpEgoJdImropSho/Nef4OH7XPFOhCxtQv5w39tSDFvFbRzobDEReQ==
+X-Received: by 2002:a17:90a:ae11:: with SMTP id t17mr868017pjq.157.1591757333075;
+        Tue, 09 Jun 2020 19:48:53 -0700 (PDT)
+Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
+        by smtp.gmail.com with ESMTPSA id r8sm2733607pgn.19.2020.06.09.19.48.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 19:48:52 -0700 (PDT)
+From:   Chuhong Yuan <hslester96@gmail.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Magnus Damm <magnus.damm@gmail.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>
+Subject: [PATCH] USB: ohci-sm501: Add missed iounmap() in remove
+Date:   Wed, 10 Jun 2020 10:48:44 +0800
+Message-Id: <20200610024844.3628408-1-hslester96@gmail.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200530072933.576851-1-christophe.jaillet@wanadoo.fr>
-References: <20200530072933.576851-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
- mlxlogscore=885 adultscore=0 spamscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006100019
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=0
- spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- mlxlogscore=937 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006100019
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 May 2020 09:29:33 +0200, Christophe JAILLET wrote:
+This driver misses calling iounmap() in remove to undo the ioremap()
+called in probe.
+Add the missed call to fix it.
 
-> The dev_id used in 'request_irq()' and 'free_irq()' should match.
-> So use 'host' in both cases.
+Fixes: f54aab6ebcec ("usb: ohci-sm501 driver")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+---
+ drivers/usb/host/ohci-sm501.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Applied to 5.8/scsi-queue, thanks!
-
-[1/1] scsi: powertec: Fix different dev_id between request_irq() and free_irq()
-      https://git.kernel.org/mkp/scsi/c/af7b415a1ebf
-
+diff --git a/drivers/usb/host/ohci-sm501.c b/drivers/usb/host/ohci-sm501.c
+index cff965240327..b91d50da6127 100644
+--- a/drivers/usb/host/ohci-sm501.c
++++ b/drivers/usb/host/ohci-sm501.c
+@@ -191,6 +191,7 @@ static int ohci_hcd_sm501_drv_remove(struct platform_device *pdev)
+ 	struct resource	*mem;
+ 
+ 	usb_remove_hcd(hcd);
++	iounmap(hcd->regs);
+ 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
+ 	usb_put_hcd(hcd);
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.26.2
+
