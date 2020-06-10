@@ -2,62 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005AB1F4CC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 07:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513181F4CCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 07:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgFJFJI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Jun 2020 01:09:08 -0400
-Received: from esa1.hc95-91.eu.iphmx.com ([207.54.67.254]:54153 "EHLO
-        esa1.hc95-91.eu.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgFJFJI (ORCPT
+        id S1726053AbgFJFNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 01:13:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725844AbgFJFNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 01:09:08 -0400
-X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Jun 2020 01:09:07 EDT
-IronPort-SDR: cH9Co7AsKwS05dKBMeoN9or/WOEqbEzz1gk9F96t85MNCX6Qs26L8CCcuAdu9vlOegY/6ixKXy
- bEAaBTVYsQRsYk8nl0hd2oyvMChhp/sR/d2gclSRm/K8WXAGURB5SBtsQjgxWgtGVE4lw/huIA
- WzsVqPRIm3/a18OoUYqJMcYne6Fr7pf6UUtvMma8kq1GuB4+uTQqlKDCzvhPPXkywth7SmOrLc
- zVty8RCx/lE8i4f+wrvZBYl75Epe5vlmfS+XzM6gYj9GjdgA6KTqH+0lhRVQfj2XHCDP14URvC
- evI=
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from unknown (HELO mail.metallo.com) ([212.222.125.238])
-  by esa1.hc95-91.eu.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA384; 10 Jun 2020 07:01:58 +0200
-Received: from BEEXCHANGE2.metallo.local (10.32.17.167) by
- BEEXCHANGE1.metallo.local (10.32.17.166) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1591.10; Wed, 10 Jun 2020 06:58:59 +0200
-Received: from [192.168.100.16] (10.32.17.146) by mail.metallo.com
- (10.32.17.167) with Microsoft SMTP Server id 15.1.1591.10 via Frontend
- Transport; Wed, 10 Jun 2020 06:58:58 +0200
-Content-Type: text/plain; charset="utf-8"
+        Wed, 10 Jun 2020 01:13:08 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B53C05BD1E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 22:13:08 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id p15so486670qvr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 22:13:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hLUoxt0yiIKouGw7/buAE5rk8hMNj3nZR/xKb2B/ppc=;
+        b=jTeg4CPQ7s4h9Y4F7BOUQVHOAxnY8YXCxjC/UrDVy9eN4he3dh5AFSdg94P/oYYfeP
+         dbJFi3RpFReQOhjJRvudpIken1Rzr11mWy0Hn/9l+SjQHJ3zBZ33sebrkLiwBZTfYAil
+         CzTtAtWwvGi7JAkvTpsjR5RjzUeXkjkwK39HrJH89c/k3Q/ueAbt3dJtC/E+G1iauWEd
+         nZaozL0GeaIOC4RyLqP2HhPMt5UZ3lHVp3SmZd51aei04H02KVo+K/Lu+t9Z11DOmIGv
+         4k1xEqpoQ54wrkjzleSc9ykpZV88+iwlu567Urs0h7fdZRrGYbXygA6SDIJvqR8Xa02+
+         3riA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hLUoxt0yiIKouGw7/buAE5rk8hMNj3nZR/xKb2B/ppc=;
+        b=O5ZrvJpl+0g4fBBOkcbInd2U0tTEkrHfU1SexFSVuuUwar9gaHfsD2aI9STLBumUhh
+         ucX55wFJe/KFHLTZe5mbVa4qVl73jiJALAG+rB8GbbTP6EY///JT9ErM3LXtVA50mv14
+         roiuiJoh/zoBp/CO2knhKgSeVPehnjDCd3HAsnDBP5PH4wTEM5HgCzkVZ0g378QsN0rD
+         4vbOIYNz5w9Ee2qhWouGEK3SZehNpFRSCWOOtr18REQk8msRz5MqA9nfn7bm32/sAu6k
+         J4AxiBfcjdOxHxEdiWjZltHNrEjDLFsZYRLPPg9h/qR/HlNtCHNLdtGrp4KQXqGsuVQH
+         5paQ==
+X-Gm-Message-State: AOAM532Y74PL3kDbVO9WR5VI4qqgHuuPmxyXM/AS82GNPnJ4H8zueZ9J
+        D5/7DbUfyNvl69wpnooy2VYqEhVQNip+WZ7+CJMWrQ==
+X-Google-Smtp-Source: ABdhPJwueE8ZjMW1bpMs2FrKsGnGX0T6gYMQdn2T3ghIBONhrFPd8wQC8+4GwNFV8+CzuFgJdOp/zChta6l90nzMsVo=
+X-Received: by 2002:ad4:4368:: with SMTP id u8mr1472220qvt.227.1591765987012;
+ Tue, 09 Jun 2020 22:13:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Dear: Sir/Madam,
-To:     Recipients <bakhtiari@azn.ir>
-From:   "Mr. David Lance Bowdich" <bakhtiari@azn.ir>
-Date:   Wed, 10 Jun 2020 05:58:52 +0100
-Reply-To: <mrdavidlancebowdich@outlook.com>
-Message-ID: <ab39ed7e-bfda-41ab-8674-8f5776b4ad5f@BEEXCHANGE2.metallo.local>
-X-C2ProcessedOrg: 3b4afc4f-c687-4cda-a3c9-3d9e00d850b4
+References: <1590561903-13186-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1590561903-13186-8-git-send-email-iamjoonsoo.kim@lge.com> <20200609135431.GI22623@dhcp22.suse.cz>
+In-Reply-To: <20200609135431.GI22623@dhcp22.suse.cz>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Wed, 10 Jun 2020 14:12:56 +0900
+Message-ID: <CAAmzW4Ou-65wW2iHFDZdOYrEkb2afrSox7sVwd1zEo-VXSE30Q@mail.gmail.com>
+Subject: Re: [PATCH v2 07/12] mm/hugetlb: do not modify user provided gfp_mask
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Date: 10th June 2020.
-Time: 09:45am (Washington DC Time GMT)
-Dear: Sir/Madam,
+2020=EB=85=84 6=EC=9B=94 9=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 10:54, M=
+ichal Hocko <mhocko@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Wed 27-05-20 15:44:58, Joonsoo Kim wrote:
+> > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> >
+> > It's not good practice to modify user input. Instead of using it to
+> > build correct gfp_mask for APIs, this patch introduces another gfp_mask
+> > field, __gfp_mask, for internal usage.
+>
+> Ugh, this is really ugly. It is just hugetlb to add __GFP_THISNODE as a
+> special case. This is an ugly hack but I do not think we want to work
+> around it by yet another hack. Moreover it seems that the __GFP_THISNODE
+> might be not needed anymore as pointed out in a reply to earlier patch.
 
-This official memorandum is to know if you receive our previous mail.
+If you mean __GFP_THISNODE handling is ugly, as you pointed out,
+__GFP_THISNODE handling would be removed in the next version.
 
-Officially Sealed.
+If you mean introducing __gfp_mask is ugly, I will try to use a local varia=
+ble
+to keep modified gfp_mask rather than introducing a field in alloc_control.
 
-Mr. David Lance Bowdich.
-
- 
-
-
-bakhtiari@azn.ir | metallo.com
-
-Disclaimer: This message (including any attachments) is intended for the addressee only and may contain confidential or privileged information. If you have received this message by mistake, you must not copy this message or any attachments neither disclose the contents to any other person. Please notify the sender, destroy any copies and permanently delete this message and any attachments from your computer system. Email transmission cannot be guaranteed to be secure or error free as information could be intercepted, corrupted, lost, destroyed, arrive late or incomplete, or contain viruses. No responsibility is accepted for any loss or damage arising in any way from its use. The addressee of this message has to check whether the sender has authority to conclude or enter into binding contracts, engagements, understandings, etc. on behalf of the company.
+Thanks.
