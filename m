@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438701F4B7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741001F4B83
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgFJCdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 22:33:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725798AbgFJCdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 22:33:50 -0400
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C90E20774;
-        Wed, 10 Jun 2020 02:33:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591756430;
-        bh=nTjH+tdbs+yAKbTwA1OOrmTxHfSLcvvhAAg+lSjYA/I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vPC03ns92LIQ+rLBTLuZAiZrArPks5URUOgmitlx9TLwhwbfNqSfqwdl0rpAEYP6S
-         sV05gJqHwrG/8RdrRdvjVqc6uCGGEI0gytiieSgBNRq0qEazRLpwm7XMGDtAQIpB9u
-         /S6OGKQ5tJDZ2JOoa0zKoDxV/Mhv73Vvswsfevms=
-Received: by mail-ua1-f45.google.com with SMTP id v25so338706uau.4;
-        Tue, 09 Jun 2020 19:33:50 -0700 (PDT)
-X-Gm-Message-State: AOAM530ghc4Xi+9/CD1cDHrLPMHwmhsFbb4jeFjUZJDJDmpoAL2rU2cg
-        aRanay6k8vEKeEyAssdUWC/qxtVkC+iIzjK+8T8=
-X-Google-Smtp-Source: ABdhPJzrdQrTOlvQWKAfqf6y57d0RDb8cSLbmuHAMZqD9eEGwgxWOWugMp4a4gueTOO0ONCtgFvGNt3Ru0wnEG51bPw=
-X-Received: by 2002:a9f:326a:: with SMTP id y39mr906811uad.93.1591756429682;
- Tue, 09 Jun 2020 19:33:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <1587452704-1299-1-git-send-email-yangtiezhu@loongson.cn>
- <9b50d2b1-2fb4-10a1-5966-5458507a9b05@loongson.cn> <20200511182814.GS11244@42.do-not-panic.com>
-In-Reply-To: <20200511182814.GS11244@42.do-not-panic.com>
-From:   Luis Chamberlain <mcgrof@kernel.org>
-Date:   Tue, 9 Jun 2020 20:33:37 -0600
-X-Gmail-Original-Message-ID: <CAB=NE6VZyG1Q9kFYKXKg=EePUY7tY99LLEq95vuMPLZxufAdUg@mail.gmail.com>
-Message-ID: <CAB=NE6VZyG1Q9kFYKXKg=EePUY7tY99LLEq95vuMPLZxufAdUg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] Fix some issues about kmod
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726100AbgFJCkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 22:40:24 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:50216 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725927AbgFJCkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 22:40:22 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT9_3R+BeKBdAAA--.3191S2;
+        Wed, 10 Jun 2020 10:39:51 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] PCI: Loongson: Use DECLARE_PCI_FIXUP_EARLY for bridge_class_quirk()
+Date:   Wed, 10 Jun 2020 10:39:50 +0800
+Message-Id: <1591756790-12081-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxT9_3R+BeKBdAAA--.3191S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJrW3Wr18tF4UGF48ZryrZwb_yoW8Gr17p3
+        45Aa17KF4ftrs8A3WDX3yDGas8ZF93G34kCFWfuwnFgasxXa4UWry2k3ZYvF4UJrZ7XayU
+        ZayDCw18Can8ur7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7Cj
+        xVA2Y2ka0xkIwI1lc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3
+        Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUbN6pPUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 12:28 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> On Mon, May 11, 2020 at 08:59:37PM +0800, Tiezhu Yang wrote:
-> > Hi,
-> >
-> > Could you please apply the following three patches?
-> >
-> > [v4,1/4] selftests: kmod: Use variable NAME in kmod_test_0001()
-> > https://lore.kernel.org/patchwork/patch/1227980/
-> >
-> > [v4,2/4] kmod: Remove redundant "be an" in the comment
-> > https://lore.kernel.org/patchwork/patch/1227982/
-> >
-> > [v4,4/4] test_kmod: Avoid potential double free in trigger_config_run_type()
-> > https://lore.kernel.org/patchwork/patch/1227978/
->
-> Andrew,
->
-> These 3 patches should be fine.
->
-> I am re-working a replacement proper fix for patch #3, that requires a
-> change to the umh. I'll try to iron this out today.
+Use DECLARE_PCI_FIXUP_EARLY instead of DECLARE_PCI_FIXUP_HEADER
+for bridge_class_quirk() in pci-loongson.c, otherwise the fixup
+has no effect.
 
-I'll pick these up, and run tests now that I have a finalized solution
-in place for the patch replacement I mentioned which was needed. Sorry
-this took so long, but I am glad I took my time. I'll post soon after
-I test the new fix.
+Fixes: 1f58cca5cf2b ("PCI: Add Loongson PCI Controller support")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
 
-  Luis
+This patch is based on mips-next tree.
+
+ drivers/pci/controller/pci-loongson.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pci/controller/pci-loongson.c b/drivers/pci/controller/pci-loongson.c
+index 459009c..58b862a 100644
+--- a/drivers/pci/controller/pci-loongson.c
++++ b/drivers/pci/controller/pci-loongson.c
+@@ -37,11 +37,11 @@ static void bridge_class_quirk(struct pci_dev *dev)
+ {
+ 	dev->class = PCI_CLASS_BRIDGE_PCI << 8;
+ }
+-DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_LOONGSON,
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
+ 			DEV_PCIE_PORT_0, bridge_class_quirk);
+-DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_LOONGSON,
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
+ 			DEV_PCIE_PORT_1, bridge_class_quirk);
+-DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_LOONGSON,
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
+ 			DEV_PCIE_PORT_2, bridge_class_quirk);
+ 
+ static void system_bus_quirk(struct pci_dev *pdev)
+-- 
+2.1.0
+
