@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFDD1F536A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 13:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2EE1F538F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 13:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728643AbgFJLg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 07:36:27 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:37396 "EHLO
+        id S1728895AbgFJLhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 07:37:45 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:29258 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728594AbgFJLgU (ORCPT
+        by vger.kernel.org with ESMTP id S1728661AbgFJLgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 07:36:20 -0400
+        Wed, 10 Jun 2020 07:36:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591788979;
+        s=mimecast20190719; t=1591788982;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=g1mhrQ6NM5wYShJMoCPQWA/YwUtZgT5jddxZW0yxgs8=;
-        b=e4exZrjI9HtnU7rNPcCffQSp6dcxNVzPTIOk9WOlEhevQmVFckVdD6wwrPz4beGBi294ot
-        GjFTWLDX72WBmnpB0hJPN9LiHTo0iVrvnEclvOeUEX+xGkA7PpqXqYrhzlVXgqwx2LDFxi
-        aDoHlxPegSPHT/43Gw5cVqlu6RSSu3w=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-462-B0oq4rSJP9GGyyx7Uzg_MA-1; Wed, 10 Jun 2020 07:36:17 -0400
-X-MC-Unique: B0oq4rSJP9GGyyx7Uzg_MA-1
-Received: by mail-wr1-f72.google.com with SMTP id z10so978151wrs.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 04:36:17 -0700 (PDT)
+        bh=nqpRKPPRu97i04+lEwiVZnVP4RAISD6OyeyY71/1iaw=;
+        b=PD3DXviUIXZSvLoLAGuF692PzUijlWhppV55ZYxp5ZvJhdv/oOyKxnqycdlsIKlAl05Ro9
+        vJXmZKpt9/tjiRcITzJF7kZ+lqnPFaDR6sRdKl9FT8WvPsPF/3XlmhxsbBVFUDAcD1u2C4
+        Q8BCO1YTt5uaGYZRw8wu8KRy9OYKJWc=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-194-dq12sjCyNT2fCVMm2nr8wg-1; Wed, 10 Jun 2020 07:36:20 -0400
+X-MC-Unique: dq12sjCyNT2fCVMm2nr8wg-1
+Received: by mail-wm1-f70.google.com with SMTP id v24so401502wmh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 04:36:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=g1mhrQ6NM5wYShJMoCPQWA/YwUtZgT5jddxZW0yxgs8=;
-        b=p18qdk3wgv0B7hb3H3vYqli8O1ylejtFNsQWMCRtgfeN834ie1p3Kif5d1+AGCbxgB
-         1xMjzVT5dDS0a7IJ06/z9+ms3w8uVUBZ9b72UTiXlzZeL9TD3zN6awcGagGSgzku5Lcc
-         v6YI9phNrEkWCKYOTHK+8Jbbka8dk1QQpiof65PURa+ax4A0lSGITWy1tCpvmL+Q3oQj
-         lInSdt6ok698ilmhB+ac+0TAd3vWDiSniwI7nIs7TVD6Cs+PwM3ulSPebkJwxFamrTjH
-         I8Sk+bcS+4EXbaJt6XhigktXRbyxijhhLIUxjMvYSxKrR//T1IzmmlMOS7/LDGOw9LpJ
-         /R5w==
-X-Gm-Message-State: AOAM533jDO9F4Iw7IrVeUFrJnVkTE/xran1n8ecE2iA3VpEdueUzYJP9
-        TEnuFpdK4L/7oiyMgk2LspJlvPDjJWT+9FhWG0j3lL7zi6Uug890J/HY8akhO/HQsjal6MgtW1g
-        wEC1a1kSurxQ+EFpg51A+DHea
-X-Received: by 2002:a1c:254:: with SMTP id 81mr2746855wmc.93.1591788976419;
-        Wed, 10 Jun 2020 04:36:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxFkt3Ubc8PKFjtb6gY/lDXcBZnr6E3I6m79bNAQFz95Fybj8NNv1w+aulFwppsq1zCYoyKZw==
-X-Received: by 2002:a1c:254:: with SMTP id 81mr2746830wmc.93.1591788976169;
-        Wed, 10 Jun 2020 04:36:16 -0700 (PDT)
+        bh=nqpRKPPRu97i04+lEwiVZnVP4RAISD6OyeyY71/1iaw=;
+        b=h06zfjyWln84MFaL0M7III3AQ1SIdWcefiLl0DaPO6cI84d4PI/37rL0CnPWjhnYqb
+         LzJTLXpmL4EAPEhYkcNZ3T4pXwgiojTHeIKdeO5KNrZH+Ok6rq+A1JZrc7KJfwSD5Bju
+         nwfRmYwtMIjIpkr3vhL4/oeM5RsLW/EmQ09xnIv/Je68J8FqomjKe93Fb9WrPSlGgoMy
+         MYDvOczDQEhrEamchLjp4T6LNP3mnK158hIYmn1dCG/GCvjZxKOr3zbUjx8emk+sJlLE
+         4sQpb+hNd8KyhlbtOkabvKi8eoFzz5b7qPeN2/a93kdHygDbQ0OllqK6fU6MA6StEDGf
+         GqYQ==
+X-Gm-Message-State: AOAM532TGIvecDPLY/n8OYhpGil79kIf7gp/FxZDmownHVlXH6pO1rJf
+        ztrgca6qPV0ITVyOLyoXyPkWpb6CdpyT6PC2MfC5gfCjpbyJQfmuxuAr6xhmJo0iU9+Lv2/dtPd
+        hj4cCvP4KM5yjqF4y9OpBuelT
+X-Received: by 2002:a7b:cc94:: with SMTP id p20mr2749318wma.148.1591788979281;
+        Wed, 10 Jun 2020 04:36:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxk/lBSoKqQEzUm0ygb+JThKfl+fyQkS7QcmVzzuz7sF0aMX0Q8Jh3FrRflgePDOX+1hNCqVA==
+X-Received: by 2002:a7b:cc94:: with SMTP id p20mr2749304wma.148.1591788979097;
+        Wed, 10 Jun 2020 04:36:19 -0700 (PDT)
 Received: from redhat.com ([212.92.121.57])
-        by smtp.gmail.com with ESMTPSA id z22sm6583776wmf.9.2020.06.10.04.36.14
+        by smtp.gmail.com with ESMTPSA id d63sm6775894wmc.22.2020.06.10.04.36.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 04:36:15 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 07:36:13 -0400
+        Wed, 10 Jun 2020 04:36:18 -0700 (PDT)
+Date:   Wed, 10 Jun 2020 07:36:16 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
         netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
         eperezma@redhat.com
-Subject: [PATCH RFC v7 07/14] fixup! vhost: format-independent API for used
- buffers
-Message-ID: <20200610113515.1497099-8-mst@redhat.com>
+Subject: [PATCH RFC v7 08/14] fixup! vhost: use batched get_vq_desc version
+Message-ID: <20200610113515.1497099-9-mst@redhat.com>
 References: <20200610113515.1497099-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -72,50 +71,24 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 ---
- drivers/vhost/vhost.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ drivers/vhost/vhost.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index e5763d81bf0f..7a587b13095c 100644
+index 7a587b13095c..03e6bca02288 100644
 --- a/drivers/vhost/vhost.c
 +++ b/drivers/vhost/vhost.c
-@@ -2421,7 +2421,7 @@ int vhost_get_avail_buf(struct vhost_virtqueue *vq, struct vhost_buf *buf,
- err:
- 	unfetch_descs(vq);
+@@ -2205,10 +2205,6 @@ static int fetch_buf(struct vhost_virtqueue *vq)
+ 	last_avail_idx = vq->last_avail_idx;
  
--	return ret ? ret : vq->num;
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(vhost_get_avail_buf);
- 
-@@ -2433,6 +2433,27 @@ void vhost_discard_avail_bufs(struct vhost_virtqueue *vq,
- }
- EXPORT_SYMBOL_GPL(vhost_discard_avail_bufs);
- 
-+/* This function returns the descriptor number found, or vq->num (which is
-+ * never a valid descriptor number) if none was found.  A negative code is
-+ * returned on error. */
-+int vhost_get_vq_desc(struct vhost_virtqueue *vq,
-+		      struct iovec iov[], unsigned int iov_size,
-+		      unsigned int *out_num, unsigned int *in_num,
-+		      struct vhost_log *log, unsigned int *log_num)
-+{
-+	struct vhost_buf buf;
-+	int ret = vhost_get_avail_buf(vq, &buf,
-+				      iov, iov_size, out_num, in_num,
-+				      log, log_num);
-+
-+	if (likely(ret > 0))
-+		return buf->id;
-+	if (likely(!ret))
-+		return vq->num;
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(vhost_get_vq_desc);
-+
- /* Reverse the effect of vhost_get_vq_desc. Useful for error handling. */
- void vhost_discard_vq_desc(struct vhost_virtqueue *vq, int n)
- {
+ 	if (unlikely(vq->avail_idx == vq->last_avail_idx)) {
+-		/* If we already have work to do, don't bother re-checking. */
+-		if (likely(vq->ndescs))
+-			return 1;
+-
+ 		if (unlikely(vhost_get_avail_idx(vq, &avail_idx))) {
+ 			vq_err(vq, "Failed to access avail idx at %p\n",
+ 				&vq->avail->idx);
 -- 
 MST
 
