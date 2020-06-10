@@ -2,54 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C8D1F5D38
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 22:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6131F5D3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 22:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgFJUa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 16:30:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726277AbgFJUaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 16:30:24 -0400
-Subject: Re: [GIT PULL] UML changes for v5.8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591821024;
-        bh=j7JnUzzkBQUS8Cb4iN2Pzvp+rtD8G88Uz7rNrgd+Pb0=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=o6h0V6ggOWx3lPdY8BkpS1JisQxlSwRu0YOlhtpooecPVk5t0IR/fxp9U+bn+WUNZ
-         V/2g453zvKF/SmsYT6vjv1aqkjBYB1kX1sXRMV6GIIHLuEt7PZtnti0FCskIR7pQGX
-         mpkEaG1MYkOxCX1BJDs5WKE3SKJRGvWapzdoVsT8=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <1858220125.350.1591736510906.JavaMail.zimbra@nod.at>
-References: <1858220125.350.1591736510906.JavaMail.zimbra@nod.at>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <1858220125.350.1591736510906.JavaMail.zimbra@nod.at>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git
- tags/for-linus-5.8-rc1
-X-PR-Tracked-Commit-Id: f6e8c474390be2e6f5bd0b8966e19958214609ff
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 84fc461db99b2dc19e019c0a97725a3653687981
-Message-Id: <159182102423.16227.12145075205238240772.pr-tracker-bot@kernel.org>
-Date:   Wed, 10 Jun 2020 20:30:24 +0000
-To:     Richard Weinberger <richard@nod.at>
-Cc:     torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>
+        id S1726316AbgFJUdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 16:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726134AbgFJUdW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 16:33:22 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAB5C03E96B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 13:33:22 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id t16so1408454plo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 13:33:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Vsa1hMUPNb5WCHvsXvWB/06k71eACWwpCirDs+9Q+FM=;
+        b=cABCKH2xY/5m+HB+J5wdt32ctH/anKH8qbucZqqdDAF1yt0SO3TLAqxYkmDuCPkXDp
+         2p9nYKQeYePorQSVI2AZdF9aLMGDTbcBdseOqIahf0OZkIhiqq1U872YMfVXacnEywd3
+         OD2owJMMD644tyy37Nh1FqyL6/T31RgvlvZCg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Vsa1hMUPNb5WCHvsXvWB/06k71eACWwpCirDs+9Q+FM=;
+        b=qjeJxEtC1LJDueJRJYNJqhS6e8BtrsE+IzPr/Dnx2j3DTjh+lXwytJYms2pBz/dsFZ
+         9iesDqvVCew3ODOpSbMWqtVSg2Mekju6gkiob1zQER1BQkC0YY99Irjv3t5YbW2JCv8Q
+         m0y6+PEctUPayRID2uU70J5jimDimE1xPi6I4XxFBgyh5LAhfYRzRMq5GVyQFbozx7BG
+         yegvhFRPSD/QrBYWhLUhZ11PCwxzgJRqWHVG5493CQdWy5mkG0EkPn4ZqQTPLxY3mBaE
+         t+BXYTEFVvY9QwlUxvkE15o2B65jQWi503h0Adyk9Dt0tzotmi9LTa0ZIHorjNsQFRf9
+         5YYg==
+X-Gm-Message-State: AOAM533Mz1KYAo92NZt3VzzhTB6W26AAmk2MgxLpVWlbo1OcUAdmXn/l
+        OkanR0su4aCzechxW8Qv8UVUSw5s8dGqNx7X
+X-Google-Smtp-Source: ABdhPJzDOQUOheeFJU5QyKNl72qiIt95tCuX6Jjl0D8dBPyKMY4iJAD3w5tH2To0fTr3i/2PJNQmJA==
+X-Received: by 2002:a17:90b:3d1:: with SMTP id go17mr4594186pjb.114.1591821201738;
+        Wed, 10 Jun 2020 13:33:21 -0700 (PDT)
+Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id x1sm576136pju.3.2020.06.10.13.33.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jun 2020 13:33:20 -0700 (PDT)
+From:   Scott Branden <scott.branden@broadcom.com>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
+Cc:     BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        linux-kernel@vger.kernel.org,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: [PATCH] checkpatch: ignore CamelCase for inttypes.h format specifiers
+Date:   Wed, 10 Jun 2020 13:33:07 -0700
+Message-Id: <20200610203307.9344-1-scott.branden@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 9 Jun 2020 23:01:50 +0200 (CEST):
+Ignore CamelCase for inttypes.h for fixed integer types format specifiers.
+(ex. PRIx32 for uint32_t).
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.8-rc1
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+---
+ scripts/checkpatch.pl | 2 ++
+ 1 file changed, 2 insertions(+)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/84fc461db99b2dc19e019c0a97725a3653687981
-
-Thank you!
-
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 899e380782c0..9fa90457b270 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -5157,6 +5157,8 @@ sub process {
+ 			    $var =~ /[A-Z][a-z]|[a-z][A-Z]/ &&
+ #Ignore Page<foo> variants
+ 			    $var !~ /^(?:Clear|Set|TestClear|TestSet|)Page[A-Z]/ &&
++#Ignore inttypes.h scanf/printf format specifiers for fixed size integer types
++			    $var !~ /^(?:PRI|SCN)[dxoui](8|16|32|64|PTR|MAX)?$/ &&
+ #Ignore SI style variants like nS, mV and dB
+ #(ie: max_uV, regulator_min_uA_show, RANGE_mA_VALUE)
+ 			    $var !~ /^(?:[a-z0-9_]*|[A-Z0-9_]*)?_?[a-z][A-Z](?:_[a-z0-9_]+|_[A-Z0-9_]+)?$/ &&
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+2.17.1
+
