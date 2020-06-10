@@ -2,127 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318401F5B3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 20:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4201F5B52
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 20:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729002AbgFJSdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 14:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728973AbgFJSc7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 14:32:59 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0CEC03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 11:32:59 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id c3so3401858wru.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 11:32:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cuF+cADa9Q3nUhREBOrFxHULJ1t6/1ibL+MaQiIT2O4=;
-        b=ShddrI1KueMSqR6Wmvilt3rbyr+sz5HwFSfAUsjfnmYpijcnBNTyMgSkGknkRMlEvD
-         T7ONcUqIiN6ZuI/+73WkfNKjPnjpCxAY0Tq+chqDh8IyImYw44Sg7NfS0nCQK0g2iQfF
-         hJUycqfOB9F5s9VszPETBUbzqglDtFaWamE4I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cuF+cADa9Q3nUhREBOrFxHULJ1t6/1ibL+MaQiIT2O4=;
-        b=OSdeBr0wKEEfOAO956zGg4MgtreWcUd4xuQVUDdBYnOMkEk57Cot0ZxccAxIfs6DQI
-         zO4J777EQElTnrbILEg8WxQ1x9GYNwR+i+oqKO0+mnY0fClzQ3/SyTY67OW6nnGKYhoJ
-         vODmUXzHfyiTHdECISSIIQDIdy+O7IYnwJCUJ0iTlsDiQd9buNHkWnPVYviI4DtuxrMz
-         +rgKRNWtDi771rVZGtnhxVjcWc2GZ3JkXLW1Wh+Zjn7qyhtja3ZaoqgbuNicFgpPEjMO
-         E/UA3PhEaxyK6Tl5KbWRunhPaqC2c7UHyWWrx+nCLJRiOJXI9dYPA2NPDr5H6UFemIqg
-         cDxw==
-X-Gm-Message-State: AOAM533Z3CGDG4Z9CEjFgjwg6syoW2tMu79jGtfibBC1sKmRvzGVbSF5
-        naxo1A6Et5Aye89YUQWvBn9+MfG66zVSIGdlUwbu
-X-Google-Smtp-Source: ABdhPJxCnMMuL58nYu6fTmdEAISV5qEamhPuW63lyo5ERyRoWIudqU0rQgeZrHhfm+NaPcTZ3CjeV2CAQGJ51/I8SH4=
-X-Received: by 2002:adf:e68a:: with SMTP id r10mr5092633wrm.384.1591813978084;
- Wed, 10 Jun 2020 11:32:58 -0700 (PDT)
+        id S1729145AbgFJShP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 14:37:15 -0400
+Received: from raptor.unsafe.ru ([5.9.43.93]:53430 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726287AbgFJShP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 14:37:15 -0400
+Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-89-102-33-211.net.upcbroadband.cz [89.102.33.211])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id BA90E203BD;
+        Wed, 10 Jun 2020 18:37:12 +0000 (UTC)
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     ebiederm@xmission.com
+Cc:     syzbot <syzbot+4abac52934a48af5ff19@syzkaller.appspotmail.com>,
+        adobriyan@gmail.com, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: [PATCH v2] proc: s_fs_info may be NULL when proc_kill_sb is called
+Date:   Wed, 10 Jun 2020 20:35:49 +0200
+Message-Id: <20200610183549.1234214-1-gladkov.alexey@gmail.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200610130422.1197386-1-gladkov.alexey@gmail.com>
+References: <20200610130422.1197386-1-gladkov.alexey@gmail.com>
 MIME-Version: 1.0
-References: <20200603153608.30056-1-alex@ghiti.fr>
-In-Reply-To: <20200603153608.30056-1-alex@ghiti.fr>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Wed, 10 Jun 2020 11:32:47 -0700
-Message-ID: <CAOnJCUJSKvLDsXC8+wyO1xsZDzLJmjY2kwMKhjz0t+uS8h0pDw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] PUD/PGDIR entries for linear mapping
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Wed, 10 Jun 2020 18:37:13 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 3, 2020 at 8:36 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
->
-> This small patchset intends to use PUD/PGDIR entries for linear mapping
-> in order to better utilize TLB.
->
-> At the moment, only PMD entries can be used since on common platforms
-> (qemu/unleashed), the kernel is loaded at DRAM + 2MB which dealigns virtual
-> and physical addresses and then prevents the use of PUD/PGDIR entries.
-> So the kernel must be able to get those 2MB for PAGE_OFFSET to map the
-> beginning of the DRAM: this is achieved in patch 1.
->
+syzbot found that proc_fill_super() fails before filling up sb->s_fs_info,
+deactivate_locked_super() will be called and sb->s_fs_info will be NULL.
+The proc_kill_sb() does not expect fs_info to be NULL which is wrong.
 
-I don't have in depth knowledge of how mm code works so this question
-may be a completely
-stupid one :). Just for my understanding,
-As per my understanding, kernel will map those 2MB of memory but never use it.
-How does the kernel ensure that it doesn't allocate any memory from those 2MB
-memory if it is not marked as reserved?
+Link: https://lore.kernel.org/lkml/0000000000002d7ca605a7b8b1c5@google.com
+Reported-by: syzbot+4abac52934a48af5ff19@syzkaller.appspotmail.com
+Fixes: fa10fed30f25 ("proc: allow to mount many instances of proc in one pid namespace")
+Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
+---
+ fs/proc/root.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-> But furthermore, at the moment, the firmware (opensbi) explicitly asks the
-> kernel not to map the region it occupies, which is on those common
-> platforms at the very beginning of the DRAM and then it also dealigns
-> virtual and physical addresses. I proposed a patch here:
->
-> https://github.com/riscv/opensbi/pull/167
->
-> that removes this 'constraint' but *not* all the time as it offers some
-> kind of protection in case PMP is not available. So sometimes, we may
-> have a part of the memory below the kernel that is removed creating a
-> misalignment between virtual and physical addresses. So for performance
-> reasons, we must at least make sure that PMD entries can be used: that
-> is guaranteed by patch 1 too.
->
-> Finally the second patch simply improves best_map_size so that whenever
-> possible, PUD/PGDIR entries are used.
->
-> Below is the kernel page table without this patch on a 6G platform:
->
-> ---[ Linear mapping ]---
-> 0xffffc00000000000-0xffffc00176e00000    0x0000000080200000 5998M PMD     D A . . . W R V
->
-> And with this patchset + opensbi patch:
->
-> ---[ Linear mapping ]---
-> 0xffffc00000000000-0xffffc00140000000 0x0000000080000000         5G PUD     D A . . . W R V
-> 0xffffc00140000000-0xffffc00177000000    0x00000001c0000000 880M PMD     D A . . . W R V
->
-> Alexandre Ghiti (2):
->   riscv: Get memory below load_pa while ensuring linear mapping is PMD
->     aligned
->   riscv: Use PUD/PGDIR entries for linear mapping when possible
->
->  arch/riscv/include/asm/page.h |  8 ++++
->  arch/riscv/mm/init.c          | 69 +++++++++++++++++++++++++++++------
->  2 files changed, 65 insertions(+), 12 deletions(-)
->
-> --
-> 2.20.1
->
->
-
-
+diff --git a/fs/proc/root.c b/fs/proc/root.c
+index ffebed1999e5..5e444d4f9717 100644
+--- a/fs/proc/root.c
++++ b/fs/proc/root.c
+@@ -264,11 +264,13 @@ static void proc_kill_sb(struct super_block *sb)
+ {
+ 	struct proc_fs_info *fs_info = proc_sb_info(sb);
+ 
+-	if (fs_info->proc_self)
+-		dput(fs_info->proc_self);
++	if (!fs_info) {
++		kill_anon_super(sb);
++		return;
++	}
+ 
+-	if (fs_info->proc_thread_self)
+-		dput(fs_info->proc_thread_self);
++	dput(fs_info->proc_self);
++	dput(fs_info->proc_thread_self);
+ 
+ 	kill_anon_super(sb);
+ 	put_pid_ns(fs_info->pid_ns);
 -- 
-Regards,
-Atish
+2.25.4
+
