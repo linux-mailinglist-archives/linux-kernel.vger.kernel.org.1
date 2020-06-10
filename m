@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB571F59E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1701F59F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729658AbgFJRQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 13:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729622AbgFJRQn (ORCPT
+        id S1729567AbgFJRQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 13:16:38 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:39476 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729535AbgFJRQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 13:16:43 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255EEC03E96F;
-        Wed, 10 Jun 2020 10:16:43 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id y17so3151394wrn.11;
-        Wed, 10 Jun 2020 10:16:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5Z5HmDtV/uFdRn9AN/WhBRbcRr/O4rtkluxMrfIJN0s=;
-        b=fd37f0BFKkT2dMXloiiCDGGxDqQW2UM1Gqs9hsUCTJHrIMsznCmrphGvKwLWSf09OQ
-         FZ/PU8zWotSr3ZdZH7s5eCn52gzfXfr1tjeLXFII3k8ooBcolu00v3pdmXRkZpE/6Eaf
-         f+R5cqW6M2mDLdCgRCgsApoEaHi7nq6Z2Jh0J2fq+wz8lsI5sKHAcmsLlfjBNTbUGFJ8
-         UlFI4Q5hsHzNVI+Wa9bXfTDbQs+8uGOyAubuoeQFhW6MKjVU7RFOCyVXFAlLQGNmrhkr
-         nqOB0STrqyWMkEFMeBGi5OPuxgM7ZMqfgfIfC4BTeaUP3BVZgnMSvkLgiSVs2pOFsU2a
-         FFJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5Z5HmDtV/uFdRn9AN/WhBRbcRr/O4rtkluxMrfIJN0s=;
-        b=QDxEuoGrJFDTpRw1fL43m6ElKy1YOxJUS8IB4IuWxXeQj49QSP18kZE8T3141pEVUr
-         M4Ov++UiLafyf0Ah4XBP7EHgIWIeWzGJMbRCverdx9RfUwJyR199xArJ6NOkYLeGZRLG
-         IFQf9oLfRZXJF0a7GvW8j8cFrZJoiwItsWDXMtCoqdWEKCVwztEs7ari/fWiO63VJ/5m
-         YmFzrMiy+OK8MLLIpmvvIhQgtUiIko3XofqEGPWI2Y0YV5rhZ6q5swMrbJLzbPvqQQqJ
-         QzbRZQtPPK/j/RvVgY4qvjsu71yNd+iikBJokUAjkMPo+IuarXiFOWt1OcCMFaI1s0SE
-         /VIw==
-X-Gm-Message-State: AOAM531aoTVXesQPvS/kIfszkDf6TPLn8l5xabL9G9b1hUQBYGPMqHxH
-        9zC5UvzrYPxA1jAPtUgqeD8=
-X-Google-Smtp-Source: ABdhPJwwhcrMFSDWf49dyge+OJdhoE3YU2B7KXd0sYZzv3guwN9R5Sp6bftxIqpZxmqZXOYSfjIbcQ==
-X-Received: by 2002:adf:cd08:: with SMTP id w8mr4763720wrm.36.1591809401794;
-        Wed, 10 Jun 2020 10:16:41 -0700 (PDT)
-Received: from skynet.lan (28.red-83-49-61.dynamicip.rima-tde.net. [83.49.61.28])
-        by smtp.gmail.com with ESMTPSA id f11sm589048wrm.13.2020.06.10.10.16.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 10:16:41 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     hauke@hauke-m.de, zajec5@gmail.com, tsbogend@alpha.franken.de,
-        robh+dt@kernel.org, f.fainelli@gmail.com, jonas.gorski@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH v3 9/9] mips: bmips: dts: add BCM63268 power domain support
-Date:   Wed, 10 Jun 2020 19:16:30 +0200
-Message-Id: <20200610171630.465579-10-noltari@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200610171630.465579-1-noltari@gmail.com>
-References: <20200610163301.461160-1-noltari@gmail.com>
- <20200610171630.465579-1-noltari@gmail.com>
+        Wed, 10 Jun 2020 13:16:35 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05AH6uQs063813;
+        Wed, 10 Jun 2020 17:16:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=wS59L6vvmXCNVjet98GjK9oBN+CCQZkrpA0QujBKnZ0=;
+ b=hFI/zbFTbjyY+2aOzvewZqBosGcClAxVbT0+kAM6xB3ZHBpK5V3EPPXo38hjj0YtJ4eq
+ zYnfMN4F5I8HgV5jzWYQC+vBqaeBdxP8XukOyvlNW9Fn0Nj8DBc2Kxr6+wekrRpiAxKX
+ t090KhG2PgRT8ejwtNCAWxHS5ZyF2aEd99aJkcv1occx9JtkfRxSt/u2uY03oKJP495/
+ FplrxaX5iOruXxEyR7LKtLZI7ebNnmwKLi7FUAloPT0tZVhH38DlYuD2bL1Fu6sM558o
+ cq4FVBBAfxkmg6lfkoBgchHtkEOgxKzTPq57lrfMIEmpkr/nMN2Z3Pm89vujUYT0dSFY 3g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 31jepnwg61-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Jun 2020 17:16:14 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05AH7km6024523;
+        Wed, 10 Jun 2020 17:16:14 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 31gn2ytctv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Jun 2020 17:16:13 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05AHG8P1014115;
+        Wed, 10 Jun 2020 17:16:12 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Jun 2020 10:16:07 -0700
+Date:   Wed, 10 Jun 2020 13:16:32 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Sistare <steven.sistare@oracle.com>
+Subject: Re: [PATCH v2] x86/mm: use max memory block size on bare metal
+Message-ID: <20200610171632.uiaucnp65tg6xexk@ca-dmjordan1.us.oracle.com>
+References: <20200609225451.3542648-1-daniel.m.jordan@oracle.com>
+ <ab4e0907-522d-7834-03f3-014e3ed904c5@redhat.com>
+ <0311c2e5-aa27-f59e-cd00-0c51332b73fd@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0311c2e5-aa27-f59e-cd00-0c51332b73fd@redhat.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9648 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
+ bulkscore=0 adultscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006100131
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9648 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 phishscore=0 impostorscore=0
+ malwarescore=0 mlxscore=0 cotscore=-2147483648 adultscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006100131
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BCM63268 SoCs have a power domain controller to enable/disable certain
-components in order to save power.
+On Wed, Jun 10, 2020 at 09:30:00AM +0200, David Hildenbrand wrote:
+> On 10.06.20 09:20, David Hildenbrand wrote:
+> > On 10.06.20 00:54, Daniel Jordan wrote:
+> >> @@ -1390,6 +1391,15 @@ static unsigned long probe_memory_block_size(void)
+> >>  		goto done;
+> >>  	}
+> >>  
+> >> +	/*
+> >> +	 * Use max block size to minimize overhead on bare metal, where
+> >> +	 * alignment for memory hotplug isn't a concern.
+> >> +	 */
+> >> +	if (hypervisor_is_type(X86_HYPER_NATIVE)) {
+> >> +		bz = MAX_BLOCK_SIZE;
+> >> +		goto done;
+> >> +	}
+> > 
+> > I'd assume that bioses on physical machines >= 64GB will not align
+> > bigger (>= 2GB) DIMMs to something < 2GB.
+> > 
+> > Acked-by: David Hildenbrand <david@redhat.com>
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- v3: Separate dt-bindings definitions from power domain .dtsi support.
- v2: Add dt-bindings header files.
+Thanks!
 
- arch/mips/boot/dts/brcm/bcm63268.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+> FTWT, setup_arch() does the init_hypervisor_platform() call. I assume
+> that should be early enough.
 
-diff --git a/arch/mips/boot/dts/brcm/bcm63268.dtsi b/arch/mips/boot/dts/brcm/bcm63268.dtsi
-index beec24145af7..5acb49b61867 100644
---- a/arch/mips/boot/dts/brcm/bcm63268.dtsi
-+++ b/arch/mips/boot/dts/brcm/bcm63268.dtsi
-@@ -117,6 +117,12 @@ leds0: led-controller@10001900 {
- 			status = "disabled";
- 		};
- 
-+		periph_pwr: power-controller@1000184c {
-+			compatible = "brcm,bcm6328-power-controller";
-+			reg = <0x1000184c 0x4>;
-+			#power-domain-cells = <1>;
-+		};
-+
- 		ehci: usb@10002500 {
- 			compatible = "brcm,bcm63268-ehci", "generic-ehci";
- 			reg = <0x10002500 0x100>;
--- 
-2.26.2
-
+I checked all the places where x86 uses memory_block_size_bytes(), it looks ok.
