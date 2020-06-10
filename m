@@ -2,171 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5B91F5CA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 22:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA481F5C92
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 22:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730812AbgFJUPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 16:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730576AbgFJUNv (ORCPT
+        id S1730729AbgFJUO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 16:14:27 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:56299 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730663AbgFJUOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 16:13:51 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D9AC00863A;
-        Wed, 10 Jun 2020 13:13:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=K+NqwcuwBBsF5gvk4uOfKfFisJ5O9Bzckjl4rjWXvjY=; b=qA6a873s/Zff6UrlIw+ycMtkmr
-        r7DXIh0LqRMxP8WmkQDOXoK4uBozwknJV1jplSMSs98TIdUIx9XWMUHtY5l3pS6At6H0Xo3WrxqxB
-        Hd4PKKJiOVr/UNzXW9P1ADiQ2BXcPTKbHqHw4Vu3jZHP/lMxn1vwvo14aDBfSs/nxM5xlnqoahpLH
-        bOivbzFTqd30i9dX6D36QV9MDuQJbVOHE7P8sXzMHd/HO5kvplNVn8doNMTZ7o47aCSZFxVTtjAEa
-        kwGXfT5L3TCXUpfoZOZ8sSz+qHMzHK1b84OTzHcsHm1cPxLrUaCSX1eV8+lK+rgZy7PRnoEdC+vgv
-        paZTSwUA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jj76a-0003XE-SA; Wed, 10 Jun 2020 20:13:48 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 39/51] mm: Remove assumptions of THP size
-Date:   Wed, 10 Jun 2020 13:13:33 -0700
-Message-Id: <20200610201345.13273-40-willy@infradead.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200610201345.13273-1-willy@infradead.org>
-References: <20200610201345.13273-1-willy@infradead.org>
+        Wed, 10 Jun 2020 16:14:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1591820049; x=1623356049;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=/zjjMaVbDmqq3wXpUWjYwp9e/G6JsSEa+Pr+btXJzbo=;
+  b=HFIRD0S2jd2xGzeGfVPImOl8whrm0oZvG+sySDFeb9+vDs5h/DnVG23t
+   g7HrYQtsra8+qKp6+RiUFZJaii7iaATx0ght1l218mCRB4cyJylysSqwu
+   vYR0OEWKsrP1E7uPIR/yDh5fKXMWNSQwr1V4IouapNguNJi9PblzXRapF
+   o=;
+IronPort-SDR: VWTjnwx3BrftDrQJamoKDCQfbyc9UdmuRrreUu/coR2zBRNaPZDAbzHzrPzdDM24LOKWEymkSA
+ iMm+WNP7shvw==
+X-IronPort-AV: E=Sophos;i="5.73,497,1583193600"; 
+   d="scan'208";a="35620000"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 10 Jun 2020 20:14:07 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id D3A1CA260A;
+        Wed, 10 Jun 2020 20:13:56 +0000 (UTC)
+Received: from EX13D07EUA004.ant.amazon.com (10.43.165.172) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 10 Jun 2020 20:13:44 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (10.43.61.77) by
+ EX13D07EUA004.ant.amazon.com (10.43.165.172) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 10 Jun 2020 20:13:43 +0000
+Received: from u908889d5e8f057.ant.amazon.com (10.1.212.33) by
+ mail-relay.amazon.com (10.43.61.169) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Wed, 10 Jun 2020 20:13:35 +0000
+Subject: Re: [PATCH v15 01/14] mm/page_ext: Export lookup_page_ext() to GPL
+ modules
+To:     SeongJae Park <sjpark@amazon.com>, <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
+        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
+        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
+        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
+        <peterz@infradead.org>, <rdunlap@infradead.org>,
+        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
+        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
+        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
+        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
+        <ying.huang@intel.com>, <david@redhat.com>,
+        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200608114047.26589-1-sjpark@amazon.com>
+ <20200608114047.26589-2-sjpark@amazon.com>
+From:   <vrd@amazon.com>
+Message-ID: <e6d6f74f-0ff5-e4f3-7b6b-9ff0ce5b4f48@amazon.com>
+Date:   Wed, 10 Jun 2020 22:13:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200608114047.26589-2-sjpark@amazon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-
-Remove direct uses of HPAGE_PMD_NR in paths that aren't necessarily
-PMD sized.
-
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- mm/huge_memory.c | 15 ++++++++-------
- mm/rmap.c        | 10 +++++-----
- 2 files changed, 13 insertions(+), 12 deletions(-)
-
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 744863aa0374..c25d8e2310e8 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2340,7 +2340,7 @@ static void remap_page(struct page *page)
- 	if (PageTransHuge(page)) {
- 		remove_migration_ptes(page, page, true);
- 	} else {
--		for (i = 0; i < HPAGE_PMD_NR; i++)
-+		for (i = 0; i < thp_nr_pages(page); i++)
- 			remove_migration_ptes(page + i, page + i, true);
- 	}
- }
-@@ -2415,6 +2415,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 	struct lruvec *lruvec;
- 	struct address_space *swap_cache = NULL;
- 	unsigned long offset = 0;
-+	unsigned int nr = thp_nr_pages(head);
- 	int i;
- 
- 	lruvec = mem_cgroup_page_lruvec(head, pgdat);
-@@ -2430,7 +2431,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 		xa_lock(&swap_cache->i_pages);
- 	}
- 
--	for (i = HPAGE_PMD_NR - 1; i >= 1; i--) {
-+	for (i = nr - 1; i >= 1; i--) {
- 		__split_huge_page_tail(head, i, lruvec, list);
- 		/* Some pages can be beyond i_size: drop them from page cache */
- 		if (head[i].index >= end) {
-@@ -2471,7 +2472,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 
- 	remap_page(head);
- 
--	for (i = 0; i < HPAGE_PMD_NR; i++) {
-+	for (i = 0; i < nr; i++) {
- 		struct page *subpage = head + i;
- 		if (subpage == page)
- 			continue;
-@@ -2553,14 +2554,14 @@ int page_trans_huge_mapcount(struct page *page, int *total_mapcount)
- 	page = compound_head(page);
- 
- 	_total_mapcount = ret = 0;
--	for (i = 0; i < HPAGE_PMD_NR; i++) {
-+	for (i = 0; i < thp_nr_pages(page); i++) {
- 		mapcount = atomic_read(&page[i]._mapcount) + 1;
- 		ret = max(ret, mapcount);
- 		_total_mapcount += mapcount;
- 	}
- 	if (PageDoubleMap(page)) {
- 		ret -= 1;
--		_total_mapcount -= HPAGE_PMD_NR;
-+		_total_mapcount -= thp_nr_pages(page);
- 	}
- 	mapcount = compound_mapcount(page);
- 	ret += mapcount;
-@@ -2577,9 +2578,9 @@ bool can_split_huge_page(struct page *page, int *pextra_pins)
- 
- 	/* Additional pins from page cache */
- 	if (PageAnon(page))
--		extra_pins = PageSwapCache(page) ? HPAGE_PMD_NR : 0;
-+		extra_pins = PageSwapCache(page) ? thp_nr_pages(page) : 0;
- 	else
--		extra_pins = HPAGE_PMD_NR;
-+		extra_pins = thp_nr_pages(page);
- 	if (pextra_pins)
- 		*pextra_pins = extra_pins;
- 	return total_mapcount(page) == page_count(page) - extra_pins - 1;
-diff --git a/mm/rmap.c b/mm/rmap.c
-index c56fab5826c1..c0295282928b 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1205,7 +1205,7 @@ void page_add_file_rmap(struct page *page, bool compound)
- 	VM_BUG_ON_PAGE(compound && !PageTransHuge(page), page);
- 	lock_page_memcg(page);
- 	if (compound && PageTransHuge(page)) {
--		for (i = 0, nr = 0; i < HPAGE_PMD_NR; i++) {
-+		for (i = 0, nr = 0; i < thp_nr_pages(page); i++) {
- 			if (atomic_inc_and_test(&page[i]._mapcount))
- 				nr++;
- 		}
-@@ -1246,7 +1246,7 @@ static void page_remove_file_rmap(struct page *page, bool compound)
- 
- 	/* page still mapped by someone else? */
- 	if (compound && PageTransHuge(page)) {
--		for (i = 0, nr = 0; i < HPAGE_PMD_NR; i++) {
-+		for (i = 0, nr = 0; i < thp_nr_pages(page); i++) {
- 			if (atomic_add_negative(-1, &page[i]._mapcount))
- 				nr++;
- 		}
-@@ -1293,7 +1293,7 @@ static void page_remove_anon_compound_rmap(struct page *page)
- 		 * Subpages can be mapped with PTEs too. Check how many of
- 		 * them are still mapped.
- 		 */
--		for (i = 0, nr = 0; i < HPAGE_PMD_NR; i++) {
-+		for (i = 0, nr = 0; i < thp_nr_pages(page); i++) {
- 			if (atomic_add_negative(-1, &page[i]._mapcount))
- 				nr++;
- 		}
-@@ -1303,10 +1303,10 @@ static void page_remove_anon_compound_rmap(struct page *page)
- 		 * page of the compound page is unmapped, but at least one
- 		 * small page is still mapped.
- 		 */
--		if (nr && nr < HPAGE_PMD_NR)
-+		if (nr && nr < thp_nr_pages(page))
- 			deferred_split_huge_page(page);
- 	} else {
--		nr = HPAGE_PMD_NR;
-+		nr = thp_nr_pages(page);
- 	}
- 
- 	if (unlikely(PageMlocked(page)))
--- 
-2.26.2
+T24gNi84LzIwIDE6NDAgUE0sIFNlb25nSmFlIFBhcmsgd3JvdGU6Cj4gRnJvbTogU2VvbmdKYWUg
+UGFyayA8c2pwYXJrQGFtYXpvbi5kZT4KPiAKPiBUaGlzIGNvbW1pdCBleHBvcnRzICdsb29rdXBf
+cGFnZV9leHQoKScgdG8gR1BMIG1vZHVsZXMuICBUaGlzIHdpbGwgYmUKPiB1c2VkIGJ5IERBTU9O
+Lgo+IAo+IFNpZ25lZC1vZmYtYnk6IFNlb25nSmFlIFBhcmsgPHNqcGFya0BhbWF6b24uZGU+Cj4g
+UmV2aWV3ZWQtYnk6IExlb25hcmQgRm9lcnN0ZXIgPGZvZXJzbGVvQGFtYXpvbi5kZT4KClJldmll
+d2VkLWJ5OiBWYXJhZCBHYXV0YW0gPHZyZEBhbWF6b24uZGU+Cgo+IC0tLQo+ICBtbS9wYWdlX2V4
+dC5jIHwgMSArCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQo+IAo+IGRpZmYgLS1n
+aXQgYS9tbS9wYWdlX2V4dC5jIGIvbW0vcGFnZV9leHQuYwo+IGluZGV4IGEzNjE2ZjdhMGU5ZS4u
+OWQ4MDJkMDFmY2I1IDEwMDY0NAo+IC0tLSBhL21tL3BhZ2VfZXh0LmMKPiArKysgYi9tbS9wYWdl
+X2V4dC5jCj4gQEAgLTEzMSw2ICsxMzEsNyBAQCBzdHJ1Y3QgcGFnZV9leHQgKmxvb2t1cF9wYWdl
+X2V4dChjb25zdCBzdHJ1Y3QgcGFnZSAqcGFnZSkKPiAgCQkJCQlNQVhfT1JERVJfTlJfUEFHRVMp
+Owo+ICAJcmV0dXJuIGdldF9lbnRyeShiYXNlLCBpbmRleCk7Cj4gIH0KPiArRVhQT1JUX1NZTUJP
+TF9HUEwobG9va3VwX3BhZ2VfZXh0KTsKPiAgCj4gIHN0YXRpYyBpbnQgX19pbml0IGFsbG9jX25v
+ZGVfcGFnZV9leHQoaW50IG5pZCkKPiAgewo+IAoKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRl
+ciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0ci4gMzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVo
+cnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwgSm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0g
+QW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcgdW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxp
+bgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgoK
 
