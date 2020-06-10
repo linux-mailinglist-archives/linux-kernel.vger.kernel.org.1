@@ -2,86 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B681E1F5877
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 17:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1628A1F586A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 17:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730442AbgFJP6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 11:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728217AbgFJP6j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 11:58:39 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867F6C03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 08:58:39 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id k15so2080947otp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 08:58:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0SN+q6mCsu4s+N1LLrzuE4p100GHqHC1FGVfTGwaqXU=;
-        b=GR/SWSFRZtaURduwcW76F5Ced+0XjjVPJl7VYugof1hdZ3GifLGv4TEu8UfrA1UiYM
-         clzHzyu7ZC48I6JLbtZU6Ogw2KzNTphllnI3q4M4E8ea0tiLbVRQIvUsHXcDcPBS3zub
-         M3fkBYEbhvhvNeuVN2vQBTMATWzBuxTy3TfzmRDWN7skhyKMCsFtJtSrFZLE+kjkdMs0
-         1bidJKfHzKD2jEmm65n98elEvz+KWRE9ZBVxeqXzFtVbNWmsicyfAQveO/Rc790guHSL
-         CsVmN0h3w4TTRgGeF7NcjZ0mmpL9+UUR4I3H3w4oOMYnwG7ZEns8JbOGmoUKETe1MpvY
-         nJQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0SN+q6mCsu4s+N1LLrzuE4p100GHqHC1FGVfTGwaqXU=;
-        b=e9SD6pRu8Aw8KyQs2kY0SfrTPqc+I+O7rausJVN8wWxUJBE6N597IFvQ/nwwtfYdMZ
-         n+Y/Sk4927TFlMRpPtKLyfDS2TwR+BL8XRdm0lS2p7hHDWKynHs5+BqTGcgl6/uxDzTC
-         wt/77cR7vh3AWSRjMhY9rSTFi85A9+jrlWKE3AaHQq9yV1cV/6v8a7ZcR7TiLBbmqXcM
-         S+NvbZ7fbqBBDXrebcAZGoHqfSTkg+hAyjepEO621IVYhxi2VrLzh0ucSRT9VRE/BQOT
-         Dc+a2cvmU5ptkVQXjBBYFVSBC4Samt2uoKa1DAJ3CbLWMEsn3n6rehIJyfbsi91GDHDQ
-         OoFQ==
-X-Gm-Message-State: AOAM532bh1eMtaddg78BsQDKwVWiH3Q3s/0+iL/+W1eT/Ct/mjfOroZ8
-        ykFBXjw5uktDzpeiP7ZPmS0=
-X-Google-Smtp-Source: ABdhPJziMwWfIGwj8ox5Zhg8kLleKrhfSCHTAXEByakroOwaXdHNmz2Hge9IXzMrImDg3u3zlBIrZg==
-X-Received: by 2002:a05:6830:2151:: with SMTP id r17mr2874415otd.254.1591804718359;
-        Wed, 10 Jun 2020 08:58:38 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:4111:8b00::3])
-        by smtp.gmail.com with ESMTPSA id 126sm30622oii.39.2020.06.10.08.58.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 08:58:37 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 08:58:36 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] .clang-format: update column limit
-Message-ID: <20200610155836.GA2360592@ubuntu-n2-xlarge-x86>
-References: <20200610125147.2782142-1-christian.brauner@ubuntu.com>
- <CANiq72m_p2BRXswCGhUZi-Nta2y0uNXDQLRjPUFydB7YGV-6HQ@mail.gmail.com>
+        id S1728775AbgFJPzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 11:55:43 -0400
+Received: from mga03.intel.com ([134.134.136.65]:40297 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728431AbgFJPzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 11:55:43 -0400
+IronPort-SDR: 9TlXgGqaoEoIKgy71D0hDVuSNFO8dK4E6MBgE8rdD4yf6RvaFhfTdZt7kcbXdi4I4k69w3m02Y
+ X2dEH8BnePDQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 08:55:42 -0700
+IronPort-SDR: 9efg9fGoGODP1xTvJB+I/1ydlZnUayQEJ29ZCA7cJuOSoGkrIs1OcW/SLl7fnbmRfgQN+MXDi3
+ fpYNDBB6OclA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,496,1583222400"; 
+   d="scan'208";a="271282719"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
+  by orsmga003.jf.intel.com with ESMTP; 10 Jun 2020 08:55:40 -0700
+Subject: Re: [PATCH 1/2] xhci: Suspend ports to U3 directly from U1 or U2
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200610064231.9454-1-kai.heng.feng@canonical.com>
+ <20200610143220.GC11727@rowland.harvard.edu>
+ <591D2A1F-9645-4B0B-896C-99544F06DFAA@canonical.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
+ 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 fiD/
+Message-ID: <9d7842de-9813-becd-80a0-a422e59c1e94@linux.intel.com>
+Date:   Wed, 10 Jun 2020 18:58:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiq72m_p2BRXswCGhUZi-Nta2y0uNXDQLRjPUFydB7YGV-6HQ@mail.gmail.com>
+In-Reply-To: <591D2A1F-9645-4B0B-896C-99544F06DFAA@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 05:55:14PM +0200, Miguel Ojeda wrote:
-> Hi Christian,
+On 10.6.2020 18.43, Kai-Heng Feng wrote:
 > 
-> On Wed, Jun 10, 2020 at 2:51 PM Christian Brauner
-> <christian.brauner@ubuntu.com> wrote:
-> >
-> > The provided clang-format file wraps at 80 chars. If no one minds, I'd like
-> > to adjust this limit to 100 similar to what checkpatch (cf. [1]) uses now.
 > 
-> Thanks! Picking this up with a few changes to the commit message.
+>> On Jun 10, 2020, at 22:32, Alan Stern <stern@rowland.harvard.edu> wrote:
+>>
+>> On Wed, Jun 10, 2020 at 02:42:30PM +0800, Kai-Heng Feng wrote:
+>>> xHCI spec "4.15.1 Port Suspend" states that port can be put to U3 as long
+>>> as Enabled bit is set and from U0, U1 or U2 state.
+>>>
+>>> Currently only USB_PORT_FEAT_LINK_STATE puts port to U3 directly, let's
+>>> do the same for USB_PORT_FEAT_SUSPEND and bus suspend case.
+>>>
+>>> This is particularly useful for USB2 devices, which may take a very long
+>>> time to switch USB2 LPM on and off.
+>>
+>> Have these two patches been tested with a variety of USB-2.0 and USB-2.1 
+>> devices?
 > 
-> Cheers,
-> Miguel
+> I tested some laptops around and they work fine.
+> Only internally connected USB devices like USB Bluetooth and USB Camera have USB2 LPM enabled, so this patch won't affect external connected devices.
 > 
 
-If it isn't too late:
+Took a fresh look at the USB2 side and it's not as clear as the USB3 case, where
+we know the hub must support transition to U3 from any other state. [1]
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Supporting link state transition to U3 (USB2 L2) from any other U state for USB2 seems
+to be xHCI specific feature. xHC hardware will make sure it goes via the U0 state.
+
+I have no clue about other hosts (or hubs), USB2 LPM ECN just shows that link
+state transitions to L1 or L2 should always goes via L0.
+It's possible this has to be done in software by disabling USB2 LPM before suspending the device.
+
+So I guess the original suggestion to wait for link state to reach U0 before
+is a better solution. Sorry about my hasty suggestion.
+
+Kai-Heng, does it help if you fist manually set the link to U0 before disabling
+USB2 LPM (set PLS to 0 before clearing the HLE bit). Does it transition to U0
+any faster, or get rid of the extra port event with PLC:U0?
+
+-Mathias
+
+ 
+[1]
+    USB3.1 spec (10.16.2.10) Set Port feature:   
+   "If the value is 3, then host software wants to selectively suspend the
+    device connected to this port. The hub shall transition the link to U3
+    from any of the other U states using allowed link state transitions.
+    If the port is not already in the U0 state, then it shall transition the
+    port to the U0 state and then initiate the transition to U3.
