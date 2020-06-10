@@ -2,116 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497DB1F51FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 12:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828851F5206
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 12:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728141AbgFJKNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 06:13:05 -0400
-Received: from mail-db8eur05on2052.outbound.protection.outlook.com ([40.107.20.52]:8509
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726134AbgFJKNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 06:13:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bnOtelpKpjbUvCUsRbjPZDfmo3jefmtdPa/ieUZtfjPF5OPG5hwz8PJWdY7aPldRMf960wSh0yDZ59BMbSCzyW9/MK/gDHx36FjEiEB5t7fsQmCVmtvX7CoyoHgGEpEhKV5FTobohutGVj7ceto9i6etzJlpvsP6TX8NyHB/i0T3beY1h928D55V25D3I9gvtf8je4b/NM3yD+DTLIxMWW//ig0X6o0RW2Sa0Ahf4hYIfB56ZYD6c8vZD43SXuvw9/wahuPL6lwOc8K09B8Se6mXv4uBJOzQWruIwF6pfdHR7MCUqG9UxvycDCUFd6rYCvsgQMTwbKxwYsgLu06M0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f6f1RGokw1hv0lmYvbyzCy9DD4GnOC82wQjVxiW/Cvc=;
- b=L+fM17PJmmrRfLYm34CKeJANYs7AwgIj3p0AmpOInufJsDYBZGlgJYuFwX4GKnL4CJSOZYi2d7pIiiDIdfcHgm6NEZ+RBmXB0eArq6NWFe+b7bz6oSF0D7rHrO8PndATanZkKU1ldvvXZvR/62978W/PTk4GFPbnFQsJ6N1mNAwRw5u2Feihc7CXN/sq97oSPjgyPm06hpaysHtPwFXkcHIldyOquHZKqLTjbgOSzg31wkZ/ihTj2Tqt3s9VfCcRehwrlHp+T/oTzioJ9mAMb4MyJ12hL9hnxQ9/ar2b3ij4qxIyoFispITW30fHiEP/JeLOSEs+Nt7pXi++JMBGGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f6f1RGokw1hv0lmYvbyzCy9DD4GnOC82wQjVxiW/Cvc=;
- b=sdUBp91zM3LszwlbETMcDHaCGLZ8l5C1t6Ve47xp/0I56U58fZXXgbjs6GgpIOVAEs2euvihlakDBBgFCGwxGYkIJpKOEJzEhG1X0O/zWeVf5eaD57ohNfCYJA0RTrA25v5xHWRer1LfawfQ8C09voNWzTVsqn2f+2fRvTlxcD8=
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
- by DB3PR0402MB3673.eurprd04.prod.outlook.com (2603:10a6:8:c::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.18; Wed, 10 Jun
- 2020 10:12:57 +0000
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3%6]) with mapi id 15.20.3088.018; Wed, 10 Jun 2020
- 10:12:57 +0000
-From:   Anson Huang <anson.huang@nxp.com>
-To:     Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        Peng Fan <peng.fan@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH V2] soc: imx8m: Correct i.MX8MP UID fuse offset
-Thread-Topic: [PATCH V2] soc: imx8m: Correct i.MX8MP UID fuse offset
-Thread-Index: AQHWPrCw0WB/imHNuUG5ox2m9H66cKjRezCAgAAAlhCAAA03gIAAGNmQ
-Date:   Wed, 10 Jun 2020 10:12:57 +0000
-Message-ID: <DB3PR0402MB3916DB340C8BC6BC38035B2BF5830@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-References: <1591742515-7108-1-git-send-email-Anson.Huang@nxp.com>
- <DB7PR04MB4972E7B649B935B1EFE6469880830@DB7PR04MB4972.eurprd04.prod.outlook.com>
- <DB3PR0402MB3916F5F4C797595437D5FBE5F5830@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <552e1ae9-8b28-a462-5ee8-3e5bd6821c90@nxp.com>
-In-Reply-To: <552e1ae9-8b28-a462-5ee8-3e5bd6821c90@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [183.192.13.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 22ecf110-13ff-45ab-facc-08d80d26d949
-x-ms-traffictypediagnostic: DB3PR0402MB3673:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB3PR0402MB3673BFBCC74B1C3CB3488C7AF5830@DB3PR0402MB3673.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-forefront-prvs: 0430FA5CB7
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4lx+raO2/zvQJ348ZnX+t0i5u1icpVVNm5uP/6gaBbj2W6zyojPflLmmn/cgF6zE2WLClvpJTvJYx0A+SClueLkIFegCVnKcBTkbmoNvMf/lKvLFZFJBLGh6dKxwRDQy5ElCHjK5/OMzsD4Gyk6T/a2Rzlt0S2SlLYCaAoh0GJxofG14RfwJuqAHDPMXGewjMMd1C6k2oBqE+ZT/WYLDwnZ3Pk9th2Bq4A3UCHC13WsjDBTlSd+JYt1MQwPTAkH+bHtOwTA5IDJnP+Yy6R/lI7IhJyxhNM8AVeO5nB9eilWNQWfBxkjQPYYOJ3E6SgOZZ2kkz1gTDKraOHP5E/lfv5TliYw8vttUcsM9uJr5F/Piaa/XkSssO7NqXbIig9SQkA3RIt4tnwjDSKHB07olDQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(39860400002)(376002)(136003)(366004)(396003)(316002)(55016002)(8676002)(26005)(8936002)(33656002)(110136005)(4744005)(71200400001)(9686003)(86362001)(2906002)(4326008)(64756008)(7696005)(52536014)(53546011)(6506007)(478600001)(66556008)(66476007)(44832011)(186003)(66446008)(76116006)(66946007)(5660300002)(32563001)(921003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: vLae4oBVihueWyzUP3jlDq/fui6VIW5EYrAnBfWHUSzULw9Zr8qJuk2Q8JHoPbgzX6GsKE9Yz/7RKl6U1LoQ2YjnSbEO69lDtdJeOE/6VsuAQZr/ItSUeEp49ietlZlFJW6j3FqWdkZNerHMDGc+YkIsXvLLd8+30uoAMJo245TdMoNQ8mOOjDHmnI+CN4EBHxGyHkTRKVVNZpJVHs0Tr/7Rxu9VEIhm3g9rpTsYwwSRYl55Tn9YqdJZNjhhm4lDLR+3f0mGnjt/ylyhbQFMMByIS8MoQsBkoeZJM13WF+3FEBSvPxGA83IBwBPeUA2hLqgdTpB7BWmFfX2M30W07znU261ewtapSxkVukiYmMItdYoDI2fJPIUFFq5RZLCW/6khVw6HNKyQrJ525LnEvOULzBL8BojM8neW5iou7ss7vS3QDPBDa6GPf+VkS8g3WQrzVwPkp577Z2G5BFx+4NmAOO/rVeDuaHeUyePzMHH1t1YE4v4JIW6eNdLnFtEa
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728159AbgFJKOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 06:14:11 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:58991 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726134AbgFJKOK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 06:14:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1591784049; x=1623320049;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=CtNLCaD8mW2jfZ6LEQ4ahCDLJNSsZclpIdWVExMRWPo=;
+  b=cGNV4Jg97bQ5pG1Sb9bMuzZ2Ym7uxL82UzlF5SgFBSRfNgamiiGNar8J
+   jMFhY0SS21QQCnYQPpixxS2Q6ASb53YwufvRN0WPZ7GQKhH74uZxrD+m2
+   J7CD/xbXcjlb2yiWs/7AEAyNOf639FVzyXGkrDRvnzZu5FqDjUqn+c4UR
+   8=;
+IronPort-SDR: dke9JTcwLcS6G+n1O6A4GNdauJ4coP5XGtmjnU1489ct9Otf/FYfhQaBHKJ7KquAN5GGblkUrs
+ TMi1N1GQCvgw==
+X-IronPort-AV: E=Sophos;i="5.73,495,1583193600"; 
+   d="scan'208";a="35409709"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 10 Jun 2020 10:14:07 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 8F90B286AD4;
+        Wed, 10 Jun 2020 10:13:57 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 10 Jun 2020 10:13:56 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.53) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 10 Jun 2020 10:13:40 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     SeongJae Park <sjpark@amazon.com>
+CC:     <akpm@linux-foundation.org>, SeongJae Park <sjpark@amazon.de>,
+        <Jonathan.Cameron@Huawei.com>, <aarcange@redhat.com>,
+        <acme@kernel.org>, <alexander.shishkin@linux.intel.com>,
+        <amit@kernel.org>, <benh@kernel.crashing.org>,
+        <brendan.d.gregg@gmail.com>, <brendanhiggins@google.com>,
+        <cai@lca.pw>, <colin.king@canonical.com>, <corbet@lwn.net>,
+        <dwmw@amazon.com>, <foersleo@amazon.de>, <irogers@google.com>,
+        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
+        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
+        <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <sblbir@amazon.com>, <shakeelb@google.com>,
+        <shuah@kernel.org>, <sj38.park@gmail.com>, <snu@amazon.de>,
+        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <david@redhat.com>, <linux-damon@amazon.com>, <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v15 04/14] mm/damon: Adaptively adjust regions
+Date:   Wed, 10 Jun 2020 12:13:24 +0200
+Message-ID: <20200610101324.20437-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200608114047.26589-5-sjpark@amazon.com> (raw)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22ecf110-13ff-45ab-facc-08d80d26d949
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jun 2020 10:12:57.7858
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ysBB6X5I7d3MBXJ7msBTTqTai/gS2B9U0jKQwyjmvZbn1Bryuz+2Zo5B558Bp9Mk3ksHLOPkCxeWz7feNedong==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3673
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.53]
+X-ClientProxiedBy: EX13D36UWA003.ant.amazon.com (10.43.160.237) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEx1bGlhbmENCg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIFYyXSBzb2M6IGlteDhtOiBDb3Jy
-ZWN0IGkuTVg4TVAgVUlEIGZ1c2Ugb2Zmc2V0DQo+IA0KPiANCj4gDQo+IE9uIDYvMTAvMjAyMCAx
-MDo1NyBBTSwgQW5zb24gSHVhbmcgd3JvdGU6DQo+ID4NCj4gPj4gU3ViamVjdDogUkU6IFtQQVRD
-SCBWMl0gc29jOiBpbXg4bTogQ29ycmVjdCBpLk1YOE1QIFVJRCBmdXNlIG9mZnNldA0KPiA+Pg0K
-PiA+Pj4gRnJvbTogQW5zb24gSHVhbmcgPEFuc29uLkh1YW5nQG54cC5jb20+DQo+ID4+PiBTZW50
-OiBXZWRuZXNkYXksIEp1bmUgMTAsIDIwMjAgNjo0MiBBTQ0KPiA+Pj4NCj4gPj4+IENvcnJlY3Qg
-aS5NWDhNUCBVSUQgZnVzZSBvZmZzZXQgYWNjb3JkaW5nIHRvIGZ1c2UgbWFwOg0KPiA+Pj4NCj4g
-Pj4+IFVJRF9MT1c6IDB4NDIwDQo+ID4+PiBVSURfSElHSDogMHg0MzANCj4gPj4+DQo+ID4+PiBG
-aXhlczogZmM0MDIwMGViZjgyICgic29jOiBpbXg6IGluY3JlYXNlIGJ1aWxkIGNvdmVyYWdlIGZv
-ciBpbXg4bQ0KPiA+Pj4gc29jDQo+ID4+PiBkcml2ZXIiKQ0KPiA+Pg0KPiA+PiBBRkFJSyAiRml4
-ZXM6IiBzaG91bGQgcG9pbnQgdG8gdGhlIG9yaWdpbmFsIHBhdGNoIHdoaWNoIGludHJvZHVjZWQg
-dGhlIGlzc3VlLg0KPiA+PiBOb3QgdGhlIG9uZSBjaGFuZ2luZyBmaWxlIG5hbWUuDQo+ID4NCj4g
-PiBCdXQgdGhlIHBhdGNoIGNhbiBOT1QgYmUgYXBwbGllZCB0byB0aGUga2VybmVsIHZlcnNpb24g
-d2l0aCBvcmlnaW5hbA0KPiA+IGZpbGUsIGhvdyB0byBmaXggaXQ/DQo+ID4NCj4gSSBiZWxpZXZl
-IHlvdSBjYW4gYWRkIHR3byAiRml4ZXM6IiB3aXRoIHRoZSB0d28gY29tbWl0czogdGhlIG9uZSBp
-bnRyb2R1Y2luZw0KPiB0aGUgaXNzdWUgYW5kIHRoZSBvbmUgY2hhbmdpbmcgdGhlIGZpbGUgbmFt
-ZS4NCg0KVGhhbmtzLCB3aWxsIGFkZCBvbmNlIG1vcmUgZml4IHRhZywgcGxlYXNlIGhlbHAgcmV2
-aWV3IFYzLg0KDQpBbnNvbg0K
+On Mon, 8 Jun 2020 13:40:37 +0200 SeongJae Park <sjpark@amazon.com> wrote:
+
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> At the beginning of the monitoring, DAMON constructs the initial regions
+> by evenly splitting the memory mapped address space of the process into
+> the user-specified minimal number of regions.  In this initial state,
+> the assumption of the regions (pages in same region have similar access
+> frequencies) is normally not kept and thus the monitoring quality could
+> be low.  To keep the assumption as much as possible, DAMON adaptively
+> merges and splits each region.
+> 
+> For each ``aggregation interval``, it compares the access frequencies of
+> adjacent regions and merges those if the frequency difference is small.
+> Then, after it reports and clears the aggregated access frequency of
+> each region, it splits each region into two regions if the total number
+> of regions is smaller than the half of the user-specified maximum number
+> of regions.
+
+I recently realized that only the 'maximum number of regions' is respected,
+meanwhile the 'minimum number of regions' isn't.  In the next spin, I will
+update the code to 1) set new internal variable, 'max_sz_region' as size of
+entire monitoring target regions divided by the 'minimum number of regions',
+and 2) avoid merging regions if it results in region of size larger than that.
+
+This change would make DAMON more flexible for special cases.  For example,
+some use cases would need static granularity monitoring.  In such case, users
+will be able to adjust the granularity by controlling the 'minimum number of
+regions', and avoid the split/merge of regions by setting the 'maximum number
+of regions' as same to the 'minimum number of regions'.
+
+
+Thanks,
+SeongJae Park
+
+> 
+> In this way, DAMON provides its best-effort quality and minimal overhead
+> while keeping the bounds users set for their trade-off.
+> 
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> Reviewed-by: Leonard Foerster <foersleo@amazon.de>
