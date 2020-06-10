@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C641F58FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 18:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDECC1F5910
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 18:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgFJQZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 12:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728077AbgFJQZA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 12:25:00 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAC5C03E96B;
-        Wed, 10 Jun 2020 09:25:00 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id t18so2972592wru.6;
-        Wed, 10 Jun 2020 09:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7MdATQTOMqVdqWwVcwhsiYUCt9se11ZiKZMK8K7BiCo=;
-        b=G7cIYBilI7XvkCmFr1RcYL6e4zYFpHIZ+Fui6TE+JRVNwNH2zv5vQSu8BRtPxnIt7C
-         vJA+h6aqYIlEFyyN9eAyLbU6G4Rd5hE110kw2icRuIcR/u607F61WcB8SJ23NqURkprp
-         MYEO/00q+hnhVypeBkUnj5x46gxYtjKsD2FILL7Ty0WTWoT3/gnjwebcrg+aIJmrftuu
-         2O0RZBYLN+aHegRryBKBOadEJKeQyD/yhkj4RhreWaqj7JNHhfFU5vDmYiXpJ2zdT3d6
-         UaLFH0zSnwtDezlwQ7fMLd5f2FVohoGZXiXLQ7x0OjgPdLTMJuanoCvQZMcxKSTWHerz
-         ryFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7MdATQTOMqVdqWwVcwhsiYUCt9se11ZiKZMK8K7BiCo=;
-        b=Vfvdmlb9UMFTG7EArmYHBSpIC8aWYRnmBh/GeAYc4j0d/y60l+fgMPL6+QqRouLGXd
-         NT0WrQ1A5rOc6WbRTvlYyZxZwkzh2E0uXDF4evq3R4iQxbw53KDeGSdHI4c2wIv55AV5
-         fqMPJplT1d1bbsnEASm3DvNX6X8ktDGp5wn2woGmy0c9S9lUU2pBCeg2FrgjHHkF9icT
-         xLzKrpN/QMNgrynhWPOnFH1OaSHfKXlWcS7vEiPHbmWNuwkojGeyx7wOuoMAOXrACqsf
-         h8mYcWXkEEK0bkeGv6LMgy/kWu5o87rS36YGP/09JDimu9b0ryX6l48iE/LmtuiwokD3
-         VJeQ==
-X-Gm-Message-State: AOAM531QHcymcW7NAxrUzZXhic1k0IZOj9/8rGWY0nFCbP0RxL2zpoC6
-        7HAMxhzJfkI2jBAY88pO7h4=
-X-Google-Smtp-Source: ABdhPJwJUsnozQmJ8rArz+o+VE7Ug+Ogn3pwymbR97IR9oAxEz6MkGrQ1RZU+2WkilkvLYCz//PBwA==
-X-Received: by 2002:a5d:5006:: with SMTP id e6mr4869928wrt.170.1591806299316;
-        Wed, 10 Jun 2020 09:24:59 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id s8sm458703wrg.50.2020.06.10.09.24.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jun 2020 09:24:58 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] serial: core: fix sysrq overhead regression
-To:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jslaby@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200610152232.16925-1-johan@kernel.org>
- <20200610152232.16925-3-johan@kernel.org>
-From:   Dmitry Safonov <0x7f454c46@gmail.com>
-Message-ID: <19008afb-bfbb-35e2-3bd5-e7fd1b7355cc@gmail.com>
-Date:   Wed, 10 Jun 2020 17:24:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729054AbgFJQby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 12:31:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60430 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728174AbgFJQbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 12:31:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id C13F8ACAE;
+        Wed, 10 Jun 2020 16:31:53 +0000 (UTC)
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, vinmenon@codeaurora.org,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Garrett <mjg59@google.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>
+Subject: [PATCH 0/9] slub_debug fixes and improvements
+Date:   Wed, 10 Jun 2020 18:31:26 +0200
+Message-Id: <20200610163135.17364-1-vbabka@suse.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200610152232.16925-3-johan@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan,
+Hi,
 
-On 6/10/20 4:22 PM, Johan Hovold wrote:
-> Commit 8e20fc391711 ("serial_core: Move sysrq functions from header
-> file") converted the inline sysrq helpers to exported functions which
-> are now called for every received character, interrupt and break signal
-> also on systems without CONFIG_MAGIC_SYSRQ_SERIAL instead of being
-> optimised away by the compiler.
+this series puts together the recent series "replace runtime slub_debug
+toggling with more capable boot parameter" [4] (no longer RFC, thanks for
+reviews), with older RFC [5] to introduce a static key for slub_debug. It's
+because the removal of runtime toggling makes the static key addition simpler.
+The last patch improves cache_from_obj() based on recent debugging effort [6].
 
-The part with ifdeffing looks good to me.
+We had recently reports [1,2] of troubles with runtime writes to various SLUB
+per-cache sysfs files related to slub_debug or tuning leading to crashes. I have
+inspected all those writable files and the rather unfortunate result is that
+most of them are made read-only by this patchset, as fixing the issues doesn't
+seem viable. Details for each are given in each patch (2-5)
 
-> Inlining these helpers again also avoids the function call overhead when
-> CONFIG_MAGIC_SYSRQ_SERIAL is enabled (e.g. when the port is not used as
-> a console).
+The runtime toggles were however necessary for the use case described in [3],
+so the first patch extends the slub_debug boot parameter syntax to achieve the
+same configuration without runtime toggles. That should hopefully make the
+changes more feasible.
 
-But this one, coul you add measures? (it will also help to understand if
-it's a stable material).
+Patches 6-9 reduce slub_debug overhead in cases where it's compiled in but not
+enabled during boot, with a static key. Patch 9 also improves bug reporting
+in cache_from_obj().
 
-If one function call actually matters here, than should
-uart_insert_char() also go into header?
+[1] https://lkml.kernel.org/r/1580379523-32272-1-git-send-email-vjitta@codeaurora.org
+[2] https://lore.kernel.org/r/CAG48ez31PP--h6_FzVyfJ4H86QYczAFPdxtJHUEEan+7VJETAQ@mail.gmail.com
+[3] https://lore.kernel.org/r/1383cd32-1ddc-4dac-b5f8-9c42282fa81c@codeaurora.org
+[4] https://lore.kernel.org/r/20200602141519.7099-1-vbabka@suse.cz
+[5] https://lore.kernel.org/r/20190404091531.9815-1-vbabka@suse.cz
+[6] https://lore.kernel.org/r/4dc93ff8-f86e-f4c9-ebeb-6d3153a78d03@oracle.com
 
-I see quite common pattern in drivers:
-: if (!uart_handle_sysrq_char(&up->port, ch))
-: 	uart_insert_char(&up->port, byte, 0, ch, TTY_NORMAL);
+Vlastimil Babka (9):
+  mm, slub: extend slub_debug syntax for multiple blocks
+  mm, slub: make some slub_debug related attributes read-only
+  mm, slub: remove runtime allocation order changes
+  mm, slub: make remaining slub_debug related attributes read-only
+  mm, slub: make reclaim_account attribute read-only
+  mm, slub: introduce static key for slub_debug()
+  mm, slub: introduce kmem_cache_debug_flags()
+  mm, slub: extend checks guarded by slub_debug static key
+  mm, slab/slub: move and improve cache_from_obj()
 
-Don't misunderstand me, but I would prefer keeping headers cleaner
-without realization details with the exception if function calls
-actually hurts the performance.
+ .../admin-guide/kernel-parameters.txt         |   2 +-
+ Documentation/vm/slub.rst                     |  37 +-
+ mm/slab.c                                     |   8 +
+ mm/slab.h                                     |  23 --
+ mm/slub.c                                     | 374 +++++++++---------
+ 5 files changed, 222 insertions(+), 222 deletions(-)
 
-Probably, a comment like
-/*
- * Keeping these functions in the header improves performance by X% on
- * YYY platform by letting the compiler inline them.
- */
-would also help.
+-- 
+2.26.2
 
-Thanks for working on this,
-          Dmitry
