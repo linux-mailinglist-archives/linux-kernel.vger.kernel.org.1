@@ -2,160 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1595C1F5246
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 12:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC1B1F5241
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 12:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728265AbgFJK3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 06:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728234AbgFJK3Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 06:29:24 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD4FC03E96F
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 03:29:23 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id t18so1643328wru.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 03:29:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2gvb3h72zonJCVPACju41Fbw0tDgnKx5h0TrDtNmZYU=;
-        b=cVxMfXgKRNgr+F74+NX6QkCCJWBVbcaIolD7qRiQgmfdoxxyjdPNvQqSVPvDNHyU5b
-         zutGY00KZ+V2A6xa7UdrCQ4mbO4KOBSVlbJnEi24sWcxCPzWJkbKuUydpqJuzjNDhXN4
-         ztN4nLKUUI+zmTNQ1wipCZvj9rX1uD5inqNhE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2gvb3h72zonJCVPACju41Fbw0tDgnKx5h0TrDtNmZYU=;
-        b=V4D4HgrDnb0/1WUmkycB+xvyXg9BG3h3mAUVQRo813KDdulN8bgNzVXXzgk+luo6D5
-         CDcC7rmilozatKNrAW3s24Xkyzqb6P65UdUZujw4LkM3AgkTZf6Zrl6u3hCQIhlNHzGp
-         CzLGlwZm6eAssz9fKob+MlBIXg//35tgtkip5uowGuN+fb/x6aIWFkXUSJ39kM5HI5a3
-         +zHsp9hFxGCY3sRgIBMFG+0gnbgUTyyMo5HhrNuoWIMtp+QqDyuLGdlTHTZvWv4NwBdr
-         XjYwkaazjQ60kBTrr78sWWpPAuDgLsK597rFxPfphM5DBEY2Jjr945DqUaYB8Ltw83Ye
-         5LXg==
-X-Gm-Message-State: AOAM531CN9yQfVNjjlNOpt0r+/+Zp5WL19NOW03VAVg28qLcBqYPAOGt
-        iuBPxd3hOKuKW+TeQk6h1Qe+oM4M9kUiqzkescakaw==
-X-Google-Smtp-Source: ABdhPJykAxEMxc/5PA42qda+imN1iaGFnWE/E5DN0O6oJJrD3srN7KBugNNqszuh2dH7sSY67I4FzMJcwCuoTywbwrw=
-X-Received: by 2002:adf:f990:: with SMTP id f16mr2793952wrr.311.1591784962225;
- Wed, 10 Jun 2020 03:29:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191014061617.10296-2-daniel@0x0f.com> <20200610090421.3428945-2-daniel@0x0f.com>
- <cafee323-841d-92ed-b4ad-a1aaa136864d@suse.de>
-In-Reply-To: <cafee323-841d-92ed-b4ad-a1aaa136864d@suse.de>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Wed, 10 Jun 2020 19:29:06 +0900
-Message-ID: <CAFr9PXnPPDWg-Jd_1=LgPEYa8Ru7eKm9wE90-DPR-ggv8NzGHA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] dt-bindings: arm: Initial MStar vendor prefixes
- and compatible strings
-To:     =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>
-Cc:     Krzysztof Adamski <k@japko.eu>, tim.bird@sony.com,
-        devicetree@vger.kernel.org, Daniel Palmer <daniel@thingy.jp>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
-        Doug Anderson <armlinux@m.disordat.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Gregory Fong <gregory.0xf0@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        id S1728232AbgFJK3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 06:29:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:56562 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726533AbgFJK3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 06:29:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 400191FB;
+        Wed, 10 Jun 2020 03:29:21 -0700 (PDT)
+Received: from gaia (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5FE5E3F73D;
+        Wed, 10 Jun 2020 03:29:19 -0700 (PDT)
+Date:   Wed, 10 Jun 2020 11:29:17 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Stephen Boyd <swboyd@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
         Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Huckleberry <nhuck15@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2] arm64: vdso32: add CONFIG_THUMB2_COMPAT_VDSO
+Message-ID: <20200610102916.GA26099@gaia>
+References: <20200528072031.GA22156@willie-the-truck>
+ <20200608205711.109418-1-ndesaulniers@google.com>
+ <20200609203502.GA21214@gaia>
+ <CAKwvOdnDeYQ-tbyW8=tcKcbbFxtDzqk8dCUSzbBYP1amb9a2hg@mail.gmail.com>
+ <20200610084755.GB17035@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200610084755.GB17035@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +
-> > +properties:
-> > +  $nodename:
-> > +    const: '/'
-> > +  compatible:
-> > +    oneOf:
-> > +      - description: thingy.jp BreadBee
-> > +        items:
-> > +          - const: thingyjp,breadbee
-> > +          - const: mstar,infinity3
-> > +
-> > +      - description: thingy.jp BreadBee Crust
-> > +        items:
-> > +          - const: thingyjp,breadbee-crust
-> > +          - const: mstar,infinity
-> > +
-> > +      - description: 70mai midrive d08
-> > +        items:
-> > +          - const: 70mai,midrived08
-> > +          - const: mstar,mercury5
->
-> I would advise to restructure these three for forward planning:
+On Wed, Jun 10, 2020 at 09:47:55AM +0100, Will Deacon wrote:
+> On Tue, Jun 09, 2020 at 04:55:13PM -0700, Nick Desaulniers wrote:
+> > On Tue, Jun 9, 2020 at 1:35 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > On Mon, Jun 08, 2020 at 01:57:08PM -0700, Nick Desaulniers wrote:
+> > > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > > > index 7f9d38444d6d..fe9e6b231cac 100644
+> > > > --- a/arch/arm64/Kconfig
+> > > > +++ b/arch/arm64/Kconfig
+> > > > @@ -1299,6 +1299,14 @@ config COMPAT_VDSO
+> > > >         You must have a 32-bit build of glibc 2.22 or later for programs
+> > > >         to seamlessly take advantage of this.
+> > > >
+> > > > +config THUMB2_COMPAT_VDSO
+> > > > +     bool "Compile the vDSO in THUMB2 mode"
+> > > > +     depends on COMPAT_VDSO
+> > > > +     default y
+> > > > +     help
+> > > > +       Compile the compat vDSO with -mthumb -fomit-frame-pointer if y, otherwise
+> > > > +       as -marm.
+> > >
+> > > Now that we understood the issue (I think), do we actually need this
+> > > choice? Why not going for -mthumb -fomit-frame-pointer always for the
+> > > compat vdso?
+> > 
+> > "Why should the compat vdso be configurable?" is a fair question.  I
+> > don't have an answer, but maybe some of the folks on thread do?
+> > 
+> > Our problem is more so "if the vdso is built as thumb, we need it also
+> > explicitly built with -fomit-frame-pointer."  Whether it should be
+> > built as thumb, arm, or configurable (and which default to pick in
+> > that case) are still an open questions.  Will asked for it to be
+> > configurable, so I sent a patch making it configurable.
+> 
+> It's configurable for 32-bit arm,
 
-That makes a lot of sense. To be honest I basically copied something
-that was in-tree to come up with something that would make checkpatch
-happy and didn't think too much about it.
+On 32-bit, the vdso mode is a side-effect of how we build the kernel
+image. I guess we haven't put much thought into whether we want to keep
+the vdso in Thumb-2 or ARM mode.
 
-> >     # Keep list in alphabetical order.
-> > +  "^70mai,.*":
-> > +    description: 70mai
->
-> "70mai Co., Ltd." please - don't just repeat the prefix.
+> so I was just following that as it's
+> hardly a maintenance burden to support both. I suppose you could have
+> a toolchain that only supports one or the other, but it does seem a little
+> esoteric if you're building a kernel for an arm64 CPU.
 
-Understood.
+We could leave the config option in if we ever need to change the compat
+vdso mode. But as not to confuse others with too many options, maybe
+add:
 
-> If you split the vendor prefixes to a preceding patch, they have a
-> chance of getting Reviewed-bys more quickly. You can then also CC the
-> vendors on the prefixes you're assigning for them.
+	bool "Compile the vDSO in THUMB2 mode" if EXPERT
 
-thingy.jp is the vendor I'm using for the breadbee project. As for
-70mai and MStar/Sigmastar I have
-tried reaching out to them in the past and they don't respond. In
-70mai's case their camera doesn't
-run Linux by default so I don't think they will care much.
+Either way:
 
-If it helps I can split them out but I'm not sure if it'll be possible
-to ever get the ok from the other vendors.
-For what it's worth the "mstar" prefix is what was being used in their
-kernels up until very recently when
-they switched everything to using "sstar" for SigmaStar. I considered
-using the sstar prefix but went
-with mstar because SigmaStar is totally unknown whereas MStar is
-slightly known, would be more
-recognisable, most of the chips still have mstar written on them and so on.
-
-> > +ARM/MStar/Sigmastar ARMv7 SoC support
-> > +M:   Daniel Palmer <daniel@thingy.jp>
-> > +L:   linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> > +S:   Maintained
-> > +F:   Documentation/devicetree/bindings/arm/mstar.yaml
-> > +
-> >   ARM/NEC MOBILEPRO 900/c MACHINE SUPPORT
-> >   M:  Michael Petchkovsky <mkpetch@internode.on.net>
-> >   S:  Maintained
->
-> In theory it's spelled Armv7 since 2017, but MAINTAINERS, subject prefix
-> conventions and many other places in Linux still use the old upper-case
-> spelling, too...
-
-Understood. I'll fix that up.
-
-Thankyou for your input,
-
-Daniel
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
