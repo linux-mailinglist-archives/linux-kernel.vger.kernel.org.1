@@ -2,195 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAFB1F5B33
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 20:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D451F5B3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 20:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728968AbgFJSbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 14:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44606 "EHLO
+        id S1729027AbgFJSdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 14:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728859AbgFJSa7 (ORCPT
+        with ESMTP id S1727078AbgFJSdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 14:30:59 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8487AC08C5C3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 11:30:58 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id e1so3428205wrt.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 11:30:58 -0700 (PDT)
+        Wed, 10 Jun 2020 14:33:10 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B262C03E96B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 11:33:10 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id c9so1192676uao.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 11:33:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=/+J5oO5OnfDiIOVOhIHmtbQvypR4NOyguvZ+vS+VBRA=;
-        b=DV34bec3kn8ups3mo1KcqY/YeluhEBHJfMnEoE9K8u+na1nJ1DGGsyc4jU+glucolT
-         TUviM5dxviwZLPuM0g8+vQXe6cH2pxFxUWwU93dsLznmfLILTgw0LIRBUGyUiEr5eR3C
-         YVHYT4otqvUKNG5g6IBlf3xE5gnzBzFj8GQusuekh3De1azhWfnqZ9zrNkArwxjoeSDN
-         OrOIMECTmg9RCEjAQB7ALp90Ij1RGNwkk5LC/8K25KqHj43cQrS4VRgqmzzK2AP4yrmE
-         cR6KgKL7WPcVlg8QndhCyIa1+G17DLQVODULBk72RsyfmyYYRSqETFm9e19h9C2G/EmO
-         VhdA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GGyy3CO8by6rtbdLVnfCEmk/inhvOgbRGBcLBUPWXjg=;
+        b=ZynGCI6UZvGi1T1Lo6Nhhh/Zb77Vo/06xc1iPkoeYqXl0v0Divn5OlgSdLmC6cakks
+         TUR3Or9Ci3LXrrFic5hJx/o/z5pjQpdczHomgInozaiU4IHEisKNQC11phbUeU3tqzgV
+         lAJMasMquH4aaO7yUyEVXShGcrMXqxjfhVtJ5lIITOFReXXc1XBcwMR/uGxmjiMvaSwm
+         ErKreBlPKYGUD3GmhVDhWYWlg15Fws6LfXe9DvNGNMdgq7IbQDbzaEBVgsy+W0l2wQhO
+         oLbnFWWODYz/0PMb8vGiCWi2Z3LIeemf5QCuk5n/m5KdNJCPp9dOVNf7r9Xab2b4hEWV
+         ixJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=/+J5oO5OnfDiIOVOhIHmtbQvypR4NOyguvZ+vS+VBRA=;
-        b=On0N+KY3AOqgyrhdB28LoBciTUk2GBzW0Il5197Hi3ft4pETbpgJyFzIdn2V23bPl0
-         RoFottjO12w9mkz6WgPlJpQzOOICHt27J58lZ6gUL6sK+3+9MiZiRUlSn7XbMV//zZjm
-         jlhV2RMUHLgTUn01ad/vO/qPlzj2MJXTD/znKbUcGwnhSzgfyczyIF622In0nrdkanzL
-         bBFdoOwSZjapqMN0HHF4QN1yS8FXLmrwELK1TeVKHImOVq3jGywJQ/Eqqvb9OztHOdXV
-         R7eSSHFpFdA93VdLSUQP2AeYYDoa32fCiAdT3voaP8jELdBTq1tPG0pOGM3C3ZN4b5Sa
-         enEQ==
-X-Gm-Message-State: AOAM531oiSqI1xDhCusZKhFgV9bUg+KKEl49wu7Z9gR+RbcoNF7NBEWq
-        HNuPSkb5IOrU/ZZbTEgMOt2CaA==
-X-Google-Smtp-Source: ABdhPJz6Ni2JYhcqjCdFdfUuYTBOEDs7I3nA8SyUMwPOtX+kOnBTbqU0Si/knyTH6nG0/LiIF9R1rQ==
-X-Received: by 2002:adf:c98a:: with SMTP id f10mr5095428wrh.329.1591813856649;
-        Wed, 10 Jun 2020 11:30:56 -0700 (PDT)
-Received: from dell ([2.27.167.101])
-        by smtp.gmail.com with ESMTPSA id a15sm878966wra.86.2020.06.10.11.30.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 11:30:55 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 19:30:53 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        david.m.ertman@intel.com, shiraz.saleem@intel.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v4 02/11] mfd: Add support for Kontron sl28cpld
- management controller
-Message-ID: <20200610183053.GV4106@dell>
-References: <20200609064735.GH4106@dell>
- <32287ac0488f7cbd5a7d1259c284e554@walle.cc>
- <20200609151941.GM4106@dell>
- <95e6ec9bbdf6af7a9ff9c31786f743f2@walle.cc>
- <20200609194505.GQ4106@dell>
- <3a6931248f0efcaf8efbb5425a9bd833@walle.cc>
- <20200610071940.GS4106@dell>
- <f7b2b690750edd022000ab56d2f58154@walle.cc>
- <20200610075615.GT4106@dell>
- <b06a79c845e0ab251235d30f7dc94dd5@walle.cc>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GGyy3CO8by6rtbdLVnfCEmk/inhvOgbRGBcLBUPWXjg=;
+        b=E7oWs2dj49ZP05VZeF/5FqR2R+XTILr5Ok5HfTk21v2XSUeDEDi5rpxQMBNlve7BPQ
+         p6ec1ZHq+S/Lyqyrri0iHpsnqNwCxbS6C2F0jou45wUNXXrsGSS1aV1duyGeFNTZiMTg
+         LGqYFjCzpBpcztIauapo+GzLsC/UTMUAyIw+dDBjwm/V5ALH5uSheI/h6ylpz9iIKkdz
+         uCAHDqvwNaoyJFncWNRdjiEix9Mw2EOuopdQE62PqBi1fJmPOYTKTCR7Akdr/5KLhNri
+         iHT1gkbMVWYY90884ekB+kTz2nQ1Luy0BGgJ/pcnDobPsh8BNw/e3DI7j+2XmjnU8usK
+         9d+A==
+X-Gm-Message-State: AOAM531rSxKZcr+kiMPWyjDGUFMt8HjWWcOJf9CnkbHBxhY7D81w9LOt
+        yNgxg20bxjbFB/iIw8PfBWJ4PkgS1TZWcXMX4vk=
+X-Google-Smtp-Source: ABdhPJxbJcRW+B+d7Iw9itG/HDC/fcaNfAvvsVjm8DV1enjLKdTP0iSISXIaw5Zs2qTYz7Q6asJyvTiXTwV49JPfjPg=
+X-Received: by 2002:a9f:31cb:: with SMTP id w11mr3631980uad.128.1591813988984;
+ Wed, 10 Jun 2020 11:33:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b06a79c845e0ab251235d30f7dc94dd5@walle.cc>
+References: <20200609104604.1594-1-stanimir.varbanov@linaro.org> <20200609104604.1594-7-stanimir.varbanov@linaro.org>
+In-Reply-To: <20200609104604.1594-7-stanimir.varbanov@linaro.org>
+From:   jim.cromie@gmail.com
+Date:   Wed, 10 Jun 2020 12:32:42 -0600
+Message-ID: <CAJfuBxzxwoyXbDrgQzb=BZJ8ZQ5hHo32Zr1uo6Od=7+q13+GXQ@mail.gmail.com>
+Subject: WIP generic module->debug_flags and dynamic_debug
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Joe Perches <joe@perches.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Jun 2020, Michael Walle wrote:
+so Ive got a WIP / broken / partial approach to giving all modules a
+u32 flagset,
+and enabling pr_debug based upon it.  I leave out the "pr_debug_typed(
+bitpos )" for now.  For Stanimir, bits 1,2,3 could be high, middle,
+low.
 
-> Am 2020-06-10 09:56, schrieb Lee Jones:
-> > On Wed, 10 Jun 2020, Michael Walle wrote:
-> > 
-> > > Am 2020-06-10 09:19, schrieb Lee Jones:
-> > > > On Wed, 10 Jun 2020, Michael Walle wrote:
-> > > > > Am 2020-06-09 21:45, schrieb Lee Jones:
-> > > > > > On Tue, 09 Jun 2020, Michael Walle wrote:
-> > > > > > > > We do not need a 'simple-regmap' solution for your use-case.
-> > > > > > > >
-> > > > > > > > Since your device's registers are segregated, just split up the
-> > > > > > > > register map and allocate each sub-device with it's own slice.
-> > > > > > >
-> > > > > > > I don't get it, could you make a device tree example for my
-> > > > > > > use-case? (see also above)
-> > > > > >
-> > > > > >     &i2cbus {
-> > > > > >         mfd-device@10 {
-> > > > > >             compatible = "simple-mfd";
-> > > > > >             reg = <10>;
-> > > > > >
-> > > > > >             sub-device@10 {
-> > > > > >                 compatible = "vendor,sub-device";
-> > > > > >                 reg = <10>;
-> > > > > >             };
-> > > > > >    };
-> > > > > >
-> > > > > > The Regmap config would be present in each of the child devices.
-> > > > > >
-> > > > > > Each child device would call devm_regmap_init_i2c() in .probe().
-> > > > >
-> > > > > Ah, I see. If I'm not wrong, this still means to create an i2c
-> > > > > device driver with the name "simple-mfd".
-> > > >
-> > > > Yes, it does.
-> > > >
-> > > > > Besides that, I don't like this, because:
-> > > > >  - Rob already expressed its concerns with "simple-mfd" and so on.
-> > > >
-> > > > Where did this take place?  I'd like to read up on this.
-> > > 
-> > > In this thread:
-> > > https://lore.kernel.org/linux-devicetree/20200604211039.12689-1-michael@walle.cc/T/#m16fdba5962069e7cd4aa817582ee358c9fe2ecbf
-> > > 
-> > > >
-> > > > >  - you need to duplicate the config in each sub device
-> > > >
-> > > > You can have a share a single config.
-> > > >
-> > > > >  - which also means you are restricting the sub devices to be
-> > > > >    i2c only (unless you implement and duplicate other regmap configs,
-> > > > >    too). For this driver, SPI and MMIO may be viable options.
-> > > >
-> > > > You could also have a shared implementation to choose between different
-> > > > busses.
-> > > 
-> > > Then what is the difference between to have this shared config in the
-> > > parent driver only and use the functions which are already there, i.e.
-> > > dev_get_regmap(parent). But see, below, I'll wait with what you're
-> > > coming up.
-> > 
-> > The difference is the omission of an otherwise pointless/superfluous
-> > driver.  Actually, it's the difference between the omission of 10
-> > pointless drivers!
-> 
-> If you want to omit anything generic in the device tree - and as far as
-> I understand it - that should be the way to go, the specific compatible
-> string of the parent device has to go somewhere. Thus I'd appreciate
-> a consolidated (MFD) driver which holds all these, as you say it
-> pointless drivers.
-> Because IMHO they are not pointless, rather they are
-> the actual drivers for the MFD. Its sub nodes are just an implementation
-> detail to be able to use the OF bindings
-> (like your clock example or
-> a phandle to a PWM controller). Just because it is almost nothing there
-> except the regmap instantiation doesn't mean it is not a valid MFD driver.
+ATM its broken on my lack of container_of() skills.
 
-A valid MFD driver is whatever we (the Linux community at large)
-define it to be.  An MFD is not a real thing.  We made it up.  It's
-MFD which is the implementation detail, not the child devices.  If a
-driver a) does very little, and b) the very little it does do can be
-resolved in a different way, is not a valid driver.  It's a waste of
-disk space.
+Im trying to use it to get a struct module* using its name value thats
+been copied
+into a ddebug_table member.
 
-> And there is also additional stuff, like clock enable, version checks, etc.
+Im relying on
+cdf6d006968  dynamic_debug: don't duplicate modname in ddebug_add_module
+to have the same value in both structs
 
-As more functionality is added *then* we can justify a driver.
+but Im clearly missing a few things
+besides the likely future trouble with .rodata builtin modules
+(after compile prob solved)
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+It seems container_of wants me to use struct ddebug_table instead,
+but I dont want a *ddebug_table.
+Ive blindly guessed at adding & and * to 1st param, w/o understanding.
+
+can anyone diagnose my problem ?
+
+
+[jimc@frodo build-virtme]$ git diff
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index a5d76f8f6b40..2bfd1aa083b3 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -20,6 +20,7 @@ struct _ddebug {
+        const char *function;
+        const char *filename;
+        const char *format;
++       u32 reqd_flags; /*misleading name todo, probly should hold
+just a single type-bit */
+        unsigned int lineno:18;
+        /*
+         * The flags field controls the behaviour at the callsite.
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 1ad393e62bef..06eeef438fd3 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -429,6 +429,7 @@ struct module {
+        struct mod_arch_specific arch;
+
+        unsigned long taints;   /* same bits as kernel:taint_flags */
++       u32 debugflags;
+
+ #ifdef CONFIG_GENERIC_BUG
+        /* Support for BUG */
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index 63ae6f77a0e4..965ee96630b5 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -202,6 +202,20 @@ static int ddebug_change(const struct ddebug_query *query,
+                        if ((~dp->flags & filter->mask) != filter->mask)
+                                continue;
+
++                       /* screen on module->debugflags */
++                       if (query->module) {
++                               /* dt->modname is known == module->name */
++                               struct module *m =
++                                       container_of((&(dt->mod_name)),
++                                                    struct module, name);
++                               if (m->debugflags &&
++                                   ((m->debugflags & dp->reqd_flags)
++                                    != dp->reqd_flags))
++                                       continue;
++                               vpr_info("%s module-debugflags: 0x%x\n",
++                                        dt->mod_name, dp->reqd_flags);
++                       }
++
+                        nfound++;
+
+                        newflags = (dp->flags & mods->mask) | mods->flags;
+(END)
