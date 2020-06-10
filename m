@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA821F5D30
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 22:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F331F5D33
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 22:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgFJU2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 16:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
+        id S1729125AbgFJUa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 16:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728836AbgFJU2m (ORCPT
+        with ESMTP id S1727083AbgFJUa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 16:28:42 -0400
+        Wed, 10 Jun 2020 16:30:27 -0400
 Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5331AC03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 13:28:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D39C03E96B;
+        Wed, 10 Jun 2020 13:30:26 -0700 (PDT)
 Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1jj7Kv-006d70-IQ; Wed, 10 Jun 2020 20:28:37 +0000
-Date:   Wed, 10 Jun 2020 21:28:37 +0100
+        id 1jj7MZ-006dAU-Oc; Wed, 10 Jun 2020 20:30:19 +0000
+Date:   Wed, 10 Jun 2020 21:30:19 +0100
 From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-Subject: [git pull] uaccess i915
-Message-ID: <20200610202837.GV23230@ZenIV.linux.org.uk>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [git pull] vfs misc
+Message-ID: <20200610203019.GW23230@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -31,32 +31,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Low-hanging fruit in i915; there are several trickier followups,
-but that'll wait for the next cycle.
+	A couple of trivial patches that fell through the cracks last cycle
 
-The following changes since commit b44f687386875b714dae2afa768e73401e45c21c:
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
 
-  drm/i915/gem: Replace user_access_begin by user_write_access_begin (2020-05-01 12:35:22 +1000)
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
 
 are available in the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git uaccess.i915
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.misc
 
-for you to fetch changes up to 7b3f0c4c56b08a86f890cad3599242c78c683aa9:
+for you to fetch changes up to cc23402c1c2de8b1815212f3924cdbc3cda02b94:
 
-  i915:get_engines(): get rid of pointless access_ok() (2020-05-01 20:35:42 -0400)
+  fs: fix indentation in deactivate_super() (2020-05-29 10:35:25 -0400)
 
 ----------------------------------------------------------------
-Al Viro (5):
-      i915: switch query_{topology,engine}_info() to copy_to_user()
-      i915: switch copy_perf_config_registers_or_number() to unsafe_put_user()
-      i915 compat ioctl(): just use drm_ioctl_kernel()
-      i915: alloc_oa_regs(): get rid of pointless access_ok()
-      i915:get_engines(): get rid of pointless access_ok()
+Nikolay Borisov (1):
+      vfs: Remove duplicated d_mountpoint check in __is_local_mountpoint
 
- drivers/gpu/drm/i915/gem/i915_gem_context.c |  5 ---
- drivers/gpu/drm/i915/i915_ioc32.c           | 14 +++----
- drivers/gpu/drm/i915/i915_perf.c            |  3 --
- drivers/gpu/drm/i915/i915_query.c           | 62 ++++++++++-------------------
- drivers/gpu/drm/i915/i915_reg.h             |  2 +-
- 5 files changed, 28 insertions(+), 58 deletions(-)
+Yufen Yu (1):
+      fs: fix indentation in deactivate_super()
+
+ fs/namespace.c | 5 +----
+ fs/super.c     | 2 +-
+ 2 files changed, 2 insertions(+), 5 deletions(-)
