@@ -2,63 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F3B1F54D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 14:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9991F54DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 14:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729033AbgFJMbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 08:31:06 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34760 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728540AbgFJMbF (ORCPT
+        id S1729092AbgFJMcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 08:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727927AbgFJMcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 08:31:05 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jizsj-000343-Nf; Wed, 10 Jun 2020 12:31:01 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: usbhid: remove redundant assignment to variable retval
-Date:   Wed, 10 Jun 2020 13:31:01 +0100
-Message-Id: <20200610123101.1133117-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0.rc0
+        Wed, 10 Jun 2020 08:32:36 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B16C03E96B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 05:32:33 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id s18so1959861ioe.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 05:32:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gEwAMEos9mJeyuBEtMGoJ7WeF5TrT6RnXqrCBNOkXKo=;
+        b=mFmvftu8um4zSR74X94iYcbVafHOUT2/kfnxIJ6pJmXtt0NZ3RA0PpVJ8D/cwBTozI
+         QcOGchsvt4jIO6zcGpXfP/UNpTM2ormEecd5+Qerse5Atz4s7WgwhLW8kEv+LqVyMtrC
+         ibxnSuEP39roA3Apd+7h7YQQJPAi/+w34lpryuPYQDE9nqREIVU2xUVrBKWDL6MUtejy
+         8WU1be9W4z/vfTj6xHrkXP/dVPap963HqP7gzUskmX/VB/n1JqLl51jdAzHhkj9AuCRw
+         /hZw6aPdKa1j7o8C7nWTA1xzJEor+5oMmSxkaeC5c9rcmzrjZm+gsNJo+M2E+Zlvdzs/
+         BYmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gEwAMEos9mJeyuBEtMGoJ7WeF5TrT6RnXqrCBNOkXKo=;
+        b=rXmrN8ubOIh8TiqXQa9iD1kICpxZ0k1lNnSuELTFYT1Axuj9/VR/wxS/zt5ISZ1obb
+         PwSu0Nlwx3TmaUs3P6XI7oUs4aTQiVGhP1AO0EYb8RQKCvMxmcdhcYp2twtr3hBNq571
+         gcQjaVQ+8WUdY8hrBZEYhClihyGm5xV1UYC0LDCza/agV3Zt8DU52G9/8/T+04VV3q69
+         sc5UK3TZEPuU050SXvorRVxJ2K2nQX/UBuBm5fR8l/Aiixq+RyV4Wgr7M8uK1goJ0JtE
+         Uu8oU1n7pYwvFtwzsxq5o6Sib9npolj82XZKX0CxDOTgaI4+YJReWaKtcBD2J8aXz4W/
+         Zg4w==
+X-Gm-Message-State: AOAM530Uy/9YCYyuVgTOKIG/e5OmoRfYgdyqB8wyA1wjoT1yDZ+MPECW
+        ps8ymg/Az8OjKkwhhMi8R6v/set286pWUUTzhw==
+X-Google-Smtp-Source: ABdhPJxFtXrRZYv/jPjKUVyCn4z98p60ZiiAk2PbzG5kx1qFSlHpBWc1HBjAWzumIC8NM4BJbXItyqdA1ttpUZOo2+k=
+X-Received: by 2002:a05:6602:50:: with SMTP id z16mr3084684ioz.22.1591792353125;
+ Wed, 10 Jun 2020 05:32:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20200610114851.28549-1-jslaby@suse.cz>
+In-Reply-To: <20200610114851.28549-1-jslaby@suse.cz>
+From:   Brian Gerst <brgerst@gmail.com>
+Date:   Wed, 10 Jun 2020 08:32:22 -0400
+Message-ID: <CAMzpN2imDt9GZ3rFAJHQXw_GZhCHGzpCckSPZ2-2ObpbxdePiQ@mail.gmail.com>
+Subject: Re: [PATCH] syscalls: fix offset type of ksys_ftruncate
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dominik Brodowski <linux@dominikbrodowski.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Jun 10, 2020 at 7:48 AM Jiri Slaby <jslaby@suse.cz> wrote:
+>
+> After the commit below, truncate on i586 uses ksys_ftruncate. But
+> ksys_ftruncate truncates the offset to unsigned long. So switch the type
+> of offset to loff_t which is what the lower do_sys_ftruncate expects.
+>
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Fixes: 121b32a58a3a (x86/entry/32: Use IA32-specific wrappers for syscalls taking 64-bit arguments)
+> Cc: Brian Gerst <brgerst@gmail.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+> ---
+>  include/linux/syscalls.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+> index 63ffa6dc9da3..e97ca179d0dc 100644
+> --- a/include/linux/syscalls.h
+> +++ b/include/linux/syscalls.h
+> @@ -1370,7 +1370,7 @@ static inline long ksys_lchown(const char __user *filename, uid_t user,
+>
+>  extern long do_sys_ftruncate(unsigned int fd, loff_t length, int small);
+>
+> -static inline long ksys_ftruncate(unsigned int fd, unsigned long length)
+> +static inline long ksys_ftruncate(unsigned int fd, loff_t length)
+>  {
+>         return do_sys_ftruncate(fd, length, 1);
+>  }
 
-The variable retval is being initialized with a value that is
-never read and it is being updated later with a new value. The
-initialization is redundant and can be removed.
-
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/hid/usbhid/hid-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-index 17a638f15082..17a29ee0ac6c 100644
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -1667,7 +1667,7 @@ struct usb_interface *usbhid_find_interface(int minor)
- 
- static int __init hid_init(void)
- {
--	int retval = -ENOMEM;
-+	int retval;
- 
- 	retval = hid_quirks_init(quirks_param, BUS_USB, MAX_USBHID_BOOT_QUIRKS);
- 	if (retval)
--- 
-2.27.0.rc0
-
+Reviewed-by: Brian Gerst <brgerst@gmail.com>
