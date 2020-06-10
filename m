@@ -2,59 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1511F5698
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 16:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4826E1F56A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 16:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729757AbgFJOK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 10:10:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37284 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727022AbgFJOK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 10:10:56 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 36262ABC7;
-        Wed, 10 Jun 2020 14:10:58 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>, Peter Jones <pjones@redhat.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: [PATCH] efi: avoid error message when booting under Xen
-Date:   Wed, 10 Jun 2020 16:10:52 +0200
-Message-Id: <20200610141052.13258-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id S1729770AbgFJONN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 10:13:13 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:52380 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727022AbgFJONM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 10:13:12 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05AECJ3e108368;
+        Wed, 10 Jun 2020 09:12:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591798339;
+        bh=M6xkOjg3ZDZEAeNUvfjnKS/Ad55tPzrwQaDSRurU5cc=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=afvjACCPdnbDmVqRfX8f0zKOBmY9rg4cWCK7zArxo9riELGH3cHx9TJpHXVrJKdeQ
+         GymgnaosAsYh0fy0IWJmFZgJT+0cqDima0Yo+2+egzOLa9KST9G2joFxyA6zb+stHG
+         HVh729z6a4WQYzWzYNRAayMo722dVTEWYCXQoI4U=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05AECJ16130904;
+        Wed, 10 Jun 2020 09:12:19 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 10
+ Jun 2020 09:12:19 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 10 Jun 2020 09:12:19 -0500
+Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05AECGkD054825;
+        Wed, 10 Jun 2020 09:12:17 -0500
+Subject: Re: [RFC PATCH 1/2] dt-bindings: tas2562: Add firmware support for
+ tas2563
+To:     Mark Brown <broonie@kernel.org>
+CC:     <lgirdwood@gmail.com>, <perex@perex.cz>, <tiwai@suse.com>,
+        <robh@kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20200609172841.22541-1-dmurphy@ti.com>
+ <20200609172841.22541-2-dmurphy@ti.com> <20200609173143.GN4583@sirena.org.uk>
+ <bb7cff87-f814-1b37-c9eb-e68919e3c077@ti.com>
+ <20200609175852.GQ4583@sirena.org.uk>
+ <414a2d73-6d09-1e76-59c8-4943c0e8f720@ti.com>
+ <20200609184734.GS4583@sirena.org.uk>
+ <014b85b5-677b-569a-4eb2-74526d3f00bc@ti.com>
+ <20200610102920.GC5005@sirena.org.uk>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <84a6dd5f-cc3e-adb4-ae94-b4fe389adfd9@ti.com>
+Date:   Wed, 10 Jun 2020 09:12:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <20200610102920.GC5005@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-efifb_probe() will issue an error message in case the kernel is booted
-as Xen dom0 from UEFI as EFI_MEMMAP won't be set in this case. Avoid
-that message by calling efi_mem_desc_lookup() only if EFI_PARAVIRT
-isn't set.
+Mark
 
-Fixes: 38ac0287b7f4 ("fbdev/efifb: Honour UEFI memory map attributes when mapping the FB")
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
- drivers/video/fbdev/efifb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 6/10/20 5:29 AM, Mark Brown wrote:
+> On Tue, Jun 09, 2020 at 02:20:29PM -0500, Dan Murphy wrote:
+>> On 6/9/20 1:47 PM, Mark Brown wrote:
+>>> That's really not very idiomatic for how Linux does stuff and seems to
+>>> pretty much guarantee issues with hotplugging controls and ordering -
+>>> you'd need special userspace to start up even if it was just a really
+>>> simple DSP config doing only speaker correction or something.  I'm not
+>>> sure what the advantage would be - what problem is this solving over
+>>> static names?
+>> IMO having a static name is the problem. It is an inflexible design.
+>> Besides the firmware-name property seems to be used in other drivers to
+>> declare firmwares for the boards.
+>> But if no one is complaining or submitting patches within the codecs to be
+>> more flexible with firmware then I can just hard code the name like other
+>> drivers do.
+> I'm not *completely* opposed to having the ability to suggest a name in
+> firmware, the big problem is making use of the DSP completely dependent
+> on having a DT property or doing some non-standard dance in userspace.
 
-diff --git a/drivers/video/fbdev/efifb.c b/drivers/video/fbdev/efifb.c
-index 65491ae74808..f5eccd1373e9 100644
---- a/drivers/video/fbdev/efifb.c
-+++ b/drivers/video/fbdev/efifb.c
-@@ -453,7 +453,7 @@ static int efifb_probe(struct platform_device *dev)
- 	info->apertures->ranges[0].base = efifb_fix.smem_start;
- 	info->apertures->ranges[0].size = size_remap;
- 
--	if (efi_enabled(EFI_BOOT) &&
-+	if (efi_enabled(EFI_BOOT) && !efi_enabled(EFI_PARAVIRT) &&
- 	    !efi_mem_desc_lookup(efifb_fix.smem_start, &md)) {
- 		if ((efifb_fix.smem_start + efifb_fix.smem_len) >
- 		    (md.phys_addr + (md.num_pages << EFI_PAGE_SHIFT))) {
--- 
-2.26.2
+Well from what I see we have 4 options.
+
+1.  We can have a DT node like RFC'd (Need Rob's comments here)
+
+2.  We can have a defconfig flag that hard codes the name (This will 
+probably be met with some resistance if not some really bad reactions 
+and I don't prefer to do it this way)
+
+3.  We can hard code the name of the firmware in the c file.
+
+4.  Dynamically derive a file name based on the I2C bus-address-device 
+so it would be expected to be "2_4c_tas2563.bin".  Just need to figure 
+out how to get the bus number.
+
+I don't see the user space as a viable option because the codec will 
+have to load and then the user space would have to request to load the 
+firmware and then more mixer controls will appear.
+
+Again only option 1 allows us to have different firmware binaries per IC 
+instance and also denotes the use of the DSP.  The DSP is not programmed 
+until the user space selects the program or configuration from the 
+binary.  So special audio handling is very explicit in the user space.  
+More then likely most standard distributions will not even use the DSP 
+for this device it is more of a specialized use case for each product.
+
+
 
