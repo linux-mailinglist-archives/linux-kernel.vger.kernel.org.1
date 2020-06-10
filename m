@@ -2,82 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA161F5558
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 15:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061501F5563
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 15:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729199AbgFJNHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 09:07:35 -0400
-Received: from ste-pvt-msa1.bahnhof.se ([213.80.101.70]:27693 "EHLO
-        ste-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728844AbgFJNHf (ORCPT
+        id S1729207AbgFJNJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 09:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728844AbgFJNJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 09:07:35 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id E6AD13F683;
-        Wed, 10 Jun 2020 15:07:32 +0200 (CEST)
-Authentication-Results: ste-pvt-msa1.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=CSFaq2l8;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.099
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.099 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, URIBL_BLOCKED=0.001]
-        autolearn=ham autolearn_force=no
-Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8se4flHNtQaz; Wed, 10 Jun 2020 15:07:31 +0200 (CEST)
-Received: from mail1.shipmail.org (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        (Authenticated sender: mb878879)
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id D09623F613;
-        Wed, 10 Jun 2020 15:07:30 +0200 (CEST)
-Received: from localhost.localdomain (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        by mail1.shipmail.org (Postfix) with ESMTPSA id 22F47360060;
-        Wed, 10 Jun 2020 15:07:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
-        t=1591794450; bh=IJ9u1GxVx+qsu6oG3TX7HWi7e9bnoSgVQXnBCxCvSrY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=CSFaq2l8gV0H1uLMlTxTWB5ilfeWzJiad7o1Ei9DoLShaL8QaUdeDbLjt/qe+wgW+
-         yn9NNJyKa56gDfDoXcFsVFJOkyVObxJPuPLYh/ula+z3sWXes4cnYncQPYbX5b9KQo
-         gwWz7YCRYCYJTRPWHwedVmdLbCPwaFtmSfRgiIQw=
-Subject: Re: [PATCH 02/18] dma-buf: minor doc touch-ups
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Cc:     linux-rdma@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>
-References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
- <20200604081224.863494-3-daniel.vetter@ffwll.ch>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Message-ID: <f5ffe0bf-e050-90c1-b83b-1f11fcf55012@shipmail.org>
-Date:   Wed, 10 Jun 2020 15:07:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 10 Jun 2020 09:09:48 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF209C03E96B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 06:09:46 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id w16so1941959ejj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 06:09:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=hN4wVu7c1HZmNsRAprCKs7uo3bA/4E5kOO/AWz4PAB4=;
+        b=UQYFZcj9mxtPTw97Es6oj/OR2iUlY5qrWDFvHpq+VMTee2QWT4CLG91bil7g+DNOKx
+         l42eEyiPdTPNNWDIoPNk92GG2j+9fXAGij9RGHwrBITksWgbiVYw5wh8YJ0dJXUI6mDQ
+         2bw5QharfQ0PkAald8DvcQLnahJJ5HVACQzJHNqWklEjILxX0+eBMSDfYEAwXl/VlspO
+         Oi9qb8oDP5tdGz0apkqlG2sSxkM4o8YqMPfufdz0MQCFxmpZ448b0L0Y0wwaQx3SiyKa
+         PodYSusNWy31wlSxvBNYKeaQxBDQ/EwKkM3apQgvVYtyBW0GX7c01SpdjNplstjh4tv0
+         xa+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=hN4wVu7c1HZmNsRAprCKs7uo3bA/4E5kOO/AWz4PAB4=;
+        b=KlHevEzbR+8EbY368RHom6lg21QCg+4rAUuVpoRwJxjiVXAGDf1C6cWR8nSvJP67g6
+         AHFF+GM93Wyiv7Ja31Xov2IBvavV/E/J5sQVJuWPrrmOTDNH4g7poCVdPfnQ/0KACJxC
+         7afA6I7xFJ3viQ+objfV7kSCuk2aMtRMx5EebDmumbMINbei4sph5elfcGrkb3ZcVckD
+         V/CnL5tF6WPfyV4DtrDU9r08TWiyv6s75u7NjOysHUMx/iaTucRs2sqd/5IMIT2ezdLS
+         u/a5SQ5yRAkzrH+dfKA+5HKILouoYAMzEgGxAdpZE/3N+RIiGARmC5+M9Kzap28V91iq
+         FY7w==
+X-Gm-Message-State: AOAM531SF+n9aWZAIpO1BQIDKO7c4GPbiPCUevaH5nDDKR7XOMh8n51W
+        dDDl4UTq2H2XZ3/oXGMbh9MMdyHT4sk=
+X-Google-Smtp-Source: ABdhPJwFedDlbzm+dYX6gyNm93Xyr1Jcg5woX1Qp7tJ8WSlNK7uiPvjIAx6Ib7uFiK7cAaMr2dIeUA==
+X-Received: by 2002:a17:906:68c5:: with SMTP id y5mr3246267ejr.436.1591794585380;
+        Wed, 10 Jun 2020 06:09:45 -0700 (PDT)
+Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
+        by smtp.gmail.com with ESMTPSA id ox27sm15373147ejb.101.2020.06.10.06.09.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jun 2020 06:09:43 -0700 (PDT)
+References: <20200610041329.12948-1-hhk7734@gmail.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     hhk7734@gmail.com, linus.walleij@linaro.org, khilman@baylibre.com
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH] pinctrl: meson: fix drive strength register and bit calculation
+In-reply-to: <20200610041329.12948-1-hhk7734@gmail.com>
+Date:   Wed, 10 Jun 2020 15:09:42 +0200
+Message-ID: <1jo8prnk2x.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <20200604081224.863494-3-daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 6/4/20 10:12 AM, Daniel Vetter wrote:
-> Just some tiny edits:
-> - fix link to struct dma_fence
-> - give slightly more meaningful title - the polling here is about
->    implicit fences, explicit fences (in sync_file or drm_syncobj) also
->    have their own polling
+On Wed 10 Jun 2020 at 06:13, hhk7734@gmail.com wrote:
+
+> From: Hyeonki Hong <hhk7734@gmail.com>
 >
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> If a GPIO bank has greater than 16 pins, PAD_DS_REG is split into two
+> registers. However, when register and bit were calculated, the first
+> register defined in the bank was used, and the bit was calculated based
+> on the first pin. This causes problems in setting the driving strength.
+>
+> Solved the problem by changing the bit using a mask and selecting the
+> next register when the bit exceeds 15.
 
-Reviewed-by: Thomas Hellstrom <thomas.hellstrom@intel.com>
+This fixes the case of GPIOX on g12 which goes up to 18 yes but the same
+problem will happen again a if bank ever goes past 31 pins. In such case
+the problem would apply to all reg types.
 
+I would prefer if it was solved in a more generic fashion, like defining
+a "stride" table with the values of each reg type. This table can common
+to all aml SoCs for now but eventually it probably need to be SoC
+specific.
+
+This would allow to :
+A) handle the case you are reporting in a generic (future proof) way
+B) remove the weird "bit = bit << 1;" calc in place in the get/set of
+the drive strengh pinconf
+
+>
+> Signed-off-by: Hyeonki Hong <hhk7734@gmail.com>
+> ---
+>  drivers/pinctrl/meson/pinctrl-meson.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/pinctrl/meson/pinctrl-meson.c b/drivers/pinctrl/meson/pinctrl-meson.c
+> index bbc919bef2bf..ef66239b7df5 100644
+> --- a/drivers/pinctrl/meson/pinctrl-meson.c
+> +++ b/drivers/pinctrl/meson/pinctrl-meson.c
+> @@ -98,6 +98,13 @@ static void meson_calc_reg_and_bit(struct meson_bank *bank, unsigned int pin,
+>
+>  	*reg = desc->reg * 4;
+>  	*bit = desc->bit + pin - bank->first;
+> +
+> +	if (reg_type == REG_DS) {
+> +		if (*bit > 15) {
+> +			*bit &= 0xf;
+> +			*reg += 4;
+> +		}
+> +	}
+>  }
+>
+>  static int meson_get_groups_count(struct pinctrl_dev *pcdev)
 
