@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A301F5084
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 10:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D2E1F508B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 10:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726872AbgFJIsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 04:48:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726081AbgFJIsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 04:48:01 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDCFD2078C;
-        Wed, 10 Jun 2020 08:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591778881;
-        bh=XmJ4HSxl4hqG6l3t1jcWoLYOgV//M491zGdVj+6y1cs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yPQ0Gn3ME6yN2FN9zfRHpgCOwfCYNMmgtZNq/1Qc1Y9lWLTi7EgLBE+ceOFwekFAr
-         BPy2IzPJIwhEykv0N0q/1FvwtRO8QIPl5WmVzTw24LCdU4SPKU5ktMLNX0I0Zc+Dh/
-         URIKegjZCtuwKT88nDENRmGm4av/IJGbwrYZqVzw=
-Date:   Wed, 10 Jun 2020 09:47:55 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Stephen Boyd <swboyd@google.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Luis Lozano <llozano@google.com>,
-        Manoj Gupta <manojgupta@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH v2] arm64: vdso32: add CONFIG_THUMB2_COMPAT_VDSO
-Message-ID: <20200610084755.GB17035@willie-the-truck>
-References: <20200528072031.GA22156@willie-the-truck>
- <20200608205711.109418-1-ndesaulniers@google.com>
- <20200609203502.GA21214@gaia>
- <CAKwvOdnDeYQ-tbyW8=tcKcbbFxtDzqk8dCUSzbBYP1amb9a2hg@mail.gmail.com>
+        id S1726926AbgFJIsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 04:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726673AbgFJIsk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 04:48:40 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1A5C03E96B;
+        Wed, 10 Jun 2020 01:48:40 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id x22so982877lfd.4;
+        Wed, 10 Jun 2020 01:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VC9z0YQVw/ovp7RcdPcoELOnuCQp6hRBgNQO9wmx/S4=;
+        b=pgYRvjiWI9A4AuDA7s2i4gT5VqsCkDiNA5Q+kChiJCsMF9JGQLAV6ZdXISKFy8Y6ZJ
+         NOTHCgAE1sIW3aluZnjE+2ms1ZgSQdlixIcx2+fPunWGZCFTZuPd/CQbkcMNBaq0r7VW
+         Lz+K+h6q+GyXXyc8OgJIY9GuSXlLbfHc4O/c6JY9HmCEa6vcunouYF8BJognnuFmCMzr
+         t3TtpAGHy/c9hghZlSFJ6RuDBfeqeQGU39jzyVHzqYb+YmwG3x/Lz0R2XUN9LlsJPHoJ
+         n7zOLDs4k3BF+tP9jIT/pab+/VGu+fjKBIcNckh/VOAw8MPbLUmBGp/4qBDhC8+eghYh
+         DFNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VC9z0YQVw/ovp7RcdPcoELOnuCQp6hRBgNQO9wmx/S4=;
+        b=bL8OBvBmbWK/7eos4WxZlmIPL5DPLtkRpqQmSOfjfo9WnGVUV3i6gKnFyTsgUGQ8Sp
+         QxAbv5ZFgMWNMo7lxzYIMditj9e+5gLXqxOXcv8k4I1nr6PAve5MJI5rtT04/0UVB0bw
+         skMA5s7NomeFdNvWNKqwqV7SBSbNl7MhctmTvXiUPcurDaxwQNMtGgJdqXTBPzPJWDiR
+         f0Q4m7fNNrTeNuwlWIO3++qqpMXEnf+vpTcYVJvBd3t1R3u+DpwKhcqYNcoQM6CWJ8Nz
+         zuJKquE30OCNzfs0Zfh+2VArfDLtPXiVSd/ewoa7Yp7Wt8IE3Sh4OB401ibAR77hgA9E
+         2LzQ==
+X-Gm-Message-State: AOAM531yAsSBlJcUZa4i7Dz+Cuo97cEVFoC+ym+t6IAhrClzBE8frXpl
+        tg+mbIQgXMaZf179Z47QmjMmq8qrPgnlkd+FfVE=
+X-Google-Smtp-Source: ABdhPJxsPu3S/Zw+UKXoVa8bsgKlBQqtFzO4VbdBKA+uqODD6HONKVUcUzPacw2j/I2RQ+GOYTg8BcAd9QNwnEDl+BE=
+X-Received: by 2002:ac2:55b2:: with SMTP id y18mr1128272lfg.55.1591778918010;
+ Wed, 10 Jun 2020 01:48:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnDeYQ-tbyW8=tcKcbbFxtDzqk8dCUSzbBYP1amb9a2hg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200610065801.3579-1-zhenzhong.duan@gmail.com> <20200610082040.GB14118@zn.tnic>
+In-Reply-To: <20200610082040.GB14118@zn.tnic>
+From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Date:   Wed, 10 Jun 2020 16:48:26 +0800
+Message-ID: <CAFH1YnNsM0okzpLru9Fd__F9yp-a00+J17L2atLBrnV3vWSqLw@mail.gmail.com>
+Subject: Re: [PATCH] EDAC, {skx,i10nm}: Advice mcelog that the error were handled
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-edac@vger.kernel.org, tony.luck@intel.com,
+        mchehab@kernel.org, james.morse@arm.com, rrichter@marvell.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 04:55:13PM -0700, Nick Desaulniers wrote:
-> On Tue, Jun 9, 2020 at 1:35 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+On Wed, Jun 10, 2020 at 4:20 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Wed, Jun 10, 2020 at 02:58:01PM +0800, Zhenzhong Duan wrote:
+> > If one MCE error has been processed in kernel, it's not necessory
+> > to pass it to user level mcelog.
 > >
-> > On Mon, Jun 08, 2020 at 01:57:08PM -0700, Nick Desaulniers wrote:
-> > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > > index 7f9d38444d6d..fe9e6b231cac 100644
-> > > --- a/arch/arm64/Kconfig
-> > > +++ b/arch/arm64/Kconfig
-> > > @@ -1299,6 +1299,14 @@ config COMPAT_VDSO
-> > >         You must have a 32-bit build of glibc 2.22 or later for programs
-> > >         to seamlessly take advantage of this.
-> > >
-> > > +config THUMB2_COMPAT_VDSO
-> > > +     bool "Compile the vDSO in THUMB2 mode"
-> > > +     depends on COMPAT_VDSO
-> > > +     default y
-> > > +     help
-> > > +       Compile the compat vDSO with -mthumb -fomit-frame-pointer if y, otherwise
-> > > +       as -marm.
+> > Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+> > ---
+> >  drivers/edac/skx_common.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
 > >
-> > Now that we understood the issue (I think), do we actually need this
-> > choice? Why not going for -mthumb -fomit-frame-pointer always for the
-> > compat vdso?
-> 
-> "Why should the compat vdso be configurable?" is a fair question.  I
-> don't have an answer, but maybe some of the folks on thread do?
-> 
-> Our problem is more so "if the vdso is built as thumb, we need it also
-> explicitly built with -fomit-frame-pointer."  Whether it should be
-> built as thumb, arm, or configurable (and which default to pick in
-> that case) are still an open questions.  Will asked for it to be
-> configurable, so I sent a patch making it configurable.
+> > diff --git a/drivers/edac/skx_common.c b/drivers/edac/skx_common.c
+> > index 46be1a7..8c0165b 100644
+> > --- a/drivers/edac/skx_common.c
+> > +++ b/drivers/edac/skx_common.c
+> > @@ -615,7 +615,8 @@ int skx_mce_check_error(struct notifier_block *nb, unsigned long val,
+> >
+> >       skx_mce_output_error(mci, mce, &res);
+> >
+> > -     return NOTIFY_DONE;
+> > +     /* Advice mcelog that the error were handled */
+> > +     return NOTIFY_STOP;
+> >  }
+> >
+> >  void skx_remove(void)
+> > --
+>
+> No, we won't be doing that anymore. See here:
+>
+> https://git.kernel.org/tip/23ba710a0864108910c7531dc4c73ef65eca5568
+>
+> it should appear mainline soon-ish, I hope.
 
-It's configurable for 32-bit arm, so I was just following that as it's
-hardly a maintenance burden to support both. I suppose you could have
-a toolchain that only supports one or the other, but it does seem a little
-esoteric if you're building a kernel for an arm64 CPU.
+I see, thanks for showing.
 
-Will
+Zhenzhong
