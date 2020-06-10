@@ -2,125 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C381F5208
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 12:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0F61F5217
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 12:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728164AbgFJKPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 06:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
+        id S1728214AbgFJKRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 06:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726134AbgFJKPG (ORCPT
+        with ESMTP id S1726533AbgFJKRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 06:15:06 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5E2C03E96B;
-        Wed, 10 Jun 2020 03:15:05 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49hjXf4CBYz9sQx;
-        Wed, 10 Jun 2020 20:14:58 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1591784098;
-        bh=8UMlMKyh418ho0oWZQ7XY53wR1BrVLFmXQhMaFHpS/8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GhLDgR6tTFsJx79L7F+HPXR1BKGomT3NyUwq+blWaXzMoUJ07aAA48sTOeaLZvyAs
-         aGsbEOegaXRMwvQ1qyNYZKn/npM6ZSBdPXX3evuYE/v2FiFRZmQmAxl0XMkKt7G+xG
-         3rV2K24dE69frphNi830pI4xCAbMhcpGyC5NneLifK9sFop6uXwQoUR1QuGcshxWhm
-         qhh2658tSbsP18wH3E4N7L/HcCpxdRD0TxkPCMLhSYOR0DqMEtqhYJKNyNuby6koWx
-         MBNV+7qRBaqtqoNYfvVqxy33unnFyoDelv0muRlt8Fo2bsjsvJvdP4+XwD1W+lq6Ra
-         O6WpKn/YI93Ug==
-Date:   Wed, 10 Jun 2020 20:14:57 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20200610201457.5698b119@canb.auug.org.au>
-In-Reply-To: <20200609210137.e7aaf4efa9f8b9ff0bcdc1dc@linux-foundation.org>
-References: <20200609224252.1704eff3@canb.auug.org.au>
-        <20200610134425.6dd32bf6@canb.auug.org.au>
-        <20200609210137.e7aaf4efa9f8b9ff0bcdc1dc@linux-foundation.org>
+        Wed, 10 Jun 2020 06:17:32 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AFAC03E96F
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 03:17:31 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id g1so980227edv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 03:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vlc2DkfoS9fCgUdl8ll/iVxGFZ5RW0ELnSTQYCe4qzM=;
+        b=TVTA5LByMF9ljQ4aw2uPEqGqWK40sLhpuXPzkdezDWqDFdJ0OhWmnsWnT1WvAkPJ38
+         Qz5BQStn4oUkD1+qEIXMWeVcqHbqmq+VDD09cBB0PGsnVbakLcPc4+/zlCMTEHlVESTx
+         8BQYMM1IP1GznHDYspSgYZkA1MuwsinzJY0x4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vlc2DkfoS9fCgUdl8ll/iVxGFZ5RW0ELnSTQYCe4qzM=;
+        b=fKuOFqndn2KgIA/ItyBAi1C+etht0+FRreebIf5iZKtYJNct+8BSX5f3afAW4M+f1H
+         SKjl9+cc7YfakWd9UX6bo9J1gOX3g9LvnmOEBPX8GDyfRhhvx5vcDlLhASqwre/6QxnB
+         3lxqgTSkTVT0Q0WRHoevAfSfSVAaiy4GKy5VoHz0Pb8dg7X4+65EgGMiBOwyJDymru7b
+         GnCFACLMIHsgdvRRD17jMN5KBMz23TMN3LxZGyhrc2VnFO474c2x7yjqgMkoodzavtFZ
+         g1m7TUiDyBYbOjSlmw1qeB1XNnkklH9d7DuRIkkhQLOlfiYOTm1ZPi4rf8OyZwqmZ+2A
+         rxrg==
+X-Gm-Message-State: AOAM530EfmaOCZCRNn7yVfeETz0wTNSLnJuHxictvORIqY087ii0K8hK
+        MTpp6DhEaj1VGPqG/JkSrVNUWOxRrZo=
+X-Google-Smtp-Source: ABdhPJzcwFFOYPwjji+t8kCsvgegNA0cs+xSYvTqtOKsggDZT8dWsbwV5KLCJgR9E6gl2pIQK2Ehjg==
+X-Received: by 2002:aa7:dc57:: with SMTP id g23mr1737376edu.352.1591784250147;
+        Wed, 10 Jun 2020 03:17:30 -0700 (PDT)
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
+        by smtp.gmail.com with ESMTPSA id o7sm12854956edj.52.2020.06.10.03.17.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jun 2020 03:17:29 -0700 (PDT)
+Received: by mail-wm1-f41.google.com with SMTP id r15so1277892wmh.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 03:17:29 -0700 (PDT)
+X-Received: by 2002:a1c:2e0e:: with SMTP id u14mr2446283wmu.55.1591784248713;
+ Wed, 10 Jun 2020 03:17:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BiVkGYbjM6ry4uwpZ9Rrkzi";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200609060417.8066-1-sergey.senozhatsky@gmail.com> <d1ebdb9b-ceea-3582-831d-7cef5134d8f9@xs4all.nl>
+In-Reply-To: <d1ebdb9b-ceea-3582-831d-7cef5134d8f9@xs4all.nl>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Wed, 10 Jun 2020 12:17:18 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5C=01Jpmn3TTEhPWufg8f72ta9ZUjeRG2VCB8F9NPwvJw@mail.gmail.com>
+Message-ID: <CAAFQd5C=01Jpmn3TTEhPWufg8f72ta9ZUjeRG2VCB8F9NPwvJw@mail.gmail.com>
+Subject: Re: [PATCH] videobuf2: always re-init queue memory consistency attribute
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/BiVkGYbjM6ry4uwpZ9Rrkzi
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Andrew,
-
-On Tue, 9 Jun 2020 21:01:37 -0700 Andrew Morton <akpm@linux-foundation.org>=
- wrote:
+On Wed, Jun 10, 2020 at 11:54 AM Hans Verkuil <hverkuil@xs4all.nl> wrote:
 >
-> I've sent this in as well:
->=20
-> From: Andrew Morton <akpm@linux-foundation.org>
-> Subject: arch/sparc/mm/srmmu.c: fix build
->=20
-> "mm: consolidate pte_index() and pte_offset_*() definitions" was supposed
-> to remove arch/sparc/mm/srmmu.c:pte_offset_kernel().
->=20
-> Fixes: 974b9b2c68f3d35 ("mm: consolidate pte_index() and pte_offset_*() d=
-efinitions")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Mike Rapoport <rppt@linux.ibm.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> ---
->=20
->  arch/sparc/mm/srmmu.c |   10 ----------
->  1 file changed, 10 deletions(-)
->=20
-> --- a/arch/sparc/mm/srmmu.c~arch-sparc-mm-srmmuc-fix-build
-> +++ a/arch/sparc/mm/srmmu.c
-> @@ -140,16 +140,6 @@ void pmd_set(pmd_t *pmdp, pte_t *ptep)
->  	set_pte((pte_t *)&pmd_val(*pmdp), __pte(SRMMU_ET_PTD | ptp));
->  }
-> =20
-> -/* Find an entry in the third-level page table.. */
-> -pte_t *pte_offset_kernel(pmd_t *dir, unsigned long address)
-> -{
-> -	void *pte;
-> -
-> -	pte =3D __nocache_va((pmd_val(*dir) & SRMMU_PTD_PMASK) << 4);
-> -	return (pte_t *) pte +
-> -	    ((address >> PAGE_SHIFT) & (PTRS_PER_PTE - 1));
-> -}
-> -
->  /*
->   * size: bytes to allocate in the nocache area.
->   * align: bytes, number to align at.
-> _
->=20
+> Hi Sergey,
+>
+> On 09/06/2020 08:04, Sergey Senozhatsky wrote:
+> > We need a combination of two factors in order to permit modification
+> > of queue's memory consistency attribute in set_queue_consistency():
+> >   (1) queue should allow user-space cache hints
+> >   (2) queue should be used for MMAP-ed I/O
+> >
+> > Therefore the code in videobuf2 core looks as follows:
+> >
+> >       q->memory = req->memory;
+> >       set_queue_consistency(q, consistent);
+> >
+> > This works when we do something like this (suppose that queue allows
+> > cache hints)
+> >
+> >       reqbufs.memory = V4L2_MEMORY_DMABUF;
+> >       reqbufs.flags = 0;
+> >       doioctl(node, VIDIOC_REQBUFS, &reqbufs);
+> >
+> >       reqbufs.memory = V4L2_MEMORY_MMAP;
+> >       reqbufs.flags = V4L2_FLAG_MEMORY_NON_CONSISTENT;
+> >       doioctl(node, VIDIOC_REQBUFS, &reqbufs);
+> >
+> > However, this doesn't work the other way around
+> >
+> >       reqbufs.memory = V4L2_MEMORY_MMAP;
+> >       reqbufs.flags = V4L2_FLAG_MEMORY_NON_CONSISTENT;
+> >       doioctl(node, VIDIOC_REQBUFS, &reqbufs);
+> >
+> >       reqbufs.memory = V4L2_MEMORY_DMABUF;
+> >       reqbufs.flags = 0;
+> >       doioctl(node, VIDIOC_REQBUFS, &reqbufs);
+> >
+> > because __vb2_queue_free() doesn't clear queue's ->dma_attrs
+> > once its don't freeing queue buffers, and by the time we call
+> > set_queue_consistency() the queue is DMABUF so (2) is false
+> > and we never clear the stale consistency attribute.
+> >
+> > Re-implement set_queue_consistency() - it must always clear
+> > queue's non-consistency attr and set it only if (1) and (2).
+> >
+> > Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> > ---
+> >  drivers/media/common/videobuf2/videobuf2-core.c | 7 +++----
+> >  1 file changed, 3 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> > index 7e081716b8da..37d0186ba330 100644
+> > --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> > +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> > @@ -704,12 +704,11 @@ EXPORT_SYMBOL(vb2_verify_memory_type);
+> >
+> >  static void set_queue_consistency(struct vb2_queue *q, bool consistent_mem)
+> >  {
+> > +     q->dma_attrs &= ~DMA_ATTR_NON_CONSISTENT;
+> > +
+> >       if (!vb2_queue_allows_cache_hints(q))
+> >               return;
+> > -
+> > -     if (consistent_mem)
+> > -             q->dma_attrs &= ~DMA_ATTR_NON_CONSISTENT;
+> > -     else
+> > +     if (!consistent_mem)
+> >               q->dma_attrs |= DMA_ATTR_NON_CONSISTENT;
+> >  }
+> >
+> >
+>
+> Is it OK with you if I fold this patch into the original patch series and make a
+> new PR for it? I prefer to have a series merged without a bug, rather than fixing
+> it in a final patch.
 
-Thanks.
+I believe this didn't introduce any real bug, because dma_attrs would
+end up used only for MMAP buffers anyway. Still, the current behavior
+could end up being confusing for whoever has to deal with vb2 in the
+future, so should be fixed.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/BiVkGYbjM6ry4uwpZ9Rrkzi
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7gsqEACgkQAVBC80lX
-0GwGOggAij4ikq4ze7TVxoyBkxNel6dX4MOOaLgfCmNkxOtrWfo49e6p1SbCj+wR
-OlHf/wm5NoZZVLnJJqT4jBc79tcqiDons5kZ9/zd+tsWAbPJob46qYqEOTuGeQoQ
-Wiq3OqLeE6LjwB2fD8R7ydcC36hqDRCyTIYV4wZEX8HgNWvT0vtLeXBKTaEtyyKF
-R2gVI+/U7iMVqkvM5ce1SdZKsv4QiAmrVsfM8ZLFP2Rq8WI4oqmcgG3QkHf0iSOP
-IK9P7jSp8l6HDyz0niDM4B63HFGspNKUD8aAOzVKrVECJqZzNZ3Uc8xM2y7N6vGQ
-vuhtollzg4+J8g4eKslVm2P7vhUAXA==
-=OF1y
------END PGP SIGNATURE-----
-
---Sig_/BiVkGYbjM6ry4uwpZ9Rrkzi--
+Best regards,
+Tomasz
