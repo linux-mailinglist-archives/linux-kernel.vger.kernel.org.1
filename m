@@ -2,75 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63E31F5715
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 16:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0B51F5719
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 16:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729959AbgFJOxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 10:53:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43824 "EHLO mail.kernel.org"
+        id S1727097AbgFJOyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 10:54:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726943AbgFJOxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 10:53:50 -0400
+        id S1726908AbgFJOyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 10:54:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDBAC2072F;
-        Wed, 10 Jun 2020 14:53:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C009F2072F;
+        Wed, 10 Jun 2020 14:54:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591800830;
-        bh=TC73ZRDSuoUg0mbgkZG8iBdzAr9faRcRABDM7yMly28=;
+        s=default; t=1591800875;
+        bh=h4GU7pIHSH5YCQVcvAzjRoaE8142Y+WoPe3aExRwEV4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TFu/AplpxtnCVEq78ohceG29T7SYBjPC5HIAjxG+hxCRxeLrPsNRy6j26NYJwFeJ3
-         QvsLuNdCVS76nhPuHuTAwnK+XQfju0sw8jNByZiGyMECclLQF04DAR+Z4IqXPkEVqP
-         MgQGPcl1Ntz21ulzRCF6E58ON+T9q5eiGmmkIeOE=
-Date:   Wed, 10 Jun 2020 16:53:44 +0200
+        b=eLXbmVHursVNIqb8JTBmWPsenKWOSKR6Eff0VmZEi5m5uq7Dh5sUSVrKCQhQ181bB
+         FCURlDVuhQUQeWxgxm4WaPOobuSG30vWKrhOrnDbMLuVaDIHmCyy1G76ucW7i5aFGp
+         2ownfxKK+kMNkyeROKw30C1cs9aRwOTq3G7r3ntM=
+Date:   Wed, 10 Jun 2020 16:54:29 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Tetsuhiro Kohada <kohada.t2@gmail.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>
-Subject: Re: exfat: Improving exception handling in two functions
-Message-ID: <20200610145344.GA2102023@kroah.com>
-References: <9b9272fb-b265-010b-0696-4c0579abd841@web.de>
- <208cba7b-e535-c8e0-5ac7-f15170117a7f@web.de>
+Cc:     Navid Emamdoost <navid.emamdoost@gmail.com>,
+        linux-gpio@vger.kernel.org, patches@opensource.cirrus.com,
+        Navid Emamdoost <emamd001@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
+        Stephen McCamant <smccaman@umn.edu>,
+        Qiushi Wu <wu000273@umn.edu>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] gpio: arizona: put pm_runtime in case of failure
+Message-ID: <20200610145429.GB2102023@kroah.com>
+References: <11488e76-2ea0-6478-0800-deb0438f0136@web.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <208cba7b-e535-c8e0-5ac7-f15170117a7f@web.de>
+In-Reply-To: <11488e76-2ea0-6478-0800-deb0438f0136@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 11:27:58AM +0200, Markus Elfring wrote:
-> Hello,
+On Fri, Jun 05, 2020 at 02:14:38PM +0200, Markus Elfring wrote:
+> I recommend to replace the word “pm_runtime” by the
+> alternative “PM run time system” in the patch subject.
 > 
-> I have taken another look at pointer usage after calls of the function “brelse”.
-> My source code analysis approach pointed implementation details
-> like the following out for further software development considerations.
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/fs/exfat/namei.c?id=3d155ae4358baf4831609c2f9cd09396a2b8badf#n1078
+> 
+> > Calling pm_runtime_get_sync increments the counter even in case of
+> > failure, causing incorrect ref count if pm_runtime_put is not called in
+> > error handling paths.
+> 
+> Should the term “reference count” be used here?
+> 
+> 
+> > Call pm_runtime_put if pm_runtime_get_sync fails.
+> 
+> The diff hunks show an other function name.
+> 
 > 
 > …
-> 		epold = exfat_get_dentry(sb, p_dir, oldentry + 1, &old_bh,
-> 			&sector_old);
-> 		epnew = exfat_get_dentry(sb, p_dir, newentry + 1, &new_bh,
-> 			&sector_new);
-> 		if (!epold || !epnew)
-> 			return -EIO;
-> …
+> > +++ b/drivers/gpio/gpio-arizona.c
+> > @@ -64,6 +64,7 @@  static int arizona_gpio_get(struct gpio_chip *chip, unsigned offset)
+> >  		ret = pm_runtime_get_sync(chip->parent);
+> >  		if (ret < 0) {
+> >  			dev_err(chip->parent, "Failed to resume: %d\n", ret);
+> > +			pm_runtime_put_autosuspend(chip->parent);
+> >  			return ret;
+> >  		}
 > 
-> I suggest to split such an error check.
-> How do you think about to release a buffer head object for the desired
-> exception handling if one of these function calls succeeded?
+> You propose to use identical statements in three if branches.
+> Please add a corresponding jump target for better exception handling.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst?id=435faf5c218a47fd6258187f62d9bb1009717896#n455
 > 
-> Would you like to adjust such code in the functions “exfat_rename_file”
-> and “exfat_move_file”?
+> 
+> Would you like to add the tag “Fixes” to the commit message?
+> 
+> 
+> I find it amazing how many questionable implementation details
+> you pointed out recently.
+> Were these contributions triggered by an evolving source code analysis
+> tool like CheQ?
+> https://github.com/umnsec/cheq/
 > 
 > Regards,
 > Markus
