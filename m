@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632F31F5ADB
+	by mail.lfdr.de (Postfix) with ESMTP id F38E61F5ADC
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbgFJR5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 13:57:22 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:59491 "EHLO
+        id S1728116AbgFJR52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 13:57:28 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:37641 "EHLO
         wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727052AbgFJR5R (ORCPT
+        by vger.kernel.org with ESMTP id S1727863AbgFJR5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 13:57:17 -0400
+        Wed, 10 Jun 2020 13:57:18 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 571AB793;
-        Wed, 10 Jun 2020 13:57:16 -0400 (EDT)
+        by mailout.west.internal (Postfix) with ESMTP id 39B6F77D;
+        Wed, 10 Jun 2020 13:57:17 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 10 Jun 2020 13:57:16 -0400
+  by compute4.internal (MEProxy); Wed, 10 Jun 2020 13:57:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paritcher.com;
          h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=Lw/1IiHHO7tB2
-        teVnWxdii7xEm1PsRJYbtGvx1aqdvg=; b=Vn2ST55J27PaTTL2FjGGAO4o2JoZ8
-        me0GOb06k6tZsJPsB8HC8G+42QQSxuB0q+WwkwYM1E8onkEgtnUDdgzm+bIiTPH4
-        MUzhuFef60Zl78CGoTDnO4B2pwLXYAY7F81/u/ZdisWG/uyfioLDKqqXdlSfJ8Cw
-        GS9xo4yiw6y3L7mqoKsG6uvOLwDUy1Zm+ZxueTYUFfS/zW5YTze5PhzCS0dfpVvS
-        PzX3RIINe06gyESKdTL/gj6tmbek0th4S6wcm0EjoKH/fwvWU+UfJwV9GIuyQczu
-        xPO8QUJYUl8zSWGOzueNrjHQ9KT1ee1rF0Jo5t1GjuuXjUKPuQ9imneGg==
+        :mime-version:content-transfer-encoding; s=fm2; bh=KFHjFgl8Nl0mN
+        4saWbnmKFhbyNQI/P4uhTVdUXtr0Ak=; b=A0iskHp5fuvv3HtbTns7eDJvo3irN
+        FMIsIisxbZkZar5+yeZakI4bHgxprgWcmAnido1BakWJHXzqD15lHI9I3NZEbGEE
+        ngnpeLSfcfHRqnZYTFfT+ZUlIveAQda8+EfvfQvGgdNO/GQ8pZN/6sFkT2GicGYi
+        mXMZ4iouJQJADvhQxW9e2mQvQScqm6p5aeL62NqFnk8HaxRFTBOL9UX/K/NkdJB+
+        XcddVBHsM8GQbmPNejew8djpU4pRhgf0ggV1bu7eK4/ABtPSRfjAOU+XRHb79uWo
+        I/Mgq34k2MA+TYiXTNCiTyiwK0eQmGVQlvBXiIhqyU4/xZ8DWgVpLF4Zg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=Lw/1IiHHO7tB2teVnWxdii7xEm1PsRJYbtGvx1aqdvg=; b=CHpGeJxZ
-        Vq2Ckrd+kYhRfNiGKFfSI/1epxbXjX0BKq9MYSeiull2ho+Ckhv3d6yjVy8WuwzR
-        yVkBplrVv88YMX9Rf9HNRBQlm5wrnLu94xj41P5ntVc9oygRC7Im5VHrPxw1C8zR
-        qvxHG9c4yq3FcdR2XphHel4VFZglPkLsEwoJ16Q121aEoymKNRkXEX2mkBe6ku1D
-        uFPGkjXkJRwok0CgR0JUuU35oyvf2IaG6ikNK3T48fMV+abk9S7aMcnbon2bJaot
-        kvZyjvCoUYvN4hh5S+AgoPvR9nvGsOrVVbQRxytr1Sz+npG5hfwZYasD8EcgksVw
-        wX1bEfnETHusUQ==
-X-ME-Sender: <xms:-x7hXujBDY9hF3maswazChe7B_gVLOCtAPYe8PmkMDQBXY5xIx9Vcg>
+        fm3; bh=KFHjFgl8Nl0mN4saWbnmKFhbyNQI/P4uhTVdUXtr0Ak=; b=N81LhWZC
+        J62xh10oD2/9kN3JbEHvTdsYaah8xtIfbZZPCi9nR2BQwOR2KbyfDjql0etb9e+f
+        GpaBAXOXZN1vADXapCS8aGLkx1n9VA1h8qAkxR8iXm2VqwGZK8Q7XbKBiMyC3BT1
+        WRZdOCqjDZ1nvyvmf+2gStlRfS6Q940UPVDAyGHztc/n2WxN5Wwpbt9FycbdGO9t
+        K1I8Otp5cO5O6lRWtXH8R6YE+hLPPJ9mu+SAq0Nt5VnqatDnl3Uuj/mnAKS4XA/R
+        Awv1KBldAODE8/SvCOmmZYOFbWskmIrfZrWJOAhZ+H+wMRTNVO5wAAtLElLIjvHJ
+        4+cpYBkNShNTwA==
+X-ME-Sender: <xms:_B7hXhB8lnXbhApKBqjOG0H0f_RhVy-5V5kkXkwTS1A8-sl8vznGOg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehiedguddvvdcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
@@ -47,21 +47,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehiedguddvvdcutefuodetgg
     hfdthedukeenucfkphepieejrdekgedrudelgedrudejheenucevlhhushhtvghrufhiii
     gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeihrdhlihhnuhigsehprghrihhttghh
     vghrrdgtohhm
-X-ME-Proxy: <xmx:-x7hXvAb6H5xxCYTPtrPY8EZCnoQzYx8r4k-vJItzUGpqPybwrrWMg>
-    <xmx:-x7hXmHdjWo-Xs1MRq6tOwraVTy6FTlLI9bD10vM3fx7TQTeziIssQ>
-    <xmx:-x7hXnTUm0sNl2IoMGX9wHMANH2Oc_MejmS4GldfFD6frgmWj3XFzQ>
-    <xmx:-x7hXkp6JWRysGz4aJTM8n6lTMJxRq-9uEO7ZjNC4bd1thmO3nFHkw>
+X-ME-Proxy: <xmx:_B7hXvhOP8uENS5VAu1zXBCHSJat4Eet91HUPoxJeEGXyubKE_RJ_g>
+    <xmx:_B7hXsnH5z7sjpmL-yFyV2vyrqeReonsCz0n5Bmto4B1VvQsG28nbA>
+    <xmx:_B7hXrwSXsYNcISPIwhCeQoptMugVfpiq0P2fYpbIr2RZjgdiuiOQQ>
+    <xmx:_B7hXpI5RpQuW6Zm-2XvBqI7w5tlBUN59DG6IMOf4D21nI15i39oow>
 Received: from localhost.localdomain (ool-4354c2af.dyn.optonline.net [67.84.194.175])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 970E33061CCB;
+        by mail.messagingengine.com (Postfix) with ESMTPA id C4E873061DC5;
         Wed, 10 Jun 2020 13:57:15 -0400 (EDT)
 From:   Y Paritcher <y.linux@paritcher.com>
 To:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
         Matthew Garrett <mjg59@srcf.ucam.org>,
         Mario.Limonciello@dell.com
-Subject: [PATCH v4 2/3] platform/x86: dell-wmi: add new keymap type 0x0012
-Date:   Wed, 10 Jun 2020 13:56:57 -0400
-Message-Id: <b2efc80238424ffe5f97422f3e59e9689a327a28.1591811549.git.y.linux@paritcher.com>
+Subject: [PATCH v4 3/3] platform/x86: dell-wmi: add new dmi mapping for keycode 0xffff
+Date:   Wed, 10 Jun 2020 13:56:58 -0400
+Message-Id: <b388001d4804871f03067dbbe134f7368c8b5b25.1591811549.git.y.linux@paritcher.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1591811549.git.y.linux@paritcher.com>
 References: <cover.1591584631.git.y.linux@paritcher.com> <cover.1591811549.git.y.linux@paritcher.com>
@@ -72,82 +72,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are events with extended data. The extended data is
-currently ignored as userspace does not have a way to deal
-it.
+This keycode is used by Dell as a no-op for keys that should have
+no function.
 
-Ignore event with a type of 0x0012 and a code of 0xe035, as
-the keyboard controller takes care of Fn lock events by itself.
-This silences the following messages being logged when
-pressing the Fn-lock key on a Dell Inspiron 5593:
+This keycode is never triggered by a keypress in practice, rather
+it is included from the 0xB2 DMI table at startup.
 
-dell_wmi: Unknown WMI event type 0x12
-dell_wmi: Unknown key with type 0x0012 and code 0xe035 pressed
+This prevents the following messages from being logged at startup on a
+Dell Inspiron 5593:
 
-This is consistent with the behavior for the Fn-lock key
-elsewhere in this file.
+    dell_wmi: firmware scancode 0x48 maps to unrecognized keycode 0xffff
+    dell_wmi: firmware scancode 0x50 maps to unrecognized keycode 0xffff
+
+as per this code comment:
+
+   Log if we find an entry in the DMI table that we don't
+   understand.  If this happens, we should figure out what
+   the entry means and add it to bios_to_linux_keycode.
 
 Signed-off-by: Y Paritcher <y.linux@paritcher.com>
 ---
- drivers/platform/x86/dell-wmi.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ drivers/platform/x86/dell-wmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/platform/x86/dell-wmi.c b/drivers/platform/x86/dell-wmi.c
-index 0b2edfe2767d..e3bc2601e631 100644
+index e3bc2601e631..bbdb3e860892 100644
 --- a/drivers/platform/x86/dell-wmi.c
 +++ b/drivers/platform/x86/dell-wmi.c
-@@ -334,6 +334,15 @@ static const struct key_entry dell_wmi_keymap_type_0011[] = {
- 	{ KE_IGNORE, KBD_LED_AUTO_100_TOKEN, { KEY_RESERVED } },
- };
+@@ -506,7 +506,7 @@ static void handle_dmi_entry(const struct dmi_header *dm, void *opaque)
+ 		u16 keycode = (bios_entry->keycode <
+ 			       ARRAY_SIZE(bios_to_linux_keycode)) ?
+ 			bios_to_linux_keycode[bios_entry->keycode] :
+-			KEY_RESERVED;
++			(bios_entry->keycode == 0xffff ? KEY_UNKNOWN : KEY_RESERVED);
  
-+/*
-+ * Keymap for WMI events of type 0x0012
-+ * They are events with extended data
-+ */
-+static const struct key_entry dell_wmi_keymap_type_0012[] = {
-+	/* Fn-lock button pressed */
-+	{ KE_IGNORE, 0xe035, { KEY_RESERVED } },
-+};
-+
- static void dell_wmi_process_key(struct wmi_device *wdev, int type, int code)
- {
- 	struct dell_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
-@@ -418,10 +427,11 @@ static void dell_wmi_notify(struct wmi_device *wdev,
- 
- 		switch (buffer_entry[1]) {
- 		case 0x0000: /* One key pressed or event occurred */
-+		case 0x0012: /* Event with extended data occurred */
- 			if (len > 2)
--				dell_wmi_process_key(wdev, 0x0000,
-+				dell_wmi_process_key(wdev, buffer_entry[1],
- 						     buffer_entry[2]);
--			/* Other entries could contain additional information */
-+			/* Extended data is currently ignored */
- 			break;
- 		case 0x0010: /* Sequence of keys pressed */
- 		case 0x0011: /* Sequence of events occurred */
-@@ -556,6 +566,7 @@ static int dell_wmi_input_setup(struct wmi_device *wdev)
- 			 ARRAY_SIZE(dell_wmi_keymap_type_0000) +
- 			 ARRAY_SIZE(dell_wmi_keymap_type_0010) +
- 			 ARRAY_SIZE(dell_wmi_keymap_type_0011) +
-+			 ARRAY_SIZE(dell_wmi_keymap_type_0012) +
- 			 1,
- 			 sizeof(struct key_entry), GFP_KERNEL);
- 	if (!keymap) {
-@@ -600,6 +611,13 @@ static int dell_wmi_input_setup(struct wmi_device *wdev)
- 		pos++;
- 	}
- 
-+	/* Append table with events of type 0x0012 */
-+	for (i = 0; i < ARRAY_SIZE(dell_wmi_keymap_type_0012); i++) {
-+		keymap[pos] = dell_wmi_keymap_type_0012[i];
-+		keymap[pos].code |= (0x0012 << 16);
-+		pos++;
-+	}
-+
- 	/*
- 	 * Now append also table with "legacy" events of type 0x0000. Some of
- 	 * them are reported also on laptops which have scancodes in DMI.
+ 		/*
+ 		 * Log if we find an entry in the DMI table that we don't
 -- 
 2.27.0
 
