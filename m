@@ -2,122 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582D41F4CD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 07:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE73E1F4CDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 07:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbgFJFWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 01:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35348 "EHLO
+        id S1726135AbgFJFYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 01:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgFJFWX (ORCPT
+        with ESMTP id S1726108AbgFJFYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 01:22:23 -0400
+        Wed, 10 Jun 2020 01:24:09 -0400
 Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99DE4C05BD1E
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 22:22:22 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id q14so821643qtr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 22:22:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87ADDC05BD1E;
+        Tue,  9 Jun 2020 22:24:09 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id e16so865604qtg.0;
+        Tue, 09 Jun 2020 22:24:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8QdWS47TQ1Szf9UCQ4isLDh5BjiBexfLw+qwLr2MzEw=;
-        b=OCU+XXFzrS4ai50Np9aZhbn19RNc2bnShkVkV8MLxQN2uJDPsqKuyNIhYPoQ/I05Bf
-         LjboC7mC14jw+qhwG/PPPOPqYFy6HRRaWoVYVlQ2NlVwSrzUAChOoG3tIZYdLp5HKxyy
-         fUGwtp2o++EXckki0Z9sOJmealnfizMwTbSOxuc2R7yVi5ImeS5/e8rVkwyJLyN5QfnG
-         86xNL+QfjOlAwiR8X9DUiDipaWoC+txwyqfLAg6ViaRZ38jH87M7LHzvswhNwprkM1U3
-         Z/ru0cpVetqQ6RC+AnQqfNuLt3gW8i77xxokKTz2DZ63qtHuBEiQMkJuyhkhXdoXlqp8
-         3L+g==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=stGYbyy0hIe7gMKA+zTlsc1pHHaFqBnSNnTM1vxhGKQ=;
+        b=sH1hR/ftg7dbREqfBeQfywQVOoxKF3sIqXK2QX136WVvT/h4dfC3Hl8BWk2LIiO4v2
+         ebsj9ltehqZnk72848Dp/lMT7CPR/VYQTiX3pR0QmXptTFIyotit+3OGCR7ehLV2Mnd9
+         PQSeYv584hymmo/eNDDFilggT/r1hTXQxuxImm3sipYpIT69G/EXGDX76bTMhw0GehN8
+         hnJyWBrVIfEqxfWrhJHfFzP+H4XVCbgkIBpXlWxU/kNMm85NEmK3+Ma2hNzeDVHk5CIc
+         fvOdhfF/oQ5RomnARokjpgc4BYk267IDKqfhWAJD4R/QK7YWL7EhTavcnimr9zIfh8T8
+         vYUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8QdWS47TQ1Szf9UCQ4isLDh5BjiBexfLw+qwLr2MzEw=;
-        b=Whm2QDng1zbGqs+GugpVSm8sC5JlV+khalyDjkoSFC8yjYa8RUkgX1n6h/svYnEsbO
-         UpEiD7rNkGCN61afzNWiqqekqP9LhlSfVq2S1u1zOsRKKL7vkE3VnxeF9GAYBsMlcKWm
-         MFHVnhBL+AMxoNU8sB4dibvn6v1N42IevOvO2EWjQ98VBYmtWUotXCwKPaRY6DSq+252
-         Hw4GgJxQ2YfPPoWQMYe8mKcQYnwpnoSpCEt102v2PKV5VmNA9u03dcX6GWEXFtHwsKzF
-         CzuUEep93SWf9uhuLnK8ZReA6i7MckqFHvevmVbfZwdKm3Ad6RwyF7jKCfRjLjHapBbi
-         JCmw==
-X-Gm-Message-State: AOAM532VtsHI4ALi8YhW+fSrBLqjbCA8Oxi1XSiKqoOKZyYhgndIVHH/
-        kV2ioNxZuc0mz3ym0DG1zi8uIA==
-X-Google-Smtp-Source: ABdhPJxu0jgXyK9IXjFAr7eI3aNQFUTA7yhVo6Cz+97MafAvWUnd3xNTF/6D8+pFUXvnePGcNvWKrQ==
-X-Received: by 2002:ac8:1892:: with SMTP id s18mr1471482qtj.306.1591766541396;
-        Tue, 09 Jun 2020 22:22:21 -0700 (PDT)
-Received: from ovpn-113-201.phx2.redhat.com (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id d23sm11831827qtn.38.2020.06.09.22.22.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Jun 2020 22:22:20 -0700 (PDT)
-From:   Qian Cai <cai@lca.pw>
-To:     akpm@linux-foundation.org
-Cc:     borntraeger@de.ibm.com, glider@google.com, keescook@chromium.org,
-        dvyukov@google.com, kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Qian Cai <cai@lca.pw>
-Subject: [PATCH] mm/page_alloc: silence a KASAN false positive
-Date:   Wed, 10 Jun 2020 01:21:54 -0400
-Message-Id: <20200610052154.5180-1-cai@lca.pw>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=stGYbyy0hIe7gMKA+zTlsc1pHHaFqBnSNnTM1vxhGKQ=;
+        b=unvYGip9LWgKKdTIZaT1TvzVJBWCJ5X5e4aWCharVQiKu/hapXrnW/WtCjSix3pCfU
+         SGZ8iAtMR/QRHaS4l2g1zeuVyHyKs21fNCcL840uu5/5v8ooVpo0Z/XSLBOOWb6oauLl
+         lWv6IW785KBCbOiPV+ErgumnhExGgsorNwgk3Iph2wyBSr3QkOKaJCqzplFGyN1hn/49
+         pSppSPInZWCrWVvxS6du8Q/kK9D/8Ljv0hRHqf9ADRlh+8+ycUQKfAf3y/g4653hAcph
+         LKp7UyWba9wOBgf8h1DS2n73hJupO7XgtkazBzCsReNAuH7tOB2KdAxp9pZWVUv9/veh
+         4yQg==
+X-Gm-Message-State: AOAM533kibH7EzLwzyuUVU/fTY2WzRfBPLC34RU6bsPrn9lZqw88i60W
+        QGbfL0DJv5KNtjl7fWHNBgO+zbWVe61WflFgBeQ=
+X-Google-Smtp-Source: ABdhPJwS1Vbp0l7/qFukLruWw2/DM2AotG/IwW7Hj0E6hxH7fGTPOWujbInp5kKoPKMdHOe4g8sGnOqC62TGe3dflnw=
+X-Received: by 2002:aed:2359:: with SMTP id i25mr1440164qtc.194.1591766648490;
+ Tue, 09 Jun 2020 22:24:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200603230303.kSkT62Lb5%akpm@linux-foundation.org>
+ <a60f7866-3b32-7a0e-5d0a-a48d77f845a8@linux.alibaba.com> <20200609144551.GA452252@cmpxchg.org>
+In-Reply-To: <20200609144551.GA452252@cmpxchg.org>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Wed, 10 Jun 2020 14:23:57 +0900
+Message-ID: <CAAmzW4OrmCBQC05E6Kr-pLw3VU=cthzZCpfEzDabhO5vTaq8KA@mail.gmail.com>
+Subject: Re: [patch 113/131] mm: balance LRU lists based on relative thrashing
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Michal Hocko <mhocko@suse.com>,
+        =?UTF-8?B?6rmA66+87LCs?= <minchan@kernel.org>,
+        mm-commits@vger.kernel.org, Rik van Riel <riel@surriel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel_init_free_pages() will use memset() on s390 to clear all pages
-from kmalloc_order() which will override KASAN redzones because a
-redzone was setup from the end of the allocation size to the end of the
-last page. Silence it by not reporting it there. An example of the
-report is,
+2020=EB=85=84 6=EC=9B=94 9=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 11:46, J=
+ohannes Weiner <hannes@cmpxchg.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Tue, Jun 09, 2020 at 05:15:33PM +0800, Alex Shi wrote:
+> >
+> >
+> > =E5=9C=A8 2020/6/4 =E4=B8=8A=E5=8D=887:03, Andrew Morton =E5=86=99=E9=
+=81=93:
+> > >
+> > > +   /* XXX: Move to lru_cache_add() when it supports new vs putback *=
+/
+> >
+> > Hi Hannes,
+> >
+> > Sorry for a bit lost, would you like to explain a bit more of your idea=
+ here?
+> >
+> > > +   spin_lock_irq(&page_pgdat(page)->lru_lock);
+> > > +   lru_note_cost(page);
+> > > +   spin_unlock_irq(&page_pgdat(page)->lru_lock);
+> > > +
+> >
+> >
+> > What could we see here w/o the lru_lock?
+>
+> It'll just be part of the existing LRU locking in
+> pagevec_lru_move_fn(), when the new pages are added to the LRU in
+> batch. See this older patch for example:
+>
+> https://lore.kernel.org/linux-mm/20160606194836.3624-6-hannes@cmpxchg.org=
+/
+>
+> I didn't include it in this series to reduce conflict with Joonsoo's
+> WIP series that also operates in this area and does something similar:
 
- BUG: KASAN: slab-out-of-bounds in __free_pages_ok
- Write of size 4096 at addr 000000014beaa000
- Call Trace:
- show_stack+0x152/0x210
- dump_stack+0x1f8/0x248
- print_address_description.isra.13+0x5e/0x4d0
- kasan_report+0x130/0x178
- check_memory_region+0x190/0x218
- memset+0x34/0x60
- __free_pages_ok+0x894/0x12f0
- kfree+0x4f2/0x5e0
- unpack_to_rootfs+0x60e/0x650
- populate_rootfs+0x56/0x358
- do_one_initcall+0x1f4/0xa20
- kernel_init_freeable+0x758/0x7e8
- kernel_init+0x1c/0x170
- ret_from_fork+0x24/0x28
- Memory state around the buggy address:
- 000000014bea9f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- 000000014bea9f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->000000014beaa000: 03 fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-                    ^
- 000000014beaa080: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
- 000000014beaa100: fe fe fe fe fe fe fe fe fe fe fe fe fe fe
+Thanks!
 
-Fixes: 6471384af2a6 ("mm: security: introduce init_on_alloc=1 and init_on_free=1 boot options")
-Signed-off-by: Qian Cai <cai@lca.pw>
----
- mm/page_alloc.c | 3 +++
- 1 file changed, 3 insertions(+)
+> https://lkml.org/lkml/2020/4/3/63
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 727751219003..9954973f89a3 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1164,8 +1164,11 @@ static void kernel_init_free_pages(struct page *page, int numpages)
- {
- 	int i;
- 
-+	/* s390's use of memset() could override KASAN redzones. */
-+	kasan_disable_current();
- 	for (i = 0; i < numpages; i++)
- 		clear_highpage(page + i);
-+	kasan_enable_current();
- }
- 
- static __always_inline bool free_pages_prepare(struct page *page,
--- 
-2.21.0 (Apple Git-122.2)
+I haven't completed the rebase of my series but I guess that referenced pat=
+ch
+"https://lkml.org/lkml/2020/4/3/63" would be removed in the next version.
 
+Before the I/O cost model, a new anonymous page contributes to the LRU recl=
+aim
+balance. But, now, a new anonymous page doesn't contributes to the I/O cost
+so this adjusting patch would not be needed anymore.
+
+If anyone wants to change this part,
+"/* XXX: Move to lru_cache_add() when it supports new vs putback */", feel =
+free
+to do it.
+
+Thanks.
