@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EC01F5E76
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 00:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5FF1F5E72
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 00:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgFJWrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 18:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
+        id S1726760AbgFJWr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 18:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726301AbgFJWrZ (ORCPT
+        with ESMTP id S1726540AbgFJWrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Jun 2020 18:47:25 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B38C03E96F
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27EBC08C5C1
         for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 15:47:24 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id d7so2395895lfi.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 15:47:23 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id y11so4569634ljm.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 15:47:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=VksGgFKIEXZczaCwsl1pQL0VbmA1hM56Tr8nj1ZMGGU=;
-        b=t9uv7DrPWCUJPa/OykTy48St4eA8F2epkL3QWc+I70w5t2T0E/5LQ0ZGOk48gWg96m
-         Cnp9UnM57CPlzpK5SmIiud8mSNj1veBmSZTWqWWkHdR0bbGxRa0s2ADdrPaWTf1pp3F3
-         7Bprxx3kpGlAimgdtgmNr12D0nT6C39ZQ7wb0y/7eaPzb6VhdcmMLMVAoowBSy/E5XaU
-         b9ZbM5QRv0fvzbV4LlxS+H+u2fE9+Cd+8DDFb5+g7Clb8aPECm/GREhdTk10qLEc6gDy
-         Cayic5XOugw2E0A11QXc39ppOMGVGikRJy75sk+lObyHipE8krRxuyhJx+NmHTsNOP2+
-         p2CQ==
+        bh=3hdR1U1pgJ2jCq0TI+wqRp17veeSC2dFXf50rAGsQmQ=;
+        b=aOPAmT5qPIdXrvQjZrQTiIzegs+3vaL7fgwueUfXWSSIX4LyKA3791Ih3vxVTaPFZ5
+         pmi20xz3KwbgflHzHF4yPyEsPAu+lSsvsnuvjYXyk6mdxXn9vaTsD1Ofw38z61AZx1ES
+         7+Sz+sM9zzVE50+YQGPK0oTbwvioSi+Ti2MId7LOh/X+HXD0fgrMgi+2GXe4213r26LI
+         3fMZ48Rk3sosSki5DUiMpteZyjP2BUpUSJuaLN/7UWsDbEflhyM13VT2BkJjXSXfJgHA
+         eVrjW3kqmGSdYVFJLVtS/BWXJXV9yIYKBvKuJ6/L1+ZXmRmMIAIRlUD0fwzzQSQ/YyYP
+         Hvkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VksGgFKIEXZczaCwsl1pQL0VbmA1hM56Tr8nj1ZMGGU=;
-        b=eabuE12x3mSPhuhmNBwQPnLNnfrQdeqLIQiQLsKvnj6cGLnROxp+DiTz2yAkpbvYwg
-         YcGc1ppQesEI3LCMAZOYIgH0hfpP5/3KgNgWb5N9o9mtlaLLT9hNlHhB7AKpxBmS3+JG
-         B9fWwbNuaSQNgoxkd6F8fKBrJMvR/8rkNeBSZJ5JKSz7GipVLL7mRmSG47P89CFUwMOD
-         fRf7S2AfxKpRhy1ptBwn3je4Q/GwvtNCmcI6c1I37OfOt6aWIfLutDU6YbOsHls6gfwN
-         CakFvCE+hCraM+Cyk5ZZs1OcGYDejzHDaRUNdMVvgMJskd+CXiquh5FEbwYSp4M8Kev6
-         LBUA==
-X-Gm-Message-State: AOAM531ZWfiteGnYjLGCf4Z3mHjypyynHcaLRVmJiLP/NcD7HS7/mzkE
-        HJeniE0I5PTFwaBHKDjKxHygrZekQwI=
-X-Google-Smtp-Source: ABdhPJyHur2PUyzabi3GZeZIdQjXgA/kBPkxaQyw9Z4FIgiMWF/ZiHVVPW+1BKTJ0qQTsU0z3u20og==
-X-Received: by 2002:ac2:54a8:: with SMTP id w8mr2756221lfk.53.1591829242217;
-        Wed, 10 Jun 2020 15:47:22 -0700 (PDT)
+        bh=3hdR1U1pgJ2jCq0TI+wqRp17veeSC2dFXf50rAGsQmQ=;
+        b=EO1e7BxluSuDWcxvoiDTqW5FTcskRnzkwhEEowsbn7vGl6IN0zlnk7eG6zyLqyS6M0
+         T4e9Di0rkkVDnVdTQXFQnd4kWxEC2aWOOsaQTzDInT4JWHS2goKHyJwwJtrbqDxCFzM6
+         W2TUqRTlDtN0I3FFh+xIl0IMcvK7JPmKFtCWF1a855vdKTiayx8PcHVLbothaJylVK1G
+         LoqHObkRoFKVyXKQG0p9bzJcT/OvhwvIdeZfcocqIm47F9ipaSa5m0UHbyFQWzCMU4KR
+         WQSUx7Th/lHQweTDyBcNN/o2kD0/mSLNoMO2R/DfSPFDKpzWB/Xpw+nqe53uGss/T8A9
+         PVeg==
+X-Gm-Message-State: AOAM532gY+1X4+BdZQFdPs5+QkgtM2IlmOSveSM7UvbuC6SPh6s+hRdl
+        n3q1dmu0Y3ecw3/57meic2Ej7FbNMaA=
+X-Google-Smtp-Source: ABdhPJyk7L7Bfs2tzWEeEGYmP8Onu0TAiPwPQsPTGmJutewI+K0p9Tkw5ft/tbAeASzl8uyMe2GRVA==
+X-Received: by 2002:a2e:8756:: with SMTP id q22mr3003764ljj.238.1591829243201;
+        Wed, 10 Jun 2020 15:47:23 -0700 (PDT)
 Received: from localhost.localdomain (h-82-196-111-136.NA.cust.bahnhof.se. [82.196.111.136])
-        by smtp.gmail.com with ESMTPSA id s17sm262506ljd.51.2020.06.10.15.47.21
+        by smtp.gmail.com with ESMTPSA id s17sm262506ljd.51.2020.06.10.15.47.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 15:47:21 -0700 (PDT)
+        Wed, 10 Jun 2020 15:47:22 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 1/4] misc: rtsx_usb: Constify struct usb_device_id
-Date:   Thu, 11 Jun 2020 00:47:01 +0200
-Message-Id: <20200610224704.27082-2-rikard.falkeborn@gmail.com>
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Frank Haverkamp <haver@linux.ibm.com>
+Subject: [PATCH 2/4] misc: genwqe: Constify struct pci_error_handlers
+Date:   Thu, 11 Jun 2020 00:47:02 +0200
+Message-Id: <20200610224704.27082-3-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200610224704.27082-1-rikard.falkeborn@gmail.com>
 References: <20200610224704.27082-1-rikard.falkeborn@gmail.com>
@@ -65,35 +66,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rtsx_usb_usb_ids is never modified and can therefore be made const to
-allow the compiler to put it in read-only memory.
+genwqe_err_handler is never modified, so it can be made const to allow
+the compiler to put it in read-only memory.
 
 Before:
    text    data     bss     dec     hex filename
-  21513    4160     128   25801    64c9 drivers/misc/cardreader/rtsx_usb.o
+  20174    6104    2464   28742    7046 drivers/misc/genwqe/card_base.o
 
 After:
    text    data     bss     dec     hex filename
-  21673    4000     128   25801    64c9 drivers/misc/cardreader/rtsx_usb.o
+  20270    6008    2464   28742    7046 drivers/misc/genwqe/card_base.o
 
 Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/misc/cardreader/rtsx_usb.c | 2 +-
+ drivers/misc/genwqe/card_base.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/cardreader/rtsx_usb.c b/drivers/misc/cardreader/rtsx_usb.c
-index a328cab11014..59eda55d92a3 100644
---- a/drivers/misc/cardreader/rtsx_usb.c
-+++ b/drivers/misc/cardreader/rtsx_usb.c
-@@ -759,7 +759,7 @@ static int rtsx_usb_post_reset(struct usb_interface *intf)
+diff --git a/drivers/misc/genwqe/card_base.c b/drivers/misc/genwqe/card_base.c
+index 1dc6c7c5cbce..9969c0003f15 100644
+--- a/drivers/misc/genwqe/card_base.c
++++ b/drivers/misc/genwqe/card_base.c
+@@ -1324,7 +1324,7 @@ static int genwqe_sriov_configure(struct pci_dev *dev, int numvfs)
  	return 0;
  }
  
--static struct usb_device_id rtsx_usb_usb_ids[] = {
-+static const struct usb_device_id rtsx_usb_usb_ids[] = {
- 	{ USB_DEVICE(0x0BDA, 0x0129) },
- 	{ USB_DEVICE(0x0BDA, 0x0139) },
- 	{ USB_DEVICE(0x0BDA, 0x0140) },
+-static struct pci_error_handlers genwqe_err_handler = {
++static const struct pci_error_handlers genwqe_err_handler = {
+ 	.error_detected = genwqe_err_error_detected,
+ 	.mmio_enabled	= genwqe_err_result_none,
+ 	.slot_reset	= genwqe_err_slot_reset,
 -- 
 2.27.0
 
