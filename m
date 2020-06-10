@@ -2,85 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD351F4B36
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 933611F4B3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726053AbgFJCLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 22:11:50 -0400
-Received: from mga07.intel.com ([134.134.136.100]:22668 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725798AbgFJCLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 22:11:49 -0400
-IronPort-SDR: nM5y7RZK5bSpD8d1TnmNuDiPmasDiGudR0eqGDsHzt49DnL/JLK0NKiRiodpk3vcBAJgztEtHb
- zzl8MTfp8URg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 19:11:48 -0700
-IronPort-SDR: kN1rgZC1ZwioEDqx8NmY1hE7Oa0mb2fQ/dbSTaRX0EQcKxo1ZH94O0RBWNh9pEYYSSnLgTHqiD
- lzX6Cd9LeO8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,494,1583222400"; 
-   d="scan'208";a="259152355"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 09 Jun 2020 19:11:48 -0700
-Received: from [10.255.176.176] (vramuthx-MOBL1.gar.corp.intel.com [10.255.176.176])
-        by linux.intel.com (Postfix) with ESMTP id 2BEAA580698;
-        Tue,  9 Jun 2020 19:11:43 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v1 2/2] usb: phy: Add USB3 PHY support for Intel LGM SoC
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, balbi@kernel.org
-Cc:     gregkh@linuxfoundation.org, robh@kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com,
-        andriy.shevchenko@intel.com
-References: <20200609110850.43469-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200609110850.43469-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <d2f30dbde89050e428b61092a1e5bbcf8d257129.camel@pengutronix.de>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <1ed87ef0-170d-4543-5d90-8c8b223c704c@linux.intel.com>
-Date:   Wed, 10 Jun 2020 10:11:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
-MIME-Version: 1.0
-In-Reply-To: <d2f30dbde89050e428b61092a1e5bbcf8d257129.camel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726119AbgFJCMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 22:12:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725798AbgFJCM3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Jun 2020 22:12:29 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D57C05BD1E;
+        Tue,  9 Jun 2020 19:12:28 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id r10so275273pgv.8;
+        Tue, 09 Jun 2020 19:12:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=r2oVYJYYg2RDS1H2d6x4IIYfTMv6sdz0p85rDZpNZaM=;
+        b=SlKST4sRe9z5NfYngtIcEgI7OPqllf0tdp3qx7B6gwf02PVHRBxHdxrhDhJZd+pTwe
+         9cIDZUyZrOvsmAwHXJYtib5Zt2RWwY9gSR9iDUDFB4mA1m4qYzyrRXNSrM5/G0OjpKj1
+         YYTc/gXCgoeEQ9R9mgYNktPxoT92dkFQpb84l1K5Pn553MQQf7bpInwFtcesIV0GfzMj
+         ASxD8QTrQHFRlTpl8JlGHNqoHLVe6WAKW1BG1KpxlfjHuVuG0EombUA6sgaMp0Xxn2Eq
+         lgPX01cb8lpoI57uSUnlLGMpkZWRcBYBm7mbiMFbIeG45cb3TTuRdmkQ6GD/WFX0/heE
+         Hvfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=r2oVYJYYg2RDS1H2d6x4IIYfTMv6sdz0p85rDZpNZaM=;
+        b=QlAEMYA/Ge9XXtx4U3b2+4x8jEmpAztyXKl7xrSZT6UkScaTs4M/qvBtwU5b+ZjyJG
+         nIFtL3srxyGjNeXLiHBqaIaaKcdIwHSp9pW+3TR7Qf+UwIuczbn2xHt+mEPnIGXUq5hf
+         s79pikdXrTYuzvqS3iLBU5xoQgxIHmdqfhHwp+eAzp43HHYkpIUELSkdnxuj2LK1Gutb
+         P4kRtCPT6ljpkfpb3xkcW88lYZUvCFRgaDzq/EJDxcneByJavlRiJWjo0AVi0kTCJhqH
+         yY73T9rWN6PB1vZBh/IX8Hp9bBVJ8p4BsveM8g50klqejG7rULiUjFTROPDZ8WDtHuZp
+         wn8Q==
+X-Gm-Message-State: AOAM532eR3kBvvdFU66Ki+m2XcPtBxuaeHw7u3XG2m57buKsModAnz4Q
+        3f131s1WRHEez9VIK7H084E=
+X-Google-Smtp-Source: ABdhPJz1U68Robey0Q1bmAEtvvWcGuKEBwSUNPbdIo1X+jHwidmrm4jijqjtoAseNZR/qoRnNlkYVQ==
+X-Received: by 2002:a63:b506:: with SMTP id y6mr761219pge.107.1591755147346;
+        Tue, 09 Jun 2020 19:12:27 -0700 (PDT)
+Received: from bj616583pcu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id p19sm11030694pff.116.2020.06.09.19.12.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 19:12:26 -0700 (PDT)
+From:   gengcixi@gmail.com
+To:     gregkh@linuxfoundation.org, jslaby@suse.com, oberpar@linux.ibm.com,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        Cixi Geng <cixi.geng1@unisoc.com>
+Subject: [RFC PATCH V5] GCOV: Add config to check the preqequisites situation
+Date:   Wed, 10 Jun 2020 10:11:50 +0800
+Message-Id: <20200610021150.19233-1-gengcixi@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+From: Cixi Geng <cixi.geng1@unisoc.com>
 
-    Thanks for the review comments...
+Introduce new configuration option GCOV_PROFILE_PREREQS that can be
+used to check whether the prerequisites for enabling gcov profiling
+for specific files and directories are met.
 
-On 9/6/2020 8:14 pm, Philipp Zabel wrote:
->> +
->> +	for (i = 0; i < ARRAY_SIZE(CTL_RESETS); i++)
->> +		reset_control_deassert(resets[i]);
->> +	/* Need to wait at least 20us before de-assert the PHY */
->> +	usleep_range(20, 100);
-> This waits 20us after de-asserting the reset, not before. Is this in the
-> correct place?
-This is correct place , but the above mentioned comments are wrong, need 
-to re-write the comments as below...
+Only add SERIAL_GCOV for an example.
 
-/* out-of-band reset of the controller after PHY reset
-  * will cause controller malfunctioning, so should use in-bandcontroller
-  * reset only and leave the controller de-asserted here.
-  */
-     for (i = 0; i < ARRAY_SIZE(CTL_RESETS); i++)
-             reset_control_deassert(resets[i]);
+Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
+---
+ drivers/tty/serial/Kconfig  |  8 ++++++++
+ drivers/tty/serial/Makefile |  1 +
+ kernel/gcov/Kconfig         | 15 +++++++++++++++
+ 3 files changed, 24 insertions(+)
 
-/* Need to wait at least 20us after de-assert the PHY */
-     usleep_range(20, 100);
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index adf9e80e7dc9..3d7e811d90dc 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -1566,3 +1566,11 @@ endmenu
+ 
+ config SERIAL_MCTRL_GPIO
+ 	tristate
++
++config SERIAL_GCOV
++	bool "Enable profile gcov for serial directory"
++	depends on GCOV_PROFILE_PREREQS
++	default y if GCOV_PROFILE_PREREQS
++	help
++	  The SERIAL_GCOV will add Gcov profiling flags when kernel compiles.
++	  Say 'Y' here if you want the gcov data for the serial directory,
+diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
+index d056ee6cca33..17272733db95 100644
+--- a/drivers/tty/serial/Makefile
++++ b/drivers/tty/serial/Makefile
+@@ -3,6 +3,7 @@
+ # Makefile for the kernel serial device drivers.
+ #
+ 
++GCOV_PROFILE := $(CONFIG_SERIAL_GCOV)
+ obj-$(CONFIG_SERIAL_CORE) += serial_core.o
+ 
+ obj-$(CONFIG_SERIAL_EARLYCON) += earlycon.o
+diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+index 3941a9c48f83..35b839879553 100644
+--- a/kernel/gcov/Kconfig
++++ b/kernel/gcov/Kconfig
+@@ -51,6 +51,21 @@ config GCOV_PROFILE_ALL
+ 	larger and run slower. Also be sure to exclude files from profiling
+ 	which are not linked to the kernel image to prevent linker errors.
+ 
++config GCOV_PROFILE_PREREQS
++	bool "Profile Kernel for prereqs"
++	depends on !COMPILE_TEST
++	depends on GCOV_KERNEL
++	depends on !COMPILE_PROFILE_ALL
++	default y if GCOV_KERNEL && !COMPILE_TEST
++	help
++	  This options activates profiling for the specified kernel modules.
++
++	  When some modules need Gcov data, enable this config, then configure
++	  with gcov on the corresponding modules,The directories or files of
++	  these modules will be added profiling flags after kernel compile.
++
++	  If unsure, say N.
++
+ choice
+ 	prompt "Specify GCOV format"
+ 	depends on GCOV_KERNEL
+-- 
+2.17.1
 
-
-Regards
-Vadivel
-
-> 
