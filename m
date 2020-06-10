@@ -2,128 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353811F5E61
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 00:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8491F5E69
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 00:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgFJWem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 18:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgFJWel (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 18:34:41 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1542FC08C5C2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 15:34:40 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id 190so2265943vsr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 15:34:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C9LYQ8aclMkdwfJP4cdhxWD4N8cMJMuN6znPHlB3Rsc=;
-        b=UevvpOtsXUfdMcqvIgRfPVVQSDyZs6oXq/Xnj/8uJDFNeQBZ7vzloiU32xzvK6mFCu
-         cGGLwNrdnw/Q0on5lLXJlkuu8D4VI6gjZehfPhGO6t/torNaJ6NxHMQ2JuDgO8FwHc4P
-         o8FP7KzD9QWU8u7G49I5aLDbEK8X8zhTnPGPK+25pdCKJLn9W7w1iBlkb84D2LADSGpc
-         tCqhhzfq26VpCG0se8b1WZwp4CCFSusJSn+larn2+KMSi4aCsCQRQ/S3A4qsfTfUDCpT
-         JYfiX91/2CIDQozv8ZBX3SClrislUPBF+zqSWJE7quvH7sEsU2MJoNuxaq5T13FcVb0X
-         ExAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C9LYQ8aclMkdwfJP4cdhxWD4N8cMJMuN6znPHlB3Rsc=;
-        b=PpWGsTVO55Xz6EBUStRxOjzVEUW9PLlp2xPhkp/VmCMzsC684FiRdyu7sCVzLh3Bkc
-         R932hK8wc/obfjpKh8GxJQAChq0wWEOnwPeUCMC9ADeKI/ACGfbfbZjdxJjvwU80w/dW
-         vnkprny8gT+siwz+fU3V74ne7DrUL2sDD5/BqqcvgeXsUrjaKpgLL99EGe4fhDARyHhq
-         f1BYcyu96b20hRI9sXntw4qgLHJkGgZIl8PtSJy4d/JjRPBGR0EjXkUbJte2Iw4ZR9BF
-         UHqLoh8r+kB2Kmylwr6gO49XQeoUMVlaszMXF9K0dnWT49ZMR/DUtcMwx1vg/fIm3osF
-         x3Qw==
-X-Gm-Message-State: AOAM531jFm4+euGkQ/0Em8etAHr22dEwG0kBuWAH2eK4vDLo4q7inPrr
-        Vg1OZVuzdNI6mzt8SSuvoVnPuvWMuHfATTmEC6s+0w==
-X-Google-Smtp-Source: ABdhPJzdt1t5lYhNZNFDbxTCIee/fOpBW2dvkZTK5r9pH/LqHC+MVWmHSuu/UxjSaFUQydIW/izqWRJz+CsXZPttueA=
-X-Received: by 2002:a67:79ce:: with SMTP id u197mr4725019vsc.17.1591828478904;
- Wed, 10 Jun 2020 15:34:38 -0700 (PDT)
+        id S1726656AbgFJWlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 18:41:25 -0400
+Received: from muru.com ([72.249.23.125]:57630 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726105AbgFJWlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 18:41:23 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id AE4F18081;
+        Wed, 10 Jun 2020 22:42:11 +0000 (UTC)
+Date:   Wed, 10 Jun 2020 15:41:17 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc:     linux-omap@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH 1/5] drm/omap: Fix suspend resume regression after
+ platform data removal
+Message-ID: <20200610224117.GE43721@atomide.com>
+References: <20200531193941.13179-1-tony@atomide.com>
+ <20200531193941.13179-2-tony@atomide.com>
+ <16ba1808-5c7f-573d-8dd0-c80cac2f476e@ti.com>
+ <20200603140639.GG37466@atomide.com>
+ <47e286dd-f87a-4440-5bde-1f7b53e8b672@ti.com>
+ <20200609151943.GL37466@atomide.com>
+ <9ed70121-2a53-d2b3-051a-88eb83e6c53f@ti.com>
+ <20200609165234.GM37466@atomide.com>
+ <20200609171043.GN37466@atomide.com>
+ <7c4809d0-5262-a739-354a-61e617fe6c6e@ti.com>
 MIME-Version: 1.0
-References: <20200605213853.14959-1-sean.j.christopherson@intel.com> <20200605213853.14959-8-sean.j.christopherson@intel.com>
-In-Reply-To: <20200605213853.14959-8-sean.j.christopherson@intel.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 10 Jun 2020 15:34:28 -0700
-Message-ID: <CANgfPd9UH01vO1SYJ3vrKq4H_DXcJ3OL_VaeY2TV8_ZH9cR1GQ@mail.gmail.com>
-Subject: Re: [PATCH 07/21] KVM: x86/mmu: Topup memory caches after walking GVA->GPA
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Feiner <pfeiner@google.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Christoffer Dall <christoffer.dall@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c4809d0-5262-a739-354a-61e617fe6c6e@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 2:39 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> Topup memory caches after walking the GVA->GPA translation during a
-> shadow page fault, there is no need to ensure the caches are full when
-> walking the GVA.  As of commit f5a1e9f89504f ("KVM: MMU: remove call
-> to kvm_mmu_pte_write from walk_addr"), the FNAME(walk_addr) flow no
-> longer add rmaps via kvm_mmu_pte_write().
->
-> This avoids allocating memory in the case that the GVA is unmapped in
-> the guest, and also provides a paper trail of why/when the memory caches
-> need to be filled.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Ben Gardon <bgardon@google.com>
-> ---
->  arch/x86/kvm/mmu/paging_tmpl.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-> index 38c576495048..3de32122f601 100644
-> --- a/arch/x86/kvm/mmu/paging_tmpl.h
-> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
-> @@ -791,10 +791,6 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
->
->         pgprintk("%s: addr %lx err %x\n", __func__, addr, error_code);
->
-> -       r = mmu_topup_memory_caches(vcpu);
-> -       if (r)
-> -               return r;
-> -
->         /*
->          * If PFEC.RSVD is set, this is a shadow page fault.
->          * The bit needs to be cleared before walking guest page tables.
-> @@ -822,6 +818,10 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
->                 return RET_PF_EMULATE;
->         }
->
-> +       r = mmu_topup_memory_caches(vcpu);
-> +       if (r)
-> +               return r;
-> +
->         vcpu->arch.write_fault_to_shadow_pgtable = false;
->
->         is_self_change_mapping = FNAME(is_self_change_mapping)(vcpu,
-> --
-> 2.26.0
->
+* Tomi Valkeinen <tomi.valkeinen@ti.com> [200610 11:48]:
+> On 09/06/2020 20:10, Tony Lindgren wrote:
+> 
+> > > On beagle-x15 I see these errors after modprobe:
+> > > 
+> > > DSS: OMAP DSS rev 6.1
+> > > omapdss_dss 58000000.dss: bound 58001000.dispc (ops dispc_component_ops [omapdss])
+> > > omapdss_dss 58000000.dss: bound 58040000.encoder (ops hdmi5_component_ops [omapdss])
+> > > [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
+> > > omapdrm omapdrm.0: [drm] Cannot find any crtc or sizes
+> > > [drm] Initialized omapdrm 1.0.0 20110917 for omapdrm.0 on minor 0
+> > > omapdrm omapdrm.0: [drm] Cannot find any crtc or sizes
+> > > aic_dvdd_fixed: disabling
+> > > ldousb: disabling
+> > > 
+> > > Maybe I'm missing some related module on x15?
+> > 
+> > Still did not figure what I might be missing on x15 :)
+> 
+> The log above shows that nothing is missing, omapdrm has probed fine. But it
+> cannot see anything connected to the hdmi port. Are you booting with correct
+> dtb for your x15 revision? And you have a monitor connected? =)
+
+Oh you're right, I forgot to connect the HDMI cable back to X15 :)
+No wonder it's no longer working for me..
+
+Regards,
+
+Tony
