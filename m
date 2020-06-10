@@ -2,156 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D6C1F59CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFAE1F59D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 19:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728620AbgFJRPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 13:15:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48694 "EHLO mx2.suse.de"
+        id S1729524AbgFJRQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 13:16:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726979AbgFJRPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 13:15:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 58E21B009;
-        Wed, 10 Jun 2020 17:15:06 +0000 (UTC)
-Subject: Re: [PATCH] drm/ast: fix missing break in switch statement for
- format->cpp[0] case 4
-To:     Colin King <colin.king@canonical.com>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200610115804.1132338-1-colin.king@canonical.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- mQENBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAG0J1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPokBVAQTAQgAPhYh
- BHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsDBQkDwmcABQsJCAcCBhUKCQgLAgQWAgMB
- Ah4BAheAAAoJEGgNwR1TC3ojR80H/jH+vYavwQ+TvO8ksXL9JQWc3IFSiGpuSVXLCdg62AmR
- irxW+qCwNncNQyb9rd30gzdectSkPWL3KSqEResBe24IbA5/jSkPweJasgXtfhuyoeCJ6PXo
- clQQGKIoFIAEv1s8l0ggPZswvCinegl1diyJXUXmdEJRTWYAtxn/atut1o6Giv6D2qmYbXN7
- mneMC5MzlLaJKUtoH7U/IjVw1sx2qtxAZGKVm4RZxPnMCp9E1MAr5t4dP5gJCIiqsdrVqI6i
- KupZstMxstPU//azmz7ZWWxT0JzgJqZSvPYx/SATeexTYBP47YFyri4jnsty2ErS91E6H8os
- Bv6pnSn7eAq5AQ0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRH
- UE9eosYbT6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgT
- RjP+qbU63Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+R
- dhgATnWWGKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zb
- ehDda8lvhFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r
- 12+lqdsAEQEAAYkBPAQYAQgAJhYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsMBQkD
- wmcAAAoJEGgNwR1TC3ojpfcIAInwP5OlcEKokTnHCiDTz4Ony4GnHRP2fXATQZCKxmu4AJY2
- h9ifw9Nf2TjCZ6AMvC3thAN0rFDj55N9l4s1CpaDo4J+0fkrHuyNacnT206CeJV1E7NYntxU
- n+LSiRrOdywn6erjxRi9EYTVLCHcDhBEjKmFZfg4AM4GZMWX1lg0+eHbd5oL1as28WvvI/uI
- aMyV8RbyXot1r/8QLlWldU3NrTF5p7TMU2y3ZH2mf5suSKHAMtbE4jKJ8ZHFOo3GhLgjVrBW
- HE9JXO08xKkgD+w6v83+nomsEuf6C6LYrqY/tsZvyEX6zN8CtirPdPWu/VXNRYAl/lat7lSI
- 3H26qrE=
-Message-ID: <3286283e-f202-a515-0ae1-89c0d3e855fb@suse.de>
-Date:   Wed, 10 Jun 2020 19:14:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1727938AbgFJRQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 13:16:23 -0400
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5855B20820;
+        Wed, 10 Jun 2020 17:16:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591809382;
+        bh=VuG8GFAPexrsYOA4UE1dLrNk0LWRoaPJInTcHfEdbfo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cS9uw1oEysLZyc2hML43CnVBubSlpUYbM9CTxkk9RoQ715TYm/u3Dy8vLeX92YFTE
+         IkcqPBTQ3Rx3T8JW4U0T7zi6X4B3yrCgYsmJg7KPfCl1HecKq6oGj5DwWASrzgOSPn
+         lQWCOT18fF9z+do35e5vBc/EmNwC2ti6NMhrdwec=
+Received: by mail-oi1-f171.google.com with SMTP id p70so2728310oic.12;
+        Wed, 10 Jun 2020 10:16:22 -0700 (PDT)
+X-Gm-Message-State: AOAM531sjSvLiUglLnibhf+Ypa7+9PxAnKP41begekUUbzwfpVISI/wb
+        s/tFxhq730hxlIi/Rqfx4jPGr91NKtjLwreD3Q==
+X-Google-Smtp-Source: ABdhPJwHOABuR6AQwMm2KvAS7N8eot1RgRxtzsddB3/K6M8xY7inxghhge+De2OMnh1FR1Xql5mlTOlR1gqOEN6sorU=
+X-Received: by 2002:aca:d943:: with SMTP id q64mr3389865oig.147.1591809381607;
+ Wed, 10 Jun 2020 10:16:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200610115804.1132338-1-colin.king@canonical.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="UsxwGtEEheNGlAKZ6LKRC92AjTcFcuLXI"
+References: <CAHp75VdiH=J-ovCdh1RFJDW_bJM8=pbXRaHmB691GLb-5oBmYQ@mail.gmail.com>
+ <7d7feb374cbf5a587dc1ce65fc3ad672@walle.cc> <20200608185651.GD4106@dell>
+ <32231f26f7028d62aeda8fdb3364faf1@walle.cc> <20200609064735.GH4106@dell>
+ <32287ac0488f7cbd5a7d1259c284e554@walle.cc> <20200609151941.GM4106@dell>
+ <95e6ec9bbdf6af7a9ff9c31786f743f2@walle.cc> <20200609194505.GQ4106@dell>
+ <3a6931248f0efcaf8efbb5425a9bd833@walle.cc> <20200610071940.GS4106@dell>
+In-Reply-To: <20200610071940.GS4106@dell>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 10 Jun 2020 11:16:10 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKr1aDVzgAMjwwK8E8O_f29vSrx1HXk81FF+rd3sEe==w@mail.gmail.com>
+Message-ID: <CAL_JsqKr1aDVzgAMjwwK8E8O_f29vSrx1HXk81FF+rd3sEe==w@mail.gmail.com>
+Subject: Re: [PATCH v4 02/11] mfd: Add support for Kontron sl28cpld management controller
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Michael Walle <michael@walle.cc>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        david.m.ertman@intel.com, shiraz.saleem@intel.com,
+        Mark Brown <broonie@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux HWMON List <linux-hwmon@vger.kernel.org>,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---UsxwGtEEheNGlAKZ6LKRC92AjTcFcuLXI
-Content-Type: multipart/mixed; boundary="Eah6yEBgs72EXQ71v3OZ8NDYMEkLD36Kz";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Colin King <colin.king@canonical.com>, Dave Airlie <airlied@redhat.com>,
- David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
- Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <3286283e-f202-a515-0ae1-89c0d3e855fb@suse.de>
-Subject: Re: [PATCH] drm/ast: fix missing break in switch statement for
- format->cpp[0] case 4
-References: <20200610115804.1132338-1-colin.king@canonical.com>
-In-Reply-To: <20200610115804.1132338-1-colin.king@canonical.com>
+On Wed, Jun 10, 2020 at 1:19 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Wed, 10 Jun 2020, Michael Walle wrote:
+> > Am 2020-06-09 21:45, schrieb Lee Jones:
+> > > On Tue, 09 Jun 2020, Michael Walle wrote:
+> > > > > We do not need a 'simple-regmap' solution for your use-case.
+> > > > >
+> > > > > Since your device's registers are segregated, just split up the
+> > > > > register map and allocate each sub-device with it's own slice.
+> > > >
+> > > > I don't get it, could you make a device tree example for my
+> > > > use-case? (see also above)
+> > >
+> > >     &i2cbus {
+> > >         mfd-device@10 {
+> > >             compatible =3D "simple-mfd";
+> > >             reg =3D <10>;
+> > >
+> > >             sub-device@10 {
+> > >                 compatible =3D "vendor,sub-device";
+> > >                 reg =3D <10>;
+> > >             };
+> > >    };
+> > >
+> > > The Regmap config would be present in each of the child devices.
+> > >
+> > > Each child device would call devm_regmap_init_i2c() in .probe().
+> >
+> > Ah, I see. If I'm not wrong, this still means to create an i2c
+> > device driver with the name "simple-mfd".
+>
+> Yes, it does.
 
---Eah6yEBgs72EXQ71v3OZ8NDYMEkLD36Kz
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+TBC, while fine for a driver to bind on 'simple-mfd', a DT compatible
+with that alone is not fine.
 
-Hi
+> > Besides that, I don't like this, because:
+> >  - Rob already expressed its concerns with "simple-mfd" and so on.
+>
+> Where did this take place?  I'd like to read up on this.
+>
+> >  - you need to duplicate the config in each sub device
+>
+> You can have a share a single config.
+>
+> >  - which also means you are restricting the sub devices to be
+> >    i2c only (unless you implement and duplicate other regmap configs,
+> >    too). For this driver, SPI and MMIO may be viable options.
+>
+> You could also have a shared implementation to choose between different
+> busses.
 
-Am 10.06.20 um 13:58 schrieb Colin King:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> Currently the switch statement for format->cpp[0] value 4 assigns
-> color_index which is never read again and then falls through to the
-> default case and returns. This looks like a missing break statement
-> bug. Fix this by adding a break statement.
->=20
-> Addresses-Coverity: ("Unused value")
-> Fixes: 259d14a76a27 ("drm/ast: Split ast_set_vbios_mode_info()")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+I think it is really the syscon mfd driver you want to generalize to
+other buses. Though with a quick look at it, there's not really a
+whole lot to share. The regmap lookup would be the main thing. You are
+going to need a driver instance for each bus type.
 
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+> > Thus, I'd rather implement a simple-mfd.c which implement a common
+> > I2C driver for now and populate its children using
+> > devm_of_platform_populate(). This could be extended to support other
+> > type of regmaps like SPI in the future.
+> >
+> > Also some MFD drivers could be moved to this, a likely candidate is
+> > the smsc-ece1099.c. Although I don't really understand its purpose,
+> > if don't have CONFIG_OF.
+> >
+> > Judging from the existing code, this simple-mfd.c wouldn't just be
+> > "a list of compatible" strings but also additional quirks and tweaks
+> > for particular devices in this list.
 
-Thanks for the fix. I'll test and merge the patch tomorrow.
+Yes, this is why specific compatible strings are required.
 
-Best regards
-Thomas
-
-> ---
->  drivers/gpu/drm/ast/ast_mode.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/gpu/drm/ast/ast_mode.c b/drivers/gpu/drm/ast/ast_m=
-ode.c
-> index 7d39b858c9f1..3a3a511670c9 100644
-> --- a/drivers/gpu/drm/ast/ast_mode.c
-> +++ b/drivers/gpu/drm/ast/ast_mode.c
-> @@ -226,6 +226,7 @@ static void ast_set_vbios_color_reg(struct ast_priv=
-ate *ast,
->  	case 3:
->  	case 4:
->  		color_index =3D TrueCModeIndex;
-> +		break;
->  	default:
->  		return;
->  	}
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---Eah6yEBgs72EXQ71v3OZ8NDYMEkLD36Kz--
-
---UsxwGtEEheNGlAKZ6LKRC92AjTcFcuLXI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl7hFRUACgkQaA3BHVML
-eiNuewf+NSC3xjI5ZqB94Yy11a5/KKJtyGy9G3I638ASSLvAjH4PiqkGQCW246p7
-QrOnWTdoKlW6XreLjH06r3+9Jb6WafV/ewvzio6+SvuD64edsef6HBekhUlKwYo3
-1593l1mh+DKw3o+uGYUBo96Oj5RY3yZrSjfnhAfOd116th4V5YbOOyakfWQ0gEhX
-xE0+r9NB+BtY1rPUNDcucYn37j4twAICKVPOX2shYc/Qpoc8cE/QI9Y7J/ktpy11
-3LMItZvlevCWP/79zrdpy/buo603otmLkn5Ia8QMtFAKZ+IBIzo97fdHVqrC/aHZ
-X3f5bYnUyyOscA5mRY72K1veGuupuQ==
-=kXy7
------END PGP SIGNATURE-----
-
---UsxwGtEEheNGlAKZ6LKRC92AjTcFcuLXI--
+> Hold off on the simple-mfd.c idea, as I'm not taken by it yet and
+> wouldn't want you to waste your time.  I have another idea which would
+> help.  Give me a few days to put something together.
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
