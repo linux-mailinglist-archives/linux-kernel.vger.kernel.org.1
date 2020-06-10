@@ -2,272 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF6A1F4E61
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 08:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26C21F4E64
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 08:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgFJGn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 02:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgFJGnV (ORCPT
+        id S1726298AbgFJGop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 02:44:45 -0400
+Received: from sonic316-22.consmr.mail.ne1.yahoo.com ([66.163.187.148]:46205
+        "EHLO sonic316-22.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726255AbgFJGoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 02:43:21 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E1FC03E96B
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Jun 2020 23:43:19 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j10so881765wrw.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jun 2020 23:43:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=50byfSUtLO2L1CsGut80+OISi/Nz9nsAC9YkkMqMXOM=;
-        b=WpAdeT9dbF9UyWDJZv0gWHAQMuuBqmw5us09gBqWv+GWgq+kxrUfIl8gfsmGhALYRN
-         9U88mTavWdGgeMiEitVvkwac8h/MigSeJesciURuMINjhqnylY868I+AXmLy3CHeKK4P
-         Xe+AlqVbHt4WBnTG1f8JhdVuwbTMAbJOjy5TFxeEHF5cXMmFTDwyPmEaDiqrwZ5X6ZU9
-         O2hrYZYEQdr60oSPRqLkRvGI8eXrcyplPOevfujiGJYbUm9lfLo0lFaFzifhAsL09oDj
-         QJXOxBR3qtn+1jT1b8rXZcqpYHhumFRmVcFCr3GMMys3xSzduKC41iTYvv9r9E5MMR3d
-         n+DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=50byfSUtLO2L1CsGut80+OISi/Nz9nsAC9YkkMqMXOM=;
-        b=BdMXwuPjqCHfBJjB+8TzOh1perH4pFl004yonh1bm9o7A1LwHEK3NjrzFAwCLLpBdh
-         G88w5EuOYqHhxlqUJd/JtklVwMDg+pLXmAqGnMBUpe+oAkYERYF91c9P1pkGkPSPJeh6
-         Mq19hM0u+Y2TGVip66t+crk3N+p4ubekdS69iCsr6t38Pej+e9ocyUj6kiXJL4l4lHG/
-         2xjm9bbazzK1qQRTliDU2quYKelwqqOiL1qINYh3gK/b5JmVy6heFR+LrOCsDpNpXGkh
-         ObT27uAOCeCiqqah0YJrTQjfDekhNWlo0q3YbmV8ut5SAIZaLKBix12ik2ripJBiaTWI
-         Uwaw==
-X-Gm-Message-State: AOAM530AxVxtj2Byqij5U/Y8lobiFol9d+ztTucX7mjVWZeNSOOMwmwI
-        jkHpSelTUNI+b7Ep8aPUKXBp1A==
-X-Google-Smtp-Source: ABdhPJwaoQK+X0lo6GNX+4YH4LmVZ34yndsRQ2O8DgNG6DNYc2XV0ST4pDrJrPqXkHWMBQcWpVJ2Mg==
-X-Received: by 2002:a5d:608d:: with SMTP id w13mr1828741wrt.298.1591771398313;
-        Tue, 09 Jun 2020 23:43:18 -0700 (PDT)
-Received: from dell ([2.27.167.101])
-        by smtp.gmail.com with ESMTPSA id y14sm5513504wma.25.2020.06.09.23.43.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 23:43:17 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 07:43:15 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Mark Brown <broonie@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        GregKroah-Hartmangregkh@linuxfoundation.org
-Subject: Re: [RFC] MFD's relationship with Device Tree (OF)
-Message-ID: <20200610064315.GR4106@dell>
-References: <20200609110136.GJ4106@dell>
- <CAL_JsqK1BfYa2WfHFUwm9MB+aZVF5zehDSTZj0MhjuhJyYXdTA@mail.gmail.com>
+        Wed, 10 Jun 2020 02:44:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591771483; bh=YdDyVS9QBRPCiN2YYZ/cryZSa6YEXSJJY6ujWZ06LZ8=; h=Date:From:Reply-To:Subject:References:From:Subject; b=jqRZqJdFceDG6vYWifLbws7x6ED4EVQCqrpcbzg2gxAJ/8feOzWdwHfiUn0fIwnupLgpnPHxyf5/CqsFlPvalKUV5WJ7i7qhrgUSihoOZTuvcVTCt5msMhgYNokwZgF8uus32kJyV8PPqvqQqh07yiNplBa+ahnf3Oq6hEuKn0RdNs18+gW3L/+O3Z5fByck+WGCOunrgP/r+TrZMFmeAx3iytpRnG66arIsz5jpdPswdOkbuHKoxCdkRhPKfZSsSv3u9U682Ze7EvuXVzg7+ujuypcC/vgC7z283/P7CMqK5QMY2uHbVPveOedOpoEMFrPiaEOakOKLmcXxI0+aRw==
+X-YMail-OSG: mHLnddYVM1mbyXD307VgOxOh2r752aRlOTjBBIr6_5FuQo.r2u5SHbUtY9OVW70
+ QBeqSe8H3CEm1cYyuGjwtkDSBXqgcwGsHhuK7Drbi0SphKAzNMFQBsgaZdSLoNgOSzfBu_25KG39
+ B46jOBkto29Nm62YxawE_ZGZXrQN57SA_Gex3GPt6ibElhOvADtXA8r8Y7XCj2mSDHqD.B7igSBU
+ wnBsDnQmWnyaItEtiMy9JlpH3SeAkg30u6vqNniyFoG4qcQ2dteLi51okXsAfXodPtGeGFqrGU8d
+ crgVaCfMBqY0BKNo3QbxKirZezIo5qsmkuhBoXaWsf4K4UPOeXO6Pl7gJGqrjRkaEkpb87cETJZ8
+ ypjXZbLuOb23zSgw5fyNPawwAdJcuc6qOlVWpPgd2RWWYSPS_e0.BHpRnHYDzHcePSbwx12sgQQa
+ WAppMbzRAUucyGsAcSflRPerfRwxhBHXsA46jM9muKk3rsaMQxxgqi6T6tF0S6Za.ZQT8w9WspHh
+ bA.XWmkSjdjw6CcVlohSaqmYRgMttsamguLw572v2Xl80m9hOUAI2dd0ZKY7BRnuMKlUetSBSs8D
+ ibIgmIfm.vVjAEtQFjGdUjUYlLMgqT7SSc9FOqRiu_la0FxqjupYZEqThTwibLfcmFqnOC5LVgkR
+ mIqh6xotQqWg32e.I87ljDMFGAK0TVlToBthQU.0M75sT_8oRpqNryPA6IxXhnO6bQ.EH0nBcKSw
+ M61UcecX3kyWbBXbhwZlLEI5GrhXqzYuwLMw0ZdNjBj74xek02JcrAvVKRRtcZlnsHKG501RsUgi
+ b6hJ9A5HJjLTy6AWEDBo6wVIApfPzjw3wjk3aMQi77cGpSOQIubqZPWgwuUph4gZB3VCA6VdnJK7
+ l51whcBa_VzarsKLPmcTH2ZbeKaDuhbrkcGafaEsMzGaCoC4fOLjxb9RBG6LeHnbNnBXB93DjltI
+ ngWHrAUiWv.ztigvqjVEmMvoQE5sgPC1ZMCiHAvQB.hcXKJRhYyAtkZsWkWiT6moIqGq5OO9W2Re
+ dspphovsFpb0xjd2k9U66miYg1xdRWuWb60l5Gu2uCqQNG4oC.s6GlI0Xu5cbXnrV3N3yPdOL1on
+ 039.OPbkGZMu4lgbWs4Jk3G3M35TgvtKqsuKHZDYDnSwUNWVPa1MfDcxffXTdBZChPR1ENCXKMOd
+ KR.pcYPwzW5QVg2A8Yiww3DYdH8Z86cK.Vy91zrzd_ZV1On0hY5e9XMss_e658FuEgOGberWMdjv
+ 18v1wNM6EVJ9cYZrjefXzl1XbOuaAh5BhNfjIxwToTCAFv7RFe4qku2GUZkaD5ibFLLQzapWMzUr
+ xlB5fSQtHOc8ztQRZjWAKbRE8
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Wed, 10 Jun 2020 06:44:43 +0000
+Date:   Wed, 10 Jun 2020 06:44:42 +0000 (UTC)
+From:   Mr Moussa Dauda <mrmoussadauda@gmail.com>
+Reply-To: mrmoussadaudaa@gmail.com
+Message-ID: <1301434136.2025933.1591771482976@mail.yahoo.com>
+Subject: I await your urgent response immediately.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqK1BfYa2WfHFUwm9MB+aZVF5zehDSTZj0MhjuhJyYXdTA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1301434136.2025933.1591771482976.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16072 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 09 Jun 2020, Rob Herring wrote:
 
-Thanks for replying Rob.
 
-> On Tue, Jun 9, 2020 at 5:01 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > Good morning,
-> >
-> > After a number of reports/queries surrounding a known long-term issue
-> > in the MFD core, including the submission of a couple of attempted
-> > solutions, I've decided to finally tackle this one myself.
-> >
-> > Currently, when a child platform device (sometimes referred to as a
-> > sub-device) is registered via the Multi-Functional Device (MFD) API,
-> > the framework attempts to match the newly registered platform device
-> > with its associated Device Tree (OF) node.  Until now, the device has
-> > been allocated the first node found with an identical OF compatible
-> > string.  Unfortunately, if there are, say for example '3' devices
-> > which are to be handled by the same driver and therefore have the same
-> > compatible string, each of them will be allocated a pointer to the
-> > *first* node.
-> >
-> > Let me give you an example.
-> >
-> > I have knocked up an example 'parent' and 'child' device driver.  The
-> > parent utilises the MFD API to register 3 identical children, each
-> > controlled by the same driver.  This happens a lot.  Fortunately, in
-> > the majority of cases, the OF nodes are also totally identical, but
-> > what if you wish to configure one of the child devices with different
-> > attributes or resources supplied via Device Tree, like a clock?  This
-> > is currently impossible.
-> >
-> > Here is the Device Tree representation for the 1 parent and the 3
-> > child (sub) devices described above:
-> >
-> >         parent {
-> >                 compatible = "mfd,of-test-parent";
-> >
-> >                 child@0 {
-> 
-> Just a note, unit-address implies there is a 'reg' property. Why
-> that's important below.
+Dear Good Friend,
 
-Right.  This is just an example to express the problem more easily.
+Good Day,
 
-> >                         compatible = "mfd,of-test-child";
-> >                         clocks = <&clock 0>;
-> >                 };
-> >
-> >                 child@1 {
-> >                         compatible = "mfd,of-test-child";
-> >                         clocks = <&clock 1>;
-> >                 };
-> >
-> >                 child@2 {
-> >                         compatible = "mfd,of-test-child";
-> >                         clocks = <&clock 2>;
-> >                 };
-> >         };
-> >
-> > This is how we register those devices from MFD:
-> >
-> > static const struct mfd_cell mfd_of_test_cell[] = {
-> >         OF_MFD_CELL("mfd_of_test_child", NULL, NULL, 0, 0, "mfd,of-test-child"),
-> >         OF_MFD_CELL("mfd_of_test_child", NULL, NULL, 0, 1, "mfd,of-test-child"),
-> >         OF_MFD_CELL("mfd_of_test_child", NULL, NULL, 0, 2, "mfd,of-test-child")
-> > };
-> >
-> > ... which we pass into mfd_add_devices() for processing.
-> >
-> > In an ideal world.  The devices with the platform_id; 0, 1 and 2 would
-> > be matched up to Device Tree nodes; child@0, child@1 and child@2
-> > respectively.  Instead all 3 devices will be allocated a pointer to
-> > child@0's OF node, which is obviously not correct.
-> >
-> > This is how it looks when each of the child devices are probed:
-> >
-> >  [0.708287] mfd-of-test-parent mfd_of_test: Registering 3 devices
-> >  [...]
-> >  [0.712511] mfd-of-test-child mfd_of_test_child.0: Probing platform device: 0
-> >  [0.712710] mfd-of-test-child mfd_of_test_child.0: Using OF node: child@0
-> >  [0.713033] mfd-of-test-child mfd_of_test_child.1: Probing platform device: 1
-> >  [0.713381] mfd-of-test-child mfd_of_test_child.1: Using OF node: child@0
-> >  [0.713691] mfd-of-test-child mfd_of_test_child.2: Probing platform device: 2
-> >  [0.713889] mfd-of-test-child mfd_of_test_child.2: Using OF node: child@0
-> >
-> > "Why is it when I change child 2's clock rate, it also changes 0's?"
-> >
-> > Whoops!
-> >
-> > So in order to fix this, we need to make MFD more-cleverer!
-> >
-> > However, this is not so simple.  There are some rules we should abide
-> > by (I use "should" intentionally here, as something might just have to
-> > give):
-> >
-> >  a) Since Device Tree is designed to describe hardware, inserting
-> >     arbitrary properties into DT is forbidden.  This precludes things
-> >     we would ordinarily be able to match on, like 'id' or 'name'.
-> >  b) As an extension to a) DTs should also be OS agnostic, so
-> >     properties like 'mfd-device', 'mfd-order' etc are also not
-> >     not suitable for inclusion.
-> >  c) The final solution should ideally be capable of supporting both
-> >     newly defined and current trees (without retroactive edits)
-> >     alike.
-> 
-> Presumably anything current already works. If you had the above
-> example already, requiring updating the DT to make it work seems fine.
+I am Mr. Moussa Dauda, Director In charge of Auditing and accounting department of Bank Of Africa, BOA, I hope that you will not betray or expose this trust and confident that i am about to repose on you for the mutual benefit of our both families.
 
-"works" it a matter of opinion.  Some instances "work" out of luck.
-Some "work" because they have been worked-around or an alternative
-implementation sought.
+I need your urgent assistance in transferring the sum of TEN MILLION FIVE HUNDRED THOUSAND UNITED STATES DOLLARS, U$10,500.000.00, immediately to your account anywhere you chose.
 
-For instance, 'ab8500-pwm' only has 1 DT node present, yet 3 devices
-are registered via MFD.  Since MFD matches devices with DT nodes
-containing identical compatible strings using first-found, all PWM
-instances are assigned a pointer to the 1 existing DT node.
-Fortunately in this case they all share the same clock, so it "works",
-but that's clearly not the intended implementation.
+This is a very highly secret, i will like you to please keep this proposal as a top secret or delete it if you are not interested, upon receipt of your reply, i will send to you more details about this business deal.
 
-> >  d) Existing properties could be used, but not abused.  For example,
-> >     one of my suggestions (see below) is to use the 'reg' property.
-> >     This is fine in principle but loading 'reg' with arbitrary values
-> >     (such as; 0, 1, 2 ... x) which 1) clearly do not have anything to
-> >     do with registers and 2) would be meaningless in other OSes/
-> >     implementations, just to serve our purpose, is to be interpreted
-> >     as an abuse.
-> 
-> Multiple instances of something implies you have some way to address
-> them and 'reg' is what defines the address of something. 0,1,2,etc.
-> looks suspiciously like just some kernel defined indexes, but if
-> that's how things are defined in the datasheet I'm okay with them.
-> 
-> The one wrinkle is there's only one address space at one level, so
-> gpio@0, gpio@1, pwm@0, pwm@1, etc. doesn't really work (well, it
-> works, but having overlapping addresses is not good practice). Either
-> we relax that in this case or we can add another level to group nodes.
+I will also direct you on how this deal will be done without any problem; you must understand that this is 100% free from risk.
 
-All agreed.  Sounds promising.
+Therefore my questions are:
 
-> > Proposal 1:
-> >
-> > As mentioned above, my initial thoughts were to use the 'reg' property
-> > to match an MFD cell entry with the correct DT node.  However, not
-> > all Device Tree nodes have 'reg' properties.  Particularly true in the
-> > case of MFD, where memory resources are usually shared with the parent
-> > via Regmap, or (as in the case of the ab8500) the MFD handles all
-> > register transactions via its own API.
-> 
-> Just to pick on ab8500, it should have had 'reg' property IMO. The
-> 'bank' is clearly a h/w property and how you address each sub-device.
-> 
-> >
-> > Proposal 2:
-> >
-> > If we can't guarantee that all DT nodes will have at least one
-> > property in common to be used for matching and we're prevented from
-> > supplying additional, potentially bespoke properties, then we must
-> > seek an alternative procedure.
-> >
-> > It should be possible to match based on order.  However, the developer
-> > would have to guarantee that the order in which the child devices are
-> > presented to the MFD API are in exactly the same order as they are
-> > represented in the Device Tree.  The obvious draw-back to this
-> > strategy is that it's potentially very fragile.
-> 
-> I don't think we should use order.
+1. Can you handle this project?
+2. Can I give you this trust?
+If yes, get back to me immediately.
 
-If it's always possible to have a 'reg' property then we won't need
-to.
+Try and get back to me with this my private email address ( mrmoussadaudaa@gmail.com )
 
-> > Current Proposal:
-> >
-> > How about a collection of Proposal 1 and Proposal 2?  First we could
-> > attempt a match on the 'reg' property.  Then, if that fails, we would
-> > use the fragile-but-its-all-we-have Proposal 2 as the fall-back.
-> 
-> Yes, we should use 'reg' whenever possible. If we don't have 'reg',
-> then you shouldn't have a unit-address either and you can simply match
-> on the node name (standard DT driver matching is with compatible,
-> device_type, and node name (w/o unit-address)). We've generally been
-> doing 'classname-N' when there's no 'reg' to do 'classname@N'.
-> Matching on 'classname-N' would work with node name matching as only
-> unit-addresses are stripped.
+I will be waiting to hear from you immediately.
 
-Let me try and knock something up.
-
-I'll get back to you when it's done.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Regards
+Mr. Moussa Dauda.
