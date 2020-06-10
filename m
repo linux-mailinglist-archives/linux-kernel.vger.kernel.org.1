@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E2E1F5DE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 23:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64FA1F5DF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 23:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbgFJVvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 17:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726698AbgFJVvY (ORCPT
+        id S1726886AbgFJVwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 17:52:31 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48818 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726317AbgFJVw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 17:51:24 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30916C03E96B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 14:51:23 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id d190so3317696qkc.20
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 14:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=4dFkZP2Au0Kx1zBnayZQrTEyqU5l+wtyIesCoLSGDjM=;
-        b=BygGwKZuudzSjpPdsYWTXVx4GGu9IRRAQ4OmhGdK8VRrUb54dvATxlIyLBPd/aoEcZ
-         QfleYJ1oTKI1n4ypb6mvx/EJs6VMIdKsMaVRfmasruaDWI2+N6PTtMnp62bou39Atuy7
-         W1f7JgYsopOhivEBWzYA+kjonOZNmcvQKWeMTHT4WA+d/b+FubJDBYGr5LxROnfuyvMc
-         rDbFJo6IiNTqrC+MBgmC1SqMAk1NZ42QeyLLazQUz6RHONiejMGm/vDJydQvty5PeFaA
-         tIcsbVk7h+Z8AJ+r/p4JTL67tA2WcwVdauaAKJ+XP+IqyLdpDj5boZnevaCLmG/aWnEd
-         MpeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=4dFkZP2Au0Kx1zBnayZQrTEyqU5l+wtyIesCoLSGDjM=;
-        b=R3T5Kc6PEnJ6bLKhrbzRGQRils/JfDRDpn2u5kup6b4fdMncDUPuRXLHBqz/SWQXW0
-         rTiaEc3vCPm3OqeoFBNNcmFyBFitFZfHqh3UHSFv1hFZMv27kYQZ7MvgJJsaRTjWicGk
-         S+kYntSgcGj96Dx8ZwZVTyF0vWiXMgAPSHScGeYy6hJaJcZ6z1x32vVPV4oDEXjnQgEu
-         i0MLtOa9zcrkxZTheApPqX2nt2S6vtzvvRmjRGDUC4IvVQKaAxDIzMokgG3gGDhXvuAM
-         p+8qKqb0dMLcoukt0AxgpOubJkFDm1cFSjTI/X9Hsd8Nil9vfgxoWjcVmR0hjeGcyuj+
-         HQcw==
-X-Gm-Message-State: AOAM532yNmg0Y0BuXfZOE748KBnV9xfCKSVe6UTTdlHSE2StPlQvAdr1
-        Xv/Exo7N+Hy1IFKnuuM44jCg4wjfQh61
-X-Google-Smtp-Source: ABdhPJx0PMvlLMdcGm8b5Y7pL3u9QE/q5aa1zkA7s//M0QVfkGTVEVU1H9ZTbev1QkXn4CA6MvvgRnuOzPw0
-X-Received: by 2002:a0c:9ae2:: with SMTP id k34mr4990107qvf.247.1591825882381;
- Wed, 10 Jun 2020 14:51:22 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 14:51:00 -0700
-In-Reply-To: <20200610215100.256599-1-irogers@google.com>
-Message-Id: <20200610215100.256599-11-irogers@google.com>
-Mime-Version: 1.0
-References: <20200610215100.256599-1-irogers@google.com>
-X-Mailer: git-send-email 2.27.0.278.ge193c7cf3a9-goog
-Subject: [PATCH 10/10] perf parse-events: Disable a subset of bison warnings
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 10 Jun 2020 17:52:26 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05ALWudx098327;
+        Wed, 10 Jun 2020 17:51:59 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31k5hxktj1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Jun 2020 17:51:59 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05ALmuDn152648;
+        Wed, 10 Jun 2020 17:51:59 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31k5hxkthm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Jun 2020 17:51:59 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05ALV67p011105;
+        Wed, 10 Jun 2020 21:51:58 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma01dal.us.ibm.com with ESMTP id 31hygymn8v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Jun 2020 21:51:58 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05ALptTj9175430
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Jun 2020 21:51:55 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AAFABBE04F;
+        Wed, 10 Jun 2020 21:51:56 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F2156BE056;
+        Wed, 10 Jun 2020 21:51:52 +0000 (GMT)
+Received: from kermit.br.ibm.com.com (unknown [9.163.42.87])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 10 Jun 2020 21:51:52 +0000 (GMT)
+From:   Murilo Opsfelder Araujo <muriloo@linux.ibm.com>
+To:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Murilo Opsfelder Araujo <muriloo@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alistair Popple <alistair@popple.id.au>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Murilo Opsfelder Araujo <mopsfelder@gmail.com>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Daniel Axtens <dja@axtens.net>
+Subject: [PATCH 0/3] powerpc/dt_cpu_ftrs: Make use of ISA_V3_* macros
+Date:   Wed, 10 Jun 2020 18:51:11 -0300
+Message-Id: <20200610215114.167544-1-muriloo@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-10_13:2020-06-10,2020-06-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
+ mlxscore=0 mlxlogscore=479 suspectscore=0 bulkscore=0 impostorscore=0
+ cotscore=-2147483648 phishscore=0 malwarescore=0 lowpriorityscore=0
+ adultscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006100156
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than disable all warnings with -w, disable specific warnings.
-Tested with GCC 9.3.0 and clang 9.0.1.
+The first patch removes unused macro ISA_V2_07B.  The second and third
+patches make use of macros ISA_V3_0B and ISA_V3_1, respectively,
+instead their corresponding literals.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/Build | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Murilo Opsfelder Araujo (3):
+  powerpc/dt_cpu_ftrs: Remove unused macro ISA_V2_07B
+  powerpc/dt_cpu_ftrs: Make use of macro ISA_V3_0B
+  powerpc/dt_cpu_ftrs: Make use of macro ISA_V3_1
 
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 68885bae466e..c1f872ab7748 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -229,9 +229,10 @@ flex_flags := -Wno-switch-enum -Wno-switch-default -Wno-unused-function -Wno-red
- CFLAGS_parse-events-flex.o  += $(flex_flags)
- CFLAGS_pmu-flex.o           += $(flex_flags)
- CFLAGS_expr-flex.o          += $(flex_flags)
--CFLAGS_parse-events-bison.o += -DYYENABLE_NLS=0 -w
--CFLAGS_pmu-bison.o          += -DYYENABLE_NLS=0 -DYYLTYPE_IS_TRIVIAL=0 -w
--CFLAGS_expr-bison.o         += -DYYENABLE_NLS=0 -DYYLTYPE_IS_TRIVIAL=0 -w
-+bison_flags := -DYYENABLE_NLS=0 -Wno-unused-parameter -Wno-nested-externs
-+CFLAGS_parse-events-bison.o += $(bison_flags)
-+CFLAGS_pmu-bison.o          += -DYYLTYPE_IS_TRIVIAL=0 $(bison_flags)
-+CFLAGS_expr-bison.o         += -DYYLTYPE_IS_TRIVIAL=0 $(bison_flags)
- 
- $(OUTPUT)util/parse-events.o: $(OUTPUT)util/parse-events-flex.c $(OUTPUT)util/parse-events-bison.c
- $(OUTPUT)util/pmu.o: $(OUTPUT)util/pmu-flex.c $(OUTPUT)util/pmu-bison.c
--- 
-2.27.0.278.ge193c7cf3a9-goog
+ arch/powerpc/kernel/dt_cpu_ftrs.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
+--
+2.25.4
