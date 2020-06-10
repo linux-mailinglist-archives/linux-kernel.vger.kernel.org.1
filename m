@@ -2,115 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DB81F5DED
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 23:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE8D1F5DF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 23:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgFJVwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 17:52:19 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:45621 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbgFJVwR (ORCPT
+        id S1726496AbgFJV4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 17:56:05 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:38146 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgFJV4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 17:52:17 -0400
-Received: by mail-pg1-f193.google.com with SMTP id n23so1561442pgb.12;
-        Wed, 10 Jun 2020 14:52:17 -0700 (PDT)
+        Wed, 10 Jun 2020 17:56:05 -0400
+Received: by mail-io1-f69.google.com with SMTP id l19so2521045iol.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 14:56:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eRf6W4oVEmwpsh0h+K1sCW7NaH3bq1FpwEBiNryS1Wo=;
-        b=GVfmeToqAO9SEml7j9bByOpsYVyCsxug/bX6H9XLG7OC9NfuH5pjGiWLQEEZzTAsHM
-         d7EpWSbJn/Qp+6FxhUkJQJFl6QYtMS/bpQEEfnihJR6WZlA/Yr5GZzXUcRKEgvsBTh3P
-         pV6BYcZvb3atDdRmAqUaYlsLORSlWiJKVee239z+S7WD+KXNJaDxtw2j1uR7VPhNE5qr
-         deNri2wUB9Ki+IZ9rUw0l1UUYyqaW3G1Giu6nx3HjuzSO5axDQIUbvvLaNXpBfTv7iTT
-         /5eDvDQK7zHhjci9nk8KKZZnvOKIGC9XXKrky4lC+yGy3S9/Im0tyrobF0nx54nSP5J7
-         JCTA==
-X-Gm-Message-State: AOAM530EWaOzgQw5VdHOft0Yf0VERYq+euCqLCQV1dH+ZrcbR92iwMX7
-        CLlaCKtU8S9M6uU6Z1w3ank=
-X-Google-Smtp-Source: ABdhPJy992mUv5U8bhwojNTbIZ80dvsxUMVUFbzemXqKRntKpx7DGKHGnQxvq9NILxqv4J2ZE+scdw==
-X-Received: by 2002:a63:4d5a:: with SMTP id n26mr4421932pgl.85.1591825936625;
-        Wed, 10 Jun 2020 14:52:16 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id n69sm854031pfd.171.2020.06.10.14.52.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 14:52:14 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 038B5403AB; Wed, 10 Jun 2020 21:52:13 +0000 (UTC)
-Date:   Wed, 10 Jun 2020 21:52:13 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, axboe@kernel.dk, viro@zeniv.linux.org.uk,
-        bvanassche@acm.org, gregkh@linuxfoundation.org,
-        rostedt@goodmis.org, mingo@redhat.com, ming.lei@redhat.com,
-        nstange@suse.de, akpm@linux-foundation.org, mhocko@suse.com,
-        yukuai3@huawei.com, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
-Subject: Re: [PATCH v6 6/6] blktrace: fix debugfs use after free
-Message-ID: <20200610215213.GH13911@42.do-not-panic.com>
-References: <20200608170127.20419-1-mcgrof@kernel.org>
- <20200608170127.20419-7-mcgrof@kernel.org>
- <20200609150602.GA7111@infradead.org>
- <20200609172922.GP11244@42.do-not-panic.com>
- <20200609173218.GA7968@infradead.org>
- <20200609175359.GR11244@42.do-not-panic.com>
- <20200610064234.GB24975@infradead.org>
- <20200610210917.GH11244@42.do-not-panic.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=zPzq8Z3GKSk3UIRzJdOGFkl1eD/aaIDkUJNbvpb5G54=;
+        b=SJY+cTflqfOEDqOx0KH6Wg16mWlERO2CL0ot6vN1o63fyNBc8k2grmEp/V5ogLOx1j
+         DZJc5d9omd0AnpeeRnjAq1yCuRYV21cvRr2RlAERmP2sAZHWMYdRVkb3fcCfLqbeexdY
+         PjNqJrHvH6rUuzR2HhLhIJf5lOM+zao21eNCm+F1ItBpykGzCjOPFOiuhBLXrdt8zyc9
+         bLiNmdyRHb2CBm5UxiGC/Bi2ntDzipGJh8jxE7sh4tt8fACX9G51TcXFLD9NKIXbeWtj
+         IRXqOLe8dRzw4DC2rZVYbezUsn9bA6OstGNjNeGbtFfVT/gqNzarFIDP6pQ6uRRUpN5C
+         54Rg==
+X-Gm-Message-State: AOAM533Qp3kpf7N1umhf69gt5DZprG73oV1SJS04FVZIZAMp2vFFOs9p
+        lV1AzEA78MNNYjIpjWhXjqcGsBXZCTCAIXJCTEewobLkffoo
+X-Google-Smtp-Source: ABdhPJwdkWvMBc1TJXeW0mgdyMOWPQe+AxeV8HWhb/kgzkEPdNlxjttn1vdto1D35yO45FopICQEQGsF9FDHXLO3hZla1CRUNIII
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200610210917.GH11244@42.do-not-panic.com>
+X-Received: by 2002:a92:c6c5:: with SMTP id v5mr3414047ilm.1.1591826163957;
+ Wed, 10 Jun 2020 14:56:03 -0700 (PDT)
+Date:   Wed, 10 Jun 2020 14:56:03 -0700
+In-Reply-To: <20200610214107.GK1347934@mit.edu>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000c06da05a7c1e93d@google.com>
+Subject: Re: BUG: unable to handle kernel NULL pointer dereference in
+ generic_perform_write (2)
+From:   syzbot <syzbot+bca9799bf129256190da@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, akpm@linux-foundation.org,
+        dan.j.williams@intel.com, jack@suse.cz, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So, upon updating the commit log, and moving the empty directory check
-into another patch, I realized we might be able to simplify this now even
-further still. Patch below. The key of the issue was that the use after free
-happens when a recursive removal happens, and then later a specific
-dentry removal happens. This happened for make_request block drivers
-when using the whole disk, but since we *don't* have any other users of
-the directory for the others cases, this in theory shuld not happen for
-them either.
+Hello,
 
-I'll try to shoot some bullets at this.
+syzbot has tested the proposed patch but the reproducer still triggered crash:
+BUG: unable to handle kernel NULL pointer dereference in generic_perform_write
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index 7ff2ea5cd05e..5cea04c05e09 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -524,10 +524,16 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
- 	if (!bt->msg_data)
- 		goto err;
- 
--	ret = -ENOENT;
--
--	dir = debugfs_lookup(buts->name, blk_debugfs_root);
--	if (!dir)
-+	/*
-+	 * When tracing whole make_request drivers (multiqueue) block devices,
-+	 * reuse the existing debugfs directory created by the block layer on
-+	 * init. For request-based block devices, all partitions block devices,
-+	 * and scsi-generic block devices we create a temporary new debugfs
-+	 * directory that will be removed once the trace ends.
-+	 */
-+	if (queue_is_mq(q))
-+		dir = q->debugfs_dir;
-+	else
- 		bt->dir = dir = debugfs_create_dir(buts->name, blk_debugfs_root);
- 
- 	bt->dev = dev;
-@@ -565,8 +571,6 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
- 
- 	ret = 0;
- err:
--	if (dir && !bt->dir)
--		dput(dir);
- 	if (ret)
- 		blk_trace_free(bt);
- 	return ret;
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD a3819067 P4D a3819067 PUD a2ea0067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 9214 Comm: syz-executor.1 Not tainted 5.6.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:0x0
+Code: Bad RIP value.
+RSP: 0018:ffffc90006d1fa38 EFLAGS: 00010246
+RAX: ffffffff883cb0a0 RBX: 0000000000000000 RCX: 0000000000000001
+RDX: 0000000000000000 RSI: ffff888082b89a60 RDI: ffff88808a414a80
+RBP: ffff888082b89a60 R08: 0000000000000000 R09: ffffc90006d1fac0
+R10: ffff888072cd6607 R11: ffffed100e59acc0 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffc90006d1fd18
+FS:  00007f310f3f3700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 00000000904f1000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ generic_perform_write+0x20a/0x4e0 mm/filemap.c:3302
+ ext4_buffered_write_iter+0x1f7/0x450 fs/ext4/file.c:270
+ ext4_file_write_iter+0x1ec/0x13f0 fs/ext4/file.c:642
+ call_write_iter include/linux/fs.h:1907 [inline]
+ new_sync_write+0x4a2/0x700 fs/read_write.c:484
+ __vfs_write+0xc9/0x100 fs/read_write.c:497
+ vfs_write+0x268/0x5d0 fs/read_write.c:559
+ ksys_write+0x12d/0x250 fs/read_write.c:612
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x45c889
+Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f310f3f2c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f310f3f36d4 RCX: 000000000045c889
+RDX: 0000000000000001 RSI: 0000000020000080 RDI: 0000000000000003
+RBP: 000000000076bfa0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 0000000000000cdc R14: 00000000004cf042 R15: 000000000076bfac
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace ff42a65b331528ba ]---
+RIP: 0010:0x0
+Code: Bad RIP value.
+RSP: 0018:ffffc90006d1fa38 EFLAGS: 00010246
+RAX: ffffffff883cb0a0 RBX: 0000000000000000 RCX: 0000000000000001
+RDX: 0000000000000000 RSI: ffff888082b89a60 RDI: ffff88808a414a80
+RBP: ffff888082b89a60 R08: 0000000000000000 R09: ffffc90006d1fac0
+R10: ffff888072cd6607 R11: ffffed100e59acc0 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffc90006d1fd18
+FS:  00007f310f3f3700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000076c061 CR3: 00000000904f1000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+Tested on:
+
+commit:         5b8b9d0c Merge branch 'akpm' (patches from Andrew)
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=158b23ca100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=23c5a352e32a1944
+dashboard link: https://syzkaller.appspot.com/bug?extid=bca9799bf129256190da
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
