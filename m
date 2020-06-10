@@ -2,133 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933611F4B3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F5A1F4B3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jun 2020 04:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726119AbgFJCMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Jun 2020 22:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
+        id S1726132AbgFJCOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Jun 2020 22:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725798AbgFJCM3 (ORCPT
+        with ESMTP id S1725798AbgFJCOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Jun 2020 22:12:29 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D57C05BD1E;
-        Tue,  9 Jun 2020 19:12:28 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id r10so275273pgv.8;
-        Tue, 09 Jun 2020 19:12:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=r2oVYJYYg2RDS1H2d6x4IIYfTMv6sdz0p85rDZpNZaM=;
-        b=SlKST4sRe9z5NfYngtIcEgI7OPqllf0tdp3qx7B6gwf02PVHRBxHdxrhDhJZd+pTwe
-         9cIDZUyZrOvsmAwHXJYtib5Zt2RWwY9gSR9iDUDFB4mA1m4qYzyrRXNSrM5/G0OjpKj1
-         YYTc/gXCgoeEQ9R9mgYNktPxoT92dkFQpb84l1K5Pn553MQQf7bpInwFtcesIV0GfzMj
-         ASxD8QTrQHFRlTpl8JlGHNqoHLVe6WAKW1BG1KpxlfjHuVuG0EombUA6sgaMp0Xxn2Eq
-         lgPX01cb8lpoI57uSUnlLGMpkZWRcBYBm7mbiMFbIeG45cb3TTuRdmkQ6GD/WFX0/heE
-         Hvfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=r2oVYJYYg2RDS1H2d6x4IIYfTMv6sdz0p85rDZpNZaM=;
-        b=QlAEMYA/Ge9XXtx4U3b2+4x8jEmpAztyXKl7xrSZT6UkScaTs4M/qvBtwU5b+ZjyJG
-         nIFtL3srxyGjNeXLiHBqaIaaKcdIwHSp9pW+3TR7Qf+UwIuczbn2xHt+mEPnIGXUq5hf
-         s79pikdXrTYuzvqS3iLBU5xoQgxIHmdqfhHwp+eAzp43HHYkpIUELSkdnxuj2LK1Gutb
-         P4kRtCPT6ljpkfpb3xkcW88lYZUvCFRgaDzq/EJDxcneByJavlRiJWjo0AVi0kTCJhqH
-         yY73T9rWN6PB1vZBh/IX8Hp9bBVJ8p4BsveM8g50klqejG7rULiUjFTROPDZ8WDtHuZp
-         wn8Q==
-X-Gm-Message-State: AOAM532eR3kBvvdFU66Ki+m2XcPtBxuaeHw7u3XG2m57buKsModAnz4Q
-        3f131s1WRHEez9VIK7H084E=
-X-Google-Smtp-Source: ABdhPJz1U68Robey0Q1bmAEtvvWcGuKEBwSUNPbdIo1X+jHwidmrm4jijqjtoAseNZR/qoRnNlkYVQ==
-X-Received: by 2002:a63:b506:: with SMTP id y6mr761219pge.107.1591755147346;
-        Tue, 09 Jun 2020 19:12:27 -0700 (PDT)
-Received: from bj616583pcu.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id p19sm11030694pff.116.2020.06.09.19.12.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 19:12:26 -0700 (PDT)
-From:   gengcixi@gmail.com
-To:     gregkh@linuxfoundation.org, jslaby@suse.com, oberpar@linux.ibm.com,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
-        Cixi Geng <cixi.geng1@unisoc.com>
-Subject: [RFC PATCH V5] GCOV: Add config to check the preqequisites situation
-Date:   Wed, 10 Jun 2020 10:11:50 +0800
-Message-Id: <20200610021150.19233-1-gengcixi@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 9 Jun 2020 22:14:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60011C05BD1E;
+        Tue,  9 Jun 2020 19:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6clucF3QXfEzAnbmB5jl3BAojfrGSwWtR1xoyvsNv9g=; b=j0fSxe7zT86tbf+E/1M9XeN6jQ
+        I8G+jEqVSzMjCHH1YaJGN5FCpHL5zo/TojHrHjU6cRfeKXgHeVPFxZb7OS+WJtxiDgDKlq77a85vl
+        oCVHQygdqVaYOpf+Z7hwGv7SUNMX/y6ovf7XOJ4PcgzV2RIb6w/pT5v04LAzLa+v7yz8x89dyfJAf
+        50kRxec9sDmggv9iB9JdlFDRZ46vG3gU0IKQ7kqUaUQDc8DV1s/bpeyNeU4pQx4we0t5ay2PHzKVw
+        fK7UV+fiTyjTsPw4KeJTEdM4pF7USyJUD0oUqvGyazphIuJtb0m1Glb4SNijeQpcw5QALkvYjWFba
+        K2zj5F3w==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jiqFl-0002oV-Lz; Wed, 10 Jun 2020 02:14:09 +0000
+Date:   Tue, 9 Jun 2020 19:14:09 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Qian Cai <cai@lca.pw>, linux-kernel@vger.kernel.org,
+        dave@stgolabs.net, manfred@colorfullife.com,
+        mm-commits@vger.kernel.org
+Subject: Re: + ipc-convert-ipcs_idr-to-xarray-update.patch added to -mm tree
+Message-ID: <20200610021409.GH19604@bombadil.infradead.org>
+References: <20200420181310.c18b3c0aa4dc5b3e5ec1be10@linux-foundation.org>
+ <20200424014753.DfBuzjmzo%akpm@linux-foundation.org>
+ <20200605195848.GB5393@lca.pw>
+ <20200605201134.GJ19604@bombadil.infradead.org>
+ <20200605142039.b8a81c08bf5ba34fa0181545@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200605142039.b8a81c08bf5ba34fa0181545@linux-foundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cixi Geng <cixi.geng1@unisoc.com>
+On Fri, Jun 05, 2020 at 02:20:39PM -0700, Andrew Morton wrote:
+> On Fri, 5 Jun 2020 13:11:34 -0700 Matthew Wilcox <willy@infradead.org> wrote:
+> 
+> > On Fri, Jun 05, 2020 at 03:58:48PM -0400, Qian Cai wrote:
+> > > This will trigger,
+> > > 
+> > > [ 8853.759549] LTP: starting semget05
+> > > [ 8867.257088] BUG: sleeping function called from invalid context at mm/slab.h:567
+> > > [ 8867.270259] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 22556, name: semget05
+> > > [ 8867.270309] 2 locks held by semget05/22556:
+> > > [ 8867.270345]  #0: 00000000512de7e0 (&ids->rwsem){++++}-{3:3}, at: ipcget+0x4e/0x230
+> > > [ 8867.270426]  #1: 00000000552b9018 (&new->lock){+.+.}-{2:2}, at: ipc_addid+0xf4/0xf50
+> > 
+> > Did the fix for this not make it into -next?
+> 
+> I don't think I've seen this fix before.  And I'm unclear on how it
+> pertains to the current patch(es) in -mm.  And it has no changelog!
+> 
+> Perhaps it would be best to do a formal send of the latest version?
 
-Introduce new configuration option GCOV_PROFILE_PREREQS that can be
-used to check whether the prerequisites for enabling gcov profiling
-for specific files and directories are met.
-
-Only add SERIAL_GCOV for an example.
-
-Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
----
- drivers/tty/serial/Kconfig  |  8 ++++++++
- drivers/tty/serial/Makefile |  1 +
- kernel/gcov/Kconfig         | 15 +++++++++++++++
- 3 files changed, 24 insertions(+)
-
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index adf9e80e7dc9..3d7e811d90dc 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -1566,3 +1566,11 @@ endmenu
- 
- config SERIAL_MCTRL_GPIO
- 	tristate
-+
-+config SERIAL_GCOV
-+	bool "Enable profile gcov for serial directory"
-+	depends on GCOV_PROFILE_PREREQS
-+	default y if GCOV_PROFILE_PREREQS
-+	help
-+	  The SERIAL_GCOV will add Gcov profiling flags when kernel compiles.
-+	  Say 'Y' here if you want the gcov data for the serial directory,
-diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-index d056ee6cca33..17272733db95 100644
---- a/drivers/tty/serial/Makefile
-+++ b/drivers/tty/serial/Makefile
-@@ -3,6 +3,7 @@
- # Makefile for the kernel serial device drivers.
- #
- 
-+GCOV_PROFILE := $(CONFIG_SERIAL_GCOV)
- obj-$(CONFIG_SERIAL_CORE) += serial_core.o
- 
- obj-$(CONFIG_SERIAL_EARLYCON) += earlycon.o
-diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-index 3941a9c48f83..35b839879553 100644
---- a/kernel/gcov/Kconfig
-+++ b/kernel/gcov/Kconfig
-@@ -51,6 +51,21 @@ config GCOV_PROFILE_ALL
- 	larger and run slower. Also be sure to exclude files from profiling
- 	which are not linked to the kernel image to prevent linker errors.
- 
-+config GCOV_PROFILE_PREREQS
-+	bool "Profile Kernel for prereqs"
-+	depends on !COMPILE_TEST
-+	depends on GCOV_KERNEL
-+	depends on !COMPILE_PROFILE_ALL
-+	default y if GCOV_KERNEL && !COMPILE_TEST
-+	help
-+	  This options activates profiling for the specified kernel modules.
-+
-+	  When some modules need Gcov data, enable this config, then configure
-+	  with gcov on the corresponding modules,The directories or files of
-+	  these modules will be added profiling flags after kernel compile.
-+
-+	  If unsure, say N.
-+
- choice
- 	prompt "Specify GCOV format"
- 	depends on GCOV_KERNEL
--- 
-2.17.1
-
+In testing, I discovered a lockdep warning.  I don't think it's readily
+fixable, so please drop this patch for the moment.  I'll be back with
+a patch set that rejiggers the locking in ipc to be more normal.
