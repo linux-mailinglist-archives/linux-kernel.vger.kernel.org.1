@@ -2,179 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D7B1F6777
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767131F679E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgFKMI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 08:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbgFKMIY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 08:08:24 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E338C08C5C2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 05:08:24 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id j198so6824365wmj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 05:08:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l9/1IkVcWGgYEUiuZWnQIOE6uUjuPXFr0zUWFBzg324=;
-        b=kIE33h7Lf2r+tx6hQ/ix/6+/19I3lB8Ldey0jlumYHalyyXnEmqjH3Ykw4mPIPgrcv
-         4dkNF36frta7vt0Et8JEAJhO/OWx50XwV4omuBKChHuTgqeA1dZ4TD8tQT9UZmcYYDBD
-         iVtWJnbCi9wgpwY0FWz7KnMUpzhRVlUGS2xbU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l9/1IkVcWGgYEUiuZWnQIOE6uUjuPXFr0zUWFBzg324=;
-        b=tzGoeJ0AQzSbQ+6Mgpo1pevvFY9uR6Yxl8niCvAf/dsblhZpE5Tcw2f2Et/0xaCjXX
-         bkKX9dS2+XHdUYvRd19wuf2b37YaJ66o0hfD+XNuV0/U4fR6PXH4tROUP6rVgubL1hRP
-         E5A9nI6bipM0ur50AjjuvGP666h9FE7p8VuZTc5Wc5Bsf4jwydrGH0gYYLnK52ifJlTO
-         efEviXKkgU3v4TWvkDe/+5rVF616HdSVIfNuiTLGgX1KBqHpjY3qfPAMOhUmMXrPpAAV
-         +OoSLPck8F9CavJCv7m7dcETXMxTsNsMq7v+aGv9rVlR4Sq2Wv7pLXEvMPOS4uR6dKeH
-         n7cw==
-X-Gm-Message-State: AOAM531o6RwGLnuJFfnXu+g9m1FiZOSOF2+ZVHUYOvH3zwltF0ATURN4
-        P1F3C1C89J67FOEYyaSO9Dv/RA==
-X-Google-Smtp-Source: ABdhPJw/4tFHFEvAplryswUi9eYGwKBoFlfEALinuD5TCcI+/+xf1W81Wni9oObHj3ji4UEsPf8kKQ==
-X-Received: by 2002:a1c:7416:: with SMTP id p22mr7953394wmc.95.1591877303012;
-        Thu, 11 Jun 2020 05:08:23 -0700 (PDT)
-Received: from chromium.org (205.215.190.35.bc.googleusercontent.com. [35.190.215.205])
-        by smtp.gmail.com with ESMTPSA id 5sm6618926wrr.5.2020.06.11.05.08.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 05:08:22 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 12:08:20 +0000
-From:   Tomasz Figa <tfiga@chromium.org>
-To:     Xia Jiang <xia.jiang@mediatek.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rick Chang <rick.chang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        srv_heupstream@mediatek.com, senozhatsky@chromium.org,
-        mojahsu@chromium.org, drinkcat@chromium.org,
-        maoguang.meng@mediatek.com, sj.huang@mediatek.com
-Subject: Re: [PATCH RESEND v9 05/18] media: platform: Improve power on and
- power off flow
-Message-ID: <20200611120820.GC135826@chromium.org>
-References: <20200604090553.10861-1-xia.jiang@mediatek.com>
- <20200604090553.10861-7-xia.jiang@mediatek.com>
+        id S1728249AbgFKMKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 08:10:01 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:49313 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728237AbgFKMJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 08:09:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591877397; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Date: Message-ID: Subject: From: Cc: To: Sender;
+ bh=GHyDQ0CNebWZew+ULIczlDAXcOVl5+2NRVl7coOxMuc=; b=iO5xAJME4au4CDyEUQx9I0yuTKep4yWvVZIcp6aTWenAbU9sdhTNIS6FUN4VQSwqpxNHrvT0
+ 9ewZ3TD3JXCZPxRoTNXtTMsjlOn0QnQ9u6EWn5jRZfMk4N1q/dEdIJzIF2bADFAL8dL3/mzG
+ WHLH2YTtxQ6geRRdldcPmapzUnA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5ee21f11f3deea03f32a289c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Jun 2020 12:09:53
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7B643C433B1; Thu, 11 Jun 2020 12:09:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.102] (unknown [183.83.143.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2005EC433C8;
+        Thu, 11 Jun 2020 12:09:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2005EC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=charante@codeaurora.org
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        mgorman@techsingularity.net, linux-mm@kvack.org
+Cc:     LKML <linux-kernel@vger.kernel.org>, vinmenon@codeaurora.org
+From:   Charan Teja Kalla <charante@codeaurora.org>
+Subject: [PATCH] mm, page_alloc: skip ->watermark_boost for atomic order-0
+ allocations-fix
+Message-ID: <31556793-57b1-1c21-1a9d-22674d9bd938@codeaurora.org>
+Date:   Thu, 11 Jun 2020 17:39:47 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200604090553.10861-7-xia.jiang@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xia,
+When boosting is enabled, it is observed that rate of atomic order-0
+allocation failures are high due to the fact that free levels in the
+system are checked with ->watermark_boost offset. This is not a problem
+for sleepable allocations but for atomic allocations which looks like
+regression.
 
-On Thu, Jun 04, 2020 at 05:05:40PM +0800, Xia Jiang wrote:
-> Call pm_runtime_get_sync() before starting a frame and then
-> pm_runtime_put() after completing it. This can save power for the time
-> between processing two frames.
-> 
-> Signed-off-by: Xia Jiang <xia.jiang@mediatek.com>
-> ---
-> v9: use pm_runtime_put() to replace pm_runtime_put_sync()
-> ---
->  .../media/platform/mtk-jpeg/mtk_jpeg_core.c   | 27 +++++--------------
->  1 file changed, 6 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
-> index 12609ca46fd9..fb624385969e 100644
-> --- a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
-> +++ b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
-> @@ -710,23 +710,6 @@ static struct vb2_v4l2_buffer *mtk_jpeg_buf_remove(struct mtk_jpeg_ctx *ctx,
->  		return v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
->  }
->  
-> -static int mtk_jpeg_start_streaming(struct vb2_queue *q, unsigned int count)
-> -{
-> -	struct mtk_jpeg_ctx *ctx = vb2_get_drv_priv(q);
-> -	struct vb2_v4l2_buffer *vb;
-> -	int ret = 0;
-> -
-> -	ret = pm_runtime_get_sync(ctx->jpeg->dev);
-> -	if (ret < 0)
-> -		goto err;
-> -
-> -	return 0;
-> -err:
-> -	while ((vb = mtk_jpeg_buf_remove(ctx, q->type)))
-> -		v4l2_m2m_buf_done(vb, VB2_BUF_STATE_QUEUED);
-> -	return ret;
-> -}
-> -
->  static void mtk_jpeg_stop_streaming(struct vb2_queue *q)
->  {
->  	struct mtk_jpeg_ctx *ctx = vb2_get_drv_priv(q);
-> @@ -751,8 +734,6 @@ static void mtk_jpeg_stop_streaming(struct vb2_queue *q)
->  
->  	while ((vb = mtk_jpeg_buf_remove(ctx, q->type)))
->  		v4l2_m2m_buf_done(vb, VB2_BUF_STATE_ERROR);
-> -
-> -	pm_runtime_put_sync(ctx->jpeg->dev);
->  }
->  
->  static const struct vb2_ops mtk_jpeg_qops = {
-> @@ -761,7 +742,6 @@ static const struct vb2_ops mtk_jpeg_qops = {
->  	.buf_queue          = mtk_jpeg_buf_queue,
->  	.wait_prepare       = vb2_ops_wait_prepare,
->  	.wait_finish        = vb2_ops_wait_finish,
-> -	.start_streaming    = mtk_jpeg_start_streaming,
->  	.stop_streaming     = mtk_jpeg_stop_streaming,
->  };
->  
-> @@ -812,7 +792,7 @@ static void mtk_jpeg_device_run(void *priv)
->  	struct mtk_jpeg_src_buf *jpeg_src_buf;
->  	struct mtk_jpeg_bs bs;
->  	struct mtk_jpeg_fb fb;
-> -	int i;
-> +	int i, ret;
->  
->  	src_buf = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
->  	dst_buf = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
-> @@ -832,6 +812,10 @@ static void mtk_jpeg_device_run(void *priv)
->  		return;
->  	}
->  
-> +	ret = pm_runtime_get_sync(jpeg->dev);
-> +	if (ret < 0)
-> +		goto dec_end;
-> +
->  	mtk_jpeg_set_dec_src(ctx, &src_buf->vb2_buf, &bs);
->  	if (mtk_jpeg_set_dec_dst(ctx, &jpeg_src_buf->dec_param, &dst_buf->vb2_buf, &fb))
->  		goto dec_end;
-> @@ -957,6 +941,7 @@ static irqreturn_t mtk_jpeg_dec_irq(int irq, void *priv)
->  	v4l2_m2m_buf_done(src_buf, buf_state);
->  	v4l2_m2m_buf_done(dst_buf, buf_state);
->  	v4l2_m2m_job_finish(jpeg->m2m_dev, ctx->fh.m2m_ctx);
-> +	pm_runtime_put(ctx->jpeg->dev);
+This problem is seen frequently on system setup of Android kernel
+running on Snapdragon hardware with 4GB RAM size. When no extfrag event
+occurred in the system, ->watermark_boost factor is zero, thus the
+watermark configurations in the system are:
+   _watermark = (
+          [WMARK_MIN] = 1272, --> ~5MB
+          [WMARK_LOW] = 9067, --> ~36MB
+          [WMARK_HIGH] = 9385), --> ~38MB
+   watermark_boost = 0
 
-This patch itself is correct and feel free to add my
+After launching some memory hungry applications in Android which can
+cause extfrag events in the system to an extent that ->watermark_boost
+can be set to max i.e. default boost factor makes it to 150% of high
+watermark.
+   _watermark = (
+          [WMARK_MIN] = 1272, --> ~5MB
+          [WMARK_LOW] = 9067, --> ~36MB
+          [WMARK_HIGH] = 9385), --> ~38MB
+   watermark_boost = 14077, -->~57MB
 
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+With default system configuration, for an atomic order-0 allocation to
+succeed, having free memory of ~2MB will suffice. But boosting makes
+the min_wmark to ~61MB thus for an atomic order-0 allocation to be
+successful system should have minimum of ~23MB of free memory(from
+calculations of zone_watermark_ok(), min = 3/4(min/2)). But failures are
+observed despite system is having ~20MB of free memory. In the testing,
+this is reproducible as early as first 300secs since boot and with
+furtherlowram configurations(<2GB) it is observed as early as first
+150secs since boot.
 
-However, it looks like there might be one more problem with this driver.
-What happens if the hardware locks up? The driver doesn't seem to take
-any measures to detect that and recover the system.
+These failures can be avoided by excluding the ->watermark_boost in
+watermark caluculations for atomic order-0 allocations.
 
-If you take a look at other drivers, e.g. the MTK FD driver, there is a
-delayed work scheduled before starting the hardware and canceled in the
-interrupt handler. If the delayed work is executed, it resets the
-hardware and reports the failure to V4L2, so that the execution can
-continue from next frames.
+Fix-suggested-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+---
 
-This should be fixed in a separate patch, could be outside of this
-series.
+Change in linux-next: https://lore.kernel.org/patchwork/patch/1244272/ 
 
-Best regards,
-Tomasz
+ mm/page_alloc.c | 36 ++++++++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 16 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 0c435b2..18f407e 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3580,7 +3580,7 @@ bool zone_watermark_ok(struct zone *z, unsigned int order, unsigned long mark,
+ 
+ static inline bool zone_watermark_fast(struct zone *z, unsigned int order,
+ 				unsigned long mark, int highest_zoneidx,
+-				unsigned int alloc_flags)
++				unsigned int alloc_flags, gfp_t gfp_mask)
+ {
+ 	long free_pages = zone_page_state(z, NR_FREE_PAGES);
+ 	long cma_pages = 0;
+@@ -3602,8 +3602,23 @@ static inline bool zone_watermark_fast(struct zone *z, unsigned int order,
+ 				mark + z->lowmem_reserve[highest_zoneidx])
+ 		return true;
+ 
+-	return __zone_watermark_ok(z, order, mark, highest_zoneidx, alloc_flags,
+-					free_pages);
++	if (__zone_watermark_ok(z, order, mark, highest_zoneidx, alloc_flags,
++					free_pages))
++		return true;
++	/*
++	 * Ignore watermark boosting for GFP_ATOMIC order-0 allocations
++	 * when checking the min watermark. The min watermark is the
++	 * point where boosting is ignored so that kswapd is woken up
++	 * when below the low watermark.
++	 */
++	if (unlikely(!order && (gfp_mask & __GFP_ATOMIC) && z->watermark_boost
++		&& ((alloc_flags & ALLOC_WMARK_MASK) == WMARK_MIN))) {
++		mark = z->_watermark[WMARK_MIN];
++		return __zone_watermark_ok(z, order, mark, highest_zoneidx,
++					alloc_flags, free_pages);
++	}
++
++	return false;
+ }
+ 
+ bool zone_watermark_ok_safe(struct zone *z, unsigned int order,
+@@ -3746,20 +3761,9 @@ static bool zone_allows_reclaim(struct zone *local_zone, struct zone *zone)
+ 		}
+ 
+ 		mark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK);
+-		/*
+-		 * Allow GFP_ATOMIC order-0 allocations to exclude the
+-		 * zone->watermark_boost in their watermark calculations.
+-		 * We rely on the ALLOC_ flags set for GFP_ATOMIC requests in
+-		 * gfp_to_alloc_flags() for this.  Reason not to use the
+-		 * GFP_ATOMIC directly is that we want to fall back to slow path
+-		 * thus wake up kswapd.
+-		 */
+-		if (unlikely(!order && !(alloc_flags & ALLOC_WMARK_MASK) &&
+-		     (alloc_flags & (ALLOC_HARDER | ALLOC_HIGH)))) {
+-			mark = zone->_watermark[WMARK_MIN];
+-		}
+ 		if (!zone_watermark_fast(zone, order, mark,
+-				       ac->highest_zoneidx, alloc_flags)) {
++				       ac->highest_zoneidx, alloc_flags,
++				       gfp_mask)) {
+ 			int ret;
+ 
+ #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
