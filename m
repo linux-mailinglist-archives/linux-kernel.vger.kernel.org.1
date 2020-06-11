@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5621F67F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D511F67FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726346AbgFKMmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 08:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
+        id S1726450AbgFKMmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 08:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgFKMmF (ORCPT
+        with ESMTP id S1726349AbgFKMmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 08:42:05 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6070FC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 05:42:05 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id r15so4898737wmh.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 05:42:05 -0700 (PDT)
+        Thu, 11 Jun 2020 08:42:08 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC5AC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 05:42:06 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id x13so6013015wrv.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 05:42:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/5Sa2AQrDHSWdZzqpjBH4h//ceIVQSzjk3tUp3KsmEE=;
-        b=PB6ee25/CV55OHayB5k+7ASePj+owVMvtkgsE2VDkdvUpOUbyRJl9UG/kB0wDm8ual
-         F7z/5IVqwgELP4SvmbZT8UOA8MQoNOetza6/cMBUsUDN64GPM/f5lP2N8V9aqwafrl4J
-         GbF0quLVQiVzYIoDlreB4S37o25i8xHGmRzKMrBWaMCQy0XuA4chrDkx/c37SjLTDrMJ
-         /AdEgYhxK6DSWuixce/P63zqDrtGxzU6GhmwTOi/pZsyDGMlKB7UUJw+LTsL41XyEGYB
-         coczXH5fThZ2G13m8uW7OHo8VYF9aOUGC/h8yVZDtY0es4PO0vqAFDaOEMkijmEC8fxz
-         tbiw==
+        bh=DNGruM6B9mSP+joziG19q2cWIhnj5b++piG0JMa2V6w=;
+        b=V4h1Ca5nmbkGj2hladouj3f0enZ42GxqHryh272WGrCyPuT8xAqb5wtLULOLNDb+kC
+         4nQJutDNKmqUgli3yOe3RjfHFZaSVQ19vyaJsIfIPTBQY8Djk8nvgmc+cLynOwY483hE
+         +j/KXAsI6qxCx/3+go7O4EV+4+zHdi9amag7lzmPK6C1Pc0f5/gueHRHXHCloSoGx5wE
+         oQw5gZFdYR3DQEGt4IpZC6IyjcxKMBtvidnKZ4MoZXG42gGEyoM7bHwuHH5p0KoFSjTv
+         JSKm5hl4tsRxMY0LiWiW2QKqLF2UTBI0Tz96AH8b2WczI3be44UTQa/le2UeX/qI5JgH
+         Nw+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/5Sa2AQrDHSWdZzqpjBH4h//ceIVQSzjk3tUp3KsmEE=;
-        b=Wgs7FUJ9vmoYItMWjxyUr+OXIuA+d3l5fPQVAnqHC+oxiBSLMSlQjSsvms+36lesAm
-         /wwcy5T/FcLlCcahEWg0t6DGDZULTuoaLDCHfQWFWLHIk5dex5tC4QHnvqT9QDcFEYTL
-         zBzXXiQCwmI5wBCbtT4PpwZQAYcdCIQGUg7i1Nhk3OpPZqdb8gCV+8O1Jq9yKbUXJorp
-         OhHeAbyKoa2/4GjP91EJr7OMXxw7aiXpvBqC994dzqjbA0D8wF7BJT1YyxMGPhov5DUb
-         k0x24VZzP1I0ac48bXOBi8CrJQo0C/sGG5XMS6Jm5OZuSyQdiophR1fvXwl4bFp4AmJ6
-         UJSA==
-X-Gm-Message-State: AOAM533evbAKXUjjoQeq8nXnM2BYSzG+tSUIG96B4Q97RVqXGu2n4MrP
-        j03veVWnYOlvZneNnCWNlLsU4w==
-X-Google-Smtp-Source: ABdhPJy8MbdIYkW8OpzVcUydBi2O4mW62kazC5GR9AyPxfefygPOSzJ5Xs3AmjkHlnXxBfdmU+dL2w==
-X-Received: by 2002:a7b:c11a:: with SMTP id w26mr7894520wmi.0.1591879324065;
-        Thu, 11 Jun 2020 05:42:04 -0700 (PDT)
+        bh=DNGruM6B9mSP+joziG19q2cWIhnj5b++piG0JMa2V6w=;
+        b=BlUTJ+mlNYkPat89Ke74yd5DmN4zwx3ECbLyaM3nlRP7OCd69aq+mJSVqloMc1v2Fs
+         DURiP3xuy1/KFcKKqICkIyYFuJFHumZQTcbALJBgsEyzaxNMPRUEOl+I7rhDKk8RYgRv
+         kuCSb7g6r1DD1hYmDDnxXXA8SlV2dyX+yleBz3scQQhRjJb2Evc95mRnSXODn8t3AUqd
+         rzQ7BplVi/Ue3I4V//lHSRoT3VJmSA9n9Fld89B8itKOFw4PqxFkCznLqQ3YrmCrCuTN
+         58RQuaQSZHZtBFoNBCvC3uTwb/ke9C0wQzNrFMvbvLkn2detXiq5fW2P+hT9dpEkBfgY
+         xAWw==
+X-Gm-Message-State: AOAM531zYzVtlLgZ0CitAbXBESamfG3VivFdRTYdR6GSfzPDyJ47Uy9q
+        ugXiNtxvyJmDCwh3Y33Ve3k+bw==
+X-Google-Smtp-Source: ABdhPJz4z+o5PKHUFnC5aUpJgoVQGqDgO8B3X+8NJKRrokT1gn4IjQF8Z7a2PR+JqR94h+2kLxN8eA==
+X-Received: by 2002:a5d:5585:: with SMTP id i5mr9200628wrv.112.1591879325343;
+        Thu, 11 Jun 2020 05:42:05 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id q13sm4810355wrn.84.2020.06.11.05.42.02
+        by smtp.gmail.com with ESMTPSA id q13sm4810355wrn.84.2020.06.11.05.42.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 05:42:03 -0700 (PDT)
+        Thu, 11 Jun 2020 05:42:04 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     broonie@kernel.org
 Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
         alsa-devel@alsa-project.org, lgirdwood@gmail.com,
         linux-kernel@vger.kernel.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 1/8] ASoC: q6asm: add command opcode to timeout error report
-Date:   Thu, 11 Jun 2020 13:41:52 +0100
-Message-Id: <20200611124159.20742-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/8] ASoC: q6asm: handle EOS correctly
+Date:   Thu, 11 Jun 2020 13:41:53 +0100
+Message-Id: <20200611124159.20742-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200611124159.20742-1-srinivas.kandagatla@linaro.org>
 References: <20200611124159.20742-1-srinivas.kandagatla@linaro.org>
@@ -67,37 +67,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make the error reporting more useful by adding opcode to it.
-Without this its almost impossible to say which command actually
-timed out.
+Successful send of EOS command does not indicate that EOS is actually
+finished, correct event to wait EOS is finished is EOS_RENDERED event.
+EOS_RENDERED means that the DSP has finished processing all the buffers
+for that particular session and stream.
 
+This patch fixes EOS handling!
+
+Fixes: 68fd8480bb7b ("ASoC: qdsp6: q6asm: Add support to audio stream apis")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6asm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/qcom/qdsp6/q6asm.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index 0e0e8f7a460a..0ce70a5c7d9e 100644
+index 0ce70a5c7d9e..e0983970cba9 100644
 --- a/sound/soc/qcom/qdsp6/q6asm.c
 +++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -310,7 +310,7 @@ static int q6asm_apr_send_session_pkt(struct q6asm *a, struct audio_client *ac,
- 					5 * HZ);
+@@ -25,6 +25,7 @@
+ #define ASM_STREAM_CMD_FLUSH			0x00010BCE
+ #define ASM_SESSION_CMD_PAUSE			0x00010BD3
+ #define ASM_DATA_CMD_EOS			0x00010BDB
++#define ASM_DATA_EVENT_RENDERED_EOS		0x00010C1C
+ #define ASM_NULL_POPP_TOPOLOGY			0x00010C68
+ #define ASM_STREAM_CMD_FLUSH_READBUFS		0x00010C09
+ #define ASM_STREAM_CMD_SET_ENCDEC_PARAM		0x00010C10
+@@ -622,9 +623,6 @@ static int32_t q6asm_stream_callback(struct apr_device *adev,
+ 		case ASM_SESSION_CMD_SUSPEND:
+ 			client_event = ASM_CLIENT_EVENT_CMD_SUSPEND_DONE;
+ 			break;
+-		case ASM_DATA_CMD_EOS:
+-			client_event = ASM_CLIENT_EVENT_CMD_EOS_DONE;
+-			break;
+ 		case ASM_STREAM_CMD_FLUSH:
+ 			client_event = ASM_CLIENT_EVENT_CMD_FLUSH_DONE;
+ 			break;
+@@ -727,6 +725,9 @@ static int32_t q6asm_stream_callback(struct apr_device *adev,
+ 			spin_unlock_irqrestore(&ac->lock, flags);
+ 		}
  
- 	if (!rc) {
--		dev_err(a->dev, "CMD timeout\n");
-+		dev_err(a->dev, "CMD %x timeout\n", hdr->opcode);
- 		rc = -ETIMEDOUT;
- 	} else if (ac->result.status > 0) {
- 		dev_err(a->dev, "DSP returned error[%x]\n",
-@@ -890,7 +890,7 @@ static int q6asm_ac_send_cmd_sync(struct audio_client *ac, struct apr_pkt *pkt)
- 	rc = wait_event_timeout(ac->cmd_wait,
- 				(ac->result.opcode == hdr->opcode), 5 * HZ);
- 	if (!rc) {
--		dev_err(ac->dev, "CMD timeout\n");
-+		dev_err(ac->dev, "CMD %x timeout\n", hdr->opcode);
- 		rc =  -ETIMEDOUT;
- 		goto err;
++		break;
++	case ASM_DATA_EVENT_RENDERED_EOS:
++		client_event = ASM_CLIENT_EVENT_CMD_EOS_DONE;
+ 		break;
  	}
+ 
 -- 
 2.21.0
 
