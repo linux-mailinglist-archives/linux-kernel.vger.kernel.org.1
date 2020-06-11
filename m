@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60A41F6255
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 09:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877DE1F6259
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 09:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgFKHc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 03:32:26 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:41999 "EHLO
+        id S1726833AbgFKHcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 03:32:33 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:39395 "EHLO
         new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726706AbgFKHcY (ORCPT
+        by vger.kernel.org with ESMTP id S1726679AbgFKHcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 03:32:24 -0400
+        Thu, 11 Jun 2020 03:32:25 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id CCED55800D2;
-        Thu, 11 Jun 2020 03:32:22 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 11 Jun 2020 03:32:22 -0400
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5E0E35800D3;
+        Thu, 11 Jun 2020 03:32:24 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 11 Jun 2020 03:32:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=Br6jNHTz2Qqeu
-        hVMkqvSgmOdnA/EpKz1fVYzAs6ZIJ8=; b=ps0RS+sfRDCBjfGJJi4lth4vMDQ33
-        mc7mhLCoAq/CZr24SwyRZHStCZNjov4k36l7Y/RCJt5U2vX8kE2gDe/n9y5vTMaA
-        tQUZAkUQXZ2sm5P79GisJSLwwg13Q99O2CJ9HtShNitpfRu+lwBzEE82UUMfOVYE
-        1RICM/CaqOExBe754u9pHNVmkClWEKRkBD49A9+i/FMmNj6XpW7PQZj17XFe44uC
-        5uhnR+QM365GvozZpBFxDTcMYULdargjvLpn8n+qnkYuvCPbtAlnG3fmhjVih/KA
-        OxFTmUMC7morcFBhSP8Qpa6m1rLqjq8FU/AEY5TIeEM0AUkpkDvRpkH2g==
+        :mime-version:content-transfer-encoding; s=fm3; bh=BfQY97l1HsXaR
+        odKqHBN4T2fOtec0sfUBI+DC279bkI=; b=r5DVazx4b/zznaw0bm32egqnPoCZd
+        9y/X1aY6V2dMm1jZGwXky3C+4YMxH6y8PL//GSB/OnwfPXrJUYG7TP0jt8D3Yo/f
+        kaP4WSBXhS4JguKMuL6vMrh7cvT6pRfJOoroVh/3OYuW0cHZYmw/2Ozv1Ua0kFox
+        t2y0uRfCbdb0AiLaMggoIiOfKYKZ0+eYgKYVO8DIuXvTQKHJDOapbVpNKMmqIFo6
+        H4psYFTqwF6YwuQzrHJtOc/WfCjWLDfnHkaZYhw9OVjqIK0mjSTHthxv9AZCliUC
+        xoU+R3FoI03+2kJ03JK5nwrPj6G88Qn8/ztgAwzCwdyj7E5jNBvWs+P0Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=Br6jNHTz2QqeuhVMkqvSgmOdnA/EpKz1fVYzAs6ZIJ8=; b=UUh3cfYb
-        KfntAf1DplVt+Dr82k5iNzl7HmJInXQgRk6pcY3m6c9ywwERxL598sNzVwFFEpLK
-        jvOGPwLdCmo0+eVXPb+GdOWpTWAJN584YdgJ2IBtX1wbsOa2o9ZXw84g7yYASgVe
-        EMmy0ttIBtbpUgTnjbnC2Qb4jn6/7cWvbb8xnQB/ztighFDPdURdNsXWGzsiHEH5
-        MqkqpkPLQaQPJ12MrOKhXGyBuWv/ENdmYBb/nhn2Ju18CiLqvey5jkaalvdwVWyF
-        /2piOZt1AefZq35MDE5QkBS7t2XjqUoNjxFXTGxflEW1t5YPfHjCKZxeMfBegfhK
-        dFMZWnsyz4nb+A==
-X-ME-Sender: <xms:Bt7hXvhR0dMkNhL9zp2ps1_kNx7-EBc5gTydgGdA89Z0hAEWcBl7_Q>
+        fm3; bh=BfQY97l1HsXaRodKqHBN4T2fOtec0sfUBI+DC279bkI=; b=VVw2ZRu5
+        jZCOCEopZHPvFtuCw2Npoo+1FA0g7Qcu741nTjNlsMH8BSVzEwva5EDWfT+AxDVa
+        EfAxMmjgfIsvOr2/221kF4pl8sJ3pgncuaHVfKZcwE0nocmLbSakA7W2I9vMvNJa
+        yyjshetZw+S/aTnTRrDU0xcmdBRpHspql7lzuLbDHRBuMJF3xVTlyhAnDs4kQTNB
+        ExEzRX28FD0JyxvDYhLTNSRpejnNBPUa6jsRqd4TldMeZlnJlhGc1fmzCK0m76lD
+        R1p++lGLDKm6/8xGAxgEzVYhVgmzXbHbG1M/hz+vbzUc1l5hCUqwsDV92Lm0718N
+        lqvQZbqjGh57jQ==
+X-ME-Sender: <xms:CN7hXraqN86mguhldCkmxU-lSoSMq_OBgsW1V_GYcMZ_pBlW-CJ65w>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehjedguddvvdcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enogevohgrshhtrghlqdfhgeduvddqtddvucdludehtddmnecujfgurhephffvufffkffo
-    jghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhmvgcutfhiphgrrhguuceomh
-    grgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvghrnhepveejieejtdev
-    gfffgfejuefggfeutdelteekgeetueeftddutddtgfffhffgueffnecuffhomhgrihhnpe
-    guvghvihgtvghtrhgvvgdrohhrghenucfkphepledtrdekledrieekrdejieenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestg
-    gvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:Bt7hXsDSWijE2AlSsaNQNj7O2xx6Wcr0Rx8Es7W__KirMYYoy2_zVg>
-    <xmx:Bt7hXvGTZIhOEz3fUjJdUELzOxEu2F_j7BV6foA-yry798OVxjGAww>
-    <xmx:Bt7hXsTvzBT3vZ2qrVkyypR4EDZcL2soVLsh-GDi42IZ5H_0dMgTtw>
-    <xmx:Bt7hXoeJzSMNtCj5V0FunGTRt-uSoiqHbq-R5neJZPKhm_8HciRBuQ>
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
+    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:CN7hXqZP0UzqbkDfILyoMETjGP2LQ7JvPjGjoHILKgCd5kWzaQYPMA>
+    <xmx:CN7hXt9lFhtOQB8l7dscJ_btXZLLo6a9H0r3W0j--YWYnekxGp7w3w>
+    <xmx:CN7hXhomhzgUDMpaZV5O-sq3KUQnBvKD2_mqzIiqihOeZmOL6XtLPw>
+    <xmx:CN7hXjgaur-FEMqyCSU_kENEY_1kROJK-qvgS4HMbJQCWw6AfGCDOQ>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 69A4D30618C1;
-        Thu, 11 Jun 2020 03:32:22 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 02C4D3280064;
+        Thu, 11 Jun 2020 03:32:23 -0400 (EDT)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 Cc:     linux-rpi-kernel@lists.infradead.org,
@@ -65,11 +63,11 @@ Cc:     linux-rpi-kernel@lists.infradead.org,
         Phil Elwell <phil@raspberrypi.com>,
         Mike Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        Maxime Ripard <maxime@cerno.tech>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH v4 01/27] dt-bindings: arm: bcm: Convert BCM2835 firmware binding to YAML
-Date:   Thu, 11 Jun 2020 09:31:50 +0200
-Message-Id: <2c7d516ab35742171561088fc376b132ea8ccfa8.1591860665.git-series.maxime@cerno.tech>
+        Maxime Ripard <maxime@cerno.tech>, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v4 02/27] dt-bindings: clock: Add a binding for the RPi Firmware clocks
+Date:   Thu, 11 Jun 2020 09:31:51 +0200
+Message-Id: <17ccd4479a13587c372f57420a5901cd1f673809.1591860665.git-series.maxime@cerno.tech>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.58c6e44891ff5bf61052b5804f7da9b5ba074840.1591860665.git-series.maxime@cerno.tech>
 References: <cover.58c6e44891ff5bf61052b5804f7da9b5ba074840.1591860665.git-series.maxime@cerno.tech>
@@ -80,80 +78,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+The firmware running on the RPi VideoCore can be used to discover and
+change the various clocks running in the BCM2711. Since devices will
+need to use them through the DT, let's add a pretty simple binding.
 
-Convert the Raspberry Pi BCM2835 firmware binding document to YAML.
-Verified with dt_binding_check and dtbs_check.
-
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Michael Turquette <mturquette@baylibre.com>
+Cc: linux-clk@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Reviewed-by: Rob Herring <robh+dt@kernel.org>
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.txt  | 14 --------------
- Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml | 35 +++++++++++++++++++++++++++++++++++
- 2 files changed, 35 insertions(+), 14 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.txt
- create mode 100644 Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
+ Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.txt b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.txt
-deleted file mode 100644
-index 6824b3180ffb..000000000000
---- a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.txt
-+++ /dev/null
-@@ -1,14 +0,0 @@
--Raspberry Pi VideoCore firmware driver
--
--Required properties:
--
--- compatible:		Should be "raspberrypi,bcm2835-firmware"
--- mboxes:		Phandle to the firmware device's Mailbox.
--			  (See: ../mailbox/mailbox.txt for more information)
--
--Example:
--
--firmware {
--	compatible = "raspberrypi,bcm2835-firmware";
--	mboxes = <&mailbox>;
--};
 diff --git a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
-new file mode 100644
-index 000000000000..cec540c052b6
---- /dev/null
+index cec540c052b6..b48ed875eb8e 100644
+--- a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
 +++ b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
-@@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/arm/bcm/raspberrypi,bcm2835-firmware.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+@@ -22,6 +22,25 @@ properties:
+       Phandle to the firmware device's Mailbox.
+       (See: ../mailbox/mailbox.txt for more information)
+ 
++  clocks:
++    type: object
 +
-+title: Raspberry Pi VideoCore firmware driver
++    properties:
++      compatible:
++        const: raspberrypi,firmware-clocks
 +
-+maintainers:
-+  - Eric Anholt <eric@anholt.net>
-+  - Stefan Wahren <wahrenst@gmx.net>
++      "#clock-cells":
++        const: 1
++        description: >
++          The argument is the ID of the clocks contained by the
++          firmware messages.
 +
-+properties:
-+  compatible:
-+    items:
-+      - const: raspberrypi,bcm2835-firmware
-+      - const: simple-bus
++    required:
++      - compatible
++      - "#clock-cells"
 +
-+  mboxes:
-+    $ref: '/schemas/types.yaml#/definitions/phandle'
-+    description: |
-+      Phandle to the firmware device's Mailbox.
-+      (See: ../mailbox/mailbox.txt for more information)
++    additionalProperties: false
 +
-+required:
-+  - compatible
-+  - mboxes
+ required:
+   - compatible
+   - mboxes
+@@ -31,5 +50,10 @@ examples:
+     firmware {
+         compatible = "raspberrypi,bcm2835-firmware", "simple-bus";
+         mboxes = <&mailbox>;
 +
-+examples:
-+  - |
-+    firmware {
-+        compatible = "raspberrypi,bcm2835-firmware", "simple-bus";
-+        mboxes = <&mailbox>;
-+    };
-+...
++        firmware_clocks: clocks {
++            compatible = "raspberrypi,firmware-clocks";
++            #clock-cells = <1>;
++        };
+     };
+ ...
 -- 
 git-series 0.9.1
