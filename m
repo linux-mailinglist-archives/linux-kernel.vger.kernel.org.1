@@ -2,122 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15FE1F621C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 09:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C991F6224
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 09:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbgFKHUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 03:20:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53403 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726617AbgFKHUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 03:20:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591860035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yaDPKfElQw2EbPSMf7NzdGzIk/N8eShdAJgRkziqYxo=;
-        b=YpswGGbDCZlUQHBvWbHl8gk5e1XATiMpJdyNjBBXhf/9PVkfHSby/6le1uXesok7z5FYBU
-        pK1sabCkB4Ui8iRtsGk6PvtSQxXW6qsEbmAAToymlWheiWARyhjNVlbdww7651GoeohCf3
-        2apUoCOgHs+KLi5h5TgX1f/KYJJ/W/0=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-iF4ZVVJQNsqtNy8KbyvNCQ-1; Thu, 11 Jun 2020 03:20:33 -0400
-X-MC-Unique: iF4ZVVJQNsqtNy8KbyvNCQ-1
-Received: by mail-wr1-f72.google.com with SMTP id d6so2210580wrn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 00:20:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yaDPKfElQw2EbPSMf7NzdGzIk/N8eShdAJgRkziqYxo=;
-        b=YyLH1GtJvxHK4QZjHY+YIRN9eod/rnTc4B8NKEVEnmeLPy+yLX6LQCJEnZhx4OMWuf
-         EXugipnFRkQ/AekwD29l2/9d77fbIGfOyX1gu/XnRtodUrxRo7Df+Pwo9ozprIRs9c6t
-         GkxpwrYEJJzu9pgRE3dsZRLFEv7BzOzAd8LvRCSLRCytiOl3JulptfI6xYdOFyEI/LKT
-         8LmkmEEfcquxAPEu/S4sRWfFf1viwrt59/PhsdT5AkSLPiLxVCbJivnYkln5Eg8s2FjF
-         9sf+tilIOKnw3Ctasri+x/DgfnGi69vNwFvyHd5Q9+uXBT30qxWk0hOcGrL64kxlrhqk
-         5lzQ==
-X-Gm-Message-State: AOAM531Snz3g5l5a/MF5Rb4XlLBcM3wyEUT4wagvE5WrndzOf7lF7IlN
-        CqBjL7dhhxu+uFeg33DC3wbCAASingPcs+F97QyCLx9GIS3r6SrNVv67BVMPH0b4pAzyJPeWvX+
-        DfgP20RFHxP1BdQMyWWJR65g1
-X-Received: by 2002:adf:e590:: with SMTP id l16mr7634840wrm.383.1591860032648;
-        Thu, 11 Jun 2020 00:20:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyA66WKSAmtJ+sZXGhpsVf0Sl7/pNYHpzwg5MJQ7WIUxQqgrnwhnOxyK8LA1PstwxI4KhuiNQ==
-X-Received: by 2002:adf:e590:: with SMTP id l16mr7634831wrm.383.1591860032457;
-        Thu, 11 Jun 2020 00:20:32 -0700 (PDT)
-Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id k14sm3333212wrq.97.2020.06.11.00.20.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jun 2020 00:20:32 -0700 (PDT)
-Subject: Re: [RFC PATCH 7/7] objtool: Make unwind_hints available for all
- architectures
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        peterz@infradead.org, raphael.gault@arm.com
-References: <20200608152754.2483-1-jthierry@redhat.com>
- <20200608152754.2483-8-jthierry@redhat.com>
- <alpine.LSU.2.21.2006101516310.26666@pobox.suse.cz>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <c4518f15-545a-3cb5-214b-29ddc068189b@redhat.com>
-Date:   Thu, 11 Jun 2020 08:20:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726790AbgFKHU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 03:20:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726763AbgFKHUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 03:20:54 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5AA12074B;
+        Thu, 11 Jun 2020 07:20:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591860052;
+        bh=wryQOEqCvB3LT1mDnP5wE6WUUMvLji/WCUYOA1o1gXQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bnSDGjECZmkSGIy8rrnZh7jtKj+ldW1m4kaPkaeWBdo/Vho0ofYfIv0oKJBrWHUTH
+         hvlJejjLWPUDeFfhy9jwgTyrjRMX8RCmlnCGA0pxwwVuXdcPiIvLzGOZi+yyhSczgm
+         rCERBZM8K3Zw+zMJsXkp4uGpO9Ic6vjgGE9oeHlY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.4.46
+Date:   Thu, 11 Jun 2020 09:20:36 +0200
+Message-Id: <159186003613253@kroah.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.21.2006101516310.26666@pobox.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miroslav,
+I'm announcing the release of the 5.4.46 kernel.
 
-On 6/10/20 2:20 PM, Miroslav Benes wrote:
-> Hi Julien,
-> 
-> On Mon, 8 Jun 2020, Julien Thierry wrote:
-> 
->> Unwind hints are useful to give some information about the call frame
->> or stack states in non-standard code.
->>
->> Despite unwind hints being used in arch-independent code, the
->> unwind_hint structure type itself is define in x86 kernel headers.
->>
->> This is because what an unwind hint will describe is very architecture
->> specific, both regarding the state and the affected registers.
->>
->> To get to share this concept, expose the unwind_hint structure across
->> architecutres. However, the hint types remain defined by the
->> architecture code. Objtool then needs it's arch specific code to
->> "decode" the unwind hint into a cfi_state.
-> 
-> I think it would be nice to split the patch. Something like.
-> 
-> 1. current include/linux/frame.h mixes assembly and non-assembly
-> definitions, so introduce ASSEMBLY ifdef first seems like a good idea to
-> me.
-> 
-> 2. move the relevant definitions to frame.h and add the file to
-> sync-check
-> 
-> 3. the rest of the patch
-> 
-> Would it make sense?
-> 
+All users of the 5.4 kernel series must upgrade.
 
-Yes, I think your approach will make it simpler to review. I wasn't sure 
-how to split it but I like your suggestion, thank you for it.
+The updated 5.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-I'll probably post the split patch separately if the rest of the series 
-gets picked.
+thanks,
 
-Cheers,
+greg k-h
 
--- 
-Julien Thierry
+------------
+
+ Documentation/ABI/testing/sysfs-devices-system-cpu                          |    1 
+ Documentation/admin-guide/hw-vuln/index.rst                                 |    1 
+ Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst |  149 ++++++++++
+ Documentation/admin-guide/kernel-parameters.txt                             |   20 +
+ Makefile                                                                    |    2 
+ arch/x86/include/asm/cpu_device_id.h                                        |   30 ++
+ arch/x86/include/asm/cpufeatures.h                                          |    2 
+ arch/x86/include/asm/msr-index.h                                            |    4 
+ arch/x86/kernel/cpu/bugs.c                                                  |  106 +++++++
+ arch/x86/kernel/cpu/common.c                                                |   63 +++-
+ arch/x86/kernel/cpu/cpu.h                                                   |    1 
+ arch/x86/kernel/cpu/match.c                                                 |    7 
+ drivers/base/cpu.c                                                          |    8 
+ drivers/iio/adc/stm32-adc-core.c                                            |   34 --
+ drivers/iio/chemical/pms7003.c                                              |   17 -
+ drivers/iio/chemical/sps30.c                                                |    9 
+ drivers/iio/light/vcnl4000.c                                                |    6 
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.c                           |    6 
+ drivers/net/ethernet/mellanox/mlx5/core/main.c                              |   18 +
+ drivers/net/ethernet/netronome/nfp/flower/offload.c                         |    3 
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c                           |    3 
+ drivers/net/usb/qmi_wwan.c                                                  |    1 
+ drivers/nfc/st21nfca/dep.c                                                  |    4 
+ drivers/nvmem/qfprom.c                                                      |   14 
+ drivers/staging/rtl8712/wifi.h                                              |    9 
+ drivers/tty/hvc/hvc_console.c                                               |   23 -
+ drivers/tty/vt/keyboard.c                                                   |   26 +
+ drivers/usb/class/cdc-acm.c                                                 |    2 
+ drivers/usb/musb/musb_core.c                                                |    7 
+ drivers/usb/musb/musb_debugfs.c                                             |   10 
+ drivers/usb/serial/ch341.c                                                  |   53 +++
+ drivers/usb/serial/option.c                                                 |    4 
+ drivers/usb/serial/qcserial.c                                               |    1 
+ drivers/usb/serial/usb_wwan.c                                               |    4 
+ include/linux/mod_devicetable.h                                             |    6 
+ include/linux/virtio_net.h                                                  |   25 +
+ kernel/events/uprobes.c                                                     |   16 -
+ net/ipv4/devinet.c                                                          |    1 
+ net/l2tp/l2tp_core.c                                                        |    3 
+ net/l2tp/l2tp_ip.c                                                          |   29 +
+ net/l2tp/l2tp_ip6.c                                                         |   30 +-
+ net/vmw_vsock/af_vsock.c                                                    |    2 
+ 42 files changed, 626 insertions(+), 134 deletions(-)
+
+Bin Liu (2):
+      USB: serial: usb_wwan: do not resubmit rx urb on fatal errors
+      usb: musb: start session in resume for host port
+
+Chuhong Yuan (1):
+      NFC: st21nfca: add missed kfree_skb() in an error path
+
+Daniele Palmas (2):
+      net: usb: qmi_wwan: add Telit LE910C1-EUX composition
+      USB: serial: option: add Telit LE910C1-EUX compositions
+
+Dinghao Liu (1):
+      usb: musb: Fix runtime PM imbalance on error
+
+Dmitry Torokhov (1):
+      vt: keyboard: avoid signed integer overflow in k_ascii
+
+Eric Dumazet (3):
+      l2tp: add sk_family checks to l2tp_validate_socket
+      l2tp: do not use inet_hash()/inet_unhash()
+      net: be more gentle about silly gso requests coming from user
+
+Fabrice Gasnier (1):
+      iio: adc: stm32-adc: fix a wrong error message when probing interrupts
+
+Fugang Duan (1):
+      net: stmmac: enable timestamp snapshot for required PTP packets in dwmac v5.10a
+
+Greg Kroah-Hartman (2):
+      Revert "net/mlx5: Annotate mutex destroy for root ns"
+      Linux 5.4.46
+
+Heinrich Kuhn (1):
+      nfp: flower: fix used time of merge flow statistics
+
+Jiri Slaby (1):
+      tty: hvc_console, fix crashes on parallel open/close
+
+Jonathan Cameron (2):
+      iio:chemical:sps30: Fix timestamp alignment
+      iio:chemical:pms7003: Fix timestamp alignment and prevent data leak.
+
+Josh Poimboeuf (1):
+      x86/speculation: Add Ivy Bridge to affected list
+
+Mark Bloch (1):
+      net/mlx5: Fix crash upon suspend/resume
+
+Mark Gross (4):
+      x86/cpu: Add a steppings field to struct x86_cpu_id
+      x86/cpu: Add 'table' argument to cpu_matches()
+      x86/speculation: Add Special Register Buffer Data Sampling (SRBDS) mitigation
+      x86/speculation: Add SRBDS vulnerability and mitigation documentation
+
+Mathieu Othacehe (1):
+      iio: vcnl4000: Fix i2c swapped word reading.
+
+Matt Jolly (1):
+      USB: serial: qcserial: add DW5816e QDL support
+
+Michael Hanselmann (1):
+      USB: serial: ch341: add basis for quirk detection
+
+Oleg Nesterov (1):
+      uprobes: ensure that uprobe->offset and ->ref_ctr_offset are properly aligned
+
+Oliver Neukum (1):
+      CDC-ACM: heed quirk also in error handling
+
+Pascal Terjan (1):
+      staging: rtl8712: Fix IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK
+
+Srinivas Kandagatla (1):
+      nvmem: qfprom: remove incorrect write support
+
+Stefano Garzarella (1):
+      vsock: fix timeout in vsock_accept()
+
+Tony W Wang-oc (1):
+      x86/speculation/spectre_v2: Exclude Zhaoxin CPUs from SPECTRE_V2
+
+Willem de Bruijn (1):
+      net: check untrusted gso_size at kernel entry
+
+Yang Yingliang (1):
+      devinet: fix memleak in inetdev_init()
 
