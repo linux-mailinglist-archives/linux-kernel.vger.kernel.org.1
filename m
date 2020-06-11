@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D891F642A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 11:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF331F6435
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 11:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgFKJBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 05:01:35 -0400
-Received: from mga03.intel.com ([134.134.136.65]:4803 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgFKJBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 05:01:35 -0400
-IronPort-SDR: KvLf+9Ogvw8N0u0grp2RQ022H0ic5Sr4PBQLlChemjuIl8dBz0SOtnAgcmXptgmV4eHygKLvrx
- EWTACex7fAwQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 02:01:35 -0700
-IronPort-SDR: 6ITRvQo4TaYdZoPDTI+zEjEv2DNIWe0IS8NPuGBRjpyrRvei3KLh76xmrcJ4dHShHvxTX7Ueog
- prduhYEpr2fQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,499,1583222400"; 
-   d="scan'208";a="260442809"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 11 Jun 2020 02:01:34 -0700
-Received: from [10.214.154.243] (vramuthx-mobl1.gar.corp.intel.com [10.214.154.243])
-        by linux.intel.com (Postfix) with ESMTP id 5024B580458;
-        Thu, 11 Jun 2020 02:01:31 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v2 2/2] usb: phy: Add USB3 PHY support for Intel LGM SoC
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     linux-kernel@vger.kernel.org, balbi@kernel.org,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        robh@kernel.org, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, yin1.li@intel.com
-References: <20200611021246.3250-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200611021246.3250-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200611081254.GR2428291@smile.fi.intel.com>
- <21b5db0e-c45a-2255-0389-04b204685d63@linux.intel.com>
- <20200611085710.GV2428291@smile.fi.intel.com>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <086e01da-a834-4745-022a-8d59c52f98d6@linux.intel.com>
-Date:   Thu, 11 Jun 2020 17:01:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1727011AbgFKJDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 05:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726833AbgFKJDt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 05:03:49 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9780CC03E96F
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 02:03:48 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id y20so4262381wmi.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 02:03:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fooishbar-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=611EZXoXvMC0wgvkSoDqQkuDX4b96jfM5TQTQEW07+g=;
+        b=rBu3ZBBsiU7BegTaLT92EmVcTqTQ1ln4TngPt+QtaRUJwZJvFNvlbvL3HcjTBtXw9H
+         G1BFGLxRjII2qe+n6Wb4wAjp/MIbndhkzRvvFKrM4W8lQT+ibssLtH8TT46cMB5P5uU3
+         5NUykMXB6wJxIim5uZLsueE9Lb1sMJwsx7fkaWRSDcEwhKWAYhiGyzIwnkpl/z6oq0Or
+         4x+BtmbF9c7Gs6DTj+RsOX7oSNj6Q0tkv5onPLhaBIsEtG4yxV9T70vq8ePrXAlDNpD8
+         5sB2zFwst0zY2C9XYIlAcPCJ2JUIt9V9Hjz4+vjSenZxVun25fMG+8FtkYQcjlFwLPq+
+         dTPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=611EZXoXvMC0wgvkSoDqQkuDX4b96jfM5TQTQEW07+g=;
+        b=soFDCb27HOdr5CZKII2fLQKlDKgb8dzn8XB17Ikt8pNTc6EaBjQoZBlMiSviNYLeRd
+         /O45rvB//etr9JvhVUnL964JRQJWxMokDUKHNyqCZpoOw36bloAnJT4GG4aBZRc0r0ge
+         mBUITB0HsB0hdfnmQHirKz5ASq+QhNJZ49xYB0GE2TaP3F4d8z1Yx4q/mQCmTQN9YSZ9
+         9YZO8qC5fjhacseTBh3YO34qIrgf6n57h/8gn8K8Jkw7ZZAXDs+7vUZW90r4yEuSS26q
+         6LElk6z3YVTWY1d0wKjORBbd3PqEST8vtidTT6425XZ2VWBQR+bhPoP2PzrkMHe/8r4t
+         iSxQ==
+X-Gm-Message-State: AOAM533bJMqcD8qj/u4df84aanM/Esx8RYHvBDwnhMT0VTy4OerCICVu
+        RW9plFmxadJWix0PnVGBujUV5qssv+nmIgoEDARBlw==
+X-Google-Smtp-Source: ABdhPJxPKKxxiM1BfEdkh9RUDLtOEwohJAfgWmxAu+vR7pTgkQ6fdURfjYcm3A4r4/Ejum+DBwaGettYUqKJ7IOPnc8=
+X-Received: by 2002:a1c:6a01:: with SMTP id f1mr6984797wmc.52.1591866227178;
+ Thu, 11 Jun 2020 02:03:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200611085710.GV2428291@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
+ <20200604081224.863494-4-daniel.vetter@ffwll.ch> <159186243606.1506.4437341616828968890@build.alporthouse.com>
+ <CAPM=9ty6r1LuXAH_rf98GH0R9yN3x8xzKPjZG3QyvokpQBR-Hg@mail.gmail.com>
+In-Reply-To: <CAPM=9ty6r1LuXAH_rf98GH0R9yN3x8xzKPjZG3QyvokpQBR-Hg@mail.gmail.com>
+From:   Daniel Stone <daniel@fooishbar.org>
+Date:   Thu, 11 Jun 2020 10:01:46 +0100
+Message-ID: <CAPj87rM0S2OPssf+WA+pjanT-0Om3yuUM1zUJCv4qTx5VYE=Fw@mail.gmail.com>
+Subject: Re: [Intel-gfx] [PATCH 03/18] dma-fence: basic lockdep annotations
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        linux-rdma@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Hi,
 
-  Thank you very much for prompt review comments...
+On Thu, 11 Jun 2020 at 09:44, Dave Airlie <airlied@gmail.com> wrote:
+> On Thu, 11 Jun 2020 at 18:01, Chris Wilson <chris@chris-wilson.co.uk> wrote:
+> > Introducing a global lockmap that cannot capture the rules correctly,
+>
+> Can you document the rules all drivers should be following then,
+> because from here it looks to get refactored every version of i915,
+> and it would be nice if we could all aim for the same set of things
+> roughly. We've already had enough problems with amdgpu vs i915 vs
+> everyone else with fences, if this stops that in the future then I'd
+> rather we have that than just some unwritten rules per driver and
+> untestable.
 
-On 11/6/2020 4:57 pm, Andy Shevchenko wrote:
-> On Thu, Jun 11, 2020 at 04:36:29PM +0800, Ramuthevar, Vadivel MuruganX wrote:
->> On 11/6/2020 4:12 pm, Andy Shevchenko wrote:
->>> On Thu, Jun 11, 2020 at 10:12:46AM +0800, Ramuthevar,Vadivel MuruganX wrote:
->>>> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
-> ...
-> 
->>>> +	ret = readl_poll_timeout(ctrl1, val, val & SRAM_INIT_DONE,
->>>> +				 10, 10 * 1000);
->> exceeds more than 80 characters, so checkpatch throws warnings, to avoid
->> that move to next line.
-> 
->>> On one line easier to read.
-> 
-> It's 82 characters. It's fine.
-Noted.
-> 
->>>> +	if (ret) {
->>>> +		dev_err(ta->phy.dev, "SRAM init failed, 0x%x\n", val);
->>>> +		return ret;
->>>> +	}
-> 
-> ...
-> 
->>>> +	int ret = 0;
->>>
->>> Assignment is redundant.
->> so you mean , should be declared as
->> int ret;
->> right?
-> 
-> Right.
-okay, Thanks!
-> 
-> ...
-> 
->>>> +		dev_info(ta->phy.dev, "connected%s\n",
->>>> +			 flipped ? " flipped" : "");
->>>
->>> One line.
->> exceeds more than 80 characters, so checkpatch throw warnings, to avoid that
->> moved to next line.
-> 
-> It's fine to have on one line.
-> 
-> And by the way, try new checkpatch.
-Sure , will try and fix it.
+As someone who has sunk a bunch of work into explicit-fencing
+awareness in my compositor so I can never be blocked, I'd be
+disappointed if the infrastructure was ultimately pointless because
+the documented fencing rules were \_o_/ or thereabouts. Lockdep
+definitely isn't my area of expertise so I can't comment on the patch
+per se, but having something to ensure we don't hit deadlocks sure
+seems a lot better than nothing.
 
-Regards
-Vadivel
-> 
-> 
+Cheers,
+Daniel
