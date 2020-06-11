@@ -2,88 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD5C1F6310
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 09:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7BF1F631B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 09:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgFKH6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 03:58:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52810 "EHLO mx2.suse.de"
+        id S1727019AbgFKH7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 03:59:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726694AbgFKH6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 03:58:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D33BBACF9;
-        Thu, 11 Jun 2020 07:58:23 +0000 (UTC)
-Date:   Thu, 11 Jun 2020 09:58:18 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH] printk/kdb: Redirect printk messages into kdb in any
- context
-Message-ID: <20200611075818.GC6581@linux-b0ei>
-References: <1589273314-12060-1-git-send-email-sumit.garg@linaro.org>
- <20200512142533.ta4uejwmq5gchtlx@holly.lan>
- <CAFA6WYOV7oPbYE=9fXueYMacb5wv0r9T6F8tmECt-Eafe-fctw@mail.gmail.com>
- <20200514084230.GO17734@linux-b0ei>
- <CAFA6WYPSsgdAB-wJC0e2YkVkW0XsqQsu5wrn4iB4M-cwvS7z2g@mail.gmail.com>
- <20200515085021.GS17734@linux-b0ei>
- <20200515103308.GD42471@jagdpanzerIV.localdomain>
- <CAFA6WYOBsimP1j8Fwq4OcePEug4MGoaY3wTTTVydHtTphZ-FTw@mail.gmail.com>
- <20200515163638.GI42471@jagdpanzerIV.localdomain>
- <20200610164140.tgzcn5oip2gzgmze@holly.lan>
+        id S1726716AbgFKH7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 03:59:07 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A277B204EA;
+        Thu, 11 Jun 2020 07:59:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591862346;
+        bh=OosHKHNgy/JfsuiXlWm6kqNlEzxuPgPk1Y8ZZaJeWD0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xdnE9ijSYCm2ieKcA6MjTtuO04MHTQe1Et0EXVKYQCTKFPlQEVb9Yfj8kMl8AR13w
+         Qa+QrSTirgnpvN11t74TOELy0TkE+PQGhIX4EOiSYHH4YRZ7TbRRaDjLYoA1zHsodf
+         +Qk2xXT4keuJXovgH5hLfKz2s8TnNRSdO4NRUwV4=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jjI77-0021Wl-9L; Thu, 11 Jun 2020 08:59:05 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200610164140.tgzcn5oip2gzgmze@holly.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 11 Jun 2020 08:59:05 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Feiner <pfeiner@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Ben Gardon <bgardon@google.com>,
+        Christoffer Dall <christoffer.dall@arm.com>
+Subject: Re: [PATCH 17/21] KVM: arm64: Use common code's approach for
+ __GFP_ZERO with memory caches
+In-Reply-To: <20200605213853.14959-18-sean.j.christopherson@intel.com>
+References: <20200605213853.14959-1-sean.j.christopherson@intel.com>
+ <20200605213853.14959-18-sean.j.christopherson@intel.com>
+User-Agent: Roundcube Webmail/1.4.4
+Message-ID: <6cc08074c289cbea7b9c1deeaf18c63f@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: sean.j.christopherson@intel.com, paulus@ozlabs.org, borntraeger@de.ibm.com, frankja@linux.ibm.com, pbonzini@redhat.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, david@redhat.com, cohuck@redhat.com, imbrenda@linux.ibm.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org, kvm@vger.kernel.org, kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org, pfeiner@google.com, pshier@google.com, junaids@google.com, bgardon@google.com, christoffer.dall@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-06-10 17:41:40, Daniel Thompson wrote:
-> On Sat, May 16, 2020 at 01:36:38AM +0900, Sergey Senozhatsky wrote:
-> > On (20/05/15 17:32), Sumit Garg wrote:
-> > > > Can I please have some context what problem does this solve?
-> > > 
-> > > You can find the problem description here [1] which leads to this fix.
-> > 
-> > [..]
-> > 
-> > > [1] https://lkml.org/lkml/2020/5/12/213
-> > 
-> > Thanks for the link. I'm slightly surprised it took so many years
-> > to notice the addition of printk_nmi/printk_safe :)
+Hi Sean,
+
+On 2020-06-05 22:38, Sean Christopherson wrote:
+> Add a "gfp_zero" member to arm64's 'struct kvm_mmu_memory_cache' to 
+> make
+> the struct and its usage compatible with the common 'struct
+> kvm_mmu_memory_cache' in linux/kvm_host.h.  This will minimize code
+> churn when arm64 moves to the common implementation in a future patch, 
+> at
+> the cost of temporarily having somewhat silly code.
 > 
-> Rather by coincidence (at least I think its a coincidence) the problem
-> has recently become much more obvious.
+> No functional change intended.
 > 
-> 0d00449c7a28 ("x86: Replace ist_enter() with nmi_enter()") just brought
-> this to the surface by treating debug traps as NMIs. This means the CPU
-> that takes a breakpoint, and where almost all of the kdb printk() calls
-> take place, will now unconditionally have printk() interception enabled.
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/arm64/include/asm/kvm_host.h | 1 +
+>  arch/arm64/kvm/arm.c              | 2 ++
+>  arch/arm64/kvm/mmu.c              | 5 +++--
+>  3 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h
+> b/arch/arm64/include/asm/kvm_host.h
+> index abbdf9703e20..2385dede96e0 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -105,6 +105,7 @@ struct kvm_arch {
+>   */
+>  struct kvm_mmu_memory_cache {
+>  	int nobjs;
+> +	gfp_t gfp_zero;
+>  	void *objects[KVM_NR_MEM_OBJS];
+>  };
+> 
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 45276ed50dd6..4c98c6b4d850 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -270,6 +270,8 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+>  	vcpu->arch.target = -1;
+>  	bitmap_zero(vcpu->arch.features, KVM_VCPU_MAX_FEATURES);
+> 
+> +	vcpu->arch.mmu_page_cache.gfp_zero = __GFP_ZERO;
+> +
+>  	/* Set up the timer */
+>  	kvm_timer_vcpu_init(vcpu);
+> 
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 9398b66f8a87..688213ef34f0 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -131,7 +131,8 @@ static int mmu_topup_memory_cache(struct
+> kvm_mmu_memory_cache *cache, int min)
+>  	if (cache->nobjs >= min)
+>  		return 0;
+>  	while (cache->nobjs < ARRAY_SIZE(cache->objects)) {
+> -		page = (void *)__get_free_page(GFP_PGTABLE_USER);
+> +		page = (void *)__get_free_page(GFP_KERNEL_ACCOUNT |
 
-Mea culpa. I have marked this patch as proceed by mistake. It has got
-enough acks and is ready for 5.8.
+This is definitely a change in the way we account for guest
+page tables allocation, although I find it bizarre that not
+all architectures account for it the same way.
 
-I have just commited the patch into printk/linux.git,
-branch for-5.8-kdb-nmi.
+It seems logical to me that nested page tables would be accounted
+against userspace, but I'm willing to be educated on the matter.
 
-I am going to push it to Linus when it passes linux-next integration,
-hopefully tomorrow.
+Another possibility is that depending on the context, some allocations
+should be accounted on either the kernel or userspace (NV on arm64
+could definitely do something like that). If that was the case,
+maybe moving most of the GFP_* flags into the per-cache flags,
+and have the renaming that Ben suggested earlier.
 
-Thanks a lot for poking me.
+Thanks,
 
-Best Regards,
-Petr
+         M.
+-- 
+Jazz is not dead. It just smells funny...
