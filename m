@@ -2,104 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC35C1F6695
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EA71F6650
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728020AbgFKL0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 07:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727904AbgFKL0L (ORCPT
+        id S1727932AbgFKLLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 07:11:13 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:30673 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727874AbgFKLLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 07:26:11 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78EE4C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 04:26:11 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id n24so6112587ejd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 04:26:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NA3wi+sqNlJq17nOS/TElKV909MYYt0naP4yTX76rbI=;
-        b=diGjbebT+7YQBde6Y9mVDqeBytRKr6jSYHBHUv0V5DqlAw1S4U0YVd4tc8PIkFpm61
-         cYpbZUrbwH+OEumKyZRu6py1EUMs6Ro7EMdBlCe5dwiHRKSO6jqL2p+tGuHvlJd8UZJL
-         rbp0CrgdjnQyKCQSDNNWH7xc5xwYtgVOeVjiQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NA3wi+sqNlJq17nOS/TElKV909MYYt0naP4yTX76rbI=;
-        b=qN2BKYm48wFBFk0F/eAZBSWBtChoLMgFY0H47T5VtvJl+ryWCzdrvVRhlDdJWoKzjr
-         LQBrEZdjC0ghbwFqrOn3aMMPXx+q/5gf8YIesLsyjbtIdy4KK0CCmMpj3/ovkASHE7A5
-         827/rtibkHryZcIdmmr2ttvFjq/6pDuNDqbSVUBdV4N2pEJ1TnyeMQP5q3Wj94rKbcbv
-         A3eyo4AoHpeVG4diwr7BXZHd/wwaI2Z7Wt5WBG/iwrm1PWrI+39dVG7ivdmIYkZGciwD
-         jtIdlOidhCBPizjPwP++xAYGg4xfzfm5VLV0UCUIHKh3pMXMsv+nIL2pkM9TGJFIyiw4
-         OQfA==
-X-Gm-Message-State: AOAM530IdXiCFyMVkvIeExNgvqg8iGaS9rA6Zu2dNsdJm1CnEDx2Q/UQ
-        ovfRJx7pMsBh+UtmN5IqEE3AcA==
-X-Google-Smtp-Source: ABdhPJwAJGjjRC4+BgtAIKcDKG7ehv2dvKrFkl3jTqw26nmz0OeeRtECOvIQwke+FGfWU48BDCZU8w==
-X-Received: by 2002:a17:906:1196:: with SMTP id n22mr7699922eja.33.1591874768241;
-        Thu, 11 Jun 2020 04:26:08 -0700 (PDT)
-Received: from [192.168.1.149] (ip-5-186-127-38.cgn.fibianet.dk. [5.186.127.38])
-        by smtp.gmail.com with ESMTPSA id i23sm1687119eja.37.2020.06.11.04.26.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jun 2020 04:26:07 -0700 (PDT)
-Subject: Re: WIP generic module->debug_flags and dynamic_debug
-To:     jim.cromie@gmail.com,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Joe Perches <joe@perches.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
- <20200609104604.1594-7-stanimir.varbanov@linaro.org>
- <CAJfuBxzxwoyXbDrgQzb=BZJ8ZQ5hHo32Zr1uo6Od=7+q13+GXQ@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <548d30a8-0a5a-4ada-5564-b61f88863afc@rasmusvillemoes.dk>
-Date:   Thu, 11 Jun 2020 13:26:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 11 Jun 2020 07:11:11 -0400
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200611111107epoutp016f73354f0536285ecb2ba36866f74142~XeNlJwX1L0193401934epoutp019
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 11:11:07 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200611111107epoutp016f73354f0536285ecb2ba36866f74142~XeNlJwX1L0193401934epoutp019
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591873867;
+        bh=m5J+ghZMJqGOXBmy3eWSpEpm7qa5DnNLLLRwQ72pHow=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=i7mTdp8Xns87CfUNeM83Z8EvUm5EgoaBTkT9Ud0y0YcrlLFau0FRP6AqqNN9oRdQK
+         OANkSFxh3G5dMYq+2Ct/0cBDM0CvcIIGRpnjIpzTFzEUTuWVzcuC5osX5GySwpyFCW
+         x66UWBzRyrdVym/n46IE/xiHAf3OybfD379c4GGA=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20200611111107epcas2p4bb292c4c64c2ecc2819859a3055a7032~XeNkvu3B11259312593epcas2p4s;
+        Thu, 11 Jun 2020 11:11:07 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.188]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 49jLkx5FfKzMqYlx; Thu, 11 Jun
+        2020 11:11:05 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        67.7F.27013.74112EE5; Thu, 11 Jun 2020 20:11:03 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20200611111103epcas2p3b454a6086d4eab9c03a6eb58635d2357~XeNgtmFIh0129101291epcas2p3L;
+        Thu, 11 Jun 2020 11:11:03 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200611111103epsmtrp15da611433d670aa1d1c5fcb42fb26550~XeNgs5vPW2149021490epsmtrp1I;
+        Thu, 11 Jun 2020 11:11:03 +0000 (GMT)
+X-AuditID: b6c32a48-d35ff70000006985-38-5ee21147b134
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        50.B4.08382.74112EE5; Thu, 11 Jun 2020 20:11:03 +0900 (KST)
+Received: from Dabang.dsn.sec.samsung.com (unknown [12.36.155.59]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200611111102epsmtip10637ec99eba10fe6a80a9890ad26a72b~XeNgiaJRZ1633816338epsmtip1u;
+        Thu, 11 Jun 2020 11:11:02 +0000 (GMT)
+From:   Hyesoo Yu <hyesoo.yu@samsung.com>
+Cc:     Hyesoo Yu <hyesoo.yu@samsung.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dma-buf: support to walk the list of dmabuf for debug
+Date:   Thu, 11 Jun 2020 20:28:41 +0900
+Message-Id: <20200611112842.23636-1-hyesoo.yu@samsung.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <CAJfuBxzxwoyXbDrgQzb=BZJ8ZQ5hHo32Zr1uo6Od=7+q13+GXQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJKsWRmVeSWpSXmKPExsWy7bCmma674KM4gyXd6hZXvr5ns/jbeYHV
+        4suVh0wWl3fNYbPo2bCV1eLU3c/sDmwed67tYfO4332cyeP2v8fMHn1bVjF6fN4kF8AalWOT
+        kZqYklqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlhrqSQl5ibaqvk4hOg65aZA3SBkkJZYk4p
+        UCggsbhYSd/Opii/tCRVISO/uMRWKbUgJafA0LBArzgxt7g0L10vOT/XytDAwMgUqDIhJ2PD
+        lJ2MBS8EK+bMzWpgfMTXxcjJISFgIjHt5R5mEFtIYAejxMld7l2MXED2J0aJu18WskM43xgl
+        Fn5+wQLTsfh4LzNEYi+jxKlfu6GqvjNKHGn8wAhSxSagLnFiyzIwW0SARWLl9+8sIEXMAucZ
+        Jd5dnQWU4OAQFnCTWNVqBlLDIqAqMXfKSrANvAJWEr8+7WSD2CYvMXH2XUaIuKDEyZlPwGqY
+        geLNW2eDXSEhcIxdov3fNEaIBheJuwfesULYwhKvjm9hh7ClJF72t0HZ5RJnWx6xQjS3MEpc
+        nHYVapuxxKxn7WDHMQtoSqzfpQ9iSggoSxy5BbWXT6Lj8F92iDCvREebEESjssT+ZfOgASQp
+        8WhtOytEiYdE46NoSOjGSny9MZN1AqP8LCTPzELyzCyEtQsYmVcxiqUWFOempxYbFZggR+km
+        RnAa1PLYwTj77Qe9Q4xMHIyHGCU4mJVEeAXFH8YJ8aYkVlalFuXHF5XmpBYfYjQFBu9EZinR
+        5HxgIs4riTc0NTIzM7A0tTA1M7JQEud9Z3UhTkggPbEkNTs1tSC1CKaPiYNTqoFJZNOkuTnH
+        1qW2pf5rl2M6rbnO/szt3++dl2dGsonMZT43q+vctFsX7r69cXPBjnWuuSJbfCRmhMf0fN/K
+        9EpJUMWFv0Dn4yctHZbWaKPC7TZJPTOylyj3szHMy3edPWv+iefzPsz4v//C75D6IIO4c3Mf
+        u9yulIrSKDszbQdXrmHokkbdtr5pgYKN1SreOxbcTKw18KlYfNbz+e8VV1btY9RtE4u7lGf5
+        42T8iie+t68WRlv5/N3Xn5g/L3hes+L7zg+fF87/80r4H3P29mt/Tj9UkDLoSc35ZKt//qIe
+        9/kbdVv9rVXWMtt7bfbf8UxR455D22qFy3rtW0qyfmz7mJuy23hfya3rRgUJZrZ3lViKMxIN
+        tZiLihMBSl5KAQwEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBLMWRmVeSWpSXmKPExsWy7bCSnK674KM4g/YdLBZXvr5ns/jbeYHV
+        4suVh0wWl3fNYbPo2bCV1eLU3c/sDmwed67tYfO4332cyeP2v8fMHn1bVjF6fN4kF8AaxWWT
+        kpqTWZZapG+XwJWxYcpOxoIXghVz5mY1MD7i62Lk5JAQMJFYfLyXuYuRi0NIYDejxNfVIA5I
+        QlJi1ueTTBC2sMT9liOsEEVfGSXePp3ODpJgE1CXOLFlGSOILSLAIrHy+3cWEJtZ4DKjxPFr
+        pV2MHBzCAm4Sq1rNQMIsAqoSc6esBCvhFbCS+PVpJxvEfHmJibPvMkLEBSVOznwCNUZeonnr
+        bOYJjHyzkKRmIUktYGRaxSiZWlCcm55bbFhgmJdarlecmFtcmpeul5yfu4kRHJhamjsYt6/6
+        oHeIkYmD8RCjBAezkgivoPjDOCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8NwoXxgkJpCeWpGan
+        phakFsFkmTg4pRqYPJUuhFp/N7+1bS7P9b6PTquPXIhZYzkl/9xplZuO+frHPsimFf444v9k
+        X8qSFt8f7YyTCjazGV0T5QmNEzU/cvm/sOGXzTt1HHtYHnsVr+Hct0LsSe5ixwvXUmIjfD0W
+        TXV9ckIvVPo/d4i79hqFzVOf1yx4GJHc0yuk+Vd9gU7x+xfrF2j5XSx403Nu8WnBtfqNMjPM
+        Q3Qamf//ezcrwifz++7FKWUBihdFxJZJiTIGZ1m/WNv7eu2FX/E/rnBG2X+OYL3NVeI1eyv3
+        KxE/mV135aw8Gx9qb/7G8TCk0HCe7XsZp8csiR2RtV1axlJTH19ekvIt2XqZxYmKsBsfOMyS
+        5D78yJzs0F47jWmhEktxRqKhFnNRcSIA8Kcrt7sCAAA=
+X-CMS-MailID: 20200611111103epcas2p3b454a6086d4eab9c03a6eb58635d2357
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200611111103epcas2p3b454a6086d4eab9c03a6eb58635d2357
+References: <CGME20200611111103epcas2p3b454a6086d4eab9c03a6eb58635d2357@epcas2p3.samsung.com>
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06/2020 20.32, jim.cromie@gmail.com wrote:
-> so Ive got a WIP / broken / partial approach to giving all modules a
-> u32 flagset,
-> and enabling pr_debug based upon it.  I leave out the "pr_debug_typed(
-> bitpos )" for now.  For Stanimir, bits 1,2,3 could be high, middle,
-> low.
-> 
-> ATM its broken on my lack of container_of() skills.
-> 
-> Im trying to use it to get a struct module* using its name value thats
-> been copied
-> into a ddebug_table member.
-> 
-> Im relying on
-> cdf6d006968  dynamic_debug: don't duplicate modname in ddebug_add_module
-> to have the same value in both structs
-> 
-> but Im clearly missing a few things
-> besides the likely future trouble with .rodata builtin modules
-> (after compile prob solved)
-> 
-> It seems container_of wants me to use struct ddebug_table instead,
-> but I dont want a *ddebug_table.
-> Ive blindly guessed at adding & and * to 1st param, w/o understanding.
-> 
-> can anyone diagnose my problem ?
+Let's support debugging function to show exporter
+detail information. The exporter don't need to manage
+the lists for debugging because all dmabuf list are
+managed on dmabuf framework.
 
-Sorry, I have not the faintest idea of what you're trying to achieve.
-Can you spell that out?
+That supports to walk the dmabuf list and show the
+detailed information for exporter by passed function
+implemented from exporter.
 
-Rasmus
+That helps to show exporter detail information.
+For example, ION may show the buffer flag, heap name,
+or the name of process to request allocation.
+
+Change-Id: I670f04dda4a0870081e1b0fd96b9185b48b9dd15
+Signed-off-by: Hyesoo Yu <hyesoo.yu@samsung.com>
+---
+ drivers/dma-buf/dma-buf.c | 30 ++++++++++++++++++++++++++++++
+ include/linux/dma-buf.h   |  2 ++
+ 2 files changed, 32 insertions(+)
+
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 01ce125f8e8d..002bd3ac636e 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -1254,6 +1254,36 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, void *vaddr)
+ }
+ EXPORT_SYMBOL_GPL(dma_buf_vunmap);
+ 
++int dma_buf_exp_show(struct seq_file *s,
++		     int (*it)(struct seq_file *s, struct dma_buf *dmabuf))
++{
++	int ret;
++	struct dma_buf *buf_obj;
++
++	ret = mutex_lock_interruptible(&db_list.lock);
++	if (ret)
++		return ret;
++
++	list_for_each_entry(buf_obj, &db_list.head, list_node) {
++		ret = mutex_lock_interruptible(&buf_obj->lock);
++		if (ret) {
++			seq_puts(s,
++				 "\tERROR locking buffer object: skipping\n");
++			continue;
++		}
++
++		ret = it(s, buf_obj);
++		mutex_unlock(&buf_obj->lock);
++		if (ret)
++			break;
++	}
++	mutex_unlock(&db_list.lock);
++
++	return 0;
++
++}
++EXPORT_SYMBOL_GPL(dma_buf_exp_show);
++
+ #ifdef CONFIG_DEBUG_FS
+ static int dma_buf_debug_show(struct seq_file *s, void *unused)
+ {
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index ab0c156abee6..b5c0a10b4eb3 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -502,4 +502,6 @@ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
+ 		 unsigned long);
+ void *dma_buf_vmap(struct dma_buf *);
+ void dma_buf_vunmap(struct dma_buf *, void *vaddr);
++int dma_buf_exp_show(struct seq_file *s,
++		     int (*it)(struct seq_file *s, struct dma_buf *dmabuf));
+ #endif /* __DMA_BUF_H__ */
+-- 
+2.27.0
+
